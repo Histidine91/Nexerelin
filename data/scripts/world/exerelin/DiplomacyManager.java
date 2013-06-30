@@ -500,6 +500,8 @@ public class DiplomacyManager
 		}
 		else if(change.equalsIgnoreCase("Alliance initiated between "))
 		{
+			// TODO: Needs to join alliance
+
 			for(int i = 0; i < factionRecords.length; i = i + 1)
 			{
 				if(factionRecords[i].getGameRelationship(fdr1.getFactionId()) < 0)
@@ -524,7 +526,7 @@ public class DiplomacyManager
 		}
 		else if(change.equalsIgnoreCase("Alliance ended between "))
 		{
-			// ????
+			// TODO: Needs to be removed from alliance
 		}
 		else if(change.equalsIgnoreCase("Alliance betrayal between "))
 		{
