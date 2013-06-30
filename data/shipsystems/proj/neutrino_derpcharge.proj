@@ -1,0 +1,35 @@
+{
+	"id":"neutrino_derpcharge",
+	"specClass":"missile",	
+	"missileType":"PHASE_CHARGE",
+	"sprite":"graphics/neut/missiles/neutrino_derpcharge.png",
+	"size":[10,12],	
+	"center":[5,6],
+	"collisionRadius":12,
+	"collisionClass":"MISSILE_FF",
+	"explosionColor":[222,82,38,15],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":270, # purely visual	
+	"engineSpec":{"turnAcc":500,
+				  "turnRate":150,
+				  "acc":100,
+				  "dec":100},
+	#"engineSlots":[{"id":"ES1",
+	#				"loc":[-8, 0],
+	#			    "style":"HIGH_TECH",
+	#			    "width":4.0,
+	#			    "length":10.0,
+	#			    "angle":180.0}]
+	"behaviorSpec":{"behavior":"PROXIMITY_FUSE",
+					"range":55,
+					"explosionSpec":{"duration":0.1f,
+									 "radius":235,
+									 "coreRadius":175, # full damage within core radius
+									 "collisionClass":PROJECTILE_FF,
+									 "collisionClassByFighter":PROJECTILE_FIGHTER,
+									 "particleSizeMin":3.0,
+									 "particleSizeRange":3.0,
+									 "particleDuration":1,
+									 "particleCount":10,
+									 "particleColor":[235,142,112,15]},
+					}	
+}

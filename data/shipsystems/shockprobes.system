@@ -1,0 +1,35 @@
+{
+	"id":"shockprobes",
+	"type":"EMP",
+	"aiType":"EMP",
+	
+	"range":600,
+	
+	"empDamage":265,
+	"damage":225,
+	"damageType":ENERGY,
+	
+	#"effectColor1":[165,165,165,200],
+	#"effectColor2":[175,175,255,255],
+	"effectColor1":[200,200,235,200],
+	"effectColor2":[175,175,175,255],
+
+
+	"useSound":"beam_heavy_intro",
+	"loopSound":"system_emp_emitter_loop",
+	"impactSound":"system_emp_emitter_impact",
+	"outOfUsesSound":"gun_out_of_ammo",
+	
+	"aiHints":{
+		"threatRange":600,
+		"threatAmount":4,
+		"threatAngle":0,
+		"threatArc":360,
+		"weaponAssignmentSuitability":{
+			"LIGHT_ESCORT":{"mult":1, "flat":15},
+			"DESTROYER_ESCORT":{"mult":1, "flat":15},
+			"FULL_ESCORT":{"mult":1, "flat":10},
+			"INTERCEPT":{"mult":1, "flat":10},
+		}
+	}
+}

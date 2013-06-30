@@ -1,0 +1,39 @@
+{
+  "displayName": "Advanced",
+  "fluxCapacitors": 0,
+  "fluxVents": 2,
+  "hullId": "heron",
+  "hullMods": [
+    "targetingunit"
+  ],
+  "variantId": "heron_A",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "irpdburst",
+        "WS0002": "irpdburst",
+        "WS0003": "irpdcannon",
+        "WS0004": "irpdcannon",
+        "WS0005": "irpdcannon",
+        "WS0006": "irpdcannon",
+        "WS0007": "irpdburst",
+        "WS0008": "irpdburst"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "quadheavymg",
+        "WS0010": "quadheavymg"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

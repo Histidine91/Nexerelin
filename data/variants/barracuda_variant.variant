@@ -1,0 +1,19 @@
+{
+  "displayName": "Attack",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "barracuda_drone",
+  "hullMods": null,
+  "variantId": "barracuda_variant",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "vulcan",
+        "WS0002": "lightmortar",
+        "WS0003": "lightmortar"
+      }
+    }
+  ]
+}

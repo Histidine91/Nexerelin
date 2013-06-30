@@ -1,0 +1,196 @@
+{
+  "bounds": [
+    44.0,
+    6.5,
+    24.0,
+    -7.0,
+    17.5,
+    -18.0,
+    2.0,
+    -20.0,
+    -3.5,
+    -24.5,
+    -19.0,
+    -17.5,
+    -15.0,
+    -13.0,
+    -28.0,
+    -9.0,
+    -24.0,
+    6.5,
+    -16.5,
+    7.0,
+    -18.0,
+    12.0,
+    -23.5,
+    15.0,
+    -18.0,
+    23.5,
+    -12.5,
+    22.5,
+    -6.0,
+    34.0,
+    3.0,
+    28.5,
+    30.5,
+    22.0
+  ],
+  "center": [
+    36.0,
+    30.0
+  ],
+  "collisionRadius": 60.0,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 5.0,
+      "length": 22.5,
+      "location": [
+        -23.0,
+        22.0
+      ],
+      "style": "LOW_TECH",
+      "width": 5.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 10.0,
+      "length": 36.0,
+      "location": [
+        -25.0,
+        17.0
+      ],
+      "style": "LOW_TECH",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 7.0,
+      "length": 17.0,
+      "location": [
+        -27.0,
+        7.0
+      ],
+      "style": "LOW_TECH",
+      "width": 7.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 10.0,
+      "length": 31.5,
+      "location": [
+        -28.0,
+        4.0
+      ],
+      "style": "LOW_TECH",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 8.0,
+      "length": 25.0,
+      "location": [
+        -30.0,
+        -3.0
+      ],
+      "style": "LOW_TECH",
+      "width": 8.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 10.0,
+      "length": 22.0,
+      "location": [
+        -29.0,
+        -8.0
+      ],
+      "style": "LOW_TECH",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 5.0,
+      "length": 11.5,
+      "location": [
+        -24.0,
+        -12.0
+      ],
+      "style": "LOW_TECH",
+      "width": 5.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 10.0,
+      "length": 43.0,
+      "location": [
+        -29.5,
+        1.0
+      ],
+      "style": "LOW_TECH",
+      "width": 10.0
+    }
+  ],
+  "height": 75.0,
+  "width": 62.0,
+  "hullId": "nom_wurm",
+  "hullName": "Wurm",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0.0,
+    0.0
+  ],
+  "shieldRadius": 55.0,
+  "spriteName": "graphics/nom/ships/nom_wurm.png",
+  "style": "LOW_TECH",
+  "viewOffset": 50.0,
+  "weaponSlots": [
+    {
+      "angle": -18.4,
+      "arc": 253.6,
+      "id": "WS 001",
+      "locations": [
+        20.0,
+        -10.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 20.6,
+      "arc": 310.0,
+      "id": "WS 002",
+      "locations": [
+        19.5,
+        5.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -53.1,
+      "arc": 310.0,
+      "id": "WS 003",
+      "locations": [
+        -5.5,
+        -15.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 54.5,
+      "arc": 310.0,
+      "id": "WS 004",
+      "locations": [
+        0.5,
+        14.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ]
+}

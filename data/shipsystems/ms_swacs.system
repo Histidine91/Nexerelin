@@ -1,0 +1,11 @@
+{
+    "id":"ms_swacs",
+    "type":"STAT_MOD",
+    "aiType":"CUSTOM",
+    "aiScript":"data.shipsystems.scripts.ai.ms_swacsai",
+
+    "statsScript":"data.shipsystems.scripts.ms_swacs",
+
+    "useSound":"system_ammo_feeder",
+    "outOfUsesSound":"gun_out_of_ammo",
+}

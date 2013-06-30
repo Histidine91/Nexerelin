@@ -1,0 +1,25 @@
+{
+	"specClass":"beam",
+	"id":"jenova radar",
+	"type":"DECORATIVE",
+	"size":"SMALL",
+
+	"everyFrameEffect":"data.scripts.plugins.RotatingDish",
+
+	"turretSprite":"graphics/weapons/decorative/radar_array.png",
+	"hardpointSprite":"graphics/weapons/decorative/radar_array.png",
+
+	"turretOffsets":[10, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[15, 0],
+	"hardpointAngleOffsets":[0],
+
+	"fringeColor":[255,255,255,255],
+	"coreColor":[255,255,255,255],
+	"glowColor":[255,255,255,255],
+
+	"width":1.0,
+	"textureType":ROUGH,
+	"textureScrollSpeed":1.0,
+	"pixelsPerTexel":1.0,
+}

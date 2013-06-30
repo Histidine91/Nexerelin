@@ -1,0 +1,83 @@
+{
+  "bounds": [
+    3.5,
+    -19,
+    9.5,
+    -13.5,
+    9.5,
+    13.5,
+    3.5,
+    19,
+    -12,
+    -0
+  ],
+  "center": [
+    25,
+    13
+  ],
+  "collisionRadius": 25,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 31.5,
+      "location": [
+        -13,
+        -0
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    }
+  ],
+  "height": 24,
+  "hullId": "relics_charger_h",
+  "hullName": "Charger H",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    -1,
+    -0
+  ],
+  "shieldRadius": 22.799999,
+  "spriteName": "graphics/ships/relics_charger.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS 3",
+      "locations": [
+        -3,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 106.300003,
+      "id": "WS 1",
+      "locations": [
+        7,
+        10.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 106.300003,
+      "id": "WS 2",
+      "locations": [
+        7,
+        -10.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 49
+}

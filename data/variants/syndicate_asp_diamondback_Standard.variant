@@ -1,0 +1,26 @@
+{
+  "displayName": "Standard",
+  "hullId": "syndicate_asp_diamondback",
+  "variantId": "syndicate_asp_diamondback_Standard",
+  "fluxVents": 5,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "turretgyros",
+    "armoredweapons"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "swarmer"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "pdburst",
+        "WS 3": "pdburst"
+      }
+    }
+  ]
+}

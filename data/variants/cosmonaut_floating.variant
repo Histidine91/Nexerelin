@@ -1,0 +1,9 @@
+{
+  "displayName": "Floating",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "cosmonaut",
+  "hullMods": [],
+  "variantId": "cosmonaut_floating",
+  "weaponGroups": []
+}

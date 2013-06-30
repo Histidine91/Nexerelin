@@ -1,0 +1,36 @@
+{
+    "displayName": "Strike",
+    "fluxCapacitors": 5,
+    "fluxVents": 10,
+    "hullId": "ms_enlil",
+    "hullMods": [
+        "missleracks",
+        "magazines"
+    ],
+    "variantId": "ms_enlil_Strike",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+		        "WS 002": "atropos",
+                "WS 003": "atropos"
+	        }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "heavyac"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 004": "pdlaser",
+                "WS 005": "pdlaser"
+            }
+        }
+    ]
+}

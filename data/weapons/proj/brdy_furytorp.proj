@@ -1,0 +1,36 @@
+{
+	"id":"brdy_furytorp",
+	"specClass":"missile",
+	"missileType":"ROCKET",
+	#"sprite":"graphics/missiles/missile_torpedo.png",
+	#"size":[16,28],	
+	#"center":[8,14],
+	"sprite":"graphics/BR/missiles/br_furytorp.png",
+	"size":[14,23],	
+	"center":[7,11],
+	"collisionRadius":20,
+	"collisionClass":"MISSILE_FF",
+	"explosionColor":[119,200,137,125],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":350, # purely visual
+	"explosionSpec":{"duration":0.2f, # not visual
+					 "radius":105,
+					 "coreRadius":75, # full damage within core radius
+					 "collisionClass":HITS_SHIPS_AND_ASTEROIDS,
+					 "collisionClassByFighter":HITS_SHIPS_AND_ASTEROIDS,
+					 "particleSizeMin":5.0,
+					 "particleSizeRange":3.0,
+					 "particleDuration":1,
+					 "particleCount":200,
+					 "particleColor":[255,255,137,125]},
+	"engineSpec":{"turnAcc":0,
+				  "turnRate":0,
+				  "acc":35,
+				  "dec":0},
+	"engineSlots":[{"id":"ES1",
+					"loc":[-11, 0],
+					#"loc":[-14, 0],
+				    "style":"TORPEDO_ATROPOS",
+				    "width":10.0,
+				    "length":80.0,
+				    "angle":180.0}]
+}

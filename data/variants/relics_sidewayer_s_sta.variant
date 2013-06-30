@@ -1,0 +1,45 @@
+{
+    "displayName": "Standard",
+    "fluxCapacitors": 18,
+    "fluxVents": 30,
+    "hullId": "relics_sidewayer_s",
+    "hullMods": ["stabilizedshieldemitter"],
+    "variantId": "relics_sidewayer_s_sta",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS 9": "amblaster"}
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS 3": "amblaster",
+                "WS 7": "amblaster"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 2": "pdburst",
+                "WS 8": "pdburst"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 12": "pulselaser",
+                "WS 13": "pulselaser",
+                "WS 14": "pulselaser"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS 10": "relics_zaap_h"}
+        }
+    ]
+}

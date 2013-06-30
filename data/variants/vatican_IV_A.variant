@@ -1,0 +1,115 @@
+{
+  "displayName": "Advanced",
+  "fluxCapacitors": 3,
+  "fluxVents": 5,
+  "hullId": "vatican_IV",
+  "hullMods": [
+    "targetingunit"
+  ],
+  "variantId": "vatican_IV_A",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "sabot",
+        "WS0002": "sabot",
+        "WS0003": "sabot",
+        "WS0004": "sabot"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "scorpionpod",
+        "WS0006": "scorpionpod",
+        "WS0007": "scorpionpod",
+        "WS0008": "scorpionpod"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "ibcm"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0014": "light_antimatter_laser",
+        "WS0015": "light_antimatter_laser",
+        "WS0022": "lightlancer",
+        "WS0023": "lightlancer",
+        "WS0030": "light_antimatter_laser",
+        "WS0031": "light_antimatter_laser",
+        "WS0044": "heavylancer",
+        "WS0045": "heavylancer",
+        "WS0046": "heavylancer",
+        "WS0047": "heavylancer",
+        "WS0050": "heavylancer",
+        "WS0051": "heavylancer",
+        "WS0062": "heavy_assault_cannon",
+        "WS0063": "heavy_assault_cannon",
+        "WS0064": "antiproton_laser",
+        "WS0065": "antiproton_laser",
+        "WS0066": "antiproton_laser",
+        "WS0067": "antiproton_laser",
+        "WS0068": "heavy_assault_cannon",
+        "WS0069": "heavy_assault_cannon",
+        "WS0070": "heavy_assault_cannon",
+        "WS0071": "heavy_assault_cannon",
+        "WS0072": "antiproton_laser"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0010": "irpdcannon",
+        "WS0011": "irpdcannon",
+        "WS0012": "irpdburst",
+        "WS0013": "irpdburst",
+        "WS0016": "irpdburst",
+        "WS0017": "irpdburst",
+        "WS0018": "irpdburst",
+        "WS0019": "irpdburst",
+        "WS0020": "irpdcannon",
+        "WS0021": "irpdcannon",
+        "WS0024": "irpdburst",
+        "WS0025": "irpdburst",
+        "WS0026": "irpdburst",
+        "WS0027": "irpdburst",
+        "WS0028": "irpdcannon",
+        "WS0029": "irpdcannon",
+        "WS0032": "irpdburst",
+        "WS0033": "irpdburst",
+        "WS0034": "irpdcannon",
+        "WS0035": "irpdcannon",
+        "WS0036": "quadheavymg",
+        "WS0037": "quadheavymg",
+        "WS0038": "quadheavymg",
+        "WS0039": "quadheavymg",
+        "WS0040": "quadheavymg",
+        "WS0041": "quadheavymg",
+        "WS0042": "lrflak",
+        "WS0043": "lrflak",
+        "WS0048": "lrflak",
+        "WS0049": "lrflak",
+        "WS0052": "lrflak",
+        "WS0053": "lrflak",
+        "WS0054": "lrflak",
+        "WS0055": "lrflak",
+        "WS0056": "quadheavymg",
+        "WS0057": "quadheavymg",
+        "WS0058": "quadheavymg",
+        "WS0059": "quadheavymg",
+        "WS0060": "quadheavymg",
+        "WS0061": "quadheavymg",
+        "WS0073": "antiproton_laser"
+      }
+    }
+  ]
+}

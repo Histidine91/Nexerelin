@@ -1,0 +1,54 @@
+{
+    "displayName": "Armada",
+    "fluxCapacitors": 50,
+    "fluxVents": 50,
+    "hullId": "paragon",
+    "hullMods": [
+        "hardenedshieldemitter",
+        "stabilizedshieldemitter",
+        "magazines",
+        "targetingunit",
+        "advancedshieldemitter"
+    ],
+    "variantId": "paragon_Armada",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "hil",
+                "WS 002": "hil"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 007": "pulselaser",
+                "WS 008": "pulselaser"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 003": "autopulse",
+                "WS 004": "autopulse",
+                "WS 005": "pulselaser",
+                "WS 006": "pulselaser"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 011": "pdlaser",
+                "WS 013": "pdlaser",
+                "WS 016": "pdlaser",
+                "WS 017": "pdlaser",
+                "WS 019": "pdlaser",
+                "WS 022": "pdlaser"
+            }
+        }
+    ]
+}

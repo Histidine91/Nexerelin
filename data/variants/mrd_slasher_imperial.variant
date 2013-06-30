@@ -1,0 +1,43 @@
+{
+  "displayName": "Imperial",
+  "fluxCapacitors": 4,
+  "fluxVents": 3,
+  "hullId": "mrd_slasher",
+  "hullMods": [
+    "targetingunit",
+    "missleracks"
+  ],
+  "variantId": "mrd_slasher_imperial",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "mrd_assault_gun",
+        "WS 6": "mrd_assault_gun"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 3": "atropos",
+        "WS 4": "atropos"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pdlaser",
+        "WS 2": "pdlaser",
+        "WS 7": "pdlaser"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

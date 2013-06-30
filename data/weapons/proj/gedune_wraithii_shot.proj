@@ -1,0 +1,18 @@
+{
+	"id":"gedune_wraithii_shot",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC_AS_BEAM",
+	"collisionClass":"RAY",
+	"collisionClassByFighter":"RAY_FIGHTER",
+	"length":12.0,
+	"width":8,
+	"fadeTime":0.3,
+	"fringeColor":[200,120,180,255],
+	"coreColor":[255,255,255,255],
+	"glowColor":[200,120,200,85],
+	"glowRadius":10,
+	"hitGlowRadius":5,	
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":5.0,
+	"bulletSprite":"graphics/missiles/shell_gauss_cannon.png"	
+}

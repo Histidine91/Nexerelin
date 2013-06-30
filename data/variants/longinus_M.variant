@@ -1,0 +1,42 @@
+{
+  "displayName": "Military",
+  "fluxCapacitors": 2,
+  "fluxVents": 2,
+  "hullId": "longinus",
+  "hullMods": [
+    "autorepair",
+    "missleracks"
+  ],
+  "variantId": "longinus_M",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "lightneedler",
+        "WS0004": "lightneedler"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "scorpionpod",
+        "WS0002": "scorpionpod"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "lightflak",
+        "WS0006": "lightflak"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

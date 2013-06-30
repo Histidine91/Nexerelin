@@ -1,0 +1,34 @@
+{
+    "displayName": "Stripped",
+    "fluxCapacitors": 9,
+    "fluxVents": 8,
+    "hullId": "gedune_mozok",
+    "hullMods": [
+        "targetingunit",
+        "fluxbreakers"
+    ],
+    "variantId": "gedune_mozok_variant1",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {"WS0001": "gedune_repeater"}
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0004": "annihilator",
+                "WS0005": "annihilator"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0002": "gedune_flarepd",
+                "WS0003": "gedune_flarepd"
+            }
+        }
+    ]
+}

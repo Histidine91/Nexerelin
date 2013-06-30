@@ -1,0 +1,21 @@
+{
+  "displayName": "Drone",
+  "fluxCapacitors": 0,
+  "fluxVents": 3,
+  "hullId": "neutrino_causality",
+  "hullMods": [
+    "auxiliarythrusters",
+    "targetingunit",
+    "heavyarmor"
+  ],
+  "variantId": "neutrino_causality_standard",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "neutrino_dualpulsar"
+      }
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+{
+  "bounds": [
+    100,
+    12.5,
+    100,
+    34.5,
+    -25,
+    64.5,
+    -95,
+    44.5,
+    -57,
+    41.5,
+    -42,
+    -1.5,
+    -57,
+    -41.5,
+    -98,
+    -44.5,
+    -27,
+    -64.5,
+    99,
+    -35.5,
+    100,
+    -16.5,
+    31,
+    -18.5,
+    21,
+    -0.5,
+    30,
+    16.5
+  ],
+  "center": [
+    67,
+    102
+  ],
+  "collisionRadius": 130,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 250,
+      "length": 40,
+      "location": [
+        -53,
+        20
+      ],
+      "style": "LOW_TECH",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 150,
+      "length": 40,
+      "location": [
+        -53,
+        -20
+      ],
+      "style": "LOW_TECH",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 250,
+      "length": 80,
+      "location": [
+        -58,
+        35
+      ],
+      "style": "LOW_TECH",
+      "width": 15
+    },
+    {
+      "angle": 180,
+      "contrailSize": 250,
+      "length": 80,
+      "location": [
+        -58,
+        -35
+      ],
+      "style": "LOW_TECH",
+      "width": 15
+    }
+  ],
+  "height": 224,
+  "width": 134,
+  "hullId": "ajax",
+  "hullName": "Ajax",
+  "hullSize": "CRUISER",
+  "shieldCenter": [
+    0,
+    0
+  ],
+  "shieldRadius": 150,
+  "spriteName": "graphics/lotus/ships/ajax.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 15,
+      "id": "WS 001",
+      "locations": [
+        104,
+        26
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 15,
+      "id": "WS 002",
+      "locations": [
+        104,
+        -26
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 30,
+      "arc": 240,
+      "id": "WS 003",
+      "locations": [
+        42,
+        34
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -30,
+      "arc": 240,
+      "id": "WS 004",
+      "locations": [
+        42,
+        -34
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 140,
+      "arc": 250,
+      "id": "WS 005",
+      "locations": [
+        -36,
+        48
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -140,
+      "arc": 250,
+      "id": "WS 006",
+      "locations": [
+        -36,
+        -48
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90,
+      "arc": 270,
+      "id": "WS 007",
+      "locations": [
+        1,
+        41
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -90,
+      "arc": 270,
+      "id": "WS 008",
+      "locations": [
+        1,
+        -41
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    }
+  ]
+}

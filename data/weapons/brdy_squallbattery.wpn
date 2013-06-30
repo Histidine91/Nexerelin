@@ -1,0 +1,28 @@
+{
+	"id":"brdy_squallbattery",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"LARGE",
+	"displayArcRadius":500,
+	"turretSprite":"graphics/BR/weapons/squallbattery_turretbase.png",
+	"turretGunSprite":"graphics/BR/weapons/squallbattery_turretrecoil.png",
+	"hardpointSprite":"graphics/BR/weapons/squallbattery_hpbase.png",
+	"hardpointGunSprite":"graphics/BR/weapons/squallbattery_hprecoil.png",	
+	"visualRecoil":11.0,  # the gun sprites are only used if this is non-0
+	"renderHints":[RENDER_BARREL_BELOW],
+	"turretOffsets":[25, -7, 24, 0, 25, 7],
+	"turretAngleOffsets":[0, 0, 0],
+	"hardpointOffsets":[25, -7, 27, 0, 25, 7],
+	"hardpointAngleOffsets":[0, 0, 0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":64.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":10.0,
+					   "particleSizeMin":16.0,
+					   "particleSizeRange":18.0,
+					   "particleDuration":0.3,
+					   "particleCount":46,
+					   "particleColor":[255,195,95,215]},
+	"projectileSpecId":"brdy_squallgun_shot",  # projectile that will be fired	
+	"fireSoundTwo":"brdy_squallgun_fire",
+}

@@ -1,0 +1,34 @@
+{
+  "displayName": "Support",
+  "hullId": "shogun",
+  "variantId": "shogun_Support",
+  "fluxVents": 6,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 6": "vulcan"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lightac",
+        "WS 2": "lightac"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "heavyneedler",
+        "WS 4": "HV75"
+      }
+    },
+    {
+      "mode": "ALTERNATING",
+      "weapons": {}
+    }
+  ]
+}

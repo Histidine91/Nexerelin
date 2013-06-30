@@ -1,0 +1,37 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "cruiser_gibborim",
+  "variantId": "gibborim_Antediluvian",
+  "fluxVents": 1,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "autorepair",
+    "reinforcedhull",
+    "heavyarmor",
+    "magazines"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pressureturret",
+        "WS 2": "pressureturret",
+        "WS 3": "pressureturret",
+        "WS 4": "pressureturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "sonicturret",
+        "WS 6": "sonicturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "deucalion"
+      }
+    }
+  ]
+}

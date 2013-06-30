@@ -1,0 +1,80 @@
+{
+  "bounds": [
+    -11,
+    -15.5,
+    16,
+    -0,
+    -11,
+    15.5,
+    -17.5,
+    -0
+  ],
+  "center": [
+    20,
+    19.5
+  ],
+  "collisionRadius": 26.5,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 64,
+      "length": 32.5,
+      "location": [
+        -18.5,
+        3.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 64,
+      "length": 32.5,
+      "location": [
+        -18.5,
+        -3.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 8
+    }
+  ],
+  "height": 39,
+  "hullId": "relics_chaser_h",
+  "hullName": "Chaser H",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    -1.5,
+    -0
+  ],
+  "shieldRadius": 23.6,
+  "spriteName": "graphics/ships/relics_chaser.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 48.900002,
+      "id": "WS 1",
+      "locations": [
+        -9,
+        15.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 48.900002,
+      "id": "WS 2",
+      "locations": [
+        -9,
+        -15.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 40
+}

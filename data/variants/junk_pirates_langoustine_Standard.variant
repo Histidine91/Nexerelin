@@ -1,0 +1,45 @@
+{
+	"displayName":"Standard",
+	"hullId":"junk_pirates_langoustine",
+	"variantId":"junk_pirates_langoustine_Standard",
+	"fluxVents":20,
+	"fluxCapacitors":3,
+	"hullMods":[
+		"augmentedengines"
+	], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"junk_pirates_scorpion",
+		 		   },
+		},
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 002":"pulselaser",
+		 		   },
+		},
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 004":"junk_pirates_scatterpd",
+					"WS 005":"junk_pirates_scatterpd",
+		 			"WS 006":"heavymg",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+					"WS 003":"harpoonpod",
+		 		   },
+		},
+	],
+}

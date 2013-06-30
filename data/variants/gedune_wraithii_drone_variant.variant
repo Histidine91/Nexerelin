@@ -1,0 +1,17 @@
+{
+  "displayName": "Stinger",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "gedune_wraithii_drone",
+  "hullMods": [],
+  "variantId": "gedune_wraithii_drone_variant",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "annihilatorpod"
+      }
+    }
+  ]
+}

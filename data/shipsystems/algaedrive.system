@@ -1,0 +1,28 @@
+{
+	"id":"algaedrive",
+	"type":"ENGINE_MOD",
+	"aiType":"BURN_DRIVE",
+	
+	"statsScript":"data.shipsystems.scripts.AlgaeDriveStats",
+	
+	#"engineGlowColor":[150,255,200,200],
+	#"engineGlowContrailColor":[150,255,200,200],
+	"engineGlowLengthMult":3.5,
+	"engineGlowWidthMult":3,
+	"engineGlowGlowMult":2,
+	
+	"flameoutOnImpactChance":1,
+
+	"clampTurnRateAfter":true,
+	"clampMaxSpeedAfter":true,
+	"alwaysAccelerate":true,
+
+	"useSound":"system_burn_drive_activate",
+	"loopSound":"system_burn_drive_loop",
+	"deactivateSound":"system_burn_drive_deactivate",
+	"outOfUsesSound":"engine_disabled",
+	
+	"aiHints":{
+		"averageSpeedIncrease":50,
+	}
+}

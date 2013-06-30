@@ -1,0 +1,51 @@
+{
+    "displayName": "Assault",
+    "fluxCapacitors": 0,
+    "fluxVents": 25,
+    "hullId": "ms_elysium",
+    "hullMods": [
+        "stabilizedshieldemitter"
+    ],
+    "variantId": "ms_elysium_Assault",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0009": "ms_pandora"
+        }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "irpulse",
+                "WS0007": "irpulse"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0004": "irpulse",
+                "WS0008": "irpulse"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0005": "heavyblaster",
+                "WS0006": "heavyblaster"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "amblaster",
+                "WS0002": "amblaster"
+            }
+        }
+    ]
+}

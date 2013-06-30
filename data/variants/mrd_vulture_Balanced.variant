@@ -1,0 +1,60 @@
+{
+  "displayName": "Balanced",
+  "fluxCapacitors": 3,
+  "fluxVents": 5,
+  "hullId": "mrd_vulture",
+  "hullMods": [
+    "missleracks",
+    "targetingunit"
+  ],
+  "variantId": "mrd_vulture_Balanced",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0013": "chaingun",
+        "WS0014": "chaingun"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "mrd_heavy_autoblaster",
+        "WS0006": "mrd_heavy_autoblaster",
+        "WS0007": "mrd_heavy_autoblaster",
+        "WS0008": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "mrd_pd_laser_mk_ii",
+        "WS0002": "mrd_pd_laser_mk_ii",
+        "WS0003": "mrd_pd_laser_mk_ii",
+        "WS0004": "mrd_pd_laser_mk_ii",
+        "WS0011": "pdburst",
+        "WS0012": "pdburst",
+        "WS0017": "mrd_pd_laser_mk_ii"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0015": "chaingun",
+        "WS0016": "chaingun"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "pilum",
+        "WS0010": "pilum"
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+	"specClass":"projectile",
+	"id":"neutrino_siegefusor",
+	"type":"ENERGY",
+	"size":"LARGE",
+	"displayArcRadius":750,
+	"turretSprite":"graphics/neut/weapons/neutrino_siegefusor_hardpoint_base.png",
+	"turretGlowSprite":"graphics/neut/weapons/neutrino_siegefusor_hardpoint_glow.png",
+	"hardpointSprite":"graphics/neut/weapons/neutrino_siegefusor_hardpoint_base.png",
+	"hardpointGlowSprite":"graphics/neut/weapons/neutrino_siegefusor_hardpoint_glow.png",
+	"turretOffsets":[0, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[0, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"GLOW_AND_FLASH",
+	"glowColor":[255,219,50,255],
+	"muzzleFlashSpec":{"length":34.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":10.0,
+					   "particleSizeMin":18.0,
+					   "particleSizeRange":24.0,
+					   "particleDuration":0.02,
+					   "particleCount":12,
+					   "particleColor":[255,219,50,255]},
+	"projectileSpecId":"neutrino_siegefusor_shot",
+	"fireSoundOne":"neutrino_siegefusor_charge",
+	"fireSoundTwo":"neutrino_siegefusor_firing",
+}

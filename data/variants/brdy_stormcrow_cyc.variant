@@ -1,0 +1,63 @@
+{
+    "displayName": "Signature",
+    "fluxCapacitors": 30,
+    "fluxVents": 30,
+    "hullId": "brdy_stormcrow",
+    "hullMods": [
+        "targetingunit",
+        "turretgyros",
+        "hardenedshieldemitter",
+        "insulatedengine",
+        "fluxbreakers",
+        "autorepair",
+        "advancedshieldemitter",
+        "stabilizedshieldemitter",
+        "auxiliarythrusters",
+        "magazines",
+        "advancedoptics",
+        "extendedshieldemitter"
+    ],
+    "variantId": "brdy_stormcrow_cyc",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "brdy_squallgun",
+                "WS0002": "brdy_squallgun",
+                "WS0003": "brdy_squallgun",
+                "WS0004": "brdy_squallgun",
+                "WS0010": "brdy_squallbattery"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0011": "brdy_volley",
+                "WS0012": "brdy_volley",
+                "WS0013": "brdy_volley",
+                "WS0014": "brdy_volley"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0015": "brdy_quill",
+                "WS0016": "brdy_quill"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0005": "brburst",
+                "WS0006": "brburst",
+                "WS0007": "brburst",
+                "WS0008": "brvulcan",
+                "WS0009": "brvulcan"
+            }
+        }
+    ]
+}

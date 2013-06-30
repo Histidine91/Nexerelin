@@ -1,0 +1,29 @@
+{
+	"id":"irpdcannon",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"SMALL",
+	"displayArcRadius":300,
+	"turretSprite":"graphics/weapons/ir_pd_cannon.png",
+	"turretGunSprite":"graphics/weapons/ir_pd_cannon_recoil.png",
+	"hardpointSprite":"graphics/weapons/ir_pd_cannon.png",
+	"hardpointGunSprite":"graphics/weapons/ir_pd_cannon_recoil.png",
+	"renderHints":[RENDER_BARREL_BELOW],
+	"visualRecoil":5.0,  # the gun sprites are only used if this is non-0
+	"turretOffsets":[6, -3, 6, 3],
+	"turretAngleOffsets":[0, 0],
+	"hardpointOffsets":[6, -3, 6, 3],
+	"hardpointAngleOffsets":[0, 0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",
+	"muzzleFlashSpec":{"length":20.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":5.0,
+					   "particleSizeMin":4.0,
+					   "particleSizeRange":11.0,
+					   "particleDuration":0.11,
+					   "particleCount":6,
+					   "particleColor":[125,120,175,250]},
+	"projectileSpecId":"irpdcannon_shot",  # projectile that will be fired
+#	"fireSoundOne":"irpdcannon1",
+	"fireSoundTwo":"irpdcannon2",	
+}

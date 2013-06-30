@@ -1,0 +1,17 @@
+{
+  "displayName": "Defense",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "gedune_duri",
+  "hullMods": [],
+  "variantId": "gedune_duri_variant",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "gedune_flarepd"
+      }
+    }
+  ]
+}

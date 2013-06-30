@@ -1,0 +1,124 @@
+{
+  "bounds": [
+    -16,
+    -6,
+    -10,
+    -11,
+    -2,
+    -11,
+    22,
+    -0,
+    -2,
+    11,
+    -10,
+    11,
+    -16,
+    6
+  ],
+  "center": [
+    13,
+    18
+  ],
+  "collisionRadius": 26.076809,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 30,
+      "location": [
+        -17,
+        7
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 30,
+      "location": [
+        -17,
+        -7
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 30,
+      "location": [
+        -18,
+        3
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 30,
+      "location": [
+        -18,
+        -3
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    }
+  ],
+  "height": 43,
+  "hullId": "lightning",
+  "hullName": "Lightning",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 25.124689,
+  "spriteName": "graphics/ships/lightning.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0001",
+      "locations": [
+        21.5,
+        2.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0002",
+      "locations": [
+        21.5,
+        -2.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0003",
+      "locations": [
+        4,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    }
+  ],
+  "width": 26
+}

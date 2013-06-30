@@ -1,0 +1,46 @@
+{
+  "displayName": "Assault",
+  "fluxCapacitors": 9,
+  "fluxVents": 5,
+  "hullId": "mrd_spartakan",
+  "hullMods": [
+    "advancedshieldemitter",
+    "targetingunit"
+  ],
+  "variantId": "mrd_spartakan_assault",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "mrd_heavy_autoblaster",
+        "WS 8": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "mrd_heavy_beam",
+        "WS 6": "mrd_heavy_beam"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pdlaser",
+        "WS 2": "pdlaser",
+        "WS 9": "pdburst"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "mrd_light_autoblaster",
+        "WS 4": "mrd_light_autoblaster"
+      }
+    }
+  ]
+}

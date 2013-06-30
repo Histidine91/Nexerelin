@@ -1,0 +1,26 @@
+{
+  "displayName": "Interceptor",
+  "hullId": "relics_chaser",
+  "variantId": "relics_chaser_Interceptor",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "irpulse"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "irpulse"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

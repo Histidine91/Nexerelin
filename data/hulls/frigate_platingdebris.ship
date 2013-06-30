@@ -1,0 +1,96 @@
+{
+  "bounds": [
+    -26.5,
+    20.5,
+    -26.5,
+    -1.5,
+    -4.5,
+    -23.5,
+    31.0,
+    7.5,
+    31.0,
+    20.5
+  ],
+  "center": [
+    28.5,
+    40.0
+  ],
+  "collisionRadius": 43.6,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -39.0,
+        6.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    }
+  ],
+  "height": 80.0,
+  "width": 57.0,
+  "hullId": "frigate_platingdebris",
+  "hullName": "Plating Debris",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0.0,
+    0.0
+  ],
+  "shieldRadius": 41.0,
+  "spriteName": "graphics/antediluvians/ships/frigate_platingdebris_shading.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 45.0,
+      "arc": 180.0,
+      "id": "WS 1",
+      "locations": [
+        27.0,
+        17.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -90.0,
+      "arc": 180.0,
+      "id": "WS 2",
+      "locations": [
+        -12.0,
+        11.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -90.0,
+      "arc": 180.0,
+      "id": "WS 3",
+      "locations": [
+        -21.0,
+        11.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "WS 4",
+      "locations": [
+        7.5,
+        -6.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

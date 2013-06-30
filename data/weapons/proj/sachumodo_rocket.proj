@@ -1,0 +1,22 @@
+{
+	"id":"sachumodo_rocket",
+	"specClass":"missile",	
+	"missileType":"MISSILE",
+	"sprite":"graphics/missiles/missile_SRM.png",
+	"size":[6,14],	
+	"center":[3,7],
+	"collisionRadius":12,
+	"collisionClass":"MISSILE_NO_FF",
+	"explosionColor":[255,165,50,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":60, # purely visual
+	"engineSpec":{"turnAcc":140,
+				  "turnRate":45,
+				  "acc":300,
+				  "dec":500},		  
+	"engineSlots":[{"id":"ES1",
+					"loc":[-7, 0],
+				    "style":"MISSILE_HIGH_TECH",
+				    "width":4.0,
+				    "length":20.0,
+				    "angle":180.0}]
+}

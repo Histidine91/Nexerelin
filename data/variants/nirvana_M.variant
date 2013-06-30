@@ -1,0 +1,65 @@
+{
+  "displayName": "Military",
+  "fluxCapacitors": 8,
+  "fluxVents": 8,
+  "hullId": "nirvana",
+  "hullMods": [
+    "autorepair",
+    "missleracks",
+    "blast_doors"
+  ],
+  "variantId": "nirvana_M",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "scorpionpod",
+        "WS0002": "scorpionpod",
+        "WS0003": "scorpionpod",
+        "WS0004": "scorpionpod"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0005": "sabot",
+        "WS0006": "sabot",
+        "WS0021": "sabot"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0007": "wraith",
+        "WS0008": "wraith"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0016": "heavyneedler",
+        "WS0017": "heavyneedler",
+        "WS0020": "hephag"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "irpdburst",
+        "WS0010": "irpdburst",
+        "WS0011": "lightflak",
+        "WS0012": "irpdburst",
+        "WS0013": "irpdburst",
+        "WS0014": "lightdualmg",
+        "WS0015": "lightdualmg",
+        "WS0018": "quadheavymg",
+        "WS0019": "quadheavymg"
+      }
+    }
+  ]
+}

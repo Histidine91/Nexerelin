@@ -1,0 +1,258 @@
+{
+  "bounds": [
+    -111.5,
+    7.5,
+    -83.0,
+    33.5,
+    10.0,
+    25.5,
+    88.0,
+    48.0,
+    88.0,
+    -42.5,
+    10.5,
+    -22.5,
+    -84.0,
+    -31.5,
+    -111.5,
+    -3.5
+  ],
+  "center": [
+    55.5,
+    128.5
+  ],
+  "collisionRadius": 130.3,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -116.5,
+        30.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -116.5,
+        21.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -127.5,
+        6.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -127.5,
+        -2.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -116.5,
+        -17.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -116.5,
+        -26.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    }
+  ],
+  "height": 257.0,
+  "width": 111.0,
+  "hullId": "cruiser_nephilim",
+  "hullName": "Nephilim",
+  "hullSize": "CRUISER",
+  "shieldCenter": [
+    0.0,
+    0.0
+  ],
+  "shieldRadius": 125.0,
+  "spriteName": "graphics/antediluvians/ships/cruiser_nephilim_shading.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 45.0,
+      "arc": 180.0,
+      "id": "WS 1",
+      "locations": [
+        72.5,
+        18.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45.0,
+      "arc": 180.0,
+      "id": "WS 2",
+      "locations": [
+        72.5,
+        -14.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -135.0,
+      "arc": 180.0,
+      "id": "WS 3",
+      "locations": [
+        41.5,
+        -14.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 135.0,
+      "arc": 180.0,
+      "id": "WS 4",
+      "locations": [
+        41.5,
+        18.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 180.0,
+      "id": "WS 5",
+      "locations": [
+        57.5,
+        1.5
+      ],
+      "mount": "TURRET",
+      "size": "LARGE",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 90.0,
+      "arc": 180.0,
+      "id": "WS 6",
+      "locations": [
+        2.5,
+        25.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 180.0,
+      "id": "WS 7",
+      "locations": [
+        -11.5,
+        25.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -90.0,
+      "arc": 180.0,
+      "id": "WS 8",
+      "locations": [
+        -11.5,
+        -21.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -90.0,
+      "arc": 180.0,
+      "id": "WS 9",
+      "locations": [
+        2.5,
+        -21.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 90.0,
+      "id": "WS 10",
+      "locations": [
+        94.5,
+        42.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0.0,
+      "arc": 90.0,
+      "id": "WS 11",
+      "locations": [
+        94.5,
+        -38.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "WS 12",
+      "locations": [
+        -60.0,
+        2.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

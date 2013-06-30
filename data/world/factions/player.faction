@@ -1,0 +1,24 @@
+{
+	"id":"player",
+	"color":[155,255,0,255],
+	"displayName":"Player",
+	"names":{
+	},
+	"portraits":{},
+	"fleetCompositions":{
+		"shuttle":{
+			"displayName":"Fleet",
+			"maxFleetPoints":0,
+			"daysWorthOfSupplies":[20, 30],
+			"lyWorthOfFuel":[10, 15],
+			"extraCrewPercent":[10, 20],
+			"marinesPercent":[5, 10],
+			"ships":{
+				"vigilance_Standard":[0, 1],
+				"wolf_CS":[0, 1],
+				"lasher_Standard":[0, 1],
+				"hound_Assault":[0, 1],
+			},
+		},
+	},
+}

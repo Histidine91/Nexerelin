@@ -1,0 +1,28 @@
+{
+	"id":"HV100",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"LARGE",
+	"displayArcRadius":200,
+	"turretSprite":"graphics/interstellarFederation/weapons/HV100_base.png",
+	"turretGunSprite":"graphics/interstellarFederation/weapons/HV100_recoil.png",
+	"hardpointSprite":"graphics/interstellarFederation/weapons/HV100_base.png",
+	"hardpointGunSprite":"graphics/interstellarFederation/weapons/HV100_recoil.png",	
+	"visualRecoil":10.0,  # the gun sprites are only used if this is non-0
+	"renderHints":["RENDER_BARREL_BELOW"],
+	"turretOffsets":[36, -9, 36, 9],
+	"turretAngleOffsets":[0, 0],
+	"hardpointOffsets":[36, -9, 36, 9],
+	"hardpointAngleOffsets":[0, 0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",
+	"muzzleFlashSpec":{"length":20.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":28.0,
+					   "particleSizeMin":10.0,
+					   "particleSizeRange":8.0,
+					   "particleDuration":0.2,
+					   "particleCount":14,
+					   "particleColor":[165,225,185,175]},
+	"projectileSpecId":"HV100_shot",  # projectile that will be fired
+	"fireSoundTwo":"gun_heavy_2",
+}

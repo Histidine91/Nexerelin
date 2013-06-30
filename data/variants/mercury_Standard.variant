@@ -1,0 +1,43 @@
+{
+  "displayName": "Standard",
+  "hullId": "mercury",
+  "variantId": "mercury_Standard",
+  "fluxVents": 30,
+  "fluxCapacitors": 8,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 1": "lightag",
+        "WS 2": "lightag",
+        "WS 3": "lightag",
+        "WS 4": "lightag"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "railgun",
+        "WS 8": "railgun"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 11": "dualflak"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "hveldriver",
+        "WS 6": "hveldriver"
+      }
+    }
+  ]
+}

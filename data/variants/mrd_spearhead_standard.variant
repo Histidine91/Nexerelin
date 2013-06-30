@@ -1,0 +1,46 @@
+{
+  "displayName": "Standard",
+  "fluxCapacitors": 10,
+  "fluxVents": 5,
+  "hullId": "mrd_spearhead",
+  "hullMods": [
+    "targetingunit",
+    "advancedshieldemitter",
+    "missleracks"
+  ],
+  "variantId": "mrd_spearhead_standard",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "mrd_assault_gun",
+        "WS0004": "mrd_assault_gun"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "mrd_light_autoblaster",
+        "WS0008": "mrd_light_autoblaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "mrd_pd_laser_mk_ii",
+        "WS0006": "mrd_pd_laser_mk_ii"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "heatseeker",
+        "WS0002": "heatseeker"
+      }
+    }
+  ]
+}

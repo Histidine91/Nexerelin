@@ -1,0 +1,18 @@
+{
+	"id":"ms_rhpcblast",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC_AS_BEAM",
+	"collisionClass":"RAY",
+	"collisionClassByFighter":"RAY_FIGHTER",
+	"length":400.0,
+	"width":40.0,
+	"hitGlowRadius":30,
+	"fadeTime":0.2,
+	"fringeColor":[0,155,0,255],
+	"coreColor":[155,255,155,255],
+	"glowColor":[100,0,255,235],
+	"darkCore":true,
+	"textureType":WEAVE,
+	"textureScrollSpeed":-64.0,
+	"pixelsPerTexel":5.0,
+}

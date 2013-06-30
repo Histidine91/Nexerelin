@@ -1,0 +1,64 @@
+{
+  "displayName": "Advanced",
+  "fluxCapacitors": 0,
+  "fluxVents": 25,
+  "hullId": "vatican_I",
+  "hullMods": [
+    "targetingunit",
+    "magazines"
+  ],
+  "variantId": "vatican_I_A",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "ether_driver"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0002": "antiproton_laser",
+        "WS0003": "antiproton_laser",
+        "WS0004": "antiproton_laser",
+        "WS0005": "antiproton_laser",
+        "WS0008": "heavylancer",
+        "WS0009": "heavylancer",
+        "WS0010": "heavylancer",
+        "WS0011": "heavylancer"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0006": "quadheavymg",
+        "WS0007": "quadheavymg",
+        "WS0012": "quadheavymg",
+        "WS0013": "quadheavymg",
+        "WS0014": "irpdburst",
+        "WS0015": "irpdburst",
+        "WS0016": "irpdcannon",
+        "WS0017": "irpdcannon",
+        "WS0018": "irpdcannon",
+        "WS0019": "irpdcannon",
+        "WS0020": "irpdburst",
+        "WS0021": "irpdburst",
+        "WS0022": "irpdcannon",
+        "WS0023": "irpdcannon"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

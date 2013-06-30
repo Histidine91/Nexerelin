@@ -1,0 +1,20 @@
+{
+	"id":"torpedolauncher",
+	"type":"WEAPON",
+	"aiType":"EMP",
+	"weaponDataId":"torpedolauncher",
+	"outOfUsesSound":"gun_out_of_ammo",
+	
+	"aiHints":{
+		"threatRange":800,
+		"threatAmount":4,
+		"threatAngle":0,
+		"threatArc":0,
+		"weaponAssignmentSuitability":{
+			"LIGHT_ESCORT":{"mult":1, "flat":15},
+			"DESTROYER_ESCORT":{"mult":1, "flat":15},
+			"FULL_ESCORT":{"mult":1, "flat":10},
+			"INTERCEPT":{"mult":1, "flat":10},
+		}
+	}
+}

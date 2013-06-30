@@ -1,0 +1,18 @@
+{
+  "displayName": "Support",
+  "hullId": "gedune_chua",
+  "variantId": "gedune_chua_variant",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "taclaser",
+        "WS0002": "taclaser"
+      }
+    }
+  ]
+}

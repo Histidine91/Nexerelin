@@ -1,0 +1,268 @@
+{
+  "bounds": [
+    62,
+    1.5,
+    59,
+    4.5,
+    34,
+    7.5,
+    11.5,
+    12.5,
+    11,
+    14.5,
+    21,
+    15.5,
+    19,
+    23.5,
+    -3,
+    24.5,
+    -5,
+    27.5,
+    5,
+    28.5,
+    3,
+    36.5,
+    -19,
+    38.5,
+    -25,
+    35.5,
+    -24,
+    32.5,
+    -27,
+    29.5,
+    -33,
+    29,
+    -33,
+    16.5,
+    -26,
+    16.5,
+    -32,
+    8.5,
+    -42,
+    7.5,
+    -42,
+    -7.5,
+    -32,
+    -8.5,
+    -26,
+    -16.5,
+    -33,
+    -16.5,
+    -33,
+    -29,
+    -27,
+    -29.5,
+    -24,
+    -32.5,
+    -25,
+    -35.5,
+    -19,
+    -38.5,
+    3,
+    -36.5,
+    5,
+    -28.5,
+    -5,
+    -27.5,
+    -3,
+    -24.5,
+    19,
+    -23.5,
+    21,
+    -15.5,
+    11,
+    -14.5,
+    11.5,
+    -12.5,
+    34,
+    -7.5,
+    59,
+    -4.5,
+    62,
+    -1.5
+  ],
+  "center": [
+    43,
+    44.5
+  ],
+  "collisionRadius": 89,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 13,
+      "location": [
+        -33.5,
+        26
+      ],
+      "style": "MIDLINE",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 16,
+      "location": [
+        -33.5,
+        -27
+      ],
+      "style": "MIDLINE",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 18,
+      "location": [
+        -33.5,
+        19.5
+      ],
+      "style": "MIDLINE",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 22,
+      "location": [
+        -33.5,
+        -20.5
+      ],
+      "style": "MIDLINE",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 12,
+      "length": 26,
+      "location": [
+        -42.5,
+        4
+      ],
+      "style": "MIDLINE",
+      "width": 12
+    },
+    {
+      "angle": -180,
+      "contrailSize": 12,
+      "length": 26,
+      "location": [
+        -42.5,
+        -5
+      ],
+      "style": "MIDLINE",
+      "width": 12
+    }
+  ],
+  "height": 109,
+  "hullId": "mrd_slasher",
+  "hullName": "Slasher",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    7.5,
+    -0
+  ],
+  "shieldRadius": 80.524841,
+  "spriteName": "graphics/ships/mrd_slasher.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 100.199997,
+      "arc": 230.300003,
+      "id": "WS 1",
+      "locations": [
+        -9.5,
+        15
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -100.199997,
+      "arc": 230.100006,
+      "id": "WS 2",
+      "locations": [
+        -9.5,
+        -15
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS 3",
+      "locations": [
+        0.5,
+        32
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS 4",
+      "locations": [
+        0.5,
+        -32
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS 5",
+      "locations": [
+        16.5,
+        19
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS 6",
+      "locations": [
+        16.5,
+        -19
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 0,
+      "arc": 230,
+      "id": "WS 7",
+      "locations": [
+        16.5,
+        0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 180,
+      "arc": 33.400002,
+      "id": "WS0001",
+      "locations": [
+        -11,
+        0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ],
+  "width": 86
+}

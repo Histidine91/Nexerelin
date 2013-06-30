@@ -1,0 +1,31 @@
+{
+	"displayName":"Standard",
+	"hullId":"junk_pirates_clam",
+	"variantId":"junk_pirates_clam_Standard",
+	"fluxVents":10,
+	"fluxCapacitors":2,
+	"hullMods":[
+		"missleracks"
+	], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"lightdualmg",
+		 			"WS 002":"lightdualmg",
+		 			"WS 003":"lightdualmg",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 004":"pilum",
+		 		   },
+		},
+	],
+}

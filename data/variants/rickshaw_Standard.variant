@@ -1,0 +1,35 @@
+{
+  "displayName": "Standard",
+  "hullId": "rickshaw",
+  "variantId": "rickshaw_Standard",
+  "fluxVents": 10,
+  "fluxCapacitors": 9,
+  "hullMods": [
+    "augmentedengines"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "vulcan"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "railgun",
+        "WS 4": "railgun"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "sabot"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+	"displayName":"Overdrive",
+	"hullId":"junk_pirates_onslaught_overdrive",
+	"variantId":"junk_pirates_onslaught_overdrive_Standard",
+	"fluxVents":10,
+	"fluxCapacitors":10,
+	"mods":[], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 016":"hil",
+		 			"WS 017":"hil",
+		 		   },
+		},
+		{"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 021":"typhoon",
+		 			"WS 022":"typhoon",
+		 			"WS 023":"typhoon",
+		 			"WS 024":"typhoon",
+		 		   },
+		},		
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"heavymg",
+		 			"WS 002":"lightdualac",
+		 			"WS 003":"heavymg",
+		 			"WS 004":"lightdualac",
+		 			"WS 005":"heavymg",
+		 			"WS 006":"heavymg",
+		 			"WS 008":"heavymg",
+		 			"WS 009":"heavymg",
+		 			"WS 012":"lightdualac",
+		 			"WS 013":"lightdualac",
+		 			"WS 014":"lightdualac",
+		 			"WS 015":"lightdualac",
+		 			"WS 007":"chaingun",
+		 			"WS 010":"chaingun",
+		 			"WS 011":"chaingun",
+		 		   },
+		},
+
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 018":"heavyac",
+		 			"WS 019":"heavyac",
+		 			"WS 020":"heavyac",
+		 		   },
+		},
+	],
+}

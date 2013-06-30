@@ -1,0 +1,58 @@
+{
+    "displayName": "Assault",
+    "fluxCapacitors": 10,
+    "fluxVents": 30,
+    "hullId": "ms_mimir",
+    "hullMods": [
+        "hardenedshieldemitter"
+    ],
+    "variantId": "ms_mimir_Assault",
+    "weaponGroups": [
+        {
+        "autofire": FALSE,
+        "mode": "LINKED",
+        "weapons": {
+            "WS0001": "ms_rhpbc",
+            "WS0002": "plasma"
+            }
+        },
+        {
+        "autofire": FALSE,
+        "mode": "LINKED",
+        "weapons": {
+            "WS0008": "annihilatorpod",
+            "WS0009": "annihilatorpod"
+            }
+        },
+        {
+        "autofire": TRUE,
+        "mode": "LINKED",
+        "weapons": {
+            "WS0005": "pulselaser",
+            "WS0006": "pulselaser",
+            "WS0007": "pulselaser",
+            "WS0010": "irpulse",
+            "WS0011": "irpulse",
+            "WS0012": "irpulse"
+            }
+        },
+        {
+        "autofire": FALSE,
+        "mode": "LINKED",
+        "weapons": {
+            "WS0003": "autopulse",
+            "WS0004": "autopulse",
+            "WS0013": "amblaster",
+            "WS0014": "amblaster"
+            }
+        },
+        {
+        "autofire": TRUE,
+        "mode": "LINKED",
+        "weapons": {  
+            "WS0015": "pdburst",
+            "WS0016": "pdburst"
+            }
+        }
+    ]
+}

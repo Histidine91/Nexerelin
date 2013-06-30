@@ -1,0 +1,100 @@
+{
+  "bounds": [
+    18.5,
+    -7.5,
+    0,
+    -12,
+    -6.5,
+    -12,
+    -14.5,
+    -6.5,
+    -14.5,
+    6.5,
+    -6.5,
+    12,
+    0,
+    12,
+    18.5,
+    7.5
+  ],
+  "center": [
+    13,
+    17
+  ],
+  "collisionRadius": 25,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 64,
+      "length": 20,
+      "location": [
+        -17,
+        6
+      ],
+      "style": "LOW_TECH",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 64,
+      "length": 20,
+      "location": [
+        -17,
+        -6
+      ],
+      "style": "LOW_TECH",
+      "width": 6
+    }
+  ],
+  "height": 43,
+  "width": 26,
+  "hullId": "cutlass",
+  "hullName": "Cutlass",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    0
+  ],
+  "shieldRadius": 25,
+  "spriteName": "graphics/lotus/ships/cutlass.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS 001",
+      "locations": [
+        14,
+        5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 15,
+      "id": "WS 002",
+      "locations": [
+        14,
+        -5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 233.1,
+      "id": "WS 003",
+      "locations": [
+        -2,
+        0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ]
+}

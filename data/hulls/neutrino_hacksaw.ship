@@ -1,0 +1,254 @@
+{
+  "bounds": [
+    80.5,
+    6,
+    98.5,
+    6,
+    98.5,
+    13.5,
+    81,
+    20.5,
+    27.5,
+    20.5,
+    6,
+    32.5,
+    28.5,
+    32.5,
+    20,
+    44.5,
+    -24,
+    53.5,
+    -27,
+    46.5,
+    -53.5,
+    30,
+    -53,
+    24,
+    -70,
+    24,
+    -74,
+    19.5,
+    -58,
+    19.5,
+    -53,
+    12,
+    -53,
+    -12,
+    -58,
+    -19.5,
+    -74,
+    -19.5,
+    -70,
+    -24,
+    -53,
+    -24,
+    -53.5,
+    -30,
+    -27,
+    -46.5,
+    -24,
+    -53.5,
+    20,
+    -44.5,
+    28.5,
+    -32.5,
+    6,
+    -32.5,
+    27.5,
+    -20.5,
+    81,
+    -20.5,
+    98.5,
+    -13.5,
+    98.5,
+    -6,
+    80.5,
+    -6
+  ],
+  "center": [
+    55,
+    75.5
+  ],
+  "collisionRadius": 114,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -53,
+        8
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -53,
+        -8
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 40,
+      "location": [
+        -53,
+        2.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 40,
+      "location": [
+        -53,
+        -2.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    }
+  ],
+  "height": 176,
+  "hullId": "neutrino_hacksaw",
+  "hullName": "Hacksaw",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 110,
+  "spriteName": "graphics/neut/ships/neutrino_hacksaw.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS 1",
+      "locations": [
+        80.5,
+        5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS 2",
+      "locations": [
+        80.5,
+        -5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS 3",
+      "locations": [
+        76,
+        5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS 4",
+      "locations": [
+        76,
+        -5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS 5",
+      "locations": [
+        43.5,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 180,
+      "arc": 270,
+      "id": "WS 6",
+      "locations": [
+        -28,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 90,
+      "arc": 200,
+      "id": "WS 7",
+      "locations": [
+        -16.5,
+        32
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -90,
+      "arc": 200,
+      "id": "WS 8",
+      "locations": [
+        -16.5,
+        -32
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -60.099998,
+      "arc": 5,
+      "id": "WS0001",
+      "locations": [
+        7.5,
+        -42.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 60.099998,
+      "arc": 5,
+      "id": "WS0002",
+      "locations": [
+        7.5,
+        42.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ],
+  "width": 110
+}

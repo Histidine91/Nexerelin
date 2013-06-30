@@ -1,0 +1,112 @@
+{
+  "bounds": [
+    7.0,
+    -59.0,
+    -2.0,
+    -62.0,
+    -6.0,
+    -19.5,
+    -25.0,
+    -8.5,
+    -25.0,
+    8.5,
+    -6.0,
+    19.5,
+    -2.0,
+    62.0,
+    7.0,
+    59.0,
+    25.0,
+    -0.0
+  ],
+  "center": [
+    63.0,
+    26.0
+  ],
+  "collisionRadius": 68.1,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 10.0,
+      "length": 50.0,
+      "location": [
+        -7.0,
+        -27.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 10.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 10.0,
+      "length": 50.0,
+      "location": [
+        -7.0,
+        27.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 10.0,
+      "length": 40.0,
+      "location": [
+        -5.0,
+        -41.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 10.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 10.0,
+      "length": 40.0,
+      "location": [
+        -5.0,
+        41.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 10.0
+    }
+  ],
+  "height": 52.0,
+  "width": 126.0,
+  "hullId": "neutrino_drache",
+  "hullName": "Drache",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    3.0,
+    -0.0
+  ],
+  "shieldRadius": 64.1,
+  "spriteName": "graphics/neut/ships/neutrino_drache.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 180.0,
+      "arc": 360.0,
+      "id": "WS 1",
+      "locations": [
+        -4.5,
+        -0.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0.0,
+      "arc": 0.0,
+      "id": "WS 2",
+      "locations": [
+        7.5,
+        -0.0
+      ],
+      "mount": "HIDDEN",
+      "size": "LARGE",
+      "type": "MISSILE"
+    }
+  ]
+}

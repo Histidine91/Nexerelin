@@ -1,0 +1,36 @@
+{
+  "displayName": "Assault",
+  "hullId": "shogun",
+  "variantId": "shogun_Assault",
+  "fluxVents": 4,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 6": "vulcan"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "ioncannon"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "HV50",
+        "WS 2": "HV50"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "arbalest",
+        "WS 4": "arbalest"
+      }
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "bounds": [
+    93.5,
+    2.5,
+    83.5,
+    12.0,
+    67.0,
+    14.5,
+    55.0,
+    12.0,
+    43.5,
+    15.5,
+    19.5,
+    13.0,
+    -1.0,
+    19.5,
+    -13.5,
+    18.0,
+    -14.0,
+    26.0,
+    -68.5,
+    29.5,
+    -68.5,
+    10.5,
+    -56.5,
+    9.5,
+    -56.5,
+    -9.5,
+    -68.5,
+    -10.5,
+    -68.5,
+    -29.5,
+    -14.0,
+    -26.0,
+    -13.5,
+    -18.0,
+    -1.0,
+    -19.5,
+    19.5,
+    -13.0,
+    43.5,
+    -15.5,
+    55.0,
+    -12.0,
+    67.0,
+    -14.5,
+    83.5,
+    -12.0,
+    93.5,
+    -2.5
+  ],
+  "center": [
+    44.5,
+    81.0
+  ],
+  "collisionRadius": 76.0,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 18.0,
+      "length": 50.0,
+      "location": [
+        -71.0,
+        -20.5
+      ],
+      "style": "MIDLINE",
+      "width": 18.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 18.0,
+      "length": 50.0,
+      "location": [
+        -71.0,
+        19.5
+      ],
+      "style": "MIDLINE",
+      "width": 18.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 6.0,
+      "length": 31.0,
+      "location": [
+        -63.5,
+        -0.5
+      ],
+      "style": "MIDLINE",
+      "width": 6.0
+    }
+  ],
+  "height": 190.0,
+  "width": 90.0,
+  "hullId": "scythe",
+  "hullName": "scythe-class",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    8.0,
+    0.0
+  ],
+  "shieldRadius": 98.0,
+  "spriteName": "graphics/interstellarFederation/ships/scythe.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 0.0,
+      "arc": 13.3,
+      "id": "WS 1",
+      "locations": [
+        -4.5,
+        -15.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0.0,
+      "arc": 13.3,
+      "id": "WS 2",
+      "locations": [
+        -4.5,
+        15.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 0.0,
+      "id": "WS 3",
+      "locations": [
+        -11.0,
+        -0.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 254.0,
+      "id": "WS 4",
+      "locations": [
+        14.0,
+        -0.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ]
+}

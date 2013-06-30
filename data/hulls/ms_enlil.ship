@@ -1,0 +1,196 @@
+{
+    "bounds": [
+	36.5,
+	15,
+	27.5,
+	14,
+	33.5,
+	-11,
+	30.5,
+	-28,
+	22.5,
+	-34,
+	21.5,
+	-42,
+	-5.5,
+	-56,
+	-33.5,
+	-40,
+	-35.5,
+	-18,
+	-11.5,
+	-16,
+	-22.5,
+	-6,
+	-39.5,
+	0,
+	-22.5,
+	4,
+	-9.5,
+	15,
+	-36.5,
+	20,
+	-33.5,
+	40,
+	-5.5,
+	56,
+	8.5,
+	34,
+	36.5,
+	25
+    ],
+    "center": [
+	57,
+	45
+    ],
+    "collisionRadius": "90",
+    "engineSlots": [
+	{
+	    "angle": "180",
+	    "contrailSize": "6",
+	    "location": [
+		-36,
+		24
+	    ],
+	    "length": "40",
+	    "width": "10",
+	    "style": "CUSTOM",
+        "styleId":"ShadowyardsFlare",
+	},
+	{
+	    "angle": "180",
+	    "contrailSize": "6",
+	    "location": [
+		-36,
+		-24
+	    ],
+	    "length": "40",
+	    "width": "10",
+	    "style": "CUSTOM",
+        "styleId":"ShadowyardsFlare",
+	},
+	{
+	    "angle": "180",
+	    "contrailSize": "3",
+	    "location": [
+		-34,
+		37
+	    ],
+	    "length": "30",
+	    "width": "6",
+	    "style": "CUSTOM",
+        "styleId":"ShadowyardsFlare",
+	},
+	{
+	    "angle": "180",
+	    "contrailSize": "3",
+	    "location": [
+		-34,
+		-37
+	    ],
+	    "length": "30",
+	    "width": "6",
+	    "style": "CUSTOM",
+        "styleId":"ShadowyardsFlare",
+	}
+    ],
+    "height": 87,
+    "width": 114,
+    "hullId": "ms_enlil",
+    "hullName": "Enlil",
+    "hullSize": "FRIGATE",
+    "shieldCenter": [
+	0,
+	0
+    ],
+    "shieldRadius": "70",
+    "spriteName": "graphics/shadow_ships/ships/ms_enlil.png",
+    "style": "HIGH_TECH",
+    "viewOffset": 0,
+    "weaponSlots": [
+	{
+	    "angle": "0",
+	    "arc": "5",
+	    "id": "WS 001",
+	    "locations": [
+		36,
+		21
+	    ],
+	    "mount": "HARDPOINT",
+	    "size": "MEDIUM",
+	    "type": "UNIVERSAL"
+	},
+	{
+	    "angle": "0",
+	    "arc": "5",
+	    "id": "WS 002",
+	    "locations": [
+		32,
+		-27
+	    ],
+	    "mount": "HARDPOINT",
+	    "size": "SMALL",
+	    "type": "UNIVERSAL"
+	},
+	{
+	    "angle": "0",
+	    "arc": "5",
+	    "id": "WS 003",
+	    "locations": [
+		22,
+		-40
+	    ],
+	    "mount": "HARDPOINT",
+	    "size": "SMALL",
+	    "type": "UNIVERSAL"
+	},
+	{
+	    "angle": "145",
+	    "arc": "190",
+	    "id": "WS 004",
+	    "locations": [
+		-13,
+		35
+	    ],
+	    "mount": "TURRET",
+	    "size": "SMALL",
+	    "type": "ENERGY"
+	},
+	{
+	    "angle": "-145",
+	    "arc": "190",
+	    "id": "WS 005",
+	    "locations": [
+		-13,
+		-35
+	    ],
+	    "mount": "TURRET",
+	    "size": "SMALL",
+	    "type": "ENERGY"
+	},
+        {
+            "angle": 130,
+            "arc": 5,
+            "id": "WS 006",
+            "locations": [
+                -4,
+                54
+            ],
+            "mount": "HIDDEN",
+            "size": "SMALL",
+            "type": "SYSTEM"
+        },
+        {
+            "angle": -130,
+            "arc": 5,
+            "id": "WS 007",
+            "locations": [
+                -4,
+                -54
+            ],
+            "mount": "HIDDEN",
+            "size": "SMALL",
+            "type": "SYSTEM"
+        }
+    ]
+}

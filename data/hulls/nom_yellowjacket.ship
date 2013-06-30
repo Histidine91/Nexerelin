@@ -1,0 +1,201 @@
+{
+  "bounds": [
+    55.0,
+    -2.0,
+    30.0,
+    -5.5,
+    23.5,
+    -24.5,
+    29.0,
+    -29.5,
+    20.5,
+    -44.5,
+    12.0,
+    -48.0,
+    -20.0,
+    -32.5,
+    -17.5,
+    -22.0,
+    -32.5,
+    -27.0,
+    -33.5,
+    -19.0,
+    -44.5,
+    -17.5,
+    -45.5,
+    5.5,
+    -38.0,
+    6.5,
+    -34.0,
+    18.5,
+    -13.0,
+    22.0,
+    -8.0,
+    31.5,
+    -7.5,
+    78.0,
+    -27.5,
+    79.0,
+    -21.0,
+    90.5,
+    11.5,
+    89.5,
+    16.0,
+    79.0,
+    1.0,
+    79.0,
+    1.0,
+    21.0,
+    11.0,
+    18.5,
+    15.5,
+    27.5,
+    43.5,
+    23.0
+  ],
+  "center": [
+    93.0,
+    74.0
+  ],
+  "collisionRadius": 100.9,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 10.0,
+      "length": 30.0,
+      "location": [
+        -48.0,
+        -10.0
+      ],
+      "style": "LOW_TECH",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 6.0,
+      "length": 15.5,
+      "location": [
+        -45.5,
+        4.5
+      ],
+      "style": "LOW_TECH",
+      "width": 6.0
+    },
+    {
+      "angle": 147.0,
+      "contrailSize": 6.2,
+      "length": 19.5,
+      "location": [
+        -43.5,
+        17.0
+      ],
+      "style": "LOW_TECH",
+      "width": 6.2
+    },
+    {
+      "angle": -139.8,
+      "contrailSize": 6.9,
+      "length": 19.9,
+      "location": [
+        -42.0,
+        -26.0
+      ],
+      "style": "LOW_TECH",
+      "width": 6.9
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 9.0,
+      "length": 35.5,
+      "location": [
+        -50.0,
+        -5.0
+      ],
+      "style": "LOW_TECH",
+      "width": 9.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 7.0,
+      "length": 21.5,
+      "location": [
+        -48.0,
+        -0.5
+      ],
+      "style": "LOW_TECH",
+      "width": 7.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 4.0,
+      "length": 10.5,
+      "location": [
+        -38.5,
+        -7.0
+      ],
+      "style": "LOW_TECH",
+      "width": 4.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 5.0,
+      "length": 10.5,
+      "location": [
+        -43.0,
+        -13.0
+      ],
+      "style": "LOW_TECH",
+      "width": 5.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 4.0,
+      "length": 11.5,
+      "location": [
+        -39.0,
+        7.0
+      ],
+      "style": "LOW_TECH",
+      "width": 4.0
+    }
+  ],
+  "height": 140.0,
+  "width": 147.0,
+  "hullId": "nom_yellowjacket",
+  "hullName": "Yellowjacket",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    -1.5,
+    21.0
+  ],
+  "shieldRadius": 77.1,
+  "spriteName": "graphics/nom/ships/nom_yellowjacket.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 0.0,
+      "arc": 10.0,
+      "id": "WS 1",
+      "locations": [
+        -4.0,
+        55.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "LARGE",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 22.4,
+      "arc": 337.4,
+      "id": "WS 2",
+      "locations": [
+        30.0,
+        20.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ]
+}

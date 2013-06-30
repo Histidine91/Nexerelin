@@ -1,0 +1,30 @@
+{
+  "displayName": "Strike",
+  "hullId": "rickshaw",
+  "variantId": "rickshaw_Strike",
+  "fluxVents": 10,
+  "fluxCapacitors": 3,
+  "hullMods": [
+    "missleracks",
+    "augmentedengines"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "railgun",
+        "WS 4": "railgun"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "sabotpod"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

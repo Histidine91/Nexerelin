@@ -1,0 +1,154 @@
+{
+  "bounds": [
+    -34.5,
+    22.0,
+    -21.5,
+    12.5,
+    -19.0,
+    30.0,
+    36.0,
+    29.0,
+    36.0,
+    12.5,
+    46.5,
+    12.0,
+    59.5,
+    8.5,
+    63.5,
+    -0.5,
+    58.5,
+    -10.0,
+    48.0,
+    -11.0,
+    40.0,
+    -16.5,
+    28.0,
+    -10.0,
+    10.5,
+    -23.0,
+    1.5,
+    -22.0,
+    -2.0,
+    -33.0,
+    -20.0,
+    -33.0,
+    -20.5,
+    -22.5,
+    -37.5,
+    -22.5,
+    -39.0,
+    -14.0,
+    -39.5,
+    -8.0,
+    -43.5,
+    -6.0,
+    -43.5,
+    4.5,
+    -39.5,
+    7.5
+  ],
+  "center": [
+    39.5,
+    53.5
+  ],
+  "collisionRadius": 49.1,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 13.0,
+      "length": 41.0,
+      "location": [
+        -45.0,
+        -0.5
+      ],
+      "style": "LOW_TECH",
+      "width": 13.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 5.0,
+      "length": 18.0,
+      "location": [
+        -22.5,
+        24.0
+      ],
+      "style": "MIDLINE",
+      "width": 5.0
+    }
+  ],
+  "height": 130.0,
+  "width": 80.0,
+  "hullId": "rickshaw",
+  "hullName": "Rickshaw-class",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    10.5,
+    0.0
+  ],
+  "shieldRadius": 68.5,
+  "spriteName": "graphics/interstellarFederation/ships/rickshaw.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 180.0,
+      "arc": 271.2,
+      "id": "WS 1",
+      "locations": [
+        -30.5,
+        -0.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 0.0,
+      "id": "WS 2",
+      "locations": [
+        37.5,
+        18.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -18.0,
+      "arc": 35.8,
+      "id": "WS 3",
+      "locations": [
+        10.5,
+        -15.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -16.8,
+      "arc": 35.8,
+      "id": "WS 4",
+      "locations": [
+        -4.0,
+        -25.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 180.0,
+      "arc": 0.0,
+      "id": "WS0003",
+      "locations": [
+        -20.5,
+        22.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+    "id":"ecm_jammer",
+    "type":"STAT_MOD",
+    "aiType":"CUSTOM",
+    "aiScript":"data.shipsystems.scripts.ai.ECMJammerAI",
+
+    "statsScript":"data.shipsystems.scripts.ECMJammer",
+
+    "useSound":"Effect_NanoDisruptor",
+    "outOfUsesSound":"gun_out_of_ammo",
+}

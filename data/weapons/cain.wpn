@@ -1,0 +1,28 @@
+{
+	"id":"cain",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"LARGE",
+	"displayArcRadius":50,
+	"turretSprite":"graphics/interstellarFederation/weapons/cain_base.png",
+	"turretGunSprite":"graphics/interstellarFederation/weapons/cain_recoil.png",
+	"hardpointSprite":"graphics/interstellarFederation/weapons/cain_base.png",
+	"hardpointGunSprite":"graphics/interstellarFederation/weapons/cain_recoil.png",	
+	"visualRecoil":12.0,  # the gun sprites are only used if this is non-0
+	"renderHints":["RENDER_BARREL_BELOW"],
+	"turretOffsets":[20, -4, 20, 4],
+	"turretAngleOffsets":[0, 0],
+	"hardpointOffsets":[20, -4, 20, 4],
+	"hardpointAngleOffsets":[0, 0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",
+	"muzzleFlashSpec":{"length":150.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":1.0,
+					   "particleSizeMin":4.0,
+					   "particleSizeRange":8.0,
+					   "particleDuration":1,
+					   "particleCount":65,
+					   "particleColor":[113,217,255,175]},
+	"projectileSpecId":"cain_shot",  # projectile that will be fired
+	"fireSoundTwo":"railgun_burst",
+}

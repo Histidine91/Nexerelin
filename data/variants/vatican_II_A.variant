@@ -1,0 +1,79 @@
+{
+  "displayName": "Advanced",
+  "fluxCapacitors": 3,
+  "fluxVents": 10,
+  "hullId": "vatican_II",
+  "hullMods": [
+    "magazines",
+    "targetingunit",
+    "missleracks"
+  ],
+  "variantId": "vatican_II_A",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0007": "sabotpod",
+        "WS0008": "sabotpod"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "scorpionpod",
+        "WS0002": "scorpionpod",
+        "WS0003": "scorpionpod",
+        "WS0004": "scorpionpod",
+        "WS0005": "scorpionpod",
+        "WS0006": "scorpionpod"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0025": "heavylancer",
+        "WS0026": "heavylancer",
+        "WS0027": "heavylancer",
+        "WS0028": "heavylancer",
+        "WS0029": "heavylancer",
+        "WS0030": "heavylancer",
+        "WS0033": "antiproton_laser",
+        "WS0034": "antiproton_laser",
+        "WS0035": "antiproton_laser",
+        "WS0036": "antiproton_laser"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "irpdburst",
+        "WS0010": "irpdburst",
+        "WS0011": "irpdcannon",
+        "WS0012": "irpdcannon",
+        "WS0013": "irpdburst",
+        "WS0014": "irpdburst",
+        "WS0015": "irpdcannon",
+        "WS0016": "irpdcannon",
+        "WS0017": "irpdburst",
+        "WS0018": "irpdburst",
+        "WS0019": "irpdcannon",
+        "WS0020": "irpdcannon",
+        "WS0021": "irpdburst",
+        "WS0022": "irpdburst",
+        "WS0023": "quadheavymg",
+        "WS0024": "quadheavymg",
+        "WS0031": "quadheavymg",
+        "WS0032": "quadheavymg"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

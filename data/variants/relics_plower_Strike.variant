@@ -1,0 +1,48 @@
+{
+  "displayName": "Strike",
+  "hullId": "relics_plower_h",
+  "variantId": "relics_plower_Strike",
+  "fluxVents": 8,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "hardenedshieldemitter"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "relics_blazo",
+        "WS 13": "relics_blazo",
+        "WS 14": "relics_blazo",
+        "WS 2": "relics_blazo",
+        "WS 3": "relics_blazo",
+        "WS 4": "relics_blazo"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 11": "relics_exo",
+        "WS 12": "relics_exo",
+        "WS 15": "relics_blazo",
+        "WS 16": "relics_blazo"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "relics_exo",
+        "WS 6": "relics_exo",
+        "WS 7": "relics_exo",
+        "WS 8": "relics_exo"
+      }
+    },
+    {
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 10": "relics_zaap",
+        "WS 9": "relics_zaap"
+      }
+    }
+  ]
+}

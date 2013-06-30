@@ -1,0 +1,22 @@
+{
+	id:"neutral",
+	"color":[11,11,11,11],
+	"displayName":"Neutral",
+	"names":{
+	},
+	"portraits":{
+	},
+	"fleetCompositions":{
+        "exerelinStationConstructionFleet":{
+            "displayName":"Station Construction Convoy",
+            "maxFleetPoints":0,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "atlas_Standard":[5, 5],
+            },
+        },
+    },
+},

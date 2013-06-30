@@ -1,0 +1,158 @@
+{
+  "bounds": [
+    -55.5,
+    12.5,
+    -55.5,
+    -13.5,
+    -9.0,
+    -13.5,
+    13.5,
+    3.5,
+    34.0,
+    3.5,
+    34.0,
+    13.0
+  ],
+  "center": [
+    19.0,
+    59.0
+  ],
+  "collisionRadius": 60.9,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -58.0,
+        9.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -58.0,
+        -10.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -58.0,
+        -0.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    }
+  ],
+  "height": 118.0,
+  "width": 38.0,
+  "hullId": "frigate_donovan",
+  "hullName": "Donovan",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0.0,
+    0.0
+  ],
+  "shieldRadius": 48.0,
+  "spriteName": "graphics/antediluvians/ships/frigate_donovan_shading.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 1",
+      "locations": [
+        -7.0,
+        11.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 2",
+      "locations": [
+        0.0,
+        11.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 3",
+      "locations": [
+        -7.0,
+        2.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 4",
+      "locations": [
+        0.0,
+        2.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "WS 5",
+      "locations": [
+        -16.0,
+        -8.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 90.0,
+      "arc": 180.0,
+      "id": "WS 6",
+      "locations": [
+        20.5,
+        15.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "WS 7",
+      "locations": [
+        -34.5,
+        -0.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

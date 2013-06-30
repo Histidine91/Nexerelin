@@ -1,0 +1,35 @@
+{
+  "displayName": "Support",
+  "fluxCapacitors": 5,
+  "fluxVents": 1,
+  "hullId": "brdy_typheus",
+  "hullMods": [
+    "targetingunit"
+  ],
+  "variantId": "brdy_typheus_support",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "brdy_ac",
+        "WS0002": "brdy_ac"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "brburst"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0004": "brvulcan",
+        "WS0005": "brvulcan"
+      }
+    }
+  ]
+}

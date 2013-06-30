@@ -1,0 +1,31 @@
+{
+	"id":"piranha_warhead",
+	"specClass":"missile",	
+	"missileType":"MISSILE",
+	"sprite":"graphics/interstellarFederation/missiles/piranhaMissileWarhead.png",
+	"glowColor":[255,200,100,125],
+	"glowRadius":0,
+	"size":[5,9],	
+	"center":[2.5,4.5],
+	"collisionRadius":5,
+	"collisionClass":"MISSILE_FF",
+	"explosionColor":[235,255,215,235],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":5, # purely visual
+	"explosionSpec":{"duration":0.1f, # not visual
+					 "radius":5,
+					 "coreRadius":5, # full damage within core radius
+					 "collisionClass":HITS_SHIPS_AND_ASTEROIDS,
+					 "collisionClassByFighter":HITS_SHIPS_AND_ASTEROIDS,
+					 "particleSizeMin":1.0,
+					 "particleSizeRange":3.0,
+					 "particleDuration":1,
+					 "particleCount":10,
+					 "particleColor":[255,185,155,255],
+					"sound":"explosion_flak"},
+	"maxFlightTime":.2,
+	"engineSpec":{"turnAcc":2000,
+				  "turnRate":0,
+				  "maxSpeed":3000,
+				  "acc":300,
+				  "dec":0},
+}

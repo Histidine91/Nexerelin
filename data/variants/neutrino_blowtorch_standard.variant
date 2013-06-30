@@ -1,0 +1,33 @@
+{
+  "displayName": "Construction",
+  "fluxCapacitors": 1,
+  "fluxVents": 2,
+  "hullId": "neutrino_blowtorch",
+  "hullMods": [
+    "auxiliarythrusters",
+    "advancedoptics"
+  ],
+  "variantId": "neutrino_blowtorch_standard",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "neutrino_fusionlance",
+        "WS0004": "neutrino_fusionlance",
+        "WS0005": "neutrino_fusionlance",
+        "WS0006": "neutrino_fusionlance",
+        "WS0007": "neutrino_fusionlance",
+        "WS0008": "neutrino_fusionlance"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "pdburst",
+        "WS0002": "pdburst"
+      }
+    }
+  ]
+}

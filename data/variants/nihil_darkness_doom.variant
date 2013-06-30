@@ -1,0 +1,52 @@
+{
+  "displayName": "Doom",
+  "hullId": "nihil_darkness",
+  "variantId": "nihil_darkness_doom",
+  "fluxVents": 4,
+  "fluxCapacitors": 2,
+  "hullMods": [
+    "stabilizedshieldemitter",
+    "magazines"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "nihil_phasebeam",
+        "WS 2": "nihil_phasebeam",
+        "WS 3": "nihil_phasebeam",
+        "WS 4": "nihil_phasebeam"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "dooml"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 10": "pdvr",
+        "WS 11": "pdvr",
+        "WS 12": "pdvr",
+        "WS 9": "pdvr"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 13": "pddmg",
+        "WS 14": "pddmg",
+        "WS 5": "pddmg",
+        "WS 6": "pddmg",
+        "WS 7": "pddmg",
+        "WS 8": "pddmg"
+      }
+    }
+  ]
+}

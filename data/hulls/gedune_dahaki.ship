@@ -1,0 +1,238 @@
+{
+  "bounds": [
+    -55.5,
+    -18,
+    -25.5,
+    -19.5,
+    -15.5,
+    -51.5,
+    -3,
+    -54,
+    15,
+    -24.5,
+    41,
+    -33.5,
+    49.5,
+    -14,
+    73.5,
+    -11.5,
+    73.5,
+    11.5,
+    49.5,
+    14,
+    41,
+    33.5,
+    15,
+    24.5,
+    -3,
+    54,
+    -15.5,
+    51.5,
+    -25.5,
+    19.5,
+    -55.5,
+    18
+  ],
+  "center": [
+    55,
+    57
+  ],
+  "collisionRadius": 77.5,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -55,
+        7
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -55,
+        -7
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 5,
+      "length": 19.5,
+      "location": [
+        -54.5,
+        16
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 5
+    },
+    {
+      "angle": -180,
+      "contrailSize": 5,
+      "length": 19.5,
+      "location": [
+        -54.5,
+        -16
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 5
+    },
+    {
+      "angle": 180,
+      "contrailSize": 5,
+      "length": 10.5,
+      "location": [
+        -24,
+        24
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 5
+    },
+    {
+      "angle": -180,
+      "contrailSize": 5,
+      "length": 10.5,
+      "location": [
+        -24,
+        -24
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 5
+    },
+    {
+      "angle": 180,
+      "contrailSize": 5,
+      "length": 10.5,
+      "location": [
+        -22.5,
+        32
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 5
+    },
+    {
+      "angle": -180,
+      "contrailSize": 5,
+      "length": 10.5,
+      "location": [
+        -22.5,
+        -32
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 5
+    }
+  ],
+  "height": 134,
+  "hullId": "gedune_dahaki",
+  "hullName": "Dahaki",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    7,
+    -0
+  ],
+  "shieldRadius": 104.900002,
+  "spriteName": "graphics/gedune/ships/gedune_dahaki3.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 90,
+      "arc": 300,
+      "id": "WS0001",
+      "locations": [
+        2,
+        19
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -90,
+      "arc": 300,
+      "id": "WS0002",
+      "locations": [
+        2,
+        -19
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 8.2,
+      "id": "WS0005",
+      "locations": [
+        3,
+        48
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 8.2,
+      "id": "WS0006",
+      "locations": [
+        3,
+        -48
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS0007",
+      "locations": [
+        63,
+        -0
+      ],
+      "mount": "HARDPOINT",
+      "size": "LARGE",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0003",
+      "locations": [
+        45.5,
+        24
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0004",
+      "locations": [
+        45.5,
+        -24
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 110
+}

@@ -1,0 +1,24 @@
+{
+  "displayName": "High Command",
+  "fluxCapacitors": 0,
+  "fluxVents": 5,
+  "hullId": "thule_frigga",
+  "hullMods": [
+    "blast_doors",
+    "thule_rune"
+  ],
+  "variantId": "thule_frigga_HC",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "thule_light_hunker",
+        "WS0002": "thule_light_hunker",
+        "WS0003": "thule_light_hunker",
+        "WS0004": "thule_light_hunker",
+        "WS0005": "thule_light_hunker"
+      }
+    }
+  ]
+}

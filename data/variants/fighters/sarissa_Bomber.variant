@@ -1,0 +1,24 @@
+{
+	"displayName":"Bomber",
+	"hullId":"sarissa",
+	"variantId":"sarissa_Bomber",
+	"fluxVents":0,
+	"fluxCapacitors":0,
+	"mods":[], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"revolver",
+		 		   },
+		},
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 002":"annihilator",
+		 			"WS 003":"annihilator"
+		 		   },
+		},
+	],
+}

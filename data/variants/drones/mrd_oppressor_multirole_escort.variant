@@ -1,0 +1,43 @@
+{
+  "displayName": "Multirole Escort Fighter",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "mrd_oppressor_escort",
+  "hullMods": [],
+  "variantId": "mrd_oppressor_multirole_escort",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 1": "mrd_light_blaster_oppressor",
+        "WS 2": "mrd_light_blaster_oppressor"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "pdlaser"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 3": "sabot_single",
+        "WS 4": "sabot_single"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

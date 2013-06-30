@@ -1,0 +1,8 @@
+{
+	"id":"mrd_flarelauncher",
+	"type":"WEAPON",
+	"aiType":"FLARE",
+	
+	"weaponDataId":"flarelauncher1",
+	"outOfUsesSound":"gun_out_of_ammo",
+}

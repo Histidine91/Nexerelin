@@ -1,0 +1,35 @@
+{
+  "displayName": "Assault",
+  "hullId": "junk_pirates_turbot",
+  "variantId": "junk_pirates_turbot_Assault",
+  "fluxVents": 10,
+  "fluxCapacitors": 5,
+  "hullMods": [
+    "eccm",
+    "missleracks",
+    "insulatedengine"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+	  "mode": "LINKED",
+      "weapons": {
+        "WS 1": "harpoonpod"
+      }
+    },
+    {
+      "autofire": false,
+	  "mode": "LINKED",
+      "weapons": {
+        "WS 2": "lightneedler"
+      }
+    },
+    {
+      "autofire": false,
+	  "mode": "LINKED",
+      "weapons": {
+        "WS 4": "miningblaster"
+      }
+    }
+  ]
+}

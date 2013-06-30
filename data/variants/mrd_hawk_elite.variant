@@ -1,0 +1,64 @@
+{
+  "displayName": "Elite",
+  "fluxCapacitors": 8,
+  "fluxVents": 10,
+  "hullId": "mrd_hawk",
+  "hullMods": [
+    "targetingunit",
+    "hardenedshieldemitter"
+  ],
+  "variantId": "mrd_hawk_elite",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 17": "mrd_heavy_autoblaster",
+        "WS 19": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 16": "mrd_heavy_autoblaster",
+        "WS 18": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "mrd_pd_laser_mk_ii",
+        "WS 10": "mrd_light_blaster",
+        "WS 11": "pdburst",
+        "WS 12": "pdburst",
+        "WS 13": "pdburst",
+        "WS 2": "mrd_pd_laser_mk_ii",
+        "WS 3": "pdburst",
+        "WS 4": "pdburst",
+        "WS 5": "mrd_pd_laser_mk_ii",
+        "WS 6": "mrd_pd_laser_mk_ii",
+        "WS 7": "mrd_light_blaster",
+        "WS 8": "mrd_light_blaster",
+        "WS 9": "mrd_light_blaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 20": "mrd_heavy_beam",
+        "WS 21": "mrd_heavy_beam"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 14": "mrd_light_autoblaster",
+        "WS 15": "mrd_light_autoblaster"
+      }
+    }
+  ]
+}

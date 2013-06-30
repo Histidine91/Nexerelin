@@ -1,0 +1,106 @@
+{
+  "bounds": [
+    -21.0,
+    -25.0,
+    -29.0,
+    8.0,
+    -11.0,
+    18.0,
+    33.0,
+    14.0,
+    33.0,
+    -22.0
+  ],
+  "center": [
+    35.0,
+    43.0
+  ],
+  "collisionRadius": 61.900002,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 60.0,
+      "length": 40.0,
+      "location": [
+        -45.0,
+        0.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 14.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 50.0,
+      "length": 30.0,
+      "location": [
+        -45.0,
+        -27.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 10.0
+    }
+  ],
+  "height": 88.0,
+  "width": 70.0,
+  "hullId": "junk_pirates_clam",
+  "hullName": "Clam",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0.0,
+    -0.0
+  ],
+  "shieldRadius": 59.5,
+  "spriteName": "graphics/junk_pirates/ships/junk_pirates_clam.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 30.0,
+      "arc": 180.0,
+      "id": "WS 001",
+      "locations": [
+        37.0,
+        10.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 270.0,
+      "arc": 90.0,
+      "id": "WS 002",
+      "locations": [
+        2.0,
+        -20.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 180.0,
+      "arc": 180.0,
+      "id": "WS 003",
+      "locations": [
+        -20.0,
+        -10.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 5.0,
+      "id": "WS 004",
+      "locations": [
+        -1.0,
+        31.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    }
+  ]
+}

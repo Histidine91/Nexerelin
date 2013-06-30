@@ -1,0 +1,50 @@
+{
+	"displayName":"Support",
+	"hullId":"junk_pirates_boxenstein",
+	"variantId":"junk_pirates_boxenstein_Support",
+	"fluxVents":13,
+	"fluxCapacitors":0,
+	"hullMods":[
+		"missleracks",
+		"advancedoptics"
+	], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"pdlaser",
+		 			"WS 002":"pdlaser",
+		 			"WS 003":"pdlaser",
+		 			"WS 004":"pdlaser",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+					"WS 005":"gravitonbeam",
+		 			"WS 006":"gravitonbeam",
+					},
+		},
+		{
+		"autofire": false,
+		"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 009":"harpoon",
+					"WS 010":"harpoon",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"ALTERNATING",
+		 "weapons":{
+					"WS 008":"pilum",
+					"WS 007":"pilum",
+		 		   },
+		},
+	],
+}

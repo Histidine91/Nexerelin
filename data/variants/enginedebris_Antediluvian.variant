@@ -1,0 +1,20 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "frigate_enginedebris",
+  "variantId": "enginedebris_Antediluvian",
+  "fluxVents": 4,
+  "fluxCapacitors": 2,
+  "hullMods": [
+    "armoredweapons",
+    "autorepair",
+    "turretgyros"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "sonicturret"
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+	"id":"neutrino_phasemissilelauncher",
+	"specClass":"projectile",
+	"type":"SYSTEM",
+	"size":"SMALL",
+	"turretSprite":"",
+	"hardpointSprite":"",
+	"hardpointOffsets":[0, 0],
+	"turretOffsets":[0, 0],
+	"hardpointAngleOffsets":[0],
+	"turretAngleOffsets":[0],
+	"barrelMode":"ALTERNATING",
+	"interruptibleBurst":false,
+
+	"animationType":"MUZZLE_FLASH",
+	"muzzleFlashSpec":{"length":15.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":45.0,
+					   "particleSizeMin":10.0,
+					   "particleSizeRange":5.0,
+					   "particleDuration":0.15,
+					   "particleCount":8,
+					   "particleColor":[255,176,255,0]},				 
+	"projectileSpecId":"neutrino_phase_missile",
+	"fireSoundTwo":"neutrino_phase_missile_firing",
+}

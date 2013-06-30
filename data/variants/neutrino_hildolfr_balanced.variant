@@ -1,0 +1,66 @@
+{
+  "displayName": "Drone",
+  "fluxCapacitors": 3,
+  "fluxVents": 0,
+  "hullId": "neutrino_hildolfr",
+  "hullMods": [
+    "magazines",
+    "turretgyros",
+    "targetingunit",
+    "fluxbreakers",
+    "pointdefenseai"
+  ],
+  "variantId": "neutrino_hildolfr_balanced",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 1": "neutrino_dualpulsebeam",
+        "WS 2": "neutrino_dualpulsebeam"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 12": "neutrino_photongun",
+        "WS 13": "neutrino_photongun",
+        "WS 14": "neutrino_pulsar",
+        "WS 15": "neutrino_pulsar",
+        "WS 16": "neutrino_pulsar",
+        "WS 3": "neutrino_darkmatterbeamcannon",
+        "WS 4": "neutrino_darkmatterbeamcannon",
+        "WS 8": "neutrino_darkmatterbeamcannon",
+        "WS 9": "neutrino_darkmatterbeamcannon"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 10": "neutrino_antiproton",
+        "WS 11": "neutrino_antiproton",
+        "WS 5": "neutrino_antiproton",
+        "WS 6": "neutrino_antiproton",
+        "WS 7": "neutrino_derp_launcher"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 17": "neutrino_disruptor",
+        "WS 18": "neutrino_disruptor",
+        "WS 19": "neutrino_disruptor",
+        "WS 20": "taclaser",
+        "WS 21": "taclaser",
+        "WS 22": "taclaser",
+        "WS 23": "taclaser",
+        "WS 24": "taclaser",
+        "WS 25": "taclaser",
+        "WS 26": "neutrino_disruptor"
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+	"id":"ms_rhpbc",
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"LARGE",
+	"displayArcRadius":1250,
+	"turretSprite":"",
+	"turretGlowSprite":"",
+	"hardpointSprite":"",
+	"hardpointGlowSprite":"",
+	"turretOffsets":[-3, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[5, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	#"animationType":"GLOW",
+	"animationType":"MUZZLE_FLASH",
+	"muzzleFlashSpec":{"length":20.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":0.0,
+					   "particleSizeMin":6.0,
+					   "particleSizeRange":6.0,
+					   "particleDuration":0.12,
+					   "particleCount":14,
+					   "particleColor":[160,220,160,255]},	
+	"autocharge":true,
+	#"interruptibleBurst":true,
+	"projectileSpecId":"ms_rhpcblast",  # projectile that will be fired
+	"fireSoundOne":"beam_heavy_intro",
+	"fireSoundTwo":"beam_heavy_loop",
+}

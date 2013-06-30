@@ -1,0 +1,35 @@
+{
+  "displayName": "Advanced",
+  "fluxCapacitors": 5,
+  "fluxVents": 7,
+  "hullId": "tesladora_ii",
+  "hullMods": [
+    "armoredweapons",
+    "blast_doors",
+    "targetingunit"
+  ],
+  "variantId": "tesladora_ii_A",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "lightlancer",
+        "WS0002": "lightlancer",
+        "WS0003": "lightlancer",
+        "WS0004": "lightlancer",
+        "WS0005": "lightlancer",
+        "WS0006": "lightlancer",
+        "WS0007": "lightlancer",
+        "WS0008": "lightlancer"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "quadheavymg"
+      }
+    }
+  ]
+}

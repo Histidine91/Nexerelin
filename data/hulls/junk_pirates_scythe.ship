@@ -1,0 +1,173 @@
+{
+  "bounds": [
+    -60,
+    26,
+    -60,
+    -26,
+    -14,
+    -31,
+    -2,
+    -45,
+    40,
+    -46,
+    57,
+    -1,
+    59,
+    17,
+    47,
+    40,
+    35,
+    34,
+    -49,
+    35
+  ],
+  "center": [
+    58.5,
+    69
+  ],
+  "collisionRadius": 63.3,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 48,
+      "location": [
+        -70,
+        -15
+      ],
+      "style": "LOW_TECH",
+      "width": 16
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 20,
+      "location": [
+        -69,
+        -6
+      ],
+      "style": "LOW_TECH",
+      "width": 12
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 20,
+      "location": [
+        -69,
+        -25
+      ],
+      "style": "LOW_TECH",
+      "width": 12
+    },
+    {
+      "angle": 180,
+      "contrailSize": 2,
+      "length": 34,
+      "location": [
+        -68,
+        32
+      ],
+      "style": "LOW_TECH",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 2,
+      "length": 34,
+      "location": [
+        -68,
+        28
+      ],
+      "style": "LOW_TECH",
+      "width": 6
+    }
+  ],
+  "height": 134,
+  "width": 113,
+  "hullId": "junk_pirates_scythe",
+  "hullName": "Scythe",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0,
+    0
+  ],
+  "shieldRadius": 88.6,
+  "spriteName": "/graphics/junk_pirates/ships/junk_pirates_scythe.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 5.0,
+      "id": "WS 1",
+      "locations": [
+        52,
+        54
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 126.0,
+      "id": "WS 3",
+      "locations": [
+        55,
+        16
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 5.0,
+      "id": "WS 2",
+      "locations": [
+        52,
+        35
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -13.1,
+      "arc": 297.1,
+      "id": "WS 4",
+      "locations": [
+        41,
+        -11
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 5.0,
+      "id": "WS 5",
+      "locations": [
+        55,
+        -42
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45,
+      "arc": 90,
+      "id": "WS 6",
+      "locations": [
+        20,
+        -33
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "bounds": [
+    -43,
+    -39,
+    12,
+    -45,
+    40,
+    -24,
+    53,
+    6,
+    66,
+    22,
+    36,
+    31,
+    3,
+    30,
+    -8,
+    47,
+    -43,
+    46,
+    -47,
+    37,
+    -42,
+    32,
+    -48,
+    15,
+    -68,
+    12,
+    -58,
+    -14,
+    -42,
+    -20
+  ],
+  "center": [
+    60,
+    75
+  ],
+  "collisionRadius": 110,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 64,
+      "length": 82,
+      "location": [
+        -75,
+        8
+      ],
+      "style": "HIGH_TECH",
+      "width": 38
+    },
+    {
+      "angle": 180,
+      "contrailSize": 58,
+      "length": 64,
+      "location": [
+        -58,
+        -38
+      ],
+      "style": "HIGH_TECH",
+      "width": 28
+    }
+  ],
+  "height": 150,
+  "width": 120,
+  "hullId": "junk_pirates_langoustine",
+  "hullName": "Langoustine",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0,
+    0
+  ],
+  "shieldRadius": 100,
+  "spriteName": "graphics/junk_pirates/ships/junk_pirates_langoustine.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS 001",
+      "locations": [
+        12,
+        48
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS 002",
+      "locations": [
+        66,
+        8
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS 003",
+      "locations": [
+        29,
+        -43
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 270,
+      "arc": 195,
+      "id": "WS 004",
+      "locations": [
+        0,
+        -53
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 65,
+      "arc": 215,
+      "id": "WS 005",
+      "locations": [
+        65,
+        38
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 235,
+      "arc": 230,
+      "id": "WS 006",
+      "locations": [
+        -38,
+        -17
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    }
+  ],
+      "builtInWeapons":{
+    	"WS 001":"junk_pirates_scorpion",
+    },
+}

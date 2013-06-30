@@ -1,0 +1,27 @@
+{
+	"id":"neutrino_cruise_engine",
+	"type":"ENGINE_MOD",
+	"aiType":"BURN_DRIVE",
+	
+	"statsScript":"data.shipsystems.scripts.NeutrinoCruiseEngineStats",
+	
+	#"engineGlowColor":[255,175,125,255],
+	#"engineGlowContrailColor":[100,165,255,25],
+	"engineGlowLengthMult":1,
+	"engineGlowWidthMult":1,
+	"engineGlowGlowMult":0.66,
+	
+	"flameoutOnImpactChance":0,
+
+	"clampTurnRateAfter":true,
+	"clampMaxSpeedAfter":false,
+	"alwaysAccelerate":true,
+	
+	"useSound":"neutrino_cruise_activate",
+	"loopSound":"neutrino_cruise_loop",
+	"outOfUsesSound":"engine_disabled",
+	
+	"aiHints":{
+		"averageSpeedIncrease":150,
+	}
+}

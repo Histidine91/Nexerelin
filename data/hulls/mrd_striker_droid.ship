@@ -1,0 +1,119 @@
+{
+  "bounds": [
+    10.5,
+    2,
+    4.5,
+    4,
+    2.5,
+    8,
+    2.5,
+    13,
+    -2.5,
+    13,
+    -9.5,
+    8,
+    -9.5,
+    6,
+    -4.5,
+    2,
+    -6.5,
+    1,
+    -6.5,
+    -1,
+    -4.5,
+    -2,
+    -9.5,
+    -6,
+    -9.5,
+    -8,
+    -2.5,
+    -13,
+    2.5,
+    -13,
+    2.5,
+    -8,
+    4.5,
+    -4,
+    10.5,
+    -2
+  ],
+  "center": [
+    14.5,
+    11
+  ],
+  "collisionRadius": 19.6,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 10,
+      "location": [
+        -10,
+        7
+      ],
+      "style": "LOW_TECH_FIGHTER",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 10,
+      "location": [
+        -10,
+        -7
+      ],
+      "style": "LOW_TECH_FIGHTER",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 9,
+      "location": [
+        -7,
+        -0
+      ],
+      "style": "LOW_TECH_FIGHTER",
+      "width": 4
+    }
+  ],
+  "height": 25,
+  "hullId": "mrd_striker_droid",
+  "hullName": "Striker droid",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 18,
+  "spriteName": "graphics/ships/mrd_striker_droid.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 20,
+      "id": "WS 1",
+      "locations": [
+        4.5,
+        7.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 20,
+      "id": "WS 2",
+      "locations": [
+        4.5,
+        -7.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 29
+}

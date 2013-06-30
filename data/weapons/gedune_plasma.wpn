@@ -1,0 +1,28 @@
+{
+	"id":"gedune_plasma",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"LARGE",
+	"turretSprite":"graphics/gedune/weapons/gedune_plasma_cannon_turret_base.png",
+	"turretGlowSprite":"graphics/weapons/plasma_cannon_turret_glow.png",
+	"hardpointSprite":"graphics/gedune/weapons/gedune_plasma_cannon_hardpoint_base.png",
+	"hardpointGlowSprite":"graphics/weapons/plasma_cannon_hardpoint_glow.png",
+	"glowColor":[100,255,100,255],
+	"turretOffsets":[30, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[40, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"GLOW_AND_FLASH",
+	"muzzleFlashSpec":{"length":-34.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":15.0,
+					   "particleSizeMin":15.0,
+					   "particleSizeRange":15.0,
+					   "particleDuration":0.15,
+					   "particleCount":30,
+					   "particleColor":[105,250,100,255]},
+	"interruptibleBurst":false,
+	"autocharge":false,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held
+	"projectileSpecId":"gedune_plasma_shot",  # projectile that will be fired
+	"fireSoundTwo":"energy_pulse",
+}

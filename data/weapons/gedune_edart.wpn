@@ -1,0 +1,27 @@
+{
+	"id":"gedune_edart",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"SMALL",
+	"turretSprite":"graphics/weapons/flechette_turret_base.png",
+	"turretGunSprite":"graphics/weapons/flechette_turret_recoil.png",
+	"hardpointSprite":"graphics/weapons/flechette_hardpoint_base.png",
+	"hardpointGunSprite":"graphics/weapons/flechette_hardpoint_recoil.png",	
+	"visualRecoil":3.0,  # the gun sprites are only used if this is non-0
+	"renderHints":["RENDER_BARREL_BELOW"],
+	"turretOffsets":[0, 0, 0, 0, 0, 0, 0, 0],
+	"turretAngleOffsets":[45, 135, 225, 315],
+	"hardpointOffsets":[0, 0, 0, 0, 0, 0, 0, 0],
+	"hardpointAngleOffsets":[45, 135, 225, 315],
+	"barrelMode":"LINKED", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",
+	"muzzleFlashSpec":{"length":0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":0.0,
+					   "particleSizeMin":0,
+					   "particleSizeRange":0,
+					   "particleDuration":0,
+					   "particleCount":0,
+					   "particleColor":[155,255,155,175]},
+	"projectileSpecId":"gedune_edart_shot",  # projectile that will be fired
+	"fireSoundTwo":"energy_pulse_light",
+}

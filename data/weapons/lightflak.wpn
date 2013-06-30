@@ -1,0 +1,27 @@
+{
+	"id":"lightflak",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"SMALL",
+	"turretSprite":"graphics/weapons/lightflak_turret_base.png",
+	"turretGunSprite":"graphics/weapons/lightflak_turret_recoil.png",
+	"hardpointSprite":"graphics/weapons/lightflak_hardpoint_base.png",
+	"hardpointGunSprite":"graphics/weapons/lightflak_hardpoint_recoil.png",	
+	"visualRecoil":6.0,  # the gun sprites are only used if this is non-0
+	"renderHints":["RENDER_BARREL_BELOW"],
+	"turretOffsets":[22, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[28, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",
+	"muzzleFlashSpec":{"length":45.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":25.0,
+					   "particleSizeMin":16.0,
+					   "particleSizeRange":18.0,
+					   "particleDuration":0.3,
+					   "particleCount":30,
+					   "particleColor":[255,255,255,175]},
+	"projectileSpecId":"lrflak_shot",  # projectile that will be fired
+	"fireSoundTwo":"gun_light_flak",
+}

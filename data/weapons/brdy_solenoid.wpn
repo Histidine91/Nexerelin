@@ -1,0 +1,28 @@
+{
+	"id":"brdy_solenoid",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"MEDIUM",
+	"displayArcRadius":500,
+	"turretSprite":"graphics/BR/weapons/sqc_turretbase.png",
+	"turretGunSprite":"graphics/BR/weapons/sqc_barrel.png",
+	"hardpointSprite":"graphics/BR/weapons/sqc_hpbase.png",
+	"hardpointGunSprite":"graphics/BR/weapons/sqc_hpbarrel.png",		
+	"visualRecoil":4.0,  # the gun sprites are only used if this is non-0
+	"renderHints":[RENDER_BARREL_BELOW],
+	"turretOffsets":[14, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[20, 0],
+	"hardpointAngleOffsets":[0],	
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":160.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":4.0,
+					   "particleSizeMin":9.0,
+					   "particleSizeRange":19.0,
+					   "particleDuration":0.75,
+					   "particleCount":43,
+					   "particleColor":[135,155,130,155]},	
+	"projectileSpecId":"SQGnewshot",  # projectile that will be fired
+	"fireSoundTwo":"SQGnewfire",	
+}

@@ -1,0 +1,16 @@
+{
+	"id":"relics_ultima_shot",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"length":100.0,
+	"width":7.0,
+	"fadeTime":0.5,
+	"hitGlowRadius":200,
+	"fringeColor":[255,245,71,255],
+	"coreColor":[249,240,140,255],	
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":5.0,
+	"bulletSprite":"graphics/missiles/relics_ultima_shell.png"
+}

@@ -1,0 +1,29 @@
+{
+	"id":"massdriver",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"MEDIUM",
+	"displayArcRadius":50,
+	"turretSprite":"graphics/interstellarFederation/weapons/massdriver_base.png",
+	"turretGunSprite":"graphics/interstellarFederation/weapons/massdriver_recoil.png",
+	"hardpointSprite":"graphics/interstellarFederation/weapons/massdriver_base.png",
+	"hardpointGunSprite":"graphics/interstellarFederation/weapons/massdriver_recoil.png",	
+	"visualRecoil":10.0,  # the gun sprites are only used if this is non-0
+	"renderHints":["RENDER_BARREL_BELOW"],
+	"turretOffsets":[30, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[30, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",
+	"muzzleFlashSpec":{"length":80.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":3.0,
+					   "particleSizeMin":4.0,
+					   "particleSizeRange":8.0,
+					   "particleDuration":1,
+					   "particleCount":65,
+					   "particleColor":[165,225,185,175]},
+	"projectileSpecId":"massdriver_shot",  # projectile that will be fired
+	"fireSoundOne":"beam_heavy_burst_1",
+	"fireSoundTwo":"gun_superheavy_1",
+}

@@ -1,0 +1,142 @@
+{
+  "bounds": [
+    -58,
+    -16,
+    -47,
+    -27,
+    -20,
+    -27,
+    51,
+    -6,
+    51,
+    6,
+    -20,
+    27,
+    -47,
+    27,
+    -58,
+    16
+  ],
+  "builtInWeapons": {
+    "WS0001": "light",
+    "WS0002": "jenova radar"
+  },
+  "center": [
+    33,
+    63
+  ],
+  "collisionRadius": 66.030296,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 45,
+      "location": [
+        -62,
+        16
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 8,
+      "length": 45,
+      "location": [
+        -62,
+        -16
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 8
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 60,
+      "location": [
+        -61,
+        8
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 60,
+      "location": [
+        -61,
+        -8
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 10
+    }
+  ],
+  "height": 122,
+  "hullId": "jenova",
+  "hullName": "Jenova",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 68.001839,
+  "spriteName": "graphics/ships/Battle_Drone.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 45,
+      "arc": 120,
+      "id": "WS0003",
+      "locations": [
+        -11,
+        9
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45,
+      "arc": 120,
+      "id": "WS0004",
+      "locations": [
+        -11,
+        -9
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0001",
+      "locations": [
+        -23.5,
+        -0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "DECORATIVE"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS0002",
+      "locations": [
+        -27,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "DECORATIVE"
+    }
+  ],
+  "width": 66
+}

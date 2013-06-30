@@ -1,0 +1,43 @@
+{
+  "displayName": "Death",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "mrd_oppressor_ds",
+  "hullMods": [],
+  "variantId": "mrd_oppressor_ds_multirole",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 1": "mrd_light_blaster_oppressor",
+        "WS 2": "mrd_light_blaster_oppressor"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "pdlaser"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 3": "sabot_single",
+        "WS 4": "sabot_single"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

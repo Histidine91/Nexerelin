@@ -1,0 +1,22 @@
+{
+	"id":"harpy_mrm",
+	"specClass":"missile",	
+	"missileType":"MISSILE",
+	"sprite":"graphics/interstellarFederation/missiles/harpyMissile.png",
+	"size":[10,30],	
+	"center":[5,15],
+	"collisionRadius":16,
+	"collisionClass":"MISSILE_NO_FF",
+	"explosionColor":[255,200,100,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":150, # purely visual
+	"engineSpec":{"turnAcc":225,
+				  "turnRate":85,
+				  "acc":800,
+				  "dec":500},
+	"engineSlots":[{"id":"ES1",
+					"loc":[-13, 0],
+				    "style":"MISSILE_HIGH_TECH",
+				    "width":7.0,
+				    "length":35.0,
+				    "angle":180.0}]
+}

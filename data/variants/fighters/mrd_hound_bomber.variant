@@ -1,0 +1,39 @@
+{
+  "displayName": "Heavy Bomber",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "mrd_hound",
+  "hullMods": [],
+  "variantId": "mrd_hound_bomber",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "mrd_light_blaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 1": "mrd_reaper",
+        "WS 2": "mrd_reaper"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "mrd_pd_laser_mk_ii"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 4": "lightmg"
+      }
+    }
+  ]
+}

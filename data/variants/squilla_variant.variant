@@ -1,0 +1,24 @@
+{
+  "displayName": "Torpedo Bomber",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "brdy_squilla",
+  "hullMods": null,
+  "variantId": "squilla_variant",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "brdy_fury"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0002": "brvulcan"
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+    "displayName": "Attack",
+    "fluxCapacitors": 0,
+    "fluxVents": 7,
+    "hullId": "brdy_mantis",
+    "hullMods": [],
+    "variantId": "brdy_mantis_attack",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0003": "brdy_quill",
+                "WS0004": "brdy_quill"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0001": "achillespod"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0002": "brvulcan",
+                "WS0005": "brvulcan"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0006": "brdy_volley"}
+        }
+    ]
+}

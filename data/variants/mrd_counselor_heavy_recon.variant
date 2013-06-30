@@ -1,0 +1,54 @@
+{
+  "displayName": "Heavy Recon",
+  "fluxCapacitors": 9,
+  "fluxVents": 9,
+  "hullId": "mrd_counselor",
+  "hullMods": [
+    "targetingunit",
+    "advancedshieldemitter"
+  ],
+  "variantId": "mrd_counselor_heavy_recon",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "mrd_heavy_autoblaster",
+        "WS0006": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "lightmg",
+        "WS0008": "lightmg"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "pdburst",
+        "WS0002": "pdburst",
+        "WS0003": "mrd_pd_laser_mk_ii",
+        "WS0004": "mrd_pd_laser_mk_ii",
+        "WS0009": "pdburst",
+        "WS0010": "pdburst",
+        "WS0011": "mrd_pd_laser_mk_ii"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0012": "pilum"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

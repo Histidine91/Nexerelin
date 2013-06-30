@@ -1,0 +1,174 @@
+{
+  "bounds": [
+    -53.5,
+    6,
+    -62.5,
+    23.5,
+    -54.5,
+    41.5,
+    -2,
+    65.5,
+    10,
+    83.5,
+    66,
+    40,
+    66,
+    -40,
+    10,
+    -83.5,
+    -2,
+    -65.5,
+    -54.5,
+    -41.5,
+    -62.5,
+    -23.5,
+    -53.5,
+    -6,
+    -74,
+    -0
+  ],
+  "center": [
+    87,
+    78
+  ],
+  "collisionRadius": 125.165894,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 50,
+      "location": [
+        -62,
+        -24
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 50,
+      "location": [
+        -62,
+        24
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 50,
+      "location": [
+        -58,
+        -32.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 50,
+      "location": [
+        -58,
+        32.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 20,
+      "length": 40,
+      "location": [
+        -55,
+        -41
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 7
+    },
+    {
+      "angle": -180,
+      "contrailSize": 20,
+      "length": 40,
+      "location": [
+        -55,
+        41
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 7
+    }
+  ],
+  "height": 156,
+  "hullId": "ms_sargasso",
+  "hullName": "Sargasso",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 113.156967,
+  "spriteName": "graphics/shadow_ships/ships/ms_sargasso.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS0001",
+      "locations": [
+        67.5,
+        43
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 5,
+      "id": "WS0002",
+      "locations": [
+        67.5,
+        -43
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 140,
+      "id": "WS0003",
+      "locations": [
+        49.5,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "LB 1",
+      "locations": [
+        24,
+        21.5,
+        24,
+        -21.5
+      ],
+      "mount": "HIDDEN",
+      "size": "LARGE",
+      "type": "LAUNCH_BAY"
+    }
+  ],
+  "width": 174
+}

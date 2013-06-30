@@ -1,0 +1,33 @@
+{
+	"id":"drone_shield_midline",
+	"type":"DRONE_LAUNCHER",
+	"aiType":"DRONE_LAUNCHER_PD",
+	
+	"droneVariant":"drone_shield_midline",
+	
+	"allowFreeRoam":false,
+	
+	"launchSpeed":300,
+	"launchDelay":0.5,
+	"maxDrones":15,
+	"droneBehavior":[
+		{"droneIndex":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+		 "defaultFacing":"AWAY_FROM_SHIP",	# MATCH_DRONE_HEADING, MATCH_SHIP_HEADING, MATCH_SHIP_FACING, AWAY_FROM_SHIP
+		 "faceEnemy":false,
+		 "holdRoamRange":100,
+		 "freeRoamRange":500,
+		 "targetPriority":[MISSILE, FIGHTER, SHIP], # also SHIP_TARGET to prefer targeting the mothership's target
+		 "initialOrbitAngle":0,
+		 "orbitRadius":40, 				# plus ship radius
+		 "orbitDir":1, 					# -1 or 1
+		 "orbitSpeed":50, 				# pixels/second
+		},
+	],
+	
+	"useSound":"missile_heavy",
+	"outOfUsesSound":"gun_out_of_ammo",
+	
+	"aiHints":{
+
+	}
+}

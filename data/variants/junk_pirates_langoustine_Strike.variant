@@ -1,0 +1,45 @@
+{
+	"displayName":"Strike",
+	"hullId":"junk_pirates_langoustine",
+	"variantId":"junk_pirates_langoustine_Strike",
+	"fluxVents":17,
+	"fluxCapacitors":15,
+	"hullMods":[
+		"missleracks"
+	], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"junk_pirates_scorpion",
+		 		   },
+		},	
+		{
+		"autofire": false,
+		"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 002":"junk_pirates_cutlass",
+		 		   },
+		},
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 004":"pdlaser",
+					"WS 005":"pdlaser",
+		 			"WS 006":"dualflak",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 003":"typhoon",
+		 		   },
+		},
+	],
+}

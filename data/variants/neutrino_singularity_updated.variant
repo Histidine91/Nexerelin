@@ -1,0 +1,27 @@
+{
+  "displayName": "Updated Drone",
+  "fluxCapacitors": 2,
+  "fluxVents": 0,
+  "hullId": "neutrino_singularity",
+  "hullMods": [
+    "auxiliarythrusters"
+  ],
+  "variantId": "neutrino_singularity_updated",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 2": "neutrino_neutronpulseheavy",
+        "WS 3": "neutrino_neutronpulse"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lrpdlaser"
+      }
+    }
+  ]
+}

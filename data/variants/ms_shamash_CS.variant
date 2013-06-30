@@ -1,0 +1,28 @@
+{
+    "displayName": "Close Support",
+    "fluxCapacitors": 4,
+    "fluxVents": 10,
+    "hullId": "ms_shamash",
+    "hullMods": [
+        "augmentedengines",
+        "insulatedengine"
+    ],
+    "variantId": "ms_shamash_CS",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "ms_phasegun"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "taclaser",
+                "WS0002": "taclaser"
+            }
+        }
+    ]
+}

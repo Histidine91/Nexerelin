@@ -1,0 +1,29 @@
+{
+    "displayName": "Standard",
+    "fluxCapacitors": 0,
+    "fluxVents": 12,
+    "hullId": "ms_sargasso",
+    "hullMods": [
+        "auxiliarythrusters",
+        "blast_doors",
+        "stabilizedshieldemitter"
+    ],
+    "variantId": "ms_sargasso_Standard",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "ms_cepc",
+                "WS0002": "ms_cepc"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "ms_scattercepc"
+            }
+        }
+    ]
+}

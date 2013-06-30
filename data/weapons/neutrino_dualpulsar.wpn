@@ -1,0 +1,28 @@
+{
+	"id":"neutrino_dualpulsar",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"MEDIUM",
+	"displayArcRadius":500,
+	"turretSprite":"graphics/neut/weapons/neutrino_dualpulsar_turret.png",
+	"turretGlowSprite":"graphics/neut/weapons/neutrino_dualpulsar_turret_glow.png",
+	"hardpointSprite":"graphics/neut/weapons/neutrino_dualpulsar_hardpoint.png",
+	"hardpointGlowSprite":"graphics/neut/weapons/neutrino_dualpulsar_hardpoint_glow.png",	
+	"glowColor":[100,195,255,255],	
+	"turretOffsets":[0, -7, 0, 7],
+	"turretAngleOffsets":[0, 0],
+	"hardpointOffsets":[0, -7, 0, 7],
+	"hardpointAngleOffsets":[0, 0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"GLOW_AND_FLASH",
+	"muzzleFlashSpec":{"length":30.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":7.0,
+					   "particleSizeMin":15.0,
+					   "particleSizeRange":25.0,
+					   "particleDuration":0.20,
+					   "particleCount":7,
+					   "particleColor":[100,195,255,255]},
+	"autocharge":true,					   
+	"projectileSpecId":"neutrino_pulsar_shot",  # projectile that will be fired
+	"fireSoundTwo":"neutrino_pulsar_firing",	
+}

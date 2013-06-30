@@ -1,0 +1,138 @@
+{
+  "bounds": [
+    -27,
+    -11,
+    -19,
+    -27,
+    11,
+    -19,
+    30,
+    -5,
+    30,
+    5,
+    11,
+    19,
+    -19,
+    27,
+    -27,
+    11
+  ],
+  "center": [
+    35,
+    34
+  ],
+  "collisionRadius": 43.511494,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 12,
+      "length": 45,
+      "location": [
+        -26,
+        20
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 12
+    },
+    {
+      "angle": -180,
+      "contrailSize": 12,
+      "length": 45,
+      "location": [
+        -26,
+        -20
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 12
+    }
+  ],
+  "height": 70,
+  "hullId": "excalibur",
+  "hullName": "Excalibur",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 41.5,
+  "spriteName": "graphics/ships/Excalibur.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0001",
+      "locations": [
+        14,
+        13
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0002",
+      "locations": [
+        14,
+        -13
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0003",
+      "locations": [
+        8.5,
+        15.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0004",
+      "locations": [
+        8.5,
+        -15.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90,
+      "arc": 220,
+      "id": "WS0005",
+      "locations": [
+        -14,
+        6
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -90,
+      "arc": 220,
+      "id": "WS0006",
+      "locations": [
+        -14,
+        -6
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 70
+}

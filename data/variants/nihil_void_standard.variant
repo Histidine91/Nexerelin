@@ -1,0 +1,62 @@
+{
+  "displayName": "Corrupted",
+  "hullId": "nihil_void",
+  "variantId": "nihil_void_standard",
+  "fluxVents": 5,
+  "fluxCapacitors": 3,
+  "hullMods": [
+    "hardenedshieldemitter",
+    "magazines",
+    "missleracks",
+    "autorepair"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 006": "vd"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "pdvr",
+        "WS 002": "pdvr",
+        "WS 004": "amt",
+        "WS 005": "amt",
+        "WS 007": "pdvr",
+        "WS 008": "pdvr",
+        "WS 009": "pdvr",
+        "WS 010": "pdvr"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 003a": "ldflak",
+        "WS 003b": "ldflak",
+        "WS 1": "ldflak",
+        "WS 2": "ldflak",
+        "WS 3": "lightdualac",
+        "WS 4": "lightdualac",
+        "WS 5": "lightdualac",
+        "WS 6": "lightdualac"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 011": "gamma"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

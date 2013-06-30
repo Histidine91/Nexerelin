@@ -1,0 +1,17 @@
+{
+  "displayName": "Elite Interceptor",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "thule_einherjer_lh",
+  "hullMods": [],
+  "variantId": "thule_einherjer_LH_Wing",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "lightdualac"
+      }
+    }
+  ]
+}

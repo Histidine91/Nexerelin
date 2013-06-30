@@ -1,0 +1,26 @@
+{
+  "displayName": "Interceptor Strike",
+  "hullId": "relics_chaser",
+  "variantId": "relics_chaser_s_Interceptor",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "relics_blazo"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "relics_blazo"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

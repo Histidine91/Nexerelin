@@ -1,0 +1,62 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "capital_calypso",
+  "variantId": "calypso_Antediluvian",
+  "fluxVents": 5,
+  "fluxCapacitors": 3,
+  "hullMods": [
+    "magazines",
+    "autorepair",
+    "eccm"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pressureturret",
+        "WS 17": "pressureturret",
+        "WS 18": "pressureturret",
+        "WS 20": "pressureturret",
+        "WS 21": "pressureturret",
+        "WS 24": "pressureturret",
+        "WS 25": "pressureturret",
+        "WS 3": "pressureturret",
+        "WS 7": "pressureturret",
+        "WS 8": "pressureturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 10": "dualturret",
+        "WS 11": "dualturret",
+        "WS 16": "advancedturret",
+        "WS 19": "advancedturret",
+        "WS 2": "advancedturret",
+        "WS 22": "extendedturret",
+        "WS 23": "extendedturret",
+        "WS 26": "extendedturret",
+        "WS 27": "extendedturret",
+        "WS 4": "advancedturret",
+        "WS 6": "advancedturret",
+        "WS 9": "advancedturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 28": "sonicturret",
+        "WS 5": "sonicturret"
+      }
+    },
+    {
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 12": "prometheus",
+        "WS 13": "prometheus",
+        "WS 14": "prometheus",
+        "WS 15": "prometheus"
+      }
+    }
+  ]
+}

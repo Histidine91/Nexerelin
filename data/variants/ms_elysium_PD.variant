@@ -1,0 +1,45 @@
+{
+  "displayName": "Point Defense",
+  "fluxCapacitors": 5,
+  "fluxVents": 14,
+  "hullId": "ms_elysium",
+  "hullMods": [
+        "adaptiveshields"
+  ],
+  "variantId": "ms_elysium_PD",
+  "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0009": "ms_pandora"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "ms_pdcepc",
+                "WS0004": "ms_pdcepc",
+                "WS0007": "ms_pdcepc",
+                "WS0008": "ms_pdcepc"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {              
+                "WS0001": "ms_cepc",
+                "WS0002": "ms_cepc"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0005": "heavyburst",
+                "WS0006": "heavyburst"
+            }
+        }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+	"id":"heavy_assault_cannon_shot",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"length":75.0,
+	"hitGlowRadius":80,
+	"width":8.0,
+	"fadeTime":0.5,
+	"fringeColor":[255,165,30,175],
+	#"coreColor":[255,225,175,225],
+	"coreColor":[255,255,255,200],
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":5.0,
+	"bulletSprite":"graphics/missiles/shell_hellbore.png"
+	#"bulletSprite":"graphics/missiles/shell_round_lrg.png"
+}

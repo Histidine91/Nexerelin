@@ -1,0 +1,17 @@
+{
+	"id":"HV100_shot",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"length":30.0,
+	"width":10.0,
+	"fadeTime":0.2,
+	#"fringeColor":[140,140,140,255],
+	#"coreColor":[200,200,200,150],
+	"fringeColor":[180,180,180,235],
+	"coreColor":[220,210,210,130],	
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":5.0,
+	"bulletSprite":"graphics/missiles/shell_large.png"
+}

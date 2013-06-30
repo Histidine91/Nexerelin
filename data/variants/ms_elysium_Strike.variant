@@ -1,0 +1,46 @@
+{
+    "displayName": "Strike",
+    "fluxCapacitors": 0,
+    "fluxVents": 25,
+    "hullId": "ms_elysium",
+    "hullMods": [
+        "fluxbreakers",
+        "blast_doors"
+    ],
+    "variantId": "ms_elysium_Strike",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0009": "ms_pandora"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "ms_cepc",
+                "WS0004": "ms_cepc",
+                "WS0001": "ioncannon",
+                "WS0002": "ioncannon"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {              
+                "WS0007": "pdlaser",
+                "WS0008": "pdlaser"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0005": "ms_scattercepc",
+                "WS0006": "ms_scattercepc"
+            }
+        }
+    ]
+}

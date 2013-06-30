@@ -1,0 +1,16 @@
+{
+	"id":"ms_mcepc_blast",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"length":80.0,
+	"width":9.0,
+	"hitGlowRadius":40,
+	"fadeTime":0.5,
+	"fringeColor":[0,155,0,255],
+	"coreColor":[155,255,155,255],
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":5.0,
+	"bulletSprite":"graphics/shadow_weapons/missiles/cecp_big.png"
+}

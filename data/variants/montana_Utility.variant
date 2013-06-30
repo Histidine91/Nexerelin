@@ -1,0 +1,37 @@
+{
+  "displayName": "Utility",
+  "hullId": "montana",
+  "variantId": "montana_Utility",
+  "fluxVents": 13,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "vulcan",
+        "WS 4": "vulcan",
+        "WS 5": "vulcan"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "lightag",
+        "WS 3": "lightag"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 6": "heavyac",
+        "WS 7": "heavyac",
+        "WS 8": "heavyac",
+        "WS 9": "heavyac"
+      }
+    }
+  ]
+}

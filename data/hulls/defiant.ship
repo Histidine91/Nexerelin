@@ -1,0 +1,271 @@
+{
+  "bounds": [
+    116.5,
+    5.0,
+    100.0,
+    5.0,
+    97.0,
+    6.5,
+    64.0,
+    6.0,
+    60.5,
+    10.0,
+    45.0,
+    13.0,
+    32.0,
+    15.0,
+    30.5,
+    18.5,
+    19.5,
+    19.5,
+    18.0,
+    34.5,
+    -0.5,
+    34.0,
+    -6.5,
+    39.0,
+    -15.0,
+    38.5,
+    -17.5,
+    37.0,
+    -41.5,
+    38.5,
+    -50.0,
+    22.5,
+    -55.5,
+    23.0,
+    -61.0,
+    18.0,
+    -61.0,
+    -18.0,
+    -55.5,
+    -23.0,
+    -50.0,
+    -22.5,
+    -41.5,
+    -38.5,
+    -17.5,
+    -37.0,
+    -15.0,
+    -38.5,
+    -6.5,
+    -39.0,
+    -0.5,
+    -34.0,
+    18.0,
+    -34.5,
+    19.5,
+    -19.5,
+    30.5,
+    -18.5,
+    32.0,
+    -15.0,
+    45.0,
+    -13.0,
+    60.5,
+    -10.0,
+    64.0,
+    -6.0,
+    97.0,
+    -6.5,
+    100.0,
+    -5.0,
+    116.5,
+    -5.0
+  ],
+  "center": [
+    48.5,
+    72.0
+  ],
+  "collisionRadius": 66.2,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 5.0,
+      "length": 22.5,
+      "location": [
+        -60.5,
+        -18.0
+      ],
+      "style": "MIDLINE",
+      "width": 5.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 5.0,
+      "length": 22.5,
+      "location": [
+        -60.5,
+        18.0
+      ],
+      "style": "MIDLINE",
+      "width": 5.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 5.0,
+      "length": 22.5,
+      "location": [
+        -60.5,
+        -12.5
+      ],
+      "style": "MIDLINE",
+      "width": 5.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 5.0,
+      "length": 22.5,
+      "location": [
+        -60.5,
+        12.5
+      ],
+      "style": "MIDLINE",
+      "width": 5.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 5.0,
+      "length": 22.5,
+      "location": [
+        -60.5,
+        -7.0
+      ],
+      "style": "MIDLINE",
+      "width": 5.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 5.0,
+      "length": 22.5,
+      "location": [
+        -60.5,
+        7.0
+      ],
+      "style": "MIDLINE",
+      "width": 5.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 7.0,
+      "length": 32.0,
+      "location": [
+        -60.5,
+        -0.0
+      ],
+      "style": "MIDLINE",
+      "width": 7.0
+    }
+  ],
+  "height": 200.0,
+  "width": 97.0,
+  "hullId": "defiant",
+  "hullName": "Defiant",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    23.0,
+    0.5
+  ],
+  "shieldRadius": 105.1,
+  "spriteName": "graphics/interstellarFederation/ships/defiantGunship.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 0.0,
+      "arc": 0.0,
+      "id": "WS 1",
+      "locations": [
+        15.0,
+        -25.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 0.0,
+      "id": "WS 2",
+      "locations": [
+        15.0,
+        25.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 34.4,
+      "id": "WS 3",
+      "locations": [
+        -4.0,
+        -0.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 180.0,
+      "arc": 229.1,
+      "id": "WS 4",
+      "locations": [
+        -44.0,
+        -0.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 282.9,
+      "id": "WS 5",
+      "locations": [
+        26.0,
+        -0.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 283.1,
+      "id": "WS 6",
+      "locations": [
+        52.0,
+        -0.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -48.4,
+      "arc": 0.0,
+      "id": "WS0001",
+      "locations": [
+        -4.5,
+        -34.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 48.4,
+      "arc": 0.0,
+      "id": "WS0002",
+      "locations": [
+        -4.5,
+        34.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

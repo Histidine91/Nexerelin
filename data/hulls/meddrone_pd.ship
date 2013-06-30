@@ -1,0 +1,55 @@
+{
+  "bounds": [
+    5.0,
+    0.0,
+    -5.0,
+    3.0,
+    -5.0,
+    -3.0
+  ],
+  "center": [
+    9.0,
+    11.0
+  ],
+  "collisionRadius": 10.6,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 4.0,
+      "length": 12.0,
+      "location": [
+        -8.5,
+        -0.0
+      ],
+      "style": "MIDLINE",
+      "width": 4.0
+    }
+  ],
+  "height": 14.0,
+  "width": 14.0,
+  "hullId": "meddrone_pd",
+  "hullName": "PD Drone",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0.0,
+    -0.0
+  ],
+  "shieldRadius": 10.8,
+  "spriteName": "graphics/interstellarFederation/ships/medDrone.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 0.0,
+      "arc": 0.0,
+      "id": "WS 001",
+      "locations": [
+        6.0,
+        -0.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ]
+}

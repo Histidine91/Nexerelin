@@ -1,0 +1,100 @@
+{
+    "displayName": "Assault",
+    "fluxCapacitors": 0,
+    "fluxVents": 41,
+    "hullId": "relics_faithoper",
+    "hullMods": [
+        "heavyarmor",
+        "reinforcedhull",
+        "armoredweapons",
+        "autorepair",
+        "magazines",
+        "auxiliarythrusters"
+    ],
+    "variantId": "relics_faithoper_Assault",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 1": "heavymauler",
+                "WS 10": "dualflak",
+                "WS 11": "vulcan",
+                "WS 12": "vulcan",
+                "WS 13": "vulcan",
+                "WS 14": "vulcan",
+                "WS 15": "vulcan",
+                "WS 16": "vulcan",
+                "WS 17": "vulcan",
+                "WS 18": "vulcan",
+                "WS 19": "vulcan",
+                "WS 2": "heavymauler",
+                "WS 20": "vulcan",
+                "WS 21": "vulcan",
+                "WS 22": "vulcan",
+                "WS 23": "vulcan",
+                "WS 24": "vulcan",
+                "WS 25": "vulcan",
+                "WS 26": "vulcan",
+                "WS 27": "vulcan",
+                "WS 28": "vulcan",
+                "WS 29": "vulcan",
+                "WS 30": "vulcan",
+                "WS 31": "vulcan",
+                "WS 32": "vulcan",
+                "WS 33": "vulcan",
+                "WS 34": "vulcan",
+                "WS 35": "vulcan",
+                "WS 36": "vulcan",
+                "WS 37": "vulcan",
+                "WS 38": "vulcan",
+                "WS 46": "vulcan",
+                "WS 7": "dualflak",
+                "WS 8": "dualflak",
+                "WS 9": "dualflak"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS 49": "pilum",
+                "WS 50": "pilum",
+                "WS 51": "pilum",
+                "WS 52": "pilum",
+                "WS 53": "pilum",
+                "WS 54": "pilum",
+                "WS 55": "pilum",
+                "WS 56": "pilum"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 3": "hveldriver",
+                "WS 4": "hveldriver",
+                "WS 5": "hveldriver",
+                "WS 6": "hveldriver"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS 47": "relics_ultima"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 39": "railgun",
+                "WS 40": "railgun",
+                "WS 41": "railgun",
+                "WS 42": "railgun",
+                "WS 43": "railgun",
+                "WS 44": "railgun",
+                "WS 45": "railgun"
+            }
+        }
+    ]
+}

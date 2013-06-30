@@ -1,0 +1,23 @@
+{
+  "displayName": "Support",
+  "hullId": "syndicate_asp_constrictor",
+  "variantId": "syndicate_asp_constrictor_Support",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 1": "sabot",
+        "WS 2": "sabot"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "irpulse"
+      }
+    }
+  ]
+}

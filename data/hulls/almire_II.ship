@@ -1,0 +1,510 @@
+{
+  "bounds": [
+    -131,
+    -10,
+    -143,
+    -16,
+    -135,
+    -63,
+    -116,
+    -63,
+    -107,
+    -71,
+    -65,
+    -71,
+    -58,
+    -86,
+    -39,
+    -91,
+    -26,
+    -87,
+    -12,
+    -59,
+    16,
+    -59,
+    39,
+    -50,
+    105,
+    -50,
+    164,
+    -30,
+    155,
+    -10,
+    134,
+    -10,
+    134,
+    10,
+    155,
+    10,
+    164,
+    30,
+    105,
+    50,
+    39,
+    50,
+    16,
+    59,
+    -12,
+    59,
+    -26,
+    87,
+    -39,
+    91,
+    -58,
+    86,
+    -65,
+    71,
+    -107,
+    71,
+    -116,
+    63,
+    -135,
+    63,
+    -143,
+    16,
+    -131,
+    10
+  ],
+  "center": [
+    100,
+    153
+  ],
+  "collisionRadius": 190.000656,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 12,
+      "length": 60,
+      "location": [
+        -134,
+        5
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 12
+    },
+    {
+      "angle": -180,
+      "contrailSize": 12,
+      "length": 60,
+      "location": [
+        -134,
+        -5
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 12
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 50,
+      "location": [
+        -146,
+        19
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 50,
+      "location": [
+        -146,
+        -19
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 50,
+      "location": [
+        -145,
+        31
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 50,
+      "location": [
+        -145,
+        -31
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 50,
+      "location": [
+        -144,
+        41
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 50,
+      "location": [
+        -144,
+        -41
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 40,
+      "location": [
+        -141,
+        50
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 40,
+      "location": [
+        -141,
+        -50
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 40,
+      "location": [
+        -140,
+        55
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 40,
+      "location": [
+        -140,
+        -55
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 40,
+      "location": [
+        -139,
+        59
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 40,
+      "location": [
+        -139,
+        -59
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 40,
+      "location": [
+        -138,
+        63
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 40,
+      "location": [
+        -138,
+        -63
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 6
+    }
+  ],
+  "height": 325,
+  "hullId": "almire_II",
+  "hullName": "Almire Mk.II",
+  "hullSize": "CRUISER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 184.016983,
+  "spriteName": "graphics/ships/Almire_II.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0001",
+      "locations": [
+        131,
+        -0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0002",
+      "locations": [
+        -16,
+        71
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0003",
+      "locations": [
+        -16,
+        -71
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 120,
+      "id": "WS0004",
+      "locations": [
+        148,
+        19
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 120,
+      "id": "WS0005",
+      "locations": [
+        148,
+        -19
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 45,
+      "arc": 120,
+      "id": "WS0006",
+      "locations": [
+        128,
+        25
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45,
+      "arc": 120,
+      "id": "WS0007",
+      "locations": [
+        128,
+        -25
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 135,
+      "arc": 120,
+      "id": "WS0008",
+      "locations": [
+        -57,
+        58
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -135,
+      "arc": 120,
+      "id": "WS0009",
+      "locations": [
+        -57,
+        -58
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 180,
+      "arc": 120,
+      "id": "WS0010",
+      "locations": [
+        -105,
+        33
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -180,
+      "arc": 120,
+      "id": "WS0011",
+      "locations": [
+        -105,
+        -33
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 45,
+      "arc": 120,
+      "id": "WS0012",
+      "locations": [
+        110,
+        25
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45,
+      "arc": 120,
+      "id": "WS0013",
+      "locations": [
+        110,
+        -25
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 45,
+      "arc": 120,
+      "id": "WS0014",
+      "locations": [
+        23,
+        31
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45,
+      "arc": 120,
+      "id": "WS0015",
+      "locations": [
+        23,
+        -31
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 135,
+      "arc": 120,
+      "id": "WS0016",
+      "locations": [
+        -19,
+        31
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -135,
+      "arc": 120,
+      "id": "WS0017",
+      "locations": [
+        -19,
+        -31
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 45,
+      "arc": 120,
+      "id": "WS0018",
+      "locations": [
+        66,
+        22
+      ],
+      "mount": "TURRET",
+      "size": "LARGE",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45,
+      "arc": 120,
+      "id": "WS0019",
+      "locations": [
+        66,
+        -22
+      ],
+      "mount": "TURRET",
+      "size": "LARGE",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 200
+}

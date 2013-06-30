@@ -1,0 +1,54 @@
+{
+  "displayName": "Standard",
+  "hullId": "yukon",
+  "variantId": "yukon_Standard",
+  "fluxVents": 50,
+  "fluxCapacitors": 7,
+  "hullMods": [
+    "magazines"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 10": "dualflak",
+        "WS 11": "dualflak"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lightag",
+        "WS 2": "lightag",
+        "WS 3": "lightag",
+        "WS 4": "lightag"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 12": "lightag",
+        "WS 13": "lightag",
+        "WS 5": "lightag",
+        "WS 6": "lightag"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "hveldriver",
+        "WS 8": "hveldriver",
+        "WS 9": "hveldriver"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

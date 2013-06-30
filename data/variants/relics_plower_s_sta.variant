@@ -1,0 +1,47 @@
+{
+    "displayName": "Standard",
+    "fluxCapacitors": 0,
+    "fluxVents": 27,
+    "hullId": "relics_plower_s",
+    "hullMods": [
+        "hardenedshieldemitter",
+        "targetingunit"
+    ],
+    "variantId": "relics_plower_s_sta",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 10": "relics_zaap_h",
+                "WS 9": "relics_zaap_h"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 5": "pulselaser",
+                "WS 6": "pulselaser",
+                "WS 7": "pulselaser",
+                "WS 8": "pulselaser"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 11": "gravitonbeam",
+                "WS 12": "gravitonbeam"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 1": "relics_blazo_h",
+                "WS 2": "relics_blazo_h"
+            }
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+  "displayName": "Drone",
+  "hullId": "neutrino_singularity",
+  "variantId": "neutrino_singularity_standard",
+  "fluxVents": 0,
+  "fluxCapacitors": 1,
+  "hullMods": [
+    "targetingunit",
+    "eccm"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 2": "neutrino_photongun",
+        "WS 3": "neutrino_photongun"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lrpdlaser"
+      }
+    }
+  ]
+}

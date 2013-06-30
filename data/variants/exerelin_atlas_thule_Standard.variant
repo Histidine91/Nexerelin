@@ -1,0 +1,17 @@
+{
+    "displayName": "Standard",
+    "fluxCapacitors": 6,
+    "fluxVents": 0,
+    "hullId": "exerelin_atlas_thule",
+    "hullMods": ["auxiliarythrusters"],
+    "variantId": "exerelin_atlas_thule_Standard",
+    "weaponGroups": [{
+        "autofire": true,
+        "mode": "LINKED",
+        "weapons": {
+            "WS 001": "lightmg",
+            "WS 002": "lightmg",
+            "WS 003": "lightmg"
+        }
+    }]
+}

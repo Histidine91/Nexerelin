@@ -1,0 +1,14 @@
+{
+	"id":"shrimpsensor",
+	"type":"STAT_MOD",
+	"aiType":"WEAPON_BOOST",
+	
+	"statsScript":"data.shipsystems.scripts.ShrimpSensorStats",
+	
+	"weaponGlowColor":[200,230,200,25],
+	"weaponTypes":[BALLISTIC],
+	
+	"useSound":"shrimp_sensor_use",
+	#"loopSound":"shrimp_sensor_loop",
+	"outOfUsesSound":"gun_out_of_ammo",
+}

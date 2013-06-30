@@ -1,0 +1,32 @@
+{
+	"displayName":"Point Defense",
+	"hullId":"junk_pirates_sickle",
+	"variantId":"junk_pirates_sickle_Pointdefense",
+	"fluxVents":9,
+	"fluxCapacitors":3,
+	"hullMods":[
+		"advancedoptics",
+		"turretgyros"
+	], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"pdlaser",
+		 			"WS 002":"pdlaser",
+		 			"WS 004":"pdlaser",
+		 		   },
+		},
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 003":"lightdualmg",
+		 		   },
+		},
+	],
+}

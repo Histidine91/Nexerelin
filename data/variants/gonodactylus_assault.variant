@@ -1,0 +1,42 @@
+{
+    "displayName": "Assault",
+    "fluxCapacitors": 8,
+    "fluxVents": 8,
+    "hullId": "brdy_gonodactylus",
+    "hullMods": ["armoredweapons"],
+    "variantId": "gonodactylus_assault",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {"WS0006": "brdy_hammerclaw"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0005": "brdy_quill"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0007": "brdy_dualac"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "brdy_ag",
+                "WS0002": "brdy_ag",
+                "WS0003": "brdy_ag"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0004": "brvulcan",
+                "WS0008": "brvulcan"
+            }
+        }
+    ]
+}

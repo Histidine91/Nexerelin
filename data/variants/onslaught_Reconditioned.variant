@@ -1,0 +1,37 @@
+{
+	"displayName":"Outdated",
+	"hullId":"onslaught",
+	"variantId":"onslaught_Reconditioned",
+	"fluxVents":10,
+	"fluxCapacitors":10,
+	"mods":[], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 021":"pilum",
+		 		   },
+		},		
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"lightmg",
+		 			"WS 002":"lightdualac",
+		 			"WS 003":"lightmg",
+		 			"WS 004":"lightdualac",
+		 			"WS 006":"lightmg",
+		 			"WS 009":"lightmg",
+		 			"WS 013":"lightdualac",
+		 			"WS 015":"lightdualac",
+		 		   },
+		},
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 018":"chaingun",
+		 			"WS 019":"chaingun",
+		 			"WS 020":"chaingun",
+		 		   },
+		},
+	],
+}

@@ -1,0 +1,42 @@
+{
+  "displayName": "Unknown",
+  "hullId": "nihil_rigor",
+  "variantId": "nihil_rigor_unknown",
+  "fluxVents": 2,
+  "fluxCapacitors": 3,
+  "hullMods": [
+    "hardenedshieldemitter",
+    "magazines",
+    "advancedshieldemitter"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 006": "amblaster",
+        "WS 009": "amblaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 002": "ldflak",
+        "WS 003": "ldflak",
+        "WS 004": "ldflak"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pddmg",
+        "WS 2": "pddmg",
+        "WS 3": "pddmg",
+        "WS 4": "pddmg",
+        "WS 5": "lightmg"
+      }
+    }
+  ]
+}

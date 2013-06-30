@@ -1,0 +1,25 @@
+{
+  "displayName": "Escort Fighter",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "mrd_buzzer_escort",
+  "hullMods": [],
+  "variantId": "mrd_buzzer_escort_fighter",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "mrd_light_blaster",
+        "WS 2": "mrd_light_blaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "mrd_pd_laser_mk_ii"
+      }
+    }
+  ]
+}

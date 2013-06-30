@@ -1,0 +1,29 @@
+{
+	"id":"heavy_assault_cannon",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"LARGE",
+	"displayArcRadius":450,
+	"turretSprite":"graphics/weapons/heavy_assault_cannon_turret.png",
+	"turretGunSprite":"graphics/weapons/hac_turret_recoil.png",
+	"hardpointSprite":"graphics/weapons/heavy_assault_cannon_turret.png",
+	"hardpointGunSprite":"graphics/weapons/hac_turret_recoil.png",	
+	"visualRecoil":10.0,  # the gun sprites are only used if this is non-0
+	"renderHints":[RENDER_BARREL_BELOW],
+	"glowColor":[255,165,30,175],
+	"turretOffsets":[25, -4.5, 25, 0, 25, 4.5],
+	"turretAngleOffsets":[0, 0],
+	"hardpointOffsets":[37, -4.5, 37, 0, 37, 4.5],
+	"hardpointAngleOffsets":[0, 0],
+	"barrelMode":"ALTERNATING", # LINKED or ALTERNATING.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":75.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":25.0,
+					   "particleSizeMin":18.0,
+					   "particleSizeRange":24.0,
+					   "particleDuration":0.12,
+					   "particleCount":12,
+					   "particleColor":[255,165,30,175]},
+	"projectileSpecId":"heavy_assault_cannon_shot",  # projectile that will be fired
+	"fireSoundTwo":"gun_superheavy_1",	
+}

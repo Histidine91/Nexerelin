@@ -1,0 +1,72 @@
+{
+  "bounds": [
+    -10.5,
+    -4,
+    -16.5,
+    -18.5,
+    7,
+    -7,
+    7,
+    7,
+    -16.5,
+    18.5,
+    -10.5,
+    4
+  ],
+  "center": [
+    20,
+    24.5
+  ],
+  "collisionRadius": 29,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 25,
+      "location": [
+        -7.5,
+        -0
+      ],
+      "style": "HIGH_TECH",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 25,
+      "location": [
+        -7.5,
+        0
+      ],
+      "style": "LOW_TECH",
+      "width": 4
+    }
+  ],
+  "height": 40,
+  "hullId": "neutrino_drohne",
+  "hullName": "Drohne",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 28,
+  "spriteName": "graphics/neut/ships/neutrino_drohne.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 80,
+      "id": "WS 1",
+      "locations": [
+        5.5,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    }
+  ],
+  "width": 40
+}

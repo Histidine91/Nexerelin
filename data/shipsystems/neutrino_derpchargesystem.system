@@ -1,0 +1,17 @@
+{
+	"id":"neutrino_derpchargesystem",
+	"type":"WEAPON",
+	"aiType":"FLARE",
+	"weaponDataId":"neutrino_derpchargelauncher",
+	
+	#"useSound":"system_flare_launcher_active",
+	"outOfUsesSound":"gun_out_of_ammo",
+	
+	"aiHints":{
+		"weaponAssignmentSuitability":{
+			"LIGHT_ESCORT":{"mult":1, "flat":3},
+			"DESTROYER_ESCORT":{"mult":1, "flat":3},
+			"FULL_ESCORT":{"mult":1, "flat":3},
+		}
+	}	
+}

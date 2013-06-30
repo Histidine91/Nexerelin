@@ -1,0 +1,74 @@
+{
+  "bounds": [
+    -15,
+    -4.5,
+    -3.5,
+    -10,
+    9,
+    -3.5,
+    9,
+    3.5,
+    -3.5,
+    10,
+    -15,
+    4.5
+  ],
+  "center": [
+    11,
+    17
+  ],
+  "collisionRadius": 16.007811,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 11,
+      "location": [
+        -15.5,
+        3
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngineFighter",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 11,
+      "location": [
+        -15.5,
+        -3
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngineFighter",
+      "width": 4
+    }
+  ],
+  "height": 34,
+  "hullId": "gedune_kyra_drone",
+  "hullName": "Kyra",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    0
+  ],
+  "shieldRadius": 0,
+  "spriteName": "graphics/gedune/ships/drones/gedune_kyra.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 14.250032,
+      "id": "WS0001",
+      "locations": [
+        8,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 22
+}

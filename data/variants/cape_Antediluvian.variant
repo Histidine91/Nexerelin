@@ -1,0 +1,36 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "frigate_cape",
+  "variantId": "cape_Antediluvian",
+  "fluxVents": 5,
+  "fluxCapacitors": 2,
+  "hullMods": [
+    "augmentedengines",
+    "autorepair",
+    "auxiliarythrusters",
+    "magazines"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pressureturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "extendedturret",
+        "WS 3": "extendedturret",
+        "WS 4": "extendedturret",
+        "WS 5": "extendedturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 6": "deucalion"
+      }
+    }
+  ]
+}

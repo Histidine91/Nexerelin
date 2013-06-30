@@ -1,0 +1,17 @@
+{
+  "displayName": "Interceptor",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "thule_einherjer",
+  "hullMods": [],
+  "variantId": "thule_einherjer_Wing",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "lightdualac"
+      }
+    }
+  ]
+}

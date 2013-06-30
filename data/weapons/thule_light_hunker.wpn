@@ -1,0 +1,29 @@
+{
+	"id":"thule_light_hunker",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"SMALL",
+	"displayArcRadius":400,
+	"turretSprite":"graphics/TL/weapons/light_flak_turret.png",
+	"turretGunSprite":"graphics/TL/weapons/light_flak_turret_recoil.png",
+	"hardpointSprite":"graphics/TL/weapons/light_flak_hardpoint.png",
+	"hardpointGunSprite":"graphics/TL/weapons/light_flak_hardpoint_recoil.png",	
+	"visualRecoil":5.0,  # the gun sprites are only used if this is non-0
+	"renderHints":[RENDER_BARREL_BELOW],
+	"glowColor":[255,185,215,215],
+	"turretOffsets":[13, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[20, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":30.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":30.0,
+					   "particleSizeMin":12.0,
+					   "particleSizeRange":18.0,
+					   "particleDuration":0.3,
+					   "particleCount":35,
+					   "particleColor":[200,165,255,200]},	
+	"projectileSpecId":"thule_light_hunker_shot",  # projectile that will be fired	
+	"fireSoundTwo":"thule_hunker",
+}

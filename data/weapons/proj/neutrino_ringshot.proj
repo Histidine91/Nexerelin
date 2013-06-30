@@ -1,0 +1,18 @@
+{
+	"id":"neutrino_ringshot",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"length":0.01,
+	"width":0.01,
+	"fadeTime":0.05,
+	#"fringeColor":[255,125,125,255],
+	#"coreColor":[255,200,200,150],
+	"fringeColor":[255,200,70,0],
+	"coreColor":[255,200,200,0],
+	"hitGlowRadius":0,	
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":1.0,
+	"bulletSprite":"graphics/missiles/shell_large_yellow.png"
+}

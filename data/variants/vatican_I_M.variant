@@ -1,0 +1,65 @@
+{
+  "displayName": "Military",
+  "fluxCapacitors": 4,
+  "fluxVents": 2,
+  "hullId": "vatican_I",
+  "hullMods": [
+    "autorepair",
+    "magazines",
+    "targetingunit"
+  ],
+  "variantId": "vatican_I_M",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "gauss"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0002": "hephag",
+        "WS0003": "hephag",
+        "WS0004": "hephag",
+        "WS0005": "hephag",
+        "WS0008": "heavyneedler",
+        "WS0009": "heavyneedler",
+        "WS0012": "heavyneedler",
+        "WS0013": "heavyneedler"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0006": "quadheavymg",
+        "WS0007": "quadheavymg",
+        "WS0010": "lrflak",
+        "WS0011": "lrflak",
+        "WS0014": "irpdburst",
+        "WS0015": "irpdburst",
+        "WS0016": "lightdualmg",
+        "WS0017": "lightdualmg",
+        "WS0018": "lightdualmg",
+        "WS0019": "lightdualmg",
+        "WS0020": "irpdburst",
+        "WS0021": "irpdburst",
+        "WS0022": "lightflak",
+        "WS0023": "lightflak"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

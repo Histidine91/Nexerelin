@@ -1,0 +1,15 @@
+{
+	"displayName": "Corvette",
+	"hullId": "nom_iguana",
+	"variantId": "nom_iguana_assault",
+	"fluxVents": 0,
+	"fluxCapacitors": 0,
+	"hullMods": [],
+	"weaponGroups": [{
+		"mode": "LINKED",
+		"weapons": {
+			"WS 001": "nom_ultralight_electron_maser",
+			"WS 002": "nom_light_electron_maser"
+		}
+	}]
+}

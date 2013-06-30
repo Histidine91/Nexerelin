@@ -1,0 +1,225 @@
+{
+  "bounds": [
+    -61,
+    -3,
+    -65,
+    -28,
+    -55,
+    -36,
+    28,
+    -36,
+    71,
+    -24,
+    74,
+    -16,
+    57,
+    -4,
+    57,
+    4,
+    74,
+    16,
+    71,
+    24,
+    28,
+    36,
+    -55,
+    36,
+    -65,
+    28,
+    -61,
+    3
+  ],
+  "builtInWeapons": {
+    "WS0007": "ilc"
+  },
+  "center": [
+    50,
+    69
+  ],
+  "collisionRadius": 100.650383,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 30,
+      "location": [
+        -67,
+        28
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 8,
+      "length": 30,
+      "location": [
+        -67,
+        -28
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 8
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 35,
+      "location": [
+        -66,
+        20
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 35,
+      "location": [
+        -66,
+        -20
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 30,
+      "location": [
+        -64,
+        10.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 8,
+      "length": 30,
+      "location": [
+        -64,
+        -10.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 8
+    },
+    {
+      "angle": 180,
+      "contrailSize": 14,
+      "length": 40,
+      "location": [
+        -65,
+        -0
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 14
+    }
+  ],
+  "height": 160,
+  "hullId": "inquisitor",
+  "hullName": "Inquisitor",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 95.605965,
+  "spriteName": "graphics/ships/inquisitor.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 90,
+      "arc": 120,
+      "id": "WS0001",
+      "locations": [
+        -18,
+        28
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -90,
+      "arc": 120,
+      "id": "WS0002",
+      "locations": [
+        -18,
+        -28
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 45,
+      "arc": 120,
+      "id": "WS0003",
+      "locations": [
+        0,
+        21
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45,
+      "arc": 120,
+      "id": "WS0004",
+      "locations": [
+        0,
+        -21
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 45,
+      "arc": 120,
+      "id": "WS0005",
+      "locations": [
+        54,
+        13
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45,
+      "arc": 120,
+      "id": "WS0006",
+      "locations": [
+        54,
+        -13
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0007",
+      "locations": [
+        19,
+        -0
+      ],
+      "mount": "HARDPOINT",
+      "size": "LARGE",
+      "type": "BUILT_IN"
+    }
+  ],
+  "width": 100
+}

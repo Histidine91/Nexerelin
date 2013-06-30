@@ -1,0 +1,38 @@
+{
+	"displayName":"Close Support",
+	"hullId":"junk_pirates_clam",
+	"variantId":"junk_pirates_clam_CS",
+	"fluxVents":8,
+	"fluxCapacitors":1,
+	"hullMods":[
+		"magazines",
+		"heavyarmor",
+	], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"lightdualac",
+					"WS 002":"lightac",
+		 		   },
+		},
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 003":"lightdualmg",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 004":"junk_pirates_grapeshot_m",
+		 		   },
+		},
+	],
+}

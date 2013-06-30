@@ -1,0 +1,96 @@
+{
+  "bounds": [
+    -42.0,
+    17.0,
+    -20.0,
+    31.0,
+    36.0,
+    30.0,
+    33.0,
+    -0.0,
+    37.0,
+    -33.0,
+    -36.0,
+    -20.0
+  ],
+  "center": [
+    38.0,
+    48.0
+  ],
+  "collisionRadius": 53.2,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -46.0,
+        14.0
+      ],
+      "style": "MIDLINE",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -46.0,
+        -13.0
+      ],
+      "style": "MIDLINE",
+      "width": 10.0
+    }
+  ],
+  "height": 94.0,
+  "width": 76.0,
+  "hullId": "syndicate_asp_diamondback",
+  "hullName": "Diamondback",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    1.0,
+    -0.0
+  ],
+  "shieldRadius": 67.6,
+  "spriteName": "graphics/syndicate_asp/ships/syndicate_asp_diamondback.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 0.0,
+      "arc": 5.0,
+      "id": "WS 1",
+      "locations": [
+        38.0,
+        -14.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 179.7,
+      "arc": 211.5,
+      "id": "WS 2",
+      "locations": [
+        -23.0,
+        -0.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -22.5,
+      "arc": 259.4,
+      "id": "WS 3",
+      "locations": [
+        13.0,
+        -12.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+    "displayName": "Strike",
+    "fluxCapacitors": 0,
+    "fluxVents": 18,
+    "hullId": "ajax",
+    "hullMods": [
+        "magazines",
+        "missleracks",
+        "insulatedengine"
+    ],
+    "variantId": "ajax_Strike",
+    "weaponGroups": [
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "stingerlauncher",
+                "WS 002": "stingerlauncher"
+            }
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 003": "lightag",
+                "WS 004": "lightag"
+            }
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 007": "hveldriver",
+                "WS 008": "hveldriver"
+            }
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 005": "vulcan",
+                "WS 006": "vulcan"
+            }
+        }
+    ]
+}

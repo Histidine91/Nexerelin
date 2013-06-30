@@ -1,0 +1,19 @@
+{
+  "displayName": "Interceptor",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "mrd_buzzer",
+  "hullMods": [],
+  "variantId": "mrd_buzzer_fighter",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 1": "mrd_light_blaster",
+        "WS 2": "mrd_light_blaster",
+        "WS 3": "mrd_pd_laser_mk_ii"
+      }
+    }
+  ]
+}

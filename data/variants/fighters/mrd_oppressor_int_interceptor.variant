@@ -1,0 +1,33 @@
+{
+  "displayName": "Heavy Interceptor",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "mrd_oppressor_int",
+  "hullMods": [],
+  "variantId": "mrd_oppressor_int_interceptor",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "mrd_light_blaster",
+        "WS0004": "mrd_light_blaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "mrd_buzzer_swarmer",
+        "WS0002": "mrd_buzzer_swarmer"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "pdburst"
+      }
+    }
+  ]
+}

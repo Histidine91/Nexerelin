@@ -1,0 +1,73 @@
+{
+  "bounds": [
+    13.5,
+    1.5,
+    7.0,
+    4.5,
+    2.0,
+    13.0,
+    -7.5,
+    13.0,
+    -7.5,
+    5.5,
+    -14.5,
+    2.5,
+    -14.5,
+    -2.5,
+    -7.5,
+    -5.5,
+    -7.5,
+    -13.0,
+    2.0,
+    -13.0,
+    7.0,
+    -4.5,
+    13.5,
+    -1.5
+  ],
+  "center": [
+    15.0,
+    17.0
+  ],
+  "collisionRadius": 16.0,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 8.0,
+      "length": 21.0,
+      "location": [
+        -15.5,
+        -0.0
+      ],
+      "style": "LOW_TECH",
+      "width": 8.0
+    }
+  ],
+  "height": 34.0,
+  "width": 30.0,
+  "hullId": "foxbat",
+  "hullName": "Foxbat",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0.0,
+    -0.0
+  ],
+  "shieldRadius": 17.4,
+  "spriteName": "graphics/interstellarFederation/ships/foxbat.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 0.0,
+      "arc": 90.0,
+      "id": "WS 1",
+      "locations": [
+        0.5,
+        -0.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+    "displayName": "Exploration",
+    "fluxCapacitors": 9,
+    "fluxVents": 25,
+    "hullId": "brdy_stenos",
+    "hullMods": [
+        "targetingunit",
+        "turretgyros"
+    ],
+    "variantId": "brdy_stenos_exploration",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {"WS0014": "brdy_solenoidlarge"}
+        },
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0011": "harpoon",
+                "WS0012": "harpoon"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {"WS0017": "br_pde"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "brdy_ac",
+                "WS0002": "brdy_ac",
+                "WS0003": "brdy_ac",
+                "WS0004": "brdy_ac"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0007": "brvulcan",
+                "WS0008": "brvulcan",
+                "WS0009": "brvulcan",
+                "WS0010": "brvulcan"
+            }
+        }
+    ]
+}

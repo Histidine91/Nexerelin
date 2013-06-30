@@ -1,0 +1,40 @@
+{
+	"id":"gedune_edart_shot",
+	"specClass":"missile",	
+	"missileType":"MISSILE",
+	"sprite":"graphics/missiles/shell_gauss_cannon.png",
+	"size":[4,-6],	
+	"center":[2,3],
+	"collisionRadius":12,
+	"collisionClass":"MISSILE_NO_FF",
+	"explosionColor":[190,40,40,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":30, # purely visual
+	"flameoutTime":0.2, # total time from flameout to full fadeout
+	"noEngineGlowTime":0, # time spend without the engine glow being rendered
+	"fadeTime":0, # fadeout duration
+	"behaviorSpec":{"behavior":"CUSTOM",
+					"effectRange":0,
+					"effectChance":0,
+				   },
+	"engineSpec":{"turnRate":1500,
+              "turnAcc":3500,
+				  "acc":1000,
+				  "dec":100},
+	"engineSlots":[
+					{"id":"ES1",
+					"loc":[-6, 0],
+				    "style":"CUSTOM",
+					"styleSpec":{
+						"engineColor":[255,100,100,255],
+						"contrailParticleSizeMult":0,
+						"contrailParticleDuration":0,
+						"contrailMaxSpeedMult":0,
+						"contrailAngularVelocityMult":0f,
+						"contrailColor":[0,0,0,0],
+						"type":"SMOKE" # GLOW or SMOKE
+					},
+				    "width":10.0,
+				    "length":25.0,
+				    "angle":180.0},
+				   ]
+}

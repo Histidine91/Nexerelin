@@ -1,0 +1,70 @@
+{
+  "displayName": "Assault",
+  "fluxCapacitors": 10,
+  "fluxVents": 14,
+  "hullId": "mrd_venator_mk_II",
+  "hullMods": [
+    "targetingunit",
+    "advancedshieldemitter",
+    "missleracks"
+  ],
+  "variantId": "mrd_venator_mk_II_assault",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0021": "mrd_quad_autoblaster",
+        "WS0022": "mrd_quad_autoblaster",
+        "WS0029": "mrd_turbo_blaster",
+        "WS0030": "mrd_turbo_blaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "mrd_light_autoblaster",
+        "WS0010": "mrd_light_autoblaster",
+        "WS0015": "mrd_light_autoblaster",
+        "WS0016": "mrd_light_autoblaster",
+        "WS0031": "mrd_heavy_autoblaster",
+        "WS0032": "mrd_light_autoblaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "pdburst",
+        "WS0008": "pdburst",
+        "WS0011": "pdburst",
+        "WS0012": "pdburst",
+        "WS0019": "pdburst",
+        "WS0020": "pdburst",
+        "WS0025": "pdburst",
+        "WS0026": "pdburst"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0013": "swarmer",
+        "WS0014": "swarmer",
+        "WS0027": "swarmer",
+        "WS0028": "swarmer"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0017": "pilum",
+        "WS0018": "pilum",
+        "WS0023": "pilum",
+        "WS0024": "pilum"
+      }
+    }
+  ]
+}

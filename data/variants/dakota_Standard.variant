@@ -1,0 +1,29 @@
+{
+  "displayName": "Standard",
+  "hullId": "dakota",
+  "variantId": "dakota_Standard",
+  "fluxVents": 5,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "lightdualmg"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lightdualac"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "HV50",
+        "WS 4": "railgun"
+      }
+    }
+  ]
+}

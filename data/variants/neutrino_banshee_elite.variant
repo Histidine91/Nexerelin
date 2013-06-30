@@ -1,0 +1,58 @@
+{
+  "displayName": "Elite",
+  "fluxCapacitors": 5,
+  "fluxVents": 9,
+  "hullId": "neutrino_banshee",
+  "hullMods": [
+    "missleracks",
+    "targetingunit",
+    "auxiliarythrusters"
+  ],
+  "variantId": "neutrino_banshee_elite",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "neutrino_heavypulsar",
+        "WS0002": "neutrino_heavypulsar",
+        "WS0006": "neutrino_dualpulsar",
+        "WS0007": "neutrino_dualpulsar"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0003": "neutrino_XLadvancedtorpedo",
+        "WS0004": "neutrino_XLadvancedtorpedo",
+        "WS0005": "neutrino_XLadvancedtorpedo"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0008": "neutrino_pulsebeam",
+        "WS0009": "neutrino_pulsebeam",
+        "WS0010": "neutrino_pulsebeam",
+        "WS0011": "neutrino_pulsebeam",
+        "WS0012": "neutrino_pulsebeam",
+        "WS0013": "neutrino_pulsebeam"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0014": "lrpdlaser",
+        "WS0015": "lrpdlaser",
+        "WS0016": "lrpdlaser",
+        "WS0017": "pdburst",
+        "WS0018": "pdburst",
+        "WS0019": "pdburst",
+        "WS0020": "pdburst"
+      }
+    }
+  ]
+}

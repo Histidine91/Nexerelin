@@ -1,0 +1,23 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "fighter_demeter",
+  "variantId": "demeter_Antediluvian",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "fighterturret",
+        "WS 2": "fighterturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "deucalion"
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "displayName": "Military",
+  "fluxCapacitors": 1,
+  "fluxVents": 2,
+  "hullId": "valkyrie_b",
+  "hullMods": [
+    "autorepair",
+    "missleracks"
+  ],
+  "variantId": "valkyrie_b_M",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "scorpionpod",
+        "WS0002": "scorpionpod",
+        "WS0003": "lightdualmg",
+        "WS0004": "lightdualmg",
+        "WS0005": "lightdualmg",
+        "WS0006": "lightdualmg"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

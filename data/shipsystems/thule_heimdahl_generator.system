@@ -1,0 +1,12 @@
+{
+    "id":"thule_heimdahl_generator",
+    "type":"STAT_MOD",
+    "aiType":"CUSTOM",
+	"aiScript":"data.shipsystems.scripts.ai.HeimdahlAI",
+
+    "statsScript":"data.shipsystems.scripts.HeimdahlSystem",
+
+    "useSound":"thule_heimdahl_generator_chargeup",
+    "deactivateSound":"thule_heimdahl_generator_shockwave",
+    "outOfUsesSound":"thule_hgno",
+}

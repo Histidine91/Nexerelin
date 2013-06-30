@@ -1,0 +1,146 @@
+{
+  "bounds": [
+    18.5,
+    3.5,
+    1.5,
+    5,
+    6.5,
+    19.5,
+    -15.5,
+    8.5,
+    -15.5,
+    -8.5,
+    6.5,
+    -19.5,
+    1.5,
+    -5,
+    18.5,
+    -3.5
+  ],
+  "center": [
+    22,
+    18
+  ],
+  "collisionRadius": 36.989864,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 18,
+      "location": [
+        -16.5,
+        -5.5
+      ],
+      "style": "LOW_TECH_FIGHTER",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 8,
+      "length": 18,
+      "location": [
+        -16.5,
+        5.5
+      ],
+      "style": "LOW_TECH_FIGHTER",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 16,
+      "location": [
+        -11.5,
+        14
+      ],
+      "style": "LOW_TECH_FIGHTER",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 16,
+      "location": [
+        -11.5,
+        -14
+      ],
+      "style": "LOW_TECH_FIGHTER",
+      "width": 6
+    }
+  ],
+  "height": 45,
+  "hullId": "mrd_oppressor_int",
+  "hullName": "Oppressor Interceptor",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 36,
+  "spriteName": "graphics/ships/mrd_oppressor_interceptor.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0001",
+      "locations": [
+        7,
+        -11
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 10,
+      "id": "WS0002",
+      "locations": [
+        7,
+        11
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 15,
+      "id": "WS0003",
+      "locations": [
+        22.5,
+        2.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 15,
+      "id": "WS0004",
+      "locations": [
+        22.5,
+        -2.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 230,
+      "id": "WS0005",
+      "locations": [
+        -9,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 44
+}

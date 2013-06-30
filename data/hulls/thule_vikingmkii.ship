@@ -1,0 +1,370 @@
+{
+  "bounds": [
+    -50,
+    -1.5,
+    -51,
+    -4,
+    -60.5,
+    -4.5,
+    -50.5,
+    -6.5,
+    -50.5,
+    -12.5,
+    -44.5,
+    -18,
+    -48.5,
+    -22,
+    -47.5,
+    -27.5,
+    -40,
+    -31.5,
+    -43,
+    -39.5,
+    -35.5,
+    -35.5,
+    -26,
+    -40.5,
+    -14.5,
+    -43,
+    -5,
+    -42.5,
+    4.5,
+    -43,
+    19,
+    -36.5,
+    38,
+    -33.5,
+    38,
+    -31,
+    22.5,
+    -31,
+    31.5,
+    -28.5,
+    38,
+    -22,
+    47,
+    -21,
+    53,
+    -11.5,
+    53,
+    -9.5,
+    45,
+    -6,
+    61,
+    -6,
+    61,
+    6,
+    45,
+    6,
+    52,
+    9,
+    52,
+    13,
+    46,
+    22,
+    38,
+    22,
+    31.5,
+    28.5,
+    22,
+    32,
+    37,
+    32,
+    37,
+    34,
+    19,
+    36.5,
+    4.5,
+    43,
+    -4,
+    43,
+    -14.5,
+    43,
+    -26,
+    40.5,
+    -36.5,
+    36,
+    -41.5,
+    39.5,
+    -40,
+    33.5,
+    -47.5,
+    27.5,
+    -48.5,
+    22,
+    -45,
+    19.5,
+    -50.5,
+    12.5,
+    -51,
+    7.5,
+    -61,
+    5.5,
+    -50.5,
+    5,
+    -50,
+    1.5
+  ],
+  "center": [
+    46,
+    61
+  ],
+  "collisionRadius": 63.089222,
+  "engineSlots": [
+    {
+      "angle": 174.472458,
+      "contrailSize": 2,
+      "length": 23,
+      "location": [
+        -49,
+        -3
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 2
+    },
+    {
+      "angle": -174.143982,
+      "contrailSize": 2,
+      "length": 23,
+      "location": [
+        -49,
+        4
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 2
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 37,
+      "location": [
+        -49.5,
+        0.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 10
+    },
+    {
+      "angle": -137.935669,
+      "contrailSize": 8.166327,
+      "length": 23.928597,
+      "location": [
+        -44.5,
+        -27.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 8.166327
+    },
+    {
+      "angle": 134.060806,
+      "contrailSize": 8.166327,
+      "length": 23.928597,
+      "location": [
+        -44.5,
+        28.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 8.166327
+    },
+    {
+      "angle": 145.00798,
+      "contrailSize": 3.901529,
+      "length": 16.865484,
+      "location": [
+        -45.5,
+        25.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 3.901529
+    },
+    {
+      "angle": 123.690071,
+      "contrailSize": 3.708913,
+      "length": 16.296042,
+      "location": [
+        -42.5,
+        29.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 3.708913
+    },
+    {
+      "angle": -147.380753,
+      "contrailSize": 3.241181,
+      "length": 16.721952,
+      "location": [
+        -45.5,
+        -25.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 3.241181
+    },
+    {
+      "angle": -129.805573,
+      "contrailSize": 3.150642,
+      "length": 16.912077,
+      "location": [
+        -41.5,
+        -29.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 3.150642
+    },
+    {
+      "angle": 174.472458,
+      "contrailSize": 2,
+      "length": 23,
+      "location": [
+        -47,
+        -13.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 2
+    },
+    {
+      "angle": -174.472458,
+      "contrailSize": 2,
+      "length": 23,
+      "location": [
+        -47,
+        13.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 2
+    },
+    {
+      "angle": 174.472458,
+      "contrailSize": 2,
+      "length": 23,
+      "location": [
+        -44,
+        -16.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 2
+    },
+    {
+      "angle": -174.472458,
+      "contrailSize": 2,
+      "length": 23,
+      "location": [
+        -44,
+        16.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 2
+    }
+  ],
+  "height": 122,
+  "hullId": "thule_vikingmkii",
+  "hullName": "Viking Mk II",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 62.837089,
+  "spriteName": "graphics/TL/ships/thule_vikingmkii.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS 001",
+      "locations": [
+        -21,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS 002",
+      "locations": [
+        5,
+        15.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS 003",
+      "locations": [
+        5,
+        -15.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 120,
+      "arc": 5,
+      "id": "WS 004",
+      "locations": [
+        -17.5,
+        26
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -120,
+      "arc": 5,
+      "id": "WS 005",
+      "locations": [
+        -17.5,
+        -26
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 13,
+      "id": "WS 006",
+      "locations": [
+        28,
+        20
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 13,
+      "id": "NEW",
+      "locations": [
+        28,
+        -19
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 92
+}

@@ -1,0 +1,39 @@
+{
+    "displayName": "Assault",
+    "fluxCapacitors": 6,
+    "fluxVents": 4,
+    "hullId": "gedune_kitsune",
+    "hullMods": [
+        "missleracks",
+        "eccm"
+    ],
+    "variantId": "gedune_kitsune_variant",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {"WS0006": "gedune_scythe"}
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0001": "irpulse",
+                "WS0002": "irpulse"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0003": "annihilator",
+                "WS0004": "annihilator"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0005": "gedune_flarepd"}
+        }
+    ]
+}

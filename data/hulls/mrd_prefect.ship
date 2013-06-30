@@ -1,0 +1,275 @@
+{
+  "bounds": [
+    116.5,
+    4,
+    113.5,
+    12.5,
+    104.5,
+    22.5,
+    87.5,
+    25.5,
+    85.5,
+    10.5,
+    58.5,
+    10.5,
+    51.5,
+    24.5,
+    34.5,
+    29.5,
+    23.5,
+    20.5,
+    20.5,
+    28.5,
+    6.5,
+    38.5,
+    2.5,
+    28.5,
+    -12.5,
+    30.5,
+    -27.5,
+    51.5,
+    -43.5,
+    53.5,
+    -46.5,
+    40.5,
+    -55,
+    35.5,
+    -75.5,
+    35.5,
+    -98.5,
+    28.5,
+    -98.5,
+    19.5,
+    -85.5,
+    17.5,
+    -80.5,
+    10.5,
+    -105.5,
+    5.5,
+    -105.5,
+    -5.5,
+    -80.5,
+    -10.5,
+    -85.5,
+    -17.5,
+    -98.5,
+    -19.5,
+    -98.5,
+    -28.5,
+    -75.5,
+    -35.5,
+    -55,
+    -35.5,
+    -46.5,
+    -40.5,
+    -43.5,
+    -53.5,
+    -27.5,
+    -51.5,
+    -12.5,
+    -30.5,
+    2.5,
+    -28.5,
+    6.5,
+    -38.5,
+    20.5,
+    -28.5,
+    23.5,
+    -20.5,
+    34.5,
+    -29.5,
+    51.5,
+    -24.5,
+    58.5,
+    -10.5,
+    85.5,
+    -10.5,
+    87.5,
+    -25.5,
+    104.5,
+    -22.5,
+    113.5,
+    -12.5,
+    116.5,
+    -4
+  ],
+  "center": [
+    56,
+    107
+  ],
+  "collisionRadius": 155,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 18,
+      "length": 35,
+      "location": [
+        -98.5,
+        -24
+      ],
+      "style": "MIDLINE",
+      "width": 18
+    },
+    {
+      "angle": -180,
+      "contrailSize": 18,
+      "length": 35,
+      "location": [
+        -98.5,
+        24
+      ],
+      "style": "MIDLINE",
+      "width": 18
+    },
+    {
+      "angle": 180,
+      "contrailSize": 20,
+      "length": 40,
+      "location": [
+        -105.5,
+        -0
+      ],
+      "style": "MIDLINE",
+      "width": 20
+    }
+  ],
+  "height": 226,
+  "hullId": "mrd_prefect",
+  "hullName": "Prefect",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    3,
+    -0
+  ],
+  "shieldRadius": 151.013245,
+  "spriteName": "graphics/ships/mrd_prefect.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 180,
+      "arc": 60,
+      "id": "WS0001",
+      "locations": [
+        -72,
+        -24
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": -180,
+      "arc": 60,
+      "id": "WS0002",
+      "locations": [
+        -72,
+        24
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": -60,
+      "arc": 140,
+      "id": "WS0003",
+      "locations": [
+        -34,
+        -41
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 60,
+      "arc": 140,
+      "id": "WS0004",
+      "locations": [
+        -34,
+        41
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -55,
+      "arc": 135,
+      "id": "WS0005",
+      "locations": [
+        38,
+        -16
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 55,
+      "arc": 135,
+      "id": "WS0006",
+      "locations": [
+        38,
+        16
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 250,
+      "id": "WS0007",
+      "locations": [
+        74,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 250,
+      "id": "WS0008",
+      "locations": [
+        -9,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "LB 1",
+      "locations": [
+        10.5,
+        -29.5,
+        14.5,
+        -25.5
+      ],
+      "mount": "HIDDEN",
+      "size": "LARGE",
+      "type": "LAUNCH_BAY"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "LB 2",
+      "locations": [
+        10.5,
+        29.5,
+        14.5,
+        25.5
+      ],
+      "mount": "HIDDEN",
+      "size": "LARGE",
+      "type": "LAUNCH_BAY"
+    }
+  ],
+  "width": 112
+}

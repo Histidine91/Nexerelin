@@ -1,0 +1,36 @@
+{
+  "displayName": "Heavy Fighter Strike",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "relics_charger",
+  "hullMods": [],
+  "variantId": "relics_charger_s_Fighter",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 3": "relics_blazo"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "relics_blazo"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "relics_blazo"
+      }
+    }
+  ]
+}

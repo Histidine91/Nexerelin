@@ -1,0 +1,20 @@
+{
+	"id":"ms_pbcpulse",
+	"specClass":"projectile",
+	#"spawnType":"BEAM",
+	"spawnType":"BALLISTIC_AS_BEAM",
+	"collisionClass":"RAY",
+	"collisionClassByFighter":"RAY_FIGHTER",
+	"length":300.0,
+	"width":15.0,
+	"hitGlowRadius":17,
+	"fadeTime":0.15,
+	"fringeColor":[207,123,103,235],
+	"coreColor":[255,225,200,200],
+	#"textureType":"SMOOTH",  # only needed for BEAM spawnType
+	#"textureScrollSpeed":64.0,
+	#"pixelsPerTexel":5.0
+	"textureType":ROUGH,
+	"textureScrollSpeed":-32.0,
+	"pixelsPerTexel":6.0,
+}

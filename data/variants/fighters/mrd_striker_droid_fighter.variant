@@ -1,0 +1,18 @@
+{
+  "displayName": "Droid Fighter",
+  "hullId": "mrd_striker_droid",
+  "variantId": "mrd_striker_droid_fighter",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lightmg",
+        "WS 2": "lightmg"
+      }
+    }
+  ]
+}

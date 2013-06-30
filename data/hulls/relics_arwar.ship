@@ -1,0 +1,250 @@
+{
+  "bounds": [
+    -93.5,
+    -25.5,
+    -65.5,
+    -39.5,
+    -30.5,
+    -20,
+    -13.5,
+    -36,
+    51.5,
+    -36.5,
+    54.5,
+    -27.5,
+    66.5,
+    -20.5,
+    74.5,
+    -29.5,
+    93.5,
+    -15,
+    93.5,
+    15,
+    74.5,
+    29.5,
+    66.5,
+    20.5,
+    54.5,
+    27.5,
+    51.5,
+    36.5,
+    -13.5,
+    36,
+    -30.5,
+    20,
+    -65.5,
+    39.5,
+    -93.5,
+    25.5
+  ],
+  "center": [
+    42,
+    96.5
+  ],
+  "collisionRadius": 116.599998,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 14,
+      "length": 52,
+      "location": [
+        -95.5,
+        23
+      ],
+      "style": "HIGH_TECH",
+      "width": 14
+    },
+    {
+      "angle": -180,
+      "contrailSize": 14,
+      "length": 52,
+      "location": [
+        -95.5,
+        -23
+      ],
+      "style": "HIGH_TECH",
+      "width": 14
+    },
+    {
+      "angle": 180,
+      "contrailSize": 14,
+      "length": 52,
+      "location": [
+        -95.5,
+        11
+      ],
+      "style": "HIGH_TECH",
+      "width": 14
+    },
+    {
+      "angle": -180,
+      "contrailSize": 14,
+      "length": 52,
+      "location": [
+        -95.5,
+        -11
+      ],
+      "style": "HIGH_TECH",
+      "width": 14
+    },
+    {
+      "angle": 180,
+      "contrailSize": 12,
+      "length": 42,
+      "location": [
+        -95.5,
+        -0
+      ],
+      "style": "HIGH_TECH",
+      "width": 12
+    }
+  ],
+  "height": 193.0,
+  "width": 84.0,
+  "hullId": "relics_arwar",
+  "hullName": "ArWar",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0.0,
+    -0.0
+  ],
+  "shieldRadius": 109.0,
+  "spriteName": "graphics/ships/relics_arwar.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": -0,
+      "arc": 100.880661,
+      "id": "WS 1",
+      "locations": [
+        74.5,
+        16.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 0,
+      "arc": 100.880661,
+      "id": "WS 2",
+      "locations": [
+        74.5,
+        -16.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 20.556045,
+      "arc": 100.397415,
+      "id": "WS 3",
+      "locations": [
+        45.5,
+        29.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -20.556045,
+      "arc": 100.397415,
+      "id": "WS 4",
+      "locations": [
+        45.5,
+        -29.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 26.565052,
+      "arc": 101.421188,
+      "id": "WS 5",
+      "locations": [
+        28.5,
+        29.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -26.565052,
+      "arc": 101.421188,
+      "id": "WS 6",
+      "locations": [
+        28.5,
+        -29.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 4.398705,
+      "arc": 95.81411,
+      "id": "WS 7",
+      "locations": [
+        -3.5,
+        14.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -4.398705,
+      "arc": 95.81411,
+      "id": "WS 8",
+      "locations": [
+        -3.5,
+        -14.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 153.434952,
+      "arc": 135.288757,
+      "id": "WS 9",
+      "locations": [
+        -62.5,
+        14.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -153.434952,
+      "arc": 135.288757,
+      "id": "WS 10",
+      "locations": [
+        -62.5,
+        -14.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    }
+  ],
+      "builtInWeapons":{
+    	"WS 1":"relics_blazo",
+	"WS 2":"relics_blazo",
+	"WS 3":"relics_blazo",
+	"WS 4":"relics_blazo",
+	"WS 5":"relics_blazo",
+	"WS 6":"relics_blazo",
+	"WS 7":"relics_exo",
+	"WS 8":"relics_exo",
+	"WS 9":"relics_exo",
+	"WS 10":"relics_exo",
+
+   },
+}

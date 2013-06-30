@@ -1,0 +1,28 @@
+{
+    "displayName": "Close Support",
+    "fluxCapacitors": 5,
+    "fluxVents": 4,
+    "hullId": "brdy_locust",
+    "hullMods": [],
+    "variantId": "brdy_locust_wing",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {"WS0003": "brdy_volley"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0004": "brdy_ac"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "pdlaser",
+                "WS0005": "pdlaser"
+            }
+        }
+    ]
+}

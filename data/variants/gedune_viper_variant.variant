@@ -1,0 +1,18 @@
+{
+  "displayName": "HellFire",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "gedune_viper",
+  "hullMods": [],
+  "variantId": "gedune_viper_variant",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "irpulse",
+        "WS0002": "irpulse"
+      }
+    }
+  ]
+}

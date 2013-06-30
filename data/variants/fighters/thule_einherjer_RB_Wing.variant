@@ -1,0 +1,22 @@
+{
+  "displayName": "Legendary Interceptor",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "thule_einherjer_rb",
+  "hullMods": [],
+  "variantId": "thule_einherjer_RB_Wing",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "lightdualac"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

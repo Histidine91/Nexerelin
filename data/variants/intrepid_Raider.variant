@@ -1,0 +1,56 @@
+{
+    "displayName": "Raider",
+    "fluxCapacitors": 0,
+    "fluxVents": 26,
+    "hullId": "intrepid",
+    "hullMods": [
+        "stabilizedshieldemitter",
+        "targetingunit"
+    ],
+    "variantId": "intrepid_Raider",
+    "weaponGroups": [
+        {
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS 002": "heavymg",
+                "WS 003": "heavymg",
+                "WS 004": "heavymg",
+                "WS 005": "heavymg",
+                "WS 006": "heavymg",
+                "WS 007": "heavymg",
+                "WS 008": "heavymg",
+                "WS 009": "heavymg",
+                "WS 010": "heavymg",
+                "WS 011": "heavymg"
+            }
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 016": "revolver",
+                "WS 017": "revolver",
+                "WS 018": "revolver",
+                "WS 019": "revolver"
+            }
+        },
+        {
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS 012": "sabot",
+                "WS 013": "sabot",
+                "WS 014": "sabot",
+                "WS 015": "sabot"
+            }
+        },
+        {
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS 001": "hdstinger",
+                "WS 020": "hdstinger",
+                "WS 021": "hdstinger",
+                "WS 022": "hdstinger",
+                "WS 023": "hdstinger"
+            }
+        }
+    ]
+}

@@ -1,0 +1,29 @@
+{
+	"id":"advancedturret",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"SMALL",
+	"displayArcRadius":250,
+	"turretSprite":"graphics/antediluvians/weapons/antediluvian_advanced_turret_final_base.png",
+	"turretGunSprite":"graphics/antediluvians/weapons/antediluvian_advanced_turret_final_recoil.png",
+	"hardpointSprite":"graphics/antediluvians/weapons/antediluvian_advanced_turret_final_base.png",
+	"hardpointGunSprite":"graphics/antediluvians/weapons/antediluvian_advanced_turret_final_recoil.png",
+	"renderHints":[RENDER_BARREL_BELOW],
+	"visualRecoil":2.5,  # the gun sprites are only used if this is non-0
+	"turretOffsets":[10, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[15, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",
+	"muzzleFlashSpec":{"length":15.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":20.0,
+					   "particleSizeMin":5.0,
+					   "particleSizeRange":10.0,
+					   "particleDuration":0.20,
+					   "particleCount":10,
+					   "particleColor":[150,255,200,200]},
+	"projectileSpecId":"slug_advanced",  # projectile that will be fired
+	"fireSoundOne":"machine_01",
+	"fireSoundTwo":"slug_01",
+}

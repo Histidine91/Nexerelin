@@ -1,0 +1,81 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "capital_atol",
+  "variantId": "atol_Antediluvian",
+  "fluxVents": 2,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "turretgyros",
+    "magazines"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 19": "pressureturret",
+        "WS 20": "pressureturret",
+        "WS 21": "pressureturret",
+        "WS 25": "pressureturret",
+        "WS 26": "pressureturret",
+        "WS 27": "pressureturret",
+        "WS 28": "pressureturret",
+        "WS 29": "pressureturret",
+        "WS 30": "pressureturret",
+        "WS 31": "pressureturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "superiorityturret",
+        "WS 10": "superiorityturret",
+        "WS 11": "superiorityturret",
+        "WS 12": "superiorityturret",
+        "WS 13": "superiorityturret",
+        "WS 14": "superiorityturret",
+        "WS 15": "superiorityturret",
+        "WS 16": "superiorityturret",
+        "WS 17": "superiorityturret",
+        "WS 18": "superiorityturret",
+        "WS 2": "superiorityturret",
+        "WS 22": "extendedturret",
+        "WS 23": "extendedturret",
+        "WS 24": "extendedturret",
+        "WS 3": "superiorityturret",
+        "WS 32": "extendedturret",
+        "WS 33": "extendedturret",
+        "WS 34": "extendedturret",
+        "WS 4": "superiorityturret",
+        "WS 5": "superiorityturret",
+        "WS 6": "superiorityturret",
+        "WS 7": "superiorityturret",
+        "WS 8": "superiorityturret",
+        "WS 9": "superiorityturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 44": "sonicturret",
+        "WS 45": "sonicturret",
+        "WS 46": "sonicturret",
+        "WS 47": "sonicturret",
+        "WS 48": "sonicturret"
+      }
+    },
+    {
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 35": "prometheus",
+        "WS 36": "prometheus",
+        "WS 37": "prometheus",
+        "WS 38": "prometheus",
+        "WS 39": "deucalion",
+        "WS 40": "deucalion",
+        "WS 41": "deucalion",
+        "WS 42": "deucalion",
+        "WS 43": "pandora"
+      }
+    }
+  ]
+}

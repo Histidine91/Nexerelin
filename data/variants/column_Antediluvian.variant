@@ -1,0 +1,32 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "frigate_column",
+  "variantId": "column_Antediluvian",
+  "fluxVents": 2,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "heavyarmor",
+    "reinforcedhull",
+    "targetingunit",
+    "turretgyros"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pressureturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "prometheus",
+        "WS 4": "prometheus"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+    "displayName": "Standared",
+    "fluxCapacitors": 18,
+    "fluxVents": 0,
+    "hullId": "gedune_byakuri",
+    "hullMods": [
+        "eccm",
+        "missleracks"
+    ],
+    "variantId": "gedune_byakuri_variant",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "gedune_repeater",
+                "WS0004": "gedune_repeater"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0005": "heatseeker",
+                "WS0006": "heatseeker"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "gedune_flarepd",
+                "WS0002": "gedune_flarepd"
+            }
+        }
+    ]
+}

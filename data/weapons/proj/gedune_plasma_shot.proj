@@ -1,0 +1,13 @@
+{
+	"id":"gedune_plasma_shot",
+	"specClass":"projectile",
+	"spawnType":"PLASMA",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"width":45.0,
+	"fadeTime":0.5,
+	"fringeColor":[0,255,0,255],
+	"coreColor":[100,250,100,255],
+	#"fringeColor":[0,255,0,255],
+	#"coreColor":[100,250,100,255],	
+}

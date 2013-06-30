@@ -1,0 +1,56 @@
+{
+  "displayName": "Assault",
+  "fluxCapacitors": 7,
+  "fluxVents": 7,
+  "hullId": "mrd_phantom",
+  "hullMods": [
+    "targetingunit",
+    "missleracks",
+    "advancedshieldemitter",
+    "magazines"
+  ],
+  "variantId": "mrd_phantom_assault",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0011": "mrd_assault_gun",
+        "WS0012": "mrd_assault_gun"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "mrd_heavy_autoblaster",
+        "WS0004": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "pdburst",
+        "WS0002": "pdburst",
+        "WS0005": "pdlaser",
+        "WS0006": "pdlaser",
+        "WS0007": "pdlaser",
+        "WS0008": "pdlaser"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "harpoon",
+        "WS0010": "harpoon"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

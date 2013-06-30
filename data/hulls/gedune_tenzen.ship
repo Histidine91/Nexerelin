@@ -1,0 +1,298 @@
+{
+  "bounds": [
+    -80.5,
+    -23,
+    -67.5,
+    -24.5,
+    -58,
+    -45.5,
+    -43.5,
+    -47,
+    -35,
+    -79.5,
+    8.5,
+    -69,
+    18,
+    -52,
+    -0.5,
+    -52,
+    -2,
+    -29.5,
+    66.5,
+    -21,
+    66.5,
+    21,
+    -2,
+    29.5,
+    -0.5,
+    52,
+    18,
+    52,
+    8.5,
+    69,
+    -35,
+    79.5,
+    -43.5,
+    47,
+    -58,
+    45.5,
+    -67.5,
+    24.5,
+    -80.5,
+    23
+  ],
+  "builtInWeapons": {
+    "WS0009": "gedune_disruptor",
+    "WS0010": "gedune_disruptor"
+  },
+  "center": [
+    82,
+    83
+  ],
+  "collisionRadius": 95.599998,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 16,
+      "length": 39.5,
+      "location": [
+        -82,
+        -0
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 16
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 31,
+      "location": [
+        -81,
+        17
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 31,
+      "location": [
+        -81,
+        -17
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 16,
+      "location": [
+        -64,
+        33.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 16,
+      "location": [
+        -64,
+        -33.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 20.5,
+      "location": [
+        -43,
+        65
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 20.5,
+      "location": [
+        -43,
+        -65
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 9.5,
+      "location": [
+        -40,
+        71.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 9.5,
+      "location": [
+        -40,
+        -71.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 4
+    }
+  ],
+  "height": 222,
+  "hullId": "gedune_tenzen",
+  "hullName": "Tenzen",
+  "hullSize": "CRUISER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 120.900002,
+  "spriteName": "graphics/gedune/ships/gedune_tenzen.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 45,
+      "arc": 300,
+      "id": "WS0001",
+      "locations": [
+        -16,
+        62
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -45,
+      "arc": 300,
+      "id": "WS0002",
+      "locations": [
+        -16,
+        -62
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS0003",
+      "locations": [
+        -8.5,
+        42
+      ],
+      "mount": "HARDPOINT",
+      "size": "LARGE",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 5,
+      "id": "WS0004",
+      "locations": [
+        -8.5,
+        -42
+      ],
+      "mount": "HARDPOINT",
+      "size": "LARGE",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 6,
+      "id": "WS0005",
+      "locations": [
+        80,
+        9
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 6,
+      "id": "WS0006",
+      "locations": [
+        80,
+        -9
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 119.099998,
+      "id": "WS0007",
+      "locations": [
+        10,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "LARGE",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS0008",
+      "locations": [
+        -13,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS0009",
+      "locations": [
+        16.5,
+        67
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -0,
+      "arc": 5,
+      "id": "WS0010",
+      "locations": [
+        16.5,
+        -67
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    }
+  ],
+  "width": 164
+}

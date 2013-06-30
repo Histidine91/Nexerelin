@@ -1,0 +1,39 @@
+{
+  "displayName": "Assault",
+  "hullId": "toa",
+  "variantId": "toa_Assault",
+  "fluxVents": 6,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "vulcan"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lightag",
+        "WS 2": "lightag"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "pdburst",
+        "WS 6": "pdburst"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "heavyneedler",
+        "WS 4": "heavyneedler",
+        "WS 8": "railgun",
+        "WS 9": "railgun"
+      }
+    }
+  ]
+}

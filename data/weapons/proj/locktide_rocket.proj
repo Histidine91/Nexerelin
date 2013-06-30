@@ -1,0 +1,22 @@
+{
+	"id":"locktide_rocket",
+	"specClass":"missile",
+	"missileType":"ROCKET",
+	"sprite":"graphics/missiles/missile_annihilator.png",
+	"size":[4,18],	
+	"center":[2,9],
+	"collisionRadius":15,
+	"collisionClass":"MISSILE_FF",
+	"explosionColor":[255,165,0,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":75, # purely visual	
+	"engineSpec":{"turnAcc":0,
+				  "turnRate":0,
+				  "acc":350,
+				  "dec":0},
+	"engineSlots":[{"id":"ES1",
+					"loc":[-11, 0],
+				    "style":"MISSILE_LOW_TECH",
+				    "width":4.0,
+				    "length":30.0,
+				    "angle":180.0}]
+}

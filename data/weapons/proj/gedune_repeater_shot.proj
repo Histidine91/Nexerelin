@@ -1,0 +1,20 @@
+{
+	"id":"gedune_repeater_shot",
+	"specClass":"projectile",
+	#"spawnType":"BEAM",
+	"spawnType":"BALLISTIC_AS_BEAM",
+	"collisionClass":"RAY",
+	"collisionClassByFighter":"RAY_FIGHTER",
+	"length":55.0,
+	"width":9.5,
+	"fadeTime":0.25,
+	"fringeColor":[50,200,0,255],
+	"coreColor":[255,255,255,200],
+	#"coreColor":[175,175,175,255],
+	#"textureType":"SMOOTH",  # only needed for BEAM spawnType
+	#"textureScrollSpeed":64.0,
+	#"pixelsPerTexel":5.0
+	"textureType":"SMOOTH",  # only needed for BEAM spawnType
+	"textureScrollSpeed":-256.0,
+	"pixelsPerTexel":1.0	
+}

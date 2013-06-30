@@ -1,0 +1,41 @@
+{
+  "displayName": "Support",
+  "hullId": "zephyr",
+  "variantId": "zephyr_Strike",
+  "fluxVents": 1,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "vulcan"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 3": "lightag",
+        "WS 4": "lightag"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lightdualac",
+        "WS 2": "lightdualac"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "sabotpod",
+        "WS 6": "sabotpod"
+      }
+    }
+  ]
+}

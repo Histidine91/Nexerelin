@@ -1,0 +1,78 @@
+{
+  "bounds": [
+    -20,
+    10,
+    -8,
+    30,
+    3,
+    16,
+    21,
+    12,
+    21,
+    -12,
+    3,
+    -16,
+    -8,
+    -30,
+    -20,
+    -10
+  ],
+  "center": [
+    40,
+    29
+  ],
+  "collisionRadius": 41.027431,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 12,
+      "length": 40,
+      "location": [
+        -22,
+        6
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 12
+    },
+    {
+      "angle": -180,
+      "contrailSize": 12,
+      "length": 40,
+      "location": [
+        -22,
+        -6
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 12
+    }
+  ],
+  "height": 60,
+  "hullId": "ancord",
+  "hullName": "Ancord",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 38.118237,
+  "spriteName": "graphics/ships/Ancord.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 15,
+      "id": "WS0003",
+      "locations": [
+        20,
+        -0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 80
+}

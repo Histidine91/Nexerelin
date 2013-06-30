@@ -1,0 +1,28 @@
+{
+  "displayName": "High Command",
+  "fluxCapacitors": 0,
+  "fluxVents": 5,
+  "hullId": "thule_berghast",
+  "hullMods": [
+    "thule_rune",
+    "targetingunit"
+  ],
+  "variantId": "thule_berghast_HC",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "thule_heavyslugger",
+        "WS0002": "thule_heavyslugger",
+        "WS0003": "thule_heavy_hvpc",
+        "WS0004": "thule_light_hunker",
+        "WS0005": "thule_light_hunker",
+        "WS0006": "thule_light_hunker",
+        "WS0007": "thule_light_hunker",
+        "WS0008": "thule_bulwark_srm_launcher",
+        "WS0009": "thule_bulwark_srm_launcher"
+      }
+    }
+  ]
+}

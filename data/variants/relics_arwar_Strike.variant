@@ -1,0 +1,42 @@
+{
+  "displayName": "Strike",
+  "hullId": "relics_arwar_h",
+  "variantId": "relics_arwar_Strike",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "hardenedshieldemitter"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "relics_blazo",
+        "WS 2": "relics_blazo"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "relics_blazo",
+        "WS 4": "relics_blazo",
+        "WS 5": "relics_blazo",
+        "WS 6": "relics_blazo"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "relics_exo",
+        "WS 8": "relics_exo"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 10": "relics_exo",
+        "WS 9": "relics_exo"
+      }
+    }
+  ]
+}

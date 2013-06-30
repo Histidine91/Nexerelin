@@ -1,0 +1,44 @@
+{
+  "displayName": "Assault",
+  "hullId": "antares",
+  "variantId": "antares_Assault",
+  "fluxVents": 18,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "missleracks",
+    "magazines"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 11": "pdlaser"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 10": "railgun",
+        "WS 4": "railgun",
+        "WS 5": "railgun",
+        "WS 6": "railgun",
+        "WS 9": "railgun"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "heavyac",
+        "WS 7": "heavyac",
+        "WS 8": "heavyac"
+      }
+    },
+    {
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 1": "locktide",
+        "WS 2": "riptide"
+      }
+    }
+  ]
+}

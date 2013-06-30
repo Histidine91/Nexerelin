@@ -1,0 +1,101 @@
+{
+  "displayName": "Support",
+  "fluxCapacitors": 3,
+  "fluxVents": 4,
+  "hullId": "vatican_III",
+  "hullMods": [
+    "targetingunit",
+    "magazines",
+    "missleracks"
+  ],
+  "variantId": "vatican_III_S",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "sabotpod",
+        "WS0010": "sabotpod",
+        "WS0011": "sabotpod",
+        "WS0012": "sabotpod",
+        "WS0013": "sabotpod",
+        "WS0014": "sabotpod",
+        "WS0015": "sabotpod",
+        "WS0016": "sabotpod"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "scorpion",
+        "WS0002": "scorpion",
+        "WS0003": "scorpion",
+        "WS0004": "scorpion",
+        "WS0005": "scorpion",
+        "WS0006": "scorpion",
+        "WS0007": "scorpion",
+        "WS0008": "scorpion"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0057": "ibcm"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0037": "hveldriver",
+        "WS0038": "hveldriver",
+        "WS0039": "hveldriver",
+        "WS0040": "hveldriver",
+        "WS0043": "hveldriver",
+        "WS0044": "hveldriver",
+        "WS0051": "hveldriver",
+        "WS0052": "hveldriver",
+        "WS0053": "heavy_assault_cannon",
+        "WS0054": "heavy_assault_cannon",
+        "WS0055": "heavy_assault_cannon",
+        "WS0056": "heavy_assault_cannon"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0017": "irpdburst",
+        "WS0018": "irpdburst",
+        "WS0019": "irpdcannon",
+        "WS0020": "irpdcannon",
+        "WS0021": "irpdcannon",
+        "WS0022": "irpdcannon",
+        "WS0023": "irpdburst",
+        "WS0024": "irpdburst",
+        "WS0025": "irpdcannon",
+        "WS0026": "irpdcannon",
+        "WS0027": "irpdburst",
+        "WS0028": "irpdburst",
+        "WS0029": "irpdcannon",
+        "WS0030": "irpdcannon",
+        "WS0031": "irpdburst",
+        "WS0032": "irpdburst",
+        "WS0033": "irpdcannon",
+        "WS0034": "irpdcannon",
+        "WS0035": "irpdburst",
+        "WS0036": "irpdburst",
+        "WS0041": "quadheavymg",
+        "WS0042": "quadheavymg",
+        "WS0045": "quadheavymg",
+        "WS0046": "quadheavymg",
+        "WS0047": "quadheavymg",
+        "WS0048": "quadheavymg",
+        "WS0049": "irpdburst",
+        "WS0050": "irpdburst"
+      }
+    }
+  ]
+}

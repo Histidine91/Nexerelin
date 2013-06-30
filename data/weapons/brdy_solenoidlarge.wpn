@@ -1,0 +1,32 @@
+{
+	"id":"brdy_solenoidlarge",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"LARGE",
+	"displayArcRadius":1200,
+	"turretSprite":"graphics/BR/weapons/solenoid_large/sqclarge_turret00.png",
+	"hardpointSprite":"graphics/BR/weapons/solenoid_large/sqclarge_hpbarrel00.png",
+	"numFrames":24,	
+	"frameRate":15,	
+	"visualRecoil":0.0,  # the gun sprites are only used if this is non-0
+	"renderHints":[RENDER_BARREL_BELOW],
+	"turretOffsets":[30, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[50, 0],
+	"hardpointAngleOffsets":[0],	
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":45.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":6.0,
+					   "particleSizeMin":1.0,
+					   "particleSizeRange":60.0,
+					   "particleDuration":1.25,
+					   "particleCount":63,
+					   "particleColor":[135,155,170,125]},
+	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held					   
+	"projectileSpecId":"SQGlargeshot",  # projectile that will be fired
+	"requiresFullCharge":true,  # for pulse weapons - whether the weapon will fire at a lower strength partial charge	
+	"fireSoundOne":"SQpreattack",
+	"fireSoundTwo":"SQGlargefire",
+    "everyFrameEffect":"data.scripts.weapons.SolenoidQuenchAnimation",		
+}

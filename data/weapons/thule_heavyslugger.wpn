@@ -1,0 +1,29 @@
+{
+	"id":"thule_heavyslugger",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"MEDIUM",
+	"displayArcRadius":900,
+	"turretSprite":"graphics/TL/weapons/thule_heavy_slugger_base.png",
+	"turretGunSprite":"graphics/TL/weapons/thule_heavy_slugger_recoil.png",
+	"hardpointSprite":"graphics/TL/weapons/thule_heavy_slugger_hardbase.png",
+	"hardpointGunSprite":"graphics/TL/weapons/thule_heavy_slugger_hardrecoil.png",	
+	"visualRecoil":7.0,  # the gun sprites are only used if this is non-0
+	"renderHints":[RENDER_BARREL_BELOW],
+	"glowColor":[255,185,215,215],
+	"turretOffsets":[22, -5.5, 22, 5.5],
+	"turretAngleOffsets":[0, 0],
+	"hardpointOffsets":[28, -5.5, 28, 5.5],
+	"hardpointAngleOffsets":[0, 0],	
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":40.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":5.0,
+					   "particleSizeMin":12.0,
+					   "particleSizeRange":14.0,
+					   "particleDuration":0.5,
+					   "particleCount":12,
+					   "particleColor":[200,165,255,200]},	
+	"projectileSpecId":"thule_heavyslugger_shot",  # projectile that will be fired
+	"fireSoundTwo":"thule_slugger",	
+}

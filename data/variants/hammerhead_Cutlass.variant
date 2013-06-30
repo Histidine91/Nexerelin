@@ -1,0 +1,37 @@
+{
+	"displayName":"Assault",
+	"hullId":"hammerhead",
+	"variantId":"hammerhead_Cutlass",
+	"fluxVents":10,
+	"fluxCapacitors":10,
+	"mods":[], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"chaingun",
+		 			"WS 002":"chaingun",
+		 		   },
+		},
+		{"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 003":"harpoon",
+		 			"WS 004":"harpoon",
+		 		   },
+		},
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 005":"dualflak",
+		 			"WS 006":"dualflak",
+		 		   },
+		},
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 007":"junk_pirates_cutlass",
+		 			"WS 008":"junk_pirates_cutlass",
+		 		   },
+		},		
+	],
+}

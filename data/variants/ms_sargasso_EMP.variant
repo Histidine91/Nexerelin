@@ -1,0 +1,28 @@
+{
+    "displayName": "Overload",
+    "fluxCapacitors": 5,
+    "fluxVents": 17,
+    "hullId": "ms_sargasso",
+    "hullMods": [
+        "fluxbreakers",
+        "auxiliarythrusters"
+    ],
+    "variantId": "ms_sargasso_EMP",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "ioncannon",
+                "WS0002": "ioncannon"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "harpoonpod"
+            }
+        }
+    ]
+}

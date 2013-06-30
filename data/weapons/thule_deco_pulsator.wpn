@@ -1,0 +1,34 @@
+{
+	"id":"thule_deco_pulsator",
+	"specClass":"projectile",
+	"type":"DECORATIVE",
+	"size":"SMALL",
+
+	"everyFrameEffect":"data.scripts.plugins.isHulkCheck",
+	
+	"turretSprite":"graphics/TL/weapons/decor1/thule_pulsator_00.png",
+	"hardpointSprite":"graphics/TL/weapons/decor1/thule_pulsator_00.png",
+
+	"numFrames":36,	
+	"frameRate":18,
+	"alwaysAnimate":"true",
+
+	"turretOffsets":[0, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[0, 0],
+	"hardpointAngleOffsets":[0],
+
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":0.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":10,
+					   "particleSizeMin":4.0,
+					   "particleSizeRange":18.0,
+					   "particleDuration":0.2,
+					   "particleCount":25,
+					   "particleColor":[255,150,30,200]},
+
+	"projectileSpecId":"thule_barbarossa_shot",  # projectile that will be fired
+	"fireSoundTwo":"thule_barbarossa",
+	"fireSoundOne":"thule_barbarossa_overload",
+}

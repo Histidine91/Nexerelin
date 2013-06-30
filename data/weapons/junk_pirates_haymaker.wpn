@@ -1,0 +1,27 @@
+{
+	"id":"junk_pirates_haymaker",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"MEDIUM",
+	"turretSprite":"graphics/junk_pirates/weapons/junk_pirates_haymaker_hardpoint_base.png",
+	"turretGlowSprite":"graphics/junk_pirates/weapons/junk_pirates_haymaker_glow.png",
+	"hardpointSprite":"graphics/junk_pirates/weapons/junk_pirates_haymaker_hardpoint_base.png",
+	"hardpointGlowSprite":"graphics/junk_pirates/weapons/junk_pirates_haymaker_glow.png",
+	"turretOffsets":[12, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[16, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"GLOW_AND_FLASH",
+	"glowColor":[225,100,125,255],
+	"muzzleFlashSpec":{"length":25.0,
+					   "spread":15.0,
+					   "particleSizeMin":10.0,
+					   "particleSizeRange":15.0,
+					   "particleDuration":0.12,
+					   "particleCount":10,
+					   "particleColor":[225,100,125,255]},		
+	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held
+	"projectileSpecId":"junk_pirates_haymaker_shot",  # projectile that will be fired
+	"fireSoundTwo":"thermal_pulse_cannon_fire",
+}

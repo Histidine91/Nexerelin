@@ -1,0 +1,37 @@
+{
+	"id":"neutrino_graviton",
+	"specClass":"missile",	
+	"missileType":"PHASE_CHARGE",
+	"sprite":"graphics/neut/missiles/neutrino_graviton_charge.png",
+	"glowSprite":"graphics/neut/missiles/neutrino_graviton_chargeglow.png",
+	"glowColor":[173,219,255,255],
+	"size":[32,32],	
+	"center":[8,8],
+	"collisionRadius":12,
+	"collisionClass":"MISSILE_FF",
+	"explosionColor":[120,188,236,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":1500, # purely visual	
+	"engineSpec":{"turnAcc":500,
+				  "turnRate":150,
+				  "acc":100,
+				  "dec":100},
+	#"engineSlots":[{"id":"ES1",
+	#				"loc":[-8, 0],
+	#			    "style":"HIGH_TECH",
+	#			    "width":4.0,
+	#			    "length":10.0,
+	#			    "angle":180.0}]
+	"behaviorSpec":{"behavior":"PROXIMITY_FUSE",
+					"range":25,
+					"explosionSpec":{"duration":0.1f,
+									 "radius":450,
+									 "coreRadius":250, # full damage within core radius - also equal to proximity fuse range
+									 "collisionClass":PROJECTILE_FF,
+									 "collisionClassByFighter":PROJECTILE_FIGHTER,
+									 "particleSizeMin":3.0,
+									 "particleSizeRange":3.0,
+									 "particleDuration":1,
+									 "particleCount":100,
+									 "particleColor":[193,234,255,255]},
+					}	
+}

@@ -1,0 +1,29 @@
+{
+    "displayName": "Balanced",
+    "fluxCapacitors": 0,
+    "fluxVents": 10,
+    "hullId": "ms_sargasso",
+    "hullMods": [
+        "stabilizedshieldemitter",
+        "extendedshieldemitter",
+        "hardenedshieldemitter"
+    ],
+    "variantId": "ms_sargasso_Balanced",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "irpulse",
+                "WS0002": "irpulse"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "dualflak"
+            }
+        }
+    ]
+}

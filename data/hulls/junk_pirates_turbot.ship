@@ -1,0 +1,144 @@
+{
+  "bounds": [
+    -72.0,
+    35.0,
+    -80.0,
+    8.0,
+    -61.0,
+    -9.0,
+    -77.0,
+    -24.0,
+    -56.0,
+    -44.0,
+    -29.0,
+    -46.0,
+    -18.0,
+    -38.0,
+    -6.0,
+    -44.0,
+    12.0,
+    -40.0,
+    23.0,
+    -57.0,
+    61.0,
+    -42.0,
+    66.0,
+    -26.0,
+    57.0,
+    -17.0,
+    83.0,
+    11.0,
+    46.0,
+    27.0,
+    53.0,
+    39.0,
+    51.0,
+    48.0,
+    -7.0,
+    49.0,
+    -15.0,
+    30.0
+  ],
+  "center": [
+    62.5,
+    84.0
+  ],
+  "collisionRadius": 100.0,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 12.0,
+      "length": 40.0,
+      "location": [
+        -82.0,
+        33.0
+      ],
+      "style": "LOW_TECH",
+      "width": 12.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 12.0,
+      "length": 40.0,
+      "location": [
+        -83.0,
+        -25.0
+      ],
+      "style": "LOW_TECH",
+      "width": 12.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 4.0,
+      "length": 47.0,
+      "location": [
+        -86.0,
+        16.0
+      ],
+      "style": "LOW_TECH",
+      "width": 4.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 4.0,
+      "length": 47.0,
+      "location": [
+        -86.0,
+        7.0
+      ],
+      "style": "LOW_TECH",
+      "width": 4.0
+    }
+  ],
+  "height": 168.0,
+  "width": 125.0,
+  "hullId": "junk_pirates_turbot",
+  "hullName": "Turbot",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0.0,
+    -0.0
+  ],
+  "shieldRadius": 99.0,
+  "spriteName": "graphics/junk_pirates/ships/junk_pirates_turbot.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 0.0,
+      "arc": 9.9,
+      "id": "WS 1",
+      "locations": [
+        53.0,
+        45.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0.0,
+      "arc": 132.2,
+      "id": "WS 2",
+      "locations": [
+        -8.0,
+        39.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 0.0,
+      "arc": 9.9,
+      "id": "WS 4",
+      "locations": [
+        80.0,
+        -15.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    }
+  ]
+}

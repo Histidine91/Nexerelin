@@ -1,0 +1,43 @@
+{
+    "displayName": "Anti Flux",
+    "fluxCapacitors": 4,
+    "fluxVents": 12,
+    "hullId": "ms_morningstar",
+    "hullMods": [
+	"turretgyros",
+	"advancedshieldemitter",
+	"fluxbreakers"
+    ],
+    "variantId": "ms_morningstar_AF",
+    "weaponGroups": [
+	{
+	    "mode": "LINKED",
+	    "weapons": {
+		"WS 001": "irpulse",
+		"WS 002": "irpulse",
+		"WS 003": "irpulse"
+	    }
+	},
+	{
+	    "mode": "ALTERNATING",
+	    "weapons": {
+		"WS 007": "ms_shrike_rack",
+		"WS 008": "ms_shrike_rack"
+
+	    }
+	},
+	{
+	    "mode": "LINKED",
+	    "weapons": {
+		"WS 006": "phasebeam"
+	    }
+	},
+	{
+	    "mode": "LINKED",
+	    "weapons": {
+		"WS 004": "pdlaser",
+		"WS 005": "pdlaser"
+	    }
+	}	
+    ]
+}

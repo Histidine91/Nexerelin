@@ -1,0 +1,83 @@
+{
+  "displayName": "Foul",
+  "hullId": "nihil_irritum",
+  "variantId": "nihil_irritum_nefarious",
+  "fluxVents": 6,
+  "fluxCapacitors": 6,
+  "hullMods": [
+    "magazines"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "vd",
+        "WS 3": "vd",
+        "WS 4": "vd"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "nullcore",
+        "WS 43": "nullcore"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 23": "nihil_phasebeam",
+        "WS 24": "nihil_phasebeam",
+        "WS 25": "nihil_phasebeam",
+        "WS 26": "nihil_phasebeam",
+        "WS 7": "nihil_phasebeam",
+        "WS 8": "nihil_phasebeam"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 10": "ldflak",
+        "WS 11": "pdvr",
+        "WS 12": "pdvr",
+        "WS 13": "pdvr",
+        "WS 14": "pdvr",
+        "WS 15": "pddmg",
+        "WS 16": "pddmg",
+        "WS 17": "pddmg",
+        "WS 18": "pddmg",
+        "WS 19": "pdvr",
+        "WS 20": "pdvr",
+        "WS 21": "ldflak",
+        "WS 22": "ldflak",
+        "WS 27": "pdvr",
+        "WS 28": "pdvr",
+        "WS 29": "pddmg",
+        "WS 30": "pddmg",
+        "WS 35": "pddmg",
+        "WS 36": "pddmg",
+        "WS 37": "pdvr",
+        "WS 38": "pdvr",
+        "WS 39": "ldflak",
+        "WS 40": "ldflak",
+        "WS 41": "pddmg",
+        "WS 42": "pddmg",
+        "WS 5": "ldflak",
+        "WS 6": "ldflak",
+        "WS 9": "ldflak"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 31": "gamma",
+        "WS 32": "gamma"
+      }
+    }
+  ]
+}

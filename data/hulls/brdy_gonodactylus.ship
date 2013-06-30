@@ -1,0 +1,347 @@
+{
+  "bounds": [
+    45,
+    16.5,
+    62.5,
+    6.5,
+    111.5,
+    6.5,
+    84.5,
+    9.5,
+    69,
+    15.5,
+    35,
+    23.5,
+    56.5,
+    40,
+    88,
+    25.5,
+    94.5,
+    31.5,
+    94.5,
+    36.5,
+    67,
+    63.5,
+    27.5,
+    63.5,
+    16.5,
+    56,
+    -24,
+    56,
+    -21.5,
+    43,
+    -3.5,
+    40.5,
+    6.5,
+    31,
+    -12,
+    19,
+    -35.5,
+    24,
+    -66.5,
+    25,
+    -71,
+    19,
+    -89.5,
+    20.5,
+    -90,
+    7.5,
+    -49.5,
+    7.5,
+    -50,
+    -6,
+    -89.5,
+    -6,
+    -89.5,
+    -19,
+    -69.5,
+    -17.5,
+    -66,
+    -24.5,
+    -18,
+    -21,
+    -0.5,
+    -27.5,
+    -12,
+    -35.5,
+    -48,
+    -35,
+    -47.5,
+    -49,
+    -35,
+    -49.5,
+    -6,
+    -57.5,
+    -4,
+    -68,
+    19.5,
+    -69,
+    17,
+    -57,
+    57.5,
+    -54.5,
+    46.5,
+    -52.5,
+    45.5,
+    -45,
+    13.5,
+    -34.5,
+    13.5,
+    -26.5,
+    40,
+    -24.5,
+    56,
+    -18.5,
+    70.5,
+    -15.5,
+    88.5,
+    -10,
+    111.5,
+    -7.5,
+    61.5,
+    -9,
+    45.5,
+    -15.5
+  ],
+  "builtInWeapons": {
+    "WS0006": "brdy_hammerclaw"
+  },
+  "center": [
+    65,
+    99
+  ],
+  "collisionRadius": 123.357208,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 25,
+      "location": [
+        -22,
+        48
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 25,
+      "location": [
+        -48,
+        -41.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 43.5,
+      "location": [
+        -91,
+        -18.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 8,
+      "length": 43.5,
+      "location": [
+        -91,
+        18.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 58,
+      "location": [
+        -91,
+        14
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 58,
+      "location": [
+        -91,
+        -14
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 9,
+      "length": 48,
+      "location": [
+        -91,
+        9.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 9
+    },
+    {
+      "angle": 180,
+      "contrailSize": 9,
+      "length": 48,
+      "location": [
+        -91,
+        -9.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 9
+    },
+    {
+      "angle": 180,
+      "contrailSize": 9,
+      "length": 15,
+      "location": [
+        -3.5,
+        37
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 9
+    },
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 20.5,
+      "location": [
+        -4.5,
+        -63.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 8
+    }
+  ],
+  "height": 220,
+  "hullId": "brdy_gonodactylus",
+  "hullName": "Gonodactylus",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 119.863464,
+  "spriteName": "graphics/BR/ships/gonodactylus.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 70.346176,
+      "arc": 164.498047,
+      "id": "WS0003",
+      "locations": [
+        32.5,
+        45
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 71.565048,
+      "arc": 164.498047,
+      "id": "WS0002",
+      "locations": [
+        48.5,
+        45
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 71.565048,
+      "arc": 164.498047,
+      "id": "WS0001",
+      "locations": [
+        63,
+        45.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90,
+      "arc": 233.130096,
+      "id": "WS0004",
+      "locations": [
+        16,
+        33.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 25,
+      "id": "WS0006",
+      "locations": [
+        42,
+        -47.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 0,
+      "arc": 253.739792,
+      "id": "WS0007",
+      "locations": [
+        -13.5,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -42.137596,
+      "arc": 136.397186,
+      "id": "WS0005",
+      "locations": [
+        -21.5,
+        -43.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 180,
+      "arc": 180,
+      "id": "WS0008",
+      "locations": [
+        -43,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 140
+}

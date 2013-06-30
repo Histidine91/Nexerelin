@@ -1,0 +1,17 @@
+{
+  "displayName": "kyra",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "gedune_kyra_drone",
+  "hullMods": [],
+  "variantId": "gedune_kyra_drone_variant",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "gedune_disruptor"
+      }
+    }
+  ]
+}

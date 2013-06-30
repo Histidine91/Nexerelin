@@ -1,0 +1,119 @@
+{
+    "bounds": [
+        59,
+        9,
+        -11,
+        27,
+        -28,
+        -6,
+        -5,
+        -29,
+        48,
+        -6
+    ],
+    "center": [
+        32,
+        31
+    ],
+    "collisionRadius": 80,
+    "engineSlots": [
+        {
+            "angle": 180,
+            "contrailSize": 64,
+            "length": 64,
+            "location": [
+                -29,
+                7
+            ],
+            "style": "LOW_TECH",
+            "width": 24
+        },
+        {
+            "angle": 180,
+            "contrailSize": 64,
+            "length": 64,
+            "location": [
+                -29,
+                -7
+            ],
+            "style": "LOW_TECH",
+            "width": 24
+        }
+    ],
+    "height": 92,
+    "hullId": "blizzard",
+    "hullName": "Blizzard",
+    "hullSize": "FRIGATE",
+    "shieldCenter": [
+        15,
+        0
+    ],
+    "shieldRadius": 64,
+    "spriteName": "graphics/lotus/ships/blizzard.png",
+    "style": "LOW_TECH",
+    "viewOffset": 0,
+    "weaponSlots": [
+        {
+            "angle": 0,
+            "arc": 5,
+            "id": "WS 001",
+            "locations": [
+                25,
+                17
+            ],
+            "mount": "HARDPOINT",
+            "size": "SMALL",
+            "type": "MISSILE"
+        },
+		{
+            "angle": 0,
+            "arc": 5,
+            "id": "WS 002",
+            "locations": [
+                25,
+                -17
+            ],
+            "mount": "HARDPOINT",
+            "size": "SMALL",
+            "type": "MISSILE"
+        },
+		{
+            "angle": 0,
+            "arc": 5,
+            "id": "WS 003",
+            "locations": [
+                46,
+                0
+            ],
+            "mount": "HARDPOINT",
+            "size": "MEDIUM",
+            "type": "MISSILE"
+        },
+        {
+            "angle": 0,
+            "arc": 180,
+            "id": "WS 004",
+            "locations": [
+                -5,
+                -18
+            ],
+            "mount": "TURRET",
+            "size": "SMALL",
+            "type": "BALLISTIC"
+        },
+		 {
+            "angle": 0,
+            "arc": 180,
+            "id": "WS 005",
+            "locations": [
+                -5,
+                18
+            ],
+            "mount": "TURRET",
+            "size": "SMALL",
+            "type": "BALLISTIC"
+        }
+        
+    ],
+    "width": 64
+}

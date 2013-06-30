@@ -1,0 +1,18 @@
+{
+	"id":"gravityfield",
+	"type":"STAT_MOD",
+	"aiType":"CUSTOM",
+	"aiScript":"data.shipsystems.ai.ReflectorAI",
+	
+	"jitterColor":[60,95,85,19],
+	"jitterCopies":10,
+	"jitterRange":0,
+	"jitterRangeRadiusFraction":0.05,
+
+	"statsScript":"data.shipsystems.scripts.GravityField",
+
+	"outOfUsesSound":"gun_out_of_ammo",
+    "useSound":"system_lucifergenactivate",
+	"deactivateSound":"system_lucifergendeactivate",
+	"loopSound":"system_fortress_shield_loop",
+}

@@ -1,0 +1,13 @@
+{
+	"id":"neutrino_phasedshot",
+	"specClass":"projectile",
+	"spawnType":"PLASMA",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"width":50.0,
+	"fadeTime":0.5,
+	"fringeColor":[255,0,0,255],
+	"coreColor":[255,241,203,255],
+	#"fringeColor":[255,0,0,255],
+	#"coreColor":[255,100,255,255],	
+}

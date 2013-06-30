@@ -1,0 +1,250 @@
+{
+  "bounds": [
+    -43,
+    -7.5,
+    -39,
+    -12.5,
+    -37.5,
+    -18.5,
+    -57,
+    -19,
+    -57,
+    -31,
+    -36,
+    -33,
+    -35,
+    -44.5,
+    -12,
+    -44,
+    -19.5,
+    -35,
+    24.5,
+    -39,
+    25,
+    -27,
+    -0.5,
+    -21,
+    48.5,
+    -19,
+    57.5,
+    -9.5,
+    57.5,
+    9.5,
+    48.5,
+    19,
+    -0.5,
+    21,
+    25,
+    27,
+    24.5,
+    39,
+    -19.5,
+    35,
+    -12,
+    44,
+    -35,
+    44.5,
+    -36,
+    33,
+    -57,
+    31,
+    -57,
+    19,
+    -37.5,
+    18.5,
+    -39,
+    12.5,
+    -43,
+    7.5
+  ],
+  "center": [
+    50,
+    76
+  ],
+  "collisionRadius": 80.777473,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 13,
+      "length": 31,
+      "location": [
+        -57,
+        25
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 13,
+      "length": 31,
+      "location": [
+        -57,
+        -25
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 9,
+      "length": 32.5,
+      "location": [
+        -44,
+        5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 9
+    },
+    {
+      "angle": -180,
+      "contrailSize": 9,
+      "length": 32.5,
+      "location": [
+        -44,
+        -5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 9
+    },
+    {
+      "angle": 180,
+      "contrailSize": 13,
+      "length": 37,
+      "location": [
+        -44,
+        1.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 13,
+      "length": 37,
+      "location": [
+        -44,
+        -1.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": 150.255112,
+      "contrailSize": 128,
+      "length": 19.5,
+      "location": [
+        -34,
+        41
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 8
+    },
+    {
+      "angle": -150.255112,
+      "contrailSize": 128,
+      "length": 19.5,
+      "location": [
+        -34,
+        -41
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 8
+    }
+  ],
+  "height": 150,
+  "hullId": "scarab",
+  "hullName": "Scarab",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 79.600563,
+  "spriteName": "graphics/BR/ships/scarab.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 90,
+      "arc": 213.398483,
+      "id": "WS0003",
+      "locations": [
+        -24.5,
+        20.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -90,
+      "arc": 213.398483,
+      "id": "WS0004",
+      "locations": [
+        -24.5,
+        -20.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 101.812279,
+      "id": "WS0005",
+      "locations": [
+        -8,
+        34.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 101.812279,
+      "id": "WS0006",
+      "locations": [
+        -8,
+        -34.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS0001",
+      "locations": [
+        11,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 0,
+      "arc": 9.147842,
+      "id": "WS0002",
+      "locations": [
+        52,
+        15
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    }
+  ],
+  "width": 100
+}

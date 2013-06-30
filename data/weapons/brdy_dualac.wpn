@@ -1,0 +1,28 @@
+{
+	"id":"brdy_dualac",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"MEDIUM",
+	"displayArcRadius":700,
+	"turretSprite":"graphics/BR/weapons/medshard_turret.png",
+	"turretGunSprite":"graphics/BR/weapons/medshard_tbarrel.png",
+	"hardpointSprite":"graphics/BR/weapons/medshard_hp.png",
+	"hardpointGunSprite":"graphics/BR/weapons/medshard_hbarrel.png",	
+	"visualRecoil":7.0,  # the gun sprites are only used if this is non-0
+	"renderHints":["RENDER_BARREL_BELOW"],
+	"turretOffsets":[20, -4.5, 20, 4.5],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[20, -4.5, 20, 4.5],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",
+	"muzzleFlashSpec":{"length":33.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":23.0,
+					   "particleSizeMin":6.0,
+					   "particleSizeRange":12.0,
+					   "particleDuration":0.12,
+					   "particleCount":16,
+					   "particleColor":[165,225,235,245]},
+	"projectileSpecId":"brdyac_shot",  # projectile that will be fired
+	"fireSoundTwo":"br1fire",
+}

@@ -1,0 +1,49 @@
+{
+  "displayName": "Widow Maker",
+  "fluxCapacitors": 10,
+  "fluxVents": 10,
+  "hullId": "mrd_sparrow",
+  "hullMods": [
+    "hardenedshieldemitter",
+    "targetingunit",
+    "magazines",
+    "advancedshieldemitter"
+  ],
+  "variantId": "mrd_sparrow_wm",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0005": "mrd_light_autoblaster",
+        "WS0006": "mrd_light_autoblaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "mrd_assault_gun",
+        "WS0004": "mrd_assault_gun",
+        "WS0009": "mrd_heavy_assault_gun"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "mrd_pd_laser_mk_ii",
+        "WS0002": "mrd_pd_laser_mk_ii",
+        "WS0010": "mrd_pd_laser_mk_ii"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "pilum",
+        "WS0008": "pilum"
+      }
+    }
+  ]
+}

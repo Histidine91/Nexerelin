@@ -1,0 +1,26 @@
+{
+  "displayName": "Super",
+  "hullId": "neutrino_nausicaa",
+  "variantId": "neutrino_nausicaa_standard",
+  "fluxVents": 5,
+  "fluxCapacitors": 7,
+  "hullMods": [
+		"targetingunit",
+		"magazines",
+  ],
+  "weaponGroups": [
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 1":"neutrino_freightergun",					
+		 			"WS 2":"neutrino_freightergun",
+					"WS 3":"neutrino_freightergun",
+					"WS 4":"neutrino_freightergun",
+					"WS 5":"neutrino_freightergun",
+					"WS 6":"neutrino_freightergun",
+		 		   },
+		},
+
+  
+  
+  ]
+}

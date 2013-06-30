@@ -1,0 +1,47 @@
+{
+	"displayName":"Standard",
+	"hullId":"junk_pirates_boxer",
+	"variantId":"junk_pirates_boxer_Standard",
+	"fluxVents":6,
+	"fluxCapacitors":0,
+	"hullMods":[
+		"heavyarmor"
+	], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 003":"pdlaser",
+		 			"WS 004":"pdlaser",
+		 			"WS 005":"flak",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"chaingun",
+					"WS 002":"chaingun",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 006":"harpoon",
+					"WS 008":"harpoon",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+					"WS 007":"atropos",
+		 		   },
+		},
+	],
+}

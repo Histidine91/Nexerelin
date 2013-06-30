@@ -1,0 +1,46 @@
+{
+  "displayName": "Standard",
+  "fluxCapacitors": 10,
+  "fluxVents": 18,
+  "hullId": "ms_elysium",
+  "hullMods": [
+       "auxiliarythrusters",
+       "magazines"
+  ],
+  "variantId": "ms_elysium_Standard",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "ms_pandora"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "ms_cepc",
+        "WS0003": "ms_cepc",
+        "WS0005": "ms_mcepc"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0002": "ms_cepc",
+        "WS0004": "ms_cepc",
+        "WS0006": "ms_mcepc"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "ms_pdcepc",
+        "WS0008": "ms_pdcepc"
+      }
+    },
+  ]
+}

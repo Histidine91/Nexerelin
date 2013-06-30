@@ -1,0 +1,53 @@
+{
+  "displayName": "Advanced",
+  "fluxCapacitors": 2,
+  "fluxVents": 6,
+  "hullId": "elfheim",
+  "hullMods": [
+    "autorepair",
+    "missleracks",
+    "targetingunit"
+  ],
+  "variantId": "elfheim_A",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "scorpionpod",
+        "WS0002": "scorpionpod"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0003": "sabot",
+        "WS0004": "sabot"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "heavylancer",
+        "WS0006": "heavylancer"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "irpdburst",
+        "WS0008": "irpdburst",
+        "WS0009": "irpdcannon",
+        "WS0010": "irpdcannon"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

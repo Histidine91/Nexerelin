@@ -1,0 +1,49 @@
+{
+  "displayName": "High Command",
+  "fluxCapacitors": 0,
+  "fluxVents": 7,
+  "hullId": "thule_berserker",
+  "hullMods": [
+    "targetingunit",
+    "thule_rune"
+  ],
+  "variantId": "thule_berserker_HC",
+  "weaponGroups": [
+    {
+      "autofire": true,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 003": "thule_bulwark_srm_launcher",
+        "WS 006": "thule_light_hunker",
+        "WS 009": "thule_light_hunker",
+        "WS 011": "thule_light_hvpc",
+        "WS 012": "thule_bulwark_srm_launcher"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 004": "thule_light_hvpc"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 005": "thule_heavyslugger",
+        "WS 010": "thule_heavyslugger"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {}
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

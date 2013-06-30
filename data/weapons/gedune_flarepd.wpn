@@ -1,0 +1,26 @@
+{
+	"id":"gedune_flarepd",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"SMALL",
+	"displayArcRadius":250,
+	"turretSprite":"graphics/gedune/weapons/gedune_flarepd_turret_base.png",
+	"turretGlowSprite":"graphics/gedune/weapons/gedune_flarepd_turret_glow.png",
+	"hardpointSprite":"graphics/gedune/weapons/gedune_flarepd_hardpoint_base.png",
+	"hardpointGunSprite":"graphics/gedune/weapons/gedune_flarepd_hardpoint_glow.png",	
+	"turretOffsets":[-2,-6, 3,-6, 6,-4, 7,1],
+	"turretAngleOffsets":[-30,-10,10,30],
+	"hardpointOffsets":[1,-5, 4,-4, 4,4, 1,5],
+	"hardpointAngleOffsets":[-30,-10,10,30],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":40.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":30.0,
+					   "particleSizeMin":16.0,
+					   "particleSizeRange":18.0,
+					   "particleDuration":0.3,
+					   "particleCount":10,
+					   "particleColor":[0,155,0,225]},
+	"projectileSpecId":"gedune_fpdflare",  # projectile that will be fired	
+	"fireSoundTwo":"gun_light_flak",
+}

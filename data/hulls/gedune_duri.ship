@@ -1,0 +1,70 @@
+{
+  "bounds": [
+    -9.5,
+    -10,
+    8,
+    -9,
+    8,
+    9,
+    -9.5,
+    10
+  ],
+  "center": [
+    11,
+    10.5
+  ],
+  "collisionRadius": 20,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 5,
+      "length": 10,
+      "location": [
+        -9.5,
+        5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngineFighter",
+      "width": 5
+    },
+    {
+      "angle": -180,
+      "contrailSize": 5,
+      "length": 10,
+      "location": [
+        -9.5,
+        -6
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngineFighter",
+      "width": 5
+    }
+  ],
+  "height": 21,
+  "hullId": "gedune_duri",
+  "hullName": "Duri",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    0
+  ],
+  "shieldRadius": 20,
+  "spriteName": "graphics/gedune/ships/gedune_duri.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0001",
+      "locations": [
+        2,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 22
+}

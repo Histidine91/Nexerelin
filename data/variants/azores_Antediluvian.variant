@@ -1,0 +1,24 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "frigate_azores",
+  "variantId": "azores_Antediluvian",
+  "fluxVents": 6,
+  "fluxCapacitors": 3,
+  "hullMods": [
+    "armoredweapons",
+    "autorepair",
+    "magazines"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "dualturret",
+        "WS 2": "dualturret",
+        "WS 3": "dualturret",
+        "WS 4": "dualturret",
+        "WS 5": "dualturret"
+      }
+    }
+  ]
+}

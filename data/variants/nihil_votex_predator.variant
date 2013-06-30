@@ -1,0 +1,27 @@
+{
+  "displayName": "Predator",
+  "hullId": "nihil_votex",
+  "variantId": "nihil_votex_predator",
+  "fluxVents": 0,
+  "fluxCapacitors": 1,
+  "hullMods": [
+    "targetingunit"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "ldflak"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 002": "pdvr",
+        "WS 003": "pdvr"
+      }
+    }
+  ]
+}

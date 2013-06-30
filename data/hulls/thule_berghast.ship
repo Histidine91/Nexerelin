@@ -1,0 +1,313 @@
+{
+  "bounds": [
+    -70.5,
+    -5.5,
+    -68.5,
+    -17.5,
+    -59,
+    -22,
+    -54,
+    -38.5,
+    -36.5,
+    -55,
+    -31.5,
+    -53.5,
+    -24.5,
+    -61.5,
+    -16.5,
+    -70.5,
+    4.5,
+    -71,
+    17.5,
+    -66,
+    23.5,
+    -54.5,
+    33,
+    -54.5,
+    39.5,
+    -51.5,
+    41.5,
+    -45.5,
+    46,
+    -44,
+    59,
+    -31.5,
+    72.5,
+    -7,
+    72.5,
+    7,
+    59,
+    31.5,
+    46,
+    44,
+    41.5,
+    45.5,
+    39.5,
+    51.5,
+    33,
+    54.5,
+    23.5,
+    54.5,
+    17.5,
+    66,
+    4.5,
+    71,
+    -16.5,
+    70.5,
+    -24.5,
+    61.5,
+    -31.5,
+    53.5,
+    -36.5,
+    55,
+    -54,
+    38.5,
+    -59,
+    22,
+    -68.5,
+    17.5,
+    -70.5,
+    5.5
+  ],
+    "builtInWeapons": {
+    "thule_decor1": "thule_deco_pulsator",
+  },
+  "center": [
+    72,
+    72
+  ],
+  "collisionRadius": 74.813103,
+  "engineSlots": [
+    {
+      "angle": 147.264771,
+      "contrailSize": 1.081515,
+      "length": 0.841178,
+      "location": [
+        -55,
+        29.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 1.081515
+    },
+    {
+      "angle": -147.264771,
+      "contrailSize": 1.081515,
+      "length": 0.841178,
+      "location": [
+        -55,
+        -29.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 1.081515
+    },
+    {
+      "angle": 113.629379,
+      "contrailSize": 1.081515,
+      "length": 0.841178,
+      "location": [
+        -27.5,
+        54.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 1.081515
+    },
+    {
+      "angle": -113.629379,
+      "contrailSize": 1.081515,
+      "length": 0.841178,
+      "location": [
+        -27.5,
+        -54.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 1.081515
+    },
+    {
+      "angle": 59.743565,
+      "contrailSize": 1.081515,
+      "length": 0.841178,
+      "location": [
+        23.5,
+        54.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 1.081515
+    },
+    {
+      "angle": -59.743565,
+      "contrailSize": 1.081515,
+      "length": 0.841178,
+      "location": [
+        23.5,
+        -54.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 1.081515
+    },
+    {
+      "angle": 22.619865,
+      "contrailSize": 1.081515,
+      "length": 0.841178,
+      "location": [
+        60.5,
+        22.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 1.081515
+    },
+    {
+      "angle": -22.619865,
+      "contrailSize": 1.081515,
+      "length": 0.841178,
+      "location": [
+        60.5,
+        -22.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 1.081515
+    }
+  ],
+  "height": 145,
+  "hullId": "thule_berghast",
+  "hullName": "Berghast",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 74.600601,
+  "spriteName": "graphics/TL/ships/thule_berghast.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 90,
+      "id": "WS0001",
+      "locations": [
+        -2.5,
+        42.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 90,
+      "id": "WS0002",
+      "locations": [
+        -2.5,
+        -42.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 200,
+      "id": "WS0003",
+      "locations": [
+        41.5,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 135,
+      "arc": 180,
+      "id": "WS0004",
+      "locations": [
+        -15,
+        63
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -135,
+      "arc": 180,
+      "id": "WS0005",
+      "locations": [
+        -15,
+        -63
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 45,
+      "arc": 180,
+      "id": "WS0006",
+      "locations": [
+        9,
+        63
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45,
+      "arc": 180,
+      "id": "WS0007",
+      "locations": [
+        9,
+        -63
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 225.239731,
+      "id": "WS0008",
+      "locations": [
+        27,
+        26
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 225.239731,
+      "id": "WS0009",
+      "locations": [
+        27,
+        -26
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "thule_decor1",
+      "locations": [
+        -51,
+        -0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "DECORATIVE"
+    }
+  ],
+  "width": 144
+}

@@ -1,0 +1,32 @@
+{
+    "displayName": "Attack",
+    "fluxCapacitors": 1,
+    "fluxVents": 8,
+    "hullId": "scarab",
+    "hullMods": ["hardenedshieldemitter"],
+    "variantId": "scarab_attack",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0002": "brdy_ag",
+                "WS0005": "brdy_ac",
+                "WS0006": "brdy_ac"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0001": "brdy_squallgun"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "pdlaser",
+                "WS0004": "pdlaser"
+            }
+        }
+    ]
+}

@@ -1,0 +1,21 @@
+{
+	"id":"achilles_stage2",
+	"specClass":"missile",	
+	"missileType":"MISSILE",
+	"sprite":"graphics/missiles/missile_sabot_warhead.png",
+	"glowColor":[135,255,180,205],
+	"glowRadius":14,
+	"size":[7,14],	
+	"center":[3.5,7],
+	"collisionRadius":12,
+	"collisionClass":"PROJECTILE_FIGHTER",
+	"collisionClassAfterFlameout":"PROJECTILE_FIGHTER",
+	"explosionColor":[235,255,215,235],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":65, # purely visual
+	"maxFlightTime":1,
+	"engineSpec":{"turnAcc":1840,
+				  "turnRate":240,
+				  "maxSpeed":540,
+				  "acc":500,
+				  "dec":0},
+} 

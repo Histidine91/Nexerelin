@@ -1,0 +1,61 @@
+{
+	"displayName":"Assault",
+	"hullId":"junk_pirates_orca",
+	"variantId":"junk_pirates_orca_Assault",
+	"fluxVents":18,
+	"fluxCapacitors":0,
+	"mods":[], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 003":"lightmg",
+			 		"WS 004":"lightmg",
+			 		"WS 005":"lightdualmg",
+			 		"WS 006":"lightdualmg",
+			 		"WS 007":"lightdualmg",
+			 		"WS 010":"dualflak",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 018":"cyclone",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 011":"irpulse",
+			 		"WS 012":"irpulse",
+			 		"WS 013":"irpulse",
+			 		"WS 014":"irpulse",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"ALTERNATING",
+		 "weapons":{		
+		 			"WS 015":"junk_pirates_haymaker",
+					"WS 016":"junk_pirates_haymaker",
+		 		   },
+		},
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 019":"heavymg",
+					"WS 008":"heavymg",
+					"WS 009":"heavymg",
+		 			"WS 001":"lightdualac",
+		 			"WS 002":"lightdualac",
+		 		   },
+		}	
+	],
+}

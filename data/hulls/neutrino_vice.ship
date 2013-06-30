@@ -1,0 +1,174 @@
+{
+  "bounds": [
+    89.5,
+    -2,
+    99,
+    -2,
+    99,
+    -6.5,
+    77,
+    -6.5,
+    62.5,
+    -9.5,
+    46.5,
+    -22.5,
+    33,
+    -22.5,
+    15.5,
+    -28,
+    18.5,
+    -52,
+    2,
+    -52,
+    -13,
+    -24,
+    -37,
+    -24,
+    -41.5,
+    -17,
+    -50,
+    -17,
+    -50,
+    17,
+    -41.5,
+    17,
+    -37,
+    24,
+    -13,
+    24,
+    2,
+    52,
+    18.5,
+    52,
+    15.5,
+    28,
+    33,
+    22.5,
+    46.5,
+    22.5,
+    62.5,
+    9.5,
+    77,
+    6.5,
+    99,
+    6.5,
+    99,
+    2,
+    89.5,
+    2
+  ],
+  "center": [
+    53,
+    53.5
+  ],
+  "collisionRadius": 105.099998,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -50,
+        7.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -50,
+        -7.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 40,
+      "location": [
+        -50,
+        2.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 40,
+      "location": [
+        -50,
+        -2.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    }
+  ],
+  "height": 154,
+  "hullId": "neutrino_vice",
+  "hullName": "Vice",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    21,
+    -0
+  ],
+  "shieldRadius": 82.5,
+  "spriteName": "graphics/neut/ships/neutrino_vice.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS 1",
+      "locations": [
+        17,
+        38
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS 2",
+      "locations": [
+        17,
+        -38
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS 3",
+      "locations": [
+        0.5,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "LARGE",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS 4",
+      "locations": [
+        87,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 106
+}

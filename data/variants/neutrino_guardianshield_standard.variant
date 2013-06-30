@@ -1,0 +1,13 @@
+{
+  "displayName": "Guardian Shield",
+  "hullId": "neutrino_guardianshield",
+  "variantId": "neutrino_guardianshield_standard",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "advancedshieldemitter",
+    "armoredweapons",
+    "fluxbreakers"
+  ],
+  "weaponGroups": []
+}

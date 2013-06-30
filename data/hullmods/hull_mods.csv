@@ -1,0 +1,10 @@
+name,id,unlocked,cost_frigate,cost_dest,cost_cruiser,cost_capital,script,desc,sprite
+
+Superior Reactor Core,dissipatehard,,0,0,0,0,data.hullmods.DissipateHardFluxWhileShielded,"Allows a ship to dissipate hard flux even when shields are active.",graphics/hullmods/integrated_point_defense_ai.png
+"R.U.N.E","thule_rune","TRUE",0,0,0,0,"data.hullmods.RuneStats","The Ships internal and outer frame is incased
+in a Reinforced ulterior nanoalloy exoskeleton.
+
+The Thulium infused alloy and it's 
+self-restructering shapeconsintent memory 
+allows for almost instant self-repairing
+abilities of engine and weapon systems.","graphics/TL/hullmods/thule_rune.png"

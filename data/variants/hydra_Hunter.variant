@@ -1,0 +1,38 @@
+{
+    "displayName": "Hunter",
+    "fluxCapacitors": 2,
+    "fluxVents": 11,
+    "hullId": "hydra",
+    "hullMods": [
+        "stabilizedshieldemitter",
+        "magazines",
+        "turretgyros"
+    ],
+    "variantId": "hydra_Hunter",
+    "weaponGroups": [
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 006": "dualflak",
+                "WS 007": "heavymauler"
+            }
+        },
+        {
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS 008": "sabot",
+                "WS 009": "sabot"
+            }
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "lightdualmg",
+                "WS 002": "lightdualmg",
+                "WS 003": "lightneedler",
+                "WS 004": "lightneedler",
+                "WS 005": "revolver"
+            }
+        }
+    ]
+}

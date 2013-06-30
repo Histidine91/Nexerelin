@@ -1,0 +1,34 @@
+{
+  "displayName": "Heavy Fighter",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "brdy_krait",
+  "hullMods": [
+    "fluxbreakers"
+  ],
+  "variantId": "brdy_krait_heavy",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "brdy_ag",
+        "WS0002": "brdy_ag"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "lightdualmg"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0006": "brvulcan"
+      }
+    }
+  ]
+}

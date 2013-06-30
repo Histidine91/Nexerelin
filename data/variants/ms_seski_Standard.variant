@@ -1,0 +1,31 @@
+{
+    "displayName": "Standard",
+    "fluxCapacitors": 5,
+    "fluxVents": 7,
+    "hullId": "ms_seski",
+    "hullMods": [
+        "fluxbreakers",
+        "insulatedengine"
+    ],
+    "variantId": "ms_seski_Standard",
+    "weaponGroups": [
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 003": "ms_scattercepc"
+            }
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {
+		"WS 002": "ms_cepc"
+	    }
+        },
+	{
+	    "mode": "LINKED",
+            "weapons": {
+		"WS 001": "ms_pdcepc"
+	    }
+	}
+    ]
+}

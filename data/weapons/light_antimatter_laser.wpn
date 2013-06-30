@@ -1,0 +1,29 @@
+{
+	"id":"light_antimatter_laser",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"SMALL",
+	"displayArcRadius":300,
+	"turretSprite":"graphics/weapons/light_particle_cannon_turret_base.png",
+	"hardpointSprite":"graphics/weapons/light_particle_cannon_turret_base.png",
+	"renderHints":[RENDER_BARREL_BELOW],
+	"visualRecoil":0.0,  # the gun sprites are only used if this is non-0
+	"glowColor":[200,100,0,255],
+	"turretOffsets":[10, -2.5, 15, 2.5],
+	"turretAngleOffsets":[0, 0],
+	"hardpointOffsets":[15, -5, 25, 5],
+	"hardpointAngleOffsets":[0, 0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	#"animationType":"GLOW",
+	"animationType":"GLOW_AND_FLASH",
+	"muzzleFlashSpec":{"length":80.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":8.0,
+					   "particleSizeMin":8.0,
+					   "particleSizeRange":9.0,
+					   "particleDuration":0.15,
+					   "particleCount":11,
+					   "particleColor":[200,100,0,255]},
+	"projectileSpecId":"light_antiproton_shot",  # projectile that will be fired
+	"deactivateSound":"light_antimatter_charge",
+	"fireSoundTwo":"light_antimatter_laser",
+}

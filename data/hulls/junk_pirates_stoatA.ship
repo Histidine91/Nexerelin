@@ -1,0 +1,72 @@
+{
+  "bounds": [
+    -31,
+    -25,
+    18,
+    -29,
+    28,
+    14,
+    -11,
+    20,
+    -16,
+    31,
+    -32,
+    23
+  ],
+  "center": [
+    36.5,
+    40.5
+  ],
+  "collisionRadius": 32,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 26,
+      "length": 20,
+      "location": [
+        -41,
+        23
+      ],
+      "style": "LOW_TECH",
+      "width": 8
+    },
+    {
+      "angle": 180,
+      "contrailSize": 26,
+      "length": 20,
+      "location": [
+        -40,
+        -28
+      ],
+      "style": "LOW_TECH",
+      "width": 8
+    }
+  ],
+  "height": 81,
+  "width": 73,
+  "hullId": "junk_pirates_stoatA",
+  "hullName": "Stoat (A Variant)",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0,
+    0
+  ],
+  "shieldRadius": 45,
+  "spriteName": "graphics/junk_pirates/ships/junk_pirates_stoatA.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS 001",
+      "locations": [
+        -20,
+        27
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ]
+}

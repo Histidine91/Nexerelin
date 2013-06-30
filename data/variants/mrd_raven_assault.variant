@@ -1,0 +1,50 @@
+{
+  "displayName": "Assault",
+  "fluxCapacitors": 10,
+  "fluxVents": 14,
+  "hullId": "mrd_raven",
+  "hullMods": [
+    "targetingunit",
+    "advancedshieldemitter"
+  ],
+  "variantId": "mrd_raven_assault",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 6": "heavyblaster",
+        "WS 8": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "heavyblaster",
+        "WS 7": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "mrd_pd_laser_mk_ii",
+        "WS 10": "pdburst",
+        "WS 13": "pdburst",
+        "WS 2": "mrd_pd_laser_mk_ii",
+        "WS 3": "mrd_pd_laser_mk_ii",
+        "WS 4": "mrd_pd_laser_mk_ii",
+        "WS 9": "pdburst"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 11": "mrd_light_autoblaster",
+        "WS 12": "mrd_light_autoblaster"
+      }
+    }
+  ]
+}

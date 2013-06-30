@@ -1,0 +1,28 @@
+{
+    "displayName": "Fleet",
+    "fluxCapacitors": 0,
+    "fluxVents": 6,
+    "hullId": "aria",
+    "hullMods": [
+        "advancedshieldemitter",
+        "insulatedengine",
+        "turretgyros"
+    ],
+    "variantId": "aria_Fleet",
+    "weaponGroups": [
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "revolver",
+                "WS 002": "revolver"
+            }
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 003": "swarmer",
+                "WS 004": "swarmer"
+            }
+        }
+    ]
+}

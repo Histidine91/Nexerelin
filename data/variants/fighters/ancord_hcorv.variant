@@ -1,0 +1,22 @@
+{
+  "displayName": "Assault Corvette",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "ancord",
+  "hullMods": [],
+  "variantId": "ancord_hcorv",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "heavylancer"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

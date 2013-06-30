@@ -1,0 +1,225 @@
+{
+  "bounds": [
+    -4.5,
+    -16.5,
+    30.5,
+    -21.5,
+    138.5,
+    -21.5,
+    143,
+    -25,
+    198,
+    -21.5,
+    215.5,
+    -28,
+    256,
+    -26.5,
+    266.5,
+    -44,
+    245.5,
+    -90.5,
+    -171,
+    -90.5,
+    -171.5,
+    -47.5,
+    -178.5,
+    -41,
+    -178.5,
+    -35.5,
+    -165.5,
+    -26.5,
+    -100,
+    -26.5,
+    -95,
+    -21,
+    -114.5,
+    -17.5,
+    -107,
+    -12,
+    -107,
+    12,
+    -114.5,
+    17.5,
+    -95,
+    21,
+    -100,
+    26.5,
+    -165.5,
+    26.5,
+    -178.5,
+    35.5,
+    -178.5,
+    41,
+    -171.5,
+    47.5,
+    -171.5,
+    90.5,
+    245.5,
+    90.5,
+    266.5,
+    44,
+    256,
+    26.5,
+    215.5,
+    28,
+    198,
+    21.5,
+    143,
+    25,
+    138.5,
+    21.5,
+    30.5,
+    21.5,
+    -4.5,
+    16.5
+  ],
+  "center": [
+    96,
+    178.5
+  ],
+  "collisionRadius": 325.200012,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 60,
+      "location": [
+        -108,
+        10
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 60,
+      "location": [
+        -108,
+        -10
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 60,
+      "location": [
+        -108,
+        5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 60,
+      "location": [
+        -108,
+        -5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 60,
+      "location": [
+        -108,
+        -0
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    }
+  ],
+  "height": 445,
+  "hullId": "neutrino_nausicaa",
+  "hullName": "Nausicaä",
+  "hullSize": "CAPITAL_SHIP",
+  "shieldCenter": [
+    -13,
+    0
+  ],
+  "shieldRadius": 307.700012,
+  "spriteName": "graphics/neut/ships/neutrino_nausicaa.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS 1",
+      "locations": [
+        253.5,
+        37
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS 2",
+      "locations": [
+        253.5,
+        -37
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS 3",
+      "locations": [
+        99.5,
+        42.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 360,
+      "id": "WS 4",
+      "locations": [
+        99.5,
+        -42.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 180,
+      "arc": 360,
+      "id": "WS 5",
+      "locations": [
+        -166.5,
+        39
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -180,
+      "arc": 360,
+      "id": "WS 6",
+      "locations": [
+        -166.5,
+        -39
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 192
+}

@@ -1,0 +1,170 @@
+{
+  "bounds": [
+    -52.5,
+    10.0,
+    -52.5,
+    -8.0,
+    -17.0,
+    -8.0,
+    13.0,
+    1.5,
+    27.0,
+    1.5,
+    27.0,
+    10.0
+  ],
+  "center": [
+    13.5,
+    56.0
+  ],
+  "collisionRadius": 58.2,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -55.0,
+        7.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -55.0,
+        -5.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -55.0,
+        1.0
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    }
+  ],
+  "height": 112.0,
+  "width": 27.0,
+  "hullId": "frigate_forlorn",
+  "hullName": "Forlorn",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0.0,
+    0.0
+  ],
+  "shieldRadius": 55.0,
+  "spriteName": "graphics/antediluvians/ships/frigate_forlorn_shading.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 1",
+      "locations": [
+        18.0,
+        5.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 2",
+      "locations": [
+        11.0,
+        5.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 3",
+      "locations": [
+        4.0,
+        5.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 4",
+      "locations": [
+        -3.0,
+        5.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 5",
+      "locations": [
+        -10.0,
+        5.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 6",
+      "locations": [
+        -17.0,
+        5.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 180.0,
+      "id": "WS 7",
+      "locations": [
+        -41.5,
+        11.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "WS 8",
+      "locations": [
+        -41.5,
+        -2.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

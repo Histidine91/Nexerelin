@@ -1,0 +1,72 @@
+{
+    "bounds": [
+    ],
+    "center": [
+        16,
+        10
+    ],
+    "collisionRadius": 13,
+    "engineSlots": [
+        {
+            "angle": 180,
+            "contrailSize": 58,
+            "length": 24,
+            "location": [
+                -13,
+                0
+            ],
+            "style": "LOW_TECH_FIGHTER",
+            "width": 12
+        },
+        {
+            "angle": 180,
+            "contrailSize": 22,
+            "length": 12,
+            "location": [
+                -13,
+                -13
+            ],
+            "style": "LOW_TECH_FIGHTER",
+            "width": 6
+        }
+    ],
+    "height": 26,
+    "hullId": "junk_pirates_spike",
+    "hullName": "Spike",
+    "hullSize": "FIGHTER",
+    "shieldCenter": [
+        0,
+        0
+    ],
+    "shieldRadius": 20,
+    "spriteName": "graphics/junk_pirates/ships/junk_pirates_spike.png",
+    "style": "LOW_TECH",
+    "viewOffset": 0,
+    "weaponSlots": [
+	{
+        "angle": 0,
+        "arc": 5,
+        "id": "WS 001",
+        "locations": [
+            9,
+            -4
+        ],
+        "mount": "HIDDEN",
+        "size": "SMALL",
+        "type": "BALLISTIC"
+    },
+	{
+        "angle": 0,
+        "arc": 5,
+        "id": "WS 002",
+        "locations": [
+            4,
+            -13
+        ],
+        "mount": "HIDDEN",
+        "size": "SMALL",
+        "type": "BALLISTIC"
+    },
+	],
+    "width": 32
+}

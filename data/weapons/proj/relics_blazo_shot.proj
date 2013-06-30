@@ -1,0 +1,16 @@
+{
+	"id":"relics_blazo_shot",
+	"specClass":"projectile",
+	"spawnType":"BEAM",
+	"collisionClass":"RAY",
+	"collisionClassByFighter":"RAY_FIGHTER",
+	"length":25.0,
+	"width":9.0,
+	"fadeTime":0.25,
+	"fringeColor":[254,166,81,255],
+	"coreColor":[254,248,81,255],
+	"textureType":"WEAVE",  # only needed for BEAM spawnType
+	#"textureType":["graphics/fx/emp_arcs.png","graphics/fx/emp_arcs.png"],
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":5.0
+}

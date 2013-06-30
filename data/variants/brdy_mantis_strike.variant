@@ -1,0 +1,36 @@
+{
+    "displayName": "Strike",
+    "fluxCapacitors": 0,
+    "fluxVents": 9,
+    "hullId": "brdy_mantis",
+    "hullMods": ["missleracks"],
+    "variantId": "brdy_mantis_strike",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "brdy_quill",
+                "WS0004": "brdy_quill"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0001": "brdy_2xfury"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0005": "brdy_ag",
+                "WS0006": "brdy_volley"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0002": "vulcan"}
+        }
+    ]
+}

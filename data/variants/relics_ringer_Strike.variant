@@ -1,0 +1,40 @@
+{
+  "displayName": "Strike",
+  "hullId": "relics_ringer_h",
+  "variantId": "relics_ringer_Strike",
+  "fluxVents": 6,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "hardenedshieldemitter"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "relics_exo",
+        "WS 2": "relics_exo"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "relics_exo",
+        "WS 4": "relics_exo"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "relics_exo",
+        "WS 6": "relics_exo"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "relics_exo",
+        "WS 8": "relics_exo"
+      }
+    }
+  ]
+}

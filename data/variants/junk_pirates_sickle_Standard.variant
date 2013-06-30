@@ -1,0 +1,35 @@
+{
+	"displayName":"Standard",
+	"hullId":"junk_pirates_sickle",
+	"variantId":"junk_pirates_sickle_Standard",
+	"fluxVents":9,
+	"fluxCapacitors":6,
+	"hullMods":[], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"junk_pirates_scatterpd",
+		 			"WS 002":"junk_pirates_scatterpd",
+		 		   },
+		},
+		{
+		"autofire": true,
+		"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 003":"lightdualmg",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 004":"junk_pirates_cutlass",
+		 		   },
+		},
+	],
+}

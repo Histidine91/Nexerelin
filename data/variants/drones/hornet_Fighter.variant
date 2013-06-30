@@ -1,0 +1,25 @@
+{
+  "displayName": "Assault Fighter",
+  "hullId": "hornet",
+  "variantId": "hornet_Fighter",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "sabot",
+        "WS 2": "sabot"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "heavymg"
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "displayName": "Close Support",
+  "fluxCapacitors": 5,
+  "fluxVents": 14,
+  "hullId": "ms_elysium",
+  "hullMods": [
+       "adaptiveshields"
+  ],
+  "variantId": "ms_elysium_CS",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "ms_pandora"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "taclaser",
+        "WS0005": "phasebeam",
+        "WS0007": "taclaser"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0004": "taclaser",
+        "WS0006": "phasebeam",
+        "WS0008": "taclaser"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "lrpdlaser",
+        "WS0002": "lrpdlaser"
+      }
+    }
+  ]
+}

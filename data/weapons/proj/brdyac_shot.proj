@@ -1,0 +1,21 @@
+{
+	"id":"brdyac_shot",
+	"specClass":"projectile",
+    "onHitEffect":"data.scripts.weapons.ShardOnHitEffect",	
+	"spawnType":"BALLISTIC",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"length":20.0,
+	"hitGlowRadius":10,
+	"width":5.5,
+	"fadeTime":0.15,
+	#"fringeColor":[255,155,125,255],
+	#"coreColor":[255,255,200,150],
+	"fringeColor":[130,205,225,220],
+	"coreColor":[130,205,215,255],
+	"glowColor":[70,140,255,25],
+	"glowRadius":14,	
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":5.0,
+	"bulletSprite":"graphics/missiles/shell_large_green.png"
+}

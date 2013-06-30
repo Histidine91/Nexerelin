@@ -1,0 +1,49 @@
+{
+  "displayName": "Explorer",
+  "hullId": "eagle",
+  "variantId": "nihil_eagle_mission",
+  "fluxVents": 2,
+  "fluxCapacitors": 5,
+  "hullMods": [
+    "magazines"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 007": "heavyneedler",
+        "WS 008": "heavyneedler",
+        "WS 013": "heavyneedler"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 005": "heavyburst",
+        "WS 006": "heavyburst",
+        "WS 009": "heavyburst"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "heatseeker",
+        "WS 002": "heatseeker"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 003": "lrpdlaser",
+        "WS 004": "lrpdlaser",
+        "WS 010": "lrpdlaser",
+        "WS 011": "lrpdlaser",
+        "WS 012": "lrpdlaser"
+      }
+    }
+  ]
+}

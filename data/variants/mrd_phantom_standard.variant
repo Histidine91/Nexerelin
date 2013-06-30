@@ -1,0 +1,57 @@
+{
+  "displayName": "Standard",
+  "fluxCapacitors": 7,
+  "fluxVents": 7,
+  "hullId": "mrd_phantom",
+  "hullMods": [
+    "targetingunit",
+    "missleracks",
+    "advancedshieldemitter",
+    "magazines"
+  ],
+  "variantId": "mrd_phantom_standard",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0011": "mrd_assault_gun",
+        "WS0012": "mrd_assault_gun"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "mrd_heavy_beam",
+        "WS0004": "mrd_heavy_beam"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "pdlaser",
+        "WS0006": "pdlaser",
+        "WS0007": "pdlaser",
+        "WS0008": "pdlaser"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "mrd_light_autoblaster",
+        "WS0002": "mrd_light_autoblaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "heatseeker",
+        "WS0010": "heatseeker"
+      }
+    }
+  ]
+}

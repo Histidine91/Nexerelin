@@ -1,0 +1,66 @@
+{
+    "bounds": [
+        12,
+        11,
+        -10,
+        14,
+        -9,
+        -13,
+        7,
+        -10
+    ],
+    "center": [
+        16,
+        12
+    ],
+    "collisionRadius": 24,
+    "engineSlots": [
+        {
+            "angle": 180,
+            "contrailSize": 64,
+            "length": 24,
+            "location": [
+                -12,
+                9
+            ],
+            "style": "LOW_TECH",
+            "width": 12
+        },
+        {
+            "angle": 180,
+            "contrailSize": 64,
+            "length": 24,
+            "location": [
+                -12,
+                -9
+            ],
+            "style": "LOW_TECH",
+            "width": 12
+        }
+    ],
+    "height": 27,
+    "hullId": "junk_pirates_tnt_drone",
+    "hullName": "TNT Drone",
+    "hullSize": "FIGHTER",
+    "shieldCenter": [
+        0,
+        0
+    ],
+    "shieldRadius": 24,
+    "spriteName": "graphics/junk_pirates/ships/drones/junk_pirates_tnt_drone.png",
+    "style": "LOW_TECH",
+    "viewOffset": 0,
+    "weaponSlots": [{
+        "angle": 0,
+        "arc": 5,
+        "id": "WS 001",
+        "locations": [
+            2,
+            -6
+        ],
+        "mount": "HIDDEN",
+        "size": "SMALL",
+        "type": "BALLISTIC"
+    }],
+    "width": 32
+}

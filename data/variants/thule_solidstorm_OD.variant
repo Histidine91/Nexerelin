@@ -1,0 +1,36 @@
+{
+  "displayName": "Outdated",
+  "fluxCapacitors": 0,
+  "fluxVents": 1,
+  "hullId": "thule_solidstorm",
+  "hullMods": [
+    "thule_rune"
+  ],
+  "variantId": "thule_solidstorm_OD",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 001": "hurricane",
+        "WS 002": "hurricane",
+        "WS 003": "hurricane",
+        "WS 004": "hurricane",
+        "WS 005": "hurricane",
+        "WS 006": "hurricane",
+        "WS 007": "pilum",
+        "WS 008": "pilum",
+        "WS0001": "lightdualmg"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 009": "lightdualmg",
+        "WS 010": "lightdualmg",
+        "WS 011": "lightdualmg"
+      }
+    }
+  ]
+}

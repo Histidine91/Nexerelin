@@ -1,0 +1,45 @@
+{
+	"displayName":"Support",
+	"hullId":"junk_pirates_goat",
+	"variantId":"junk_pirates_goat_CS",
+	"fluxVents":12,
+	"fluxCapacitors":2,
+	"hullMods":[
+	], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 1":"gravitonbeam",
+		 			"WS 2":"gravitonbeam",
+		 		   },
+		},
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+					"WS 4":"pdburst",
+		 			"WS 5":"pdburst",
+					},
+		},
+		{
+		"autofire": false,
+		"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 6":"pilum",
+					"WS 7":"pilum",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+					"WS 3":"hil",
+		 		   },
+		},
+	],
+}

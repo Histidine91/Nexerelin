@@ -1,0 +1,236 @@
+{
+  "bounds": [
+    -126.0,
+    -4.0,
+    -117.5,
+    1.5,
+    -107.5,
+    -0.0,
+    -103.0,
+    9.0,
+    -102.5,
+    26.5,
+    -44.5,
+    27.0,
+    -31.0,
+    23.5,
+    -31.5,
+    19.0,
+    -8.0,
+    22.5,
+    17.5,
+    22.5,
+    24.5,
+    24.5,
+    27.5,
+    15.5,
+    37.5,
+    18.0,
+    60.0,
+    18.0,
+    68.5,
+    14.5,
+    76.0,
+    15.0,
+    79.5,
+    17.5,
+    99.5,
+    13.5,
+    103.0,
+    5.5,
+    108.5,
+    5.0,
+    108.5,
+    -0.5,
+    123.0,
+    -0.5,
+    124.0,
+    -18.5,
+    90.5,
+    -20.5,
+    87.0,
+    -18.0,
+    78.0,
+    -18.5,
+    71.0,
+    -21.5,
+    49.5,
+    -22.5,
+    43.5,
+    -18.5,
+    37.5,
+    -22.5,
+    19.0,
+    -24.0,
+    -3.0,
+    -24.5,
+    -28.5,
+    -21.5,
+    -38.0,
+    -24.5,
+    -58.5,
+    -25.0,
+    -69.0,
+    -22.0,
+    -82.0,
+    -22.5,
+    -85.0,
+    -24.5,
+    -115.5,
+    -23.0,
+    -121.5,
+    -16.0,
+    -125.5,
+    -15.0
+  ],
+  "center": [
+    50.0,
+    140.0
+  ],
+  "collisionRadius": 120.5,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 7.0,
+      "length": 25.0,
+      "location": [
+        -103.5,
+        23.5
+      ],
+      "style": "MIDLINE",
+      "width": 7.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 7.0,
+      "length": 25.0,
+      "location": [
+        -103.5,
+        18.0
+      ],
+      "style": "MIDLINE",
+      "width": 7.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 7.0,
+      "length": 25.0,
+      "location": [
+        -103.5,
+        12.5
+      ],
+      "style": "MIDLINE",
+      "width": 7.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 11.0,
+      "length": 52.5,
+      "location": [
+        -125.5,
+        -10.0
+      ],
+      "style": "MIDLINE",
+      "width": 11.0
+    }
+  ],
+  "height": 280.0,
+  "width": 100.0,
+  "hullId": "vixen",
+  "hullName": "Vixen-class",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0.0,
+    -0.0
+  ],
+  "shieldRadius": 139.0,
+  "spriteName": "graphics/interstellarFederation/ships/vixen.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 0.0,
+      "arc": 317.5,
+      "id": "WS 1",
+      "locations": [
+        104.5,
+        -10.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 0.0,
+      "id": "WS 2",
+      "locations": [
+        23.0,
+        14.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 90.0,
+      "arc": 180.0,
+      "id": "WS 6",
+      "locations": [
+        -69.0,
+        20.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 180.0,
+      "arc": 302.3,
+      "id": "WS 7",
+      "locations": [
+        -97.0,
+        -7.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45.0,
+      "arc": 0.0,
+      "id": "WS 3",
+      "locations": [
+        40.0,
+        -27.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -45.0,
+      "arc": 0.0,
+      "id": "WS 4",
+      "locations": [
+        14.5,
+        -28.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -45.0,
+      "arc": 0.0,
+      "id": "WS 5",
+      "locations": [
+        -10.5,
+        -28.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    }
+  ]
+}

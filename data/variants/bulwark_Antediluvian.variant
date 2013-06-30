@@ -1,0 +1,36 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "frigate_bulwark",
+  "variantId": "bulwark_Antediluvian",
+  "fluxVents": 3,
+  "fluxCapacitors": 1,
+  "hullMods": [
+    "autorepair",
+    "targetingunit",
+    "missleracks"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pressureturret",
+        "WS 2": "pressureturret",
+        "WS 3": "pressureturret"
+      }
+    },
+    {
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 4": "deucalion",
+        "WS 5": "deucalion",
+        "WS 6": "deucalion"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "deucalion"
+      }
+    }
+  ]
+}

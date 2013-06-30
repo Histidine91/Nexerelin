@@ -1,0 +1,61 @@
+{
+  "displayName": "Military",
+  "fluxCapacitors": 2,
+  "fluxVents": 3,
+  "hullId": "herald",
+  "hullMods": [
+    "autorepair",
+    "missleracks"
+  ],
+  "variantId": "herald_M",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "sabot",
+        "WS0002": "sabot",
+        "WS0003": "sabot",
+        "WS0004": "sabot",
+        "WS0005": "sabot",
+        "WS0006": "sabot"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "scorpionpod",
+        "WS0008": "scorpionpod"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "ibcm"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0010": "lightdualmg",
+        "WS0011": "lightdualmg",
+        "WS0012": "irpdburst",
+        "WS0013": "irpdburst",
+        "WS0014": "lightdualmg",
+        "WS0015": "lightdualmg",
+        "WS0016": "irpdburst",
+        "WS0017": "irpdburst",
+        "WS0018": "lrflak",
+        "WS0019": "lrflak"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

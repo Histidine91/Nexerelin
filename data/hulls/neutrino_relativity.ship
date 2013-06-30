@@ -1,0 +1,150 @@
+{
+  "bounds": [
+    62.5,
+    -4.5,
+    72.5,
+    -4,
+    72.5,
+    -10,
+    13.5,
+    -11.5,
+    13.5,
+    -32,
+    38,
+    -33.5,
+    38,
+    -40,
+    16,
+    -40,
+    12,
+    -43,
+    -7.5,
+    -43,
+    -19,
+    -36,
+    -19,
+    36,
+    -7.5,
+    43,
+    12,
+    43,
+    16,
+    40,
+    38,
+    40,
+    38,
+    33.5,
+    13.5,
+    32,
+    13.5,
+    11.5,
+    72.5,
+    10,
+    72.5,
+    4,
+    62.5,
+    4.5
+  ],
+  "center": [
+    45,
+    21
+  ],
+  "collisionRadius": 94.5,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -18,
+        16.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -18,
+        -16.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 35,
+      "location": [
+        -18,
+        -11.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 35,
+      "location": [
+        -18,
+        11.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 10
+    }
+  ],
+  "height": 95,
+  "hullId": "neutrino_relativity",
+  "hullName": "Relativity",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    28,
+    -0
+  ],
+  "shieldRadius": 64.507751,
+  "spriteName": "graphics/neut/ships/neutrino_relativity.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 30.036722,
+      "id": "WS0001",
+      "locations": [
+        61.5,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 0,
+      "arc": 10.026228,
+      "id": "WS0002",
+      "locations": [
+        12,
+        21
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 10.026228,
+      "id": "WS0003",
+      "locations": [
+        12,
+        -21
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 90
+}

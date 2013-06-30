@@ -1,0 +1,35 @@
+{
+	"id":"neutrino_arcsurge",
+	"type":"EMP",
+	"aiType":"EMP",
+	
+	"range":700,
+	
+	"empDamage":185,
+	"damage":120,
+	"damageType":ENERGY,
+	
+	#"effectColor1":[150,150,255,200],
+	#"effectColor2":[175,175,255,255],
+	"effectColor1":[255,150,150,200],
+	"effectColor2":[255,80,62,255],
+
+
+	"useSound":"beam_heavy_intro",
+	"loopSound":"system_emp_emitter_loop",
+	"impactSound":"system_emp_emitter_impact",
+	"outOfUsesSound":"gun_out_of_ammo",
+	
+	"aiHints":{
+		"threatRange":675,
+		"threatAmount":12,
+		"threatAngle":0,
+		"threatArc":30,
+		"weaponAssignmentSuitability":{
+			"LIGHT_ESCORT":{"mult":1, "flat":15},
+			"DESTROYER_ESCORT":{"mult":1, "flat":15},
+			"FULL_ESCORT":{"mult":1, "flat":10},
+			"INTERCEPT":{"mult":1, "flat":10},
+		}
+	}
+}

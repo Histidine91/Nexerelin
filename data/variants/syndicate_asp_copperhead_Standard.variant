@@ -1,0 +1,37 @@
+{
+  "displayName": "Copperhead",
+  "hullId": "syndicate_asp_copperhead",
+  "variantId": "syndicate_asp_copperhead_Standard",
+  "fluxVents": 5,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "heavyburst",
+        "WS 2": "heavyburst"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "pdlaser",
+        "WS 4": "pdlaser",
+        "WS 5": "pdlaser"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 6": "pilum"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "swarmer"
+      }
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "bounds": [
+    -89,
+    -35.5,
+    -50,
+    -42.5,
+    -47,
+    -32,
+    49.5,
+    -31,
+    85.5,
+    -43,
+    85.5,
+    43,
+    49.5,
+    31,
+    -47,
+    32,
+    -50,
+    42.5,
+    -89,
+    35.5
+  ],
+  "center": [
+    49.5,
+    95
+  ],
+  "collisionRadius": 110.7,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 60,
+      "length": 30,
+      "location": [
+        -90,
+        28
+      ],
+      "style": "LOW_TECH",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 60,
+      "length": 30,
+      "location": [
+        -90,
+        -28
+      ],
+      "style": "LOW_TECH",
+      "width": 8
+    },
+    {
+      "angle": 180,
+      "contrailSize": 80,
+      "length": 45,
+      "location": [
+        -90,
+        15
+      ],
+      "style": "LOW_TECH",
+      "width": 12
+    },
+    {
+      "angle": -180,
+      "contrailSize": 80,
+      "length": 45,
+      "location": [
+        -90,
+        -15
+      ],
+      "style": "LOW_TECH",
+      "width": 12
+    },
+    {
+      "angle": 180,
+      "contrailSize": 120,
+      "length": 60,
+      "location": [
+        -90,
+        0
+      ],
+      "style": "LOW_TECH",
+      "width": 20
+    }
+  ],
+  "height": 190,
+  "width": 99,
+  "hullId": "aria",
+  "hullName": "Aria",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    5.5,
+    0
+  ],
+  "shieldRadius": 118.3,
+  "spriteName": "/graphics/lotus/ships/aria.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 45,
+      "arc": 270,
+      "id": "WS 001",
+      "locations": [
+        68.5,
+        27.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45,
+      "arc": 360,
+      "id": "WS 002",
+      "locations": [
+        68.5,
+        -27.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 135,
+      "arc": 360,
+      "id": "WS 003",
+      "locations": [
+        -73.5,
+        26.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -135,
+      "arc": 270,
+      "id": "WS 004",
+      "locations": [
+        -73.5,
+        -26.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+	"id":"junk_pirates_cutlass_shot",
+	"specClass":"projectile",
+	"spawnType":"BEAM",
+	"collisionClass":"RAY",
+	"collisionClassByFighter":"RAY_FIGHTER",
+	"length":25.0,
+	"width":11.0,
+	"fadeTime":0.25,
+	"fringeColor":[0,200,0,255],
+	"coreColor":[250,250,250,255],
+	#"coreColor":[175,175,175,255],
+	"textureType":"SMOOTH",  # only needed for BEAM spawnType
+	#"textureType":["graphics/fx/emp_arcs.png","graphics/fx/emp_arcs.png"],
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":5.0
+}

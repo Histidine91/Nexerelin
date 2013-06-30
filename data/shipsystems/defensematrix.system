@@ -1,0 +1,29 @@
+{
+	"id":"defensematrix",
+	"type":"SHIELD_MOD",
+	"aiType":"FORTRESS_SHIELD",
+
+	"statsScript":"data.shipsystems.scripts.FortressShieldStats",
+	
+	"shieldRingColor":[50,150,255,255],
+	"shieldInnerColor":[50,150,255,75],
+	"shieldThicknessMult":1.2,
+	"shieldFluctuationMult":2,
+	
+	"soundFilterType":"LOWPASS",
+	"soundFilterGain":0.4,
+	"soundFilterGainHF":0.0,
+	
+	"useSound":"shield_raise",
+	#"loopSound":"beam_heavy_loop",
+	#"deactivateSound":"shield_lower",
+	#"outOfUsesSound":"gun_out_of_ammo",
+	
+	#"useSound":"shield_raise",
+	#"deactivateSound":"shield_lower",
+	# Stian disabled these two because the timing of activate/deactivate did not work together with the loop sound.
+	# Enable them to test the issue. The deactivateSound plays late, after the loopsound has already stopped,
+	# creating a stuttering effect. 
+	"loopSound":"system_fortress_shield_loop",
+	"outOfUsesSound":"gun_out_of_ammo",	
+}

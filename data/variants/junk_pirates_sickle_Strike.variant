@@ -1,0 +1,35 @@
+{
+	"displayName":"Strike",
+	"hullId":"junk_pirates_sickle",
+	"variantId":"junk_pirates_sickle_Strike",
+	"fluxVents":2,
+	"fluxCapacitors":4,
+	"mods":[], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": false,
+		"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 001":"amblaster",
+		 			"WS 002":"amblaster",
+		 		   },
+		},
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 003":"lightmg",
+		 		   },
+		},
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 004":"heavyburst",
+		 		   },
+		},
+	],
+}

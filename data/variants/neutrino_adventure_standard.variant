@@ -1,0 +1,56 @@
+{
+  "displayName": "Civilian",
+  "hullId": "neutrino_adventure",
+  "variantId": "neutrino_adventure_standard",
+  "fluxVents": 30,
+  "fluxCapacitors": 10,
+  "hullMods": [
+    "targetingunit"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "plasma"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0002": "miningblaster",
+        "WS0003": "miningblaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0010": "sabotpod",
+        "WS0011": "sabotpod",
+        "WS0012": "pilum",
+        "WS0013": "pilum"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0004": "dualflak",
+        "WS0005": "dualflak",
+        "WS0006": "dualflak",
+        "WS0007": "dualflak",
+        "WS0008": "mininglaser",
+        "WS0009": "mininglaser",
+        "WS0014": "mininglaser",
+        "WS0015": "mininglaser"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "displayName": "Explorer",
+  "hullId": "odyssey",
+  "variantId": "nihil_odyssey_mission",
+  "fluxVents": 34,
+  "fluxCapacitors": 5,
+  "hullMods": [
+    "autorepair"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 002": "autopulse",
+        "WS 003": "autopulse"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 004": "pilum",
+        "WS 005": "pilum",
+        "WS 006": "sabotpod"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 008": "irpulse",
+        "WS 011": "irpulse",
+        "WS 012": "irpulse",
+        "WS 015": "irpulse",
+        "WS 016": "irpulse"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "guardian",
+        "WS 007": "pdburst",
+        "WS 009": "pdburst",
+        "WS 010": "pdburst",
+        "WS 013": "pdburst",
+        "WS 014": "pdburst",
+        "WS 017": "pdburst",
+        "WS 018": "pdburst"
+      }
+    }
+  ]
+}

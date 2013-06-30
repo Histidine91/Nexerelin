@@ -1,0 +1,28 @@
+{
+    "displayName": "Interceptor",
+    "fluxCapacitors": 10,
+    "fluxVents": 5,
+    "hullId": "gedune_kyirus",
+    "hullMods": ["advancedoptics"],
+    "variantId": "gedune_kyirus_variant",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {"WS0002": "gedune_kdart"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "taclaser",
+                "WS0004": "taclaser"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0001": "gedune_edart"}
+        }
+    ]
+}

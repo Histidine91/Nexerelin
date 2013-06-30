@@ -1,0 +1,53 @@
+{
+  "displayName": "Siege",
+  "hullId": "titan",
+  "variantId": "titan_Siege",
+  "fluxVents": 35,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "pointdefenseai",
+    "magazines"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lightneedler",
+        "WS 10": "HV50",
+        "WS 11": "HV50",
+        "WS 12": "HV50",
+        "WS 13": "HV50",
+        "WS 14": "lightdualmg",
+        "WS 16": "massdriver",
+        "WS 17": "massdriver",
+        "WS 19": "lightneedler",
+        "WS 20": "lightdualmg",
+        "WS 3": "lightneedler",
+        "WS 4": "lightdualmg",
+        "WS 5": "heavyneedler",
+        "WS 7": "heavyneedler",
+        "WS 9": "HV50"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 15": "annihilatorpod",
+        "WS 8": "annihilatorpod"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 18": "gauss",
+        "WS 2": "gauss"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 6": "hadron"
+      }
+    }
+  ]
+}

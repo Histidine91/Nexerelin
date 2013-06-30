@@ -1,0 +1,32 @@
+{
+	"id":"neutrino_heavyphotonrepeater",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"LARGE",
+	"turretSprite":"graphics/neut/weapons/heavyphotonrepeater/neutrino_heavyphotonrepeater_turret_base00.png",
+	"turretGlowSprite":"graphics/neut/weapons/heavyphotonrepeater/neutrino_heavyphotonrepeater_turret_glow.png",	
+	"hardpointSprite":"graphics/neut/weapons/heavyphotonrepeater/neutrino_heavyphotonrepeater_hardpoint_base00.png",
+	"hardpointGlowSprite":"graphics/neut/weapons/heavyphotonrepeater/neutrino_heavyphotonrepeater_hardpoint_glow.png",		
+	"numFrames":4,	
+	"frameRate":30,	
+	"visualRecoil":2.0,  # the gun sprites are only used if this is non-0
+	"glowColor":[227,101,52,255],	
+	"turretOffsets":[33, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[48, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"GLOW_AND_FLASH",
+	"muzzleFlashSpec":{"length":40.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":15.0,
+					   "particleSizeMin":20.0,
+					   "particleSizeRange":10.0,
+					   "particleDuration":0.12,
+					   "particleCount":12,
+					   "particleColor":[100,100,255,255]},
+	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held
+	#"requiresFullCharge":true,  # for pulse weapons - whether the weapon will fire at a lower strength partial charge
+	"projectileSpecId":"neutrino_heavyphotongun",  # projectile that will be fired
+	"fireSoundOne":"gun_mechanicals_medium_up_spin",	
+	"fireSoundTwo":"neutrino_photon_firing",
+}

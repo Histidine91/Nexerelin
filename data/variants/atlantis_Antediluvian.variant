@@ -1,0 +1,71 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "capital_atlantis",
+  "variantId": "atlantis_Antediluvian",
+  "fluxVents": 4,
+  "fluxCapacitors": 2,
+  "hullMods": [
+    "armoredweapons",
+    "magazines",
+    "turretgyros"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 12": "pressureturret",
+        "WS 14": "pressureturret",
+        "WS 15": "pressureturret",
+        "WS 26": "pressureturret",
+        "WS 27": "pressureturret",
+        "WS 33": "pressureturret",
+        "WS 34": "pressureturret",
+        "WS 6": "pressureturret",
+        "WS 8": "pressureturret",
+        "WS 9": "pressureturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "advancedturret",
+        "WS 10": "advancedturret",
+        "WS 11": "advancedturret",
+        "WS 13": "tripleturret",
+        "WS 16": "tripleturret",
+        "WS 17": "extendedturret",
+        "WS 18": "extendedturret",
+        "WS 19": "extendedturret",
+        "WS 20": "extendedturret",
+        "WS 21": "extendedturret",
+        "WS 22": "extendedturret",
+        "WS 23": "extendedturret",
+        "WS 24": "extendedturret",
+        "WS 28": "dualturret",
+        "WS 29": "dualturret",
+        "WS 31": "dualturret",
+        "WS 32": "dualturret",
+        "WS 4": "advancedturret",
+        "WS 5": "tripleturret",
+        "WS 7": "tripleturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "sonicturret",
+        "WS 25": "advancedsonicturret",
+        "WS 3": "sonicturret",
+        "WS 30": "sonicturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 35": "pandora",
+        "WS 36": "prometheus",
+        "WS 38": "prometheus"
+      }
+    }
+  ]
+}

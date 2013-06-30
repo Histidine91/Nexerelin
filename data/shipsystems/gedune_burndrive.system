@@ -1,0 +1,28 @@
+{
+	"id":"gedune_burndrive",
+	"type":"ENGINE_MOD",
+	"aiType":"BURN_DRIVE",
+	
+	"statsScript":"data.shipsystems.scripts.Gedune_BurnDriveStats",
+	
+	"engineGlowColor":[200,255,130,255],
+	"engineGlowContrailColor":[50,165,55,25],
+	"engineGlowLengthMult":2.5,
+	"engineGlowWidthMult":3,
+	"engineGlowGlowMult":2,
+	
+	"flameoutOnImpactChance":0.5,
+
+	"clampTurnRateAfter":true,
+	"clampMaxSpeedAfter":false,
+	"alwaysAccelerate":true,
+
+	"useSound":"system_burn_drive_activate",
+	"loopSound":"system_burn_drive_loop",
+	"deactivateSound":"system_burn_drive_deactivate",
+	"outOfUsesSound":"engine_disabled",
+	
+	"aiHints":{
+		"averageSpeedIncrease":100,
+	}
+}

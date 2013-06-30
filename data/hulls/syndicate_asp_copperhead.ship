@@ -1,0 +1,203 @@
+{
+  "bounds": [
+    -78.0,
+    9.0,
+    -43.0,
+    11.0,
+    -51.0,
+    78.0,
+    75.0,
+    86.0,
+    76.0,
+    14.0,
+    56.0,
+    4.0,
+    64.0,
+    -6.0,
+    63.0,
+    -68.0,
+    34.0,
+    -78.0,
+    15.0,
+    -71.0,
+    -51.0,
+    -80.0,
+    -43.0,
+    -9.0,
+    -78.0,
+    -7.0
+  ],
+  "center": [
+    94.5,
+    85.0
+  ],
+  "collisionRadius": 119.0,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 16.0,
+      "length": 31.0,
+      "location": [
+        -60.0,
+        -76.0
+      ],
+      "style": "LOW_TECH",
+      "width": 16.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 16.0,
+      "length": 31.0,
+      "location": [
+        -60.0,
+        74.5
+      ],
+      "style": "LOW_TECH",
+      "width": 16.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 16.0,
+      "length": 31.0,
+      "location": [
+        -84.0,
+        -0.0
+      ],
+      "style": "LOW_TECH",
+      "width": 16.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 8.0,
+      "length": 51.5,
+      "location": [
+        -53.5,
+        -60.0
+      ],
+      "style": "LOW_TECH",
+      "width": 8.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 8.0,
+      "length": 51.5,
+      "location": [
+        -53.0,
+        60.0
+      ],
+      "style": "LOW_TECH",
+      "width": 8.0
+    }
+  ],
+  "height": 170.0,
+  "width": 189.0,
+  "hullId": "syndicate_asp_copperhead",
+  "hullName": "Copperhead",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    10.0,
+    2.0
+  ],
+  "shieldRadius": 118.8,
+  "spriteName": "graphics/syndicate_asp/ships/syndicate_asp_copperhead.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 45.6,
+      "arc": 158.3,
+      "id": "WS 1",
+      "locations": [
+        31.0,
+        46.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -49.7,
+      "arc": 158.3,
+      "id": "WS 2",
+      "locations": [
+        30.0,
+        -45.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -117.0,
+      "arc": 185.7,
+      "id": "WS 3",
+      "locations": [
+        -21.0,
+        -43.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 131.8,
+      "arc": 133.2,
+      "id": "WS 4",
+      "locations": [
+        -20.5,
+        45.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 92.4,
+      "arc": 162.8,
+      "id": "WS 5",
+      "locations": [
+        -1.0,
+        78.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0.0,
+      "arc": 5.2,
+      "id": "WS 6",
+      "locations": [
+        65.0,
+        -61.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0.0,
+      "arc": 5.2,
+      "id": "WS 7",
+      "locations": [
+        51.0,
+        -82.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0.8,
+      "arc": 158.3,
+      "id": "WS 8",
+      "locations": [
+        38.5,
+        14.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "LAUNCH_BAY"
+    }
+  ]
+}

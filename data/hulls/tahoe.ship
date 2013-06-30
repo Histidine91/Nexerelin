@@ -1,0 +1,281 @@
+{
+  "bounds": [
+    150.0,
+    23.0,
+    147.0,
+    27.5,
+    151.5,
+    27.0,
+    164.0,
+    34.5,
+    157.5,
+    47.0,
+    134.0,
+    42.0,
+    93.5,
+    43.0,
+    84.0,
+    47.5,
+    84.0,
+    13.5,
+    41.0,
+    16.5,
+    38.0,
+    21.0,
+    36.0,
+    39.5,
+    23.5,
+    40.0,
+    5.0,
+    53.5,
+    -29.5,
+    54.0,
+    -37.5,
+    49.5,
+    -88.5,
+    49.5,
+    -95.5,
+    39.5,
+    -110.0,
+    39.5,
+    -111.5,
+    31.0,
+    -124.0,
+    23.0,
+    -150.0,
+    21.0,
+    -158.0,
+    16.5,
+    -177.0,
+    16.5,
+    -195.0,
+    11.0,
+    -195.0,
+    -11.0,
+    -177.0,
+    -16.5,
+    -158.0,
+    -16.5,
+    -150.0,
+    -21.0,
+    -124.0,
+    -23.0,
+    -111.5,
+    -31.0,
+    -110.0,
+    -39.5,
+    -95.5,
+    -39.5,
+    -88.5,
+    -49.5,
+    -37.5,
+    -49.5,
+    -29.5,
+    -54.0,
+    5.0,
+    -53.5,
+    23.5,
+    -40.0,
+    36.0,
+    -39.5,
+    38.0,
+    -21.0,
+    41.0,
+    -16.5,
+    84.0,
+    -13.5,
+    84.0,
+    -47.5,
+    93.5,
+    -43.0,
+    134.0,
+    -42.0,
+    157.5,
+    -47.0,
+    164.0,
+    -34.5,
+    151.5,
+    -27.0,
+    147.0,
+    -27.5,
+    151.5,
+    -20.0,
+    160.0,
+    -20.5,
+    181.0,
+    -18.5,
+    195.0,
+    -8.0,
+    195.0,
+    9.5,
+    141.0,
+    14.5,
+    129.5,
+    18.0,
+    129.5,
+    22.5
+  ],
+  "center": [
+    90.0,
+    210.0
+  ],
+  "collisionRadius": 197.0,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 28.0,
+      "length": 41.0,
+      "location": [
+        83.0,
+        -33.5
+      ],
+      "style": "MIDLINE",
+      "width": 28.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 28.0,
+      "length": 41.0,
+      "location": [
+        83.0,
+        33.5
+      ],
+      "style": "MIDLINE",
+      "width": 28.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 38.0,
+      "length": 77.0,
+      "location": [
+        -197.0,
+        0.5
+      ],
+      "style": "MIDLINE",
+      "width": 38.0
+    }
+  ],
+  "height": 420.0,
+  "width": 180.0,
+  "hullId": "tahoe",
+  "hullName": "Tahoe",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0.0,
+    -0.0
+  ],
+  "shieldRadius": 249.0,
+  "spriteName": "graphics/interstellarFederation/ships/tahoe.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": -80.6,
+      "arc": 216.1,
+      "id": "WS 1",
+      "locations": [
+        137.0,
+        -28.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 80.6,
+      "arc": 216.1,
+      "id": "WS 2",
+      "locations": [
+        137.0,
+        29.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 0.0,
+      "id": "WS 3",
+      "locations": [
+        195.5,
+        0.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "WS 4",
+      "locations": [
+        31.0,
+        -0.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 180.0,
+      "arc": 280.1,
+      "id": "WS 5",
+      "locations": [
+        -179.0,
+        -0.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -114.0,
+      "arc": 0.0,
+      "id": "WS0001",
+      "locations": [
+        94.0,
+        -16.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 114.0,
+      "arc": 0.0,
+      "id": "WS0002",
+      "locations": [
+        94.0,
+        16.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": -114.0,
+      "arc": 0.0,
+      "id": "WS0003",
+      "locations": [
+        -155.5,
+        -17.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 114.0,
+      "arc": 0.0,
+      "id": "WS0004",
+      "locations": [
+        -155.5,
+        17.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

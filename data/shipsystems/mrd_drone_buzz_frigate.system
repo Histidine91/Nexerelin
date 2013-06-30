@@ -1,0 +1,37 @@
+{
+	"id":"mrd_drone_buzz_frigate",
+	"type":"DRONE_LAUNCHER",
+	"aiType":"DRONE_LAUNCHER_PD",
+	
+	"droneVariant":"mrd_drone_buzz_fighter",
+	
+	"allowFreeRoam":true,
+	
+	"launchSpeed":300,
+	"launchDelay":0.8,
+	"maxDrones":5,
+	"droneBehavior":[
+		{"droneIndex":[0,1,2,3,4],
+		 "defaultFacing":"MATCH_DRONE_HEADING",	# MATCH_DRONE_HEADING, MATCH_SHIP_HEADING, MATCH_SHIP_FACING, AWAY_FROM_SHIP
+		 "faceEnemy":true,
+		 "holdRoamRange":350,
+		 "freeRoamRange":1200,
+		 "targetPriority":[MISSILE, FIGHTER, SHIP, SHIP_TARGET], # also SHIP_TARGET to prefer targeting the mothership's target
+		 "initialOrbitAngle":0,
+		 "orbitRadius":25, 				# plus ship radius
+		 "orbitDir":1, 					# -1 or 1
+		 "orbitSpeed":110, 				# pixels/second
+		},
+	],
+	
+	"useSound":"missile_heavy",
+	"outOfUsesSound":"gun_out_of_ammo",
+	
+	"aiHints":{
+		"weaponAssignmentSuitability":{
+			"LIGHT_ESCORT":{"mult":1, "flat":20},
+			"DESTROYER_ESCORT":{"mult":1, "flat":20},
+			"FULL_ESCORT":{"mult":1, "flat":20},
+		}
+	}
+}

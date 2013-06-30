@@ -1,0 +1,134 @@
+{
+  "bounds": [
+    -15,
+    -4,
+    -13,
+    -8,
+    -11,
+    -10,
+    -7,
+    -12,
+    2,
+    -12,
+    5,
+    -10,
+    7,
+    -8,
+    8,
+    -6,
+    9.5,
+    -4,
+    14,
+    -4,
+    14,
+    -2,
+    9,
+    -2,
+    9,
+    2,
+    14,
+    2,
+    14,
+    4,
+    9.5,
+    4,
+    8,
+    6,
+    7,
+    8,
+    5,
+    10,
+    2,
+    12,
+    -7,
+    12,
+    -11,
+    10,
+    -13,
+    8,
+    -15,
+    4
+  ],
+  "center": [
+    12,
+    15
+  ],
+  "collisionRadius": 16.224981,
+  "engineSlots": [
+    {
+      "angle": 176.2686,
+      "contrailSize": 8.877278,
+      "length": 21.372845,
+      "location": [
+        -14,
+        3
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 8.877278
+    },
+    {
+      "angle": -176.2686,
+      "contrailSize": 8.877278,
+      "length": 21.372845,
+      "location": [
+        -14,
+        -3
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 8.877278
+    },
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 28,
+      "location": [
+        -13.5,
+        -0
+      ],
+      "style": "CUSTOM",
+      "styleId": "THULE",
+      "width": 8
+    }
+  ],
+  "height": 29,
+  "hullId": "thule_einherjer_ph",
+  "hullName": "Einherjer Purple Hearts",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 16.40122,
+  "spriteName": "graphics/TL/ships/thule_einherjer_purple_hearts.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0001",
+      "locations": [
+        4,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0002",
+      "locations": [
+        4,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 24
+}

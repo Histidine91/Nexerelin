@@ -1,0 +1,43 @@
+{
+    "displayName": "Fast Attack",
+    "fluxCapacitors": 16,
+    "fluxVents": 11,
+    "hullId": "desdinova",
+    "hullMods": ["turretgyros"],
+    "variantId": "desdinova_fastattack",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0002": "brvulcan",
+                "WS0003": "brvulcan",
+                "WS0006": "brvulcan",
+                "WS0007": "brvulcan",
+                "WS0010": "brvulcan",
+                "WS0011": "brvulcan"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0008": "achilles_mrm",
+                "WS0009": "achilles_mrm"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0001": "br_pde"}
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0004": "brdy_solenoid",
+                "WS0005": "brdy_solenoid"
+            }
+        }
+    ]
+}

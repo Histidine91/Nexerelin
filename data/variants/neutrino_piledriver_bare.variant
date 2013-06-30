@@ -1,0 +1,17 @@
+{
+  "displayName": "Custom",
+  "hullId": "neutrino_piledriver",
+  "variantId": "neutrino_piledriver_bare",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "neutrino_unstable_photon"
+      }
+    }
+  ]
+}

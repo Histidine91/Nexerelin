@@ -1,0 +1,46 @@
+{
+    "displayName": "Tactical",
+    "fluxCapacitors": 10,
+    "fluxVents": 6,
+    "hullId": "brdy_revenant",
+    "hullMods": [
+        "targetingunit",
+        "turretgyros"
+    ],
+    "variantId": "brdy_revenant_carrier",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0009": "achilles_mrm",
+                "WS0010": "achilles_mrm"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0005": "brdy_ac",
+                "WS0006": "brdy_ac",
+                "WS0007": "brdy_ac",
+                "WS0008": "brdy_ac"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {"WS0002": "brdy_solenoid"}
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0001": "brburst",
+                "WS0003": "lrpdlaser",
+                "WS0004": "lrpdlaser",
+                "WS0011": "lrpdlaser"
+            }
+        }
+    ]
+}

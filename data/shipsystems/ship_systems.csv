@@ -1,0 +1,93 @@
+name,id,flux/second,f/s (base rate),f/s (base cap),flux/use,f/u (base rate),f/u (base cap),max uses,regen,charge up,active,down,cooldown,toggle,noDissipation,noHardDissipation,hardFlux,noFiring,noTurning,noStrafing,noAccel,noShield,icon
+,,,,,,,,,,,,,,,,,,,,,,,
+Phase Anchors,ms_phaseanchor,,,,,,,,,0.5,,0.5,0,TRUE,,TRUE,TRUE,TRUE,,,,TRUE,graphics/icons/hullsys/phase_cloak.png
+Phase Mines,ms_phasemine,,,,,,,20,,0,,4,5,,,,,,,,,,graphics/icons/hullsys/drone_sensor.png
+Drive Overcharge,ms_drivecharger,500,,,2000,,,,,,,1,1,TRUE,,,,,,,TRUE,,graphics/icons/hullsys/infernium_injector.png
+Fighter Control Relay,ms_swacs,150,,,,,,,,1.5,,3,0,TRUE,,,,,,,,,graphics/icons/hullsys/drone_sensor.png
+Heavy Phase Skimmer,ms_mimirskimmir,,,,,,0.15,4,0.1,0.5,,0.5,0,,TRUE,,TRUE,,,,,,graphics/icons/hullsys/displacer.png
+
+"Phase Drones","junk_pirates_drone_phase",,,,,,,15,,0,,0,0,,,,,,,,,,
+"TNT Drones","junk_pirates_tnt_drone",,,,,,,6,0.05,0,,0,0,,,,,,,,,,
+"Welding Drones","junk_pirates_welding_drones",,,,,,,2,,0,,0,0,,,,,,,,,,
+
+Defense Drones,mrd_drone_buzz,,,,,,,10,0.0666,0,,0,0,,,,,,,,,,graphics/icons/hullsys/drone_pd_mid.png
+Defense Drones,mrd_drone_buzz_frigate,,,,,,,6,0.0333,0,,0,0,,,,,,,,,,graphics/icons/hullsys/drone_pd_mid.png
+,,,,,,,,,,,,,,,,,,,,,,,
+Buzzer Escort,mrd_buzzer_escort,,,,,,,9,0.0666,0,,0,0,,,,,,,,,,graphics/icons/hullsys/mrd_buzzer_escort.png
+Buzzer Escort,mrd_buzzer_escort_Kiwi,,,,,,,9,0.0666,0,,0,0,,,,,,,,,,graphics/icons/hullsys/mrd_buzzer_escort.png
+Oppressor Escort,mrd_oppressor_escort_capital,,,,,,,6,0.0333,0,,0,0,,,,,,,,,,graphics/icons/hullsys/mrd_oppressor_escort.png
+Oppressor Escort,mrd_oppressor_int_escort_capital,,,,,,,6,0.0333,0,,0,0,,,,,,,,,,graphics/icons/hullsys/mrd_oppressor_interceptor_escort.png
+,,,,,,,,,,,,,,,,,,,,,,,
+Short Burn Drive,mrd_burndrive,1,,,,,,,,2,3,1,10,,,,,,TRUE,TRUE,TRUE,TRUE,graphics/icons/hullsys/burn_drive.png
+Flare Launcher,mrd_flarelauncher,,,,,,,8,,,,,5,,,,,,,,,,graphics/icons/hullsys/flare_launcher.png
+Fortress Shield,mrd_fortressshield,,,0.018,,,,,,1,,1,0,TRUE,,,TRUE,TRUE,,,,,graphics/icons/hullsys/fortress_shield.png
+Maneuvering Jets,mrd_maneuveringjets,,,,,,,,,1,2,1,6,,,,,,,,,,graphics/icons/hullsys/maneuvering_jets.png
+
+Arc Jet Burner,arcjetburner,1,,,0,,,,,1,4,1.6,9,,,,,,FALSE,TRUE,TRUE,TRUE,graphics/icons/hullsys/burn_drive.png
+Lucifer Generator,lucifergenerator,1,,,500,,,,,1,1.5,1,8,,,,,,TRUE,TRUE,FALSE,TRUE,graphics/icons/hullsys/burn_drive.png
+Barracuda Drones,revenantdrones,,,,,,,8,0.02,0,,0,0,,,,,,,,,,graphics/icons/hullsys/drone_pd_high.png
+Interdiction Array,gravityfield,1,,0.04,250,,,,,0,,0,0,TRUE,,,,,,,,FALSE,graphics/icons/hullsys/drone_sensor.png
+Burst Maneuvering Jets,burstjets,,,,,,,2,0.14,0.8,0.2,1.4,0.05,,,,,,,,,,graphics/icons/hullsys/burn_drive.png
+Arc Jet Thrusters,desdinovajets,,,,,,,2,0.155,0.2,0.21,1.8,0,,,,,,,,,,graphics/icons/hullsys/burn_drive.png
+Lucifer Drive,luciferdrive,,,,,,0.4,,,0.6,0,1.5,10,,TRUE,,,,,,,,graphics/icons/hullsys/high_energy_focus.png
+Sentinel Drone,brdy_sentineldrone,,,,,,,3,0.012,0,0,0,0,,,,,,,,,,graphics/icons/hullsys/drone_sensor.png
+Burst Maneuvering Jets,burstjets_drone,,,,,,,1,0.14,0.5,0.3,1.1,0.05,,,,,,,,,,graphics/icons/hullsys/burn_drive.png
+Combat Sensors,shrimpsensor,,,0.06,,,,,,1,7,1,15,,,,,,,,,,graphics/icons/hullsys/high_energy_focus.png
+
+Algae Drive,algaedrive,1,,,,,,,,2,5,1,3,,,,,,TRUE,TRUE,TRUE,TRUE,graphics/icons/hullsys/burn_drive.png
+
+,,,,,,,,,,,,,,,,,,,,,,,
+Guardian Drones,drone_pd_midline,,,,,,,25,,0,,0,0,,,,,,,,,,graphics/icons/hullsys/drone_pd_mid.png
+,,,,,,,,,,,,,,,,,,,,,,,
+Guardian Shield Drones,drone_shield_midline,,,,,,,15,,0,,0,0,,,,,,,,,,graphics/icons/hullsys/drone_pd_mid.png
+,,,,,,,,,,,,,,,,,,,,,,,
+Guardian Drone Swarm,heavy_drone_pd_midline,,,,,,,60,,0,,0,0,,,,,,,,,,graphics/icons/hullsys/drone_pd_mid.png
+,,,,,,,,,,,,,,,,,,,,,,,
+Incendiary Ammunition,incendiaryammo,,,,,,,,,0.5,,0.5,0,TRUE,,,,,,,,TRUE,graphics/icons/hullsys/ammo_feeder.png
+,,,,,,,,,,,,,,,,,,,,,,,
+Valkyria EMSW Generator,valkyria,,,,,,,,,2.5,0.5,0.5,45,,,,,,,,,,graphics/icons/hullsys/ammo_feeder.png
+,,,,,,,,,,,,,,,,,,,,,,,
+Command Relay,commandbuff,,,,,,,,,0,,0,0,TRUE,,,,,,,,,graphics/icons/hullsys/drone_sensor.png
+,,,,,,,,,,,,,,,,,,,,,,,
+ECM Jammer,ecm_jammer,,,,,,0.2,,,1,15,1,15,,,,,,,,,,graphics/icons/hullsys/ammo_feeder.png
+,,,,,,,,,,,,,,,,,,,,,,,
+Micro Burn Drive,microburndrive,1,,,,,,,,1,1.5,1,5,,,,,,,,TRUE,,graphics/icons/hullsys/burn_drive.png
+
+Gedune Phase Teleporter,gedune_phasetele,,,,,,0.1,3,0.05,0.45,,0.45,0,,TRUE,,TRUE,,,,,,graphics/icons/hullsys/high_energy_focus.png
+Nuclear Burn,gedune_burndrive,,,,,,,,,0.7,3,0.7,10,,,,,,TRUE,TRUE,TRUE,TRUE,graphics/icons/hullsys/burn_drive.png
+Kyra Drone,drone_kyra,,,,,,,8,0.02,0,,0,0,,,,,,,,,,graphics/icons/hullsys/drone_pd_high.png
+Wraithii Drone,drone_wraithii,,,,,,,2,0.2,0,,0,0,,,,,,,,,,graphics/icons/hullsys/drone_pd_high.png
+
+"Scout Drohne","neutrino_drone_scout",,,,,,,3,,0,,0,0,,,,,,,,,,"graphics/icons/hullsys/drone_sensor.png"
+"Active Swarm Flares","neutrino_swarmflarelauncher",,,,,,,4,,,,,8,,,,,,,,,,"graphics/icons/hullsys/active_flare_launcher.png"
+"Guardian Shield","neutrino_guardianshield",,,,,,,1,,0,,0,999,,,,,,,,,,"graphics/icons/hullsys/fortress_shield.png"
+"Aegis Drones","neutrino_shielddrones",,,,,,,4,,0,,0,0,,,,,,,,,,"graphics/icons/hullsys/fortress_shield.png"
+"Derp Charge CIWS","neutrino_derpchargesystem",,,,,,,32,,0,,0,0.2,,,,,,,,,,"graphics/icons/hullsys/flare_launcher.png"
+"Arc Surge Emitter","neutrino_arcsurge",1,,,,,0.66,,,0.5,2,0.025,4,,,,"TRUE",,,,,,"graphics/icons/hullsys/emp_emitter.png"
+"Phase Missile System ","neutrino_phasemissilesystem",,,,,,0.5,3,0.05,0,,0,10,,,,,,,,,,"graphics/icons/hullsys/flare_launcher.png"
+"Cruise Drive","neutrino_cruise_engine",,,,,,,,,2,7.5,1,6,,,,,"TRUE",,,"TRUE",,"graphics/icons/hullsys/burn_drive.png"
+"For The Swarm","neutrino_schwarm2",,,,,,,2,,0,,0,0,,,,,,,,,,"graphics/icons/hullsys/flare_launcher.png"
+"For The Swarm","neutrino_schwarm3",,,,,,,2,,0,,0,0,,,,,,,,,,"graphics/icons/hullsys/flare_launcher.png"
+
+Hadron Transporter,hadrontransporter,,,,,,0.3,3,0.05,0.1,0,0.1,0,,TRUE,,TRUE,,,,,,graphics/icons/hullsys/high_energy_focus.png
+Point Defense Drones,meddrone_pd,,,,,,,15,,0,,0,0,,,,,,,,,,graphics/icons/hullsys/drone_pd_high.png
+Lightning Gun,shockprobes,1,,,,,0.25,,,0.5,4,0.5,5,,,,,TRUE,,,,,graphics/icons/hullsys/emp_emitter.png
+Defense Matrix,defensematrix,,,0.015,,,,,,1,,1,0,TRUE,,,TRUE,TRUE,,,,,graphics/icons/hullsys/fortress_shield.png
+Torpedo Launcher,torpedolauncher,,,,,,,2,0.05,,,,3,,,,,,,,,,graphics/interstellarFederation/icons/hullsys/torpedo_launcher.png
+Mine Layer,minelayer,,,,,,,4,,,,,10,,,,,,,,,,graphics/interstellarFederation/icons/hullsys/minelayer.png
+X-Flare Launcher,xflarelauncher,,,,,,,,,,,,15,,,,,,,,,,graphics/icons/hullsys/active_flare_launcher.png
+Neutron Gun,neutrongun,1,,,,,0.2,,,,,,5,,,,,TRUE,,,,,graphics/icons/hullsys/emp_emitter.png
+
+
+"Relics Defense Drones","relics_defense_drone",,,,,,,70,0.5,,,0,0,,,,,,,,,,"graphics/icons/hullsys/drone_pd_high.png"
+
+
+
+,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,
+"Komet Drive","kometdrive",,,25,,,,,,2,,2,0,"TRUE",,,,,,"TRUE","TRUE",,"graphics/icons/hullsys/burn_drive.png"
+,,,,,,,,,,,,,,,,,,,,,,,
+"Heimdahl Generator","thule_heimdahl_generator",,,,,,,3,,"15","0.5","0.5",30,,,,,,,,,,"graphics/TL/icons/hullsys/thule_heimdahl_generator.png"
+"Heimdahl Pulsator","thule_heimdahl_pulsator",,,,,,,10,,1,"0.5","0.5",0,,,,,,,,,,"graphics/TL/icons/hullsys/thule_heimdahl_generator.png"

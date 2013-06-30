@@ -1,0 +1,218 @@
+{
+  "bounds": [
+    -34,
+    -12,
+    -20,
+    -12.5,
+    -16,
+    -33.5,
+    5,
+    -33,
+    21,
+    -13.5,
+    48.5,
+    -10,
+    48.5,
+    10,
+    21,
+    13.5,
+    5,
+    33,
+    -16,
+    33.5,
+    -20,
+    12.5,
+    -34,
+    12
+  ],
+  "center": [
+    50,
+    35
+  ],
+  "collisionRadius": 51.799999,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -32.5,
+        7
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -32.5,
+        -7
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 15.5,
+      "location": [
+        -20.5,
+        16.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 15.5,
+      "location": [
+        -20.5,
+        -16.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 4
+    },
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 16,
+      "location": [
+        -17,
+        27
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 8,
+      "length": 16,
+      "location": [
+        -17,
+        -27
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 8
+    }
+  ],
+  "height": 100,
+  "hullId": "gedune_kitsune",
+  "hullName": "Kitsune",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    6,
+    -0
+  ],
+  "shieldRadius": 61.099998,
+  "spriteName": "graphics/gedune/ships/gedune_kitsune.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": -0,
+      "arc": 5,
+      "id": "WS0001",
+      "locations": [
+        21.5,
+        -17
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS0002",
+      "locations": [
+        21.5,
+        17
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0003",
+      "locations": [
+        11,
+        -31
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0004",
+      "locations": [
+        11,
+        31
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS0005",
+      "locations": [
+        0,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0006",
+      "locations": [
+        40,
+        -0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 16.699244,
+      "arc": 41.026638,
+      "id": "WS0007",
+      "locations": [
+        9.5,
+        20.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": -16.699244,
+      "arc": 41.026638,
+      "id": "WS0008",
+      "locations": [
+        9.5,
+        -20.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ],
+  "width": 100
+}

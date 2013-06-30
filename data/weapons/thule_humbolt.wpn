@@ -1,0 +1,29 @@
+{
+	"id":"thule_humbolt",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"LARGE",
+	"displayArcRadius":600,
+	"turretSprite":"graphics/TL/weapons/thule_humbolt_cannon_base.png",
+	"turretGlowSprite":"graphics/TL/weapons/thule_humbolt_cannon_glow.png",
+	"hardpointSprite":"graphics/TL/weapons/thule_humbolt_cannon_base.png",
+	"hardpointGlowSprite":"graphics/TL/weapons/thule_humbolt_cannon_glow.png",
+	"glowColor":[180,0,255,100],
+	"turretOffsets":[25, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[35, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"GLOW_AND_FLASH",
+	"muzzleFlashSpec":{"length":100.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":5.0,
+					   "particleSizeMin":20.0,
+					   "particleSizeRange":20.0,
+					   "particleDuration":0.25,
+					   "particleCount":25,
+					   "particleColor":[80,0,255,255]},	
+	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held
+	"projectileSpecId":"thule_humbolt_shot",  # projectile that will be fired
+	"fireSoundTwo":"thule_humbolt",
+	"fireSoundOne":"thule_humbolt_charge",
+}

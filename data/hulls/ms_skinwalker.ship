@@ -1,0 +1,132 @@
+{
+  "bounds": [
+    -14,
+    8,
+    6,
+    24.5,
+    15,
+    0,
+    6,
+    -24.5,
+    -14,
+    -8
+  ],
+  "center": [
+    25,
+    15
+  ],
+  "collisionRadius": 30.103987,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 5,
+      "length": 20,
+      "location": [
+        -14,
+        7
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 5,
+      "length": 20,
+      "location": [
+        -14,
+        -5.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 5,
+      "length": 20,
+      "location": [
+        -14,
+        -8
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 6
+    }
+  ],
+  "height": 40,
+  "hullId": "ms_skinwalker",
+  "hullName": "Skinwalker",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 28.853077,
+  "spriteName": "graphics/shadow_ships/ships/ms_skinwalker.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 25,
+      "id": "WS 001",
+      "locations": [
+        3.5,
+        -2
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS 002",
+      "locations": [
+        6,
+        7
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS 003",
+      "locations": [
+        2.5,
+        -4.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "DECORATIVE"
+    },
+    {
+      "angle": -135,
+      "arc": 5,
+      "id": "WS 004",
+      "locations": [
+        -6,
+        -12.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 135,
+      "arc": 5,
+      "id": "WS 005",
+      "locations": [
+        -6,
+        12.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ],
+  "width": 50
+}

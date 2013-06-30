@@ -1,0 +1,24 @@
+{
+	"id":"ms_blackcap",
+	"specClass":"missile",	
+	"missileType":"MISSILE",
+	"sprite":"graphics/shadow_weapons/missiles/missile_blackcap.png",
+	"size":[10,14],	
+	"center":[5,7],
+	"collisionRadius":12,
+	"collisionClass":"MISSILE_NO_FF",
+	"explosionColor":[255,255,255,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":100, # purely visual
+	"engineSpec":{"turnAcc":1720,
+				  "turnRate":280,
+				  "acc":800,
+				  "dec":600},
+	"engineSlots":[{"id":"ES1",
+					"loc":[-7, 0],
+				    "style":"CUSTOM",
+                    "styleId":"ShadowyardsFlare",
+				    "width":3.0,
+				    "length":30.0,
+				    "angle":180.0},
+				    ]
+}

@@ -1,0 +1,79 @@
+{
+  "displayName": "Military",
+  "fluxCapacitors": 5,
+  "fluxVents": 6,
+  "hullId": "vatican_II",
+  "hullMods": [
+    "autorepair",
+    "magazines",
+    "targetingunit"
+  ],
+  "variantId": "vatican_II_M",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "scorpionpod",
+        "WS0002": "scorpionpod",
+        "WS0003": "scorpionpod",
+        "WS0004": "scorpionpod"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0005": "pilum",
+        "WS0006": "pilum",
+        "WS0007": "pilum",
+        "WS0008": "pilum"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0025": "heavyneedler",
+        "WS0026": "heavyneedler",
+        "WS0027": "heavyneedler",
+        "WS0028": "heavyneedler",
+        "WS0033": "hephag",
+        "WS0034": "hephag",
+        "WS0035": "hephag",
+        "WS0036": "hephag"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "irpdburst",
+        "WS0010": "irpdburst",
+        "WS0011": "irpdburst",
+        "WS0012": "irpdburst",
+        "WS0013": "lightflak",
+        "WS0014": "lightflak",
+        "WS0015": "lightdualmg",
+        "WS0016": "lightdualmg",
+        "WS0017": "irpdburst",
+        "WS0018": "irpdburst",
+        "WS0019": "lightdualmg",
+        "WS0020": "lightdualmg",
+        "WS0021": "irpdburst",
+        "WS0022": "irpdburst",
+        "WS0023": "lrflak",
+        "WS0024": "lrflak",
+        "WS0029": "quadheavymg",
+        "WS0030": "quadheavymg",
+        "WS0031": "lrflak",
+        "WS0032": "lrflak"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

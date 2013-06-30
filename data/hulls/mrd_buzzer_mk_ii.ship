@@ -1,0 +1,126 @@
+{
+  "bounds": [
+    14.5,
+    3.5,
+    1.5,
+    6.5,
+    -9.5,
+    14.5,
+    -16.5,
+    7,
+    -14.5,
+    -0,
+    -16.5,
+    -7,
+    -9.5,
+    -14.5,
+    1.5,
+    -6.5,
+    14.5,
+    -3.5
+  ],
+  "center": [
+    16,
+    18
+  ],
+  "collisionRadius": 23.505318,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 14,
+      "location": [
+        -16.5,
+        5.5
+      ],
+      "style": "LOW_TECH",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 14,
+      "location": [
+        -16.5,
+        -5.5
+      ],
+      "style": "LOW_TECH",
+      "width": 6
+    }
+  ],
+  "height": 36,
+  "hullId": "mrd_buzzer_mk_ii",
+  "hullName": "Buzzer Mk. II",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 22.522211,
+  "spriteName": "graphics/ships/mrd_buzzer_mk_II.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 15,
+      "id": "WS0001",
+      "locations": [
+        14.5,
+        2.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 15,
+      "id": "WS0002",
+      "locations": [
+        14.5,
+        -2.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 140,
+      "id": "WS0003",
+      "locations": [
+        -10.5,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 10,
+      "id": "WS0004",
+      "locations": [
+        -1,
+        11
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0005",
+      "locations": [
+        -1,
+        -11
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    }
+  ],
+  "width": 32
+}

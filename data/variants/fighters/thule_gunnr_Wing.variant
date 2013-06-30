@@ -1,0 +1,19 @@
+{
+  "displayName": "Elite Fighter",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "thule_gunnr",
+  "hullMods": [],
+  "variantId": "thule_gunnr_Wing",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "lightac",
+        "WS0002": "lightac",
+        "WS0003": "swarmer"
+      }
+    }
+  ]
+}

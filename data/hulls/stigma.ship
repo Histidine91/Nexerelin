@@ -1,0 +1,93 @@
+{
+    "bounds": [
+        -6,
+        11,
+        18,
+        0,
+        -6,
+        -11,
+        -9,
+        0
+    ],
+    "center": [
+        15,
+        13
+    ],
+    "collisionRadius": 30,
+    "engineSlots": [
+        {
+            "angle": 180,
+            "contrailSize": 64,
+            "length": 32,
+            "location": [
+                -12,
+                5
+            ],
+            "style": "LOW_TECH",
+            "width": 12
+        },
+        {
+            "angle": 180,
+            "contrailSize": 64,
+            "length": 32,
+            "location": [
+                -12,
+                -5
+            ],
+            "style": "LOW_TECH",
+            "width": 12
+        }
+    ],
+    "height": 33,
+    "hullId": "stigma",
+    "hullName": "Stigma",
+    "hullSize": "FIGHTER",
+    "shieldCenter": [
+        0,
+        0
+    ],
+    "shieldRadius": 22,
+    "spriteName": "graphics/lotus/ships/stigma.png",
+    "style": "LOW_TECH",
+    "viewOffset": 0,
+    "weaponSlots": [
+        {
+            "angle": 0,
+            "arc": 5,
+            "id": "WS 001",
+            "locations": [
+                -6,
+                10
+            ],
+            "mount": "HIDDEN",
+            "size": "SMALL",
+            "type": "BALLISTIC"
+        },
+        {
+            "angle": 0,
+            "arc": 5,
+            "id": "WS 002",
+            "locations": [
+                -6,
+                -10
+            ],
+            "mount": "HIDDEN",
+            "size": "SMALL",
+            "type": "BALLISTIC"
+        },
+        {
+            "angle": 0,
+            "arc": 5,
+            "id": "WS 003",
+            "locations": [
+                10,
+                0
+            ],
+            "mount": "HIDDEN",
+            "size": "SMALL",
+            "type": "MISSILE"
+        },
+        
+    ],
+    "width": 30
+}

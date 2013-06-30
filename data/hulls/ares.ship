@@ -1,0 +1,375 @@
+{
+  "bounds": [
+    180.5,
+    -3.5,
+    171.5,
+    -8.0,
+    164.5,
+    -12.5,
+    157.5,
+    -14.0,
+    149.0,
+    -14.5,
+    109.5,
+    -15.0,
+    92.0,
+    -16.0,
+    78.5,
+    -20.5,
+    61.0,
+    -20.5,
+    55.5,
+    -18.5,
+    41.5,
+    -19.5,
+    28.5,
+    -22.5,
+    24.0,
+    -21.0,
+    11.5,
+    -21.0,
+    5.5,
+    -30.5,
+    6.0,
+    -35.0,
+    2.5,
+    -48.5,
+    -2.5,
+    -49.0,
+    -5.5,
+    -47.0,
+    -15.0,
+    -30.0,
+    -22.0,
+    -30.0,
+    -35.5,
+    -22.5,
+    -44.0,
+    -22.5,
+    -48.0,
+    -24.5,
+    -84.0,
+    -25.0,
+    -90.0,
+    -25.0,
+    -97.0,
+    -25.0,
+    -100.0,
+    -20.5,
+    -105.0,
+    -23.5,
+    -119.5,
+    -23.5,
+    -127.5,
+    -27.0,
+    -138.5,
+    -24.0,
+    -140.0,
+    -11.5,
+    -144.0,
+    -8.5,
+    -144.0,
+    8.5,
+    -140.0,
+    11.5,
+    -138.5,
+    24.0,
+    -127.5,
+    27.0,
+    -119.5,
+    23.5,
+    -105.0,
+    23.5,
+    -100.0,
+    20.5,
+    -97.0,
+    25.0,
+    -90.0,
+    25.0,
+    -84.0,
+    25.0,
+    -48.0,
+    24.5,
+    -44.0,
+    22.5,
+    -35.5,
+    22.5,
+    -22.0,
+    30.0,
+    -15.0,
+    30.0,
+    -5.5,
+    47.0,
+    -2.5,
+    49.0,
+    2.5,
+    48.5,
+    6.0,
+    35.0,
+    5.5,
+    30.5,
+    11.5,
+    21.0,
+    24.0,
+    21.0,
+    28.5,
+    22.5,
+    41.5,
+    19.5,
+    55.5,
+    18.5,
+    61.0,
+    20.5,
+    78.5,
+    20.5,
+    92.0,
+    16.0,
+    109.5,
+    15.0,
+    149.0,
+    14.5,
+    157.5,
+    14.0,
+    164.5,
+    12.5,
+    171.5,
+    8.0,
+    180.5,
+    3.5
+  ],
+  "center": [
+    59.5,
+    159.0
+  ],
+  "collisionRadius": 144.5,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 6.0,
+      "length": 22.5,
+      "location": [
+        -140.5,
+        -19.5
+      ],
+      "style": "MIDLINE",
+      "width": 6.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 6.0,
+      "length": 22.5,
+      "location": [
+        -140.5,
+        19.5
+      ],
+      "style": "MIDLINE",
+      "width": 6.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 3.0,
+      "length": 11.5,
+      "location": [
+        -140.5,
+        13.5
+      ],
+      "style": "MIDLINE",
+      "width": 3.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 3.0,
+      "length": 11.5,
+      "location": [
+        -140.5,
+        -13.5
+      ],
+      "style": "MIDLINE",
+      "width": 3.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 14.0,
+      "length": 46.5,
+      "location": [
+        -145.5,
+        -0.0
+      ],
+      "style": "MIDLINE",
+      "width": 14.0
+    }
+  ],
+  "height": 380.0,
+  "width": 120.0,
+  "hullId": "ares",
+  "hullName": "Ares",
+  "hullSize": "CRUISER",
+  "shieldCenter": [
+    26.5,
+    0.0
+  ],
+  "shieldRadius": 194.1,
+  "spriteName": "graphics/interstellarFederation/ships/aresDestroyer.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 0.0,
+      "arc": 317.0,
+      "id": "WS 1",
+      "locations": [
+        158.5,
+        -0.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 293.4,
+      "id": "WS 2",
+      "locations": [
+        70.0,
+        -0.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 275.6,
+      "id": "WS 3",
+      "locations": [
+        44.0,
+        -0.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 180.0,
+      "arc": 275.1,
+      "id": "WS 4",
+      "locations": [
+        -131.0,
+        -0.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -96.0,
+      "arc": 169.6,
+      "id": "WS 5",
+      "locations": [
+        -94.0,
+        -20.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 94.6,
+      "arc": 169.1,
+      "id": "WS 6",
+      "locations": [
+        -94.0,
+        18.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -90.0,
+      "arc": 197.6,
+      "id": "WS 7",
+      "locations": [
+        -3.0,
+        -36.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 197.9,
+      "id": "WS 8",
+      "locations": [
+        -3.0,
+        34.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "LB 1",
+      "locations": [
+        50.0,
+        19.0,
+        50.5,
+        -20.0
+      ],
+      "mount": "HIDDEN",
+      "size": "LARGE",
+      "type": "LAUNCH_BAY"
+    },
+    {
+      "angle": -37.1,
+      "arc": 0.0,
+      "id": "WS0001",
+      "locations": [
+        88.0,
+        -16.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 37.1,
+      "arc": 0.0,
+      "id": "WS0002",
+      "locations": [
+        88.0,
+        16.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": -118.8,
+      "arc": 0.0,
+      "id": "WS0003",
+      "locations": [
+        -114.0,
+        -24.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 118.8,
+      "arc": 0.0,
+      "id": "WS0004",
+      "locations": [
+        -114.0,
+        24.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

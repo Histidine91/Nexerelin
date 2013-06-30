@@ -1,0 +1,32 @@
+{
+    "displayName": "Hunter",
+    "fluxCapacitors": 2,
+    "fluxVents": 8,
+    "hullId": "blizzard",
+    "hullMods": [
+        "fluxbreakers",
+        "stabilizedshieldemitter",
+        "missleracks"
+    ],
+    "variantId": "blizzard_Hunter",
+    "weaponGroups": [
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "sabot_single",
+                "WS 002": "sabot_single"
+            }
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {"WS 003": "harpoonpod"}
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 004": "lightdualac",
+                "WS 005": "lightdualac"
+            }
+        }
+    ]
+}

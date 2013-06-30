@@ -1,0 +1,490 @@
+package data.scripts.plugins;
+
+import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
+import com.fs.starfarer.api.characters.CharacterCreationPlugin;
+import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
+import data.scripts.world.exerelin.ExerelinData;
+
+import java.util.ArrayList;
+import java.util.List;
+/* Originally from UomozCorvus */
+
+public class CharacterCreationPluginImpl implements CharacterCreationPlugin
+{
+	public static class ResponseImpl implements Response {
+		private String text;
+		public ResponseImpl(String text)
+		{
+			this.text = text;
+		}
+		public String getText()
+		{
+			return text;
+		}
+	}
+
+	private ResponseImpl THREE_PLANETS = new ResponseImpl("3 Planets");
+	private ResponseImpl SIX_PLANETS = new ResponseImpl("6 Planets");
+	private ResponseImpl NINE_PLANETS = new ResponseImpl("9 Planets");
+	private ResponseImpl TWELVE_PLANETS = new ResponseImpl("12 Planets");
+	private ResponseImpl FIFTEEN_PLANETS = new ResponseImpl("15 Planets");
+	private ResponseImpl EIGHTEEN_PLANETS = new ResponseImpl("18 Planets");
+	private ResponseImpl TWENTYONE_PLANETS = new ResponseImpl("21 Planets");
+
+	private ResponseImpl TWO_ASTEROID_BELTS = new ResponseImpl("2 Asteroid Belts");
+	private ResponseImpl FOUR_ASTEROID_BELTS = new ResponseImpl("4 Asteroid Belts");
+	private ResponseImpl SIX_ASTEROID_BELTS = new ResponseImpl("6 Asteroid Belts");
+	private ResponseImpl EIGHT_ASTEROID_BELTS = new ResponseImpl("8 Asteroid Belts");
+	private ResponseImpl TEN_ASTEROID_BELTS = new ResponseImpl("10 Asteroid Belts");
+
+	private ResponseImpl FIVE_STATIONS = new ResponseImpl("5 Stations");
+	private ResponseImpl TEN_STATIONS = new ResponseImpl("10 Stations");
+	private ResponseImpl FIFTEEN_STATIONS = new ResponseImpl("15 Stations");
+	private ResponseImpl TWENTY_STATIONS = new ResponseImpl("20 Stations");
+	private ResponseImpl TWENTYFIVE_STATIONS = new ResponseImpl("25 Stations");
+	private ResponseImpl THIRTY_STATIONS = new ResponseImpl("30 Stations");
+	private ResponseImpl THIRTYFIVE_STATIONS = new ResponseImpl("35 Stations");
+
+	private ResponseImpl OMNI_FAC_PRESENT = new ResponseImpl("The OmniFactory is available");
+	private ResponseImpl OMNI_FAC_NOT_PRESENT = new ResponseImpl("The OmniFactory is not available");
+
+	private ResponseImpl ONE_FACTION = new ResponseImpl("1 other Faction");
+	private ResponseImpl THREE_FACTION = new ResponseImpl("3 other Factions");
+	private ResponseImpl SIX_FACTION = new ResponseImpl("6 other Factions");
+	private ResponseImpl ALL_FACTION = new ResponseImpl("All factions you know of!");
+	private ResponseImpl ONE_VANILLA_FACTION = new ResponseImpl("1 familiar face [Vanilla Only]");
+	private ResponseImpl ALL_VANILLA_FACTION = new ResponseImpl("A few old friends [Vanilla Only]");
+
+	private ResponseImpl RESPAWN_YES = new ResponseImpl("Yes, factions will respawn");
+	private ResponseImpl RESPAWN_YES_COND = new ResponseImpl("Yes, but only factions initially in Exerelin");
+	private ResponseImpl RESPAWN_NO = new ResponseImpl("No, factions will not respawn");
+
+	// FACTIONS AUTO GENERATED
+	private ResponseImpl NEXT = new ResponseImpl("Next...");
+	private ResponseImpl PREV = new ResponseImpl("Prev...");
+
+	private ResponseImpl RESPAWN_ZERO = new ResponseImpl("As soon as possible!");
+	private ResponseImpl RESPAWN_TWO = new ResponseImpl("Two months later");
+	private ResponseImpl RESPAWN_FOUR = new ResponseImpl("Four months later");
+	private ResponseImpl RESPAWN_EIGHT = new ResponseImpl("Eight months later");
+	private ResponseImpl RESPAWN_SIXTEEN = new ResponseImpl("Sixteen months later");
+
+	private ResponseImpl FREE_GOODS = new ResponseImpl("Be given free goods");
+	private ResponseImpl PAY_FOR_GOODS = new ResponseImpl("Pay for goods");
+
+
+
+	private int stage = 0;
+	private String [] prompts = new String [] {
+		"System Exerelin has how many planets?",
+		"System Exerelin has how many asteroid belts?",
+		"System Exerelin has how many stations?",
+		"Is the OmniFactory in Exerelin?",
+		"When you arrive at Exerelin, how many other factions are there with you initially?",
+		"Shall factions return to Exerelin?",
+		"How long until other factions show up?",
+		"For the assault on Exerelin you have joined...",
+		"... or you joined ..",
+		//"At your faction aligned stations you expect to...",
+	};
+
+	public String getPrompt()
+	{
+		if (stage < prompts.length)
+		{
+			return prompts[stage];
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+
+	public List getResponses()
+	{
+		List result = new ArrayList();
+
+		if (stage == 0)
+		{
+			result.add(THREE_PLANETS);
+			result.add(SIX_PLANETS);
+			result.add(NINE_PLANETS);
+			result.add(TWELVE_PLANETS);
+			result.add(FIFTEEN_PLANETS);
+			result.add(EIGHTEEN_PLANETS);
+			result.add(TWENTYONE_PLANETS);
+		}
+		else if (stage == 1)
+		{
+			result.add(TWO_ASTEROID_BELTS);
+			result.add(FOUR_ASTEROID_BELTS);
+			result.add(SIX_ASTEROID_BELTS);
+			result.add(EIGHT_ASTEROID_BELTS);
+			result.add(TEN_ASTEROID_BELTS);
+		}
+		else if (stage == 2)
+		{
+			result.add(FIVE_STATIONS);
+			result.add(TEN_STATIONS);
+			result.add(FIFTEEN_STATIONS);
+			result.add(TWENTY_STATIONS);
+			result.add(TWENTYFIVE_STATIONS);
+			result.add(THIRTY_STATIONS);
+			result.add(THIRTYFIVE_STATIONS);
+		}
+		else if (stage == 3)
+		{
+			result.add(OMNI_FAC_PRESENT);
+			result.add(OMNI_FAC_NOT_PRESENT);
+		}
+		else if (stage == 4)
+		{
+			result.add(ONE_FACTION);
+			result.add(THREE_FACTION);
+			result.add(SIX_FACTION);
+			result.add(ALL_FACTION);
+			result.add(ONE_VANILLA_FACTION);
+			result.add(ALL_VANILLA_FACTION);
+		}
+		else if (stage == 5)
+		{
+			result.add(RESPAWN_YES);
+			result.add(RESPAWN_YES_COND);
+			result.add(RESPAWN_NO);
+		}
+		else if (stage == 6)
+		{
+			//result.add(RESPAWN_ZERO);
+			result.add(RESPAWN_TWO);
+			result.add(RESPAWN_FOUR);
+			result.add(RESPAWN_EIGHT);
+			result.add(RESPAWN_SIXTEEN);
+		}
+		else if (stage == 7)
+		{
+			String[] possibleFactions = ExerelinData.getInstance().getPossibleFacions();
+			if(possibleFactions.length > 6)
+			{
+				for(int i = 0; i < possibleFactions.length/2; i = i + 1)
+				{
+					result.add(new ResponseImpl(possibleFactions[i]));
+				}
+				result.add(NEXT);
+			}
+			else
+			{
+				for(int i = 0; i < possibleFactions.length; i = i + 1)
+				{
+					result.add(new ResponseImpl(possibleFactions[i]));
+				}
+			}
+		}
+		else if (stage == 8)
+		{
+			String[] possibleFactions = ExerelinData.getInstance().getPossibleFacions();
+			for(int i = possibleFactions.length/2; i < possibleFactions.length; i = i + 1)
+			{
+				result.add(new ResponseImpl(possibleFactions[i]));
+			}
+			result.add(PREV);
+		}
+		else if (stage == 9)
+		{
+			stage++; // SKIP THIS STAGE
+			//result.add(FREE_GOODS);
+			//result.add(PAY_FOR_GOODS);
+
+		}
+
+        return result;
+    }
+
+
+	public void submit(Response response, CharacterCreationData data)
+	{
+		stage++;
+		if (response == THREE_PLANETS)
+			ExerelinData.getInstance().numPlanets = 3;
+		else if (response == SIX_PLANETS)
+			ExerelinData.getInstance().numPlanets = 6;
+		else if (response == NINE_PLANETS)
+			ExerelinData.getInstance().numPlanets = 9;
+		else if (response == TWELVE_PLANETS)
+			ExerelinData.getInstance().numPlanets = 12;
+		else if (response == FIFTEEN_PLANETS)
+			ExerelinData.getInstance().numPlanets = 15;
+		else if (response == EIGHTEEN_PLANETS)
+			ExerelinData.getInstance().numPlanets = 18;
+		else if (response == TWO_ASTEROID_BELTS)
+			ExerelinData.getInstance().numAsteroidBelts = 2;
+		else if (response == FOUR_ASTEROID_BELTS)
+			ExerelinData.getInstance().numAsteroidBelts = 4;
+		else if (response == SIX_ASTEROID_BELTS)
+			ExerelinData.getInstance().numAsteroidBelts = 6;
+		else if (response == EIGHT_ASTEROID_BELTS)
+			ExerelinData.getInstance().numAsteroidBelts = 8;
+		else if (response == TEN_ASTEROID_BELTS)
+			ExerelinData.getInstance().numAsteroidBelts = 10;
+		else if (response == TWENTYONE_PLANETS)
+			ExerelinData.getInstance().numPlanets = 21;
+		else if (response == FIVE_STATIONS)
+			ExerelinData.getInstance().numStations = 5;
+		else if (response == TEN_STATIONS)
+			ExerelinData.getInstance().numStations = 10;
+		else if (response == FIFTEEN_STATIONS)
+			ExerelinData.getInstance().numStations = 15;
+		else if (response == TWENTY_STATIONS)
+			ExerelinData.getInstance().numStations = 20;
+		else if (response == TWENTYFIVE_STATIONS)
+			ExerelinData.getInstance().numStations = 25;
+		else if (response == THIRTY_STATIONS)
+			ExerelinData.getInstance().numStations = 30;
+		else if (response == THIRTYFIVE_STATIONS)
+			ExerelinData.getInstance().numStations = 35;
+		else if (response == OMNI_FAC_PRESENT)
+			ExerelinData.getInstance().omniFacPresent = true;
+		else if (response == OMNI_FAC_NOT_PRESENT)
+			ExerelinData.getInstance().omniFacPresent = false;
+		else if (response == ONE_FACTION)
+		{
+			ExerelinData.getInstance().numStartFactions = 1;
+			ExerelinData.getInstance().onlyVanillaFactions = false;
+		}
+		else if (response == THREE_FACTION)
+		{
+			ExerelinData.getInstance().numStartFactions = 3;
+			ExerelinData.getInstance().onlyVanillaFactions = false;
+		}
+		else if (response == SIX_FACTION)
+		{
+			ExerelinData.getInstance().numStartFactions = 6;
+			ExerelinData.getInstance().onlyVanillaFactions = false;
+		}
+		else if (response == ALL_FACTION)
+		{
+			ExerelinData.getInstance().numStartFactions = 99; // Just use how many available factions there are
+			ExerelinData.getInstance().onlyVanillaFactions = false;
+		}
+		else if (response == ONE_VANILLA_FACTION)
+		{
+			ExerelinData.getInstance().numStartFactions = 1;
+			ExerelinData.getInstance().onlyVanillaFactions = true;
+		}
+		else if (response == ALL_VANILLA_FACTION)
+		{
+			ExerelinData.getInstance().numStartFactions = 3;
+			ExerelinData.getInstance().onlyVanillaFactions = true;
+		}
+		else if (response == RESPAWN_YES)
+		{
+			ExerelinData.getInstance().respawnFactions = true;
+			ExerelinData.getInstance().onlyRespawnStartingFactions = false;
+		}
+		else if (response == RESPAWN_YES_COND)
+		{
+			ExerelinData.getInstance().respawnFactions = true;
+			ExerelinData.getInstance().onlyRespawnStartingFactions = true;
+		}
+		else if (response == RESPAWN_NO)
+		{
+			ExerelinData.getInstance().respawnFactions = false;
+			ExerelinData.getInstance().onlyRespawnStartingFactions = false;
+			stage = stage + 1;
+		}
+		else if (response == RESPAWN_ZERO)
+		{
+			ExerelinData.getInstance().respawnDelay = 0;
+		}
+		else if (response == RESPAWN_TWO)
+		{
+			ExerelinData.getInstance().respawnDelay = 2;
+		}
+		else if (response == RESPAWN_FOUR)
+		{
+			ExerelinData.getInstance().respawnDelay = 4;
+		}
+		else if (response == RESPAWN_EIGHT)
+		{
+			ExerelinData.getInstance().respawnDelay = 8;
+		}
+		else if (response == RESPAWN_SIXTEEN)
+		{
+			ExerelinData.getInstance().respawnDelay = 16;
+		}
+		else if (response == FREE_GOODS)
+		{
+			data.getStartingCargo().getCredits().set(0f);
+			ExerelinData.getInstance().playerOwnedStationFreeTransfer = true;
+			ExerelinData.getInstance().confirmedFreeTransfer = true;
+		}
+		else if (response == PAY_FOR_GOODS)
+		{
+			data.getStartingCargo().getCredits().add(4000f);
+			ExerelinData.getInstance().playerOwnedStationFreeTransfer = false;
+			ExerelinData.getInstance().confirmedFreeTransfer = true;
+		}
+		else if (response == PREV)
+		{
+			stage = stage - 2;
+		}
+		else if (response == NEXT)
+		{
+			// Don't do anything
+		}
+		else
+		{
+			MutableCharacterStatsAPI stats = data.getPerson().getStats();
+
+			stats.addAptitudePoints(3);
+			stats.addSkillPoints(6);
+			String[] possibleFactions = ExerelinData.getInstance().getPossibleFacions();
+			for(int i = 0; i < possibleFactions.length; i = i + 1)
+			{
+				if(response.getText().equalsIgnoreCase(possibleFactions[i]))
+				{
+					ExerelinData.getInstance().setPlayerFaction(possibleFactions[i]);
+					ExerelinData.getInstance().confirmedFaction = true;
+					setStartingShipFromFactionSelection(possibleFactions[i], data);
+					break;
+				}
+			}
+			if(stage == 8)
+				stage = stage + 1; // Skip next faction selection
+		}
+	}
+
+	private void setStartingShipFromFactionSelection(String factionId, CharacterCreationData data)
+	{
+		if(factionId.equalsIgnoreCase("hegemony"))
+		{
+			data.addStartingShipChoice("hound_Assault");
+			data.addStartingShipChoice("lasher_Standard");
+		}
+		else if (factionId.equalsIgnoreCase("pirates"))
+		{
+			data.addStartingShipChoice("lasher_Standard");
+			data.addStartingShipChoice("hound_Assault");
+		}
+		else if (factionId.equalsIgnoreCase("tritachyon"))
+		{
+			data.addStartingShipChoice("wolf_CS");
+			data.addStartingShipChoice("afflictor_Strike");
+			data.addStartingShipChoice("omen_PD");
+			data.addStartingShipChoice("shade_Assault");
+			data.addStartingShipChoice("tempest_Attack");
+		}
+		else if (factionId.equalsIgnoreCase("independent"))
+		{
+			data.addStartingShipChoice("brawler_Assault");
+			data.addStartingShipChoice("vigilance_Standard");
+		}
+		else if (factionId.equalsIgnoreCase("shadowyards"))
+		{
+			data.addStartingShipChoice("ms_enlil_Standard");
+			data.addStartingShipChoice("ms_seski_Standard");
+			data.addStartingShipChoice("ms_shamash_Standard");
+			data.addStartingShipChoice("ms_inanna_Standard");
+		}
+		else if (factionId.equalsIgnoreCase("syndicateasp"))
+			data.addStartingShipChoice("syndicate_asp_diamondback_Standard");
+		else if (factionId.equalsIgnoreCase("junkpirate"))
+		{
+			data.addStartingShipChoice("junk_pirates_sickle_Standard");
+			data.addStartingShipChoice("junk_pirates_clam_Standard");
+			data.addStartingShipChoice("junk_pirates_hammer_Assault");
+		}
+		else if (factionId.equalsIgnoreCase("nomad"))
+		{
+			data.addStartingShipChoice("nom_wurm_assault");
+			data.addStartingShipChoice("nom_yellowjacket_sniper");
+		}
+		else if (factionId.equalsIgnoreCase("council"))
+		{
+			data.addStartingShipChoice("mrd_slasher_Balanced");
+			data.addStartingShipChoice("mrd_ambassador_standard");
+			data.addStartingShipChoice("mrd_defender_assault");
+			data.addStartingShipChoice("mrd_sparrow_Fast");
+		}
+		else if (factionId.equalsIgnoreCase("blackrock"))
+		{
+			data.addStartingShipChoice("scarab_attack");
+			data.addStartingShipChoice("brdy_locust_patrol");
+			data.addStartingShipChoice("brdy_mantis_strike");
+		}
+		else if (factionId.equalsIgnoreCase("antediluvian"))
+		{
+			data.addStartingShipChoice("donovan_Antediluvian");
+			data.addStartingShipChoice("bulwark_Antediluvian");
+			data.addStartingShipChoice("cape_Antediluvian");
+			data.addStartingShipChoice("sentinel_Antediluvian");
+		}
+		else if (factionId.equalsIgnoreCase("valkyrian"))
+		{
+			data.addStartingShipChoice("yuusha_M");
+			data.addStartingShipChoice("tesladora_M");
+			data.addStartingShipChoice("longinus_M");
+			data.addStartingShipChoice("jenova_ECM");
+			data.addStartingShipChoice("inquisitor_M");
+		}
+		else if (factionId.equalsIgnoreCase("lotusconglomerate"))
+		{
+			data.addStartingShipChoice("jackal_Hunter");
+			data.addStartingShipChoice("blizzard_Hunter");
+			data.addStartingShipChoice("stingray_Hunter");
+		}
+		else if (factionId.equalsIgnoreCase("gedune"))
+		{
+			data.addStartingShipChoice("gedune_kyirus_variant");
+			data.addStartingShipChoice("gedune_kitsune_variant");
+			data.addStartingShipChoice("gedune_nanda_variant1");
+		}
+		else if (factionId.equalsIgnoreCase("neutrino"))
+		{
+			data.addStartingShipChoice("neutrino_relativity_standard");
+			data.addStartingShipChoice("neutrino_singularity_balanced");
+
+		}
+		else if (factionId.equalsIgnoreCase("interstellarFederation"))
+		{
+			data.addStartingShipChoice("dakota_Standard");
+			data.addStartingShipChoice("scythe_Frigate");
+			data.addStartingShipChoice("echo_Standard");
+
+		}
+		else if (factionId.equalsIgnoreCase("relics"))
+		{
+			data.addStartingShipChoice("relics_egler_Standard");
+			data.addStartingShipChoice("relics_pusher_Standard");
+			data.addStartingShipChoice("relics_solver_Standard");
+		}
+		else if (factionId.equalsIgnoreCase("nihil"))
+		{
+			data.addStartingShipChoice("nihil_votex_predator");
+			data.addStartingShipChoice("nihil_null_cultist");
+		}
+		else if (factionId.equalsIgnoreCase("thulelegacy"))
+		{
+			data.addStartingShipChoice("thule_vikingmki_OD");
+			data.addStartingShipChoice("thule_vikingmkii_OD");
+		}
+		else
+		{
+			System.out.println("EXERELIN ERROR: Faction starting ship for " + factionId + " not defined");
+			data.addStartingShipChoice("shuttle_Attack");
+		}
+	}
+
+	public void startingShipPicked(String variantId, CharacterCreationData data)
+	{
+		data.getStartingCargo().addFuel(10);
+		data.getStartingCargo().addSupplies(20);
+		data.getStartingCargo().addCrew(CrewXPLevel.REGULAR, 25);
+		data.getStartingCargo().addMarines(3);
+	}
+}
+
+
+
+
+
+
+

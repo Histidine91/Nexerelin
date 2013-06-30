@@ -1,0 +1,18 @@
+{
+	"id":"ms_phaseblast",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC_AS_BEAM",
+	"collisionClass":"RAY",
+	"collisionClassByFighter":"RAY_FIGHTER",
+	"length":25.0,
+	"width":7,
+	"fadeTime":0.3,
+	"fringeColor":[165,215,145,255],
+	"coreColor":[125,155,115,150],
+	"glowColor":[70,120,50,75],
+	"glowRadius":35,
+	"hitGlowRadius":75,	
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":5.0,
+	"bulletSprite":"graphics/missiles/shell_gauss_cannon.png"	
+}

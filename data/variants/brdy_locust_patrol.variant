@@ -1,0 +1,28 @@
+{
+    "displayName": "Patrol",
+    "fluxCapacitors": 10,
+    "fluxVents": 2,
+    "hullId": "brdy_locust",
+    "hullMods": [],
+    "variantId": "brdy_locust_patrol",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {"WS0005": "br_fpde"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "brvulcan",
+                "WS0004": "brvulcan"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS0001": "pdlaser"}
+        }
+    ]
+}

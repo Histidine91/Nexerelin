@@ -1,0 +1,126 @@
+{
+  "bounds": [
+    -17.5,
+    -16,
+    9,
+    -15.5,
+    26,
+    -5.5,
+    -2,
+    -11.5,
+    -3.5,
+    -3.5,
+    11.5,
+    -2,
+    11.5,
+    2,
+    -3.5,
+    4,
+    -2,
+    12,
+    26,
+    5.5,
+    9,
+    15.5,
+    -17.5,
+    16
+  ],
+  "center": [
+    22.5,
+    30
+  ],
+  "collisionRadius": 29.02585,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -20.5,
+        11
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -20.5,
+        -11
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    }
+  ],
+  "height": 60,
+  "hullId": "brdy_krait",
+  "hullName": "Krait",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 45.96561,
+  "spriteName": "graphics/BR/ships/krait.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": -0,
+      "arc": 30.510237,
+      "id": "WS0001",
+      "locations": [
+        0.5,
+        7
+      ],
+      "mount": "HIDDEN",
+      "position": null,
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 30.510237,
+      "id": "WS0002",
+      "locations": [
+        0.5,
+        -7
+      ],
+      "mount": "HIDDEN",
+      "position": null,
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 270,
+      "id": "WS0005",
+      "locations": [
+        -14,
+        -0
+      ],
+      "mount": "TURRET",
+      "position": null,
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 14.250032,
+      "id": "WS0006",
+      "locations": [
+        10,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "position": null,
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 45
+}

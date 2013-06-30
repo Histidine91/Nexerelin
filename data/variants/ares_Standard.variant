@@ -1,0 +1,39 @@
+{
+  "displayName": "Standard",
+  "hullId": "ares",
+  "variantId": "ares_Standard",
+  "fluxVents": 28,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "magazines"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "thunderchief",
+        "WS 4": "vulcan"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "railgun",
+        "WS 6": "railgun",
+        "WS 7": "railgun",
+        "WS 8": "railgun"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "hveldriver",
+        "WS 3": "hveldriver"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

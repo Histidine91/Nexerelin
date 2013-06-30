@@ -1,0 +1,269 @@
+{
+  "bounds": [
+    -65.0,
+    -1.5,
+    -65.0,
+    -22.5,
+    -62.5,
+    -23.5,
+    -58.0,
+    -28.5,
+    -39.5,
+    -29.0,
+    -30.0,
+    -39.5,
+    -29.5,
+    -61.5,
+    29.5,
+    -60.5,
+    29.5,
+    -41.5,
+    32.0,
+    -36.0,
+    32.0,
+    -25.0,
+    37.0,
+    -16.0,
+    44.0,
+    -16.0,
+    48.5,
+    -20.5,
+    64.0,
+    -20.5,
+    67.5,
+    -16.5,
+    68.0,
+    -7.5,
+    68.0,
+    7.5,
+    67.5,
+    16.5,
+    64.0,
+    20.5,
+    48.5,
+    20.5,
+    44.0,
+    16.0,
+    37.0,
+    16.0,
+    32.0,
+    25.0,
+    32.0,
+    36.0,
+    29.5,
+    41.5,
+    29.5,
+    60.5,
+    -29.5,
+    61.5,
+    -30.0,
+    39.5,
+    -39.5,
+    29.0,
+    -58.0,
+    28.5,
+    -62.5,
+    23.5,
+    -65.0,
+    22.5,
+    -65.0,
+    1.5
+  ],
+  "center": [
+    68.0,
+    67.0
+  ],
+  "collisionRadius": 105.0,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 64.0,
+      "length": 64.0,
+      "location": [
+        -66.0,
+        0.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 24.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 64.0,
+      "length": 32.0,
+      "location": [
+        -30.5,
+        50.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 8.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 64.0,
+      "length": 32.0,
+      "location": [
+        -64.5,
+        19.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 8.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 64.0,
+      "length": 32.0,
+      "location": [
+        -64.5,
+        -19.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 8.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 64.0,
+      "length": 32.0,
+      "location": [
+        -30.5,
+        -50.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 8.0
+    }
+  ],
+  "height": 136.0,
+  "width": 136.0,
+  "hullId": "nihil_rigor",
+  "hullName": "Rigor",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    -1.0,
+    -0.0
+  ],
+  "shieldRadius": 119.6,
+  "spriteName": "graphics/nihil/ships/rigor.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 30.0,
+      "arc": 125.0,
+      "id": "WS 002",
+      "locations": [
+        -16.5,
+        24.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 125.0,
+      "id": "WS 003",
+      "locations": [
+        18.0,
+        0.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -30.0,
+      "arc": 125.0,
+      "id": "WS 004",
+      "locations": [
+        -16.5,
+        -24.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 5.0,
+      "id": "WS 006",
+      "locations": [
+        62.0,
+        13.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0.0,
+      "arc": 5.0,
+      "id": "WS 009",
+      "locations": [
+        62.0,
+        -13.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 116.0,
+      "arc": 159.1,
+      "id": "WS 1",
+      "locations": [
+        -15.0,
+        50.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -116.0,
+      "arc": 159.1,
+      "id": "WS 2",
+      "locations": [
+        -15.0,
+        -50.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 61.8,
+      "arc": 163.0,
+      "id": "WS 3",
+      "locations": [
+        15.0,
+        50.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -61.8,
+      "arc": 163.0,
+      "id": "WS 4",
+      "locations": [
+        15.0,
+        -50.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 180.0,
+      "arc": 125.0,
+      "id": "WS 5",
+      "locations": [
+        -45.0,
+        0.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "displayName": "Bomber Drone",
+  "hullId": "neutrino_schwarzgeist",
+  "variantId": "neutrino_schwarzgeist_Bomber",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "neutrino_lightphoton",
+        "WS 2": "neutrino_lightphoton",
+        "WS 3": "neutrino_lightphoton",
+        "WS 4": "neutrino_lightphoton"
+      }
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "displayName": "Elite",
+  "fluxCapacitors": 14,
+  "fluxVents": 10,
+  "hullId": "mrd_venator",
+  "hullMods": [
+    "targetingunit",
+    "hardenedshieldemitter",
+    "magazines"
+  ],
+  "variantId": "mrd_venator_elite",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 18": "hephag",
+        "WS 21": "hephag",
+        "WS 22": "hephag"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 15": "chaingun",
+        "WS 16": "chaingun"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "mrd_pd_laser_mk_ii",
+        "WS 10": "pdburst",
+        "WS 17": "pdburst",
+        "WS 2": "mrd_pd_laser_mk_ii",
+        "WS 23": "mrd_pd_laser_mk_ii",
+        "WS 24": "mrd_pd_laser_mk_ii",
+        "WS 3": "swarmer",
+        "WS 4": "swarmer",
+        "WS 5": "pdburst",
+        "WS 6": "pdburst",
+        "WS 7": "swarmer",
+        "WS 8": "swarmer",
+        "WS 9": "pdburst"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 11": "pilum",
+        "WS 12": "pilum",
+        "WS 13": "pilum",
+        "WS 14": "pilum"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 19": "mrd_Venator_turbo_P",
+        "WS 20": "mrd_Venator_turbo_L"
+      }
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "bounds": [
+    -32,
+    -22,
+    -33,
+    27,
+    20,
+    22,
+    22,
+    -23
+  ],
+  "center": [
+    30.5,
+    41
+  ],
+  "collisionRadius": 40,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 26,
+      "length": 20,
+      "location": [
+        -41,
+        20
+      ],
+      "style": "LOW_TECH",
+      "width": 8
+    },
+    {
+      "angle": 180,
+      "contrailSize": 26,
+      "length": 20,
+      "location": [
+        -41,
+        -20
+      ],
+      "style": "LOW_TECH",
+      "width": 8
+    }
+  ],
+  "height": 82,
+  "width": 61,
+  "hullId": "junk_pirates_stoatB",
+  "hullName": "Stoat (B Variant)",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0,
+    0
+  ],
+  "shieldRadius": 55,
+  "spriteName": "graphics/junk_pirates/ships/junk_pirates_stoatB.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS 001",
+      "locations": [
+        30,
+        -19
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    }
+  ]
+}

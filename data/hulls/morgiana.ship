@@ -1,0 +1,60 @@
+{
+  "bounds": [
+    -12,
+    -6,
+    -1,
+    -12,
+    14,
+    -0,
+    -1,
+    12,
+    -12,
+    6
+  ],
+  "center": [
+    15,
+    16
+  ],
+  "collisionRadius": 20.5,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 12,
+      "length": 25,
+      "location": [
+        -12,
+        -0
+      ],
+      "style": "CUSTOM",
+      "styleId": "valkEngine",
+      "width": 12
+    }
+  ],
+  "height": 33,
+  "hullId": "morgiana",
+  "hullName": "Morgiana",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 19.525623,
+  "spriteName": "graphics/ships/Morgiana.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0001",
+      "locations": [
+        14,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 30
+}

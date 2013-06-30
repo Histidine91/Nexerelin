@@ -1,0 +1,18 @@
+{
+  "displayName": "Scout Drone",
+  "hullId": "neutrino_drohne",
+  "variantId": "neutrino_drohne_Scout",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "neutrino_lightphoton",
+
+      }
+    }
+  ]
+}

@@ -1,0 +1,280 @@
+{
+  "bounds": [
+    75.0,
+    6.5,
+    81.5,
+    5.5,
+    82.0,
+    21.5,
+    76.5,
+    21.0,
+    51.0,
+    26.5,
+    51.0,
+    50.5,
+    45.0,
+    51.0,
+    37.0,
+    23.5,
+    26.5,
+    23.0,
+    13.0,
+    38.5,
+    2.5,
+    34.5,
+    -1.0,
+    36.0,
+    -10.5,
+    31.5,
+    -16.0,
+    36.5,
+    -17.0,
+    42.5,
+    -45.5,
+    63.5,
+    -52.5,
+    63.0,
+    -68.5,
+    39.0,
+    -69.0,
+    35.0,
+    -58.0,
+    27.0,
+    -79.5,
+    2.5,
+    -79.5,
+    -2.5,
+    -58.0,
+    -27.0,
+    -69.0,
+    -35.0,
+    -68.5,
+    -39.0,
+    -52.5,
+    -63.0,
+    -45.5,
+    -63.5,
+    -17.0,
+    -42.5,
+    -16.0,
+    -36.5,
+    -10.5,
+    -31.5,
+    -1.0,
+    -36.0,
+    2.5,
+    -34.5,
+    13.0,
+    -38.5,
+    26.5,
+    -23.0,
+    37.0,
+    -23.5,
+    45.0,
+    -51.0,
+    51.0,
+    -50.5,
+    51.0,
+    -26.5,
+    76.5,
+    -21.0,
+    82.0,
+    -21.5,
+    81.5,
+    -5.5,
+    75.0,
+    -6.5
+  ],
+  "center": [
+    70.0,
+    90.0
+  ],
+  "collisionRadius": 90.2,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 10.0,
+      "length": 40.0,
+      "location": [
+        -65.0,
+        -23.0
+      ],
+      "style": "MIDLINE",
+      "width": 10.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 10.0,
+      "length": 40.0,
+      "location": [
+        -65.0,
+        23.0
+      ],
+      "style": "MIDLINE",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 12.0,
+      "length": 43.0,
+      "location": [
+        -71.5,
+        -17.0
+      ],
+      "style": "MIDLINE",
+      "width": 12.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 12.0,
+      "length": 43.0,
+      "location": [
+        -71.5,
+        17.0
+      ],
+      "style": "MIDLINE",
+      "width": 12.0
+    }
+  ],
+  "height": 180.0,
+  "width": 140.0,
+  "hullId": "zephyr",
+  "hullName": "Zephyr",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0.0,
+    -0.0
+  ],
+  "shieldRadius": 112.8,
+  "spriteName": "graphics/interstellarFederation/ships/zephyr.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": -90.0,
+      "arc": 187.8,
+      "id": "WS 1",
+      "locations": [
+        -1.0,
+        -26.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 187.8,
+      "id": "WS 2",
+      "locations": [
+        -1.0,
+        26.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -50.5,
+      "arc": 224.7,
+      "id": "WS 3",
+      "locations": [
+        62.0,
+        -9.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 50.5,
+      "arc": 224.7,
+      "id": "WS 4",
+      "locations": [
+        62.0,
+        9.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 0.0,
+      "id": "WS 5",
+      "locations": [
+        81.0,
+        -14.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0.0,
+      "arc": 0.0,
+      "id": "WS 6",
+      "locations": [
+        81.0,
+        14.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 180.0,
+      "arc": 142.6,
+      "id": "WS 7",
+      "locations": [
+        -57.0,
+        -0.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "LB 1",
+      "locations": [
+        -55.0,
+        -39.0,
+        -47.5,
+        -50.5,
+        -55.0,
+        39.0,
+        -47.0,
+        50.0
+      ],
+      "mount": "HIDDEN",
+      "size": "LARGE",
+      "type": "LAUNCH_BAY"
+    },
+    {
+      "angle": -145.1,
+      "arc": 0.0,
+      "id": "WS0001",
+      "locations": [
+        -51.5,
+        -44.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 145.1,
+      "arc": 0.0,
+      "id": "WS0002",
+      "locations": [
+        -51.5,
+        44.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+    "bounds": [
+    ],
+    "center": [
+        18,
+        18
+    ],
+    "collisionRadius": 11,
+    "engineSlots": [
+        {
+            "angle": 180,
+            "contrailSize": 64,
+            "length": 18,
+            "location": [
+                -15,
+                7
+            ],
+            "style": "LOW_TECH_FIGHTER",
+            "width": 8
+        },
+        {
+            "angle": 180,
+            "contrailSize": 64,
+            "length": 22,
+            "location": [
+                -19,
+                -8
+            ],
+            "style": "LOW_TECH_FIGHTER",
+            "width": 10
+        }
+    ],
+    "height": 36,
+    "hullId": "junk_pirates_shard",
+    "hullName": "Shard",
+    "hullSize": "FIGHTER",
+    "shieldCenter": [
+        0,
+        0
+    ],
+    "shieldRadius": 20,
+    "spriteName": "graphics/junk_pirates/ships/junk_pirates_shard.png",
+    "style": "LOW_TECH",
+    "viewOffset": 0,
+    "weaponSlots": [
+	{
+        "angle": 0,
+        "arc": 5,
+        "id": "WS 001",
+        "locations": [
+            17,
+            8
+        ],
+        "mount": "HIDDEN",
+        "size": "SMALL",
+        "type": "ENERGY"
+    },
+	{
+        "angle": 0,
+        "arc": 360,
+        "id": "WS 002",
+        "locations": [
+            -5,
+            -8
+        ],
+        "mount": "TURRET",
+        "size": "SMALL",
+        "type": "BALLISTIC"
+    },
+	],
+    "width": 36
+}

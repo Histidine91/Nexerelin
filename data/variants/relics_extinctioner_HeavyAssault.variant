@@ -1,0 +1,72 @@
+{
+  "displayName": "Heavy Assault",
+  "hullId": "relics_extinctioner",
+  "variantId": "relics_extinctioner_HeavyAssault",
+  "fluxVents": 50,
+  "fluxCapacitors": 50,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 001": "harpoon_single",
+        "WS 002": "harpoon_single",
+        "WS 003": "harpoon_single",
+        "WS 004": "harpoon_single",
+        "WS 005": "harpoon_single",
+        "WS 006": "harpoon_single",
+        "WS 007": "harpoon_single",
+        "WS 008": "harpoon_single",
+        "WS 009": "harpoon_single",
+        "WS 010": "harpoon_single",
+        "WS 011": "harpoon_single",
+        "WS 012": "harpoon_single",
+        "WS 013": "harpoon_single",
+        "WS 014": "harpoon_single",
+        "WS 015": "harpoon_single",
+        "WS 016": "harpoon_single",
+        "WS 017": "harpoon_single",
+        "WS 018": "harpoon_single",
+        "WS 019": "harpoon_single",
+        "WS 020": "harpoon_single"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 021": "lightneedler",
+        "WS 022": "lightneedler",
+        "WS 023": "lightneedler",
+        "WS 024": "lightneedler",
+        "WS 025": "lightneedler",
+        "WS 026": "lightneedler",
+        "WS 027": "lightneedler",
+        "WS 028": "lightneedler",
+        "WS 029": "lightneedler",
+        "WS 030": "lightneedler",
+        "WS 031": "lightneedler",
+        "WS 032": "lightneedler",
+        "WS 033": "dualflak",
+        "WS 034": "dualflak"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 035": "heavyneedler",
+        "WS 036": "heavyneedler",
+        "WS 037": "heavyneedler",
+        "WS 038": "heavyneedler",
+        "WS 039": "heavyneedler",
+        "WS 040": "heavyneedler"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 041": "multineedler",
+        "WS 042": "multineedler"
+      }
+    }
+  ]
+}

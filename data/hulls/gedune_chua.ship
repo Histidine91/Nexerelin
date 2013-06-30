@@ -1,0 +1,94 @@
+{
+  "bounds": [
+    -11.5,
+    -12,
+    9.5,
+    -18.5,
+    9.5,
+    18.5,
+    -11.5,
+    12
+  ],
+  "center": [
+    19,
+    13
+  ],
+  "collisionRadius": 19.9,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 12,
+      "location": [
+        -10.5,
+        -0
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngineFighter",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 8.5,
+      "location": [
+        -7.5,
+        11
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngineFighter",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 8.5,
+      "location": [
+        -7.5,
+        -11
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngineFighter",
+      "width": 4
+    }
+  ],
+  "height": 26,
+  "hullId": "gedune_chua",
+  "hullName": "Chua",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 22.9,
+  "spriteName": "graphics/gedune/ships/gedune_chua.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 15,
+      "id": "WS0001",
+      "locations": [
+        8,
+        14
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 15,
+      "id": "WS0002",
+      "locations": [
+        8,
+        -14
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 38
+}

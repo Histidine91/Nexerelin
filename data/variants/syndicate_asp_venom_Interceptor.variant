@@ -1,0 +1,23 @@
+{
+  "displayName": "Interceptor",
+  "hullId": "syndicate_asp_venom",
+  "variantId": "syndicate_asp_venom_Interceptor",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "mininglaser",
+        "WS 3": "mininglaser"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "swarmer"
+      }
+    }
+  ]
+}

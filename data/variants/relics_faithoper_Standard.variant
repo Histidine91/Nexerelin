@@ -1,0 +1,87 @@
+{
+  "displayName": "Standard",
+  "hullId": "relics_faithoper",
+  "variantId": "relics_faithoper_Standard",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "auxiliarythrusters",
+    "heavyarmor"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "dualflak",
+        "WS 10": "dualflak",
+        "WS 11": "lightdualmg",
+        "WS 12": "lightdualmg",
+        "WS 13": "railgun",
+        "WS 14": "railgun",
+        "WS 15": "lightdualmg",
+        "WS 16": "lightdualmg",
+        "WS 17": "lightdualmg",
+        "WS 18": "lightdualmg",
+        "WS 19": "lightdualmg",
+        "WS 2": "dualflak",
+        "WS 20": "lightdualmg",
+        "WS 21": "railgun",
+        "WS 22": "railgun",
+        "WS 23": "lightdualmg",
+        "WS 24": "lightdualmg",
+        "WS 25": "railgun",
+        "WS 26": "railgun",
+        "WS 27": "lightdualmg",
+        "WS 28": "lightdualmg",
+        "WS 29": "lightdualmg",
+        "WS 3": "dualflak",
+        "WS 30": "lightdualmg",
+        "WS 31": "railgun",
+        "WS 32": "railgun",
+        "WS 33": "lightdualmg",
+        "WS 34": "lightdualmg",
+        "WS 35": "lightdualmg",
+        "WS 36": "lightdualmg",
+        "WS 37": "lightdualmg",
+        "WS 38": "lightdualmg",
+        "WS 39": "lightdualmg",
+        "WS 4": "dualflak",
+        "WS 40": "lightdualmg",
+        "WS 41": "railgun",
+        "WS 42": "railgun",
+        "WS 43": "railgun",
+        "WS 44": "railgun",
+        "WS 45": "railgun",
+        "WS 46": "railgun",
+        "WS 5": "dualflak",
+        "WS 6": "dualflak",
+        "WS 7": "dualflak",
+        "WS 8": "dualflak",
+        "WS 9": "dualflak"
+      }
+    },
+    {
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 49": "hurricane",
+        "WS 50": "hurricane",
+        "WS 51": "pilum",
+        "WS 52": "pilum",
+        "WS 53": "hurricane",
+        "WS 54": "hurricane",
+        "WS 55": "pilum",
+        "WS 56": "pilum"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 47": "relics_ultima"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

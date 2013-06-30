@@ -1,0 +1,233 @@
+{
+	id:"gedune",
+	"color":[130,160,50,255],
+	"displayName":"Gedune",
+	"shipNamePrefix":"GMS",
+	"shipNameSources":{
+		"JAPANESE":2,
+	},
+	"description":"No description yet.",
+	"names":{
+		"fringe":1,
+	},
+	"portraits":{
+		"standard_male":[
+			"graphics/portraits/portrait_mercenary01.png",
+			"graphics/portraits/portrait_mercenary03.png",
+			"graphics/portraits/portrait12.png",
+			"graphics/portraits/portrait15.png",
+			"graphics/portraits/portrait17.png",
+			"graphics/portraits/portrait18.png",
+		],
+		"standard_female":[
+			"graphics/portraits/portrait_mercenary02.png",
+			"graphics/portraits/portrait14.png",
+			"graphics/portraits/portrait16.png",
+		],
+	},
+	"fleetCompositions":{
+	    "exerelinGenericFleet":{
+            "displayName":"Generic Fleet",
+            "maxFleetPoints":180,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "gedune_dahaki_variant2":[0, 3],
+                "gedune_tenzen_variant":[0, 2],
+                "gedune_nanda_variant1":[0, 3],
+                "gedune_kitsune_variant":[0, 4],
+                "gedune_kitsune_variant_support":[0, 2],
+                "gedune_mozok_f_variant1":[0, 2],
+                "gedune_byakuri_variant":[0, 2],
+                "gedune_kyirus_variant":[0, 4],
+                "gedune_chua_wing":[0, 4],
+                "gedune_duri_wing":[0, 4],
+                "gedune_bakoros_variant":[0, 2],
+            },
+        },
+        "exerelinOutSystemSupplyConvoy":{
+            "displayName":"Out-System Supply Convoy",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "gedune_mozok_f_variant1":[1, 2],
+                "gedune_mozok_t_variant1":[1, 2]
+            },
+        },
+        "exerelinInSystemSupplyConvoy":{
+            "displayName":"In-System Supply Convoy",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "gedune_mozok_f_variant1":[1, 1],
+                "gedune_mozok_t_variant1":[1, 1]
+            },
+        },
+        "exerelinInSystemStationAttackFleet":{
+            "displayName":"In-System Station Attack Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "exerelin_atlas_ged_Standard":[1, 1],
+            },
+        },
+        "exerelinOutSystemStationAttackFleet":{
+            "displayName":"Out-System Station Attack Fleet",
+            "maxFleetPoints":300,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "exerelin_atlas_ged_Standard":[1, 1],
+                "gedune_dahaki_variant2":[0, 3],
+                "gedune_tenzen_variant":[0, 3],
+                "gedune_nanda_variant1":[0, 3],
+                "gedune_kitsune_variant":[0, 4],
+                "gedune_kitsune_variant_support":[0, 3],
+                "gedune_mozok_f_variant1":[0, 3],
+                "gedune_byakuri_variant":[0, 3],
+                "gedune_kyirus_variant":[0, 4],
+                "gedune_chua_wing":[0, 4],
+                "gedune_duri_wing":[0, 4],
+                "gedune_bakoros_variant":[0, 3],
+            },
+        },
+		"scout":{
+			"displayName":"Scavengers",
+			"maxFleetPoints":100,
+			"daysWorthOfSupplies":[15, 20],
+			"lyWorthOfFuel":[10, 15],
+			"extraCrewPercent":[30, 50],
+			"marinesPercent":[0, 0],
+			"ships":{
+				"gedune_tenzen_variant":[0, 1],
+				"gedune_dahaki_variant2":[1, 2],
+				"gedune_kyirus_variant":[1, 2],
+				"gedune_mozok_t_variant1":[1, 1],
+				"gedune_mozok_f_variant1":[1, 1]
+			},
+		},
+		"longRangeScout":{
+			"displayName":"Scout",
+			"maxFleetPoints":50,
+			"daysWorthOfSupplies":[15, 20],
+			"lyWorthOfFuel":[10, 15],
+			"extraCrewPercent":[30, 50],
+			"marinesPercent":[0, 0],
+			"ships":{
+				"gedune_nanda_variant1":[0, 2],
+				"gedune_kyirus_variant":[1, 1],
+				"gedune_kitsune_variant":[1, 1],
+				"gedune_chua_wing":[1, 2]
+
+			},
+
+		},
+		"raiders":{
+			"displayName":"Raiders",
+			"maxFleetPoints":100,
+			"daysWorthOfSupplies":[15, 20],
+			"lyWorthOfFuel":[10, 15],
+			"extraCrewPercent":[30, 50],
+			"marinesPercent":[1, 2],
+			"ships":{
+				"gedune_tenzen_variant":[1, 1],
+				"gedune_dahaki_variant2":[0, 2],
+				"gedune_kitsune_variant":[1, 1],
+				"gedune_kyirus_variant":[0, 3],
+				"gedune_nanda_variant1":[0, 3],
+				"gedune_byakuri_variant":[1, 1],
+				"gedune_chua_wing":[0, 2],
+                "gedune_duri_wing":[0, 3]
+			},
+		},
+		"libers":{
+			"displayName":"Liberators",
+			"maxFleetPoints":170,
+			"daysWorthOfSupplies":[15, 20],
+			"lyWorthOfFuel":[10, 15],
+			"extraCrewPercent":[30, 50],
+			"marinesPercent":[1, 2],
+			"ships":{
+				"gedune_tenzen_variant":[1, 2],
+				"gedune_bakoros_variant":[0, 2],
+				"gedune_dahaki_variant2":[1, 2],
+				"gedune_kyirus_variant":[2, 3],
+				"gedune_kitsune_variant":[1, 1],
+				"gedune_kitsune_variant_attack":[0, 1],
+				"gedune_nanda_variant1":[1, 3],
+				"gedune_byakuri_variant":[1, 1],
+				"gedune_chua_wing":[2, 4],
+				"gedune_duri_wing":[2, 2]
+
+			},
+		},
+		"elite":{
+			"displayName":"Elites",
+			"maxFleetPoints":100,
+			"daysWorthOfSupplies":[15, 20],
+			"lyWorthOfFuel":[10, 15],
+			"extraCrewPercent":[30, 50],
+			"marinesPercent":[1, 2],
+			"ships":{
+				"gedune_dahaki_variant2":[4, 4],
+				"gedune_tenzen_variant":[0, 1],
+				"gedune_kyirus_variant":[2, 3],
+            "gedune_mozok_f_variant1":[1, 1],
+            "gedune_mozok_t_variant1":[1, 1]
+			},
+		},
+		"siege":{
+			"displayName":"Siege Group",
+			"maxFleetPoints":200,
+			"daysWorthOfSupplies":[32, 35],
+			"lyWorthOfFuel":[10, 15],
+			"extraCrewPercent":[30, 50],
+			"marinesPercent":[1, 2],
+			"ships":{
+				"gedune_dahaki_variant2":[2, 3],
+				"gedune_tenzen_variant":[2, 2],
+				"gedune_nanda_variant1":[2, 3],
+				"gedune_kitsune_variant":[3, 4],
+				"gedune_kitsune_variant_support":[1, 2],
+				"gedune_mozok_f_variant1":[2, 2],
+				"gedune_byakuri_variant":[2, 2],
+				"gedune_kyirus_variant":[2, 4],
+				"gedune_chua_wing":[3, 4],
+            "gedune_duri_wing":[3, 4]
+			},
+		},
+	},
+	"traits":{
+		"admiral":{
+
+		},
+		"captain":{
+			"cowardly":0,
+			"cautious":1,
+			"steady":2,
+			"aggressive":3,
+			"suicidal":0,
+			"fearless":3,
+		},
+	},
+	"dialogue":{
+		"greetingFriendly":"Greetings! We'd love to stay and chat, but there are sights to see and things to steal!",
+		"greetingNeutral":"You're not on our record... unless you have business with us, leave now.",
+		"greetingHostileAggressive":"We hold the advantage here commander, surrender now and your life may be spared.",
+		"greetingHostileTimid":"I don't suppose you'll surrender, eh?",
+	}
+
+},

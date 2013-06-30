@@ -1,0 +1,33 @@
+{
+  "displayName": "Antediluvian Reflector",
+  "hullId": "destroyer_halyard",
+  "variantId": "halyard_Antediluvian_Reflector",
+  "fluxVents": 6,
+  "fluxCapacitors": 3,
+  "hullMods": [
+    "turretgyros",
+    "autorepair",
+    "fluxbreakers"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pressureturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "reflectorbeam",
+        "WS 3": "reflectorbeam"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 4": "prometheus"
+      }
+    }
+  ]
+}

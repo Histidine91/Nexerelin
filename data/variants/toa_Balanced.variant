@@ -1,0 +1,39 @@
+{
+  "displayName": "Balanced",
+  "hullId": "toa",
+  "variantId": "toa_Balanced",
+  "fluxVents": 12,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lightneedler",
+        "WS 2": "lightneedler",
+        "WS 7": "vulcan"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "ioncannon",
+        "WS 6": "ioncannon"
+      }
+    },
+    {
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 8": "railgun",
+        "WS 9": "railgun"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "shredder",
+        "WS 4": "shredder"
+      }
+    }
+  ]
+}

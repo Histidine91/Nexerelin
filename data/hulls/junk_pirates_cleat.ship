@@ -1,0 +1,61 @@
+{
+    "bounds": [
+    ],
+    "center": [
+        13,
+        10
+    ],
+    "collisionRadius": 13,
+    "engineSlots": [
+        {
+            "angle": 180,
+            "contrailSize": 64,
+            "length": 24,
+            "location": [
+                -13,
+                0
+            ],
+            "style": "LOW_TECH_FIGHTER",
+            "width": 12
+        }
+    ],
+    "height": 22,
+    "hullId": "junk_pirates_cleat",
+    "hullName": "Cleat",
+    "hullSize": "FIGHTER",
+    "shieldCenter": [
+        0,
+        0
+    ],
+    "shieldRadius": 16,
+    "spriteName": "graphics/junk_pirates/ships/junk_pirates_cleat_v.png",
+    "style": "LOW_TECH",
+    "viewOffset": 0,
+    "weaponSlots": [
+	{
+        "angle": 0,
+        "arc": 5,
+        "id": "WS 001",
+        "locations": [
+            -1,
+            6
+        ],
+        "mount": "HIDDEN",
+        "size": "SMALL",
+        "type": "MISSILE"
+    },
+		{
+        "angle": 0,
+        "arc": 5,
+        "id": "WS 002",
+        "locations": [
+            -3,
+            -8
+        ],
+        "mount": "HIDDEN",
+        "size": "SMALL",
+        "type": "ENERGY"
+    },
+	],
+    "width": 22
+}

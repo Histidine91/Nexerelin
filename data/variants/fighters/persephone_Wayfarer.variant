@@ -1,0 +1,17 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "fighter_persephonewayfarer",
+  "variantId": "persephone_Wayfarer",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "fighterturret",
+        "WS 2": "fighterturret"
+      }
+    }
+  ]
+}

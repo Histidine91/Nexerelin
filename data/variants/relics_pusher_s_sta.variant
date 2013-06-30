@@ -1,0 +1,38 @@
+{
+    "displayName": "Standard",
+    "fluxCapacitors": 10,
+    "fluxVents": 10,
+    "hullId": "relics_pusher_s",
+    "hullMods": [],
+    "variantId": "relics_pusher_s_sta",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS 1": "pulselaser"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 2": "pdlaser",
+                "WS 3": "pdlaser"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {}
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {}
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {}
+        }
+    ]
+}

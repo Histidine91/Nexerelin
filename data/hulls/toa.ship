@@ -1,0 +1,283 @@
+{
+  "bounds": [
+    -9.5,
+    6.0,
+    -0.5,
+    4.5,
+    25.0,
+    5.0,
+    29.0,
+    9.0,
+    39.0,
+    8.5,
+    42.0,
+    6.5,
+    54.5,
+    6.5,
+    65.0,
+    9.5,
+    78.0,
+    10.0,
+    79.0,
+    21.5,
+    77.0,
+    27.0,
+    62.0,
+    32.5,
+    48.5,
+    33.5,
+    42.0,
+    36.5,
+    26.0,
+    38.0,
+    18.0,
+    40.0,
+    -3.0,
+    39.5,
+    -37.0,
+    38.5,
+    -41.0,
+    39.5,
+    -50.5,
+    27.5,
+    -61.5,
+    22.0,
+    -61.5,
+    10.5,
+    -58.5,
+    8.5,
+    -58.5,
+    -8.5,
+    -61.5,
+    -10.5,
+    -61.5,
+    -22.0,
+    -50.5,
+    -27.5,
+    -41.0,
+    -39.5,
+    -37.0,
+    -38.5,
+    -3.0,
+    -39.5,
+    18.0,
+    -40.0,
+    26.0,
+    -38.0,
+    42.0,
+    -36.5,
+    48.5,
+    -33.5,
+    62.0,
+    -32.5,
+    77.0,
+    -27.0,
+    79.0,
+    -21.5,
+    78.0,
+    -10.0,
+    65.0,
+    -9.5,
+    54.5,
+    -6.5,
+    42.0,
+    -6.5,
+    39.0,
+    -8.5,
+    29.0,
+    -9.0,
+    25.0,
+    -5.0,
+    -0.5,
+    -4.5,
+    -9.5,
+    -6.0
+  ],
+  "center": [
+    55.0,
+    69.0
+  ],
+  "collisionRadius": 76.0,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 16.0,
+      "length": 43.0,
+      "location": [
+        -63.0,
+        -16.0
+      ],
+      "style": "MIDLINE",
+      "width": 16.0
+    },
+    {
+      "angle": -180.0,
+      "contrailSize": 16.0,
+      "length": 43.0,
+      "location": [
+        -63.0,
+        16.0
+      ],
+      "style": "MIDLINE",
+      "width": 16.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 10.0,
+      "length": 32.0,
+      "location": [
+        -60.0,
+        -0.0
+      ],
+      "style": "MIDLINE",
+      "width": 10.0
+    }
+  ],
+  "height": 160.0,
+  "width": 110.0,
+  "hullId": "toa",
+  "hullName": "Toa-Class",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    6.5,
+    -0.0
+  ],
+  "shieldRadius": 113.6,
+  "spriteName": "graphics/interstellarFederation/ships/toa.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "WS 1",
+      "locations": [
+        8.0,
+        -26.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0.0,
+      "arc": 360.0,
+      "id": "WS 2",
+      "locations": [
+        8.0,
+        26.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 0.0,
+      "id": "WS 3",
+      "locations": [
+        76.5,
+        -18.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0.0,
+      "arc": 0.0,
+      "id": "WS 4",
+      "locations": [
+        76.5,
+        18.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -41.5,
+      "arc": 80.5,
+      "id": "WS 5",
+      "locations": [
+        -36.0,
+        -34.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 41.5,
+      "arc": 80.5,
+      "id": "WS 6",
+      "locations": [
+        -36.0,
+        34.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 180.0,
+      "arc": 249.0,
+      "id": "WS 7",
+      "locations": [
+        -46.0,
+        -1.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 0.0,
+      "id": "WS 8",
+      "locations": [
+        -9.0,
+        -11.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0.0,
+      "arc": 0.0,
+      "id": "WS 9",
+      "locations": [
+        -9.0,
+        10.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -120.6,
+      "arc": 0.0,
+      "id": "WS0001",
+      "locations": [
+        -20.5,
+        -37.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 120.6,
+      "arc": 0.0,
+      "id": "WS0002",
+      "locations": [
+        -20.5,
+        37.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

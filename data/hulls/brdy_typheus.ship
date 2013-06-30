@@ -1,0 +1,228 @@
+{
+  "bounds": [
+    -76.5,
+    -14.5,
+    -59,
+    -21.5,
+    -78,
+    -27,
+    -77,
+    -41.5,
+    -57,
+    -41.5,
+    -47.5,
+    -44.5,
+    -14.5,
+    -29,
+    32,
+    -39.5,
+    71.5,
+    -33,
+    49.5,
+    -15.5,
+    28,
+    -0,
+    49.5,
+    15.5,
+    71.5,
+    33,
+    32,
+    39.5,
+    -14.5,
+    29,
+    -47.5,
+    44.5,
+    -57,
+    41.5,
+    -77,
+    41.5,
+    -78,
+    27,
+    -59,
+    21.5,
+    -76,
+    14.5,
+    -48,
+    -0
+  ],
+  "center": [
+    71,
+    104.5
+  ],
+  "collisionRadius": 117.183617,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 9,
+      "length": 41.5,
+      "location": [
+        -75,
+        14.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 9
+    },
+    {
+      "angle": -180,
+      "contrailSize": 9,
+      "length": 41.5,
+      "location": [
+        -75,
+        -14.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 9
+    },
+    {
+      "angle": 180,
+      "contrailSize": 12,
+      "length": 45,
+      "location": [
+        -75,
+        39.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 12
+    },
+    {
+      "angle": -180,
+      "contrailSize": 12,
+      "length": 45,
+      "location": [
+        -75,
+        -39.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 12
+    },
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 21.5,
+      "location": [
+        -80.5,
+        31
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 8,
+      "length": 21.5,
+      "location": [
+        -80.5,
+        -31
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 9,
+      "length": 31,
+      "location": [
+        -55,
+        -1
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 9
+    }
+  ],
+  "height": 215,
+  "hullId": "brdy_typheus",
+  "hullName": "Typheus",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0.5,
+    -0
+  ],
+  "shieldRadius": 115.985001,
+  "spriteName": "graphics/BR/ships/brdy_typheus.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 40.601295,
+      "arc": 180,
+      "id": "WS0001",
+      "locations": [
+        22.5,
+        35
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -40.601295,
+      "arc": 180,
+      "id": "WS0002",
+      "locations": [
+        22.5,
+        -35
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS0003",
+      "locations": [
+        -22,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 132.273682,
+      "arc": 180.888306,
+      "id": "WS0004",
+      "locations": [
+        -62.5,
+        33
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -132.273682,
+      "arc": 180.888306,
+      "id": "WS0005",
+      "locations": [
+        -61.5,
+        -34
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "LB 1",
+      "locations": [
+        6,
+        -0.5,
+        1,
+        -0.5
+      ],
+      "mount": "HIDDEN",
+      "size": "LARGE",
+      "type": "LAUNCH_BAY"
+    }
+  ],
+  "width": 138
+}

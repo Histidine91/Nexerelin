@@ -1,0 +1,174 @@
+{
+  "bounds": [
+    -55.0,
+    18.5,
+    -55.0,
+    -17.5,
+    -34.0,
+    -38.5,
+    2.0,
+    -38.5,
+    23.0,
+    -17.5,
+    23.0,
+    18.5,
+    2.0,
+    39.5,
+    -34.0,
+    39.5
+  ],
+  "center": [
+    52.5,
+    52.5
+  ],
+  "collisionRadius": 54.6,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -51.5,
+        4.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -51.5,
+        -4.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    }
+  ],
+  "height": 105.0,
+  "width": 105.0,
+  "hullId": "cruiser_gibborim",
+  "hullName": "Gibborim",
+  "hullSize": "CRUISER",
+  "shieldCenter": [
+    0.0,
+    0.0
+  ],
+  "shieldRadius": 50.0,
+  "spriteName": "graphics/antediluvians/ships/cruiser_gibborim_shading.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 135.0,
+      "arc": 200.0,
+      "id": "WS 1",
+      "locations": [
+        -15.5,
+        16.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 45.0,
+      "arc": 200.0,
+      "id": "WS 2",
+      "locations": [
+        15.5,
+        16.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -135.0,
+      "arc": 200.0,
+      "id": "WS 3",
+      "locations": [
+        -15.5,
+        -16.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -45.0,
+      "arc": 200.0,
+      "id": "WS 4",
+      "locations": [
+        15.5,
+        -16.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -135.0,
+      "arc": 200.0,
+      "id": "WS 5",
+      "locations": [
+        -3.5,
+        -4.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 45.0,
+      "arc": 200.0,
+      "id": "WS 6",
+      "locations": [
+        3.5,
+        4.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -90.0,
+      "arc": 90.0,
+      "id": "WS 7",
+      "locations": [
+        3.5,
+        -27.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "WS 8",
+      "locations": [
+        0.0,
+        -0.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "LAUNCH_BAY"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "WS 9",
+      "locations": [
+        22.0,
+        -2.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

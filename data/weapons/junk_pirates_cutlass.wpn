@@ -1,0 +1,20 @@
+{
+	"id":"junk_pirates_cutlass",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"MEDIUM",
+	"turretSprite":"graphics/junk_pirates/weapons/junk_pirates_cutlass_turret_base.png",
+	"turretGlowSprite":"graphics/junk_pirates/weapons/junk_pirates_cutlass_turret_glow.png",
+	"hardpointSprite":"graphics/junk_pirates/weapons/junk_pirates_cutlass_hardpoint_base.png",
+	"hardpointGlowSprite":"graphics/junk_pirates/weapons/junk_pirates_cutlass_hardpoint_glow.png",
+	"glowColor":[200,200,255,255],
+	"turretOffsets":[13, 5, 13, -5],
+	"turretAngleOffsets":[0, 0],
+	"hardpointOffsets":[15, 5, 15, -5],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"GLOW",
+	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held
+	"projectileSpecId":"junk_pirates_cutlass_shot",  # projectile that will be fired
+	"fireSoundTwo":"energy_pulse",
+}

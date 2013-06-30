@@ -1,0 +1,45 @@
+{
+  "displayName": "Explorer",
+  "hullId": "apogee",
+  "variantId": "nihil_apogee_mission",
+  "fluxVents": 5,
+  "fluxCapacitors": 3,
+  "hullMods": [
+    "stabilizedshieldemitter"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "autopulse",
+        "WS 002": "autopulse",
+        "WS 003": "gravitonbeam",
+        "WS 004": "gravitonbeam"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 005": "sabot",
+        "WS 009": "hurricane"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 006": "swarmer",
+        "WS 007": "swarmer"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 008": "hil"
+      }
+    }
+  ]
+}

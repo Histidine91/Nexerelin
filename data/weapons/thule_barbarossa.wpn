@@ -1,0 +1,31 @@
+{
+	"id":"thule_barbarossa",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"LARGE",
+	"displayArcRadius":900,
+	"turretSprite":"graphics/TL/weapons/thule_barbarossa_base.png",
+	"turretGunSprite":"graphics/TL/weapons/thule_barbarossa_recoil.png",
+	"hardpointSprite":"graphics/TL/weapons/thule_barbarossa_hardbase.png",
+	"hardpointGunSprite":"graphics/TL/weapons/thule_barbarossa_hardrecoil.png",	
+	"visualRecoil":10.0,  # the gun sprites are only used if this is non-0
+	"renderHints":[RENDER_BARREL_BELOW],
+	"glowColor":[255,185,215,215],
+	"turretOffsets":[38, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[41, 0],
+	"hardpointAngleOffsets":[0],	
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",	# NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":60.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":15.0,
+					   "particleSizeMin":15.0,
+					   "particleSizeRange":18.0,
+					   "particleDuration":1.0,
+					   "particleCount":20,
+					   "particleColor":[200,165,255,200]},	
+	"projectileSpecId":"thule_barbarossa_shot",  # projectile that will be fired
+	"fireSoundTwo":"thule_barbarossa",
+	"fireSoundOne":"thule_barbarossa_overload",
+	"autocharge":true,
+}

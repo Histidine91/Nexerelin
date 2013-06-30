@@ -1,0 +1,29 @@
+{
+	"id":"mrd_Venator_turbo_P",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"MEDIUM",
+	"turretSprite":"graphics/weapons/mrd_venator_turbo_turret_P_base.png",
+	"turretGlowSprite":"",
+	"hardpointSprite":"",
+	"hardpointGlowSprite":"graphics/weapons/mrd_venator_turbo_P_glow.png",
+	"turretOffsets":[20, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[15, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"GLOW",
+	"glowColor":[255,100,100,255],
+	"muzzleFlashSpec":{"length":10.0,
+					   "spread":5.0,
+					   "particleSizeMin":15.0,
+					   "particleSizeRange":20.0,
+					   "particleDuration":0.12,
+					   "particleCount":10,
+					   "particleColor":[255,100,100,255]},		
+	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held
+	"projectileSpecId":"mrd_Venator_turbo_shot",  # projectile that will be fired
+	"fireSoundTwo":"mrd_dual_turbo_blaster_V3",
+#	"fireSoundTwo":"mrd_dual_turbo_blaster",
+#	"fireSoundTwo":"mrd_auto_blaster",
+}

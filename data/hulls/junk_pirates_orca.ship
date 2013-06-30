@@ -1,0 +1,430 @@
+{
+  "bounds": [
+    -120.0,
+    27.0,
+    -114.0,
+    77.0,
+    -85.0,
+    113.0,
+    -43.0,
+    129.0,
+    2.0,
+    131.0,
+    23.0,
+    116.0,
+    38.0,
+    125.0,
+    71.0,
+    95.0,
+    66.0,
+    73.0,
+    80.0,
+    52.0,
+    90.0,
+    23.0,
+    87.0,
+    -22.0,
+    105.0,
+    -19.0,
+    117.0,
+    -35.0,
+    110.0,
+    -65.0,
+    89.0,
+    -75.0,
+    61.0,
+    -60.0,
+    47.0,
+    -71.0,
+    59.0,
+    -79.0,
+    62.0,
+    -100.0,
+    35.0,
+    -109.0,
+    86.0,
+    -114.0,
+    68.0,
+    -138.0,
+    -7.0,
+    -136.0,
+    -21.0,
+    -129.0,
+    -48.0,
+    -133.0,
+    -81.0,
+    -125.0,
+    -91.0,
+    -123.0,
+    -107.0,
+    -109.0,
+    -110.0,
+    -94.0,
+    -112.0,
+    -19.0,
+    -117.0,
+    -13.0,
+    -128.0,
+    15.0
+  ],
+  "center": [
+    150.0,
+    136.0
+  ],
+  "collisionRadius": 200.0,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 64.0,
+      "length": 75.0,
+      "location": [
+        -136.0,
+        19.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 16.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 64.0,
+      "length": 80.0,
+      "location": [
+        -137.0,
+        2.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 16.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 48.0,
+      "length": 64.0,
+      "location": [
+        -124.0,
+        -44.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 16.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 48.0,
+      "length": 64.0,
+      "location": [
+        -122.0,
+        -61.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 16.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 48.0,
+      "length": 64.0,
+      "location": [
+        -130.0,
+        -75.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 16.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 48.0,
+      "length": 64.0,
+      "location": [
+        -122.0,
+        -92.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 16.0
+    },
+    {
+      "angle": 135.0,
+      "contrailSize": 24.0,
+      "length": 24.0,
+      "location": [
+        -122.0,
+        87.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 16.0
+    },
+    {
+      "angle": 135.0,
+      "contrailSize": 24.0,
+      "length": 24.0,
+      "location": [
+        -114.0,
+        100.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 16.0
+    }
+  ],
+  "height": 272.0,
+  "width": 300.0,
+  "hullId": "junk_pirates_orca",
+  "hullName": "Orca",
+  "hullSize": "CAPITAL_SHIP",
+  "shieldCenter": [
+    0.0,
+    0.0
+  ],
+  "shieldRadius": 195.0,
+  "spriteName": "graphics/junk_pirates/ships/junk_pirates_orca.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 35.0,
+      "arc": 120.0,
+      "id": "WS 001",
+      "locations": [
+        70.0,
+        86.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 55.0,
+      "arc": 120.0,
+      "id": "WS 002",
+      "locations": [
+        29.0,
+        126.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 80.0,
+      "arc": 120.0,
+      "id": "WS 003",
+      "locations": [
+        -19.0,
+        142.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 100.0,
+      "arc": 120.0,
+      "id": "WS 004",
+      "locations": [
+        -57.0,
+        135.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 110.0,
+      "arc": 110.0,
+      "id": "WS 005",
+      "locations": [
+        -89.0,
+        122.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 175.0,
+      "arc": 90.0,
+      "id": "WS 006",
+      "locations": [
+        -114.0,
+        59.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 185.0,
+      "arc": 90.0,
+      "id": "WS 007",
+      "locations": [
+        -116.0,
+        42.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 140.0,
+      "id": "WS 008",
+      "locations": [
+        95.0,
+        -52.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 45.0,
+      "arc": 140.0,
+      "id": "WS 009",
+      "locations": [
+        54.0,
+        107.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 270.0,
+      "arc": 90.0,
+      "id": "WS 010",
+      "locations": [
+        -45.0,
+        -111.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 330.0,
+      "arc": 30.0,
+      "id": "WS 011",
+      "locations": [
+        79.0,
+        -86.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 350.0,
+      "arc": 120.0,
+      "id": "WS 012",
+      "locations": [
+        112.0,
+        -76.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 10.0,
+      "arc": 120.0,
+      "id": "WS 013",
+      "locations": [
+        126.0,
+        -39.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 45.0,
+      "arc": 90.0,
+      "id": "WS 014",
+      "locations": [
+        105.0,
+        -12.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0.0,
+      "arc": 5.0,
+      "id": "WS 015",
+      "locations": [
+        95.0,
+        -118.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 0.0,
+      "arc": 5.0,
+      "id": "WS 016",
+      "locations": [
+        78.0,
+        -137.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "WS 017",
+      "locations": [
+        -26.0,
+        100.0,
+        0.0,
+        100.0,
+        0.0,
+        78.0,
+        -26.0,
+        78.0
+      ],
+      "mount": "HIDDEN",
+      "size": "LARGE",
+      "type": "LAUNCH_BAY"
+    },
+    {
+      "angle": 0.0,
+      "arc": 120.0,
+      "id": "WS 018",
+      "locations": [
+        68.0,
+        56.0
+      ],
+      "mount": "TURRET",
+      "size": "LARGE",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0.0,
+      "arc": 90.0,
+      "id": "WS 019",
+      "locations": [
+        60.0,
+        6.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -3.4,
+      "arc": 90.0,
+      "id": "WS 1",
+      "locations": [
+        -74.0,
+        43.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "LAUNCH_BAY"
+    }
+  ],
+    "builtInWeapons":{
+    	"WS 015":"junk_pirates_haymaker",
+    	"WS 016":"junk_pirates_haymaker",
+    },
+}

@@ -1,0 +1,66 @@
+{
+  "displayName": "Prototype",
+  "fluxCapacitors": 0,
+  "fluxVents": 5,
+  "hullId": "nirvana_II",
+  "hullMods": [
+    "blast_doors",
+    "missleracks"
+  ],
+  "variantId": "nirvana_II_P",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0006": "scorpionpod",
+        "WS0007": "scorpionpod",
+        "WS0008": "scorpionpod",
+        "WS0009": "scorpionpod"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0003": "sabot",
+        "WS0004": "sabot",
+        "WS0005": "sabot"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "wraith",
+        "WS0002": "wraith"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0012": "light_antimatter_laser",
+        "WS0013": "light_antimatter_laser",
+        "WS0014": "light_antimatter_laser",
+        "WS0021": "heavylancer",
+        "WS0022": "heavylancer",
+        "WS0023": "ether_driver"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0010": "irpdcannon",
+        "WS0011": "irpdcannon",
+        "WS0015": "irpdcannon",
+        "WS0016": "irpdcannon",
+        "WS0017": "irpdburst",
+        "WS0018": "irpdburst",
+        "WS0019": "quadheavymg",
+        "WS0020": "quadheavymg"
+      }
+    }
+  ]
+}

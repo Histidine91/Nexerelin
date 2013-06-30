@@ -1,0 +1,558 @@
+{
+  "bounds": [
+    -107,
+    -9,
+    -101,
+    -31,
+    -69,
+    -38.5,
+    -20.5,
+    -29.5,
+    12.5,
+    -27.5,
+    9.5,
+    -47,
+    -22,
+    -71,
+    -52,
+    -84.5,
+    -5,
+    -73.5,
+    19,
+    -73,
+    14.5,
+    -86.5,
+    17.5,
+    -89.5,
+    51,
+    -61,
+    75,
+    -57.5,
+    104,
+    -38,
+    134.5,
+    -29,
+    142,
+    -13.5,
+    99.5,
+    -14,
+    85.5,
+    -9,
+    85.5,
+    9,
+    99.5,
+    14,
+    142,
+    13.5,
+    134.5,
+    29,
+    104,
+    38,
+    75,
+    57.5,
+    51,
+    61,
+    17.5,
+    89.5,
+    14.5,
+    86.5,
+    19,
+    73,
+    -5,
+    73.5,
+    -52,
+    84.5,
+    -22,
+    71,
+    9.5,
+    47,
+    12.5,
+    27.5,
+    -20.5,
+    29.5,
+    -69,
+    38.5,
+    -101,
+    31,
+    -107,
+    9
+  ],
+  "center": [
+    125.5,
+    200
+  ],
+  "collisionRadius": 189.095215,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 16,
+      "length": 60.5,
+      "location": [
+        -107,
+        15.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 16
+    },
+    {
+      "angle": -180,
+      "contrailSize": 16,
+      "length": 60.5,
+      "location": [
+        -107,
+        -15.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 16
+    },
+    {
+      "angle": 180,
+      "contrailSize": 16,
+      "length": 60.5,
+      "location": [
+        -104,
+        28.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 16
+    },
+    {
+      "angle": -180,
+      "contrailSize": 16,
+      "length": 60.5,
+      "location": [
+        -104,
+        -28.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 16
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 45.5,
+      "location": [
+        15.5,
+        52.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 45.5,
+      "location": [
+        15.5,
+        -52.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 10,
+      "length": 45.5,
+      "location": [
+        10,
+        58
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 10,
+      "length": 45.5,
+      "location": [
+        10,
+        -58
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": 167.19574,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        -83,
+        38
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": -167.19574,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        -83,
+        -38
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": 152.020523,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        -78.5,
+        41.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": -152.020523,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        -78.5,
+        -41.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": 102.926003,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        59.5,
+        48
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": -102.926003,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        59.5,
+        -48
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": 123.340706,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        54.5,
+        50
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": -123.340706,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        54.5,
+        -50
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": 140.946869,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        49.5,
+        52.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": -140.946869,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        49.5,
+        -52.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": 140.946869,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        16.5,
+        77
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": -140.946869,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        16.5,
+        -77
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": 153.434952,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        9.5,
+        75
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    },
+    {
+      "angle": -153.434952,
+      "contrailSize": 128,
+      "length": 36.039436,
+      "location": [
+        9.5,
+        -75
+      ],
+      "style": "CUSTOM",
+      "styleId": "BlackrockFlare",
+      "width": 4.96351
+    }
+  ],
+  "height": 400,
+  "hullId": "brdy_stormcrow",
+  "hullName": "Stormcrow",
+  "hullSize": "CRUISER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 186.929138,
+  "spriteName": "graphics/BR/ships/cycnevermore.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 12.680384,
+      "id": "WS0010",
+      "locations": [
+        79,
+        -0
+      ],
+      "mount": "HARDPOINT",
+      "size": "LARGE",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 30.510237,
+      "id": "WS0001",
+      "locations": [
+        56.5,
+        21.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 30.510237,
+      "id": "WS0002",
+      "locations": [
+        56.5,
+        -21.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 30.510237,
+      "id": "WS0003",
+      "locations": [
+        66.5,
+        44
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 30.510237,
+      "id": "WS0004",
+      "locations": [
+        66.5,
+        -44
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 60.255119,
+      "arc": 131.54451,
+      "id": "WS0005",
+      "locations": [
+        -10,
+        14
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -60.255119,
+      "arc": 131.54451,
+      "id": "WS0006",
+      "locations": [
+        -10,
+        -14
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 180,
+      "arc": 131.54451,
+      "id": "WS0007",
+      "locations": [
+        -69,
+        0.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 90,
+      "arc": 180,
+      "id": "WS0008",
+      "locations": [
+        -49,
+        21.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -90,
+      "arc": 180,
+      "id": "WS0009",
+      "locations": [
+        -49,
+        -21.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 21.239311,
+      "id": "WS0011",
+      "locations": [
+        97,
+        42.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": -0,
+      "arc": 21.239311,
+      "id": "WS0012",
+      "locations": [
+        97,
+        -42.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 0,
+      "arc": 21.239311,
+      "id": "WS0013",
+      "locations": [
+        114.5,
+        26
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": -0,
+      "arc": 21.239311,
+      "id": "WS0014",
+      "locations": [
+        115,
+        -24.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0015",
+      "locations": [
+        142,
+        19
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0016",
+      "locations": [
+        142,
+        -18
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    }
+  ],
+  "width": 250
+}

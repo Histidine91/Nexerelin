@@ -1,0 +1,24 @@
+{
+	"id":"junk_pirates_grapeshot_warhead",
+	"specClass":"missile",	
+	"missileType":"MISSILE",
+	"sprite":"graphics/junk_pirates/missiles/junk_pirates_grape.png",
+	"size":[10,10],	
+	"center":[5,5],
+	"collisionRadius":6,
+	"collisionClass":"MISSILE_NO_FF",
+	"explosionColor":[255,165,0,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":75, # purely visual
+	"maxFlightTime":2.5,	
+	"engineSpec":{"turnAcc":5,
+				  "turnRate":5,
+				  "maxSpeed":300,
+				  "acc":5,
+				  "dec":5},
+	"engineSlots":[{"id":"ES1",
+					"loc":[-3, 0],
+				    "style":"MISSILE_MIDLINE",
+				    "width":4.0,
+				    "length":4.0,
+				    "angle":180.0}]
+}

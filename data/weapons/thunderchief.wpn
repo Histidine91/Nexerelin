@@ -1,0 +1,29 @@
+{
+	"id":"thunderchief",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"MEDIUM",
+	"displayArcRadius":600,
+	"turretSprite":"graphics/interstellarFederation/weapons/thunderchief_base.png",
+	"turretGunSprite":"graphics/interstellarFederation/weapons/thunderchief_recoil.png",
+	"hardpointSprite":"graphics/interstellarFederation/weapons/thunderchief_base.png",
+	"hardpointGunSprite":"graphics/interstellarFederation/weapons/thunderchief_recoil.png",
+	"renderHints":[RENDER_BARREL_BELOW],
+	"visualRecoil":2.0,  # the gun sprites are only used if this is non-0
+	"turretOffsets":[21, -4, 21, 5, 21, -6, 21, 0, 21, 7, 21, -5, 21, -1, 21, 5, 21, -2, 21, 4],
+	"turretAngleOffsets":[-5, 3, -1, -3, 5, -2, 4, -4, 2, 1],
+	"hardpointOffsets":[21, -4, 21, 5, 21, -6, 21, 0, 21, 7, 21, -5, 21, -1, 21, 5, 21, -2, 21, 4],
+	"hardpointAngleOffsets":[-5, 3, -1, -3, 5, -2, 4, -4, 2, 1],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",
+	"muzzleFlashSpec":{"length":30.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":6.0,
+					   "particleSizeMin":7.0,
+					   "particleSizeRange":9.0,
+					   "particleDuration":0.15,
+					   "particleCount":11,
+					   "particleColor":[255,120,105,250]},
+	"projectileSpecId":"thunderchief_shot",  # projectile that will be fired
+	"fireSoundOne":"gun_mechanicals_light_up_2",
+	"fireSoundTwo":"gun_needler_1",
+}

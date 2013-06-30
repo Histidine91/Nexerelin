@@ -1,0 +1,158 @@
+{
+  "bounds": [
+    -78.5,
+    -19,
+    -28,
+    -22,
+    -26.5,
+    -43.5,
+    8,
+    -43.5,
+    27.5,
+    -17.5,
+    57.5,
+    -10,
+    57.5,
+    10,
+    27.5,
+    17.5,
+    8,
+    43.5,
+    -26.5,
+    43.5,
+    -28,
+    22,
+    -78.5,
+    19
+  ],
+  "center": [
+    51,
+    109.5
+  ],
+  "collisionRadius": 73.730926,
+  "engineSlots": [
+    {
+      "angle": -180,
+      "contrailSize": 14,
+      "length": 26,
+      "location": [
+        -38,
+        -34
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 14
+    },
+    {
+      "angle": 180,
+      "contrailSize": 14,
+      "length": 26,
+      "location": [
+        -38,
+        34
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 14
+    }
+  ],
+  "height": 175,
+  "hullId": "gedune_byakuri",
+  "hullName": "Byakuri",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    -1,
+    -0.5
+  ],
+  "shieldRadius": 92.803558,
+  "spriteName": "graphics/gedune/ships/gedune_byakuri2.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 90,
+      "arc": 250,
+      "id": "WS0001",
+      "locations": [
+        6.5,
+        14
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -90,
+      "arc": 250,
+      "id": "WS0002",
+      "locations": [
+        6.5,
+        -14
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0003",
+      "locations": [
+        21,
+        24.5
+      ],
+      "mount": "HIDDEN",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 10,
+      "id": "WS0004",
+      "locations": [
+        21,
+        -24.5
+      ],
+      "mount": "HIDDEN",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS0007",
+      "locations": [
+        18.5,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "LAUNCH_BAY"
+    },
+    {
+      "angle": 90,
+      "arc": 5,
+      "id": "WS0005",
+      "locations": [
+        -9.5,
+        46
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -90,
+      "arc": 5,
+      "id": "WS0006",
+      "locations": [
+        -9.5,
+        -46
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "MISSILE"
+    }
+  ],
+  "width": 102
+}

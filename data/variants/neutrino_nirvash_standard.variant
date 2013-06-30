@@ -1,0 +1,53 @@
+{
+  "displayName": "Assault",
+  "fluxCapacitors": 2,
+  "fluxVents": 1,
+  "hullId": "neutrino_nirvash",
+  "hullMods": [
+    "turretgyros",
+    "targetingunit",
+    "pointdefenseai",
+    "armoredweapons"
+  ],
+  "variantId": "neutrino_nirvash_standard",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "neutrino_neutronlance"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 11": "neutrino_pulsebeam",
+        "WS 3": "neutrino_pulsebeam",
+        "WS 5": "neutrino_pulsebeam",
+        "WS 7": "neutrino_pulsebeam",
+        "WS 9": "neutrino_pulsebeam"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 10": "neutrino_pulsebeam",
+        "WS 12": "neutrino_pulsebeam",
+        "WS 4": "neutrino_pulsebeam",
+        "WS 6": "neutrino_pulsebeam",
+        "WS 8": "neutrino_pulsebeam"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 16": "taclaser",
+        "WS 17": "taclaser",
+        "WS 18": "taclaser"
+      }
+    }
+  ]
+}

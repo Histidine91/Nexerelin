@@ -1,0 +1,38 @@
+{
+  "displayName": "Military",
+  "fluxCapacitors": 0,
+  "fluxVents": 3,
+  "hullId": "inquisitor",
+  "hullMods": [
+    "blast_doors",
+    "armoredweapons"
+  ],
+  "variantId": "inquisitor_M",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "ilc"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "quadheavymg",
+        "WS0004": "quadheavymg"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "lightdualmg",
+        "WS0002": "lightdualmg",
+        "WS0005": "lightdualmg",
+        "WS0006": "lightdualmg"
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+	"id":"ms_pandora",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"LARGE",
+	"everyFrameEffect":"data.scripts.weapons.ms_panChargeFX",
+	"turretSprite":"",
+	"turretGlowSprite":"graphics/shadow_weapons/weapons/ms_pandora_glow.png",
+	"hardpointSprite":"",
+	"hardpointGlowSprite":"graphics/shadow_weapons/weapons/ms_pandora_glow.png",
+	"turretOffsets":[25, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[15, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",
+	"glowColor":[155,155,255,125],
+	"muzzleFlashSpec":{"length":100.0,
+					   "spread":30.0,
+					   "particleSizeMin":15.0,
+					   "particleSizeRange":20.0,
+					   "particleDuration":0.75,
+					   "particleCount":30,
+					   "particleColor":[165,215,145,255]},		
+	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held
+	"projectileSpecId":"ms_pandora_wave",  # projectile that will be fired
+	"fireSoundTwo":"thermal_pulse_cannon_fire",
+}

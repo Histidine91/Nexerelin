@@ -1,0 +1,36 @@
+{
+	"id":"gedune_maelstrom_torp",
+	"specClass":"missile",	
+	"missileType":"MISSILE",
+	#"sprite":"graphics/gedune/missiles/gedune_maelstrom_torpedo.png",
+	#"size":[16,28],	
+	#"center":[8,14],
+	"sprite":"graphics/gedune/missiles/gedune_maelstrom_torpedo_compact.png",
+	"size":[14,23],	
+	"center":[7,11],
+	"collisionRadius":20,
+	"collisionClass":"MISSILE_FF",
+	"explosionColor":[100,255,100,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":350, # purely visual
+	"explosionSpec":{"duration":0.1f, # not visual
+					 "radius":175,
+					 "coreRadius":75, # full damage within core radius
+					 "collisionClass":HITS_SHIPS_AND_ASTEROIDS,
+					 "collisionClassByFighter":HITS_SHIPS_AND_ASTEROIDS,
+					 "particleSizeMin":5.0,
+					 "particleSizeRange":3.0,
+					 "particleDuration":1,
+					 "particleCount":200,
+					 "particleColor":[155,255,155,255]},
+	"engineSpec":{"turnAcc":60,
+				  "turnRate":6,
+				  "acc":300,
+				  "dec":150},
+	"engineSlots":[{"id":"ES1",
+					"loc":[-11, 0],
+					#"loc":[-14, 0],
+				    "style":"TORPEDO_ATROPOS",
+				    "width":10.0,
+				    "length":80.0,
+				    "angle":180.0}]
+}

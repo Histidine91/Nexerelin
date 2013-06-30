@@ -1,0 +1,54 @@
+{
+  "displayName": "Advanced",
+  "fluxCapacitors": 0,
+  "fluxVents": 2,
+  "hullId": "almire_II",
+  "hullMods": [
+    "targetingunit"
+  ],
+  "variantId": "almire_II_A",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "sabotpod",
+        "WS0002": "sabotpod",
+        "WS0003": "sabotpod"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0014": "heavylancer",
+        "WS0015": "heavylancer",
+        "WS0018": "ultraheavy_lancer",
+        "WS0019": "ultraheavy_lancer"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0004": "irpdcannon",
+        "WS0005": "irpdcannon",
+        "WS0006": "irpdburst",
+        "WS0007": "irpdburst",
+        "WS0008": "irpdburst",
+        "WS0009": "irpdburst",
+        "WS0010": "irpdcannon",
+        "WS0011": "irpdcannon",
+        "WS0012": "quadheavymg",
+        "WS0013": "quadheavymg",
+        "WS0016": "quadheavymg",
+        "WS0017": "quadheavymg"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

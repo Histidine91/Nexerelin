@@ -1,0 +1,34 @@
+{
+  "displayName": "Strike",
+  "hullId": "junk_pirates_turbot",
+  "variantId": "junk_pirates_turbot_Strike",
+  "fluxVents": 9,
+  "fluxCapacitors": 10,
+  "hullMods": [
+    "augmentedengines",
+    "missleracks",
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+	  "mode": "LINKED",
+      "weapons": {
+        "WS 1": "sabotpod"
+      }
+    },
+    {
+      "autofire": false,
+	  "mode": "LINKED",
+      "weapons": {
+        "WS 2": "lightag"
+      }
+    },
+    {
+      "autofire": false,
+	  "mode": "LINKED",
+      "weapons": {
+        "WS 4": "amblaster"
+      }
+    }
+  ]
+}

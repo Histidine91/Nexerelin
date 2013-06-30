@@ -1,0 +1,7 @@
+{
+	"id":"neutrongun",
+	"type":"WEAPON",
+	"aiType":"FLARE",
+	"weaponDataId":"neutrongun",
+	"outOfUsesSound":"gun_out_of_ammo",
+}

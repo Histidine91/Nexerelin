@@ -1,0 +1,24 @@
+{
+	"id":"ms_shrike",
+	"specClass":"missile",	
+	"missileType":"MISSILE",
+	"sprite":"graphics/shadow_weapons/missiles/missile_shrike.png",
+	"size":[10,22],	
+	"center":[5,12],
+	"collisionRadius":16,
+	"collisionClass":"MISSILE_NO_FF",
+	"explosionColor":[100,100,255,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":75, # purely visual
+	"engineSpec":{"turnAcc":140,
+				  "turnRate":35,
+				  "acc":2000,
+				  "dec":200},
+	"engineSlots":[{"id":"ES1",
+					"loc":[-13, 0],
+				    "style":"CUSTOM",
+                    "styleId":"ShadowyardsFlare",
+				    "width":7.0,
+				    "length":40.0,
+				    "angle":180.0},
+				    ]
+}

@@ -1,0 +1,95 @@
+{
+  "bounds": [
+    14.5,
+    18,
+    1.5,
+    16,
+    -2.5,
+    9,
+    0.5,
+    5,
+    -10.5,
+    3,
+    -10.5,
+    -3,
+    0.5,
+    -5,
+    -2.5,
+    -9,
+    1.5,
+    -16,
+    14.5,
+    -18,
+    17.5,
+    -12,
+    11.5,
+    -9,
+    23.5,
+    -5,
+    12.5,
+    -0,
+    19.5,
+    5,
+    11.5,
+    9,
+    17.5,
+    12
+  ],
+  "center": [
+    20.5,
+    12
+  ],
+  "collisionRadius": 43,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 18,
+      "location": [
+        -10.5,
+        -0
+      ],
+      "style": "LOW_TECH_FIGHTER",
+      "width": 8
+    }
+  ],
+  "height": 38,
+  "hullId": "mrd_drone_buzz",
+  "hullName": "Heavy Buzz Drone",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    3.5,
+    -0
+  ],
+  "shieldRadius": 36,
+  "spriteName": "graphics/ships/mrd_drone.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 15,
+      "id": "WS0001",
+      "locations": [
+        22.5,
+        -5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 18,
+      "id": "WS0002",
+      "locations": [
+        18.5,
+        5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 41
+}

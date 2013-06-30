@@ -1,0 +1,271 @@
+{
+  "bounds": [
+    100,
+    1.5,
+    93,
+    5.5,
+    72,
+    7.5,
+    48,
+    12.5,
+    48,
+    17.5,
+    37,
+    28.5,
+    32,
+    27.5,
+    28,
+    31.5,
+    29,
+    34.5,
+    19,
+    44.5,
+    13,
+    45.5,
+    11,
+    48.5,
+    20,
+    52.5,
+    18,
+    60.5,
+    0,
+    64.5,
+    -28,
+    78.5,
+    -31,
+    68.5,
+    -22,
+    50.5,
+    -23,
+    34,
+    -46,
+    26,
+    -46,
+    19.5,
+    -23,
+    10.5,
+    -63,
+    3.5,
+    -63,
+    -3.5,
+    -23,
+    -10.5,
+    -46,
+    -19.5,
+    -46,
+    -26,
+    -23,
+    -34,
+    -22,
+    -50.5,
+    -31,
+    -68.5,
+    -28,
+    -78.5,
+    0,
+    -64.5,
+    18,
+    -60.5,
+    20,
+    -52.5,
+    11,
+    -48.5,
+    13,
+    -45.5,
+    19,
+    -44.5,
+    29,
+    -34.5,
+    28,
+    -31.5,
+    32,
+    -27.5,
+    37,
+    -28.5,
+    48,
+    -17.5,
+    48,
+    -12.5,
+    72,
+    -7.5,
+    93,
+    -5.5,
+    100,
+    -1.5
+  ],
+  "center": [
+    81,
+    64.5
+  ],
+  "collisionRadius": 132.092773,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 16,
+      "length": 40,
+      "location": [
+        -46,
+        23
+      ],
+      "style": "MIDLINE",
+      "width": 16
+    },
+    {
+      "angle": -180,
+      "contrailSize": 16,
+      "length": 40,
+      "location": [
+        -46,
+        -23
+      ],
+      "style": "MIDLINE",
+      "width": 16
+    },
+    {
+      "angle": 180,
+      "contrailSize": 14,
+      "length": 38,
+      "location": [
+        -63,
+        0
+      ],
+      "style": "MIDLINE",
+      "width": 14
+    }
+  ],
+  "height": 167,
+  "hullId": "mrd_dragonfly",
+  "hullName": "Dragon Fly",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    10.5,
+    -0
+  ],
+  "shieldRadius": 115.491341,
+  "spriteName": "graphics/ships/mrd_dragonfly.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0001",
+      "locations": [
+        16,
+        56
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0002",
+      "locations": [
+        16,
+        -56
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 240,
+      "id": "WS0007",
+      "locations": [
+        25.5,
+        0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 235,
+      "id": "WS0008",
+      "locations": [
+        54.5,
+        0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 50,
+      "arc": 130,
+      "id": "WS0005",
+      "locations": [
+        7.5,
+        25
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": -50,
+      "arc": 130,
+      "id": "WS0006",
+      "locations": [
+        7.5,
+        -25
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": -110,
+      "arc": 250.699997,
+      "id": "WS0003",
+      "locations": [
+        -9.5,
+        -53
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 110,
+      "arc": 250.699997,
+      "id": "WS0004",
+      "locations": [
+        -9.5,
+        53
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 180,
+      "arc": 53.099998,
+      "id": "WS0009",
+      "locations": [
+        -36,
+        0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 180,
+      "arc": 53.099998,
+      "id": "WS0010",
+      "locations": [
+        -17,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ],
+  "width": 162
+}

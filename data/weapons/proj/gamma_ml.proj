@@ -1,0 +1,22 @@
+{
+	"id":"gamma_ml",
+	"specClass":"missile",	
+	"missileType":"MISSILE",
+	"sprite":"graphics/nihil/missiles/gamma_lm.png",
+	"size":[6,24],	
+	"center":[3,12],
+	"collisionRadius":14,
+	"collisionClass":"MISSILE_NO_FF",
+	"explosionColor":[225,25,225,225],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":115, # purely visual
+	"engineSpec":{"turnAcc":100,
+				  "turnRate":120,
+				  "acc":190,
+				  "dec":135},
+	"engineSlots":[{"id":"ES1",
+					"loc":[-12, 0],
+				    "style":"MISSILE_HIGH_TECH",
+				    "width":5.0,
+				    "length":32.0,
+				    "angle":180.0}]
+}

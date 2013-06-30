@@ -1,0 +1,283 @@
+{
+  "bounds": [
+    -235.0,
+    40.0,
+    -214.0,
+    57.0,
+    -179.0,
+    50.0,
+    -170.0,
+    60.0,
+    -94.0,
+    53.0,
+    -88.0,
+    36.0,
+    -44.0,
+    54.0,
+    36.0,
+    53.0,
+    48.0,
+    62.0,
+    76.0,
+    62.0,
+    84.0,
+    49.0,
+    130.0,
+    49.0,
+    137.0,
+    61.0,
+    163.0,
+    60.0,
+    168.0,
+    41.0,
+    226.0,
+    35.0,
+    233.0,
+    25.0,
+    232.0,
+    -3.0,
+    190.0,
+    -54.0,
+    163.0,
+    -61.0,
+    115.0,
+    -63.0,
+    105.0,
+    -52.0,
+    20.0,
+    -57.0,
+    6.0,
+    -48.0,
+    -91.0,
+    -47.0,
+    -108.0,
+    -38.0,
+    -160.0,
+    -46.0,
+    -236.0,
+    -36.0
+  ],
+  "center": [
+    70.0,
+    246.0
+  ],
+  "collisionRadius": 241.1,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 18.0,
+      "length": 55.0,
+      "location": [
+        -248.0,
+        31.0
+      ],
+      "style": "MIDLINE",
+      "width": 18.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 18.0,
+      "length": 55.0,
+      "location": [
+        -248.0,
+        1.0
+      ],
+      "style": "MIDLINE",
+      "width": 18.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 18.0,
+      "length": 55.0,
+      "location": [
+        -248.0,
+        -27.0
+      ],
+      "style": "MIDLINE",
+      "width": 18.0
+    }
+  ],
+  "height": 490.0,
+  "width": 140.0,
+  "hullId": "syndicate_asp_gigantophis",
+  "hullName": "Gigantophis",
+  "hullSize": "CRUISER",
+  "shieldCenter": [
+    9.0,
+    -0.0
+  ],
+  "shieldRadius": 267.9,
+  "spriteName": "graphics/syndicate_asp/ships/syndicate_asp_gigantophis.png",
+  "style": "MIDLINE",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": -92.9,
+      "arc": 167.0,
+      "id": "WS 1",
+      "locations": [
+        -77.0,
+        -36.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -92.6,
+      "arc": 167.0,
+      "id": "WS 2",
+      "locations": [
+        1.5,
+        -39.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -87.9,
+      "arc": 175.8,
+      "id": "WS 3",
+      "locations": [
+        91.0,
+        -41.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -54.8,
+      "arc": 235.2,
+      "id": "WS 4",
+      "locations": [
+        174.0,
+        -33.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 66.6,
+      "arc": 146.8,
+      "id": "WS 5",
+      "locations": [
+        160.5,
+        53.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 91.2,
+      "arc": 171.3,
+      "id": "WS 6",
+      "locations": [
+        142.0,
+        60.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 82.8,
+      "arc": 161.9,
+      "id": "WS 7",
+      "locations": [
+        76.0,
+        59.0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 100.1,
+      "arc": 161.9,
+      "id": "WS 8",
+      "locations": [
+        49.5,
+        58.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 109.5,
+      "arc": 196.2,
+      "id": "WS 9",
+      "locations": [
+        -118.0,
+        16.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -165.2,
+      "arc": 274.9,
+      "id": "WS 10",
+      "locations": [
+        -155.5,
+        -21.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 42.2,
+      "arc": 237.8,
+      "id": "WS 11",
+      "locations": [
+        175.0,
+        -0.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -31.1,
+      "arc": 4.8,
+      "id": "WS 12",
+      "locations": [
+        220.0,
+        -23.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -30.5,
+      "arc": 4.8,
+      "id": "WS 13",
+      "locations": [
+        202.0,
+        -50.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 88.9,
+      "arc": 51.4,
+      "id": "WS 14",
+      "locations": [
+        -23.5,
+        35.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "LAUNCH_BAY"
+    }
+  ]
+}

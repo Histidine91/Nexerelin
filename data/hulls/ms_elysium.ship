@@ -1,0 +1,311 @@
+{
+  "bounds": [
+    127.5,
+    -0.5,
+    130.5,
+    -30,
+    114,
+    -31.5,
+    96.5,
+    -43.5,
+    84,
+    -67.5,
+    60,
+    -82.5,
+    63.5,
+    -41.5,
+    -5,
+    -61.5,
+    -48.5,
+    -64.5,
+    -50.5,
+    -53,
+    -87.5,
+    -52,
+    -95.5,
+    -21,
+    -131,
+    -12.5,
+    -131,
+    12.5,
+    -95.5,
+    21,
+    -87.5,
+    52,
+    -50.5,
+    53,
+    -48.5,
+    64.5,
+    -5,
+    61.5,
+    63.5,
+    41.5,
+    60,
+    82.5,
+    84,
+    67.5,
+    96.5,
+    43.5,
+    114,
+    31.5,
+    130.5,
+    30,
+    127.5,
+    0.5
+  ],
+  "builtInWeapons": {
+    "WS0009": "ms_pandora",
+    "WS0010": "ms_arc",
+    "WS0011": "ms_arc"
+  },
+  "center": [
+    100,
+    135
+  ],
+  "collisionRadius": 160,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 40,
+      "length": 70,
+      "location": [
+        -94,
+        -40
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 16
+    },
+    {
+      "angle": -180,
+      "contrailSize": 40,
+      "length": 70,
+      "location": [
+        -94,
+        40
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 16
+    },
+    {
+      "angle": 180,
+      "contrailSize": 35,
+      "length": 50,
+      "location": [
+        -88,
+        -49
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 12
+    },
+    {
+      "angle": -180,
+      "contrailSize": 35,
+      "length": 50,
+      "location": [
+        -88,
+        49
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 12
+    },
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 40,
+      "location": [
+        -133.5,
+        -5
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 40,
+      "location": [
+        -133.5,
+        5
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 35,
+      "location": [
+        -131,
+        -11
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 35,
+      "location": [
+        -131,
+        11
+      ],
+      "style": "CUSTOM",
+      "styleId": "ShadowyardsFlare",
+      "width": 8
+    }
+  ],
+  "height": 270,
+  "hullId": "ms_elysium",
+  "hullName": "Elysium",
+  "hullSize": "CRUISER",
+  "shieldCenter": [
+    0,
+    0
+  ],
+  "shieldRadius": 200,
+  "spriteName": "graphics/shadow_ships/ships/ms_elysium.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": -70,
+      "arc": 160,
+      "id": "WS0001",
+      "locations": [
+        94.5,
+        -32
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 70,
+      "arc": 160,
+      "id": "WS0002",
+      "locations": [
+        94.5,
+        32
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -70,
+      "arc": 140,
+      "id": "WS0003",
+      "locations": [
+        41.5,
+        -31.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 70,
+      "arc": 140,
+      "id": "WS0004",
+      "locations": [
+        41.5,
+        31.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -75,
+      "arc": 120,
+      "id": "WS0005",
+      "locations": [
+        13,
+        -41
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 75,
+      "arc": 120,
+      "id": "WS0006",
+      "locations": [
+        13,
+        41
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -135,
+      "arc": 210,
+      "id": "WS0007",
+      "locations": [
+        -18.5,
+        -41
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 135,
+      "arc": 210,
+      "id": "WS0008",
+      "locations": [
+        -18.5,
+        41
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS0009",
+      "locations": [
+        110,
+        -0
+      ],
+      "mount": "HARDPOINT",
+      "size": "LARGE",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 0,
+      "arc": 20,
+      "id": "WS0010",
+      "locations": [
+        0,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 180,
+      "arc": 20,
+      "id": "WS0011",
+      "locations": [
+        75,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    }
+  ],
+  "width": 200
+}

@@ -1,0 +1,11 @@
+{
+	"id":"relics_zaap_shot",
+	"specClass":"projectile",
+	"spawnType":"PLASMA",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"width":25.0,
+	"fadeTime":0.5,
+	"fringeColor":[254,166,81,255],
+	"coreColor":[254,248,81,255],
+}

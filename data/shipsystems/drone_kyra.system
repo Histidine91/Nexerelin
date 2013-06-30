@@ -1,0 +1,38 @@
+{
+	"id":"drone_kyra",
+	"type":"DRONE_LAUNCHER",
+	"aiType":"DRONE_LAUNCHER_PD",
+	
+	"droneVariant":"gedune_kyra_drone_variant",
+	
+	"allowFreeRoam":true,
+	
+	"launchSpeed":100,
+	"launchDelay":1,
+	"maxDrones":4,
+	"droneBehavior":[
+		{"droneIndex":[0,1,2,3,4,5,6,7,8,9],
+		 "defaultFacing":"MATCH_DRONE_HEADING",	# MATCH_DRONE_HEADING, MATCH_SHIP_HEADING, MATCH_SHIP_FACING, AWAY_FROM_SHIP
+		 "faceEnemy":true,
+		 "holdRoamRange":250,
+		 "freeRoamRange":1500,
+		 "targetPriority":[SHIP_TARGET, FIGHTER, SHIP],
+		 "initialOrbitAngle":0,
+		 "orbitRadius":200, 				# plus ship radius
+		 "orbitDir":1, 					# -1 or 1
+		 "orbitSpeed":100, 				# pixels/second
+		},
+	],
+	
+	"useSound":"missile_heavy",
+	"outOfUsesSound":"gun_out_of_ammo",
+	
+	"aiHints":{
+		"weaponAssignmentSuitability":{
+			"LIGHT_ESCORT":{"mult":1, "flat":5},
+			"DESTROYER_ESCORT":{"mult":1, "flat":5},
+			"FULL_ESCORT":{"mult":1, "flat":5},
+		}
+	}
+}
+

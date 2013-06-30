@@ -1,0 +1,20 @@
+{
+	"id":"mrd_Venator_turbo_shot",
+	"specClass":"projectile",
+	#"spawnType":"BEAM",
+	"spawnType":"BALLISTIC_AS_BEAM",
+	"collisionClass":"RAY",
+	"collisionClassByFighter":"RAY_FIGHTER",
+	"length":60.0,
+	"width":26.0,
+	"hitGlowRadius":50,
+	"fadeTime":0.25,
+	"fringeColor":[200,0,0,255],
+	"coreColor":[255,200,200,200],
+	#"textureType":"SMOOTH",  # only needed for BEAM spawnType
+	#"textureScrollSpeed":64.0,
+	#"pixelsPerTexel":5.0
+	"textureType":"SMOOTH",  # only needed for BEAM spawnType
+	"textureScrollSpeed":-256.0,
+	"pixelsPerTexel":1.0
+}

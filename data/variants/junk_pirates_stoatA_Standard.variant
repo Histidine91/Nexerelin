@@ -1,0 +1,20 @@
+{
+	"displayName":"Standard",
+	"hullId":"junk_pirates_stoatA",
+	"variantId":"junk_pirates_stoatA_Standard",
+	"fluxVents":0,
+	"fluxCapacitors":0,
+	"mods":[], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"junk_pirates_scatterpd",
+		 		   },
+		},
+	],
+}

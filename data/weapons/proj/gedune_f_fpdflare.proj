@@ -1,0 +1,40 @@
+{
+	"id":"gedune_f_fpdflare",
+	"specClass":"missile",	
+	"missileType":"MISSILE",
+	"sprite":"graphics/missiles/bomblet0.png",
+	"size":[4,4],	
+	"center":[2,2],
+	"collisionRadius":12,
+	"collisionClass":"MISSILE_NO_FF",
+	"explosionColor":[40,180,40,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":40, # purely visual
+	"flameoutTime":0.5, # total time from flameout to full fadeout
+	"noEngineGlowTime":0.1, # time spend without the engine glow being rendered
+	"fadeTime":0.2, # fadeout duration
+	"behaviorSpec":{"behavior":"CUSTOM",
+					"effectRange":0,
+					"effectChance":0,
+				   },
+	"engineSpec":{"turnRate":1500,
+              "turnAcc":3500,
+				  "acc":1000,
+				  "dec":100},
+	"engineSlots":[
+					{"id":"ES1",
+					"loc":[0, 0],
+				    "style":"CUSTOM",
+					"styleSpec":{
+						"engineColor":[100,255,100,255],
+						"contrailParticleSizeMult":6,
+						"contrailParticleDuration":2,
+						"contrailMaxSpeedMult":-0.2,
+						"contrailAngularVelocityMult":0f,
+						"contrailColor":[55,255,55,35],
+						"type":"GLOW" # GLOW or SMOKE
+					},
+				    "width":9.0,
+				    "length":10.0,
+				    "angle":180.0},
+				   ]
+}

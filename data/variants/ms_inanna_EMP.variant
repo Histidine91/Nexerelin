@@ -1,0 +1,36 @@
+{
+    "displayName": "Overload",
+    "fluxCapacitors": 8,
+    "fluxVents": 10,
+    "hullId": "ms_inanna",
+    "hullMods": [
+        "fluxbreakers",
+        "auxiliarythrusters"
+    ],
+    "variantId": "ms_inanna_EMP",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "pulselaser"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0002": "ioncannon",
+                "WS0003": "ioncannon",
+                "WS0004": "ioncannon"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0005": "lrpdlaser"
+            }
+        }
+    ]
+}

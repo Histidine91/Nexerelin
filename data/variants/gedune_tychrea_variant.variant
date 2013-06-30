@@ -1,0 +1,34 @@
+{
+    "displayName": "Searcher",
+    "fluxCapacitors": 10,
+    "fluxVents": 0,
+    "hullId": "gedune_tychrea",
+    "hullMods": [
+        "targetingunit",
+        "unstable_injector"
+    ],
+    "variantId": "gedune_tychrea_variant",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {"WS0006": "gedune_phase_repeater"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "taclaser",
+                "WS0004": "taclaser"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "gedune_flarepd",
+                "WS0002": "gedune_flarepd"
+            }
+        }
+    ]
+}

@@ -1,0 +1,50 @@
+{
+	"displayName":"Slugger",
+	"hullId":"junk_pirates_boxenstein",
+	"variantId":"junk_pirates_boxenstein_Slugger",
+	"fluxVents":5,
+	"fluxCapacitors":7,
+	"hullMods":[
+		"missleracks",
+		"heavyarmor"
+	], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"junk_pirates_scatterpd",
+		 			"WS 002":"junk_pirates_scatterpd",
+		 			"WS 003":"junk_pirates_scatterpd",
+		 			"WS 004":"junk_pirates_scatterpd",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+					"WS 005":"junk_pirates_cutlass",
+		 			"WS 006":"junk_pirates_cutlass",
+					},
+		},
+		{
+		"autofire": false,
+		"mode":"ALTERNATING",
+		 "weapons":{
+		 			"WS 009":"swarmer",
+					"WS 010":"swarmer",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"ALTERNATING",
+		 "weapons":{
+					"WS 008":"junk_pirates_grapeshot_m",
+					"WS 007":"junk_pirates_grapeshot_m",
+		 		   },
+		},
+	],
+}

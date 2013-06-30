@@ -1,0 +1,15 @@
+{
+  "displayName": "Shield",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "drone_shield_midline",
+  "hullMods": [],
+  "variantId": "drone_shield_midline",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

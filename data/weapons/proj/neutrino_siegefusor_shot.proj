@@ -1,0 +1,17 @@
+{
+	"id":"neutrino_siegefusor_shot",
+	"specClass":"projectile",
+	"onHitEffect":"data.scripts.weapons.NeutSiegeFusorEffect",		
+	"spawnType":"BALLISTIC",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"length":17.0,
+	"hitGlowRadius":110,
+	"width":17.0,
+	"fadeTime":0.5,
+	"fringeColor":[255,255,255,25],
+	"coreColor":[255,255,255,175],
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":5.0,
+	"bulletSprite":"graphics/neut/missiles/neutrino_siegefusor.png"
+}

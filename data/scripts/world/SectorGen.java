@@ -1,0 +1,195 @@
+package data.scripts.world;
+
+import java.awt.Color;
+import java.util.List;
+
+import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.SectorGeneratorPlugin;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
+import data.scripts.world.exerelin.SystemManager;
+import data.scripts.world.exerelin.ExerelinData;
+import data.scripts.world.exerelin.ExerelinUtils;
+
+@SuppressWarnings("unchecked")
+public class SectorGen implements SectorGeneratorPlugin
+{
+	public void generate(SectorAPI sector)
+	{
+		StarSystemAPI system = sector.createStarSystem("Exerelin");
+		SectorEntityToken star = system.initStar("star_yellow", Color.white, 500f);
+
+
+		// Build lists of possbile planet types, names and moon types
+		String[] possiblePlanetTypes = new String[]	{"desert", "jungle", "gas_giant", "ice_giant", "terran", "arid"};
+		String[] possiblePlanetNames = new String[]	{"Baresh", "Zaril", "Vardu", "Drewler", "Trilar", "Polres", "Laret", "Erilatir", "Nambor", "Zat", "Raqueler", "Garret", "Carashil", "Qwerty", "Tyrian", "Savarra", "Outer", "Yar", "Tyrel", "Tywin", "Arya", "Sword", "Centuri", "Heaven", "Hell", "Sanctuary", "Hyperion", "Zaphod", "Vagar", "Green", "Blond", "Gabrielle", "Masset", "Effecer", "Gunsa", "Patiota", "Rayma", "Origea", "Litsoa", "Bimo", "Plasert", "Pizzart", "Shaper", "Coruscent", "Hoth", "Gibraltar"};
+		String[] possibleMoonTypes = new String[]	{"frozen", "barren", "lava", "toxic", "cryovolcanic"};
+
+
+		// Build base planets
+		int numBasePlanets = ExerelinData.getInstance().numPlanets;
+		int distanceStepping = 11000/numBasePlanets;
+		for(int i = 0; i < numBasePlanets; i = i + 1)
+		{
+			String planetType = possiblePlanetTypes[ExerelinUtils.getRandomInRange(0, possiblePlanetTypes.length - 1)];
+
+			String name = "";
+			Boolean nameInUse = false;
+			while(name.equalsIgnoreCase("") || nameInUse)
+			{
+				name = possiblePlanetNames[ExerelinUtils.getRandomInRange(0, possiblePlanetNames.length - 1)];
+				nameInUse = false;
+
+				List builtPlanets = system.getPlanets();
+				for(int k = 0; k < builtPlanets.size(); k = k + 1)
+				{
+					if(((SectorEntityToken)builtPlanets.get(k)).getFullName().contains(name))
+					{
+						nameInUse = true;
+						break;
+					}
+				}
+			}
+
+			int radius;
+			int angle = ExerelinUtils.getRandomInRange(1, 360);
+			int distance = 3000 + (distanceStepping * (i  + 1)) + ExerelinUtils.getRandomInRange((distanceStepping/3)*-1, distanceStepping/3);
+			int orbitDays = distance / 16 * ExerelinUtils.getRandomInRange(1, 3);
+			if(planetType.equalsIgnoreCase("gas_giant") || planetType.equalsIgnoreCase("ice_giant"))
+			{
+				radius = 350;
+				name = name + " Gaseous";
+			}
+			else
+				radius = ExerelinUtils.getRandomInRange(150, 250);
+
+			SectorEntityToken newPlanet = system.addPlanet(star, name, planetType, angle, radius, distance, orbitDays);
+
+			// Chance to build moons around planet
+			if(ExerelinUtils.getRandomInRange(0, 1) == 1)
+			{
+				// Build 0 - 2 moons
+				for(int j = 0; j < ExerelinUtils.getRandomInRange(0, ExerelinData.getInstance().maxMoonsPerPlanet - 1); j = j + 1)
+				{
+					String ext = "";
+					if(j == 0)
+						ext = "I";
+					if(j == 1)
+						ext = "II";
+					if(j == 2)
+						ext = "III";
+
+					String moonType = possibleMoonTypes[ExerelinUtils.getRandomInRange(0, possibleMoonTypes.length - 1)];
+					angle = ExerelinUtils.getRandomInRange(1, 360);
+					distance = ExerelinUtils.getRandomInRange(650, 1300);
+					radius = ExerelinUtils.getRandomInRange(50, 100);
+					orbitDays = distance / 16 * ExerelinUtils.getRandomInRange(1, 3);
+					system.addPlanet(newPlanet, name + " " + ext, moonType, angle, radius, distance, orbitDays);
+				}
+			}
+		}
+
+
+		// Build asteroid belts
+		List planets = system.getPlanets();
+		int numAsteroidBelts = ExerelinData.getInstance().numAsteroidBelts;
+		for(int j = 0; j < numAsteroidBelts; j = j + 1)
+		{
+			SectorEntityToken planet = null;
+			while(planet == null)
+				planet = (SectorEntityToken)planets.get(ExerelinUtils.getRandomInRange(0, planets.size() - 1));
+
+			float orbitRadius;
+			int numAsteroids;
+
+			if (planet.getFullName().contains(" I") || planet.getFullName().contains(" II") || planet.getFullName().contains(" III"))
+			{
+				orbitRadius = ExerelinUtils.getRandomInRange(250, 350);
+				numAsteroids = 1;
+			}
+			else if(planet.getFullName().contains("Gaseous"))
+			{
+				orbitRadius = ExerelinUtils.getRandomInRange(700, 900);
+				numAsteroids = 10;
+			}
+			else if (planet.getFullName().contains("Exerelin"))
+			{
+				orbitRadius = ExerelinUtils.getRandomInRange(1000, 8000);
+				numAsteroids = 50;
+			}
+			else
+			{
+				orbitRadius = ExerelinUtils.getRandomInRange(400, 550);
+				numAsteroids = 2;
+			}
+
+
+			float width = ExerelinUtils.getRandomInRange(10, 50);
+			float minOrbitDays = ExerelinUtils.getRandomInRange(240, 360);
+			float maxOrbitDays = ExerelinUtils.getRandomInRange(360, 480);
+			system.addAsteroidBelt(planet, numAsteroids, orbitRadius, width, minOrbitDays, maxOrbitDays);
+		}
+
+		// Build a list of possbile station names
+		String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest", "Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
+
+		// Build stations
+		int numStation = ExerelinData.getInstance().numStations;
+
+		int currentPlanet = 0;
+		int k = 0;
+		while(k < numStation)
+		{
+			SectorEntityToken planet = (SectorEntityToken)planets.get(currentPlanet);
+
+			currentPlanet = currentPlanet + 1;
+
+			if(currentPlanet == planets.size())
+				currentPlanet = 0;
+
+			if(planet.getFullName().equalsIgnoreCase("Exerelin"))
+				continue; // Skip sun
+
+			if(ExerelinUtils.getRandomInRange(0,3) == 0)
+				continue; // 25% chance to skip this planet
+
+			Boolean nameOK = false;
+			String name = "";
+			while(!nameOK)
+			{
+				name = possibleStationNames[ExerelinUtils.getRandomInRange(0, possibleStationNames.length - 1)];
+				nameOK = true;
+				for(int l = 0; l < system.getOrbitalStations().size(); l++)
+				{
+					if(((SectorEntityToken)system.getOrbitalStations().get(l)).getFullName().equalsIgnoreCase(name))
+						nameOK = false;
+				}
+			}
+			int angle = ExerelinUtils.getRandomInRange(1, 360);
+			int orbitRadius = 300;
+			int orbitDays = ExerelinUtils.getRandomInRange(50, 100);
+			if (planet.getFullName().contains(" I") || planet.getFullName().contains(" II") || planet.getFullName().contains(" III"))
+				orbitRadius = 200;
+			else if(planet.getFullName().contains("Gaseous"))
+				orbitRadius = 500;
+
+			SectorEntityToken newStation = system.addOrbitalStation(planet, angle, orbitRadius, orbitDays, planet.getFullName() + " " + name, "abandoned");
+			k = k + 1;
+		}
+
+		ExerelinData.getInstance().resetAvailableFactions();
+
+		// Build a system manager to run things
+		SystemManager systemManager = new SystemManager(sector);
+
+		// Set starting conditions needed later for saving into the save file
+		systemManager.freeTransfer = ExerelinData.getInstance().playerOwnedStationFreeTransfer;
+		systemManager.respawnFactions = ExerelinData.getInstance().respawnFactions;
+		systemManager.playerFactionId = ExerelinData.getInstance().getPlayerFaction();
+		systemManager.availableFactions = ExerelinData.getInstance().getAvailableFactions(sector);
+		systemManager.monthsToWait = ExerelinData.getInstance().respawnDelay;
+		systemManager.omnifactoryPresent = ExerelinData.getInstance().omniFacPresent;
+
+		system.addSpawnPoint(systemManager);
+	}
+}

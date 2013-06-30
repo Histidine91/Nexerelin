@@ -1,0 +1,94 @@
+{
+  "bounds": [
+    3.5,
+    -7,
+    -12.5,
+    -15.5,
+    -12.5,
+    15.5,
+    3.5,
+    7
+  ],
+  "center": [
+    19,
+    14
+  ],
+  "collisionRadius": 16.970562,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 9,
+      "location": [
+        -12.5,
+        12.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngineFighter",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 9,
+      "location": [
+        -12.5,
+        -12.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngineFighter",
+      "width": 4
+    },
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 22,
+      "location": [
+        -12.5,
+        -0
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngineFighter",
+      "width": 8
+    }
+  ],
+  "height": 28,
+  "hullId": "gedune_viper",
+  "hullName": "Viper",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    0
+  ],
+  "shieldRadius": 0,
+  "spriteName": "graphics/gedune/ships/gedune_viper.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 2.54606,
+      "id": "WS0001",
+      "locations": [
+        -4.5,
+        12.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 2.54606,
+      "id": "WS0002",
+      "locations": [
+        -4.5,
+        -12.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 38
+}

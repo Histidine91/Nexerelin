@@ -1,0 +1,24 @@
+{
+  "displayName": "Drone",
+  "hullId": "syndicate_asp_bite",
+  "variantId": "syndicate_asp_bite_Drone",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lrpdlaser"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {}
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

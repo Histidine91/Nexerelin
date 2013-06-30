@@ -1,0 +1,53 @@
+{
+    "displayName": "Advanced",
+    "fluxCapacitors": 20,
+    "fluxVents": 14,
+    "hullId": "nevermore",
+    "hullMods": [
+        "targetingunit",
+        "turretgyros"
+    ],
+    "variantId": "nevermore_advanced",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {"WS0010": "brdy_amlance"}
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0011": "achilles_mrm",
+                "WS0012": "achilles_mrm"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0001": "br_pde",
+                "WS0002": "br_pde"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0003": "brdy_ac",
+                "WS0004": "brdy_ac",
+                "WS0005": "brdy_solenoid",
+                "WS0006": "brdy_solenoid"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0007": "pdlaser",
+                "WS0008": "pdlaser",
+                "WS0009": "brburst"
+            }
+        }
+    ]
+}

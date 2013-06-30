@@ -1,0 +1,33 @@
+{
+	"id":"gedune_phasetele",
+	"type":"TELEPORTER",
+	"aiType":"PHASE_TELEPORTER",
+	
+	"jitterColor":[100,165,100,150],
+	#"jitterColor":[155,200,155,150],
+	"jitterCopies":20,
+	#"jitterRange":25,
+	"jitterRange":25,
+	"jitterRangeRadiusFraction":0,
+	
+	"weaponGlowColor":[100,165,255,0],
+	"weaponTypes":[ENERGY],
+	
+	#"engineGlowColor":[255,100,225,255],
+	#"engineGlowContrailColor":[200,100,200,25],
+	"engineGlowLengthMult":0,
+	"engineGlowWidthMult":0,
+	"engineGlowGlowMult":0,
+	
+	"range":600,
+	"randomRange":0,
+	
+	#"useSound":"system_teleport",
+	"useSound":"system_phase_teleporter",	
+	"outOfUsesSound":"gun_out_of_ammo",
+	
+	
+	"aiHints":{
+		"averageSpeedIncrease":400,
+	}
+}

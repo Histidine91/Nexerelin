@@ -1,0 +1,27 @@
+{
+	"id":"neutrino_ring",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"DECORATIVE",
+	"size":"SMALL",
+	"turretSprite":"graphics/neut/weapons/theend/neutrino_theend00.png",
+	"hardpointSprite":"graphics/neut/weapons/theend/neutrino_theend00.png",
+	"numFrames":4,	
+	"frameRate":10,
+	"turretOffsets":[0, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[10, 0],
+	"hardpointAngleOffsets":[0],	
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":0.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":0.0,
+					   "particleSizeMin":0.0,
+					   "particleSizeRange":0.0,
+					   "particleDuration":0.0,
+					   "particleCount":0,
+					   "particleColor":[255,240,165,0]},	
+	"projectileSpecId":"neutrino_ringshot",  # projectile that will be fired
+	#"fireSoundOne":"gun_mechanicals_medium_up_whirr",	
+	#"fireSoundTwo":"gun_medium_1",	
+	"alwaysAnimate":"true"
+}

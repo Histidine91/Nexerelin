@@ -1,0 +1,23 @@
+{
+	"displayName":"Bomber",
+	"hullId":"junk_pirates_cleat",
+	"variantId":"junk_pirates_cleat_Bomber",
+	"fluxVents":0,
+	"fluxCapacitors":0,
+	"mods":[], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"reaper",
+		 		   },
+		},
+		{"mode":"LINKED",
+		 "weapons":{
+		 			"WS 002":"taclaser",
+		 		   },
+		},
+	],
+}

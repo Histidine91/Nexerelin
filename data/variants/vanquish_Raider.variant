@@ -1,0 +1,57 @@
+{
+    "displayName": "Raider",
+    "fluxCapacitors": 0,
+    "fluxVents": 0,
+    "hullId": "vanquish",
+    "hullMods": [
+        "fluxbreakers",
+        "stabilizedshieldemitter",
+        "magazines",
+        "missleracks"
+    ],
+    "variantId": "vanquish_Raider",
+    "weaponGroups": [
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 011": "mjolnir",
+                "WS 013": "mjolnir",
+                "WS 015": "heavymauler",
+                "WS 017": "heavymauler"
+            }
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 012": "multineedler",
+                "WS 014": "multineedler",
+                "WS 016": "heavyneedler",
+                "WS 018": "heavyneedler"
+            }
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "pilum",
+                "WS 002": "pilum",
+                "WS 019": "pilum",
+                "WS 020": "pilum"
+            }
+        },
+        {
+            "mode": "LINKED",
+            "weapons": {
+                "WS 003": "revolver",
+                "WS 004": "revolver",
+                "WS 005": "revolver",
+                "WS 006": "revolver",
+                "WS 007": "revolver",
+                "WS 008": "revolver",
+                "WS 009": "revolver",
+                "WS 010": "revolver",
+                "WS 022": "dualflak",
+                "WS 023": "dualflak"
+            }
+        }
+    ]
+}

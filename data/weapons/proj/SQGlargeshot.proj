@@ -1,0 +1,22 @@
+{
+	"id":"SQGlargeshot",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC_AS_BEAM",
+	"collisionClass":"RAY",
+	"collisionClassByFighter":"RAY_FIGHTER",	
+	#"spawnType":"BALLISTIC_AS_BEAM",
+	#"collisionClass":"RAY",
+	#"collisionClassByFighter":"RAY_FIGHTER",
+	"length":3160.0,
+	"width":90.9,
+	"fadeTime":0.25,
+	"glowColor":[135,155,130,95],
+	"glowRadius":65,
+	"fringeColor":[135,155,130,225],
+	"coreColor":[245,255,250,255],
+	"hitGlowRadius":175,
+	"textureScrollSpeed":6.0,
+	"pixelsPerTexel":5550.0,
+	"textureType":"SMOOTH",  # only needed for BEAM spawnType
+	
+}

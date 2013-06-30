@@ -1,0 +1,76 @@
+{
+  "displayName": "Advanced",
+  "fluxCapacitors": 0,
+  "fluxVents": 5,
+  "hullId": "yoshura",
+  "hullMods": [
+    "magazines",
+    "targetingunit"
+  ],
+  "variantId": "yoshura_A",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0005": "sabotpod",
+        "WS0006": "sabotpod"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "scorpion",
+        "WS0002": "scorpion",
+        "WS0003": "scorpion",
+        "WS0004": "scorpion"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0033": "wraith"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0023": "heavylancer",
+        "WS0024": "heavylancer",
+        "WS0025": "heavylancer",
+        "WS0028": "antiproton_laser",
+        "WS0029": "ether_driver",
+        "WS0030": "ether_driver",
+        "WS0031": "antiproton_laser",
+        "WS0032": "antiproton_laser"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "irpdcannon",
+        "WS0008": "irpdcannon",
+        "WS0009": "irpdburst",
+        "WS0010": "irpdburst",
+        "WS0011": "irpdburst",
+        "WS0012": "irpdburst",
+        "WS0013": "irpdcannon",
+        "WS0014": "irpdcannon",
+        "WS0015": "irpdcannon",
+        "WS0016": "irpdcannon",
+        "WS0017": "irpdburst",
+        "WS0018": "irpdburst",
+        "WS0019": "irpdcannon",
+        "WS0020": "irpdcannon",
+        "WS0021": "quadheavymg",
+        "WS0022": "quadheavymg",
+        "WS0026": "quadheavymg",
+        "WS0027": "quadheavymg"
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+	"id":"mrd_pdminigun",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"BALLISTIC",
+	"size":"MEDIUM",
+	"displayArcRadius":450,
+	#"turretSprite":"graphics/weapons/",
+	#"turretGunSprite":"graphics/weapons/",
+	#"hardpointSprite":"graphics/weapons/",
+	#"hardpointGunSprite":"graphics/weapons/",	
+	#"visualRecoil":4.0,  # the gun sprites are only used if this is non-0
+	#"renderHints":[RENDER_BARREL_BELOW],
+	"turretSprite":"graphics/weapons/rotary/mrd_rotary_pdminigun_turret_base00.png",
+	"hardpointSprite":"graphics/weapons/rotary/mrd_rotary_pdminigun_hardpoint_base00.png",	
+	"numFrames":4,	
+	"frameRate":20,
+	"turretOffsets":[22, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[25, 0],
+	"hardpointAngleOffsets":[0],	
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":15.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":5.0,
+					   "particleSizeMin":6.0,
+					   "particleSizeRange":14.0,
+					   "particleDuration":0.15,
+					   "particleCount":11,
+					   "particleColor":[255,240,165,200]},	
+        #"projectileSpecId":"lightmg_shot",  # projectile that will be fired
+	"projectileSpecId":"vulcan_shot",  # projectile that will be fired
+	"fireSoundOne":"gun_mechanicals_medium_up_whirr",	
+	"fireSoundTwo":"gun_rapid_2",	
+}

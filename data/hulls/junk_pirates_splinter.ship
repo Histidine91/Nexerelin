@@ -1,0 +1,96 @@
+{
+  "bounds": [
+    7.5,
+    -2.5,
+    -4,
+    -7.5,
+    -9.5,
+    -3.5,
+    -9.5,
+    3.5,
+    -4,
+    7.5,
+    7.5,
+    2.5
+  ],
+  "center": [
+    17,
+    15.5
+  ],
+  "collisionRadius": 15.913831,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 5,
+      "length": 16,
+      "location": [
+        -14,
+        -3
+      ],
+      "style": "LOW_TECH",
+      "width": 5
+    },
+    {
+      "angle": -180,
+      "contrailSize": 5,
+      "length": 16,
+      "location": [
+        -14,
+        3
+      ],
+      "style": "LOW_TECH",
+      "width": 5
+    }
+  ],
+  "height": 32,
+  "hullId": "junk_pirates_splinter",
+  "hullName": "Splinter",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 19.474342,
+  "spriteName": "graphics/junk_pirates/ships/junk_pirates_splinter.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0001",
+      "locations": [
+        0,
+        9
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0002",
+      "locations": [
+        0,
+        -9
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0003",
+      "locations": [
+        9.5,
+        -1.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 32
+}

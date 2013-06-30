@@ -1,0 +1,330 @@
+{
+  "bounds": [
+    -119,
+    -58,
+    -90,
+    -75,
+    -72.5,
+    -69,
+    -76.5,
+    -123,
+    -58,
+    -135,
+    -19,
+    -71,
+    13,
+    -46,
+    19,
+    -63.5,
+    0.5,
+    -83,
+    27,
+    -118.5,
+    100.5,
+    -77.5,
+    120,
+    -46,
+    115,
+    -0,
+    120,
+    46,
+    100.5,
+    77.5,
+    27,
+    118.5,
+    0.5,
+    83,
+    19,
+    63.5,
+    13,
+    46,
+    -19,
+    71,
+    -58,
+    135,
+    -76.5,
+    123,
+    -72.5,
+    69,
+    -90,
+    75,
+    -119,
+    58
+  ],
+  "builtInWeapons": {
+    "WS 1": "relics_blazo",
+    "WS 10": "relics_zaap",
+    "WS 11": "relics_exo",
+    "WS 12": "relics_exo",
+    "WS 13": "relics_blazo",
+    "WS 14": "relics_blazo",
+    "WS 15": "relics_blazo",
+    "WS 16": "relics_blazo",
+    "WS 2": "relics_blazo",
+    "WS 3": "relics_blazo",
+    "WS 4": "relics_blazo",
+    "WS 5": "relics_exo",
+    "WS 6": "relics_exo",
+    "WS 7": "relics_exo",
+    "WS 8": "relics_exo",
+    "WS 9": "relics_zaap"
+  },
+  "center": [
+    138,
+    128.5
+  ],
+  "collisionRadius": 178.100006,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 42,
+      "length": 140.5,
+      "location": [
+        -120.5,
+        45.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 42
+    },
+    {
+      "angle": -180,
+      "contrailSize": 42,
+      "length": 140.5,
+      "location": [
+        -120.5,
+        -45.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 42
+    },
+    {
+      "angle": 180,
+      "contrailSize": 38,
+      "length": 109.5,
+      "location": [
+        -127,
+        16.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 38
+    },
+    {
+      "angle": -180,
+      "contrailSize": 38,
+      "length": 109.5,
+      "location": [
+        -127,
+        -16.5
+      ],
+      "style": "HIGH_TECH",
+      "width": 38
+    }
+  ],
+  "height": 257,
+  "hullId": "relics_plower",
+  "hullName": "Plower",
+  "hullSize": "CRUISER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 169.5,
+  "spriteName": "graphics/ships/relics_plower.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 72.054749,
+      "id": "WS 1",
+      "locations": [
+        108.5,
+        47
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -0,
+      "arc": 72.054749,
+      "id": "WS 2",
+      "locations": [
+        108.5,
+        -47
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 0,
+      "arc": 92.937599,
+      "id": "WS 3",
+      "locations": [
+        94.5,
+        69
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -0,
+      "arc": 92.937599,
+      "id": "WS 4",
+      "locations": [
+        94.5,
+        -69
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 22.9321,
+      "arc": 103.41967,
+      "id": "WS 5",
+      "locations": [
+        86.5,
+        48
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -22.9321,
+      "arc": 103.41967,
+      "id": "WS 6",
+      "locations": [
+        86.5,
+        -48
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 19.290047,
+      "arc": 95.368919,
+      "id": "WS 7",
+      "locations": [
+        39.5,
+        90
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -19.290047,
+      "arc": 95.368919,
+      "id": "WS 8",
+      "locations": [
+        39.5,
+        -90
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 0,
+      "arc": 70.191635,
+      "id": "WS 9",
+      "locations": [
+        -2.5,
+        48
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -0,
+      "arc": 70.191635,
+      "id": "WS 10",
+      "locations": [
+        -2.5,
+        -48
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 159,
+      "arc": 103.699997,
+      "id": "WS 11",
+      "locations": [
+        -48.5,
+        51
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -159,
+      "arc": 103.699997,
+      "id": "WS 12",
+      "locations": [
+        -48.5,
+        -51
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 90,
+      "arc": 150.899994,
+      "id": "WS 13",
+      "locations": [
+        -52.5,
+        81.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -90,
+      "arc": 150.899994,
+      "id": "WS 14",
+      "locations": [
+        -52.5,
+        -81.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 180,
+      "arc": 129.100006,
+      "id": "WS 15",
+      "locations": [
+        -87.5,
+        39
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": -180,
+      "arc": 129.100006,
+      "id": "WS 16",
+      "locations": [
+        -87.5,
+        -39
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    }
+  ],
+  "width": 276
+}

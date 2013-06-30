@@ -1,0 +1,232 @@
+{
+  "bounds": [
+    -82.5,
+    12.0,
+    -82.5,
+    -20.0,
+    -20.0,
+    -17.5,
+    -20.0,
+    -10.0,
+    52.5,
+    -10.0,
+    52.5,
+    9.5,
+    -49.0,
+    14.0
+  ],
+  "center": [
+    25.5,
+    86.0
+  ],
+  "collisionRadius": 89.8,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -85.0,
+        9.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -85.0,
+        -17.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -85.0,
+        0.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -85.0,
+        -8.5
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 30.0,
+      "length": 30.0,
+      "location": [
+        -66.0,
+        19.0
+      ],
+      "style": "CUSTOM",
+	"styleId": "algae",
+      "width": 10.0
+    }
+  ],
+  "height": 172.0,
+  "width": 51.0,
+  "hullId": "destroyer_critias",
+  "hullName": "Critias",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    0.0,
+    0.0
+  ],
+  "shieldRadius": 85.0,
+  "spriteName": "graphics/antediluvians/ships/destroyer_critias_shading.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 1",
+      "locations": [
+        12.0,
+        8.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 2",
+      "locations": [
+        3.0,
+        8.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 3",
+      "locations": [
+        -6.0,
+        8.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 4",
+      "locations": [
+        -15.0,
+        8.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 5",
+      "locations": [
+        -24.0,
+        8.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 6",
+      "locations": [
+        -20.0,
+        -4.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 7",
+      "locations": [
+        -11.0,
+        -4.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 8",
+      "locations": [
+        -2.0,
+        -4.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 90.0,
+      "arc": 200.0,
+      "id": "WS 9",
+      "locations": [
+        7.0,
+        -4.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 90.0,
+      "id": "WS 10",
+      "locations": [
+        -24.5,
+        -17.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0.0,
+      "arc": 360.0,
+      "id": "WS 11",
+      "locations": [
+        -48.5,
+        9.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    }
+  ]
+}

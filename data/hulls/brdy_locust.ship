@@ -1,0 +1,202 @@
+{
+  "bounds": [
+    -20,
+    -3,
+    -28.5,
+    -3,
+    -28.5,
+    -8,
+    -35.5,
+    -8,
+    -35,
+    -15,
+    -22.5,
+    -15,
+    2.5,
+    -17.5,
+    -5,
+    -28,
+    26.5,
+    -24,
+    23,
+    -16.5,
+    33,
+    -5.5,
+    18,
+    -5.5,
+    11.5,
+    -4.5,
+    11,
+    5,
+    18,
+    5.5,
+    39.5,
+    6,
+    27.5,
+    8,
+    23,
+    16.5,
+    23.5,
+    24,
+    -5,
+    28,
+    6.5,
+    21.5,
+    -20,
+    18,
+    -22.5,
+    15,
+    -35,
+    15,
+    -35,
+    3,
+    -20,
+    3
+  ],
+  "center": [
+    32.5,
+    42.5
+  ],
+  "collisionRadius": 58.84301,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 3,
+      "length": 22.5,
+      "location": [
+        -36,
+        13
+      ],
+      "style": "CUSTOM",
+	  "styleId": "BlackrockFlare",
+      "width": 3
+    },
+    {
+      "angle": -180,
+      "contrailSize": 3,
+      "length": 22.5,
+      "location": [
+        -36,
+        -13
+      ],
+      "style": "CUSTOM",
+	  "styleId": "BlackrockFlare",
+      "width": 3
+    },
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -4.5,
+        25.5
+      ],
+      "style": "CUSTOM",
+	  "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -4.5,
+        -25.5
+      ],
+      "style": "CUSTOM",
+	  "styleId": "BlackrockFlare",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 3,
+      "length": 22.5,
+      "location": [
+        -36,
+        9.5
+      ],
+      "style": "CUSTOM",
+	  "styleId": "BlackrockFlare",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 3,
+      "length": 22.5,
+      "location": [
+        -36,
+        -9.5
+      ],
+      "style": "CUSTOM",
+	  "styleId": "BlackrockFlare",
+      "width": 4
+    }
+  ],
+  "height": 85,
+  "hullId": "brdy_locust",
+  "hullName": "Locust",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    1,
+    -0
+  ],
+  "shieldRadius": 63.310741,
+  "spriteName": "graphics/BR/ships/locust.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 31.048222,
+      "id": "WS0003",
+      "locations": [
+        27.5,
+        -11.5
+      ],
+      "mount": "HARDPOINT",
+      "position": null,
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 90,
+      "id": "WS0004",
+      "locations": [
+        22,
+        17.5
+      ],
+      "mount": "TURRET",
+      "position": null,
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS0005",
+      "locations": [
+        -11,
+        -0
+      ],
+      "mount": "TURRET",
+      "position": null,
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -45,
+      "arc": 190.807587,
+      "id": "WS0001",
+      "locations": [
+        8,
+        -22.5
+      ],
+      "mount": "TURRET",
+      "position": null,
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 65
+}

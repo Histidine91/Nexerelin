@@ -1,0 +1,23 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "frigate_anchor",
+  "variantId": "anchor_Antediluvian",
+  "fluxVents": 5,
+  "fluxCapacitors": 2,
+  "hullMods": [
+    "armoredweapons",
+    "autorepair",
+    "turretgyros",
+    "heavyarmor",
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "tripleturret",
+        "WS 2": "tripleturret",
+        "WS 3": "tripleturret"
+      }
+    }
+  ]
+}

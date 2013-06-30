@@ -1,0 +1,116 @@
+{
+  "bounds": [
+    14,
+    2.5,
+    5,
+    4.5,
+    -6,
+    17.5,
+    -12,
+    10.5,
+    -16,
+    1.5,
+    -16,
+    -1.5,
+    -12,
+    -10.5,
+    -6,
+    -17.5,
+    5,
+    -4.5,
+    14,
+    -2.5
+  ],
+  "center": [
+    19,
+    17.5
+  ],
+  "collisionRadius": 25.9,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 12,
+      "location": [
+        -12.5,
+        -9.5
+      ],
+      "style": "LOW_TECH_FIGHTER",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 12,
+      "location": [
+        -12.5,
+        9.5
+      ],
+      "style": "LOW_TECH_FIGHTER",
+      "width": 4
+    }
+  ],
+  "height": 35,
+  "hullId": "mrd_striker",
+  "hullName": "Striker",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 24,
+  "spriteName": "graphics/ships/mrd_striker.png",
+  "style": "LOW_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS 1",
+      "locations": [
+        -3,
+        15.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 10,
+      "id": "WS 2",
+      "locations": [
+        -3,
+        -15.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 15,
+      "id": "WS 3",
+      "locations": [
+        4.5,
+        8.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 15,
+      "id": "WS 4",
+      "locations": [
+        4.5,
+        -8.5
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 38
+}

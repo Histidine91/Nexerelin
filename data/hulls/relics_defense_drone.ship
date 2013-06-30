@@ -1,0 +1,82 @@
+{
+  "bounds": [
+    -9.5,
+    -4.5,
+    -1.5,
+    -11,
+    10,
+    -0,
+    -1.5,
+    11,
+    -9.5,
+    4.5
+  ],
+  "center": [
+    13,
+    12
+  ],
+  "collisionRadius": 16.070158,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 8,
+      "location": [
+        -10,
+        2
+      ],
+      "style": "HIGH_TECH",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 8,
+      "location": [
+        -10,
+        -2
+      ],
+      "style": "HIGH_TECH",
+      "width": 4
+    }
+  ],
+  "height": 24,
+  "hullId": "relics_defense_drone",
+  "hullName": "Defense Drone",
+  "hullSize": "FIGHTER",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 15.572411,
+  "spriteName": "graphics/ships/drones/relics_biter_drone.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS0001",
+      "locations": [
+        0,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 61.927513,
+      "id": "WS0002",
+      "locations": [
+        6.5,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 26
+}

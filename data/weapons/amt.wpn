@@ -1,0 +1,21 @@
+{
+	"id":"amt",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"SMALL",
+	"turretSprite":"graphics/nihil/weapons/amt_turret_base.png",
+	"turretGlowSprite":"graphics/nihil/weapons/amt_turret_glow.png",
+	"hardpointSprite":"graphics/nihil/weapons/amt_hardpoint_base.png",
+	"hardpointGlowSprite":"graphics/nihil/weapons/amt_hardpoint_glow.png",
+	"glowColor":[30,30,30,200],
+	"turretOffsets":[10, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[15, 0],
+	"hardpointAngleOffsets":[0],
+	"barrelMode":"ALTERNATING", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"GLOW",
+	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held
+	"requiresFullCharge":true,  # for pulse weapons - whether the weapon will fire at a lower strength partial charge
+	"projectileSpecId":"amblaster_shot",  # projectile that will be fired
+	"fireSoundTwo":"energy_pulse",
+}

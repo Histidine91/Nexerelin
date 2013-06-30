@@ -1,0 +1,36 @@
+{
+    "displayName": "Standard",
+    "fluxCapacitors": 7,
+    "fluxVents": 10,
+    "hullId": "ms_inanna",
+    "hullMods": [
+        "magazines",
+        "augmentedengines"
+    ],
+    "variantId": "ms_inanna_Standard",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "ms_scattercepc"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0002": "ms_cepc",
+                "WS0003": "ms_cepc",
+                "WS0004": "ms_cepc"
+        }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0005": "ms_pdcepc"
+            }
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+    "displayName": "Assault",
+    "fluxCapacitors": 5,
+    "fluxVents": 0,
+    "hullId": "ms_sargasso",
+    "hullMods": [
+        "hardenedshieldemitter",
+        "augmentedengines"
+    ],
+    "variantId": "ms_sargasso_Assault",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "amblaster",
+                "WS0002": "amblaster"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "ms_shrike_pod"
+            }
+        }
+    ]
+}

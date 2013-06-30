@@ -1,0 +1,50 @@
+{
+  "displayName": "Imperial",
+  "fluxCapacitors": 8,
+  "fluxVents": 8,
+  "hullId": "mrd_raven",
+  "hullMods": [
+    "targetingunit",
+    "stabilizedshieldemitter"
+  ],
+  "variantId": "mrd_raven_imperial",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "mrd_heavy_autoblaster",
+        "WS 8": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 11": "mrd_heavy_beam",
+        "WS 12": "mrd_heavy_beam"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pdlaser",
+        "WS 10": "pdburst",
+        "WS 13": "pdburst",
+        "WS 2": "pdlaser",
+        "WS 3": "pdlaser",
+        "WS 4": "pdlaser",
+        "WS 9": "pdburst"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "pilum",
+        "WS 6": "pilum"
+      }
+    }
+  ]
+}

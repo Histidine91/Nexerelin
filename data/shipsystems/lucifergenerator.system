@@ -1,0 +1,23 @@
+{
+	"id":"lucifergenerator",
+	"type":"STAT_MOD",
+	"aiType":"HIGH_ENERGY_FOCUS",
+	
+	"statsScript":"data.shipsystems.scripts.HighEnergyFocusStats",
+	
+	"weaponGlowColor":[101,96,200,50],
+	"weaponTypes":[ENERGY],
+	
+	#"useSound":"beam_heavy_intro",
+	#"outOfUsesSound":"gun_out_of_ammo",
+
+	"activatingShieldsCancels":true,
+	
+	# Stian deactivated these two because of audio playback timing issues. See fortressshield.system for more.
+	# Re-enable for testing.
+	
+	"outOfUsesSound":"gun_out_of_ammo",
+    "useSound":"system_lucifergenactivate",
+	"deactivateSound":"system_lucifergendeactivate",
+	"loopSound":"system_lucifergenloop",	
+}

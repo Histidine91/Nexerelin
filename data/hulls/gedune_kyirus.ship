@@ -1,0 +1,174 @@
+{
+  "bounds": [
+    -30.5,
+    -6,
+    -41.5,
+    -12.5,
+    -24.5,
+    -20,
+    -23,
+    -31.5,
+    -8,
+    -36,
+    11.5,
+    -35,
+    11.5,
+    -21,
+    63.5,
+    -6.5,
+    26.5,
+    -2.5,
+    26.5,
+    2.5,
+    63.5,
+    6.5,
+    11.5,
+    21,
+    11.5,
+    35,
+    -8,
+    36,
+    -23,
+    31.5,
+    -24.5,
+    20,
+    -41.5,
+    12.5,
+    -30.5,
+    6
+  ],
+  "builtInWeapons": {
+    "WS0001": "gedune_edart",
+    "WS0002": "gedune_kdart"
+  },
+  "center": [
+    38,
+    42
+  ],
+  "collisionRadius": 48.01302,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 15,
+      "location": [
+        -26,
+        29.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 15,
+      "location": [
+        -26,
+        -29.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 14,
+      "length": 49,
+      "location": [
+        -32,
+        -0
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 14
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 21.5,
+      "location": [
+        -41,
+        -10.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 6
+    },
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 21.5,
+      "location": [
+        -41,
+        10.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 6
+    }
+  ],
+  "height": 105,
+  "hullId": "gedune_kyirus",
+  "hullName": "Kyirus",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 65.001923,
+  "spriteName": "graphics/gedune/ships/gedune_kyirus.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS0001",
+      "locations": [
+        -4,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "MEDIUM",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 0,
+      "arc": 2,
+      "id": "WS0002",
+      "locations": [
+        13.5,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BUILT_IN"
+    },
+    {
+      "angle": 0,
+      "arc": 9.627102,
+      "id": "WS0003",
+      "locations": [
+        9.5,
+        29
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 9.627102,
+      "id": "WS0004",
+      "locations": [
+        9.5,
+        -29
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 76
+}

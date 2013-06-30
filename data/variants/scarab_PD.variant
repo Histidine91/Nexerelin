@@ -1,0 +1,35 @@
+{
+    "displayName": "Point Defense",
+    "fluxCapacitors": 2,
+    "fluxVents": 1,
+    "hullId": "scarab",
+    "hullMods": [
+        "turretgyros",
+        "auxiliarythrusters"
+    ],
+    "variantId": "scarab_pd",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "ALTERNATING",
+            "weapons": {"WS0002": "swarmer"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "brburst",
+                "WS0003": "pdburst",
+                "WS0004": "pdburst"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0005": "brvulcan",
+                "WS0006": "brvulcan"
+            }
+        }
+    ]
+}

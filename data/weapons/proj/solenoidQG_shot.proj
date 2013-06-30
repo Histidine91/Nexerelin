@@ -1,0 +1,19 @@
+{
+	"id":"solenoidQG_shot",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",	
+	"length":220.0,
+	"width":4.5,
+	"fadeTime":0.2,
+	"glowColor":[135,255,180,55],
+	"glowRadius":45,
+	"fringeColor":[135,255,180,235],
+	"coreColor":[200,255,220,255],
+	"hitGlowRadius":135,
+	"textureScrollSpeed":64.0,
+	"pixelsPerTexel":5.0,
+	"bulletSprite":"graphics/missiles/shell_gauss_cannon.png",
+	
+}

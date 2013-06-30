@@ -1,0 +1,29 @@
+{
+	"id":"neutrino_neutronpulse",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"MEDIUM",
+	"displayArcRadius":1100,
+	"turretSprite":"graphics/neut/weapons/neutrino_neutronpulse_turret_base.png",
+	"turretGunSprite":"graphics/neut/weapons/neutrino_neutronpulse_turret_recoil.png",
+	"hardpointSprite":"graphics/neut/weapons/neutrino_neutronpulse_hardpoint_base.png",
+	"hardpointGunSprite":"graphics/neut/weapons/neutrino_neutronpulse_hardpoint_recoil.png",	
+	"visualRecoil":3.0,  # the gun sprites are only used if this is non-0
+	"renderHints":[RENDER_BARREL_BELOW],
+	"glowColor":[199,93,76,215],
+	"turretOffsets":[10, -4.5, 10, 4.5],
+	"turretAngleOffsets":[0, 0],
+	"hardpointOffsets":[20, -4.5, 20, 4.5],
+	"hardpointAngleOffsets":[0, 0],
+	"barrelMode":"ALTERNATING", # LINKED or ALTERNATING.  whether barrels fire at the same time or alternate.
+	"animationType":"MUZZLE_FLASH",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":34.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":10.0,
+					   "particleSizeMin":18.0,
+					   "particleSizeRange":24.0,
+					   "particleDuration":0.02,
+					   "particleCount":12,
+					   "particleColor":[199,93,76,215]},
+	"projectileSpecId":"neut_neutronpulse_shot",  # projectile that will be fired
+	"fireSoundTwo":"neutrino_neutronpulse",	
+}

@@ -1,0 +1,39 @@
+{
+  "displayName": "High Command",
+  "fluxCapacitors": 0,
+  "fluxVents": 5,
+  "hullId": "thule_vikingmki",
+  "hullMods": [
+    "thule_rune"
+  ],
+  "variantId": "thule_vikingmki_HC",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "thule_light_hunker",
+        "WS 002": "thule_light_hvpc",
+        "WS 003": "thule_light_hvpc",
+        "WS 004": "thule_bulwark_srm_launcher",
+        "WS 005": "thule_bulwark_srm_launcher",
+        "WS 006": "thule_heavyslugger"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "displayName": "Standard",
+  "fluxCapacitors": 5,
+  "fluxVents": 10,
+  "hullId": "mrd_raven_mk_ii",
+  "hullMods": [
+    "targetingunit",
+    "stabilizedshieldemitter",
+    "advancedshieldemitter"
+  ],
+  "variantId": "mrd_raven_mk_ii_standard",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "mrd_heavy_autoblaster",
+        "WS0008": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "heavyburst",
+        "WS0004": "heavyburst"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "pdlaser",
+        "WS0002": "pdlaser",
+        "WS0005": "pdlaser",
+        "WS0006": "pdlaser",
+        "WS0009": "mrd_light_blaster",
+        "WS0010": "mrd_light_blaster",
+        "WS0011": "pdburst",
+        "WS0012": "pdburst",
+        "WS0015": "mrd_pd_laser_mk_ii"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0013": "mrd_light_autoblaster",
+        "WS0014": "mrd_light_autoblaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

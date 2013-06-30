@@ -1,0 +1,94 @@
+{
+  "bounds": [
+    59.0,
+    9.0,
+    -11.0,
+    27.0,
+    -28.0,
+    -6.0,
+    -5.0,
+    -29.0,
+    48.0,
+    -6.0
+  ],
+  "center": [
+    32.0,
+    31.0
+  ],
+  "collisionRadius": 80.0,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 64.0,
+      "length": 64.0,
+      "location": [
+        -29.0,
+        0.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 24.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 64.0,
+      "length": 32.0,
+      "location": [
+        -23.0,
+        19.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 12.0
+    }
+  ],
+  "height": 92.0,
+  "width": 64.0,
+  "hullId": "nihil_tempest_escort",
+  "hullName": "Tempest-e",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    11.0,
+    -0.0
+  ],
+  "shieldRadius": 76.9,
+  "spriteName": "graphics/nihil/ships/nihil_tempest-e.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 60.0,
+      "arc": 235.0,
+      "id": "WS 001",
+      "locations": [
+        12.0,
+        20.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 260.0,
+      "arc": 235.0,
+      "id": "WS 002",
+      "locations": [
+        -4.0,
+        -17.0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 5.0,
+      "id": "WS 003",
+      "locations": [
+        30.0,
+        -15.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    }
+  ]
+}

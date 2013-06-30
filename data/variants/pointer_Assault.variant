@@ -1,0 +1,14 @@
+{
+    "displayName": "Assault",
+    "fluxCapacitors": 0,
+    "fluxVents": 0,
+    "hullId": "pointer",
+    "hullMods": ["auxiliarythrusters"],
+    "variantId": "pointer_Assault",
+    "weaponGroups": [
+        {
+            "mode": "LINKED",
+            "weapons": {"WS 001": "shredder"}
+        }
+    ]
+}

@@ -1,0 +1,178 @@
+{
+  "bounds": [
+    -31.5,
+    -6,
+    -22,
+    -20.5,
+    -2,
+    -28,
+    0,
+    -9,
+    26,
+    -9,
+    26,
+    9,
+    0,
+    9,
+    -2,
+    28,
+    -22,
+    20.5,
+    -31.5,
+    6
+  ],
+  "center": [
+    33,
+    32.5
+  ],
+  "collisionRadius": 34,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 8,
+      "length": 11.5,
+      "location": [
+        -21.5,
+        16
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 8
+    },
+    {
+      "angle": -180,
+      "contrailSize": 8,
+      "length": 11.5,
+      "location": [
+        -21.5,
+        -16
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 8
+    },
+    {
+      "angle": 180,
+      "contrailSize": 6,
+      "length": 24.5,
+      "location": [
+        -30.5,
+        4
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 6
+    },
+    {
+      "angle": -180,
+      "contrailSize": 6,
+      "length": 24.5,
+      "location": [
+        -30.5,
+        -4
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 6
+    }
+  ],
+  "height": 68,
+  "hullId": "gedune_nanda",
+  "hullName": "Nanda",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 63,
+  "spriteName": "graphics/gedune/ships/gedune_nanda.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "WS0001",
+      "locations": [
+        -2.5,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0002",
+      "locations": [
+        0.5,
+        29
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": -0,
+      "arc": 10,
+      "id": "WS0003",
+      "locations": [
+        0.5,
+        -29
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS0007",
+      "locations": [
+        26,
+        -0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0006",
+      "locations": [
+        11,
+        -0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "SYSTEM"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS0004",
+      "locations": [
+        4,
+        12
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -0,
+      "arc": 5,
+      "id": "WS0005",
+      "locations": [
+        4,
+        -12
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "ENERGY"
+    }
+  ],
+  "width": 66
+}

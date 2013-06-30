@@ -1,0 +1,61 @@
+{
+  "displayName": "Advanced",
+  "fluxCapacitors": 0,
+  "fluxVents": 3,
+  "hullId": "herald",
+  "hullMods": [
+    "missleracks",
+    "eccm"
+  ],
+  "variantId": "herald_A",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "scorpion",
+        "WS0002": "scorpion",
+        "WS0003": "scorpion",
+        "WS0004": "scorpion",
+        "WS0005": "scorpion",
+        "WS0006": "scorpion"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0007": "sabotpod",
+        "WS0008": "sabotpod"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "ibcm"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0010": "irpdcannon",
+        "WS0011": "irpdcannon",
+        "WS0012": "irpdburst",
+        "WS0013": "irpdburst",
+        "WS0014": "irpdcannon",
+        "WS0015": "irpdcannon",
+        "WS0016": "irpdburst",
+        "WS0017": "irpdburst",
+        "WS0018": "quadheavymg",
+        "WS0019": "quadheavymg"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

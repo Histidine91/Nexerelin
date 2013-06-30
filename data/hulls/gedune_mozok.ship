@@ -1,0 +1,162 @@
+{
+  "bounds": [
+    -7.5,
+    -22,
+    -28.5,
+    -26.5,
+    -30,
+    -37.5,
+    -24,
+    -48.5,
+    10.5,
+    -45.5,
+    12,
+    -27,
+    34.5,
+    -7,
+    34.5,
+    7,
+    12,
+    27,
+    10.5,
+    45.5,
+    -24,
+    48.5,
+    -30,
+    37.5,
+    -28.5,
+    26.5,
+    -7.5,
+    22
+  ],
+  "center": [
+    50,
+    31
+  ],
+  "collisionRadius": 56,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -29,
+        32
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 10
+    },
+    {
+      "angle": -180,
+      "contrailSize": 30,
+      "length": 30,
+      "location": [
+        -29,
+        -32
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 10
+    },
+    {
+      "angle": 180,
+      "contrailSize": 4,
+      "length": 13.5,
+      "location": [
+        -23.5,
+        44.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 4
+    },
+    {
+      "angle": -180,
+      "contrailSize": 4,
+      "length": 13.5,
+      "location": [
+        -23.5,
+        -44.5
+      ],
+      "style": "CUSTOM",
+      "styleId": "geduneEngine",
+      "width": 4
+    }
+  ],
+  "height": 100,
+  "hullId": "gedune_mozok",
+  "hullName": "Mozok",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0,
+    -0
+  ],
+  "shieldRadius": 60,
+  "spriteName": "graphics/gedune/ships/gedune_mozok.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 230,
+      "id": "WS0001",
+      "locations": [
+        7,
+        0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 90,
+      "arc": 300,
+      "id": "WS0002",
+      "locations": [
+        4,
+        20
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -90,
+      "arc": 300,
+      "id": "WS0003",
+      "locations": [
+        4,
+        -20
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0004",
+      "locations": [
+        14.5,
+        40
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 10,
+      "id": "WS0005",
+      "locations": [
+        14.5,
+        -40
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "MISSILE"
+    }
+  ],
+  "width": 100
+}

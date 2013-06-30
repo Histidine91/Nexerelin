@@ -1,0 +1,34 @@
+{
+  "displayName": "Tractor ",
+  "fluxCapacitors": 3,
+  "fluxVents": 2,
+  "hullId": "neutrino_vice",
+  "hullMods": [
+    "auxiliarythrusters"
+  ],
+  "variantId": "neutrino_vice_standard",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "neutrino_tractorbeam"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 1": "neutrino_photontorpedo",
+        "WS 2": "neutrino_photontorpedo"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 4": "neutrino_antiproton"
+      }
+    }
+  ]
+}

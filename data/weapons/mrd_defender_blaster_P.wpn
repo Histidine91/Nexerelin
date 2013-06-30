@@ -1,0 +1,37 @@
+{
+	"id":"mrd_defender_blaster_P",  # this id must match what's in the spreadsheet
+	"specClass":"projectile",
+	"type":"ENERGY",
+	"size":"MEDIUM",
+	"displayArcRadius":600,
+	"turretSprite":"",
+	"turretGunSprite":"",
+	"turretGlowSprite":"",
+	"hardpointSprite":"graphics/weapons/mrd_defender_blaster_hardpoint_P.png",
+	"hardpointGunSprite":"graphics/weapons/mrd_defender_blaster_P_recoil.png",
+	"hardpointGlowSprite":"graphics/weapons/mrd_defender_blaster_P_hardpoint_glow.png",	
+	"visualRecoil":7.0,  # the gun sprites are only used if this is non-0
+	"renderHints":[RENDER_BARREL_BELOW],
+	"turretOffsets":[12, 0],
+	"turretAngleOffsets":[0],
+	"hardpointOffsets":[10, 0],
+	"hardpointAngleOffsets":[0],
+	"fringeColor":[0,0,155,255],
+	"coreColor":[255,255,255,255],
+	"glowColor":[255,100,100,255],
+	"width":12.0,
+	"textureType":ROUGH,
+	"textureScrollSpeed":128.0,
+	"pixelsPerTexel":5.0,
+	"barrelMode":"LINKED", # or LINKED.  whether barrels fire at the same time or alternate.
+	"animationType":"GLOW",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
+	"muzzleFlashSpec":{"length":30.0,   # only used if animationType = MUZZLE_FLASH
+					   "spread":10.0,
+					   "particleSizeMin":15.0,
+					   "particleSizeRange":8.0,
+					   "particleDuration":0.12,
+					   "particleCount":10,
+					   "particleColor":[100,100,255,255]},
+	"projectileSpecId":"mrd_light_blaster_shot",  # projectile that will be fired
+	"fireSoundTwo":"mrd_defender_rapid_cannons",
+}

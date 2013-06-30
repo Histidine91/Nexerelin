@@ -1,0 +1,39 @@
+{
+  "displayName": "Antediluvian",
+  "hullId": "destroyer_timaeus",
+  "variantId": "timaeus_Antediluvian",
+  "fluxVents": 0,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "magazines",
+    "reinforcedhull",
+    "turretgyros"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pressureturret",
+        "WS 2": "pressureturret",
+        "WS 3": "pressureturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 4": "advancedturret",
+        "WS 5": "advancedturret",
+        "WS 6": "advancedturret",
+        "WS 7": "dualturret",
+        "WS 8": "dualturret",
+        "WS 9": "dualturret"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 10": "sonicturret"
+      }
+    }
+  ]
+}

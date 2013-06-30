@@ -1,0 +1,51 @@
+{
+  "displayName": "Assault",
+  "fluxCapacitors": 5,
+  "fluxVents": 10,
+  "hullId": "mrd_defender",
+  "hullMods": [
+    "missleracks",
+    "targetingunit",
+    "advancedshieldemitter",
+    "blast_doors"
+  ],
+  "variantId": "mrd_defender_assault",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0001": "mrd_defender_blaster_L",
+        "WS0002": "mrd_defender_blaster_P"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0003": "mrd_hydra",
+        "WS0004": "mrd_hydra"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "mrd_pd_laser_mk_ii"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0005": "mrd_defender_detail_L",
+        "WS0006": "mrd_defender_detail_P"
+      }
+    }
+  ]
+}

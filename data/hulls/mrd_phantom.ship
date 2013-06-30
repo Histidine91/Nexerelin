@@ -1,0 +1,311 @@
+{
+  "bounds": [
+    60,
+    4.5,
+    119,
+    7.5,
+    130,
+    11.5,
+    127,
+    15,
+    130,
+    18.5,
+    117,
+    22.5,
+    42,
+    50.5,
+    26,
+    58.5,
+    7,
+    55.5,
+    -0.5,
+    50,
+    -13,
+    48.5,
+    -15,
+    59.5,
+    -24,
+    65.5,
+    -9,
+    70.5,
+    -13,
+    74,
+    -9,
+    77.5,
+    -24,
+    83.5,
+    -49,
+    88.5,
+    -62,
+    82.5,
+    -68,
+    69.5,
+    -57,
+    64.5,
+    -79,
+    57.5,
+    -79,
+    46.5,
+    -59.5,
+    39,
+    -48,
+    17.5,
+    -32,
+    15.5,
+    -56,
+    5.5,
+    -56,
+    -5.5,
+    -32,
+    -15.5,
+    -48,
+    -17.5,
+    -59.5,
+    -39,
+    -79,
+    -46.5,
+    -79,
+    -57.5,
+    -57,
+    -64.5,
+    -68,
+    -69.5,
+    -62,
+    -82.5,
+    -49,
+    -88.5,
+    -24,
+    -83.5,
+    -9,
+    -77.5,
+    -13,
+    -74,
+    -9,
+    -70.5,
+    -24,
+    -65.5,
+    -15,
+    -59.5,
+    -13,
+    -48.5,
+    -0.5,
+    -50,
+    7,
+    -55.5,
+    26,
+    -58.5,
+    42,
+    -50.5,
+    117,
+    -22.5,
+    130,
+    -18.5,
+    127,
+    -15,
+    130,
+    -11.5,
+    119,
+    -7.5,
+    60,
+    -4.5
+  ],
+  "center": [
+    92,
+    81.5
+  ],
+  "collisionRadius": 171.105225,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 16,
+      "length": 40,
+      "location": [
+        -79,
+        53
+      ],
+      "style": "MIDLINE",
+      "width": 16
+    },
+    {
+      "angle": -180,
+      "contrailSize": 16,
+      "length": 40,
+      "location": [
+        -79,
+        -53
+      ],
+      "style": "MIDLINE",
+      "width": 16
+    },
+    {
+      "angle": -180,
+      "contrailSize": 24,
+      "length": 46,
+      "location": [
+        -56,
+        0
+      ],
+      "style": "MIDLINE",
+      "width": 24
+    }
+  ],
+  "height": 214,
+  "hullId": "mrd_phantom",
+  "hullName": "Phantom",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    13.5,
+    -0
+  ],
+  "shieldRadius": 155.528931,
+  "spriteName": "graphics/ships/mrd_phantom.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 50,
+      "arc": 135,
+      "id": "WS0001",
+      "locations": [
+        -11.5,
+        33
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": -50,
+      "arc": 135,
+      "id": "WS0002",
+      "locations": [
+        -11.5,
+        -33
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 35,
+      "arc": 135,
+      "id": "WS0003",
+      "locations": [
+        34.5,
+        31
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -35,
+      "arc": 135,
+      "id": "WS0004",
+      "locations": [
+        34.5,
+        -31
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 60.700001,
+      "arc": 160.399994,
+      "id": "WS0005",
+      "locations": [
+        -46.5,
+        76
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -60,
+      "arc": 160.800003,
+      "id": "WS0006",
+      "locations": [
+        -46.5,
+        -76
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -161.600006,
+      "arc": 100.900002,
+      "id": "WS0007",
+      "locations": [
+        -33.5,
+        54
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 161.600006,
+      "arc": 100.400002,
+      "id": "WS0008",
+      "locations": [
+        -33.5,
+        -54
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0009",
+      "locations": [
+        -15,
+        74
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0010",
+      "locations": [
+        -15,
+        -74
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 0,
+      "id": "WS0011",
+      "locations": [
+        125,
+        15
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    },
+    {
+      "angle": 0,
+      "arc": 0,
+      "id": "WS0012",
+      "locations": [
+        125,
+        -15
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "UNIVERSAL"
+    }
+  ],
+  "width": 184
+}

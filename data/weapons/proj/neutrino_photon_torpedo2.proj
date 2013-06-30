@@ -1,0 +1,24 @@
+{
+	"id":"neutrino_photon_torpedo2",
+	"specClass":"missile",
+	"missileType":"MISSILE",
+	"sprite":"graphics/neut/missiles/neutrino_photon_torpedo.png",
+	"glowColor":[227,40,26,100],
+	"glowRadius":30,
+	"size":[7,14],	
+	"center":[3.5,7],
+	"collisionRadius":8,
+	"collisionClass":"MISSILE_FF",
+	"explosionColor":[173,252,251,255],  # purely visual, will get a white additively blended core on top of this color
+	"explosionRadius":100, # purely visual	
+	"engineSpec":{"turnAcc":0,
+				  "turnRate":0,
+				  "acc":375,
+				  "dec":0},
+	#"engineSlots":[{"id":"ES1",
+	#				"loc":[-11, 0],
+	#			    "style":"MISSILE_HIGH_TECH",
+	#			    "width":4.0,
+	#			    "length":30.0,
+	#			    "angle":180.0}]
+}

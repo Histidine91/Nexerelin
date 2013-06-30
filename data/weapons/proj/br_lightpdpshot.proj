@@ -1,0 +1,17 @@
+{
+	"id":"br_lightpdpshot",
+	"specClass":"projectile",
+	"spawnType":"BALLISTIC",
+	"collisionClass":"PROJECTILE_FF",
+	"collisionClassByFighter":"PROJECTILE_FIGHTER",
+	"length":1.0,
+	"width":20.0,
+	"center":[6,14],	
+	"fadeTime":0.3,
+	"fringeColor":[255,167,205,115],
+	"coreColor":[0,255,255,255],
+	"hitGlowRadius":48,
+	"bulletSprite":"graphics/BR/missiles/plasmacupola.png",	
+	"textureScrollSpeed":512.0,
+	"pixelsPerTexel":5.0,
+}

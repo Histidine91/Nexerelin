@@ -1,0 +1,47 @@
+{
+  "displayName": "Balanced",
+  "fluxCapacitors": 12,
+  "fluxVents": 15,
+  "hullId": "mrd_centurion",
+  "hullMods": [
+    "advancedshieldemitter",
+    "targetingunit",
+    "turretgyros"
+  ],
+  "variantId": "mrd_centurion_balanced",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0009": "mrd_light_autoblaster",
+        "WS0010": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0007": "harpoon",
+        "WS0008": "harpoon"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "mrd_pd_laser_mk_ii",
+        "WS0002": "mrd_pd_laser_mk_ii",
+        "WS0003": "pdburst",
+        "WS0004": "pdburst",
+        "WS0005": "mrd_pd_laser_mk_ii",
+        "WS0006": "mrd_pd_laser_mk_ii"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "displayName": "Standard",
+  "fluxCapacitors": 15,
+  "fluxVents": 5,
+  "hullId": "mrd_alliance",
+  "hullMods": [
+    "targetingunit",
+    "advancedshieldemitter",
+    "turretgyros"
+  ],
+  "variantId": "mrd_alliance_standard",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS0007": "mrd_Alliance_turbo_P",
+        "WS0008": "mrd_Alliance_turbo_L"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0004": "mrd_heavy_autoblaster"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0001": "mrd_pd_laser_mk_ii",
+        "WS0002": "mrd_pd_laser_mk_ii"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS0003": "pdburst",
+        "WS0005": "pdburst"
+      }
+    }
+  ]
+}

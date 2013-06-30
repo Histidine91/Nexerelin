@@ -1,0 +1,116 @@
+{
+  "bounds": [
+    15.5,
+    -27.5,
+    -20.5,
+    -12.5,
+    -20.5,
+    12.5,
+    15.5,
+    27.5
+  ],
+  "center": [
+    43.0,
+    29.0
+  ],
+  "collisionRadius": 29.0,
+  "engineSlots": [
+    {
+      "angle": 180.0,
+      "contrailSize": 55.0,
+      "length": 40.0,
+      "location": [
+        -26.0,
+        10.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 8.0
+    },
+    {
+      "angle": 180.0,
+      "contrailSize": 55.0,
+      "length": 40.0,
+      "location": [
+        -26.0,
+        -10.0
+      ],
+      "style": "HIGH_TECH",
+      "width": 8.0
+    }
+  ],
+  "height": 57.0,
+  "width": 85.0,
+  "hullId": "junk_pirates_hammer",
+  "hullName": "Hammer",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    0.0,
+    0.0
+  ],
+  "shieldRadius": 50.0,
+  "spriteName": "graphics/junk_pirates/ships/junk_pirates_hammer.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0.0,
+  "weaponSlots": [
+    {
+      "angle": 355.0,
+      "arc": 5.0,
+      "id": "WS 001",
+      "locations": [
+        27.0,
+        9.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 5.0,
+      "arc": 5.0,
+      "id": "WS 002",
+      "locations": [
+        27.0,
+        -9.0
+      ],
+      "mount": "HIDDEN",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0.0,
+      "arc": 5.0,
+      "id": "WS 003",
+      "locations": [
+        3.0,
+        39.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0.0,
+      "arc": 5.0,
+      "id": "WS 004",
+      "locations": [
+        2.5,
+        -38.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0.0,
+      "arc": 5.0,
+      "id": "WS 005",
+      "locations": [
+        4.0,
+        -12.0
+      ],
+      "mount": "HARDPOINT",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ]
+}

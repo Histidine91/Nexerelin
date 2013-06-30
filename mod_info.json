@@ -1,0 +1,21 @@
+{
+"id":"exerelin", # internal id
+"name":"Exerelin", # displayed to the player
+"author":"Zaphide",
+"version":"0.55",
+"description":"Choose your banner and fight for supremacy of system Exerelin!",
+"gameVersion":"0.54.1",
+"totalConversion":"true",
+"jars":["jars/Omnifactory.jar",],
+
+"replace":
+	[
+	"data/scripts/plugins/CharacterCreationPluginImpl.java",
+    "data/scripts/world/SectorGen.java",
+    "data/world/generators.csv",
+    "data/world/factions/hegemony.faction",
+    "data/world/factions/independent.faction",
+    "data/world/factions/pirates.faction",
+    "data/world/factions/tritachyon.faction",
+	],
+}

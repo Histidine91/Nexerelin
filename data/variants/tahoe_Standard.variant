@@ -1,0 +1,29 @@
+{
+  "displayName": "Standard",
+  "hullId": "tahoe",
+  "variantId": "tahoe_Standard",
+  "fluxVents": 10,
+  "fluxCapacitors": 1,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "sabotpod",
+        "WS 5": "vulcan"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "lightdualac",
+        "WS 2": "lightdualac",
+        "WS 4": "lightdualac"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

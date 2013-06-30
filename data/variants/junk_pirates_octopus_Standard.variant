@@ -1,0 +1,44 @@
+{
+	"displayName":"Standard",
+	"hullId":"junk_pirates_octopus",
+	"variantId":"junk_pirates_octopus_Standard",
+	"fluxVents":7,
+	"fluxCapacitors":10,
+	"hullMods":[], # array of strings
+	
+	# mode is either LINKED or ALTERNATING
+	# slot ids (WS ***) must match what's in the .ship file
+	"weaponGroups":[
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 001":"flak",
+		 			"WS 002":"vulcan",
+		 			"WS 003":"vulcan",
+		 		   },
+		},
+		{
+		"autofire": true,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 005":"junk_pirates_scatterpd",
+					"WS 006":"junk_pirates_scatterpd",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 007":"heatseeker",
+		 		   },
+		},
+		{
+		"autofire": false,
+		"mode":"LINKED",
+		 "weapons":{
+		 			"WS 008":"reaper",
+		 		   },
+		}
+	],
+}

@@ -1,0 +1,53 @@
+{
+    "displayName": "Blitz",
+    "fluxCapacitors": 2,
+    "fluxVents": 10,
+    "hullId": "gedune_tenzen",
+    "hullMods": [
+        "targetingunit",
+        "fluxbreakers",
+        "magazines",
+        "stabilizedshieldemitter"
+    ],
+    "variantId": "gedune_tenzen_variant",
+    "weaponGroups": [
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0003": "gedune_plasma",
+                "WS0004": "gedune_plasma"
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {"WS0007": "gedune_maelstrom"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0009": "gedune_disruptor",
+                "WS0010": "gedune_disruptor"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "ALTERNATING",
+            "weapons": {
+                "WS0005": "gedune_repeater",
+                "WS0006": "gedune_repeater"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS0001": "gedune_flarepd",
+                "WS0002": "gedune_flarepd",
+                "WS0008": "gedune_flarepd"
+            }
+        }
+    ]
+}

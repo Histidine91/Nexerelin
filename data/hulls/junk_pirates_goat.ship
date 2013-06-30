@@ -1,0 +1,171 @@
+{
+  "bounds": [
+    -89,
+    18,
+    -109,
+    -57,
+    -30,
+    -57,
+    -11,
+    -38,
+    30,
+    -59,
+    39,
+    -33,
+    90,
+    -39,
+    73,
+    1,
+    107,
+    13,
+    94,
+    32,
+    60,
+    30,
+    40,
+    69,
+    -76,
+    62,
+    -75,
+    47
+  ],
+  "center": [
+    75.5,
+    116.5
+  ],
+  "collisionRadius": 123.5,
+  "engineSlots": [
+    {
+      "angle": 180,
+      "contrailSize": 16,
+      "length": 56,
+      "location": [
+        -84,
+        55
+      ],
+      "style": "HIGH_TECH",
+      "width": 16
+    },
+    {
+      "angle": 180,
+      "contrailSize": 20,
+      "length": 37,
+      "location": [
+        -120,
+        -48
+      ],
+      "style": "HIGH_TECH",
+      "width": 20
+    },
+    {
+      "angle": 135.2,
+      "contrailSize": 8.6,
+      "length": 17,
+      "location": [
+        -106,
+        -37
+      ],
+      "style": "HIGH_TECH",
+      "width": 8.6
+    }
+  ],
+  "height": 243,
+  "width": 145,
+  "hullId": "junk_pirates_goat",
+  "hullName": "Goat",
+  "hullSize": "CRUISER",
+  "shieldCenter": [
+    0,
+    0
+  ],
+  "shieldRadius": 162.8,
+  "spriteName": "/graphics/junk_pirates/ships/junk_pirates_goat.png",
+  "style": "HIGH_TECH",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 44.7,
+      "arc": 115.3,
+      "id": "WS 1",
+      "locations": [
+        58.5,
+        33
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -82.5,
+      "arc": 168,
+      "id": "WS 2",
+      "locations": [
+        30.5,
+        -53
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "ENERGY"
+    },
+    {
+      "angle": -39.4,
+      "arc": 85,
+      "id": "WS 3",
+      "locations": [
+        -26.5,
+        -38
+      ],
+      "mount": "TURRET",
+      "size": "LARGE",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 64.3,
+      "arc": 165.5,
+      "id": "WS 4",
+      "locations": [
+        93.5,
+        42.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 19.4,
+      "arc": 205.2,
+      "id": "WS 5",
+      "locations": [
+        113.5,
+        29.5
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "ENERGY"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS 6",
+      "locations": [
+        96,
+        3.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS 7",
+      "locations": [
+        95,
+        -33
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    }
+  ]
+}

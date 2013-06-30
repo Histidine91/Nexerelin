@@ -1,0 +1,38 @@
+{
+  "displayName": "Standard",
+  "hullId": "ballista",
+  "variantId": "ballista_Standard",
+  "fluxVents": 30,
+  "fluxCapacitors": 2,
+  "hullMods": [],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 7": "vulcan"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "railgun",
+        "WS 2": "railgun",
+        "WS 5": "railgun",
+        "WS 6": "railgun"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "hveldriver",
+        "WS 4": "hveldriver"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 8": "peacemaker"
+      }
+    }
+  ]
+}

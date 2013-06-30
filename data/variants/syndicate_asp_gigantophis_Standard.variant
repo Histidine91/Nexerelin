@@ -1,0 +1,40 @@
+{
+  "displayName": "Standard",
+  "hullId": "syndicate_asp_gigantophis",
+  "variantId": "syndicate_asp_gigantophis_Standard",
+  "fluxVents": 9,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "extendedshieldemitter"
+  ],
+  "weaponGroups": [
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "pdlaser",
+        "WS 2": "pdlaser",
+        "WS 3": "pdlaser",
+        "WS 4": "pdlaser",
+        "WS 5": "pdlaser",
+        "WS 6": "pdlaser",
+        "WS 7": "pdlaser",
+        "WS 8": "pdlaser"
+      }
+    },
+    {
+      "mode": "LINKED",
+      "weapons": {
+        "WS 10": "heavyburst",
+        "WS 11": "heavyburst",
+        "WS 9": "heavyburst"
+      }
+    },
+    {
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 12": "pilum",
+        "WS 13": "pilum"
+      }
+    }
+  ]
+}
