@@ -28,7 +28,7 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
 		if(defendStation != null)
 		{
 			for(int i = 0; i < this.getFleets().size();i++)
-				setDefendAssignments((CampaignFleetAPI)this.getFleets().get(i));
+				setWarAssignments((CampaignFleetAPI) this.getFleets().get(i));
 		}
 		else
 		{
@@ -55,7 +55,7 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
 			fleet.setPreferredResupplyLocation(getAnchor());
 
 			if(defendStation != null)
-				setDefendAssignments(fleet);
+				setWarAssignments(fleet);
 			else
 				setFleetAssignments(fleet);
 
@@ -78,13 +78,45 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 90);
 	}
 
-	private void setDefendAssignments(CampaignFleetAPI fleet)
+	private void setWarAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
-		fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken(), 90);
-		fleet.addAssignment(FleetAssignment.RESUPPLY, defendStation.getStationToken(), 90);
-		fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken() , 90);
-		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 90);
+		if(defendStation.getStationToken().getFullName().equalsIgnoreCase(getAnchor().getFullName()))
+		{
+			// Defend home station
+			fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken(), 90);
+			fleet.addAssignment(FleetAssignment.RESUPPLY, defendStation.getStationToken(), 90);
+			fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken() , 90);
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 90);
+		}
+		else
+		{
+			int action = ExerelinUtils.getRandomInRange(0,2);
+			if(action == 0)
+			{
+				// Defend under attack station
+				fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken(), 90);
+				fleet.addAssignment(FleetAssignment.RESUPPLY, defendStation.getStationToken(), 90);
+				fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken() , 90);
+				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 90);
+			}
+			else if (action == 1 && defendStation.getTargetStationRecord() != null)
+			{
+				// Attack station
+				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, defendStation.getTargetStationRecord().getStationToken(), 90);
+				fleet.addAssignment(FleetAssignment.RESUPPLY, getAnchor(), 90);
+				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, defendStation.getTargetStationRecord().getStationToken() , 90);
+				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 90);
+			}
+			else if(action == 2 && defendStation.getTargetStationRecord() != null)
+			{
+				// Raid system
+				fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation.getTargetStationRecord().getStationToken(), 90);
+				fleet.addAssignment(FleetAssignment.RESUPPLY, getAnchor(), 90);
+				fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation.getTargetStationRecord().getStationToken() , 90);
+				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 90);
+			}
+		}
 	}
 }
 

@@ -79,7 +79,6 @@ public class StationManager
 	{
 		if(stationCount != null && doesFactionOwnStation(factionId) && stationCount.containsKey(factionId))
 		{
-
 			Integer count = Integer.parseInt((String)stationCount.get(factionId));
 			return count;
 		}
@@ -134,6 +133,11 @@ public class StationManager
 		return losingFaction;
 	}
 
+	public int getNumFactionsInSystem()
+	{
+		return stationCount.size();
+	}
+
 	private void setFactionStationCount()
 	{
 		HashMap map = new HashMap();
@@ -160,11 +164,6 @@ public class StationManager
 					firstNumStations = count;
 					firstFaction = owner;
 				}
-				else if(count < lastNumStations || lastFaction.equalsIgnoreCase(owner))
-				{
-					lastNumStations = count;
-					lastFaction = owner;
-				}
 				map.remove(owner);
 				map.put(owner, count.toString());
 			}
@@ -176,19 +175,31 @@ public class StationManager
 					firstNumStations = 1;
 					firstFaction = owner;
 				}
-				else if(1 < lastNumStations)
-				{
-					lastNumStations = 1;
-					lastFaction = owner;
-				}
 			}
+		}
+
+		stationCount = map;
+
+		for(int j = 0; j < stationRecords.length; j = j + 1)
+		{
+			StationRecord record = stationRecords[j];
+			
+			if(record.getOwner() == null)
+				continue;
+
+			int stationCount = this.getNumStationsOwnedByFaction(record.getOwner().getFactionId());
+
+			if(stationCount < lastNumStations)
+			{
+				lastFaction = record.getOwner().getFactionId();
+				lastNumStations = stationCount;
+			}
+
 		}
 
 		leadingFaction = firstFaction;
 		leadingFactionStationCount = firstNumStations;
 		losingFaction = lastFaction;
 		losingFactionStationCount = lastNumStations;
-
-		stationCount = map;
 	}
 }

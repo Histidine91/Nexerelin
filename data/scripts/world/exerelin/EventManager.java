@@ -54,7 +54,7 @@ public class EventManager
 			return;
 		}
 
-		if(ExerelinData.getInstance().respawnFactions && ExerelinUtils.getRandomInRange(0,55) == 0)
+		if(ExerelinData.getInstance().systemManager.respawnFactions && ExerelinUtils.getRandomInRange(0,55) == 0)
 		{
 			eventStationSeccession.makeStationSecedeToOutSystemFaction();
 			return;

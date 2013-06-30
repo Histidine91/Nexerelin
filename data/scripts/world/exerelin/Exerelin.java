@@ -71,6 +71,12 @@ public class Exerelin implements SectorGeneratorPlugin
 		{
 			sector.getFaction(factions[i]).setRelationship("abandoned", -1);
 		}
+
+		// Set the tradeguild and rebels to hate each other
+		FactionAPI rebel = sector.getFaction("rebel");
+		FactionAPI tradeGuild = sector.getFaction("tradeguild");
+		rebel.setRelationship(tradeGuild.getId(), -1);
+		tradeGuild.setRelationship(rebel.getId(), -1);
 	}
 
 	private void initTraderSpawns(SectorAPI sector, StarSystemAPI system)

@@ -657,10 +657,7 @@ public class ExerelinUtils
 		List weapons = cargo.getWeapons();
 		if(weapons.size() > 30)
 		{
-			for(int j = 0; j < weapons.size() - 25; j++)
-			{
-				cargo.removeItems(CargoAPI.CargoItemType.WEAPONS, null ,5);
-			}
+			removeRandomWeaponStacksFromCargo(cargo, weapons.size() - 25);
 		}
 
 		if(factionWeapons.length > 0)
@@ -1360,12 +1357,7 @@ public class ExerelinUtils
 
 		List ships = cargo.getMothballedShips().getMembersListCopy();
 		if(ships.size() > 25)
-		{
-			for(int j = 0; j < ships.size() - 22; j++)
-			{
-				cargo.getMothballedShips().removeFleetMember((FleetMemberAPI)ships.get(ExerelinUtils.getRandomInRange(0, ships.size() - 1)));
-			}
-		}
+			removeRandomShipsFromCargo(cargo,  ships.size() - 22);
 
 		for(int i = 0; i < count; i = i + 1)
 		{
@@ -1410,4 +1402,23 @@ public class ExerelinUtils
 			//cargo.getMothballedShips().addFleetMember(fmAPI);
 		}
 	}
+
+	public static void removeRandomShipsFromCargo(CargoAPI cargoAPI, int numToRemove)
+	{
+		List ships = cargoAPI.getMothballedShips().getMembersListCopy();
+		for(int j = 0; j < Math.min(numToRemove, ships.size()); j++)
+		{
+			cargoAPI.getMothballedShips().removeFleetMember((FleetMemberAPI)ships.get(ExerelinUtils.getRandomInRange(0, ships.size() - 1)));
+		}
+	}
+
+	public static void removeRandomWeaponStacksFromCargo(CargoAPI cargoAPI, int numToRemove)
+	{
+		List weapons = cargoAPI.getWeapons();
+		for(int j = 0; j < Math.min(weapons.size(), numToRemove); j++)
+		{
+			cargoAPI.removeItems(CargoAPI.CargoItemType.WEAPONS, null ,5);
+		}
+	}
+
 }

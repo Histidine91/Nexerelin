@@ -56,7 +56,7 @@ public class EventRebelInsurrection
 			if(fleet.getFaction().getId().equalsIgnoreCase(rebelAgainseFaction) && ((float)ExerelinUtils.getRandomInRange(1, 10)/10) <= ExerelinData.getInstance().systemManager.stationManager.getStationOwnershipPercent(rebelAgainseFaction))
 			{
 				String fleetFullName = fleet.getFullName();
-				if(fleetFullName.contains("Station") || fleetFullName.contains("Supply"))
+				if(fleetFullName.contains("Station") || fleetFullName.contains("Supply") || fleetFullName.contains("Mining"))
 					continue; // Skip non-combat fleets
 
 				if(fleet.getFullName().equalsIgnoreCase(sectorAPI.getPlayerFleet().getFullName()))

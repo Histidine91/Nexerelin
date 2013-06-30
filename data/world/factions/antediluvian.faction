@@ -89,6 +89,32 @@
                 "exerelin_atlas_algae_Standard":[1, 1],
             },
         },
+        "exerelinAsteroidMiningFleet":{
+            "displayName":"Asteroid Mining Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[10, 15],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "mining_drone_Standard":[1, 2],
+                "tarsus_Standard":[1, 1],
+                "oracle_Antediluvian":[1, 1],
+            },
+        },
+        "exerelinGasMiningFleet":{
+            "displayName":"Gas Mining Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[0, 0],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "mining_drone_Standard":[1, 2],
+                "dram_Light":[1, 2],
+                "oracle_Antediluvian":[1, 1],
+            },
+        },
         "exerelinOutSystemStationAttackFleet":{
             "displayName":"Out-System Station Attack Fleet",
             "maxFleetPoints":300,

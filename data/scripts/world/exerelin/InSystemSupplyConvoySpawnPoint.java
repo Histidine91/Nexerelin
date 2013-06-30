@@ -67,6 +67,7 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 		theFleet = fleet;
 		getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 		fleet.setPreferredResupplyLocation(getAnchor());
+		fleet.setName("In-System Supply Convoy");
 
 		// Remove cargo from station
 		if(convoyType.equalsIgnoreCase("fuel"))
@@ -99,7 +100,7 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 	private Script createTestTargetScript() {
 		return new Script() {
 			public void run() {
-				if(friendlyStation.getOwner().getFactionId().equalsIgnoreCase(owningFactionId) || friendlyStation.getOwner().getGameRelationship(owningFactionId) >= 1)
+				if(friendlyStation != null && friendlyStation.getOwner() != null && (friendlyStation.getOwner().getFactionId().equalsIgnoreCase(owningFactionId) || friendlyStation.getOwner().getGameRelationship(owningFactionId) >= 1))
 				{
 					// Deliver resources and despawn
 					CargoAPI cargo = friendlyStation.getStationToken().getCargo();
@@ -111,6 +112,12 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 						cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, 100);
 					else if(convoyType.equalsIgnoreCase("marines"))
 						cargo.addMarines(50) ;
+
+					if(friendlyStation.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+					{
+						ExerelinUtils.addWeaponsToCargo(cargo, 2, owningFactionId, getSector());
+						ExerelinUtils.addRandomFactionShipsToCargo(cargo, 1, owningFactionId, getSector());
+					}
 				}
 				else
 				{

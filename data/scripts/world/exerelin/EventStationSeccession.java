@@ -19,6 +19,12 @@ public class EventStationSeccession
 
 	public void makeStationSecedeToOutSystemFaction()
 	{
+		if(ExerelinData.getInstance().systemManager.stationManager.getNumFactionsInSystem() >= ExerelinData.getInstance().systemManager.maxFactionsInExerelin)
+		{
+			System.out.println(ExerelinData.getInstance().systemManager.stationManager.getNumFactionsInSystem() + " of " + ExerelinData.getInstance().systemManager.maxFactionsInExerelin + " already in system.");
+			return;
+		}
+
 		String[] factions = ExerelinData.getInstance().getAvailableFactions(sectorAPI);
 		String[] factionsInSystem = ExerelinUtils.getFactionsInSystem(starSystemAPI);
 		int attempts = 0;

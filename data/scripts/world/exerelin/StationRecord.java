@@ -18,10 +18,13 @@ public class StationRecord
 	private String planetType;
 	private DiplomacyRecord owningFaction;
 	private Float efficiency = 1f;
+	private StarSystemAPI system;
 
 	private int numStationsTargeting;
 	private StationRecord targetStationRecord;
 	private StationRecord assistStationRecord;
+	private SectorEntityToken targetAsteroid;
+	private SectorEntityToken targetGasGiant;
 
 	// Spawnpoints
 	private AttackFleetSpawnPoint attackSpawn;
@@ -30,9 +33,13 @@ public class StationRecord
 	private InSystemStationAttackShipSpawnPoint stationAttackFleetSpawn;
 	private InSystemSupplyConvoySpawnPoint inSystemSupplyConvoySpawn;
 	private OutSystemSupplyConvoySpawnPoint outSystemSupplyConvoySpawn;
+	private AsteroidMiningFleetSpawnPoint asteroidMiningFleetSpawnPoint;
+	private GasMiningFleetSpawnPoint gasMiningFleetSpawnPoint;
 
-	public StationRecord(SectorAPI sector, StarSystemAPI system, StationManager manager, SectorEntityToken token)
+	public StationRecord(SectorAPI sector, StarSystemAPI inSystem, StationManager manager, SectorEntityToken token)
 	{
+		system = inSystem;
+
 		stationToken = token;
 		stationCargo = token.getCargo();
 		planetType = this.derivePlanetType(token);
@@ -43,6 +50,8 @@ public class StationRecord
 		stationAttackFleetSpawn = new InSystemStationAttackShipSpawnPoint(sector, system, 1000000, 1, token);
 		inSystemSupplyConvoySpawn = new InSystemSupplyConvoySpawnPoint(sector, system, 1000000, 1, token);
 		outSystemSupplyConvoySpawn = new OutSystemSupplyConvoySpawnPoint(sector, system, 1000000, 1, token);
+		asteroidMiningFleetSpawnPoint = new AsteroidMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
+		gasMiningFleetSpawnPoint = new GasMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
 
 		stationManager = manager;
 	}
@@ -86,6 +95,8 @@ public class StationRecord
 		stationAttackFleetSpawn.setFaction(newOwnerFactionId);
 		inSystemSupplyConvoySpawn.setFaction(newOwnerFactionId);
 		outSystemSupplyConvoySpawn.setFaction(newOwnerFactionId);
+		asteroidMiningFleetSpawnPoint.setFaction(newOwnerFactionId);
+		gasMiningFleetSpawnPoint.setFaction(newOwnerFactionId);
 
 		owningFaction = ExerelinData.getInstance().systemManager.diplomacyManager.getRecordForFaction(newOwnerFactionId);
 
@@ -137,6 +148,8 @@ public class StationRecord
 	{
 		deriveClosestEnemyTarget();
 		deriveStationToAssist();
+		deriveClosestAsteroid();
+		deriveClosestGasGiant();
 		setFleetTargets();
 
 		removeDeadOrRebelFleets(attackSpawn);
@@ -145,9 +158,17 @@ public class StationRecord
 		removeDeadOrRebelFleets(patrolSpawn);
 		removeDeadOrRebelFleets(outSystemSupplyConvoySpawn);
 		removeDeadOrRebelFleets(inSystemSupplyConvoySpawn);
+		removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint);
+		removeDeadOrRebelFleets(gasMiningFleetSpawnPoint);
 
 		outSystemSupplyConvoySpawn.spawnFleet();
 		inSystemSupplyConvoySpawn.spawnFleet();
+
+		if(numStationsTargeting == 0)
+		{
+			asteroidMiningFleetSpawnPoint.spawnFleet();
+			gasMiningFleetSpawnPoint.spawnFleet();
+		}
 
 		if(ExerelinUtils.getRandomInRange(0, 2) == 0 || (targetStationRecord != null && targetStationRecord.getOwner() == null))
 			stationAttackFleetSpawn.spawnFleet();
@@ -199,12 +220,8 @@ public class StationRecord
 	public void clearCargo()
 	{
 		stationCargo.clear();
-		List ships = stationCargo.getMothballedShips().getMembersListCopy();
-		for(int j = 0; j < ships.size(); j++)
-		{
-			stationCargo.getMothballedShips().removeFleetMember((FleetMemberAPI)ships.get(j));
-		}
-
+		ExerelinUtils.removeRandomWeaponStacksFromCargo(stationCargo,  9999);
+		ExerelinUtils.removeRandomShipsFromCargo(stationCargo,  9999);
 	}
 
 
@@ -286,18 +303,62 @@ public class StationRecord
 		this.assistStationRecord = assistStation;
 	}
 
+	private void deriveClosestAsteroid()
+	{
+		List asteroids = system.getAsteroids();
+		SectorEntityToken closestAsteroid = null;
+		float closestDistance = 999999999f;
+		for(int i = 0; i < asteroids.size(); i++)
+		{
+			SectorEntityToken asteroid = (SectorEntityToken)asteroids.get(i);
+
+			Float distance = MathUtils.getDistanceSquared(this.stationToken, asteroid) ;
+			if(distance < closestDistance)
+			{
+				closestAsteroid = asteroid;
+				closestDistance = distance;
+			}
+		}
+
+		targetAsteroid = closestAsteroid;
+	}
+
+	private void deriveClosestGasGiant()
+	{
+		List planets = system.getPlanets();
+		SectorEntityToken closestPlanet = null;
+		float closestDistance = 999999999f;
+		for(int i = 0; i < planets.size(); i++)
+		{
+			SectorEntityToken planet = (SectorEntityToken)planets.get(i);
+
+			if(!derivePlanetType(planet).equalsIgnoreCase("gas"))
+				continue;
+
+			Float distance = MathUtils.getDistanceSquared(this.stationToken,  planet) ;
+			if(distance < closestDistance)
+			{
+				closestPlanet = planet;
+				closestDistance = distance;
+			}
+		}
+		targetGasGiant = closestPlanet;
+	}
+
 	private void setFleetTargets()
 	{
 		stationAttackFleetSpawn.setTarget(targetStationRecord);
 		attackSpawn.setTarget(targetStationRecord, assistStationRecord);
 		patrolSpawn.setDefendStation(assistStationRecord);
 		inSystemSupplyConvoySpawn.setFriendlyStation(assistStationRecord);
+		asteroidMiningFleetSpawnPoint.setTargetAsteroid(targetAsteroid);
+		gasMiningFleetSpawnPoint.setTargetPlanet(targetGasGiant);
 	}
 
 	private String derivePlanetType(SectorEntityToken token)
 	{
 		String name = token.getFullName();
-		if(name.contains("Gaseous"))
+		if(name.contains("Gaseous") && !(name.contains(" I") || name.contains(" II") || name.contains(" III")))
 			return "gas";
 		if(name.contains(" I") || name.contains(" II") || name.contains(" III"))
 			return "moon";

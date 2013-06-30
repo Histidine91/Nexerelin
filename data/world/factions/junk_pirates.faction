@@ -34,6 +34,7 @@
                 "junk_pirates_boxer_Standard":[0, 1],
                 "junk_pirates_langoustine_Standard":[0, 2],
                 "junk_pirates_langoustine_CS":[0, 2],
+                "junk_pirates_octopus_Standard":[1, 1],
                 "junk_pirates_clam_CS":[0, 1],
                 "junk_pirates_clam_Standard":[0, 1],
                 "junk_pirates_sickle_Standard":[0, 2],
@@ -80,6 +81,32 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "atlas_Standard":[1, 1],
+            },
+        },
+        "exerelinAsteroidMiningFleet":{
+            "displayName":"Asteroid Mining Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[10, 15],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "mining_drone_Standard":[1, 2],
+                "junk_pirates_stoatB_Standard":[1, 1],
+                "junk_pirates_octopus_Standard":[1, 1],
+            },
+        },
+        "exerelinGasMiningFleet":{
+            "displayName":"Gas Mining Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[0, 0],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "mining_drone_Standard":[1, 2],
+                "junk_pirates_stoatA_Standard":[1, 1],
+                "junk_pirates_octopus_Standard":[1, 1],
             },
         },
         "exerelinOutSystemStationAttackFleet":{

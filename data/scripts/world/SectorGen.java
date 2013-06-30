@@ -29,6 +29,7 @@ public class SectorGen implements SectorGeneratorPlugin
 		// Build base planets
 		int numBasePlanets = ExerelinData.getInstance().numPlanets;
 		int distanceStepping = 11000/numBasePlanets;
+		Boolean gasPlanetCreated = false;
 		for(int i = 0; i < numBasePlanets; i = i + 1)
 		{
 			String planetType = possiblePlanetTypes[ExerelinUtils.getRandomInRange(0, possiblePlanetTypes.length - 1)];
@@ -59,9 +60,18 @@ public class SectorGen implements SectorGeneratorPlugin
 			{
 				radius = 350;
 				name = name + " Gaseous";
+				gasPlanetCreated = true;
 			}
 			else
 				radius = ExerelinUtils.getRandomInRange(150, 250);
+
+			if(!gasPlanetCreated && i == numBasePlanets - 1)
+			{
+				planetType = "gas_giant";
+				radius = 350;
+				name = name + " Gaseous";
+				gasPlanetCreated = true;
+			}
 
 			SectorEntityToken newPlanet = system.addPlanet(star, name, planetType, angle, radius, distance, orbitDays);
 
@@ -130,6 +140,9 @@ public class SectorGen implements SectorGeneratorPlugin
 			system.addAsteroidBelt(planet, numAsteroids, orbitRadius, width, minOrbitDays, maxOrbitDays);
 		}
 
+		// Always put an asteroid belt around the sun
+		system.addAsteroidBelt(star, 50, ExerelinUtils.getRandomInRange(1000, 8000), ExerelinUtils.getRandomInRange(10, 50), ExerelinUtils.getRandomInRange(240, 360), ExerelinUtils.getRandomInRange(360, 480));
+
 		// Build a list of possbile station names
 		String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest", "Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
 
@@ -185,6 +198,7 @@ public class SectorGen implements SectorGeneratorPlugin
 		// Set starting conditions needed later for saving into the save file
 		systemManager.freeTransfer = ExerelinData.getInstance().playerOwnedStationFreeTransfer;
 		systemManager.respawnFactions = ExerelinData.getInstance().respawnFactions;
+		systemManager.maxFactionsInExerelin = ExerelinData.getInstance().maxFactionsInExerelinAtOnce;
 		systemManager.playerFactionId = ExerelinData.getInstance().getPlayerFaction();
 		systemManager.availableFactions = ExerelinData.getInstance().getAvailableFactions(sector);
 		systemManager.monthsToWait = ExerelinData.getInstance().respawnDelay;

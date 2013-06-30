@@ -35,7 +35,7 @@ public class DiplomacyRecord
 		{
 			if(!availableFactions[i].equalsIgnoreCase(factionId))
 			{
-				otherFactionRelationships.put(availableFactions[i], Integer.toString(ExerelinUtils.getRandomInRange(-30, 30)));
+				otherFactionRelationships.put(availableFactions[i], Integer.toString(ExerelinUtils.getRandomInRange(-50, 50)));
 				gameFactionRelationships.put(availableFactions[i], "0");
 			}
 		}
@@ -209,6 +209,33 @@ public class DiplomacyRecord
 				continue;
 
 			if(Float.parseFloat((String)gameFactionRelationships.get(availableFactions[i])) < 0)
+			{
+				confirmedFactionsString = confirmedFactionsString + availableFactions[i] + delimter;
+				found = true;
+			}
+
+		}
+		if(found)
+		{
+			confirmedFactionsString = confirmedFactionsString.substring(0, confirmedFactionsString.length() - delimter.length());
+			return confirmedFactionsString.split(delimter);
+		}
+		else
+			return new String[]{};
+	}
+
+	public String[] getNeutralFactions()
+	{
+		String confirmedFactionsString = "";
+		String delimter = "1111"; // weird but '|' didn't work
+		Boolean found = false;
+
+		for(int i = 0; i < availableFactions.length; i++)
+		{
+			if(availableFactions[i].equalsIgnoreCase(this.getFactionId()))
+				continue;
+
+			if(Float.parseFloat((String)gameFactionRelationships.get(availableFactions[i])) < 1 && Float.parseFloat((String)gameFactionRelationships.get(availableFactions[i])) >= 0)
 			{
 				confirmedFactionsString = confirmedFactionsString + availableFactions[i] + delimter;
 				found = true;

@@ -32,7 +32,7 @@ public class EventStationExplosion
 		{
 			float efficiency = (float)ExerelinUtils.getRandomInRange(1,9)/10f;
 			String accidentType = "";
-			if(efficiency == 0.1)
+			if(efficiency < 0.2)
 				accidentType = "catastrophic";
 			else if(efficiency < 0.5)
 				accidentType = "major";
@@ -48,6 +48,7 @@ public class EventStationExplosion
 
 				station.setEfficiency(efficiency);
 
+				// Clear the majority of resources/weapons/ships
 				CargoAPI stationCargo = station.getStationToken().getCargo();
 				ExerelinUtils.decreaseCargo(stationCargo, "fuel", (int)(stationCargo.getFuel()*0.9));
 				ExerelinUtils.decreaseCargo(stationCargo, "supplies", (int)(stationCargo.getSupplies()*0.9));
@@ -55,37 +56,23 @@ public class EventStationExplosion
 				ExerelinUtils.decreaseCargo(stationCargo, "crewRegular", (int)(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR)*0.9));
 
 				List ships = stationCargo.getMothballedShips().getMembersListCopy();
-				int i = 0;
-				while(i < ships.size())
-				{
-					if(ExerelinUtils.getRandomInRange(0,9) > 0)
-						ships.remove(i);
-
-					i++;
-				}
+				ExerelinUtils.removeRandomShipsFromCargo(stationCargo,  (int)(ships.size()*0.9));
 
 				List weapons =  stationCargo.getWeapons();
-				while(i < weapons.size())
-				{
-					if(ExerelinUtils.getRandomInRange(0,9) > 0)
-						weapons.remove(i);
-
-					i++;
-				}
+				ExerelinUtils.removeRandomWeaponStacksFromCargo(stationCargo,  (int)(weapons.size()*0.9));
 			}
 			else
 			{
-				station.setOwner(null, false, false);
-				station.getStationToken().setFaction("abandoned");
-				station.clearCargo();
-				station.setEfficiency(0.1f);
-
 				if(station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 					Global.getSector().addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and has been abandoned!", Color.magenta);
 				else
 					Global.getSector().addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and has been abandoned.");
 				System.out.println("EVENT : " + accidentType + " station accident at " + station.getStationToken().getFullName());
 
+				station.setOwner(null, false, false);
+				station.getStationToken().setFaction("abandoned");
+				station.clearCargo();
+				station.setEfficiency(efficiency);
 			}
 		}
 	}

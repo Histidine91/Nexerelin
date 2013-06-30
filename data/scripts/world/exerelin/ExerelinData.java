@@ -35,6 +35,7 @@ public final class ExerelinData
 	public int respawnDelay = 1000000;
 	public int numStartFactions = 3;
 	public boolean omniFacPresent = false;
+	public int maxFactionsInExerelinAtOnce = 3;
 
 	public SystemManager systemManager;
 

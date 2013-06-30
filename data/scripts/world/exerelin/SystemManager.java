@@ -34,6 +34,7 @@ public class SystemManager implements SpawnPointPlugin
 	public boolean freeTransfer = false;
 	public String[] availableFactions = null;
 	public boolean omnifactoryPresent = false;
+	public int maxFactionsInExerelin = 999;
 
 	public SystemManager(SectorAPI sector)
 	{
@@ -141,6 +142,13 @@ public class SystemManager implements SpawnPointPlugin
 
 		System.out.println(" - - - - - - - - - - - - ");
 		System.out.println("Calling out-system station attack fleets");
+
+		if(stationManager.getNumFactionsInSystem() >= maxFactionsInExerelin)
+		{
+			System.out.println(stationManager.getNumFactionsInSystem() + " of " + maxFactionsInExerelin + " already in system.");
+			System.out.println(" - - - - - - - - - - - - ");
+			return;
+		}
 
 		// Chance to create out system attack fleet for a missing faction
 		int attempts = 0;
