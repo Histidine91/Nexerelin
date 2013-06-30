@@ -31,6 +31,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 	private ResponseImpl EIGHTEEN_PLANETS = new ResponseImpl("18 Planets");
 	private ResponseImpl TWENTYONE_PLANETS = new ResponseImpl("21 Planets");
 
+	private ResponseImpl ZERO_ASTEROID_BELTS = new ResponseImpl("0 Asteroid Belts");
 	private ResponseImpl TWO_ASTEROID_BELTS = new ResponseImpl("2 Asteroid Belts");
 	private ResponseImpl FOUR_ASTEROID_BELTS = new ResponseImpl("4 Asteroid Belts");
 	private ResponseImpl SIX_ASTEROID_BELTS = new ResponseImpl("6 Asteroid Belts");
@@ -51,12 +52,14 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 	private ResponseImpl ONE_FACTION = new ResponseImpl("1 other Faction");
 	private ResponseImpl THREE_FACTION = new ResponseImpl("3 other Factions");
 	private ResponseImpl SIX_FACTION = new ResponseImpl("6 other Factions");
+	private ResponseImpl NINE_FACTION = new ResponseImpl("9 other Factions");
 	private ResponseImpl ALL_FACTION = new ResponseImpl("All factions you know of!");
 	private ResponseImpl ONE_VANILLA_FACTION = new ResponseImpl("1 familiar face [Vanilla Only]");
 	private ResponseImpl ALL_VANILLA_FACTION = new ResponseImpl("A few old friends [Vanilla Only]");
 
 	private ResponseImpl RESPAWN_YES = new ResponseImpl("Yes, factions will respawn");
 	private ResponseImpl RESPAWN_YES_COND = new ResponseImpl("Yes, but only factions initially in Exerelin");
+	private ResponseImpl RESPAWN_YES_COND_MAX = new ResponseImpl("Yes, but only to a maximum of the starting factions");
 	private ResponseImpl RESPAWN_NO = new ResponseImpl("No, factions will not respawn");
 
 	// FACTIONS AUTO GENERATED
@@ -115,6 +118,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		}
 		else if (stage == 1)
 		{
+			result.add(ZERO_ASTEROID_BELTS);
 			result.add(TWO_ASTEROID_BELTS);
 			result.add(FOUR_ASTEROID_BELTS);
 			result.add(SIX_ASTEROID_BELTS);
@@ -141,6 +145,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			result.add(ONE_FACTION);
 			result.add(THREE_FACTION);
 			result.add(SIX_FACTION);
+			result.add(NINE_FACTION);
 			result.add(ALL_FACTION);
 			result.add(ONE_VANILLA_FACTION);
 			result.add(ALL_VANILLA_FACTION);
@@ -149,6 +154,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		{
 			result.add(RESPAWN_YES);
 			result.add(RESPAWN_YES_COND);
+			result.add(RESPAWN_YES_COND_MAX);
 			result.add(RESPAWN_NO);
 		}
 		else if (stage == 6)
@@ -214,6 +220,8 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			ExerelinData.getInstance().numPlanets = 15;
 		else if (response == EIGHTEEN_PLANETS)
 			ExerelinData.getInstance().numPlanets = 18;
+		else if (response == ZERO_ASTEROID_BELTS)
+			ExerelinData.getInstance().numAsteroidBelts = 0;
 		else if (response == TWO_ASTEROID_BELTS)
 			ExerelinData.getInstance().numAsteroidBelts = 2;
 		else if (response == FOUR_ASTEROID_BELTS)
@@ -259,6 +267,11 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			ExerelinData.getInstance().numStartFactions = 6;
 			ExerelinData.getInstance().onlyVanillaFactions = false;
 		}
+		else if (response == NINE_FACTION)
+		{
+			ExerelinData.getInstance().numStartFactions = 9;
+			ExerelinData.getInstance().onlyVanillaFactions = false;
+		}
 		else if (response == ALL_FACTION)
 		{
 			ExerelinData.getInstance().numStartFactions = 99; // Just use how many available factions there are
@@ -278,16 +291,25 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		{
 			ExerelinData.getInstance().respawnFactions = true;
 			ExerelinData.getInstance().onlyRespawnStartingFactions = false;
+			ExerelinData.getInstance().maxFactionsInExerelinAtOnce = 999;
 		}
 		else if (response == RESPAWN_YES_COND)
 		{
 			ExerelinData.getInstance().respawnFactions = true;
 			ExerelinData.getInstance().onlyRespawnStartingFactions = true;
+			ExerelinData.getInstance().maxFactionsInExerelinAtOnce = 999;
+		}
+		else if (response == RESPAWN_YES_COND_MAX)
+		{
+			ExerelinData.getInstance().respawnFactions = true;
+			ExerelinData.getInstance().onlyRespawnStartingFactions = false;
+			ExerelinData.getInstance().maxFactionsInExerelinAtOnce = ExerelinData.getInstance().numStartFactions + 1;
 		}
 		else if (response == RESPAWN_NO)
 		{
 			ExerelinData.getInstance().respawnFactions = false;
 			ExerelinData.getInstance().onlyRespawnStartingFactions = false;
+			ExerelinData.getInstance().maxFactionsInExerelinAtOnce = 999;
 			stage = stage + 1;
 		}
 		else if (response == RESPAWN_ZERO)
