@@ -164,11 +164,10 @@ public class StationRecord
 		outSystemSupplyConvoySpawn.spawnFleet();
 		inSystemSupplyConvoySpawn.spawnFleet();
 
-		if(numStationsTargeting == 0)
-		{
-			asteroidMiningFleetSpawnPoint.spawnFleet();
-			gasMiningFleetSpawnPoint.spawnFleet();
-		}
+
+		asteroidMiningFleetSpawnPoint.spawnFleet();
+		gasMiningFleetSpawnPoint.spawnFleet();
+
 
 		if(ExerelinUtils.getRandomInRange(0, 2) == 0 || (targetStationRecord != null && targetStationRecord.getOwner() == null))
 			stationAttackFleetSpawn.spawnFleet();
