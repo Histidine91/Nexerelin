@@ -1425,18 +1425,14 @@ public class ExerelinUtils
 
 	public static boolean isValidMiningFleet(CampaignFleetAPI fleet)
 	{
-		if(fleet.getNumFighters() == 0)
-			return false;
-		else
+		List members = fleet.getFleetData().getMembersListCopy();
+		for(int i = 0; i < members.size(); i++)
 		{
-			List members = fleet.getFleetData().getMembersListCopy();
-			for(int i = 0; i < members.size(); i++)
-			{
-				FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-				String shipId = fmAPI.getSpecId();
-				if(shipId.equalsIgnoreCase("mining_drone_Standard"))
-					return true;
-			}
+			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
+			String shipId = fmAPI.getSpecId();
+
+			if(shipId.equalsIgnoreCase("mining_drone_Standard"))
+				return true;
 		}
 
 		return false;
@@ -1453,6 +1449,7 @@ public class ExerelinUtils
 			for(int i = 0; i < members.size(); i++)
 			{
 				FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
+
 				String shipId = fmAPI.getSpecId();
 				if(shipId.equalsIgnoreCase("mining_drone_Standard"))
 					power = power + 1;
