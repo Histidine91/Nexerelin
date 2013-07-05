@@ -2,9 +2,6 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
-import data.scripts.world.exerelin.ExerelinData;
-import data.scripts.world.exerelin.ExerelinUtils;
-import data.scripts.world.exerelin.StationRecord;
 
 import java.util.HashMap;
 
@@ -20,6 +17,7 @@ public class DiplomacyRecord
 	private FactionAPI factionAPI;
 	private int warWeariness = 0;
 	private String[] availableFactions;
+	private String allianceId;
 
 	public DiplomacyRecord(SectorAPI sector, String FactionIdValue, String[] InAvailableFactions)
 	{
@@ -29,6 +27,8 @@ public class DiplomacyRecord
 		otherFactionRelationships = new HashMap();
 		gameFactionRelationships = new HashMap();
 		availableFactions = InAvailableFactions;
+
+		allianceId = "";
 
 		// Initialise each other faction level to random
 		for(int i = 0; i < availableFactions.length; i = i + 1)
@@ -125,7 +125,7 @@ public class DiplomacyRecord
 		return factionId;
 	}
 
-	public Boolean hasWarTagetInSystem(Boolean includeAbandoned)
+	public Boolean hasWarTargetInSystem(Boolean includeAbandoned)
 	{
 		StationRecord[] stations = ExerelinData.getInstance().systemManager.stationManager.getStationRecords();
 		for(int i = 0; i < stations.length; i = i + 1)
@@ -153,7 +153,7 @@ public class DiplomacyRecord
 
 	public int updateWarWeariness()
 	{
-		if(hasWarTagetInSystem(false))
+		if(hasWarTargetInSystem(false))
 			warWeariness = warWeariness + 1;
 		else
 			warWeariness = 0;
@@ -249,5 +249,23 @@ public class DiplomacyRecord
 		}
 		else
 			return new String[]{};
+	}
+
+	public Boolean isInAlliance()
+	{
+		if(allianceId.equalsIgnoreCase(""))
+			return false;
+		else
+			return true;
+	}
+
+	public String getAllianceId()
+	{
+		return allianceId;
+	}
+
+	public void setAllianceId(String inAllianceId)
+	{
+		allianceId = inAllianceId;
 	}
 }

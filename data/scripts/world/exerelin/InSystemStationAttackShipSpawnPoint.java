@@ -87,7 +87,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 	private Script createTestTargetScript() {
 		return new Script() {
 			public void run() {
-				if(stationTarget.getOwner() != null)
+				if(stationTarget != null && stationTarget.getOwner() != null)
 				{
 					if(stationTarget.getOwner().getFactionId().equalsIgnoreCase(fleetOwningFactionId))
 					{

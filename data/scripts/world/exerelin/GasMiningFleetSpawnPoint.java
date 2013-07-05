@@ -68,7 +68,7 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 	private void setFleetAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
-		if(targetPlanet != null)
+		if(targetPlanet != null && ExerelinUtils.isValidMiningFleet(fleet))
 		{
 			if(!returningHome)
 				//fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, getLocation().createToken(targetPlanet.getLocation().getX() + ExerelinUtils.getRandomInRange(-100,100), targetPlanet.getLocation().getY() + ExerelinUtils.getRandomInRange(-100,100)), 1000, createTestTargetScript());

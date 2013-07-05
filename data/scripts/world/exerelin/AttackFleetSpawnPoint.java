@@ -84,14 +84,14 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 		fleet.clearAssignments();
 		if(stationTarget == null)
 		{
-			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 90);
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
 		}
 		else
 		{
-			fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, stationTarget.getStationToken(), 90);
-			fleet.addAssignment(FleetAssignment.RESUPPLY, stationTarget.getStationToken(), 90);
-			fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, stationTarget.getStationToken(), 90);
-			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 90);
+			fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, stationTarget.getStationToken(), 200);
+			fleet.addAssignment(FleetAssignment.RESUPPLY, stationTarget.getStationToken(), 200);
+			fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, stationTarget.getStationToken(), 200);
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
 		}
 	}
 }

@@ -35,6 +35,7 @@ public class SystemManager implements SpawnPointPlugin
 	public String[] availableFactions = null;
 	public boolean omnifactoryPresent = false;
 	public int maxFactionsInExerelin = 999;
+	public int maxSystemSize = 15000;
 
 	public SystemManager(SectorAPI sector)
 	{
@@ -114,7 +115,7 @@ public class SystemManager implements SpawnPointPlugin
 		// Pay wages if needed
 		if(!this.freeTransfer)
 		{
-			if(diplomacyManager.playerRecord.hasWarTagetInSystem(false))
+			if(diplomacyManager.playerRecord.hasWarTargetInSystem(false))
 				Global.getSector().getPlayerFleet().getCargo().getCredits().add(5000f);
 			else
 				Global.getSector().getPlayerFleet().getCargo().getCredits().add(2500f);
@@ -248,7 +249,8 @@ public class SystemManager implements SpawnPointPlugin
 	@Override
 	public void advance(SectorAPI sector, LocationAPI location)
 	{
-		//NOTE: FOLLOWING CODE IS USED TO HANDLE SAVE DATA LOADING
+		//NOTE: FOLLOWING CODE IS USED TO HANDLE SAVE DATA LOADING !!!!!! DEPRECATED APPROACH
+		//NOTE: USE THE REFERENCE TO THE SYSTEMMANAGER IN EXERELINDATA RATHER THAN REFRESHING HERE
 
 		// Refresh available factions to cache before doing anything
 		if(!ExerelinData.getInstance().confirmedAvailableFactions)

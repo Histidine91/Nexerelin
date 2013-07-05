@@ -28,7 +28,7 @@ public class SectorGen implements SectorGeneratorPlugin
 
 		// Build base planets
 		int numBasePlanets = ExerelinData.getInstance().numPlanets;
-		int distanceStepping = 11000/numBasePlanets;
+		int distanceStepping = (ExerelinData.getInstance().maxSystemSize-4000)/numBasePlanets;
 		Boolean gasPlanetCreated = false;
 		for(int i = 0; i < numBasePlanets; i = i + 1)
 		{
@@ -203,7 +203,9 @@ public class SectorGen implements SectorGeneratorPlugin
 		systemManager.availableFactions = ExerelinData.getInstance().getAvailableFactions(sector);
 		systemManager.monthsToWait = ExerelinData.getInstance().respawnDelay;
 		systemManager.omnifactoryPresent = ExerelinData.getInstance().omniFacPresent;
+		systemManager.maxSystemSize = ExerelinData.getInstance().maxSystemSize;
 
 		system.addSpawnPoint(systemManager);
+		ExerelinData.getInstance().systemManager = systemManager;
 	}
 }

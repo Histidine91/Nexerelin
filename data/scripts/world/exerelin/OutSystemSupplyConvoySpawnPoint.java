@@ -81,11 +81,11 @@ public class OutSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 				targetCargo.addCrew(CargoAPI.CrewXPLevel.VETERAN, 1);
 				targetCargo.addCrew(CargoAPI.CrewXPLevel.GREEN, 1);
 				targetCargo.addMarines(100);
-				targetCargo.addFuel(200);
-				targetCargo.addSupplies(800);
+				targetCargo.addFuel(150);
+				targetCargo.addSupplies(600);
 
 				// Adjust certain things if it is a player supply fleet
-				if(owningFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+				if(theFleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 				{
 					targetCargo.addCrew(CargoAPI.CrewXPLevel.GREEN, 20);
 					ExerelinUtils.decreaseCargo(targetCargo,"crewRegular", 75);

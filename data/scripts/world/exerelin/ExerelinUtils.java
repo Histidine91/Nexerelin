@@ -37,21 +37,23 @@ public class ExerelinUtils
 		int edge = ExerelinUtils.getRandomInRange(0, 3);
 		int x = 0;
 		int y = 0;
+		int maxSize = ExerelinData.getInstance().systemManager.maxSystemSize;
+		int negativeMaxSize = -1 * maxSize;
 
 		if(edge == 0)
-			x = 15000;
+			x = maxSize;
 		else if(edge == 1)
-			x = -15000;
+			x = negativeMaxSize;
 		else if(edge == 2)
-			y = 15000;
+			y = maxSize;
 		else if(edge == 3)
-			y = -15000;
+			y = negativeMaxSize;
 
 		if(x == 0)
-			x = ExerelinUtils.getRandomInRange(-15000, 15000);
+			x = ExerelinUtils.getRandomInRange(negativeMaxSize, maxSize);
 
 		if(y == 0)
-			y = ExerelinUtils.getRandomInRange(-15000, 15000);
+			y = ExerelinUtils.getRandomInRange(negativeMaxSize, maxSize);
 
 		SectorEntityToken spawnPoint = location.createToken(x, y);
 		return spawnPoint;
@@ -1421,4 +1423,42 @@ public class ExerelinUtils
 		}
 	}
 
+	public static boolean isValidMiningFleet(CampaignFleetAPI fleet)
+	{
+		if(fleet.getNumFighters() == 0)
+			return false;
+		else
+		{
+			List members = fleet.getFleetData().getMembersListCopy();
+			for(int i = 0; i < members.size(); i++)
+			{
+				FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
+				String shipId = fmAPI.getSpecId();
+				if(shipId.equalsIgnoreCase("mining_drone_Standard"))
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static int getMiningPower(CampaignFleetAPI fleet)
+	{
+		int power = 0;
+		if(fleet.getNumFighters() == 0)
+			return power;
+		else
+		{
+			List members = fleet.getFleetData().getMembersListCopy();
+			for(int i = 0; i < members.size(); i++)
+			{
+				FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
+				String shipId = fmAPI.getSpecId();
+				if(shipId.equalsIgnoreCase("mining_drone_Standard"))
+					power = power + 1;
+			}
+		}
+
+		return power;
+	}
 }

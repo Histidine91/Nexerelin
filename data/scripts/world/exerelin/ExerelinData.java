@@ -36,6 +36,7 @@ public final class ExerelinData
 	public int numStartFactions = 3;
 	public boolean omniFacPresent = false;
 	public int maxFactionsInExerelinAtOnce = 3;
+	public int maxSystemSize = 15000;
 
 	public SystemManager systemManager;
 

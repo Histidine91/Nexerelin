@@ -187,9 +187,9 @@ public class StationRecord
 	public void increaseResources()
 	{
 		if(stationCargo.getFuel() < 800)
-			stationCargo.addFuel(200*efficiency);
+			stationCargo.addFuel(150*efficiency);
 		if(stationCargo.getSupplies() < 6400)
-			stationCargo.addSupplies(800*efficiency);
+			stationCargo.addSupplies(600*efficiency);
 		if(stationCargo.getMarines() < 800)
 			stationCargo.addMarines((int)(100*efficiency));
 		if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 1600)

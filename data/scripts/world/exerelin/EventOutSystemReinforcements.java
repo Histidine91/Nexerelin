@@ -2,8 +2,6 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import data.scripts.world.exerelin.ExerelinData;
-import data.scripts.world.exerelin.ExerelinUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -35,7 +33,7 @@ public class EventOutSystemReinforcements
 			factionId = factions[ExerelinUtils.getRandomInRange(0, factions.length - 1)];
 			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().systemManager.stationManager.getFactionLeader()))
 				factionId = ""; // Can't be leader
-			else if(!ExerelinData.getInstance().systemManager.diplomacyManager.getRecordForFaction(factionId).hasWarTagetInSystem(false))
+			else if(!ExerelinData.getInstance().systemManager.diplomacyManager.getRecordForFaction(factionId).hasWarTargetInSystem(false))
 				factionId = ""; // Faction must be at war
 			else if(ExerelinData.getInstance().systemManager.stationManager.getNumStationsOwnedByFaction(factionId) == 0)
 				factionId = ""; // Faction has to own a station

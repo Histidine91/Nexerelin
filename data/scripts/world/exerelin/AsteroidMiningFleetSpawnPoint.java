@@ -67,7 +67,7 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 	private void setFleetAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
-		if(targetAsteroid != null)
+		if(targetAsteroid != null && ExerelinUtils.isValidMiningFleet(fleet))
 		{
 			if(!returningHome)
 				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, targetAsteroid, 1000, createTestTargetScript());
@@ -98,7 +98,7 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 				{
 					// Reached home so unload
 					theFleet.getCargo().removeSupplies(1);
-					getAnchor().getCargo().addSupplies(1);
+					getAnchor().getCargo().addSupplies(2);
 				}
 				else
 				{
