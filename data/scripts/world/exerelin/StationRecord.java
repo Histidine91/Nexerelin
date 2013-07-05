@@ -163,8 +163,6 @@ public class StationRecord
 
 		outSystemSupplyConvoySpawn.spawnFleet();
 		inSystemSupplyConvoySpawn.spawnFleet();
-
-
 		asteroidMiningFleetSpawnPoint.spawnFleet();
 		gasMiningFleetSpawnPoint.spawnFleet();
 
