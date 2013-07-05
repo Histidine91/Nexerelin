@@ -259,7 +259,7 @@ public class DiplomacyManager
 
 			// Dislike them if in different alliance
 			if(recordToUpdate.isInAlliance() && factionRecords[j].isInAlliance() && !recordToUpdate.getAllianceId().equalsIgnoreCase(factionRecords[j].getAllianceId()))
-				factionRelationship = factionRelationship - 2;
+				factionRelationship = factionRelationship - 3;
 
 			// 1% chance to reset relationship
 			if(ExerelinUtils.getRandomInRange(0,99) == 0)

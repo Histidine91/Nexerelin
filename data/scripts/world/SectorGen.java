@@ -120,7 +120,7 @@ public class SectorGen implements SectorGeneratorPlugin
 			else if(planet.getFullName().contains("Gaseous"))
 			{
 				orbitRadius = ExerelinUtils.getRandomInRange(700, 900);
-				numAsteroids = 10;
+				numAsteroids = 2;
 			}
 			else if (planet.getFullName().contains("Exerelin"))
 			{
@@ -130,7 +130,7 @@ public class SectorGen implements SectorGeneratorPlugin
 			else
 			{
 				orbitRadius = ExerelinUtils.getRandomInRange(400, 550);
-				numAsteroids = 2;
+				numAsteroids = 1;
 			}
 
 
@@ -141,7 +141,15 @@ public class SectorGen implements SectorGeneratorPlugin
 		}
 
 		// Always put an asteroid belt around the sun
-		system.addAsteroidBelt(star, 50, ExerelinUtils.getRandomInRange(1000, 8000), ExerelinUtils.getRandomInRange(10, 50), ExerelinUtils.getRandomInRange(240, 360), ExerelinUtils.getRandomInRange(360, 480));
+		system.addAsteroidBelt(star, 25, ExerelinUtils.getRandomInRange(1000, 8000), ExerelinUtils.getRandomInRange(10, 50), ExerelinUtils.getRandomInRange(240, 360), ExerelinUtils.getRandomInRange(360, 480));
+
+		// Another one if medium system size
+		if(ExerelinData.getInstance().maxSystemSize > 15000)
+			system.addAsteroidBelt(star, 50, ExerelinUtils.getRandomInRange(15000, 25000), ExerelinUtils.getRandomInRange(50, 100), ExerelinUtils.getRandomInRange(480, 720), ExerelinUtils.getRandomInRange(720, 960));
+
+		// And another one if a large system
+		if(ExerelinData.getInstance().maxSystemSize > 30000)
+			system.addAsteroidBelt(star, 75, ExerelinUtils.getRandomInRange(15000, 25000), ExerelinUtils.getRandomInRange(100, 150), ExerelinUtils.getRandomInRange(960, 1440), ExerelinUtils.getRandomInRange(1440, 1920));
 
 		// Build a list of possbile station names
 		String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest", "Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
