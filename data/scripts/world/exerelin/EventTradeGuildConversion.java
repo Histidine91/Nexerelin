@@ -50,7 +50,7 @@ public class EventTradeGuildConversion
 		{
 			CampaignFleetAPI fleet = (CampaignFleetAPI)fleets.get(i);
 
-			if(fleet.getFaction().getId().equalsIgnoreCase(tradingWithFaction))
+			if(fleet.getFaction().getId().equalsIgnoreCase(tradingWithFaction) || fleet.getFaction().getId().equalsIgnoreCase(traderFAPI.getId()))
 				continue;
 
 			// Supply fleets have a 50% chance to deflect
