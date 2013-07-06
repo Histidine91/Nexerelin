@@ -138,7 +138,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR,  80);
 					cargo.addFuel(80);
 					cargo.addMarines(40);
-					cargo.addSupplies(360);
+					cargo.addSupplies(320);
 				}
 				else if(stationTarget.getOwner() != null && stationTarget.getOwner().getGameRelationship(fleetOwningFactionId) >= 0)
 				{

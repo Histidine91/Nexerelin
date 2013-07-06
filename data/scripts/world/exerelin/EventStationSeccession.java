@@ -80,7 +80,7 @@ public class EventStationSeccession
 			station.getStationToken().getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 1600);
 			station.getStationToken().getCargo().addMarines(800);
 			station.getStationToken().getCargo().addFuel(1600);
-			station.getStationToken().getCargo().addSupplies(3200);
+			station.getStationToken().getCargo().addSupplies(6400);
 
 			station.setEfficiency(3);
 		}

@@ -140,14 +140,14 @@ public class OutSystemStationAttackFleet
 						theTarget.getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 200);
 						theTarget.getCargo().addMarines(100);
 						theTarget.getCargo().addFuel(200);
-						theTarget.getCargo().addSupplies(400);
+						theTarget.getCargo().addSupplies(800);
 					}
 					else
 					{
 						theTarget.getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 800);
 						theTarget.getCargo().addMarines(400);
 						theTarget.getCargo().addFuel(800);
-						theTarget.getCargo().addSupplies(1600);
+						theTarget.getCargo().addSupplies(3200);
 					}
 					return; // commence defending or despawn
 				}
@@ -176,14 +176,14 @@ public class OutSystemStationAttackFleet
 					theTarget.getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 200);
 					theTarget.getCargo().addMarines(100);
 					theTarget.getCargo().addFuel(200);
-					theTarget.getCargo().addSupplies(400);
+					theTarget.getCargo().addSupplies(800);
 				}
 				else
 				{
 					theTarget.getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 800);
 					theTarget.getCargo().addMarines(400);
 					theTarget.getCargo().addFuel(800);
-					theTarget.getCargo().addSupplies(1600);
+					theTarget.getCargo().addSupplies(3200);
 				}
 			}
 		};

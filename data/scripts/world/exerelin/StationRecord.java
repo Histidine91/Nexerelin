@@ -183,7 +183,7 @@ public class StationRecord
 	// Increase resources in station based off efficiency
 	public void increaseResources()
 	{
-		if(stationCargo.getFuel() < 800)
+		if(stationCargo.getFuel() < 1600)
 			stationCargo.addFuel(150*efficiency);
 		if(stationCargo.getSupplies() < 6400)
 			stationCargo.addSupplies(600*efficiency);
@@ -199,7 +199,7 @@ public class StationRecord
 		if(planetType.equalsIgnoreCase("planet"))
 		{
 			stationCargo.addMarines((int)(100*efficiency));
-			stationCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, (int)(400*efficiency));
+			stationCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, (int)(200*efficiency));
 		}
 
 		if(owningFaction.getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) && efficiency > 0.6)

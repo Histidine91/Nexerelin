@@ -564,7 +564,7 @@ public class ExerelinUtils
 			String name = station.getFullName();
 			CargoAPI cargo = station.getCargo();
 
-			if(cargo.getFuel() < 800)
+			if(cargo.getFuel() < 1600)
 				cargo.addFuel(50);
 			if(cargo.getSupplies() < 6400)
 				cargo.addSupplies(200);

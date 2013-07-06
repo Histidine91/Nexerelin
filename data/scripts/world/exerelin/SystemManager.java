@@ -198,7 +198,7 @@ public class SystemManager implements SpawnPointPlugin
 		CargoAPI cargo = stationTarget.getCargo();
 		if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) > 800 || cargo.getMarines() > 400 || cargo.getSupplies() > 3200 || cargo.getFuel() > 800)
 			numStationAttackFleets = numStationAttackFleets + 1;
-		if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) > 1600 || cargo.getMarines() > 800 || cargo.getSupplies() > 6400 || cargo.getFuel() > 800)
+		if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) > 1600 || cargo.getMarines() > 800 || cargo.getSupplies() > 6400 || cargo.getFuel() > 1600)
 			numStationAttackFleets = numStationAttackFleets + 2;
 
 		for(int h = 0; h < numStationAttackFleets; h = h + 1)
