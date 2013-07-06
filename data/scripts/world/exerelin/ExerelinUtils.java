@@ -10,6 +10,7 @@ import org.lazywizard.lazylib.MathUtils;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.List;
+import java.util.Iterator;
 
 public class ExerelinUtils
 {
@@ -1456,6 +1457,83 @@ public class ExerelinUtils
 				return;
 			cargo.addMothballedShip(memberType, shipId, null);
 			//cargo.getMothballedShips().addFleetMember(fmAPI);
+		}
+	}
+
+	public static void addRandomEscortShipsToFleet (CampaignFleetAPI campaignFleet, int minCount, int maxCount, String factionId, SectorAPI sector)
+	{
+		List members = campaignFleet.getFleetData().getMembersListCopy();
+		float minSpeed = 1000f;
+
+		for(int i = 0; i < members.size(); i++)
+		{
+			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
+			float speed = fmAPI.getStats().getMaxSpeed().getModifiedValue();
+
+			if (minSpeed > speed) {
+				minSpeed = speed;
+			}
+		}
+
+		minSpeed -= (minSpeed / 8f + 5f);
+
+		CampaignFleetAPI dummyFleet;
+		float[] weights;
+		float totalWeight = 0.f;
+
+		do
+		{
+			dummyFleet = sector.createFleet(factionId, "exerelinGenericFleet");
+
+			members = dummyFleet.getFleetData().getMembersListCopy();
+			weights = new float[ members.size() ];
+			int m = 0;
+
+			for(Iterator it = members.iterator(); it.hasNext(); )
+			{
+				FleetMemberAPI fmAPI = (FleetMemberAPI)it.next();
+
+				if (fmAPI.isCapital() || fmAPI.getStats().getMaxSpeed().getModifiedValue() < minSpeed) {
+					it.remove();
+					continue;
+				} else if (fmAPI.isFighterWing()) {
+					weights[m] = 1.2f;
+				} else if (fmAPI.isFrigate()) {
+					weights[m] = 1.2f;
+				} else if (fmAPI.isDestroyer()) {
+					weights[m] = 0.7f;
+				} else if (fmAPI.isCruiser()) {
+					weights[m] = 0.2f;
+				}
+
+				totalWeight += weights[m];
+				m++;
+			}
+		} while (totalWeight == 0.f); // repeat until dummyFleet contains at least one valid escort ship
+
+		FleetDataAPI fleetData = campaignFleet.getFleetData();    
+		int count = ExerelinUtils.getRandomInRange(minCount, maxCount);
+
+		for(int i = 0; i < count; )
+		{
+			float randomWeight = (float)Math.random() * totalWeight;
+
+			int m = 0;
+			while (randomWeight >= weights[m])
+			{
+				randomWeight -= weights[m];
+				m++;
+			}
+
+			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(m);
+			FleetMemberType memberType = fmAPI.getType();
+			String shipId = fmAPI.getSpecId();
+
+			if (shipId == null) continue;
+
+			fleetData.addFleetMember( Global.getFactory().createFleetMember(memberType, shipId) );
+
+			i++;
 		}
 	}
 
