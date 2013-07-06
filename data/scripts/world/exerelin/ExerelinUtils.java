@@ -75,13 +75,12 @@ public class ExerelinUtils
 		if(getBestFleetForStation(stationCargo, fleet, numberToSpawn))
 		{
 			// Recalc again
-			int multiplyer = getFleetMultiplyer(fleet);
-			float points = fleet.getFleetData().getFleetPointsUsed();
+			float fleetCost = getFleetCost(fleet);
 
-			float reqCrew = (points * multiplyer)*2;
-			float reqSupplies = ((points * multiplyer) * 4)*2;
-			float reqFuel = (points * multiplyer)*2;
-			int reqMarines = ((int)(points * multiplyer) / 2)*2;
+			float reqCrew     = fleetCost;
+			float reqSupplies = fleetCost * 4;
+			float reqFuel     = fleetCost;
+			int reqMarines    = (int)(fleetCost / 2);
 
 			// Check again just in case other changes
 			if((stationCargo.getFuel() / numberToSpawn) < reqFuel || (stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) / numberToSpawn) < reqCrew || (stationCargo.getSupplies() / numberToSpawn) < reqSupplies || (stationCargo.getMarines() / numberToSpawn) < reqMarines)
@@ -125,20 +124,24 @@ public class ExerelinUtils
 		if(members.size() == 0)
 			return false;
 
-		int multiplyer = getFleetMultiplyer(fleet);
-		float points = fleet.getFleetData().getFleetPointsUsed();
+		float fleetCost = getFleetCost(fleet);
 
-		float reqCrew = (points * multiplyer)*2;
-		float reqSupplies = ((points * multiplyer) * 4)*2;
-		float reqFuel = (points * multiplyer)*2;
-		int reqMarines = ((int)(points * multiplyer) / 2)*2;
+		float reqCrew     = fleetCost;
+		float reqSupplies = fleetCost * 4;
+		float reqFuel     = fleetCost;
+		int reqMarines    = (int)(fleetCost / 2);
 
 		if((stationCargo.getFuel() / numberToSpawn) < reqFuel || (stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) / numberToSpawn) < reqCrew || (stationCargo.getSupplies() / numberToSpawn) < reqSupplies || (stationCargo.getMarines() / numberToSpawn) < reqMarines)
 		{
+			if(members.size() == 1)
+				return false;
+
 			// Can't spawn, so remove random members and try again
 			// Remove capital ships first
 			if(fleet.getNumCapitals() > 0)
 			{
+				// THIS CODE IS NEVER EXECUTED, because getNumCapitals() always returns 0
+
 				int toRemove = -1;
 				for(int i = 0; i < members.size(); i++)
 				{
@@ -166,6 +169,8 @@ public class ExerelinUtils
 			// Can spawn so make sure fleet size isn't small if it has capitals
 			if(fleet.getFleetData().getFleetPointsUsed() < 40 && fleet.getNumCapitals() > 0)
 			{
+				// THIS CODE IS NEVER EXECUTED, because getNumCapitals() always returns 0
+
 				for(int k = 0; k < fleet.getNumCapitals(); k++)
 				{
 					for(int l = 0; l < members.size(); k++)
@@ -184,11 +189,38 @@ public class ExerelinUtils
 		}
 	}
 
-	private static int getFleetMultiplyer(CampaignFleetAPI fleet)
+	private static int getFleetCost(CampaignFleetAPI fleet)
 	{
-		int multiplyer = 1;
-		multiplyer = multiplyer + (fleet.getNumCapitals() * 7) + (fleet.getNumCruisers() * 4) + (fleet.getNumDestroyers() * 3) + (fleet.getNumFrigates() * 2) + fleet.getNumFighters() * 2;
-		return multiplyer;
+		final float FLEET_COST_MULT = 0.7f;
+
+		float fleetCost = 0f;
+		float mult;
+		List members = fleet.getFleetData().getMembersListCopy();		
+
+		for (int i = 0; i < members.size(); i++)
+		{
+			FleetMemberAPI ship = (FleetMemberAPI)members.get(i);
+
+            if (ship.isCivilian()) { // superfreighters are not battleships and shouldn't cost that much
+            	mult = 2f;
+            } else if (ship.isFighterWing()) {
+            	mult = 2f;
+            } else if (ship.isFrigate()) {
+            	mult = 2f;
+            } else if (ship.isDestroyer()) {
+            	mult = 3f;
+            } else if (ship.isCruiser()) {
+            	mult = 4f;
+            } else if (ship.isCapital()) {
+            	mult = 7f;
+            } else {
+            	mult = 2f;
+            }
+
+            fleetCost += (ship.getFleetPointCost() * mult);
+		}
+
+		return Math.round(fleetCost * FLEET_COST_MULT);
 	}
 
 	public static String getStationOwnerFactionId(SectorEntityToken stationToken)
