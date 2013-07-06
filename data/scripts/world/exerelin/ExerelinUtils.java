@@ -124,8 +124,8 @@ public class ExerelinUtils
 
 		if (noCivilianShips) {
 			for(int i = 0; i < members.size(); i++)	{
-				FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);	
-				
+				FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
+
 				if(fmAPI.isCivilian()) {
 					fleet.getFleetData().removeFleetMember(fmAPI);
 				}
@@ -208,7 +208,7 @@ public class ExerelinUtils
 
 		float fleetCost = 0f;
 		float mult;
-		List members = fleet.getFleetData().getMembersListCopy();		
+		List members = fleet.getFleetData().getMembersListCopy();
 
 		for (int i = 0; i < members.size(); i++)
 		{
@@ -1511,7 +1511,7 @@ public class ExerelinUtils
 			}
 		} while (totalWeight == 0.f); // repeat until dummyFleet contains at least one valid escort ship
 
-		FleetDataAPI fleetData = campaignFleet.getFleetData();    
+		FleetDataAPI fleetData = campaignFleet.getFleetData();
 		int count = ExerelinUtils.getRandomInRange(minCount, maxCount);
 
 		for(int i = 0; i < count; )
@@ -1562,8 +1562,7 @@ public class ExerelinUtils
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
 			String shipId = fmAPI.getSpecId();
-
-			if(shipId.equalsIgnoreCase("mining_drone_Standard"))
+			if(shipId.equalsIgnoreCase("mining_drone_wing"))
 				return true;
 		}
 

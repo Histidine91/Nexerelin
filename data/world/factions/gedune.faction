@@ -90,7 +90,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "mining_drone_Standard":[1, 2],
+                "mining_drone_wing":[1, 2],
                 "gedune_mozok_f_variant1":[1, 1],
                 "gedune_byakuri_variant":[1, 1],
             },
@@ -103,7 +103,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "mining_drone_Standard":[1, 2],
+                "mining_drone_wing":[1, 2],
                 "gedune_mozok_t_variant1":[1, 1],
                 "gedune_byakuri_variant":[1, 1],
             },

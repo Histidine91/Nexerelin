@@ -50,10 +50,10 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 
 		// Check cargo and set convoy type
 		CargoAPI stationCargo = getAnchor().getCargo();
-		if(stationCargo.getFuel() >= 400)
-			convoyType = "fuel";
-		else if(stationCargo.getSupplies() >= 1600)
+		if(stationCargo.getSupplies() >= 1600)
 			convoyType = "supplies";
+		else if(stationCargo.getFuel() >= 400)
+			convoyType = "fuel";
 		else if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) >= 400)
 			convoyType = "crew";
 		else if(stationCargo.getMarines() >= 200)
@@ -77,13 +77,13 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 
 		// Remove cargo from station
 		if(convoyType.equalsIgnoreCase("fuel"))
-			ExerelinUtils.decreaseCargo(stationCargo, "fuel", 100);
+			ExerelinUtils.decreaseCargo(stationCargo, "fuel", 200);
 		else if(convoyType.equalsIgnoreCase("supplies"))
-			ExerelinUtils.decreaseCargo(stationCargo, "supplies", 400);
+			ExerelinUtils.decreaseCargo(stationCargo, "supplies", 800);
 		else if(convoyType.equalsIgnoreCase("crew"))
-			ExerelinUtils.decreaseCargo(stationCargo, "crewRegular", 100);
+			ExerelinUtils.decreaseCargo(stationCargo, "crewRegular", 200);
 		else if(convoyType.equalsIgnoreCase("marines"))
-			ExerelinUtils.decreaseCargo(stationCargo, "marines", 50);
+			ExerelinUtils.decreaseCargo(stationCargo, "marines", 100);
 
 		setFleetAssignments(fleet);
 
@@ -111,13 +111,13 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 					// Deliver resources and despawn
 					CargoAPI cargo = friendlyStation.getStationToken().getCargo();
 					if(convoyType.equalsIgnoreCase("fuel"))
-						cargo.addFuel(100);
+						cargo.addFuel(200);
 					else if(convoyType.equalsIgnoreCase("supplies"))
-						cargo.addSupplies(400) ;
+						cargo.addSupplies(800) ;
 					else if(convoyType.equalsIgnoreCase("crew"))
-						cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, 100);
+						cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, 200);
 					else if(convoyType.equalsIgnoreCase("marines"))
-						cargo.addMarines(50) ;
+						cargo.addMarines(100) ;
 
 					if(friendlyStation.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 					{

@@ -92,7 +92,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "mining_drone_Standard":[1, 2],
+                "mining_drone_wing":[1, 2],
                 "junk_pirates_stoatB_Standard":[1, 1],
                 "junk_pirates_octopus_Standard":[1, 1],
             },
@@ -105,7 +105,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "mining_drone_Standard":[1, 2],
+                "mining_drone_wing":[1, 2],
                 "junk_pirates_stoatA_Standard":[1, 1],
                 "junk_pirates_octopus_Standard":[1, 1],
             },
