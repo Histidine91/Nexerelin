@@ -221,6 +221,7 @@ public class DiplomacyManager
 				continue;
 
 			int factionRelationship = recordToUpdate.getFactionRelationship(factionRecords[j].getFactionId());
+			float gameRelationship  = recordToUpdate.getGameRelationship(factionRecords[j].getFactionId());
 
 			// If last, like them, if first, don't like them
 			if(factionRecords[j].getFactionId().equalsIgnoreCase(factionIdFirst))
@@ -252,15 +253,15 @@ public class DiplomacyManager
 				bias = 1;
 
 			// Only add warweariness if we are actually at war with this faction
-			if(recordToUpdate.getGameRelationship(factionRecords[j].getFactionId()) < 0)
+			if(gameRelationship < 0)
 				factionRelationship = factionRelationship + bias + warweariness;
 			else
 				factionRelationship = factionRelationship + bias;
 
 			// If no war target, decrease relationships with allies a lot and neutral slightly
-			if(!hasWarTarget && recordToUpdate.getGameRelationship(factionRecords[j].getFactionId()) >= 1)
+			if(!hasWarTarget && gameRelationship >= 1)
 				factionRelationship = factionRelationship - 4;
-			else if(!hasWarTarget && recordToUpdate.getGameRelationship(factionRecords[j].getFactionId()) > 0)
+			else if(!hasWarTarget && gameRelationship > 0)
 				factionRelationship = factionRelationship - 2;
 
 			// Add a bit of random

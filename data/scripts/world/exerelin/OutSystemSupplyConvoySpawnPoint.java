@@ -56,7 +56,7 @@ public class OutSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
 
 	    DiplomacyRecord diplomacyRecord = ExerelinData.getInstance().systemManager.diplomacyManager.getRecordForFaction(owningFactionId);
-	    if (diplomacyRecord.hasWarTagetInSystem(false))
+	    if (diplomacyRecord.hasWarTargetInSystem(false))
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 3, 4, owningFactionId, getSector());
 	    else
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 2, 3, owningFactionId, getSector());
