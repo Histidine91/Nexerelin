@@ -104,7 +104,7 @@
            "extraCrewPercent":[80, 80],
            "marinesPercent":[20, 20],
            "ships":{
-               "mining_drone_Standard":[1, 2],
+               "mining_drone_wing":[1, 2],
                "tahoe_Standard":[1, 1],
                "zephyr_Strike":[1, 1],
            },
@@ -117,7 +117,7 @@
            "extraCrewPercent":[80, 80],
            "marinesPercent":[20, 20],
            "ships":{
-               "mining_drone_Standard":[1, 2],
+               "mining_drone_wing":[1, 2],
                "trexel_Standard":[1, 2],
                "zephyr_Strike":[1, 1],
            },
