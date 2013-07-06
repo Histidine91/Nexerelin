@@ -63,7 +63,7 @@
             }
         },
         "exerelinInSystemSupplyConvoy":{
-            "displayName":"Inter-System Supply Convoy",
+            "displayName":"In-System Supply Convoy",
             "maxFleetPoints":40,
             "daysWorthOfSupplies":[30, 50],
             "lyWorthOfFuel":[40, 60],
@@ -74,7 +74,7 @@
             },
         },
         "exerelinInSystemStationAttackFleet":{
-            "displayName":"Inter-System Station Attack Fleet",
+            "displayName":"In-System Station Attack Fleet",
             "maxFleetPoints":40,
             "daysWorthOfSupplies":[30, 50],
             "lyWorthOfFuel":[40, 60],
