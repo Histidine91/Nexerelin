@@ -63,7 +63,8 @@ public class SystemManager implements SpawnPointPlugin
 		diplomacyManager.updateRelationships();
 
 		// Manage stations (1 update per 10 stations per day)
-		for(int i = 0; i < Math.max(1, stationManager.getStationRecords().length/10); i++)
+		int numStationsToUpdate = Math.max(1, ExerelinUtils.getRandomNearestInteger(stationManager.getStationRecords().length / 10f));
+		for(int i = 0; i < numStationsToUpdate; i++)
 			stationManager.updateStations();
 
 		// Manage system events

@@ -18,6 +18,16 @@ public class ExerelinUtils
 		return min + (int)(Math.random() * ((max - min) + 1)); // hate java
 	}
 
+	// rounds up or down with closer integer having a proportionally higher chance
+	public static int getRandomNearestInteger(float number)
+	{
+		if (number >= 0) {
+			return (int)(number + Math.random());
+		} else {
+			return (int)(number - Math.random());
+		}
+	}
+
 	public static void shuffleStringArray (String[] array)
 	{
 		Random rng = new Random();   // i.e., java.util.Random.
