@@ -56,7 +56,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 
 		CampaignFleetAPI fleet = getSector().createFleet(fleetOwningFactionId, type);
 
-		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, 1))
+		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, 1, 0.8f, false))
 		{
 			getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 			theFleet = fleet;

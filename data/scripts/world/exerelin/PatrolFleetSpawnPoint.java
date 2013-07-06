@@ -49,7 +49,7 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
 
 
 		int remainingFleetsToSpawn = this.getMaxFleets()*2 - this.getFleets().size();
-		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn))
+		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn, 0.5f, true))
 		{
 			getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 			fleet.setPreferredResupplyLocation(getAnchor());
