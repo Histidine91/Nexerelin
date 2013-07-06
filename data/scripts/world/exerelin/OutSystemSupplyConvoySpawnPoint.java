@@ -55,6 +55,12 @@ public class OutSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 		// If faction is player, get which faction player is playing as
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
 
+	    DiplomacyRecord diplomacyRecord = ExerelinData.getInstance().systemManager.diplomacyManager.getRecordForFaction(owningFactionId);
+	    if (diplomacyRecord.hasWarTagetInSystem(false))
+	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 3, 4, owningFactionId, getSector());
+	    else
+	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 2, 3, owningFactionId, getSector());
+
 		theFleet = fleet;
 		getLocation().spawnFleet(ExerelinUtils.getRandomOffMapPoint(getLocation()), 0, 0, fleet);
 		fleet.setPreferredResupplyLocation(getAnchor());
