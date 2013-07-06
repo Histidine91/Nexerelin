@@ -4,6 +4,8 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 
+import org.lazywizard.lazylib.MathUtils;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class StationManager
 	private int leadingFactionStationCount;
 	private String losingFaction;
 	private int losingFactionStationCount;
+	private float averageStationDistance;
 
 	private int nextStationRecord = 0;
 
@@ -108,6 +111,42 @@ public class StationManager
 			return 0f;
 	}
 
+	public float getDistanceBetweenFactionsRelativeToAverage (String factionId1, String factionId2)
+	{
+		if(stationCount != null) //averageStationDistance got calculated
+		{
+			float totalStationsDistance = 0.f;
+			int numDistances = 0;
+
+			for(int i = 0; i < stationRecords.length; i++)
+			{
+				StationRecord record = stationRecords[i];
+
+				if(record.getOwner() == null || !record.getOwner().getFactionId().equalsIgnoreCase(factionId1))
+					continue;
+
+				for(int j = 0; j < stationRecords.length; j++) {
+					StationRecord record2 = stationRecords[j];
+				
+					if (record2.getOwner() == null || !record2.getOwner().getFactionId().equalsIgnoreCase(factionId2))
+						continue;
+
+					totalStationsDistance += MathUtils.getDistance(record.getStationToken(), record2.getStationToken());
+					numDistances++;
+				}
+			}
+
+			if (numDistances == 0)
+				return 0f;
+
+			float factionDistance = totalStationsDistance / numDistances;
+
+			return (factionDistance - averageStationDistance) / averageStationDistance;
+		}
+		else
+			return 0f;
+	}	
+
 	public Boolean doesFactionOwnStation(String factionId)
 	{
 		for(int i = 0; i < stationRecords.length; i = i + 1)
@@ -145,6 +184,8 @@ public class StationManager
 		int firstNumStations = 0;
 		String lastFaction = "";
 		int lastNumStations = 600;
+		float totalStationsDistance = 0.f;
+		int numDistances = 0;
 
 		for(int i = 0; i < stationRecords.length; i = i + 1)
 		{
@@ -176,6 +217,18 @@ public class StationManager
 					firstFaction = owner;
 				}
 			}
+
+			//calculate distances
+			for(int j = i + 1; j < stationRecords.length; j++)
+			{
+				StationRecord record2 = stationRecords[j];
+
+				if (record2.getOwner() == null || record2.getOwner().getFactionId().equalsIgnoreCase(owner))
+					continue;
+
+				totalStationsDistance += MathUtils.getDistance(record.getStationToken(), record2.getStationToken());
+				numDistances++;
+			}
 		}
 
 		stationCount = map;
@@ -201,5 +254,6 @@ public class StationManager
 		leadingFactionStationCount = firstNumStations;
 		losingFaction = lastFaction;
 		losingFactionStationCount = lastNumStations;
+		averageStationDistance = ((numDistances > 0) ? totalStationsDistance / numDistances : 1.f);
 	}
 }

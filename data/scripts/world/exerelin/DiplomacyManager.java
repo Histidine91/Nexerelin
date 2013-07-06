@@ -233,6 +233,16 @@ public class DiplomacyManager
 			Float theirPercentage = ExerelinData.getInstance().systemManager.stationManager.getStationOwnershipPercent(factionRecords[j].getFactionId());
 			factionRelationship = factionRelationship + (int)((ourPercentage - theirPercentage)*5);
 
+			// If far, like them, if close, don't like them (we want their stations!)
+			float factionDistanceDiffFromAverage = ExerelinData.getInstance().systemManager.stationManager.getDistanceBetweenFactionsRelativeToAverage(recordToUpdate.getFactionId(), factionRecords[j].getFactionId());
+
+			int relationshipChange = ExerelinUtils.getRandomNearestInteger( factionDistanceDiffFromAverage * 2.0f );
+			if (gameRelationship > 0) { // if they are ally, like them when close
+				relationshipChange = Math.abs(relationshipChange); //we want strong and nearby ally
+			}
+
+			factionRelationship += relationshipChange;
+
 			// Add whatever the current bias is
 			int f1API_about_f2API = recordToUpdate.getFactionRelationship(factionRecords[j].getFactionId());
 			int bias = 0;
