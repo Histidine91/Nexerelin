@@ -3,6 +3,7 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /*	This class is used to store a finer grained faction relationship
@@ -172,9 +173,7 @@ public class DiplomacyRecord
 
 	public String[] getAlliedFactions()
 	{
-		String confirmedFactionsString = "";
-		String delimter = "1111"; // weird but '|' didn't work
-		Boolean found = false;
+		ArrayList confirmedFactions = new ArrayList(availableFactions.length);
 
 		for(int i = 0; i < availableFactions.length; i++)
 		{
@@ -183,25 +182,16 @@ public class DiplomacyRecord
 
 			if(Float.parseFloat((String)gameFactionRelationships.get(availableFactions[i])) >= 1)
 			{
-				confirmedFactionsString = confirmedFactionsString + availableFactions[i] + delimter;
-				found = true;
+				confirmedFactions.add(availableFactions[i]);
 			}
+		}
 
-		}
-		if(found)
-		{
-			confirmedFactionsString = confirmedFactionsString.substring(0, confirmedFactionsString.length() - delimter.length());
-			return confirmedFactionsString.split(delimter);
-		}
-		else
-			return new String[]{};
+		return (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
 	}
 
 	public String[] getEnemyFactions()
 	{
-		String confirmedFactionsString = "";
-		String delimter = "1111"; // weird but '|' didn't work
-		Boolean found = false;
+		ArrayList confirmedFactions = new ArrayList(availableFactions.length);
 
 		for(int i = 0; i < availableFactions.length; i++)
 		{
@@ -210,25 +200,16 @@ public class DiplomacyRecord
 
 			if(Float.parseFloat((String)gameFactionRelationships.get(availableFactions[i])) < 0)
 			{
-				confirmedFactionsString = confirmedFactionsString + availableFactions[i] + delimter;
-				found = true;
+				confirmedFactions.add(availableFactions[i]);
 			}
+		}
 
-		}
-		if(found)
-		{
-			confirmedFactionsString = confirmedFactionsString.substring(0, confirmedFactionsString.length() - delimter.length());
-			return confirmedFactionsString.split(delimter);
-		}
-		else
-			return new String[]{};
+		return (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
 	}
 
 	public String[] getNeutralFactions()
 	{
-		String confirmedFactionsString = "";
-		String delimter = "1111"; // weird but '|' didn't work
-		Boolean found = false;
+		ArrayList confirmedFactions = new ArrayList(availableFactions.length);
 
 		for(int i = 0; i < availableFactions.length; i++)
 		{
@@ -237,18 +218,11 @@ public class DiplomacyRecord
 
 			if(Float.parseFloat((String)gameFactionRelationships.get(availableFactions[i])) < 1 && Float.parseFloat((String)gameFactionRelationships.get(availableFactions[i])) >= 0)
 			{
-				confirmedFactionsString = confirmedFactionsString + availableFactions[i] + delimter;
-				found = true;
+				confirmedFactions.add(availableFactions[i]);
 			}
+		}
 
-		}
-		if(found)
-		{
-			confirmedFactionsString = confirmedFactionsString.substring(0, confirmedFactionsString.length() - delimter.length());
-			return confirmedFactionsString.split(delimter);
-		}
-		else
-			return new String[]{};
+		return (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
 	}
 
 	public Boolean isInAlliance()
