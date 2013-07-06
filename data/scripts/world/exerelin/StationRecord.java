@@ -150,6 +150,7 @@ public class StationRecord
 		deriveStationToAssist();
 		deriveClosestAsteroid();
 		deriveClosestGasGiant();
+
 		setFleetTargets();
 
 		removeDeadOrRebelFleets(attackSpawn);
@@ -305,7 +306,12 @@ public class StationRecord
 		List asteroids = system.getAsteroids();
 		SectorEntityToken closestAsteroid = null;
 		float closestDistance = 999999999f;
-		for(int i = 0; i < asteroids.size(); i++)
+
+		if(targetAsteroid != null && ExerelinUtils.getRandomInRange(0,2) != 0)
+			return; // Don't recalc every time
+
+		// Only check every 4th asteroid as they are fairly close normally
+		for(int i = 0; i < asteroids.size(); i = i + 4)
 		{
 			SectorEntityToken asteroid = (SectorEntityToken)asteroids.get(i);
 
@@ -325,6 +331,10 @@ public class StationRecord
 		List planets = system.getPlanets();
 		SectorEntityToken closestPlanet = null;
 		float closestDistance = 999999999f;
+
+		if(targetGasGiant != null && ExerelinUtils.getRandomInRange(0,2) != 0)
+			return; // Don't recalc each time
+
 		for(int i = 0; i < planets.size(); i++)
 		{
 			SectorEntityToken planet = (SectorEntityToken)planets.get(i);

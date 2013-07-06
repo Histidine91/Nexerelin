@@ -82,7 +82,7 @@ public class EventOutSystemReinforcements
 			else
 				fleet = sectorAPI.createFleet(factionId,  type);
 
-			fleet.setName("Reinforement Fleet");
+			fleet.setName("Reinforcement Fleet");
 
 			starSystemAPI.spawnFleet(token, ExerelinUtils.getRandomInRange(-100,100), ExerelinUtils.getRandomInRange(-10,10), fleet);
 
