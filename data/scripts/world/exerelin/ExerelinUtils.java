@@ -7,6 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import org.lazywizard.lazylib.MathUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.List;
@@ -594,15 +595,11 @@ public class ExerelinUtils
 
 	public static String[] getFactionsInSystem(StarSystemAPI starSystem)
 	{
-		String foundFactionsString = "";
-		String delimter = "1111"; // weird but '|' didn't work
-
 		List stations = starSystem.getOrbitalStations();
+		ArrayList foundFactions = new ArrayList(stations.size());
 
 		for(int i = 0; i < stations.size(); i = i + 1)
 		{
-			String [] factionsSoFar = foundFactionsString.split(delimter);
-
 			String stationName = ((SectorEntityToken)stations.get(i)).getFullName();
 			if(stationName.contains("Omnifactory"))
 				continue;
@@ -615,23 +612,18 @@ public class ExerelinUtils
 			if(stationFactionId.equalsIgnoreCase("abandoned"))
 				continue;
 
-			Boolean alreadyFound = false;
-			for(int j = 0; j < factionsSoFar.length; j = j + 1)
+			boolean alreadyFound = false;
+			for(int j = 0; j < foundFactions.size(); j = j + 1)
 			{
-				if(factionsSoFar[j].equalsIgnoreCase(stationFactionId))
+				if(((String)foundFactions.get(j)).equalsIgnoreCase(stationFactionId))
 					alreadyFound = true;
 			}
 			if(!alreadyFound)
-				foundFactionsString = foundFactionsString + stationFactionId + delimter;
+				foundFactions.add(stationFactionId);
 
 		}
-		if(foundFactionsString.length() > 0)
-		{
-			foundFactionsString = foundFactionsString.substring(0, foundFactionsString.length() - delimter.length());
-			return foundFactionsString.split(delimter);
-		}
-		else
-			return new String[]{};
+
+		return (String[])foundFactions.toArray( new String[foundFactions.size()] );
 	}
 
 	public static void decreaseCargo(CargoAPI cargo, String type, int quantity)

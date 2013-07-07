@@ -4,6 +4,8 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import org.lwjgl.util.vector.Vector2f;
 
+import java.util.ArrayList;
+
 /* This class functions as a data transfer for the various Exerelin modules
 
    It should also function as a cache, but due to no hookable event on load/save
@@ -93,9 +95,8 @@ public final class ExerelinData
 	{
 		if (availableFactions == null)
 		{
-			String confirmedFactionsString = "";
-			String delimter = "1111"; // weird but '|' didn't work
 			String[] locPossibleFaction = this.getPossibleFacions();
+			ArrayList confirmedFactions = new ArrayList(locPossibleFaction.length);
 
 			if(!onlyRespawnStartingFactions)
 			{
@@ -103,20 +104,18 @@ public final class ExerelinData
 				{
 					FactionAPI fac = sector.getFaction(locPossibleFaction[i]);
 					if(fac != null)
-						confirmedFactionsString = confirmedFactionsString + fac.getId() + delimter;
+						confirmedFactions.add(fac.getId());
 					else
 						System.out.println("Couldn't determine faction for:" + locPossibleFaction[i]);
 				}
-				confirmedFactionsString = confirmedFactionsString.substring(0, confirmedFactionsString.length() - delimter.length());
-				availableFactions = confirmedFactionsString.split(delimter);
+				availableFactions = (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
 			}
 			else
 			{
 				ExerelinUtils.shuffleStringArray(locPossibleFaction);
 
 				int i = 0;
-				int added = 0;
-				while(added < Math.min(this.numStartFactions, locPossibleFaction.length))
+				while(confirmedFactions.size() < Math.min(this.numStartFactions, locPossibleFaction.length))
 				{
 					if(locPossibleFaction[i].equalsIgnoreCase(this.playerFaction))
 					{
@@ -127,18 +126,16 @@ public final class ExerelinData
 					FactionAPI fac = sector.getFaction(locPossibleFaction[i]);
 					if(fac != null)
 					{
-						confirmedFactionsString = confirmedFactionsString + fac.getId() + delimter;
-						added = added + 1;
+						confirmedFactions.add(fac.getId());
 					}
 					else
 						System.out.println("Couldn't determine faction for:" + locPossibleFaction[i]);
 
 					i = i + 1;
 				}
-				confirmedFactionsString = confirmedFactionsString + this.getPlayerFaction() + delimter;
+				confirmedFactions.add(this.getPlayerFaction());
 
-				confirmedFactionsString = confirmedFactionsString.substring(0, confirmedFactionsString.length() - delimter.length());
-				availableFactions = confirmedFactionsString.split(delimter);
+				availableFactions = (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
 			}
 		}
 		return availableFactions;
