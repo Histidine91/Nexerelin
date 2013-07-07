@@ -81,11 +81,10 @@ public class EventTradeGuildConversion
 				fleet.clearAssignments();
 				SectorEntityToken station = ExerelinUtils.getRandomStationForFaction(tradingWithFaction, sectorAPI);
 
-				if(station == null)
-					return; // Faction had no stations
+				if(station != null)
+					fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, station, 200);
 
-				fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, station, 30);
-				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, ExerelinUtils.getRandomOffMapPoint(starSystemAPI), 30);
+				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, ExerelinUtils.getRandomOffMapPoint(starSystemAPI), 200);
 			}
 		}
 	}
