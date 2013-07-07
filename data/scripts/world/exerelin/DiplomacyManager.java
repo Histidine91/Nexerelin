@@ -360,6 +360,9 @@ public class DiplomacyManager
 			if(diplomacyRecord.getFactionId().equalsIgnoreCase(otherDiplomacyRecord.getFactionId()))
 				continue;
 
+			if(!ExerelinData.getInstance().systemManager.stationManager.doesFactionOwnStation(otherDiplomacyRecord.getFactionId()))
+				continue;
+
 			int rel1 = 0;
 			int rel2 = 0;
 			float currentGameRelationship = 0f;
