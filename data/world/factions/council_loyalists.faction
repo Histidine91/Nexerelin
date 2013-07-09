@@ -55,7 +55,7 @@
                 "mrd_spearhead_standard":[0, 2],
                 "mrd_ambassador_standard":[1, 2],
                 "mrd_defender_assault":[0, 2],
-                "mrd_sparrow_Fast":[0, 2],
+                "mrd_sparrow_Fast":[0, 1],
                 "mrd_dragonfly_support":[0, 2],
                 "mrd_oppressor_int_wing":[0, 2],
                 "mrd_oppressor_wing":[0, 2],

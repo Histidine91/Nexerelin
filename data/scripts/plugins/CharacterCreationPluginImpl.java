@@ -439,8 +439,10 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		{
 			data.addStartingShipChoice("mrd_slasher_Balanced");
 			data.addStartingShipChoice("mrd_ambassador_standard");
+			data.addStartingShipChoice("mrd_spearhead_assault");
+			data.addStartingShipChoice("mrd_dragonfly_assault");
+			//data.addStartingShipChoice("mrd_sparrow_Fast");
 			data.addStartingShipChoice("mrd_defender_assault");
-			data.addStartingShipChoice("mrd_sparrow_Fast");
 		}
 		else if (factionId.equalsIgnoreCase("blackrock"))
 		{
