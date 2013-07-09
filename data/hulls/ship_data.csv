@@ -31,8 +31,8 @@ Mimir XV,ms_mimirBaus,Battlecruiser,ms_mimirskimmir,22,8000,800,22000,800,1100,2
 "Clam","junk_pirates_clam","Frigate","fortressshield",7,1800,300,2750,,280,45,75,120,100,100,140,220,"FRONT",,360,0.35,0.8,,,10,20,40,40,1.2,40,,5000,,321609
 "Orca","junk_pirates_orca","Battleship","drone_pd",16,6000,700,11000,,375,150,25,25,25,20,20,2800,"FRONT",,250,0.35,0.8,,,80,260,350,650,12,45,30,65000,,321610
 "Shard","junk_pirates_shard",,,,550,150,600,,50,0,135,40,40,70,120,40,"NONE",,0,0,0,,,3,3,,,,,,,,321611
-"Stoat (A Variant)","junk_pirates_stoatA","Frigate","burndrive",4,1900,50,250,,100,5,40,5,5,25,15,300,"NONE",,0,0,0,,,4,12,100,120,0.8,80,,2000,,321612
-"Stoat (B Variant)","junk_pirates_stoatB","Frigate","burndrive",4,1900,50,100,,100,4,40,5,5,25,15,300,"NONE",,0,0,0,,,4,12,100,120,0.8,80,,2000,,321613
+"Stoat (A Variant)","junk_pirates_stoatA","Frigate","burndrive",4,1900,50,250,,100,5,40,5,5,25,15,300,"NONE",,0,0,0,,,4,12,100,120,0.8,80,CIVILIAN,2000,,321612
+"Stoat (B Variant)","junk_pirates_stoatB","Frigate","burndrive",4,1900,50,100,,100,4,40,5,5,25,15,300,"NONE",,0,0,0,,,4,12,100,120,0.8,80,CIVILIAN,2000,,321613
 "Langoustine","junk_pirates_langoustine","Destroyer","highenergyfocus",10,3500,400,4800,,450,80,100,65,40,85,65,580,"FRONT",,120,0.3,0.8,,,35,55,40,140,2.5,40,5,12000,,321614
 "Scythe","junk_pirates_scythe","Destroyer","flarelauncher",9,2400,250,3000,,450,65,105,85,65,95,85,320,"OMNI",,110,0.5,1.2,,,25,75,150,160,1.6,60,10,8000,,321615
 "Goat","junk_pirates_goat","Cruiser","drone_sensor",14,7500,1000,10000,,500,90,55,45,35,25,25,2100,"FRONT",,300,0.7,0.8,,,125,275,300,200,4,75,16,24000,,321616
@@ -118,7 +118,7 @@ Mantis,brdy_mantis,Frigate,fastmissileracks,7,1500,250,2200,4,200,50,155,125,135
 Kurmaraja,brdy_kurmaraja,Battlecruiser,gravityfield,19,10000,900,15500,4,850,210,70,45,33,11,25,2600,OMNI,,180,0.5,0.8,,,150,450,450,300,3.5,86,20,95000,,12345
 Squilla,brdy_squilla,,,,600,75,1000,,100,0,150,140,100,70,90,50,FRONT,,140,0.3,0.45,,,3,3,,,,,,,,
 Serket,brdy_serket,,,,600,130,1000,,175,,170,300,250,230,240,50,PHASE,phasecloak,,,,0.02,0.026,3,3,,,,,,,,
-Cetonia,brdy_cetonia,Freight Courier,flarelauncher_active,8,3600,500,3000,4,160,45,80,35,35,24,25,500,FRONT,,320,0.45,0.9,,,40,100,300,120,2.5,48,8,8500,,12345
+Cetonia,brdy_cetonia,Freight Courier,flarelauncher_active,8,3600,500,3000,4,160,45,80,35,35,24,25,500,FRONT,,320,0.45,0.9,,,40,100,300,120,2.5,48,8,8500,CIVILIAN,12345
 Typheus,brdy_typheus,Pocket Carrier,brdy_sentineldrone,10,3800,500,3000,4,200,55,70,25,30,22,16,500,OMNI,,100,0.37,1.0,,,50,120,150,100,2.5,40,12,9800,CARRIER,12345
 Stenos,brdy_stenos,Cruiser,brdy_sentineldrone,14,8000,600,6000,5,500,150,75,32,32,13,24,2250,OMNI,,100,0.49,1.1,,,65,150,200,175,4,50,16,25000,,12345
 Sentinel,brdy_sentinel_drone,Drone,burstjets_drone,,700,75,1200,4,195,,80,280,300,180,200,25,OMNI,,90,0.5,0.5,,,,,,,,,,,,12345
@@ -235,11 +235,11 @@ Jackal,jackal,Frigate,maneuveringjets,6,1230,118,1725,1875,145,42,142,90,80,60,1
 Stingray,stingray,Frigate,maneuveringjets,6,1750,250,2300,1875,240,52,124,90,80,60,100,300,OMNI,,120,0.4,0.8,,,25,40,50,80,1.5,60,,15000,,2050
 Vengeance,vengeance,Frigate,maneuveringjets,6,920,122,2100,1625,180,42,152,112,85,55,100,120,OMNI,,90,0.5,0.9,,,12,28,60,60,1.2,75,6,13600,,2060
 
-Argos,argos,Freighter,flarelauncher_active,8,3500,270,1750,1667,120,42,65,45,45,35,25,425,OMNI,,105,0.7,1.3,,,25,120,350,240,2.4,80,10,10000,,3010
+Argos,argos,Freighter,flarelauncher_active,8,3500,270,1750,1667,120,42,65,45,45,35,25,425,OMNI,,105,0.7,1.3,,,25,120,350,240,2.4,80,10,10000,CIVILIAN,3010
 Hydra,hydra,Destroyer,maneuveringjets,11,2400,260,5400,5667,350,98,112,90,60,50,125,300,OMNI,,110,0.4,0.7,,,50,75,80,100,1.8,70,3,24000,,3020
 Rive,rive,Destroyer,ammofeed,11,4600,350,4800,4167,360,86,100,70,50,40,70,400,FRONT,,300,0.4,0.8,,,60,120,120,125,2,80,8,21500,,3030
 Arcadia,arcadia,Carrier,drone_pd,12,3000,300,2250,2000,125,52,70,50,50,25,30,450,FRONT,,80,0.5,0.9,,,50,100,75,100,2,60,15,26000,,3040
-Aria,aria,Tanker,flarelauncher_active,10,1500,200,1750,1250,120,42,75,25,15,15,20,600,OMNI,,90,0.4,1.0,,,18,36,25,750,2,750,,14000,,3050
+Aria,aria,Tanker,flarelauncher_active,10,1500,200,1750,1250,120,42,75,25,15,15,20,600,OMNI,,90,0.4,1.0,,,18,36,25,750,2,750,,14000,CIVILIAN,3050
 
 Eventide,eventide,Cruiser,maneuveringjets,16,7100,700,13000,15000,730,160,82,55,30,30,30,1750,FRONT,,270,0.7,0.7,,,100,300,250,220,5,50,5,34000,,4010
 Ajax,ajax,Cruiser,maneuveringjets,14,5600,600,6200,6000,420,112,76,50,30,25,25,900,FRONT,,270,0.5,0.8,,,80,240,140,220,4,50,7,30000,,4020
@@ -274,7 +274,7 @@ Wraithii Drone,gedune_wraithii_drone,,,,300,60,500,,100,,150,200,200,90,180,5,OM
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 "Lathe","neutrino_lathe","Battlecruiser","displacer",22,8250,1650,4250,,1600,200,48,20,15,7,7,3750,"OMNI",,35,0.2,0.2,,,100,150,250,300,9,,0,165000,,8971
 "Pile-Driver","neutrino_piledriver","Destroyer","neutrino_drone_scout",12,3000,950,2250,,850,100,80,40,30,18,18,2000,"OMNI",,30,0.2,0.2,,,35,80,75,125,4,,3,34000,,8972
-"Nausicaa","neutrino_nausicaa","Corporate Freighter","fortressshield",20,32000,2500,2500,,400,130,32,5,5,3,3,12500,"OMNI",,35,0,0.2,,,60,250,3200,850,18,,2,175000,,8973
+"Nausicaa","neutrino_nausicaa","Corporate Freighter","fortressshield",20,32000,2500,2500,,400,130,32,5,5,3,3,12500,"OMNI",,35,0,0.2,,,60,250,3200,850,18,,2,175000,CIVILIAN,8973
 "Hacksaw","neutrino_hacksaw","Heavy Destroyer","neutrino_swarmflarelauncher",12,3300,1025,2200,,775,100,75,30,25,16,16,1250,"OMNI",,30,0.2,0.2,,,40,75,60,100,4,,0,22000,,8974
 "Blowtorch","neutrino_blowtorch","Ship","burndrive",12,2650,900,2000,,500,75,115,75,65,28,28,1250,"OMNI",,35,0.2,0.2,,,15,35,50,75,2,,0,19000,,8975
 "Jackhammer","neutrino_jackhammer","Battleship","neutrino_derpchargesystem",28,12500,1950,6500,,1800,275,20,8,8,5,3,5250,"OMNI",,30,0.2,0.2,,,250,475,325,300,15,,24,200000,,8976
@@ -328,10 +328,10 @@ Dakota,dakota,Frigate,flarelauncher,5,2200,250,1950,1875,145,35,95,75,70,55,85,2
 Rickshaw,rickshaw,Frigate,flarelauncher,5,1750,230,2200,1500,120,50,125,90,70,60,90,200,OMNI,,150,0.25,1,,,20,50,40,50,1.25,40,,4200,,102.55
 Echo,echo,Scout,flarelauncher,3,2000,285,750,1250,100,30,195,175,95,90,120,185,NONE,,0,0,0,,,5,35,25,60,1,60,,3600,,103.55
 Albatross,albatross,Attack Ship,ammofeed,6,1700,250,2300,1500,140,50,110,90,70,60,90,215,OMNI,,150,0.25,0.8,,,25,50,40,50,1.25,40,,6250,,104.55
-Mazerk,mazerk,Superbarge,flarelauncher,15,7500,250,4000,2500,140,50,30,6,3,4,2,3900,OMNI,,45,0.5,1,,,25,100,1850,800,8,87,25,22000,,900.55
+Mazerk,mazerk,Superbarge,flarelauncher,15,7500,250,4000,2500,140,50,30,6,3,4,2,3900,OMNI,,45,0.5,1,,,25,100,1850,800,8,87,25,22000,CIVILIAN,900.55
 Orion,orion,Hypertug,flarelauncher,7,4750,250,2700,1200,170,50,165,70,65,55,65,255,OMNI,,120,0.3,0.95,,,25,100,50,60,1.75,34,,8000,,901.55
-Tahoe,tahoe,Cargo Barge,flarelauncher,10,4500,250,2800,2833,160,45,40,15,12,12,6,2000,OMNI,,150,0.4,0.8,,,35,120,450,150,1.75,86,15,12000,,902.55
-Trexel,trexel,Fuel Barge,flarelauncher,9,4500,250,2800,2833,160,45,40,15,12,12,6,2000,OMNI,,150,0.4,0.8,,,35,120,50,750,1.75,86,,11000,,903.55
+Tahoe,tahoe,Cargo Barge,flarelauncher,10,4500,250,2800,2833,160,45,40,15,12,12,6,2000,OMNI,,150,0.4,0.8,,,35,120,450,150,1.75,86,15,12000,CIVILIAN,902.55
+Trexel,trexel,Fuel Barge,flarelauncher,9,4500,250,2800,2833,160,45,40,15,12,12,6,2000,OMNI,,150,0.4,0.8,,,35,120,50,750,1.75,86,,11000,CIVILIAN,903.55
 Icarus,earthcracker,Earth Cracker,,15,10000,1500,50000,25000,5000,1025,20,2,5,3,4,3500,NONE,,0,0,0,,,1,1,1,500,15,30,,200000,,1000.55
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 Draken,draken,,,,375,40,400,,50,0,225,160,110,120,240,10,NONE,,0,0,0,,,1,1,,,,,,,,50.55
