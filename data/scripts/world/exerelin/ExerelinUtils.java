@@ -73,8 +73,20 @@ public class ExerelinUtils
 
 	public static Boolean canStationSpawnFleet(SectorEntityToken station, CampaignFleetAPI fleet, float numberToSpawn, float marinesPercent, boolean noCivilianShips)
 	{
+		if (noCivilianShips) {
+			List members = fleet.getFleetData().getMembersListCopy();
+
+			for(int i = 0; i < members.size(); i++)	{
+				FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
+
+				if(fmAPI.isCivilian()) {
+					fleet.getFleetData().removeFleetMember(fmAPI);
+				}
+			}
+		}
+
 		CargoAPI stationCargo = station.getCargo();
-		if(getBestFleetForStation(stationCargo, fleet, numberToSpawn, noCivilianShips))
+		if(getBestFleetForStation(stationCargo, fleet, numberToSpawn))
 		{
 			// Recalc again
 			float fleetCost = getFleetCost(fleet);
@@ -119,21 +131,9 @@ public class ExerelinUtils
 
 	// Recursive method
 	// Will remove fleet members until either 0 is left or fleet can be spawned from station
-	private static Boolean getBestFleetForStation(CargoAPI stationCargo, CampaignFleetAPI fleet, float numberToSpawn, boolean noCivilianShips)
+	private static Boolean getBestFleetForStation(CargoAPI stationCargo, CampaignFleetAPI fleet, float numberToSpawn)
 	{
 		List members = fleet.getFleetData().getMembersListCopy();
-
-		if (noCivilianShips) {
-			for(int i = 0; i < members.size(); i++)	{
-				FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-
-				if(fmAPI.isCivilian()) {
-					fleet.getFleetData().removeFleetMember(fmAPI);
-				}
-			}
-
-			members = fleet.getFleetData().getMembersListCopy();
-		}
 
 		if(members.size() == 0)
 			return false;
@@ -176,7 +176,7 @@ public class ExerelinUtils
 					fleet.getFleetData().removeFleetMember((FleetMemberAPI)members.get(getRandomInRange(0, members.size() - 1)));
 			}
 
-			return getBestFleetForStation(stationCargo, fleet, numberToSpawn, false);
+			return getBestFleetForStation(stationCargo, fleet, numberToSpawn);
 		}
 		else
 		{
