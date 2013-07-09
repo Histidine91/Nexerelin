@@ -483,10 +483,11 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		}
 		else if (factionId.equalsIgnoreCase("interstellarFederation"))
 		{
+			data.addStartingShipChoice("albatross_Attack");
 			data.addStartingShipChoice("dakota_Standard");
 			data.addStartingShipChoice("scythe_Frigate");
 			data.addStartingShipChoice("echo_Standard");
-
+			data.addStartingShipChoice("rickshaw_Standard");
 		}
 		else if (factionId.equalsIgnoreCase("relics"))
 		{
