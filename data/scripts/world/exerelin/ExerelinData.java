@@ -1,10 +1,14 @@
 package data.scripts.world.exerelin;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SpawnPointPlugin;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /* This class functions as a data transfer for the various Exerelin modules
 
@@ -15,6 +19,7 @@ import java.util.ArrayList;
 public final class ExerelinData
 {
 	private static ExerelinData instance = null;
+	private static SectorAPI sector = null;
 
 	public boolean confirmedFaction = false;
 	private String playerFaction = "independent";
@@ -54,7 +59,43 @@ public final class ExerelinData
 		if(instance == null)
 			instance = new ExerelinData();
 
+		updateSystemManager();
+
 		return instance;
+	}
+
+	private static void updateSystemManager()
+	{
+		if (Global.getSector() != sector)
+		{
+			sector = Global.getSector();
+
+			System.out.println("Sector change detected, retrieving spawnpoints...");
+
+			StarSystemAPI system = sector.getStarSystem("Exerelin");
+			ArrayList spawnPoints = ExerelinHacks.getSpawnPoints(system);
+
+			if (spawnPoints != null)
+			{
+				System.out.println("Spawnpoints retrieved.");
+
+				for(Iterator it = spawnPoints.iterator(); it.hasNext(); )
+				{
+					SpawnPointPlugin plugin = (SpawnPointPlugin)it.next();
+
+					if (plugin instanceof SystemManager)
+					{
+						System.out.println("SystemManager found.");
+
+						instance.systemManager = (SystemManager)plugin;
+						break;
+					}
+				}
+			} else
+			{
+				System.out.println("Failed to retrieve spawnpoints.");
+			}
+		}
 	}
 
 	public String getPlayerFaction()
