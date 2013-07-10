@@ -1081,7 +1081,7 @@ public class DiplomacyManager
 		float gameRelationshipTotal = 0;
 		for(int i = 0; i < allianceOneFactions.length; i++)
 		{
-			for(int j = 0; j < allianceTwoFactions.length; i++)
+			for(int j = 0; j < allianceTwoFactions.length; j++)
 			{
 				gameRelationshipTotal = gameRelationshipTotal + allianceTwoFactions[j].getGameRelationship(allianceOneFactions[i].getFactionId());
 			}
