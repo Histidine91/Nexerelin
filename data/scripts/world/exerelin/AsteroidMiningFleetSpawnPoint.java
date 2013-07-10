@@ -14,6 +14,8 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 	SectorEntityToken targetAsteroid;
 	Boolean returningHome = false;
 	float fleetCargoCapacity = 0;
+	int miningPower = 0;
+	boolean validFleet = false;
 
 	public AsteroidMiningFleetSpawnPoint(SectorAPI sector, LocationAPI location,
 									float daysInterval, int maxFleets, SectorEntityToken anchor)
@@ -58,6 +60,8 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 
 		returningHome = false;
 		fleetCargoCapacity = getFleetCargoCapacity(fleet);
+		validFleet = true;
+		miningPower = ExerelinUtils.getMiningPower(fleet);
 		setFleetAssignments(fleet);
 
 		this.getFleets().add(fleet);
@@ -67,7 +71,8 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 	private void setFleetAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
-		if(targetAsteroid != null && ExerelinUtils.isValidMiningFleet(fleet))
+
+		if(targetAsteroid != null && validFleet && miningPower != 0)
 		{
 			if(!returningHome)
 				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, targetAsteroid, 1000, createTestTargetScript());
@@ -87,24 +92,28 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 				if(!returningHome && theFleet.getCargo().getSupplies() < fleetCargoCapacity)
 				{
 					// Mine more supplies
-					theFleet.getCargo().addSupplies(1);
+					theFleet.getCargo().addSupplies(miningPower);
 				}
 				else if(!returningHome)
 				{
 					// Head for home
 					returningHome = true;
+					validFleet = ExerelinUtils.isValidMiningFleet(theFleet);
+					miningPower = ExerelinUtils.getMiningPower(theFleet);
 				}
 				else if (theFleet.getCargo().getSupplies() > 20)
 				{
 					// Reached home so unload
 					theFleet.getCargo().removeSupplies(1);
-					getAnchor().getCargo().addSupplies(2);
+					getAnchor().getCargo().addSupplies(1);
 				}
 				else
 				{
 					// Head out to mine again
 					returningHome = false;
 					fleetCargoCapacity = getFleetCargoCapacity(theFleet);
+					validFleet = ExerelinUtils.isValidMiningFleet(theFleet);
+					miningPower = ExerelinUtils.getMiningPower(theFleet);
 				}
 
 				setFleetAssignments(theFleet);

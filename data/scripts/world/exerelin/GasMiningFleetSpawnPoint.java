@@ -15,6 +15,8 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 	SectorEntityToken targetPlanet;
 	Boolean returningHome = false;
 	float fleetFuelCapacity = 0;
+	int miningPower = 0;
+	boolean validFleet = false;
 
 	public GasMiningFleetSpawnPoint(SectorAPI sector, LocationAPI location,
 									  float daysInterval, int maxFleets, SectorEntityToken anchor)
@@ -59,6 +61,8 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 
 		returningHome = false;
 		fleetFuelCapacity = getFleetFuelCapacity(fleet);
+		validFleet = true;
+		miningPower = ExerelinUtils.getMiningPower(fleet);
 		setFleetAssignments(fleet);
 
 		this.getFleets().add(fleet);
@@ -68,7 +72,8 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 	private void setFleetAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
-		if(targetPlanet != null && ExerelinUtils.isValidMiningFleet(fleet))
+
+		if(targetPlanet != null && miningPower != 0)
 		{
 			if(!returningHome)
 				//fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, getLocation().createToken(targetPlanet.getLocation().getX() + ExerelinUtils.getRandomInRange(-100,100), targetPlanet.getLocation().getY() + ExerelinUtils.getRandomInRange(-100,100)), 1000, createTestTargetScript());
@@ -89,26 +94,29 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 				if(!returningHome && theFleet.getCargo().getFuel() < fleetFuelCapacity)
 				{
 					// Mine more gas
-					theFleet.getCargo().addFuel(3);
+					theFleet.getCargo().addFuel(miningPower);
 				}
 				else if(!returningHome)
 				{
 					// Head for home
 					returningHome = true;
+					validFleet = ExerelinUtils.isValidMiningFleet(theFleet);
+					miningPower = ExerelinUtils.getMiningPower(theFleet);
 				}
 				else if (theFleet.getCargo().getFuel() > 0)
 				{
 					// Reached home so unload
 					theFleet.getCargo().removeFuel(1);
-					getAnchor().getCargo().addFuel(1);
+					getAnchor().getCargo().addFuel(ExerelinUtils.getRandomInRange(0,1));
 				}
 				else
 				{
 					// Head out to mine again
 					returningHome = false;
 					fleetFuelCapacity = getFleetFuelCapacity(theFleet);
+					validFleet = ExerelinUtils.isValidMiningFleet(theFleet);
+					miningPower = ExerelinUtils.getMiningPower(theFleet);
 				}
-
 
 				setFleetAssignments(theFleet);
 			}

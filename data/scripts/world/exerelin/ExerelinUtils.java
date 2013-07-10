@@ -1550,33 +1550,32 @@ public class ExerelinUtils
 	public static boolean isValidMiningFleet(CampaignFleetAPI fleet)
 	{
 		List members = fleet.getFleetData().getMembersListCopy();
+		Boolean hasMiningWing = false;
+		Boolean hasShip = false;
 		for(int i = 0; i < members.size(); i++)
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			String shipId = fmAPI.getSpecId();
-			if(shipId.equalsIgnoreCase("mining_drone_wing"))
-				return true;
+			if(fmAPI.getSpecId().equalsIgnoreCase("mining_drone_wing"))
+				hasMiningWing = true;
+			else if(!fmAPI.isFighterWing())
+				hasShip = true;
 		}
 
-		return false;
+		return (hasMiningWing && hasShip);
 	}
 
 	public static int getMiningPower(CampaignFleetAPI fleet)
 	{
 		int power = 0;
-		if(fleet.getNumFighters() == 0)
-			return power;
-		else
-		{
-			List members = fleet.getFleetData().getMembersListCopy();
-			for(int i = 0; i < members.size(); i++)
-			{
-				FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
 
-				String shipId = fmAPI.getSpecId();
-				if(shipId.equalsIgnoreCase("mining_drone_Standard"))
-					power = power + 1;
-			}
+		List members = fleet.getFleetData().getMembersListCopy();
+		for(int i = 0; i < members.size(); i++)
+		{
+			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
+
+			String shipId = fmAPI.getSpecId();
+			if(shipId.equalsIgnoreCase("mining_drone_wing"))
+				power = power + 1;
 		}
 
 		return power;

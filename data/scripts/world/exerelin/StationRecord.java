@@ -185,18 +185,18 @@ public class StationRecord
 	public void increaseResources()
 	{
 		if(stationCargo.getFuel() < 1600)
-			stationCargo.addFuel(150*efficiency);
+			stationCargo.addFuel(100*efficiency); // Halved due to mining fleets
 		if(stationCargo.getSupplies() < 6400)
-			stationCargo.addSupplies(600*efficiency);
+			stationCargo.addSupplies(400*efficiency); // Halved due to mining fleets
 		if(stationCargo.getMarines() < 800)
 			stationCargo.addMarines((int)(100*efficiency));
 		if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 1600)
 			stationCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, (int)(200*efficiency));
 
 		if(planetType.equalsIgnoreCase("gas"))
-			stationCargo.addFuel(200*efficiency);
+			stationCargo.addFuel(100*efficiency); // Halved due to mining fleets
 		if(planetType.equalsIgnoreCase("moon"))
-			stationCargo.addSupplies(800*efficiency);
+			stationCargo.addSupplies(400*efficiency); // Halved due to mining fleets
 		if(planetType.equalsIgnoreCase("planet"))
 		{
 			stationCargo.addMarines((int)(100*efficiency));
