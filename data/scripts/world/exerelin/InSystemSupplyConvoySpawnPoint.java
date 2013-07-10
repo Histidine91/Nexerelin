@@ -48,18 +48,36 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 		if(friendlyStation == null)
 			return null;
 
-		// Check cargo and set convoy type
 		CargoAPI stationCargo = getAnchor().getCargo();
+
+		// Check cargo and set convoy type
+		float suppliesNormalised = 0;
+		float fuelNormalised = 0;
+		float crewNormalised = 0;
+		float marineNormalised = 0;
+
 		if(stationCargo.getSupplies() >= 1600)
+			suppliesNormalised = stationCargo.getSupplies()/8;
+		if(stationCargo.getFuel() >= 400)
+			fuelNormalised = stationCargo.getFuel()/2;
+		if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) >= 400)
+			crewNormalised = stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR)/2;
+		if(stationCargo.getMarines() >= 200)
+			marineNormalised = stationCargo.getMarines();
+
+		if(suppliesNormalised == 0 && fuelNormalised == 0 && crewNormalised == 0 && marineNormalised == 0)
+			return null;
+
+		if(suppliesNormalised > fuelNormalised && suppliesNormalised > crewNormalised && suppliesNormalised > marineNormalised)
 			convoyType = "supplies";
-		else if(stationCargo.getFuel() >= 400)
+		else if(fuelNormalised > suppliesNormalised && fuelNormalised > crewNormalised && fuelNormalised > marineNormalised)
 			convoyType = "fuel";
-		else if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) >= 400)
+		else if(crewNormalised > suppliesNormalised && crewNormalised > fuelNormalised && crewNormalised > marineNormalised)
 			convoyType = "crew";
-		else if(stationCargo.getMarines() >= 200)
+		else if(marineNormalised > suppliesNormalised && marineNormalised > fuelNormalised && marineNormalised > crewNormalised)
 			convoyType = "marines";
 		else
-			return null;
+			convoyType = "supplies";
 
 		// Create fleet
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
