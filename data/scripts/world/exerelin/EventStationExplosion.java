@@ -8,11 +8,11 @@ import data.scripts.world.exerelin.StationRecord;
 import java.awt.*;
 import java.util.List;
 
-public class EventStationExplosion
+public class EventStationExplosion extends EventBase
 {
 	public EventStationExplosion()
 	{
-
+		setType(this.getClass().getName());
 	}
 
 	public void causeExplosion()

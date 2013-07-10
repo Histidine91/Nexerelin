@@ -13,6 +13,7 @@
     <orderEntry type="library" name="lwjgl" level="project" />
     <orderEntry type="library" name="lwjgl_util" level="project" />
     <orderEntry type="library" name="Omnifactory" level="project" />
+    <orderEntry type="library" name="ExerelinHacks" level="project" />
   </component>
 </module>
 

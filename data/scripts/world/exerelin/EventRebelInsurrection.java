@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class EventRebelInsurrection
+public class EventRebelInsurrection extends EventBase
 {
 	SectorAPI sectorAPI;
 	StarSystemAPI starSystemAPI;
@@ -18,6 +18,7 @@ public class EventRebelInsurrection
 	{
 		sectorAPI = sector;
 		starSystemAPI = system;
+		setType(this.getClass().getName());
 	}
 
 	public void causeRebellionAgainstLeadingFaction()

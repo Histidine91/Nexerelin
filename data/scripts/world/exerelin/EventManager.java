@@ -11,7 +11,9 @@ public class EventManager
 	private EventStationExplosion eventStationExplosion;
 	private EventStationSeccession eventStationSeccession;
 
-	private int waitTime = 60;
+	private int waitTime = 60; // Wait two months before running first events
+	private String lastEventType = "";
+	private int betweenEventWait = 5;
 
 	public EventManager(SectorAPI sector, StarSystemAPI system)
 	{
@@ -27,37 +29,63 @@ public class EventManager
 		if(waitTime > 0)
 		{
 			waitTime--;
-			return; // Wait two months before running events
+			return;
 		}
 
-		if(ExerelinUtils.getRandomInRange(0, 30) == 0)
+		if(ExerelinUtils.getRandomInRange(0, 30) == 0
+				&& !eventTradeGuildConversion.getType().equalsIgnoreCase(lastEventType))
 		{
 			eventTradeGuildConversion.callTradersForLastFaction();
+			waitTime = betweenEventWait;
+			lastEventType = eventTradeGuildConversion.getType();
 			return;
 		}
 
-		if(ExerelinUtils.getRandomInRange(0,45) == 0)
+		if(ExerelinUtils.getRandomInRange(0,45) == 0
+				&& !eventRebelInsurrection.getType().equalsIgnoreCase(lastEventType))
 		{
 			eventRebelInsurrection.causeRebellionAgainstLeadingFaction();
+			waitTime = betweenEventWait;
+			lastEventType = eventRebelInsurrection.getType();
 			return;
 		}
 
-		if(ExerelinUtils.getRandomInRange(0, 45) == 0)
+		if(ExerelinUtils.getRandomInRange(0, 45) == 0
+				&& !eventOutSystemReinforcements.getType().equalsIgnoreCase(lastEventType))
 		{
 			eventOutSystemReinforcements.callReinforcementFleets();
+			waitTime = betweenEventWait;
+			lastEventType = eventOutSystemReinforcements.getType();
 			return;
 		}
 
-		if(ExerelinUtils.getRandomInRange(0,40) == 0)
+		if(ExerelinUtils.getRandomInRange(0,40) == 0
+				&& !eventStationExplosion.getType().equalsIgnoreCase(lastEventType))
 		{
 			eventStationExplosion.causeExplosion();
+			waitTime = betweenEventWait;
+			lastEventType = eventStationExplosion.getType();
 			return;
 		}
 
-		if(ExerelinData.getInstance().systemManager.respawnFactions && ExerelinUtils.getRandomInRange(0,55) == 0)
+		if(ExerelinData.getInstance().systemManager.respawnFactions
+				&& ExerelinUtils.getRandomInRange(0,55) == 0
+				&& !eventStationSeccession.getType().equalsIgnoreCase(lastEventType))
 		{
 			eventStationSeccession.makeStationSecedeToOutSystemFaction();
+			waitTime = betweenEventWait;
+			lastEventType = eventStationSeccession.getType();
 			return;
 		}
+	}
+
+	public void setBetweenEventWait(int value)
+	{
+		betweenEventWait = value;
+	}
+
+	public void setWaitTime(int value)
+	{
+		waitTime = value;
 	}
 }

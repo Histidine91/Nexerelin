@@ -6,7 +6,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 
 import java.awt.*;
 
-public class EventStationSeccession
+public class EventStationSeccession extends EventBase
 {
 	SectorAPI sectorAPI;
 	StarSystemAPI starSystemAPI;
@@ -15,6 +15,7 @@ public class EventStationSeccession
 	{
 		sectorAPI = sector;
 		starSystemAPI = system;
+		setType(this.getClass().getName());
 	}
 
 	public void makeStationSecedeToOutSystemFaction()

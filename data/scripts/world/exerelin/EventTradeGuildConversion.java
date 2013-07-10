@@ -7,7 +7,7 @@ import data.scripts.world.exerelin.ExerelinUtils;
 
 import java.awt.*;
 
-public class EventTradeGuildConversion
+public class EventTradeGuildConversion extends EventBase
 {
 	private SectorAPI sectorAPI;
 	private StarSystemAPI starSystemAPI;
@@ -16,6 +16,7 @@ public class EventTradeGuildConversion
 	{
 		sectorAPI = sector;
 		starSystemAPI = system;
+		setType(this.getClass().getName());
 	}
 
 	public void callTradersForLastFaction()

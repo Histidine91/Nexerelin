@@ -7,7 +7,7 @@ import java.awt.*;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class EventOutSystemReinforcements
+public class EventOutSystemReinforcements extends EventBase
 {
 	SectorAPI sectorAPI;
 	StarSystemAPI starSystemAPI;
@@ -16,6 +16,7 @@ public class EventOutSystemReinforcements
 	{
 		sectorAPI = sector;
 		starSystemAPI = system;
+		setType(this.getClass().getName());
 	}
 
 	public void callReinforcementFleets()
