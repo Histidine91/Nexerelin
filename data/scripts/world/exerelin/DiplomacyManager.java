@@ -1216,6 +1216,7 @@ public class DiplomacyManager
 			else
 			{
 				allianceRecord.removeFactionFromAlliance(factionId);
+				rec.setAllianceId("");
 				declareWarOrPeaceBetweenFactionAndAlliance(factionId, allianceId, -1);
 			}
 		}
