@@ -68,13 +68,13 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 		if(suppliesNormalised == 0 && fuelNormalised == 0 && crewNormalised == 0 && marineNormalised == 0)
 			return null;
 
-		if(suppliesNormalised > fuelNormalised && suppliesNormalised > crewNormalised && suppliesNormalised > marineNormalised)
+		if(suppliesNormalised >= fuelNormalised && suppliesNormalised >= crewNormalised && suppliesNormalised >= marineNormalised)
 			convoyType = "supplies";
-		else if(fuelNormalised > suppliesNormalised && fuelNormalised > crewNormalised && fuelNormalised > marineNormalised)
+		else if(fuelNormalised >= suppliesNormalised && fuelNormalised >= crewNormalised && fuelNormalised >= marineNormalised)
 			convoyType = "fuel";
-		else if(crewNormalised > suppliesNormalised && crewNormalised > fuelNormalised && crewNormalised > marineNormalised)
+		else if(crewNormalised >= suppliesNormalised && crewNormalised >= fuelNormalised && crewNormalised >= marineNormalised)
 			convoyType = "crew";
-		else if(marineNormalised > suppliesNormalised && marineNormalised > fuelNormalised && marineNormalised > crewNormalised)
+		else if(marineNormalised >= suppliesNormalised && marineNormalised >= fuelNormalised && marineNormalised >= crewNormalised)
 			convoyType = "marines";
 		else
 			convoyType = "supplies";
