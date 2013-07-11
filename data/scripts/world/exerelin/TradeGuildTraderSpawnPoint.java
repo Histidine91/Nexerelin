@@ -97,8 +97,8 @@ public class TradeGuildTraderSpawnPoint extends BaseSpawnPoint
 					{
 						// Deliver resources and leave
 						CargoAPI cargo = toStation.getStationToken().getCargo();
-						cargo.addFuel(100);
-						cargo.addSupplies(400) ;
+						cargo.addFuel(50); // Halved due to mining fleets
+						cargo.addSupplies(200) ; // Halved due to mining fleets
 						cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, 100);
 						cargo.addMarines(50);
 
