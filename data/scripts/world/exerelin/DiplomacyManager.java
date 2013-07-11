@@ -1209,7 +1209,8 @@ public class DiplomacyManager
 				{
 					if(factionRecords[i].getFactionId().equalsIgnoreCase(factionId))
 						continue;
-
+					rec.setFactionRelationship(factionRecords[i].getFactionId(), warLevel*2);
+					factionRecords[i].setFactionRelationship(rec.getFactionId(), warLevel);
 					declareFactionWarOrPeace(rec, factionRecords[i], -1);
 				}
 			}
@@ -1217,6 +1218,16 @@ public class DiplomacyManager
 			{
 				allianceRecord.removeFactionFromAlliance(factionId);
 				rec.setAllianceId("");
+
+				for(int i = 0; i < factionRecords.length; i++)
+				{
+					if(factionRecords[i].getFactionId().equalsIgnoreCase(factionId))
+						continue;
+
+					rec.setFactionRelationship(factionRecords[i].getFactionId(), warLevel);
+					factionRecords[i].setFactionRelationship(rec.getFactionId(), peaceTreatyLevel);
+				}
+
 				declareWarOrPeaceBetweenFactionAndAlliance(factionId, allianceId, -1);
 			}
 		}
