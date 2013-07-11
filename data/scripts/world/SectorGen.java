@@ -22,7 +22,7 @@ public class SectorGen implements SectorGeneratorPlugin
 
 		// Build lists of possbile planet types, names and moon types
 		String[] possiblePlanetTypes = new String[]	{"desert", "jungle", "gas_giant", "ice_giant", "terran", "arid"};
-		String[] possiblePlanetNames = new String[]	{"Baresh", "Zaril", "Vardu", "Drewler", "Trilar", "Polres", "Laret", "Erilatir", "Nambor", "Zat", "Raqueler", "Garret", "Carashil", "Qwerty", "Tyrian", "Savarra", "Outer", "Yar", "Tyrel", "Tywin", "Arya", "Sword", "Centuri", "Heaven", "Hell", "Sanctuary", "Hyperion", "Zaphod", "Vagar", "Green", "Blond", "Gabrielle", "Masset", "Effecer", "Gunsa", "Patiota", "Rayma", "Origea", "Litsoa", "Bimo", "Plasert", "Pizzart", "Shaper", "Coruscent", "Hoth", "Gibraltar"};
+		String[] possiblePlanetNames = new String[]	{"Baresh", "Zaril", "Vardu", "Drewler", "Trilar", "Polres", "Laret", "Erilatir", "Nambor", "Zat", "Raqueler", "Garret", "Carashil", "Qwerty", "Tyrian", "Savarra", "Yar", "Tyrel", "Tywin", "Arya", "Sword", "Centuri", "Heaven", "Hell", "Sanctuary", "Hyperion", "Zaphod", "Vagar", "Green", "Blond", "Gabrielle", "Masset", "Effecer", "Gunsa", "Patiota", "Rayma", "Origea", "Litsoa", "Bimo", "Plasert", "Pizzart", "Shaper", "Coruscent", "Hoth", "Gibraltar"};
 		String[] possibleMoonTypes = new String[]	{"frozen", "barren", "lava", "toxic", "cryovolcanic"};
 
 
