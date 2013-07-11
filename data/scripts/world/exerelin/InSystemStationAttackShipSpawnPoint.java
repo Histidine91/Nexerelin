@@ -60,7 +60,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 	    if (diplomacyRecord.hasWarTargetInSystem(false))
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 3, 5, fleetOwningFactionId, getSector());
 	    else
-	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 2, 4, fleetOwningFactionId, getSector());
+	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 1, 2, fleetOwningFactionId, getSector());
 
 		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, 1, 0.8f, false))
 		{
