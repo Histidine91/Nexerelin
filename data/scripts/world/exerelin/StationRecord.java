@@ -164,21 +164,43 @@ public class StationRecord
 
 		outSystemSupplyConvoySpawn.spawnFleet();
 		inSystemSupplyConvoySpawn.spawnFleet();
-		asteroidMiningFleetSpawnPoint.spawnFleet();
-		gasMiningFleetSpawnPoint.spawnFleet();
 
+		if(stationCargo.getSupplies() < 6400)
+			asteroidMiningFleetSpawnPoint.spawnFleet();
+		if(stationCargo.getFuel() < 1600)
+			gasMiningFleetSpawnPoint.spawnFleet();
 
-		if(ExerelinUtils.getRandomInRange(0, 2) == 0 || (targetStationRecord != null && targetStationRecord.getOwner() == null))
+		if(ExerelinUtils.getRandomInRange(0, 1) == 0 || (targetStationRecord != null && targetStationRecord.getOwner() == null))
 			stationAttackFleetSpawn.spawnFleet();
 
-		for(int i = defenseSpawn.getFleets().size(); i < defenseSpawn.getMaxFleets(); i++)
-			defenseSpawn.spawnFleet();
+		if(numStationsTargeting == 0)
+		{
+			// Spawn only 1 defense fleet
+			for(int i = defenseSpawn.getFleets().size(); i < defenseSpawn.getMaxFleets() - 1; i++)
+				defenseSpawn.spawnFleet();
+		}
+		else
+		{
+			// Spawn max 2 fleets
+			for(int i = defenseSpawn.getFleets().size(); i < defenseSpawn.getMaxFleets(); i++)
+				defenseSpawn.spawnFleet();
+		}
+
+		if(numStationsTargeting == 0 && assistStationRecord == null)
+		{
+			// Spawn only 1 patrol fleet
+			for(int i = patrolSpawn.getFleets().size(); i < patrolSpawn.getMaxFleets() - 1; i++)
+				patrolSpawn.spawnFleet();
+		}
+		else
+		{
+			// Spawn max 2 fleets
+			for(int i = patrolSpawn.getFleets().size(); i < patrolSpawn.getMaxFleets(); i++)
+				patrolSpawn.spawnFleet();
+		}
 
 		for(int i = attackSpawn.getFleets().size(); i < attackSpawn.getMaxFleets(); i++)
 			attackSpawn.spawnFleet();
-
-		for(int i = patrolSpawn.getFleets().size(); i < patrolSpawn.getMaxFleets(); i++)
-			patrolSpawn.spawnFleet();
 	}
 
 	// Increase resources in station based off efficiency
@@ -332,7 +354,7 @@ public class StationRecord
 		SectorEntityToken closestPlanet = null;
 		float closestDistance = 999999999f;
 
-		if(targetGasGiant != null && ExerelinUtils.getRandomInRange(0,2) != 0)
+		if(targetGasGiant != null && ExerelinUtils.getRandomInRange(0,4) != 0)
 			return; // Don't recalc each time
 
 		for(int i = 0; i < planets.size(); i++)

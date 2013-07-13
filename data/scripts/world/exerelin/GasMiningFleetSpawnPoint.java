@@ -73,7 +73,7 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 	{
 		fleet.clearAssignments();
 
-		if(targetPlanet != null && miningPower != 0)
+		if(targetPlanet != null && validFleet && miningPower != 0 && getAnchor().getCargo().getFuel() < 2000)
 		{
 			if(!returningHome)
 				//fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, getLocation().createToken(targetPlanet.getLocation().getX() + ExerelinUtils.getRandomInRange(-100,100), targetPlanet.getLocation().getY() + ExerelinUtils.getRandomInRange(-100,100)), 1000, createTestTargetScript());
@@ -94,7 +94,8 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 				if(!returningHome && theFleet.getCargo().getFuel() < fleetFuelCapacity)
 				{
 					// Mine more gas
-					theFleet.getCargo().addFuel(miningPower);
+					if(ExerelinUtils.getRandomInRange(0,1) == 0)
+						theFleet.getCargo().addFuel(miningPower);
 				}
 				else if(!returningHome)
 				{

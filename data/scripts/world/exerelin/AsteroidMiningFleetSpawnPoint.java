@@ -72,7 +72,7 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 	{
 		fleet.clearAssignments();
 
-		if(targetAsteroid != null && validFleet && miningPower != 0)
+		if(targetAsteroid != null && validFleet && miningPower != 0 && getAnchor().getCargo().getSupplies() < 8000)
 		{
 			if(!returningHome)
 				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, targetAsteroid, 1000, createTestTargetScript());
@@ -92,7 +92,8 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 				if(!returningHome && theFleet.getCargo().getSupplies() < fleetCargoCapacity)
 				{
 					// Mine more supplies
-					theFleet.getCargo().addSupplies(miningPower);
+					if(ExerelinUtils.getRandomInRange(0,1) == 0)
+						theFleet.getCargo().addSupplies(miningPower);
 				}
 				else if(!returningHome)
 				{
