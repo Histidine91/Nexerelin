@@ -152,10 +152,8 @@ public class ExerelinUtils
 
 			// Can't spawn, so remove random members and try again
 			// Remove capital ships first
-			if(fleet.getNumCapitals() > 0)
+			if(isCapitalInFleet(fleet))
 			{
-				// THIS CODE IS NEVER EXECUTED, because getNumCapitals() always returns 0
-
 				int toRemove = -1;
 				for(int i = 0; i < members.size(); i++)
 				{
@@ -167,7 +165,9 @@ public class ExerelinUtils
 				}
 
 				if(toRemove != -1)
+				{
 					fleet.getFleetData().removeFleetMember((FleetMemberAPI)members.get(toRemove));
+				}
 			}
 			else
 			{
@@ -181,21 +181,17 @@ public class ExerelinUtils
 		else
 		{
 			// Can spawn so make sure fleet size isn't small if it has capitals
-			if(fleet.getFleetData().getFleetPointsUsed() < 40 && fleet.getNumCapitals() > 0)
+			if(fleet.getFleetData().getFleetPointsUsed() < 40 && isCapitalInFleet(fleet))
 			{
-				// THIS CODE IS NEVER EXECUTED, because getNumCapitals() always returns 0
-
-				for(int k = 0; k < fleet.getNumCapitals(); k++)
+				for(int l = 0; l < members.size(); l++)
 				{
-					for(int l = 0; l < members.size(); k++)
+					if(((FleetMemberAPI)members.get(l)).isCapital())
 					{
-						if(((FleetMemberAPI)members.get(k)).isCapital())
-						{
-							members.remove(k);
-							break;
-						}
+						members.remove(l);
+						break;
 					}
 				}
+
 				if(members.size() == 0)
 					return false;
 			}
@@ -1596,5 +1592,20 @@ public class ExerelinUtils
 			return true;
 		else
 			return false;
+	}
+
+	private static boolean isCapitalInFleet(CampaignFleetAPI fleet)
+	{
+		List members = fleet.getFleetData().getMembersListCopy();
+		for(int i = 0; i < members.size(); i++)
+		{
+			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
+			if(fmAPI.isCapital())
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
