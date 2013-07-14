@@ -1580,4 +1580,21 @@ public class ExerelinUtils
 
 		return power;
 	}
+
+	public static boolean isValidBoardingFleet(CampaignFleetAPI fleet)
+	{
+		List members = fleet.getFleetData().getMembersListCopy();
+		Boolean hasAtlas = false;
+		for(int i = 0; i < members.size(); i++)
+		{
+			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
+			if(fmAPI.getSpecId().contains("atlas") )
+				hasAtlas = true; // Currently only checks for presence of atlas ship
+		}
+
+		if(hasAtlas)
+			return true;
+		else
+			return false;
+	}
 }

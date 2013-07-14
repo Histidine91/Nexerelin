@@ -80,7 +80,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 	private void setFleetAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
-		if(stationTarget != null)
+		if(stationTarget != null && ExerelinUtils.isValidBoardingFleet(fleet))
 		{
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, stationTarget.getStationToken(), 3000, createTestTargetScript());
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, stationTarget.getStationToken(), 3, createArrivedScript());
