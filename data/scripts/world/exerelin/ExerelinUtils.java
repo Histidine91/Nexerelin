@@ -5,8 +5,11 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import org.lazywizard.lazylib.LazyLib;
 import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -1584,7 +1587,7 @@ public class ExerelinUtils
 		for(int i = 0; i < members.size(); i++)
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if(fmAPI.getSpecId().contains("atlas") )
+			if(fmAPI.getSpecId().contains("atlas") || fmAPI.getSpecId().contains("mazerk") )
 				hasAtlas = true; // Currently only checks for presence of atlas ship
 		}
 
@@ -1607,5 +1610,75 @@ public class ExerelinUtils
 		}
 
 		return false;
+	}
+
+	public static void handlePlayerFleetMining(CampaignFleetAPI playerFleet, StarSystemAPI system)
+	{
+		Vector2f playerLocation = playerFleet.getLocation();
+		float xMax = playerLocation.getX() + 5;
+		float xMin = playerLocation.getX() - 5;
+		float yMax = playerLocation.getY() + 5;
+		float yMin = playerLocation.getY() - 5;
+
+		List asteroids = system.getAsteroids();
+		List planets = system.getPlanets();
+
+		for(int i = 0; i < asteroids.size(); i++)
+		{
+			SectorEntityToken asteroid = (SectorEntityToken)asteroids.get(i);
+			Vector2f asteroidLocation = asteroid.getLocation();
+
+			if(asteroidLocation.getX() > xMin
+					&& asteroidLocation.getX() < xMax
+					&& asteroidLocation.getY() > yMin
+					&& asteroidLocation.getY() < yMax)
+			{
+				// Mine supplies
+				int miningPower = getMiningPower(playerFleet);
+				if(miningPower > 0)
+				{
+					System.out.println(MathUtils.getDistanceSquared(playerFleet.getLocation(), asteroidLocation));
+					playerFleet.getCargo().addSupplies(50*miningPower) ;
+					Global.getSector().addMessage("Mined " + 50*miningPower + " supplies", Color.green);
+					System.out.println("Mined " + 50*miningPower + " supplies");
+				}
+				return;
+			}
+		}
+
+		for(int i = 0; i < planets.size(); i++)
+		{
+			SectorEntityToken planet = (SectorEntityToken)planets.get(i);
+			Vector2f planetLocation = planet.getLocation();
+
+			if(planetLocation.getX() > xMin
+					&& planetLocation.getX() < xMax
+					&& planetLocation.getY() > yMin
+					&& planetLocation.getY() < yMax)
+			{
+				if(planet.getFullName().contains("Gaseous")
+						&& !(planet.getFullName().contains(" I") || planet.getFullName().contains(" II") || planet.getFullName().contains(" III")))
+				{
+					// Mine gas
+					int miningPower = getMiningPower(playerFleet);
+					if(miningPower > 0)
+					{
+						System.out.println(MathUtils.getDistanceSquared(playerFleet.getLocation(), planetLocation));
+						playerFleet.getCargo().addFuel(50*miningPower);
+						Global.getSector().addMessage("Mined " + 50*miningPower + " fuel", Color.green);
+						System.out.println("Mined " + 50*miningPower + " fuel");
+					}
+					return;
+				}
+			}
+		}
+	}
+
+	public static void populateStartingStorageFacility(SectorEntityToken storageFacility)
+	{
+		CargoAPI cargo = storageFacility.getCargo();
+		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
+		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
+		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "mining_drone_wing", null);
 	}
 }
