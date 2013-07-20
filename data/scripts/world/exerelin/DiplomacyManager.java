@@ -81,26 +81,37 @@ public class DiplomacyManager
 				if(playerRecord.isInAlliance() && factionRecords[j].isInAlliance())
 				{
 					// War between players alliance and alliance
-					declareAllianceWarOrPeace(playerRecord.getAllianceId(), factionRecords[j].getAllianceId(), -1);
-
-					DiplomacyRecord[] playerAllianceRecords = getDiplomacyRecordsForAlliance(playerRecord.getAllianceId());
-					DiplomacyRecord[] otherAllianceRecords = getDiplomacyRecordsForAlliance(factionRecords[j].getAllianceId());
-
-					for(int i = 0; i < playerAllianceRecords.length; i++)
+					if(playerRecord.getAllianceId().equalsIgnoreCase(factionRecords[j].getAllianceId()))
 					{
-						DiplomacyRecord playerAllianceFactionRecord = playerAllianceRecords[i];
+						// Same alliance
+						removeFactionFromAlliance(playerRecord.getAllianceId(), playerRecord.getFactionId(), true);
+					}
+					else
+					{
+						// Different alliances
+						declareAllianceWarOrPeace(playerRecord.getAllianceId(), factionRecords[j].getAllianceId(), -1);
 
-						if(playerAllianceFactionRecord.getFactionId().equalsIgnoreCase(playerRecord.getFactionId()))
-							continue;
+						DiplomacyRecord[] playerAllianceRecords = getDiplomacyRecordsForAlliance(playerRecord.getAllianceId());
+						DiplomacyRecord[] otherAllianceRecords = getDiplomacyRecordsForAlliance(factionRecords[j].getAllianceId());
 
-						for(int k = 0; k < otherAllianceRecords.length; k++)
+						for(int i = 0; i < playerAllianceRecords.length; i++)
 						{
-							DiplomacyRecord otherAllianceFactionRecord = otherAllianceRecords[k];
+							DiplomacyRecord playerAllianceFactionRecord = playerAllianceRecords[i];
 
-							playerAllianceFactionRecord.setFactionRelationship(otherAllianceFactionRecord.getFactionId(), WAR_LEVEL);
-							otherAllianceFactionRecord.setFactionRelationship(playerAllianceFactionRecord.getFactionId(), WAR_LEVEL *2);
+							if(playerAllianceFactionRecord.getFactionId().equalsIgnoreCase(playerRecord.getFactionId()))
+								continue;
+
+							for(int k = 0; k < otherAllianceRecords.length; k++)
+							{
+								DiplomacyRecord otherAllianceFactionRecord = otherAllianceRecords[k];
+
+								playerAllianceFactionRecord.setFactionRelationship(otherAllianceFactionRecord.getFactionId(), WAR_LEVEL);
+								otherAllianceFactionRecord.setFactionRelationship(playerAllianceFactionRecord.getFactionId(), WAR_LEVEL *2);
+							}
 						}
 					}
+
+
 				}
 				else if(factionRecords[j].isInAlliance())
 				{
