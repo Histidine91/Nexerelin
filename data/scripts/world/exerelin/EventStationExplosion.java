@@ -2,6 +2,7 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import data.scripts.world.exerelin.ExerelinData;
 import data.scripts.world.exerelin.StationRecord;
 
@@ -15,9 +16,9 @@ public class EventStationExplosion extends EventBase
 		setType(this.getClass().getName());
 	}
 
-	public void causeExplosion()
+	public void causeExplosion(StarSystemAPI starSystemAPI)
 	{
-		StationRecord[] stations = ExerelinData.getInstance().systemManager.stationManager.getStationRecords();
+		StationRecord[] stations = ExerelinData.getInstance().systemManager.stationManager.getStationRecords(); //TODO change to use sectorManager
 		int attempts = 0;
 		StationRecord station = null;
 		while(station == null & attempts < 20)

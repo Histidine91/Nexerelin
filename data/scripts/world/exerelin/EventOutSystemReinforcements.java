@@ -9,17 +9,13 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class EventOutSystemReinforcements extends EventBase
 {
-	SectorAPI sectorAPI;
-	StarSystemAPI starSystemAPI;
 
-	public EventOutSystemReinforcements(SectorAPI sector, StarSystemAPI system)
+	public EventOutSystemReinforcements()
 	{
-		sectorAPI = sector;
-		starSystemAPI = system;
 		setType(this.getClass().getName());
 	}
 
-	public void callReinforcementFleets()
+	public void callReinforcementFleets(StarSystemAPI starSystemAPI)
 	{
 		// DEFAULTS
 		String type = "exerelinGenericFleet";
@@ -79,11 +75,14 @@ public class EventOutSystemReinforcements extends EventBase
 		{
 			CampaignFleetAPI fleet;
 			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-				fleet = sectorAPI.createFleet(ExerelinData.getInstance().getPlayerFaction(),  type);
+				fleet = Global.getSector().createFleet(ExerelinData.getInstance().getPlayerFaction(),  type);
 			else
-				fleet = sectorAPI.createFleet(factionId,  type);
+				fleet = Global.getSector().createFleet(factionId,  type);
 
 			fleet.setName("Reinforcement Fleet");
+
+			// Add prisoner that can be captured
+			fleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1000);
 
 			starSystemAPI.spawnFleet(token, ExerelinUtils.getRandomInRange(-100,100), ExerelinUtils.getRandomInRange(-10,10), fleet);
 

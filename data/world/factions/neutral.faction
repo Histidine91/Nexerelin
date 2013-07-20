@@ -1,6 +1,6 @@
 {
 	id:"neutral",
-	"color":[11,11,11,11],
+	"color":[72,61,139,255],
 	"displayName":"Neutral",
 	"names":{
 	},

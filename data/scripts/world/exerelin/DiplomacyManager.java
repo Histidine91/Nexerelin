@@ -610,19 +610,19 @@ public class DiplomacyManager
 
 		if(event.equalsIgnoreCase("agent"))
 		{
-			sector.addMessage("Your agent has caused a disagreement between " + factionId + " and " + otherFactionId, Color.magenta);
+			sector.addMessage(ExerelinData.getInstance().getPlayerFaction() + " agent has caused a disagreement between " + factionId + " and " + otherFactionId, Color.magenta);
 			relChange = -20;
 		}
 
-		if(event.equalsIgnoreCase("agentBetrayal"))
+		if(event.equalsIgnoreCase("agentCapture"))
 		{
-			sector.addMessage("Your agent has betrayed your plan to " + factionId + " and they are not happy!", Color.magenta);
+			sector.addMessage(ExerelinData.getInstance().getPlayerFaction() + " agent has been captured by " + factionId, Color.magenta);
 			relChange = -20;
 		}
 
 		if(event.equalsIgnoreCase("prisoner"))
 		{
-			sector.addMessage("Your prisoner exchange has been accepted and " + factionId + " is pleased.", Color.magenta);
+			sector.addMessage(ExerelinData.getInstance().getPlayerFaction() + " prisoner exchange has been accepted and " + factionId + " is pleased", Color.magenta);
 			relChange = 20;
 		}
 
@@ -724,13 +724,15 @@ public class DiplomacyManager
 
 		int i = ExerelinUtils.getRandomInRange(0, 1);
 
+		String[] alliedFactions = diplomacyRecord.getAlliedFactions();
+		String[] neutralFactions = diplomacyRecord.getNeutralFactions();
+
 		String[] possibleFactions;
-		if(i == 0)
+		if((i == 0 && alliedFactions.length > 0) || neutralFactions.length == 0)
 			possibleFactions = diplomacyRecord.getAlliedFactions();
 		else
-		{
 			possibleFactions = diplomacyRecord.getNeutralFactions();
-		}
+
 
 		if(possibleFactions.length == 0)
 			return "";

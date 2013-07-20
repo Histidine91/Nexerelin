@@ -49,11 +49,6 @@ public class OutSystemStationConstructionFleet
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, theTarget, 3000, arriveScript);
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, theTarget, 10);
 
-		/*if(fleetOwningFactionId.equalsIgnoreCase("player"))
-			Global.getSector().addMessage(ExerelinData.getInstance().getPlayerFaction() + " out system attack fleet incoming!", Color.magenta);
-		else
-			Global.getSector().addMessage(fleetOwningFactionId + " out system attack fleet incoming!");
-*/
 		System.out.println(theFaction + " station construction fleet created to " + theAssignment);
 
 		return fleet;
@@ -71,6 +66,7 @@ public class OutSystemStationConstructionFleet
 						orbitRadius = 500;
 					SectorEntityToken storage = theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Storage Facility", "neutral");
 					storage.getCargo().setFreeTransfer(true);
+					ExerelinUtils.populateStartingStorageFacility(storage);
 					System.out.println(theFaction + " constructed station ");
 				}
 				else if (theAssignment.equalsIgnoreCase("omnifac"))
@@ -87,24 +83,6 @@ public class OutSystemStationConstructionFleet
 				{
 					System.out.println("EXERELIN ERROR: Assignment for station construction fleet invalid");
 				}
-				/*
-				if(fleetOwningFactionId.equalsIgnoreCase("player"))
-					Global.getSector().addMessage(stationTarget.getFullName() + " taken over by " + ExerelinData.getInstance().getPlayerFaction(), Color.magenta);
-				else if(ExerelinUtils.getStationOwnerFactionId(stationTarget).equalsIgnoreCase("player"))
-					Global.getSector().addMessage(stationTarget.getFullName() + " taken over by " + fleetOwningFactionId, Color.magenta);
-				else
-					Global.getSector().addMessage(stationTarget.getFullName() + " taken over by " + fleetOwningFactionId);
-
-				System.out.println(stationTarget.getFullName() + " taken over by " + fleetOwningFactionId);
-
-				stationTarget.setFaction(fleetOwningFactionId);
-				if(fleetOwningFactionId.equalsIgnoreCase("player"))
-					stationTarget.getCargo().setFreeTransfer(ExerelinData.getInstance().playerOwnedStationFreeTransfer);
-				else
-					stationTarget.getCargo().setFreeTransfer(false);
-
-				stationTarget.getCargo().clear();
-				*/
 			}
 		};
 	}

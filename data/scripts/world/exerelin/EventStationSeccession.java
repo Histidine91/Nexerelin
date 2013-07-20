@@ -1,5 +1,6 @@
 package data.scripts.world.exerelin;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -8,17 +9,13 @@ import java.awt.*;
 
 public class EventStationSeccession extends EventBase
 {
-	SectorAPI sectorAPI;
-	StarSystemAPI starSystemAPI;
 
-	public EventStationSeccession(SectorAPI sector, StarSystemAPI system)
+	public EventStationSeccession()
 	{
-		sectorAPI = sector;
-		starSystemAPI = system;
 		setType(this.getClass().getName());
 	}
 
-	public void makeStationSecedeToOutSystemFaction()
+	public void makeStationSecedeToOutSystemFaction(StarSystemAPI starSystemAPI)
 	{
 		if(ExerelinData.getInstance().systemManager.stationManager.getNumFactionsInSystem() >= ExerelinData.getInstance().systemManager.maxFactionsInExerelin)
 		{
@@ -26,7 +23,7 @@ public class EventStationSeccession extends EventBase
 			return;
 		}
 
-		String[] factions = ExerelinData.getInstance().getAvailableFactions(sectorAPI);
+		String[] factions = ExerelinData.getInstance().getAvailableFactions(Global.getSector());
 		String[] factionsInSystem = ExerelinUtils.getFactionsInSystem(starSystemAPI);
 		int attempts = 0;
 		String factionId = "";
@@ -67,9 +64,9 @@ public class EventStationSeccession extends EventBase
 		if(station != null)
 		{
 			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-				sectorAPI.addMessage(station.getStationToken().getFullName() + " has secceded to " + factionId + "!", Color.MAGENTA);
+				Global.getSector().addMessage(station.getStationToken().getFullName() + " has secceded to " + factionId + "!", Color.MAGENTA);
 			else
-				sectorAPI.addMessage(station.getStationToken().getFullName() + " has secceded to " + factionId + "!");
+				Global.getSector().addMessage(station.getStationToken().getFullName() + " has secceded to " + factionId + "!");
 
 			System.out.println("EVENT : Station secession at " + station.getStationToken().getFullName() + " to " + factionId + "(out system)");
 

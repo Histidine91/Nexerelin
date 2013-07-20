@@ -11,20 +11,16 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class EventRebelInsurrection extends EventBase
 {
-	SectorAPI sectorAPI;
-	StarSystemAPI starSystemAPI;
 
-	public EventRebelInsurrection(SectorAPI sector, StarSystemAPI system)
+	public EventRebelInsurrection()
 	{
-		sectorAPI = sector;
-		starSystemAPI = system;
 		setType(this.getClass().getName());
 	}
 
-	public void causeRebellionAgainstLeadingFaction()
+	public void causeRebellionAgainstLeadingFaction(StarSystemAPI starSystemAPI)
 	{
 		// DEFAULTS
-		FactionAPI rebelFAPI = sectorAPI.getFaction("rebel");
+		FactionAPI rebelFAPI = Global.getSector().getFaction("rebel");
 		String rebelAgainseFaction = "";
 
 		// Reset Rebel relationships with each faction
@@ -60,7 +56,7 @@ public class EventRebelInsurrection extends EventBase
 				if(fleetFullName.contains("Station") || fleetFullName.contains("Supply") || fleetFullName.contains("Mining"))
 					continue; // Skip non-combat fleets
 
-				if(fleet.getFullName().equalsIgnoreCase(sectorAPI.getPlayerFleet().getFullName()))
+				if(fleet.getFullName().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFullName()))
 					continue; // Skip the players fleet
 
 				fleet.setFaction("rebel");
@@ -70,7 +66,7 @@ public class EventRebelInsurrection extends EventBase
 				fleet.setName(fleetName);
 
 				fleet.clearAssignments();
-				SectorEntityToken station = ExerelinUtils.getRandomStationForFaction(rebelAgainseFaction, sectorAPI);
+				SectorEntityToken station = ExerelinUtils.getRandomStationForFaction(rebelAgainseFaction, Global.getSector());
 				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, station, 30);
 				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, ExerelinUtils.getRandomOffMapPoint(starSystemAPI), 30);
 			}

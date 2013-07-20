@@ -1677,8 +1677,9 @@ public class ExerelinUtils
 	public static void populateStartingStorageFacility(SectorEntityToken storageFacility)
 	{
 		CargoAPI cargo = storageFacility.getCargo();
-		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
-		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
+		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "agent", 2);
+		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 2);
+		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "mining_drone_wing", null);
 		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "mining_drone_wing", null);
 	}
 }

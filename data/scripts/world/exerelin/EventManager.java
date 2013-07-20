@@ -10,18 +10,23 @@ public class EventManager
 	private EventOutSystemReinforcements eventOutSystemReinforcements;
 	private EventStationExplosion eventStationExplosion;
 	private EventStationSeccession eventStationSeccession;
+	private EventAddObjectToStorage eventAddObjectToStorage;
 
 	private int waitTime = 60; // Wait two months before running first events
 	private String lastEventType = "";
 	private int betweenEventWait = 5;
 
-	public EventManager(SectorAPI sector, StarSystemAPI system)
+	private StarSystemAPI starSystemAPI;
+
+	public EventManager(SectorAPI sector, StarSystemAPI inSystem)
 	{
-		eventRebelInsurrection = new EventRebelInsurrection(sector, system);
-		eventTradeGuildConversion = new EventTradeGuildConversion(sector, system);
-		eventOutSystemReinforcements = new EventOutSystemReinforcements(sector, system);
+		starSystemAPI = inSystem;
+		eventRebelInsurrection = new EventRebelInsurrection();
+		eventTradeGuildConversion = new EventTradeGuildConversion();
+		eventOutSystemReinforcements = new EventOutSystemReinforcements();
 		eventStationExplosion = new EventStationExplosion();
-		eventStationSeccession = new EventStationSeccession(sector,  system);
+		eventStationSeccession = new EventStationSeccession();
+		eventAddObjectToStorage = new EventAddObjectToStorage();
 	}
 
 	public void runEvents()
@@ -35,7 +40,7 @@ public class EventManager
 		if(ExerelinUtils.getRandomInRange(0, 30) == 0
 				&& !eventTradeGuildConversion.getType().equalsIgnoreCase(lastEventType))
 		{
-			eventTradeGuildConversion.callTradersForLastFaction();
+			eventTradeGuildConversion.callTradersForLastFaction(starSystemAPI);
 			waitTime = betweenEventWait;
 			lastEventType = eventTradeGuildConversion.getType();
 			return;
@@ -44,7 +49,7 @@ public class EventManager
 		if(ExerelinUtils.getRandomInRange(0,45) == 0
 				&& !eventRebelInsurrection.getType().equalsIgnoreCase(lastEventType))
 		{
-			eventRebelInsurrection.causeRebellionAgainstLeadingFaction();
+			eventRebelInsurrection.causeRebellionAgainstLeadingFaction(starSystemAPI);
 			waitTime = betweenEventWait;
 			lastEventType = eventRebelInsurrection.getType();
 			return;
@@ -53,7 +58,7 @@ public class EventManager
 		if(ExerelinUtils.getRandomInRange(0, 45) == 0
 				&& !eventOutSystemReinforcements.getType().equalsIgnoreCase(lastEventType))
 		{
-			eventOutSystemReinforcements.callReinforcementFleets();
+			eventOutSystemReinforcements.callReinforcementFleets(starSystemAPI);
 			waitTime = betweenEventWait;
 			lastEventType = eventOutSystemReinforcements.getType();
 			return;
@@ -62,7 +67,7 @@ public class EventManager
 		if(ExerelinUtils.getRandomInRange(0,40) == 0
 				&& !eventStationExplosion.getType().equalsIgnoreCase(lastEventType))
 		{
-			eventStationExplosion.causeExplosion();
+			eventStationExplosion.causeExplosion(starSystemAPI);
 			waitTime = betweenEventWait;
 			lastEventType = eventStationExplosion.getType();
 			return;
@@ -72,10 +77,26 @@ public class EventManager
 				&& ExerelinUtils.getRandomInRange(0,55) == 0
 				&& !eventStationSeccession.getType().equalsIgnoreCase(lastEventType))
 		{
-			eventStationSeccession.makeStationSecedeToOutSystemFaction();
+			eventStationSeccession.makeStationSecedeToOutSystemFaction(starSystemAPI);
 			waitTime = betweenEventWait;
 			lastEventType = eventStationSeccession.getType();
 			return;
+		}
+
+		if(ExerelinUtils.getRandomInRange(0,45) == 0
+				&& !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType))
+		{
+			eventAddObjectToStorage.addAgentToStorageFacility(starSystemAPI);
+			waitTime = betweenEventWait;
+			lastEventType = eventAddObjectToStorage.getType();
+		}
+
+		if(ExerelinUtils.getRandomInRange(0,45) == 0
+				&& !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType))
+		{
+			eventAddObjectToStorage.addPrisonerToStorageFacility(starSystemAPI);
+			waitTime = betweenEventWait;
+			lastEventType = eventAddObjectToStorage.getType();
 		}
 	}
 
@@ -87,5 +108,11 @@ public class EventManager
 	public void setWaitTime(int value)
 	{
 		waitTime = value;
+	}
+
+	// Set the starSystem to run events in
+	public void setStarSystemAPI(StarSystemAPI inSystem)
+	{
+		starSystemAPI = inSystem;
 	}
 }

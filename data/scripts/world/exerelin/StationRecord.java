@@ -407,4 +407,48 @@ public class StationRecord
 				i++;
 		}
 	}
+
+	public void checkForPlayerItems()
+	{
+		if(this.getOwner() != null && !this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+		{
+			float numAgents = stationCargo.getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent");
+			float numPrisoners = stationCargo.getQuantity(CargoAPI.CargoItemType.RESOURCES, "prisoner");
+
+			if(numAgents > 0)
+			{
+				if(ExerelinUtils.getRandomInRange(0, 9) != 0)
+				{
+					String otherFactionId = ExerelinData.getInstance().systemManager.diplomacyManager.getRandomNonEnemyFactionIdForFaction(this.getOwner().getFactionId());
+					if(otherFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+						otherFactionId = "";
+
+					if(otherFactionId.equalsIgnoreCase(""))
+					{
+						Global.getSector().addMessage(ExerelinData.getInstance().getPlayerFaction() + " agent has failed in their mission.", Color.magenta);
+						System.out.println(ExerelinData.getInstance().getPlayerFaction() + " agent has failed in their mission.");
+						stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
+						return;
+					}
+
+					ExerelinData.getInstance().systemManager.diplomacyManager.updateRelationshipOnEvent(this.getOwner().getFactionId(), otherFactionId , "agent");
+					stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
+					return;
+				}
+				else
+				{
+					ExerelinData.getInstance().systemManager.diplomacyManager.updateRelationshipOnEvent(this.getOwner().getFactionId(), ExerelinData.getInstance().getPlayerFaction(), "agentCapture");
+					stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
+					return;
+				}
+			}
+
+			if(numPrisoners > 0)
+			{
+				ExerelinData.getInstance().systemManager.diplomacyManager.updateRelationshipOnEvent(this.getOwner().getFactionId(), ExerelinData.getInstance().getPlayerFaction(), "prisoner");
+				stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
+				return;
+			}
+		}
+	}
 }

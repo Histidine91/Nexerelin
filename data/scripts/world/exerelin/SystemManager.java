@@ -37,6 +37,8 @@ public class SystemManager implements SpawnPointPlugin
 	public int maxFactionsInExerelin = 999;
 	public int maxSystemSize = 15000;
 
+	private StarSystemAPI starSystemAPI;
+
 	public SystemManager(SectorAPI sector)
 	{
 		// Synch the heartbeat to the sectorAPI clock
@@ -55,6 +57,9 @@ public class SystemManager implements SpawnPointPlugin
 	private void runDaily()
 	{
 		StarSystemAPI system = sectorAPI.getStarSystem("Exerelin");
+
+		// Handle player mining
+		ExerelinUtils.handlePlayerFleetMining(Global.getSector().getPlayerFleet(), system);
 
 		// Check player betrayal
 		diplomacyManager.checkBetrayal();
@@ -120,7 +125,7 @@ public class SystemManager implements SpawnPointPlugin
 				Global.getSector().getPlayerFleet().getCargo().getCredits().add(5000f);
 			else
 				Global.getSector().getPlayerFleet().getCargo().getCredits().add(2500f);
-			Global.getSector().addMessage("Wages Paid", Color.magenta);
+			Global.getSector().addMessage("Wages Paid", Color.green);
 		}
 	}
 
@@ -361,10 +366,17 @@ public class SystemManager implements SpawnPointPlugin
 		}
 
 		// Events that run at set in-game intervals
+		//System.out.println("Hour: " + sector.getClock().getHour());
+
 		if (sector.getClock().getElapsedDaysSince(lastHeartbeat) >= heartbeatInterval)
 		{
 			doIntervalChecks(sector.getClock().getTimestamp());
 			checkSynched();
 		}
+	}
+
+	public String getStarSystemName()
+	{
+		return starSystemAPI.getName();
 	}
 }

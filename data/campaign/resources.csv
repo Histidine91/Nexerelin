@@ -1,0 +1,3 @@
+name,id,cargo space,base value,stack size,icon,order
+Prisoner,prisoner,0,10,1000,graphics/icons/cargo/crew3.png,1
+Agent,agent,0,10,1000,graphics/icons/cargo/crew2.png,1

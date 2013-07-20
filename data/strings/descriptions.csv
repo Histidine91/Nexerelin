@@ -1,5 +1,9 @@
 id,type,text1,text2,text3,notes
-ms_charybdis,SHIP,"Perhaps the fastest and, for it's size, best armed carrier in the sector, the Charybdis-class Strike Carrier is well suited for exploration and combat deep in hostile territory. 
+
+prisoner,RESOURCE,A captured prisoner of war. Trade to another faction to improve your relationship with them.,,,
+agent,RESOURCE,An agent. Trade to another faction to set the agent to turn a faction against that faction (...hopefully). ,,,
+
+ms_charybdis,SHIP,"Perhaps the fastest and, for it's size, best armed carrier in the sector, the Charybdis-class Strike Carrier is well suited for exploration and combat deep in hostile territory.
 
 However, these vessels formidable combat capabilities have come at rather severe cost; the Charybdis suffered from severely conflicting development goals and it's design is marred by a number of potentially fatal compromises.
 
@@ -11,7 +15,7 @@ ms_morningstar,SHIP,"The Morningstar is Shadowyards Heavy Industries 'flagship' 
 
 The ship is named for it's highly distinctive sensor system, the spines near the front of the hull.  In the past they were fitted with extended range combat sensors, but are now commonly fitted with tech scanners; as such, the vessel is commonly seen in the hands of middling tech mining operations.
 
-While lacking redundancy, the ships unusual extended drive system provides good speed, and is remarkably fuel efficient.  An array of potent thrusters, combined with the ships length, offer excellent agility for it's size.  It's shields, while not a straight up match for the Medusa, are paired with one of the best flux dissipation systems in the sector, giving it good battlefield longevity.  Unfortunately, however, like most S.H.I. vessels its advantages come at the cost of a middling armor belt and fragile hull. 
+While lacking redundancy, the ships unusual extended drive system provides good speed, and is remarkably fuel efficient.  An array of potent thrusters, combined with the ships length, offer excellent agility for it's size.  It's shields, while not a straight up match for the Medusa, are paired with one of the best flux dissipation systems in the sector, giving it good battlefield longevity.  Unfortunately, however, like most S.H.I. vessels its advantages come at the cost of a middling armor belt and fragile hull.
 
 A small hangar bay allows the Morningstar to support a limited number of fighters or drones, enhancing it's self-sufficiency."
 
@@ -243,7 +247,7 @@ nom_scorpion,SHIP,"A specialized missile support destroyer. This ship, while exp
 nom_sandstorm,SHIP,"The Sandstorm is designed to charge into a fight with frontal weaponry blazing, and take out its target in a single pass. Prolonged engagements usually expose its high flux requirements.",,,
 nom_gila_monster,SHIP,"The Gila Monster was invented to take on ancient battleships, such as the Onslaught, which would then be looted for supplies and spare parts to refit the rest of the fleet.",,,
 
-mrd_alliance,SHIP,"A compact destroyer, with great speed and maneuverability. The two Dual Autoblasters build right into the ships forward hull make up for its otherwise weaker firepower.  
+mrd_alliance,SHIP,"A compact destroyer, with great speed and maneuverability. The two Dual Autoblasters build right into the ships forward hull make up for its otherwise weaker firepower.
 
 
 Ever since its blueprints were accessible in the sector, the Alliance is one of the most wanted destroyers among the sector smugglers, pirates and other scum, due to its almost ideal premise to smuggle illegal goods from station to station without being captured by the sector lawful authorities. The large cargo space is usually extended with several hidden compartments, where illegal goods are stashed, while the almost
@@ -255,14 +259,14 @@ On the contrary, the ship does have great maneuverability, however due to the we
 mrd_ambassador,SHIP,"The Ambassador is equipped with excellent shields and a EMP Emitter making it a perfect escort for larger ships.
 
 
-Originally the EMP emitters were mounted on the Counselor class hulls, however it was later decided to strip them of these systems and outfit the freed space with simple snaps, that could hold heavy drones. 
+Originally the EMP emitters were mounted on the Counselor class hulls, however it was later decided to strip them of these systems and outfit the freed space with simple snaps, that could hold heavy drones.
 
 The EMP emitters, that were obtained after this transition, were later used as a base to build a whole new ship around them. Due to its supposed role of an escort ship, the Ambassador was equipped with a heavy duty energy generator to upkeep strong shields and a decent load-out of weapons.",,,
-mrd_buzzer,SHIP,"Buzzer is considered to be the main fighter of the Old Council Remnant. Its a compact size means that some armor protection is sacrificed in order to make room for engines and its two dual light blasters. 
+mrd_buzzer,SHIP,"Buzzer is considered to be the main fighter of the Old Council Remnant. Its a compact size means that some armor protection is sacrificed in order to make room for engines and its two dual light blasters.
 
 
 Ideal for scouting and intercepting light enemy fighters, or harassing bigger ships, when deployed in large numbers. It is not uncommon to see the Old Council Remnant carriers to be protected by at least a wing of these fighters.",,,
-mrd_buzzer_escort,SHIP,"Buzzer is considered to be the main fighter of the Old Council Remnant. Its a compact size means that some armor protection is sacrificed in order to make room for engines and its two dual light blasters. 
+mrd_buzzer_escort,SHIP,"Buzzer is considered to be the main fighter of the Old Council Remnant. Its a compact size means that some armor protection is sacrificed in order to make room for engines and its two dual light blasters.
 
 
 Ideal for scouting and intercepting light enemy fighters, or harassing bigger ships, when deployed in large numbers. It is not uncommon to see the Old Council Remnant carriers to be protected by at least a wing of these fighters.",,,
@@ -273,13 +277,13 @@ The droid fighter was developed for various convoy escort, recon and for mission
 mrd_buzzer_mk_ii,SHIP,"The Buzzer Mk. II is a medium, quite common fighter among the Old Council Remnant. The fighter has better armor protection, than Mk. I and it is equipped with two light  anti-fighter missile pods.
 
 
-This fighter was made to withstand some damage, but was also considered as possible contingent for Council carriers, the armor took place for less powerful engines, so the ship top speed and maneuverability are slightly worse. 
+This fighter was made to withstand some damage, but was also considered as possible contingent for Council carriers, the armor took place for less powerful engines, so the ship top speed and maneuverability are slightly worse.
 
 Enemy light fighters of frigates are this fighters preferred targets. It is also not uncommon to see some of the Old Council Remnant carriers to be protected by at least a wing of these fighters.",,,
 mrd_centaur,SHIP,"The Centaur-class battleship is the symbol of speed and maneuverability among the ships of its size.
 
 
-The Centaur Class has many powerful engines making it the fastest battleship in known space. For protection it relies heavily on its OMNI Shield emitter, which is capable of redirecting all power from the weapon systems to the shields, greatly increasing the efficiency at which damage is absorbed. While the ships hull alone is still decently armored, without the shields, the ship would not last long under direct fire. 
+The Centaur Class has many powerful engines making it the fastest battleship in known space. For protection it relies heavily on its OMNI Shield emitter, which is capable of redirecting all power from the weapon systems to the shields, greatly increasing the efficiency at which damage is absorbed. While the ships hull alone is still decently armored, without the shields, the ship would not last long under direct fire.
 
 However the ship has an improved flux dispassion system making it difficult to overlord the shields.
 
@@ -300,17 +304,17 @@ mrd_defender,SHIP,"The defender is a powerful frigate, designed to scout the mos
 The blueprints for the Defender I are the most wanted ones among starting pirates, due to the ships relatively small upkeep cost and vast firepower.
 
 Originally serving in Council space in the role of a recon ship, or to hunt down the most dangerous criminals.",,,
-mrd_dragonfly,SHIP,"An advanced design frigate with good maneuverability, an efficient shield generator, and an impressive weapons package. 
+mrd_dragonfly,SHIP,"An advanced design frigate with good maneuverability, an efficient shield generator, and an impressive weapons package.
 
 
 Many Council ship from the later era shared a lot of the blueprint designs, the Dragonfly is a good example of this system. Combining the base hull of the Sparrow with the successful Slasher cockpit formed a new ship which could deal with various tactical missions.",,,
 mrd_drone,SHIP,"Drones are much cheaper, than droids and since they are mass produced, they are also expandable.
 
 
-Lightly armored drone, that heavily relies on its good Omni shielding for protection. The drone carries a Burst PD laser and one Light Blaster. Capable of both defending its mother-ship from missiles and low-med tech fighters alike. 
+Lightly armored drone, that heavily relies on its good Omni shielding for protection. The drone carries a Burst PD laser and one Light Blaster. Capable of both defending its mother-ship from missiles and low-med tech fighters alike.
 
 It is not uncommon to see the Old Council Remnant carriers to be protected by whole swarms of these drones.",,,
-mrd_hawk,SHIP,"The Hawk-class battleships can be found in fleets heading to difficult battles. It is not hard to see why:  strong armor protection, robust engines, deadly weapon load-outs, backed up by a strong omni shield generator. 
+mrd_hawk,SHIP,"The Hawk-class battleships can be found in fleets heading to difficult battles. It is not hard to see why:  strong armor protection, robust engines, deadly weapon load-outs, backed up by a strong omni shield generator.
 
 
 These ships can deal with most threats with ease, which is why the Old Council Remnant allows the Council Loyalists to use these ships only after the crew has gone through alot of additional training and extensive political, ideological indoctrination.
@@ -325,7 +329,7 @@ The Hawk is usually armed with various energy weapons, however the Hawk Mk. IA h
 mrd_hawk_mk_ii_allegiance_B,SHIP,"Heavy Assault Battleship, an improved version of the already impressive Hawk class design.
 
 
-The Hawk-class battleships can be found in fleets heading to difficult battles. It is not hard to see why:  strong armor protection, robust engines, deadly weapon load-outs, backed up by strong armor and strong omni shield generator. 
+The Hawk-class battleships can be found in fleets heading to difficult battles. It is not hard to see why:  strong armor protection, robust engines, deadly weapon load-outs, backed up by strong armor and strong omni shield generator.
 
 The Mk. II Allegiance has been equipped with two Large energy slots. This ship represents a huge war asset, which is why the Old Council Remnant allows the Council Loyalists to use these ships only after the crew has gone through alot of additional training and extensive political, ideological indoctrination.",,,
 mrd_hawk_mk_iii_hegemony_spear,SHIP,"The Hawk Mk. III ""Council Pride"" is the toughest ship, that the Old Council Remnant introduced so far. Sector naval tacticians have few answers for the threat that the Mk. III presents. ",,,
@@ -333,52 +337,52 @@ mrd_hawk_mk_iv_phoenix,SHIP,"Abandoning all heavy weapons, the Mk. IV should be 
 
 
 The Phoenix has a wide variety of energy and missile weapons, good armor protection and shield generator. Combined with the power from its lengthy engines, this is possibly the most versatile ship ever build. ",,,
-mrd_hound,SHIP,"Heavy bomber, shares many similar attributes with the Oppressor, but this ship was build mainly around its two Reaper-class LR Torpedo's. 
+mrd_hound,SHIP,"Heavy bomber, shares many similar attributes with the Oppressor, but this ship was build mainly around its two Reaper-class LR Torpedo's.
 
 
 The Hound wings are rarely deployed outside larger fleets and without at least one carrier backing up the task force, due to the bombers high price, no commander wants to risk losing even one of these wings. If deployed correctly however, they may turn the tide in any battle.",,,
-mrd_hunter,SHIP,"A support fighter, of an older design. Possibly meant to replace the obsolete Talon fighter. 
+mrd_hunter,SHIP,"A support fighter, of an older design. Possibly meant to replace the obsolete Talon fighter.
 
 
 Equipped with two light machine guns and two light anti fighter missile launchers. The Old Council Remnant saw no use for this craft, so its has become very popular between various law-enforcing agency's, independent contractors, or the Hegemony.",,,
 mrd_kiwi,SHIP,Durable carrier providing cover and repairs for Loyalists and Remnants fighters and bombers.,,,
-mrd_mustang,SHIP,"The Mustang-class ships were designed to fit the role of a space-mule. 
+mrd_mustang,SHIP,"The Mustang-class ships were designed to fit the role of a space-mule.
 
 
-They have several large transport section separated by sturdy bulkheads, that can be equipped to transport various inventory from relief supplies to ammunition to toxic waste and even transport several hundred refugees. 
+They have several large transport section separated by sturdy bulkheads, that can be equipped to transport various inventory from relief supplies to ammunition to toxic waste and even transport several hundred refugees.
 
-The ship can play multiple roles, but the standard, unmodified versions are used to transport up-to 200 additional passengers, plus the cargo, such as a variable amount of weapons, supplies and fuel. Though in this configuration, the passengers may have to endure some slight dis-comfort. To be able to carry so much at once the Mustang has sacrificed a lot from its armor and weapons, but has been equipped with a modified military shield emitter. 
+The ship can play multiple roles, but the standard, unmodified versions are used to transport up-to 200 additional passengers, plus the cargo, such as a variable amount of weapons, supplies and fuel. Though in this configuration, the passengers may have to endure some slight dis-comfort. To be able to carry so much at once the Mustang has sacrificed a lot from its armor and weapons, but has been equipped with a modified military shield emitter.
 
 Mustang has several defensive systems, which can deal with minor pirate raids, but like all transports it should have an escort.",,,
-mrd_mustang_mk_ii,SHIP,"The battle version of the Mustang. Equipped with heavy armor and a more effective shield emitter. 
+mrd_mustang_mk_ii,SHIP,"The battle version of the Mustang. Equipped with heavy armor and a more effective shield emitter.
 
 
 This ship was designed to protect convoys and to deal with small and medium threats.  The Mustang Mk. II inherited several larger cargo sections, though separated by much stronger bulkheads, which allows it  to carry more supplies than the average cruiser of the same size.",,,
 mrd_omega,SHIP,"The pinnacle of the Tri-Tachyon corporation engineers ship design. Capable of dealing with any and all threats to the Tri-Tachyon corporation. The construction of this magnitude takes over two years and it is one of the the most expensive ship in serial production.
 
 
-Omega can act as a fleet on its own, having large hangar bays for fighters, its own potential firepower is so superior to other battleships, that there's no real need for additional Heavy ship support. Although It will always have couple assisting vessels and swarms of fighters protecting it from bombers, small fighters that would be capable of avoiding Omegas main weapons. 
+Omega can act as a fleet on its own, having large hangar bays for fighters, its own potential firepower is so superior to other battleships, that there's no real need for additional Heavy ship support. Although It will always have couple assisting vessels and swarms of fighters protecting it from bombers, small fighters that would be capable of avoiding Omegas main weapons.
 
 
 Due to the limitations of the supply convoys, because the ships demand for supply is over the charts, Omega sometimes operates alone with only a small fighter protection. This is a possible strategic flaw, as the single ship could in theory be defeated by larger numbers, possibly crippling it in enemy space, or managing to kill enough crew members in combat, leaving the ship vulnerable to large boarding parties, but the Tri-Tachyon corporation does not think of it as a valid threat. There's a good catch to it though, since the ship alone poses a great threat, Tri-Tachyon spy network deliberately sends out many fake messages about the ships next certain route, destination. While enemy fleets investigate, normal attacks from Tri-Tachyon are very effective. Money well spend, indeed.
 
 
 Like all Tri-Tachyon ships even Omega is mostly armed with various energy weapons, with several rocket launcher emplacements for good measure. Weapon load-out prefers large, heavy weapons, which usually move a lot slower than light turrets, meaning the ship should have protection from at least three fighter squadrons. ",,,
-mrd_oppressor,SHIP,"Heavy multi-role fighter, requires three crew members, has an impressive weapon loadout, decent armor and OMNI shield generator. 
+mrd_oppressor,SHIP,"Heavy multi-role fighter, requires three crew members, has an impressive weapon loadout, decent armor and OMNI shield generator.
 
 
 The Oppressor wing can attack anything from fighters, to frigates or even bring down a battlecruiser, if deployed in larger numbers. Some carrier captains even prefer to have a wing of these fighters for escort over the standard Buzzer Mk. I.",,,
 mrd_oppressor_ds,SHIP,"Greatly expanded wing of Oppressor Multi-role Fighters, formed to perform exceptionally difficult or vital tasks.
 
 
-Each Oppressor requires three crew members, has an impressive weapon loadout, decent armor and OMNI shield generator. 
+Each Oppressor requires three crew members, has an impressive weapon loadout, decent armor and OMNI shield generator.
 
 The Death Wing can attack anything from fighters to battlecruisers.",,,
-mrd_oppressor_int,SHIP,"Heavy interceptor fighter, requires two crew members, has an impressive weapon loadout, decent armor and OMNI shield generator. 
+mrd_oppressor_int,SHIP,"Heavy interceptor fighter, requires two crew members, has an impressive weapon loadout, decent armor and OMNI shield generator.
 
 
 The Oppressor Interceptor, was developed to be more anti-fighter focused ship, the weapon loadout corresponds with this role in mind. Equipped with two anti fighter missile launchers and two dual light blaster. Some carrier captains prefer to have a wing of these fighters for escort over the standard Buzzer Mk. I.",,,
-mrd_oppressor_int_escort,SHIP,"Heavy interceptor fighter, requires two crew members, has an impressive weapon loadout, decent armor and OMNI shield generator. 
+mrd_oppressor_int_escort,SHIP,"Heavy interceptor fighter, requires two crew members, has an impressive weapon loadout, decent armor and OMNI shield generator.
 
 
 The Oppressor Interceptor, was developed to be more anti-fighter focused ship, the weapon loadout corresponds with this role in mind. Equipped with two anti fighter missile launchers and two dual light blaster. Some carrier captains prefer to have a wing of these fighters for escort over the standard Buzzer Mk. I.",,,
@@ -389,32 +393,32 @@ The Overlord hull takes many designs, features from the elderly Onslaught, howev
 
 Surprisingly the Old Remnant gave several Overlords to the Hegemony aswell as the Loyalists straight away. Probably because the Remnant doesn't see this ship to be something of a real threat to its technologically more superior battleships, but it was also a sign of good gesture and the ship doesn't have many new technologies, systems the new recruits would need to learn to operate.",,,
 mrd_phantom,SHIP,"Experimental destroyer, with a decent load-out of weapons. Used mainly in a support role, or recon tasks in nearby systems.",,,
-mrd_prefect,SHIP,"The Prefect-class ships commonly serve in patrol or convoy defense roles. The design features two landing pads for bombers and fighters, that both lead to a central multi-level hangar bay. 
+mrd_prefect,SHIP,"The Prefect-class ships commonly serve in patrol or convoy defense roles. The design features two landing pads for bombers and fighters, that both lead to a central multi-level hangar bay.
 
 
-While the ship does carry some energy and missile weaponry, it is not meant to be on the front lines, but rather provide fire support form save distance. The armor protection is mediocre, however the shield performance makes up for that. 
+While the ship does carry some energy and missile weaponry, it is not meant to be on the front lines, but rather provide fire support form save distance. The armor protection is mediocre, however the shield performance makes up for that.
 
 The blueprints share many components similar to the ones found in the design of the Centurion or Counselor destroyers.",,,
-mrd_raven,SHIP,"Light Cruiser with decent armor and packing some serious firepower, due to its several universal weapon mounts. Due to this adaptive nature, the Raven is filling the light cruiser role in many Loyalists fleets throughout the Sector. 
+mrd_raven,SHIP,"Light Cruiser with decent armor and packing some serious firepower, due to its several universal weapon mounts. Due to this adaptive nature, the Raven is filling the light cruiser role in many Loyalists fleets throughout the Sector.
 
 
 Raven was among the first ships that the Old Council Remnant shared with the Loyalists, possibly also due to the fact, that the volunteers for the Loyalists would have been familiar with its systems, as many of them had already served their time on either the Falcon or Eagle class cruisers.
 
 It is obvious, that the Raven and other triangle shaped cruisers the Old Council Remnant uses share alot of designs with the Eagle class cruisers, however it appears that the Remnant was able to do some upgrades on their ships, before they reached our Sector of the Galaxy. ",,,
-mrd_raven_mk_ii,SHIP,"Variation of the first Raven, Mk. II focuses more on energy weapons and serves many roles, but mostly serves as the ""Tank"" for fleets consisting of Spartakan destroyers and Slashers. 
+mrd_raven_mk_ii,SHIP,"Variation of the first Raven, Mk. II focuses more on energy weapons and serves many roles, but mostly serves as the ""Tank"" for fleets consisting of Spartakan destroyers and Slashers.
 
 
 Additional space was gained by extending the ship hull for additional supplies, personal and PD weapons.",,,
-mrd_slasher,SHIP,"Remnant's own conversion and modern version of the so popular Lasher. Equipped with multiple universal mounts the ship can be used for variety of missions. 
+mrd_slasher,SHIP,"Remnant's own conversion and modern version of the so popular Lasher. Equipped with multiple universal mounts the ship can be used for variety of missions.
 
 Such as delivering supplies, dropping of commando units, hit and run strikes, convoy escorts etc. The newly designed frigate has a fighter-like layout and most of its controls are located in the front cockpits. Thanks to this design, the crew required to run the ship has been reduced by third, leaving extra room for cargo. The Slasher can utilize various load-outs, to extend the possibilities of its operational use, other modifications include an extended armor protection and a new engines.",,,
-mrd_sparrow,SHIP,"An unconventional ship design even by the Remnant standards, equipped with phase teleporting technology.  
+mrd_sparrow,SHIP,"An unconventional ship design even by the Remnant standards, equipped with phase teleporting technology.
 
 
-A fast ship, with only light armor protection and small omni shield generator, that can deliver a strong punch. Relies heavily on evading larger ships thanks to its onboard phase teleporter. 
+A fast ship, with only light armor protection and small omni shield generator, that can deliver a strong punch. Relies heavily on evading larger ships thanks to its onboard phase teleporter.
 
 These specs favor the bold captains.",,,
-mrd_spartakan,SHIP,"Also called the Spartan patrol destroyer. Very flexible destroyer, that packs a respectable amount of firepower. 
+mrd_spartakan,SHIP,"Also called the Spartan patrol destroyer. Very flexible destroyer, that packs a respectable amount of firepower.
 
 
 Its universal mounts can be used to equip the Spartakan with missile launchers, giving the ship the ability to attack both from close range and from distance.
@@ -422,20 +426,20 @@ Its universal mounts can be used to equip the Spartakan with missile launchers, 
 One curious feature is that this ship doesn't have any main bridge, which is typical for ships of the V shape, this might be because originally the Spartakan was being developed as a heavy frigate, but eventually has grown to a full scale destroyer.
 
 The Spartan is used for wide variety of actions, from simple transport to recon and patrol duties and fighting alongside bigger ships, securing their flank, which is what this ship is best at.",,,
-mrd_spearhead,SHIP,"A further improvement of the Slasher design. Tougher, with stronger punch. 
+mrd_spearhead,SHIP,"A further improvement of the Slasher design. Tougher, with stronger punch.
 
 
-While Lasher was considered a well-rounded frigate, it was well known fact, that if the ship had to engage in a battle against a heavily shielded or armored opponent, the Slasher simply didn't have enough firepower. 
+While Lasher was considered a well-rounded frigate, it was well known fact, that if the ship had to engage in a battle against a heavily shielded or armored opponent, the Slasher simply didn't have enough firepower.
 
 Based on the blueprints provided by the Old Council Remnant, the Spearhead was constructed to have better protection against incoming fire and carry heavier weapons. The ships hull was extended and more powerful engines were installed too.
 
 This design itself lead to a relatively high price of the Spearhead class.. and needless to say, many captains rather chose Slashers, whenever they were given the option, over the Spearhead. The craft wasn't badly designed, nor has any problems to speak off, but in general Slashers can manage to do the same job for less credit.",,,
-mrd_spearhead_mk_ii,SHIP,"A custom variant of the Spearhead, equipped with an impressive weapons package. 
+mrd_spearhead_mk_ii,SHIP,"A custom variant of the Spearhead, equipped with an impressive weapons package.
 
 Spearhead was never amongst the favourite ships to serve on, but this custom variant, constructed directly by the Old Remnant, managed to deal with most of the bugs the original design. The missile mounts on side weapon mounts remained, however the small ballistic mounts were swapped for medium weapons mounts, giving the ship the so needed frontal firepower.",,,
 mrd_vulture,SHIP,"A powerfull cruiser, equippable with a wide variety of weapons. Strong armor and powerful shields place this ship in the center of every assault. ",,,
 mrd_striker,SHIP,"Originally developed by the Hegemony, now in the service of various mercenary and pirate groups. Striker was designed as a cheap support fighter, armed with several machine guns and missile launchers.",,,
-mrd_striker_droid,SHIP,"Lightly armed, unmanned, VI controlled fighter. These fighters are armed with two light machine guns and are notoriously known for their terrible IFF system. 
+mrd_striker_droid,SHIP,"Lightly armed, unmanned, VI controlled fighter. These fighters are armed with two light machine guns and are notoriously known for their terrible IFF system.
 
 
 They are handy for scouting and can become a real nuisance, if deployed in large numbers.
@@ -447,7 +451,7 @@ mrd_venator,SHIP,"Durable carrier, which can deliver a strong punch. It has a de
 Besides carrying an interesting loadout of weapons, each Venator also has two heavy Dual Autoblasters built into the front section of the hull. In battle the carrier is protected by swarms of VI controlled drones, which protect the carrier from enemy bombers and missiles. Because of its multi-role nature, many admirals chose Venator as their command ship.",,,
 mrd_venator_mk_II,SHIP,"A later version of the Venator carrier a true Behemoth among battleship armed with heavy energy weapons and protected by wings of Buzzers.
 
-The nose of the ship was stripped off the heavy Dual Blasters and redesigned for a more aero-dynamical shape, much more powerful engines were added to replace the ones of the Venator Mk. I. Besides adding more decks above the central multi-deck hangar, which improved the overall integrity of the ship, additional changes were also made to the command bridge. From the left tower the personnel now takes care of the flight controls, hangar bays, communications and FTL drive. The right bridge is where the ship captain is stationed along with engine, shield emitter controls and  the main weapon systems personal. 
+The nose of the ship was stripped off the heavy Dual Blasters and redesigned for a more aero-dynamical shape, much more powerful engines were added to replace the ones of the Venator Mk. I. Besides adding more decks above the central multi-deck hangar, which improved the overall integrity of the ship, additional changes were also made to the command bridge. From the left tower the personnel now takes care of the flight controls, hangar bays, communications and FTL drive. The right bridge is where the ship captain is stationed along with engine, shield emitter controls and  the main weapon systems personal.
 
 The firepower of the Venator Mk. II was greatly improved with the addition of a fourth large energy weapon mount.",,,
 ,,,,,
@@ -455,7 +459,7 @@ mrd_Alliance_turbo_L,WEAPON,"Build directly into the Alliances hull, providing t
 mrd_Alliance_turbo_P,WEAPON,"Build directly into the Alliances hull, providing the ship with vast frontal firepower.",Assault,,
 mrd_assault_gun,WEAPON,"Small caliber cannon designed for close range fights, good fire rate combined with very good accuracy.
 
-A redesigned small caliber cannon, that fires the same high explosive 25x163mm rounds, but unlike its predecessor, its been equipped with a longer, stabilized barrel, that allows the fired projectiles to travel faster, causing some secondary damage upon hitting the target. 
+A redesigned small caliber cannon, that fires the same high explosive 25x163mm rounds, but unlike its predecessor, its been equipped with a longer, stabilized barrel, that allows the fired projectiles to travel faster, causing some secondary damage upon hitting the target.
 
 Excellent assault weapon, especially against armor, however due to the use of some rare materials in the design, it comes at a high cost.",Assault,,
 mrd_buzzer_swarmer,WEAPON,"A short range guided missile launcher. The missiles are designed to intercept and destroy enemy fighters, and do little damage to heavier ships.
@@ -472,19 +476,19 @@ The engineering team, that constructed this weapon for the Hegemony Navy was put
 The decision was made quickly to use the Assault Gun as a reference and use as many parts form it as possible. It was decided to use the same barrel and recoil dumping system, but the barrel was easily adjusted to use a bigger projectile. The rate of fire had to be lowered in this situation though, because if the original setting from the A.G. were untempered the recoil increased rapidly with each shot - the barrel was not designed for the new projectiles.
 
 Because of that it was decided to use two barrel configuration, which increased the potential damage output and increased the rate of fire, while keeping a decent accuracy of the weapon. The only downside of this configuration, besides its cost, was the fact that due to the the final demand - for compact size of the system, the space for additional ammo was quite limited and was never too high. However this could be at least slightly corrected, if used with a combination with additional ammo feeders ship systems.",Close Support,,
-mrd_heavy_autoblaster,WEAPON,"A triple-barreled turret, that fires a burst of bolts of energy at enemy ships. 
+mrd_heavy_autoblaster,WEAPON,"A triple-barreled turret, that fires a burst of bolts of energy at enemy ships.
 
 
 The Heavy autoblaster is equipped with large banks of capacitors, allowing them to build up and store far more powerful energy bursts than standard cannons. These capacitors give huge energy bursts to the beam, greatly increasing its power over standard laser cannons.
 
-Does not have the damage output of the Heavy Blaster, per one shot, but its more effective flux-wise. 
+Does not have the damage output of the Heavy Blaster, per one shot, but its more effective flux-wise.
 
 The three shot burst system puts some pressure off the weapon operators, as it increases the possibility for a successful hit.",Assault,,
-mrd_heavy_beam,WEAPON,"A powerful beam weapon, which can easily overwhelm standard energy fields. 
+mrd_heavy_beam,WEAPON,"A powerful beam weapon, which can easily overwhelm standard energy fields.
 
 
 Has an excellent range, the damage per second on armor plating is somewhat small, however the beam eventually burns through anything.",Close Support,,
-mrd_light_autoblaster,WEAPON,"A smaller, single barrel version, of the Heavy Autoblaster, that fires a burst of bolts of energy at enemy targets. 
+mrd_light_autoblaster,WEAPON,"A smaller, single barrel version, of the Heavy Autoblaster, that fires a burst of bolts of energy at enemy targets.
 
 
 This weapon was designed to fill the small cap between small and medium weapons. The main advantage of this weapon, besides its two shot burst, is the fact, that it can be mounted on a small energy mounts.
@@ -509,7 +513,7 @@ mrd_reaper,WEAPON,"A single, devastatingly powerful, poorly guided torpedo with 
 
 The quintessential strike weapon, a single LR Reaper torpedo is a 550mm, self-propelled, armored, poorly guided delivery system for an enriched infernium warhead.
 
-This version has been introduced by the Remnant, unlike the Torpedos known to is before the Old Council Remnant arrival these new torpedos have poor target tracking and can travel at much greater distances, although the warhead is less powerful, it can still break havoc among enemy ships. 
+This version has been introduced by the Remnant, unlike the Torpedos known to is before the Old Council Remnant arrival these new torpedos have poor target tracking and can travel at much greater distances, although the warhead is less powerful, it can still break havoc among enemy ships.
 
 The Hound wings are exclusively armed with these weapons.",Strike,,
 mrd_turbo_blaster,WEAPON,"A dreaded dual barreled turret, usually found mounted on large capital ships, that fires a burst of devastating bolts of energy at enemy ships.",Assault,,
@@ -544,7 +548,7 @@ desdinova,SHIP,"These monstrous destroyers are built around a complex engine sys
 
 Lacking the reach and resources needed to mass-produce phase technology, Blackrock still required a flexible mid line option that can outmaneuver other destroyers and avoid fighter wings. The result is a design that has mobility unheard of for a hull of its size - bristling with Blackrock-custom ballistic guns and sporting a gas-bleeding flux core built directly into the engine, this menacing, insectoid vessel has quickly ascended to notoriety. ",,,
 scarab,SHIP,"The Scarab is a large, flexible frigate. Its somewhat outdated shield generator is offset by an impressive armament and powerful auxiliary engines.",,,
-brdy_revenant,SHIP,"The Revenant-class is designed to round out any task force it is assigned to, being well capable of servicing fighters, carrying supplies, and defending itself against strike craft and frigates. 
+brdy_revenant,SHIP,"The Revenant-class is designed to round out any task force it is assigned to, being well capable of servicing fighters, carrying supplies, and defending itself against strike craft and frigates.
 
 Its Barracuda Drones allow it to intercept small threats, or leave fighters open for other tasks in lieu of needing to escort their carrier.",,,
 brdy_gonodactylus,SHIP,"A re-tooled variant of a pre-Collapse asteroid smasher. While its asymmetry leaves parts of the hull very exposed, this ship was originally armored to withstand asteroid impacts.
@@ -566,7 +570,7 @@ Each drone features an extremely strong phase comm-array built into the entire h
 lucifergenerator,SHIP_SYSTEM,"The unique Lucifer Generator runs along the entire skeletal structure of the ship, being nestled around the Antimatter Lance array, like veins and arteries around the heart of a human being.
 
 When needed, the power flow to the aft section of the ship can simply be shunted off, and flux buildup is then cycled in a resonant pattern inside the weapon compartments fore on the vessel, allowing for an enormous increase in the potential damage done by the ship's energy weapons ﾖ including the Antimatter Lance. ",Special,,
-desdinovaburstjets,SHIP_SYSTEM,"The special Arcjet Burner feeds excess flux from the entire shield powerplant into the drives, venting the resulting energy out with the engine torch to produce an astonishing volume of temporary acceleration. 
+desdinovaburstjets,SHIP_SYSTEM,"The special Arcjet Burner feeds excess flux from the entire shield powerplant into the drives, venting the resulting energy out with the engine torch to produce an astonishing volume of temporary acceleration.
 
 Magnetic coils that run alongside the flame catch and redirect instabilities, allowing the crew to maneuver the ship even at peak specific thrust. While Tri-Tachyon techs snort derisively and offer that it would have been better to simply implement a phase displacer or skimmer, it remains to be seen if this straight-forward approach will allow Blackrock to contend with high-tech adversaries.",Mobility,,
 brdy_mantis,SHIP,"A state-of-the-art attack frigate, designed with short battles in mind, the Mantis is hated and envied by corsairs across the Sector.",,,
@@ -764,7 +768,7 @@ One of the few capital ships equiped with gate-class phase drives, the project f
 ,,,,,,,,
 "nirvana_III","SHIP","The latest model of the Nirvana, slightly thiner but more heavily armored and armed with robust engine power, its slowly making its way in and replacing older designs."
 "nirvana_II","SHIP","The Second variant of the Nirvana class, it sees alot of service with the valkyrian fleets since its deployment, even today it remains the workhorse cruiser for the valkyrians."
-"almire_II","SHIP","A new model upon the almire project, designed for offensive warfare, bolstering armor and firepower on par with a nirvana-class, any captain would be overjoyed granted the chance to fly one."  
+"almire_II","SHIP","A new model upon the almire project, designed for offensive warfare, bolstering armor and firepower on par with a nirvana-class, any captain would be overjoyed granted the chance to fly one."
 "nirvana","SHIP","The first model of the Nirvana series, long outdated by modern designs, nowdays it serves as convoy escort and a means to bring in development money."
 "almire","SHIP","A cruiser that has undergone countless modifications over the years including a class change, it stands side by side with the nirvana in battle, but the design is almost entirely replaced by it."
 ,,,,,,,,
@@ -819,7 +823,7 @@ With techonlogy catching up to the designs, with state of the art shield, energy
 "scorpionpod","WEAPON","Made out of a MIRV warhead for less weigth and a harpoon engine, resulting in faster turn rates and higher speeds, but less damage capability, comes with larger ammunition stores.",Assault,,
 "scorpion","WEAPON","Made out of a MIRV warhead for less weigth and a harpoon engine, resulting in faster turn rates and higher speeds, but less damage capability.",Assault,,
 ,,,,,,,,
-,,,,,,,, 
+,,,,,,,,
 ,,,,,,,,
 "irpdcannon","WEAPON","Energy capacitors installed with the vulcan cannon firing mechanism, the extra power and energy makes the gun fire much faster, but the production is complicated and thus only mounted on the higher class ships.",Point Defence,,
 "ether_driver","WEAPON","A massivly powerful cannon firing shells near the speed of light, the extreme impact force alows the cannon to virtualy bypass shields, making it an extreme threat to any ship using them as their only defence.",Close Support,,
@@ -834,66 +838,66 @@ With techonlogy catching up to the designs, with state of the art shield, energy
 "valkyria","SHIP_SYSTEM","The most powerful smartbomb weapon ever made, it radiates an omnidirectional pulse that knocks out all electronics on any ship hit and consumes all of the host ships flux reserves in the process, the massive power of the pulse is also strong enough to push several hundred thousand ton battleships out of balance."
 "incendiaryammo","SHIP_SYSTEM","the ammunition is drenched in infernium, making it highly flammable and dangerous, vastly increasing ballistic firepower, such experimentation does not come without its risks however."
 
-cerberus,SHIP,"A fully militarized Tri-Tachyon advanced variant of the venerable Hound class fast frigate, Cerberus is fast to produce, cheap and readily available to fill Tri-Tachyon scout and light escort roles. 
+cerberus,SHIP,"A fully militarized Tri-Tachyon advanced variant of the venerable Hound class fast frigate, Cerberus is fast to produce, cheap and readily available to fill Tri-Tachyon scout and light escort roles.
 
-In comparison to its predecessor the Hound class, Cerberus trades armor with a more modern energy core, allowing both greater speed and the installation of a small shield emitter. 
+In comparison to its predecessor the Hound class, Cerberus trades armor with a more modern energy core, allowing both greater speed and the installation of a small shield emitter.
 
 Originally re-designed as a cheap stopgap for merchant escort and resupply roles, the Cerberus is used everywhere to protect Tri-Tachyon interests from pirates and harassers, but is not suited to the modern big fleet battlefield due to its origins."
-pointer,SHIP,"A fully militarized Hegemony advanced variant of the venerable Hound class fast frigate, Pointer is fast to produce, cheap and readily available to fill Hegemony scout and light escort roles. 
+pointer,SHIP,"A fully militarized Hegemony advanced variant of the venerable Hound class fast frigate, Pointer is fast to produce, cheap and readily available to fill Hegemony scout and light escort roles.
 
 In comparison to its predecessor the Hound class, Pointer trades speed and point defence for more armour and survivability, giving the adventurous pilot a platform that can take a lot of punishment while keeping hot on his target.
 
 Originally re-designed as a cheap stopgap for merchant escort and resupply roles, the Pointer is used everywhere to protect Hegemony interests from pirates and harassers, but is not suited to the modern big fleet battlefield due to its origins."
-eventide,SHIP,"The Eventide-class cruiser is a reverse-engineered variant of the Aurora-class. Ordered by the Lotus Pirate conglomerate as a fast flagship, the Eventide excels at interdiction, keeping at bay most adversaries. 
+eventide,SHIP,"The Eventide-class cruiser is a reverse-engineered variant of the Aurora-class. Ordered by the Lotus Pirate conglomerate as a fast flagship, the Eventide excels at interdiction, keeping at bay most adversaries.
 
-The Eventide is an amalgam of salvaged Tri-Tachyon parts, reverse-engineered components and home-brew stopgaps. It does not look pretty, and fortunately it doesn't need to. After all, the Lotus Pirates are renowned for their cutthroat efficiency, not their cleaning skills. 
+The Eventide is an amalgam of salvaged Tri-Tachyon parts, reverse-engineered components and home-brew stopgaps. It does not look pretty, and fortunately it doesn't need to. After all, the Lotus Pirates are renowned for their cutthroat efficiency, not their cleaning skills.
 
-In comparison to its fully militarized Tri-Tachyon counterpart, the Eventide trades energy efficiency and weapon range for brute force and speed. Re-designed for attacking convoys and terrorizing the shipping lanes, the Eventide is faster than ships of its current size, but lacks the technology to stand in a true line of battle. 
+In comparison to its fully militarized Tri-Tachyon counterpart, the Eventide trades energy efficiency and weapon range for brute force and speed. Re-designed for attacking convoys and terrorizing the shipping lanes, the Eventide is faster than ships of its current size, but lacks the technology to stand in a true line of battle.
 
 It was never meant to anyway..."
-hydra,SHIP,"The Hydra-class fast Hunter Destroyer serves as a prime example of what happens when close guarded military blueprints fall into the..wrong hands. The Lotus Conglomerate was only too keen to oblige, and the rest is history. 
+hydra,SHIP,"The Hydra-class fast Hunter Destroyer serves as a prime example of what happens when close guarded military blueprints fall into the..wrong hands. The Lotus Conglomerate was only too keen to oblige, and the rest is history.
 
-Re-fitted as a fast hunter destroyer for convoy assault, the Hydra is essentially a custom built Medusa-class destroyer, built to outmaneuver merchant marine escorts and to outlast all but its heaviest class counterparts. 
+Re-fitted as a fast hunter destroyer for convoy assault, the Hydra is essentially a custom built Medusa-class destroyer, built to outmaneuver merchant marine escorts and to outlast all but its heaviest class counterparts.
 
-Used as the flagship of small Lotus raider fleets, the Hydra trades armor and energy efficiency for speed and close-quarters firepower. In the search for speed even basic amenities are spared in the design. And it shows. 
+Used as the flagship of small Lotus raider fleets, the Hydra trades armor and energy efficiency for speed and close-quarters firepower. In the search for speed even basic amenities are spared in the design. And it shows.
 
 Not that the pirates care though..."
-stigma,SHIP,"The Stigma is a custom Broadsword fighter class variant, modified for fast convoy attack duties. Trading armor for speed and combat range for close support lethality, the Stigma excels as a raider. 
+stigma,SHIP,"The Stigma is a custom Broadsword fighter class variant, modified for fast convoy attack duties. Trading armor for speed and combat range for close support lethality, the Stigma excels as a raider.
 
-The Lotus anchorage ground in Posterior IIb is renown for converting salvaged parts into highly lethal (and expensive to boot) pieces of ordnance. The Stigmas produced there are a prime example of that, favored by Buccaneers and Mercenaries alike for their speed and close-quarters brutality. 
+The Lotus anchorage ground in Posterior IIb is renown for converting salvaged parts into highly lethal (and expensive to boot) pieces of ordnance. The Stigmas produced there are a prime example of that, favored by Buccaneers and Mercenaries alike for their speed and close-quarters brutality.
 
 And rightfully so. The motto 'Fast, close and personal' was made for this ship after all... "
 blizzard,SHIP,"Sometimes referred to as the 'quintessential' raider, the Blizzard-class is a build-to-order frigate hull that is constructed at the Lotus anchorage ground in Posterior IIb.
 
-Built to last a lifetime in the hands of a worthy captain, the Blizzard is a fast frigate design based on stolen Tri-Tachyon blueprints and manufactured for the Lotus Pirate conglomerate as a fast attack craft against heavily escorted convoys. 
+Built to last a lifetime in the hands of a worthy captain, the Blizzard is a fast frigate design based on stolen Tri-Tachyon blueprints and manufactured for the Lotus Pirate conglomerate as a fast attack craft against heavily escorted convoys.
 
 The Blizzard packs the long range punch needed for standoff engagements and is armed with 2 small and 1 medium missile hardpoints, making it an excellent choice for pursuing merchant fleets and light escorts alike. Alas, it is notoriously flimsy at short range combat and needs to keep the 'weather gage' at all times.
 
 Thankfully, its powerful twin RBo1x engines can help with that. To the delight of many a Lotus Corsair..."
-jackal,SHIP,"Designed exclusively for the Lotus Pirates by the Posterior II Anchorage ground, this fragile, fast and furious little frigate design is the Lotus Co equivalent of a mosquito bringing a sledgehammer to a summer dance party. 
+jackal,SHIP,"Designed exclusively for the Lotus Pirates by the Posterior II Anchorage ground, this fragile, fast and furious little frigate design is the Lotus Co equivalent of a mosquito bringing a sledgehammer to a summer dance party.
 
-The Jackal-class fast Hunter frigate is a raider variant of the high-tech Tri-Tachyon branded Wolf frigate, trading survivability for speed and versatility for raw power. Its 2 medium hardpoints can put to the test most merchant escorts of its size, while its tritium supercharged X01a engines can ensure that beefier adversaries will stay out of reach. 
+The Jackal-class fast Hunter frigate is a raider variant of the high-tech Tri-Tachyon branded Wolf frigate, trading survivability for speed and versatility for raw power. Its 2 medium hardpoints can put to the test most merchant escorts of its size, while its tritium supercharged X01a engines can ensure that beefier adversaries will stay out of reach.
 
 Armed like a Leprechaun guarding its gold and armored like a virgin from Procyon in a Corvean slumber party, the Jackal brings out the true essence of what the Lotus Conglomerate is known about...'Take the money and run!'..."
 javelin,SHIP,"Fusing the high tech pedigree of the Xyphos-class with the elegance of a brigade of drunk Corvean welders, the Javelin-class is a custom built heavy fighter hull designed to overwhelm even the heaviest escort detachment.
 
-Designed exclusively for the Lotus Pirates by the Posterior II Anchorage ground, this crude but extremely effective design is the product of industrial espionage, home-brew solutions and space whiskey. A lot of space whiskey to be precise. 
+Designed exclusively for the Lotus Pirates by the Posterior II Anchorage ground, this crude but extremely effective design is the product of industrial espionage, home-brew solutions and space whiskey. A lot of space whiskey to be precise.
 
 Trading protection for speed, and beam weapons for a easier to field (and finance) load-out, the Javelin strikes fear into all but the most courageous of pilots that have to engage it. Rightfully so, because in worthy hands this heavy fighter can obliterate almost any opposition from adversaries of its size."
-argos,SHIP,"Designed as a fast blockade runner and optimized for auxiliary use as a general supply ship, the Argos-class freighter is the workhorse of Lotus Co smuggling and contraband divisions. 
+argos,SHIP,"Designed as a fast blockade runner and optimized for auxiliary use as a general supply ship, the Argos-class freighter is the workhorse of Lotus Co smuggling and contraband divisions.
 
-Based on the venerable Tarsus-class, the Argos is converted to carry double the fuel amount (the extra space sometimes used for smuggling Corvean high grade Brandy), and to service a small raider fleet by itself. The engines have also been upgraded via tritium supercharging so as to enable the unwieldy freighter hull to pass through blockade points easier. 
+Based on the venerable Tarsus-class, the Argos is converted to carry double the fuel amount (the extra space sometimes used for smuggling Corvean high grade Brandy), and to service a small raider fleet by itself. The engines have also been upgraded via tritium supercharging so as to enable the unwieldy freighter hull to pass through blockade points easier.
 
-Mass-converted at the Posterior II Anchorage ground, the Tarsus hulls are also stripped of much of their famous armor so as to give more room for cargo, ammunitions and the engine superchargers. This makes the Argos rather flimsy in comparison to its Domain designed cousin. 
+Mass-converted at the Posterior II Anchorage ground, the Tarsus hulls are also stripped of much of their famous armor so as to give more room for cargo, ammunitions and the engine superchargers. This makes the Argos rather flimsy in comparison to its Domain designed cousin.
 
 Not that the pirates care much though..."
-revolver,WEAPON," Typically seen in Lotus Co larger raider hulls, the 20mm revolver autocannon is designed to instill fear to all but the most courageous bomber pilots. 
+revolver,WEAPON," Typically seen in Lotus Co larger raider hulls, the 20mm revolver autocannon is designed to instill fear to all but the most courageous bomber pilots.
 Based on the venerable Hegemony vulcan, the revolver uses a cylinder with multiple chambers, like those of a revolver handgun, to speed up the loading-firing-ejection cycle. Loaded with 20mm SAPHEI (Semi-Armor Piercing High Explosive Incendiary) rounds, this autocannon design excels at point defense while the larger caliber gives it also better range than its multi-barreled counterpart. At the cost of higher flux and slower RoF though.",Point Defense
-vanquish,SHIP,"Ordered as the flagship of Conglomerate flotillas in the Core, the Vanquish-class battlecruiser is the biggest, baddest and most frightening sight a merchant captain could ever witness. Usually, the last too.  
+vanquish,SHIP,"Ordered as the flagship of Conglomerate flotillas in the Core, the Vanquish-class battlecruiser is the biggest, baddest and most frightening sight a merchant captain could ever witness. Usually, the last too.
 
 Converted from the venerable Conquest class (at great monetary and resource cost for the Lotus Co) the Vanquish serves as the home of almost 600 rabid pirates, and holds all the ammunition, cargo and fuel that a pirate flotilla would need in an extended patrol. Compared to its Domain designed cousin, the Vanquish adds another power core (above the bridge) so as to support its 8 tritium supercharged XoR01 engines, giving it more speed than anything of its size could dream of. The forward superstructure also houses a small hangar bay for servicing small craft.
 
-These extensive modifications come at the cost of armor and hull integrity, making the Vanquish rather flimsy for its size and armament. The fact that the hull is mainly constructed from salvaged Conquest wreckages found around the De-civilised worlds does not help either. 
+These extensive modifications come at the cost of armor and hull integrity, making the Vanquish rather flimsy for its size and armament. The fact that the hull is mainly constructed from salvaged Conquest wreckages found around the De-civilised worlds does not help either.
 
 But the pirates are not concerned with such technicalities..."
 arcadia,SHIP,"Known as the fastest ship in the Core that can service small craft, the Arcadia-class light carrier exemplifies the mentality that the Lotus Conglomerate operates with: 'Be fast, be first, be loaded'...
@@ -901,27 +905,27 @@ arcadia,SHIP,"Known as the fastest ship in the Core that can service small craft
 A conversion from the financially disastrous Hegemony Valkyrie-class, this hull can service up to 15 standard unit points of small craft, while providing luxurious accommodations for flight crews (like heated bunks and tachyon-coffee makers).
 
 Most of its predecessors' armor and troop quarters are removed so as to provide room for the large hangar bay and support equipment. The energy core is also downgraded, mainly due to the defective original plans that had the main conduits pass through the whole length of the ship.
-When used with caution, the Arcadia can prove extremely valuable for every raider fleet. If escort wings are not kept at bay though, this flimsy design is a disaster waiting to happen. 
+When used with caution, the Arcadia can prove extremely valuable for every raider fleet. If escort wings are not kept at bay though, this flimsy design is a disaster waiting to happen.
 Fortunately, the Lotus Co pirates are aware of that..."
 rive,SHIP," A custom design that excels in raiding sorties against fast supply convoys, the Rive-class is used en-mass by the Lotus Co for almost all fleet tasks, earning the nickname "FeatherSledge" among pirate flottilas.
 
-And with good reason. Derived from the Hammerhead and Sunder classes, this warship was built for concentrated firepower. Essentially a Core Epoch design put into the LotusWorks grinder and then re-assembled with scotch tape, this fast and agile destroyer can out-maneuver most escorts of its size, while keeping its enormous arsenal trained on them. 
+And with good reason. Derived from the Hammerhead and Sunder classes, this warship was built for concentrated firepower. Essentially a Core Epoch design put into the LotusWorks grinder and then re-assembled with scotch tape, this fast and agile destroyer can out-maneuver most escorts of its size, while keeping its enormous arsenal trained on them.
 
-Most of the armor is dismounted from the parts salvaged to make the hull (for monetary and feasibility reasons), so as to keep the design light yet sturdy enough to support the inclusion of a battleship sized ballistic slot for long range combat. Also, a bigger energy core is installed to both fuel the much beefier engines and the large ballistic mount. 
+Most of the armor is dismounted from the parts salvaged to make the hull (for monetary and feasibility reasons), so as to keep the design light yet sturdy enough to support the inclusion of a battleship sized ballistic slot for long range combat. Also, a bigger energy core is installed to both fuel the much beefier engines and the large ballistic mount.
 
 The result is a ship that almost falls apart with every round it fires, but needs far fewer rounds than anything of its size.
 
 Some call this controversial. The Lotus Pirates just call it marvelous..."
-ajax,SHIP," Based on an originally modified by the Green Sun Pirates Falcon-class prototype, the Ajax Light raider Cruiser is an oddity among ships of its size, both in intended use and traits. 
+ajax,SHIP," Based on an originally modified by the Green Sun Pirates Falcon-class prototype, the Ajax Light raider Cruiser is an oddity among ships of its size, both in intended use and traits.
 
-Re-designed as a fast raider by the Lotus Co, this hull serves as the flagship in fast wolf packs intended to strike fast and with force against merchant shipping. For this purpose, much of the original armor is stripped away to make room for a bigger engine room to house 4 Xo1r tritium supercharged engines, a standard modification for Conglomerate designs. 
+Re-designed as a fast raider by the Lotus Co, this hull serves as the flagship in fast wolf packs intended to strike fast and with force against merchant shipping. For this purpose, much of the original armor is stripped away to make room for a bigger engine room to house 4 Xo1r tritium supercharged engines, a standard modification for Conglomerate designs.
 
-The result is a Cruiser sized hull that can take less hits than many destroyers do, while having the speed that most destroyers lack. The extra room is also put into good use for stowing enough supplies to service an entire wolf pack on its own. 
+The result is a Cruiser sized hull that can take less hits than many destroyers do, while having the speed that most destroyers lack. The extra room is also put into good use for stowing enough supplies to service an entire wolf pack on its own.
 
 As long as the holds are still intact at least..."
 stinger,WEAPON,"A rack of advanced, highly maneuverable torpedoes, smaller than typical torpedoes.
 
-The Stinger lightweight torpedo is a custom 480mm guided torpedo design manufactured for the Lotus Conglomerate pirates. Derived from the high-tech Atropos class guided torpedo, the Stinger replaces the potent chemical warhead with a conventional High Explosive Squash Head charge, managing to strip enough weight so as to fit an upgraded supercharged ion engine. 
+The Stinger lightweight torpedo is a custom 480mm guided torpedo design manufactured for the Lotus Conglomerate pirates. Derived from the high-tech Atropos class guided torpedo, the Stinger replaces the potent chemical warhead with a conventional High Explosive Squash Head charge, managing to strip enough weight so as to fit an upgraded supercharged ion engine.
 
 The result is a torpedo with less punch than weapons of its type, but with far higher agility and speed. Both of them highly sought after by the Pirates due to the 'hit and run' tactics they are accustomed with.",Strike
 stinger_single,WEAPON,"A single advanced, highly maneuverable torpedo, smaller than typical torpedoes.
@@ -931,7 +935,7 @@ The Stinger lightweight torpedo is a custom 480mm guided torpedo design  manufac
 The result is a torpedo with less punch than weapons of its type, but with far higher agility and speed. Both of them highly sought after by the Pirates due to the 'hit and run' tactics they are accustomed with.
 
 This mount features only a single torpedo.",Strike
-stingerlauncher,WEAPON,"Multiple torpedo launcher, able to fire more than one lightweight torpedo sequentially. 
+stingerlauncher,WEAPON,"Multiple torpedo launcher, able to fire more than one lightweight torpedo sequentially.
 
 The Stinger lightweight torpedo is a custom 480mm guided torpedo design manufactured for the Lotus Conglomerate pirates. Derived from the high-tech Atropos class guided torpedo, the Stinger replaces the potent chemical warhead with a conventional High Explosive Squash Head charge, managing to strip enough weight so as to fit an upgraded supercharged ion engine.
 
@@ -950,21 +954,21 @@ hdstinger,WEAPON,"Dual torpedo launcher system, used for launching lightweight t
 A very large weapon system, the Heavy stinger launcher is listed as having two 480mm torpedo tubes with an internal magazine that carries twenty four Stinger light torpedoes. The fire control system is linked, and fires four Stinger torpedoes in tandem. An automatic loader prepares the next salvo from the magazine in seconds.
 
 Although the Stingers used lack the punch of regular heavyweight torpedoes, this launcher fits a niche in capital ships that need heavier guided munitions but lack the maneuverability to aim them efficiently.",Strike
-bolt,SHIP," Built around the 20mm revolver autocannon, the Bolt-class interceptor fighter is one of the fastest fighters put in mass-production in the Core. It is also one of the flimsiest. 
+bolt,SHIP," Built around the 20mm revolver autocannon, the Bolt-class interceptor fighter is one of the fastest fighters put in mass-production in the Core. It is also one of the flimsiest.
 
-Often described as 'the coffin with thrusters', Bolt interceptors serve as fast raiders against lightly armored and armed merchant marine targets. They are fast, cheap and easy to produce, but lack the firepower and protection needed for anything other than harassment duties. 
+Often described as 'the coffin with thrusters', Bolt interceptors serve as fast raiders against lightly armored and armed merchant marine targets. They are fast, cheap and easy to produce, but lack the firepower and protection needed for anything other than harassment duties.
 
-The life expectancy while flying this hull is so low, that Pilots are often chosen as a sort of punishment for dereliction of duty (a common offense among pirate crews). 
+The life expectancy while flying this hull is so low, that Pilots are often chosen as a sort of punishment for dereliction of duty (a common offense among pirate crews).
 
 And the fact that most offenders prefer marooning when given the choice, tells a lot about the Bolt indeed..."
-stingray,SHIP,"With four magnetically boosted small ballistic turrets utilized in area defense roles, the Stingray-class fire support Frigate is a force to be reckoned with for any bomber pilot. 
+stingray,SHIP,"With four magnetically boosted small ballistic turrets utilized in area defense roles, the Stingray-class fire support Frigate is a force to be reckoned with for any bomber pilot.
 
-Maybe the ugliest of the Posterior II offerings, the Stingray resembles more the fish that its name is derived from than a frigate, with the added disadvantage of being very difficult to produce, due to the scarcity of Hydra class destroyer hulls it uses as a base. 
+Maybe the ugliest of the Posterior II offerings, the Stingray resembles more the fish that its name is derived from than a frigate, with the added disadvantage of being very difficult to produce, due to the scarcity of Hydra class destroyer hulls it uses as a base.
 
 As a result, the Stingray is rarely in Lotus Conglomerate flotillas and it is used mainly to protect valuable shipping assets when used in blockade runs."
 aria,SHIP," Based on an antiquated Domain super-tanker blueprint, the Aria-class is a medium sized fleet tanker built to support Lotus Co long range operations against distant trade routes.
 
-The Pirates use this ship to double the effective range of their wolf packs, thus allowing both long range operations and constant shadowing of merchant convoys. The ship itself is built around two 5000DWT self insulating fuel tanks. carrying enough fuel and AV gas for a medium sized pirate flotilla. 
+The Pirates use this ship to double the effective range of their wolf packs, thus allowing both long range operations and constant shadowing of merchant convoys. The ship itself is built around two 5000DWT self insulating fuel tanks. carrying enough fuel and AV gas for a medium sized pirate flotilla.
 
 Scantly armored and armed, this supply ship needs constant protection from enemy escort and interdiction sorties and it would be wise to be always kept far as far away from the battlefield as possible. A single missile passing the light point defenses is enough to produce a hulking inferno, as well as a shockwave that can put out of action the whole battlegroup.
 
@@ -973,12 +977,12 @@ sarissa,SHIP," Sporting two heavy 100mm rocket bays and a revolver auto-cannon f
 
 The design is based on an old Domain blueprint for assault fighters procured in a raid of the Trendor IV de-civilised world, an old Domain R&D hub for almost a millennium. The Posterior II Anchorage shipyard was quick to reverse-engineer and modify the ancient design, both to fit the modern battlefield and to allow for mass production. The result is a heavy bomber that fits perfectly with the Lotus hit 'n' run tactics.
 
-The two pilots are seated in tandem, with the left responsible for avionics and flying and the one seated on the right manning the 20mm turret and aiming the bombing aperture. The cabin and engines are protected with 12mm dense-alloy panels, a rare sight in Lotus designs due to the high procurement and fitting cost. 
+The two pilots are seated in tandem, with the left responsible for avionics and flying and the one seated on the right manning the 20mm turret and aiming the bombing aperture. The cabin and engines are protected with 12mm dense-alloy panels, a rare sight in Lotus designs due to the high procurement and fitting cost.
 
 Well armored, heavily armed and with enough speed to enable swift bomb runs, the Sarissa is considered the quintessential bomber for every Pirate wolf pack."
 intrepid,SHIP,"The Intrepid-class fast battleship is the epitome of the LotusWorks design bureau. And it shows...
 
-Built to outgun the heaviest corporate convoy escorts conceived, the Intrepid is designed around a lightweight yet durable fast battleship monoframe, based on century old Tri-Tachyon battleship blueprints - duly retrieved via the trademark 'Lotus persuasion ave'. 
+Built to outgun the heaviest corporate convoy escorts conceived, the Intrepid is designed around a lightweight yet durable fast battleship monoframe, based on century old Tri-Tachyon battleship blueprints - duly retrieved via the trademark 'Lotus persuasion ave'.
 The Posterior IIb Anchorage was swift to adapt the design for raiding purposes, reconfiguring the hull for standoff CSS roles by the addition of five (!) large missile mounts sporting lightweight torpedo launchers.
 
 The hull was also extensively optimized for speed, thus giving the class exceptional maneuvering abilities that most ships of its size lack. Unfortunately the need for speed incurred the standard penalty in survivability, a characteristic that the Lotus Pirates are easy to forgo due to the hit 'n' run mentality that love so much. "
@@ -1027,7 +1031,7 @@ In the hands of a skilled captain the Tenzen is a force to be reckoned with.",,,
 ,,,,,
 gedune_flarepd,WEAPON,"An interdictor flare system. These flares try to collide with inbound targets, forcing detonation, and bypassing armour common to heavy ordinance.
 
-The flares are crudely constructed vessels with a basic guidance packages capable of holding active plasma shunted from a ships power core. Once a flare is activated the vessel releases stored plasma, propelling the flare towards incoming targets. 
+The flares are crudely constructed vessels with a basic guidance packages capable of holding active plasma shunted from a ships power core. Once a flare is activated the vessel releases stored plasma, propelling the flare towards incoming targets.
 
 These flares do not give off an effective decoy to missile guidance systems, and so, rely entirely on a physical collision with the target. Ironically these flares are themselves vulnerable to interference from enemy point defense.
 
@@ -1157,7 +1161,7 @@ Desperate to combat Jardain dreadnaughts during the first contact war, the Feder
 To this day, any fleet with a Titan is a force to be reckoned with.",,,
 antares,SHIP,"An advanced Federation battlecruiser with heavy missile systems designed to make quick work of enemy capital ships.
 
-With the need to protect its borders with a faster, long range capital ship, the Federation opted for a powerful yet inexpensive battlecruiser design.  Equipped with a heavy missile system, the Antares' rocket swarms are deadly to enemy carriers.  Despite its thinner armor, in numbers, it will simply overwhelm even the most powerful battleships.  
+With the need to protect its borders with a faster, long range capital ship, the Federation opted for a powerful yet inexpensive battlecruiser design.  Equipped with a heavy missile system, the Antares' rocket swarms are deadly to enemy carriers.  Despite its thinner armor, in numbers, it will simply overwhelm even the most powerful battleships.
 
 A Hedgemony commander once commented on how the Antares' impressive weapons and ease of construction made it the ideal capital ship.  He was severely reprimanded.",,,
 ares,SHIP,"A capable Federation destroyer often used in security patrol and escort rolls, the Ares provides command presence in a small package.
@@ -1179,7 +1183,7 @@ rickshaw,SHIP,"The Rickshaw is a well armed strike frigate often used in attack 
 Replacing the aging Federation Dakota-class ships, the Rickshaw was designed with more contemporary needs in mind.  The majority of its weapon batteries face forward for use in high speed gun runs or gunship strafing fire.  Criticized for lack of versatility and range of the old Dakota-class frigates, its modern weapon and communication systems better suit the Federation's current needs as old Dakotas are retired.  So successful was the low-cost design, that plans to manufacture it were smuggled onto the black market. Years later, counterfeit Rickshaws began to be spotted in populated space.  Realizing that it could be a valuable trade item, an export variant was put into production.  Enjoyed by mercenaries and pirates alike, Rickshaw-class frigates are common throughout Federation space.",,,
 toa,SHIP,"A reliable war vessel armored to the hilt to survive the harshest combat, the Toa can combat swaths of frigates in prolonged engagements.
 
-One of the last great destroyers of the contact war, the Toa could fight on Jardain terms--close and brutal combat.  Designed to withstand extreme punishment, there were instances where barely recognizable battle damaged Toas would continue to fight with engines missing and numerous weapons offline.  So dense was their armor and hull, that their destroyed husks were used in the siege of Corinth as kinetic weapons dropped from orbit.  With the difficulty of scrapping them, when faced with the issue of their replacement, it was decided that maintaining them would be less costly.  
+One of the last great destroyers of the contact war, the Toa could fight on Jardain terms--close and brutal combat.  Designed to withstand extreme punishment, there were instances where barely recognizable battle damaged Toas would continue to fight with engines missing and numerous weapons offline.  So dense was their armor and hull, that their destroyed husks were used in the siege of Corinth as kinetic weapons dropped from orbit.  With the difficulty of scrapping them, when faced with the issue of their replacement, it was decided that maintaining them would be less costly.
 
 To this day, Toa hulls are routinely modernized with new weapons systems and engines.  New threats and recent Federation expansion has fueled rumors that they may go back into production after nearly a hundred years.",,,
 citadelpd,WEAPON,"A massive flak cannon that hurls 1600mm fragmentation shells toward its targets, destroying swaths of missiles or fighters in single volleys.
@@ -1262,7 +1266,7 @@ Striving to reduce running costs, the Federation began developing a series of hi
 "relics_exo_h","WEAPON","Exo is fearsome weapon. It is completely unknown how is beam capable of making explosive damage. Closer examination of weapon in work reveal that it's used light with something classified as dark light"". Dark light is core of beam"," compressed and restrain with strong and very focus gravity field. On outer edge of beam is ""regular"" light. On beams end gravity field is weakened and two lights combine leading to tremendous explosion. How is dark light created remain unknown.Exo is extremely complex weapon design to melt heavy armor and for that role it's perfect tool.
 This is modified version of original weapon and it's made compatible to be used on non Purifiers ships. However use of this weapon come with high OP cost and lowered overall statistics"," compared with original version.""","Assault"
 "relics_blazo","WEAPON","Blazo is energy base explosive weapon. It's small energy mount allow it many purposes.Blazo uses effect of regular light and dark light but in form of laser rays. Still it's same principe in function there, same as Exo.","Assault",,
-"relics_blazo_h","WEAPON","Blazo is energy base explosive weapon. It's small energy mount allow it many purposes.Blazo uses effect of regular light and dark light but in form of laser rays. Still it's same principe in function there, same as Exo. 
+"relics_blazo_h","WEAPON","Blazo is energy base explosive weapon. It's small energy mount allow it many purposes.Blazo uses effect of regular light and dark light but in form of laser rays. Still it's same principe in function there, same as Exo.
 This is modified version of original weapon and it's made compatibile to be used on non Purifiers ships.However use of this weapon come with high OP cost and lowered overall statistics, compared with original version.","Assault",,
 "relics_zaap","WEAPON","This is really terrifying device. It use completely unknown process to lunch plasma like projectiles with devastating effects on ships armor. Zaap have very long range and extreme impact power. It can be mounted on medium energy slot. Only major drawback of this weapon is his recharge rate. It recharges longer than anything else.","Fire Support",,
 "relics_zaap_h","WEAPON","This is really terrifying device. It use completely unknown process to lunch plasma like projectiles with devastating effects on ships armor. Zaap have very long range and extreme impact power. It can be mounted on medium energy slot. Only major drawback of this weapon is his recharge rate. It recharges longer than anything else.
@@ -1278,7 +1282,7 @@ Redmad last words, an captain on Parrot capital ship Black Wierd"""," recorded i
 "relics_chaser","SHIP","Lightest and fastest of all Purifiers fighters. Extremely low armor is compensate with lot of flux and superb OMNI shields. Armed with pair of Burst PD lasers there is no threat that these Interceptors can't handle. Drawback of such speed and supreme shield generator is very complex maintenance resulting in just 2 ship per wing.",,,
 "relics_hiter","SHIP","Hiter is powerful fighter design to withstand lot and to punch hard. Even more powerful energy generator is housed beneath his weak armor.Supreme OMNI shields present only real defense to hull damage.",,,
 "relics_charger","SHIP","Chargers is true heavy fighter. They come in pairs that bring ultimate small packed destruction. Weak armor is guarded by powerful OMNI shield and monstrous energy generator back it up all. Charger is used to obliterate and devastate anything in it's path. Unfortunately such power come with high deployment cost.",,,
-"relics_chaser_h","SHIP","Lightest and fastest of all Purifiers fighters. Extremely low armor is compensate with lot of flux and superb OMNI shields. Armed with pair of Burst PD lasers there is no threat that these Interceptors can't handle. Drawback of such speed and supreme shield generator is very complex maintenance resulting in just 2 ship per wing. 
+"relics_chaser_h","SHIP","Lightest and fastest of all Purifiers fighters. Extremely low armor is compensate with lot of flux and superb OMNI shields. Armed with pair of Burst PD lasers there is no threat that these Interceptors can't handle. Drawback of such speed and supreme shield generator is very complex maintenance resulting in just 2 ship per wing.
 This is modified version of original craft made to be controllable by humans. It's advanced AI core is removed.",,,
 "relics_hiter_h","SHIP","Hiter is powerful fighter design to withstand lot and to punch hard. Even more powerful energy generator is housed beneath his weak armor.Supreme OMNI shields present only real defense to hull damage.
 This is modified version of original craft conrolable by humans with extracted AI core.",,,
@@ -1288,7 +1292,7 @@ This is modified version of original craft made to be controllable by humans. It
 "relics_pusher_h","SHIP","Pusher is very fast and light frigate armed with one medium energy turret backed up with two small energy turrets. Design to chase down fast targets or to kite bigger ones. 360 degrees OMNI shield protect it's weak armor. As all Purifiers ships it's relay on powerful energy generator to give him punch or to provide him cover behind powerful shield.
 This is modified version of original craft made to be controllable by humans. It's advanced AI core is removed.",,,
 "relics_egler","SHIP","Smallest of Purifiers frigates, his only hitting power is three small energy turrets. Unlike other two frigates Egler is slow because of engine energy cut down in favor of building large energy pool for OMNI shield and weapons. This give him ability to withstand lots of hits and yet to use his own weapons under heavy fire without needing to vent. It have lots of cargo space. As all Purifiers he also have extremely weak armor.",,,
-"relics_egler_h","SHIP","Smallest of Purifiers frigates, his only hitting power is three small energy turrets. Unlike other two frigates Egler is slow because of engine energy cut down in favor of building large energy pool for OMNI shield and weapons. 
+"relics_egler_h","SHIP","Smallest of Purifiers frigates, his only hitting power is three small energy turrets. Unlike other two frigates Egler is slow because of engine energy cut down in favor of building large energy pool for OMNI shield and weapons.
 This give him ability to withstand lots of hits and yet to use his own weapons under heavy fire without needing to vent. It have lots of cargo space. As all Purifiers he also have extremely weak armor.This is modified version of original craft made to be controllable by humans. It's advanced AI core is removed.",,,
 "relics_solver","SHIP","Solver is biggest of Purifiers frigates and strongest one. It's design to solve any situation. Six small energy turrets supported by wast energy reserve give him unique ability to handle even destroyer class ships on it's own.It's turrets are focused on broadside. His fragile hull is protected by excellent OMNI shield, like any other Purifiers ship.",,,
 "relics_solver_h","SHIP","Solver is biggest of Purifiers frigates and strongest one. It's design to solve any situation. Six small energy turrets supported by wast energy reserve give him unique ability to handle even destroyer class ships on it's own.It's turrets are focused on broadside. His fragile hull is protected by excellent OMNI shield, like any other Purifiers ship.

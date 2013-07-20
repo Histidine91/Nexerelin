@@ -62,6 +62,7 @@ public class StationManager
 		{
 			stationRecords[nextStationRecord].increaseResources();
 			stationRecords[nextStationRecord].spawnFleets();
+			stationRecords[nextStationRecord].checkForPlayerItems();
 		}
 
 		nextStationRecord++;
@@ -127,7 +128,7 @@ public class StationManager
 
 				for(int j = 0; j < stationRecords.length; j++) {
 					StationRecord record2 = stationRecords[j];
-				
+
 					if (record2.getOwner() == null || !record2.getOwner().getFactionId().equalsIgnoreCase(factionId2))
 						continue;
 
@@ -145,7 +146,7 @@ public class StationManager
 		}
 		else
 			return 0f;
-	}	
+	}
 
 	public Boolean doesFactionOwnStation(String factionId)
 	{
@@ -236,7 +237,7 @@ public class StationManager
 		for(int j = 0; j < stationRecords.length; j = j + 1)
 		{
 			StationRecord record = stationRecords[j];
-			
+
 			if(record.getOwner() == null)
 				continue;
 

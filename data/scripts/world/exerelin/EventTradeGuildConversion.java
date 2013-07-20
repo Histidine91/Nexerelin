@@ -9,20 +9,16 @@ import java.awt.*;
 
 public class EventTradeGuildConversion extends EventBase
 {
-	private SectorAPI sectorAPI;
-	private StarSystemAPI starSystemAPI;
 
-	public EventTradeGuildConversion(SectorAPI sector, StarSystemAPI system)
+	public EventTradeGuildConversion()
 	{
-		sectorAPI = sector;
-		starSystemAPI = system;
 		setType(this.getClass().getName());
 	}
 
-	public void callTradersForLastFaction()
+	public void callTradersForLastFaction(StarSystemAPI starSystemAPI)
 	{
 		// DEFAULTS
-		FactionAPI traderFAPI = sectorAPI.getFaction("tradeguild");
+		FactionAPI traderFAPI = Global.getSector().getFaction("tradeguild");
 		String tradingWithFaction = "";
 
 		// Reset trader relationships with each faction
@@ -80,7 +76,7 @@ public class EventTradeGuildConversion extends EventBase
 				fleetCargo.addSupplies(800);
 
 				fleet.clearAssignments();
-				SectorEntityToken station = ExerelinUtils.getRandomStationForFaction(tradingWithFaction, sectorAPI);
+				SectorEntityToken station = ExerelinUtils.getRandomStationForFaction(tradingWithFaction, Global.getSector());
 
 				if(station != null)
 					fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, station, 200);
