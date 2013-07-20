@@ -214,10 +214,10 @@ public class DiplomacyManager
 		{
 			FactionAPI f2API = sector.getFaction(factionRecords[j].getFactionId());
 
-			if(!ExerelinData.getInstance().systemManager.stationManager.doesFactionOwnStation(f2API.getId()))
+			if(f2API.getId().equalsIgnoreCase(f1API.getId()))
 				continue;
 
-			if(f2API.getId().equalsIgnoreCase(f1API.getId()))
+			if(!ExerelinData.getInstance().systemManager.stationManager.doesFactionOwnStation(f2API.getId()))
 				continue;
 
 			int factionRelationship = recordToUpdate.getFactionRelationship(factionRecords[j].getFactionId());
@@ -247,7 +247,6 @@ public class DiplomacyManager
 
 				factionRelationship += relationshipChange;
 			}
-
 
 			// Add whatever the current bias is
 			int f1API_about_f2API = recordToUpdate.getFactionRelationship(factionRecords[j].getFactionId());
@@ -283,7 +282,7 @@ public class DiplomacyManager
 
 			// Update the relationship setting
 			recordToUpdate.setFactionRelationship(factionRecords[j].getFactionId(), factionRelationship);
-			//System.out.println(recordToUpdate.getFactionId() + " relationship to " + factionRecords[j].getFactionId() + " = " + recordToUpdate.getFactionRelationship(factionRecords[j].getFactionId()));
+			System.out.println(recordToUpdate.getFactionId() + " relationship to " + factionRecords[j].getFactionId() + " = " + recordToUpdate.getFactionRelationship(factionRecords[j].getFactionId()));
 		}
 
 		String[] enemies = recordToUpdate.getEnemyFactions();
@@ -471,13 +470,10 @@ public class DiplomacyManager
 					dissolveAlliance(diplomacyRecord.getAllianceId(), getDiplomacyRecordsForAlliance(diplomacyRecord.getAllianceId()));
 					break;
 				}
-				else if(ExerelinUtils.getRandomInRange(0,9)*allySystemOwnership > 2)
+				else if(ExerelinUtils.getRandomInRange(0,9)*allySystemOwnership > 3)
 				{
 					// Betray alliance
-					allianceManager.dissolveAlliance(diplomacyRecord.getAllianceId(), getDiplomacyRecordsForAlliance(diplomacyRecord.getAllianceId()));
-					diplomacyRecord.setFactionRelationship(otherDiplomacyRecord.getFactionId(), WAR_LEVEL *3);
-					otherDiplomacyRecord.setFactionRelationship(diplomacyRecord.getFactionId(), WAR_LEVEL *3);
-					declareFactionWarOrPeace(diplomacyRecord,  otherDiplomacyRecord, -1);
+					removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
 					break;
 				}
 			}
@@ -499,7 +495,7 @@ public class DiplomacyManager
 					removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), false);
 					break;
 				}
-				else if(ExerelinUtils.getRandomInRange(0,9)*allySystemOwnership > 2)
+				else if(ExerelinUtils.getRandomInRange(0,9)*allySystemOwnership > 3)
 				{
 					// Betray the alliance
 					removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
