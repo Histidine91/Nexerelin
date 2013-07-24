@@ -1401,7 +1401,19 @@ public class ExerelinUtils
 
 	public static void addRandomFactionShipsToCargo(CargoAPI cargo, int count, String factionId, SectorAPI sector)
 	{
-		CampaignFleetAPI fleet = sector.createFleet(factionId, "exerelinGenericFleet");
+		int r = getRandomInRange(0,15);
+
+		CampaignFleetAPI fleet;
+
+		if(r == 0)
+			fleet = sector.createFleet(factionId, "exerelinOutSystemSupplyConvoy");
+		else if(r == 1)
+			fleet = sector.createFleet(factionId, "exerelinAsteroidMiningFleet");
+		else if(r == 2)
+			fleet = sector.createFleet(factionId, "exerelinGasMiningFleet");
+		else
+			fleet = sector.createFleet(factionId, "exerelinGenericFleet");
+
 
 		List ships = cargo.getMothballedShips().getMembersListCopy();
 		if(ships.size() > 25)
