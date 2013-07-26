@@ -110,12 +110,23 @@ public class DiplomacyManager
 							}
 						}
 					}
+				}
+				else if (playerRecord.isInAlliance())
+				{
+					// War between players alliance and faction
+					declareWarOrPeaceBetweenFactionAndAlliance(factionRecords[j].getFactionId(), playerRecord.getAllianceId(), -1);
 
-
+					DiplomacyRecord[] records = getDiplomacyRecordsForAlliance(playerRecord.getAllianceId());
+					for(int i = 0; i < records.length; i++)
+					{
+						DiplomacyRecord allianceFactionRecord = records[i];
+						allianceFactionRecord.setFactionRelationship(factionRecords[j].getFactionId(), WAR_LEVEL);
+						factionRecords[j].setFactionRelationship(allianceFactionRecord.getFactionId(), WAR_LEVEL *2);
+					}
 				}
 				else if(factionRecords[j].isInAlliance())
 				{
-					// War between player and alliance
+					// War between player and other factions alliance
 					declareWarOrPeaceBetweenFactionAndAlliance(playerRecord.getFactionId(), factionRecords[j].getAllianceId(), -1);
 
 					DiplomacyRecord[] records = getDiplomacyRecordsForAlliance(factionRecords[j].getAllianceId());
@@ -149,7 +160,7 @@ public class DiplomacyManager
 				String[] allies = factionRecords[j].getAlliedFactions();
 				for(int i = 0; i < allies.length; i++)
 				{
-					DiplomacyRecord allyOfBetrayed = this.getRecordForFaction(enemies[i]);
+					DiplomacyRecord allyOfBetrayed = this.getRecordForFaction(allies[i]);
 					if(!allyOfBetrayed.getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 						allyOfBetrayed.addToFactionRelationship(ExerelinData.getInstance().getPlayerFaction(), -20);
 				}
@@ -293,7 +304,7 @@ public class DiplomacyManager
 
 			// Update the relationship setting
 			recordToUpdate.setFactionRelationship(factionRecords[j].getFactionId(), factionRelationship);
-			System.out.println(recordToUpdate.getFactionId() + " relationship to " + factionRecords[j].getFactionId() + " = " + recordToUpdate.getFactionRelationship(factionRecords[j].getFactionId()));
+			//System.out.println(recordToUpdate.getFactionId() + " relationship to " + factionRecords[j].getFactionId() + " = " + recordToUpdate.getFactionRelationship(factionRecords[j].getFactionId()));
 		}
 
 		String[] enemies = recordToUpdate.getEnemyFactions();
@@ -764,8 +775,8 @@ public class DiplomacyManager
 				continue;
 
 			factionRecords[i].setGameRelationship(factionId,  0);
-			factionRecords[i].setFactionRelationship(factionId,  0);
 			factionRecords[i].getFactionAPI().setRelationship(factionId,  0);
+			factionRecords[i].setFactionRelationship(factionId,  0);
 		}
 
 		// Remove from alliance
@@ -942,13 +953,22 @@ public class DiplomacyManager
 			float allianceGameRelationship = deriveAllianceGameRelationshipWithFaction(allianceId, iRec.getFactionId());
 
 			rec.setGameRelationship(iRec.getFactionId(), allianceGameRelationship);
-			iRec.setGameRelationship(rec.getFactionId(), allianceGameRelationship);
 			rec.getFactionAPI().setRelationship(iRec.getFactionId(), allianceGameRelationship);
+			iRec.setGameRelationship(rec.getFactionId(), allianceGameRelationship);
 			iRec.getFactionAPI().setRelationship(rec.getFactionId(), allianceGameRelationship);
 		}
 
 		allianceRecord.addFactionToAlliance(factionId);
-		rec.setAllianceId(allianceRecord.getAllianceId());
+		rec.setAllianceId(allianceId);
+
+		DiplomacyRecord[] allianceRecords = this.getDiplomacyRecordsForAlliance(allianceId);
+		for(int i = 0; i < allianceRecords.length; i++)
+		{
+			allianceRecords[i].setGameRelationship(rec.getFactionId(), 1);
+			allianceRecords[i].getFactionAPI().setRelationship(rec.getFactionId(), 1);
+			rec.setGameRelationship(allianceRecords[i].getFactionId(), 1);
+			rec.getFactionAPI().setRelationship(allianceRecords[i].getFactionId(), 1);
+		}
 
 		System.out.println(factionId + " has joined " + allianceRecord.getAllianceNameAndFactions());
 		if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
@@ -1025,8 +1045,8 @@ public class DiplomacyManager
 	private void declareFactionWarOrPeace(DiplomacyRecord recordOne, DiplomacyRecord recordTwo, float value)
 	{
 		recordOne.setGameRelationship(recordTwo.getFactionId(), value);
-		recordTwo.setGameRelationship(recordOne.getFactionId(), value);
 		recordOne.getFactionAPI().setRelationship(recordTwo.getFactionId(), value);
+		recordTwo.setGameRelationship(recordOne.getFactionId(), value);
 		recordTwo.getFactionAPI().setRelationship(recordOne.getFactionId(), value);
 
 		String innerMessage = "";
@@ -1060,8 +1080,8 @@ public class DiplomacyManager
 			{
 				DiplomacyRecord jRec = getRecordForFaction(allianceTwoFactions[j]);
 				iRec.setGameRelationship(jRec.getFactionId(), value);
-				jRec.setGameRelationship(iRec.getFactionId(), value);
 				iRec.getFactionAPI().setRelationship(jRec.getFactionId(), value);
+				jRec.setGameRelationship(iRec.getFactionId(), value);
 				jRec.getFactionAPI().setRelationship(iRec.getFactionId(), value);
 			}
 		}
@@ -1091,8 +1111,8 @@ public class DiplomacyManager
 		{
 			DiplomacyRecord iRec = getRecordForFaction(allianceFactions[i]);
 			iRec.setGameRelationship(rec.getFactionId(), value);
-			rec.setGameRelationship(iRec.getFactionId(), value);
 			iRec.getFactionAPI().setRelationship(rec.getFactionId(), value);
+			rec.setGameRelationship(iRec.getFactionId(), value);
 			rec.getFactionAPI().setRelationship(iRec.getFactionId(), value);
 		}
 
@@ -1130,9 +1150,13 @@ public class DiplomacyManager
 			float allianceGameRelationship = deriveAllianceGameRelationshipWithFaction(allianceId, iRec.getFactionId());
 
 			rec1.setGameRelationship(iRec.getFactionId(), allianceGameRelationship);
+			rec1.getFactionAPI().setRelationship(iRec.getFactionId(), allianceGameRelationship);
 			rec2.setGameRelationship(iRec.getFactionId(), allianceGameRelationship);
+			rec2.getFactionAPI().setRelationship(iRec.getFactionId(), allianceGameRelationship);
 			iRec.setGameRelationship(rec1.getFactionId(), allianceGameRelationship);
+			iRec.getFactionAPI().setRelationship(rec1.getFactionId(), allianceGameRelationship);
 			iRec.setGameRelationship(rec2.getFactionId(), allianceGameRelationship);
+			iRec.getFactionAPI().setRelationship(rec2.getFactionId(), allianceGameRelationship);
 		}
 
 		System.out.println("New alliance " + allianceRecord.getAllianceNameAndFactions() + " has been founded");
@@ -1199,8 +1223,8 @@ public class DiplomacyManager
 				float allianceGameRelationship = deriveAllianceGameRelationshipWithFaction(combinedAllianceId, iRec.getFactionId());
 
 				rec.setGameRelationship(iRec.getFactionId(), allianceGameRelationship);
-				iRec.setGameRelationship(rec.getFactionId(), allianceGameRelationship);
 				rec.getFactionAPI().setRelationship(iRec.getFactionId(), allianceGameRelationship);
+				iRec.setGameRelationship(rec.getFactionId(), allianceGameRelationship);
 				iRec.getFactionAPI().setRelationship(rec.getFactionId(), allianceGameRelationship);
 			}
 		}
