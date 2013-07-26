@@ -182,10 +182,13 @@ public class SectorGen implements SectorGeneratorPlugin
 				nameOK = true;
 				for(int l = 0; l < system.getOrbitalStations().size(); l++)
 				{
-					if(((SectorEntityToken)system.getOrbitalStations().get(l)).getFullName().equalsIgnoreCase(name))
+					String possibleName = planet.getFullName() + " " + name;
+					if(((SectorEntityToken)system.getOrbitalStations().get(l)).getFullName().contains(possibleName))
 						nameOK = false;
+
 				}
 			}
+
 			int angle = ExerelinUtils.getRandomInRange(1, 360);
 			int orbitRadius = 300;
 			int orbitDays = ExerelinUtils.getRandomInRange(50, 100);
