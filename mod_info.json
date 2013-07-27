@@ -5,7 +5,7 @@
 "version":"0.58",
 "description":"Choose your banner and fight for supremacy of system Exerelin!",
 "gameVersion":"0.54.1",
-"totalConversion":"true",
+"totalConversion":"false",
 "jars":["jars/Omnifactory.jar","jars/ExerelinHacks.jar",],
 
 "replace":
@@ -17,5 +17,8 @@
     "data/world/factions/independent.faction",
     "data/world/factions/pirates.faction",
     "data/world/factions/tritachyon.faction",
+    "data/world/factions/neutral.faction",
+    "data/world/factions/bushi.faction",
+    "data/world/factions/hiigaran_descendants.faction",
 	],
 }

@@ -177,7 +177,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		}
 		else if (stage == 8)
 		{
-			String[] possibleFactions = ExerelinData.getInstance().getPossibleFacions();
+			String[] possibleFactions = ExerelinData.getInstance().getPossibleFactions();
 			if(possibleFactions.length > 6)
 			{
 				for(int i = 0; i < possibleFactions.length/2; i = i + 1)
@@ -196,7 +196,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		}
 		else if (stage == 9)
 		{
-			String[] possibleFactions = ExerelinData.getInstance().getPossibleFacions();
+			String[] possibleFactions = ExerelinData.getInstance().getPossibleFactions();
 			for(int i = possibleFactions.length/2; i < possibleFactions.length; i = i + 1)
 			{
 				result.add(new ResponseImpl(possibleFactions[i]));
@@ -374,7 +374,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 
 			stats.addAptitudePoints(3);
 			stats.addSkillPoints(6);
-			String[] possibleFactions = ExerelinData.getInstance().getPossibleFacions();
+			String[] possibleFactions = ExerelinData.getInstance().getPossibleFactions();
 			for(int i = 0; i < possibleFactions.length; i = i + 1)
 			{
 				if(response.getText().equalsIgnoreCase(possibleFactions[i]))
@@ -506,6 +506,17 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		{
 			data.addStartingShipChoice("thule_vikingmki_OD");
 			data.addStartingShipChoice("thule_vikingmkii_OD");
+		}
+		else if (factionId.equalsIgnoreCase("bushi"))
+		{
+			data.addStartingShipChoice("bushi_kaiken_Standard");
+			data.addStartingShipChoice("bushi_yari_Standard");
+		}
+		else if (factionId.equalsIgnoreCase("hiigaran_descendants"))
+		{
+			data.addStartingShipChoice("hii_fiirkan_Standard");
+			data.addStartingShipChoice("hii_jet_Standard");
+			data.addStartingShipChoice("hii_kaan_Standard");
 		}
 		else
 		{

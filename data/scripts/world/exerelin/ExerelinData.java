@@ -114,12 +114,22 @@ public final class ExerelinData
 		playerFaction = "independent"; // Set to default
 	}
 
-	public String[] getPossibleFacions()
+	public String[] getPossibleFactions()
 	{
 		if(onlyVanillaFactions)
 			return new String[] {"hegemony", "tritachyon", "pirates", "independent",};
 		else
-			return possibleFactions;
+		{
+			ArrayList possibleFactionsList = new ArrayList();
+
+			// Add built in factions
+			for(int i = 0; i < possibleFactions.length; i++)
+				possibleFactionsList.add(possibleFactions[i]);
+
+			// Add modded factions
+			addModdedFactionsToList(possibleFactionsList);
+			return (String[])possibleFactionsList.toArray(new String[possibleFactionsList.size()]);
+		}
 	}
 
 	public void setAvailableFactions(String[] array)
@@ -136,7 +146,7 @@ public final class ExerelinData
 	{
 		if (availableFactions == null)
 		{
-			String[] locPossibleFaction = this.getPossibleFacions();
+			String[] locPossibleFaction = this.getPossibleFactions();
 			ArrayList confirmedFactions = new ArrayList(locPossibleFaction.length);
 
 			if(!onlyRespawnStartingFactions)
@@ -180,5 +190,34 @@ public final class ExerelinData
 			}
 		}
 		return availableFactions;
+	}
+
+	public void addModdedFactionsToList(ArrayList possibleFactionList)
+	{
+		System.out.println("Getting modded factions");
+
+		// Test for Bushi
+		try
+		{
+			Global.getSettings().getScriptClassLoader().loadClass("data.scripts.world.BushiGen");
+			System.out.println("Bushi installed");
+			possibleFactionList.add("bushi");
+		}
+		catch (ClassNotFoundException ex)
+		{
+			System.out.println("Bushi not installed");
+		}
+
+		// Test for Hiigaran Descendents
+		try
+		{
+			Global.getSettings().getScriptClassLoader().loadClass("data.scripts.world.HiigaraGen");
+			System.out.println("Hiigaran_Descendents installed");
+			possibleFactionList.add("hiigaran_descendants");
+		}
+		catch (ClassNotFoundException ex)
+		{
+			System.out.println("Hiigaran_Descendents not installed");
+		}
 	}
 }

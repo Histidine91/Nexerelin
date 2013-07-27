@@ -1392,6 +1392,49 @@ public class ExerelinUtils
 					"thule_meteor_launcher",
 			};
 		}
+		else if (factionId.equalsIgnoreCase("bushi"))
+		{
+			return new String[] {
+					"bushi_pd_laser",
+					"bushi_small_laser",
+					"bushi_medium_laser",
+					"bushi_large_laser",
+					"bushi_dark_matter",
+					"bushi_srm_pod",
+					"bushi_mrm_pod",
+					"bushi_mrm_pod_xl",
+					"bushi_lrm_pod",
+					"bushi_lrm_pod_xl",
+					"bushi_torpedo_launcher",
+			};
+		}
+		else if (factionId.equalsIgnoreCase("hiigaran_descendants"))
+		{
+			return new String[] {
+					"hii_pulsar_beam",
+					"hii_sustained_ion_beam",
+					"hii_sustained_ion_beam_xl",
+					"hii_accelerated_pulsar_beam_sm",
+					"hii_accelerated_pulsar_beam",
+					"hii_singularity_cannon",
+					"hii_flak_cannon",
+					"hii_kinetic_driver",
+					"hii_chaingun_medium",
+					"hii_chaingun_large",
+					"hii_chaingun_medium_he",
+					"hii_chaingun_large_he",
+					"hii_kinetic_burst_cannon",
+					"hii_kinetic_burst_cannon_large",
+					"hii_kinetic_burst_cannon_he",
+					"hii_kinetic_burst_cannon_large_he",
+					"hii_cor_missile_pod",
+					"hii_cor_missile_pod_xl",
+					"hii_tviir_launcher",
+					"hii_torpedo_launcher",
+					"hii_abas_missile_pod",
+					"hii_abas_missile_pod_xl",
+			};
+		}
 		else
 		{
 			System.out.println("EXERELIN ERROR: Faction specific weapons for " + factionId + " not defined");
@@ -1595,15 +1638,15 @@ public class ExerelinUtils
 	public static boolean isValidBoardingFleet(CampaignFleetAPI fleet)
 	{
 		List members = fleet.getFleetData().getMembersListCopy();
-		Boolean hasAtlas = false;
+		Boolean hasLargeFreighter = false;
 		for(int i = 0; i < members.size(); i++)
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if(fmAPI.getSpecId().contains("atlas") || fmAPI.getSpecId().contains("mazerk") )
-				hasAtlas = true; // Currently only checks for presence of atlas ship
+			if(fmAPI.getSpecId().contains("atlas") || fmAPI.getSpecId().contains("mazerk") || fmAPI.getSpecId().contains("neerin"))
+				hasLargeFreighter = true;
 		}
 
-		if(hasAtlas)
+		if(hasLargeFreighter)
 			return true;
 		else
 			return false;
