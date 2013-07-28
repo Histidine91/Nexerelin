@@ -24,7 +24,7 @@ public final class ExerelinData
 	public boolean confirmedFaction = false;
 	private String playerFaction = "independent";
 
-	private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "independent", "shadowyards", "syndicateasp", "junkpirate", "nomad", "council", "blackrock", "antediluvian", "valkyrian", "lotusconglomerate", "gedune", "neutrino", "interstellarFederation", "relics", "nihil", "thulelegacy"};
+	private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "independent"};
 	//private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "independent"};
 	private String[] availableFactions = null;
 	public boolean onlyVanillaFactions = false;
@@ -194,30 +194,91 @@ public final class ExerelinData
 
 	public void addModdedFactionsToList(ArrayList possibleFactionList)
 	{
-		System.out.println("Getting modded factions");
+		System.out.println("EXERELIN: Getting modded factions");
+
+		// Test for antediluvian
+		if(isFactionInstalled("antediluvian", "data.scripts.world.AntediluvianGen"))
+			possibleFactionList.add("antediluvian");
+
+		// Test for blackrock
+		if(isFactionInstalled("blackrock", "data.scripts.world.BRGen"))
+			possibleFactionList.add("blackrock");
+
+		// Test for interstellarFederation
+		if(isFactionInstalled("interstellarFederation", "data.scripts.world.InterstellarFederationSectorGen"))
+			possibleFactionList.add("interstellarFederation");
+
+		// Test for junkpirate
+		if(isFactionInstalled("junkpirate", "data.scripts.world.JPSectorGen"))
+			possibleFactionList.add("junkpirate");
+
+		// Test for council
+		if(isFactionInstalled("council", "data.scripts.world.HegemonyCoreGen"))
+			possibleFactionList.add("council");
+
+		// Test for neutrino
+		if(isFactionInstalled("neutrino", "data.scripts.world.neutrinoGen"))
+			possibleFactionList.add("neutrino");
+
+		// Test for gedune
+		if(isFactionInstalled("gedune", "data.scripts.world.SectorGenWithGedune"))
+			possibleFactionList.add("gedune");
+
+		// Test for nihil
+		if(isFactionInstalled("nihil", "data.scripts.nihil.world.NihilSectorGen"))
+			possibleFactionList.add("nihil");
+
+		// Test for nomads
+		if(isFactionInstalled("nomad", "data.scripts.nom.world.SectorGenWithNomads"))
+			possibleFactionList.add("nomad");
+
+		// Test for relics
+		//if(isFactionInstalled("relics", "data.scripts.pur.world.PurSectorGen"))
+			//possibleFactionList.add("relics");
+
+		// Test for shadowyards
+		if(isFactionInstalled("shadowyards", "data.scripts.world.SHIGen"))
+			possibleFactionList.add("shadowyards");
+
+		// Test for thulelegacy
+		if(isFactionInstalled("thulelegacy", "data.scripts.world.TLGen"))
+			possibleFactionList.add("thulelegacy");
+
+		// Test for valkyrian
+		if(isFactionInstalled("valkyrian", "data.scripts.world.valkyrianGen"))
+			possibleFactionList.add("valkyrian");
+
+		// Test for syndicateasp
+		if(isFactionInstalled("syndicateasp", "data.scripts.world.ASPSectorGen"))
+			possibleFactionList.add("syndicateasp");
+
+		// Test for lotusconglomerate
+		if(isFactionInstalled("lotusconglomerate", "data.scripts.world.LotusSectorGen"))
+			possibleFactionList.add("lotusconglomerate");
 
 		// Test for Bushi
-		try
-		{
-			Global.getSettings().getScriptClassLoader().loadClass("data.scripts.world.BushiGen");
-			System.out.println("Bushi installed");
+		if(isFactionInstalled("bushi", "data.scripts.world.BushiGen"))
 			possibleFactionList.add("bushi");
-		}
-		catch (ClassNotFoundException ex)
-		{
-			System.out.println("Bushi not installed");
-		}
 
 		// Test for Hiigaran Descendents
+		if(isFactionInstalled("hiigaran_descendants", "data.scripts.world.HiigaraGen"))
+			possibleFactionList.add("hiigaran_descendants");
+
+		System.out.println("- - - - - - - - - -");
+	}
+
+	private boolean isFactionInstalled(String factionId, String factionSpecficClassName)
+	{
 		try
 		{
-			Global.getSettings().getScriptClassLoader().loadClass("data.scripts.world.HiigaraGen");
-			System.out.println("Hiigaran_Descendents installed");
-			possibleFactionList.add("hiigaran_descendants");
+			Global.getSettings().getScriptClassLoader().loadClass(factionSpecficClassName);
+			System.out.println(factionId + " installed");
+			return true;
 		}
 		catch (ClassNotFoundException ex)
 		{
-			System.out.println("Hiigaran_Descendents not installed");
+			System.out.println(factionId + " not installed");
+			return false;
 		}
 	}
 }
