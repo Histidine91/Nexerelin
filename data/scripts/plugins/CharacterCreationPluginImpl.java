@@ -1,5 +1,6 @@
 package data.scripts.plugins;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.characters.CharacterCreationPlugin;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
@@ -7,7 +8,6 @@ import data.scripts.world.exerelin.ExerelinData;
 
 import java.util.ArrayList;
 import java.util.List;
-/* Originally from UomozCorvus */
 
 public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 {
@@ -66,19 +66,23 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 	private ResponseImpl RESPAWN_YES_COND_MAX = new ResponseImpl("Yes, but only to a maximum of the starting factions");
 	private ResponseImpl RESPAWN_NO = new ResponseImpl("No, factions will not respawn");
 
-	// -- FACTION RESPONSES AUTO GENERATED --
-	private ResponseImpl NEXT = new ResponseImpl("Next...");
-	private ResponseImpl PREV = new ResponseImpl("Prev...");
-
 	private ResponseImpl RESPAWN_ZERO = new ResponseImpl("As soon as possible!");
 	private ResponseImpl RESPAWN_TWO = new ResponseImpl("Two months later");
 	private ResponseImpl RESPAWN_FOUR = new ResponseImpl("Four months later");
 	private ResponseImpl RESPAWN_EIGHT = new ResponseImpl("Eight months later");
 	private ResponseImpl RESPAWN_SIXTEEN = new ResponseImpl("Sixteen months later");
 
+	private ResponseImpl START_SHIP_FACTION = new ResponseImpl("Start with a faction specfic frigate");
+	private ResponseImpl START_SHIP_TOREUPPLENTY1 = new ResponseImpl("Start with a Tore Up Plenty frigate");
+	private ResponseImpl START_SHIP_TOREUPPLENTY2 = new ResponseImpl("Start with a Tore Up Plenty other class");
+
+	// -- FACTION RESPONSES AUTO GENERATED --
+
+	private ResponseImpl NEXT = new ResponseImpl("Next...");
+	private ResponseImpl PREV = new ResponseImpl("Prev...");
+
 	private ResponseImpl FREE_GOODS = new ResponseImpl("Be given free goods");
 	private ResponseImpl PAY_FOR_GOODS = new ResponseImpl("Pay for goods");
-
 
 
 	private int stage = 0;
@@ -91,10 +95,15 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		"When you arrive at Exerelin, how many other factions are there with you initially?",
 		"Shall factions return to Exerelin?",
 		"How long until other factions show up?",
+		"What kind of ship do you start with?",
 		"For the assault on Exerelin you have joined...",
 		"... or you joined ..",
 		//"At your faction aligned stations you expect to...",
 	};
+
+	private boolean factionStartShip = true;
+	private boolean toreUpPlentyFrigate = false;
+	private boolean toreUpPlentyOther = false;
 
 	public String getPrompt()
 	{
@@ -177,6 +186,12 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		}
 		else if (stage == 8)
 		{
+			result.add(START_SHIP_FACTION);
+			result.add(START_SHIP_TOREUPPLENTY1);
+			result.add(START_SHIP_TOREUPPLENTY2);
+		}
+		else if (stage == 9)
+		{
 			String[] possibleFactions = ExerelinData.getInstance().getPossibleFactions();
 			if(possibleFactions.length > 6)
 			{
@@ -194,7 +209,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 				}
 			}
 		}
-		else if (stage == 9)
+		else if (stage == 10)
 		{
 			String[] possibleFactions = ExerelinData.getInstance().getPossibleFactions();
 			for(int i = possibleFactions.length/2; i < possibleFactions.length; i = i + 1)
@@ -203,7 +218,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			}
 			result.add(PREV);
 		}
-		else if (stage == 10)
+		else if (stage == 11)
 		{
 			stage++; // SKIP THIS STAGE
 			//result.add(FREE_GOODS);
@@ -326,27 +341,59 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			ExerelinData.getInstance().respawnFactions = false;
 			ExerelinData.getInstance().onlyRespawnStartingFactions = false;
 			ExerelinData.getInstance().maxFactionsInExerelinAtOnce = 999;
-			stage = stage + 1;
+			stage++;
+
+			if(!isToreUpPlentyInstalled())
+				stage++;
 		}
 		else if (response == RESPAWN_ZERO)
 		{
 			ExerelinData.getInstance().respawnDelay = 0;
+
+			if(!isToreUpPlentyInstalled())
+				stage++;
 		}
 		else if (response == RESPAWN_TWO)
 		{
 			ExerelinData.getInstance().respawnDelay = 2;
+
+			if(!isToreUpPlentyInstalled())
+				stage++;
 		}
 		else if (response == RESPAWN_FOUR)
 		{
 			ExerelinData.getInstance().respawnDelay = 4;
+
+			if(!isToreUpPlentyInstalled())
+				stage++;
 		}
 		else if (response == RESPAWN_EIGHT)
 		{
 			ExerelinData.getInstance().respawnDelay = 8;
+
+			if(!isToreUpPlentyInstalled())
+				stage++;
 		}
 		else if (response == RESPAWN_SIXTEEN)
 		{
 			ExerelinData.getInstance().respawnDelay = 16;
+			
+			if(!isToreUpPlentyInstalled())
+				stage++;
+		}
+		else if (response == START_SHIP_FACTION)
+		{
+			factionStartShip = true;
+		}
+		else if (response == START_SHIP_TOREUPPLENTY1)
+		{
+			factionStartShip = false;
+			toreUpPlentyFrigate = true;
+		}
+		else if (response == START_SHIP_TOREUPPLENTY2)
+		{
+			factionStartShip = false;
+			toreUpPlentyOther = true;
 		}
 		else if (response == FREE_GOODS)
 		{
@@ -385,143 +432,173 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 					break;
 				}
 			}
-			if(stage == 9)
+			if(stage == 10)
 				stage = stage + 1; // Skip next faction selection
 		}
 	}
 
 	private void setStartingShipFromFactionSelection(String factionId, CharacterCreationData data)
 	{
-		if(factionId.equalsIgnoreCase("hegemony"))
+		if(factionStartShip)
 		{
-			data.addStartingShipChoice("hound_Assault");
-			data.addStartingShipChoice("lasher_Standard");
-		}
-		else if (factionId.equalsIgnoreCase("pirates"))
-		{
-			data.addStartingShipChoice("lasher_Standard");
-			data.addStartingShipChoice("hound_Assault");
-		}
-		else if (factionId.equalsIgnoreCase("tritachyon"))
-		{
-			data.addStartingShipChoice("wolf_CS");
-			data.addStartingShipChoice("afflictor_Strike");
-			data.addStartingShipChoice("omen_PD");
-			data.addStartingShipChoice("shade_Assault");
-			data.addStartingShipChoice("tempest_Attack");
-		}
-		else if (factionId.equalsIgnoreCase("independent"))
-		{
-			data.addStartingShipChoice("brawler_Assault");
-			data.addStartingShipChoice("vigilance_Standard");
-		}
-		else if (factionId.equalsIgnoreCase("shadowyards"))
-		{
-			data.addStartingShipChoice("ms_enlil_Standard");
-			data.addStartingShipChoice("ms_seski_Standard");
-			data.addStartingShipChoice("ms_shamash_Standard");
-			data.addStartingShipChoice("ms_inanna_Standard");
-		}
-		else if (factionId.equalsIgnoreCase("syndicateasp"))
-			data.addStartingShipChoice("syndicate_asp_diamondback_Standard");
-		else if (factionId.equalsIgnoreCase("junkpirate"))
-		{
-			data.addStartingShipChoice("junk_pirates_sickle_Standard");
-			data.addStartingShipChoice("junk_pirates_clam_Standard");
-			data.addStartingShipChoice("junk_pirates_hammer_Assault");
-		}
-		else if (factionId.equalsIgnoreCase("nomad"))
-		{
-			data.addStartingShipChoice("nom_wurm_assault");
-			data.addStartingShipChoice("nom_yellowjacket_sniper");
-		}
-		else if (factionId.equalsIgnoreCase("council"))
-		{
-			data.addStartingShipChoice("mrd_slasher_Balanced");
-			data.addStartingShipChoice("mrd_ambassador_standard");
-			data.addStartingShipChoice("mrd_spearhead_assault");
-			data.addStartingShipChoice("mrd_dragonfly_assault");
-			//data.addStartingShipChoice("mrd_sparrow_Fast");
-			data.addStartingShipChoice("mrd_defender_assault");
-		}
-		else if (factionId.equalsIgnoreCase("blackrock"))
-		{
-			data.addStartingShipChoice("scarab_attack");
-			data.addStartingShipChoice("brdy_locust_patrol");
-			data.addStartingShipChoice("brdy_mantis_strike");
-		}
-		else if (factionId.equalsIgnoreCase("antediluvian"))
-		{
-			data.addStartingShipChoice("donovan_Antediluvian");
-			data.addStartingShipChoice("bulwark_Antediluvian");
-			data.addStartingShipChoice("cape_Antediluvian");
-			data.addStartingShipChoice("sentinel_Antediluvian");
-		}
-		else if (factionId.equalsIgnoreCase("valkyrian"))
-		{
-			data.addStartingShipChoice("yuusha_M");
-			data.addStartingShipChoice("tesladora_M");
-			data.addStartingShipChoice("longinus_M");
-			data.addStartingShipChoice("jenova_ECM");
-			data.addStartingShipChoice("inquisitor_M");
-		}
-		else if (factionId.equalsIgnoreCase("lotusconglomerate"))
-		{
-			data.addStartingShipChoice("jackal_Hunter");
-			data.addStartingShipChoice("blizzard_Hunter");
-			data.addStartingShipChoice("stingray_Hunter");
-		}
-		else if (factionId.equalsIgnoreCase("gedune"))
-		{
-			data.addStartingShipChoice("gedune_kyirus_variant");
-			data.addStartingShipChoice("gedune_kitsune_variant");
-			data.addStartingShipChoice("gedune_nanda_variant1");
-		}
-		else if (factionId.equalsIgnoreCase("neutrino"))
-		{
-			data.addStartingShipChoice("neutrino_relativity_standard");
-			data.addStartingShipChoice("neutrino_singularity_balanced");
+			if(factionId.equalsIgnoreCase("hegemony"))
+			{
+				data.addStartingShipChoice("hound_Assault");
+				data.addStartingShipChoice("lasher_Standard");
+			}
+			else if (factionId.equalsIgnoreCase("pirates"))
+			{
+				data.addStartingShipChoice("lasher_Standard");
+				data.addStartingShipChoice("hound_Assault");
+			}
+			else if (factionId.equalsIgnoreCase("tritachyon"))
+			{
+				data.addStartingShipChoice("wolf_CS");
+				data.addStartingShipChoice("afflictor_Strike");
+				data.addStartingShipChoice("omen_PD");
+				data.addStartingShipChoice("shade_Assault");
+				data.addStartingShipChoice("tempest_Attack");
+			}
+			else if (factionId.equalsIgnoreCase("independent"))
+			{
+				data.addStartingShipChoice("brawler_Assault");
+				data.addStartingShipChoice("vigilance_Standard");
+			}
+			else if (factionId.equalsIgnoreCase("shadowyards"))
+			{
+				data.addStartingShipChoice("ms_enlil_Standard");
+				data.addStartingShipChoice("ms_seski_Standard");
+				data.addStartingShipChoice("ms_shamash_Standard");
+				data.addStartingShipChoice("ms_inanna_Standard");
+			}
+			else if (factionId.equalsIgnoreCase("syndicateasp"))
+				data.addStartingShipChoice("syndicate_asp_diamondback_Standard");
+			else if (factionId.equalsIgnoreCase("junkpirate"))
+			{
+				data.addStartingShipChoice("junk_pirates_sickle_Standard");
+				data.addStartingShipChoice("junk_pirates_clam_Standard");
+				data.addStartingShipChoice("junk_pirates_hammer_Assault");
+			}
+			else if (factionId.equalsIgnoreCase("nomad"))
+			{
+				data.addStartingShipChoice("nom_wurm_assault");
+				data.addStartingShipChoice("nom_yellowjacket_sniper");
+			}
+			else if (factionId.equalsIgnoreCase("council"))
+			{
+				data.addStartingShipChoice("mrd_slasher_Balanced");
+				data.addStartingShipChoice("mrd_ambassador_standard");
+				data.addStartingShipChoice("mrd_spearhead_assault");
+				data.addStartingShipChoice("mrd_dragonfly_assault");
+				//data.addStartingShipChoice("mrd_sparrow_Fast");
+				data.addStartingShipChoice("mrd_defender_assault");
+			}
+			else if (factionId.equalsIgnoreCase("blackrock"))
+			{
+				data.addStartingShipChoice("scarab_attack");
+				data.addStartingShipChoice("brdy_locust_patrol");
+				data.addStartingShipChoice("brdy_mantis_strike");
+			}
+			else if (factionId.equalsIgnoreCase("antediluvian"))
+			{
+				data.addStartingShipChoice("donovan_Antediluvian");
+				data.addStartingShipChoice("bulwark_Antediluvian");
+				data.addStartingShipChoice("cape_Antediluvian");
+				data.addStartingShipChoice("sentinel_Antediluvian");
+			}
+			else if (factionId.equalsIgnoreCase("valkyrian"))
+			{
+				data.addStartingShipChoice("yuusha_M");
+				data.addStartingShipChoice("tesladora_M");
+				data.addStartingShipChoice("longinus_M");
+				data.addStartingShipChoice("jenova_ECM");
+				data.addStartingShipChoice("inquisitor_M");
+			}
+			else if (factionId.equalsIgnoreCase("lotusconglomerate"))
+			{
+				data.addStartingShipChoice("jackal_Hunter");
+				data.addStartingShipChoice("blizzard_Hunter");
+				data.addStartingShipChoice("stingray_Hunter");
+			}
+			else if (factionId.equalsIgnoreCase("gedune"))
+			{
+				data.addStartingShipChoice("gedune_kyirus_variant");
+				data.addStartingShipChoice("gedune_kitsune_variant");
+				data.addStartingShipChoice("gedune_nanda_variant1");
+			}
+			else if (factionId.equalsIgnoreCase("neutrino"))
+			{
+				data.addStartingShipChoice("neutrino_relativity_standard");
+				data.addStartingShipChoice("neutrino_singularity_balanced");
 
-		}
-		else if (factionId.equalsIgnoreCase("interstellarFederation"))
-		{
-			data.addStartingShipChoice("albatross_Attack");
-			data.addStartingShipChoice("dakota_Standard");
-			data.addStartingShipChoice("scythe_Frigate");
-			data.addStartingShipChoice("echo_Standard");
-			data.addStartingShipChoice("rickshaw_Standard");
-		}
-		else if (factionId.equalsIgnoreCase("relics"))
-		{
-			data.addStartingShipChoice("relics_egler_Standard");
-			data.addStartingShipChoice("relics_pusher_Standard");
-			data.addStartingShipChoice("relics_solver_Standard");
-		}
-		else if (factionId.equalsIgnoreCase("nihil"))
-		{
-			data.addStartingShipChoice("nihil_votex_predator");
-			data.addStartingShipChoice("nihil_null_cultist");
-		}
-		else if (factionId.equalsIgnoreCase("thulelegacy"))
-		{
-			data.addStartingShipChoice("thule_vikingmki_OD");
-			data.addStartingShipChoice("thule_vikingmkii_OD");
-		}
-		else if (factionId.equalsIgnoreCase("bushi"))
-		{
-			data.addStartingShipChoice("bushi_kaiken_Standard");
-			data.addStartingShipChoice("bushi_yari_Standard");
-		}
-		else if (factionId.equalsIgnoreCase("hiigaran_descendants"))
-		{
-			data.addStartingShipChoice("hii_fiirkan_Standard");
-			data.addStartingShipChoice("hii_jet_Standard");
-			data.addStartingShipChoice("hii_kaan_Standard");
+			}
+			else if (factionId.equalsIgnoreCase("interstellarFederation"))
+			{
+				data.addStartingShipChoice("albatross_Attack");
+				data.addStartingShipChoice("dakota_Standard");
+				data.addStartingShipChoice("scythe_Frigate");
+				data.addStartingShipChoice("echo_Standard");
+				data.addStartingShipChoice("rickshaw_Standard");
+			}
+			else if (factionId.equalsIgnoreCase("relics"))
+			{
+				data.addStartingShipChoice("relics_egler_Standard");
+				data.addStartingShipChoice("relics_pusher_Standard");
+				data.addStartingShipChoice("relics_solver_Standard");
+			}
+			else if (factionId.equalsIgnoreCase("nihil"))
+			{
+				data.addStartingShipChoice("nihil_votex_predator");
+				data.addStartingShipChoice("nihil_null_cultist");
+			}
+			else if (factionId.equalsIgnoreCase("thulelegacy"))
+			{
+				data.addStartingShipChoice("thule_vikingmki_OD");
+				data.addStartingShipChoice("thule_vikingmkii_OD");
+			}
+			else if (factionId.equalsIgnoreCase("bushi"))
+			{
+				data.addStartingShipChoice("bushi_kaiken_Standard");
+				data.addStartingShipChoice("bushi_yari_Standard");
+			}
+			else if (factionId.equalsIgnoreCase("hiigaran_descendants"))
+			{
+				data.addStartingShipChoice("hii_fiirkan_Standard");
+				data.addStartingShipChoice("hii_jet_Standard");
+				data.addStartingShipChoice("hii_kaan_Standard");
+			}
+			else
+			{
+				System.out.println("EXERELIN ERROR: Faction starting ship for " + factionId + " not defined");
+				data.addStartingShipChoice("shuttle_Attack");
+			}
 		}
 		else
 		{
-			System.out.println("EXERELIN ERROR: Faction starting ship for " + factionId + " not defined");
-			data.addStartingShipChoice("shuttle_Attack");
+			if(toreUpPlentyFrigate)
+			{
+				data.addStartingShipChoice("foxhound_Basic");
+				data.addStartingShipChoice("sentinel_Basic");
+				data.addStartingShipChoice("striker_Basic");
+				data.addStartingShipChoice("timberwolf_Basic");
+				data.addStartingShipChoice("wrestler_Basic");
+				data.addStartingShipChoice("moth_Basic");
+				data.addStartingShipChoice("ryker_Basic");
+			}
+			else if(toreUpPlentyOther)
+			{
+				data.addStartingShipChoice("talus_Basic");
+				data.addStartingShipChoice("annihilator_Basic");
+				data.addStartingShipChoice("lance_Basic");
+				data.addStartingShipChoice("mace_Basic");
+				data.addStartingShipChoice("damocles_Basic");
+				data.addStartingShipChoice("centaur_Basic");
+			}
+			else
+			{
+				System.out.println("EXERELIN ERROR: Starting ship initialisztion failure");
+				data.addStartingShipChoice("shuttle_Attack");
+			}
 		}
 	}
 
@@ -531,6 +608,25 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		data.getStartingCargo().addSupplies(20);
 		data.getStartingCargo().addCrew(CrewXPLevel.REGULAR, 25);
 		data.getStartingCargo().addMarines(3);
+	}
+
+	public boolean isToreUpPlentyInstalled()
+	{
+		System.out.println("EXERELIN: Getting if tore up plenty mod installed");
+
+		try
+		{
+			Global.getSettings().getScriptClassLoader().loadClass("data.missions.mace.MissionDefinition");
+			System.out.println("tore up plenty installed");
+			System.out.println("- - - - - - - - - -");
+			return true;
+		}
+		catch (ClassNotFoundException ex)
+		{
+			System.out.println("tore up plenty not installed");
+			System.out.println("- - - - - - - - - -");
+			return false;
+		}
 	}
 }
 
