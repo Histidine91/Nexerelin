@@ -1,8 +1,0 @@
-{
-	"id":"ms_pandorasys",
-	"type":"WEAPON",
-	"aiType":"EMP",
-	
-	"weaponDataId":"ms_pandora",
-	"outOfUsesSound":"gun_out_of_ammo",
-}
