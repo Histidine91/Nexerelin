@@ -210,9 +210,9 @@ public class DiplomacyManager
 		if(nextRecordToUpdate == 0)
 		{
 			System.out.println(" - - - - - -        - - - - - - ");
-			factionIdFirst = ExerelinData.getInstance().systemManager.stationManager.getFactionLeader();
-			factionIdLast = ExerelinData.getInstance().systemManager.stationManager.getFactionLoser();
-			System.out.println("First: " + factionIdFirst + ", Last: " + factionIdLast);
+			factionIdFirst = SectorManager.getCurrentSectorManager().getLeadingFaction();
+			factionIdLast = SectorManager.getCurrentSectorManager().getLosingFaction();
+			System.out.println("Sector Leader: " + factionIdFirst + ", Sector Loser: " + factionIdLast);
 		}
 
 		if(nextRecordToUpdate == factionRecords.length - 1)
@@ -220,26 +220,23 @@ public class DiplomacyManager
 		else
 			nextRecordToUpdate = nextRecordToUpdate + 1;
 
-		if(!ExerelinData.getInstance().systemManager.stationManager.doesFactionOwnStation(recordToUpdate.getFactionId()))
+		if(!SectorManager.getCurrentSectorManager().isFactionInSector(recordToUpdate.getFactionId()))
 			return;
 
-		FactionAPI f1API = sector.getFaction(recordToUpdate.getFactionId());
-
-		int warweariness = recordToUpdate.updateWarWeariness();
+		// Update and Get current level of warWeariness
+		Boolean atWar = isFactionAtWarAndHasTarget(recordToUpdate.getFactionId());
+		int warweariness = recordToUpdate.updateWarWeariness(atWar);
 		if(warweariness > 1)
 			warweariness = 1;
-
-		boolean hasWarTarget = recordToUpdate.hasWarTargetInSystem(false);
 
 		// Update all relationship levels with all other factions
 		for(int j = 0; j < factionRecords.length; j = j + 1)
 		{
-			FactionAPI f2API = sector.getFaction(factionRecords[j].getFactionId());
 
-			if(f2API.getId().equalsIgnoreCase(f1API.getId()))
+			if(factionRecords[j].getFactionId().equalsIgnoreCase(recordToUpdate.getFactionId()))
 				continue;
 
-			if(!ExerelinData.getInstance().systemManager.stationManager.doesFactionOwnStation(f2API.getId()))
+			if(!SectorManager.getCurrentSectorManager().isFactionInSector(factionRecords[j].getFactionId()))
 				continue;
 
 			int factionRelationship = recordToUpdate.getFactionRelationship(factionRecords[j].getFactionId());
@@ -252,12 +249,14 @@ public class DiplomacyManager
 				factionRelationship = factionRelationship + 2;
 
 			// Are they beating us or are we beating them
-			Float ourPercentage = ExerelinData.getInstance().systemManager.stationManager.getStationOwnershipPercent(recordToUpdate.getFactionId());
-			Float theirPercentage = ExerelinData.getInstance().systemManager.stationManager.getStationOwnershipPercent(factionRecords[j].getFactionId());
+			Float ourPercentage = SectorManager.getCurrentSectorManager().getSectorOwnership(recordToUpdate.getFactionId());
+			Float theirPercentage = SectorManager.getCurrentSectorManager().getSectorOwnership(factionRecords[j].getFactionId());
 			factionRelationship = factionRelationship + (int)((ourPercentage - theirPercentage)*5);
 
 			// If far, like them, if close, don't like them (we want their stations!)
-			float factionDistanceDiffFromAverage = ExerelinData.getInstance().systemManager.stationManager.getDistanceBetweenFactionsRelativeToAverage(recordToUpdate.getFactionId(), factionRecords[j].getFactionId());
+			//TODO - A good way to rework this on a sector level
+			/*
+			float factionDistanceDiffFromAverage = ExerelinData.getInstance().systemManager.getStationManager().getDistanceBetweenFactionsRelativeToAverage(recordToUpdate.getFactionId(), factionRecords[j].getFactionId());
 
 			if(factionDistanceDiffFromAverage != Float.POSITIVE_INFINITY
 					&& factionDistanceDiffFromAverage != Float.NEGATIVE_INFINITY)
@@ -269,6 +268,7 @@ public class DiplomacyManager
 
 				factionRelationship += relationshipChange;
 			}
+			*/
 
 			// Add whatever the current bias is
 			int f1API_about_f2API = recordToUpdate.getFactionRelationship(factionRecords[j].getFactionId());
@@ -284,10 +284,10 @@ public class DiplomacyManager
 			else
 				factionRelationship = factionRelationship + bias;
 
-			// If no war target, decrease relationships with allies a lot and neutral slightly
-			if(!hasWarTarget && gameRelationship >= 1)
+			// If not at war, decrease relationships with allies a lot and neutral slightly
+			if(!atWar && gameRelationship >= 1)
 				factionRelationship = factionRelationship - 4;
-			else if(!hasWarTarget && gameRelationship > 0)
+			else if(!atWar && gameRelationship > 0)
 				factionRelationship = factionRelationship - 2;
 
 			// Add a bit of random
@@ -365,7 +365,7 @@ public class DiplomacyManager
 		// Decrease relationship with allies as alliance gets large
 		if(recordToUpdate.isInAlliance())
 		{
-			float allianceOwnership = deriveAllianceSystemOwnership(recordToUpdate.getAllianceId());
+			float allianceOwnership = deriveAllianceSectorOwnership(recordToUpdate.getAllianceId());
 
 			for(int i = 0; i < allies.length; i++)
 				recordToUpdate.addToFactionRelationship(allies[i], (int)(allianceOwnership * -6));
@@ -379,7 +379,7 @@ public class DiplomacyManager
 	// Apply any war/peace/alliance changes that need to be made
 	private void updateFactionDiplomacy(DiplomacyRecord diplomacyRecord)
 	{
-		if(!ExerelinData.getInstance().systemManager.stationManager.doesFactionOwnStation(diplomacyRecord.getFactionId()))
+		if(!SectorManager.getCurrentSectorManager().isFactionInSector(diplomacyRecord.getFactionId()))
 			return;
 
 		for(int i = 0; i < this.factionRecords.length; i++)
@@ -389,7 +389,7 @@ public class DiplomacyManager
 			if(diplomacyRecord.getFactionId().equalsIgnoreCase(otherDiplomacyRecord.getFactionId()))
 				continue;
 
-			if(!ExerelinData.getInstance().systemManager.stationManager.doesFactionOwnStation(otherDiplomacyRecord.getFactionId()))
+			if(!SectorManager.getCurrentSectorManager().isFactionInSector(otherDiplomacyRecord.getFactionId()))
 				continue;
 
 			int rel1 = 0;
@@ -444,14 +444,14 @@ public class DiplomacyManager
 				// Neither faction is in an alliance
 				if(rel1 + rel2 < WAR_LEVEL + WAR_LEVEL && currentGameRelationship >= 0 && currentGameRelationship < 1)
 				{
+					// Reset war weariness for factions if they dont have a war
+					if(diplomacyRecord.getEnemyFactions().length == 0)
+						diplomacyRecord.setWarweariness(0);
+					if(otherDiplomacyRecord.getEnemyFactions().length == 0)
+						otherDiplomacyRecord.setWarweariness(0);
+
 					// Declare war
 					declareFactionWarOrPeace(diplomacyRecord,  otherDiplomacyRecord, -1);
-
-					// Reset war weariness for factions if they dont have a war
-					if(!diplomacyRecord.hasWarTargetInSystem(false))
-						diplomacyRecord.setWarweariness(0);
-					if(!otherDiplomacyRecord.hasWarTargetInSystem(false))
-						otherDiplomacyRecord.setWarweariness(0);
 
 					// Reduce likelihood of war with other factions slightly
 					diplomacyRecord.bulkAddToFactionRelationships(otherDiplomacyRecord.getFactionId(), ExerelinUtils.getRandomInRange(2, 3));
@@ -484,7 +484,7 @@ public class DiplomacyManager
 				float allySystemOwnership = 0f;
 				String[] allies = allianceManager.getAllianceRecord(diplomacyRecord.getAllianceId()).getFactions();
 				for(int j = 0; j< allies.length; j++)
-					allySystemOwnership = allySystemOwnership + ExerelinData.getInstance().systemManager.stationManager.getStationOwnershipPercent(allies[j]);
+					allySystemOwnership = allySystemOwnership + SectorManager.getCurrentSectorManager().getSectorOwnership(allies[j]);
 
 				if(rel1 + rel2 < END_ALLIANCE_LEVEL + END_ALLIANCE_LEVEL)
 				{
@@ -509,7 +509,7 @@ public class DiplomacyManager
 				float allySystemOwnership = 0f;
 				String[] allies = allianceManager.getAllianceRecord(diplomacyRecord.getAllianceId()).getFactions();
 				for(int j = 0; j< allies.length; j++)
-					allySystemOwnership = allySystemOwnership + ExerelinData.getInstance().systemManager.stationManager.getStationOwnershipPercent(allies[j]);
+					allySystemOwnership = allySystemOwnership + SectorManager.getCurrentSectorManager().getSectorOwnership(allies[j]);
 
 				if(rel1 + rel2 < END_ALLIANCE_LEVEL + END_ALLIANCE_LEVEL)
 				{
@@ -622,7 +622,7 @@ public class DiplomacyManager
 			allyChange = -1; // allies perceive weakness
 			enemyChange = 10; // Less of a threat
 
-			if(!ExerelinData.getInstance().systemManager.stationManager.doesFactionOwnStation(factionId))
+			if(!SectorManager.getCurrentSectorManager().isFactionInSector(factionId))
 			{
 				sector.addMessage(factionId + " has been driven from Exerelin!");
 				System.out.println(factionId + " has lost all stations");
@@ -660,10 +660,13 @@ public class DiplomacyManager
 	// Create a war with the leading faction if passed in faction doesn't have a war
 	public void createWarIfNoneExists(String factionId)
 	{
-		if(this.getRecordForFaction(factionId).hasWarTargetInSystem(false))
-			return;
+		for(int i = 0; i < SectorManager.getCurrentSectorManager().getSystemManagers().length; i++)
+		{
+			if(this.getRecordForFaction(factionId).hasWarTargetInSystem(SectorManager.getCurrentSectorManager().getSystemManagers()[i].getStarSystemAPI(), false))
+				return;
+		}
 
-		String leadingFactionId = ExerelinData.getInstance().systemManager.stationManager.getFactionLeader();
+		String leadingFactionId = SectorManager.getCurrentSectorManager().getLeadingFaction();
 		if(leadingFactionId == null || leadingFactionId.equalsIgnoreCase(factionId))
 			return;
 
@@ -1236,15 +1239,33 @@ public class DiplomacyManager
 			sector.addMessage(combinedAlliance.getAllianceNameAndFactions() + " has been established as the new alliance!");
 	}
 
-	private float deriveAllianceSystemOwnership(String allianceId)
+	private float deriveAllianceSectorOwnership(String allianceId)
 	{
 		AllianceRecord allianceRecord = allianceManager.getAllianceRecord(allianceId);
 		String[] allianceFactions = allianceRecord.getFactions();
 
 		float ownership = 0;
 		for(int i = 0; i < allianceFactions.length; i++)
-			ownership = ownership + ExerelinData.getInstance().systemManager.stationManager.getStationOwnershipPercent(allianceFactions[i]);
+			ownership = ownership + SectorManager.getCurrentSectorManager().getSectorOwnership(allianceFactions[i]);
 
 		return ownership;
+	}
+
+	public Boolean isFactionAtWarAndHasTarget(String factionId)
+	{
+		Boolean atWar = false;
+		SystemManager[] systemManagers = SectorManager.getCurrentSectorManager().getSystemManagers();
+		String[] enemyFactionIds = this.getRecordForFaction(factionId).getEnemyFactions();
+		for(int i = 0; i < systemManagers.length; i++)
+		{
+			if(systemManagers[i].isFactionInSystem(factionId)
+					&& systemManagers[i].isOneOfFactionInSystem(enemyFactionIds))
+			{
+				atWar = true;
+				break;
+			}
+		}
+
+		return atWar;
 	}
 }

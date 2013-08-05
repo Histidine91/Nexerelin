@@ -1,6 +1,5 @@
 package data.scripts.world.exerelin;
 
-import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 
 public class EventManager
@@ -18,7 +17,7 @@ public class EventManager
 
 	private StarSystemAPI starSystemAPI;
 
-	public EventManager(SectorAPI sector, StarSystemAPI inSystem)
+	public EventManager(StarSystemAPI inSystem)
 	{
 		starSystemAPI = inSystem;
 		eventRebelInsurrection = new EventRebelInsurrection();
@@ -73,7 +72,7 @@ public class EventManager
 			return;
 		}
 
-		if(ExerelinData.getInstance().systemManager.respawnFactions
+		if(ExerelinData.getInstance().getSectorManager().getRespawnFactions()
 				&& ExerelinUtils.getRandomInRange(0,55) == 0
 				&& !eventStationSeccession.getType().equalsIgnoreCase(lastEventType))
 		{

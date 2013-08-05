@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 
 import org.lazywizard.lazylib.MathUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -256,5 +257,30 @@ public class StationManager
 		losingFaction = lastFaction;
 		losingFactionStationCount = lastNumStations;
 		averageStationDistance = ((numDistances > 0) ? totalStationsDistance / numDistances : 1.f);
+	}
+
+	public String[] getFactionsOwningStations()
+	{
+		ArrayList foundFactions = new ArrayList(stationRecords.length);
+
+		for(int i = 0; i < stationRecords.length; i = i + 1)
+		{
+			if(stationRecords[i].getOwner() == null)
+				continue;
+
+			String stationFactionId = stationRecords[i].getOwner().getFactionId();
+
+			boolean alreadyFound = false;
+			for(int j = 0; j < foundFactions.size(); j = j + 1)
+			{
+				if(((String)foundFactions.get(j)).equalsIgnoreCase(stationFactionId))
+					alreadyFound = true;
+			}
+			if(!alreadyFound)
+				foundFactions.add(stationFactionId);
+
+		}
+
+		return (String[])foundFactions.toArray( new String[foundFactions.size()] );
 	}
 }

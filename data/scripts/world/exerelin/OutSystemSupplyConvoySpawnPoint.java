@@ -55,8 +55,8 @@ public class OutSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 		// If faction is player, get which faction player is playing as
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
 
-	    DiplomacyRecord diplomacyRecord = ExerelinData.getInstance().systemManager.diplomacyManager.getRecordForFaction(owningFactionId);
-	    if (diplomacyRecord.hasWarTargetInSystem(false))
+	    DiplomacyRecord diplomacyRecord = ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRecordForFaction(owningFactionId);
+	    if (diplomacyRecord.hasWarTargetInSystem((StarSystemAPI)getLocation(), false))
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 4, 5, owningFactionId, getSector());
 	    else
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 1, 2, owningFactionId, getSector());
@@ -111,21 +111,8 @@ public class OutSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 			public void run() {
 				if(!ExerelinUtils.getStationOwnerFactionId(getAnchor()).equalsIgnoreCase(owningFactionId))
 				{
-					// Attempt to find another friendly station to deliver goods
 					theFleet.clearAssignments();
-					Script script2 = createTestTargetScript();
-					Script arriveScript = createArrivedTargetScript();
-
-					SectorEntityToken newTarget = ExerelinUtils.getClosestFriendlyStation(owningFactionId, getSector(), getAnchor());
-					theTarget = newTarget;
-					if(newTarget == null)
-						theFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, ExerelinUtils.getRandomOffMapPoint(theLocation), 100);
-					else
-					{
-						theFleet.addAssignment(FleetAssignment.GO_TO_LOCATION, newTarget, 1000, script2);
-						theFleet.addAssignment(FleetAssignment.GO_TO_LOCATION, getAnchor(), 10, arriveScript);
-						theFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, newTarget, 10);
-					}
+					theFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, ExerelinUtils.getRandomOffMapPoint(theLocation), 100);
 				}
 			}
 		};

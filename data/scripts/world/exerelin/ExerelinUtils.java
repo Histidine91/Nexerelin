@@ -52,7 +52,7 @@ public class ExerelinUtils
 		int edge = ExerelinUtils.getRandomInRange(0, 3);
 		int x = 0;
 		int y = 0;
-		int maxSize = ExerelinData.getInstance().systemManager.maxSystemSize;
+		int maxSize = ExerelinData.getInstance().getSectorManager().getMaxSystemSize();
 		int negativeMaxSize = -1 * maxSize;
 
 		if(edge == 0)
@@ -260,9 +260,9 @@ public class ExerelinUtils
 		return "neutral"; // Do nothing
 	}
 
-	public static SectorEntityToken getClosestEnemyStation(String targetingFaction, SectorAPI sector, SectorEntityToken anchor)
+	public static SectorEntityToken getClosestEnemyStation(String targetingFaction, StarSystemAPI starSystemAPI, SectorAPI sector, SectorEntityToken anchor)
 	{
-		List stations = sector.getStarSystem("Exerelin").getOrbitalStations();
+		List stations = starSystemAPI.getOrbitalStations();
 		Float bestDistance = 10000000000000f;
 		SectorEntityToken bestStation = anchor;
 
@@ -299,123 +299,9 @@ public class ExerelinUtils
 			return bestStation;
 	}
 
-	public static SectorEntityToken getClosestEnemyStationNotAbandoned(String targetingFaction, SectorAPI sector, SectorEntityToken anchor)
+	public static SectorEntityToken getRandomStationForFaction(String factionId, StarSystemAPI starSystemAPI, SectorAPI sector)
 	{
-		List stations = sector.getStarSystem("Exerelin").getOrbitalStations();
-		Float bestDistance = 10000000000000f;
-		SectorEntityToken bestStation = anchor;
-
-		for(int i = 0; i < stations.size(); i = i + 1)
-		{
-			SectorEntityToken theStation = (SectorEntityToken)stations.get(i);
-
-			if(theStation.getFullName().contains("Omnifactory"))
-				continue;
-
-			if(theStation.getFullName().contains("Storage"))
-				continue;
-
-			FactionAPI stationOwner = sector.getFaction(getStationOwnerFactionId(theStation));
-
-			if(stationOwner == null || stationOwner.getId().equalsIgnoreCase("abandoned"))
-				continue;
-
-			Float attackDistance = MathUtils.getDistanceSquared(anchor, theStation);
-
-			if(stationOwner.getRelationship(targetingFaction) < 0 && bestDistance > attackDistance)
-			{
-				bestStation = theStation;
-				bestDistance = attackDistance;
-			}
-		}
-
-		if(MathUtils.getDistance(anchor, bestStation) == 0)
-		{
-			//System.out.println("Couldn't get station target for: " + targetingFaction);
-			return null; // no available targets
-		}
-		else
-			return bestStation;
-	}
-
-	public static SectorEntityToken getClosestFriendlyStation(String factionId, SectorAPI sector, SectorEntityToken current)
-	{
-		List stations = sector.getStarSystem("Exerelin").getOrbitalStations();
-		Float bestDistance = 10000000000000f;
-		SectorEntityToken bestStation = current;
-
-		for(int i = 0; i < stations.size(); i = i + 1)
-		{
-			SectorEntityToken theStation = (SectorEntityToken)stations.get(i);
-
-			if(theStation.getFullName().contains("Omnifactory"))
-				continue;
-
-			if(theStation.getFullName().contains("Storage"))
-				continue;
-
-			if(theStation.getFullName().equalsIgnoreCase(current.getFullName()))
-				continue; // Skip current station
-
-			FactionAPI stationOwner = sector.getFaction(getStationOwnerFactionId(theStation));
-
-			if(stationOwner == null)
-				continue; //Crash protect...
-
-			Float attackDistance = MathUtils.getDistanceSquared(current, theStation);
-
-			if(stationOwner.getId().equalsIgnoreCase(factionId) && bestDistance > attackDistance)
-			{
-				bestStation = theStation;
-				bestDistance = attackDistance;
-			}
-		}
-		if(MathUtils.getDistance(current, bestStation) == 0)
-		{
-			System.out.println("Couldn't get friendly station for: " + factionId);
-			return null; // no available targets
-		}
-		else
-			return bestStation;
-	}
-
-	public static SectorEntityToken getRandomFriendlyStation(String factionId, SectorAPI sector, SectorEntityToken current)
-	{
-		List stations = sector.getStarSystem("Exerelin").getOrbitalStations();
-		SectorEntityToken theStation;
-		SectorEntityToken factionStation = null;
-
-		for(int i = 0; i < stations.size(); i = i + 1)
-		{
-			theStation = (SectorEntityToken)stations.get(i);
-
-			if(theStation.getFullName().equalsIgnoreCase(current.getFullName()))
-				continue; // Skip current station
-
-			if(theStation.getFullName().contains("Omnifactory"))
-				continue;
-
-			if(theStation.getFullName().contains("Storage"))
-				continue;
-
-			String stationOwner = getStationOwnerFactionId(theStation);
-
-			if(stationOwner == null)
-				continue; //Crash protect...
-
-			if(stationOwner.equalsIgnoreCase(factionId))
-			{
-				if(ExerelinUtils.getRandomInRange(0, 1) == 1 || factionStation == null)
-					factionStation = theStation;
-			}
-		}
-
-		return factionStation;
-	}
-
-	public static SectorEntityToken getRandomStationForFaction(String factionId, SectorAPI sector)
-	{
-		List stations = sector.getStarSystem("Exerelin").getOrbitalStations();
+		List stations = starSystemAPI.getOrbitalStations();
 		SectorEntityToken theStation;
 		SectorEntityToken factionStation = null;
 
@@ -442,187 +328,6 @@ public class ExerelinUtils
 		}
 
 		return factionStation;
-	}
-
-	public static HashMap getFactionStationCount(StarSystemAPI system)
-	{
-		HashMap map = new HashMap();
-		List stations = system.getOrbitalStations();
-
-		for(int i = 0; i < stations.size(); i = i + 1)
-		{
-			String stationName = ((SectorEntityToken)stations.get(i)).getFullName();
-			if(stationName.contains("Omnifactory"))
-				continue;
-
-			if(stationName.contains("Storage"))
-				continue;
-
-			String owner = getStationOwnerFactionId((SectorEntityToken)stations.get(i));
-			if(map.containsKey(owner))
-			{
-				Integer count = Integer.parseInt((String)map.get(owner));
-				count = count + 1;
-				map.remove(owner);
-				map.put(owner, count.toString());
-			}
-			else
-			{
-				map.put(owner, "1");
-			}
-		}
-
-		return map;
-	}
-
-	public static String getFactionWithMostStations(StarSystemAPI system)
-	{
-		HashMap map = getFactionStationCount(system);
-		String[] factions = getFactionsInSystem(system);
-		int highestCount = 0;
-		String highestFactionId = "";
-
-		for (int i = 0; i < factions.length; i = i + 1)
-		{
-			String faction = factions[i];
-			Integer stationCount = Integer.parseInt((String) map.get(faction));
-
-			if(stationCount > highestCount)
-			{
-				highestCount = stationCount;
-				highestFactionId = faction;
-			}
-		}
-		if(highestCount != 0)
-			return highestFactionId;
-		else
-			return null;
-	}
-
-	public static String getFactionWithLeastStations(StarSystemAPI system)
-	{
-		HashMap map = getFactionStationCount(system);
-		String[] factions = getFactionsInSystem(system);
-		int highestCount = 1000000;
-		String highestFactionId = "";
-		for (int i = 0; i < factions.length; i = i + 1)
-		{
-			String faction = factions[i];
-			Integer stationCount = Integer.parseInt((String) map.get(faction));
-
-			if(stationCount < highestCount && stationCount != 0)
-			{
-				highestCount = stationCount;
-				highestFactionId = faction;
-			}
-		}
-		if(highestCount != 1000000)
-			return highestFactionId;
-		else
-			return null;
-	}
-
-	public static boolean doesFactionOwnAnyStations(String factionId, StarSystemAPI starSystem)
-	{
-		List stations = starSystem.getOrbitalStations();
-
-		for(int i = 0; i < stations.size(); i = i + 1)
-		{
-			if(getStationOwnerFactionId((SectorEntityToken)stations.get(i)).equalsIgnoreCase(factionId))
-				return true;
-		}
-
-		return false;
-	}
-
-	public static int numberStationsFactionOwns(String factionId, StarSystemAPI system)
-	{
-		List stations = system.getOrbitalStations();
-		int count = 0;
-		for(int i = 0; i < stations.size(); i = i + 1)
-		{
-			if(getStationOwnerFactionId((SectorEntityToken)stations.get(i)).equalsIgnoreCase(factionId))
-				count = count + 1;
-		}
-		return count;
-	}
-
-	public static void increaseSystemsStationsResources(SectorAPI sector, StarSystemAPI starSystem)
-	{
-		List stations = starSystem.getOrbitalStations();
-
-		for(int i = 0; i < stations.size(); i = i + 1)
-		{
-			SectorEntityToken station = (SectorEntityToken)stations.get(i);
-
-			if(station.getFullName().contains("Omnifactory"))
-				continue;
-
-			if(station.getFullName().contains("Storage"))
-				continue;
-
-			String name = station.getFullName();
-			CargoAPI cargo = station.getCargo();
-
-			if(cargo.getFuel() < 1600)
-				cargo.addFuel(50);
-			if(cargo.getSupplies() < 6400)
-				cargo.addSupplies(200);
-			if(cargo.getMarines() < 800)
-				cargo.addMarines(25);
-			if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 1600)
-				cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, 50);
-
-			if(name.contains("Gaseous"))
-				cargo.addFuel(25 * getRandomInRange(1, 4));
-			else if(name.contains(" I") || name.contains(" II") || name.contains(" III"))
-				cargo.addSupplies(100 * getRandomInRange(1, 4));
-			else
-			{
-				cargo.addMarines(13 * getRandomInRange(1, 4));
-				cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, 25 * getRandomInRange(1, 4));
-			}
-
-			String stationOwnerId = ExerelinUtils.getStationOwnerFactionId(station);
-			if(stationOwnerId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-			{
-				ExerelinUtils.addRandomFactionShipsToCargo(cargo, 2, stationOwnerId, sector);
-				ExerelinUtils.addWeaponsToCargo(cargo, 4, stationOwnerId, sector);
-			}
-		}
-	}
-
-	public static String[] getFactionsInSystem(StarSystemAPI starSystem)
-	{
-		List stations = starSystem.getOrbitalStations();
-		ArrayList foundFactions = new ArrayList(stations.size());
-
-		for(int i = 0; i < stations.size(); i = i + 1)
-		{
-			String stationName = ((SectorEntityToken)stations.get(i)).getFullName();
-			if(stationName.contains("Omnifactory"))
-				continue;
-
-			if(stationName.contains("Storage"))
-				continue;
-
-			String stationFactionId =  getStationOwnerFactionId((SectorEntityToken)stations.get(i));
-
-			if(stationFactionId.equalsIgnoreCase("abandoned"))
-				continue;
-
-			boolean alreadyFound = false;
-			for(int j = 0; j < foundFactions.size(); j = j + 1)
-			{
-				if(((String)foundFactions.get(j)).equalsIgnoreCase(stationFactionId))
-					alreadyFound = true;
-			}
-			if(!alreadyFound)
-				foundFactions.add(stationFactionId);
-
-		}
-
-		return (String[])foundFactions.toArray( new String[foundFactions.size()] );
 	}
 
 	public static void decreaseCargo(CargoAPI cargo, String type, int quantity)
@@ -1643,13 +1348,13 @@ public class ExerelinUtils
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
 			if(fmAPI.getSpecId().contains("atlas") || fmAPI.getSpecId().contains("mazerk") || fmAPI.getSpecId().contains("neerin"))
+			{
 				hasLargeFreighter = true;
+				break;
+			}
 		}
 
-		if(hasLargeFreighter)
-			return true;
-		else
-			return false;
+		return hasLargeFreighter;
 	}
 
 	private static boolean isCapitalInFleet(CampaignFleetAPI fleet)
@@ -1667,8 +1372,10 @@ public class ExerelinUtils
 		return false;
 	}
 
-	public static void handlePlayerFleetMining(CampaignFleetAPI playerFleet, StarSystemAPI system)
+	public static void handlePlayerFleetMining(CampaignFleetAPI playerFleet)
 	{
+		StarSystemAPI system = (StarSystemAPI)playerFleet.getContainingLocation();
+
 		Vector2f playerLocation = playerFleet.getLocation();
 		float xMax = playerLocation.getX() + 5;
 		float xMin = playerLocation.getX() - 5;

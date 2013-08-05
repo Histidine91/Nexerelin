@@ -7,18 +7,52 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SectorGeneratorPlugin;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import data.scripts.world.exerelin.SystemManager;
-import data.scripts.world.exerelin.ExerelinData;
-import data.scripts.world.exerelin.ExerelinUtils;
+import data.scripts.world.exerelin.*;
 
 @SuppressWarnings("unchecked")
 public class SectorGen implements SectorGeneratorPlugin
 {
-	public void generate(SectorAPI sector)
-	{
-		StarSystemAPI system = sector.createStarSystem("Exerelin");
-		SectorEntityToken star = system.initStar("star_yellow", Color.white, 500f);
 
+	public void generate(SectorAPI sectorAPI)
+	{
+		// Build initial system
+		buildSystem(sectorAPI);
+
+		// build any additional systems
+		for(int i = 0; i < ExerelinData.getInstance().numSystems - 1; i ++)
+			buildSystem(sectorAPI);
+
+
+		ExerelinData.getInstance().resetAvailableFactions();
+
+		// Build a sector manager to run things
+		SectorManager sectorManager = new SectorManager(sectorAPI);
+
+		// Set starting conditions needed later for saving into the save file
+		sectorManager.setPlayerFreeTransfer(ExerelinData.getInstance().playerOwnedStationFreeTransfer);
+		sectorManager.setRespawnFactions(ExerelinData.getInstance().respawnFactions);
+		sectorManager.setMaxFactions(ExerelinData.getInstance().maxFactionsInExerelinAtOnce);
+		sectorManager.setPlayerFactionId(ExerelinData.getInstance().getPlayerFaction());
+		sectorManager.setFactionsPossibleInSector(ExerelinData.getInstance().getAvailableFactions(sectorAPI));
+		sectorManager.setRespawnWaitMonths(ExerelinData.getInstance().respawnDelay);
+		sectorManager.setBuildOmnifactory(ExerelinData.getInstance().omniFacPresent);
+		sectorManager.setMaxSystemSize(ExerelinData.getInstance().maxSystemSize);
+
+		// Add to cache
+		ExerelinData.getInstance().setSectorManager(sectorManager);
+
+		// Build and add a time mangager
+		TimeManager timeManger = new TimeManager();
+		timeManger.sectorManagerRef = sectorManager;
+		sectorAPI.getStarSystem("Exerelin").addSpawnPoint(timeManger); //TODO - change
+	}
+
+	public void buildSystem(SectorAPI sectorAPI)
+	{
+		String[] possibleSystemNames = new String[]{"Exerelin"};
+
+		StarSystemAPI system = sectorAPI.createStarSystem(possibleSystemNames[sectorAPI.getStarSystems().size()]);
+		SectorEntityToken star = system.initStar("star_yellow", Color.white, 500f);
 
 		// Build lists of possbile planet types, names and moon types
 		String[] possiblePlanetTypes = new String[]	{"desert", "jungle", "gas_giant", "ice_giant", "terran", "arid"};
@@ -122,7 +156,7 @@ public class SectorGen implements SectorGeneratorPlugin
 				orbitRadius = ExerelinUtils.getRandomInRange(700, 900);
 				numAsteroids = 2;
 			}
-			else if (planet.getFullName().contains("Exerelin"))
+			else if (planet.getFullName().contains(system.getStar().getFullName()))
 			{
 				orbitRadius = ExerelinUtils.getRandomInRange(1000, 8000);
 				numAsteroids = 50;
@@ -168,7 +202,7 @@ public class SectorGen implements SectorGeneratorPlugin
 			if(currentPlanet == planets.size())
 				currentPlanet = 0;
 
-			if(planet.getFullName().equalsIgnoreCase("Exerelin"))
+			if(planet.getFullName().equalsIgnoreCase(system.getStar().getFullName()))
 				continue; // Skip sun
 
 			if(ExerelinUtils.getRandomInRange(0,3) == 0)
@@ -200,23 +234,5 @@ public class SectorGen implements SectorGeneratorPlugin
 			SectorEntityToken newStation = system.addOrbitalStation(planet, angle, orbitRadius, orbitDays, planet.getFullName() + " " + name, "abandoned");
 			k = k + 1;
 		}
-
-		ExerelinData.getInstance().resetAvailableFactions();
-
-		// Build a system manager to run things
-		SystemManager systemManager = new SystemManager(sector);
-
-		// Set starting conditions needed later for saving into the save file
-		systemManager.freeTransfer = ExerelinData.getInstance().playerOwnedStationFreeTransfer;
-		systemManager.respawnFactions = ExerelinData.getInstance().respawnFactions;
-		systemManager.maxFactionsInExerelin = ExerelinData.getInstance().maxFactionsInExerelinAtOnce;
-		systemManager.playerFactionId = ExerelinData.getInstance().getPlayerFaction();
-		systemManager.availableFactions = ExerelinData.getInstance().getAvailableFactions(sector);
-		systemManager.monthsToWait = ExerelinData.getInstance().respawnDelay;
-		systemManager.omnifactoryPresent = ExerelinData.getInstance().omniFacPresent;
-		systemManager.maxSystemSize = ExerelinData.getInstance().maxSystemSize;
-
-		system.addSpawnPoint(systemManager);
-		ExerelinData.getInstance().systemManager = systemManager;
 	}
 }

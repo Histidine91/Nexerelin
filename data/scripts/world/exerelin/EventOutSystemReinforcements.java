@@ -23,35 +23,27 @@ public class EventOutSystemReinforcements extends EventBase
 
 		// Get faction to spawn reinforcements for
 		int attempts = 0;
-		String[] factions = ExerelinData.getInstance().systemManager.availableFactions;
+		String[] factions = ExerelinData.getInstance().getSectorManager().getFactionsPossibleInSector();
 		while(attempts < 10 && factionId.equalsIgnoreCase(""))
 		{
 			attempts = attempts + 1;
 			factionId = factions[ExerelinUtils.getRandomInRange(0, factions.length - 1)];
-			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().systemManager.stationManager.getFactionLeader()))
+			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getFactionLeader()))
 				factionId = ""; // Can't be leader
-			else if(!ExerelinData.getInstance().systemManager.diplomacyManager.getRecordForFaction(factionId).hasWarTargetInSystem(false))
-				factionId = ""; // Faction must be at war
-			else if(ExerelinData.getInstance().systemManager.stationManager.getNumStationsOwnedByFaction(factionId) == 0)
+			else if(!ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRecordForFaction(factionId).hasWarTargetInSystem(starSystemAPI, false))
+				factionId = ""; // Faction must be at war with faction in system
+			else if(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getNumStationsOwnedByFaction(factionId) == 0)
 				factionId = ""; // Faction has to own a station
 		}
 
 		if(factionId.equalsIgnoreCase(""))
 			return;
 
-		// Warn player
-		if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-			Global.getSector().addMessage("A number of " + ExerelinData.getInstance().getPlayerFaction() + " out system reinforcements are arriving in Exerelin!", Color.magenta);
-		else
-			Global.getSector().addMessage("A number of " + factionId + " out system reinforcements are arriving in Exerelin!");
-
-		System.out.println("EVENT: Out system reinforcements for " + factionId);
-
 		// Get a spawn location
 		SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(starSystemAPI);
 
 		// Choose a station to reinforce
-		StationRecord[] records = ExerelinData.getInstance().systemManager.stationManager.getStationRecords();
+		StationRecord[] records = SystemManager.getSystemManagerForAPI(starSystemAPI).getStationManager().getStationRecords();
 		SectorEntityToken defend = null;
 		SectorEntityToken attack = null;
 		for(int j = 0; j < records.length; j++)
@@ -70,8 +62,16 @@ public class EventOutSystemReinforcements extends EventBase
 		if(attack == null || defend == null)
 			return;
 
+        // Warn player
+        if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            Global.getSector().addMessage("A number of " + ExerelinData.getInstance().getPlayerFaction() + " out system reinforcements are arriving in Exerelin!", Color.magenta);
+        else
+            Global.getSector().addMessage("A number of " + factionId + " out system reinforcements are arriving in Exerelin!");
+
+        System.out.println("EVENT: Out system reinforcements for " + factionId);
+
 		List fleets = starSystemAPI.getFleets();
-		for(int i = 0; i < fleets.size()/20; i++)
+		for(int i = 0; i < Math.max(fleets.size()/20, 1); i++)
 		{
 			CampaignFleetAPI fleet;
 			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
@@ -80,9 +80,6 @@ public class EventOutSystemReinforcements extends EventBase
 				fleet = Global.getSector().createFleet(factionId,  type);
 
 			fleet.setName("Reinforcement Fleet");
-
-			// Add prisoner that can be captured
-			fleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1000);
 
 			starSystemAPI.spawnFleet(token, ExerelinUtils.getRandomInRange(-100,100), ExerelinUtils.getRandomInRange(-10,10), fleet);
 

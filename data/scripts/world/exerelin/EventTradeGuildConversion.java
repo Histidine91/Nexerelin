@@ -2,8 +2,6 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import data.scripts.world.exerelin.ExerelinData;
-import data.scripts.world.exerelin.ExerelinUtils;
 
 import java.awt.*;
 
@@ -22,12 +20,12 @@ public class EventTradeGuildConversion extends EventBase
 		String tradingWithFaction = "";
 
 		// Reset trader relationships with each faction
-		String[] factions = ExerelinData.getInstance().systemManager.availableFactions;
+		String[] factions = ExerelinData.getInstance().getSectorManager().getFactionsPossibleInSector();
 		for(int i = 0; i < factions.length; i = i + 1)
 			traderFAPI.setRelationship(factions[i], 0);
 
 		// Get a last faction and declare friend with them
-		tradingWithFaction = ExerelinData.getInstance().systemManager.stationManager.getFactionLoser();
+		tradingWithFaction = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getFactionLoser();
 		if(tradingWithFaction == null)
 			return;
 
@@ -76,7 +74,7 @@ public class EventTradeGuildConversion extends EventBase
 				fleetCargo.addSupplies(800);
 
 				fleet.clearAssignments();
-				SectorEntityToken station = ExerelinUtils.getRandomStationForFaction(tradingWithFaction, Global.getSector());
+				SectorEntityToken station = ExerelinUtils.getRandomStationForFaction(tradingWithFaction, starSystemAPI, Global.getSector());
 
 				if(station != null)
 					fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, station, 200);

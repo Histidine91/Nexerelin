@@ -30,6 +30,7 @@ public final class ExerelinData
 	public boolean onlyVanillaFactions = false;
 	public boolean confirmedAvailableFactions = false;
 
+	public int numSystems = 1;
 	public int numPlanets = 10;
 	public int maxMoonsPerPlanet = 3;
 	public int numStations = 3;
@@ -45,9 +46,9 @@ public final class ExerelinData
 	public int maxFactionsInExerelinAtOnce = 3;
 	public int maxSystemSize = 15000;
 
-	public SystemManager systemManager;
-
 	public Vector2f playerOffMapFleetSpawnLocation = null;
+
+	private SectorManager sectorManager;
 
 	private ExerelinData()
 	{
@@ -59,20 +60,22 @@ public final class ExerelinData
 		if(instance == null)
 			instance = new ExerelinData();
 
-		updateSystemManager();
+		updateSectorManager();
 
 		return instance;
 	}
 
-	private static void updateSystemManager()
+	private static void updateSectorManager()
 	{
 		if (Global.getSector() != sector)
 		{
 			sector = Global.getSector();
 
-			System.out.println("Sector change detected, retrieving spawnpoints...");
+			System.out.println("Sector change detected, retrieving saved time manager...");
 
-			StarSystemAPI system = sector.getStarSystem("Exerelin");
+			//TODO - Will the time manager always be in Exerelin?
+			StarSystemAPI system = (StarSystemAPI)sector.getStarSystems().get(0); //TODO - change
+
 			ArrayList spawnPoints = ExerelinHacks.getSpawnPoints(system);
 
 			if (spawnPoints != null)
@@ -83,11 +86,11 @@ public final class ExerelinData
 				{
 					SpawnPointPlugin plugin = (SpawnPointPlugin)it.next();
 
-					if (plugin instanceof SystemManager)
+					if (plugin instanceof TimeManager)
 					{
-						System.out.println("SystemManager found.");
+						System.out.println("TimeManager found, settign reference");
 
-						instance.systemManager = (SystemManager)plugin;
+						instance.sectorManager = ((TimeManager) plugin).sectorManagerRef;
 						break;
 					}
 				}
@@ -280,5 +283,15 @@ public final class ExerelinData
 			System.out.println(factionId + " not installed");
 			return false;
 		}
+	}
+
+	public SectorManager getSectorManager()
+	{
+		return sectorManager;
+	}
+
+	public void setSectorManager(SectorManager inSectorManager)
+	{
+		sectorManager = inSectorManager;
 	}
 }

@@ -98,7 +98,7 @@ public class StationRecord
 		asteroidMiningFleetSpawnPoint.setFaction(newOwnerFactionId);
 		gasMiningFleetSpawnPoint.setFaction(newOwnerFactionId);
 
-		owningFaction = ExerelinData.getInstance().systemManager.diplomacyManager.getRecordForFaction(newOwnerFactionId);
+		owningFaction = ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRecordForFaction(newOwnerFactionId);
 
 		if(newOwnerFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 			stationToken.getCargo().setFreeTransfer(ExerelinData.getInstance().playerOwnedStationFreeTransfer);
@@ -107,7 +107,7 @@ public class StationRecord
 
 		// Update relationship
 		if(!originalOwnerId.equalsIgnoreCase("") && updateRelationship)
-			ExerelinData.getInstance().systemManager.diplomacyManager.updateRelationshipOnEvent(originalOwnerId, newOwnerFactionId, "LostStation");
+			ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(originalOwnerId, newOwnerFactionId, "LostStation");
 	}
 
 	public void setEfficiency(float value)
@@ -419,7 +419,7 @@ public class StationRecord
 			{
 				if(ExerelinUtils.getRandomInRange(0, 9) != 0)
 				{
-					String otherFactionId = ExerelinData.getInstance().systemManager.diplomacyManager.getRandomNonEnemyFactionIdForFaction(this.getOwner().getFactionId());
+					String otherFactionId = ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRandomNonEnemyFactionIdForFaction(this.getOwner().getFactionId());
 					if(otherFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 						otherFactionId = "";
 
@@ -431,13 +431,13 @@ public class StationRecord
 						return;
 					}
 
-					ExerelinData.getInstance().systemManager.diplomacyManager.updateRelationshipOnEvent(this.getOwner().getFactionId(), otherFactionId , "agent");
+					ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), otherFactionId , "agent");
 					stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
 					return;
 				}
 				else
 				{
-					ExerelinData.getInstance().systemManager.diplomacyManager.updateRelationshipOnEvent(this.getOwner().getFactionId(), ExerelinData.getInstance().getPlayerFaction(), "agentCapture");
+					ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), ExerelinData.getInstance().getPlayerFaction(), "agentCapture");
 					stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
 					return;
 				}
@@ -445,7 +445,7 @@ public class StationRecord
 
 			if(numPrisoners > 0)
 			{
-				ExerelinData.getInstance().systemManager.diplomacyManager.updateRelationshipOnEvent(this.getOwner().getFactionId(), ExerelinData.getInstance().getPlayerFaction(), "prisoner");
+				ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), ExerelinData.getInstance().getPlayerFaction(), "prisoner");
 				stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
 				return;
 			}

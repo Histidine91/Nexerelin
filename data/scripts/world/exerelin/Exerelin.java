@@ -17,11 +17,11 @@ public class Exerelin implements SectorGeneratorPlugin
 		// Set abandoned as enemy of every faction
 		this.initFactionRelationships(sector);
 
-		// Build off map initial station attack fleets
-		this.initStationAttackFleets(sector, system);
+		// Build off map initial station attack fleets in random systems
+		this.initStationAttackFleets(sector);
 
 		// Add trader spawns
-		this.initTraderSpawns(sector, system);
+		this.initTraderSpawns(sector);
 	}
 
 	private void checkPlayerFactionPick(SectorAPI sector)
@@ -38,9 +38,9 @@ public class Exerelin implements SectorGeneratorPlugin
 			ExerelinData.getInstance().resetPlayerFaction();
 	}
 
-	private void initStationAttackFleets(SectorAPI sector, StarSystemAPI system)
+	private void initStationAttackFleets(SectorAPI sector)
 	{
-		String[] factions = ExerelinData.getInstance().getAvailableFactions(sector);
+		String[] factions = SectorManager.getCurrentSectorManager().getFactionsPossibleInSector();
 		ExerelinUtils.shuffleStringArray(factions); // Randomise order
 
 		int numFactionsInitialStart = Math.min(factions.length - 1, ExerelinData.getInstance().numStartFactions);
@@ -52,12 +52,17 @@ public class Exerelin implements SectorGeneratorPlugin
 				numFactionsInitialStart = numFactionsInitialStart + 1;
 				continue;
 			}
-			OutSystemStationAttackFleet offMapSpawn = new OutSystemStationAttackFleet(sector, system, factionId, false);
+
+			int systemChosen = ExerelinUtils.getRandomInRange(0, SectorManager.getCurrentSectorManager().getSystemManagers().length - 1);
+			StarSystemAPI systemAPI = SectorManager.getCurrentSectorManager().getSystemManagers()[systemChosen].getStarSystemAPI();
+			OutSystemStationAttackFleet offMapSpawn = new OutSystemStationAttackFleet(sector, systemAPI, factionId, false);
 			offMapSpawn.spawnFleet(null, null);
 		}
 
 		// Spawn player fleet
-		OutSystemStationAttackFleet offMapSpawn = new OutSystemStationAttackFleet(sector, system, ExerelinData.getInstance().getPlayerFaction(), false);
+		int systemChosen = ExerelinUtils.getRandomInRange(0, SectorManager.getCurrentSectorManager().getSystemManagers().length - 1);
+		StarSystemAPI systemAPI = SectorManager.getCurrentSectorManager().getSystemManagers()[systemChosen].getStarSystemAPI();
+		OutSystemStationAttackFleet offMapSpawn = new OutSystemStationAttackFleet(sector, systemAPI, ExerelinData.getInstance().getPlayerFaction(), false);
 		offMapSpawn.spawnFleet(null, null);
 
 		// Save player off map fleet spawn location
@@ -79,12 +84,16 @@ public class Exerelin implements SectorGeneratorPlugin
 		tradeGuild.setRelationship(rebel.getId(), -1);
 	}
 
-	private void initTraderSpawns(SectorAPI sector, StarSystemAPI system)
+	private void initTraderSpawns(SectorAPI sector)
 	{
-		for(int i = 0; i < Math.max(1, system.getOrbitalStations().size()/5); i++)
+		for(int j = 0; j < SectorManager.getCurrentSectorManager().getSystemManagers().length; j++)
 		{
-			TradeGuildTraderSpawnPoint tgtsp = new TradeGuildTraderSpawnPoint(sector,  system,  ExerelinUtils.getRandomInRange(8,12), 1, system.createToken(0,0));
-			system.addSpawnPoint(tgtsp);
+			StarSystemAPI systemAPI = SectorManager.getCurrentSectorManager().getSystemManagers()[j].getStarSystemAPI();
+			for(int i = 0; i < Math.max(1, systemAPI.getOrbitalStations().size()/5); i++)
+			{
+				TradeGuildTraderSpawnPoint tgtsp = new TradeGuildTraderSpawnPoint(sector,  systemAPI,  ExerelinUtils.getRandomInRange(8,12), 1, systemAPI.createToken(0,0));
+				systemAPI.addSpawnPoint(tgtsp);
+			}
 		}
 	}
 }

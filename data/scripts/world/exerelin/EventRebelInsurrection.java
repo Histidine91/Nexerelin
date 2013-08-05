@@ -2,8 +2,6 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import data.scripts.world.exerelin.ExerelinData;
-import data.scripts.world.exerelin.ExerelinUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -24,12 +22,12 @@ public class EventRebelInsurrection extends EventBase
 		String rebelAgainseFaction = "";
 
 		// Reset Rebel relationships with each faction
-		String[] factions = ExerelinData.getInstance().systemManager.availableFactions;
+		String[] factions = ExerelinData.getInstance().getSectorManager().getFactionsPossibleInSector();
 		for(int i = 0; i < factions.length; i = i + 1)
 			rebelFAPI.setRelationship(factions[i], 0);
 
 		// Get a target faction and declare war on them
-		rebelAgainseFaction = ExerelinData.getInstance().systemManager.stationManager.getFactionLeader();
+		rebelAgainseFaction = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getFactionLeader();
 		if(rebelAgainseFaction == null)
 			return;
 
@@ -50,7 +48,7 @@ public class EventRebelInsurrection extends EventBase
 			CampaignFleetAPI fleet = (CampaignFleetAPI)fleets.get(i);
 
 			// Faction fleets have a chance to rebel
-			if(fleet.getFaction().getId().equalsIgnoreCase(rebelAgainseFaction) && ((float)ExerelinUtils.getRandomInRange(1, 10)/10) <= ExerelinData.getInstance().systemManager.stationManager.getStationOwnershipPercent(rebelAgainseFaction))
+			if(fleet.getFaction().getId().equalsIgnoreCase(rebelAgainseFaction) && ((float)ExerelinUtils.getRandomInRange(1, 10)/10) <= ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getStationOwnershipPercent(rebelAgainseFaction))
 			{
 				String fleetFullName = fleet.getFullName();
 				if(fleetFullName.contains("Station") || fleetFullName.contains("Supply") || fleetFullName.contains("Mining"))
@@ -66,7 +64,7 @@ public class EventRebelInsurrection extends EventBase
 				fleet.setName(fleetName);
 
 				fleet.clearAssignments();
-				SectorEntityToken station = ExerelinUtils.getRandomStationForFaction(rebelAgainseFaction, Global.getSector());
+				SectorEntityToken station = ExerelinUtils.getRandomStationForFaction(rebelAgainseFaction, starSystemAPI, Global.getSector());
 				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, station, 30);
 				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, ExerelinUtils.getRandomOffMapPoint(starSystemAPI), 30);
 			}

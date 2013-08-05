@@ -18,14 +18,14 @@ public class EventStationExplosion extends EventBase
 
 	public void causeExplosion(StarSystemAPI starSystemAPI)
 	{
-		StationRecord[] stations = ExerelinData.getInstance().systemManager.stationManager.getStationRecords(); //TODO change to use sectorManager
+		StationRecord[] stations = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getStationRecords(); //TODO change to use sectorManager
 		int attempts = 0;
 		StationRecord station = null;
 		while(station == null & attempts < 20)
 		{
 			attempts = attempts + 1;
 			station = stations[ExerelinUtils.getRandomInRange(0, stations.length - 1)];
-			if(station.getOwner() == null || station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().systemManager.stationManager.getFactionLoser()))
+			if(station.getOwner() == null || station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getFactionLoser()))
 				station = null;
 		}
 

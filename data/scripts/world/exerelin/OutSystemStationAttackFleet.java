@@ -41,7 +41,7 @@ public class OutSystemStationAttackFleet
 		SectorEntityToken target;
 		if(targetPredetermined == null)
 		{
-			target = ExerelinUtils.getClosestEnemyStation(faction, this.theSector, this.spawnPoint);
+			target = ExerelinUtils.getClosestEnemyStation(faction, (StarSystemAPI)theLocation, this.theSector, this.spawnPoint);
 			if(target == null)
 				return null;
 		}
@@ -88,7 +88,7 @@ public class OutSystemStationAttackFleet
 				else if(!ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(theFaction) && theSector.getFaction(ExerelinUtils.getStationOwnerFactionId(theTarget)).getRelationship(theFaction) >= 0)
 				{
 					// Ally or neutral owns it so get a new target to attack
-					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, theSector, theTarget);
+					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, (StarSystemAPI)theLocation, theSector, theTarget);
 					if(newTarget == null)
 					{
 						// No target so leave system
@@ -154,7 +154,7 @@ public class OutSystemStationAttackFleet
 				else if(!ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(theFaction) && theSector.getFaction(ExerelinUtils.getStationOwnerFactionId(theTarget)).getRelationship(theFaction) >= 0)
 				{
 					// Ally or neutral owns it so get new target
-					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, theSector, theTarget);
+					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, (StarSystemAPI)theLocation, theSector, theTarget);
 					if(newTarget == null)
 					{
 						// No target so leave system
@@ -167,7 +167,7 @@ public class OutSystemStationAttackFleet
 					return;
 				}
 
-				StationRecord stationRecord = ExerelinData.getInstance().systemManager.stationManager.getStationRecordForToken(theTarget);
+				StationRecord stationRecord = SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI)theLocation).getStationManager().getStationRecordForToken(theTarget);
 				stationRecord.setOwner(theFaction, true, true);
 				stationRecord.clearCargo();
 

@@ -51,7 +51,7 @@ public class TradeGuildTraderSpawnPoint extends BaseSpawnPoint
 	// Get a station to trade with (not at war, not abandoned, not same one, not under attack)
 	private void setStationToTradeWith()
 	{
-		StationRecord[] stations = ExerelinData.getInstance().systemManager.stationManager.getStationRecords();
+		StationRecord[] stations = SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI)getLocation()).getStationManager().getStationRecords();
 		StationRecord station = null;
 		int attempts = 0;
 		while(station == null && attempts < 20)
