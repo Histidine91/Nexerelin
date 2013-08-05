@@ -27,11 +27,19 @@ public class EventRebelInsurrection extends EventBase
 			rebelFAPI.setRelationship(factions[i], 0);
 
 		// Get a target faction and declare war on them
-		rebelAgainseFaction = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getFactionLeader();
+		rebelAgainseFaction = SystemManager.getSystemManagerForAPI(starSystemAPI).getStationManager().getFactionLeader();
 		if(rebelAgainseFaction == null)
 			return;
 
 		rebelFAPI.setRelationship(rebelAgainseFaction, -1);
+
+        // Check if there are any rebel fleets in system
+        for(int j = 0; j < starSystemAPI.getFleets().size(); j++)
+        {
+            CampaignFleetAPI fleet = (CampaignFleetAPI)starSystemAPI.getFleets().get(j);
+            if(fleet.getFaction().getId().equalsIgnoreCase("rebel"))
+                return;
+        }
 
 		// Warn player
 		if(rebelAgainseFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
@@ -48,7 +56,7 @@ public class EventRebelInsurrection extends EventBase
 			CampaignFleetAPI fleet = (CampaignFleetAPI)fleets.get(i);
 
 			// Faction fleets have a chance to rebel
-			if(fleet.getFaction().getId().equalsIgnoreCase(rebelAgainseFaction) && ((float)ExerelinUtils.getRandomInRange(1, 10)/10) <= ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getStationOwnershipPercent(rebelAgainseFaction))
+			if(fleet.getFaction().getId().equalsIgnoreCase(rebelAgainseFaction) && ((float)ExerelinUtils.getRandomInRange(1, 10)/10) <= SystemManager.getSystemManagerForAPI(starSystemAPI).getStationManager().getStationOwnershipPercent(rebelAgainseFaction))
 			{
 				String fleetFullName = fleet.getFullName();
 				if(fleetFullName.contains("Station") || fleetFullName.contains("Supply") || fleetFullName.contains("Mining"))
