@@ -3,8 +3,6 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import data.scripts.world.exerelin.ExerelinData;
-import data.scripts.world.exerelin.StationRecord;
 
 import java.awt.*;
 import java.util.List;
@@ -18,14 +16,14 @@ public class EventStationExplosion extends EventBase
 
 	public void causeExplosion(StarSystemAPI starSystemAPI)
 	{
-		StationRecord[] stations = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getStationRecords(); //TODO change to use sectorManager
+		StationRecord[] stations = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getStationRecords(); //TODO change to use sectorManager
 		int attempts = 0;
 		StationRecord station = null;
 		while(station == null & attempts < 20)
 		{
 			attempts = attempts + 1;
 			station = stations[ExerelinUtils.getRandomInRange(0, stations.length - 1)];
-			if(station.getOwner() == null || station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getFactionLoser()))
+			if(station.getOwner() == null || station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLoser()))
 				station = null;
 		}
 

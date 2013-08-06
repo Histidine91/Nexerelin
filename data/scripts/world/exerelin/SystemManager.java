@@ -4,8 +4,8 @@ import com.fs.starfarer.api.campaign.*;
 
 public class SystemManager
 {
-	private StationManager stationManager;
-	private EventManager eventManager;
+	private SystemStationManager systemStationManager;
+	private SystemEventManager systemEventManager;
 
 	private StarSystemAPI starSystemAPI;
 
@@ -13,8 +13,8 @@ public class SystemManager
 	{
 		this.starSystemAPI = starSystemAPI;
 
-		stationManager = new StationManager(sectorAPI, this.starSystemAPI);
-		eventManager = new EventManager(this.starSystemAPI);
+		systemStationManager = new SystemStationManager(sectorAPI, this.starSystemAPI);
+		systemEventManager = new SystemEventManager(this.starSystemAPI);
 	}
 
 	public String getStarSystemName()
@@ -27,29 +27,29 @@ public class SystemManager
 		return this.starSystemAPI;
 	}
 
-	public StationManager getStationManager()
+	public SystemStationManager getSystemStationManager()
 	{
-		return stationManager;
+		return systemStationManager;
 	}
 
-	public EventManager getEventManager()
+	public SystemEventManager getSystemEventManager()
 	{
-		return eventManager;
+		return systemEventManager;
 	}
 
 	public String getLeadingFactionId()
 	{
-		return stationManager.getFactionLeader();
+		return systemStationManager.getFactionLeader();
 	}
 
 	public String getLosingFactionId()
 	{
-		return stationManager.getFactionLoser();
+		return systemStationManager.getFactionLoser();
 	}
 
 	public Boolean isFactionInSystem(String factionId)
 	{
-		return stationManager.doesFactionOwnStation(factionId);
+		return systemStationManager.doesFactionOwnStation(factionId);
 	}
 
 	public Boolean isOneOfFactionInSystem(String[] factionIds)
@@ -65,12 +65,12 @@ public class SystemManager
 
 	public float getSystemOwnership(String factionId)
 	{
-		return stationManager.getStationOwnershipPercent(factionId);
+		return systemStationManager.getStationOwnershipPercent(factionId);
 	}
 
 	public String[] getFactionsInSystem()
 	{
-		return stationManager.getFactionsOwningStations();
+		return systemStationManager.getFactionsOwningStations();
 	}
 
 	public static SystemManager getSystemManagerForSystem(String systemName)

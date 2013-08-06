@@ -167,7 +167,7 @@ public class OutSystemStationAttackFleet
 					return;
 				}
 
-				StationRecord stationRecord = SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI)theLocation).getStationManager().getStationRecordForToken(theTarget);
+				StationRecord stationRecord = SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI)theLocation).getSystemStationManager().getStationRecordForToken(theTarget);
 				stationRecord.setOwner(theFaction, true, true);
 				stationRecord.clearCargo();
 

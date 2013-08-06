@@ -256,7 +256,7 @@ public class DiplomacyManager
 			// If far, like them, if close, don't like them (we want their stations!)
 			//TODO - A good way to rework this on a sector level
 			/*
-			float factionDistanceDiffFromAverage = ExerelinData.getInstance().systemManager.getStationManager().getDistanceBetweenFactionsRelativeToAverage(recordToUpdate.getFactionId(), factionRecords[j].getFactionId());
+			float factionDistanceDiffFromAverage = ExerelinData.getInstance().systemManager.getSystemStationManager().getDistanceBetweenFactionsRelativeToAverage(recordToUpdate.getFactionId(), factionRecords[j].getFactionId());
 
 			if(factionDistanceDiffFromAverage != Float.POSITIVE_INFINITY
 					&& factionDistanceDiffFromAverage != Float.NEGATIVE_INFINITY)
@@ -1134,7 +1134,7 @@ public class DiplomacyManager
 
 	private void startAlliance(DiplomacyRecord rec1, DiplomacyRecord rec2)
 	{
-		String allianceId = allianceManager.createAlliance(rec1,  rec2);
+		String allianceId = allianceManager.createAlliance(rec1, rec2);
 		AllianceRecord allianceRecord = allianceManager.getAllianceRecord(allianceId);
 
 		rec1.setGameRelationship(rec2.getFactionId(), 1);
@@ -1180,7 +1180,7 @@ public class DiplomacyManager
 		else
 			sector.addMessage("Alliance " + allianceRecord.getAllianceNameAndFactions() + " has been dissolved.");
 
-		allianceManager.dissolveAlliance(allianceId,  records);
+		allianceManager.dissolveAlliance(allianceId, records);
 	}
 
 	private void joinAlliances(String allianceOneId, String allianceTwoId)

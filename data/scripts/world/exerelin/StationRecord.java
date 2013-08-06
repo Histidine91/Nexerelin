@@ -2,7 +2,6 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import data.scripts.world.BaseSpawnPoint;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -11,7 +10,7 @@ import java.util.List;
 
 public class StationRecord
 {
-	private StationManager stationManager;
+	private SystemStationManager systemStationManager;
 
 	private SectorEntityToken stationToken;
 	private CargoAPI stationCargo;
@@ -36,7 +35,7 @@ public class StationRecord
 	private AsteroidMiningFleetSpawnPoint asteroidMiningFleetSpawnPoint;
 	private GasMiningFleetSpawnPoint gasMiningFleetSpawnPoint;
 
-	public StationRecord(SectorAPI sector, StarSystemAPI inSystem, StationManager manager, SectorEntityToken token)
+	public StationRecord(SectorAPI sector, StarSystemAPI inSystem, SystemStationManager manager, SectorEntityToken token)
 	{
 		system = inSystem;
 
@@ -53,7 +52,7 @@ public class StationRecord
 		asteroidMiningFleetSpawnPoint = new AsteroidMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
 		gasMiningFleetSpawnPoint = new GasMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
 
-		stationManager = manager;
+		systemStationManager = manager;
 	}
 
 	public DiplomacyRecord getOwner()
@@ -251,14 +250,14 @@ public class StationRecord
 		Float bestDistance = 99999999999f;
 		StationRecord bestTarget = null;
 
-		for(int i = 0; i < stationManager.getStationRecords().length; i++)
+		for(int i = 0; i < systemStationManager.getStationRecords().length; i++)
 		{
-			StationRecord possibleTarget = stationManager.getStationRecords()[i];
+			StationRecord possibleTarget = systemStationManager.getStationRecords()[i];
 
 			if(possibleTarget.getStationToken().getFullName().equalsIgnoreCase(this.getStationToken().getFullName()))
 				continue;
 
-			if(stationManager.getStationRecords()[i].getOwner() == null)
+			if(systemStationManager.getStationRecords()[i].getOwner() == null)
 			{
 				Float distance = MathUtils.getDistanceSquared(possibleTarget.getStationToken(), this.getStationToken());
 				if(distance < bestDistance)
@@ -271,7 +270,7 @@ public class StationRecord
 			{
 				for(int j = 0; j < enemies.length; j++)
 				{
-					if(stationManager.getStationRecords()[i].getOwner().getFactionId().equalsIgnoreCase(enemies[j]))
+					if(systemStationManager.getStationRecords()[i].getOwner().getFactionId().equalsIgnoreCase(enemies[j]))
 					{
 						Float distance = MathUtils.getDistanceSquared(possibleTarget.getStationToken(), this.getStationToken());
 						if(distance < bestDistance)
@@ -302,9 +301,9 @@ public class StationRecord
 			return;
 		}
 
-		for(int i = 0; i < stationManager.getStationRecords().length; i++)
+		for(int i = 0; i < systemStationManager.getStationRecords().length; i++)
 		{
-			StationRecord possibleAssist = stationManager.getStationRecords()[i];
+			StationRecord possibleAssist = systemStationManager.getStationRecords()[i];
 
 			if(possibleAssist.getOwner() == null)
 				continue;
@@ -431,7 +430,7 @@ public class StationRecord
 						return;
 					}
 
-					ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), otherFactionId , "agent");
+					ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), otherFactionId, "agent");
 					stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
 					return;
 				}

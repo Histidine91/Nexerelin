@@ -16,9 +16,9 @@ public class EventStationSeccession extends EventBase
 
 	public void makeStationSecedeToOutSystemFaction(StarSystemAPI starSystemAPI)
 	{
-		if(SystemManager.getSystemManagerForAPI(starSystemAPI).getStationManager().getNumFactionsInSystem() >= SectorManager.getCurrentSectorManager().getMaxFactions())
+		if(SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager().getNumFactionsInSystem() >= SectorManager.getCurrentSectorManager().getMaxFactions())
 		{
-			System.out.println(SystemManager.getSystemManagerForAPI(starSystemAPI).getStationManager().getNumFactionsInSystem() + " of " + SectorManager.getCurrentSectorManager().getMaxFactions() + " already in system.");
+			System.out.println(SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager().getNumFactionsInSystem() + " of " + SectorManager.getCurrentSectorManager().getMaxFactions() + " already in system.");
 			return;
 		}
 
@@ -47,7 +47,7 @@ public class EventStationSeccession extends EventBase
 		if(factionId.equalsIgnoreCase(""))
 			return; // No faction has 0 stations in system
 
-		StationRecord[] stations = SystemManager.getSystemManagerForAPI(starSystemAPI) .getStationManager().getStationRecords();
+		StationRecord[] stations = SystemManager.getSystemManagerForAPI(starSystemAPI) .getSystemStationManager().getStationRecords();
 		attempts = 0;
 		StationRecord station = null;
 		while(station == null & attempts < 20)
@@ -55,8 +55,8 @@ public class EventStationSeccession extends EventBase
 			attempts = attempts + 1;
 			station = stations[ExerelinUtils.getRandomInRange(0, stations.length - 1)];
 			if(station.getOwner() == null
-					|| !station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getFactionLeader())
-					|| ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getNumStationsOwnedByFaction(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getFactionLeader()) <= 1)
+					|| !station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLeader())
+					|| ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getNumStationsOwnedByFaction(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLeader()) <= 1)
 				station = null;
 		}
 

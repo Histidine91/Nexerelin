@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class StationManager
+public class SystemStationManager
 {
 	private StationRecord[] stationRecords;
 
@@ -23,7 +23,7 @@ public class StationManager
 
 	private int nextStationRecord = 0;
 
-	public StationManager(SectorAPI sector, StarSystemAPI system)
+	public SystemStationManager(SectorAPI sector, StarSystemAPI system)
 	{
 		List stations = system.getOrbitalStations();
 		stationRecords = new StationRecord[stations.size()];

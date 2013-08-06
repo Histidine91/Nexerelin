@@ -25,7 +25,7 @@ public class EventTradeGuildConversion extends EventBase
 			traderFAPI.setRelationship(factions[i], 0);
 
 		// Get a last faction and declare friend with them
-		tradingWithFaction = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getFactionLoser();
+		tradingWithFaction = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLoser();
 		if(tradingWithFaction == null)
 			return;
 

@@ -21,25 +21,25 @@ public class EventRebelInsurrection extends EventBase
 		FactionAPI rebelFAPI = Global.getSector().getFaction("rebel");
 		String rebelAgainseFaction = "";
 
-		// Reset Rebel relationships with each faction
-		String[] factions = ExerelinData.getInstance().getSectorManager().getFactionsPossibleInSector();
-		for(int i = 0; i < factions.length; i = i + 1)
-			rebelFAPI.setRelationship(factions[i], 0);
+        // Get a target faction and declare war on them
+        rebelAgainseFaction = SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager().getFactionLeader();
+        if(rebelAgainseFaction == null)
+            return;
 
-		// Get a target faction and declare war on them
-		rebelAgainseFaction = SystemManager.getSystemManagerForAPI(starSystemAPI).getStationManager().getFactionLeader();
-		if(rebelAgainseFaction == null)
-			return;
-
-		rebelFAPI.setRelationship(rebelAgainseFaction, -1);
-
-        // Check if there are any rebel fleets in system
+        // Check if there are any rebel fleets still in system
         for(int j = 0; j < starSystemAPI.getFleets().size(); j++)
         {
             CampaignFleetAPI fleet = (CampaignFleetAPI)starSystemAPI.getFleets().get(j);
-            if(fleet.getFaction().getId().equalsIgnoreCase("rebel"))
+            if(fleet.getFaction().getId().equalsIgnoreCase(rebelFAPI.getId()))
                 return;
         }
+
+		// Reset Rebel relationships with each faction
+		String[] factions = SectorManager.getCurrentSectorManager().getFactionsPossibleInSector();
+		for(int i = 0; i < factions.length; i = i + 1)
+			rebelFAPI.setRelationship(factions[i], 0);
+
+		rebelFAPI.setRelationship(rebelAgainseFaction, -1);
 
 		// Warn player
 		if(rebelAgainseFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
@@ -56,7 +56,7 @@ public class EventRebelInsurrection extends EventBase
 			CampaignFleetAPI fleet = (CampaignFleetAPI)fleets.get(i);
 
 			// Faction fleets have a chance to rebel
-			if(fleet.getFaction().getId().equalsIgnoreCase(rebelAgainseFaction) && ((float)ExerelinUtils.getRandomInRange(1, 10)/10) <= SystemManager.getSystemManagerForAPI(starSystemAPI).getStationManager().getStationOwnershipPercent(rebelAgainseFaction))
+			if(fleet.getFaction().getId().equalsIgnoreCase(rebelAgainseFaction) && ((float)ExerelinUtils.getRandomInRange(1, 10)/10) <= SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager().getStationOwnershipPercent(rebelAgainseFaction))
 			{
 				String fleetFullName = fleet.getFullName();
 				if(fleetFullName.contains("Station") || fleetFullName.contains("Supply") || fleetFullName.contains("Mining"))

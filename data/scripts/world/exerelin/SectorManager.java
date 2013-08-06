@@ -65,10 +65,10 @@ public class SectorManager
 		// Manage stations (1 update per 10 stations per day)
 		for(int j = 0; j < this.systemManagers.length; j++)
 		{
-			StationManager stationManager =  this.systemManagers[j].getStationManager();
-			int numStationsToUpdate = Math.max(1, ExerelinUtils.getRandomNearestInteger(stationManager.getStationRecords().length / 10f));
+			SystemStationManager systemStationManager =  this.systemManagers[j].getSystemStationManager();
+			int numStationsToUpdate = Math.max(1, ExerelinUtils.getRandomNearestInteger(systemStationManager.getStationRecords().length / 10f));
 			for(int i = 0; i < numStationsToUpdate; i++)
-				stationManager.updateStations();
+				systemStationManager.updateStations();
 		}
 	}
 
@@ -77,7 +77,7 @@ public class SectorManager
 		// Manage system events
 		for(int j = 0; j < this.systemManagers.length; j++)
 		{
-			this.systemManagers[j].getEventManager().runEvents();
+			this.systemManagers[j].getSystemEventManager().runEvents();
 		}
 	}
 
@@ -155,9 +155,9 @@ public class SectorManager
 			System.out.println(" - - - - - - - - - - - - ");
 			System.out.println("Calling out-system station attack fleets for " + systemAPI.getName());
 
-			if(systemManager.getStationManager().getNumFactionsInSystem() >= maxFactions)
+			if(systemManager.getSystemStationManager().getNumFactionsInSystem() >= maxFactions)
 			{
-				System.out.println(systemManager.getStationManager().getNumFactionsInSystem() + " of " + maxFactions + " already in system.");
+				System.out.println(systemManager.getSystemStationManager().getNumFactionsInSystem() + " of " + maxFactions + " already in system.");
 				System.out.println(" - - - - - - - - - - - - ");
 				return;
 			}

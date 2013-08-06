@@ -2,7 +2,7 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 
-public class EventManager
+public class SystemEventManager
 {
 	private EventRebelInsurrection eventRebelInsurrection;
 	private EventTradeGuildConversion eventTradeGuildConversion;
@@ -17,7 +17,7 @@ public class EventManager
 
 	private StarSystemAPI starSystemAPI;
 
-	public EventManager(StarSystemAPI inSystem)
+	public SystemEventManager(StarSystemAPI inSystem)
 	{
 		starSystemAPI = inSystem;
 		eventRebelInsurrection = new EventRebelInsurrection();

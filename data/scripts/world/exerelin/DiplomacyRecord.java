@@ -129,7 +129,7 @@ public class DiplomacyRecord
 
 	public Boolean hasWarTargetInSystem(StarSystemAPI starSystemAPI, Boolean includeAbandoned)
 	{
-		StationRecord[] stations = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getStationRecords();
+		StationRecord[] stations = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getStationRecords();
 		for(int i = 0; i < stations.length; i = i + 1)
 		{
 			StationRecord station = stations[i];

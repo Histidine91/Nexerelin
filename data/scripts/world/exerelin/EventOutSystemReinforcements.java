@@ -28,11 +28,11 @@ public class EventOutSystemReinforcements extends EventBase
 		{
 			attempts = attempts + 1;
 			factionId = factions[ExerelinUtils.getRandomInRange(0, factions.length - 1)];
-			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getFactionLeader()))
+			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLeader()))
 				factionId = ""; // Can't be leader
 			else if(!ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRecordForFaction(factionId).hasWarTargetInSystem(starSystemAPI, false))
 				factionId = ""; // Faction must be at war with faction in system
-			else if(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getStationManager().getNumStationsOwnedByFaction(factionId) == 0)
+			else if(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getNumStationsOwnedByFaction(factionId) == 0)
 				factionId = ""; // Faction has to own a station
 		}
 
@@ -43,7 +43,7 @@ public class EventOutSystemReinforcements extends EventBase
 		SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(starSystemAPI);
 
 		// Choose a station to reinforce
-		StationRecord[] records = SystemManager.getSystemManagerForAPI(starSystemAPI).getStationManager().getStationRecords();
+		StationRecord[] records = SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager().getStationRecords();
 		SectorEntityToken defend = null;
 		SectorEntityToken attack = null;
 		for(int j = 0; j < records.length; j++)
