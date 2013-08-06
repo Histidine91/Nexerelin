@@ -1586,9 +1586,11 @@ public class ExerelinUtils
 	public static void removeRandomShipsFromCargo(CargoAPI cargoAPI, int numToRemove)
 	{
 		List ships = cargoAPI.getMothballedShips().getMembersListCopy();
-		for(int j = 0; j < Math.min(numToRemove, ships.size()); j++)
+        int totalToRemove = Math.min(numToRemove, ships.size());
+		for(int j = 0; j < totalToRemove; j++)
 		{
-			cargoAPI.getMothballedShips().removeFleetMember((FleetMemberAPI)ships.get(ExerelinUtils.getRandomInRange(0, ships.size() - 1)));
+            int toRemove = ExerelinUtils.getRandomInRange(0, cargoAPI.getMothballedShips().getMembersListCopy().size() - 1);
+            cargoAPI.getMothballedShips().removeFleetMember((FleetMemberAPI)cargoAPI.getMothballedShips().getMembersListCopy().get(toRemove));
 		}
 	}
 
