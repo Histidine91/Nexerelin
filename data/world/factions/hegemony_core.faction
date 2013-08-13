@@ -33,8 +33,6 @@
            "marinesPercent":[20, 20],
            "ships":{
                 "mrd_hawk_mk_iv_phoenix_fs":[0, 1],
-                "mrd_hawk_mk_iii_hegemony_spear_elite":[0, 1],
-                "mrd_hawk_mk_ii_allegiance_B_assault":[0, 1],
                 "mrd_hawk_1A_imp_carrier":[0, 1],
                 "mrd_hawk_balanced":[0, 1],
                 "mrd_overlord_standard":[0, 1],
@@ -134,8 +132,6 @@
            "marinesPercent":[20, 20],
            "ships":{
                 "atlas_Standard":[1, 1],
-               "mrd_hawk_mk_iv_phoenix_fs":[0, 1],
-               "mrd_hawk_mk_iii_hegemony_spear_elite":[0, 1],
                "mrd_hawk_mk_ii_allegiance_B_assault":[0, 1],
                "mrd_hawk_1A_imp_carrier":[0, 1],
                "mrd_hawk_balanced":[0, 1],
@@ -166,6 +162,20 @@
                "mrd_buzzer_wing":[0, 2],
            },
        },
+       "exerelinEliteFleet":{
+            "displayName":"Exerelin Elite Fleet",
+            "maxFleetPoints":100,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[0, 0],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "mrd_hawk_mk_iv_phoenix_fs":[0, 1],
+                "mrd_hawk_mk_iii_hegemony_spear_elite":[0, 1],
+                "mrd_sparrow_Fast":[0, 1],
+                "mrd_overlord_standard":[0, 1],
+            },
+        },
 		"scout":{
 			"displayName":"Scout",
 			"maxFleetPoints":55,

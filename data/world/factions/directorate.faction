@@ -35,7 +35,6 @@
            "marinesPercent":[20, 20],
            "ships":{
                 "manta_Carrier":[0,1],
-                "wyvera_Balanced":[0,1],
                 "panther_Standard":[0,1],
                 "perentie_Heavy":[0, 2],
                 "v_synapse_Standard":[0, 4],
@@ -115,7 +114,6 @@
            "marinesPercent":[20, 20],
            "ships":{
                 "exerelin_atlas_b_Standard":[1, 1],
-                "wyvera_Balanced":[0,1],
                 "panther_Standard":[0,1],
                 "manta_Carrier":[0,1],
                 "perentie_Heavy":[0, 2],
@@ -127,6 +125,17 @@
                 "v_asp_wing":[0,4],
                 "neutrino_wing":[0,4],
                 "positron_wing":[0,4],
+           },
+       },
+       "exerelinEliteFleet":{
+           "displayName":"Exerelin Elite Fleet",
+           "maxFleetPoints":100,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[0, 0],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+               "wyvera_Balanced":[0,1],
            },
        },
 	},

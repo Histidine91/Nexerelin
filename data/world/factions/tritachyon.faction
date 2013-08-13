@@ -33,7 +33,6 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "odyssey_Balanced":[0, 1],
-                "paragon_Elite":[0, 1],
                 "astral_Elite":[0, 1],
                 "doom_Strike":[0, 1],
                 "aurora_Balanced":[0, 2],
@@ -118,7 +117,6 @@
             "ships":{
                 "exerelin_atlas_b_Standard":[1, 1],
                 "odyssey_Balanced":[0, 1],
-                "paragon_Elite":[0, 1],
                 "astral_Elite":[0, 1],
                 "doom_Strike":[0, 1],
                 "aurora_Balanced":[0, 2],
@@ -133,6 +131,17 @@
                 "xyphos_wing":[0, 3],
                 "wasp_wing":[0, 3],
                 "dagger_wing":[0, 3],
+            },
+        },
+        "exerelinEliteFleet":{
+            "displayName":"Exerelin Elite Fleet",
+            "maxFleetPoints":100,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[0, 0],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "paragon_Elite":[0, 1],
             },
         },
 		"scout":{

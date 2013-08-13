@@ -76,8 +76,7 @@ public class OutSystemStationAttackFleet
 
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, theTarget, 3000, createTestTargetScript());
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, theTarget, 10, createArrivedScript());
-		if(defendLocation)
-			fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, theTarget, 60);
+		fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, theTarget, 60);
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, theTarget, 10);
 	}
 

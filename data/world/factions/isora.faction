@@ -35,8 +35,6 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "phoenix_Assault":[0, 1],
-                "crocodile_Elite":[0, 1],
-                "lance_FS":[0, 1],
                 "kepler_Balanced":[0, 2],
                 "hyena_Pursuit":[0, 1],
                 "hyena_Hunter":[0, 2],
@@ -117,8 +115,6 @@
             "ships":{
                 "atlas_Standard":[1, 1],
                 "phoenix_Assault":[0, 1],
-                "crocodile_Elite":[0, 1],
-                "lance_FS":[0, 1],
                 "kepler_Balanced":[0, 2],
                 "hyena_Pursuit":[0, 1],
                 "hyena_Hunter":[0, 1],
@@ -129,6 +125,18 @@
                 "brawler_Assault":[0, 2],
                 "thunder_wing":[0, 4],
                 "broadsword_wing":[0, 4],
+            },
+        },
+        "exerelinEliteFleet":{
+            "displayName":"Exerelin Elite Fleet",
+            "maxFleetPoints":100,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[0, 0],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "crocodile_Elite":[0, 1],
+                "lance_FS":[0, 1],
             },
         },
 	},

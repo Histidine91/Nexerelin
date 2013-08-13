@@ -26,7 +26,6 @@
             "marinesPercent":[20, 20],
             "ships":{
             	"relics_faithoper_Standard":[0, 1],
-				"relics_queen_Standard":[0, 1],
 				"relics_extinctioner_Standard":[0, 1],
                 "relics_intersepter_Standard":[0, 2],
                 "relics_sidewayer_Standard":[0, 2],
@@ -110,7 +109,6 @@
             "ships":{
                 "exerelin_atlas_b_Standard":[1, 1],
                 "relics_faithoper_Standard":[0, 1],
-                "relics_queen_Standard":[0, 1],
                 "relics_extinctioner_Standard":[0, 1],
                 "relics_intersepter_Strike":[0, 2],
                 "relics_sidewayer_Strike":[0, 2],
@@ -124,6 +122,17 @@
                 "relics_chaser_wing":[0, 4],
                 "relics_hiter_wing":[0, 4],
                 "relics_charger_wing":[0, 4],
+            },
+        },
+        "exerelinEliteFleet":{
+            "displayName":"Exerelin Elite Fleet",
+            "maxFleetPoints":100,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[0, 0],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "relics_queen_Standard":[0, 1],
             },
         },
 		"pur1":{

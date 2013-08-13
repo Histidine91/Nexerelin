@@ -594,13 +594,13 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
             }
             else if (factionId.equalsIgnoreCase("directorate"))
             {
-                data.addStartingShipChoice("proton");
-                data.addStartingShipChoice("amanita");
+                data.addStartingShipChoice("proton_Standard");
+                data.addStartingShipChoice("amanita_Assault");
             }
             else if (factionId.equalsIgnoreCase("ceredia"))
             {
-                data.addStartingShipChoice("javelin");
-                data.addStartingShipChoice("marten");
+                data.addStartingShipChoice("javelin_Artil");
+                data.addStartingShipChoice("marten_PD");
             }
 			else
 			{

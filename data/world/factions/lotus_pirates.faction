@@ -23,8 +23,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "intrepid_Raider":[0, 2],
-                "vanquish_Raider":[0, 2],
+                "vanquish_Raider":[0, 1],
                 "ajax_Hunter":[0, 4],
                 "argos_Standard":[0, 1],
                 "aria_Fleet":[0, 1],
@@ -114,8 +113,7 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "atlas_Standard":[1, 1],
-                "intrepid_Raider":[0, 3],
-                "vanquish_Raider":[0, 3],
+                "vanquish_Raider":[0, 1],
                 "ajax_Hunter":[0, 4],
                 "argos_Standard":[0, 3],
                 "aria_Fleet":[0, 3],
@@ -135,6 +133,17 @@
                 "ajax_Support":[0, 2],
             },
         },
+        "exerelinEliteFleet":{
+           "displayName":"Exerelin Elite Fleet",
+           "maxFleetPoints":100,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[0, 0],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+               "intrepid_Raider":[0, 1],
+           },
+       },
 		"scout":{
 			"displayName":"Scout",
 			"maxFleetPoints":14,

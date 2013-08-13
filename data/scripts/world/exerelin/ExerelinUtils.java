@@ -1090,15 +1090,14 @@ public class ExerelinUtils
 		else if (factionId.equalsIgnoreCase("thulelegacy"))
 		{
 			return new String[] {
-					"thule_achilles",
-					"thule_barbarossa",
-					"thule_bulwark_srm_launcher",
-					"thule_bulwark_srm_pod",
-					"thule_heavy_hvpc",
-					"thule_heavyslugger",
-					"thule_light_hunker",
-					"thule_light_hvpc",
-					"thule_meteor_launcher",
+                    "thule_barbarossa",
+                    "thule_bulwark_srm_launcher",
+                    "thule_bulwark_srm_pod",
+                    "thule_heavy_hvpc",
+                    "thule_heavyslugger",
+                    "thule_light_hunker",
+                    "thule_light_hvpc",
+                    "thule_meteor_launcher",
 			};
 		}
 		else if (factionId.equalsIgnoreCase("bushi"))
@@ -1645,16 +1644,17 @@ public class ExerelinUtils
     {
         try
         {
-            CampaignFleetAPI eliteFleet = SectorManager.getCurrentSectorManager().getSectorAPI().createFleet(fleet.getFaction().getId(), "ExerelinElitFleet");
+            CampaignFleetAPI eliteFleet = SectorManager.getCurrentSectorManager().getSectorAPI().createFleet(fleet.getFaction().getId(), "exerelinEliteFleet");
             if(eliteFleet.getFleetData().getMembersListCopy().size() > 0)
             {
                 int memberToAdd = getRandomInRange(0, eliteFleet.getFleetData().getMembersListCopy().size() - 1);
-                System.out.println("Adding elite member:" + ((FleetMemberAPI)eliteFleet.getFleetData().getMembersListCopy().get(memberToAdd)).getSpecId() + " to " + fleet.getName());
+                System.out.println("Adding eliteFleet ship:" + ((FleetMemberAPI)eliteFleet.getFleetData().getMembersListCopy().get(memberToAdd)).getSpecId() + " to " + fleet.getName());
                 fleet.getFleetData().addFleetMember((FleetMemberAPI)eliteFleet.getFleetData().getMembersListCopy().get(memberToAdd));
             }
         }
         catch(Exception e)
         {
+            System.out.println("EXERELIN ERROR (eliteFleetAdd): " + e.getMessage());
             // Elite fleet not setup for this faction
         }
     }

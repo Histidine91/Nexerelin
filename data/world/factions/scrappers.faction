@@ -31,7 +31,6 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "hadd_homeworld_Balanced":[0, 1],
                 "hadd_battleborn_Balanced":[0, 1],
                 "hadd_transcendent_Elite":[0, 2],
                 "hadd_reaper_Standard":[0, 2],
@@ -125,7 +124,6 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "atlas_Standard":[1, 1],
-                "hadd_homeworld_Balanced":[0, 1],
                 "hadd_battleborn_Balanced":[0, 1],
                 "hadd_transcendent_Elite":[0, 2],
                 "hadd_reaper_Standard":[0, 2],
@@ -151,6 +149,17 @@
                 "hadd_fang_wing":[0, 4],
             },
         },
+        "exerelinEliteFleet":{
+           "displayName":"Exerelin Elite Fleet",
+           "maxFleetPoints":100,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[0, 0],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+               "hadd_homeworld_Balanced":[0, 1],
+           },
+       },
 	},
 	"traits":{
 		"admiral":{

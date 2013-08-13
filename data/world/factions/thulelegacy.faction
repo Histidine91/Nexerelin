@@ -29,6 +29,7 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "thule_herzog_HC":[0, 1],
+                "thule_forsser_HC":[0, 1],
                 "thule_oberon_HC":[0, 1],
                 "thule_berghast_HC":[0, 2],
                 "thule_solidstorm_OD":[0, 2],
@@ -117,6 +118,7 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "exerelin_atlas_thule_Standard":[1, 1],
+                "thule_forsser_HC":[0, 1],
                 "thule_herzog_HC":[0, 1],
                 "thule_solidstorm_OD":[0, 2],
                 "thule_ragnarok_HC":[0, 1],
@@ -134,6 +136,17 @@
                 "thule_wartool_wing":[0, 4],
             },
         },
+        "exerelinEliteFleet":{
+           "displayName":"Exerelin Elite Fleet",
+           "maxFleetPoints":100,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[0, 0],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+               "thule_monarch_HC":[0, 1],
+           },
+       },
 	},
 	"traits":{
 		"admiral":{

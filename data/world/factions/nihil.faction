@@ -26,7 +26,6 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "nihil_irritum_nefarious":[0, 1],
                 "nihil_void_standard":[0, 2],
                 "nihil_darkness_doom":[0, 3],
                 "nihil_rigor_unknown":[0, 3],
@@ -102,7 +101,6 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "exerelin_atlas_b_Standard":[1, 1],
-                "nihil_irritum_nefarious":[0, 1],
                 "nihil_void_standard":[0, 2],
                 "nihil_darkness_doom":[0, 3],
                 "nihil_rigor_unknown":[0, 3],
@@ -111,6 +109,17 @@
                 "anti_wing":[0, 6],
             },
         },
+        "exerelinEliteFleet":{
+           "displayName":"Exerelin Elite Fleet",
+           "maxFleetPoints":100,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[0, 0],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+               "nihil_irritum_nefarious":[0, 1],
+           },
+       },
 		"corrupted_a01":{
 			"displayName":"Corrupted_a01",
 			"maxFleetPoints":50,
