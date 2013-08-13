@@ -64,6 +64,7 @@ public class OutSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 		theFleet = fleet;
 		getLocation().spawnFleet(ExerelinUtils.getRandomOffMapPoint(getLocation()), 0, 0, fleet);
 		fleet.setPreferredResupplyLocation(getAnchor());
+        fleet.setName("Supply Convoy");
 		theTarget = getAnchor();
 
 		Script script2 = createTestTargetScript();

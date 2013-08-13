@@ -67,6 +67,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 			getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 			theFleet = fleet;
 			fleet.setPreferredResupplyLocation(getAnchor());
+            fleet.setName("Boarding Fleet");
 
 			setFleetAssignments(fleet);
 

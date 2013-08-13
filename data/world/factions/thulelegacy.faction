@@ -56,7 +56,7 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "valkyrie_Elite":[0, 1],
-                "tarsus_Standard":[1, 3],
+                "tarsus_Standard":[1, 2],
                 "dram_Light":[0, 1],
             },
         },

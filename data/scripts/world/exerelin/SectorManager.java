@@ -102,7 +102,7 @@ public class SectorManager
 			for(int i = 0; i < fleets.size(); i = i + 1)
 			{
 				CampaignFleetAPI fleet = (CampaignFleetAPI)fleets.get(i);
-				if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) && fleet.getFullName().contains("Station Attack Fleet"))
+				if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) && fleet.getFullName().contains("Command Fleet"))
 					return;
 			}
 
@@ -461,8 +461,10 @@ public class SectorManager
 				currentLeaderCount = count;
 			}
 		}
-
-		return currentLeader;
+        if(currentLeader == null)
+            return "";
+        else
+		    return currentLeader;
 	}
 
 	public String getLosingFaction()
@@ -491,8 +493,10 @@ public class SectorManager
 				currentLoserCount = count;
 			}
 		}
-
-		return currentLoser;
+        if(currentLoser == null)
+            return "";
+        else
+		    return currentLoser;
 	}
 
 	public float getSectorOwnership(String factionId)
@@ -522,4 +526,9 @@ public class SectorManager
 
 		return (String[])foundFactions.toArray( new String[foundFactions.size()] );
 	}
+
+    public SectorAPI getSectorAPI()
+    {
+        return sectorAPI;
+    }
 }

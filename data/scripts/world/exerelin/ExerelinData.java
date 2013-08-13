@@ -24,8 +24,8 @@ public final class ExerelinData
 	public boolean confirmedFaction = false;
 	private String playerFaction = "independent";
 
+	//private String[] possibleFactions = new String[] {};
 	private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "independent"};
-	//private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "independent"};
 	private String[] availableFactions = null;
 	public boolean onlyVanillaFactions = false;
 	public boolean confirmedAvailableFactions = false;
@@ -236,12 +236,12 @@ public final class ExerelinData
 			possibleFactionList.add("nomad");
 
 		// Test for relics
-		//if(isFactionInstalled("relics", "data.scripts.pur.world.PurSectorGen"))
-			//possibleFactionList.add("relics");
+		if(isFactionInstalled("relics", "data.scripts.pur.world.PurSectorGen"))
+			possibleFactionList.add("relics");
 
 		// Test for shadowyards
 		if(isFactionInstalled("shadowyards", "data.scripts.world.SHIGen"))
-			possibleFactionList.add("shadowyards");
+			possibleFactionList.add("shadowyards_hi");
 
 		// Test for thulelegacy
 		if(isFactionInstalled("thulelegacy", "data.scripts.world.TLGen"))
@@ -266,6 +266,30 @@ public final class ExerelinData
 		// Test for Hiigaran Descendents
 		if(isFactionInstalled("hiigaran_descendants", "data.scripts.world.HiigaraGen"))
 			possibleFactionList.add("hiigaran_descendants");
+
+        // Test for Ceredia
+        if(isFactionInstalled("ceredia", "data.scripts.world.AvanMod"))
+            possibleFactionList.add("ceredia");
+
+        // Test for Directorate
+        if(isFactionInstalled("directorate", "data.scripts.world.AvanMod"))
+            possibleFactionList.add("directorate");
+
+        // Test for Isora
+        if(isFactionInstalled("isora", "data.scripts.world.AvanMod"))
+            possibleFactionList.add("isora");
+
+        // Test for Independant Miners
+        if(isFactionInstalled("independantMiners", "data.scripts.world.MineFactionModGen"))
+            possibleFactionList.add("independantMiners");
+
+        // Test for Scrappers
+        if(isFactionInstalled("scrappers", "data.scripts.world.hadd_ModGen"))
+            possibleFactionList.add("scrappers");
+
+        // Test for Shadow Order
+        if(isFactionInstalled("shadoworder", "data.scripts.world.tadd_ModGen"))
+            possibleFactionList.add("shadoworder");
 
 		System.out.println("- - - - - - - - - -");
 	}

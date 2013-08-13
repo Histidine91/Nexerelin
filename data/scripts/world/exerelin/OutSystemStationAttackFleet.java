@@ -54,17 +54,18 @@ public class OutSystemStationAttackFleet
 		CampaignFleetAPI fleet = theSector.createFleet(faction, type);
 
 		theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
+        fleet.setName("Command Fleet");
 		theFleet = fleet;
 		fleet.setPreferredResupplyLocation(target);
 
 		setFleetAssignments(fleet);
 
 		if(theFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-			Global.getSector().addMessage(ExerelinData.getInstance().getPlayerFaction() + " out system attack fleet incoming!", Color.magenta);
+			Global.getSector().addMessage(ExerelinData.getInstance().getPlayerFaction() + " command fleet incoming!", Color.magenta);
 		else
-			Global.getSector().addMessage(theFaction + " out system attack fleet incoming!");
+			Global.getSector().addMessage(theFaction + " command fleet incoming!");
 
-		System.out.println(theFaction + " out system attack fleet created");
+		System.out.println(theFaction + " command fleet created");
 
 		return fleet;
 	}

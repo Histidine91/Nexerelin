@@ -567,6 +567,41 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 				data.addStartingShipChoice("hii_jet_Standard");
 				data.addStartingShipChoice("hii_kaan_Standard");
 			}
+            else if (factionId.equalsIgnoreCase("shadoworder"))
+            {
+                data.addStartingShipChoice("tadd_wight_Standard");
+                data.addStartingShipChoice("tadd_venom_Standard");
+                data.addStartingShipChoice("tadd_mirage_Standard");
+                data.addStartingShipChoice("tadd_wraith_Standard");
+            }
+            else if (factionId.equalsIgnoreCase("scrappers"))
+            {
+                data.addStartingShipChoice("hadd_refuge_Balanced");
+                data.addStartingShipChoice("hadd_vice_Balanced");
+                data.addStartingShipChoice("hadd_bite_Balanced");
+                data.addStartingShipChoice("hadd_manta_Balanced");
+                data.addStartingShipChoice("hadd_array_Balanced");
+                data.addStartingShipChoice("hadd_imp_Standard");
+            }
+            else if (factionId.equalsIgnoreCase("independantMiners"))
+            {
+                data.addStartingShipChoice("mole_miner");
+            }
+            else if (factionId.equalsIgnoreCase("isora"))
+            {
+                data.addStartingShipChoice("vigilance_FS");
+                data.addStartingShipChoice("brawler_Assault");
+            }
+            else if (factionId.equalsIgnoreCase("directorate"))
+            {
+                data.addStartingShipChoice("proton");
+                data.addStartingShipChoice("amanita");
+            }
+            else if (factionId.equalsIgnoreCase("ceredia"))
+            {
+                data.addStartingShipChoice("javelin");
+                data.addStartingShipChoice("marten");
+            }
 			else
 			{
 				System.out.println("EXERELIN ERROR: Faction starting ship for " + factionId + " not defined");
@@ -593,6 +628,9 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 				data.addStartingShipChoice("mace_Basic");
 				data.addStartingShipChoice("damocles_Basic");
 				data.addStartingShipChoice("centaur_Basic");
+                data.addStartingShipChoice("stampede_Basic");
+                data.addStartingShipChoice("hedgehog_Basic");
+                data.addStartingShipChoice("cormorant_Basic");
 			}
 			else
 			{

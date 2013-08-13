@@ -53,7 +53,7 @@ public class EventTradeGuildConversion extends EventBase
 			{
 				String fleetFullName = fleet.getFullName();
 
-				if(!fleetFullName.contains("Supply"))
+				if(!fleetFullName.contains("Supply") && !fleetFullName.contains("Resource"))
 					continue; // Skip non-supply fleets
 
 				String originalFaction = fleet.getFaction().getId();

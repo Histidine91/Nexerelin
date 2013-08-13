@@ -50,7 +50,6 @@
                "brdy_cetonia_standard":[0, 2],
                "brdy_kurmaraja_elite":[0, 2],
                "nevermore_assault":[0, 2],
-               "brdy_stormcrow_cyc":[0, 1],
            },
        },
        "exerelinOutSystemSupplyConvoy":{
@@ -139,7 +138,17 @@
                 "brdy_cetonia_standard":[0, 2],
                 "brdy_kurmaraja_elite":[0, 2],
                 "nevermore_assault":[0, 2],
-                "brdy_stormcrow_cyc":[0, 1],
+           },
+       },
+       "exerelinEliteFleet":{
+           "displayName":"Exerelin Elite Fleet",
+           "maxFleetPoints":100,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[0, 0],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+               "brdy_stormcrow_cyc":[0, 1],
            },
        },
 	},

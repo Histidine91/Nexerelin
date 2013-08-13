@@ -2,7 +2,7 @@
 "id":"exerelin", # internal id
 "name":"Exerelin", # displayed to the player
 "author":"Zaphide",
-"version":"0.58",
+"version":"0.59",
 "description":"Choose your banner and fight for supremacy of system Exerelin!",
 "gameVersion":"0.54.1",
 "totalConversion":"false",
@@ -34,10 +34,16 @@
     "data/world/factions/gedune.faction",
     "data/world/factions/neutrino.faction",
     "data/world/factions/interstellarFederation.faction",
-    "data/world/factions/relics.faction",
+    "data/world/factions/elder.faction",
     "data/world/factions/nihil.faction",
     "data/world/factions/thulelegacy.faction",
     "data/world/factions/bushi.faction",
     "data/world/factions/hiigaran_descendants.faction",
+    "data/world/factions/shadoworder.faction",
+    "data/world/factions/scrappers.faction",
+    "data/world/factions/minefaction.faction",
+    "data/world/factions/isora.faction",
+    "data/world/factions/ceredia.faction",
+    "data/world/factions/directorate.faction",
 	],
 }

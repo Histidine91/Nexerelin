@@ -91,7 +91,7 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 		theFleet = fleet;
 		getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 		fleet.setPreferredResupplyLocation(getAnchor());
-		fleet.setName("In-System Supply Convoy");
+		fleet.setName("Resource Convoy");
 
 		// Remove cargo from station
 		if(convoyType.equalsIgnoreCase("fuel"))

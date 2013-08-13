@@ -79,6 +79,11 @@ public class EventOutSystemReinforcements extends EventBase
 			else
 				fleet = Global.getSector().createFleet(factionId,  type);
 
+            // If faction is last, add an elite ship to fleet (if possbile)
+            if(factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getLosingFaction()))
+                ExerelinUtils.addEliteShipToFleet(fleet);
+
+
 			fleet.setName("Reinforcement Fleet");
 
 			starSystemAPI.spawnFleet(token, ExerelinUtils.getRandomInRange(-100,100), ExerelinUtils.getRandomInRange(-10,10), fleet);
