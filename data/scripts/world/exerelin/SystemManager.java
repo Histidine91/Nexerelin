@@ -73,6 +73,17 @@ public class SystemManager
 		return systemStationManager.getFactionsOwningStations();
 	}
 
+    public SectorEntityToken getStationTokenForXY(float x, float y, float maxOffset)
+    {
+        return systemStationManager.getStationTokenForXY(x, y, maxOffset);
+    }
+
+    public void setStationOwner(SectorEntityToken station, String newOwnerFactionId, Boolean displayMessage, Boolean updateRelationship)
+    {
+        systemStationManager.setStationOwner(station, newOwnerFactionId, displayMessage, updateRelationship);
+    }
+
+
 	public static SystemManager getSystemManagerForSystem(String systemName)
 	{
 		return SectorManager.getCurrentSectorManager().getSystemManager(systemName);

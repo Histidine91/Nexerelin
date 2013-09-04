@@ -789,7 +789,6 @@ public class DiplomacyManager
 
 
 
-
 	private int deriveFactionRelationshipWithAlliance(String factionId, String allianceId)
 	{
 		AllianceRecord allianceRecord = allianceManager.getAllianceRecord(allianceId);
@@ -869,6 +868,11 @@ public class DiplomacyManager
 		else
 			return totalRelationship/(allianceOneFactions.length/2);
 	}
+
+    public float deriveFactionRelationshipWithFaction(String factionId, String otherFactionId)
+    {
+        return this.getRecordForFaction(factionId).getGameRelationship(otherFactionId);
+    }
 
 	private float deriveAllianceGameRelationshipWithAlliance(String allianceOneId, String allianceTwoId)
 	{

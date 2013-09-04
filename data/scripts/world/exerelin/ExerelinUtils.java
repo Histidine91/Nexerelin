@@ -46,6 +46,19 @@ public class ExerelinUtils
 		}
 	}
 
+    public static Boolean doesStringArrayContainValue(String value, String[] valuesToCheck, Boolean partialMatch)
+    {
+        for(int i = 0; i < valuesToCheck.length; i++)
+        {
+            if(partialMatch && value.contains(valuesToCheck[i]))
+                return true;
+            else if(value.equalsIgnoreCase(valuesToCheck[i]))
+                return true;
+        }
+
+        return false;
+    }
+
 	public static SectorEntityToken getRandomOffMapPoint(LocationAPI location)
 	{
 		int edge = ExerelinUtils.getRandomInRange(0, 3);
@@ -111,16 +124,7 @@ public class ExerelinUtils
 				// Reset fleet cargo and put correct cargo in for fleet size otherwise accidents will occur
 				CargoAPI fleetCargo = fleet.getCargo();
 				fleetCargo.clear();
-
-				List members = fleet.getFleetData().getMembersListCopy();
-				for(int i = 0; i < members.size(); i = i + 1)
-				{
-					FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-					fleetCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR,  (int)fmAPI.getMinCrew() + (int)((fmAPI.getMaxCrew() - fmAPI.getMinCrew()) * (1.f - marinesPercent)) );
-					fleetCargo.addMarines( (int)((fmAPI.getMaxCrew() - fmAPI.getMinCrew()) * marinesPercent) );
-					fleetCargo.addFuel(fmAPI.getFuelCapacity()/2);
-					fleetCargo.addSupplies(fmAPI.getCargoCapacity()/2);
-				}
+                ExerelinUtils.resetFleetCargoToDefaults(fleet, marinesPercent);
 
 				return true;
 			}
@@ -1334,7 +1338,7 @@ public class ExerelinUtils
 
 	public static void addRandomFactionShipsToCargo(CargoAPI cargo, int count, String factionId, SectorAPI sector)
 	{
-		int r = getRandomInRange(0,15);
+		int r = getRandomInRange(0,20);
 
 		CampaignFleetAPI fleet;
 
@@ -1344,6 +1348,12 @@ public class ExerelinUtils
 			fleet = sector.createFleet(factionId, "exerelinAsteroidMiningFleet");
 		else if(r == 2)
 			fleet = sector.createFleet(factionId, "exerelinGasMiningFleet");
+        else if(r == 3)
+            fleet = sector.createFleet(factionId, "exerelinInSystemStationAttackFleet");
+        else if(r == 4)
+            fleet = sector.createFleet(factionId, "exerelinInSystemSupplyConvoy");
+        else if(r == 5)
+            fleet = sector.createFleet(factionId, "exerelinOutSystemStationAttackFleet");
 		else
 			fleet = sector.createFleet(factionId, "exerelinGenericFleet");
 
@@ -1535,21 +1545,34 @@ public class ExerelinUtils
 		return power;
 	}
 
-	public static boolean isValidBoardingFleet(CampaignFleetAPI fleet)
+    // Check if a fleet is a valid boarding fleet
+	public static boolean isValidBoardingFleet(CampaignFleetAPI fleet, Boolean checkForTroopTransport)
 	{
 		List members = fleet.getFleetData().getMembersListCopy();
-		Boolean hasLargeFreighter = false;
+
+		Boolean hasValidFlagship = false;
+
+        Boolean hasValidTroopTransport;
+        if(checkForTroopTransport)
+            hasValidTroopTransport = false;
+        else
+            hasValidTroopTransport = true;
+
 		for(int i = 0; i < members.size(); i++)
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if(fmAPI.getSpecId().contains("atlas") || fmAPI.getSpecId().contains("mazerk") || fmAPI.getSpecId().contains("neerin"))
-			{
-				hasLargeFreighter = true;
-				break;
-			}
+
+            if(ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidBoardingFlagships(), true))
+				hasValidFlagship = true;
+
+            if(ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidTroopTransportShips(), true))
+                hasValidTroopTransport = true;
+
+            if(hasValidFlagship && hasValidTroopTransport)
+                break;
 		}
 
-		return hasLargeFreighter;
+		return (hasValidFlagship && hasValidTroopTransport);
 	}
 
 	private static boolean isCapitalInFleet(CampaignFleetAPI fleet)
@@ -1638,6 +1661,10 @@ public class ExerelinUtils
 		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 2);
 		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "mining_drone_wing", null);
 		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "mining_drone_wing", null);
+
+        // TODO REMOVE
+        cargo.addMothballedShip(FleetMemberType.SHIP, "atlas_Standard", null);
+        cargo.addMothballedShip(FleetMemberType.SHIP, "valkyrie_Elite", null);
 	}
 
     public static void addEliteShipToFleet(CampaignFleetAPI fleet)
@@ -1656,6 +1683,144 @@ public class ExerelinUtils
         {
             System.out.println("EXERELIN ERROR (eliteFleetAdd): " + e.getMessage());
             // Elite fleet not setup for this faction
+        }
+    }
+
+    public static void handlePlayerBoarding(CampaignFleetAPI playerFleet)
+    {
+        StarSystemAPI starSystemAPI = (StarSystemAPI)playerFleet.getContainingLocation();
+        SystemManager systemManager = SystemManager.getSystemManagerForAPI(starSystemAPI);
+
+        // Check player fleet composition
+        if(!ExerelinUtils.isValidBoardingFleet(playerFleet, true))
+            return;
+
+        // Get factionId of station at XY coords (if exists)
+        SectorEntityToken possibleBoardTarget = systemManager.getStationTokenForXY(playerFleet.getLocation().getX(), playerFleet.getLocation().getY(), 60);
+        if(possibleBoardTarget == null)
+            return;
+
+        // Get owner faction id
+        String possibleBoardTargetFactionId = ExerelinUtils.getStationOwnerFactionId(possibleBoardTarget);
+        if(possibleBoardTargetFactionId.equalsIgnoreCase(""))
+            return;
+
+        // Check if at war or station is abandonded
+        if(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getRelationship(possibleBoardTargetFactionId) >= 0)
+            return;
+
+        // Attempt to takeover station
+        if(ExerelinUtils.boardStationAttempt(playerFleet, possibleBoardTarget, true))
+        {
+            systemManager.setStationOwner(possibleBoardTarget, ExerelinData.getInstance().getPlayerFaction(), true, true);
+
+        }
+    }
+
+    public static void removeShipsFromFleet(CampaignFleetAPI fleet, String[] shipTypes)
+    {
+        List members = fleet.getFleetData().getMembersListCopy();
+
+        for(int i = 0; i < shipTypes.length; i++)
+        {
+            for(int j = 0; j < members.size(); j++)
+            {
+                if(((FleetMemberAPI)members.get(j)).getSpecId().contains(shipTypes[i]))
+                {
+                    fleet.getFleetData().removeFleetMember((FleetMemberAPI)members.get((j)));
+                }
+            }
+        }
+    }
+
+    // Play out a station boarding attempt
+    // Returns true if board successful, flase if not
+    // Subsequent code must handle any station ownership changes etc.
+    public static boolean boardStationAttempt(CampaignFleetAPI fleet, SectorEntityToken station, Boolean playerFleet)
+    {
+        int marinesDefending = station.getCargo().getMarines();
+        int marinesAttacking = fleet.getCargo().getMarines();
+
+        // Let station record know it is being boarded
+        StarSystemAPI starSystemAPI = (StarSystemAPI)fleet.getContainingLocation();
+        SystemManager systemManager = SystemManager.getSystemManagerForAPI(starSystemAPI);
+        systemManager.getSystemStationManager().getStationRecordForToken(station).setIsBeingBoarded(true);
+
+        while(marinesDefending > 0 && marinesAttacking > 0)
+        {
+            int attackRoll = ExerelinUtils.getRandomInRange(1, 6);
+            int defendRoll = ExerelinUtils.getRandomInRange(1, 6);
+
+            if(attackRoll > defendRoll)
+                marinesDefending = marinesDefending - (attackRoll - defendRoll);
+            else
+                marinesAttacking = marinesAttacking - (defendRoll - attackRoll);
+
+            if(ExerelinUtils.getRandomInRange(0, 20) == 0)
+                break;
+        }
+
+        // Report if player fleet
+        if(playerFleet)
+        {
+            if(fleet.getCargo().getMarines() > marinesAttacking)
+            {
+                Global.getSector().addMessage("Your fleet lost " + (fleet.getCargo().getMarines() - marinesAttacking) + " marines assualting the station", Color.green);
+                System.out.println("Your fleet lost " + (fleet.getCargo().getMarines() - marinesAttacking) + " marines assualting the station");
+            }
+            if(marinesDefending <= 0)
+            {
+                Global.getSector().addMessage("Your fleet successfully boarded " + station.getName(), Color.green);
+                System.out.println("Your fleet successfully boarded " + station.getName());
+            }
+        }
+
+        if(station.getCargo().getMarines() > marinesDefending)
+            ExerelinUtils.decreaseCargo(station.getCargo(), "marines", station.getCargo().getMarines() - marinesDefending);
+
+        if(fleet.getCargo().getMarines() > marinesAttacking)
+            ExerelinUtils.decreaseCargo(fleet.getCargo(), "marines", fleet.getCargo().getMarines() - marinesAttacking);
+
+        if(marinesDefending <= 0)
+        {
+            // Attackers won
+            ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships());
+            ExerelinUtils.decreaseCargo(fleet.getCargo(), "supplies", (int)(fleet.getCargo().getSupplies()/2));
+            ExerelinUtils.decreaseCargo(fleet.getCargo(), "marines", fleet.getCargo().getMarines()/2);
+            return true;
+        }
+        else
+        {
+            // Defenders won
+            if(fleet.getCargo().getMarines() <= 0)
+            {
+                // Defenders total win
+                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships());
+                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidTroopTransportShips());
+                ExerelinUtils.decreaseCargo(fleet.getCargo(), "supplies", (int)(fleet.getCargo().getSupplies()/2));
+                if(playerFleet)
+                {
+                    Global.getSector().addMessage("Your fleet has failed to capture station and has suffered extensive losses", Color.green);
+                    System.out.println("Your fleet has failed to capture station and has suffered extensive losses");
+                }
+            }
+            return false;
+        }
+    }
+
+    // Defaults a fleets cargo to acceptable ranges
+    // Useful after changing a fleet composition
+    public static void resetFleetCargoToDefaults(CampaignFleetAPI fleet, float marinesPercent)
+    {
+        CargoAPI fleetCargo = fleet.getCargo();
+        List members = fleet.getFleetData().getMembersListCopy();
+        for(int i = 0; i < members.size(); i = i + 1)
+        {
+            FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
+            fleetCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR,  (int)fmAPI.getMinCrew() + (int)((fmAPI.getMaxCrew() - fmAPI.getMinCrew()) * (1.f - marinesPercent)) );
+            fleetCargo.addMarines( (int)((fmAPI.getMaxCrew() - fmAPI.getMinCrew()) * marinesPercent) );
+            fleetCargo.addFuel(fmAPI.getFuelCapacity()/2);
+            fleetCargo.addSupplies(fmAPI.getCargoCapacity()/2);
         }
     }
 }

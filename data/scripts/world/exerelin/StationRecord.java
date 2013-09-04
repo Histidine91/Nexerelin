@@ -20,6 +20,8 @@ public class StationRecord
 	private StarSystemAPI system;
 
 	private int numStationsTargeting;
+    private Boolean isBeingBoarded;
+    private long lastBoardAttemptTime;
 	private StationRecord targetStationRecord;
 	private StationRecord assistStationRecord;
 	private SectorEntityToken targetAsteroid;
@@ -51,6 +53,9 @@ public class StationRecord
 		outSystemSupplyConvoySpawn = new OutSystemSupplyConvoySpawnPoint(sector, system, 1000000, 1, token);
 		asteroidMiningFleetSpawnPoint = new AsteroidMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
 		gasMiningFleetSpawnPoint = new GasMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
+
+        isBeingBoarded = false;
+        lastBoardAttemptTime = 0;
 
 		systemStationManager = manager;
 	}
@@ -145,21 +150,24 @@ public class StationRecord
 
 	public void spawnFleets()
 	{
+        removeDeadOrRebelFleets(attackSpawn);
+        removeDeadOrRebelFleets(stationAttackFleetSpawn);
+        removeDeadOrRebelFleets(defenseSpawn);
+        removeDeadOrRebelFleets(patrolSpawn);
+        removeDeadOrRebelFleets(outSystemSupplyConvoySpawn);
+        removeDeadOrRebelFleets(inSystemSupplyConvoySpawn);
+        removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint);
+        removeDeadOrRebelFleets(gasMiningFleetSpawnPoint);
+
+        if(checkIsBeingBoarded())
+            return; // Don't spawn fleets if being boarded
+
 		deriveClosestEnemyTarget();
 		deriveStationToAssist();
 		deriveClosestAsteroid();
 		deriveClosestGasGiant();
 
 		setFleetTargets();
-
-		removeDeadOrRebelFleets(attackSpawn);
-		removeDeadOrRebelFleets(stationAttackFleetSpawn);
-		removeDeadOrRebelFleets(defenseSpawn);
-		removeDeadOrRebelFleets(patrolSpawn);
-		removeDeadOrRebelFleets(outSystemSupplyConvoySpawn);
-		removeDeadOrRebelFleets(inSystemSupplyConvoySpawn);
-		removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint);
-		removeDeadOrRebelFleets(gasMiningFleetSpawnPoint);
 
 		outSystemSupplyConvoySpawn.spawnFleet();
 		inSystemSupplyConvoySpawn.spawnFleet();
@@ -205,6 +213,9 @@ public class StationRecord
 	// Increase resources in station based off efficiency
 	public void increaseResources()
 	{
+        if(checkIsBeingBoarded())
+            return; // Don't increase resources if being boarded
+
 		if(stationCargo.getFuel() < 1600)
 			stationCargo.addFuel(100*efficiency); // Halved due to mining fleets
 		if(stationCargo.getSupplies() < 6400)
@@ -450,4 +461,27 @@ public class StationRecord
 			}
 		}
 	}
+
+    // Set the station being boarded
+    public void setIsBeingBoarded(Boolean beingBoarded)
+    {
+        isBeingBoarded = beingBoarded;
+        lastBoardAttemptTime = Global.getSector().getClock().getTimestamp();
+    }
+
+    // Check if station has been boarded in last 2 days
+    private Boolean checkIsBeingBoarded()
+    {
+        if (!isBeingBoarded)
+            return false;
+        else if(isBeingBoarded && Global.getSector().getClock().getElapsedDaysSince(lastBoardAttemptTime) > 2)
+        {
+            isBeingBoarded = false;
+            return false;
+        }
+        else
+            return true;
+
+
+    }
 }

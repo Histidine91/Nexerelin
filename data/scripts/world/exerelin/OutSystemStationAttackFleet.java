@@ -167,6 +167,7 @@ public class OutSystemStationAttackFleet
 					return;
 				}
 
+                ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidBoardingFlagships());
 				StationRecord stationRecord = SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI)theLocation).getSystemStationManager().getStationRecordForToken(theTarget);
 				stationRecord.setOwner(theFaction, true, true);
 				stationRecord.clearCargo();

@@ -283,4 +283,47 @@ public class SystemStationManager
 
 		return (String[])foundFactions.toArray( new String[foundFactions.size()] );
 	}
+
+    // Check if x,y coordinates correspond to a station managed by this station manager and return the station record
+    public StationRecord getStationRecordForXY(float x, float y, float maxOffset)
+    {
+        float xMax = x + maxOffset;
+        float xMin = x - maxOffset;
+        float yMax = y + maxOffset;
+        float yMin = y - maxOffset;
+
+        for(int i = 0; i < stationRecords.length; i++)
+        {
+            float stationX = stationRecords[i].getStationToken().getLocation().getX();
+            float stationY = stationRecords[i].getStationToken().getLocation().getY();
+
+            if(stationX > xMin
+                    && stationX < xMax
+                    && stationY > yMin
+                    && stationY < yMax)
+            {
+                return stationRecords[i];
+            }
+        }
+
+        return null;
+    }
+
+    // Return the faction id of a station at a location
+    public SectorEntityToken getStationTokenForXY(float x, float y, float maxOffset)
+    {
+        StationRecord stationRecord = this.getStationRecordForXY(x, y, maxOffset);
+
+        if(stationRecord == null)
+            return null;
+        else
+        {
+            return stationRecord.getStationToken();
+        }
+    }
+
+    public void setStationOwner(SectorEntityToken station, String newOwnerFactionId, Boolean displayMessage, Boolean updateRelationship)
+    {
+        this.getStationRecordForToken(station).setOwner(newOwnerFactionId, displayMessage, updateRelationship);
+    }
 }

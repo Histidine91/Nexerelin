@@ -17,6 +17,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 	String fleetOwningFactionId;
 	CampaignFleetAPI theFleet;
 	boolean boarding = false;
+    long lastTimeCheck;
 
 	public InSystemStationAttackShipSpawnPoint(SectorAPI sector, LocationAPI location,
 											   float daysInterval, int maxFleets, SectorEntityToken anchor)
@@ -81,10 +82,11 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 	private void setFleetAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
-		if(stationTarget != null && ExerelinUtils.isValidBoardingFleet(fleet))
+		if(stationTarget != null && ExerelinUtils.isValidBoardingFleet(fleet, false))
 		{
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, stationTarget.getStationToken(), 3000, createTestTargetScript());
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, stationTarget.getStationToken(), 3, createArrivedScript());
+            fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, stationTarget.getStationToken(), 5);
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, stationTarget.getStationToken(), 10);
 		}
 		else
@@ -105,26 +107,38 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					{
 						// If neutral/ally owns station, head home (home station may reassign a target later)
 						theFleet.clearAssignments();
+                        boarding = false;
 						theFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 10);
 						return;
 					}
 					else if(!boarding && stationTarget.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 					{
-						boarding = true;
 						System.out.println("Player owned " + stationTarget.getStationToken().getFullName() + " being boarded by " + fleetOwningFactionId);
 						Global.getSector().addMessage(stationTarget.getStationToken().getFullName() + " is being boarded by " + fleetOwningFactionId, Color.magenta);
 					}
 				}
 
-				if(!boarding || ExerelinUtils.getRandomInRange(0, 7000) > 0)
-				{
-					boarding = true;
-					setFleetAssignments(theFleet);
-				}
-				else
-				{
-					return; // Will run arrived script
-				}
+                if(!boarding)
+                {
+                    lastTimeCheck = Global.getSector().getClock().getTimestamp();
+                    boarding = true;
+                }
+
+                if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) >= 1)
+                {
+                    lastTimeCheck = Global.getSector().getClock().getTimestamp();
+                    if(ExerelinUtils.boardStationAttempt(theFleet, stationTarget.getStationToken(), false))
+                    {
+                        ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips());
+                        boarding = false;
+                        return;
+                    }
+                    else
+                        setFleetAssignments(theFleet);
+                }
+                else
+                    setFleetAssignments(theFleet);
+
 			}
 		};
 	}
@@ -134,22 +148,25 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 			public void run() {
 				if(stationTarget.getOwner() != null && stationTarget.getOwner().getFactionId().equalsIgnoreCase(fleetOwningFactionId))
 				{
-					// If we already own it deliver resources and despawn
+					// If we already own it deliver resources (as if we took it over), defend and despawn
 					CargoAPI cargo = stationTarget.getStationToken().getCargo();
 					cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR,  80);
 					cargo.addFuel(80);
 					cargo.addMarines(40);
 					cargo.addSupplies(320);
+                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidBoardingFlagships());
+                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips());
 				}
 				else if(stationTarget.getOwner() != null && stationTarget.getOwner().getGameRelationship(fleetOwningFactionId) >= 0)
 				{
-					// If neutral/ally owns station, mill around until new orders
+					// If neutral/ally owns station, go home
 					theFleet.clearAssignments();
+                    boarding = false;
 					theFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 10);
 				}
 				else
 				{
-					// Take over station
+					// Else, take over station
 					stationTarget.setOwner(theFleet.getFaction().getId(), true, true);
 					stationTarget.clearCargo();
 				}

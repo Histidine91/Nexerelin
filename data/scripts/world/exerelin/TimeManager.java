@@ -31,6 +31,9 @@ public class TimeManager implements SpawnPointPlugin
 		// Handle player mining
 		ExerelinUtils.handlePlayerFleetMining(Global.getSector().getPlayerFleet());
 
+        // Handle player station boarding
+        ExerelinUtils.handlePlayerBoarding(Global.getSector().getPlayerFleet());
+
 		SectorManager sectorManager = SectorManager.getCurrentSectorManager();
 
 		// Check for player betrayal
