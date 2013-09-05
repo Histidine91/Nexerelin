@@ -480,8 +480,16 @@ public class StationRecord
             return false;
         }
         else
+        {
             return true;
+        }
+    }
 
-
+    public float getEfficiency(Boolean highOnly)
+    {
+        if(efficiency < 1 && highOnly)
+            return 1f;
+        else
+            return efficiency;
     }
 }

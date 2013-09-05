@@ -1,5 +1,6 @@
 package data.scripts.world.exerelin;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -17,6 +18,7 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 	float fleetFuelCapacity = 0;
 	int miningPower = 0;
 	boolean validFleet = false;
+    long lastTimeCheck;
 
 	public GasMiningFleetSpawnPoint(SectorAPI sector, LocationAPI location,
 									  float daysInterval, int maxFleets, SectorEntityToken anchor)
@@ -64,6 +66,7 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 		validFleet = true;
 		miningPower = ExerelinUtils.getMiningPower(fleet);
 		setFleetAssignments(fleet);
+        lastTimeCheck = Global.getSector().getClock().getTimestamp();
 
 		this.getFleets().add(fleet);
 		return fleet;
@@ -94,8 +97,11 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 				if(!returningHome && theFleet.getCargo().getFuel() < fleetFuelCapacity)
 				{
 					// Mine more gas
-					if(ExerelinUtils.getRandomInRange(0,1) == 0)
-						theFleet.getCargo().addFuel(miningPower);
+                    if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) > 1)
+                    {
+                        lastTimeCheck = Global.getSector().getClock().getTimestamp();
+                        theFleet.getCargo().addFuel(miningPower * 100);
+                    }
 				}
 				else if(!returningHome)
 				{
@@ -107,8 +113,12 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 				else if (theFleet.getCargo().getFuel() > 0)
 				{
 					// Reached home so unload
-					theFleet.getCargo().removeFuel(1);
-					getAnchor().getCargo().addFuel(ExerelinUtils.getRandomInRange(0,1));
+                    if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) > 1)
+                    {
+                        lastTimeCheck = Global.getSector().getClock().getTimestamp();
+                        theFleet.getCargo().removeFuel(200);
+                        getAnchor().getCargo().addFuel(200 * SystemManager.getSystemManagerForAPI((StarSystemAPI)theFleet.getContainingLocation()).getSystemStationManager().getStationRecordForToken(getAnchor()).getEfficiency(true));
+                    }
 				}
 				else
 				{
