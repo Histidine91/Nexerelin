@@ -77,7 +77,16 @@ public final class ExerelinData
 			System.out.println("Sector change detected, retrieving saved time manager...");
 
 			//TODO - Will the time manager always be in Exerelin?
-			StarSystemAPI system = (StarSystemAPI)sector.getStarSystems().get(0); //TODO - change
+            StarSystemAPI system;
+            try
+            {
+			    system = (StarSystemAPI)sector.getStarSystems().get(0); //TODO - change
+            }
+            catch(Exception e)
+            {
+                System.out.println("No systems built yet." + e.getMessage());
+                return;
+            }
 
 			ArrayList spawnPoints = ExerelinHacks.getSpawnPoints(system);
 
