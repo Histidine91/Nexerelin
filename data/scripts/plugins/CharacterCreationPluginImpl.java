@@ -591,6 +591,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
             {
                 data.addStartingShipChoice("vigilance_FS");
                 data.addStartingShipChoice("brawler_Assault");
+                data.addStartingShipChoice("anvil_Standard");
             }
             else if (factionId.equalsIgnoreCase("directorate"))
             {
