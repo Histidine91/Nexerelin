@@ -18,8 +18,8 @@ import java.util.Iterator;
 
 public final class ExerelinData
 {
-    private String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin"};
-    private String[] ValidTroopTransportShips = new String[] { "valkyrie" };
+    private String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa"};
+    private String[] ValidTroopTransportShips = new String[] { "valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari" };
 
 	private static ExerelinData instance = null;
 	private static SectorAPI sector = null;

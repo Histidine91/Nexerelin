@@ -80,7 +80,7 @@
             "extraCrewPercent":[50, 50],
             "marinesPercent":[50, 50],
             "ships":{
-                "exerelin_atlas_thule_Standard":[1, 1],
+                "thule_hansa_HC":[1, 1],
                 "valkyrie_Elite":[1, 1],
             },
         },
@@ -118,7 +118,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "exerelin_atlas_thule_Standard":[1, 1],
+                "thule_hansa_HC":[1, 1],
                 "thule_forsser_HC":[0, 1],
                 "thule_herzog_HC":[0, 1],
                 "thule_solidstorm_OD":[0, 2],

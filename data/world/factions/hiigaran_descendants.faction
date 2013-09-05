@@ -85,7 +85,7 @@
            "marinesPercent":[50, 50],
            "ships":{
                "hii_neerin_Standard":[1, 1],
-               "valkyrie_Elite":[1, 1],
+               "hii_saari_Standard":[1, 1],
            },
        },
        "exerelinAsteroidMiningFleet":{
