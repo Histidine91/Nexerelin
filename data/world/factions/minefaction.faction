@@ -122,6 +122,17 @@
                 "mouse":[0, 3],
             },
         },
+        "exerelinEliteFleet":{
+           "displayName":"Exerelin Elite Fleet",
+           "maxFleetPoints":100,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[0, 0],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+               "tarantula_sniper":[0, 1],
+           },
+       },
 	},
 	"traits":{
 		"admiral":{
