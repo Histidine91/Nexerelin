@@ -83,6 +83,10 @@ public class SectorManager
 
 	public void checkPlayerHasStationOrStationAttackFleet()
 	{
+        // Check if player fleet is a boarding fleet
+        if(ExerelinUtils.isValidBoardingFleet(Global.getSector().getPlayerFleet(),true))
+            return;
+
 		// Check that player has a station or a station attack fleet
 		for(int k = 0; k < this.systemManagers.length; k++)
 		{
@@ -320,29 +324,26 @@ public class SectorManager
 					{
 						sectorAPI.getPlayerFleet().getFleetData().removeFleetMember(((FleetMemberAPI)sectorAPI.getPlayerFleet().getFleetData().getMembersListCopy().get(0)));
 						sectorAPI.getPlayerFleet().getFleetData().addFleetMember(((FleetMemberAPI)dummyFleet.getFleetData().getMembersListCopy().get(i)));
-						sectorAPI.getPlayerFleet().getCargo().addCrew(CargoAPI.CrewXPLevel.GREEN, (int)sectorAPI.getPlayerFleet().getFlagship().getMinCrew());
 						break;
 					}
 				}
 			}
-
-			// Set starting or respawn cargo
-			CargoAPI fleetCargo = sectorAPI.getPlayerFleet().getCargo();
-			fleetCargo.clear();
-			FleetMemberAPI fmAPI = sectorAPI.getPlayerFleet().getFlagship();
-			fleetCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR,  (int)fmAPI.getMinCrew() + (int)((fmAPI.getMaxCrew() - fmAPI.getMinCrew())/2));
-			fleetCargo.addMarines(((int)fmAPI.getMaxCrew() - (int)fmAPI.getMinCrew())/2);
-			fleetCargo.addFuel(fmAPI.getFuelCapacity()/2);
-			fleetCargo.addSupplies(fmAPI.getCargoCapacity()/2);
+            else
+            {
+                // Initial fleet so add boarding ships
+                CampaignFleetAPI dummyBoardingFleet = Global.getSector().createFleet(ExerelinData.getInstance().getPlayerFaction(), "exerelinInSystemStationAttackFleet");
+                List members = dummyBoardingFleet.getFleetData().getMembersListCopy();
+                for(int i = 0; i < members.size(); i++)
+                    Global.getSector().getPlayerFleet().getFleetData().addFleetMember((FleetMemberAPI)members.get(i));
+            }
+            ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.1f, CargoAPI.CrewXPLevel.GREEN);
 		}
 
 		// Move player to their starting fleet if this is the start of the game
 		if(!playerMovedToSpawnLocation)
 		{
-			if(ExerelinData.getInstance().playerOffMapFleetSpawnLocation != null)
-			{
-				sectorAPI.getPlayerFleet().setLocation(ExerelinData.getInstance().playerOffMapFleetSpawnLocation.getX(), ExerelinData.getInstance().playerOffMapFleetSpawnLocation.getY());
-			}
+            SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(Global.getSector().getPlayerFleet().getContainingLocation());
+			sectorAPI.getPlayerFleet().setLocation(token.getLocation().getX(), token.getLocation().getY());
 			playerMovedToSpawnLocation = true;
 		}
 	}

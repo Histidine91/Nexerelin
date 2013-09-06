@@ -2,6 +2,9 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class Exerelin implements SectorGeneratorPlugin
@@ -58,15 +61,6 @@ public class Exerelin implements SectorGeneratorPlugin
 			OutSystemStationAttackFleet offMapSpawn = new OutSystemStationAttackFleet(sector, systemAPI, factionId, false);
 			offMapSpawn.spawnFleet(null, null);
 		}
-
-		// Spawn player fleet
-		int systemChosen = ExerelinUtils.getRandomInRange(0, SectorManager.getCurrentSectorManager().getSystemManagers().length - 1);
-		StarSystemAPI systemAPI = SectorManager.getCurrentSectorManager().getSystemManagers()[systemChosen].getStarSystemAPI();
-		OutSystemStationAttackFleet offMapSpawn = new OutSystemStationAttackFleet(sector, systemAPI, ExerelinData.getInstance().getPlayerFaction(), false);
-		offMapSpawn.spawnFleet(null, null);
-
-		// Save player off map fleet spawn location
-		ExerelinData.getInstance().playerOffMapFleetSpawnLocation = offMapSpawn.spawnPoint.getLocation();
 	}
 
 	private void initFactionRelationships(SectorAPI sector)

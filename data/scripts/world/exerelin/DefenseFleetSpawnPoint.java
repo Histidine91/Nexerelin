@@ -43,7 +43,7 @@ public class DefenseFleetSpawnPoint extends BaseSpawnPoint
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
 
 		int remainingFleetsToSpawn = this.getMaxFleets()*2 - this.getFleets().size();
-		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn, 0.5f, true))
+		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn, 0.5f, true, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId)))
 		{
             // If faction is last, 5% chance to add a free elite ship to fleet
             if(SectorManager.getCurrentSectorManager().getLosingFaction().equalsIgnoreCase(this.owningFactionId) && ExerelinUtils.getRandomInRange(0, 19) == 0)

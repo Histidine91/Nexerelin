@@ -49,8 +49,6 @@ public final class ExerelinData
 	public int maxFactionsInExerelinAtOnce = 3;
 	public int maxSystemSize = 15000;
 
-	public Vector2f playerOffMapFleetSpawnLocation = null;
-
 	private SectorManager sectorManager;
 
 	private ExerelinData()

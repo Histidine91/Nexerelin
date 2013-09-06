@@ -86,7 +86,7 @@ public class ExerelinUtils
 		return spawnPoint;
 	}
 
-	public static Boolean canStationSpawnFleet(SectorEntityToken station, CampaignFleetAPI fleet, float numberToSpawn, float marinesPercent, boolean noCivilianShips)
+	public static Boolean canStationSpawnFleet(SectorEntityToken station, CampaignFleetAPI fleet, float numberToSpawn, float marinesPercent, boolean noCivilianShips, CargoAPI.CrewXPLevel crewXPLevel)
 	{
 		if (noCivilianShips) {
 			List members = fleet.getFleetData().getMembersListCopy();
@@ -124,7 +124,7 @@ public class ExerelinUtils
 				// Reset fleet cargo and put correct cargo in for fleet size otherwise accidents will occur
 				CargoAPI fleetCargo = fleet.getCargo();
 				fleetCargo.clear();
-                ExerelinUtils.resetFleetCargoToDefaults(fleet, marinesPercent);
+                ExerelinUtils.resetFleetCargoToDefaults(fleet, 1.0f - marinesPercent, marinesPercent, crewXPLevel);
 
 				return true;
 			}
@@ -1785,8 +1785,7 @@ public class ExerelinUtils
         {
             // Attackers won
             ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships());
-            ExerelinUtils.decreaseCargo(fleet.getCargo(), "supplies", (int)(fleet.getCargo().getSupplies()/2));
-            ExerelinUtils.decreaseCargo(fleet.getCargo(), "marines", fleet.getCargo().getMarines()/2);
+            ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
             return true;
         }
         else
@@ -1797,7 +1796,7 @@ public class ExerelinUtils
                 // Defenders total win
                 ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships());
                 ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidTroopTransportShips());
-                ExerelinUtils.decreaseCargo(fleet.getCargo(), "supplies", (int)(fleet.getCargo().getSupplies()/2));
+                ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
                 if(playerFleet)
                 {
                     Global.getSector().addMessage("Your fleet has failed to capture station and has suffered extensive losses", Color.green);
@@ -1810,17 +1809,27 @@ public class ExerelinUtils
 
     // Defaults a fleets cargo to acceptable ranges
     // Useful after changing a fleet composition
-    public static void resetFleetCargoToDefaults(CampaignFleetAPI fleet, float marinesPercent)
+    public static void resetFleetCargoToDefaults(CampaignFleetAPI fleet, float extraCrewPercent, float marinesPercent, CargoAPI.CrewXPLevel crewXPLevel)
     {
         CargoAPI fleetCargo = fleet.getCargo();
         List members = fleet.getFleetData().getMembersListCopy();
+        fleetCargo.clear();
         for(int i = 0; i < members.size(); i = i + 1)
         {
             FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-            fleetCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR,  (int)fmAPI.getMinCrew() + (int)((fmAPI.getMaxCrew() - fmAPI.getMinCrew()) * (1.f - marinesPercent)) );
-            fleetCargo.addMarines( (int)((fmAPI.getMaxCrew() - fmAPI.getMinCrew()) * marinesPercent) );
-            fleetCargo.addFuel(fmAPI.getFuelCapacity()/2);
-            fleetCargo.addSupplies(fmAPI.getCargoCapacity()/2);
+            fleetCargo.addCrew(crewXPLevel, (int) fmAPI.getMinCrew() + (int) ((fmAPI.getMaxCrew() - fmAPI.getMinCrew()) * extraCrewPercent));
+            fleetCargo.addMarines((int) ((fmAPI.getMaxCrew() - fmAPI.getMinCrew()) * marinesPercent));
+            fleetCargo.addFuel(fmAPI.getFuelCapacity() / 2f);
+            fleetCargo.addSupplies(fmAPI.getCargoCapacity() / 2f);
         }
+    }
+
+    // Returns a factions crew xp level
+    public static CargoAPI.CrewXPLevel getCrewXPLevelForFaction(String factionId)
+    {
+        //if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+        //    return CargoAPI.CrewXPLevel.GREEN;
+        //else
+            return  CargoAPI.CrewXPLevel.REGULAR;
     }
 }
