@@ -469,12 +469,12 @@ public class StationRecord
         lastBoardAttemptTime = Global.getSector().getClock().getTimestamp();
     }
 
-    // Check if station has been boarded in last 2 days
+    // Check if station has been boarded in last 3 days
     private Boolean checkIsBeingBoarded()
     {
         if (!isBeingBoarded)
             return false;
-        else if(isBeingBoarded && Global.getSector().getClock().getElapsedDaysSince(lastBoardAttemptTime) > 2)
+        else if(isBeingBoarded && Global.getSector().getClock().getElapsedDaysSince(lastBoardAttemptTime) > 3)
         {
             isBeingBoarded = false;
             return false;
