@@ -24,7 +24,17 @@
 		],
 	},
 	"fleetCompositions":{
-
+        "exerelinOutSystemStationAttackFleet":{
+            "displayName":"Out-System Station Attack Fleet",
+            "maxFleetPoints":320,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "atlas_Standard":[1, 1],
+            },
+        },
 	},
 	"traits":{
 		"admiral":{
