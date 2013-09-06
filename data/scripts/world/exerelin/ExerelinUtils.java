@@ -749,7 +749,7 @@ public class ExerelinUtils
 					"vulcan",
 			};
 		}
-		else if (factionId.equalsIgnoreCase("council"))
+		else if (factionId.equalsIgnoreCase("council_loyalists"))
 		{
 			return new String[] {
 					"mrd_council_spear",

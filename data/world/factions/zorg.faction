@@ -68,8 +68,7 @@
             "extraCrewPercent":[50, 50],
             "marinesPercent":[50, 50],
             "ships":{
-                "exerelin_atlas_ged_Standard":[1, 1],
-                "zorg_allocator_Active":[1, 1],
+                "zorg_allocator_Active":[2, 2],
             },
         },
         "exerelinAsteroidMiningFleet":{
@@ -104,11 +103,13 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "exerelin_atlas_ged_Standard":[1, 1],
+                "zorg_allocator_Active":[1, 1],
                 "zorg_control_matrix_Active":[0, 1],
                 "zorg_tactical_overseer_Active":[0, 2],
-                "zorg_surveyor_ActiveY":[0, 2],
-                "zorg_drone_ActiveZ":[0, 3],
+                "zorg_surveyor_ActiveY":[0, 1],
+                "zorg_surveyor_ActiveZ":[0, 1],
+                "zorg_drone_ActiveZ":[0, 2],
+                "zorg_drone_ActiveY":[0, 2],
                 "zorg_tactical_probe_Active":[0, 3],
                 "zorg_probe_wing":[0, 4],
                 "zorg_disabler_wing":[0, 4],

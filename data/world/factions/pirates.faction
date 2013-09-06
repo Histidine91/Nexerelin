@@ -39,8 +39,8 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "dominator_Assault":[0, 5],
-                "venture_Balanced":[0, 5],
-                "mule_Standard":[0, 4],
+                "venture_Balanced":[0, 3],
+                "mule_Standard":[0, 3],
                 "enforcer_Outdated":[0, 4],
                 "condor_FS":[0, 23],
                 "buffalo2_FS":[0, 3],
@@ -121,8 +121,8 @@
             "ships":{
                 "atlas_Standard":[1, 1],
                 "dominator_Assault":[0, 5],
-                "venture_Balanced":[0, 5],
-                "mule_Standard":[0, 4],
+                "venture_Balanced":[0, 3],
+                "mule_Standard":[0, 3],
                 "enforcer_Outdated":[0, 4],
                 "condor_FS":[0, 23],
                 "buffalo2_FS":[0, 3],
