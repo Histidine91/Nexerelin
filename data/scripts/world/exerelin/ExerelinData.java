@@ -225,9 +225,9 @@ public final class ExerelinData
 		if(isFactionInstalled("junkpirate", "data.scripts.world.JPSectorGen"))
 			possibleFactionList.add("junkpirate");
 
-		// Test for council
-		if(isFactionInstalled("council", "data.scripts.world.HegemonyCoreGen"))
-			possibleFactionList.add("council");
+		// Test for council_loyalists
+		if(isFactionInstalled("council_loyalists", "data.scripts.world.HegemonyCoreGen"))
+			possibleFactionList.add("council_loyalists");
 
 		// Test for neutrino
 		if(isFactionInstalled("neutrino", "data.scripts.world.neutrinoGen"))

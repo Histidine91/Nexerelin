@@ -1,7 +1,7 @@
  {
-	id:"council",
+	id:"council_loyalists",
 	"color":[205;170;125,255],
-	"displayName":"Council Loyalists",
+	"displayName":"Council_Loyalists",
 	"shipNamePrefix":"OCL",
 	"shipNameSources":{
 		"ROMAN":2,
