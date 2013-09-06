@@ -603,6 +603,16 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
                 data.addStartingShipChoice("javelin_Artil");
                 data.addStartingShipChoice("marten_PD");
             }
+            else if (factionId.equalsIgnoreCase("zorg_hive"))
+            {
+                data.addStartingShipChoice("zorg_tactical_probe_Active");
+                data.addStartingShipChoice("zorg_drone_ActiveZ");
+            }
+            else if (factionId.equalsIgnoreCase("qualljom_society"))
+            {
+                data.addStartingShipChoice("qua_minal_standard");
+                data.addStartingShipChoice("qua_taom_standard");
+            }
 			else
 			{
 				System.out.println("EXERELIN ERROR: Faction starting ship for " + factionId + " not defined");
@@ -635,7 +645,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			}
 			else
 			{
-				System.out.println("EXERELIN ERROR: Starting ship initialisztion failure");
+				System.out.println("EXERELIN ERROR: Starting ship initialistion failure");
 				data.addStartingShipChoice("shuttle_Attack");
 			}
 		}

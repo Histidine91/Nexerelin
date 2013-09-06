@@ -155,7 +155,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					cargo.addSupplies(320);
                     ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidBoardingFlagships());
                     ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips());
-                    ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.5f, ExerelinUtils.getCrewXPLevelForFaction(fleetOwningFactionId));
+                    ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleetOwningFactionId));
 				}
 				else if(stationTarget.getOwner() != null && stationTarget.getOwner().getGameRelationship(fleetOwningFactionId) >= 0)
 				{
@@ -170,7 +170,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					stationTarget.setOwner(theFleet.getFaction().getId(), true, true);
 					stationTarget.clearCargo();
                     ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips());
-                    ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.5f, ExerelinUtils.getCrewXPLevelForFaction(fleetOwningFactionId));
+                    ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleetOwningFactionId));
 				}
 			}
 		};

@@ -1329,6 +1329,51 @@ public class ExerelinUtils
                 "hadd_pyrostorm",
             };
         }
+        else if (factionId.equalsIgnoreCase("zorg_hive"))
+        {
+            return new String[] {
+                    "handlerray",
+                    "disruptorray",
+                    "concussionray",
+                    "transmitterray",
+                    "adaptorray",
+                    "interdictorray",
+            };
+        }
+        else if (factionId.equalsIgnoreCase("qualljom_society"))
+        {
+            return new String[] {
+                    "qua_dual_mg_small",
+                    "qua_vulcan_small",
+                    "qua_ac_small",
+                    "qua_ag_he_small",
+                    "qua_dual_ac_medium",
+                    "qua_ag_he_medium",
+                    "qua_quad_ac_large",
+                    "qua_heavy_cannon",
+                    "qua_dual_flak_medium",
+                    "qua_dual_flak_large",
+                    "qua_pulse_laser_small",
+                    "qua_pulse_laser_medium",
+                    "qua_pulse_laser_large",
+                    "qua_beam_projector_small",
+                    "qua_beam_projector_medium",
+                    "qua_pd_burst_laser_small",
+                    "qua_pd_laser_small",
+                    "qua_pd_laser_medium",
+                    "qua_pac_large",
+                    "qua_ashet_missile_small",
+                    "qua_rodim_missile_small",
+                    "qua_issot_missile_small",
+                    "qua_ashet_missile_medium",
+                    "qua_rodim_missile_medium",
+                    "qua_issot_missile_medium",
+                    "qua_ashet_missile_large",
+                    "qua_rodim_missile_large",
+                    "qua_issot_missile_large",
+                    "qua_tasut_torp_medium",
+            };
+        }
 		else
 		{
 			System.out.println("EXERELIN ERROR: Faction specific weapons for " + factionId + " not defined");

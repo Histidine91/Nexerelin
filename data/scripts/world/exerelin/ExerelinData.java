@@ -18,8 +18,8 @@ import java.util.Iterator;
 
 public final class ExerelinData
 {
-    private String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa"};
-    private String[] ValidTroopTransportShips = new String[] { "valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari" };
+    private String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall"};
+    private String[] ValidTroopTransportShips = new String[] { "valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_allocator", "qua_yidato" };
 
 	private static ExerelinData instance = null;
 	private static SectorAPI sector = null;
@@ -300,6 +300,14 @@ public final class ExerelinData
         // Test for Shadow Order
         if(isFactionInstalled("shadoworder", "data.scripts.world.tadd_ModGen"))
             possibleFactionList.add("shadoworder");
+
+        // Test for Zorg
+        if(isFactionInstalled("zorg_hive", "data.scripts.world.ZorgGen"))
+            possibleFactionList.add("zorg_hive");
+
+        // Test for Zorg
+        if(isFactionInstalled("qualljom_society", "data.scripts.world.QSGen"))
+            possibleFactionList.add("qualljom_society");
 
 		System.out.println("- - - - - - - - - -");
 	}

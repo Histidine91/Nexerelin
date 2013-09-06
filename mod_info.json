@@ -44,5 +44,7 @@
     "data/world/factions/isora.faction",
     "data/world/factions/ceredia.faction",
     "data/world/factions/directorate.faction",
+    "data/world/factions/zorg.faction",
+    "data/world/factions/qualljom.faction",
 	],
 }
