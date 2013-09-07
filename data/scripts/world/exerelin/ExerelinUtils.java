@@ -1393,12 +1393,10 @@ public class ExerelinUtils
 			fleet = sector.createFleet(factionId, "exerelinAsteroidMiningFleet");
 		else if(r == 2)
 			fleet = sector.createFleet(factionId, "exerelinGasMiningFleet");
-        else if(r == 3)
+        else if(r == 3 || r == 4)
             fleet = sector.createFleet(factionId, "exerelinInSystemStationAttackFleet");
-        else if(r == 4)
-            fleet = sector.createFleet(factionId, "exerelinInSystemSupplyConvoy");
         else if(r == 5)
-            fleet = sector.createFleet(factionId, "exerelinOutSystemStationAttackFleet");
+            fleet = sector.createFleet(factionId, "exerelinInSystemSupplyConvoy");
 		else
 			fleet = sector.createFleet(factionId, "exerelinGenericFleet");
 
@@ -1595,6 +1593,9 @@ public class ExerelinUtils
 	{
 		List members = fleet.getFleetData().getMembersListCopy();
 
+        if(members.size() < 3)
+            return false; // Must be 1 flagship, 1 transport, 1 other ship
+
 		Boolean hasValidFlagship = false;
 
         Boolean hasValidTroopTransport;
@@ -1706,10 +1707,6 @@ public class ExerelinUtils
 		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 2);
 		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "mining_drone_wing", null);
 		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "mining_drone_wing", null);
-
-        // TODO REMOVE
-        cargo.addMothballedShip(FleetMemberType.SHIP, "atlas_Standard", null);
-        cargo.addMothballedShip(FleetMemberType.SHIP, "valkyrie_Elite", null);
 	}
 
     public static void addEliteShipToFleet(CampaignFleetAPI fleet)
@@ -1762,7 +1759,7 @@ public class ExerelinUtils
         }
     }
 
-    public static void removeShipsFromFleet(CampaignFleetAPI fleet, String[] shipTypes)
+    public static void removeShipsFromFleet(CampaignFleetAPI fleet, String[] shipTypes, Boolean limitToOneRemove)
     {
         List members = fleet.getFleetData().getMembersListCopy();
 
@@ -1773,6 +1770,8 @@ public class ExerelinUtils
                 if(((FleetMemberAPI)members.get(j)).getSpecId().contains(shipTypes[i]))
                 {
                     fleet.getFleetData().removeFleetMember((FleetMemberAPI)members.get((j)));
+                    if(limitToOneRemove)
+                        return;
                 }
             }
         }
@@ -1829,7 +1828,7 @@ public class ExerelinUtils
         if(marinesDefending <= 0)
         {
             // Attackers won
-            ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships());
+            ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships(), true);
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
             return true;
         }
@@ -1839,8 +1838,8 @@ public class ExerelinUtils
             if(fleet.getCargo().getMarines() <= 0)
             {
                 // Defenders total win
-                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships());
-                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidTroopTransportShips());
+                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships(), true);
+                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
                 ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
                 if(playerFleet)
                 {
@@ -1876,5 +1875,12 @@ public class ExerelinUtils
         //    return CargoAPI.CrewXPLevel.GREEN;
         //else
             return  CargoAPI.CrewXPLevel.REGULAR;
+    }
+
+    public static void mergeFleets(CampaignFleetAPI mainFleet, CampaignFleetAPI fleetToMerge)
+    {
+        List members = fleetToMerge.getFleetData().getMembersListCopy();
+        for(int i = 0; i < members.size(); i = i + 1)
+            mainFleet.getFleetData().addFleetMember((FleetMemberAPI)members.get((i)));
     }
 }

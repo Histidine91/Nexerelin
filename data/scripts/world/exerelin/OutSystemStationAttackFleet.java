@@ -17,6 +17,7 @@ public class OutSystemStationAttackFleet
 	SectorAPI theSector;
 	Boolean defendLocation;
 	Boolean boarding = false;
+    long lastTimeCheck;
 
 	public OutSystemStationAttackFleet(SectorAPI sector, LocationAPI location, String faction, Boolean defend)
 	{
@@ -51,7 +52,12 @@ public class OutSystemStationAttackFleet
 		this.theTarget = target;
 		this.boarding = false;
 
-		CampaignFleetAPI fleet = theSector.createFleet(faction, type);
+		CampaignFleetAPI fleet = theSector.createFleet(faction, "exerelinInSystemStationAttackFleet");
+        CampaignFleetAPI extraFleet = theSector.createFleet(faction, "exerelinGenericFleet");
+        CampaignFleetAPI extraFleetTwo = theSector.createFleet(faction, "exerelinGenericFleet");
+        ExerelinUtils.mergeFleets(fleet, extraFleet);
+        ExerelinUtils.mergeFleets(fleet, extraFleetTwo);
+        ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.5f, CargoAPI.CrewXPLevel.ELITE);
 
 		theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
         fleet.setName("Command Fleet");
@@ -95,7 +101,7 @@ public class OutSystemStationAttackFleet
 						theFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, spawnPoint, 100);
 						return;
 					}
-
+                    boarding = false;
 					theTarget = newTarget;
 					setFleetAssignments(theFleet);
 					return;
@@ -103,23 +109,33 @@ public class OutSystemStationAttackFleet
 				else if(!boarding && ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 				{
 					// Warn player of boarding
-					boarding = true;
 					System.out.println("Player owned " + theTarget.getFullName() + " being boarded by " + theFaction);
 					Global.getSector().addMessage(theTarget.getFullName() + " is being boarded by " + theFaction, Color.magenta);
 				}
 
 				if(defendLocation)
 				{
-					if(!boarding || ExerelinUtils.getRandomInRange(0, 6000) > 0)
+					if(!boarding)
 					{
 						// Start boarding
+                        lastTimeCheck = Global.getSector().getClock().getTimestamp();
 						boarding = true;
 						setFleetAssignments(theFleet);
 					}
-					else
-					{
-						return; // Finish boarding and run arrived script
-					}
+
+                    if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) >= 1)
+                    {
+                        lastTimeCheck = Global.getSector().getClock().getTimestamp();
+                        if(ExerelinUtils.getRandomInRange(0, 15) == 0)
+                        {
+                            boarding = false;
+                            return; // Finish boarding and run arrived script
+                        }
+                        else
+                            setFleetAssignments(theFleet);
+                    }
+                    else
+                        setFleetAssignments(theFleet);
 				}
 				else
 				{
@@ -167,7 +183,8 @@ public class OutSystemStationAttackFleet
 					return;
 				}
 
-                ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidBoardingFlagships());
+                ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidBoardingFlagships(), true);
+                ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
 				StationRecord stationRecord = SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI)theLocation).getSystemStationManager().getStationRecordForToken(theTarget);
 				stationRecord.setOwner(theFaction, true, true);
 				stationRecord.clearCargo();
