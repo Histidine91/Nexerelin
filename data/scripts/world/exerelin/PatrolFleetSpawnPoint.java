@@ -42,8 +42,8 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
 	{
 		String type = "exerelinGenericFleet";
 
-		if(this.getFleets().size() == this.getMaxFleets())
-			return null;
+		if(this.getFleets().size() == this.getMaxFleets() || (defendStation == null && this.getFleets().size() > 0))
+			return null; // Only build if at war, or no patrol fleets deployed
 
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
 
@@ -81,42 +81,44 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
 	private void setWarAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
+
+        // Check if home is under threat
+        Boolean homeUnderThreat = false;
 		if(defendStation.getStationToken().getFullName().equalsIgnoreCase(getAnchor().getFullName()))
-		{
-			// Defend home station
-			fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken(), 200);
-			fleet.addAssignment(FleetAssignment.RESUPPLY, defendStation.getStationToken(), 200);
-			fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken() , 200);
-			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
-		}
-		else
-		{
-			int action = ExerelinUtils.getRandomInRange(0,2);
-			if(action == 0)
-			{
-				// Defend under attack station
-				fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken(), 200);
-				fleet.addAssignment(FleetAssignment.RESUPPLY, defendStation.getStationToken(), 200);
-				fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken() , 200);
-				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
-			}
-			else if (action == 1 && defendStation.getTargetStationRecord() != null)
-			{
-				// Attack station
-				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, defendStation.getTargetStationRecord().getStationToken(), 200);
-				fleet.addAssignment(FleetAssignment.RESUPPLY, getAnchor(), 200);
-				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, defendStation.getTargetStationRecord().getStationToken() , 200);
-				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
-			}
-			else if(action == 2 && defendStation.getTargetStationRecord() != null)
-			{
-				// Raid system
-				fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation.getTargetStationRecord().getStationToken(), 200);
-				fleet.addAssignment(FleetAssignment.RESUPPLY, getAnchor(), 200);
-				fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation.getTargetStationRecord().getStationToken() , 200);
-				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
-			}
-		}
+            homeUnderThreat = true;
+
+        // Only allow raid system choice if home is not under threat
+        int action;
+        if(homeUnderThreat)
+            action = ExerelinUtils.getRandomInRange(0,1);
+        else
+            action = ExerelinUtils.getRandomInRange(0,2);
+
+        if(action == 0)
+        {
+            // Defend station
+            fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken(), 200);
+            fleet.addAssignment(FleetAssignment.RESUPPLY, defendStation.getStationToken(), 200);
+            fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken() , 200);
+            fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
+        }
+        else if (action == 1 && defendStation.getTargetStationRecord() != null)
+        {
+            // Attack station
+            fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, defendStation.getTargetStationRecord().getStationToken(), 200);
+            fleet.addAssignment(FleetAssignment.RESUPPLY, getAnchor(), 200);
+            fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, defendStation.getTargetStationRecord().getStationToken() , 200);
+            fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
+        }
+        else if(action == 2 && defendStation.getTargetStationRecord() != null)
+        {
+            // Raid system
+            fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation.getTargetStationRecord().getStationToken(), 200);
+            fleet.addAssignment(FleetAssignment.RESUPPLY, getAnchor(), 200);
+            fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation.getTargetStationRecord().getStationToken() , 200);
+            fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
+        }
+
 	}
 }
 

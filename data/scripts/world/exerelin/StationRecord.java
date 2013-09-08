@@ -45,8 +45,8 @@ public class StationRecord
 		stationCargo = token.getCargo();
 		planetType = this.derivePlanetType(token);
 
-		attackSpawn = new AttackFleetSpawnPoint(sector, system, 1000000, 2, token);
-		defenseSpawn = new DefenseFleetSpawnPoint(sector, system, 1000000, 2, token);
+		attackSpawn = new AttackFleetSpawnPoint(sector, system, 1000000, 1, token);
+		defenseSpawn = new DefenseFleetSpawnPoint(sector, system, 1000000, 1, token);
 		patrolSpawn = new PatrolFleetSpawnPoint(sector, system, 1000000, 2, token);
 		stationAttackFleetSpawn = new InSystemStationAttackShipSpawnPoint(sector, system, 1000000, 1, token);
 		inSystemSupplyConvoySpawn = new InSystemSupplyConvoySpawnPoint(sector, system, 1000000, 1, token);
@@ -180,31 +180,13 @@ public class StationRecord
 		if(ExerelinUtils.getRandomInRange(0, 1) == 0 || (targetStationRecord != null && targetStationRecord.getOwner() == null))
 			stationAttackFleetSpawn.spawnFleet();
 
-		if(numStationsTargeting == 0)
-		{
-			// Spawn only 1 defense fleet
-			for(int i = defenseSpawn.getFleets().size(); i < defenseSpawn.getMaxFleets() - 1; i++)
-				defenseSpawn.spawnFleet();
-		}
-		else
-		{
-			// Spawn max 2 fleets
-			for(int i = defenseSpawn.getFleets().size(); i < defenseSpawn.getMaxFleets(); i++)
-				defenseSpawn.spawnFleet();
-		}
 
-		if(numStationsTargeting == 0 && assistStationRecord == null)
-		{
-			// Spawn only 1 patrol fleet
-			for(int i = patrolSpawn.getFleets().size(); i < patrolSpawn.getMaxFleets() - 1; i++)
-				patrolSpawn.spawnFleet();
-		}
-		else
-		{
-			// Spawn max 2 fleets
-			for(int i = patrolSpawn.getFleets().size(); i < patrolSpawn.getMaxFleets(); i++)
-				patrolSpawn.spawnFleet();
-		}
+
+        for(int i = defenseSpawn.getFleets().size(); i < defenseSpawn.getMaxFleets(); i++)
+            defenseSpawn.spawnFleet();
+
+        for(int i = patrolSpawn.getFleets().size(); i < patrolSpawn.getMaxFleets(); i++)
+            patrolSpawn.spawnFleet();
 
 		for(int i = attackSpawn.getFleets().size(); i < attackSpawn.getMaxFleets(); i++)
 			attackSpawn.spawnFleet();
