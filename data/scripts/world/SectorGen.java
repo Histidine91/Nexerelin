@@ -22,7 +22,6 @@ public class SectorGen implements SectorGeneratorPlugin
 		for(int i = 0; i < ExerelinData.getInstance().numSystems - 1; i ++)
 			buildSystem(sectorAPI);
 
-
 		ExerelinData.getInstance().resetAvailableFactions();
 
 		// Build a sector manager to run things
@@ -34,7 +33,7 @@ public class SectorGen implements SectorGeneratorPlugin
 		sectorManager.setMaxFactions(ExerelinData.getInstance().maxFactionsInExerelinAtOnce);
 		sectorManager.setPlayerFactionId(ExerelinData.getInstance().getPlayerFaction());
 		sectorManager.setFactionsPossibleInSector(ExerelinData.getInstance().getAvailableFactions(sectorAPI));
-		sectorManager.setRespawnWaitMonths(ExerelinData.getInstance().respawnDelay);
+		sectorManager.setRespawnWaitDays(ExerelinData.getInstance().respawnDelay);
 		sectorManager.setBuildOmnifactory(ExerelinData.getInstance().omniFacPresent);
 		sectorManager.setMaxSystemSize(ExerelinData.getInstance().maxSystemSize);
 

@@ -67,10 +67,10 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 	private ResponseImpl RESPAWN_NO = new ResponseImpl("No, factions will not respawn");
 
 	private ResponseImpl RESPAWN_ZERO = new ResponseImpl("As soon as possible!");
-	private ResponseImpl RESPAWN_TWO = new ResponseImpl("Two months later");
-	private ResponseImpl RESPAWN_FOUR = new ResponseImpl("Four months later");
-	private ResponseImpl RESPAWN_EIGHT = new ResponseImpl("Eight months later");
-	private ResponseImpl RESPAWN_SIXTEEN = new ResponseImpl("Sixteen months later");
+	private ResponseImpl RESPAWN_TWO = new ResponseImpl("Two months");
+	private ResponseImpl RESPAWN_FOUR = new ResponseImpl("Four months");
+	private ResponseImpl RESPAWN_EIGHT = new ResponseImpl("Eight months");
+	private ResponseImpl RESPAWN_SIXTEEN = new ResponseImpl("Sixteen months");
 
 	private ResponseImpl START_SHIP_FACTION = new ResponseImpl("Start with a faction specfic frigate");
 	private ResponseImpl START_SHIP_TOREUPPLENTY1 = new ResponseImpl("Start with a Tore Up Plenty frigate");
@@ -94,7 +94,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		"Is the OmniFactory in Exerelin?",
 		"When you arrive at Exerelin, how many other factions are there with you initially?",
 		"Shall factions return to Exerelin?",
-		"How long until other factions show up?",
+		"How much time passes between factions returning to Exerelin?",
 		"What kind of ship do you start with?",
 		"For the assault on Exerelin you have joined...",
 		"... or you joined ..",
@@ -355,28 +355,28 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		}
 		else if (response == RESPAWN_TWO)
 		{
-			ExerelinData.getInstance().respawnDelay = 2;
+			ExerelinData.getInstance().respawnDelay = 60;
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
 		}
 		else if (response == RESPAWN_FOUR)
 		{
-			ExerelinData.getInstance().respawnDelay = 4;
+			ExerelinData.getInstance().respawnDelay = 120;
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
 		}
 		else if (response == RESPAWN_EIGHT)
 		{
-			ExerelinData.getInstance().respawnDelay = 8;
+			ExerelinData.getInstance().respawnDelay = 240;
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
 		}
 		else if (response == RESPAWN_SIXTEEN)
 		{
-			ExerelinData.getInstance().respawnDelay = 16;
+			ExerelinData.getInstance().respawnDelay = 480;
 			
 			if(!isToreUpPlentyInstalled())
 				stage++;

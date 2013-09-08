@@ -1,5 +1,6 @@
 package data.scripts.world.exerelin;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 
 public class SystemEventManager
@@ -13,7 +14,7 @@ public class SystemEventManager
 
 	private int waitTime = 60; // Wait two months before running first events
 	private String lastEventType = "";
-	private int betweenEventWait = 5;
+	private int betweenEventWait = 10;
 
 	private StarSystemAPI starSystemAPI;
 
@@ -74,7 +75,8 @@ public class SystemEventManager
 
 		if(ExerelinData.getInstance().getSectorManager().getRespawnFactions()
 				&& ExerelinUtils.getRandomInRange(0,55) == 0
-				&& !eventStationSeccession.getType().equalsIgnoreCase(lastEventType))
+				&& !eventStationSeccession.getType().equalsIgnoreCase(lastEventType)
+                && Global.getSector().getClock().getElapsedDaysSince(SectorManager.getCurrentSectorManager().getLastFactionSpawnTime()) > SectorManager.getCurrentSectorManager().getRespawnWaitDays())
 		{
 			eventStationSeccession.makeStationSecedeToOutSystemFaction(starSystemAPI);
 			waitTime = betweenEventWait;

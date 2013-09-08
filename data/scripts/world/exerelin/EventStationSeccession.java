@@ -80,6 +80,8 @@ public class EventStationSeccession extends EventBase
 			station.getStationToken().getCargo().addSupplies(6400);
 
 			station.setEfficiency(3);
+
+            SectorManager.getCurrentSectorManager().setLastFactionSpawnTime(Global.getSector().getClock().getTimestamp());
 		}
 	}
 }

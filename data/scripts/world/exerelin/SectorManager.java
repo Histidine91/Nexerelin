@@ -18,13 +18,15 @@ public class SectorManager
 	private String[] factionsPossibleInSector;
 	private boolean playerFreeTransfer;
 	private boolean respawnFactions;
-	private int respawnWaitMonths;
+	private int respawnWaitDays;
 	private int maxFactions;
 	private String playerFactionId;
 	private boolean builtOmnifactoryAndStorage;
 	private boolean buildOmnifactory;
 	private boolean playerMovedToSpawnLocation;
 	private int maxSystemSize;
+
+    private long lastFactionSpawnTime;
 
 	public SectorManager(SectorAPI inSectorAPI)
 	{
@@ -137,13 +139,10 @@ public class SectorManager
 	public void respawnRandomFaction()
 	{
 		if(!this.respawnFactions)
-			return;
+			return; // No factions will respawn
 
-		if(respawnWaitMonths != 0)
-		{
-			respawnWaitMonths = respawnWaitMonths - 1;
-			return;
-		}
+		if(Global.getSector().getClock().getElapsedDaysSince(lastFactionSpawnTime) < this.respawnWaitDays)
+			return; // Hasn't been long enough since the last respawn
 
 		for(int k = 0; k < this.systemManagers.length; k++)
 		{
@@ -220,6 +219,9 @@ public class SectorManager
 				OutSystemStationAttackFleet omsaf = new OutSystemStationAttackFleet(sectorAPI, systemAPI, factionId, true);
 				omsaf.spawnFleet(stationTarget, token);
 			}
+
+            lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
+
 			System.out.println(" - - - - - - - - - - - - ");
 		}
 	}
@@ -240,7 +242,7 @@ public class SectorManager
 	public void doSetupChecks()
 	{
 		//NOTE: FOLLOWING CODE IS USED TO HANDLE SAVE DATA LOADING !!!!!! DEPRECATED APPROACH
-		//NOTE: USE THE REFERENCE TO THE SYSTEMMANAGER IN EXERELINDATA RATHER THAN REFRESHING HERE
+		//NOTE: USE THE REFERENCE TO THE SECTORMANAGER IN EXERELINDATA RATHER THAN REFRESHING HERE
 
 		// Refresh available factions to cache before doing anything
 		if(!ExerelinData.getInstance().confirmedAvailableFactions)
@@ -335,11 +337,14 @@ public class SectorManager
                 List members = dummyBoardingFleet.getFleetData().getMembersListCopy();
                 for(int i = 0; i < members.size(); i++)
                     Global.getSector().getPlayerFleet().getFleetData().addFleetMember((FleetMemberAPI)members.get(i));
+
+                // Start of game, player fleet is last to be spawned so set last faction spawn time as this
+                this.lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
             }
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.1f, CargoAPI.CrewXPLevel.GREEN);
 		}
 
-		// Move player to their starting fleet if this is the start of the game
+		// Move player to edge of system if start of game
 		if(!playerMovedToSpawnLocation)
 		{
             SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(Global.getSector().getPlayerFleet().getContainingLocation());
@@ -393,10 +398,25 @@ public class SectorManager
 		factionsPossibleInSector = inFactionsPossibleInSector;
 	}
 
-	public void setRespawnWaitMonths(int inRespawnWaitMonths)
+	public void setRespawnWaitDays(int inRespawnWaitDays)
 	{
-		respawnWaitMonths = inRespawnWaitMonths;
+		respawnWaitDays = inRespawnWaitDays;
 	}
+
+    public int getRespawnWaitDays()
+    {
+        return this.respawnWaitDays;
+    }
+
+    public long getLastFactionSpawnTime()
+    {
+        return lastFactionSpawnTime;
+    }
+
+    public void setLastFactionSpawnTime(long timestamp)
+    {
+        lastFactionSpawnTime = timestamp;
+    }
 
 	public void setBuildOmnifactory(Boolean inBuildOmnifactory)
 	{
