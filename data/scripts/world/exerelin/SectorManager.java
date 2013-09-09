@@ -108,7 +108,7 @@ public class SectorManager
 			for(int i = 0; i < fleets.size(); i = i + 1)
 			{
 				CampaignFleetAPI fleet = (CampaignFleetAPI)fleets.get(i);
-				if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) && fleet.getFullName().contains("Command Fleet"))
+				if(ExerelinUtils.isValidBoardingFleet(fleet, true))
 					return;
 			}
 
