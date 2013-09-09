@@ -1,0 +1,33 @@
+{
+  "displayName": "Standard",
+  "hullId": "relics_pusher_h",
+  "variantId": "relics_pusher_Standard",
+  "fluxVents": 7,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "reinforcedhull",
+    "hardenedshieldemitter"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "relics_exo_h"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 2": "irpulse",
+        "WS 3": "irpulse"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {}
+    }
+  ]
+}

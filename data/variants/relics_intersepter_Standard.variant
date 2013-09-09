@@ -1,0 +1,38 @@
+{
+  "displayName": "Standard",
+  "hullId": "relics_intersepter_h",
+  "variantId": "relics_intersepter_Standard",
+  "fluxVents": 5,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "stabilizedshieldemitter",
+    "hardenedshieldemitter"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "irpulse",
+        "WS 2": "irpulse",
+        "WS 7": "irpulse"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "pulselaser",
+        "WS 4": "pulselaser"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "ALTERNATING",
+      "weapons": {
+        "WS 5": "relics_zaap_h",
+        "WS 6": "relics_zaap_h"
+      }
+    }
+  ]
+}

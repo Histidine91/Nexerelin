@@ -1,0 +1,36 @@
+{
+  "displayName": "Standard",
+  "hullId": "relics_solver_h",
+  "variantId": "relics_solver_Standard",
+  "fluxVents": 4,
+  "fluxCapacitors": 0,
+  "hullMods": [
+    "pointdefenseai"
+  ],
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 1": "relics_blazo_h",
+        "WS 2": "relics_blazo_h"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 5": "taclaser",
+        "WS 6": "taclaser"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 3": "irpulse",
+        "WS 4": "irpulse"
+      }
+    }
+  ]
+}
