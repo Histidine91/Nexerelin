@@ -1382,7 +1382,7 @@ public class ExerelinUtils
 
 	public static void addRandomFactionShipsToCargo(CargoAPI cargo, int count, String factionId, SectorAPI sector)
 	{
-		int r = getRandomInRange(0, 20);
+		int r = getRandomInRange(0, 30);
 
 		CampaignFleetAPI fleet;
 
