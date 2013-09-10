@@ -2,15 +2,12 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.List;
 import java.util.Iterator;
@@ -655,8 +652,10 @@ public class ExerelinUtils
 					"gedune_scythe",
 					"phasebeam",
 					"hurricane",
-					"gedune_hipdlaser",
 					"gedune_flarepd",
+                    "gedune_phase_repeater",
+                    "gedune_reithe",
+                    "gedune_kdart"
 			};
 		}
 		else if (factionId.equalsIgnoreCase("junkpirate"))
@@ -1383,7 +1382,7 @@ public class ExerelinUtils
 
 	public static void addRandomFactionShipsToCargo(CargoAPI cargo, int count, String factionId, SectorAPI sector)
 	{
-		int r = getRandomInRange(0,20);
+		int r = getRandomInRange(0, 20);
 
 		CampaignFleetAPI fleet;
 
@@ -1557,18 +1556,18 @@ public class ExerelinUtils
 	public static boolean isValidMiningFleet(CampaignFleetAPI fleet)
 	{
 		List members = fleet.getFleetData().getMembersListCopy();
-		Boolean hasMiningWing = false;
+		Boolean hasMiningShip = false;
 		Boolean hasShip = false;
 		for(int i = 0; i < members.size(); i++)
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if(fmAPI.getSpecId().equalsIgnoreCase("mining_drone_wing"))
-				hasMiningWing = true;
+			if(ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidMiningShips(), true))
+				hasMiningShip = true;
 			else if(!fmAPI.isFighterWing())
 				hasShip = true;
 		}
 
-		return (hasMiningWing && hasShip);
+		return (hasMiningShip && hasShip);
 	}
 
 	public static int getMiningPower(CampaignFleetAPI fleet)
@@ -1579,9 +1578,7 @@ public class ExerelinUtils
 		for(int i = 0; i < members.size(); i++)
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-
-			String shipId = fmAPI.getSpecId();
-			if(shipId.equalsIgnoreCase("mining_drone_wing"))
+			if(ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidMiningShips(), true))
 				power = power + 1;
 		}
 

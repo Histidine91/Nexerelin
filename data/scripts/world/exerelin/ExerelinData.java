@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SpawnPointPlugin;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import org.lwjgl.util.vector.Vector2f;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,8 +17,9 @@ import java.util.Iterator;
 
 public final class ExerelinData
 {
-    private String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_allocator"};
-    private String[] ValidTroopTransportShips = new String[] { "valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_allocator", "qua_yidato" };
+    private final String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_allocator"};
+    private final String[] ValidTroopTransportShips = new String[] { "valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_allocator", "qua_yidato" };
+    private final String[] ValidMiningShips = new String[] {"mining_drone", "zorg_worker"};
 
 	private static ExerelinData instance = null;
 	private static SectorAPI sector = null;
@@ -345,5 +345,10 @@ public final class ExerelinData
     public String[] getValidTroopTransportShips()
     {
         return ValidTroopTransportShips;
+    }
+
+    public String[] getValidMiningShips()
+    {
+        return ValidMiningShips;
     }
 }

@@ -81,7 +81,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "mining_drone_wing":[1, 2],
+                "zorg_worker_wing":[1, 2],
                 "zorg_allocator_Active":[1, 1],
             },
         },
@@ -93,7 +93,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "mining_drone_wing":[1, 2],
+                "zorg_worker_wing":[1, 2],
                 "zorg_allocator_Active":[1, 2],
             },
         },
