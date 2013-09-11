@@ -464,7 +464,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 				data.addStartingShipChoice("brawler_Assault");
 				data.addStartingShipChoice("vigilance_Standard");
 			}
-			else if (factionId.equalsIgnoreCase("shadowyards"))
+			else if (factionId.equalsIgnoreCase("shadowyards_hi"))
 			{
 				data.addStartingShipChoice("ms_enlil_Standard");
 				data.addStartingShipChoice("ms_seski_Standard");

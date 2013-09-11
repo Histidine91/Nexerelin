@@ -35,6 +35,7 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "gedune_bakoros_variant":[0, 2],
+                "gedune_dahkan_variant":[0, 2],
                 "gedune_dahaki_variant2":[0, 3],
                 "gedune_tenzen_variant":[0, 2],
                 "gedune_muragatta_variant":[0, 1],

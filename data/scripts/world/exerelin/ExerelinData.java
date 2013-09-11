@@ -250,7 +250,7 @@ public final class ExerelinData
 			possibleFactionList.add("relics");
 
 		// Test for shadowyards
-		if(isFactionInstalled("shadowyards", "data.scripts.world.SHIGen"))
+		if(isFactionInstalled("shadowyards_hi", "data.scripts.world.SHIGen"))
 			possibleFactionList.add("shadowyards_hi");
 
 		// Test for thulelegacy
