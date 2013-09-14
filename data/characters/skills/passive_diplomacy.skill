@@ -1,0 +1,25 @@
+{
+	"id":"passive_diplomacy",
+	"governingAptitude":"faction",
+	"effectGroups":[
+		{
+			"effects":[
+				{
+					"type":"CHARACTER_STATS",
+					"script":"data.characters.skills.scripts.PassiveDiplomacyEffect1",
+				},
+			]
+		},
+		{
+            "name":"Alliance Betrayal Reduction",
+            "requiredSkillLevel":10,
+            "effectBasedOnLevel":false,
+            "effects":[
+                {
+                    "type":"CHARACTER_STATS",
+                    "script":"data.characters.skills.scripts.PassiveDiplomacyPerk1",
+                },
+            ]
+        },
+	],
+}

@@ -51,6 +51,15 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
 		int remainingFleetsToSpawn = this.getMaxFleets()*2 - this.getFleets().size();
 		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn, 0.5f, true, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId)))
 		{
+            float eliteShipChance = 0.01f;
+
+            // Add player chance
+            if(owningFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+                eliteShipChance = eliteShipChance + ExerelinPlayerFunctions.getPlayerFactionFleetEliteShipBonusChance();
+
+            if(ExerelinUtils.getRandomInRange(0, (int)(99 / (eliteShipChance * 100))) == 0)
+                ExerelinUtils.addEliteShipToFleet(fleet);
+
 			getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 			fleet.setPreferredResupplyLocation(getAnchor());
 

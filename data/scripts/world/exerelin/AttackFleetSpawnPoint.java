@@ -59,8 +59,18 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 		CampaignFleetAPI fleet = getSector().createFleet(ownerFactionId, type);
 		theFleet = fleet;
 
+
+        float eliteShipChance = 0.01f;
+
         // If leading, 5% chance to add a elite ship to fleet
-        if(SectorManager.getCurrentSectorManager().getLeadingFaction().equalsIgnoreCase(this.ownerFactionId) && ExerelinUtils.getRandomInRange(0, 19) == 0)
+        if(SectorManager.getCurrentSectorManager().getLeadingFaction().equalsIgnoreCase(this.ownerFactionId))
+            eliteShipChance = eliteShipChance + 0.05f;
+
+        // Add player chance
+        if(ownerFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            eliteShipChance = eliteShipChance + ExerelinPlayerFunctions.getPlayerFactionFleetEliteShipBonusChance();
+
+        if(ExerelinUtils.getRandomInRange(0, (int)(99 / (eliteShipChance * 100))) == 0)
             ExerelinUtils.addEliteShipToFleet(fleet);
 
 		int remainingFleetsToSpawn = this.getMaxFleets()*2 - this.getFleets().size();

@@ -204,7 +204,10 @@ public class ExerelinUtils
 
 	private static int getFleetCost(CampaignFleetAPI fleet)
 	{
-		final float FLEET_COST_MULT = 0.7f;
+		float fleetCostMult = 0.7f;
+
+        if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            fleetCostMult = ExerelinPlayerFunctions.getPlayerFleetCostMultiplier();
 
 		float fleetCost = 0f;
 		float mult;
@@ -233,7 +236,7 @@ public class ExerelinUtils
             fleetCost += (ship.getFleetPointCost() * mult);
 		}
 
-		return Math.round(fleetCost * FLEET_COST_MULT);
+		return Math.round(fleetCost * fleetCostMult);
 	}
 
 	public static String getStationOwnerFactionId(SectorEntityToken stationToken)

@@ -1,0 +1,36 @@
+{
+	"id":"station_industry",
+	"governingAptitude":"faction",
+	"effectGroups":[
+		{
+			"effects":[
+				{
+					"type":"CHARACTER_STATS",
+					"script":"data.characters.skills.scripts.StationIndustryEffect1",
+				},
+			]
+		},
+		{
+            "name":"Resource Storage Limit Increase",
+            "requiredSkillLevel":5,
+            "effectBasedOnLevel":false,
+            "effects":[
+                {
+                    "type":"CHARACTER_STATS",
+                    "script":"data.characters.skills.scripts.StationIndustryPerk1",
+                },
+            ]
+        },
+        {
+            "name":"Extra Resource Fleets",
+            "requiredSkillLevel":10,
+            "effectBasedOnLevel":false,
+            "effects":[
+                {
+                    "type":"CHARACTER_STATS",
+                    "script":"data.characters.skills.scripts.StationIndustryPerk2",
+                },
+            ]
+        },
+	],
+}

@@ -1,0 +1,14 @@
+{
+	"id":"aptitude_faction",
+	"governingAptitude":"faction",
+	"effectGroups":[
+		{
+			"effects":[
+				{
+					"type":"CHARACTER_STATS",
+					"script":"data.characters.skills.scripts.FactionAptitudeEffect1",
+				},
+			]
+		},
+	],
+}

@@ -1,12 +1,15 @@
 package data.scripts.world.exerelin;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 
+import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 
+import data.characters.skills.scripts.ExerelinSkillData;
 import data.scripts.world.BaseSpawnPoint;
 import data.scripts.world.exerelin.ExerelinData;
 import data.scripts.world.exerelin.ExerelinUtils;
@@ -83,25 +86,36 @@ public class OutSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 			public void run() {
 				CargoAPI targetCargo = theTarget.getCargo();
 
-				targetCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, 200);
+                float cargoMultiplier = 1.0f;
+
+                if(theFleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+                    cargoMultiplier = ExerelinPlayerFunctions.getPlayerStationConvoyResourceMultipler();
+
+				targetCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, (int)(200 * cargoMultiplier));
+                System.out.println("Adding crew (200): " + (200 * cargoMultiplier));
 				targetCargo.addCrew(CargoAPI.CrewXPLevel.ELITE, 1);
 				targetCargo.addCrew(CargoAPI.CrewXPLevel.VETERAN, 1);
 				targetCargo.addCrew(CargoAPI.CrewXPLevel.GREEN, 1);
-				targetCargo.addMarines(100);
-				targetCargo.addFuel(100); // Halved due to mining fleets
-				targetCargo.addSupplies(400); // Halved due to mining fleets
+				targetCargo.addMarines((int)(100 * cargoMultiplier));
+				targetCargo.addFuel(100 * cargoMultiplier); // Halved due to mining fleets
+				targetCargo.addSupplies(400 * cargoMultiplier); // Halved due to mining fleets
 
-				// Adjust certain things if it is a player supply fleet
-				if(theFleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-				{
-					targetCargo.addCrew(CargoAPI.CrewXPLevel.GREEN, 20);
-					ExerelinUtils.decreaseCargo(targetCargo,"crewRegular", 70);
-					ExerelinUtils.decreaseCargo(targetCargo,"marines", 25);
-					ExerelinUtils.decreaseCargo(targetCargo,"fuel", 35);
-					ExerelinUtils.decreaseCargo(targetCargo,"supplies", 150);
-					ExerelinUtils.addWeaponsToCargo(targetCargo, 4, theFleet.getFaction().getId(), getSector()) ;
-					ExerelinUtils.addRandomFactionShipsToCargo(targetCargo, 2, theFleet.getFaction().getId(), getSector()) ;
-				}
+                if(theFleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+                {
+                    // Faction is player so add weapons/ships to cargo
+                    int numWeapons = 4;
+                    int numShips = 2;
+
+                    if(ExerelinUtils.getRandomInRange(0, (int)(99 / cargoMultiplier)) == 0)
+                    {
+                        System.out.println("Adding extra weapons/ships");
+                        numWeapons = numWeapons*2;
+                        numShips = numShips*2;
+                    }
+
+                    ExerelinUtils.addWeaponsToCargo(targetCargo, numWeapons, theFleet.getFaction().getId(), getSector());
+                    ExerelinUtils.addRandomFactionShipsToCargo(targetCargo, numShips, theFleet.getFaction().getId(), getSector());
+                }
 			}
 		};
 	}
