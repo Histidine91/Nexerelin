@@ -3,16 +3,63 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import data.scripts.world.BaseSpawnPoint;
 
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class Exerelin implements SectorGeneratorPlugin
+public class Exerelin //implements SectorGeneratorPlugin
 {
 	public void generate(SectorAPI sector)
 	{
-		ClassLoader cl = Global.getSettings().getScriptClassLoader();
-		StarSystemAPI system = sector.getStarSystem("Exerelin");
+        System.out.println("Starting setup...");
+
+        /*for(int i = 0; i < sector.getStarSystems().size(); i++)
+        {
+            System.out.println(((StarSystemAPI) sector.getStarSystems().get(i)).getName());
+            StarSystemAPI system = ((StarSystemAPI) sector.getStarSystems().get(i));
+
+            for(int j = 0; j < system.getSpawnPoints().size(); j++)
+            {
+                SpawnPointPlugin spawnPointPlugin = (SpawnPointPlugin)system.getSpawnPoints().get(j);
+                System.out.println("Removing spawnpoint");
+                system.removeSpawnPoint(spawnPointPlugin);
+            }
+
+            for(int k = 0; k < system.getEntities(BaseSpawnPoint.class).size(); k++)
+            {
+                System.out.println("Found baseSpawnPoint");
+            }
+
+            for(int l = 0; l < system.getOrbitalStations().size(); l++)
+            {
+                SectorEntityToken station = (SectorEntityToken)system.getOrbitalStations().get(l);
+                station.setFaction("abandoned");
+            }
+        }*/
+
+        ExerelinData.getInstance().resetAvailableFactions();
+
+        // Build a sector manager to run things
+        SectorManager sectorManager = new SectorManager(sector);
+
+        // Set starting conditions needed later for saving into the save file
+        sectorManager.setPlayerFreeTransfer(ExerelinData.getInstance().playerOwnedStationFreeTransfer);
+        sectorManager.setRespawnFactions(ExerelinData.getInstance().respawnFactions);
+        sectorManager.setMaxFactions(ExerelinData.getInstance().maxFactionsInExerelinAtOnce);
+        sectorManager.setPlayerFactionId(ExerelinData.getInstance().getPlayerFaction());
+        sectorManager.setFactionsPossibleInSector(ExerelinData.getInstance().getAvailableFactions(sector));
+        sectorManager.setRespawnWaitDays(ExerelinData.getInstance().respawnDelay);
+        sectorManager.setBuildOmnifactory(ExerelinData.getInstance().omniFacPresent);
+        sectorManager.setMaxSystemSize(ExerelinData.getInstance().maxSystemSize);
+
+        // Add to cache
+        ExerelinData.getInstance().setSectorManager(sectorManager);
+
+        // Build and add a time mangager
+        TimeManager timeManger = new TimeManager();
+        timeManger.sectorManagerRef = sectorManager;
+        ((StarSystemAPI)sector.getStarSystems().get(0)).addSpawnPoint(timeManger);
 
 		// Check that player picked faction is available
 		this.checkPlayerFactionPick(sector);
@@ -25,6 +72,11 @@ public class Exerelin implements SectorGeneratorPlugin
 
 		// Add trader spawns
 		this.initTraderSpawns(sector);
+
+        for(int i = 0; i < sector.getStarSystems().size(); i++)
+            System.out.println(((StarSystemAPI) sector.getStarSystems().get(i)).getName());
+
+        System.out.println("Finished generation and setup...");
 	}
 
 	private void checkPlayerFactionPick(SectorAPI sector)

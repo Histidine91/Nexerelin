@@ -282,16 +282,21 @@ public class SectorManager
 		// Build OmniFactory and Storage if not been built and players faction has a station
 		if(!this.builtOmnifactoryAndStorage)
 		{
+            if(sectorAPI.getPlayerFleet().isInHyperspace())
+                return;
+
 			StarSystemAPI system = (StarSystemAPI)sectorAPI.getPlayerFleet().getContainingLocation();
 
 			if(SectorManager.getCurrentSectorManager().isFactionInSector(ExerelinData.getInstance().getPlayerFaction()))
 			{
 				java.util.List planets = system.getPlanets();
-				SectorEntityToken playerStation = ExerelinUtils.getRandomStationForFaction(ExerelinData.getInstance().getPlayerFaction(), this.getSystemManagers()[0].getStarSystemAPI(), sectorAPI); // TODO change
+				SectorEntityToken playerStation = ExerelinUtils.getRandomStationForFaction(ExerelinData.getInstance().getPlayerFaction(), system, sectorAPI);
 				for(int i = 0; i < planets.size(); i = i + 1)
 				{
 					SectorEntityToken planet = ((SectorEntityToken)planets.get(i));
 					// Check if this planet has the player station
+                    System.out.println("Station: " + playerStation.getFullName());
+                    System.out.println("Planet: " + playerStation.getFullName());
 					if(playerStation.getFullName().contains(planet.getFullName()))
 					{
 						if(this.buildOmnifactory)
@@ -336,7 +341,7 @@ public class SectorManager
                 CampaignFleetAPI dummyBoardingFleet = Global.getSector().createFleet(ExerelinData.getInstance().getPlayerFaction(), "exerelinInSystemStationAttackFleet");
                 List members = dummyBoardingFleet.getFleetData().getMembersListCopy();
                 for(int i = 0; i < members.size(); i++)
-                    Global.getSector().getPlayerFleet().getFleetData().addFleetMember((FleetMemberAPI)members.get(i));
+                    //Global.getSector().getPlayerFleet().getFleetData().addFleetMember((FleetMemberAPI)members.get(i)); //TODO FIX
 
                 // Start of game, player fleet is last to be spawned so set last faction spawn time as this
                 this.lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
@@ -347,8 +352,9 @@ public class SectorManager
 		// Move player to edge of system if start of game
 		if(!playerMovedToSpawnLocation)
 		{
+            sectorAPI.setCurrentLocation(sectorAPI.getRespawnLocation());
             SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(Global.getSector().getPlayerFleet().getContainingLocation());
-			sectorAPI.getPlayerFleet().setLocation(token.getLocation().getX(), token.getLocation().getY());
+            sectorAPI.getPlayerFleet().setLocation(token.getLocation().getX(), token.getLocation().getY());
 			playerMovedToSpawnLocation = true;
 		}
 	}

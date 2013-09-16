@@ -25,6 +25,9 @@ public class TradeGuildTraderSpawnPoint extends BaseSpawnPoint
 		String factions[] = ExerelinData.getInstance().getAvailableFactions(getSector());
 		String factionShips = factions[ExerelinUtils.getRandomInRange(0, factions.length - 1)];
 
+        if(this.getLocation().getOrbitalStations().size() == 0)
+            return null;
+
 		fromStationFactionId = "";
 		this.setStationToTradeWith();
 

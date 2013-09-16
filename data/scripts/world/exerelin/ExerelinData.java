@@ -25,19 +25,19 @@ public final class ExerelinData
 	private static SectorAPI sector = null;
 
 	public boolean confirmedFaction = false;
-	private String playerFaction = "independent";
+	private String playerFaction = "sindrian_diktat";
 
 	//private String[] possibleFactions = new String[] {};
-	private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "independent"};
+	private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "sindrian_diktat"};
 	private String[] availableFactions = null;
 	public boolean onlyVanillaFactions = false;
 	public boolean confirmedAvailableFactions = false;
 
-	public int numSystems = 1;
-	public int numPlanets = 10;
+	public int numSystems = 9;
+	public int maxPlanets = 10;
 	public int maxMoonsPerPlanet = 3;
-	public int numStations = 3;
-	public int numAsteroidBelts = 6;
+	public int maxStations = 6;
+	public int maxAsteroidBelts = 2;
 
 	public Boolean playerOwnedStationFreeTransfer = false;
 	public Boolean confirmedFreeTransfer = false;
@@ -47,7 +47,8 @@ public final class ExerelinData
 	public int numStartFactions = 3;
 	public boolean omniFacPresent = false;
 	public int maxFactionsInExerelinAtOnce = 3;
-	public int maxSystemSize = 15000;
+    public int maxSectorSize = 18000;
+	public int maxSystemSize = 18000;
 
 	private SectorManager sectorManager;
 
@@ -61,7 +62,7 @@ public final class ExerelinData
 		if(instance == null)
 			instance = new ExerelinData();
 
-		updateSectorManager();
+		//updateSectorManager();
 
 		return instance;
 	}

@@ -53,6 +53,9 @@ public class SystemStationManager
 	// Each call will update a station and move the counter to the next station
 	public void updateStations()
 	{
+        if(stationRecords.length == 0)
+            return;
+
 		if(nextStationRecord == stationRecords.length)
 		{
 			setFactionStationCount();

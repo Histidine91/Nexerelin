@@ -241,6 +241,8 @@ public class ExerelinUtils
 
 	public static String getStationOwnerFactionId(SectorEntityToken stationToken)
 	{
+        return stationToken.getFaction().getId();
+        /*
 		String stationName = stationToken.getFullName().toLowerCase();
 
 		if(stationName.contains("omnifactory"))
@@ -261,6 +263,7 @@ public class ExerelinUtils
 
 		System.out.println("Couldn't derive faction for: " + stationToken.getFullName());
 		return "neutral"; // Do nothing
+		*/
 	}
 
 	public static SectorEntityToken getClosestEnemyStation(String targetingFaction, StarSystemAPI starSystemAPI, SectorAPI sector, SectorEntityToken anchor)
@@ -531,7 +534,7 @@ public class ExerelinUtils
 					"amblaster",
 			};
 		}
-		else if (factionId.equalsIgnoreCase("independent"))
+		else if (factionId.equalsIgnoreCase("sindrian_diktat"))
 		{
 			return new String[] {
 					"annihilatorpod",
@@ -1640,6 +1643,9 @@ public class ExerelinUtils
 
 	public static void handlePlayerFleetMining(CampaignFleetAPI playerFleet)
 	{
+        if(playerFleet.isInHyperspace())
+            return;
+
 		StarSystemAPI system = (StarSystemAPI)playerFleet.getContainingLocation();
 
 		Vector2f playerLocation = playerFleet.getLocation();
@@ -1732,6 +1738,9 @@ public class ExerelinUtils
 
     public static void handlePlayerBoarding(CampaignFleetAPI playerFleet)
     {
+        if(playerFleet.isInHyperspace())
+            return;
+
         StarSystemAPI starSystemAPI = (StarSystemAPI)playerFleet.getContainingLocation();
         SystemManager systemManager = SystemManager.getSystemManagerForAPI(starSystemAPI);
 

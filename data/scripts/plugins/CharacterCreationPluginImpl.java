@@ -240,45 +240,45 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		else if (response == LARGE_SYSTEM)
 			ExerelinData.getInstance().maxSystemSize = 40000;
 		else if (response == THREE_PLANETS)
-			ExerelinData.getInstance().numPlanets = 3;
+			ExerelinData.getInstance().maxPlanets = 3;
 		else if (response == SIX_PLANETS)
-			ExerelinData.getInstance().numPlanets = 6;
+			ExerelinData.getInstance().maxPlanets = 6;
 		else if (response == NINE_PLANETS)
-			ExerelinData.getInstance().numPlanets = 9;
+			ExerelinData.getInstance().maxPlanets = 9;
 		else if (response == TWELVE_PLANETS)
-			ExerelinData.getInstance().numPlanets = 12;
+			ExerelinData.getInstance().maxPlanets = 12;
 		else if (response == FIFTEEN_PLANETS)
-			ExerelinData.getInstance().numPlanets = 15;
+			ExerelinData.getInstance().maxPlanets = 15;
 		else if (response == EIGHTEEN_PLANETS)
-			ExerelinData.getInstance().numPlanets = 18;
+			ExerelinData.getInstance().maxPlanets = 18;
 		else if (response == ZERO_ASTEROID_BELTS)
-			ExerelinData.getInstance().numAsteroidBelts = 0;
+			ExerelinData.getInstance().maxAsteroidBelts = 0;
 		else if (response == TWO_ASTEROID_BELTS)
-			ExerelinData.getInstance().numAsteroidBelts = 2;
+			ExerelinData.getInstance().maxAsteroidBelts = 2;
 		else if (response == FOUR_ASTEROID_BELTS)
-			ExerelinData.getInstance().numAsteroidBelts = 4;
+			ExerelinData.getInstance().maxAsteroidBelts = 4;
 		else if (response == SIX_ASTEROID_BELTS)
-			ExerelinData.getInstance().numAsteroidBelts = 6;
+			ExerelinData.getInstance().maxAsteroidBelts = 6;
 		else if (response == EIGHT_ASTEROID_BELTS)
-			ExerelinData.getInstance().numAsteroidBelts = 8;
+			ExerelinData.getInstance().maxAsteroidBelts = 8;
 		else if (response == TEN_ASTEROID_BELTS)
-			ExerelinData.getInstance().numAsteroidBelts = 10;
+			ExerelinData.getInstance().maxAsteroidBelts = 10;
 		else if (response == TWENTYONE_PLANETS)
-			ExerelinData.getInstance().numPlanets = 21;
+			ExerelinData.getInstance().maxStations = 21;
 		else if (response == FIVE_STATIONS)
-			ExerelinData.getInstance().numStations = 5;
+			ExerelinData.getInstance().maxStations = 5;
 		else if (response == TEN_STATIONS)
-			ExerelinData.getInstance().numStations = 10;
+			ExerelinData.getInstance().maxStations = 10;
 		else if (response == FIFTEEN_STATIONS)
-			ExerelinData.getInstance().numStations = 15;
+			ExerelinData.getInstance().maxStations = 15;
 		else if (response == TWENTY_STATIONS)
-			ExerelinData.getInstance().numStations = 20;
+			ExerelinData.getInstance().maxStations = 20;
 		else if (response == TWENTYFIVE_STATIONS)
-			ExerelinData.getInstance().numStations = 25;
+			ExerelinData.getInstance().maxStations = 25;
 		else if (response == THIRTY_STATIONS)
-			ExerelinData.getInstance().numStations = 30;
+			ExerelinData.getInstance().maxStations = 30;
 		else if (response == THIRTYFIVE_STATIONS)
-			ExerelinData.getInstance().numStations = 35;
+			ExerelinData.getInstance().maxStations = 35;
 		else if (response == OMNI_FAC_PRESENT)
 			ExerelinData.getInstance().omniFacPresent = true;
 		else if (response == OMNI_FAC_NOT_PRESENT)
