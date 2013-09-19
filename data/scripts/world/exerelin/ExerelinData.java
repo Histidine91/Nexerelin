@@ -17,15 +17,16 @@ import java.util.Iterator;
 
 public final class ExerelinData
 {
+    private static ExerelinData instance = null;
+    private static SectorAPI sector = null;
+
+    public boolean confirmedFaction = false;
+    private String playerFaction = "sindrian_diktat";
+
+    // Valid ships for special fleets
     private final String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_allocator"};
     private final String[] ValidTroopTransportShips = new String[] { "valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_allocator", "qua_yidato" };
     private final String[] ValidMiningShips = new String[] {"mining_drone", "zorg_worker"};
-
-	private static ExerelinData instance = null;
-	private static SectorAPI sector = null;
-
-	public boolean confirmedFaction = false;
-	private String playerFaction = "sindrian_diktat";
 
 	//private String[] possibleFactions = new String[] {};
 	private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "sindrian_diktat"};
@@ -33,22 +34,25 @@ public final class ExerelinData
 	public boolean onlyVanillaFactions = false;
 	public boolean confirmedAvailableFactions = false;
 
+    // Sector Generation Defaults
 	public int numSystems = 9;
-	public int maxPlanets = 10;
-	public int maxMoonsPerPlanet = 3;
-	public int maxStations = 6;
-	public int maxAsteroidBelts = 2;
+    public int maxMoonsPerPlanet = 3;
 
+	public int maxPlanets = 3;
+	public int maxStations = 5;
+	public int maxAsteroidBelts = 0;
+    public int maxSystemSize = 16000;
+    public int maxSectorSize = 16000;
+
+    // Game defaults
 	public Boolean playerOwnedStationFreeTransfer = false;
 	public Boolean confirmedFreeTransfer = false;
 	public boolean respawnFactions = true;
-	public boolean onlyRespawnStartingFactions = true;
-	public int respawnDelay = 1000000;
+	public boolean onlyRespawnStartingFactions = false;
+	public int respawnDelay = 60;
 	public int numStartFactions = 3;
-	public boolean omniFacPresent = false;
+	public boolean omniFacPresent = true;
 	public int maxFactionsInExerelinAtOnce = 3;
-    public int maxSectorSize = 18000;
-	public int maxSystemSize = 18000;
 
 	private SectorManager sectorManager;
 
@@ -62,7 +66,7 @@ public final class ExerelinData
 		if(instance == null)
 			instance = new ExerelinData();
 
-		//updateSectorManager();
+		updateSectorManager();
 
 		return instance;
 	}

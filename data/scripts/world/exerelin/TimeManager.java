@@ -83,6 +83,9 @@ public class TimeManager implements SpawnPointPlugin
 
 		// Pay wages
 		SectorManager.getCurrentSectorManager().payPlayerWages();
+
+        // Update FactionDirectors
+        FactionDirector.updateAllFactionDirectors();
 	}
 
 	private void runMonthly()

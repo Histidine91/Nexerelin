@@ -14,6 +14,7 @@ public class SectorManager
 	private SystemManager[] systemManagers;
 	private DiplomacyManager diplomacyManager;
 	private SectorAPI sectorAPI;
+    private FactionDirector[] factionDirectors;
 
 	private String[] factionsPossibleInSector;
 	private boolean playerFreeTransfer;
@@ -41,6 +42,14 @@ public class SectorManager
 		diplomacyManager = new DiplomacyManager(sectorAPI);
 	}
 
+    public void setupFactionDirectors()
+    {
+        // Setup a director for each faction
+        factionDirectors = new FactionDirector[factionsPossibleInSector.length];
+        for(int i = 0; i < factionsPossibleInSector.length; i++)
+            factionDirectors[i] = new FactionDirector(factionsPossibleInSector[i], null);
+    }
+
 	public SystemManager getSystemManager(String systemName)
 	{
 		for(int i = 0; i < systemManagers.length; i++)
@@ -56,6 +65,22 @@ public class SectorManager
 	{
 		return getSystemManager(starSystemAPI.getName());
 	}
+
+    public FactionDirector[] getFactionDirectors()
+    {
+        return this.factionDirectors;
+    }
+
+    public FactionDirector getFactionDirector(String factionId)
+    {
+        for(int i = 0; i < factionDirectors.length; i++)
+        {
+            if(factionDirectors[i].getFactionId().equalsIgnoreCase(factionId))
+                return factionDirectors[i];
+        }
+
+        return null;
+    }
 
 	public DiplomacyManager getDiplomacyManager()
 	{
@@ -131,6 +156,7 @@ public class SectorManager
 			{
 				OutSystemStationAttackFleet omsaf = new OutSystemStationAttackFleet(sectorAPI, system, ExerelinData.getInstance().getPlayerFaction(), true);
 				omsaf.spawnFleet(target, token);
+                FactionDirector.getFactionDirectorForFactionId(ExerelinData.getInstance().getPlayerFaction()).setHomeSystem(system);
 			}
 			return;
 		}
@@ -218,6 +244,7 @@ public class SectorManager
 			{
 				OutSystemStationAttackFleet omsaf = new OutSystemStationAttackFleet(sectorAPI, systemAPI, factionId, true);
 				omsaf.spawnFleet(stationTarget, token);
+                FactionDirector.getFactionDirectorForFactionId(factionId).setHomeSystem(systemAPI);
 			}
 
             lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
@@ -285,30 +312,26 @@ public class SectorManager
             if(sectorAPI.getPlayerFleet().isInHyperspace())
                 return;
 
-			StarSystemAPI system = (StarSystemAPI)sectorAPI.getPlayerFleet().getContainingLocation();
-
 			if(SectorManager.getCurrentSectorManager().isFactionInSector(ExerelinData.getInstance().getPlayerFaction()))
 			{
-				java.util.List planets = system.getPlanets();
+                StarSystemAPI system = null;
+                for(int i = 0; i < Global.getSector().getStarSystems().size(); i++)
+                {
+                    system = (StarSystemAPI)Global.getSector().getStarSystems().get(i);
+                    if(SystemManager.getSystemManagerForAPI(system).isFactionInSystem(ExerelinData.getInstance().getPlayerFaction()))
+                        break;
+                }
+
 				SectorEntityToken playerStation = ExerelinUtils.getRandomStationForFaction(ExerelinData.getInstance().getPlayerFaction(), system, sectorAPI);
-				for(int i = 0; i < planets.size(); i = i + 1)
-				{
-					SectorEntityToken planet = ((SectorEntityToken)planets.get(i));
-					// Check if this planet has the player station
-                    System.out.println("Station: " + playerStation.getFullName());
-                    System.out.println("Planet: " + playerStation.getFullName());
-					if(playerStation.getFullName().contains(planet.getFullName()))
-					{
-						if(this.buildOmnifactory)
-							new OutSystemStationConstructionFleet(sectorAPI,  system,  system, "neutral", planet, "omnifac").spawnFleet();
+                SectorEntityToken planet = playerStation.getOrbit().getFocus();
 
-						if(!this.playerFreeTransfer)
-							new OutSystemStationConstructionFleet(sectorAPI,  system,  system, "neutral", planet, "storage").spawnFleet();
+                if(this.buildOmnifactory)
+                    new OutSystemStationConstructionFleet(sectorAPI,  system,  system, "neutral", planet, "omnifac").spawnFleet();
 
-						this.builtOmnifactoryAndStorage = true;
-						break;
-					}
-				}
+                if(!this.playerFreeTransfer)
+                    new OutSystemStationConstructionFleet(sectorAPI,  system,  system, "neutral", planet, "storage").spawnFleet();
+
+                this.builtOmnifactoryAndStorage = true;
 			}
 		}
 
@@ -341,10 +364,11 @@ public class SectorManager
                 CampaignFleetAPI dummyBoardingFleet = Global.getSector().createFleet(ExerelinData.getInstance().getPlayerFaction(), "exerelinInSystemStationAttackFleet");
                 List members = dummyBoardingFleet.getFleetData().getMembersListCopy();
                 for(int i = 0; i < members.size(); i++)
-                    //Global.getSector().getPlayerFleet().getFleetData().addFleetMember((FleetMemberAPI)members.get(i)); //TODO FIX
+                    Global.getSector().getPlayerFleet().getFleetData().addFleetMember((FleetMemberAPI)members.get(i)); //TODO FIX
 
                 // Start of game, player fleet is last to be spawned so set last faction spawn time as this
                 this.lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
+                FactionDirector.getFactionDirectorForFactionId(ExerelinData.getInstance().getPlayerFaction()).setHomeSystem((StarSystemAPI)Global.getSector().getPlayerFleet().getContainingLocation());
             }
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.1f, CargoAPI.CrewXPLevel.GREEN);
 		}

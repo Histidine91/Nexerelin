@@ -37,7 +37,7 @@ public class SystemEventManager
 			return;
 		}
 
-		if(ExerelinUtils.getRandomInRange(0, 30) == 0
+		/*if(ExerelinUtils.getRandomInRange(0, 30) == 0
 				&& !eventTradeGuildConversion.getType().equalsIgnoreCase(lastEventType))
 		{
 			eventTradeGuildConversion.callTradersForLastFaction(starSystemAPI);
@@ -82,7 +82,7 @@ public class SystemEventManager
 			waitTime = betweenEventWait;
 			lastEventType = eventStationSeccession.getType();
 			return;
-		}
+		}*/
 
 		if(ExerelinUtils.getRandomInRange(0,45) == 0
 				&& !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType))

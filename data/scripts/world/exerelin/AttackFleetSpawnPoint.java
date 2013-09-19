@@ -74,10 +74,17 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
             ExerelinUtils.addEliteShipToFleet(fleet);
 
 		int remainingFleetsToSpawn = this.getMaxFleets()*2 - this.getFleets().size();
-		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn, 0.5f, true, ExerelinUtils.getCrewXPLevelForFaction(this.ownerFactionId)))
+		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn, 0.1f, true, ExerelinUtils.getCrewXPLevelForFaction(this.ownerFactionId)))
 		{
+            ExerelinUtils.addFreightersToFleet(fleet);
+            ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.ownerFactionId));
+
 			getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
-			fleet.setPreferredResupplyLocation(getAnchor());
+
+            if(((StarSystemAPI)stationTarget.getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(this.ownerFactionId).getTargetResupplyEntityToken() == null)
+			    fleet.setPreferredResupplyLocation(getAnchor());
+            else
+                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(this.ownerFactionId).getTargetResupplyEntityToken());
 
 			setFleetAssignments(fleet);
 
@@ -97,14 +104,12 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 		fleet.clearAssignments();
 		if(stationTarget == null)
 		{
-			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
 		}
 		else
 		{
-			fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, stationTarget.getStationToken(), 200);
-			fleet.addAssignment(FleetAssignment.RESUPPLY, stationTarget.getStationToken(), 200);
-			fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, stationTarget.getStationToken(), 200);
-			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
+			fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, stationTarget.getStationToken(), 1000);
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
 		}
 	}
 }

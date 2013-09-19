@@ -66,9 +66,17 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 
 		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, 1, 0.8f, false, ExerelinUtils.getCrewXPLevelForFaction(this.fleetOwningFactionId)))
 		{
+            ExerelinUtils.addFreightersToFleet(fleet);
+            ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.2f, 0.8f, ExerelinUtils.getCrewXPLevelForFaction(this.fleetOwningFactionId));
+
 			getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 			theFleet = fleet;
-			fleet.setPreferredResupplyLocation(getAnchor());
+
+            if(((StarSystemAPI)stationTarget.getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(this.fleetOwningFactionId).getTargetResupplyEntityToken() == null)
+                fleet.setPreferredResupplyLocation(getAnchor());
+            else
+                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(this.fleetOwningFactionId).getTargetResupplyEntityToken());
+
             fleet.setName("Boarding Fleet");
 
 			setFleetAssignments(fleet);

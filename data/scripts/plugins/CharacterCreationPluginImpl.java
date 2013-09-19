@@ -23,6 +23,14 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		}
 	}
 
+    private ResponseImpl ONE_SYSTEM = new ResponseImpl("1 System");
+    private ResponseImpl FOUR_SYSTEMS = new ResponseImpl("4 Systems");
+    private ResponseImpl EIGHT_SYSTEMS = new ResponseImpl("8 Systems");
+    private ResponseImpl TWELVE_SYSTEMS = new ResponseImpl("12 Systems");
+    private ResponseImpl SIXTEEN_SYSTEMS = new ResponseImpl("16 Systems");
+    private ResponseImpl TWENTY_SYSTEMS = new ResponseImpl("20 Systems");
+    private ResponseImpl TWENTYFOUR_SYSTEMS = new ResponseImpl("24 Systems");
+
 	private ResponseImpl SMALL_SYSTEM = new ResponseImpl("Small");
 	private ResponseImpl MEDIUM_SYSTEM = new ResponseImpl("Medium");
 	private ResponseImpl LARGE_SYSTEM = new ResponseImpl("Large");
@@ -87,16 +95,17 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 
 	private int stage = 0;
 	private String [] prompts = new String [] {
-		"How big is the Exerelin System?",
-		"System Exerelin has how many planets?",
-		"System Exerelin has how many asteroid belts?",
-		"System Exerelin has how many stations?",
-		"Is the OmniFactory in Exerelin?",
-		"When you arrive at Exerelin, how many other factions are there with you initially?",
-		"Shall factions return to Exerelin?",
-		"How much time passes between factions returning to Exerelin?",
+        "Number of systems?",
+		"Max system size?",
+		"Max planets per system?",
+		"Max asteroid belts per system?",
+		"Max stations per system?",
+		"Is the OmniFactory available?",
+		"When you arrive at Sector Exerelin, how many other factions are there with you initially?",
+		"Shall factions return to Sector Exerelin?",
+		"How much time passes between factions returning to Sector Exerelin?",
 		"What kind of ship do you start with?",
-		"For the assault on Exerelin you have joined...",
+		"For the conquest of Sector Exerelin you have joined...",
 		"... or you joined ..",
 		//"At your faction aligned stations you expect to...",
 	};
@@ -119,13 +128,23 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 	public List getResponses()
 	{
 		List result = new ArrayList();
-		if(stage == 0)
+        if(stage == 0)
+        {
+            result.add(ONE_SYSTEM);
+            result.add(FOUR_SYSTEMS);
+            result.add(EIGHT_SYSTEMS);
+            result.add(TWELVE_SYSTEMS);
+            result.add(SIXTEEN_SYSTEMS);
+            result.add(TWENTY_SYSTEMS);
+            result.add(TWENTYFOUR_SYSTEMS);
+        }
+		else if(stage == 1)
 		{
 			result.add(SMALL_SYSTEM);
 			result.add(MEDIUM_SYSTEM);
 			result.add(LARGE_SYSTEM);
 		}
-		else if (stage == 1)
+		else if (stage == 2)
 		{
 			result.add(THREE_PLANETS);
 			result.add(SIX_PLANETS);
@@ -135,7 +154,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			result.add(EIGHTEEN_PLANETS);
 			result.add(TWENTYONE_PLANETS);
 		}
-		else if (stage == 2)
+		else if (stage == 3)
 		{
 			result.add(ZERO_ASTEROID_BELTS);
 			result.add(TWO_ASTEROID_BELTS);
@@ -144,7 +163,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			result.add(EIGHT_ASTEROID_BELTS);
 			result.add(TEN_ASTEROID_BELTS);
 		}
-		else if (stage == 3)
+		else if (stage == 4)
 		{
 			result.add(FIVE_STATIONS);
 			result.add(TEN_STATIONS);
@@ -154,12 +173,12 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			result.add(THIRTY_STATIONS);
 			result.add(THIRTYFIVE_STATIONS);
 		}
-		else if (stage == 4)
+		else if (stage == 5)
 		{
 			result.add(OMNI_FAC_PRESENT);
 			result.add(OMNI_FAC_NOT_PRESENT);
 		}
-		else if (stage == 5)
+		else if (stage == 6)
 		{
 			result.add(ONE_FACTION);
 			result.add(THREE_FACTION);
@@ -169,14 +188,14 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			result.add(ONE_VANILLA_FACTION);
 			result.add(ALL_VANILLA_FACTION);
 		}
-		else if (stage == 6)
+		else if (stage == 7)
 		{
 			result.add(RESPAWN_YES);
 			result.add(RESPAWN_YES_COND);
 			result.add(RESPAWN_YES_COND_MAX);
 			result.add(RESPAWN_NO);
 		}
-		else if (stage == 7)
+		else if (stage == 8)
 		{
 			//result.add(RESPAWN_ZERO);
 			result.add(RESPAWN_TWO);
@@ -184,13 +203,13 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			result.add(RESPAWN_EIGHT);
 			result.add(RESPAWN_SIXTEEN);
 		}
-		else if (stage == 8)
+		else if (stage == 9)
 		{
 			result.add(START_SHIP_FACTION);
 			result.add(START_SHIP_TOREUPPLENTY1);
 			result.add(START_SHIP_TOREUPPLENTY2);
 		}
-		else if (stage == 9)
+		else if (stage == 10)
 		{
 			String[] possibleFactions = ExerelinData.getInstance().getPossibleFactions();
 			if(possibleFactions.length > 6)
@@ -209,7 +228,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 				}
 			}
 		}
-		else if (stage == 10)
+		else if (stage == 11)
 		{
 			String[] possibleFactions = ExerelinData.getInstance().getPossibleFactions();
 			for(int i = possibleFactions.length/2; i < possibleFactions.length; i = i + 1)
@@ -218,7 +237,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			}
 			result.add(PREV);
 		}
-		else if (stage == 11)
+		else if (stage == 12)
 		{
 			stage++; // SKIP THIS STAGE
 			//result.add(FREE_GOODS);
@@ -233,10 +252,24 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 	public void submit(Response response, CharacterCreationData data)
 	{
 		stage++;
-		if (response == SMALL_SYSTEM)
-			ExerelinData.getInstance().maxSystemSize = 15000;
+        if (response == ONE_SYSTEM)
+        ExerelinData.getInstance().numSystems = 1;
+        else if (response == FOUR_SYSTEMS)
+            ExerelinData.getInstance().numSystems = 4;
+        else if (response == EIGHT_SYSTEMS)
+            ExerelinData.getInstance().numSystems = 8;
+        else if (response == TWELVE_SYSTEMS)
+            ExerelinData.getInstance().numSystems = 12;
+        else if (response == SIXTEEN_SYSTEMS)
+            ExerelinData.getInstance().numSystems = 16;
+        else if (response == TWENTY_SYSTEMS)
+            ExerelinData.getInstance().numSystems = 20;
+        else if (response == TWENTYFOUR_SYSTEMS)
+            ExerelinData.getInstance().numSystems = 24;
+		else if (response == SMALL_SYSTEM)
+			ExerelinData.getInstance().maxSystemSize = 16000;
 		else if (response == MEDIUM_SYSTEM)
-			ExerelinData.getInstance().maxSystemSize = 30000;
+			ExerelinData.getInstance().maxSystemSize = 32000;
 		else if (response == LARGE_SYSTEM)
 			ExerelinData.getInstance().maxSystemSize = 40000;
 		else if (response == THREE_PLANETS)
@@ -432,7 +465,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 					break;
 				}
 			}
-			if(stage == 10)
+			if(stage == 11)
 				stage = stage + 1; // Skip next faction selection
 		}
 	}
@@ -459,7 +492,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 				data.addStartingShipChoice("shade_Assault");
 				data.addStartingShipChoice("tempest_Attack");
 			}
-			else if (factionId.equalsIgnoreCase("independent"))
+			else if (factionId.equalsIgnoreCase("sindrian_diktat"))
 			{
 				data.addStartingShipChoice("brawler_Assault");
 				data.addStartingShipChoice("vigilance_Standard");
@@ -646,9 +679,9 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			else
 			{
 				System.out.println("EXERELIN ERROR: Starting ship initialistion failure");
-				data.addStartingShipChoice("shuttle_Attack");
-			}
+            }
 		}
+        data.addStartingShipChoice("shuttle_Attack");
 	}
 
 	public void startingShipPicked(String variantId, CharacterCreationData data)

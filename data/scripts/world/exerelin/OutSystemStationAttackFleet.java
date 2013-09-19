@@ -67,11 +67,11 @@ public class OutSystemStationAttackFleet
 		setFleetAssignments(fleet);
 
 		if(theFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-			Global.getSector().addMessage(ExerelinData.getInstance().getPlayerFaction() + " command fleet incoming!", Color.magenta);
+			Global.getSector().addMessage(((StarSystemAPI)theLocation).getName() + ": " + theFaction + " command fleet incoming!", Color.magenta);
 		else
-			Global.getSector().addMessage(theFaction + " command fleet incoming!");
+			Global.getSector().addMessage(((StarSystemAPI)theLocation).getName() + ": " + theFaction + " command fleet incoming!");
 
-		System.out.println(theFaction + " command fleet created");
+		System.out.println(((StarSystemAPI)theLocation).getName() + ": " + theFaction + " command fleet incoming!");
 
 		return fleet;
 	}

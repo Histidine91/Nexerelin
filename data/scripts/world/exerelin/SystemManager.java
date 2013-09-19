@@ -83,7 +83,6 @@ public class SystemManager
         systemStationManager.setStationOwner(station, newOwnerFactionId, displayMessage, updateRelationship);
     }
 
-
 	public static SystemManager getSystemManagerForSystem(String systemName)
 	{
 		return SectorManager.getCurrentSectorManager().getSystemManager(systemName);

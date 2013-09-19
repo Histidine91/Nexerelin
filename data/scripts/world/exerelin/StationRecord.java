@@ -33,7 +33,6 @@ public class StationRecord
 	private PatrolFleetSpawnPoint patrolSpawn;
 	private InSystemStationAttackShipSpawnPoint stationAttackFleetSpawn;
 	private InSystemSupplyConvoySpawnPoint inSystemSupplyConvoySpawn;
-	private OutSystemSupplyConvoySpawnPoint outSystemSupplyConvoySpawn;
 	private AsteroidMiningFleetSpawnPoint asteroidMiningFleetSpawnPoint;
 	private GasMiningFleetSpawnPoint gasMiningFleetSpawnPoint;
 
@@ -50,7 +49,6 @@ public class StationRecord
 		patrolSpawn = new PatrolFleetSpawnPoint(sector, system, 1000000, 2, token);
 		stationAttackFleetSpawn = new InSystemStationAttackShipSpawnPoint(sector, system, 1000000, 1, token);
 		inSystemSupplyConvoySpawn = new InSystemSupplyConvoySpawnPoint(sector, system, 1000000, 1, token);
-		outSystemSupplyConvoySpawn = new OutSystemSupplyConvoySpawnPoint(sector, system, 1000000, 1, token);
 		asteroidMiningFleetSpawnPoint = new AsteroidMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
 		gasMiningFleetSpawnPoint = new GasMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
 
@@ -98,7 +96,6 @@ public class StationRecord
 		patrolSpawn.setFaction(newOwnerFactionId);
 		stationAttackFleetSpawn.setFaction(newOwnerFactionId);
 		inSystemSupplyConvoySpawn.setFaction(newOwnerFactionId);
-		outSystemSupplyConvoySpawn.setFaction(newOwnerFactionId);
 		asteroidMiningFleetSpawnPoint.setFaction(newOwnerFactionId);
 		gasMiningFleetSpawnPoint.setFaction(newOwnerFactionId);
 
@@ -112,6 +109,9 @@ public class StationRecord
 		// Update relationship
 		if(!originalOwnerId.equalsIgnoreCase("") && updateRelationship)
 			ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(originalOwnerId, newOwnerFactionId, "LostStation");
+
+        // Update FactionDirectors
+        FactionDirector.updateAllFactionDirectors();
 	}
 
 	public void setEfficiency(float value)
@@ -154,7 +154,6 @@ public class StationRecord
         removeDeadOrRebelFleets(stationAttackFleetSpawn);
         removeDeadOrRebelFleets(defenseSpawn);
         removeDeadOrRebelFleets(patrolSpawn);
-        removeDeadOrRebelFleets(outSystemSupplyConvoySpawn);
         removeDeadOrRebelFleets(inSystemSupplyConvoySpawn);
         removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint);
         removeDeadOrRebelFleets(gasMiningFleetSpawnPoint);
@@ -169,7 +168,6 @@ public class StationRecord
 
 		setFleetTargets();
 
-		outSystemSupplyConvoySpawn.spawnFleet();
 		inSystemSupplyConvoySpawn.spawnFleet();
 
 		if(stationCargo.getSupplies() < 6400)
@@ -243,38 +241,54 @@ public class StationRecord
 		Float bestDistance = 99999999999f;
 		StationRecord bestTarget = null;
 
-		for(int i = 0; i < systemStationManager.getStationRecords().length; i++)
-		{
-			StationRecord possibleTarget = systemStationManager.getStationRecords()[i];
+        SystemStationManager targetSystemStationManager;
+        if(!ExerelinUtils.doesSystemHaveEntityForFaction(this.system, this.owningFaction.getFactionId(), Float.MIN_VALUE, 0.01f))
+        {
+            FactionDirector factionDirector = FactionDirector.getFactionDirectorForFactionId(this.owningFaction.getFactionId());
+            if(factionDirector.getTargetSystem() != null)
+            {
+                targetSystemStationManager = SystemManager.getSystemManagerForAPI(factionDirector.getTargetSystem()).getSystemStationManager();
+                bestTarget = targetSystemStationManager.getStationRecordForToken(factionDirector.getTargetSectorEntityToken());
+                //System.out.println(owningFaction.getFactionId() + ", sending fleets to " + factionDirector.getTargetSystem().getName());
+            }
+        }
+        else
+        {
+            targetSystemStationManager = this.systemStationManager;
+            for(int i = 0; i < targetSystemStationManager.getStationRecords().length; i++)
+            {
+                StationRecord possibleTarget = targetSystemStationManager.getStationRecords()[i];
 
-			if(possibleTarget.getStationToken().getFullName().equalsIgnoreCase(this.getStationToken().getFullName()))
-				continue;
+                if(possibleTarget.getStationToken().getFullName().equalsIgnoreCase(this.getStationToken().getFullName()))
+                    continue;
 
-			if(systemStationManager.getStationRecords()[i].getOwner() == null)
-			{
-				Float distance = MathUtils.getDistanceSquared(possibleTarget.getStationToken(), this.getStationToken());
-				if(distance < bestDistance)
-				{
-					bestDistance = distance;
-					bestTarget = possibleTarget;
-				}
-			}
-			else
-			{
-				for(int j = 0; j < enemies.length; j++)
-				{
-					if(systemStationManager.getStationRecords()[i].getOwner().getFactionId().equalsIgnoreCase(enemies[j]))
-					{
-						Float distance = MathUtils.getDistanceSquared(possibleTarget.getStationToken(), this.getStationToken());
-						if(distance < bestDistance)
-						{
-							bestDistance = distance;
-							bestTarget = possibleTarget;
-						}
-					}
-				}
-			}
-		}
+                if(targetSystemStationManager.getStationRecords()[i].getOwner() == null)
+                {
+                    Float distance = MathUtils.getDistanceSquared(possibleTarget.getStationToken(), this.getStationToken());
+                    if(distance < bestDistance)
+                    {
+                        bestDistance = distance;
+                        bestTarget = possibleTarget;
+                    }
+                }
+                else
+                {
+                    for(int j = 0; j < enemies.length; j++)
+                    {
+                        if(targetSystemStationManager.getStationRecords()[i].getOwner().getFactionId().equalsIgnoreCase(enemies[j]))
+                        {
+                            Float distance = MathUtils.getDistanceSquared(possibleTarget.getStationToken(), this.getStationToken());
+                            if(distance < bestDistance)
+                            {
+                                bestDistance = distance;
+                                bestTarget = possibleTarget;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 		if(targetStationRecord != null)
 			targetStationRecord.stopTargeting();
 		if(bestTarget != null && bestTarget.getOwner() != null)
@@ -311,6 +325,17 @@ public class StationRecord
 
 		//if(assistStation != null)
 		//	System.out.println(this.getStationToken().getFullName() + " is assisting" + assistStation.getStationToken().getFullName() + " which is targeted " + assistStation.getNumAttacking());
+
+        if(assistStation == null)
+        {
+            StarSystemAPI starSystemAPI = FactionDirector.getFactionDirectorForFactionId(this.owningFaction.getFactionId()).getSupportSystem();
+            if(starSystemAPI != null)
+            {
+                systemStationManager = SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager();
+                SectorEntityToken assistToken = FactionDirector.getFactionDirectorForFactionId(this.owningFaction.getFactionId()).getSupportSectorEntityToken();
+                assistStation = systemStationManager.getStationRecordForToken(assistToken);
+            }
+        }
 
 		this.assistStationRecord = assistStation;
 	}

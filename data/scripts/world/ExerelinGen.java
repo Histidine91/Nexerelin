@@ -3,6 +3,7 @@ package data.scripts.world;
 import java.awt.Color;
 import java.util.List;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import data.scripts.world.exerelin.*;
@@ -15,7 +16,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
         System.out.println("Starting generation...");
 
 		// build systems
-		for(int i = 0; i < ExerelinData.getInstance().numSystems - 1; i ++)
+		for(int i = 0; i < ExerelinData.getInstance().numSystems; i ++)
 			buildSystem(sector);
 
         new Exerelin().generate(sector);
@@ -25,7 +26,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
 
 	public void buildSystem(SectorAPI sector)
 	{
-		String[] possibleSystemNames = new String[]{"Askar", "Garil", "Exerelin", "Yaerol", "Plagris", "Marot", "Caxort", "Laret", "Narbil"};
+		String[] possibleSystemNames = new String[]{"Askar", "Garil", "Exerelin", "Yaerol", "Plagris", "Marot", "Caxort", "Laret", "Narbil", "Karit", "Raestal", "Bemortis"};
 
         // Create star system from next available name
         StarSystemAPI system = sector.createStarSystem(possibleSystemNames[sector.getStarSystems().size()]);
@@ -34,9 +35,9 @@ public class ExerelinGen implements SectorGeneratorPlugin
         int maxSectorSize = ExerelinData.getInstance().maxSectorSize;
         system.getLocation().set(ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 
-        //sector.setCurrentLocation(system);
-        //sector.setRespawnLocation(system);
-        //sector.getRespawnCoordinates().set(-2500, -3500);
+        sector.setCurrentLocation(system);
+        sector.setRespawnLocation(system);
+        sector.getRespawnCoordinates().set(-2500, -3500);
 
         // Set star/light colour/background
         SectorEntityToken star;
@@ -44,13 +45,19 @@ public class ExerelinGen implements SectorGeneratorPlugin
         {
             star = system.initStar("star_yellow", Color.yellow, 500f);
             //system.setLightColor(new Color(255, 180, 180));
-            system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
+            if(ExerelinUtils.getRandomInRange(0,1) == 0)
+                system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
+            else
+                system.setBackgroundTextureFilename("graphics/backgrounds/background2.jpg");
         }
         else
         {
             star = system.initStar("star_red", Color.red, 900f);
             system.setLightColor(new Color(255, 180, 180));
-            system.setBackgroundTextureFilename("graphics/backgrounds/background3.jpg");
+            if(ExerelinUtils.getRandomInRange(0,1) == 0)
+                system.setBackgroundTextureFilename("graphics/backgrounds/background3.jpg");
+            else
+                system.setBackgroundTextureFilename("graphics/backgrounds/background1.jpg");
         }
 
 
@@ -60,7 +67,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
 		String[] possibleMoonTypes = new String[]	{"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice"};
 
 		// Build base planets
-		int numBasePlanets = ExerelinUtils.getRandomInRange(1, ExerelinData.getInstance().maxPlanets);
+		int numBasePlanets = ExerelinUtils.getRandomInRange(3, ExerelinData.getInstance().maxPlanets);
 		int distanceStepping = (ExerelinData.getInstance().maxSystemSize-4000)/numBasePlanets;
 		Boolean gasPlanetCreated = false;
 		for(int i = 0; i < numBasePlanets; i = i + 1)
@@ -85,6 +92,9 @@ public class ExerelinGen implements SectorGeneratorPlugin
 				}
 			}
 
+            // Assign system name to planet as a prefix
+            name = system.getStar().getName() + "-" + name;
+
 			int radius;
 			int angle = ExerelinUtils.getRandomInRange(1, 360);
 			int distance = 3000 + (distanceStepping * (i  + 1)) + ExerelinUtils.getRandomInRange((distanceStepping/3)*-1, distanceStepping/3);
@@ -108,10 +118,10 @@ public class ExerelinGen implements SectorGeneratorPlugin
 
 			SectorEntityToken newPlanet = system.addPlanet(star, name, planetType, angle, radius, distance, orbitDays);
 
-			// Chance to build moons around planet
+			// 50% Chance to build moons around planet
 			if(ExerelinUtils.getRandomInRange(0, 1) == 1)
 			{
-				// Build 0 - 2 moons
+				// Build moons
 				for(int j = 0; j < ExerelinUtils.getRandomInRange(0, ExerelinData.getInstance().maxMoonsPerPlanet - 1); j = j + 1)
 				{
 					String ext = "";
@@ -130,6 +140,32 @@ public class ExerelinGen implements SectorGeneratorPlugin
 					system.addPlanet(newPlanet, name + " " + ext, moonType, angle, radius, distance, orbitDays);
 				}
 			}
+
+            // 20% chance of rings around planet / 33% chance if a gas giant
+            if(ExerelinUtils.getRandomInRange(0,4) == 0 || (name.contains("Gaseous") && ExerelinUtils.getRandomInRange(0,2) == 0))
+            {
+                int ringType = ExerelinUtils.getRandomInRange(0,2);
+
+                if(ringType == 0)
+                {
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*2, 40f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*2, 60f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*2, 80f);
+                }
+                else if (ringType == 1)
+                {
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, radius*3, 70f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, radius*3, 90f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, radius*3, 110f);
+                }
+                else
+                {
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, radius*4, 50f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, radius*4, 70f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, radius*4, 80f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 1, Color.white, 256f, radius*4, 90f);
+                }
+            }
 		}
 
 
@@ -188,7 +224,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
 		String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest", "Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
 
 		// Build stations
-		int numStation = ExerelinUtils.getRandomInRange(1, ExerelinData.getInstance().maxStations);
+		int numStation = ExerelinUtils.getRandomInRange(1, Math.min(ExerelinData.getInstance().maxStations, numBasePlanets*2));
 		int currentPlanet = 0;
 		int k = 0;
 		while(k < numStation)
@@ -232,6 +268,16 @@ public class ExerelinGen implements SectorGeneratorPlugin
 			SectorEntityToken newStation = system.addOrbitalStation(planet, angle, orbitRadius, orbitDays, planet.getFullName() + " " + name, "abandoned");
 			k = k + 1;
 		}
+
+
+
+        JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("Jump Point Alpha");
+        OrbitAPI orbit = Global.getFactory().createCircularOrbit(system.createToken(0,0), 0f, 1200, 120);
+        jumpPoint.setOrbit(orbit);
+        //jumpPoint.setRelatedPlanet(c2);
+
+        jumpPoint.setStandardWormholeToHyperspaceVisual();
+        system.addEntity(jumpPoint);
 
         system.autogenerateHyperspaceJumpPoints(true, true);
 	}

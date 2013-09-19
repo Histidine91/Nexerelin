@@ -2,9 +2,9 @@
 "id":"exerelin", # internal id
 "name":"Exerelin", # displayed to the player
 "author":"Zaphide",
-"version":"0.59",
+"version":"0.6",
 "description":"Choose your banner and fight for supremacy of system Exerelin!",
-"gameVersion":"0.54.1",
+"gameVersion":"0.6a",
 "totalConversion":"false",
 "jars":["jars/Omnifactory.jar","jars/ExerelinHacks.jar",],
 
@@ -13,6 +13,7 @@
 	"data/scripts/plugins/CharacterCreationPluginImpl.java",
 	"data/scripts/world/SectorGen.java",
 	"data/world/generators.csv",
+	"data/config/settings.json",
 
     "data/world/factions/neutral.faction",
     "data/world/factions/abandoned.faction",

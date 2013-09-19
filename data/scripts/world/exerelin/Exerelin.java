@@ -1,11 +1,6 @@
 package data.scripts.world.exerelin;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import data.scripts.world.BaseSpawnPoint;
-
-import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class Exerelin //implements SectorGeneratorPlugin
@@ -56,6 +51,8 @@ public class Exerelin //implements SectorGeneratorPlugin
         // Add to cache
         ExerelinData.getInstance().setSectorManager(sectorManager);
 
+        sectorManager.setupFactionDirectors();
+
         // Build and add a time mangager
         TimeManager timeManger = new TimeManager();
         timeManger.sectorManagerRef = sectorManager;
@@ -72,9 +69,6 @@ public class Exerelin //implements SectorGeneratorPlugin
 
 		// Add trader spawns
 		this.initTraderSpawns(sector);
-
-        for(int i = 0; i < sector.getStarSystems().size(); i++)
-            System.out.println(((StarSystemAPI) sector.getStarSystems().get(i)).getName());
 
         System.out.println("Finished generation and setup...");
 	}
@@ -111,6 +105,7 @@ public class Exerelin //implements SectorGeneratorPlugin
 			int systemChosen = ExerelinUtils.getRandomInRange(0, SectorManager.getCurrentSectorManager().getSystemManagers().length - 1);
 			StarSystemAPI systemAPI = SectorManager.getCurrentSectorManager().getSystemManagers()[systemChosen].getStarSystemAPI();
 			OutSystemStationAttackFleet offMapSpawn = new OutSystemStationAttackFleet(sector, systemAPI, factionId, false);
+            FactionDirector.getFactionDirectorForFactionId(factionId).setHomeSystem(systemAPI);
 			offMapSpawn.spawnFleet(null, null);
 		}
 	}
@@ -121,13 +116,15 @@ public class Exerelin //implements SectorGeneratorPlugin
 		for(int i = 0; i < factions.length; i = i + 1)
 		{
 			sector.getFaction(factions[i]).setRelationship("abandoned", -1);
+            sector.getFaction(factions[i]).setRelationship("rebel", -1);
+            sector.getFaction(factions[i]).setRelationship("independent", 0);
 		}
 
-		// Set the tradeguild and rebels to hate each other
+		// Set indpendant and rebels to hate each other
 		FactionAPI rebel = sector.getFaction("rebel");
-		FactionAPI tradeGuild = sector.getFaction("tradeguild");
-		rebel.setRelationship(tradeGuild.getId(), -1);
-		tradeGuild.setRelationship(rebel.getId(), -1);
+		FactionAPI independent = sector.getFaction("independent");
+		rebel.setRelationship(independent.getId(), -1);
+        independent.setRelationship(rebel.getId(), -1);
 	}
 
 	private void initTraderSpawns(SectorAPI sector)
@@ -137,7 +134,7 @@ public class Exerelin //implements SectorGeneratorPlugin
 			StarSystemAPI systemAPI = SectorManager.getCurrentSectorManager().getSystemManagers()[j].getStarSystemAPI();
 			for(int i = 0; i < Math.max(1, systemAPI.getOrbitalStations().size()/5); i++)
 			{
-				TradeGuildTraderSpawnPoint tgtsp = new TradeGuildTraderSpawnPoint(sector,  systemAPI,  ExerelinUtils.getRandomInRange(8,12), 1, systemAPI.createToken(0,0));
+				IndependantTraderSpawnPoint tgtsp = new IndependantTraderSpawnPoint(sector,  systemAPI,  ExerelinUtils.getRandomInRange(8,12), 1, systemAPI.createToken(0,0));
 				systemAPI.addSpawnPoint(tgtsp);
 			}
 		}

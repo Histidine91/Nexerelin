@@ -68,7 +68,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "buffalo_Standard":[1, 2],
+                "buffalo_Standard":[1, 3],
             },
         },
         "exerelinInSystemStationAttackFleet":{

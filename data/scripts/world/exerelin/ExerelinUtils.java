@@ -11,6 +11,7 @@ import java.awt.*;
 import java.util.Random;
 import java.util.List;
 import java.util.Iterator;
+import java.util.ArrayList;
 
 public class ExerelinUtils
 {
@@ -204,7 +205,7 @@ public class ExerelinUtils
 
 	private static int getFleetCost(CampaignFleetAPI fleet)
 	{
-		float fleetCostMult = 0.7f;
+		float fleetCostMult = 1f;
 
         if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
             fleetCostMult = ExerelinPlayerFunctions.getPlayerFleetCostMultiplier();
@@ -410,14 +411,13 @@ public class ExerelinUtils
 
 	public static void addWeaponsToCargo(CargoAPI cargo, int count, String factionId, SectorAPI sector)
 	{
-		String[] factionWeapons = ExerelinUtils.getFactionWeapons(factionId);
+        String[] factionWeapons = ExerelinUtils.getFactionWeaponListFromGenericFleet(factionId);
 		int maxQuantityInStack = 4;
 
 		List weapons = cargo.getWeapons();
 		if(weapons.size() > 30)
-		{
 			removeRandomWeaponStacksFromCargo(cargo, weapons.size() - 25);
-		}
+
 
 		if(factionWeapons.length > 0)
 		{
@@ -443,950 +443,35 @@ public class ExerelinUtils
 		}
 	}
 
-	private static String[] getFactionWeapons(String factionId)
-	{
-		if(factionId.equalsIgnoreCase("hegemony"))
-		{
-			return new String[] {
-					"annihilatorpod",
-					"harpoon",
-					"heavymg",
-					"arbalest",
-					"heavyac",
-					"dualflak",
-					"lightdualac",
-					"lightag",
-					"lightneedler",
-					"heavymauler",
-					"hellbore",
-					"cyclone",
-					"pilum",
-					"hveldriver",
-					"reaper",
-					"shredder",
-					"flak",
-					"chaingun",
-					"heavyneedler",
-					"gauss",
-					"hephag",
-					"mark9",
-					"mjolnir",
-					"multineedler",
+    private static String[] getFactionWeaponListFromGenericFleet(String factionId)
+    {
+        ArrayList weaponList;
+        CampaignFleetAPI dummyFleet = Global.getSector().createFleet(factionId, "exerelinGenericFleet");
+        List members = dummyFleet.getFleetData().getMembersListCopy();
 
-			};
-		}
-		else if (factionId.equalsIgnoreCase("pirates"))
-		{
-			return new String[] {
-					"annihilatorpod",
-					"harpoon",
-					"heavymg",
-					"arbalest",
-					"heavyac",
-					"dualflak",
-					"lightdualac",
-					"lightag",
-					"lightneedler",
-					"heavymauler",
-					"hellbore",
-					"cyclone",
-					"pilum",
-					"hveldriver",
-					"reaper",
-					"pulselaser",
-					"shredder",
-					"flak",
-					"chaingun",
-					"heavyneedler",
-					"gauss",
-					"hephag",
-					"mark9",
-					"mjolnir",
-					"multineedler",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("tritachyon"))
-		{
-			return new String[] {
-					"atropos",
-					"typhoon",
-					"ioncannon",
-					"sabot",
-					"guardian",
-					"plasma",
-					"sabotpod",
-					"pilum",
-					"autopulse",
-					"plasma",
-					"hil",
-					"hurricane",
-					"taclaser",
-					"lrpdlaser",
-					"pdlaser",
-					"pdburst",
-					"irpulse",
-					"pulselaser",
-					"heavyburst",
-					"gravitonbeam",
-					"tachyonlance",
-					"heavyblaster",
-					"phasebeam",
-					"amblaster",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("sindrian_diktat"))
-		{
-			return new String[] {
-					"annihilatorpod",
-					"harpoon",
-					"heavymg",
-					"arbalest",
-					"heavyac",
-					"dualflak",
-					"heavyblaster",
-					"lightdualac",
-					"lightag",
-					"lightneedler",
-					"heavymauler",
-					"gravitonbeam",
-					"hellbore",
-					"cyclone",
-					"pilum",
-					"taclaser",
-					"pulselaser",
-					"heavyburst",
-					"hveldriver",
-					"reaper",
-					"atropos",
-					"typhoon",
-					"ioncannon",
-					"heavyneedler",
-					"sabot",
-					"dualflak",
-					"guardian",
-					"plasma",
-					"chaingun",
-					"sabotpod",
-					"pilum",
-					"autopulse",
-					"plasma",
-					"hil",
-					"hurricane",
-					"mjolnir",
-					"taclaser",
-					"lrpdlaser",
-					"pdlaser",
-					"pdburst",
-					"irpulse",
-					"lrpdlaser",
-					"pdlaser",
-					"pdburst",
-					"lrpdlaser",
-					"gravitonbeam",
-					"phasebeam",
-					"amblaster",
-					"heavyblaster",
-					"hveldriver",
-					"shredder",
-					"flak",
-					"chaingun",
-					"gauss",
-					"hephag",
-					"mark9",
-					"multineedler",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("antediluvian"))
-		{
-			return new String[] {
-					"pandora",
-					"advancedsonicturret",
-					"sonicturret",
-					"prometheus",
-					"deucalion",
-					"advancedturret",
-					"dualturret",
-					"extendedturret",
-					"superiorityturret",
-					"tripleturret",
-					"pressureturret",
-					"reflectorbeam",
-					"modifiedreflectorbeam",
-					"batteryturret",
-					"nozzle",
-					"pressureturret",
-					"dualturret",
-					"advancedturret",
-					"tripleturret",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("blackrock"))
-		{
-			return new String[] {
-					"brdy_ac",
-					"brdy_ag",
-					"achilles_mrm",
-					"brvulcan",
-					"brburst",
-					"brvulcan",
-					"brdy_fury",
-					"brdy_quill",
-					"brdy_solenoid",
-					"brdy_plasma",
-					"achillespod",
-					"brdy_squallgun",
-					"brdy_volley",
-					"brdy_solenoidlarge",
-					"brdy_dualac",
-					"brdy_squallbattery",
-					"brdy_2xfury",
-					"br_pde",
-					"br_fpde",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("gedune"))
-		{
-			return new String[] {
-					"gedune_plasma",
-					"gedune_repeater",
-					"gedune_flarepd",
-					"annihilator",
-					"lightag",
-					"taclaser",
-					"irpulse",
-					"gedune_maelstrom",
-					"gedune_scythe",
-					"phasebeam",
-					"hurricane",
-					"gedune_flarepd",
-                    "gedune_phase_repeater",
-                    "gedune_reithe",
-                    "gedune_kdart"
-			};
-		}
-		else if (factionId.equalsIgnoreCase("junkpirate"))
-		{
-			return new String[] {
-					"amblaster",
-					"pdburst",
-					"pdlaser",
-					"junk_pirates_cutlass",
-					"junk_pirates_lexcimer",
-					"heavyburst",
-					"chaingun",
-					"gravitonbeam",
-					"junk_pirates_scatterpd",
-					"pulselaser",
-					"ioncannon",
-					"taclaser",
-					"lightmg",
-					"lightac",
-					"lightag",
-					"phasecl",
-					"pilum",
-					"sabot",
-					"harpoon",
-					"heatseeker",
-					"annihilator",
-					"swarmer",
-					"atropos",
-					"reaper",
-					"sabotpod",
-					"harpoonpod",
-					"railgun",
-					"miningblaster",
-					"hil",
-					"junk_pirates_grapeshot",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("lotusconglomerate"))
-		{
-			return new String[] {
-					"annihilator",
-					"annihilatorpod",
-					"arbalest",
-					"atropos",
-					"atropos_single",
-					"bomb",
-					"clusterbomb",
-					"chaingun",
-					"cyclone",
-					"dualflak",
-					"flak",
-					"fragbomb",
-					"gauss",
-					"harpoon",
-					"harpoon_single",
-					"harpoonpod",
-					"hdstinger",
-					"heatseeker",
-					"heavyac",
-					"heavymauler",
-					"heavymg",
-					"heavyneedler",
-					"hellbore",
-					"hephag",
-					"hurricane",
-					"hveldriver",
-					"lightac",
-					"lightag",
-					"lightdualac",
-					"lightmg",
-					"lightmortar",
-					"lightneedler",
-					"mjolnir",
-					"multineedler",
-					"phasecl",
-					"pilum",
-					"railgun",
-					"reaper",
-					"revolver",
-					"sabot",
-					"sabot_single",
-					"sabotpod",
-					"salamanderpod",
-					"shredder",
-					"stinger_single",
-					"stinger",
-					"stingerlauncher",
-					"swarmer",
-					"typhoon",
-					"vulcan",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("council_loyalists"))
-		{
-			return new String[] {
-					"mrd_council_spear",
-					"mrd_gladiator_beam",
-					"mrd_heavy_assault_gun",
-					"mrd_heavy_autoblaster",
-					"mrd_heavy_beam",
-					"mrd_light_autoblaster",
-					"mrd_light_blaster",
-					"mrd_pd_laser_mk_ii",
-					"mrd_pdminigun",
-					"mrd_quad_autoblaster",
-					"mrd_turbo_blaster",
-					"mrd_heavy_assault_gun",
-					"amblaster",
-					"annihilator",
-					"annihilatorpod",
-					"atropos",
-					"atropos_single",
-					"chaingun",
-					"cyclone",
-					"dualflak",
-					"flak",
-					"gauss",
-					"harpoon",
-					"harpoon_single",
-					"harpoonpod",
-					"heavyblaster",
-					"heatseeker",
-					"heavyburst",
-					"heavymauler",
-					"heavymg",
-					"heavyneedler",
-					"hellbore",
-					"hephag",
-					"hurricane",
-					"ioncannon",
-					"lightag",
-					"lightmg",
-					"lightneedler",
-					"mjolnir",
-					"mark9",
-					"pdburst",
-					"pdlaser",
-					"pilum",
-					"reaper",
-					"sabot",
-					"sabot_single",
-					"sabotpod",
-					"salamanderpod",
-					"swarmer",
-					"mrd_council_spear",
-					"mrd_gladiator_beam",
-					"mrd_heavy_assault_gun",
-					"mrd_heavy_autoblaster",
-					"mrd_heavy_beam",
-					"mrd_light_autoblaster",
-					"mrd_light_blaster",
-					"mrd_pd_laser_mk_ii",
-					"mrd_pdminigun",
-					"mrd_quad_autoblaster",
-					"mrd_turbo_blaster",
-					"mrd_heavy_assault_gun",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("neutrino"))
-		{
-			return new String[] {
-					"autopulse",
-					"atropos",
-					"atropos_single",
-					"harpoon",
-					"harpoon_single",
-					"harpoonpod",
-					"hurricane",
-					"mjolnir",
-					"neutrino_photontorpedo",
-					"neutrino_lightphoton",
-					"neutrino_antiproton",
-					"neutrino_tractorbeam",
-					"neutrino_pulsebeam",
-					"neutrino_javelin",
-					"neutrino_particlecannonarray",
-					"neutrino_darkmatterbeamcannon",
-					"neutrino_advancedtorpedo",
-					"neutrino_advancedtorpedosingle",
-					"neutrino_XLadvancedtorpedo",
-					"neutrino_pulsar",
-					"neutrino_dualpulsar",
-					"neutrino_heavypulsar",
-					"neutrino_dualpulsebeam",
-					"neutrino_disruptor",
-					"neutrino_derp_launcher",
-					"neutrino_neutronpulse",
-					"neutrino_neutronpulsebattery",
-					"neutrino_neutronpulseheavy",
-					"neutrino_neutronlance",
-					"neutrino_unstable_photon",
-					"neutrino_photongun",
-					"neutrino_fusionlance",
-					"neutrino_phasedarray",
-					"neutrino_pulsebeam",
-					"neutrino_graviton_inverter",
-					"neutrino_heavyphotonrepeater",
-					"phasecl",
-					"pilum",
-					"pdburst",
-					"sabot",
-					"sabot_single",
-					"sabotpod",
-					"salamanderpod",
-					"swarmer",
-					"taclaser",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("shadowyards_hi"))
-		{
-			return new String[] {
-					"amblaster",
-					"autopulse",
-					"pdburst",
-					"ms_cepc",
-					"ms_pdcepc",
-					"ms_mcepc",
-					"ms_scattercepc",
-					"ms_blackcap_3x",
-					"ms_blackcap_6x",
-					"ms_blackcap_pod",
-                    "ms_chaingang",
-					"heavyburst",
-					"hil",
-					"irpulse",
-					"gravitonbeam",
-                    "chaingun",
-					"ms_shrike_single",
-					"ms_shrike_rack",
-					"ms_shrike_pod",
-					"pulselaser",
-					"lightag",
-					"phasecl",
-					"phasebeam",
-					"harpoon",
-					"heatseeker",
-					"annihilator",
-					"atropos",
-					"reaper",
-					"ms_cepc",
-					"ms_pdcepc",
-					"ms_mcepc",
-					"ms_scattercepc",
-					"ms_blackcap_3x",
-					"ms_blackcap_6x",
-					"ms_blackcap_pod",
-					"ms_shrike_single",
-					"ms_shrike_rack",
-					"ms_shrike_pod",
-                    "ms_tusk_single",
-                    "ms_tusk_rack"
-			};
-		}
-		else if (factionId.equalsIgnoreCase("valkyrian"))
-		{
-			return new String[] {
-					"ether_driver",
-					"irpdburst",
-					"irpdcannon",
-					"quadheavymg",
-					"lightflak",
-					"lrflak",
-					"wraith",
-					"ultraheavy_lancer",
-					"heavyneedler",
-					"lightneedler",
-					"heavylancer",
-					"lightlancer",
-					"hephag",
-					"gauss",
-					"ibcm",
-					"lightdualmg",
-					"scorpionpod",
-					"scorpion",
-					"sabotpod",
-					"sabot",
-					"pilum",
-					"antiproton_laser",
-					"lightflak",
-					"lrflak",
-					"irpdburst",
-					"irpdcannon",
-                    "heavyarbalest",
-                    "phantasm",
-                    "spectre"
-			};
-		}
-		else if (factionId.equalsIgnoreCase("syndicateasp"))
-		{
-			return new String[] {
-					"atropos",
-					"typhoon",
-					"ioncannon",
-					"sabot",
-					"guardian",
-					"plasma",
-					"sabotpod",
-					"pilum",
-					"hurricane",
-					"taclaser",
-					"lrpdlaser",
-					"pdlaser",
-					"pdburst",
-					"irpulse",
-					"pulselaser",
-					"heavyburst",
-					"gravitonbeam",
-					"pdlaser",
-					"pdburst",
-					"irpulse",
-					"pulselaser",
-					"heavyburst",
-					"heavyblaster",
-					"phasebeam",
-					"amblaster",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("nomad"))
-		{
-			return new String[] {
-					"nom_ultralight_electron_maser",
-					"nom_light_electron_maser",
-					"nom_heavy_electron_maser",
-					"nom_maser_pulse_beam",
-					"nom_twin_electron_maser",
-					"nom_doom_cannon",
-					"nom_light_electron_maser",
-					"nom_light_electron_maser",
-					"nom_heavy_electron_maser",
-					"pilum",
-					"harpoon",
-					"hurricane",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("interstellarFederation"))
-		{
-			return new String[] {
-					"annihilatorpod",
-					"HV50",
-					"HV75",
-					"HV100",
-					"massdriver",
-					"harpypod",
-					"arbalest",
-					"chaingun",
-					"dualflak",
-					"gauss",
-					"heatseeker",
-					"heavyac",
-					"heavymauler",
-					"heavyneedler",
-					"hveldriver",
-					"lightac",
-					"lightag",
-					"lightdualac",
-					"lightdualmg",
-					"lightneedler",
-					"locktide",
-					"pdburst",
-					"pdlaser",
-					"railgun",
-					"reaper",
-					"riptide",
-					"shredder",
-					"vulcan",
-					"lancer",
-					"thunderchief",
-					"lancer_dual",
-					"lancer_single",
-					"piranha",
-					"omega",
-					"cain",
-					"citadelpd",
-					"hadron",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("relics"))
-		{
-			return new String[] {
-					"annihilatorpod",
-					"harpoon",
-					"harpoon_single",
-					"lightneedler",
-					"dualflak",
-					"heavyneedler",
-					"multineedler",
-					"hveldriver",
-					"heavymauler",
-					"vulcan",
-					"pilum",
-					"railgun",
-					"relics_exo_h",
-					"relics_blazo_h",
-					"relics_zaap_h",
-					"relics_exo_h",
-					"relics_blazo_h",
-					"relics_zaap_h",
-					"relics_exo_h",
-					"relics_blazo_h",
-					"relics_zaap_h",
-					"relics_exo_h",
-					"relics_blazo_h",
-					"relics_zaap_h",
-					"ioncannon",
-					"guardian",
-					"plasma",
-					"taclaser",
-					"lrpdlaser",
-					"pdlaser",
-					"pdburst",
-					"irpulse",
-					"pulselaser",
-					"heavyburst",
-					"gravitonbeam",
-					"pdlaser",
-					"pdburst",
-					"irpulse",
-					"heavyblaster",
-					"phasebeam",
-					"amblaster",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("nihil"))
-		{
-			return new String[] {
-					"nihil_phasebeam",
-					"vd",
-					"amt",
-					"pdvr",
-					"ldflak",
-					"nullcore",
-					"gamma",
-					"dooml",
-					"pddmg",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("thulelegacy"))
-		{
-			return new String[] {
-                    "thule_barbarossa",
-                    "thule_bulwark_srm_launcher",
-                    "thule_bulwark_srm_pod",
-                    "thule_heavy_hvpc",
-                    "thule_heavyslugger",
-                    "thule_light_hunker",
-                    "thule_light_hvpc",
-                    "thule_meteor_launcher",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("bushi"))
-		{
-			return new String[] {
-                    "bushi_pd_laser",
-                    "bushi_small_laser",
-                    "bushi_medium_laser",
-                    "bushi_large_laser",
-                    "bushi_energy_beam",
-                    "bushi_energy_torpedo_launcher_med",
-                    "bushi_energy_torpedo_launcher",
-                    "bushi_dark_matter",
-                    "bushi_srm_pod",
-                    "bushi_mrm_pod",
-                    "bushi_mrm_pod_xl",
-                    "bushi_lrm_pod",
-                    "bushi_lrm_pod_xl",
-                    "bushi_torpedo_launcher",
-			};
-		}
-		else if (factionId.equalsIgnoreCase("hiigaran_descendants"))
-		{
-			return new String[] {
-					"hii_pulsar_beam",
-					"hii_sustained_ion_beam",
-					"hii_sustained_ion_beam_xl",
-					"hii_accelerated_pulsar_beam_sm",
-					"hii_accelerated_pulsar_beam",
-					"hii_singularity_cannon",
-					"hii_flak_cannon",
-					"hii_kinetic_driver",
-					"hii_chaingun_medium",
-					"hii_chaingun_large",
-					"hii_chaingun_medium_he",
-					"hii_chaingun_large_he",
-					"hii_kinetic_burst_cannon",
-					"hii_kinetic_burst_cannon_large",
-					"hii_kinetic_burst_cannon_he",
-					"hii_kinetic_burst_cannon_large_he",
-					"hii_cor_missile_pod",
-					"hii_cor_missile_pod_xl",
-					"hii_tviir_launcher",
-					"hii_torpedo_launcher",
-					"hii_abas_missile_pod",
-					"hii_abas_missile_pod_xl",
-			};
-		}
-        else if (factionId.equalsIgnoreCase("ceredia"))
-        {
-            return new String[] {
-                "heavymg",
-                "dualflak",
-                "heavyblaster",
-                "lightdualac",
-                "lightag",
-                "lightneedler",
-                "heavymauler",
-                "gravitonbeam",
-                "pdburst",
-                "irpulse",
-                "taclaser",
-                "pulselaser",
-                "heavyburst",
-                "hil",
-                "hveldriver",
-                "reaper",
-                "reaper",
-                "heavyneedler",
-                "hephag",
-                "pilum",
-                "typhoon",
-                "autopulse",
-                "heavyac",
-            };
-        }
-        else if (factionId.equalsIgnoreCase("directorate"))
-        {
-            return new String[] {
-                "microlance",
-                "cascadedisruptor",
-                "heavyblaster",
-                "bolas",
-                "lancetbeamer",
-                "shardsrm",
-                "sparrow",
-                "gravitonbeam",
-                "impulseproj",
-                "irpulse",
-                "pdlaser",
-                "fluxbolt",
-                "heavyburst",
-                "hpl",
-                "firestorm",
-                "reaper",
-                "ioncannon",
-                "guardian",
-                "plasma",
-                "taclaser",
-                "lrpdlaser",
-                "pdlaser",
-                "pdburst",
-                "irpulse",
-                "pulselaser",
-                "heavyburst",
-                "gravitonbeam",
-                "pdlaser",
-                "pdburst",
-                "irpulse",
-                "heavyblaster",
-                "phasebeam",
-                "amblaster",
-            };
-        }
-        else if (factionId.equalsIgnoreCase("isora"))
-        {
-            return new String[] {
-                "annihilatorpod",
-                "harpoon",
-                "heavymg",
-                "arbalest",
-                "heavyac",
-                "dualflak",
-                "heavyblaster",
-                "lightdualac",
-                "lightag",
-                "lightneedler",
-                "heavymauler",
-                "gravitonbeam",
-                "hellbore",
-                "cyclone",
-                "pilum",
-                "taclaser",
-                "pulselaser",
-                "heavyburst",
-                "hveldriver",
-                "reaper",
-                "atropos",
-                "typhoon",
-                "ioncannon",
-                "heavyneedler",
-                "sabot",
-                "dualflak",
-                "guardian",
-                "plasma",
-                "chaingun",
-                "sabotpod",
-                "pilum",
-                "autopulse",
-                "plasma",
-                "hil",
-                "hurricane",
-                "mjolnir",
-                "taclaser",
-                "lrpdlaser",
-                "pdlaser",
-                "pdburst",
-                "irpulse",
-                "lrpdlaser",
-                "pdlaser",
-                "pdburst",
-                "lrpdlaser",
-                "gravitonbeam",
-                "phasebeam",
-                "amblaster",
-                "heavyblaster",
-                "hveldriver",
-                "shredder",
-                "flak",
-                "chaingun",
-                "gauss",
-                "hephag",
-                "mark9",
-                "multineedler",
-            };
-        }
-        else if (factionId.equalsIgnoreCase("independantMiners"))
-        {
-            return new String[] {
-                "med_mining_drill",
-                "mirv_bomb_launcher",
-                "planet_cracker",
-                "heavy_glassing_laser",
-                "archimedes_laser",
-                "infer_bomb",
-            };
-        }
-        else if (factionId.equalsIgnoreCase("shadoworder"))
-        {
-            return new String[] {
-            "tadd_lightshadowblaster",
-            "tadd_shadowblaster",
-            "tadd_shadowcannon",
-            "tadd_smallvortexlauncher",
-            "tadd_burstlance",
-            "tadd_smallenergycore",
-            "tadd_shadowmegacannon",
-            "tadd_energycore",
-            "tadd_sapper",
-            "tadd_shadowscythe",
-            "tadd_shadowcannon",
+        FleetMemberAPI fleetMemberAPI = null;
 
-            };
-        }
-        else if (factionId.equalsIgnoreCase("scrappers"))
+        int attempts = 0;
+        while(fleetMemberAPI == null
+                || fleetMemberAPI.getType() == FleetMemberType.FIGHTER_WING
+                || attempts < 20)
         {
-            return new String[] {
-                "hadd_dartergun",
-                "hadd_infernorockets",
-                "hadd_microwavebeam",
-                "hadd_spines",
-                "hadd_pointsnap",
-                "hadd_spreadchaingun",
-                "hadd_volleyrocket",
-                "hadd_wrecker",
-                "hadd_pounderassaultgun",
-                "hadd_pointmissiles",
-                "hadd_hellfirerockets",
-                "hadd_flakbombardier",
-                "hadd_shredder",
-                "hadd_titancannon",
-                "hadd_deathbringer",
-                "hadd_dancingblade",
-                "hadd_worldshammer",
-                "hadd_pyrostorm",
-            };
+            fleetMemberAPI = (FleetMemberAPI)members.get(ExerelinUtils.getRandomInRange(0, members.size() - 1));
+            attempts++;
         }
-        else if (factionId.equalsIgnoreCase("zorg_hive"))
-        {
-            return new String[] {
-                    "handlerray",
-                    "disruptorray",
-                    "concussionray",
-                    "transmitterray",
-                    "adaptorray",
-                    "interdictorray",
-            };
-        }
-        else if (factionId.equalsIgnoreCase("qualljom_society"))
-        {
-            return new String[] {
-                    "qua_dual_mg_small",
-                    "qua_vulcan_small",
-                    "qua_ac_small",
-                    "qua_ag_he_small",
-                    "qua_dual_ac_medium",
-                    "qua_ag_he_medium",
-                    "qua_quad_ac_large",
-                    "qua_heavy_cannon",
-                    "qua_dual_flak_medium",
-                    "qua_dual_flak_large",
-                    "qua_pulse_laser_small",
-                    "qua_pulse_laser_medium",
-                    "qua_pulse_laser_large",
-                    "qua_beam_projector_small",
-                    "qua_beam_projector_medium",
-                    "qua_pd_burst_laser_small",
-                    "qua_pd_laser_small",
-                    "qua_pd_laser_medium",
-                    "qua_pac_large",
-                    "qua_ashet_missile_small",
-                    "qua_rodim_missile_small",
-                    "qua_issot_missile_small",
-                    "qua_ashet_missile_medium",
-                    "qua_rodim_missile_medium",
-                    "qua_issot_missile_medium",
-                    "qua_ashet_missile_large",
-                    "qua_rodim_missile_large",
-                    "qua_issot_missile_large",
-                    "qua_tasut_torp_medium",
-            };
-        }
-		else
-		{
-			System.out.println("EXERELIN ERROR: Faction specific weapons for " + factionId + " not defined");
-			return new String[]{};
-		}
-	}
+
+        if(fleetMemberAPI == null)
+            return new String[]{};
+
+        List weaponSlots = fleetMemberAPI.getVariant().getNonBuiltInWeaponSlots();
+
+        weaponList = new ArrayList(weaponSlots.size());
+        for(int i = 0; i < weaponSlots.size(); i++)
+            weaponList.add(fleetMemberAPI.getVariant().getWeaponId((String)weaponSlots.get(i)));
+
+
+        return (String[])weaponList.toArray(new String[weaponList.size()]);
+    }
 
 	public static void addRandomFactionShipsToCargo(CargoAPI cargo, int count, String factionId, SectorAPI sector)
 	{
@@ -1874,8 +959,8 @@ public class ExerelinUtils
             FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
             fleetCargo.addCrew(crewXPLevel, (int) fmAPI.getMinCrew() + (int) ((fmAPI.getMaxCrew() - fmAPI.getMinCrew()) * extraCrewPercent));
             fleetCargo.addMarines((int) ((fmAPI.getMaxCrew() - fmAPI.getMinCrew()) * marinesPercent));
-            fleetCargo.addFuel(fmAPI.getFuelCapacity() / 2f);
-            fleetCargo.addSupplies(fmAPI.getCargoCapacity() / 2f);
+            fleetCargo.addFuel(fmAPI.getFuelCapacity());
+            fleetCargo.addSupplies(fmAPI.getCargoCapacity());
         }
     }
 
@@ -1893,5 +978,100 @@ public class ExerelinUtils
         List members = fleetToMerge.getFleetData().getMembersListCopy();
         for(int i = 0; i < members.size(); i = i + 1)
             mainFleet.getFleetData().addFleetMember((FleetMemberAPI)members.get((i)));
+    }
+
+    public static boolean doesSystemHaveEntityForFaction(StarSystemAPI system, String factionId, float minRelationship, float maxRelationship)
+    {
+        for(int i = 0; i < system.getOrbitalStations().size(); i++)
+        {
+            SectorEntityToken station = (SectorEntityToken)system.getOrbitalStations().get(i);
+            float relationship = station.getFaction().getRelationship(factionId);
+
+            if(relationship <= maxRelationship && relationship >= minRelationship)
+                return true;
+        }
+
+        return false;
+    }
+
+    public static float getDistanceBetweenSystems(StarSystemAPI system, StarSystemAPI otherSystem)
+    {
+        return MathUtils.getDistanceSquared(system.getLocation(), otherSystem.getLocation());
+    }
+
+    public static StarSystemAPI getClosestSystemForFaction(StarSystemAPI system, String factionId, float minRelationship, float maxRelationship)
+    {
+        float bestDistance = 99999999999f;
+        StarSystemAPI bestSystem = null;
+
+        for(int i = 0; i < Global.getSector().getStarSystems().size(); i++)
+        {
+            StarSystemAPI potentialSystem = (StarSystemAPI)Global.getSector().getStarSystems().get(i);
+
+            if(potentialSystem.getName().equalsIgnoreCase(system.getName()))
+                continue; // Don't find intitial system
+
+            if(!ExerelinUtils.doesSystemHaveEntityForFaction(potentialSystem, factionId, minRelationship, maxRelationship))
+                continue; // If searching for war target or friendly target
+
+            float potentialDistance = ExerelinUtils.getDistanceBetweenSystems(system, potentialSystem);
+            if(potentialDistance < bestDistance)
+            {
+                bestSystem = potentialSystem;
+                bestDistance = potentialDistance;
+            }
+        }
+
+        return bestSystem;
+    }
+
+    public static SectorEntityToken getClosestEntityToSystemEntrance(StarSystemAPI system, String factionId, float minRelationship, float maxRelationship)
+    {
+        Vector2f jumpLoc = system.getHyperspaceAnchor().getLocation();
+
+        float bestDistance = 99999999999f;
+        SectorEntityToken bestStation = null;
+
+        for(int i = 0; i < system.getOrbitalStations().size(); i++)
+        {
+            SectorEntityToken potentialStation = (SectorEntityToken)system.getOrbitalStations().get(i);
+            float relationship = potentialStation.getFaction().getRelationship(factionId);
+
+            if(relationship <= maxRelationship && relationship >= minRelationship)
+            {
+                float potentialDistance = MathUtils.getDistanceSquared(jumpLoc, potentialStation.getLocation());
+                if(potentialDistance < bestDistance)
+                {
+                    bestDistance = potentialDistance;
+                    bestStation = potentialStation;
+                }
+
+            }
+        }
+
+        return bestStation;
+    }
+
+    public static void addFreightersToFleet(CampaignFleetAPI fleet)
+    {
+        CampaignFleetAPI dummyFleet = Global.getSector().createFleet(fleet.getFaction().getId(), "exerelinInSystemSupplyConvoy");
+
+        if(fleet.getFleetData().getFleetPointsUsed() < 40)
+        {
+            dummyFleet.getFleetData().removeFleetMember((FleetMemberAPI)dummyFleet.getFleetData().getMembersListCopy().get(0));
+            dummyFleet.getFleetData().removeFleetMember((FleetMemberAPI)dummyFleet.getFleetData().getMembersListCopy().get(0));
+
+            mergeFleets(fleet, dummyFleet);
+        }
+        else if(fleet.getFleetData().getFleetPointsUsed() < 90)
+        {
+            dummyFleet.getFleetData().removeFleetMember((FleetMemberAPI)dummyFleet.getFleetData().getMembersListCopy().get(0));
+
+            mergeFleets(fleet, dummyFleet);
+        }
+        else
+        {
+            mergeFleets(fleet, dummyFleet);
+        }
     }
 }

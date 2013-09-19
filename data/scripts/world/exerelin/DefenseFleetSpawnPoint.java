@@ -41,7 +41,7 @@ public class DefenseFleetSpawnPoint extends BaseSpawnPoint
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
 
 		int remainingFleetsToSpawn = this.getMaxFleets()*2 - this.getFleets().size();
-		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn, 0.5f, true, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId)))
+		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn, 0.2f, true, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId)))
 		{
             float eliteShipChance = 0.01f;
 
@@ -55,6 +55,9 @@ public class DefenseFleetSpawnPoint extends BaseSpawnPoint
 
             if(ExerelinUtils.getRandomInRange(0, (int)(99 / (eliteShipChance * 100))) == 0)
                 ExerelinUtils.addEliteShipToFleet(fleet);
+
+            ExerelinUtils.addFreightersToFleet(fleet);
+            ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId));
 
 			getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 			fleet.setPreferredResupplyLocation(getAnchor());
@@ -74,10 +77,8 @@ public class DefenseFleetSpawnPoint extends BaseSpawnPoint
 	private void setFleetAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
-		fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation, 30);
-		fleet.addAssignment(FleetAssignment.RESUPPLY, getAnchor(), 30);
-		fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation, 30);
-		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 30);
+		fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation, 1000);
+		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
 	}
 }
 

@@ -5,15 +5,15 @@ import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.BaseSpawnPoint;
 
 @SuppressWarnings("unchecked")
-public class TradeGuildTraderSpawnPoint extends BaseSpawnPoint
+public class IndependantTraderSpawnPoint extends BaseSpawnPoint
 {
 	CampaignFleetAPI theFleet;
 	String fromStationFactionId = "";
 	StationRecord toStation;
 	Boolean trading = false;
 
-	public TradeGuildTraderSpawnPoint(SectorAPI sector, LocationAPI location,
-									  float daysInterval, int maxFleets, SectorEntityToken anchor)
+	public IndependantTraderSpawnPoint(SectorAPI sector, LocationAPI location,
+                                       float daysInterval, int maxFleets, SectorEntityToken anchor)
 	{
 		super(sector, location, daysInterval, maxFleets, anchor);
 	}
@@ -25,9 +25,6 @@ public class TradeGuildTraderSpawnPoint extends BaseSpawnPoint
 		String factions[] = ExerelinData.getInstance().getAvailableFactions(getSector());
 		String factionShips = factions[ExerelinUtils.getRandomInRange(0, factions.length - 1)];
 
-        if(this.getLocation().getOrbitalStations().size() == 0)
-            return null;
-
 		fromStationFactionId = "";
 		this.setStationToTradeWith();
 
@@ -38,7 +35,7 @@ public class TradeGuildTraderSpawnPoint extends BaseSpawnPoint
 
 		// Create fleet
 		CampaignFleetAPI fleet = getSector().createFleet(factionShips, type);
-		fleet.setFaction("tradeguild");
+		fleet.setFaction("independent");
 		fleet.setName("Trader");
 		theFleet = fleet;
 		getLocation().spawnFleet(ExerelinUtils.getRandomOffMapPoint(getLocation()), 0, 0, fleet);
@@ -51,21 +48,27 @@ public class TradeGuildTraderSpawnPoint extends BaseSpawnPoint
 		return fleet;
 	}
 
-	// Get a station to trade with (not at war, not abandoned, not same one, not under attack)
+	// Get a random station in random to trade with (not at war, not abandoned, not same one, not under attack)
 	private void setStationToTradeWith()
 	{
-		StationRecord[] stations = SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI)getLocation()).getSystemStationManager().getStationRecords();
+        SystemManager[] systemManagers = SectorManager.getCurrentSectorManager().getSystemManagers();
+
 		StationRecord station = null;
 		int attempts = 0;
 		while(station == null && attempts < 20)
 		{
+            SystemStationManager systemStationManager = systemManagers[ExerelinUtils.getRandomInRange(0, systemManagers.length - 1)].getSystemStationManager();
+            StationRecord[] stations = systemStationManager.getStationRecords();
+            station = stations[ExerelinUtils.getRandomInRange(0, stations.length - 1)];
+
 			attempts++;
-			station = stations[ExerelinUtils.getRandomInRange(0, stations.length - 1)];
 			if(station.getOwner() == null
-					|| station.getOwner().getFactionAPI().getRelationship("tradeguild") < 0
+					|| station.getOwner().getFactionAPI().getRelationship("independent") < 0
 					|| (toStation != null && station.getStationToken().getFullName().equalsIgnoreCase(toStation.getStationToken().getFullName()))
 					|| station.getNumAttacking() > 0)
+            {
 				station = null;
+            }
 		}
 
 		toStation = station;
@@ -88,7 +91,7 @@ public class TradeGuildTraderSpawnPoint extends BaseSpawnPoint
 	private Script createTestTargetScript() {
 		return new Script() {
 			public void run() {
-				if(toStation.getOwner() != null && toStation.getOwner().getFactionAPI().getRelationship("tradeguild") >= 0)
+				if(toStation.getOwner() != null && toStation.getOwner().getFactionAPI().getRelationship("independent") >= 0)
 				{
 					if(!trading || ExerelinUtils.getRandomInRange(0,400) > 0)
 					{
