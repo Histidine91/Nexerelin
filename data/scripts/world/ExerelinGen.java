@@ -7,10 +7,13 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import data.scripts.world.exerelin.*;
+import data.scripts.plugins.*;
 
 @SuppressWarnings("unchecked")
 public class ExerelinGen implements SectorGeneratorPlugin
 {
+    private boolean isStartSystemChosen = false;
+
 	public void generate(SectorAPI sector)
 	{
         System.out.println("Starting generation...");
@@ -22,11 +25,12 @@ public class ExerelinGen implements SectorGeneratorPlugin
         new Exerelin().generate(sector);
 
         sector.registerPlugin(new CoreCampaignPluginImpl());
+        sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 	}
 
 	public void buildSystem(SectorAPI sector)
 	{
-		String[] possibleSystemNames = new String[]{"Askar", "Garil", "Exerelin", "Yaerol", "Plagris", "Marot", "Caxort", "Laret", "Narbil", "Karit", "Raestal", "Bemortis"};
+		String[] possibleSystemNames = new String[]{"Exerelin", "Askar", "Garil", "Yaerol", "Plagris", "Marot", "Caxort", "Laret", "Narbil", "Karit", "Raestal", "Bemortis", "Xanador", "Tralor", "Exoral", "Oldat", "Pirata", "Zamaror", "Servator", "Bavartis", "Valore", "Charbor", "Dresnen", "Firort", "Haidu", "Jira", "Wesmon", "Uxor"};
 
         // Create star system from next available name
         StarSystemAPI system = sector.createStarSystem(possibleSystemNames[sector.getStarSystems().size()]);
@@ -35,9 +39,15 @@ public class ExerelinGen implements SectorGeneratorPlugin
         int maxSectorSize = ExerelinData.getInstance().maxSectorSize;
         system.getLocation().set(ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 
-        sector.setCurrentLocation(system);
-        sector.setRespawnLocation(system);
-        sector.getRespawnCoordinates().set(-2500, -3500);
+        if((ExerelinData.getInstance().numSystems == sector.getStarSystems().size()
+                || ExerelinUtils.getRandomInRange(0,2) == 0)
+                && !isStartSystemChosen)
+        {
+            sector.setCurrentLocation(system);
+            sector.setRespawnLocation(system);
+            sector.getRespawnCoordinates().set(-2500, -3500);
+            isStartSystemChosen = true;
+        }
 
         // Set star/light colour/background
         SectorEntityToken star;
@@ -148,9 +158,9 @@ public class ExerelinGen implements SectorGeneratorPlugin
 
                 if(ringType == 0)
                 {
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*2, 40f);
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*2, 60f);
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*2, 80f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*3, 40f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*3, 60f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*3, 80f);
                 }
                 else if (ringType == 1)
                 {

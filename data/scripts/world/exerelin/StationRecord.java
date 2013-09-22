@@ -55,6 +55,8 @@ public class StationRecord
         isBeingBoarded = false;
         lastBoardAttemptTime = 0;
 
+
+
 		systemStationManager = manager;
 	}
 
@@ -80,13 +82,13 @@ public class StationRecord
 		if(displayMessage)
 		{
 			if(newOwnerFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-				Global.getSector().addMessage(stationToken.getFullName() + " taken over by " + ExerelinData.getInstance().getPlayerFaction(), Color.magenta);
+				Global.getSector().addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName(), Color.magenta);
 			else if(this.getOwner() != null && this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-				Global.getSector().addMessage(stationToken.getFullName() + " taken over by " + newOwnerFactionId, Color.magenta);
+				Global.getSector().addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName(), Color.magenta);
 			else
-				Global.getSector().addMessage(stationToken.getFullName() + " taken over by " + newOwnerFactionId);
+				Global.getSector().addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName());
 
-			System.out.println(stationToken.getFullName() + " taken over by " + newOwnerFactionId);
+			System.out.println(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName());
 		}
 
 		stationToken.setFaction(newOwnerFactionId);
@@ -215,15 +217,22 @@ public class StationRecord
 			stationCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, (int)(200*efficiency));
 		}
 
-		if(owningFaction.getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) && efficiency > 0.6)
+		if(efficiency > 0.6)
 		{
 			ExerelinUtils.addRandomFactionShipsToCargo(stationCargo, 1, owningFaction.getFactionId(), Global.getSector());
 			ExerelinUtils.addWeaponsToCargo(stationCargo, 2, owningFaction.getFactionId(), Global.getSector());
 		}
-		if(efficiency < 1)
-			efficiency = efficiency + 0.1f;
-		else if(efficiency > 1)
-			efficiency = efficiency - 0.1f;
+
+        // Update efficiency
+        float baseEfficiency = 1.0f;
+        if(this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            baseEfficiency = ExerelinUtilsPlayer.getPlayerStationBaseEfficiency();
+
+
+        if(efficiency < baseEfficiency)
+            efficiency = efficiency + 0.1f;
+        else if(efficiency > baseEfficiency)
+            efficiency = efficiency - 0.1f;
 	}
 
 	// Clear cargo and ships from station
@@ -242,14 +251,14 @@ public class StationRecord
 		StationRecord bestTarget = null;
 
         SystemStationManager targetSystemStationManager;
-        if(!ExerelinUtils.doesSystemHaveEntityForFaction(this.system, this.owningFaction.getFactionId(), Float.MIN_VALUE, 0.01f))
+        if(!ExerelinUtils.doesSystemHaveEntityForFaction(this.system, this.owningFaction.getFactionId(), -100000f, -0.01f))
         {
             FactionDirector factionDirector = FactionDirector.getFactionDirectorForFactionId(this.owningFaction.getFactionId());
             if(factionDirector.getTargetSystem() != null)
             {
                 targetSystemStationManager = SystemManager.getSystemManagerForAPI(factionDirector.getTargetSystem()).getSystemStationManager();
                 bestTarget = targetSystemStationManager.getStationRecordForToken(factionDirector.getTargetSectorEntityToken());
-                //System.out.println(owningFaction.getFactionId() + ", sending fleets to " + factionDirector.getTargetSystem().getName());
+                //System.out.println(owningFaction.getFactionId() + ", sending fleets to " + bestTarget.getStationToken().getName());
             }
         }
         else
@@ -324,7 +333,7 @@ public class StationRecord
 		}
 
 		//if(assistStation != null)
-		//	System.out.println(this.getStationToken().getFullName() + " is assisting" + assistStation.getStationToken().getFullName() + " which is targeted " + assistStation.getNumAttacking());
+			//System.out.println(this.getStationToken().getFullName() + " is assisting " + assistStation.getStationToken().getFullName() + " which is targeted " + assistStation.getNumAttacking());
 
         if(assistStation == null)
         {

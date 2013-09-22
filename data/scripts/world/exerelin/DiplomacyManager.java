@@ -454,7 +454,7 @@ public class DiplomacyManager
 					declareFactionWarOrPeace(diplomacyRecord,  otherDiplomacyRecord, -1);
 
 					// Reduce likelihood of war with other factions slightly
-					diplomacyRecord.bulkAddToFactionRelationships(otherDiplomacyRecord.getFactionId(), ExerelinUtils.getRandomInRange(2, 3));
+					diplomacyRecord.bulkAddToFactionRelationships(otherDiplomacyRecord.getFactionId(), ExerelinUtils.getRandomInRange(5, 6));
 					break;
 				}
 				else if(rel1 + rel2 > PEACE_TREATY_LEVEL + PEACE_TREATY_LEVEL && currentGameRelationship < 0)
@@ -481,10 +481,10 @@ public class DiplomacyManager
 				// Same alliance with just these two factions
 
 				// Work out alliance system ownership
-				float allySystemOwnership = 0f;
+				float allianceSectorOwnership = 0f;
 				String[] allies = allianceManager.getAllianceRecord(diplomacyRecord.getAllianceId()).getFactions();
 				for(int j = 0; j< allies.length; j++)
-					allySystemOwnership = allySystemOwnership + SectorManager.getCurrentSectorManager().getSectorOwnership(allies[j]);
+					allianceSectorOwnership = allianceSectorOwnership + SectorManager.getCurrentSectorManager().getSectorOwnership(allies[j]);
 
 				if(rel1 + rel2 < END_ALLIANCE_LEVEL + END_ALLIANCE_LEVEL)
 				{
@@ -492,7 +492,7 @@ public class DiplomacyManager
 					dissolveAlliance(diplomacyRecord.getAllianceId(), getDiplomacyRecordsForAlliance(diplomacyRecord.getAllianceId()));
 					break;
 				}
-				else if(ExerelinUtils.getRandomInRange(0,9)*allySystemOwnership > 3)
+				else if(ExerelinUtils.getRandomInRange(0,9)*allianceSectorOwnership > 4)
 				{
 					// Betray alliance
 					removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
@@ -506,10 +506,10 @@ public class DiplomacyManager
 				// Same alliance with more than two members
 
 				// Work out alliance system ownership
-				float allySystemOwnership = 0f;
+				float allianceSectorOwnership = 0f;
 				String[] allies = allianceManager.getAllianceRecord(diplomacyRecord.getAllianceId()).getFactions();
 				for(int j = 0; j< allies.length; j++)
-					allySystemOwnership = allySystemOwnership + SectorManager.getCurrentSectorManager().getSectorOwnership(allies[j]);
+					allianceSectorOwnership = allianceSectorOwnership + SectorManager.getCurrentSectorManager().getSectorOwnership(allies[j]);
 
 				if(rel1 + rel2 < END_ALLIANCE_LEVEL + END_ALLIANCE_LEVEL)
 				{
@@ -517,7 +517,7 @@ public class DiplomacyManager
 					removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), false);
 					break;
 				}
-				else if(ExerelinUtils.getRandomInRange(0,9)*allySystemOwnership > 3)
+				else if(ExerelinUtils.getRandomInRange(0,9)*allianceSectorOwnership > 4)
 				{
 					// Betray the alliance
 					removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
@@ -1183,6 +1183,27 @@ public class DiplomacyManager
 			sector.addMessage("Alliance " + allianceRecord.getAllianceNameAndFactions() + " has been dissolved.", Color.magenta);
 		else
 			sector.addMessage("Alliance " + allianceRecord.getAllianceNameAndFactions() + " has been dissolved.");
+
+        DiplomacyRecord[] allianceFactions = records;
+
+        for(int i = 0; i < allianceFactions.length; i++)
+        {
+            DiplomacyRecord iRec = allianceFactions[i];
+            for(int j = 0; j < allianceFactions.length; j++)
+            {
+                DiplomacyRecord jRec = allianceFactions[j];
+
+                if(iRec.getFactionId().equalsIgnoreCase(jRec.getFactionId()))
+                    continue;
+
+                System.out.println(iRec.getFactionId() + " is now 0 with " + jRec.getFactionId());
+
+                iRec.setGameRelationship(jRec.getFactionId(), 0);
+                iRec.getFactionAPI().setRelationship(jRec.getFactionId(), 0);
+                jRec.setGameRelationship(iRec.getFactionId(), 0);
+                jRec.getFactionAPI().setRelationship(iRec.getFactionId(), 0);
+            }
+        }
 
 		allianceManager.dissolveAlliance(allianceId, records);
 	}

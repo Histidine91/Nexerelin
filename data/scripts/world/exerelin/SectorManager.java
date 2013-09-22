@@ -170,87 +170,74 @@ public class SectorManager
 		if(Global.getSector().getClock().getElapsedDaysSince(lastFactionSpawnTime) < this.respawnWaitDays)
 			return; // Hasn't been long enough since the last respawn
 
-		for(int k = 0; k < this.systemManagers.length; k++)
-		{
-			SystemManager systemManager = this.systemManagers[k];
-			StarSystemAPI systemAPI = systemManager.getStarSystemAPI();
+        if(this.getFactionsInSector().length >= this.getMaxFactions())
+            return; // Enough faction in sector already
 
-			String[] factions = SectorManager.getCurrentSectorManager().getFactionsPossibleInSector();
-			String[] factionsInSystem = SectorManager.getCurrentSectorManager().getFactionsInSector();
 
-			if(factionsInSystem.length == 0)
-				return;
+        // Chance to create out system attack fleet for a missing faction
+        int attempts = 0;
+        String factionId = null;
+        while((factionId == null || factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction())) && attempts < 40)
+        {
+            attempts = attempts + 1;
+            factionId = this.getFactionsPossibleInSector()[ExerelinUtils.getRandomInRange(0, this.getFactionsPossibleInSector().length - 1)];
 
-			System.out.println(" - - - - - - - - - - - - ");
-			System.out.println("Calling out-system station attack fleets for " + systemAPI.getName());
+            if(this.isFactionInSector(factionId))
+                factionId = null;
+        }
 
-			if(systemManager.getSystemStationManager().getNumFactionsInSystem() >= maxFactions)
-			{
-				System.out.println(systemManager.getSystemStationManager().getNumFactionsInSystem() + " of " + maxFactions + " already in system.");
-				System.out.println(" - - - - - - - - - - - - ");
-				return;
-			}
+        if(factionId == null || factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            return;
 
-			// Chance to create out system attack fleet for a missing faction
-			int attempts = 0;
-			String factionId = null;
-			while((factionId == null || factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction())) && attempts < 20)
-			{
-				attempts = attempts + 1;
-				factionId = factions[ExerelinUtils.getRandomInRange(0, factions.length - 1)];
+        System.out.println("--- RESPAWNING FACTION ---");
+        System.out.println("Faction: " + factionId);
 
-				Boolean inSystem = false;
-				for(int j = 0; j < factionsInSystem.length; j = j + 1)
-				{
-					if(factionId.equalsIgnoreCase(factionsInSystem[j]))
-					{
-						inSystem = true;
-						break;
-					}
-				}
-				if(inSystem)
-					factionId = null;
-			}
+        // Ensure faction only has target of leading faction
+        diplomacyManager.declarePeaceWithAllFactions(factionId);
+        diplomacyManager.createWarIfNoneExists(factionId);
 
-			if(factionId == null || factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-			{
-				System.out.println(" - - - - - - - - - - - - ");
-				return;
-			}
+        StarSystemAPI system = null;
+        attempts = 0;
+        while (system == null && attempts < 40)
+        {
+            attempts++;
+            system = (StarSystemAPI)Global.getSector().getStarSystems().get(ExerelinUtils.getRandomInRange(0, Global.getSector().getStarSystems().size() - 1));
+            System.out.println("Checking: " + system.getName());
+            if(!ExerelinUtils.isFactionPresentInSystem(SectorManager.getCurrentSectorManager().getLeadingFaction(), system))
+                system = null;
+        }
 
-			SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(systemAPI);
+        if(system == null)
+            return;
 
-			// Ensure faction only has target of leading faction
-			diplomacyManager.declarePeaceWithAllFactions(factionId);
-			diplomacyManager.createWarIfNoneExists(factionId);
+        System.out.println("System: " + system.getName());
 
-			SectorEntityToken stationTarget = ExerelinUtils.getClosestEnemyStation(factionId, this.systemManagers[k].getStarSystemAPI(), sectorAPI, token);
+        SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(system);
+        SectorEntityToken stationTarget = ExerelinUtils.getClosestEnemyStation(factionId, system, sectorAPI, token);
 
-			if(stationTarget == null)
-			{
-				System.out.println("Couldn't get out system attack fleet station target for " + factionId);
-				System.out.println(" - - - - - - - - - - - - ");
-				return;
-			}
+        if(stationTarget == null)
+            return;
 
-			int numStationAttackFleets = 1;
-			CargoAPI cargo = stationTarget.getCargo();
-			if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) > 800 || cargo.getMarines() > 400 || cargo.getSupplies() > 3200 || cargo.getFuel() > 800)
-				numStationAttackFleets = numStationAttackFleets + 1;
-			if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) > 1600 || cargo.getMarines() > 800 || cargo.getSupplies() > 6400 || cargo.getFuel() > 1600)
-				numStationAttackFleets = numStationAttackFleets + 2;
+        System.out.println("Station: " + stationTarget.getName());
 
-			for(int h = 0; h < numStationAttackFleets; h = h + 1)
-			{
-				OutSystemStationAttackFleet omsaf = new OutSystemStationAttackFleet(sectorAPI, systemAPI, factionId, true);
-				omsaf.spawnFleet(stationTarget, token);
-                FactionDirector.getFactionDirectorForFactionId(factionId).setHomeSystem(systemAPI);
-			}
+        int numStationAttackFleets = 1;
+        CargoAPI cargo = stationTarget.getCargo();
+        if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) > 800 || cargo.getMarines() > 400 || cargo.getSupplies() > 3200 || cargo.getFuel() > 800)
+            numStationAttackFleets = numStationAttackFleets + 1;
+        if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) > 1600 || cargo.getMarines() > 800 || cargo.getSupplies() > 6400 || cargo.getFuel() > 1600)
+            numStationAttackFleets = numStationAttackFleets + 2;
 
-            lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
+        for(int h = 0; h < numStationAttackFleets; h = h + 1)
+        {
+            OutSystemStationAttackFleet omsaf = new OutSystemStationAttackFleet(sectorAPI, system, factionId, true);
+            omsaf.spawnFleet(stationTarget, token);
+            FactionDirector.getFactionDirectorForFactionId(factionId).setHomeSystem(system);
+        }
 
-			System.out.println(" - - - - - - - - - - - - ");
-		}
+        lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
+
+        System.out.println(" - - - - - - - - - - - - ");
+
 	}
 
 	public void payPlayerWages()
@@ -322,7 +309,7 @@ public class SectorManager
                         break;
                 }
 
-				SectorEntityToken playerStation = ExerelinUtils.getRandomStationForFaction(ExerelinData.getInstance().getPlayerFaction(), system, sectorAPI);
+				SectorEntityToken playerStation = ExerelinUtils.getRandomStationInSystemForFaction(ExerelinData.getInstance().getPlayerFaction(), system, sectorAPI);
                 SectorEntityToken planet = playerStation.getOrbit().getFocus();
 
                 if(this.buildOmnifactory)
@@ -339,7 +326,9 @@ public class SectorManager
 		if(sectorAPI.getPlayerFleet().getFaction().getId().equalsIgnoreCase("player"))
 		{
 			sectorAPI.getPlayerFleet().setFaction(ExerelinData.getInstance().getPlayerFaction());
-			SectorEntityToken station = ExerelinUtils.getRandomStationForFaction(ExerelinData.getInstance().getPlayerFaction(), this.getSystemManagers()[0].getStarSystemAPI(), sectorAPI); //TODO - change
+			SectorEntityToken station = null;
+            if(SectorManager.getCurrentSectorManager().getFactionDirector(ExerelinData.getInstance().getPlayerFaction()).getHomeSystem() != null)
+                station = ExerelinUtils.getRandomStationInSystemForFaction(ExerelinData.getInstance().getPlayerFaction(), SectorManager.getCurrentSectorManager().getFactionDirector(ExerelinData.getInstance().getPlayerFaction()).getHomeSystem(), sectorAPI);
 			if(station != null)
 				sectorAPI.getPlayerFleet().setLocation(station.getLocation().getX(),  station.getLocation().getY());
 
@@ -364,7 +353,7 @@ public class SectorManager
                 CampaignFleetAPI dummyBoardingFleet = Global.getSector().createFleet(ExerelinData.getInstance().getPlayerFaction(), "exerelinInSystemStationAttackFleet");
                 List members = dummyBoardingFleet.getFleetData().getMembersListCopy();
                 for(int i = 0; i < members.size(); i++)
-                    Global.getSector().getPlayerFleet().getFleetData().addFleetMember((FleetMemberAPI)members.get(i)); //TODO FIX
+                    Global.getSector().getPlayerFleet().getFleetData().addFleetMember((FleetMemberAPI)members.get(i));
 
                 // Start of game, player fleet is last to be spawned so set last faction spawn time as this
                 this.lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
@@ -488,66 +477,47 @@ public class SectorManager
 
 	public String getLeadingFaction()
 	{
-		HashMap map = new HashMap();
-		int currentLeaderCount = 0;
-		String currentLeader = "";
+        float tempLeaderOwnership = 0.0f;
+        String tempLeaderId = "";
 
-		for(int i = 0; i < this.systemManagers.length; i++)
-		{
-			String leadingFactionTemp = this.systemManagers[i].getLeadingFactionId();
-			Integer count = 0;
-			if(map.containsKey(leadingFactionTemp))
-			{
-				count = Integer.parseInt((String)map.get(leadingFactionTemp)) + 1;
-				map.remove(leadingFactionTemp);
-			}
-			else
-				count = 1;
+        for(int i = 0; i < this.getFactionsInSector().length; i++)
+        {
+            String factionId = this.getFactionsInSector()[i];
 
-			map.put(leadingFactionTemp,  count.toString());
+            if(this.isFactionInSector(factionId))
+            {
+                if(this.getSectorOwnership(factionId) > tempLeaderOwnership)
+                {
+                    tempLeaderId = factionId;
+                    tempLeaderOwnership = this.getSectorOwnership(factionId);
+                }
+            }
+        }
 
-			if(currentLeaderCount < count)
-			{
-				currentLeader = leadingFactionTemp;
-				currentLeaderCount = count;
-			}
-		}
-        if(currentLeader == null)
-            return "";
-        else
-		    return currentLeader;
+        return tempLeaderId;
 	}
 
 	public String getLosingFaction()
 	{
-		HashMap map = new HashMap();
-		int currentLoserCount = 0;
-		String currentLoser = "";
+        float tempLoserOwnership = 1200.0f;
+        String tempLoserId = "";
 
-		for(int i = 0; i < this.systemManagers.length; i++)
-		{
-			String losingFactionTemp = this.systemManagers[i].getLosingFactionId();
-			Integer count = 0;
-			if(map.containsKey(losingFactionTemp))
-			{
-				count = Integer.parseInt((String)map.get(losingFactionTemp)) + 1;
-				map.remove(losingFactionTemp);
-			}
-			else
-				count = 1;
+        for(int i = 0; i < this.getFactionsInSector().length; i++)
+        {
+            String factionId = this.getFactionsInSector()[i];
+            //System.out.println("Checking : " + factionId + ", inSector: " + this.isFactionInSector(factionId) + ", ownership: " + this.getSectorOwnership(factionId));
 
-			map.put(losingFactionTemp,  count.toString());
+            if(this.isFactionInSector(factionId))
+            {
+                if(this.getSectorOwnership(factionId) < tempLoserOwnership)
+                {
+                    tempLoserId = factionId;
+                    tempLoserOwnership = this.getSectorOwnership(factionId);
+                }
+            }
+        }
 
-			if(currentLoserCount < count)
-			{
-				currentLoser = losingFactionTemp;
-				currentLoserCount = count;
-			}
-		}
-        if(currentLoser == null)
-            return "";
-        else
-		    return currentLoser;
+        return tempLoserId;
 	}
 
 	public float getSectorOwnership(String factionId)

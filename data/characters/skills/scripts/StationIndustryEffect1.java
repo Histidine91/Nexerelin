@@ -14,7 +14,7 @@ public class StationIndustryEffect1 implements CharacterStatsSkillEffect {
     }
 
 	public String getEffectDescription(float level) {
-		return "+" + (int)(ExerelinSkillData.FACTION_STATIONINDUSTRY_EFFECT_STATION_EFFICIENCY_BONUS_PERCENTAGE * level) + "% bonus to station efficiency";
+		return "+" + (int)(ExerelinSkillData.FACTION_STATIONINDUSTRY_EFFECT_STATION_EFFICIENCY_BONUS_PERCENTAGE * level) + "% further increase to station efficiency";
 	}
 	
 	public String getEffectPerLevelDescription() {

@@ -122,8 +122,8 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					}
 					else if(!boarding && stationTarget.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 					{
-						System.out.println("Player owned " + stationTarget.getStationToken().getFullName() + " being boarded by " + fleetOwningFactionId);
-						Global.getSector().addMessage(stationTarget.getStationToken().getFullName() + " is being boarded by " + fleetOwningFactionId, Color.magenta);
+						System.out.println("Player owned " + stationTarget.getStationToken().getFullName() + " being boarded by " + Global.getSector().getFaction(fleetOwningFactionId).getDisplayName());
+						Global.getSector().addMessage(stationTarget.getStationToken().getFullName() + " is being boarded by " + Global.getSector().getFaction(fleetOwningFactionId).getDisplayName(), Color.magenta);
 					}
 				}
 

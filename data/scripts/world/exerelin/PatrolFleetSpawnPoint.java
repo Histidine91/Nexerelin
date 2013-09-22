@@ -55,7 +55,7 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
 
             // Add player chance
             if(owningFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-                eliteShipChance = eliteShipChance + ExerelinPlayerFunctions.getPlayerFactionFleetEliteShipBonusChance();
+                eliteShipChance = eliteShipChance + ExerelinUtilsPlayer.getPlayerFactionFleetEliteShipBonusChance();
 
             if(ExerelinUtils.getRandomInRange(0, (int)(99 / (eliteShipChance * 100))) == 0)
                 ExerelinUtils.addEliteShipToFleet(fleet);

@@ -2,7 +2,7 @@ package data.characters.skills.scripts;
 
 public class ExerelinSkillData {
 
-	public static final float FACTION_APTITUDE_RESOURCE_DELIVERY_INCREASE_PERCENTAGE = 2f;
+	public static final float FACTION_APTITUDE_STATION_EFFICIENCY_INCREASE_PERCENTAGE = 1f;
 	
 	public static final float FACTION_ACTIVEDIPLOMACY_EFFECT_ITEM_AVAILABILITY_BONUS_PERECENTAGE= 1f;
 	public static final float FACTION_ACTIVEDIPLOMACY_PERK_NEW_ITEM = 1;

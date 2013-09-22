@@ -28,16 +28,16 @@ public class FactionDirector {
         if(this.homeSystem == null)
             return;
 
-        if(ExerelinUtils.doesSystemHaveEntityForFaction(this.homeSystem, this.factionId, Float.MIN_VALUE, -0.01f))
+        if(ExerelinUtils.doesSystemHaveEntityForFaction(this.homeSystem, this.factionId, -100000f, -0.01f))
             this.targetSystem = this.homeSystem;
         else
-            this.targetSystem = ExerelinUtils.getClosestSystemForFaction(this.homeSystem, this.factionId, Float.MIN_VALUE, -0.01f);
+            this.targetSystem = ExerelinUtils.getClosestSystemForFaction(this.homeSystem, this.factionId, -100000, -0.01f);
 
         if(this.targetSystem != null)
         {
-            this.targetSectorEntityToken = ExerelinUtils.getClosestEntityToSystemEntrance(this.targetSystem, factionId, Float.MIN_VALUE, -0.01f);
+            this.targetSectorEntityToken = ExerelinUtils.getClosestEntityToSystemEntrance(this.targetSystem, factionId, -100000, -0.01f);
 
-            if(this.targetSystem == this.homeSystem
+            if(this.targetSystem.getName().equalsIgnoreCase(this.homeSystem.getName())
                     && ExerelinUtils.doesSystemHaveEntityForFaction(this.homeSystem, this.factionId, 1, Float.MAX_VALUE))
                 this.targetResupplySystem = this.homeSystem;
             else
@@ -48,7 +48,7 @@ public class FactionDirector {
 
             this.targetResupplyEntityToken = ExerelinUtils.getClosestEntityToSystemEntrance(this.targetResupplySystem, this.factionId, 1, Float.MAX_VALUE);
 
-            /*ystem.out.println(factionId + " home system is: " + homeSystem.getName());
+            /*System.out.println(factionId + " home system is: " + homeSystem.getName());
             System.out.println(factionId + " target system is: " + targetSystem.getName());
             if(targetSectorEntityToken != null)
                 System.out.println(factionId + " target token is: " + targetSectorEntityToken.getName());

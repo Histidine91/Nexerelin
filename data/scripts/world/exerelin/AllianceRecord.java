@@ -1,5 +1,7 @@
 package data.scripts.world.exerelin;
 
+import com.fs.starfarer.api.Global;
+
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -82,7 +84,7 @@ public class AllianceRecord
 
 		for(int i = 0; i < factions.length; i++)
 		{
-			allianceFactions = allianceFactions + factions[i] + ", ";
+			allianceFactions = allianceFactions + Global.getSector().getFaction(factions[i]).getDisplayName() + ", ";
 		}
 		allianceFactions = allianceFactions.substring(0, allianceFactions.length() - 2);
 

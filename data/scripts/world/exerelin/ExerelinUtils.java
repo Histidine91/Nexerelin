@@ -208,7 +208,7 @@ public class ExerelinUtils
 		float fleetCostMult = 1f;
 
         if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-            fleetCostMult = ExerelinPlayerFunctions.getPlayerFleetCostMultiplier();
+            fleetCostMult = ExerelinUtilsPlayer.getPlayerFleetCostMultiplier();
 
 		float fleetCost = 0f;
 		float mult;
@@ -306,7 +306,7 @@ public class ExerelinUtils
 			return bestStation;
 	}
 
-	public static SectorEntityToken getRandomStationForFaction(String factionId, StarSystemAPI starSystemAPI, SectorAPI sector)
+	public static SectorEntityToken getRandomStationInSystemForFaction(String factionId, StarSystemAPI starSystemAPI, SectorAPI sector)
 	{
 		List stations = starSystemAPI.getOrbitalStations();
 		SectorEntityToken theStation;
@@ -480,7 +480,7 @@ public class ExerelinUtils
 		CampaignFleetAPI fleet;
 
 		if(r == 0)
-			fleet = sector.createFleet(factionId, "exerelinOutSystemSupplyConvoy");
+			fleet = sector.createFleet(factionId, "exerelinGenericFleet");
 		else if(r == 1)
 			fleet = sector.createFleet(factionId, "exerelinAsteroidMiningFleet");
 		else if(r == 2)
@@ -489,6 +489,16 @@ public class ExerelinUtils
             fleet = sector.createFleet(factionId, "exerelinInSystemStationAttackFleet");
         else if(r == 5)
             fleet = sector.createFleet(factionId, "exerelinInSystemSupplyConvoy");
+        else if(r == 6)
+        {
+            // Add from common list
+            for(int i = 0; i < count; i++)
+            {
+                String shipId = ExerelinConfig.commonShipList[ExerelinUtils.getRandomInRange(0, ExerelinConfig.commonShipList.length - 1)];
+                cargo.addMothballedShip(FleetMemberType.SHIP, shipId, null);
+            }
+            return;
+        }
 		else
 			fleet = sector.createFleet(factionId, "exerelinGenericFleet");
 
@@ -546,6 +556,7 @@ public class ExerelinUtils
 				shipId = shipId + "_Hull";
 			else
 				return;
+
 			cargo.addMothballedShip(memberType, shipId, null);
 			//cargo.getMothballedShips().addFleetMember(fmAPI);
 		}
@@ -982,12 +993,14 @@ public class ExerelinUtils
 
     public static boolean doesSystemHaveEntityForFaction(StarSystemAPI system, String factionId, float minRelationship, float maxRelationship)
     {
+        //System.out.println("Checking: " + system.getName() + " for min: " + minRelationship + ", max: " + maxRelationship);
         for(int i = 0; i < system.getOrbitalStations().size(); i++)
         {
             SectorEntityToken station = (SectorEntityToken)system.getOrbitalStations().get(i);
             float relationship = station.getFaction().getRelationship(factionId);
-
-            if(relationship <= maxRelationship && relationship >= minRelationship)
+            //System.out.println("   Checking: " + station.getName() + ", Relationship: " + relationship);
+            if((relationship <= maxRelationship && relationship >= minRelationship)
+                    || (minRelationship >= 1 && factionId.equalsIgnoreCase(station.getFaction().getId())))
                 return true;
         }
 
@@ -1037,7 +1050,8 @@ public class ExerelinUtils
             SectorEntityToken potentialStation = (SectorEntityToken)system.getOrbitalStations().get(i);
             float relationship = potentialStation.getFaction().getRelationship(factionId);
 
-            if(relationship <= maxRelationship && relationship >= minRelationship)
+            if((relationship <= maxRelationship && relationship >= minRelationship)
+                    || (minRelationship >= 1 && factionId.equalsIgnoreCase(potentialStation.getFaction().getId())))
             {
                 float potentialDistance = MathUtils.getDistanceSquared(jumpLoc, potentialStation.getLocation());
                 if(potentialDistance < bestDistance)
@@ -1073,5 +1087,27 @@ public class ExerelinUtils
         {
             mergeFleets(fleet, dummyFleet);
         }
+    }
+
+    public static boolean isPlayerInSystem(StarSystemAPI starSystemAPI)
+    {
+        if(Global.getSector().getPlayerFleet().isInHyperspace())
+            return false;
+
+        if(((StarSystemAPI)Global.getSector().getPlayerFleet().getContainingLocation()).getName().equalsIgnoreCase(starSystemAPI.getName()))
+            return true;
+        else
+            return false;
+    }
+
+    public static boolean isFactionPresentInSystem(String factionId, StarSystemAPI starSystemAPI)
+    {
+        for(int i = 0; i < starSystemAPI.getOrbitalStations().size(); i++)
+        {
+            if(((SectorEntityToken)starSystemAPI.getOrbitalStations().get(i)).getFaction().getId().equalsIgnoreCase(factionId))
+                return true;
+        }
+
+        return false;
     }
 }

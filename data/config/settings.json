@@ -149,8 +149,8 @@
 		},
 		"backgrounds":{
 			"defaultSpaceBackground":"graphics/backgrounds/background4.jpg",
-			"defaultHyperBackground":"graphics/backgrounds/hyperspace1.jpg",
-			#"defaultHyperBackground":"graphics/backgrounds/hyperspace_bg_cool.jpg",
+			#"defaultHyperBackground":"graphics/backgrounds/hyperspace1.jpg",
+			"defaultHyperBackground":"graphics/backgrounds/hyperspace_bg_cool.jpg",
 
 			"star0":"graphics/backgrounds/star0.png",
 			"star1":"graphics/backgrounds/star1.png",

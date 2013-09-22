@@ -4,20 +4,20 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import data.characters.skills.scripts.ExerelinSkillData;
 
-public class ExerelinPlayerFunctions {
+public class ExerelinUtilsPlayer {
 
     // -- SKILL FUNCTIONS --
 
-    public static float getPlayerStationConvoyResourceMultipler()
+    public static float getPlayerStationBaseEfficiency()
     {
-        float multiplier = 0.8f; // Player gets a slight penalty
+        float baseEfficiency = 0.9f; // Player gets a slight penalty
 
         MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
         if(playerStatsAPI.getAptitudeLevel("faction") > 0)
-            multiplier = multiplier + (playerStatsAPI.getAptitudeLevel("faction") * ExerelinSkillData.FACTION_APTITUDE_RESOURCE_DELIVERY_INCREASE_PERCENTAGE / 100);
+            baseEfficiency = baseEfficiency + (playerStatsAPI.getAptitudeLevel("faction") * ExerelinSkillData.FACTION_APTITUDE_STATION_EFFICIENCY_INCREASE_PERCENTAGE / 100);
 
-        //System.out.println("Player station convoy resource multipler: " + multiplier);
-        return  multiplier;
+        //System.out.println("Player station base efficiency: " + multiplier);
+        return  baseEfficiency;
     }
 
     public static float getPlayerFleetCostMultiplier()

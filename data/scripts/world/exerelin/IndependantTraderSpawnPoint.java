@@ -108,11 +108,9 @@ public class IndependantTraderSpawnPoint extends BaseSpawnPoint
 						cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, 100);
 						cargo.addMarines(50);
 
-						if(toStation.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-						{
-							ExerelinUtils.addRandomFactionShipsToCargo(cargo, 1,  fromStationFactionId, getSector());
-							ExerelinUtils.addWeaponsToCargo(cargo,  2, fromStationFactionId,  getSector());
-						}
+                        ExerelinUtils.addRandomFactionShipsToCargo(cargo, 1,  fromStationFactionId, getSector());
+                        ExerelinUtils.addWeaponsToCargo(cargo,  2, fromStationFactionId,  getSector());
+
 
 						// Finish trading
 						trading = false;

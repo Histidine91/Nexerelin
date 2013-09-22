@@ -42,23 +42,10 @@
                 "junk_pirates_sickle_Pointdefense":[0, 2],
                 "junk_pirates_hammer_Assault":[0, 2],
                 "junk_pirates_scythe_Assault":[0, 2],
-                "junk_pirates_cleat_wing":[0, 2],
-                "junk_pirates_shard_wing":[0, 2],
-                "junk_pirates_spike_wing":[0, 2],
-                "junk_pirates_splinter_wing":[0, 2],
-            },
-        },
-        "exerelinOutSystemSupplyConvoy":{
-            "displayName":"Out-System Supply Convoy",
-            "maxFleetPoints":40,
-            "daysWorthOfSupplies":[30, 50],
-            "lyWorthOfFuel":[40, 60],
-            "extraCrewPercent":[80, 80],
-            "marinesPercent":[20, 20],
-            "ships":{
-                "junk_pirates_stoatA_Standard":[1, 1],
-                "junk_pirates_stoatB_Standard":[2, 1],
-                "junk_pirates_octopus_Standard":[1, 1],
+                "junk_pirates_cleat_wing":[0, 3],
+                "junk_pirates_shard_wing":[0, 3],
+                "junk_pirates_spike_wing":[0, 3],
+                "junk_pirates_splinter_wing":[0, 3],
             },
         },
         "exerelinInSystemSupplyConvoy":{
@@ -69,8 +56,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "junk_pirates_stoatA_Standard":[1, 1],
-                "junk_pirates_octopus_Standard":[1, 1],
+                "junk_pirates_octopus_Standard":[1, 3],
             },
         },
         "exerelinInSystemStationAttackFleet":{

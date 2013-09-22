@@ -51,18 +51,6 @@
                 "gedune_viper_wing":[0, 4],
             },
         },
-        "exerelinOutSystemSupplyConvoy":{
-            "displayName":"Out-System Supply Convoy",
-            "maxFleetPoints":40,
-            "daysWorthOfSupplies":[30, 50],
-            "lyWorthOfFuel":[40, 60],
-            "extraCrewPercent":[80, 80],
-            "marinesPercent":[20, 20],
-            "ships":{
-                "gedune_mozok_f_variant1":[1, 2],
-                "gedune_mozok_t_variant1":[1, 2]
-            },
-        },
         "exerelinInSystemSupplyConvoy":{
             "displayName":"In-System Supply Convoy",
             "maxFleetPoints":40,
@@ -71,8 +59,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "gedune_mozok_f_variant1":[1, 1],
-                "gedune_mozok_t_variant1":[1, 1]
+                "gedune_mozok_f_variant1":[1, 3],
             },
         },
         "exerelinInSystemStationAttackFleet":{

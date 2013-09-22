@@ -45,19 +45,6 @@
                 "bushi_suntetsu_wing":[0, 3],
            },
        },
-       "exerelinOutSystemSupplyConvoy":{
-           "displayName":"Out-System Supply Convoy",
-           "maxFleetPoints":40,
-           "daysWorthOfSupplies":[30, 50],
-           "lyWorthOfFuel":[40, 60],
-           "extraCrewPercent":[80, 80],
-           "marinesPercent":[20, 20],
-           "ships":{
-                "bushi_sangu_Standard":[0, 1],
-                "bushi_haramaki_Standard":[0, 1],
-                "bushi_kikko_Standard":[0, 1],
-           },
-       },
        "exerelinInSystemSupplyConvoy":{
            "displayName":"In-System Supply Convoy",
            "maxFleetPoints":40,
@@ -66,8 +53,7 @@
            "extraCrewPercent":[80, 80],
            "marinesPercent":[20, 20],
            "ships":{
-                "bushi_sangu_Standard":[0, 1],
-                "bushi_haramaki_Standard":[0, 1],
+                "bushi_haramaki_Standard":[0, 3],
            },
        },
        "exerelinInSystemStationAttackFleet":{

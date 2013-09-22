@@ -67,11 +67,11 @@ public class OutSystemStationAttackFleet
 		setFleetAssignments(fleet);
 
 		if(theFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-			Global.getSector().addMessage(((StarSystemAPI)theLocation).getName() + ": " + theFaction + " command fleet incoming!", Color.magenta);
+			Global.getSector().addMessage(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!", Color.magenta);
 		else
-			Global.getSector().addMessage(((StarSystemAPI)theLocation).getName() + ": " + theFaction + " command fleet incoming!");
+			Global.getSector().addMessage(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!");
 
-		System.out.println(((StarSystemAPI)theLocation).getName() + ": " + theFaction + " command fleet incoming!");
+		System.out.println(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!");
 
 		return fleet;
 	}
@@ -109,8 +109,8 @@ public class OutSystemStationAttackFleet
 				else if(!boarding && ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 				{
 					// Warn player of boarding
-					System.out.println("Player owned " + theTarget.getFullName() + " being boarded by " + theFaction);
-					Global.getSector().addMessage(theTarget.getFullName() + " is being boarded by " + theFaction, Color.magenta);
+					System.out.println("Player owned " + theTarget.getFullName() + " being boarded by " + Global.getSector().getFaction(theFaction).getDisplayName());
+					Global.getSector().addMessage(theTarget.getFullName() + " is being boarded by " + Global.getSector().getFaction(theFaction).getDisplayName(), Color.magenta);
 				}
 
 				if(defendLocation)

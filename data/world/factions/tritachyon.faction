@@ -49,17 +49,6 @@
                 "dagger_wing":[0, 3],
             },
         },
-        "exerelinOutSystemSupplyConvoy":{
-            "displayName":"Out-System Supply Convoy",
-            "maxFleetPoints":40,
-            "daysWorthOfSupplies":[30, 50],
-            "lyWorthOfFuel":[40, 60],
-            "extraCrewPercent":[80, 80],
-            "marinesPercent":[20, 20],
-            "ships":{
-                "buffalo_Standard":[1, 4],
-            },
-        },
         "exerelinInSystemSupplyConvoy":{
             "displayName":"In-System Supply Convoy",
             "maxFleetPoints":40,

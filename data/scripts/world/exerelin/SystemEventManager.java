@@ -1,18 +1,17 @@
 package data.scripts.world.exerelin;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 
 public class SystemEventManager
 {
 	private EventRebelInsurrection eventRebelInsurrection;
-	private EventTradeGuildConversion eventTradeGuildConversion;
+	private EventRebelFleetSpawn eventRebelFleetSpawn;
 	private EventOutSystemReinforcements eventOutSystemReinforcements;
 	private EventStationExplosion eventStationExplosion;
 	private EventStationSeccession eventStationSeccession;
 	private EventAddObjectToStorage eventAddObjectToStorage;
 
-	private int waitTime = 60; // Wait two months before running first events
+	private int waitTime = 30; // Wait 1 month before running first events
 	private String lastEventType = "";
 	private int betweenEventWait = 10;
 
@@ -22,7 +21,7 @@ public class SystemEventManager
 	{
 		starSystemAPI = inSystem;
 		eventRebelInsurrection = new EventRebelInsurrection();
-		eventTradeGuildConversion = new EventTradeGuildConversion();
+		eventRebelFleetSpawn = new EventRebelFleetSpawn();
 		eventOutSystemReinforcements = new EventOutSystemReinforcements();
 		eventStationExplosion = new EventStationExplosion();
 		eventStationSeccession = new EventStationSeccession();
@@ -37,12 +36,12 @@ public class SystemEventManager
 			return;
 		}
 
-		/*if(ExerelinUtils.getRandomInRange(0, 30) == 0
-				&& !eventTradeGuildConversion.getType().equalsIgnoreCase(lastEventType))
+		if(ExerelinUtils.getRandomInRange(0, 10) == 0
+				&& !eventRebelFleetSpawn.getType().equalsIgnoreCase(lastEventType))
 		{
-			eventTradeGuildConversion.callTradersForLastFaction(starSystemAPI);
-			waitTime = betweenEventWait;
-			lastEventType = eventTradeGuildConversion.getType();
+			eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
+			//waitTime = betweenEventWait;
+			//lastEventType = eventRebelFleetSpawn.getType();
 			return;
 		}
 
@@ -55,14 +54,14 @@ public class SystemEventManager
 			return;
 		}
 
-		if(ExerelinUtils.getRandomInRange(0, 45) == 0
+		/*if(ExerelinUtils.getRandomInRange(0, 45) == 0
 				&& !eventOutSystemReinforcements.getType().equalsIgnoreCase(lastEventType))
 		{
 			eventOutSystemReinforcements.callReinforcementFleets(starSystemAPI);
 			waitTime = betweenEventWait;
 			lastEventType = eventOutSystemReinforcements.getType();
 			return;
-		}
+		}*/
 
 		if(ExerelinUtils.getRandomInRange(0,40) == 0
 				&& !eventStationExplosion.getType().equalsIgnoreCase(lastEventType))
@@ -73,7 +72,7 @@ public class SystemEventManager
 			return;
 		}
 
-		if(ExerelinData.getInstance().getSectorManager().getRespawnFactions()
+		/*if(ExerelinData.getInstance().getSectorManager().getRespawnFactions()
 				&& ExerelinUtils.getRandomInRange(0,55) == 0
 				&& !eventStationSeccession.getType().equalsIgnoreCase(lastEventType)
                 && Global.getSector().getClock().getElapsedDaysSince(SectorManager.getCurrentSectorManager().getLastFactionSpawnTime()) > SectorManager.getCurrentSectorManager().getRespawnWaitDays())

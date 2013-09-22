@@ -6,7 +6,7 @@
 "description":"Choose your banner and fight for supremacy of system Exerelin!",
 "gameVersion":"0.6a",
 "totalConversion":"false",
-"jars":["jars/Omnifactory.jar","jars/ExerelinHacks.jar",],
+"jars":["jars/Omnifactory.jar","jars/ExerelinHacks.jar", "jars/ExerelinPlugins.jar",],
 
 "replace":
 	[

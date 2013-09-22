@@ -14,11 +14,11 @@ public class FactionAptitudeEffect1 implements CharacterStatsSkillEffect {
     }
 
 	public String getEffectDescription(float level) {
-		return "+" + (int)(ExerelinSkillData.FACTION_APTITUDE_RESOURCE_DELIVERY_INCREASE_PERCENTAGE * level) + "% resources (including ships/weapons) delivered by supply convoys";
+		return "+" + (int)(ExerelinSkillData.FACTION_APTITUDE_STATION_EFFICIENCY_INCREASE_PERCENTAGE * level) + "% increase to station efficiency";
 	}
 	
 	public String getEffectPerLevelDescription() {
-		return "" + (int)(ExerelinSkillData.FACTION_APTITUDE_RESOURCE_DELIVERY_INCREASE_PERCENTAGE) + "%";
+		return "" + (int)(ExerelinSkillData.FACTION_APTITUDE_STATION_EFFICIENCY_INCREASE_PERCENTAGE) + "%";
 	}
 
 	public ScopeDescription getScopeDescription() {
