@@ -2,18 +2,10 @@ package data.scripts.plugins;
 
 import java.awt.Color;
 
+import com.fs.starfarer.api.campaign.*;
 import org.lwjgl.input.Keyboard;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CoreInteractionListener;
-import com.fs.starfarer.api.campaign.CoreUITabId;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.campaign.VisualPanelAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 
@@ -25,6 +17,9 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         TRADE_SHIPS,
         REFIT,
         REPAIR_ALL,
+        PLANT_AGENT,
+        DROP_OFF_PRISONER,
+        PLANT_SABOTEUR,
         LEAVE,
     }
 
@@ -96,6 +91,24 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             case REPAIR_ALL:
                 performRepairs();
                 break;
+            case PLANT_AGENT:
+                Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
+                station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
+                options.clearOptions();
+                createInitialOptions();
+                break;
+            case DROP_OFF_PRISONER:
+                Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
+                station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
+                options.clearOptions();
+                createInitialOptions();
+                break;
+            case PLANT_SABOTEUR:
+                Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
+                station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
+                options.clearOptions();
+                createInitialOptions();
+                break;
             case LEAVE:
                 Global.getSector().setPaused(false);
                 dialog.dismiss();
@@ -126,9 +139,6 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
     private void createInitialOptions() {
         options.clearOptions();
 
-        System.out.println("station: " + station.getFaction().getId() + ", fleet: " + Global.getSector().getPlayerFleet().getFaction().getId());
-        System.out.println("relationship: " + station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()));
-
         if (station.getFaction().isNeutralFaction()) {
             options.addOption("Transfer cargo or personnel", OptionId.TRADE_CARGO);
             options.setShortcut(OptionId.TRADE_CARGO, Keyboard.KEY_I, false, false, false, true);
@@ -146,10 +156,23 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 options.addOption("Make use of the dockyard's refitting facilities", OptionId.REFIT);
                 options.setShortcut(OptionId.REFIT, Keyboard.KEY_R, false, false, false, true);
             }
+
+            if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent") > 0
+                    && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+                options.addOption("Plant agent on station", OptionId.PLANT_AGENT);
+
+            if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "prisoner") > 0
+                    && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+                options.addOption("Drop prisoner off at station", OptionId.DROP_OFF_PRISONER);
+
+            if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur") > 0
+                    && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+                options.addOption("Plant saboteur on station", OptionId.PLANT_SABOTEUR);
         }
 
         if (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) >= 1
-                || station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())) {
+                || station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
+                || station.getFaction().isNeutralFaction()) {
             float needed = playerFleet.getLogistics().getTotalRepairSupplyCost();
             float supplies = playerFleet.getCargo().getSupplies();
             options.addOption("Repair your ships at the station's dockyard", OptionId.REPAIR_ALL);

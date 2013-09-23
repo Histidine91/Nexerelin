@@ -14,7 +14,7 @@ public class FleetDeploymentPerk1 implements CharacterStatsSkillEffect {
     }
 
 	public String getEffectDescription(float level) {
-		return "+" + (int)(ExerelinSkillData.FACTION_FLEETDEPLOYMENT_PERK_ELITE_SHIP_CHANCE_BONUS_PERCENTAGE) + "% increased chance of deploying elite ships";
+		return "+" + (int)(ExerelinSkillData.FACTION_FLEETDEPLOYMENT_PERK_ELITE_SHIP_CHANCE_BONUS_PERCENTAGE) + "% increased chance of deploying an additional elite capital ship with each fleet";
 	}
 	
 	public String getEffectPerLevelDescription() {

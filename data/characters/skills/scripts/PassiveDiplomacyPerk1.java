@@ -14,7 +14,7 @@ public class PassiveDiplomacyPerk1 implements CharacterStatsSkillEffect {
     }
 
 	public String getEffectDescription(float level) {
-		return "" + (int)(ExerelinSkillData.FACTION_PASSIVEDIPLOMACY_PERK_ALLIANCE_BETRAYAL_REDUCTION_PERCENTAGE) + "% reduction in alliance betrayals";
+		return "" + (int)(ExerelinSkillData.FACTION_PASSIVEDIPLOMACY_PERK_ALLIANCE_BETRAYAL_REDUCTION_PERCENTAGE) + "% reduction in alliance betrayal chance in alliance your faction is in";
 	}
 	
 	public String getEffectPerLevelDescription() {

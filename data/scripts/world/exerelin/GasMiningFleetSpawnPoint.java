@@ -76,7 +76,11 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 	{
 		fleet.clearAssignments();
 
-		if(targetPlanet != null && validFleet && miningPower != 0 && getAnchor().getCargo().getFuel() < 2000)
+        float resourceMultiplier = 1.0f;
+        if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
+
+		if(targetPlanet != null && validFleet && miningPower != 0 && getAnchor().getCargo().getFuel() < 2000*resourceMultiplier)
 		{
 			if(!returningHome)
 				//fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, getLocation().createToken(targetPlanet.getLocation().getX() + ExerelinUtils.getRandomInRange(-100,100), targetPlanet.getLocation().getY() + ExerelinUtils.getRandomInRange(-100,100)), 1000, createTestTargetScript());
@@ -117,7 +121,7 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
                     {
                         lastTimeCheck = Global.getSector().getClock().getTimestamp();
                         theFleet.getCargo().removeFuel(200);
-                        getAnchor().getCargo().addFuel(200 * SystemManager.getSystemManagerForAPI((StarSystemAPI)theFleet.getContainingLocation()).getSystemStationManager().getStationRecordForToken(getAnchor()).getEfficiency(true));
+                        getAnchor().getCargo().addFuel(200 * SystemManager.getSystemManagerForAPI((StarSystemAPI)theFleet.getContainingLocation()).getSystemStationManager().getStationRecordForToken(getAnchor()).getEfficiency(false));
                     }
 				}
 				else

@@ -1,7 +1,7 @@
 {
 	id:"zorg_hive",
 	"color":[25,75,55,255],
-	"displayName":"Zorg_Hive",
+	"displayName":"Zorg Hive",
 	"shipNamePrefix":"ZHU",
 	"shipNameSources":{
 		"ZORG":1, # zorg names for zorg ships

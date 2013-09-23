@@ -83,7 +83,9 @@ public class SystemEventManager
 			return;
 		}*/
 
-		if(ExerelinUtils.getRandomInRange(0,45) == 0
+        float extraChance = ExerelinUtilsPlayer.getPlayerDiplomacyObjectCreationBonus();
+
+		if(ExerelinUtils.getRandomInRange(0,(45*(int)(1.0f - extraChance))) == 0
 				&& !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType))
 		{
 			eventAddObjectToStorage.addAgentToStorageFacility(starSystemAPI);
@@ -91,13 +93,22 @@ public class SystemEventManager
 			lastEventType = eventAddObjectToStorage.getType();
 		}
 
-		if(ExerelinUtils.getRandomInRange(0,45) == 0
+		if(ExerelinUtils.getRandomInRange(0,(45*(int)(1.0f - extraChance))) == 0
 				&& !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType))
 		{
 			eventAddObjectToStorage.addPrisonerToStorageFacility(starSystemAPI);
 			waitTime = betweenEventWait;
 			lastEventType = eventAddObjectToStorage.getType();
 		}
+
+        if(ExerelinUtils.getRandomInRange(0,(45*(int)(1.0f - extraChance))) == 0
+                && !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType)
+                && ExerelinUtilsPlayer.getPlayerSabateurAvailability())
+        {
+            eventAddObjectToStorage.addSabateurToStorageFacility(starSystemAPI);
+            waitTime = betweenEventWait;
+            lastEventType = eventAddObjectToStorage.getType();
+        }
 	}
 
 	public void setBetweenEventWait(int value)

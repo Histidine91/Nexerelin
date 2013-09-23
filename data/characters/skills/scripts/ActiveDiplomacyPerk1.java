@@ -15,12 +15,12 @@ public class ActiveDiplomacyPerk1 implements CharacterStatsSkillEffect {
 
 	public String getEffectDescription(float level) {
 		//return "+" + (int)(ExerelinSkillData.FACTION_ACTIVEDIPLOMACY_PERK_NEW_ITEM) + "% travel speed";
-        return "New diplomacy item available";
+        return "Sabateur special agent available";
 	}
 	
 	public String getEffectPerLevelDescription() {
 		//return "" + (int)(ExerelinSkillData.FACTION_ACTIVEDIPLOMACY_PERK_NEW_ITEM) + "%";
-        return "available";
+        return "";
 	}
 
 	public ScopeDescription getScopeDescription() {

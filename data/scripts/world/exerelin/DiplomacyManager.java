@@ -1,5 +1,6 @@
 package data.scripts.world.exerelin;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 
@@ -302,6 +303,13 @@ public class DiplomacyManager
 			if(ExerelinUtils.getRandomInRange(0,99) == 0)
 				factionRelationship = 0;
 
+            // Add extra player increase if skilled appropriatly
+            if(recordToUpdate.getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            {
+                float bonus = ExerelinUtilsPlayer.getPlayerDiplomacyRelationshipBonus();
+                factionRelationship = factionRelationship + (int)(factionRelationship*bonus);
+            }
+
 			// Update the relationship setting
 			recordToUpdate.setFactionRelationship(factionRecords[j].getFactionId(), factionRelationship);
 			//System.out.println(recordToUpdate.getFactionId() + " relationship to " + factionRecords[j].getFactionId() + " = " + recordToUpdate.getFactionRelationship(factionRecords[j].getFactionId()));
@@ -495,8 +503,21 @@ public class DiplomacyManager
 				else if(ExerelinUtils.getRandomInRange(0,9)*allianceSectorOwnership > 4)
 				{
 					// Betray alliance
-					removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
-					break;
+                    if(this.allianceManager.isFactionInAlliance(ExerelinData.getInstance().getPlayerFaction(), diplomacyRecord.getAllianceId())
+                            && ExerelinUtilsPlayer.getPlayerDiplomacyBetrayalReducedChance() > 0f)
+                    {
+                        System.out.println("Chance to save alliance betrayal");
+                        if(ExerelinUtils.getRandomInRange(0, 4) > 0)
+                        {
+                            removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
+                            break;
+                        }
+                    }
+                    else
+                    {
+					    removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
+					    break;
+                    }
 				}
 			}
 			else if(diplomacyRecord.isInAlliance()
@@ -520,8 +541,21 @@ public class DiplomacyManager
 				else if(ExerelinUtils.getRandomInRange(0,9)*allianceSectorOwnership > 4)
 				{
 					// Betray the alliance
-					removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
-					break;
+                    if(this.allianceManager.isFactionInAlliance(ExerelinData.getInstance().getPlayerFaction(), diplomacyRecord.getAllianceId())
+                            && ExerelinUtilsPlayer.getPlayerDiplomacyBetrayalReducedChance() > 0f)
+                    {
+                        System.out.println("Chance to save alliance betrayal");
+                        if(ExerelinUtils.getRandomInRange(0, 4) > 0)
+                        {
+                            removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
+                        break;
+                    }
 				}
 			}
 			else if(diplomacyRecord.isInAlliance()
@@ -624,27 +658,27 @@ public class DiplomacyManager
 
 			if(!SectorManager.getCurrentSectorManager().isFactionInSector(factionId))
 			{
-				sector.addMessage(factionId + " has been driven from Exerelin!");
-				System.out.println(factionId + " has lost all stations");
+				sector.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has been driven from Exerelin!");
+				System.out.println(Global.getSector().getFaction(factionId).getDisplayName() + " has been driven from Exerelin!");
 				declarePeaceWithAllFactions(factionId);
 			}
 		}
 
 		if(event.equalsIgnoreCase("agent"))
 		{
-			sector.addMessage(ExerelinData.getInstance().getPlayerFaction() + " agent has caused a disagreement between " + factionId + " and " + otherFactionId, Color.magenta);
+			sector.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " agent has caused a disagreement between " + Global.getSector().getFaction(factionId).getDisplayName() + " and " + Global.getSector().getFaction(otherFactionId).getDisplayName(), Color.magenta);
 			relChange = -20;
 		}
 
 		if(event.equalsIgnoreCase("agentCapture"))
 		{
-			sector.addMessage(ExerelinData.getInstance().getPlayerFaction() + " agent has been captured by " + factionId, Color.magenta);
+			sector.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " agent has been captured by " + Global.getSector().getFaction(factionId).getDisplayName(), Color.magenta);
 			relChange = -20;
 		}
 
 		if(event.equalsIgnoreCase("prisoner"))
 		{
-			sector.addMessage(ExerelinData.getInstance().getPlayerFaction() + " prisoner exchange has been accepted and " + factionId + " is pleased", Color.magenta);
+			sector.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " prisoner exchange has been accepted and " + Global.getSector().getFaction(factionId).getDisplayName() + " is pleased", Color.magenta);
 			relChange = 20;
 		}
 

@@ -1,7 +1,7 @@
 {
 	id:"shadowyards_hi",
 	"color":[50,20,157,157],
-	"displayName":"Shadowyards Heavy Industries",
+	"displayName":"Shadowyards",
 	"shipNamePrefix":"SYS",
 	"names":{
 		"SHADOWYARDS":1,

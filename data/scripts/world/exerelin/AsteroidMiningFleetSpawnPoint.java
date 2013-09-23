@@ -75,7 +75,11 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 	{
 		fleet.clearAssignments();
 
-		if(targetAsteroid != null && validFleet && miningPower != 0 && getAnchor().getCargo().getSupplies() < 8000)
+        float resourceMultiplier = 1.0f;
+        if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
+
+		if(targetAsteroid != null && validFleet && miningPower != 0 && getAnchor().getCargo().getSupplies() < 8000*resourceMultiplier)
 		{
 			if(!returningHome)
 				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, targetAsteroid, 1000, createTestTargetScript());
@@ -115,7 +119,7 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
                     {
                         lastTimeCheck = Global.getSector().getClock().getTimestamp();
                         theFleet.getCargo().removeSupplies(200);
-                        getAnchor().getCargo().addSupplies(200 * SystemManager.getSystemManagerForAPI((StarSystemAPI)theFleet.getContainingLocation()).getSystemStationManager().getStationRecordForToken(getAnchor()).getEfficiency(true));
+                        getAnchor().getCargo().addSupplies(200 * SystemManager.getSystemManagerForAPI((StarSystemAPI)theFleet.getContainingLocation()).getSystemStationManager().getStationRecordForToken(getAnchor()).getEfficiency(false));
                     }
 				}
 				else

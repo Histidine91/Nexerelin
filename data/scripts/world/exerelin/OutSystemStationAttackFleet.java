@@ -180,6 +180,7 @@ public class OutSystemStationAttackFleet
 
 					theTarget = newTarget;
 					setFleetAssignments(theFleet);
+                    theFleet.setPreferredResupplyLocation(newTarget);
 					return;
 				}
 

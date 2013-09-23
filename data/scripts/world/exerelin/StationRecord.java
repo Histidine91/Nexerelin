@@ -36,6 +36,10 @@ public class StationRecord
 	private AsteroidMiningFleetSpawnPoint asteroidMiningFleetSpawnPoint;
 	private GasMiningFleetSpawnPoint gasMiningFleetSpawnPoint;
 
+    // Extra spawnpoints for player skill (kind of ugly, should just replace all spawnpoints with fleets)
+    private AsteroidMiningFleetSpawnPoint asteroidMiningFleetSpawnPoint2;
+    private GasMiningFleetSpawnPoint gasMiningFleetSpawnPoint2;
+
 	public StationRecord(SectorAPI sector, StarSystemAPI inSystem, SystemStationManager manager, SectorEntityToken token)
 	{
 		system = inSystem;
@@ -51,11 +55,11 @@ public class StationRecord
 		inSystemSupplyConvoySpawn = new InSystemSupplyConvoySpawnPoint(sector, system, 1000000, 1, token);
 		asteroidMiningFleetSpawnPoint = new AsteroidMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
 		gasMiningFleetSpawnPoint = new GasMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
+        asteroidMiningFleetSpawnPoint2 = new AsteroidMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
+        gasMiningFleetSpawnPoint2 = new GasMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
 
         isBeingBoarded = false;
         lastBoardAttemptTime = 0;
-
-
 
 		systemStationManager = manager;
 	}
@@ -100,6 +104,8 @@ public class StationRecord
 		inSystemSupplyConvoySpawn.setFaction(newOwnerFactionId);
 		asteroidMiningFleetSpawnPoint.setFaction(newOwnerFactionId);
 		gasMiningFleetSpawnPoint.setFaction(newOwnerFactionId);
+        asteroidMiningFleetSpawnPoint2.setFaction(newOwnerFactionId);
+        gasMiningFleetSpawnPoint2.setFaction(newOwnerFactionId);
 
 		owningFaction = ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRecordForFaction(newOwnerFactionId);
 
@@ -159,6 +165,8 @@ public class StationRecord
         removeDeadOrRebelFleets(inSystemSupplyConvoySpawn);
         removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint);
         removeDeadOrRebelFleets(gasMiningFleetSpawnPoint);
+        removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint2);
+        removeDeadOrRebelFleets(gasMiningFleetSpawnPoint2);
 
         if(checkIsBeingBoarded())
             return; // Don't spawn fleets if being boarded
@@ -172,12 +180,27 @@ public class StationRecord
 
 		inSystemSupplyConvoySpawn.spawnFleet();
 
-		if(stationCargo.getSupplies() < 6400)
-			asteroidMiningFleetSpawnPoint.spawnFleet();
-		if(stationCargo.getFuel() < 1600)
-			gasMiningFleetSpawnPoint.spawnFleet();
+        float resourceMultiplier = 1.0f;
+        if(this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
 
-		if(ExerelinUtils.getRandomInRange(0, 1) == 0 || (targetStationRecord != null && targetStationRecord.getOwner() == null))
+
+		if(stationCargo.getSupplies() < (6400*resourceMultiplier))
+        {
+			asteroidMiningFleetSpawnPoint.spawnFleet();
+            if(ExerelinUtilsPlayer.getPlayerDeployExtraMiningFleets())
+                asteroidMiningFleetSpawnPoint2.spawnFleet();
+        }
+		if(stationCargo.getFuel() < (1600*resourceMultiplier))
+        {
+			gasMiningFleetSpawnPoint.spawnFleet();
+            if(ExerelinUtilsPlayer.getPlayerDeployExtraMiningFleets())
+                gasMiningFleetSpawnPoint2.spawnFleet();
+        }
+
+
+		if(ExerelinUtils.getRandomInRange(0, 1) == 0
+                || (targetStationRecord != null && targetStationRecord.getOwner() == null))
 			stationAttackFleetSpawn.spawnFleet();
 
 
@@ -198,23 +221,29 @@ public class StationRecord
         if(checkIsBeingBoarded())
             return; // Don't increase resources if being boarded
 
-		if(stationCargo.getFuel() < 1600)
+        float resourceMultiplier = 1.0f;
+        if(this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
+
+		if(stationCargo.getFuel() < 1600*resourceMultiplier)
 			stationCargo.addFuel(100*efficiency); // Halved due to mining fleets
-		if(stationCargo.getSupplies() < 6400)
+		if(stationCargo.getSupplies() < 6400*resourceMultiplier)
 			stationCargo.addSupplies(400*efficiency); // Halved due to mining fleets
-		if(stationCargo.getMarines() < 800)
+		if(stationCargo.getMarines() < 800*resourceMultiplier)
 			stationCargo.addMarines((int)(100*efficiency));
-		if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 1600)
+		if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 1600*resourceMultiplier)
 			stationCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, (int)(200*efficiency));
 
-		if(planetType.equalsIgnoreCase("gas"))
+		if(planetType.equalsIgnoreCase("gas") && stationCargo.getFuel() < 3200*resourceMultiplier)
 			stationCargo.addFuel(100*efficiency); // Halved due to mining fleets
-		if(planetType.equalsIgnoreCase("moon"))
+		if(planetType.equalsIgnoreCase("moon") && stationCargo.getSupplies() < 12800*resourceMultiplier)
 			stationCargo.addSupplies(400*efficiency); // Halved due to mining fleets
 		if(planetType.equalsIgnoreCase("planet"))
 		{
-			stationCargo.addMarines((int)(100*efficiency));
-			stationCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, (int)(200*efficiency));
+            if(stationCargo.getMarines() < 1600*resourceMultiplier)
+                stationCargo.addMarines((int)(100*efficiency));
+            if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 3200*resourceMultiplier)
+                stationCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, (int)(200*efficiency));
 		}
 
 		if(efficiency > 0.6)
@@ -227,7 +256,6 @@ public class StationRecord
         float baseEfficiency = 1.0f;
         if(this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
             baseEfficiency = ExerelinUtilsPlayer.getPlayerStationBaseEfficiency();
-
 
         if(efficiency < baseEfficiency)
             efficiency = efficiency + 0.1f;
@@ -408,6 +436,8 @@ public class StationRecord
 		inSystemSupplyConvoySpawn.setFriendlyStation(assistStationRecord);
 		asteroidMiningFleetSpawnPoint.setTargetAsteroid(targetAsteroid);
 		gasMiningFleetSpawnPoint.setTargetPlanet(targetGasGiant);
+        asteroidMiningFleetSpawnPoint2.setTargetAsteroid(targetAsteroid);
+        gasMiningFleetSpawnPoint2.setTargetPlanet(targetGasGiant);
 	}
 
 	private String derivePlanetType(SectorEntityToken token)
@@ -440,6 +470,7 @@ public class StationRecord
 		{
 			float numAgents = stationCargo.getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent");
 			float numPrisoners = stationCargo.getQuantity(CargoAPI.CargoItemType.RESOURCES, "prisoner");
+            float numSabateurs = stationCargo.getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur");
 
 			if(numAgents > 0)
 			{
@@ -451,20 +482,24 @@ public class StationRecord
 
 					if(otherFactionId.equalsIgnoreCase(""))
 					{
-						Global.getSector().addMessage(ExerelinData.getInstance().getPlayerFaction() + " agent has failed in their mission.", Color.magenta);
-						System.out.println(ExerelinData.getInstance().getPlayerFaction() + " agent has failed in their mission.");
+						Global.getSector().addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " agent has failed in their mission.", Color.magenta);
+						System.out.println(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " agent has failed in their mission.");
 						stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
 						return;
 					}
 
 					ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), otherFactionId, "agent");
-					stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
+
+                    if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
+                        Global.getSector().addMessage("The agent was not discovered and will repeat their mission.", Color.magenta);
+                    else
+                        stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
 					return;
 				}
 				else
 				{
 					ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), ExerelinData.getInstance().getPlayerFaction(), "agentCapture");
-					stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
+                    stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
 					return;
 				}
 			}
@@ -472,9 +507,27 @@ public class StationRecord
 			if(numPrisoners > 0)
 			{
 				ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), ExerelinData.getInstance().getPlayerFaction(), "prisoner");
-				stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
+                if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
+                    Global.getSector().addMessage("The prisoner is extremely valuable and will be interrogated further.", Color.magenta);
+                else
+                    stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
 				return;
 			}
+
+            if(numSabateurs > 0)
+            {
+                Global.getSector().addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " sabateur has caused a station explosion at " + this.getStationToken().getName() + ".", Color.magenta);
+                System.out.println(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " sabateur has caused a station explosion at " + this.getStationToken().getName() + ".");
+                lastBoardAttemptTime = Global.getSector().getClock().getTimestamp();
+                this.efficiency = 0.1f;
+                ExerelinUtils.removeRandomShipsFromCargo(this.stationCargo, this.stationCargo.getMothballedShips().getCombatReadyMembersListCopy().size());
+                ExerelinUtils.removeRandomWeaponStacksFromCargo(this.stationCargo, this.stationCargo.getWeapons().size());
+                if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
+                    Global.getSector().addMessage("The saboteur was not discoverd and will repeat their mission.", Color.magenta);
+                else
+                    stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
+                return;
+            }
 		}
 	}
 

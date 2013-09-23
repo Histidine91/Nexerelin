@@ -540,6 +540,10 @@ public class ExerelinUtils
 				if(shipId.equalsIgnoreCase("nihil_anti"))
 					shipId = "anti";
 
+                // Fix wrong Zorg names
+                if(shipId.equalsIgnoreCase("zorg_worker_sphere"))
+                    shipId = "zorg_worker";
+
                 shipId = shipId + "_wing";
 
                 // Fix wrong independantMiner names (these don't have _wing on the end)
@@ -978,10 +982,14 @@ public class ExerelinUtils
     // Returns a factions crew xp level
     public static CargoAPI.CrewXPLevel getCrewXPLevelForFaction(String factionId)
     {
-        //if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-        //    return CargoAPI.CrewXPLevel.GREEN;
-        //else
-            return  CargoAPI.CrewXPLevel.REGULAR;
+        if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+        {
+            float crewUpgradeChance = ExerelinUtilsPlayer.getPlayerFactionFleetCrewExperienceBonus();
+            if(ExerelinUtils.getRandomInRange(0, 99) <= -1 + crewUpgradeChance*100)
+                return CargoAPI.CrewXPLevel.VETERAN;
+        }
+
+        return CargoAPI.CrewXPLevel.REGULAR;
     }
 
     public static void mergeFleets(CampaignFleetAPI mainFleet, CampaignFleetAPI fleetToMerge)
