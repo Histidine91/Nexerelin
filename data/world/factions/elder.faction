@@ -1,0 +1,158 @@
+{
+	"id":"relics",
+	"color":[59,76,84,255],
+	"displayName":"Relics",
+	"description":"Human like ships, fully automated  without living crew.",
+	"shipNamePrefix":"RLC",
+
+	"names":{
+		"pur":1,
+	},
+	"portraits":{
+		"standard_male":[
+			"graphics/portraits/portrait_relics_elder_01.png",
+		],
+		"standard_female":[
+			"graphics/portraits/portrait_relics_elder_02.png",
+		],
+	},
+	"fleetCompositions":{
+	    "exerelinGenericFleet":{
+            "displayName":"Generic Fleet",
+            "maxFleetPoints":180,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+            	"relics_faithoper_Standard":[0, 1],
+				"relics_extinctioner_Standard":[0, 1],
+                "relics_intersepter_Standard":[0, 2],
+                "relics_sidewayer_Standard":[0, 2],
+                "relics_plower_Standard":[0, 2],
+                "relics_carrioner_Standard":[0, 2],
+                "relics_arwar_Standard":[0, 3],
+                "relics_ringer_Standard":[0, 3],
+                "relics_egler_Standard":[0, 3],
+                "relics_pusher_Standard":[0, 3],
+                "relics_solver_Standard":[0, 3],
+                "relics_chaser_wing":[0, 4],
+                "relics_hiter_wing":[0, 4],
+                "relics_charger_wing":[0, 4],
+            },
+        },
+        "exerelinOutSystemSupplyConvoy":{
+            "displayName":"Out-System Supply Convoy",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "buffalo_Standard":[1, 4],
+            },
+        },
+        "exerelinInSystemSupplyConvoy":{
+            "displayName":"In-System Supply Convoy",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "buffalo_Standard":[1, 2],
+            },
+        },
+        "exerelinInSystemStationAttackFleet":{
+            "displayName":"In-System Station Attack Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[50, 50],
+            "marinesPercent":[50, 50],
+            "ships":{
+                "exerelin_atlas_b_Standard":[1, 1],
+                "valkyrie_Elite":[1, 1],
+            },
+        },
+        "exerelinAsteroidMiningFleet":{
+            "displayName":"Asteroid Mining Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[10, 15],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "mining_drone_wing":[1, 2],
+                "buffalo_Standard":[1, 2],
+            },
+        },
+        "exerelinGasMiningFleet":{
+            "displayName":"Gas Mining Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[0, 0],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "mining_drone_wing":[1, 2],
+                "phaeton_Standard":[1, 1],
+                "buffalo_Standard":[1, 1],
+            },
+        },
+        "exerelinOutSystemStationAttackFleet":{
+            "displayName":"Out-System Station Attack Fleet",
+            "maxFleetPoints":300,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "exerelin_atlas_b_Standard":[1, 1],
+                "relics_faithoper_Standard":[0, 1],
+                "relics_extinctioner_Standard":[0, 1],
+                "relics_intersepter_Strike":[0, 2],
+                "relics_sidewayer_Strike":[0, 2],
+                "relics_plower_Strike":[0, 2],
+                "relics_carrioner_Strike":[0, 2],
+                "relics_arwar_Strike":[0, 3],
+                "relics_ringer_Strike":[0, 3],
+                "relics_egler_Strike":[0, 3],
+                "relics_pusher_Strike":[0, 3],
+                "relics_solver_Strike":[0, 3],
+                "relics_chaser_wing":[0, 4],
+                "relics_hiter_wing":[0, 4],
+                "relics_charger_wing":[0, 4],
+            },
+        },
+        "exerelinEliteFleet":{
+            "displayName":"Exerelin Elite Fleet",
+            "maxFleetPoints":100,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[0, 0],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "relics_queen_Standard":[0, 1],
+            },
+        },
+	},
+	"traits":{
+		"admiral":{
+
+		},
+		"captain":{
+			"steady":1,
+			"aggressive":1,
+			"suicidal":1,
+			"fearless":1,
+		},
+	},
+	"dialogue":{
+		"greetingFriendly":"1010001110001010100100001010100010",
+		"greetingNeutral":"111111111111111111111111111000000000000000000000000",
+		"greetingHostileAggressive":"00000000000000000000000000000000000",
+		"greetingHostileTimid":"1111111111111111111111111111111111111111",
+	}
+
+},

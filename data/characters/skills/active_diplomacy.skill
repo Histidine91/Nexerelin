@@ -1,0 +1,36 @@
+{
+	"id":"active_diplomacy",
+	"governingAptitude":"faction",
+	"effectGroups":[
+		{
+			"effects":[
+				{
+					"type":"CHARACTER_STATS",
+					"script":"data.characters.skills.scripts.ActiveDiplomacyEffect1",
+				},
+			]
+		},
+		{
+			"name":"New Item",
+			"requiredSkillLevel":5,
+			"effectBasedOnLevel":false,
+			"effects":[
+				{			
+					"type":"CHARACTER_STATS",
+					"script":"data.characters.skills.scripts.ActiveDiplomacyPerk1",
+				},
+			]
+		},
+		{
+			"name":"Agent Persistence",
+			"requiredSkillLevel":10,
+			"effectBasedOnLevel":false,
+			"effects":[
+				{			
+					"type":"CHARACTER_STATS",
+					"script":"data.characters.skills.scripts.ActiveDiplomacyPerk2",
+				},
+			]
+		},
+	],
+}

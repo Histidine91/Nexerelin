@@ -1,5 +1,6 @@
 package data.scripts.world.exerelin;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -16,6 +17,7 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 	float fleetCargoCapacity = 0;
 	int miningPower = 0;
 	boolean validFleet = false;
+    long lastTimeCheck;
 
 	public AsteroidMiningFleetSpawnPoint(SectorAPI sector, LocationAPI location,
 									float daysInterval, int maxFleets, SectorEntityToken anchor)
@@ -63,6 +65,7 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 		validFleet = true;
 		miningPower = ExerelinUtils.getMiningPower(fleet);
 		setFleetAssignments(fleet);
+        lastTimeCheck = Global.getSector().getClock().getTimestamp();
 
 		this.getFleets().add(fleet);
 		return fleet;
@@ -72,7 +75,11 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 	{
 		fleet.clearAssignments();
 
-		if(targetAsteroid != null && validFleet && miningPower != 0 && getAnchor().getCargo().getSupplies() < 8000)
+        float resourceMultiplier = 1.0f;
+        if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
+
+		if(targetAsteroid != null && validFleet && miningPower != 0 && getAnchor().getCargo().getSupplies() < 8000*resourceMultiplier)
 		{
 			if(!returningHome)
 				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, targetAsteroid, 1000, createTestTargetScript());
@@ -92,8 +99,11 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 				if(!returningHome && theFleet.getCargo().getSupplies() < fleetCargoCapacity)
 				{
 					// Mine more supplies
-					if(ExerelinUtils.getRandomInRange(0,1) == 0)
-						theFleet.getCargo().addSupplies(miningPower);
+                    if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) > 1)
+                    {
+                        lastTimeCheck = Global.getSector().getClock().getTimestamp();
+                        theFleet.getCargo().addSupplies(miningPower * 100);
+                    }
 				}
 				else if(!returningHome)
 				{
@@ -105,8 +115,12 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 				else if (theFleet.getCargo().getSupplies() > 20)
 				{
 					// Reached home so unload
-					theFleet.getCargo().removeSupplies(1);
-					getAnchor().getCargo().addSupplies(1);
+                    if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) > 1)
+                    {
+                        lastTimeCheck = Global.getSector().getClock().getTimestamp();
+                        theFleet.getCargo().removeSupplies(200);
+                        getAnchor().getCargo().addSupplies(200 * SystemManager.getSystemManagerForAPI((StarSystemAPI)theFleet.getContainingLocation()).getSystemStationManager().getStationRecordForToken(getAnchor()).getEfficiency(false));
+                    }
 				}
 				else
 				{

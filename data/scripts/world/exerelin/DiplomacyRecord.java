@@ -2,6 +2,7 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,9 +127,9 @@ public class DiplomacyRecord
 		return factionId;
 	}
 
-	public Boolean hasWarTargetInSystem(Boolean includeAbandoned)
+	public Boolean hasWarTargetInSystem(StarSystemAPI starSystemAPI, Boolean includeAbandoned)
 	{
-		StationRecord[] stations = ExerelinData.getInstance().systemManager.stationManager.getStationRecords();
+		StationRecord[] stations = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getStationRecords();
 		for(int i = 0; i < stations.length; i = i + 1)
 		{
 			StationRecord station = stations[i];
@@ -152,9 +153,9 @@ public class DiplomacyRecord
 		return false;
 	}
 
-	public int updateWarWeariness()
+	public int updateWarWeariness(Boolean atWar)
 	{
-		if(hasWarTargetInSystem(false))
+		if(atWar)
 			warWeariness = warWeariness + 1;
 		else
 			warWeariness = 0;

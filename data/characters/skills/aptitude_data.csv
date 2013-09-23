@@ -1,0 +1,2 @@
+id,name,color,description,order,effect_skill_id
+faction,Faction,"255,192,203,255","Skills related to faction management, fleet deployment and station efficiency.",5,aptitude_faction

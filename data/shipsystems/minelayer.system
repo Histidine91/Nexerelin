@@ -1,7 +1,0 @@
-{
-	"id":"minelayer",
-	"type":"WEAPON",
-	"aiType":"FLARE",
-	"weaponDataId":"minelayer",
-	"outOfUsesSound":"gun_out_of_ammo",
-}

@@ -2,8 +2,6 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import data.scripts.world.exerelin.ExerelinData;
-import data.scripts.world.exerelin.ExerelinUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -23,23 +21,31 @@ public class EventRebelInsurrection extends EventBase
 		FactionAPI rebelFAPI = Global.getSector().getFaction("rebel");
 		String rebelAgainseFaction = "";
 
-		// Reset Rebel relationships with each faction
-		String[] factions = ExerelinData.getInstance().systemManager.availableFactions;
-		for(int i = 0; i < factions.length; i = i + 1)
-			rebelFAPI.setRelationship(factions[i], 0);
+        // Get a target faction and declare war on them
+        rebelAgainseFaction = SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager().getFactionLeader();
 
-		// Get a target faction and declare war on them
-		rebelAgainseFaction = ExerelinData.getInstance().systemManager.stationManager.getFactionLeader();
-		if(rebelAgainseFaction == null)
-			return;
+        if(rebelAgainseFaction == null)
+            return;
 
-		rebelFAPI.setRelationship(rebelAgainseFaction, -1);
+        if(SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemOwnership(rebelAgainseFaction) != 1f)
+            return; // If not total ownership, then don't rebel
+
+        // Check if there are any rebel fleets still in system
+        for(int j = 0; j < starSystemAPI.getFleets().size(); j++)
+        {
+            CampaignFleetAPI fleet = (CampaignFleetAPI)starSystemAPI.getFleets().get(j);
+            if(fleet.getFaction().getId().equalsIgnoreCase(rebelFAPI.getId()))
+                return;
+        }
 
 		// Warn player
-		if(rebelAgainseFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-			Global.getSector().addMessage("A number of " + ExerelinData.getInstance().getPlayerFaction() + " fleets are attempting an insurrection!", Color.magenta);
-		else
-			Global.getSector().addMessage("A number of " + rebelAgainseFaction + " fleets are attempting an insurrection!");
+        if(ExerelinUtils.isPlayerInSystem(starSystemAPI))
+        {
+            if(rebelAgainseFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+                Global.getSector().addMessage("A number of " + ExerelinData.getInstance().getPlayerFaction() + " fleets are attempting an insurrection!", Color.magenta);
+            else
+                Global.getSector().addMessage("A number of " + rebelAgainseFaction + " fleets are attempting an insurrection!");
+        }
 
 		System.out.println("EVENT: Rebel insurrection against " + rebelAgainseFaction);
 
@@ -50,10 +56,10 @@ public class EventRebelInsurrection extends EventBase
 			CampaignFleetAPI fleet = (CampaignFleetAPI)fleets.get(i);
 
 			// Faction fleets have a chance to rebel
-			if(fleet.getFaction().getId().equalsIgnoreCase(rebelAgainseFaction) && ((float)ExerelinUtils.getRandomInRange(1, 10)/10) <= ExerelinData.getInstance().systemManager.stationManager.getStationOwnershipPercent(rebelAgainseFaction))
+			if(fleet.getFaction().getId().equalsIgnoreCase(rebelAgainseFaction) && ExerelinUtils.getRandomInRange(0, 1) == 0)
 			{
 				String fleetFullName = fleet.getFullName();
-				if(fleetFullName.contains("Station") || fleetFullName.contains("Supply") || fleetFullName.contains("Mining"))
+				if(fleetFullName.contains("Boarding") || fleetFullName.contains("Logistics") || fleetFullName.contains("Mining") || fleetFullName.contains("Command"))
 					continue; // Skip non-combat fleets
 
 				if(fleet.getFullName().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFullName()))
@@ -66,7 +72,7 @@ public class EventRebelInsurrection extends EventBase
 				fleet.setName(fleetName);
 
 				fleet.clearAssignments();
-				SectorEntityToken station = ExerelinUtils.getRandomStationForFaction(rebelAgainseFaction, Global.getSector());
+				SectorEntityToken station = ExerelinUtils.getRandomStationInSystemForFaction(rebelAgainseFaction, starSystemAPI, Global.getSector());
 				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, station, 30);
 				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, ExerelinUtils.getRandomOffMapPoint(starSystemAPI), 30);
 			}

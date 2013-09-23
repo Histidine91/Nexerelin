@@ -42,15 +42,27 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
 	{
 		String type = "exerelinGenericFleet";
 
-		if(this.getFleets().size() == this.getMaxFleets())
-			return null;
+		if(this.getFleets().size() == this.getMaxFleets() || (defendStation == null && this.getFleets().size() > 0))
+			return null; // Only build if at war, or no patrol fleets deployed
 
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
 
 
 		int remainingFleetsToSpawn = this.getMaxFleets()*2 - this.getFleets().size();
-		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn, 0.5f, true))
+		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn, 0.2f, true, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId)))
 		{
+            float eliteShipChance = 0.01f;
+
+            // Add player chance
+            if(owningFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+                eliteShipChance = eliteShipChance + ExerelinUtilsPlayer.getPlayerFactionFleetEliteShipBonusChance();
+
+            if(ExerelinUtils.getRandomInRange(0, (int)(99 / (eliteShipChance * 100))) == 0)
+                ExerelinUtils.addEliteShipToFleet(fleet);
+
+            ExerelinUtils.addFreightersToFleet(fleet);
+            ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId));
+
 			getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 			fleet.setPreferredResupplyLocation(getAnchor());
 
@@ -72,51 +84,52 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
 	private void setFleetAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
-		fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, getAnchor(), 200);
-		fleet.addAssignment(FleetAssignment.RESUPPLY, getAnchor(), 200);
-		fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, getAnchor(), 200);
-		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
+		fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, getAnchor(), 1000);
+		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
 	}
 
 	private void setWarAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
+
+        // Check if home is under threat
+        Boolean homeUnderThreat = false;
 		if(defendStation.getStationToken().getFullName().equalsIgnoreCase(getAnchor().getFullName()))
-		{
-			// Defend home station
-			fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken(), 200);
-			fleet.addAssignment(FleetAssignment.RESUPPLY, defendStation.getStationToken(), 200);
-			fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken() , 200);
-			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
-		}
-		else
-		{
-			int action = ExerelinUtils.getRandomInRange(0,2);
-			if(action == 0)
-			{
-				// Defend under attack station
-				fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken(), 200);
-				fleet.addAssignment(FleetAssignment.RESUPPLY, defendStation.getStationToken(), 200);
-				fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken() , 200);
-				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
-			}
-			else if (action == 1 && defendStation.getTargetStationRecord() != null)
-			{
-				// Attack station
-				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, defendStation.getTargetStationRecord().getStationToken(), 200);
-				fleet.addAssignment(FleetAssignment.RESUPPLY, getAnchor(), 200);
-				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, defendStation.getTargetStationRecord().getStationToken() , 200);
-				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
-			}
-			else if(action == 2 && defendStation.getTargetStationRecord() != null)
-			{
-				// Raid system
-				fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation.getTargetStationRecord().getStationToken(), 200);
-				fleet.addAssignment(FleetAssignment.RESUPPLY, getAnchor(), 200);
-				fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation.getTargetStationRecord().getStationToken() , 200);
-				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 200);
-			}
-		}
+            homeUnderThreat = true;
+
+        // Only allow raid system choice if home is not under threat
+        int action;
+        if(homeUnderThreat)
+            action = ExerelinUtils.getRandomInRange(0,1);
+        else
+            action = ExerelinUtils.getRandomInRange(0,2);
+
+        if(action == 0)
+        {
+            // Defend station
+            fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken(), 1000);
+            fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 100);
+        }
+        else if (action == 1 && defendStation.getTargetStationRecord() != null)
+        {
+            // Attack station
+            fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, defendStation.getTargetStationRecord().getStationToken(), 1000);
+            fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
+        }
+        else if(action == 2 && defendStation.getTargetStationRecord() != null)
+        {
+            // Raid system
+            fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation.getTargetStationRecord().getStationToken(), 1000);
+            fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
+        }
+        if(action == 1 || action == 2)
+        {
+            if(defendStation.getTargetStationRecord() == null || ((StarSystemAPI)defendStation.getTargetStationRecord().getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(this.owningFactionId).getTargetResupplyEntityToken() == null)
+                fleet.setPreferredResupplyLocation(getAnchor());
+            else
+                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(this.owningFactionId).getTargetResupplyEntityToken());
+        }
+
 	}
 }
 

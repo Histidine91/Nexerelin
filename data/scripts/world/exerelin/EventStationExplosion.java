@@ -3,8 +3,6 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import data.scripts.world.exerelin.ExerelinData;
-import data.scripts.world.exerelin.StationRecord;
 
 import java.awt.*;
 import java.util.List;
@@ -18,14 +16,14 @@ public class EventStationExplosion extends EventBase
 
 	public void causeExplosion(StarSystemAPI starSystemAPI)
 	{
-		StationRecord[] stations = ExerelinData.getInstance().systemManager.stationManager.getStationRecords(); //TODO change to use sectorManager
+		StationRecord[] stations = SectorManager.getCurrentSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getStationRecords();
 		int attempts = 0;
 		StationRecord station = null;
 		while(station == null & attempts < 20)
 		{
 			attempts = attempts + 1;
 			station = stations[ExerelinUtils.getRandomInRange(0, stations.length - 1)];
-			if(station.getOwner() == null || station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().systemManager.stationManager.getFactionLoser()))
+			if(station.getOwner() == null || station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLoser()))
 				station = null;
 		}
 
@@ -41,10 +39,13 @@ public class EventStationExplosion extends EventBase
 				accidentType = "minor";
 			if(!accidentType.equalsIgnoreCase("catastrophic"))
 			{
-				if(station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-					Global.getSector().addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and is operating at reduced efficiency!", Color.magenta);
-				else
-					Global.getSector().addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and is operating at reduced efficiency.");
+                if(ExerelinUtils.isPlayerInSystem(starSystemAPI))
+                {
+                    if(station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+                        Global.getSector().addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and is operating at reduced efficiency!", Color.magenta);
+                    else
+                        Global.getSector().addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and is operating at reduced efficiency.");
+                }
 				System.out.println("EVENT : " + accidentType + " station accident at " + station.getStationToken().getFullName());
 
 				station.setEfficiency(efficiency);
@@ -64,10 +65,13 @@ public class EventStationExplosion extends EventBase
 			}
 			else
 			{
-				if(station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-					Global.getSector().addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and has been abandoned!", Color.magenta);
-				else
-					Global.getSector().addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and has been abandoned.");
+                if(ExerelinUtils.isPlayerInSystem(starSystemAPI))
+                {
+                    if(station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+                        Global.getSector().addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and has been abandoned!", Color.magenta);
+                    else
+                        Global.getSector().addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and has been abandoned.");
+                }
 				System.out.println("EVENT : " + accidentType + " station accident at " + station.getStationToken().getFullName());
 
 				station.setOwner(null, false, false);

@@ -1,6 +1,6 @@
 {
 	id:"abandoned",
-	"color":[11,11,11,11],
+	"color":[72,61,139,255],
 	"displayName":"Abandoned",
 	"shipNamePrefix":"ABD",
 	"shipNameSources":{
@@ -143,9 +143,9 @@
 		},
 	},
 	"dialogue":{
-		"greetingFriendly":"This Tri-Tachyon vessel is on a classified mission. Identity and friendly status confirmed.",
-		"greetingNeutral":"We of the Tri-tachyon corporation have scanned your vessel and analyzed your tactical capabilities. Maintain your distance.",
-		"greetingHostileAggressive":"Attention. Your vessel has been scanned and identified as hostile to the Tri-Tachyon corporation. Prepare for annihilation.",
-		"greetingHostileTimid":"Attention. Your vessel has been scanned and identified as hostile to the Tri-Tachyon corporation. Further attempts at aggression will be recorded.",
+		"greetingFriendly":"...",
+		"greetingNeutral":"...",
+		"greetingHostileAggressive":"...",
+		"greetingHostileTimid":"...",
 	}
 },

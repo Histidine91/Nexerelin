@@ -2,7 +2,6 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 
 import java.awt.*;
@@ -17,14 +16,14 @@ public class EventStationSeccession extends EventBase
 
 	public void makeStationSecedeToOutSystemFaction(StarSystemAPI starSystemAPI)
 	{
-		if(ExerelinData.getInstance().systemManager.stationManager.getNumFactionsInSystem() >= ExerelinData.getInstance().systemManager.maxFactionsInExerelin)
+		if(SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager().getNumFactionsInSystem() >= SectorManager.getCurrentSectorManager().getMaxFactions())
 		{
-			System.out.println(ExerelinData.getInstance().systemManager.stationManager.getNumFactionsInSystem() + " of " + ExerelinData.getInstance().systemManager.maxFactionsInExerelin + " already in system.");
+			System.out.println(SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager().getNumFactionsInSystem() + " of " + SectorManager.getCurrentSectorManager().getMaxFactions() + " already in system.");
 			return;
 		}
 
-		String[] factions = ExerelinData.getInstance().getAvailableFactions(Global.getSector());
-		String[] factionsInSystem = ExerelinUtils.getFactionsInSystem(starSystemAPI);
+		String[] factions = SectorManager.getCurrentSectorManager().getFactionsPossibleInSector();
+		String[] factionsInSystem = SystemManager.getSystemManagerForAPI(starSystemAPI).getFactionsInSystem();
 		int attempts = 0;
 		String factionId = "";
 		while((factionId.equalsIgnoreCase("")) && attempts < 20)
@@ -48,7 +47,7 @@ public class EventStationSeccession extends EventBase
 		if(factionId.equalsIgnoreCase(""))
 			return; // No faction has 0 stations in system
 
-		StationRecord[] stations = ExerelinData.getInstance().systemManager.stationManager.getStationRecords();
+		StationRecord[] stations = SystemManager.getSystemManagerForAPI(starSystemAPI) .getSystemStationManager().getStationRecords();
 		attempts = 0;
 		StationRecord station = null;
 		while(station == null & attempts < 20)
@@ -56,8 +55,8 @@ public class EventStationSeccession extends EventBase
 			attempts = attempts + 1;
 			station = stations[ExerelinUtils.getRandomInRange(0, stations.length - 1)];
 			if(station.getOwner() == null
-					|| !station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().systemManager.stationManager.getFactionLeader())
-					|| ExerelinData.getInstance().systemManager.stationManager.getNumStationsOwnedByFaction(ExerelinData.getInstance().systemManager.stationManager.getFactionLeader()) <= 1)
+					|| !station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLeader())
+					|| ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getNumStationsOwnedByFaction(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLeader()) <= 1)
 				station = null;
 		}
 
@@ -70,8 +69,8 @@ public class EventStationSeccession extends EventBase
 
 			System.out.println("EVENT : Station secession at " + station.getStationToken().getFullName() + " to " + factionId + "(out system)");
 
-			ExerelinData.getInstance().systemManager.diplomacyManager.declarePeaceWithAllFactions(factionId);
-			ExerelinData.getInstance().systemManager.diplomacyManager.createWarIfNoneExists(factionId);
+			ExerelinData.getInstance().getSectorManager().getDiplomacyManager().declarePeaceWithAllFactions(factionId);
+			ExerelinData.getInstance().getSectorManager().getDiplomacyManager().createWarIfNoneExists(factionId);
 			station.setOwner(factionId,  false, false);
 
 			station.getStationToken().getCargo().clear();
@@ -81,6 +80,8 @@ public class EventStationSeccession extends EventBase
 			station.getStationToken().getCargo().addSupplies(6400);
 
 			station.setEfficiency(3);
+
+            SectorManager.getCurrentSectorManager().setLastFactionSpawnTime(Global.getSector().getClock().getTimestamp());
 		}
 	}
 }

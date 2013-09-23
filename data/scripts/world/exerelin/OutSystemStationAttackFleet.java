@@ -17,6 +17,7 @@ public class OutSystemStationAttackFleet
 	SectorAPI theSector;
 	Boolean defendLocation;
 	Boolean boarding = false;
+    long lastTimeCheck;
 
 	public OutSystemStationAttackFleet(SectorAPI sector, LocationAPI location, String faction, Boolean defend)
 	{
@@ -41,7 +42,7 @@ public class OutSystemStationAttackFleet
 		SectorEntityToken target;
 		if(targetPredetermined == null)
 		{
-			target = ExerelinUtils.getClosestEnemyStation(faction, this.theSector, this.spawnPoint);
+			target = ExerelinUtils.getClosestEnemyStation(faction, (StarSystemAPI)theLocation, this.theSector, this.spawnPoint);
 			if(target == null)
 				return null;
 		}
@@ -51,20 +52,26 @@ public class OutSystemStationAttackFleet
 		this.theTarget = target;
 		this.boarding = false;
 
-		CampaignFleetAPI fleet = theSector.createFleet(faction, type);
+		CampaignFleetAPI fleet = theSector.createFleet(faction, "exerelinInSystemStationAttackFleet");
+        CampaignFleetAPI extraFleet = theSector.createFleet(faction, "exerelinGenericFleet");
+        CampaignFleetAPI extraFleetTwo = theSector.createFleet(faction, "exerelinGenericFleet");
+        ExerelinUtils.mergeFleets(fleet, extraFleet);
+        ExerelinUtils.mergeFleets(fleet, extraFleetTwo);
+        ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.5f, CargoAPI.CrewXPLevel.ELITE);
 
 		theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
+        fleet.setName("Command Fleet");
 		theFleet = fleet;
 		fleet.setPreferredResupplyLocation(target);
 
 		setFleetAssignments(fleet);
 
 		if(theFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-			Global.getSector().addMessage(ExerelinData.getInstance().getPlayerFaction() + " out system attack fleet incoming!", Color.magenta);
+			Global.getSector().addMessage(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!", Color.magenta);
 		else
-			Global.getSector().addMessage(theFaction + " out system attack fleet incoming!");
+			Global.getSector().addMessage(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!");
 
-		System.out.println(theFaction + " out system attack fleet created");
+		System.out.println(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!");
 
 		return fleet;
 	}
@@ -75,8 +82,7 @@ public class OutSystemStationAttackFleet
 
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, theTarget, 3000, createTestTargetScript());
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, theTarget, 10, createArrivedScript());
-		if(defendLocation)
-			fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, theTarget, 60);
+		fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, theTarget, 60);
 		fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, theTarget, 10);
 	}
 
@@ -88,14 +94,14 @@ public class OutSystemStationAttackFleet
 				else if(!ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(theFaction) && theSector.getFaction(ExerelinUtils.getStationOwnerFactionId(theTarget)).getRelationship(theFaction) >= 0)
 				{
 					// Ally or neutral owns it so get a new target to attack
-					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, theSector, theTarget);
+					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, (StarSystemAPI)theLocation, theSector, theTarget);
 					if(newTarget == null)
 					{
 						// No target so leave system
 						theFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, spawnPoint, 100);
 						return;
 					}
-
+                    boarding = false;
 					theTarget = newTarget;
 					setFleetAssignments(theFleet);
 					return;
@@ -103,23 +109,33 @@ public class OutSystemStationAttackFleet
 				else if(!boarding && ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 				{
 					// Warn player of boarding
-					boarding = true;
-					System.out.println("Player owned " + theTarget.getFullName() + " being boarded by " + theFaction);
-					Global.getSector().addMessage(theTarget.getFullName() + " is being boarded by " + theFaction, Color.magenta);
+					System.out.println("Player owned " + theTarget.getFullName() + " being boarded by " + Global.getSector().getFaction(theFaction).getDisplayName());
+					Global.getSector().addMessage(theTarget.getFullName() + " is being boarded by " + Global.getSector().getFaction(theFaction).getDisplayName(), Color.magenta);
 				}
 
 				if(defendLocation)
 				{
-					if(!boarding || ExerelinUtils.getRandomInRange(0, 6000) > 0)
+					if(!boarding)
 					{
 						// Start boarding
+                        lastTimeCheck = Global.getSector().getClock().getTimestamp();
 						boarding = true;
 						setFleetAssignments(theFleet);
 					}
-					else
-					{
-						return; // Finish boarding and run arrived script
-					}
+
+                    if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) >= 1)
+                    {
+                        lastTimeCheck = Global.getSector().getClock().getTimestamp();
+                        if(ExerelinUtils.getRandomInRange(0, 15) == 0)
+                        {
+                            boarding = false;
+                            return; // Finish boarding and run arrived script
+                        }
+                        else
+                            setFleetAssignments(theFleet);
+                    }
+                    else
+                        setFleetAssignments(theFleet);
 				}
 				else
 				{
@@ -154,7 +170,7 @@ public class OutSystemStationAttackFleet
 				else if(!ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(theFaction) && theSector.getFaction(ExerelinUtils.getStationOwnerFactionId(theTarget)).getRelationship(theFaction) >= 0)
 				{
 					// Ally or neutral owns it so get new target
-					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, theSector, theTarget);
+					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, (StarSystemAPI)theLocation, theSector, theTarget);
 					if(newTarget == null)
 					{
 						// No target so leave system
@@ -164,10 +180,13 @@ public class OutSystemStationAttackFleet
 
 					theTarget = newTarget;
 					setFleetAssignments(theFleet);
+                    theFleet.setPreferredResupplyLocation(newTarget);
 					return;
 				}
 
-				StationRecord stationRecord = ExerelinData.getInstance().systemManager.stationManager.getStationRecordForToken(theTarget);
+                ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidBoardingFlagships(), true);
+                ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
+				StationRecord stationRecord = SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI)theLocation).getSystemStationManager().getStationRecordForToken(theTarget);
 				stationRecord.setOwner(theFaction, true, true);
 				stationRecord.clearCargo();
 

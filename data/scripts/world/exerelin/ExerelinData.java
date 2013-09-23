@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SpawnPointPlugin;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import org.lwjgl.util.vector.Vector2f;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,36 +17,44 @@ import java.util.Iterator;
 
 public final class ExerelinData
 {
-	private static ExerelinData instance = null;
-	private static SectorAPI sector = null;
+    private static ExerelinData instance = null;
+    private static SectorAPI sector = null;
 
-	public boolean confirmedFaction = false;
-	private String playerFaction = "independent";
+    public boolean confirmedFaction = false;
+    private String playerFaction = "sindrian_diktat";
 
-	private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "independent", "shadowyards", "syndicateasp", "junkpirate", "nomad", "council", "blackrock", "antediluvian", "valkyrian", "lotusconglomerate", "gedune", "neutrino", "interstellarFederation", "relics", "nihil", "thulelegacy"};
-	//private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "independent"};
+    // Valid ships for special fleets
+    private final String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_allocator"};
+    private final String[] ValidTroopTransportShips = new String[] { "valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_allocator", "qua_yidato" };
+    private final String[] ValidMiningShips = new String[] {"mining_drone", "zorg_worker"};
+
+	//private String[] possibleFactions = new String[] {};
+	private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "sindrian_diktat"};
 	private String[] availableFactions = null;
 	public boolean onlyVanillaFactions = false;
 	public boolean confirmedAvailableFactions = false;
 
-	public int numPlanets = 10;
-	public int maxMoonsPerPlanet = 3;
-	public int numStations = 3;
-	public int numAsteroidBelts = 6;
+    // Sector Generation Defaults
+	public int numSystems = 4;
+    public int maxMoonsPerPlanet = 3;
 
+	public int maxPlanets = 6;
+	public int maxStations = 10;
+	public int maxAsteroidBelts = 0;
+    public int maxSystemSize = 16000;
+    public int maxSectorSize = 16000;
+
+    // Game defaults
 	public Boolean playerOwnedStationFreeTransfer = false;
 	public Boolean confirmedFreeTransfer = false;
 	public boolean respawnFactions = true;
-	public boolean onlyRespawnStartingFactions = true;
-	public int respawnDelay = 1000000;
+	public boolean onlyRespawnStartingFactions = false;
+	public int respawnDelay = 60;
 	public int numStartFactions = 3;
-	public boolean omniFacPresent = false;
+	public boolean omniFacPresent = true;
 	public int maxFactionsInExerelinAtOnce = 3;
-	public int maxSystemSize = 15000;
 
-	public SystemManager systemManager;
-
-	public Vector2f playerOffMapFleetSpawnLocation = null;
+	private SectorManager sectorManager;
 
 	private ExerelinData()
 	{
@@ -59,20 +66,31 @@ public final class ExerelinData
 		if(instance == null)
 			instance = new ExerelinData();
 
-		updateSystemManager();
+		updateSectorManager();
 
 		return instance;
 	}
 
-	private static void updateSystemManager()
+	private static void updateSectorManager()
 	{
 		if (Global.getSector() != sector)
 		{
 			sector = Global.getSector();
 
-			System.out.println("Sector change detected, retrieving spawnpoints...");
+			System.out.println("Sector change detected, retrieving saved time manager...");
 
-			StarSystemAPI system = sector.getStarSystem("Exerelin");
+			//TODO - Will the time manager always be in Exerelin?
+            StarSystemAPI system;
+            try
+            {
+			    system = (StarSystemAPI)sector.getStarSystems().get(0); //TODO - change
+            }
+            catch(Exception e)
+            {
+                System.out.println("No systems built yet." + e.getMessage());
+                return;
+            }
+
 			ArrayList spawnPoints = ExerelinHacks.getSpawnPoints(system);
 
 			if (spawnPoints != null)
@@ -83,11 +101,11 @@ public final class ExerelinData
 				{
 					SpawnPointPlugin plugin = (SpawnPointPlugin)it.next();
 
-					if (plugin instanceof SystemManager)
+					if (plugin instanceof TimeManager)
 					{
-						System.out.println("SystemManager found.");
+						System.out.println("TimeManager found, settign reference");
 
-						instance.systemManager = (SystemManager)plugin;
+						instance.sectorManager = ((TimeManager) plugin).sectorManagerRef;
 						break;
 					}
 				}
@@ -194,30 +212,148 @@ public final class ExerelinData
 
 	public void addModdedFactionsToList(ArrayList possibleFactionList)
 	{
-		System.out.println("Getting modded factions");
+		System.out.println("EXERELIN: Getting modded factions");
+
+		// Test for antediluvian
+		if(isFactionInstalled("antediluvian", "data.scripts.world.AntediluvianGen"))
+			possibleFactionList.add("antediluvian");
+
+		// Test for blackrock
+		if(isFactionInstalled("blackrock", "data.scripts.world.BRGen"))
+			possibleFactionList.add("blackrock");
+
+		// Test for interstellarFederation
+		if(isFactionInstalled("interstellarFederation", "data.scripts.world.InterstellarFederationSectorGen"))
+			possibleFactionList.add("interstellarFederation");
+
+		// Test for junkpirate
+		if(isFactionInstalled("junkpirate", "data.scripts.world.JPSectorGen"))
+			possibleFactionList.add("junkpirate");
+
+		// Test for council_loyalists
+		if(isFactionInstalled("council_loyalists", "data.scripts.world.HegemonyCoreGen"))
+			possibleFactionList.add("council_loyalists");
+
+		// Test for neutrino
+		if(isFactionInstalled("neutrino", "data.scripts.world.neutrinoGen"))
+			possibleFactionList.add("neutrino");
+
+		// Test for gedune
+		if(isFactionInstalled("gedune", "data.scripts.world.SectorGenWithGedune"))
+			possibleFactionList.add("gedune");
+
+		// Test for nihil
+		if(isFactionInstalled("nihil", "data.scripts.nihil.world.NihilSectorGen"))
+			possibleFactionList.add("nihil");
+
+		// Test for nomads
+		if(isFactionInstalled("nomad", "data.scripts.nom.world.SectorGenWithNomads"))
+			possibleFactionList.add("nomad");
+
+		// Test for relics
+		if(isFactionInstalled("relics", "data.scripts.pur.world.PurSectorGen"))
+			possibleFactionList.add("relics");
+
+		// Test for shadowyards
+		if(isFactionInstalled("shadowyards_hi", "data.scripts.world.SHIGen"))
+			possibleFactionList.add("shadowyards_hi");
+
+		// Test for thulelegacy
+		if(isFactionInstalled("thulelegacy", "data.scripts.world.TLGen"))
+			possibleFactionList.add("thulelegacy");
+
+		// Test for valkyrian
+		if(isFactionInstalled("valkyrian", "data.scripts.world.valkyrianGen"))
+			possibleFactionList.add("valkyrian");
+
+		// Test for syndicateasp
+		if(isFactionInstalled("syndicateasp", "data.scripts.world.ASPSectorGen"))
+			possibleFactionList.add("syndicateasp");
+
+		// Test for lotusconglomerate
+		if(isFactionInstalled("lotusconglomerate", "data.scripts.world.LotusSectorGen"))
+			possibleFactionList.add("lotusconglomerate");
 
 		// Test for Bushi
-		try
-		{
-			Global.getSettings().getScriptClassLoader().loadClass("data.scripts.world.BushiGen");
-			System.out.println("Bushi installed");
+		if(isFactionInstalled("bushi", "data.scripts.world.BushiGen"))
 			possibleFactionList.add("bushi");
-		}
-		catch (ClassNotFoundException ex)
-		{
-			System.out.println("Bushi not installed");
-		}
 
 		// Test for Hiigaran Descendents
+		if(isFactionInstalled("hiigaran_descendants", "data.scripts.world.HiigaraGen"))
+			possibleFactionList.add("hiigaran_descendants");
+
+        // Test for Ceredia
+        if(isFactionInstalled("ceredia", "data.scripts.world.AvanMod"))
+            possibleFactionList.add("ceredia");
+
+        // Test for Directorate
+        if(isFactionInstalled("directorate", "data.scripts.world.AvanMod"))
+            possibleFactionList.add("directorate");
+
+        // Test for Isora
+        if(isFactionInstalled("isora", "data.scripts.world.AvanMod"))
+            possibleFactionList.add("isora");
+
+        // Test for Independant Miners
+        if(isFactionInstalled("independantMiners", "data.scripts.world.MineFactionModGen"))
+            possibleFactionList.add("independantMiners");
+
+        // Test for Scrappers
+        if(isFactionInstalled("scrappers", "data.scripts.world.hadd_ModGen"))
+            possibleFactionList.add("scrappers");
+
+        // Test for Shadow Order
+        if(isFactionInstalled("shadoworder", "data.scripts.world.tadd_ModGen"))
+            possibleFactionList.add("shadoworder");
+
+        // Test for Zorg
+        if(isFactionInstalled("zorg_hive", "data.scripts.world.ZorgGen"))
+            possibleFactionList.add("zorg_hive");
+
+        // Test for Zorg
+        if(isFactionInstalled("qualljom_society", "data.scripts.world.QSGen"))
+            possibleFactionList.add("qualljom_society");
+
+		System.out.println("- - - - - - - - - -");
+	}
+
+	private boolean isFactionInstalled(String factionId, String factionSpecficClassName)
+	{
 		try
 		{
-			Global.getSettings().getScriptClassLoader().loadClass("data.scripts.world.HiigaraGen");
-			System.out.println("Hiigaran_Descendents installed");
-			possibleFactionList.add("hiigaran_descendants");
+			Global.getSettings().getScriptClassLoader().loadClass(factionSpecficClassName);
+			System.out.println(factionId + " installed");
+			return true;
 		}
 		catch (ClassNotFoundException ex)
 		{
-			System.out.println("Hiigaran_Descendents not installed");
+			System.out.println(factionId + " not installed");
+			return false;
 		}
 	}
+
+	public SectorManager getSectorManager()
+	{
+		return sectorManager;
+	}
+
+	public void setSectorManager(SectorManager inSectorManager)
+	{
+		sectorManager = inSectorManager;
+	}
+
+    public String[] getValidBoardingFlagships()
+    {
+        return ValidBoardingFlagships;
+    }
+
+    public String[] getValidTroopTransportShips()
+    {
+        return ValidTroopTransportShips;
+    }
+
+    public String[] getValidMiningShips()
+    {
+        return ValidMiningShips;
+    }
 }

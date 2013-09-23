@@ -1,0 +1,14 @@
+{
+	"id":"fleet_crew_training",
+	"governingAptitude":"faction",
+	"effectGroups":[
+		{
+			"effects":[
+				{
+					"type":"CHARACTER_STATS",
+					"script":"data.characters.skills.scripts.FleetCrewTrainingEffect1",
+				},
+			]
+		},
+	],
+}

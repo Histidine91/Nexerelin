@@ -47,4 +47,20 @@ public class EventAddObjectToStorage extends EventBase
 			}
 		}
 	}
+
+    public void addSabateurToStorageFacility(StarSystemAPI starSystemAPI)
+    {
+        List stations = starSystemAPI.getOrbitalStations();
+
+        for(int i = 0; i < stations.size(); i++)
+        {
+            SectorEntityToken station = (SectorEntityToken)stations.get(i);
+            if(station.getFullName().contains("Storage"))
+            {
+                station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
+                System.out.println("EVENT: A sabateur is available at your storage facility.");
+                Global.getSector().addMessage("A sabateur is available at your storage facility.", Color.green);
+            }
+        }
+    }
 }
