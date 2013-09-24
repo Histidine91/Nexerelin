@@ -284,6 +284,8 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			ExerelinData.getInstance().maxPlanets = 15;
 		else if (response == EIGHTEEN_PLANETS)
 			ExerelinData.getInstance().maxPlanets = 18;
+        else if (response == TWENTYONE_PLANETS)
+            ExerelinData.getInstance().maxPlanets = 21;
 		else if (response == ZERO_ASTEROID_BELTS)
 			ExerelinData.getInstance().maxAsteroidBelts = 0;
 		else if (response == TWO_ASTEROID_BELTS)

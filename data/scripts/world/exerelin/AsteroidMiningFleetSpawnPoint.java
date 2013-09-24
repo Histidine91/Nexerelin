@@ -112,7 +112,7 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 					validFleet = ExerelinUtils.isValidMiningFleet(theFleet);
 					miningPower = ExerelinUtils.getMiningPower(theFleet);
 				}
-				else if (theFleet.getCargo().getSupplies() > 20)
+				else if (theFleet.getCargo().getSupplies() > 40)
 				{
 					// Reached home so unload
                     if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) > 1)

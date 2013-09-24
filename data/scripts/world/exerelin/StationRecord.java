@@ -156,7 +156,18 @@ public class StationRecord
 		}
 	}
 
-	public void spawnFleets()
+    public void deriveTargets()
+    {
+        if(this.owningFaction == null)
+            return;
+
+        deriveClosestEnemyTarget();
+        deriveStationToAssist();
+        deriveClosestAsteroid();
+        deriveClosestGasGiant();
+    }
+
+	public void updateFleets()
 	{
         removeDeadOrRebelFleets(attackSpawn);
         removeDeadOrRebelFleets(stationAttackFleetSpawn);
@@ -171,11 +182,6 @@ public class StationRecord
         if(checkIsBeingBoarded())
             return; // Don't spawn fleets if being boarded
 
-		deriveClosestEnemyTarget();
-		deriveStationToAssist();
-		deriveClosestAsteroid();
-		deriveClosestGasGiant();
-
 		setFleetTargets();
 
 		inSystemSupplyConvoySpawn.spawnFleet();
@@ -183,7 +189,6 @@ public class StationRecord
         float resourceMultiplier = 1.0f;
         if(this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
             resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
-
 
 		if(stationCargo.getSupplies() < (6400*resourceMultiplier))
         {
@@ -204,7 +209,6 @@ public class StationRecord
 			stationAttackFleetSpawn.spawnFleet();
 
 
-
         for(int i = defenseSpawn.getFleets().size(); i < defenseSpawn.getMaxFleets(); i++)
             defenseSpawn.spawnFleet();
 
@@ -218,6 +222,9 @@ public class StationRecord
 	// Increase resources in station based off efficiency
 	public void increaseResources()
 	{
+        if(this.getOwner() == null)
+            return;
+
         if(checkIsBeingBoarded())
             return; // Don't increase resources if being boarded
 

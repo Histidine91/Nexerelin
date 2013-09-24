@@ -24,7 +24,7 @@ public final class ExerelinData
     private String playerFaction = "sindrian_diktat";
 
     // Valid ships for special fleets
-    private final String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_allocator"};
+    private final String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_allocator", "neutrino_nausicaa", "neutrino_nausicaa2"};
     private final String[] ValidTroopTransportShips = new String[] { "valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_allocator", "qua_yidato" };
     private final String[] ValidMiningShips = new String[] {"mining_drone", "zorg_worker"};
 

@@ -145,35 +145,42 @@ public class ExerelinGen implements SectorGeneratorPlugin
 					String moonType = possibleMoonTypes[ExerelinUtils.getRandomInRange(0, possibleMoonTypes.length - 1)];
 					angle = ExerelinUtils.getRandomInRange(1, 360);
 					distance = ExerelinUtils.getRandomInRange(650, 1300);
-					radius = ExerelinUtils.getRandomInRange(50, 100);
+					int moonRadius = ExerelinUtils.getRandomInRange(50, 100);
 					orbitDays = distance / 16 * ExerelinUtils.getRandomInRange(1, 3);
-					system.addPlanet(newPlanet, name + " " + ext, moonType, angle, radius, distance, orbitDays);
+					system.addPlanet(newPlanet, name + " " + ext, moonType, angle, moonRadius, distance, orbitDays);
 				}
 			}
 
-            // 20% chance of rings around planet / 33% chance if a gas giant
-            if(ExerelinUtils.getRandomInRange(0,4) == 0 || (name.contains("Gaseous") && ExerelinUtils.getRandomInRange(0,2) == 0))
+            // 20% chance of rings around planet / 50% chance if a gas giant
+            if(ExerelinUtils.getRandomInRange(0,4) == 0 || (name.contains("Gaseous") && ExerelinUtils.getRandomInRange(0,1) == 0))
             {
-                int ringType = ExerelinUtils.getRandomInRange(0,2);
+                int ringType = ExerelinUtils.getRandomInRange(0,3);
 
                 if(ringType == 0)
                 {
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*3, 40f);
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*3, 60f);
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*3, 80f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*2, 40f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*2, 60f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*2, 80f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, (int)(radius*2.5), 80f);
                 }
                 else if (ringType == 1)
                 {
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, radius*3, 70f);
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, radius*3, 90f);
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, radius*3, 110f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, radius*3, 70f);
+                    //system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, (int)(radius*2.5), 90f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, (int)(radius*3.5), 110f);
                 }
-                else
+                else if (ringType == 2)
                 {
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, radius*4, 50f);
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, radius*4, 70f);
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, radius*4, 80f);
-                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 1, Color.white, 256f, radius*4, 90f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, radius*3, 70f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, (int)(radius*3), 90f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, (int)(radius*3), 110f);
+                }
+                else if (ringType == 3)
+                {
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, radius*2, 50f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, radius*2, 70f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, radius*2, 80f);
+                    system.addRingBand(newPlanet, "misc", "rings1", 256f, 1, Color.white, 256f, (int)(radius*2.5), 90f);
                 }
             }
 		}

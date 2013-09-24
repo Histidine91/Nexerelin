@@ -307,7 +307,7 @@ public class DiplomacyManager
             if(recordToUpdate.getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
             {
                 float bonus = ExerelinUtilsPlayer.getPlayerDiplomacyRelationshipBonus();
-                factionRelationship = factionRelationship + (int)(factionRelationship*bonus);
+                factionRelationship = factionRelationship + Math.abs((int)(factionRelationship*bonus));
             }
 
 			// Update the relationship setting

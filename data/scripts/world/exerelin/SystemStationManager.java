@@ -50,8 +50,17 @@ public class SystemStationManager
 		return null;
 	}
 
+    // Run in conjunction with updateStationFleets
+    public void deriveStationTargets()
+    {
+        if(stationRecords.length == 0 || nextStationRecord == stationRecords.length)
+            return;
+
+        stationRecords[nextStationRecord].deriveTargets();
+    }
+
 	// Each call will update a station and move the counter to the next station
-	public void updateStations()
+	public void updateStationFleets()
 	{
         if(stationRecords.length == 0)
             return;
@@ -64,8 +73,7 @@ public class SystemStationManager
 
 		if(stationRecords[nextStationRecord].getOwner() != null)
 		{
-			stationRecords[nextStationRecord].increaseResources();
-			stationRecords[nextStationRecord].spawnFleets();
+			stationRecords[nextStationRecord].updateFleets();
 			stationRecords[nextStationRecord].checkForPlayerItems();
 		}
 

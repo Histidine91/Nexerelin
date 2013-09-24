@@ -93,7 +93,7 @@ public class SystemEventManager
 			lastEventType = eventAddObjectToStorage.getType();
 		}
 
-		if(ExerelinUtils.getRandomInRange(0,(45*(int)(1.0f - extraChance))) == 0
+		if(ExerelinUtils.getRandomInRange(0,(60*(int)(1.0f - extraChance))) == 0
 				&& !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType))
 		{
 			eventAddObjectToStorage.addPrisonerToStorageFacility(starSystemAPI);
@@ -101,7 +101,7 @@ public class SystemEventManager
 			lastEventType = eventAddObjectToStorage.getType();
 		}
 
-        if(ExerelinUtils.getRandomInRange(0,(45*(int)(1.0f - extraChance))) == 0
+        if(ExerelinUtils.getRandomInRange(0,(60*(int)(1.0f - extraChance))) == 0
                 && !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType)
                 && ExerelinUtilsPlayer.getPlayerSabateurAvailability())
         {

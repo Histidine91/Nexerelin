@@ -20,8 +20,6 @@ public class EventRebelFleetSpawn extends EventBase
 		// DEFAULTS
         FactionAPI rebelFAPI = Global.getSector().getFaction("rebel");
 
-		System.out.println("EVENT: Spawning rebel fleet in " + starSystemAPI.getName());
-
 		java.util.List fleets = starSystemAPI.getFleets();
 
         // Get cont of current rebel fleets in system
@@ -43,6 +41,8 @@ public class EventRebelFleetSpawn extends EventBase
         SectorEntityToken planet = (SectorEntityToken)starSystemAPI.getPlanets().get(ExerelinUtils.getRandomInRange(1, starSystemAPI.getPlanets().size() - 1));
 
         CampaignFleetAPI newRebelFleet = Global.getSector().createFleet(factionLeaderId, "exerelinGenericFleet");
+
+        //System.out.println("EVENT: Spawning rebel fleet in " + starSystemAPI.getName());
 
         // Reduce size of rebel fleet
         List members = newRebelFleet.getFleetData().getMembersListCopy();

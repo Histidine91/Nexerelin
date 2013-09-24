@@ -3,7 +3,7 @@
 "name":"Exerelin", # displayed to the player
 "author":"Zaphide",
 "version":"0.6",
-"description":"Choose your banner and fight for supremacy of system Exerelin!",
+"description":"Choose your banner and fight for supremacy of sector Exerelin!",
 "gameVersion":"0.6a",
 "totalConversion":"false",
 "jars":["jars/Omnifactory.jar","jars/ExerelinHacks.jar", "jars/ExerelinPlugins.jar",],

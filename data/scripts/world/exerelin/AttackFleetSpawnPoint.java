@@ -53,7 +53,7 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 		if(this.getFleets().size() == this.getMaxFleets())
 			return null;
 
-		if(stationTarget == null || stationTarget.getOwner() == null)
+		if(stationTarget == null || stationTarget.getOwner() == null || stationTarget.getOwner().getFactionId().equalsIgnoreCase(this.ownerFactionId))
 			return null;
 
 		CampaignFleetAPI fleet = getSector().createFleet(ownerFactionId, type);

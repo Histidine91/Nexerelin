@@ -816,7 +816,6 @@ public class ExerelinUtils
 		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "agent", 2);
 		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 2);
 		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "mining_drone_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "mining_drone_wing", null);
 	}
 
     public static void addEliteShipToFleet(CampaignFleetAPI fleet)
@@ -840,15 +839,16 @@ public class ExerelinUtils
 
     public static void handlePlayerBoarding(CampaignFleetAPI playerFleet)
     {
+        // Check player isn't in hyperspace
         if(playerFleet.isInHyperspace())
             return;
-
-        StarSystemAPI starSystemAPI = (StarSystemAPI)playerFleet.getContainingLocation();
-        SystemManager systemManager = SystemManager.getSystemManagerForAPI(starSystemAPI);
 
         // Check player fleet composition
         if(!ExerelinUtils.isValidBoardingFleet(playerFleet, true))
             return;
+
+        StarSystemAPI starSystemAPI = (StarSystemAPI)playerFleet.getContainingLocation();
+        SystemManager systemManager = SystemManager.getSystemManagerForAPI(starSystemAPI);
 
         // Get factionId of station at XY coords (if exists)
         SectorEntityToken possibleBoardTarget = systemManager.getStationTokenForXY(playerFleet.getLocation().getX(), playerFleet.getLocation().getY(), 60);
@@ -867,8 +867,13 @@ public class ExerelinUtils
         // Attempt to takeover station
         if(ExerelinUtils.boardStationAttempt(playerFleet, possibleBoardTarget, true))
         {
+            if(!SectorManager.getCurrentSectorManager().isFactionInSector(ExerelinData.getInstance().getPlayerFaction()))
+            {
+                // First station takeover so also remove extra transport
+                ExerelinUtils.removeShipsFromFleet(playerFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
+                ExerelinUtils.resetFleetCargoToDefaults(playerFleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(playerFleet.getFaction().getId()));
+            }
             systemManager.setStationOwner(possibleBoardTarget, ExerelinData.getInstance().getPlayerFaction(), true, true);
-
         }
     }
 

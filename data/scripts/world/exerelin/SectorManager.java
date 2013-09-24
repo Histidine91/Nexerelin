@@ -6,7 +6,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class SectorManager
@@ -87,17 +86,38 @@ public class SectorManager
 		return diplomacyManager;
 	}
 
+    public void updateStationTargets()
+    {
+        // Update station targets (1 station per system per day)
+        for(int j = 0; j < this.systemManagers.length; j++)
+        {
+            SystemStationManager systemStationManager =  this.systemManagers[j].getSystemStationManager();
+            systemStationManager.deriveStationTargets();
+        }
+    }
+
 	public void updateStations()
 	{
-		// Manage stations (1 update per 10 stations per day)
+		// Manage stations (1 station per system per day)
 		for(int j = 0; j < this.systemManagers.length; j++)
 		{
 			SystemStationManager systemStationManager =  this.systemManagers[j].getSystemStationManager();
-			int numStationsToUpdate = Math.max(1, ExerelinUtils.getRandomNearestInteger(systemStationManager.getStationRecords().length / 10f));
-			for(int i = 0; i < numStationsToUpdate; i++)
-				systemStationManager.updateStations();
+			systemStationManager.updateStationFleets();
 		}
 	}
+
+    public void updateStationResources()
+    {
+        SystemManager[] systemManagers = ExerelinData.getInstance().getSectorManager().getSystemManagers();
+        for(int j = 0; j < systemManagers.length; j++)
+        {
+            SystemStationManager systemStationManager =  systemManagers[j].getSystemStationManager();
+            for(int i = 0; i < systemStationManager.getStationRecords().length; i++)
+            {
+                systemStationManager.getStationRecords()[i].increaseResources();
+            }
+        }
+    }
 
 	public void runEvents()
 	{
@@ -246,9 +266,9 @@ public class SectorManager
 		if(!this.playerFreeTransfer)
 		{
 			if(this.getDiplomacyManager().isFactionAtWarAndHasTarget(this.diplomacyManager.playerRecord.getFactionId()))
-				Global.getSector().getPlayerFleet().getCargo().getCredits().add(5000f);
+				Global.getSector().getPlayerFleet().getCargo().getCredits().add(2000f);
 			else
-				Global.getSector().getPlayerFleet().getCargo().getCredits().add(2500f);
+				Global.getSector().getPlayerFleet().getCargo().getCredits().add(1000f);
 			Global.getSector().addMessage("Wages Paid", Color.green);
 		}
 	}

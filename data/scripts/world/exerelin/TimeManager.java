@@ -25,67 +25,79 @@ public class TimeManager implements SpawnPointPlugin
 
 	private void runHourly(long hour)
 	{
-        if(hour == 3)
+        if(hour == 6)
         {
             // Handle player mining
             ExerelinUtils.handlePlayerFleetMining(Global.getSector().getPlayerFleet());
         }
 
-        SectorManager sectorManager = SectorManager.getCurrentSectorManager();
-
-        if(hour == 6)
+        if(hour == 9)
         {
             // Check for player betrayal
-            sectorManager.getDiplomacyManager().checkBetrayal();
+            SectorManager.getCurrentSectorManager().getDiplomacyManager().checkBetrayal();
         }
 
-        if(hour == 9)
+        if(hour == 12)
         {
             // Handle player station boarding
             ExerelinUtils.handlePlayerBoarding(Global.getSector().getPlayerFleet());
         }
 
-        if(hour == 12)
+        if(hour == 15)
         {
             // Manage relationships
-            sectorManager.getDiplomacyManager().updateRelationships();
+            Thread updateRelationshipThread = new Thread("updateRelationshipThread"){
+                public void run()
+                {
+                    SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationships();
+                }
+            };
+
+            updateRelationshipThread.start();
         }
 
         if(hour == 18)
         {
             // Run system events
-            sectorManager.runEvents();
+            SectorManager.getCurrentSectorManager().runEvents();
         }
-
 	}
 
 	private void runDaily()
 	{
-        MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
+        Thread stationTargetThread = new Thread("stationTargetThread"){
+            public void run()
+            {
+                // Update station targets
+                SectorManager.getCurrentSectorManager().updateStationTargets();
+            }
+        };
 
-        /*System.out.println("active_diplomacy: " + playerStatsAPI.getSkillLevel("active_diplomacy"));
-        System.out.println("passive_diplomacy: " + playerStatsAPI.getSkillLevel("passive_diplomacy"));
-        System.out.println("station_industry: " + playerStatsAPI.getSkillLevel("station_industry"));
-        System.out.println("fleet_crew_training: " + playerStatsAPI.getSkillLevel("fleet_crew_training"));
-        System.out.println("fleet_deployment: " + playerStatsAPI.getSkillLevel("fleet_deployment"));*/
+        stationTargetThread.start();
 
-
-		SectorManager sectorManager = SectorManager.getCurrentSectorManager();
-
-		// Update stations
-		sectorManager.updateStations();
+        SectorManager.getCurrentSectorManager().updateStations();
 	}
 
 	private void runWeekly()
 	{
-		// Check player has station or station attack fleet
-		SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
+        Thread weeklyThread = new Thread("weeklyThread"){
+            public void run()
+            {
+                // Check player has station or station attack fleet
+                SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
 
-		// Pay wages
-		SectorManager.getCurrentSectorManager().payPlayerWages();
+                // Pay wages
+                SectorManager.getCurrentSectorManager().payPlayerWages();
 
-        // Update FactionDirectors
-        FactionDirector.updateAllFactionDirectors();
+                // Update FactionDirectors
+                FactionDirector.updateAllFactionDirectors();
+
+                // Increase station resources
+                SectorManager.getCurrentSectorManager().updateStationResources();
+            }
+        };
+
+        weeklyThread.start();
 	}
 
 	private void runMonthly()
