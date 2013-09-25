@@ -11,4 +11,6 @@ public class ExerelinConfig {
 
     public static String[] commonShipList = new String[]{"ox_Hull", "crig_Hull"};
 
+    public static boolean randomOmnifactoryLocation = false;
+
 }

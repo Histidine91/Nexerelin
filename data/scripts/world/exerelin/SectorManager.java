@@ -332,11 +332,18 @@ public class SectorManager
 				SectorEntityToken playerStation = ExerelinUtils.getRandomStationInSystemForFaction(ExerelinData.getInstance().getPlayerFaction(), system, sectorAPI);
                 SectorEntityToken planet = playerStation.getOrbit().getFocus();
 
-                if(this.buildOmnifactory)
-                    new OutSystemStationConstructionFleet(sectorAPI,  system,  system, "neutral", planet, "omnifac").spawnFleet();
-
                 if(!this.playerFreeTransfer)
                     new OutSystemStationConstructionFleet(sectorAPI,  system,  system, "neutral", planet, "storage").spawnFleet();
+
+                if(ExerelinConfig.randomOmnifactoryLocation)
+                {
+                    // Choose a random location for the omnifactory
+                    system = (StarSystemAPI)Global.getSector().getStarSystems().get(ExerelinUtils.getRandomInRange(0, Global.getSector().getStarSystems().size() - 1));
+                    planet = (SectorEntityToken)system.getPlanets().get(ExerelinUtils.getRandomInRange(0, system.getPlanets().size() - 1));
+                }
+
+                if(this.buildOmnifactory)
+                    new OutSystemStationConstructionFleet(sectorAPI,  system,  system, "neutral", planet, "omnifac").spawnFleet();
 
                 this.builtOmnifactoryAndStorage = true;
 			}
