@@ -184,7 +184,7 @@ public final class ExerelinData
 				ExerelinUtils.shuffleStringArray(locPossibleFaction);
 
 				int i = 0;
-				while(confirmedFactions.size() < Math.min(this.numStartFactions, locPossibleFaction.length))
+				while(confirmedFactions.size() < Math.min(this.numStartFactions, locPossibleFaction.length - 1))
 				{
 					if(locPossibleFaction[i].equalsIgnoreCase(this.playerFaction))
 					{
