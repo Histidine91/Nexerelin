@@ -1,0 +1,133 @@
+{
+	id:"insurgency",
+	"color":[150,100,205,255],
+	"displayName":"Qamar Insurgency",
+	"description":"A loose organization of rebels, terrorists, and political dissidents who have fled the repressive regime of the Kadur.",
+    "shipNamePrefix":"QMS",
+    "shipNameSources":{
+		"insurgency":1,
+		"battlemage":1,
+	},
+	"names":{
+		"fringe":1, 
+    },
+    "portraits":{
+      "standard_male":[
+		 "graphics/portraits/portrait_generic4.png",
+         "graphics/portraits/portrait17.png",
+         "graphics/portraits/portrait18.png",
+      ],
+      "standard_female":[
+         "graphics/portraits/portrait_generic4.png",
+         "graphics/portraits/portrait_mercenary02.png",
+         "graphics/portraits/portrait14.png",
+      ],
+    },
+	"fleetCompositions":{
+		"exerelinGenericFleet":{
+            "displayName":"Generic Fleet",
+            "maxFleetPoints":190,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+				"khs_behemoth_acehigh":[0, 1],
+				"khs_seraph_acehigh":[0, 1],
+				"khs_sphinx_acehigh":[0, 2],
+				"khs_golem_acehigh":[0, 4],
+				"dominator_Support":[0, 3],
+				"khs_leviathan_outdated":[0, 2],
+				"khs_falchion_acehigh":[0, 16],
+				"enforcer_Outdated":[0, 9],
+				"khs_sirocco_acehigh":[0, 3],
+				"khs_djinn_acehigh":[0, 3],
+				"khs_hyena_acehigh":[0, 3],
+				"khs_buzzard_pd":[0, 3],
+				"khs_vulture_acehigh":[0, 2],
+				"khs_dolphin_acehigh":[0, 3],
+				"khs_mutt_acehigh":[0, 2],
+				"khs_mistral_acehigh":[0, 2],
+				"talon_wing":[0, 5],
+                "piranha_wing":[0, 5],
+                "broadsword_wing":[0, 4],
+            },
+        },
+        "exerelinInSystemSupplyConvoy":{
+            "displayName":"In-System Supply Convoy",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "khs_sirocco_acehigh":[1, 3],
+            },
+        },
+        "exerelinInSystemStationAttackFleet":{
+            "displayName":"In-System Station Attack Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[50, 50],
+            "marinesPercent":[50, 50],
+            "ships":{
+                "atlas_Standard":[1, 1],
+                "valkyrie_Elite":[1, 1],
+            },
+        },
+        "exerelinAsteroidMiningFleet":{
+            "displayName":"Asteroid Mining Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[10, 15],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "mining_drone_wing":[1, 1],
+                "khs_sirocco_acehigh":[1, 2],
+                "khs_vulture_acehigh":[1, 1],
+            },
+        },
+        "exerelinGasMiningFleet":{
+            "displayName":"Gas Mining Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[0, 0],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "mining_drone_wing":[1, 1],
+                "khs_mistral_acehigh":[1, 2],
+				"khs_djinn_acehigh":[0, 1],
+                "khs_vulture_acehigh":[1, 1],
+            },
+        },
+       "exerelinEliteFleet":{
+           "displayName":"Exerelin Elite Fleet",
+           "maxFleetPoints":100,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[0, 0],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+               "khs_seraph_acehigh":[0, 1],
+			},
+		},	
+	},
+	"traits":{
+		"admiral":{
+			"suicidal":1,
+		},
+		"captain":{
+			"aggressive":1,
+			"suicidal":1,
+		},
+	},
+	"dialogue":{
+		"greetingFriendly":"Glad to have you on our side, captain.",
+		"greetingNeutral":"You have no part in this struggle, outsider. Keep your distance and we'll keep ours.",
+		"greetingHostileAggressive":"Your guilt is evident. Die, infidel.",
+		"greetingHostileTimid":"Kill us if you must, tyrant, but we will not go quietly.",
+	}	
+}

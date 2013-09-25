@@ -45,6 +45,8 @@
     "data/world/factions/directorate.faction",
     "data/world/factions/zorg.faction",
     "data/world/factions/qualljom.faction",
+    "data/world/factions/insurgency.faction",
+    "data/world/factions/regime.faction",
 
     "data/hulls/relics_extinctioner.ship",
     "data/hulls/relics_faithoper.ship",

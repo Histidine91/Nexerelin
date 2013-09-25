@@ -314,6 +314,14 @@ public final class ExerelinData
         if(isFactionInstalled("qualljom_society", "data.scripts.world.QSGen"))
             possibleFactionList.add("qualljom_society");
 
+        // Test for Kadur Theocracy
+        if(isFactionInstalled("regime", "data.scripts.world.vayraKadurGen"))
+            possibleFactionList.add("regime");
+
+        // Test for Qamar Insurgency
+        if(isFactionInstalled("insurgency", "data.scripts.world.vayraKadurGen"))
+            possibleFactionList.add("insurgency");
+
 		System.out.println("- - - - - - - - - -");
 	}
 

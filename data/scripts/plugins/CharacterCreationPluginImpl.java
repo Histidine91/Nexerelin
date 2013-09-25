@@ -648,6 +648,16 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
                 data.addStartingShipChoice("qua_minal_standard");
                 data.addStartingShipChoice("qua_taom_standard");
             }
+            else if (factionId.equalsIgnoreCase("regime"))
+            {
+                data.addStartingShipChoice("khs_camel_Combat");
+                data.addStartingShipChoice("khs_hyena_Picket");
+            }
+            else if (factionId.equalsIgnoreCase("insurgency"))
+            {
+                data.addStartingShipChoice("khs_hyena_acehigh");
+                data.addStartingShipChoice("khs_buzzard_pd");
+            }
 			else
 			{
 				System.out.println("EXERELIN ERROR: Faction starting ship for " + factionId + " not defined");
