@@ -174,6 +174,7 @@ public class OutSystemStationAttackFleet
 					if(newTarget == null)
 					{
 						// No target so leave system
+                        theFleet.clearAssignments();
 						theFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, spawnPoint, 100);
 						return;
 					}
