@@ -28,6 +28,22 @@ public class SystemEventManager
 
 	public void runEvents()
 	{
+        // Spawn rebel fleets in system
+        if(ExerelinUtils.getRandomInRange(0, 10) == 0)
+        {
+            Thread spawnRebelFleetThread = new Thread("spawnRebelFleetThread"){
+                public void run()
+                {
+                    eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
+                }
+            };
+
+            spawnRebelFleetThread.start();
+            //waitTime = betweenEventWait;
+            //lastEventType = eventRebelFleetSpawn.getType();
+            return;
+        }
+
 		if(waitTime > 0)
 		{
 			waitTime--;

@@ -1236,7 +1236,9 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                 options.setEnabled(OptionId.HARRY_PURSUE, false);
             }
         } else {
-            if(!Global.getSector().getPlayerFleet().getFaction().getId().equalsIgnoreCase(otherFleet.getFaction().getId()))
+            if(!Global.getSector().getPlayerFleet().getFaction().getId().equalsIgnoreCase(otherFleet.getFaction().getId())
+                    && !otherFleet.getFaction().getId().equalsIgnoreCase("independent")
+                    && !otherFleet.getFaction().getId().equalsIgnoreCase("neutral"))
             {
                 if (playerHasReadyShips) {
                     options.addOption("Move in to engage", OptionId.ENGAGE, getString("tooltipEngage"));
