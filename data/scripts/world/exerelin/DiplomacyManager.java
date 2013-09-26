@@ -3,6 +3,9 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import data.scripts.world.exerelin.diplomacy.AllianceManager;
+import data.scripts.world.exerelin.diplomacy.AllianceRecord;
+import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
 
 import java.awt.*;
 

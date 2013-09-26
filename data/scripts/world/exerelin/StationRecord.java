@@ -3,6 +3,7 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.BaseSpawnPoint;
+import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
 import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;

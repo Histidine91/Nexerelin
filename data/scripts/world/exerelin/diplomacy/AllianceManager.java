@@ -1,7 +1,9 @@
-package data.scripts.world.exerelin;
+package data.scripts.world.exerelin.diplomacy;
 
 /* This class manages the alliances currently in the game.
  */
+
+import data.scripts.world.exerelin.ExerelinUtils;
 
 public class AllianceManager
 {

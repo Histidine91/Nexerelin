@@ -1,11 +1,15 @@
-package data.scripts.world.exerelin;
+package data.scripts.world.exerelin.diplomacy;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import data.scripts.world.exerelin.ExerelinConfig;
+import data.scripts.world.exerelin.ExerelinUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /*	This class is used to store a finer grained faction relationship
 	with other factions.
@@ -16,15 +20,13 @@ public class DiplomacyRecord
 	private String factionId;
 	private HashMap otherFactionRelationships;
 	private HashMap gameFactionRelationships;
-	private FactionAPI factionAPI;
 	private int warWeariness = 0;
 	private String[] availableFactions;
 	private String allianceId;
 
-	public DiplomacyRecord(SectorAPI sector, String FactionIdValue, String[] InAvailableFactions)
+	public DiplomacyRecord(String FactionIdValue, String[] InAvailableFactions)
 	{
 		factionId = FactionIdValue;
-		factionAPI = sector.getFaction(factionId);
 
 		otherFactionRelationships = new HashMap();
 		gameFactionRelationships = new HashMap();
@@ -118,7 +120,7 @@ public class DiplomacyRecord
 
 			gameFactionRelationships.remove(availableFactions[i]);
 			gameFactionRelationships.put(availableFactions[i], Float.toString(relationshipValue));
-			this.factionAPI.setRelationship(availableFactions[i], 0);
+			Global.getSector().getFaction(this.factionId).setRelationship(availableFactions[i], 0);
 		}
 	}
 
@@ -129,28 +131,21 @@ public class DiplomacyRecord
 
 	public Boolean hasWarTargetInSystem(StarSystemAPI starSystemAPI, Boolean includeAbandoned)
 	{
-		StationRecord[] stations = ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getStationRecords();
-		for(int i = 0; i < stations.length; i = i + 1)
-		{
-			StationRecord station = stations[i];
+        List stations = starSystemAPI.getOrbitalStations();
+        for(int i = 0; i < stations.size(); i = i + 1)
+        {
+            SectorEntityToken station = (SectorEntityToken)stations.get(i);
 
-			if(station.getOwner() == null)
-			{
-				if(includeAbandoned)
-					return true;
-				else
-					continue;
-			}
+            if(station.getFaction().getId().equalsIgnoreCase(this.factionId)
+                || (station.getFaction().getId().equalsIgnoreCase("abandoned") && !includeAbandoned)
+                || ExerelinUtils.doesStringArrayContainValue(station.getFaction().getId(), ExerelinConfig.neutralFactions, false))
+                continue;
 
-			if(station.getOwner().getFactionId().equalsIgnoreCase(this.getFactionId()))
-				continue;
+            if(Global.getSector().getFaction(this.getFactionId()).getRelationship(station.getFaction().getId()) < 0)
+                return true;
+        }
 
-			float relationshipLevel = getGameRelationship(station.getOwner().getFactionId());
-
-			if(relationshipLevel < 0)
-				return true;
-		}
-		return false;
+        return false;
 	}
 
 	public int updateWarWeariness(Boolean atWar)
@@ -169,7 +164,7 @@ public class DiplomacyRecord
 
 	public FactionAPI getFactionAPI()
 	{
-		return this.factionAPI;
+        return Global.getSector().getFaction(this.factionId);
 	}
 
 	public String[] getAlliedFactions()

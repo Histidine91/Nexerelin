@@ -6,7 +6,6 @@ public class SystemEventManager
 {
 	private EventRebelInsurrection eventRebelInsurrection;
 	private EventRebelFleetSpawn eventRebelFleetSpawn;
-	private EventOutSystemReinforcements eventOutSystemReinforcements;
 	private EventStationExplosion eventStationExplosion;
 	private EventStationSeccession eventStationSeccession;
 	private EventAddObjectToStorage eventAddObjectToStorage;
@@ -22,7 +21,6 @@ public class SystemEventManager
 		starSystemAPI = inSystem;
 		eventRebelInsurrection = new EventRebelInsurrection();
 		eventRebelFleetSpawn = new EventRebelFleetSpawn();
-		eventOutSystemReinforcements = new EventOutSystemReinforcements();
 		eventStationExplosion = new EventStationExplosion();
 		eventStationSeccession = new EventStationSeccession();
 		eventAddObjectToStorage = new EventAddObjectToStorage();
@@ -36,15 +34,6 @@ public class SystemEventManager
 			return;
 		}
 
-		if(ExerelinUtils.getRandomInRange(0, 10) == 0
-				&& !eventRebelFleetSpawn.getType().equalsIgnoreCase(lastEventType))
-		{
-			eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
-			//waitTime = betweenEventWait;
-			//lastEventType = eventRebelFleetSpawn.getType();
-			return;
-		}
-
 		if(ExerelinUtils.getRandomInRange(0,45) == 0
 				&& !eventRebelInsurrection.getType().equalsIgnoreCase(lastEventType))
 		{
@@ -53,15 +42,6 @@ public class SystemEventManager
 			lastEventType = eventRebelInsurrection.getType();
 			return;
 		}
-
-		/*if(ExerelinUtils.getRandomInRange(0, 45) == 0
-				&& !eventOutSystemReinforcements.getType().equalsIgnoreCase(lastEventType))
-		{
-			eventOutSystemReinforcements.callReinforcementFleets(starSystemAPI);
-			waitTime = betweenEventWait;
-			lastEventType = eventOutSystemReinforcements.getType();
-			return;
-		}*/
 
 		if(ExerelinUtils.getRandomInRange(0,40) == 0
 				&& !eventStationExplosion.getType().equalsIgnoreCase(lastEventType))

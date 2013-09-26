@@ -1,6 +1,7 @@
-package data.scripts.world.exerelin;
+package data.scripts.world.exerelin.diplomacy;
 
 import com.fs.starfarer.api.Global;
+import data.scripts.world.exerelin.ExerelinUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,7 +20,7 @@ public class AllianceRecord
 	{
 		factions = new HashMap();
 		if(id.equalsIgnoreCase(""))
-			allianceId = Integer.toString(ExerelinUtils.getRandomInRange(0,10000000));
+			allianceId = Integer.toString(ExerelinUtils.getRandomInRange(0, 10000000));
 		else
 			allianceId = id;
 	}

@@ -4,11 +4,10 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import data.scripts.world.BaseSpawnPoint;
+import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
 
 import java.awt.*;
-import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint

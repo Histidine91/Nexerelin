@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 
 import data.scripts.world.BaseSpawnPoint;
+import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
 
 @SuppressWarnings("unchecked")
 public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
