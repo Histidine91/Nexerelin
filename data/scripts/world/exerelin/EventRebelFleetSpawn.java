@@ -44,9 +44,17 @@ public class EventRebelFleetSpawn extends EventBase
 
         //System.out.println("EVENT: Spawning rebel fleet in " + starSystemAPI.getName());
 
-        // Reduce size of rebel fleet
+        // Reduce size of rebel fleet to be close to player fleet
         List members = newRebelFleet.getFleetData().getMembersListCopy();
-        int numToRemove = ExerelinUtils.getRandomInRange((members.size()/3)*2, members.size() - 2);
+        int numToRemove = members.size() - Global.getSector().getPlayerFleet().getFleetData().getCombatReadyMembersListCopy().size();
+
+        numToRemove = numToRemove + ExerelinUtils.getRandomInRange(-2, 2);
+
+        if(numToRemove < 0)
+            numToRemove = 0;
+        else if(numToRemove > members.size() -1)
+            numToRemove = members.size() - 1;
+
         for(int i = 0; i < numToRemove; i++)
         {
             List membersUpdated = newRebelFleet.getFleetData().getMembersListCopy();
@@ -60,8 +68,7 @@ public class EventRebelFleetSpawn extends EventBase
         newRebelFleet.setName("Dissenter Fleet");
 
         starSystemAPI.spawnFleet(planet, 0, 0, newRebelFleet);
-
-        newRebelFleet.addAssignment(FleetAssignment.ATTACK_LOCATION, (SectorEntityToken)starSystemAPI.getOrbitalStations().get(ExerelinUtils.getRandomInRange(0, starSystemAPI.getOrbitalStations().size() - 1)), 90);
+        newRebelFleet.addAssignment(FleetAssignment.ATTACK_LOCATION, ExerelinUtils.getRandomStationInSystemForFaction(factionLeaderId, starSystemAPI), 90);
         newRebelFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, planet, 60);
 	}
 }
