@@ -45,7 +45,7 @@ public class DiplomacyManager
 		// Build a record for each available faction
 		for (int i = 0; i < factionRecords.length; i = i + 1)
 		{
-			factionRecords[i] = new DiplomacyRecord(sector, availableFactions[i], availableFactions);
+			factionRecords[i] = new DiplomacyRecord(availableFactions[i], availableFactions);
 			if(availableFactions[i].equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 				playerRecord = factionRecords[i];
 		}
