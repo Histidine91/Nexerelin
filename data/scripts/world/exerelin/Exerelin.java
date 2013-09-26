@@ -47,6 +47,7 @@ public class Exerelin //implements SectorGeneratorPlugin
         sectorManager.setRespawnWaitDays(ExerelinData.getInstance().respawnDelay);
         sectorManager.setBuildOmnifactory(ExerelinData.getInstance().omniFacPresent);
         sectorManager.setMaxSystemSize(ExerelinData.getInstance().maxSystemSize);
+        sectorManager.setPlayerStartShipVariant(ExerelinData.getInstance().getPlayerStartingShipVariant());
 
         // Add to cache
         ExerelinData.getInstance().setSectorManager(sectorManager);

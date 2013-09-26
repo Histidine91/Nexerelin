@@ -72,7 +72,7 @@ public class EventRebelInsurrection extends EventBase
 				fleet.setName(fleetName);
 
 				fleet.clearAssignments();
-				SectorEntityToken station = ExerelinUtils.getRandomStationInSystemForFaction(rebelAgainseFaction, starSystemAPI, Global.getSector());
+				SectorEntityToken station = ExerelinUtils.getRandomStationInSystemForFaction(rebelAgainseFaction, starSystemAPI);
 				fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, station, 30);
 				fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, ExerelinUtils.getRandomOffMapPoint(starSystemAPI), 30);
 			}
