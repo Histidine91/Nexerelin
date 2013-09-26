@@ -3,6 +3,7 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.BaseSpawnPoint;
+import data.scripts.world.exerelin.commandQueue.CommandAddCargo;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -234,24 +235,24 @@ public class StationRecord
             resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
 
 		if(stationCargo.getFuel() < 1600*resourceMultiplier)
-			stationCargo.addFuel(100*efficiency); // Halved due to mining fleets
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "fuel", CargoAPI.CargoItemType.RESOURCES, 100*efficiency)); // Halved due to mining fleets
 		if(stationCargo.getSupplies() < 6400*resourceMultiplier)
-			stationCargo.addSupplies(400*efficiency); // Halved due to mining fleets
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "supplies", CargoAPI.CargoItemType.RESOURCES,400*efficiency)); // Halved due to mining fleets
 		if(stationCargo.getMarines() < 800*resourceMultiplier)
-			stationCargo.addMarines((int)(100*efficiency));
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "marines", CargoAPI.CargoItemType.RESOURCES,(int)(100*efficiency)));
 		if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 1600*resourceMultiplier)
-			stationCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, (int)(200*efficiency));
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "regular_crew", CargoAPI.CargoItemType.RESOURCES, (int)(200*efficiency)));
 
 		if(planetType.equalsIgnoreCase("gas") && stationCargo.getFuel() < 3200*resourceMultiplier)
-			stationCargo.addFuel(100*efficiency); // Halved due to mining fleets
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "fuel", CargoAPI.CargoItemType.RESOURCES, 100*efficiency)); // Halved due to mining fleets
 		if(planetType.equalsIgnoreCase("moon") && stationCargo.getSupplies() < 12800*resourceMultiplier)
-			stationCargo.addSupplies(400*efficiency); // Halved due to mining fleets
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "supplies", CargoAPI.CargoItemType.RESOURCES, 400*efficiency)); // Halved due to mining fleets
 		if(planetType.equalsIgnoreCase("planet"))
 		{
             if(stationCargo.getMarines() < 1600*resourceMultiplier)
-                stationCargo.addMarines((int)(100*efficiency));
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "marines", CargoAPI.CargoItemType.RESOURCES, (int)(100*efficiency)));
             if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 3200*resourceMultiplier)
-                stationCargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, (int)(200*efficiency));
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "regular_crew", CargoAPI.CargoItemType.RESOURCES, (int)(200*efficiency)));
 		}
 
 		if(efficiency > 0.6)

@@ -76,7 +76,7 @@ public class OutSystemStationConstructionFleet
 						orbitRadius = 200;
 					else if(theTarget.getFullName().contains("Gaseous"))
 						orbitRadius = 500;
-					theSystem.addSpawnPoint(new OmniFac(theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Omnifactory", "independent")));
+					theSystem.addSpawnPoint(new OmniFac(theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Omnifactory", "neutral")));
 					System.out.println(theFaction + " constructed station ");
 				}
 				else

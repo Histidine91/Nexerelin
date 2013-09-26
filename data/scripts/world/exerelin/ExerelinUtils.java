@@ -4,6 +4,10 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import data.scripts.world.exerelin.commandQueue.CommandAddShip;
+import data.scripts.world.exerelin.commandQueue.CommandAddWeapon;
+import data.scripts.world.exerelin.commandQueue.CommandRemoveCargo;
+import data.scripts.world.exerelin.commandQueue.CommandRemoveShip;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -306,7 +310,7 @@ public class ExerelinUtils
 			return bestStation;
 	}
 
-	public static SectorEntityToken getRandomStationInSystemForFaction(String factionId, StarSystemAPI starSystemAPI, SectorAPI sector)
+	public static SectorEntityToken getRandomStationInSystemForFaction(String factionId, StarSystemAPI starSystemAPI)
 	{
 		List stations = starSystemAPI.getOrbitalStations();
 		SectorEntityToken theStation;
@@ -320,7 +324,7 @@ public class ExerelinUtils
 				continue; // Skip current station
 
 			if(theStation.getFullName().contains("Storage"))
-				continue;
+				continue; // Skip current station
 
 			if(!getStationOwnerFactionId(theStation).equalsIgnoreCase(factionId))
 				continue; // Skip current station
@@ -424,7 +428,8 @@ public class ExerelinUtils
 			for(int i = 0; i < count; i = i + 1)
 			{
 				String weaponId = factionWeapons[ExerelinUtils.getRandomInRange(0, factionWeapons.length - 1)];
-				cargo.addWeapons(weaponId, ExerelinUtils.getRandomInRange(1, maxQuantityInStack));
+				//cargo.addWeapons(weaponId, ExerelinUtils.getRandomInRange(1, maxQuantityInStack));
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddWeapon(cargo, weaponId, ExerelinUtils.getRandomInRange(1, maxQuantityInStack)));
 			}
 		}
 		else
@@ -439,7 +444,8 @@ public class ExerelinUtils
 		for (int i = 0; i < count; i++) {
 			String weaponId = (String) weaponIds.get((int) (weaponIds.size() * Math.random()));
 			int quantity = 3;
-			cargo.addWeapons(weaponId, quantity);
+			//cargo.addWeapons(weaponId, quantity);
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddWeapon(cargo, weaponId, quantity));
 		}
 	}
 
@@ -495,7 +501,8 @@ public class ExerelinUtils
             for(int i = 0; i < count; i++)
             {
                 String shipId = ExerelinConfig.commonShipList[ExerelinUtils.getRandomInRange(0, ExerelinConfig.commonShipList.length - 1)];
-                cargo.addMothballedShip(FleetMemberType.SHIP, shipId, null);
+                //cargo.addMothballedShip(FleetMemberType.SHIP, shipId, null);
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddShip(cargo, FleetMemberType.SHIP, shipId, null));
             }
             return;
         }
@@ -561,7 +568,8 @@ public class ExerelinUtils
 			else
 				return;
 
-			cargo.addMothballedShip(memberType, shipId, null);
+			//cargo.addMothballedShip(memberType, shipId, null);
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddShip(cargo, memberType, shipId, null));
 			//cargo.getMothballedShips().addFleetMember(fmAPI);
 		}
 	}
@@ -650,7 +658,8 @@ public class ExerelinUtils
 		for(int j = 0; j < totalToRemove; j++)
 		{
             int toRemove = ExerelinUtils.getRandomInRange(0, cargoAPI.getMothballedShips().getMembersListCopy().size() - 1);
-            cargoAPI.getMothballedShips().removeFleetMember((FleetMemberAPI)cargoAPI.getMothballedShips().getMembersListCopy().get(toRemove));
+            //cargoAPI.getMothballedShips().removeFleetMember((FleetMemberAPI)cargoAPI.getMothballedShips().getMembersListCopy().get(toRemove));
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveShip(cargoAPI, (FleetMemberAPI)cargoAPI.getMothballedShips().getMembersListCopy().get(toRemove)));
 		}
 	}
 
@@ -659,7 +668,8 @@ public class ExerelinUtils
 		List weapons = cargoAPI.getWeapons();
 		for(int j = 0; j < Math.min(weapons.size(), numToRemove); j++)
 		{
-			cargoAPI.removeItems(CargoAPI.CargoItemType.WEAPONS, null ,5);
+			//cargoAPI.removeItems(CargoAPI.CargoItemType.WEAPONS, null ,5);
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(cargoAPI, null, CargoAPI.CargoItemType.WEAPONS, 5));
 		}
 	}
 
@@ -865,7 +875,7 @@ public class ExerelinUtils
             return;
 
         // Attempt to takeover station
-        if(ExerelinUtils.boardStationAttempt(playerFleet, possibleBoardTarget, true))
+        if(ExerelinUtils.boardStationAttempt(playerFleet, possibleBoardTarget, true, false))
         {
             if(!SectorManager.getCurrentSectorManager().isFactionInSector(ExerelinData.getInstance().getPlayerFaction()))
             {
@@ -898,7 +908,7 @@ public class ExerelinUtils
     // Play out a station boarding attempt
     // Returns true if board successful, flase if not
     // Subsequent code must handle any station ownership changes etc.
-    public static boolean boardStationAttempt(CampaignFleetAPI fleet, SectorEntityToken station, Boolean playerFleet)
+    public static boolean boardStationAttempt(CampaignFleetAPI fleet, SectorEntityToken station, Boolean playerFleet, Boolean resetCargo)
     {
         int marinesDefending = station.getCargo().getMarines();
         int marinesAttacking = fleet.getCargo().getMarines();
@@ -947,7 +957,10 @@ public class ExerelinUtils
         {
             // Attackers won
             ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships(), true);
-            ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
+            if(resetCargo)
+                ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
+            else
+                ExerelinUtils.decreaseCargo(fleet.getCargo(), "marines", fleet.getCargo().getMarines());
             return true;
         }
         else
@@ -1124,5 +1137,20 @@ public class ExerelinUtils
         }
 
         return false;
+    }
+
+    // REMOVE ONCE LAZYLIB UPDATED
+    public static float LazyLib_getDistance(SectorEntityToken token1, SectorEntityToken token2)
+    {
+        return Math.max(0f, LazyLib_getDistance(token1.getLocation(), token2.getLocation())
+                - (token1.getRadius() + token2.getRadius()));
+    }
+
+    // REMOVE ONCE LAZYLIB UPDATED
+    public static float LazyLib_getDistance(Vector2f vector1, Vector2f vector2)
+    {
+        float a = vector1.x - vector2.x;
+        float b = vector1.y - vector2.y;
+        return (float) Math.hypot(a, b);
     }
 }

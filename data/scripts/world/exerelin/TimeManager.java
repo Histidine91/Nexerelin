@@ -2,7 +2,6 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 
 import java.util.*;
 
@@ -86,9 +85,6 @@ public class TimeManager implements SpawnPointPlugin
                 // Check player has station or station attack fleet
                 SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
 
-                // Pay wages
-                SectorManager.getCurrentSectorManager().payPlayerWages();
-
                 // Update FactionDirectors
                 FactionDirector.updateAllFactionDirectors();
 
@@ -98,6 +94,9 @@ public class TimeManager implements SpawnPointPlugin
         };
 
         weeklyThread.start();
+
+        // Pay wages
+        SectorManager.getCurrentSectorManager().payPlayerWages();
 	}
 
 	private void runMonthly()

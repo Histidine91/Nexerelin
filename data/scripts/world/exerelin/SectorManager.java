@@ -3,6 +3,8 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.FleetMemberType;
+import data.scripts.world.exerelin.commandQueue.CommandQueue;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ public class SectorManager
 	private int maxSystemSize;
 
     private long lastFactionSpawnTime;
+
+    private CommandQueue commandQueue;
 
 	public SectorManager(SectorAPI inSectorAPI)
 	{
@@ -330,7 +334,7 @@ public class SectorManager
                         break;
                 }
 
-				SectorEntityToken playerStation = ExerelinUtils.getRandomStationInSystemForFaction(ExerelinData.getInstance().getPlayerFaction(), system, sectorAPI);
+				SectorEntityToken playerStation = ExerelinUtils.getRandomStationInSystemForFaction(ExerelinData.getInstance().getPlayerFaction(), system);
                 SectorEntityToken planet = playerStation.getOrbit().getFocus();
 
                 if(!this.playerFreeTransfer)
@@ -356,7 +360,7 @@ public class SectorManager
 			sectorAPI.getPlayerFleet().setFaction(ExerelinData.getInstance().getPlayerFaction());
 			SectorEntityToken station = null;
             if(SectorManager.getCurrentSectorManager().getFactionDirector(ExerelinData.getInstance().getPlayerFaction()).getHomeSystem() != null)
-                station = ExerelinUtils.getRandomStationInSystemForFaction(ExerelinData.getInstance().getPlayerFaction(), SectorManager.getCurrentSectorManager().getFactionDirector(ExerelinData.getInstance().getPlayerFaction()).getHomeSystem(), sectorAPI);
+                station = ExerelinUtils.getRandomStationInSystemForFaction(ExerelinData.getInstance().getPlayerFaction(), SectorManager.getCurrentSectorManager().getFactionDirector(ExerelinData.getInstance().getPlayerFaction()).getHomeSystem());
 			if(station != null)
 				sectorAPI.getPlayerFleet().setLocation(station.getLocation().getX(),  station.getLocation().getY());
 
@@ -580,8 +584,19 @@ public class SectorManager
     {
         return sectorAPI;
     }
+
     public void setPlayerStartShipVariant(String variantId)
     {
         this.playerStartShipVariant = variantId;
+    }
+
+    public void setCommandQueue(CommandQueue commandQueue)
+    {
+        this.commandQueue = commandQueue;
+    }
+
+    public CommandQueue getCommandQueue()
+    {
+        return this.commandQueue;
     }
 }

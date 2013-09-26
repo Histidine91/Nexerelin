@@ -242,8 +242,10 @@ public final class ExerelinData
 			possibleFactionList.add("neutrino");
 
 		// Test for gedune
-		if(isFactionInstalled("gedune", "data.scripts.world.SectorGenWithGedune"))
+		if(isFactionInstalled("gedune", "data.scripts.world.GeduneGen"))
 			possibleFactionList.add("gedune");
+        if(isFactionInstalled("gedune", "data.scripts.world.SectorGenWithGedune"))
+            possibleFactionList.add("gedune"); // TODO remove
 
 		// Test for nihil
 		if(isFactionInstalled("nihil", "data.scripts.nihil.world.NihilSectorGen"))

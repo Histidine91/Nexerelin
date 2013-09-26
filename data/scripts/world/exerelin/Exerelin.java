@@ -1,6 +1,8 @@
 package data.scripts.world.exerelin;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import data.scripts.world.exerelin.commandQueue.CommandQueue;
 
 @SuppressWarnings("unchecked")
 public class Exerelin //implements SectorGeneratorPlugin
@@ -49,7 +51,7 @@ public class Exerelin //implements SectorGeneratorPlugin
         sectorManager.setMaxSystemSize(ExerelinData.getInstance().maxSystemSize);
         sectorManager.setPlayerStartShipVariant(ExerelinData.getInstance().getPlayerStartingShipVariant());
 
-        // Add to cache
+        // Add sector manager to cache
         ExerelinData.getInstance().setSectorManager(sectorManager);
 
         sectorManager.setupFactionDirectors();
@@ -58,6 +60,11 @@ public class Exerelin //implements SectorGeneratorPlugin
         TimeManager timeManger = new TimeManager();
         timeManger.sectorManagerRef = sectorManager;
         ((StarSystemAPI)sector.getStarSystems().get(0)).addSpawnPoint(timeManger);
+
+        // Add a EveryFrameScript command queue to handle synchronous-only events
+        CommandQueue commandQueue = new CommandQueue();
+        Global.getSector().addScript(commandQueue);
+        sectorManager.setCommandQueue(commandQueue);
 
 		// Check that player picked faction is available
 		this.checkPlayerFactionPick(sector);
