@@ -24,7 +24,9 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 	}
 
     private ResponseImpl ONE_SYSTEM = new ResponseImpl("1 System");
+    private ResponseImpl TWO_SYSTEMS = new ResponseImpl("2 Systems");
     private ResponseImpl FOUR_SYSTEMS = new ResponseImpl("4 Systems");
+    private ResponseImpl SIX_SYSTEMS = new ResponseImpl("6 Systems");
     private ResponseImpl EIGHT_SYSTEMS = new ResponseImpl("8 Systems");
     private ResponseImpl TWELVE_SYSTEMS = new ResponseImpl("12 Systems");
     private ResponseImpl SIXTEEN_SYSTEMS = new ResponseImpl("16 Systems");
@@ -131,12 +133,14 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
         if(stage == 0)
         {
             result.add(ONE_SYSTEM);
+            result.add(TWO_SYSTEMS);
             result.add(FOUR_SYSTEMS);
+            result.add(SIX_SYSTEMS);
             result.add(EIGHT_SYSTEMS);
-            result.add(TWELVE_SYSTEMS);
-            result.add(SIXTEEN_SYSTEMS);
-            result.add(TWENTY_SYSTEMS);
-            result.add(TWENTYFOUR_SYSTEMS);
+            //result.add(TWELVE_SYSTEMS);
+            //result.add(SIXTEEN_SYSTEMS);
+            //result.add(TWENTY_SYSTEMS);
+            //result.add(TWENTYFOUR_SYSTEMS);
         }
 		else if(stage == 1)
 		{
@@ -254,8 +258,12 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		stage++;
         if (response == ONE_SYSTEM)
         ExerelinData.getInstance().numSystems = 1;
+        else if (response == TWO_SYSTEMS)
+            ExerelinData.getInstance().numSystems = 2;
         else if (response == FOUR_SYSTEMS)
             ExerelinData.getInstance().numSystems = 4;
+        else if (response == SIX_SYSTEMS)
+            ExerelinData.getInstance().numSystems = 6;
         else if (response == EIGHT_SYSTEMS)
             ExerelinData.getInstance().numSystems = 8;
         else if (response == TWELVE_SYSTEMS)
@@ -479,20 +487,18 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			if(factionId.equalsIgnoreCase("hegemony"))
 			{
 				data.addStartingShipChoice("hound_Assault");
-				data.addStartingShipChoice("lasher_Standard");
+				data.addStartingShipChoice("lasher_CS");
 			}
 			else if (factionId.equalsIgnoreCase("pirates"))
 			{
-				data.addStartingShipChoice("lasher_Standard");
 				data.addStartingShipChoice("hound_Assault");
+                data.addStartingShipChoice("lasher_Standard");
 			}
 			else if (factionId.equalsIgnoreCase("tritachyon"))
 			{
 				data.addStartingShipChoice("wolf_CS");
 				data.addStartingShipChoice("afflictor_Strike");
 				data.addStartingShipChoice("omen_PD");
-				data.addStartingShipChoice("shade_Assault");
-				data.addStartingShipChoice("tempest_Attack");
 			}
 			else if (factionId.equalsIgnoreCase("sindrian_diktat"))
 			{
