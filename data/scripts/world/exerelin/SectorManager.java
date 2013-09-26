@@ -21,6 +21,7 @@ public class SectorManager
 	private int respawnWaitDays;
 	private int maxFactions;
 	private String playerFactionId;
+    private String playerStartShipVariant;
 	private boolean builtOmnifactoryAndStorage;
 	private boolean buildOmnifactory;
 	private boolean playerMovedToSpawnLocation;
@@ -369,7 +370,7 @@ public class SectorManager
 					if(((FleetMemberAPI)dummyFleet.getFleetData().getMembersListCopy().get(i)).isFrigate())
 					{
 						sectorAPI.getPlayerFleet().getFleetData().removeFleetMember(((FleetMemberAPI)sectorAPI.getPlayerFleet().getFleetData().getMembersListCopy().get(0)));
-						sectorAPI.getPlayerFleet().getFleetData().addFleetMember(((FleetMemberAPI)dummyFleet.getFleetData().getMembersListCopy().get(i)));
+                        sectorAPI.getPlayerFleet().getFleetData().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, this.playerStartShipVariant));
 						break;
 					}
 				}
@@ -578,5 +579,9 @@ public class SectorManager
     public SectorAPI getSectorAPI()
     {
         return sectorAPI;
+    }
+    public void setPlayerStartShipVariant(String variantId)
+    {
+        this.playerStartShipVariant = variantId;
     }
 }

@@ -708,6 +708,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 		data.getStartingCargo().addSupplies(20);
 		data.getStartingCargo().addCrew(CrewXPLevel.REGULAR, 25);
 		data.getStartingCargo().addMarines(3);
+        ExerelinData.getInstance().setPlayerStartingShipVariant(variantId);
 	}
 
 	public boolean isToreUpPlentyInstalled()

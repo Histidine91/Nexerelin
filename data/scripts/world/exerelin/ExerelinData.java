@@ -21,7 +21,10 @@ public final class ExerelinData
     private static SectorAPI sector = null;
 
     public boolean confirmedFaction = false;
+
+    // Player setup defaults
     private String playerFaction = "sindrian_diktat";
+    private String playerStartingShipVariant = "shuttle_Attack";
 
     // Valid ships for special fleets
     private final String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_allocator", "neutrino_nausicaa", "neutrino_nausicaa2"};
@@ -363,5 +366,15 @@ public final class ExerelinData
     public String[] getValidMiningShips()
     {
         return ValidMiningShips;
+    }
+
+    public String getPlayerStartingShipVariant()
+    {
+        return this.playerStartingShipVariant;
+    }
+
+    public void setPlayerStartingShipVariant(String variant)
+    {
+        this.playerStartingShipVariant = variant;
     }
 }
