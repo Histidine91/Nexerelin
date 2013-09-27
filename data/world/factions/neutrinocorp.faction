@@ -72,7 +72,7 @@
         },
         "exerelinInSystemStationAttackFleet":{
             "displayName":"In-System Station Attack Fleet",
-            "maxFleetPoints":30,
+            "maxFleetPoints":28,
             "daysWorthOfSupplies":[30, 50],
             "lyWorthOfFuel":[40, 60],
             "extraCrewPercent":[50, 50],

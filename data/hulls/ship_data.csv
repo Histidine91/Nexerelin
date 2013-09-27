@@ -1,9 +1,1 @@
 name,id,designation,system id,fleet pts,hitpoints,armor rating,max flux,8/6/5/4%,flux dissipation,ordnance points,max speed,acceleration,deceleration,max turn rate,turn acceleration,mass,shield type,defense id,shield arc,shield upkeep,shield efficiency,phase cost,phase upkeep,min crew,max crew,cargo,fuel,fuel/ly,range,hangar,base value,hints,number
-
-Atlas_B,exerelin_atlas_b,Superfreighter,flarelauncher,15,8000,250,4000,5000,200,45,25,5,2,3,2,4000,OMNI,,45,0.5,1,,,50,100,2000,700,10,70,20,20000,CIVILIAN,502
-Atlas_Algae,exerelin_atlas_algae,Superfreighter,flarelauncher,15,8000,250,4000,5000,200,45,25,5,2,3,2,4000,OMNI,,45,0.5,1,,,50,100,2000,700,10,70,20,20000,CIVILIAN,502
-Atlas_S,exerelin_atlas_s,Superfreighter,flarelauncher,15,8000,250,4000,5000,200,45,25,5,2,3,2,4000,OMNI,,45,0.5,1,,,50,100,2000,700,10,70,20,20000,CIVILIAN,502
-Atlas_BlackRock,exerelin_atlas_blackrock,Superfreighter,flarelauncher,15,8000,250,4000,5000,200,45,25,5,2,3,2,4000,OMNI,,45,0.5,1,,,50,100,2000,700,10,70,20,20000,CIVILIAN,502
-Atlas_Valk,exerelin_atlas_valk,Superfreighter,flarelauncher,15,8000,250,4000,5000,200,45,25,5,2,3,2,4000,OMNI,,45,0.5,1,,,50,100,2000,700,10,70,20,20000,CIVILIAN,502
-Atlas_Ged,exerelin_atlas_ged,Superfreighter,flarelauncher,15,8000,250,4000,5000,200,45,25,5,2,3,2,4000,OMNI,,45,0.5,1,,,50,100,2000,700,10,70,20,20000,CIVILIAN,502
-Atlas_Thule,exerelin_atlas_thule,Superfreighter,flarelauncher,15,8000,250,4000,5000,200,45,25,5,2,3,2,4000,OMNI,,45,0.5,1,,,50,100,2000,700,10,70,20,20000,CIVILIAN,502

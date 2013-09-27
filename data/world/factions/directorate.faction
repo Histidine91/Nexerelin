@@ -77,7 +77,7 @@
            "extraCrewPercent":[50, 50],
            "marinesPercent":[50, 50],
            "ships":{
-               "exerelin_atlas_b_Standard":[1, 1],
+               "atlas_Standard":[1, 1],
                "valkyrie_Elite":[1, 1],
            },
        },
