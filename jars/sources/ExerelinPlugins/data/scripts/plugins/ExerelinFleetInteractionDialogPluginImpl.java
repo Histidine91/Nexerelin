@@ -16,11 +16,14 @@ import com.fs.starfarer.api.fleet.FleetGoal;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.BattleAutoresolverPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ExampleCustomUIPanel;
-import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
-import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.BoardingAttackType;
-import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.BoardingOutcome;
-import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.BoardingResult;
-import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.EngageBoardableOutcome;
+//import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.BoardingAttackType;
+import data.scripts.plugins.ExerelinFleetEncounterContext.BoardingAttackType;
+//import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.BoardingOutcome;
+import data.scripts.plugins.ExerelinFleetEncounterContext.BoardingOutcome;
+//import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.BoardingResult;
+import data.scripts.plugins.ExerelinFleetEncounterContext.BoardingResult;
+//import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.EngageBoardableOutcome;
+import data.scripts.plugins.ExerelinFleetEncounterContext.EngageBoardableOutcome;
 import com.fs.starfarer.api.ui.ValueDisplayMode;
 
 import java.awt.*;
@@ -83,7 +86,7 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
 
     private VisualType currVisualType = VisualType.FLEET_INFO;
 
-    private FleetEncounterContext context = new FleetEncounterContext();
+    private ExerelinFleetEncounterContext context = new ExerelinFleetEncounterContext();
 
     private static final Color HIGHLIGHT_COLOR = Global.getSettings().getColor("buttonShortcut");
 
@@ -451,7 +454,7 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                         new FleetMemberPickerListener() {
                             public void pickedFleetMembers(List<FleetMemberAPI> members) {
                                 if (members != null && !members.isEmpty()) {
-                                    BattleAutoresolverPluginImpl resolver = new BattleAutoresolverPluginImpl(playerFleet, otherFleet);
+                                    ExerelinBattleAutoresolverPluginImpl resolver = new ExerelinBattleAutoresolverPluginImpl(playerFleet, otherFleet);
                                     resolver.resolvePlayerPursuit(context, members);
                                     addText(getString("pursuitAutoresolve"));
                                     backFromEngagement(resolver.getResult());
