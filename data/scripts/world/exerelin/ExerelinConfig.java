@@ -11,15 +11,15 @@ public class ExerelinConfig {
 
     public static String[] commonShipList = new String[]{"ox_Hull", "crig_Hull", "shuttle_Attack"};
 
-    public static String[] neutralFactions = new String[]{"neutral", "independent"};
+    public static String[] neutralFactions = new String[]{"neutral", "independent"}; // NOT USED
 
-    public static boolean randomOmnifactoryLocation = true;
+    public static boolean randomOmnifactoryLocation = false;
 
-    public static boolean allowTradeAtNeutralStations = false;
-    public static boolean allowTradeAtHostileStations = false;
+    public static boolean allowTradeAtNeutralStations = false; // NOT USED
+    public static boolean allowTradeAtHostileStations = false; // NOT USED
 
-    public static String asteroidMiningResource = "Supplies";
-    public static String gasgiantMiningResource = "Fuel";
-    public static String fleetCostResource = "Supplies";
+    public static String asteroidMiningResource = "Supplies"; // NOT USED
+    public static String gasgiantMiningResource = "Fuel"; // NOT USED
+    public static String fleetCostResource = "Supplies"; // NOT USED
 
 }
