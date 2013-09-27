@@ -58,7 +58,9 @@ public class OutSystemStationAttackFleet
         CampaignFleetAPI extraFleetTwo = theSector.createFleet(faction, "exerelinGenericFleet");
         ExerelinUtils.mergeFleets(fleet, extraFleet);
         ExerelinUtils.mergeFleets(fleet, extraFleetTwo);
-        ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.5f, CargoAPI.CrewXPLevel.ELITE);
+        ExerelinUtils.addFreightersToFleet(fleet);
+        ExerelinUtils.addFreightersToFleet(fleet);
+        ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.3f, 0.3f, CargoAPI.CrewXPLevel.ELITE);
         ExerelinUtilsFleet.fleetOrderReset(fleet);
 
 		theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
