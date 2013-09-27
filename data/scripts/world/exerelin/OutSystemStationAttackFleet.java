@@ -105,6 +105,7 @@ public class OutSystemStationAttackFleet
 					}
                     boarding = false;
 					theTarget = newTarget;
+                    theFleet.setPreferredResupplyLocation(newTarget);
 					setFleetAssignments(theFleet);
 					return;
 				}

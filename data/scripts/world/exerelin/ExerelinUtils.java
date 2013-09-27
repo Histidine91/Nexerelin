@@ -1071,6 +1071,9 @@ public class ExerelinUtils
 
     public static SectorEntityToken getClosestEntityToSystemEntrance(StarSystemAPI system, String factionId, float minRelationship, float maxRelationship)
     {
+        if(system.getHyperspaceAnchor() == null)
+            return null;
+
         Vector2f jumpLoc = system.getHyperspaceAnchor().getLocation();
 
         float bestDistance = 99999999999f;
