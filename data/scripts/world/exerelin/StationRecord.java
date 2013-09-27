@@ -171,20 +171,14 @@ public class StationRecord
 
 	public void updateFleets()
 	{
-        removeDeadOrRebelFleets(attackSpawn);
-        removeDeadOrRebelFleets(stationAttackFleetSpawn);
-        removeDeadOrRebelFleets(defenseSpawn);
-        removeDeadOrRebelFleets(patrolSpawn);
-        removeDeadOrRebelFleets(inSystemSupplyConvoySpawn);
-        removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint);
-        removeDeadOrRebelFleets(gasMiningFleetSpawnPoint);
-        removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint2);
-        removeDeadOrRebelFleets(gasMiningFleetSpawnPoint2);
+        // Remove dead/traiter fleets from counts
+        updateFleetLists();
+
+        // Update any of our fleets with any changed targets
+        updateFleetTargets();
 
         if(checkIsBeingBoarded())
-            return; // Don't spawn fleets if being boarded
-
-		setFleetTargets();
+            return; // Don't spawn any fleets if being boarded
 
 		inSystemSupplyConvoySpawn.spawnFleet();
 
@@ -198,6 +192,7 @@ public class StationRecord
             if(ExerelinUtilsPlayer.getPlayerDeployExtraMiningFleets())
                 asteroidMiningFleetSpawnPoint2.spawnFleet();
         }
+
 		if(stationCargo.getFuel() < (1600*resourceMultiplier))
         {
 			gasMiningFleetSpawnPoint.spawnFleet();
@@ -205,20 +200,45 @@ public class StationRecord
                 gasMiningFleetSpawnPoint2.spawnFleet();
         }
 
+        if(defenseSpawn.getFleets().size() < defenseSpawn.getMaxFleets())
+        {
+            defenseSpawn.spawnFleet();
+            return;
+        }
 
-		if(ExerelinUtils.getRandomInRange(0, 1) == 0
-                || (targetStationRecord != null && targetStationRecord.getOwner() == null))
-			stationAttackFleetSpawn.spawnFleet();
+        if(attackSpawn.getFleets().size() < attackSpawn.getMaxFleets()
+                && targetStationRecord != null && targetStationRecord.getOwner() != null)
+        {
+            attackSpawn.spawnFleet();
+            return;
+        }
 
+        if(stationAttackFleetSpawn.getFleets().size() < stationAttackFleetSpawn.getMaxFleets()
+                && targetStationRecord != null && targetStationRecord.getOwner() == null)
+        {
+            stationAttackFleetSpawn.spawnFleet();
+            return;
+        }
 
+        if(patrolSpawn.getFleets().size() < patrolSpawn.getMaxFleets())
+        {
+            patrolSpawn.spawnFleet();
+            return;
+        }
+
+        /*
         for(int i = defenseSpawn.getFleets().size(); i < defenseSpawn.getMaxFleets(); i++)
             defenseSpawn.spawnFleet();
 
+        for(int i = attackSpawn.getFleets().size(); i < attackSpawn.getMaxFleets(); i++)
+            attackSpawn.spawnFleet();
+
+		if(targetStationRecord != null && targetStationRecord.getOwner() == null)
+			stationAttackFleetSpawn.spawnFleet();
+
         for(int i = patrolSpawn.getFleets().size(); i < patrolSpawn.getMaxFleets(); i++)
             patrolSpawn.spawnFleet();
-
-		for(int i = attackSpawn.getFleets().size(); i < attackSpawn.getMaxFleets(); i++)
-			attackSpawn.spawnFleet();
+        */
 	}
 
 	// Increase resources in station based off efficiency
@@ -235,24 +255,24 @@ public class StationRecord
             resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
 
 		if(stationCargo.getFuel() < 1600*resourceMultiplier)
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "fuel", CargoAPI.CargoItemType.RESOURCES, 100*efficiency)); // Halved due to mining fleets
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "fuel", CargoAPI.CargoItemType.RESOURCES, 100 * efficiency)); // Halved due to mining fleets
 		if(stationCargo.getSupplies() < 6400*resourceMultiplier)
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "supplies", CargoAPI.CargoItemType.RESOURCES,400*efficiency)); // Halved due to mining fleets
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "supplies", CargoAPI.CargoItemType.RESOURCES, 400 * efficiency)); // Halved due to mining fleets
 		if(stationCargo.getMarines() < 800*resourceMultiplier)
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "marines", CargoAPI.CargoItemType.RESOURCES,(int)(100*efficiency)));
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "marines", CargoAPI.CargoItemType.RESOURCES, (int) (100 * efficiency)));
 		if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 1600*resourceMultiplier)
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "regular_crew", CargoAPI.CargoItemType.RESOURCES, (int)(200*efficiency)));
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "regular_crew", CargoAPI.CargoItemType.RESOURCES, (int) (200 * efficiency)));
 
 		if(planetType.equalsIgnoreCase("gas") && stationCargo.getFuel() < 3200*resourceMultiplier)
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "fuel", CargoAPI.CargoItemType.RESOURCES, 100*efficiency)); // Halved due to mining fleets
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "fuel", CargoAPI.CargoItemType.RESOURCES, 100 * efficiency)); // Halved due to mining fleets
 		if(planetType.equalsIgnoreCase("moon") && stationCargo.getSupplies() < 12800*resourceMultiplier)
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "supplies", CargoAPI.CargoItemType.RESOURCES, 400*efficiency)); // Halved due to mining fleets
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "supplies", CargoAPI.CargoItemType.RESOURCES, 400 * efficiency)); // Halved due to mining fleets
 		if(planetType.equalsIgnoreCase("planet"))
 		{
             if(stationCargo.getMarines() < 1600*resourceMultiplier)
-                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "marines", CargoAPI.CargoItemType.RESOURCES, (int)(100*efficiency)));
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "marines", CargoAPI.CargoItemType.RESOURCES, (int) (100 * efficiency)));
             if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 3200*resourceMultiplier)
-                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "regular_crew", CargoAPI.CargoItemType.RESOURCES, (int)(200*efficiency)));
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "regular_crew", CargoAPI.CargoItemType.RESOURCES, (int) (200 * efficiency)));
 		}
 
 		if(efficiency > 0.6)
@@ -437,7 +457,7 @@ public class StationRecord
 		targetGasGiant = closestPlanet;
 	}
 
-	private void setFleetTargets()
+	public void updateFleetTargets()
 	{
 		stationAttackFleetSpawn.setTarget(targetStationRecord);
 		attackSpawn.setTarget(targetStationRecord, assistStationRecord);
@@ -448,6 +468,19 @@ public class StationRecord
         asteroidMiningFleetSpawnPoint2.setTargetAsteroid(targetAsteroid);
         gasMiningFleetSpawnPoint2.setTargetPlanet(targetGasGiant);
 	}
+
+    public void updateFleetLists()
+    {
+        removeDeadOrRebelFleets(attackSpawn);
+        removeDeadOrRebelFleets(stationAttackFleetSpawn);
+        removeDeadOrRebelFleets(defenseSpawn);
+        removeDeadOrRebelFleets(patrolSpawn);
+        removeDeadOrRebelFleets(inSystemSupplyConvoySpawn);
+        removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint);
+        removeDeadOrRebelFleets(gasMiningFleetSpawnPoint);
+        removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint2);
+        removeDeadOrRebelFleets(gasMiningFleetSpawnPoint2);
+    }
 
 	private String derivePlanetType(SectorEntityToken token)
 	{

@@ -33,7 +33,15 @@ public class TimeManager implements SpawnPointPlugin
         if(hour == 9)
         {
             // Check for player betrayal
-            SectorManager.getCurrentSectorManager().getDiplomacyManager().checkBetrayal();
+            Thread checkBetrayalThread = new Thread("checkBetrayalThread"){
+                public void run()
+                {
+                    SectorManager.getCurrentSectorManager().getDiplomacyManager().checkBetrayal();
+                }
+            };
+
+            checkBetrayalThread.start();
+
         }
 
         if(hour == 12)
@@ -74,7 +82,7 @@ public class TimeManager implements SpawnPointPlugin
 
         stationTargetThread.start();
 
-        SectorManager.getCurrentSectorManager().updateStations();
+        SectorManager.getCurrentSectorManager().updateStationFleets();
 	}
 
 	private void runWeekly()
