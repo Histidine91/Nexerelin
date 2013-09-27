@@ -3,6 +3,7 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 import java.awt.*;
 
@@ -58,6 +59,7 @@ public class OutSystemStationAttackFleet
         ExerelinUtils.mergeFleets(fleet, extraFleet);
         ExerelinUtils.mergeFleets(fleet, extraFleetTwo);
         ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.5f, CargoAPI.CrewXPLevel.ELITE);
+        ExerelinUtilsFleet.fleetOrderReset(fleet);
 
 		theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
         fleet.setName("Command Fleet");

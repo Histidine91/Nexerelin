@@ -56,7 +56,6 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
 		fleet.setName("Asteroid Mining Fleet");
 		theFleet = fleet;
-		getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 
 		fleet.setPreferredResupplyLocation(getAnchor());
 
@@ -66,6 +65,8 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 		miningPower = ExerelinUtils.getMiningPower(fleet);
 		setFleetAssignments(fleet);
         lastTimeCheck = Global.getSector().getClock().getTimestamp();
+
+        getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 
 		this.getFleets().add(fleet);
 		return fleet;

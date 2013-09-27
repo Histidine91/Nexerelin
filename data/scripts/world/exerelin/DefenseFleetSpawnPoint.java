@@ -2,6 +2,7 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.BaseSpawnPoint;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 @SuppressWarnings("unchecked")
 public class DefenseFleetSpawnPoint extends BaseSpawnPoint
@@ -56,15 +57,17 @@ public class DefenseFleetSpawnPoint extends BaseSpawnPoint
             if(ExerelinUtils.getRandomInRange(0, (int)(99 / (eliteShipChance * 100))) == 0)
                 ExerelinUtils.addEliteShipToFleet(fleet);
 
+            ExerelinUtils.renameFleet(fleet, "defense");
             ExerelinUtils.addFreightersToFleet(fleet);
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId));
+            ExerelinUtilsFleet.fleetOrderReset(fleet);
 
-			getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 			fleet.setPreferredResupplyLocation(getAnchor());
 
 			setFleetAssignments(fleet);
 
-			ExerelinUtils.renameFleet(fleet, "defense");
+            getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
+
 			this.getFleets().add(fleet);
 			return fleet;
 		}

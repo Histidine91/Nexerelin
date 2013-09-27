@@ -57,7 +57,6 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
 		fleet.setName("Gas Mining Fleet");
 		theFleet = fleet;
-		getLocation().spawnFleet(getAnchor(), 0,0, fleet);
 
 		fleet.setPreferredResupplyLocation(getAnchor());
 
@@ -67,6 +66,8 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 		miningPower = ExerelinUtils.getMiningPower(fleet);
 		setFleetAssignments(fleet);
         lastTimeCheck = Global.getSector().getClock().getTimestamp();
+
+        getLocation().spawnFleet(getAnchor(), 0,0, fleet);
 
 		this.getFleets().add(fleet);
 		return fleet;

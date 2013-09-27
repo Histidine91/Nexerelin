@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.*;
 
 import data.scripts.world.BaseSpawnPoint;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 import java.awt.*;
 
@@ -67,8 +68,8 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 		{
             ExerelinUtils.addFreightersToFleet(fleet);
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.2f, 0.8f, ExerelinUtils.getCrewXPLevelForFaction(this.fleetOwningFactionId));
+            ExerelinUtilsFleet.fleetOrderReset(fleet);
 
-			getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 			theFleet = fleet;
 
             if(((StarSystemAPI)stationTarget.getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(this.fleetOwningFactionId).getTargetResupplyEntityToken() == null)
@@ -79,6 +80,8 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
             fleet.setName("Boarding Fleet");
 
 			setFleetAssignments(fleet);
+
+            getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 
 			this.getFleets().add(fleet);
 			return fleet;

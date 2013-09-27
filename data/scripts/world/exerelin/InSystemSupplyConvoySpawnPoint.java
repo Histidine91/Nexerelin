@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 
 import data.scripts.world.BaseSpawnPoint;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 @SuppressWarnings("unchecked")
 public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
@@ -57,13 +58,13 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 		float crewNormalised = 0;
 		float marineNormalised = 0;
 
-		if(stationCargo.getSupplies() >= 1600)
+		if(stationCargo.getSupplies() >= 3200)
 			suppliesNormalised = stationCargo.getSupplies()/8;
-		if(stationCargo.getFuel() >= 400)
+		if(stationCargo.getFuel() >= 800)
 			fuelNormalised = stationCargo.getFuel()/2;
-		if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) >= 400)
+		if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) >= 800)
 			crewNormalised = stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR)/2;
-		if(stationCargo.getMarines() >= 200)
+		if(stationCargo.getMarines() >= 400)
 			marineNormalised = stationCargo.getMarines();
 
 		if(suppliesNormalised == 0 && fuelNormalised == 0 && crewNormalised == 0 && marineNormalised == 0)
@@ -89,22 +90,26 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 	    else
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 1, 2, owningFactionId, getSector());
 
+        ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.3f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId));
+        ExerelinUtilsFleet.fleetOrderReset(fleet);
+
 		theFleet = fleet;
-		getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 		fleet.setPreferredResupplyLocation(getAnchor());
 		fleet.setName("Logistics Convoy");
 
 		// Remove cargo from station
 		if(convoyType.equalsIgnoreCase("fuel"))
-			ExerelinUtils.decreaseCargo(stationCargo, "fuel", 200);
+			ExerelinUtils.decreaseCargo(stationCargo, "fuel", 400);
 		else if(convoyType.equalsIgnoreCase("supplies"))
-			ExerelinUtils.decreaseCargo(stationCargo, "supplies", 800);
+			ExerelinUtils.decreaseCargo(stationCargo, "supplies", 1600);
 		else if(convoyType.equalsIgnoreCase("crew"))
-			ExerelinUtils.decreaseCargo(stationCargo, "crewRegular", 200);
+			ExerelinUtils.decreaseCargo(stationCargo, "crewRegular", 400);
 		else if(convoyType.equalsIgnoreCase("marines"))
-			ExerelinUtils.decreaseCargo(stationCargo, "marines", 100);
+			ExerelinUtils.decreaseCargo(stationCargo, "marines", 200);
 
 		setFleetAssignments(fleet);
+
+        getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 
 		this.getFleets().add(fleet);
 		return fleet;
@@ -130,13 +135,13 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 					// Deliver resources and despawn
 					CargoAPI cargo = friendlyStation.getStationToken().getCargo();
 					if(convoyType.equalsIgnoreCase("fuel"))
-						cargo.addFuel(200);
+						cargo.addFuel(400);
 					else if(convoyType.equalsIgnoreCase("supplies"))
-						cargo.addSupplies(800) ;
+						cargo.addSupplies(1600) ;
 					else if(convoyType.equalsIgnoreCase("crew"))
-						cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, 200);
+						cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, 400);
 					else if(convoyType.equalsIgnoreCase("marines"))
-						cargo.addMarines(100) ;
+						cargo.addMarines(200) ;
 
 					if(friendlyStation.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 					{

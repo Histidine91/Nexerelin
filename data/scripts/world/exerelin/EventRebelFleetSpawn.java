@@ -3,6 +3,7 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 import java.awt.*;
 import java.util.List;
@@ -42,7 +43,7 @@ public class EventRebelFleetSpawn extends EventBase
 
         CampaignFleetAPI newRebelFleet = Global.getSector().createFleet(factionLeaderId, "exerelinGenericFleet");
 
-        //System.out.println("EVENT: Spawning rebel fleet in " + starSystemAPI.getName());
+
 
         // Reduce size of rebel fleet to be close to player fleet
         List members = newRebelFleet.getFleetData().getMembersListCopy();
@@ -64,12 +65,15 @@ public class EventRebelFleetSpawn extends EventBase
 
         ExerelinUtils.addFreightersToFleet(newRebelFleet);
         ExerelinUtils.resetFleetCargoToDefaults(newRebelFleet, 0.3f, 0.1f, CargoAPI.CrewXPLevel.REGULAR);
+        ExerelinUtilsFleet.fleetOrderReset(newRebelFleet);
+
         newRebelFleet.setFaction(rebelFAPI.getId());
         newRebelFleet.setName("Dissenter Fleet");
 
-        starSystemAPI.spawnFleet(planet, 0, 0, newRebelFleet);
         newRebelFleet.addAssignment(FleetAssignment.ATTACK_LOCATION, ExerelinUtils.getRandomStationInSystemForFaction(factionLeaderId, starSystemAPI), 90);
         newRebelFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, planet, 60);
+        starSystemAPI.spawnFleet(planet, 0, 0, newRebelFleet);
+        //System.out.println("EVENT: Spawned rebel fleet in " + starSystemAPI.getName());
 	}
 }
 

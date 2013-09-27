@@ -2,6 +2,7 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.BaseSpawnPoint;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 
 @SuppressWarnings("unchecked")
@@ -76,10 +77,10 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 		int remainingFleetsToSpawn = this.getMaxFleets()*2 - this.getFleets().size();
 		if(ExerelinUtils.canStationSpawnFleet(getAnchor(), fleet, remainingFleetsToSpawn, 0.1f, true, ExerelinUtils.getCrewXPLevelForFaction(this.ownerFactionId)))
 		{
+            ExerelinUtils.renameFleet(fleet, "attack");
             ExerelinUtils.addFreightersToFleet(fleet);
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.ownerFactionId));
-
-			getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
+            ExerelinUtilsFleet.fleetOrderReset(fleet);
 
             if(((StarSystemAPI)stationTarget.getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(this.ownerFactionId).getTargetResupplyEntityToken() == null)
 			    fleet.setPreferredResupplyLocation(getAnchor());
@@ -88,7 +89,7 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 
 			setFleetAssignments(fleet);
 
-			ExerelinUtils.renameFleet(fleet, "attack");
+            getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
 
 			this.getFleets().add(fleet);
 			return fleet;
