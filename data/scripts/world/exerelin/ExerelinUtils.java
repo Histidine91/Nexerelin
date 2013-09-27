@@ -756,7 +756,10 @@ public class ExerelinUtils
 	public static void handlePlayerFleetMining(CampaignFleetAPI playerFleet)
 	{
         if(playerFleet.isInHyperspace())
-            return;
+            return; // Nothing to mine in hyperspace, although that would be COOL
+
+        if(!ExerelinUtils.isValidMiningFleet(playerFleet))
+            return; // Not a mining fleet
 
 		StarSystemAPI system = (StarSystemAPI)playerFleet.getContainingLocation();
 
