@@ -101,7 +101,7 @@ public class SectorManager
         }
     }
 
-	public void updateStations()
+	public void updateStationFleets()
 	{
 		// Manage stations (1 station per system per day)
 		for(int j = 0; j < this.systemManagers.length; j++)
@@ -358,26 +358,19 @@ public class SectorManager
 		if(sectorAPI.getPlayerFleet().getFaction().getId().equalsIgnoreCase("player"))
 		{
 			sectorAPI.getPlayerFleet().setFaction(ExerelinData.getInstance().getPlayerFaction());
-			SectorEntityToken station = null;
-            if(SectorManager.getCurrentSectorManager().getFactionDirector(ExerelinData.getInstance().getPlayerFaction()).getHomeSystem() != null)
-                station = ExerelinUtils.getRandomStationInSystemForFaction(ExerelinData.getInstance().getPlayerFaction(), SectorManager.getCurrentSectorManager().getFactionDirector(ExerelinData.getInstance().getPlayerFaction()).getHomeSystem());
-			if(station != null)
-				sectorAPI.getPlayerFleet().setLocation(station.getLocation().getX(),  station.getLocation().getY());
 
 			if(playerMovedToSpawnLocation)
 			{
-				// Not initial fleet so set player fleet to have a faction specfic frigate
-				CampaignFleetAPI dummyFleet = sectorAPI.createFleet(ExerelinData.getInstance().getPlayerFaction(), "exerelinGenericFleet");
+				// Not initial fleet so set player fleet to have their starting frigate
+                sectorAPI.getPlayerFleet().getFleetData().removeFleetMember(((FleetMemberAPI)sectorAPI.getPlayerFleet().getFleetData().getMembersListCopy().get(0)));
+                sectorAPI.getPlayerFleet().getFleetData().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, this.playerStartShipVariant));
 
-				for(int i = 0; i < dummyFleet.getFleetData().getMembersListCopy().size(); i++)
-				{
-					if(((FleetMemberAPI)dummyFleet.getFleetData().getMembersListCopy().get(i)).isFrigate())
-					{
-						sectorAPI.getPlayerFleet().getFleetData().removeFleetMember(((FleetMemberAPI)sectorAPI.getPlayerFleet().getFleetData().getMembersListCopy().get(0)));
-                        sectorAPI.getPlayerFleet().getFleetData().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, this.playerStartShipVariant));
-						break;
-					}
-				}
+                // Move them to one of their stations
+                SectorEntityToken station = null;
+                if(SectorManager.getCurrentSectorManager().getFactionDirector(ExerelinData.getInstance().getPlayerFaction()).getHomeSystem() != null)
+                    station = ExerelinUtils.getRandomStationInSystemForFaction(ExerelinData.getInstance().getPlayerFaction(), SectorManager.getCurrentSectorManager().getFactionDirector(ExerelinData.getInstance().getPlayerFaction()).getHomeSystem());
+                if(station != null)
+                    sectorAPI.getPlayerFleet().setLocation(station.getLocation().getX(),  station.getLocation().getY());
 			}
             else
             {
@@ -390,17 +383,14 @@ public class SectorManager
                 // Start of game, player fleet is last to be spawned so set last faction spawn time as this
                 this.lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
                 FactionDirector.getFactionDirectorForFactionId(ExerelinData.getInstance().getPlayerFaction()).setHomeSystem((StarSystemAPI)Global.getSector().getPlayerFleet().getContainingLocation());
+
+                // Move to appropriate start location edge of map
+                sectorAPI.setCurrentLocation(sectorAPI.getRespawnLocation());
+                SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(Global.getSector().getPlayerFleet().getContainingLocation());
+                sectorAPI.getPlayerFleet().setLocation(token.getLocation().getX(), token.getLocation().getY());
+                playerMovedToSpawnLocation = true;
             }
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.1f, CargoAPI.CrewXPLevel.GREEN);
-		}
-
-		// Move player to edge of system if start of game
-		if(!playerMovedToSpawnLocation)
-		{
-            sectorAPI.setCurrentLocation(sectorAPI.getRespawnLocation());
-            SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(Global.getSector().getPlayerFleet().getContainingLocation());
-            sectorAPI.getPlayerFleet().setLocation(token.getLocation().getX(), token.getLocation().getY());
-			playerMovedToSpawnLocation = true;
 		}
 	}
 
