@@ -1,0 +1,15 @@
+{
+    "displayName": "Attack",
+    "fluxCapacitors": 0,
+    "fluxVents": 8,
+    "hullId": "exerelinshuttle",
+    "hullMods": [],
+    "variantId": "exerelinshuttle_Attack",
+    "weaponGroups": [{
+        "mode": "ALTERNATING",
+        "weapons": {
+            "WS 001": "irpulse",
+            "WS 002": "irpulse"
+        }
+    }]
+}

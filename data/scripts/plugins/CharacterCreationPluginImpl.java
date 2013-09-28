@@ -697,9 +697,10 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			else
 			{
 				System.out.println("EXERELIN ERROR: Starting ship initialistion failure");
+                data.addStartingShipChoice("shuttle_Attack");
             }
 		}
-        data.addStartingShipChoice("shuttle_Attack");
+        //data.addStartingShipChoice("exerelinshuttle_Attack");
 	}
 
 	public void startingShipPicked(String variantId, CharacterCreationData data)
