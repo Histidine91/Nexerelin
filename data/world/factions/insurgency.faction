@@ -26,7 +26,7 @@
 	"fleetCompositions":{
 		"exerelinGenericFleet":{
             "displayName":"Generic Fleet",
-            "maxFleetPoints":190,
+            "maxFleetPoints":180,
             "daysWorthOfSupplies":[30, 50],
             "lyWorthOfFuel":[40, 60],
             "extraCrewPercent":[80, 80],
@@ -98,7 +98,7 @@
             "marinesPercent":[20, 20],
             "ships":{
                 "mining_drone_wing":[1, 1],
-                "khs_mistral_acehigh":[1, 2],
+                "khs_mistral_acehigh":[1, 1],
 				"khs_djinn_acehigh":[0, 1],
                 "khs_vulture_acehigh":[1, 1],
             },
