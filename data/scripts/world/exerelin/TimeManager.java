@@ -33,14 +33,19 @@ public class TimeManager implements SpawnPointPlugin
         if(hour == 9)
         {
             // Check for player betrayal
-            Thread checkBetrayalThread = new Thread("checkBetrayalThread"){
-                public void run()
-                {
-                    SectorManager.getCurrentSectorManager().getDiplomacyManager().checkBetrayal();
-                }
-            };
+            if(ExerelinConfig.enableThreading)
+            {
+                Thread checkBetrayalThread = new Thread("checkBetrayalThread"){
+                    public void run()
+                    {
+                        SectorManager.getCurrentSectorManager().getDiplomacyManager().checkBetrayal();
+                    }
+                };
 
-            checkBetrayalThread.start();
+                checkBetrayalThread.start();
+            }
+            else
+                SectorManager.getCurrentSectorManager().getDiplomacyManager().checkBetrayal();
 
         }
 
@@ -53,14 +58,19 @@ public class TimeManager implements SpawnPointPlugin
         if(hour == 15)
         {
             // Manage relationships
-            Thread updateRelationshipThread = new Thread("updateRelationshipThread"){
-                public void run()
-                {
-                    SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationships();
-                }
-            };
+            if(ExerelinConfig.enableThreading)
+            {
+                Thread updateRelationshipThread = new Thread("updateRelationshipThread"){
+                    public void run()
+                    {
+                        SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationships();
+                    }
+                };
 
-            updateRelationshipThread.start();
+                updateRelationshipThread.start();
+            }
+            else
+                SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationships();
         }
 
         if(hour == 18)
@@ -72,36 +82,55 @@ public class TimeManager implements SpawnPointPlugin
 
 	private void runDaily()
 	{
-        Thread stationTargetThread = new Thread("stationTargetThread"){
-            public void run()
-            {
-                // Update station targets
-                SectorManager.getCurrentSectorManager().updateStationTargets();
-            }
-        };
+        if(ExerelinConfig.enableThreading)
+        {
+            Thread stationTargetThread = new Thread("stationTargetThread"){
+                public void run()
+                {
+                    // Update station targets
+                    SectorManager.getCurrentSectorManager().updateStationTargets();
+                }
+            };
 
-        stationTargetThread.start();
+            stationTargetThread.start();
+        }
+        else
+            SectorManager.getCurrentSectorManager().updateStationTargets();
 
         SectorManager.getCurrentSectorManager().updateStationFleets();
 	}
 
 	private void runWeekly()
 	{
-        Thread weeklyThread = new Thread("weeklyThread"){
-            public void run()
-            {
-                // Check player has station or station attack fleet
-                SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
+        if(ExerelinConfig.enableThreading)
+        {
+            Thread weeklyThread = new Thread("weeklyThread"){
+                public void run()
+                {
+                    // Check player has station or station attack fleet
+                    SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
 
-                // Update FactionDirectors
-                FactionDirector.updateAllFactionDirectors();
+                    // Update FactionDirectors
+                    FactionDirector.updateAllFactionDirectors();
 
-                // Increase station resources
-                SectorManager.getCurrentSectorManager().updateStationResources();
-            }
-        };
+                    // Increase station resources
+                    SectorManager.getCurrentSectorManager().updateStationResources();
+                }
+            };
 
-        weeklyThread.start();
+            weeklyThread.start();
+        }
+        else
+        {
+            // Check player has station or station attack fleet
+            SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
+
+            // Update FactionDirectors
+            FactionDirector.updateAllFactionDirectors();
+
+            // Increase station resources
+            SectorManager.getCurrentSectorManager().updateStationResources();
+        }
 
         // Pay wages
         SectorManager.getCurrentSectorManager().payPlayerWages();

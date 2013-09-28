@@ -31,14 +31,19 @@ public class SystemEventManager
         // Spawn rebel fleets in system
         if(ExerelinUtils.getRandomInRange(0, 10) == 0)
         {
-            Thread spawnRebelFleetThread = new Thread("spawnRebelFleetThread"){
-                public void run()
+            if(ExerelinConfig.enableThreading)
                 {
-                    eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
-                }
-            };
+                Thread spawnRebelFleetThread = new Thread("spawnRebelFleetThread"){
+                    public void run()
+                    {
+                        eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
+                    }
+                };
 
-            spawnRebelFleetThread.start();
+                spawnRebelFleetThread.start();
+            }
+            else
+                eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
             //waitTime = betweenEventWait;
             //lastEventType = eventRebelFleetSpawn.getType();
             return;

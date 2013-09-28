@@ -118,10 +118,14 @@ public class ExerelinUtils
 				return false;
 			else
 			{
-				decreaseCargo(stationCargo, "crewRegular", (int)reqCrew);
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(stationCargo, "regular_crew", CargoAPI.CargoItemType.RESOURCES, (int)reqCrew));
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(stationCargo, "fuel", CargoAPI.CargoItemType.RESOURCES, (int)reqFuel));
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(stationCargo, "supplies", CargoAPI.CargoItemType.RESOURCES, (int)reqSupplies));
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(stationCargo, "marines", CargoAPI.CargoItemType.RESOURCES, (int)reqMarines));
+                /*decreaseCargo(stationCargo, "crewRegular", (int) reqCrew);
 				decreaseCargo(stationCargo, "fuel", (int)reqFuel);
 				decreaseCargo(stationCargo, "supplies", (int)reqSupplies);
-				decreaseCargo(stationCargo, "marines", reqMarines);
+				decreaseCargo(stationCargo, "marines", reqMarines);*/
 
 				// Reset fleet cargo and put correct cargo in for fleet size otherwise accidents will occur
 				CargoAPI fleetCargo = fleet.getCargo();

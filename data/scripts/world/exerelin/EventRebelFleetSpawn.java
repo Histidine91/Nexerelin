@@ -3,6 +3,7 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import data.scripts.world.exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 import java.awt.*;
@@ -72,7 +73,8 @@ public class EventRebelFleetSpawn extends EventBase
 
         newRebelFleet.addAssignment(FleetAssignment.ATTACK_LOCATION, ExerelinUtils.getRandomStationInSystemForFaction(factionLeaderId, starSystemAPI), 90);
         newRebelFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, planet, 60);
-        starSystemAPI.spawnFleet(planet, 0, 0, newRebelFleet);
+        //starSystemAPI.spawnFleet(planet, 0, 0, newRebelFleet);
+        SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandSpawnPrebuiltFleet(planet, 0, 0, newRebelFleet));
         //System.out.println("EVENT: Spawned rebel fleet in " + starSystemAPI.getName());
 	}
 }

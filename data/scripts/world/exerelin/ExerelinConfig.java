@@ -22,4 +22,7 @@ public class ExerelinConfig {
     public static String gasgiantMiningResource = "Fuel"; // NOT USED
     public static String fleetCostResource = "Supplies"; // NOT USED
 
+
+    // TECHNICAL
+    public static boolean enableThreading = true;
 }

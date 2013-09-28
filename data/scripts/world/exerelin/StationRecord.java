@@ -202,43 +202,73 @@ public class StationRecord
 
         if(defenseSpawn.getFleets().size() < defenseSpawn.getMaxFleets())
         {
-            defenseSpawn.spawnFleet();
+            if(ExerelinConfig.enableThreading)
+            {
+                Thread defenseSpawnThread = new Thread("defenseSpawnThread"){
+                    public void run()
+                    {
+                        defenseSpawn.spawnFleet();
+                    }
+                };
+                defenseSpawnThread.start();
+            }
+            else
+                defenseSpawn.spawnFleet();
             return;
         }
 
         if(attackSpawn.getFleets().size() < attackSpawn.getMaxFleets()
                 && targetStationRecord != null && targetStationRecord.getOwner() != null)
         {
-            attackSpawn.spawnFleet();
+            if(ExerelinConfig.enableThreading)
+            {
+                Thread attackSpawnThread = new Thread("attackSpawnThread"){
+                    public void run()
+                    {
+                        attackSpawn.spawnFleet();
+                    }
+                };
+                attackSpawnThread.start();
+            }
+            else
+                attackSpawn.spawnFleet();
             return;
         }
 
         if(stationAttackFleetSpawn.getFleets().size() < stationAttackFleetSpawn.getMaxFleets()
                 && targetStationRecord != null && targetStationRecord.getOwner() == null)
         {
-            stationAttackFleetSpawn.spawnFleet();
+            if(ExerelinConfig.enableThreading)
+            {
+                Thread stationAttackSpawnThread = new Thread("stationAttackSpawnThread"){
+                    public void run()
+                    {
+                        stationAttackFleetSpawn.spawnFleet();
+                    }
+                };
+                stationAttackSpawnThread.start();
+            }
+            else
+                stationAttackFleetSpawn.spawnFleet();
             return;
         }
 
         if(patrolSpawn.getFleets().size() < patrolSpawn.getMaxFleets())
         {
-            patrolSpawn.spawnFleet();
+            if(ExerelinConfig.enableThreading)
+            {
+                Thread patrolSpawnThread = new Thread("patrolSpawnThread"){
+                    public void run()
+                    {
+                        patrolSpawn.spawnFleet();
+                    }
+                };
+                patrolSpawnThread.start();
+            }
+            else
+                patrolSpawn.spawnFleet();
             return;
         }
-
-        /*
-        for(int i = defenseSpawn.getFleets().size(); i < defenseSpawn.getMaxFleets(); i++)
-            defenseSpawn.spawnFleet();
-
-        for(int i = attackSpawn.getFleets().size(); i < attackSpawn.getMaxFleets(); i++)
-            attackSpawn.spawnFleet();
-
-		if(targetStationRecord != null && targetStationRecord.getOwner() == null)
-			stationAttackFleetSpawn.spawnFleet();
-
-        for(int i = patrolSpawn.getFleets().size(); i < patrolSpawn.getMaxFleets(); i++)
-            patrolSpawn.spawnFleet();
-        */
 	}
 
 	// Increase resources in station based off efficiency

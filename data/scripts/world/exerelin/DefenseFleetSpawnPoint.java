@@ -2,6 +2,7 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.BaseSpawnPoint;
+import data.scripts.world.exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 @SuppressWarnings("unchecked")
@@ -66,10 +67,13 @@ public class DefenseFleetSpawnPoint extends BaseSpawnPoint
 
 			setFleetAssignments(fleet);
 
-            getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
+            this.getFleets().add(fleet);
 
-			this.getFleets().add(fleet);
-			return fleet;
+            //getLocation().spawnFleet(getAnchor(), 0, 0, fleet);
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandSpawnPrebuiltFleet(getAnchor(), 0, 0, fleet));
+
+			//return fleet;
+            return null;
 		}
 		else
 		{
