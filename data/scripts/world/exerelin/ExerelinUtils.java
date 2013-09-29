@@ -1148,19 +1148,4 @@ public class ExerelinUtils
 
         return false;
     }
-
-    // REMOVE ONCE LAZYLIB UPDATED
-    public static float LazyLib_getDistance(SectorEntityToken token1, SectorEntityToken token2)
-    {
-        return Math.max(0f, LazyLib_getDistance(token1.getLocation(), token2.getLocation())
-                - (token1.getRadius() + token2.getRadius()));
-    }
-
-    // REMOVE ONCE LAZYLIB UPDATED
-    public static float LazyLib_getDistance(Vector2f vector1, Vector2f vector2)
-    {
-        float a = vector1.x - vector2.x;
-        float b = vector1.y - vector2.y;
-        return (float) Math.hypot(a, b);
-    }
 }
