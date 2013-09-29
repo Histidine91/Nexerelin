@@ -3,7 +3,10 @@ package data.scripts.plugins;
 import java.awt.Color;
 
 import com.fs.starfarer.api.campaign.*;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsFaction;
 import org.lwjgl.input.Keyboard;
+
+import java.util.List;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
@@ -20,6 +23,8 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         PLANT_AGENT,
         DROP_OFF_PRISONER,
         PLANT_SABOTEUR,
+        DISPLAY_ALLIES,
+        DISPLAY_ENEMIES,
         LEAVE,
     }
 
@@ -109,6 +114,12 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 options.clearOptions();
                 createInitialOptions();
                 break;
+            case DISPLAY_ALLIES:
+                this.displayRleationships(1);
+                break;
+            case DISPLAY_ENEMIES:
+                this.displayRleationships(-1);
+                break;
             case LEAVE:
                 Global.getSector().setPaused(false);
                 dialog.dismiss();
@@ -155,6 +166,13 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 options.setShortcut(OptionId.TRADE_SHIPS, Keyboard.KEY_F, false, false, false, true);
                 options.addOption("Make use of the dockyard's refitting facilities", OptionId.REFIT);
                 options.setShortcut(OptionId.REFIT, Keyboard.KEY_R, false, false, false, true);
+            }
+
+            // If we own station, display diplomacy reports
+            if(!station.getFaction().getId().equalsIgnoreCase("abandoned") && !station.getFaction().getId().equalsIgnoreCase("rebel"))
+            {
+                options.addOption("Alliance Report", OptionId.DISPLAY_ALLIES);
+                options.addOption("Enemy Report", OptionId.DISPLAY_ENEMIES);
             }
 
             if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent") > 0
@@ -241,6 +259,40 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
     public void coreUIDismissed() {
         optionSelected(null, OptionId.INIT);
+    }
+
+    public void displayRleationships(int value)
+    {
+        String playerFaction = Global.getSector().getPlayerFleet().getFaction().getId();
+        if(value == 1)
+        {
+            // Display allies
+            List<String> allies = ExerelinUtilsFaction.getFactionsAlliedWithFaction(this.station.getFaction().getId());
+            if(allies.size() > 0)
+                textPanel.addParagraph("Current allies of " + this.station.getFaction().getDisplayName() + ":");
+            else
+                textPanel.addParagraph(this.station.getFaction().getDisplayName() + " has no allies currently.");
+
+            for(int i = 0; i < allies.size(); i++)
+            {
+                textPanel.addParagraph(Global.getSector().getFaction(allies.get(i)).getDisplayName());
+            }
+        }
+        else if(value == -1)
+        {
+            // Display enemies
+            List<String> enemies = ExerelinUtilsFaction.getFactionsAtWarWithFaction(this.station.getFaction().getId());
+            if(enemies.size() > 0)
+                textPanel.addParagraph(this.station.getFaction().getDisplayName() + " is currently at war with:");
+            else
+                textPanel.addParagraph(this.station.getFaction().getDisplayName() + " has no enemies currently.");
+
+            for(int i = 0; i < enemies.size(); i++)
+            {
+                if(!enemies.get(i).equalsIgnoreCase("rebel") && !enemies.get(i).equalsIgnoreCase("abandoned"))
+                    textPanel.addParagraph(Global.getSector().getFaction(enemies.get(i)).getDisplayName());
+            }
+        }
     }
 
 }
