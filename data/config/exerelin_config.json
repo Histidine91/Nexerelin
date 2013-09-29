@@ -1,0 +1,7 @@
+{
+    "allowTradeAtAlliedStations":true, # Boolean
+    "allowTradeAtNeutralStations":false, # Boolean
+    "allowTradeAtHostileStations":false, # Boolean
+    "reduceSupplies":true, # Boolean
+    "maxSuppliesDropped": 200, # Integer
+}

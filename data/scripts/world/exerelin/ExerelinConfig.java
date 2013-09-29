@@ -17,14 +17,12 @@ public class ExerelinConfig
 
     public static String[] neutralFactions = new String[]{"neutral", "independent"}; // NOT USED
 
-    public static boolean allowTradeAtNeutralStations = false; // NOT USED
-    public static boolean allowTradeAtHostileStations = false; // NOT USED
-
+    // Resourcing
     public static String asteroidMiningResource = "supplies"; // NOT USED
     public static String gasgiantMiningResource = "fuel"; // NOT USED
-    public static String fleetCostResource = "supplies"; // NOT USED
-
-    // System Generation Minimum
+    public static String fleetCostResource = "supplies"; // NOT USED 
+    
+    // System Generation Minimums
     public static int minimumPlanets = 3;
     public static int minimumStations = 1;
     public static int minimumAsteroidBelts = 0;

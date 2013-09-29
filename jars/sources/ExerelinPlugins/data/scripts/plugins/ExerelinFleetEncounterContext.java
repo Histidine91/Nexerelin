@@ -30,6 +30,8 @@ import com.fs.starfarer.api.fleet.FleetGoal;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.world.exerelin.ExerelinConfig;
+import org.json.JSONObject;
 
 public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugin {
 
@@ -1131,11 +1133,27 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
             suppliesSalvaged += data.getMember().getRepairTracker().getSuppliesFromSalvage() * mult;
         }
 
-        // EXERELIN edit - loot a max 200 supplies, or the cargo capaacity of fleet
-        //loot.addSupplies((int)suppliesSalvaged);
-        int suppliesToAdd = Math.min((int)suppliesSalvaged, (int)this.getWinner().getCargo().getMaxCapacity()/2);
-        suppliesToAdd = Math.min(200, suppliesToAdd);
-        loot.addSupplies(suppliesToAdd);
+        // EXERELIN edit - loot a min of 200 supplies, or the cargo capaacity of fleet / 2
+        boolean reduceSupplies = true;
+        int maxSuppliesDropped = 200;
+        try
+        {
+            JSONObject settings = Global.getSettings().loadJSON("data/config/exerelin_config.json");
+            reduceSupplies = settings.getBoolean("reduceSupplies");
+            maxSuppliesDropped = settings.getInt("maxSuppliesDropped");
+        }
+        catch(Exception e)
+        {
+            System.out.println("EXERELIN ERROR: " + e.getMessage());
+        }
+        if(reduceSupplies)
+        {
+            int suppliesToAdd = Math.min((int)suppliesSalvaged, (int)this.getWinner().getCargo().getMaxCapacity()/2);
+            suppliesToAdd = Math.min(maxSuppliesDropped, suppliesToAdd);
+            loot.addSupplies(suppliesToAdd);
+        }
+        else
+            loot.addSupplies((int)suppliesSalvaged);
 
         float scrappedCapacity = 0f;
         float lootedCapacity = 0f;
@@ -1157,7 +1175,9 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
 
         float lootedFraction = 0.5f;
         loot.addFuel(Math.round(fuelLost * lootedFraction));
-        //loot.addSupplies(Math.round(suppliesLost * lootedFraction));
+
+        if(!reduceSupplies)
+            loot.addSupplies(Math.round(suppliesLost * lootedFraction));
 
         for (CargoStackAPI stack : loserCargo.getStacksCopy()) {
             if (stack.isNull()) continue;
