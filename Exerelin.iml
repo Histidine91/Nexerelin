@@ -8,7 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Java" level="project" />
-    <orderEntry type="library" name="LazyLib" level="project" />
     <orderEntry type="library" name="lwjgl" level="project" />
     <orderEntry type="library" name="lwjgl_util" level="project" />
     <orderEntry type="library" name="Omnifactory" level="project" />
@@ -16,6 +15,7 @@
     <orderEntry type="library" name="starfarer.api" level="project" />
     <orderEntry type="library" name="ExerelinPlugins" level="project" />
     <orderEntry type="library" name="ExerelinUtilities" level="project" />
+    <orderEntry type="library" name="LazyLib" level="project" />
   </component>
 </module>
 

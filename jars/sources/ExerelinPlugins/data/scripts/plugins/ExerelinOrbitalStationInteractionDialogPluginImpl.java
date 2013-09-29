@@ -150,7 +150,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
     private void createInitialOptions() {
         options.clearOptions();
 
-        if (station.getFaction().isNeutralFaction()) {
+        if (station.getFaction().isNeutralFaction() || station.getFullName().contains("Omnifactory")) {
             options.addOption("Transfer cargo or personnel", OptionId.TRADE_CARGO);
             options.setShortcut(OptionId.TRADE_CARGO, Keyboard.KEY_I, false, false, false, true);
             options.addOption("Transfer ships to or from this station", OptionId.TRADE_SHIPS);
@@ -282,7 +282,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         {
             // Display enemies
             List<String> enemies = ExerelinUtilsFaction.getFactionsAtWarWithFaction(this.station.getFaction().getId());
-            if(enemies.size() > 0)
+            if(enemies.size() > 2) // Always at war with Rebel, Abandoned
                 textPanel.addParagraph(this.station.getFaction().getDisplayName() + " is currently at war with:");
             else
                 textPanel.addParagraph(this.station.getFaction().getDisplayName() + " has no enemies currently.");
