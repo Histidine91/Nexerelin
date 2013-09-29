@@ -280,11 +280,11 @@ public final class ExerelinData
 			possibleFactionList.add("lotusconglomerate");
 
 		// Test for Bushi
-		if(isFactionInstalled("bushi", "data.scripts.world.BushiGen"))
+		if(isFactionInstalled("bushi", "data.scripts.world.BushiModPlugin"))
 			possibleFactionList.add("bushi");
 
 		// Test for Hiigaran Descendents
-		if(isFactionInstalled("hiigaran_descendants", "data.scripts.world.HiigaraGen"))
+		if(isFactionInstalled("hiigaran_descendants", "data.scripts.world.HiiModPlugin"))
 			possibleFactionList.add("hiigaran_descendants");
 
         // Test for Ceredia
