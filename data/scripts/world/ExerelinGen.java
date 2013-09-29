@@ -77,7 +77,11 @@ public class ExerelinGen implements SectorGeneratorPlugin
 		String[] possibleMoonTypes = new String[]	{"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice"};
 
 		// Build base planets
-		int numBasePlanets = ExerelinUtils.getRandomInRange(3, ExerelinData.getInstance().maxPlanets);
+		int numBasePlanets;
+        if(ExerelinData.getInstance().numSystems != 1)
+            numBasePlanets = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumPlanets, ExerelinData.getInstance().maxPlanets);
+        else
+            numBasePlanets = ExerelinData.getInstance().maxPlanets;
 		int distanceStepping = (ExerelinData.getInstance().maxSystemSize-4000)/numBasePlanets;
 		Boolean gasPlanetCreated = false;
 		for(int i = 0; i < numBasePlanets; i = i + 1)
@@ -188,7 +192,12 @@ public class ExerelinGen implements SectorGeneratorPlugin
 
 		// Build asteroid belts
 		List planets = system.getPlanets();
-		int numAsteroidBelts = ExerelinUtils.getRandomInRange(0, ExerelinData.getInstance().maxAsteroidBelts);
+        int numAsteroidBelts;
+        if(ExerelinData.getInstance().numSystems != 1)
+            numAsteroidBelts = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumAsteroidBelts, ExerelinData.getInstance().maxAsteroidBelts);
+        else
+            numAsteroidBelts = ExerelinData.getInstance().maxAsteroidBelts;
+
 		for(int j = 0; j < numAsteroidBelts; j = j + 1)
 		{
 			SectorEntityToken planet = null;
@@ -241,7 +250,11 @@ public class ExerelinGen implements SectorGeneratorPlugin
 		String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest", "Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
 
 		// Build stations
-		int numStation = ExerelinUtils.getRandomInRange(1, Math.min(ExerelinData.getInstance().maxStations, numBasePlanets*2));
+		int numStation;
+        if(ExerelinData.getInstance().numSystems != 1)
+            numStation = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumStations, Math.min(ExerelinData.getInstance().maxStations, numBasePlanets*2));
+        else
+            numStation = ExerelinData.getInstance().maxStations;
 		int currentPlanet = 0;
 		int k = 0;
 		while(k < numStation)
