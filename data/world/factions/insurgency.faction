@@ -45,7 +45,7 @@
 				"khs_hyena_acehigh":[0, 3],
 				"khs_buzzard_pd":[0, 3],
 				"khs_vulture_acehigh":[0, 2],
-				#"khs_dolphin_acehigh":[0, 3],
+				"khs_dolphin_acehigh":[0, 3],
 				"khs_mutt_acehigh":[0, 2],
 				"khs_mistral_acehigh":[0, 2],
 				"talon_wing":[0, 5],
