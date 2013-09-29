@@ -160,7 +160,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 	private Script createArrivedScript() {
 		return new Script() {
 			public void run() {
-				if(stationTarget.getOwner() != null && stationTarget.getOwner().getFactionId().equalsIgnoreCase(fleetOwningFactionId))
+				if(stationTarget != null && stationTarget.getOwner() != null && stationTarget.getOwner().getFactionId().equalsIgnoreCase(fleetOwningFactionId))
 				{
 					// If we already own it deliver resources (as if we took it over), defend and despawn
 					CargoAPI cargo = stationTarget.getStationToken().getCargo();
@@ -172,7 +172,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
                     ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
                     ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleetOwningFactionId));
 				}
-				else if(stationTarget.getOwner() != null && stationTarget.getOwner().getGameRelationship(fleetOwningFactionId) >= 0)
+				else if(stationTarget == null || (stationTarget.getOwner() != null && stationTarget.getOwner().getGameRelationship(fleetOwningFactionId) >= 0))
 				{
 					// If neutral/ally owns station, go home
 					theFleet.clearAssignments();
