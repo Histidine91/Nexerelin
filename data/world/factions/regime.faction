@@ -54,7 +54,7 @@
 				"khs_buzzard_Strike":[0, 3],
 				"khs_camel_Combat":[0, 4],
 				"khs_vulture_Fighter_Support":[0, 2],
-				"khs_dolphin_Ramming":[0, 3],
+				#"khs_dolphin_Ramming":[0, 3],
 				"khs_jackal_Scout":[0, 2],
 				"khs_dirk_wing":[0, 5],
 				"khs_scimitar_wing":[0, 5],
