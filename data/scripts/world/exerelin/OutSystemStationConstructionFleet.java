@@ -1,11 +1,8 @@
 package data.scripts.world.exerelin;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.OmniFac;
-
-import java.awt.*;
 
 @SuppressWarnings("unchecked")
 public class OutSystemStationConstructionFleet
@@ -76,8 +73,11 @@ public class OutSystemStationConstructionFleet
 						orbitRadius = 200;
 					else if(theTarget.getFullName().contains("Gaseous"))
 						orbitRadius = 500;
-					theSystem.addSpawnPoint(new OmniFac(theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Omnifactory", "independent")));
-					System.out.println(theFaction + " constructed station ");
+
+                    OmniFac factory = new OmniFac(theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Omnifactory", "independent"));
+                    factory.loadSettingsFromJSON("data/config/omnifac_settings.json");
+                    theTarget.getContainingLocation().addScript(factory);
+                    System.out.println(theFaction + " constructed station ");
 				}
 				else
 				{
