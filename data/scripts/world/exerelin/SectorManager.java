@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import data.scripts.world.exerelin.commandQueue.CommandQueue;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 
 import java.awt.*;
 import java.util.ArrayList;

@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SpawnPointPlugin;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -67,7 +68,10 @@ public final class ExerelinData
 	public static ExerelinData getInstance()
 	{
 		if(instance == null)
+        {
 			instance = new ExerelinData();
+            ExerelinConfig.loadSettings();
+        }
 
 		updateSectorManager();
 

@@ -3,6 +3,7 @@ package data.scripts.plugins;
 import java.awt.Color;
 
 import com.fs.starfarer.api.campaign.*;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFaction;
 import org.lwjgl.input.Keyboard;
 import org.json.JSONObject;
@@ -151,21 +152,6 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
     private void createInitialOptions() {
         options.clearOptions();
 
-        boolean allowTradeAtAlliedStations = true;
-        boolean allowTradeAtNeutralStations = false;
-        boolean allowTradeAtHostileStations = false;
-        try
-        {
-            JSONObject settings = Global.getSettings().loadJSON("data/config/exerelin_config.json");
-            allowTradeAtAlliedStations = settings.getBoolean("allowTradeAtAlliedStations");
-            allowTradeAtNeutralStations = settings.getBoolean("allowTradeAtNeutralStations");
-            allowTradeAtHostileStations = settings.getBoolean("allowTradeAtHostileStations");
-        }
-        catch(Exception e)
-        {
-            System.out.println("EXERELIN ERROR: " + e.getMessage());
-        }
-
         if (station.getFaction().isNeutralFaction() || station.getFullName().contains("Omnifactory")) {
             options.addOption("Transfer cargo or personnel", OptionId.TRADE_CARGO);
             options.setShortcut(OptionId.TRADE_CARGO, Keyboard.KEY_I, false, false, false, true);
@@ -175,9 +161,9 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             options.setShortcut(OptionId.REFIT, Keyboard.KEY_R, false, false, false, true);
         } else {
             if (station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
-                    || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) >= 1 && allowTradeAtAlliedStations)
-                    || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) > 0 && station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 1 && allowTradeAtNeutralStations)
-                    || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 && allowTradeAtHostileStations))
+                    || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) >= 1 && ExerelinConfig.allowTradeAtAlliedStations)
+                    || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) >= 0 && station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 1 && ExerelinConfig.allowTradeAtNeutralStations)
+                    || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 && ExerelinConfig.allowTradeAtHostileStations))
             {
                 options.addOption("Trade, or hire personnel", OptionId.TRADE_CARGO);
                 options.setShortcut(OptionId.TRADE_CARGO, Keyboard.KEY_I, false, false, false, true);

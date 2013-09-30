@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import data.scripts.world.exerelin.ExerelinConfig;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.ExerelinUtils;
 
 import java.util.ArrayList;

@@ -8,6 +8,7 @@ import data.scripts.world.exerelin.commandQueue.CommandAddShip;
 import data.scripts.world.exerelin.commandQueue.CommandAddWeapon;
 import data.scripts.world.exerelin.commandQueue.CommandRemoveCargo;
 import data.scripts.world.exerelin.commandQueue.CommandRemoveShip;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 

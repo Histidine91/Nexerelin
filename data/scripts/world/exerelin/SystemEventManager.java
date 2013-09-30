@@ -1,6 +1,7 @@
 package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 
 public class SystemEventManager
 {

@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import data.scripts.world.exerelin.*;
 import data.scripts.plugins.*;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 
 @SuppressWarnings("unchecked")
 public class ExerelinGen implements SectorGeneratorPlugin

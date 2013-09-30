@@ -13,7 +13,7 @@
     <orderEntry type="library" name="ExerelinHacks" level="project" />
     <orderEntry type="library" name="starfarer.api" level="project" />
     <orderEntry type="library" name="ExerelinPlugins" level="project" />
-    <orderEntry type="library" name="ExerelinUtilities" level="project" />
+    <orderEntry type="library" exported="" name="ExerelinUtilities" level="project" />
     <orderEntry type="library" name="LazyLib" level="project" />
     <orderEntry type="library" name="json" level="project" />
     <orderEntry type="library" name="Omnifactory" level="project" />

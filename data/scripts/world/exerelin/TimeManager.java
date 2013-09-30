@@ -2,6 +2,7 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 
 import java.util.*;
 
