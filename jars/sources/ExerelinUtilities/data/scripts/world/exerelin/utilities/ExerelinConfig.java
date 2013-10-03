@@ -11,16 +11,11 @@ public class ExerelinConfig
     // Factions classed as neutral for relationship calculations
     public static String[] neutralFactions = new String[]{"neutral", "independent"};
 
-    // Threading support for improving/smoothing performance
-    public static boolean enableThreading = true;
+    // Threading support for improving/smoothing performance WARNING: BROKEN
+    public static boolean enableThreading = false;
 
     // Randomise the location of the omnifactory
     public static boolean randomOmnifactoryLocation = false;
-
-    // Resourcing
-    //public static String asteroidMiningResource = "supplies"; // NOT USED
-    //public static String gasgiantMiningResource = "fuel"; // NOT USED
-    //public static String fleetCostResource = "supplies"; // NOT USED
 
     // Trading control
     public static boolean allowTradeAtAlliedStations = true;
@@ -36,6 +31,11 @@ public class ExerelinConfig
     public static int minimumStations = 5;
     public static int minimumAsteroidBelts = 0;
 
+    // Resourcing
+    public static String asteroidMiningResource = "supplies";
+    public static String gasgiantMiningResource = "fuel";
+    public static String fleetCostResource = "supplies";
+    public static int miningAmountPerDayPerMiner = 50;
 
     public static void loadSettings()
     {
@@ -45,7 +45,7 @@ public class ExerelinConfig
 
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelin_config.json");
 
-            enableThreading = settings.getBoolean("enableThreading");
+            //enableThreading = settings.getBoolean("enableThreading");
 
             randomOmnifactoryLocation = settings.getBoolean("randomOmnifactoryLocation");
 
@@ -59,6 +59,11 @@ public class ExerelinConfig
             minimumPlanets = settings.getInt("minimumPlanets");
             minimumStations = settings.getInt("minimumStations");
             minimumAsteroidBelts = settings.getInt("minimumAsteroidBelts");
+
+            asteroidMiningResource = settings.getString("asteroidMiningResource");
+            gasgiantMiningResource = settings.getString("gasgiantMiningResource");
+            fleetCostResource = settings.getString("fleetCostResource");
+            miningAmountPerDayPerMiner = settings.getInt("miningAmountPerDayPerMiner");
         }
         catch(Exception e)
         {

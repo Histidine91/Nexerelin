@@ -7,7 +7,7 @@
 "gameVersion":"0.6a",
 "totalConversion":"false",
 "jars":["jars/Omnifactory.jar","jars/ExerelinHacks.jar", "jars/ExerelinPlugins.jar", "jars/ExerelinUtilities.jar", ],
-
+"modPlugin":"data.scripts.ExerelinModPlugin",
 "replace":
 	[
 	"data/scripts/plugins/CharacterCreationPluginImpl.java",

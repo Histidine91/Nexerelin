@@ -1,5 +1,5 @@
 {
-    "enableThreading":true, # Boolean
+    "enableThreading":false, # Boolean, NOT USED
     "randomOmnifactoryLocation":false, # Boolean
     "minimumPlanets": 3, # Integer
     "minimumStations": 5, # Integer
@@ -9,4 +9,8 @@
     "allowTradeAtHostileStations":false, # Boolean
     "reduceSupplies":true, # Boolean
     "maxSuppliesDropped": 200, # Integer
+    "asteroidMiningResource": "supplies", # String
+    "gasgiantMiningResource": "fuel", # String
+    "fleetCostResource": "supplies", # String
+    "miningAmountPerDayPerMiner": 50, # Integer
 }

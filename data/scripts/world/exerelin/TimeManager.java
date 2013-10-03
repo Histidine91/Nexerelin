@@ -25,6 +25,12 @@ public class TimeManager implements SpawnPointPlugin
 
 	private void runHourly(long hour)
 	{
+        if(hour == 3)
+        {
+            // Handle player station boarding
+            ExerelinUtils.handlePlayerBoarding(Global.getSector().getPlayerFleet());
+        }
+
         if(hour == 6)
         {
             // Handle player mining
@@ -52,8 +58,8 @@ public class TimeManager implements SpawnPointPlugin
 
         if(hour == 12)
         {
-            // Handle player station boarding
-            ExerelinUtils.handlePlayerBoarding(Global.getSector().getPlayerFleet());
+            // Update station resources part 1
+
         }
 
         if(hour == 15)
@@ -78,6 +84,12 @@ public class TimeManager implements SpawnPointPlugin
         {
             // Run system events
             SectorManager.getCurrentSectorManager().runEvents();
+        }
+
+        if(hour == 23)
+        {
+            // Update station resources part 2
+
         }
 	}
 

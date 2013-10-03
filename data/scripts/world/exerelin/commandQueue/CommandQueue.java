@@ -47,4 +47,17 @@ public class CommandQueue implements EveryFrameScript
     {
         return queuedCommands.isEmpty();
     }
+
+    public void executeAllCommands()
+    {
+        synchronized (queuedCommands)
+        {
+            BaseCommand tmp;
+            while (!queuedCommands.isEmpty())
+            {
+                tmp = (BaseCommand) queuedCommands.remove();
+                tmp.executeCommand();
+            }
+        }
+    }
 }
