@@ -13,6 +13,7 @@ import java.util.List;
 
 public class SectorManager
 {
+    private SectorEventManager sectorEventManager;
 	private SystemManager[] systemManagers;
 	private DiplomacyManager diplomacyManager;
 	private SectorAPI sectorAPI;
@@ -37,6 +38,8 @@ public class SectorManager
 	public SectorManager(SectorAPI inSectorAPI)
 	{
 		sectorAPI = inSectorAPI;
+
+        sectorEventManager = new SectorEventManager();
 
 		// Setup system managers for each system in the sector
 		systemManagers = new SystemManager[sectorAPI.getStarSystems().size()];
@@ -127,6 +130,9 @@ public class SectorManager
 
 	public void runEvents()
 	{
+        // Manage sector events
+        sectorEventManager.runEvents();
+
 		// Manage system events
 		for(int j = 0; j < this.systemManagers.length; j++)
 		{

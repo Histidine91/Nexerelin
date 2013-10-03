@@ -9,7 +9,6 @@ public class SystemEventManager
 	private EventRebelFleetSpawn eventRebelFleetSpawn;
 	private EventStationExplosion eventStationExplosion;
 	private EventStationSeccession eventStationSeccession;
-	private EventAddObjectToStorage eventAddObjectToStorage;
 
 	private int waitTime = 30; // Wait 1 month before running first events
 	private String lastEventType = "";
@@ -24,7 +23,7 @@ public class SystemEventManager
 		eventRebelFleetSpawn = new EventRebelFleetSpawn();
 		eventStationExplosion = new EventStationExplosion();
 		eventStationSeccession = new EventStationSeccession();
-		eventAddObjectToStorage = new EventAddObjectToStorage();
+
 	}
 
 	public void runEvents()
@@ -84,33 +83,6 @@ public class SystemEventManager
 			lastEventType = eventStationSeccession.getType();
 			return;
 		}*/
-
-        float extraChance = ExerelinUtilsPlayer.getPlayerDiplomacyObjectCreationBonus();
-
-		if(ExerelinUtils.getRandomInRange(0,(45*(int)(1.0f - extraChance))) == 0
-				&& !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType))
-		{
-			eventAddObjectToStorage.addAgentToStorageFacility(starSystemAPI);
-			waitTime = betweenEventWait;
-			lastEventType = eventAddObjectToStorage.getType();
-		}
-
-		if(ExerelinUtils.getRandomInRange(0,(60*(int)(1.0f - extraChance))) == 0
-				&& !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType))
-		{
-			eventAddObjectToStorage.addPrisonerToStorageFacility(starSystemAPI);
-			waitTime = betweenEventWait;
-			lastEventType = eventAddObjectToStorage.getType();
-		}
-
-        if(ExerelinUtils.getRandomInRange(0,(60*(int)(1.0f - extraChance))) == 0
-                && !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType)
-                && ExerelinUtilsPlayer.getPlayerSabateurAvailability())
-        {
-            eventAddObjectToStorage.addSabateurToStorageFacility(starSystemAPI);
-            waitTime = betweenEventWait;
-            lastEventType = eventAddObjectToStorage.getType();
-        }
 	}
 
 	public void setBetweenEventWait(int value)
