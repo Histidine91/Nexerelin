@@ -1,5 +1,6 @@
 package data.scripts.world.exerelin.commandQueue;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 
@@ -21,6 +22,7 @@ public class CommandAddShip implements BaseCommand
     @Override
     public void executeCommand()
     {
-        cargo.addMothballedShip(type, shipId, optionalName);
+        cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(type, shipId));
+        //cargo.addMothballedShip(type, shipId, optionalName);
     }
 }
