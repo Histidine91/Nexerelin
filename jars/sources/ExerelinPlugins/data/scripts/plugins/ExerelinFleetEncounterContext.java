@@ -31,7 +31,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
-import org.json.JSONObject;
 
 public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugin {
 
@@ -337,16 +336,17 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
     }
 
     public float getDeployCost(FleetMemberAPI member) {
-        float deployCost = member.getStats().getCRPerDeploymentPercent().computeEffective(member.getHullSpec().getCRToDeploy()) / 100f;
-        if (member.isFighterWing()) {
-            deployCost *= (float) member.getNumFightersInWing();
-        }
-        return deployCost;
+        return member.getDeployCost();
+//		float deployCost = member.getStats().getCRPerDeploymentPercent().computeEffective(member.getHullSpec().getCRToDeploy()) / 100f;
+//		if (member.isFighterWing()) {
+//			deployCost *= (float) member.getNumFightersInWing();
+//		}
+//		return deployCost;
     }
 
 
     public void applyAfterBattleEffectsIfThereWasABattle() {
-        if (!hasWinnerAndLoser()) {
+        if (!hasWinnerAndLoser() || !engagedInHostilities) {
             return;
         }
 
@@ -362,10 +362,15 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
         winner.getVelocity().set(0, 0);
 
 
-        loser.getStats().addTemporaryModPercent(0.5f, "losing_fleet_speed_boost",
-                50f, loser.getStats().getMovementSpeedMod());
-        winner.getStats().addTemporaryModPercent(0.25f, "winning_fleet_speed_penalty",
-                -50f, winner.getStats().getMovementSpeedMod());
+        float maxBurn = winner.getFleetData().getBurnLevel();
+        if (maxBurn >= 2) {
+            winner.getStats().addTemporaryModFlat(0.5f, "winner_slowdown", "Reorganizing",
+                    -(maxBurn - 1), winner.getStats().getFleetwideMaxBurnMod());
+        }
+
+        loser.getStats().addTemporaryModFlat(0.5f, "loser_speedup", "Emergency speed",
+                5f, loser.getStats().getFleetwideMaxBurnMod());
+
 
 
         if (loser == Global.getSector().getPlayerFleet()) {
@@ -496,6 +501,10 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
 
     public boolean didPlayerWinEncounter() {
         if (getDataFor(Global.getSector().getPlayerFleet()).disengaged()) return false;
+
+        if (getWinner() == Global.getSector().getPlayerFleet()) {
+            return true;
+        }
         //return getWinnerData().getFleet() == CampaignEngine.getInstance().getPlayerFleet();
         return lastOutcome == EngagementOutcome.BATTLE_PLAYER_WIN_TOTAL ||
                 lastOutcome == EngagementOutcome.BATTLE_PLAYER_WIN ||
@@ -1014,6 +1023,8 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
 
         for (FleetMemberData data : side.getOwnCasualties()) {
             FleetMemberAPI member = data.getMember();
+            if (member.isFighterWing()) continue;
+
             float threshold = 1f - getRepairChance(member, side.getFleet());
 
 
@@ -1143,6 +1154,7 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
         else
             loot.addSupplies((int)suppliesSalvaged);
 
+
         float scrappedCapacity = 0f;
         float lootedCapacity = 0f;
         for (FleetMemberData data : winner.getEnemyCasualties()) {
@@ -1163,7 +1175,6 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
 
         float lootedFraction = 0.5f;
         loot.addFuel(Math.round(fuelLost * lootedFraction));
-
         if(!ExerelinConfig.reduceSupplies)
             loot.addSupplies(Math.round(suppliesLost * lootedFraction));
 
@@ -1290,6 +1301,7 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
     public static void fixFighters(EngagementResultForFleetAPI result) {
         boolean replaceLost = false;
         for (FleetMemberAPI curr : result.getReserves()) {
+            if (curr.isMothballed()) continue;
             if (curr.getNumFlightDecks() > 0) {
                 replaceLost = true;
                 break;
@@ -1297,6 +1309,7 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
         }
         if (!replaceLost) {
             for (FleetMemberAPI curr : result.getDeployed()) {
+                if (curr.isMothballed()) continue;
                 if (curr.getNumFlightDecks() > 0) {
                     replaceLost = true;
                     break;
@@ -1305,6 +1318,7 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
         }
         if (!replaceLost) {
             for (FleetMemberAPI curr : result.getRetreated()) {
+                if (curr.isMothballed()) continue;
                 if (curr.getNumFlightDecks() > 0) {
                     replaceLost = true;
                     break;
@@ -1408,14 +1422,14 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
 
             applyExtendedCRLossIfNeeded(result, member);
 
-            if (!wonBattle) {
+            if (!wonBattle && result.getGoal() != FleetGoal.ESCAPE) {
                 float retreatCost = deployCost * retreatLossMult;
                 member.getRepairTracker().applyCREvent(-retreatCost, "retreated from lost engagement");
             }
         }
 
 //		// important, so that in-combat Ship objects can be garbage collected.
-//		// Probably some combat engine references in there, too. 
+//		// Probably some combat engine references in there, too.
 //		// NOTE: moved this elsewhere in this class
 //		result.resetAllEverDeployed();
 //		getDataFor(result.getFleet()).getMemberToDeployedMap().clear();
@@ -1654,13 +1668,6 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
         cargo.addMarines((int) rec.getMarines());
     }
 }
-
-
-
-
-
-
-
 
 
 

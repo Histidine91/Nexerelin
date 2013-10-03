@@ -270,6 +270,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
             computeOutcomeForFleetMember(data, 1f/winnerAdvantage, damageDealtToLoser, loserEscaping, false);
             damageDealtToLoser -= data.strength;
             if (damageDealtToLoser < 0) damageDealtToLoser = 0;
+            if (data.member.isMothballed()) continue;
             if (data.member.getStatus().getHullFraction() > 0 && data.member.getNumFlightDecks() > 0) {
                 loserCarrierLeft = true;
             }
@@ -296,6 +297,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
             damageDealtToWinner -= data.strength;
             if (damageDealtToWinner < 0) damageDealtToWinner = 0;
 
+            if (data.member.isMothballed()) continue;
             if (data.member.getStatus().getHullFraction() > 0 && data.member.getNumFlightDecks() > 0) {
                 winnerCarrierLeft = true;
             }
@@ -553,7 +555,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
         FleetMemberAutoresolveData data = new FleetMemberAutoresolveData();
 
         data.member = member;
-        if (member.isCivilian() || !member.canBeDeployedForCombat()) {
+        if ((member.isCivilian() && !playerPursuitAutoresolveMode) || !member.canBeDeployedForCombat()) {
             data.strength = 1f;
             data.combatReady = false;
             return data;
@@ -578,7 +580,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
         if (hullSpec.getShieldType() == ShieldType.NONE) {
             normalizedShieldStr = 0;
         } else {
-            float shieldMult = 1f/stats.getShieldAbsorptionMult().getModifiedValue() * stats.getShieldDamageTakenMult().getModifiedValue();
+            float shieldMult = stats.getShieldAbsorptionMult().getModifiedValue() * stats.getShieldDamageTakenMult().getModifiedValue();
             normalizedShieldStr *= shieldMult;
         }
 

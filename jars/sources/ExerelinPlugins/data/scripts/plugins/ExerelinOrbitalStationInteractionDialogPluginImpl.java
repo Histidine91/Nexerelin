@@ -18,6 +18,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
     private static enum OptionId {
         INIT,
+        INIT_NO_TEXT,
         TRADE_CARGO,
         TRADE_SHIPS,
         REFIT,
@@ -73,6 +74,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         switch (option) {
             case INIT:
                 addText(getString("approach"));
+            case INIT_NO_TEXT:
                 createInitialOptions();
                 if (station.getCustomInteractionDialogImageVisual() != null) {
                     visual.showImageVisual(station.getCustomInteractionDialogImageVisual());
@@ -97,6 +99,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 break;
             case REPAIR_ALL:
                 performRepairs();
+                createInitialOptions();
                 break;
             case PLANT_AGENT:
                 Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
@@ -199,6 +202,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             float needed = playerFleet.getLogistics().getTotalRepairSupplyCost();
             float supplies = playerFleet.getCargo().getSupplies();
             options.addOption("Repair your ships at the station's dockyard", OptionId.REPAIR_ALL);
+            options.setShortcut(OptionId.REPAIR_ALL, Keyboard.KEY_A, false, false, false, true);
 
             if (needed <= 0) {
                 options.setEnabled(OptionId.REPAIR_ALL, false);
@@ -263,7 +267,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
     }
 
     public void coreUIDismissed() {
-        optionSelected(null, OptionId.INIT);
+        optionSelected(null, OptionId.INIT_NO_TEXT);
     }
 
     public void displayRleationships(int value)

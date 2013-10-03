@@ -62,6 +62,7 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
 
         CONTINUE_INTO_BOARDING,
         BOARDING_ACTION,
+        SELECT_FLAGSHIP,
         ENGAGE_BOARDABLE,
         ABORT_BOARDING_ACTION,
         HARD_DOCK,
@@ -284,7 +285,11 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                     addText(getString("postBattleDisengage"));
                 }
             } else {
-                addText(getString("postBattleNeutral"));
+                if (otherFleetHoldingVsStrongerEnemy()) {
+                    addText(getString("postBattleHoldVsStrongerEnemy"));
+                } else {
+                    addText(getString("postBattleNeutral"));
+                }
             }
         }
     }
@@ -321,7 +326,11 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                         }
                     }
                 } else {
-                    addText(getString("initialNeutral"));
+                    if (otherFleetHoldingVsStrongerEnemy()) {
+                        addText(getString("initialHoldVsStrongerEnemy"));
+                    } else {
+                        addText(getString("initialNeutral"));
+                    }
                 }
                 //textPanel.highlightFirstInLastPara("neutral posture", HIGHLIGHT_COLOR);
                 updateMainState();
@@ -340,25 +349,31 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                 updatePreCombat();
                 break;
             case CONTINUE_INTO_BATTLE:
-//			boolean smallBattle = playerFleet.getFleetData().getFleetPointsUsed() + 
+//			boolean smallBattle = playerFleet.getFleetData().getFleetPointsUsed() +
 //								  otherFleet.getFleetData().getFleetPointsUsed() <= Global.getSettings().getBattleSize();
                 BattleCreationContext bcc = new BattleCreationContext(playerFleet, playerGoal, otherFleet, otherGoal);
 //			bcc.setSmallBattle(smallBattle);
                 if (playerGoal == FleetGoal.ESCAPE) {
                     DataForEncounterSide data = context.getDataFor(otherFleet);
                     if (data.getLastWinOption() == PostEngagementOption.HARRY) {
-                        bcc.setPursuitRangeModifier(-3000);
+                        bcc.setPursuitRangeModifier(-2500);
                     }
                 } else if (otherGoal == FleetGoal.ESCAPE) {
                     DataForEncounterSide data = context.getDataFor(playerFleet);
                     if (data.getLastWinOption() == PostEngagementOption.HARRY) {
-                        bcc.setPursuitRangeModifier(-3000);
+                        bcc.setPursuitRangeModifier(-2500);
                     }
                 }
+                visual.fadeVisualOut();
                 dialog.startBattle(bcc);
                 break;
             case DISENGAGE:
+                CampaignFleetAIAPI ai = otherFleet.getAI();
                 PursuitOption po = otherFleet.getAI().pickPursuitOption(context, playerFleet);
+                if (otherFleetHoldingVsStrongerEnemy()) {
+                    po = PursuitOption.LET_THEM_GO;
+                }
+
                 context.applyPursuitOption(otherFleet, playerFleet, po);
                 context.getDataFor(playerFleet).setDisengaged(true);
                 context.getDataFor(otherFleet).setDisengaged(false);
@@ -367,6 +382,9 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                         // shouldn't happen here, or we'd be in ATTEMPT_TO_DISENGAGE
                     case HARRY:
                         addText(getString("enemyHarass"));
+                        context.setEngagedInHostilities(true);
+                        context.getDataFor(playerFleet).setDisengaged(true);
+                        context.getDataFor(otherFleet).setDisengaged(false);
                         break;
                     case LET_THEM_GO:
                         if (canDisengageCleanly(playerFleet)) {
@@ -391,8 +409,10 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                     } else if (pursuitOption == PursuitOption.HARRY) {
                         context.applyPursuitOption(otherFleet, playerFleet, PursuitOption.HARRY);
                         addText(getString("enemyHarass"));
-                        context.getDataFor(playerFleet).setDisengaged(!context.isEngagedInHostilities());
-                        context.getDataFor(otherFleet).setDisengaged(true);
+                        context.setEngagedInHostilities(true);
+                        //context.getDataFor(playerFleet).setDisengaged(!context.isEngagedInHostilities());
+                        context.getDataFor(playerFleet).setDisengaged(true);
+                        context.getDataFor(otherFleet).setDisengaged(false);
                         updateMainState();
                         letGo = false;
                     } else {
@@ -408,7 +428,7 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                         addText(getString("enemyUnableToPursue"));
                     }
                     context.getDataFor(playerFleet).setDisengaged(true);
-                    context.getDataFor(otherFleet).setDisengaged(false);
+                    context.getDataFor(otherFleet).setDisengaged(!context.isEngagedInHostilities());
                     updateMainState();
                 }
 
@@ -456,8 +476,10 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                                 if (members != null && !members.isEmpty()) {
                                     ExerelinBattleAutoresolverPluginImpl resolver = new ExerelinBattleAutoresolverPluginImpl(playerFleet, otherFleet);
                                     resolver.resolvePlayerPursuit(context, members);
-                                    addText(getString("pursuitAutoresolve"));
-                                    backFromEngagement(resolver.getResult());
+                                    if (resolver.getResult() != null) {
+                                        addText(getString("pursuitAutoresolve"));
+                                        backFromEngagement(resolver.getResult());
+                                    }
                                 }
                             }
                             public void cancelledFleetMemberPicking() {
@@ -504,7 +526,8 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
             case HARRY_PURSUE:
                 addText(getString("playerHarass"));
                 context.applyPursuitOption(playerFleet, otherFleet, PursuitOption.HARRY);
-                context.getDataFor(playerFleet).setDisengaged(!context.isEngagedInHostilities());
+                context.setEngagedInHostilities(true);
+                context.getDataFor(playerFleet).setDisengaged(false);
                 context.getDataFor(otherFleet).setDisengaged(true);
                 context.setEngagedInHostilities(true);
 //			options.clearOptions();
@@ -597,6 +620,29 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                     goToEncounterEndPath();
                 }
                 break;
+            case SELECT_FLAGSHIP:
+                members = new ArrayList<FleetMemberAPI>();
+                for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy()) {
+                    if (member.isFighterWing()) continue;
+                    members.add(member);
+                }
+                if (!members.isEmpty()) {
+                    dialog.showFleetMemberPickerDialog("Select flagship for this engagement", "Ok", "Cancel",
+                            3, 7, 58f, false, false, members,
+                            new FleetMemberPickerListener() {
+                                public void pickedFleetMembers(List<FleetMemberAPI> members) {
+                                    if (members != null && !members.isEmpty()) {
+                                        flagship = members.get(0);
+                                        playerFleet.getFleetData().setFlagship(flagship);
+                                        addText(getString("selectedFlagship"));
+                                    }
+                                }
+                                public void cancelledFleetMemberPicking() {
+
+                                }
+                            });
+                }
+                break;
             case ENGAGE_BOARDABLE:
                 EngageBoardableOutcome outcome = context.engageBoardableShip(toBoard, otherFleet, playerFleet);
                 switch (outcome) {
@@ -661,6 +707,7 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
     private CrewCompositionAPI boardingParty = null;
     private BoardingAttackType boardingAttackType = null;
     private BoardingResult boardingResult = null;
+    private FleetMemberAPI flagship = null;
 
     private InitialBoardingResponse aiBoardingResponse = null;
 
@@ -1049,11 +1096,20 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
     private void updatePreCombat() {
         options.clearOptions();
 
+        int nonFighters = playerFleet.getFleetData().getMembersListCopy().size() - playerFleet.getNumFighters();
         if (playerGoal == FleetGoal.ATTACK && otherGoal == FleetGoal.ESCAPE) {
             String tooltipText = getString("tooltipPursueAutoresolve");
             options.addOption("Order your second-in-command to handle it", OptionId.AUTORESOLVE_PURSUE, tooltipText);
+            options.addOption("Transfer command before the engagement", OptionId.SELECT_FLAGSHIP, getString("tooltipSelectFlagship"));
+            if (nonFighters <= 1) {
+                options.setEnabled(OptionId.SELECT_FLAGSHIP, false);
+            }
             options.addOption("Take personal command of the action", OptionId.CONTINUE_INTO_BATTLE, null);
         } else {
+            options.addOption("Transfer command before the engagement", OptionId.SELECT_FLAGSHIP, getString("tooltipSelectFlagship"));
+            if (nonFighters <= 1) {
+                options.setEnabled(OptionId.SELECT_FLAGSHIP, false);
+            }
             options.addOption("Continue", OptionId.CONTINUE_INTO_BATTLE, null);
         }
         if (Global.getSettings().isDevMode()) {
@@ -1182,6 +1238,14 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
 
         options.addOption("Open a comm link", OptionId.OPEN_COMM, null);
 
+        if(Global.getSector().getPlayerFleet().getFaction().getId().equalsIgnoreCase(otherFleet.getFaction().getId())
+                || otherFleet.getFaction().getId().equalsIgnoreCase("independent")
+                || otherFleet.getFaction().getId().equalsIgnoreCase("neutral"))
+        {
+            options.addOption("Leave", OptionId.LEAVE, null);
+            return;
+        }
+
         boolean otherWantsToRun = otherFleetWantsToDisengage() && otherCanDisengage();
 
         boolean playerHasReadyShips = !playerFleet.getFleetData().getCombatReadyMembersListCopy().isEmpty();
@@ -1228,9 +1292,19 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                     break;
             }
 
+            CampaignFleetAIAPI ai = otherFleet.getAI();
+            boolean hostile = false;
+            if (ai != null) {
+                hostile = ai.isHostileTo(playerFleet) || context.isEngagedInHostilities();
+            }
+
             options.addOption("Pursue them", OptionId.PURSUE, getString(pursueTooltip));
             options.addOption("Harry their retreat", OptionId.HARRY_PURSUE, getString(harassTooltip));
-            options.addOption("Let them go", OptionId.LET_THEM_GO, getString(letThemGoTooltip));
+            if (hostile) {
+                options.addOption("Let them go", OptionId.LET_THEM_GO, getString(letThemGoTooltip));
+            } else {
+                options.addOption("Leave", OptionId.LEAVE, null);
+            }
 
             if (!canPursue) {
                 options.setEnabled(OptionId.PURSUE, false);
@@ -1239,17 +1313,13 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                 options.setEnabled(OptionId.HARRY_PURSUE, false);
             }
         } else {
-            if(!Global.getSector().getPlayerFleet().getFaction().getId().equalsIgnoreCase(otherFleet.getFaction().getId())
-                    && !otherFleet.getFaction().getId().equalsIgnoreCase("independent")
-                    && !otherFleet.getFaction().getId().equalsIgnoreCase("neutral"))
-            {
-                if (playerHasReadyShips) {
-                    options.addOption("Move in to engage", OptionId.ENGAGE, getString("tooltipEngage"));
-                } else {
-                    options.addOption("Move in to engage", OptionId.ENGAGE, getString("tooltipNoReadyShips"));
-                    options.setEnabled(OptionId.ENGAGE, false);
-                }
+            if (playerHasReadyShips) {
+                options.addOption("Move in to engage", OptionId.ENGAGE, getString("tooltipEngage"));
+            } else {
+                options.addOption("Move in to engage", OptionId.ENGAGE, getString("tooltipNoReadyShips"));
+                options.setEnabled(OptionId.ENGAGE, false);
             }
+
             CampaignFleetAIAPI ai = otherFleet.getAI();
             boolean hostile = false;
             if (ai != null) {
@@ -1258,7 +1328,7 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
             if (otherFleetWantsToFight() || (hostile && !otherFleetWantsToDisengage())) {
                 if (canDisengageCleanly(playerFleet)) {
                     options.addOption("Disengage", OptionId.DISENGAGE, getString("tooltipCleanDisengage"));
-                } else if (canDisengageWithoutPursuit(playerFleet)) {
+                } else if (canDisengageWithoutPursuit(playerFleet) || !otherFleetWantsToFight()) {
                     options.addOption("Disengage", OptionId.DISENGAGE, getString("tooltipHarrassableDisengage"));
                 } else {
                     if (canDisengage() || !playerHasReadyShips) {
@@ -1278,12 +1348,26 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
     }
 
     private boolean canDisengage() {
-        return playerFleet.getFleetData().getFleetPointsUsed() <= getDisengageSize();
+        float total = 0f;
+        for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy()) {
+            if (member.canBeDeployedForCombat()) {
+                total += member.getFleetPointCost();
+            }
+        }
+        return total <= getDisengageSize();
+        //return playerFleet.getFleetData().getFleetPointsUsed() <= getDisengageSize();
     }
 
     private boolean otherCanDisengage() {
-        boolean otherHasReadyShips = !otherFleet.getFleetData().getCombatReadyMembersListCopy().isEmpty();
-        return otherFleet.getFleetData().getFleetPointsUsed() <= getDisengageSize() || !otherHasReadyShips;
+        float total = 0f;
+        for (FleetMemberAPI member : otherFleet.getFleetData().getMembersListCopy()) {
+            if (member.canBeDeployedForCombat()) {
+                total += member.getFleetPointCost();
+            }
+        }
+        return total <= getDisengageSize();
+        //boolean otherHasReadyShips = !otherFleet.getFleetData().getCombatReadyMembersListCopy().isEmpty();
+        //return otherFleet.getFleetData().getFleetPointsUsed() <= getDisengageSize() || !otherHasReadyShips;
     }
 
     private float getDisengageSize() {
@@ -1356,6 +1440,10 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
         str = str.replaceAll("\\$crewRecovered", crewRecStr);
         str = str.replaceAll("\\$marinesRecovered", marinesRecStr);
 
+        if (flagship != null) {
+            str = str.replaceAll("\\$flagship", "the " + flagship.getShipName());
+        }
+
         str = str.replaceAll("\\$creditsLooted", creditsLooted);
 
         if (boardingTaskForceList != null) {
@@ -1420,9 +1508,16 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
     }
 
     private boolean otherFleetWantsToFight() {
+        boolean hasNonCivReserves = false;
+        for (FleetMemberAPI member : context.getDataFor(otherFleet).getInReserveDuringLastEngagement()) {
+            if (!member.isCivilian()) {
+                hasNonCivReserves = true;
+                break;
+            }
+        }
         if (context.isEngagedInHostilities() &&
                 !context.getDataFor(otherFleet).isWonLastEngagement() &&
-                context.getDataFor(otherFleet).getInReserveDuringLastEngagement().isEmpty()) {
+                !hasNonCivReserves) {
             return false;
         }
 
@@ -1432,10 +1527,24 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                 ai.pickEncounterOption(context, playerFleet) == EncounterOption.ENGAGE;
     }
 
+    private boolean otherFleetHoldingVsStrongerEnemy() {
+        CampaignFleetAIAPI ai = otherFleet.getAI();
+        if (ai == null) return false;
+        boolean hostile = ai.isHostileTo(playerFleet) || context.isEngagedInHostilities();
+        return hostile && ai.pickEncounterOption(context, playerFleet) == EncounterOption.HOLD_VS_STRONGER;
+    }
+
     private boolean otherFleetWantsToDisengage() {
+        boolean hasNonCivReserves = false;
+        for (FleetMemberAPI member : context.getDataFor(otherFleet).getInReserveDuringLastEngagement()) {
+            if (!member.isCivilian()) {
+                hasNonCivReserves = true;
+                break;
+            }
+        }
         if (context.isEngagedInHostilities() &&
                 !context.getDataFor(otherFleet).isWonLastEngagement() &&
-                context.getDataFor(otherFleet).getInReserveDuringLastEngagement().isEmpty()) {
+                !hasNonCivReserves) {
             return true;
         }
 
