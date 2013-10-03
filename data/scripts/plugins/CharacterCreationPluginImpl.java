@@ -137,10 +137,10 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
             result.add(FOUR_SYSTEMS);
             result.add(SIX_SYSTEMS);
             result.add(EIGHT_SYSTEMS);
-            //result.add(TWELVE_SYSTEMS);
-            //result.add(SIXTEEN_SYSTEMS);
-            //result.add(TWENTY_SYSTEMS);
-            //result.add(TWENTYFOUR_SYSTEMS);
+            result.add(TWELVE_SYSTEMS);
+            result.add(SIXTEEN_SYSTEMS);
+            result.add(TWENTY_SYSTEMS);
+            result.add(TWENTYFOUR_SYSTEMS);
         }
 		else if(stage == 1)
 		{
@@ -306,8 +306,6 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 			ExerelinData.getInstance().maxAsteroidBelts = 8;
 		else if (response == TEN_ASTEROID_BELTS)
 			ExerelinData.getInstance().maxAsteroidBelts = 10;
-		else if (response == TWENTYONE_PLANETS)
-			ExerelinData.getInstance().maxStations = 21;
 		else if (response == FIVE_STATIONS)
 			ExerelinData.getInstance().maxStations = 5;
 		else if (response == TEN_STATIONS)
