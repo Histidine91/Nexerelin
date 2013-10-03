@@ -766,66 +766,41 @@ public class ExerelinUtils
         if(!ExerelinUtils.isValidMiningFleet(playerFleet))
             return; // Not a mining fleet
 
-		StarSystemAPI system = (StarSystemAPI)playerFleet.getContainingLocation();
+        SectorEntityToken interactionTarget;
+        if(SectorManager.getCurrentSectorManager().getLastInteractionToken() != null)
+            interactionTarget = SectorManager.getCurrentSectorManager().getLastInteractionToken();
+        else
+            return;
 
-		Vector2f playerLocation = playerFleet.getLocation();
-		float xMax = playerLocation.getX() + 5;
-		float xMin = playerLocation.getX() - 5;
-		float yMax = playerLocation.getY() + 5;
-		float yMin = playerLocation.getY() - 5;
+        String interactionType = "";
+        if(interactionTarget instanceof AsteroidAPI)
+            interactionType = "asteroid";
+        else if(interactionTarget instanceof PlanetAPI && ((PlanetAPI)interactionTarget).getFullName().contains("Gaseous"))
+            interactionType = "gasgiant";
 
-		List asteroids = system.getAsteroids();
-		List planets = system.getPlanets();
+        if(interactionType.equalsIgnoreCase(""))
+            return; // Interaction target not gas giant or asteroid
 
-		for(int i = 0; i < asteroids.size(); i++)
-		{
-			SectorEntityToken asteroid = (SectorEntityToken)asteroids.get(i);
-			Vector2f asteroidLocation = asteroid.getLocation();
-
-			if(asteroidLocation.getX() > xMin
-					&& asteroidLocation.getX() < xMax
-					&& asteroidLocation.getY() > yMin
-					&& asteroidLocation.getY() < yMax)
-			{
-				// Mine supplies
-				int miningPower = getMiningPower(playerFleet);
-				if(miningPower > 0)
-				{
-					System.out.println(MathUtils.getDistanceSquared(playerFleet.getLocation(), asteroidLocation));
-					playerFleet.getCargo().addSupplies(50*miningPower) ;
-					Global.getSector().addMessage("Mined " + 50*miningPower + " supplies", Color.green);
-					System.out.println("Mined " + 50*miningPower + " supplies");
-				}
-				return;
-			}
-		}
-
-		for(int i = 0; i < planets.size(); i++)
-		{
-			SectorEntityToken planet = (SectorEntityToken)planets.get(i);
-			Vector2f planetLocation = planet.getLocation();
-
-			if(planetLocation.getX() > xMin
-					&& planetLocation.getX() < xMax
-					&& planetLocation.getY() > yMin
-					&& planetLocation.getY() < yMax)
-			{
-				if(planet.getFullName().contains("Gaseous")
-						&& !(planet.getFullName().contains(" I") || planet.getFullName().contains(" II") || planet.getFullName().contains(" III")))
-				{
-					// Mine gas
-					int miningPower = getMiningPower(playerFleet);
-					if(miningPower > 0)
-					{
-						System.out.println(MathUtils.getDistanceSquared(playerFleet.getLocation(), planetLocation));
-						playerFleet.getCargo().addFuel(50*miningPower);
-						Global.getSector().addMessage("Mined " + 50*miningPower + " fuel", Color.green);
-						System.out.println("Mined " + 50*miningPower + " fuel");
-					}
-					return;
-				}
-			}
-		}
+        if(MathUtils.getDistanceSquared(interactionTarget.getLocation(), playerFleet.getLocation()) < 1500)
+        {
+            int miningPower = getMiningPower(playerFleet);
+            if(miningPower > 0)
+            {
+                if(interactionType.equalsIgnoreCase("asteroid"))
+                {
+                    playerFleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource, ExerelinConfig.miningAmountPerDayPerMiner*miningPower);
+                    Global.getSector().addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.asteroidMiningResource, Color.green);
+                    System.out.println("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.asteroidMiningResource);
+                }
+                else if(interactionType.equalsIgnoreCase("gasgiant"))
+                {
+                    playerFleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.gasgiantMiningResource, ExerelinConfig.miningAmountPerDayPerMiner*miningPower);
+                    Global.getSector().addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.gasgiantMiningResource, Color.green);
+                    System.out.println("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.gasgiantMiningResource);
+                }
+                Global.getSector().getPlayerFleet().getCommanderStats().addXP(400);
+            }
+        }
 	}
 
 	public static void populateStartingStorageFacility(SectorEntityToken storageFacility)
@@ -928,15 +903,15 @@ public class ExerelinUtils
 
         while(marinesDefending > 0 && marinesAttacking > 0)
         {
-            int attackRoll = ExerelinUtils.getRandomInRange(1, 6);
-            int defendRoll = ExerelinUtils.getRandomInRange(1, 6);
+            int attackRoll = ExerelinUtils.getRandomInRange(1, 12);
+            int defendRoll = ExerelinUtils.getRandomInRange(1, 12);
 
             if(attackRoll > defendRoll)
                 marinesDefending = marinesDefending - (attackRoll - defendRoll);
             else
                 marinesAttacking = marinesAttacking - (defendRoll - attackRoll);
 
-            if(ExerelinUtils.getRandomInRange(0, 20) == 0)
+            if(ExerelinUtils.getRandomInRange(0, 30) == 0)
                 break;
         }
 
@@ -979,7 +954,11 @@ public class ExerelinUtils
                 // Defenders total win
                 ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships(), true);
                 ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
-                ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
+                if(resetCargo)
+                    ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
+                else
+                    ExerelinUtils.decreaseCargo(fleet.getCargo(), "marines", fleet.getCargo().getMarines());
+
                 if(playerFleet)
                 {
                     Global.getSector().addMessage("Your fleet has failed to capture station and has suffered extensive losses", Color.green);

@@ -1,16 +1,21 @@
 {
     "enableThreading":false, # Boolean, NOT USED
+
     "randomOmnifactoryLocation":false, # Boolean
+
     "minimumPlanets": 3, # Integer
     "minimumStations": 5, # Integer
     "minimumAsteroidBelts": 0, # Integer
+
     "allowTradeAtAlliedStations":true, # Boolean
     "allowTradeAtNeutralStations":false, # Boolean
     "allowTradeAtHostileStations":false, # Boolean
+
     "reduceSupplies":true, # Boolean
     "maxSuppliesDropped": 200, # Integer
+
     "asteroidMiningResource": "supplies", # String
-    "gasgiantMiningResource": "fuel", # String
+    "gasgiantMiningResource": "fuel", # String, NOT USED
     "fleetCostResource": "supplies", # String
     "miningAmountPerDayPerMiner": 50, # Integer
 }

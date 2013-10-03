@@ -32,6 +32,8 @@ public class SectorManager
 	private int maxSystemSize;
 
     private long lastFactionSpawnTime;
+    private SectorEntityToken lastInteractionToken;
+    private long lastInteractionTime;
 
     private CommandQueue commandQueue;
 
@@ -399,6 +401,11 @@ public class SectorManager
             }
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.1f, CargoAPI.CrewXPLevel.GREEN);
 		}
+
+        if(Global.getSector().getPlayerFleet().getInteractionTarget() != null)
+            this.setLastInteractionToken(Global.getSector().getPlayerFleet().getInteractionTarget());
+        else if(Global.getSector().getClock().getElapsedDaysSince(this.getLastInteractionTime()) > 20)
+            this.lastInteractionToken = null;
 	}
 
 	public boolean getRespawnFactions()
@@ -595,5 +602,21 @@ public class SectorManager
     public CommandQueue getCommandQueue()
     {
         return this.commandQueue;
+    }
+
+    public SectorEntityToken getLastInteractionToken()
+    {
+        return lastInteractionToken;
+    }
+
+    public void setLastInteractionToken(SectorEntityToken token)
+    {
+        this.lastInteractionToken = token;
+        this.lastInteractionTime = Global.getSector().getClock().getTimestamp();
+    }
+
+    public long getLastInteractionTime()
+    {
+        return  lastInteractionTime;
     }
 }

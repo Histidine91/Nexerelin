@@ -5,6 +5,8 @@ import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import data.scripts.world.BaseSpawnPoint;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
+
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -97,13 +99,13 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 	private Script createTestTargetScript() {
 		return new Script() {
 			public void run() {
-				if(!returningHome && theFleet.getCargo().getSupplies() < fleetCargoCapacity)
+				if(!returningHome && theFleet.getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource) < fleetCargoCapacity)
 				{
 					// Mine more supplies
                     if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) > 1)
                     {
                         lastTimeCheck = Global.getSector().getClock().getTimestamp();
-                        theFleet.getCargo().addSupplies(miningPower * 100);
+                        theFleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource, ExerelinConfig.miningAmountPerDayPerMiner * 2);
                     }
 				}
 				else if(!returningHome)
@@ -113,14 +115,14 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 					validFleet = ExerelinUtils.isValidMiningFleet(theFleet);
 					miningPower = ExerelinUtils.getMiningPower(theFleet);
 				}
-				else if (theFleet.getCargo().getSupplies() > 40)
+				else if (theFleet.getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource) > 0)
 				{
 					// Reached home so unload
                     if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) > 1)
                     {
                         lastTimeCheck = Global.getSector().getClock().getTimestamp();
-                        theFleet.getCargo().removeSupplies(200);
-                        getAnchor().getCargo().addSupplies(200 * SystemManager.getSystemManagerForAPI((StarSystemAPI)theFleet.getContainingLocation()).getSystemStationManager().getStationRecordForToken(getAnchor()).getEfficiency(false));
+                        theFleet.getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource, ExerelinConfig.miningAmountPerDayPerMiner * 2);
+                        getAnchor().getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource, ExerelinConfig.miningAmountPerDayPerMiner * 2 * SystemManager.getSystemManagerForAPI((StarSystemAPI)theFleet.getContainingLocation()).getSystemStationManager().getStationRecordForToken(getAnchor()).getEfficiency(false));
                     }
 				}
 				else
