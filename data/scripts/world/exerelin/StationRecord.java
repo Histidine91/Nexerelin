@@ -53,7 +53,7 @@ public class StationRecord
 
 		attackSpawn = new AttackFleetSpawnPoint(sector, system, 1000000, 1, token);
 		defenseSpawn = new DefenseFleetSpawnPoint(sector, system, 1000000, 1, token);
-		patrolSpawn = new PatrolFleetSpawnPoint(sector, system, 1000000, 2, token);
+		patrolSpawn = new PatrolFleetSpawnPoint(sector, system, 1000000, 1, token);
 		stationAttackFleetSpawn = new InSystemStationAttackShipSpawnPoint(sector, system, 1000000, 1, token);
 		inSystemSupplyConvoySpawn = new InSystemSupplyConvoySpawnPoint(sector, system, 1000000, 1, token);
 		asteroidMiningFleetSpawnPoint = new AsteroidMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
@@ -593,8 +593,12 @@ public class StationRecord
                 System.out.println(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " sabateur has caused a station explosion at " + this.getStationToken().getName() + ".");
                 lastBoardAttemptTime = Global.getSector().getClock().getTimestamp();
                 this.efficiency = 0.1f;
-                ExerelinUtils.removeRandomShipsFromCargo(this.stationCargo, this.stationCargo.getMothballedShips().getCombatReadyMembersListCopy().size());
+                ExerelinUtils.removeRandomShipsFromCargo(this.stationCargo, this.stationCargo.getMothballedShips().getMembersListCopy().size());
                 ExerelinUtils.removeRandomWeaponStacksFromCargo(this.stationCargo, this.stationCargo.getWeapons().size());
+                ExerelinUtils.decreaseCargo(this.stationCargo, "marines", (int)(this.stationCargo.getMarines() * 0.9));
+                ExerelinUtils.decreaseCargo(this.stationCargo, "supplies", (int)(this.stationCargo.getSupplies() * 0.9));
+                ExerelinUtils.decreaseCargo(this.stationCargo, "crewRegular", (int)(this.stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR)*0.9));
+                ExerelinUtils.decreaseCargo(this.stationCargo, "fuel", (int)(this.stationCargo.getFuel()*0.9));
                 if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
                     Global.getSector().addMessage("The saboteur was not discoverd and will repeat their mission.", Color.magenta);
                 else
