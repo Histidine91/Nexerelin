@@ -40,6 +40,8 @@ public class FactionDirector {
             if(this.targetSystem.getName().equalsIgnoreCase(this.homeSystem.getName())
                     && ExerelinUtils.doesSystemHaveEntityForFaction(this.homeSystem, this.factionId, 1, Float.MAX_VALUE))
                 this.targetResupplySystem = this.homeSystem;
+            else if(ExerelinUtils.doesSystemHaveEntityForFaction(this.targetSystem, this.factionId, 1, Float.MAX_VALUE))
+                this.targetResupplySystem = this.targetSystem;
             else
                 this.targetResupplySystem = ExerelinUtils.getClosestSystemForFaction(this.targetSystem, this.factionId, 1, Float.MAX_VALUE);
 
