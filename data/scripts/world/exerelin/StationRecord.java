@@ -203,7 +203,7 @@ public class StationRecord
 
         if(defenseSpawn.getFleets().size() < defenseSpawn.getMaxFleets())
         {
-            if(ExerelinConfig.enableThreading)
+            /*if(ExerelinConfig.enableThreading)
             {
                 Thread defenseSpawnThread = new Thread("defenseSpawnThread"){
                     public void run()
@@ -213,7 +213,7 @@ public class StationRecord
                 };
                 defenseSpawnThread.start();
             }
-            else
+            else*/
                 defenseSpawn.spawnFleet();
             return;
         }
@@ -221,7 +221,7 @@ public class StationRecord
         if(attackSpawn.getFleets().size() < attackSpawn.getMaxFleets()
                 && targetStationRecord != null && targetStationRecord.getOwner() != null)
         {
-            if(ExerelinConfig.enableThreading)
+            /*if(ExerelinConfig.enableThreading)
             {
                 Thread attackSpawnThread = new Thread("attackSpawnThread"){
                     public void run()
@@ -231,15 +231,15 @@ public class StationRecord
                 };
                 attackSpawnThread.start();
             }
-            else
+            else*/
                 attackSpawn.spawnFleet();
             return;
         }
 
         if(stationAttackFleetSpawn.getFleets().size() < stationAttackFleetSpawn.getMaxFleets()
-                && targetStationRecord != null && targetStationRecord.getOwner() == null)
+                && targetStationRecord != null)
         {
-            if(ExerelinConfig.enableThreading)
+            /*if(ExerelinConfig.enableThreading)
             {
                 Thread stationAttackSpawnThread = new Thread("stationAttackSpawnThread"){
                     public void run()
@@ -249,14 +249,14 @@ public class StationRecord
                 };
                 stationAttackSpawnThread.start();
             }
-            else
+            else*/
                 stationAttackFleetSpawn.spawnFleet();
             return;
         }
 
         if(patrolSpawn.getFleets().size() < patrolSpawn.getMaxFleets())
         {
-            if(ExerelinConfig.enableThreading)
+            /*if(ExerelinConfig.enableThreading)
             {
                 Thread patrolSpawnThread = new Thread("patrolSpawnThread"){
                     public void run()
@@ -266,7 +266,7 @@ public class StationRecord
                 };
                 patrolSpawnThread.start();
             }
-            else
+            else*/
                 patrolSpawn.spawnFleet();
             return;
         }

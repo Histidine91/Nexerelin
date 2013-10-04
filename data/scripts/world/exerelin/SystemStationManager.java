@@ -22,6 +22,7 @@ public class SystemStationManager
 	private float averageStationDistance;
 
 	private int nextStationRecord = 0;
+    private int nextIncreaseResourceStationRecord = 0;
 
 	public SystemStationManager(SectorAPI sector, StarSystemAPI system)
 	{
@@ -79,6 +80,23 @@ public class SystemStationManager
 
 		nextStationRecord++;
 	}
+
+    // Each call will increase a stations resources and move the counter to the next station
+    public void updateStationResources()
+    {
+        if(stationRecords.length == 0)
+            return;
+
+        if(nextIncreaseResourceStationRecord == stationRecords.length)
+            nextIncreaseResourceStationRecord = 0;
+
+        //System.out.println("   Updating: " + stationRecords[nextIncreaseResourceStationRecord].getStationToken().getFullName());
+
+        if(stationRecords[nextIncreaseResourceStationRecord].getOwner() != null)
+            stationRecords[nextIncreaseResourceStationRecord].increaseResources();
+
+        nextIncreaseResourceStationRecord++;
+    }
 
 	public float getStationOwnershipPercent(String factionId)
 	{
@@ -336,5 +354,13 @@ public class SystemStationManager
     public void setStationOwner(SectorEntityToken station, String newOwnerFactionId, Boolean displayMessage, Boolean updateRelationship)
     {
         this.getStationRecordForToken(station).setOwner(newOwnerFactionId, displayMessage, updateRelationship);
+    }
+
+    public int getNextIncreaseResourceStationRecord()
+    {
+        if(nextIncreaseResourceStationRecord < this.stationRecords.length)
+            return nextIncreaseResourceStationRecord;
+        else
+            return 0; // We have no more stations to updates so return 0 for first station
     }
 }

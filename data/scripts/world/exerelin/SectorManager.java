@@ -37,6 +37,8 @@ public class SectorManager
 
     private CommandQueue commandQueue;
 
+    private int currentUpdateStationStep = 0;
+
 	public SectorManager(SectorAPI inSectorAPI)
 	{
 		sectorAPI = inSectorAPI;
@@ -117,7 +119,7 @@ public class SectorManager
 		}
 	}
 
-    public void updateStationResources()
+    public void updateAllStationResources()
     {
         SystemManager[] systemManagers = ExerelinData.getInstance().getSectorManager().getSystemManagers();
         for(int j = 0; j < systemManagers.length; j++)
@@ -128,6 +130,40 @@ public class SectorManager
                 systemStationManager.getStationRecords()[i].increaseResources();
             }
         }
+    }
+
+    public void updateStationResources(int stepSize)
+    {
+        if(currentUpdateStationStep == stepSize)
+            currentUpdateStationStep = 0;
+
+        // Upate 1/14th of stations per call
+        int numSystems = SectorManager.getCurrentSectorManager().getSystemManagers().length;
+        for(int i = 0; i < numSystems; i++)
+        {
+            SystemStationManager systemStationManager = SectorManager.getCurrentSectorManager().getSystemManagers()[i].getSystemStationManager();
+            int numStations = systemStationManager.getStationRecords().length;
+
+            double numberToUpdate = numStations/(double)stepSize;
+            int startPoint = systemStationManager.getNextIncreaseResourceStationRecord();
+
+            numberToUpdate = numberToUpdate*((double)(currentUpdateStationStep+1));
+            numberToUpdate = numberToUpdate - startPoint;
+
+            //System.out.println("numStations: " + numStations + ", stepSize: " + stepSize + ", Number to update: " + numberToUpdate + ", startpoint: " + startPoint);
+
+            if(numberToUpdate < 1)
+            {
+                numberToUpdate = 0;
+            }
+
+            int numToUpdate = (int)numberToUpdate;
+
+            for(int j = 0; j < numToUpdate; j++)
+                systemStationManager.updateStationResources();
+        }
+
+        currentUpdateStationStep++;
     }
 
 	public void runEvents()

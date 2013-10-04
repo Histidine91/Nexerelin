@@ -11,8 +11,8 @@ public class ExerelinConfig
     // Factions classed as neutral for relationship calculations
     public static String[] neutralFactions = new String[]{"neutral", "independent"};
 
-    // Threading support for improving/smoothing performance WARNING: BROKEN
-    public static boolean enableThreading = false;
+    // Threading support for improving/smoothing performance
+    public static boolean enableThreading = true;
 
     // Randomise the location of the omnifactory
     public static boolean randomOmnifactoryLocation = false;
@@ -45,7 +45,7 @@ public class ExerelinConfig
 
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelin_config.json");
 
-            //enableThreading = settings.getBoolean("enableThreading");
+            enableThreading = settings.getBoolean("enableThreading");
 
             randomOmnifactoryLocation = settings.getBoolean("randomOmnifactoryLocation");
 

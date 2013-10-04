@@ -59,7 +59,7 @@ public class TimeManager implements SpawnPointPlugin
         if(hour == 12)
         {
             // Update station resources part 1
-
+            SectorManager.getCurrentSectorManager().updateStationResources(14);
         }
 
         if(hour == 15)
@@ -89,7 +89,7 @@ public class TimeManager implements SpawnPointPlugin
         if(hour == 23)
         {
             // Update station resources part 2
-
+            SectorManager.getCurrentSectorManager().updateStationResources(14);
         }
 	}
 
@@ -120,14 +120,11 @@ public class TimeManager implements SpawnPointPlugin
             Thread weeklyThread = new Thread("weeklyThread"){
                 public void run()
                 {
-                    // Check player has station or station attack fleet
-                    SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
-
                     // Update FactionDirectors
                     FactionDirector.updateAllFactionDirectors();
 
-                    // Increase station resources
-                    SectorManager.getCurrentSectorManager().updateStationResources();
+                    // Check player has station or station attack fleet
+                    SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
                 }
             };
 
@@ -135,14 +132,8 @@ public class TimeManager implements SpawnPointPlugin
         }
         else
         {
-            // Check player has station or station attack fleet
-            SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
-
             // Update FactionDirectors
             FactionDirector.updateAllFactionDirectors();
-
-            // Increase station resources
-            SectorManager.getCurrentSectorManager().updateStationResources();
         }
 
         // Pay wages
