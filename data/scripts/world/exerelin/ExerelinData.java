@@ -226,7 +226,7 @@ public final class ExerelinData
 			possibleFactionList.add("antediluvian");
 
 		// Test for blackrock
-		if(isFactionInstalled("blackrock", "data.scripts.world.BRGen"))
+		if(isFactionInstalled("blackrock", "data.scripts.BRModPlugin"))
 			possibleFactionList.add("blackrock");
 
 		// Test for interstellarFederation
@@ -248,8 +248,6 @@ public final class ExerelinData
 		// Test for gedune
 		if(isFactionInstalled("gedune", "data.scripts.world.GeduneGen"))
 			possibleFactionList.add("gedune");
-        if(isFactionInstalled("gedune", "data.scripts.world.SectorGenWithGedune"))
-            possibleFactionList.add("gedune"); // TODO remove
 
 		// Test for nihil
 		if(isFactionInstalled("nihil", "data.scripts.nihil.world.NihilSectorGen"))
