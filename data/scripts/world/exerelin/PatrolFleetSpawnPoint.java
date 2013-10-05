@@ -131,10 +131,10 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
         }
         if(action == 1 || action == 2)
         {
-            if(defendStation.getTargetStationRecord() == null || ((StarSystemAPI)defendStation.getTargetStationRecord().getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(this.owningFactionId).getTargetResupplyEntityToken() == null)
+            if(defendStation.getTargetStationRecord() == null || ((StarSystemAPI)defendStation.getTargetStationRecord().getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken() == null)
                 fleet.setPreferredResupplyLocation(getAnchor());
             else
-                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(this.owningFactionId).getTargetResupplyEntityToken());
+                fleet.setPreferredResupplyLocation(defendStation.getTargetStationRecord().getStationToken());
         }
 
 	}

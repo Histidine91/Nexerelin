@@ -38,7 +38,6 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 
 		for(int i = 0; i < this.getFleets().size();i++)
 			setFleetAssignments((CampaignFleetAPI)this.getFleets().get(i));
-
 	}
 
 	public void setFaction(String factionId)
@@ -115,6 +114,12 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 		{
 			fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, stationTarget.getStationToken(), 1000);
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
+
+            if(((StarSystemAPI)stationTarget.getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName())
+                    || FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken() == null)
+                fleet.setPreferredResupplyLocation(getAnchor());
+            else
+                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken());
 		}
 	}
 }

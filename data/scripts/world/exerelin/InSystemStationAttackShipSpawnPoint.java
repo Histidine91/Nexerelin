@@ -103,6 +103,11 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, stationTarget.getStationToken(), 3, createArrivedScript());
             fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, stationTarget.getStationToken(), 10);
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, stationTarget.getStationToken(), 10);
+
+            if(((StarSystemAPI)stationTarget.getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken() == null)
+                fleet.setPreferredResupplyLocation(getAnchor());
+            else
+                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken());
 		}
 		else
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 10);
