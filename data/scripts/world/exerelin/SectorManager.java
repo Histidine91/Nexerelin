@@ -137,7 +137,7 @@ public class SectorManager
         if(currentUpdateStationStep == stepSize)
             currentUpdateStationStep = 0;
 
-        // Upate 1/14th of stations per call
+        // Upate 1/28th of stations per call
         int numSystems = SectorManager.getCurrentSectorManager().getSystemManagers().length;
         for(int i = 0; i < numSystems; i++)
         {
@@ -153,9 +153,7 @@ public class SectorManager
             //System.out.println("numStations: " + numStations + ", stepSize: " + stepSize + ", Number to update: " + numberToUpdate + ", startpoint: " + startPoint);
 
             if(numberToUpdate < 1)
-            {
                 numberToUpdate = 0;
-            }
 
             int numToUpdate = (int)numberToUpdate;
 

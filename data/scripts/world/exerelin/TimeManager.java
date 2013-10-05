@@ -59,7 +59,7 @@ public class TimeManager implements SpawnPointPlugin
         if(hour == 12)
         {
             // Update station resources part 1
-            SectorManager.getCurrentSectorManager().updateStationResources(14);
+            SectorManager.getCurrentSectorManager().updateStationResources(28);
         }
 
         if(hour == 15)
@@ -89,7 +89,7 @@ public class TimeManager implements SpawnPointPlugin
         if(hour == 23)
         {
             // Update station resources part 2
-            SectorManager.getCurrentSectorManager().updateStationResources(14);
+            SectorManager.getCurrentSectorManager().updateStationResources(28);
         }
 	}
 
