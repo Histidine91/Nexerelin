@@ -314,10 +314,10 @@ public final class ExerelinData
             possibleFactionList.add("shadoworder");
 
         // Test for Zorg
-        if(isFactionInstalled("zorg_hive", "data.scripts.world.zorg.ZorgGen"))
+        if(isFactionInstalled("zorg_hive", "data.scripts.ZorgModPlugin"))
             possibleFactionList.add("zorg_hive");
 
-        // Test for Zorg
+        // Test for Qualljom Society
         if(isFactionInstalled("qualljom_society", "data.scripts.world.QSGen"))
             possibleFactionList.add("qualljom_society");
 
