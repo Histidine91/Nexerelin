@@ -12,7 +12,8 @@
     "allowTradeAtHostileStations":false, # Boolean
 
     "reduceSupplies":true, # Boolean
-    "maxSuppliesDropped": 200, # Integer
+    "capSupplyDropToCargo":true, # Boolean, only used if reduceSupplies is true, cap = cargo*1.5
+    "reduceSuppliesFactor":1.0, # Double, only used if reduceSupplies is true, applied after cap to cargo
 
     "asteroidMiningResource": "supplies", # String
     "gasgiantMiningResource": "fuel", # String, NOT USED

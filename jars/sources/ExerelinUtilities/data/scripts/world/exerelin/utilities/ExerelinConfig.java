@@ -24,7 +24,8 @@ public class ExerelinConfig
 
     // Supply reduction
     public static boolean reduceSupplies = true;
-    public static int maxSuppliesDropped = 200;
+    public static boolean capSupplyDropToCargo = true;
+    public static double reduceSuppliesFactor = 1.0;
     
     // System Generation Minimums
     public static int minimumPlanets = 3;
@@ -54,7 +55,8 @@ public class ExerelinConfig
             allowTradeAtHostileStations = settings.getBoolean("allowTradeAtHostileStations");
 
             reduceSupplies = settings.getBoolean("reduceSupplies");
-            maxSuppliesDropped = settings.getInt("maxSuppliesDropped");
+            capSupplyDropToCargo = settings.getBoolean("capSupplyDropToCargo");
+            reduceSuppliesFactor = settings.getDouble("reduceSuppliesFactor");
 
             minimumPlanets = settings.getInt("minimumPlanets");
             minimumStations = settings.getInt("minimumStations");

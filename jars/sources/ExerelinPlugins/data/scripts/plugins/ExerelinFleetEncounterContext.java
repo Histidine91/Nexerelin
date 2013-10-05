@@ -1144,15 +1144,18 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
             suppliesSalvaged += data.getMember().getRepairTracker().getSuppliesFromSalvage() * mult;
         }
 
-        // EXERELIN edit - loot a min of 200 supplies, or the cargo capaacity of fleet / 2
+        // EXERELIN edit
         if(ExerelinConfig.reduceSupplies)
         {
-            int suppliesToAdd = Math.min((int)suppliesSalvaged, (int)this.getWinner().getCargo().getMaxCapacity()/2);
-            suppliesToAdd = Math.min(ExerelinConfig.maxSuppliesDropped, suppliesToAdd);
-            loot.addSupplies(suppliesToAdd);
+            float suppliesToAdd = suppliesSalvaged;
+            if(ExerelinConfig.capSupplyDropToCargo)
+                suppliesToAdd = Math.min(suppliesToAdd, (float)(this.getWinner().getCargo().getMaxCapacity()*1.5));
+
+            suppliesToAdd = suppliesToAdd*(float)ExerelinConfig.reduceSuppliesFactor;
+            suppliesSalvaged = suppliesToAdd;
         }
-        else
-            loot.addSupplies((int)suppliesSalvaged);
+
+        loot.addSupplies((int)suppliesSalvaged);
 
 
         float scrappedCapacity = 0f;
@@ -1175,8 +1178,24 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
 
         float lootedFraction = 0.5f;
         loot.addFuel(Math.round(fuelLost * lootedFraction));
-        if(!ExerelinConfig.reduceSupplies)
+
+        // EXERELIN EDIT
+        if(ExerelinConfig.reduceSupplies)
+        {
+            float suppliesToAdd = Math.round(suppliesLost * lootedFraction);
+
+            if(ExerelinConfig.capSupplyDropToCargo)
+                suppliesToAdd = Math.min(suppliesToAdd, (float)(this.getWinner().getCargo().getMaxCapacity()*1.5));
+
+            suppliesToAdd = suppliesToAdd*(float)ExerelinConfig.reduceSuppliesFactor;
+            suppliesToAdd = suppliesToAdd - suppliesSalvaged; // Reduce by how many we have already added
+
+            if(suppliesToAdd > 0)
+                loot.addSupplies(suppliesToAdd);
+        }
+        else
             loot.addSupplies(Math.round(suppliesLost * lootedFraction));
+
 
         for (CargoStackAPI stack : loserCargo.getStacksCopy()) {
             if (stack.isNull()) continue;

@@ -14,6 +14,7 @@
 	"data/scripts/world/SectorGen.java",
 	"data/world/generators.csv",
 	"data/config/settings.json",
+	"data/campaign/resources.json",
 
     "data/world/factions/neutral.faction",
     "data/world/factions/abandoned.faction",
