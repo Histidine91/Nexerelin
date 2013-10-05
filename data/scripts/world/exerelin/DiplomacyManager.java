@@ -1014,11 +1014,11 @@ public class DiplomacyManager
 			rec.getFactionAPI().setRelationship(allianceRecords[i].getFactionId(), 1);
 		}
 
-		System.out.println(factionId + " has joined " + allianceRecord.getAllianceNameAndFactions());
+		System.out.println(Global.getSector().getFaction(factionId).getDisplayName() + " has joined " + allianceRecord.getAllianceNameAndFactions());
 		if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
-			sector.addMessage(factionId + " has joined " + allianceRecord.getAllianceNameAndFactions(), Color.magenta);
+			sector.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has joined " + allianceRecord.getAllianceNameAndFactions(), Color.magenta);
 		else
-			sector.addMessage(factionId + " has joined " + allianceRecord.getAllianceNameAndFactions());
+			sector.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has joined " + allianceRecord.getAllianceNameAndFactions());
 	}
 
 	private void removeFactionFromAlliance(String allianceId, String factionId, Boolean betrayal)
@@ -1036,11 +1036,20 @@ public class DiplomacyManager
 				allianceRecord.removeFactionFromAlliance(factionId);
 				rec.setAllianceId("");
 
-				System.out.println(factionId + " has left " + allianceRecord.getAllianceNameAndFactions());
+                DiplomacyRecord[] records = this.getDiplomacyRecordsForAlliance(allianceId);
+                for(int i = 0; i < records.length; i++)
+                {
+                    rec.setGameRelationship(records[i].getFactionId(), 0);
+                    rec.getFactionAPI().setRelationship(records[i].getFactionId(), 0);
+                    records[i].setGameRelationship(rec.getFactionId(), 0);
+                    records[i].getFactionAPI().setRelationship(rec.getFactionId(), 0);
+                }
+
+				System.out.println(Global.getSector().getFaction(factionId).getDisplayName() + " has left " + allianceRecord.getAllianceNameAndFactions());
 				if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
-					sector.addMessage(factionId + " has left " + allianceRecord.getAllianceNameAndFactions(), Color.magenta);
+					sector.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has left " + allianceRecord.getAllianceNameAndFactions(), Color.magenta);
 				else
-					sector.addMessage(factionId + " has left " + allianceRecord.getAllianceNameAndFactions());
+					sector.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has left " + allianceRecord.getAllianceNameAndFactions());
 			}
 		}
 		else
@@ -1048,11 +1057,11 @@ public class DiplomacyManager
 			// Remove faction from alliance and declare war with remaining faction in alliance
 			DiplomacyRecord[] factionRecords = getDiplomacyRecordsForAlliance(allianceId);
 
-			System.out.println(factionId + " has betrayed " + allianceRecord.getAllianceNameAndFactions() + "!");
+			System.out.println(Global.getSector().getFaction(factionId).getDisplayName() + " has betrayed " + allianceRecord.getAllianceNameAndFactions() + "!");
 			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
-				sector.addMessage(factionId + " has betrayed " + allianceRecord.getAllianceNameAndFactions() + "!", Color.magenta);
+				sector.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has betrayed " + allianceRecord.getAllianceNameAndFactions() + "!", Color.magenta);
 			else
-				sector.addMessage(factionId + " has betrayed " + allianceRecord.getAllianceNameAndFactions() + "!");
+				sector.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has betrayed " + allianceRecord.getAllianceNameAndFactions() + "!");
 
 			if(allianceRecord.getNumFactionsInAlliance() == 2)
 			{
@@ -1099,12 +1108,11 @@ public class DiplomacyManager
 		else if(value == 0)
 			innerMessage = " has signed a peace treaty with ";
 
-
-		System.out.println(recordOne.getFactionId() + innerMessage + recordTwo.getFactionId());
+		System.out.println(Global.getSector().getFaction(recordOne.getFactionId()).getDisplayName() + innerMessage + Global.getSector().getFaction(recordTwo.getFactionId()).getDisplayName());
 		if(recordOne.getFactionId().equalsIgnoreCase(playerRecord.getFactionId()) || recordTwo.getFactionId().equalsIgnoreCase(playerRecord.getFactionId()))
-			sector.addMessage(recordOne.getFactionId() + innerMessage + recordTwo.getFactionId(), Color.magenta);
+			sector.addMessage(Global.getSector().getFaction(recordOne.getFactionId()).getDisplayName() + innerMessage + Global.getSector().getFaction(recordTwo.getFactionId()).getDisplayName(), Color.magenta);
 		else
-			sector.addMessage(recordOne.getFactionId() + innerMessage + recordTwo.getFactionId());
+			sector.addMessage(Global.getSector().getFaction(recordOne.getFactionId()).getDisplayName() + innerMessage + Global.getSector().getFaction(recordTwo.getFactionId()).getDisplayName());
 
 	}
 
@@ -1166,11 +1174,11 @@ public class DiplomacyManager
 		else if(value == 0)
 			innerMessage = " has signed a peace treaty with ";
 
-		System.out.println(factionId + innerMessage + allianceRecord.getAllianceNameAndFactions());
+		System.out.println(Global.getSector().getFaction(factionId).getDisplayName() + innerMessage + allianceRecord.getAllianceNameAndFactions());
 		if(factionId.equalsIgnoreCase(playerRecord.getFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
-			sector.addMessage(factionId + innerMessage + allianceRecord.getAllianceNameAndFactions(), Color.magenta);
+			sector.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + innerMessage + allianceRecord.getAllianceNameAndFactions(), Color.magenta);
 		else
-			sector.addMessage(factionId + innerMessage + allianceRecord.getAllianceNameAndFactions());
+			sector.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + innerMessage + allianceRecord.getAllianceNameAndFactions());
 	}
 
 	private void startAlliance(DiplomacyRecord rec1, DiplomacyRecord rec2)
