@@ -799,6 +799,7 @@ public class ExerelinUtils
                     System.out.println("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.gasgiantMiningResource);
                 }
                 Global.getSector().getPlayerFleet().getCommanderStats().addXP(400);
+                Global.getSector().getPlayerFleet().getCommanderStats().levelUpIfNeeded();
             }
         }
 	}
