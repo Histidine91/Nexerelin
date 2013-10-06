@@ -176,13 +176,6 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 options.setShortcut(OptionId.REFIT, Keyboard.KEY_R, false, false, false, true);
             }
 
-            // If we own station, display diplomacy reports
-            if(!station.getFaction().getId().equalsIgnoreCase("abandoned") && !station.getFaction().getId().equalsIgnoreCase("rebel"))
-            {
-                options.addOption("Alliance Report", OptionId.DISPLAY_ALLIES);
-                options.addOption("Enemy Report", OptionId.DISPLAY_ENEMIES);
-            }
-
             if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent") > 0
                     && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
                 options.addOption("Plant agent on station", OptionId.PLANT_AGENT);
@@ -217,6 +210,13 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 options.setTooltipHighlightColors(OptionId.REPAIR_ALL, HIGHLIGHT_COLOR, HIGHLIGHT_COLOR);
                 options.setTooltipHighlights(OptionId.REPAIR_ALL, "" + (int) needed, "" + (int) supplies);
             }
+        }
+
+        // If we own station, display diplomacy reports
+        if(!station.getFaction().getId().equalsIgnoreCase("abandoned") && !station.getFaction().getId().equalsIgnoreCase("rebel"))
+        {
+            options.addOption("Alliance Report", OptionId.DISPLAY_ALLIES);
+            options.addOption("Enemy Report", OptionId.DISPLAY_ENEMIES);
         }
 
         options.addOption("Leave", OptionId.LEAVE);
