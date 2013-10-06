@@ -55,7 +55,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "tarsus_Standard":[1, 3],
+                "syndicate_asp_copperhead_Standard":[1, 3],
             },
         },
         "exerelinInSystemStationAttackFleet":{
