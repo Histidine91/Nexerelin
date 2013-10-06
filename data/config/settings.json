@@ -26,7 +26,7 @@
 	
 	"fogOfWar":true,
 	"smallClouds":true,  # set to true to improve nebula rendering performance
-	"compressSaveGameData":false, # smaller files, much faster saving/loading, but can't be edited by hand
+	"compressSaveGameData":true, # smaller files, much faster saving/loading, but can't be edited by hand
 	
 	"cloudColor":[255, 255, 255, 255],
 	
