@@ -254,8 +254,8 @@ public final class ExerelinData
 			possibleFactionList.add("nihil");
 
 		// Test for nomads
-		if(isFactionInstalled("nomad", "data.scripts.nom.world.SectorGenWithNomads"))
-			possibleFactionList.add("nomad");
+		if(isFactionInstalled("nomads", "data.scripts.TheNomadsModPlugin"))
+			possibleFactionList.add("nomads");
 
 		// Test for relics
 		if(isFactionInstalled("relics", "data.scripts.pur.world.PurSectorGen"))

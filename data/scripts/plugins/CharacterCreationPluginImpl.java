@@ -517,7 +517,7 @@ public class CharacterCreationPluginImpl implements CharacterCreationPlugin
 				data.addStartingShipChoice("junk_pirates_sickle_Standard");
 				data.addStartingShipChoice("junk_pirates_stoatA_Standard");
 			}
-			else if (factionId.equalsIgnoreCase("nomad"))
+			else if (factionId.equalsIgnoreCase("nomads"))
 			{
 				data.addStartingShipChoice("nom_wurm_assault");
 				data.addStartingShipChoice("nom_yellowjacket_sniper");
