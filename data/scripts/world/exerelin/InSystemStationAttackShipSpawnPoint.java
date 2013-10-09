@@ -162,7 +162,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 	private Script createArrivedScript() {
 		return new Script() {
 			public void run() {
-				if(stationTarget != null && stationTarget.getOwner() != null && stationTarget.getOwner().getFactionId().equalsIgnoreCase(fleetOwningFactionId))
+				if(stationTarget != null && stationTarget.getOwner() != null && stationTarget.getOwner().getFactionId().equalsIgnoreCase(theFleet.getFaction().getId()))
 				{
 					// If we already own it deliver resources (as if we took it over), defend and despawn
 					CargoAPI cargo = stationTarget.getStationToken().getCargo();
@@ -174,7 +174,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
                     ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
                     ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleetOwningFactionId));
 				}
-				else if(stationTarget == null || (stationTarget.getOwner() != null && stationTarget.getOwner().getGameRelationship(fleetOwningFactionId) >= 0))
+				else if(stationTarget == null || (stationTarget.getOwner() != null && stationTarget.getOwner().getGameRelationship(theFleet.getFaction().getId()) >= 0))
 				{
 					// If neutral/ally owns station, go home
 					theFleet.clearAssignments();
@@ -187,7 +187,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					stationTarget.setOwner(theFleet.getFaction().getId(), true, true);
 					stationTarget.clearCargo();
                     ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
-                    ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleetOwningFactionId));
+                    ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(theFleet.getFaction().getId()));
 				}
 			}
 		};

@@ -38,7 +38,7 @@
 	"startingCommandPoints":3,
 	"baseShipRepairChance":5,
 	
-	"suppliesPerMarinePerDay":0.1;
+	"suppliesPerMarinePerDay":0.02;
 	"suppliesPerCrewPerDay":0.01;
 	"suppliesPerCargoUnitOverCapacity":0.1;
 	"suppliesPerFuelUnitOverCapacity":0.1;
