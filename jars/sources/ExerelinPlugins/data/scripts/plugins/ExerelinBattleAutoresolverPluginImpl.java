@@ -388,7 +388,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
                 unscathed = 10f;
                 break;
             case DESTROYER:
-                unscathed = 15;;
+                unscathed = 15;
                 break;
             case FRIGATE:
             case FIGHTER:

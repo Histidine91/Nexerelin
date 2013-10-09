@@ -17,6 +17,7 @@ import java.util.Iterator;
    some variables need to be reset each game advance.
  */
 
+@SuppressWarnings("unchecked")
 public final class ExerelinData
 {
     private static ExerelinData instance = null;
