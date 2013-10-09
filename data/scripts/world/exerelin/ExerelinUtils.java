@@ -686,7 +686,7 @@ public class ExerelinUtils
 		for(int i = 0; i < members.size(); i++)
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if(ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidMiningShips(), true))
+			if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidMiningShips(), true))
 				hasMiningShip = true;
 			else if(!fmAPI.isFighterWing())
 				hasShip = true;
@@ -703,7 +703,7 @@ public class ExerelinUtils
 		for(int i = 0; i < members.size(); i++)
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if(ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidMiningShips(), true))
+			if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidMiningShips(), true))
 				power = power + 1;
 		}
 
@@ -725,10 +725,10 @@ public class ExerelinUtils
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
 
-            if(ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidBoardingFlagships(), true))
+            if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidBoardingFlagships(), true))
 				hasValidFlagship = true;
 
-            if(ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidTroopTransportShips(), true))
+            if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidTroopTransportShips(), true))
                 hasValidTroopTransport = true;
 
             if(hasValidFlagship && hasValidTroopTransport)
@@ -744,7 +744,7 @@ public class ExerelinUtils
 		for(int i = 0; i < members.size(); i++)
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if(fmAPI.isCapital())
+			if((! fmAPI.isMothballed()) && fmAPI.isCapital())
 			{
 				return true;
 			}

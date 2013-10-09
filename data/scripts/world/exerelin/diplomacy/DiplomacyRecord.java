@@ -222,7 +222,7 @@ public class DiplomacyRecord
 
 	public Boolean isInAlliance()
 	{
-		return (allianceId.equalsIgnoreCase(""));
+		return (! allianceId.equalsIgnoreCase(""));
 	}
 
 	public String getAllianceId()
