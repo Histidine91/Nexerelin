@@ -91,7 +91,7 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 1, 2, owningFactionId, getSector());
 
         ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.3f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId));
-        ExerelinUtilsFleet.fleetOrderReset(fleet);
+        ExerelinUtilsFleet.sortByHullSize(fleet);
 
 		theFleet = fleet;
 		fleet.setPreferredResupplyLocation(getAnchor());

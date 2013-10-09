@@ -43,30 +43,35 @@ public class EventRebelFleetSpawn extends EventBase
         SectorEntityToken planet = (SectorEntityToken)starSystemAPI.getPlanets().get(ExerelinUtils.getRandomInRange(1, starSystemAPI.getPlanets().size() - 1));
 
         CampaignFleetAPI newRebelFleet = Global.getSector().createFleet(factionLeaderId, "exerelinGenericFleet");
+        ExerelinUtilsFleet.sortByFleetCost(newRebelFleet);
 
+        // Reduce size of rebel fleet to contain ships of close to the same fleet points as the player fleet
+        int playerFleetPoints = Global.getSector().getPlayerFleet().getFleetPoints();
+        int targetFleetPoints = ExerelinUtils.getRandomInRange(playerFleetPoints, playerFleetPoints * 3);
+        int rebelFleetPoints = newRebelFleet.getFleetPoints();
 
-
-        // Reduce size of rebel fleet to be close to player fleet
-        List members = newRebelFleet.getFleetData().getMembersListCopy();
-        int numToRemove = members.size() - Global.getSector().getPlayerFleet().getFleetData().getCombatReadyMembersListCopy().size();
-
-        numToRemove = numToRemove + ExerelinUtils.getRandomInRange(-2, 2);
-
-        if(numToRemove < 0)
-            numToRemove = 0;
-        else if(numToRemove > members.size() -1)
-            numToRemove = members.size() - 1;
-
-        for(int i = 0; i < numToRemove; i++)
-        {
-            List membersUpdated = newRebelFleet.getFleetData().getMembersListCopy();
-            FleetMemberAPI toRemove = (FleetMemberAPI)membersUpdated.get(ExerelinUtils.getRandomInRange(0, membersUpdated.size() - 1));
-            newRebelFleet.getFleetData().removeFleetMember(toRemove);
+        // Remove best ships until we're closer to player fleet size
+        while(rebelFleetPoints > (playerFleetPoints * 5)){
+            FleetMemberAPI member = (FleetMemberAPI)newRebelFleet.getFleetData().getMembersListCopy().get(0);
+            newRebelFleet.getFleetData().removeFleetMember(member);
+            rebelFleetPoints -= member.getFleetPointCost();
         }
 
-        ExerelinUtils.addFreightersToFleet(newRebelFleet);
+        // Remove random ships until we're within target fleet size
+        // This should provide a fairly decent variety of fleet compositions
+        while (rebelFleetPoints > targetFleetPoints){
+            List rebelFleetMembers = newRebelFleet.getFleetData().getMembersListCopy();
+            FleetMemberAPI member = (FleetMemberAPI)rebelFleetMembers.get(ExerelinUtils.getRandomInRange(0, rebelFleetMembers.size() - 1));
+            newRebelFleet.getFleetData().removeFleetMember(member);
+            rebelFleetPoints -= member.getFleetPointCost();
+        }
+
+        // Add cargo ships if this fleet has capital or cruiser class ships, or 33% of the time for smaller fleets
+        if (newRebelFleet.getNumCapitals() > 0 || newRebelFleet.getNumCruisers() > 0 || (ExerelinUtils.getRandomInRange(0, 2) == 0 ))
+            ExerelinUtils.addFreightersToFleet(newRebelFleet);
+
         ExerelinUtils.resetFleetCargoToDefaults(newRebelFleet, 0.3f, 0.1f, CargoAPI.CrewXPLevel.REGULAR);
-        ExerelinUtilsFleet.fleetOrderReset(newRebelFleet);
+        ExerelinUtilsFleet.sortByHullSize(newRebelFleet);
 
         newRebelFleet.setFaction(rebelFAPI.getId());
         newRebelFleet.setName("Dissenter Fleet");

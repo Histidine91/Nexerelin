@@ -81,7 +81,7 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
             ExerelinUtils.renameFleet(fleet, "attack");
             ExerelinUtils.addFreightersToFleet(fleet);
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.ownerFactionId));
-            ExerelinUtilsFleet.fleetOrderReset(fleet);
+            ExerelinUtilsFleet.sortByHullSize(fleet);
 
             if(((StarSystemAPI)stationTarget.getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(this.ownerFactionId).getTargetResupplyEntityToken() == null)
 			    fleet.setPreferredResupplyLocation(getAnchor());
