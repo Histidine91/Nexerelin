@@ -113,8 +113,7 @@ public class SystemStationManager
 	{
 		if(stationCount != null && doesFactionOwnStation(factionId) && stationCount.containsKey(factionId))
 		{
-			Integer count = Integer.parseInt((String)stationCount.get(factionId));
-			return count;
+			return Integer.parseInt((String)stationCount.get(factionId));
 		}
 		else
 			return 0;

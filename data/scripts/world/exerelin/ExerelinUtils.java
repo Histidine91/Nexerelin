@@ -85,8 +85,7 @@ public class ExerelinUtils
 		if(y == 0)
 			y = ExerelinUtils.getRandomInRange(negativeMaxSize, maxSize);
 
-		SectorEntityToken spawnPoint = location.createToken(x, y);
-		return spawnPoint;
+		return location.createToken(x, y);
 	}
 
 	public static Boolean canStationSpawnFleet(SectorEntityToken station, CampaignFleetAPI fleet, float numberToSpawn, float marinesPercent, boolean noCivilianShips, CargoAPI.CrewXPLevel crewXPLevel)

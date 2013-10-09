@@ -70,7 +70,6 @@ public class SystemEventManager
 			eventStationExplosion.causeExplosion(starSystemAPI);
 			waitTime = betweenEventWait;
 			lastEventType = eventStationExplosion.getType();
-			return;
 		}
 
 		/*if(ExerelinData.getInstance().getSectorManager().getRespawnFactions()

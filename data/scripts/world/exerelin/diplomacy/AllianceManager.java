@@ -72,8 +72,7 @@ public class AllianceManager
 	private void addAllianceToCollection(AllianceRecord record)
 	{
 		AllianceRecord[] newAllianceRecords = new AllianceRecord[allianceRecords.length + 1];
-		for(int i = 0; i < allianceRecords.length; i++)
-			newAllianceRecords[i] = allianceRecords[i];
+        System.arraycopy(allianceRecords, 0, newAllianceRecords, 0, allianceRecords.length);
 
 		newAllianceRecords[allianceRecords.length] = record;
 		allianceRecords = newAllianceRecords;
