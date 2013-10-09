@@ -59,7 +59,7 @@
            "extraCrewPercent":[80, 80],
            "marinesPercent":[20, 20],
            "ships":{
-				"hii_vihr_Standard":[0, 3],
+				"hii_vihr_Standard":[1, 3],
            },
        },
        "exerelinInSystemStationAttackFleet":{
