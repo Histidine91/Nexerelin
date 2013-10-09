@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class SystemStationManager
 {
 	private StationRecord[] stationRecords;
@@ -113,8 +114,7 @@ public class SystemStationManager
 	{
 		if(stationCount != null && doesFactionOwnStation(factionId) && stationCount.containsKey(factionId))
 		{
-			Integer count = Integer.parseInt((String)stationCount.get(factionId));
-			return count;
+			return Integer.parseInt((String)stationCount.get(factionId));
 		}
 		else
 			return 0;

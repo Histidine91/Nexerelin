@@ -3,47 +3,54 @@ package data.scripts.world.exerelin.utilities;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExerelinUtilsFleet
 {
-    public static void fleetOrderReset(CampaignFleetAPI fleet)
-    {
-        // A temporary list to store re-ordered members in
-        List<FleetMemberAPI> tempMemberList = new ArrayList<FleetMemberAPI>();
 
-        // local reference
+    public static void sortByFleetCost(CampaignFleetAPI fleet){
+        // local reference to be sorted
         List<FleetMemberAPI> initialFleetMembers = fleet.getFleetData().getMembersListCopy();
 
-        // Put a reference to fleet members into the temp list in the order we want them
-        for(int i = 0; i < 5; i++)
-        {
-            for(int j = 0; j < initialFleetMembers.size(); j++)
-            {
-                if(i == 0 && initialFleetMembers.get(j).isCapital())
-                    tempMemberList.add(initialFleetMembers.get(j));
+        // Remove all members from the fleet
+        for(FleetMemberAPI member : initialFleetMembers)
+            fleet.getFleetData().removeFleetMember(member);
 
-                if(i == 1 && initialFleetMembers.get(j).isCruiser())
-                    tempMemberList.add(initialFleetMembers.get(j));
-
-                if(i == 2 && initialFleetMembers.get(j).isDestroyer())
-                    tempMemberList.add(initialFleetMembers.get(j));
-
-                if(i == 3 && initialFleetMembers.get(j).isFrigate())
-                    tempMemberList.add(initialFleetMembers.get(j));
-
-                if(i == 4 && initialFleetMembers.get(j).isFighterWing())
-                    tempMemberList.add(initialFleetMembers.get(j));
+        // Sort descending by fleet cost so that more expensive ships are first
+        Collections.sort(initialFleetMembers, new Comparator<FleetMemberAPI>() {
+            @Override
+            public int compare(FleetMemberAPI o1, FleetMemberAPI o2) {
+                return Float.compare(o2.getFleetPointCost(), o1.getFleetPointCost());
             }
-        }
+        });
 
-        // Remove all members from fleet
-        for(int i = 0; i < initialFleetMembers.size(); i++)
-            fleet.getFleetData().removeFleetMember(initialFleetMembers.get(i));
+        // Re-add members to fleet from sorted list
+        for (FleetMemberAPI member : initialFleetMembers)
+            fleet.getFleetData().addFleetMember(member);
+    }
 
-        // Re-add members to fleet from temp list
-        for(int i = 0; i < tempMemberList.size(); i++)
-            fleet.getFleetData().addFleetMember(tempMemberList.get(i));
+    public static void sortByHullSize(CampaignFleetAPI fleet)
+    {
+        // local reference to be sorted
+        List<FleetMemberAPI> initialFleetMembers = fleet.getFleetData().getMembersListCopy();
+
+        // Remove all members from the fleet
+        for(FleetMemberAPI member : initialFleetMembers)
+            fleet.getFleetData().removeFleetMember(member);
+
+        // Sort descending by hull size so that larger hulls are first
+        Collections.sort(initialFleetMembers, new Comparator<FleetMemberAPI>() {
+            @Override
+            public int compare(FleetMemberAPI o1, FleetMemberAPI o2) {
+                return o2.getHullSpec().getHullSize().compareTo(o1.getHullSpec().getHullSize());
+            }
+        });
+
+        // Re-add members to fleet from sorted list
+        for (FleetMemberAPI member : initialFleetMembers)
+            fleet.getFleetData().addFleetMember(member);
     }
 }

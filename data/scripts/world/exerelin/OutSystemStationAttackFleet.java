@@ -61,7 +61,7 @@ public class OutSystemStationAttackFleet
         ExerelinUtils.addFreightersToFleet(fleet);
         ExerelinUtils.addFreightersToFleet(fleet);
         ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.3f, 0.3f, CargoAPI.CrewXPLevel.ELITE);
-        ExerelinUtilsFleet.fleetOrderReset(fleet);
+        ExerelinUtilsFleet.sortByHullSize(fleet);
 
 		theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
         fleet.setName("Command Fleet");
@@ -132,19 +132,12 @@ public class OutSystemStationAttackFleet
                     {
                         lastTimeCheck = Global.getSector().getClock().getTimestamp();
                         if(ExerelinUtils.getRandomInRange(0, 15) == 0)
-                        {
                             boarding = false;
-                            return; // Finish boarding and run arrived script
-                        }
                         else
                             setFleetAssignments(theFleet);
                     }
                     else
                         setFleetAssignments(theFleet);
-				}
-				else
-				{
-					return; // Skip boarding and run arrived script
 				}
 			}
 		};

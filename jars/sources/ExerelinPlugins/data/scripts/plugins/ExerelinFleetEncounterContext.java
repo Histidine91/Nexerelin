@@ -1521,8 +1521,6 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
                     member.getRepairTracker().applyCREvent(-missileReloadLoss, "missile weapons used in combat");
                 }
             }
-
-            return;
         }
     }
 

@@ -8,7 +8,7 @@ import java.util.Iterator;
 
 /* This class holds the details of a multi-faction alliance.
  */
-
+@SuppressWarnings("unchecked")
 public class AllianceRecord
 {
 	private String allianceId;
@@ -24,8 +24,6 @@ public class AllianceRecord
 		else
 			allianceId = id;
 	}
-
-
 
 	public void addFactionToAlliance(String factionId)
 	{

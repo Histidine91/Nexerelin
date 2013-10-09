@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 /* This class functions as a data transfer for the various Exerelin modules
@@ -16,6 +17,7 @@ import java.util.Iterator;
    some variables need to be reset each game advance.
  */
 
+@SuppressWarnings("unchecked")
 public final class ExerelinData
 {
     private static ExerelinData instance = null;
@@ -148,8 +150,7 @@ public final class ExerelinData
 			ArrayList possibleFactionsList = new ArrayList();
 
 			// Add built in factions
-			for(int i = 0; i < possibleFactions.length; i++)
-				possibleFactionsList.add(possibleFactions[i]);
+            Collections.addAll(possibleFactionsList, possibleFactions);
 
 			// Add modded factions
 			addModdedFactionsToList(possibleFactionsList);

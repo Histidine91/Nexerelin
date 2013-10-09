@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
+@SuppressWarnings("unchecked")
 public class ExerelinUtils
 {
 	public static int getRandomInRange(int min, int max)
@@ -85,8 +86,7 @@ public class ExerelinUtils
 		if(y == 0)
 			y = ExerelinUtils.getRandomInRange(negativeMaxSize, maxSize);
 
-		SectorEntityToken spawnPoint = location.createToken(x, y);
-		return spawnPoint;
+		return location.createToken(x, y);
 	}
 
 	public static Boolean canStationSpawnFleet(SectorEntityToken station, CampaignFleetAPI fleet, float numberToSpawn, float marinesPercent, boolean noCivilianShips, CargoAPI.CrewXPLevel crewXPLevel)
@@ -719,12 +719,7 @@ public class ExerelinUtils
             return false; // Must be 1 flagship, 1 transport, 1 other ship
 
 		Boolean hasValidFlagship = false;
-
-        Boolean hasValidTroopTransport;
-        if(checkForTroopTransport)
-            hasValidTroopTransport = false;
-        else
-            hasValidTroopTransport = true;
+        Boolean hasValidTroopTransport = checkForTroopTransport;
 
 		for(int i = 0; i < members.size(); i++)
 		{
@@ -1113,10 +1108,7 @@ public class ExerelinUtils
         if(Global.getSector().getPlayerFleet().isInHyperspace())
             return false;
 
-        if(((StarSystemAPI)Global.getSector().getPlayerFleet().getContainingLocation()).getName().equalsIgnoreCase(starSystemAPI.getName()))
-            return true;
-        else
-            return false;
+        return ((StarSystemAPI)Global.getSector().getPlayerFleet().getContainingLocation()).getName().equalsIgnoreCase(starSystemAPI.getName());
     }
 
     public static boolean isFactionPresentInSystem(String factionId, StarSystemAPI starSystemAPI)
@@ -1126,7 +1118,6 @@ public class ExerelinUtils
             if(((SectorEntityToken)starSystemAPI.getOrbitalStations().get(i)).getFaction().getId().equalsIgnoreCase(factionId))
                 return true;
         }
-
         return false;
     }
 }

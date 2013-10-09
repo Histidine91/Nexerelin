@@ -69,7 +69,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 		{
             ExerelinUtils.addFreightersToFleet(fleet);
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.2f, 0.8f, ExerelinUtils.getCrewXPLevelForFaction(this.fleetOwningFactionId));
-            ExerelinUtilsFleet.fleetOrderReset(fleet);
+            ExerelinUtilsFleet.sortByHullSize(fleet);
 
 			theFleet = fleet;
 
@@ -148,10 +148,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
                 {
                     lastTimeCheck = Global.getSector().getClock().getTimestamp();
                     if(ExerelinUtils.boardStationAttempt(theFleet, stationTarget.getStationToken(), false, true))
-                    {
                         boarding = false;
-                        return;
-                    }
                     else
                         setFleetAssignments(theFleet);
                 }

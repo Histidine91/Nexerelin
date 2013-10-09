@@ -58,10 +58,7 @@ public class ExerelinUtilsPlayer {
     public static boolean getPlayerDeployExtraMiningFleets()
     {
         MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
-        if(playerStatsAPI.getSkillLevel("station_industry") >= 10)
-            return true;
-        else
-            return false;
+        return (playerStatsAPI.getSkillLevel("station_industry") >= 10);
     }
 
     public static float getPlayerFactionFleetCrewExperienceBonus()
@@ -89,10 +86,7 @@ public class ExerelinUtilsPlayer {
     public static boolean getPlayerSabateurAvailability()
     {
         MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
-        if(playerStatsAPI.getSkillLevel("active_diplomacy") >= 5)
-            return true;
-        else
-            return false;
+        return (playerStatsAPI.getSkillLevel("active_diplomacy") >= 5);
     }
 
     public static float getPlayerDiplomacyObjectReuseChance()

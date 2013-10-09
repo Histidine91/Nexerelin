@@ -65,7 +65,7 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
             ExerelinUtils.renameFleet(fleet, "patrol");
             ExerelinUtils.addFreightersToFleet(fleet);
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId));
-            ExerelinUtilsFleet.fleetOrderReset(fleet);
+            ExerelinUtilsFleet.sortByHullSize(fleet);
 
 			fleet.setPreferredResupplyLocation(getAnchor());
 

@@ -15,6 +15,7 @@ import java.util.List;
 	with other factions.
  */
 
+@SuppressWarnings("unchecked")
 public class DiplomacyRecord
 {
 	private String factionId;
@@ -91,10 +92,8 @@ public class DiplomacyRecord
 
 	public boolean checkForBetray(String otherFactionId, float value)
 	{
-		if(Float.parseFloat((String)gameFactionRelationships.get(otherFactionId)) > value  && Float.parseFloat((String)gameFactionRelationships.get(otherFactionId)) >= 0)
-			return true;
-		else
-			return false;
+        float relationship = Float.parseFloat((String)gameFactionRelationships.get(otherFactionId));
+		return (relationship > value && relationship >= 0);
 	}
 
 	public void setGameRelationship(String otherFactionId, float value)
@@ -223,10 +222,7 @@ public class DiplomacyRecord
 
 	public Boolean isInAlliance()
 	{
-		if(allianceId.equalsIgnoreCase(""))
-			return false;
-		else
-			return true;
+		return (allianceId.equalsIgnoreCase(""));
 	}
 
 	public String getAllianceId()

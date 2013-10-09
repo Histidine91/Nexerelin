@@ -268,7 +268,6 @@ public class StationRecord
             }
             else*/
                 patrolSpawn.spawnFleet();
-            return;
         }
 	}
 
@@ -603,7 +602,6 @@ public class StationRecord
                     Global.getSector().addMessage("The saboteur was not discoverd and will repeat their mission.", Color.magenta);
                 else
                     stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
-                return;
             }
 		}
 	}
