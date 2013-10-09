@@ -1378,8 +1378,7 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
 
     private boolean canDisengageCleanly(CampaignFleetAPI fleet) {
         DataForEncounterSide data = context.getDataFor(fleet);
-        if (data.isWonLastEngagement()) return true;
-        return false;
+        return data.isWonLastEngagement();
     }
     private boolean canDisengageWithoutPursuit(CampaignFleetAPI fleet) {
         CampaignFleetAPI other = playerFleet;

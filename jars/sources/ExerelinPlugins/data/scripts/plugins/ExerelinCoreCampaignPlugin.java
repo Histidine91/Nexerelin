@@ -3,6 +3,7 @@ package data.scripts.plugins;
 import com.fs.starfarer.api.PluginPick;
 import com.fs.starfarer.api.campaign.*;
 
+@SuppressWarnings("unchecked")
 public class ExerelinCoreCampaignPlugin extends BaseCampaignPlugin {
 
     @Override
