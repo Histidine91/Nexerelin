@@ -811,7 +811,7 @@ public class ExerelinUtils
     {
         try
         {
-            CampaignFleetAPI eliteFleet = SectorManager.getCurrentSectorManager().getSectorAPI().createFleet(fleet.getFaction().getId(), "exerelinEliteFleet");
+            CampaignFleetAPI eliteFleet = Global.getSector().createFleet(fleet.getFaction().getId(), "exerelinEliteFleet");
             if(eliteFleet.getFleetData().getMembersListCopy().size() > 0)
             {
                 int memberToAdd = getRandomInRange(0, eliteFleet.getFleetData().getMembersListCopy().size() - 1);

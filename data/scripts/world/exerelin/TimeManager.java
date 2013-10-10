@@ -1,12 +1,13 @@
 package data.scripts.world.exerelin;
 
+import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
 
 import java.util.*;
 
-public class TimeManager implements SpawnPointPlugin
+public class TimeManager implements EveryFrameScript
 {
 	private static final float BASE_INTERVAL = 1.0f;
 	private static final int FIRST_DAY_IN_WEEK = GregorianCalendar.SUNDAY;
@@ -14,8 +15,6 @@ public class TimeManager implements SpawnPointPlugin
 	private long lastHeartbeat;
     private long lastHourChecked;
 	private GregorianCalendar calendar = new GregorianCalendar();
-
-	public SectorManager sectorManagerRef; // REMOVE WHEN CAN USE PERSISTANT DATA
 
 	public TimeManager()
 	{
@@ -151,21 +150,38 @@ public class TimeManager implements SpawnPointPlugin
 
 	}
 
-	@Override
-	public void advance(SectorAPI sectorAPI, LocationAPI locationAPI)
-	{
-        // Do any setup steps that need to be performed
-		ExerelinData.getInstance().getSectorManager().doSetupChecks();
+    @Override
+    public boolean isDone()
+    {
+        return false;
+    }
 
-        if(sectorAPI.getClock().getElapsedDaysSince(lastHeartbeat) < heartbeatInterval && sectorAPI.getClock().getHour() != lastHourChecked)
+    @Override
+    public boolean runWhilePaused()
+    {
+        return false;
+    }
+
+	@Override
+	public void advance(float amount)
+	{
+        if(ExerelinData.getInstance().getSectorManager() == null)
+            return; //OnGameLoad doesn't seem to run before EveryFrameScript.advance()
+
+        // Do any every frame checks that need to be performed
+		ExerelinData.getInstance().getSectorManager().doEveryFrameChecks();
+
+        SectorAPI sector = Global.getSector();
+
+        if(sector.getClock().getElapsedDaysSince(lastHeartbeat) < heartbeatInterval && sector.getClock().getHour() != lastHourChecked)
         {
-            lastHourChecked = sectorAPI.getClock().getHour();
+            lastHourChecked = sector.getClock().getHour();
             runHourly(lastHourChecked);
         }
 
-		if (sectorAPI.getClock().getElapsedDaysSince(lastHeartbeat) >= heartbeatInterval)
+		if (sector.getClock().getElapsedDaysSince(lastHeartbeat) >= heartbeatInterval)
 		{
-			doIntervalChecks(sectorAPI.getClock().getTimestamp());
+			doIntervalChecks(sector.getClock().getTimestamp());
 			checkSynched();
 		}
 	}
