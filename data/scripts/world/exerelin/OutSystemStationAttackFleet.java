@@ -65,15 +65,17 @@ public class OutSystemStationAttackFleet
 
 		theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
         fleet.setName("Command Fleet");
+        if(ExerelinUtils.getRandomInRange(0,1) == 1)
+          fleet.getCommander().setPersonality("aggressive");
 		theFleet = fleet;
 		fleet.setPreferredResupplyLocation(target);
 
 		setFleetAssignments(fleet);
 
 		if(theFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-			Global.getSector().addMessage(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!", Color.magenta);
+			Global.getSector().getCampaignUI().addMessage(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!", Color.magenta);
 		else
-			Global.getSector().addMessage(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!");
+			Global.getSector().getCampaignUI().addMessage(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!");
 
 		System.out.println(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!");
 
@@ -115,7 +117,7 @@ public class OutSystemStationAttackFleet
 				{
 					// Warn player of boarding
 					System.out.println("Player owned " + theTarget.getFullName() + " being boarded by " + Global.getSector().getFaction(theFaction).getDisplayName());
-					Global.getSector().addMessage(theTarget.getFullName() + " is being boarded by " + Global.getSector().getFaction(theFaction).getDisplayName(), Color.magenta);
+					Global.getSector().getCampaignUI().addMessage(theTarget.getFullName() + " is being boarded by " + Global.getSector().getFaction(theFaction).getDisplayName(), Color.magenta);
 				}
 
 				if(defendLocation)

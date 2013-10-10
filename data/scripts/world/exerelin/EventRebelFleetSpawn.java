@@ -2,6 +2,7 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import data.scripts.world.exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
@@ -75,6 +76,12 @@ public class EventRebelFleetSpawn extends EventBase
 
         newRebelFleet.setFaction(rebelFAPI.getId());
         newRebelFleet.setName("Dissenter Fleet");
+
+        // Make rebel fleets more willing to engage in combat
+        if(((FleetMemberAPI)newRebelFleet.getFleetData().getMembersListCopy().get(0)).getHullSpec().getHullSize().compareTo(ShipAPI.HullSize.DESTROYER) >= 0)
+            newRebelFleet.getCommander().setPersonality("aggressive");
+        else
+            newRebelFleet.getCommander().setPersonality("fearless");
 
         newRebelFleet.addAssignment(FleetAssignment.ATTACK_LOCATION, ExerelinUtils.getRandomStationInSystemForFaction(factionLeaderId, starSystemAPI), 90);
         newRebelFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, planet, 60);

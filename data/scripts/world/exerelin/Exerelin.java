@@ -128,7 +128,7 @@ public class Exerelin //implements SectorGeneratorPlugin
             sector.getFaction(factions[i]).setRelationship("independent", 0);
 		}
 
-		// Set indpendant and rebels to hate each other
+		// Set independent and rebels to hate each other
 		FactionAPI rebel = sector.getFaction("rebel");
 		FactionAPI independent = sector.getFaction("independent");
 		rebel.setRelationship(independent.getId(), -1);
