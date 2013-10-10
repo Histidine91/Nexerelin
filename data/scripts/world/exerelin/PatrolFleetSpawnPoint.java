@@ -116,27 +116,22 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
             // Defend station
             fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken(), 1000);
             fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 100);
+            fleet.setPreferredResupplyLocation(getAnchor());
         }
         else if (action == 1 && defendStation.getTargetStationRecord() != null)
         {
             // Attack station
             fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, defendStation.getTargetStationRecord().getStationToken(), 1000);
             fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
+            fleet.setPreferredResupplyLocation(defendStation.getStationToken());
         }
         else if(action == 2 && defendStation.getTargetStationRecord() != null)
         {
             // Raid system
             fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation.getTargetStationRecord().getStationToken(), 1000);
             fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
+            fleet.setPreferredResupplyLocation(defendStation.getStationToken());
         }
-        if(action == 1 || action == 2)
-        {
-            if(defendStation.getTargetStationRecord() == null || ((StarSystemAPI)defendStation.getTargetStationRecord().getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken() == null)
-                fleet.setPreferredResupplyLocation(getAnchor());
-            else
-                fleet.setPreferredResupplyLocation(defendStation.getTargetStationRecord().getStationToken());
-        }
-
 	}
 }
 
