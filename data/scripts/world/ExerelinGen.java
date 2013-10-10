@@ -27,6 +27,8 @@ public class ExerelinGen implements SectorGeneratorPlugin
 
         sector.registerPlugin(new CoreCampaignPluginImpl());
         sector.registerPlugin(new ExerelinCoreCampaignPlugin());
+
+        System.out.println("Finished generation...");
 	}
 
 	public void buildSystem(SectorAPI sector)
@@ -218,7 +220,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
 				orbitRadius = ExerelinUtils.getRandomInRange(700, 900);
 				numAsteroids = 2;
 			}
-			else if (planet.getFullName().contains(system.getStar().getFullName()))
+			else if (planet.getFullName().equalsIgnoreCase(system.getStar().getFullName()))
 			{
 				orbitRadius = ExerelinUtils.getRandomInRange(1000, 8000);
 				numAsteroids = 50;
