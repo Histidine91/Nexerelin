@@ -380,8 +380,6 @@ public class ExerelinUtils
 
 	public static void renameFleet(CampaignFleetAPI fleet, String type)
 	{
-		String fleetFaction = fleet.getFaction().getId();
-
 		String fleetTypeName = "";
 		float fleetSize = fleet.getFleetData().getFleetPointsUsed();
 		if(type.equalsIgnoreCase("attack"))
@@ -463,9 +461,7 @@ public class ExerelinUtils
         FleetMemberAPI fleetMemberAPI = null;
 
         int attempts = 0;
-        while(fleetMemberAPI == null
-                || fleetMemberAPI.getType() == FleetMemberType.FIGHTER_WING
-                || attempts < 20)
+        while((fleetMemberAPI == null || fleetMemberAPI.isFighterWing()) && attempts < 20)
         {
             fleetMemberAPI = (FleetMemberAPI)members.get(ExerelinUtils.getRandomInRange(0, members.size() - 1));
             attempts++;
@@ -755,45 +751,36 @@ public class ExerelinUtils
 
 	public static void handlePlayerFleetMining(CampaignFleetAPI playerFleet)
 	{
+
+        SectorEntityToken interactionTarget =  SectorManager.getCurrentSectorManager().getLastInteractionToken();
+        if(interactionTarget == null)
+            return; // Not interacting with anything
+
         if(playerFleet.isInHyperspace())
             return; // Nothing to mine in hyperspace, although that would be COOL
 
         if(!ExerelinUtils.isValidMiningFleet(playerFleet))
             return; // Not a mining fleet
 
-        SectorEntityToken interactionTarget;
-        if(SectorManager.getCurrentSectorManager().getLastInteractionToken() != null)
-            interactionTarget = SectorManager.getCurrentSectorManager().getLastInteractionToken();
-        else
-            return;
-
-        String interactionType = "";
-        if(interactionTarget instanceof AsteroidAPI)
-            interactionType = "asteroid";
-        else if(interactionTarget instanceof PlanetAPI && ((PlanetAPI)interactionTarget).getFullName().contains("Gaseous"))
-            interactionType = "gasgiant";
-
-        if(interactionType.equalsIgnoreCase(""))
-            return; // Interaction target not gas giant or asteroid
-
         if(MathUtils.getDistanceSquared(interactionTarget.getLocation(), playerFleet.getLocation()) < 1500)
         {
             int miningPower = getMiningPower(playerFleet);
             if(miningPower > 0)
             {
-                if(interactionType.equalsIgnoreCase("asteroid"))
+                if(interactionTarget instanceof AsteroidAPI)
                 {
                     playerFleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource, ExerelinConfig.miningAmountPerDayPerMiner*miningPower);
-                    Global.getSector().addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.asteroidMiningResource, Color.green);
+                    Global.getSector().getCampaignUI().addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.asteroidMiningResource, Color.green);
                     System.out.println("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.asteroidMiningResource);
+                    Global.getSector().getPlayerFleet().getCommanderStats().addXP(400);
                 }
-                else if(interactionType.equalsIgnoreCase("gasgiant"))
+                else if(interactionTarget instanceof PlanetAPI && ((PlanetAPI)interactionTarget).isGasGiant())
                 {
                     playerFleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.gasgiantMiningResource, ExerelinConfig.miningAmountPerDayPerMiner*miningPower);
-                    Global.getSector().addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.gasgiantMiningResource, Color.green);
+                    Global.getSector().getCampaignUI().addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.gasgiantMiningResource, Color.green);
                     System.out.println("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.gasgiantMiningResource);
+                    Global.getSector().getPlayerFleet().getCommanderStats().addXP(400);
                 }
-                Global.getSector().getPlayerFleet().getCommanderStats().addXP(400);
                 Global.getSector().getPlayerFleet().getCommanderStats().levelUpIfNeeded();
             }
         }
@@ -804,7 +791,7 @@ public class ExerelinUtils
 		CargoAPI cargo = storageFacility.getCargo();
 		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "agent", 2);
 		cargo.addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 2);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "mining_drone_wing", null);
+        cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, "mining_drone_wing"));
 	}
 
     public static void addEliteShipToFleet(CampaignFleetAPI fleet)
@@ -885,7 +872,7 @@ public class ExerelinUtils
     }
 
     // Play out a station boarding attempt
-    // Returns true if board successful, flase if not
+    // Returns true if board successful, false if not
     // Subsequent code must handle any station ownership changes etc.
     public static boolean boardStationAttempt(CampaignFleetAPI fleet, SectorEntityToken station, Boolean playerFleet, Boolean resetCargo)
     {
@@ -916,12 +903,12 @@ public class ExerelinUtils
         {
             if(fleet.getCargo().getMarines() > marinesAttacking)
             {
-                Global.getSector().addMessage("Your fleet lost " + (fleet.getCargo().getMarines() - marinesAttacking) + " marines assualting the station", Color.green);
+                Global.getSector().getCampaignUI().addMessage("Your fleet lost " + (fleet.getCargo().getMarines() - marinesAttacking) + " marines assualting the station", Color.green);
                 System.out.println("Your fleet lost " + (fleet.getCargo().getMarines() - marinesAttacking) + " marines assualting the station");
             }
             if(marinesDefending <= 0)
             {
-                Global.getSector().addMessage("Your fleet successfully boarded " + station.getName(), Color.green);
+                Global.getSector().getCampaignUI().addMessage("Your fleet successfully boarded " + station.getName(), Color.green);
                 System.out.println("Your fleet successfully boarded " + station.getName());
             }
         }
@@ -957,7 +944,7 @@ public class ExerelinUtils
 
                 if(playerFleet)
                 {
-                    Global.getSector().addMessage("Your fleet has failed to capture station and has suffered extensive losses", Color.green);
+                    Global.getSector().getCampaignUI().addMessage("Your fleet has failed to capture station and has suffered extensive losses", Color.green);
                     System.out.println("Your fleet has failed to capture station and has suffered extensive losses");
                 }
             }
@@ -1083,25 +1070,20 @@ public class ExerelinUtils
     public static void addFreightersToFleet(CampaignFleetAPI fleet)
     {
         CampaignFleetAPI dummyFleet = Global.getSector().createFleet(fleet.getFaction().getId(), "exerelinInSystemSupplyConvoy");
+        int targetFleetSize;
 
         if(fleet.getFleetData().getFleetPointsUsed() < 40)
-        {
-            dummyFleet.getFleetData().removeFleetMember((FleetMemberAPI)dummyFleet.getFleetData().getMembersListCopy().get(0));
-            dummyFleet.getFleetData().removeFleetMember((FleetMemberAPI)dummyFleet.getFleetData().getMembersListCopy().get(0));
-
-            mergeFleets(fleet, dummyFleet);
-        }
+            targetFleetSize = 1;
         else if(fleet.getFleetData().getFleetPointsUsed() < 90)
-        {
+            targetFleetSize = 2;
+        else
+            targetFleetSize = 3;
+
+        while(dummyFleet.getFleetData().getMembersListCopy().size() > targetFleetSize)
             dummyFleet.getFleetData().removeFleetMember((FleetMemberAPI)dummyFleet.getFleetData().getMembersListCopy().get(0));
 
-            mergeFleets(fleet, dummyFleet);
-        }
-        else
-        {
-            mergeFleets(fleet, dummyFleet);
-        }
-    }
+        mergeFleets(fleet, dummyFleet);
+}
 
     public static boolean isPlayerInSystem(StarSystemAPI starSystemAPI)
     {
