@@ -293,6 +293,13 @@ public class StationRecord
 		if(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 1600*resourceMultiplier)
             SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "regular_crew", CargoAPI.CargoItemType.RESOURCES, (int) (400 * efficiency)));
 
+        if(stationCargo.getCrew(CargoAPI.CrewXPLevel.GREEN) < 950)
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "green_crew", CargoAPI.CargoItemType.RESOURCES, 20));
+        if(stationCargo.getCrew(CargoAPI.CrewXPLevel.VETERAN) < 950)
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "veteran_crew", CargoAPI.CargoItemType.RESOURCES, 20));
+        if(stationCargo.getCrew(CargoAPI.CrewXPLevel.ELITE) < 950)
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "elite_crew", CargoAPI.CargoItemType.RESOURCES, 20));
+
 		if(planetType.equalsIgnoreCase("gas") && stationCargo.getFuel() < 3200*resourceMultiplier)
             SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "fuel", CargoAPI.CargoItemType.RESOURCES, 200 * efficiency)); // Halved due to mining fleets
 		if(planetType.equalsIgnoreCase("moon") && stationCargo.getSupplies() < 12800*resourceMultiplier)
@@ -325,9 +332,9 @@ public class StationRecord
 	// Clear cargo and ships from station
 	public void clearCargo()
 	{
-		stationCargo.clear();
 		ExerelinUtils.removeRandomWeaponStacksFromCargo(stationCargo,  9999);
 		ExerelinUtils.removeRandomShipsFromCargo(stationCargo,  9999);
+        stationCargo.clear();
 	}
 
 
