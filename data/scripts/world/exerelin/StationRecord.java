@@ -113,7 +113,7 @@ public class StationRecord
 		owningFaction = ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRecordForFaction(newOwnerFactionId);
 
 		if(newOwnerFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-			stationToken.getCargo().setFreeTransfer(ExerelinData.getInstance().playerOwnedStationFreeTransfer);
+			stationToken.getCargo().setFreeTransfer(ExerelinConfig.playerFactionFreeTransfer);
 		else
 			stationToken.getCargo().setFreeTransfer(false);
 
