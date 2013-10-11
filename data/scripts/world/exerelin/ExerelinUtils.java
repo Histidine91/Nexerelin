@@ -859,14 +859,14 @@ public class ExerelinUtils
             if(!SectorManager.getCurrentSectorManager().isFactionInSector(ExerelinData.getInstance().getPlayerFaction()))
             {
                 // First station takeover so also remove extra transport
-                ExerelinUtils.removeShipsFromFleet(playerFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
+                ExerelinUtils.removeShipsFromFleet(playerFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false, false);
                 ExerelinUtils.resetFleetCargoToDefaults(playerFleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(playerFleet.getFaction().getId()));
             }
             systemManager.setStationOwner(possibleBoardTarget, ExerelinData.getInstance().getPlayerFaction(), true, true);
         }
     }
 
-    public static void removeShipsFromFleet(CampaignFleetAPI fleet, String[] shipTypes, Boolean limitToOneRemove)
+    public static void removeShipsFromFleet(CampaignFleetAPI fleet, String[] shipTypes, Boolean limitToOneRemove, boolean destructionFlash)
     {
         List members = fleet.getFleetData().getMembersListCopy();
 
@@ -876,7 +876,10 @@ public class ExerelinUtils
             {
                 if(((FleetMemberAPI)members.get(j)).getSpecId().contains(shipTypes[i]))
                 {
-                    fleet.getFleetData().removeFleetMember((FleetMemberAPI)members.get((j)));
+                    if(destructionFlash)
+                        fleet.removeFleetMemberWithDestructionFlash((FleetMemberAPI)members.get((j)));
+                    else
+                        fleet.getFleetData().removeFleetMember((FleetMemberAPI) members.get((j)));
                     if(limitToOneRemove)
                         return;
                 }
@@ -935,7 +938,7 @@ public class ExerelinUtils
         if(marinesDefending <= 0)
         {
             // Attackers won
-            ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships(), true);
+            ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships(), true, false);
             if(resetCargo)
                 ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
             else
@@ -948,8 +951,8 @@ public class ExerelinUtils
             if(fleet.getCargo().getMarines() <= 0)
             {
                 // Defenders total win
-                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships(), true);
-                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
+                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships(), true, true);
+                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidTroopTransportShips(), false, true);
                 if(resetCargo)
                     ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
                 else
