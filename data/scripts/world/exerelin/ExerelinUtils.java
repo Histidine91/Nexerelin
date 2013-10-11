@@ -892,6 +892,8 @@ public class ExerelinUtils
     // Subsequent code must handle any station ownership changes etc.
     public static boolean boardStationAttempt(CampaignFleetAPI fleet, SectorEntityToken station, Boolean playerFleet, Boolean resetCargo)
     {
+        final int NORMAL_DICE_ROLL_MAX = 12;
+
         int marinesDefending = station.getCargo().getMarines();
         int marinesAttacking = fleet.getCargo().getMarines();
 
@@ -902,13 +904,18 @@ public class ExerelinUtils
 
         while(marinesDefending > 0 && marinesAttacking > 0)
         {
-            int attackRoll = ExerelinUtils.getRandomInRange(1, 12);
-            int defendRoll = ExerelinUtils.getRandomInRange(1, 12);
+            int attackRoll = 0;
+            if(fleet.getCommanderStats().getSkillLevel("advanced_tactics") > 5 )
+                attackRoll = ExerelinUtils.getRandomInRange(1, NORMAL_DICE_ROLL_MAX*2);
+            else
+                attackRoll = ExerelinUtils.getRandomInRange(1, NORMAL_DICE_ROLL_MAX);
+
+            int defendRoll = ExerelinUtils.getRandomInRange(1, NORMAL_DICE_ROLL_MAX);
 
             if(attackRoll > defendRoll)
                 marinesDefending = marinesDefending - (attackRoll - defendRoll);
             else
-                marinesAttacking = marinesAttacking - (defendRoll - attackRoll);
+                marinesAttacking = marinesAttacking - ((defendRoll - attackRoll) + 1);
 
             if(ExerelinUtils.getRandomInRange(0, 30) == 0)
                 break;
