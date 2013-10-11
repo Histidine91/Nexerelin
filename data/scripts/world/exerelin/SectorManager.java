@@ -312,9 +312,9 @@ public class SectorManager
 		if(ExerelinConfig.playerBaseWage > 0)
 		{
 			if(this.getDiplomacyManager().getRecordForFaction(this.playerFactionId).isAtWar())
-				Global.getSector().getPlayerFleet().getCargo().getCredits().add(ExerelinConfig.playerBaseWage);
-			else
 				Global.getSector().getPlayerFleet().getCargo().getCredits().add(ExerelinConfig.playerBaseWage*2);
+			else
+				Global.getSector().getPlayerFleet().getCargo().getCredits().add(ExerelinConfig.playerBaseWage);
 			Global.getSector().getCampaignUI().addMessage("Wages Paid", Color.green);
 		}
 	}
