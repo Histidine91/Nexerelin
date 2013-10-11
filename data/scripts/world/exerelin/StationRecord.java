@@ -5,8 +5,8 @@ import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.BaseSpawnPoint;
 import data.scripts.world.exerelin.commandQueue.CommandAddCargo;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
-import org.lazywizard.lazylib.MathUtils;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
+import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -20,7 +20,6 @@ public class StationRecord
 	private String planetType;
 	private DiplomacyRecord owningFaction;
 	private Float efficiency = 1f;
-	private StarSystemAPI system;
 
 	private int numStationsTargeting;
     private Boolean isBeingBoarded;
@@ -43,10 +42,8 @@ public class StationRecord
     private AsteroidMiningFleetSpawnPoint asteroidMiningFleetSpawnPoint2;
     private GasMiningFleetSpawnPoint gasMiningFleetSpawnPoint2;
 
-	public StationRecord(SectorAPI sector, StarSystemAPI inSystem, SystemStationManager manager, SectorEntityToken token)
+	public StationRecord(SectorAPI sector, StarSystemAPI system, SystemStationManager manager, SectorEntityToken token)
 	{
-		system = inSystem;
-
 		stationToken = token;
 		stationCargo = token.getCargo();
 		planetType = this.derivePlanetType(token);
@@ -345,7 +342,7 @@ public class StationRecord
 		StationRecord bestTarget = null;
 
         SystemStationManager targetSystemStationManager;
-        if(!ExerelinUtils.doesSystemHaveEntityForFaction(this.system, this.owningFaction.getFactionId(), -100000f, -0.01f))
+        if(!ExerelinUtils.doesSystemHaveEntityForFaction((StarSystemAPI)this.stationToken.getContainingLocation(), this.owningFaction.getFactionId(), -100000f, -0.01f))
         {
             FactionDirector factionDirector = FactionDirector.getFactionDirectorForFactionId(this.owningFaction.getFactionId());
             if(factionDirector.getTargetSystem() != null)
@@ -445,7 +442,7 @@ public class StationRecord
 
 	private void deriveClosestAsteroid()
 	{
-		List asteroids = system.getAsteroids();
+		List asteroids = ((StarSystemAPI)this.stationToken.getContainingLocation()).getAsteroids();
 		SectorEntityToken closestAsteroid = null;
 		float closestDistance = 999999999f;
 
@@ -470,7 +467,7 @@ public class StationRecord
 
 	private void deriveClosestGasGiant()
 	{
-		List planets = system.getPlanets();
+		List planets = ((StarSystemAPI)this.stationToken.getContainingLocation()).getPlanets();
 		SectorEntityToken closestPlanet = null;
 		float closestDistance = 999999999f;
 
