@@ -55,10 +55,19 @@ public class SystemStationManager
     // Run in conjunction with updateStationFleets
     public void deriveStationTargets()
     {
-        if(stationRecords.length == 0 || nextStationRecord == stationRecords.length)
+        int localNextStationRecord = this.nextStationRecord;
+
+        if(stationRecords.length == 0 || localNextStationRecord == stationRecords.length)
             return;
 
-        stationRecords[nextStationRecord].deriveTargets();
+        // If the current station doesn't need updating, advance till we find one that does
+        while(localNextStationRecord != stationRecords.length && stationRecords[localNextStationRecord].getOwner() == null)
+            localNextStationRecord++;
+
+        if(localNextStationRecord == stationRecords.length)
+            return;
+
+        stationRecords[localNextStationRecord].deriveTargets();
     }
 
 	// Each call will update a station and move the counter to the next station
@@ -72,6 +81,16 @@ public class SystemStationManager
 			setFactionStationCount();
 			nextStationRecord = 0;
 		}
+
+        // If the current station doesn't need updating, advance till we find one that does
+        while(nextStationRecord != stationRecords.length && stationRecords[nextStationRecord].getOwner() == null)
+            nextStationRecord++;
+
+        if(nextStationRecord == stationRecords.length)
+        {
+            setFactionStationCount();
+            nextStationRecord = 0;
+        }
 
 		if(stationRecords[nextStationRecord].getOwner() != null)
 		{

@@ -71,6 +71,7 @@ public final class ExerelinData
     public static void resetInstance()
     {
         instance = new ExerelinData();
+        ExerelinConfig.loadSettings();
     }
 
 	public String getPlayerFaction()

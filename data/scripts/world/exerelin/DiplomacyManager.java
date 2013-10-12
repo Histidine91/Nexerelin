@@ -699,7 +699,7 @@ public class DiplomacyManager
 	{
 		for(int i = 0; i < SectorManager.getCurrentSectorManager().getSystemManagers().length; i++)
 		{
-			if(this.getRecordForFaction(factionId).hasWarTargetInSystem(SectorManager.getCurrentSectorManager().getSystemManagers()[i].getStarSystemAPI(), false))
+			if(this.getRecordForFaction(factionId).isAtWar())
 				return;
 		}
 

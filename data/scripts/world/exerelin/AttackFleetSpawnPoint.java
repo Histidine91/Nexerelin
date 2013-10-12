@@ -106,7 +106,7 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 	private void setFleetAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
-		if(stationTarget == null)
+		if(stationTarget == null || stationTarget.getOwner() == null)
 		{
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
 		}

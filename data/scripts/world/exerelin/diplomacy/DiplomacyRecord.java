@@ -2,14 +2,10 @@ package data.scripts.world.exerelin.diplomacy;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
-import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.ExerelinUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /*	This class is used to store a finer grained faction relationship
 	with other factions.
@@ -128,23 +124,9 @@ public class DiplomacyRecord
 		return factionId;
 	}
 
-	public Boolean hasWarTargetInSystem(StarSystemAPI starSystemAPI, Boolean includeAbandoned)
+	public Boolean isAtWar()
 	{
-        List stations = starSystemAPI.getOrbitalStations();
-        for(int i = 0; i < stations.size(); i = i + 1)
-        {
-            SectorEntityToken station = (SectorEntityToken)stations.get(i);
-
-            if(station.getFaction().getId().equalsIgnoreCase(this.factionId)
-                || (station.getFaction().getId().equalsIgnoreCase("abandoned") && !includeAbandoned)
-                || ExerelinUtils.doesStringArrayContainValue(station.getFaction().getId(), ExerelinConfig.neutralFactions, false))
-                continue;
-
-            if(Global.getSector().getFaction(this.getFactionId()).getRelationship(station.getFaction().getId()) < 0)
-                return true;
-        }
-
-        return false;
+        return this.getEnemyFactions().length > 0;
 	}
 
 	public int updateWarWeariness(Boolean atWar)

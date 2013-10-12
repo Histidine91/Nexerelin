@@ -59,8 +59,8 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 
 		CampaignFleetAPI fleet = getSector().createFleet(fleetOwningFactionId, type);
 
-	    DiplomacyRecord diplomacyRecord = ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRecordForFaction(fleetOwningFactionId);
-	    if (diplomacyRecord.hasWarTargetInSystem((StarSystemAPI)getLocation(), false))
+	    DiplomacyRecord diplomacyRecord = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(fleetOwningFactionId);
+	    if (diplomacyRecord.isAtWar())
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 3, 5, fleetOwningFactionId, getSector());
 	    else
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 1, 2, fleetOwningFactionId, getSector());
@@ -170,8 +170,8 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					cargo.addFuel(80);
 					cargo.addMarines(40);
 					cargo.addSupplies(320);
-                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidBoardingFlagships(), true);
-                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
+                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidBoardingFlagships(), true, false);
+                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false, false);
                     ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleetOwningFactionId));
 				}
 				else if(stationTarget == null || (stationTarget.getOwner() != null && stationTarget.getOwner().getGameRelationship(theFleet.getFaction().getId()) >= 0))
@@ -186,7 +186,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					// Else, take over station
 					stationTarget.setOwner(theFleet.getFaction().getId(), true, true);
 					stationTarget.clearCargo();
-                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
+                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false, false);
                     ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(theFleet.getFaction().getId()));
 				}
 			}

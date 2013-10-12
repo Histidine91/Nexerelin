@@ -38,6 +38,10 @@ public class ExerelinConfig
     public static String fleetCostResource = "supplies";
     public static int miningAmountPerDayPerMiner = 50;
 
+    // Player settings
+    public static int playerBaseWage = 1000;
+    public static boolean playerFactionFreeTransfer = false;
+
     public static void loadSettings()
     {
         try
@@ -66,6 +70,9 @@ public class ExerelinConfig
             gasgiantMiningResource = settings.getString("gasgiantMiningResource");
             fleetCostResource = settings.getString("fleetCostResource");
             miningAmountPerDayPerMiner = settings.getInt("miningAmountPerDayPerMiner");
+
+            playerBaseWage = settings.getInt("playerBaseWage");
+            playerFactionFreeTransfer = settings.getBoolean("playerFactionFreeTransfer");
         }
         catch(Exception e)
         {
