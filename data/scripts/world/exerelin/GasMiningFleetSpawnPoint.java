@@ -56,6 +56,7 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 		// Create fleet
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
 		fleet.setName("Gas Mining Fleet");
+        fleet.getCommander().setPersonality("cautious");
 		theFleet = fleet;
 
 		fleet.setPreferredResupplyLocation(getAnchor());

@@ -87,7 +87,7 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 			    fleet.setPreferredResupplyLocation(getAnchor());
             else
                 fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(this.ownerFactionId).getTargetResupplyEntityToken());
-
+            fleet.getCommander().setPersonality("aggressive");
 			setFleetAssignments(fleet);
 
             this.getFleets().add(fleet);

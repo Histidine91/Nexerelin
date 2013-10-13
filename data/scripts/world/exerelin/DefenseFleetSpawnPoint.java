@@ -64,7 +64,7 @@ public class DefenseFleetSpawnPoint extends BaseSpawnPoint
             ExerelinUtilsFleet.sortByHullSize(fleet);
 
 			fleet.setPreferredResupplyLocation(getAnchor());
-
+            fleet.getCommander().setPersonality("cautious");
 			setFleetAssignments(fleet);
 
             this.getFleets().add(fleet);
