@@ -86,7 +86,7 @@ public class ExerelinUtilsPlayer {
     public static boolean getPlayerSabateurAvailability()
     {
         MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
-        return (playerStatsAPI.getSkillLevel("active_diplomacy") >= 5);
+        return (playerStatsAPI.getSkillLevel("active_diplomacy") >= 3);
     }
 
     public static float getPlayerDiplomacyObjectReuseChance()
