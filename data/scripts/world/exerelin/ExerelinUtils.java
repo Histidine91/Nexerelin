@@ -68,7 +68,12 @@ public class ExerelinUtils
 		int edge = ExerelinUtils.getRandomInRange(0, 3);
 		int x = 0;
 		int y = 0;
-		int maxSize = ExerelinData.getInstance().getSectorManager().getMaxSystemSize();
+		int maxSize = 0; //ExerelinData.getInstance().getSectorManager().getMaxSystemSize();
+        if(SectorManager.getCurrentSectorManager() == null) //TODO - Fix when rework is complete or 'frame advance running before onGameLoad' bug is fixed
+            maxSize = 17000;
+        else
+            ExerelinData.getInstance().getSectorManager().getMaxSystemSize();
+
 		int negativeMaxSize = -1 * maxSize;
 
 		if(edge == 0)
@@ -388,7 +393,7 @@ public class ExerelinUtils
 				fleetTypeName = "Advance Force";
 			else if (fleetSize < 90)
 				fleetTypeName = "Strike Force";
-			else if (fleetSize > 90)
+			else
 				fleetTypeName = "Crusaders";
 		}
 		else if(type.equalsIgnoreCase("defense"))
@@ -397,7 +402,7 @@ public class ExerelinUtils
 				fleetTypeName = "Watch Fleet";
 			else if (fleetSize < 90)
 				fleetTypeName = "Guard Fleet";
-			else if (fleetSize > 90)
+			else
 				fleetTypeName = "Sentinels";
 		}
 		else if(type.equalsIgnoreCase("patrol"))
@@ -406,7 +411,7 @@ public class ExerelinUtils
 				fleetTypeName = "Recon Patrol";
 			else if (fleetSize < 90)
 				fleetTypeName = "Ranger Patrol";
-			else if (fleetSize > 90)
+			else
 				fleetTypeName = "Wayfarers";
 		}
 		else
@@ -762,7 +767,14 @@ public class ExerelinUtils
         if(!ExerelinUtils.isValidMiningFleet(playerFleet))
             return; // Not a mining fleet
 
-        if(MathUtils.getDistanceSquared(interactionTarget.getLocation(), playerFleet.getLocation()) < 1500)
+        int distanceAllowable = 0;
+        if(interactionTarget instanceof AsteroidAPI)
+            distanceAllowable = 1500;
+        else if(interactionTarget instanceof PlanetAPI)
+            distanceAllowable = 7000;
+
+
+        if(MathUtils.getDistanceSquared(interactionTarget.getLocation(), playerFleet.getLocation()) < distanceAllowable)
         {
             int miningPower = getMiningPower(playerFleet);
             if(miningPower > 0)
