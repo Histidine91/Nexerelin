@@ -67,6 +67,17 @@ public class EventRebelFleetSpawn extends EventBase
             rebelFleetPoints -= member.getFleetPointCost();
         }
 
+        // Cap rabel fleet size at 6 as we don't want rebels to take over the system
+        if(newRebelFleet.getFleetData().getMembersListCopy().size() > 6)
+        {
+            for(int i = 0; i < newRebelFleet.getFleetData().getMembersListCopy().size() - 6; i++)
+            {
+                List rebelFleetMembers = newRebelFleet.getFleetData().getMembersListCopy();
+                FleetMemberAPI member = (FleetMemberAPI)rebelFleetMembers.get(ExerelinUtils.getRandomInRange(0, rebelFleetMembers.size() - 1));
+                newRebelFleet.getFleetData().removeFleetMember(member);
+            }
+        }
+
         // Add cargo ships if this fleet has capital or cruiser class ships, or 33% of the time for smaller fleets
         if (newRebelFleet.getNumCapitals() > 0 || newRebelFleet.getNumCruisers() > 0 || (ExerelinUtils.getRandomInRange(0, 2) == 0 ))
             ExerelinUtils.addFreightersToFleet(newRebelFleet);
