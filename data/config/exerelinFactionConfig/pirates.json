@@ -1,0 +1,20 @@
+{
+    "stationInteriorIllustrationKeys":["hound_hangar"], # String array
+
+    "crewExpereinceLevelIncreaseChance":0.5, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":0.5, # Double, 0 - 1.0
+
+    "rebelFleetSuffix":"Outlaws", # String
+
+    "smallAttackFleetName":"Raider", # String
+    "mediumAttackFleetName":"Invader Fleet", # String
+    "largeAttackFleetName":"Marauders", # String
+
+    "smallDefenceFleetName":"Picket Defense", # String
+    "mediumDefenceFleetName":"Defense Fleet", # String
+    "largeDefenceFleetName":"Hideout Defense Fleet", # String
+
+    "smallPatrolFleetName":"Lookout Fleet", # String
+    "mediumPatrolFleetName":"Bandit Patrol", # String
+    "largePatrolFleetName":"Corsairs", # String
+}

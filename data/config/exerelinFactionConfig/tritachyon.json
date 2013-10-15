@@ -1,0 +1,20 @@
+{
+    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double, 0 - 1.0
+
+    "rebelFleetSuffix":"Splinter Group", # String
+
+    "smallAttackFleetName":"Scout", # String
+    "mediumAttackFleetName":"Invader Fleet", # String
+    "largeAttackFleetName":"Armada", # String
+
+    "smallDefenceFleetName":"Picket Defense", # String
+    "mediumDefenceFleetName":"Shield Fleet", # String
+    "largeDefenceFleetName":"Sentinels", # String
+
+    "smallPatrolFleetName":"Lookout Fleet", # String
+    "mediumPatrolFleetName":"Warden Patrol", # String
+    "largePatrolFleetName":"Flotilla", # String
+}

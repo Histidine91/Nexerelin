@@ -1,0 +1,20 @@
+{
+    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+
+    "crewExpereinceLevelIncreaseChance":0.5, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":4.0, # Double
+
+    "rebelFleetSuffix":"Dissenters", # String
+
+    "smallAttackFleetName":"Scout", # String
+    "mediumAttackFleetName":"Invader Fleet", # String
+    "largeAttackFleetName":"Crusaders", # String
+
+    "smallDefenceFleetName":"Picket Defense", # String
+    "mediumDefenceFleetName":"Guard Fleet", # String
+    "largeDefenceFleetName":"Sentinels", # String
+
+    "smallPatrolFleetName":"Patrol", # String
+    "mediumPatrolFleetName":"Warden Patrol", # String
+    "largePatrolFleetName":"Wayfarers", # String
+}

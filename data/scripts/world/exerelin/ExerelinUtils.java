@@ -219,10 +219,14 @@ public class ExerelinUtils
 
 	private static int getFleetCost(CampaignFleetAPI fleet)
 	{
-		float fleetCostMult = 1f;
+		float fleetCostMult = (float)ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).baseFleetCostMultiplier;
 
         if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-            fleetCostMult = ExerelinUtilsPlayer.getPlayerFleetCostMultiplier();
+        {
+            float playerFleetCostMult = ExerelinUtilsPlayer.getPlayerFleetCostMultiplier();
+            fleetCostMult = Math.max(playerFleetCostMult, fleetCostMult);
+            fleetCostMult = fleetCostMult - ((Math.max(playerFleetCostMult, fleetCostMult) - Math.min(playerFleetCostMult, fleetCostMult))/2);
+        }
 
 		float fleetCost = 0f;
 		float mult;
@@ -390,29 +394,29 @@ public class ExerelinUtils
 		if(type.equalsIgnoreCase("attack"))
 		{
 			if(fleetSize < 40)
-				fleetTypeName = "Advance Force";
+				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).smallAttackFleetName;
 			else if (fleetSize < 90)
-				fleetTypeName = "Strike Force";
+				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).mediumAttackFleetName;
 			else
-				fleetTypeName = "Crusaders";
+				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).largeAttackFleetName;
 		}
 		else if(type.equalsIgnoreCase("defense"))
 		{
 			if(fleetSize < 40)
-				fleetTypeName = "Watch Fleet";
+				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).smallDefenceFleetName;
 			else if (fleetSize < 90)
-				fleetTypeName = "Guard Fleet";
+				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).mediumDefenceFleetName;
 			else
-				fleetTypeName = "Sentinels";
+				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).largeDefenceFleetName;
 		}
 		else if(type.equalsIgnoreCase("patrol"))
 		{
 			if(fleetSize < 40)
-				fleetTypeName = "Recon Patrol";
+				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).smallPatrolFleetName;
 			else if (fleetSize < 90)
-				fleetTypeName = "Ranger Patrol";
+				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).mediumPatrolFleetName;
 			else
-				fleetTypeName = "Wayfarers";
+				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).largePatrolFleetName;
 		}
 		else
 		{
@@ -996,8 +1000,13 @@ public class ExerelinUtils
     {
         if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
         {
-            float crewUpgradeChance = ExerelinUtilsPlayer.getPlayerFactionFleetCrewExperienceBonus();
+            float crewUpgradeChance = ExerelinUtilsPlayer.getPlayerFactionFleetCrewExperienceBonus() + (float)ExerelinConfig.getExerelinFactionConfig(factionId).crewExpereinceLevelIncreaseChance;
             if(ExerelinUtils.getRandomInRange(0, 99) <= -1 + crewUpgradeChance*100)
+                return CargoAPI.CrewXPLevel.VETERAN;
+        }
+        else if(ExerelinConfig.getExerelinFactionConfig(factionId).crewExpereinceLevelIncreaseChance > 0)
+        {
+            if(ExerelinUtils.getRandomInRange(0, 99) <= -1 + ExerelinConfig.getExerelinFactionConfig(factionId).crewExpereinceLevelIncreaseChance*100)
                 return CargoAPI.CrewXPLevel.VETERAN;
         }
 

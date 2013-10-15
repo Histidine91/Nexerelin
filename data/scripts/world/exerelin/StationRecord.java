@@ -7,6 +7,7 @@ import data.scripts.world.exerelin.commandQueue.CommandAddCargo;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import org.lazywizard.lazylib.MathUtils;
+import com.fs.starfarer.api.InteractionDialogImageVisual;
 
 import java.awt.*;
 import java.util.List;
@@ -96,6 +97,7 @@ public class StationRecord
 		}
 
 		stationToken.setFaction(newOwnerFactionId);
+        stationToken.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).stationInteriorIllustrationKeys[0], 640, 400));
 
 		attackSpawn.setFaction(newOwnerFactionId);
 		defenseSpawn.setFaction(newOwnerFactionId);

@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import data.scripts.world.exerelin.commandQueue.CommandSpawnPrebuiltFleet;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 import java.awt.*;
@@ -86,7 +87,7 @@ public class EventRebelFleetSpawn extends EventBase
         ExerelinUtilsFleet.sortByHullSize(newRebelFleet);
 
         newRebelFleet.setFaction(rebelFAPI.getId());
-        newRebelFleet.setName("Dissenter Fleet");
+        newRebelFleet.setName(ExerelinConfig.getExerelinFactionConfig(factionLeaderId).rebelFleetSuffix);
 
         // Make rebel fleets more willing to engage in combat
         if(((FleetMemberAPI)newRebelFleet.getFleetData().getMembersListCopy().get(0)).getHullSpec().getHullSize().compareTo(ShipAPI.HullSize.DESTROYER) >= 0)

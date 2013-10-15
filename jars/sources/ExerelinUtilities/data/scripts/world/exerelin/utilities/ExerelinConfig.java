@@ -1,7 +1,10 @@
 package data.scripts.world.exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import org.json.JSONObject;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ExerelinConfig
 {
@@ -10,6 +13,7 @@ public class ExerelinConfig
 
     // Factions classed as neutral for relationship calculations
     public static String[] neutralFactions = new String[]{"neutral", "independent"};
+    public static List<ExerelinFactionConfig> exerelinFactionConfigs;
 
     // Threading support for improving/smoothing performance
     public static boolean enableThreading = true;
@@ -80,5 +84,36 @@ public class ExerelinConfig
         {
             System.out.println("EXERELIN ERROR: Unable to load settings: " + e.getMessage());
         }
+
+        // Reset and load faction configuration data
+        if(ExerelinConfig.exerelinFactionConfigs != null)
+            ExerelinConfig.exerelinFactionConfigs.clear();
+        ExerelinConfig.exerelinFactionConfigs = new ArrayList<ExerelinFactionConfig>();
+
+        // If sector has loaded populate faction configs
+        if(Global.getSector() != null)
+        {
+            List<FactionAPI> factions = Global.getSector().getAllFactions();
+            for(FactionAPI faction : factions)
+            {
+                if(!faction.getId().equalsIgnoreCase("independent")
+                    && !faction.getId().equalsIgnoreCase("abandoned")
+                    && !faction.getId().equalsIgnoreCase("player")
+                    && !faction.getId().equalsIgnoreCase("neutral")
+                    && !faction.getId().equalsIgnoreCase("rebel"))
+                ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(faction.getId()));
+            }
+        }
+    }
+
+    public static ExerelinFactionConfig getExerelinFactionConfig(String factionId)
+    {
+        for(ExerelinFactionConfig exerelinFactionConfig : exerelinFactionConfigs)
+        {
+            if(exerelinFactionConfig.factionId.equalsIgnoreCase(factionId))
+                return exerelinFactionConfig;
+        }
+
+        return null;
     }
 }
