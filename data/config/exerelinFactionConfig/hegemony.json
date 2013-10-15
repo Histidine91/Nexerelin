@@ -2,7 +2,7 @@
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
 
     "rebelFleetSuffix":"Traitors", # String
 

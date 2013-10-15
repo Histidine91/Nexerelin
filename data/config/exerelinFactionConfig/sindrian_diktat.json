@@ -1,8 +1,8 @@
 {
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
-    "crewExpereinceLevelIncreaseChance":0.5, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":4.0, # Double
+    "crewExpereinceLevelIncreaseChance":1.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
 
     "rebelFleetSuffix":"Dissenters", # String
 
