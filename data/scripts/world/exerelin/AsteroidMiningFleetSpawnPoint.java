@@ -60,7 +60,7 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
         fleet.getCommander().setPersonality("cautious");
 		theFleet = fleet;
 
-		fleet.setPreferredResupplyLocation(getAnchor());
+		fleet.setPreferredResupplyLocation(getAnchor().getOrbit().getFocus());
 
 		returningHome = false;
 		fleetCargoCapacity = getFleetCargoCapacity(fleet);

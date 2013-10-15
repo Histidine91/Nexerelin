@@ -74,9 +74,9 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 			theFleet = fleet;
 
             if(((StarSystemAPI)stationTarget.getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(this.fleetOwningFactionId).getTargetResupplyEntityToken() == null)
-                fleet.setPreferredResupplyLocation(getAnchor());
+                fleet.setPreferredResupplyLocation(getAnchor().getOrbit().getFocus());
             else
-                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(this.fleetOwningFactionId).getTargetResupplyEntityToken());
+                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(this.fleetOwningFactionId).getTargetResupplyEntityToken().getOrbit().getFocus());
 
             fleet.setName("Boarding Fleet");
 
@@ -105,9 +105,9 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, stationTarget.getStationToken(), 10);
 
             if(((StarSystemAPI)stationTarget.getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken() == null)
-                fleet.setPreferredResupplyLocation(getAnchor());
+                fleet.setPreferredResupplyLocation(getAnchor().getOrbit().getFocus());
             else
-                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken());
+                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken().getOrbit().getFocus());
 		}
 		else
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 10);

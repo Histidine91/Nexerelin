@@ -68,7 +68,7 @@ public class OutSystemStationAttackFleet
         if(ExerelinUtils.getRandomInRange(0,1) == 1)
           fleet.getCommander().setPersonality("aggressive");
 		theFleet = fleet;
-		fleet.setPreferredResupplyLocation(target);
+		fleet.setPreferredResupplyLocation(target.getOrbit().getFocus());
 
 		setFleetAssignments(fleet);
 
@@ -181,7 +181,7 @@ public class OutSystemStationAttackFleet
 
 					theTarget = newTarget;
 					setFleetAssignments(theFleet);
-                    theFleet.setPreferredResupplyLocation(newTarget);
+                    theFleet.setPreferredResupplyLocation(newTarget.getOrbit().getFocus());
 					return;
 				}
 

@@ -67,7 +67,7 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId));
             ExerelinUtilsFleet.sortByHullSize(fleet);
 
-			fleet.setPreferredResupplyLocation(getAnchor());
+			fleet.setPreferredResupplyLocation(getAnchor().getOrbit().getFocus());
 
 			if(defendStation != null)
 				setWarAssignments(fleet);
@@ -116,7 +116,7 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
             // Defend station
             fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, defendStation.getStationToken(), 1000);
             fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 100);
-            fleet.setPreferredResupplyLocation(getAnchor());
+            fleet.setPreferredResupplyLocation(getAnchor().getOrbit().getFocus());
         }
         /*else if (action == 1 && defendStation.getTargetStationRecord() != null)
         {
@@ -133,7 +133,7 @@ public class PatrolFleetSpawnPoint extends BaseSpawnPoint
             else
                 fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation.getTargetStationRecord().getStationToken(), 1000);
             fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
-            fleet.setPreferredResupplyLocation(defendStation.getStationToken());
+            fleet.setPreferredResupplyLocation(defendStation.getStationToken().getOrbit().getFocus());
         }
 	}
 }

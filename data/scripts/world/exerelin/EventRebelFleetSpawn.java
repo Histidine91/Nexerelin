@@ -97,6 +97,9 @@ public class EventRebelFleetSpawn extends EventBase
 
         newRebelFleet.addAssignment(FleetAssignment.ATTACK_LOCATION, ExerelinUtils.getRandomStationInSystemForFaction(factionLeaderId, starSystemAPI), 90);
         newRebelFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, planet, 60);
+
+        newRebelFleet.setPreferredResupplyLocation(planet);
+
         //starSystemAPI.spawnFleet(planet, 0, 0, newRebelFleet);
         SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandSpawnPrebuiltFleet(planet, 0, 0, newRebelFleet));
         //System.out.println("EVENT: Spawned rebel fleet in " + starSystemAPI.getName());

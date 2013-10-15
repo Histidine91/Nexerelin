@@ -39,7 +39,7 @@ public class OutSystemStationConstructionFleet
         fleet.getCommander().setPersonality("cautious");
 		theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
 		theFleet = fleet;
-		fleet.setPreferredResupplyLocation(theTarget);
+		fleet.setPreferredResupplyLocation(theTarget.getOrbit().getFocus());
 
 		Script arriveScript = createArrivedScript();
 

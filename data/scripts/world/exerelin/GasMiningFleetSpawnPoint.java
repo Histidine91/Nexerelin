@@ -59,7 +59,7 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
         fleet.getCommander().setPersonality("cautious");
 		theFleet = fleet;
 
-		fleet.setPreferredResupplyLocation(getAnchor());
+		fleet.setPreferredResupplyLocation(getAnchor().getOrbit().getFocus());
 
 		returningHome = false;
 		fleetFuelCapacity = getFleetFuelCapacity(fleet);

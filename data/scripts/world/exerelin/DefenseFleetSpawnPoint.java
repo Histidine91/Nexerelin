@@ -63,7 +63,7 @@ public class DefenseFleetSpawnPoint extends BaseSpawnPoint
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId));
             ExerelinUtilsFleet.sortByHullSize(fleet);
 
-			fleet.setPreferredResupplyLocation(getAnchor());
+			fleet.setPreferredResupplyLocation(getAnchor().getOrbit().getFocus());
             fleet.getCommander().setPersonality("cautious");
 			setFleetAssignments(fleet);
 
