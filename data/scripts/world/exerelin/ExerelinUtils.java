@@ -524,7 +524,7 @@ public class ExerelinUtils
 		{
 			int memberToGet = ExerelinUtils.getRandomInRange(0, fleet.getFleetData().getMembersListCopy().size() - 1);
 			FleetMemberAPI fmAPI = (FleetMemberAPI)fleet.getFleetData().getMembersListCopy().get(memberToGet);
-			if(fmAPI.isCapital())
+			if(fmAPI.isCapital() && ExerelinConfig.reduceCapitalShipSaleChance)
 			{
 				// Get another one to reduce chance of capitals
 				memberToGet = ExerelinUtils.getRandomInRange(0, fleet.getFleetData().getMembersListCopy().size() - 1);
