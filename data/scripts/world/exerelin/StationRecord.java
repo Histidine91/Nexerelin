@@ -189,14 +189,14 @@ public class StationRecord
 		if(stationCargo.getSupplies() < (6400*resourceMultiplier))
         {
 			asteroidMiningFleetSpawnPoint.spawnFleet();
-            if(ExerelinUtilsPlayer.getPlayerDeployExtraMiningFleets())
+            if(ExerelinUtilsPlayer.getPlayerDeployExtraMiningFleets() || this.getEfficiency(true) > 1.8f)
                 asteroidMiningFleetSpawnPoint2.spawnFleet();
         }
 
 		if(stationCargo.getFuel() < (1600*resourceMultiplier))
         {
 			gasMiningFleetSpawnPoint.spawnFleet();
-            if(ExerelinUtilsPlayer.getPlayerDeployExtraMiningFleets())
+            if(ExerelinUtilsPlayer.getPlayerDeployExtraMiningFleets() || this.getEfficiency(true) > 1.8f)
                 gasMiningFleetSpawnPoint2.spawnFleet();
         }
 
