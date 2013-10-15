@@ -1,0 +1,20 @@
+{
+    "stationInteriorIllustrationKeys":["zorg_interior"], # String array
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
+
+    "rebelFleetSuffix":"Rogue Drones", # String
+
+    "smallAttackFleetName":"Scout", # String
+    "mediumAttackFleetName":"Subjection Force", # String
+    "largeAttackFleetName":"Assimilators", # String
+
+    "smallDefenceFleetName":"Oversight", # String
+    "mediumDefenceFleetName":"Containment Fleet", # String
+    "largeDefenceFleetName":"Regulators", # String
+
+    "smallPatrolFleetName":"Patrol", # String
+    "mediumPatrolFleetName":"Survey Fleet", # String
+    "largePatrolFleetName":"Prospectors", # String
+}
