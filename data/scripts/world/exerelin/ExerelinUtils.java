@@ -70,9 +70,9 @@ public class ExerelinUtils
 		int y = 0;
 		int maxSize = 0; //ExerelinData.getInstance().getSectorManager().getMaxSystemSize();
         if(SectorManager.getCurrentSectorManager() == null) //TODO - Fix when rework is complete or 'frame advance running before onGameLoad' bug is fixed
-            maxSize = 17000;
+            maxSize = 16000;
         else
-            ExerelinData.getInstance().getSectorManager().getMaxSystemSize();
+            maxSize = SectorManager.getCurrentSectorManager().getMaxSystemSize();
 
 		int negativeMaxSize = -1 * maxSize;
 
