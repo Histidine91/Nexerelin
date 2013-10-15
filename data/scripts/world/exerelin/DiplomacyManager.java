@@ -73,13 +73,13 @@ public class DiplomacyManager
 
 				if(previousGameRelationship >= 1)
 				{
-					System.out.println(ExerelinData.getInstance().getPlayerFaction() + " has betrayed " + f2API.getId());
-					sector.addMessage(ExerelinData.getInstance().getPlayerFaction() + " has betrayed " + f2API.getId(), Color.magenta);
+					System.out.println(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " has betrayed " + Global.getSector().getFaction(f2API.getId()).getDisplayName());
+					sector.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " has betrayed " + Global.getSector().getFaction(f2API.getId()).getDisplayName(), Color.magenta);
 				}
 				else if(previousGameRelationship >= 0)
 				{
-					System.out.println(ExerelinData.getInstance().getPlayerFaction() + " has broken treaty with " + f2API.getId());
-					sector.addMessage(ExerelinData.getInstance().getPlayerFaction() + " has broken treaty with " + f2API.getId(), Color.magenta);
+					System.out.println(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " has broken treaty with " + Global.getSector().getFaction(f2API.getId()).getDisplayName());
+					sector.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " has broken treaty with " + Global.getSector().getFaction(f2API.getId()).getDisplayName(), Color.magenta);
 				}
 
 				if(playerRecord.isInAlliance() && factionRecords[j].isInAlliance())
