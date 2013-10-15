@@ -224,8 +224,7 @@ public class ExerelinUtils
         if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
         {
             float playerFleetCostMult = ExerelinUtilsPlayer.getPlayerFleetCostMultiplier();
-            fleetCostMult = Math.max(playerFleetCostMult, fleetCostMult);
-            fleetCostMult = fleetCostMult - ((Math.max(playerFleetCostMult, fleetCostMult) - Math.min(playerFleetCostMult, fleetCostMult))/2);
+            fleetCostMult = playerFleetCostMult * fleetCostMult;
         }
 
 		float fleetCost = 0f;
@@ -261,28 +260,6 @@ public class ExerelinUtils
 	public static String getStationOwnerFactionId(SectorEntityToken stationToken)
 	{
         return stationToken.getFaction().getId();
-        /*
-		String stationName = stationToken.getFullName().toLowerCase();
-
-		if(stationName.contains("omnifactory"))
-			return "neutral";
-
-		if(stationName.contains("storage"))
-			return "neutral";
-
-		if(stationName.contains("abandoned"))
-			return "abandoned";
-
-		String[] factions = ExerelinData.getInstance().getAvailableFactions(Global.getSector());
-		for(int i = 0; i < factions.length; i = i + 1)
-		{
-			if(stationName.contains(factions[i].toLowerCase()))
-				return factions[i];
-		}
-
-		System.out.println("Couldn't derive faction for: " + stationToken.getFullName());
-		return "neutral"; // Do nothing
-		*/
 	}
 
 	public static SectorEntityToken getClosestEnemyStation(String targetingFaction, StarSystemAPI starSystemAPI, SectorAPI sector, SectorEntityToken anchor)
