@@ -395,7 +395,7 @@ public class SectorManager
                 sector.getPlayerFleet().setLocation(token.getLocation().getX(), token.getLocation().getY());
                 playerMovedToSpawnLocation = true;
             }
-            ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.1f, CargoAPI.CrewXPLevel.GREEN);
+            ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.0f, CargoAPI.CrewXPLevel.GREEN);
 		}
 
         if(Global.getSector().getPlayerFleet().getInteractionTarget() != null)
