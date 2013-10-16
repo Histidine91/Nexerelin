@@ -53,7 +53,7 @@ public class EventRebelFleetSpawn extends EventBase
         int rebelFleetPoints = newRebelFleet.getFleetPoints();
 
         // Remove best ships until we're closer to player fleet size
-        while(rebelFleetPoints > (playerFleetPoints * 5)){
+        while(rebelFleetPoints > (playerFleetPoints * 5) && newRebelFleet.getFleetData().getMembersListCopy().size() > 1){
             FleetMemberAPI member = (FleetMemberAPI)newRebelFleet.getFleetData().getMembersListCopy().get(0);
             newRebelFleet.getFleetData().removeFleetMember(member);
             rebelFleetPoints -= member.getFleetPointCost();
@@ -61,7 +61,7 @@ public class EventRebelFleetSpawn extends EventBase
 
         // Remove random ships until we're within target fleet size
         // This should provide a fairly decent variety of fleet compositions
-        while (rebelFleetPoints > targetFleetPoints){
+        while (rebelFleetPoints > targetFleetPoints && newRebelFleet.getFleetData().getMembersListCopy().size() > 1){
             List rebelFleetMembers = newRebelFleet.getFleetData().getMembersListCopy();
             FleetMemberAPI member = (FleetMemberAPI)rebelFleetMembers.get(ExerelinUtils.getRandomInRange(0, rebelFleetMembers.size() - 1));
             newRebelFleet.getFleetData().removeFleetMember(member);
@@ -80,8 +80,8 @@ public class EventRebelFleetSpawn extends EventBase
         }
 
         // Add cargo ships if this fleet has capital or cruiser class ships, or 33% of the time for smaller fleets
-        if (newRebelFleet.getNumCapitals() > 0 || newRebelFleet.getNumCruisers() > 0 || (ExerelinUtils.getRandomInRange(0, 2) == 0 ))
-            ExerelinUtils.addFreightersToFleet(newRebelFleet);
+        //if (newRebelFleet.getNumCapitals() > 0 || newRebelFleet.getNumCruisers() > 0 || (ExerelinUtils.getRandomInRange(0, 2) == 0 ))
+            ExerelinUtils.addFreightersToFleet(newRebelFleet); // Needs freighters due to resupply issues
 
         ExerelinUtils.resetFleetCargoToDefaults(newRebelFleet, 0.3f, 0.1f, CargoAPI.CrewXPLevel.REGULAR);
         ExerelinUtilsFleet.sortByHullSize(newRebelFleet);
