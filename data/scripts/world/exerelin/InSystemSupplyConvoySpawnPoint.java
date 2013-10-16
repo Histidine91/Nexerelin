@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 
 import data.scripts.world.BaseSpawnPoint;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 @SuppressWarnings("unchecked")
@@ -95,7 +96,7 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 		theFleet = fleet;
 		fleet.setPreferredResupplyLocation(getAnchor().getOrbit().getFocus());
         fleet.getCommander().setPersonality("cautious");
-		fleet.setName("Logistics Convoy");
+		fleet.setName(ExerelinConfig.getExerelinFactionConfig(this.owningFactionId).logisticsFleetName);
 
 		// Remove cargo from station
 		if(convoyType.equalsIgnoreCase("fuel"))

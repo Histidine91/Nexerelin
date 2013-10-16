@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.BaseSpawnPoint;
 import data.scripts.world.exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 import java.awt.*;
@@ -78,7 +79,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
             else
                 fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(this.fleetOwningFactionId).getTargetResupplyEntityToken().getOrbit().getFocus());
 
-            fleet.setName("Boarding Fleet");
+            fleet.setName(ExerelinConfig.getExerelinFactionConfig(this.fleetOwningFactionId).boardingFleetName);
 
 			setFleetAssignments(fleet);
 

@@ -9,12 +9,16 @@ public class SystemManager
 
 	private StarSystemAPI starSystemAPI;
 
+    private String originalBackgroundImage;
+
 	public SystemManager(SectorAPI sectorAPI, StarSystemAPI starSystemAPI)
 	{
 		this.starSystemAPI = starSystemAPI;
 
 		systemStationManager = new SystemStationManager(sectorAPI, this.starSystemAPI);
 		systemEventManager = new SystemEventManager(this.starSystemAPI);
+
+        this.originalBackgroundImage = starSystemAPI.getBackgroundTextureFilename();
 	}
 
 	public String getStarSystemName()
@@ -81,6 +85,11 @@ public class SystemManager
     public void setStationOwner(SectorEntityToken station, String newOwnerFactionId, Boolean displayMessage, Boolean updateRelationship)
     {
         systemStationManager.setStationOwner(station, newOwnerFactionId, displayMessage, updateRelationship);
+    }
+
+    public String getOriginalBackgroundImage()
+    {
+        return  originalBackgroundImage;
     }
 
 	public static SystemManager getSystemManagerForSystem(String systemName)

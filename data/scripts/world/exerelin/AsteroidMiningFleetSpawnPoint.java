@@ -56,7 +56,7 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 
 		// Create fleet
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
-		fleet.setName("Asteroid Mining Fleet");
+		fleet.setName(ExerelinConfig.getExerelinFactionConfig(this.owningFactionId).asteroidMiningFleetName);
         fleet.getCommander().setPersonality("cautious");
 		theFleet = fleet;
 

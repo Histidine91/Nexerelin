@@ -6,6 +6,7 @@ import data.scripts.world.BaseSpawnPoint;
 import data.scripts.world.exerelin.commandQueue.CommandAddCargo;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsFaction;
 import org.lazywizard.lazylib.MathUtils;
 import com.fs.starfarer.api.InteractionDialogImageVisual;
 
@@ -97,7 +98,30 @@ public class StationRecord
 		}
 
 		stationToken.setFaction(newOwnerFactionId);
-        stationToken.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).stationInteriorIllustrationKeys[0], 640, 400));
+        stationToken.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).stationInteriorIllustrationKeys[ExerelinUtils.getRandomInRange(0, ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).stationInteriorIllustrationKeys.length - 1)], 640, 400));
+
+        if(ExerelinUtilsFaction.doesFactionOwnSystem(newOwnerFactionId, (StarSystemAPI)this.getStationToken().getContainingLocation()))
+        {
+            // Check if we should switch background image to faction specific one
+            if(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).changeBackgroundOnSystemLockdown)
+                ((StarSystemAPI)this.getStationToken().getContainingLocation()).setBackgroundTextureFilename(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredBackgroundImagePath);
+
+            if(newOwnerFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+                Global.getSector().getCampaignUI().addMessage(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!", Color.magenta);
+            else
+                Global.getSector().getCampaignUI().addMessage(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!");
+
+            System.out.println(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!");
+        }
+        else
+        {
+            // Check to see if we need to switch background image back
+            if(!originalOwnerId.equalsIgnoreCase("") && ((StarSystemAPI)this.getStationToken().getContainingLocation()).getBackgroundTextureFilename().equalsIgnoreCase(ExerelinConfig.getExerelinFactionConfig(originalOwnerId).preferredBackgroundImagePath))
+                ((StarSystemAPI)this.getStationToken().getContainingLocation()).setBackgroundTextureFilename(SystemManager.getSystemManagerForAPI((StarSystemAPI)this.getStationToken().getContainingLocation()).getOriginalBackgroundImage());
+
+        }
+
+        //TODO rename station when possible
 
 		attackSpawn.setFaction(newOwnerFactionId);
 		defenseSpawn.setFaction(newOwnerFactionId);

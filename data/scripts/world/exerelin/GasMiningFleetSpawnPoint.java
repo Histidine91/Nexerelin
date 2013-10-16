@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import data.scripts.world.BaseSpawnPoint;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class GasMiningFleetSpawnPoint extends BaseSpawnPoint
 
 		// Create fleet
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
-		fleet.setName("Gas Mining Fleet");
+		fleet.setName(ExerelinConfig.getExerelinFactionConfig(this.owningFactionId).gasMiningFleetName);
         fleet.getCommander().setPersonality("cautious");
 		theFleet = fleet;
 

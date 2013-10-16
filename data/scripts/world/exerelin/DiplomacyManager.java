@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import data.scripts.world.exerelin.diplomacy.AllianceManager;
 import data.scripts.world.exerelin.diplomacy.AllianceRecord;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 
 import java.awt.*;
 
@@ -258,7 +259,7 @@ public class DiplomacyManager
 			factionRelationship = factionRelationship + (int)((ourPercentage - theirPercentage)*5);
 
 			// If far, like them, if close, don't like them (we want their stations!)
-			//TODO - A good way to rework this on a sector level
+			//TODO - A good way to rework this on a sector level, present in same systems?
 			/*
 			float factionDistanceDiffFromAverage = ExerelinData.getInstance().systemManager.getSystemStationManager().getDistanceBetweenFactionsRelativeToAverage(recordToUpdate.getFactionId(), factionRecords[j].getFactionId());
 
@@ -312,6 +313,18 @@ public class DiplomacyManager
                 float bonus = ExerelinUtilsPlayer.getPlayerDiplomacyRelationshipBonus();
                 factionRelationship = factionRelationship + Math.abs((int)(factionRelationship*bonus));
             }
+
+            // Check if we need to add/remove anything for this specific faction
+            if(factionRelationship < 0)
+                factionRelationship = factionRelationship + ExerelinConfig.getExerelinFactionConfig(recordToUpdate.getFactionId()).negativeDiplomacyExtra;
+            else if(factionRelationship > 0)
+                factionRelationship = factionRelationship + ExerelinConfig.getExerelinFactionConfig(recordToUpdate.getFactionId()).positiveDiplomacyExtra;
+
+            // Does this faction innately like/dislike the other faction
+            if(ExerelinUtils.doesStringArrayContainValue(factionRecords[j].getFactionId(), ExerelinConfig.getExerelinFactionConfig(recordToUpdate.getFactionId()).factionsLiked, false))
+                factionRelationship = factionRelationship + 1;
+            if(ExerelinUtils.doesStringArrayContainValue(factionRecords[j].getFactionId(), ExerelinConfig.getExerelinFactionConfig(recordToUpdate.getFactionId()).factionsDisliked, false))
+                factionRelationship = factionRelationship - 1;
 
 			// Update the relationship setting
 			recordToUpdate.setFactionRelationship(factionRecords[j].getFactionId(), factionRelationship);

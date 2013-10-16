@@ -3,6 +3,7 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 import java.awt.*;
@@ -64,7 +65,8 @@ public class OutSystemStationAttackFleet
         ExerelinUtilsFleet.sortByHullSize(fleet);
 
 		theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
-        fleet.setName("Command Fleet");
+
+        fleet.setName(ExerelinConfig.getExerelinFactionConfig(faction).commandFleetName);
         if(ExerelinUtils.getRandomInRange(0,1) == 1)
           fleet.getCommander().setPersonality("aggressive");
 		theFleet = fleet;

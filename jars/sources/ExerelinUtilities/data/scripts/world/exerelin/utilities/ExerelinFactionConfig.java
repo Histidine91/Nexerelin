@@ -9,6 +9,10 @@ public class ExerelinFactionConfig
     public String factionId;
 
     public String[] stationInteriorIllustrationKeys = new String[]{"hound_hangar"};
+    public String preferredBackgroundImagePath = "graphics/backgrounds/background4.jpg";
+    public Boolean changeBackgroundOnSystemLockdown = false;
+
+    public String[] stationNameSuffixes = new String[]{"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge"};
 
     public double crewExpereinceLevelIncreaseChance = 0.0;
     public double baseFleetCostMultiplier = 1.0;
@@ -27,6 +31,17 @@ public class ExerelinFactionConfig
     public String mediumPatrolFleetName = "Ranger Patrol";
     public String largePatrolFleetName = "Wayfarers";
 
+    public String asteroidMiningFleetName = "Asteroid Mining Fleet";
+    public String gasMiningFleetName = "Gas Mining Fleet";
+    public String logisticsFleetName = "Logistics Convoy";
+    public String boardingFleetName = "Boarding Fleet";
+    public String commandFleetName = "Command Fleet";
+
+    public int positiveDiplomacyExtra = 0;
+    public int negativeDiplomacyExtra = 0;
+    public String[] factionsLiked = new String[]{};
+    public String[] factionsDisliked = new String[]{};
+
     public ExerelinFactionConfig(String factionId)
     {
         this.factionId = factionId;
@@ -39,8 +54,11 @@ public class ExerelinFactionConfig
         {
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelinFactionConfig/" + factionId + ".json");
 
-            JSONArray JSONstationInteriorIllustrationKeys = settings.getJSONArray("stationInteriorIllustrationKeys");
-            stationInteriorIllustrationKeys = JSONstationInteriorIllustrationKeys.toString().substring(1, JSONstationInteriorIllustrationKeys.toString().length() - 1).replaceAll("\"","").split(",");
+            stationInteriorIllustrationKeys = JSONArrayToStringArray(settings.getJSONArray("stationInteriorIllustrationKeys"));
+            preferredBackgroundImagePath = settings.getString("preferredBackgroundImagePath");
+            changeBackgroundOnSystemLockdown = settings.getBoolean("changeBackgroundOnSystemLockdown");
+
+            stationNameSuffixes = JSONArrayToStringArray(settings.getJSONArray("stationNameSuffixes"));
 
             crewExpereinceLevelIncreaseChance = settings.getDouble("crewExpereinceLevelIncreaseChance");
             baseFleetCostMultiplier = settings.getDouble("baseFleetCostMultiplier");
@@ -59,10 +77,32 @@ public class ExerelinFactionConfig
             mediumPatrolFleetName = settings.getString("mediumPatrolFleetName");
             largePatrolFleetName = settings.getString("largePatrolFleetName");
 
+            asteroidMiningFleetName = settings.getString("asteroidMiningFleetName");
+            gasMiningFleetName = settings.getString("gasMiningFleetName");
+            logisticsFleetName = settings.getString("logisticsFleetName");
+            boardingFleetName = settings.getString("boardingFleetName");
+            commandFleetName = settings.getString("commandFleetName");
+
+            positiveDiplomacyExtra = settings.getInt("positiveDiplomacyExtra");
+            negativeDiplomacyExtra = settings.getInt("negativeDiplomacyExtra");
+            factionsLiked = JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
+            factionsDisliked = JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
         }
         catch(Exception e)
         {
             System.out.println("EXERELIN ERROR: Unable to load faction config for: " + this.factionId + ", " + e.getMessage());
+        }
+    }
+
+    private String[] JSONArrayToStringArray(JSONArray jsonArray)
+    {
+        try
+        {
+            return jsonArray.toString().substring(1, jsonArray.toString().length() - 1).replaceAll("\"","").split(",");
+        }
+        catch(Exception e)
+        {
+            return new String[]{};
         }
     }
 }

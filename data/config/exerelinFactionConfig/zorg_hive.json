@@ -1,5 +1,9 @@
 {
     "stationInteriorIllustrationKeys":["zorg_interior"], # String array
+    "preferredBackgroundImagePath":"graphics/zorg/backgrounds/backgroundzorg3.png", # String
+    "changeBackgroundOnSystemLockdown":"true", # Boolean
+
+    "stationNameSuffixes":["Unimatrix", "Hive", "Base"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
@@ -17,4 +21,15 @@
     "smallPatrolFleetName":"Patrol", # String
     "mediumPatrolFleetName":"Survey Fleet", # String
     "largePatrolFleetName":"Prospectors", # String
+
+    "asteroidMiningFleetName":"Asteroid Strip Mining Fleet", # String
+    "gasMiningFleetName":"Gas Strip Mining Fleet", # String
+    "logisticsFleetName":"Auxiliary Convoy", # String
+    "boardingFleetName":"Incorporation Fleet", # String
+    "commandFleetName":"Zeta Fleet", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
 }

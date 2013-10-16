@@ -2,6 +2,8 @@ package data.scripts.world.exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,4 +40,18 @@ public class ExerelinUtilsFaction {
         return allies;
     }
 
+    public static boolean doesFactionOwnSystem(String factionId, StarSystemAPI system)
+    {
+        for(SectorEntityToken station : system.getOrbitalStations())
+        {
+            if(!station.getFaction().getId().equalsIgnoreCase(factionId)
+                    && !station.getFaction().getId().equalsIgnoreCase("neutral")
+                    && !station.getFaction().getId().equalsIgnoreCase("independent"))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
