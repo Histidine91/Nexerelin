@@ -1,0 +1,35 @@
+{
+    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+    "preferredBackgroundImagePath":"graphics/backgrounds/background4.jpg", # String
+    "changeBackgroundOnSystemLockdown":"false", # Boolean
+
+    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Port", "Quey", "Habitat", "Shipyard"], # String array
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
+
+    "rebelFleetSuffix":"Rogue AI", # String
+
+    "smallAttackFleetName":"Scout", # String
+    "mediumAttackFleetName":"Strike Force", # String
+    "largeAttackFleetName":"Warfleet", # String
+
+    "smallDefenceFleetName":"Picket Defense", # String
+    "mediumDefenceFleetName":"Guard Fleet", # String
+    "largeDefenceFleetName":"System Defense Fleet", # String
+
+    "smallPatrolFleetName":"Patrol", # String
+    "mediumPatrolFleetName":"Warden Patrol", # String
+    "largePatrolFleetName":"Garrison Fleet", # String
+
+    "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
+    "gasMiningFleetName":"Gas Mining Fleet", # String
+    "logisticsFleetName":"Logistics Convoy", # String
+    "boardingFleetName":"Boarding Fleet", # String
+    "commandFleetName":"Command Fleet", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
+}
