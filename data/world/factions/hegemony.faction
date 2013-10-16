@@ -1,6 +1,6 @@
 {
 	id:"hegemony",
-	"color":[159,89,39,255],
+	"color":[245,150,30,255],
 	"displayName":"Hegemony",
 	"shipNamePrefix":"HSS",
 	"shipNameSources":{
