@@ -34,7 +34,7 @@
                 "zorg_drone_Configurated":[2, 2],
                 "zorg_probe_Configurated":[2, 2],
                 "zorg_diamond_wing":[0, 3],
-                "zorg_sphere_wing":[0, 3],
+                "zorg_trapezoid_wing":[0, 3],
             },
         },
         "exerelinInSystemSupplyConvoy":{
