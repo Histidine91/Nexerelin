@@ -94,7 +94,7 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
         ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.3f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId));
         ExerelinUtilsFleet.sortByHullSize(fleet);
 		theFleet = fleet;
-		fleet.setPreferredResupplyLocation(getAnchor().getOrbit().getFocus());
+		fleet.setPreferredResupplyLocation(getAnchor());
         fleet.getCommander().setPersonality("cautious");
 		fleet.setName(ExerelinConfig.getExerelinFactionConfig(this.owningFactionId).logisticsFleetName);
 

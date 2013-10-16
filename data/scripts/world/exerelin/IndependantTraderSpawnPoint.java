@@ -40,7 +40,7 @@ public class IndependantTraderSpawnPoint extends BaseSpawnPoint
 		theFleet = fleet;
 		getLocation().spawnFleet(ExerelinUtils.getRandomOffMapPoint(getLocation()), 0, 0, fleet);
 
-		fleet.setPreferredResupplyLocation(toStation.getStationToken().getOrbit().getFocus());
+		fleet.setPreferredResupplyLocation(toStation.getStationToken());
 
 		trading = false;
 		setFleetAssignments(fleet);

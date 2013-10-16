@@ -117,9 +117,9 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 
             if(((StarSystemAPI)stationTarget.getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName())
                     || FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken() == null)
-                fleet.setPreferredResupplyLocation(getAnchor().getOrbit().getFocus());
+                fleet.setPreferredResupplyLocation(getAnchor());
             else
-                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken().getOrbit().getFocus());
+                fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(fleet.getFaction().getId()).getTargetResupplyEntityToken());
 		}
 	}
 }
