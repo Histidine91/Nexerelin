@@ -3,6 +3,7 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
+import data.scripts.world.exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
@@ -64,7 +65,6 @@ public class OutSystemStationAttackFleet
         ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.3f, 0.3f, CargoAPI.CrewXPLevel.ELITE);
         ExerelinUtilsFleet.sortByHullSize(fleet);
 
-		theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
 
         fleet.setName(ExerelinConfig.getExerelinFactionConfig(faction).commandFleetName);
         if(ExerelinUtils.getRandomInRange(0,1) == 1)
@@ -81,7 +81,10 @@ public class OutSystemStationAttackFleet
 
 		System.out.println(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!");
 
-		return fleet;
+        //theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
+        SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandSpawnPrebuiltFleet(spawnPoint, 0, 0, fleet));
+
+		return null;
 	}
 
 	private void setFleetAssignments(CampaignFleetAPI fleet)
@@ -183,7 +186,7 @@ public class OutSystemStationAttackFleet
 
 					theTarget = newTarget;
 					setFleetAssignments(theFleet);
-                    theFleet.setPreferredResupplyLocation(newTarget.getOrbit().getFocus());
+                    theFleet.setPreferredResupplyLocation(newTarget);
 					return;
 				}
 
