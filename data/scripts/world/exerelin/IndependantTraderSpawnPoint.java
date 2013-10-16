@@ -23,6 +23,10 @@ public class IndependantTraderSpawnPoint extends BaseSpawnPoint
 		String type = "exerelinInSystemSupplyConvoy";
 
 		String factions[] = SectorManager.getCurrentSectorManager().getFactionsInSector();
+
+        if(factions.length == 0)
+            return null;
+
 		String factionShips = factions[ExerelinUtils.getRandomInRange(0, factions.length - 1)];
 
 		fromStationFactionId = "";
