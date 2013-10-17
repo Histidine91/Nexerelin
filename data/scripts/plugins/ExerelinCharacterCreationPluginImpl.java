@@ -643,8 +643,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
             }
             else if (factionId.equalsIgnoreCase("zorg_hive"))
             {
-                data.addStartingShipChoice("zorg_tactical_probe_Active");
-                data.addStartingShipChoice("zorg_drone_ActiveZ");
+                data.addStartingShipChoice("zorg_probe_Configurated");
             }
             else if (factionId.equalsIgnoreCase("qualljom_society"))
             {
