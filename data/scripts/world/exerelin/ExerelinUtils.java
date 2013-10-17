@@ -11,6 +11,7 @@ import data.scripts.world.exerelin.commandQueue.CommandRemoveShip;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.awt.*;
 import java.util.Random;
@@ -763,15 +764,13 @@ public class ExerelinUtils
                 if(interactionTarget instanceof AsteroidAPI)
                 {
                     playerFleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource, ExerelinConfig.miningAmountPerDayPerMiner*miningPower);
-                    Global.getSector().getCampaignUI().addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.asteroidMiningResource, Color.green);
-                    System.out.println("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.asteroidMiningResource);
+                    ExerelinUtilsMessaging.addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.asteroidMiningResource, Color.green);
                     Global.getSector().getPlayerFleet().getCommanderStats().addXP(400);
                 }
                 else if(interactionTarget instanceof PlanetAPI && ((PlanetAPI)interactionTarget).isGasGiant())
                 {
                     playerFleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.gasgiantMiningResource, ExerelinConfig.miningAmountPerDayPerMiner*miningPower);
-                    Global.getSector().getCampaignUI().addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.gasgiantMiningResource, Color.green);
-                    System.out.println("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.gasgiantMiningResource);
+                    ExerelinUtilsMessaging.addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.gasgiantMiningResource, Color.green);
                     Global.getSector().getPlayerFleet().getCommanderStats().addXP(400);
                 }
                 Global.getSector().getPlayerFleet().getCommanderStats().levelUpIfNeeded();
@@ -906,13 +905,11 @@ public class ExerelinUtils
         {
             if(fleet.getCargo().getMarines() > marinesAttacking)
             {
-                Global.getSector().getCampaignUI().addMessage("Your fleet lost " + (fleet.getCargo().getMarines() - marinesAttacking) + " marines assualting the station", Color.green);
-                System.out.println("Your fleet lost " + (fleet.getCargo().getMarines() - marinesAttacking) + " marines assualting the station");
+                ExerelinUtilsMessaging.addMessage("Your fleet lost " + (fleet.getCargo().getMarines() - marinesAttacking) + " marines assualting the station", Color.green);
             }
             if(marinesDefending <= 0)
             {
-                Global.getSector().getCampaignUI().addMessage("Your fleet successfully boarded " + station.getName(), Color.green);
-                System.out.println("Your fleet successfully boarded " + station.getName());
+                ExerelinUtilsMessaging.addMessage("Your fleet successfully boarded " + station.getName(), Color.green);
             }
         }
 
@@ -947,8 +944,7 @@ public class ExerelinUtils
 
                 if(playerFleet)
                 {
-                    Global.getSector().getCampaignUI().addMessage("Your fleet has failed to capture station and has suffered extensive losses", Color.green);
-                    System.out.println("Your fleet has failed to capture station and has suffered extensive losses");
+                    ExerelinUtilsMessaging.addMessage("Your fleet has failed to capture station and has suffered extensive losses", Color.green);
                 }
             }
             return false;

@@ -9,6 +9,7 @@ import data.scripts.world.exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.awt.*;
 
@@ -134,8 +135,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					}
 					else if(!boarding && stationTarget.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 					{
-						System.out.println("Player owned " + stationTarget.getStationToken().getFullName() + " being boarded by " + Global.getSector().getFaction(fleetOwningFactionId).getDisplayName());
-						Global.getSector().addMessage(stationTarget.getStationToken().getFullName() + " is being boarded by " + Global.getSector().getFaction(fleetOwningFactionId).getDisplayName(), Color.magenta);
+						ExerelinUtilsMessaging.addMessage(stationTarget.getStationToken().getFullName() + " is being boarded by " + Global.getSector().getFaction(fleetOwningFactionId).getDisplayName(), Color.magenta);
 					}
 				}
 

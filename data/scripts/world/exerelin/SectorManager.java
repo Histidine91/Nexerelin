@@ -6,6 +6,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import data.scripts.world.exerelin.commandQueue.CommandQueue;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -315,7 +316,6 @@ public class SectorManager
 				Global.getSector().getPlayerFleet().getCargo().getCredits().add(ExerelinConfig.playerBaseWage*2);
 			else
 				Global.getSector().getPlayerFleet().getCargo().getCredits().add(ExerelinConfig.playerBaseWage);
-			Global.getSector().getCampaignUI().addMessage("Wages Paid", Color.green);
 		}
 	}
 

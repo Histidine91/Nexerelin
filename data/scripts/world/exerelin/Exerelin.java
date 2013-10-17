@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.exerelin.commandQueue.CommandQueue;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
+import data.scripts.world.exerelin.utilities.ExerelinMessageManager;
 
 @SuppressWarnings("unchecked")
 public class Exerelin //implements SectorGeneratorPlugin
@@ -31,6 +32,10 @@ public class Exerelin //implements SectorGeneratorPlugin
         // Set sector manager reference in cache and persistent storage
         ExerelinData.getInstance().setSectorManager(sectorManager);
         Global.getSector().getPersistentData().put("SectorManager", sectorManager);
+
+        // Build a message manager object and add to persistent storage
+        ExerelinMessageManager exerelinMessageManager = new ExerelinMessageManager();
+        Global.getSector().getPersistentData().put("ExerelinMessageManager", exerelinMessageManager);
 
         sectorManager.setupFactionDirectors();
 

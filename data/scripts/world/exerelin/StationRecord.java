@@ -9,6 +9,7 @@ import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFaction;
 import org.lazywizard.lazylib.MathUtils;
 import com.fs.starfarer.api.InteractionDialogImageVisual;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.awt.*;
 import java.util.List;
@@ -88,13 +89,11 @@ public class StationRecord
 		if(displayMessage)
 		{
 			if(newOwnerFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-				Global.getSector().addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName(), Color.magenta);
+				ExerelinUtilsMessaging.addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName(), Color.magenta);
 			else if(this.getOwner() != null && this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-				Global.getSector().addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName(), Color.magenta);
+				ExerelinUtilsMessaging.addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName(), Color.magenta);
 			else
-				Global.getSector().addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName());
-
-			System.out.println(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName());
+				ExerelinUtilsMessaging.addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName());
 		}
 
 		stationToken.setFaction(newOwnerFactionId);
@@ -107,11 +106,9 @@ public class StationRecord
                 ((StarSystemAPI)this.getStationToken().getContainingLocation()).setBackgroundTextureFilename(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredBackgroundImagePath);
 
             if(newOwnerFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-                Global.getSector().getCampaignUI().addMessage(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!", Color.magenta);
+                ExerelinUtilsMessaging.addMessage(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!", Color.magenta);
             else
-                Global.getSector().getCampaignUI().addMessage(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!");
-
-            System.out.println(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!");
+                ExerelinUtilsMessaging.addMessage(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!");
         }
         else
         {
@@ -584,8 +581,7 @@ public class StationRecord
 
 					if(otherFactionId.equalsIgnoreCase(""))
 					{
-						Global.getSector().addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " agent has failed in their mission.", Color.magenta);
-						System.out.println(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " agent has failed in their mission.");
+						ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " agent has failed in their mission.", Color.magenta);
 						stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
 						return;
 					}
@@ -593,7 +589,7 @@ public class StationRecord
 					ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), otherFactionId, "agent");
 
                     if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
-                        Global.getSector().addMessage("The agent was not discovered and will repeat their mission.", Color.magenta);
+                        ExerelinUtilsMessaging.addMessage("The agent was not discovered and will repeat their mission.", Color.magenta);
                     else
                         stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
 					return;
@@ -610,7 +606,7 @@ public class StationRecord
 			{
 				ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), ExerelinData.getInstance().getPlayerFaction(), "prisoner");
                 if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
-                    Global.getSector().addMessage("The prisoner is extremely valuable and will be interrogated further.", Color.magenta);
+                    ExerelinUtilsMessaging.addMessage("The prisoner is extremely valuable and will be interrogated further.", Color.magenta);
                 else
                     stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
 				return;
@@ -618,8 +614,7 @@ public class StationRecord
 
             if(numSabateurs > 0)
             {
-                Global.getSector().addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " sabateur has caused a station explosion at " + this.getStationToken().getName() + ".", Color.magenta);
-                System.out.println(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " sabateur has caused a station explosion at " + this.getStationToken().getName() + ".");
+                ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " sabateur has caused a station explosion at " + this.getStationToken().getName() + ".", Color.magenta);
                 lastBoardAttemptTime = Global.getSector().getClock().getTimestamp();
                 this.efficiency = 0.1f;
                 ExerelinUtils.removeRandomShipsFromCargo(this.stationCargo, this.stationCargo.getMothballedShips().getMembersListCopy().size());
@@ -629,7 +624,7 @@ public class StationRecord
                 ExerelinUtils.decreaseCargo(this.stationCargo, "crewRegular", (int)(this.stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR)*0.9));
                 ExerelinUtils.decreaseCargo(this.stationCargo, "fuel", (int)(this.stationCargo.getFuel()*0.9));
                 if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
-                    Global.getSector().addMessage("The saboteur was not discoverd and will repeat their mission.", Color.magenta);
+                    ExerelinUtilsMessaging.addMessage("The saboteur was not discoverd and will repeat their mission.", Color.magenta);
                 else
                     stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
             }
