@@ -1,5 +1,6 @@
 {
     "enableThreading":true, # Boolean
+    "useMultipleBackgroundsAndStars":true, # Boolean
 
     "randomOmnifactoryLocation":false, # Boolean
 
@@ -11,7 +12,6 @@
     "allowTradeAtNeutralStations":false, # Boolean
     "allowTradeAtHostileStations":false, # Boolean
     "reduceCapitalShipSaleChance":true, # Boolean
-
 
     "reduceSupplies":true, # Boolean
     "capSupplyDropToCargo":true, # Boolean, only used if reduceSupplies is true, cap = cargo*1.5

@@ -17,6 +17,8 @@ public class ExerelinConfig
 
     // Threading support for improving/smoothing performance
     public static boolean enableThreading = true;
+    // Use multiple larger backgrounds
+    public static boolean useMultipleBackgroundsAndStars = true;
 
     // Randomise the location of the omnifactory
     public static boolean randomOmnifactoryLocation = false;
@@ -56,6 +58,7 @@ public class ExerelinConfig
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelin_config.json");
 
             enableThreading = settings.getBoolean("enableThreading");
+            useMultipleBackgroundsAndStars = settings.getBoolean("useMultipleBackgroundsAndStars");
 
             randomOmnifactoryLocation = settings.getBoolean("randomOmnifactoryLocation");
 

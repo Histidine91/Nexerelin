@@ -1,0 +1,164 @@
+{
+	"star_blue":{
+		"name":"Blue Star",
+		"tilt":0, # left-right (>0 tilts to the left)
+		"pitch":0, # towards-away from the viewer (>0 pitches towards)
+		"rotation":-3, # degrees/second
+		"planetColor":[185,185,240,255],
+		"atmosphereThickness":0.25, # as fraction of radius.  Set to 0 for no atmosphere
+		"atmosphereThicknessMin":10, #  minimum thickness in pixels
+		"atmosphereColor":[185,185,240,255],
+		"texture":"graphics/exerelin/planets/star_texture_blue.jpg",
+		"icon":"graphics/warroom/icon_star.png",
+		"iconColor":[185,185,240,255],
+		"starCoronaSprite":"graphics/fx/star_halo.png", # optional, defaults to really bright particle
+		"starCoronaColor":[185,185,240,120], # optional, defaults to white
+		"starCoronaSizeMult":5.12, # required, multiplier for star's radius
+		"isStar":true,
+		"lightPosition":[0,0,10], # in planet radii.  Not used for stars.  z > 0 is above the playing field.
+	},
+	"star_white":{
+		"name":"White Star",
+		"tilt":0, # left-right (>0 tilts to the left)
+		"pitch":66, # towards-away from the viewer (>0 pitches towards)
+		"rotation":-3, # degrees/second
+		"planetColor":[255,255,255,255],
+		"atmosphereThickness":0.25, # as fraction of radius.  Set to 0 for no atmosphere
+		"atmosphereThicknessMin":10, #  minimum thickness in pixels
+		"atmosphereColor":[255,255,255,255],
+		"texture":"graphics/exerelin/planets/star_texture_white.jpg",
+		"icon":"graphics/warroom/icon_star.png",
+		"iconColor":[255,255,255,255],
+		"starCoronaSprite":"graphics/fx/star_halo.png", # optional, defaults to really bright particle
+		"starCoronaColor":[255,255,255,120], # optional, defaults to white
+		"starCoronaSizeMult":5.12, # required, multiplier for star's radius
+		"isStar":true,
+		"lightPosition":[0,0,10], # in planet radii.  Not used for stars.  z > 0 is above the playing field.
+	},
+	"star_orange":{
+		"name":"Orange Star",
+		"tilt":0, # left-right (>0 tilts to the left)
+		"pitch":66, # towards-away from the viewer (>0 pitches towards)
+		"rotation":-3, # degrees/second
+		"planetColor":[255,165,0,255],
+		"atmosphereThickness":0.25, # as fraction of radius.  Set to 0 for no atmosphere
+		"atmosphereThicknessMin":10, #  minimum thickness in pixels
+		"atmosphereColor":[255,165,0,255],
+		"texture":"graphics/exerelin/planets/star_texture_orange.jpg",
+		"icon":"graphics/warroom/icon_star.png",
+		"iconColor":[255,165,0,255],
+		"starCoronaSprite":"graphics/fx/star_halo.png", # optional, defaults to really bright particle
+		"starCoronaColor":[255,165,0,255], # optional, defaults to white
+		"starCoronaSizeMult":5.12, # required, multiplier for star's radius
+		"isStar":true,
+		"lightPosition":[0,0,10], # in planet radii.  Not used for stars.  z > 0 is above the playing field.
+	},
+	"star_yellowwhite":{
+		"name":"Yellow-White Star",
+		"tilt":0, # left-right (>0 tilts to the left)
+		"pitch":66, # towards-away from the viewer (>0 pitches towards)
+		"rotation":-3, # degrees/second
+		"planetColor":[255,255,224,255],
+		"atmosphereThickness":0.25, # as fraction of radius.  Set to 0 for no atmosphere
+		"atmosphereThicknessMin":10, #  minimum thickness in pixels
+		"atmosphereColor":[255,255,224,255],
+		"texture":"graphics/exerelin/planets/star_texture_yellowwhite.jpg",
+		"icon":"graphics/warroom/icon_star.png",
+		"iconColor":[255,255,224,250],
+		"starCoronaSprite":"graphics/fx/star_halo.png", # optional, defaults to really bright particle
+		"starCoronaColor":[255,255,224,90], # optional, defaults to white
+		"starCoronaSizeMult":5.12, # required, multiplier for star's radius
+		"isStar":true,
+		"lightPosition":[0,0,10], # in planet radii.  Not used for stars.  z > 0 is above the playing field.
+	},
+	"star_bluewhite":{
+		"name":"Blue-White Star",
+		"tilt":0, # left-right (>0 tilts to the left)
+		"pitch":66, # towards-away from the viewer (>0 pitches towards)
+		"rotation":-3, # degrees/second
+		"planetColor":[135,206,250,255],
+		"atmosphereThickness":0.25, # as fraction of radius.  Set to 0 for no atmosphere
+		"atmosphereThicknessMin":10, #  minimum thickness in pixels
+		"atmosphereColor":[135,206,250,255],
+		"texture":"graphics/exerelin/planets/star_texture_bluewhite.jpg",
+		"icon":"graphics/warroom/icon_star.png",
+		"iconColor":[135,206,250,255],
+		"starCoronaSprite":"graphics/fx/star_halo.png", # optional, defaults to really bright particle
+		"starCoronaColor":[135,206,250,120], # optional, defaults to white
+		"starCoronaSizeMult":5.12, # required, multiplier for star's radius
+		"isStar":true,
+		"lightPosition":[0,0,10], # in planet radii.  Not used for stars.  z > 0 is above the playing field.
+	},
+	"star_purple":{
+		"name":"Neutron Star",
+		"tilt":0, # left-right (>0 tilts to the left)
+		"pitch":66, # towards-away from the viewer (>0 pitches towards)
+		"rotation":-3, # degrees/second
+		"planetColor":[148,0,211,255],
+		"atmosphereThickness":0.25, # as fraction of radius.  Set to 0 for no atmosphere
+		"atmosphereThicknessMin":10, #  minimum thickness in pixels
+		"atmosphereColor":[148,0,211,255],
+		"texture":"graphics/exerelin/planets/star_texture_purple.jpg",
+		"icon":"graphics/warroom/icon_star.png",
+		"iconColor":[148,0,211,255],
+		"starCoronaSprite":"graphics/fx/star_halo.png", # optional, defaults to really bright particle
+		"starCoronaColor":[148,0,211,60], # optional, defaults to white
+		"starCoronaSizeMult":5.12, # required, multiplier for star's radius
+		"isStar":true,
+		"lightPosition":[0,0,10], # in planet radii.  Not used for stars.  z > 0 is above the playing field.
+	},
+	"star_dark":{
+		"name":"Dark Star",
+		"tilt":0, # left-right (>0 tilts to the left)
+		"pitch":66, # towards-away from the viewer (>0 pitches towards)
+		"rotation":-3, # degrees/second
+		"planetColor":[105,105,105,255],
+		"atmosphereThickness":0.25, # as fraction of radius.  Set to 0 for no atmosphere
+		"atmosphereThicknessMin":10, #  minimum thickness in pixels
+		"atmosphereColor":[105,105,105,255],
+		"texture":"graphics/exerelin/planets/star_texture_dark.jpg",
+		"icon":"graphics/warroom/icon_star.png",
+		"iconColor":[105,105,105,255],
+		"starCoronaSprite":"graphics/fx/star_halo.png", # optional, defaults to really bright particle
+		"starCoronaColor":[105,105,105,80], # optional, defaults to white
+		"starCoronaSizeMult":5.12, # required, multiplier for star's radius
+		"isStar":true,
+		"lightPosition":[0,0,10], # in planet radii.  Not used for stars.  z > 0 is above the playing field.
+	},
+	"star_green":{
+		"name":"Green Star",
+		"tilt":0, # left-right (>0 tilts to the left)
+		"pitch":66, # towards-away from the viewer (>0 pitches towards)
+		"rotation":-3, # degrees/second
+		"planetColor":[34,139,34,255],
+		"atmosphereThickness":0.25, # as fraction of radius.  Set to 0 for no atmosphere
+		"atmosphereThicknessMin":10, #  minimum thickness in pixels
+		"atmosphereColor":[34,139,34,255],
+		"texture":"graphics/exerelin/planets/star_texture_green.jpg",
+		"icon":"graphics/warroom/icon_star.png",
+		"iconColor":[34,139,34,250],
+		"starCoronaSprite":"graphics/fx/star_halo.png", # optional, defaults to really bright particle
+		"starCoronaColor":[34,139,34,60], # optional, defaults to white
+		"starCoronaSizeMult":5.12, # required, multiplier for star's radius
+		"isStar":true,
+		"lightPosition":[0,0,10], # in planet radii.  Not used for stars.  z > 0 is above the playing field.
+	},
+	"star_greenwhite":{
+		"name":"Green-White Star",
+		"tilt":0, # left-right (>0 tilts to the left)
+		"pitch":66, # towards-away from the viewer (>0 pitches towards)
+		"rotation":-3, # degrees/second
+		"planetColor":[240,255,240,255],
+		"atmosphereThickness":0.25, # as fraction of radius.  Set to 0 for no atmosphere
+		"atmosphereThicknessMin":10, #  minimum thickness in pixels
+		"atmosphereColor":[240,255,240,255],
+		"texture":"graphics/exerelin/planets/star_texture_greenwhite.jpg",
+		"icon":"graphics/warroom/icon_star.png",
+		"iconColor":[240,255,240,250],
+		"starCoronaSprite":"graphics/fx/star_halo.png", # optional, defaults to really bright particle
+		"starCoronaColor":[240,255,240,90], # optional, defaults to white
+		"starCoronaSizeMult":5.12, # required, multiplier for star's radius
+		"isStar":true,
+		"lightPosition":[0,0,10], # in planet radii.  Not used for stars.  z > 0 is above the playing field.
+	},
+}
