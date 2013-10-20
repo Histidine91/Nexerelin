@@ -82,7 +82,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
         else if(starType == 2)
         {
             star = system.initStar("star_blue", 400f);
-            system.setLightColor(new Color(195,195,240));
+            system.setLightColor(new Color(135,206,250));
             if(ExerelinUtils.getRandomInRange(0,1) == 0)
                 system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/blue_background1.jpg");
             else
@@ -100,7 +100,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
         else if(starType == 4)
         {
             star = system.initStar("star_orange", 900f);
-            system.setLightColor(new Color(255,180,0));
+            system.setLightColor(new Color(255,220,0));
             if(ExerelinUtils.getRandomInRange(0,1) == 0)
                 system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/orange_background1.jpg");
             else
@@ -127,7 +127,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
         else if(starType == 7)
         {
             star = system.initStar("star_purple", 700f);
-            system.setLightColor(new Color(160,0,223));
+            system.setLightColor(new Color(218,112,214));
             if(ExerelinUtils.getRandomInRange(0,1) == 0)
                 system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/purple_background1.jpg");
             else
@@ -145,7 +145,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
         else if(starType == 9)
         {
             star = system.initStar("star_green", 600f);
-            system.setLightColor(new Color(54,139,54));
+            system.setLightColor(new Color(240,255,240));
             if(ExerelinUtils.getRandomInRange(0,1) == 0)
                 system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/green_background1.jpg");
             else
