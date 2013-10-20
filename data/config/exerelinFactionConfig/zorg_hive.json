@@ -1,13 +1,18 @@
 {
     "stationInteriorIllustrationKeys":["zorg_interior"], # String array
+
+    "changeSystemSpecsOnSystemLockdown":"true", # Boolean
     "preferredBackgroundImagePath":"graphics/zorg/backgrounds/backgroundzorg3.png", # String
-    "changeBackgroundOnSystemLockdown":"true", # Boolean
+    "preferredStarType":"star_zorg", # String
+    "preferredStarLight":"0x37694B", # String, 0xFFFFFF
 
     "stationNameSuffixes":["Unimatrix", "Hive", "Base"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
 
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Rogue Drones", # String
 
     "smallAttackFleetName":"Scout", # String

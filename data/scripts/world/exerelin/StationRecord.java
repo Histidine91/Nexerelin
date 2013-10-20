@@ -102,8 +102,14 @@ public class StationRecord
         if(ExerelinUtilsFaction.doesFactionOwnSystem(newOwnerFactionId, (StarSystemAPI)this.getStationToken().getContainingLocation()))
         {
             // Check if we should switch background image to faction specific one
-            if(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).changeBackgroundOnSystemLockdown)
-                ((StarSystemAPI)this.getStationToken().getContainingLocation()).setBackgroundTextureFilename(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredBackgroundImagePath);
+            if(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).changeSystemSpecsOnSystemLockdown)
+            {
+                StarSystemAPI system = (StarSystemAPI)this.getStationToken().getContainingLocation();
+                system.setBackgroundTextureFilename(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredBackgroundImagePath);
+                system.removeEntity(system.getStar());
+                system.initStar(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredStarType, 700);
+                system.setLightColor(Color.decode(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredStarLight));
+            }
 
             if(newOwnerFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
                 ExerelinUtilsMessaging.addMessage(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!", Color.magenta);
@@ -114,7 +120,14 @@ public class StationRecord
         {
             // Check to see if we need to switch background image back
             if(!originalOwnerId.equalsIgnoreCase("") && ((StarSystemAPI)this.getStationToken().getContainingLocation()).getBackgroundTextureFilename().equalsIgnoreCase(ExerelinConfig.getExerelinFactionConfig(originalOwnerId).preferredBackgroundImagePath))
-                ((StarSystemAPI)this.getStationToken().getContainingLocation()).setBackgroundTextureFilename(SystemManager.getSystemManagerForAPI((StarSystemAPI)this.getStationToken().getContainingLocation()).getOriginalBackgroundImage());
+            {
+                StarSystemAPI system = (StarSystemAPI)this.getStationToken().getContainingLocation();
+                SystemManager systemManager = SystemManager.getSystemManagerForAPI(system);
+                system.setBackgroundTextureFilename(systemManager.getOriginalBackgroundImage());
+                system.removeEntity(system.getStar());
+                system.initStar(systemManager.getOriginalStarSpec(), 700);
+                system.setLightColor(systemManager.getOriginalLightColor());
+            }
 
         }
 

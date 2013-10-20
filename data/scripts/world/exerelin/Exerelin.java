@@ -49,10 +49,10 @@ public class Exerelin //implements SectorGeneratorPlugin
         sectorManager.setCommandQueue(commandQueue);
 
 		// Set abandoned as enemy of every faction
+        ExerelinConfig.loadSettings();
 		this.initFactionRelationships(sector);
 
 		// Build off map initial station attack fleets in random systems
-        ExerelinConfig.loadSettings(); // Needed for attack fleets
 		this.initStationAttackFleets(sector);
 
 		// Add trader spawns
@@ -92,6 +92,15 @@ public class Exerelin //implements SectorGeneratorPlugin
 			sector.getFaction(factions[i]).setRelationship("abandoned", -1);
             sector.getFaction(factions[i]).setRelationship("rebel", -1);
             sector.getFaction(factions[i]).setRelationship("independent", 0);
+
+            String customRebelFactionId = ExerelinConfig.getExerelinFactionConfig(factions[i]).customRebelFaction;
+            if(!customRebelFactionId.equalsIgnoreCase(""))
+            {
+                for(int j = 0; j < factions.length; j = j + 1)
+                {
+                        sector.getFaction(factions[j]).setRelationship(customRebelFactionId, -1);
+                }
+            }
 		}
 
 		// Set independent and rebels to hate each other

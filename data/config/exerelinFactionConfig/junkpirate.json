@@ -1,13 +1,18 @@
 {
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
-    "preferredBackgroundImagePath":"graphics/backgrounds/background4.jpg", # String
-    "changeBackgroundOnSystemLockdown":"false", # Boolean
+
+    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
+    "preferredBackgroundImagePath":"", # String
+    "preferredStarType":"", # String
+    "preferredStarLight":"", # String, 123,123,123
 
     "stationNameSuffixes":["Hideout", "Trading Post", "Post", "Dock", "Port", "Quey", "Terminal", "Backwater", "Nest"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
 
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Outlaws", # String
 
     "smallAttackFleetName":"Scout", # String

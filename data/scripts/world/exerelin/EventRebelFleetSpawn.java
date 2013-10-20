@@ -23,6 +23,7 @@ public class EventRebelFleetSpawn extends EventBase
 	{
 		// DEFAULTS
         FactionAPI rebelFAPI = Global.getSector().getFaction("rebel");
+        String fleetId = "exerelinGenericFleet";
 
 		java.util.List fleets = starSystemAPI.getFleets();
 
@@ -42,9 +43,20 @@ public class EventRebelFleetSpawn extends EventBase
         if(factionLeaderId == null || factionLeaderId.equalsIgnoreCase(""))
             return;
 
+        if(!ExerelinConfig.getExerelinFactionConfig(factionLeaderId).customRebelFaction.equalsIgnoreCase(""))
+            rebelFAPI = Global.getSector().getFaction(ExerelinConfig.getExerelinFactionConfig(factionLeaderId).customRebelFaction);
+
+        if(!ExerelinConfig.getExerelinFactionConfig(factionLeaderId).customRebelFleetId.equalsIgnoreCase(""))
+            fleetId = ExerelinConfig.getExerelinFactionConfig(factionLeaderId).customRebelFleetId;
+
         SectorEntityToken planet = (SectorEntityToken)starSystemAPI.getPlanets().get(ExerelinUtils.getRandomInRange(1, starSystemAPI.getPlanets().size() - 1));
 
-        CampaignFleetAPI newRebelFleet = Global.getSector().createFleet(factionLeaderId, "exerelinGenericFleet");
+        CampaignFleetAPI newRebelFleet;
+        if(ExerelinConfig.getExerelinFactionConfig(factionLeaderId).customRebelFaction.equalsIgnoreCase(""))
+            newRebelFleet = Global.getSector().createFleet(factionLeaderId, fleetId);
+        else
+            newRebelFleet = Global.getSector().createFleet(rebelFAPI.getId(), fleetId);
+
         ExerelinUtilsFleet.sortByFleetCost(newRebelFleet);
 
         // Reduce size of rebel fleet to contain ships of close to the same fleet points as the player fleet

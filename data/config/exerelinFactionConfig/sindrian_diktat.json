@@ -1,13 +1,18 @@
 {
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
-    "preferredBackgroundImagePath":"graphics/backgrounds/background4.jpg", # String
-    "changeBackgroundOnSystemLockdown":"false", # Boolean
+
+    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
+    "preferredBackgroundImagePath":"", # String
+    "preferredStarType":"", # String
+    "preferredStarLight":"", # String, 123,123,123
 
     "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Port", "Quey", "Habitat", "Shipyard"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
 
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Dissenters", # String
 
     "smallAttackFleetName":"Scout", # String

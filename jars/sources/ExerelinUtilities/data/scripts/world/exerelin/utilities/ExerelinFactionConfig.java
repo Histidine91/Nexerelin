@@ -9,14 +9,19 @@ public class ExerelinFactionConfig
     public String factionId;
 
     public String[] stationInteriorIllustrationKeys = new String[]{"hound_hangar"};
-    public String preferredBackgroundImagePath = "graphics/backgrounds/background4.jpg";
-    public Boolean changeBackgroundOnSystemLockdown = false;
+
+    public Boolean changeSystemSpecsOnSystemLockdown = false;
+    public String preferredBackgroundImagePath = "";
+    public String preferredStarType = "";
+    public String preferredStarLight = "";
 
     public String[] stationNameSuffixes = new String[]{"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge"};
 
     public double crewExpereinceLevelIncreaseChance = 0.0;
     public double baseFleetCostMultiplier = 1.0;
 
+    public String customRebelFaction = "";
+    public String customRebelFleetId = "";
     public String rebelFleetSuffix = "Dissenters";
 
     public String smallAttackFleetName = "Advance Force";
@@ -55,14 +60,19 @@ public class ExerelinFactionConfig
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelinFactionConfig/" + factionId + ".json");
 
             stationInteriorIllustrationKeys = JSONArrayToStringArray(settings.getJSONArray("stationInteriorIllustrationKeys"));
+
+            changeSystemSpecsOnSystemLockdown = settings.getBoolean("changeSystemSpecsOnSystemLockdown");
             preferredBackgroundImagePath = settings.getString("preferredBackgroundImagePath");
-            changeBackgroundOnSystemLockdown = settings.getBoolean("changeBackgroundOnSystemLockdown");
+            preferredStarType = settings.getString("preferredStarType");
+            preferredStarLight = settings.getString("preferredStarLight");
 
             stationNameSuffixes = JSONArrayToStringArray(settings.getJSONArray("stationNameSuffixes"));
 
             crewExpereinceLevelIncreaseChance = settings.getDouble("crewExpereinceLevelIncreaseChance");
             baseFleetCostMultiplier = settings.getDouble("baseFleetCostMultiplier");
 
+            customRebelFaction = settings.getString("customRebelFaction");
+            customRebelFleetId = settings.getString("customRebelFleetId");
             rebelFleetSuffix = settings.getString("rebelFleetSuffix");
 
             smallAttackFleetName = settings.getString("smallAttackFleetName");
@@ -90,7 +100,8 @@ public class ExerelinFactionConfig
         }
         catch(Exception e)
         {
-            System.out.println("EXERELIN ERROR: Unable to load faction config for: " + this.factionId + ", " + e.getMessage());
+            System.out.println("EXERELIN ERROR: Unable to load faction config for: " + this.factionId);
+            System.out.println(e.getMessage());
         }
     }
 
