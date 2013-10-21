@@ -289,7 +289,8 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
             for(int i = 0; i < allies.size(); i++)
             {
-                textPanel.addParagraph(Global.getSector().getFaction(allies.get(i)).getDisplayName());
+                if(!allies.get(i).equalsIgnoreCase(this.station.getFaction().getId()))
+                    textPanel.addParagraph(Global.getSector().getFaction(allies.get(i)).getDisplayName());
             }
         }
         else if(value == -1)
@@ -303,7 +304,9 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
             for(int i = 0; i < enemies.size(); i++)
             {
-                if(!enemies.get(i).equalsIgnoreCase("rebel") && !enemies.get(i).equalsIgnoreCase("abandoned"))
+                if(!enemies.get(i).equalsIgnoreCase("rebel")
+                        && !enemies.get(i).equalsIgnoreCase("abandoned")
+                        && !enemies.get(i).equalsIgnoreCase("gedune_drone"))
                     textPanel.addParagraph(Global.getSector().getFaction(enemies.get(i)).getDisplayName());
             }
         }
