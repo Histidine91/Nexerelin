@@ -148,7 +148,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
                 if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) >= 1)
                 {
                     lastTimeCheck = Global.getSector().getClock().getTimestamp();
-                    if(ExerelinUtils.boardStationAttempt(theFleet, stationTarget.getStationToken(), false, true))
+                    if(stationTarget != null && ExerelinUtils.boardStationAttempt(theFleet, stationTarget.getStationToken(), false, true))
                         boarding = false;
                     else
                         setFleetAssignments(theFleet);
