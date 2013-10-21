@@ -100,6 +100,9 @@ public class AsteroidMiningFleetSpawnPoint extends BaseSpawnPoint
 	private Script createTestTargetScript() {
 		return new Script() {
 			public void run() {
+                if(ExerelinData.getInstance().getSectorManager() == null)
+                    return; //TODO - Remove when scripts do not run before after game load
+
 				if(!returningHome && theFleet.getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource) < fleetCargoCapacity)
 				{
 					// Mine more supplies
