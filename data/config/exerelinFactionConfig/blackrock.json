@@ -19,9 +19,9 @@
     "mediumAttackFleetName":"Hunter-Killer Detachment", # String
     "largeAttackFleetName":"Combine Warfleet", # String
 
-    "smallDefenceFleetName":"Patrol", # String
-    "mediumDefenceFleetName":"Patrol Fleet", # String
-    "largeDefenceFleetName":"Security Detachment", # String
+    "smallDefenceFleetName":"Picket Defense", # String
+    "mediumDefenceFleetName":"Security Fleet", # String
+    "largeDefenceFleetName":"Garrison Detachment", # String
 
     "smallPatrolFleetName":"Lookout", # String
     "mediumPatrolFleetName":"Patrol Fleet", # String
