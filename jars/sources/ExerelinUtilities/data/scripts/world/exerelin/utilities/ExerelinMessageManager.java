@@ -13,10 +13,10 @@ public class ExerelinMessageManager
 
     public void addMessage(ExerelinMessage message)
     {
-        this.messages.add(0, message);
+        this.messages.add(message);
 
         if(this.messages.size() > 20)
-            this.messages.remove(20);
+            this.messages.remove(0);
     }
 
     public List<ExerelinMessage> getMessages()
