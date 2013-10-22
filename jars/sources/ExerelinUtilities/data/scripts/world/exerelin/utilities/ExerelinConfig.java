@@ -19,6 +19,8 @@ public class ExerelinConfig
     public static boolean enableThreading = true;
     // Use multiple larger backgrounds
     public static boolean useMultipleBackgroundsAndStars = true;
+    // Use custom faction configs
+    public static boolean useCustomFactionConfigs = true;
 
     // Randomise the location of the omnifactory
     public static boolean randomOmnifactoryLocation = false;
@@ -59,6 +61,7 @@ public class ExerelinConfig
 
             enableThreading = settings.getBoolean("enableThreading");
             useMultipleBackgroundsAndStars = settings.getBoolean("useMultipleBackgroundsAndStars");
+            useCustomFactionConfigs = settings.getBoolean("useCustomFactionConfigs");
 
             randomOmnifactoryLocation = settings.getBoolean("randomOmnifactoryLocation");
 
@@ -104,7 +107,7 @@ public class ExerelinConfig
                     && !faction.getId().equalsIgnoreCase("player")
                     && !faction.getId().equalsIgnoreCase("neutral")
                     && !faction.getId().equalsIgnoreCase("rebel"))
-                ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(faction.getId()));
+                ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(faction.getId(), ExerelinConfig.useCustomFactionConfigs));
             }
         }
     }

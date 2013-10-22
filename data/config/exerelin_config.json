@@ -1,6 +1,7 @@
 {
     "enableThreading":true, # Boolean
     "useMultipleBackgroundsAndStars":true, # Boolean
+    "useCustomFactionConfigs":true, # Boolean
 
     "randomOmnifactoryLocation":false, # Boolean
 

@@ -47,10 +47,11 @@ public class ExerelinFactionConfig
     public String[] factionsLiked = new String[]{};
     public String[] factionsDisliked = new String[]{};
 
-    public ExerelinFactionConfig(String factionId)
+    public ExerelinFactionConfig(String factionId, boolean load)
     {
         this.factionId = factionId;
-        loadFactionConfig();
+        if(load)
+            loadFactionConfig();
     }
 
     public void loadFactionConfig()
