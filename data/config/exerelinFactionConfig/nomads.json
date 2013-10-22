@@ -1,40 +1,40 @@
 {
-    "stationInteriorIllustrationKeys":["hound_hangar"], # String array
+    "stationInteriorIllustrationKeys":["desert_moons_ruins"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
-    "preferredBackgroundImagePath":"", # String
-    "preferredStarType":"", # String
-    "preferredStarLight":"", # String, 123,123,123
+    "preferredBackgroundImagePath":"graphics/backgrounds/background2.jpg", # String
+    "preferredStarType":"star_blue", # String
+    "preferredStarLight":"160,160,255", # String, 123,123,123
 
-    "stationNameSuffixes":["Base", "Orbital", "HQ", "Dock", "Shipyard"], # String array
+    "stationNameSuffixes":["Refuge", "Waystation", "Port", "Outpost", "Shelter"], # String array
 
     "crewExpereinceLevelIncreaseChance":1.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":0.1, # Double
+    "baseFleetCostMultiplier":0.08, # Double
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
+    "customRebelFaction":"nomads", # String
+    "customRebelFleetId":"exerelinNomadRebels", # String
     "rebelFleetSuffix":"Traitors", # String
 
-    "smallAttackFleetName":"Scout", # String
+    "smallAttackFleetName":"Death Commandos", # String
     "mediumAttackFleetName":"Battle Group", # String
     "largeAttackFleetName":"Jihad Death Fleet", # String
 
-    "smallDefenceFleetName":"Watch Fleet", # String
-    "mediumDefenceFleetName":"Guard Fleet", # String
-    "largeDefenceFleetName":"Royal Guard", # String
+    "smallDefenceFleetName":"Long-Range Scout", # String
+    "mediumDefenceFleetName":"Royal Guard", # String
+    "largeDefenceFleetName":"Carrier Group", # String
 
-    "smallPatrolFleetName":"Patrol", # String
-    "mediumPatrolFleetName":"Patrol Group", # String
-    "largePatrolFleetName":"Armada", # String
+    "smallPatrolFleetName":"Scout", # String
+    "mediumPatrolFleetName":"Battle Group", # String
+    "largePatrolFleetName":"Carrier Group", # String
 
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
-    "logisticsFleetName":"Logistics Convoy", # String
+    "logisticsFleetName":"Colony Transport Group", # String
     "boardingFleetName":"Boarding Fleet", # String
-    "commandFleetName":"Command Fleet", # String
+    "commandFleetName":"Royal Command Fleet", # String
 
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
+    "factionsLiked":["independent","neutral"], # String array
     "factionsDisliked":[], # String array
 }
