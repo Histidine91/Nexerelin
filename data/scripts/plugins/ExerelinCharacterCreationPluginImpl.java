@@ -258,7 +258,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 	{
 		stage++;
         if (response == ONE_SYSTEM)
-        ExerelinData.getInstance().numSystems = 1;
+            ExerelinData.getInstance().numSystems = 1;
         else if (response == TWO_SYSTEMS)
             ExerelinData.getInstance().numSystems = 2;
         else if (response == FOUR_SYSTEMS)
