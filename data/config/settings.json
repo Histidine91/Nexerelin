@@ -1,3 +1,3 @@
 {
-	"compressSaveGameData":true, # smaller files, much faster saving/loading, but can't be edited by hand
+	"compressSaveGameData":false, # smaller files, much faster saving/loading, but can't be edited by hand
 }

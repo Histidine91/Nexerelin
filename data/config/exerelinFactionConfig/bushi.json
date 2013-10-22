@@ -4,7 +4,7 @@
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
     "preferredBackgroundImagePath":"", # String
     "preferredStarType":"", # String
-    "preferredStarLight":"", # String, 123,123,123
+    "preferredStarLight":"", # String, 0xFFFFFF
 
     "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Port", "Quey", "Habitat", "Shipyard"], # String array
 

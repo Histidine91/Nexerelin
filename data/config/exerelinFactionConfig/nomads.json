@@ -4,15 +4,15 @@
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
     "preferredBackgroundImagePath":"graphics/backgrounds/background2.jpg", # String
     "preferredStarType":"star_blue", # String
-    "preferredStarLight":"160,160,255", # String, 123,123,123
+    "preferredStarLight":"160,160,255", # String, 0xFFFFFF
 
     "stationNameSuffixes":["Refuge", "Waystation", "Port", "Outpost", "Shelter"], # String array
 
-    "crewExpereinceLevelIncreaseChance":1.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":0.08, # Double
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
 
-    "customRebelFaction":"nomads", # String
-    "customRebelFleetId":"exerelinNomadRebels", # String
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Traitors", # String
 
     "smallAttackFleetName":"Death Commandos", # String
