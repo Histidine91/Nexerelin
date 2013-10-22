@@ -1,6 +1,7 @@
 package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.campaign.*;
+import java.awt.*;
 
 public class SystemManager
 {
@@ -9,12 +10,20 @@ public class SystemManager
 
 	private StarSystemAPI starSystemAPI;
 
+    private String originalBackgroundImage;
+    private String originalStarSpec;
+    private Color originalLightColor;
+
 	public SystemManager(SectorAPI sectorAPI, StarSystemAPI starSystemAPI)
 	{
 		this.starSystemAPI = starSystemAPI;
 
 		systemStationManager = new SystemStationManager(sectorAPI, this.starSystemAPI);
 		systemEventManager = new SystemEventManager(this.starSystemAPI);
+
+        this.originalBackgroundImage = starSystemAPI.getBackgroundTextureFilename();
+        this.originalStarSpec = starSystemAPI.getStar().getTypeId();
+        this.originalLightColor = starSystemAPI.getLightColor();
 	}
 
 	public String getStarSystemName()
@@ -81,6 +90,21 @@ public class SystemManager
     public void setStationOwner(SectorEntityToken station, String newOwnerFactionId, Boolean displayMessage, Boolean updateRelationship)
     {
         systemStationManager.setStationOwner(station, newOwnerFactionId, displayMessage, updateRelationship);
+    }
+
+    public String getOriginalBackgroundImage()
+    {
+        return  originalBackgroundImage;
+    }
+
+    public String getOriginalStarSpec()
+    {
+        return  originalStarSpec;
+    }
+
+    public Color getOriginalLightColor()
+    {
+        return originalLightColor;
     }
 
 	public static SystemManager getSystemManagerForSystem(String systemName)

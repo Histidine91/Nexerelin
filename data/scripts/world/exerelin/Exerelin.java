@@ -3,6 +3,8 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.exerelin.commandQueue.CommandQueue;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
+import data.scripts.world.exerelin.utilities.ExerelinMessageManager;
 
 @SuppressWarnings("unchecked")
 public class Exerelin //implements SectorGeneratorPlugin
@@ -10,30 +12,6 @@ public class Exerelin //implements SectorGeneratorPlugin
 	public void generate(SectorAPI sector)
 	{
         System.out.println("Starting setup...");
-
-        /*for(int i = 0; i < sector.getStarSystems().size(); i++)
-        {
-            System.out.println(((StarSystemAPI) sector.getStarSystems().get(i)).getName());
-            StarSystemAPI system = ((StarSystemAPI) sector.getStarSystems().get(i));
-
-            for(int j = 0; j < system.getSpawnPoints().size(); j++)
-            {
-                SpawnPointPlugin spawnPointPlugin = (SpawnPointPlugin)system.getSpawnPoints().get(j);
-                System.out.println("Removing spawnpoint");
-                system.removeSpawnPoint(spawnPointPlugin);
-            }
-
-            for(int k = 0; k < system.getEntities(BaseSpawnPoint.class).size(); k++)
-            {
-                System.out.println("Found baseSpawnPoint");
-            }
-
-            for(int l = 0; l < system.getOrbitalStations().size(); l++)
-            {
-                SectorEntityToken station = (SectorEntityToken)system.getOrbitalStations().get(l);
-                station.setFaction("abandoned");
-            }
-        }*/
 
         ExerelinData.getInstance().resetAvailableFactions();
 
@@ -51,25 +29,27 @@ public class Exerelin //implements SectorGeneratorPlugin
         sectorManager.setMaxSystemSize(ExerelinData.getInstance().maxSystemSize);
         sectorManager.setPlayerStartShipVariant(ExerelinData.getInstance().getPlayerStartingShipVariant());
 
-        // Add sector manager to cache
+        // Set sector manager reference in cache and persistent storage
         ExerelinData.getInstance().setSectorManager(sectorManager);
+        Global.getSector().getPersistentData().put("SectorManager", sectorManager);
+
+        // Build a message manager object and add to persistent storage
+        ExerelinMessageManager exerelinMessageManager = new ExerelinMessageManager();
+        Global.getSector().getPersistentData().put("ExerelinMessageManager", exerelinMessageManager);
 
         sectorManager.setupFactionDirectors();
 
         // Build and add a time mangager
         TimeManager timeManger = new TimeManager();
-        timeManger.sectorManagerRef = sectorManager;
-        ((StarSystemAPI)sector.getStarSystems().get(0)).addSpawnPoint(timeManger);
+        Global.getSector().addScript(timeManger);
 
         // Add a EveryFrameScript command queue to handle synchronous-only events
         CommandQueue commandQueue = new CommandQueue();
         Global.getSector().addScript(commandQueue);
         sectorManager.setCommandQueue(commandQueue);
 
-		// Check that player picked faction is available
-		this.checkPlayerFactionPick(sector);
-
 		// Set abandoned as enemy of every faction
+        ExerelinConfig.loadSettings();
 		this.initFactionRelationships(sector);
 
 		// Build off map initial station attack fleets in random systems
@@ -79,20 +59,6 @@ public class Exerelin //implements SectorGeneratorPlugin
 		this.initTraderSpawns(sector);
 
         System.out.println("Finished generation and setup...");
-	}
-
-	private void checkPlayerFactionPick(SectorAPI sector)
-	{
-		String[] availableFactions = ExerelinData.getInstance().getAvailableFactions(sector);
-		Boolean pickOK = false;
-		for(int i = 0; i < availableFactions.length; i = i + 1)
-		{
-			if(ExerelinData.getInstance().getPlayerFaction().equalsIgnoreCase(availableFactions[i]))
-			pickOK = true;
-		}
-
-		if(!pickOK)
-			ExerelinData.getInstance().resetPlayerFaction();
 	}
 
 	private void initStationAttackFleets(SectorAPI sector)
@@ -126,9 +92,18 @@ public class Exerelin //implements SectorGeneratorPlugin
 			sector.getFaction(factions[i]).setRelationship("abandoned", -1);
             sector.getFaction(factions[i]).setRelationship("rebel", -1);
             sector.getFaction(factions[i]).setRelationship("independent", 0);
+
+            String customRebelFactionId = ExerelinConfig.getExerelinFactionConfig(factions[i]).customRebelFaction;
+            if(!customRebelFactionId.equalsIgnoreCase(""))
+            {
+                for(int j = 0; j < factions.length; j = j + 1)
+                {
+                        sector.getFaction(factions[j]).setRelationship(customRebelFactionId, -1);
+                }
+            }
 		}
 
-		// Set indpendant and rebels to hate each other
+		// Set independent and rebels to hate each other
 		FactionAPI rebel = sector.getFaction("rebel");
 		FactionAPI independent = sector.getFaction("independent");
 		rebel.setRelationship(independent.getId(), -1);

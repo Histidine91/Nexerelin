@@ -4,6 +4,8 @@ import java.awt.Color;
 
 import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
+import data.scripts.world.exerelin.utilities.ExerelinMessageManager;
+import data.scripts.world.exerelin.utilities.ExerelinMessage;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFaction;
 import org.lwjgl.input.Keyboard;
 import org.json.JSONObject;
@@ -28,6 +30,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         PLANT_SABOTEUR,
         DISPLAY_ALLIES,
         DISPLAY_ENEMIES,
+        DISPLAY_MESSAGES,
         LEAVE,
     }
 
@@ -125,6 +128,9 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             case DISPLAY_ENEMIES:
                 this.displayRleationships(-1);
                 break;
+            case DISPLAY_MESSAGES:
+                this.displayMessages();
+                break;
             case LEAVE:
                 Global.getSector().setPaused(false);
                 dialog.dismiss();
@@ -212,13 +218,13 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             }
         }
 
-        // If we own station, display diplomacy reports
+        //display diplomacy reports and message history
         if(!station.getFaction().getId().equalsIgnoreCase("abandoned") && !station.getFaction().getId().equalsIgnoreCase("rebel"))
         {
             options.addOption("Alliance Report", OptionId.DISPLAY_ALLIES);
             options.addOption("Enemy Report", OptionId.DISPLAY_ENEMIES);
         }
-
+        options.addOption("Display Messages", OptionId.DISPLAY_MESSAGES);
         options.addOption("Leave", OptionId.LEAVE);
     }
 
@@ -272,7 +278,6 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
     public void displayRleationships(int value)
     {
-        String playerFaction = Global.getSector().getPlayerFleet().getFaction().getId();
         if(value == 1)
         {
             // Display allies
@@ -284,7 +289,8 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
             for(int i = 0; i < allies.size(); i++)
             {
-                textPanel.addParagraph(Global.getSector().getFaction(allies.get(i)).getDisplayName());
+                if(!allies.get(i).equalsIgnoreCase(this.station.getFaction().getId()))
+                    textPanel.addParagraph(Global.getSector().getFaction(allies.get(i)).getDisplayName());
             }
         }
         else if(value == -1)
@@ -298,12 +304,26 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
             for(int i = 0; i < enemies.size(); i++)
             {
-                if(!enemies.get(i).equalsIgnoreCase("rebel") && !enemies.get(i).equalsIgnoreCase("abandoned"))
+                if(!enemies.get(i).equalsIgnoreCase("rebel")
+                        && !enemies.get(i).equalsIgnoreCase("abandoned")
+                        && !enemies.get(i).equalsIgnoreCase("gedune_drone"))
                     textPanel.addParagraph(Global.getSector().getFaction(enemies.get(i)).getDisplayName());
             }
         }
     }
 
+    public void displayMessages()
+    {
+        List<ExerelinMessage> messages = ((ExerelinMessageManager)Global.getSector().getPersistentData().get("ExerelinMessageManager")).getMessages();
+
+        for(ExerelinMessage message : messages)
+        {
+            if(message.color == null)
+                textPanel.addParagraph(message.message);
+            else
+                textPanel.addParagraph(message.message, message.color);
+        }
+    }
 }
 
 

@@ -27,6 +27,8 @@ public class ExerelinGen implements SectorGeneratorPlugin
 
         sector.registerPlugin(new CoreCampaignPluginImpl());
         sector.registerPlugin(new ExerelinCoreCampaignPlugin());
+
+        System.out.println("Finished generation...");
 	}
 
 	public void buildSystem(SectorAPI sector)
@@ -52,23 +54,111 @@ public class ExerelinGen implements SectorGeneratorPlugin
 
         // Set star/light colour/background
         SectorEntityToken star;
-        if(ExerelinUtils.getRandomInRange(0,1) == 0)
+
+        int starType = 0;
+        if(ExerelinConfig.useMultipleBackgroundsAndStars)
+            starType = ExerelinUtils.getRandomInRange(0, 10);
+        else
+            starType = ExerelinUtils.getRandomInRange(0, 1);
+
+        if(starType == 0)
         {
-            star = system.initStar("star_yellow", Color.yellow, 500f);
+            star = system.initStar("star_yellow", 500f);
             //system.setLightColor(new Color(255, 180, 180));
             if(ExerelinUtils.getRandomInRange(0,1) == 0)
                 system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
             else
                 system.setBackgroundTextureFilename("graphics/backgrounds/background2.jpg");
         }
-        else
+        else if(starType == 1)
         {
-            star = system.initStar("star_red", Color.red, 900f);
+            star = system.initStar("star_red", 900f);
             system.setLightColor(new Color(255, 180, 180));
             if(ExerelinUtils.getRandomInRange(0,1) == 0)
                 system.setBackgroundTextureFilename("graphics/backgrounds/background3.jpg");
             else
                 system.setBackgroundTextureFilename("graphics/backgrounds/background1.jpg");
+        }
+        else if(starType == 2)
+        {
+            star = system.initStar("star_blue", 400f);
+            system.setLightColor(new Color(135,206,250));
+            if(ExerelinUtils.getRandomInRange(0,1) == 0)
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/blue_background1.jpg");
+            else
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/blue_background2.jpg");
+        }
+        else if(starType == 3)
+        {
+            star = system.initStar("star_white", 300f);
+            //system.setLightColor(new Color(185,185,240));
+            if(ExerelinUtils.getRandomInRange(0,1) == 0)
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/white_background1.jpg");
+            else
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/white_background2.jpg");
+        }
+        else if(starType == 4)
+        {
+            star = system.initStar("star_orange", 900f);
+            system.setLightColor(new Color(255,220,0));
+            if(ExerelinUtils.getRandomInRange(0,1) == 0)
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/orange_background1.jpg");
+            else
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/orange_background2.jpg");
+        }
+        else if(starType == 5)
+        {
+            star = system.initStar("star_yellowwhite", 400f);
+            system.setLightColor(new Color(255,255,224));
+            if(ExerelinUtils.getRandomInRange(0,1) == 0)
+                system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
+            else
+                system.setBackgroundTextureFilename("graphics/backgrounds/background2.jpg");
+        }
+        else if(starType == 6)
+        {
+            star = system.initStar("star_bluewhite", 400f);
+            system.setLightColor(new Color(135,206,250));
+            if(ExerelinUtils.getRandomInRange(0,1) == 0)
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/bluewhite_background1.jpg");
+            else
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/bluewhite_background2.jpg");
+        }
+        else if(starType == 7)
+        {
+            star = system.initStar("star_purple", 700f);
+            system.setLightColor(new Color(218,112,214));
+            if(ExerelinUtils.getRandomInRange(0,1) == 0)
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/purple_background1.jpg");
+            else
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/purple_background2.jpg");
+        }
+        else if(starType == 8)
+        {
+            star = system.initStar("star_dark", 700f);
+            system.setLightColor(new Color(105,105,105));
+            if(ExerelinUtils.getRandomInRange(0,1) == 0)
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/dark_background1.jpg");
+            else
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/dark_background2.jpg");
+        }
+        else if(starType == 9)
+        {
+            star = system.initStar("star_green", 600f);
+            system.setLightColor(new Color(240,255,240));
+            if(ExerelinUtils.getRandomInRange(0,1) == 0)
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/green_background1.jpg");
+            else
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/green_background2.jpg");
+        }
+        else
+        {
+            star = system.initStar("star_greenwhite", 600f);
+            system.setLightColor(new Color(240,255,240));
+            if(ExerelinUtils.getRandomInRange(0,1) == 0)
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/greenwhite_background1.jpg");
+            else
+                system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/greenwhite_background1.jpg");
         }
 
 
@@ -218,7 +308,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
 				orbitRadius = ExerelinUtils.getRandomInRange(700, 900);
 				numAsteroids = 2;
 			}
-			else if (planet.getFullName().contains(system.getStar().getFullName()))
+			else if (planet.getFullName().equalsIgnoreCase(system.getStar().getFullName()))
 			{
 				orbitRadius = ExerelinUtils.getRandomInRange(1000, 8000);
 				numAsteroids = 50;

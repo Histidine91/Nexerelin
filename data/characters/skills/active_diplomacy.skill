@@ -11,8 +11,8 @@
 			]
 		},
 		{
-			"name":"New Item",
-			"requiredSkillLevel":5,
+			"name":"Sabateur Available",
+			"requiredSkillLevel":3,
 			"effectBasedOnLevel":false,
 			"effects":[
 				{			

@@ -1,0 +1,84 @@
+{
+	id:"gedune_drone",
+	"color":[60,100,10,255],
+	"displayName":"MAIS Drone",
+	"shipNamePrefix":"MAIS",
+	"shipNameSources":{
+		"DRONE_SHIPS":2,
+	},
+	"description":"No description yet.",
+	"names":{
+		"DRONE_AI":1,
+	},
+	"portraits":{
+		"standard_male":[
+			"graphics/gedune/portraits/portrait_drone.png",
+			"graphics/gedune/portraits/portrait_drone2.png",
+			"graphics/gedune/portraits/portrait_drone3.png",
+			"graphics/gedune/portraits/portrait_drone4.png",
+			"graphics/gedune/portraits/portrait_drone5.png",
+			"graphics/gedune/portraits/portrait_drone6.png",
+			"graphics/gedune/portraits/portrait_drone7.png",
+			"graphics/gedune/portraits/portrait_drone8.png"
+		],
+		"standard_female":[
+			"graphics/gedune/portraits/portrait_drone.png",
+			"graphics/gedune/portraits/portrait_drone2.png",
+			"graphics/gedune/portraits/portrait_drone3.png",
+			"graphics/gedune/portraits/portrait_drone4.png",
+			"graphics/gedune/portraits/portrait_drone5.png",
+			"graphics/gedune/portraits/portrait_drone6.png",
+			"graphics/gedune/portraits/portrait_drone7.png",
+			"graphics/gedune/portraits/portrait_drone8.png"
+		],
+	},
+	"fleetCompositions":{
+		"drone_r":{
+			"displayName":"Raiders",
+			"maxFleetPoints":100,
+			"daysWorthOfSupplies":[15, 20],
+			"lyWorthOfFuel":[10, 15],
+			"extraCrewPercent":[0, 0],
+			"marinesPercent":[0, 0],
+			"ships":{
+				"gedune_bakoros_variant":[2, 2],
+				"gedune_bakoros_variant2":[1, 1],
+				"gedune_muragatta_variant":[1, 1],
+				"gedune_tychrea_variant":[2, 2],
+				"gedune_viper_wing":[3, 3]
+				
+			},
+		},
+		"exerelinInSystemSupplyConvoy":{
+            "displayName":"In-System Supply Convoy",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "gedune_mozok_f_variant1":[1, 3],
+            },
+        },
+	},
+	"traits":{
+		"admiral":{
+			
+		},
+		"captain":{
+			"cowardly":0,
+			"cautious":0,
+			"steady":5,
+			"aggressive":0,
+			"suicidal":0,
+			"fearless":0,
+		},
+	},
+	"dialogue":{
+		"greetingFriendly":"KNOWN NON-HOSTILE TARGET IDENTIFIED - INITIATE AUDIO PLAYBACK: We like you! END TRANSMISSION",
+		"greetingNeutral":"UNCLASSIFIED TARGET ENCOUNTERED - IDENTIFICATION REQUIRED - INITIATE STANDARD AUDIO PLAYBACK: We're on a routine mission with no hostile intent. Keep your distance and we'll do the same. END TRANSMISSION",
+		"greetingHostileAggressive":"HOSTILE TARGET ACQUIRED - INITIATE AUDIO PLAYBACK: Die, pathetic meat sacks! END TRANSMISSION",
+		"greetingHostileTimid":"DEFEAT PROBABLE - INITIATE DATA PURGE PROCEDURES",
+	}
+	
+},

@@ -81,13 +81,13 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
             ExerelinUtils.renameFleet(fleet, "attack");
             ExerelinUtils.addFreightersToFleet(fleet);
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.ownerFactionId));
-            ExerelinUtilsFleet.fleetOrderReset(fleet);
+            ExerelinUtilsFleet.sortByHullSize(fleet);
 
             if(((StarSystemAPI)stationTarget.getStationToken().getContainingLocation()).getName().equalsIgnoreCase(((StarSystemAPI)getAnchor().getContainingLocation()).getName()) || FactionDirector.getFactionDirectorForFactionId(this.ownerFactionId).getTargetResupplyEntityToken() == null)
 			    fleet.setPreferredResupplyLocation(getAnchor());
             else
                 fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(this.ownerFactionId).getTargetResupplyEntityToken());
-
+            fleet.getCommander().setPersonality("aggressive");
 			setFleetAssignments(fleet);
 
             this.getFleets().add(fleet);
@@ -106,7 +106,7 @@ public class AttackFleetSpawnPoint extends BaseSpawnPoint
 	private void setFleetAssignments(CampaignFleetAPI fleet)
 	{
 		fleet.clearAssignments();
-		if(stationTarget == null)
+		if(stationTarget == null || stationTarget.getOwner() == null)
 		{
 			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, getAnchor(), 1000);
 		}

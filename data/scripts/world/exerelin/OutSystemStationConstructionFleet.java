@@ -36,10 +36,10 @@ public class OutSystemStationConstructionFleet
 		this.spawnPoint = ExerelinUtils.getRandomOffMapPoint(theLocation);
 
 		CampaignFleetAPI fleet = theSector.createFleet(faction, type);
-
+        fleet.getCommander().setPersonality("cautious");
 		theLocation.spawnFleet(spawnPoint, 0, 0, fleet);
 		theFleet = fleet;
-		fleet.setPreferredResupplyLocation(theTarget);
+		fleet.setPreferredResupplyLocation(theTarget.getOrbit().getFocus());
 
 		Script arriveScript = createArrivedScript();
 
@@ -57,9 +57,10 @@ public class OutSystemStationConstructionFleet
 				if(theAssignment.equalsIgnoreCase("storage"))
 				{
 					int orbitRadius = 300;
-					if (theTarget.getFullName().contains(" I") || theTarget.getFullName().contains(" II") || theTarget.getFullName().contains(" III"))
+
+					if (((PlanetAPI)theTarget).isMoon())
 						orbitRadius = 200;
-					else if(theTarget.getFullName().contains("Gaseous"))
+					else if(((PlanetAPI)theTarget).isGasGiant())
 						orbitRadius = 500;
 					SectorEntityToken storage = theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Storage Facility", "neutral");
 					storage.getCargo().setFreeTransfer(true);
@@ -69,9 +70,9 @@ public class OutSystemStationConstructionFleet
 				else if (theAssignment.equalsIgnoreCase("omnifac"))
 				{
 					int orbitRadius = 300;
-					if (theTarget.getFullName().contains(" I") || theTarget.getFullName().contains(" II") || theTarget.getFullName().contains(" III"))
+					if (((PlanetAPI)theTarget).isMoon())
 						orbitRadius = 200;
-					else if(theTarget.getFullName().contains("Gaseous"))
+					else if(((PlanetAPI)theTarget).isGasGiant())
 						orbitRadius = 500;
 
                     OmniFac factory = new OmniFac(theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Omnifactory", "independent"));

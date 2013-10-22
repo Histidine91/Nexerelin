@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.awt.*;
 import java.util.List;
@@ -28,8 +29,7 @@ public class EventAddObjectToStorage extends EventBase
                 if(station.getFullName().contains("Storage"))
                 {
                     station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
-                    System.out.println("EVENT: An agent is available at your storage facility.");
-                    Global.getSector().addMessage("An agent is available at your storage facility.", Color.green);
+                    ExerelinUtilsMessaging.addMessage("An agent is available at your storage facility.", Color.green);
                 }
             }
         }
@@ -47,8 +47,7 @@ public class EventAddObjectToStorage extends EventBase
                 if(station.getFullName().contains("Storage"))
                 {
                     station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
-                    System.out.println("EVENT: A prisoner of war has been jailed at your storage facility.");
-                    Global.getSector().addMessage("A prisoner of war has been jailed at your storage facility.", Color.green);
+                    ExerelinUtilsMessaging.addMessage("A prisoner of war has been jailed at your storage facility.", Color.green);
                 }
             }
         }
@@ -66,8 +65,7 @@ public class EventAddObjectToStorage extends EventBase
                 if(station.getFullName().contains("Storage"))
                 {
                     station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
-                    System.out.println("EVENT: A sabateur is available at your storage facility.");
-                    Global.getSector().addMessage("A sabateur is available at your storage facility.", Color.green);
+                    ExerelinUtilsMessaging.addMessage("A sabateur is available at your storage facility.", Color.green);
                 }
             }
         }

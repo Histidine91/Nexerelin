@@ -3,6 +3,7 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.awt.*;
 
@@ -63,11 +64,9 @@ public class EventStationSeccession extends EventBase
 		if(station != null)
 		{
 			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-				Global.getSector().addMessage(station.getStationToken().getFullName() + " has secceded to " + factionId + "!", Color.MAGENTA);
+				ExerelinUtilsMessaging.addMessage(station.getStationToken().getFullName() + " has secceded to " + factionId + "!", Color.MAGENTA);
 			else
-				Global.getSector().addMessage(station.getStationToken().getFullName() + " has secceded to " + factionId + "!");
-
-			System.out.println("EVENT : Station secession at " + station.getStationToken().getFullName() + " to " + factionId + "(out system)");
+				ExerelinUtilsMessaging.addMessage(station.getStationToken().getFullName() + " has secceded to " + factionId + "!");
 
 			ExerelinData.getInstance().getSectorManager().getDiplomacyManager().declarePeaceWithAllFactions(factionId);
 			ExerelinData.getInstance().getSectorManager().getDiplomacyManager().createWarIfNoneExists(factionId);

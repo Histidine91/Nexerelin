@@ -7,7 +7,9 @@ import com.fs.starfarer.api.campaign.*;
 import data.scripts.world.BaseSpawnPoint;
 import data.scripts.world.exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
+import data.scripts.world.exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.awt.*;
 
@@ -59,8 +61,8 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 
 		CampaignFleetAPI fleet = getSector().createFleet(fleetOwningFactionId, type);
 
-	    DiplomacyRecord diplomacyRecord = ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRecordForFaction(fleetOwningFactionId);
-	    if (diplomacyRecord.hasWarTargetInSystem((StarSystemAPI)getLocation(), false))
+	    DiplomacyRecord diplomacyRecord = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(fleetOwningFactionId);
+	    if (diplomacyRecord.isAtWar())
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 3, 5, fleetOwningFactionId, getSector());
 	    else
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 1, 2, fleetOwningFactionId, getSector());
@@ -69,7 +71,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 		{
             ExerelinUtils.addFreightersToFleet(fleet);
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.2f, 0.8f, ExerelinUtils.getCrewXPLevelForFaction(this.fleetOwningFactionId));
-            ExerelinUtilsFleet.fleetOrderReset(fleet);
+            ExerelinUtilsFleet.sortByHullSize(fleet);
 
 			theFleet = fleet;
 
@@ -78,7 +80,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
             else
                 fleet.setPreferredResupplyLocation(FactionDirector.getFactionDirectorForFactionId(this.fleetOwningFactionId).getTargetResupplyEntityToken());
 
-            fleet.setName("Boarding Fleet");
+            fleet.setName(ExerelinConfig.getExerelinFactionConfig(this.fleetOwningFactionId).boardingFleetName);
 
 			setFleetAssignments(fleet);
 
@@ -133,8 +135,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					}
 					else if(!boarding && stationTarget.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
 					{
-						System.out.println("Player owned " + stationTarget.getStationToken().getFullName() + " being boarded by " + Global.getSector().getFaction(fleetOwningFactionId).getDisplayName());
-						Global.getSector().addMessage(stationTarget.getStationToken().getFullName() + " is being boarded by " + Global.getSector().getFaction(fleetOwningFactionId).getDisplayName(), Color.magenta);
+						ExerelinUtilsMessaging.addMessage(stationTarget.getStationToken().getFullName() + " is being boarded by " + Global.getSector().getFaction(fleetOwningFactionId).getDisplayName(), Color.magenta);
 					}
 				}
 
@@ -147,11 +148,8 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
                 if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) >= 1)
                 {
                     lastTimeCheck = Global.getSector().getClock().getTimestamp();
-                    if(ExerelinUtils.boardStationAttempt(theFleet, stationTarget.getStationToken(), false, true))
-                    {
+                    if(stationTarget != null && ExerelinUtils.boardStationAttempt(theFleet, stationTarget.getStationToken(), false, true))
                         boarding = false;
-                        return;
-                    }
                     else
                         setFleetAssignments(theFleet);
                 }
@@ -165,7 +163,7 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 	private Script createArrivedScript() {
 		return new Script() {
 			public void run() {
-				if(stationTarget != null && stationTarget.getOwner() != null && stationTarget.getOwner().getFactionId().equalsIgnoreCase(fleetOwningFactionId))
+				if(stationTarget != null && stationTarget.getOwner() != null && stationTarget.getOwner().getFactionId().equalsIgnoreCase(theFleet.getFaction().getId()))
 				{
 					// If we already own it deliver resources (as if we took it over), defend and despawn
 					CargoAPI cargo = stationTarget.getStationToken().getCargo();
@@ -173,11 +171,11 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					cargo.addFuel(80);
 					cargo.addMarines(40);
 					cargo.addSupplies(320);
-                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidBoardingFlagships(), true);
-                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
+                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidBoardingFlagships(), true, false);
+                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false, false);
                     ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleetOwningFactionId));
 				}
-				else if(stationTarget == null || (stationTarget.getOwner() != null && stationTarget.getOwner().getGameRelationship(fleetOwningFactionId) >= 0))
+				else if(stationTarget == null || (stationTarget.getOwner() != null && stationTarget.getOwner().getGameRelationship(theFleet.getFaction().getId()) >= 0))
 				{
 					// If neutral/ally owns station, go home
 					theFleet.clearAssignments();
@@ -189,8 +187,8 @@ public class InSystemStationAttackShipSpawnPoint extends BaseSpawnPoint
 					// Else, take over station
 					stationTarget.setOwner(theFleet.getFaction().getId(), true, true);
 					stationTarget.clearCargo();
-                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false);
-                    ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleetOwningFactionId));
+                    ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false, false);
+                    ExerelinUtils.resetFleetCargoToDefaults(theFleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(theFleet.getFaction().getId()));
 				}
 			}
 		};

@@ -2,8 +2,10 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import data.scripts.world.exerelin.commandQueue.CommandSpawnPrebuiltFleet;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 import java.awt.*;
@@ -21,6 +23,7 @@ public class EventRebelFleetSpawn extends EventBase
 	{
 		// DEFAULTS
         FactionAPI rebelFAPI = Global.getSector().getFaction("rebel");
+        String fleetId = "exerelinGenericFleet";
 
 		java.util.List fleets = starSystemAPI.getFleets();
 
@@ -40,39 +43,75 @@ public class EventRebelFleetSpawn extends EventBase
         if(factionLeaderId == null || factionLeaderId.equalsIgnoreCase(""))
             return;
 
+        if(!ExerelinConfig.getExerelinFactionConfig(factionLeaderId).customRebelFaction.equalsIgnoreCase(""))
+            rebelFAPI = Global.getSector().getFaction(ExerelinConfig.getExerelinFactionConfig(factionLeaderId).customRebelFaction);
+
+        if(!ExerelinConfig.getExerelinFactionConfig(factionLeaderId).customRebelFleetId.equalsIgnoreCase(""))
+            fleetId = ExerelinConfig.getExerelinFactionConfig(factionLeaderId).customRebelFleetId;
+
         SectorEntityToken planet = (SectorEntityToken)starSystemAPI.getPlanets().get(ExerelinUtils.getRandomInRange(1, starSystemAPI.getPlanets().size() - 1));
 
-        CampaignFleetAPI newRebelFleet = Global.getSector().createFleet(factionLeaderId, "exerelinGenericFleet");
+        CampaignFleetAPI newRebelFleet;
+        if(ExerelinConfig.getExerelinFactionConfig(factionLeaderId).customRebelFaction.equalsIgnoreCase(""))
+            newRebelFleet = Global.getSector().createFleet(factionLeaderId, fleetId);
+        else
+            newRebelFleet = Global.getSector().createFleet(rebelFAPI.getId(), fleetId);
 
+        ExerelinUtilsFleet.sortByFleetCost(newRebelFleet);
 
+        // Reduce size of rebel fleet to contain ships of close to the same fleet points as the player fleet
+        int playerFleetPoints = Global.getSector().getPlayerFleet().getFleetPoints();
+        int targetFleetPoints = ExerelinUtils.getRandomInRange(playerFleetPoints, playerFleetPoints * 3);
+        int rebelFleetPoints = newRebelFleet.getFleetPoints();
 
-        // Reduce size of rebel fleet to be close to player fleet
-        List members = newRebelFleet.getFleetData().getMembersListCopy();
-        int numToRemove = members.size() - Global.getSector().getPlayerFleet().getFleetData().getCombatReadyMembersListCopy().size();
-
-        numToRemove = numToRemove + ExerelinUtils.getRandomInRange(-2, 2);
-
-        if(numToRemove < 0)
-            numToRemove = 0;
-        else if(numToRemove > members.size() -1)
-            numToRemove = members.size() - 1;
-
-        for(int i = 0; i < numToRemove; i++)
-        {
-            List membersUpdated = newRebelFleet.getFleetData().getMembersListCopy();
-            FleetMemberAPI toRemove = (FleetMemberAPI)membersUpdated.get(ExerelinUtils.getRandomInRange(0, membersUpdated.size() - 1));
-            newRebelFleet.getFleetData().removeFleetMember(toRemove);
+        // Remove best ships until we're closer to player fleet size
+        while(rebelFleetPoints > (playerFleetPoints * 5) && newRebelFleet.getFleetData().getMembersListCopy().size() > 1){
+            FleetMemberAPI member = (FleetMemberAPI)newRebelFleet.getFleetData().getMembersListCopy().get(0);
+            newRebelFleet.getFleetData().removeFleetMember(member);
+            rebelFleetPoints -= member.getFleetPointCost();
         }
 
-        ExerelinUtils.addFreightersToFleet(newRebelFleet);
+        // Remove random ships until we're within target fleet size
+        // This should provide a fairly decent variety of fleet compositions
+        while (rebelFleetPoints > targetFleetPoints && newRebelFleet.getFleetData().getMembersListCopy().size() > 1){
+            List rebelFleetMembers = newRebelFleet.getFleetData().getMembersListCopy();
+            FleetMemberAPI member = (FleetMemberAPI)rebelFleetMembers.get(ExerelinUtils.getRandomInRange(0, rebelFleetMembers.size() - 1));
+            newRebelFleet.getFleetData().removeFleetMember(member);
+            rebelFleetPoints -= member.getFleetPointCost();
+        }
+
+        // Cap rabel fleet size at 6 as we don't want rebels to take over the system
+        if(newRebelFleet.getFleetData().getMembersListCopy().size() > 6)
+        {
+            for(int i = 0; i < newRebelFleet.getFleetData().getMembersListCopy().size() - 6; i++)
+            {
+                List rebelFleetMembers = newRebelFleet.getFleetData().getMembersListCopy();
+                FleetMemberAPI member = (FleetMemberAPI)rebelFleetMembers.get(ExerelinUtils.getRandomInRange(0, rebelFleetMembers.size() - 1));
+                newRebelFleet.getFleetData().removeFleetMember(member);
+            }
+        }
+
+        // Add cargo ships if this fleet has capital or cruiser class ships, or 33% of the time for smaller fleets
+        //if (newRebelFleet.getNumCapitals() > 0 || newRebelFleet.getNumCruisers() > 0 || (ExerelinUtils.getRandomInRange(0, 2) == 0 ))
+            ExerelinUtils.addFreightersToFleet(newRebelFleet); // Needs freighters due to resupply issues
+
         ExerelinUtils.resetFleetCargoToDefaults(newRebelFleet, 0.3f, 0.1f, CargoAPI.CrewXPLevel.REGULAR);
-        ExerelinUtilsFleet.fleetOrderReset(newRebelFleet);
+        ExerelinUtilsFleet.sortByHullSize(newRebelFleet);
 
         newRebelFleet.setFaction(rebelFAPI.getId());
-        newRebelFleet.setName("Dissenter Fleet");
+        newRebelFleet.setName(ExerelinConfig.getExerelinFactionConfig(factionLeaderId).rebelFleetSuffix);
+
+        // Make rebel fleets more willing to engage in combat
+        if(((FleetMemberAPI)newRebelFleet.getFleetData().getMembersListCopy().get(0)).getHullSpec().getHullSize().compareTo(ShipAPI.HullSize.DESTROYER) >= 0)
+            newRebelFleet.getCommander().setPersonality("aggressive");
+        else
+            newRebelFleet.getCommander().setPersonality("fearless");
 
         newRebelFleet.addAssignment(FleetAssignment.ATTACK_LOCATION, ExerelinUtils.getRandomStationInSystemForFaction(factionLeaderId, starSystemAPI), 90);
         newRebelFleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, planet, 60);
+
+        newRebelFleet.setPreferredResupplyLocation(planet);
+
         //starSystemAPI.spawnFleet(planet, 0, 0, newRebelFleet);
         SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandSpawnPrebuiltFleet(planet, 0, 0, newRebelFleet));
         //System.out.println("EVENT: Spawned rebel fleet in " + starSystemAPI.getName());

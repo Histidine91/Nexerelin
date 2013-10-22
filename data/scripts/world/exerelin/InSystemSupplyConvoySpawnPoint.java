@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 
 import data.scripts.world.BaseSpawnPoint;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
+import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsFleet;
 
 @SuppressWarnings("unchecked")
@@ -85,17 +86,17 @@ public class InSystemSupplyConvoySpawnPoint extends BaseSpawnPoint
 		CampaignFleetAPI fleet = getSector().createFleet(owningFactionId, type);
 
 	    DiplomacyRecord diplomacyRecord = ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRecordForFaction(owningFactionId);
-	    if (diplomacyRecord.hasWarTargetInSystem((StarSystemAPI)getLocation(), false))
+	    if (diplomacyRecord.isAtWar())
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 3, 4, owningFactionId, getSector());
 	    else
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 1, 2, owningFactionId, getSector());
 
         ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.3f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(this.owningFactionId));
-        ExerelinUtilsFleet.fleetOrderReset(fleet);
-
+        ExerelinUtilsFleet.sortByHullSize(fleet);
 		theFleet = fleet;
 		fleet.setPreferredResupplyLocation(getAnchor());
-		fleet.setName("Logistics Convoy");
+        fleet.getCommander().setPersonality("cautious");
+		fleet.setName(ExerelinConfig.getExerelinFactionConfig(this.owningFactionId).logisticsFleetName);
 
 		// Remove cargo from station
 		if(convoyType.equalsIgnoreCase("fuel"))

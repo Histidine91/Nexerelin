@@ -1,7 +1,10 @@
 package data.scripts.world.exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import org.json.JSONObject;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ExerelinConfig
 {
@@ -10,9 +13,12 @@ public class ExerelinConfig
 
     // Factions classed as neutral for relationship calculations
     public static String[] neutralFactions = new String[]{"neutral", "independent"};
+    public static List<ExerelinFactionConfig> exerelinFactionConfigs;
 
     // Threading support for improving/smoothing performance
     public static boolean enableThreading = true;
+    // Use multiple larger backgrounds
+    public static boolean useMultipleBackgroundsAndStars = true;
 
     // Randomise the location of the omnifactory
     public static boolean randomOmnifactoryLocation = false;
@@ -21,6 +27,7 @@ public class ExerelinConfig
     public static boolean allowTradeAtAlliedStations = true;
     public static boolean allowTradeAtNeutralStations = false;
     public static boolean allowTradeAtHostileStations = false;
+    public static boolean reduceCapitalShipSaleChance = true;
 
     // Supply reduction
     public static boolean reduceSupplies = true;
@@ -38,6 +45,10 @@ public class ExerelinConfig
     public static String fleetCostResource = "supplies";
     public static int miningAmountPerDayPerMiner = 50;
 
+    // Player settings
+    public static int playerBaseWage = 1000;
+    public static boolean playerFactionFreeTransfer = false;
+
     public static void loadSettings()
     {
         try
@@ -47,12 +58,14 @@ public class ExerelinConfig
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelin_config.json");
 
             enableThreading = settings.getBoolean("enableThreading");
+            useMultipleBackgroundsAndStars = settings.getBoolean("useMultipleBackgroundsAndStars");
 
             randomOmnifactoryLocation = settings.getBoolean("randomOmnifactoryLocation");
 
             allowTradeAtAlliedStations = settings.getBoolean("allowTradeAtAlliedStations");
             allowTradeAtNeutralStations = settings.getBoolean("allowTradeAtNeutralStations");
             allowTradeAtHostileStations = settings.getBoolean("allowTradeAtHostileStations");
+            reduceCapitalShipSaleChance = settings.getBoolean("reduceCapitalShipSaleChance");
 
             reduceSupplies = settings.getBoolean("reduceSupplies");
             capSupplyDropToCargo = settings.getBoolean("capSupplyDropToCargo");
@@ -66,10 +79,44 @@ public class ExerelinConfig
             gasgiantMiningResource = settings.getString("gasgiantMiningResource");
             fleetCostResource = settings.getString("fleetCostResource");
             miningAmountPerDayPerMiner = settings.getInt("miningAmountPerDayPerMiner");
+
+            playerBaseWage = settings.getInt("playerBaseWage");
+            playerFactionFreeTransfer = settings.getBoolean("playerFactionFreeTransfer");
         }
         catch(Exception e)
         {
             System.out.println("EXERELIN ERROR: Unable to load settings: " + e.getMessage());
         }
+
+        // Reset and load faction configuration data
+        if(ExerelinConfig.exerelinFactionConfigs != null)
+            ExerelinConfig.exerelinFactionConfigs.clear();
+        ExerelinConfig.exerelinFactionConfigs = new ArrayList<ExerelinFactionConfig>();
+
+        // If sector has loaded populate faction configs
+        if(Global.getSector() != null)
+        {
+            List<FactionAPI> factions = Global.getSector().getAllFactions();
+            for(FactionAPI faction : factions)
+            {
+                if(!faction.getId().equalsIgnoreCase("independent")
+                    && !faction.getId().equalsIgnoreCase("abandoned")
+                    && !faction.getId().equalsIgnoreCase("player")
+                    && !faction.getId().equalsIgnoreCase("neutral")
+                    && !faction.getId().equalsIgnoreCase("rebel"))
+                ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(faction.getId()));
+            }
+        }
+    }
+
+    public static ExerelinFactionConfig getExerelinFactionConfig(String factionId)
+    {
+        for(ExerelinFactionConfig exerelinFactionConfig : exerelinFactionConfigs)
+        {
+            if(exerelinFactionConfig.factionId.equalsIgnoreCase(factionId))
+                return exerelinFactionConfig;
+        }
+
+        return null;
     }
 }

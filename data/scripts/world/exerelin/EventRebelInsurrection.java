@@ -3,6 +3,8 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 
+import data.scripts.world.exerelin.utilities.ExerelinUtilsMessaging;
+
 import java.awt.*;
 import java.util.List;
 
@@ -42,12 +44,10 @@ public class EventRebelInsurrection extends EventBase
         if(ExerelinUtils.isPlayerInSystem(starSystemAPI))
         {
             if(rebelAgainseFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-                Global.getSector().addMessage("A number of " + ExerelinData.getInstance().getPlayerFaction() + " fleets are attempting an insurrection!", Color.magenta);
+                ExerelinUtilsMessaging.addMessage("A number of " + ExerelinData.getInstance().getPlayerFaction() + " fleets are attempting an insurrection!", Color.magenta);
             else
-                Global.getSector().addMessage("A number of " + rebelAgainseFaction + " fleets are attempting an insurrection!");
+                ExerelinUtilsMessaging.addMessage("A number of " + rebelAgainseFaction + " fleets are attempting an insurrection!");
         }
-
-		System.out.println("EVENT: Rebel insurrection against " + rebelAgainseFaction);
 
 		List fleets = starSystemAPI.getFleets();
 

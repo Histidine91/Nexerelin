@@ -1,5 +1,6 @@
 {
     "enableThreading":true, # Boolean
+    "useMultipleBackgroundsAndStars":true, # Boolean
 
     "randomOmnifactoryLocation":false, # Boolean
 
@@ -10,6 +11,7 @@
     "allowTradeAtAlliedStations":true, # Boolean
     "allowTradeAtNeutralStations":false, # Boolean
     "allowTradeAtHostileStations":false, # Boolean
+    "reduceCapitalShipSaleChance":true, # Boolean
 
     "reduceSupplies":true, # Boolean
     "capSupplyDropToCargo":true, # Boolean, only used if reduceSupplies is true, cap = cargo*1.5
@@ -19,4 +21,7 @@
     "gasgiantMiningResource": "fuel", # String, NOT USED
     "fleetCostResource": "supplies", # String
     "miningAmountPerDayPerMiner": 50, # Integer
+
+    "playerBaseWage": 1000, # Integer
+    "playerFactionFreeTransfer":false, # Boolean, DOESN'T WORK UNTIL FREETRANSFER IS FIXED
 }
