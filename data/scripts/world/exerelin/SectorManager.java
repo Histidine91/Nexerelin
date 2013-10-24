@@ -400,20 +400,24 @@ public class SectorManager
 		}
 
         // Player clicked target so save for usage
+        // Don't reset for asteroids
         if(Global.getSector().getPlayerFleet().getInteractionTarget() != null
                 && (this.lastInteractionToken == null || !Global.getSector().getPlayerFleet().getInteractionTarget().getFullName().equalsIgnoreCase(this.lastInteractionToken.getFullName())))
         {
             this.setLastInteractionToken(Global.getSector().getPlayerFleet().getInteractionTarget());
         }
         else if(this.lastInteractionToken != null
-                && MathUtils.getDistance(Global.getSector().getPlayerFleet().getLocation(), this.lastInteractionToken.getLocation()) > 1)
+                && MathUtils.getDistance(Global.getSector().getPlayerFleet().getLocation(), this.lastInteractionToken.getLocation()) > 1
+                && !(this.lastInteractionToken instanceof AsteroidAPI))
         {
             this.lastInteractionToken = null;
         }
 
         // If we have a saved target and the players fleet is close enough, stick player fleet to target
+        // Don't issue move override for asteroids
         if(this.lastInteractionToken != null
-                && MathUtils.getDistance(Global.getSector().getPlayerFleet().getLocation(), this.lastInteractionToken.getLocation()) < 2)
+                && MathUtils.getDistance(Global.getSector().getPlayerFleet().getLocation(), this.lastInteractionToken.getLocation()) < 2
+                && !(this.lastInteractionToken instanceof AsteroidAPI))
         {
             Global.getSector().getPlayerFleet().setMoveDestination(lastInteractionToken.getLocation().getX(), lastInteractionToken.getLocation().getY());
         }
