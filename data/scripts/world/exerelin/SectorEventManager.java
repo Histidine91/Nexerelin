@@ -48,4 +48,10 @@ public class SectorEventManager
             lastEventType = eventAddObjectToStorage.getType();
         }
     }
+
+    public void triggerEvent(String eventType)
+    {
+        if(eventType.equalsIgnoreCase("saboteur"))
+            eventAddObjectToStorage.addSabateurToStorageFacility();
+    }
 }

@@ -1,12 +1,16 @@
 package data.characters.skills.scripts;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.characters.CharacterStatsSkillEffect;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
+import data.scripts.world.exerelin.SectorManager;
 
 public class ActiveDiplomacyPerk1 implements CharacterStatsSkillEffect {
 
     public void apply(MutableCharacterStatsAPI stats, String id, float level)
     {
+        SectorManager.getCurrentSectorManager().getSectorEventManager().triggerEvent("saboteur");
+        SectorManager.getCurrentSectorManager().getSectorEventManager().triggerEvent("saboteur");
     }
 
     public void unapply(MutableCharacterStatsAPI stats, String id)

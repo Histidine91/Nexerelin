@@ -620,4 +620,9 @@ public class SectorManager
     {
         return playerFactionId;
     }
+
+    public SectorEventManager getSectorEventManager()
+    {
+        return this.sectorEventManager;
+    }
 }
