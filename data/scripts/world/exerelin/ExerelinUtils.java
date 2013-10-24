@@ -654,10 +654,12 @@ public class ExerelinUtils
 	public static void removeRandomWeaponStacksFromCargo(CargoAPI cargoAPI, int numToRemove)
 	{
 		List weapons = cargoAPI.getWeapons();
+
 		for(int j = 0; j < Math.min(weapons.size(), numToRemove); j++)
 		{
-			//cargoAPI.removeItems(CargoAPI.CargoItemType.WEAPONS, null ,5);
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(cargoAPI, null, CargoAPI.CargoItemType.WEAPONS, 5));
+            CargoAPI.CargoItemQuantity weapon = (CargoAPI.CargoItemQuantity)weapons.get(j);
+			//cargoAPI.removeItems(CargoAPI.CargoItemType.WEAPONS, weapon.getItem(), weapon.getCount());
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(cargoAPI, weapon.getItem(), CargoAPI.CargoItemType.WEAPONS, weapon.getCount()));
 		}
 	}
 
