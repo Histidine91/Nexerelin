@@ -7,6 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberType;
 import data.scripts.world.exerelin.commandQueue.CommandQueue;
 import data.scripts.world.exerelin.utilities.ExerelinConfig;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsMessaging;
+import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -398,10 +399,24 @@ public class SectorManager
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.0f, CargoAPI.CrewXPLevel.GREEN);
 		}
 
-        if(Global.getSector().getPlayerFleet().getInteractionTarget() != null)
+        // Player clicked target so save for usage
+        if(Global.getSector().getPlayerFleet().getInteractionTarget() != null
+                && (this.lastInteractionToken == null || !Global.getSector().getPlayerFleet().getInteractionTarget().getFullName().equalsIgnoreCase(this.lastInteractionToken.getFullName())))
+        {
             this.setLastInteractionToken(Global.getSector().getPlayerFleet().getInteractionTarget());
-        else if(Global.getSector().getClock().getElapsedDaysSince(this.getLastInteractionTime()) > 20)
+        }
+        else if(this.lastInteractionToken != null
+                && MathUtils.getDistance(Global.getSector().getPlayerFleet().getLocation(), this.lastInteractionToken.getLocation()) > 1)
+        {
             this.lastInteractionToken = null;
+        }
+
+        // If we have a saved target and the players fleet is close enough, stick player fleet to target
+        if(this.lastInteractionToken != null
+                && MathUtils.getDistance(Global.getSector().getPlayerFleet().getLocation(), this.lastInteractionToken.getLocation()) < 2)
+        {
+            Global.getSector().getPlayerFleet().setMoveDestination(lastInteractionToken.getLocation().getX(), lastInteractionToken.getLocation().getY());
+        }
 	}
 
 	public boolean getRespawnFactions()

@@ -753,7 +753,7 @@ public class ExerelinUtils
 
         int distanceAllowable = 0;
         if(interactionTarget instanceof AsteroidAPI)
-            distanceAllowable = 1500;
+            distanceAllowable = 2500;
         else if(interactionTarget instanceof PlanetAPI)
             distanceAllowable = 7000;
 
