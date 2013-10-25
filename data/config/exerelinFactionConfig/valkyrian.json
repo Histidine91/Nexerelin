@@ -1,0 +1,40 @@
+{
+    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+
+    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
+    "preferredBackgroundImagePath":"", # String
+    "preferredStarType":"", # String
+    "preferredStarLight":"", # String, 0xFFFFFF
+
+    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Port", "Quey", "Habitat", "Shipyard"], # String array
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.1, # Double
+
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Traitors", # String
+
+    "smallAttackFleetName":"Scout", # String
+    "mediumAttackFleetName":"Standard War Fleet", # String
+    "largeAttackFleetName":"Armada", # String
+
+    "smallDefenceFleetName":"Picket Defense", # String
+    "mediumDefenceFleetName":"Warden Fleet", # String
+    "largeDefenceFleetName":"Station Guardians", # String
+
+    "smallPatrolFleetName":"Perimeter Patrol", # String
+    "mediumPatrolFleetName":"Warden Patrol", # String
+    "largePatrolFleetName":"Perimeter Guardians", # String
+
+    "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
+    "gasMiningFleetName":"Gas Mining Fleet", # String
+    "logisticsFleetName":"Resupply Convoy", # String
+    "boardingFleetName":"Boarding Fleet", # String
+    "commandFleetName":"Command Fleet", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
+}
