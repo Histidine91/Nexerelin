@@ -33,11 +33,11 @@
 			"ships":{
 				"nom_gila_monster_antibattleship":[0, 1],
 				"nom_sandstorm_assault":[0, 1],
-				"nom_rattlesnake_assault":[0, 2],          
+				"nom_rattlesnake_assault":[0, 2],
+				"nom_roadrunner_pursuit":[0, 2],
 				"nom_komodo_mk2_assault":[0, 1],
 				"nom_komodo_assault":[0, 3],
 				"nom_scorpion_assault":[0, 2],
-				"nom_flycatcher_carrier":[0, 1],
 				"nom_death_bloom_strike":[0, 2],
 				"nom_yellowjacket_sniper":[0, 4],
 				"nom_wurm_assault":[0, 6],
