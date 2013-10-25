@@ -29,6 +29,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
+                "zorg_cube_Configurated":[0, 1],
                 "zorg_core_Configurated":[0, 1],
                 "zorg_pyramid_Configurated":[0, 1],
                 "zorg_overseer_Configurated":[0, 2],
@@ -92,7 +93,7 @@
            "extraCrewPercent":[80, 80],
            "marinesPercent":[20, 20],
            "ships":{
-               "zorg_core_Configurated":[0, 1],
+               "zorg_cube_Configurated":[0, 1],
            },
        },
 	},

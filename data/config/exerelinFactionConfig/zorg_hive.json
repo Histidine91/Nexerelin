@@ -9,7 +9,7 @@
     "stationNameSuffixes":["Unimatrix", "Hive", "Base"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.1, # Double
 
     "customRebelFaction":"", # String
     "customRebelFleetId":"", # String
