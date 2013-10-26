@@ -28,7 +28,8 @@ public class SectorEventManager
         {
             eventAddObjectToStorage.addAgentToStorageFacility();
             waitTime = betweenEventWait;
-            lastEventType = eventAddObjectToStorage.getType();
+            //lastEventType = eventAddObjectToStorage.getType();
+            lastEventType = "";
         }
 
         if(ExerelinUtils.getRandomInRange(0,(40*(int)(1.0f - extraChance))) == 0
@@ -36,7 +37,8 @@ public class SectorEventManager
         {
             eventAddObjectToStorage.addPrisonerToStorageFacility();
             waitTime = betweenEventWait;
-            lastEventType = eventAddObjectToStorage.getType();
+            //lastEventType = eventAddObjectToStorage.getType();
+            lastEventType = "";
         }
 
         if(ExerelinUtils.getRandomInRange(0,(40*(int)(1.0f - extraChance))) == 0
@@ -45,7 +47,8 @@ public class SectorEventManager
         {
             eventAddObjectToStorage.addSabateurToStorageFacility();
             waitTime = betweenEventWait;
-            lastEventType = eventAddObjectToStorage.getType();
+            //lastEventType = eventAddObjectToStorage.getType();
+            lastEventType = "";
         }
     }
 
