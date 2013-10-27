@@ -23,7 +23,7 @@ public class SectorEventManager
 
         float extraChance = ExerelinUtilsPlayer.getPlayerDiplomacyObjectCreationBonus();
 
-        if(ExerelinUtils.getRandomInRange(0,(40*(int)(1.0f - extraChance))) == 0
+        if(ExerelinUtils.getRandomInRange(0,(int)(45*(1.0f - extraChance))) == 0
                 && !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType))
         {
             eventAddObjectToStorage.addAgentToStorageFacility();
@@ -32,7 +32,7 @@ public class SectorEventManager
             lastEventType = "";
         }
 
-        if(ExerelinUtils.getRandomInRange(0,(40*(int)(1.0f - extraChance))) == 0
+        if(ExerelinUtils.getRandomInRange(0,(int)(45*(1.0f - extraChance))) == 0
                 && !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType))
         {
             eventAddObjectToStorage.addPrisonerToStorageFacility();
@@ -41,7 +41,7 @@ public class SectorEventManager
             lastEventType = "";
         }
 
-        if(ExerelinUtils.getRandomInRange(0,(40*(int)(1.0f - extraChance))) == 0
+        if(ExerelinUtils.getRandomInRange(0,(int)(45*(1.0f - extraChance))) == 0
                 && !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType)
                 && ExerelinUtilsPlayer.getPlayerSabateurAvailability())
         {
