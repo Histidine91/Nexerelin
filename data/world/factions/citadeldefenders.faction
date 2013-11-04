@@ -1,0 +1,134 @@
+{
+	id:"citadeldefenders",
+	"color":[145,163,176,255],
+	"displayName":"Citadel",
+	"shipNamePrefix":"DCS",
+	"description":"A new and very popular mercenary group with many customers.",
+	"shipNameSources":{"JAPANESE":1,},
+	"names":{
+		"modern":4,
+		"NORSE":1,
+		"CELTIC":1,
+	},
+	"portraits":{
+		"standard_male":[
+			"graphics/portraits/portrait_hegemony05.png",
+			"graphics/portraits/portrait_hegemony06.png",
+			"graphics/portraits/portrait_hegemony01.png",
+		],
+		"standard_female":[
+			"graphics/portraits/portrait_hegemony04.png",
+			"graphics/portraits/portrait_hegemony06.png",
+		],
+	},
+	"fleetCompositions":{
+        "exerelinGenericFleet":{
+            "displayName":"Generic Fleet",
+            "maxFleetPoints":165,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+			"ships":{
+                "FoxSeige_elitevariant":[0, 1],
+                "FoxCarrier_elitevariant":[0, 2],
+                "FoxBattleship_elitevariant":[0, 2],
+                "FoxCruiser_elitevariant":[0, 2],
+                "FoxMDestroyer_elitevariant":[0, 2],
+                "FoxLDestroyer_elitevariant":[0, 3],
+                "FoxCorvette_elitevariant":[0, 3],
+                "FoxDrone_elitevariant":[0, 3],
+                "FoxFrigate_elitevariant":[0, 3],
+                "FoxMinelayer_elitevariant":[0, 3],
+                "fox_arrowhead_wing":[0,4],
+                "fox_heak_wing":[0, 3],
+                "fox_mako_wing":[0, 2],
+			},
+		},
+
+        "exerelinInSystemStationAttackFleet":{
+            "displayName":"In-System Station Attack Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[50, 50],
+            "marinesPercent":[50, 50],
+            "ships":{
+                "atlas_Standard":[1, 1],
+                "valkyrie_Elite":[1, 1],
+
+			},
+		},
+
+        "exerelinAsteroidMiningFleet":{
+            "displayName":"Asteroid Mining Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[10, 15],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "mining_drone_wing":[1, 2],
+                "buffalo_Standard":[1, 2],
+
+			},
+		},
+
+        "exerelinGasMiningFleet":{
+            "displayName":"Gas Mining Fleet",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[0, 0],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "mining_drone_wing":[1, 2],
+                "phaeton_Standard":[1, 1],
+                "buffalo_Standard":[1, 1],
+
+			},
+		},
+
+        "exerelinInSystemSupplyConvoy":{
+            "displayName":"In-System Supply Convoy",
+            "maxFleetPoints":40,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[40, 60],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+                "buffalo_Standard":[1, 3],
+			},
+		},
+		"exerelinEliteFleet":{
+            "displayName":"Exerelin Elite Fleet",
+            "maxFleetPoints":100,
+            "daysWorthOfSupplies":[30, 50],
+            "lyWorthOfFuel":[0, 0],
+            "extraCrewPercent":[80, 80],
+            "marinesPercent":[20, 20],
+            "ships":{
+				"FoxDreadnaught_elitevariant":[0, 1],
+         			   },
+       		 },	
+	},
+	"traits":{
+		"admiral":{
+
+		},
+		"captain":{
+			"cowardly":1,
+			"cautious":1,
+			"steady":1,
+			"aggressive":1,
+			"suicidal":1,
+			"fearless":1,
+		},
+	},
+	"dialogue":{
+		"greetingFriendly":"Nice seeing you again, commander! So, what have you been up to, eh? Any good contracts recently?",
+		"greetingNeutral":"Greetings, would you be interested in our services? We offer a variety of defence packages, as well as courier operations.",
+		"greetingHostileAggressive":"You have been identified as a threat to our operations. Power down and this can all end peacefully ",
+		"greetingHostileTimid":"Make it quick...",
+	}
+},
