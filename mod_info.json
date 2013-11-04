@@ -48,6 +48,7 @@
     "data/world/factions/insurgency.faction",
     "data/world/factions/regime.faction",
     "data/world/factions/citadeldefenders.faction",
+    "data/world/factions/ORI.faction",
 
     "data/hulls/relics_extinctioner.ship",
     "data/hulls/relics_faithoper.ship",
