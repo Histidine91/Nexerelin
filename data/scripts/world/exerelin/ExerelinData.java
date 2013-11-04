@@ -21,8 +21,8 @@ public final class ExerelinData
     private String playerStartingShipVariant = "shuttle_Attack";
 
     // Valid ships for special fleets
-    private final String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2"};
-    private final String[] ValidTroopTransportShips = new String[] { "valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_auxiliary", "qua_yidato" };
+    private final String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2", "ori_butterflier"};
+    private final String[] ValidTroopTransportShips = new String[] { "valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_auxiliary", "qua_yidato", "cane"};
     private final String[] ValidMiningShips = new String[] {"mining_drone", "zorg_sphere"};
 
 	//private String[] possibleFactions = new String[] {};
@@ -276,6 +276,10 @@ public final class ExerelinData
         // Test for Citadel Defenders
         if(isFactionInstalled("citadeldefenders", "data.scripts.world.defendersGen"))
             possibleModdedFactionList.add("citadeldefenders");
+
+        // Test for ORI
+        if(isFactionInstalled("ORI", "data.scripts.world.ORIModPlugin"))
+            possibleModdedFactionList.add("ORI");
 
 		System.out.println("- - - - - - - - - -");
         return (String[])possibleModdedFactionList.toArray(new String[possibleModdedFactionList.size()]);

@@ -665,6 +665,11 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 data.addStartingShipChoice("FoxFrigate_elitevariant");
                 data.addStartingShipChoice("FoxCorvette_elitevariant");
             }
+            else if (factionId.equalsIgnoreCase("ORI"))
+            {
+                data.addStartingShipChoice("grib_variant");
+                data.addStartingShipChoice("openok_variant");
+            }
 			else
 			{
 				System.out.println("EXERELIN ERROR: Faction starting ship for " + factionId + " not defined");
