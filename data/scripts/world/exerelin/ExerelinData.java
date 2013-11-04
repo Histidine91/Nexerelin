@@ -273,6 +273,10 @@ public final class ExerelinData
         if(isFactionInstalled("insurgency", "data.scripts.world.vayraKadurGen"))
             possibleModdedFactionList.add("insurgency");
 
+        // Test for Citadel Defenders
+        if(isFactionInstalled("citadeldefenders", "data.scripts.world.defendersGen"))
+            possibleModdedFactionList.add("citadeldefenders");
+
 		System.out.println("- - - - - - - - - -");
         return (String[])possibleModdedFactionList.toArray(new String[possibleModdedFactionList.size()]);
 	}
