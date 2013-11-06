@@ -37,7 +37,7 @@
                 "zorg_probe_Configurated":[0, 2],
                 "zorg_supernova_Configurated":[0, 2],
                 "zorg_diamond_wing":[0, 3],
-                "zorg_trapezoid_wing":[0, 3],
+                "zorg_trapezoid_wing":[0, 2],
             },
         },
         "exerelinInSystemSupplyConvoy":{
