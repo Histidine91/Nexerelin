@@ -550,6 +550,10 @@ public class ExerelinUtils
                     shipId = "mouse";
                 if(shipId.equalsIgnoreCase("cony_wing"))
                     shipId = "cony";
+
+                // Fix wrong ORI names
+                if(shipId.equalsIgnoreCase("wall_wing"))
+                    shipId = "wall_bomb_wing";
 			}
 			else if (memberType == FleetMemberType.SHIP)
 				shipId = shipId + "_Hull";

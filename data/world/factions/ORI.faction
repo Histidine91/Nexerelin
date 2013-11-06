@@ -70,9 +70,8 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "wind_variant":[1, 3],
-				"zugc_variant":[1, 3],
-				"biom_variant":[0, 1],
+                "wind_variant":[0, 1],
+				"zugc_variant":[1, 2],
             },
         },
         "exerelinInSystemStationAttackFleet":{
