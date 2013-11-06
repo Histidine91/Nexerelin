@@ -2,6 +2,7 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import data.scripts.exerelin.fleets.AsteroidMiningFleet;
 import data.scripts.world.BaseSpawnPoint;
 import data.scripts.world.exerelin.commandQueue.CommandAddCargo;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
@@ -38,11 +39,11 @@ public class StationRecord
 	private PatrolFleetSpawnPoint patrolSpawn;
 	private InSystemStationAttackShipSpawnPoint stationAttackFleetSpawn;
 	private InSystemSupplyConvoySpawnPoint inSystemSupplyConvoySpawn;
-	private AsteroidMiningFleetSpawnPoint asteroidMiningFleetSpawnPoint;
+	private AsteroidMiningFleet asteroidMiningFleet;
 	private GasMiningFleetSpawnPoint gasMiningFleetSpawnPoint;
 
     // Extra spawnpoints for player skill (kind of ugly, should just replace all spawnpoints with fleets)
-    private AsteroidMiningFleetSpawnPoint asteroidMiningFleetSpawnPoint2;
+    private AsteroidMiningFleet asteroidMiningFleet2;
     private GasMiningFleetSpawnPoint gasMiningFleetSpawnPoint2;
 
 	public StationRecord(SectorAPI sector, StarSystemAPI system, SystemStationManager manager, SectorEntityToken token)
@@ -56,9 +57,7 @@ public class StationRecord
 		patrolSpawn = new PatrolFleetSpawnPoint(sector, system, 1000000, 1, token);
 		stationAttackFleetSpawn = new InSystemStationAttackShipSpawnPoint(sector, system, 1000000, 1, token);
 		inSystemSupplyConvoySpawn = new InSystemSupplyConvoySpawnPoint(sector, system, 1000000, 1, token);
-		asteroidMiningFleetSpawnPoint = new AsteroidMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
 		gasMiningFleetSpawnPoint = new GasMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
-        asteroidMiningFleetSpawnPoint2 = new AsteroidMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
         gasMiningFleetSpawnPoint2 = new GasMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
 
         isBeingBoarded = false;
@@ -138,9 +137,7 @@ public class StationRecord
 		patrolSpawn.setFaction(newOwnerFactionId);
 		stationAttackFleetSpawn.setFaction(newOwnerFactionId);
 		inSystemSupplyConvoySpawn.setFaction(newOwnerFactionId);
-		asteroidMiningFleetSpawnPoint.setFaction(newOwnerFactionId);
 		gasMiningFleetSpawnPoint.setFaction(newOwnerFactionId);
-        asteroidMiningFleetSpawnPoint2.setFaction(newOwnerFactionId);
         gasMiningFleetSpawnPoint2.setFaction(newOwnerFactionId);
 
 		owningFaction = ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRecordForFaction(newOwnerFactionId);
@@ -222,9 +219,22 @@ public class StationRecord
 
 		if(stationCargo.getSupplies() < (6400*resourceMultiplier))
         {
-			asteroidMiningFleetSpawnPoint.spawnFleet();
+			if((asteroidMiningFleet == null || !asteroidMiningFleet.fleet.isAlive())
+                    && this.owningFaction != null)
+            {
+                asteroidMiningFleet = new AsteroidMiningFleet();
+                asteroidMiningFleet.createFleet(this.owningFaction.getFactionId(), this.stationToken);
+                asteroidMiningFleet.setTargetAsteroid(this.targetAsteroid);
+            }
             if(ExerelinUtilsPlayer.getPlayerDeployExtraMiningFleets() || this.getEfficiency(true) > 1.8f)
-                asteroidMiningFleetSpawnPoint2.spawnFleet();
+            {
+                if(asteroidMiningFleet2 == null || !asteroidMiningFleet2.fleet.isAlive())
+                {
+                    asteroidMiningFleet2 = new AsteroidMiningFleet();
+                    asteroidMiningFleet2.createFleet(this.owningFaction.getFactionId(), this.stationToken);
+                    asteroidMiningFleet2.setTargetAsteroid(this.targetAsteroid);
+                }
+            }
         }
 
 		if(stationCargo.getFuel() < (1600*resourceMultiplier))
@@ -533,10 +543,16 @@ public class StationRecord
 		attackSpawn.setTarget(targetStationRecord, assistStationRecord);
 		patrolSpawn.setDefendStation(assistStationRecord);
 		inSystemSupplyConvoySpawn.setFriendlyStation(assistStationRecord);
-		asteroidMiningFleetSpawnPoint.setTargetAsteroid(targetAsteroid);
+
 		gasMiningFleetSpawnPoint.setTargetPlanet(targetGasGiant);
-        asteroidMiningFleetSpawnPoint2.setTargetAsteroid(targetAsteroid);
+
         gasMiningFleetSpawnPoint2.setTargetPlanet(targetGasGiant);
+
+        if(asteroidMiningFleet != null)
+            asteroidMiningFleet.setTargetAsteroid(targetAsteroid);
+
+        if(asteroidMiningFleet2 != null)
+            asteroidMiningFleet2.setTargetAsteroid(targetAsteroid);
 	}
 
     public void updateFleetLists()
@@ -546,10 +562,14 @@ public class StationRecord
         removeDeadOrRebelFleets(defenseSpawn);
         removeDeadOrRebelFleets(patrolSpawn);
         removeDeadOrRebelFleets(inSystemSupplyConvoySpawn);
-        removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint);
         removeDeadOrRebelFleets(gasMiningFleetSpawnPoint);
-        removeDeadOrRebelFleets(asteroidMiningFleetSpawnPoint2);
         removeDeadOrRebelFleets(gasMiningFleetSpawnPoint2);
+
+        if(asteroidMiningFleet != null && !asteroidMiningFleet.fleet.isAlive())
+            asteroidMiningFleet = null;
+
+        if(asteroidMiningFleet2 != null && !asteroidMiningFleet2.fleet.isAlive())
+            asteroidMiningFleet2 = null;
     }
 
 	private String derivePlanetType(SectorEntityToken token)
