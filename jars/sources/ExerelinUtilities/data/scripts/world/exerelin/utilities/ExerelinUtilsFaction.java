@@ -25,19 +25,31 @@ public class ExerelinUtilsFaction {
         return allies;
     }
 
-    public static List<String> getFactionsAtWarWithFaction(String factionId)
+    public static List<String> getFactionsAtWarWithFaction(String factionId, Boolean excludeNeutralAndRebels)
     {
-        List<String> allies = new ArrayList<String>();
+        List<String> enemies = new ArrayList<String>();
 
         List<FactionAPI> factions = Global.getSector().getAllFactions();
 
         for(int i = 0; i < factions.size(); i++)
         {
+            FactionAPI potentialWarCandidate = factions.get(i);
             if(factions.get(i).getRelationship(factionId) <= -1)
-                allies.add(factions.get(i).getId());
+            {
+                if(excludeNeutralAndRebels)
+                {
+                    if(potentialWarCandidate.getId().equalsIgnoreCase("rebel")
+                            || ExerelinUtilsHelper.doesStringArrayContainValue(potentialWarCandidate.getId(), ExerelinConfig.neutralFactions, false)
+                            || ExerelinUtilsHelper.doesStringArrayContainValue(potentialWarCandidate.getId(), ExerelinConfig.getAllCustomFactionRebels().toArray(new String[]{}), false))
+                    {
+                        continue;
+                    }
+                }
+                enemies.add(factions.get(i).getId());
+            }
         }
 
-        return allies;
+        return enemies;
     }
 
     public static boolean doesFactionOwnSystem(String factionId, StarSystemAPI system)

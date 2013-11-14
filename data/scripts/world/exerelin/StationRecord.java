@@ -3,6 +3,7 @@ package data.scripts.world.exerelin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import data.scripts.exerelin.fleets.AsteroidMiningFleet;
+import data.scripts.exerelin.fleets.LogisticsConvoyFleet;
 import data.scripts.world.BaseSpawnPoint;
 import data.scripts.world.exerelin.commandQueue.CommandAddCargo;
 import data.scripts.world.exerelin.diplomacy.DiplomacyRecord;
@@ -13,6 +14,8 @@ import com.fs.starfarer.api.InteractionDialogImageVisual;
 import data.scripts.world.exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class StationRecord
@@ -38,7 +41,7 @@ public class StationRecord
 	private DefenseFleetSpawnPoint defenseSpawn;
 	private PatrolFleetSpawnPoint patrolSpawn;
 	private InSystemStationAttackShipSpawnPoint stationAttackFleetSpawn;
-	private InSystemSupplyConvoySpawnPoint inSystemSupplyConvoySpawn;
+	private LogisticsConvoyFleet logisticsConvoyFleet;
 	private AsteroidMiningFleet asteroidMiningFleet;
 	private GasMiningFleetSpawnPoint gasMiningFleetSpawnPoint;
 
@@ -56,7 +59,6 @@ public class StationRecord
 		defenseSpawn = new DefenseFleetSpawnPoint(sector, system, 1000000, 1, token);
 		patrolSpawn = new PatrolFleetSpawnPoint(sector, system, 1000000, 1, token);
 		stationAttackFleetSpawn = new InSystemStationAttackShipSpawnPoint(sector, system, 1000000, 1, token);
-		inSystemSupplyConvoySpawn = new InSystemSupplyConvoySpawnPoint(sector, system, 1000000, 1, token);
 		gasMiningFleetSpawnPoint = new GasMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
         gasMiningFleetSpawnPoint2 = new GasMiningFleetSpawnPoint(sector,  system,  1000000, 1, token);
 
@@ -136,7 +138,6 @@ public class StationRecord
 		defenseSpawn.setFaction(newOwnerFactionId);
 		patrolSpawn.setFaction(newOwnerFactionId);
 		stationAttackFleetSpawn.setFaction(newOwnerFactionId);
-		inSystemSupplyConvoySpawn.setFaction(newOwnerFactionId);
 		gasMiningFleetSpawnPoint.setFaction(newOwnerFactionId);
         gasMiningFleetSpawnPoint2.setFaction(newOwnerFactionId);
 
@@ -210,8 +211,8 @@ public class StationRecord
 
         if(checkIsBeingBoarded())
             return; // Don't spawn any fleets if being boarded
-
-		inSystemSupplyConvoySpawn.spawnFleet();
+        if(this.assistStationRecord != null)
+		    logisticsConvoyFleet.createFleet(this.owningFaction.getFactionId(), this.getStationToken(), this.assistStationRecord.getStationToken());
 
         float resourceMultiplier = 1.0f;
         if(this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
@@ -251,7 +252,7 @@ public class StationRecord
                 Thread defenseSpawnThread = new Thread("defenseSpawnThread"){
                     public void run()
                     {
-                        defenseSpawn.spawnFleet();
+                        defenseSpawn.createFleet();
                     }
                 };
                 defenseSpawnThread.start();
@@ -269,7 +270,7 @@ public class StationRecord
                 Thread attackSpawnThread = new Thread("attackSpawnThread"){
                     public void run()
                     {
-                        attackSpawn.spawnFleet();
+                        attackSpawn.createFleet();
                     }
                 };
                 attackSpawnThread.start();
@@ -287,7 +288,7 @@ public class StationRecord
                 Thread stationAttackSpawnThread = new Thread("stationAttackSpawnThread"){
                     public void run()
                     {
-                        stationAttackFleetSpawn.spawnFleet();
+                        stationAttackFleetSpawn.createFleet();
                     }
                 };
                 stationAttackSpawnThread.start();
@@ -304,7 +305,7 @@ public class StationRecord
                 Thread patrolSpawnThread = new Thread("patrolSpawnThread"){
                     public void run()
                     {
-                        patrolSpawn.spawnFleet();
+                        patrolSpawn.createFleet();
                     }
                 };
                 patrolSpawnThread.start();
@@ -454,6 +455,7 @@ public class StationRecord
 			return;
 		}
 
+        // Support a station in this system under attack
 		for(int i = 0; i < systemStationManager.getStationRecords().length; i++)
 		{
 			StationRecord possibleAssist = systemStationManager.getStationRecords()[i];
@@ -472,6 +474,7 @@ public class StationRecord
 		//if(assistStation != null)
 			//System.out.println(this.getStationToken().getFullName() + " is assisting " + assistStation.getStationToken().getFullName() + " which is targeted " + assistStation.getNumAttacking());
 
+        // Support a station in another system
         if(assistStation == null)
         {
             StarSystemAPI starSystemAPI = FactionDirector.getFactionDirectorForFactionId(this.owningFaction.getFactionId()).getSupportSystem();
@@ -480,6 +483,27 @@ public class StationRecord
                 systemStationManager = SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager();
                 SectorEntityToken assistToken = FactionDirector.getFactionDirectorForFactionId(this.owningFaction.getFactionId()).getSupportSectorEntityToken();
                 assistStation = systemStationManager.getStationRecordForToken(assistToken);
+            }
+        }
+
+        // No stations under attack, so assist a random faction station in this system
+        if(assistStation == null)
+        {
+            StationRecord[] stationRecords =systemStationManager.getStationRecords();
+            Collections.shuffle(Arrays.asList(stationRecords));
+
+            for(int i = 0; i < stationRecords.length; i++)
+            {
+                StationRecord possibleAssist = stationRecords[i];
+
+                if(possibleAssist.getOwner() == null)
+                    continue;
+
+                if(possibleAssist.getOwner().getFactionId().equalsIgnoreCase(this.getOwner().getFactionId()))
+                {
+                    assistStation = possibleAssist;
+                    break;
+                }
             }
         }
 
@@ -542,7 +566,7 @@ public class StationRecord
 		stationAttackFleetSpawn.setTarget(targetStationRecord);
 		attackSpawn.setTarget(targetStationRecord, assistStationRecord);
 		patrolSpawn.setDefendStation(assistStationRecord);
-		inSystemSupplyConvoySpawn.setFriendlyStation(assistStationRecord);
+		logisticsConvoyFleet.setTarget(assistStationRecord.getStationToken());
 
 		gasMiningFleetSpawnPoint.setTargetPlanet(targetGasGiant);
 
@@ -561,9 +585,11 @@ public class StationRecord
         removeDeadOrRebelFleets(stationAttackFleetSpawn);
         removeDeadOrRebelFleets(defenseSpawn);
         removeDeadOrRebelFleets(patrolSpawn);
-        removeDeadOrRebelFleets(inSystemSupplyConvoySpawn);
         removeDeadOrRebelFleets(gasMiningFleetSpawnPoint);
         removeDeadOrRebelFleets(gasMiningFleetSpawnPoint2);
+
+        if(logisticsConvoyFleet != null && !logisticsConvoyFleet.fleet.isAlive())
+            logisticsConvoyFleet = null;
 
         if(asteroidMiningFleet != null && !asteroidMiningFleet.fleet.isAlive())
             asteroidMiningFleet = null;

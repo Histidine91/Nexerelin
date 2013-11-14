@@ -122,4 +122,17 @@ public class ExerelinConfig
 
         return null;
     }
+
+    public static List<String> getAllCustomFactionRebels()
+    {
+        List<String> customRebels = new ArrayList<String>();
+
+        for(ExerelinFactionConfig exerelinFactionConfig : exerelinFactionConfigs)
+        {
+            if(!exerelinFactionConfig.customRebelFaction.equalsIgnoreCase(""))
+                customRebels.add(exerelinFactionConfig.customRebelFaction);
+        }
+
+        return  customRebels;
+    }
 }
