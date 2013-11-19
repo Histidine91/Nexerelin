@@ -30,13 +30,15 @@ public class LogisticsConvoyFleet extends ExerelinFleetBase
 	public CampaignFleetAPI createFleet(String faction, SectorEntityToken anchor, SectorEntityToken target)
     {
 		String type = "exerelinInSystemSupplyConvoy";
+        this.anchor = anchor;
+        this.target = target;
 
         setConvoyType();
 
 		// Create fleet
 		CampaignFleetAPI fleet = Global.getSector().createFleet(faction, type);
 
-	    if (ExerelinUtilsFaction.getFactionsAtWarWithFaction(faction).size() > 0)
+	    if (ExerelinUtilsFaction.getFactionsAtWarWithFaction(faction, false).size() > 0)
 	      ExerelinUtils.addRandomEscortShipsToFleet(fleet, 3, 4, faction, Global.getSector());
 	    else
 	      ExerelinUtils.addRandomEscortShipsToFleet (fleet, 1, 2, faction, Global.getSector());
@@ -118,7 +120,7 @@ public class LogisticsConvoyFleet extends ExerelinFleetBase
 
     private void setConvoyType()
     {
-        CargoAPI stationCargo = anchor.getCargo();
+        CargoAPI stationCargo = this.anchor.getCargo();
 
         // Check cargo and set convoy type
         float suppliesNormalised = 0;

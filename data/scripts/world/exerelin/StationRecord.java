@@ -211,8 +211,13 @@ public class StationRecord
 
         if(checkIsBeingBoarded())
             return; // Don't spawn any fleets if being boarded
-        if(this.assistStationRecord != null)
+
+        if(this.assistStationRecord != null
+                && (this.getStationToken().getCargo().getSupplies() > 3200 || this.getStationToken().getCargo().getFuel() > 800 || this.getStationToken().getCargo().getMarines() > 400 || this.getStationToken().getCargo().getCrew(CargoAPI.CrewXPLevel.REGULAR) > 800))
+        {
+            logisticsConvoyFleet = new LogisticsConvoyFleet();
 		    logisticsConvoyFleet.createFleet(this.owningFaction.getFactionId(), this.getStationToken(), this.assistStationRecord.getStationToken());
+        }
 
         float resourceMultiplier = 1.0f;
         if(this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
@@ -566,7 +571,9 @@ public class StationRecord
 		stationAttackFleetSpawn.setTarget(targetStationRecord);
 		attackSpawn.setTarget(targetStationRecord, assistStationRecord);
 		patrolSpawn.setDefendStation(assistStationRecord);
-		logisticsConvoyFleet.setTarget(assistStationRecord.getStationToken());
+
+        if(logisticsConvoyFleet != null)
+		    logisticsConvoyFleet.setTarget(assistStationRecord.getStationToken());
 
 		gasMiningFleetSpawnPoint.setTargetPlanet(targetGasGiant);
 

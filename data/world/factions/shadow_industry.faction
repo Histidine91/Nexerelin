@@ -72,7 +72,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "mining_drone_wing":[1, 1],
+                "mining_drone_wing":[1, 2],
                 "ms_solidarity_Standard":[1, 1],
                 "ms_sargasso_Balanced":[1, 1],
             },
