@@ -61,7 +61,7 @@
             "marinesPercent":[50, 50],
             "ships":{
                 "atlas_Standard":[1, 1],
-                "valkyrie_Elite":[1, 1],
+                "ms_potnia_Standard":[1, 1],
             },
         },
         "exerelinAsteroidMiningFleet":{
