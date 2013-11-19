@@ -47,6 +47,7 @@
                  "eyed_wing":[0, 4],
                  "grib_variant":[0, 3],
                  "hook_variant":[0, 2],
+                 "ori_rainbow_variant":[0, 2],
                  "iris_variant":[0, 2],
                  "kitty_variant":[0, 1],
                  "openok_variant":[0, 3],
