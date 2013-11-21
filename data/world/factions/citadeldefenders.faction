@@ -1,6 +1,6 @@
 {
 	id:"citadeldefenders",
-	"color":[145,163,176,255],
+	"color":[24,168,209,200],
 	"displayName":"Citadel",
 	"shipNamePrefix":"DCS",
 	"description":"A new and very popular mercenary group with many customers.",
@@ -33,6 +33,7 @@
                 "FoxSeige_elitevariant":[0, 1],
                 "FoxCarrier_elitevariant":[0, 2],
                 "FoxBattleship_elitevariant":[0, 2],
+                "FoxSpecial_elitevariant":[0, 2],
                 "FoxCruiser_elitevariant":[0, 2],
                 "FoxMDestroyer_elitevariant":[0, 2],
                 "FoxLDestroyer_elitevariant":[0, 3],
