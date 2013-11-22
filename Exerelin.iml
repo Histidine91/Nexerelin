@@ -17,6 +17,7 @@
     <orderEntry type="library" name="LazyLib" level="project" />
     <orderEntry type="library" name="json" level="project" />
     <orderEntry type="library" name="Omnifactory" level="project" />
+    <orderEntry type="module" module-name="ExerelinCore" />
   </component>
 </module>
 

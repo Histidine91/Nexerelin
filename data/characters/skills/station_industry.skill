@@ -6,7 +6,7 @@
 			"effects":[
 				{
 					"type":"CHARACTER_STATS",
-					"script":"data.characters.skills.scripts.StationIndustryEffect1",
+					"script":"exerelin.skills.scripts.StationIndustryEffect1",
 				},
 			]
 		},
@@ -17,7 +17,7 @@
             "effects":[
                 {
                     "type":"CHARACTER_STATS",
-                    "script":"data.characters.skills.scripts.StationIndustryPerk1",
+                    "script":"exerelin.skills.scripts.StationIndustryPerk1",
                 },
             ]
         },
@@ -28,7 +28,7 @@
             "effects":[
                 {
                     "type":"CHARACTER_STATS",
-                    "script":"data.characters.skills.scripts.StationIndustryPerk2",
+                    "script":"exerelin.skills.scripts.StationIndustryPerk2",
                 },
             ]
         },

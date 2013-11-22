@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.characters.CharacterCreationPlugin;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
-import data.scripts.world.exerelin.ExerelinData;
+import exerelin.ExerelinData;
 
 import java.util.ArrayList;
 import java.util.List;

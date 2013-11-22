@@ -2,8 +2,8 @@ package data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
-import data.scripts.world.exerelin.ExerelinData;
-import data.scripts.world.exerelin.SectorManager;
+import exerelin.ExerelinData;
+import exerelin.SectorManager;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {

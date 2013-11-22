@@ -6,7 +6,7 @@
 			"effects":[
 				{
 					"type":"CHARACTER_STATS",
-					"script":"data.characters.skills.scripts.FactionAptitudeEffect1",
+					"script":"exerelin.skills.scripts.FactionAptitudeEffect1",
 				},
 			]
 		},

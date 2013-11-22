@@ -2,9 +2,10 @@ package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import data.scripts.world.exerelin.commandQueue.CommandQueue;
-import data.scripts.world.exerelin.utilities.ExerelinConfig;
-import data.scripts.world.exerelin.utilities.ExerelinMessageManager;
+import exerelin.commandQueue.CommandQueue;
+import exerelin.*;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinMessageManager;
 
 @SuppressWarnings("unchecked")
 public class Exerelin //implements SectorGeneratorPlugin
@@ -52,7 +53,7 @@ public class Exerelin //implements SectorGeneratorPlugin
         ExerelinConfig.loadSettings();
 		this.initFactionRelationships(sector);
 
-		// Build off map initial station attack fleets in random systems
+		// Build off map initial station attack exerelin.fleets in random systems
 		this.initStationAttackFleets(sector);
 
 		// Add trader spawns
