@@ -72,7 +72,7 @@ public class SystemEventManager
 			lastEventType = eventStationExplosion.getType();
 		}
 
-		/*if(ExerelinData.getInstance().getSectorManager().getRespawnFactions()
+		/*if(SectorManager.getCurrentSectorManager().getRespawnFactions()
 				&& ExerelinUtils.getRandomInRange(0,55) == 0
 				&& !eventStationSeccession.getType().equalsIgnoreCase(lastEventType)
                 && Global.getSector().getClock().getElapsedDaysSince(SectorManager.getCurrentSectorManager().getLastFactionSpawnTime()) > SectorManager.getCurrentSectorManager().getRespawnWaitDays())

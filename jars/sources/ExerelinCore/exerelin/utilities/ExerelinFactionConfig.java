@@ -32,8 +32,8 @@ public class ExerelinFactionConfig
     public String mediumDefenceFleetName = "Guard Fleet";
     public String largeDefenceFleetName = "Sentinels";
 
-    public String smallPatrolFleetName = "Recon PATROL";
-    public String mediumPatrolFleetName = "Ranger PATROL";
+    public String smallPatrolFleetName = "Recon Patrol";
+    public String mediumPatrolFleetName = "Ranger Patrol";
     public String largePatrolFleetName = "Wayfarers";
 
     public String asteroidMiningFleetName = "Asteroid Mining Fleet";

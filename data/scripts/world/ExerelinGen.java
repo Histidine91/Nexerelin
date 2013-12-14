@@ -8,7 +8,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import data.scripts.world.exerelin.*;
 import exerelin.plugins.*;
-import exerelin.ExerelinData;
+import data.scripts.world.exerelin.ExerelinSetupData;
 import exerelin.*;
 import exerelin.utilities.ExerelinConfig;
 
@@ -22,7 +22,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
         System.out.println("Starting generation...");
 
 		// build systems
-		for(int i = 0; i < ExerelinData.getInstance().numSystems; i ++)
+		for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
 			buildSystem(sector);
 
         new Exerelin().generate(sector);
@@ -41,10 +41,10 @@ public class ExerelinGen implements SectorGeneratorPlugin
         StarSystemAPI system = sector.createStarSystem(possibleSystemNames[sector.getStarSystems().size()]);
 
         // Position star system randomely in hyperspace
-        int maxSectorSize = ExerelinData.getInstance().maxSectorSize;
+        int maxSectorSize = ExerelinSetupData.getInstance().maxSectorSize;
         system.getLocation().set(ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 
-        if((ExerelinData.getInstance().numSystems == sector.getStarSystems().size()
+        if((ExerelinSetupData.getInstance().numSystems == sector.getStarSystems().size()
                 || ExerelinUtils.getRandomInRange(0,2) == 0)
                 && !isStartSystemChosen)
         {
@@ -171,11 +171,11 @@ public class ExerelinGen implements SectorGeneratorPlugin
 
 		// Build base planets
 		int numBasePlanets;
-        if(ExerelinData.getInstance().numSystems != 1)
-            numBasePlanets = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumPlanets, ExerelinData.getInstance().maxPlanets);
+        if(ExerelinSetupData.getInstance().numSystems != 1)
+            numBasePlanets = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumPlanets, ExerelinSetupData.getInstance().maxPlanets);
         else
-            numBasePlanets = ExerelinData.getInstance().maxPlanets;
-		int distanceStepping = (ExerelinData.getInstance().maxSystemSize-4000)/numBasePlanets;
+            numBasePlanets = ExerelinSetupData.getInstance().maxPlanets;
+		int distanceStepping = (ExerelinSetupData.getInstance().maxSystemSize-4000)/numBasePlanets;
 		Boolean gasPlanetCreated = false;
 		for(int i = 0; i < numBasePlanets; i = i + 1)
 		{
@@ -229,7 +229,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
 			if(ExerelinUtils.getRandomInRange(0, 1) == 1)
 			{
 				// Build moons
-				for(int j = 0; j < ExerelinUtils.getRandomInRange(0, ExerelinData.getInstance().maxMoonsPerPlanet - 1); j = j + 1)
+				for(int j = 0; j < ExerelinUtils.getRandomInRange(0, ExerelinSetupData.getInstance().maxMoonsPerPlanet - 1); j = j + 1)
 				{
 					String ext = "";
 					if(j == 0)
@@ -286,10 +286,10 @@ public class ExerelinGen implements SectorGeneratorPlugin
 		// Build asteroid belts
 		List planets = system.getPlanets();
         int numAsteroidBelts;
-        if(ExerelinData.getInstance().numSystems != 1)
-            numAsteroidBelts = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumAsteroidBelts, ExerelinData.getInstance().maxAsteroidBelts);
+        if(ExerelinSetupData.getInstance().numSystems != 1)
+            numAsteroidBelts = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumAsteroidBelts, ExerelinSetupData.getInstance().maxAsteroidBelts);
         else
-            numAsteroidBelts = ExerelinData.getInstance().maxAsteroidBelts;
+            numAsteroidBelts = ExerelinSetupData.getInstance().maxAsteroidBelts;
 
 		for(int j = 0; j < numAsteroidBelts; j = j + 1)
 		{
@@ -332,11 +332,11 @@ public class ExerelinGen implements SectorGeneratorPlugin
 		system.addAsteroidBelt(star, 25, ExerelinUtils.getRandomInRange(1000, 8000), ExerelinUtils.getRandomInRange(10, 50), ExerelinUtils.getRandomInRange(240, 360), ExerelinUtils.getRandomInRange(360, 480));
 
 		// Another one if medium system size
-		if(ExerelinData.getInstance().maxSystemSize > 15000)
+		if(ExerelinSetupData.getInstance().maxSystemSize > 15000)
 			system.addAsteroidBelt(star, 50, ExerelinUtils.getRandomInRange(15000, 25000), ExerelinUtils.getRandomInRange(50, 100), ExerelinUtils.getRandomInRange(480, 720), ExerelinUtils.getRandomInRange(720, 960));
 
 		// And another one if a large system
-		if(ExerelinData.getInstance().maxSystemSize > 30000)
+		if(ExerelinSetupData.getInstance().maxSystemSize > 30000)
 			system.addAsteroidBelt(star, 75, ExerelinUtils.getRandomInRange(15000, 25000), ExerelinUtils.getRandomInRange(100, 150), ExerelinUtils.getRandomInRange(960, 1440), ExerelinUtils.getRandomInRange(1440, 1920));
 
 		// Build a list of possbile station names
@@ -344,10 +344,10 @@ public class ExerelinGen implements SectorGeneratorPlugin
 
 		// Build stations
 		int numStation;
-        if(ExerelinData.getInstance().numSystems != 1)
-            numStation = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumStations, Math.min(ExerelinData.getInstance().maxStations, numBasePlanets*2));
+        if(ExerelinSetupData.getInstance().numSystems != 1)
+            numStation = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumStations, Math.min(ExerelinSetupData.getInstance().maxStations, numBasePlanets*2));
         else
-            numStation = ExerelinData.getInstance().maxStations;
+            numStation = ExerelinSetupData.getInstance().maxStations;
 		int currentPlanet = 0;
 		int k = 0;
 		while(k < numStation)
@@ -393,7 +393,7 @@ public class ExerelinGen implements SectorGeneratorPlugin
 		}
 
 
-        if(ExerelinData.getInstance().numSystems > 1)
+        if(ExerelinSetupData.getInstance().numSystems > 1)
         {
             JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("Jump Point Alpha");
             OrbitAPI orbit = Global.getFactory().createCircularOrbit(system.createToken(0,0), 0f, 1200, 120);

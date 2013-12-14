@@ -53,7 +53,7 @@ public class StationRecord
 	private AsteroidMiningFleet asteroidMiningFleet;
 	private GasMiningFleet gasMiningFleet;
 
-    // Extra exerelin.fleets for player skill (kind of ugly, should just replace all spawnpoints with exerelin.fleets)
+    // Extra exerelin.fleets for player skill (kind of ugly)
     private AsteroidMiningFleet asteroidMiningFleet2;
     private GasMiningFleet gasMiningFleet2;
 
@@ -94,9 +94,9 @@ public class StationRecord
 
 		if(displayMessage)
 		{
-			if(newOwnerFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+			if(newOwnerFactionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 				ExerelinUtilsMessaging.addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName(), Color.magenta);
-			else if(this.getOwner() != null && this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+			else if(this.getOwner() != null && this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 				ExerelinUtilsMessaging.addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName(), Color.magenta);
 			else
 				ExerelinUtilsMessaging.addMessage(stationToken.getFullName() + " taken over by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName());
@@ -117,7 +117,7 @@ public class StationRecord
                 system.setLightColor(Color.decode(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredStarLight));
             }
 
-            if(newOwnerFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            if(newOwnerFactionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
                 ExerelinUtilsMessaging.addMessage(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!", Color.magenta);
             else
                 ExerelinUtilsMessaging.addMessage(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!");
@@ -140,16 +140,16 @@ public class StationRecord
 
         //TODO rename station when possible
 
-		owningFaction = ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRecordForFaction(newOwnerFactionId);
+		owningFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(newOwnerFactionId);
 
-		if(newOwnerFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+		if(newOwnerFactionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 			stationToken.getCargo().setFreeTransfer(ExerelinConfig.playerFactionFreeTransfer);
 		else
 			stationToken.getCargo().setFreeTransfer(false);
 
 		// Update relationship
 		if(!originalOwnerId.equalsIgnoreCase("") && updateRelationship)
-			ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(originalOwnerId, newOwnerFactionId, "LostStation");
+			SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(originalOwnerId, newOwnerFactionId, "LostStation");
 
         // Update FactionDirectors
         FactionDirector.updateAllFactionDirectors();
@@ -195,7 +195,7 @@ public class StationRecord
 
     private void updateStance()
     {
-        if(this.getOwner() != null && !this.getOwner().getFactionId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+        if(this.getOwner() != null && !this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
         {
             if(!ExerelinUtilsFaction.isFactionAtWar(this.getOwner().getFactionId(), true))
             {
@@ -252,7 +252,7 @@ public class StationRecord
         }
 
         float resourceMultiplier = 1.0f;
-        if(this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+        if(this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
             resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
 
 		if(stationCargo.getSupplies() < (6400*resourceMultiplier))
@@ -298,7 +298,7 @@ public class StationRecord
         // Build 1 war fleet for defense
         if(this.owningFaction != null && (warFleet == null || !warFleet.fleet.isAlive()))
         {
-            warFleet = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.Defense);
+            warFleet = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.DEFENSE, true);
 
             if(warFleet.fleet == null)
                 warFleet = null;
@@ -310,7 +310,7 @@ public class StationRecord
         {
             if(this.owningFaction != null && (warFleet1 == null || !warFleet1.fleet.isAlive()) && this.targetStationRecord != null && this.targetStationRecord.getOwner() != null)
             {
-                warFleet1 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), this.targetStationRecord.getStationToken(), null, resupplyStation, WarFleet.FleetStance.Attack);
+                warFleet1 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), this.targetStationRecord.getStationToken(), null, resupplyStation, WarFleet.FleetStance.ATTACK, true);
 
                 if(warFleet1.fleet == null)
                     warFleet1 = null;
@@ -320,9 +320,9 @@ public class StationRecord
             if(this.owningFaction != null && (warFleet2 == null || !warFleet2.fleet.isAlive()) && ExerelinUtilsFaction.isFactionAtWar(this.owningFaction.getFactionId(), true))
             {
                 if(this.defendStationRecord != null)
-                    warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, this.defendStationRecord.getStationToken(), null, WarFleet.FleetStance.Patrol);
+                    warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, this.defendStationRecord.getStationToken(), null, WarFleet.FleetStance.PATROL, true);
                 else
-                    warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.Patrol);
+                    warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.PATROL, true);
 
                 if(warFleet2.fleet == null)
                     warFleet2 = null;
@@ -335,7 +335,7 @@ public class StationRecord
         {
             if(this.owningFaction != null && (warFleet1 == null || !warFleet1.fleet.isAlive()))
             {
-                warFleet1 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.Defense);
+                warFleet1 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.DEFENSE, true);
 
                 if(warFleet1.fleet == null)
                     warFleet1 = null;
@@ -344,7 +344,7 @@ public class StationRecord
             }
             if(this.owningFaction != null && (warFleet2 == null || !warFleet2.fleet.isAlive()))
             {
-                warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.Defense);
+                warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.DEFENSE, true);
 
                 if(warFleet2.fleet == null)
                     warFleet2 = null;
@@ -357,7 +357,7 @@ public class StationRecord
         {
             if(this.owningFaction != null && (warFleet1 == null || !warFleet1.fleet.isAlive()))
             {
-                warFleet1 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), this.targetStationRecord.getStationToken(), null, resupplyStation, WarFleet.FleetStance.Attack);
+                warFleet1 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), this.targetStationRecord.getStationToken(), null, resupplyStation, WarFleet.FleetStance.ATTACK, true);
 
                 if(warFleet1.fleet == null)
                     warFleet1 = null;
@@ -366,7 +366,7 @@ public class StationRecord
             }
             if(this.owningFaction != null && (warFleet2 == null || !warFleet2.fleet.isAlive())&& this.targetStationRecord != null && this.targetStationRecord.getOwner() != null)
             {
-                warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), this.targetStationRecord.getStationToken(), null, resupplyStation, WarFleet.FleetStance.Attack);
+                warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), this.targetStationRecord.getStationToken(), null, resupplyStation, WarFleet.FleetStance.ATTACK, true);
 
                 if(warFleet2.fleet == null)
                     warFleet2 = null;
@@ -380,9 +380,9 @@ public class StationRecord
             if(this.owningFaction != null && (warFleet1 == null || !warFleet1.fleet.isAlive()) && ExerelinUtilsFaction.isFactionAtWar(this.owningFaction.getFactionId(), true))
             {
                 if(this.defendStationRecord != null)
-                    warFleet1 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, this.defendStationRecord.getStationToken(), null, WarFleet.FleetStance.Patrol);
+                    warFleet1 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, this.defendStationRecord.getStationToken(), null, WarFleet.FleetStance.PATROL, true);
                 else
-                    warFleet1 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.Patrol);
+                    warFleet1 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.PATROL, true);
 
                 if(warFleet1.fleet == null)
                     warFleet1 = null;
@@ -392,9 +392,9 @@ public class StationRecord
             if(this.owningFaction != null && (warFleet2 == null || !warFleet2.fleet.isAlive()) && ExerelinUtilsFaction.isFactionAtWar(this.owningFaction.getFactionId(), true))
             {
                 if(this.defendStationRecord != null)
-                    warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, this.defendStationRecord.getStationToken(), null, WarFleet.FleetStance.Patrol);
+                    warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, this.defendStationRecord.getStationToken(), null, WarFleet.FleetStance.PATROL, true);
                 else
-                    warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.Patrol);
+                    warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, null, null, WarFleet.FleetStance.PATROL, true);
 
                 if(warFleet2.fleet == null)
                     warFleet2 = null;
@@ -407,7 +407,7 @@ public class StationRecord
                 && takeoverStationRecord != null
                 && this.stationFleetStance != StationFleetStance.DEFENSE && this.stationFleetStance != StationFleetStance.PATROL)
         {
-            stationAttackFleet = new StationAttackFleet(this.owningFaction.getFactionId(), this.getStationToken(), takeoverStationRecord.getStationToken(), resupplyStation);
+            stationAttackFleet = new StationAttackFleet(this.owningFaction.getFactionId(), this.getStationToken(), takeoverStationRecord.getStationToken(), resupplyStation, true);
 
             if(stationAttackFleet.fleet == null)
                 stationAttackFleet = null;
@@ -426,7 +426,7 @@ public class StationRecord
             return; // Don't increase resources if being boarded
 
         float resourceMultiplier = 1.0f;
-        if(this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+        if(this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
             resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
 
 		/*if(stationCargo.getFuel() < 1600*resourceMultiplier)
@@ -465,7 +465,7 @@ public class StationRecord
 
         // Update efficiency
         float baseEfficiency = 1.0f;
-        if(this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+        if(this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
             baseEfficiency = ExerelinUtilsPlayer.getPlayerStationBaseEfficiency();
 
         if(efficiency < baseEfficiency)
@@ -749,7 +749,7 @@ public class StationRecord
 
 	public void checkForPlayerItems()
 	{
-		if(this.getOwner() != null && !this.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+		if(this.getOwner() != null && !this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 		{
 			float numAgents = stationCargo.getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent");
 			float numPrisoners = stationCargo.getQuantity(CargoAPI.CargoItemType.RESOURCES, "prisoner");
@@ -759,18 +759,18 @@ public class StationRecord
 			{
 				if(ExerelinUtils.getRandomInRange(0, 9) != 0)
 				{
-					String otherFactionId = ExerelinData.getInstance().getSectorManager().getDiplomacyManager().getRandomNonEnemyFactionIdForFaction(this.getOwner().getFactionId());
-					if(otherFactionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+					String otherFactionId = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRandomNonEnemyFactionIdForFaction(this.getOwner().getFactionId());
+					if(otherFactionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 						otherFactionId = "";
 
 					if(otherFactionId.equalsIgnoreCase(""))
 					{
-						ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " agent has failed in their mission.", Color.magenta);
+						ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " agent has failed in their mission.", Color.magenta);
 						stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
 						return;
 					}
 
-					ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), otherFactionId, "agent");
+                    SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), otherFactionId, "agent");
 
                     if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
                         ExerelinUtilsMessaging.addMessage("The agent was not discovered and will repeat their mission.", Color.magenta);
@@ -780,7 +780,7 @@ public class StationRecord
 				}
 				else
 				{
-					ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), ExerelinData.getInstance().getPlayerFaction(), "agentCapture");
+                    SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), SectorManager.getCurrentSectorManager().getPlayerFactionId(), "agentCapture");
                     stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
 					return;
 				}
@@ -788,7 +788,7 @@ public class StationRecord
 
 			if(numPrisoners > 0)
 			{
-				ExerelinData.getInstance().getSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), ExerelinData.getInstance().getPlayerFaction(), "prisoner");
+                SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), SectorManager.getCurrentSectorManager().getPlayerFactionId(), "prisoner");
                 if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
                     ExerelinUtilsMessaging.addMessage("The prisoner is extremely valuable and will be interrogated further.", Color.magenta);
                 else
@@ -798,7 +798,7 @@ public class StationRecord
 
             if(numSabateurs > 0)
             {
-                ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " sabateur has caused a station explosion at " + this.getStationToken().getName() + ".", Color.magenta);
+                ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " sabateur has caused a station explosion at " + this.getStationToken().getName() + ".", Color.magenta);
                 lastBoardAttemptTime = Global.getSector().getClock().getTimestamp();
                 this.efficiency = 0.1f;
                 ExerelinUtils.removeRandomShipsFromCargo(this.stationCargo, this.stationCargo.getMothballedShips().getMembersListCopy().size());
@@ -858,35 +858,45 @@ public class StationRecord
         if(stance == StationFleetStance.BALANCED)
         {
             if(warFleet1 != null)
-                warFleet1.setStance(WarFleet.FleetStance.Attack);
+                warFleet1.setStance(WarFleet.FleetStance.ATTACK);
             if(warFleet2 != null)
-                warFleet2.setStance(WarFleet.FleetStance.Patrol);
+                warFleet2.setStance(WarFleet.FleetStance.PATROL);
         }
         if(stance == StationFleetStance.DEFENSE)
         {
             if(warFleet1 != null)
-                warFleet1.setStance(WarFleet.FleetStance.Defense);
+                warFleet1.setStance(WarFleet.FleetStance.DEFENSE);
             if(warFleet2 != null)
-                warFleet2.setStance(WarFleet.FleetStance.Defense);
+                warFleet2.setStance(WarFleet.FleetStance.DEFENSE);
         }
         if(stance == StationFleetStance.ATTACK)
         {
             if(warFleet1 != null)
-                warFleet1.setStance(WarFleet.FleetStance.Attack);
+                warFleet1.setStance(WarFleet.FleetStance.ATTACK);
             if(warFleet2 != null)
-                warFleet2.setStance(WarFleet.FleetStance.Attack);
+                warFleet2.setStance(WarFleet.FleetStance.ATTACK);
         }
         if(stance == StationFleetStance.PATROL)
         {
             if(warFleet1 != null)
-                warFleet1.setStance(WarFleet.FleetStance.Patrol);
+                warFleet1.setStance(WarFleet.FleetStance.PATROL);
             if(warFleet2 != null)
-                warFleet2.setStance(WarFleet.FleetStance.Patrol);
+                warFleet2.setStance(WarFleet.FleetStance.PATROL);
         }
 
         if(warFleet1 != null)
             warFleet1.setFleetAssignments();
         if(warFleet2 != null)
             warFleet2.setFleetAssignments();
+    }
+
+    public SectorEntityToken getTargetAsteroid()
+    {
+        return this.targetAsteroid;
+    }
+
+    public SectorEntityToken getTargetGasGiant()
+    {
+        return this.targetGasGiant;
     }
 }

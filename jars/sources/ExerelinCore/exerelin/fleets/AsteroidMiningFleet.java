@@ -4,9 +4,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import exerelin.ExerelinData;
 import exerelin.ExerelinUtils;
 import exerelin.ExerelinUtilsPlayer;
+import exerelin.SectorManager;
 import exerelin.SystemManager;
 import exerelin.utilities.ExerelinConfig;
 
@@ -59,7 +59,7 @@ public class AsteroidMiningFleet extends ExerelinFleetBase
 		fleet.clearAssignments();
 
         float resourceMultiplier = 1.0f;
-        if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+        if(fleet.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
             resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
 
 		if(targetAsteroid != null && validFleet && miningPower != 0 && this.anchor.getCargo().getSupplies() < 8000*resourceMultiplier)
@@ -81,7 +81,7 @@ public class AsteroidMiningFleet extends ExerelinFleetBase
 
 		return new Script() {
 			public void run() {
-                if(ExerelinData.getInstance().getSectorManager() == null)
+                if(SectorManager.getCurrentSectorManager() == null)
                     return; //TODO - Remove when scripts do not run before after game load
 
 				if(!returningHome && fleet.getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource) < fleetCargoCapacity)

@@ -49,6 +49,10 @@
     "data/world/factions/regime.faction",
     "data/world/factions/citadeldefenders.faction",
     "data/world/factions/ORI.faction",
+    "data/world/factions/batavia.faction",
+    "data/world/factions/mayorate.faction",
+    "data/world/factions/patnavy.faction",
+    "data/world/factions/pn.faction",
 
     "data/hulls/relics_extinctioner.ship",
     "data/hulls/relics_faithoper.ship",

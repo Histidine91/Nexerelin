@@ -3,9 +3,11 @@ package exerelin.plugins;
 import java.awt.Color;
 
 import com.fs.starfarer.api.campaign.*;
-import exerelin.StationRecord;
-import exerelin.SystemManager;
-import exerelin.SystemStationManager;
+import exerelin.*;
+import exerelin.fleets.AsteroidMiningFleet;
+import exerelin.fleets.StationAttackFleet;
+import exerelin.fleets.WarFleet;
+import exerelin.fleets.GasMiningFleet;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinMessageManager;
 import exerelin.utilities.ExerelinMessage;
@@ -42,7 +44,6 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         ASTEROID_MINING_FLEET,
         ATTACK_FLEET,
         DEFENSE_FLEET,
-        LOGISTICS_FLEET,
         STATION_ATTACK_FLEET,
 
         STATION_FLEET_COMMAND,
@@ -99,6 +100,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         switch (option) {
             case INIT:
                 addText(getString("approach"));
+                this.displayStationStatus();
             case INIT_NO_TEXT:
                 createInitialOptions();
                 if (station.getCustomInteractionDialogImageVisual() != null) {
@@ -157,30 +159,54 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             case DISPLAY_STATION_STATUS:
                 this.displayStationStatus();
                 break;
+            case DISPLAY_MESSAGES:
+                this.displayMessages();
+                break;
             case STATION_FLEET_COMMAND:
                 options.clearOptions();
                 createStationFleetCommandOptions();
                 break;
-            case DISPLAY_MESSAGES:
-                this.displayMessages();
-                break;
             case STANCE_BALANCED:
                 this.setStationStance(StationRecord.StationFleetStance.BALANCED);
+                options.clearOptions();
+                createStationFleetCommandOptions();
                 break;
             case STANCE_ATTACK:
                 this.setStationStance(StationRecord.StationFleetStance.ATTACK);
+                options.clearOptions();
+                createStationFleetCommandOptions();
                 break;
             case STANCE_DEFEND:
                 this.setStationStance(StationRecord.StationFleetStance.DEFENSE);
+                options.clearOptions();
+                createStationFleetCommandOptions();
                 break;
             case STANCE_PATROL:
                 this.setStationStance(StationRecord.StationFleetStance.PATROL);
+                options.clearOptions();
+                createStationFleetCommandOptions();
                 break;
             case SET_ALL_IN_SYSTEM:
                 this.setAllStationsInSystemStance();
                 break;
             case PLAYER_FLEET_COMMAND:
+                options.clearOptions();
                 this.createPlayerFleetCommandOptions();
+                break;
+            case DEFENSE_FLEET:
+                createPlayerCommandedDefenseFleet();
+                break;
+            case ASTEROID_MINING_FLEET:
+                createPlayerCommandedAsteroidMiningFleet();
+                break;
+            case GAS_MINING_FLEET:
+                createPlayerCommandedGasMiningFleet();
+                break;
+            case ATTACK_FLEET:
+                createPlayerCommandedAttackFleet();
+                break;
+            case STATION_ATTACK_FLEET:
+                createPlayerCommandedBoardingFleet();
                 break;
             case BACK:
                 options.clearOptions();
@@ -275,14 +301,13 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
         //display diplomacy reports and message history
         if(!station.getFaction().getId().equalsIgnoreCase("abandoned") && !station.getFaction().getId().equalsIgnoreCase("rebel"))
-        {
             options.addOption("Access Intel Reports", OptionId.INTEL);
-        }
 
         if(station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-        {
             options.addOption("Access Station Fleet Command", OptionId.STATION_FLEET_COMMAND);
-        }
+
+        if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 || this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+            options.addOption("Access Operational Fleet Command", OptionId.PLAYER_FLEET_COMMAND);
 
         options.addOption("Leave", OptionId.LEAVE);
     }
@@ -300,10 +325,10 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
     {
         String currentStance = SystemManager.getSystemManagerForAPI((StarSystemAPI)this.station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(this.station).getStationFleetStance().toString();
 
-        options.addOption("Set behavior to Balanced", OptionId.STANCE_BALANCED, "1 Attack, 1 Defense, 1 Patrol");
-        options.addOption("Set behavior to Attack", OptionId.STANCE_ATTACK, "2 Attack, 1 Defense");
-        options.addOption("Set behavior to Defend", OptionId.STANCE_DEFEND, "3 Defense");
-        options.addOption("Set behavior to Patrol", OptionId.STANCE_PATROL, "1 Defense, 2 Patrol");
+        options.addOption("Set behavior to Balanced", OptionId.STANCE_BALANCED, "1 ATTACK, 1 DEFENSE, 1 PATROL");
+        options.addOption("Set behavior to Attack", OptionId.STANCE_ATTACK, "2 ATTACK, 1 DEFENSE");
+        options.addOption("Set behavior to Defend", OptionId.STANCE_DEFEND, "3 DEFENSE");
+        options.addOption("Set behavior to Patrol", OptionId.STANCE_PATROL, "1 DEFENSE, 2 PATROL");
         options.addOption("Set all stations in system to " + currentStance, OptionId.SET_ALL_IN_SYSTEM, "Set all stations in system to this stations current behaviour");
         options.addOption("Back", OptionId.BACK);
     }
@@ -312,19 +337,17 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
     {
         if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0)
         {
-            options.addOption("Attack Fleet", OptionId.ATTACK_FLEET);
-            options.addOption("Station Boarding Fleet", OptionId.STATION_ATTACK_FLEET);
+            options.addOption("Organise Attack Fleet", OptionId.ATTACK_FLEET, "Mobilise an Attack Fleet from your faction's closest station.");
+            options.addOption("Organise Station Boarding Fleet", OptionId.STATION_ATTACK_FLEET, "Mobilise a Boarding Fleet from your faction's closest station.");
         }
         else if(this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
         {
-            options.addOption("Defense Fleet", OptionId.DEFENSE_FLEET);
-            options.addOption("Asteroid Mining Fleet", OptionId.ASTEROID_MINING_FLEET);
-            options.addOption("Gas Mining Fleet", OptionId.GAS_MINING_FLEET);
-            options.addOption("Logistics Fleet", OptionId.LOGISTICS_FLEET);
+            options.addOption("Organise Defense Fleet", OptionId.DEFENSE_FLEET);
+            options.addOption("Organise Asteroid Mining Fleet", OptionId.ASTEROID_MINING_FLEET);
+            options.addOption("Organise Gas Mining Fleet", OptionId.GAS_MINING_FLEET);
         }
         options.addOption("Back", OptionId.BACK);
     }
-
 
     private OptionId lastOptionMousedOver = null;
     public void optionMousedOver(String optionText, Object optionData) {
@@ -421,7 +444,13 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
     private void displayStationStatus()
     {
-        StationRecord stationRecord = SystemManager.getSystemManagerForAPI((StarSystemAPI) this.station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(this.station);
+        StationRecord stationRecord = SystemManager.getSystemManagerForAPI((StarSystemAPI)this.station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(this.station);
+
+        if(stationRecord == null)
+            return;
+
+        //if(!Global.getSector().getPlayerFleet().getFaction().getId().equalsIgnoreCase(this.station.getFaction().getId()))
+        //    return;
 
         float stationEfficiency = stationRecord.getEfficiency(false);
         int numAttacking = stationRecord.getNumAttacking();
@@ -478,6 +507,78 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         }
 
         textPanel.addParagraph("All stations in system fleet behaviours changed.");
+    }
+
+    private void createPlayerCommandedDefenseFleet()
+    {
+        WarFleet warFleet = new WarFleet(this.station.getFaction().getId(), this.station, null, null, null, WarFleet.FleetStance.DEFENSE, false);
+        SectorManager.getCurrentSectorManager().addPlayerCommandedFleet(warFleet);
+    }
+
+    private void createPlayerCommandedAsteroidMiningFleet()
+    {
+        SectorEntityToken targetAsteroid = SystemManager.getSystemManagerForAPI((StarSystemAPI)this.station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(this.station).getTargetAsteroid();
+
+        AsteroidMiningFleet asteroidMiningFleet = new AsteroidMiningFleet(this.station.getFaction().getId(), this.station, targetAsteroid);
+        SectorManager.getCurrentSectorManager().addPlayerCommandedFleet(asteroidMiningFleet);
+    }
+
+    private void createPlayerCommandedGasMiningFleet()
+    {
+        SectorEntityToken targetGasGiant = SystemManager.getSystemManagerForAPI((StarSystemAPI)this.station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(this.station).getTargetGasGiant();
+
+        GasMiningFleet gasMiningFleet = new GasMiningFleet(this.station.getFaction().getId(), this.station, targetGasGiant);
+        SectorManager.getCurrentSectorManager().addPlayerCommandedFleet(gasMiningFleet);
+    }
+
+    private void createPlayerCommandedAttackFleet()
+    {
+        SectorEntityToken spawnStation = ExerelinUtils.getClosestStationForFaction(Global.getSector().getPlayerFleet().getFaction().getId(), (StarSystemAPI)this.station.getContainingLocation(), this.station);
+
+        if(spawnStation == null)
+        {
+            StarSystemAPI spawnSystem = ExerelinUtils.getClosestSystemWithFaction((StarSystemAPI)this.station.getContainingLocation(), Global.getSector().getPlayerFleet().getFaction().getId());
+            if(spawnSystem == null)
+            {
+                return;
+            }
+            else
+            {
+                spawnStation = ExerelinUtils.getRandomStationInSystemForFaction(Global.getSector().getPlayerFleet().getFaction().getId(), spawnSystem);
+                if(spawnStation == null)
+                {
+                    return;
+                }
+            }
+        }
+
+        WarFleet warFleet = new WarFleet(Global.getSector().getPlayerFleet().getFaction().getId(), spawnStation, this.station, null, spawnStation, WarFleet.FleetStance.ATTACK, false);
+        SectorManager.getCurrentSectorManager().addPlayerCommandedFleet(warFleet);
+    }
+
+    private void createPlayerCommandedBoardingFleet()
+    {
+        SectorEntityToken spawnStation = ExerelinUtils.getClosestStationForFaction(Global.getSector().getPlayerFleet().getFaction().getId(), (StarSystemAPI)this.station.getContainingLocation(), this.station);
+
+        if(spawnStation == null)
+        {
+            StarSystemAPI spawnSystem = ExerelinUtils.getClosestSystemWithFaction((StarSystemAPI)this.station.getContainingLocation(), Global.getSector().getPlayerFleet().getFaction().getId());
+            if(spawnSystem == null)
+            {
+                return;
+            }
+            else
+            {
+                spawnStation = ExerelinUtils.getRandomStationInSystemForFaction(Global.getSector().getPlayerFleet().getFaction().getId(), spawnSystem);
+                if(spawnStation == null)
+                {
+                    return;
+                }
+            }
+        }
+
+        StationAttackFleet stationAttackFleet = new StationAttackFleet(Global.getSector().getPlayerFleet().getFaction().getId(), spawnStation, this.station, spawnStation, false);
+        SectorManager.getCurrentSectorManager().addPlayerCommandedFleet(stationAttackFleet);
     }
 }
 

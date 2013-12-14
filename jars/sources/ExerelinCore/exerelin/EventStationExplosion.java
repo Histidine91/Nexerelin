@@ -48,7 +48,7 @@ public class EventStationExplosion extends EventBase
 			{
                 if(ExerelinUtils.isPlayerInSystem(starSystemAPI))
                 {
-                    if(station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+                    if(station.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
                         ExerelinUtilsMessaging.addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and is operating at reduced efficiency!", Color.magenta);
                     else
                         ExerelinUtilsMessaging.addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and is operating at reduced efficiency.");
@@ -73,7 +73,7 @@ public class EventStationExplosion extends EventBase
 			{
                 if(ExerelinUtils.isPlayerInSystem(starSystemAPI))
                 {
-                    if(station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+                    if(station.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
                         ExerelinUtilsMessaging.addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and has been abandoned!", Color.magenta);
                     else
                         ExerelinUtilsMessaging.addMessage(station.getStationToken().getFullName() + " has suffered a " + accidentType + " accident and has been abandoned.");

@@ -56,20 +56,20 @@ public class EventStationSeccession extends EventBase
 			attempts = attempts + 1;
 			station = stations[ExerelinUtils.getRandomInRange(0, stations.length - 1)];
 			if(station.getOwner() == null
-					|| !station.getOwner().getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLeader())
-					|| ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getNumStationsOwnedByFaction(ExerelinData.getInstance().getSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLeader()) <= 1)
+					|| !station.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLeader())
+					|| SectorManager.getCurrentSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getNumStationsOwnedByFaction(SectorManager.getCurrentSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLeader()) <= 1)
 				station = null;
 		}
 
 		if(station != null)
 		{
-			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+			if(factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 				ExerelinUtilsMessaging.addMessage(station.getStationToken().getFullName() + " has secceded to " + factionId + "!", Color.MAGENTA);
 			else
 				ExerelinUtilsMessaging.addMessage(station.getStationToken().getFullName() + " has secceded to " + factionId + "!");
 
-			ExerelinData.getInstance().getSectorManager().getDiplomacyManager().declarePeaceWithAllFactions(factionId);
-			ExerelinData.getInstance().getSectorManager().getDiplomacyManager().createWarIfNoneExists(factionId);
+			SectorManager.getCurrentSectorManager().getDiplomacyManager().declarePeaceWithAllFactions(factionId);
+			SectorManager.getCurrentSectorManager().getDiplomacyManager().createWarIfNoneExists(factionId);
 			station.setOwner(factionId,  false, false);
 
 			station.getStationToken().getCargo().clear();

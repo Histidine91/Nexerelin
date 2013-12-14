@@ -24,6 +24,9 @@ public class TimeManager implements EveryFrameScript
 
 	private void runHourly(long hour)
 	{
+        if(hour == 1)
+            SectorManager.getCurrentSectorManager().updatePlayerCommandedFleets();
+
         if(hour == 3)
         {
             // Handle player station boarding
@@ -165,11 +168,11 @@ public class TimeManager implements EveryFrameScript
 	@Override
 	public void advance(float amount)
 	{
-        if(ExerelinData.getInstance().getSectorManager() == null)
+        if(SectorManager.getCurrentSectorManager() == null)
             return; //OnGameLoad doesn't seem to run before EveryFrameScript.advance()
 
         // Do any every frame checks that need to be performed
-		ExerelinData.getInstance().getSectorManager().doEveryFrameChecks();
+		SectorManager.getCurrentSectorManager().doEveryFrameChecks();
 
         SectorAPI sector = Global.getSector();
 

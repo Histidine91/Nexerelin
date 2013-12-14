@@ -14,9 +14,9 @@ public class WarFleet extends ExerelinFleetBase
 {
     public static enum FleetStance
     {
-        Attack,
-        Defense,
-        Patrol
+        ATTACK,
+        DEFENSE,
+        PATROL
     }
 
     SectorEntityToken targetStation;
@@ -26,7 +26,7 @@ public class WarFleet extends ExerelinFleetBase
 
     FleetStance currentStance;
 
-    public WarFleet(String faction, SectorEntityToken anchor, SectorEntityToken target, SectorEntityToken defend, SectorEntityToken resupply, FleetStance stance)
+    public WarFleet(String faction, SectorEntityToken anchor, SectorEntityToken target, SectorEntityToken defend, SectorEntityToken resupply, FleetStance stance, Boolean deductResources)
     {
         this.anchor = anchor;
         this.targetStation = target;
@@ -49,7 +49,7 @@ public class WarFleet extends ExerelinFleetBase
         if(ExerelinUtils.getRandomInRange(0, (int) (99 / (eliteShipChance * 100))) == 0)
             ExerelinUtils.addEliteShipToFleet(fleet);
 
-        if(ExerelinUtils.canStationSpawnFleet(anchor, fleet, 1, 0.1f, true, ExerelinUtils.getCrewXPLevelForFaction(faction)))
+        if(!deductResources || ExerelinUtils.canStationSpawnFleet(anchor, fleet, 1, 0.1f, true, ExerelinUtils.getCrewXPLevelForFaction(faction)))
         {
             ExerelinUtils.addFreightersToFleet(fleet);
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(faction));
@@ -88,9 +88,9 @@ public class WarFleet extends ExerelinFleetBase
     {
         fleet.clearAssignments();
 
-        if(this.currentStance == FleetStance.Attack)
+        if(this.currentStance == FleetStance.ATTACK)
             setAttackAssignments();
-        else if(this.currentStance == FleetStance.Patrol)
+        else if(this.currentStance == FleetStance.PATROL)
             setPatrolAssignments();
         else
             setDefendAssignments();
@@ -127,17 +127,17 @@ public class WarFleet extends ExerelinFleetBase
 
         if(this.defendStation != null)
         {
-            // Check if home is under threat
+            // Check if home is under major threat
             Boolean homeUnderThreat = false;
             if(defendStation == anchor)
                 homeUnderThreat = true;
 
-            // Only allow raid system choice if home is not under threat
+            // Only allow raid/patrol choice if home is not under threat
             int action;
             if(homeUnderThreat)
                 action = 0;
             else
-                action = ExerelinUtils.getRandomInRange(0,2);
+                action = ExerelinUtils.getRandomInRange(1,2);
 
             if(action == 0)
             {
@@ -146,24 +146,31 @@ public class WarFleet extends ExerelinFleetBase
                 fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, anchor, 1000);
                 fleet.setPreferredResupplyLocation(defendStation);
             }
-            else if(action == 1)
+            else if(action == 1 && ExerelinUtils.doesSystemHaveEntityForFaction((StarSystemAPI)defendStation.getContainingLocation(), fleet.getFaction().getId(), -100000f, -0.01f))
             {
-                // Raid system of station
+                // Raid system of defend station
                 fleet.addAssignment(FleetAssignment.RAID_SYSTEM, defendStation, 270);
                 fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, anchor, 1000);
                 fleet.setPreferredResupplyLocation(defendStation);
             }
-            else if(action == 2)
+            else if(action == 2 && defendStation.getContainingLocation() == anchor.getContainingLocation())
             {
-                // PATROL system of station
+                // Patrol system of defend station
                 fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, defendStation, 270);
                 fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, anchor, 1000);
                 fleet.setPreferredResupplyLocation(defendStation);
             }
+            else
+            {
+                // Patrol home system
+                fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, anchor, 270);
+                fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, anchor, 1000);
+                fleet.setPreferredResupplyLocation(anchor);
+            }
         }
         else if(ExerelinUtilsFaction.isFactionAtWar(this.fleet.getFaction().getId(), true))
         {
-            // PATROL system
+            // Patrol home system
             fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, anchor, 270);
             fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, anchor, 1000);
             fleet.setPreferredResupplyLocation(anchor);

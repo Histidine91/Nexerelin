@@ -1,9 +1,9 @@
 package data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
-import com.fs.starfarer.api.Global;
-import exerelin.ExerelinData;
+import data.scripts.world.exerelin.ExerelinSetupData;
 import exerelin.SectorManager;
+import exerelin.utilities.ExerelinConfig;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -18,13 +18,14 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onGameLoad()
     {
         System.out.println("onGameLoad");
-        ExerelinData.resetInstance();
-        ExerelinData.getInstance().setSectorManager((SectorManager)Global.getSector().getPersistentData().get("SectorManager"));
+        ExerelinSetupData.resetInstance();
+        ExerelinConfig.loadSettings();
     }
 
     @Override
     public void onNewGame() {
         System.out.println("onNewGame");
-        ExerelinData.resetInstance();
+        ExerelinSetupData.resetInstance();
+        ExerelinConfig.loadSettings();
     }
 }

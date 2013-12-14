@@ -75,7 +75,7 @@ public class OutSystemStationAttackFleet
 
 		setFleetAssignments(fleet);
 
-		if(theFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+		if(theFaction.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 			ExerelinUtilsMessaging.addMessage(((StarSystemAPI) theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!", Color.magenta);
 		else
             ExerelinUtilsMessaging.addMessage(((StarSystemAPI)theLocation).getName() + ": " + Global.getSector().getFaction(theFaction).getDisplayName() + " command fleet incoming!");
@@ -117,7 +117,7 @@ public class OutSystemStationAttackFleet
 					setFleetAssignments(theFleet);
 					return;
 				}
-				else if(!boarding && ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+				else if(!boarding && ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 				{
 					// Warn player of boarding
                     ExerelinUtilsMessaging.addMessage(theTarget.getFullName() + " is being boarded by " + Global.getSector().getFaction(theFaction).getDisplayName(), Color.magenta);
@@ -188,8 +188,8 @@ public class OutSystemStationAttackFleet
 					return;
 				}
 
-                ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidBoardingFlagships(), true, false);
-                ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false, false);
+                ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinConfig.validBoardingFlagships, true, false);
+                ExerelinUtils.removeShipsFromFleet(theFleet, ExerelinConfig.validTroopTransportShips, false, false);
 				StationRecord stationRecord = SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI)theLocation).getSystemStationManager().getStationRecordForToken(theTarget);
 				stationRecord.setOwner(theFaction, true, true);
 				stationRecord.clearCargo();

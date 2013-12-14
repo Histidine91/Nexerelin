@@ -1,32 +1,26 @@
-package exerelin;
+package data.scripts.world.exerelin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import exerelin.ExerelinUtils;
 import exerelin.utilities.ExerelinConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-/* This class functions as a data transfer for the various Exerelin modules
+/* This class functions as a data structure for Exerelin setup
  */
 
 @SuppressWarnings("unchecked")
-public final class ExerelinData
+public final class ExerelinSetupData
 {
-    private static ExerelinData instance = null;
+    private static ExerelinSetupData instance = null;
 
     // Player setup defaults
     private String playerFaction = "sindrian_diktat";
     private String playerStartingShipVariant = "shuttle_Attack";
 
-    // Valid ships for special exerelin.fleets
-    private final String[] ValidBoardingFlagships = new String[] { "atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2", "ori_butterflier"};
-    private final String[] ValidTroopTransportShips = new String[] { "valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_auxiliary", "qua_yidato", "cane", "ms_potnia"};
-    private final String[] ValidMiningShips = new String[] {"mining_drone", "zorg_sphere"};
-
-	//private String[] possibleFactions = new String[] {};
-	private String[] possibleFactions = new String[] {"hegemony", "tritachyon", "pirates", "sindrian_diktat"};
 	private String[] availableFactions = null;
 	public boolean onlyVanillaFactions = false;
 
@@ -50,18 +44,16 @@ public final class ExerelinData
 	public boolean omniFacPresent = true;
 	public int maxFactionsInExerelinAtOnce = 3;
 
-	private SectorManager sectorManager;
-
-	private ExerelinData()
+	private ExerelinSetupData()
 	{
 		// Empty constructor
 	}
 
-	public static ExerelinData getInstance()
+	public static ExerelinSetupData getInstance()
 	{
 		if(instance == null)
         {
-			instance = new ExerelinData();
+			instance = new ExerelinSetupData();
             ExerelinConfig.loadSettings();
         }
 
@@ -70,16 +62,12 @@ public final class ExerelinData
 
     public static void resetInstance()
     {
-        instance = new ExerelinData();
-        ExerelinConfig.loadSettings();
+        instance = new ExerelinSetupData();
     }
 
 	public String getPlayerFaction()
 	{
-        if(sectorManager != null)
-            return sectorManager.getPlayerFactionId();
-        else
-		    return playerFaction;
+        return playerFaction;
 	}
 
 	public void setPlayerFaction(String factionId)
@@ -96,7 +84,8 @@ public final class ExerelinData
 			ArrayList possibleFactionsList = new ArrayList();
 
 			// Add built in factions
-            Collections.addAll(possibleFactionsList, this.possibleFactions);
+            ExerelinConfig.loadSettings();
+            Collections.addAll(possibleFactionsList, ExerelinConfig.builtInFactions);
 
 			// Add modded factions
             Collections.addAll(possibleFactionsList, this.getModdedFactionsList());
@@ -281,6 +270,22 @@ public final class ExerelinData
         if(isFactionInstalled("ORI", "data.scripts.world.ORIModPlugin"))
             possibleModdedFactionList.add("ORI");
 
+        // Test for Patrian Principate
+        if(isFactionInstalled("patnavy", "data.scripts.PatriaModPlugin"))
+            possibleModdedFactionList.add("patnavy");
+
+        // Test for Project Batavia
+        if(isFactionInstalled("batavia", "data.scripts.BataviaModPlugin"))
+            possibleModdedFactionList.add("batavia");
+
+        // Test for P9 Colony Group
+        if(isFactionInstalled("pn", "data.scripts.world.pnModPlugin"))
+            possibleModdedFactionList.add("pn");
+
+        // Test for Ilkhannae Mayorate
+        if(isFactionInstalled("mayorate", "data.scripts.world.rasht"))
+            possibleModdedFactionList.add("mayorate");
+
 		System.out.println("- - - - - - - - - -");
         return (String[])possibleModdedFactionList.toArray(new String[possibleModdedFactionList.size()]);
 	}
@@ -299,31 +304,6 @@ public final class ExerelinData
 			return false;
 		}
 	}
-
-	public SectorManager getSectorManager()
-	{
-		return sectorManager;
-	}
-
-	public void setSectorManager(SectorManager inSectorManager)
-	{
-		sectorManager = inSectorManager;
-	}
-
-    public String[] getValidBoardingFlagships()
-    {
-        return ValidBoardingFlagships;
-    }
-
-    public String[] getValidTroopTransportShips()
-    {
-        return ValidTroopTransportShips;
-    }
-
-    public String[] getValidMiningShips()
-    {
-        return ValidMiningShips;
-    }
 
     public String getPlayerStartingShipVariant()
     {

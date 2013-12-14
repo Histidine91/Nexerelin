@@ -24,7 +24,7 @@ public class StationAttackFleet extends ExerelinFleetBase
 	boolean boarding = false;
     long lastTimeCheck;
 
-	public StationAttackFleet(String faction, SectorEntityToken anchor, SectorEntityToken targetStation, SectorEntityToken resupplyStation)
+	public StationAttackFleet(String faction, SectorEntityToken anchor, SectorEntityToken targetStation, SectorEntityToken resupplyStation, Boolean deductResources)
 	{
         this.anchor = anchor;
         this.targetStation = targetStation;
@@ -39,7 +39,7 @@ public class StationAttackFleet extends ExerelinFleetBase
 
         boarding = false;
 
-        if(ExerelinUtils.canStationSpawnFleet(anchor, fleet, 1, 0.8f, false, ExerelinUtils.getCrewXPLevelForFaction(faction)))
+        if(!deductResources || ExerelinUtils.canStationSpawnFleet(anchor, fleet, 1, 0.8f, false, ExerelinUtils.getCrewXPLevelForFaction(faction)))
         {
             ExerelinUtils.addFreightersToFleet(fleet);
             ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.2f, 0.8f, ExerelinUtils.getCrewXPLevelForFaction(faction));
@@ -102,7 +102,7 @@ public class StationAttackFleet extends ExerelinFleetBase
 						fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, resupplyStation, 10);
 						return;
 					}
-					else if(!boarding && targetStation.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+					else if(!boarding && targetStation.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
 					{
 						ExerelinUtilsMessaging.addMessage(targetStation.getFullName() + " is being boarded by " + fleet.getFaction().getDisplayName(), Color.magenta);
 					}
@@ -140,8 +140,8 @@ public class StationAttackFleet extends ExerelinFleetBase
 					cargo.addFuel(80);
 					cargo.addMarines(40);
 					cargo.addSupplies(320);
-                    ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships(), true, false);
-                    ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidTroopTransportShips(), false, false);
+                    ExerelinUtils.removeShipsFromFleet(fleet, ExerelinConfig.validBoardingFlagships, true, false);
+                    ExerelinUtils.removeShipsFromFleet(fleet, ExerelinConfig.validTroopTransportShips, false, false);
                     ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
 				}
 				else if(targetStation == null || targetStation.getFaction().getRelationship(fleet.getFaction().getId()) >= 0)
@@ -157,7 +157,7 @@ public class StationAttackFleet extends ExerelinFleetBase
                     StationRecord stationRecord = SystemManager.getSystemManagerForAPI((StarSystemAPI)targetStation.getContainingLocation()).getSystemStationManager().getStationRecordForToken(targetStation);
                     stationRecord.setOwner(fleet.getFaction().getId(), true, true);
                     stationRecord.clearCargo();
-                    ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidTroopTransportShips(), false, false);
+                    ExerelinUtils.removeShipsFromFleet(fleet, ExerelinConfig.validTroopTransportShips, false, false);
                     ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.5f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
 				}
 			}

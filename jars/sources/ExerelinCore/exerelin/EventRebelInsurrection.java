@@ -43,8 +43,8 @@ public class EventRebelInsurrection extends EventBase
 		// Warn player
         if(ExerelinUtils.isPlayerInSystem(starSystemAPI))
         {
-            if(rebelAgainseFaction.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-                ExerelinUtilsMessaging.addMessage("A number of " + ExerelinData.getInstance().getPlayerFaction() + " exerelin.fleets are attempting an insurrection!", Color.magenta);
+            if(rebelAgainseFaction.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
+                ExerelinUtilsMessaging.addMessage("A number of " + SectorManager.getCurrentSectorManager().getPlayerFactionId() + " exerelin.fleets are attempting an insurrection!", Color.magenta);
             else
                 ExerelinUtilsMessaging.addMessage("A number of " + rebelAgainseFaction + " exerelin.fleets are attempting an insurrection!");
         }

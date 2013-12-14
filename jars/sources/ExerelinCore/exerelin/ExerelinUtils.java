@@ -66,7 +66,7 @@ public class ExerelinUtils
 		int edge = ExerelinUtils.getRandomInRange(0, 3);
 		int x = 0;
 		int y = 0;
-		int maxSize = 0; //ExerelinData.getInstance().getSectorManager().getMaxSystemSize();
+		int maxSize = 0; //SectorManager.getCurrentSectorManager().getMaxSystemSize();
         if(SectorManager.getCurrentSectorManager() == null) //TODO - Fix when rework is complete or 'frame advance running before onGameLoad' bug is fixed
             maxSize = 16000;
         else
@@ -219,7 +219,7 @@ public class ExerelinUtils
 	{
 		float fleetCostMult = (float) ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).baseFleetCostMultiplier;
 
-        if(fleet.getFaction().getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+        if(fleet.getFaction().getId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
         {
             float playerFleetCostMult = ExerelinUtilsPlayer.getPlayerFleetCostMultiplier();
             fleetCostMult = playerFleetCostMult * fleetCostMult;
@@ -260,6 +260,36 @@ public class ExerelinUtils
         return stationToken.getFaction().getId();
 	}
 
+    public static SectorEntityToken getClosestStationForFaction(String factionId, StarSystemAPI starSystemAPI, SectorEntityToken anchor)
+    {
+        List stations = starSystemAPI.getOrbitalStations();
+        Float bestDistance = 10000000000000f;
+        SectorEntityToken bestStation = anchor;
+
+        for(int i = 0; i < stations.size(); i = i + 1)
+        {
+            SectorEntityToken theStation = (SectorEntityToken)stations.get(i);
+
+            if(theStation == anchor)
+                continue;
+
+            if(theStation.getFaction().getId().equalsIgnoreCase(factionId))
+            {
+                Float distance = MathUtils.getDistanceSquared(anchor, theStation);
+                if(distance < bestDistance)
+                {
+                    bestStation = theStation;
+                    bestDistance = distance;
+                }
+            }
+        }
+
+        if(MathUtils.getDistanceSquared(anchor, bestStation) == 0)
+            return null;
+        else
+            return bestStation;
+    }
+
 	public static SectorEntityToken getClosestEnemyStation(String targetingFaction, StarSystemAPI starSystemAPI, SectorAPI sector, SectorEntityToken anchor)
 	{
 		List stations = starSystemAPI.getOrbitalStations();
@@ -290,7 +320,7 @@ public class ExerelinUtils
 			}
 		}
 
-		if(MathUtils.getDistance(anchor, bestStation) == 0)
+		if(MathUtils.getDistanceSquared(anchor, bestStation) == 0)
 		{
 			//System.out.println("Couldn't get station target for: " + targetingFaction);
 			return null; // no available targets
@@ -315,16 +345,11 @@ public class ExerelinUtils
 			if(theStation.getFullName().contains("Storage"))
 				continue; // Skip current station
 
-			if(!getStationOwnerFactionId(theStation).equalsIgnoreCase(factionId))
+			if(!theStation.getFaction().getId().equalsIgnoreCase(factionId))
 				continue; // Skip current station
 
-			if(factionStation == null)
-				factionStation = theStation;
-			else
-			{
-				if(ExerelinUtils.getRandomInRange(0, 1) == 0)
-					factionStation = theStation;
-			}
+            if(factionStation == null || ExerelinUtils.getRandomInRange(0, 1) == 0)
+                factionStation = theStation;
 		}
 
 		return factionStation;
@@ -467,7 +492,6 @@ public class ExerelinUtils
 	public static void addRandomFactionShipsToCargo(CargoAPI cargo, int count, String factionId, SectorAPI sector)
 	{
 		int r = getRandomInRange(0, 30);
-
 		CampaignFleetAPI fleet;
 
 		if(r == 0)
@@ -486,7 +510,6 @@ public class ExerelinUtils
             for(int i = 0; i < count; i++)
             {
                 String shipId = ExerelinConfig.commonShipList[ExerelinUtils.getRandomInRange(0, ExerelinConfig.commonShipList.length - 1)];
-                //cargo.addMothballedShip(FleetMemberType.SHIP, shipId, null);
                 SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddShip(cargo, FleetMemberType.SHIP, shipId, null));
             }
             return;
@@ -509,57 +532,17 @@ public class ExerelinUtils
 				memberToGet = ExerelinUtils.getRandomInRange(0, fleet.getFleetData().getMembersListCopy().size() - 1);
 				fmAPI = (FleetMemberAPI)fleet.getFleetData().getMembersListCopy().get(memberToGet);
 			}
-			String shipId = fmAPI.getHullId();
-			FleetMemberType memberType = fmAPI.getType();
 
-			if(memberType == FleetMemberType.FIGHTER_WING)
-			{
-				// Fix wrong Antedilvian names
-				if(shipId.startsWith("fighter_"))
-				{
-					shipId = shipId.substring(8, shipId.length());
-					if(shipId.equalsIgnoreCase("persephone"))
-						shipId = shipId + "_large";
-				}
+			String shipId = "";
 
-				// Fix wrong Valkyrian names
-				if(shipId.equalsIgnoreCase("helia") || shipId.equalsIgnoreCase("excalibur"))
-					shipId = shipId + "_corv";
-				if(shipId.equalsIgnoreCase("ancord"))
-					shipId = shipId + "_hcorv";
-
-				// Fix wrong Nihil names
-				if(shipId.equalsIgnoreCase("nihil_anti"))
-					shipId = "anti";
-
-                // Fix wrong Zorg names
-                if(shipId.equalsIgnoreCase("zorg_worker_sphere"))
-                    shipId = "zorg_worker";
-
-                shipId = shipId + "_wing";
-
-                // Fix wrong independantMiner names (these don't have _wing on the end)
-                if(shipId.equalsIgnoreCase("rat_wing"))
-                    shipId = "rat";
-                if(shipId.equalsIgnoreCase("weasel_wing"))
-                    shipId = "weasel";
-                if(shipId.equalsIgnoreCase("mouse_wing"))
-                    shipId = "mouse";
-                if(shipId.equalsIgnoreCase("cony_wing"))
-                    shipId = "cony";
-
-                // Fix wrong ORI names
-                if(shipId.equalsIgnoreCase("wall_wing"))
-                    shipId = "wall_bomb_wing";
-			}
-			else if (memberType == FleetMemberType.SHIP)
-				shipId = shipId + "_Hull";
+			if(fmAPI.getType() == FleetMemberType.FIGHTER_WING)
+                shipId = fmAPI.getSpecId();
+			else if (fmAPI.getType() == FleetMemberType.SHIP)
+				shipId = fmAPI.getHullId() + "_Hull";
 			else
 				return;
 
-			//cargo.addMothballedShip(memberType, shipId, null);
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddShip(cargo, memberType, shipId, null));
-			//cargo.getMothballedShips().addFleetMember(fmAPI);
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddShip(cargo, fmAPI.getType(), shipId, null));
 		}
 	}
 
@@ -672,7 +655,7 @@ public class ExerelinUtils
 		for(int i = 0; i < members.size(); i++)
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidMiningShips(), true))
+			if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinConfig.validMiningShips, true))
 				hasMiningShip = true;
 			else if(!fmAPI.isFighterWing())
 				hasShip = true;
@@ -689,7 +672,7 @@ public class ExerelinUtils
 		for(int i = 0; i < members.size(); i++)
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidMiningShips(), true))
+			if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinConfig.validMiningShips, true))
 				power = power + 1;
 		}
 
@@ -711,10 +694,10 @@ public class ExerelinUtils
 		{
 			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
 
-            if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidBoardingFlagships(), true))
+            if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinConfig.validBoardingFlagships, true))
 				hasValidFlagship = true;
 
-            if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinData.getInstance().getValidTroopTransportShips(), true))
+            if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinConfig.validTroopTransportShips, true))
                 hasValidTroopTransport = true;
 
             if(hasValidFlagship && hasValidTroopTransport)
@@ -832,19 +815,19 @@ public class ExerelinUtils
             return;
 
         // Check if at war or station is abandonded
-        if(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getRelationship(possibleBoardTargetFactionId) >= 0)
+        if(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getRelationship(possibleBoardTargetFactionId) >= 0)
             return;
 
         // Attempt to takeover station
         if(ExerelinUtils.boardStationAttempt(playerFleet, possibleBoardTarget, true, false))
         {
-            if(!SectorManager.getCurrentSectorManager().isFactionInSector(ExerelinData.getInstance().getPlayerFaction()))
+            if(!SectorManager.getCurrentSectorManager().isFactionInSector(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
             {
                 // First station takeover so also remove extra transport
-                ExerelinUtils.removeShipsFromFleet(playerFleet, ExerelinData.getInstance().getValidTroopTransportShips(), false, false);
+                ExerelinUtils.removeShipsFromFleet(playerFleet, ExerelinConfig.validTroopTransportShips, false, false);
                 ExerelinUtils.resetFleetCargoToDefaults(playerFleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(playerFleet.getFaction().getId()));
             }
-            systemManager.setStationOwner(possibleBoardTarget, ExerelinData.getInstance().getPlayerFaction(), true, true);
+            systemManager.setStationOwner(possibleBoardTarget, SectorManager.getCurrentSectorManager().getPlayerFactionId(), true, true);
         }
     }
 
@@ -925,7 +908,7 @@ public class ExerelinUtils
         if(marinesDefending <= 0)
         {
             // Attackers won
-            ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships(), true, false);
+            ExerelinUtils.removeShipsFromFleet(fleet, ExerelinConfig.validBoardingFlagships, true, false);
             if(resetCargo)
                 ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
             else
@@ -938,8 +921,8 @@ public class ExerelinUtils
             if(fleet.getCargo().getMarines() <= 0)
             {
                 // Defenders total win
-                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidBoardingFlagships(), true, true);
-                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinData.getInstance().getValidTroopTransportShips(), false, true);
+                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinConfig.validBoardingFlagships, true, true);
+                ExerelinUtils.removeShipsFromFleet(fleet, ExerelinConfig.validTroopTransportShips, false, true);
                 if(resetCargo)
                     ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(fleet.getFaction().getId()));
                 else
@@ -974,7 +957,7 @@ public class ExerelinUtils
     // Returns a factions crew xp level
     public static CargoAPI.CrewXPLevel getCrewXPLevelForFaction(String factionId)
     {
-        if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+        if(factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
         {
             float crewUpgradeChance = ExerelinUtilsPlayer.getPlayerFactionFleetCrewExperienceBonus() + (float)ExerelinConfig.getExerelinFactionConfig(factionId).crewExpereinceLevelIncreaseChance;
             if(ExerelinUtils.getRandomInRange(0, 99) <= -1 + crewUpgradeChance*100)
@@ -1031,6 +1014,32 @@ public class ExerelinUtils
 
             if(!ExerelinUtils.doesSystemHaveEntityForFaction(potentialSystem, factionId, minRelationship, maxRelationship))
                 continue; // If searching for war target or friendly target
+
+            float potentialDistance = ExerelinUtils.getDistanceBetweenSystems(system, potentialSystem);
+            if(potentialDistance < bestDistance)
+            {
+                bestSystem = potentialSystem;
+                bestDistance = potentialDistance;
+            }
+        }
+
+        return bestSystem;
+    }
+
+    public static StarSystemAPI getClosestSystemWithFaction(StarSystemAPI system, String factionId)
+    {
+        float bestDistance = 99999999999f;
+        StarSystemAPI bestSystem = null;
+
+        for(int i = 0; i < Global.getSector().getStarSystems().size(); i++)
+        {
+            StarSystemAPI potentialSystem = (StarSystemAPI)Global.getSector().getStarSystems().get(i);
+
+            if(potentialSystem.getName().equalsIgnoreCase(system.getName()))
+                continue; // Don't find intitial system
+
+            if(!ExerelinUtils.isFactionPresentInSystem(factionId, potentialSystem))
+                continue; // Faction is not present in system
 
             float potentialDistance = ExerelinUtils.getDistanceBetweenSystems(system, potentialSystem);
             if(potentialDistance < bestDistance)

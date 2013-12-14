@@ -2,6 +2,7 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.List;
 import java.util.ArrayList;
@@ -51,6 +52,13 @@ public class ExerelinConfig
     public static int playerBaseWage = 1000;
     public static boolean playerFactionFreeTransfer = false;
 
+    // Special Ships
+    public static String[] validBoardingFlagships = new String[]{};
+    public static String[] validTroopTransportShips = new String[]{};
+    public static String[] validMiningShips = new String[]{};
+
+    public static String[] builtInFactions = new String[]{};
+
     public static void loadSettings()
     {
         try
@@ -85,6 +93,12 @@ public class ExerelinConfig
 
             playerBaseWage = settings.getInt("playerBaseWage");
             playerFactionFreeTransfer = settings.getBoolean("playerFactionFreeTransfer");
+
+            validBoardingFlagships = JSONArrayToStringArray(settings.getJSONArray("validBoardingFlagships"));
+            validTroopTransportShips = JSONArrayToStringArray(settings.getJSONArray("validTroopTransportShips"));
+            validMiningShips = JSONArrayToStringArray(settings.getJSONArray("validMiningShips"));
+
+            builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
         }
         catch(Exception e)
         {
@@ -134,5 +148,17 @@ public class ExerelinConfig
         }
 
         return  customRebels;
+    }
+
+    private static String[] JSONArrayToStringArray(JSONArray jsonArray)
+    {
+        try
+        {
+            return jsonArray.toString().substring(1, jsonArray.toString().length() - 1).replaceAll("\"","").split(",");
+        }
+        catch(Exception e)
+        {
+            return new String[]{};
+        }
     }
 }

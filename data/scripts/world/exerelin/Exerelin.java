@@ -14,25 +14,25 @@ public class Exerelin //implements SectorGeneratorPlugin
 	{
         System.out.println("Starting setup...");
 
-        ExerelinData.getInstance().resetAvailableFactions();
+        ExerelinSetupData.getInstance().resetAvailableFactions();
 
-        // Build a sector manager to run things
-        SectorManager sectorManager = new SectorManager(sector);
+        // Set sector manager reference in persistent storage
+        SectorManager sectorManager = new SectorManager();
+        Global.getSector().getPersistentData().put("SectorManager", sectorManager);
 
         // Set starting conditions needed later for saving into the save file
-        sectorManager.setPlayerFreeTransfer(ExerelinData.getInstance().playerOwnedStationFreeTransfer);
-        sectorManager.setRespawnFactions(ExerelinData.getInstance().respawnFactions);
-        sectorManager.setMaxFactions(ExerelinData.getInstance().maxFactionsInExerelinAtOnce);
-        sectorManager.setPlayerFactionId(ExerelinData.getInstance().getPlayerFaction());
-        sectorManager.setFactionsPossibleInSector(ExerelinData.getInstance().getAvailableFactions(sector));
-        sectorManager.setRespawnWaitDays(ExerelinData.getInstance().respawnDelay);
-        sectorManager.setBuildOmnifactory(ExerelinData.getInstance().omniFacPresent);
-        sectorManager.setMaxSystemSize(ExerelinData.getInstance().maxSystemSize);
-        sectorManager.setPlayerStartShipVariant(ExerelinData.getInstance().getPlayerStartingShipVariant());
+        sectorManager.setPlayerFreeTransfer(ExerelinSetupData.getInstance().playerOwnedStationFreeTransfer);
+        sectorManager.setRespawnFactions(ExerelinSetupData.getInstance().respawnFactions);
+        sectorManager.setMaxFactions(ExerelinSetupData.getInstance().maxFactionsInExerelinAtOnce);
+        sectorManager.setPlayerFactionId(ExerelinSetupData.getInstance().getPlayerFaction());
+        sectorManager.setFactionsPossibleInSector(ExerelinSetupData.getInstance().getAvailableFactions(sector));
+        sectorManager.setRespawnWaitDays(ExerelinSetupData.getInstance().respawnDelay);
+        sectorManager.setBuildOmnifactory(ExerelinSetupData.getInstance().omniFacPresent);
+        sectorManager.setMaxSystemSize(ExerelinSetupData.getInstance().maxSystemSize);
+        sectorManager.setPlayerStartShipVariant(ExerelinSetupData.getInstance().getPlayerStartingShipVariant());
 
-        // Set sector manager reference in cache and persistent storage
-        ExerelinData.getInstance().setSectorManager(sectorManager);
-        Global.getSector().getPersistentData().put("SectorManager", sectorManager);
+        // Build the sector manager
+        sectorManager.setupSectorManager(sector);
 
         // Build a message manager object and add to persistent storage
         ExerelinMessageManager exerelinMessageManager = new ExerelinMessageManager();
@@ -59,6 +59,9 @@ public class Exerelin //implements SectorGeneratorPlugin
 		// Add trader spawns
 		this.initTraderSpawns(sector);
 
+        // Remove any data stored in ExerelinSetupData
+        ExerelinSetupData.resetInstance();
+
         System.out.println("Finished generation and setup...");
 	}
 
@@ -67,11 +70,11 @@ public class Exerelin //implements SectorGeneratorPlugin
 		String[] factions = SectorManager.getCurrentSectorManager().getFactionsPossibleInSector();
 		ExerelinUtils.shuffleStringArray(factions); // Randomise order
 
-		int numFactionsInitialStart = Math.min(factions.length - 1, ExerelinData.getInstance().numStartFactions);
+		int numFactionsInitialStart = Math.min(factions.length - 1, ExerelinSetupData.getInstance().numStartFactions);
 		for(int i = 0; i < numFactionsInitialStart; i = i + 1)
 		{
 			String factionId = factions[i];
-			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+			if(factionId.equalsIgnoreCase(ExerelinSetupData.getInstance().getPlayerFaction()))
 			{
 				numFactionsInitialStart = numFactionsInitialStart + 1;
 				continue;
@@ -87,7 +90,7 @@ public class Exerelin //implements SectorGeneratorPlugin
 
 	private void initFactionRelationships(SectorAPI sector)
 	{
-		String[] factions = ExerelinData.getInstance().getAvailableFactions(sector);
+		String[] factions = ExerelinSetupData.getInstance().getAvailableFactions(sector);
 		for(int i = 0; i < factions.length; i = i + 1)
 		{
 			sector.getFaction(factions[i]).setRelationship("abandoned", -1);

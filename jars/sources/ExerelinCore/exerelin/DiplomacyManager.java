@@ -21,7 +21,7 @@ public class DiplomacyManager
 {
 	private AllianceManager allianceManager;
 	private DiplomacyRecord[] factionRecords;
-	private SectorAPI sector;
+	private SectorAPI sector; //TODO REMOVE
 
 	private final int WAR_LEVEL = -40;
 	private final int ALLY_LEVEL = 40;
@@ -35,20 +35,18 @@ public class DiplomacyManager
 	String factionIdFirst;
 	String factionIdLast;
 
-	public DiplomacyManager(SectorAPI sectorValue)
+	public DiplomacyManager(SectorAPI sector)
 	{
 		allianceManager = new AllianceManager();
 
-		sector = sectorValue;
-
-		String [] availableFactions = ExerelinData.getInstance().getAvailableFactions(sector);
+		String [] availableFactions = SectorManager.getCurrentSectorManager().getFactionsPossibleInSector();
 		factionRecords = new DiplomacyRecord[availableFactions.length];
 
 		// Build a record for each available faction
 		for (int i = 0; i < factionRecords.length; i = i + 1)
 		{
 			factionRecords[i] = new DiplomacyRecord(availableFactions[i], availableFactions);
-			if(availableFactions[i].equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+			if(availableFactions[i].equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 				playerRecord = factionRecords[i];
 		}
 	}
@@ -56,14 +54,14 @@ public class DiplomacyManager
 	// Check if player has betrayed a faction since last check
 	public void checkBetrayal()
 	{
-		FactionAPI f1API = sector.getFaction(playerRecord.getFactionId());
+		FactionAPI f1API = Global.getSector().getFaction(playerRecord.getFactionId());
 
 		// Check for betrayal of each faction
 		for(int j = 0; j < factionRecords.length; j = j + 1)
 		{
-			FactionAPI f2API = sector.getFaction(factionRecords[j].getFactionId());
+			FactionAPI f2API = Global.getSector().getFaction(factionRecords[j].getFactionId());
 
-			if(f2API.getId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+			if(f2API.getId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 				continue;
 
 			float currentRelationship = f1API.getRelationship(f2API.getId());
@@ -75,11 +73,11 @@ public class DiplomacyManager
 
 				if(previousGameRelationship >= 1)
 				{
-					ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " has betrayed " + Global.getSector().getFaction(f2API.getId()).getDisplayName(), Color.magenta);
+					ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " has betrayed " + Global.getSector().getFaction(f2API.getId()).getDisplayName(), Color.magenta);
 				}
 				else if(previousGameRelationship >= 0)
 				{
-					ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " has broken treaty with " + Global.getSector().getFaction(f2API.getId()).getDisplayName(), Color.magenta);
+					ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " has broken treaty with " + Global.getSector().getFaction(f2API.getId()).getDisplayName(), Color.magenta);
 				}
 
 				if(playerRecord.isInAlliance() && factionRecords[j].isInAlliance())
@@ -156,8 +154,8 @@ public class DiplomacyManager
 				for(int i = 0; i < enemies.length; i++)
 				{
 					DiplomacyRecord enemyOfBetrayed = this.getRecordForFaction(enemies[i]);
-					if(!enemyOfBetrayed.getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-						enemyOfBetrayed.addToFactionRelationship(ExerelinData.getInstance().getPlayerFaction(), 20);
+					if(!enemyOfBetrayed.getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
+						enemyOfBetrayed.addToFactionRelationship(SectorManager.getCurrentSectorManager().getPlayerFactionId(), 20);
 				}
 
 				// Decrease players relationship with betrayed factions allies
@@ -165,8 +163,8 @@ public class DiplomacyManager
 				for(int i = 0; i < allies.length; i++)
 				{
 					DiplomacyRecord allyOfBetrayed = this.getRecordForFaction(allies[i]);
-					if(!allyOfBetrayed.getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
-						allyOfBetrayed.addToFactionRelationship(ExerelinData.getInstance().getPlayerFaction(), -20);
+					if(!allyOfBetrayed.getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
+						allyOfBetrayed.addToFactionRelationship(SectorManager.getCurrentSectorManager().getPlayerFactionId(), -20);
 				}
 
 				// Decrease players relationship with factions neutral to betrayed
@@ -175,7 +173,7 @@ public class DiplomacyManager
 					Boolean allyOrEnemy = false;
 					DiplomacyRecord record = this.factionRecords[k];
 
-					if(record.getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) || record.getFactionId().equalsIgnoreCase(factionRecords[j].getFactionId()))
+					if(record.getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || record.getFactionId().equalsIgnoreCase(factionRecords[j].getFactionId()))
 						continue; // Skip player faction or betrayed faction
 
 					for (int l = 0; l < allies.length; l++)
@@ -199,7 +197,7 @@ public class DiplomacyManager
 					if(allyOrEnemy)
 						continue;
 
-					record.addToFactionRelationship(ExerelinData.getInstance().getPlayerFaction(), -10);
+					record.addToFactionRelationship(SectorManager.getCurrentSectorManager().getPlayerFactionId(), -10);
 				}
 			}
 		}
@@ -307,7 +305,7 @@ public class DiplomacyManager
 				factionRelationship = 0;
 
             // Add extra player increase if skilled appropriatly
-            if(recordToUpdate.getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+            if(recordToUpdate.getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
             {
                 float bonus = ExerelinUtilsPlayer.getPlayerDiplomacyRelationshipBonus();
                 factionRelationship = factionRelationship + Math.abs((int)(factionRelationship*bonus));
@@ -518,7 +516,7 @@ public class DiplomacyManager
 				else if(ExerelinUtils.getRandomInRange(0,9)*allianceSectorOwnership > 4)
 				{
 					// Betray alliance
-                    if(this.allianceManager.isFactionInAlliance(ExerelinData.getInstance().getPlayerFaction(), diplomacyRecord.getAllianceId())
+                    if(this.allianceManager.isFactionInAlliance(SectorManager.getCurrentSectorManager().getPlayerFactionId(), diplomacyRecord.getAllianceId())
                             && ExerelinUtilsPlayer.getPlayerDiplomacyBetrayalReducedChance() > 0f)
                     {
                         System.out.println("Chance to save alliance betrayal");
@@ -556,7 +554,7 @@ public class DiplomacyManager
 				else if(ExerelinUtils.getRandomInRange(0,9)*allianceSectorOwnership > 4)
 				{
 					// Betray the alliance
-                    if(this.allianceManager.isFactionInAlliance(ExerelinData.getInstance().getPlayerFaction(), diplomacyRecord.getAllianceId())
+                    if(this.allianceManager.isFactionInAlliance(SectorManager.getCurrentSectorManager().getPlayerFactionId(), diplomacyRecord.getAllianceId())
                             && ExerelinUtilsPlayer.getPlayerDiplomacyBetrayalReducedChance() > 0f)
                     {
                         System.out.println("Chance to save alliance betrayal");
@@ -680,19 +678,19 @@ public class DiplomacyManager
 
 		if(event.equalsIgnoreCase("agent"))
 		{
-			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " agent has caused a disagreement between " + Global.getSector().getFaction(factionId).getDisplayName() + " and " + Global.getSector().getFaction(otherFactionId).getDisplayName(), Color.magenta);
+			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " agent has caused a disagreement between " + Global.getSector().getFaction(factionId).getDisplayName() + " and " + Global.getSector().getFaction(otherFactionId).getDisplayName(), Color.magenta);
 			relChange = -20;
 		}
 
 		if(event.equalsIgnoreCase("agentCapture"))
 		{
-			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " agent has been captured by " + Global.getSector().getFaction(factionId).getDisplayName(), Color.magenta);
+			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " agent has been captured by " + Global.getSector().getFaction(factionId).getDisplayName(), Color.magenta);
 			relChange = -20;
 		}
 
 		if(event.equalsIgnoreCase("prisoner"))
 		{
-			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(ExerelinData.getInstance().getPlayerFaction()).getDisplayName() + " prisoner exchange has been accepted and " + Global.getSector().getFaction(factionId).getDisplayName() + " is pleased", Color.magenta);
+			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " prisoner exchange has been accepted and " + Global.getSector().getFaction(factionId).getDisplayName() + " is pleased", Color.magenta);
 			relChange = 20;
 		}
 
@@ -1026,7 +1024,7 @@ public class DiplomacyManager
 		}
 
 		System.out.println(Global.getSector().getFaction(factionId).getDisplayName() + " has joined " + allianceRecord.getAllianceNameAndFactions());
-		if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
+		if(factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
 			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has joined " + allianceRecord.getAllianceNameAndFactions(), Color.magenta);
 		else
 			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has joined " + allianceRecord.getAllianceNameAndFactions());
@@ -1056,7 +1054,7 @@ public class DiplomacyManager
                     records[i].getFactionAPI().setRelationship(rec.getFactionId(), 0);
                 }
 
-				if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
+				if(factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
 					ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has left " + allianceRecord.getAllianceNameAndFactions(), Color.magenta);
 				else
 					ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has left " + allianceRecord.getAllianceNameAndFactions());
@@ -1067,7 +1065,7 @@ public class DiplomacyManager
 			// Remove faction from alliance and declare war with remaining faction in alliance
 			DiplomacyRecord[] factionRecords = getDiplomacyRecordsForAlliance(allianceId);
 
-			if(factionId.equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
+			if(factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
 				ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has betrayed " + allianceRecord.getAllianceNameAndFactions() + "!", Color.magenta);
 			else
 				ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has betrayed " + allianceRecord.getAllianceNameAndFactions() + "!");
@@ -1217,7 +1215,7 @@ public class DiplomacyManager
 			iRec.getFactionAPI().setRelationship(rec2.getFactionId(), allianceGameRelationship);
 		}
 
-		if(rec1.getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()) || rec2.getFactionId().equalsIgnoreCase(ExerelinData.getInstance().getPlayerFaction()))
+		if(rec1.getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || rec2.getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 			ExerelinUtilsMessaging.addMessage("New alliance " + allianceRecord.getAllianceNameAndFactions() + " has been founded!", Color.magenta);
 		else
 			ExerelinUtilsMessaging.addMessage("New alliance " + allianceRecord.getAllianceNameAndFactions() + " has been founded!");
