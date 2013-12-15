@@ -392,7 +392,7 @@ public class ExerelinUtils
 		String fleetTypeName = "";
 		float fleetSize = fleet.getFleetData().getFleetPointsUsed();
 
-        System.out.println("Renaming fleet for: " + fleet.getFaction().getId());
+        //System.out.println("Renaming fleet for: " + fleet.getFaction().getId());
 
 		if(type.equalsIgnoreCase("attack"))
 		{
