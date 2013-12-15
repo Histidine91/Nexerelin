@@ -151,6 +151,9 @@ public class StationRecord
 		if(!originalOwnerId.equalsIgnoreCase("") && updateRelationship)
 			SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(originalOwnerId, newOwnerFactionId, "LostStation");
 
+        // Get station targets for new faction
+        this.deriveTargets();
+
         // Update FactionDirectors
         FactionDirector.updateAllFactionDirectors();
 	}
@@ -681,17 +684,33 @@ public class StationRecord
         else
             resupplyStation = FactionDirector.getFactionDirectorForFactionId(this.owningFaction.getFactionId()).getTargetResupplyEntityToken();
 
-        if(stationAttackFleet != null && this.takeoverStationRecord != null)
-		    stationAttackFleet.setTarget(this.takeoverStationRecord.getStationToken(), resupplyStation);
+        SectorEntityToken targetToken = null;
+        if(this.targetStationRecord != null)
+            targetToken = this.targetStationRecord.getStationToken();
 
-        if(warFleet1 != null && this.targetStationRecord != null && this.defendStationRecord != null)
-            warFleet1.setTarget(this.targetStationRecord.getStationToken(), this.defendStationRecord.getStationToken(), resupplyStation);
+        SectorEntityToken defendToken = null;
+        if(this.defendStationRecord != null)
+            defendToken = this.defendStationRecord.getStationToken();
 
-        if(warFleet2 != null && this.targetStationRecord != null && this.defendStationRecord != null)
-            warFleet2.setTarget(this.targetStationRecord.getStationToken(), this.defendStationRecord.getStationToken(), resupplyStation);
+        SectorEntityToken takeoverToken = null;
+        if(this.takeoverStationRecord != null)
+            takeoverToken = this.takeoverStationRecord.getStationToken();
 
-        if(logisticsConvoyFleet != null && defendStationRecord != null)
-		    logisticsConvoyFleet.setTarget(defendStationRecord.getStationToken());
+        SectorEntityToken convoyToken = null;
+        if(this.convoyStationRecord != null)
+            convoyToken = this.convoyStationRecord.getStationToken();
+
+        if(stationAttackFleet != null)
+		    stationAttackFleet.setTarget(takeoverToken, resupplyStation);
+
+        if(warFleet1 != null)
+            warFleet1.setTarget(targetToken, defendToken, resupplyStation);
+
+        if(warFleet2 != null)
+            warFleet2.setTarget(targetToken, defendToken, resupplyStation);
+
+        if(logisticsConvoyFleet != null)
+		    logisticsConvoyFleet.setTarget(convoyToken);
 
         if(gasMiningFleet != null)
 		    gasMiningFleet.setTargetPlanet(targetGasGiant);
@@ -708,32 +727,41 @@ public class StationRecord
 
     public void updateFleetLists()
     {
-        if(stationAttackFleet != null && !stationAttackFleet.fleet.isAlive())
+        if(!exerelinFleetReferenceOK(stationAttackFleet))
             stationAttackFleet = null;
 
-        if(warFleet != null && !warFleet.fleet.isAlive())
+        if(!exerelinFleetReferenceOK(warFleet))
             warFleet = null;
 
-        if(warFleet1 != null && !warFleet1.fleet.isAlive())
+        if(!exerelinFleetReferenceOK(warFleet1))
             warFleet1 = null;
 
-        if(warFleet2 != null && !warFleet2.fleet.isAlive())
+        if(!exerelinFleetReferenceOK(warFleet2))
             warFleet2 = null;
 
-        if(gasMiningFleet != null && !gasMiningFleet.fleet.isAlive())
-            gasMiningFleet = null;
-
-        if(gasMiningFleet2 != null && !gasMiningFleet2.fleet.isAlive())
-            gasMiningFleet2 = null;
-
-        if(logisticsConvoyFleet != null && !logisticsConvoyFleet.fleet.isAlive())
+        if(!exerelinFleetReferenceOK(logisticsConvoyFleet))
             logisticsConvoyFleet = null;
 
-        if(asteroidMiningFleet != null && !asteroidMiningFleet.fleet.isAlive())
+        if(!exerelinFleetReferenceOK(asteroidMiningFleet))
             asteroidMiningFleet = null;
 
-        if(asteroidMiningFleet2 != null && !asteroidMiningFleet2.fleet.isAlive())
+        if(!exerelinFleetReferenceOK(asteroidMiningFleet2))
             asteroidMiningFleet2 = null;
+
+        if(!exerelinFleetReferenceOK(gasMiningFleet))
+            gasMiningFleet = null;
+
+        if(!exerelinFleetReferenceOK(gasMiningFleet2))
+            gasMiningFleet2 = null;
+    }
+
+    private boolean exerelinFleetReferenceOK(ExerelinFleetBase exerelinFleetBase)
+    {
+        if((exerelinFleetBase != null && !exerelinFleetBase.fleet.isAlive())
+                || (exerelinFleetBase != null && exerelinFleetBase.fleet != null && !exerelinFleetBase.fleet.getFaction().getId().equalsIgnoreCase(this.stationToken.getFaction().getId())))
+            return false;
+        else
+            return true;
     }
 
 	private String derivePlanetType(SectorEntityToken token)
@@ -848,7 +876,7 @@ public class StationRecord
 
     public StationFleetStance getStationFleetStance()
     {
-        return  this.stationFleetStance;
+        return this.stationFleetStance;
     }
 
     public void setStationFleetStance(StationFleetStance stance)

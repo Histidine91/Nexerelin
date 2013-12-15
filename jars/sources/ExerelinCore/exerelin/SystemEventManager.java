@@ -55,7 +55,7 @@ public class SystemEventManager
 			return;
 		}
 
-		if(ExerelinUtils.getRandomInRange(0,45) == 0
+		if(ExerelinUtils.getRandomInRange(0,40) == 0
 				&& !eventRebelInsurrection.getType().equalsIgnoreCase(lastEventType))
 		{
 			eventRebelInsurrection.causeRebellionAgainstLeadingFaction(starSystemAPI);

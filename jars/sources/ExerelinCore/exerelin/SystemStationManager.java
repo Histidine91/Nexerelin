@@ -4,6 +4,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 
+import exerelin.utilities.ExerelinConfig;
 import org.lazywizard.lazylib.MathUtils;
 
 import java.util.ArrayList;
@@ -113,7 +114,22 @@ public class SystemStationManager
         //System.out.println("   Updating: " + stationRecords[nextIncreaseResourceStationRecord].getStationToken().getFullName());
 
         if(stationRecords[nextIncreaseResourceStationRecord].getOwner() != null)
-            stationRecords[nextIncreaseResourceStationRecord].increaseResources();
+        {
+            final int localToUpdate = nextIncreaseResourceStationRecord;
+            if(ExerelinConfig.enableThreading)
+            {
+                Thread updateRelationshipThread = new Thread("increaseResourcesThread"){
+                    public void run()
+                    {
+                        stationRecords[localToUpdate].increaseResources();
+                    }
+                };
+
+                updateRelationshipThread.start();
+            }
+            else
+                stationRecords[localToUpdate].increaseResources();
+        }
 
         nextIncreaseResourceStationRecord++;
     }

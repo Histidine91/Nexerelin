@@ -1,7 +1,7 @@
 {
 	id:"batavia",
 	"color":[55,55,55,255],
-	"displayName":"Batavia Shipyard",
+	"displayName":"Batavia",
 	"shipNamePrefix":"BSY",
 	"shipNameSources":{
 		"BATAVIA":1, # batavian names for batavian ships

@@ -58,7 +58,7 @@ public class TimeManager implements EveryFrameScript
 
         }
 
-        if(hour == 12)
+        if(hour == 11)
         {
             // Update station resources part 1
             SectorManager.getCurrentSectorManager().updateStationResources(28);
@@ -84,7 +84,7 @@ public class TimeManager implements EveryFrameScript
 
         if(hour == 18)
         {
-            // Run system events
+            // Run sector and system events
             SectorManager.getCurrentSectorManager().runEvents();
         }
 
@@ -136,6 +136,9 @@ public class TimeManager implements EveryFrameScript
         {
             // Update FactionDirectors
             FactionDirector.updateAllFactionDirectors();
+
+            // Check player has station or station attack fleet
+            SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
         }
 
         // Pay wages

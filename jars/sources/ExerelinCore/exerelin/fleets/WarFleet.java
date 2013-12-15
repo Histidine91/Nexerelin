@@ -86,6 +86,9 @@ public class WarFleet extends ExerelinFleetBase
 
     public void setFleetAssignments()
     {
+        if(this.fleet == null)
+            return;
+
         fleet.clearAssignments();
 
         if(this.currentStance == FleetStance.ATTACK)

@@ -19,11 +19,9 @@ public class EventRebelInsurrection extends EventBase
 
 	public void causeRebellionAgainstLeadingFaction(StarSystemAPI starSystemAPI)
 	{
-		// DEFAULTS
-		FactionAPI rebelFAPI = Global.getSector().getFaction("rebel");
 		String rebelAgainseFaction = "";
 
-        // Get a target faction and declare war on them
+        // Get a target faction
         rebelAgainseFaction = SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager().getFactionLeader();
 
         if(rebelAgainseFaction == null)
@@ -32,21 +30,13 @@ public class EventRebelInsurrection extends EventBase
         if(SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemOwnership(rebelAgainseFaction) != 1f)
             return; // If not total ownership, then don't rebel
 
-        // Check if there are any rebel exerelin.fleets still in system
-        for(int j = 0; j < starSystemAPI.getFleets().size(); j++)
-        {
-            CampaignFleetAPI fleet = (CampaignFleetAPI)starSystemAPI.getFleets().get(j);
-            if(fleet.getFaction().getId().equalsIgnoreCase(rebelFAPI.getId()))
-                return;
-        }
-
 		// Warn player
         if(ExerelinUtils.isPlayerInSystem(starSystemAPI))
         {
             if(rebelAgainseFaction.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
-                ExerelinUtilsMessaging.addMessage("A number of " + SectorManager.getCurrentSectorManager().getPlayerFactionId() + " exerelin.fleets are attempting an insurrection!", Color.magenta);
+                ExerelinUtilsMessaging.addMessage("A number of " + Global.getSector().getFaction(rebelAgainseFaction).getDisplayName() + " fleets are attempting an insurrection!", Color.magenta);
             else
-                ExerelinUtilsMessaging.addMessage("A number of " + rebelAgainseFaction + " exerelin.fleets are attempting an insurrection!");
+                ExerelinUtilsMessaging.addMessage("A number of " + Global.getSector().getFaction(rebelAgainseFaction).getDisplayName() + " fleets are attempting an insurrection!");
         }
 
 		List fleets = starSystemAPI.getFleets();
@@ -58,16 +48,12 @@ public class EventRebelInsurrection extends EventBase
 			// Faction exerelin.fleets have a chance to rebel
 			if(fleet.getFaction().getId().equalsIgnoreCase(rebelAgainseFaction) && ExerelinUtils.getRandomInRange(0, 1) == 0)
 			{
-				String fleetFullName = fleet.getFullName();
-				if(fleetFullName.contains("Boarding") || fleetFullName.contains("Logistics") || fleetFullName.contains("Mining") || fleetFullName.contains("Command"))
-					continue; // Skip non-combat exerelin.fleets
-
 				if(fleet.getFullName().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFullName()))
 					continue; // Skip the players fleet
 
 				fleet.setFaction("rebel");
 
-				String fleetName = rebelAgainseFaction + " Insurrection Fleet";
+				String fleetName = "Insurrection Fleet";
 
 				fleet.setName(fleetName);
 

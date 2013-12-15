@@ -57,7 +57,7 @@ public class LogisticsConvoyFleet extends ExerelinFleetBase
 
 	public void setTarget(SectorEntityToken target)
 	{
-        if(this.target.getFullName().equalsIgnoreCase(target.getFullName()))
+        if(this.target != null && target != null && this.target.getFullName().equalsIgnoreCase(target.getFullName()))
             return;
 
         this.target = target;

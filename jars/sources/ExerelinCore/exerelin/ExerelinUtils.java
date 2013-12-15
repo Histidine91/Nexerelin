@@ -391,6 +391,9 @@ public class ExerelinUtils
 	{
 		String fleetTypeName = "";
 		float fleetSize = fleet.getFleetData().getFleetPointsUsed();
+
+        System.out.println("Renaming fleet for: " + fleet.getFaction().getId());
+
 		if(type.equalsIgnoreCase("attack"))
 		{
 			if(fleetSize < 40)
@@ -518,9 +521,9 @@ public class ExerelinUtils
 			fleet = sector.createFleet(factionId, "exerelinGenericFleet");
 
 
-		List ships = cargo.getMothballedShips().getMembersListCopy();
+		/*List ships = cargo.getMothballedShips().getMembersListCopy();
 		if(ships.size() > 25)
-			removeRandomShipsFromCargo(cargo,  ships.size() - 22);
+			removeRandomShipsFromCargo(cargo,  ships.size() - 22);*/
 
 		for(int i = 0; i < count; i = i + 1)
 		{
