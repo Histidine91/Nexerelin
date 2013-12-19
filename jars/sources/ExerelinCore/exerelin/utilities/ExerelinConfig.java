@@ -30,7 +30,6 @@ public class ExerelinConfig
     public static boolean allowTradeAtAlliedStations = true;
     public static boolean allowTradeAtNeutralStations = false;
     public static boolean allowTradeAtHostileStations = false;
-    public static boolean reduceCapitalShipSaleChance = true;
 
     // Supply reduction
     public static boolean reduceSupplies = true;
@@ -76,7 +75,6 @@ public class ExerelinConfig
             allowTradeAtAlliedStations = settings.getBoolean("allowTradeAtAlliedStations");
             allowTradeAtNeutralStations = settings.getBoolean("allowTradeAtNeutralStations");
             allowTradeAtHostileStations = settings.getBoolean("allowTradeAtHostileStations");
-            reduceCapitalShipSaleChance = settings.getBoolean("reduceCapitalShipSaleChance");
 
             reduceSupplies = settings.getBoolean("reduceSupplies");
             capSupplyDropToCargo = settings.getBoolean("capSupplyDropToCargo");

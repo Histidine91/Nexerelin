@@ -307,7 +307,13 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             options.addOption("Access Station Fleet Command", OptionId.STATION_FLEET_COMMAND);
 
         if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 || this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            options.addOption("Access Operational Fleet Command", OptionId.PLAYER_FLEET_COMMAND);
+            options.addOption("Access Strategic Fleet Command", OptionId.PLAYER_FLEET_COMMAND);
+
+        if(!ExerelinUtilsPlayer.getPlayerStrategicCommandAccess())
+            options.setEnabled(OptionId.PLAYER_FLEET_COMMAND, false);
+
+        if(!ExerelinUtilsPlayer.getPlayerStationFleetCommandAccess())
+            options.setEnabled(OptionId.STATION_FLEET_COMMAND, false);
 
         options.addOption("Leave", OptionId.LEAVE);
     }

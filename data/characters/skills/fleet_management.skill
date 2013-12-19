@@ -1,34 +1,34 @@
 {
-	"id":"fleet_deployment",
+	"id":"fleet_management",
 	"governingAptitude":"faction",
 	"effectGroups":[
 		{
 			"effects":[
 				{
 					"type":"CHARACTER_STATS",
-					"script":"exerelin.skills.scripts.FleetDeploymentEffect1",
+					"script":"exerelin.skills.scripts.FleetManagementEffect1",
 				},
 			]
 		},
 		{
-            "name":"Capital Ship Availability",
+            "name":"Station Fleet Command",
             "requiredSkillLevel":2,
             "effectBasedOnLevel":false,
             "effects":[
                 {
                     "type":"CHARACTER_STATS",
-                    "script":"exerelin.skills.scripts.FleetDeploymentPerk2",
+                    "script":"exerelin.skills.scripts.FleetManagementPerk2",
                 },
             ]
         },
 		{
-            "name":"Elite Ship Chance",
-            "requiredSkillLevel":10,
+            "name":"Strategic Fleet Deployment",
+            "requiredSkillLevel":4,
             "effectBasedOnLevel":false,
             "effects":[
                 {
                     "type":"CHARACTER_STATS",
-                    "script":"exerelin.skills.scripts.FleetDeploymentPerk1",
+                    "script":"exerelin.skills.scripts.FleetManagementPerk1",
                 },
             ]
         },

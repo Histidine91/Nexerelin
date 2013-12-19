@@ -25,12 +25,16 @@ public class SectorManager
 	private boolean respawnFactions;
 	private int respawnWaitDays;
 	private int maxFactions;
+    private int maxSystemSize;
+
 	private String playerFactionId;
     private String playerStartShipVariant;
+
 	private boolean builtOmnifactoryAndStorage;
 	private boolean buildOmnifactory;
 	private boolean playerMovedToSpawnLocation;
-	private int maxSystemSize;
+    private boolean saboteurPerkTriggered = false;
+    private boolean eliteShipPerkTriggered = false;
 
     private long lastFactionSpawnTime;
     private SectorEntityToken lastInteractionToken;
@@ -678,5 +682,25 @@ public class SectorManager
 
         if(toRemove != null)
             this.playerOrderedFleets.remove(toRemove);
+    }
+
+    public boolean getEliteShipPerkTriggered()
+    {
+        return eliteShipPerkTriggered;
+    }
+
+    public boolean getSaboteurPerkTriggered()
+    {
+        return saboteurPerkTriggered;
+    }
+
+    public void setEliteShipPerkTriggered(boolean triggered)
+    {
+        this.eliteShipPerkTriggered = triggered;
+    }
+
+    public void setSaboteurPerkTriggered(boolean triggered)
+    {
+        this.saboteurPerkTriggered = triggered;
     }
 }

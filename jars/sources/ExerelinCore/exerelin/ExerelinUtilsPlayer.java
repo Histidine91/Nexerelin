@@ -10,16 +10,20 @@ public class ExerelinUtilsPlayer {
 
     public static float getPlayerStationBaseEfficiency()
     {
-        float baseEfficiency = 0.95f; // Player gets a slight penalty
+        float baseEfficiency = 90f; // Player gets a slight penalty
 
         MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
         if(playerStatsAPI.getAptitudeLevel("faction") > 0)
-            baseEfficiency = baseEfficiency + (playerStatsAPI.getAptitudeLevel("faction") * ExerelinSkillData.FACTION_APTITUDE_STATION_EFFICIENCY_INCREASE_PERCENTAGE / 100);
+            baseEfficiency = baseEfficiency + (playerStatsAPI.getAptitudeLevel("faction") * ExerelinSkillData.FACTION_APTITUDE_STATION_EFFICIENCY_INCREASE_PERCENTAGE);
+
+        System.out.println("1st: " + baseEfficiency);
 
         if(playerStatsAPI.getSkillLevel("station_industry") > 0)
-            baseEfficiency = baseEfficiency + (playerStatsAPI.getAptitudeLevel("station_industry") * (ExerelinSkillData.FACTION_STATIONINDUSTRY_EFFECT_STATION_EFFICIENCY_BONUS_PERCENTAGE / 100));
+            baseEfficiency = baseEfficiency + (playerStatsAPI.getSkillLevel("station_industry") * (ExerelinSkillData.FACTION_STATIONINDUSTRY_EFFECT_STATION_EFFICIENCY_BONUS_PERCENTAGE));
 
-        return  baseEfficiency;
+        System.out.println("2nd: " + baseEfficiency);
+
+        return  baseEfficiency/100;
     }
 
     public static float getPlayerFleetCostMultiplier()
@@ -42,6 +46,15 @@ public class ExerelinUtilsPlayer {
             chance = chance + (ExerelinSkillData.FACTION_FLEETDEPLOYMENT_PERK_ELITE_SHIP_CHANCE_BONUS_PERCENTAGE / 100);
 
         return chance;
+    }
+
+    public static boolean getPlayerEliteShipConstruction()
+    {
+        MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
+        if(playerStatsAPI.getSkillLevel("fleet_deployment") >= 10)
+            return true;
+        else
+            return false;
     }
 
     public static float getPlayerStationResourceLimitMultiplier()
@@ -67,7 +80,7 @@ public class ExerelinUtilsPlayer {
 
         MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
         if(playerStatsAPI.getSkillLevel("fleet_crew_training") > 0)
-            bonus = playerStatsAPI.getSkillLevel("fleet_crew_training") * (ExerelinSkillData.FACTION_FLEETCREWTRAINING_EFFECT_EXPERIENCE_BONUS_PERCENTAGE / 100);
+            bonus = playerStatsAPI.getSkillLevel("fleet_crew_training") * (ExerelinSkillData.FACTION_FLEETMANAGEMENT_EFFECT_EXPERIENCE_BONUS_PERCENTAGE / 100);
 
         return bonus;
     }
@@ -120,5 +133,23 @@ public class ExerelinUtilsPlayer {
             chance = ExerelinSkillData.FACTION_PASSIVEDIPLOMACY_PERK_ALLIANCE_BETRAYAL_REDUCTION_PERCENTAGE / 100;
 
         return chance;
+    }
+
+    public static boolean getPlayerCapitalShipAvailability()
+    {
+        MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
+        return (playerStatsAPI.getSkillLevel("fleet_deployment") >= 2);
+    }
+
+    public static boolean getPlayerStrategicCommandAccess()
+    {
+        MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
+        return (playerStatsAPI.getSkillLevel("fleet_management") >= 4);
+    }
+
+    public static boolean getPlayerStationFleetCommandAccess()
+    {
+        MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
+        return (playerStatsAPI.getSkillLevel("fleet_management") >= 2);
     }
 }

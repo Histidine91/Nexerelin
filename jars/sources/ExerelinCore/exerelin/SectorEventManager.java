@@ -56,5 +56,8 @@ public class SectorEventManager
     {
         if(eventType.equalsIgnoreCase("saboteur"))
             eventAddObjectToStorage.addSabateurToStorageFacility();
+
+        if(eventType.equalsIgnoreCase("eliteShip"))
+            eventAddObjectToStorage.addEliteShipToStorage();
     }
 }

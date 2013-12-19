@@ -12,14 +12,13 @@
     "allowTradeAtAlliedStations":true, # Boolean
     "allowTradeAtNeutralStations":false, # Boolean
     "allowTradeAtHostileStations":false, # Boolean
-    "reduceCapitalShipSaleChance":true, # Boolean
 
     "reduceSupplies":true, # Boolean
     "capSupplyDropToCargo":true, # Boolean, only used if reduceSupplies is true, cap = cargo*1.5
     "reduceSuppliesFactor":1.0, # Double, only used if reduceSupplies is true, applied after cap to cargo
 
     "asteroidMiningResource": "supplies", # String
-    "gasgiantMiningResource": "fuel", # String, NOT USED
+    "gasgiantMiningResource": "fuel", # String
     "fleetCostResource": "supplies", # String
     "miningAmountPerDayPerMiner": 50, # Integer
 

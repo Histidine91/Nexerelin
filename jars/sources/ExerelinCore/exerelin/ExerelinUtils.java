@@ -517,6 +517,10 @@ public class ExerelinUtils
             }
             return;
         }
+        else if ((r == 7 || r == 8) && ExerelinUtilsPlayer.getPlayerEliteShipConstruction())
+        {
+            fleet = sector.createFleet(factionId, "exerelinEliteFleet");
+        }
 		else
 			fleet = sector.createFleet(factionId, "exerelinGenericFleet");
 
@@ -529,7 +533,7 @@ public class ExerelinUtils
 		{
 			int memberToGet = ExerelinUtils.getRandomInRange(0, fleet.getFleetData().getMembersListCopy().size() - 1);
 			FleetMemberAPI fmAPI = (FleetMemberAPI)fleet.getFleetData().getMembersListCopy().get(memberToGet);
-			if(fmAPI.isCapital() && ExerelinConfig.reduceCapitalShipSaleChance)
+			if(fmAPI.isCapital() && !ExerelinUtilsPlayer.getPlayerCapitalShipAvailability())
 			{
 				// Get another one to reduce chance of capitals
 				memberToGet = ExerelinUtils.getRandomInRange(0, fleet.getFleetData().getMembersListCopy().size() - 1);

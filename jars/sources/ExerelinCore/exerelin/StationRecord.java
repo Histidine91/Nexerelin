@@ -472,9 +472,9 @@ public class StationRecord
             baseEfficiency = ExerelinUtilsPlayer.getPlayerStationBaseEfficiency();
 
         if(efficiency < baseEfficiency)
-            efficiency = efficiency + 0.1f;
+            efficiency = efficiency + Math.min(0.1f, baseEfficiency - efficiency);
         else if(efficiency > baseEfficiency)
-            efficiency = efficiency - 0.1f;
+            efficiency = efficiency - Math.min(0.1f, efficiency - baseEfficiency);
 	}
 
 	// Clear cargo and ships from station
@@ -882,6 +882,8 @@ public class StationRecord
     public void setStationFleetStance(StationFleetStance stance)
     {
         this.stationFleetStance = stance;
+
+        this.updateFleetLists();
 
         if(stance == StationFleetStance.BALANCED)
         {

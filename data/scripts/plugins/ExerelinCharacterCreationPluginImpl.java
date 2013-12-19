@@ -550,7 +550,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 				data.addStartingShipChoice("tesladora_M");
 				data.addStartingShipChoice("longinus_M");
 				data.addStartingShipChoice("jenova_ECM");
-				data.addStartingShipChoice("inquisitor_M");
 			}
 			else if (factionId.equalsIgnoreCase("lotusconglomerate"))
 			{
