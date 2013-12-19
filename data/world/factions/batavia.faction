@@ -150,9 +150,9 @@
 		},
 	},
 	 "dialogue":{
- 	    "greetingFriendly":"Species categorised. Cross-referencing newly acquired data. Directive: Zorg affinity detected. Maintain non-hostile relations in order to benefit Zorg progress.",
-  	    "greetingNeutral":"Species categorised. Cross-referencing newly acquired data. Directive: Zero relevance detected. Ignore irrelevant species.",
-  	    "greetingHostileAggressive":"Species categorised. Cross-referencing newly acquired data. Directive: Relevant technology detected. Annihilate potential threat.",
-  	    "greetingHostileTimid":"Species categorised. Cross-referencing newly acquired data. Directive: Potential value detected in technological and biological composition.",
+        "greetingFriendly":"Hail, commander. How may we be of service?",
+        "greetingNeutral":"Commander, keep your distance.",
+        "greetingHostileAggressive":"Prepare to be boarded, commander.",
+        "greetingHostileTimid":"You are in violation of Batavian law.",
 	}	
 },

@@ -25,7 +25,7 @@
     "playerBaseWage": 1000, # Integer
     "playerFactionFreeTransfer":false, # Boolean, DOESN'T WORK UNTIL FREETRANSFER IS FIXED
 
-    "validBoardingFlagships":["atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2", "ori_butterflier"], # String array
+    "validBoardingFlagships":["atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2", "ori_butterflier", "brdy_eschaton"], # String array
     "validTroopTransportShips":["valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_auxiliary", "qua_yidato", "cane", "ms_potnia", "pb_vanghentmk2_Convoy"], # String array
     "validMiningShips":["mining_drone", "zorg_sphere"], # String array
 

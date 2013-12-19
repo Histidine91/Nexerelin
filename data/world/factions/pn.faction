@@ -27,8 +27,8 @@
            "extraCrewPercent":[80, 80],
            "marinesPercent":[20, 20],
            "ships":{
-				"as_sike":[0, 6],
-				"cs_sike":[0, 6],
+				"as_sike":[0, 2],
+				"cs_sike":[0, 3],
 				"as_sike-m":[0, 4],
 				"as_rs":[0, 3],
 				"cs_rs":[0, 2],
@@ -39,6 +39,7 @@
 				"lr_korlo-skt":[0, 5],
 				"cs_mite":[0, 6],
 				"as_mite":[0, 6],
+				"stress_wing":[0, 6],
            },
        },
        "exerelinInSystemSupplyConvoy":{

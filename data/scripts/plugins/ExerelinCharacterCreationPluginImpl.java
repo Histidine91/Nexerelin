@@ -732,7 +732,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 data.addStartingShipChoice("shuttle_Attack");
             }
 		}
-        data.addStartingShipChoice("exerelinshuttle_Attack");
+        //data.addStartingShipChoice("exerelinshuttle_Attack");
 	}
 
 	public void startingShipPicked(String variantId, CharacterCreationData data)
