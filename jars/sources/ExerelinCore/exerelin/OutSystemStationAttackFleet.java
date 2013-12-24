@@ -34,7 +34,6 @@ public class OutSystemStationAttackFleet
 	public CampaignFleetAPI spawnFleet(SectorEntityToken targetPredetermined, SectorEntityToken spawnPointPredetermined) {
 
 		// DEFAULTS
-		String type = "exerelinOutSystemStationAttackFleet";
 		String faction = theFaction;
 
 		if(spawnPointPredetermined == null)
@@ -57,18 +56,22 @@ public class OutSystemStationAttackFleet
 		this.boarding = false;
 
 		CampaignFleetAPI fleet = theSector.createFleet(faction, "exerelinInSystemStationAttackFleet");
-        CampaignFleetAPI extraFleet = theSector.createFleet(faction, "exerelinGenericFleet");
-        CampaignFleetAPI extraFleetTwo = theSector.createFleet(faction, "exerelinGenericFleet");
-        ExerelinUtils.mergeFleets(fleet, extraFleet);
-        ExerelinUtils.mergeFleets(fleet, extraFleetTwo);
-        ExerelinUtils.addFreightersToFleet(fleet);
-        ExerelinUtils.addFreightersToFleet(fleet);
-        ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.3f, 0.3f, CargoAPI.CrewXPLevel.ELITE);
+        if(defendLocation)
+        {
+            CampaignFleetAPI extraFleet = theSector.createFleet(faction, "exerelinGenericFleet");
+            CampaignFleetAPI extraFleetTwo = theSector.createFleet(faction, "exerelinGenericFleet");
+            ExerelinUtils.mergeFleets(fleet, extraFleet);
+            ExerelinUtils.mergeFleets(fleet, extraFleetTwo);
+            ExerelinUtils.addFreightersToFleet(fleet);
+            ExerelinUtils.addFreightersToFleet(fleet);
+        }
+
+        ExerelinUtils.resetFleetCargoToDefaults(fleet, 1f, 1f, CargoAPI.CrewXPLevel.ELITE);
         ExerelinUtilsFleet.sortByHullSize(fleet);
 
 
         fleet.setName(ExerelinConfig.getExerelinFactionConfig(faction).commandFleetName);
-        if(ExerelinUtils.getRandomInRange(0,1) == 1)
+        if(defendLocation)
           fleet.getCommander().setPersonality("aggressive");
 		theFleet = fleet;
 		fleet.setPreferredResupplyLocation(target);
@@ -154,20 +157,15 @@ public class OutSystemStationAttackFleet
 				if(ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(theFaction))
 				{
 					// We own station
-					if(!defendLocation)
-					{
-						theTarget.getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 200);
-						theTarget.getCargo().addMarines(100);
-						theTarget.getCargo().addFuel(200);
-						theTarget.getCargo().addSupplies(800);
-					}
-					else
-					{
-						theTarget.getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 800);
-						theTarget.getCargo().addMarines(400);
-						theTarget.getCargo().addFuel(800);
-						theTarget.getCargo().addSupplies(3200);
-					}
+
+                    theTarget.getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 200);
+                    theTarget.getCargo().addMarines(100);
+                    theTarget.getCargo().addFuel(200);
+                    theTarget.getCargo().addSupplies(800);
+
+                    ExerelinUtils.addRandomFactionShipsToCargo(theTarget.getCargo(), 2, theFaction, Global.getSector());
+                    ExerelinUtils.addWeaponsToCargo(theTarget.getCargo(), 2, theFaction, Global.getSector());
+
 					return; // commence defending or despawn
 				}
 				else if(!ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(theFaction) && theSector.getFaction(ExerelinUtils.getStationOwnerFactionId(theTarget)).getRelationship(theFaction) >= 0)
@@ -194,20 +192,12 @@ public class OutSystemStationAttackFleet
 				stationRecord.setOwner(theFaction, true, true);
 				stationRecord.clearCargo();
 
-				if(!defendLocation)
-				{
-					theTarget.getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 200);
-					theTarget.getCargo().addMarines(100);
-					theTarget.getCargo().addFuel(200);
-					theTarget.getCargo().addSupplies(800);
-				}
-				else
-				{
-					theTarget.getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 800);
-					theTarget.getCargo().addMarines(400);
-					theTarget.getCargo().addFuel(800);
-					theTarget.getCargo().addSupplies(3200);
-				}
+                theTarget.getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 200);
+                theTarget.getCargo().addMarines(100);
+                theTarget.getCargo().addFuel(200);
+                theTarget.getCargo().addSupplies(800);
+                ExerelinUtils.addRandomFactionShipsToCargo(theTarget.getCargo(), 2, theFaction, Global.getSector());
+                ExerelinUtils.addWeaponsToCargo(theTarget.getCargo(), 2, theFaction, Global.getSector());
 			}
 		};
 	}

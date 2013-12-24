@@ -833,6 +833,13 @@ public class ExerelinUtils
                 // First station takeover so also remove extra transport
                 ExerelinUtils.removeShipsFromFleet(playerFleet, ExerelinConfig.validTroopTransportShips, false, false);
                 ExerelinUtils.resetFleetCargoToDefaults(playerFleet, 0.1f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(playerFleet.getFaction().getId()));
+
+                possibleBoardTarget.getCargo().addCrew(CargoAPI.CrewXPLevel.REGULAR, 200);
+                possibleBoardTarget.getCargo().addMarines(100);
+                possibleBoardTarget.getCargo().addFuel(200);
+                possibleBoardTarget.getCargo().addSupplies(800);
+                ExerelinUtils.addRandomFactionShipsToCargo(possibleBoardTarget.getCargo(), 2, playerFleet.getFaction().getId(), Global.getSector());
+                ExerelinUtils.addWeaponsToCargo(possibleBoardTarget.getCargo(), 2, playerFleet.getFaction().getId(), Global.getSector());
             }
             systemManager.setStationOwner(possibleBoardTarget, SectorManager.getCurrentSectorManager().getPlayerFactionId(), true, true);
         }
