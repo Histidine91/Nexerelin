@@ -16,12 +16,8 @@ public class ExerelinUtilsPlayer {
         if(playerStatsAPI.getAptitudeLevel("faction") > 0)
             baseEfficiency = baseEfficiency + (playerStatsAPI.getAptitudeLevel("faction") * ExerelinSkillData.FACTION_APTITUDE_STATION_EFFICIENCY_INCREASE_PERCENTAGE);
 
-        System.out.println("1st: " + baseEfficiency);
-
         if(playerStatsAPI.getSkillLevel("station_industry") > 0)
             baseEfficiency = baseEfficiency + (playerStatsAPI.getSkillLevel("station_industry") * (ExerelinSkillData.FACTION_STATIONINDUSTRY_EFFECT_STATION_EFFICIENCY_BONUS_PERCENTAGE));
-
-        System.out.println("2nd: " + baseEfficiency);
 
         return  baseEfficiency/100;
     }

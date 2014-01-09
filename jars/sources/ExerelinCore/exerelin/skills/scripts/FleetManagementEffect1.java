@@ -14,7 +14,7 @@ public class FleetManagementEffect1 implements CharacterStatsSkillEffect {
     }
 
 	public String getEffectDescription(float level) {
-		return "+" + (int)(ExerelinSkillData.FACTION_FLEETMANAGEMENT_EFFECT_EXPERIENCE_BONUS_PERCENTAGE * level) + "% more expereinced crew in faction exerelin.fleets";
+		return "+" + (int)(ExerelinSkillData.FACTION_FLEETMANAGEMENT_EFFECT_EXPERIENCE_BONUS_PERCENTAGE * level) + "% more expereinced crew in faction fleets";
 	}
 	
 	public String getEffectPerLevelDescription() {

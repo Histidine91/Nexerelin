@@ -571,11 +571,11 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 			}
 			else if (factionId.equalsIgnoreCase("interstellarFederation"))
 			{
-				data.addStartingShipChoice("albatross_Attack");
-				data.addStartingShipChoice("dakota_Standard");
-				data.addStartingShipChoice("scythe_Frigate");
-				data.addStartingShipChoice("echo_Standard");
-				data.addStartingShipChoice("rickshaw_Standard");
+				data.addStartingShipChoice("ifed_albatross_Attack");
+				data.addStartingShipChoice("ifed_dakota_Standard");
+				data.addStartingShipChoice("ifed_scythe_Frigate");
+				data.addStartingShipChoice("ifed_echo_Standard");
+				data.addStartingShipChoice("ifed_rickshaw_Standard");
 			}
 			else if (factionId.equalsIgnoreCase("relics"))
 			{
@@ -683,10 +683,9 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
             }
             else if (factionId.equalsIgnoreCase("pn"))
             {
-                data.addStartingShipChoice("as_sike-m");
-                data.addStartingShipChoice("cs_sike");
-                data.addStartingShipChoice("as_rs");
-                data.addStartingShipChoice("cs_mite");
+                data.addStartingShipChoice("cs_pn_sike");
+                data.addStartingShipChoice("as_pn_rs");
+                data.addStartingShipChoice("cs_pn_mite");
             }
             else if (factionId.equalsIgnoreCase("mayorate"))
             {
@@ -725,6 +724,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 data.addStartingShipChoice("centaur_Basic");
                 data.addStartingShipChoice("zephyr_Basic");
                 data.addStartingShipChoice("cormorant_Basic");
+                data.addStartingShipChoice("void_Basic");
 			}
 			else
 			{
@@ -732,7 +732,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 data.addStartingShipChoice("shuttle_Attack");
             }
 		}
-        //data.addStartingShipChoice("exerelinshuttle_Attack");
+        data.addStartingShipChoice("exerelinshuttle_Attack");
 	}
 
 	public void startingShipPicked(String variantId, CharacterCreationData data)
@@ -746,19 +746,15 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 	public boolean isToreUpPlentyInstalled()
 	{
-		System.out.println("EXERELIN: Getting if tore up plenty mod installed");
-
 		try
 		{
-			Global.getSettings().getScriptClassLoader().loadClass("data.missions.mace.MissionDefinition");
-			System.out.println("tore up plenty installed");
-			System.out.println("- - - - - - - - - -");
+			Global.getSettings().getScriptClassLoader().loadClass("data.scripts.TUPModPlugin");
+			System.out.println("EXERELIN: tore up plenty installed");
 			return true;
 		}
 		catch (ClassNotFoundException ex)
 		{
-			System.out.println("tore up plenty not installed");
-			System.out.println("- - - - - - - - - -");
+			System.out.println("EXERELIN: tore up plenty not installed");
 			return false;
 		}
 	}

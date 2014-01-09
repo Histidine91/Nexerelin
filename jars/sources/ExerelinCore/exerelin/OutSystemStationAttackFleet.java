@@ -45,7 +45,7 @@ public class OutSystemStationAttackFleet
 		SectorEntityToken target;
 		if(targetPredetermined == null)
 		{
-			target = ExerelinUtils.getClosestEnemyStation(faction, (StarSystemAPI)theLocation, this.theSector, this.spawnPoint);
+			target = ExerelinUtils.getClosestEnemyStation(faction, (StarSystemAPI)theLocation, this.spawnPoint);
 			if(target == null)
 				return null;
 		}
@@ -107,7 +107,7 @@ public class OutSystemStationAttackFleet
 				else if(!ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(theFaction) && theSector.getFaction(ExerelinUtils.getStationOwnerFactionId(theTarget)).getRelationship(theFaction) >= 0)
 				{
 					// Ally or neutral owns it so get a new target to attack
-					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, (StarSystemAPI)theLocation, theSector, theTarget);
+					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, (StarSystemAPI)theLocation, theTarget);
 					if(newTarget == null)
 					{
 						// No target so leave system
@@ -163,7 +163,7 @@ public class OutSystemStationAttackFleet
                     theTarget.getCargo().addFuel(200);
                     theTarget.getCargo().addSupplies(800);
 
-                    ExerelinUtils.addRandomFactionShipsToCargo(theTarget.getCargo(), 2, theFaction, Global.getSector());
+                    ExerelinUtils.addRandomFactionShipsToCargo(theTarget.getCargo(), 2, theFaction, Global.getSector(), false);
                     ExerelinUtils.addWeaponsToCargo(theTarget.getCargo(), 2, theFaction, Global.getSector());
 
 					return; // commence defending or despawn
@@ -171,7 +171,7 @@ public class OutSystemStationAttackFleet
 				else if(!ExerelinUtils.getStationOwnerFactionId(theTarget).equalsIgnoreCase(theFaction) && theSector.getFaction(ExerelinUtils.getStationOwnerFactionId(theTarget)).getRelationship(theFaction) >= 0)
 				{
 					// Ally or neutral owns it so get new target
-					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, (StarSystemAPI)theLocation, theSector, theTarget);
+					SectorEntityToken newTarget = ExerelinUtils.getClosestEnemyStation(theFaction, (StarSystemAPI)theLocation, theTarget);
 					if(newTarget == null)
 					{
 						// No target so leave system
@@ -196,7 +196,7 @@ public class OutSystemStationAttackFleet
                 theTarget.getCargo().addMarines(100);
                 theTarget.getCargo().addFuel(200);
                 theTarget.getCargo().addSupplies(800);
-                ExerelinUtils.addRandomFactionShipsToCargo(theTarget.getCargo(), 2, theFaction, Global.getSector());
+                ExerelinUtils.addRandomFactionShipsToCargo(theTarget.getCargo(), 2, theFaction, Global.getSector(), false);
                 ExerelinUtils.addWeaponsToCargo(theTarget.getCargo(), 2, theFaction, Global.getSector());
 			}
 		};

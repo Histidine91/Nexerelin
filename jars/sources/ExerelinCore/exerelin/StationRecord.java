@@ -26,8 +26,6 @@ public class StationRecord
         PATROL
     }
 
-	private SystemStationManager systemStationManager;
-
 	private SectorEntityToken stationToken;
 	private CargoAPI stationCargo;
 	private String planetType;
@@ -59,7 +57,7 @@ public class StationRecord
 
     private StationFleetStance stationFleetStance;
 
-	public StationRecord(SectorAPI sector, StarSystemAPI system, SystemStationManager manager, SectorEntityToken token)
+	public StationRecord(SectorEntityToken token)
 	{
 		stationToken = token;
 		stationCargo = token.getCargo();
@@ -67,8 +65,6 @@ public class StationRecord
 
         isBeingBoarded = false;
         lastBoardAttemptTime = 0;
-
-		systemStationManager = manager;
 
         this.stationFleetStance = StationFleetStance.BALANCED;
 	}
@@ -462,7 +458,7 @@ public class StationRecord
 
 		if(efficiency > 0.6)
 		{
-			ExerelinUtils.addRandomFactionShipsToCargo(stationCargo, 2, owningFaction.getFactionId(), Global.getSector());
+			ExerelinUtils.addRandomFactionShipsToCargo(stationCargo, 2, owningFaction.getFactionId(), Global.getSector(), false);
 			ExerelinUtils.addWeaponsToCargo(stationCargo, 4, owningFaction.getFactionId(), Global.getSector());
 		}
 
@@ -488,65 +484,35 @@ public class StationRecord
 
 	private void deriveClosestEnemyTarget()
 	{
-		String[] enemies = owningFaction.getEnemyFactions();
-		Float bestDistance = 99999999999f;
-		StationRecord bestTarget = null;
+		SectorEntityToken bestTarget = null;
+        StationRecord bestTargetRecord = null;
 
         SystemStationManager targetSystemStationManager;
-        if(!ExerelinUtils.doesSystemHaveEntityForFaction((StarSystemAPI)this.stationToken.getContainingLocation(), this.owningFaction.getFactionId(), -100000f, -0.01f))
+        bestTarget = ExerelinUtils.getClosestEnemyStation(this.stationToken.getFaction().getId(), (StarSystemAPI)this.stationToken.getContainingLocation(), this.stationToken);
+
+        if(bestTarget == null)
         {
             FactionDirector factionDirector = FactionDirector.getFactionDirectorForFactionId(this.owningFaction.getFactionId());
-            if(factionDirector.getTargetSystem() != null)
+            if(factionDirector.getTargetSystem() != null && factionDirector.getTargetSectorEntityToken() != null)
             {
                 targetSystemStationManager = SystemManager.getSystemManagerForAPI(factionDirector.getTargetSystem()).getSystemStationManager();
-                bestTarget = targetSystemStationManager.getStationRecordForToken(factionDirector.getTargetSectorEntityToken());
-                //System.out.println(owningFaction.getFactionId() + ", sending exerelin.fleets to " + bestTarget.getStationToken().getName());
+                bestTarget = factionDirector.getTargetSectorEntityToken();
+                bestTargetRecord = targetSystemStationManager.getStationRecordForToken(bestTarget);
             }
         }
         else
         {
-            targetSystemStationManager = this.systemStationManager;
-            for(int i = 0; i < targetSystemStationManager.getStationRecords().length; i++)
-            {
-                StationRecord possibleTarget = targetSystemStationManager.getStationRecords()[i];
-
-                if(possibleTarget.getStationToken().getFullName().equalsIgnoreCase(this.getStationToken().getFullName()))
-                    continue;
-
-                if(targetSystemStationManager.getStationRecords()[i].getOwner() == null)
-                {
-                    Float distance = MathUtils.getDistanceSquared(possibleTarget.getStationToken(), this.getStationToken());
-                    if(distance < bestDistance)
-                    {
-                        bestDistance = distance;
-                        bestTarget = possibleTarget;
-                    }
-                }
-                else
-                {
-                    for(int j = 0; j < enemies.length; j++)
-                    {
-                        if(targetSystemStationManager.getStationRecords()[i].getOwner().getFactionId().equalsIgnoreCase(enemies[j]))
-                        {
-                            Float distance = MathUtils.getDistanceSquared(possibleTarget.getStationToken(), this.getStationToken());
-                            if(distance < bestDistance)
-                            {
-                                bestDistance = distance;
-                                bestTarget = possibleTarget;
-                            }
-                        }
-                    }
-                }
-            }
+            targetSystemStationManager = SystemManager.getSystemManagerForAPI((StarSystemAPI)this.stationToken.getContainingLocation()).getSystemStationManager();
+            bestTargetRecord = targetSystemStationManager.getStationRecordForToken(bestTarget);
         }
 
 		if(targetStationRecord != null)
 			targetStationRecord.stopTargeting();
-		if(bestTarget != null && bestTarget.getOwner() != null)
-			bestTarget.startTargeting();
+		if(bestTargetRecord != null && bestTargetRecord.getOwner() != null)
+            bestTargetRecord.startTargeting();
 
-		targetStationRecord = bestTarget;
-        takeoverStationRecord = bestTarget;
+		targetStationRecord = bestTargetRecord;
+        takeoverStationRecord = bestTargetRecord;
 
         if(targetStationRecord != null && targetStationRecord.getOwner() == null)
             targetStationRecord = null;
@@ -564,9 +530,9 @@ public class StationRecord
 		}
 
         // Support a station in this system under attack
-		for(int i = 0; i < systemStationManager.getStationRecords().length; i++)
+		for(int i = 0; i < SystemManager.getSystemManagerForAPI((StarSystemAPI)this.stationToken.getContainingLocation()).getSystemStationManager().getStationRecords().length; i++)
 		{
-			StationRecord possibleAssist = systemStationManager.getStationRecords()[i];
+			StationRecord possibleAssist = SystemManager.getSystemManagerForAPI((StarSystemAPI)this.stationToken.getContainingLocation()).getSystemStationManager().getStationRecords()[i];
 
 			if(possibleAssist.getOwner() == null)
 				continue;
@@ -588,7 +554,7 @@ public class StationRecord
             StarSystemAPI starSystemAPI = FactionDirector.getFactionDirectorForFactionId(this.owningFaction.getFactionId()).getSupportSystem();
             if(starSystemAPI != null)
             {
-                systemStationManager = SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager();
+                SystemStationManager systemStationManager = SystemManager.getSystemManagerForAPI(starSystemAPI).getSystemStationManager();
                 SectorEntityToken assistToken = FactionDirector.getFactionDirectorForFactionId(this.owningFaction.getFactionId()).getSupportSectorEntityToken();
                 assistStation = systemStationManager.getStationRecordForToken(assistToken);
             }
@@ -604,7 +570,7 @@ public class StationRecord
             this.defendStationRecord = null;
 
         // No stations under attack, so assist a random faction station in this system
-        StationRecord[] stationRecords =systemStationManager.getStationRecords();
+        StationRecord[] stationRecords = SystemManager.getSystemManagerForAPI((StarSystemAPI)this.stationToken.getContainingLocation()).getSystemStationManager().getStationRecords();
         Collections.shuffle(Arrays.asList(stationRecords));
 
         for(int i = 0; i < stationRecords.length; i++)
@@ -928,5 +894,16 @@ public class StationRecord
     public SectorEntityToken getTargetGasGiant()
     {
         return this.targetGasGiant;
+    }
+
+    public void capInventoryAmounts()
+    {
+        int numWeaponStacks = stationToken.getCargo().getWeapons().size();
+        if(numWeaponStacks > 40)
+            ExerelinUtils.removeRandomWeaponStacksFromCargo(stationToken.getCargo(), numWeaponStacks - (numWeaponStacks - 25));
+
+        int numShips = stationToken.getCargo().getMothballedShips().getMembersListCopy().size();
+        if(numShips > 25)
+            ExerelinUtils.removeRandomShipsFromCargo(stationToken.getCargo(), numShips - (30 - numShips));
     }
 }

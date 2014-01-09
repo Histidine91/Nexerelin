@@ -332,12 +332,12 @@ public class ExerelinGen implements SectorGeneratorPlugin
 		system.addAsteroidBelt(star, 25, ExerelinUtils.getRandomInRange(1000, 8000), ExerelinUtils.getRandomInRange(10, 50), ExerelinUtils.getRandomInRange(240, 360), ExerelinUtils.getRandomInRange(360, 480));
 
 		// Another one if medium system size
-		if(ExerelinSetupData.getInstance().maxSystemSize > 15000)
-			system.addAsteroidBelt(star, 50, ExerelinUtils.getRandomInRange(15000, 25000), ExerelinUtils.getRandomInRange(50, 100), ExerelinUtils.getRandomInRange(480, 720), ExerelinUtils.getRandomInRange(720, 960));
+		if(ExerelinSetupData.getInstance().maxSystemSize > 16000)
+			system.addAsteroidBelt(star, 50, ExerelinUtils.getRandomInRange(12000, 25000), ExerelinUtils.getRandomInRange(50, 100), ExerelinUtils.getRandomInRange(480, 720), ExerelinUtils.getRandomInRange(720, 960));
 
 		// And another one if a large system
-		if(ExerelinSetupData.getInstance().maxSystemSize > 30000)
-			system.addAsteroidBelt(star, 75, ExerelinUtils.getRandomInRange(15000, 25000), ExerelinUtils.getRandomInRange(100, 150), ExerelinUtils.getRandomInRange(960, 1440), ExerelinUtils.getRandomInRange(1440, 1920));
+		if(ExerelinSetupData.getInstance().maxSystemSize > 32000)
+			system.addAsteroidBelt(star, 75, ExerelinUtils.getRandomInRange(25000, 35000), ExerelinUtils.getRandomInRange(100, 150), ExerelinUtils.getRandomInRange(960, 1440), ExerelinUtils.getRandomInRange(1440, 1920));
 
 		// Build a list of possbile station names
 		String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest", "Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};

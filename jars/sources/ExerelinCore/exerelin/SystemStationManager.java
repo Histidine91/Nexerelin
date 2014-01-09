@@ -26,13 +26,13 @@ public class SystemStationManager
 	private int nextStationRecord = 0;
     private int nextIncreaseResourceStationRecord = 0;
 
-	public SystemStationManager(SectorAPI sector, StarSystemAPI system)
+	public SystemStationManager(StarSystemAPI system)
 	{
 		List stations = system.getOrbitalStations();
 		stationRecords = new StationRecord[stations.size()];
 		for(int i = 0; i < stations.size(); i++)
 		{
-			stationRecords[i] = new StationRecord(sector, system, this, (SectorEntityToken)stations.get(i));
+			stationRecords[i] = new StationRecord((SectorEntityToken)stations.get(i));
 		}
 	}
 
@@ -97,6 +97,7 @@ public class SystemStationManager
 		{
 			stationRecords[nextStationRecord].updateFleets();
 			stationRecords[nextStationRecord].checkForPlayerItems();
+            stationRecords[nextStationRecord].capInventoryAmounts();
 		}
 
 		nextStationRecord++;

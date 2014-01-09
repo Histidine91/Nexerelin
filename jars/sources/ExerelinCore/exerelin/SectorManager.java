@@ -58,7 +58,7 @@ public class SectorManager
         // Setup system managers for each system in the sector
         systemManagers = new SystemManager[sector.getStarSystems().size()];
         for(int i = 0; i < sector.getStarSystems().size(); i++)
-            systemManagers[i] = new SystemManager(sector, (StarSystemAPI)sector.getStarSystems().get(i));
+            systemManagers[i] = new SystemManager((StarSystemAPI)sector.getStarSystems().get(i));
 
         // Setup a diplomacy manager for the sector
         diplomacyManager = new DiplomacyManager(sector);
@@ -221,7 +221,7 @@ public class SectorManager
 			diplomacyManager.declarePeaceWithAllFactions(SectorManager.getCurrentSectorManager().getPlayerFactionId());
 			diplomacyManager.createWarIfNoneExists(SectorManager.getCurrentSectorManager().getPlayerFactionId());
 			SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(system);
-			SectorEntityToken target = ExerelinUtils.getClosestEnemyStation(SectorManager.getCurrentSectorManager().getPlayerFactionId(), this.systemManagers[k].getStarSystemAPI(), Global.getSector(), token);
+			SectorEntityToken target = ExerelinUtils.getClosestEnemyStation(SectorManager.getCurrentSectorManager().getPlayerFactionId(), this.systemManagers[k].getStarSystemAPI(), token);
 
 			if(target == null)
 				return;
@@ -294,7 +294,7 @@ public class SectorManager
         System.out.println("System: " + system.getName());
 
         SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(system);
-        SectorEntityToken stationTarget = ExerelinUtils.getClosestEnemyStation(factionId, system, Global.getSector(), token);
+        SectorEntityToken stationTarget = ExerelinUtils.getClosestEnemyStation(factionId, system, token);
 
         if(stationTarget == null)
             return;

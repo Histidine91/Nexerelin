@@ -290,7 +290,7 @@ public class ExerelinUtils
             return bestStation;
     }
 
-	public static SectorEntityToken getClosestEnemyStation(String targetingFaction, StarSystemAPI starSystemAPI, SectorAPI sector, SectorEntityToken anchor)
+	public static SectorEntityToken getClosestEnemyStation(String targetingFaction, StarSystemAPI starSystemAPI, SectorEntityToken anchor)
 	{
 		List stations = starSystemAPI.getOrbitalStations();
 		Float bestDistance = 10000000000000f;
@@ -306,11 +306,7 @@ public class ExerelinUtils
 			if(theStation.getFullName().contains("Storage"))
 				continue;
 
-			FactionAPI stationOwner = sector.getFaction(getStationOwnerFactionId(theStation));
-
-			if(stationOwner == null)
-				continue; //Crash protect...
-
+			FactionAPI stationOwner = theStation.getFaction();
 			Float attackDistance = MathUtils.getDistanceSquared(anchor, theStation);
 
 			if(stationOwner.getRelationship(targetingFaction) < 0 && bestDistance > attackDistance)
@@ -492,7 +488,7 @@ public class ExerelinUtils
         return (String[])weaponList.toArray(new String[weaponList.size()]);
     }
 
-	public static void addRandomFactionShipsToCargo(CargoAPI cargo, int count, String factionId, SectorAPI sector)
+	public static void addRandomFactionShipsToCargo(CargoAPI cargo, int count, String factionId, SectorAPI sector, boolean allowToreUpPlenty)
 	{
 		int r = getRandomInRange(0, 30);
 		CampaignFleetAPI fleet;
@@ -520,6 +516,11 @@ public class ExerelinUtils
         else if ((r == 7 || r == 8) && ExerelinUtilsPlayer.getPlayerEliteShipConstruction())
         {
             fleet = sector.createFleet(factionId, "exerelinEliteFleet");
+        }
+        else if ((r == 9 || r == 10) && ExerelinUtils.isToreUpPlentyInstalled())
+        {
+            // Add from Tore Up Plenty
+            fleet = sector.createFleet("scavengers", "exerelinGenericFleet");
         }
 		else
 			fleet = sector.createFleet(factionId, "exerelinGenericFleet");
@@ -838,7 +839,7 @@ public class ExerelinUtils
                 possibleBoardTarget.getCargo().addMarines(100);
                 possibleBoardTarget.getCargo().addFuel(200);
                 possibleBoardTarget.getCargo().addSupplies(800);
-                ExerelinUtils.addRandomFactionShipsToCargo(possibleBoardTarget.getCargo(), 2, playerFleet.getFaction().getId(), Global.getSector());
+                ExerelinUtils.addRandomFactionShipsToCargo(possibleBoardTarget.getCargo(), 2, playerFleet.getFaction().getId(), Global.getSector(), false);
                 ExerelinUtils.addWeaponsToCargo(possibleBoardTarget.getCargo(), 2, playerFleet.getFaction().getId(), Global.getSector());
             }
             systemManager.setStationOwner(possibleBoardTarget, SectorManager.getCurrentSectorManager().getPlayerFactionId(), true, true);
@@ -1131,5 +1132,18 @@ public class ExerelinUtils
                 return true;
         }
         return false;
+    }
+
+    public static boolean isToreUpPlentyInstalled()
+    {
+        try
+        {
+            Global.getSettings().getScriptClassLoader().loadClass("data.scripts.TUPModPlugin");
+            return true;
+        }
+        catch (ClassNotFoundException ex)
+        {
+            return false;
+        }
     }
 }

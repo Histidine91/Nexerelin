@@ -101,7 +101,7 @@ public class LogisticsConvoyFleet extends ExerelinFleetBase
 						cargo.addMarines(100);
 
                     ExerelinUtils.addWeaponsToCargo(cargo, 2, fleet.getFaction().getId(), Global.getSector());
-                    ExerelinUtils.addRandomFactionShipsToCargo(cargo, 1, fleet.getFaction().getId(), Global.getSector());
+                    ExerelinUtils.addRandomFactionShipsToCargo(cargo, 1, fleet.getFaction().getId(), Global.getSector(), false);
 
 				}
 				else

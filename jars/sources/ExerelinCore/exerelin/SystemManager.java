@@ -15,11 +15,11 @@ public class SystemManager
     private String originalStarSpec;
     private Color originalLightColor;
 
-	public SystemManager(SectorAPI sectorAPI, StarSystemAPI starSystemAPI)
+	public SystemManager(StarSystemAPI starSystemAPI)
 	{
 		this.starSystemAPI = starSystemAPI;
 
-		systemStationManager = new SystemStationManager(sectorAPI, this.starSystemAPI);
+		systemStationManager = new SystemStationManager(this.starSystemAPI);
 		systemEventManager = new SystemEventManager(this.starSystemAPI);
 
         this.originalBackgroundImage = starSystemAPI.getBackgroundTextureFilename();

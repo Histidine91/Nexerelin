@@ -2,7 +2,7 @@
 "id":"exerelin", # internal id
 "name":"Exerelin", # displayed to the player
 "author":"Zaphide",
-"version":"0.623",
+"version":"0.63",
 "description":"Choose your banner and fight for supremacy of sector Exerelin!",
 "gameVersion":"0.6.1a",
 "totalConversion":"false",
@@ -53,6 +53,7 @@
     "data/world/factions/mayorate.faction",
     "data/world/factions/patnavy.faction",
     "data/world/factions/pn.faction",
+    "data/world/factions/scavengers.faction",
 
     "data/hulls/relics_extinctioner.ship",
     "data/hulls/relics_faithoper.ship",
