@@ -286,6 +286,10 @@ public final class ExerelinSetupData
         if(isFactionInstalled("mayorate", "data.scripts.world.rasht"))
             possibleModdedFactionList.add("mayorate");
 
+        // Test for dstech
+        if(isFactionInstalled("dstech", "data.scripts.world.DSSectorGen"))
+            possibleModdedFactionList.add("dstech");
+
 		System.out.println("- - - - - - - - - -");
         return (String[])possibleModdedFactionList.toArray(new String[possibleModdedFactionList.size()]);
 	}

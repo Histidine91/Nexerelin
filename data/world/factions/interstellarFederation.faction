@@ -104,8 +104,9 @@
            "extraCrewPercent":[80, 80],
            "marinesPercent":[20, 20],
            "ships":{
-               "mining_drone_wing":[1, 2],
+               "mining_drone_wing":[1, 1],
                "ifed_trexel_Standard":[1, 2],
+               "ifed_tahoe_Standard":[1, 1],
            },
        },
        "exerelinEliteFleet":{
