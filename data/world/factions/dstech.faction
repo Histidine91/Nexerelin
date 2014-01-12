@@ -45,7 +45,7 @@
 		        "ds_lead_wing":[0,2],
 		        "ds_chaser_wing":[0,4],
                 "ds_striker_wing":[0,2],
-                "ds_driver_missile_bomber":[0,2],
+                "ds_driver_wing":[0,2],
                 "ds_attacker_wing":[0,3],
             },
         },
