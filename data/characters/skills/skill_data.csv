@@ -2,5 +2,5 @@ id,name,order,description,icon
 station_industry,Station Industry,410,"Advances in warehousing, automated loading/unloading and station management can increase the performance of station industrial complexes.",graphics/icons/skills/exerelin_station_industry.png
 passive_diplomacy,Passive Diplomacy,420,"The old art of politiking comes into force, smoothing ruffled feathers and talking with a silken tongue.",graphics/icons/skills/exerelin_passive_diplomacy.png
 active_diplomacy,Active Diplomacy,430,"Cloak and dagger; sometimes it is called for. Advances in stealth, deception and identity theft can propel covert faction representatives to new heights.",graphics/icons/skills/exerelin_active_diplomacy.png
-fleet_crew_training,Fleet Crew Training,440,"Enhanced teaching techiniques and state of the art fleet simulations deliver better trained and equipped crew members.",graphics/icons/skills/exerelin_crew_training.png
+fleet_management,Fleet Management,440,"Enhanced teaching techiniques and strategic command relay construction allow for increased strategic level fleet management.",graphics/icons/skills/exerelin_crew_training.png
 fleet_deployment,Fleet Deployment,450,"Automated assembly areas, secret weapons projects and rapid response fleet deployments lead to lower cost, better equipped combat fleets.",graphics/icons/skills/exerelin_fleet_deployment.png

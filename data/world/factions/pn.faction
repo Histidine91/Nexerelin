@@ -1,0 +1,123 @@
+{
+	id:"pn",
+	"color":[0,82,163,255],
+	"displayName":"P9 Colony Group",
+	"shipNamePrefix":"P9",
+	"shipNameSources":{
+		"GREEK":1,
+	},
+	"description":"Descendants from the Tri-Tachyon colonists that first settled in the TOLP system. Their ancestors worked for the Tri-Tachyon corporation as the operators of their experimental P7 reactors, supplying anti matter fuel for 16 Domain systems. That is, until the twilight days of the Domain when the energy independent Tri-Tachyo corporation abruptly cut support and destroyed their own main reactor hub in an effort to starve the Domain during a grab for power against them.",
+	"names":{
+		"old english":1,
+	},
+	"portraits":{
+		"standard_male":[
+			"graphics/portraits/p9m1.png",
+		],
+		"standard_female":[
+			"graphics/portraits/portrait_mercenary02.png",
+		],
+	},
+	"fleetCompositions":{
+	    "exerelinGenericFleet":{
+           "displayName":"Generic Fleet",
+           "maxFleetPoints":180,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[40, 60],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+				"as_pn_sike":[0, 2],
+				"cs_pn_sike":[0, 3],
+				"as_pn_sike-m":[0, 4],
+				"as_pn_rs":[0, 3],
+				"cs_pn_rs":[0, 2],
+				"lr_pn_sl-t2":[0, 3],
+				"as_pn_sl-t2":[0, 3],
+				"as_pn_sl-t3":[0, 2],
+				"as_pn_korlo-skt":[0, 5],
+				"lr_pn_korlo-skt":[0, 5],
+				"cs_pn_mite":[0, 6],
+				"as_pn_mite":[0, 6],
+				"pn_stress_wing":[0, 6],
+           },
+       },
+       "exerelinInSystemSupplyConvoy":{
+           "displayName":"In-System Supply Convoy",
+           "maxFleetPoints":40,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[40, 60],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+				"pn_tick":[1, 3],
+           },
+       },
+       "exerelinInSystemStationAttackFleet":{
+           "displayName":"In-System Station Attack Fleet",
+           "maxFleetPoints":40,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[40, 60],
+           "extraCrewPercent":[50, 50],
+           "marinesPercent":[50, 50],
+           "ships":{
+				"atlas_Standard":[1, 1],
+				"pn_valkyrie":[1, 1],
+           },
+       },
+       "exerelinAsteroidMiningFleet":{
+           "displayName":"Asteroid Mining Fleet",
+           "maxFleetPoints":40,
+           "daysWorthOfSupplies":[10, 15],
+           "lyWorthOfFuel":[40, 60],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+               "pn_mlmv_wing":[1, 2],
+               "pn_tick":[1, 1],
+           },
+       },
+       "exerelinGasMiningFleet":{
+           "displayName":"Gas Mining Fleet",
+           "maxFleetPoints":40,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[0, 0],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+               "pn_mlmv_wing":[1, 2],
+               "pn_tick":[1, 1],
+           },
+       },
+        "exerelinEliteFleet":{
+           "displayName":"Exerelin Elite Fleet",
+           "maxFleetPoints":100,
+           "daysWorthOfSupplies":[30, 50],
+           "lyWorthOfFuel":[0, 0],
+           "extraCrewPercent":[80, 80],
+           "marinesPercent":[20, 20],
+           "ships":{
+				"as_pn_korlo-skt":[0, 1],
+           },
+       },
+	},
+	"traits":{
+		"admiral":{
+
+		},
+		"captain":{
+			"cowardly":1,
+			"cautious":1,
+			"steady":1,
+			"aggressive":1,
+			"suicidal":1,
+			"fearless":1,
+		},
+	},
+	"dialogue":{
+		"greetingFriendly":"Good day friend, another lovely day, another day full of productive work! Also, dont forget to do your daily cancer screening.",
+		"greetingNeutral":"Greetings to you too, the P9 Group wishes you plesant journey.",
+		"greetingHostileAggressive":"I regret to inform you that your destruction is a matter of utmost importance to us. Rest assured however that your closest living family will get a letter of condolence from us and are eglible for a one time payment from our MisfortunesOfWar fund.",
+		"greetingHostileTimid":"Beware, if you do manage to catch one of our ships we are not liable for any case of cancer that might arise from the operation of our ships.",
+	}
+},

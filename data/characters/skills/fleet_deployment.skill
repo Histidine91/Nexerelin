@@ -6,10 +6,21 @@
 			"effects":[
 				{
 					"type":"CHARACTER_STATS",
-					"script":"data.characters.skills.scripts.FleetDeploymentEffect1",
+					"script":"exerelin.skills.scripts.FleetDeploymentEffect1",
 				},
 			]
 		},
+		{
+            "name":"Capital Ship Availability",
+            "requiredSkillLevel":2,
+            "effectBasedOnLevel":false,
+            "effects":[
+                {
+                    "type":"CHARACTER_STATS",
+                    "script":"exerelin.skills.scripts.FleetDeploymentPerk2",
+                },
+            ]
+        },
 		{
             "name":"Elite Ship Chance",
             "requiredSkillLevel":10,
@@ -17,7 +28,7 @@
             "effects":[
                 {
                     "type":"CHARACTER_STATS",
-                    "script":"data.characters.skills.scripts.FleetDeploymentPerk1",
+                    "script":"exerelin.skills.scripts.FleetDeploymentPerk1",
                 },
             ]
         },

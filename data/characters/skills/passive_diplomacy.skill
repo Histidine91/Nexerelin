@@ -6,7 +6,7 @@
 			"effects":[
 				{
 					"type":"CHARACTER_STATS",
-					"script":"data.characters.skills.scripts.PassiveDiplomacyEffect1",
+					"script":"exerelin.skills.scripts.PassiveDiplomacyEffect1",
 				},
 			]
 		},
@@ -17,7 +17,7 @@
             "effects":[
                 {
                     "type":"CHARACTER_STATS",
-                    "script":"data.characters.skills.scripts.PassiveDiplomacyPerk1",
+                    "script":"exerelin.skills.scripts.PassiveDiplomacyPerk1",
                 },
             ]
         },

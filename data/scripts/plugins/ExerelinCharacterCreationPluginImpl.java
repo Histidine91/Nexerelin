@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.characters.CharacterCreationPlugin;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
-import data.scripts.world.exerelin.ExerelinData;
+import data.scripts.world.exerelin.ExerelinSetupData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,7 +132,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		List result = new ArrayList();
         if(stage == 0)
         {
-            ExerelinData.resetInstance();
+            ExerelinSetupData.resetInstance();
             result.add(ONE_SYSTEM);
             result.add(TWO_SYSTEMS);
             result.add(FOUR_SYSTEMS);
@@ -216,7 +216,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		}
 		else if (stage == 10)
 		{
-			String[] possibleFactions = ExerelinData.getInstance().getPossibleFactions();
+			String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
 			if(possibleFactions.length > 6)
 			{
 				for(int i = 0; i < possibleFactions.length/2; i = i + 1)
@@ -235,7 +235,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		}
 		else if (stage == 11)
 		{
-			String[] possibleFactions = ExerelinData.getInstance().getPossibleFactions();
+			String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
 			for(int i = possibleFactions.length/2; i < possibleFactions.length; i = i + 1)
 			{
 				result.add(new ResponseImpl(possibleFactions[i]));
@@ -258,131 +258,131 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 	{
 		stage++;
         if (response == ONE_SYSTEM)
-            ExerelinData.getInstance().numSystems = 1;
+            ExerelinSetupData.getInstance().numSystems = 1;
         else if (response == TWO_SYSTEMS)
-            ExerelinData.getInstance().numSystems = 2;
+            ExerelinSetupData.getInstance().numSystems = 2;
         else if (response == FOUR_SYSTEMS)
-            ExerelinData.getInstance().numSystems = 4;
+            ExerelinSetupData.getInstance().numSystems = 4;
         else if (response == SIX_SYSTEMS)
-            ExerelinData.getInstance().numSystems = 6;
+            ExerelinSetupData.getInstance().numSystems = 6;
         else if (response == EIGHT_SYSTEMS)
-            ExerelinData.getInstance().numSystems = 8;
+            ExerelinSetupData.getInstance().numSystems = 8;
         else if (response == TWELVE_SYSTEMS)
-            ExerelinData.getInstance().numSystems = 12;
+            ExerelinSetupData.getInstance().numSystems = 12;
         else if (response == SIXTEEN_SYSTEMS)
-            ExerelinData.getInstance().numSystems = 16;
+            ExerelinSetupData.getInstance().numSystems = 16;
         else if (response == TWENTY_SYSTEMS)
-            ExerelinData.getInstance().numSystems = 20;
+            ExerelinSetupData.getInstance().numSystems = 20;
         else if (response == TWENTYFOUR_SYSTEMS)
-            ExerelinData.getInstance().numSystems = 24;
+            ExerelinSetupData.getInstance().numSystems = 24;
 		else if (response == SMALL_SYSTEM)
-			ExerelinData.getInstance().maxSystemSize = 16000;
+			ExerelinSetupData.getInstance().maxSystemSize = 16000;
 		else if (response == MEDIUM_SYSTEM)
-			ExerelinData.getInstance().maxSystemSize = 32000;
+			ExerelinSetupData.getInstance().maxSystemSize = 32000;
 		else if (response == LARGE_SYSTEM)
-			ExerelinData.getInstance().maxSystemSize = 40000;
+			ExerelinSetupData.getInstance().maxSystemSize = 40000;
 		else if (response == THREE_PLANETS)
-			ExerelinData.getInstance().maxPlanets = 3;
+			ExerelinSetupData.getInstance().maxPlanets = 3;
 		else if (response == SIX_PLANETS)
-			ExerelinData.getInstance().maxPlanets = 6;
+			ExerelinSetupData.getInstance().maxPlanets = 6;
 		else if (response == NINE_PLANETS)
-			ExerelinData.getInstance().maxPlanets = 9;
+			ExerelinSetupData.getInstance().maxPlanets = 9;
 		else if (response == TWELVE_PLANETS)
-			ExerelinData.getInstance().maxPlanets = 12;
+			ExerelinSetupData.getInstance().maxPlanets = 12;
 		else if (response == FIFTEEN_PLANETS)
-			ExerelinData.getInstance().maxPlanets = 15;
+			ExerelinSetupData.getInstance().maxPlanets = 15;
 		else if (response == EIGHTEEN_PLANETS)
-			ExerelinData.getInstance().maxPlanets = 18;
+			ExerelinSetupData.getInstance().maxPlanets = 18;
         else if (response == TWENTYONE_PLANETS)
-            ExerelinData.getInstance().maxPlanets = 21;
+            ExerelinSetupData.getInstance().maxPlanets = 21;
 		else if (response == ZERO_ASTEROID_BELTS)
-			ExerelinData.getInstance().maxAsteroidBelts = 0;
+			ExerelinSetupData.getInstance().maxAsteroidBelts = 0;
 		else if (response == TWO_ASTEROID_BELTS)
-			ExerelinData.getInstance().maxAsteroidBelts = 2;
+			ExerelinSetupData.getInstance().maxAsteroidBelts = 2;
 		else if (response == FOUR_ASTEROID_BELTS)
-			ExerelinData.getInstance().maxAsteroidBelts = 4;
+			ExerelinSetupData.getInstance().maxAsteroidBelts = 4;
 		else if (response == SIX_ASTEROID_BELTS)
-			ExerelinData.getInstance().maxAsteroidBelts = 6;
+			ExerelinSetupData.getInstance().maxAsteroidBelts = 6;
 		else if (response == EIGHT_ASTEROID_BELTS)
-			ExerelinData.getInstance().maxAsteroidBelts = 8;
+			ExerelinSetupData.getInstance().maxAsteroidBelts = 8;
 		else if (response == TEN_ASTEROID_BELTS)
-			ExerelinData.getInstance().maxAsteroidBelts = 10;
+			ExerelinSetupData.getInstance().maxAsteroidBelts = 10;
 		else if (response == FIVE_STATIONS)
-			ExerelinData.getInstance().maxStations = 5;
+			ExerelinSetupData.getInstance().maxStations = 5;
 		else if (response == TEN_STATIONS)
-			ExerelinData.getInstance().maxStations = 10;
+			ExerelinSetupData.getInstance().maxStations = 10;
 		else if (response == FIFTEEN_STATIONS)
-			ExerelinData.getInstance().maxStations = 15;
+			ExerelinSetupData.getInstance().maxStations = 15;
 		else if (response == TWENTY_STATIONS)
-			ExerelinData.getInstance().maxStations = 20;
+			ExerelinSetupData.getInstance().maxStations = 20;
 		else if (response == TWENTYFIVE_STATIONS)
-			ExerelinData.getInstance().maxStations = 25;
+			ExerelinSetupData.getInstance().maxStations = 25;
 		else if (response == THIRTY_STATIONS)
-			ExerelinData.getInstance().maxStations = 30;
+			ExerelinSetupData.getInstance().maxStations = 30;
 		else if (response == THIRTYFIVE_STATIONS)
-			ExerelinData.getInstance().maxStations = 35;
+			ExerelinSetupData.getInstance().maxStations = 35;
 		else if (response == OMNI_FAC_PRESENT)
-			ExerelinData.getInstance().omniFacPresent = true;
+			ExerelinSetupData.getInstance().omniFacPresent = true;
 		else if (response == OMNI_FAC_NOT_PRESENT)
-			ExerelinData.getInstance().omniFacPresent = false;
+			ExerelinSetupData.getInstance().omniFacPresent = false;
 		else if (response == ONE_FACTION)
 		{
-			ExerelinData.getInstance().numStartFactions = 1;
-			ExerelinData.getInstance().onlyVanillaFactions = false;
+			ExerelinSetupData.getInstance().numStartFactions = 1;
+			ExerelinSetupData.getInstance().onlyVanillaFactions = false;
 		}
 		else if (response == THREE_FACTION)
 		{
-			ExerelinData.getInstance().numStartFactions = 3;
-			ExerelinData.getInstance().onlyVanillaFactions = false;
+			ExerelinSetupData.getInstance().numStartFactions = 3;
+			ExerelinSetupData.getInstance().onlyVanillaFactions = false;
 		}
 		else if (response == SIX_FACTION)
 		{
-			ExerelinData.getInstance().numStartFactions = 6;
-			ExerelinData.getInstance().onlyVanillaFactions = false;
+			ExerelinSetupData.getInstance().numStartFactions = 6;
+			ExerelinSetupData.getInstance().onlyVanillaFactions = false;
 		}
 		else if (response == NINE_FACTION)
 		{
-			ExerelinData.getInstance().numStartFactions = 9;
-			ExerelinData.getInstance().onlyVanillaFactions = false;
+			ExerelinSetupData.getInstance().numStartFactions = 9;
+			ExerelinSetupData.getInstance().onlyVanillaFactions = false;
 		}
 		else if (response == ALL_FACTION)
 		{
-			ExerelinData.getInstance().numStartFactions = 99; // Just use how many available factions there are
-			ExerelinData.getInstance().onlyVanillaFactions = false;
+			ExerelinSetupData.getInstance().numStartFactions = 99; // Just use how many available factions there are
+			ExerelinSetupData.getInstance().onlyVanillaFactions = false;
 		}
 		else if (response == ONE_VANILLA_FACTION)
 		{
-			ExerelinData.getInstance().numStartFactions = 1;
-			ExerelinData.getInstance().onlyVanillaFactions = true;
+			ExerelinSetupData.getInstance().numStartFactions = 1;
+			ExerelinSetupData.getInstance().onlyVanillaFactions = true;
 		}
 		else if (response == ALL_VANILLA_FACTION)
 		{
-			ExerelinData.getInstance().numStartFactions = 3;
-			ExerelinData.getInstance().onlyVanillaFactions = true;
+			ExerelinSetupData.getInstance().numStartFactions = 3;
+			ExerelinSetupData.getInstance().onlyVanillaFactions = true;
 		}
 		else if (response == RESPAWN_YES)
 		{
-			ExerelinData.getInstance().respawnFactions = true;
-			ExerelinData.getInstance().onlyRespawnStartingFactions = false;
-			ExerelinData.getInstance().maxFactionsInExerelinAtOnce = 999;
+			ExerelinSetupData.getInstance().respawnFactions = true;
+			ExerelinSetupData.getInstance().onlyRespawnStartingFactions = false;
+			ExerelinSetupData.getInstance().maxFactionsInExerelinAtOnce = 999;
 		}
 		else if (response == RESPAWN_YES_COND)
 		{
-			ExerelinData.getInstance().respawnFactions = true;
-			ExerelinData.getInstance().onlyRespawnStartingFactions = true;
-			ExerelinData.getInstance().maxFactionsInExerelinAtOnce = 999;
+			ExerelinSetupData.getInstance().respawnFactions = true;
+			ExerelinSetupData.getInstance().onlyRespawnStartingFactions = true;
+			ExerelinSetupData.getInstance().maxFactionsInExerelinAtOnce = 999;
 		}
 		else if (response == RESPAWN_YES_COND_MAX)
 		{
-			ExerelinData.getInstance().respawnFactions = true;
-			ExerelinData.getInstance().onlyRespawnStartingFactions = false;
-			ExerelinData.getInstance().maxFactionsInExerelinAtOnce = ExerelinData.getInstance().numStartFactions + 1;
+			ExerelinSetupData.getInstance().respawnFactions = true;
+			ExerelinSetupData.getInstance().onlyRespawnStartingFactions = false;
+			ExerelinSetupData.getInstance().maxFactionsInExerelinAtOnce = ExerelinSetupData.getInstance().numStartFactions + 1;
 		}
 		else if (response == RESPAWN_NO)
 		{
-			ExerelinData.getInstance().respawnFactions = false;
-			ExerelinData.getInstance().onlyRespawnStartingFactions = false;
-			ExerelinData.getInstance().maxFactionsInExerelinAtOnce = 999;
+			ExerelinSetupData.getInstance().respawnFactions = false;
+			ExerelinSetupData.getInstance().onlyRespawnStartingFactions = false;
+			ExerelinSetupData.getInstance().maxFactionsInExerelinAtOnce = 999;
 			stage++;
 
 			if(!isToreUpPlentyInstalled())
@@ -390,35 +390,35 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		}
 		else if (response == RESPAWN_ZERO)
 		{
-			ExerelinData.getInstance().respawnDelay = 0;
+			ExerelinSetupData.getInstance().respawnDelay = 0;
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
 		}
 		else if (response == RESPAWN_TWO)
 		{
-			ExerelinData.getInstance().respawnDelay = 60;
+			ExerelinSetupData.getInstance().respawnDelay = 60;
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
 		}
 		else if (response == RESPAWN_FOUR)
 		{
-			ExerelinData.getInstance().respawnDelay = 120;
+			ExerelinSetupData.getInstance().respawnDelay = 120;
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
 		}
 		else if (response == RESPAWN_EIGHT)
 		{
-			ExerelinData.getInstance().respawnDelay = 240;
+			ExerelinSetupData.getInstance().respawnDelay = 240;
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
 		}
 		else if (response == RESPAWN_SIXTEEN)
 		{
-			ExerelinData.getInstance().respawnDelay = 480;
+			ExerelinSetupData.getInstance().respawnDelay = 480;
 			
 			if(!isToreUpPlentyInstalled())
 				stage++;
@@ -440,14 +440,14 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		else if (response == FREE_GOODS)
 		{
 			data.getStartingCargo().getCredits().set(0f);
-			ExerelinData.getInstance().playerOwnedStationFreeTransfer = true;
-			ExerelinData.getInstance().confirmedFreeTransfer = true;
+			ExerelinSetupData.getInstance().playerOwnedStationFreeTransfer = true;
+			ExerelinSetupData.getInstance().confirmedFreeTransfer = true;
 		}
 		else if (response == PAY_FOR_GOODS)
 		{
 			data.getStartingCargo().getCredits().add(4000f);
-			ExerelinData.getInstance().playerOwnedStationFreeTransfer = false;
-			ExerelinData.getInstance().confirmedFreeTransfer = true;
+			ExerelinSetupData.getInstance().playerOwnedStationFreeTransfer = false;
+			ExerelinSetupData.getInstance().confirmedFreeTransfer = true;
 		}
 		else if (response == PREV)
 		{
@@ -463,12 +463,12 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			stats.addAptitudePoints(3);
 			stats.addSkillPoints(6);
-			String[] possibleFactions = ExerelinData.getInstance().getPossibleFactions();
+			String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
 			for(int i = 0; i < possibleFactions.length; i = i + 1)
 			{
 				if(response.getText().equalsIgnoreCase(possibleFactions[i]))
 				{
-					ExerelinData.getInstance().setPlayerFaction(possibleFactions[i]);
+					ExerelinSetupData.getInstance().setPlayerFaction(possibleFactions[i]);
 					setStartingShipFromFactionSelection(possibleFactions[i], data);
 					break;
 				}
@@ -550,7 +550,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 				data.addStartingShipChoice("tesladora_M");
 				data.addStartingShipChoice("longinus_M");
 				data.addStartingShipChoice("jenova_ECM");
-				data.addStartingShipChoice("inquisitor_M");
 			}
 			else if (factionId.equalsIgnoreCase("lotusconglomerate"))
 			{
@@ -572,11 +571,11 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 			}
 			else if (factionId.equalsIgnoreCase("interstellarFederation"))
 			{
-				data.addStartingShipChoice("albatross_Attack");
-				data.addStartingShipChoice("dakota_Standard");
-				data.addStartingShipChoice("scythe_Frigate");
-				data.addStartingShipChoice("echo_Standard");
-				data.addStartingShipChoice("rickshaw_Standard");
+				data.addStartingShipChoice("ifed_albatross_Attack");
+				data.addStartingShipChoice("ifed_dakota_Standard");
+				data.addStartingShipChoice("ifed_scythe_Frigate");
+				data.addStartingShipChoice("ifed_echo_Standard");
+				data.addStartingShipChoice("ifed_rickshaw_Standard");
 			}
 			else if (factionId.equalsIgnoreCase("relics"))
 			{
@@ -670,6 +669,32 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 data.addStartingShipChoice("grib_variant");
                 data.addStartingShipChoice("openok_variant");
             }
+            else if (factionId.equalsIgnoreCase("patnavy"))
+            {
+                data.addStartingShipChoice("pat_cloak_hunterkiller");
+                data.addStartingShipChoice("pat_kortenaer_patrian");
+                data.addStartingShipChoice("pat_valnad_assault");
+            }
+            else if (factionId.equalsIgnoreCase("batavia"))
+            {
+                data.addStartingShipChoice("pb_java_Patrol");
+                data.addStartingShipChoice("pb_sumatra_Strike");
+                data.addStartingShipChoice("pb_vankinsbergen_Patrol");
+            }
+            else if (factionId.equalsIgnoreCase("pn"))
+            {
+                data.addStartingShipChoice("cs_pn_sike");
+                data.addStartingShipChoice("as_pn_rs");
+                data.addStartingShipChoice("cs_pn_mite");
+            }
+            else if (factionId.equalsIgnoreCase("mayorate"))
+            {
+                data.addStartingShipChoice("rakshasa_assault");
+            }
+            else if (factionId.equalsIgnoreCase("dstech"))
+            {
+                data.addStartingShipChoice("ds_blade_variant_1");
+            }
 			else
 			{
 				System.out.println("EXERELIN ERROR: Faction starting ship for " + factionId + " not defined");
@@ -680,25 +705,30 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		{
 			if(toreUpPlentyFrigate)
 			{
-				data.addStartingShipChoice("foxhound_Basic");
-				data.addStartingShipChoice("sentinel_Basic");
-				data.addStartingShipChoice("striker_Basic");
-				data.addStartingShipChoice("timberwolf_Basic");
-				data.addStartingShipChoice("wrestler_Basic");
-				data.addStartingShipChoice("moth_Basic");
-				data.addStartingShipChoice("ryker_Basic");
+                data.addStartingShipChoice("foxhound_Basic");
+                data.addStartingShipChoice("sentinel_Basic");
+                data.addStartingShipChoice("striker_Basic");
+                data.addStartingShipChoice("timberwolf_Basic");
+                data.addStartingShipChoice("wrestler_Basic");
+                data.addStartingShipChoice("moth_Basic");
+                data.addStartingShipChoice("ryker_Basic");
+                data.addStartingShipChoice("thunderchild_blue_Basic");
 			}
 			else if(toreUpPlentyOther)
 			{
-				data.addStartingShipChoice("talus_Basic");
-				data.addStartingShipChoice("annihilator_Basic");
-				data.addStartingShipChoice("lance_Basic");
-				data.addStartingShipChoice("mace_Basic");
-				data.addStartingShipChoice("damocles_Basic");
-				data.addStartingShipChoice("centaur_Basic");
-                data.addStartingShipChoice("stampede_Basic");
+                data.addStartingShipChoice("talus_Basic");
                 data.addStartingShipChoice("hedgehog_Basic");
+                data.addStartingShipChoice("annihilator_Basic");
+                data.addStartingShipChoice("barracuda_Basic");
+
+                data.addStartingShipChoice("lance_Basic");
+                data.addStartingShipChoice("stampede_Basic");
+                data.addStartingShipChoice("mace_Basic");
+                data.addStartingShipChoice("damocles_Basic");
+                data.addStartingShipChoice("centaur_Basic");
+                data.addStartingShipChoice("zephyr_Basic");
                 data.addStartingShipChoice("cormorant_Basic");
+                data.addStartingShipChoice("void_Basic");
 			}
 			else
 			{
@@ -706,7 +736,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 data.addStartingShipChoice("shuttle_Attack");
             }
 		}
-        //data.addStartingShipChoice("exerelinshuttle_Attack");
+        data.addStartingShipChoice("exerelinshuttle_Attack");
 	}
 
 	public void startingShipPicked(String variantId, CharacterCreationData data)
@@ -715,24 +745,20 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		data.getStartingCargo().addSupplies(20);
 		data.getStartingCargo().addCrew(CrewXPLevel.REGULAR, 25);
 		data.getStartingCargo().addMarines(3);
-        ExerelinData.getInstance().setPlayerStartingShipVariant(variantId);
+        ExerelinSetupData.getInstance().setPlayerStartingShipVariant(variantId);
 	}
 
 	public boolean isToreUpPlentyInstalled()
 	{
-		System.out.println("EXERELIN: Getting if tore up plenty mod installed");
-
 		try
 		{
-			Global.getSettings().getScriptClassLoader().loadClass("data.missions.mace.MissionDefinition");
-			System.out.println("tore up plenty installed");
-			System.out.println("- - - - - - - - - -");
+			Global.getSettings().getScriptClassLoader().loadClass("data.scripts.TUPModPlugin");
+			System.out.println("EXERELIN: tore up plenty installed");
 			return true;
 		}
 		catch (ClassNotFoundException ex)
 		{
-			System.out.println("tore up plenty not installed");
-			System.out.println("- - - - - - - - - -");
+			System.out.println("EXERELIN: tore up plenty not installed");
 			return false;
 		}
 	}

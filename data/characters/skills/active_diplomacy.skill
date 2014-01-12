@@ -6,7 +6,7 @@
 			"effects":[
 				{
 					"type":"CHARACTER_STATS",
-					"script":"data.characters.skills.scripts.ActiveDiplomacyEffect1",
+					"script":"exerelin.skills.scripts.ActiveDiplomacyEffect1",
 				},
 			]
 		},
@@ -17,7 +17,7 @@
 			"effects":[
 				{			
 					"type":"CHARACTER_STATS",
-					"script":"data.characters.skills.scripts.ActiveDiplomacyPerk1",
+					"script":"exerelin.skills.scripts.ActiveDiplomacyPerk1",
 				},
 			]
 		},
@@ -28,7 +28,7 @@
 			"effects":[
 				{			
 					"type":"CHARACTER_STATS",
-					"script":"data.characters.skills.scripts.ActiveDiplomacyPerk2",
+					"script":"exerelin.skills.scripts.ActiveDiplomacyPerk2",
 				},
 			]
 		},

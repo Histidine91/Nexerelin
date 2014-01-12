@@ -39,6 +39,10 @@
                 "nevermore_advanced":[0, 1],
                 "brdy_revenant_carrier":[0, 2],
                 "brdy_stenos_exploration":[0, 2],
+                "brdy_convergence_standard":[0, 1],
+                "brdy_convergence_frontier":[0, 1],
+                "brdy_asura_assault":[0, 1],
+                "brdy_asura_strike":[0, 1],
 
                 "gonodactylus_assault":[0, 2],
                 "gonodactylus_CS":[0, 1],
@@ -54,6 +58,8 @@
                 "brdy_locust_patrol":[0, 3],
                 "brdy_robberfly_cs":[0, 1],
                 "brdy_robberfly_strike":[0, 2],
+                "brdy_imaginos_elite":[0, 1],
+                "brdy_imaginos_shock":[0, 1],
 
                 "brdy_squilla_wing":[0, 3],
                 "brdy_locust_wing":[0, 3],

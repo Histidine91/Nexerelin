@@ -59,6 +59,13 @@
                  "zugb_variant":[0, 2],
                  "zugc_variant":[0, 2],
 				 "zugf_variant":[0, 2],
+
+
+                 "ori_bastion_variant":[0, 1],
+                 "ori_bastion_heavy_variant":[0, 1],
+                 "ori_fork_variant":[0, 1],
+
+                 "ori_whirly_wing":[0, 2],
 				 "shtur_wing":[0, 4],
 				 "wall_bomb_wing":[0, 3],
             },

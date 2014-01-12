@@ -1,0 +1,36 @@
+{
+	"id":"fleet_management",
+	"governingAptitude":"faction",
+	"effectGroups":[
+		{
+			"effects":[
+				{
+					"type":"CHARACTER_STATS",
+					"script":"exerelin.skills.scripts.FleetManagementEffect1",
+				},
+			]
+		},
+		{
+            "name":"Station Fleet Command",
+            "requiredSkillLevel":2,
+            "effectBasedOnLevel":false,
+            "effects":[
+                {
+                    "type":"CHARACTER_STATS",
+                    "script":"exerelin.skills.scripts.FleetManagementPerk2",
+                },
+            ]
+        },
+		{
+            "name":"Strategic Fleet Deployment",
+            "requiredSkillLevel":4,
+            "effectBasedOnLevel":false,
+            "effects":[
+                {
+                    "type":"CHARACTER_STATS",
+                    "script":"exerelin.skills.scripts.FleetManagementPerk1",
+                },
+            ]
+        },
+	],
+}

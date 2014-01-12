@@ -12,17 +12,22 @@
     "allowTradeAtAlliedStations":true, # Boolean
     "allowTradeAtNeutralStations":false, # Boolean
     "allowTradeAtHostileStations":false, # Boolean
-    "reduceCapitalShipSaleChance":true, # Boolean
 
     "reduceSupplies":true, # Boolean
     "capSupplyDropToCargo":true, # Boolean, only used if reduceSupplies is true, cap = cargo*1.5
     "reduceSuppliesFactor":1.0, # Double, only used if reduceSupplies is true, applied after cap to cargo
 
     "asteroidMiningResource": "supplies", # String
-    "gasgiantMiningResource": "fuel", # String, NOT USED
+    "gasgiantMiningResource": "fuel", # String
     "fleetCostResource": "supplies", # String
     "miningAmountPerDayPerMiner": 50, # Integer
 
     "playerBaseWage": 1000, # Integer
     "playerFactionFreeTransfer":false, # Boolean, DOESN'T WORK UNTIL FREETRANSFER IS FIXED
+
+    "validBoardingFlagships":["atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2", "ori_butterflier", "brdy_eschaton"], # String array
+    "validTroopTransportShips":["valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_auxiliary", "qua_yidato", "cane", "ms_potnia", "pb_vanghentmk2", "pn_valkyrie"], # String array
+    "validMiningShips":["mining_drone", "zorg_sphere", "pn_mlmv"], # String array
+
+    "builtInFactions":["hegemony", "tritachyon", "pirates", "sindrian_diktat"], # String array
 }

@@ -2,11 +2,11 @@
 "id":"exerelin", # internal id
 "name":"Exerelin", # displayed to the player
 "author":"Zaphide",
-"version":"0.623",
+"version":"0.63",
 "description":"Choose your banner and fight for supremacy of sector Exerelin!",
 "gameVersion":"0.6.1a",
 "totalConversion":"false",
-"jars":["jars/Omnifactory.jar","jars/ExerelinHacks.jar", "jars/ExerelinPlugins.jar", "jars/ExerelinUtilities.jar", ],
+"jars":["jars/Omnifactory.jar", "jars/ExerelinCore.jar", ],
 "modPlugin":"data.scripts.ExerelinModPlugin",
 "replace":
 	[
@@ -49,6 +49,13 @@
     "data/world/factions/regime.faction",
     "data/world/factions/citadeldefenders.faction",
     "data/world/factions/ORI.faction",
+    "data/world/factions/citadeldefenders.faction",
+    "data/world/factions/ORI.faction",
+    "data/world/factions/batavia.faction",
+    "data/world/factions/mayorate.faction",
+    "data/world/factions/patnavy.faction",
+    "data/world/factions/pn.faction",
+    "data/world/factions/scavengers.faction",
 
     "data/hulls/relics_extinctioner.ship",
     "data/hulls/relics_faithoper.ship",
