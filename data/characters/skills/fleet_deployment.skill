@@ -12,7 +12,7 @@
 		},
 		{
             "name":"Capital Ship Availability",
-            "requiredSkillLevel":2,
+            "requiredSkillLevel":3,
             "effectBasedOnLevel":false,
             "effects":[
                 {
