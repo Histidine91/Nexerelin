@@ -112,17 +112,17 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             case TRADE_CARGO:
                 addText(getString("tradeCargo"));
                 options.clearOptions();
-                visual.showCore(CoreUITabId.CARGO, station, station.getFaction().isNeutralFaction(), this);
+                visual.showCore(CoreUITabId.CARGO, station, this);
                 break;
             case TRADE_SHIPS:
                 addText(getString("tradeShips"));
                 options.clearOptions();
-                visual.showCore(CoreUITabId.FLEET, station, station.getFaction().isNeutralFaction(), this);
+                visual.showCore(CoreUITabId.FLEET, station, this);
                 break;
             case REFIT:
                 addText(getString("refit"));
                 options.clearOptions();
-                visual.showCore(CoreUITabId.REFIT, station, station.getFaction().isNeutralFaction(), this);
+                visual.showCore(CoreUITabId.REFIT, station, this);
                 break;
             case REPAIR_ALL:
                 performRepairs();
@@ -424,7 +424,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         float needed = playerFleet.getLogistics().getTotalRepairSupplyCost();
         float supplies = playerFleet.getCargo().getSupplies();
         str = str.replaceAll("\\$supplies", "" + (int) supplies);
-        str = str.replaceAll("\\$repairSupplyCost", "" + (int) needed);
+        str = str.replaceAll("\\$repairSupplyCost", "" + (int) Math.ceil(needed));
 
         return str;
     }

@@ -48,9 +48,10 @@ public class ExerelinGen implements SectorGeneratorPlugin
                 || ExerelinUtils.getRandomInRange(0,2) == 0)
                 && !isStartSystemChosen)
         {
-            sector.setCurrentLocation(system);
+            System.out.println("Setting start location " + system.getName());
             sector.setRespawnLocation(system);
             sector.getRespawnCoordinates().set(-2500, -3500);
+            //sector.setCurrentLocation(system);
             isStartSystemChosen = true;
         }
 

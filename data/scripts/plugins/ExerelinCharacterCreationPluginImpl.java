@@ -713,6 +713,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 data.addStartingShipChoice("moth_Basic");
                 data.addStartingShipChoice("ryker_Basic");
                 data.addStartingShipChoice("thunderchild_blue_Basic");
+                data.addStartingShipChoice("platypus_Basic");
 			}
 			else if(toreUpPlentyOther)
 			{
@@ -720,15 +721,9 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 data.addStartingShipChoice("hedgehog_Basic");
                 data.addStartingShipChoice("annihilator_Basic");
                 data.addStartingShipChoice("barracuda_Basic");
-
-                data.addStartingShipChoice("lance_Basic");
-                data.addStartingShipChoice("stampede_Basic");
-                data.addStartingShipChoice("mace_Basic");
-                data.addStartingShipChoice("damocles_Basic");
-                data.addStartingShipChoice("centaur_Basic");
-                data.addStartingShipChoice("zephyr_Basic");
-                data.addStartingShipChoice("cormorant_Basic");
+                data.addStartingShipChoice("wildebeest_Basic");
                 data.addStartingShipChoice("void_Basic");
+                data.addStartingShipChoice("hermit_Basic");
 			}
 			else
 			{

@@ -62,7 +62,7 @@ public class Exerelin //implements SectorGeneratorPlugin
         // Remove any data stored in ExerelinSetupData
         ExerelinSetupData.resetInstance();
 
-        System.out.println("Finished generation and setup...");
+        System.out.println("Finished setup...");
 	}
 
 	private void initStationAttackFleets(SectorAPI sector)

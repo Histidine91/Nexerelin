@@ -2,7 +2,9 @@ package exerelin.plugins;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAutoresolverPlugin;
@@ -154,7 +156,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
         EncounterOption optionTwo = two.getAI().pickEncounterOption(context, one);
 
         if (optionOne == EncounterOption.DISENGAGE && optionTwo == EncounterOption.DISENGAGE) {
-            report("Both exerelin.fleets want to disengage");
+            report("Both fleets want to disengage");
             report("Finished autoresolving engagement");
             report("***");
             report("***");
@@ -252,8 +254,8 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
         if (winnerAdvantage < 0.5f) winnerAdvantage = 0.5f;
         //if (winnerAdvantage < 0.1f) winnerAdvantage = 0.1f;
 
-        float damageDealtToWinner =  loser.fightingStrength / winnerAdvantage;
-        float damageDealtToLoser =  winner.fightingStrength * winnerAdvantage;
+        float damageDealtToWinner = loser.fightingStrength / winnerAdvantage;
+        float damageDealtToLoser = winner.fightingStrength * winnerAdvantage;
         if (playerPursuitAutoresolveMode) {
             damageDealtToWinner = 0f;
         }
@@ -265,11 +267,17 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
         report("--------------------------------------------");
         Collections.shuffle(loser.members);
         boolean loserCarrierLeft = false;
+        Map<FleetMemberAPI, FleetMemberBattleOutcome> wingDamage = new HashMap<FleetMemberAPI, FleetMemberBattleOutcome>();
         for (FleetMemberAutoresolveData data : loser.members) {
             report(String.format("Remaining damage to loser: %02.2f", damageDealtToLoser));
-            computeOutcomeForFleetMember(data, 1f/winnerAdvantage, damageDealtToLoser, loserEscaping, false);
+            FleetMemberBattleOutcome outcome = computeOutcomeForFleetMember(data, 1f/winnerAdvantage, damageDealtToLoser, loserEscaping, false);
             damageDealtToLoser -= data.strength;
             if (damageDealtToLoser < 0) damageDealtToLoser = 0;
+
+            if (data.member.isFighterWing() && outcome != FleetMemberBattleOutcome.UNSCATHED) {
+                wingDamage.put(data.member, outcome);
+            }
+
             if (data.member.isMothballed()) continue;
             if (data.member.getStatus().getHullFraction() > 0 && data.member.getNumFlightDecks() > 0) {
                 loserCarrierLeft = true;
@@ -277,12 +285,40 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
         }
 
         for (FleetMemberAutoresolveData data : loser.members) {
-            if (data.member.getStatus().getHullFraction() > 0 || (data.member.isFighterWing() && loserCarrierLeft)) {
-                result.getLoserResult().getRetreated().add(data.member);
+            if (data.member.isFighterWing()) {
+                FleetMemberBattleOutcome outcome = wingDamage.get(data.member);
+                if (outcome != null) {
+                    float crLoss = 0f;
+                    switch (outcome) {
+                        case DISABLED:
+                            crLoss = 1f;
+                            data.member.getStatus().disable();
+                            break;
+                        case HEAVY_DAMAGE: crLoss = 0.75f; break;
+                        case MEDIUM_DAMAGE: crLoss = 0.5f; break;
+                        case LIGHT_DAMAGE: crLoss = 0.25f; break;
+                        case UNSCATHED: crLoss = 0f; break;
+                    }
+                    if (crLoss > 0) {
+                        data.member.getRepairTracker().applyCREvent(-crLoss, "lost craft in battle");
+                    }
+                }
+                if (data.member.getRepairTracker().getBaseCR() <= 0f && !loserCarrierLeft) {
+                    result.getLoserResult().getDisabled().add(data.member);
+                } else {
+                    result.getLoserResult().getRetreated().add(data.member);
+                }
             } else {
-                result.getLoserResult().getDisabled().add(data.member);
+                if (data.member.getStatus().getHullFraction() > 0) { // || (data.member.isFighterWing() && loserCarrierLeft)) {
+                    result.getLoserResult().getRetreated().add(data.member);
+                } else {
+                    result.getLoserResult().getDisabled().add(data.member);
+                }
             }
         }
+        wingDamage.clear();
+
+
 
         report("");
         report("Applying damage to winner's ships");
@@ -293,9 +329,13 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
         for (FleetMemberAutoresolveData data : winner.members) {
             if (!data.combatReady) continue;
             report(String.format("Remaining damage to winner: %02.2f", damageDealtToWinner));
-            computeOutcomeForFleetMember(data, winnerAdvantage, damageDealtToWinner, false, loserEscaping);
+            FleetMemberBattleOutcome outcome = computeOutcomeForFleetMember(data, winnerAdvantage, damageDealtToWinner, false, loserEscaping);
             damageDealtToWinner -= data.strength;
             if (damageDealtToWinner < 0) damageDealtToWinner = 0;
+
+            if (data.member.isFighterWing() && outcome != FleetMemberBattleOutcome.UNSCATHED) {
+                wingDamage.put(data.member, outcome);
+            }
 
             if (data.member.isMothballed()) continue;
             if (data.member.getStatus().getHullFraction() > 0 && data.member.getNumFlightDecks() > 0) {
@@ -304,9 +344,9 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
         }
 
         // which ships should count as "deployed" for CR loss purposes?
-        // anything that was disabled, and then anything up to double the winner's strength
+        // anything that was disabled, and then anything up to double the loser's strength
         float deployedStrength = 0f;
-        float maxDeployedStrength = loser.fightingStrength;
+        float maxDeployedStrength = loser.fightingStrength * 2f;
         for (FleetMemberAutoresolveData data : winner.members) {
             if (!(data.member.getStatus().getHullFraction() > 0 || (data.member.isFighterWing() && winnerCarrierLeft))) {
                 deployedStrength += data.strength;
@@ -321,15 +361,40 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
                     result.getWinnerResult().getReserves().add(data.member);
                 }
             } else {
-                if (data.member.getStatus().getHullFraction() > 0 || (data.member.isFighterWing() && winnerCarrierLeft)) {
-                    if (deployedStrength < maxDeployedStrength) {
-                        result.getWinnerResult().getDeployed().add(data.member);
-                        deployedStrength += data.strength;
+                if (data.member.isFighterWing()) {
+                    FleetMemberBattleOutcome outcome = wingDamage.get(data.member);
+                    if (outcome != null) {
+                        float crLoss = 0f;
+                        switch (outcome) {
+                            case DISABLED:
+                                crLoss = 1f;
+                                data.member.getStatus().disable();
+                                break;
+                            case HEAVY_DAMAGE: crLoss = 0.75f; break;
+                            case MEDIUM_DAMAGE: crLoss = 0.5f; break;
+                            case LIGHT_DAMAGE: crLoss = 0.25f; break;
+                            case UNSCATHED: crLoss = 0f; break;
+                        }
+                        if (crLoss > 0) {
+                            data.member.getRepairTracker().applyCREvent(-crLoss, "lost craft in battle");
+                        }
+                    }
+                    if (data.member.getRepairTracker().getBaseCR() <= 0f && !loserCarrierLeft) {
+                        result.getLoserResult().getDisabled().add(data.member);
                     } else {
-                        result.getWinnerResult().getReserves().add(data.member);
+                        result.getLoserResult().getRetreated().add(data.member);
                     }
                 } else {
-                    result.getWinnerResult().getDisabled().add(data.member);
+                    if (data.member.getStatus().getHullFraction() > 0) { // || (data.member.isFighterWing() && winnerCarrierLeft)) {
+                        if (deployedStrength < maxDeployedStrength) {
+                            result.getWinnerResult().getDeployed().add(data.member);
+                            deployedStrength += data.strength;
+                        } else {
+                            result.getWinnerResult().getReserves().add(data.member);
+                        }
+                    } else {
+                        result.getWinnerResult().getDisabled().add(data.member);
+                    }
                 }
             }
         }
@@ -370,8 +435,8 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
         }
     }
 
-    private void computeOutcomeForFleetMember(FleetMemberAutoresolveData data, float advantageInBattle,
-                                              float maxDamage, boolean escaping, boolean enemyEscaping) {
+    private FleetMemberBattleOutcome computeOutcomeForFleetMember(FleetMemberAutoresolveData data, float advantageInBattle,
+                                                                  float maxDamage, boolean escaping, boolean enemyEscaping) {
         ShipHullSpecAPI hullSpec = data.member.getHullSpec();
 
         float unscathed = 1f;
@@ -388,7 +453,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
                 unscathed = 10f;
                 break;
             case DESTROYER:
-                unscathed = 15;
+                unscathed = 15;;
                 break;
             case FRIGATE:
             case FIGHTER:
@@ -482,7 +547,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
                 damage = 1f;
                 for (int i = 0; i < data.member.getStatus().getNumStatuses(); i++) {
                     if (data.member.isFighterWing()) {
-                        data.member.getStatus().applyHullFractionDamage(damage, i);
+                        //data.member.getStatus().applyHullFractionDamage(damage, i);
                     } else {
                         data.member.getStatus().applyHullFractionDamage(damage/3f);
                         data.member.getStatus().applyHullFractionDamage(damage/3f);
@@ -495,7 +560,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
                 damage = 0.7f + (float) Math.random() * 0.1f;
                 for (int i = 0; i < data.member.getStatus().getNumStatuses(); i++) {
                     if (data.member.isFighterWing()) {
-                        data.member.getStatus().applyHullFractionDamage(damage, i);
+                        //data.member.getStatus().applyHullFractionDamage(damage, i);
                     } else {
                         data.member.getStatus().applyHullFractionDamage(damage/3f);
                         data.member.getStatus().applyHullFractionDamage(damage/3f);
@@ -508,7 +573,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
                 damage = 0.45f + (float) Math.random() * 0.1f;
                 for (int i = 0; i < data.member.getStatus().getNumStatuses(); i++) {
                     if (data.member.isFighterWing()) {
-                        data.member.getStatus().applyHullFractionDamage(damage, i);
+                        //data.member.getStatus().applyHullFractionDamage(damage, i);
                     } else {
                         data.member.getStatus().applyHullFractionDamage(damage/2f);
                         data.member.getStatus().applyHullFractionDamage(damage/2f);
@@ -520,7 +585,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
                 damage = 0.2f + (float) Math.random() * 0.1f;
                 for (int i = 0; i < data.member.getStatus().getNumStatuses(); i++) {
                     if (data.member.isFighterWing()) {
-                        data.member.getStatus().applyHullFractionDamage(damage, i);
+                        //data.member.getStatus().applyHullFractionDamage(damage, i);
                     } else {
                         data.member.getStatus().applyHullFractionDamage(damage);
                     }
@@ -532,6 +597,7 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
                 break;
         }
 
+        return outcome;
     }
 
     private FleetAutoresolveData computeDataForFleet(CampaignFleetAPI fleet) {
@@ -555,8 +621,12 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
         FleetMemberAutoresolveData data = new FleetMemberAutoresolveData();
 
         data.member = member;
+        ShipHullSpecAPI hullSpec = data.member.getHullSpec();
         if ((member.isCivilian() && !playerPursuitAutoresolveMode) || !member.canBeDeployedForCombat()) {
-            data.strength = 1f;
+            data.strength = 0.25f;
+            if (hullSpec.getShieldType() != ShieldType.NONE) {
+                data.shieldRatio = 0.5f;
+            }
             data.combatReady = false;
             return data;
         }
@@ -567,7 +637,6 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
 //			System.out.println("testtesttest");
 //		}
 
-        ShipHullSpecAPI hullSpec = data.member.getHullSpec();
         MutableShipStatsAPI stats = data.member.getStats();
 
         float normalizedHullStr = stats.getHullBonus().computeEffective(hullSpec.getHitpoints()) +
@@ -591,28 +660,29 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
 
 
 
-        float baseOP = member.getHullSpec().getOrdnancePoints(null);
-        float strength;
-        if (baseOP <= 0) {
-            strength = (float) member.getFleetPointCost();
-        } else {
-            strength = (float) member.getFleetPointCost() *
-                    member.getVariant().computeOPCost(null) / baseOP;
-        }
+        float strength = member.getMemberStrength();
 
+//		float baseOP = member.getHullSpec().getOrdnancePoints(null);
+//		float strength;
+//		if (baseOP <= 0) {
+//			strength = (float) member.getFleetPointCost();
+//		} else {
+//			strength = (float) member.getFleetPointCost() *
+//						member.getVariant().computeOPCost(null) / baseOP;
+//		}
+//		strength *= 0.5f + 0.5f * member.getRepairTracker().getCR();
+
+        strength *= 0.5f + 0.5f * member.getStatus().getHullFraction();
         float captainMult = 0.5f;
         if (member.getCaptain() != null) {
             captainMult = (10f + member.getCaptain().getStats().getAptitudeLevel("combat")) / 20f;
         }
 
         strength *= captainMult;
-        strength *= 0.5f + 0.5f * member.getStatus().getHullFraction();
-        strength *= 0.5f + 0.5f * member.getRepairTracker().getCR();
-
 
         strength *= 0.85f + 0.3f * (float) Math.random();
 
-        data.strength = Math.max(strength, 1f);
+        data.strength = Math.max(strength, 0.25f);
 
         return data;
     }
@@ -635,7 +705,6 @@ public class ExerelinBattleAutoresolverPluginImpl implements BattleAutoresolverP
     }
 
 }
-
 
 
 

@@ -49,9 +49,10 @@
             "extraCrewPercent":[20, 30],
             "marinesPercent":[5, 10],
             "ships":{
-                "void_Basic":[0, 1],
                 "cormorant_Basic":[0, 1],
                 "zephyr_Basic":[0, 1],
+                "dreadnought_Basic":[0, 1],
+
                 "centaur_Basic":[0, 1],
                 "damocles_Basic":[0, 1],
                 "mace_Basic":[0, 1],
@@ -62,6 +63,9 @@
                 "annihilator_Basic":[0, 1],
                 "hedgehog_Basic":[0, 1],
                 "talus_Basic":[0, 1],
+                "wildebeest_Basic":[0, 1],
+                "void_Basic":[0, 1],
+                "hermit_Basic":[0, 1],
 
                 "foxhound_Basic":[0, 1],
                 "sentinel_Basic":[0, 1],
@@ -71,6 +75,7 @@
                 "moth_Basic":[0, 1],
                 "ryker_Basic":[0, 1],
                 "thunderchild_blue_Basic":[0, 1],
+                "platypus_Basic":[0, 1],
 
                 "raider_wing":[0, 1],
                 "gull_wing":[0, 1],

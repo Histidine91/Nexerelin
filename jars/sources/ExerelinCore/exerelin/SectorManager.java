@@ -338,11 +338,8 @@ public class SectorManager
         SectorAPI sector = Global.getSector();
 
 		// Build OmniFactory and Storage if not been built and players faction has a station
-		if(!this.builtOmnifactoryAndStorage)
+		if(!this.builtOmnifactoryAndStorage && !sector.getPlayerFleet().isInHyperspace())
 		{
-            if(sector.getPlayerFleet().isInHyperspace())
-                return;
-
 			if(SectorManager.getCurrentSectorManager().isFactionInSector(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 			{
                 StarSystemAPI system = null;
@@ -376,6 +373,7 @@ public class SectorManager
 		// Set player fleet to appropriate faction
 		if(sector.getPlayerFleet().getFaction().getId().equalsIgnoreCase("player"))
 		{
+            System.out.println("Re-assigning player");
 			sector.getPlayerFleet().setFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId());
 
 			if(playerMovedToSpawnLocation)
@@ -401,13 +399,15 @@ public class SectorManager
 
                 // Start of game, player fleet is last to be spawned so set last faction spawn time as this
                 this.lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
-                FactionDirector.getFactionDirectorForFactionId(SectorManager.getCurrentSectorManager().getPlayerFactionId()).setHomeSystem((StarSystemAPI)Global.getSector().getPlayerFleet().getContainingLocation());
 
-                // Move to appropriate start location edge of map
-                sector.setCurrentLocation(sector.getRespawnLocation());
-                SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(Global.getSector().getPlayerFleet().getContainingLocation());
-                sector.getPlayerFleet().setLocation(token.getLocation().getX(), token.getLocation().getY());
+                // Move to appropriate start location edge of map on respawn system
+                //sector.setCurrentLocation(sector.getRespawnLocation());
+                //SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(Global.getSector().getPlayerFleet().getContainingLocation());
+                //sector.getPlayerFleet().setLocation(token.getLocation().getX(), token.getLocation().getY());
                 playerMovedToSpawnLocation = true;
+                // Set initial faction home system
+                //FactionDirector.getFactionDirectorForFactionId(SectorManager.getCurrentSectorManager().getPlayerFactionId()).setHomeSystem((StarSystemAPI)Global.getSector().getPlayerFleet().getContainingLocation());
+                System.out.println("Moved player to starting location");
             }
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.0f, CargoAPI.CrewXPLevel.GREEN);
 		}

@@ -88,6 +88,7 @@
            "ships":{
                "mining_drone_wing":[1, 2],
                "hii_vihr_Standard":[1, 1],
+               "hii_luun_Standard":[1, 1],
            },
        },
        "exerelinGasMiningFleet":{

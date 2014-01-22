@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class ExerelinConfig
 {
     // List of ships that can be produced at any station regardless of owner
-    public static String[] commonShipList = new String[]{"ox_Hull", "crig_Hull", "shuttle_Attack"};
+    public static String[] commonShipList = new String[]{"ox_Hull", "crig_Hull", "shuttle_Attack", "hermes_Standard"};
 
     // Factions classed as neutral for relationship calculations
     public static String[] neutralFactions = new String[]{"neutral", "independent"};

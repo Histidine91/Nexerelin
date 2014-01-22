@@ -393,6 +393,11 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
             if (didPlayerWinEncounter()) repChange = -0.1f;
 
             playerFleet.getFaction().adjustRelationship(enemyFleet.getFaction().getId(), repChange);
+            float rep = playerFleet.getFaction().getRelationship(enemyFleet.getFaction().getId());
+            if (rep >= 0) {
+                playerFleet.getFaction().setRelationship(enemyFleet.getFaction().getId(), -0.01f);
+            }
+
             Color color = Global.getSettings().getColor("textEnemyColor");
             Global.getSector().getCampaignUI().addMessage("Your relationship with the " + enemyFleet.getFaction().getDisplayName() + " faction has deteriorated", color);
         }
@@ -502,10 +507,11 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
     public boolean didPlayerWinEncounter() {
         if (getDataFor(Global.getSector().getPlayerFleet()).disengaged()) return false;
 
-        if (getWinner() == Global.getSector().getPlayerFleet()) {
+        // non-fighting "win", i.e. harrying a weaker enemy
+        if (lastOutcome == null && getWinner() == Global.getSector().getPlayerFleet()) {
             return true;
         }
-        //return getWinnerData().getFleet() == CampaignEngine.getInstance().getPlayerFleet();
+
         return lastOutcome == EngagementOutcome.BATTLE_PLAYER_WIN_TOTAL ||
                 lastOutcome == EngagementOutcome.BATTLE_PLAYER_WIN ||
                 lastOutcome == EngagementOutcome.ESCAPE_ENEMY_LOSS_TOTAL ||
@@ -573,7 +579,7 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
                                                       CampaignFleetAPI fleetItBelongsTo,
                                                       CampaignFleetAPI attackingFleet) {
         float r = (float) Math.random();
-        if (r < ENGAGE_ESCAPE_CHANCE) {
+        if (r < ENGAGE_ESCAPE_CHANCE && !attackingFleet.isPlayerFleet()) {
             // escaped
             letBoardableGo(toBoard, fleetItBelongsTo, attackingFleet);
 
@@ -582,12 +588,12 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
             // disabled
             DataForEncounterSide attackerSide = getDataFor(attackingFleet);
             attackerSide.changeEnemy(toBoard, Status.DISABLED);
-
+            toBoard.getStatus().disable();
             return EngageBoardableOutcome.DISABLED;
         } else {
             DataForEncounterSide attackerSide = getDataFor(attackingFleet);
             attackerSide.changeEnemy(toBoard, Status.DESTROYED);
-
+            toBoard.getStatus().disable();
             return EngageBoardableOutcome.DESTROYED;
         }
     }
@@ -686,7 +692,7 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
                 defenderCrew.getRegular() * regularMult +
                 defenderCrew.getVeteran() * veteranMult +
                 defenderCrew.getElite() * eliteMult +
-                defenderCrew.getMarines() * eliteMult;
+                defenderCrew.getMarines() * marineMult;
         defenderStr *= defenderMarineMult;
 
         if (attackType == BoardingAttackType.LAUNCH_FROM_DISTANCE) {
@@ -708,11 +714,7 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
 
 
         for (FleetMemberAPI fm: boardingTaskForce) {
-            float deployCost = fm.getStats().getCRPerDeploymentPercent().computeEffective(fm.getHullSpec().getCRToDeploy()) / 100f;
-            if (member.isFighterWing()) {
-                deployCost *= (float) member.getNumFightersInWing();
-            }
-
+            float deployCost = getDeployCost(member);
             fm.getRepairTracker().applyCREvent(-deployCost, "engaged in boarding action");
         }
 
@@ -755,6 +757,7 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
             case SELF_DESTRUCT:
                 applyBoardingSelfDestruct(member, boardingParty, attackType, boardingTaskForce, attacker, defender, result);
                 result.getAttackerLosses().removeFromCargo(attacker.getCargo());
+                member.getStatus().disable();
                 break;
             case SHIP_ESCAPED:
                 applyCrewLossFromBoarding(result, member, boardingParty, attackerStr, defenderStr);
@@ -786,6 +789,7 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
                 applyCrewLossFromBoarding(result, member, boardingParty, attackerStr, defenderStr);
                 result.getAttackerLosses().removeFromCargo(attacker.getCargo());
                 member.getCrewComposition().removeAll(result.getDefenderLosses());
+                member.getStatus().disable();
                 break;
         }
 
@@ -1131,7 +1135,6 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
             float mult = getSalvageMult(data.getStatus());
             lootWeapons(data.getMember(), mult);
             suppliesSalvaged += data.getMember().getRepairTracker().getSuppliesFromSalvage() * mult;
-
             maxCapacity += data.getMember().getCargoCapacity();
         }
         for (FleetMemberData data : winner.getOwnCasualties()) {
@@ -1195,7 +1198,6 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
         }
         else
             loot.addSupplies(Math.round(suppliesLost * lootedFraction));
-
 
         for (CargoStackAPI stack : loserCargo.getStacksCopy()) {
             if (stack.isNull()) continue;
@@ -1521,6 +1523,8 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
                     member.getRepairTracker().applyCREvent(-missileReloadLoss, "missile weapons used in combat");
                 }
             }
+
+            return;
         }
     }
 
@@ -1685,6 +1689,13 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
         cargo.addMarines((int) rec.getMarines());
     }
 }
+
+
+
+
+
+
+
 
 
 

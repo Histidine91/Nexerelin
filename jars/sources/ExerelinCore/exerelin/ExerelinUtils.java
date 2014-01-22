@@ -841,6 +841,9 @@ public class ExerelinUtils
                 possibleBoardTarget.getCargo().addSupplies(800);
                 ExerelinUtils.addRandomFactionShipsToCargo(possibleBoardTarget.getCargo(), 2, playerFleet.getFaction().getId(), Global.getSector(), false);
                 ExerelinUtils.addWeaponsToCargo(possibleBoardTarget.getCargo(), 2, playerFleet.getFaction().getId(), Global.getSector());
+
+                // Reset faction home system for player
+                FactionDirector.getFactionDirectorForFactionId(SectorManager.getCurrentSectorManager().getPlayerFactionId()).setHomeSystem((StarSystemAPI)Global.getSector().getPlayerFleet().getContainingLocation());
             }
             systemManager.setStationOwner(possibleBoardTarget, SectorManager.getCurrentSectorManager().getPlayerFactionId(), true, true);
         }

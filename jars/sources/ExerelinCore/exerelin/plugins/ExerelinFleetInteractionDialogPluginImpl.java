@@ -1,33 +1,41 @@
 package exerelin.plugins;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CoreInteractionListener;
+import com.fs.starfarer.api.campaign.FleetMemberPickerListener;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
+import com.fs.starfarer.api.campaign.OptionPanelAPI;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.VisualPanelAPI;
 import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
-import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.*;
+import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.DataForEncounterSide;
+import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.DisengageHarryAvailability;
+import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.EngagementOutcome;
+import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.PursueAvailability;
+import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.Status;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.InitialBoardingResponse;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.PostEngagementOption;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.PursuitOption;
 import com.fs.starfarer.api.combat.BattleCreationContext;
+import com.fs.starfarer.api.combat.CombatReadinessPlugin;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.CrewCompositionAPI;
 import com.fs.starfarer.api.fleet.FleetGoal;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ExampleCustomUIPanel;
-//import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.BoardingAttackType;
 import exerelin.plugins.ExerelinFleetEncounterContext.BoardingAttackType;
-//import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.BoardingOutcome;
 import exerelin.plugins.ExerelinFleetEncounterContext.BoardingOutcome;
-//import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.BoardingResult;
 import exerelin.plugins.ExerelinFleetEncounterContext.BoardingResult;
-//import com.fs.starfarer.api.impl.campaign.FleetEncounterContext.EngageBoardableOutcome;
 import exerelin.plugins.ExerelinFleetEncounterContext.EngageBoardableOutcome;
 import com.fs.starfarer.api.ui.ValueDisplayMode;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDialogPlugin {
 
@@ -62,6 +70,7 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
         CONTINUE_INTO_BOARDING,
         BOARDING_ACTION,
         SELECT_FLAGSHIP,
+        CRASH_MOTHBALL,
         ENGAGE_BOARDABLE,
         ABORT_BOARDING_ACTION,
         HARD_DOCK,
@@ -109,6 +118,14 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
 
     private EngagementResultAPI lastResult = null;
     public void backFromEngagement(EngagementResultAPI result) {
+
+        if (origFlagship != null) {
+            playerFleet.getFleetData().setFlagship(origFlagship);
+            origFlagship = null;
+            selectedFlagship = null;
+
+        }
+
         context.processEngagementResults(result);
         lastResult = result;
 
@@ -348,10 +365,7 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                 updatePreCombat();
                 break;
             case CONTINUE_INTO_BATTLE:
-//			boolean smallBattle = playerFleet.getFleetData().getFleetPointsUsed() +
-//								  otherFleet.getFleetData().getFleetPointsUsed() <= Global.getSettings().getBattleSize();
                 BattleCreationContext bcc = new BattleCreationContext(playerFleet, playerGoal, otherFleet, otherGoal);
-//			bcc.setSmallBattle(smallBattle);
                 if (playerGoal == FleetGoal.ESCAPE) {
                     DataForEncounterSide data = context.getDataFor(otherFleet);
                     if (data.getLastWinOption() == PostEngagementOption.HARRY) {
@@ -362,14 +376,20 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                     if (data.getLastWinOption() == PostEngagementOption.HARRY) {
                         bcc.setPursuitRangeModifier(-2500);
                     }
+
+                    CampaignFleetAIAPI ai = otherFleet.getAI();
+                    if (ai != null) {
+                        ai.performCrashMothballingPriorToEscape(null, playerFleet); //TODO CHANGE null -> context when API is fixed
+                    }
                 }
+
                 visual.fadeVisualOut();
                 dialog.startBattle(bcc);
                 break;
             case DISENGAGE:
                 CampaignFleetAIAPI ai = otherFleet.getAI();
                 PursuitOption po = otherFleet.getAI().pickPursuitOption(context, playerFleet);
-                if (otherFleetHoldingVsStrongerEnemy()) {
+                if (otherFleetHoldingVsStrongerEnemy() || !otherFleetWantsToFight()) {
                     po = PursuitOption.LET_THEM_GO;
                 }
 
@@ -486,6 +506,33 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                             }
                         });
                 break;
+            case CRASH_MOTHBALL:
+                List<FleetMemberAPI> choices = getCrashMothballable(playerFleet.getFleetData().getCombatReadyMembersListCopy());
+                dialog.showFleetMemberPickerDialog("Select craft to crash-mothball", "Ok", "Cancel",
+                        3, 7, 58f, false, true, choices,
+                        new FleetMemberPickerListener() {
+                            public void pickedFleetMembers(List<FleetMemberAPI> members) {
+                                for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy()) {
+                                    member.getRepairTracker().setCrashMothballed(false);
+                                }
+                                if (members != null && !members.isEmpty()) {
+                                    for (FleetMemberAPI member : members) {
+                                        member.getRepairTracker().setCrashMothballed(true);
+                                    }
+
+                                    crashMothballList = createShipNameListString(members);
+                                    if (members.size() == 1) {
+                                        addText(getString("crashMothballSelectedOneShip"));
+                                    } else {
+                                        addText(getString("crashMothballSelectedMultiple"));
+                                    }
+                                }
+                            }
+                            public void cancelledFleetMemberPicking() {
+
+                            }
+                        });
+                break;
             case SCUTTLE:
                 break;
             case GO_TO_ENGAGE:
@@ -520,6 +567,7 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
 
 
                 context.applyAfterBattleEffectsIfThereWasABattle();
+                Global.getSector().getCampaignUI().addMessage("Game paused");
                 dialog.dismiss();
                 break;
             case HARRY_PURSUE:
@@ -631,8 +679,9 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                             new FleetMemberPickerListener() {
                                 public void pickedFleetMembers(List<FleetMemberAPI> members) {
                                     if (members != null && !members.isEmpty()) {
-                                        flagship = members.get(0);
-                                        playerFleet.getFleetData().setFlagship(flagship);
+                                        origFlagship = playerFleet.getFlagship();
+                                        selectedFlagship = members.get(0);
+                                        playerFleet.getFleetData().setFlagship(selectedFlagship);
                                         addText(getString("selectedFlagship"));
                                     }
                                 }
@@ -700,13 +749,15 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
     private FleetMemberAPI toBoard = null;
     private String repairedShipList = null;
     private String boardingTaskForceList = null;
+    private String crashMothballList = null;
     private List<FleetMemberAPI> boardingTaskForce = null;
     private int boardingPhase = 0;
     private CrewCompositionAPI maxBoardingParty = null;
     private CrewCompositionAPI boardingParty = null;
     private BoardingAttackType boardingAttackType = null;
     private BoardingResult boardingResult = null;
-    private FleetMemberAPI flagship = null;
+    private FleetMemberAPI selectedFlagship = null;
+    private FleetMemberAPI origFlagship = null;
 
     private InitialBoardingResponse aiBoardingResponse = null;
 
@@ -1020,6 +1071,16 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
         }
     }
 
+    private List<FleetMemberAPI> getCrashMothballable(List<FleetMemberAPI> all) {
+        List<FleetMemberAPI> result = new ArrayList<FleetMemberAPI>();
+        CombatReadinessPlugin crPlugin = Global.getSettings().getCRPlugin();
+        for (FleetMemberAPI member : all) {
+            if (!member.isFighterWing() && member.getRepairTracker().getCR() < crPlugin.getMalfunctionThreshold()) {
+                result.add(member);
+            }
+        }
+        return result;
+    }
 
     private void initBoardingParty() {
         if (options.getSelectorValue(OptionId.SELECTOR_CREW) + options.getSelectorValue(OptionId.SELECTOR_MARINES) < 1) {
@@ -1046,6 +1107,11 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
 
     private OptionId lastOptionMousedOver = null;
     public void optionMousedOver(String optionText, Object optionData) {
+
+//		if (optionData == OptionId.HARD_DOCK) {
+//			options.setTooltip(OptionId.HARD_DOCK, "Crew: " + options.getSelectorValue(OptionId.SELECTOR_CREW));
+//		}
+
         if (optionData == null) {
             if (currVisualType != VisualType.FLEET_INFO) {
                 visual.showFleetInfo((String)null, playerFleet, (String)null, otherFleet, context);
@@ -1057,6 +1123,7 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
         OptionId option = (OptionId) optionData;
         if (option == lastOptionMousedOver) return;
         lastOptionMousedOver = option;
+
 
 //		if (option == OptionId.LET_THEM_GO) {
 //			visual.showImagePortion("illustrations", "space_wreckage", 800, 800, 0, 0, 400, 400);
@@ -1099,15 +1166,26 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
         if (playerGoal == FleetGoal.ATTACK && otherGoal == FleetGoal.ESCAPE) {
             String tooltipText = getString("tooltipPursueAutoresolve");
             options.addOption("Order your second-in-command to handle it", OptionId.AUTORESOLVE_PURSUE, tooltipText);
-            options.addOption("Transfer command before the engagement", OptionId.SELECT_FLAGSHIP, getString("tooltipSelectFlagship"));
+            options.addOption("Transfer command for this engagement", OptionId.SELECT_FLAGSHIP, getString("tooltipSelectFlagship"));
             if (nonFighters <= 1) {
                 options.setEnabled(OptionId.SELECT_FLAGSHIP, false);
             }
             options.addOption("Take personal command of the action", OptionId.CONTINUE_INTO_BATTLE, null);
         } else {
-            options.addOption("Transfer command before the engagement", OptionId.SELECT_FLAGSHIP, getString("tooltipSelectFlagship"));
+            options.addOption("Transfer command for this engagement", OptionId.SELECT_FLAGSHIP, getString("tooltipSelectFlagship"));
             if (nonFighters <= 1) {
                 options.setEnabled(OptionId.SELECT_FLAGSHIP, false);
+            }
+            if (playerGoal == FleetGoal.ESCAPE) {
+                List<FleetMemberAPI> choices = getCrashMothballable(playerFleet.getFleetData().getCombatReadyMembersListCopy());
+
+                options.addOption("Crash-mothball some of your ships to prevent malfunctions", OptionId.CRASH_MOTHBALL, null);
+                if (choices.isEmpty()) {
+                    options.setEnabled(OptionId.CRASH_MOTHBALL, false);
+                    options.setTooltip(OptionId.CRASH_MOTHBALL, getString("tooltipCrashMothballUnavailable"));
+                } else {
+                    options.setTooltip(OptionId.CRASH_MOTHBALL, getString("tooltipCrashMothball"));
+                }
             }
             options.addOption("Continue", OptionId.CONTINUE_INTO_BATTLE, null);
         }
@@ -1237,14 +1315,6 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
 
         options.addOption("Open a comm link", OptionId.OPEN_COMM, null);
 
-        if(Global.getSector().getPlayerFleet().getFaction().getId().equalsIgnoreCase(otherFleet.getFaction().getId())
-                || otherFleet.getFaction().getId().equalsIgnoreCase("independent")
-                || otherFleet.getFaction().getId().equalsIgnoreCase("neutral"))
-        {
-            options.addOption("Leave", OptionId.LEAVE, null);
-            return;
-        }
-
         boolean otherWantsToRun = otherFleetWantsToDisengage() && otherCanDisengage();
 
         boolean playerHasReadyShips = !playerFleet.getFleetData().getCombatReadyMembersListCopy().isEmpty();
@@ -1255,6 +1325,9 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
             String pursueTooltip = "tooltipPursue";
             String harassTooltip = "tooltipHarassRetreat";
             String letThemGoTooltip = "tooltipLetThemGo";
+            if (!context.isEngagedInHostilities()) {
+                letThemGoTooltip = "tooltipLetThemGoNoPenalty";
+            }
             boolean canPursue = false;
             boolean canHasass = false;
 
@@ -1318,7 +1391,6 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                 options.addOption("Move in to engage", OptionId.ENGAGE, getString("tooltipNoReadyShips"));
                 options.setEnabled(OptionId.ENGAGE, false);
             }
-
             CampaignFleetAIAPI ai = otherFleet.getAI();
             boolean hostile = false;
             if (ai != null) {
@@ -1342,8 +1414,6 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
                 options.addOption("Leave", OptionId.LEAVE, null);
             }
         }
-
-        //options.addOption("Play game", OptionId.CONTINUE, null);
     }
 
     private boolean canDisengage() {
@@ -1354,7 +1424,6 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
             }
         }
         return total <= getDisengageSize();
-        //return playerFleet.getFleetData().getFleetPointsUsed() <= getDisengageSize();
     }
 
     private boolean otherCanDisengage() {
@@ -1365,8 +1434,6 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
             }
         }
         return total <= getDisengageSize();
-        //boolean otherHasReadyShips = !otherFleet.getFleetData().getCombatReadyMembersListCopy().isEmpty();
-        //return otherFleet.getFleetData().getFleetPointsUsed() <= getDisengageSize() || !otherHasReadyShips;
     }
 
     private float getDisengageSize() {
@@ -1377,7 +1444,8 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
 
     private boolean canDisengageCleanly(CampaignFleetAPI fleet) {
         DataForEncounterSide data = context.getDataFor(fleet);
-        return data.isWonLastEngagement();
+        if (data.isWonLastEngagement()) return true;
+        return false;
     }
     private boolean canDisengageWithoutPursuit(CampaignFleetAPI fleet) {
         CampaignFleetAPI other = playerFleet;
@@ -1438,14 +1506,17 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
         str = str.replaceAll("\\$crewRecovered", crewRecStr);
         str = str.replaceAll("\\$marinesRecovered", marinesRecStr);
 
-        if (flagship != null) {
-            str = str.replaceAll("\\$flagship", "the " + flagship.getShipName());
+        if (selectedFlagship != null) {
+            str = str.replaceAll("\\$flagship", "the " + selectedFlagship.getShipName());
         }
 
         str = str.replaceAll("\\$creditsLooted", creditsLooted);
 
         if (boardingTaskForceList != null) {
             str = str.replaceAll("\\$boardingTaskForceShips", boardingTaskForceList);
+        }
+        if (crashMothballList != null) {
+            str = str.replaceAll("\\$crashMothballList", crashMothballList);
         }
 
         if (boardingTaskForce != null && !boardingTaskForce.isEmpty()) {
