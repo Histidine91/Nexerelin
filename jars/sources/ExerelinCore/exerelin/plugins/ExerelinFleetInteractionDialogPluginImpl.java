@@ -1315,6 +1315,15 @@ public class ExerelinFleetInteractionDialogPluginImpl implements InteractionDial
 
         options.addOption("Open a comm link", OptionId.OPEN_COMM, null);
 
+        // EXERELIN CHANGES
+        if(Global.getSector().getPlayerFleet().getFaction().getId().equalsIgnoreCase(this.otherFleet.getFaction().getId())
+                || this.otherFleet.getFaction().getId().equalsIgnoreCase("Neutral")
+                || this.otherFleet.getFaction().getId().equalsIgnoreCase("Independent"))
+        {
+            options.addOption("Leave", OptionId.LEAVE, null);
+            return;
+        }
+
         boolean otherWantsToRun = otherFleetWantsToDisengage() && otherCanDisengage();
 
         boolean playerHasReadyShips = !playerFleet.getFleetData().getCombatReadyMembersListCopy().isEmpty();
