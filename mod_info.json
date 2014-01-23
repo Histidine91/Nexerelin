@@ -2,9 +2,9 @@
 "id":"exerelin", # internal id
 "name":"Exerelin", # displayed to the player
 "author":"Zaphide",
-"version":"0.63",
+"version":"0.631",
 "description":"Choose your banner and fight for supremacy of sector Exerelin!",
-"gameVersion":"0.6.1a",
+"gameVersion":"0.6.2a-RC3",
 "totalConversion":"false",
 "jars":["jars/Omnifactory.jar", "jars/ExerelinCore.jar", ],
 "modPlugin":"data.scripts.ExerelinModPlugin",
