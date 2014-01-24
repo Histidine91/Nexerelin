@@ -56,6 +56,7 @@
     "data/world/factions/patnavy.faction",
     "data/world/factions/pn.faction",
     "data/world/factions/scavengers.faction",
+    "data/world/factions/pack.faction",
 
     "data/hulls/relics_extinctioner.ship",
     "data/hulls/relics_faithoper.ship",

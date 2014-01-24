@@ -695,6 +695,11 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
             {
                 data.addStartingShipChoice("ds_blade_variant_1");
             }
+            else if (factionId.equalsIgnoreCase("pack"))
+            {
+                data.addStartingShipChoice("pack_wirefox_Standard");
+                data.addStartingShipChoice("pack_bedlington_Standard");
+            }
 			else
 			{
 				System.out.println("EXERELIN ERROR: Faction starting ship for " + factionId + " not defined");

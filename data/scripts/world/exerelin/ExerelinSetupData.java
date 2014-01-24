@@ -290,6 +290,10 @@ public final class ExerelinSetupData
         if(isFactionInstalled("dstech", "data.scripts.world.DSSectorGen"))
             possibleModdedFactionList.add("dstech");
 
+        // Test for pack
+        if(isFactionInstalled("pack", "data.scripts.world.PackModPlugin"))
+            possibleModdedFactionList.add("pack");
+
 		System.out.println("- - - - - - - - - -");
         return (String[])possibleModdedFactionList.toArray(new String[possibleModdedFactionList.size()]);
 	}
