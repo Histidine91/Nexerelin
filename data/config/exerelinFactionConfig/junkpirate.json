@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.world.JPSectorGen", # String
+
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["junk_pirates_sickle_Standard", "junk_pirates_stoatA_Standard"], # String array
 }

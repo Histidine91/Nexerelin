@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.world.HiiModPlugin", # String
+
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["hii_fiirkan_Standard", "hii_jet_Standard", "hii_kaan_Standard"], # String array
 }

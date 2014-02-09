@@ -8,6 +8,8 @@ public class ExerelinFactionConfig
 {
     public String factionId;
 
+    public String uniqueModClassName = "";
+
     public String[] stationInteriorIllustrationKeys = new String[]{"hound_hangar"};
 
     public Boolean changeSystemSpecsOnSystemLockdown = false;
@@ -47,11 +49,12 @@ public class ExerelinFactionConfig
     public String[] factionsLiked = new String[]{};
     public String[] factionsDisliked = new String[]{};
 
-    public ExerelinFactionConfig(String factionId, boolean load)
+    public String[] startingVariants = new String[]{};
+
+    public ExerelinFactionConfig(String factionId)
     {
         this.factionId = factionId;
-        if(load)
-            loadFactionConfig();
+        this.loadFactionConfig();
     }
 
     public void loadFactionConfig()
@@ -59,6 +62,8 @@ public class ExerelinFactionConfig
         try
         {
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelinFactionConfig/" + factionId + ".json");
+
+            uniqueModClassName = settings.getString("uniqueModClassName");
 
             stationInteriorIllustrationKeys = JSONArrayToStringArray(settings.getJSONArray("stationInteriorIllustrationKeys"));
 
@@ -98,6 +103,8 @@ public class ExerelinFactionConfig
             negativeDiplomacyExtra = settings.getInt("negativeDiplomacyExtra");
             factionsLiked = JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
             factionsDisliked = JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
+
+            startingVariants = JSONArrayToStringArray(settings.getJSONArray("startingVariants"));
         }
         catch(Exception e)
         {

@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.world.vayraKadurGen", # String
+
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["khs_camel_Combat", "khs_hyena_Picket"], # String array
 }

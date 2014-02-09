@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.TheNomadsModPlugin", # String
+
     "stationInteriorIllustrationKeys":["desert_moons_ruins"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["nom_wurm_assault", "nom_yellowjacket_sniper"], # String array
 }

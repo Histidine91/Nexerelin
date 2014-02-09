@@ -31,11 +31,17 @@
            "extraCrewPercent":[80, 80],
            "marinesPercent":[20, 20],
            "ships":{
-                "ravana_pursuit":[0, 2],
-                "narayaan_artillery":[0, 3],
-                "esfahan_assault":[0, 3],
-                "rakshasa_assault":[0, 4],
-                "reaver_wing":[0, 4],
+                "ilk_ravana_pursuit":[0, 2],
+
+                "ilk_del_azarchel_artillery":[0, 2],
+                "ilk_del_azarchel_CS":[0, 1],
+
+                "ilk_esfahan_assault":[0, 3],
+                "ilk_cimeterre_strike":[0, 3],
+
+                "ilk_lilith_assault":[0, 4],
+
+                "ilk_reaver_wing":[0, 4],
 				"piranha_wing":[0, 3],
 				"ilk_inanna_wing":[0, 4],
            },
@@ -95,7 +101,7 @@
            "extraCrewPercent":[80, 80],
            "marinesPercent":[20, 20],
            "ships":{
-               "ravana_pursuit":[0, 1],
+               "ilk_ravana_pursuit":[0, 1],
            },
        },
 	},

@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.world.rasht", # String
+
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["ilk_lilith_assault"], # String array
 }

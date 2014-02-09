@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"", # String
+
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["wolf_CS", "afflictor_Strike", "omen_PD"], # String array
 }

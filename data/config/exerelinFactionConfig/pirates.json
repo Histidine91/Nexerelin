@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"", # String
+
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["hound_Assault", "lasher_CS"], # String array
 }

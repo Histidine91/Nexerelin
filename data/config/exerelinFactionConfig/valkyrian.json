@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.world.valkyrianGen", # String
+
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["valk_yuusha_M", "valk_tesladora_M", "valk_longinus_M"], # String array
 }

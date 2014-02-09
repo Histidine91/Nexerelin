@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.BataviaModPlugin", # String
+
     "stationInteriorIllustrationKeys":["batavia_interior"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["pb_java_Patrol", "pb_sumatra_Strike", "pb_vankinsbergen_Patrol"], # String array
 }

@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.ZorgModPlugin", # String
+
     "stationInteriorIllustrationKeys":["zorg_interior"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"true", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["zorg_probe_Configurated"], # String array
 }

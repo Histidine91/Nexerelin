@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.world.SHIGen", # String
+
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["ms_enlil_Standard", "ms_seski_Standard", "ms_shamash_Standard", "ms_inanna_Standard"], # String array
 }

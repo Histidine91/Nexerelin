@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.world.neutrinoGen", # String
+
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["neutrino_relativity_standard", "neutrino_singularity_balanced"], # String array
 }

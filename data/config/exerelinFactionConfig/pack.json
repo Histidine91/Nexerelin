@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.world.PackModPlugin", # String
+
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["pack_wirefox_Standard", "pack_bedlington_Standard"], # String array
 }

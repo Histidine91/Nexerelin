@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import exerelin.ExerelinUtils;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +23,6 @@ public final class ExerelinSetupData
     private String playerStartingShipVariant = "shuttle_Attack";
 
 	private String[] availableFactions = null;
-	public boolean onlyVanillaFactions = false;
 
     // Sector Generation Defaults
 	public int numSystems = 4;
@@ -77,20 +77,15 @@ public final class ExerelinSetupData
 
 	public String[] getPossibleFactions()
 	{
-		if(onlyVanillaFactions)
-			return new String[] {"hegemony", "tritachyon", "pirates", "sindrian_diktat",};
-		else
-		{
-			ArrayList possibleFactionsList = new ArrayList();
+        ArrayList possibleFactionsList = new ArrayList();
 
-			// Add built in factions
-            ExerelinConfig.loadSettings();
-            Collections.addAll(possibleFactionsList, ExerelinConfig.builtInFactions);
+        // Add built in factions
+        ExerelinConfig.loadSettings();
+        Collections.addAll(possibleFactionsList, ExerelinConfig.builtInFactions);
 
-			// Add modded factions
-            Collections.addAll(possibleFactionsList, this.getModdedFactionsList());
-			return (String[])possibleFactionsList.toArray(new String[possibleFactionsList.size()]);
-		}
+        // Add modded factions
+        Collections.addAll(possibleFactionsList, this.getModdedFactionsList());
+        return (String[])possibleFactionsList.toArray(new String[possibleFactionsList.size()]);
 	}
 
 	public void resetAvailableFactions()
@@ -113,7 +108,7 @@ public final class ExerelinSetupData
 					if(fac != null)
 						confirmedFactions.add(fac.getId());
 					else
-						System.out.println("Couldn't determine faction for:" + locPossibleFaction[i]);
+						System.out.println("EXERELIN ERROR: Couldn't determine faction for:" + locPossibleFaction[i]);
 				}
 				availableFactions = (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
 			}
@@ -136,7 +131,7 @@ public final class ExerelinSetupData
 						confirmedFactions.add(fac.getId());
 					}
 					else
-						System.out.println("Couldn't determine faction for:" + locPossibleFaction[i]);
+						System.out.println("EXERELIN ERROR: Couldn't determine faction for:" + locPossibleFaction[i]);
 
 					i = i + 1;
 				}
@@ -151,76 +146,44 @@ public final class ExerelinSetupData
 	public String[] getModdedFactionsList()
 	{
 		System.out.println("EXERELIN: Getting modded factions");
-
         ArrayList possibleModdedFactionList = new ArrayList();
+
+        for(int i = 0; i < ExerelinConfig.exerelinFactionConfigs.size(); i++)
+        {
+            ExerelinFactionConfig exerelinFactionConfig = (ExerelinFactionConfig)ExerelinConfig.exerelinFactionConfigs.get(i);
+            if(isFactionInstalled(exerelinFactionConfig.factionId, exerelinFactionConfig.uniqueModClassName))
+                possibleModdedFactionList.add(exerelinFactionConfig.factionId);
+        }
+
+        // OBSOLETE
+        //
+        // SEE ExerelinFactionConfig.uniqueModClassName
+
+        /*
 
 		// Test for antediluvian
 		if(isFactionInstalled("antediluvian", "data.scripts.world.AntediluvianGen"))
 			possibleModdedFactionList.add("antediluvian");
 
-		// Test for blackrock
-		if(isFactionInstalled("blackrock", "data.scripts.BRModPlugin"))
-			possibleModdedFactionList.add("blackrock");
-
-		// Test for interstellarFederation
-		if(isFactionInstalled("interstellarFederation", "data.scripts.world.InterstellarFederationSectorGen"))
-			possibleModdedFactionList.add("interstellarFederation");
-
-		// Test for junkpirate
-		if(isFactionInstalled("junkpirate", "data.scripts.world.JPSectorGen"))
-			possibleModdedFactionList.add("junkpirate");
-
 		// Test for council_loyalists
 		if(isFactionInstalled("council_loyalists", "data.scripts.world.HegemonyCoreGen"))
 			possibleModdedFactionList.add("council_loyalists");
-
-		// Test for neutrino
-		if(isFactionInstalled("neutrino", "data.scripts.world.neutrinoGen"))
-			possibleModdedFactionList.add("neutrino");
-
-		// Test for gedune
-		if(isFactionInstalled("gedune", "data.scripts.world.GeduneGen"))
-			possibleModdedFactionList.add("gedune");
 
 		// Test for nihil
 		if(isFactionInstalled("nihil", "data.scripts.nihil.world.NihilSectorGen"))
 			possibleModdedFactionList.add("nihil");
 
-		// Test for nomads
-		if(isFactionInstalled("nomads", "data.scripts.TheNomadsModPlugin"))
-			possibleModdedFactionList.add("nomads");
-
 		// Test for relics
 		if(isFactionInstalled("relics", "data.scripts.pur.world.PurSectorGen"))
 			possibleModdedFactionList.add("relics");
-
-		// Test for shadowyards
-		if(isFactionInstalled("shadowyards_hi", "data.scripts.world.SHIGen"))
-			possibleModdedFactionList.add("shadowyards_hi");
 
 		// Test for thulelegacy
 		if(isFactionInstalled("thulelegacy", "data.scripts.world.TLGen"))
 			possibleModdedFactionList.add("thulelegacy");
 
-		// Test for valkyrian
-		if(isFactionInstalled("valkyrian", "data.scripts.world.valkyrianGen"))
-			possibleModdedFactionList.add("valkyrian");
-
-		// Test for syndicateasp
-		if(isFactionInstalled("syndicateasp", "data.scripts.world.ASPSectorGen"))
-			possibleModdedFactionList.add("syndicateasp");
-
 		// Test for lotusconglomerate
 		if(isFactionInstalled("lotusconglomerate", "data.scripts.world.LotusSectorGen"))
 			possibleModdedFactionList.add("lotusconglomerate");
-
-		// Test for Bushi
-		if(isFactionInstalled("bushi", "data.scripts.world.BushiModPlugin"))
-			possibleModdedFactionList.add("bushi");
-
-		// Test for Hiigaran Descendents
-		if(isFactionInstalled("hiigaran_descendants", "data.scripts.world.HiiModPlugin"))
-			possibleModdedFactionList.add("hiigaran_descendants");
 
         // Test for Ceredia
         if(isFactionInstalled("ceredia", "data.scripts.world.AvanMod"))
@@ -246,53 +209,11 @@ public final class ExerelinSetupData
         if(isFactionInstalled("shadoworder", "data.scripts.world.tadd_ModGen"))
             possibleModdedFactionList.add("shadoworder");
 
-        // Test for Zorg
-        if(isFactionInstalled("zorg_hive", "data.scripts.ZorgModPlugin"))
-            possibleModdedFactionList.add("zorg_hive");
-
         // Test for Qualljom Society
         if(isFactionInstalled("qualljom_society", "data.scripts.world.QSGen"))
             possibleModdedFactionList.add("qualljom_society");
 
-        // Test for Kadur Theocracy
-        if(isFactionInstalled("regime", "data.scripts.world.vayraKadurGen"))
-            possibleModdedFactionList.add("regime");
-
-        // Test for Qamar Insurgency
-        if(isFactionInstalled("insurgency", "data.scripts.world.vayraKadurGen"))
-            possibleModdedFactionList.add("insurgency");
-
-        // Test for Citadel Defenders
-        if(isFactionInstalled("citadeldefenders", "data.scripts.world.defendersGen"))
-            possibleModdedFactionList.add("citadeldefenders");
-
-        // Test for ORI
-        if(isFactionInstalled("ORI", "data.scripts.world.ORIModPlugin"))
-            possibleModdedFactionList.add("ORI");
-
-        // Test for Patrian Principate
-        if(isFactionInstalled("patnavy", "data.scripts.PatriaModPlugin"))
-            possibleModdedFactionList.add("patnavy");
-
-        // Test for Project Batavia
-        if(isFactionInstalled("batavia", "data.scripts.BataviaModPlugin"))
-            possibleModdedFactionList.add("batavia");
-
-        // Test for P9 Colony Group
-        if(isFactionInstalled("pn", "data.scripts.world.pnModPlugin"))
-            possibleModdedFactionList.add("pn");
-
-        // Test for Ilkhannae Mayorate
-        if(isFactionInstalled("mayorate", "data.scripts.world.rasht"))
-            possibleModdedFactionList.add("mayorate");
-
-        // Test for dstech
-        if(isFactionInstalled("dstech", "data.scripts.world.DSSectorGen"))
-            possibleModdedFactionList.add("dstech");
-
-        // Test for pack
-        if(isFactionInstalled("pack", "data.scripts.world.PackModPlugin"))
-            possibleModdedFactionList.add("pack");
+        */
 
 		System.out.println("- - - - - - - - - -");
         return (String[])possibleModdedFactionList.toArray(new String[possibleModdedFactionList.size()]);
@@ -308,7 +229,7 @@ public final class ExerelinSetupData
 		}
 		catch (ClassNotFoundException ex)
 		{
-			System.out.println(factionId + " not installed");
+			//System.out.println(factionId + " not installed");
 			return false;
 		}
 	}

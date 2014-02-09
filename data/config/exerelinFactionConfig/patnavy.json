@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.PatriaModPlugin", # String
+
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["pat_cloak_hunterkiller", "pat_kortenaer_patrian", "pat_valnad_assault"], # String array
 }

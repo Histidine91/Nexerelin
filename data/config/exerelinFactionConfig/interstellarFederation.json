@@ -1,4 +1,6 @@
 {
+    "uniqueModClassName":"data.scripts.world.InterstellarFederationSectorGen", # String
+
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
@@ -37,4 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+
+    "startingVariants":["ifed_albatross_Attack", "ifed_dakota_Standard", "ifed_rickshaw_Standard", "ifed_echo_Standard", "ifed_scythe_Frigate"], # String array
 }

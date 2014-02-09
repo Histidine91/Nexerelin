@@ -2,7 +2,7 @@
 "id":"exerelin", # internal id
 "name":"Exerelin", # displayed to the player
 "author":"Zaphide",
-"version":"0.631",
+"version":"0.632",
 "description":"Choose your banner and fight for supremacy of sector Exerelin!",
 "gameVersion":"0.6.2a-RC3",
 "totalConversion":"false",

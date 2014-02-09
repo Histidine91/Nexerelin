@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.characters.CharacterCreationPlugin;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import data.scripts.world.exerelin.ExerelinSetupData;
+import exerelin.utilities.ExerelinConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +69,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 	private ResponseImpl SIX_FACTION = new ResponseImpl("6 other Factions");
 	private ResponseImpl NINE_FACTION = new ResponseImpl("9 other Factions");
 	private ResponseImpl ALL_FACTION = new ResponseImpl("All factions you know of!");
-	private ResponseImpl ONE_VANILLA_FACTION = new ResponseImpl("1 familiar face [Vanilla Only]");
-	private ResponseImpl ALL_VANILLA_FACTION = new ResponseImpl("A few old friends [Vanilla Only]");
 
 	private ResponseImpl RESPAWN_YES = new ResponseImpl("Yes, factions will respawn");
 	private ResponseImpl RESPAWN_YES_COND = new ResponseImpl("Yes, but only factions initially in Exerelin");
@@ -190,8 +189,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 			result.add(SIX_FACTION);
 			result.add(NINE_FACTION);
 			result.add(ALL_FACTION);
-			result.add(ONE_VANILLA_FACTION);
-			result.add(ALL_VANILLA_FACTION);
 		}
 		else if (stage == 7)
 		{
@@ -328,37 +325,22 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		else if (response == ONE_FACTION)
 		{
 			ExerelinSetupData.getInstance().numStartFactions = 1;
-			ExerelinSetupData.getInstance().onlyVanillaFactions = false;
 		}
 		else if (response == THREE_FACTION)
 		{
 			ExerelinSetupData.getInstance().numStartFactions = 3;
-			ExerelinSetupData.getInstance().onlyVanillaFactions = false;
 		}
 		else if (response == SIX_FACTION)
 		{
 			ExerelinSetupData.getInstance().numStartFactions = 6;
-			ExerelinSetupData.getInstance().onlyVanillaFactions = false;
 		}
 		else if (response == NINE_FACTION)
 		{
 			ExerelinSetupData.getInstance().numStartFactions = 9;
-			ExerelinSetupData.getInstance().onlyVanillaFactions = false;
 		}
 		else if (response == ALL_FACTION)
 		{
 			ExerelinSetupData.getInstance().numStartFactions = 99; // Just use how many available factions there are
-			ExerelinSetupData.getInstance().onlyVanillaFactions = false;
-		}
-		else if (response == ONE_VANILLA_FACTION)
-		{
-			ExerelinSetupData.getInstance().numStartFactions = 1;
-			ExerelinSetupData.getInstance().onlyVanillaFactions = true;
-		}
-		else if (response == ALL_VANILLA_FACTION)
-		{
-			ExerelinSetupData.getInstance().numStartFactions = 3;
-			ExerelinSetupData.getInstance().onlyVanillaFactions = true;
 		}
 		else if (response == RESPAWN_YES)
 		{
@@ -482,47 +464,16 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 	{
 		if(factionStartShip)
 		{
-			if(factionId.equalsIgnoreCase("hegemony"))
-			{
-				data.addStartingShipChoice("hound_Assault");
-				data.addStartingShipChoice("lasher_CS");
-			}
-			else if (factionId.equalsIgnoreCase("pirates"))
-			{
-				data.addStartingShipChoice("hound_Assault");
-                data.addStartingShipChoice("lasher_Standard");
-			}
-			else if (factionId.equalsIgnoreCase("tritachyon"))
-			{
-				data.addStartingShipChoice("wolf_CS");
-				data.addStartingShipChoice("afflictor_Strike");
-				data.addStartingShipChoice("omen_PD");
-			}
-			else if (factionId.equalsIgnoreCase("sindrian_diktat"))
-			{
-				data.addStartingShipChoice("brawler_Assault");
-				data.addStartingShipChoice("vigilance_Standard");
-			}
-			else if (factionId.equalsIgnoreCase("shadowyards_hi"))
-			{
-				data.addStartingShipChoice("ms_enlil_Standard");
-				data.addStartingShipChoice("ms_seski_Standard");
-				data.addStartingShipChoice("ms_shamash_Standard");
-				data.addStartingShipChoice("ms_inanna_Standard");
-			}
-			else if (factionId.equalsIgnoreCase("syndicateasp"))
-				data.addStartingShipChoice("syndicate_asp_diamondback_Standard");
-			else if (factionId.equalsIgnoreCase("junkpirate"))
-			{
-				data.addStartingShipChoice("junk_pirates_sickle_Standard");
-				data.addStartingShipChoice("junk_pirates_stoatA_Standard");
-			}
-			else if (factionId.equalsIgnoreCase("nomads"))
-			{
-				data.addStartingShipChoice("nom_wurm_assault");
-				data.addStartingShipChoice("nom_yellowjacket_sniper");
-			}
-			else if (factionId.equalsIgnoreCase("council_loyalists"))
+            String[] startingVariants = ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants;
+
+            for(int i = 0; i < ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants.length; i++)
+                data.addStartingShipChoice(ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants[i]);
+
+            // NO LONGER IN USE
+            //
+            // SEE confing/exerelinFactionConfig/faction.json:startingVariants
+            /*
+			if (factionId.equalsIgnoreCase("council_loyalists"))
 			{
 				data.addStartingShipChoice("mrd_slasher_Balanced");
 				data.addStartingShipChoice("mrd_ambassador_standard");
@@ -531,12 +482,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 				//data.addStartingShipChoice("mrd_sparrow_Fast");
 				data.addStartingShipChoice("mrd_defender_assault");
 			}
-			else if (factionId.equalsIgnoreCase("blackrock"))
-			{
-				data.addStartingShipChoice("scarab_attack");
-				data.addStartingShipChoice("brdy_locust_patrol");
-				data.addStartingShipChoice("brdy_mantis_strike");
-			}
 			else if (factionId.equalsIgnoreCase("antediluvian"))
 			{
 				data.addStartingShipChoice("donovan_Antediluvian");
@@ -544,38 +489,11 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 				data.addStartingShipChoice("cape_Antediluvian");
 				data.addStartingShipChoice("sentinel_Antediluvian");
 			}
-			else if (factionId.equalsIgnoreCase("valkyrian"))
-			{
-				data.addStartingShipChoice("yuusha_M");
-				data.addStartingShipChoice("tesladora_M");
-				data.addStartingShipChoice("longinus_M");
-				data.addStartingShipChoice("jenova_ECM");
-			}
 			else if (factionId.equalsIgnoreCase("lotusconglomerate"))
 			{
 				data.addStartingShipChoice("jackal_Hunter");
 				data.addStartingShipChoice("blizzard_Hunter");
 				data.addStartingShipChoice("stingray_Hunter");
-			}
-			else if (factionId.equalsIgnoreCase("gedune"))
-			{
-				data.addStartingShipChoice("gedune_kyirus_variant");
-				data.addStartingShipChoice("gedune_kitsune_variant");
-				data.addStartingShipChoice("gedune_nanda_variant1");
-			}
-			else if (factionId.equalsIgnoreCase("neutrino"))
-			{
-				data.addStartingShipChoice("neutrino_relativity_standard");
-				data.addStartingShipChoice("neutrino_singularity_balanced");
-
-			}
-			else if (factionId.equalsIgnoreCase("interstellarFederation"))
-			{
-				data.addStartingShipChoice("ifed_albatross_Attack");
-				data.addStartingShipChoice("ifed_dakota_Standard");
-				data.addStartingShipChoice("ifed_scythe_Frigate");
-				data.addStartingShipChoice("ifed_echo_Standard");
-				data.addStartingShipChoice("ifed_rickshaw_Standard");
 			}
 			else if (factionId.equalsIgnoreCase("relics"))
 			{
@@ -592,17 +510,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 			{
 				data.addStartingShipChoice("thule_vikingmki_OD");
 				data.addStartingShipChoice("thule_vikingmkii_OD");
-			}
-			else if (factionId.equalsIgnoreCase("bushi"))
-			{
-				data.addStartingShipChoice("bushi_kaiken_Standard");
-				data.addStartingShipChoice("bushi_yari_Standard");
-			}
-			else if (factionId.equalsIgnoreCase("hiigaran_descendants"))
-			{
-				data.addStartingShipChoice("hii_fiirkan_Standard");
-				data.addStartingShipChoice("hii_jet_Standard");
-				data.addStartingShipChoice("hii_kaan_Standard");
 			}
             else if (factionId.equalsIgnoreCase("shadoworder"))
             {
@@ -640,71 +547,17 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 data.addStartingShipChoice("javelin_Artil");
                 data.addStartingShipChoice("marten_PD");
             }
-            else if (factionId.equalsIgnoreCase("zorg_hive"))
-            {
-                data.addStartingShipChoice("zorg_probe_Configurated");
-            }
             else if (factionId.equalsIgnoreCase("qualljom_society"))
             {
                 data.addStartingShipChoice("qua_minal_standard");
                 data.addStartingShipChoice("qua_taom_standard");
-            }
-            else if (factionId.equalsIgnoreCase("regime"))
-            {
-                data.addStartingShipChoice("khs_camel_Combat");
-                data.addStartingShipChoice("khs_hyena_Picket");
-            }
-            else if (factionId.equalsIgnoreCase("insurgency"))
-            {
-                data.addStartingShipChoice("khs_hyena_acehigh");
-                data.addStartingShipChoice("khs_buzzard_pd");
-            }
-            else if (factionId.equalsIgnoreCase("citadeldefenders"))
-            {
-                data.addStartingShipChoice("FoxFrigate_elitevariant");
-                data.addStartingShipChoice("FoxCorvette_elitevariant");
-            }
-            else if (factionId.equalsIgnoreCase("ORI"))
-            {
-                data.addStartingShipChoice("grib_variant");
-                data.addStartingShipChoice("openok_variant");
-            }
-            else if (factionId.equalsIgnoreCase("patnavy"))
-            {
-                data.addStartingShipChoice("pat_cloak_hunterkiller");
-                data.addStartingShipChoice("pat_kortenaer_patrian");
-                data.addStartingShipChoice("pat_valnad_assault");
-            }
-            else if (factionId.equalsIgnoreCase("batavia"))
-            {
-                data.addStartingShipChoice("pb_java_Patrol");
-                data.addStartingShipChoice("pb_sumatra_Strike");
-                data.addStartingShipChoice("pb_vankinsbergen_Patrol");
-            }
-            else if (factionId.equalsIgnoreCase("pn"))
-            {
-                data.addStartingShipChoice("cs_pn_sike");
-                data.addStartingShipChoice("as_pn_rs");
-                data.addStartingShipChoice("cs_pn_mite");
-            }
-            else if (factionId.equalsIgnoreCase("mayorate"))
-            {
-                data.addStartingShipChoice("rakshasa_assault");
-            }
-            else if (factionId.equalsIgnoreCase("dstech"))
-            {
-                data.addStartingShipChoice("ds_blade_variant_1");
-            }
-            else if (factionId.equalsIgnoreCase("pack"))
-            {
-                data.addStartingShipChoice("pack_wirefox_Standard");
-                data.addStartingShipChoice("pack_bedlington_Standard");
             }
 			else
 			{
 				System.out.println("EXERELIN ERROR: Faction starting ship for " + factionId + " not defined");
 				data.addStartingShipChoice("shuttle_Attack");
 			}
+			*/
 		}
 		else
 		{
@@ -736,7 +589,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 data.addStartingShipChoice("shuttle_Attack");
             }
 		}
-        data.addStartingShipChoice("exerelinshuttle_Attack");
+        //data.addStartingShipChoice("exerelinshuttle_Attack");
 	}
 
 	public void startingShipPicked(String variantId, CharacterCreationData data)
