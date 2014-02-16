@@ -2,7 +2,7 @@
 "id":"exerelin", # internal id
 "name":"Exerelin", # displayed to the player
 "author":"Zaphide",
-"version":"0.632",
+"version":"0.633",
 "description":"Choose your banner and fight for supremacy of sector Exerelin!",
 "gameVersion":"0.6.2a-RC3",
 "totalConversion":"false",
@@ -57,19 +57,6 @@
     "data/world/factions/pn.faction",
     "data/world/factions/scavengers.faction",
     "data/world/factions/pack.faction",
-
-    "data/hulls/relics_extinctioner.ship",
-    "data/hulls/relics_faithoper.ship",
-    "data/hulls/relics_queen.ship",
-
-    "data/variants/relics_arwar_Standard.variant",
-    "data/variants/relics_carrioner_Standard.variant",
-    "data/variants/relics_egler_Standard.variant",
-    "data/variants/relics_intersepter_Standard.variant",
-    "data/variants/relics_plower_Standard.variant",
-    "data/variants/relics_pusher_Standard.variant",
-    "data/variants/relics_ringer_Standard.variant",
-    "data/variants/relics_sidewayer_Standard.variant",
-    "data/variants/relics_solver_Standard.variant",
+    "data/world/factions/bge.faction",
 	],
 }

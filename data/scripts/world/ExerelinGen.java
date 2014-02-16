@@ -394,17 +394,14 @@ public class ExerelinGen implements SectorGeneratorPlugin
 		}
 
 
-        if(ExerelinSetupData.getInstance().numSystems > 1)
-        {
-            JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("Jump Point Alpha");
-            OrbitAPI orbit = Global.getFactory().createCircularOrbit(system.createToken(0,0), 0f, 1200, 120);
-            jumpPoint.setOrbit(orbit);
-            //jumpPoint.setRelatedPlanet(c2);
+        // Build hyperspace exits
+        JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("Jump Point Alpha");
+        OrbitAPI orbit = Global.getFactory().createCircularOrbit(system.createToken(0,0), 0f, 1200, 120);
+        jumpPoint.setOrbit(orbit);
 
-            jumpPoint.setStandardWormholeToHyperspaceVisual();
-            system.addEntity(jumpPoint);
+        jumpPoint.setStandardWormholeToHyperspaceVisual();
+        system.addEntity(jumpPoint);
 
-            system.autogenerateHyperspaceJumpPoints(true, true);
-        }
+        system.autogenerateHyperspaceJumpPoints(true, true);
 	}
 }

@@ -30,5 +30,5 @@
     "validMiningShips":["mining_drone", "zorg_sphere", "pn_mlmv"], # String array
 
     "builtInFactions":["hegemony", "tritachyon", "pirates", "sindrian_diktat"], # String array
-    "supportedModFactions":["batavia", "blackrock", "bushi", "citadeldefenders", "dstech", "gedune", "hiigaran_descendants", "insurgency", "interstellarFederation", "junkpirate", "mayorate", "neutrino", "nomads", "ORI", "pack", "patnavy", "pn", "regime", "shadowyards_hi", "syndicateasp", "valkyrian", "zorg_hive"], # String array
+    "supportedModFactions":["batavia", "blackrock", "bushi", "citadeldefenders", "dstech", "gedune", "hiigaran_descendants", "insurgency", "interstellarFederation", "junkpirate", "mayorate", "neutrino", "nomads", "ORI", "pack", "patnavy", "pn", "regime", "shadowyards_hi", "syndicateasp", "valkyrian", "zorg_hive", "relics", "bge", "qualljom"], # String array
 }

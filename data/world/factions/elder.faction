@@ -30,18 +30,21 @@
 				"relics_extinctioner_HeavyAssault":[0, 1],
 				"relics_extinctioner_Standard":[0, 1],
 				"relics_extinctioner_Strike":[0, 1],
+
                 "relics_intersepter_Standard":[0, 1],
                 "relics_intersepter_Strike":[0, 1],
                 "relics_sidewayer_Standard":[0, 1],
                 "relics_sidewayer_Strike":[0, 1],
                 "relics_plower_Standard":[0, 1],
                 "relics_plower_Strike":[0, 1],
+
                 "relics_carrioner_Standard":[0, 1],
                 "relics_carrioner_Strike":[0, 1],
                 "relics_arwar_Standard":[0, 2],
                 "relics_arwar_Strike":[0, 1],
                 "relics_ringer_Standard":[0, 2],
                 "relics_ringer_Strike":[0, 1],
+
                 "relics_egler_Standard":[0, 2],
                 "relics_egler_Strike":[0, 1],
                 "relics_pusher_Standard":[0, 2],
@@ -49,12 +52,13 @@
                 "relics_pusher_specijal":[0, 1],
                 "relics_solver_Standard":[0, 2],
                 "relics_solver_Strike":[0, 1],
+
                 "relics_chaser_wing":[0, 4],
                 "relics_hiter_wing":[0, 4],
                 "relics_charger_wing":[0, 4],
             },
         },
-        "exerelinOutSystemSupplyConvoy":{
+        "exerelinInSystemSupplyConvoy":{
             "displayName":"Out-System Supply Convoy",
             "maxFleetPoints":40,
             "daysWorthOfSupplies":[30, 50],

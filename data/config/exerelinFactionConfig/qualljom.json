@@ -1,0 +1,44 @@
+{
+    "uniqueModClassName":"data.scripts.world.QualljomHolotisGen", # String
+
+    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+
+    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
+    "preferredBackgroundImagePath":"", # String
+    "preferredStarType":"", # String
+    "preferredStarLight":"", # String, 0xFFFFFF
+
+    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Port", "Quey", "Habitat", "Shipyard"], # String array
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
+
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Betrayers", # String
+
+    "smallAttackFleetName":"Scout", # String
+    "mediumAttackFleetName":"Strike Force", # String
+    "largeAttackFleetName":"Warfleet", # String
+
+    "smallDefenceFleetName":"Defense Star", # String
+    "mediumDefenceFleetName":"Guardian Fleet", # String
+    "largeDefenceFleetName":"Defense Enforcement Fleet", # String
+
+    "smallPatrolFleetName":"Recon Patrol", # String
+    "mediumPatrolFleetName":"Warden Patrol", # String
+    "largePatrolFleetName":"Garrison Fleet", # String
+
+    "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
+    "gasMiningFleetName":"Gas Mining Fleet", # String
+    "logisticsFleetName":"Logistics Convoy", # String
+    "boardingFleetName":"Boarding Fleet", # String
+    "commandFleetName":"Command Fleet", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
+
+    "startingVariants":["qua_minal_standard", "qua_taom_standard"], # String array
+}

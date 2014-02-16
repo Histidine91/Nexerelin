@@ -495,12 +495,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 				data.addStartingShipChoice("blizzard_Hunter");
 				data.addStartingShipChoice("stingray_Hunter");
 			}
-			else if (factionId.equalsIgnoreCase("relics"))
-			{
-				data.addStartingShipChoice("relics_egler_Standard");
-				data.addStartingShipChoice("relics_pusher_Standard");
-				data.addStartingShipChoice("relics_solver_Standard");
-			}
 			else if (factionId.equalsIgnoreCase("nihil"))
 			{
 				data.addStartingShipChoice("nihil_votex_predator");
@@ -547,16 +541,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 data.addStartingShipChoice("javelin_Artil");
                 data.addStartingShipChoice("marten_PD");
             }
-            else if (factionId.equalsIgnoreCase("qualljom_society"))
-            {
-                data.addStartingShipChoice("qua_minal_standard");
-                data.addStartingShipChoice("qua_taom_standard");
-            }
-			else
-			{
-				System.out.println("EXERELIN ERROR: Faction starting ship for " + factionId + " not defined");
-				data.addStartingShipChoice("shuttle_Attack");
-			}
 			*/
 		}
 		else
