@@ -42,25 +42,25 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "pack_ridgeback_Standard":[0, 2],
-                "pack_ridgeback_x_Standard":[0, 2],
+                "pack_ridgeback_Standard":[0, 1],
+                "pack_ridgeback_x_Standard":[0, 1],
 
+                "pack_sharpei_Assault":[0, 1],
+                "pack_sharpei_Standard":[0, 2],
                 "pack_pitbull_Standard":[0, 3],
-
-                "pack_komondor_Standard":[0,2],
-                "pack_komondor_Strike":[0,2],
+                "pack_komondor_Standard":[0,1],
+                "pack_komondor_Strike":[0,1],
                 "pack_komondor_Support":[0,1],
-                "pack_BRT_Guard":[0, 2],
-                "pack_BRT_Strike":[0, 2],
+                "pack_BRT_Guard":[0, 1],
+                "pack_BRT_Strike":[0, 1],
                 "pack_BRT_Support":[0, 1],
 
-                "pack_samoyed_Standard":[1,1],
+                "pack_samoyed_Standard":[0,1],
                 "pack_samoyed_Support":[0,1],
                 "pack_samoyed_decoupled_Standard":[0, 1],
-
-                "pack_wirefox_Assault":[0, 4],
-                "pack_wirefox_Standard":[0, 4],
-                "pack_bedlington_Standard":[0, 4],
+                "pack_wirefox_Assault":[0, 2],
+                "pack_wirefox_Standard":[0, 2],
+                "pack_bedlington_Standard":[0, 3],
             },
         },
         "exerelinInSystemSupplyConvoy":{

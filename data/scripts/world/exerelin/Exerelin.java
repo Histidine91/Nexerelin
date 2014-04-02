@@ -1,5 +1,6 @@
 package data.scripts.world.exerelin;
 
+import java.util.List;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import exerelin.commandQueue.CommandQueue;
@@ -7,12 +8,14 @@ import exerelin.*;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinMessageManager;
 
+import java.util.Collections;
+
 @SuppressWarnings("unchecked")
 public class Exerelin //implements SectorGeneratorPlugin
 {
 	public void generate(SectorAPI sector)
 	{
-        System.out.println("Starting setup...");
+        System.out.println("Starting sector setup...");
 
         ExerelinSetupData.getInstance().resetAvailableFactions();
 
@@ -30,8 +33,10 @@ public class Exerelin //implements SectorGeneratorPlugin
         sectorManager.setBuildOmnifactory(ExerelinSetupData.getInstance().omniFacPresent);
         sectorManager.setMaxSystemSize(ExerelinSetupData.getInstance().maxSystemSize);
         sectorManager.setPlayerStartShipVariant(ExerelinSetupData.getInstance().getPlayerStartingShipVariant());
+        sectorManager.setSectorPrePopulated(ExerelinSetupData.getInstance().isSectorPopulated);
+        sectorManager.setSectorPartiallyPopulated(ExerelinSetupData.getInstance().isSectorPartiallyPopulated);
 
-        // Build the sector manager
+        // Setup the sector manager
         sectorManager.setupSectorManager(sector);
 
         // Build a message manager object and add to persistent storage
@@ -54,7 +59,10 @@ public class Exerelin //implements SectorGeneratorPlugin
 		this.initFactionRelationships(sector);
 
 		// Build off map initial station attack exerelin.fleets in random systems
-		this.initStationAttackFleets(sector);
+        if(sectorManager.isSectorPrePopulated())
+            this.populateSector(Global.getSector(), sectorManager);
+        else
+		    this.initStationAttackFleets(sector);
 
 		// Add trader spawns
 		this.initTraderSpawns(sector);
@@ -62,7 +70,7 @@ public class Exerelin //implements SectorGeneratorPlugin
         // Remove any data stored in ExerelinSetupData
         ExerelinSetupData.resetInstance();
 
-        System.out.println("Finished setup...");
+        System.out.println("Finished sector setup...");
 	}
 
 	private void initStationAttackFleets(SectorAPI sector)
@@ -74,7 +82,7 @@ public class Exerelin //implements SectorGeneratorPlugin
 		for(int i = 0; i < numFactionsInitialStart; i = i + 1)
 		{
 			String factionId = factions[i];
-			if(factionId.equalsIgnoreCase(ExerelinSetupData.getInstance().getPlayerFaction()))
+			if(!SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player") && factionId.equalsIgnoreCase(ExerelinSetupData.getInstance().getPlayerFaction()))
 			{
 				numFactionsInitialStart = numFactionsInitialStart + 1;
 				continue;
@@ -126,4 +134,108 @@ public class Exerelin //implements SectorGeneratorPlugin
 			}
 		}
 	}
+
+    private void populateSector(SectorAPI sector, SectorManager sectorManager)
+    {
+        boolean finishedPopulating = false;
+
+        // Popuate a single station for each starting faction
+        String[] factions = sectorManager.getFactionsPossibleInSector();
+        int numFactionsInitialStart = Math.min(factions.length - 1, ExerelinSetupData.getInstance().numStartFactions);
+        for(int i = 0; i < numFactionsInitialStart; i++)
+        {
+            String factionId = factions[i];
+            if(factionId.equalsIgnoreCase(sectorManager.getPlayerFactionId()))
+            {
+                numFactionsInitialStart = numFactionsInitialStart + 1;
+                continue;
+            }
+
+            // Find an available station
+            List systems = sector.getStarSystems();
+            Collections.shuffle(systems);
+            systemLoop: for(int j = 0; j < systems.size(); j++)
+            {
+                StarSystemAPI systemAPI = (StarSystemAPI)systems.get(j);
+                List stations = systemAPI.getOrbitalStations();
+                for(int k = 0; k < stations.size(); k++)
+                {
+                    SectorEntityToken station = (SectorEntityToken)stations.get(k);
+                    if(station.getFaction().getId().equalsIgnoreCase("abandoned"))
+                    {
+                        SystemStationManager systemStationManager = SystemManager.getSystemManagerForAPI(systemAPI).getSystemStationManager();
+                        StationRecord stationRecord = systemStationManager.getStationRecordForToken(station);
+                        stationRecord.setOwner(factionId, false, false);
+                        System.out.println("Setting start station in " + systemAPI.getName() + " for: " + factionId);
+                        FactionDirector.getFactionDirectorForFactionId(factionId).setHomeSystem(systemAPI);
+                        break systemLoop;
+                    }
+                }
+            }
+        }
+
+        // Add players start station
+        if(!sectorManager.getPlayerFactionId().equalsIgnoreCase("player"))
+        {
+            List systems = sector.getStarSystems();
+            Collections.shuffle(systems);
+            systemLoop: for(int j = 0; j < systems.size(); j++)
+            {
+                StarSystemAPI systemAPI = (StarSystemAPI)systems.get(j);
+                List stations = systemAPI.getOrbitalStations();
+                for(int k = 0; k < stations.size(); k++)
+                {
+                    SectorEntityToken station = (SectorEntityToken)stations.get(k);
+                    if(station.getFaction().getId().equalsIgnoreCase("abandoned"))
+                    {
+                        SystemStationManager systemStationManager = SystemManager.getSystemManagerForAPI(systemAPI).getSystemStationManager();
+                        StationRecord stationRecord = systemStationManager.getStationRecordForToken(station);
+                        stationRecord.setOwner(sectorManager.getPlayerFactionId(), false, false);
+                        System.out.println("Setting start station in " + systemAPI.getName() + " for: " + sectorManager.getPlayerFactionId());
+                        FactionDirector.getFactionDirectorForFactionId(sectorManager.getPlayerFactionId()).setHomeSystem(systemAPI);
+                        break systemLoop;
+                    }
+                }
+            }
+        }
+
+        // Populate rest of sector half or full
+        int populated = 1;
+        String[] factionsInSector = sectorManager.getFactionsInSector();
+
+        while(!finishedPopulating)
+        {
+            for(int i = 0; i < factionsInSector.length; i++)
+            {
+                String factionId = factionsInSector[i];
+
+                // Check home system for available stations
+                StarSystemAPI homeSystem = FactionDirector.getFactionDirectorForFactionId(factionId).getHomeSystem();
+                StarSystemAPI system = homeSystem;
+                SectorEntityToken station = ExerelinUtils.getClosestEnemyStation(factionId, homeSystem, ExerelinUtils.getRandomStationInSystemForFaction(factionId, homeSystem));
+
+                if(station == null)
+                {
+                    // Couldn't find station in home system so find closest available system
+                    system = ExerelinUtils.getClosestSystemForFaction(homeSystem, factionId, -1f, -0.0001f);
+                    if(system != null)
+                        station = ExerelinUtils.getClosestEntityToSystemEntrance(system, factionId, -1f, -0.0001f);
+                }
+
+                if(station == null)
+                    continue; // Move to next faction
+
+                SystemStationManager systemStationManager = SystemManager.getSystemManagerForAPI(system).getSystemStationManager();
+                StationRecord stationRecord = systemStationManager.getStationRecordForToken(station);
+                stationRecord.setOwner(factionId, false, false);
+                System.out.println("Setting station in " + system.getName() + " for: " + factionId);
+            }
+
+            populated++;
+
+            if((sectorManager.isSectorPartiallyPopulated() && populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(1)).getOrbitalStations().size()/2)
+                    || populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(1)).getOrbitalStations().size())
+                finishedPopulating = true;
+        }
+    }
 }

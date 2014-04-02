@@ -1,33 +1,33 @@
 {
     "uniqueModClassName":"data.scripts.world.QualljomHolotisGen", # String
-
-    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+	
+	"stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
     "preferredBackgroundImagePath":"", # String
     "preferredStarType":"", # String
     "preferredStarLight":"", # String, 0xFFFFFF
 
-    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Port", "Quey", "Habitat", "Shipyard"], # String array
+    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Port", "Habitat", "Shipyard"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
 
     "customRebelFaction":"", # String
     "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Betrayers", # String
+    "rebelFleetSuffix":"Bandits", # String
 
     "smallAttackFleetName":"Scout", # String
     "mediumAttackFleetName":"Strike Force", # String
-    "largeAttackFleetName":"Warfleet", # String
+    "largeAttackFleetName":"War Fleet", # String
 
-    "smallDefenceFleetName":"Defense Star", # String
-    "mediumDefenceFleetName":"Guardian Fleet", # String
-    "largeDefenceFleetName":"Defense Enforcement Fleet", # String
+    "smallDefenceFleetName":"Defence Star", # String
+    "mediumDefenceFleetName":"Defence Fleet", # String
+    "largeDefenceFleetName":"Guardian Fleet", # String
 
     "smallPatrolFleetName":"Recon Patrol", # String
     "mediumPatrolFleetName":"Warden Patrol", # String
-    "largePatrolFleetName":"Garrison Fleet", # String
+    "largePatrolFleetName":"Patrol Fleet", # String
 
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
@@ -39,6 +39,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
-
-    "startingVariants":["qua_minal_standard", "qua_taom_standard"], # String array
+	
+	"startingVariants":["qua_imran_dogfight", "qua_taom_assault", "qua_minal_patrol"], # String array
 }

@@ -90,8 +90,9 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 	private ResponseImpl NEXT = new ResponseImpl("Next...");
 	private ResponseImpl PREV = new ResponseImpl("Prev...");
 
-	private ResponseImpl FREE_GOODS = new ResponseImpl("Be given free goods");
-	private ResponseImpl PAY_FOR_GOODS = new ResponseImpl("Pay for goods");
+	private ResponseImpl POPULATED_EMTPY = new ResponseImpl("Empty");
+	private ResponseImpl POPULATED_PARTIALLY = new ResponseImpl("Partially");
+    private ResponseImpl POPULATED_FULLY = new ResponseImpl("Fully");
 
 
 	private int stage = 0;
@@ -102,13 +103,13 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		"Max asteroid belts per system?",
 		"Max stations per system?",
 		"Is the OmniFactory available?",
-		"When you arrive at Sector Exerelin, how many other factions are there with you initially?",
+		"How many other factions are in Sector Exerelin initially?",
 		"Shall factions return to Sector Exerelin?",
 		"How much time passes between factions returning to Sector Exerelin?",
 		"What kind of ship do you start with?",
 		"For the conquest of Sector Exerelin you have joined...",
 		"... or you joined ..",
-		//"At your faction aligned stations you expect to...",
+		"How populated is Sector Exerelin?",
 	};
 
 	private boolean factionStartShip = true;
@@ -213,22 +214,23 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		}
 		else if (stage == 10)
 		{
-			String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
-			if(possibleFactions.length > 6)
-			{
-				for(int i = 0; i < possibleFactions.length/2; i = i + 1)
-				{
-					result.add(new ResponseImpl(possibleFactions[i]));
-				}
-				result.add(NEXT);
-			}
-			else
-			{
-				for(int i = 0; i < possibleFactions.length; i = i + 1)
-				{
-					result.add(new ResponseImpl(possibleFactions[i]));
-				}
-			}
+            String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
+            if(possibleFactions.length > 6)
+            {
+                for(int i = 0; i < possibleFactions.length/2; i = i + 1)
+                {
+                    result.add(new ResponseImpl(possibleFactions[i]));
+                }
+                result.add(NEXT);
+            }
+            else
+            {
+                for(int i = 0; i < possibleFactions.length; i = i + 1)
+                {
+                    result.add(new ResponseImpl(possibleFactions[i]));
+                }
+            }
+
 		}
 		else if (stage == 11)
 		{
@@ -241,10 +243,9 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		}
 		else if (stage == 12)
 		{
-			stage++; // SKIP THIS STAGE
-			//result.add(FREE_GOODS);
-			//result.add(PAY_FOR_GOODS);
-
+			result.add(POPULATED_EMTPY);
+			result.add(POPULATED_PARTIALLY);
+            result.add(POPULATED_FULLY);
 		}
 
         return result;
@@ -369,6 +370,8 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
+            else if(!ExerelinConfig.playerIsFaction)
+                stage = stage + 3;
 		}
 		else if (response == RESPAWN_ZERO)
 		{
@@ -376,6 +379,8 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
+            else if(!ExerelinConfig.playerIsFaction)
+                stage = stage + 3;
 		}
 		else if (response == RESPAWN_TWO)
 		{
@@ -383,6 +388,8 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
+            else if(!ExerelinConfig.playerIsFaction)
+                stage = stage + 3;
 		}
 		else if (response == RESPAWN_FOUR)
 		{
@@ -390,6 +397,8 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
+            else if(!ExerelinConfig.playerIsFaction)
+                stage = stage + 3;
 		}
 		else if (response == RESPAWN_EIGHT)
 		{
@@ -397,6 +406,8 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
+            else if(!ExerelinConfig.playerIsFaction)
+                stage = stage + 3;
 		}
 		else if (response == RESPAWN_SIXTEEN)
 		{
@@ -404,33 +415,44 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 			
 			if(!isToreUpPlentyInstalled())
 				stage++;
+            else if(!ExerelinConfig.playerIsFaction)
+                stage = stage + 3;
 		}
 		else if (response == START_SHIP_FACTION)
 		{
 			factionStartShip = true;
+            if(!ExerelinConfig.playerIsFaction)
+                stage = stage + 2;
 		}
 		else if (response == START_SHIP_TOREUPPLENTY1)
 		{
 			factionStartShip = false;
 			toreUpPlentyFrigate = true;
+            if(!ExerelinConfig.playerIsFaction)
+                stage = stage + 2;
 		}
 		else if (response == START_SHIP_TOREUPPLENTY2)
 		{
 			factionStartShip = false;
 			toreUpPlentyOther = true;
+            if(!ExerelinConfig.playerIsFaction)
+                stage = stage + 2;
 		}
-		else if (response == FREE_GOODS)
+		else if (response == POPULATED_EMTPY)
 		{
-			data.getStartingCargo().getCredits().set(0f);
-			ExerelinSetupData.getInstance().playerOwnedStationFreeTransfer = true;
-			ExerelinSetupData.getInstance().confirmedFreeTransfer = true;
+            ExerelinSetupData.getInstance().isSectorPopulated = false;
+            ExerelinSetupData.getInstance().isSectorPartiallyPopulated = false;
 		}
-		else if (response == PAY_FOR_GOODS)
+		else if (response == POPULATED_PARTIALLY)
 		{
-			data.getStartingCargo().getCredits().add(4000f);
-			ExerelinSetupData.getInstance().playerOwnedStationFreeTransfer = false;
-			ExerelinSetupData.getInstance().confirmedFreeTransfer = true;
+            ExerelinSetupData.getInstance().isSectorPopulated = true;
+            ExerelinSetupData.getInstance().isSectorPartiallyPopulated = true;
 		}
+        else if (response == POPULATED_FULLY)
+        {
+            ExerelinSetupData.getInstance().isSectorPopulated = true;
+            ExerelinSetupData.getInstance().isSectorPartiallyPopulated = false;
+        }
 		else if (response == PREV)
 		{
 			stage = stage - 2;
@@ -455,6 +477,10 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 					break;
 				}
 			}
+
+            if(!ExerelinConfig.playerIsFaction)
+                ExerelinSetupData.getInstance().setPlayerFaction("player");
+
 			if(stage == 11)
 				stage = stage + 1; // Skip next faction selection
 		}
@@ -464,11 +490,15 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 	{
 		if(factionStartShip)
 		{
-            String[] startingVariants = ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants;
+            if(ExerelinConfig.playerIsFaction)
+            {
+                String[] startingVariants = ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants;
 
-            for(int i = 0; i < ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants.length; i++)
-                data.addStartingShipChoice(ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants[i]);
-
+                for(int i = 0; i < ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants.length; i++)
+                    data.addStartingShipChoice(ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants[i]);
+            }
+            else
+                data.addStartingShipChoice("wolf_PD");
             // NO LONGER IN USE
             //
             // SEE confing/exerelinFactionConfig/faction.json:startingVariants
@@ -579,7 +609,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 	public void startingShipPicked(String variantId, CharacterCreationData data)
 	{
 		data.getStartingCargo().addFuel(10);
-		data.getStartingCargo().addSupplies(20);
+		data.getStartingCargo().addSupplies(40);
 		data.getStartingCargo().addCrew(CrewXPLevel.REGULAR, 25);
 		data.getStartingCargo().addMarines(3);
         ExerelinSetupData.getInstance().setPlayerStartingShipVariant(variantId);

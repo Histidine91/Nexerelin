@@ -26,6 +26,8 @@ public class SectorManager
 	private int respawnWaitDays;
 	private int maxFactions;
     private int maxSystemSize;
+    private boolean sectorPrePopulated = false;
+    private boolean sectorPartiallyPopulated = false;
 
 	private String playerFactionId;
     private String playerStartShipVariant;
@@ -191,6 +193,10 @@ public class SectorManager
 
 	public void checkPlayerHasStationOrStationAttackFleet()
 	{
+        // Check if player is playing as their own faction
+        if(!SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+           return;
+
         // Check if player fleet is a boarding fleet
         if(ExerelinUtils.isValidBoardingFleet(Global.getSector().getPlayerFleet(),true))
             return;
@@ -324,7 +330,7 @@ public class SectorManager
 	public void payPlayerWages()
 	{
 		// Pay wages if needed
-		if(ExerelinConfig.playerBaseWage > 0)
+		if(ExerelinConfig.playerBaseWage > 0 && !this.getPlayerFactionId().equalsIgnoreCase("player"))
 		{
 			if(this.getDiplomacyManager().getRecordForFaction(this.playerFactionId).isAtWar())
 				Global.getSector().getPlayerFleet().getCargo().getCredits().add(ExerelinConfig.playerBaseWage*2);
@@ -338,7 +344,7 @@ public class SectorManager
         SectorAPI sector = Global.getSector();
 
 		// Build OmniFactory and Storage if not been built and players faction has a station
-		if(!this.builtOmnifactoryAndStorage && !sector.getPlayerFleet().isInHyperspace())
+		if(!this.getPlayerFactionId().equalsIgnoreCase("player") && !this.builtOmnifactoryAndStorage && !sector.getPlayerFleet().isInHyperspace())
 		{
 			if(SectorManager.getCurrentSectorManager().isFactionInSector(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
 			{
@@ -371,10 +377,10 @@ public class SectorManager
 		}
 
 		// Set player fleet to appropriate faction
-		if(sector.getPlayerFleet().getFaction().getId().equalsIgnoreCase("player"))
+		if(!this.getPlayerFactionId().equalsIgnoreCase("player") && sector.getPlayerFleet().getFaction().getId().equalsIgnoreCase("player"))
 		{
             System.out.println("Re-assigning player");
-			sector.getPlayerFleet().setFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId());
+			sector.getPlayerFleet().setFaction(this.getPlayerFactionId());
 
 			if(playerMovedToSpawnLocation)
 			{
@@ -384,30 +390,54 @@ public class SectorManager
 
                 // Move them to one of their stations
                 SectorEntityToken station = null;
-                if(SectorManager.getCurrentSectorManager().getFactionDirector(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getHomeSystem() != null)
-                    station = ExerelinUtils.getRandomStationInSystemForFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId(), SectorManager.getCurrentSectorManager().getFactionDirector(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getHomeSystem());
+                if(this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem() != null)
+                    station = ExerelinUtils.getRandomStationInSystemForFaction(this.getPlayerFactionId(), this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem());
+
                 if(station != null)
-                    sector.getPlayerFleet().setLocation(station.getLocation().getX(),  station.getLocation().getY());
+                {
+                    //this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem().addEntity(sector.getPlayerFleet());
+                    //sector.setCurrentLocation(this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem());
+                    //sector.getPlayerFleet().setLocation(station.getLocation().getX(),  station.getLocation().getY());
+                    //sector.doHyperspaceTransition(sector.getPlayerFleet(), null, new JumpPointAPI.JumpDestination(station, ""));
+                }
+
+                System.out.println("Reset player fleet");
 			}
             else
             {
-                // Initial fleet so add boarding ships
-                CampaignFleetAPI dummyBoardingFleet = Global.getSector().createFleet(SectorManager.getCurrentSectorManager().getPlayerFactionId(), "exerelinInSystemStationAttackFleet");
-                List members = dummyBoardingFleet.getFleetData().getMembersListCopy();
-                for(int i = 0; i < members.size(); i++)
-                    Global.getSector().getPlayerFleet().getFleetData().addFleetMember((FleetMemberAPI)members.get(i));
+                if(this.isSectorPrePopulated())
+                {
+                    // Initial fleet in pre-populated sector so move to one of players factions stations
+                    SectorEntityToken station = null;
+                    if(this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem() != null)
+                        station = ExerelinUtils.getRandomStationInSystemForFaction(this.getPlayerFactionId(), this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem());
+
+                    if(station != null)
+                    {
+                        //this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem().addEntity(sector.getPlayerFleet());
+                        sector.getHyperspace().addEntity(sector.getPlayerFleet());
+                        //sector.setCurrentLocation(this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem());
+                        //sector.getPlayerFleet().setLocation(station.getLocation().getX(),  station.getLocation().getY());
+                        //sector.doHyperspaceTransition(sector.getPlayerFleet(), null, new JumpPointAPI.JumpDestination(station, ""));
+                    }
+
+                    playerMovedToSpawnLocation = true;
+                    System.out.println("Set player initial fleet");
+                }
+                else
+                {
+                    // Initial fleet in unpopulated sector so add boarding ships
+                    CampaignFleetAPI dummyBoardingFleet = Global.getSector().createFleet(SectorManager.getCurrentSectorManager().getPlayerFactionId(), "exerelinInSystemStationAttackFleet");
+                    List members = dummyBoardingFleet.getFleetData().getMembersListCopy();
+                    for(int i = 0; i < members.size(); i++)
+                        Global.getSector().getPlayerFleet().getFleetData().addFleetMember((FleetMemberAPI)members.get(i));
+
+                    playerMovedToSpawnLocation = true;
+                    System.out.println("Set player initial boarding fleet");
+                }
 
                 // Start of game, player fleet is last to be spawned so set last faction spawn time as this
                 this.lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
-
-                // Move to appropriate start location edge of map on respawn system
-                //sector.setCurrentLocation(sector.getRespawnLocation());
-                //SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(Global.getSector().getPlayerFleet().getContainingLocation());
-                //sector.getPlayerFleet().setLocation(token.getLocation().getX(), token.getLocation().getY());
-                playerMovedToSpawnLocation = true;
-                // Set initial faction home system
-                //FactionDirector.getFactionDirectorForFactionId(SectorManager.getCurrentSectorManager().getPlayerFactionId()).setHomeSystem((StarSystemAPI)Global.getSector().getPlayerFleet().getContainingLocation());
-                System.out.println("Moved player to starting location");
             }
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.0f, CargoAPI.CrewXPLevel.GREEN);
 		}
@@ -526,7 +556,6 @@ public class SectorManager
 		return this.systemManagers.length;
 	}
 
-
 	public Boolean isFactionInSector(String factionId)
 	{
 		for(int i = 0; i < this.systemManagers.length; i++)
@@ -612,10 +641,7 @@ public class SectorManager
 		return (String[])foundFactions.toArray( new String[foundFactions.size()] );
 	}
 
-    /*public SectorAPI getSectorAPI()
-    {
-        return sectorAPI;
-    }*/
+
 
     public void setPlayerStartShipVariant(String variantId)
     {
@@ -702,5 +728,28 @@ public class SectorManager
     public void setSaboteurPerkTriggered(boolean triggered)
     {
         this.saboteurPerkTriggered = triggered;
+    }
+
+    public boolean isSectorPrePopulated()
+    {
+        return sectorPrePopulated;
+    }
+
+    public void setSectorPrePopulated(boolean value)
+    {
+        sectorPrePopulated = value;
+    }
+
+    public boolean isSectorPartiallyPopulated()
+    {
+        if(!sectorPrePopulated)
+            return false;
+        else
+            return sectorPartiallyPopulated;
+    }
+
+    public void setSectorPartiallyPopulated(boolean value)
+    {
+        sectorPartiallyPopulated = value;
     }
 }

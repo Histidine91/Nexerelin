@@ -49,6 +49,7 @@ public class ExerelinConfig
     public static int miningAmountPerDayPerMiner = 50;
 
     // Player settings
+    public static boolean playerIsFaction = false;
     public static int playerBaseWage = 1000;
     public static boolean playerFactionFreeTransfer = false;
 
@@ -91,6 +92,7 @@ public class ExerelinConfig
             fleetCostResource = settings.getString("fleetCostResource");
             miningAmountPerDayPerMiner = settings.getInt("miningAmountPerDayPerMiner");
 
+            playerIsFaction = settings.getBoolean("playerIsFaction");
             playerBaseWage = settings.getInt("playerBaseWage");
             playerFactionFreeTransfer = settings.getBoolean("playerFactionFreeTransfer");
 

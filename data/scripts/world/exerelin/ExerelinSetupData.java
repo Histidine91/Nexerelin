@@ -43,6 +43,8 @@ public final class ExerelinSetupData
 	public int numStartFactions = 3;
 	public boolean omniFacPresent = true;
 	public int maxFactionsInExerelinAtOnce = 3;
+    public boolean isSectorPopulated = false;
+    public boolean isSectorPartiallyPopulated = false;
 
 	private ExerelinSetupData()
 	{

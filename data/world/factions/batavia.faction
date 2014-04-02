@@ -47,6 +47,9 @@
                 "pb_kareldoorman_Patrol":[0, 1],
                 "pb_kareldoorman_Support":[0, 1],
                 "pb_kareldoorman_Batavian":[0, 1],
+                "pb_zwaardvis_Batavian":[0, 1],
+                "pb_zwaardvis_Convoy":[0, 1],
+                "pb_zwaardvis_Patrol":[0, 1],
 
                 "pb_tromp_Escort":[0, 1],
                 "pb_tromp_Patrol":[0, 1],

@@ -58,6 +58,7 @@
                 "mace_Basic":[0, 1],
                 "stampede_Basic":[0, 1],
                 "lance_Basic":[0, 1],
+                "phoenix_Basic":[0, 1],
 
                 "barracuda_Basic":[0, 1],
                 "annihilator_Basic":[0, 1],
@@ -76,6 +77,8 @@
                 "ryker_Basic":[0, 1],
                 "thunderchild_blue_Basic":[0, 1],
                 "platypus_Basic":[0, 1],
+                "wolfpack_Basic":[0, 1],
+                "redstar_Basic":[0, 1],
 
                 "raider_wing":[0, 1],
                 "gull_wing":[0, 1],

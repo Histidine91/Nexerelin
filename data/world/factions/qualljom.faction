@@ -1,6 +1,6 @@
 {
 	id:"qualljom",
-	"color":[189,170,157,255],
+	"color":[174,155,142,255],
 	"displayName":"Qualljom Society",
 	"shipNamePrefix":"QSS",
 	"description":"The Qualljom Society is a bunch of scientists, technicians and adventurer dedicated to exploration and knowledge gathering.",
@@ -8,8 +8,8 @@
 		"modern":1,
 	},
 	"shipNameSources":{
-		"JAPANESE":1,
-		"EGYPTIAN":1,
+		"QUALLJOM":1,
+		
 	},
 	"portraits":{
 		"standard_male":[
@@ -54,12 +54,19 @@
 				"qua_taom_closecombat":[0, 6],
                 "qua_taom_standard":[0, 6],
                 "qua_taom_strike":[0, 6],
-				"qua_enshy_standard":[0, 3],
-				"qua_enshy_pd":[0, 3],
-                "qua_kimil_wing":[0, 10],
+				"qua_taom_torpedo":[0, 3],
+				"qua_imran_patrol":[0, 3],
+				"qua_imran_standard":[0, 3],
+				"qua_imran_dogfight":[0, 3],
+                "qua_enshy_standard":[0, 1],
+				"qua_enshy_pd":[0, 1],
+				"qua_enshy_support":[0, 2],
+				"qua_kimil_wing":[0, 10],
                 "qua_sayph_wing":[0, 10],
                 "qua_turan_wing":[0, 10],
-           },
+				"qua_lerdyn_wing":[0, 10],
+				"qua_osor_wing":[0, 5],
+				},
        },
        "exerelinInSystemSupplyConvoy":{
            "displayName":"In-System Supply Convoy",
@@ -94,7 +101,7 @@
            "ships":{
                "mining_drone_wing":[1, 2],
                "qua_askeli_standard":[1, 2],
-			   "qua_enshy_pd":[1, 1],
+			   "qua_enshy_support":[1, 1],
             },
        },
        "exerelinGasMiningFleet":{
@@ -107,7 +114,7 @@
            "ships":{
                "mining_drone_wing":[1, 2],
                "qua_swetia_standard":[1, 2],
-			   "qua_enshy_pd":[1, 1],
+			   "qua_enshy_support":[1, 1],
            },
        },
         "exerelinEliteFleet":{

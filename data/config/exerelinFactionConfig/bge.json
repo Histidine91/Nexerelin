@@ -1,5 +1,5 @@
 {
-    "uniqueModClassName":"data.scripts.world.BGESectorGen", # String
+    "uniqueModClassName":"data.scripts.world.Himmel.BGEGen", # String
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
@@ -15,7 +15,7 @@
 
     "customRebelFaction":"", # String
     "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Rogue AI", # String
+    "rebelFleetSuffix":"Instinctive swarm", # String
 
     "smallAttackFleetName":"Observer", # String
     "mediumAttackFleetName":"Offensive Group", # String
@@ -40,5 +40,5 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "startingVariants":["bge_vergifter_standard"], # String array
+    "startingVariants":["bge_vergifter_standard", "bge_flusskrebs_standard", "bge_krieger_standard"], # String array
 }

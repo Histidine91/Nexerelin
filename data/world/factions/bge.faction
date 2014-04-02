@@ -1,5 +1,5 @@
 {
-	id:"bge",
+	id:"BGE",
 	
 "color":[128,0,128,255],
 	
@@ -38,7 +38,7 @@
             
 "maxFleetPoints":180,
             
-"daysWorthOfSupplies":[30, 50],
+"daysWorthOfSupplies":[80, 100],
             
 "lyWorthOfFuel":[40, 60],
             
@@ -48,28 +48,29 @@
             
 "ships":{
                 
-"bge_waechter_standard":[0,1],
+"bge_waechter_standard":[0,2],
                 
-"bge_waechter_siege":[0,1],
-                
-"bge_arbiter_standard":[0,1],
+"bge_waechter_siege":[0,2],
+ 
+"bge_vergifter_standard":[0,4],             
+"bge_arbiter_standard":[0,2],
 
-		        
-"bge_arbiter_siege":[0,1],
+
+"bge_krieger_standard":[0, 2],		        
+"bge_arbiter_siege":[0,2],
 		        
 "bge_flusskrebs_standard":[0,2],
-
-"bge_vergifter_standard":[0,2],		        
-"bge_flusskrebs_siege":[0,1],
+		        
+"bge_flusskrebs_siege":[0,2],
 		        
 "bge_koenig_siege":[0,1],
                 
 "bge_koenig_standard":[0,1],
 
 		        
-"bge_zophe_standard":[0, 2],
+"bge_zophe_standard":[0, 3],
 		        
-"bge_zophe_siege":[0, 2],
+"bge_zophe_siege":[0, 3],
 		        		        
 "bge_hornisse_standard_wing":[0,4],
                               
@@ -103,7 +104,7 @@
             
 "maxFleetPoints":40,
             
-"daysWorthOfSupplies":[30, 50],
+"daysWorthOfSupplies":[80, 100],
             
 "lyWorthOfFuel":[40, 60],
             
@@ -125,7 +126,7 @@
             
 "maxFleetPoints":40,
             
-"daysWorthOfSupplies":[10, 15],
+"daysWorthOfSupplies":[30, 50],
             
 "lyWorthOfFuel":[40, 60],
             
@@ -171,7 +172,7 @@
            
 "maxFleetPoints":100,
            
-"daysWorthOfSupplies":[30, 50],
+"daysWorthOfSupplies":[80, 100],
            
 "lyWorthOfFuel":[0, 0],
            
@@ -208,11 +209,9 @@
 		},
 	},
 	
-"dialogue":{
-		"greetingFriendly":"Friendly fleet identified: State your request.",
-		
-"greetingNeutral":"No hostile interaction recorded: Maintain distance or removal of your fleet will commence.",
-		
-"greetingHostileAggressive":"Enemy fleet idenfitified: Removal underway.",
-		"greetingHostileTimid":"...",
+   "dialogue":{
+      "greetingFriendly":"Hyperspace bio-uplink initiated. How's the Krill biting today, Captain?",
+      "greetingNeutral":"Greetings! Interrested in some fresh Gourmet foodstuffs harvested on Himmel?",
+      "greetingHostileAggressive":"You know scrap metal is rare on Himmel. Surrender your vessel or prepare to become Krill food!",
+      "greetingHostileTimid":"To think your outdated ships could compete with Biomancy Genetic Engineering's superior technology is an insult in itself. This act will provoke retaliation!",
 },}

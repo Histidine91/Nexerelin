@@ -48,6 +48,7 @@
                 "neutrino_hacksaw_assault":[0, 1],
                 "neutrino_piledriver_standard":[0, 2],
 
+				"neutrino_criticality_standard":[0, 1],
                 "neutrino_singularity_balanced":[0, 2],
                 "neutrino_relativity_standard":[0, 2],
                 "neutrino_causality_standard":[0, 2],
