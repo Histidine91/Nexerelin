@@ -370,7 +370,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(!ExerelinConfig.playerIsFaction)
+            else if(ExerelinConfig.playerIsFaction)
                 stage = stage + 3;
 		}
 		else if (response == RESPAWN_ZERO)
@@ -379,7 +379,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(!ExerelinConfig.playerIsFaction)
+            else if(ExerelinConfig.playerIsFaction)
                 stage = stage + 3;
 		}
 		else if (response == RESPAWN_TWO)
@@ -388,7 +388,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(!ExerelinConfig.playerIsFaction)
+            else if(ExerelinConfig.playerIsFaction)
                 stage = stage + 3;
 		}
 		else if (response == RESPAWN_FOUR)
@@ -397,7 +397,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(!ExerelinConfig.playerIsFaction)
+            else if(ExerelinConfig.playerIsFaction)
                 stage = stage + 3;
 		}
 		else if (response == RESPAWN_EIGHT)
@@ -406,7 +406,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(!ExerelinConfig.playerIsFaction)
+            else if(ExerelinConfig.playerIsFaction)
                 stage = stage + 3;
 		}
 		else if (response == RESPAWN_SIXTEEN)
@@ -415,27 +415,27 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 			
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(!ExerelinConfig.playerIsFaction)
+            else if(ExerelinConfig.playerIsFaction)
                 stage = stage + 3;
 		}
 		else if (response == START_SHIP_FACTION)
 		{
 			factionStartShip = true;
-            if(!ExerelinConfig.playerIsFaction)
+            if(ExerelinConfig.playerIsFaction)
                 stage = stage + 2;
 		}
 		else if (response == START_SHIP_TOREUPPLENTY1)
 		{
 			factionStartShip = false;
 			toreUpPlentyFrigate = true;
-            if(!ExerelinConfig.playerIsFaction)
+            if(ExerelinConfig.playerIsFaction)
                 stage = stage + 2;
 		}
 		else if (response == START_SHIP_TOREUPPLENTY2)
 		{
 			factionStartShip = false;
 			toreUpPlentyOther = true;
-            if(!ExerelinConfig.playerIsFaction)
+            if(ExerelinConfig.playerIsFaction)
                 stage = stage + 2;
 		}
 		else if (response == POPULATED_EMTPY)
