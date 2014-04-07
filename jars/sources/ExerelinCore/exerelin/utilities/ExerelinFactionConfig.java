@@ -3,12 +3,14 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.util.*;
 
 public class ExerelinFactionConfig
 {
     public String factionId;
 
     public String uniqueModClassName = "";
+    public Boolean playableFaction = true;
 
     public String[] stationInteriorIllustrationKeys = new String[]{"hound_hangar"};
 
@@ -51,6 +53,12 @@ public class ExerelinFactionConfig
 
     public String[] startingVariants = new String[]{};
 
+    public List<String> fighterWings = new ArrayList<String>() {};
+    public List<String> frigateVariants = new ArrayList<String>() {};
+    public List<String> destroyerVariants = new ArrayList<String>() {};
+    public List<String> cruiserVariants = new ArrayList<String>() {};
+    public List<String> capitalVariants = new ArrayList<String>() {};
+
     public ExerelinFactionConfig(String factionId)
     {
         this.factionId = factionId;
@@ -64,6 +72,7 @@ public class ExerelinFactionConfig
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelinFactionConfig/" + factionId + ".json");
 
             uniqueModClassName = settings.getString("uniqueModClassName");
+            playableFaction = settings.getBoolean("playableFaction");
 
             stationInteriorIllustrationKeys = JSONArrayToStringArray(settings.getJSONArray("stationInteriorIllustrationKeys"));
 
@@ -105,6 +114,12 @@ public class ExerelinFactionConfig
             factionsDisliked = JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
 
             startingVariants = JSONArrayToStringArray(settings.getJSONArray("startingVariants"));
+
+            fighterWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("fighterWings")));
+            frigateVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("frigateVariants")));
+            destroyerVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("destroyerVariants")));
+            cruiserVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("cruiserVariants")));
+            capitalVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("capitalVariants")));
         }
         catch(Exception e)
         {

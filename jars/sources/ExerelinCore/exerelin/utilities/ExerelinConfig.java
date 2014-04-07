@@ -128,6 +128,7 @@ public class ExerelinConfig
                 return exerelinFactionConfig;
         }
 
+        System.out.println("EXERELIN ERROR: Faction config not found: " + factionId);
         return null;
     }
 

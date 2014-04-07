@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.valkyrianGen", # String
+    "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 

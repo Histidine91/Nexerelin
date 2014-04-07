@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.elder.world.ElderSectorGen", # String
+    "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 

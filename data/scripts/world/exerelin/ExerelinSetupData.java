@@ -153,7 +153,7 @@ public final class ExerelinSetupData
         for(int i = 0; i < ExerelinConfig.exerelinFactionConfigs.size(); i++)
         {
             ExerelinFactionConfig exerelinFactionConfig = (ExerelinFactionConfig)ExerelinConfig.exerelinFactionConfigs.get(i);
-            if(isFactionInstalled(exerelinFactionConfig.factionId, exerelinFactionConfig.uniqueModClassName))
+            if(exerelinFactionConfig.playableFaction && isFactionInstalled(exerelinFactionConfig.factionId, exerelinFactionConfig.uniqueModClassName))
                 possibleModdedFactionList.add(exerelinFactionConfig.factionId);
         }
 

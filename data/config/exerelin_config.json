@@ -22,7 +22,7 @@
     "fleetCostResource": "supplies", # String
     "miningAmountPerDayPerMiner": 50, # Integer
 
-    "playerIsFaction": true, # Boolean, EXPIREMENTAL
+    "playerIsFaction": "false", # Boolean, EXPIREMENTAL
     "playerBaseWage": 1000, # Integer
     "playerFactionFreeTransfer":false, # Boolean, DOESN'T WORK UNTIL FREETRANSFER IS FIXED
 
@@ -31,5 +31,5 @@
     "validMiningShips":["mining_drone", "zorg_sphere", "pn_mlmv"], # String array
 
     "builtInFactions":["hegemony", "tritachyon", "pirates", "sindrian_diktat"], # String array
-    "supportedModFactions":["batavia", "blackrock", "bushi", "citadeldefenders", "dstech", "gedune", "hiigaran_descendants", "insurgency", "interstellarFederation", "junkpirate", "mayorate", "neutrino", "nomads", "ORI", "pack", "patnavy", "pn", "regime", "shadowyards_hi", "syndicateasp", "valkyrian", "zorg_hive", "relics", "bge", "qualljom"], # String array
+    "supportedModFactions":["batavia", "blackrock", "bushi", "citadeldefenders", "dstech", "gedune", "hiigaran_descendants", "insurgency", "interstellarFederation", "junkpirate", "mayorate", "neutrino", "nomads", "ORI", "pack", "patnavy", "pn", "regime", "shadowyards_hi", "syndicateasp", "valkyrian", "zorg_hive", "relics", "bge", "qualljom", "scavengers"], # String array
 }

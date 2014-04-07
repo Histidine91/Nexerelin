@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.GeduneGen", # String
+    "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
 

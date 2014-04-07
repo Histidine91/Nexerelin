@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.BataviaModPlugin", # String
+    "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["batavia_interior"], # String array
 
