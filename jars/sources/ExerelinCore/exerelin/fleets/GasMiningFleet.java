@@ -9,6 +9,7 @@ import exerelin.ExerelinUtilsPlayer;
 import exerelin.SectorManager;
 import exerelin.SystemManager;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsFleet;
 
 import java.util.List;
 
@@ -30,8 +31,9 @@ public class GasMiningFleet extends ExerelinFleetBase
         this.targetPlanet = targetPlanet;
 
         // Create fleet
-        fleet = Global.getSector().createFleet(faction, "exerelinGasMiningFleet");
-        fleet.setName(ExerelinConfig.getExerelinFactionConfig(faction).gasMiningFleetName);
+        this.fleet = ExerelinUtilsFleet.createFleetForFaction(faction, ExerelinUtilsFleet.ExerelinFleetType.GAS_MINING, null);
+        ExerelinUtilsFleet.addFreightersToFleet(fleet);
+        ExerelinUtilsFleet.resetFleetCargoToDefaults(fleet, 0.3f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(faction));
         fleet.getCommander().setPersonality("cautious");
         fleet.setPreferredResupplyLocation(anchor);
 

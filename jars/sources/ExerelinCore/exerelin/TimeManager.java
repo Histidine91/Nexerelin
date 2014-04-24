@@ -126,7 +126,8 @@ public class TimeManager implements EveryFrameScript
                     FactionDirector.updateAllFactionDirectors();
 
                     // Check player has station or station attack fleet
-                    SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
+                    SectorManager.getCurrentSectorManager().checkPlayerHasLost();
+                    SectorManager.getCurrentSectorManager().checkPlayerHasWon();
                 }
             };
 
@@ -138,7 +139,8 @@ public class TimeManager implements EveryFrameScript
             FactionDirector.updateAllFactionDirectors();
 
             // Check player has station or station attack fleet
-            SectorManager.getCurrentSectorManager().checkPlayerHasStationOrStationAttackFleet();
+            SectorManager.getCurrentSectorManager().checkPlayerHasLost();
+            SectorManager.getCurrentSectorManager().checkPlayerHasWon();
         }
 
         // Pay wages
@@ -147,8 +149,7 @@ public class TimeManager implements EveryFrameScript
 
 	private void runMonthly()
 	{
-		// Respawn missing factions
-		SectorManager.getCurrentSectorManager().respawnRandomFaction();
+
 	}
 
 	private void runYearly()

@@ -41,5 +41,29 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["tarsus_Standard"], # String array
+    "tankerVariants":["phaeton_Standard"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["ilk_jamaran_support", "ilk_esfahan_assault"], # String array
+
+    "fighterWings":["ilk_reaver_wing",
+                    "piranha_wing",
+                    "ilk_inanna_wing"], # String array
+
+    "frigateVariants":["ilk_lilith_assault"], # String array
+
+    "destroyerVariants":["ilk_esfahan_assault",
+                         "ilk_cimeterre_strike"], # String array
+
+    "cruiserVariants":["ilk_del_azarchel_artillery",
+                       "ilk_del_azarchel_CS",
+                       "ilk_jamaran_support"], # String array
+
+    "capitalVariants":["ilk_ravana_pursuit"], # String array
+
     "startingVariants":["ilk_lilith_assault"], # String array
 }

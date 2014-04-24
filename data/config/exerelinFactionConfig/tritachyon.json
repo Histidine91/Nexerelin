@@ -41,5 +41,20 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["buffalo_Standard"], # String array
+    "tankerVariants":["phaeton_Standard"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["astral_Elite"], # String array
+
+    "fighterWings":["dagger_wing", "wasp_wing", "xyphos_wing"], # String array
+    "frigateVariants":["tempest_Attack", "hyperion_Attack", "wolf_PD", "wolf_CS", "wolf_Assault", "afflictor_Strike", "shade_Assault", "omen_PD"], # String array
+    "destroyerVariants":["medusa_CS", "medusa_Attack"], # String array
+    "cruiserVariants":["apogee_Balanced", "aurora_Balanced", "doom_Strike"], # String array
+    "capitalVariants":["astral_Elite", "odyssey_Balanced", "paragon_Elite"], # String array
+
     "startingVariants":["wolf_CS", "afflictor_Strike", "omen_PD"], # String array
 }

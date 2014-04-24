@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.*;
 
 import exerelin.ExerelinUtils;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 
@@ -18,27 +19,23 @@ public class LogisticsConvoyFleet extends ExerelinFleetBase
 
 	public LogisticsConvoyFleet(String faction, SectorEntityToken anchor, SectorEntityToken target)
 	{
-        String type = "exerelinInSystemSupplyConvoy";
         this.anchor = anchor;
         this.target = target;
 
         setConvoyType();
 
         // Create fleet
-        CampaignFleetAPI fleet = Global.getSector().createFleet(faction, type);
+        this.fleet = ExerelinUtilsFleet.createFleetForFaction(faction, ExerelinUtilsFleet.ExerelinFleetType.LOGISTICS, null);
 
         if (ExerelinUtilsFaction.getFactionsAtWarWithFaction(faction, false).size() > 0)
-            ExerelinUtils.addRandomEscortShipsToFleet(fleet, 3, 4, faction, Global.getSector());
+            ExerelinUtilsFleet.addEscortsToFleet(this.fleet, 4);
         else
-            ExerelinUtils.addRandomEscortShipsToFleet (fleet, 1, 2, faction, Global.getSector());
-
-        ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.3f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(faction));
+            ExerelinUtilsFleet.addEscortsToFleet(this.fleet, 1);
+        ExerelinUtilsFleet.resetFleetCargoToDefaults(fleet, 0.3f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(faction));
         ExerelinUtilsFleet.sortByHullSize(fleet);
 
-        this.fleet = fleet;
-        fleet.setPreferredResupplyLocation(anchor);
-        fleet.getCommander().setPersonality("cautious");
-        fleet.setName(ExerelinConfig.getExerelinFactionConfig(faction).logisticsFleetName);
+        this.fleet.setPreferredResupplyLocation(anchor);
+        this.fleet.getCommander().setPersonality("cautious");
 
         // Remove cargo from station
         if(convoyType.equalsIgnoreCase("fuel"))
@@ -52,7 +49,7 @@ public class LogisticsConvoyFleet extends ExerelinFleetBase
 
         setFleetAssignments();
 
-        ((StarSystemAPI)anchor.getContainingLocation()).spawnFleet(anchor, 0, 0, fleet);
+        ((StarSystemAPI)anchor.getContainingLocation()).spawnFleet(anchor, 0, 0, this.fleet);
 	}
 
 	public void setTarget(SectorEntityToken target)
@@ -100,8 +97,8 @@ public class LogisticsConvoyFleet extends ExerelinFleetBase
 					else if(convoyType.equalsIgnoreCase("marines"))
 						cargo.addMarines(100);
 
-                    ExerelinUtils.addWeaponsToCargo(cargo, 2, fleet.getFaction().getId(), Global.getSector());
-                    ExerelinUtils.addRandomFactionShipsToCargo(cargo, 1, fleet.getFaction().getId(), Global.getSector(), false);
+                    ExerelinUtilsCargo.addFactionVariantsToCargo(cargo, fleet.getFaction().getId(), 1, false);
+                    ExerelinUtilsCargo.addFactionWeaponsToCargo(cargo, fleet.getFaction().getId(), 2, 2);
 
 				}
 				else

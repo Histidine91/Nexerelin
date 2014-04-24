@@ -58,11 +58,8 @@ public class Exerelin //implements SectorGeneratorPlugin
         ExerelinConfig.loadSettings();
 		this.initFactionRelationships(sector);
 
-		// Build off map initial station attack exerelin.fleets in random systems
-        if(sectorManager.isSectorPrePopulated())
-            this.populateSector(Global.getSector(), sectorManager);
-        else
-		    this.initStationAttackFleets(sector);
+		// Populate sector
+        this.populateSector(Global.getSector(), sectorManager);
 
 		// Add trader spawns
 		this.initTraderSpawns(sector);
@@ -73,29 +70,6 @@ public class Exerelin //implements SectorGeneratorPlugin
         System.out.println("Finished sector setup...");
 	}
 
-	private void initStationAttackFleets(SectorAPI sector)
-	{
-		String[] factions = SectorManager.getCurrentSectorManager().getFactionsPossibleInSector();
-		ExerelinUtils.shuffleStringArray(factions); // Randomise order
-
-		int numFactionsInitialStart = Math.min(factions.length - 1, ExerelinSetupData.getInstance().numStartFactions);
-		for(int i = 0; i < numFactionsInitialStart; i = i + 1)
-		{
-			String factionId = factions[i];
-			if(!SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player") && factionId.equalsIgnoreCase(ExerelinSetupData.getInstance().getPlayerFaction()))
-			{
-				numFactionsInitialStart = numFactionsInitialStart + 1;
-				continue;
-			}
-
-			int systemChosen = ExerelinUtils.getRandomInRange(0, SectorManager.getCurrentSectorManager().getSystemManagers().length - 1);
-			StarSystemAPI systemAPI = SectorManager.getCurrentSectorManager().getSystemManagers()[systemChosen].getStarSystemAPI();
-			OutSystemStationAttackFleet offMapSpawn = new OutSystemStationAttackFleet(sector, systemAPI, factionId, false);
-            FactionDirector.getFactionDirectorForFactionId(factionId).setHomeSystem(systemAPI);
-			offMapSpawn.spawnFleet(null, null);
-		}
-	}
-
 	private void initFactionRelationships(SectorAPI sector)
 	{
 		String[] factions = ExerelinSetupData.getInstance().getAvailableFactions(sector);
@@ -104,6 +78,7 @@ public class Exerelin //implements SectorGeneratorPlugin
 			sector.getFaction(factions[i]).setRelationship("abandoned", -1);
             sector.getFaction(factions[i]).setRelationship("rebel", -1);
             sector.getFaction(factions[i]).setRelationship("independent", 0);
+            sector.getFaction(factions[i]).setRelationship("pirates", -1);
 
             String customRebelFactionId = ExerelinConfig.getExerelinFactionConfig(factions[i]).customRebelFaction;
             if(!customRebelFactionId.equalsIgnoreCase(""))
@@ -203,6 +178,10 @@ public class Exerelin //implements SectorGeneratorPlugin
         int populated = 1;
         String[] factionsInSector = sectorManager.getFactionsInSector();
 
+        // If empty sector, only leave one station
+        if(!ExerelinSetupData.getInstance().isSectorPopulated)
+            finishedPopulating = true;
+
         while(!finishedPopulating)
         {
             for(int i = 0; i < factionsInSector.length; i++)
@@ -233,8 +212,8 @@ public class Exerelin //implements SectorGeneratorPlugin
 
             populated++;
 
-            if((sectorManager.isSectorPartiallyPopulated() && populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(1)).getOrbitalStations().size()/2)
-                    || populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(1)).getOrbitalStations().size())
+            if((sectorManager.isSectorPartiallyPopulated() && populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size()/2)
+                    || populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size())
                 finishedPopulating = true;
         }
     }

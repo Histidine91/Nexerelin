@@ -41,5 +41,41 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["pn_tick"], # String array
+    "tankerVariants":["pn_tick"], # String array
+    "miningVariantsOrWings":["pn_mlmv_wing"], # String array
+
+    "troopTransportVariants":["pn_valkyrie"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["pn_tick"], # String array
+
+    "fighterWings":["pn_saksh-t_turret_wing",
+                    "pn_stress_wing",
+                    "pn_mlmv_wing"], # String array
+
+    "frigateVariants":["cs_pn_mite",
+                       "as_pn_mite",
+                       "as_pn_rs",
+                       "cs_pn_rs",
+                       "as_pn_sike",
+                       "cs_pn_sike",
+                       "as_pn_sike-m",
+                       "cs_pn_spore",
+                       "pn_spore",
+                       "pn_spore-mk2",
+                       "pn_mite-s"], # String array
+
+    "destroyerVariants":[   "pn_korlo-skt_elite",
+                            "lr_pn_sl-t2",
+                            "as_pn_sl-t2",
+                            "as_pn_sl-t3"], # String array
+
+    "cruiserVariants":["as_pn_korlo-skt",
+                       "lr_pn_korlo-skt",
+                       "cs_pn_kaala"], # String array
+
+    "capitalVariants":["pn_samaa-dsi"], # String array
+
     "startingVariants":["cs_pn_sike", "as_pn_rs", "cs_pn_mite"], # String array
 }

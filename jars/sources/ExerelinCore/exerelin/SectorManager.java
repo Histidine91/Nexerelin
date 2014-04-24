@@ -6,6 +6,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import exerelin.commandQueue.CommandQueue;
 import exerelin.fleets.ExerelinFleetBase;
+import exerelin.plugins.WelcomeDialogPlugin;
 import exerelin.utilities.ExerelinConfig;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -191,7 +192,23 @@ public class SectorManager
 		}
 	}
 
-	public void checkPlayerHasStationOrStationAttackFleet()
+    public void checkPlayerHasWon()
+    {
+        // Check if player is playing as their own faction
+        if(!SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+            return;
+
+        String[] factionsInSector = SectorManager.getCurrentSectorManager().getFactionsInSector();
+
+        if(factionsInSector.length == 1 && factionsInSector[0].equalsIgnoreCase(this.playerFactionId))
+        {
+            // Player has won
+            Global.getSector().getCampaignUI().addMessage("Your faction has been conquered sector Exerelin!");
+            Global.getSector().getCampaignUI().addMessage("You have won!");
+        }
+    }
+
+	public void checkPlayerHasLost()
 	{
         // Check if player is playing as their own faction
         if(!SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
@@ -220,111 +237,15 @@ public class SectorManager
 			for(int i = 0; i < fleets.size(); i = i + 1)
 			{
 				CampaignFleetAPI fleet = (CampaignFleetAPI)fleets.get(i);
-				if(ExerelinUtils.isValidBoardingFleet(fleet, true))
+				if(fleet.getFaction().getId() == this.playerFactionId && ExerelinUtils.isValidBoardingFleet(fleet, true))
 					return;
 			}
-
-			diplomacyManager.declarePeaceWithAllFactions(SectorManager.getCurrentSectorManager().getPlayerFactionId());
-			diplomacyManager.createWarIfNoneExists(SectorManager.getCurrentSectorManager().getPlayerFactionId());
-			SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(system);
-			SectorEntityToken target = ExerelinUtils.getClosestEnemyStation(SectorManager.getCurrentSectorManager().getPlayerFactionId(), this.systemManagers[k].getStarSystemAPI(), token);
-
-			if(target == null)
-				return;
-
-			int numStationAttackFleets = 1;
-			CargoAPI cargo = target.getCargo();
-			if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) > 1000 || cargo.getMarines() > 1000 || cargo.getSupplies() > 1000 || cargo.getFuel() > 1000)
-				numStationAttackFleets = numStationAttackFleets + 1;
-			if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) > 2000 || cargo.getMarines() > 2000 || cargo.getSupplies() > 2000 || cargo.getFuel() > 2000)
-				numStationAttackFleets = numStationAttackFleets + 1;
-
-			for(int h = 0; h < numStationAttackFleets; h = h + 1)
-			{
-				OutSystemStationAttackFleet omsaf = new OutSystemStationAttackFleet(Global.getSector(), system, SectorManager.getCurrentSectorManager().getPlayerFactionId(), true);
-				omsaf.spawnFleet(target, token);
-                FactionDirector.getFactionDirectorForFactionId(SectorManager.getCurrentSectorManager().getPlayerFactionId()).setHomeSystem(system);
-			}
-			return;
 		}
-	}
 
-	public void respawnRandomFaction()
-	{
-		if(!this.respawnFactions)
-			return; // No factions will respawn
-
-		if(Global.getSector().getClock().getElapsedDaysSince(lastFactionSpawnTime) < this.respawnWaitDays)
-			return; // Hasn't been long enough since the last respawn
-
-        if(this.getFactionsInSector().length >= this.getMaxFactions())
-            return; // Enough faction in sector already
-
-
-        // Chance to create out system attack fleet for a missing faction
-        int attempts = 0;
-        String factionId = null;
-        while((factionId == null || factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId())) && attempts < 40)
-        {
-            attempts = attempts + 1;
-            factionId = this.getFactionsPossibleInSector()[ExerelinUtils.getRandomInRange(0, this.getFactionsPossibleInSector().length - 1)];
-
-            if(this.isFactionInSector(factionId))
-                factionId = null;
-        }
-
-        if(factionId == null || factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
-            return;
-
-        System.out.println("--- RESPAWNING FACTION ---");
-        System.out.println("Faction: " + factionId);
-
-        // Ensure faction only has target of leading faction
-        diplomacyManager.declarePeaceWithAllFactions(factionId);
-        diplomacyManager.createWarIfNoneExists(factionId);
-
-        StarSystemAPI system = null;
-        attempts = 0;
-        while (system == null && attempts < 40)
-        {
-            attempts++;
-            system = (StarSystemAPI)Global.getSector().getStarSystems().get(ExerelinUtils.getRandomInRange(0, Global.getSector().getStarSystems().size() - 1));
-            System.out.println("Checking: " + system.getName());
-            if(!ExerelinUtils.isFactionPresentInSystem(SectorManager.getCurrentSectorManager().getLeadingFaction(), system))
-                system = null;
-        }
-
-        if(system == null)
-            return;
-
-        System.out.println("System: " + system.getName());
-
-        SectorEntityToken token = ExerelinUtils.getRandomOffMapPoint(system);
-        SectorEntityToken stationTarget = ExerelinUtils.getClosestEnemyStation(factionId, system, token);
-
-        if(stationTarget == null)
-            return;
-
-        System.out.println("Station: " + stationTarget.getName());
-
-        int numStationAttackFleets = 1;
-        CargoAPI cargo = stationTarget.getCargo();
-        if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) > 800 || cargo.getMarines() > 400 || cargo.getSupplies() > 3200 || cargo.getFuel() > 800)
-            numStationAttackFleets = numStationAttackFleets + 1;
-        if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) > 1600 || cargo.getMarines() > 800 || cargo.getSupplies() > 6400 || cargo.getFuel() > 1600)
-            numStationAttackFleets = numStationAttackFleets + 2;
-
-        for(int h = 0; h < numStationAttackFleets; h = h + 1)
-        {
-            OutSystemStationAttackFleet omsaf = new OutSystemStationAttackFleet(Global.getSector(), system, factionId, true);
-            omsaf.spawnFleet(stationTarget, token);
-            FactionDirector.getFactionDirectorForFactionId(factionId).setHomeSystem(system);
-        }
-
-        lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
-
-        System.out.println(" - - - - - - - - - - - - ");
-
+        // Player doesn't have a boarding fleet, their faction doesn't and they have no station
+        // So lose condition
+        Global.getSector().getCampaignUI().addMessage("Your faction has been scattered to the depths of space...");
+        Global.getSector().getCampaignUI().addMessage("You have lost...");
 	}
 
 	public void payPlayerWages()
@@ -405,39 +326,28 @@ public class SectorManager
 			}
             else
             {
-                if(this.isSectorPrePopulated())
+                // Initial fleet in sector so move to one of players factions stations
+                SectorEntityToken station = null;
+                if(this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem() != null)
+                    station = ExerelinUtils.getRandomStationInSystemForFaction(this.getPlayerFactionId(), this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem());
+
+                if(station != null)
                 {
-                    // Initial fleet in pre-populated sector so move to one of players factions stations
-                    SectorEntityToken station = null;
-                    if(this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem() != null)
-                        station = ExerelinUtils.getRandomStationInSystemForFaction(this.getPlayerFactionId(), this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem());
-
-                    if(station != null)
-                    {
-                        //this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem().addEntity(sector.getPlayerFleet());
-                        sector.getHyperspace().addEntity(sector.getPlayerFleet());
-                        //sector.setCurrentLocation(this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem());
-                        //sector.getPlayerFleet().setLocation(station.getLocation().getX(),  station.getLocation().getY());
-                        //sector.doHyperspaceTransition(sector.getPlayerFleet(), null, new JumpPointAPI.JumpDestination(station, ""));
-                    }
-
-                    playerMovedToSpawnLocation = true;
-                    System.out.println("Set player initial fleet");
+                    //this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem().addEntity(sector.getPlayerFleet());
+                    sector.getHyperspace().addEntity(sector.getPlayerFleet());
+                    //sector.setCurrentLocation(this.getFactionDirector(this.getPlayerFactionId()).getHomeSystem());
+                    //sector.getPlayerFleet().setLocation(station.getLocation().getX(),  station.getLocation().getY());
+                    //sector.doHyperspaceTransition(sector.getPlayerFleet(), null, new JumpPointAPI.JumpDestination(station, ""));
                 }
-                else
-                {
-                    // Initial fleet in unpopulated sector so add boarding ships
-                    CampaignFleetAPI dummyBoardingFleet = Global.getSector().createFleet(SectorManager.getCurrentSectorManager().getPlayerFactionId(), "exerelinInSystemStationAttackFleet");
-                    List members = dummyBoardingFleet.getFleetData().getMembersListCopy();
-                    for(int i = 0; i < members.size(); i++)
-                        Global.getSector().getPlayerFleet().getFleetData().addFleetMember((FleetMemberAPI)members.get(i));
 
-                    playerMovedToSpawnLocation = true;
-                    System.out.println("Set player initial boarding fleet");
-                }
+                playerMovedToSpawnLocation = true;
+                System.out.println("Set player initial fleet");
+
 
                 // Start of game, player fleet is last to be spawned so set last faction spawn time as this
                 this.lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
+
+                Global.getSector().getCampaignUI().showInteractionDialog(new WelcomeDialogPlugin(), null);
             }
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.0f, CargoAPI.CrewXPLevel.GREEN);
 		}

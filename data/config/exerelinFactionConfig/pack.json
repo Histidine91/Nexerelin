@@ -41,5 +41,36 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["pack_samoyed_Standard"], # String array
+    "tankerVariants":["dram_Light"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["condor_FS"], # String array
+
+    "fighterWings":["talon_wing"], # String array
+
+    "frigateVariants":["pack_wirefox_Assault",
+                       "pack_wirefox_Standard",
+                       "pack_bedlington_Standard",
+                       "pack_samoyed_decoupled_Standard"], # String array
+
+    "destroyerVariants":["pack_sharpei_Assault",
+                         "pack_sharpei_Standard",
+                         "pack_pitbull_Standard",
+                         "pack_komondor_Standard",
+                         "pack_komondor_Strike",
+                         "pack_komondor_Support",
+                         "pack_BRT_Guard",
+                         "pack_BRT_Strike",
+                         "pack_BRT_Support",], # String array
+
+    "cruiserVariants":["pack_ridgeback_Standard",
+                       "pack_ridgeback_x_Standard",], # String array
+
+    "capitalVariants":["pack_ridgeback_x_Standard"], # String array
+
     "startingVariants":["pack_wirefox_Standard", "pack_bedlington_Standard"], # String array
 }

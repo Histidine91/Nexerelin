@@ -41,5 +41,34 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "startingVariants":["bushi_kaiken_Standard", "bushi_yari_Standard"], # String array
+    "freighterVariants":["bushi_haramaki_Standard"], # String array
+    "tankerVariants":["bushi_kikko_Standard"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["bushi_sangu_Standard"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["bushi_chigiriki_Standard", "bushi_tanto_Standard", "bushi_kabuto_Standard"], # String array
+
+    "fighterWings":["bushi_higonokami_wing",
+                    "bushi_honyaki_wing",
+                    "bushi_suntetsu_wing"], # String array
+
+    "frigateVariants":["bushi_yari_Standard",
+                       "bushi_kaiken_Standard"], # String array
+
+    "destroyerVariants":[   "bushi_chigiriki_Standard",
+                            "bushi_tachi_Standard"], # String array
+
+    "cruiserVariants":[ "bushi_katana_Standard",
+                        "bushi_nagamaki_Standard",
+                        "bushi_tanto_Standard",
+                        "bushi_wakizashi_Standard"], # String array
+
+    "capitalVariants":[ "bushi_kabuto_Standard",
+                        "bushi_odachi_Standard",
+                        "bushi_raiu_Standard"], # String array
+
+    "startingVariants":["bushi_kaiken_Standard",
+                        "bushi_yari_Standard"], # String array
 }

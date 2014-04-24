@@ -41,5 +41,26 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["syndicate_asp_copperhead_Standard"], # String array
+    "tankerVariants":["syndicate_asp_copperhead_Standard"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["syndicate_asp_copperhead_Standard", "syndicate_asp_gigantophis_Standard"], # String array
+
+    "fighterWings":["syndicate_asp_bite_wing",
+                    "syndicate_asp_venom_wing",
+                    "syndicate_asp_constrictor_wing"], # String array
+
+    "frigateVariants":["syndicate_asp_diamondback_Standard"], # String array
+
+    "destroyerVariants":["syndicate_asp_copperhead_Standard"], # String array
+
+    "cruiserVariants":["syndicate_asp_gigantophis_Standard"], # String array
+
+    "capitalVariants":["syndicate_asp_gigantophis_Standard"], # String array
+
     "startingVariants":["syndicate_asp_diamondback_Standard"], # String array
 }

@@ -53,6 +53,15 @@ public class ExerelinFactionConfig
 
     public String[] startingVariants = new String[]{};
 
+    public List<String> freighterVariants = new ArrayList<String>() {};
+    public List<String> tankerVariants = new ArrayList<String>() {};
+    public List<String> miningVariantsOrWings = new ArrayList<String>() {};
+
+    public List<String> troopTransportVariants = new ArrayList<String>() {};
+    public List<String> boardingFlagshipVariants = new ArrayList<String>() {};
+
+    public List<String> carrierVariants = new ArrayList<String>() {};
+
     public List<String> fighterWings = new ArrayList<String>() {};
     public List<String> frigateVariants = new ArrayList<String>() {};
     public List<String> destroyerVariants = new ArrayList<String>() {};
@@ -114,6 +123,15 @@ public class ExerelinFactionConfig
             factionsDisliked = JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
 
             startingVariants = JSONArrayToStringArray(settings.getJSONArray("startingVariants"));
+
+            freighterVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("freighterVariants")));
+            tankerVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("tankerVariants")));
+            miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
+
+            troopTransportVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("troopTransportVariants")));
+            boardingFlagshipVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("boardingFlagshipVariants")));
+
+            carrierVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("carrierVariants")));
 
             fighterWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("fighterWings")));
             frigateVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("frigateVariants")));

@@ -6,7 +6,9 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import exerelin.commandQueue.*;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsMessaging;
+import exerelin.utilities.ExerelinUtilsStation;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -90,169 +92,6 @@ public class ExerelinUtils
 			y = ExerelinUtils.getRandomInRange(negativeMaxSize, maxSize);
 
 		return location.createToken(x, y);
-	}
-
-	public static Boolean canStationSpawnFleet(SectorEntityToken station, CampaignFleetAPI fleet, float numberToSpawn, float marinesPercent, boolean noCivilianShips, CargoAPI.CrewXPLevel crewXPLevel)
-	{
-		if (noCivilianShips) {
-			List members = fleet.getFleetData().getMembersListCopy();
-
-			for(int i = 0; i < members.size(); i++)	{
-				FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-
-				if(fmAPI.isCivilian()) {
-					fleet.getFleetData().removeFleetMember(fmAPI);
-				}
-			}
-		}
-
-		CargoAPI stationCargo = station.getCargo();
-		if(getBestFleetForStation(stationCargo, fleet, numberToSpawn))
-		{
-			// Recalc again
-			float fleetCost = getFleetCost(fleet);
-
-			float reqCrew     = fleetCost;
-			float reqSupplies = fleetCost * 4;
-			float reqFuel     = fleetCost;
-			int reqMarines    = (int)(fleetCost / 2);
-
-			// Check again just in case other changes
-			if((stationCargo.getFuel() / numberToSpawn) < reqFuel || (stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) / numberToSpawn) < reqCrew || (stationCargo.getSupplies() / numberToSpawn) < reqSupplies || (stationCargo.getMarines() / numberToSpawn) < reqMarines)
-				return false;
-			else
-			{
-                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(stationCargo, "regular_crew", CargoAPI.CargoItemType.RESOURCES, (int)reqCrew));
-                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(stationCargo, "fuel", CargoAPI.CargoItemType.RESOURCES, (int)reqFuel));
-                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(stationCargo, "supplies", CargoAPI.CargoItemType.RESOURCES, (int)reqSupplies));
-                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(stationCargo, "marines", CargoAPI.CargoItemType.RESOURCES, (int)reqMarines));
-                /*decreaseCargo(stationCargo, "crewRegular", (int) reqCrew);
-				decreaseCargo(stationCargo, "fuel", (int)reqFuel);
-				decreaseCargo(stationCargo, "supplies", (int)reqSupplies);
-				decreaseCargo(stationCargo, "marines", reqMarines);*/
-
-				// Reset fleet cargo and put correct cargo in for fleet size otherwise accidents will occur
-				CargoAPI fleetCargo = fleet.getCargo();
-				fleetCargo.clear();
-                ExerelinUtils.resetFleetCargoToDefaults(fleet, 1.0f - marinesPercent, marinesPercent, crewXPLevel);
-
-				return true;
-			}
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	// Recursive method
-	// Will remove fleet members until either 0 is left or fleet can be spawned from station
-	private static Boolean getBestFleetForStation(CargoAPI stationCargo, CampaignFleetAPI fleet, float numberToSpawn)
-	{
-		List members = fleet.getFleetData().getMembersListCopy();
-
-		if(members.size() == 0)
-			return false;
-
-		float fleetCost = getFleetCost(fleet);
-
-		float reqCrew     = fleetCost;
-		float reqSupplies = fleetCost * 4;
-		float reqFuel     = fleetCost;
-		int reqMarines    = (int)(fleetCost / 2);
-
-		if((stationCargo.getFuel() / numberToSpawn) < reqFuel || (stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) / numberToSpawn) < reqCrew || (stationCargo.getSupplies() / numberToSpawn) < reqSupplies || (stationCargo.getMarines() / numberToSpawn) < reqMarines)
-		{
-			if(members.size() == 1)
-				return false;
-
-			// Can't spawn, so remove random members and try again
-			// Remove capital ships first
-			if(isCapitalInFleet(fleet))
-			{
-				int toRemove = -1;
-				for(int i = 0; i < members.size(); i++)
-				{
-					if(((FleetMemberAPI)members.get(i)).isCapital())
-					{
-						toRemove = i;
-						break;
-					}
-				}
-
-				if(toRemove != -1)
-				{
-					fleet.getFleetData().removeFleetMember((FleetMemberAPI)members.get(toRemove));
-				}
-			}
-			else
-			{
-				int removeMembers = getRandomInRange(1, members.size());
-				for(int j = 0; j < removeMembers; j = j + 1)
-					fleet.getFleetData().removeFleetMember((FleetMemberAPI)members.get(getRandomInRange(0, members.size() - 1)));
-			}
-
-			return getBestFleetForStation(stationCargo, fleet, numberToSpawn);
-		}
-		else
-		{
-			// Can spawn so make sure fleet size isn't small if it has capitals
-			if(fleet.getFleetData().getFleetPointsUsed() < 40 && isCapitalInFleet(fleet))
-			{
-				for(int l = 0; l < members.size(); l++)
-				{
-					if(((FleetMemberAPI)members.get(l)).isCapital())
-					{
-						members.remove(l);
-						break;
-					}
-				}
-
-				if(members.size() == 0)
-					return false;
-			}
-			return true;
-		}
-	}
-
-	private static int getFleetCost(CampaignFleetAPI fleet)
-	{
-		float fleetCostMult = (float) ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).baseFleetCostMultiplier;
-
-        if(fleet.getFaction().getId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
-        {
-            float playerFleetCostMult = ExerelinUtilsPlayer.getPlayerFleetCostMultiplier();
-            fleetCostMult = playerFleetCostMult * fleetCostMult;
-        }
-
-		float fleetCost = 0f;
-		float mult;
-		List members = fleet.getFleetData().getMembersListCopy();
-
-		for (int i = 0; i < members.size(); i++)
-		{
-			FleetMemberAPI ship = (FleetMemberAPI)members.get(i);
-
-            if (ship.isCivilian()) { // superfreighters are not battleships and shouldn't cost that much
-            	mult = 2f;
-            } else if (ship.isFighterWing()) {
-            	mult = 2f;
-            } else if (ship.isFrigate()) {
-            	mult = 2f;
-            } else if (ship.isDestroyer()) {
-            	mult = 3f;
-            } else if (ship.isCruiser()) {
-            	mult = 4f;
-            } else if (ship.isCapital()) {
-            	mult = 7f;
-            } else {
-            	mult = 2f;
-            }
-
-            fleetCost += (ship.getFleetPointCost() * mult);
-		}
-
-		return Math.round(fleetCost * fleetCostMult);
 	}
 
 	public static String getStationOwnerFactionId(SectorEntityToken stationToken)
@@ -392,7 +231,7 @@ public class ExerelinUtils
 
 		if(type.equalsIgnoreCase("attack"))
 		{
-			if(fleetSize < 40)
+			if(fleetSize < 50)
 				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).smallAttackFleetName;
 			else if (fleetSize < 90)
 				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).mediumAttackFleetName;
@@ -422,213 +261,6 @@ public class ExerelinUtils
 			System.out.println("EXERELIN ERROR: Invalid fleet type to rename: " + type);
 		}
 		fleet.setName(fleetTypeName);
-	}
-
-	public static void addWeaponsToCargo(CargoAPI cargo, int count, String factionId, SectorAPI sector)
-	{
-        String[] factionWeapons = ExerelinUtils.getFactionWeaponListFromGenericFleet(factionId);
-		int maxQuantityInStack = 4;
-
-		List weapons = cargo.getWeapons();
-		if(weapons.size() > 30)
-			removeRandomWeaponStacksFromCargo(cargo, weapons.size() - 25);
-
-
-		if(factionWeapons.length > 0)
-		{
-			for(int i = 0; i < count; i = i + 1)
-			{
-				String weaponId = factionWeapons[ExerelinUtils.getRandomInRange(0, factionWeapons.length - 1)];
-				//cargo.addWeapons(weaponId, ExerelinUtils.getRandomInRange(1, maxQuantityInStack));
-                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddWeapon(cargo, weaponId, ExerelinUtils.getRandomInRange(1, maxQuantityInStack)));
-			}
-		}
-		else
-		{
-			addRandomWeapons(cargo, count, sector);
-		}
-	}
-
-	private static void addRandomWeapons(CargoAPI cargo, int count, SectorAPI sector)
-	{
-		List weaponIds = sector.getAllWeaponIds();
-		for (int i = 0; i < count; i++) {
-			String weaponId = (String) weaponIds.get((int) (weaponIds.size() * Math.random()));
-			int quantity = 3;
-			//cargo.addWeapons(weaponId, quantity);
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddWeapon(cargo, weaponId, quantity));
-		}
-	}
-
-    private static String[] getFactionWeaponListFromGenericFleet(String factionId)
-    {
-        ArrayList weaponList;
-        CampaignFleetAPI dummyFleet = Global.getSector().createFleet(factionId, "exerelinGenericFleet");
-        List members = dummyFleet.getFleetData().getMembersListCopy();
-
-        FleetMemberAPI fleetMemberAPI = null;
-
-        int attempts = 0;
-        while((fleetMemberAPI == null || fleetMemberAPI.isFighterWing()) && attempts < 20)
-        {
-            fleetMemberAPI = (FleetMemberAPI)members.get(ExerelinUtils.getRandomInRange(0, members.size() - 1));
-            attempts++;
-        }
-
-        if(fleetMemberAPI == null)
-            return new String[]{};
-
-        List weaponSlots = fleetMemberAPI.getVariant().getNonBuiltInWeaponSlots();
-
-        weaponList = new ArrayList(weaponSlots.size());
-        for(int i = 0; i < weaponSlots.size(); i++)
-            weaponList.add(fleetMemberAPI.getVariant().getWeaponId((String)weaponSlots.get(i)));
-
-
-        return (String[])weaponList.toArray(new String[weaponList.size()]);
-    }
-
-	public static void addRandomFactionShipsToCargo(CargoAPI cargo, int count, String factionId, SectorAPI sector, boolean allowToreUpPlenty)
-	{
-		int r = getRandomInRange(0, 30);
-		CampaignFleetAPI fleet;
-
-		if(r == 0)
-			fleet = sector.createFleet(factionId, "exerelinGenericFleet");
-		else if(r == 1)
-			fleet = sector.createFleet(factionId, "exerelinAsteroidMiningFleet");
-		else if(r == 2)
-			fleet = sector.createFleet(factionId, "exerelinGasMiningFleet");
-        else if(r == 3 || r == 4)
-            fleet = sector.createFleet(factionId, "exerelinInSystemStationAttackFleet");
-        else if(r == 5)
-            fleet = sector.createFleet(factionId, "exerelinInSystemSupplyConvoy");
-        else if(r == 6)
-        {
-            // Add from common list
-            for(int i = 0; i < count; i++)
-            {
-                String shipId = ExerelinConfig.commonShipList[ExerelinUtils.getRandomInRange(0, ExerelinConfig.commonShipList.length - 1)];
-                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddShip(cargo, FleetMemberType.SHIP, shipId, null));
-            }
-            return;
-        }
-        else if ((r == 7 || r == 8) && ExerelinUtilsPlayer.getPlayerEliteShipConstruction())
-        {
-            fleet = sector.createFleet(factionId, "exerelinEliteFleet");
-        }
-        else if ((r == 9 || r == 10) && ExerelinUtils.isToreUpPlentyInstalled())
-        {
-            // Add from Tore Up Plenty
-            fleet = sector.createFleet("scavengers", "exerelinGenericFleet");
-        }
-		else
-			fleet = sector.createFleet(factionId, "exerelinGenericFleet");
-
-
-		/*List ships = cargo.getMothballedShips().getMembersListCopy();
-		if(ships.size() > 25)
-			removeRandomShipsFromCargo(cargo,  ships.size() - 22);*/
-
-		for(int i = 0; i < count; i = i + 1)
-		{
-			int memberToGet = ExerelinUtils.getRandomInRange(0, fleet.getFleetData().getMembersListCopy().size() - 1);
-			FleetMemberAPI fmAPI = (FleetMemberAPI)fleet.getFleetData().getMembersListCopy().get(memberToGet);
-			if(fmAPI.isCapital() && !ExerelinUtilsPlayer.getPlayerCapitalShipAvailability())
-			{
-				// Get another one to reduce chance of capitals
-				memberToGet = ExerelinUtils.getRandomInRange(0, fleet.getFleetData().getMembersListCopy().size() - 1);
-				fmAPI = (FleetMemberAPI)fleet.getFleetData().getMembersListCopy().get(memberToGet);
-			}
-
-			String shipId = "";
-
-			if(fmAPI.getType() == FleetMemberType.FIGHTER_WING)
-                shipId = fmAPI.getSpecId();
-			else if (fmAPI.getType() == FleetMemberType.SHIP)
-				shipId = fmAPI.getHullId() + "_Hull";
-			else
-				return;
-
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddShip(cargo, fmAPI.getType(), shipId, null));
-		}
-	}
-
-	public static void addRandomEscortShipsToFleet (CampaignFleetAPI campaignFleet, int minCount, int maxCount, String factionId, SectorAPI sector)
-	{
-		List members = campaignFleet.getFleetData().getMembersListCopy();
-		float minSpeed = 1000f;
-
-		for(int i = 0; i < members.size(); i++)
-		{
-			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			float speed = fmAPI.getStats().getMaxSpeed().getModifiedValue();
-
-			if (minSpeed > speed) {
-				minSpeed = speed;
-			}
-		}
-
-		minSpeed -= (minSpeed / 8f + 5f);
-
-		CampaignFleetAPI dummyFleet;
-		float[] weights;
-		float totalWeight = 0.f;
-
-		do
-		{
-			dummyFleet = sector.createFleet(factionId, "exerelinGenericFleet");
-
-			members = dummyFleet.getFleetData().getMembersListCopy();
-			weights = new float[ members.size() ];
-			int m = 0;
-
-			for(Iterator it = members.iterator(); it.hasNext(); )
-			{
-				FleetMemberAPI fmAPI = (FleetMemberAPI)it.next();
-
-				if (fmAPI.isCapital() || fmAPI.getStats().getMaxSpeed().getModifiedValue() < minSpeed) {
-					it.remove();
-					continue;
-				} else if (fmAPI.isFighterWing()) {
-					weights[m] = 1.2f;
-				} else if (fmAPI.isFrigate()) {
-					weights[m] = 1.2f;
-				} else if (fmAPI.isDestroyer()) {
-					weights[m] = 0.7f;
-				} else if (fmAPI.isCruiser()) {
-					weights[m] = 0.2f;
-				}
-
-				totalWeight += weights[m];
-				m++;
-			}
-		} while (totalWeight == 0.f); // repeat until dummyFleet contains at least one valid escort ship
-
-		FleetDataAPI fleetData = campaignFleet.getFleetData();
-		int count = ExerelinUtils.getRandomInRange(minCount, maxCount);
-
-		for(int i = 0; i < count; )
-		{
-			float randomWeight = (float)Math.random() * totalWeight;
-
-			int m = 0;
-			while (randomWeight >= weights[m])
-			{
-				randomWeight -= weights[m];
-				m++;
-			}
-
-			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(m);
-			FleetMemberType memberType = fmAPI.getType();
-			String shipId = fmAPI.getSpecId();
-
-			if (shipId == null) continue;
-
-			fleetData.addFleetMember( Global.getFactory().createFleetMember(memberType, shipId) );
-
-			i++;
-		}
 	}
 
 	public static void removeRandomShipsFromCargo(CargoAPI cargoAPI, int numToRemove)
@@ -715,21 +347,6 @@ public class ExerelinUtils
 		return (hasValidFlagship && hasValidTroopTransport);
 	}
 
-	private static boolean isCapitalInFleet(CampaignFleetAPI fleet)
-	{
-		List members = fleet.getFleetData().getMembersListCopy();
-		for(int i = 0; i < members.size(); i++)
-		{
-			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if((! fmAPI.isMothballed()) && fmAPI.isCapital())
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	public static void handlePlayerFleetMining(CampaignFleetAPI playerFleet)
 	{
 
@@ -780,25 +397,6 @@ public class ExerelinUtils
         cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, "mining_drone_wing"));
 	}
 
-    public static void addEliteShipToFleet(CampaignFleetAPI fleet)
-    {
-        try
-        {
-            CampaignFleetAPI eliteFleet = Global.getSector().createFleet(fleet.getFaction().getId(), "exerelinEliteFleet");
-            if(eliteFleet.getFleetData().getMembersListCopy().size() > 0)
-            {
-                int memberToAdd = getRandomInRange(0, eliteFleet.getFleetData().getMembersListCopy().size() - 1);
-                System.out.println("Adding eliteFleet ship:" + ((FleetMemberAPI)eliteFleet.getFleetData().getMembersListCopy().get(memberToAdd)).getSpecId() + " to " + fleet.getName());
-                fleet.getFleetData().addFleetMember((FleetMemberAPI)eliteFleet.getFleetData().getMembersListCopy().get(memberToAdd));
-            }
-        }
-        catch(Exception e)
-        {
-            System.out.println("EXERELIN ERROR (eliteFleetAdd): " + e.getMessage());
-            // Elite fleet not setup for this faction
-        }
-    }
-
     public static void handlePlayerBoarding(CampaignFleetAPI playerFleet)
     {
         // Check player isn't in hyperspace
@@ -839,8 +437,8 @@ public class ExerelinUtils
                 possibleBoardTarget.getCargo().addMarines(100);
                 possibleBoardTarget.getCargo().addFuel(200);
                 possibleBoardTarget.getCargo().addSupplies(800);
-                ExerelinUtils.addRandomFactionShipsToCargo(possibleBoardTarget.getCargo(), 2, playerFleet.getFaction().getId(), Global.getSector(), false);
-                ExerelinUtils.addWeaponsToCargo(possibleBoardTarget.getCargo(), 2, playerFleet.getFaction().getId(), Global.getSector());
+                ExerelinUtilsCargo.addFactionVariantsToCargo(possibleBoardTarget.getCargo(), playerFleet.getFaction().getId(), 2);
+                ExerelinUtilsCargo.addFactionWeaponsToCargo(possibleBoardTarget.getCargo(), playerFleet.getFaction().getId(), 2, 2);
 
                 // Reset faction home system for player
                 FactionDirector.getFactionDirectorForFactionId(SectorManager.getCurrentSectorManager().getPlayerFactionId()).setHomeSystem((StarSystemAPI)Global.getSector().getPlayerFleet().getContainingLocation());

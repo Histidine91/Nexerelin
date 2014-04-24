@@ -7,10 +7,7 @@ import com.fs.starfarer.api.campaign.*;
 import exerelin.*;
 import exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import exerelin.SectorManager;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsFleet;
-import exerelin.utilities.ExerelinUtilsMessaging;
+import exerelin.utilities.*;
 
 import java.awt.*;
 
@@ -30,30 +27,38 @@ public class StationAttackFleet extends ExerelinFleetBase
         this.targetStation = targetStation;
         this.resupplyStation = resupplyStation;
 
-        fleet = Global.getSector().createFleet(faction, "exerelinInSystemStationAttackFleet");
+        ExerelinUtilsFleet.ExerelinFleetSize fleetSize = ExerelinUtilsStation.getSpawnFleetSizeForStation(anchor);
 
-        if (ExerelinUtilsFaction.isFactionAtWar(faction, true))
-            ExerelinUtils.addRandomEscortShipsToFleet(fleet, 3, 5, faction, Global.getSector());
+        if(deductResources && (fleetSize == ExerelinUtilsFleet.ExerelinFleetSize.SMALL || fleetSize == null))
+        {
+            this.fleet = null;
+            return;
+        }
+
+        this.fleet = ExerelinUtilsFleet.createFleetForFaction(faction, ExerelinUtilsFleet.ExerelinFleetType.BOARDING, null);
+
+        if (ExerelinUtilsFaction.getFactionsAtWarWithFaction(faction, false).size() > 0)
+            ExerelinUtilsFleet.addEscortsToFleet(this.fleet, 4);
         else
-            ExerelinUtils.addRandomEscortShipsToFleet (fleet, 1, 2, faction, Global.getSector());
+            ExerelinUtilsFleet.addEscortsToFleet(this.fleet, 2);
 
         boarding = false;
 
-        if(!deductResources || ExerelinUtils.canStationSpawnFleet(anchor, fleet, 1, 0.8f, false, ExerelinUtils.getCrewXPLevelForFaction(faction)))
+        //ExerelinUtilsFleet.addFreightersToFleet(fleet);
+        ExerelinUtilsFleet.resetFleetCargoToDefaults(fleet, 0.2f, 0.8f, ExerelinUtils.getCrewXPLevelForFaction(faction));
+
+        ExerelinUtilsFleet.sortByHullSize(fleet);
+
+        fleet.setPreferredResupplyLocation(resupplyStation);
+
+        setFleetAssignments();
+
+        SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandSpawnPrebuiltFleet(anchor, 0, 0, fleet));
+
+        if(deductResources)
         {
-            ExerelinUtils.addFreightersToFleet(fleet);
-            ExerelinUtils.resetFleetCargoToDefaults(fleet, 0.2f, 0.8f, ExerelinUtils.getCrewXPLevelForFaction(faction));
-            ExerelinUtilsFleet.sortByHullSize(fleet);
-
-            fleet.setPreferredResupplyLocation(resupplyStation);
-            fleet.setName(ExerelinConfig.getExerelinFactionConfig(faction).boardingFleetName);
-
-            setFleetAssignments();
-
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandSpawnPrebuiltFleet(anchor, 0, 0, fleet));
+            ExerelinUtilsStation.removeResourcesFromStationForFleetSize(anchor, ExerelinUtilsFleet.ExerelinFleetSize.MEDIUM);
         }
-        else
-            this.fleet = null;
 	}
 
 	public void setTarget(SectorEntityToken targetStation, SectorEntityToken resupplyStation)

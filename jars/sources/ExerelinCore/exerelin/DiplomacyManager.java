@@ -513,7 +513,7 @@ public class DiplomacyManager
 					dissolveAlliance(diplomacyRecord.getAllianceId(), getDiplomacyRecordsForAlliance(diplomacyRecord.getAllianceId()));
 					break;
 				}
-				else if(ExerelinUtils.getRandomInRange(0,9)*allianceSectorOwnership > 4)
+				/*else if(ExerelinUtils.getRandomInRange(0,9)*allianceSectorOwnership > 4)
 				{
 					// Betray alliance
                     if(this.allianceManager.isFactionInAlliance(SectorManager.getCurrentSectorManager().getPlayerFactionId(), diplomacyRecord.getAllianceId())
@@ -531,7 +531,7 @@ public class DiplomacyManager
 					    removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
 					    break;
                     }
-				}
+				}*/
 			}
 			else if(diplomacyRecord.isInAlliance()
 					&& otherDiplomacyRecord.isInAlliance()
@@ -551,7 +551,7 @@ public class DiplomacyManager
 					removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), false);
 					break;
 				}
-				else if(ExerelinUtils.getRandomInRange(0,9)*allianceSectorOwnership > 4)
+				/*else if(ExerelinUtils.getRandomInRange(0,9)*allianceSectorOwnership > 4)
 				{
 					// Betray the alliance
                     if(this.allianceManager.isFactionInAlliance(SectorManager.getCurrentSectorManager().getPlayerFactionId(), diplomacyRecord.getAllianceId())
@@ -569,7 +569,7 @@ public class DiplomacyManager
                         removeFactionFromAlliance(diplomacyRecord.getAllianceId(), diplomacyRecord.getFactionId(), true);
                         break;
                     }
-				}
+				}*/
 			}
 			else if(diplomacyRecord.isInAlliance()
 					&& otherDiplomacyRecord.isInAlliance())

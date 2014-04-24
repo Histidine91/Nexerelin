@@ -35,17 +35,17 @@
 	"fleetCompositions":{
 		"drone_r":{
 			"displayName":"Raiders",
-			"maxFleetPoints":100,
+			"maxFleetPoints":50,
 			"daysWorthOfSupplies":[15, 20],
 			"lyWorthOfFuel":[10, 15],
 			"extraCrewPercent":[0, 0],
 			"marinesPercent":[0, 0],
 			"ships":{
-				"gedune_bakoros_variant":[2, 2],
-				"gedune_bakoros_variant2":[1, 1],
-				"gedune_muragatta_variant":[1, 1],
-				"gedune_tychrea_variant":[2, 2],
-				"gedune_viper_wing":[3, 3]
+				"gedune_bakoros_variant":[0, 2],
+				"gedune_bakoros_variant2":[0, 1],
+				"gedune_muragatta_variant":[0, 1],
+				"gedune_tychrea_variant":[0, 2],
+				"gedune_viper_wing":[0, 3]
 				
 			},
 		},

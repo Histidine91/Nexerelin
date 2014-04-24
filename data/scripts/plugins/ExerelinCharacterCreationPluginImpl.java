@@ -91,7 +91,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 	private ResponseImpl NEXT = new ResponseImpl("Next...");
 	private ResponseImpl PREV = new ResponseImpl("Prev...");
 
-	private ResponseImpl POPULATED_EMTPY = new ResponseImpl("Empty");
+	private ResponseImpl POPULATED_SINGLE = new ResponseImpl("Single Station");
 	private ResponseImpl POPULATED_PARTIALLY = new ResponseImpl("Partially");
     private ResponseImpl POPULATED_FULLY = new ResponseImpl("Fully");
 
@@ -194,9 +194,9 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		}
 		else if (stage == 7)
 		{
-			result.add(RESPAWN_YES);
-			result.add(RESPAWN_YES_COND);
-			result.add(RESPAWN_YES_COND_MAX);
+			//result.add(RESPAWN_YES);
+			//result.add(RESPAWN_YES_COND);
+			//result.add(RESPAWN_YES_COND_MAX);
 			result.add(RESPAWN_NO);
 		}
 		else if (stage == 8)
@@ -243,7 +243,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		}
 		else if (stage == 12)
 		{
-			result.add(POPULATED_EMTPY);
+			result.add(POPULATED_SINGLE);
 			result.add(POPULATED_PARTIALLY);
             result.add(POPULATED_FULLY);
 		}
@@ -431,7 +431,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
             if(ExerelinConfig.playerIsFaction)
                 stage = stage + 2;
 		}
-		else if (response == POPULATED_EMTPY)
+		else if (response == POPULATED_SINGLE)
 		{
             ExerelinSetupData.getInstance().isSectorPopulated = false;
             ExerelinSetupData.getInstance().isSectorPartiallyPopulated = false;

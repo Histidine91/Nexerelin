@@ -1,5 +1,5 @@
 {
-    "uniqueModClassName":"data.scripts.world.Himmel.BGEGen", # String
+    "uniqueModClassName":"bge.data.scripts.BGEModPlugin", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
@@ -41,5 +41,33 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "startingVariants":["bge_vergifter_standard", "bge_flusskrebs_standard", "bge_krieger_standard"], # String array
+    "freighterVariants":["buffalo_Standard"], # String array
+    "tankerVariants":["phaeton_Standard"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["bge_arbiter_standard", "bge_arbiter_siege"], # String array
+
+    "fighterWings":["bge_hornisse_standard_wing",
+                    "bge_nymphe_standard_wing"], # String array
+
+    "frigateVariants":[ "bge_vergifter_standard",
+                        "bge_krieger_standard"], # String array
+
+    "destroyerVariants":[   "bge_flusskrebs_standard",
+                            "bge_zophe_siege",
+                            "bge_zophe_standard"], # String array
+
+    "cruiserVariants":[ "bge_arbiter_siege",
+                        "bge_arbiter_standard",
+                        "bge_waechter_siege",
+                        "bge_waechter_standard"], # String array
+
+    "capitalVariants":[ "bge_koenig_standard",
+                        "bge_koenig_siege"], # String array
+
+    "startingVariants":["bge_vergifter_standard",
+                        "bge_krieger_standard"], # String array
 }

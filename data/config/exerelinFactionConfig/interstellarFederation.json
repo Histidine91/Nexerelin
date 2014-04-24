@@ -41,5 +41,44 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["ifed_tahoe_Standard"], # String array
+    "tankerVariants":["ifed_trexel_Standard"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["ifed_mazerk_Standard"], # String array
+
+    "carrierVariants":["ifed_zephyr_Strike", "ifed_ares_Standard", "ifed_montana_Utility", "ifed_antares_Assault", "ifed_auria_Standard"], # String array
+
+    "fighterWings":["ifed_hornet_wing",
+                    "ifed_draken_wing",
+                    "ifed_foxbat_wing",
+                    "ifed_tracer_wing"], # String array
+
+    "frigateVariants":["ifed_albatross_Attack",
+                        "ifed_dakota_Standard",
+                        "ifed_echo_Standard",
+                        "ifed_rickshaw_Standard",
+                        "ifed_scythe_Frigate"], # String array
+
+    "destroyerVariants":["ifed_defiant_Assault",
+                            "ifed_shogun_Support",
+                            "ifed_shogun_Assault",
+                            "ifed_toa_Balanced",
+                            "ifed_toa_Assault",
+                            "ifed_vixen_Standard",
+                            "ifed_zephyr_Strike"], # String array
+
+    "cruiserVariants":["ifed_ares_Standard",
+                        "ifed_ballista_Standard",
+                        "ifed_helios_Assault",
+                        "ifed_mercury_Standard",
+                        "ifed_montana_Utility"], # String array
+
+    "capitalVariants":["ifed_antares_Assault",
+                        "ifed_auria_Standard",
+                        "ifed_titan_Siege",
+                        "ifed_yukon_Standard"], # String array
+
     "startingVariants":["ifed_albatross_Attack", "ifed_dakota_Standard", "ifed_rickshaw_Standard", "ifed_echo_Standard", "ifed_scythe_Frigate"], # String array
 }

@@ -41,6 +41,15 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["hermit_Basic"], # String array
+    "tankerVariants":["hermit_Basic"], # String array
+    "miningVariantsOrWings":["raider_wing"], # String array
+
+    "troopTransportVariants":["hermit_Basic"], # String array
+    "boardingFlagshipVariants":["hermit_Basic"], # String array
+
+    "carrierVariants":["damocles_Basic", "lance_Basic", "phoenix_Basic", "rover_Basic", "cormorant_Basic", "hermit_Basic"], # String array
+
     "startingVariants":["brawler_Assault",
                         "vigilance_Standard"], # String array
 
@@ -67,7 +76,8 @@
                         "skylarkc_Basic",
                         "skylarkf_Basic",
                         "strikermk2_Basic",
-                        "sentinelmk2_Basic",], # String array
+                        "sentinelmk2_Basic",
+                        "hawkmk2_Basic"], # String array
 
     "destroyerVariants":[   "barracuda_Basic",
                             "annihilator_Basic",
@@ -77,7 +87,6 @@
                             "void_Basic",
                             "hermit_Basic",
                             "buck_Basic",
-                            "rover_Basic",
                             "jules_Basic",
                             "daedalus_Basic",
                             "buckmk2_Basic"], # String array
@@ -88,9 +97,9 @@
                         "stampede_Basic",
                         "lance_Basic",
                         "phoenix_Basic",
-                        "vulture_Basic",
                         "annihilatormk2_Basic",
-                        "taskmaster_Basic"], # String array
+                        "taskmaster_Basic",
+                        "rover_Basic",], # String array
 
     "capitalVariants":[ "cormorant_Basic",
                         "zephyr_Basic",

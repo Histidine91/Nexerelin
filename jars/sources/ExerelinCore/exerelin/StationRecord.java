@@ -1,20 +1,23 @@
 package exerelin;
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.*;
-import exerelin.fleets.*;
-import exerelin.commandQueue.CommandAddCargo;
-import exerelin.diplomacy.DiplomacyRecord;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsFaction;
-import org.lazywizard.lazylib.MathUtils;
-import com.fs.starfarer.api.InteractionDialogImageVisual;
-import exerelin.utilities.ExerelinUtilsMessaging;
-
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.InteractionDialogImageVisual;
+
+import org.lazywizard.lazylib.MathUtils;
+
+import exerelin.fleets.*;
+import exerelin.commandQueue.CommandAddCargo;
+import exerelin.diplomacy.DiplomacyRecord;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsCargo;
+import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsMessaging;
 
 public class StationRecord
 {
@@ -51,7 +54,7 @@ public class StationRecord
 	private AsteroidMiningFleet asteroidMiningFleet;
 	private GasMiningFleet gasMiningFleet;
 
-    // Extra exerelin.fleets for player skill (kind of ugly)
+    // Extra fleets for player skill (kind of ugly)
     private AsteroidMiningFleet asteroidMiningFleet2;
     private GasMiningFleet gasMiningFleet2;
 
@@ -147,10 +150,13 @@ public class StationRecord
 		if(!originalOwnerId.equalsIgnoreCase("") && updateRelationship)
 			SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(originalOwnerId, newOwnerFactionId, "LostStation");
 
+        // Reset fleets
+        this.updateFleetLists();
+
         // Get station targets for new faction
         this.deriveTargets();
 
-        // Update FactionDirectors
+        // Update FactionDirectors for changed sector
         FactionDirector.updateAllFactionDirectors();
 	}
 
@@ -233,14 +239,14 @@ public class StationRecord
 
 	public void updateFleets()
 	{
-        // Remove dead/traitor exerelin.fleets from counts
+        // Remove dead/traitor fleets from counts
         updateFleetLists();
 
-        // Update any of our exerelin.fleets with any changed targets
+        // Update any of our fleets with any changed targets
         updateFleetTargets();
 
         if(checkIsBeingBoarded())
-            return; // Don't spawn any exerelin.fleets if being boarded
+            return; // Don't spawn any fleets if being boarded
 
         if(this.convoyStationRecord != null
                 && (logisticsConvoyFleet == null || !logisticsConvoyFleet.fleet.isAlive())
@@ -458,8 +464,8 @@ public class StationRecord
 
 		if(efficiency > 0.6)
 		{
-			ExerelinUtils.addRandomFactionShipsToCargo(stationCargo, 2, owningFaction.getFactionId(), Global.getSector(), false);
-			ExerelinUtils.addWeaponsToCargo(stationCargo, 4, owningFaction.getFactionId(), Global.getSector());
+            ExerelinUtilsCargo.addFactionVariantsToCargo(stationCargo, owningFaction.getFactionId(), 2);
+            ExerelinUtilsCargo.addFactionWeaponsToCargo(stationCargo, owningFaction.getFactionId(), 2, 2);
 		}
 
         // Update efficiency
@@ -521,12 +527,13 @@ public class StationRecord
 	private void deriveStationToAssist()
 	{
 		StationRecord assistStation = null;
+        Boolean defendingSelf = false;
 
 		// Check if we are under attack first
 		if(getNumAttacking() > 0)
 		{
 			this.defendStationRecord = this;
-			return;
+            defendingSelf = true;
 		}
 
         // Support a station in this system under attack
@@ -563,10 +570,11 @@ public class StationRecord
         if(assistStation != null)
         {
             this.convoyStationRecord = assistStation;
-            this.defendStationRecord = assistStation;
+            if(!defendingSelf)
+                this.defendStationRecord = assistStation;
             return;
         }
-        else
+        else if(!defendingSelf)
             this.defendStationRecord = null;
 
         // No stations under attack, so assist a random faction station in this system
@@ -900,10 +908,10 @@ public class StationRecord
     {
         int numWeaponStacks = stationToken.getCargo().getWeapons().size();
         if(numWeaponStacks > 40)
-            ExerelinUtils.removeRandomWeaponStacksFromCargo(stationToken.getCargo(), numWeaponStacks - (numWeaponStacks - 25));
+            ExerelinUtils.removeRandomWeaponStacksFromCargo(stationToken.getCargo(), numWeaponStacks - (numWeaponStacks - 35));
 
         int numShips = stationToken.getCargo().getMothballedShips().getMembersListCopy().size();
         if(numShips > 25)
-            ExerelinUtils.removeRandomShipsFromCargo(stationToken.getCargo(), numShips - (30 - numShips));
+            ExerelinUtils.removeRandomShipsFromCargo(stationToken.getCargo(), numShips - (45 - numShips));
     }
 }

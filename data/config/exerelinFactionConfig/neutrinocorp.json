@@ -1,0 +1,87 @@
+{
+    "uniqueModClassName":"data.scripts.world.neutrinoGen", # String
+    "playableFaction":"true", # Boolean
+
+    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+
+    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
+    "preferredBackgroundImagePath":"", # String
+    "preferredStarType":"", # String
+    "preferredStarLight":"", # String, 0xFFFFFF
+
+    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard"], # String array
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.1, # Double
+
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Dissidents", # String
+
+    "smallAttackFleetName":"Scout", # String
+    "mediumAttackFleetName":"Combat Lawyers", # String
+    "largeAttackFleetName":"Battle fleet", # String
+
+    "smallDefenceFleetName":"Picket Defense", # String
+    "mediumDefenceFleetName":"Shield Fleet", # String
+    "largeDefenceFleetName":"Guardians", # String
+
+    "smallPatrolFleetName":"Lookout Fleet", # String
+    "mediumPatrolFleetName":"Warden Patrol", # String
+    "largePatrolFleetName":"Flotilla", # String
+
+    "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
+    "gasMiningFleetName":"Gas Mining Fleet", # String
+    "logisticsFleetName":"Logistics Convoy", # String
+    "boardingFleetName":"Boarding Fleet", # String
+    "commandFleetName":"Command Fleet", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
+
+    "freighterVariants":["buffalo_Standard"], # String array
+    "tankerVariants":["phaeton_Standard"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["neutrino_nausicaa_standard", "neutrino_nausicaa2_standard"], # String array
+
+    "carrierVariants":["neutrino_theend_standard", "neutrino_hildolfr_standard", "neutrino_jackhammer2_standard"], # String array
+
+    "fighterWings":["neutrino_drohne_wing",
+                    "neutrino_schwarzgeist_wing",
+                    "neutrino_floh_wing",
+                    "neutrino_drache_wing",], # String array
+
+    "frigateVariants":["neutrino_criticality_standard",
+                       "neutrino_singularity_balanced",
+                       "neutrino_relativity_standard",
+                       "neutrino_causality_standard",
+                       "neutrino_polarity_standard"], # String array
+
+    "destroyerVariants":["neutrino_sledgehammer_assault",
+                         "neutrino_vice_assault",
+                         "neutrino_vice_standard",
+                         "neutrino_hacksaw_standard",
+                         "neutrino_hacksaw_assault",
+                         "neutrino_piledriver_standard"], # String array
+
+    "cruiserVariants":["neutrino_grinder_standard",
+                       "neutrino_lathe_standard",
+                       "neutrino_maul_standard",
+                       "neutrino_nirvash_standard",
+                       "neutrino_theend_standard"], # String array
+
+    "capitalVariants":["neutrino_colossus_standard",
+                       "neutrino_hildolfr_standard",
+                       "neutrino_banshee_standard",
+                       "neutrino_bansheenorn_standard",
+                       "neutrino_jackhammer_standard",
+                       "neutrino_jackhammer2_standard",
+                       "neutrino_unsung_standard",
+                       "neutrino_hammer_standard"], # String array
+
+    "startingVariants":["neutrino_relativity_standard", "neutrino_singularity_balanced"], # String array
+}

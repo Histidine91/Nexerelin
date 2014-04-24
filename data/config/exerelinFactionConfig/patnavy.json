@@ -41,5 +41,38 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["tarsus_Standard"], # String array
+    "tankerVariants":["phaeton_Standard"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["pat_lithuania_patrian", "pat_bastion_patrian", "pat_kortenaer_patrian", "pat_kittyhawk_patrian"], # String array
+
+    "fighterWings":["pat_asf4_attack_wing",
+                    "pat_asf4_strike_wing",
+                    "pat_asf104_attack_wing",
+                    "pat_asf104_strike_wing",
+                    "pat_asf90_attack_wing",
+                    "pat_asf16_attack_wing",
+                    "pat_asf16_strike_wing",
+                    "pat_gac47_attack_wing",
+                    "pat_asf117_strike_wing"], # String array
+
+    "frigateVariants":["pat_cloak_hunterkiller",
+                       "pat_kortenaer_patrian",
+                       "pat_valnad_assault"], # String array
+
+    "destroyerVariants":["pat_kittyhawk_patrian",
+                         "pat_groundhog_fs",
+                         "pat_charger_patrian"], # String array
+
+    "cruiserVariants":["pat_lithuania_patrian",
+                       "pat_bastion_patrian"], # String array
+
+    "capitalVariants":["pat_yamato_patrian",
+                       "pat_mayflower_patrian"], # String array
+
     "startingVariants":["pat_cloak_hunterkiller", "pat_kortenaer_patrian", "pat_valnad_assault"], # String array
 }

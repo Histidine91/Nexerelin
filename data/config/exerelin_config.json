@@ -30,6 +30,6 @@
     "validTroopTransportShips":["valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_auxiliary", "qua_yidato", "cane", "ms_potnia", "pb_vanghentmk2", "pn_valkyrie"], # String array
     "validMiningShips":["mining_drone", "zorg_sphere", "pn_mlmv"], # String array
 
-    "builtInFactions":["hegemony", "tritachyon", "pirates", "sindrian_diktat"], # String array
-    "supportedModFactions":["batavia", "blackrock", "bushi", "citadeldefenders", "dstech", "gedune", "hiigaran_descendants", "insurgency", "interstellarFederation", "junkpirate", "mayorate", "neutrino", "nomads", "ORI", "pack", "patnavy", "pn", "regime", "shadowyards_hi", "syndicateasp", "valkyrian", "zorg_hive", "relics", "bge", "qualljom", "scavengers"], # String array
+    "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat"], # String array
+    "supportedModFactions":["batavia", "blackrock_driveyards", "bushi", "citadeldefenders", "dstech", "gedune", "hiigaran_descendants", "insurgency", "interstellarFederation", "junk_pirates", "mayorate", "neutrinocorp", "nomads", "ORI", "pack", "patnavy", "pn", "regime", "shadow_industry", "syndicate_asp", "valkyrian", "zorg", "relics", "BGE", "qualljom", "scavengers", "sun_ice"], # String array
 }

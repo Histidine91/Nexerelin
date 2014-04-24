@@ -9,6 +9,7 @@ import exerelin.ExerelinUtilsPlayer;
 import exerelin.SectorManager;
 import exerelin.SystemManager;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsFleet;
 
 import java.util.List;
 
@@ -30,8 +31,8 @@ public class AsteroidMiningFleet extends ExerelinFleetBase
         this.targetAsteroid = targetAsteroid;
 
         // Create fleet
-        this.fleet = Global.getSector().createFleet(faction, "exerelinAsteroidMiningFleet");
-        fleet.setName(ExerelinConfig.getExerelinFactionConfig(faction).asteroidMiningFleetName);
+        this.fleet = ExerelinUtilsFleet.createFleetForFaction(faction, ExerelinUtilsFleet.ExerelinFleetType.ASTEROID_MINING, null);
+        ExerelinUtilsFleet.resetFleetCargoToDefaults(fleet, 0.3f, 0.1f, ExerelinUtils.getCrewXPLevelForFaction(faction));
         fleet.getCommander().setPersonality("cautious");
         fleet.setPreferredResupplyLocation(anchor);
 

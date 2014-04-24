@@ -41,5 +41,40 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["khs_sirocco_Standard"], # String array
+    "tankerVariants":["khs_djinn_Standard", "khs_mistral_Light"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["khs_vulture_Fighter_Support", "khs_rukh_Fast_Attack", "khs_seraph_Command"], # String array
+
+    "fighterWings":["khs_dirk_wing",
+                    "khs_scimitar_wing",
+                    "khs_dervish_wing",
+                    "khs_phalanx_wing",
+                    "khs_myrmidon_wing",
+                    "khs_immortal_wing"], # String array
+
+    "frigateVariants":[ "khs_buzzard_Strike",
+                        "khs_camel_Combat",
+                        "khs_hyena_Picket",
+                        "khs_jackal_Scout",
+                        "khs_vulture_Fighter_Support"], # String array
+
+    "destroyerVariants":[   "khs_falchion_firesupport",
+                            "khs_hauberk_EWAR",
+                            "khs_targe_Shield"], # String array
+
+    "cruiserVariants":[ "khs_golem_escort",
+                        "khs_leviathan_outdated",
+                        "khs_rukh_Fast_Attack",
+                        "khs_sphinx_fastattack"], # String array
+
+    "capitalVariants":[ "khs_behemoth_Support",
+                        "khs_caliph_Assault",
+                        "khs_seraph_Command"], # String array
+
     "startingVariants":["khs_camel_Combat", "khs_hyena_Picket"], # String array
 }

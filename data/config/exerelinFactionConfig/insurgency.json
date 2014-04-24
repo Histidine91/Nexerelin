@@ -41,5 +41,33 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["khs_sirocco_Standard"], # String array
+    "tankerVariants":["khs_djinn_Standard", "khs_mistral_Light"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["khs_vulture_acehigh", "khs_seraph_acehigh"], # String array
+
+    "fighterWings":["talon_wing",
+                    "piranha_wing",
+                    "broadsword_wing"], # String array
+
+    "frigateVariants":[ "khs_buzzard_pd",
+                        "khs_hyena_acehigh",
+                        "khs_vulture_acehigh"], # String array
+
+    "destroyerVariants":[   "khs_falchion_acehigh",
+                            "enforcer_Outdated"], # String array
+
+    "cruiserVariants":[ "khs_golem_acehigh",
+                        "khs_leviathan_outdated",
+                        "dominator_Support",
+                        "khs_sphinx_acehigh"], # String array
+
+    "capitalVariants":[ "khs_behemoth_acehigh",
+                        "khs_seraph_acehigh"], # String array
+
     "startingVariants":["khs_hyena_acehigh", "khs_buzzard_pd"], # String array
 }

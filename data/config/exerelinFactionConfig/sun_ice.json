@@ -1,5 +1,5 @@
 {
-    "uniqueModClassName":"data.scripts.world.DSSectorGen", # String
+    "uniqueModClassName":"data.scripts.ICEModPlugin", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
@@ -16,23 +16,23 @@
 
     "customRebelFaction":"", # String
     "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Rogue AI", # String
+    "rebelFleetSuffix":"Traitors", # String
 
-    "smallAttackFleetName":"Observer", # String
-    "mediumAttackFleetName":"Offensive Group", # String
+    "smallAttackFleetName":"Recon", # String
+    "mediumAttackFleetName":"Shredder", # String
     "largeAttackFleetName":"Armada", # String
 
     "smallDefenceFleetName":"Picket Defense", # String
     "mediumDefenceFleetName":"Defensive Group", # String
-    "largeDefenceFleetName":"Security Force", # String
+    "largeDefenceFleetName":"Guardian Fleet", # String
 
-    "smallPatrolFleetName":"Recon", # String
+    "smallPatrolFleetName":"Duelist", # String
     "mediumPatrolFleetName":"Special Ops Group", # String
     "largePatrolFleetName":"Battle Group", # String
 
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
-    "logisticsFleetName":"Logistics Convoy", # String
+    "logisticsFleetName":"Supply Convoy", # String
     "boardingFleetName":"Boarding Fleet", # String
     "commandFleetName":"Command Fleet", # String
 
@@ -48,30 +48,24 @@
     "troopTransportVariants":["valkyrie_Elite"], # String array
     "boardingFlagshipVariants":["atlas_Standard"], # String array
 
-    "carrierVariants":["ds_hive_carrier_main"], # String array
+    "carrierVariants":["sun_ice_eidolon_Standard"], # String array
 
-    "fighterWings":["ds_pusher_wing",
-                    "ds_lead_wing",
-                    "ds_chaser_wing",
-                    "ds_striker_wing",
-                    "ds_driver_wing",
-                    "ds_attacker_wing"], # String array
+    "fighterWings":["sun_ice_phantom_wing",
+                    "sun_ice_poltergeist_wing"], # String array
 
-    "frigateVariants":[ "ds_blade_variant_1",
-                        "ds_forward_scout",
-                        "ds_shield_variant_1"], # String array
+    "frigateVariants":[ "sun_ice_nightseer_Standard",
+                        "sun_ice_pentagram_Standard",
+                        "sun_ice_athame_Standard",
+                        "sun_ice_flashghast_Standard",
+                        "sun_ice_specter_Standard"], # String array
 
-    "destroyerVariants":[   "ds_block_variant_1",
-                            "ds_command_main",
-                            "ds_fogger_variant_1",
-                            "ds_judgement_main",
-                            "ds_judgement_anti_capital"], # String array
+    "destroyerVariants":["sun_ice_soulbane_Standard"], # String array
 
-    "cruiserVariants":["ds_side_main",
-                       "ds_side_multibeam_bombardment",
-                       "ds_hive_carrier_main"], # String array
+    "cruiserVariants":[ "sun_ice_voidreaver_Standard",
+                        "sun_ice_eidolon_Standard",
+                        "sun_ice_kelpie_Standard"], # String array
 
-    "capitalVariants":["ds_edge_variant_1"], # String array
+    "capitalVariants":["sun_ice_voidreaver_Standard"], # String array
 
-    "startingVariants":["ds_blade_variant_1"], # String array
+    "startingVariants":["sun_ice_specter_Standard", "sun_ice_flashghast_Standard"], # String array
 }

@@ -41,5 +41,18 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":[], # String array
+    "tankerVariants":[], # String array
+    "miningVariantsOrWings":[], # String array
+
+    "troopTransportHulls":[], # String array
+    "boardingFlagshipHulls":[], # String array
+
+    "fighterWings":[], # String array
+    "frigateVariants":[], # String array
+    "destroyerVariants":[], # String array
+    "cruiserVariants":[], # String array
+    "capitalVariants":[], # String array
+
     "startingVariants":["relics_egler_Standard", "relics_pusher_Standard", "relics_solver_Standard"], # String array
 }

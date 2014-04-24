@@ -1,6 +1,7 @@
 package exerelin;
 
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import exerelin.events.EventPirateFleetSpawn;
 import exerelin.utilities.ExerelinConfig;
 
 public class SystemEventManager
@@ -9,6 +10,7 @@ public class SystemEventManager
 	private EventRebelFleetSpawn eventRebelFleetSpawn;
 	private EventStationExplosion eventStationExplosion;
 	private EventStationSeccession eventStationSeccession;
+    private EventPirateFleetSpawn eventPirateFleetSpawn;
 
 	private int waitTime = 30; // Wait 1 month before running first events
 	private String lastEventType = "";
@@ -23,27 +25,31 @@ public class SystemEventManager
 		eventRebelFleetSpawn = new EventRebelFleetSpawn();
 		eventStationExplosion = new EventStationExplosion();
 		eventStationSeccession = new EventStationSeccession();
-
+        eventPirateFleetSpawn = new EventPirateFleetSpawn();
 	}
 
 	public void runEvents()
 	{
-        // Spawn rebel exerelin.fleets in system
+        // Spawn rebel and pirate in system
         if(ExerelinUtils.getRandomInRange(0, 10) == 0)
         {
             if(ExerelinConfig.enableThreading)
                 {
-                Thread spawnRebelFleetThread = new Thread("spawnRebelFleetThread"){
+                Thread spawnEventFleetThread = new Thread("spawnEventFleetThread"){
                     public void run()
                     {
+                        eventPirateFleetSpawn.spawnPirateFleet(starSystemAPI);
                         eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
                     }
                 };
 
-                spawnRebelFleetThread.start();
+                spawnEventFleetThread.start();
             }
             else
+            {
+                eventPirateFleetSpawn.spawnPirateFleet(starSystemAPI);
                 eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
+            }
             //waitTime = betweenEventWait;
             //lastEventType = eventRebelFleetSpawn.getType();
             return;

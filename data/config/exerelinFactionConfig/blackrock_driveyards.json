@@ -1,0 +1,89 @@
+{
+    "uniqueModClassName":"data.scripts.BRModPlugin", # String
+    "playableFaction":"true", # Boolean
+
+    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+
+    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
+    "preferredBackgroundImagePath":"", # String
+    "preferredStarType":"", # String
+    "preferredStarLight":"", # String, 0xFFFFFF
+
+    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard"], # String array
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
+
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Splinter Group", # String
+
+    "smallAttackFleetName":"Scout", # String
+    "mediumAttackFleetName":"Hunter-Killer Detachment", # String
+    "largeAttackFleetName":"Combine Warfleet", # String
+
+    "smallDefenceFleetName":"Picket Defense", # String
+    "mediumDefenceFleetName":"Security Fleet", # String
+    "largeDefenceFleetName":"Garrison Detachment", # String
+
+    "smallPatrolFleetName":"Lookout", # String
+    "mediumPatrolFleetName":"Patrol Fleet", # String
+    "largePatrolFleetName":"Sovereignity Fleet", # String
+
+    "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
+    "gasMiningFleetName":"Gas Mining Fleet", # String
+    "logisticsFleetName":"Logistics Convoy", # String
+    "boardingFleetName":"Boarding Fleet", # String
+    "commandFleetName":"Command Fleet", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
+
+    "freighterVariants":["brdy_cetonia_standard"], # String array
+    "tankerVariants":["dram_Light"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["brdy_eschaton_armed"], # String array
+
+    "carrierVariants":["brdy_typheus_support", "brdy_convergence_standard", "brdy_convergence_frontier", "brdy_revenant_carrier", "brdy_revenant_anticap"], # String array
+
+    "fighterWings":["brdy_vespa_wing",
+                    "brdy_serket_wing",
+                    "brdy_krait_wing",
+                    "brdy_dipteron_wing"], # String array
+
+    "frigateVariants":["brdy_mantis_elite",
+                       "brdy_mantis_strike",
+                       "scarab_firesupport",
+                       "scarab_pd",
+                       "brdy_locust_patrol",
+                       "brdy_robberfly_cs",
+                       "brdy_robberfly_strike",
+                       "brdy_imaginos_elite",
+                       "brdy_imaginos_shock"], # String array
+
+    "destroyerVariants":["gonodactylus_assault",
+                         "gonodactylus_CS",
+                         "desdinova_HK",
+                         "desdinova_cs",
+                         "desdinova_assault",
+                         "brdy_typheus_support"], # String array
+
+    "cruiserVariants":["nevermore_assault",
+                       "nevermore_advanced",
+                       "brdy_revenant_carrier",
+                       "brdy_revenant_anticap",
+                       "brdy_stenos_exploration",
+                       "brdy_convergence_standard",
+                       "brdy_convergence_frontier",
+                       "brdy_asura_assault",
+                       "brdy_asura_strike"], # String array
+
+    "capitalVariants":["brdy_karkinos_assault",
+                       "brdy_kurmaraja_elite"], # String array
+
+    "startingVariants":["scarab_attack", "brdy_locust_patrol", "brdy_mantis_strike"], # String array
+}

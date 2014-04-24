@@ -41,5 +41,20 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["gemini_Standard"], # String array
+    "tankerVariants":["dram_Light"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["gemini_Standard"], # String array
+
+    "fighterWings":["thunder_wing", "warthog_wing", "gladius_wing"], # String array
+    "frigateVariants":["brawler_Assault", "vigilance_Standard", "brawler_Elite", "brawler_Assault"], # String array
+    "destroyerVariants":["sunder_CS", "hammerhead_Balanced", "gemini_Standard"], # String array
+    "cruiserVariants":["heron_Standard", "apogee_Balanced", "falcon_Attack", "eagle_Assault", "eagle_Balanced"], # String array
+    "capitalVariants":["conquest_Elite"], # String array
+
     "startingVariants":["brawler_Assault", "vigilance_Standard"], # String array
 }

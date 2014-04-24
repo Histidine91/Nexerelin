@@ -41,5 +41,34 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
+    "freighterVariants":["ms_solidarity_Standard"], # String array
+    "tankerVariants":["ms_lambent_Standard"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["ms_potnia_Standard"], # String array
+    "boardingFlagshipVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["ms_charybdis_Balanced", "ms_sargasso_Balanced"], # String array
+
+    "fighterWings":["ms_skinwalker_wing",
+                    "ms_neriad_wing",
+                    "ms_raksasha_wing"], # String array
+
+    "frigateVariants":["ms_enlil_Standard",
+                       "ms_inanna_Standard",
+                       "ms_seski_Standard",
+                       "ms_shamash_Standard"], # String array
+
+    "destroyerVariants":["ms_morningstar_Standard",
+                         "ms_sargasso_Balanced",
+                         "ms_potniaBis_Attack"], # String array
+
+    "cruiserVariants":[ "ms_tartarus_Standard",
+                        "ms_charybdis_Balanced",
+                        "ms_elysium_Standard",
+                        "ms_scylla_Standard"], # String array
+
+    "capitalVariants":["ms_mimir_Standard"], # String array
+
     "startingVariants":["ms_enlil_Standard", "ms_seski_Standard", "ms_shamash_Standard", "ms_inanna_Standard"], # String array
 }

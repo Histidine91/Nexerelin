@@ -2,6 +2,8 @@ package exerelin;
 
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
+import exerelin.utilities.ExerelinUtilsCargo;
+import exerelin.utilities.ExerelinUtilsFleet;
 
 @SuppressWarnings("unchecked")
 public class IndependantTraderSpawnPoint extends BaseSpawnPoint
@@ -37,7 +39,9 @@ public class IndependantTraderSpawnPoint extends BaseSpawnPoint
 		fromStationFactionId = toStation.getOwner().getFactionId();
 
 		// Create fleet
-		CampaignFleetAPI fleet = getSector().createFleet(factionShips, type);
+		CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetForFaction(factionShips, ExerelinUtilsFleet.ExerelinFleetType.LOGISTICS, ExerelinUtilsFleet.ExerelinFleetSize.SMALL);
+        ExerelinUtilsFleet.resetFleetCargoToDefaults(fleet, 0.3f, 0.1f, CargoAPI.CrewXPLevel.REGULAR);
+
 		fleet.setFaction("independent");
 		fleet.setName("Trader");
 		theFleet = fleet;
@@ -111,9 +115,16 @@ public class IndependantTraderSpawnPoint extends BaseSpawnPoint
 						cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, 100);
 						cargo.addMarines(50);
 
-                        ExerelinUtils.addRandomFactionShipsToCargo(cargo, 1,  fromStationFactionId, getSector(), true);
-                        ExerelinUtils.addWeaponsToCargo(cargo,  2, fromStationFactionId,  getSector());
+                        String factionShips = fromStationFactionId;
+                        Boolean includeLargeShips = false;
+                        if(ExerelinUtils.getRandomInRange(0, 1) == 1 && ExerelinUtils.isToreUpPlentyInstalled())
+                        {
+                            factionShips = "scavengers";
+                            includeLargeShips = true;
+                        }
 
+                        ExerelinUtilsCargo.addFactionVariantsToCargo(cargo, factionShips, 1, includeLargeShips);
+                        ExerelinUtilsCargo.addFactionWeaponsToCargo(cargo, factionShips, 2, 2);
 
 						// Finish trading
 						trading = false;
@@ -121,6 +132,7 @@ public class IndependantTraderSpawnPoint extends BaseSpawnPoint
 
 						setStationToTradeWith();
 						setFleetAssignments(theFleet);
+                        ExerelinUtilsFleet.resetFleetCargoToDefaults(theFleet, 0.3f, 0.1f, CargoAPI.CrewXPLevel.REGULAR);
 					}
 				}
 				else
