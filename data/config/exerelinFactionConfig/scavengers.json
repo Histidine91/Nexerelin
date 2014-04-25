@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["raider_wing"], # String array
 
     "troopTransportVariants":["hermit_Basic"], # String array
-    "boardingFlagshipVariants":["hermit_Basic"], # String array
+    "superFreighterVariants":["hermit_Basic"], # String array
 
     "carrierVariants":["damocles_Basic", "lance_Basic", "phoenix_Basic", "rover_Basic", "cormorant_Basic", "hermit_Basic"], # String array
 

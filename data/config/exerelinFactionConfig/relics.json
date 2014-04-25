@@ -45,8 +45,10 @@
     "tankerVariants":[], # String array
     "miningVariantsOrWings":[], # String array
 
-    "troopTransportHulls":[], # String array
-    "boardingFlagshipHulls":[], # String array
+    "troopTransportVariants":[], # String array
+    "superFreighterVariants":[], # String array
+
+    "carrierVariants":[], # String array
 
     "fighterWings":[], # String array
     "frigateVariants":[], # String array

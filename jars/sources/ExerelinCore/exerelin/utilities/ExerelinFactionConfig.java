@@ -58,7 +58,7 @@ public class ExerelinFactionConfig
     public List<String> miningVariantsOrWings = new ArrayList<String>() {};
 
     public List<String> troopTransportVariants = new ArrayList<String>() {};
-    public List<String> boardingFlagshipVariants = new ArrayList<String>() {};
+    public List<String> superFreighterVariants = new ArrayList<String>() {};
 
     public List<String> carrierVariants = new ArrayList<String>() {};
 
@@ -129,7 +129,7 @@ public class ExerelinFactionConfig
             miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
 
             troopTransportVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("troopTransportVariants")));
-            boardingFlagshipVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("boardingFlagshipVariants")));
+            superFreighterVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("superFreighterVariants")));
 
             carrierVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("carrierVariants")));
 

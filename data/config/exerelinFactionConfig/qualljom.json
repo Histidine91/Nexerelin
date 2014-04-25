@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["qua_yidato_standard"], # String array
-    "boardingFlagshipVariants":["qua_cesall_standard"], # String array
+    "superFreighterVariants":["qua_cesall_standard"], # String array
 
     "carrierVariants":["qua_enshy_standard", "qua_enshy_pd", "qua_enshy_support"], # String array
 

@@ -37,7 +37,7 @@ public class ExerelinUtilsCargo
                 switch(rand)
                 {
                     case 1:
-                        variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(factionId, ExerelinUtilsFleet.ExerelinVariantType.BOARDING_FLAGSHIP);
+                        variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(factionId, ExerelinUtilsFleet.ExerelinVariantType.SUPER_FREIGHTER);
                         break;
                     case 2:
                         variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(factionId, ExerelinUtilsFleet.ExerelinVariantType.CARRIER);

@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["valkyrie_Elite"], # String array
-    "boardingFlagshipVariants":["brdy_eschaton_armed"], # String array
+    "superFreighterVariants":["brdy_eschaton_armed"], # String array
 
     "carrierVariants":["brdy_typheus_support", "brdy_convergence_standard", "brdy_convergence_frontier", "brdy_revenant_carrier", "brdy_revenant_anticap"], # String array
 

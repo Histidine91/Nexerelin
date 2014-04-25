@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["pn_mlmv_wing"], # String array
 
     "troopTransportVariants":["pn_valkyrie"], # String array
-    "boardingFlagshipVariants":["atlas_Standard"], # String array
+    "superFreighterVariants":["atlas_Standard"], # String array
 
     "carrierVariants":["pn_tick"], # String array
 

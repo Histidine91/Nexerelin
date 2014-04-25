@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["pb_vanghentmk2_Convoy"], # String array
-    "boardingFlagshipVariants":["atlas_Standard"], # String array
+    "superFreighterVariants":["atlas_Standard"], # String array
 
     "carrierVariants":["pb_trompmk2_Batavian", "pb_trompmk2_Patrol", "pb_trompmk2_Missile", "pb_kareldoorman_Batavian", "pb_kareldoorman_Support", "pb_kareldoorman_Patrol"], # String array
 

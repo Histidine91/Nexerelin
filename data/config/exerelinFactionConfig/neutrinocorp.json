@@ -41,12 +41,12 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["buffalo_Standard"], # String array
+    "freighterVariants":["neutrino_polarity_standard"], # String array
     "tankerVariants":["phaeton_Standard"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["valkyrie_Elite"], # String array
-    "boardingFlagshipVariants":["neutrino_nausicaa_standard", "neutrino_nausicaa2_standard"], # String array
+    "superFreighterVariants":["neutrino_nausicaa_standard", "neutrino_nausicaa2_standard"], # String array
 
     "carrierVariants":["neutrino_theend_standard", "neutrino_hildolfr_standard", "neutrino_jackhammer2_standard"], # String array
 

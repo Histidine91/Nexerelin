@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["valkyrie_Elite"], # String array
-    "boardingFlagshipVariants":["ifed_mazerk_Standard"], # String array
+    "superFreighterVariants":["ifed_mazerk_Standard"], # String array
 
     "carrierVariants":["ifed_zephyr_Strike", "ifed_ares_Standard", "ifed_montana_Utility", "ifed_antares_Assault", "ifed_auria_Standard"], # String array
 

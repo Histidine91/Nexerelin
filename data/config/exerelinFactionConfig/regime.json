@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["valkyrie_Elite"], # String array
-    "boardingFlagshipVariants":["atlas_Standard"], # String array
+    "superFreighterVariants":["atlas_Standard"], # String array
 
     "carrierVariants":["khs_vulture_Fighter_Support", "khs_rukh_Fast_Attack", "khs_seraph_Command"], # String array
 

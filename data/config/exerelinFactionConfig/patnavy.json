@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["valkyrie_Elite"], # String array
-    "boardingFlagshipVariants":["atlas_Standard"], # String array
+    "superFreighterVariants":["atlas_Standard"], # String array
 
     "carrierVariants":["pat_lithuania_patrian", "pat_bastion_patrian", "pat_kortenaer_patrian", "pat_kittyhawk_patrian"], # String array
 

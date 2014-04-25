@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["ms_potnia_Standard"], # String array
-    "boardingFlagshipVariants":["atlas_Standard"], # String array
+    "superFreighterVariants":["atlas_Standard"], # String array
 
     "carrierVariants":["ms_charybdis_Balanced", "ms_sargasso_Balanced"], # String array
 

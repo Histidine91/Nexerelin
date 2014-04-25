@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["hii_saari_Standard"], # String array
-    "boardingFlagshipVariants":["hii_neerin_Standard"], # String array
+    "superFreighterVariants":["hii_neerin_Standard"], # String array
 
     "carrierVariants":["hii_faal-corum_Standard", "hii_saarkin_Standard", "hii_koshiir_Singular", "hii_sajuuk_Singular", "hii_taiid_Standard", "hii_wodaan_Standard", "hii_sajuukkhar_Standard"], # String array
 

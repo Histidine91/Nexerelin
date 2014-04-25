@@ -3,6 +3,7 @@ package exerelin.utilities;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.*;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -39,8 +40,17 @@ public class ExerelinUtilsFleet
         FREIGHTER,
         TANKER,
         TROOP_TRANSPORT,
-        BOARDING_FLAGSHIP,
+        SUPER_FREIGHTER,
         CARRIER
+    }
+
+    public enum ExerelinWarFleetType
+    {
+        RANDOM,
+        CARRIER,
+        LARGE_SHIPS,
+        FRIGATE,
+        MEDIUM_SHIPS
     }
 
     private static int SMALL_FLEET_SUPPLIES_DAY = 10;
@@ -112,8 +122,8 @@ public class ExerelinUtilsFleet
                 return exerelinFactionConfig.tankerVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.tankerVariants.size() - 1));
             case TROOP_TRANSPORT:
                 return exerelinFactionConfig.troopTransportVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.troopTransportVariants.size() - 1));
-            case BOARDING_FLAGSHIP:
-                return exerelinFactionConfig.boardingFlagshipVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.boardingFlagshipVariants.size() - 1));
+            case SUPER_FREIGHTER:
+                return exerelinFactionConfig.superFreighterVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.superFreighterVariants.size() - 1));
             case CARRIER:
                 return exerelinFactionConfig.carrierVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.carrierVariants.size() - 1));
             default:
@@ -298,29 +308,41 @@ public class ExerelinUtilsFleet
     private static void buildAsteroidMiningFleet(CampaignFleetAPI fleet, ExerelinFactionConfig factionConfig)
     {
         String miningVariantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.MINING);
-        String freighterVariantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.FREIGHTER);
 
         FleetMemberAPI newMember = Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, miningVariantId);
         fleet.getFleetData().addFleetMember(newMember);
         newMember = Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, miningVariantId);
         fleet.getFleetData().addFleetMember(newMember);
-        newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, freighterVariantId);
-        fleet.getFleetData().addFleetMember(newMember);
-        newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, freighterVariantId);
-        fleet.getFleetData().addFleetMember(newMember);
+
+        float maxCapacity = fleet.getCargo().getMaxCapacity();
+
+        while(maxCapacity < 400)
+        {
+            String variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.FREIGHTER) ;
+            newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+            fleet.getFleetData().addFleetMember(newMember);
+
+            maxCapacity += newMember.getCargoCapacity();
+        }
     }
 
     private static void buildGasMiningFleet(CampaignFleetAPI fleet, ExerelinFactionConfig factionConfig)
     {
         String miningVariantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.MINING);
-        String tankerVariantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.TANKER);
 
         FleetMemberAPI newMember = Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, miningVariantId);
         fleet.getFleetData().addFleetMember(newMember);
-        newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, tankerVariantId);
-        fleet.getFleetData().addFleetMember(newMember);
-        newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, tankerVariantId);
-        fleet.getFleetData().addFleetMember(newMember);
+
+        float maxFuel = fleet.getCargo().getMaxFuel();
+
+        while(maxFuel < 700)
+        {
+            String variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.TANKER) ;
+            newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+            fleet.getFleetData().addFleetMember(newMember);
+
+            maxFuel += newMember.getFuelCapacity();
+        }
     }
 
     private static void buildLogisticsFleet(CampaignFleetAPI fleet, ExerelinFactionConfig factionConfig)
@@ -336,7 +358,7 @@ public class ExerelinUtilsFleet
 
     private static void buildBoardingFleet(CampaignFleetAPI fleet, ExerelinFactionConfig factionConfig)
     {
-        String boardingFlagshipVariantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.BOARDING_FLAGSHIP);
+        String boardingFlagshipVariantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.SUPER_FREIGHTER);
         String troopTransportVariantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.TROOP_TRANSPORT);
 
         FleetMemberAPI newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, boardingFlagshipVariantId);
@@ -349,38 +371,64 @@ public class ExerelinUtilsFleet
     {
         int maxSuppliesDay = 0;
 
+        List<ExerelinWarFleetType> possibleTypes = new ArrayList<ExerelinWarFleetType>();
+
         switch(fleetSize)
         {
             case SMALL:
                 maxSuppliesDay = SMALL_FLEET_SUPPLIES_DAY;
+                possibleTypes.add(ExerelinWarFleetType.RANDOM);
+                possibleTypes.add(ExerelinWarFleetType.FRIGATE);
                 break;
             case MEDIUM:
                 maxSuppliesDay = MEDIUM_FLEET_SUPPLIES_DAY;
+                possibleTypes.add(ExerelinWarFleetType.RANDOM);
+                possibleTypes.add(ExerelinWarFleetType.FRIGATE);
+                possibleTypes.add(ExerelinWarFleetType.CARRIER);
+                possibleTypes.add(ExerelinWarFleetType.MEDIUM_SHIPS);
                 break;
             case LARGE:
                 maxSuppliesDay = LARGE_FLEET_SUPPLIES_DAY;
+                possibleTypes.add(ExerelinWarFleetType.RANDOM);
+                possibleTypes.add(ExerelinWarFleetType.CARRIER);
+                possibleTypes.add(ExerelinWarFleetType.LARGE_SHIPS);
+                possibleTypes.add(ExerelinWarFleetType.MEDIUM_SHIPS);
                 break;
             case EXTRA_LARGE:
                 maxSuppliesDay = EXTRA_LARGE_FLEET_SUPPLIES_DAY;
+                possibleTypes.add(ExerelinWarFleetType.RANDOM);
+                possibleTypes.add(ExerelinWarFleetType.CARRIER);
+                possibleTypes.add(ExerelinWarFleetType.LARGE_SHIPS);
                 break;
         }
 
-        int rand = 0;
-
-        if(factionConfig.carrierVariants.size() >= (factionConfig.cruiserVariants.size() + factionConfig.destroyerVariants.size())/2)
-            rand = ExerelinUtils.getRandomInRange(1,2); // Lots of carriers, so larger chance of carrier fleet
-        else
-            rand = ExerelinUtils.getRandomInRange(1,3);
-
-        if(rand == 1)
-            ExerelinUtilsFleet.buildCarrierFleet(fleet,  maxSuppliesDay);
-        else
+        if(fleetSize != ExerelinFleetSize.SMALL && (factionConfig.carrierVariants.size() + factionConfig.fighterWings.size()) >= (factionConfig.cruiserVariants.size() + factionConfig.destroyerVariants.size())/2)
         {
-            if(ExerelinUtils.getRandomInRange(1, 3) == 1 && maxSuppliesDay >= LARGE_FLEET_SUPPLIES_DAY)
-                ExerelinUtilsFleet.buildLargeShipFleet(fleet, maxSuppliesDay);
-            else
-                ExerelinUtilsFleet.buildRandomFleet(fleet, maxSuppliesDay);
+            possibleTypes.add(ExerelinWarFleetType.CARRIER);
+            possibleTypes.add(ExerelinWarFleetType.CARRIER);
         }
+
+        ExerelinWarFleetType fleetType = possibleTypes.get(ExerelinUtils.getRandomInRange(0, possibleTypes.size() - 1));
+
+        switch(fleetType)
+        {
+            case RANDOM:
+                ExerelinUtilsFleet.buildRandomFleet(fleet, maxSuppliesDay);
+                break;
+            case FRIGATE:
+                ExerelinUtilsFleet.buildFrigateFleet(fleet, maxSuppliesDay) ;
+                break;
+            case CARRIER:
+                ExerelinUtilsFleet.buildCarrierFleet(fleet,  maxSuppliesDay);
+                break;
+            case LARGE_SHIPS:
+                ExerelinUtilsFleet.buildLargeShipFleet(fleet, maxSuppliesDay);
+                break;
+            case MEDIUM_SHIPS:
+                ExerelinUtilsFleet.buildMediumShipFleet(fleet, maxSuppliesDay);
+                break;
+        }
+
     }
 
     private static void buildCarrierFleet(CampaignFleetAPI fleet, int maxSuppliesDay)
@@ -445,6 +493,43 @@ public class ExerelinUtilsFleet
         }
     }
 
+    private static void buildFrigateFleet(CampaignFleetAPI fleet,  int maxSuppliesDay)
+    {
+        float currentSuppliesDay = 0;
+
+        String variantId = "";
+        FleetMemberAPI member = null;
+
+        while(currentSuppliesDay < maxSuppliesDay)
+        {
+            variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize(fleet.getFaction().getId(), ShipAPI.HullSize.FRIGATE);
+
+            member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+            fleet.getFleetData().addFleetMember(member);
+            currentSuppliesDay += member.getStats().getBaseSupplyUsePerDay().getModifiedValue();
+        }
+    }
+
+    private static void buildMediumShipFleet(CampaignFleetAPI fleet, int maxSuppliesDay)
+    {
+        float currentSuppliesDay = 0;
+
+        String variantId = "";
+        FleetMemberAPI member = null;
+
+        while(currentSuppliesDay < maxSuppliesDay)
+        {
+            if(ExerelinUtils.getRandomInRange(1, 3) == 1)
+                variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize(fleet.getFaction().getId(), ShipAPI.HullSize.CRUISER);
+            else
+                variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize(fleet.getFaction().getId(), ShipAPI.HullSize.DESTROYER);
+
+            member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+            fleet.getFleetData().addFleetMember(member);
+            currentSuppliesDay += member.getStats().getBaseSupplyUsePerDay().getModifiedValue();
+        }
+    }
+
     private static void buildRandomFleet(CampaignFleetAPI fleet, int maxSuppliesDay)
     {
         String randomVariantId = "";
@@ -499,21 +584,27 @@ public class ExerelinUtilsFleet
 
     public static void addFreightersToFleet(CampaignFleetAPI fleet)
     {
-        int numFreightersToAdd;
+        float suppliesDay = fleet.getTotalSupplyCostPerDay();
+        float maxCapacity = fleet.getCargo().getMaxCapacity();
 
-        if(fleet.getFleetData().getFleetPointsUsed() < 40)
-            numFreightersToAdd = 1;
-        else if(fleet.getFleetData().getFleetPointsUsed() < 90)
-            numFreightersToAdd = 2;
-        else
-            numFreightersToAdd = 3;
-
-        for(int i = 0; i < numFreightersToAdd; i++)
+        // Add super freighter to extra large fleets
+        if(suppliesDay >= EXTRA_LARGE_FLEET_SUPPLIES_DAY)
         {
-            String randomFrigateVariantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.FREIGHTER) ;
-            FleetMemberAPI newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, randomFrigateVariantId);
+            String variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.SUPER_FREIGHTER) ;
+            FleetMemberAPI newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
             fleet.getFleetData().addFleetMember(newMember);
         }
+
+        // Fleet should last minimum of 90 days before resupply
+        while(maxCapacity < (suppliesDay * 90))
+        {
+            String variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.FREIGHTER) ;
+            FleetMemberAPI newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+            fleet.getFleetData().addFleetMember(newMember);
+
+            maxCapacity += newMember.getCargoCapacity();
+        }
+
     }
 
     public static void addCapitalShipToFleet(CampaignFleetAPI fleet)

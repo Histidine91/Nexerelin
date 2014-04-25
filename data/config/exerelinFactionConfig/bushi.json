@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["bushi_sangu_Standard"], # String array
-    "boardingFlagshipVariants":["atlas_Standard"], # String array
+    "superFreighterVariants":["atlas_Standard"], # String array
 
     "carrierVariants":["bushi_chigiriki_Standard", "bushi_tanto_Standard", "bushi_kabuto_Standard"], # String array
 

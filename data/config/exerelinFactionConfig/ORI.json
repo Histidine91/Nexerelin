@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["cane_variant"], # String array
-    "boardingFlagshipVariants":["ori_butterflier_variant"], # String array
+    "superFreighterVariants":["ori_butterflier_variant"], # String array
 
     "carrierVariants":["openok_variant", "biom_variant", "atlasfix_variant"], # String array
 

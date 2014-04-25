@@ -46,7 +46,7 @@
     "miningVariantsOrWings":["zorg_sphere_wing"], # String array
 
     "troopTransportVariants":["zorg_auxiliary_Configurated"], # String array
-    "boardingFlagshipVariants":["zorg_auxiliary_Configurated"], # String array
+    "superFreighterVariants":["zorg_auxiliary_Configurated"], # String array
 
     "carrierVariants":["zorg_cube_Configurated", "zorg_pyramid_Configurated"], # String array
 
