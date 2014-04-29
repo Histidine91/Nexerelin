@@ -1,0 +1,70 @@
+{
+    "uniqueModClassName":"data.scripts.ExigencyModPlugin", # String
+    "playableFaction":"true", # Boolean
+
+    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+
+    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
+    "preferredBackgroundImagePath":"", # String
+    "preferredStarType":"", # String
+    "preferredStarLight":"", # String, 0xFFFFFF
+
+    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard"], # String array
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
+
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Splinter Group", # String
+
+    "smallAttackFleetName":"Recon", # String
+    "mediumAttackFleetName":"Battle Group", # String
+    "largeAttackFleetName":"Harbinger Fleet", # String
+
+    "smallDefenceFleetName":"Picket Defense", # String
+    "mediumDefenceFleetName":"Defense Fleet", # String
+    "largeDefenceFleetName":"Bulwark Fleet", # String
+
+    "smallPatrolFleetName":"Lookout", # String
+    "mediumPatrolFleetName":"Patrol Fleet", # String
+    "largePatrolFleetName":"Heavy Patrol", # String
+
+    "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
+    "gasMiningFleetName":"Gas Mining Fleet", # String
+    "logisticsFleetName":"Logistics Convoy", # String
+    "boardingFleetName":"Boarding Fleet", # String
+    "commandFleetName":"Command Fleet", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
+
+    "freighterVariants":["buffalo_Standard"], # String array
+    "tankerVariants":["phaeton_Standard"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "superFreighterVariants":["atlas_Standard"], # String array
+
+    "carrierVariants":["exigency_lightcarrier_Standard", "exigency_carrier_Standard"], # String array
+
+    "fighterWings":["exigency_naxos_wing",
+                    "exigency_kaivor_wing",
+                    "exigency_glynado_wing"], # String array
+
+    "frigateVariants":["exigency_compactfrigate_Standard",
+                        "exigency_indra_Standard",
+                        "exigency_yria_Standard",
+                        "exigency_yria_Attacker"], # String array
+
+    "destroyerVariants":["exigency_lightcarrier_Standard",
+                            "exigency_destroyer_Standard"], # String array
+
+    "cruiserVariants":["exigency_cruiser_Standard"], # String array
+
+    "capitalVariants":["exigency_carrier_Standard"], # String array
+
+    "startingVariants":["exigency_compactfrigate_Standard", "exigency_indra_Standard", "exigency_yria_Standard"], # String array
+}
