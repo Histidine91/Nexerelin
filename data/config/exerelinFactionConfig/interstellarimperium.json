@@ -139,18 +139,8 @@
 					   "ii_olympus_a_sta",
 					   "ii_olympus_t_sta"], # String array
 
-    "startingVariants":["ii_decurion_art",
-						"ii_decurion_ass",
-						"ii_decurion_roc",
-						"ii_decurion_sni",
-						"ii_decurion_sta",
-						"ii_decurion_str",
+    "startingVariants":["ii_decurion_str",
 						"ii_decurion_sup",
 						"ii_invictus_arm",
-						"ii_invictus_art",
-						"ii_invictus_ass",
-						"ii_invictus_eli",
-						"ii_invictus_sta",
-						"ii_invictus_str",
-						"ii_invictus_sup"], # String array
+						"ii_invictus_art"], # String array
 }

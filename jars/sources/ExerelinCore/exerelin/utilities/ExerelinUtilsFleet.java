@@ -595,8 +595,8 @@ public class ExerelinUtilsFleet
             fleet.getFleetData().addFleetMember(newMember);
         }
 
-        // Fleet should last minimum of 90 days before resupply
-        while(maxCapacity < (suppliesDay * 90))
+        // Fleet should last minimum of 120 days before resupply
+        while(maxCapacity < (suppliesDay * 120))
         {
             String variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.FREIGHTER) ;
             FleetMemberAPI newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);

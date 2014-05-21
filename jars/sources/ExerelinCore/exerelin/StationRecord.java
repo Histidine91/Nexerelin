@@ -60,6 +60,8 @@ public class StationRecord
 
     private StationFleetStance stationFleetStance;
 
+    private CargoAPI playerStorage;
+
 	public StationRecord(SectorEntityToken token)
 	{
 		stationToken = token;
@@ -70,6 +72,9 @@ public class StationRecord
         lastBoardAttemptTime = 0;
 
         this.stationFleetStance = StationFleetStance.BALANCED;
+
+        playerStorage = Global.getFactory().createCargo(true);
+        playerStorage.initMothballedShips("neutral");
 	}
 
 	public DiplomacyRecord getOwner()
@@ -913,5 +918,10 @@ public class StationRecord
         int numShips = stationToken.getCargo().getMothballedShips().getMembersListCopy().size();
         if(numShips > 25)
             ExerelinUtils.removeRandomShipsFromCargo(stationToken.getCargo(), numShips - (45 - numShips));
+    }
+
+    public CargoAPI getPlayerStorage()
+    {
+        return this.playerStorage;
     }
 }

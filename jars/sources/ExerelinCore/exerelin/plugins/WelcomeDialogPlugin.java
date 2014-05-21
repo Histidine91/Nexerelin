@@ -58,7 +58,7 @@ public class WelcomeDialogPlugin implements InteractionDialogPlugin
             this.textPanel.addParagraph("");
             this.textPanel.addParagraph("Your goal is to conquer this sector for the " + Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " faction.");
             this.textPanel.addParagraph("");
-            this.textPanel.addParagraph("Your faction has started in " + SectorManager.getCurrentSectorManager().getFactionDirector(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getHomeSystem().getName());
+            this.textPanel.addParagraph("Your faction has started in " + SectorManager.getCurrentSectorManager().getFactionDirector(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getHomeSystem().getName() + ".");
             this.textPanel.addParagraph("");
         }
     }

@@ -53,6 +53,8 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         STANCE_PATROL,
         SET_ALL_IN_SYSTEM,
 
+        ACCESS_PLAYER_STORAGE,
+
         BACK,
         LEAVE,
     }
@@ -218,6 +220,11 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 options.clearOptions();
                 this.createPlayerFleetCommandOptions();
                 break;
+            case ACCESS_PLAYER_STORAGE:
+                StationRecord stationRecord = SystemManager.getSystemManagerForAPI((StarSystemAPI)this.station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(this.station);
+                visual.showLoot("Personal Storage", stationRecord.getPlayerStorage(), this);
+                options.clearOptions();
+                break;
             case BACK:
                 options.clearOptions();
                 createInitialOptions();
@@ -311,13 +318,19 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
         //display diplomacy reports and message history
         if(!station.getFaction().getId().equalsIgnoreCase("abandoned") && !station.getFaction().getId().equalsIgnoreCase("rebel"))
-            options.addOption("Access Intel Reports", OptionId.INTEL);
+            options.addOption("Intel Reports", OptionId.INTEL);
 
         if(station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            options.addOption("Access Station Fleet Command", OptionId.STATION_FLEET_COMMAND);
+            options.addOption("Station Fleet Command", OptionId.STATION_FLEET_COMMAND);
 
         if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 || this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            options.addOption("Access Strategic Fleet Command", OptionId.PLAYER_FLEET_COMMAND);
+            options.addOption("Strategic Fleet Command", OptionId.PLAYER_FLEET_COMMAND);
+
+        if(station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+        {
+            options.addOption("Personal Storage", OptionId.ACCESS_PLAYER_STORAGE);
+            options.setShortcut(OptionId.ACCESS_PLAYER_STORAGE, Keyboard.KEY_P, false, false, false, true);
+        }
 
         if(!ExerelinUtilsPlayer.getPlayerStrategicCommandAccess())
             options.setEnabled(OptionId.PLAYER_FLEET_COMMAND, false);

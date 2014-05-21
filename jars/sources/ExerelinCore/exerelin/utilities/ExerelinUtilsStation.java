@@ -7,10 +7,10 @@ import exerelin.commandQueue.CommandRemoveCargo;
 
 public class ExerelinUtilsStation
 {
-    private static int CREW_INCREMENT = 400;
-    private static float FUEL_INCREMENT = 400;
-    private static float SUPPLIES_INCREMENT = 800;
-    private static int MARINES_INCREMENT = 200;
+    private static int CREW_INCREMENT = 300;
+    private static float FUEL_INCREMENT = 300;
+    private static float SUPPLIES_INCREMENT = 600;
+    private static int MARINES_INCREMENT = 150;
 
     public static ExerelinUtilsFleet.ExerelinFleetSize getSpawnFleetSizeForStation(SectorEntityToken station)
     {
