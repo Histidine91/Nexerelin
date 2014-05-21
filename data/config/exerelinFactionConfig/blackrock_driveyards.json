@@ -70,7 +70,10 @@
                          "desdinova_HK",
                          "desdinova_cs",
                          "desdinova_assault",
-                         "brdy_typheus_support"], # String array
+                         "brdy_typheus_support",
+                         "brdy_scorpion_adv",
+                         "brdy_scorpion_fs",
+                         "brdy_scorpion_standard"], # String array
 
     "cruiserVariants":["nevermore_assault",
                        "nevermore_advanced",

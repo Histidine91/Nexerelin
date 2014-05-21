@@ -1,5 +1,5 @@
 {
-    "uniqueModClassName":"data.scripts.world.defendersGen", # String
+    "uniqueModClassName":"data.scripts.CITModPlugin", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array

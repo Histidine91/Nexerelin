@@ -52,7 +52,8 @@
 
     "fighterWings":["ms_skinwalker_wing",
                     "ms_neriad_wing",
-                    "ms_raksasha_wing"], # String array
+                    "ms_raksasha_wing",
+                    "ms_kobold_wing"], # String array
 
     "frigateVariants":["ms_enlil_Standard",
                        "ms_inanna_Standard",
