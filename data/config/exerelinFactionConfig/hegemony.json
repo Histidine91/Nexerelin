@@ -39,7 +39,7 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "factionsDisliked":["interstellarimperium"], # String array
 
     "freighterVariants":["tarsus_Standard", "mule_Standard"], # String array
     "tankerVariants":["dram_Light"], # String array

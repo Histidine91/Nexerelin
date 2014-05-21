@@ -75,8 +75,7 @@ public class OutSystemStationConstructionFleet
 					else if(((PlanetAPI)theTarget).isGasGiant())
 						orbitRadius = 500;
 
-                    OmniFac factory = new OmniFac(theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Omnifactory", "independent"));
-                    factory.loadSettingsFromJSON("data/config/omnifac_settings.json");
+                    OmniFac factory = new OmniFac(theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Omnifactory", "independent"), "data/config/omnifac_settings.json");
                     theTarget.getContainingLocation().addScript(factory);
                     System.out.println(theFaction + " constructed station ");
 				}
