@@ -20,6 +20,7 @@ public class DiplomacyRecord
 	private int warWeariness = 0;
 	private String[] availableFactions;
 	private String allianceId;
+    private int playerInfluence;
 
 	public DiplomacyRecord(String FactionIdValue, String[] InAvailableFactions)
 	{
@@ -40,7 +41,9 @@ public class DiplomacyRecord
 				gameFactionRelationships.put(availableFactions[i], "0");
 			}
 		}
+
 		warWeariness = ExerelinUtils.getRandomInRange(-5, 0);
+        playerInfluence = 0;
 	}
 
 	public void setFactionRelationship(String otherFactionId, int relationshipValue)
@@ -216,4 +219,14 @@ public class DiplomacyRecord
 	{
 		allianceId = inAllianceId;
 	}
+
+    public int getPlayerInfluence()
+    {
+        return this.playerInfluence;
+    }
+
+    public void setPlayerInfluence(int influence)
+    {
+        this.playerInfluence = influence;
+    }
 }

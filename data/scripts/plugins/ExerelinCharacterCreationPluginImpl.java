@@ -6,6 +6,7 @@ import com.fs.starfarer.api.characters.CharacterCreationPlugin;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import data.scripts.world.exerelin.ExerelinSetupData;
+import exerelin.ExerelinUtils;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
 
@@ -87,6 +88,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 	private ResponseImpl START_SHIP_TOREUPPLENTY = new ResponseImpl("Start with a Tore Up Plenty ship");
 
 	// -- FACTION RESPONSES AUTO GENERATED --
+    private ResponseImpl START_AS_PLAYER_FACTION = new ResponseImpl("Start Unaligned");
 
 	private ResponseImpl NEXT = new ResponseImpl("Next...");
 	private ResponseImpl PREV = new ResponseImpl("Prev...");
@@ -214,6 +216,9 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		}
 		else if (stage == 10)
 		{
+            // Add option for starting unaligned
+            result.add(START_AS_PLAYER_FACTION);
+
             String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
             if(possibleFactions.length > 6)
             {
@@ -370,8 +375,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(ExerelinConfig.playerIsFaction)
-                stage = stage + 3;
 		}
 		else if (response == RESPAWN_ZERO)
 		{
@@ -379,8 +382,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(ExerelinConfig.playerIsFaction)
-                stage = stage + 3;
 		}
 		else if (response == RESPAWN_TWO)
 		{
@@ -388,8 +389,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(ExerelinConfig.playerIsFaction)
-                stage = stage + 3;
 		}
 		else if (response == RESPAWN_FOUR)
 		{
@@ -397,8 +396,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(ExerelinConfig.playerIsFaction)
-                stage = stage + 3;
 		}
 		else if (response == RESPAWN_EIGHT)
 		{
@@ -406,8 +403,6 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(ExerelinConfig.playerIsFaction)
-                stage = stage + 3;
 		}
 		else if (response == RESPAWN_SIXTEEN)
 		{
@@ -415,21 +410,15 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 			
 			if(!isToreUpPlentyInstalled())
 				stage++;
-            else if(ExerelinConfig.playerIsFaction)
-                stage = stage + 3;
 		}
 		else if (response == START_SHIP_FACTION)
 		{
 			factionStartShip = true;
-            if(ExerelinConfig.playerIsFaction)
-                stage = stage + 2;
 		}
 		else if (response == START_SHIP_TOREUPPLENTY)
 		{
 			factionStartShip = false;
 			toreUpPlentyShip = true;
-            if(ExerelinConfig.playerIsFaction)
-                stage = stage + 2;
 		}
 		else if (response == POPULATED_SINGLE)
 		{
@@ -460,19 +449,23 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 
 			stats.addAptitudePoints(3);
 			stats.addSkillPoints(6);
-			String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
-			for(int i = 0; i < possibleFactions.length; i = i + 1)
-			{
-				if(response.getText().equalsIgnoreCase(possibleFactions[i]))
-				{
-					ExerelinSetupData.getInstance().setPlayerFaction(possibleFactions[i]);
-					setStartingShipFromFactionSelection(possibleFactions[i], data);
-					break;
-				}
-			}
 
-            if(ExerelinConfig.playerIsFaction)
+            if(response == START_AS_PLAYER_FACTION)
+            {
                 ExerelinSetupData.getInstance().setPlayerFaction("player");
+                setStartingShipFromFactionSelection("player", data);
+            }
+            else
+            {
+                String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
+                for (int i = 0; i < possibleFactions.length; i = i + 1) {
+                    if (response.getText().equalsIgnoreCase(possibleFactions[i])) {
+                        ExerelinSetupData.getInstance().setPlayerFaction(possibleFactions[i]);
+                        setStartingShipFromFactionSelection(possibleFactions[i], data);
+                        break;
+                    }
+                }
+            }
 
 			if(stage == 11)
 				stage = stage + 1; // Skip next faction selection
@@ -483,8 +476,9 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 	{
 		if(factionStartShip)
 		{
-            if(!ExerelinConfig.playerIsFaction)
+            if(!factionId.equalsIgnoreCase("player"))
             {
+                // Get starting variants for selected faction
                 String[] startingVariants = ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants;
 
                 for(int i = 0; i < ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants.length; i++)
@@ -492,7 +486,28 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
             }
             else
             {
-                data.addStartingShipChoice("wolf_PD");
+                // Get variants for unaligned start
+                int factionShips = 3;
+                if(isToreUpPlentyInstalled())
+                {
+                    // Use tore up plenty if it is installed
+                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
+                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
+                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
+                }
+                else
+                {
+                    factionShips = factionShips + 3;
+                }
+
+                for(int i = 0; i < factionShips; i++)
+                {
+                    // Get some random frigates from possible factions
+                    String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
+                    int rand = ExerelinUtils.getRandomInRange(0, possibleFactions.length - 1);
+
+                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize(possibleFactions[rand], ShipAPI.HullSize.FRIGATE));
+                }
             }
 		}
 		else

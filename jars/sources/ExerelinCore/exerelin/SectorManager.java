@@ -64,7 +64,7 @@ public class SectorManager
             systemManagers[i] = new SystemManager((StarSystemAPI)sector.getStarSystems().get(i));
 
         // Setup a diplomacy manager for the sector
-        diplomacyManager = new DiplomacyManager(sector);
+        diplomacyManager = new DiplomacyManager();
 
         // Setup a list for referencing player-ordered fleets
         playerOrderedFleets = new ArrayList<ExerelinFleetBase>();
@@ -195,7 +195,7 @@ public class SectorManager
     public void checkPlayerHasWon()
     {
         // Check if player is playing as their own faction
-        if(!SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+        if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
             return;
 
         String[] factionsInSector = SectorManager.getCurrentSectorManager().getFactionsInSector();
@@ -203,7 +203,7 @@ public class SectorManager
         if(factionsInSector.length == 1 && factionsInSector[0].equalsIgnoreCase(this.playerFactionId))
         {
             // Player has won
-            Global.getSector().getCampaignUI().addMessage("Your faction has been conquered sector Exerelin!");
+            Global.getSector().getCampaignUI().addMessage("Your faction has conquered sector Exerelin!");
             Global.getSector().getCampaignUI().addMessage("You have won!");
         }
     }
@@ -211,7 +211,7 @@ public class SectorManager
 	public void checkPlayerHasLost()
 	{
         // Check if player is playing as their own faction
-        if(!SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+        if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
            return;
 
         // Check if player fleet is a boarding fleet
@@ -661,5 +661,10 @@ public class SectorManager
     public void setSectorPartiallyPopulated(boolean value)
     {
         sectorPartiallyPopulated = value;
+    }
+
+    public boolean isPlayerInPlayerFaction()
+    {
+        return this.playerFactionId.equalsIgnoreCase("player");
     }
 }

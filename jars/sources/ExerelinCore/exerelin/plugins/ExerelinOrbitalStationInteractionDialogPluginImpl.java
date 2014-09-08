@@ -25,19 +25,19 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
     private static enum OptionId {
         INIT,
         INIT_NO_TEXT,
+
+        STATION_SERVICES,
         TRADE_CARGO,
+        ACCESS_PLAYER_STORAGE,
         TRADE_SHIPS,
         REFIT,
         REPAIR_ALL,
-        PLANT_AGENT,
-        DROP_OFF_PRISONER,
-        PLANT_SABOTEUR,
-        DISPLAY_MESSAGES,
 
         INTEL,
         DISPLAY_ALLIES,
         DISPLAY_ENEMIES,
         DISPLAY_STATION_STATUS,
+        DISPLAY_MESSAGES,
 
         PLAYER_FLEET_COMMAND,
         GAS_MINING_FLEET,
@@ -53,7 +53,11 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         STANCE_PATROL,
         SET_ALL_IN_SYSTEM,
 
-        ACCESS_PLAYER_STORAGE,
+        PLANT_AGENT,
+        DROP_OFF_PRISONER,
+        PLANT_SABOTEUR,
+        JOIN_FACTION,
+        LEAVE_FACTION,
 
         BACK,
         LEAVE,
@@ -111,24 +115,24 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                     visual.showImagePortion("illustrations", "hound_hangar", 800, 800, 0, 0, 400, 400);
                 }
                 break;
+            case STATION_SERVICES:
+                options.clearOptions();
+                this.createStationServicesOptions();
+                break;
             case TRADE_CARGO:
                 addText(getString("tradeCargo"));
-                options.clearOptions();
                 visual.showCore(CoreUITabId.CARGO, station, this);
                 break;
             case TRADE_SHIPS:
                 addText(getString("tradeShips"));
-                options.clearOptions();
                 visual.showCore(CoreUITabId.FLEET, station, this);
                 break;
             case REFIT:
                 addText(getString("refit"));
-                options.clearOptions();
                 visual.showCore(CoreUITabId.REFIT, station, this);
                 break;
             case REPAIR_ALL:
                 performRepairs();
-                createInitialOptions();
                 break;
             case PLANT_AGENT:
                 Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
@@ -225,6 +229,16 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 visual.showLoot("Personal Storage", stationRecord.getPlayerStorage(), this);
                 options.clearOptions();
                 break;
+            case JOIN_FACTION:
+                SectorManager.getCurrentSectorManager().getDiplomacyManager().playerJoinFaction(this.station.getFaction().getId());
+                options.clearOptions();
+                createInitialOptions();
+                break;
+            case LEAVE_FACTION:
+                SectorManager.getCurrentSectorManager().getDiplomacyManager().playerLeaveFaction();
+                options.clearOptions();
+                createInitialOptions();
+                break;
             case BACK:
                 options.clearOptions();
                 createInitialOptions();
@@ -236,29 +250,51 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         }
     }
 
-    private void performRepairs() {
-        addText(getString("repair"));
-        float supplies = playerFleet.getCargo().getSupplies();
-        float needed = playerFleet.getLogistics().getTotalRepairSupplyCost();
-
-        textPanel.highlightLastInLastPara("" + (int) needed, HIGHLIGHT_COLOR);
-
-        for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy()) {
-            member.getStatus().repairFully();
-            float max = member.getRepairTracker().getMaxCR();
-            float curr = member.getRepairTracker().getBaseCR();
-            if (max > curr) {
-                member.getRepairTracker().applyCREvent(max - curr, "Repaired at station");
-            }
-        }
-        if (needed > 0) {
-            playerFleet.getCargo().removeSupplies(needed);
-        }
-    }
-
     private void createInitialOptions() {
         options.clearOptions();
 
+        options.addOption("Station Services", OptionId.STATION_SERVICES);
+
+        if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent") > 0
+                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+            options.addOption("Plant agent on station", OptionId.PLANT_AGENT);
+
+        if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "prisoner") > 0
+                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+            options.addOption("Drop prisoner off at station", OptionId.DROP_OFF_PRISONER);
+
+        if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur") > 0
+                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+            options.addOption("Plant saboteur on station", OptionId.PLANT_SABOTEUR);
+
+
+        //display diplomacy reports and message history
+        if(!station.getFaction().getId().equalsIgnoreCase("abandoned") && !station.getFaction().getId().equalsIgnoreCase("rebel"))
+            options.addOption("Intel Reports", OptionId.INTEL);
+
+        if(station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+            options.addOption("Station Fleet Command", OptionId.STATION_FLEET_COMMAND);
+
+        if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 || this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+            options.addOption("Strategic Fleet Command", OptionId.PLAYER_FLEET_COMMAND);
+
+        if(!ExerelinUtilsPlayer.getPlayerStrategicCommandAccess())
+            options.setEnabled(OptionId.PLAYER_FLEET_COMMAND, false);
+
+        if(!ExerelinUtilsPlayer.getPlayerStationFleetCommandAccess())
+            options.setEnabled(OptionId.STATION_FLEET_COMMAND, false);
+
+        if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
+            options.addOption("Request to join " + this.station.getFaction().getDisplayName(), OptionId.JOIN_FACTION);
+
+        if(SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase(this.station.getFaction().getId()))
+            options.addOption("Leave " + this.station.getFaction().getDisplayName(), OptionId.LEAVE_FACTION);
+
+        options.addOption("Leave Station", OptionId.LEAVE);
+    }
+
+    private void createStationServicesOptions()
+    {
         if (station.getFaction().isNeutralFaction() || station.getFullName().contains("Omnifactory")) {
             options.addOption("Transfer cargo or personnel", OptionId.TRADE_CARGO);
             options.setShortcut(OptionId.TRADE_CARGO, Keyboard.KEY_I, false, false, false, true);
@@ -266,31 +302,18 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             options.setShortcut(OptionId.TRADE_SHIPS, Keyboard.KEY_F, false, false, false, true);
             options.addOption("Make use of the dockyard's refitting facilities", OptionId.REFIT);
             options.setShortcut(OptionId.REFIT, Keyboard.KEY_R, false, false, false, true);
-        } else {
-            if (station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
-                    || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) >= 1 && ExerelinConfig.allowTradeAtAlliedStations)
-                    || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) >= 0 && station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 1 && ExerelinConfig.allowTradeAtNeutralStations)
-                    || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 && ExerelinConfig.allowTradeAtHostileStations))
-            {
-                options.addOption("Trade, or hire personnel", OptionId.TRADE_CARGO);
-                options.setShortcut(OptionId.TRADE_CARGO, Keyboard.KEY_I, false, false, false, true);
-                options.addOption("Buy or sell ships", OptionId.TRADE_SHIPS, null);
-                options.setShortcut(OptionId.TRADE_SHIPS, Keyboard.KEY_F, false, false, false, true);
-                options.addOption("Make use of the dockyard's refitting facilities", OptionId.REFIT);
-                options.setShortcut(OptionId.REFIT, Keyboard.KEY_R, false, false, false, true);
-            }
-
-            if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent") > 0
-                    && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-                options.addOption("Plant agent on station", OptionId.PLANT_AGENT);
-
-            if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "prisoner") > 0
-                    && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-                options.addOption("Drop prisoner off at station", OptionId.DROP_OFF_PRISONER);
-
-            if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur") > 0
-                    && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-                options.addOption("Plant saboteur on station", OptionId.PLANT_SABOTEUR);
+        }
+        else if (station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
+                || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) >= 1 && ExerelinConfig.allowTradeAtAlliedStations)
+                || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) >= 0 && station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 1 && ExerelinConfig.allowTradeAtNeutralStations)
+                || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 && ExerelinConfig.allowTradeAtHostileStations))
+        {
+            options.addOption("Trade, or hire personnel", OptionId.TRADE_CARGO);
+            options.setShortcut(OptionId.TRADE_CARGO, Keyboard.KEY_I, false, false, false, true);
+            options.addOption("Buy or sell ships", OptionId.TRADE_SHIPS, null);
+            options.setShortcut(OptionId.TRADE_SHIPS, Keyboard.KEY_F, false, false, false, true);
+            options.addOption("Make use of the dockyard's refitting facilities", OptionId.REFIT);
+            options.setShortcut(OptionId.REFIT, Keyboard.KEY_R, false, false, false, true);
         }
 
         if (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) >= 1
@@ -316,29 +339,13 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             }
         }
 
-        //display diplomacy reports and message history
-        if(!station.getFaction().getId().equalsIgnoreCase("abandoned") && !station.getFaction().getId().equalsIgnoreCase("rebel"))
-            options.addOption("Intel Reports", OptionId.INTEL);
-
-        if(station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            options.addOption("Station Fleet Command", OptionId.STATION_FLEET_COMMAND);
-
-        if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 || this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            options.addOption("Strategic Fleet Command", OptionId.PLAYER_FLEET_COMMAND);
-
         if(station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
         {
             options.addOption("Personal Storage", OptionId.ACCESS_PLAYER_STORAGE);
             options.setShortcut(OptionId.ACCESS_PLAYER_STORAGE, Keyboard.KEY_P, false, false, false, true);
         }
 
-        if(!ExerelinUtilsPlayer.getPlayerStrategicCommandAccess())
-            options.setEnabled(OptionId.PLAYER_FLEET_COMMAND, false);
-
-        if(!ExerelinUtilsPlayer.getPlayerStationFleetCommandAccess())
-            options.setEnabled(OptionId.STATION_FLEET_COMMAND, false);
-
-        options.addOption("Leave", OptionId.LEAVE);
+        options.addOption("Back", OptionId.BACK);
     }
 
     private void createIntelOptions()
@@ -402,6 +409,26 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         }
 
         options.addOption("Back", OptionId.BACK);
+    }
+
+    private void performRepairs() {
+        addText(getString("repair"));
+        float supplies = playerFleet.getCargo().getSupplies();
+        float needed = playerFleet.getLogistics().getTotalRepairSupplyCost();
+
+        textPanel.highlightLastInLastPara("" + (int) needed, HIGHLIGHT_COLOR);
+
+        for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy()) {
+            member.getStatus().repairFully();
+            float max = member.getRepairTracker().getMaxCR();
+            float curr = member.getRepairTracker().getBaseCR();
+            if (max > curr) {
+                member.getRepairTracker().applyCREvent(max - curr, "Repaired at station");
+            }
+        }
+        if (needed > 0) {
+            playerFleet.getCargo().removeSupplies(needed);
+        }
     }
 
     private OptionId lastOptionMousedOver = null;
@@ -542,6 +569,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         textPanel.addParagraph("Station Efficiency: " + stationEfficiencyPercentage, stationEfficiencyColor);
         textPanel.addParagraph("Station Threat Level: " + threatLevel, threatColor);
         textPanel.addParagraph("Current Station Fleet Behaviour: " + stationRecord.getStationFleetStance().toString());
+        textPanel.addParagraph("Influence with " + this.station.getFaction().getDisplayName() + ": " + SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getPlayerInfluence());
     }
 
     private void setStationStance(StationRecord.StationFleetStance stationFleetStance)

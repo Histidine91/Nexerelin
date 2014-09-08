@@ -15,13 +15,14 @@ import java.awt.*;
 
 	The updateRelationships method should be run each day. It will
 	pick the next faction to update and repeat in a cycle.
+
+	Also handles player influence with factions
  */
 
 public class DiplomacyManager
 {
 	private AllianceManager allianceManager;
 	private DiplomacyRecord[] factionRecords;
-	private SectorAPI sector; //TODO REMOVE
 
 	private final int WAR_LEVEL = -40;
 	private final int ALLY_LEVEL = 40;
@@ -35,7 +36,7 @@ public class DiplomacyManager
 	String factionIdFirst;
 	String factionIdLast;
 
-	public DiplomacyManager(SectorAPI sector)
+	public DiplomacyManager()
 	{
 		allianceManager = new AllianceManager();
 
@@ -54,6 +55,10 @@ public class DiplomacyManager
 	// Check if player has betrayed a faction since last check
 	public void checkBetrayal()
 	{
+        // TODO CAN POSSIBLY BETRAY AS PLAYER FACTION?
+        if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
+            return;
+
 		FactionAPI f1API = Global.getSector().getFaction(playerRecord.getFactionId());
 
 		// Check for betrayal of each faction
@@ -1338,4 +1343,18 @@ public class DiplomacyManager
 
 		return atWar;
 	}
+
+    public void playerLeaveFaction()
+    {
+        SectorManager.getCurrentSectorManager().setPlayerFactionId("player");
+        Global.getSector().getPlayerFleet().setFaction("player");
+        this.playerRecord = null;
+    }
+
+    public void playerJoinFaction(String factionId)
+    {
+        SectorManager.getCurrentSectorManager().setPlayerFactionId(factionId);
+        Global.getSector().getPlayerFleet().setFaction(factionId);
+        this.playerRecord = this.getRecordForFaction(factionId);
+    }
 }

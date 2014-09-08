@@ -95,6 +95,21 @@ public class Exerelin //implements SectorGeneratorPlugin
 		FactionAPI independent = sector.getFaction("independent");
 		rebel.setRelationship(independent.getId(), -1);
         independent.setRelationship(rebel.getId(), -1);
+
+        // Player starting as unaligned so set diplomacy
+        if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
+        {
+            sector.getFaction("player").setRelationship("abandoned", -1);
+            sector.getFaction("player").setRelationship("rebel", -1);
+            sector.getFaction("player").setRelationship("independent", 0);
+            sector.getFaction("player").setRelationship("pirates", -1);
+
+            for(int i = 0; i < factions.length; i = i + 1)
+            {
+                String customRebelFactionId = ExerelinConfig.getExerelinFactionConfig(factions[i]).customRebelFaction;
+                sector.getFaction("player").setRelationship(customRebelFactionId, -1);
+            }
+        }
 	}
 
 	private void initTraderSpawns(SectorAPI sector)
@@ -117,6 +132,11 @@ public class Exerelin //implements SectorGeneratorPlugin
         // Popuate a single station for each starting faction
         String[] factions = sectorManager.getFactionsPossibleInSector();
         int numFactionsInitialStart = Math.min(factions.length - 1, ExerelinSetupData.getInstance().numStartFactions);
+
+        // If player is starting unaligned add one more starting faction
+        if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
+            numFactionsInitialStart++;
+
         for(int i = 0; i < numFactionsInitialStart; i++)
         {
             String factionId = factions[i];
