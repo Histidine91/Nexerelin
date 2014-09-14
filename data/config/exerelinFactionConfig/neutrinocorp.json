@@ -53,7 +53,10 @@
     "fighterWings":["neutrino_drohne_wing",
                     "neutrino_schwarzgeist_wing",
                     "neutrino_floh_wing",
-                    "neutrino_drache_wing",], # String array
+                    "neutrino_drache_wing",
+                    "neutrino_gepard2_wing",
+                    "neutrino_schwarm_wing",
+                    "neutrino_gepard1_wing"], # String array
 
     "frigateVariants":["neutrino_criticality_standard",
                        "neutrino_singularity_balanced",

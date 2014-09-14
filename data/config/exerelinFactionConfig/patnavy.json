@@ -58,7 +58,8 @@
                     "pat_asf16_attack_wing",
                     "pat_asf16_strike_wing",
                     "pat_gac47_attack_wing",
-                    "pat_asf117_strike_wing"], # String array
+                    "pat_asf117_strike_wing",
+                    "pat_src71_recon_wing"], # String array
 
     "frigateVariants":["pat_cloak_hunterkiller",
                        "pat_kortenaer_patrian",

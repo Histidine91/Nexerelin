@@ -48,16 +48,17 @@
     "troopTransportVariants":["valkyrie_Elite"], # String array
     "superFreighterVariants":["atlas_Standard"], # String array
 
-    "carrierVariants":["valk_heron_M", "valk_valkyrie_b_M", "valk_vatican_III_M"], # String array
+    "carrierVariants":["valk_heron_M", "valk_valkyrie_b_M", "valk_vatican_III_M", "valk_sequence_A"], # String array
 
     "fighterWings":["valk_excalibur_corv_wing",
                      "valk_helia_corv_wing",
-                     "valk_ancord_hcorv_wing",
                      "valk_lightning_wing",
                      "valk_azgard_wing",
                      "valk_sahara_wing",
                      "valk_morgiana_wing",
-                     "valk_infinity_ASF_wing"], # String array
+                     "valk_infinity_ASF_wing",
+                     "valk_ancord_H-bomber_wing",
+                     "valk_firefly_wing"], # String array
 
     "frigateVariants":["valk_inquisitor_M",
                         "valk_jenova_ECM",
@@ -79,7 +80,8 @@
                         "valk_nirvana_M",
                         "valk_almire_II_A",
                         "valk_almire_M",
-                        "valk_nirvana_IV_M"], # String array
+                        "valk_nirvana_IV_M",
+                        "valk_sequence_A"], # String array
 
     "capitalVariants":["valk_vatican_IV_A",
                         "valk_vatican_III_M",

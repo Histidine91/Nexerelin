@@ -53,7 +53,8 @@
     "fighterWings":["hii_tarii_wing",
                     "hii_toba_wing",
                     "hii_raachok_wing",
-                    "hii_heeshk_wing"], # String array
+                    "hii_heeshk_wing",
+                    "hii_blaze_wing"], # String array
 
     "frigateVariants":["hii_kaan_Standard",
                        "hii_jet_Standard",

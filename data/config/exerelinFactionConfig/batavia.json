@@ -41,56 +41,49 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["pb_vanghent_Convoy"], # String array
-    "tankerVariants":["pb_gadila_Convoy"], # String array
+    "freighterVariants":["pb_vanghent_Standard"], # String array
+    "tankerVariants":["pb_gadila_Standard"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
-    "troopTransportVariants":["pb_vanghentmk2_Convoy"], # String array
+    "troopTransportVariants":["pb_vanghentmk2_Standard"], # String array
     "superFreighterVariants":["atlas_Standard"], # String array
 
-    "carrierVariants":["pb_trompmk2_Batavian", "pb_trompmk2_Patrol", "pb_trompmk2_Missile", "pb_kareldoorman_Batavian", "pb_kareldoorman_Support", "pb_kareldoorman_Patrol"], # String array
+    "carrierVariants":["pb_trompmk2_Standard", "pb_trompmk2_Support", "pb_kareldoorman_Standard", "pb_kareldoorman_Armoured"], # String array
 
     "fighterWings":["pb_flores_wing",
                     "pb_soemba_wing",
                     "pb_evertsen_wing",
                     "pb_fokker_wing",
-                    "pb_fokkerelite_wing"], # String array
+                    "pb_fokkerelite_wing",
+                    "pb_fokkerbomber_wing"], # String array
 
-    "frigateVariants":[    "pb_java_Patrol",
-                           "pb_java_Strike",
-                           "pb_java_Batavian",
-                           "pb_sumatra_Patrol",
-                           "pb_sumatra_Strike",
-                           "pb_sumatra_Batavian",
-                           "pb_vankinsbergen_Patrol",
-                           "pb_vankinsbergen_Support",
-                           "pb_vankinsbergen_Batavian",
-                           "pb_fokkerblack_Batavian",
-                           "pb_fokkerblack_Shielded"], # String array
+    "frigateVariants":[    "pb_java_Heavy",
+                           "pb_java_Standard",
+                           "pb_sumatra_Assault",
+                           "pb_sumatra_Standard",
+                           "pb_vankinsbergen_FireSupport",
+                           "pb_vankinsbergen_Standard",
+                           "pb_fokkerblack_Elite",
+                           "pb_fokkerblack_Standard",
+                           "pb_aukes_Armoured",
+                           "pb_aukes_Standard"], # String array
 
-    "destroyerVariants":["pb_tromp_Escort",
-                         "pb_tromp_Patrol",
-                         "pb_tromp_Batavian",
-                         "pb_trompmk2_Missile",
-                         "pb_trompmk2_Patrol",
-                         "pb_trompmk2_Batavian"], # String array
+    "destroyerVariants":["pb_tromp_Standard",
+                         "pb_tromp_Support",
+                         "pb_trompmk2_Standard",
+                         "pb_trompmk2_Support"], # String array
 
-    "cruiserVariants":["pb_deruyter_Patrol",
-                       "pb_deruyter_Strike",
-                       "pb_deruyter_Batavian",
-                       "pb_kareldoorman_Patrol",
-                       "pb_kareldoorman_Support",
-                       "pb_kareldoorman_Batavian",
-                       "pb_zwaardvis_Batavian",
-                       "pb_zwaardvis_Convoy",
-                       "pb_zwaardvis_Patrol"], # String array
+    "cruiserVariants":["pb_deruyter_Assault",
+                       "pb_deruyter_Standard",
+                       "pb_kareldoorman_Armoured",
+                       "pb_kareldoorman_Standard",
+                       "pb_zwaardvis_Standard",
+                       "pb_zwaardvis_Fireship"], # String array
 
-    "capitalVariants":["pb_koning_Batavian",
-                       "pb_koning_Patrol",
-                       "pb_eendracht_Missile",
-                       "pb_eendracht_Patrol",
-                       "pb_eendracht_Tactical",
-                       "pb_eendracht_Batavian"], # String array
+    "capitalVariants":["pb_koning_Standard",
+                       "pb_koning_Heavy",
+                       "pb_eendracht_Heavy",
+                       "pb_eendracht_Standard"], # String array
 
-    "startingVariants":["pb_java_Patrol", "pb_sumatra_Strike", "pb_vankinsbergen_Patrol"], # String array
+    "startingVariants":["pb_java_Standard", "pb_sumatra_Standard", "pb_vankinsbergen_Standard"], # String array
 }

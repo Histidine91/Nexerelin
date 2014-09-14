@@ -55,7 +55,8 @@
                     "bushi_suntetsu_wing"], # String array
 
     "frigateVariants":["bushi_yari_Standard",
-                       "bushi_kaiken_Standard"], # String array
+                       "bushi_kaiken_Standard",
+                       "bushi_datsu_Standard"], # String array
 
     "destroyerVariants":[   "bushi_chigiriki_Standard",
                             "bushi_tachi_Standard"], # String array

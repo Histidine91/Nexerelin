@@ -41,7 +41,7 @@
     "factionsLiked":[], # String array
     "factionsDisliked":["hegemony"], # String array
 
-    "freighterVariants":["tarsus_Standard", "mule_Standard"], # String array
+    "freighterVariants":["ii_basileus_f_arm", "ii_basileus_f_art", "ii_basileus_f_eli", "ii_basileus_f_sta"], # String array
     "tankerVariants":["dram_Light"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
@@ -63,7 +63,8 @@
 					"ii_vicarius_s_wing",
 					"ii_vicarius_b_wing",
 					"ii_draconarius_wing",
-					"ii_flamen_wing"], # String array
+					"ii_flamen_wing",
+					"ii_scutum_wing"], # String array
 
     "frigateVariants":["ii_basileus_ass",
                        "ii_basileus_def",
@@ -83,7 +84,10 @@
                        "ii_invictus_eli",
                        "ii_invictus_sta",
                        "ii_invictus_str",
-                       "ii_invictus_sup"], # String array
+                       "ii_invictus_sup",
+                       "ii_maximus_ass",
+                       "ii_maximus_bul",
+                       "ii_maximus_shi"], # String array
 
     "destroyerVariants":["ii_centurion_art",
                          "ii_centurion_ass",

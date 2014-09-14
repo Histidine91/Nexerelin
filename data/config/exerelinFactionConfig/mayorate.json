@@ -1,5 +1,5 @@
 {
-    "uniqueModClassName":"data.scripts.world.rasht", # String
+    "uniqueModClassName":"data.scripts.MayorateModPlugin", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
@@ -41,23 +41,25 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["tarsus_Standard"], # String array
+    "freighterVariants":["ilk_safir_standard"], # String array
     "tankerVariants":["phaeton_Standard"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["valkyrie_Elite"], # String array
     "superFreighterVariants":["atlas_Standard"], # String array
 
-    "carrierVariants":["ilk_jamaran_support", "ilk_esfahan_assault"], # String array
+    "carrierVariants":["ilk_jamaran_support", "ilk_foraker_escort"], # String array
 
-    "fighterWings":["ilk_reaver_wing",
-                    "piranha_wing",
-                    "ilk_inanna_wing"], # String array
+    "fighterWings":["piranha_wing",
+                    "ilk_inanna_wing",
+                    "ilk_angha_wing",
+                    "ilk_raad_wing"], # String array
 
     "frigateVariants":["ilk_lilith_assault"], # String array
 
-    "destroyerVariants":["ilk_esfahan_assault",
-                         "ilk_cimeterre_strike"], # String array
+    "destroyerVariants":["ilk_foraker_escort",
+                         "ilk_cimeterre_strike",
+                         "ilk_safir_converted_support"], # String array
 
     "cruiserVariants":["ilk_del_azarchel_artillery",
                        "ilk_del_azarchel_CS",

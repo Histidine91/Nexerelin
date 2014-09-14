@@ -41,12 +41,9 @@
 			"extraCrewPercent":[0, 0],
 			"marinesPercent":[0, 0],
 			"ships":{
-				"gedune_bakoros_variant":[0, 2],
-				"gedune_bakoros_variant2":[0, 1],
-				"gedune_muragatta_variant":[0, 1],
-				"gedune_tychrea_variant":[0, 2],
-				"gedune_viper_wing":[0, 3]
-				
+				"ged_searcher_tychrea":[0, 2],
+				"ged_assault_bakoros":[0, 1],
+				"gedune_viper_wing":[0, 1],
 			},
 		},
 		"exerelinInSystemSupplyConvoy":{
@@ -57,7 +54,7 @@
             "extraCrewPercent":[80, 80],
             "marinesPercent":[20, 20],
             "ships":{
-                "gedune_mozok_f_variant1":[1, 3],
+                "ged_searcher_tychrea":[1, 3],
             },
         },
 	},

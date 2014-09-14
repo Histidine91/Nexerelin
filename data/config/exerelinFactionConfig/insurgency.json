@@ -41,7 +41,7 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["khs_sirocco_Standard"], # String array
+    "freighterVariants":["khs_sirocco_Standard", "khs_mutt_acehigh"], # String array
     "tankerVariants":["khs_djinn_Standard", "khs_mistral_Light"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 

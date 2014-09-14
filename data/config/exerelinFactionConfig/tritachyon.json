@@ -50,7 +50,7 @@
 
     "carrierVariants":["astral_Elite"], # String array
 
-    "fighterWings":["dagger_wing", "wasp_wing", "xyphos_wing"], # String array
+    "fighterWings":["dagger_wing", "wasp_wing", "xyphos_wing", "longbow_wing", "trident_wing"], # String array
     "frigateVariants":["tempest_Attack", "hyperion_Attack", "wolf_PD", "wolf_CS", "wolf_Assault", "afflictor_Strike", "shade_Assault", "omen_PD"], # String array
     "destroyerVariants":["medusa_CS", "medusa_Attack"], # String array
     "cruiserVariants":["apogee_Balanced", "aurora_Balanced", "doom_Strike"], # String array

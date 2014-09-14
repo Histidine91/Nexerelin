@@ -52,7 +52,10 @@
 
     "fighterWings":["fox_arrowhead_wing",
                     "fox_heak_wing",
-                    "fox_mako_wing"], # String array
+                    "fox_mako_wing",
+                    "fox_bomber_torp_wing",
+                    "fox_bomber_plasma_wing",
+                    "fox_firewall_wing"], # String array
 
     "frigateVariants":[ "Fox_Drone_midlinevariant",
                         "Fox_Drone_elitevariant",
@@ -77,7 +80,7 @@
                         "Fox_Carrier_elitevariant",
                         "Fox_Cruiser_midlinevariant",
                         "Fox_Cruiser_elitevariant",
-                        "Fox_Special_elitevariant"], # String array
+                        "Fox_Dreadnaught_elitevariant"], # String array
 
     "capitalVariants":["Fox_Dreadnaught_elitevariant"], # String array
 

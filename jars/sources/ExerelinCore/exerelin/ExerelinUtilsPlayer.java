@@ -131,22 +131,4 @@ public class ExerelinUtilsPlayer {
 
         return chance;
     }
-
-    public static boolean getPlayerCapitalShipAvailability()
-    {
-        MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
-        return (playerStatsAPI.getSkillLevel("fleet_deployment") >= 2);
-    }
-
-    public static boolean getPlayerStrategicCommandAccess()
-    {
-        MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
-        return (playerStatsAPI.getSkillLevel("fleet_management") >= 4);
-    }
-
-    public static boolean getPlayerStationFleetCommandAccess()
-    {
-        MutableCharacterStatsAPI playerStatsAPI = Global.getSector().getPlayerFleet().getCommanderStats();
-        return (playerStatsAPI.getSkillLevel("fleet_management") >= 2);
-    }
 }

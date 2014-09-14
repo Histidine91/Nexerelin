@@ -481,8 +481,16 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 // Get starting variants for selected faction
                 String[] startingVariants = ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants;
 
-                for(int i = 0; i < ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants.length; i++)
-                    data.addStartingShipChoice(ExerelinConfig.getExerelinFactionConfig(factionId).startingVariants[i]);
+                for(int i = 0; i < startingVariants.length; i++) {
+                    try
+                    {
+                        data.addStartingShipChoice(startingVariants[i]);
+                    }
+                    catch(Exception e)
+                    {
+                        System.out.println("Error loading ship " + startingVariants[i]);
+                    }
+                }
             }
             else
             {
@@ -491,9 +499,15 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 if(isToreUpPlentyInstalled())
                 {
                     // Use tore up plenty if it is installed
-                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
-                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
-                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
+                    try {
+                        data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
+                        data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
+                        data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
+                    }
+                    catch(Exception e)
+                    {
+                        System.out.println("Error loading ship from Tore Up Plenty");
+                    }
                 }
                 else
                 {
@@ -505,8 +519,13 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                     // Get some random frigates from possible factions
                     String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
                     int rand = ExerelinUtils.getRandomInRange(0, possibleFactions.length - 1);
-
-                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize(possibleFactions[rand], ShipAPI.HullSize.FRIGATE));
+                    try {
+                        data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize(possibleFactions[rand], ShipAPI.HullSize.FRIGATE));
+                    }
+                    catch(Exception e)
+                    {
+                        System.out.println("Error loading ship for " + possibleFactions[rand]);
+                    }
                 }
             }
 		}
@@ -514,12 +533,19 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		{
 			if(toreUpPlentyShip)
 			{
-                data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
-                data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
-                data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
-                data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.DESTROYER));
-                data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.DESTROYER));
-                data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.CRUISER));
+                try
+                {
+                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
+                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
+                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.FRIGATE));
+                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.DESTROYER));
+                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.DESTROYER));
+                    data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize("scavengers", ShipAPI.HullSize.CRUISER));
+                }
+                catch(Exception e)
+                {
+                    System.out.println("Error loading ship from Tore Up Plenty");
+                }
 			}
 			else
 			{

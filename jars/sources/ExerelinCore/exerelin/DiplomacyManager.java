@@ -1031,7 +1031,7 @@ public class DiplomacyManager
 		}
 
 		System.out.println(Global.getSector().getFaction(factionId).getDisplayName() + " has joined " + allianceRecord.getAllianceNameAndFactions());
-		if(factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
+		if(playerRecord != null && (factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId)))
 			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has joined " + allianceRecord.getAllianceNameAndFactions(), Color.magenta);
 		else
 			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has joined " + allianceRecord.getAllianceNameAndFactions());
@@ -1061,7 +1061,7 @@ public class DiplomacyManager
                     records[i].getFactionAPI().setRelationship(rec.getFactionId(), 0);
                 }
 
-				if(factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
+				if(playerRecord != null && (factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId)))
 					ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has left " + allianceRecord.getAllianceNameAndFactions(), Color.magenta);
 				else
 					ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has left " + allianceRecord.getAllianceNameAndFactions());
@@ -1072,7 +1072,7 @@ public class DiplomacyManager
 			// Remove faction from alliance and declare war with remaining faction in alliance
 			DiplomacyRecord[] factionRecords = getDiplomacyRecordsForAlliance(allianceId);
 
-			if(factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
+			if(playerRecord != null && (factionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId)))
 				ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has betrayed " + allianceRecord.getAllianceNameAndFactions() + "!", Color.magenta);
 			else
 				ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + " has betrayed " + allianceRecord.getAllianceNameAndFactions() + "!");
@@ -1122,7 +1122,7 @@ public class DiplomacyManager
 		else if(value == 0)
 			innerMessage = " has signed a peace treaty with ";
 
-		if(recordOne.getFactionId().equalsIgnoreCase(playerRecord.getFactionId()) || recordTwo.getFactionId().equalsIgnoreCase(playerRecord.getFactionId()))
+		if(playerRecord != null && (recordOne.getFactionId().equalsIgnoreCase(playerRecord.getFactionId()) || recordTwo.getFactionId().equalsIgnoreCase(playerRecord.getFactionId())))
 			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(recordOne.getFactionId()).getDisplayName() + innerMessage + Global.getSector().getFaction(recordTwo.getFactionId()).getDisplayName(), Color.magenta);
 		else
 			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(recordOne.getFactionId()).getDisplayName() + innerMessage + Global.getSector().getFaction(recordTwo.getFactionId()).getDisplayName());
@@ -1157,7 +1157,7 @@ public class DiplomacyManager
 		else if(value == 0)
 			innerMessage = " has signed a peace treaty with ";
 
-		if(allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceOneId) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceTwoId))
+		if(playerRecord != null && (allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceOneId) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceTwoId)))
 			ExerelinUtilsMessaging.addMessage(allianceOneRecord.getAllianceNameAndFactions() + innerMessage + allianceTwoRecord.getAllianceNameAndFactions(), Color.magenta);
 		else
 			ExerelinUtilsMessaging.addMessage(allianceOneRecord.getAllianceNameAndFactions() + innerMessage + allianceTwoRecord.getAllianceNameAndFactions());
@@ -1186,7 +1186,7 @@ public class DiplomacyManager
 		else if(value == 0)
 			innerMessage = " has signed a peace treaty with ";
 
-		if(factionId.equalsIgnoreCase(playerRecord.getFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
+		if(playerRecord != null && (factionId.equalsIgnoreCase(playerRecord.getFactionId()) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId)))
 			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + innerMessage + allianceRecord.getAllianceNameAndFactions(), Color.magenta);
 		else
 			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(factionId).getDisplayName() + innerMessage + allianceRecord.getAllianceNameAndFactions());
@@ -1222,7 +1222,7 @@ public class DiplomacyManager
 			iRec.getFactionAPI().setRelationship(rec2.getFactionId(), allianceGameRelationship);
 		}
 
-		if(rec1.getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || rec2.getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
+		if(playerRecord != null && (rec1.getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()) || rec2.getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId())))
 			ExerelinUtilsMessaging.addMessage("New alliance " + allianceRecord.getAllianceNameAndFactions() + " has been founded!", Color.magenta);
 		else
 			ExerelinUtilsMessaging.addMessage("New alliance " + allianceRecord.getAllianceNameAndFactions() + " has been founded!");
@@ -1233,7 +1233,7 @@ public class DiplomacyManager
 	{
 		AllianceRecord allianceRecord = allianceManager.getAllianceRecord(allianceId);
 
-		if(allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId))
+		if(playerRecord != null && (allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceId)))
 			ExerelinUtilsMessaging.addMessage("Alliance " + allianceRecord.getAllianceNameAndFactions() + " has been dissolved.", Color.magenta);
 		else
 			ExerelinUtilsMessaging.addMessage("Alliance " + allianceRecord.getAllianceNameAndFactions() + " has been dissolved.");
@@ -1269,7 +1269,7 @@ public class DiplomacyManager
 		AllianceRecord allianceOneRecord = allianceManager.getAllianceRecord(allianceOneId);
 		AllianceRecord allianceTwoRecord = allianceManager.getAllianceRecord(allianceTwoId);
 
-		if(allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceOneId) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceTwoId))
+		if(playerRecord != null && (allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceOneId) || allianceManager.isFactionInAlliance(playerRecord.getFactionId(), allianceTwoId)))
 			ExerelinUtilsMessaging.addMessage("Alliances " + allianceOneRecord.getAllianceNameAndFactions() + " and " + allianceTwoRecord.getAllianceNameAndFactions() + " have joined together!", Color.magenta);
 		else
 			ExerelinUtilsMessaging.addMessage("Alliances " + allianceOneRecord.getAllianceNameAndFactions() + " and " + allianceTwoRecord.getAllianceNameAndFactions() + " have joined together!");
@@ -1310,7 +1310,7 @@ public class DiplomacyManager
 			}
 		}
 
-		if(allianceManager.isFactionInAlliance(playerRecord.getFactionId(), combinedAllianceId))
+		if(playerRecord != null && (allianceManager.isFactionInAlliance(playerRecord.getFactionId(), combinedAllianceId)))
 			ExerelinUtilsMessaging.addMessage(combinedAlliance.getAllianceNameAndFactions() + " has been established as the new alliance!", Color.magenta);
 		else
 			ExerelinUtilsMessaging.addMessage(combinedAlliance.getAllianceNameAndFactions() + " has been established as the new alliance!");

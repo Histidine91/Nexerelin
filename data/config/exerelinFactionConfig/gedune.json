@@ -1,5 +1,5 @@
 {
-    "uniqueModClassName":"data.scripts.world.GeduneGen", # String
+    "uniqueModClassName":"data.scripts.GeduneModPlugin", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
@@ -41,32 +41,37 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["gedune_mozok_f_variant1"], # String array
-    "tankerVariants":["gedune_mozok_t_variant1"], # String array
+    "freighterVariants":["ged_freight_mozok"], # String array
+    "tankerVariants":["ged_infernium_mozok"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["valkyrie_Elite"], # String array
     "superFreighterVariants":["atlas_Standard"], # String array
 
-    "carrierVariants":["gedune_byakuri_variant"], # String array
+    "carrierVariants":["ged_standard_byakuri"], # String array
 
     "fighterWings":["gedune_duri_wing",
-                    "gedune_chua_wing"], # String array
+                    "gedune_chua_wing",
+                    "gedune_dreki_wing",
+                    "gedune_zamau_wing",
+                    "gedune_viper_wing",
+                    "gedune_kakuran_wing"], # String array
 
-    "frigateVariants":[ "gedune_nanda_variant1",
-                        "gedune_kyirus_variant",
-                        "gedune_kitsune_variant_support",
-                        "gedune_kitsune_variant"], # String array
+    "frigateVariants":[ "ged_attack_nanda",
+                        "ged_interceptor_kyirus",
+                        "ged_support_kitsune",
+                        "ged_strike_kitsune_cit"], # String array
 
-    "destroyerVariants":[   "gedune_byakuri_variant",
-                            "gedune_mozok_variant1",
-                            "gedune_dahkan_variant",
-                            "gedune_dahaki_variant2",
-                            "gedune_bakoros_variant"], # String array
+    "destroyerVariants":[   "ged_standard_byakuri",
+                            "ged_stripped_mozok",
+                            "ged_battler_dahkan",
+                            "ged_assault_dahkan",
+                            "ged_killer_dahaki",
+                            "ged_attack_bakoros_cit"], # String array
 
-    "cruiserVariants":["gedune_tenzen_variant"], # String array
+    "cruiserVariants":["ged_assault_tenzin"], # String array
 
-    "capitalVariants":["gedune_tenzen_variant"], # String array
+    "capitalVariants":["ged_assault_tenzin"], # String array
 
-    "startingVariants":["gedune_kyirus_variant", "gedune_kitsune_variant", "gedune_nanda_variant1"], # String array
+    "startingVariants":["ged_interceptor_kyirus", "ged_strike_kitsune_cit", "ged_attack_nanda"], # String array
 }

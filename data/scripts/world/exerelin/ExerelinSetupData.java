@@ -211,10 +211,6 @@ public final class ExerelinSetupData
         if(isFactionInstalled("shadoworder", "data.scripts.world.tadd_ModGen"))
             possibleModdedFactionList.add("shadoworder");
 
-        // Test for Qualljom Society
-        if(isFactionInstalled("qualljom_society", "data.scripts.world.QSGen"))
-            possibleModdedFactionList.add("qualljom_society");
-
         */
 
 		System.out.println("- - - - - - - - - -");
@@ -226,12 +222,12 @@ public final class ExerelinSetupData
 		try
 		{
 			Global.getSettings().getScriptClassLoader().loadClass(factionSpecficClassName);
-			System.out.println(factionId + " installed");
+			System.out.println(factionId + " loaded");
 			return true;
 		}
 		catch (ClassNotFoundException ex)
 		{
-			//System.out.println(factionId + " not installed");
+			System.out.println(factionId + " missing");
 			return false;
 		}
 	}

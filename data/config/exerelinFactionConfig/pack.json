@@ -55,7 +55,10 @@
     "frigateVariants":["pack_wirefox_Assault",
                        "pack_wirefox_Standard",
                        "pack_bedlington_Standard",
-                       "pack_samoyed_decoupled_Standard"], # String array
+                       "pack_samoyed_decoupled_Standard",
+                       "pack_schnauzer_CS",
+                       "pack_schnauzer_PD",
+                       "pack_schnauzer_Standard"], # String array
 
     "destroyerVariants":["pack_sharpei_Assault",
                          "pack_sharpei_Standard",
@@ -68,7 +71,10 @@
                          "pack_BRT_Support",], # String array
 
     "cruiserVariants":["pack_ridgeback_Standard",
-                       "pack_ridgeback_x_Standard",], # String array
+                       "pack_ridgeback_x_Standard",
+                       "pack_mastiff_Assault",
+                       "pack_mastiff_Elite",
+                       "pack_mastiff_Standard"], # String array
 
     "capitalVariants":["pack_ridgeback_x_Standard"], # String array
 

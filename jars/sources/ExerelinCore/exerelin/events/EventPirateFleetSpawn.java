@@ -30,7 +30,7 @@ public class EventPirateFleetSpawn extends EventBase
                 pirateFleetCount++;
 		}
 
-        if(pirateFleetCount > fleets.size() / 2 || !ignoreFleetCount)
+        if((pirateFleetCount > fleets.size() / 3 && !ignoreFleetCount))
             return;
 
         String[] factions = SectorManager.getCurrentSectorManager().getSystemManager(starSystemAPI).getFactionsInSystem();
