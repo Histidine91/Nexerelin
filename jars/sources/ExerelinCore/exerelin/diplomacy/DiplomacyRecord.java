@@ -4,8 +4,11 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import exerelin.ExerelinUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Arrays;
 
 /*	This class is used to store a finer grained faction relationship
 	with other factions.
@@ -186,6 +189,11 @@ public class DiplomacyRecord
 
 		return (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
 	}
+
+    public ArrayList<String> getEnemyFactionsAsList()
+    {
+        return new ArrayList<String>(Arrays.asList(this.getEnemyFactions()));
+    }
 
 	public String[] getNeutralFactions()
 	{

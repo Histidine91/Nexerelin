@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import exerelin.commandQueue.CommandQueue;
 import exerelin.*;
+import exerelin.events.EventPirateFleetSpawn;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinMessageManager;
 
@@ -108,7 +109,13 @@ public class Exerelin //implements SectorGeneratorPlugin
             {
                 String customRebelFactionId = ExerelinConfig.getExerelinFactionConfig(factions[i]).customRebelFaction;
                 sector.getFaction("player").setRelationship(customRebelFactionId, -1);
+                SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(factions[i]).setPlayerInfluence(15);
             }
+        }
+        else
+        {
+            // Player is aligned with a faction so set initial influence
+            SectorManager.getCurrentSectorManager().getDiplomacyManager().playerRecord.setPlayerInfluence(50);
         }
 	}
 
@@ -235,6 +242,20 @@ public class Exerelin //implements SectorGeneratorPlugin
             if((sectorManager.isSectorPartiallyPopulated() && populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size()/2)
                     || populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size())
                 finishedPopulating = true;
+        }
+
+        // Setup some initial pirate spawns
+
+        EventPirateFleetSpawn pirateFleetSpawn = new EventPirateFleetSpawn();
+        List systems = sector.getStarSystems();
+        systemLoop: for(int j = 0; j < systems.size(); j++)
+        {
+            StarSystemAPI systemAPI = (StarSystemAPI)systems.get(j);
+            pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
+            pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
+            pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
+            pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
+            pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
         }
     }
 }

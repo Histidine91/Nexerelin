@@ -28,10 +28,12 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
         STATION_SERVICES,
         TRADE_CARGO,
-        ACCESS_PLAYER_STORAGE,
         TRADE_SHIPS,
         REFIT,
         REPAIR_ALL,
+        ACCESS_PLAYER_STORAGE,
+        STORE_SHIP_PLAYER_HANGER,
+        RETRIEVE_SHIP_PLAYER_HANGER,
 
         INTEL,
         DISPLAY_ALLIES,
@@ -58,6 +60,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         PLANT_SABOTEUR,
         JOIN_FACTION,
         LEAVE_FACTION,
+        LEAVE_FACTION_CONFIRM,
 
         BACK,
         LEAVE,
@@ -103,6 +106,8 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             textPanel.addParagraph(text, Global.getSettings().getColor("buttonText"));
         }
 
+        StationRecord stationRecord = SystemManager.getSystemManagerForAPI((StarSystemAPI)this.station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(this.station);
+
         switch (option) {
             case INIT:
                 addText(getString("approach"));
@@ -122,17 +127,32 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             case TRADE_CARGO:
                 addText(getString("tradeCargo"));
                 visual.showCore(CoreUITabId.CARGO, station, this);
+                options.clearOptions();
+                this.createStationServicesOptions();
                 break;
             case TRADE_SHIPS:
                 addText(getString("tradeShips"));
                 visual.showCore(CoreUITabId.FLEET, station, this);
+                options.clearOptions();
+                this.createStationServicesOptions();
                 break;
             case REFIT:
                 addText(getString("refit"));
                 visual.showCore(CoreUITabId.REFIT, station, this);
+                options.clearOptions();
+                this.createStationServicesOptions();
                 break;
             case REPAIR_ALL:
                 performRepairs();
+                break;
+            case ACCESS_PLAYER_STORAGE:
+                visual.showLoot("Personal Storage", stationRecord.getPlayerStorage(), this);
+                break;
+            case STORE_SHIP_PLAYER_HANGER:
+                this.storeShips();
+                break;
+            case RETRIEVE_SHIP_PLAYER_HANGER:
+                this.retrieveShips(stationRecord.getPlayerStorage());
                 break;
             case PLANT_AGENT:
                 Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
@@ -224,17 +244,15 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 options.clearOptions();
                 this.createPlayerFleetCommandOptions();
                 break;
-            case ACCESS_PLAYER_STORAGE:
-                StationRecord stationRecord = SystemManager.getSystemManagerForAPI((StarSystemAPI)this.station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(this.station);
-                visual.showLoot("Personal Storage", stationRecord.getPlayerStorage(), this);
-                options.clearOptions();
-                break;
             case JOIN_FACTION:
                 SectorManager.getCurrentSectorManager().getDiplomacyManager().playerJoinFaction(this.station.getFaction().getId());
                 options.clearOptions();
                 createInitialOptions();
                 break;
             case LEAVE_FACTION:
+                createLeaveFactionOptions();
+                break;
+            case LEAVE_FACTION_CONFIRM:
                 SectorManager.getCurrentSectorManager().getDiplomacyManager().playerLeaveFaction();
                 options.clearOptions();
                 createInitialOptions();
@@ -253,7 +271,21 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
     private void createInitialOptions() {
         options.clearOptions();
 
+        int influenceWithFaction;
+
+        if(this.station.getFaction().getId().equalsIgnoreCase("independent")
+                || this.station.getFaction().getId().equalsIgnoreCase("neutral"))
+            influenceWithFaction = 25;
+        else
+            influenceWithFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getPlayerInfluence();
+
         options.addOption("Station Services", OptionId.STATION_SERVICES);
+
+        if(influenceWithFaction < 25)
+        {
+            options.setEnabled(OptionId.STATION_SERVICES, false);
+            options.setTooltip(OptionId.STATION_SERVICES, "Influence not high enough. Requires 25.");
+        }
 
         if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent") > 0
                 && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
@@ -278,17 +310,26 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 || this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
             options.addOption("Strategic Fleet Command", OptionId.PLAYER_FLEET_COMMAND);
 
-        if(!ExerelinUtilsPlayer.getPlayerStrategicCommandAccess())
+        if(influenceWithFaction < 75) {
             options.setEnabled(OptionId.PLAYER_FLEET_COMMAND, false);
+            options.setTooltip(OptionId.PLAYER_FLEET_COMMAND, "Influence not high enough. Requires 75.");
+        }
 
-        if(!ExerelinUtilsPlayer.getPlayerStationFleetCommandAccess())
+        if(influenceWithFaction < 100) {
             options.setEnabled(OptionId.STATION_FLEET_COMMAND, false);
+            options.setTooltip(OptionId.STATION_FLEET_COMMAND, "Influence not high enough. Requires 100.");
+        }
 
         if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
             options.addOption("Request to join " + this.station.getFaction().getDisplayName(), OptionId.JOIN_FACTION);
 
         if(SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase(this.station.getFaction().getId()))
             options.addOption("Leave " + this.station.getFaction().getDisplayName(), OptionId.LEAVE_FACTION);
+
+        if(influenceWithFaction < 50){
+            options.setEnabled(OptionId.JOIN_FACTION, false);
+            options.setTooltip(OptionId.JOIN_FACTION, "Influence not high enough. Requires 50.");
+        }
 
         options.addOption("Leave Station", OptionId.LEAVE);
     }
@@ -303,10 +344,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             options.addOption("Make use of the dockyard's refitting facilities", OptionId.REFIT);
             options.setShortcut(OptionId.REFIT, Keyboard.KEY_R, false, false, false, true);
         }
-        else if (station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
-                || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) >= 1 && ExerelinConfig.allowTradeAtAlliedStations)
-                || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) >= 0 && station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 1 && ExerelinConfig.allowTradeAtNeutralStations)
-                || (station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 && ExerelinConfig.allowTradeAtHostileStations))
+        else
         {
             options.addOption("Trade, or hire personnel", OptionId.TRADE_CARGO);
             options.setShortcut(OptionId.TRADE_CARGO, Keyboard.KEY_I, false, false, false, true);
@@ -339,10 +377,20 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             }
         }
 
-        if(station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-        {
-            options.addOption("Personal Storage", OptionId.ACCESS_PLAYER_STORAGE);
-            options.setShortcut(OptionId.ACCESS_PLAYER_STORAGE, Keyboard.KEY_P, false, false, false, true);
+        options.addOption("Personal Storage", OptionId.ACCESS_PLAYER_STORAGE);
+        options.setShortcut(OptionId.ACCESS_PLAYER_STORAGE, Keyboard.KEY_P, false, false, false, true);
+        options.addOption("Store Ships", OptionId.STORE_SHIP_PLAYER_HANGER);
+        options.setTooltip(OptionId.STORE_SHIP_PLAYER_HANGER, "Mothball ships in your personal hanger.");
+        options.addOption("Retrieve Ships", OptionId.RETRIEVE_SHIP_PLAYER_HANGER);
+
+        if(playerFleet.getFleetData().getMembersListCopy().size() == 1) {
+            options.setEnabled(OptionId.STORE_SHIP_PLAYER_HANGER, false);
+            options.setTooltip(OptionId.STORE_SHIP_PLAYER_HANGER, "Not enough ships in fleet.");
+        }
+
+        if(SystemManager.getSystemManagerForAPI((StarSystemAPI)this.station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(this.station).getPlayerStorage().getMothballedShips().getMembersListCopy().size() == 0){
+            options.setEnabled(OptionId.RETRIEVE_SHIP_PLAYER_HANGER, false);
+            options.setTooltip(OptionId.RETRIEVE_SHIP_PLAYER_HANGER, "No ships in hanger.");
         }
 
         options.addOption("Back", OptionId.BACK);
@@ -411,6 +459,12 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         options.addOption("Back", OptionId.BACK);
     }
 
+    private void createLeaveFactionOptions()
+    {
+        options.addOption("Confirm Leave " + this.station.getFaction().getDisplayName(), OptionId.LEAVE_FACTION);
+        options.addOption("Back", OptionId.BACK);
+    }
+
     private void performRepairs() {
         addText(getString("repair"));
         float supplies = playerFleet.getCargo().getSupplies();
@@ -429,6 +483,9 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         if (needed > 0) {
             playerFleet.getCargo().removeSupplies(needed);
         }
+
+        options.clearOptions();
+        this.createStationServicesOptions();
     }
 
     private OptionId lastOptionMousedOver = null;
@@ -499,7 +556,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         {
             // Display enemies
             List<String> enemies = ExerelinUtilsFaction.getFactionsAtWarWithFaction(this.station.getFaction().getId(), true);
-            if(enemies.size() > 0) // Always at war with Rebel, Abandoned
+            if(enemies.size() > 0) // Always at war with Rebel, Abandoned, Pirates
                 textPanel.addParagraph(this.station.getFaction().getDisplayName() + " is currently at war with:");
             else
                 textPanel.addParagraph(this.station.getFaction().getDisplayName() + " has no enemies currently.");
@@ -667,6 +724,91 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         StationAttackFleet stationAttackFleet = new StationAttackFleet(Global.getSector().getPlayerFleet().getFaction().getId(), spawnStation, this.station, spawnStation, false);
         SectorManager.getCurrentSectorManager().addPlayerCommandedFleet(stationAttackFleet);
         Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(80000f);
+    }
+
+    private void storeShips()
+    {
+        List<FleetMemberAPI> members = playerFleet.getFleetData().getMembersListCopy();
+
+        if(members.size() > 1)
+        {
+            dialog.showFleetMemberPickerDialog("Store Ships in Personal Hanger", "Store", "Cancel", 3, 7, 58f, true, true, members,
+                    new FleetMemberPickerListener() {
+                        public void pickedFleetMembers(List<FleetMemberAPI> members) {
+
+                            StationRecord stationRecord = SystemManager.getSystemManagerForAPI((StarSystemAPI)station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(station);
+                            CargoAPI cargo = stationRecord.getPlayerStorage();
+
+                            if (members != null && !members.isEmpty()) {
+                                for (FleetMemberAPI member : members) {
+                                    cargo.getMothballedShips().addFleetMember(member);
+                                    playerFleet.getFleetData().removeFleetMember(member);
+                                    member.getRepairTracker().setCR(1);
+                                }
+                            }
+
+                            textPanel.addParagraph("You leave your hanger.");
+                            options.clearOptions();
+                            createStationServicesOptions();
+                        }
+                        public void cancelledFleetMemberPicking() {
+                            textPanel.addParagraph("You leave your hanger.");
+                        }
+                    });
+        }
+    }
+
+    private void retrieveShips(CargoAPI cargo)
+    {
+        List<FleetMemberAPI> hangerMembers = cargo.getMothballedShips().getMembersListCopy();
+
+        // Create empty dummy fleet
+        CampaignFleetAPI dummyFleet = Global.getSector().createFleet("player", "shuttle");
+        List<FleetMemberAPI> members = dummyFleet.getFleetData().getMembersListCopy();
+        for(FleetMemberAPI member : members) {
+            dummyFleet.getFleetData().removeFleetMember(member);
+        }
+
+        // Move hanger ships into it
+        float numCrewRequired = 0;
+        for(FleetMemberAPI member : hangerMembers) {
+            dummyFleet.getFleetData().addFleetMember(member);
+            member.getRepairTracker().setMothballed(false);
+            member.getRepairTracker().setCR(1);
+            numCrewRequired = numCrewRequired + member.getMinCrew();
+        }
+
+        // Extract hanger list from dummy fleet to clear mothballed flag
+        members = dummyFleet.getFleetData().getMembersListCopy();
+        cargo.addCrew(CargoAPI.CrewXPLevel.GREEN, (int)numCrewRequired);
+
+        if(!members.isEmpty())
+        {
+            dialog.showFleetMemberPickerDialog("Retrieve Ships from Personal Hanger", "Retrieve", "Cancel", 3, 7, 58f, true, true, members,
+                    new FleetMemberPickerListener() {
+                        public void pickedFleetMembers(List<FleetMemberAPI> members) {
+
+                            StationRecord stationRecord = SystemManager.getSystemManagerForAPI((StarSystemAPI)station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(station);
+                            CargoAPI cargo = stationRecord.getPlayerStorage();
+
+                            if (members != null && !members.isEmpty()) {
+                                for (FleetMemberAPI member : members) {
+                                    cargo.getMothballedShips().removeFleetMember(member);
+                                    playerFleet.getFleetData().addFleetMember(member);
+                                    member.getRepairTracker().setCR(1);
+                                }
+                            }
+
+                            textPanel.addParagraph("You leave your hanger.");
+                            options.clearOptions();
+                            createStationServicesOptions();
+                        }
+                        public void cancelledFleetMemberPicking() {
+                            textPanel.addParagraph("You leave your hanger.");
+                        }
+                    });
+        }
+        cargo.removeCrew(CargoAPI.CrewXPLevel.GREEN, (int)numCrewRequired);
     }
 }
 

@@ -10,6 +10,8 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.awt.*;
+import java.util.List;
+import java.util.ArrayList;
 
 /* 	This class manages faction relationships for Exerelin.
 
@@ -1346,6 +1348,13 @@ public class DiplomacyManager
 
     public void playerLeaveFaction()
     {
+        // Clear influence with faction
+        for (DiplomacyRecord record : this.factionRecords)
+        {
+            if(record.getFactionId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+                record.setPlayerInfluence(-25);
+        }
+
         SectorManager.getCurrentSectorManager().setPlayerFactionId("player");
         Global.getSector().getPlayerFleet().setFaction("player");
         this.playerRecord = null;
@@ -1356,5 +1365,43 @@ public class DiplomacyManager
         SectorManager.getCurrentSectorManager().setPlayerFactionId(factionId);
         Global.getSector().getPlayerFleet().setFaction(factionId);
         this.playerRecord = this.getRecordForFaction(factionId);
+
+        // Reset influence with factions not joined
+        for (DiplomacyRecord record : this.factionRecords)
+        {
+            if(!record.getFactionId().equalsIgnoreCase(factionId) && record.getPlayerInfluence() > 0)
+                record.setPlayerInfluence(0);
+        }
+    }
+
+    public void applyInfluenceChangeForWonEncounter(String targetedFaction, int amount, ArrayList<String> factionsInSystem)
+    {
+        for(DiplomacyRecord diplomacyRecord : this.factionRecords)
+        {
+            if(targetedFaction.equalsIgnoreCase("pirates")
+                    || targetedFaction.equalsIgnoreCase("rebel")
+                    || ExerelinConfig.getAllCustomFactionRebels().contains(targetedFaction))
+            {
+                // Pirate/Rebels destroyed so increase influence with factions resident in system
+                if(factionsInSystem.contains(diplomacyRecord.getFactionId()))
+                {
+                    diplomacyRecord.setPlayerInfluence(diplomacyRecord.getPlayerInfluence() + amount);
+                }
+            }
+            else if(factionsInSystem.contains(diplomacyRecord.getFactionId()))
+            {
+                // Check if faction destroyed is enemy of factions in system
+                if(diplomacyRecord.getEnemyFactionsAsList().contains(targetedFaction))
+                {
+                    diplomacyRecord.setPlayerInfluence(diplomacyRecord.getPlayerInfluence() + amount);
+                }
+
+                // Reduce influence with destroyed faction (half)
+                if(diplomacyRecord.getFactionId().equalsIgnoreCase(targetedFaction))
+                {
+                    diplomacyRecord.setPlayerInfluence(diplomacyRecord.getPlayerInfluence() - amount/2);
+                }
+            }
+        }
     }
 }

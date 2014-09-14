@@ -9,10 +9,6 @@
     "minimumStations": 5, # Integer
     "minimumAsteroidBelts": 0, # Integer
 
-    "allowTradeAtAlliedStations":true, # Boolean
-    "allowTradeAtNeutralStations":false, # Boolean
-    "allowTradeAtHostileStations":false, # Boolean
-
     "reduceSupplies":true, # Boolean
     "capSupplyDropToCargo":true, # Boolean, only used if reduceSupplies is true, cap = cargo*1.5
     "reduceSuppliesFactor":1.0, # Double, only used if reduceSupplies is true, applied after cap to cargo
@@ -22,7 +18,6 @@
     "fleetCostResource": "supplies", # String
     "miningAmountPerDayPerMiner": 50, # Integer
 
-    "playerIsFaction": "false", # Boolean, EXPIREMENTAL
     "playerBaseWage": 1000, # Integer
     "playerFactionFreeTransfer":false, # Boolean, DOESN'T WORK UNTIL FREETRANSFER IS FIXED
 

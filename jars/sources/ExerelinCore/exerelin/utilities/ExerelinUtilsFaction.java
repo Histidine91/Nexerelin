@@ -40,6 +40,7 @@ public class ExerelinUtilsFaction {
                 {
                     if(potentialWarCandidate.getId().equalsIgnoreCase("rebel")
                             || potentialWarCandidate.getId().equalsIgnoreCase("abandoned")
+                            || potentialWarCandidate.getId().equalsIgnoreCase("pirates")
                             || ExerelinUtilsHelper.doesStringArrayContainValue(potentialWarCandidate.getId(), ExerelinConfig.neutralFactions, false)
                             || ExerelinUtilsHelper.doesStringArrayContainValue(potentialWarCandidate.getId(), ExerelinConfig.getAllCustomFactionRebels().toArray(new String[]{}), false))
                     {

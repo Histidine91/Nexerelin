@@ -31,14 +31,14 @@ public class SystemEventManager
 	public void runEvents()
 	{
         // Spawn rebel and pirate in system
-        if(ExerelinUtils.getRandomInRange(0, 10) == 0)
+        if(ExerelinUtils.getRandomInRange(0, 5) == 0)
         {
             if(ExerelinConfig.enableThreading)
                 {
                 Thread spawnEventFleetThread = new Thread("spawnEventFleetThread"){
                     public void run()
                     {
-                        eventPirateFleetSpawn.spawnPirateFleet(starSystemAPI);
+                        eventPirateFleetSpawn.spawnPirateFleet(starSystemAPI, false);
                         eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
                     }
                 };
@@ -47,7 +47,7 @@ public class SystemEventManager
             }
             else
             {
-                eventPirateFleetSpawn.spawnPirateFleet(starSystemAPI);
+                eventPirateFleetSpawn.spawnPirateFleet(starSystemAPI, false);
                 eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
             }
             //waitTime = betweenEventWait;

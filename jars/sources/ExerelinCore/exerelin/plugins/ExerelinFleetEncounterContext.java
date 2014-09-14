@@ -8,12 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CargoStackAPI;
-import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
-import com.fs.starfarer.api.campaign.FleetDataAPI;
-import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.PostEngagementOption;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.PursuitOption;
@@ -30,7 +25,12 @@ import com.fs.starfarer.api.fleet.FleetGoal;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.loading.VariantSource;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinUtils;
+import exerelin.SectorManager;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinMessageManager;
+import exerelin.utilities.ExerelinUtilsMessaging;
+import org.lwjgl.Sys;
 
 public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugin {
 
@@ -1156,6 +1156,16 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
 
             suppliesToAdd = suppliesToAdd*(float)ExerelinConfig.reduceSuppliesFactor;
             suppliesSalvaged = suppliesToAdd;
+        }
+
+        // EXERELIN edit
+        if(didPlayerWinEncounter())
+        {
+            int influenceChange = 0;
+            influenceChange = influenceChange +  getLoserData().getDisabledInLastEngagement().size();
+            influenceChange = influenceChange +  getLoserData().getDestroyedInLastEngagement().size();
+
+            SectorManager.getCurrentSectorManager().getDiplomacyManager().applyInfluenceChangeForWonEncounter(loser.getFleet().getFaction().getId(), influenceChange, SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI) winner.getFleet().getContainingLocation()).getFactionInSystemAsList());
         }
 
         loot.addSupplies((int)suppliesSalvaged);

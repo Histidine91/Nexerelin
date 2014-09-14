@@ -343,7 +343,6 @@ public class SectorManager
                 playerMovedToSpawnLocation = true;
                 System.out.println("Set player initial fleet");
 
-
                 // Start of game, player fleet is last to be spawned so set last faction spawn time as this
                 this.lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
 

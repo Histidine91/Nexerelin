@@ -240,7 +240,6 @@ public class ExerelinUtilsFleet
             default:
                 return exerelinFactionConfig.frigateVariants.size() > 0;
         }
-
     }
 
     public static CampaignFleetAPI createPirateFleet(String[] factions, int size)

@@ -18,7 +18,7 @@ public class EventPirateFleetSpawn extends EventBase
 		setType(this.getClass().getName());
 	}
 
-	public void spawnPirateFleet(StarSystemAPI starSystemAPI)
+	public void spawnPirateFleet(StarSystemAPI starSystemAPI, Boolean ignoreFleetCount)
 	{
         // Get count of current rebel fleets in system
         int pirateFleetCount = 0;
@@ -26,11 +26,11 @@ public class EventPirateFleetSpawn extends EventBase
 		for(int i = 0; i < fleets.size(); i++)
 		{
 			CampaignFleetAPI fleet = (CampaignFleetAPI)fleets.get(i);
-            if(fleet.getFaction().getId().equalsIgnoreCase("pirate"))
+            if(fleet.getFaction().getId().equalsIgnoreCase("pirates"))
                 pirateFleetCount++;
 		}
 
-        if(pirateFleetCount > fleets.size() / 3)
+        if(pirateFleetCount > fleets.size() / 2 || !ignoreFleetCount)
             return;
 
         String[] factions = SectorManager.getCurrentSectorManager().getSystemManager(starSystemAPI).getFactionsInSystem();

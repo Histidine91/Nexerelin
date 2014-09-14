@@ -3,6 +3,7 @@ package exerelin;
 import com.fs.starfarer.api.campaign.*;
 
 import java.awt.*;
+import java.util.*;
 
 public class SystemManager
 {
@@ -82,6 +83,11 @@ public class SystemManager
 	{
 		return systemStationManager.getFactionsOwningStations();
 	}
+
+    public ArrayList<String> getFactionInSystemAsList()
+    {
+        return new ArrayList<String>(Arrays.asList(this.getFactionsInSystem()));
+    }
 
     public SectorEntityToken getStationTokenForXY(float x, float y, float maxOffset)
     {

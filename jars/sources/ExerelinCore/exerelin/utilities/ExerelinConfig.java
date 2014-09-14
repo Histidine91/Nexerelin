@@ -27,11 +27,6 @@ public class ExerelinConfig
     // Randomise the location of the omnifactory
     public static boolean randomOmnifactoryLocation = false;
 
-    // Trading control
-    public static boolean allowTradeAtAlliedStations = true;
-    public static boolean allowTradeAtNeutralStations = false;
-    public static boolean allowTradeAtHostileStations = false;
-
     // Supply reduction
     public static boolean reduceSupplies = true;
     public static boolean capSupplyDropToCargo = true;
@@ -49,7 +44,6 @@ public class ExerelinConfig
     public static int miningAmountPerDayPerMiner = 50;
 
     // Player settings
-    public static boolean playerIsFaction = false;
     public static int playerBaseWage = 1000;
     public static boolean playerFactionFreeTransfer = false;
 
@@ -75,10 +69,6 @@ public class ExerelinConfig
 
             randomOmnifactoryLocation = settings.getBoolean("randomOmnifactoryLocation");
 
-            allowTradeAtAlliedStations = settings.getBoolean("allowTradeAtAlliedStations");
-            allowTradeAtNeutralStations = settings.getBoolean("allowTradeAtNeutralStations");
-            allowTradeAtHostileStations = settings.getBoolean("allowTradeAtHostileStations");
-
             reduceSupplies = settings.getBoolean("reduceSupplies");
             capSupplyDropToCargo = settings.getBoolean("capSupplyDropToCargo");
             reduceSuppliesFactor = settings.getDouble("reduceSuppliesFactor");
@@ -92,7 +82,6 @@ public class ExerelinConfig
             fleetCostResource = settings.getString("fleetCostResource");
             miningAmountPerDayPerMiner = settings.getInt("miningAmountPerDayPerMiner");
 
-            playerIsFaction = settings.getBoolean("playerIsFaction");
             playerBaseWage = settings.getInt("playerBaseWage");
             playerFactionFreeTransfer = settings.getBoolean("playerFactionFreeTransfer");
 
