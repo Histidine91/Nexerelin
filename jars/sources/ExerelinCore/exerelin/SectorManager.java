@@ -49,6 +49,8 @@ public class SectorManager
 
     private List<ExerelinFleetBase> playerOrderedFleets;
 
+    private Boolean initialCheckComplete = false;
+
 	public SectorManager()
 	{
         // Empty Constructor
@@ -350,6 +352,13 @@ public class SectorManager
             }
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.0f, CargoAPI.CrewXPLevel.GREEN);
 		}
+
+        if(!initialCheckComplete)
+        {
+            // Reset cargo
+            ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.0f, CargoAPI.CrewXPLevel.GREEN);
+            initialCheckComplete = true;
+        }
 
         // Player clicked target so save for usage
         // Don't reset for asteroids
