@@ -3,6 +3,7 @@ package exerelin.plugins;
 import java.awt.Color;
 
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.combat.WeaponAPI;
 import exerelin.*;
 import exerelin.fleets.AsteroidMiningFleet;
 import exerelin.fleets.StationAttackFleet;
@@ -76,6 +77,8 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
     private static final Color HIGHLIGHT_COLOR = Global.getSettings().getColor("buttonShortcut");
 
+    private CargoAPI restrictedItems;
+
     public void init(InteractionDialogAPI dialog) {
         this.dialog = dialog;
         textPanel = dialog.getTextPanel();
@@ -90,6 +93,10 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         dialog.setOptionOnEscape("Leave", OptionId.LEAVE);
 
         optionSelected(null, OptionId.INIT);
+
+        restrictedItems = Global.getFactory().createCargo(true);
+        restrictedItems.initMothballedShips("neutral");
+        this.removeRestrictedCargo();
     }
 
     private EngagementResultAPI lastResult = null;
@@ -262,6 +269,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 createInitialOptions();
                 break;
             case LEAVE:
+                this.restoreRestrictedCargo();
                 Global.getSector().setPaused(false);
                 dialog.dismiss();
                 break;
@@ -809,6 +817,91 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                     });
         }
         cargo.removeCrew(CargoAPI.CrewXPLevel.GREEN, (int)numCrewRequired);
+    }
+
+    private void removeRestrictedCargo()
+    {
+        if(this.station.getFaction().getId().equalsIgnoreCase("independent")
+                || this.station.getFaction().getId().equalsIgnoreCase("neutral"))
+            return; // Ignore for independant/neutral station
+
+         int influenceWithFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getPlayerInfluence();
+
+        if(influenceWithFaction < 60
+                && station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+            influenceWithFaction = 60; // If member of faction then treat as if 60 influence
+
+        if(influenceWithFaction < 30)
+        {
+            // Remove destroyers
+            List<FleetMemberAPI> members = station.getCargo().getMothballedShips().getMembersListCopy();
+            for(FleetMemberAPI member : members)
+            {
+                if(member.isDestroyer())
+                {
+                    station.getCargo().getMothballedShips().removeFleetMember(member);
+                    restrictedItems.getMothballedShips().addFleetMember(member);
+                }
+            }
+        }
+
+        if(influenceWithFaction < 40)
+        {
+            // Remove fighters
+            List<FleetMemberAPI> members = station.getCargo().getMothballedShips().getMembersListCopy();
+            for(FleetMemberAPI member : members)
+            {
+                if(member.isFighterWing())
+                {
+                    station.getCargo().getMothballedShips().removeFleetMember(member);
+                    restrictedItems.getMothballedShips().addFleetMember(member);
+                }
+            }
+        }
+
+        if(influenceWithFaction < 60)
+        {
+            // Remove large weapons
+            // NOT SURE HOW TO DO THIS
+        }
+
+        if(influenceWithFaction < 80)
+        {
+            // Remove cruisers
+            List<FleetMemberAPI> members = station.getCargo().getMothballedShips().getMembersListCopy();
+            for(FleetMemberAPI member : members)
+            {
+                if(member.isCruiser())
+                {
+                    station.getCargo().getMothballedShips().removeFleetMember(member);
+                    restrictedItems.getMothballedShips().addFleetMember(member);
+                }
+            }
+        }
+
+        if(influenceWithFaction < 120)
+        {
+            // Remove capitals
+            List<FleetMemberAPI> members = station.getCargo().getMothballedShips().getMembersListCopy();
+            for(FleetMemberAPI member : members)
+            {
+                if(member.isCapital())
+                {
+                    station.getCargo().getMothballedShips().removeFleetMember(member);
+                    restrictedItems.getMothballedShips().addFleetMember(member);
+                }
+            }
+        }
+    }
+
+    private void restoreRestrictedCargo()
+    {
+        List<FleetMemberAPI> members = restrictedItems.getMothballedShips().getMembersListCopy();
+        for(FleetMemberAPI member : members)
+        {
+            restrictedItems.getMothballedShips().removeFleetMember(member);
+            station.getCargo().getMothballedShips().addFleetMember(member);
+        }
     }
 }
 
