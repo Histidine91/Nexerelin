@@ -10,8 +10,8 @@ public class ActiveDiplomacyPerk1 implements CharacterStatsSkillEffect {
     {
         if(SectorManager.getCurrentSectorManager() != null && !SectorManager.getCurrentSectorManager().getSaboteurPerkTriggered())
         {
-            SectorManager.getCurrentSectorManager().getSectorEventManager().triggerEvent("saboteur");
-            SectorManager.getCurrentSectorManager().getSectorEventManager().triggerEvent("saboteur");
+            //SectorManager.getCurrentSectorManager().getSectorEventManager().triggerEvent("saboteur");
+            //SectorManager.getCurrentSectorManager().getSectorEventManager().triggerEvent("saboteur");
             SectorManager.getCurrentSectorManager().setSaboteurPerkTriggered(true);
         }
     }

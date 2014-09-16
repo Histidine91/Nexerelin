@@ -21,7 +21,7 @@ public class SectorEventManager
             return;
         }
 
-        float extraChance = ExerelinUtilsPlayer.getPlayerDiplomacyObjectCreationBonus();
+        /*float extraChance = ExerelinUtilsPlayer.getPlayerDiplomacyObjectCreationBonus();
 
         if(ExerelinUtils.getRandomInRange(0,(int)(55*(1.0f - extraChance))) == 0
                 && !eventAddObjectToStorage.getType().equalsIgnoreCase(lastEventType))
@@ -49,15 +49,15 @@ public class SectorEventManager
             waitTime = betweenEventWait;
             //lastEventType = eventAddObjectToStorage.getType();
             lastEventType = "";
-        }
+        }*/
     }
 
-    public void triggerEvent(String eventType)
+    /*public void triggerEvent(String eventType)
     {
         if(eventType.equalsIgnoreCase("saboteur"))
             eventAddObjectToStorage.addSabateurToStorageFacility();
 
         if(eventType.equalsIgnoreCase("eliteShip"))
             eventAddObjectToStorage.addEliteShipToStorage();
-    }
+    }*/
 }

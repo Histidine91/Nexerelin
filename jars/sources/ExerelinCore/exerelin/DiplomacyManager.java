@@ -696,10 +696,8 @@ public class DiplomacyManager
 		}
 
 		if(event.equalsIgnoreCase("prisoner"))
-		{
-			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " prisoner exchange has been accepted and " + Global.getSector().getFaction(factionId).getDisplayName() + " is pleased", Color.magenta);
 			relChange = 20;
-		}
+
 
 		System.out.println(event + " for " + factionId + " and " + otherFactionId);
 		factionRecord.addToFactionRelationship(otherFactionId, relChange) ;

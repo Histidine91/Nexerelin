@@ -473,6 +473,21 @@ public class StationRecord
             ExerelinUtilsCargo.addFactionWeaponsToCargo(stationCargo, owningFaction.getFactionId(), 2, 2);
 		}
 
+        if(efficiency > 0.8)
+        {
+            float numSaboteurs = this.getStationToken().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur");
+            float numAgents = this.getStationToken().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent");
+
+            if(ExerelinUtils.getRandomInRange(0, 50) == 0)
+            {
+                this.getStationToken().getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", numSaboteurs);
+            }
+            if(ExerelinUtils.getRandomInRange(0, 40) == 0)
+            {
+                this.getStationToken().getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "agent", numAgents);
+            }
+        }
+
         // Update efficiency
         float baseEfficiency = 1.0f;
         if(this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
@@ -754,74 +769,6 @@ public class StationRecord
 			return "planet";
 	}
 
-	public void checkForPlayerItems()
-	{
-		if(this.getOwner() != null && !this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
-		{
-			float numAgents = stationCargo.getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent");
-			float numPrisoners = stationCargo.getQuantity(CargoAPI.CargoItemType.RESOURCES, "prisoner");
-            float numSabateurs = stationCargo.getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur");
-
-			if(numAgents > 0)
-			{
-				if(ExerelinUtils.getRandomInRange(0, 9) != 0)
-				{
-					String otherFactionId = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRandomNonEnemyFactionIdForFaction(this.getOwner().getFactionId());
-					if(otherFactionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
-						otherFactionId = "";
-
-					if(otherFactionId.equalsIgnoreCase(""))
-					{
-						ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " agent has failed in their mission.", Color.magenta);
-						stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
-						return;
-					}
-
-                    SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), otherFactionId, "agent");
-
-                    if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
-                        ExerelinUtilsMessaging.addMessage("The agent was not discovered and will repeat their mission.", Color.magenta);
-                    else
-                        stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
-					return;
-				}
-				else
-				{
-                    SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), SectorManager.getCurrentSectorManager().getPlayerFactionId(), "agentCapture");
-                    stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
-					return;
-				}
-			}
-
-			if(numPrisoners > 0)
-			{
-                SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.getOwner().getFactionId(), SectorManager.getCurrentSectorManager().getPlayerFactionId(), "prisoner");
-                if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
-                    ExerelinUtilsMessaging.addMessage("The prisoner is extremely valuable and will be interrogated further.", Color.magenta);
-                else
-                    stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
-				return;
-			}
-
-            if(numSabateurs > 0)
-            {
-                ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " sabateur has caused a station explosion at " + this.getStationToken().getName() + ".", Color.magenta);
-                lastBoardAttemptTime = Global.getSector().getClock().getTimestamp();
-                this.efficiency = 0.1f;
-                ExerelinUtils.removeRandomShipsFromCargo(this.stationCargo, this.stationCargo.getMothballedShips().getMembersListCopy().size());
-                ExerelinUtils.removeRandomWeaponStacksFromCargo(this.stationCargo, this.stationCargo.getWeapons().size());
-                ExerelinUtils.decreaseCargo(this.stationCargo, "marines", (int)(this.stationCargo.getMarines() * 0.9));
-                ExerelinUtils.decreaseCargo(this.stationCargo, "supplies", (int)(this.stationCargo.getSupplies() * 0.9));
-                ExerelinUtils.decreaseCargo(this.stationCargo, "crewRegular", (int)(this.stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR)*0.9));
-                ExerelinUtils.decreaseCargo(this.stationCargo, "fuel", (int)(this.stationCargo.getFuel()*0.9));
-                if(ExerelinUtils.getRandomInRange(0, 99) <= (-1 + (ExerelinUtilsPlayer.getPlayerDiplomacyObjectReuseChance()*100)))
-                    ExerelinUtilsMessaging.addMessage("The saboteur was not discoverd and will repeat their mission.", Color.magenta);
-                else
-                    stationCargo.removeItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
-            }
-		}
-	}
-
     // Set the station being boarded
     public void setIsBeingBoarded(Boolean beingBoarded)
     {
@@ -923,5 +870,10 @@ public class StationRecord
     public CargoAPI getPlayerStorage()
     {
         return this.playerStorage;
+    }
+
+    public void setLastBoardAttemptTime(long timestamp)
+    {
+        this.lastBoardAttemptTime = timestamp;
     }
 }

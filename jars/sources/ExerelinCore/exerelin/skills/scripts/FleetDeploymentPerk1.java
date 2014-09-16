@@ -10,7 +10,7 @@ public class FleetDeploymentPerk1 implements CharacterStatsSkillEffect {
     {
         if(SectorManager.getCurrentSectorManager() != null && !SectorManager.getCurrentSectorManager().getEliteShipPerkTriggered())
         {
-            SectorManager.getCurrentSectorManager().getSectorEventManager().triggerEvent("eliteShip");
+           // SectorManager.getCurrentSectorManager().getSectorEventManager().triggerEvent("eliteShip");
             SectorManager.getCurrentSectorManager().setEliteShipPerkTriggered(true);
         }
     }

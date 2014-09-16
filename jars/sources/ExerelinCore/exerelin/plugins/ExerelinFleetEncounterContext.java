@@ -1166,6 +1166,21 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
             influenceChange = influenceChange +  getLoserData().getDestroyedInLastEngagement().size();
 
             SectorManager.getCurrentSectorManager().getDiplomacyManager().applyInfluenceChangeForWonEncounter(loser.getFleet().getFaction().getId(), influenceChange, SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI) winner.getFleet().getContainingLocation()).getFactionInSystemAsList());
+
+            float totalCrewLost = getLoserData().getCrewLossesDuringLastEngagement().getTotalCrew();
+            if(ExerelinUtils.getRandomInRange(0, 10) <= totalCrewLost/100)
+            {
+                // 100% guarentee for 1000 killed crew
+                // Add a high value prisoner
+                loot.addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1) ;
+            }
+
+            if(ExerelinUtils.getRandomInRange(0, 1) == 0)
+            {
+                // 50% chance to add 1 crew to loot per 50 or 100 lost by enemy
+                int crew = (int)totalCrewLost/(50 * ExerelinUtils.getRandomInRange(1, 2));
+                loot.addCrew(CrewXPLevel.GREEN, crew);
+            }
         }
 
         loot.addSupplies((int)suppliesSalvaged);

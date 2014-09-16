@@ -96,7 +96,6 @@ public class SystemStationManager
 		if(stationRecords[nextStationRecord].getOwner() != null)
 		{
 			stationRecords[nextStationRecord].updateFleets();
-			stationRecords[nextStationRecord].checkForPlayerItems();
             stationRecords[nextStationRecord].capInventoryAmounts();
 		}
 

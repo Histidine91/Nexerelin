@@ -18,7 +18,7 @@ public class EventAddObjectToStorage extends EventBase
 		setType(this.getClass().getName());
 	}
 
-	public void addAgentToStorageFacility()
+	/*public void addAgentToStorageFacility()
 	{
         for(int j = 0; j < Global.getSector().getStarSystems().size(); j++)
         {
@@ -89,5 +89,5 @@ public class EventAddObjectToStorage extends EventBase
                 }
             }
         }
-    }
+    }*/
 }

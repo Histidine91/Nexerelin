@@ -9,10 +9,7 @@ import exerelin.fleets.AsteroidMiningFleet;
 import exerelin.fleets.StationAttackFleet;
 import exerelin.fleets.WarFleet;
 import exerelin.fleets.GasMiningFleet;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinMessageManager;
-import exerelin.utilities.ExerelinMessage;
-import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.*;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -59,6 +56,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         PLANT_AGENT,
         DROP_OFF_PRISONER,
         PLANT_SABOTEUR,
+        ASK_FOR_PEACE,
         JOIN_FACTION,
         LEAVE_FACTION,
         LEAVE_FACTION_CONFIRM,
@@ -162,20 +160,17 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 this.retrieveShips(stationRecord.getPlayerStorage());
                 break;
             case PLANT_AGENT:
-                Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
-                station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
+                this.plantAgent();
                 options.clearOptions();
                 createInitialOptions();
                 break;
             case DROP_OFF_PRISONER:
-                Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
-                station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
+                this.exchangePrisoner();
                 options.clearOptions();
                 createInitialOptions();
                 break;
             case PLANT_SABOTEUR:
-                Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
-                station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
+                this.plantSaboteur();
                 options.clearOptions();
                 createInitialOptions();
                 break;
@@ -264,6 +259,11 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 options.clearOptions();
                 createInitialOptions();
                 break;
+            case ASK_FOR_PEACE:
+                Global.getSector().getFaction("player").setRelationship(this.station.getFaction().getId(), 0);
+                options.clearOptions();
+                createInitialOptions();
+                break;
             case BACK:
                 options.clearOptions();
                 createInitialOptions();
@@ -296,16 +296,19 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         }
 
         if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent") > 0
-                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            options.addOption("Plant agent on station", OptionId.PLANT_AGENT);
+                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
+                && !SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+            options.addOption("Plant Agent", OptionId.PLANT_AGENT);
 
         if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "prisoner") > 0
-                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            options.addOption("Drop prisoner off at station", OptionId.DROP_OFF_PRISONER);
+                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
+                && !SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+            options.addOption("Exchange Prisoner", OptionId.DROP_OFF_PRISONER);
 
         if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur") > 0
-                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            options.addOption("Plant saboteur on station", OptionId.PLANT_SABOTEUR);
+                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
+                && !SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+            options.addOption("Plant Saboteur", OptionId.PLANT_SABOTEUR);
 
 
         //display diplomacy reports and message history
@@ -323,7 +326,11 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             options.setTooltip(OptionId.PLAYER_FLEET_COMMAND, "Influence not high enough. Requires 75.");
         }
 
-        if(influenceWithFaction < 100) {
+        int influenceWithOwnFaction = 0;
+        if(SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+            influenceWithOwnFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getPlayerInfluence();
+
+        if(influenceWithOwnFaction < 100) {
             options.setEnabled(OptionId.STATION_FLEET_COMMAND, false);
             options.setTooltip(OptionId.STATION_FLEET_COMMAND, "Influence not high enough. Requires 100.");
         }
@@ -333,6 +340,21 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
         if(SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase(this.station.getFaction().getId()))
             options.addOption("Leave " + this.station.getFaction().getDisplayName(), OptionId.LEAVE_FACTION);
+
+        if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction()
+                && Global.getSector().getFaction("player").getRelationship(this.station.getFaction().getId()) < 0
+                && influenceWithFaction > -150)
+        {
+            int peaceAmount = this.getPeaceAmount();
+
+            options.addOption("Bribe for peace with " + this.station.getFaction().getDisplayName() + " ($" + peaceAmount + ")", OptionId.ASK_FOR_PEACE);
+
+            if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < peaceAmount)
+            {
+                options.setEnabled(OptionId.ASK_FOR_PEACE, false);
+                options.setTooltip(OptionId.ASK_FOR_PEACE, "Not enough credits.");
+            }
+        }
 
         if(influenceWithFaction < 50){
             options.setEnabled(OptionId.JOIN_FACTION, false);
@@ -865,6 +887,14 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             // NOT SURE HOW TO DO THIS
         }
 
+        if(influenceWithFaction < 70 || SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+        {
+            // Remove agents
+            float numAgents = station.getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent");
+            station.getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", numAgents);
+            restrictedItems.addItems(CargoAPI.CargoItemType.RESOURCES, "agent", numAgents);
+        }
+
         if(influenceWithFaction < 80)
         {
             // Remove cruisers
@@ -877,6 +907,14 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                     restrictedItems.getMothballedShips().addFleetMember(member);
                 }
             }
+        }
+
+        if(influenceWithFaction < 90 || SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+        {
+            // Remove sabatours
+            float numSaboteurs = station.getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur");
+            station.getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", numSaboteurs);
+            restrictedItems.addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", numSaboteurs);
         }
 
         if(influenceWithFaction < 120)
@@ -902,6 +940,80 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             restrictedItems.getMothballedShips().removeFleetMember(member);
             station.getCargo().getMothballedShips().addFleetMember(member);
         }
+
+        float numAgents = restrictedItems.getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent");
+        restrictedItems.removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", numAgents);
+        station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "agent", numAgents);
+
+        float numSaboteurs = restrictedItems.getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur");
+        restrictedItems.removeItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", numSaboteurs);
+        station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", numSaboteurs);
+    }
+
+    private void plantAgent()
+    {
+        Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
+
+        if(ExerelinUtils.getRandomInRange(0, 9) != 0)
+        {
+            String otherFactionId = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRandomNonEnemyFactionIdForFaction(this.station.getFaction().getId());
+            if(otherFactionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
+                otherFactionId = "";
+
+            if(otherFactionId.equalsIgnoreCase(""))
+            {
+                ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " agent has failed in their mission.", Color.magenta);
+                return;
+            }
+
+            SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.station.getFaction().getId(), otherFactionId, "agent");
+        }
+        else
+        {
+            SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.station.getFaction().getId(), SectorManager.getCurrentSectorManager().getPlayerFactionId(), "agentCapture");
+            return;
+        }
+    }
+
+    private void plantSaboteur()
+    {
+        Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
+        StationRecord stationRecord = SystemManager.getSystemManagerForAPI((StarSystemAPI)this.station.getContainingLocation()).getSystemStationManager().getStationRecordForToken(this.station);
+        CargoAPI stationCargo = this.station.getCargo();
+
+        ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " sabateur has caused a station explosion at " + this.station.getName() + ".", Color.magenta);
+        stationRecord.setLastBoardAttemptTime(Global.getSector().getClock().getTimestamp());
+        stationRecord.setEfficiency(0.1f);
+        ExerelinUtils.removeRandomShipsFromCargo(stationCargo, stationCargo.getMothballedShips().getMembersListCopy().size());
+        ExerelinUtils.removeRandomWeaponStacksFromCargo(stationCargo, stationCargo.getWeapons().size());
+        ExerelinUtils.decreaseCargo(stationCargo, "marines", (int)(stationCargo.getMarines() * 0.9));
+        ExerelinUtils.decreaseCargo(stationCargo, "supplies", (int)(stationCargo.getSupplies() * 0.9));
+        ExerelinUtils.decreaseCargo(stationCargo, "crewRegular", (int)(stationCargo.getCrew(CargoAPI.CrewXPLevel.REGULAR)*0.9));
+        ExerelinUtils.decreaseCargo(stationCargo, "fuel", (int)(stationCargo.getFuel()*0.9));
+    }
+
+    private void exchangePrisoner()
+    {
+        Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "prisoner", 1);
+        SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.station.getFaction().getId(), SectorManager.getCurrentSectorManager().getPlayerFactionId(), "prisoner");
+        ExerelinUtilsMessaging.addMessage("Your prisoner exchange is appreciated.", Color.magenta);
+    }
+
+    private int getPeaceAmount()
+    {
+        int influenceWithFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getPlayerInfluence();
+
+        int peaceAmount = 1500;
+
+        if(influenceWithFaction < 0)
+            peaceAmount = peaceAmount * (influenceWithFaction * -1);
+        else
+            peaceAmount = peaceAmount * (20 - influenceWithFaction);
+
+        if(peaceAmount < 7500)
+            peaceAmount = 7500;
+
+        return peaceAmount;
     }
 }
 
