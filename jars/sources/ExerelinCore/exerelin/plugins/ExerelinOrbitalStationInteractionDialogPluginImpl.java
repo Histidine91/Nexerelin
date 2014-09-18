@@ -285,6 +285,11 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         if(this.station.getFaction().getId().equalsIgnoreCase("independent")
                 || this.station.getFaction().getId().equalsIgnoreCase("neutral"))
             influenceWithFaction = 25;
+        else if(this.station.getFaction().getId().equalsIgnoreCase("abandoned"))
+        {
+            options.addOption("Leave Station", OptionId.LEAVE);
+            return;
+        }
         else
             influenceWithFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getPlayerInfluence();
 
@@ -657,7 +662,9 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         textPanel.addParagraph("Station Efficiency: " + stationEfficiencyPercentage, stationEfficiencyColor);
         textPanel.addParagraph("Station Threat Level: " + threatLevel, threatColor);
         textPanel.addParagraph("Current Station Fleet Behaviour: " + stationRecord.getStationFleetStance().toString());
-        textPanel.addParagraph("Influence with " + this.station.getFaction().getDisplayName() + ": " + SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getPlayerInfluence());
+
+        if(!station.getFaction().getId().equalsIgnoreCase("abandoned"))
+            textPanel.addParagraph("Influence with " + this.station.getFaction().getDisplayName() + ": " + SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getPlayerInfluence());
     }
 
     private void setStationStance(StationRecord.StationFleetStance stationFleetStance)
@@ -845,7 +852,8 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
     private void removeRestrictedCargo()
     {
         if(this.station.getFaction().getId().equalsIgnoreCase("independent")
-                || this.station.getFaction().getId().equalsIgnoreCase("neutral"))
+                || this.station.getFaction().getId().equalsIgnoreCase("neutral")
+                || this.station.getFaction().getId().equalsIgnoreCase("abandoned"))
             return; // Ignore for independant/neutral station
 
          int influenceWithFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getPlayerInfluence();
