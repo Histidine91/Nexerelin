@@ -1386,12 +1386,16 @@ public class DiplomacyManager
                     diplomacyRecord.setPlayerInfluence(diplomacyRecord.getPlayerInfluence() + amount);
                 }
             }
-            else if(factionsInSystem.contains(diplomacyRecord.getFactionId()))
+            else
             {
-                // Check if faction destroyed is enemy of factions in system
+                // Check if faction destroyed is enemy of any factions
                 if(diplomacyRecord.getEnemyFactionsAsList().contains(targetedFaction))
                 {
                     diplomacyRecord.setPlayerInfluence(diplomacyRecord.getPlayerInfluence() + amount);
+
+                    // Double influence gains if player is destroying enemies of faction they are in
+                    if(diplomacyRecord.getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
+                        diplomacyRecord.setPlayerInfluence(diplomacyRecord.getPlayerInfluence() + amount);
                 }
 
                 // Reduce influence with destroyed faction (half)

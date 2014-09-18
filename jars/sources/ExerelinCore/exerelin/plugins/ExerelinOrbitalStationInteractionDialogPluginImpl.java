@@ -252,6 +252,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 createInitialOptions();
                 break;
             case LEAVE_FACTION:
+                options.clearOptions();
                 createLeaveFactionOptions();
                 break;
             case LEAVE_FACTION_CONFIRM:
@@ -321,18 +322,18 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 || this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
             options.addOption("Strategic Fleet Command", OptionId.PLAYER_FLEET_COMMAND);
 
-        if(influenceWithFaction < 75) {
+        if(influenceWithFaction < 80) {
             options.setEnabled(OptionId.PLAYER_FLEET_COMMAND, false);
-            options.setTooltip(OptionId.PLAYER_FLEET_COMMAND, "Influence not high enough. Requires 75.");
+            options.setTooltip(OptionId.PLAYER_FLEET_COMMAND, "Influence not high enough. Requires 80.");
         }
 
         int influenceWithOwnFaction = 0;
-        if(SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+        if(!SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
             influenceWithOwnFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getPlayerInfluence();
 
-        if(influenceWithOwnFaction < 100) {
+        if(influenceWithOwnFaction < 110) {
             options.setEnabled(OptionId.STATION_FLEET_COMMAND, false);
-            options.setTooltip(OptionId.STATION_FLEET_COMMAND, "Influence not high enough. Requires 100.");
+            options.setTooltip(OptionId.STATION_FLEET_COMMAND, "Influence not high enough. Requires 110.");
         }
 
         if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
@@ -356,9 +357,9 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             }
         }
 
-        if(influenceWithFaction < 50){
+        if(influenceWithFaction < 35){
             options.setEnabled(OptionId.JOIN_FACTION, false);
-            options.setTooltip(OptionId.JOIN_FACTION, "Influence not high enough. Requires 50.");
+            options.setTooltip(OptionId.JOIN_FACTION, "Influence not high enough. Requires 35.");
         }
 
         options.addOption("Leave Station", OptionId.LEAVE);
@@ -491,7 +492,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
     private void createLeaveFactionOptions()
     {
-        options.addOption("Confirm Leave " + this.station.getFaction().getDisplayName(), OptionId.LEAVE_FACTION);
+        options.addOption("Confirm Leave " + this.station.getFaction().getDisplayName(), OptionId.LEAVE_FACTION_CONFIRM);
         options.addOption("Back", OptionId.BACK);
     }
 
@@ -849,11 +850,11 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
          int influenceWithFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getPlayerInfluence();
 
-        if(influenceWithFaction < 60
+        if(influenceWithFaction < 70
                 && station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            influenceWithFaction = 60; // If member of faction then treat as if 60 influence
+            influenceWithFaction = 70; // If member of faction then treat as if 70 influence
 
-        if(influenceWithFaction < 30)
+        if(influenceWithFaction < 40)
         {
             // Remove destroyers
             List<FleetMemberAPI> members = station.getCargo().getMothballedShips().getMembersListCopy();
@@ -867,7 +868,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             }
         }
 
-        if(influenceWithFaction < 40)
+        if(influenceWithFaction < 50)
         {
             // Remove fighters
             List<FleetMemberAPI> members = station.getCargo().getMothballedShips().getMembersListCopy();
@@ -881,13 +882,13 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             }
         }
 
-        if(influenceWithFaction < 60)
+        if(influenceWithFaction < 70)
         {
             // Remove large weapons
             // NOT SURE HOW TO DO THIS
         }
 
-        if(influenceWithFaction < 70 || SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+        if(influenceWithFaction < 80 || SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
         {
             // Remove agents
             float numAgents = station.getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent");
@@ -895,7 +896,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             restrictedItems.addItems(CargoAPI.CargoItemType.RESOURCES, "agent", numAgents);
         }
 
-        if(influenceWithFaction < 80)
+        if(influenceWithFaction < 100)
         {
             // Remove cruisers
             List<FleetMemberAPI> members = station.getCargo().getMothballedShips().getMembersListCopy();
@@ -909,15 +910,15 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             }
         }
 
-        if(influenceWithFaction < 90 || SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+        if(influenceWithFaction < 110 || SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
         {
-            // Remove sabatours
+            // Remove sabotours
             float numSaboteurs = station.getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur");
             station.getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", numSaboteurs);
             restrictedItems.addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", numSaboteurs);
         }
 
-        if(influenceWithFaction < 120)
+        if(influenceWithFaction < 150)
         {
             // Remove capitals
             List<FleetMemberAPI> members = station.getCargo().getMothballedShips().getMembersListCopy();

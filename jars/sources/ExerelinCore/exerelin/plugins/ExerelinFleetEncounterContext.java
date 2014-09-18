@@ -1165,7 +1165,8 @@ public class ExerelinFleetEncounterContext implements FleetEncounterContextPlugi
             influenceChange = influenceChange +  getLoserData().getDisabledInLastEngagement().size();
             influenceChange = influenceChange +  getLoserData().getDestroyedInLastEngagement().size();
 
-            SectorManager.getCurrentSectorManager().getDiplomacyManager().applyInfluenceChangeForWonEncounter(loser.getFleet().getFaction().getId(), influenceChange, SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI) winner.getFleet().getContainingLocation()).getFactionInSystemAsList());
+            if(!winner.getFleet().isInHyperspace())
+                SectorManager.getCurrentSectorManager().getDiplomacyManager().applyInfluenceChangeForWonEncounter(loser.getFleet().getFaction().getId(), influenceChange, SectorManager.getCurrentSectorManager().getSystemManager((StarSystemAPI) winner.getFleet().getContainingLocation()).getFactionInSystemAsList());
 
             float totalCrewLost = getLoserData().getCrewLossesDuringLastEngagement().getTotalCrew();
             if(ExerelinUtils.getRandomInRange(0, 10) <= totalCrewLost/100)
