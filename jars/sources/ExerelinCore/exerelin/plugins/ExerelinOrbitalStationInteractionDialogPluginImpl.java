@@ -300,70 +300,74 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             options.setTooltip(OptionId.STATION_SERVICES, "Influence not high enough. Requires 25.");
         }
 
-        if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent") > 0
-                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
-                && !SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
-            options.addOption("Plant Agent", OptionId.PLANT_AGENT);
-
-        if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "prisoner") > 0
-                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
-                && !SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
-            options.addOption("Exchange Prisoner", OptionId.DROP_OFF_PRISONER);
-
-        if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur") > 0
-                && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
-                && !SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
-            options.addOption("Plant Saboteur", OptionId.PLANT_SABOTEUR);
-
-
-        //display diplomacy reports and message history
-        if(!station.getFaction().getId().equalsIgnoreCase("abandoned") && !station.getFaction().getId().equalsIgnoreCase("rebel"))
+        if(!station.getFaction().getId().equalsIgnoreCase("abandoned")
+                && !station.getFaction().getId().equalsIgnoreCase("rebel")
+                && !station.getFaction().getId().equalsIgnoreCase("independent")
+                && !station.getFaction().getId().equalsIgnoreCase("neutral"))
+        {
+            //display diplomacy reports and message history
             options.addOption("Intel Reports", OptionId.INTEL);
 
-        if(station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            options.addOption("Station Fleet Command", OptionId.STATION_FLEET_COMMAND);
+            if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent") > 0
+                    && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
+                    && !SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+                options.addOption("Plant Agent", OptionId.PLANT_AGENT);
 
-        if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 || this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            options.addOption("Strategic Fleet Command", OptionId.STRATEGIC_FLEET_COMMAND);
+            if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "prisoner") > 0
+                    && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
+                    && !SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+                options.addOption("Exchange Prisoner", OptionId.DROP_OFF_PRISONER);
 
-        int influenceWithOwnFaction = 0;
-        if(!SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
-            influenceWithOwnFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getPlayerInfluence();
+            if(Global.getSector().getPlayerFleet().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur") > 0
+                    && !station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId())
+                    && !SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+                options.addOption("Plant Saboteur", OptionId.PLANT_SABOTEUR);
 
-        if(influenceWithOwnFaction < 80) {
-            options.setEnabled(OptionId.STRATEGIC_FLEET_COMMAND, false);
-            options.setTooltip(OptionId.STRATEGIC_FLEET_COMMAND, "Influence not high enough. Requires 80.");
-        }
+            if(station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+                options.addOption("Station Fleet Command", OptionId.STATION_FLEET_COMMAND);
 
-        if(influenceWithOwnFaction < 110) {
-            options.setEnabled(OptionId.STATION_FLEET_COMMAND, false);
-            options.setTooltip(OptionId.STATION_FLEET_COMMAND, "Influence not high enough. Requires 110.");
-        }
+            if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 || this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
+                options.addOption("Strategic Fleet Command", OptionId.STRATEGIC_FLEET_COMMAND);
 
-        if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
-            options.addOption("Request to join " + this.station.getFaction().getDisplayName(), OptionId.JOIN_FACTION);
+            int influenceWithOwnFaction = 0;
+            if(!SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
+                influenceWithOwnFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getPlayerInfluence();
 
-        if(SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase(this.station.getFaction().getId()))
-            options.addOption("Leave " + this.station.getFaction().getDisplayName(), OptionId.LEAVE_FACTION);
-
-        if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction()
-                && Global.getSector().getFaction("player").getRelationship(this.station.getFaction().getId()) < 0
-                && influenceWithFaction > -150)
-        {
-            int peaceAmount = this.getPeaceAmount();
-
-            options.addOption("Bribe for peace with " + this.station.getFaction().getDisplayName() + " ($" + peaceAmount + ")", OptionId.ASK_FOR_PEACE);
-
-            if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < peaceAmount)
-            {
-                options.setEnabled(OptionId.ASK_FOR_PEACE, false);
-                options.setTooltip(OptionId.ASK_FOR_PEACE, "Not enough credits.");
+            if(influenceWithOwnFaction < 80) {
+                options.setEnabled(OptionId.STRATEGIC_FLEET_COMMAND, false);
+                options.setTooltip(OptionId.STRATEGIC_FLEET_COMMAND, "Influence not high enough. Requires 80.");
             }
-        }
 
-        if(influenceWithFaction < 35){
-            options.setEnabled(OptionId.JOIN_FACTION, false);
-            options.setTooltip(OptionId.JOIN_FACTION, "Influence not high enough. Requires 35.");
+            if(influenceWithOwnFaction < 110) {
+                options.setEnabled(OptionId.STATION_FLEET_COMMAND, false);
+                options.setTooltip(OptionId.STATION_FLEET_COMMAND, "Influence not high enough. Requires 110.");
+            }
+
+            if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
+                options.addOption("Request to join " + this.station.getFaction().getDisplayName(), OptionId.JOIN_FACTION);
+
+            if(SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase(this.station.getFaction().getId()))
+                options.addOption("Leave " + this.station.getFaction().getDisplayName(), OptionId.LEAVE_FACTION);
+
+            if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction()
+                    && Global.getSector().getFaction("player").getRelationship(this.station.getFaction().getId()) < 0
+                    && influenceWithFaction > -150)
+            {
+                int peaceAmount = this.getPeaceAmount();
+
+                options.addOption("Bribe for peace with " + this.station.getFaction().getDisplayName() + " ($" + peaceAmount + ")", OptionId.ASK_FOR_PEACE);
+
+                if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < peaceAmount)
+                {
+                    options.setEnabled(OptionId.ASK_FOR_PEACE, false);
+                    options.setTooltip(OptionId.ASK_FOR_PEACE, "Not enough credits.");
+                }
+            }
+
+            if(influenceWithFaction < 35){
+                options.setEnabled(OptionId.JOIN_FACTION, false);
+                options.setTooltip(OptionId.JOIN_FACTION, "Influence not high enough. Requires 35.");
+            }
         }
 
         options.addOption("Leave Station", OptionId.LEAVE);
@@ -378,6 +382,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             options.setShortcut(OptionId.TRADE_SHIPS, Keyboard.KEY_F, false, false, false, true);
             options.addOption("Make use of the dockyard's refitting facilities", OptionId.REFIT);
             options.setShortcut(OptionId.REFIT, Keyboard.KEY_R, false, false, false, true);
+            return;
         }
         else
         {
