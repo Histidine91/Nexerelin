@@ -97,22 +97,20 @@ public class Exerelin //implements SectorGeneratorPlugin
 		rebel.setRelationship(independent.getId(), -1);
         independent.setRelationship(rebel.getId(), -1);
 
-        // Player starting as unaligned so set diplomacy
-        if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
-        {
-            sector.getFaction("player").setRelationship("abandoned", -1);
-            sector.getFaction("player").setRelationship("rebel", -1);
-            sector.getFaction("player").setRelationship("independent", 0);
-            sector.getFaction("player").setRelationship("pirates", -1);
+        // Set player faction starting  diplomacy
+        sector.getFaction("player").setRelationship("abandoned", -1);
+        sector.getFaction("player").setRelationship("rebel", -1);
+        sector.getFaction("player").setRelationship("independent", 0);
+        sector.getFaction("player").setRelationship("pirates", -1);
 
-            for(int i = 0; i < factions.length; i = i + 1)
-            {
-                String customRebelFactionId = ExerelinConfig.getExerelinFactionConfig(factions[i]).customRebelFaction;
-                sector.getFaction("player").setRelationship(customRebelFactionId, -1);
-                SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(factions[i]).setPlayerInfluence(15);
-            }
+        for(int i = 0; i < factions.length; i = i + 1)
+        {
+            String customRebelFactionId = ExerelinConfig.getExerelinFactionConfig(factions[i]).customRebelFaction;
+            sector.getFaction("player").setRelationship(customRebelFactionId, -1);
+            SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(factions[i]).setPlayerInfluence(15);
         }
-        else
+
+        if(!SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
         {
             // Player is aligned with a faction so set initial influence
             SectorManager.getCurrentSectorManager().getDiplomacyManager().playerRecord.setPlayerInfluence(50);
@@ -135,6 +133,7 @@ public class Exerelin //implements SectorGeneratorPlugin
     private void populateSector(SectorAPI sector, SectorManager sectorManager)
     {
         boolean finishedPopulating = false;
+        int populated = 0;
 
         // Popuate a single station for each starting faction
         String[] factions = sectorManager.getFactionsPossibleInSector();
@@ -170,6 +169,7 @@ public class Exerelin //implements SectorGeneratorPlugin
                         stationRecord.setOwner(factionId, false, false);
                         System.out.println("Setting start station in " + systemAPI.getName() + " for: " + factionId);
                         FactionDirector.getFactionDirectorForFactionId(factionId).setHomeSystem(systemAPI);
+                        populated++;
                         break systemLoop;
                     }
                 }
@@ -195,6 +195,7 @@ public class Exerelin //implements SectorGeneratorPlugin
                         stationRecord.setOwner(sectorManager.getPlayerFactionId(), false, false);
                         System.out.println("Setting start station in " + systemAPI.getName() + " for: " + sectorManager.getPlayerFactionId());
                         FactionDirector.getFactionDirectorForFactionId(sectorManager.getPlayerFactionId()).setHomeSystem(systemAPI);
+                        populated++;
                         break systemLoop;
                     }
                 }
@@ -202,7 +203,7 @@ public class Exerelin //implements SectorGeneratorPlugin
         }
 
         // Populate rest of sector half or full
-        int populated = 1;
+
         String[] factionsInSector = sectorManager.getFactionsInSector();
 
         // If empty sector, only leave one station
@@ -235,13 +236,19 @@ public class Exerelin //implements SectorGeneratorPlugin
                 StationRecord stationRecord = systemStationManager.getStationRecordForToken(station);
                 stationRecord.setOwner(factionId, false, false);
                 System.out.println("Setting station in " + system.getName() + " for: " + factionId);
+                populated++;
+
+                if((sectorManager.isSectorPartiallyPopulated() && populated > (((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size()*Global.getSector().getStarSystems().size())/2)
+                        || populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size()*Global.getSector().getStarSystems().size())
+                {
+                    finishedPopulating = true;
+                    break;
+                }
             }
 
-            populated++;
 
-            if((sectorManager.isSectorPartiallyPopulated() && populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size()/2)
-                    || populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size())
-                finishedPopulating = true;
+
+
         }
 
         // Setup some initial pirate spawns

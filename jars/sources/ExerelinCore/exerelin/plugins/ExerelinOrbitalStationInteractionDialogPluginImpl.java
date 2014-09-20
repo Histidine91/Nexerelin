@@ -471,15 +471,18 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             options.setEnabled(OptionId.ASTEROID_MINING_FLEET, false);
             options.setEnabled(OptionId.GAS_MINING_FLEET, false);
         }
-        else if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < 40000f)
+
+        if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < 40000f)
         {
             options.setEnabled(OptionId.STATION_ATTACK_FLEET, false);
         }
-        else if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < 60000f)
+
+        if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < 60000f)
         {
             options.setEnabled(OptionId.DEFENSE_FLEET, false);
         }
-        else if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < 80000f)
+
+        if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < 80000f)
         {
             options.setEnabled(OptionId.ATTACK_FLEET, false);
         }

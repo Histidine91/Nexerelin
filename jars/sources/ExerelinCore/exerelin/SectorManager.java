@@ -347,8 +347,6 @@ public class SectorManager
 
                 // Start of game, player fleet is last to be spawned so set last faction spawn time as this
                 this.lastFactionSpawnTime = Global.getSector().getClock().getTimestamp();
-
-                Global.getSector().getCampaignUI().showInteractionDialog(new WelcomeDialogPlugin(), null);
             }
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.0f, CargoAPI.CrewXPLevel.GREEN);
 		}
@@ -357,6 +355,10 @@ public class SectorManager
         {
             // Reset cargo
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.0f, CargoAPI.CrewXPLevel.GREEN);
+
+            // Show welcome dialog
+            Global.getSector().getCampaignUI().showInteractionDialog(new WelcomeDialogPlugin(), null);
+
             initialCheckComplete = true;
         }
 
