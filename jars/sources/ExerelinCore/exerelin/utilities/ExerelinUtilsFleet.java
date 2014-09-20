@@ -56,7 +56,7 @@ public class ExerelinUtilsFleet
     private static int SMALL_FLEET_SUPPLIES_DAY = 10;
     private static int MEDIUM_FLEET_SUPPLIES_DAY = 25;
     private static int LARGE_FLEET_SUPPLIES_DAY = 60;
-    private static int EXTRA_LARGE_FLEET_SUPPLIES_DAY = 60;
+    private static int EXTRA_LARGE_FLEET_SUPPLIES_DAY = 90;
 
 
     public static void sortByFleetCost(CampaignFleetAPI fleet)
@@ -401,7 +401,7 @@ public class ExerelinUtilsFleet
                 break;
         }
 
-        if(fleetSize != ExerelinFleetSize.SMALL && (factionConfig.carrierVariants.size() + factionConfig.fighterWings.size()) >= (factionConfig.cruiserVariants.size() + factionConfig.destroyerVariants.size())/2)
+        if(fleetSize != ExerelinFleetSize.SMALL && (factionConfig.carrierVariants.size() + factionConfig.fighterWings.size()) > (factionConfig.cruiserVariants.size() + factionConfig.destroyerVariants.size())/2)
         {
             possibleTypes.add(ExerelinWarFleetType.CARRIER);
             possibleTypes.add(ExerelinWarFleetType.CARRIER);
@@ -583,19 +583,19 @@ public class ExerelinUtilsFleet
 
     public static void addFreightersToFleet(CampaignFleetAPI fleet)
     {
-        float suppliesDay = fleet.getTotalSupplyCostPerDay();
+        float targetSupplies = fleet.getLogistics().getLogisticalCost() * 18;
         float maxCapacity = fleet.getCargo().getMaxCapacity();
 
         // Add super freighter to extra large fleets
-        if(suppliesDay >= EXTRA_LARGE_FLEET_SUPPLIES_DAY)
+        /*if(targetSupplies >= EXTRA_LARGE_FLEET_SUPPLIES_DAY)
         {
             String variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.SUPER_FREIGHTER) ;
             FleetMemberAPI newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
             fleet.getFleetData().addFleetMember(newMember);
-        }
+        }*/
 
-        // Fleet should last minimum of 120 days before resupply
-        while(maxCapacity < (suppliesDay * 120))
+        // Add extra freighters if needed
+        while(maxCapacity < (targetSupplies))
         {
             String variantId = ExerelinUtilsFleet.getRandomVariantIdForFactionOfExerelinType(fleet.getFaction().getId(), ExerelinVariantType.FREIGHTER) ;
             FleetMemberAPI newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);

@@ -8,6 +8,7 @@ import exerelin.diplomacy.AllianceRecord;
 import exerelin.diplomacy.DiplomacyRecord;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMessaging;
+import org.lazywizard.lazylib.MathUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -686,20 +687,24 @@ public class DiplomacyManager
 		if(event.equalsIgnoreCase("agent"))
 		{
 			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " agent has caused a disagreement between " + Global.getSector().getFaction(factionId).getDisplayName() + " and " + Global.getSector().getFaction(otherFactionId).getDisplayName(), Color.magenta);
-			relChange = -20;
+			relChange = -30;
 		}
 
 		if(event.equalsIgnoreCase("agentCapture"))
 		{
 			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " agent has been captured by " + Global.getSector().getFaction(factionId).getDisplayName(), Color.magenta);
-			relChange = -20;
+			relChange = -30;
 		}
 
 		if(event.equalsIgnoreCase("prisoner"))
-			relChange = 20;
+        {
+            // Get max of 30 or 50% of negative faction relationship
+            int factionRelationship = factionRecord.getFactionRelationship(otherFactionId);
+            relChange = Math.max(30, (int)(factionRelationship * 0.50) * -1);
+        }
 
 
-		System.out.println(event + " for " + factionId + " and " + otherFactionId);
+		System.out.println(event + " for " + factionId + " and " + otherFactionId + " results in " + relChange + " change");
 		factionRecord.addToFactionRelationship(otherFactionId, relChange) ;
 		if(affectsAllies)
 			updateAllies(factionRecord, allyChange);

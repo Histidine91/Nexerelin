@@ -3,7 +3,6 @@ package exerelin.plugins;
 import java.awt.Color;
 
 import com.fs.starfarer.api.campaign.*;
-import com.fs.starfarer.api.combat.WeaponAPI;
 import exerelin.*;
 import exerelin.fleets.AsteroidMiningFleet;
 import exerelin.fleets.StationAttackFleet;
@@ -39,7 +38,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         DISPLAY_STATION_STATUS,
         DISPLAY_MESSAGES,
 
-        PLAYER_FLEET_COMMAND,
+        STRATEGIC_FLEET_COMMAND,
         GAS_MINING_FLEET,
         ASTEROID_MINING_FLEET,
         ATTACK_FLEET,
@@ -217,34 +216,34 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             case SET_ALL_IN_SYSTEM:
                 this.setAllStationsInSystemStance();
                 break;
-            case PLAYER_FLEET_COMMAND:
+            case STRATEGIC_FLEET_COMMAND:
                 options.clearOptions();
-                this.createPlayerFleetCommandOptions();
+                this.createStrategicFleetCommandOptions();
                 break;
             case DEFENSE_FLEET:
                 createPlayerCommandedDefenseFleet();
                 options.clearOptions();
-                this.createPlayerFleetCommandOptions();
+                this.createStrategicFleetCommandOptions();
                 break;
             case ASTEROID_MINING_FLEET:
                 createPlayerCommandedAsteroidMiningFleet();
                 options.clearOptions();
-                this.createPlayerFleetCommandOptions();
+                this.createStrategicFleetCommandOptions();
                 break;
             case GAS_MINING_FLEET:
                 createPlayerCommandedGasMiningFleet();
                 options.clearOptions();
-                this.createPlayerFleetCommandOptions();
+                this.createStrategicFleetCommandOptions();
                 break;
             case ATTACK_FLEET:
                 createPlayerCommandedAttackFleet();
                 options.clearOptions();
-                this.createPlayerFleetCommandOptions();
+                this.createStrategicFleetCommandOptions();
                 break;
             case STATION_ATTACK_FLEET:
                 createPlayerCommandedBoardingFleet();
                 options.clearOptions();
-                this.createPlayerFleetCommandOptions();
+                this.createStrategicFleetCommandOptions();
                 break;
             case JOIN_FACTION:
                 SectorManager.getCurrentSectorManager().getDiplomacyManager().playerJoinFaction(this.station.getFaction().getId());
@@ -325,16 +324,16 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             options.addOption("Station Fleet Command", OptionId.STATION_FLEET_COMMAND);
 
         if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0 || this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            options.addOption("Strategic Fleet Command", OptionId.PLAYER_FLEET_COMMAND);
-
-        if(influenceWithFaction < 80) {
-            options.setEnabled(OptionId.PLAYER_FLEET_COMMAND, false);
-            options.setTooltip(OptionId.PLAYER_FLEET_COMMAND, "Influence not high enough. Requires 80.");
-        }
+            options.addOption("Strategic Fleet Command", OptionId.STRATEGIC_FLEET_COMMAND);
 
         int influenceWithOwnFaction = 0;
         if(!SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
             influenceWithOwnFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getPlayerInfluence();
+
+        if(influenceWithOwnFaction < 80) {
+            options.setEnabled(OptionId.STRATEGIC_FLEET_COMMAND, false);
+            options.setTooltip(OptionId.STRATEGIC_FLEET_COMMAND, "Influence not high enough. Requires 80.");
+        }
 
         if(influenceWithOwnFaction < 110) {
             options.setEnabled(OptionId.STATION_FLEET_COMMAND, false);
@@ -453,43 +452,36 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         options.addOption("Back", OptionId.BACK);
     }
 
-    private void createPlayerFleetCommandOptions()
+    private void createStrategicFleetCommandOptions()
     {
         if(this.station.getFaction().getRelationship(Global.getSector().getPlayerFleet().getFaction().getId()) < 0)
         {
             options.addOption("Organise Attack Fleet ($80000)", OptionId.ATTACK_FLEET, "Mobilise an Attack Fleet from your faction's closest station.");
-            options.addOption("Organise Station Boarding Fleet ($80000)", OptionId.STATION_ATTACK_FLEET, "Mobilise a Boarding Fleet from your faction's closest station.");
+            options.addOption("Organise Station Boarding Fleet ($40000)", OptionId.STATION_ATTACK_FLEET, "Mobilise a Boarding Fleet from your faction's closest station.");
         }
         else if(this.station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
         {
-            options.addOption("Organise Defense Fleet ($80000)", OptionId.DEFENSE_FLEET);
+            options.addOption("Organise Defense Fleet ($60000)", OptionId.DEFENSE_FLEET);
             options.addOption("Organise Asteroid Mining Fleet ($15000)", OptionId.ASTEROID_MINING_FLEET);
             options.addOption("Organise Gas Mining Fleet ($15000", OptionId.GAS_MINING_FLEET);
         }
 
         if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < 15000f)
         {
-            options.setEnabled(OptionId.ATTACK_FLEET, false);
-            options.setEnabled(OptionId.STATION_ATTACK_FLEET, false);
-            options.setEnabled(OptionId.DEFENSE_FLEET, false);
             options.setEnabled(OptionId.ASTEROID_MINING_FLEET, false);
             options.setEnabled(OptionId.GAS_MINING_FLEET, false);
+        }
+        else if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < 40000f)
+        {
+            options.setEnabled(OptionId.STATION_ATTACK_FLEET, false);
+        }
+        else if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < 60000f)
+        {
+            options.setEnabled(OptionId.DEFENSE_FLEET, false);
         }
         else if(Global.getSector().getPlayerFleet().getCargo().getCredits().get() < 80000f)
         {
             options.setEnabled(OptionId.ATTACK_FLEET, false);
-            options.setEnabled(OptionId.STATION_ATTACK_FLEET, false);
-            options.setEnabled(OptionId.DEFENSE_FLEET, false);
-            options.setEnabled(OptionId.ASTEROID_MINING_FLEET, true);
-            options.setEnabled(OptionId.GAS_MINING_FLEET, true);
-        }
-        else
-        {
-            options.setEnabled(OptionId.ATTACK_FLEET, true);
-            options.setEnabled(OptionId.STATION_ATTACK_FLEET, true);
-            options.setEnabled(OptionId.DEFENSE_FLEET, true);
-            options.setEnabled(OptionId.ASTEROID_MINING_FLEET, true);
-            options.setEnabled(OptionId.GAS_MINING_FLEET, true);
         }
 
         options.addOption("Back", OptionId.BACK);
@@ -577,15 +569,19 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         {
             // Display allies
             List<String> allies = ExerelinUtilsFaction.getFactionsAlliedWithFaction(this.station.getFaction().getId());
-            if(allies.size() > 0)
-                textPanel.addParagraph("Current allies of " + this.station.getFaction().getDisplayName() + ":");
+
+            if(SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).isInAlliance())
+                textPanel.addParagraph(SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getAllianceId() + " members:");
             else
-                textPanel.addParagraph(this.station.getFaction().getDisplayName() + " has no allies currently.");
+                textPanel.addParagraph(this.station.getFaction().getDisplayName() + " is not in an alliance.");
 
             for(int i = 0; i < allies.size(); i++)
             {
                 if(!allies.get(i).equalsIgnoreCase(this.station.getFaction().getId()))
-                    textPanel.addParagraph(Global.getSector().getFaction(allies.get(i)).getDisplayName());
+                {
+                    String factionReleationship = Integer.toString(SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getFactionRelationship(allies.get(i)));
+                    textPanel.addParagraph(Global.getSector().getFaction(allies.get(i)).getDisplayName() + " (" + factionReleationship + ")");
+                }
             }
         }
         else if(value == -1)
@@ -599,7 +595,8 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
             for(int i = 0; i < enemies.size(); i++)
             {
-                    textPanel.addParagraph(Global.getSector().getFaction(enemies.get(i)).getDisplayName());
+                String factionReleationship = Integer.toString(SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getFactionRelationship(enemies.get(i)));
+                textPanel.addParagraph(Global.getSector().getFaction(enemies.get(i)).getDisplayName() + " (" + factionReleationship + ")");
             }
         }
     }
@@ -691,7 +688,8 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
     {
         WarFleet warFleet = new WarFleet(this.station.getFaction().getId(), this.station, null, null, null, WarFleet.FleetStance.DEFENSE, false);
         SectorManager.getCurrentSectorManager().addPlayerCommandedFleet(warFleet);
-        Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(80000f);
+        Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(60000f);
+        textPanel.addParagraph("Defense fleet launched.");
     }
 
     private void createPlayerCommandedAsteroidMiningFleet()
@@ -701,6 +699,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         AsteroidMiningFleet asteroidMiningFleet = new AsteroidMiningFleet(this.station.getFaction().getId(), this.station, targetAsteroid);
         SectorManager.getCurrentSectorManager().addPlayerCommandedFleet(asteroidMiningFleet);
         Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(15000f);
+        textPanel.addParagraph("Asteroid Mining fleet launched.");
     }
 
     private void createPlayerCommandedGasMiningFleet()
@@ -710,6 +709,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         GasMiningFleet gasMiningFleet = new GasMiningFleet(this.station.getFaction().getId(), this.station, targetGasGiant);
         SectorManager.getCurrentSectorManager().addPlayerCommandedFleet(gasMiningFleet);
         Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(15000f);
+        textPanel.addParagraph("Gas Mining fleet launched.");
     }
 
     private void createPlayerCommandedAttackFleet()
@@ -721,6 +721,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             StarSystemAPI spawnSystem = ExerelinUtils.getClosestSystemWithFaction((StarSystemAPI)this.station.getContainingLocation(), Global.getSector().getPlayerFleet().getFaction().getId());
             if(spawnSystem == null)
             {
+                textPanel.addParagraph("Unable to launch attack fleet (no originating system).", Color.red);
                 return;
             }
             else
@@ -728,6 +729,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 spawnStation = ExerelinUtils.getRandomStationInSystemForFaction(Global.getSector().getPlayerFleet().getFaction().getId(), spawnSystem);
                 if(spawnStation == null)
                 {
+                    textPanel.addParagraph("Unable to launch attack fleet (no originating station).", Color.red);
                     return;
                 }
             }
@@ -736,6 +738,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         WarFleet warFleet = new WarFleet(Global.getSector().getPlayerFleet().getFaction().getId(), spawnStation, this.station, null, spawnStation, WarFleet.FleetStance.ATTACK, false);
         SectorManager.getCurrentSectorManager().addPlayerCommandedFleet(warFleet);
         Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(80000f);
+        textPanel.addParagraph("Attack fleet launched.");
     }
 
     private void createPlayerCommandedBoardingFleet()
@@ -747,6 +750,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
             StarSystemAPI spawnSystem = ExerelinUtils.getClosestSystemWithFaction((StarSystemAPI)this.station.getContainingLocation(), Global.getSector().getPlayerFleet().getFaction().getId());
             if(spawnSystem == null)
             {
+                textPanel.addParagraph("Unable to launch attack fleet (no originating system).", Color.red);
                 return;
             }
             else
@@ -754,6 +758,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                 spawnStation = ExerelinUtils.getRandomStationInSystemForFaction(Global.getSector().getPlayerFleet().getFaction().getId(), spawnSystem);
                 if(spawnStation == null)
                 {
+                    textPanel.addParagraph("Unable to launch attack fleet (no originating station).", Color.red);
                     return;
                 }
             }
@@ -761,7 +766,8 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
         StationAttackFleet stationAttackFleet = new StationAttackFleet(Global.getSector().getPlayerFleet().getFaction().getId(), spawnStation, this.station, spawnStation, false);
         SectorManager.getCurrentSectorManager().addPlayerCommandedFleet(stationAttackFleet);
-        Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(80000f);
+        Global.getSector().getPlayerFleet().getCargo().getCredits().subtract(40000f);
+        textPanel.addParagraph("Boarding fleet launched.");
     }
 
     private void storeShips()
