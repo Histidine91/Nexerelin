@@ -1,8 +1,8 @@
 id,type,text1,text2,text3,notes
 
-prisoner,RESOURCE,A captured prisoner of war. Drop off at another factions station to improve your relationship with them.,,,
-agent,RESOURCE,An agent. Plant at another factions station to set the agent to turn another faction against that faction (...hopefully). ,,,s
-saboteur,RESOURCE,A saboteur special agent. Plant at another factions station to cause a station explosion hampering production and destroying goods. ,,,s
+prisoner,RESOURCE,A highly valuable prisoner of war. Exchange at another factions station to improve your faction's relationship with them.,,,
+agent,RESOURCE,An agent. Plant at another faction's station to set the agent to turn their allies against them. ,,,s
+saboteur,RESOURCE,A saboteur special agent. Plant at another faction's station to cause a station explosion hampering production and destroying goods. ,,,s
 
 star_blue,PLANET,"Blue Star",,,
 star_white,PLANET,"White Star",,,

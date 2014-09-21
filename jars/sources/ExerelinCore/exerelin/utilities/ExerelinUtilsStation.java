@@ -22,15 +22,15 @@ public class ExerelinUtilsStation
         float fuel = station.getCargo().getFuel();
         int marines = station.getCargo().getMarines();
 
-        if(crew > CREW_INCREMENT * 4
-                && fuel > FUEL_INCREMENT * 4
-                && marines > MARINES_INCREMENT * 4
-                && supplies > SUPPLIES_INCREMENT * 4)
+        if(crew > CREW_INCREMENT * 8
+                && fuel > FUEL_INCREMENT * 8
+                && marines > MARINES_INCREMENT * 8
+                && supplies > SUPPLIES_INCREMENT * 8)
             return ExerelinUtilsFleet.ExerelinFleetSize.EXTRA_LARGE;
-        else if(crew > CREW_INCREMENT * 3
-                && fuel > FUEL_INCREMENT * 3
-                && marines > MARINES_INCREMENT * 3
-                && supplies > SUPPLIES_INCREMENT * 3)
+        else if(crew > CREW_INCREMENT * 5
+                && fuel > FUEL_INCREMENT * 5
+                && marines > MARINES_INCREMENT * 5
+                && supplies > SUPPLIES_INCREMENT * 5)
             return ExerelinUtilsFleet.ExerelinFleetSize.LARGE;
         else if(crew > CREW_INCREMENT * 2
                 && fuel > FUEL_INCREMENT * 2
@@ -68,16 +68,16 @@ public class ExerelinUtilsStation
                 marines = MARINES_INCREMENT * 2;
                 break;
             case LARGE:
-                crew = CREW_INCREMENT * 3;
-                supplies = SUPPLIES_INCREMENT * 3;
-                fuel = FUEL_INCREMENT * 3;
-                marines = MARINES_INCREMENT * 3;
-                break;
-            case EXTRA_LARGE:
                 crew = CREW_INCREMENT * 4;
                 supplies = SUPPLIES_INCREMENT * 4;
                 fuel = FUEL_INCREMENT * 4;
                 marines = MARINES_INCREMENT * 4;
+                break;
+            case EXTRA_LARGE:
+                crew = CREW_INCREMENT * 6;
+                supplies = SUPPLIES_INCREMENT * 6;
+                fuel = FUEL_INCREMENT * 6;
+                marines = MARINES_INCREMENT * 6;
                 break;
         }
 

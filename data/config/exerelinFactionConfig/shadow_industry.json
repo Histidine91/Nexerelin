@@ -62,7 +62,7 @@
 
     "destroyerVariants":["ms_morningstar_Standard",
                          "ms_sargasso_Balanced",
-                         "ms_potniaBis_Attack"], # String array
+                         "msp_potniaBis_Attack"], # String array
 
     "cruiserVariants":[ "ms_tartarus_Standard",
                         "ms_charybdis_Balanced",

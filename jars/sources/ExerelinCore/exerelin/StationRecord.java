@@ -436,8 +436,8 @@ public class StationRecord
             return; // Don't increase resources if being boarded
 
         float resourceMultiplier = 1.0f;
-        if(this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
-            resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
+        //if(this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
+            //resourceMultiplier = ExerelinUtilsPlayer.getPlayerStationResourceLimitMultiplier();
 
 		/*if(stationCargo.getFuel() < 1600*resourceMultiplier)
             SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "fuel", CargoAPI.CargoItemType.RESOURCES, 100 * efficiency)); // Halved due to mining exerelin.fleets
@@ -467,31 +467,28 @@ public class StationRecord
                 SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "regular_crew", CargoAPI.CargoItemType.RESOURCES, (int) (400 * efficiency)));
 		}
 
-		if(efficiency > 0.6)
+		if(efficiency > 0.6f)
 		{
             ExerelinUtilsCargo.addFactionVariantsToCargo(stationCargo, owningFaction.getFactionId(), 2);
             ExerelinUtilsCargo.addFactionWeaponsToCargo(stationCargo, owningFaction.getFactionId(), 2, 2);
 		}
 
-        if(efficiency > 0.8)
+        if(efficiency > 0.8f)
         {
-            float numSaboteurs = this.getStationToken().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur");
-            float numAgents = this.getStationToken().getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, "agent");
-
             if(ExerelinUtils.getRandomInRange(0, 50) == 0)
             {
-                this.getStationToken().getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", numSaboteurs);
+                this.getStationToken().getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
             }
-            if(ExerelinUtils.getRandomInRange(0, 40) == 0)
+            if(ExerelinUtils.getRandomInRange(0, 50) == 0)
             {
-                this.getStationToken().getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "agent", numAgents);
+                this.getStationToken().getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
             }
         }
 
         // Update efficiency
         float baseEfficiency = 1.0f;
-        if(this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
-            baseEfficiency = ExerelinUtilsPlayer.getPlayerStationBaseEfficiency();
+        //if(this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
+            //baseEfficiency = ExerelinUtilsPlayer.getPlayerStationBaseEfficiency();
 
         if(efficiency < baseEfficiency)
             efficiency = efficiency + Math.min(0.1f, baseEfficiency - efficiency);

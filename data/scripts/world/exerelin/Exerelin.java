@@ -1,5 +1,6 @@
 package data.scripts.world.exerelin;
 
+import java.awt.*;
 import java.util.List;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
@@ -8,6 +9,7 @@ import exerelin.*;
 import exerelin.events.EventPirateFleetSpawn;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinMessageManager;
+import exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.util.Collections;
 
@@ -252,17 +254,23 @@ public class Exerelin //implements SectorGeneratorPlugin
         }
 
         // Setup some initial pirate spawns
-
-        EventPirateFleetSpawn pirateFleetSpawn = new EventPirateFleetSpawn();
-        List systems = sector.getStarSystems();
-        systemLoop: for(int j = 0; j < systems.size(); j++)
+        try {
+            EventPirateFleetSpawn pirateFleetSpawn = new EventPirateFleetSpawn();
+            List systems = sector.getStarSystems();
+            systemLoop:
+            for (int j = 0; j < systems.size(); j++) {
+                StarSystemAPI systemAPI = (StarSystemAPI) systems.get(j);
+                pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
+                pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
+                pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
+                pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
+                pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
+            }
+        }
+        catch (Exception e)
         {
-            StarSystemAPI systemAPI = (StarSystemAPI)systems.get(j);
-            pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
-            pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
-            pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
-            pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
-            pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
+            ExerelinUtilsMessaging.addMessage("ERROR: Exerelin mod out of sync with another mod. See log for details.", Color.white.ORANGE);
+            System.out.println(e.getMessage());
         }
     }
 }

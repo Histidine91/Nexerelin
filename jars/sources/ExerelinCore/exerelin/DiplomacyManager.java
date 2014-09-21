@@ -668,6 +668,7 @@ public class DiplomacyManager
 		int enemyChange = 0;
 		Boolean affectsAllies = false;
 		Boolean affectsEnemies = false;
+        Boolean updateBoth = false;
 
 		if(event.equalsIgnoreCase("LostStation"))
 		{
@@ -683,29 +684,31 @@ public class DiplomacyManager
 				declarePeaceWithAllFactions(factionId);
 			}
 		}
-
-		if(event.equalsIgnoreCase("agent"))
+		else if(event.equalsIgnoreCase("agent"))
 		{
 			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " agent has caused a disagreement between " + Global.getSector().getFaction(factionId).getDisplayName() + " and " + Global.getSector().getFaction(otherFactionId).getDisplayName(), Color.magenta);
-			relChange = -30;
-		}
+            int factionRelationship = factionRecord.getFactionRelationship(otherFactionId);
 
-		if(event.equalsIgnoreCase("agentCapture"))
-		{
-			ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " agent has been captured by " + Global.getSector().getFaction(factionId).getDisplayName(), Color.magenta);
-			relChange = -30;
-		}
+            if(factionRelationship >= ALLY_LEVEL)
+                relChange = factionRelationship * -1;
+            else
+                relChange = -40;
 
-		if(event.equalsIgnoreCase("prisoner"))
+            updateBoth = true;
+		}
+		else if(event.equalsIgnoreCase("prisoner"))
         {
             // Get max of 30 or 50% of negative faction relationship
             int factionRelationship = factionRecord.getFactionRelationship(otherFactionId);
             relChange = Math.max(30, (int)(factionRelationship * 0.50) * -1);
+            updateBoth = true;
         }
 
 
 		System.out.println(event + " for " + factionId + " and " + otherFactionId + " results in " + relChange + " change");
-		factionRecord.addToFactionRelationship(otherFactionId, relChange) ;
+		factionRecord.addToFactionRelationship(otherFactionId, relChange);
+        if(updateBoth)
+            otherFactionRecord.addToFactionRelationship(factionId, relChange);
 		if(affectsAllies)
 			updateAllies(factionRecord, allyChange);
 		if(affectsEnemies)
@@ -814,11 +817,19 @@ public class DiplomacyManager
 		else
 			possibleFactions = diplomacyRecord.getNeutralFactions();
 
+        // Ensure factions are in sector curretnly
+        List<String> factions = new ArrayList<String>();
+        for(String possibleFactionId : possibleFactions)
+        {
+            if(SectorManager.getCurrentSectorManager().isFactionInSector(possibleFactionId))
+                factions.add(possibleFactionId);
+        }
 
-		if(possibleFactions.length == 0)
+
+		if(factions.size() == 0)
 			return "";
 
-		return possibleFactions[ExerelinUtils.getRandomInRange(0, possibleFactions.length - 1)];
+		return factions.get(ExerelinUtils.getRandomInRange(0, factions.size() - 1));
 	}
 
 	// Declares peace with all, no message displayed

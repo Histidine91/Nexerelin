@@ -907,7 +907,16 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         if(influenceWithFaction < 70)
         {
             // Remove large weapons
-            // NOT SURE HOW TO DO THIS
+            for(CargoStackAPI cargoStack : station.getCargo().getStacksCopy())
+            {
+                if(cargoStack.isWeaponStack() && cargoStack.getMaxSize() <= 20)
+                {
+                    float numWeapons = cargoStack.getSize();
+                    String weaponId = (String)cargoStack.getData();
+                    station.getCargo().removeWeapons(weaponId,  (int)numWeapons);
+                    restrictedItems.addWeapons(weaponId,  (int)numWeapons);
+                }
+            }
         }
 
         if(influenceWithFaction < 80 || SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase("player"))
@@ -971,31 +980,35 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         float numSaboteurs = restrictedItems.getQuantity(CargoAPI.CargoItemType.RESOURCES, "saboteur");
         restrictedItems.removeItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", numSaboteurs);
         station.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", numSaboteurs);
+
+        // Restore large weapons
+        for(CargoStackAPI cargoStack : restrictedItems.getStacksCopy())
+        {
+            if(cargoStack.isWeaponStack() && cargoStack.getMaxSize() <= 10)
+            {
+                float numWeapons = cargoStack.getSize();
+                String weaponId = (String)cargoStack.getData();
+                restrictedItems.removeWeapons(weaponId,  (int)numWeapons);
+                station.getCargo().addWeapons(weaponId,  (int)numWeapons);
+            }
+        }
     }
 
     private void plantAgent()
     {
         Global.getSector().getPlayerFleet().getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
 
-        if(ExerelinUtils.getRandomInRange(0, 9) != 0)
-        {
-            String otherFactionId = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRandomNonEnemyFactionIdForFaction(this.station.getFaction().getId());
-            if(otherFactionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
-                otherFactionId = "";
+        String otherFactionId = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRandomNonEnemyFactionIdForFaction(this.station.getFaction().getId());
+        if(otherFactionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
+            otherFactionId = "";
 
-            if(otherFactionId.equalsIgnoreCase(""))
-            {
-                ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " agent has failed in their mission.", Color.magenta);
-                return;
-            }
-
-            SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.station.getFaction().getId(), otherFactionId, "agent");
-        }
-        else
+        if(otherFactionId.equalsIgnoreCase(""))
         {
-            SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.station.getFaction().getId(), SectorManager.getCurrentSectorManager().getPlayerFactionId(), "agentCapture");
+            ExerelinUtilsMessaging.addMessage(Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " agent has failed in their mission.", Color.magenta);
             return;
         }
+
+        SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(this.station.getFaction().getId(), otherFactionId, "agent");
     }
 
     private void plantSaboteur()

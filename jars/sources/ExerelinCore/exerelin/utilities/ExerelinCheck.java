@@ -63,7 +63,7 @@ public class ExerelinCheck
 
             if(error)
             {
-                ExerelinUtilsMessaging.addMessage("ERROR: Exerelin mod and " + factionConfig.factionId + " are out of sync.", Color.ORANGE);
+                ExerelinUtilsMessaging.addMessage("ERROR: Exerelin mod and " + factionConfig.factionId + " are out of sync. See log for details.", Color.ORANGE);
             }
 
             System.out.println("");
