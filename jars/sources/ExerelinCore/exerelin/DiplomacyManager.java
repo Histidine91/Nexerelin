@@ -1386,6 +1386,9 @@ public class DiplomacyManager
             if(!record.getFactionId().equalsIgnoreCase(factionId) && record.getPlayerInfluence() > 0)
                 record.setPlayerInfluence(0);
         }
+
+        // Reset stations to balanced
+        FactionDirector.getFactionDirectorForFactionId(factionId).updateAllStationsToStance(StationRecord.StationFleetStance.BALANCED);
     }
 
     public void applyInfluenceChangeForWonEncounter(String targetedFaction, int amount, ArrayList<String> factionsInSystem)

@@ -398,4 +398,19 @@ public class SystemStationManager
         else
             return 0; // We have no more stations to updates so return 0 for first station
     }
+
+    public List<StationRecord> getStationRecordsForFaction(String factionId)
+    {
+        List<StationRecord> stationRecords = new ArrayList<StationRecord>();
+
+        for(StationRecord stationRecord : this.getStationRecords())
+        {
+            if(stationRecord.getStationToken().getFaction().getId().equalsIgnoreCase(factionId))
+            {
+                stationRecords.add(stationRecord);
+            }
+        }
+
+        return stationRecords;
+    }
 }

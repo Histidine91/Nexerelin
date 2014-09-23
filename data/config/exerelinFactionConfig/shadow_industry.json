@@ -1,5 +1,5 @@
 {
-    "uniqueModClassName":"data.scripts.world.SHIGen", # String
+    "uniqueModClassName":"data.scripts.ShadowyardsModPlugin", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
@@ -41,7 +41,9 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["ms_solidarity_Standard"], # String array
+    "freighterVariants":[   "ms_solidarity_Standard",
+                            "ms_ashnan_Standard",
+                            "ms_ashnan_Fast"], # String array
     "tankerVariants":["ms_lambent_Standard"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
@@ -61,8 +63,7 @@
                        "ms_shamash_Standard"], # String array
 
     "destroyerVariants":["ms_morningstar_Standard",
-                         "ms_sargasso_Balanced",
-                         "msp_potniaBis_Attack"], # String array
+                         "ms_sargasso_Balanced"], # String array
 
     "cruiserVariants":[ "ms_tartarus_Standard",
                         "ms_charybdis_Balanced",

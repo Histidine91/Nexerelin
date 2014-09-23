@@ -41,7 +41,7 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["pn_tick"], # String array
+    "freighterVariants":["pn_tick", "cs_pn_mite", "as_pn_mite"], # String array
     "tankerVariants":["pn_tick"], # String array
     "miningVariantsOrWings":["pn_mlmv_wing"], # String array
 
@@ -54,9 +54,7 @@
                     "pn_stress_wing",
                     "pn_mlmv_wing"], # String array
 
-    "frigateVariants":["cs_pn_mite",
-                       "as_pn_mite",
-                       "as_pn_rs",
+    "frigateVariants":["as_pn_rs",
                        "cs_pn_rs",
                        "as_pn_sike",
                        "cs_pn_sike",

@@ -1,7 +1,10 @@
 package exerelin;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+
+import java.util.List;
 
 public class FactionDirector {
 
@@ -147,10 +150,22 @@ public class FactionDirector {
         return this.targetResupplyEntityToken;
     }
 
-
     public void setHomeSystem(StarSystemAPI system)
     {
         this.homeSystem = system;
+    }
+
+    public void updateAllStationsToStance(StationRecord.StationFleetStance stance)
+    {
+        for(StarSystemAPI starSystem : Global.getSector().getStarSystems())
+        {
+            List<StationRecord> stationRecords = SectorManager.getCurrentSectorManager().getSystemManager(starSystem).getSystemStationManager().getStationRecordsForFaction(this.factionId);
+
+            for(StationRecord stationRecord : stationRecords)
+            {
+                stationRecord.setStationFleetStance(stance);
+            }
+        }
     }
 
 
