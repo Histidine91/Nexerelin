@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.ZorgModPlugin", # String
+    "factionNiceName":"Zorg", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["zorg_interior"], # String array

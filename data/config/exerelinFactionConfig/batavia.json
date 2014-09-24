@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.BataviaModPlugin", # String
+    "factionNiceName":"Batavia Shipyards", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["batavia_interior"], # String array

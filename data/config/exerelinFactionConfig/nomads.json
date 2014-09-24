@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.TheNomadsModPlugin", # String
+    "factionNiceName":"Nomads", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["desert_moons_ruins"], # String array

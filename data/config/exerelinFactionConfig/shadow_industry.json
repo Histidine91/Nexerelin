@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.ShadowyardsModPlugin", # String
+    "factionNiceName":"Shadowyards Heavy Industries", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array

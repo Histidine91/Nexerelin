@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.PatriaModPlugin", # String
+    "factionNiceName":"Patrian Navy", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array

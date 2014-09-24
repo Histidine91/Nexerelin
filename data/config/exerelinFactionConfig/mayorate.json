@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.MayorateModPlugin", # String
+    "factionNiceName":"Mayorate", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array

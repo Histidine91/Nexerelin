@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.GeduneModPlugin", # String
+    "factionNiceName":"Gedune", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array

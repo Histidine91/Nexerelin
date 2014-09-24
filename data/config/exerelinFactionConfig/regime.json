@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.vayraKadurGen", # String
+    "factionNiceName":"Kadur Theocracy", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array

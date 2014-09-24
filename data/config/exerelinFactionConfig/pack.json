@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.PackModPlugin", # String
+    "factionNiceName":"P.A.C.K", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array

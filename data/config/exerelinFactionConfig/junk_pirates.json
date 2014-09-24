@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.JPSectorGen", # String
+    "factionNiceName":"Junk Pirates", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array

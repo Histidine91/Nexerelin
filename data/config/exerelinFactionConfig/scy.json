@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.SCY_homeSystem", # String
+    "factionNiceName":"Scy", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array

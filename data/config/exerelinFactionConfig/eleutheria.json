@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.EFModPlugin", # String
+    "factionNiceName":"Eleutheria", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array

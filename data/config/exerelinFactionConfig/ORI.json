@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.ORIModPlugin", # String
+    "factionNiceName":"Objectless Research Institute", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array

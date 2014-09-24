@@ -77,16 +77,16 @@ public final class ExerelinSetupData
 		playerFaction = factionId;
 	}
 
-	public String[] getPossibleFactions()
+	public String[] getPossibleFactions(Boolean getNiceNames)
 	{
         ArrayList possibleFactionsList = new ArrayList();
 
         // Add built in factions
         ExerelinConfig.loadSettings();
-        Collections.addAll(possibleFactionsList, ExerelinConfig.builtInFactions);
+        Collections.addAll(possibleFactionsList, this.getBuiltInFactionsList(getNiceNames));
 
         // Add modded factions
-        Collections.addAll(possibleFactionsList, this.getModdedFactionsList());
+        Collections.addAll(possibleFactionsList, this.getModdedFactionsList(getNiceNames));
         return (String[])possibleFactionsList.toArray(new String[possibleFactionsList.size()]);
 	}
 
@@ -99,7 +99,7 @@ public final class ExerelinSetupData
 	{
 		if (availableFactions == null)
 		{
-			String[] locPossibleFaction = this.getPossibleFactions();
+			String[] locPossibleFaction = this.getPossibleFactions(false);
 			ArrayList confirmedFactions = new ArrayList(locPossibleFaction.length);
 
 			if(!onlyRespawnStartingFactions)
@@ -145,7 +145,7 @@ public final class ExerelinSetupData
 		return availableFactions;
 	}
 
-	public String[] getModdedFactionsList()
+	public String[] getModdedFactionsList(Boolean getNiceNames)
 	{
 		System.out.println("EXERELIN: Getting modded factions");
         ArrayList possibleModdedFactionList = new ArrayList();
@@ -153,8 +153,14 @@ public final class ExerelinSetupData
         for(int i = 0; i < ExerelinConfig.exerelinFactionConfigs.size(); i++)
         {
             ExerelinFactionConfig exerelinFactionConfig = (ExerelinFactionConfig)ExerelinConfig.exerelinFactionConfigs.get(i);
-            if(exerelinFactionConfig.playableFaction && isFactionInstalled(exerelinFactionConfig.factionId, exerelinFactionConfig.uniqueModClassName))
-                possibleModdedFactionList.add(exerelinFactionConfig.factionId);
+            if(exerelinFactionConfig.playableFaction
+                    && isFactionInstalled(exerelinFactionConfig.factionId, exerelinFactionConfig.uniqueModClassName))
+            {
+                if(getNiceNames)
+                    possibleModdedFactionList.add(exerelinFactionConfig.factionNiceName);
+                else
+                    possibleModdedFactionList.add(exerelinFactionConfig.factionId);
+            }
         }
 
         // OBSOLETE
@@ -216,6 +222,25 @@ public final class ExerelinSetupData
 		System.out.println("- - - - - - - - - -");
         return (String[])possibleModdedFactionList.toArray(new String[possibleModdedFactionList.size()]);
 	}
+
+    public String[] getBuiltInFactionsList(Boolean getNiceNames)
+    {
+        ArrayList possibleBuiltInFactionList = new ArrayList();
+
+        for(int i = 0; i < ExerelinConfig.exerelinFactionConfigs.size(); i++)
+        {
+            ExerelinFactionConfig exerelinFactionConfig = (ExerelinFactionConfig)ExerelinConfig.exerelinFactionConfigs.get(i);
+            if(exerelinFactionConfig.playableFaction && exerelinFactionConfig.uniqueModClassName.equalsIgnoreCase(""))
+            {
+                if(getNiceNames)
+                    possibleBuiltInFactionList.add(exerelinFactionConfig.factionNiceName);
+                else
+                    possibleBuiltInFactionList.add(exerelinFactionConfig.factionId);
+            }
+        }
+
+        return (String[])possibleBuiltInFactionList.toArray(new String[possibleBuiltInFactionList.size()]);
+    }
 
 	private boolean isFactionInstalled(String factionId, String factionSpecficClassName)
 	{

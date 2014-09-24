@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.pnModPlugin", # String
+    "factionNiceName":"P9 Colony Group", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array

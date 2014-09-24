@@ -121,6 +121,18 @@ public class ExerelinConfig
         return null;
     }
 
+    public static ExerelinFactionConfig getExerelinFactionConfigForNiceName(String factionNiceName)
+    {
+        for(ExerelinFactionConfig exerelinFactionConfig : exerelinFactionConfigs)
+        {
+            if(exerelinFactionConfig.factionNiceName.equalsIgnoreCase(factionNiceName))
+                return exerelinFactionConfig;
+        }
+
+        System.out.println("EXERELIN ERROR: Faction config not found: " + factionNiceName);
+        return null;
+    }
+
     public static List<String> getAllCustomFactionRebels()
     {
         List<String> customRebels = new ArrayList<String>();

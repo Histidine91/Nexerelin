@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.ICEModPlugin", # String
+    "factionNiceName":"Idoneus Citadel Exiles", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array

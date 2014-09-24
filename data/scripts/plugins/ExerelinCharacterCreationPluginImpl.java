@@ -8,6 +8,7 @@ import com.fs.starfarer.api.combat.ShipAPI;
 import data.scripts.world.exerelin.ExerelinSetupData;
 import exerelin.ExerelinUtils;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
 
 import java.util.ArrayList;
@@ -219,7 +220,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
             // Add option for starting unaligned
             result.add(START_AS_PLAYER_FACTION);
 
-            String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
+            String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions(true);
             if(possibleFactions.length > 6)
             {
                 for(int i = 0; i < possibleFactions.length/2; i = i + 1)
@@ -239,7 +240,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
 		}
 		else if (stage == 11)
 		{
-			String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
+			String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions(true);
 			for(int i = possibleFactions.length/2; i < possibleFactions.length; i = i + 1)
 			{
 				result.add(new ResponseImpl(possibleFactions[i]));
@@ -457,11 +458,12 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
             }
             else
             {
-                String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
+                String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions(true);
                 for (int i = 0; i < possibleFactions.length; i = i + 1) {
                     if (response.getText().equalsIgnoreCase(possibleFactions[i])) {
-                        ExerelinSetupData.getInstance().setPlayerFaction(possibleFactions[i]);
-                        setStartingShipFromFactionSelection(possibleFactions[i], data);
+                        ExerelinFactionConfig exerelinFactionConfig = ExerelinConfig.getExerelinFactionConfigForNiceName(possibleFactions[i]);
+                        ExerelinSetupData.getInstance().setPlayerFaction(exerelinFactionConfig.factionId);
+                        setStartingShipFromFactionSelection(exerelinFactionConfig.factionId, data);
                         break;
                     }
                 }
@@ -517,7 +519,7 @@ public class ExerelinCharacterCreationPluginImpl implements CharacterCreationPlu
                 for(int i = 0; i < factionShips; i++)
                 {
                     // Get some random frigates from possible factions
-                    String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions();
+                    String[] possibleFactions = ExerelinSetupData.getInstance().getPossibleFactions(false);
                     int rand = ExerelinUtils.getRandomInRange(0, possibleFactions.length - 1);
                     try {
                         data.addStartingShipChoice(ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize(possibleFactions[rand], ShipAPI.HullSize.FRIGATE));

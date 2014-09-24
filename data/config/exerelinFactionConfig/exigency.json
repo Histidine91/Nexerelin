@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.ExigencyModPlugin", # String
+    "factionNiceName":"Exigency Corp", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array

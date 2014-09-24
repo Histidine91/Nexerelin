@@ -10,6 +10,7 @@ public class ExerelinFactionConfig
     public String factionId;
 
     public String uniqueModClassName = "";
+    public String factionNiceName = "";
     public Boolean playableFaction = true;
 
     public String[] stationInteriorIllustrationKeys = new String[]{"hound_hangar"};
@@ -81,6 +82,7 @@ public class ExerelinFactionConfig
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelinFactionConfig/" + factionId + ".json");
 
             uniqueModClassName = settings.getString("uniqueModClassName");
+            factionNiceName = settings.getString("factionNiceName");
             playableFaction = settings.getBoolean("playableFaction");
 
             stationInteriorIllustrationKeys = JSONArrayToStringArray(settings.getJSONArray("stationInteriorIllustrationKeys"));

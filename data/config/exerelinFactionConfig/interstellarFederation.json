@@ -1,5 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.InterstellarFederationSectorGen", # String
+    "factionNiceName":"Interstellar Federation", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
