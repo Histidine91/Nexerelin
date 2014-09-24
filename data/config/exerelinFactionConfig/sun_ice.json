@@ -1,5 +1,5 @@
 {
-    "uniqueModClassName":"data.scripts.ICEModPlugin", # String
+    "uniqueModClassName":"data.ICEModPlugin", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
@@ -16,19 +16,19 @@
 
     "customRebelFaction":"", # String
     "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Traitors", # String
+    "rebelFleetSuffix":"Renegades", # String
 
-    "smallAttackFleetName":"Recon", # String
-    "mediumAttackFleetName":"Shredder", # String
-    "largeAttackFleetName":"Armada", # String
+    "smallAttackFleetName":"Forward Scout", # String
+    "mediumAttackFleetName":"Strike Force", # String
+    "largeAttackFleetName":"Assault Fleet", # String
 
-    "smallDefenceFleetName":"Picket Defense", # String
-    "mediumDefenceFleetName":"Defensive Group", # String
+    "smallDefenceFleetName":"Sentinel", # String
+    "mediumDefenceFleetName":"Defence Fleet", # String
     "largeDefenceFleetName":"Guardian Fleet", # String
 
-    "smallPatrolFleetName":"Duelist", # String
-    "mediumPatrolFleetName":"Special Ops Group", # String
-    "largePatrolFleetName":"Battle Group", # String
+    "smallPatrolFleetName":"Patrol", # String
+    "mediumPatrolFleetName":"Recon Fleet", # String
+    "largePatrolFleetName":"Armada", # String
 
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
@@ -45,27 +45,32 @@
     "tankerVariants":["phaeton_Standard"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
-    "troopTransportVariants":["valkyrie_Elite"], # String array
-    "superFreighterVariants":["atlas_Standard"], # String array
+    "troopTransportVariants":["sun_ice_shalom_Standard"], # String array
+    "superFreighterVariants":["sun_ice_shalom_Standard"], # String array
 
-    "carrierVariants":["sun_ice_eidolon_Standard"], # String array
+    "carrierVariants":["sun_ice_apocrypha_Standard",
+					   "sun_ice_eidolon_Standard"], # String array
 
     "fighterWings":["sun_ice_phantom_wing",
+					"sun_ice_stormwhisp_wing",
+					"sun_ice_umbra_wing",
                     "sun_ice_poltergeist_wing"], # String array
 
     "frigateVariants":[ "sun_ice_nightseer_Standard",
-                        "sun_ice_pentagram_Standard",
+                        "sun_ice_seraph_Standard",
+                        "sun_ice_palantir_Standard",
                         "sun_ice_athame_Standard",
-                        "sun_ice_flashghast_Standard",
                         "sun_ice_specter_Standard"], # String array
 
-    "destroyerVariants":["sun_ice_soulbane_Standard"], # String array
+    "destroyerVariants":["sun_ice_soulbane_Standard",
+						 "sun_ice_shiekwraith_Standard"], # String array
 
     "cruiserVariants":[ "sun_ice_voidreaver_Standard",
                         "sun_ice_eidolon_Standard",
                         "sun_ice_kelpie_Standard"], # String array
 
-    "capitalVariants":["sun_ice_voidreaver_Standard"], # String array
+    "capitalVariants":["sun_ice_abraxas_Standard",
+                       "sun_ice_apocrypha_Standard"], # String array
 
-    "startingVariants":["sun_ice_specter_Standard", "sun_ice_flashghast_Standard"], # String array
+    "startingVariants":["sun_ice_specter_Standard"], # String array
 }

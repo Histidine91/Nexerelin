@@ -48,11 +48,12 @@
     "troopTransportVariants":["pn_valkyrie"], # String array
     "superFreighterVariants":["atlas_Standard"], # String array
 
-    "carrierVariants":["pn_tick"], # String array
+    "carrierVariants":["pn_tick", "pn_cimex"], # String array
 
     "fighterWings":["pn_saksh-t_turret_wing",
                     "pn_stress_wing",
-                    "pn_mlmv_wing"], # String array
+                    "pn_mlmv_wing",
+                    "pn_spore-mk3_variant_wing"], # String array
 
     "frigateVariants":["as_pn_rs",
                        "cs_pn_rs",
@@ -71,9 +72,12 @@
 
     "cruiserVariants":["as_pn_korlo-skt",
                        "lr_pn_korlo-skt",
-                       "cs_pn_kaala"], # String array
+                       "cs_pn_kaala",
+                       "pn_cimex",
+                       "pn_silverfish-mpk"], # String array
 
-    "capitalVariants":["pn_samaa-dsi"], # String array
+    "capitalVariants":["pn_samaa-dsi",
+                       "as_pn_samaa-ebm"], # String array
 
     "startingVariants":["cs_pn_sike", "as_pn_rs", "cs_pn_mite"], # String array
 }

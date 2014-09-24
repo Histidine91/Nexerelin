@@ -21,10 +21,10 @@
     "playerBaseWage": 1000, # Integer
     "playerFactionFreeTransfer":false, # Boolean, DOESN'T WORK UNTIL FREETRANSFER IS FIXED
 
-    "validBoardingFlagships":["atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2", "ori_butterflier", "brdy_eschaton"], # String array
-    "validTroopTransportShips":["valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_auxiliary", "qua_yidato", "cane", "ms_potnia", "pb_vanghentmk2", "pn_valkyrie"], # String array
+    "validBoardingFlagships":["atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2", "ori_butterflier", "brdy_eschaton", "sun_ice_shalom"], # String array
+    "validTroopTransportShips":["valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_auxiliary", "qua_yidato", "cane", "ms_potnia", "pb_vanghentmk2", "pn_valkyrie", "sun_ice_shalom", "SCY_hydra"], # String array
     "validMiningShips":["mining_drone", "zorg_sphere", "pn_mlmv"], # String array
 
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat"], # String array
-    "supportedModFactions":["batavia", "blackrock_driveyards", "bushi", "citadeldefenders", "dstech", "gedune", "hiigaran_descendants", "insurgency", "interstellarFederation", "junk_pirates", "mayorate", "neutrinocorp", "nomads", "ORI", "pack", "patnavy", "pn", "regime", "shadow_industry", "syndicate_asp", "valkyrian", "zorg", "relics", "BGE", "qualljom", "scavengers", "sun_ice", "exigency", "exipirated", "interstellarimperium", "eleutheria"], # String array
+    "supportedModFactions":["batavia", "blackrock_driveyards", "bushi", "citadeldefenders", "dstech", "gedune", "hiigaran_descendants", "insurgency", "interstellarFederation", "junk_pirates", "mayorate", "neutrinocorp", "nomads", "ORI", "pack", "patnavy", "pn", "regime", "shadow_industry", "syndicate_asp", "valkyrian", "zorg", "relics", "BGE", "qualljom", "scavengers", "sun_ice", "exigency", "exipirated", "interstellarimperium", "eleutheria", "SCY"], # String array
 }
