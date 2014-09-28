@@ -871,9 +871,9 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
          int influenceWithFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(this.station.getFaction().getId()).getPlayerInfluence();
 
-        if(influenceWithFaction < 70
+        if(influenceWithFaction < 60
                 && station.getFaction().getId().equalsIgnoreCase(Global.getSector().getPlayerFleet().getFaction().getId()))
-            influenceWithFaction = 70; // If member of faction then treat as if 70 influence
+            influenceWithFaction = 60; // If member of faction then treat as if 60 influence
 
         if(influenceWithFaction < 40)
         {
