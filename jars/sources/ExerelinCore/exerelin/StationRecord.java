@@ -477,11 +477,12 @@ public class StationRecord
         {
             if(ExerelinUtils.getRandomInRange(0, 50) == 0)
             {
-                this.getStationToken().getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "saboteur", 1);
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "saboteur", CargoAPI.CargoItemType.RESOURCES, 1));
             }
+
             if(ExerelinUtils.getRandomInRange(0, 50) == 0)
             {
-                this.getStationToken().getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, "agent", 1);
+                SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddCargo(stationCargo, "agent", CargoAPI.CargoItemType.RESOURCES, 1));
             }
         }
 

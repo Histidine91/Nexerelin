@@ -130,7 +130,6 @@ public class ExerelinUtilsCargo
         for(int i = 0; i < numberOfWeaponTypes; i++)
         {
             String weaponId = (String)weaponList.get(ExerelinUtils.getRandomInRange(0, weaponList.size() - 1));
-            cargo.addWeapons(weaponId, numberOfEachWeapon);
             SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandAddWeapon(cargo, weaponId, ExerelinUtils.getRandomInRange(1, numberOfEachWeapon)));
         }
     }

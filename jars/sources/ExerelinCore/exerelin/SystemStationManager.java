@@ -118,14 +118,14 @@ public class SystemStationManager
             final int localToUpdate = nextIncreaseResourceStationRecord;
             if(ExerelinConfig.enableThreading)
             {
-                Thread updateRelationshipThread = new Thread("increaseResourcesThread"){
+                Thread increaseResourcesThread = new Thread("increaseResourcesThread"){
                     public void run()
                     {
                         stationRecords[localToUpdate].increaseResources();
                     }
                 };
 
-                updateRelationshipThread.start();
+                increaseResourcesThread.start();
             }
             else
                 stationRecords[localToUpdate].increaseResources();

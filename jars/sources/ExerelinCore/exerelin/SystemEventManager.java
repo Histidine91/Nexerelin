@@ -50,7 +50,9 @@ public class SystemEventManager
             else
             {
                 eventPirateFleetSpawn.spawnPirateFleet(starSystemAPI, false);
-                eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
+
+                if(ExerelinUtils.getRandomInRange(0, 1) == 0)
+                    eventRebelFleetSpawn.spawnRebelFleet(starSystemAPI);
             }
             //waitTime = betweenEventWait;
             //lastEventType = eventRebelFleetSpawn.getType();

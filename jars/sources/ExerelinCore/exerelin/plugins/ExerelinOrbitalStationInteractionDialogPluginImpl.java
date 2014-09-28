@@ -815,24 +815,22 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
         List<FleetMemberAPI> hangerMembers = cargo.getMothballedShips().getMembersListCopy();
 
         // Create empty dummy fleet
-        CampaignFleetAPI dummyFleet = Global.getSector().createFleet("player", "shuttle");
+        final CampaignFleetAPI dummyFleet = Global.getSector().createFleet("player", "shuttle");
         List<FleetMemberAPI> members = dummyFleet.getFleetData().getMembersListCopy();
         for(FleetMemberAPI member : members) {
             dummyFleet.getFleetData().removeFleetMember(member);
         }
 
         // Move hanger ships into it
-        float numCrewRequired = 0;
         for(FleetMemberAPI member : hangerMembers) {
             dummyFleet.getFleetData().addFleetMember(member);
             member.getRepairTracker().setMothballed(false);
             member.getRepairTracker().setCR(1);
-            numCrewRequired = numCrewRequired + member.getMinCrew();
+            dummyFleet.getCargo().addCrew(CargoAPI.CrewXPLevel.GREEN, (int)member.getMinCrew());
         }
 
         // Extract hanger list from dummy fleet to clear mothballed flag
         members = dummyFleet.getFleetData().getMembersListCopy();
-        cargo.addCrew(CargoAPI.CrewXPLevel.GREEN, (int)numCrewRequired);
 
         if(!members.isEmpty())
         {
@@ -857,10 +855,11 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
                         }
                         public void cancelledFleetMemberPicking() {
                             textPanel.addParagraph("You leave your hanger.");
+                            options.clearOptions();
+                            createStationServicesOptions();
                         }
                     });
         }
-        cargo.removeCrew(CargoAPI.CrewXPLevel.GREEN, (int)numCrewRequired);
     }
 
     private void removeRestrictedCargo()
