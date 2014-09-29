@@ -42,14 +42,14 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["Fox_Hauler_elitevariant"], # String array
-    "tankerVariants":["Fox_Hauler_elitevariant"], # String array
+    "freighterVariants":["Fox_Hauler_standard"], # String array
+    "tankerVariants":["Fox_Hauler_standard"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["valkyrie_Elite"], # String array
     "superFreighterVariants":["atlas_Standard"], # String array
 
-    "carrierVariants":[ "Fox_catamaran_elitevariant", "Fox_Carrier_midlinevariant", "Fox_Carrier_elitevariant"], # String array
+    "carrierVariants":[ "Fox_catamaran_guardian", "Fox_Carrier_standard", "Fox_Carrier_mobile"], # String array
 
     "fighterWings":["fox_arrowhead_wing",
                     "fox_heak_wing",
@@ -58,32 +58,30 @@
                     "fox_bomber_plasma_wing",
                     "fox_firewall_wing"], # String array
 
-    "frigateVariants":[ "Fox_Drone_midlinevariant",
-                        "Fox_Drone_elitevariant",
-                        "Fox_Corvette_midlinevariant",
-                        "Fox_Corvette_elitevariant",
-                        "Fox_Strike_elitevariant",
-                        "Fox_Frigate_midlinevariant",
-                        "Fox_Frigate_elitevariant"], # String array
+    "frigateVariants":[ "Fox_Drone_standard",
+                        "Fox_Corvette_standard",
+                        "Fox_Corvette_mobile",
+                        "Fox_Strike_breaker",
+                        "Fox_Frigate_standard",
+                        "Fox_Frigate_mobile"], # String array
 
-    "destroyerVariants":[   "Fox_Battleship_elitevariant",
-                            "Fox_catamaran_elitevariant",
-                            "Fox_LDestroyer_midlinevariant",
-                            "Fox_LDestroyer_elitevariant",
-                            "Fox_Minelayer_midlinevariant",
-                            "Fox_Minelayer_elitevariant",
-                            "Fox_MDestroyer_elitevariant",
-                            "Fox_Tank_elitevariant"], # String array
+    "destroyerVariants":[   "Fox_Battleship_mobile",
+                            "Fox_catamaran_guardian",
+                            "Fox_LDestroyer_standard",
+                            "Fox_LDestroyer_mobile",
+                            "Fox_Minelayer_standard",
+                            "Fox_Minelayer_mobile",
+                            "Fox_MDestroyer_mobile",
+                            "Fox_Tank_mobile"], # String array
 
-    "cruiserVariants":[ "Fox_Seige_midlinevariant",
-                        "Fox_Seige_elitevariant",
-                        "Fox_Carrier_midlinevariant",
-                        "Fox_Carrier_elitevariant",
-                        "Fox_Cruiser_midlinevariant",
-                        "Fox_Cruiser_elitevariant",
-                        "Fox_Dreadnaught_elitevariant"], # String array
+    "cruiserVariants":[ "Fox_Seige_standard",
+                        "Fox_Seige_mobile",
+                        "Fox_Carrier_standard",
+                        "Fox_Carrier_mobile",
+                        "Fox_Cruiser_standard",
+                        "Fox_Cruiser_mobile"], # String array
 
-    "capitalVariants":["Fox_Dreadnaught_elitevariant"], # String array
+    "capitalVariants":["Fox_Dreadnaught_standard"], # String array
 
-    "startingVariants":["Fox_Drone_midlinevariant", "Fox_Corvette_midlinevariant", "Fox_Frigate_midlinevariant"], # String array
+    "startingVariants":["Fox_Drone_standard", "Fox_Corvette_standard", "Fox_Frigate_standard"], # String array
 }

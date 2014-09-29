@@ -247,12 +247,12 @@ public final class ExerelinSetupData
 		try
 		{
 			Global.getSettings().getScriptClassLoader().loadClass(factionSpecficClassName);
-			System.out.println(factionId + " loaded");
+			System.out.println("Loaded " + factionId);
 			return true;
 		}
 		catch (ClassNotFoundException ex)
 		{
-			System.out.println(factionId + " missing");
+			System.out.println("Skipped " + factionId);
 			return false;
 		}
 	}
