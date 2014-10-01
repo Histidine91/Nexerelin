@@ -54,22 +54,25 @@
     "fighterWings":["exigency_naxos_wing",
                     "exigency_kaivor_wing",
                     "exigency_glynado_wing",
-                    "exipirated_azazel_wing"], # String array
+                    "exigency_tarujan_wing",
+                    "exipirated_azazel_wing",
+                    "exipirated_saraph_wing"], # String array
 
-    "frigateVariants":["exigency_compactfrigate_Standard",
+    "frigateVariants":[ "exigency_compactfrigate_Standard",
                         "exipirated_rauwel_Standard",
-                        "exigency_yria_Standard",
-                        "exigency_yria_Attacker"], # String array
+                        "exigency_yria_Standard"], # String array
 
-    "destroyerVariants":["exipirated_azryel_Standard",
+    "destroyerVariants":[   "exipirated_azryel_Standard",
+                            "exipirated_azryel_Assault",
                             "exipirated_kafziel_Standard",
                             "exigency_lightcarrier_Standard",
                             "exigency_destroyer_Standard"], # String array
 
-    "cruiserVariants":["exipirated_harinder_Standard",
+    "cruiserVariants":[ "exipirated_harinder_Standard",
+                        "exipirated_harinder_Support",
                         "exigency_cruiser_Standard"], # String array
 
-    "capitalVariants":["exipirated_gehenna_Standard"], # String array
+    "capitalVariants":["exipirated_gehenna_Standard", "exipirated_gehenna_Support"], # String array
 
     "startingVariants":["exipirated_rauwel_Standard"], # String array
 }

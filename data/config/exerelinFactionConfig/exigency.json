@@ -53,19 +53,22 @@
 
     "fighterWings":["exigency_naxos_wing",
                     "exigency_kaivor_wing",
-                    "exigency_glynado_wing"], # String array
+                    "exigency_glynado_wing",
+                    "exigency_tarujan_wing"], # String array
 
-    "frigateVariants":["exigency_compactfrigate_Standard",
+    "frigateVariants":[ "exigency_compactfrigate_Standard",
                         "exigency_indra_Standard",
                         "exigency_yria_Standard",
-                        "exigency_yria_Attacker"], # String array
+                        "exigency_yria_Support",
+                        "exigency_yria_Anti-ship"], # String array
 
-    "destroyerVariants":["exigency_lightcarrier_Standard",
-                            "exigency_destroyer_Standard"], # String array
+    "destroyerVariants":[   "exigency_lightcarrier_Standard",
+                            "exigency_destroyer_Standard",
+                            "exigency_destroyer_Skirmisher"], # String array
 
-    "cruiserVariants":["exigency_cruiser_Standard"], # String array
+    "cruiserVariants":[ "exigency_cruiser_Standard"], # String array
 
-    "capitalVariants":["exigency_carrier_Standard"], # String array
+    "capitalVariants":[ "exigency_carrier_Standard"], # String array
 
     "startingVariants":["exigency_compactfrigate_Standard", "exigency_indra_Standard", "exigency_yria_Standard"], # String array
 }

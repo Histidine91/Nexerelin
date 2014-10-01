@@ -39,24 +39,25 @@
 
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":["shadow_industry", "blackrock_driveyards"], # String array
-    "factionsDisliked":["Hegemony", "tritachyon", "neutrinocorp", "valkyrian"], # String array
+    "factionsLiked":["shadow_industry", "citadeldefenders"], # String array
+    "factionsDisliked":["Hegemony", "tritachyon", "neutrinocorp", "valkyrian", "blackrock_driveyards"], # String array
 
     "freighterVariants":["SCY_balius_recon"], # String array
     "tankerVariants":["SCY_balius_recon"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
     "troopTransportVariants":["SCY_hydra_recon"], # String array
-    "superFreighterVariants":["atlas_Standard"], # String array
+    "superFreighterVariants":["SCY_xanthus_standard"], # String array
 
     "carrierVariants":["SCY_manticoreCarrier_recon", "SCY_hydra_recon"], # String array
 
     "fighterWings":["SCY_sufiPd_wing", "SCY_sufiInterceptor_wing", "SCY_sufiCombat_wing", "SCY_atfiPd_wing", "SCY_atfiInterceptor_wing", "SCY_atfiCombat_wing"], # String array
 
     "frigateVariants":["SCY_alecto_mixte", "SCY_megaera_suckerPunch", "SCY_tisiphone_elite", "SCY_tisiphone_recon", "SCY_medusa_recon", "SCY_megaera_recon", "SCY_lealaps_recon", "SCY_alecto_recon", "SCY_tisiphone_combat", "SCY_lealaps_combat", "SCY_alecto_combat"], # String array
-    "destroyerVariants":["SCY_lamia_recon", "SCY_orthrus_recon", "SCY_hydra_recon", "SCY_balius_recon", "SCY_lamia_combat", "SCY_orthrus_combat","SCY_lamia_elite", "SCY_orthrus_elite"], # String array
+    
+	"destroyerVariants":["SCY_lamia_recon", "SCY_orthrus_recon", "SCY_hydra_recon", "SCY_balius_recon", "SCY_lamia_combat", "SCY_orthrus_combat","SCY_lamia_elite", "SCY_orthrus_elite", "SCY_euryale_recon"], # String array
 
-    "cruiserVariants":["SCY_manticoreMirv_support", "SCY_manticorePhase_support", "SCY_manticore_support", "SCY_sthenos_flak", "SCY_sthenos_antiFrigate", "SCY_sthenos_recon", "SCY_siren_recon", "SCY_khalkotauroi_recon", "SCY_manticore_recon", "SCY_manticoreMirv_recon", "SCY_manticorePhase_recon", "SCY_sthenos_combat", "SCY_siren_combat", "SCY_khalkotauroi_combat", "SCY_manticore_combat", "SCY_manticoreMirv_combat", "SCY_manticorePhase_combat"], # String array
+    "cruiserVariants":["SCY_sthenos_missiles","SCY_erymanthianBoar_special","SCY_erymanthianBoar_recon","SCY_erymanthianBoar_cover","SCY_erymanthianBoar_brawler","SCY_manticoreMirv_support", "SCY_manticorePhase_support", "SCY_manticore_support", "SCY_sthenos_flak", "SCY_sthenos_antiFrigate", "SCY_sthenos_recon", "SCY_siren_recon", "SCY_khalkotauroi_recon", "SCY_manticore_recon", "SCY_manticoreMirv_recon", "SCY_manticorePhase_recon", "SCY_sthenos_combat", "SCY_siren_combat", "SCY_khalkotauroi_combat", "SCY_manticore_combat", "SCY_manticoreMirv_combat", "SCY_manticorePhase_combat"], # String array
 
     "capitalVariants":["SCY_conquest_captured", "SCY_onslaugh_captured"], # String array
 
