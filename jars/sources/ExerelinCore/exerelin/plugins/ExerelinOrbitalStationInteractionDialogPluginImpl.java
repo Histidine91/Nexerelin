@@ -345,9 +345,8 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
             if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
                 options.addOption("Request to join " + this.station.getFaction().getDisplayName(), OptionId.JOIN_FACTION);
-
-            if(SectorManager.getCurrentSectorManager().getPlayerFactionId().equalsIgnoreCase(this.station.getFaction().getId()))
-                options.addOption("Leave " + this.station.getFaction().getDisplayName(), OptionId.LEAVE_FACTION);
+            else
+                options.addOption("Leave " + Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName(), OptionId.LEAVE_FACTION);
 
             if(SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction()
                     && Global.getSector().getFaction("player").getRelationship(this.station.getFaction().getId()) < 0
@@ -497,7 +496,7 @@ public class ExerelinOrbitalStationInteractionDialogPluginImpl implements Intera
 
     private void createLeaveFactionOptions()
     {
-        options.addOption("Confirm Leave " + this.station.getFaction().getDisplayName(), OptionId.LEAVE_FACTION_CONFIRM);
+        options.addOption("Confirm Leave " + Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName(), OptionId.LEAVE_FACTION_CONFIRM);
         options.addOption("Back", OptionId.BACK);
     }
 
