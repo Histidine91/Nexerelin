@@ -51,19 +51,19 @@
 
     "carrierVariants":["valk_heron_A", "valk_valkyrie_b_A", "valk_vatican_III_A", "valk_sequence_A"], # String array
 
-    "fighterWings":["valk_excalibur_corv_wing",
+    "fighterWings":[ "valk_excalibur_corv_wing",
                      "valk_helia_corv_wing",
                      "valk_lightning_wing",
                      "valk_azgard_wing",
                      "valk_sahara_wing",
                      "valk_infinity_ASF_wing",
                      "valk_ancord_H-bomber_wing",
-                     "valk_firefly_wing"], # String array
+                     "valk_firefly_wing",
+                     "valk_morgiana_wing"], # String array
 
     "frigateVariants":["valk_inquisitor_A",
                         "valk_jenova_ECM",
                         "valk_longinus_A",
-                        "valk_tesladora_A",
                         "valk_yuusha_A",
                         "valk_yuusha_II_A"], # String array
 
