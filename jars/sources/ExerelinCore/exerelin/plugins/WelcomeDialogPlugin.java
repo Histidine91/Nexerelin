@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.VisualPanelAPI;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import exerelin.SectorManager;
+import exerelin.utilities.ExerelinCheck;
 
 import java.awt.*;
 
@@ -46,6 +47,7 @@ public class WelcomeDialogPlugin implements InteractionDialogPlugin
         {
             Global.getSector().setPaused(false);
             dialog.dismiss();
+            ExerelinCheck.checkModCompatability();
         }
         else if ((option)optionData == option.NEXT)
         {

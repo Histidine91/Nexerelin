@@ -49,48 +49,48 @@
     "troopTransportVariants":["valkyrie_Elite"], # String array
     "superFreighterVariants":["atlas_Standard"], # String array
 
-    "carrierVariants":["valk_heron_M", "valk_valkyrie_b_M", "valk_vatican_III_M", "valk_sequence_A"], # String array
+    "carrierVariants":["valk_heron_A", "valk_valkyrie_b_A", "valk_vatican_III_A", "valk_sequence_A"], # String array
 
     "fighterWings":["valk_excalibur_corv_wing",
                      "valk_helia_corv_wing",
                      "valk_lightning_wing",
                      "valk_azgard_wing",
                      "valk_sahara_wing",
-                     "valk_morgiana_wing",
                      "valk_infinity_ASF_wing",
                      "valk_ancord_H-bomber_wing",
                      "valk_firefly_wing"], # String array
 
-    "frigateVariants":["valk_inquisitor_M",
+    "frigateVariants":["valk_inquisitor_A",
                         "valk_jenova_ECM",
-                        "valk_longinus_M",
-                        "valk_tesladora_M",
-                        "valk_yuusha_M",
-                        "valk_yuusha_II_M"], # String array
+                        "valk_longinus_A",
+                        "valk_tesladora_A",
+                        "valk_yuusha_A",
+                        "valk_yuusha_II_A"], # String array
 
-    "destroyerVariants":["valk_herald_M",
-                          "valk_heron_M",
-                          "valk_elysium_M",
-                          "valk_elfheim_M",
-                          "valk_eclair_M",
-                          "valk_valkyrie_b_M",
-                          "valk_tesladora_ii_M"], # String array
+    "destroyerVariants":[ "valk_heron_A",
+                          "valk_elysium_A",
+                          "valk_elfheim_A",
+                          "valk_elfheim_S",
+                          "valk_eclair_A",
+                          "valk_valkyrie_b_A"], # String array
 
-    "cruiserVariants":["valk_nirvana_III_M",
-                        "valk_nirvana_II_M",
-                        "valk_nirvana_M",
+    "cruiserVariants":[ "valk_nirvana_II_A",
+                        "valk_nirvana_II_P",
+                        "valk_nirvana_III_A",
+                        "valk_nirvana_IV_A",
+                        "valk_almire_A",
                         "valk_almire_II_A",
-                        "valk_almire_M",
-                        "valk_nirvana_IV_M",
                         "valk_sequence_A"], # String array
 
-    "capitalVariants":["valk_vatican_IV_A",
-                        "valk_vatican_III_M",
-                        "valk_vatican_II_M",
-                        "valk_vatican_I_M",
-                        "valk_yoshura_II_A",
+    "capitalVariants":[ "valk_almire_III_A",
+                        "valk_vatican_IV_A",
+                        "valk_vatican_III_A",
+                        "valk_vatican_II_A",
+                        "valk_vatican_I_A",
+                        "valk_yoshura_A",
                         "valk_yoshura_AS",
-                        "valk_radiance_M"], # String array
+                        "valk_yoshura_II_A",
+                        "valk_radiance_A"], # String array
 
-    "startingVariants":["valk_yuusha_M", "valk_tesladora_M", "valk_longinus_M"], # String array
+    "startingVariants":["valk_yuusha_A", "valk_longinus_A"], # String array
 }

@@ -49,7 +49,7 @@
     "troopTransportVariants":["pb_vanghentmk2_Standard"], # String array
     "superFreighterVariants":["atlas_Standard"], # String array
 
-    "carrierVariants":["pb_trompmk2_Standard", "pb_trompmk2_Support", "pb_kareldoorman_Standard", "pb_kareldoorman_Armoured"], # String array
+    "carrierVariants":["pb_trompmk2_Standard", "pb_trompmk2_Support", "pb_kareldoorman_Standard", "pb_kareldoorman_Armoured", "pb_seven_Support"], # String array
 
     "fighterWings":["pb_flores_wing",
                     "pb_soemba_wing",
@@ -84,7 +84,9 @@
     "capitalVariants":["pb_koning_Standard",
                        "pb_koning_Heavy",
                        "pb_eendracht_Heavy",
-                       "pb_eendracht_Standard"], # String array
+                       "pb_eendracht_Standard",
+                       "pb_seven_Standard",
+                       "pb_seven_Support"], # String array
 
     "startingVariants":["pb_java_Standard", "pb_sumatra_Standard", "pb_vankinsbergen_Standard"], # String array
 }
