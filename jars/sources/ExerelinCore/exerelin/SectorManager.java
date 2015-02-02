@@ -6,7 +6,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import exerelin.commandQueue.CommandQueue;
 import exerelin.fleets.ExerelinFleetBase;
-import exerelin.plugins.WelcomeDialogPlugin;
+import exerelin.plugins.ExerelinWelcomeDialogPlugin;
 import exerelin.utilities.ExerelinConfig;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -357,7 +357,7 @@ public class SectorManager
             ExerelinUtils.resetFleetCargoToDefaults(Global.getSector().getPlayerFleet(), 0.1f, 0.0f, CargoAPI.CrewXPLevel.GREEN);
 
             // Show welcome dialog
-            Global.getSector().getCampaignUI().showInteractionDialog(new WelcomeDialogPlugin(), null);
+            //Global.getSector().getCampaignUI().showInteractionDialog(new ExerelinWelcomeDialogPlugin(), null);
 
             initialCheckComplete = true;
         }

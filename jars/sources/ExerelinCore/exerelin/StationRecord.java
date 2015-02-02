@@ -114,11 +114,11 @@ public class StationRecord
             // Check if we should switch background image to faction specific one
             if(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).changeSystemSpecsOnSystemLockdown)
             {
-                StarSystemAPI system = (StarSystemAPI)this.getStationToken().getContainingLocation();
+                /*StarSystemAPI system = (StarSystemAPI)this.getStationToken().getContainingLocation();
                 system.setBackgroundTextureFilename(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredBackgroundImagePath);
                 system.removeEntity(system.getStar());
-                system.initStar(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredStarType, 700);
-                system.setLightColor(Color.decode(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredStarLight));
+                system.initStar(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredStarType, 700f);
+                system.setLightColor(Color.decode(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredStarLight));*/
             }
 
             if(newOwnerFactionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
@@ -131,12 +131,12 @@ public class StationRecord
             // Check to see if we need to switch background image back
             if(!originalOwnerId.equalsIgnoreCase("") && ((StarSystemAPI)this.getStationToken().getContainingLocation()).getBackgroundTextureFilename().equalsIgnoreCase(ExerelinConfig.getExerelinFactionConfig(originalOwnerId).preferredBackgroundImagePath))
             {
-                StarSystemAPI system = (StarSystemAPI)this.getStationToken().getContainingLocation();
+                /*StarSystemAPI system = (StarSystemAPI)this.getStationToken().getContainingLocation();
                 SystemManager systemManager = SystemManager.getSystemManagerForAPI(system);
                 system.setBackgroundTextureFilename(systemManager.getOriginalBackgroundImage());
                 system.removeEntity(system.getStar());
-                system.initStar(systemManager.getOriginalStarSpec(), 700);
-                system.setLightColor(systemManager.getOriginalLightColor());
+                system.initStar(systemManager.getOriginalStarSpec(), 700f);
+                system.setLightColor(systemManager.getOriginalLightColor());*/
             }
         }
 

@@ -25,12 +25,12 @@ public final class ExerelinSetupData
 	private String[] availableFactions = null;
 
     // Sector Generation Defaults
-	public int numSystems = 4;
-    public int maxMoonsPerPlanet = 3;
+	public int numSystems = 8;
+    public int maxMoonsPerPlanet = 2;
 
-	public int maxPlanets = 6;
+	public int maxPlanets = 7;
 	public int maxStations = 10;
-	public int maxAsteroidBelts = 0;
+	public int maxAsteroidBelts = 1;
     public int maxSystemSize = 16000;
     public int maxSectorSize = 16000;
 

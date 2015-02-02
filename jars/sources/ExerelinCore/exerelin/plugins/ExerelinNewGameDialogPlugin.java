@@ -1,18 +1,18 @@
 package exerelin.plugins;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
+import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.CharacterCreationPlugin;
+import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.campaign.VisualPanelAPI;
-import com.fs.starfarer.api.campaign.OptionPanelAPI;
-import exerelin.SectorManager;
-import exerelin.utilities.ExerelinCheck;
+import com.fs.starfarer.api.fleet.FleetMemberType;
+import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
+import java.util.Map;
 
-public class WelcomeDialogPlugin implements InteractionDialogPlugin
+public class ExerelinNewGameDialogPlugin implements InteractionDialogPlugin
 {
     private InteractionDialogAPI dialog;
     private TextPanelAPI textPanel;
@@ -20,6 +20,10 @@ public class WelcomeDialogPlugin implements InteractionDialogPlugin
     private VisualPanelAPI visual;
 
     private Integer currentStage = 0;
+
+    private CharacterCreationPlugin.CharacterCreationData data;
+    private SectorEntityToken entity;
+    private MemoryAPI memory;
 
     private enum option
     {
@@ -39,6 +43,27 @@ public class WelcomeDialogPlugin implements InteractionDialogPlugin
         options.addOption("Back", option.BACK);
         options.addOption("Leave", option.LEAVE);
         showText(0);
+
+        entity = dialog.getInteractionTarget();
+        memory = entity.getMemoryWithoutUpdate();
+        data = (CharacterCreationPlugin.CharacterCreationData) memory.get("$characterData");
+        data.setStartingLocationName("Exerelin");
+        data.getStartingCoordinates().set(600, 600);
+
+        data.addStartingFleetMember("wolf_Starting", FleetMemberType.SHIP);
+
+        data.getStartingCargo().getCredits().add(5000);
+        data.getStartingCargo().addSupplies(50);
+        data.getStartingCargo().addFuel(40);
+        data.getStartingCargo().addCrew(CargoAPI.CrewXPLevel.GREEN, 20);
+
+        MutableCharacterStatsAPI stats = data.getPerson().getStats();
+        stats.addAptitudePoints((int) 2);
+        stats.addSkillPoints((int) 4);
+
+        visual.showNewGameOptionsPanel(data);
+
+        data.setDone(true);
     }
 
     public void optionSelected(String text, Object optionData)
@@ -47,7 +72,6 @@ public class WelcomeDialogPlugin implements InteractionDialogPlugin
         {
             Global.getSector().setPaused(false);
             dialog.dismiss();
-            ExerelinCheck.checkModCompatability();
         }
         else if ((option)optionData == option.NEXT)
         {
@@ -72,22 +96,9 @@ public class WelcomeDialogPlugin implements InteractionDialogPlugin
             this.textPanel.addParagraph("");
             this.textPanel.addParagraph("Factions within the sector will wage war, create alliances and compete to control a greater share of the sector.");
             this.textPanel.addParagraph("");
-            if(!SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
-            {
-                this.textPanel.addParagraph("Your goal is to conquer this sector for the " + Global.getSector().getFaction(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getDisplayName() + " faction.");
-                this.textPanel.addParagraph("");
-                this.textPanel.addParagraph("Your faction has started in " + SectorManager.getCurrentSectorManager().getFactionDirector(SectorManager.getCurrentSectorManager().getPlayerFactionId()).getHomeSystem().getName() + ".");
-                this.textPanel.addParagraph("");
-            }
-            else
-            {
-                this.textPanel.addParagraph("You have started unaligned from any faction and will need to raise your influence before you can trade and/or apply to join any factions.");
-                this.textPanel.addParagraph("");
-            }
-            this.textPanel.addParagraph("");
         }
 
-        if(stage == 1)
+        /*if(stage == 1)
         {
             options.setEnabled(option.NEXT, true);
             options.setEnabled(option.BACK, true);
@@ -142,7 +153,7 @@ public class WelcomeDialogPlugin implements InteractionDialogPlugin
             this.textPanel.addParagraph("Most of all, have fun and please leave any feedback on the StarSector forums :)");
             this.textPanel.addParagraph("");
             this.textPanel.addParagraph("");
-        }
+        }*/
     }
 
     public void optionMousedOver(String optionText, Object optionData)
@@ -162,6 +173,11 @@ public class WelcomeDialogPlugin implements InteractionDialogPlugin
     public void backFromEngagement(EngagementResultAPI battleResult)
     {
 
+    }
+
+    public Map<String, MemoryAPI> getMemoryMap()
+    {
+        return null;
     }
 
 

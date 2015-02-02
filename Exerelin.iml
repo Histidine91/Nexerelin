@@ -7,14 +7,12 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Java" level="project" />
     <orderEntry type="library" name="lwjgl" level="project" />
     <orderEntry type="library" name="lwjgl_util" level="project" />
-    <orderEntry type="library" name="starfarer.api" level="project" />
     <orderEntry type="library" name="LazyLib" level="project" />
     <orderEntry type="library" name="json" level="project" />
-    <orderEntry type="library" name="Omnifactory" level="project" />
     <orderEntry type="module" module-name="ExerelinCore" />
+    <orderEntry type="library" name="starfarer.api" level="project" />
   </component>
 </module>
 

@@ -77,7 +77,7 @@ public class SystemEventManager
 		if(ExerelinUtils.getRandomInRange(0,40) == 0
 				&& !eventStationExplosion.getType().equalsIgnoreCase(lastEventType))
 		{
-			eventStationExplosion.causeExplosion(starSystemAPI);
+			//eventStationExplosion.causeExplosion(starSystemAPI);
 			waitTime = betweenEventWait;
 			lastEventType = eventStationExplosion.getType();
 		}

@@ -2,7 +2,7 @@ package exerelin;
 
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
-import data.scripts.world.OmniFac;
+//import data.scripts.world.OmniFac;
 
 @SuppressWarnings("unchecked")
 public class OutSystemStationConstructionFleet
@@ -62,9 +62,9 @@ public class OutSystemStationConstructionFleet
 						orbitRadius = 200;
 					else if(((PlanetAPI)theTarget).isGasGiant())
 						orbitRadius = 500;
-					SectorEntityToken storage = theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Storage Facility", "neutral");
-					storage.getCargo().setFreeTransfer(true);
-					ExerelinUtils.populateStartingStorageFacility(storage);
+					//SectorEntityToken storage = theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Storage Facility", "neutral");
+					//storage.getCargo().setFreeTransfer(true);
+					//ExerelinUtils.populateStartingStorageFacility(storage);
 					System.out.println(theFaction + " constructed station ");
 				}
 				else if (theAssignment.equalsIgnoreCase("omnifac"))
@@ -75,8 +75,8 @@ public class OutSystemStationConstructionFleet
 					else if(((PlanetAPI)theTarget).isGasGiant())
 						orbitRadius = 500;
 
-                    OmniFac factory = new OmniFac(theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Omnifactory", "independent"), "data/config/omnifac_settings.json");
-                    theTarget.getContainingLocation().addScript(factory);
+                    //OmniFac factory = new OmniFac(theSystem.addOrbitalStation(theTarget, ExerelinUtils.getRandomInRange(1,359), orbitRadius, ExerelinUtils.getRandomInRange(40,60), "Omnifactory", "independent"), "data/config/omnifac_settings.json");
+                    //theTarget.getContainingLocation().addScript(factory);
                     System.out.println(theFaction + " constructed station ");
 				}
 				else

@@ -1,3 +1,16 @@
 {
 	"compressSaveGameData":false, # smaller files, much faster saving/loading, but can't be edited by hand
+
+	"maxEconFleets":60,
+    "averageEconSpawnInterval":0.25, # days
+    "minEconSpawnIntervalPerMarket":5, # no less than this many days between trade fleets from same market
+    "minMinorTradeRouteChanceMult":0.1, # 0 to 1. higher values mean more likely fleets for small-scale routes
+    "minTradeVolumeToSpawnFleets":10, # in same units as supply/demand per economyIntervalnGameDays
+    "maxTradeVolume":75000, # fleets will reach maximum size at this trade volume
+
+	"plugins":{
+	    "newGameDialogPlugin":"exerelin.plugins.ExerelinNewGameDialogPlugin",
+	    "newGameCreationEntryPoint":"data.scripts.world.ExerelinSectorGen",
+	    "coreLifecyclePlugin":"exerelin.plugins.ExerelinLifecyclePlugin",
+	}
 }

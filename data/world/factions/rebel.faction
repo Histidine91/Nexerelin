@@ -2,6 +2,9 @@
 	id:"rebel",
 	"color":[255,255,0,255],
 	"displayName":"Rebel",
+	"displayNameWithArticle":"Rebel",
+    "logo":"graphics/factions/player_flag3.png",
+    "showInIntelTab":false,
 	"shipNamePrefix":"RBL",
 	"shipNameSources":{
 		"JAPANESE":1,
@@ -23,19 +26,7 @@
 			"graphics/portraits/portrait16.png",
 		],
 	},
-	"fleetCompositions":{
-        "exerelinOutSystemStationAttackFleet":{
-            "displayName":"Out-System Station Attack Fleet",
-            "maxFleetPoints":320,
-            "daysWorthOfSupplies":[30, 50],
-            "lyWorthOfFuel":[40, 60],
-            "extraCrewPercent":[80, 80],
-            "marinesPercent":[20, 20],
-            "ships":{
-                "atlas_Standard":[1, 1],
-            },
-        },
-	},
+
 	"traits":{
 		"admiral":{
 

@@ -62,10 +62,10 @@ public class Exerelin //implements SectorGeneratorPlugin
 		this.initFactionRelationships(sector);
 
 		// Populate sector
-        this.populateSector(Global.getSector(), sectorManager);
+        //this.populateSector(Global.getSector(), sectorManager);
 
 		// Add trader spawns
-		this.initTraderSpawns(sector);
+		//this.initTraderSpawns(sector);
 
         // Remove any data stored in ExerelinSetupData
         ExerelinSetupData.resetInstance();
@@ -75,7 +75,7 @@ public class Exerelin //implements SectorGeneratorPlugin
 
 	private void initFactionRelationships(SectorAPI sector)
 	{
-		String[] factions = ExerelinSetupData.getInstance().getAvailableFactions(sector);
+		/*String[] factions = ExerelinSetupData.getInstance().getAvailableFactions(sector);
 		for(int i = 0; i < factions.length; i = i + 1)
 		{
 			sector.getFaction(factions[i]).setRelationship("abandoned", -1);
@@ -116,7 +116,42 @@ public class Exerelin //implements SectorGeneratorPlugin
         {
             // Player is aligned with a faction so set initial influence
             SectorManager.getCurrentSectorManager().getDiplomacyManager().playerRecord.setPlayerInfluence(50);
-        }
+        }*/
+
+        FactionAPI pirates = sector.getFaction("pirates");
+        FactionAPI sindrian_diktat = sector.getFaction("sindrian_diktat");
+        FactionAPI tritachyon = sector.getFaction("tritachyon");
+        FactionAPI luddic_church = sector.getFaction("luddic_church");
+        FactionAPI hegemony = sector.getFaction("hegemony");
+        FactionAPI independent = sector.getFaction("independent");
+
+        pirates.setRelationship("sindrian_diktat", RepLevel.HOSTILE);
+        pirates.setRelationship("tritachyon", RepLevel.HOSTILE);
+        pirates.setRelationship("luddic_church", RepLevel.HOSTILE);
+        pirates.setRelationship("hegemony", RepLevel.HOSTILE);
+        pirates.setRelationship("independent", RepLevel.HOSTILE);
+
+        sindrian_diktat.setRelationship("pirates", RepLevel.HOSTILE);
+        sindrian_diktat.setRelationship("luddic_church", RepLevel.HOSTILE);
+        sindrian_diktat.setRelationship("hegemony", RepLevel.SUSPICIOUS);
+        sindrian_diktat.setRelationship("tritachyon", RepLevel.FRIENDLY);
+
+        tritachyon.setRelationship("pirates", RepLevel.HOSTILE);
+        tritachyon.setRelationship("hegemony", RepLevel.HOSTILE);
+        tritachyon.setRelationship("luddic_church", RepLevel.SUSPICIOUS);
+        tritachyon.setRelationship("sindrian_diktat", RepLevel.COOPERATIVE);
+
+        luddic_church.setRelationship("pirates", RepLevel.HOSTILE);
+        luddic_church.setRelationship("sindrian_diktat", RepLevel.HOSTILE);
+        luddic_church.setRelationship("tritachyon", RepLevel.SUSPICIOUS);
+        luddic_church.setRelationship("hegemony", RepLevel.FRIENDLY);
+
+        hegemony.setRelationship("pirates", RepLevel.HOSTILE);
+        hegemony.setRelationship("tritachyon", RepLevel.HOSTILE);
+        hegemony.setRelationship("sindrian_diktat", RepLevel.SUSPICIOUS);
+        hegemony.setRelationship("hegemony", RepLevel.COOPERATIVE);
+
+        independent.setRelationship("pirates", RepLevel.HOSTILE);
 	}
 
 	private void initTraderSpawns(SectorAPI sector)

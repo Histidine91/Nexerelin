@@ -1,17 +1,10 @@
 package data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.fleet.FleetMemberType;
 import data.scripts.world.exerelin.ExerelinSetupData;
 import exerelin.ExerelinUtils;
 import exerelin.SectorManager;
 import exerelin.utilities.*;
-
-import java.awt.*;
-import java.util.List;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -37,5 +30,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         ExerelinSetupData.resetInstance();
         ExerelinConfig.loadSettings();
         ExerelinCheck.checkModCompatability();
+    }
+
+    public void onNewGameAfterEconomyLoad() {
+        System.out.println("onNewGameAfterEconomyLoad");
     }
 }

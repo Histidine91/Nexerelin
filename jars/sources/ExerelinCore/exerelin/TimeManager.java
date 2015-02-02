@@ -25,18 +25,18 @@ public class TimeManager implements EveryFrameScript
 	private void runHourly(long hour)
 	{
         if(hour == 1)
-            SectorManager.getCurrentSectorManager().updatePlayerCommandedFleets();
+            //SectorManager.getCurrentSectorManager().updatePlayerCommandedFleets();
 
         if(hour == 3)
         {
             // Handle player station boarding
-            ExerelinUtils.handlePlayerBoarding(Global.getSector().getPlayerFleet());
+            //ExerelinUtils.handlePlayerBoarding(Global.getSector().getPlayerFleet());
         }
 
         if(hour == 6)
         {
             // Handle player mining
-            ExerelinUtils.handlePlayerFleetMining(Global.getSector().getPlayerFleet());
+            //ExerelinUtils.handlePlayerFleetMining(Global.getSector().getPlayerFleet());
         }
 
         if(hour == 9)
@@ -51,17 +51,17 @@ public class TimeManager implements EveryFrameScript
                     }
                 };
 
-                checkBetrayalThread.start();
+                //checkBetrayalThread.start();
             }
-            else
-                SectorManager.getCurrentSectorManager().getDiplomacyManager().checkBetrayal();
+            //else
+                //SectorManager.getCurrentSectorManager().getDiplomacyManager().checkBetrayal();
 
         }
 
         if(hour == 11)
         {
             // Update station resources part 1
-            SectorManager.getCurrentSectorManager().updateStationResources(28);
+            //SectorManager.getCurrentSectorManager().updateStationResources(28);
         }
 
         if(hour == 15)
@@ -72,26 +72,26 @@ public class TimeManager implements EveryFrameScript
                 Thread updateRelationshipThread = new Thread("updateRelationshipThread"){
                     public void run()
                     {
-                        SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationships();
+                        //SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationships();
                     }
                 };
 
                 updateRelationshipThread.start();
             }
-            else
-                SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationships();
+            //else
+                //SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationships();
         }
 
         if(hour == 18)
         {
             // Run sector and system events
-            SectorManager.getCurrentSectorManager().runEvents();
+            //SectorManager.getCurrentSectorManager().runEvents();
         }
 
         if(hour == 23)
         {
             // Update station resources part 2
-            SectorManager.getCurrentSectorManager().updateStationResources(28);
+            //SectorManager.getCurrentSectorManager().updateStationResources(28);
         }
 	}
 
@@ -103,16 +103,16 @@ public class TimeManager implements EveryFrameScript
                 public void run()
                 {
                     // Update station targets
-                    SectorManager.getCurrentSectorManager().updateStationTargets();
+                    //SectorManager.getCurrentSectorManager().updateStationTargets();
                 }
             };
 
-            stationTargetThread.start();
+            //stationTargetThread.start();
         }
-        else
-            SectorManager.getCurrentSectorManager().updateStationTargets();
+        //else
+            //SectorManager.getCurrentSectorManager().updateStationTargets();
 
-        SectorManager.getCurrentSectorManager().updateStationFleets();
+        //SectorManager.getCurrentSectorManager().updateStationFleets();
 	}
 
 	private void runWeekly()
@@ -123,28 +123,28 @@ public class TimeManager implements EveryFrameScript
                 public void run()
                 {
                     // Update FactionDirectors
-                    FactionDirector.updateAllFactionDirectors();
+                    //FactionDirector.updateAllFactionDirectors();
 
                     // Check player has station or station attack fleet
-                    SectorManager.getCurrentSectorManager().checkPlayerHasLost();
-                    SectorManager.getCurrentSectorManager().checkPlayerHasWon();
+                    //SectorManager.getCurrentSectorManager().checkPlayerHasLost();
+                    //SectorManager.getCurrentSectorManager().checkPlayerHasWon();
                 }
             };
 
-            weeklyThread.start();
+            //weeklyThread.start();
         }
         else
         {
             // Update FactionDirectors
-            FactionDirector.updateAllFactionDirectors();
+            //FactionDirector.updateAllFactionDirectors();
 
             // Check player has station or station attack fleet
-            SectorManager.getCurrentSectorManager().checkPlayerHasLost();
-            SectorManager.getCurrentSectorManager().checkPlayerHasWon();
+            //SectorManager.getCurrentSectorManager().checkPlayerHasLost();
+            //SectorManager.getCurrentSectorManager().checkPlayerHasWon();
         }
 
         // Pay wages
-        SectorManager.getCurrentSectorManager().payPlayerWages();
+        //SectorManager.getCurrentSectorManager().payPlayerWages();
 	}
 
 	private void runMonthly()
@@ -176,7 +176,7 @@ public class TimeManager implements EveryFrameScript
             return; //OnGameLoad doesn't seem to run before EveryFrameScript.advance()
 
         // Do any every frame checks that need to be performed
-		SectorManager.getCurrentSectorManager().doEveryFrameChecks();
+		//SectorManager.getCurrentSectorManager().doEveryFrameChecks();
 
         SectorAPI sector = Global.getSector();
 
