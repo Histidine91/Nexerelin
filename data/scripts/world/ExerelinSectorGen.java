@@ -33,7 +33,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	{
 		int marketSize = 1;
 		if (isStation) marketSize = ExerelinUtils.getRandomInRange(1, 3) + ExerelinUtils.getRandomInRange(1, 3);	// stations are on average smaller
-		else marketSize = ExerelinUtils.getRandomInRange(1, 5) + ExerelinUtils.getRandomInRange(1, 5);
+		else marketSize = ExerelinUtils.getRandomInRange(1, 4) + ExerelinUtils.getRandomInRange(1, 4);
 		MarketAPI newMarket = Global.getFactory().createMarket(entity.getId() + "_market", entity.getName(), 4);
 
 		newMarket.setPrimaryEntity(entity);
@@ -519,7 +519,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				
 			String owningFactionId = getRandomFaction();
 			FactionAPI planetFaction = planet.getFaction();
-			if (planetFaction != null) owningFactionId = planetFaction.getId();
+			if (planetFaction != null && !planetFaction.getId().equalsIgnoreCase("neutral"))
+				owningFactionId = planetFaction.getId();
 			name = planet.getFullName() + " " + name;
 			String id = name.replace(' ','_');
 			
