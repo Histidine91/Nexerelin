@@ -15,10 +15,8 @@ import exerelin.*;
 /// For each market, make a copy of the list of all possible market conditions.
 /// Filter out ones that don't meet our requirements (out of allowed population range, or is banned on current market type).
 /// Also filter out any conditions we already have.
-///
-/// From the remaining list, randomly pick one and roll against the specified chance.
-/// If we pass, add it to the market and remove it from our list. 
-/// Else pick another condition at random and try that (until we run out of chances).
+/// From the remaining list, calculate the normalised chance and pick the corresponding condition. 
+/// After picking a condition, add it to the market and remove it from our list. 
 /// Repeat numConditions times.
 /// 
 /// numConditions = market size
@@ -91,38 +89,28 @@ public class ExerelinMarketConditionPicker
 	{
 		ExerelinPossibleMarketCondition cond;
 		possibleMarketConditions = new ArrayList();
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("ore_complex", 1.0f, 2));
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("volatiles_complex", 0.7f, 2));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("ore_complex", 1.6f, 2));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("volatiles_complex", 1.2f, 2));
 		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("volatiles_depot", 0.8f, 2));
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("outpost", 0.7f, 2, 4));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("outpost", 0.8f, 2, 4));
 		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("cryosanctum", 0.4f, 2, 4));
 
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("organics_complex", 0.6f, 3));
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("aquaculture", 0.45f, 3, false));
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("light_industrial_complex", 0.6f, 3));
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("ore_refining_complex", 0.6f, 3));
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("stealth_minefields", 0.6f, 3, 5));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("organics_complex", 1f, 3));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("aquaculture", 0.4f, 3, false));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("light_industrial_complex", 1.2f, 3));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("ore_refining_complex", 1.2f, 3));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("stealth_minefields", 0.7f, 3, 5));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("vice_demand", 0.8f, 3));
 		
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("military_base", 0.6f, 4));
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("spaceport", 0.8f, 4));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("military_base", 0.8f, 4));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("spaceport", 0.65f, 4));
 		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("trade_center", 0.8f, 4));
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("vice_demand", 0.7f, 4));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("large_refugee_population", 0.8f, 4));
 		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("organized_crime", 0.7f, 4));
-		
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("shipbreaking_center", 0.5f, 5));
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("autofac_heavy_industry", 0.65f, 5));
-		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("antimatter_fuel_production", 0.65f, 5));
-	}
 	
-	public boolean TryAddMarketCondition(MarketAPI market, ExerelinPossibleMarketCondition cond)
-	{
-		double rand = Math.random();
-		if (rand > cond.getChance())
-		{
-			market.addCondition(cond.getName());
-			return true;
-		}
-		return false;
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("shipbreaking_center", 0.6f, 5));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("autofac_heavy_industry", 0.7f, 5));
+		possibleMarketConditions.add(new ExerelinPossibleMarketCondition("antimatter_fuel_production", 0.8f, 5));
 	}
 	
 	public void AddMarketConditions(MarketAPI market, int size, String planetType, boolean isStation)
@@ -144,16 +132,25 @@ public class ExerelinMarketConditionPicker
 		{
 			if (allowedConditions.size() == 0)
 				return;	// out of possible conditions; nothing more to do
-			int tries = 0;
-			int maxTries = 10;
-			while (tries < maxTries)
+			
+			// normalise chance
+			float sumChanceValues = 0;
+			float accumulatedChance = 0;
+			for (int j=0; j<allowedConditions.size() - 1; j++)
 			{
-				int rand = ExerelinUtils.getRandomInRange(0, allowedConditions.size() - 1);
-				ExerelinPossibleMarketCondition testCond = (ExerelinPossibleMarketCondition)(allowedConditions.get(rand));
-				boolean success = TryAddMarketCondition(market, testCond);
-				if (success)
+				ExerelinPossibleMarketCondition cond = (ExerelinPossibleMarketCondition)(allowedConditions.get(j));
+				sumChanceValues += cond.getChance();
+			}
+			float roll = (float)(Math.random()) * sumChanceValues;
+			
+			for (int j=0; j<allowedConditions.size() - 1; j++)
+			{
+				ExerelinPossibleMarketCondition cond = (ExerelinPossibleMarketCondition)(allowedConditions.get(j));
+				accumulatedChance += cond.getChance();
+				if( accumulatedChance >= roll )
 				{
-					allowedConditions.remove(testCond);
+					market.addCondition(cond.getName());
+					allowedConditions.remove(cond);
 					break;
 				}
 			}
