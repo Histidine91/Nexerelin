@@ -1,0 +1,77 @@
+id,trigger,conditions,script,text,options,notes
+onNewGameCreationStart,BeginNewGameCreation,,"$isInIntro = true 0
+$introPage = 1.0 0
+FireBest ExerelinNGCIntroPage",,,
+,,,,,,
+ExerelinNGCIntroNextPage,NewGameOptionSelected,$option==ExerelinNGCIntroNextPage,"$introPage++
+FireBest ExerelinNGCIntroPage",,,
+ExerelinNGCIntroPrevPage,NewGameOptionSelected,$option==ExerelinNGCIntroPrevPage,"$introPage--
+FireBest ExerelinNGCIntroPage",,,
+#introPage needs to be a float,,,,,,
+ExerelinNGCIntro1,ExerelinNGCIntroPage,"$introPage == 1.0
+$isInIntro",,"Welcome to the Exerelin mod for Starsector!
+
+Exerelin is essentially a 4X game set in a corner of the Starsector universe. Factions within the sector will wage war, create alliances and compete to control a greater share of the sector.
+
+Exerelin is compatible with a large number of community made faction mods, which you can add for a more varied gameplay experience.",ExerelinNGCIntroNextPage:Next,
+ExerelinNGCIntro2,ExerelinNGCIntroPage,"$introPage == 2.0
+$isInIntro",,"Your actions will gain/lose you influence with the factions in the Sector.
+
+The higher your influence with a faction, the greater access to their support and technology you will have.
+
+Although you can choose to go your own way, the more advanced features are only available while part of a faction.","ExerelinNGCIntroNextPage:Next
+ExerelinNGCIntroPrevPage:Previous",
+ExerelinNGCIntro3,ExerelinNGCIntroPage,"$introPage == 3.0
+$isInIntro",,Have fun and please leave any feedback on the Starsector forums :),"ExerelinNGCIntroEnd:Start playing
+ExerelinNGCIntroPrevPage:Previous",
+ExerelinNGCIntroEnd,NewGameOptionSelected,$option==ExerelinNGCIntroEnd,"$isInIntro = false
+FireAll ExerelinNGCStep1",,,
+,,,,,,
+ExerelinNewGameChoicesDev,ExerelinNGCStep1,$global.isDevMode,,,100:ExerelinNGCDevStart:>>(dev) quick start,
+ExerelinNGCJoin,ExerelinNGCStep1,,,Which faction would you like to join?,"ExerelinNGCJoinHegemony:Hegemony
+ExerelinNGCJoinTriTachyon:Tri-Tachyon
+ExerelinNGCJoinSindrianDiktat:Sindrian Diktat
+ExerelinNGCJoinLuddicChurch:Luddic Church
+ExerelinNGCJoinPirate:Pirates",
+#ExerelinNewGameChoicesBlackrock,ExerelinNGCStep1,$global.myVarForHasBlackrock,,,ExerelinNGCJoinBlackrock:Blackrock,
+ExerelinNGCDevStart,NewGameOptionSelected,$option == ExerelinNGCDevStart,"NGCAddShip ""tempest_Starting""
+NGCAddCargo RESOURCES elite_crew 20
+NGCAddCargo RESOURCES supplies 20
+NGCAddCargo RESOURCES fuel 20
+NGCAddCredits 1000000
+NGCSetAptitude technology 10
+NGCSetSkill gunnery_implants 10
+NGCSetSkill construction 10
+NGCSetSkill mechanical_engineering 10
+NGCSetAptitude combat 10
+NGCAddSkillPoints 100
+NGCAddAptitudePoints 10
+NGCSetStartingLocation Exerelin -2700 3250
+NGCDone",,,
+ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == ExerelinNGCJoinHegemony,"$faction = ""hegemony""
+FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == ExerelinNGCJoinSindrianDiktat,"$faction = ""sindrian_diktat""
+FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == ExerelinNGCJoinTriTachyon,"$faction = ""tritachyon""
+FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinLuddicChurch,NewGameOptionSelected,$option == ExerelinNGCJoinChurch,"$faction = ""luddic_church""
+FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinPirate,NewGameOptionSelected,$option == ExerelinNGCJoinPirate,"$faction = ""pirate""
+FireBest ExerelinNGCStep2",,,
+#ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == ExerelinNGCJoinBlackrock,"$faction = ""blackrock""
+FireBest ExerelinNGCStep2",,,
+,,,,,,
+ExerelinNGCFinalize,ExerelinNGCStep2,,"NGCAddCargo RESOURCES regular_crew 30
+NGCAddCargo RESOURCES supplies 20
+NGCAddCargo RESOURCES fuel 20
+NGCAddShip ""wolf_Starting""
+AddText ""Added Wolf-class frigate"" textFriendColor
+AddText ""Added 30 crew"" textFriendColor
+AddText ""Added 20 supplies"" textFriendColor
+AddText ""Added 20 fuel"" textFriendColor",,ExerelinNGCDone:Continue,
+ExerelinNGCDoneOptionDefault,NewGameOptionSelected,$option == ExerelinNGCDone,"NGCAddAptitudePoints 2
+NGCAddSkillPoints 6
+AddText ""Added 2 aptitude points"" textFriendColor
+AddText ""Added 6 skill points"" textFriendColor
+NGCSetStartingLocation Exerelin 600 600
+NGCDone",,,

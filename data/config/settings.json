@@ -1,5 +1,5 @@
 {
-	"compressSaveGameData":false, # smaller files, much faster saving/loading, but can't be edited by hand
+	"compressSaveGameData":true, # smaller files, much faster saving/loading, but can't be edited by hand
 
 	"maxEconFleets":60,
     "averageEconSpawnInterval":0.25, # days
@@ -9,7 +9,7 @@
     "maxTradeVolume":75000, # fleets will reach maximum size at this trade volume
 
 	"plugins":{
-	    "newGameDialogPlugin":"exerelin.plugins.ExerelinNewGameDialogPlugin",
+	    #"newGameDialogPlugin":"exerelin.plugins.ExerelinNewGameDialogPlugin",
 	    "newGameCreationEntryPoint":"data.scripts.world.ExerelinSectorGen",
 	    "coreLifecyclePlugin":"exerelin.plugins.ExerelinLifecyclePlugin",
 	}
