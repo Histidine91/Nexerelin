@@ -28,11 +28,11 @@ public final class ExerelinSetupData
 	public int numSystems = 8;
     public int maxMoonsPerPlanet = 2;
 
-	public int maxPlanets = 7;
-	public int maxStations = 10;
-	public int maxAsteroidBelts = 1;
+	public int maxPlanets = 8;
+	public int maxStations = 5;
+	public int maxAsteroidBelts = 2;
     public int maxSystemSize = 16000;
-    public int maxSectorSize = 16000;
+    public int maxSectorSize = 12000;
 
     // Game defaults
 	public Boolean playerOwnedStationFreeTransfer = false;
