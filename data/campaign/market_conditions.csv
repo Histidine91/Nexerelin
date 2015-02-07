@@ -1,0 +1,3 @@
+name,id,script,desc,icon,order
+Recycling Plant,exerelin_recycling_plant,data.scripts.campaign.econ.exerelin_RecyclingPlant,"This ubiquitous facility turns the usual wastes of a station or city into organics, volatiles, metals, supplies and heavy machinery. Requires crew to operate.",graphics/exerelin/icons/markets/exerelin_recycling_plant.png,30
+Cloning Vats,exerelin_cloning_vats,data.scripts.campaign.econ.exerelin_CloningVats,An efficient (if unethical) way of producing large amounts of crew quickly. Failed clones can be recycled for organs.,graphics/exerelin/icons/markets/exerelin_cloning_vats.png,30
