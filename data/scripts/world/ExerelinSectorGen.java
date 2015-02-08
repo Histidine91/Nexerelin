@@ -4,21 +4,23 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Arrays;
 import java.util.LinkedList;
+import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import data.scripts.world.exerelin.*;
-import exerelin.plugins.*;
 import data.scripts.world.exerelin.ExerelinSetupData;
 import data.scripts.world.exerelin.ExerelinMarketConditionPicker;
+import exerelin.plugins.*;
 import exerelin.*;
 import exerelin.utilities.ExerelinConfig;
 
@@ -48,17 +50,27 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private static String[] factionIds = new String[]{"sindrian_diktat", "tritachyon", "luddic_church", "pirates", "hegemony", "independent"};
 	private boolean isStartSystemChosen = false;
 
+	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
+
 	private String getRandomFaction()
 	{
 		return factionIds[ExerelinUtils.getRandomInRange(0, 5)];
 	}
 	
+	private void addCommodityStockpile(MarketAPI market, String commodityID, float amount)
+	{
+		CommodityOnMarketAPI commodity = market.getCommodityData(commodityID);
+		CargoAPI cargo = market.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
+		commodity.addToStockpile(amount);
+		commodity.addToAverageStockpile(amount);
+		cargo.addCommodity(commodityID, amount);
+	}
 	private MarketAPI addMarketToEntity(int i, SectorEntityToken entity, String owningFactionId, String planetType, boolean isStation)
 	{
-				// don't make the markets too big; they'll screw up the economy big time
+		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
-		if (isStation) marketSize = ExerelinUtils.getRandomInRange(1, 2) + ExerelinUtils.getRandomInRange(1, 2);	// stations are on average smaller
-		else marketSize = ExerelinUtils.getRandomInRange(2, 3) + ExerelinUtils.getRandomInRange(1, 3);
+		if (isStation) marketSize = 2 + ExerelinUtils.getRandomInRange(1, 2);	// stations are on average smaller
+		else marketSize = ExerelinUtils.getRandomInRange(2, 3) + ExerelinUtils.getRandomInRange(2, 3);
 		
 		// first planet in the system is a regional capital
 		// it is always at least size 4 and has a military base
@@ -81,10 +93,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			newMarket.addCondition("military_base");
 			newMarket.addSubmarket(Submarkets.GENERIC_MILITARY);
 		}
-		newMarket.setSize(marketSize);
 		newMarket.setBaseSmugglingStabilityValue(0);
 		newMarket.addCondition("population_" + marketSize);
-		newMarket.getTariff().modifyFlat("generator", 0.2f);	// TODO put in a config or something 
+		newMarket.getTariff().modifyFlat("generator", 0.3f);	// TODO put in a config or something 
 
 		// planet type conditions
 		if (planetType == "jungle") {
@@ -101,7 +112,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			newMarket.addCondition("terran");
 		if (planetType == "desert")
 			newMarket.addCondition("desert");
-				if (planetType == "frozen")
+		if (planetType == "frozen")
 			newMarket.addCondition("ice");
 				
 		if(marketSize < 4 && !isStation){
@@ -112,10 +123,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		ExerelinMarketConditionPicker picker = new ExerelinMarketConditionPicker();
 		picker.AddMarketConditions(newMarket, marketSize, planetType, isStation);
 
-				if (isStation && marketSize >= 3)
-				{
-					newMarket.addCondition("exerelin_recycling_plant");
-				}
+		if (isStation && marketSize >= 3)
+		{
+			newMarket.addCondition("exerelin_recycling_plant");
+		}
 				
 		// add per-faction market conditions
 		String factionId = newMarket.getFaction().getId();
@@ -142,21 +153,25 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			else if (rand == 1)
 				newMarket.addCondition("rural_polity");
 		}
+		
+		//newMarket.addCondition("exerelin_god_device");
 
 		newMarket.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		newMarket.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		newMarket.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 				
 		// hack: seed the market with some stuff to prevent initial shortage
-		CargoAPI cargo = newMarket.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
-		cargo.addCrew(CrewXPLevel.REGULAR, marketSize^2 * 5);
-		cargo.addCrew(CrewXPLevel.GREEN, marketSize^2 * 20);
-		cargo.addCrew(CrewXPLevel.VETERAN, marketSize^2 * 1);
-		cargo.addMarines(marketSize^2 * 2);
-		cargo.addSupplies(marketSize^2 * 10);
-		cargo.addFuel(marketSize^2 * 10);
-		cargo.addCommodity("food", marketSize^2 * 20);
-		cargo.addCommodity("heavy_machinery", marketSize^2 * 2);
+		
+		float popMult = (10^marketSize) * 1/100f;
+		//addCommodityStockpile(newMarket, "green_crew", popMult * 20);
+		//addCommodityStockpile(newMarket, "regular_crew", popMult * 5);
+		//addCommodityStockpile(newMarket, "veteran_crew", popMult);
+		//addCommodityStockpile(newMarket, "marines", popMult * 2);
+		//addCommodityStockpile(newMarket, "supplies", popMult * 10);
+		//addCommodityStockpile(newMarket, "fuel", popMult * 10);
+		//addCommodityStockpile(newMarket, "food", popMult * 20);
+		//addCommodityStockpile(newMarket, "domestic_goods", popMult * 10);
+		//addCommodityStockpile(newMarket, "hand_weapons", popMult);
 		
 		Global.getSector().getEconomy().addMarket(newMarket);
 		entity.setFaction(owningFactionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
@@ -166,7 +181,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	public void generate(SectorAPI sector)
 	{
-		System.out.println("Starting generation...");
+		log.info("Starting sector generation...");
 
 		// build systems
 		for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
@@ -181,24 +196,24 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 
-		System.out.println("Finished generation...");
+		log.info("Finished sector generation");
 	}
 
 	public void buildSystem(SectorAPI sector, int systemNum)
 	{
-				// Create star system with random name
-				int systemNameIndex = ExerelinUtils.getRandomInRange(0, possibleSystemNamesList.size() - 1);
-				if (systemNum == 0) systemNameIndex = 0;	// there is always a star named Exerelin
+		// Create star system with random name
+		int systemNameIndex = ExerelinUtils.getRandomInRange(0, possibleSystemNamesList.size() - 1);
+		if (systemNum == 0) systemNameIndex = 0;	// there is always a star named Exerelin
 		StarSystemAPI system = sector.createStarSystem((String)possibleSystemNamesList.get(systemNameIndex));
 				possibleSystemNamesList.remove(systemNameIndex);
 		String systemName = system.getName();
 		
-				int maxSectorSize = ExerelinSetupData.getInstance().maxSectorSize;
+		int maxSectorSize = ExerelinSetupData.getInstance().maxSectorSize;
 		if((ExerelinSetupData.getInstance().numSystems == sector.getStarSystems().size()
-				|| ExerelinUtils.getRandomInRange(0,2) == 0)
-				&& !isStartSystemChosen)
+		|| ExerelinUtils.getRandomInRange(0,2) == 0)
+		&& !isStartSystemChosen)
 		{
-			System.out.println("Setting start location " + systemName);
+			log.info("Setting start location " + systemName);
 			sector.setRespawnLocation(system);
 			sector.getRespawnCoordinates().set(-2500, -3500);
 			//sector.setCurrentLocation(system);
@@ -448,14 +463,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		for(int j = 0; j < numAsteroidBelts; j = j + 1)
 		{
-			SectorEntityToken planet = null;
+			PlanetAPI planet = null;
 			while(planet == null)
 				planet = (PlanetAPI)planets.get(ExerelinUtils.getRandomInRange(0, planets.size() - 1));
 
 			float orbitRadius;
 			int numAsteroids;
 
-			if (planet.isMoon())
+			if (planet.getFullName().contains(" I") || planet.getFullName().contains(" II") || planet.getFullName().contains(" III"))
 			{
 				orbitRadius = ExerelinUtils.getRandomInRange(250, 350);
 				numAsteroids = 2;
@@ -551,7 +566,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 			int angle = ExerelinUtils.getRandomInRange(1, 360);
 			int orbitRadius = 300;
-			if (planet.isMoon())
+			if (planet.getFullName().contains(" I") || planet.getFullName().contains(" II") || planet.getFullName().contains(" III"))
 				orbitRadius = 200;
 			else if (isGasGiant)
 				orbitRadius = 500;
@@ -578,7 +593,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				// these are smaller on the system map than the other ones when zoomed out
 				SectorEntityToken newStation = system.addCustomEntity(id, name, image, owningFactionId);
 				newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
-				//existingMarket.addCondition("orbital_station");   // requires like 1000 crew; don't use
+				existingMarket.addCondition("orbital_station");
 				existingMarket.addCondition("exerelin_recycling_plant");
 				newStation.setMarket(existingMarket);
 			}
