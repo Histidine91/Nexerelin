@@ -17,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import data.scripts.campaign.EconomyLogger;
 import data.scripts.world.exerelin.*;
 import data.scripts.world.exerelin.ExerelinSetupData;
 import data.scripts.world.exerelin.ExerelinMarketConditionPicker;
@@ -57,6 +58,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return factionIds[ExerelinUtils.getRandomInRange(0, 5)];
 	}
 	
+	/*
 	private void addCommodityStockpile(MarketAPI market, String commodityID, float amount)
 	{
 		CommodityOnMarketAPI commodity = market.getCommodityData(commodityID);
@@ -64,12 +66,29 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		commodity.addToStockpile(amount);
 		commodity.addToAverageStockpile(amount);
 		cargo.addCommodity(commodityID, amount);
+		//log.info("Adding " + amount + " " + commodityID + " to " + market.getName());
 	}
+	*/
+	
+	private void addCommodityStockpile(MarketAPI market, String commodityID, float minMult, float maxMult)
+	{
+		float multDiff = maxMult - minMult;
+		float mult = minMult + (float)(Math.random()) * multDiff;
+		CommodityOnMarketAPI commodity = market.getCommodityData(commodityID);
+		float demand = commodity.getDemand().getDemandValue();
+		float amountToAdd = demand*mult;
+		CargoAPI cargo = market.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
+		commodity.addToStockpile(amountToAdd);
+		commodity.addToAverageStockpile(amountToAdd);
+		cargo.addCommodity(commodityID, amountToAdd * 0.15f);
+		//log.info("Adding " + amount + " " + commodityID + " to " + market.getName());
+	}
+	
 	private MarketAPI addMarketToEntity(int i, SectorEntityToken entity, String owningFactionId, String planetType, boolean isStation)
 	{
 		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
-		if (isStation) marketSize = 2 + ExerelinUtils.getRandomInRange(1, 2);	// stations are on average smaller
+		if (isStation) marketSize = ExerelinUtils.getRandomInRange(1, 2) + ExerelinUtils.getRandomInRange(1, 2);	// stations are on average smaller
 		else marketSize = ExerelinUtils.getRandomInRange(2, 3) + ExerelinUtils.getRandomInRange(2, 3);
 		
 		// first planet in the system is a regional capital
@@ -85,18 +104,24 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		MarketAPI newMarket = Global.getFactory().createMarket(entity.getId() + "_market", entity.getName(), marketSize);
 		newMarket.setPrimaryEntity(entity);
 		entity.setMarket(newMarket);
-		newMarket.setFactionId(owningFactionId);
 		
+		newMarket.setFactionId(owningFactionId);
+		newMarket.setBaseSmugglingStabilityValue(0);
+		newMarket.getTariff().modifyFlat("generator", 0.2f);	// TODO put in a config or something 
+		
+		newMarket.addSubmarket(Submarkets.SUBMARKET_OPEN);
+		newMarket.addSubmarket(Submarkets.SUBMARKET_BLACK);
+		newMarket.addSubmarket(Submarkets.SUBMARKET_STORAGE);
+		
+		newMarket.addCondition("population_" + marketSize);
+
 		if (i == 0)
 		{
 			newMarket.addCondition("regional_capital");
 			newMarket.addCondition("military_base");
 			newMarket.addSubmarket(Submarkets.GENERIC_MILITARY);
 		}
-		newMarket.setBaseSmugglingStabilityValue(0);
-		newMarket.addCondition("population_" + marketSize);
-		newMarket.getTariff().modifyFlat("generator", 0.3f);	// TODO put in a config or something 
-
+		
 		// planet type conditions
 		if (planetType == "jungle") {
 			newMarket.addCondition("jungle");
@@ -154,24 +179,27 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				newMarket.addCondition("rural_polity");
 		}
 		
-		//newMarket.addCondition("exerelin_god_device");
-
-		newMarket.addSubmarket(Submarkets.SUBMARKET_OPEN);
-		newMarket.addSubmarket(Submarkets.SUBMARKET_BLACK);
-		newMarket.addSubmarket(Submarkets.SUBMARKET_STORAGE);
-				
-		// hack: seed the market with some stuff to prevent initial shortage
-		
-		float popMult = (10^marketSize) * 1/100f;
-		//addCommodityStockpile(newMarket, "green_crew", popMult * 20);
-		//addCommodityStockpile(newMarket, "regular_crew", popMult * 5);
-		//addCommodityStockpile(newMarket, "veteran_crew", popMult);
-		//addCommodityStockpile(newMarket, "marines", popMult * 2);
-		//addCommodityStockpile(newMarket, "supplies", popMult * 10);
-		//addCommodityStockpile(newMarket, "fuel", popMult * 10);
-		//addCommodityStockpile(newMarket, "food", popMult * 20);
-		//addCommodityStockpile(newMarket, "domestic_goods", popMult * 10);
-		//addCommodityStockpile(newMarket, "hand_weapons", popMult);
+		// seed the market with some stuff to prevent initial shortage
+		// because the vanilla one is broken for some reason
+		addCommodityStockpile(newMarket, "green_crew", 0.4f, 0.5f);
+		addCommodityStockpile(newMarket, "regular_crew", 0.4f, 0.5f);
+		//addCommodityStockpile(newMarket, "veteran_crew", 0.05f, 0.1f);
+		addCommodityStockpile(newMarket, "marines", 0.6f, 0.75f);
+		addCommodityStockpile(newMarket, "supplies", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "fuel", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "food", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "domestic_goods", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "luxury_goods", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "heavy_machinery", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "metals", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "rare_metals", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "ore", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "rare_ore", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "organics", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "volatiles", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "drugs", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "organs", 0.7f, 0.8f);
+		addCommodityStockpile(newMarket, "lobster", 0.7f, 0.8f);
 		
 		Global.getSector().getEconomy().addMarket(newMarket);
 		entity.setFaction(owningFactionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
@@ -191,6 +219,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		sector.registerPlugin(new CoreCampaignPluginImpl());
 		sector.addScript(new CoreScript());
+		sector.addScript(new EconomyLogger());
 		sector.addScript(new CoreEventProbabilityManager());
 		sector.addScript(new EconomyFleetManager());
 
@@ -376,9 +405,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// At least one gas giant per system
 			if(!gasPlanetCreated && i == numBasePlanets - 1)
 			{
-				if (ExerelinUtils.getRandomInRange(0, 1) == 1)	planetType = "gas_giant";
-				else planetType = "ice_giant";
-				radius = 350;
+				planetType = (ExerelinUtils.getRandomInRange(0, 1) == 1) ? "gas_giant" : "ice_giant";
+				radius = ExerelinUtils.getRandomInRange(325, 375);
 				//name = name + " Gaseous";
 				gasPlanetCreated = true;
 				inhabitable = false;
@@ -516,7 +544,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		else
 			numStation = ExerelinSetupData.getInstance().maxStations;
 		int currentPlanet = 0;
-		boolean freeOrbit = false;
 		int k = 0;
 		while(k < numStation)
 		{
@@ -526,7 +553,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if(currentPlanet == planets.size())
 			{
 				currentPlanet = 0;
-				//freeOrbit = true;	// we ran out of planets; let the stations orbit the star independently
 			}
 
 			if(planet.isStar())
@@ -582,7 +608,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			String id = name.replace(' ','_');
 			String image = possibleStationImages[ExerelinUtils.getRandomInRange(0, possibleStationImages.length - 1)];
 			
-			if (existingMarket == null)	// de novo station, probably orbiting a gas giant
+			if (existingMarket == null)	// de novo station, probably orbiting an uninhabitable planet
 			{
 				SectorEntityToken newStation = system.addCustomEntity(id, name, image, owningFactionId);
 				newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);

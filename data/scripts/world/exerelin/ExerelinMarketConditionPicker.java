@@ -21,12 +21,12 @@ import exerelin.*;
 /// Repeat numConditions (== market size) times.
 ///
 /// CONDITIONS
-/// Size 2: 1 primary cond, 1 special cond
+/// Size 2: 1 primary cond, 0.5 special conds
 /// Size 3: 1 primary cond, 1 primary/industry cond, 1 special cond
-/// Size 4: 2 primary conds, 1 industry cond, 1 primary/industry cond, 1 special cond
-/// Size 5: 2 primary conds, 2 industry cond, 1 primary/industry cond, 1 heavy industry cond, 2 special conds
-/// Size 6: 2 primary conds, 2 industry cond, 1 primary/industry cond, 1 heavy industry cond, 1 industry/heavy industry cond, 2 special conds
-/// Size 7: 3 primary conds, 3 industry conds, 2 heavy industry conds, 2 special conds
+/// Size 4: 2 primary conds, 1 industry cond, 1 special cond
+/// Size 5: 2 primary conds, 1 industry conds, 1 primary/industry cond, 1 heavy industry cond, 2 special conds
+/// Size 6: 2 primary conds, 2 industry conds, 1 primary/industry cond, 1 heavy industry cond, 2 special conds
+/// Size 7: 3 primary conds, 3 industry conds, 1 heavy industry cond, 1 industry/heavy industry cond, 2 special conds
 
 
 */
@@ -122,7 +122,7 @@ public class ExerelinMarketConditionPicker
 		specialConds = new ArrayList();
 		
 		// size 2
-		primaryResourceConds.add(new ExerelinPossibleMarketCondition("ore_complex", 1.5f, 2));
+		primaryResourceConds.add(new ExerelinPossibleMarketCondition("ore_complex", 1.4f, 2));
 		primaryResourceConds.add(new ExerelinPossibleMarketCondition("volatiles_complex", 1f, 2));
 		primaryResourceConds.add(new ExerelinPossibleMarketCondition("organics_complex", 1f, 2));
 		specialConds.add(new ExerelinPossibleMarketCondition("outpost", 1f, 2, 4, false));
@@ -133,10 +133,10 @@ public class ExerelinMarketConditionPicker
 		primaryResourceConds.add(cond);
 
 		// size 3
-		industryConds.add(new ExerelinPossibleMarketCondition("ore_refining_complex", 1.2f, 3));
+		industryConds.add(new ExerelinPossibleMarketCondition("ore_refining_complex", 1.3f, 3));
 		//industryConds.add(new ExerelinPossibleMarketCondition("ssp_light_fuel_production", 0.8f, 3));
 		industryConds.add(new ExerelinPossibleMarketCondition("light_industrial_complex", 1f, 3, false));
-		industryConds.add(new ExerelinPossibleMarketCondition("exerelin_cloning_vats", 1f, 3));
+		//industryConds.add(new ExerelinPossibleMarketCondition("exerelin_cloning_vats", 1f, 3));
 		specialConds.add(new ExerelinPossibleMarketCondition("vice_demand", 0.8f, 3));
 		specialConds.add(new ExerelinPossibleMarketCondition("dissident", 0.6f, 3, 5, false));
 		specialConds.add(new ExerelinPossibleMarketCondition("stealth_minefields", 0.7f, 3, 5, false));
@@ -187,14 +187,14 @@ public class ExerelinMarketConditionPicker
 		// normalise chance
 		float sumChanceValues = 0;
 		float accumulatedChance = 0;
-		for (int i=0; i<allowedConds.size() - 1; i++)
+		for (int i=0; i<allowedConds.size(); i++)
 		{
 			ExerelinPossibleMarketCondition cond = (ExerelinPossibleMarketCondition)(allowedConds.get(i));
 			sumChanceValues += cond.getChance();
 		}
 		float roll = (float)(Math.random()) * sumChanceValues;
 		
-		for (int i=0; i<allowedConds.size() - 1; i++)
+		for (int i=0; i<allowedConds.size(); i++)
 		{
 			ExerelinPossibleMarketCondition cond = (ExerelinPossibleMarketCondition)(allowedConds.get(i));
 			accumulatedChance += cond.getChance();
@@ -221,42 +221,51 @@ public class ExerelinMarketConditionPicker
 		TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
 		if (size >= 4)
 			TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
-			if (size >= 7)
-				TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
+		if (size >= 7)
+			TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
 		
 		// add industry
 		
 		if (size >= 4)
 			TryAddMarketCondition(market, industryConds, size, planetType, isStation);
-			if (size >= 5)
-				TryAddMarketCondition(market, industryConds, size, planetType, isStation);
-			if (size >= 7)
-				TryAddMarketCondition(market, industryConds, size, planetType, isStation);
+		if (size >= 5)
+			TryAddMarketCondition(market, industryConds, size, planetType, isStation);
+		if (size >= 7)
+			TryAddMarketCondition(market, industryConds, size, planetType, isStation);
 				
 		// add heavy industry
 		if (size >= 5)
 			TryAddMarketCondition(market, heavyIndustryConds, size, planetType, isStation);
-			if (size >= 7)
-				TryAddMarketCondition(market, heavyIndustryConds, size, planetType, isStation);
 		
 		// add primary OR industry
-		if (size >= 3 && size <= 6)
+		if (size == 3 || size == 5 || size == 6)
+		{
 			if (ExerelinUtils.getRandomInRange(0, 1) == 0)
 				TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
 			else
 				TryAddMarketCondition(market, industryConds, size, planetType, isStation);
+		}
 				
 		// add industry OR heavy industry
-		if (size == 6)
+		if (size == 7)
+		{
 			if (ExerelinUtils.getRandomInRange(0, 1) == 0)
 				TryAddMarketCondition(market, industryConds, size, planetType, isStation);
 			else
 				TryAddMarketCondition(market, heavyIndustryConds, size, planetType, isStation);
+		}
 				
 		// add special
-		if (size >= 2)
+		if (size == 2)
+		{
+			if (ExerelinUtils.getRandomInRange(0, 1) == 0)
+				TryAddMarketCondition(market, specialConds, size, planetType, isStation);
+		}
+		else if (size >= 3)
+		{
 			TryAddMarketCondition(market, specialConds, size, planetType, isStation);
 			if (size >= 5)
 				TryAddMarketCondition(market, specialConds, size, planetType, isStation);
+		}
 	}
 }
