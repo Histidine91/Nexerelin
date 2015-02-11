@@ -6,7 +6,7 @@
     "randomOmnifactoryLocation":false, # Boolean
 
     "minimumPlanets": 3, # Integer
-    "minimumStations": 5, # Integer
+    "minimumStations": 3, # Integer
     "minimumAsteroidBelts": 0, # Integer
 
     "reduceSupplies":true, # Boolean
