@@ -48,17 +48,23 @@ NGCAddSkillPoints 100
 NGCAddAptitudePoints 10
 NGCSetStartingLocation Exerelin -2700 3250
 NGCDone",,,
-ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == ExerelinNGCJoinHegemony,"$faction = ""hegemony""
+ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == ExerelinNGCJoinHegemony,"NGCSetPlayerFaction ""hegemony""
+$playerFaction = ""hegemony""
 FireBest ExerelinNGCStep2",,,
-ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == ExerelinNGCJoinSindrianDiktat,"$faction = ""sindrian_diktat""
+ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == ExerelinNGCJoinSindrianDiktat,"NGCSetPlayerFaction ""sindrian_diktat""
+$playerFaction = ""sindrian_diktat""
 FireBest ExerelinNGCStep2",,,
-ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == ExerelinNGCJoinTriTachyon,"$faction = ""tritachyon""
+ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == ExerelinNGCJoinTriTachyon,"NGCSetPlayerFaction ""tritachyon""
+$playerFaction = ""tritachyon""
 FireBest ExerelinNGCStep2",,,
-ExerelinNGCJoinLuddicChurch,NewGameOptionSelected,$option == ExerelinNGCJoinChurch,"$faction = ""luddic_church""
+ExerelinNGCJoinLuddicChurch,NewGameOptionSelected,$option == ExerelinNGCJoinChurch,"NGCSetPlayerFaction ""luddic_church""
+$playerFaction = ""luddic_church""
 FireBest ExerelinNGCStep2",,,
-ExerelinNGCJoinPirate,NewGameOptionSelected,$option == ExerelinNGCJoinPirate,"$faction = ""pirate""
+ExerelinNGCJoinPirate,NewGameOptionSelected,$option == ExerelinNGCJoinPirate,"NGCSetPlayerFaction ""pirates""
+$playerFaction = ""pirates""
 FireBest ExerelinNGCStep2",,,
-#ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == ExerelinNGCJoinBlackrock,"$faction = ""blackrock""
+#ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == ExerelinNGCJoinBlackrock,"NGCSetPlayerFaction ""blackrock""
+$playerFaction = ""blackrock""
 FireBest ExerelinNGCStep2",,,
 ,,,,,,
 ExerelinNGCFinalize,ExerelinNGCStep2,,"NGCAddCargo RESOURCES regular_crew 30
