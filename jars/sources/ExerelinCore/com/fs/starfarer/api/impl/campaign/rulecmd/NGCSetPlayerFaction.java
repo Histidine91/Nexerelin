@@ -13,7 +13,7 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
         
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		String factionId = params.get(0).getString(memoryMap);
-		PlayerFactionStore.setPlayerFaction(factionId);
+		PlayerFactionStore.setPlayerFactionId(factionId);
 		return true;
 	}
 }

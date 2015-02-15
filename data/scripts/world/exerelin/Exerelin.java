@@ -125,9 +125,9 @@ public class Exerelin //implements SectorGeneratorPlugin
 		}*/
 	
 		FactionAPI player = sector.getFaction("player");
-		String selectedFactionKey = PlayerFactionStore.getPlayerFaction();
-		FactionAPI selectedFaction = sector.getFaction(selectedFactionKey);
-		log.info("Selected faction is " + selectedFaction + " | " + selectedFactionKey);
+		String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
+		FactionAPI selectedFaction = sector.getFaction(selectedFactionId);
+		log.info("Selected faction is " + selectedFaction + " | " + selectedFactionId);
 		
 		FactionAPI pirates = sector.getFaction("pirates");
 		FactionAPI sindrian_diktat = sector.getFaction("sindrian_diktat");
@@ -178,8 +178,10 @@ public class Exerelin //implements SectorGeneratorPlugin
 			}
 		}
 		
-		player.setRelationship(selectedFactionKey, RepLevel.FRIENDLY);
+		player.setRelationship(selectedFactionId, RepLevel.FRIENDLY);
 		selectedFaction.setRelationship("player", RepLevel.FRIENDLY);
+		MemoryAPI memory = sector.getMemory();
+		memory.set("$playerFaction", selectedFactionId);
 	}
 
 	private void initTraderSpawns(SectorAPI sector)

@@ -3,9 +3,9 @@ onNewGameCreationStart,BeginNewGameCreation,,"$isInIntro = true 0
 $introPage = 1.0 0
 FireBest ExerelinNGCIntroPage",,,
 ,,,,,,
-ExerelinNGCIntroNextPage,NewGameOptionSelected,$option==ExerelinNGCIntroNextPage,"$introPage++
+ExerelinNGCIntroNextPage,NewGameOptionSelected,$option==exerelinNGCIntroNextPage,"$introPage++
 FireBest ExerelinNGCIntroPage",,,
-ExerelinNGCIntroPrevPage,NewGameOptionSelected,$option==ExerelinNGCIntroPrevPage,"$introPage--
+ExerelinNGCIntroPrevPage,NewGameOptionSelected,$option==exerelinNGCIntroPrevPage,"$introPage--
 FireBest ExerelinNGCIntroPage",,,
 #introPage needs to be a float,,,,,,
 ExerelinNGCIntro1,ExerelinNGCIntroPage,"$introPage == 1.0
@@ -13,28 +13,29 @@ $isInIntro",,"Welcome to the Exerelin mod for Starsector!
 
 Exerelin is essentially a 4X game set in a corner of the Starsector universe. Factions within the sector will wage war, create alliances and compete to control a greater share of the sector.
 
-Exerelin is compatible with a large number of community made faction mods, which you can add for a more varied gameplay experience.",ExerelinNGCIntroNextPage:Next,
+Exerelin is compatible with a large number of community made faction mods, which you can add for a more varied gameplay experience.",exerelinNGCIntroNextPage:Next,
 ExerelinNGCIntro2,ExerelinNGCIntroPage,"$introPage == 2.0
 $isInIntro",,"Your actions will gain/lose you influence with the factions in the Sector.
 
 The higher your influence with a faction, the greater access to their support and technology you will have.
 
-Although you can choose to go your own way, the more advanced features are only available while part of a faction.","ExerelinNGCIntroNextPage:Next
-ExerelinNGCIntroPrevPage:Previous",
+Although you can choose to go your own way, the more advanced features are only available while part of a faction.","exerelinNGCIntroNextPage:Next
+exerelinNGCIntroPrevPage:Previous",
 ExerelinNGCIntro3,ExerelinNGCIntroPage,"$introPage == 3.0
-$isInIntro",,Have fun and please leave any feedback on the Starsector forums :),"ExerelinNGCIntroEnd:Start playing
-ExerelinNGCIntroPrevPage:Previous",
-ExerelinNGCIntroEnd,NewGameOptionSelected,$option==ExerelinNGCIntroEnd,"$isInIntro = false
+$isInIntro",,Have fun and please leave any feedback on the Starsector forums :),"exerelinNGCIntroEnd:Start playing
+exerelinNGCIntroPrevPage:Previous",
+ExerelinNGCIntroEnd,NewGameOptionSelected,$option==exerelinNGCIntroEnd,"$isInIntro = false
 FireAll ExerelinNGCStep1",,,
 ,,,,,,
-ExerelinNewGameChoicesDev,ExerelinNGCStep1,$global.isDevMode,,,100:ExerelinNGCDevStart:>>(dev) quick start,
-ExerelinNGCJoin,ExerelinNGCStep1,,,Which faction would you like to join?,"ExerelinNGCJoinHegemony:Hegemony
-ExerelinNGCJoinTriTachyon:Tri-Tachyon
-ExerelinNGCJoinSindrianDiktat:Sindrian Diktat
-ExerelinNGCJoinLuddicChurch:Luddic Church
-ExerelinNGCJoinPirate:Pirates",
-#ExerelinNewGameChoicesBlackrock,ExerelinNGCStep1,$global.myVarForHasBlackrock,,,ExerelinNGCJoinBlackrock:Blackrock,
-ExerelinNGCDevStart,NewGameOptionSelected,$option == ExerelinNGCDevStart,"NGCAddShip ""tempest_Starting""
+ExerelinNewGameChoicesDev,ExerelinNGCStep1,$global.isDevMode,,,100:exerelinNGCDevStart:>>(dev) quick start,
+ExerelinNGCJoin,ExerelinNGCStep1,,,Which faction would you like to join?,"exerelinNGCJoinHegemony:Hegemony
+exerelinNGCJoinTriTachyon:Tri-Tachyon
+exerelinNGCJoinSindrianDiktat:Sindrian Diktat
+exerelinNGCJoinLuddicChurch:Luddic Church
+exerelinNGCJoinPirate:Pirates",
+#ExerelinNewGameChoicesBlackrock,ExerelinNGCStep1,$global.myVarForHasBlackrock,,,exerelinNGCJoinBlackrock:Blackrock,
+ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""independent""
+NGCAddShip ""tempest_Starting""
 NGCAddCargo RESOURCES elite_crew 20
 NGCAddCargo RESOURCES supplies 20
 NGCAddCargo RESOURCES fuel 20
@@ -48,22 +49,22 @@ NGCAddSkillPoints 100
 NGCAddAptitudePoints 10
 NGCSetStartingLocation Exerelin -2700 3250
 NGCDone",,,
-ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == ExerelinNGCJoinHegemony,"NGCSetPlayerFaction ""hegemony""
+ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == exerelinNGCJoinHegemony,"NGCSetPlayerFaction ""hegemony""
 $playerFaction = ""hegemony""
 FireBest ExerelinNGCStep2",,,
-ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == ExerelinNGCJoinSindrianDiktat,"NGCSetPlayerFaction ""sindrian_diktat""
+ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == exerelinNGCJoinSindrianDiktat,"NGCSetPlayerFaction ""sindrian_diktat""
 $playerFaction = ""sindrian_diktat""
 FireBest ExerelinNGCStep2",,,
-ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == ExerelinNGCJoinTriTachyon,"NGCSetPlayerFaction ""tritachyon""
+ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == exerelinNGCJoinTriTachyon,"NGCSetPlayerFaction ""tritachyon""
 $playerFaction = ""tritachyon""
 FireBest ExerelinNGCStep2",,,
-ExerelinNGCJoinLuddicChurch,NewGameOptionSelected,$option == ExerelinNGCJoinChurch,"NGCSetPlayerFaction ""luddic_church""
+ExerelinNGCJoinLuddicChurch,NewGameOptionSelected,$option == exerelinNGCJoinChurch,"NGCSetPlayerFaction ""luddic_church""
 $playerFaction = ""luddic_church""
 FireBest ExerelinNGCStep2",,,
-ExerelinNGCJoinPirate,NewGameOptionSelected,$option == ExerelinNGCJoinPirate,"NGCSetPlayerFaction ""pirates""
+ExerelinNGCJoinPirate,NewGameOptionSelected,$option == exerelinNGCJoinPirate,"NGCSetPlayerFaction ""pirates""
 $playerFaction = ""pirates""
 FireBest ExerelinNGCStep2",,,
-#ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == ExerelinNGCJoinBlackrock,"NGCSetPlayerFaction ""blackrock""
+#ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == exerelinNGCJoinBlackrock,"NGCSetPlayerFaction ""blackrock""
 $playerFaction = ""blackrock""
 FireBest ExerelinNGCStep2",,,
 ,,,,,,
@@ -74,10 +75,80 @@ NGCAddShip ""wolf_Starting""
 AddText ""Added Wolf-class frigate"" textFriendColor
 AddText ""Added 30 crew"" textFriendColor
 AddText ""Added 20 supplies"" textFriendColor
-AddText ""Added 20 fuel"" textFriendColor",,ExerelinNGCDone:Continue,
-ExerelinNGCDoneOptionDefault,NewGameOptionSelected,$option == ExerelinNGCDone,"NGCAddAptitudePoints 2
+AddText ""Added 20 fuel"" textFriendColor",,exerelinNGCDone:Continue,
+ExerelinNGCDoneOptionDefault,NewGameOptionSelected,$option == exerelinNGCDone,"NGCAddCredits 5000
+NGCAddAptitudePoints 2
 NGCAddSkillPoints 6
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 6 skill points"" textFriendColor
 NGCSetStartingLocation Exerelin 600 600
 NGCDone",,,
+,,,,,,
+ExerelinMarketAddOptionSpecial,PopulateOptions,"$hasMarket
+$menuState == main
+!$faction.isNeutralFaction","SetShortcut exerelinMarketSpecial ""S"" true",,6:exerelinMarketSpecial:Special functions,
+ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,FireAll ExerelinMarketSpecial,,,
+ExerelinMarketLeaveOption,ExerelinMarketSpecial,,,,5:exerelinMarketSpecialBack:Back,
+ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,FireAll PopulateOptions,,,
+,,,,,,
+ExerelinMarketInvadeOption,ExerelinMarketSpecial,"$faction.id != $global.playerFaction
+HasMarines",SetEnabled exerelinInvasion true,,1:exerelinInvasion:Invade the planet/station,
+ExerelinMarketInvadeOptionNoMarines,ExerelinMarketSpecial,"$faction.id != $global.playerFaction
+!HasMarines","SetTooltip exerelinInvasion ""You have no marines!""
+SetEnabled exerelinInvasion false",,1:exerelinInvasion:Invade the planet/station,
+ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,PredictInvasionResults,Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,"exerelinInvasionProceed:Proceed
+exerelinInvasionHelp:Consult a help file
+exerelinInvasionCancel:Cancel",
+ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,,TODO,"exerelinInvasionProceed:Proceed
+exerelinInvasionHelp:Consult a help file
+exerelinInvasionCancel:Cancel",
+ExerelinInvasionProceed,DialogOptionSelected,"$option == exerelinInvasionProceed
+$hasMarket ","Wait $global.exerelinInvasionWait 1 $global.exerelinInvasionRoundComplete $global.exerelinInvasionInterrupted $global.exerelinInvasionInProgress ""Invading...""
+BroadcastPlayerWaitAction $global.exerelinInvasionWait HOSTILE 750 $exerelinRespondingToInvasion
+MakePlayerImmediatelyAttackable
+$player.invasionTarget = $id 1.01",,,
+ExerelinInvasionCancel,DialogOptionSelected,"$option == exerelinInvasionCancel
+$hasMarket","$menuState = main 0
+FireAll PopulateOptions",You decide not to attack $entityName.,,
+ExerelinInvasionLeave,DialogOptionSelected,"$option == exerelinInvasionLeave
+$hasMarket",DismissDialog,You decide not to continue the invasion.,,
+ExerelinInvasionDone,DialogOptionSelected,"$option == exerelinInvasionLeave
+$hasMarket",DismissDialog,,,
+ExerelinInvasionOpen,OpenInteractionDialog,"$hasMarket
+$id == $player.invasionTarget","ShowDefaultVisual
+FireBest ExerelinInitInvadeDialog",,,
+ExerelinInvasionRoundComplete,ExerelinInitInvadeDialog,"$hasMarket
+$global.exerelinInvasionRoundComplete score:100","ExecuteInvasionRound
+FireBest ExerelinInvasionResults
+AdjustRep $faction.id COMBAT_NORMAL",INVASION OUTCOME:,,
+ExerelinInvasionResultsComplete,ExerelinInvasionResults,$exerelinInvasionSuccessful,"unset $player.invasionTarget
+FireAll PopulateOptions",You've successfully captured $entityName!,,
+ExerelinInvasionResultsIncomplete,ExerelinInvasionResults,!$exerelinInvasionSuccessful,unset $player.invasionTarget,You have not yet captured $entityName.,"exerelinInvasionStart:Attack again
+exerelinInvasionLeave:Leave",
+ExerelinInvasionInterupted,ExerelinInitInvadeDialog,"$hasMarket
+$global.exerelinInvasionInterrupted","unset $global.exerelinInvasionInterrupted
+unset $player.invasionTarget
+$menuState = main 0
+FireAll PopulateOptions",Your invasion was interrupted.,,
+ExerelinInitInvasionInProgress,ExerelinInitInvadeDialog,"$hasMarket
+$global.exerelinInvasionInProgress
+!$global.exerelinInvasionInterrupted
+!$global.exerelinInvasionRoundComplete",,You're currently invading $entityName.,,
+ExerelinInitInvasionAbort,DialogOptionSelected,$option==exerelinAbort,"AbortWait $global.exerelinInvasionWait
+unset $player.invasionTarget
+$menuState = main 0
+FireAll PopulateOptions",The invasion is cancelled.,,
+ExerelinInvasionInterference_start,BeginFleetEncounter,"$exerelinRespondingToInvasion score:100
+$global.exerelinInvasionInProgress","AbortWait $global.exerelinInvasionWait
+MakeOtherFleetHostile true
+MakeOtherFleetAggressive true
+unset $ignorePlayerCommRequests
+unset $player.invasionTarget
+AdjustRep $faction.id COMBAT_NORMAL
+BroadcastCancelPlayerAction 1500 $exerelinRespondingToInvasion",The appearance of a $faction $otherShipOrFleet disrupts your invasion preparations.,,
+ExerelinInvasionInterference_cancelledAndRan,BeginFleetEncounter,$exerelinRespondingToInvasion score:100,"MakeOtherFleetHostile true
+unset $ignorePlayerCommRequests
+unset $player.invasionTarget
+AdjustRep $faction.id COMBAT_NORMAL
+BroadcastCancelPlayerAction 1500 $exerelinRespondingToInvasion","The $faction $otherShipOrFleet catches up with you, weapons hot.",,
+ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion score:100,$ignorePlayerCommRequests = true 1,"""You'll pay for trying to invade our territory!"" The comm link is cut before you can begin to respond.",continueCutComm:Continue,

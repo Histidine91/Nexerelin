@@ -4,12 +4,13 @@ public class PlayerFactionStore {
 
     private static String factionId = "independent";
     
-    public static void setPlayerFaction(String newFactionId)
+    // NOTE: only use for new games; factionId currently isn't saved yet
+    public static void setPlayerFactionId(String newFactionId)
     {
         factionId = newFactionId;
     }
     
-    public static String getPlayerFaction()
+    public static String getPlayerFactionId()
     {
         return factionId;
     }

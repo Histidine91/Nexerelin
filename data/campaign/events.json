@@ -1,0 +1,5 @@
+{
+	"market_captured":{
+		"script":"exerelin.campaign.events.MarketCapturedEvent",
+	}
+}
