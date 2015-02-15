@@ -10,7 +10,8 @@ import com.fs.starfarer.api.util.Misc.Token;
 
 
 public class NGCSetPlayerFaction extends BaseCommandPlugin {
-        
+	 
+	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		String factionId = params.get(0).getString(memoryMap);
 		PlayerFactionStore.setPlayerFactionId(factionId);

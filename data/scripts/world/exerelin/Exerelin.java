@@ -15,12 +15,12 @@ import exerelin.utilities.ExerelinMessageManager;
 import exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.util.Collections;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class Exerelin //implements SectorGeneratorPlugin
 {
 	public static Logger log = Global.getLogger(Exerelin.class);
-	private static String playerFaction = "independent";
 	
 	public void generate(SectorAPI sector)
 	{
@@ -180,8 +180,6 @@ public class Exerelin //implements SectorGeneratorPlugin
 		
 		player.setRelationship(selectedFactionId, RepLevel.FRIENDLY);
 		selectedFaction.setRelationship("player", RepLevel.FRIENDLY);
-		MemoryAPI memory = sector.getMemory();
-		memory.set("$playerFaction", selectedFactionId);
 	}
 
 	private void initTraderSpawns(SectorAPI sector)

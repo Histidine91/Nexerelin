@@ -1,19 +1,13 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.OrbitalStationAPI;
-import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
@@ -33,6 +27,7 @@ import exerelin.campaign.InvasionRound.InvasionSimulationType;
  */
 public class PredictInvasionResults extends BaseCommandPlugin {
 
+		@Override
 		public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 				if (dialog == null) return false;
 				SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
@@ -45,7 +40,6 @@ public class PredictInvasionResults extends BaseCommandPlugin {
 				}*/
 		
 				CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-				FactionAPI faction = target.getFaction();
 		
 				InvasionRoundResult worst = InvasionRound.GetInvasionRoundResult(playerFleet, target, InvasionSimulationType.PESSIMISTIC);
 				InvasionRoundResult best = InvasionRound.GetInvasionRoundResult(playerFleet, target, InvasionSimulationType.OPTIMISTIC);

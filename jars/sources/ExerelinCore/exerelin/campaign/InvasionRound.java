@@ -21,15 +21,16 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
+import exerelin.PlayerFactionStore;
 
 /**
  *
  * @author Histidine
- * Does some math to determine the damage dealt to a market during an invasion, the marine losses the attackers take, and whether the market is captured as a result.
+ * Does some math to determine the damage dealt to a market during an invasion, 
+ * the marine losses the attackers take, and whether the market is captured as a result.
  * 
  */
 public class InvasionRound {
@@ -46,7 +47,10 @@ public class InvasionRound {
 	public static final float MARINE_LOSS_MULT = 0.125f;
 	public static final float MARINE_LOSS_RANDOM_MOD = 0.025f;
 	
-	// pessimistic and optimistic are used for prediction; realistic is used for what actually happens
+        /**
+        * PESSIMISTIC and OPTIMISTIC are used for prediction;
+        * REALISTIC is used for what actually happens
+        */
 	public static enum InvasionSimulationType {
 		PESSIMISTIC,
 		REALISTIC,
@@ -223,7 +227,7 @@ public class InvasionRound {
 			if ( attacker == sector.getPlayerFleet() )
 			{
 				playerInvolved = true;
-				newOwnerId = sector.getMemory().getString("$playerFaction");
+				newOwnerId = PlayerFactionStore.getPlayerFactionId();
 				newOwner = sector.getFaction(newOwnerId);
 			}
 			MarketAPI market = defender.getMarket();

@@ -91,15 +91,21 @@ ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpeci
 ExerelinMarketLeaveOption,ExerelinMarketSpecial,,,,5:exerelinMarketSpecialBack:Back,
 ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,FireAll PopulateOptions,,,
 ,,,,,,
-ExerelinMarketInvadeOption,ExerelinMarketSpecial,"$faction.id != $global.playerFaction
+ExerelinMarketInvadeOption,ExerelinMarketSpecial,"$faction.id != $player.faction.id
 HasMarines",SetEnabled exerelinInvasion true,,1:exerelinInvasion:Invade the planet/station,
-ExerelinMarketInvadeOptionNoMarines,ExerelinMarketSpecial,"$faction.id != $global.playerFaction
+ExerelinMarketInvadeOptionNoMarines,ExerelinMarketSpecial,"$faction.id != $player.faction.id
 !HasMarines","SetTooltip exerelinInvasion ""You have no marines!""
 SetEnabled exerelinInvasion false",,1:exerelinInvasion:Invade the planet/station,
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,PredictInvasionResults,Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,"exerelinInvasionProceed:Proceed
 exerelinInvasionHelp:Consult a help file
 exerelinInvasionCancel:Cancel",
-ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,,TODO,"exerelinInvasionProceed:Proceed
+ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,,"Base attacker strength = (marine strength + fleet DP/2) * 0.7 (average)
+Base defender strength = (market size^3) * (stability + 0.25) * 0.75
+Each Military Base and Regional Capital adds 25% to defender strength, Headquarters adds 40%.
+Attacker strength varies by up to 1/7th in either direction.
+
+If attacker roll exceeds defender strength, the market is captured.
+Marine losses depend on both strength values, plus a random factor.","exerelinInvasionProceed:Proceed
 exerelinInvasionHelp:Consult a help file
 exerelinInvasionCancel:Cancel",
 ExerelinInvasionProceed,DialogOptionSelected,"$option == exerelinInvasionProceed
