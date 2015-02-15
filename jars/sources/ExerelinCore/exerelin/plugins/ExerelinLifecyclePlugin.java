@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventManagerAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.events.EventProbabilityAPI;
+import com.fs.starfarer.api.impl.campaign.CoreRuleTokenReplacementGeneratorImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.CustomFleets;
 import com.fs.starfarer.api.impl.campaign.ids.Events;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -19,7 +20,7 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
     public void onGameLoad() {
         // the token replacement generators don't get saved
         // add them on every game load
-        //Global.getSector().getRules().addTokenReplacementGenerator(new CoreRuleTokenReplacementGeneratorImpl());
+        Global.getSector().getRules().addTokenReplacementGenerator(new CoreRuleTokenReplacementGeneratorImpl());
     }
 
     @Override
