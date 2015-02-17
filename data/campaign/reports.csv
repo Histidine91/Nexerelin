@@ -1,3 +1,3 @@
 event_type,event_stage,p,target_rel,channels,subject,summary,assessment,image,icon,tags,sound_id,implementation notes
-market_captured,report,,,news,$market captured by $theFaction,"$theFaction forces have taken control of $market, previously held by $oldOwnerWithArticle.",,,,,,
-market_captured,report_player,,,news,$market captured by $theFaction,"$theFaction forces led by $playerName have taken control of $market, previously held by $oldOwnerWithArticle.",,,,,,
+exerelin_market_captured,report,,,news,$market captured by $faction,"$faction forces have taken control of $market, previously held by $oldOwnerWithArticle.",,,,,,
+exerelin_market_captured,report_player,,,news,$market captured by $faction,"$faction forces led by $playerName have taken control of $market, previously held by $oldOwnerWithArticle.",,,,,,

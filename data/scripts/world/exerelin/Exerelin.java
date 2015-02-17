@@ -5,17 +5,18 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import exerelin.commandQueue.CommandQueue;
 import exerelin.*;
-import exerelin.PlayerFactionStore;
+import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.events.EventPirateFleetSpawn;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinMessageManager;
 import exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.util.Collections;
-import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class Exerelin //implements SectorGeneratorPlugin
@@ -66,7 +67,7 @@ public class Exerelin //implements SectorGeneratorPlugin
 		// Set abandoned as enemy of every faction
 		ExerelinConfig.loadSettings();
 		this.initFactionRelationships(sector);
-	
+
 		// Populate sector
 		//this.populateSector(Global.getSector(), sectorManager);
 	
@@ -136,37 +137,38 @@ public class Exerelin //implements SectorGeneratorPlugin
 		FactionAPI hegemony = sector.getFaction("hegemony");
 		FactionAPI independent = sector.getFaction("independent");
 	
-		pirates.setRelationship("sindrian_diktat", RepLevel.HOSTILE);
-		pirates.setRelationship("tritachyon", RepLevel.HOSTILE);
-		pirates.setRelationship("luddic_church", RepLevel.HOSTILE);
-		pirates.setRelationship("hegemony", RepLevel.HOSTILE);
-		pirates.setRelationship("independent", RepLevel.HOSTILE);
-	
-		sindrian_diktat.setRelationship("pirates", RepLevel.HOSTILE);
 		sindrian_diktat.setRelationship("luddic_church", RepLevel.HOSTILE);
 		sindrian_diktat.setRelationship("hegemony", RepLevel.SUSPICIOUS);
 		sindrian_diktat.setRelationship("tritachyon", RepLevel.FRIENDLY);
 	
-		tritachyon.setRelationship("pirates", RepLevel.HOSTILE);
 		tritachyon.setRelationship("hegemony", RepLevel.HOSTILE);
 		tritachyon.setRelationship("luddic_church", RepLevel.SUSPICIOUS);
 		tritachyon.setRelationship("sindrian_diktat", RepLevel.COOPERATIVE);
 	
-		luddic_church.setRelationship("pirates", RepLevel.HOSTILE);
 		luddic_church.setRelationship("sindrian_diktat", RepLevel.HOSTILE);
 		luddic_church.setRelationship("tritachyon", RepLevel.SUSPICIOUS);
 		luddic_church.setRelationship("hegemony", RepLevel.FRIENDLY);
 	
-		hegemony.setRelationship("pirates", RepLevel.HOSTILE);
 		hegemony.setRelationship("tritachyon", RepLevel.HOSTILE);
 		hegemony.setRelationship("sindrian_diktat", RepLevel.SUSPICIOUS);
-		hegemony.setRelationship("hegemony", RepLevel.COOPERATIVE);
+		hegemony.setRelationship("luddic_church", RepLevel.FAVORABLE);
 	
-		independent.setRelationship("pirates", RepLevel.HOSTILE);
+                List factions = sector.getAllFactions();
+                
+                // pirates are hostile to everyone
+		// TODO: some factions (like Mayorate) should not be hostile with pirates
+		for (int i=1; i<factions.size(); i++)
+		{
+			FactionAPI faction = (FactionAPI)(factions.get(i));
+			String factionId = faction.getId();
+			if (!faction.isNeutralFaction() && !factionId.equals("pirates"))
+			{
+				pirates.setRelationship(factionId, RepLevel.HOSTILE);
+				faction.setRelationship("pirates", RepLevel.HOSTILE);
+			}
+		}
 	
 		// set player relations based on selected faction
-		List factions = sector.getAllFactions();
-		
 		for (int i=1; i<factions.size(); i++)
 		{
 			FactionAPI faction = (FactionAPI)(factions.get(i));
@@ -180,6 +182,31 @@ public class Exerelin //implements SectorGeneratorPlugin
 		
 		player.setRelationship(selectedFactionId, RepLevel.FRIENDLY);
 		selectedFaction.setRelationship("player", RepLevel.FRIENDLY);
+ 
+		// set player start location at the largest faction market with a military base
+		/*
+		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
+		int size = 0;
+		MarketAPI targetMarket = null;
+		for (MarketAPI market : markets)
+		{
+			if (market.getFaction() != selectedFaction)
+				continue;
+			if (targetMarket == null)
+				targetMarket = market;
+			else if (market.hasCondition("military_base"))
+			{
+				if (size < market.getSize()) {
+					size = market.getSize();
+					targetMarket = market;
+				}
+			}
+		}
+		if (targetMarket != null)
+		{
+		}
+		*/
 	}
 
 	private void initTraderSpawns(SectorAPI sector)

@@ -27,10 +27,12 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	
 		private boolean done;
 		
+        @Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
 		done = false;
+                //log.info("Capture event created");
 	}
 	
 	@Override
@@ -49,7 +51,13 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	{
 		if (done)
 			return;
-				
+                
+                if (newOwner == oldOwner)
+                {
+                        done = true;
+                        return;
+                }
+                
 		String stage = "report";
 		MessagePriority priority = MessagePriority.SECTOR;
 		if (playerInvolved) 
@@ -58,19 +66,29 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 			//priority = MessagePriority.ENSURE_DELIVERY;
 		}
 		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
+                //log.info("Capture event reported");
 		done = true;
 	}
 
 	@Override
 	public String getEventName() {
-		return (newOwner.getDisplayName() + " captures " + market.getName() + " from " + oldOwner.getDisplayName());
+		return (newOwner.getDisplayName() + " captures " + market.getName());
 	}
+        
+        @Override
+        public String getCurrentImage() {
+            return newOwner.getLogo();
+        }
+
+        @Override
+        public String getCurrentMessageIcon() {
+            return newOwner.getLogo();
+        }
 		
 	@Override
 	public CampaignEventCategory getEventCategory() {
 		return CampaignEventCategory.EVENT;
 	}
-
 	
 	@Override
 	public Map<String, String> getTokenReplacements() {
@@ -81,6 +99,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		return map;
 	}
 
+        @Override
 	public boolean isDone() {
 		return false;
 	}
@@ -89,4 +108,9 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	public boolean allowMultipleOngoingForSameTarget() {
 		return true;
 	}
+        
+        @Override
+        public boolean showAllMessagesIfOngoing() {
+                return false;
+        }
 }

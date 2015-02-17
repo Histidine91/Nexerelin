@@ -1,5 +1,9 @@
 {
-	"market_captured":{
+	"exerelin_market_captured":{
 		"script":"exerelin.campaign.events.MarketCapturedEvent",
+	},
+	"exerelin_market_attacked":{
+		"script":"exerelin.campaign.events.MarketAttackedEvent",
+		"image":"graphics/icons/markets/recent_unrest.png",
 	}
 }

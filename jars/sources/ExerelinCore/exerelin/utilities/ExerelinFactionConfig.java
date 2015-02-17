@@ -5,6 +5,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.*;
 
+// TODO: clean up most of this
+// I really don't think most of it is neeeded any more in current SS versions
 public class ExerelinFactionConfig
 {
     public String factionId;

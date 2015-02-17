@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
-import exerelin.PlayerFactionStore;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.ExerelinReputationPlugin;
 
 @SuppressWarnings("unchecked")

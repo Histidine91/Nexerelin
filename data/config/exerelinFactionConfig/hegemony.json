@@ -57,5 +57,5 @@
     "cruiserVariants":["dominator_Support", "dominator_Outdated", "venture_Balanced", "dominator_Assault"], # String array
     "capitalVariants":["onslaught_Standard"], # String array
 
-    "startingVariants":["hound_Assault", "lasher_CS"], # String array
+    "startingVariants":["hound_hegemony_Standard", "lasher_CS"], # String array
 }

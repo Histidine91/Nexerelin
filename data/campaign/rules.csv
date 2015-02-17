@@ -28,12 +28,17 @@ ExerelinNGCIntroEnd,NewGameOptionSelected,$option==exerelinNGCIntroEnd,"$isInInt
 FireAll ExerelinNGCStep1",,,
 ,,,,,,
 ExerelinNewGameChoicesDev,ExerelinNGCStep1,$global.isDevMode,,,100:exerelinNGCDevStart:>>(dev) quick start,
-ExerelinNGCJoin,ExerelinNGCStep1,,,Which faction would you like to join?,"exerelinNGCJoinHegemony:Hegemony
+ExerelinNGCJoin,ExerelinNGCStep1,,FireAll ExerelinNGCListFactions,Which faction would you like to join?,,
+ExerelinNGCFactionsMain,ExerelinNGCListFactions,,,,"exerelinNGCJoinHegemony:Hegemony
 exerelinNGCJoinTriTachyon:Tri-Tachyon
 exerelinNGCJoinSindrianDiktat:Sindrian Diktat
 exerelinNGCJoinLuddicChurch:Luddic Church
 exerelinNGCJoinPirate:Pirates",
-#ExerelinNewGameChoicesBlackrock,ExerelinNGCStep1,$global.myVarForHasBlackrock,,,exerelinNGCJoinBlackrock:Blackrock,
+ExerelinNGCModFactionsAN,ExerelinNGCListFactions,,,,exerelinNGCViewModFactionsAN:Mod factions (A-N),Should check if factions are actually there
+ExerelinNGCViewModFactionsAN,NewGameOptionSelected,$option == exerelinNGCViewModFactionsAN,FireAll ExerelinNGCListFactionsAN,,,
+ExerelinNGCListBlackrock,ExerelinNGCListFactionsAN,NGCDoesFactionExist blackrock_driveyards,,,exerelinNGCJoinBlackrock:Blackrock,
+ExerelinNGCListDiableAvionics,ExerelinNGCListFactionsAN,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
+ExerelinNGCListModFactionsANBack,ExerelinNGCListFactionsAN,,,,20:exerelinNGCIntroEnd:Back,
 ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""independent""
 NGCAddShip ""tempest_Starting""
 NGCAddCargo RESOURCES elite_crew 20
@@ -41,46 +46,53 @@ NGCAddCargo RESOURCES supplies 20
 NGCAddCargo RESOURCES fuel 20
 NGCAddCredits 1000000
 NGCSetAptitude technology 10
-NGCSetSkill gunnery_implants 10
-NGCSetSkill construction 10
-NGCSetSkill mechanical_engineering 10
 NGCSetAptitude combat 10
-NGCAddSkillPoints 100
+NGCAddSkillPoints 200
 NGCAddAptitudePoints 10
 NGCSetStartingLocation Exerelin -2700 3250
 NGCDone",,,
 ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == exerelinNGCJoinHegemony,"NGCSetPlayerFaction ""hegemony""
-$playerFaction = ""hegemony""
+NGCAddShip ""lasher_Starting""
+AddText ""Added Lasher-class frigate"" textFriendColor
 FireBest ExerelinNGCStep2",,,
 ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == exerelinNGCJoinSindrianDiktat,"NGCSetPlayerFaction ""sindrian_diktat""
-$playerFaction = ""sindrian_diktat""
+NGCAddShip ""brawler_Elite""
+AddText ""Added Brawler-class frigate"" textFriendColor
 FireBest ExerelinNGCStep2",,,
 ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == exerelinNGCJoinTriTachyon,"NGCSetPlayerFaction ""tritachyon""
-$playerFaction = ""tritachyon""
+NGCAddShip ""wolf_Starting""
+AddText ""Added Wolf-class frigate"" textFriendColor
 FireBest ExerelinNGCStep2",,,
 ExerelinNGCJoinLuddicChurch,NewGameOptionSelected,$option == exerelinNGCJoinChurch,"NGCSetPlayerFaction ""luddic_church""
-$playerFaction = ""luddic_church""
+NGCAddShip ""vigilance_Starting""
+AddText ""Added Vigilance-class frigate"" textFriendColor
 FireBest ExerelinNGCStep2",,,
 ExerelinNGCJoinPirate,NewGameOptionSelected,$option == exerelinNGCJoinPirate,"NGCSetPlayerFaction ""pirates""
-$playerFaction = ""pirates""
+NGCAddShip ""cerberus_Starting""
+AddText ""Added Cerberus-class frigate"" textFriendColor
 FireBest ExerelinNGCStep2",,,
-#ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == exerelinNGCJoinBlackrock,"NGCSetPlayerFaction ""blackrock""
-$playerFaction = ""blackrock""
+ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == exerelinNGCJoinBlackrock,"NGCSetPlayerFaction ""blackrock_driveyards""
+NGCAddShip ""brdy_silverfish_standard""
+AddText ""Added Silverfish-class frigate"" textFriendColor
 FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinDiableAvionics,NewGameOptionSelected,$option == exerelinNGCJoinDiableAvionics,"NGCSetPlayerFaction ""diableavionics""
+NGCAddShip ""diableavionics_vapor_standard""
+AddText ""Added Vapor-class frigate"" textFriendColor
+FireBest ExerelinNGCStep2",,,
+,,,,,,
 ,,,,,,
 ExerelinNGCFinalize,ExerelinNGCStep2,,"NGCAddCargo RESOURCES regular_crew 30
 NGCAddCargo RESOURCES supplies 20
 NGCAddCargo RESOURCES fuel 20
-NGCAddShip ""wolf_Starting""
-AddText ""Added Wolf-class frigate"" textFriendColor
 AddText ""Added 30 crew"" textFriendColor
 AddText ""Added 20 supplies"" textFriendColor
 AddText ""Added 20 fuel"" textFriendColor",,exerelinNGCDone:Continue,
-ExerelinNGCDoneOptionDefault,NewGameOptionSelected,$option == exerelinNGCDone,"NGCAddCredits 5000
+ExerelinNGCDoneOptionDefault,NewGameOptionSelected,$option == exerelinNGCDone,"NGCAddCredits 10000
 NGCAddAptitudePoints 2
 NGCAddSkillPoints 6
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 6 skill points"" textFriendColor
+AddText ""Added 10000 credits"" textFriendColor
 NGCSetStartingLocation Exerelin 600 600
 NGCDone",,,
 ,,,,,,

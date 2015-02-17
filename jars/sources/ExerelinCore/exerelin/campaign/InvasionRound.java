@@ -21,10 +21,11 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
-import exerelin.PlayerFactionStore;
+import exerelin.campaign.events.MarketAttackedEvent;
 
 /**
  *
@@ -44,8 +45,10 @@ public class InvasionRound {
 	public static final float DEFENDER_MILITARY_BASE_MOD = 0.25f;
 	public static final float DEFENDER_REGIONAL_CAPITAL_MOD = 0.25f;
 	public static final float DEFENDER_HEADQUARTERS_MOD = 0.4f;
+        public static final float DEFENDER_RAID_STRENGTH_MULT = 0.75f;
 	public static final float MARINE_LOSS_MULT = 0.125f;
 	public static final float MARINE_LOSS_RANDOM_MOD = 0.025f;
+        public static final float MARINE_LOSS_RAID_MULT = 0.5f;
 	
         /**
         * PESSIMISTIC and OPTIMISTIC are used for prediction;
@@ -59,6 +62,7 @@ public class InvasionRound {
 	
 	public static class InvasionRoundResult {
 		private boolean success;
+                private boolean isRaid;
 		private CargoAPI enemyCargoDamaged;
 		private int marinesLost;
 		private float attackerStrength;
@@ -87,6 +91,12 @@ public class InvasionRound {
 		}
 		public void setSuccess(boolean success) {
 			this.success = success;
+		}
+                public boolean getIsRaid() {
+			return isRaid;
+		}
+		public void setIsRaid(boolean isRaid) {
+			this.isRaid = isRaid;
 		}
 		public float getAttackerStrength() {
 			return attackerStrength;
@@ -135,13 +145,42 @@ public class InvasionRound {
 			defenderBonuses.put(name, amount);
 		}
 	}
+        
+        public static float GetDefenderStrength(MarketAPI market)
+        {
+                return GetDefenderStrength(market, false);
+        }
+        
+        public static float GetDefenderStrength(MarketAPI market, boolean isRaid)
+        {
+                float marketSize = market.getSize();
+                float baseDefenderStrength = DEFENDER_BASE_STRENGTH * (float)(Math.pow(marketSize, 3));
+                baseDefenderStrength = baseDefenderStrength * (market.getStabilityValue() + 1 - DEFENDER_STABILITY_MOD) * DEFENDER_STABILITY_MOD;
+		float defenderStrength = baseDefenderStrength;
+                
+                if(market.hasCondition("military_base"))
+		{
+			defenderStrength += baseDefenderStrength * DEFENDER_MILITARY_BASE_MOD;
+		}
+		if(market.hasCondition("regional_capital"))
+		{
+			defenderStrength += baseDefenderStrength * DEFENDER_REGIONAL_CAPITAL_MOD;
+		}
+		if(market.hasCondition("headquarters"))
+		{
+			defenderStrength += baseDefenderStrength * DEFENDER_HEADQUARTERS_MOD;
+		}
+                if (isRaid)
+                        defenderStrength *= DEFENDER_RAID_STRENGTH_MULT;
+                return defenderStrength;
+        }
 	
-	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, SectorEntityToken defender) 
+	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, SectorEntityToken defender, boolean isRaid) 
 	{
-		return GetInvasionRoundResult(attacker, defender, InvasionSimulationType.REALISTIC);
+		return GetInvasionRoundResult(attacker, defender, isRaid, InvasionSimulationType.REALISTIC);
 	}
 	
-	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, SectorEntityToken defender, InvasionSimulationType simType)
+	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, SectorEntityToken defender, boolean isRaid, InvasionSimulationType simType)
 	{
 		CargoAPI attackerCargo = attacker.getCargo();
 		int marineCount = attackerCargo.getMarines();
@@ -161,36 +200,33 @@ public class InvasionRound {
 		float attackerMarineMult = attacker.getCommanderStats().getMarineEffectivnessMult().getModifiedValue();
 		float attackerAssets = (marineCount * attackerMarineMult) + (attacker.getFleetPoints() * ATTACKER_FLEET_MULT);
 		float baseAttackerStrength = (ATTACKER_BASE_STRENGTH  + randomBonus) * attackerAssets;
-		float baseDefenderStrength = DEFENDER_BASE_STRENGTH * (float)(Math.pow(marketSize, 3));
-		baseDefenderStrength = baseDefenderStrength * (market.getStabilityValue() + 1 - DEFENDER_STABILITY_MOD) * DEFENDER_STABILITY_MOD;
+
 		float attackerStrength = baseAttackerStrength;
-		float defenderStrength = baseDefenderStrength;
+                float defenderStrength = GetDefenderStrength(market);
 		InvasionRoundResult result = new InvasionRoundResult();
 		
 		if(market.hasCondition("military_base"))
 		{
-			defenderStrength += baseDefenderStrength * DEFENDER_MILITARY_BASE_MOD;
 			result.addDefenderBonus("Military base", DEFENDER_MILITARY_BASE_MOD);
 		}
 		if(market.hasCondition("regional_capital"))
 		{
-			defenderStrength += baseDefenderStrength * DEFENDER_REGIONAL_CAPITAL_MOD;
 			result.addDefenderBonus("Regional capital", DEFENDER_REGIONAL_CAPITAL_MOD);
 		}
 		if(market.hasCondition("headquarters"))
 		{
-			defenderStrength += baseDefenderStrength * DEFENDER_HEADQUARTERS_MOD;
 			result.addDefenderBonus("Headquarters", DEFENDER_HEADQUARTERS_MOD);
 		}
 		
 		float outcome = attackerStrength - defenderStrength;
-		float marineLossFactor = defenderStrength*6 - attackerStrength*2;
+		float marineLossFactor = defenderStrength*6 - attackerStrength*2;                
 		float marineLossMod = MARINE_LOSS_MULT - MARINE_LOSS_RANDOM_MOD;
 		if (simType == InvasionSimulationType.REALISTIC)
 			marineLossMod += (float)(2 * Math.random() * MARINE_LOSS_RANDOM_MOD);
 		else if (simType == InvasionSimulationType.PESSIMISTIC)
 			marineLossMod += 2 * MARINE_LOSS_RANDOM_MOD;
-		
+		if (isRaid)
+                        marineLossMod *= MARINE_LOSS_RAID_MULT;
 		
 		int marinesLost = (int)(marineLossFactor * marineLossMod + 0.5f);
 		if (marinesLost > marineCount) marinesLost = marineCount;
@@ -206,73 +242,107 @@ public class InvasionRound {
 		return result;
 	}
 	
-	public static InvasionRoundResult InvadeMarket(CampaignFleetAPI attacker, SectorEntityToken defender)
+	public static InvasionRoundResult AttackMarket(CampaignFleetAPI attacker, SectorEntityToken defender, boolean isRaid)
 	{
-		InvasionRoundResult result = GetInvasionRoundResult(attacker, defender);
-		SectorAPI sector = Global.getSector();
+		InvasionRoundResult result = GetInvasionRoundResult(attacker, defender, isRaid);
 		
-		// TODO do stuff to market
-		
+                SectorAPI sector = Global.getSector();
+                FactionAPI attackerFaction = attacker.getFaction();
+		String attackerFactionId = attackerFaction.getId();
+		FactionAPI defenderFaction = defender.getFaction();
+                MarketAPI market = defender.getMarket();
+                
+                if (attackerFaction == defenderFaction)
+                {
+                    return result;
+                }
+                
+		boolean captured = false;
+                boolean success = result.getSuccess();
+                
+		// TODO destroy commodity stockpiles as well
+
+                CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_market_attacked");
+                if (eventSuper == null) 
+                    eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_attacked", null);
+                MarketAttackedEvent event = (MarketAttackedEvent)eventSuper;
+                
+                int currentPenalty = event.getStabilityPenalty();
+                if ((isRaid && success) || (!isRaid && !success))
+                {
+                    if (currentPenalty < 2)
+                        event.increaseStabilityPenalty(1);
+                }
+                else if (!isRaid && success)
+                {
+                    if (currentPenalty < 2)
+                        event.increaseStabilityPenalty(2);
+                    else event.increaseStabilityPenalty(1);
+                }
+                
 		CargoAPI attackerCargo = attacker.getCargo();
 		attackerCargo.removeMarines(result.getMarinesLost());
 		
-		if (result.getSuccess())
+                boolean playerInvolved = false;
+                if ( attacker == sector.getPlayerFleet() )
 		{
-			boolean playerInvolved = false;
-			
+			playerInvolved = true;
+                        attackerFactionId = PlayerFactionStore.getPlayerFactionId();
+                        attackerFaction = sector.getFaction(attackerFactionId);
+		}
+		if (!isRaid && success)
+		{
+                        captured = true;
 			// transfer market and associated entities
-			FactionAPI newOwner = attacker.getFaction();
-			String newOwnerId = newOwner.getId();
-			FactionAPI oldOwner = defender.getFaction();
-			if ( attacker == sector.getPlayerFleet() )
-			{
-				playerInvolved = true;
-				newOwnerId = PlayerFactionStore.getPlayerFactionId();
-				newOwner = sector.getFaction(newOwnerId);
-			}
-			MarketAPI market = defender.getMarket();
 			List<SectorEntityToken> linkedEntities = market.getConnectedEntities();
 			for (SectorEntityToken entity : linkedEntities)
 			{
-				entity.setFaction(newOwnerId);
+				entity.setFaction(attackerFactionId);
 			}
-			market.setFactionId(newOwnerId);
+			market.setFactionId(attackerFactionId);
 			List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
 			for (SubmarketAPI submarket : submarkets)
 			{
-				if(submarket.getFaction() == oldOwner)
-				submarket.setFaction(newOwner);
+				if(submarket.getFaction() == defenderFaction)
+				submarket.setFaction(attackerFaction);
 			}
 			market.reapplyConditions();
-		
-			// relationship changes
-			List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
-			Set<String> seenFactions = new HashSet<>();
-			float repChangeStrength = market.getSize()*5;
-			for (final MarketAPI otherMarket : markets) {
-				if (!otherMarket.getFaction().isHostileTo(oldOwner)) continue;
-				//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide
-				if (seenFactions.contains(otherMarket.getFactionId())) continue;
-				
-				CampaignEventTarget tempTarget = new CampaignEventTarget(otherMarket);
-				RepLevel level = newOwner.getRelationshipLevel(otherMarket.getFaction());
-				seenFactions.add(otherMarket.getFactionId());
-				if (level.isAtWorst(RepLevel.HOSTILE)) {
-					if (playerInvolved)
-						sector.adjustPlayerReputation(
-							new RepActionEnvelope(RepActions.COMBAT_WITH_ENEMY, (float)market.getSize()*5f),
-							otherMarket.getFaction().getId());
-					//log.info(String.format("Improving reputation with owner of market [%s] due to conquest of " + defender.getName(), otherMarket.getName()));
-				}
-			}
-			
-			// add intel event
-			Map<String, Object> params = new HashMap<>();
-			params.put("newOwner", newOwner);
-			params.put("oldOwner", oldOwner);
-			params.put("playerInvolved", playerInvolved);
-			sector.getEventManager().startEvent(new CampaignEventTarget(market), "market_captured", params);
-		}
+                }
+                // relationship changes
+                List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+                Set<String> seenFactions = new HashSet<>();
+                float repChangeStrength = market.getSize()*5;
+                if (success) repChangeStrength *= 2.0f;
+                if (isRaid) repChangeStrength *= 0.5f;
+                
+                for (final MarketAPI otherMarket : markets) {
+                        if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
+                        //if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide
+                        if (seenFactions.contains(otherMarket.getFactionId())) continue;
+
+                        CampaignEventTarget tempTarget = new CampaignEventTarget(otherMarket);
+                        RepLevel level = attackerFaction.getRelationshipLevel(otherMarket.getFaction());
+                        seenFactions.add(otherMarket.getFactionId());
+                        if (level.isAtWorst(RepLevel.HOSTILE)) {
+                                if (playerInvolved)
+                                        sector.adjustPlayerReputation(
+                                                new RepActionEnvelope(RepActions.COMBAT_WITH_ENEMY, repChangeStrength),
+                                                otherMarket.getFaction().getId());
+                                //log.info(String.format("Improving reputation with owner of market [%s] due to conquest of " + defender.getName(), otherMarket.getName()));
+                        }
+                }
+
+                // add intel event if captured
+                if (captured)
+                {
+                        Map<String, Object> params = new HashMap<>();
+                        params.put("newOwner", attackerFaction);
+                        params.put("oldOwner", defenderFaction);
+                        params.put("playerInvolved", playerInvolved);
+                        sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
+                }
+                
+                log.info( String.format("Invasion of [%s] by " + attacker.getNameWithFaction() + (success ? " successful" : " failed"), defender.getName()) );
 		return result;
 	}
 }
