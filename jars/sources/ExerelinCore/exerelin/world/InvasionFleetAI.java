@@ -55,7 +55,7 @@ public class InvasionFleetAI implements EveryFrameScript
             if(assignment.getAssignment() == FleetAssignment.ORBIT_PASSIVE && Misc.getDistance(data.target.getLocationInHyperspace(), data.fleet.getLocationInHyperspace()) < 300)
             {
                 fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, 3f);
-                log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " orbiting target");
+                //log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " orbiting target");
             }
             // invade
             else if(assignment.getAssignment() == FleetAssignment.HOLD && Misc.getDistance(data.target.getLocationInHyperspace(), data.fleet.getLocationInHyperspace()) < 300 )
@@ -73,7 +73,7 @@ public class InvasionFleetAI implements EveryFrameScript
             StarSystemAPI system = market.getStarSystem();
             if (system != null)
             {
-                log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " en route to target");
+                //log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " en route to target");
                 if (system != this.fleet.getContainingLocation()) {
                     this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, "travelling to the " + system.getBaseName() + " star system");
                 }

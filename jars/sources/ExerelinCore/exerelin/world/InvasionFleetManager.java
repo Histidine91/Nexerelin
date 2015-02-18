@@ -42,7 +42,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         super(true);
     
         float interval = Global.getSettings().getFloat("averagePatrolSpawnInterval");
-        interval = 2;   // debug
+        //interval = 2;   // debug
         this.tracker = new IntervalUtil(interval * 0.75F, interval * 1.25F);
         this.maxFleets = 15;
     }
@@ -189,7 +189,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         
         InvasionFleetAI ai = new InvasionFleetAI(fleet, data);
         fleet.addScript(ai);
-        log.info("\tSpawned" + fleet.getNameWithFaction() + "of size " + maxFP);
+        log.info("\tSpawned " + fleet.getNameWithFaction() + "of size " + maxFP);
     }
   
     @Override
@@ -199,8 +199,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     
         this.tracker.advance(days);
         if (!this.tracker.intervalElapsed()) {
-        return;
-    }
+            return;
+        }
         List<InvasionFleetData> remove = new LinkedList();
         for (InvasionFleetData data : this.activeFleets) {
             if ((data.fleet.getContainingLocation() == null) || (!data.fleet.getContainingLocation().getFleets().contains(data.fleet)) || (!data.fleet.isAlive())) {
