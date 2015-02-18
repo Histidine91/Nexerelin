@@ -23,6 +23,8 @@ public class ExerelinFactionConfig
     public String preferredStarLight = "";
 
     public String[] stationNameSuffixes = new String[]{"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge"};
+    
+    public Boolean isPirateNeutral = false;
 
     public double crewExpereinceLevelIncreaseChance = 0.0;
     public double baseFleetCostMultiplier = 1.0;
@@ -86,6 +88,7 @@ public class ExerelinFactionConfig
             uniqueModClassName = settings.getString("uniqueModClassName");
             factionNiceName = settings.getString("factionNiceName");
             playableFaction = settings.getBoolean("playableFaction");
+            isPirateNeutral = settings.getBoolean("isPirateNeutral");
 
             stationInteriorIllustrationKeys = JSONArrayToStringArray(settings.getJSONArray("stationInteriorIllustrationKeys"));
 

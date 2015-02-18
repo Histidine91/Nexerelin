@@ -13,6 +13,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.events.EventPirateFleetSpawn;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinMessageManager;
 import exerelin.utilities.ExerelinUtilsMessaging;
 
@@ -153,18 +154,17 @@ public class Exerelin //implements SectorGeneratorPlugin
 		hegemony.setRelationship("sindrian_diktat", RepLevel.SUSPICIOUS);
 		hegemony.setRelationship("luddic_church", RepLevel.FAVORABLE);
 	
-                List factions = sector.getAllFactions();
-                
-                // pirates are hostile to everyone
-		// TODO: some factions (like Mayorate) should not be hostile with pirates
+		List factions = sector.getAllFactions();
+		 
+		// pirates are hostile to everyone, except some factions like Mayorate
 		for (int i=1; i<factions.size(); i++)
 		{
 			FactionAPI faction = (FactionAPI)(factions.get(i));
 			String factionId = faction.getId();
-			if (!faction.isNeutralFaction() && !factionId.equals("pirates"))
+			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+			if ((factionConfig== null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !factionId.equals("pirates"))
 			{
 				pirates.setRelationship(factionId, RepLevel.HOSTILE);
-				faction.setRelationship("pirates", RepLevel.HOSTILE);
 			}
 		}
 	
@@ -176,12 +176,10 @@ public class Exerelin //implements SectorGeneratorPlugin
 			{
 				float relationship = selectedFaction.getRelationship(faction.getId());
 				player.setRelationship(faction.getId(), relationship);
-				faction.setRelationship("player", relationship);
 			}
 		}
 		
 		player.setRelationship(selectedFactionId, RepLevel.FRIENDLY);
-		selectedFaction.setRelationship("player", RepLevel.FRIENDLY);
  
 		// set player start location at the largest faction market with a military base
 		/*
@@ -207,6 +205,8 @@ public class Exerelin //implements SectorGeneratorPlugin
 		{
 		}
 		*/
+		
+		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
 	}
 
 	private void initTraderSpawns(SectorAPI sector)
