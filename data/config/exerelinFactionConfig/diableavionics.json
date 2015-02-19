@@ -41,4 +41,11 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+    
+    "freighterVariants":["buffalo_Standard"], # String array
+    "tankerVariants":["phaeton_Standard"], # String array
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "superFreighterVariants":["atlas_Standard"], # String array
 }

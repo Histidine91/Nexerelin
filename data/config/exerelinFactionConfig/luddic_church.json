@@ -1,6 +1,6 @@
 {
     "uniqueModClassName":"", # String
-    "factionNiceName":"Hegemony", # String
+    "factionNiceName":"Luddic Church", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
@@ -40,7 +40,7 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
-    "factionsDisliked":["interstellarimperium","tritachyon"], # String array
+    "factionsDisliked":["tritachyon"], # String array
 
     "freighterVariants":["tarsus_Standard", "mule_Standard"], # String array
     "tankerVariants":["dram_Light"], # String array

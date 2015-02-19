@@ -44,7 +44,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         float interval = Global.getSettings().getFloat("averagePatrolSpawnInterval");
         //interval = 2;   // debug
         this.tracker = new IntervalUtil(interval * 0.75F, interval * 1.25F);
-        this.maxFleets = 15;
+        this.maxFleets = 20;
     }
   
     public void generateInvasionFleet()

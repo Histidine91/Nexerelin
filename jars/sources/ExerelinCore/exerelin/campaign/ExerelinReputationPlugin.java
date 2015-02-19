@@ -30,7 +30,6 @@ public class ExerelinReputationPlugin extends CoreReputationPlugin
 		if (faction != playerFaction && faction != playerAlignedFaction)
 		{
 			float relationship = playerFaction.getRelationship(faction.getId());
-			playerAlignedFaction.setRelationship(faction.getId(), relationship);
 			faction.setRelationship(playerAlignedFactionId, relationship);
 		}
 	}

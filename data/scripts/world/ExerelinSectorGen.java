@@ -24,14 +24,23 @@ import exerelin.*;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.world.InvasionFleetManager;
+import exerelin.campaign.DiplomacyManager;
+import java.io.IOException;
+import java.util.ArrayList;
+import org.apache.log4j.Level;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @SuppressWarnings("unchecked")
 public class ExerelinSectorGen implements SectorGeneratorPlugin
 {
-	private static final String[] possibleSystemNames = {"Exerelin", "Askar", "Garil", "Yaerol", "Plagris", "Marot", "Caxort", "Laret", "Narbil", "Karit",
+	// NOTE: system names and planet names are overriden by planetNames.json
+	private static final String PLANET_NAMES_FILE = "data/config/planetNames.json";
+	private static String[] possibleSystemNames = {"Exerelin", "Askar", "Garil", "Yaerol", "Plagris", "Marot", "Caxort", "Laret", "Narbil", "Karit",
 		"Raestal", "Bemortis", "Xanador", "Tralor", "Exoral", "Oldat", "Pirata", "Zamaror", "Servator", "Bavartis", "Valore", "Charbor", "Dresnen",
 		"Firort", "Haidu", "Jira", "Wesmon", "Uxor"};
-	private static final String[] possiblePlanetNames = new String[] {"Baresh", "Zaril", "Vardu", "Drewler", "Trilar", "Polres", "Laret", "Erilatir",
+	private static String[] possiblePlanetNames = new String[] {"Baresh", "Zaril", "Vardu", "Drewler", "Trilar", "Polres", "Laret", "Erilatir",
 		"Nambor", "Zat", "Raqueler", "Garret", "Carashil", "Qwerty", "Azerty", "Tyrian", "Savarra", "Torm", "Gyges", "Camanis", "Ixmucane", "Yar", "Tyrel",
 		"Tywin", "Arya", "Sword", "Centuri", "Heaven", "Hell", "Sanctuary", "Hyperion", "Zaphod", "Vagar", "Green", "Blond", "Gabrielle", "Masset",
 		"Effecer", "Gunsa", "Patiota", "Rayma", "Origea", "Litsoa", "Bimo", "Plasert", "Pizzart", "Shaper", "Coruscent", "Hoth", "Gibraltar", "Aurora",
@@ -39,6 +48,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"Rutherford", "Maxwell", "Bohr", "Pauli", "Curie", "Meitner", "Heisenberg", "Feynman"};
 	private static final String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
 		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
+
 	
 	private final List possibleSystemNamesList = new LinkedList(Arrays.asList(possibleSystemNames));
 	private final List possiblePlanetNamesList = new LinkedList(Arrays.asList(possiblePlanetNames));
@@ -78,12 +88,49 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		CommodityOnMarketAPI commodity = market.getCommodityData(commodityID);
 		float demand = commodity.getDemand().getDemandValue();
 		float amountToAdd = demand*mult;
-		CargoAPI cargo = market.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
+		CargoAPI cargoOpen = market.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
+		CargoAPI cargoBlack = market.getSubmarket(Submarkets.SUBMARKET_BLACK).getCargo();
+		CargoAPI cargoMilitary = null;
+		if (market.getSubmarket(Submarkets.GENERIC_MILITARY) != null)
+			cargoMilitary = market.getSubmarket(Submarkets.GENERIC_MILITARY).getCargo();
 		commodity.addToStockpile(amountToAdd);
 		commodity.addToAverageStockpile(amountToAdd);
-		cargo.addCommodity(commodityID, amountToAdd * 0.15f);
+		if(!market.isIllegal(commodity))
+			cargoOpen.addCommodity(commodityID, amountToAdd * 0.15f);
+		else if (commodityID.equals("hand_weapons") && cargoMilitary != null)
+		{
+			cargoMilitary.addCommodity(commodityID, amountToAdd * 0.1f);
+			cargoBlack.addCommodity(commodityID, amountToAdd * 0.05f);
+		}
+		else
+			cargoBlack.addCommodity(commodityID, amountToAdd * 0.1f);
 		//log.info("Adding " + amount + " " + commodityID + " to " + market.getName());
 	}
+		
+		private void pickEntityInteractionImage(SectorEntityToken entity, MarketAPI market, boolean isStation)
+		{
+			List allowedImages = new ArrayList();
+			allowedImages.add(new String[]{"illustrations", "cargo_loading"} );
+			allowedImages.add(new String[]{"illustrations", "hound_hangar"} );
+			allowedImages.add(new String[]{"illustrations", "space_bar"} );
+			
+			int size = market.getSize();
+			
+			if(market.hasCondition("urbanized_polity") || size >= 4)
+				allowedImages.add(new String[]{"illustrations", "city_from_above"} );
+			if(size >= 4)
+				allowedImages.add(new String[]{"illustrations", "industrial_megafacility"} );
+			if(isStation && size >= 3)
+				allowedImages.add(new String[]{"illustrations", "jangala_station"} );
+			if(entity.getFaction().getId() == "pirates")
+				allowedImages.add(new String[]{"illustrations", "pirate_station"} );
+			if(!isStation && size <=3)
+				allowedImages.add(new String[]{"illustrations", "vacuum_colony"} );
+			
+			int index = ExerelinUtils.getRandomInRange(0,allowedImages.size()-1);
+			String[] illustration = (String[])allowedImages.get(index);
+			entity.setInteractionImage(illustration[0], illustration[1]);
+		}
 	
 	private MarketAPI addMarketToEntity(int i, SectorEntityToken entity, String owningFactionId, String planetType, boolean isStation)
 	{
@@ -220,7 +267,24 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	public void generate(SectorAPI sector)
 	{
 		log.info("Starting sector generation...");
+		// load planet/star names from config
 		factionIds = ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector());
+		try {
+			JSONObject planetConfig = Global.getSettings().loadJSON(PLANET_NAMES_FILE);
+			JSONArray systemNames = planetConfig.getJSONArray("stars");
+			possibleSystemNames = new String[systemNames.length()];
+			for (int i = 0; i < systemNames.length(); i++)
+				possibleSystemNames[i] = systemNames.getString(i);
+			JSONArray planetNames = planetConfig.getJSONArray("planets");
+			possiblePlanetNames = new String[planetNames.length()];
+			for (int i = 0; i < planetNames.length(); i++)
+				possiblePlanetNames[i] = planetNames.getString(i);
+		} catch (JSONException ex) {
+			Global.getLogger(ExerelinSectorGen.class).log(Level.ERROR, ex);
+		} catch (IOException ex) {
+			Global.getLogger(ExerelinSectorGen.class).log(Level.ERROR, ex);
+		}
+		
 		ExerelinSetupData.resetInstance();
 		// build systems
 		for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
@@ -236,6 +300,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		sector.addScript(new InvasionFleetManager());
+		sector.addScript(new DiplomacyManager());
 		
 		log.info("Finished sector generation");
 	}
@@ -489,6 +554,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				String owningFactionId = getRandomFaction();
 				newPlanet.setFaction(owningFactionId);
 				addMarketToEntity(i, newPlanet, owningFactionId, planetType, false);
+				pickEntityInteractionImage(newPlanet, newPlanet.getMarket(), true);
 			}
 		}
 
@@ -625,6 +691,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				SectorEntityToken newStation = system.addCustomEntity(id, name, image, owningFactionId);
 				newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
 				addMarketToEntity(-1, newStation, owningFactionId, "", true);
+				pickEntityInteractionImage(newStation, newStation.getMarket(), true);
 			}
 			else	// append a station to an existing inhabited planet
 			{
@@ -635,7 +702,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				existingMarket.addCondition("exerelin_recycling_plant");
 				newStation.setMarket(existingMarket);
 				existingMarket.getConnectedEntities().add(newStation);
+				pickEntityInteractionImage(newStation, existingMarket, true);
 			}
+			
 			k = k + 1;
 		}
 

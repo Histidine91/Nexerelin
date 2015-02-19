@@ -5,5 +5,11 @@
 	"exerelin_market_attacked":{
 		"script":"exerelin.campaign.events.MarketAttackedEvent",
 		"image":"graphics/icons/markets/recent_unrest.png",
+	},
+	"exerelin_diplomacy_positive":{
+		"script":"exerelin.campaign.events.DiplomacyEvent"
+	},
+	"exerelin_diplomacy_negative":{
+		"script":"exerelin.campaign.events.DiplomacyEvent"
 	}
 }

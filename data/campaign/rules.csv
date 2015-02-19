@@ -15,11 +15,7 @@ Exerelin is essentially a 4X game set in a corner of the Starsector universe. Fa
 
 Exerelin is compatible with a large number of community made faction mods, which you can add for a more varied gameplay experience.",exerelinNGCIntroNextPage:Next,
 ExerelinNGCIntro2,ExerelinNGCIntroPage,"$introPage == 2.0
-$isInIntro",,"Your actions will gain/lose you influence with the factions in the Sector.
-
-The higher your influence with a faction, the greater access to their support and technology you will have.
-
-Although you can choose to go your own way, the more advanced features are only available while part of a faction.","exerelinNGCIntroNextPage:Next
+$isInIntro",,"Your actions will gain/lose you influence with the factions in the Sector .The higher your influence with a faction, the greater access to their support and technology you will have.","exerelinNGCIntroNextPage:Next
 exerelinNGCIntroPrevPage:Previous",
 ExerelinNGCIntro3,ExerelinNGCIntroPage,"$introPage == 3.0
 $isInIntro",,Have fun and please leave any feedback on the Starsector forums :),"exerelinNGCIntroEnd:Start playing
@@ -29,16 +25,37 @@ FireAll ExerelinNGCStep1",,,
 ,,,,,,
 ExerelinNewGameChoicesDev,ExerelinNGCStep1,$global.isDevMode,,,100:exerelinNGCDevStart:>>(dev) quick start,
 ExerelinNGCJoin,ExerelinNGCStep1,,FireAll ExerelinNGCListFactions,Which faction would you like to join?,,
+#ExerelinNGCOptions,ExerelinNGCStep1,,,,10:exerelinNGCOptions:Options,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
 ExerelinNGCFactionsMain,ExerelinNGCListFactions,,,,"exerelinNGCJoinHegemony:Hegemony
 exerelinNGCJoinTriTachyon:Tri-Tachyon
 exerelinNGCJoinSindrianDiktat:Sindrian Diktat
 exerelinNGCJoinLuddicChurch:Luddic Church
 exerelinNGCJoinPirate:Pirates",
-ExerelinNGCModFactionsAN,ExerelinNGCListFactions,,,,exerelinNGCViewModFactionsAN:Mod factions (A-N),Should check if factions are actually there
-ExerelinNGCViewModFactionsAN,NewGameOptionSelected,$option == exerelinNGCViewModFactionsAN,FireAll ExerelinNGCListFactionsAN,,,
-ExerelinNGCListBlackrock,ExerelinNGCListFactionsAN,NGCDoesFactionExist blackrock_driveyards,,,exerelinNGCJoinBlackrock:Blackrock,
-ExerelinNGCListDiableAvionics,ExerelinNGCListFactionsAN,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
-ExerelinNGCListModFactionsANBack,ExerelinNGCListFactionsAN,,,,20:exerelinNGCIntroEnd:Back,
+ExerelinNGCModFactions1,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions1:Mod factions (A-L),Should check if factions are actually there
+ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModFactions1,FireAll ExerelinNGCListFactions1,,,
+ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (M-Z),ditto
+ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModFactions2,FireAll ExerelinNGCListFactions2,,,
+,,,,,,
+ExerelinNGCListASPSyndicate,ExerelinNGCListFactions1,NGCDoesFactionExist syndicate_asp,,,exerelinNGCJoinASPSyndicate:ASP Syndicate,
+ExerelinNGCListBlackrock,ExerelinNGCListFactions1,NGCDoesFactionExist blackrock_driveyards,,,exerelinNGCJoinBlackrock:Blackrock,
+ExerelinNGCListCitadel,ExerelinNGCListFactions1,NGCDoesFactionExist citadeldefenders,,,exerelinNGCJoinCitadel:Citadel,
+ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
+#ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions1,NGCDoesFactionExist interstellarimperium,,,exerelinNGCJoinInterstellarImperium:Interstellar Imperium,
+ExerelinNGCListJunkPirates,ExerelinNGCListFactions1,NGCDoesFactionExist junk_pirates,,,exerelinNGCJoinJunkPirates:Junk Pirates,
+#ExerelinNGCListTemplars,ExerelinNGCListFactions1,NGCDoesFactionExist templars,,,exerelinNGCJoinTemplars:Knights Templar,
+ExerelinNGCListModFactions1Back,ExerelinNGCListFactions1,,,,20:exerelinNGCIntroEnd:Back,
+,,,,,,
+ExerelinNGCListPACK,ExerelinNGCListFactions2,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:PACK,
+ExerelinNGCListMayorate,ExerelinNGCListFactions2,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
+ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions2,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
+#ExerelinNGCListSCY,ExerelinNGCListFactions2,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY,
+ExerelinNGCListShadowyards,ExerelinNGCListFactions2,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
+ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCIntroEnd:Back,
+,,,,,,
 ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""independent""
 NGCAddShip ""tempest_Starting""
 NGCAddCargo RESOURCES elite_crew 20
@@ -52,41 +69,77 @@ NGCAddAptitudePoints 10
 NGCSetStartingLocation Exerelin -2700 3250
 NGCDone",,,
 ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == exerelinNGCJoinHegemony,"NGCSetPlayerFaction ""hegemony""
-NGCAddShip ""lasher_Starting""
+NGCAddShipAndComplement ""lasher_Starting""
 AddText ""Added Lasher-class frigate"" textFriendColor
 FireBest ExerelinNGCStep2",,,
 ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == exerelinNGCJoinSindrianDiktat,"NGCSetPlayerFaction ""sindrian_diktat""
-NGCAddShip ""brawler_Elite""
-AddText ""Added Brawler-class frigate"" textFriendColor
+NGCAddShipAndComplement ""brawler_Elite""
+AddText ""Added Brawler-class gunship"" textFriendColor
 FireBest ExerelinNGCStep2",,,
 ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == exerelinNGCJoinTriTachyon,"NGCSetPlayerFaction ""tritachyon""
-NGCAddShip ""wolf_Starting""
+NGCAddShipAndComplement ""wolf_Starting""
 AddText ""Added Wolf-class frigate"" textFriendColor
 FireBest ExerelinNGCStep2",,,
 ExerelinNGCJoinLuddicChurch,NewGameOptionSelected,$option == exerelinNGCJoinChurch,"NGCSetPlayerFaction ""luddic_church""
-NGCAddShip ""vigilance_Starting""
+NGCAddShipAndComplement ""vigilance_Starting""
 AddText ""Added Vigilance-class frigate"" textFriendColor
 FireBest ExerelinNGCStep2",,,
 ExerelinNGCJoinPirate,NewGameOptionSelected,$option == exerelinNGCJoinPirate,"NGCSetPlayerFaction ""pirates""
-NGCAddShip ""cerberus_Starting""
+NGCAddShipAndComplement ""cerberus_Starting""
 AddText ""Added Cerberus-class frigate"" textFriendColor
 FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinASPSyndicate,NewGameOptionSelected,$option == exerelinNGCJoinASPSyndicate,"NGCSetPlayerFaction ""syndicate_asp""
+NGCAddShipAndComplement ""syndicate_asp_diamondback_Standard""
+AddText ""Added Diamondback-class frigate"" textFriendColor
+FireBest ExerelinNGCStep2",,,
 ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == exerelinNGCJoinBlackrock,"NGCSetPlayerFaction ""blackrock_driveyards""
-NGCAddShip ""brdy_silverfish_standard""
-AddText ""Added Silverfish-class frigate"" textFriendColor
+NGCAddShipAndComplement ""brdy_mantis_attack""
+AddText ""Added Mantis-class frigate"" textFriendColor
+FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinCitadel,NewGameOptionSelected,$option == exerelinNGCJoinCitadel,"NGCSetPlayerFaction ""citadeldefenders""
+NGCAddShipAndComplement ""Fox_Frigate_standard""
+AddText ""Added Aural-class skirmisher"" textFriendColor
 FireBest ExerelinNGCStep2",,,
 ExerelinNGCJoinDiableAvionics,NewGameOptionSelected,$option == exerelinNGCJoinDiableAvionics,"NGCSetPlayerFaction ""diableavionics""
-NGCAddShip ""diableavionics_vapor_standard""
+NGCAddShipAndComplement ""diableavionics_vapor_standard""
 AddText ""Added Vapor-class frigate"" textFriendColor
 FireBest ExerelinNGCStep2",,,
+#ExerelinNGCJoinInterstellarImperium,NewGameOptionSelected,$option == exerelinNGCJoinInterstellarImperium,"NGCSetPlayerFaction ""interstellarimperium""
+NGCAddShipAndComplement ""ii_decurion_sta""
+AddText ""Added Decurion-class frigate"" textFriendColor
+FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinJunkPirates,NewGameOptionSelected,$option == exerelinNGCJoinJunkPirates,"NGCSetPlayerFaction ""junk_pirates""
+NGCAddShipAndComplement ""junk_pirates_clam_Standard""
+AddText ""Added Clam-class frigate"" textFriendColor
+FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinTemplars,NewGameOptionSelected,$option == exerelinNGCJoinTemplars,"NGCSetPlayerFaction ""templars""
+NGCAddShipAndComplement ""tem_martyr_def""
+AddText ""Added Matyr-class corvette"" textFriendColor
+FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinMayorate,NewGameOptionSelected,$option == exerelinNGCJoinMayorate,"NGCSetPlayerFaction ""mayorate""
+NGCAddShipAndComplement ""ilk_lilith_assault""
+AddText ""Added Lilith-class frigate"" textFriendColor
+FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinNeutrinoCorp,NewGameOptionSelected,$option == exerelinNGCJoinNeutrinoCorp,"NGCSetPlayerFaction ""neutrinocorp""
+NGCAddShipAndComplement ""neutrino_singularity_standard""
+AddText ""Added Singularity-class frigate"" textFriendColor
+FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinPACK,NewGameOptionSelected,$option == exerelinNGCJoinPACK,"NGCSetPlayerFaction ""pack""
+NGCAddShipAndComplement ""pack_wirefox_Standard""
+AddText ""Added Wirefox-class frigate"" textFriendColor
+FireBest ExerelinNGCStep2",,,
+#ExerelinNGCJoinSCY,NewGameOptionSelected,$option == exerelinNGCJoinSCY,"NGCSetPlayerFaction ""SCY""
+NGCAddShipAndComplement ""SCY_tisiphone_combat""
+AddText ""Added Tisiphone-class frigate"" textFriendColor
+FireBest ExerelinNGCStep2",,,
+ExerelinNGCJoinShadowyards,NewGameOptionSelected,$option == exerelinNGCJoinShadowyards,"NGCSetPlayerFaction ""shadow_industry""
+NGCAddShipAndComplement ""ms_enlil_Balanced""
+AddText ""Added Enlil-class gunship"" textFriendColor
+FireBest ExerelinNGCStep2",,,
 ,,,,,,
-,,,,,,
-ExerelinNGCFinalize,ExerelinNGCStep2,,"NGCAddCargo RESOURCES regular_crew 30
-NGCAddCargo RESOURCES supplies 20
-NGCAddCargo RESOURCES fuel 20
-AddText ""Added 30 crew"" textFriendColor
-AddText ""Added 20 supplies"" textFriendColor
-AddText ""Added 20 fuel"" textFriendColor",,exerelinNGCDone:Continue,
+ExerelinNGCFinalize,ExerelinNGCStep2,,"AddText ""Added $crewAdded crew"" textFriendColor
+AddText ""Added $suppliesAdded supplies"" textFriendColor
+AddText ""Added $suppliesAdded fuel"" textFriendColor",,exerelinNGCDone:Continue,
 ExerelinNGCDoneOptionDefault,NewGameOptionSelected,$option == exerelinNGCDone,"NGCAddCredits 10000
 NGCAddAptitudePoints 2
 NGCAddSkillPoints 6
@@ -103,12 +156,13 @@ ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpeci
 ExerelinMarketLeaveOption,ExerelinMarketSpecial,,,,5:exerelinMarketSpecialBack:Back,
 ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,FireAll PopulateOptions,,,
 ,,,,,,
-ExerelinMarketInvadeOption,ExerelinMarketSpecial,"$faction.id != $player.faction.id
+ExerelinMarketInvadeOption,ExerelinMarketSpecial,"$faction.id != $player.factionId
 HasMarines",SetEnabled exerelinInvasion true,,1:exerelinInvasion:Invade the planet/station,
-ExerelinMarketInvadeOptionNoMarines,ExerelinMarketSpecial,"$faction.id != $player.faction.id
+ExerelinMarketInvadeOptionNoMarines,ExerelinMarketSpecial,"$faction.id != $player.factionId
 !HasMarines","SetTooltip exerelinInvasion ""You have no marines!""
 SetEnabled exerelinInvasion false",,1:exerelinInvasion:Invade the planet/station,
-ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,PredictInvasionResults,Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,"exerelinInvasionProceed:Proceed
+ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
+PredictInvasionResults",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,"exerelinInvasionProceed:Proceed
 exerelinInvasionHelp:Consult a help file
 exerelinInvasionCancel:Cancel",
 ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,,"Base attacker strength = (marine strength + fleet DP/2) * 0.7 (average)
@@ -127,6 +181,7 @@ MakePlayerImmediatelyAttackable
 $player.invasionTarget = $id 1.01",,,
 ExerelinInvasionCancel,DialogOptionSelected,"$option == exerelinInvasionCancel
 $hasMarket","$menuState = main 0
+ShowDefaultVisual
 FireAll PopulateOptions",You decide not to attack $entityName.,,
 ExerelinInvasionLeave,DialogOptionSelected,"$option == exerelinInvasionLeave
 $hasMarket",DismissDialog,You decide not to continue the invasion.,,
@@ -139,10 +194,18 @@ ExerelinInvasionRoundComplete,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionRoundComplete score:100","ExecuteInvasionRound
 FireBest ExerelinInvasionResults
 AdjustRep $faction.id COMBAT_NORMAL",INVASION OUTCOME:,,
-ExerelinInvasionResultsComplete,ExerelinInvasionResults,$exerelinInvasionSuccessful,"unset $player.invasionTarget
+ExerelinInvasionResultsComplete,ExerelinInvasionResults,$exerelinInvasionSuccessful,"ShowVisual ""graphics/illustrations/facility_explosion.jpg""
+unset $player.invasionTarget
 FireAll PopulateOptions",You've successfully captured $entityName!,,
-ExerelinInvasionResultsIncomplete,ExerelinInvasionResults,!$exerelinInvasionSuccessful,unset $player.invasionTarget,You have not yet captured $entityName.,"exerelinInvasionStart:Attack again
+ExerelinInvasionResultsIncomplete,ExerelinInvasionResults,"!$exerelinInvasionSuccessful
+HasMarines","ShowVisual ""graphics/illustrations/hull_breach.jpg""
+unset $player.invasionTarget",You have not yet captured $entityName.,"exerelinInvasionStart:Attack again
 exerelinInvasionLeave:Leave",
+ExerelinInvasionResultsIncompleteNoMoreMarines,ExerelinInvasionResults,"!$exerelinInvasionSuccessful
+!HasMarines","ShowVisual ""graphics/illustrations/hull_breach.jpg""
+unset $player.invasionTarget","You have not yet captured $entityName.
+
+Your marine complement has been wiped out; you cannot continue the offensive.",exerelinInvasionLeave:Leave,
 ExerelinInvasionInterupted,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionInterrupted","unset $global.exerelinInvasionInterrupted
 unset $player.invasionTarget

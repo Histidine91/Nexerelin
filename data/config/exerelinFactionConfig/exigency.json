@@ -40,7 +40,7 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "factionsDisliked":["exipirated"], # String array
 
     "freighterVariants":["buffalo_Standard"], # String array
     "tankerVariants":["phaeton_Standard"], # String array

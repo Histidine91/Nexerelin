@@ -1,8 +1,7 @@
 {
-    "uniqueModClassName":"data.scripts.MayorateModPlugin", # String
-    "factionNiceName":"Mayorate", # String
+    "uniqueModClassName":"", # String
+    "factionNiceName":"Knights Templar", # String
     "playableFaction":"true", # Boolean
-    "isPirateNeutral":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
@@ -21,16 +20,16 @@
     "rebelFleetSuffix":"Splinter Group", # String
 
     "smallAttackFleetName":"Scout", # String
-    "mediumAttackFleetName":"Task Force", # String
-    "largeAttackFleetName":"Battle Group", # String
+    "mediumAttackFleetName":"Invader Fleet", # String
+    "largeAttackFleetName":"Raiders", # String
 
     "smallDefenceFleetName":"Picket Defense", # String
-    "mediumDefenceFleetName":"Security Squadron", # String
-    "largeDefenceFleetName":"Warders", # String
+    "mediumDefenceFleetName":"Shield Fleet", # String
+    "largeDefenceFleetName":"Security Detachment", # String
 
-    "smallPatrolFleetName":"Lookout", # String
-    "mediumPatrolFleetName":"Patrol Detachment", # String
-    "largePatrolFleetName":"Enforcement Fleet", # String
+    "smallPatrolFleetName":"Lookout Fleet", # String
+    "mediumPatrolFleetName":"Warden Patrol", # String
+    "largePatrolFleetName":"Flotilla", # String
 
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
@@ -41,9 +40,9 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
-    "factionsDisliked":["luddic_church"], # String array
+    "factionsDisliked":[], # String array
 
-    "freighterVariants":["ilk_safir_standard"], # String array
+    "freighterVariants":["buffalo_Standard"], # String array
     "tankerVariants":["phaeton_Standard"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 

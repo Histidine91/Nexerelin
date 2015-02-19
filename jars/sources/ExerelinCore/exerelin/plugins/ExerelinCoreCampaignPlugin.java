@@ -30,5 +30,6 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		String associatedFactionId = PlayerFactionStore.getPlayerFactionId();
 		FactionAPI associatedFaction = Global.getSector().getFaction(associatedFactionId);
 		memory.set("$faction", associatedFaction);
+		memory.set("$factionId", associatedFactionId);
 	}
 }

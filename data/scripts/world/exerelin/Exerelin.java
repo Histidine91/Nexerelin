@@ -132,32 +132,33 @@ public class Exerelin //implements SectorGeneratorPlugin
 		log.info("Selected faction is " + selectedFaction + " | " + selectedFactionId);
 		
 		FactionAPI pirates = sector.getFaction("pirates");
-		FactionAPI sindrian_diktat = sector.getFaction("sindrian_diktat");
-		FactionAPI tritachyon = sector.getFaction("tritachyon");
-		FactionAPI luddic_church = sector.getFaction("luddic_church");
-		FactionAPI hegemony = sector.getFaction("hegemony");
-		FactionAPI independent = sector.getFaction("independent");
-	
-		sindrian_diktat.setRelationship("luddic_church", RepLevel.HOSTILE);
-		sindrian_diktat.setRelationship("hegemony", RepLevel.SUSPICIOUS);
-		sindrian_diktat.setRelationship("tritachyon", RepLevel.FRIENDLY);
-	
-		tritachyon.setRelationship("hegemony", RepLevel.HOSTILE);
-		tritachyon.setRelationship("luddic_church", RepLevel.SUSPICIOUS);
-		tritachyon.setRelationship("sindrian_diktat", RepLevel.COOPERATIVE);
-	
-		luddic_church.setRelationship("sindrian_diktat", RepLevel.HOSTILE);
-		luddic_church.setRelationship("tritachyon", RepLevel.SUSPICIOUS);
-		luddic_church.setRelationship("hegemony", RepLevel.FRIENDLY);
-	
-		hegemony.setRelationship("tritachyon", RepLevel.HOSTILE);
-		hegemony.setRelationship("sindrian_diktat", RepLevel.SUSPICIOUS);
-		hegemony.setRelationship("luddic_church", RepLevel.FAVORABLE);
-	
+			
 		List factions = sector.getAllFactions();
-		 
+		
+		// start hostile with hated factions
+		for (int i=0; i<factions.size(); i++)
+		{
+			FactionAPI faction = (FactionAPI)(factions.get(i));
+			String factionId = faction.getId();
+			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+			log.info("Testing config for " + factionId + ": " + factionConfig);
+			if ((factionConfig != null && factionConfig.factionsDisliked.length > 0))
+			{
+				for (int j=0; j<factionConfig.factionsDisliked.length; j++)
+				{
+					String dislikedFactionId = factionConfig.factionsDisliked[j];
+					FactionAPI dislikedFaction = sector.getFaction(dislikedFactionId);
+					if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
+					{
+						log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
+						faction.setRelationship(dislikedFactionId, RepLevel.HOSTILE);
+					}
+				}
+			}
+		}
+				
 		// pirates are hostile to everyone, except some factions like Mayorate
-		for (int i=1; i<factions.size(); i++)
+		for (int i=0; i<factions.size(); i++)
 		{
 			FactionAPI faction = (FactionAPI)(factions.get(i));
 			String factionId = faction.getId();
@@ -167,9 +168,24 @@ public class Exerelin //implements SectorGeneratorPlugin
 				pirates.setRelationship(factionId, RepLevel.HOSTILE);
 			}
 		}
+		
+		// Templars just plain hate everyone
+		FactionAPI templars = sector.getFaction("templars");
+		if (templars != null)
+		{
+			for (int i=0; i<factions.size(); i++)
+			{
+				FactionAPI faction = (FactionAPI)(factions.get(i));
+				String factionId = faction.getId();
+				if (!faction.isNeutralFaction())
+				{
+					templars.setRelationship(factionId, RepLevel.HOSTILE);
+				}
+			}
+		}
 	
 		// set player relations based on selected faction
-		for (int i=1; i<factions.size(); i++)
+		for (int i=0; i<factions.size(); i++)
 		{
 			FactionAPI faction = (FactionAPI)(factions.get(i));
 			if (faction != player && faction != selectedFaction)

@@ -11,14 +11,18 @@ import java.util.Arrays;
 
 
 public class NGCDoesFactionExist extends BaseCommandPlugin {
-	 
+	
+	static List<String> factions = null;
+	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		String factionId = params.get(0).getString(memoryMap);
-                // anyone think this is a bit inefficient? ...meh
-                ExerelinSetupData data = ExerelinSetupData.getInstance();   
-                List<String> factions = Arrays.asList(data.getPossibleFactions(false));
-                return factions.contains(factionId);
+		if(factions == null)
+		{
+			ExerelinSetupData data = ExerelinSetupData.getInstance();   
+			factions = Arrays.asList(data.getPossibleFactions(false));
+		}
+		return factions.contains(factionId);
 	}
 }
 

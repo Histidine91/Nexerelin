@@ -1,0 +1,158 @@
+{
+	"eventFrequency":10,	#10
+
+	"events":[
+		{
+			"name":"Official Aid",
+			"stage":"official_aid",
+			"minRepLevelToOccur":"inhospitable",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+			"allowPirates":true
+		},
+		{
+			"name":"Philanthropy",
+			"stage":"philanthropy",
+			"minRepLevelToOccur":"inhospitable",
+			"minRepChange":0.05,
+			"maxRepChange":0.1
+		},
+		{
+			"name":"Cultural Boom",
+			"stage":"culture_boom",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":0.05,
+			"maxRepChange":0.1
+		},
+		{
+			"name":"Cooperation Deal",
+			"stage":"cooperation_deal",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+			"allowPirates":true
+		},
+		{
+			"name":"Celebrity Wedding",
+			"stage":"celebrity_wedding",
+			"minRepLevelToOccur":"favorable",
+			"minRepChange":0.05,
+			"maxRepChange":0.1,
+			"chance":0.3	# because realistically, how often would this happen?
+		},
+		{
+			"name":"Helped Foil Terror Plot",
+			"stage":"helped_foil_terror",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":0.1,
+			"maxRepChange":0.2,
+			"allowPirates":true
+		},
+		{
+			"name":"Star-crossed Lovers",	# love conquers all
+			"stage":"starcrossed",
+			"maxRepLevelToOccur":"inhospitable",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+			#"allowPirates":true,
+			"chance":0.3
+		},		
+		{
+			"name":"Diplomatic Blunder",
+			"stage":"diplomatic_blunder",
+			"minRepLevelToOccur":"inhospitable",
+			"minRepChange":-0.1,
+			"maxRepChange":-0.05,
+			"repLimit":"inhospitable"
+		},
+		{
+			"name":"Failed Deal",
+			"stage":"failed_deal",
+			"minRepLevelToOccur":"inhospitable",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"inhospitable",
+			"allowPirates":true
+		},
+		{
+			"name":"Celebrity Wedding Jilted",
+			"stage":"celebrity_wedding_jilted",
+			"minRepLevelToOccur":"neutral",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"inhospitable",
+			"chance":0.3
+		},
+		{
+			"name":"Political Funding Uncovered",
+			"stage":"political_funding_uncovered",
+			"minRepLevelToOccur":"inhospitable",
+			"maxRepLevelToOccur":"favorable",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"hostile",
+			#"allowPirates":true
+		},
+		{
+			"name":"Xenophobia",
+			"stage":"xenophobia",
+			"minRepLevelToOccur":"hostile",
+			"maxRepLevelToOccur":"friendly",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"hostile"
+		},
+		{
+			"name":"Spy Ring Uncovered",
+			"stage":"spy_ring_uncovered",
+			"maxRepLevelToOccur":"welcoming",
+			"repEnsureAtBest":"favorable",
+			"minRepChange":-0.2,
+			"maxRepChange":-0.1,
+			"repLimit":"hostile"
+		},
+		{
+			"name":"Sabotage Uncovered",
+			"stage":"sabotage_uncovered",
+			"repEnsureAtBest":"inhospitable",
+			"maxRepLevelToOccur":"welcoming",
+			"minRepChange":-0.25,
+			"maxRepChange":-0.12,
+			"repLimit":"hostile",
+			#"allowPirates":true
+			#"chance":0,	# only happens through player action
+		},
+		{
+			"name":"Diplomat Crime Ring",
+			"stage":"diplomat_crimes",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":-0.2,
+			"maxRepChange":-0.1,
+			"repLimit":"inhospitable"
+		},
+		{
+			"name":"Privateering",
+			"stage":"privateering",
+			"minRepLevelToOccur":"inhospitable",
+			"maxRepLevelToOccur":"neutral",
+			"minRepChange":-0.3,
+			"maxRepChange":-0.2,
+			"repLimit":"hostile",
+			"chance":1.5
+		},
+		{
+			"name":"Shots Fired",
+			"stage":"shots_fired",
+			"minRepLevelToOccur":"inhospitable",
+			"maxRepLevelToOccur":"suspicious",
+			"repEnsureAtBest":"hostile",
+			"minRepChange":-0.3,
+			"maxRepChange":-0.2,
+			"repLimit":"hostile",
+			"allowPirates":true,
+			"chance":2	# help tip things over into outright violence
+		}
+	],
+	
+	"pirateFactions": [ "pirates", "exipirated", "junkpirates" ]
+}

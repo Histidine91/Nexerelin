@@ -1,5 +1,5 @@
 {
-    "uniqueModClassName":"data.scripts.world.JPSectorGen", # String
+    "uniqueModClassName":"data.scripts.JunkPiratesModPlugin", # String
     "factionNiceName":"Junk Pirates", # String
     "playableFaction":"true", # Boolean
     "isPirateNeutral":"true", # Boolean

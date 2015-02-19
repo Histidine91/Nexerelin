@@ -1,6 +1,6 @@
 {
     "uniqueModClassName":"", # String
-    "factionNiceName":"Hegemony", # String
+    "factionNiceName":"Pirates", # String
     "playableFaction":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
@@ -20,8 +20,8 @@
     "rebelFleetSuffix":"Traitors", # String
 
     "smallAttackFleetName":"Scout", # String
-    "mediumAttackFleetName":"Strike Force", # String
-    "largeAttackFleetName":"War Fleet", # String
+    "mediumAttackFleetName":"Raiders", # String
+    "largeAttackFleetName":"Armada", # String
 
     "smallDefenceFleetName":"Watch Fleet", # String
     "mediumDefenceFleetName":"Guard Fleet", # String
@@ -40,7 +40,7 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
-    "factionsDisliked":["interstellarimperium","tritachyon"], # String array
+    "factionsDisliked":[], # String array
 
     "freighterVariants":["tarsus_Standard", "mule_Standard"], # String array
     "tankerVariants":["dram_Light"], # String array

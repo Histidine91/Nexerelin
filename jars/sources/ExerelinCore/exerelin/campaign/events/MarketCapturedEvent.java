@@ -5,34 +5,41 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import java.util.HashMap;
+import java.util.List;
 
-/**
- * comment goes here
- */
 public class MarketCapturedEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(MarketCapturedEvent.class);
 	
-		private SectorEntityToken location;
-		private FactionAPI newOwner;
-		private FactionAPI oldOwner;
-		private boolean playerInvolved;
-		private Map<String, Object> params;
+	private static final int DAYS_TO_KEEP = 90;
 	
-		private boolean done;
+	private FactionAPI newOwner;
+	private FactionAPI oldOwner;
+	//private List<String> factionsToNotify;
+	private float repChangeStrength;
+	private boolean playerInvolved;
+	private Map<String, Object> params;
+	
+	private boolean done;
+	private boolean transmitted;
+	private float age;
 		
-        @Override
+	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
 		done = false;
-                //log.info("Capture event created");
+		transmitted = false;
+		age = 0;
+		//log.info("Capture event created");
 	}
 	
 	@Override
@@ -40,7 +47,9 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		params = (HashMap)param;
 		newOwner = (FactionAPI)params.get("newOwner");
 		oldOwner = (FactionAPI)params.get("oldOwner");
+		repChangeStrength = (Float)params.get("repChangeStrength");
 		playerInvolved = (Boolean)params.get("playerInvolved");
+		//factionsToNotify = (List<String>)params.get("factionsToNofify");
 		//log.info("Params newOwner: " + newOwner);
 		//log.info("Params oldOwner: " + oldOwner);
 		//log.info("Params playerInvolved: " + playerInvolved);
@@ -51,39 +60,60 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	{
 		if (done)
 			return;
-                
-                if (newOwner == oldOwner)
-                {
-                        done = true;
-                        return;
-                }
-                
-		String stage = "report";
-		MessagePriority priority = MessagePriority.SECTOR;
-		if (playerInvolved) 
+		
+		if (newOwner == oldOwner)
 		{
-			stage = "report_player";
-			//priority = MessagePriority.ENSURE_DELIVERY;
+			done = true;
+			return;
 		}
-		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
-                //log.info("Capture event reported");
-		done = true;
+		
+		age = age + Global.getSector().getClock().convertToDays(amount);
+		if (age > DAYS_TO_KEEP)
+		{
+			done = true;
+			return;
+		}
+		if (!transmitted)
+		{
+			String stage = "report";
+			MessagePriority priority = MessagePriority.SECTOR;
+			if (playerInvolved) 
+			{
+				stage = "report_player";
+				//priority = MessagePriority.ENSURE_DELIVERY;
+				priority = MessagePriority.DELIVER_IMMEDIATELY;
+			}
+			/*
+			Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
+					public void beforeDelivery(CommMessageAPI message) {
+					    if (playerInvolved)
+						for (String factionId : factionsToNotify)
+						    Global.getSector().adjustPlayerReputation(
+							new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.COMBAT_WITH_ENEMY, repChangeStrength),
+							factionId);
+					}
+				});
+			*/
+			Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
+			//log.info("Capture event reported");
+			transmitted = true;
+		}
 	}
 
 	@Override
 	public String getEventName() {
 		return (newOwner.getDisplayName() + " captures " + market.getName());
 	}
-        
-        @Override
-        public String getCurrentImage() {
-            return newOwner.getLogo();
-        }
+	
+	@Override
+	public String getCurrentImage() {
+		return newOwner.getLogo();
+	}
 
-        @Override
-        public String getCurrentMessageIcon() {
-            return newOwner.getLogo();
-        }
+	@Override
+	public String getCurrentMessageIcon() {
+		return newOwner.getLogo();
+	}
 		
 	@Override
 	public CampaignEventCategory getEventCategory() {
@@ -99,18 +129,18 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		return map;
 	}
 
-        @Override
+	@Override
 	public boolean isDone() {
-		return false;
+		return done;
 	}
 
 	@Override
 	public boolean allowMultipleOngoingForSameTarget() {
 		return true;
 	}
-        
-        @Override
-        public boolean showAllMessagesIfOngoing() {
-                return false;
-        }
+	
+	@Override
+	public boolean showAllMessagesIfOngoing() {
+		return false;
+	}
 }

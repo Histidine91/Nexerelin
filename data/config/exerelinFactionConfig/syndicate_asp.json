@@ -1,5 +1,5 @@
 {
-    "uniqueModClassName":"data.scripts.world.ASPSectorGen", # String
+    "uniqueModClassName":"data.scripts.JunkPiratesModPlugin", # String
     "factionNiceName":"ASP Syndicate", # String
     "playableFaction":"true", # Boolean
 
