@@ -13,6 +13,9 @@ import com.fs.starfarer.api.impl.campaign.fleets.CustomFleets;
 import com.fs.starfarer.api.impl.campaign.ids.Events;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.SectorManager;
+import exerelin.world.ResponseFleetManager;
 
 public class ExerelinLifecyclePlugin extends BaseModPlugin {
 
@@ -21,6 +24,14 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         // the token replacement generators don't get saved
         // add them on every game load
         Global.getSector().getRules().addTokenReplacementGenerator(new CoreRuleTokenReplacementGeneratorImpl());
+               
+        Global.getSector().addScript(SectorManager.create());
+        Global.getSector().addScript(DiplomacyManager.create());
+        Global.getSector().addScript(ResponseFleetManager.create());
+        
+        if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_salary")) {
+            Global.getSector().getEventManager().startEvent(null, "exerelin_faction_salary", null);
+        }
     }
 
     @Override
@@ -38,7 +49,7 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         //eventManager.startEvent(new CampaignEventTarget(jangala), Events.SYSTEM_BOUNTY, null);
 
 
-        WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<MarketAPI>();
+        WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
             if (market.getFactionId().equals(Factions.PIRATES)) {
                 continue;

@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 {
     private static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
     private static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
-    private static final float DEFENDER_STRENGTH_MARINE_MULT = 1.2f;
+    private static final float DEFENDER_STRENGTH_MARINE_MULT = 1.1f;
     
     public static Logger log = Global.getLogger(InvasionFleetManager.class);
     
@@ -47,6 +48,63 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         this.maxFleets = 20;
     }
   
+    public static InvasionFleetData spawnFleet(FactionAPI invader, MarketAPI originMarket, MarketAPI targetMarket, boolean noWait)
+    {
+        float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket);
+        float marketScalar = originMarket.getSize() * originMarket.getStabilityValue();
+        if (originMarket.hasCondition("military_base")) {
+            marketScalar += 20.0F;
+        }
+        if (originMarket.hasCondition("orbital_station")) {
+            marketScalar += 10.0F;
+        }
+        if (originMarket.hasCondition("spaceport")) {
+            marketScalar += 15.0F;
+        }
+        if (originMarket.hasCondition("headquarters")) {
+            marketScalar += 15.0F;
+        }
+        if (originMarket.hasCondition("regional_capital")) {
+            marketScalar += 10.0F;
+        }
+        float qf = originMarket.getShipQualityFactor();
+        int maxFP = (int)MathUtils.getRandomNumberInRange(marketScalar * 0.75F, MathUtils.getRandomNumberInRange(marketScalar * 1.5F, marketScalar * 2.5F));
+        
+        String name = "Invasion Fleet";
+        if (maxFP < 50) name = "Small " + name;
+        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(originMarket.getFactionId(), name, qf, maxFP);
+        
+        for (int i=0; i<defenderStrength/100; i++)
+        {
+            invader.pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, qf, fleet);
+        }
+        int marinesToSend = (int)(defenderStrength * DEFENDER_STRENGTH_MARINE_MULT);
+        fleet.getCargo().addMarines(marinesToSend);
+        
+        fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinInvasionFleet");
+        fleet.getMemoryWithoutUpdate().set("$maxFP", maxFP);
+        fleet.getMemoryWithoutUpdate().set("$originMarket", originMarket);
+        
+        SectorEntityToken entity = originMarket.getPrimaryEntity();
+        entity.getContainingLocation().addEntity(fleet);
+        fleet.setLocation(entity.getLocation().x, entity.getLocation().y);
+        
+        InvasionFleetData data = new InvasionFleetData(fleet);
+        data.startingFleetPoints = fleet.getFleetPoints();
+        data.sourceMarket = originMarket;
+        data.source = originMarket.getPrimaryEntity();
+        data.targetMarket = targetMarket;
+        data.target = targetMarket.getPrimaryEntity();
+        data.marineCount = marinesToSend;
+        data.noWait = noWait;
+        
+        InvasionFleetAI ai = new InvasionFleetAI(fleet, data);
+        fleet.addScript(ai);
+        log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
+        
+        return data;
+    }
+    
     public void generateInvasionFleet()
     {
         SectorAPI sector = Global.getSector();
@@ -57,18 +115,17 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
         float marineStockpile = 0;
         //log.info("Starting invasion fleet check");
+        
         // pick a faction to invade someone
         // FIXME: O^2 >:(
         for (FactionAPI faction: factions)
         {
             if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
-            for (FactionAPI otherFaction: factions)
+            List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, false);
+            for (String otherFaction: enemies)
             {
-                if (faction.isHostileTo(otherFaction))
-                {
-                    factionPicker.add(faction);
-                    break;
-                }
+                factionPicker.add(sector.getFaction(otherFaction));
+                break;
             }
         }
         FactionAPI invader = factionPicker.pick();
@@ -139,57 +196,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         //log.info("\tTarget: " + targetMarket.getName());
         
         // okay, assemble battlegroup
-        float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket);
-        float marketScalar = originMarket.getSize() * originMarket.getStabilityValue();
-        if (originMarket.hasCondition("military_base")) {
-            marketScalar += 20.0F;
-        }
-        if (originMarket.hasCondition("orbital_station")) {
-            marketScalar += 10.0F;
-        }
-        if (originMarket.hasCondition("spaceport")) {
-            marketScalar += 15.0F;
-        }
-        if (originMarket.hasCondition("headquarters")) {
-            marketScalar += 15.0F;
-        }
-        if (originMarket.hasCondition("regional_capital")) {
-            marketScalar += 10.0F;
-        }
-        float qf = originMarket.getShipQualityFactor();
-        int maxFP = (int)MathUtils.getRandomNumberInRange(marketScalar * 0.75F, MathUtils.getRandomNumberInRange(marketScalar * 2.0F, marketScalar * 4.0F));
-        
-        String name = "Invasion Fleet";
-        if (maxFP < 50) name = "Small " + name;
-        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(originMarket.getFactionId(), name, qf, maxFP);
-        
-        for (int i=0; i<defenderStrength/100; i++)
-        {
-            invader.pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, qf, fleet);
-        }
-        int marinesToSend = (int)(defenderStrength * DEFENDER_STRENGTH_MARINE_MULT);
-        fleet.getCargo().addMarines(marinesToSend);
-        
-        fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinInvasionFleet");
-        fleet.getMemoryWithoutUpdate().set("$maxFP", maxFP);
-        fleet.getMemoryWithoutUpdate().set("$originMarket", originMarket);
-        
-        SectorEntityToken entity = originMarket.getPrimaryEntity();
-        entity.getContainingLocation().addEntity(fleet);
-        fleet.setLocation(entity.getLocation().x, entity.getLocation().y);
-        
-        InvasionFleetData data = new InvasionFleetData(fleet);
-        data.startingFleetPoints = fleet.getFleetPoints();
-        data.sourceMarket = originMarket;
-        data.source = originMarket.getPrimaryEntity();
-        data.targetMarket = targetMarket;
-        data.target = targetMarket.getPrimaryEntity();
-        data.marineCount = marinesToSend;
+        InvasionFleetData data = spawnFleet(invader, originMarket, targetMarket, false);
         this.activeFleets.add(data);
-        
-        InvasionFleetAI ai = new InvasionFleetAI(fleet, data);
-        fleet.addScript(ai);
-        log.info("\tSpawned " + fleet.getNameWithFaction() + "of size " + maxFP);
     }
   
     @Override
@@ -249,6 +257,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         public MarketAPI targetMarket;
         public float startingFleetPoints = 0.0F;
         public int marineCount = 0;
+        public boolean noWait;
     
         public InvasionFleetData(CampaignFleetAPI fleet)
         {

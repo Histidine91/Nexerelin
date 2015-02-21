@@ -21,6 +21,7 @@ public class InvasionFleetAI implements EveryFrameScript
     private float daysTotal = 0.0F;
     private final CampaignFleetAPI fleet;
     private boolean orderedReturn = false;
+    private boolean responseFleetRequested = false;
   
     public InvasionFleetAI(CampaignFleetAPI fleet, InvasionFleetManager.InvasionFleetData data)
     {
@@ -29,6 +30,7 @@ public class InvasionFleetAI implements EveryFrameScript
         giveInitialAssignment();
     }
   
+    @Override
     public void advance(float amount)
     {
         float days = Global.getSector().getClock().convertToDays(amount);
@@ -52,13 +54,19 @@ public class InvasionFleetAI implements EveryFrameScript
             }
             if (orderedReturn)
                 return;
-            if(assignment.getAssignment() == FleetAssignment.ORBIT_PASSIVE && Misc.getDistance(data.target.getLocationInHyperspace(), data.fleet.getLocationInHyperspace()) < 300)
+            if(assignment.getAssignment() == FleetAssignment.ORBIT_PASSIVE && data.target.getContainingLocation() == data.fleet.getContainingLocation()
+                    && Misc.getDistance(data.target.getLocation(), data.fleet.getLocation()) < 600f)
             {
                 fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, 3f);
-                //log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " orbiting target");
+                if (!responseFleetRequested)
+                {
+                    ResponseFleetManager.requestResponseFleet(data.targetMarket, data.fleet);
+                    responseFleetRequested = true;
+                }
             }
             // invade
-            else if(assignment.getAssignment() == FleetAssignment.HOLD && Misc.getDistance(data.target.getLocationInHyperspace(), data.fleet.getLocationInHyperspace()) < 300 )
+            else if(assignment.getAssignment() == FleetAssignment.HOLD && data.target.getContainingLocation() == data.fleet.getContainingLocation()
+                    && Misc.getDistance(data.target.getLocation(), data.fleet.getLocation()) < 600f)
             {
                 // market is no longer hostile; abort invasion
                 if(!data.target.getFaction().isHostileTo(fleet.getFaction()))
@@ -77,10 +85,9 @@ public class InvasionFleetAI implements EveryFrameScript
                 if (system != this.fleet.getContainingLocation()) {
                     this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, "travelling to the " + system.getBaseName() + " star system");
                 }
-                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 3.0F, "invading " + market.getName());
+                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 3.0F, "beginning invasion of " + market.getName());
                 // once it reaches the "hold" part, that's our cue to actually run the invasion code
                 this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 1.0F, "invading " + market.getName());
-                // TODO actually tell the fleet to execute the invasion
             }
         }
     }
@@ -115,6 +122,7 @@ public class InvasionFleetAI implements EveryFrameScript
   
     private void giveInitialAssignment()
     {
+        if (data.noWait) return;
         float daysToOrbit = getDaysToOrbit();
         this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, "preparing for invasion at " + this.data.source.getName());
     }

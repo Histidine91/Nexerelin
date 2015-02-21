@@ -8,47 +8,48 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 
 
 public class DiplomacyEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(DiplomacyEvent.class);
-        private static final int DAYS_TO_KEEP = 60;
+	private static final int DAYS_TO_KEEP = 90;
 	
 	private FactionAPI otherFaction;
-	private String stage;
-	private float before;
-        private float after;
-        private float delta;
-        float age;
+	private DiplomacyEventDef event;
+	private float delta;
+	float age;
 	private Map<String, Object> params;
 	    
-        public boolean done;
-        public boolean transmitted;
+	public boolean done;
+	public boolean transmitted;
 		
-        @Override
+	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
-                done = false;
-                transmitted = false;
-                age = 0;
+		done = false;
+		transmitted = false;
+		age = 0;
 	}
 	
 	@Override
 	public void setParam(Object param) {
 		params = (HashMap)param;
 		otherFaction = (FactionAPI)params.get("otherFaction");
-		before = (Float)params.get("before");
-                after = (Float)params.get("after");
-                delta = (Float)params.get("delta");
-		stage = (String)params.get("stage");
+		delta = (Float)params.get("delta");
+		event = (DiplomacyEventDef)params.get("event");
 		//log.info("Params newOwner: " + newOwner);
 		//log.info("Params oldOwner: " + oldOwner);
 		//log.info("Params playerInvolved: " + playerInvolved);
@@ -57,82 +58,94 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	@Override
 	public void advance(float amount)
 	{
-                if (done)
-                {
+		if (done)
+		{
 			return;
-                }
-                age = age + Global.getSector().getClock().convertToDays(amount);
-                if (age > DAYS_TO_KEEP)
-                {
-                        done = true;
-                        return;
-                }
+		}
+		age = age + Global.getSector().getClock().convertToDays(amount);
+		if (age > DAYS_TO_KEEP)
+		{
+			done = true;
+			return;
+		}
 		if (!transmitted)
-                {
+		{
+			// we can set the reputation change only on message delivery
+			// but problem is, the token replacement method needs to know the relationship change NOW
+			DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
 			MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
-                        Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
-                        log.info("Diplomacy event: " + this.stage);
-                        transmitted = true;
-                }
+			Global.getSector().reportEventStage(this, event.stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
+					final DiplomacyEventDef thisEvent = event;
+					final float thisDelta = delta;
+					final MarketAPI thisMarket = market;
+					final FactionAPI fac = market.getFaction();
+					final FactionAPI otherFac = otherFaction;
+					
+					public void beforeDelivery(CommMessageAPI message) {
+					//DiplomacyManager.adjustRelations(thisEvent, thisMarket, fac, otherFac, thisDelta);
+					}});
+			log.info("Diplomacy event: " + event.stage);
+			transmitted = true;
+		}
 	}
 
 	@Override
 	public String getEventName() {
 		return (faction.getEntityNamePrefix() + " - " + otherFaction.getEntityNamePrefix() + " diplomatic event");
 	}
-        
-        /*
-        @Override
-        public String getCurrentImage() {
-            return newOwner.getLogo();
-        }
+	
+	/*
+	@Override
+	public String getCurrentImage() {
+		return newOwner.getLogo();
+	}
 
-        @Override
-        public String getCurrentMessageIcon() {
-            return newOwner.getLogo();
-        }
-        */
+	@Override
+	public String getCurrentMessageIcon() {
+		return newOwner.getLogo();
+	}
+	*/
 		
 	@Override
 	public CampaignEventPlugin.CampaignEventCategory getEventCategory() {
 		return CampaignEventPlugin.CampaignEventCategory.EVENT;
 	}
 	
-        private String getNewRelationStr()
-        {
-            RepLevel level = faction.getRelationshipLevel(otherFaction.getId());
-            int repInt = (int) Math.ceil((Math.abs(faction.getRelationship(otherFaction.getId())) * 100f));
+	private String getNewRelationStr()
+	{
+		RepLevel level = faction.getRelationshipLevel(otherFaction.getId());
+		int repInt = (int) Math.ceil((faction.getRelationship(otherFaction.getId())) * 100f);
 		
-            String standing = "" + repInt + "/100" + " (" + level.getDisplayName().toLowerCase() + ")";
-            return standing;
-        }
-        
+		String standing = "" + repInt + "/100" + " (" + level.getDisplayName().toLowerCase() + ")";
+		return standing;
+	}
+	
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
 		map.put("$otherFaction", otherFaction.getEntityNamePrefix());
-                map.put("$theOtherFaction", otherFaction.getDisplayNameWithArticle());
+		map.put("$theOtherFaction", otherFaction.getDisplayNameWithArticle());
 		map.put("$deltaAbs", "" + (int)Math.ceil(Math.abs(delta*100f)));
-                map.put("$newRelationStr", getNewRelationStr());
+		map.put("$newRelationStr", getNewRelationStr());
 		return map;
 	}
-        
-        @Override
+	
+	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
 		addTokensToList(result, "$deltaAbs");
-                addTokensToList(result, "$newRelationStr");
+		addTokensToList(result, "$newRelationStr");
 		return result.toArray(new String[0]);
 	}
-        
-        @Override
-        public Color[] getHighlightColors(String stageId) {
+	
+	@Override
+	public Color[] getHighlightColors(String stageId) {
 		Color colorDelta = delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
-                Color colorNew = faction.getRelColor(otherFaction.getId());
-                return new Color[] {colorDelta, colorNew};
+		Color colorNew = faction.getRelColor(otherFaction.getId());
+		return new Color[] {colorDelta, colorNew};
 	}
 
-        @Override
+	@Override
 	public boolean isDone() {
 		return done;
 	}
@@ -141,9 +154,9 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	public boolean allowMultipleOngoingForSameTarget() {
 		return true;
 	}
-        
-        @Override
-        public boolean showAllMessagesIfOngoing() {
-                return false;
-        }
+	
+	@Override
+	public boolean showAllMessagesIfOngoing() {
+		return false;
+	}
 }

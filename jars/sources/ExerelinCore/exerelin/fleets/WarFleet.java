@@ -1,11 +1,10 @@
 package exerelin.fleets;
 
 import com.fs.starfarer.api.campaign.*;
-import com.fs.starfarer.api.*;
 import exerelin.*;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import exerelin.SectorManager;
-import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsStation;
 
@@ -181,7 +180,7 @@ public class WarFleet extends ExerelinFleetBase
                 fleet.setPreferredResupplyLocation(anchor);
             }
         }
-        else if(ExerelinUtilsFaction.isFactionAtWar(this.fleet.getFaction().getId(), true))
+        else if(DiplomacyManager.isFactionAtWar(this.fleet.getFaction().getId(), true))
         {
             // Patrol home system
             fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, anchor, 270);

@@ -4,7 +4,13 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Level;
+import java.io.IOException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
@@ -22,15 +28,12 @@ import data.scripts.world.exerelin.ExerelinMarketConditionPicker;
 import exerelin.plugins.*;
 import exerelin.*;
 import exerelin.campaign.ExerelinSetupData;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.world.InvasionFleetManager;
 import exerelin.campaign.DiplomacyManager;
-import java.io.IOException;
-import java.util.ArrayList;
-import org.apache.log4j.Level;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import exerelin.campaign.SectorManager;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.world.InvasionFleetManager;
+import exerelin.world.ResponseFleetManager;
 
 @SuppressWarnings("unchecked")
 public class ExerelinSectorGen implements SectorGeneratorPlugin
@@ -59,7 +62,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private static final String[] possibleStationImages = new String[] {"station_side00", "station_side02", "station_side04"};
 	
 	//private static String[] possibleFactionIds = new String[]{"sindrian_diktat", "tritachyon", "luddic_church", "pirates", "hegemony", "independent"};
-	private static String[] factionIds = new String[]{};
+	private String[] factionIds = new String[]{};
 	private boolean isStartSystemChosen = false;
 
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
@@ -285,7 +288,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			Global.getLogger(ExerelinSectorGen.class).log(Level.ERROR, ex);
 		}
 		
-		ExerelinSetupData.resetInstance();
 		// build systems
 		for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
 			buildSystem(sector, i);
@@ -299,8 +301,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(new EconomyFleetManager());
 		
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
+		sector.addScript(SectorManager.create());
+		sector.addScript(DiplomacyManager.create());
 		sector.addScript(new InvasionFleetManager());
-		sector.addScript(new DiplomacyManager());
+		sector.addScript(ResponseFleetManager.create());
 		
 		log.info("Finished sector generation");
 	}
@@ -710,14 +714,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 
 		// Build hyperspace exits
-		JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(system.getId() + "_jump", "Jump Point Alpha");
-		OrbitAPI orbit = Global.getFactory().createCircularOrbit(system.createToken(0,0), 0f, 1200, 120);
-		jumpPoint.setOrbit(orbit);
+                if (ExerelinSetupData.getInstance().numSystems > 1)
+                {
+                    JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(system.getId() + "_jump", "Jump Point Alpha");
+                    OrbitAPI orbit = Global.getFactory().createCircularOrbit(system.createToken(0,0), 0f, 1200, 120);
+                    jumpPoint.setOrbit(orbit);
 
-		jumpPoint.setStandardWormholeToHyperspaceVisual();
-		system.addEntity(jumpPoint);
+                    jumpPoint.setStandardWormholeToHyperspaceVisual();
+                    system.addEntity(jumpPoint);
 
-		system.autogenerateHyperspaceJumpPoints(true, true);
+                    system.autogenerateHyperspaceJumpPoints(true, true);
+                }
 
 		// Build comm relay
 		SectorEntityToken relay = system.addCustomEntity(system.getId() + "_relay", // unique id

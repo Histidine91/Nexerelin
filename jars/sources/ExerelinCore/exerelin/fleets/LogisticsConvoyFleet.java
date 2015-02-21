@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 
 import exerelin.ExerelinUtils;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -27,7 +28,7 @@ public class LogisticsConvoyFleet extends ExerelinFleetBase
         // Create fleet
         this.fleet = ExerelinUtilsFleet.createFleetForFaction(faction, ExerelinUtilsFleet.ExerelinFleetType.LOGISTICS, null);
 
-        if (ExerelinUtilsFaction.getFactionsAtWarWithFaction(faction, false).size() > 0)
+        if (DiplomacyManager.getFactionsAtWarWithFaction(faction, false).size() > 0)
             ExerelinUtilsFleet.addEscortsToFleet(this.fleet, 4);
         else
             ExerelinUtilsFleet.addEscortsToFleet(this.fleet, 1);

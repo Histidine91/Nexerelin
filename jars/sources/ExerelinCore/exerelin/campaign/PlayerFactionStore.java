@@ -18,10 +18,6 @@ public class PlayerFactionStore {
         data.put(PLAYER_FACTION_ID_KEY, factionId);
         log.info("Stored player faction ID as " + factionId);
         String storedId = (String)data.get(PLAYER_FACTION_ID_KEY);
-        if (storedId != null) 
-        {
-            log.info("Found stored player faction ID " + storedId + " (just after save)");
-        }
     }
    /**
     * only use for new game character creation
@@ -38,7 +34,6 @@ public class PlayerFactionStore {
         String storedId = (String)data.get(PLAYER_FACTION_ID_KEY);
         if (storedId != null) 
         {
-            log.info("Found stored player faction ID " + storedId);
             factionId = (String)storedId;
             return (String)storedId;
         }

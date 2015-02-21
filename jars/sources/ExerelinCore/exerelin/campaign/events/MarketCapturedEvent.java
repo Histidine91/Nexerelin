@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,11 +20,11 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(MarketCapturedEvent.class);
 	
-	private static final int DAYS_TO_KEEP = 90;
+	private static final int DAYS_TO_KEEP = 120;
 	
 	private FactionAPI newOwner;
 	private FactionAPI oldOwner;
-	//private List<String> factionsToNotify;
+	private List<String> factionsToNotify;
 	private float repChangeStrength;
 	private boolean playerInvolved;
 	private Map<String, Object> params;
@@ -49,7 +50,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		oldOwner = (FactionAPI)params.get("oldOwner");
 		repChangeStrength = (Float)params.get("repChangeStrength");
 		playerInvolved = (Boolean)params.get("playerInvolved");
-		//factionsToNotify = (List<String>)params.get("factionsToNofify");
+		factionsToNotify = (List<String>)params.get("factionsToNofify");
 		//log.info("Params newOwner: " + newOwner);
 		//log.info("Params oldOwner: " + oldOwner);
 		//log.info("Params playerInvolved: " + playerInvolved);
@@ -76,18 +77,20 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		if (!transmitted)
 		{
 			String stage = "report";
-			MessagePriority priority = MessagePriority.SECTOR;
+			//MessagePriority priority = MessagePriority.SECTOR;
+			MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
 			if (playerInvolved) 
 			{
 				stage = "report_player";
 				//priority = MessagePriority.ENSURE_DELIVERY;
-				priority = MessagePriority.DELIVER_IMMEDIATELY;
 			}
+			// factionsToNotify is null for some reason -> causes NPE
 			/*
 			Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
+					final List<String> factions = factionsToNotify;
 					public void beforeDelivery(CommMessageAPI message) {
 					    if (playerInvolved)
-						for (String factionId : factionsToNotify)
+						for (String factionId : factions)
 						    Global.getSector().adjustPlayerReputation(
 							new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.COMBAT_WITH_ENEMY, repChangeStrength),
 							factionId);
@@ -126,6 +129,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		map.put("$newOwner", newOwner.getDisplayNameLong());
 		map.put("$oldOwner", oldOwner.getDisplayNameLong());
 		map.put("$oldOwnerWithArticle", oldOwner.getDisplayNameLongWithArticle());
+		map.put("$marketsRemaining", "" + ExerelinUtilsFaction.getFactionMarkets(oldOwner.getId()).size());
 		return map;
 	}
 

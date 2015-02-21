@@ -26,6 +26,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import exerelin.campaign.events.MarketAttackedEvent;
+import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 
 /**
@@ -47,7 +48,7 @@ public class InvasionRound {
 	public static final float DEFENDER_REGIONAL_CAPITAL_MOD = 0.25f;
 	public static final float DEFENDER_HEADQUARTERS_MOD = 0.4f;
 	public static final float DEFENDER_RAID_STRENGTH_MULT = 0.75f;
-	public static final float MARINE_LOSS_MULT = 0.125f;
+	public static final float MARINE_LOSS_MULT = 0.1f;
 	public static final float MARINE_LOSS_RANDOM_MOD = 0.025f;
 	public static final float MARINE_LOSS_RAID_MULT = 0.5f;
 	
@@ -251,6 +252,7 @@ public class InvasionRound {
 		FactionAPI attackerFaction = attacker.getFaction();
 		String attackerFactionId = attackerFaction.getId();
 		FactionAPI defenderFaction = defender.getFaction();
+		String defenderFactionId = defenderFaction.getId();
 		MarketAPI market = defender.getMarket();
 		
 		if (attackerFaction == defenderFaction)
@@ -346,9 +348,10 @@ public class InvasionRound {
 			params.put("newOwner", attackerFaction);
 			params.put("oldOwner", defenderFaction);
 			params.put("playerInvolved", playerInvolved);
-			//params.put("factionsToNotify", factionsToNotify);
+			params.put("factionsToNotify", factionsToNotify);
 			params.put("repChangeStrength", repChangeStrength);
 			sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
+			SectorManager.notifyMarketCaptured(market, attackerFaction, defenderFaction);
 		}
 		
 		log.info( String.format("Invasion of [%s] by " + attacker.getNameWithFaction() + (success ? " successful" : " failed"), defender.getName()) );

@@ -49,6 +49,13 @@
 			"allowPirates":true
 		},
 		{
+			"name":"Criminal Extradited",
+			"stage":"extradition",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+		},
+		{
 			"name":"Star-crossed Lovers",	# love conquers all
 			"stage":"starcrossed",
 			"maxRepLevelToOccur":"inhospitable",
@@ -96,11 +103,19 @@
 		{
 			"name":"Xenophobia",
 			"stage":"xenophobia",
-			"minRepLevelToOccur":"hostile",
+			"minRepLevelToOccur":"inhospitable",
 			"maxRepLevelToOccur":"friendly",
 			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
-			"repLimit":"hostile"
+			"repLimit":"inhospitable"
+		},
+		{
+			"name":"Criminal Extradition Refused",
+			"stage":"extradition_refused",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"inhospitable"
 		},
 		{
 			"name":"Spy Ring Uncovered",
@@ -114,10 +129,10 @@
 		{
 			"name":"Sabotage Uncovered",
 			"stage":"sabotage_uncovered",
-			"repEnsureAtBest":"inhospitable",
+			"repEnsureAtBest":"suspicious",
 			"maxRepLevelToOccur":"welcoming",
-			"minRepChange":-0.25,
-			"maxRepChange":-0.12,
+			"minRepChange":-0.2,
+			"maxRepChange":-0.1,
 			"repLimit":"hostile",
 			#"allowPirates":true
 			#"chance":0,	# only happens through player action
@@ -126,7 +141,7 @@
 			"name":"Diplomat Crime Ring",
 			"stage":"diplomat_crimes",
 			"minRepLevelToOccur":"suspicious",
-			"minRepChange":-0.2,
+			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
 			"repLimit":"inhospitable"
 		},
@@ -135,8 +150,8 @@
 			"stage":"privateering",
 			"minRepLevelToOccur":"inhospitable",
 			"maxRepLevelToOccur":"neutral",
-			"minRepChange":-0.3,
-			"maxRepChange":-0.2,
+			"minRepChange":-0.25,
+			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"chance":1.5
 		},
@@ -146,11 +161,31 @@
 			"minRepLevelToOccur":"inhospitable",
 			"maxRepLevelToOccur":"suspicious",
 			"repEnsureAtBest":"hostile",
-			"minRepChange":-0.3,
-			"maxRepChange":-0.2,
+			"minRepChange":-0.25,
+			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"allowPirates":true,
 			"chance":2	# help tip things over into outright violence
+		},
+		{
+			"name":"Ceasefire",
+			"stage":"ceasefire",
+			"maxRepLevelToOccur":"hostile",
+			"repEnsureAtWorst":"inhospitable",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+			"repLimit":"neutral",
+			"chance":0	# only occurs when DiplomacyManager calls it directly
+		},
+		{
+			"name":"Peace Treaty",
+			"stage":"peace_treaty",
+			"maxRepLevelToOccur":"hostile",
+			"repEnsureAtWorst":"suspicious",
+			"minRepChange":0.25,
+			"maxRepChange":0.15,
+			"repLimit":"favorable",
+			"chance":0	# only occurs when DiplomacyManager calls it directly
 		}
 	],
 	

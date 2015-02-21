@@ -1,5 +1,6 @@
 package data.scripts.world.exerelin;
 
+import com.fs.starfarer.api.EveryFrameScript;
 import java.awt.*;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -18,6 +19,7 @@ import exerelin.utilities.ExerelinMessageManager;
 import exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.util.Collections;
+import org.lwjgl.util.vector.Vector2f;
 
 @SuppressWarnings("unchecked")
 public class Exerelin //implements SectorGeneratorPlugin
@@ -38,12 +40,11 @@ public class Exerelin //implements SectorGeneratorPlugin
 		sectorManager.setPlayerFreeTransfer(ExerelinSetupData.getInstance().playerOwnedStationFreeTransfer);
 		sectorManager.setRespawnFactions(ExerelinSetupData.getInstance().respawnFactions);
 		sectorManager.setMaxFactions(ExerelinSetupData.getInstance().maxFactionsInExerelinAtOnce);
-		sectorManager.setPlayerFactionId(ExerelinSetupData.getInstance().getPlayerFaction());
+		//sectorManager.setPlayerFactionId(ExerelinSetupData.getInstance().getPlayerFaction());
 		sectorManager.setFactionsPossibleInSector(ExerelinSetupData.getInstance().getAvailableFactions(sector));
 		sectorManager.setRespawnWaitDays(ExerelinSetupData.getInstance().respawnDelay);
 		sectorManager.setBuildOmnifactory(ExerelinSetupData.getInstance().omniFacPresent);
 		sectorManager.setMaxSystemSize(ExerelinSetupData.getInstance().maxSystemSize);
-		sectorManager.setPlayerStartShipVariant(ExerelinSetupData.getInstance().getPlayerStartingShipVariant());
 		sectorManager.setSectorPrePopulated(ExerelinSetupData.getInstance().isSectorPopulated);
 		sectorManager.setSectorPartiallyPopulated(ExerelinSetupData.getInstance().isSectorPartiallyPopulated);
 	
@@ -65,7 +66,6 @@ public class Exerelin //implements SectorGeneratorPlugin
 		Global.getSector().addScript(commandQueue);
 		sectorManager.setCommandQueue(commandQueue);
 	
-		// Set abandoned as enemy of every faction
 		ExerelinConfig.loadSettings();
 		this.initFactionRelationships(sector);
 
@@ -74,6 +74,10 @@ public class Exerelin //implements SectorGeneratorPlugin
 	
 		// Add trader spawns
 		//this.initTraderSpawns(sector);
+		
+		
+		// set player start location at the largest faction market with a military base
+		setPlayerSpawnLocation();
 	
 		// Remove any data stored in ExerelinSetupData
 		ExerelinSetupData.resetInstance();
@@ -196,16 +200,20 @@ public class Exerelin //implements SectorGeneratorPlugin
 		}
 		
 		player.setRelationship(selectedFactionId, RepLevel.FRIENDLY);
- 
-		// set player start location at the largest faction market with a military base
-		/*
-		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		
+		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
+	}
+		
+		private void setPlayerSpawnLocation()
+		{
+				SectorAPI sector = Global.getSector();
+				String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 		int size = 0;
 		MarketAPI targetMarket = null;
 		for (MarketAPI market : markets)
 		{
-			if (market.getFaction() != selectedFaction)
+			if (!market.getFactionId().equals(selectedFactionId))
 				continue;
 			if (targetMarket == null)
 				targetMarket = market;
@@ -219,22 +227,35 @@ public class Exerelin //implements SectorGeneratorPlugin
 		}
 		if (targetMarket != null)
 		{
-		}
-		*/
-		
-		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
-	}
+			LocationAPI loc = targetMarket.getContainingLocation();
+			final MarketAPI market = targetMarket;
+			Vector2f marketPos = market.getPrimaryEntity().getLocation();
+			/*
+			EveryFrameScript script = new EveryFrameScript() {
+				private boolean done = false;
 
-	private void initTraderSpawns(SectorAPI sector)
-	{
-		for(int j = 0; j < SectorManager.getCurrentSectorManager().getSystemManagers().length; j++)
-		{
-			StarSystemAPI systemAPI = SectorManager.getCurrentSectorManager().getSystemManagers()[j].getStarSystemAPI();
-			for(int i = 0; i < Math.max(1, systemAPI.getOrbitalStations().size()/5); i++)
-			{
-				IndependantTraderSpawnPoint tgtsp = new IndependantTraderSpawnPoint(sector,  systemAPI,  ExerelinUtils.getRandomInRange(8,12), 1, systemAPI.createToken(0,0));
-				systemAPI.addSpawnPoint(tgtsp);
-			}
+				@Override
+				public boolean runWhilePaused() {
+					return false;
+				}
+				@Override
+				public boolean isDone() {
+					return done;
+				}
+				@Override
+				public void advance(float amount) {
+					CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+					if (playerFleet != null)
+					{
+						playerFleet.setCircularOrbit(market.getPrimaryEntity(), 0, 200, 60);
+						done = true;
+					}
+				}
+			};
+			Global.getSector().addScript(script);
+			*/
+			sector.setRespawnLocation(loc);
+			sector.getRespawnCoordinates().set(marketPos.x, marketPos.y);		
 		}
 	}
 

@@ -31,8 +31,8 @@ public class ExerelinConfig
     public static double reduceSuppliesFactor = 1.0;
     
     // System Generation Minimums
-    public static int minimumPlanets = 3;
-    public static int minimumStations = 5;
+    public static int minimumPlanets = 2;
+    public static int minimumStations = 0;
     public static int minimumAsteroidBelts = 0;
 
     // Resourcing

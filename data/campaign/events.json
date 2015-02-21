@@ -1,15 +1,21 @@
 {
 	"exerelin_market_captured":{
-		"script":"exerelin.campaign.events.MarketCapturedEvent",
+		"script":"exerelin.campaign.events.MarketCapturedEvent"
 	},
 	"exerelin_market_attacked":{
 		"script":"exerelin.campaign.events.MarketAttackedEvent",
-		"image":"graphics/icons/markets/recent_unrest.png",
+		"image":"graphics/icons/markets/recent_unrest.png"
 	},
-	"exerelin_diplomacy_positive":{
+	"exerelin_diplomacy":{
 		"script":"exerelin.campaign.events.DiplomacyEvent"
 	},
-	"exerelin_diplomacy_negative":{
-		"script":"exerelin.campaign.events.DiplomacyEvent"
+	"exerelin_faction_eliminated":{
+		"script":"exerelin.campaign.events.FactionEliminatedEvent"
+	},
+	"exerelin_faction_respawned":{
+		"script":"exerelin.campaign.events.FactionRespawnedEvent"
+	},
+	"exerelin_faction_salary":{
+		"script":"exerelin.campaign.events.FactionSalaryEvent"
 	}
 }

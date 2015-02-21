@@ -19,9 +19,6 @@ public final class ExerelinSetupData
     private static ExerelinSetupData instance = null;
 
     // Player setup defaults
-    private String playerFaction = "sindrian_diktat";
-    private String playerStartingShipVariant = "shuttle_Attack";
-
     private String[] availableFactions = null;
 
     // Sector Generation Defaults
@@ -42,7 +39,7 @@ public final class ExerelinSetupData
     public int respawnDelay = 60;
     public int numStartFactions = 3;
     public boolean omniFacPresent = true;
-    public int maxFactionsInExerelinAtOnce = 3;
+    public int maxFactionsInExerelinAtOnce = 16;
     public boolean isSectorPopulated = false;
     public boolean isSectorPartiallyPopulated = false;
 
@@ -65,16 +62,6 @@ public final class ExerelinSetupData
     public static void resetInstance()
     {
 		instance = new ExerelinSetupData();
-    }
-
-    public String getPlayerFaction()
-    {
-		return playerFaction;
-    }
-
-    public void setPlayerFaction(String factionId)
-    {
-	    playerFaction = factionId;
     }
 
     public String[] getPossibleFactions(Boolean getNiceNames)
@@ -121,7 +108,7 @@ public final class ExerelinSetupData
 			    int i = 0;
 			    while(confirmedFactions.size() < Math.min(this.numStartFactions, locPossibleFaction.length - 1))
 			    {
-				    if(locPossibleFaction[i].equalsIgnoreCase(this.playerFaction))
+				    if(locPossibleFaction[i].equalsIgnoreCase(PlayerFactionStore.getPlayerFactionId()))
 				    {
 					    i = i + 1;
 					    continue;
@@ -137,7 +124,7 @@ public final class ExerelinSetupData
 
 				    i = i + 1;
 			    }
-			    confirmedFactions.add(this.getPlayerFaction());
+			    confirmedFactions.add(PlayerFactionStore.getPlayerFactionId());
 
 			    availableFactions = (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
 		    }
@@ -197,15 +184,5 @@ public final class ExerelinSetupData
 		    System.out.println("Skipped " + factionId);
 		    return false;
 	    }
-    }
-
-    public String getPlayerStartingShipVariant()
-    {
-        return this.playerStartingShipVariant;
-    }
-
-    public void setPlayerStartingShipVariant(String variant)
-    {
-        this.playerStartingShipVariant = variant;
     }
 }
