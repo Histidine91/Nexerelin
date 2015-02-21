@@ -53,8 +53,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
 
 	
-	private final List possibleSystemNamesList = new LinkedList(Arrays.asList(possibleSystemNames));
-	private final List possiblePlanetNamesList = new LinkedList(Arrays.asList(possiblePlanetNames));
+	private List possibleSystemNamesList = new LinkedList(Arrays.asList(possibleSystemNames));
+	private List possiblePlanetNamesList = new LinkedList(Arrays.asList(possiblePlanetNames));
 	
 	private static final String[] possiblePlanetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water"};
 	private static final String[] possiblePlanetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "gas_giant", "ice_giant"};
@@ -170,15 +170,15 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			newMarket.addCondition("regional_capital");
 		}
-                
-                int minSizeForMilitaryBase = 5;
-                if (isStation) minSizeForMilitaryBase = 4;
-                
-                if (marketSize >= minSizeForMilitaryBase)
-                {
-                    newMarket.addCondition("military_base");
-                    newMarket.addSubmarket(Submarkets.GENERIC_MILITARY);
-                }
+		
+		int minSizeForMilitaryBase = 5;
+		if (isStation) minSizeForMilitaryBase = 4;
+		
+		if (marketSize >= minSizeForMilitaryBase)
+		{
+			newMarket.addCondition("military_base");
+			newMarket.addSubmarket(Submarkets.GENERIC_MILITARY);
+		}
 		
 		// planet type conditions
 		if (planetType.equals("jungle")) {
@@ -282,6 +282,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			possiblePlanetNames = new String[planetNames.length()];
 			for (int i = 0; i < planetNames.length(); i++)
 				possiblePlanetNames[i] = planetNames.getString(i);
+				
+			possibleSystemNamesList = new ArrayList();
+			for (int i=0; i < possibleSystemNames.length; i++)
+				possibleSystemNamesList.add(possibleSystemNames[i]);
+			for (int i=0; i < possiblePlanetNames.length; i++)
+				possiblePlanetNamesList.add(possiblePlanetNames[i]);
+			
 		} catch (JSONException ex) {
 			Global.getLogger(ExerelinSectorGen.class).log(Level.ERROR, ex);
 		} catch (IOException ex) {
@@ -315,7 +322,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		int systemNameIndex = ExerelinUtils.getRandomInRange(0, possibleSystemNamesList.size() - 1);
 		if (systemNum == 0) systemNameIndex = 0;	// there is always a star named Exerelin
 		StarSystemAPI system = sector.createStarSystem((String)possibleSystemNamesList.get(systemNameIndex));
-				possibleSystemNamesList.remove(systemNameIndex);
+		possibleSystemNamesList.remove(systemNameIndex);
 		String systemName = system.getName();
 		
 		int maxSectorSize = ExerelinSetupData.getInstance().maxSectorSize;
@@ -461,8 +468,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			String name = "";
 			String id = "";
 			int planetNameIndex = ExerelinUtils.getRandomInRange(0, possiblePlanetNamesList.size() - 1);
-						name = (String)(possiblePlanetNamesList.get(planetNameIndex));
-						possiblePlanetNamesList.remove(planetNameIndex);
+			name = (String)(possiblePlanetNamesList.get(planetNameIndex));
+			possiblePlanetNamesList.remove(planetNameIndex);
 
 			// Assign system name to planet as a prefix
 			// no need anymore, intel screen already gives star name on everything
@@ -714,17 +721,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 
 		// Build hyperspace exits
-                if (ExerelinSetupData.getInstance().numSystems > 1)
-                {
-                    JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(system.getId() + "_jump", "Jump Point Alpha");
-                    OrbitAPI orbit = Global.getFactory().createCircularOrbit(system.createToken(0,0), 0f, 1200, 120);
-                    jumpPoint.setOrbit(orbit);
+		if (ExerelinSetupData.getInstance().numSystems > 1)
+		{
+			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(system.getId() + "_jump", "Jump Point Alpha");
+			OrbitAPI orbit = Global.getFactory().createCircularOrbit(system.createToken(0,0), 0f, 1200, 120);
+			jumpPoint.setOrbit(orbit);
 
-                    jumpPoint.setStandardWormholeToHyperspaceVisual();
-                    system.addEntity(jumpPoint);
+			jumpPoint.setStandardWormholeToHyperspaceVisual();
+			system.addEntity(jumpPoint);
 
-                    system.autogenerateHyperspaceJumpPoints(true, true);
-                }
+			system.autogenerateHyperspaceJumpPoints(true, true);
+		}
 
 		// Build comm relay
 		SectorEntityToken relay = system.addCustomEntity(system.getId() + "_relay", // unique id
