@@ -287,6 +287,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			possibleSystemNamesList = new ArrayList();
 			for (int i=0; i < possibleSystemNames.length; i++)
 				possibleSystemNamesList.add(possibleSystemNames[i]);
+			possiblePlanetNamesList = new ArrayList();
 			for (int i=0; i < possiblePlanetNames.length; i++)
 				possiblePlanetNamesList.add(possiblePlanetNames[i]);
 			
