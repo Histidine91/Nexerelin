@@ -14,6 +14,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.utilities.ExerelinUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,11 +65,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     private static final Float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
     private static final Float PEACE_TREATY_CHANCE = 0.3f;
     private Map<String, Float> warWeariness;
-    private float warWearinessPerInterval;
+    private float warWearinessPerInterval = 20f;
     private DiplomacyEventDef peaceTreatyEvent;
     private DiplomacyEventDef ceasefireEvent;
     
-    private float interval;
+    private float interval = 10f;
     private final IntervalUtil intervalUtil;
     
     // FIXME: this is kind of a hack
@@ -79,7 +80,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     private void loadSettings() throws IOException, JSONException {
         JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
-        interval = config.getLong("eventFrequency");
+        interval = (float)config.optDouble("eventFrequency", 10f);
+        warWearinessPerInterval = (float)config.optDouble("warWearinessPerInterval", 20f);
         JSONArray pirateFactionsJson = config.getJSONArray("pirateFactions");
         for (int i=0;i<pirateFactionsJson.length();i++){ 
             pirateFactions.add(pirateFactionsJson.getString(i));
@@ -98,6 +100,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             eventDef.maxRepChange = (float)eventDefJson.getDouble("maxRepChange");
             eventDef.allowPirates = eventDefJson.optBoolean("allowPirates", false);
             eventDef.chance = (float)eventDefJson.optDouble("chance", 1f);
+            if (eventDefJson.has("allowedFactions1"))
+                eventDef.allowedFactions1 = ExerelinUtils.JSONArrayToArrayList(eventDefJson.getJSONArray("allowedFactions1"));
+            if (eventDefJson.has("allowedFactions2"))
+                eventDef.allowedFactions2 = ExerelinUtils.JSONArrayToArrayList(eventDefJson.getJSONArray("allowedFactions2"));
             
             String repLimit = eventDefJson.optString("repLimit");
             if (!repLimit.isEmpty())
@@ -122,8 +128,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             else if (eventDef.name.equals("Ceasefire"))
                 ceasefireEvent = eventDef;
         }
-        
-        warWearinessPerInterval = (float)config.optDouble("warWearinessPerInterval", 20f);
     }
 
     public DiplomacyManager()
@@ -248,6 +252,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 //log.info("Rep too high");
                 continue;
             }
+            if (eventDef.allowedFactions1 != null && !eventDef.allowedFactions1.contains(faction1.getId()))
+                continue;
+            if (eventDef.allowedFactions2 != null && !eventDef.allowedFactions2.contains(faction2.getId()))
+                continue;
+                
             eventPicker.add(eventDef, eventDef.chance);
         }
         DiplomacyEventDef event = eventPicker.pick();
