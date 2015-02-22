@@ -16,7 +16,8 @@
 			"stage":"philanthropy",
 			"minRepLevelToOccur":"inhospitable",
 			"minRepChange":0.05,
-			"maxRepChange":0.1
+			"maxRepChange":0.1,
+			"allowPirates":true
 		},
 		{
 			"name":"Cultural Boom",
@@ -70,7 +71,7 @@
 			"maxRepLevelToOccur":"inhospitable",
 			"minRepChange":0.1,
 			"maxRepChange":0.15,
-			#"allowPirates":true,
+			"allowPirates":true,
 			"chance":0.3
 		},		
 		{
@@ -107,7 +108,7 @@
 			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
 			"repLimit":"hostile",	# probably an overreaction but meh
-			#"allowPirates":true
+			"allowPirates":true
 		},
 		{
 			"name":"Xenophobia",
@@ -135,6 +136,7 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.1,
 			"repLimit":"hostile",
+			"allowPirates":true,
 			"chance":1.2
 		},
 		{
@@ -145,7 +147,7 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.1,
 			"repLimit":"hostile",
-			#"allowPirates":true,
+			"allowPirates":true,
 			"chance":1.2
 		},
 		{
@@ -156,7 +158,7 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.1,
 			"repLimit":"hostile",
-			#"allowPirates":true,
+			"allowPirates":true,
 			"chance":1.2
 		},
 		{

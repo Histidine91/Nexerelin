@@ -194,6 +194,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (delta > 0 && delta < 0.01f) delta = 0.01f;
         delta = Math.round(delta * 100f) / 100f;
        
+        delta = DiplomacyManager.adjustRelations(event, market, faction1, faction2, delta).delta;
+        
         if (Math.abs(delta) >= 0.01f) {
             log.info("Transmitting event: " + event.name);
             HashMap<String, Object> params = new HashMap<>();
@@ -466,7 +468,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     {
         SectorAPI sector = Global.getSector();
         List<String> enemies = new ArrayList<>();
-        List<String> factions = Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(sector));
+        List<String> factions = SectorManager.getLiveFactionIdsCopy();
 
         for(String otherFactionId : factions)
         {

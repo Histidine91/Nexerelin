@@ -117,7 +117,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         //log.info("Starting invasion fleet check");
         
         // pick a faction to invade someone
-        // FIXME: O^2 >:(
         for (FactionAPI faction: factions)
         {
             if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
@@ -172,7 +171,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         
         // now we pick a target
         for (MarketAPI market : markets) {
-            if  ( market.getFaction().isHostileTo(invader) )
+            if  ( market.getFaction().isHostileTo(invader) && !market.getFactionId().equals("pirates") )
             {
                 /*
                 float defenderStrength = InvasionRound.GetDefenderStrength(market);

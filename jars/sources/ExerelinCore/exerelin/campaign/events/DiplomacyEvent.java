@@ -17,6 +17,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 
@@ -72,7 +73,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		{
 			// we can set the reputation change only on message delivery
 			// but problem is, the token replacement method needs to know the relationship change NOW
-			DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
+			//DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
 			MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
 			Global.getSector().reportEventStage(this, event.stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
 					final DiplomacyEventDef thisEvent = event;
@@ -123,8 +124,12 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		map.put("$otherFaction", otherFaction.getEntityNamePrefix());
-		map.put("$theOtherFaction", otherFaction.getDisplayNameWithArticle());
+		String otherFactionStr = otherFaction.getEntityNamePrefix();
+		String theOtherFactionStr = otherFaction.getDisplayNameWithArticle();
+		map.put("$otherFaction", otherFactionStr);
+		map.put("$theOtherFaction", theOtherFactionStr);
+		map.put("$OtherFaction", Misc.ucFirst(otherFactionStr));
+		map.put("$TheOtherFaction", Misc.ucFirst(theOtherFactionStr));
 		map.put("$deltaAbs", "" + (int)Math.ceil(Math.abs(delta*100f)));
 		map.put("$newRelationStr", getNewRelationStr());
 		return map;
