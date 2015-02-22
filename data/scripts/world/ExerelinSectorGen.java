@@ -31,6 +31,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.ResponseFleetManager;

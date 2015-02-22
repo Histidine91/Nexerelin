@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import data.scripts.world.exerelin.*;
-import exerelin.*;
+import exerelin.utilities.ExerelinUtils;
 
 /*
 /// HOW IT WORKS:

@@ -1,22 +1,22 @@
-package exerelin;
+package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import exerelin.ExerelinUtilsPlayer;
+import exerelin.FactionDirector;
+import exerelin.SectorManager;
+import exerelin.SystemManager;
 import exerelin.commandQueue.*;
-import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsCargo;
-import exerelin.utilities.ExerelinUtilsMessaging;
-import exerelin.utilities.ExerelinUtilsStation;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
 import java.util.Random;
 import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
+import org.json.JSONArray;
 
 @SuppressWarnings("unchecked")
 public class ExerelinUtils
@@ -745,6 +745,35 @@ public class ExerelinUtils
         catch (ClassNotFoundException ex)
         {
             return false;
+        }
+    }
+    
+    public static String[] JSONArrayToStringArray(JSONArray jsonArray)
+    {
+        try
+        {
+            return jsonArray.toString().substring(1, jsonArray.toString().length() - 1).replaceAll("\"","").split(",");
+        }
+        catch(Exception e)
+        {
+            return new String[]{};
+        }
+    }
+    
+    public static ArrayList<String> JSONArrayToArrayList(JSONArray jsonArray)
+    {
+        try
+        {
+            ArrayList<String> ret = new ArrayList<>();
+            for (int i=0; i<jsonArray.length(); i++)
+            {
+                ret.add(jsonArray.getString(i));
+            }
+            return ret;
+        }
+        catch(Exception e)
+        {
+            return new ArrayList<>();
         }
     }
 }

@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import exerelin.commandQueue.CommandQueue;
 import exerelin.*;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.events.EventPirateFleetSpawn;

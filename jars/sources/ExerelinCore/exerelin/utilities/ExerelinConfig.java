@@ -1,10 +1,11 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.List;
 import java.util.ArrayList;
+
+import static exerelin.utilities.ExerelinUtils.JSONArrayToStringArray;
 
 public class ExerelinConfig
 {
@@ -142,17 +143,5 @@ public class ExerelinConfig
         }
 
         return  customRebels;
-    }
-
-    private static String[] JSONArrayToStringArray(JSONArray jsonArray)
-    {
-        try
-        {
-            return jsonArray.toString().substring(1, jsonArray.toString().length() - 1).replaceAll("\"","").split(",");
-        }
-        catch(Exception e)
-        {
-            return new String[]{};
-        }
     }
 }

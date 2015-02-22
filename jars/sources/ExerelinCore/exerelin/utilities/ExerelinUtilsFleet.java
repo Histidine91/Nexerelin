@@ -13,7 +13,6 @@ import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 
-import exerelin.ExerelinUtils;
 
 public class ExerelinUtilsFleet
 {

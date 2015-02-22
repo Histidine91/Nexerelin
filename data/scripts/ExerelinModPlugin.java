@@ -2,7 +2,6 @@ package data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import exerelin.campaign.ExerelinSetupData;
-import exerelin.ExerelinUtils;
 import exerelin.SectorManager;
 import exerelin.utilities.*;
 

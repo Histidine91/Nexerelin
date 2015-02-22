@@ -1,5 +1,6 @@
 package exerelin;
 
+import exerelin.utilities.ExerelinUtils;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import exerelin.events.EventPirateFleetSpawn;
 import exerelin.utilities.ExerelinConfig;

@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 
-import exerelin.ExerelinUtils;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsCargo;
