@@ -13,6 +13,8 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import exerelin.campaign.PlayerFactionStore;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FactionSalaryEvent extends BaseEventPlugin {
@@ -42,7 +44,7 @@ public class FactionSalaryEvent extends BaseEventPlugin {
                 month = Global.getSector().getClock().getMonth();
                 int level = Global.getSector().getPlayerPerson().getStats().getLevel();
                 paidAmount = BASE_SALARY + INCREMENT_PER_LEVEL * (level - 1);
-                playerFleet.getCargo().getCredits().subtract(paidAmount);
+                playerFleet.getCargo().getCredits().add(paidAmount);
                 Global.getSector().reportEventStage(this, "report", playerFleet, MessagePriority.DELIVER_IMMEDIATELY);
                 Global.getSector().getPersistentData().put("salariesClock", Global.getSector().getClock().createClock(Global.getSector().getClock().getTimestamp()));
             }
@@ -73,8 +75,9 @@ public class FactionSalaryEvent extends BaseEventPlugin {
         
         @Override
 	public String[] getHighlights(String stageId) {
-            String[] ret = {"$paid"};
-            return ret;
+            List<String> result = new ArrayList<>();
+            addTokensToList(result, "$paid");
+            return result.toArray(new String[0]);
 	}
         
         @Override
