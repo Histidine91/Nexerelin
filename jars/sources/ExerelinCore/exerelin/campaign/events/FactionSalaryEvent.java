@@ -22,8 +22,8 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(FactionSalaryEvent.class);
 	
-	private static final float BASE_SALARY = 4000f;
-	private static final float INCREMENT_PER_LEVEL = 500f;
+	private static final float BASE_SALARY = 5000f;
+	private static final float INCREMENT_PER_LEVEL = 1000f;
 	private int month;
 	private float paidAmount = 0f;
 		
