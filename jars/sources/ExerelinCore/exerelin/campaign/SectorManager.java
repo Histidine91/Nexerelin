@@ -6,10 +6,8 @@ import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import static exerelin.campaign.InvasionRound.log;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +74,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static void factionEliminated(FactionAPI victor, FactionAPI defeated, MarketAPI market)
     {
+        if (defeated.getId().equals("independent"))
+            return;
         removeLiveFactionId(defeated.getId());
         Map<String, Object> params = new HashMap<>();
         params.put("defeatedFaction", defeated);
@@ -84,6 +84,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("playerDefeated", defeated == playerFaction);
         params.put("playerVictory", victor == playerFaction && getLiveFactionIdsCopy().size() == 1);
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
+        
+        if (!defeated.getId().equals("pirates"))
+        {
+            for (FactionAPI faction : Global.getSector().getAllFactions())
+            {
+                if (!faction.getId().equals("pirates"))
+                    faction.setRelationship(defeated.getId(), 0);
+            }
+        }
     }
     
     public static void factionRespawned(FactionAPI faction, MarketAPI market)
