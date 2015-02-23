@@ -140,7 +140,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             loadSettings();
         } catch (IOException | JSONException ex) {
             Global.getLogger(DiplomacyManager.class).log(Level.ERROR, ex);
-            interval = 10;
         }
         this.intervalUtil = new IntervalUtil(interval * 0.75F, interval * 1.25F);
               
@@ -452,7 +451,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         Map<String, Object> data = Global.getSector().getPersistentData();
         diplomacyManager = (DiplomacyManager)data.get(MANAGER_MAP_KEY);
         if (diplomacyManager != null)
+        {
+            try {
+                diplomacyManager.loadSettings();
+            } catch (IOException | JSONException ex) {
+                Global.getLogger(DiplomacyManager.class).log(Level.ERROR, ex);
+            }
             return diplomacyManager;
+        }
         
         diplomacyManager = new DiplomacyManager();
         data.put(MANAGER_MAP_KEY, diplomacyManager);
