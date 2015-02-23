@@ -1,7 +1,7 @@
 {
 	"pirateFactions": [ "pirates", "exipirated", "junkpirates" ],
 	"warWearinessPerInterval":20,	#20
-	"eventFrequency":10,	#10
+	"eventFrequency":20,	#20
 	"events":[
 		{
 			"name":"Official Aid",
@@ -167,7 +167,8 @@
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
-			"repLimit":"inhospitable"
+			"repLimit":"inhospitable",
+			"chance":0.5
 		},
 		{
 			"name":"Privateering",
