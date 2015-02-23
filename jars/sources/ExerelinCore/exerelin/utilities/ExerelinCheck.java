@@ -47,15 +47,6 @@ public class ExerelinCheck
 
             System.out.println("Checking " + factionConfig.factionId);
 
-            error = attemptToCreateFleetMember(Arrays.asList(factionConfig.startingVariants), false, usedHullIds) || error;
-
-            error = attemptToCreateFleetMember(factionConfig.fighterWings, true, usedHullIds) || error;
-            error = attemptToCreateFleetMember(factionConfig.frigateVariants, false, usedHullIds) || error;
-            error = attemptToCreateFleetMember(factionConfig.destroyerVariants, false, usedHullIds) || error;
-            error = attemptToCreateFleetMember(factionConfig.cruiserVariants, false, usedHullIds) || error;
-            error = attemptToCreateFleetMember(factionConfig.capitalVariants, false, usedHullIds) || error;
-
-            error = attemptToCreateFleetMember(factionConfig.carrierVariants, false, usedHullIds) || error;
             error = attemptToCreateFleetMember(factionConfig.freighterVariants, false, usedHullIds) || error;
             error = attemptToCreateFleetMember(factionConfig.tankerVariants, false, usedHullIds) || error;
             error = attemptToCreateFleetMember(factionConfig.superFreighterVariants, false, usedHullIds) || error;
@@ -76,15 +67,6 @@ public class ExerelinCheck
         {
             if(!usedHullIds.contains(hull))
                 System.out.println(" - " + hull);
-        }
-
-        System.out.println("Checking for unused fighters");
-        List<String> fightersToCheck = Global.getSector().getAllFighterWingIds();
-
-        for(String fighterWingId : fightersToCheck)
-        {
-            if(!checkFighterIsUsed(fighterWingId))
-                System.out.println(" - " + fighterWingId);
         }
 
         System.out.println("");
@@ -113,21 +95,5 @@ public class ExerelinCheck
         }
 
         return error;
-    }
-
-    private static Boolean checkFighterIsUsed(String wingId)
-    {
-        String[] factions = SectorManager.getCurrentSectorManager().getFactionsPossibleInSector();
-
-        for(int i = 0; i < factions.length; i++)
-        {
-            ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factions[i]);
-
-            if(ExerelinUtilsHelper.doesStringArrayContainValue(wingId, (String[])factionConfig.fighterWings.toArray(), false)
-                || ExerelinUtilsHelper.doesStringArrayContainValue(wingId, (String[]) factionConfig.miningVariantsOrWings.toArray(), false))
-                return true;
-        }
-
-        return false;
     }
 }

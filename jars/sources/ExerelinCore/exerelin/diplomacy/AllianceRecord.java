@@ -1,7 +1,7 @@
 package exerelin.diplomacy;
 
 import com.fs.starfarer.api.Global;
-import exerelin.ExerelinUtils;
+import exerelin.utilities.ExerelinUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;

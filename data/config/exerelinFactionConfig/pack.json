@@ -1,5 +1,5 @@
 {
-    "uniqueModClassName":"data.scripts.world.PackModPlugin", # String
+    "uniqueModClassName":"data.scripts.JunkPiratesModPlugin", # String
     "factionNiceName":"P.A.C.K", # String
     "playableFaction":"true", # Boolean
 

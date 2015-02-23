@@ -3,7 +3,7 @@ package exerelin.events;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import exerelin.EventBase;
-import exerelin.ExerelinUtils;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.SectorManager;
 import exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import exerelin.utilities.ExerelinConfig;

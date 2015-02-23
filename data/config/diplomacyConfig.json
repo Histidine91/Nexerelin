@@ -1,0 +1,279 @@
+{
+	"pirateFactions": [ "pirates", "exipirated", "junkpirates" ],
+	"warWearinessPerInterval":20,	#20
+	"eventFrequency":10,	#10
+	"events":[
+		{
+			"name":"Official Aid",
+			"stage":"official_aid",
+			"minRepLevelToOccur":"inhospitable",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+			"allowPirates":true
+		},
+		{
+			"name":"Philanthropy",
+			"stage":"philanthropy",
+			"minRepLevelToOccur":"inhospitable",
+			"minRepChange":0.05,
+			"maxRepChange":0.1,
+			"allowPirates":true
+		},
+		{
+			"name":"Cultural Boom",
+			"stage":"culture_boom",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":0.05,
+			"maxRepChange":0.1
+		},
+		{
+			"name":"Cooperation Deal",
+			"stage":"cooperation_deal",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+			"allowPirates":true
+		},
+		{
+			"name":"Major Cooperation Deal",
+			"stage":"cooperation_deal_major",
+			"minRepLevelToOccur":"favorable",
+			"minRepChange":0.15,
+			"maxRepChange":0.2,
+			"allowPirates":true
+		},
+		{
+			"name":"Celebrity Wedding",
+			"stage":"celebrity_wedding",
+			"minRepLevelToOccur":"favorable",
+			"minRepChange":0.05,
+			"maxRepChange":0.1,
+			"chance":0.3	# because realistically, how often would this happen?
+		},
+		{
+			"name":"Helped Foil Terror Plot",
+			"stage":"helped_foil_terror",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":0.1,
+			"maxRepChange":0.2,
+			"allowPirates":true
+		},
+		{
+			"name":"Criminal Extradited",
+			"stage":"extradition",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+		},
+		{
+			"name":"Star-crossed Lovers",	# love conquers all
+			"stage":"starcrossed",
+			"maxRepLevelToOccur":"inhospitable",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+			"allowPirates":true,
+			"chance":0.3
+		},		
+		{
+			"name":"Diplomatic Blunder",
+			"stage":"diplomatic_blunder",
+			"minRepLevelToOccur":"inhospitable",
+			"minRepChange":-0.1,
+			"maxRepChange":-0.05,
+			"repLimit":"inhospitable"
+		},
+		{
+			"name":"Failed Deal",
+			"stage":"failed_deal",
+			"minRepLevelToOccur":"inhospitable",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"inhospitable",
+			"allowPirates":true
+		},
+		{
+			"name":"Celebrity Wedding Jilted",
+			"stage":"celebrity_wedding_jilted",
+			"minRepLevelToOccur":"neutral",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"inhospitable",
+			"chance":0.3
+		},
+		{
+			"name":"Political Funding Uncovered",
+			"stage":"political_funding_uncovered",
+			"minRepLevelToOccur":"inhospitable",
+			"maxRepLevelToOccur":"favorable",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"hostile",	# probably an overreaction but meh
+			"allowPirates":true
+		},
+		{
+			"name":"Xenophobia",
+			"stage":"xenophobia",
+			"minRepLevelToOccur":"inhospitable",
+			"maxRepLevelToOccur":"friendly",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"inhospitable"
+		},
+		{
+			"name":"Criminal Extradition Refused",
+			"stage":"extradition_refused",
+			"minRepLevelToOccur":"inhospitable",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"hostile",
+			"chance":1.2
+		},
+		{
+			"name":"Spy Ring Uncovered",
+			"stage":"spy_ring_uncovered",
+			"maxRepLevelToOccur":"welcoming",
+			"repEnsureAtBest":"favorable",
+			"minRepChange":-0.2,
+			"maxRepChange":-0.1,
+			"repLimit":"hostile",
+			"allowPirates":true,
+			"chance":1.2
+		},
+		{
+			"name":"Sabotage Uncovered",
+			"stage":"sabotage_uncovered",
+			"repEnsureAtBest":"suspicious",
+			"maxRepLevelToOccur":"welcoming",
+			"minRepChange":-0.2,
+			"maxRepChange":-0.1,
+			"repLimit":"hostile",
+			"allowPirates":true,
+			"chance":1.2
+		},
+		{
+			"name":"Supporting Rebels",
+			"stage":"support_rebels",
+			"repEnsureAtBest":"inhospitable",
+			"maxRepLevelToOccur":"suspicious",
+			"minRepChange":-0.2,
+			"maxRepChange":-0.1,
+			"repLimit":"hostile",
+			"allowPirates":true,
+			"chance":1.2
+		},
+		{
+			"name":"Diplomat Crime Ring",
+			"stage":"diplomat_crimes",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"inhospitable"
+		},
+		{
+			"name":"Privateering",
+			"stage":"privateering",
+			"minRepLevelToOccur":"inhospitable",
+			"maxRepLevelToOccur":"neutral",
+			"minRepChange":-0.25,
+			"maxRepChange":-0.15,
+			"repLimit":"hostile",
+			"chance":1.2
+		},
+		{
+			"name":"Shots Fired",
+			"stage":"shots_fired",
+			"minRepLevelToOccur":"inhospitable",
+			"maxRepLevelToOccur":"suspicious",
+			"repEnsureAtBest":"hostile",
+			"minRepChange":-0.1,	# the repEnsureAtBest will take care of the expected rep change from such an event
+			"maxRepChange":-0.05,
+			"repLimit":"hostile",
+			"allowPirates":true,
+			"chance":2	# help tip things over into outright violence
+		},
+		{
+			"name":"Ceasefire",
+			"stage":"ceasefire",
+			"maxRepLevelToOccur":"hostile",
+			"repEnsureAtWorst":"inhospitable",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+			"repLimit":"neutral",
+			"chance":0	# only occurs when DiplomacyManager calls it directly
+		},
+		{
+			"name":"Peace Treaty",
+			"stage":"peace_treaty",
+			"maxRepLevelToOccur":"hostile",
+			"repEnsureAtWorst":"suspicious",
+			"minRepChange":0.25,
+			"maxRepChange":0.15,
+			"repLimit":"favorable",
+			"chance":0	# only occurs when DiplomacyManager calls it directly
+		},
+		
+		# faction-specific
+		{
+			"name":"Religious Expansion",
+			"stage":"religious_expansion",
+			"minRepLevelToOccur":"suspicious",
+			"minRepChange":0.05,
+			"maxRepChange":0.1,
+			"allowedFactions2":["luddic_church"],
+			"allowPirates":true
+		},
+		{
+			"name":"Religious Minority Persecuted",
+			"stage":"persecution_minority",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"allowedFactions2":["luddic_church"],
+			"allowPirates":true
+		},
+		{
+			"name":"Religious Majority Persecutes",
+			"stage":"persecution_majority",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"allowedFactions1":["luddic_church"]
+		},
+		{
+			"name":"Priest Scandal",
+			"stage":"priest_scandal",
+			"minRepChange":-0.1,
+			"maxRepChange":-0.05,
+			"repLimit":"inhospitable",
+			"allowedFactions2":["luddic_church"]
+		},
+		{
+			"name":"Condemn Treatment of Dissidents",
+			"stage":"dissident_treatment",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"hostile",
+			"allowedFactions1":["hegemony","sindrian_diktat","mayorate","interstellarimperium"],
+			"allowedFactions2":["luddic_church","shadow_industry","citadeldefenders"]
+		},
+		{
+			"name":"Anti-Corporation Movement",
+			"stage":"anti_corporation",
+			"minRepLevelToOccur":"inhospitable",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"hostile",
+			"allowedFactions1":["hegemony","luddic_church","pack","interstellarimperium"],
+			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders"]
+		},
+		{
+			"name":"Technology Stolen",
+			"stage":"tech_stolen",
+			"maxRepLevelToOccur":"welcoming",
+			"repEnsureAtBest":"neutral",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"hostile",
+			"allowPirates":true,
+			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","interstellarimperium","mayorate"]
+		}
+	]
+}

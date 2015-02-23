@@ -1,8 +1,7 @@
 package data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
-import data.scripts.world.exerelin.ExerelinSetupData;
-import exerelin.ExerelinUtils;
+import exerelin.campaign.ExerelinSetupData;
 import exerelin.SectorManager;
 import exerelin.utilities.*;
 
@@ -21,7 +20,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         System.out.println("onGameLoad");
         ExerelinSetupData.resetInstance();
         ExerelinConfig.loadSettings();
-        ExerelinCheck.checkModCompatability();
+        //ExerelinCheck.checkModCompatability();
     }
 
     @Override
@@ -29,7 +28,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         System.out.println("onNewGame");
         ExerelinSetupData.resetInstance();
         ExerelinConfig.loadSettings();
-        ExerelinCheck.checkModCompatability();
+        //ExerelinCheck.checkModCompatability();
     }
 
     public void onNewGameAfterEconomyLoad() {

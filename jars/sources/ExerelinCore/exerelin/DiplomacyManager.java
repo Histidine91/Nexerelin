@@ -1,5 +1,6 @@
 package exerelin;
 
+import exerelin.utilities.ExerelinUtils;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
@@ -14,12 +15,12 @@ import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 
-/* 	This class manages faction relationships for Exerelin.
-
-	The updateRelationships method should be run each day. It will
-	pick the next faction to update and repeat in a cycle.
-
-	Also handles player influence with factions
+/**
+ * OUT OF DATE, use exerelin.campaign.DiplomacyManager instead!.
+ * This class manages faction relationships for Exerelin.
+ * The updateRelationships method should be run each day. It will
+ * pick the next faction to update and repeat in a cycle.
+ * Also handles player influence with factions
  */
 
 public class DiplomacyManager

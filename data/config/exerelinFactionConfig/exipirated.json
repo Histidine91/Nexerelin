@@ -2,6 +2,7 @@
     "uniqueModClassName":"data.scripts.ExigencyModPlugin", # String
     "factionNiceName":"Ahriman Association", # String
     "playableFaction":"true", # Boolean
+    "isPirateNeutral":"true", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
@@ -40,7 +41,7 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "factionsDisliked":["exigency"], # String array
 
     "freighterVariants":["buffalo_Standard"], # String array
     "tankerVariants":["phaeton_Standard"], # String array
@@ -48,31 +49,4 @@
 
     "troopTransportVariants":["valkyrie_Elite"], # String array
     "superFreighterVariants":["atlas_Standard"], # String array
-
-    "carrierVariants":["exipirated_kafziel_Standard", "exigency_lightcarrier_Standard", "exipirated_gehenna_Standard"], # String array
-
-    "fighterWings":["exigency_naxos_wing",
-                    "exigency_kaivor_wing",
-                    "exigency_glynado_wing",
-                    "exigency_tarujan_wing",
-                    "exipirated_azazel_wing",
-                    "exipirated_saraph_wing"], # String array
-
-    "frigateVariants":[ "exigency_compactfrigate_Standard",
-                        "exipirated_rauwel_Standard",
-                        "exigency_yria_Standard"], # String array
-
-    "destroyerVariants":[   "exipirated_azryel_Standard",
-                            "exipirated_azryel_Assault",
-                            "exipirated_kafziel_Standard",
-                            "exigency_lightcarrier_Standard",
-                            "exigency_destroyer_Standard"], # String array
-
-    "cruiserVariants":[ "exipirated_harinder_Standard",
-                        "exipirated_harinder_Support",
-                        "exigency_cruiser_Standard"], # String array
-
-    "capitalVariants":["exipirated_gehenna_Standard", "exipirated_gehenna_Support"], # String array
-
-    "startingVariants":["exipirated_rauwel_Standard"], # String array
 }

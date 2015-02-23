@@ -1,5 +1,6 @@
 package exerelin;
 
+import exerelin.utilities.ExerelinUtils;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import org.lazywizard.lazylib.MathUtils;
 
 import exerelin.fleets.*;
 import exerelin.commandQueue.CommandAddCargo;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.diplomacy.DiplomacyRecord;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsCargo;
@@ -207,7 +209,7 @@ public class StationRecord
     {
         if(this.getOwner() != null && !this.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
         {
-            if(!ExerelinUtilsFaction.isFactionAtWar(this.getOwner().getFactionId(), true))
+            if(!DiplomacyManager.isFactionAtWar(this.getOwner().getFactionId(), true))
             {
                 if(this.stationFleetStance != StationFleetStance.BALANCED)
                     setStationFleetStance(StationFleetStance.BALANCED);
@@ -327,7 +329,7 @@ public class StationRecord
 
                 return;
             }
-            if(this.owningFaction != null && (warFleet2 == null || !warFleet2.fleet.isAlive()) && ExerelinUtilsFaction.isFactionAtWar(this.owningFaction.getFactionId(), true))
+            if(this.owningFaction != null && (warFleet2 == null || !warFleet2.fleet.isAlive()) && DiplomacyManager.isFactionAtWar(this.owningFaction.getFactionId(), true))
             {
                 if(this.defendStationRecord != null)
                     warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, this.defendStationRecord.getStationToken(), null, WarFleet.FleetStance.PATROL, true);
@@ -387,7 +389,7 @@ public class StationRecord
 
         if(this.stationFleetStance == StationFleetStance.PATROL)
         {
-            if(this.owningFaction != null && (warFleet1 == null || !warFleet1.fleet.isAlive()) && ExerelinUtilsFaction.isFactionAtWar(this.owningFaction.getFactionId(), true))
+            if(this.owningFaction != null && (warFleet1 == null || !warFleet1.fleet.isAlive()) && DiplomacyManager.isFactionAtWar(this.owningFaction.getFactionId(), true))
             {
                 if(this.defendStationRecord != null)
                     warFleet1 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, this.defendStationRecord.getStationToken(), null, WarFleet.FleetStance.PATROL, true);
@@ -399,7 +401,7 @@ public class StationRecord
 
                 return;
             }
-            if(this.owningFaction != null && (warFleet2 == null || !warFleet2.fleet.isAlive()) && ExerelinUtilsFaction.isFactionAtWar(this.owningFaction.getFactionId(), true))
+            if(this.owningFaction != null && (warFleet2 == null || !warFleet2.fleet.isAlive()) && DiplomacyManager.isFactionAtWar(this.owningFaction.getFactionId(), true))
             {
                 if(this.defendStationRecord != null)
                     warFleet2 = new WarFleet(this.owningFaction.getFactionId(), this.getStationToken(), null, this.defendStationRecord.getStationToken(), null, WarFleet.FleetStance.PATROL, true);

@@ -1,5 +1,6 @@
 package exerelin;
 
+import exerelin.utilities.ExerelinUtils;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.combat.ShipAPI;

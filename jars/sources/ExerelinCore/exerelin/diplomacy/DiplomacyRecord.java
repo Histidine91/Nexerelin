@@ -2,7 +2,7 @@ package exerelin.diplomacy;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import exerelin.ExerelinUtils;
+import exerelin.utilities.ExerelinUtils;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

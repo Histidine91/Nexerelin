@@ -1,12 +1,11 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.List;
 import java.util.ArrayList;
-import java.io.File;
+
+import static exerelin.utilities.ExerelinUtils.JSONArrayToStringArray;
 
 public class ExerelinConfig
 {
@@ -33,8 +32,8 @@ public class ExerelinConfig
     public static double reduceSuppliesFactor = 1.0;
     
     // System Generation Minimums
-    public static int minimumPlanets = 3;
-    public static int minimumStations = 5;
+    public static int minimumPlanets = 2;
+    public static int minimumStations = 0;
     public static int minimumAsteroidBelts = 0;
 
     // Resourcing
@@ -144,17 +143,5 @@ public class ExerelinConfig
         }
 
         return  customRebels;
-    }
-
-    private static String[] JSONArrayToStringArray(JSONArray jsonArray)
-    {
-        try
-        {
-            return jsonArray.toString().substring(1, jsonArray.toString().length() - 1).replaceAll("\"","").split(",");
-        }
-        catch(Exception e)
-        {
-            return new String[]{};
-        }
     }
 }

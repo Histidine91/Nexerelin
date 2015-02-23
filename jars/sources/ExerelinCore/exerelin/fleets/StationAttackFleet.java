@@ -1,10 +1,12 @@
 package exerelin.fleets;
 
+import exerelin.utilities.ExerelinUtils;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 
 import exerelin.*;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import exerelin.SectorManager;
 import exerelin.utilities.*;
@@ -37,7 +39,7 @@ public class StationAttackFleet extends ExerelinFleetBase
 
         this.fleet = ExerelinUtilsFleet.createFleetForFaction(faction, ExerelinUtilsFleet.ExerelinFleetType.BOARDING, null);
 
-        if (ExerelinUtilsFaction.getFactionsAtWarWithFaction(faction, false).size() > 0)
+        if (DiplomacyManager.getFactionsAtWarWithFaction(faction, false).size() > 0)
             ExerelinUtilsFleet.addEscortsToFleet(this.fleet, 4);
         else
             ExerelinUtilsFleet.addEscortsToFleet(this.fleet, 2);

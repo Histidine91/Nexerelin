@@ -40,7 +40,7 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
-    "factionsDisliked":["interstellarimperium"], # String array
+    "factionsDisliked":["interstellarimperium","tritachyon"], # String array
 
     "freighterVariants":["tarsus_Standard", "mule_Standard"], # String array
     "tankerVariants":["dram_Light"], # String array
@@ -48,14 +48,4 @@
 
     "troopTransportVariants":["valkyrie_Elite"], # String array
     "superFreighterVariants":["atlas_Standard"], # String array
-
-    "carrierVariants":["condor_FS", "venture_Balanced"], # String array
-
-    "fighterWings":["piranha_wing", "broadsword_wing", "talon_wing"], # String array
-    "frigateVariants":["warhound_Standard", "hound_Assault", "lasher_CS"], # String array
-    "destroyerVariants":["enforcer_Elite", "enforcer_Assault", "enforcer_CS", "condor_FS", "buffalo2_FS"], # String array
-    "cruiserVariants":["dominator_Support", "dominator_Outdated", "venture_Balanced", "dominator_Assault"], # String array
-    "capitalVariants":["onslaught_Standard"], # String array
-
-    "startingVariants":["hound_Assault", "lasher_CS"], # String array
 }

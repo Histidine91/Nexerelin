@@ -1,5 +1,6 @@
 package exerelin;
 
+import exerelin.utilities.ExerelinUtils;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import exerelin.utilities.ExerelinUtilsMessaging;

@@ -3,7 +3,7 @@ package exerelin.diplomacy;
 /* This class manages the alliances currently in the game.
  */
 
-import exerelin.ExerelinUtils;
+import exerelin.utilities.ExerelinUtils;
 
 public class AllianceManager
 {

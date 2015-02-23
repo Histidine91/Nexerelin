@@ -170,13 +170,5 @@ public class ExerelinWelcomeDialogPlugin implements InteractionDialogPlugin
     {
         return null;
     }
-	public boolean fireAll(String trigger)
-	{
-		return FireAll.fire(null, this.dialog, this.memoryMap, trigger);
-	}
-  
-	public boolean fireBest(String trigger)
-	{
-		return FireBest.fire(null, this.dialog, this.memoryMap, trigger);
-	}
+
 }
