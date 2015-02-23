@@ -76,14 +76,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static void factionEliminated(FactionAPI victor, FactionAPI defeated, MarketAPI market)
     {
+        removeLiveFactionId(defeated.getId());
         Map<String, Object> params = new HashMap<>();
         params.put("defeatedFaction", defeated);
         params.put("victorFaction", victor);
         FactionAPI playerFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
         params.put("playerDefeated", defeated == playerFaction);
-        params.put("playerVictory", victor == playerFaction);
+        params.put("playerVictory", victor == playerFaction && getLiveFactionIdsCopy().size() == 1);
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
-        SectorManager.removeLiveFactionId(defeated.getId());
     }
     
     public static void factionRespawned(FactionAPI faction, MarketAPI market)
