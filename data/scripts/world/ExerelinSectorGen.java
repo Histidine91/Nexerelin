@@ -126,7 +126,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				allowedImages.add(new String[]{"illustrations", "industrial_megafacility"} );
 			if(isStation && size >= 3)
 				allowedImages.add(new String[]{"illustrations", "jangala_station"} );
-			if(entity.getFaction().getId() == "pirates")
+			if(entity.getFaction().getId().equals("pirates"))
 				allowedImages.add(new String[]{"illustrations", "pirate_station"} );
 			if(!isStation && size <=3)
 				allowedImages.add(new String[]{"illustrations", "vacuum_colony"} );
