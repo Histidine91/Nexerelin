@@ -58,8 +58,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private List possibleSystemNamesList = new LinkedList(Arrays.asList(possibleSystemNames));
 	private List possiblePlanetNamesList = new LinkedList(Arrays.asList(possiblePlanetNames));
 	
-	private static final String[] possiblePlanetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water"};
-	private static final String[] possiblePlanetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "gas_giant", "ice_giant"};
+	private static final String[] possiblePlanetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_ice"};
+	private static final String[] possiblePlanetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "gas_giant", "ice_giant"};
 	private static final String[] possibleMoonTypes = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice"};
 	private static final String[] possibleStationImages = new String[] {"station_side00", "station_side02", "station_side04"};
 	
@@ -202,7 +202,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			newMarket.addCondition("terran");
 		if (planetType.equals("desert"))
 			newMarket.addCondition("desert");
-		if (planetType.equals("frozen"))
+		if (planetType.equals("frozen") || planetType.equals("rocky_ice"))
 			newMarket.addCondition("ice");
 				
 		if(marketSize < 4 && !isStation){
