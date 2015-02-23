@@ -704,6 +704,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			name = planet.getName() + " " + name;
 			String id = name.replace(' ','_');
 			String image = possibleStationImages[ExerelinUtils.getRandomInRange(0, possibleStationImages.length - 1)];
+			if (owningFactionId.equals("shadow_industry"))
+				image = "station_shi_prana";    // custom station image for Shadowyards
 			
 			if (existingMarket == null)	// de novo station, probably orbiting an uninhabitable planet
 			{
