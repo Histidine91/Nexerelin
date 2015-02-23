@@ -29,6 +29,7 @@ import exerelin.plugins.*;
 import exerelin.*;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -65,6 +66,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	//private static String[] possibleFactionIds = new String[]{"sindrian_diktat", "tritachyon", "luddic_church", "pirates", "hegemony", "independent"};
 	private String[] factionIds = new String[]{};
 	private boolean isStartSystemChosen = false;
+	private int starNum = 0;
 
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
 
@@ -136,19 +138,23 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			entity.setInteractionImage(illustration[0], illustration[1]);
 		}
 	
-	private MarketAPI addMarketToEntity(int i, SectorEntityToken entity, String owningFactionId, String planetType, boolean isStation)
+	private MarketAPI addMarketToEntity(int starIndex, int planetIndex, SectorEntityToken entity, String owningFactionId, String planetType, boolean isStation)
 	{
 		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
 		if (isStation) marketSize = ExerelinUtils.getRandomInRange(1, 2) + ExerelinUtils.getRandomInRange(1, 2);	// stations are on average smaller
 		else marketSize = ExerelinUtils.getRandomInRange(2, 3) + ExerelinUtils.getRandomInRange(2, 3);
 		
-		// first planet in the system is a regional capital
+		// first planet in the system is a regional capital (or HQ if in Exerelin)
 		// it is always at least size 5
-		if (i == 0)
+		if (planetIndex == 0)
 		{
 			if (marketSize < 5)
 				marketSize = 5;
+			
+			// make sure player faction has a presence in Exerelin
+			if (starIndex == 0)
+				owningFactionId = PlayerFactionStore.getPlayerFactionId();
 		}
 		// Alex says "You can set marketSize via MarketAPI, but it's not "nicely" mutable like other stats at the moment."
 		// so to be safe we only spawn the market after we already know what size it'll be
@@ -167,9 +173,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		newMarket.addCondition("population_" + marketSize);
 
-		if (i == 0)
+		if (planetIndex == 0)
 		{
-			newMarket.addCondition("regional_capital");
+			newMarket.addCondition(starIndex == 0 ? "headquarters" : "regional_capital");
 		}
 		
 		int minSizeForMilitaryBase = 5;
@@ -566,7 +572,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			{			
 				String owningFactionId = getRandomFaction();
 				newPlanet.setFaction(owningFactionId);
-				addMarketToEntity(i, newPlanet, owningFactionId, planetType, false);
+				addMarketToEntity(starNum, i, newPlanet, owningFactionId, planetType, false);
 				pickEntityInteractionImage(newPlanet, newPlanet.getMarket(), true);
 			}
 		}
@@ -703,7 +709,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			{
 				SectorEntityToken newStation = system.addCustomEntity(id, name, image, owningFactionId);
 				newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
-				addMarketToEntity(-1, newStation, owningFactionId, "", true);
+				addMarketToEntity(starNum, -1, newStation, owningFactionId, "", true);
 				pickEntityInteractionImage(newStation, newStation.getMarket(), true);
 			}
 			else	// append a station to an existing inhabited planet
@@ -741,5 +747,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				"comm_relay", // type of object, defined in custom_entities.json
 				"neutral"); // faction
 		relay.setCircularOrbit(star, 90, 1200, 180);
+		
+		starNum++;
 	}
 }
