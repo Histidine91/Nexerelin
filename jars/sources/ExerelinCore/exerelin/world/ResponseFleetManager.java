@@ -22,7 +22,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 {
     public static final String MANAGER_MAP_KEY = "exerelin_responseFleetManager";
     public static final String RESERVE_SIZE_MAP_KEY = "exerelin_reserveFleetSize";
-    private static final float RESERVE_INCREMENT_PER_DAY = 0.4f;
+    private static final float RESERVE_INCREMENT_PER_DAY = 40f;
     private static final float RESERVE_MARKET_STABILITY_DIVISOR = 5f;
     private static final float INITIAL_RESERVE_SIZE_MULT = 0.75f;
     private static final float MIN_FP_TO_SPAWN = 20f;
@@ -107,7 +107,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
         for(MarketAPI market:markets)
         {
-            float increment = market.getSize() * market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR * RESERVE_INCREMENT_PER_DAY * days;
+            float increment = market.getSize() * (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR) * RESERVE_INCREMENT_PER_DAY * days;
             float newValue = Math.min(reserves.get(market.getId()) + increment, getMaxReserveSize(market));
             
             reserves.put(market.getId(), newValue);
