@@ -7,6 +7,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
@@ -38,15 +39,31 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 	public void advance(float amount) {
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		if (playerFleet == null) {
-		return;
+			return;
 		}
 		CampaignClockAPI clock = Global.getSector().getClock();
 		if (clock.getDay() == 1 && clock.getMonth() != month) {
 		month = Global.getSector().getClock().getMonth();
 		int level = Global.getSector().getPlayerPerson().getStats().getLevel();
+		String stage = "report";
 		paidAmount = BASE_SALARY + INCREMENT_PER_LEVEL * (level - 1);
+		
+		FactionAPI alignedFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
+		RepLevel relation = alignedFaction.getRelationshipLevel("player");
+		if (alignedFaction.isAtBest("player", RepLevel.INHOSPITABLE))
+		{
+			paidAmount = 0;
+			stage = "report_unpaid";
+		}
+		else if (relation == RepLevel.SUSPICIOUS)
+			paidAmount *= 0.25f;
+		else if (relation == RepLevel.NEUTRAL)
+			paidAmount *= 0.5f;
+		else if (relation == RepLevel.FAVORABLE)
+			paidAmount *= 0.75f;
+		
 		playerFleet.getCargo().getCredits().add(paidAmount);
-		Global.getSector().reportEventStage(this, "report", playerFleet, MessagePriority.DELIVER_IMMEDIATELY);
+		Global.getSector().reportEventStage(this, stage, playerFleet, MessagePriority.DELIVER_IMMEDIATELY);
 		Global.getSector().getPersistentData().put("salariesClock", Global.getSector().getClock().createClock(Global.getSector().getClock().getTimestamp()));
 		}
 	}

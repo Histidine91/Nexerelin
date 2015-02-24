@@ -10,6 +10,7 @@ exerelin_faction_respawned,new,,,news,$Faction arrives in Exerelin,"$TheFaction 
 exerelin_faction_respawned,respawned,,,news,$Faction returns to Exerelin,"$TheFaction have regained a foothold in the Exerelin cluster, at $market.",,,,,,
 ,,,,,,,,,,,,
 exerelin_faction_salary,report,,,player_intel_always,Monthly salary report: $paid received,You have received $paid from $employer for your continued services.,,,graphics/icons/intel/gain_credits.png,,,
+exerelin_faction_salary,report_unpaid,,,player_intel_always,Monthly salary report: no payment,"Due to your bad conduct in their eyes, $employer have witheld your salary for this month.",,,graphics/icons/intel/gain_credits.png,,,
 ,,,,,,,,,,,,
 # diplomacy events,,,,,,,,,,,,
 exerelin_diplomacy,official_aid,,,news,Aid package by $otherFaction for $faction,$OtherFaction authorities have sent a charitable aid package to $faction citizens on $market. Local officials have expressed their gratitude.,"Relations between $faction and $otherFaction improved by $deltaAbs, currently at $newRelationStr.",,,,,
