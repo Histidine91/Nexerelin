@@ -171,7 +171,8 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             if (data.fleet == fleet)
             {
                 // return the ships to reserve if applicable
-                if(reason == CampaignEventListener.FleetDespawnReason.REACHED_DESTINATION)
+                if(reason == CampaignEventListener.FleetDespawnReason.REACHED_DESTINATION 
+                        && data.sourceMarket.getFaction() == data.fleet.getFaction())
                 {
                     String marketId = data.sourceMarket.getId();
                     reserves.put(marketId, reserves.get(marketId) + fleet.getFleetPoints());
