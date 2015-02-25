@@ -58,18 +58,21 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     private List<DiplomacyEventDef> eventDefs;
     private List<String> pirateFactions;
     
-    private static final Float WAR_WEARINESS_DIVISOR = 6000f;
-    private static final Float MIN_WAR_WEARINESS_FOR_PEACE = 2500f;
-    private static final Float WAR_WEARINESS_CEASEFIRE_REDUCTION = 1600f;
-    private static final Float WAR_WEARINESS_PEACE_TREATY_REDUCTION = 2500f;
-    private static final Float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
-    private static final Float PEACE_TREATY_CHANCE = 0.3f;
+    private static final float WAR_WEARINESS_DIVISOR = 6000f;
+    private static final float MIN_WAR_WEARINESS_FOR_PEACE = 2500f;
+    private static final float WAR_WEARINESS_CEASEFIRE_REDUCTION = 1600f;
+    private static final float WAR_WEARINESS_PEACE_TREATY_REDUCTION = 2500f;
+    private static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
+    private static final float PEACE_TREATY_CHANCE = 0.3f;
+    
+    
     private Map<String, Float> warWeariness;
     private float warWearinessPerInterval = 20f;
     private DiplomacyEventDef peaceTreatyEvent;
     private DiplomacyEventDef ceasefireEvent;
     
-    private float interval = 10f;
+    private float baseInterval = 20f;
+    private float interval = 20f;
     private final IntervalUtil intervalUtil;
     
     // FIXME: this is kind of a hack
@@ -80,7 +83,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     private void loadSettings() throws IOException, JSONException {
         JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
-        interval = (float)config.optDouble("eventFrequency", 10f);
+        baseInterval = (float)config.optDouble("eventFrequency", 20f);
+        interval = getDiplomacyInterval();
         warWearinessPerInterval = (float)config.optDouble("warWearinessPerInterval", 20f);
         JSONArray pirateFactionsJson = config.getJSONArray("pirateFactions");
         for (int i=0;i<pirateFactionsJson.length();i++){ 
@@ -152,6 +156,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
     }
     
+    public float getDiplomacyInterval()
+    {
+        int numFactions = SectorManager.getLiveFactionIdsCopy().size() - 2;
+        if (numFactions < 0) numFactions = 0;
+        return baseInterval * (float)Math.pow(0.9, numFactions);
+    }
+    
     public static ReputationAdjustmentResult adjustRelations(DiplomacyEventDef event, MarketAPI market, FactionAPI faction1, FactionAPI faction2, float delta)
     {   
         SectorAPI sector = Global.getSector();
@@ -204,6 +215,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             params.put("otherFaction", faction2);
             sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
         }
+        SectorManager.checkForVictory();
     }
     
     public void createDiplomacyEvent()
@@ -288,7 +300,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     private void updateWarWeariness()
     {
         SectorAPI sector = Global.getSector();
-        String[] factionIds = ExerelinSetupData.getInstance().getAvailableFactions(sector);
+        List<String> factionIds = SectorManager.getLiveFactionIdsCopy();
         FactionAPI factionWithMostWars = null;
         int mostWarCount = 0;
         List<String> enemiesOfFaction = new ArrayList<>();
@@ -432,6 +444,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         createDiplomacyEvent();
         updateWarWeariness();
+        interval = getDiplomacyInterval();
+        intervalUtil.setInterval(interval * 0.75f, interval * 1.25f);
     }
   
     @Override

@@ -26,7 +26,6 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import exerelin.campaign.events.MarketAttackedEvent;
-import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 
 /**
@@ -48,8 +47,9 @@ public class InvasionRound {
 	public static final float DEFENDER_REGIONAL_CAPITAL_MOD = 0.25f;
 	public static final float DEFENDER_HEADQUARTERS_MOD = 0.4f;
 	public static final float DEFENDER_RAID_STRENGTH_MULT = 0.75f;
-	public static final float MARINE_LOSS_MULT = 0.1f;
-	public static final float MARINE_LOSS_RANDOM_MOD = 0.025f;
+	public static final float DEFENDER_STRENGTH_XP_MULT = 500f;
+	public static final float MARINE_LOSS_MULT = 0.4f;
+	public static final float MARINE_LOSS_RANDOM_MOD = 0.1f;
 	public static final float MARINE_LOSS_RAID_MULT = 0.5f;
 	
 	/**
@@ -221,7 +221,7 @@ public class InvasionRound {
 		}
 		
 		float outcome = attackerStrength - defenderStrength;
-		float marineLossFactor = defenderStrength*6 - attackerStrength*2;		
+		float marineLossFactor = defenderStrength * defenderStrength/attackerStrength;		
 		float marineLossMod = MARINE_LOSS_MULT - MARINE_LOSS_RANDOM_MOD;
 		if (simType == InvasionSimulationType.REALISTIC)
 			marineLossMod += (float)(2 * Math.random() * MARINE_LOSS_RANDOM_MOD);
@@ -287,7 +287,8 @@ public class InvasionRound {
 		attackerCargo.removeMarines(result.getMarinesLost());
 		
 		boolean playerInvolved = false;
-		if ( attacker == sector.getPlayerFleet() )
+		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
+		if ( attacker == playerFleet )
 		{
 			playerInvolved = true;
 			attackerFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -352,6 +353,14 @@ public class InvasionRound {
 			params.put("repChangeStrength", repChangeStrength);
 			sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
 			SectorManager.notifyMarketCaptured(market, attackerFaction, defenderFaction);
+			
+			if (playerInvolved)
+			{
+				float xp = result.defenderStrength * DEFENDER_STRENGTH_XP_MULT;
+				playerFleet.getCargo().gainCrewXP(xp);
+				playerFleet.getCommander().getStats().addXP((long) xp);
+				playerFleet.getCommander().getStats().levelUpIfNeeded();
+			}
 		}
 		
 		log.info( String.format("Invasion of [%s] by " + attacker.getNameWithFaction() + (success ? " successful" : " failed"), defender.getName()) );

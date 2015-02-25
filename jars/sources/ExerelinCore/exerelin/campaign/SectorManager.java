@@ -4,6 +4,8 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -19,11 +21,12 @@ import org.apache.log4j.Logger;
 public class SectorManager extends BaseCampaignEventListener implements EveryFrameScript {
     public static Logger log = Global.getLogger(SectorManager.class);
     private static SectorManager sectorManager;
-    
+
     private static final String MANAGER_MAP_KEY = "exerelin_sectorManager";
     
     private List<String> factionIdsAtStart;
     private List<String> liveFactionIds;
+    private boolean victoryHasOccured;
 
     public SectorManager()
     {
@@ -37,9 +40,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             {
                 liveFactionIds.add(factionId);
                 factionIdsAtStart.add(factionId);
-            }
-            
+            }   
         }
+        victoryHasOccured = false;
     }
 
     @Override
@@ -93,6 +96,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     faction.setRelationship(defeated.getId(), 0);
             }
         }
+        checkForVictory();
     }
     
     public static void factionRespawned(FactionAPI faction, MarketAPI market)
@@ -104,6 +108,43 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("originalFaction", originalFaction);
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_respawned", params);
         SectorManager.addLiveFactionId(faction.getId());
+    }
+    
+    public static void checkForVictory()
+    {
+        if (sectorManager == null) return;
+        if (sectorManager.victoryHasOccured) return;
+        //FactionAPI faction = Global.getSector().getFaction(factionId);
+        SectorAPI sector = Global.getSector();
+        String playerFactionId = PlayerFactionStore.getPlayerFactionId();
+        List<String> liveFactions = getLiveFactionIdsCopy();
+        if (liveFactions.size() == 1)   // conquest victory
+        {
+            String victorFactionId = liveFactions.get(0);
+            Map<String, Object> params = new HashMap<>();
+            boolean playerVictory = victorFactionId.equals(PlayerFactionStore.getPlayerFactionId());
+            params.put("victorFactionId", victorFactionId);
+            params.put("diplomaticVictory", false);
+            params.put("playerVictory", playerVictory);
+            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(sector.getPlayerFleet()), "exerelin_victory", params);
+            sectorManager.victoryHasOccured = true;
+        }
+        else {
+            // diplomatic victory
+            for(String factionId : liveFactions)
+            {
+                FactionAPI faction = sector.getFaction(factionId);
+                if (!faction.isAtWorst(playerFactionId, RepLevel.FRIENDLY))
+                    return;
+            }
+            Map<String, Object> params = new HashMap<>();
+            boolean playerVictory = true;
+            params.put("victorFactionId", playerFactionId);
+            params.put("diplomaticVictory", true);
+            params.put("playerVictory", true);
+            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(sector.getPlayerFleet()), "exerelin_victory", params);
+            sectorManager.victoryHasOccured = true;
+        }
     }
     
     public static void notifyMarketCaptured(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner)
@@ -142,5 +183,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return new ArrayList<>();
         return new ArrayList<>(sectorManager.liveFactionIds);
+    }
+    
+    public static boolean isFactionAlive(String factionId)
+    {
+        if (sectorManager == null) return false;
+        return sectorManager.liveFactionIds.contains(factionId);
     }
 }

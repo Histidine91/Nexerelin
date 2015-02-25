@@ -69,10 +69,11 @@
 			"name":"Star-crossed Lovers",	# love conquers all
 			"stage":"starcrossed",
 			"maxRepLevelToOccur":"inhospitable",
-			"minRepChange":0.1,
-			"maxRepChange":0.15,
+			"repEnsureAtWorst":"hostile",
+			"minRepChange":0.15,
+			"maxRepChange":0.2,
 			"allowPirates":true,
-			"chance":0.3
+			"chance":0.2
 		},		
 		{
 			"name":"Diplomatic Blunder",
