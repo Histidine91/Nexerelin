@@ -6,8 +6,11 @@ import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import static exerelin.campaign.InvasionRound.log;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +29,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     private List<String> factionIdsAtStart;
     private List<String> liveFactionIds;
+    private Map<String, String> systemToRelayMap;
     private boolean victoryHasOccured;
 
     public SectorManager()
@@ -138,7 +142,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     return;
             }
             Map<String, Object> params = new HashMap<>();
-            boolean playerVictory = true;
             params.put("victorFactionId", playerFactionId);
             params.put("diplomaticVictory", true);
             params.put("playerVictory", true);
@@ -162,6 +165,24 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (marketsRemaining == 1)
         {
             factionRespawned(newOwner, market);
+        }
+        
+        // FIXME: probably needs to be more robust (what if the star system has both a HQ and regional capital?
+        // do something in SectorManager
+        if (market.hasCondition("regional_capital") || market.hasCondition("headquarters"))
+        {
+            StarSystemAPI loc = market.getStarSystem();
+            log.info("System location: " + loc.getBaseName());
+            if (sectorManager != null)
+            {
+                String relayId = sectorManager.systemToRelayMap.get(loc.getId());
+                log.info("Relay test ID: " + relayId);
+                if (relayId != null)
+                {
+                    SectorEntityToken relay = Global.getSector().getEntityById(relayId);
+                    relay.setFaction(newOwner.getId());
+                }
+            }
         }
     }
 
@@ -189,5 +210,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return false;
         return sectorManager.liveFactionIds.contains(factionId);
+    }
+    
+    public static void setSystemToRelayMap(Map<String, String> map)
+    {
+        if (sectorManager == null) return;
+        sectorManager.systemToRelayMap = map;
     }
 }

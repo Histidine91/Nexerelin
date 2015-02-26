@@ -36,6 +36,8 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.ResponseFleetManager;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class ExerelinSectorGen implements SectorGeneratorPlugin
@@ -67,6 +69,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private String[] factionIds = new String[]{};
 	private boolean isStartSystemChosen = false;
 	private int starNum = 0;
+	private String relayOwner = "neutral";
+	
+	private Map systemToRelay = new HashMap();
 
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
 
@@ -145,16 +150,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (isStation) marketSize = ExerelinUtils.getRandomInRange(1, 2) + ExerelinUtils.getRandomInRange(1, 2);	// stations are on average smaller
 		else marketSize = ExerelinUtils.getRandomInRange(2, 3) + ExerelinUtils.getRandomInRange(2, 3);
 		
-		// first planet in the system is a regional capital (or HQ if in Exerelin)
+		// first planet in the system is a regional capital (or HQ if in Exerelin system)
 		// it is always at least size 5
 		if (planetIndex == 0)
 		{
 			if (marketSize < 5)
 				marketSize = 5;
-			
-			// make sure player faction has a presence in Exerelin
-			if (starIndex == 0)
-				owningFactionId = PlayerFactionStore.getPlayerFactionId();
 		}
 		// Alex says "You can set marketSize via MarketAPI, but it's not "nicely" mutable like other stats at the moment."
 		// so to be safe we only spawn the market after we already know what size it'll be
@@ -321,6 +322,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(new InvasionFleetManager());
 		sector.addScript(ResponseFleetManager.create());
 		
+		SectorManager.setSystemToRelayMap(systemToRelay);
+		
 		log.info("Finished sector generation");
 	}
 
@@ -468,6 +471,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			boolean inhabitable = Math.random() < 0.7f;
 			String planetType = "";
+			String owningFactionId = getRandomFaction();
+			
+			// set some stuff for first planet
+			if (i == 0)
+			{
+				// make sure player faction has a presence in Exerelin
+				if (starNum == 0)
+				{
+					owningFactionId = PlayerFactionStore.getPlayerFactionId();
+				}
+				inhabitable = true;
+				relayOwner = owningFactionId;
+			}
+			
 			if (inhabitable)
 				planetType = possiblePlanetTypes[ExerelinUtils.getRandomInRange(0, possiblePlanetTypes.length - 1)];
 			else
@@ -570,7 +587,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// Add market to inhabitable planets
 			if(inhabitable)
 			{			
-				String owningFactionId = getRandomFaction();
 				newPlanet.setFaction(owningFactionId);
 				addMarketToEntity(starNum, i, newPlanet, owningFactionId, planetType, false);
 				pickEntityInteractionImage(newPlanet, newPlanet.getMarket(), true);
@@ -747,8 +763,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		SectorEntityToken relay = system.addCustomEntity(system.getId() + "_relay", // unique id
 				systemName + " Relay", // name - if null, defaultName from custom_entities.json will be used
 				"comm_relay", // type of object, defined in custom_entities.json
-				"neutral"); // faction
+				relayOwner); // faction
 		relay.setCircularOrbit(star, 90, 1200, 180);
+		systemToRelay.put(system.getId(), system.getId() + "_relay");
 		
 		starNum++;
 	}
