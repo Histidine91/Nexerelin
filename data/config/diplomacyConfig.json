@@ -1,5 +1,5 @@
 {
-	"pirateFactions": [ "pirates", "exipirated", "junkpirates" ],
+	"pirateFactions": [ "pirates", "exipirated", "junk_pirates" ],
 	"warWearinessPerInterval":20,	#20
 	"eventFrequency":20,	#20
 	"events":[
