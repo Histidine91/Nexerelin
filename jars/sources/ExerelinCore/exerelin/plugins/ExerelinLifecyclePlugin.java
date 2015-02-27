@@ -16,6 +16,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.world.ResponseFleetManager;
+import java.util.List;
 
 public class ExerelinLifecyclePlugin extends BaseModPlugin {
 
@@ -48,10 +49,10 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         //MarketAPI jangala = Global.getSector().getEconomy().getMarket("jangala");
         //eventManager.startEvent(new CampaignEventTarget(jangala), Events.SYSTEM_BOUNTY, null);
 
-
+        List<String> pirateFactions = DiplomacyManager.getPirateFactionsCopy();
         WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-            if (market.getFactionId().equals(Factions.PIRATES)) {
+            if (pirateFactions.contains( market.getFactionId() )) {
                 continue;
             }
             EventProbabilityAPI ep = eventManager.getProbability(Events.FOOD_SHORTAGE, market);

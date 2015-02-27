@@ -66,6 +66,13 @@
 			"maxRepChange":0.15,
 		},
 		{
+			"name":"Antiwar Protests",
+			"stage":"antiwar_protest",
+			"maxRepLevelToOccur":"hostile",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+		},
+		{
 			"name":"Star-crossed Lovers",	# love conquers all
 			"stage":"starcrossed",
 			"maxRepLevelToOccur":"inhospitable",

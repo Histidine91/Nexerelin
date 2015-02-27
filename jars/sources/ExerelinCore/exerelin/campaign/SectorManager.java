@@ -92,12 +92,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("playerVictory", victor == playerFaction && getLiveFactionIdsCopy().size() == 1);
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
         
-        if (!defeated.getId().equals("pirates"))
+        if (!defeated.getId().equals(PlayerFactionStore.getPlayerFactionId()))
         {
-            for (FactionAPI faction : Global.getSector().getAllFactions())
+            List<String> pirateFactions = DiplomacyManager.getPirateFactionsCopy();
+            if (!pirateFactions.contains(defeated.getId()))
             {
-                if (!faction.getId().equals("pirates"))
-                    faction.setRelationship(defeated.getId(), 0);
+                for (FactionAPI faction : Global.getSector().getAllFactions())
+                {
+                    if (!pirateFactions.contains(faction.getId()))
+                        faction.setRelationship(defeated.getId(), 0);
+                }
             }
         }
         checkForVictory();
@@ -175,6 +179,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             log.info("System location: " + loc.getBaseName());
             if (sectorManager != null)
             {
+                //List<SectorEntityToken> relays = loc.getEntitiesWithTag("comm_relay");
+                //if (!relays.isEmpty())
+                //{
+                //    relays.get(0).setFaction(attackerFactionId);
+                //}
                 String relayId = sectorManager.systemToRelayMap.get(loc.getId());
                 log.info("Relay test ID: " + relayId);
                 if (relayId != null)

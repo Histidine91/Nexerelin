@@ -322,6 +322,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(new InvasionFleetManager());
 		sector.addScript(ResponseFleetManager.create());
 		
+		DiplomacyManager.initFactionRelationships();
+		
 		SectorManager.setSystemToRelayMap(systemToRelay);
 		
 		log.info("Finished sector generation");
@@ -335,6 +337,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		StarSystemAPI system = sector.createStarSystem((String)possibleSystemNamesList.get(systemNameIndex));
 		possibleSystemNamesList.remove(systemNameIndex);
 		String systemName = system.getName();
+		String systemId = system.getId();
 		
 		int maxSectorSize = ExerelinSetupData.getInstance().maxSectorSize;
 		if((ExerelinSetupData.getInstance().numSystems == sector.getStarSystems().size()
@@ -360,7 +363,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// TODO refactor to remove endless nested ifs
 		if(starType == 0)
 		{
-			star = system.initStar(systemName, "star_yellow", 500f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_yellow", 500f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			//system.setLightColor(new Color(255, 180, 180));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
@@ -369,7 +372,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 1)
 		{
-			star = system.initStar(systemName, "star_red", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_red", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(255, 180, 180));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/backgrounds/background3.jpg");
@@ -378,7 +381,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 2)
 		{
-			star = system.initStar(systemName, "star_blue", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_blue", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(135,206,250));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/blue_background1.jpg");
@@ -387,7 +390,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 3)
 		{
-			star = system.initStar(systemName, "star_white", 300f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_white", 300f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			//system.setLightColor(new Color(185,185,240));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/white_background1.jpg");
@@ -396,7 +399,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 4)
 		{
-			star = system.initStar(systemName, "star_orange", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_orange", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(255,220,0));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/orange_background1.jpg");
@@ -405,7 +408,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 5)
 		{
-			star = system.initStar(systemName, "star_yellowwhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_yellowwhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(255,255,224));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
@@ -414,7 +417,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 6)
 		{
-			star = system.initStar(systemName, "star_bluewhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_bluewhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(135,206,250));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/bluewhite_background1.jpg");
@@ -423,7 +426,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 7)
 		{
-			star = system.initStar(systemName, "star_purple", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_purple", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(218,112,214));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/purple_background1.jpg");
@@ -432,7 +435,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 8)
 		{
-			star = system.initStar(systemName, "star_dark", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_dark", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(105,105,105));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/dark_background1.jpg");
@@ -441,7 +444,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 9)
 		{
-			star = system.initStar(systemName, "star_green", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_green", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(240,255,240));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/green_background1.jpg");
@@ -450,7 +453,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 		{
-			star = system.initStar(systemName, "star_greenwhite", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_greenwhite", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(240,255,240));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/greenwhite_background1.jpg");
@@ -761,7 +764,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		// Build comm relay
 		SectorEntityToken relay = system.addCustomEntity(system.getId() + "_relay", // unique id
-				systemName + " Relay", // name - if null, defaultName from custom_entities.json will be used
+				system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
 				"comm_relay", // type of object, defined in custom_entities.json
 				relayOwner); // faction
 		relay.setCircularOrbit(star, 90, 1200, 180);

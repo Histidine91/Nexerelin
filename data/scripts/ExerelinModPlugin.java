@@ -11,7 +11,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void beforeGameSave()
     {
         System.out.println("beforeGameSave");
-        SectorManager.getCurrentSectorManager().getCommandQueue().executeAllCommands();
+        //SectorManager.getCurrentSectorManager().getCommandQueue().executeAllCommands();
     }
 
     @Override

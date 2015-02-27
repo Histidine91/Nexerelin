@@ -1,22 +1,21 @@
 package data.scripts.world.exerelin;
 
-import com.fs.starfarer.api.EveryFrameScript;
 import java.awt.*;
 import java.util.List;
 import org.apache.log4j.Logger;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.characters.PersonAPI;
-import exerelin.commandQueue.CommandQueue;
-import exerelin.*;
+import exerelin.FactionDirector;
+import exerelin.SectorManager;
+import exerelin.StationRecord;
+import exerelin.SystemManager;
+import exerelin.SystemStationManager;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.events.EventPirateFleetSpawn;
 import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinMessageManager;
 import exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.util.Collections;
@@ -34,6 +33,7 @@ public class Exerelin //implements SectorGeneratorPlugin
 		ExerelinSetupData.getInstance().resetAvailableFactions();
 	
 		// Set sector manager reference in persistent storage
+		/*
 		SectorManager sectorManager = new SectorManager();
 		Global.getSector().getPersistentData().put("SectorManager", sectorManager);
 	
@@ -51,6 +51,7 @@ public class Exerelin //implements SectorGeneratorPlugin
 	
 		// Setup the sector manager
 		sectorManager.setupSectorManager(sector);
+		
 	
 		// Build a message manager object and add to persistent storage
 		ExerelinMessageManager exerelinMessageManager = new ExerelinMessageManager();
@@ -66,10 +67,13 @@ public class Exerelin //implements SectorGeneratorPlugin
 		CommandQueue commandQueue = new CommandQueue();
 		Global.getSector().addScript(commandQueue);
 		sectorManager.setCommandQueue(commandQueue);
-	
+		*/
+		
 		ExerelinConfig.loadSettings();
-		this.initFactionRelationships(sector);
-
+		
+		String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
+		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
+		
 		// Populate sector
 		//this.populateSector(Global.getSector(), sectorManager);
 	
@@ -85,130 +89,11 @@ public class Exerelin //implements SectorGeneratorPlugin
 	
 		System.out.println("Finished sector setup...");
 	}
-
-	private void initFactionRelationships(SectorAPI sector)
+		
+	private void setPlayerSpawnLocation()
 	{
-		/*String[] factions = ExerelinSetupData.getInstance().getAvailableFactions(sector);
-		for(int i = 0; i < factions.length; i = i + 1)
-		{
-			sector.getFaction(factions[i]).setRelationship("abandoned", -1);
-			sector.getFaction(factions[i]).setRelationship("rebel", -1);
-			sector.getFaction(factions[i]).setRelationship("independent", 0);
-			sector.getFaction(factions[i]).setRelationship("pirates", -1);
-
-			String customRebelFactionId = ExerelinConfig.getExerelinFactionConfig(factions[i]).customRebelFaction;
-			if(!customRebelFactionId.equalsIgnoreCase(""))
-			{
-				for(int j = 0; j < factions.length; j = j + 1)
-				{
-					sector.getFaction(factions[j]).setRelationship(customRebelFactionId, -1);
-				}
-			}
-		}
-
-		// Set independent and rebels to hate each other
-		FactionAPI rebel = sector.getFaction("rebel");
-		FactionAPI independent = sector.getFaction("independent");
-		rebel.setRelationship(independent.getId(), -1);
-		independent.setRelationship(rebel.getId(), -1);
-	
-		// Set player faction starting  diplomacy
-		sector.getFaction("player").setRelationship("abandoned", -1);
-		sector.getFaction("player").setRelationship("rebel", -1);
-		sector.getFaction("player").setRelationship("independent", 0);
-		sector.getFaction("player").setRelationship("pirates", -1);
-	
-		for(int i = 0; i < factions.length; i = i + 1)
-		{
-		String customRebelFactionId = ExerelinConfig.getExerelinFactionConfig(factions[i]).customRebelFaction;
-		sector.getFaction("player").setRelationship(customRebelFactionId, -1);
-		SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(factions[i]).setPlayerInfluence(15);
-		}
-	
-		if(!SectorManager.getCurrentSectorManager().isPlayerInPlayerFaction())
-		{
-		// Player is aligned with a faction so set initial influence
-		SectorManager.getCurrentSectorManager().getDiplomacyManager().playerRecord.setPlayerInfluence(50);
-		}*/
-	
-		FactionAPI player = sector.getFaction("player");
+		SectorAPI sector = Global.getSector();
 		String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
-		FactionAPI selectedFaction = sector.getFaction(selectedFactionId);
-		log.info("Selected faction is " + selectedFaction + " | " + selectedFactionId);
-		
-		FactionAPI pirates = sector.getFaction("pirates");
-			
-		List factions = sector.getAllFactions();
-		
-		// start hostile with hated factions
-		for (int i=0; i<factions.size(); i++)
-		{
-			FactionAPI faction = (FactionAPI)(factions.get(i));
-			String factionId = faction.getId();
-			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
-			log.info("Testing config for " + factionId + ": " + factionConfig);
-			if ((factionConfig != null && factionConfig.factionsDisliked.length > 0))
-			{
-				for (int j=0; j<factionConfig.factionsDisliked.length; j++)
-				{
-					String dislikedFactionId = factionConfig.factionsDisliked[j];
-					FactionAPI dislikedFaction = sector.getFaction(dislikedFactionId);
-					if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
-					{
-						log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
-						faction.setRelationship(dislikedFactionId, RepLevel.HOSTILE);
-					}
-				}
-			}
-		}
-				
-		// pirates are hostile to everyone, except some factions like Mayorate
-		for (int i=0; i<factions.size(); i++)
-		{
-			FactionAPI faction = (FactionAPI)(factions.get(i));
-			String factionId = faction.getId();
-			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
-			if ((factionConfig== null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !factionId.equals("pirates"))
-			{
-				pirates.setRelationship(factionId, RepLevel.HOSTILE);
-			}
-		}
-		
-		// Templars just plain hate everyone
-		FactionAPI templars = sector.getFaction("templars");
-		if (templars != null)
-		{
-			for (int i=0; i<factions.size(); i++)
-			{
-				FactionAPI faction = (FactionAPI)(factions.get(i));
-				String factionId = faction.getId();
-				if (!faction.isNeutralFaction())
-				{
-					templars.setRelationship(factionId, RepLevel.HOSTILE);
-				}
-			}
-		}
-	
-		// set player relations based on selected faction
-		for (int i=0; i<factions.size(); i++)
-		{
-			FactionAPI faction = (FactionAPI)(factions.get(i));
-			if (faction != player && faction != selectedFaction)
-			{
-				float relationship = selectedFaction.getRelationship(faction.getId());
-				player.setRelationship(faction.getId(), relationship);
-			}
-		}
-		
-		player.setRelationship(selectedFactionId, RepLevel.FRIENDLY);
-		
-		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
-	}
-		
-		private void setPlayerSpawnLocation()
-		{
-				SectorAPI sector = Global.getSector();
-				String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 		int size = 0;
 		MarketAPI targetMarket = null;
