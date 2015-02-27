@@ -81,6 +81,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     static {
         String[] factions = {"templars"};
         disallowedFactions = Arrays.asList(factions);
+        pirateFactions = new ArrayList<>();
+        eventDefs = new ArrayList<>();
         
         try {
             loadSettings();
@@ -94,7 +96,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         baseInterval = (float)config.optDouble("eventFrequency", 20f);
         warWearinessPerInterval = (float)config.optDouble("warWearinessPerInterval", 20f);
         
-        if (pirateFactions == null) pirateFactions = new ArrayList<>();
         JSONArray pirateFactionsJson = config.getJSONArray("pirateFactions");
         for (int i=0;i<pirateFactionsJson.length();i++){ 
             pirateFactions.add(pirateFactionsJson.getString(i));
@@ -146,8 +147,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public DiplomacyManager()
     {
         super(true);
-        eventDefs = new ArrayList<>();
-        pirateFactions = new ArrayList<>();
         
         interval = getDiplomacyInterval();
         this.intervalUtil = new IntervalUtil(interval * 0.75F, interval * 1.25F);
