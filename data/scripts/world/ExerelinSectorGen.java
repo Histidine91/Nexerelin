@@ -27,6 +27,7 @@ import data.scripts.world.exerelin.*;
 import data.scripts.world.exerelin.ExerelinMarketConditionPicker;
 import exerelin.plugins.*;
 import exerelin.*;
+import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
@@ -321,6 +322,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(DiplomacyManager.create());
 		sector.addScript(new InvasionFleetManager());
 		sector.addScript(ResponseFleetManager.create());
+		sector.addScript(CovertOpsManager.create());
 		
 		DiplomacyManager.initFactionRelationships();
 		

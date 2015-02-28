@@ -9,6 +9,15 @@
 	"exerelin_diplomacy":{
 		"script":"exerelin.campaign.events.DiplomacyEvent"
 	},
+	"exerelin_agent_raise_relations":{
+		"script":"exerelin.campaign.events.CovertOpsEventBase"
+	},
+	"exerelin_agent_lower_relations":{
+		"script":"exerelin.campaign.events.AgentLowerRelationsEvent"
+	},
+	"exerelin_agent_destabilize_market":{
+		"script":"exerelin.campaign.events.AgentDestabilizeMarketEvent"
+	},
 	"exerelin_faction_eliminated":{
 		"script":"exerelin.campaign.events.FactionEliminatedEvent"
 	},

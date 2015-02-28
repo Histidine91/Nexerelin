@@ -8,28 +8,24 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 
 
-public class DiplomacyEvent extends BaseEventPlugin {
+public class CovertOpsEventBase extends BaseEventPlugin {
 
-	public static Logger log = Global.getLogger(DiplomacyEvent.class);
+	public static Logger log = Global.getLogger(CovertOpsEventBase.class);
 	protected static final int DAYS_TO_KEEP = 90;
 	
-	protected FactionAPI otherFaction;
-	protected DiplomacyEventDef event;
-	protected float delta;
+	protected FactionAPI agentFaction;
+        protected String stage;
+        protected boolean playerInvolved;
+	protected float repEffect;    // between agent faction and target faction
 	protected float age;
 	protected Map<String, Object> params;
 	    
@@ -40,6 +36,11 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
+                stage = "";
+                playerInvolved = false;
+                repEffect = 0;
+                agentFaction = null;
+                
 		done = false;
 		transmitted = false;
 		age = 0;
@@ -48,9 +49,11 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	@Override
 	public void setParam(Object param) {
 		params = (HashMap)param;
-		otherFaction = (FactionAPI)params.get("otherFaction");
-		delta = (Float)params.get("delta");
-		event = (DiplomacyEventDef)params.get("event");
+		agentFaction = (FactionAPI)params.get("agentFaction");
+                if (params.containsKey("repEffect"))
+                    repEffect = (Float)params.get("repEffect");
+		stage = (String)params.get("stage");
+                playerInvolved = (Boolean)params.get("playerInvolved");
 		//log.info("Params newOwner: " + newOwner);
 		//log.info("Params oldOwner: " + oldOwner);
 		//log.info("Params playerInvolved: " + playerInvolved);
@@ -71,28 +74,18 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		}
 		if (!transmitted)
 		{
-			// we can set the reputation change only on message delivery
-			// but problem is, the token replacement method needs to know the relationship change NOW
-			//DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
 			MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
-			Global.getSector().reportEventStage(this, event.stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
-					final DiplomacyEventDef thisEvent = event;
-					final float thisDelta = delta;
-					final MarketAPI thisMarket = market;
-					final FactionAPI fac = market.getFaction();
-					final FactionAPI otherFac = otherFaction;
-					
-					public void beforeDelivery(CommMessageAPI message) {
-					//DiplomacyManager.adjustRelations(thisEvent, thisMarket, fac, otherFac, thisDelta);
-					}});
-			log.info("Diplomacy event: " + event.stage);
+                        String reportStage = stage;
+                        if (playerInvolved) reportStage += "_player";
+			Global.getSector().reportEventStage(this, reportStage, market.getPrimaryEntity(), priority);
+			log.info("Covert warfare event: " + stage);
 			transmitted = true;
 		}
 	}
 
 	@Override
 	public String getEventName() {
-		return (faction.getEntityNamePrefix() + " - " + otherFaction.getEntityNamePrefix() + " diplomatic event");
+		return (agentFaction.getEntityNamePrefix() + " covert action against " + faction.getEntityNamePrefix());
 	}
 	
 	/*
@@ -112,42 +105,43 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		return CampaignEventPlugin.CampaignEventCategory.DO_NOT_SHOW_IN_MESSAGE_FILTER;
 	}
 	
-	protected String getNewRelationStr()
+	protected String getNewRelationStr(FactionAPI faction1, FactionAPI faction2)
 	{
-		RepLevel level = faction.getRelationshipLevel(otherFaction.getId());
-		int repInt = (int) Math.ceil((faction.getRelationship(otherFaction.getId())) * 100f);
+		RepLevel level = faction1.getRelationshipLevel(faction2.getId());
+		int repInt = (int) Math.ceil((faction1.getRelationship(faction2.getId())) * 100f);
 		
 		String standing = "" + repInt + "/100" + " (" + level.getDisplayName().toLowerCase() + ")";
 		return standing;
 	}
-	
+        	
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		String otherFactionStr = otherFaction.getEntityNamePrefix();
-		String theOtherFactionStr = otherFaction.getDisplayNameWithArticle();
-		map.put("$otherFaction", otherFactionStr);
-		map.put("$theOtherFaction", theOtherFactionStr);
-		map.put("$OtherFaction", Misc.ucFirst(otherFactionStr));
-		map.put("$TheOtherFaction", Misc.ucFirst(theOtherFactionStr));
-		map.put("$deltaAbs", "" + (int)Math.ceil(Math.abs(delta*100f)));
-		map.put("$newRelationStr", getNewRelationStr());
-		return map;
+		String agentFactionStr = agentFaction.getEntityNamePrefix();
+		String theAgentFactionStr = agentFaction.getDisplayNameWithArticle();
+                
+		map.put("$agentFaction", agentFactionStr);
+		map.put("$theAgentFaction", theAgentFactionStr);
+		map.put("$AgentFaction", Misc.ucFirst(agentFactionStr));
+		map.put("$TheAgentFaction", Misc.ucFirst(theAgentFactionStr));
+                
+		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repEffect*100f)));
+                map.put("$newRelationStr", getNewRelationStr(agentFaction, faction));		return map;
 	}
 	
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
-		addTokensToList(result, "$deltaAbs");
+		addTokensToList(result, "$repEffectAbs");
 		addTokensToList(result, "$newRelationStr");
 		return result.toArray(new String[0]);
 	}
 	
 	@Override
 	public Color[] getHighlightColors(String stageId) {
-		Color colorDelta = delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
-		Color colorNew = faction.getRelColor(otherFaction.getId());
-		return new Color[] {colorDelta, colorNew};
+		Color colorRepEffect = repEffect > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+                Color colorNew = agentFaction.getRelColor(faction.getId());
+		return new Color[] {colorRepEffect, colorNew};
 	}
 
 	@Override
