@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
@@ -239,9 +240,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             float effectMin = (float)(double)config.get("agentRaiseRelationsEffectMin");
             float effectMax = (float)(double)config.get("agentRaiseRelationsEffectMax");
             float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
-            DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, effect, null, null, null);
+            ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, effect, null, null, null);
             
-            Map<String, Object> params = makeEventParams(agentFaction, "success", effect, playerInvolved);
+            Map<String, Object> params = makeEventParams(agentFaction, "success", repResult.delta, playerInvolved);
             Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_raise_relations", params);
         }
         else
@@ -252,9 +253,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float effectMin = (float)(double)config.get("agentRaiseRelationsRepLossOnDetectionMin");
                 float effectMax = (float)(double)config.get("agentRaiseRelationsRepLossOnDetectionMax");
                 float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
-                DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, effect, RepLevel.NEUTRAL, null, RepLevel.INHOSPITABLE);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, effect, RepLevel.NEUTRAL, null, RepLevel.INHOSPITABLE);
                 
-                Map<String, Object> params = makeEventParams(agentFaction, "failure_detected", effect, playerInvolved);
+                Map<String, Object> params = makeEventParams(agentFaction, "failure_detected", repResult.delta, playerInvolved);
                 Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_raise_relations", params);
             }
             else    // failed but undetected
@@ -276,9 +277,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             float effectMin = (float)(double)config.get("agentLowerRelationsEffectMin");
             float effectMax = (float)(double)config.get("agentLowerRelationsEffectMax");
             float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
-            DiplomacyManager.adjustRelations(market, thirdFaction, targetFaction, effect, null, null, RepLevel.HOSTILE);
+            ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, thirdFaction, targetFaction, effect, null, null, RepLevel.HOSTILE);
             
-            Map<String, Object> params = makeEventParams(agentFaction, "success", effect, playerInvolved);
+            Map<String, Object> params = makeEventParams(agentFaction, "success", repResult.delta, playerInvolved);
             params.put("thirdFaction", thirdFaction);
             params.put("repEffect2", effect);
             Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_lower_relations", params);
@@ -290,12 +291,12 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float effectMin = (float)(double)config.get("agentLowerRelationsRepLossOnDetectionMin");
                 float effectMax = (float)(double)config.get("agentLowerRelationsRepLossOnDetectionMax");
                 float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
-                DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, effect, RepLevel.NEUTRAL, null, null);
-                DiplomacyManager.adjustRelations(market, agentFaction, thirdFaction, effect, RepLevel.NEUTRAL, null, null);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, effect, RepLevel.NEUTRAL, null, null);
+                ReputationAdjustmentResult repResult2 = DiplomacyManager.adjustRelations(market, agentFaction, thirdFaction, effect, RepLevel.NEUTRAL, null, null);
                 
-                Map<String, Object> params = makeEventParams(agentFaction, "failure_detected", effect, playerInvolved);
+                Map<String, Object> params = makeEventParams(agentFaction, "failure_detected", repResult.delta, playerInvolved);
                 params.put("thirdFaction", thirdFaction);
-                params.put("repEffect2", effect);
+                params.put("repEffect2", repResult2.delta);
                 Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_lower_relations", params);
             }
             else    // failed but undetected
@@ -335,8 +336,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float repMin = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMin");
                 float repMax = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMax");
                 float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
-                params.put("repEffect", rep);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
+                params.put("repEffect", repResult.delta);
                 params.put("stage", "success_detected");
             }
             
@@ -349,9 +350,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float repMin = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMin");
                 float repMax = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMax");
                 float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
                 
-                Map<String, Object> params = makeEventParams(agentFaction, "failure_detected", rep, playerInvolved);
+                Map<String, Object> params = makeEventParams(agentFaction, "failure_detected", repResult.delta, playerInvolved);
                 Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market", params);
             }
             else    // failed but undetected
