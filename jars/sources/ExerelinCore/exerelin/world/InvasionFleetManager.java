@@ -52,7 +52,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     {
         float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket);
         float marketScalar = originMarket.getSize() * originMarket.getStabilityValue();
-        if (originMarket.hasCondition("military_base")) {
+        if (originMarket.hasCondition("military_base") || originMarket.hasCondition("exerelin_military_base")) {
             marketScalar += 20.0F;
         }
         if (originMarket.hasCondition("orbital_station")) {
@@ -135,8 +135,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         for (MarketAPI market : markets) {
             if  ( market.getFaction() == invader && !market.hasCondition("decivilized") && 
                 ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) 
-                    || (market.hasCondition("military_base")) || (market.hasCondition("regional_capital")) 
-                    || (market.hasCondition("headquarters"))
+                    || (market.hasCondition("military_base")) || market.hasCondition("exerelin_military_base")
+                    || (market.hasCondition("regional_capital")) || (market.hasCondition("headquarters"))
                 ) && market.getSize() >= 3 )
             {
                 marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();

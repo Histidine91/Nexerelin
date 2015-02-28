@@ -93,13 +93,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	}
 	*/
 	
-	private void addCommodityStockpile(MarketAPI market, String commodityID, float minMult, float maxMult)
+	private void addCommodityStockpile(MarketAPI market, String commodityID, float amountToAdd)
 	{
-		float multDiff = maxMult - minMult;
-		float mult = minMult + (float)(Math.random()) * multDiff;
 		CommodityOnMarketAPI commodity = market.getCommodityData(commodityID);
-		float demand = commodity.getDemand().getDemandValue();
-		float amountToAdd = demand*mult;
 		CargoAPI cargoOpen = market.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
 		CargoAPI cargoBlack = market.getSubmarket(Submarkets.SUBMARKET_BLACK).getCargo();
 		CargoAPI cargoMilitary = null;
@@ -107,7 +103,22 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			cargoMilitary = market.getSubmarket(Submarkets.GENERIC_MILITARY).getCargo();
 		commodity.addToStockpile(amountToAdd);
 		commodity.addToAverageStockpile(amountToAdd);
-		if(!market.isIllegal(commodity))
+		
+		if (commodityID.equals("agent"))
+		{
+			if (cargoMilitary != null)
+			{
+				cargoOpen.addCommodity(commodityID, amountToAdd * 0.02f);
+				cargoMilitary.addCommodity(commodityID, amountToAdd * 0.11f);
+				cargoBlack.addCommodity(commodityID, amountToAdd * 0.02f);
+			}
+			else
+			{
+				cargoOpen.addCommodity(commodityID, amountToAdd * 0.04f);
+				cargoBlack.addCommodity(commodityID, amountToAdd * 0.11f);
+			}
+		}
+		else if(!market.isIllegal(commodity))
 			cargoOpen.addCommodity(commodityID, amountToAdd * 0.15f);
 		else if (commodityID.equals("hand_weapons") && cargoMilitary != null)
 		{
@@ -117,6 +128,16 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		else
 			cargoBlack.addCommodity(commodityID, amountToAdd * 0.1f);
 		//log.info("Adding " + amount + " " + commodityID + " to " + market.getName());
+	}
+	
+	private void addCommodityStockpile(MarketAPI market, String commodityID, float minMult, float maxMult)
+	{
+		float multDiff = maxMult - minMult;
+		float mult = minMult + (float)(Math.random()) * multDiff;
+		CommodityOnMarketAPI commodity = market.getCommodityData(commodityID);
+		float demand = commodity.getDemand().getDemandValue();
+		float amountToAdd = demand*mult;
+		addCommodityStockpile(market, commodityID, amountToAdd);
 	}
 		
 		private void pickEntityInteractionImage(SectorEntityToken entity, MarketAPI market, boolean isStation)
@@ -185,7 +206,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		if (marketSize >= minSizeForMilitaryBase)
 		{
-			newMarket.addCondition("military_base");
+			newMarket.addCondition("exerelin_military_base");
 			newMarket.addSubmarket(Submarkets.GENERIC_MILITARY);
 		}
 		
@@ -268,6 +289,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		addCommodityStockpile(newMarket, "drugs", 0.7f, 0.8f);
 		addCommodityStockpile(newMarket, "organs", 0.7f, 0.8f);
 		addCommodityStockpile(newMarket, "lobster", 0.7f, 0.8f);
+		if (marketSize >= 4)
+			addCommodityStockpile(newMarket, "agent", 2*marketSize);
 		
 		Global.getSector().getEconomy().addMarket(newMarket);
 		entity.setFaction(owningFactionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0

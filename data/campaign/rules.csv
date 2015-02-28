@@ -417,3 +417,38 @@ ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinF
 ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerelinFactionDirectoryGetSindrianDiktat,PrintFactionMarkets sindrian_diktat,,,
 ExerelinFactionDirectoryGetTriTachyon,DialogOptionSelected,$option == exerelinFactionDirectoryGetTriTachyon,PrintFactionMarkets tritachyon,,,
 #END MARKET DIRECTORY OPTIONS,,,,,,
+,,,,,,
+#START AGENT OPTIONS,,,,,,
+ExerelinMarketAgentOption,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+HasAgent",SetEnabled exerelinUseAgent true,,2:exerelinUseAgent:Deploy an agent,
+ExerelinMarketAgentOptionNoAgents,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+!HasAgent","SetTooltip exerelinUseAgent ""You have no agents!""
+SetEnabled exerelinUseAgent false",,2:exerelinUseAgent:Deploy an agent,
+ExereminMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$tradeMode == NONE","SetTooltip exerelinUseAgent ""The port is closed to you, and your agents are unable to infiltrate.""
+SetEnabled exerelinUseAgent false",,,
+ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
+FireAll ExerelinAgentOption",,,
+ExerelinAgentOptionListRaiseRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentRaiseRelations:Influence $Faction to like your faction more. If it fails, there is a chance they will turn more hostile instead.",,exerelinAgentRaiseRelations:Raise relations,
+ExerelinAgentOptionListLowerRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentLowerRelations:Influence $Faction to dislike one of your factions' enemies more. If your attempt is detected, both factions will be angry with you.",,exerelinAgentLowerRelations:Lower relations,
+ExerelinAgentOptionListDestabilizeMarket,ExerelinAgentOption,,"SetTooltip exerelinAgentDestabilizeMarket:Attempt the use of terror methods to destabilize $market. There is a chance your agent will be detected, with serious diplomatic repercussions.",,exerelinAgentDestabilizeMarket:Destabilize market,
+ExerelinAgentOptionListBack,ExerelinAgentOption,,,,exerelinAgentCancel:Cancel,
+,,,,,,
+ExerelinAgentRaiseRelations,DialogOptionSelected,$option == exerelinAgentRaiseRelations,"AgentRaiseRelations
+FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+ExerelinAgentLowerRelations,DialogOptionSelected,$option == exerelinAgentLowerRelations,"AgentLowerRelations
+FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+ExerelinAgentDestabilizeMarket,DialogOptionSelected,"$option == exerelinAgentDestabilizeMarket","AgentDestabilizeMarket
+FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+ExerelinAgentCancel,DialogOptionSelected,"$option == exerelinAgentCancel","$menuState = main 0
+ShowDefaultVisual
+FireAll PopulateOptions",You decide not to field any agents.,,
+ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasAgent,FireAll ExerelinAgentOption,,,
+ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasAgent,"$menuState = main 0
+ShowDefaultVisual
+FireAll PopulateOptions",You have no more agents to deploy.,,
+#END AGENT OPTIONS,,,,,,
+,,,,,,

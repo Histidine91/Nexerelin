@@ -1,15 +1,15 @@
 id,type,text1,text2,text3,notes
-
+,,,,,
 prisoner,RESOURCE,A highly valuable prisoner of war. Exchange at another factions station to improve your faction's relationship with them.,,,
-agent,RESOURCE,An agent. Plant at another faction's station to set the agent to turn their allies against them. ,,,s
+agent,RESOURCE,A covert operative capable of tampering with other factions' diplomatic relations or destabilizing their markets.,,,s
 saboteur,RESOURCE,A saboteur special agent. Plant at another faction's station to cause a station explosion hampering production and destroying goods. ,,,s
-
-star_blue,PLANET,"Blue Star",,,
-star_white,PLANET,"White Star",,,
-star_orange,PLANET,"Orange Star",,,
-star_yellowwhite,PLANET,"Yellow White Star",,,
-star_bluewhite,PLANET,"Blue White Star",,,
-star_purple,PLANET,"Neutron Star",,,
-star_dark,PLANET,"Dark Star",,,
-star_green,PLANET,"Green Star",,,
-star_greenwhite,PLANET,"Green White Star",,,
+,,,,,
+star_blue,PLANET,Blue Star,,,
+star_white,PLANET,White Star,,,
+star_orange,PLANET,Orange Star,,,
+star_yellowwhite,PLANET,Yellow White Star,,,
+star_bluewhite,PLANET,Blue White Star,,,
+star_purple,PLANET,Neutron Star,,,
+star_dark,PLANET,Dark Star,,,
+star_green,PLANET,Green Star,,,
+star_greenwhite,PLANET,Green White Star,,,

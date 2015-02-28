@@ -5,29 +5,29 @@
 	"agentRaiseRelationsDetectionChance":0,	# it logically won't work if you get found out
 	"agentRaiseRelationsDetectionChanceFail":0.3,
 	"agentRaiseRelationsEffectMin":0.15,
-	"agentRaiseRelationsEffectMax":0.3,
+	"agentRaiseRelationsEffectMax":0.2,
 	"agentRaiseRelationsRepLossOnDetectionMin":0.15,
-	"agentRaiseRelationsRepLossOnDetectionMax":0.25,
+	"agentRaiseRelationsRepLossOnDetectionMax":0.2,
 	
 	"agentLowerRelationsSuccessChance":0.7,
 	"agentLowerRelationsDetectionChance":0,
 	"agentLowerRelationsDetectionChanceFail":0.4,
 	"agentLowerRelationsEffectMin":0.15,
-	"agentLowerRelationsEffectMax":0.3,
+	"agentLowerRelationsEffectMax":0.2,
 	"agentLowerRelationsRepLossOnDetectionMin":0.15,
-	"agentLowerRelationsRepLossOnDetectionMax":0.25,
+	"agentLowerRelationsRepLossOnDetectionMax":0.2,
 	
 	"agentDestabilizeSuccessChance":0.7,
 	"agentDestabilizeDetectionChance":0.4,
 	"agentDestabilizeDetectionChanceFail":0.6,
 	"agentDestabilizeRepLossOnDetectionMin":0.2,
-	"agentDestabilizeRepLossOnDetectionMax":0.3,
+	"agentDestabilizeRepLossOnDetectionMax":0.25,
 	
 	"sabotageSuccessChance":0.7,
 	"sabotageDetectionChance":0.3,
 	"sabotageDetectionChanceFail":0.7,
 	"sabotageRepLossOnDetectionMin":0.25,
-	"sabotageRepLossOnDetectionMax":0.35,
+	"sabotageRepLossOnDetectionMax":0.3,
 	
 	"prisonerRelationBonus":0.1
 }
