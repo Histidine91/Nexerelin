@@ -91,8 +91,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 
-        //actionPicker.add(CovertActionType.RAISE_RELATIONS);
-        //actionPicker.add(CovertActionType.LOWER_RELATIONS);
+        actionPicker.add(CovertActionType.RAISE_RELATIONS);
+        actionPicker.add(CovertActionType.LOWER_RELATIONS);
         actionPicker.add(CovertActionType.DESTABILIZE_MARKET);
         CovertActionType actionType = actionPicker.pick();
         
