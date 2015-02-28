@@ -122,8 +122,8 @@ ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModF
 ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (I-P),ditto
 ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModFactions2,FireAll ExerelinNGCListFactions2,,,
 ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:Mod factions (Q-Z),
-ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,FireAll ExerelinNGCListFactions3,,100:exerelinNGCDevStart:>> (dev) quick start,
-ExerelinNGCFactionsQuickStart,ExerelinNGCListFactions,$global.isDevMode,,,,
+ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,FireAll ExerelinNGCListFactions3,,,
+ExerelinNGCFactionsQuickStart,ExerelinNGCListFactions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
 ,,,,,,
 ExerelinNGCListHegemony,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist hegemony,,,exerelinNGCJoinHegemony:Hegemony,
 ExerelinNGCListTriTachyon,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist tritachyon,,,exerelinNGCJoinTriTachyon:Tri-Tachyon,
