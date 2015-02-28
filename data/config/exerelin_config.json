@@ -18,7 +18,7 @@
     "fleetCostResource": "supplies", # String
     "miningAmountPerDayPerMiner": 50, # Integer
 
-    "playerBaseSalary": 50000, # Double
+    "playerBaseSalary": 5000, # Double
     "playerSalaryIncrementPerLevel": 1000, # Double
     "playerFactionFreeTransfer":false, # Boolean, DOESN'T WORK UNTIL FREETRANSFER IS FIXED
 

@@ -24,15 +24,8 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(FactionSalaryEvent.class);
 	
-	private static final float BASE_SALARY;
-	private static final float INCREMENT_PER_LEVEL;
 	private int month;
 	private float paidAmount = 0f;
-	
-	static {
-		BASE_SALARY = ExerelinConfig.playerBaseSalary;
-		INCREMENT_PER_LEVEL = ExerelinConfig.playerSalaryIncrementPerLevel;
-	}
 	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
@@ -52,7 +45,7 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 		month = Global.getSector().getClock().getMonth();
 		int level = Global.getSector().getPlayerPerson().getStats().getLevel();
 		String stage = "report";
-		paidAmount = BASE_SALARY + INCREMENT_PER_LEVEL * (level - 1);
+		paidAmount = ExerelinConfig.playerBaseSalary + ExerelinConfig.playerSalaryIncrementPerLevel * (level - 1);
                 if (paidAmount == 0)
                     return;
 		
