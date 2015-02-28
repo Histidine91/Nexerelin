@@ -289,8 +289,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		addCommodityStockpile(newMarket, "drugs", 0.7f, 0.8f);
 		addCommodityStockpile(newMarket, "organs", 0.7f, 0.8f);
 		addCommodityStockpile(newMarket, "lobster", 0.7f, 0.8f);
-		if (marketSize >= 4)
-			addCommodityStockpile(newMarket, "agent", 2*marketSize);
+		//if (marketSize >= 4)
+		//	addCommodityStockpile(newMarket, "agent", marketSize);
 		
 		Global.getSector().getEconomy().addMarket(newMarket);
 		entity.setFaction(owningFactionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
