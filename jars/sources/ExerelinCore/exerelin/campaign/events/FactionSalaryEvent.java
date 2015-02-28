@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinConfig;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +24,16 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(FactionSalaryEvent.class);
 	
-	private static final float BASE_SALARY = 5000f;
-	private static final float INCREMENT_PER_LEVEL = 1000f;
+	private static final float BASE_SALARY;
+	private static final float INCREMENT_PER_LEVEL;
 	private int month;
 	private float paidAmount = 0f;
-		
+	
+	static {
+		BASE_SALARY = ExerelinConfig.playerBaseSalary;
+		INCREMENT_PER_LEVEL = ExerelinConfig.playerSalaryIncrementPerLevel;
+	}
+	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
@@ -47,6 +53,8 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 		int level = Global.getSector().getPlayerPerson().getStats().getLevel();
 		String stage = "report";
 		paidAmount = BASE_SALARY + INCREMENT_PER_LEVEL * (level - 1);
+                if (paidAmount == 0)
+                    return;
 		
 		FactionAPI alignedFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
 		RepLevel relation = alignedFaction.getRelationshipLevel("player");

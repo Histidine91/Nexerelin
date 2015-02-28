@@ -128,15 +128,19 @@ ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModF
 ExerelinNGCListASPSyndicate,ExerelinNGCListFactions1,NGCDoesFactionExist syndicate_asp,,,exerelinNGCJoinASPSyndicate:ASP Syndicate,
 ExerelinNGCListBlackrock,ExerelinNGCListFactions1,NGCDoesFactionExist blackrock_driveyards,,,exerelinNGCJoinBlackrock:Blackrock,
 ExerelinNGCListCitadel,ExerelinNGCListFactions1,NGCDoesFactionExist citadeldefenders,,,exerelinNGCJoinCitadel:Citadel,
+ExerelinNGCListCrystanite,ExerelinNGCListFactions1,NGCDoesFactionExist crystanite,,,exerelinNGCJoinCrystanite:Crystanite,
 ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
 #ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions1,NGCDoesFactionExist interstellarimperium,,,exerelinNGCJoinInterstellarImperium:Interstellar Imperium,
 ExerelinNGCListJunkPirates,ExerelinNGCListFactions1,NGCDoesFactionExist junk_pirates,,,exerelinNGCJoinJunkPirates:Junk Pirates,
 #ExerelinNGCListTemplars,ExerelinNGCListFactions1,NGCDoesFactionExist templars,,,exerelinNGCJoinTemplars:Knights Templar,
 ExerelinNGCListModFactions1Back,ExerelinNGCListFactions1,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
+ExerelinNGCListORI,ExerelinNGCListFactions2,NGCDoesFactionExist ori,,,exerelinNGCJoinORI:ORI,
 ExerelinNGCListPACK,ExerelinNGCListFactions2,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:PACK,
+ExerelinNGCListPatria,ExerelinNGCListFactions2,NGCDoesFactionExist patnavy,,,exerelinNGCJoinPatria:Patrian Principate,
 ExerelinNGCListMayorate,ExerelinNGCListFactions2,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
 ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions2,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
+ExerelinNGCListRadicalORI,ExerelinNGCListFactions2,NGCDoesFactionExist rori,,,exerelinNGCJoinRORI:Radical ORI,
 #ExerelinNGCListSCY,ExerelinNGCListFactions2,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY,
 ExerelinNGCListShadowyards,ExerelinNGCListFactions2,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
 ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCFactionsBack:Back,
@@ -185,6 +189,10 @@ ExerelinNGCJoinCitadel,NewGameOptionSelected,$option == exerelinNGCJoinCitadel,"
 NGCAddShipAndComplement ""Fox_Frigate_standard""
 AddText ""Added Aural-class skirmisher"" textFriendColor
 FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinCrystanite,NewGameOptionSelected,$option == exerelinNGCJoinCrystanite,"NGCSetPlayerFaction ""crystanite""
+NGCAddShipAndComplement ""crys_pin_standard""
+AddText ""Added Pin-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinDiableAvionics,NewGameOptionSelected,$option == exerelinNGCJoinDiableAvionics,"NGCSetPlayerFaction ""diableavionics""
 NGCAddShipAndComplement ""diableavionics_vapor_standard""
 AddText ""Added Vapor-class frigate"" textFriendColor
@@ -209,9 +217,21 @@ ExerelinNGCJoinNeutrinoCorp,NewGameOptionSelected,$option == exerelinNGCJoinNeut
 NGCAddShipAndComplement ""neutrino_singularity_standard""
 AddText ""Added Singularity-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinORI,NewGameOptionSelected,$option == exerelinNGCJoinORI,"NGCSetPlayerFaction ""ori""
+NGCAddShipAndComplement ""ori_bastion_variant""
+AddText ""Added Bastion-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinPACK,NewGameOptionSelected,$option == exerelinNGCJoinPACK,"NGCSetPlayerFaction ""pack""
 NGCAddShipAndComplement ""pack_wirefox_Standard""
 AddText ""Added Wirefox-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinPatria,NewGameOptionSelected,$option == exerelinNGCJoinPatria,"NGCSetPlayerFaction ""patnavy""
+NGCAddShipAndComplement ""pat_kortenaer_patrian""
+AddText ""Added Kortenaer-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinRadicalORI,NewGameOptionSelected,$option == exerelinNGCJoinRadicalORI,"NGCSetPlayerFaction ""rori""
+NGCAddShipAndComplement ""ori_bastion_variant""
+AddText ""Added Bastion-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 #ExerelinNGCJoinSCY,NewGameOptionSelected,$option == exerelinNGCJoinSCY,"NGCSetPlayerFaction ""SCY""
 NGCAddShipAndComplement ""SCY_tisiphone_combat""
@@ -330,8 +350,8 @@ ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion
 #START MARKET DIRECTORY OPTIONS,,,,,,
 ExerelinMarketFactionDirectoryOption,ExerelinMarketSpecial,,,,5:exerelinFactionDirectoryMain:Faction directory,
 ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirectoryMain,,Which faction do you want to look up?,"exerelinFactionDirectoryList1:A-H
-exerelinFactionDirectoryList2:I-P
-exerelinFactionDirectoryList3:Q-Z
+exerelinFactionDirectoryList2:I-O
+exerelinFactionDirectoryList3:P-Z
 exerelinMarketSpecial:Back",
 ExerelinFactionDirectoryList1,DialogOptionSelected,$option == exerelinFactionDirectoryList1,FireAll ExerelinFactionDirectoryList1,,,
 ExerelinFactionDirectoryList2,DialogOptionSelected,$option == exerelinFactionDirectoryList2,FireAll ExerelinFactionDirectoryList2,,,
@@ -340,6 +360,7 @@ ExerelinFactionDirectoryList3,DialogOptionSelected,$option == exerelinFactionDir
 ExerelinFactionDirectoryListASPSyindicate,ExerelinFactionDirectoryList1,IsFactionAlive syndicate_asp,,,exerelinFactionDirectoryGetASPSyndicate:ASP Syndicate,
 ExerelinFactionDirectoryListBlackrock,ExerelinFactionDirectoryList1,IsFactionAlive blackrock_driveyards,,,exerelinFactionDirectoryGetBlackrock:Blackrock,
 ExerelinFactionDirectoryListCitadel,ExerelinFactionDirectoryList1,IsFactionAlive citadeldefenders,,,exerelinFactionDirectoryGetCitadel:Citadel,
+ExerelinFactionDirectoryListCrystanite,ExerelinFactionDirectoryList1,IsFactionAlive crystanite,,,exerelinFactionDirectoryGetCrystanite:Crystanite,
 ExerelinFactionDirectoryListDiableAvionics,ExerelinFactionDirectoryList1,IsFactionAlive diableavionics,,,exerelinFactionDirectoryGetDiableAvionics:Diable Avionics,
 ExerelinFactionDirectoryListHegemony,ExerelinFactionDirectoryList1,IsFactionAlive hegemony,,,exerelinFactionDirectoryGetHegemony:Hegemony,
 ExerelinFactionDirectoryList1Back,ExerelinFactionDirectoryList1,,,,exerelinFactionDirectoryMain:Back,
@@ -347,9 +368,12 @@ ExerelinFactionDirectoryListJunkPirates,ExerelinFactionDirectoryList2,IsFactionA
 ExerelinFactionDirectoryListLuddicChurch,ExerelinFactionDirectoryList2,IsFactionAlive luddic_church,,,exerelinFactionDirectoryGetLuddicChurch:Luddic Church,
 ExerelinFactionDirectoryListMayorate,ExerelinFactionDirectoryList2,IsFactionAlive mayorate,,,exerelinFactionDirectoryGetMayorate:Mayorate,
 ExerelinFactionDirectoryListNeutrinoCorp,ExerelinFactionDirectoryList2,IsFactionAlive neutrinocorp,,,exerelinFactionDirectoryGetNeutrinoCorp:Neutrino Corp,
-ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList2,IsFactionAlive pack,,,exerelinFactionDirectoryGetPACK:PACK,
-ExerelinFactionDirectoryListPirates,ExerelinFactionDirectoryList2,IsFactionAlive pirates,,,exerelinFactionDirectoryGetPirates:Pirates,
+ExerelinFactionDirectoryListORI,ExerelinFactionDirectoryList2,IsFactionAlive ori,,,exerelinFactionDirectoryGetORI:ORI,
 ExerelinFactionDirectoryList2Back,ExerelinFactionDirectoryList2,,,,exerelinFactionDirectoryMain:Back,
+ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList3,IsFactionAlive pack,,,exerelinFactionDirectoryGetPACK:PACK,
+ExerelinFactionDirectoryListPatria,ExerelinFactionDirectoryList3,IsFactionAlive patnavy,,,exerelinFactionDirectoryGetPatria:Patrian Principate,
+ExerelinFactionDirectoryListPirates,ExerelinFactionDirectoryList3,IsFactionAlive pirates,,,exerelinFactionDirectoryGetPirates:Pirates,
+ExerelinFactionDirectoryListRadicalORI,ExerelinFactionDirectoryList3,IsFactionAlive rori,,,exerelinFactionDirectoryGetRadicalORI:Radical ORI,
 ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList3,IsFactionAlive shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
 ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList3,IsFactionAlive sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
 ExerelinFactionDirectoryListTriTachyon,ExerelinFactionDirectoryList3,IsFactionAlive tritachyon,,,exerelinFactionDirectoryGetTriTachyon:Tri-Tachyon,
@@ -364,8 +388,11 @@ ExerelinFactionDirectoryGetJunkPirates,DialogOptionSelected,$option == exerelinF
 ExerelinFactionDirectoryGetLuddicChurch,DialogOptionSelected,$option == exerelinFactionDirectoryGetLuddicChurch,PrintFactionMarkets luddic_church,,,
 ExerelinFactionDirectoryGetMayorate,DialogOptionSelected,$option == exerelinFactionDirectoryGetMayorate,PrintFactionMarkets mayorate,,,
 ExerelinFactionDirectoryGetNeutrinoCorp,DialogOptionSelected,$option == exerelinFactionDirectoryGetNeutrinoCorp,PrintFactionMarkets neutrinocorp,,,
+ExerelinFactionDirectoryGetORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetORI,PrintFactionMarkets ori,,,
 ExerelinFactionDirectoryGetPACK,DialogOptionSelected,$option == exerelinFactionDirectoryGetPACK,PrintFactionMarkets pack,,,
+ExerelinFactionDirectoryGetPatria,DialogOptionSelected,$option == exerelinFactionDirectoryGetPatria,PrintFactionMarkets patnavy,,,
 ExerelinFactionDirectoryGetPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetPirates,PrintFactionMarkets pirates,,,
+ExerelinFactionDirectoryGetRadicalORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetRadicalORI,PrintFactionMarkets rori,,,
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,PrintFactionMarkets shadow_industry,,,
 ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerelinFactionDirectoryGetSindrianDiktat,PrintFactionMarkets sindrian_diktat,,,
 ExerelinFactionDirectoryGetTriTachyon,DialogOptionSelected,$option == exerelinFactionDirectoryGetTriTachyon,PrintFactionMarkets tritachyon,,,
