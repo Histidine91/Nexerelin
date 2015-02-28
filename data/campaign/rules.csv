@@ -400,6 +400,7 @@ ExerelinFactionDirectoryList3Back,ExerelinFactionDirectoryList3,,,,exerelinFacti
 ExerelinFactionDirectoryGetASPSyndicate,DialogOptionSelected,$option == exerelinFactionDirectoryGetASPSyndicate,PrintFactionMarkets syndicate_asp,,,
 ExerelinFactionDirectoryGetBlackrock,DialogOptionSelected,$option == exerelinFactionDirectoryGetBlackrock,PrintFactionMarkets blackrock_driveyards,,,
 ExerelinFactionDirectoryGetCitadel,DialogOptionSelected,$option == exerelinFactionDirectoryGetCitadel,PrintFactionMarkets citadeldefenders,,,
+ExerelinFactionDirectoryGetCrystanite,DialogOptionSelected,$option == exerelinFactionDirectoryGetCrystanite,PrintFactionMarkets crystanite,,,
 ExerelinFactionDirectoryGetDiableAvionics,DialogOptionSelected,$option == exerelinFactionDirectoryGetDiableAvionics,PrintFactionMarkets diableavionics,,,
 ExerelinFactionDirectoryGetHegemony,DialogOptionSelected,$option == exerelinFactionDirectoryGetHegemony,PrintFactionMarkets hegemony,,,
 ExerelinFactionDirectoryGetHiigaranDescendants,DialogOptionSelected,$option == exerelinFactionDirectoryGetHiigaranDescendants,PrintFactionMarkets hiigaran_descendants,,,
