@@ -48,38 +48,4 @@
 
     "troopTransportVariants":["hii_saari_Standard"], # String array
     "superFreighterVariants":["hii_neerin_Standard"], # String array
-
-    "carrierVariants":["hii_faal-corum_Standard", "hii_saarkin_Standard", "hii_koshiir_Singular", "hii_sajuuk_Singular", "hii_taiid_Standard", "hii_wodaan_Standard", "hii_sajuukkhar_Standard"], # String array
-
-    "fighterWings":["hii_tarii_wing",
-                    "hii_toba_wing",
-                    "hii_raachok_wing",
-                    "hii_heeshk_wing",
-                    "hii_blaze_wing"], # String array
-
-    "frigateVariants":["hii_kaan_Standard",
-                       "hii_jet_Standard",
-                       "hii_fiirkan_Standard"], # String array
-
-    "destroyerVariants":["hii_kava_Standard",
-                         "hii_faal-corum_Standard",
-                         "hii_rathan_Standard",
-                         "hii_vraan_Standard"], # String array
-
-    "cruiserVariants":["hii_vanaar_Standard",
-                       "hii_vaahrok_Standard",
-                       "hii_jneer_Standard",
-                       "hii_jneer_Singular",
-                       "hii_saarkin_Standard",
-                       "hii_skaal_Standard"], # String array
-
-    "capitalVariants":["hii_wodaan_Standard",
-                       "hii_taiid_Standard",
-                       "hii_kuun-lan_Standard",
-                       "hii_koshiir_Singular",
-                       "hii_sajuuk_Singular",
-                       "hii_qwaar_Standard",
-                       "hii_sajuukkhar_Standard"], # String array
-
-    "startingVariants":["hii_fiirkan_Standard", "hii_jet_Standard", "hii_kaan_Standard"], # String array
 }
