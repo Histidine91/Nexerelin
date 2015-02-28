@@ -17,7 +17,7 @@ public class HasAgent extends BaseCommandPlugin {
         for (CargoStackAPI stack : stacks)
         {
             if (stack.isNull()) continue;
-            if (stack.getCommodityId().equals("agent") && stack.getSize() >= 1) 
+            if (stack.getCommodityId() != null && stack.getCommodityId().equals("agent") && stack.getSize() >= 1) 
                 return true;
         }
         return false;
