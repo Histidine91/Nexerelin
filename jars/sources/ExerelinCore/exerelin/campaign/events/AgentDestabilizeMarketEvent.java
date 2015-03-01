@@ -10,7 +10,10 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import exerelin.utilities.ExerelinUtils;
 
-
+/**
+ * this handles event reporting for intel screen
+ * for the market condition see AgentDestabilizeMarketEventForCondition
+ */
 public class AgentDestabilizeMarketEvent extends CovertOpsEventBase {
 
 	public static Logger log = Global.getLogger(AgentDestabilizeMarketEvent.class);

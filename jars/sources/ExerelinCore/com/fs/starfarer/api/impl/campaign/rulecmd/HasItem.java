@@ -9,15 +9,16 @@ import java.util.List;
 import java.util.Map;
 
 
-public class HasAgent extends BaseCommandPlugin {
+public class HasItem extends BaseCommandPlugin {
     
     @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
+        String itemId = params.get(0).getString(memoryMap);
         List<CargoStackAPI> stacks = Global.getSector().getPlayerFleet().getCargo().getStacksCopy();
         for (CargoStackAPI stack : stacks)
         {
             if (stack.isNull()) continue;
-            if (stack.getCommodityId() != null && stack.getCommodityId().equals("agent") && stack.getSize() >= 1) 
+            if (stack.getCommodityId() != null && stack.getCommodityId().equals(itemId) && stack.getSize() >= 1) 
                 return true;
         }
         return false;

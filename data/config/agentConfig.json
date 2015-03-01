@@ -23,11 +23,13 @@
 	"agentDestabilizeRepLossOnDetectionMin":0.2,
 	"agentDestabilizeRepLossOnDetectionMax":0.25,
 	
-	"sabotageSuccessChance":0.7,
-	"sabotageDetectionChance":0.3,
-	"sabotageDetectionChanceFail":0.7,
-	"sabotageRepLossOnDetectionMin":0.25,
-	"sabotageRepLossOnDetectionMax":0.3,
+	"sabotageReserveSuccessChance":0.6,
+	"sabotageReserveDetectionChance":0.4,
+	"sabotageReserveDetectionChanceFail":0.65,
+	"sabotageReserveEffectMin":25.0,
+	"sabotageReserveEffectMax":30.0,
+	"sabotageReserveRepLossOnDetectionMin":0.15,
+	"sabotageReserveRepLossOnDetectionMax":0.2,
 	
 	"prisonerRelationBonus":0.1
 }

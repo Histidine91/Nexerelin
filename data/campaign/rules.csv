@@ -421,10 +421,10 @@ ExerelinFactionDirectoryGetTriTachyon,DialogOptionSelected,$option == exerelinFa
 #START AGENT OPTIONS,,,,,,
 ExerelinMarketAgentOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
-HasAgent",SetEnabled exerelinUseAgent true,,2:exerelinUseAgent:Deploy an agent,
+HasItem agent",SetEnabled exerelinUseAgent true,,2:exerelinUseAgent:Deploy an agent,
 ExerelinMarketAgentOptionNoAgents,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
-!HasAgent","SetTooltip exerelinUseAgent ""You have no agents!""
+!HasItem agent","SetTooltip exerelinUseAgent ""You have no agents!""
 SetEnabled exerelinUseAgent false",,2:exerelinUseAgent:Deploy an agent,
 #ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
@@ -446,8 +446,31 @@ FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute 
 ExerelinAgentCancel,DialogOptionSelected,"$option == exerelinAgentCancel","$menuState = main 0
 ShowDefaultVisual
 FireAll PopulateOptions",,,
-ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasAgent,FireAll ExerelinAgentOption,,,
-ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasAgent,"$menuState = main 0
+ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasItem agent,FireAll ExerelinAgentOption,,,
+ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasItem agent,"$menuState = main 0
 ShowDefaultVisual
 FireAll PopulateOptions",You have no more agents to deploy.,,
 #END AGENT OPTIONS,,,,,,
+,,,,,,
+#START SABOTEUR OPTIONS,,,,,,
+ExerelinMarketSaboteurOption,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+HasItem saboteur",SetEnabled exerelinUseSaboteur true,,2:exerelinUseSaboteur:Deploy a saboteur,
+ExerelinMarketSaboteurOptionNoSaboteurs,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+!HasItem saboteur","SetTooltip exerelinUseSaboteur ""You have no saboteurs!""
+SetEnabled exerelinUseSaboteur false",,2:exerelinUseSaboteur:Deploy a saboteur,
+ExerelinSaboteurOptionListMain,DialogOptionSelected,$option == exerelinUseSaboteur,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
+FireAll ExerelinSaboteurOption",,,
+ExerelinSaboteurOptionListBack,ExerelinSaboteurOption,,,,exerelinSaboteurCancel:Back,
+ExerelinSaboteurOptionListSabotageReserve,ExerelinSaboteurOption,,"SetTooltip exerelinSaboteurSabotageReserve ""Sabotages the reserve fleet on $market, weakening its ability to respond to invasions. Needless to say, this will be considered a hostile act if discovered.""",,exerelinSaboteurSabotageReserve:Sabotage reserve fleet,
+ExerelinSaboteurSabotageReserve,DialogOptionSelected,$option == exerelinSaboteurSabotageReserve,"SaboteurSabotageReserve
+FireAll ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
+ExerelinSaboteurCancel,DialogOptionSelected,"$option == exerelinSaboteurCancel","$menuState = main 0
+ShowDefaultVisual
+FireAll PopulateOptions",,,
+ExerelinSaboteurAfterDeploy,ExerelinSaboteurPostDeploy,HasItem saboteur,FireAll ExerelinSaboteurOption,,,
+ExerelinSaboteurAfterDeployNoMoreSaboteurs,ExerelinSaboteurPostDeploy,!HasItem saboteur,"$menuState = main 0
+ShowDefaultVisual
+FireAll PopulateOptions",You have no more saboteurs to deploy.,,
+#END SABOTEUR OPTIONS,,,,,,

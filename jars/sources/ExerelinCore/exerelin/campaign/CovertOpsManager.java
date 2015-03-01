@@ -10,10 +10,11 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.impl.campaign.events.RecentUnrestEvent;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.world.ResponseFleetManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         RAISE_RELATIONS,
         LOWER_RELATIONS,
         DESTABILIZE_MARKET,
-        //SABOTAGE
+        SABOTAGE_RESERVE,
     }
     
     public static Logger log = Global.getLogger(CovertOpsManager.class);
@@ -91,9 +92,11 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 
-        actionPicker.add(CovertActionType.RAISE_RELATIONS);
-        actionPicker.add(CovertActionType.LOWER_RELATIONS);
-        actionPicker.add(CovertActionType.DESTABILIZE_MARKET);
+        actionPicker.add(CovertActionType.RAISE_RELATIONS, 1f);
+        actionPicker.add(CovertActionType.LOWER_RELATIONS, 1f);
+        actionPicker.add(CovertActionType.DESTABILIZE_MARKET, 1f);
+        actionPicker.add(CovertActionType.SABOTAGE_RESERVE, 1f);
+        
         CovertActionType actionType = actionPicker.pick();
         
         int factionCount = 0;
@@ -329,10 +332,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         if (Math.random() <= (double)config.get("agentDestabilizeSuccessChance") )
         {
             SectorAPI sector = Global.getSector();
-            CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "recent_unrest");
+            CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market_for_condition");
             if (eventSuper == null) 
-                    eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), "recent_unrest", null);
-            RecentUnrestEvent event = (RecentUnrestEvent)eventSuper;
+                eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market_for_condition", null);
+            AgentDestabilizeMarketEventForCondition event = (AgentDestabilizeMarketEventForCondition)eventSuper;
 
             int currentPenalty = event.getStabilityPenalty();
             int delta = 1;
@@ -380,6 +383,58 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         }
     }
     
+    public static void saboteurSabotageReserve(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
+    {
+        log.info("Saboteur attacking reserve fleet");
+        if (Math.random() <= (double)config.get("sabotageReserveSuccessChance") )
+        {
+            SectorAPI sector = Global.getSector();
+            float effectMin = (float)(double)config.get("sabotageReserveEffectMin");
+            float effectMax = (float)(double)config.get("sabotageReserveEffectMax");
+            float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
+            
+            float delta = ResponseFleetManager.modifyReserveSize(market, effect);
+            
+            Map<String, Object> params = makeEventParams(agentFaction, "success", 0, playerInvolved);
+            params.put("reserveDamage", -delta);
+            
+            // detected after successful attack?
+            if (Math.random() <= (double)config.get("sabotageReserveDetectionChance") )
+            {
+                float repMin = (float)(double)config.get("sabotageReserveRepLossOnDetectionMin");
+                float repMax = (float)(double)config.get("sabotageReserveRepLossOnDetectionMax");
+                float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
+                params.put("repEffect", repResult.delta);
+                params.put("stage", "success_detected");
+            }
+            
+            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_sabotage_reserve", params);
+        }
+        else
+        {
+            if (Math.random() <= (double)config.get("sabotageReserveDetectionChanceFail") )
+            {
+                float repMin = (float)(double)config.get("sabotageReserveRepLossOnDetectionMin");
+                float repMax = (float)(double)config.get("sabotageReserveRepLossOnDetectionMax");
+                float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, RepLevel.HOSTILE);
+                if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
+                {
+                    Map<String, Object> params = makeEventParams(agentFaction, "failure_detected", repResult.delta, playerInvolved);
+                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_sabotage_reserve", params);
+                }
+            }
+            else    // failed but undetected
+            {
+                if (playerInvolved)
+                {
+                    Map<String, Object> params = makeEventParams(agentFaction, "failure", 0, playerInvolved);
+                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_sabotage_reserve", params);
+                }
+            }
+        }
+    }    
     
     public static CovertOpsManager create()
     {

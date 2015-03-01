@@ -16,13 +16,13 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.PlayerFactionStore;
 
-public class AgentDestabilizeMarket extends AgentActionBase {
+public class SaboteurSabotageReserve extends AgentActionBase {
 
         @Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
                 
-                boolean superResult = useAgent("agent", 1);
+                boolean superResult = useAgent("saboteur", 1);
                 if (superResult == false)
                     return false;
                 
@@ -30,7 +30,7 @@ public class AgentDestabilizeMarket extends AgentActionBase {
                 SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
                 MarketAPI market = target.getMarket();
                 FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
-                CovertOpsManager.agentDestabilizeMarket(market, playerAlignedFaction, market.getFaction(), true);
+                CovertOpsManager.saboteurSabotageReserve(market, playerAlignedFaction, market.getFaction(), true);
                 return true;
         }
 }

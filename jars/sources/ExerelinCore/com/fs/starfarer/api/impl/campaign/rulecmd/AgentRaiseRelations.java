@@ -22,7 +22,7 @@ public class AgentRaiseRelations extends AgentActionBase {
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
                 
-                boolean superResult = super.execute(ruleId, dialog, params, memoryMap);
+                boolean superResult = useAgent("agent", 1);
                 if (superResult == false)
                     return false;
                 

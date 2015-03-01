@@ -4,7 +4,7 @@
 	},
 	"exerelin_market_attacked":{
 		"script":"exerelin.campaign.events.MarketAttackedEvent",
-		"image":"graphics/icons/markets/recent_unrest.png"
+		"image":"graphics/icons/markets/mercenaries.png"
 	},
 	"exerelin_diplomacy":{
 		"script":"exerelin.campaign.events.DiplomacyEvent"
@@ -17,6 +17,12 @@
 	},
 	"exerelin_agent_destabilize_market":{
 		"script":"exerelin.campaign.events.AgentDestabilizeMarketEvent"
+	},
+	"exerelin_agent_destabilize_market_for_condition":{
+		"script":"exerelin.campaign.events.AgentDestabilizeMarketEventForCondition"
+	},
+	"exerelin_saboteur_sabotage_reserve":{
+		"script":"exerelin.campaign.events.SaboteurSabotageReserveEvent"
 	},
 	"exerelin_faction_eliminated":{
 		"script":"exerelin.campaign.events.FactionEliminatedEvent"
