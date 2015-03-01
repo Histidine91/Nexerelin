@@ -307,7 +307,7 @@ public class InvasionRound {
 			List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
 			for (SubmarketAPI submarket : submarkets)
 			{
-				if(submarket.getFaction() == defenderFaction)
+				if(submarket.getFaction() == defenderFaction && !submarket.getPlugin().isBlackMarket())
 				submarket.setFaction(attackerFaction);
 			}
 			market.reapplyConditions();
