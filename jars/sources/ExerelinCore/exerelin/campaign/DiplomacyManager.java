@@ -196,6 +196,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         else if(faction2 == playerAlignedFaction)
            playerFaction.setRelationship(faction1.getId(), after);
         
+        SectorManager.checkForVictory();
         return new ReputationAdjustmentResult(delta);
     }
     
@@ -225,7 +226,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             params.put("otherFaction", faction2);
             sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
         }
-        SectorManager.checkForVictory();
     }
     
     public void createDiplomacyEvent()

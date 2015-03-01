@@ -74,12 +74,10 @@ public class VictoryEvent extends BaseEventPlugin {
 		return Global.getSector().getFaction(victorFactionId).getLogo();
 	}
 	
-	/*
 	@Override
 	public String getCurrentMessageIcon() {
-		return newOwner.getLogo();
+		return Global.getSector().getFaction(victorFactionId).getLogo();
 	}
-	*/
 		
 	@Override
 	public CampaignEventPlugin.CampaignEventCategory getEventCategory() {
