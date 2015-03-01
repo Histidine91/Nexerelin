@@ -58,7 +58,7 @@ public class VictoryEvent extends BaseEventPlugin {
 			Global.getSector().reportEventStage(this, stage, Global.getSector().getPlayerFleet(), priority);
 			log.info("VICTORY EVENT: " + stage);
 			if (playerVictory) 
-				Global.getSector().getCampaignUI().addMessage("You have won the game!");
+				Global.getSector().getCampaignUI().addMessage("You have won the game!", Global.getSettings().getColor("textFriendColor"));
 			transmitted = true;
 		}
 	}
