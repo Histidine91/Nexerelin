@@ -426,7 +426,7 @@ ExerelinMarketAgentOptionNoAgents,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 !HasAgent","SetTooltip exerelinUseAgent ""You have no agents!""
 SetEnabled exerelinUseAgent false",,2:exerelinUseAgent:Deploy an agent,
-ExereminMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
+#ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $tradeMode == NONE","SetTooltip exerelinUseAgent ""The port is closed to you, and your agents are unable to infiltrate.""
 SetEnabled exerelinUseAgent false",,,
