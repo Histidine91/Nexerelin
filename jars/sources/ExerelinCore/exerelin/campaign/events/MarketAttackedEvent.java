@@ -11,17 +11,17 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
  */
 public class MarketAttackedEvent extends BaseEventPlugin {
 
-	public static final float DAYS_PER_STAGE = 10f;
-	private float elapsedDays = 0f;
-	private int stabilityPenalty = 0;
-	private String conditionToken = null;
+	public static final float DAYS_PER_STAGE = 30f;
+	protected float elapsedDays = 0f;
+	protected int stabilityPenalty = 0;
+	protected String conditionToken = null;
 	
-        @Override
-        public void init(String type, CampaignEventTarget eventTarget) {
+	@Override
+	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 	}
 	
-        @Override
+	@Override
 	public void startEvent() {
 		super.startEvent();
 		if (market == null) {
@@ -31,7 +31,7 @@ public class MarketAttackedEvent extends BaseEventPlugin {
 		conditionToken = market.addCondition("exerelin_market_attacked_condition", true, this);
 	}
 	
-        @Override
+	@Override
 	public void advance(float amount) {
 		if (!isEventStarted()) return;
 		if (isDone()) return;
@@ -58,7 +58,7 @@ public class MarketAttackedEvent extends BaseEventPlugin {
 		ended = true;
 	}
 
-        @Override
+	@Override
 	public boolean isDone() {
 		return ended;
 	}
@@ -94,12 +94,12 @@ public class MarketAttackedEvent extends BaseEventPlugin {
 		}
 	}
 	
-        @Override
+	@Override
 	public String getEventName() {
 		return "Recent attack on " + market.getName();
 	}
-        
-        @Override
+	
+	@Override
 	public CampaignEventCategory getEventCategory() {
 		return CampaignEventCategory.EVENT;
 	}
