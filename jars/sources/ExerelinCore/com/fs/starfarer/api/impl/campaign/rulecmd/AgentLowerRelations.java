@@ -42,12 +42,15 @@ public class AgentLowerRelations extends AgentActionBase {
                 SectorAPI sector = Global.getSector();
                 SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
                 MarketAPI market = target.getMarket();
-                FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
+                String targetFactionId = target.getFaction().getId();
+                String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+                FactionAPI playerAlignedFaction = sector.getFaction(playerAlignedFactionId);
                 WeightedRandomPicker<String> targetPicker = new WeightedRandomPicker<>();
                 
                 List<String> factions = SectorManager.getLiveFactionIdsCopy();
                 for (String factionId : factions)
                 {
+                    if (factionId.equals(targetFactionId) || factionId.equals(playerAlignedFactionId)) continue;
                     float weight = 0.001f;
                     RepLevel rep = playerAlignedFaction.getRelationshipLevel(factionId);
                     if (TARGET_WEIGHTINGS.containsKey(rep))
@@ -58,7 +61,7 @@ public class AgentLowerRelations extends AgentActionBase {
                 String targetId = targetPicker.pick();
                 if (targetId == null) return false;
                 
-                CovertOpsManager.agentLowerRelations(market, playerAlignedFaction, market.getFaction(), sector.getFaction(targetId), true);
+                CovertOpsManager.agentLowerRelations(market, playerAlignedFaction, target.getFaction(), sector.getFaction(targetId), true);
 
                 return true;
         }
