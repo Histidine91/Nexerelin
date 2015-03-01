@@ -34,20 +34,13 @@ public class AgentLowerRelations extends AgentActionBase {
         @Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
+                
+                boolean superResult = super.execute(ruleId, dialog, params, memoryMap);
+                if (superResult == false)
+                    return false;
+                
                 SectorAPI sector = Global.getSector();
                 SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
-
-                List<CargoStackAPI> stacks = sector.getPlayerFleet().getCargo().getStacksCopy();
-                for (CargoStackAPI stack : stacks)
-                {
-                    if (stack.getCommodityId().equals("agent"))
-                    {
-                        if (stack.getSize() < 1) return false;
-                        stack.subtract(1f);
-                        break;
-                    }
-                }
-                
                 MarketAPI market = target.getMarket();
                 FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
                 WeightedRandomPicker<String> targetPicker = new WeightedRandomPicker<>();
