@@ -148,8 +148,8 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
-		addTokensToList(result, "$oldOwnerMarketsNum");
 		addTokensToList(result, "$newOwnerMarketsNum");
+		addTokensToList(result, "$oldOwnerMarketsNum");
 		return result.toArray(new String[0]);
 	}
 

@@ -61,13 +61,13 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
-                addTokensToList(result, "$repEffectAbs2");
-		addTokensToList(result, "$newRelationStr2");
                 if (stage.equals("failure_detected"))
                 {
                     addTokensToList(result, "$repEffectAbs");
                     addTokensToList(result, "$newRelationStr");
                 }
+                addTokensToList(result, "$repEffectAbs2");
+		addTokensToList(result, "$newRelationStr2");
 		return result.toArray(new String[0]);
 	}
 	
@@ -86,6 +86,6 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
                 {
                     colorNew2 = agentFaction.getRelColor(thirdFaction.getId());
                 }
-		return new Color[] {colorRepEffect2, colorNew2, colorRepEffect, colorNew};
+		return new Color[] {colorRepEffect, colorNew, colorRepEffect2, colorNew2};
 	}
 }
