@@ -432,9 +432,9 @@ $tradeMode == NONE","SetTooltip exerelinUseAgent ""The port is closed to you, an
 SetEnabled exerelinUseAgent false",,,
 ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
 FireAll ExerelinAgentOption",,,
-ExerelinAgentOptionListRaiseRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentRaiseRelations:Influence $Faction to like your faction more. If it fails, there is a chance they will turn more hostile instead.",,exerelinAgentRaiseRelations:Raise relations,
-ExerelinAgentOptionListLowerRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentLowerRelations:Influence $Faction to dislike one of your factions' enemies more. If your attempt is detected, both factions will be angry with you.",,exerelinAgentLowerRelations:Lower relations,
-ExerelinAgentOptionListDestabilizeMarket,ExerelinAgentOption,,"SetTooltip exerelinAgentDestabilizeMarket:Attempt the use of terror methods to destabilize $market. There is a chance your agent will be detected, with serious diplomatic repercussions.",,exerelinAgentDestabilizeMarket:Destabilize market,
+ExerelinAgentOptionListRaiseRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentRaiseRelations ""Influence $Faction to like your faction more. If it fails, there is a chance they will turn more hostile instead.""",,exerelinAgentRaiseRelations:Raise relations,
+ExerelinAgentOptionListLowerRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentLowerRelations ""Influence $Faction to dislike one of your factions' enemies more. If your attempt is detected, both factions will be angry with you.""",,exerelinAgentLowerRelations:Lower relations,
+ExerelinAgentOptionListDestabilizeMarket,ExerelinAgentOption,,"SetTooltip exerelinAgentDestabilizeMarket ""Attempt the use of terror methods to destabilize $market. There is a chance your agent will be detected, with serious diplomatic repercussions.""",,exerelinAgentDestabilizeMarket:Destabilize market,
 ExerelinAgentOptionListBack,ExerelinAgentOption,,,,exerelinAgentCancel:Cancel,
 ,,,,,,
 ExerelinAgentRaiseRelations,DialogOptionSelected,$option == exerelinAgentRaiseRelations,"AgentRaiseRelations
@@ -451,4 +451,3 @@ ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasAgent,"$menuSta
 ShowDefaultVisual
 FireAll PopulateOptions",You have no more agents to deploy.,,
 #END AGENT OPTIONS,,,,,,
-,,,,,,
