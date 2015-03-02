@@ -35,7 +35,7 @@ public class AgentLowerRelations extends AgentActionBase {
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
                 
-                boolean superResult = useAgent("agent", 1);
+                boolean superResult = useSpecialPerson("agent", 1);
                 if (superResult == false)
                     return false;
                 

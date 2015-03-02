@@ -46,7 +46,14 @@ public class ExerelinConfig
     public static float playerBaseSalary = 5000f;
     public static float playerSalaryIncrementPerLevel = 1000f;
     public static boolean playerFactionFreeTransfer = false;
-
+    
+    // Prisoners
+    public static float prisonerRepatriateRepValue = 0.05f;
+    public static float prisonerBaseRansomValue = 2000f;
+    public static float prisonerRansomValueIncrementPerLevel = 200f;
+    public static float prisonerBaseSlaveValue = 4000f;
+    public static float prisonerSlaveValueIncrementPerLevel = 400f;
+    
     // Special Ships
     public static String[] validBoardingFlagships = new String[]{};
     public static String[] validTroopTransportShips = new String[]{};
@@ -85,6 +92,12 @@ public class ExerelinConfig
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary");
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel");
             playerFactionFreeTransfer = settings.getBoolean("playerFactionFreeTransfer");
+            
+            prisonerRepatriateRepValue = (float)settings.optDouble("prisonerRepatriateRepValue");
+            prisonerBaseRansomValue = (float)settings.optDouble("prisonerBaseRansomValue");
+            prisonerRansomValueIncrementPerLevel = (float)settings.optDouble("prisonerRansomValueIncrementPerLevel");
+            prisonerBaseSlaveValue = (float)settings.optDouble("prisonerBaseSlaveValue");
+            prisonerSlaveValueIncrementPerLevel = (float)settings.optDouble("prisonerSlaveValueIncrementPerLevel");
 
             validBoardingFlagships = JSONArrayToStringArray(settings.getJSONArray("validBoardingFlagships"));
             validTroopTransportShips = JSONArrayToStringArray(settings.getJSONArray("validTroopTransportShips"));

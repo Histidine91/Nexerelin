@@ -23,8 +23,16 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 				new ExerelinReputationPlugin(),
 				PickPriority.MOD_GENERAL
 			);
+		}
+		return null;
 	}
-	return null;
+	
+	@Override
+	public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
+		if (interactionTarget instanceof CampaignFleetAPI) {
+			return new PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPlugin(), PickPriority.MOD_GENERAL);
+		}
+		return super.pickInteractionDialogPlugin(interactionTarget);
 	}
 	
 	@Override

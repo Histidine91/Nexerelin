@@ -7,7 +7,7 @@ import java.util.List;
 
 public abstract class AgentActionBase extends BaseCommandPlugin {
         
-        public boolean useAgent(String typeId, int count) {
+        protected boolean useSpecialPerson(String typeId, int count) {
                 SectorAPI sector = Global.getSector();
 
                 List<CargoStackAPI> stacks = sector.getPlayerFleet().getCargo().getStacksCopy();
