@@ -274,7 +274,9 @@ ExerelinMarketAddOptionSpecial,PopulateOptions,"$menuState == main
 !$faction.isNeutralFaction","SetShortcut exerelinMarketSpecial ""S"" true",,6:exerelinMarketSpecial:Special functions,
 ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,FireAll ExerelinMarketSpecial,,,
 ExerelinMarketLeaveOption,ExerelinMarketSpecial,,,,10:exerelinMarketSpecialBack:Back,
-ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,FireAll PopulateOptions,,,
+ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,"ShowDefaultVisual
+$menuState = main 0
+FireAll PopulateOptions",,,
 ,,,,,,
 # START INVASION OPTIONS,,,,,,
 ExerelinMarketInvadeOption,ExerelinMarketSpecial,"$hasMarket
@@ -306,9 +308,8 @@ MakePlayerImmediatelyAttackable
 TriggerResponseFleet
 $player.invasionTarget = $id 1.01",,,
 ExerelinInvasionCancel,DialogOptionSelected,"$option == exerelinInvasionCancel
-$hasMarket","$menuState = main 0
-ShowDefaultVisual
-FireAll PopulateOptions",You decide not to attack $entityName.,,
+$hasMarket","ShowDefaultVisual
+FireAll ExerelinMarketSpecial",You decide not to attack $entityName.,,
 ExerelinInvasionLeave,DialogOptionSelected,"$option == exerelinInvasionLeave
 $hasMarket",DismissDialog,You decide not to continue the invasion.,,
 ExerelinInvasionDone,DialogOptionSelected,"$option == exerelinInvasionLeave
@@ -433,11 +434,11 @@ SetEnabled exerelinUseAgent false",,,
 ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 FireAll ExerelinAgentOption",,,
-ExerelinAgentOptionNumAgents,ExerelinAgentOption,,,You have $numAgents agent(s) to deploy.,,
-ExerelinAgentOptionListRaiseRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentRaiseRelations ""Influence $Faction to like your faction more. If it fails, there is a chance they will turn more hostile instead.""",,exerelinAgentRaiseRelations:Raise relations,
-ExerelinAgentOptionListLowerRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentLowerRelations ""Influence $Faction to dislike one of your factions' enemies more. If your attempt is detected, both factions will be angry with you.""",,exerelinAgentLowerRelations:Lower relations,
+ExerelinAgentOptionNumAgents,ExerelinAgentOption,,SetTextHighlights $numAgents,You have $numAgents agent(s) to deploy.,,
+ExerelinAgentOptionListRaiseRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentRaiseRelations ""Influence $theFaction to like your faction more. If it fails, there is a chance they will turn more hostile instead.""",,exerelinAgentRaiseRelations:Raise relations,
+ExerelinAgentOptionListLowerRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentLowerRelations ""Influence $theFaction to dislike one of your factions' enemies more. If your attempt is detected, both factions will be angry with you.""",,exerelinAgentLowerRelations:Lower relations,
 ExerelinAgentOptionListDestabilizeMarket,ExerelinAgentOption,,"SetTooltip exerelinAgentDestabilizeMarket ""Attempt the use of terror methods to destabilize $market. There is a chance your agent will be detected, with serious diplomatic repercussions.""",,exerelinAgentDestabilizeMarket:Destabilize market,
-ExerelinAgentOptionListBack,ExerelinAgentOption,,,,exerelinAgentCancel:Back,
+ExerelinAgentOptionListBack,ExerelinAgentOption,,,,exerelinMarketSpecial:Back,
 ,,,,,,
 ExerelinAgentRaiseRelations,DialogOptionSelected,$option == exerelinAgentRaiseRelations,"AgentRaiseRelations
 FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
@@ -445,9 +446,6 @@ ExerelinAgentLowerRelations,DialogOptionSelected,$option == exerelinAgentLowerRe
 FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
 ExerelinAgentDestabilizeMarket,DialogOptionSelected,"$option == exerelinAgentDestabilizeMarket","AgentDestabilizeMarket
 FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
-ExerelinAgentCancel,DialogOptionSelected,"$option == exerelinAgentCancel","$menuState = main 0
-ShowDefaultVisual
-FireAll PopulateOptions",,,
 ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasItem agent,"GetNumSpecialPeople
 FireAll ExerelinAgentOption",,,
 ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasItem agent,"$menuState = main 0
@@ -466,14 +464,11 @@ SetEnabled exerelinUseSaboteur false",,2:exerelinUseSaboteur:Deploy a saboteur,
 ExerelinSaboteurOptionListMain,DialogOptionSelected,$option == exerelinUseSaboteur,"GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/cargo_loading.jpg""
 FireAll ExerelinSaboteurOption",,,
-ExerelinSaboteurOptionNumSaboteurs,ExerelinSaboteurOption,,,You have $numSaboteurs saboteur(s) to deploy.,,
+ExerelinSaboteurOptionNumSaboteurs,ExerelinSaboteurOption,,SetTextHighlights $numSaboteurs,You have $numSaboteurs saboteur(s) to deploy.,,
 ExerelinSaboteurOptionListSabotageReserve,ExerelinSaboteurOption,,"SetTooltip exerelinSaboteurSabotageReserve ""Sabotages the reserve fleet on $market, weakening its ability to respond to invasions. Needless to say, this will be considered a hostile act if discovered.""",,exerelinSaboteurSabotageReserve:Sabotage reserve fleet,
-ExerelinSaboteurOptionListBack,ExerelinSaboteurOption,,,,exerelinSaboteurCancel:Back,
+ExerelinSaboteurOptionListBack,ExerelinSaboteurOption,,,,exerelinMarketSpecial:Back,
 ExerelinSaboteurSabotageReserve,DialogOptionSelected,$option == exerelinSaboteurSabotageReserve,"SaboteurSabotageReserve
 FireAll ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
-ExerelinSaboteurCancel,DialogOptionSelected,"$option == exerelinSaboteurCancel","$menuState = main 0
-ShowDefaultVisual
-FireAll PopulateOptions",,,
 ExerelinSaboteurAfterDeploy,ExerelinSaboteurPostDeploy,HasItem saboteur,"GetNumSpecialPeople
 FireAll ExerelinSaboteurOption",,,
 ExerelinSaboteurAfterDeployNoMoreSaboteurs,ExerelinSaboteurPostDeploy,!HasItem saboteur,"$menuState = main 0
@@ -483,19 +478,20 @@ FireAll PopulateOptions",You have no more saboteurs to deploy.,,
 ,,,,,,
 #START PRISONER OPTIONS,,,,,,
 ExerelinMarketPrisonerOption,ExerelinMarketSpecial,"$hasMarket
-HasItem prisoner",SetEnabled exerelinUsePrisoner true,,3:exerelinUsePrisoner:Prisoner exchange,
+HasItem prisoner",SetEnabled exerelinUsePrisoner true,,3:exerelinUsePrisoner:Prisoner actions,
 ExerelinMarketPrisonerOptionNoPrisoners,ExerelinMarketSpecial,"$hasMarket
 !HasItem prisoner","SetTooltip exerelinUsePrisoner ""You have no prisoners!""
-SetEnabled exerelinUsePrisoner false",,3:exerelinUsePrisoner:Prisoner exchange,
+SetEnabled exerelinUsePrisoner false",,3:exerelinUsePrisoner:Prisoner actions,
 ExerelinPrisonerOptionListMain,DialogOptionSelected,$option == exerelinUsePrisoner,"GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
 FireAll ExerelinPrisonerOption",,,
-ExerelinPrisonerOptionNumPrisoners,ExerelinPrisonerOption,,,You have $numPrisoners prisoner(s) to exchange.,,
+ExerelinPrisonerOptionNumPrisoners,ExerelinPrisonerOption,,SetTextHighlights $numPrisoners,You have $numPrisoners prisoner(s).,,
 ExerelinPrisonerOptionListRepatriate,ExerelinPrisonerOption,,"SetTooltip exerelinPrisonerRepatriate ""Release a prisoner for a reputation boost with $theFaction.""",,exerelinPrisonerRepatriate:Repatriate prisoner,
 ExerelinPrisonerOptionListRansom,ExerelinPrisonerOption,"RepIsAtWorst $faction.id INHOSPITABLE
 !IsPirateFaction $faction.id","GetPrisonerValue
 SetTooltip exerelinPrisonerRansom ""Return a prisoner in exchange for a ransom of $ransomValue credits.""
-SetTextHighlights exerelinPrisonerRansom $ransomValue
+SetTooltipHighlightColors exerelinPrisonerRansom buttonShortcut 
+SetTooltipHighlights exerelinPrisonerRansom $ransomValue
 SetEnabled exerelinPrisonerRansom true",,exerelinPrisonerRansom:Collect ransom,
 ExerelinPrisonerOptionListRansomHostile,ExerelinPrisonerOption,"RepIsAtBest $faction.id HOSTILE
 !IsPirateFaction $faction.id","SetTooltip exerelinPrisonerRansom ""$TheFaction is hostile to you and refuses to consider any ransom payment.""
@@ -504,11 +500,12 @@ ExerelinPrisonerOptionListRansomPirates,ExerelinPrisonerOption,IsPirateFaction $
 SetEnabled exerelinPrisonerRansom false",,exerelinPrisonerRansom:Collect ransom,
 ExerelinPrisonerOptionListSellSlave,ExerelinPrisonerOption,$tradeMode != NONE,"GetPrisonerValue
 SetTooltip exerelinPrisonerSellSlave ""Sell a prisoner as a slave for $slaveValue credits. This will anger lawful factions.""
-SetTextHighlights exerelinPrisonerRansom $slaveValue
+SetTooltipHighlightColors exerelinPrisonerSellSlave buttonShortcut 
+SetTooltipHighlights exerelinPrisonerSellSlave $slaveValue
 SetEnabled exerelinPrisonerSellSlave true",,exerelinPrisonerSellSlave:Sell as slave,
 ExerelinPrisonerOptionListSellSlaveNoMarket,ExerelinPrisonerOption,$tradeMode == NONE,"SetTooltip exerelinPrisonerSellSlave ""You cannot dock with $market to perform this trade.""
 SetEnabled exerelinPrisonerSellSlave false",,exerelinPrisonerSellSlave:Sell as slave,
-ExerelinPrisonerOptionListBack,ExerelinPrisonerOption,,,,exerelinPrisonerCancel:Back,
+ExerelinPrisonerOptionListBack,ExerelinPrisonerOption,,,,exerelinMarketSpecial:Back,
 ExerelinPrisonerRepatriate,DialogOptionSelected,$option == exerelinPrisonerRepatriate,"PrisonerRepatriate
 FireAll ExerelinPrisonerPostTrade",The prisoner has been repatriated.,,
 ExerelinPrisonerRansom,DialogOptionSelected,$option == exerelinPrisonerRansom,"PrisonerRansom
@@ -517,14 +514,11 @@ FireAll ExerelinPrisonerPostTrade",The prisoner has been ransomed for $ransomVal
 ExerelinPrisonerSellSlave,DialogOptionSelected,$option == exerelinPrisonerSellSlave,"PrisonerSellSlave
 SetTextHighlights $slaveValue
 FireAll ExerelinPrisonerPostTrade",You have sold the prisoner into slavery for $slaveValue credits.,,
-ExerelinPrisonerCancel,DialogOptionSelected,"$option == exerelinPrisonerCancel","$menuState = main 0
-ShowDefaultVisual
-FireAll PopulateOptions",,,
 ExerelinPrisonerAfterTrade,ExerelinPrisonerPostTrade,HasItem prisoner,"GetNumSpecialPeople
 FireAll ExerelinPrisonerOption",,,
 ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem prisoner,"$menuState = main 0
 ShowDefaultVisual
-FireAll PopulateOptions",You have no more prisoners to trade.,,
+FireAll PopulateOptions",You have no more prisoners.,,
 ,,,,,,
 ,,,,,,
 ,,,,,,
