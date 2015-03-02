@@ -66,6 +66,15 @@
 			"maxRepChange":0.15,
 		},
 		{
+			"name":"Prisoner Exchange",
+			"stage":"prisoner_exchange",
+			"maxRepLevelToOccur":"hostile",
+			"repEnsureAtWorst":"hostile",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+			"repLimit":"inhospitable"
+		},
+		{
 			"name":"Antiwar Protests",
 			"stage":"antiwar_protest",
 			"maxRepLevelToOccur":"hostile",
