@@ -23,26 +23,24 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	protected static final int DAYS_TO_KEEP = 90;
 	
 	protected FactionAPI agentFaction;
-        protected String stage;
-        protected boolean playerInvolved;
-	protected float repEffect;    // between agent faction and target faction
+	protected String stage;
+	protected boolean playerInvolved;
+	protected float repEffect;	// between agent faction and target faction
 	protected float age;
 	protected Map<String, Object> params;
-	    
+		
 	protected boolean done;
-	protected boolean transmitted;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
-                stage = "";
-                playerInvolved = false;
-                repEffect = 0;
-                agentFaction = null;
-                
+		stage = "";
+		playerInvolved = false;
+		repEffect = 0;
+		agentFaction = null;
+		
 		done = false;
-		transmitted = false;
 		age = 0;
 	}
 	
@@ -50,13 +48,10 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	public void setParam(Object param) {
 		params = (HashMap)param;
 		agentFaction = (FactionAPI)params.get("agentFaction");
-                if (params.containsKey("repEffect"))
-                    repEffect = (Float)params.get("repEffect");
+		if (params.containsKey("repEffect"))
+			repEffect = (Float)params.get("repEffect");
 		stage = (String)params.get("stage");
-                playerInvolved = (Boolean)params.get("playerInvolved");
-		//log.info("Params newOwner: " + newOwner);
-		//log.info("Params oldOwner: " + oldOwner);
-		//log.info("Params playerInvolved: " + playerInvolved);
+		playerInvolved = (Boolean)params.get("playerInvolved");
 	}
 		
 	@Override
@@ -72,15 +67,16 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 			done = true;
 			return;
 		}
-		if (!transmitted)
-		{
-			MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
-                        String reportStage = stage;
-                        if (playerInvolved) reportStage += "_player";
-			Global.getSector().reportEventStage(this, reportStage, market.getPrimaryEntity(), priority);
-			log.info("Covert warfare event: " + stage);
-			transmitted = true;
-		}
+	}
+	
+	@Override
+	public void startEvent()
+	{
+		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
+		String reportStage = stage;
+		if (playerInvolved) reportStage += "_player";
+		Global.getSector().reportEventStage(this, reportStage, market.getPrimaryEntity(), priority);
+		log.info("Covert warfare event: " + stage);
 	}
 
 	@Override
@@ -113,20 +109,20 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 		String standing = "" + repInt + "/100" + " (" + level.getDisplayName().toLowerCase() + ")";
 		return standing;
 	}
-        	
+		
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
 		String agentFactionStr = agentFaction.getEntityNamePrefix();
 		String theAgentFactionStr = agentFaction.getDisplayNameWithArticle();
-                
+		
 		map.put("$agentFaction", agentFactionStr);
 		map.put("$theAgentFaction", theAgentFactionStr);
 		map.put("$AgentFaction", Misc.ucFirst(agentFactionStr));
 		map.put("$TheAgentFaction", Misc.ucFirst(theAgentFactionStr));
-                
+		
 		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repEffect*100f)));
-                map.put("$newRelationStr", getNewRelationStr(agentFaction, faction));		return map;
+		map.put("$newRelationStr", getNewRelationStr(agentFaction, faction));		return map;
 	}
 	
 	@Override
@@ -140,7 +136,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	@Override
 	public Color[] getHighlightColors(String stageId) {
 		Color colorRepEffect = repEffect > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
-                Color colorNew = agentFaction.getRelColor(faction.getId());
+		Color colorNew = agentFaction.getRelColor(faction.getId());
 		return new Color[] {colorRepEffect, colorNew};
 	}
 

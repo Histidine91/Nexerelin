@@ -334,9 +334,9 @@ public class InvasionRound {
 				if (playerInvolved)
 				{
 					factionsToNotify.add(otherMarket.getFactionId());
-					sector.adjustPlayerReputation(
+					/*sector.adjustPlayerReputation(
 						new RepActionEnvelope(RepActions.COMBAT_WITH_ENEMY, repChangeStrength),
-						otherMarket.getFaction().getId());
+						otherMarket.getFaction().getId());*/
 				}
 				//log.info(String.format("Improving reputation with owner of market [%s] due to conquest of " + defender.getName(), otherMarket.getName()));
 			}

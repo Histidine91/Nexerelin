@@ -32,7 +32,6 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	private Map<String, Object> params;
 	
 	private boolean done;
-	private boolean transmitted;
 	private float age;
 		
 	@Override
@@ -40,7 +39,6 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
 		done = false;
-		transmitted = false;
 		age = 0;
 		//log.info("Capture event created");
 	}
@@ -52,10 +50,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		oldOwner = (FactionAPI)params.get("oldOwner");
 		repChangeStrength = (Float)params.get("repChangeStrength");
 		playerInvolved = (Boolean)params.get("playerInvolved");
-		factionsToNotify = (List<String>)params.get("factionsToNofify");
-		//log.info("Params newOwner: " + newOwner);
-		//log.info("Params oldOwner: " + oldOwner);
-		//log.info("Params playerInvolved: " + playerInvolved);
+		factionsToNotify = (List<String>)params.get("factionsToNotify");
 	}
 		
 	@Override
@@ -76,35 +71,31 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 			done = true;
 			return;
 		}
-		if (!transmitted)
-		{
-			String stage = "report";
-			//MessagePriority priority = MessagePriority.SECTOR;
-			MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
-			if (playerInvolved) 
-			{
-				stage = "report_player";
-				//priority = MessagePriority.ENSURE_DELIVERY;
-			}
-			// factionsToNotify is null for some reason -> causes NPE
-			/*
-			Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
-					final List<String> factions = factionsToNotify;
-					public void beforeDelivery(CommMessageAPI message) {
-					    if (playerInvolved)
-						for (String factionId : factions)
-						    Global.getSector().adjustPlayerReputation(
-							new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.COMBAT_WITH_ENEMY, repChangeStrength),
-							factionId);
-					}
-				});
-			*/
-			Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
-			//log.info("Capture event reported");
-			transmitted = true;
-		}
 	}
 
+	@Override
+	public void startEvent()
+	{
+		String stage = "report";
+		//MessagePriority priority = MessagePriority.SECTOR;
+		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
+		if (playerInvolved) 
+		{
+			stage = "report_player";
+			//priority = MessagePriority.ENSURE_DELIVERY;
+		}
+
+		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
+				public void beforeDelivery(CommMessageAPI message) {
+					if (playerInvolved)
+					for (String factionId : factionsToNotify)
+						Global.getSector().adjustPlayerReputation(
+						new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.COMBAT_WITH_ENEMY, repChangeStrength),
+						factionId);
+				}
+			});
+	}
+	
 	@Override
 	public String getEventName() {
 		return (newOwner.getDisplayName() + " captures " + market.getName());

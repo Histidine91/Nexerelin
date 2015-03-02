@@ -32,16 +32,14 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	protected float delta;
 	protected float age;
 	protected Map<String, Object> params;
-	    
+		
 	protected boolean done;
-	protected boolean transmitted;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
 		done = false;
-		transmitted = false;
 		age = 0;
 	}
 	
@@ -51,9 +49,6 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		otherFaction = (FactionAPI)params.get("otherFaction");
 		delta = (Float)params.get("delta");
 		event = (DiplomacyEventDef)params.get("event");
-		//log.info("Params newOwner: " + newOwner);
-		//log.info("Params oldOwner: " + oldOwner);
-		//log.info("Params playerInvolved: " + playerInvolved);
 	}
 		
 	@Override
@@ -69,25 +64,26 @@ public class DiplomacyEvent extends BaseEventPlugin {
 			done = true;
 			return;
 		}
-		if (!transmitted)
-		{
-			// we can set the reputation change only on message delivery
-			// but problem is, the token replacement method needs to know the relationship change NOW
-			//DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
-			MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
-			Global.getSector().reportEventStage(this, event.stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
-					final DiplomacyEventDef thisEvent = event;
-					final float thisDelta = delta;
-					final MarketAPI thisMarket = market;
-					final FactionAPI fac = market.getFaction();
-					final FactionAPI otherFac = otherFaction;
-					
-					public void beforeDelivery(CommMessageAPI message) {
-					//DiplomacyManager.adjustRelations(thisEvent, thisMarket, fac, otherFac, thisDelta);
-					}});
-			log.info("Diplomacy event: " + event.stage);
-			transmitted = true;
-		}
+	}
+	
+	@Override
+	public void startEvent() {
+		// we can set the reputation change only on message delivery
+		// but problem is, the token replacement method needs to know the relationship change NOW
+		//DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
+		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
+		Global.getSector().reportEventStage(this, event.stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
+			final DiplomacyEventDef thisEvent = event;
+			final float thisDelta = delta;
+			final MarketAPI thisMarket = market;
+			final FactionAPI fac = market.getFaction();
+			final FactionAPI otherFac = otherFaction;
+
+			public void beforeDelivery(CommMessageAPI message) {
+			//DiplomacyManager.adjustRelations(thisEvent, thisMarket, fac, otherFac, thisDelta);
+			}
+		});
+		log.info("Diplomacy event: " + event.stage);
 	}
 
 	@Override

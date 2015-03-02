@@ -24,16 +24,14 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 	private boolean playerVictory;
 	float age;
 	private Map<String, Object> params;
-	    
+		
 	public boolean done;
-	public boolean transmitted;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
 		done = false;
-		transmitted = false;
 		age = 0;
 	}
 	
@@ -59,15 +57,16 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 			done = true;
 			return;
 		}
-		if (!transmitted)
-		{
-			MessagePriority priority = MessagePriority.SECTOR;
-			String stage = "normal";
-			if (playerDefeated) stage = "player_defeat";
-			else if (playerVictory) stage = "player_victory";
-			Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
-			transmitted = true;
-		}
+	}
+	
+	@Override
+	public void startEvent()
+	{
+		MessagePriority priority = MessagePriority.SECTOR;
+		String stage = "normal";
+		if (playerDefeated) stage = "player_defeat";
+		else if (playerVictory) stage = "player_victory";
+		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
 	}
 
 	@Override
@@ -89,7 +88,7 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 	public CampaignEventPlugin.CampaignEventCategory getEventCategory() {
 		return CampaignEventPlugin.CampaignEventCategory.EVENT;
 	}
-	    
+		
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();

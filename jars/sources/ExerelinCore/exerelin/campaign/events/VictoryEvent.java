@@ -20,7 +20,7 @@ public class VictoryEvent extends BaseEventPlugin {
 	private String victorFactionId;
 	private Map<String, Object> params;
 	private boolean playerVictory;
-	    
+		
 	public boolean done;
 	public boolean transmitted;
 		
@@ -43,24 +43,16 @@ public class VictoryEvent extends BaseEventPlugin {
 	}
 		
 	@Override
-	public void advance(float amount)
+	public void startEvent()
 	{
-		if (done)
-		{
-			return;
-		}
-		if (!transmitted)
-		{
-			MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
-			String stage = "conquest";
-			if (diplomaticVictory) stage = "diplomatic";
-			else if (playerVictory) stage = "conquest_player";
-			Global.getSector().reportEventStage(this, stage, Global.getSector().getPlayerFleet(), priority);
-			log.info("VICTORY EVENT: " + stage);
-			if (playerVictory) 
-				Global.getSector().getCampaignUI().addMessage("You have won the game!", Global.getSettings().getColor("textFriendColor"));
-			transmitted = true;
-		}
+		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
+		String stage = "conquest";
+		if (diplomaticVictory) stage = "diplomatic";
+		else if (playerVictory) stage = "conquest_player";
+		Global.getSector().reportEventStage(this, stage, Global.getSector().getPlayerFleet(), priority);
+		log.info("VICTORY EVENT: " + stage);
+		if (playerVictory) 
+			Global.getSector().getCampaignUI().addMessage("You have won the game!", Global.getSettings().getColor("textFriendColor"));
 	}
 
 	@Override
