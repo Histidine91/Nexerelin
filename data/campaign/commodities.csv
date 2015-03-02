@@ -1,4 +1,4 @@
 name,id,demand class,base price,price variability,utility,decay,origin,tags,stack size,cargo space,icon,sound id,sound id drop,order
-High Value Prisoner,prisoner,regular_crew,5000,,3,0.1,,,1000,0,graphics/icons/cargo/crew3.png,ui_cargo_crew,ui_cargo_crew_drop,19
-Agent,agent,marines,2000,,1,0.1,,military,1000,0,graphics/icons/cargo/crew2.png,ui_cargo_crew,ui_cargo_crew_drop,20
-Saboteur,saboteur,marines,3000,,1,0.1,,military,1000,0,graphics/icons/cargo/crew9.png,ui_cargo_crew,ui_cargo_crew_drop,21
+High Value Prisoner,prisoner,regular_crew,5000,,3,0.3,,,1000,0,graphics/icons/cargo/crew3.png,ui_cargo_crew,ui_cargo_crew_drop,19
+Agent,agent,marines,2000,,1,0.3,,military,1000,0,graphics/icons/cargo/crew2.png,ui_cargo_crew,ui_cargo_crew_drop,20
+Saboteur,saboteur,marines,3000,,1,0.3,,military,1000,0,graphics/icons/cargo/crew9.png,ui_cargo_crew,ui_cargo_crew_drop,21
