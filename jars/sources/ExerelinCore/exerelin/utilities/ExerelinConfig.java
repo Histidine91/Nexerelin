@@ -46,6 +46,7 @@ public class ExerelinConfig
     public static float playerBaseSalary = 5000f;
     public static float playerSalaryIncrementPerLevel = 1000f;
     public static boolean playerFactionFreeTransfer = false;
+    public static float playerInsuranceMult = 0.5f;
     
     // Prisoners
     public static float prisonerRepatriateRepValue = 0.05f;
@@ -91,7 +92,7 @@ public class ExerelinConfig
 
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary");
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel");
-            playerFactionFreeTransfer = settings.getBoolean("playerFactionFreeTransfer");
+            playerInsuranceMult = (float)settings.optDouble("playerInsuranceMult");
             
             prisonerRepatriateRepValue = (float)settings.optDouble("prisonerRepatriateRepValue");
             prisonerBaseRansomValue = (float)settings.optDouble("prisonerBaseRansomValue");

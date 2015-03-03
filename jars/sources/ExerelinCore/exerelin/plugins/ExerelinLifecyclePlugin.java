@@ -36,6 +36,9 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_salary")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_salary", null);
         }
+		if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
+            Global.getSector().getEventManager().startEvent(null, "exerelin_faction_insurance", null);
+        }
     }
 
     @Override

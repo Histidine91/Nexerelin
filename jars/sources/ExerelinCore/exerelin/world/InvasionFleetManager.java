@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
@@ -17,8 +18,10 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -101,7 +104,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         InvasionFleetAI ai = new InvasionFleetAI(fleet, data);
         fleet.addScript(ai);
         log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
-        
+        Map<String, Object> params = new HashMap<>();
+        params.put("target", targetMarket);
+        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
         return data;
     }
     
