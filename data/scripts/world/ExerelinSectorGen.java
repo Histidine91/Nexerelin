@@ -29,12 +29,15 @@ import exerelin.plugins.*;
 import exerelin.*;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.ResponseFleetManager;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class ExerelinSectorGen implements SectorGeneratorPlugin
@@ -57,14 +60,18 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private List possibleSystemNamesList = new LinkedList(Arrays.asList(possibleSystemNames));
 	private List possiblePlanetNamesList = new LinkedList(Arrays.asList(possiblePlanetNames));
 	
-	private static final String[] possiblePlanetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water"};
-	private static final String[] possiblePlanetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "gas_giant", "ice_giant"};
+	private static final String[] possiblePlanetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_ice"};
+	private static final String[] possiblePlanetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "gas_giant", "ice_giant"};
 	private static final String[] possibleMoonTypes = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice"};
 	private static final String[] possibleStationImages = new String[] {"station_side00", "station_side02", "station_side04"};
 	
 	//private static String[] possibleFactionIds = new String[]{"sindrian_diktat", "tritachyon", "luddic_church", "pirates", "hegemony", "independent"};
 	private String[] factionIds = new String[]{};
 	private boolean isStartSystemChosen = false;
+	private int starNum = 0;
+	private String relayOwner = "neutral";
+	
+	private Map systemToRelay = new HashMap();
 
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
 
@@ -126,7 +133,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				allowedImages.add(new String[]{"illustrations", "industrial_megafacility"} );
 			if(isStation && size >= 3)
 				allowedImages.add(new String[]{"illustrations", "jangala_station"} );
-			if(entity.getFaction().getId() == "pirates")
+			if(entity.getFaction().getId().equals("pirates"))
 				allowedImages.add(new String[]{"illustrations", "pirate_station"} );
 			if(!isStation && size <=3)
 				allowedImages.add(new String[]{"illustrations", "vacuum_colony"} );
@@ -136,16 +143,16 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			entity.setInteractionImage(illustration[0], illustration[1]);
 		}
 	
-	private MarketAPI addMarketToEntity(int i, SectorEntityToken entity, String owningFactionId, String planetType, boolean isStation)
+	private MarketAPI addMarketToEntity(int starIndex, int planetIndex, SectorEntityToken entity, String owningFactionId, String planetType, boolean isStation)
 	{
 		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
 		if (isStation) marketSize = ExerelinUtils.getRandomInRange(1, 2) + ExerelinUtils.getRandomInRange(1, 2);	// stations are on average smaller
 		else marketSize = ExerelinUtils.getRandomInRange(2, 3) + ExerelinUtils.getRandomInRange(2, 3);
 		
-		// first planet in the system is a regional capital
+		// first planet in the system is a regional capital (or HQ if in Exerelin system)
 		// it is always at least size 5
-		if (i == 0)
+		if (planetIndex == 0)
 		{
 			if (marketSize < 5)
 				marketSize = 5;
@@ -167,9 +174,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		newMarket.addCondition("population_" + marketSize);
 
-		if (i == 0)
+		if (planetIndex == 0)
 		{
-			newMarket.addCondition("regional_capital");
+			newMarket.addCondition(starIndex == 0 ? "headquarters" : "regional_capital");
 		}
 		
 		int minSizeForMilitaryBase = 5;
@@ -196,7 +203,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			newMarket.addCondition("terran");
 		if (planetType.equals("desert"))
 			newMarket.addCondition("desert");
-		if (planetType.equals("frozen"))
+		if (planetType.equals("frozen") || planetType.equals("rocky_ice"))
 			newMarket.addCondition("ice");
 				
 		if(marketSize < 4 && !isStation){
@@ -315,6 +322,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(new InvasionFleetManager());
 		sector.addScript(ResponseFleetManager.create());
 		
+		DiplomacyManager.initFactionRelationships();
+		
+		SectorManager.setSystemToRelayMap(systemToRelay);
+		
 		log.info("Finished sector generation");
 	}
 
@@ -326,6 +337,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		StarSystemAPI system = sector.createStarSystem((String)possibleSystemNamesList.get(systemNameIndex));
 		possibleSystemNamesList.remove(systemNameIndex);
 		String systemName = system.getName();
+		String systemId = system.getId();
 		
 		int maxSectorSize = ExerelinSetupData.getInstance().maxSectorSize;
 		if((ExerelinSetupData.getInstance().numSystems == sector.getStarSystems().size()
@@ -351,7 +363,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// TODO refactor to remove endless nested ifs
 		if(starType == 0)
 		{
-			star = system.initStar(systemName, "star_yellow", 500f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_yellow", 500f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			//system.setLightColor(new Color(255, 180, 180));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
@@ -360,7 +372,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 1)
 		{
-			star = system.initStar(systemName, "star_red", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_red", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(255, 180, 180));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/backgrounds/background3.jpg");
@@ -369,7 +381,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 2)
 		{
-			star = system.initStar(systemName, "star_blue", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_blue", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(135,206,250));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/blue_background1.jpg");
@@ -378,7 +390,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 3)
 		{
-			star = system.initStar(systemName, "star_white", 300f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_white", 300f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			//system.setLightColor(new Color(185,185,240));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/white_background1.jpg");
@@ -387,7 +399,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 4)
 		{
-			star = system.initStar(systemName, "star_orange", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_orange", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(255,220,0));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/orange_background1.jpg");
@@ -396,7 +408,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 5)
 		{
-			star = system.initStar(systemName, "star_yellowwhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_yellowwhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(255,255,224));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
@@ -405,7 +417,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 6)
 		{
-			star = system.initStar(systemName, "star_bluewhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_bluewhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(135,206,250));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/bluewhite_background1.jpg");
@@ -414,7 +426,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 7)
 		{
-			star = system.initStar(systemName, "star_purple", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_purple", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(218,112,214));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/purple_background1.jpg");
@@ -423,7 +435,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 8)
 		{
-			star = system.initStar(systemName, "star_dark", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_dark", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(105,105,105));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/dark_background1.jpg");
@@ -432,7 +444,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 9)
 		{
-			star = system.initStar(systemName, "star_green", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_green", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(240,255,240));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/green_background1.jpg");
@@ -441,7 +453,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 		{
-			star = system.initStar(systemName, "star_greenwhite", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = system.initStar(systemId, "star_greenwhite", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(240,255,240));
 			if(ExerelinUtils.getRandomInRange(0,1) == 0)
 				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/greenwhite_background1.jpg");
@@ -462,6 +474,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			boolean inhabitable = Math.random() < 0.7f;
 			String planetType = "";
+			String owningFactionId = getRandomFaction();
+			
+			// set some stuff for first planet
+			if (i == 0)
+			{
+				// make sure player faction has a presence in Exerelin
+				if (starNum == 0)
+				{
+					owningFactionId = PlayerFactionStore.getPlayerFactionId();
+				}
+				inhabitable = true;
+				relayOwner = owningFactionId;
+			}
+			
 			if (inhabitable)
 				planetType = possiblePlanetTypes[ExerelinUtils.getRandomInRange(0, possiblePlanetTypes.length - 1)];
 			else
@@ -564,9 +590,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// Add market to inhabitable planets
 			if(inhabitable)
 			{			
-				String owningFactionId = getRandomFaction();
 				newPlanet.setFaction(owningFactionId);
-				addMarketToEntity(i, newPlanet, owningFactionId, planetType, false);
+				addMarketToEntity(starNum, i, newPlanet, owningFactionId, planetType, false);
 				pickEntityInteractionImage(newPlanet, newPlanet.getMarket(), true);
 			}
 		}
@@ -698,12 +723,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			name = planet.getName() + " " + name;
 			String id = name.replace(' ','_');
 			String image = possibleStationImages[ExerelinUtils.getRandomInRange(0, possibleStationImages.length - 1)];
+			if (owningFactionId.equals("shadow_industry"))
+				image = "station_shi_prana";    // custom station image for Shadowyards
 			
 			if (existingMarket == null)	// de novo station, probably orbiting an uninhabitable planet
 			{
 				SectorEntityToken newStation = system.addCustomEntity(id, name, image, owningFactionId);
 				newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
-				addMarketToEntity(-1, newStation, owningFactionId, "", true);
+				addMarketToEntity(starNum, -1, newStation, owningFactionId, "", true);
 				pickEntityInteractionImage(newStation, newStation.getMarket(), true);
 			}
 			else	// append a station to an existing inhabited planet
@@ -737,9 +764,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		// Build comm relay
 		SectorEntityToken relay = system.addCustomEntity(system.getId() + "_relay", // unique id
-				systemName + " Relay", // name - if null, defaultName from custom_entities.json will be used
+				system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
 				"comm_relay", // type of object, defined in custom_entities.json
-				"neutral"); // faction
+				relayOwner); // faction
 		relay.setCircularOrbit(star, 90, 1200, 180);
+		systemToRelay.put(system.getId(), system.getId() + "_relay");
+		
+		starNum++;
 	}
 }

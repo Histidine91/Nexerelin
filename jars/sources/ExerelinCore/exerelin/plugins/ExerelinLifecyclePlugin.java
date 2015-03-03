@@ -11,11 +11,13 @@ import com.fs.starfarer.api.campaign.events.EventProbabilityAPI;
 import com.fs.starfarer.api.impl.campaign.CoreRuleTokenReplacementGeneratorImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.CustomFleets;
 import com.fs.starfarer.api.impl.campaign.ids.Events;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+//import exerelin.campaign.CovertWarfareManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.world.ResponseFleetManager;
+import java.util.List;
 
 public class ExerelinLifecyclePlugin extends BaseModPlugin {
 
@@ -24,10 +26,12 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         // the token replacement generators don't get saved
         // add them on every game load
         Global.getSector().getRules().addTokenReplacementGenerator(new CoreRuleTokenReplacementGeneratorImpl());
-               
+        
+        ExerelinConfig.loadSettings();
         Global.getSector().addScript(SectorManager.create());
         Global.getSector().addScript(DiplomacyManager.create());
         Global.getSector().addScript(ResponseFleetManager.create());
+        //Global.getSector().addScript(CovertWarfareManager.create());
         
         if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_salary")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_salary", null);
@@ -48,10 +52,10 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         //MarketAPI jangala = Global.getSector().getEconomy().getMarket("jangala");
         //eventManager.startEvent(new CampaignEventTarget(jangala), Events.SYSTEM_BOUNTY, null);
 
-
+        List<String> pirateFactions = DiplomacyManager.getPirateFactionsCopy();
         WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-            if (market.getFactionId().equals(Factions.PIRATES)) {
+            if (pirateFactions.contains( market.getFactionId() )) {
                 continue;
             }
             EventProbabilityAPI ep = eventManager.getProbability(Events.FOOD_SHORTAGE, market);

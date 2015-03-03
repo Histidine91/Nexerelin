@@ -7,6 +7,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
@@ -14,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinConfig;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +24,9 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(FactionSalaryEvent.class);
 	
-	private static final float BASE_SALARY = 4000f;
-	private static final float INCREMENT_PER_LEVEL = 500f;
 	private int month;
 	private float paidAmount = 0f;
-		
+	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
@@ -38,15 +38,33 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 	public void advance(float amount) {
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		if (playerFleet == null) {
-		return;
+			return;
 		}
 		CampaignClockAPI clock = Global.getSector().getClock();
 		if (clock.getDay() == 1 && clock.getMonth() != month) {
 		month = Global.getSector().getClock().getMonth();
 		int level = Global.getSector().getPlayerPerson().getStats().getLevel();
-		paidAmount = BASE_SALARY + INCREMENT_PER_LEVEL * (level - 1);
+		String stage = "report";
+		paidAmount = ExerelinConfig.playerBaseSalary + ExerelinConfig.playerSalaryIncrementPerLevel * (level - 1);
+                if (paidAmount == 0)
+                    return;
+		
+		FactionAPI alignedFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
+		RepLevel relation = alignedFaction.getRelationshipLevel("player");
+		if (alignedFaction.isAtBest("player", RepLevel.INHOSPITABLE))
+		{
+			paidAmount = 0;
+			stage = "report_unpaid";
+		}
+		else if (relation == RepLevel.SUSPICIOUS)
+			paidAmount *= 0.25f;
+		else if (relation == RepLevel.NEUTRAL)
+			paidAmount *= 0.5f;
+		else if (relation == RepLevel.FAVORABLE)
+			paidAmount *= 0.75f;
+		
 		playerFleet.getCargo().getCredits().add(paidAmount);
-		Global.getSector().reportEventStage(this, "report", playerFleet, MessagePriority.DELIVER_IMMEDIATELY);
+		Global.getSector().reportEventStage(this, stage, playerFleet, MessagePriority.DELIVER_IMMEDIATELY);
 		Global.getSector().getPersistentData().put("salariesClock", Global.getSector().getClock().createClock(Global.getSector().getClock().getTimestamp()));
 		}
 	}

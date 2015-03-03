@@ -1,35 +1,35 @@
 {
-    "uniqueModClassName":"data.scripts.world.HiiModPlugin", # String
-    "factionNiceName":"Hiigaran Descendants", # String
+    "uniqueModClassName":"data.scripts.CrystaniteModPlugin", # String
+    "factionNiceName":"Crystanite", # String
     "playableFaction":"true", # Boolean
 
-    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+    "stationInteriorIllustrationKeys":["hound_hangar"], # String array
 
     "changeSystemSpecsOnSystemLockdown":"false", # Boolean
     "preferredBackgroundImagePath":"", # String
     "preferredStarType":"", # String
     "preferredStarLight":"", # String, 0xFFFFFF
 
-    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Port", "Quey", "Habitat", "Shipyard"], # String array
+    "stationNameSuffixes":["Base", "Orbital", "HQ", "Dock", "Shipyard"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.1, # Double
+    "baseFleetCostMultiplier":1.0, # Double
 
     "customRebelFaction":"", # String
     "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Betrayers", # String
+    "rebelFleetSuffix":"Traitors", # String
 
     "smallAttackFleetName":"Scout", # String
     "mediumAttackFleetName":"Strike Force", # String
-    "largeAttackFleetName":"Warfleet", # String
+    "largeAttackFleetName":"War Fleet", # String
 
-    "smallDefenceFleetName":"Picket Defense", # String
+    "smallDefenceFleetName":"Watch Fleet", # String
     "mediumDefenceFleetName":"Guard Fleet", # String
     "largeDefenceFleetName":"System Defense Fleet", # String
 
     "smallPatrolFleetName":"Patrol", # String
-    "mediumPatrolFleetName":"Warden Patrol", # String
-    "largePatrolFleetName":"Garrison Fleet", # String
+    "mediumPatrolFleetName":"Patrol Fleet", # String
+    "largePatrolFleetName":"Patrol Division", # String
 
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
@@ -42,10 +42,10 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["hii_vihr_Standard"], # String array
-    "tankerVariants":["hii_taarel_Standard"], # String array
+    "freighterVariants":["tarsus_Standard", "mule_Standard"], # String array
+    "tankerVariants":["dram_Light"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 
-    "troopTransportVariants":["hii_saari_Standard"], # String array
-    "superFreighterVariants":["hii_neerin_Standard"], # String array
+    "troopTransportVariants":["valkyrie_Elite"], # String array
+    "superFreighterVariants":["atlas_Standard"], # String array
 }

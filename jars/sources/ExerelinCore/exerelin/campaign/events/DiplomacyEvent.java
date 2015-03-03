@@ -109,7 +109,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		
 	@Override
 	public CampaignEventPlugin.CampaignEventCategory getEventCategory() {
-		return CampaignEventPlugin.CampaignEventCategory.EVENT;
+		return CampaignEventPlugin.CampaignEventCategory.DO_NOT_SHOW_IN_MESSAGE_FILTER;
 	}
 	
 	private String getNewRelationStr()

@@ -12,6 +12,9 @@
 	"exerelin_faction_eliminated":{
 		"script":"exerelin.campaign.events.FactionEliminatedEvent"
 	},
+	"exerelin_victory":{
+		"script":"exerelin.campaign.events.VictoryEvent"
+	},
 	"exerelin_faction_respawned":{
 		"script":"exerelin.campaign.events.FactionRespawnedEvent"
 	},

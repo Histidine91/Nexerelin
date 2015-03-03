@@ -254,12 +254,12 @@ public class SectorManager
 	public void payPlayerWages()
 	{
 		// Pay wages if needed
-		if(ExerelinConfig.playerBaseWage > 0 && !this.getPlayerFactionId().equalsIgnoreCase("player"))
+		if(ExerelinConfig.playerBaseSalary > 0 && !this.getPlayerFactionId().equalsIgnoreCase("player"))
 		{
 			if(this.getDiplomacyManager().getRecordForFaction(this.playerFactionId).isAtWar())
-				Global.getSector().getPlayerFleet().getCargo().getCredits().add(ExerelinConfig.playerBaseWage*2);
+				Global.getSector().getPlayerFleet().getCargo().getCredits().add(ExerelinConfig.playerBaseSalary*2);
 			else
-				Global.getSector().getPlayerFleet().getCargo().getCredits().add(ExerelinConfig.playerBaseWage);
+				Global.getSector().getPlayerFleet().getCargo().getCredits().add(ExerelinConfig.playerBaseSalary);
 		}
 	}
 

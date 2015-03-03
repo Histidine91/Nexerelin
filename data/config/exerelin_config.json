@@ -18,7 +18,8 @@
     "fleetCostResource": "supplies", # String
     "miningAmountPerDayPerMiner": 50, # Integer
 
-    "playerBaseWage": 1000, # Integer
+    "playerBaseSalary": 5000, # Double
+    "playerSalaryIncrementPerLevel": 1000, # Double
     "playerFactionFreeTransfer":false, # Boolean, DOESN'T WORK UNTIL FREETRANSFER IS FIXED
 
     "validBoardingFlagships":["atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2", "ori_butterflier", "brdy_eschaton", "sun_ice_shalom"], # String array
@@ -26,5 +27,5 @@
     "validMiningShips":["mining_drone", "zorg_sphere", "pn_mlmv"], # String array
 
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "luddic_church", "pirates"], # String array
-    "supportedModFactions":["batavia", "blackrock_driveyards", "bushi", "citadeldefenders", "dstech", "gedune", "hiigaran_descendants", "insurgency", "interstellarFederation", "junk_pirates", "mayorate", "neutrinocorp", "nomads", "ORI", "pack", "patnavy", "pn", "regime", "shadow_industry", "syndicate_asp", "valkyrian", "zorg", "relics", "BGE", "qualljom", "scavengers", "sun_ice", "exigency", "exipirated", "interstellarimperium", "eleutheria", "SCY", "lotus_pirates", "diableavionics"], # String array
+    "supportedModFactions":["batavia", "blackrock_driveyards", "bushi", "citadeldefenders", "dstech", "gedune", "hiigaran_descendants", "insurgency", "interstellarFederation", "junk_pirates", "mayorate", "neutrinocorp", "nomads", "ori", "rori", "pack", "patnavy", "pn", "regime", "shadow_industry", "syndicate_asp", "valkyrian", "zorg", "relics", "BGE", "qualljom", "scavengers", "sun_ice", "exigency", "exipirated", "interstellarimperium", "eleutheria", "SCY", "lotus_pirates", "diableavionics", "crystanite"], # String array
 }

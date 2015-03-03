@@ -40,7 +40,7 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "factionsDisliked":["rori"], # String array
 
     "freighterVariants":["wind_variant"], # String array
     "tankerVariants":["barrel_variant"], # String array
@@ -48,38 +48,6 @@
 
     "troopTransportVariants":["cane_variant"], # String array
     "superFreighterVariants":["ori_butterflier_variant"], # String array
-
-    "carrierVariants":["openok_variant", "biom_variant", "atlasfix_variant"], # String array
-
-    "fighterWings":["ori_whirly_wing",
-                     "shtur_wing",
-                     "wall_bomb_wing",
-                     "eyed_wing",
-                     "drop_wing"], # String array
-
-    "frigateVariants":["ori_bastion_variant",
-                        "ori_bastion_heavy_variant",
-                        "ori_fork_variant",
-                        "grib_variant",
-                        "openok_variant",
-                        "zugb_variant",
-                         "zugc_variant",
-                         "zugf_variant"], # String array
-
-    "destroyerVariants":["buffalofix_variant",
-                            "circles_variant",
-                            "iris_variant",
-                            "wind_variant"], # String array
-
-    "cruiserVariants":["biom_variant",
-                        "claws_variant",
-                        "kitty_variant",
-                        "ori_rainbow_variant",
-                        "romb_variant",
-                        "tester_variant"], # String array
-
-    "capitalVariants":["atlasfix_variant",
-                        "temple_variant"], # String array
 
     "startingVariants":["grib_variant", "openok_variant"], # String array
 }
