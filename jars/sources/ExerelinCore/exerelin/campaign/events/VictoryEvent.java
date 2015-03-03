@@ -22,14 +22,12 @@ public class VictoryEvent extends BaseEventPlugin {
 	private boolean playerVictory;
 		
 	public boolean done;
-	public boolean transmitted;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
 		done = false;
-		transmitted = false;
 		diplomaticVictory = false;
 		playerVictory = false;
 	}

@@ -46,8 +46,8 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 		int level = Global.getSector().getPlayerPerson().getStats().getLevel();
 		String stage = "report";
 		paidAmount = ExerelinConfig.playerBaseSalary + ExerelinConfig.playerSalaryIncrementPerLevel * (level - 1);
-                if (paidAmount == 0)
-                    return;
+		if (paidAmount == 0)
+			return;
 		
 		FactionAPI alignedFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
 		RepLevel relation = alignedFaction.getRelationshipLevel("player");
@@ -84,15 +84,15 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 		Map<String, String> map = super.getTokenReplacements();
 		CampaignClockAPI previous = (CampaignClockAPI) Global.getSector().getPersistentData().get("salariesClock");
 		if (previous != null) {
-                        map.put("$date", previous.getMonthString() + ", c." + previous.getCycle());
+			map.put("$date", previous.getMonthString() + ", c." + previous.getCycle());
 		}
-                FactionAPI faction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
-		String factionName = faction.getDisplayName();
-                String theFactionName = faction.getDisplayNameLongWithArticle();
-                map.put("$sender", factionName);
+		FactionAPI faction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
+		String factionName = faction.getEntityNamePrefix();
+		String theFactionName = faction.getDisplayNameLongWithArticle();
+		map.put("$sender", factionName);
 		map.put("$employer", factionName);
 		map.put("$Employer", Misc.ucFirst(factionName));
-                map.put("$theEmployer", theFactionName);
+		map.put("$theEmployer", theFactionName);
 		map.put("$TheEmployer", Misc.ucFirst(theFactionName));
 		map.put("$paid", "" + (int) paidAmount + Strings.C);
 		return map;

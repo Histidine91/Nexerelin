@@ -160,7 +160,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
     }
     
-    public float getDiplomacyInterval()
+    protected float getDiplomacyInterval()
     {
         int numFactions = SectorManager.getLiveFactionIdsCopy().size() - 2;
         if (numFactions < 0) numFactions = 0;
