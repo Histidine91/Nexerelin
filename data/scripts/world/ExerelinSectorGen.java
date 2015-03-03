@@ -150,9 +150,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			int size = market.getSize();
 			
 			if(market.hasCondition("urbanized_polity") || size >= 4)
-				allowedImages.add(new String[]{"illustrations", "city_from_above"} );
+				allowedImages.add(new String[]{"illustrations", "urban00"} );
+				allowedImages.add(new String[]{"illustrations", "urban01"} );
+				allowedImages.add(new String[]{"illustrations", "urban02"} );
+				allowedImages.add(new String[]{"illustrations", "urban03"} );
 			if(size >= 4)
 				allowedImages.add(new String[]{"illustrations", "industrial_megafacility"} );
+				allowedImages.add(new String[]{"illustrations", "city_from_above"} );
 			if(isStation && size >= 3)
 				allowedImages.add(new String[]{"illustrations", "jangala_station"} );
 			if(entity.getFaction().getId().equals("pirates"))
