@@ -19,6 +19,8 @@ exerelinNGCIntroEnd:Skip",
 ExerelinNGCIntro2,ExerelinNGCIntroPage,"$introPage == 2.0
 $isInIntro",,"Your actions will gain/lose you influence with the factions in the Sector. The higher your influence with a faction, the greater access to their support and technology you will have.
 
+At the start of the game, you pick a faction to join. You are a representative of your chosen faction, and your actions in the Sector will reflect on them.
+
 At present, you cannot change your faction or attempt to go it alone in Exerelin.","exerelinNGCIntroNextPage:Next
 exerelinNGCIntroPrevPage:Previous
 exerelinNGCIntroEnd:Skip",
