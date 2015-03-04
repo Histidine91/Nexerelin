@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtils;
 
 /**
@@ -68,7 +69,7 @@ public class AgentDestabilizeMarketEvent extends CovertOpsEventBase {
 		Color colorRepEffect = repEffect > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
                 Color colorNew = agentFaction.getRelColor(faction.getId());
                 if (stabilityPenalty != 0)
-                    return new Color[] {Color.YELLOW, colorRepEffect, colorNew};
+                    return new Color[] {Misc.getHighlightColor(), colorRepEffect, colorNew};
                 else return new Color[] {colorRepEffect, colorNew};
 	}
 }
