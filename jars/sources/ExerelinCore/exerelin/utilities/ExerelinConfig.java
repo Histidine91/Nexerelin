@@ -9,11 +9,6 @@ import static exerelin.utilities.ExerelinUtils.JSONArrayToStringArray;
 
 public class ExerelinConfig
 {
-    // List of ships that can be produced at any station regardless of owner
-    public static String[] commonShipList = new String[]{"ox_Hull", "crig_Hull", "shuttle_Attack", "hermes_Standard"};
-
-    // Factions classed as neutral for relationship calculations
-    public static String[] neutralFactions = new String[]{"neutral", "independent"};
     public static List<ExerelinFactionConfig> exerelinFactionConfigs;
 
     // Threading support for improving/smoothing performance
@@ -54,6 +49,9 @@ public class ExerelinConfig
     public static float prisonerRansomValueIncrementPerLevel = 200f;
     public static float prisonerBaseSlaveValue = 4000f;
     public static float prisonerSlaveValueIncrementPerLevel = 400f;
+    public static float prisonerLootChancePer10Fp = 0.05f;
+    
+    //public static float crewLootMult = 0.05f;
     
     // Special Ships
     public static String[] validBoardingFlagships = new String[]{};
@@ -99,6 +97,7 @@ public class ExerelinConfig
             prisonerRansomValueIncrementPerLevel = (float)settings.optDouble("prisonerRansomValueIncrementPerLevel");
             prisonerBaseSlaveValue = (float)settings.optDouble("prisonerBaseSlaveValue");
             prisonerSlaveValueIncrementPerLevel = (float)settings.optDouble("prisonerSlaveValueIncrementPerLevel");
+            prisonerLootChancePer10Fp  = (float)settings.optDouble("prisonerLootChancePer10Fp");
 
             validBoardingFlagships = JSONArrayToStringArray(settings.getJSONArray("validBoardingFlagships"));
             validTroopTransportShips = JSONArrayToStringArray(settings.getJSONArray("validTroopTransportShips"));

@@ -3,14 +3,19 @@ package exerelin.campaign;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import static exerelin.campaign.InvasionRound.log;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +58,31 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public void advance(float amount)
     {
         
+    }
+    
+    // adds prisoners to loot
+    @Override
+    public void reportEncounterLootGenerated(FleetEncounterContextPlugin plugin, CargoAPI loot) {
+        CampaignFleetAPI loser = plugin.getLoser();
+        if (loser == null) return;
+        
+        int fp = 0;
+        int crew = 0;
+        List<FleetMemberAPI> fleetCurrent = loser.getFleetData().getMembersListCopy();
+        for (FleetMemberAPI member : loser.getFleetData().getSnapshot()) {
+            if (!fleetCurrent.contains(member)) {
+                fp += member.getFleetPointCost();
+                crew += member.getNeededCrew();
+            }
+        }
+        for (int i=0; i<fp; i = i + 10)
+        {
+            if (Math.random() < ExerelinConfig.prisonerLootChancePer10Fp)
+            {
+                loot.addCommodity("prisoner", 1);
+            }
+        }
+        //loot.addCrew(CargoAPI.CrewXPLevel.GREEN, crew*ExerelinConfig.crewLootMult);
     }
     
     @Override
