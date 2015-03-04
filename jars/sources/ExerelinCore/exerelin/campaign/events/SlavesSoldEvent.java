@@ -13,7 +13,7 @@ import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
-import exerelin.campaign.ExerelinReputationPlugin;
+import exerelin.plugins.ExerelinReputationPlugin;
 
 
 public class SlavesSoldEvent extends BaseEventPlugin {

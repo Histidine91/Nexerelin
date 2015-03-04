@@ -10,7 +10,6 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.ExerelinReputationPlugin;
 import exerelin.world.ResponseFleetManager;
 
 @SuppressWarnings("unchecked")

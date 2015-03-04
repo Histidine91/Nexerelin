@@ -1,4 +1,4 @@
-package exerelin.campaign;
+package exerelin.plugins;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.SectorManager;
 import java.util.List;
 
 /**

@@ -24,7 +24,6 @@ import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import data.scripts.campaign.EconomyLogger;
 import data.scripts.world.exerelin.*;
-import data.scripts.world.exerelin.ExerelinMarketConditionPicker;
 import exerelin.plugins.*;
 import exerelin.*;
 import exerelin.campaign.CovertOpsManager;
@@ -37,6 +36,7 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.ResponseFleetManager;
+import exerelin.world.ExerelinMarketConditionPicker;
 import java.util.HashMap;
 import java.util.Map;
 
