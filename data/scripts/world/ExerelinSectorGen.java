@@ -247,9 +247,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				
 		// add per-faction market conditions
 		String factionId = newMarket.getFaction().getId();
-		if(factionId.equals("sindrian_diktat") && !isStation) {
-			newMarket.addCondition("urbanized_polity");
-		}
 		if(factionId.equals("tritachyon")) {
 			newMarket.addCondition("free_market");
 		}
@@ -259,16 +256,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		if(factionId.equals("pirates")) {
 			newMarket.addCondition("free_market");
-		}
-		if(factionId.equals("hegemony") && !isStation) {
-			newMarket.addCondition("urbanized_polity");
-		}
-		if(factionId.equals("independent") && !isStation) {
-			int rand = ExerelinUtils.getRandomInRange(0, 3);
-			if (rand == 0)
-				newMarket.addCondition("urbanized_polity");
-			else if (rand == 1)
-				newMarket.addCondition("rural_polity");
 		}
 		
 		// seed the market with some stuff to prevent initial shortage

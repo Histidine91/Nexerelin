@@ -152,7 +152,10 @@ public class ExerelinMarketConditionPicker
 		industryConds.add(new ExerelinPossibleMarketCondition("spaceport", 0.9f, 4));
 		specialConds.add(new ExerelinPossibleMarketCondition("organized_crime", 0.7f, 4));
 		specialConds.add(new ExerelinPossibleMarketCondition("large_refugee_population", 0.7f, 4, false));
-	
+		cond = new ExerelinPossibleMarketCondition("urbanized_polity", 0.7f, 3, false);
+		cond.setAllowStations(false);
+		specialConds.add(cond);
+		
 		// size 5
 		heavyIndustryConds.add(new ExerelinPossibleMarketCondition("autofac_heavy_industry", 1f, 5));
 		heavyIndustryConds.add(new ExerelinPossibleMarketCondition("antimatter_fuel_production", 1f, 5));
