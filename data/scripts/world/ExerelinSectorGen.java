@@ -210,7 +210,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		if (marketSize >= minSizeForMilitaryBase)
 		{
-			newMarket.addCondition("exerelin_military_base");
+			newMarket.addCondition("military_base");
 			newMarket.addSubmarket(Submarkets.GENERIC_MILITARY);
 		}
 		

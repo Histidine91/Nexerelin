@@ -138,7 +138,7 @@ public class ExerelinMarketConditionPicker
 		specialConds.add(new ExerelinPossibleMarketCondition("vice_demand", 0.8f, 3));
 		specialConds.add(new ExerelinPossibleMarketCondition("dissident", 0.6f, 3, 5, false));
 		specialConds.add(new ExerelinPossibleMarketCondition("stealth_minefields", 0.7f, 3, 5, false));
-		specialConds.add(new ExerelinPossibleMarketCondition("exerelin_military_base", 1.1f, 4, false));
+		specialConds.add(new ExerelinPossibleMarketCondition("military_base", 1.1f, 4, false));
 		cond = new ExerelinPossibleMarketCondition("volturnian_lobster_pens", 0.5f, 3);
 		cond.setAllowStations(false);
 		industryConds.add(cond);

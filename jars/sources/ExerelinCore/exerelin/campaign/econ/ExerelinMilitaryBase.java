@@ -6,8 +6,8 @@ public class ExerelinMilitaryBase extends MilitaryBase {
 
 	public void apply(String id) {
 		super.apply(id);
-		market.getCommodityData("agent").getSupply().modifyFlat(id, 5);
-		market.getCommodityData("saboteur").getSupply().modifyFlat(id, 3);
+		market.getCommodityData("agent").getSupply().modifyFlat(id, 4);
+		market.getCommodityData("saboteur").getSupply().modifyFlat(id, 2);
 	}
 
 	public void unapply(String id) {
