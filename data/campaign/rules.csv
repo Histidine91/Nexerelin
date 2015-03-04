@@ -46,6 +46,7 @@ exerelinNGCNumSystems2:Two
 exerelinNGCNumSystems4:Four
 exerelinNGCNumSystems6:Six
 exerelinNGCNumSystems8:Eight
+exerelinNGCNumSystems10:Ten
 exerelinNGCOptionsBack:Back",
 ExerelinNGCNumSystems1,NewGameOptionSelected,$option==exerelinNGCNumSystems1,"NGCSetNumSystems 1
 AddText ""Set number of star systems to 1"" textFriendColor
@@ -61,6 +62,9 @@ AddText ""Set number of star systems to 6"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ExerelinNGCNumSystems8,NewGameOptionSelected,$option==exerelinNGCNumSystems8,"NGCSetNumSystems 8
 AddText ""Set number of star systems to 8"" textFriendColor
+FireAll ExerelinNGCOptions",,,
+ExerelinNGCNumSystems10,NewGameOptionSelected,$option==exerelinNGCNumSystems10,"NGCSetNumSystems 10
+AddText ""Set number of star systems to 10"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
 ExerelinNGCMaxPlanetsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxPlanets,,Current maximum planets: $maxPlanets,"exerelinNGCMaxPlanets2:Two
@@ -496,7 +500,7 @@ SetTooltipHighlightColors exerelinPrisonerRansom buttonShortcut
 SetTooltipHighlights exerelinPrisonerRansom $ransomValue
 SetEnabled exerelinPrisonerRansom true",,exerelinPrisonerRansom:Collect ransom,
 ExerelinPrisonerOptionListRansomHostile,ExerelinPrisonerOption,"RepIsAtBest $faction.id HOSTILE
-!IsPirateFaction $faction.id","SetTooltip exerelinPrisonerRansom ""$TheFaction is hostile to you and refuses to consider any ransom payment.""
+!IsPirateFaction $faction.id","SetTooltip exerelinPrisonerRansom ""$TheFaction is $relAdjective to you and refuses to consider any ransom payment.""
 SetEnabled exerelinPrisonerRansom false",,exerelinPrisonerRansom:Collect ransom,
 ExerelinPrisonerOptionListRansomPirates,ExerelinPrisonerOption,IsPirateFaction $faction.id,"SetTooltip exerelinPrisonerRansom ""Pirates do not pay ransom.""
 SetEnabled exerelinPrisonerRansom false",,exerelinPrisonerRansom:Collect ransom,
