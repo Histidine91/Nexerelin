@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,12 @@ public class ExerelinUtilsFaction {
                 ret.add(market);
         }
         return ret;
+    }
+    
+    public static boolean isPirateFaction(String factionId)
+    {
+        List<String> pirates = DiplomacyManager.getPirateFactionsCopy();
+        return pirates.contains(factionId);
     }
 
 }

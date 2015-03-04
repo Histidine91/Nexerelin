@@ -6,8 +6,7 @@ import java.util.Map;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.SectorManager;
+import exerelin.utilities.ExerelinUtilsFaction;
 
 
 public class IsPirateFaction extends BaseCommandPlugin {
@@ -15,8 +14,7 @@ public class IsPirateFaction extends BaseCommandPlugin {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		String factionId = params.get(0).getString(memoryMap);
-		List<String> pirates = DiplomacyManager.getPirateFactionsCopy();
-                return pirates.contains(factionId);
+		return ExerelinUtilsFaction.isPirateFaction(factionId);
 	}
 }
 

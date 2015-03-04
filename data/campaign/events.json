@@ -27,6 +27,9 @@
 	"exerelin_saboteur_sabotage_reserve":{
 		"script":"exerelin.campaign.events.SaboteurSabotageReserveEvent"
 	},
+	"exerelin_slaves_sold":{
+		"script":"exerelin.campaign.events.SlavesSoldEvent"
+	},
 	"exerelin_faction_eliminated":{
 		"script":"exerelin.campaign.events.FactionEliminatedEvent"
 	},

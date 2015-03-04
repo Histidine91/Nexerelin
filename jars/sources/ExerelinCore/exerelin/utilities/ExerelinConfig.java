@@ -49,6 +49,7 @@ public class ExerelinConfig
     public static float prisonerRansomValueIncrementPerLevel = 200f;
     public static float prisonerBaseSlaveValue = 4000f;
     public static float prisonerSlaveValueIncrementPerLevel = 400f;
+    public static float prisonerSlaveRepValue = -0.05f;
     public static float prisonerLootChancePer10Fp = 0.05f;
     
     //public static float crewLootMult = 0.05f;
@@ -98,6 +99,7 @@ public class ExerelinConfig
             prisonerBaseSlaveValue = (float)settings.optDouble("prisonerBaseSlaveValue");
             prisonerSlaveValueIncrementPerLevel = (float)settings.optDouble("prisonerSlaveValueIncrementPerLevel");
             prisonerLootChancePer10Fp  = (float)settings.optDouble("prisonerLootChancePer10Fp");
+            prisonerSlaveRepValue = (float)settings.optDouble("prisonerSlaveRepValue");
 
             validBoardingFlagships = JSONArrayToStringArray(settings.getJSONArray("validBoardingFlagships"));
             validTroopTransportShips = JSONArrayToStringArray(settings.getJSONArray("validTroopTransportShips"));

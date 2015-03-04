@@ -17,6 +17,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsFaction;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -591,7 +592,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         {
                 FactionAPI faction = sector.getFaction(factionId);
                 ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
-                if ((factionConfig== null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !pirateFactions.contains(factionId))
+                if ((factionConfig== null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !ExerelinUtilsFaction.isPirateFaction(factionId))
                 {
                     for (String pirateFactionId : pirateFactions) {
                         FactionAPI pirateFaction = sector.getFaction(pirateFactionId);

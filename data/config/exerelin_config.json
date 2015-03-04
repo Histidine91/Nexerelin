@@ -27,6 +27,7 @@
     "prisonerRansomValueIncrementPerLevel": 200;
     "prisonerBaseSlaveValue": 4000;
     "prisonerSlaveValueIncrementPerLevel": 400;
+    "prisonerSlaveRepValue": -0.05;
     "prisonerLootChancePer10Fp": 0.05;
 
     "validBoardingFlagships":["atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2", "ori_butterflier", "brdy_eschaton", "sun_ice_shalom"], # String array
