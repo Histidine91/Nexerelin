@@ -8,10 +8,8 @@
     "minimumPlanets": 3, # Integer
     "minimumStations": 3, # Integer
     "minimumAsteroidBelts": 0, # Integer
-
-    "reduceSupplies":true, # Boolean
-    "capSupplyDropToCargo":true, # Boolean, only used if reduceSupplies is true, cap = cargo*1.5
-    "reduceSuppliesFactor":1.0, # Double, only used if reduceSupplies is true, applied after cap to cargo
+    "planetHabitableChance": 0.7,   # Double
+    "moonHabitableChance": 0.3,   # Double
 
     "asteroidMiningResource": "supplies", # String
     "gasgiantMiningResource": "fuel", # String
