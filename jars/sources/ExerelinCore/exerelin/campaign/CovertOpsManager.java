@@ -14,6 +14,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.ResponseFleetManager;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -104,6 +105,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         {
             if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
             if (disallowedFactions.contains(faction.getId())) continue;
+            if (ExerelinUtilsFaction.isPirateFaction(faction.getId())) continue;  // pirates don't do covert warfare
             agentFactionPicker.add(faction);
             factionCount++;
         }
@@ -145,6 +147,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 else if (repLevel == RepLevel.VENGEFUL) weight = 8f;
                 else continue;
             }
+            if (ExerelinUtilsFaction.isPirateFaction(faction.getId()))
+                weight *= 0.25f;    // reduces factions constantly targeting pirates for covert action
             
             targetFactionPicker.add(faction, weight);
             factionCount++;

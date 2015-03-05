@@ -17,6 +17,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.HashMap;
 
 public class AgentLowerRelations extends AgentActionBase {
@@ -55,6 +56,8 @@ public class AgentLowerRelations extends AgentActionBase {
                     RepLevel rep = playerAlignedFaction.getRelationshipLevel(factionId);
                     if (TARGET_WEIGHTINGS.containsKey(rep))
                         weight = TARGET_WEIGHTINGS.get(rep);
+                    if (ExerelinUtilsFaction.isPirateFaction(factionId))
+                        weight *= 0.25f;
                     
                     targetPicker.add(factionId, weight);
                 }
