@@ -37,7 +37,8 @@ ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptio
 ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,,,"exerelinNGCOptionsDone:Proceed
 exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
 exerelinNGCSetMaxPlanets:Set max planets per system ($maxPlanets)
-exerelinNGCSetMaxStations:Set max stations per system ($maxStations)",
+exerelinNGCSetMaxStations:Set max stations per system ($maxStations)
+exerelinNGCOtherOptions:Other options",
 ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
 ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone,FireBest ExerelinNGCStep2,,,
 ,,,,,,
@@ -118,10 +119,29 @@ ExerelinNGCMaxStations5,NewGameOptionSelected,$option==exerelinNGCMaxStations5,"
 AddText ""Set maximum stations per system to 5"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
+ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,$option==exerelinNGCOtherOptions,FireAll ExerelinNGCOtherOptions,,,
+ExerelinNGCListOptionEnableOmnifactory,ExerelinNGCOtherOptions,!IsOmnifacEnabled,,,exerelinNGCEnableOmnifactory:Enable Omnifactory,
+ExerelinNGCListOptionDisableOmnifactory,ExerelinNGCOtherOptions,IsOmnifacEnabled,,,exerelinNGCDisableOmnifactory:Disable Omnifactory,
+ExerelinNGCListOptionSetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"IsOmnifacEnabled
+!IsOmnifacLocationRandomized",,,exerelinNGCSetOmnifactoryRandomLocation:Enable random location for Omnifactory,
+ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"IsOmnifacEnabled
+IsOmnifacLocationRandomized",,,exerelinNGCUnsetOmnifactoryRandomLocation:Disable random location for Omnifactory,
+ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,,,10:exerelinNGCOptionsBack:Back,
+,,,,,,
+ExerelinNGCEnableOmnifactory,NewGameOptionSelected,$option==exerelinNGCEnableOmnifactory,"NGCSetOmnifacEnabled true
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCDisableOmnifactory,NewGameOptionSelected,$option==exerelinNGCDisableOmnifactory,"NGCSetOmnifacEnabled false
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCSetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCSetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation true
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCUnsetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCUnsetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation false
+FireAll ExerelinNGCOtherOptions",,,
+,,,,,,
 ,,,,,,
 ExerelinNGCJoin,ExerelinNGCStep2,,FireAll ExerelinNGCListFactions,Which faction would you like to join?,,
 ExerelinNGCFactionsBackToMain,NewGameOptionSelected,$option==exerelinNGCFactionsBack,FireAll ExerelinNGCListFactions,,,
-ExerelinNGCFactionsMain,ExerelinNGCListFactions,,,,exerelinNGCViewVanillaFactions:Vanilla factions,maybe we should just do it straight alphabetical instead of segregating vanilla factions into their own category
+ExerelinNGCFactionsMain,ExerelinNGCListFactions,,,,"exerelinNGCViewVanillaFactions:Vanilla factions
+99:exerelinNGCOptionsBack:Back",maybe we should just do it straight alphabetical instead of segregating vanilla factions into their own category
 ExerelinNGCViewVanillaFactions,NewGameOptionSelected,$option == exerelinNGCViewVanillaFactions,FireAll ExerelinNGCListFactionsVanilla,,,
 ExerelinNGCModFactions1,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions1:Mod factions (A-H),Should check if factions are actually there
 ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModFactions1,FireAll ExerelinNGCListFactions1,,,
@@ -287,9 +307,11 @@ FireAll PopulateOptions",,,
 # START INVASION OPTIONS,,,,,,
 ExerelinMarketInvadeOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
+$faction.id != ""neutral""
 HasMarines",SetEnabled exerelinInvasion true,,1:exerelinInvasion:Invade the planet/station,
 ExerelinMarketInvadeOptionNoMarines,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
+$faction.id != ""neutral""
 !HasMarines","SetTooltip exerelinInvasion ""You have no marines!""
 SetEnabled exerelinInvasion false",,1:exerelinInvasion:Invade the planet/station,
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
@@ -428,13 +450,16 @@ ExerelinFactionDirectoryGetTriTachyon,DialogOptionSelected,$option == exerelinFa
 #START AGENT OPTIONS,,,,,,
 ExerelinMarketAgentOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
+$faction.id != ""neutral""
 HasItem agent",SetEnabled exerelinUseAgent true,,2:exerelinUseAgent:Deploy an agent,
 ExerelinMarketAgentOptionNoAgents,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
+$faction.id != ""neutral""
 !HasItem agent","SetTooltip exerelinUseAgent ""You have no agents!""
 SetEnabled exerelinUseAgent false",,2:exerelinUseAgent:Deploy an agent,
 #ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
+$faction.id != ""neutral""
 $tradeMode == NONE","SetTooltip exerelinUseAgent ""The port is closed to you, and your agents are unable to infiltrate.""
 SetEnabled exerelinUseAgent false",,,
 ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"GetNumSpecialPeople
@@ -462,9 +487,11 @@ FireAll PopulateOptions",You have no more agents to deploy.,,
 #START SABOTEUR OPTIONS,,,,,,
 ExerelinMarketSaboteurOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
+$faction.id != ""neutral""
 HasItem saboteur",SetEnabled exerelinUseSaboteur true,,2:exerelinUseSaboteur:Deploy a saboteur,
 ExerelinMarketSaboteurOptionNoSaboteurs,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
+$faction.id != ""neutral""
 !HasItem saboteur","SetTooltip exerelinUseSaboteur ""You have no saboteurs!""
 SetEnabled exerelinUseSaboteur false",,2:exerelinUseSaboteur:Deploy a saboteur,
 ExerelinSaboteurOptionListMain,DialogOptionSelected,$option == exerelinUseSaboteur,"GetNumSpecialPeople
@@ -484,8 +511,10 @@ FireAll PopulateOptions",You have no more saboteurs to deploy.,,
 ,,,,,,
 #START PRISONER OPTIONS,,,,,,
 ExerelinMarketPrisonerOption,ExerelinMarketSpecial,"$hasMarket
+$faction.id != ""neutral""
 HasItem prisoner",SetEnabled exerelinUsePrisoner true,,3:exerelinUsePrisoner:Prisoner actions,
 ExerelinMarketPrisonerOptionNoPrisoners,ExerelinMarketSpecial,"$hasMarket
+$faction.id != ""neutral""
 !HasItem prisoner","SetTooltip exerelinUsePrisoner ""You have no prisoners!""
 SetEnabled exerelinUsePrisoner false",,3:exerelinUsePrisoner:Prisoner actions,
 ExerelinPrisonerOptionListMain,DialogOptionSelected,$option == exerelinUsePrisoner,"GetNumSpecialPeople
@@ -525,8 +554,11 @@ FireAll ExerelinPrisonerOption",,,
 ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem prisoner,"$menuState = main 0
 ShowDefaultVisual
 FireAll PopulateOptions",You have no more prisoners.,,
+#END PRISONER OPTIONS,,,,,,
 ,,,,,,
-,,,,,,
+# bla,,,,,,
+ExerelinFlavorTextMarketOmnifactory,TradePanelFlavorText,"$global.tradePanelMode == MARKET
+$market.id == omnifac","AddText ""The Omnifactory's main loading bay is a dark, brooding chamber gaping cavernously around stacks of replicated items - clearly, the maintaining AI lacks the cleanliness sensibility of the average human. A loading bots shuffles about with large crates in hand as nano-fabricators hum in the distance."" textGrayColor",,,
 ,,,,,,
 # vanilla overrides,,,,,,
 marketPostOpenInhospitable,MarketPostOpen,"$hasMarket

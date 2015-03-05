@@ -1,0 +1,22 @@
+{
+    "randomStartingLocation":true, # Boolean
+    "showAddedCargo":false, # Boolean
+    "showAnalysisComplete":true, # Boolean
+    "showLimitReached":true, # Boolean
+    "ignoreGoodRestrictions":false, # Boolean
+    "removeBrokenGoods":false, # Boolean
+    "shipAnalysisTimeMod":0.5, # Double
+    "weaponAnalysisTimeMod":0.5, # Double
+    "shipProductionTimeMod":1.0, # Double
+    "weaponProductionTimeMod":1.0, # Double
+    "requiredCrewToFunction":0, # Integer
+    "requiredSuppliesPerDay":0.0, # Double
+    "requiredFuelPerDay":0.0, # Double
+    "maxHullsPerFighter":3, # Integer
+    "maxHullsPerFrigate":3, # Integer
+    "maxHullsPerDestroyer":2, # Integer
+    "maxHullsPerCruiser":2, # Integer
+    "maxHullsPerCapital":1, # Integer
+    "maxStacksPerWeapon":0.5, # Double
+    "omnifactoryTariff":0.999999 # Double
+}

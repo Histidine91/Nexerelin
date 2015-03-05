@@ -6,7 +6,7 @@
 "description":"Choose your banner and fight for supremacy of sector Exerelin!",
 "gameVersion":"0.6.2a-RC3",
 "totalConversion":"false",
-"jars":["jars/ExerelinCore.jar", ],
+"jars":["jars/ExerelinCore.jar", "jars/Omnifactory.jar"],
 "modPlugin":"data.scripts.ExerelinModPlugin",
 "replace":
 	[

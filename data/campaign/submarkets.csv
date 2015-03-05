@@ -1,0 +1,2 @@
+id,name,faction,desc,script,icon,order
+omnifac_market,Omnifactory,player,"The Omnifactory is able to replicate ships and weapons.",org.lazywizard.omnifac.OmniFacSubmarket,,0

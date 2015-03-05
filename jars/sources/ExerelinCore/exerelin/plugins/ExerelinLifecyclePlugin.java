@@ -18,6 +18,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.world.ResponseFleetManager;
 import java.util.List;
+import org.lazywizard.omnifac.OmniFacSettings;
 
 public class ExerelinLifecyclePlugin extends BaseModPlugin {
 
@@ -39,6 +40,12 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
 		if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_insurance", null);
         }
+    }
+    
+    @Override
+    public void onApplicationLoad() throws Exception
+    {
+        OmniFacSettings.reloadSettings();
     }
 
     @Override

@@ -11,12 +11,14 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lazywizard.omnifac.OmniFacModPlugin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
@@ -35,8 +37,10 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.ResponseFleetManager;
 import exerelin.world.ExerelinMarketConditionPicker;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.lazywizard.lazylib.CollectionUtils;
 
 @SuppressWarnings("unchecked")
 
@@ -72,6 +76,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private boolean isStartSystemChosen = false;
 	private int starNum = 0;
 	private String relayOwner = "neutral";
+	SectorEntityToken homeworld = null;
 	
 	private Map systemToRelay = new HashMap();
 
@@ -81,18 +86,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	{
 		return factionIds[ExerelinUtils.getRandomInRange(0, factionIds.length-1)];
 	}
-	
-	/*
-	private void addCommodityStockpile(MarketAPI market, String commodityID, float amount)
-	{
-		CommodityOnMarketAPI commodity = market.getCommodityData(commodityID);
-		CargoAPI cargo = market.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
-		commodity.addToStockpile(amount);
-		commodity.addToAverageStockpile(amount);
-		cargo.addCommodity(commodityID, amount);
-		//log.info("Adding " + amount + " " + commodityID + " to " + market.getName());
-	}
-	*/
 	
 	private void addCommodityStockpile(MarketAPI market, String commodityID, float amountToAdd)
 	{
@@ -147,11 +140,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			allowedImages.add(new String[]{"illustrations", "cargo_loading"} );
 			allowedImages.add(new String[]{"illustrations", "hound_hangar"} );
 			allowedImages.add(new String[]{"illustrations", "space_bar"} );
-			
+
 			boolean isStation = (entityType.equals("station"));
 			boolean isMoon = (entityType.equals("moon")); 
 			int size = market.getSize();
-			
+
 			if(market.hasCondition("urbanized_polity") || size >= 4)
 			{
 				allowedImages.add(new String[]{"illustrations", "urban00"} );
@@ -170,8 +163,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				allowedImages.add(new String[]{"illustrations", "pirate_station"} );
 			if(!isStation && (planetType.equals("rocky_metallic") || planetType.equals("rocky_barren")))
 				allowedImages.add(new String[]{"illustrations", "vacuum_colony"} );
-			if (isMoon)
-				allowedImages.add(new String[]{"illustrations", "asteroid_belt_moon"} );
+			//if (isMoon)
+			//	allowedImages.add(new String[]{"illustrations", "asteroid_belt_moon"} );
 			if(planetType.equals("desert") && isMoon)
 				allowedImages.add(new String[]{"illustrations", "desert_moons_ruins"} );
 			
@@ -303,6 +296,57 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		return newMarket;
 	}
+		
+		public void addOmnifactory()
+		{
+			if (!ExerelinSetupData.getInstance().omniFacPresent) return;
+			
+			SectorEntityToken toOrbit = null;
+			if (ExerelinConfig.randomOmnifactoryLocation)
+			{
+				List systems = new ArrayList(Global.getSector().getStarSystems());
+				Collections.shuffle(systems);
+				for (int i=0; i > systems.size(); i++)
+				{
+					StarSystemAPI system = (StarSystemAPI)systems.get(i);
+					CollectionUtils.CollectionFilter planetFilter = new CollectionUtils.CollectionFilter() {
+						public boolean accept (Object object)
+						{
+							SectorEntityToken token = (SectorEntityToken)object;
+							String factionId = token.getFaction().getId();
+							String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+							return factionId.equals("neutral") || factionId.equals(alignedFactionId);
+						}
+					};
+					List planets = CollectionUtils.filter(system.getPlanets(), planetFilter);
+					if (!planets.isEmpty())
+					{
+						Collections.shuffle(planets);
+						toOrbit = (SectorEntityToken)planets.get(0);
+					}
+				}
+			}
+			if (toOrbit == null)
+				toOrbit = homeworld;
+			
+			LocationAPI system = toOrbit.getContainingLocation();
+			String image = possibleStationImages[ExerelinUtils.getRandomInRange(0, possibleStationImages.length - 1)];
+			SectorEntityToken omnifac = system.addCustomEntity("omnifactory", "Omnifactory", image, "neutral");
+			omnifac.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), 300, 300/25);
+			OmniFacModPlugin.initOmnifactory(omnifac);
+			omnifac.setInteractionImage("illustrations", "abandoned_station");
+			omnifac.setCustomDescriptionId("omnifactory");
+			
+			omnifac.setFaction("neutral");
+			MarketAPI market = omnifac.getMarket();
+			market.setFactionId("neutral");
+			List submarkets = market.getSubmarketsCopy();
+			for (int i=0; i<submarkets.size(); i++)
+			{
+				SubmarketAPI submarket = (SubmarketAPI)submarkets.get(i);
+		submarket.setFaction(Global.getSector().getFaction("neutral"));
+			}
+		}
 	
 	@Override
 	public void generate(SectorAPI sector)
@@ -337,7 +381,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// build systems
 		for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
 			buildSystem(sector, i);
-
+		addOmnifactory();
+		
 		new Exerelin().generate(sector);
 
 		sector.registerPlugin(new CoreCampaignPluginImpl());
@@ -581,7 +626,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 						moonType = possibleMoonTypes[ExerelinUtils.getRandomInRange(0, possibleMoonTypes.length - 1)];
 					else
 						moonType = possibleMoonTypesUninhabitable[ExerelinUtils.getRandomInRange(0, possibleMoonTypesUninhabitable.length - 1)];
-					    
+						
 					angle = ExerelinUtils.getRandomInRange(1, 360);
 					distance = ExerelinUtils.getRandomInRange(650, 1300);
 					float moonRadius = ExerelinUtils.getRandomInRange(50, 100);
@@ -637,6 +682,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				newPlanet.setFaction(owningFactionId);
 				addMarketToEntity(starNum, i, newPlanet, owningFactionId, planetType, "planet");
 				pickEntityInteractionImage(newPlanet, newPlanet.getMarket(), "", "planet");
+				
+				if (starNum == 0 && i == 0)
+					homeworld = newPlanet;
 			}
 		}
 
@@ -768,7 +816,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			String id = name.replace(' ','_');
 			String image = possibleStationImages[ExerelinUtils.getRandomInRange(0, possibleStationImages.length - 1)];
 			if (owningFactionId.equals("shadow_industry"))
-				image = "station_shi_prana";    // custom station image for Shadowyards
+				image = "station_shi_prana";	// custom station image for Shadowyards
 			
 			if (existingMarket == null)	// de novo station, probably orbiting an uninhabitable planet
 			{

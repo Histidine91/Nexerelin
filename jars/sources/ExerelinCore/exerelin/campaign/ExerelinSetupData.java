@@ -9,6 +9,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import org.apache.log4j.Logger;
 
 /* This class functions as a data structure for Exerelin setup
  */
@@ -16,6 +17,7 @@ import java.util.Collections;
 @SuppressWarnings("unchecked")
 public final class ExerelinSetupData
 {
+    public static Logger log = Global.getLogger(ExerelinSetupData.class);
     private static ExerelinSetupData instance = null;
 
     // Player setup defaults
@@ -38,7 +40,7 @@ public final class ExerelinSetupData
     public boolean onlyRespawnStartingFactions = false;
     public int respawnDelay = 60;
     public int numStartFactions = 3;
-    public boolean omniFacPresent = true;
+    public boolean omniFacPresent = false;
     public int maxFactionsInExerelinAtOnce = 16;
     public boolean isSectorPopulated = false;
     public boolean isSectorPartiallyPopulated = false;
@@ -97,7 +99,7 @@ public final class ExerelinSetupData
 				    if(fac != null)
 					    confirmedFactions.add(fac.getId());
 				    else
-					    System.out.println("EXERELIN ERROR: Couldn't determine faction for:" + locPossibleFaction[i]);
+					    log.warn("EXERELIN ERROR: Couldn't determine faction for:" + locPossibleFaction[i]);
 			    }
 			    availableFactions = (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
 		    }
@@ -120,7 +122,7 @@ public final class ExerelinSetupData
 					    confirmedFactions.add(fac.getId());
 				    }
 				    else
-					    System.out.println("EXERELIN ERROR: Couldn't determine faction for:" + locPossibleFaction[i]);
+					    log.warn("EXERELIN ERROR: Couldn't determine faction for:" + locPossibleFaction[i]);
 
 				    i = i + 1;
 			    }
@@ -134,7 +136,7 @@ public final class ExerelinSetupData
 
     public String[] getModdedFactionsList(Boolean getNiceNames)
     {
-	System.out.println("EXERELIN: Getting modded factions");
+	log.info("EXERELIN: Getting modded factions");
 	ArrayList possibleModdedFactionList = new ArrayList();
 
 	for(int i = 0; i < ExerelinConfig.exerelinFactionConfigs.size(); i++)
@@ -176,12 +178,12 @@ public final class ExerelinSetupData
 	    try
 	    {
 		    Global.getSettings().getScriptClassLoader().loadClass(factionSpecficClassName);
-		    System.out.println("Loaded " + factionId);
+		    log.info("Loaded " + factionId);
 		    return true;
 	    }
 	    catch (ClassNotFoundException ex)
 	    {
-		    System.out.println("Skipped " + factionId);
+		    log.info("Skipped " + factionId);
 		    return false;
 	    }
     }
