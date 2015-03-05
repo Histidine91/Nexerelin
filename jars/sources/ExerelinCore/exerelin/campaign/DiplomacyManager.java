@@ -576,11 +576,20 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             log.info("Testing config for " + factionId + ": " + factionConfig);
             if ((factionConfig != null && factionConfig.factionsDisliked.length > 0))
             {
+                for (String likedFactionId : factionConfig.factionsLiked) {
+                    FactionAPI dislikedFaction = sector.getFaction(likedFactionId);
+                    if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
+                    {
+                        //log.info(faction.getDisplayName() + " likes " + dislikedFaction.getDisplayName());
+                        faction.setRelationship(likedFactionId, RepLevel.FRIENDLY);
+                    }
+                }
+                
                 for (String dislikedFactionId : factionConfig.factionsDisliked) {
                     FactionAPI dislikedFaction = sector.getFaction(dislikedFactionId);
                     if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
                     {
-                        log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
+                        //log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
                         faction.setRelationship(dislikedFactionId, RepLevel.HOSTILE);
                     }
                 }
