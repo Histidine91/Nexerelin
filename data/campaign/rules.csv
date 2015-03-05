@@ -179,6 +179,7 @@ ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrin
 ExerelinNGCListRadicalORI,ExerelinNGCListFactions3,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
 #ExerelinNGCListSCY,ExerelinNGCListFactions3,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY,
 ExerelinNGCListShadowyards,ExerelinNGCListFactions3,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
+ExerelinNGCListValkyrians,ExerelinNGCListFactions3,NGCDoesFactionExist valkyrian,,,exerelinNGCJoinValkyrians:Valkyrians,
 ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""independent""
@@ -280,6 +281,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinShadowyards,NewGameOptionSelected,$option == exerelinNGCJoinShadowyards,"NGCSetPlayerFaction ""shadow_industry""
 NGCAddShipAndComplement ""ms_enlil_Balanced""
 AddText ""Added Enlil-class gunship"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinValkyrians,NewGameOptionSelected,$option == exerelinNGCJoinValkyrians,"NGCSetPlayerFaction ""valkyrian""
+NGCAddShipAndComplement ""valk_longinus_A""
+AddText ""Added Longinus-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ,,,,,,
 ExerelinNGCFinalize,ExerelinNGCStep3,,"AddText ""Added $crewAdded crew"" textFriendColor
@@ -423,6 +428,7 @@ ExerelinFactionDirectoryListRadicalORI,ExerelinFactionDirectoryList3,IsFactionAl
 ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList3,IsFactionAlive shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
 ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList3,IsFactionAlive sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
 ExerelinFactionDirectoryListTriTachyon,ExerelinFactionDirectoryList3,IsFactionAlive tritachyon,,,exerelinFactionDirectoryGetTriTachyon:Tri-Tachyon,
+ExerelinFactionDirectoryListValkyrians,ExerelinFactionDirectoryList3,IsFactionAlive valkyrian,,,exerelinFactionDirectoryGetValkyrians:Valkyrians,
 ExerelinFactionDirectoryList3Back,ExerelinFactionDirectoryList3,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
 # this feels like it could be a billion times more efficient,,,,,,
@@ -445,6 +451,7 @@ ExerelinFactionDirectoryGetRadicalORI,DialogOptionSelected,$option == exerelinFa
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,PrintFactionMarkets shadow_industry,,,
 ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerelinFactionDirectoryGetSindrianDiktat,PrintFactionMarkets sindrian_diktat,,,
 ExerelinFactionDirectoryGetTriTachyon,DialogOptionSelected,$option == exerelinFactionDirectoryGetTriTachyon,PrintFactionMarkets tritachyon,,,
+ExerelinFactionDirectoryGetValkyrians,DialogOptionSelected,$option == exerelinFactionDirectoryGetValkyrians,PrintFactionMarkets valkyrian,,,
 #END MARKET DIRECTORY OPTIONS,,,,,,
 ,,,,,,
 #START AGENT OPTIONS,,,,,,
