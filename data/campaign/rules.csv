@@ -42,7 +42,7 @@ exerelinNGCOtherOptions:Other options",
 ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
 ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone,FireBest ExerelinNGCStep2,,,
 ,,,,,,
-ExerelinNGCNumStarSystemsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumSystems,,Current number of systems: $numSystems,"exerelinNGCNumSystems1:One
+ExerelinNGCNumStarSystemsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumSystems,,,"exerelinNGCNumSystems1:One
 exerelinNGCNumSystems2:Two
 exerelinNGCNumSystems4:Four
 exerelinNGCNumSystems6:Six
@@ -68,7 +68,7 @@ ExerelinNGCNumSystems10,NewGameOptionSelected,$option==exerelinNGCNumSystems10,"
 AddText ""Set number of star systems to 10"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
-ExerelinNGCMaxPlanetsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxPlanets,,Current maximum planets: $maxPlanets,"exerelinNGCMaxPlanets2:Two
+ExerelinNGCMaxPlanetsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxPlanets,,,"exerelinNGCMaxPlanets2:Two
 exerelinNGCMaxPlanets3:Three
 exerelinNGCMaxPlanets4:Four
 exerelinNGCMaxPlanets5:Five
@@ -94,7 +94,7 @@ ExerelinNGCMaxPlanets8,NewGameOptionSelected,$option==exerelinNGCMaxPlanets8,"NG
 AddText ""Set maximum planets per system to 8"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
-ExerelinNGCMaxStationsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxStations,,Current maximum stations: $maxStations,"exerelinNGCMaxStations1:One
+ExerelinNGCMaxStationsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxStations,,,"exerelinNGCMaxStations1:One
 exerelinNGCMaxStations2:Two
 exerelinNGCMaxStations3:Three
 exerelinNGCMaxStations4:Four

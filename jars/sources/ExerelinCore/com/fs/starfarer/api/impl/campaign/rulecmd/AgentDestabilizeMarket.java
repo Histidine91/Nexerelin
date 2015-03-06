@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.Global;
-import static com.fs.starfarer.api.Global.getSector;
-import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
