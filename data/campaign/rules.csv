@@ -506,8 +506,11 @@ ShowVisual ""graphics/illustrations/cargo_loading.jpg""
 FireAll ExerelinSaboteurOption",,,
 ExerelinSaboteurOptionNumSaboteurs,ExerelinSaboteurOption,,SetTextHighlights $numSaboteurs,You have $numSaboteurs saboteur(s) to deploy.,,
 ExerelinSaboteurOptionListSabotageReserve,ExerelinSaboteurOption,,"SetTooltip exerelinSaboteurSabotageReserve ""Sabotages the reserve fleet on $market, weakening its ability to respond to invasions. Needless to say, this will be considered a hostile act if discovered.""",,exerelinSaboteurSabotageReserve:Sabotage reserve fleet,
+ExerelinSaboteurOptionListDestroyFood,ExerelinSaboteurOption,,"SetTooltip exerelinSaboteurDestroyFood ""Destroys a large amount of food on $market, possibly provoking a destabilizing crisis.""",,exerelinSaboteurDestroyFood:Destroy food stockpiles,
 ExerelinSaboteurOptionListBack,ExerelinSaboteurOption,,,,exerelinMarketSpecial:Back,
 ExerelinSaboteurSabotageReserve,DialogOptionSelected,$option == exerelinSaboteurSabotageReserve,"SaboteurSabotageReserve
+FireAll ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
+ExerelinSaboteurDestroyFood,DialogOptionSelected,$option == exerelinSaboteurDestroyFood,"SaboteurDestroyFood
 FireAll ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
 ExerelinSaboteurAfterDeploy,ExerelinSaboteurPostDeploy,HasItem saboteur,"GetNumSpecialPeople
 FireAll ExerelinSaboteurOption",,,

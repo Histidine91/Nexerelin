@@ -7,9 +7,11 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
@@ -38,6 +40,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         LOWER_RELATIONS,
         DESTABILIZE_MARKET,
         SABOTAGE_RESERVE,
+        DESTROY_FOOD,
     }
     
     public static Logger log = Global.getLogger(CovertOpsManager.class);
@@ -139,7 +142,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 else if (repLevel == RepLevel.VENGEFUL) weight = 8f;
                 else continue;
             }
-            else if (actionType == CovertActionType.DESTABILIZE_MARKET)
+            else if (actionType == CovertActionType.DESTABILIZE_MARKET || actionType == CovertActionType.DESTROY_FOOD)
             {
                 if (repLevel == RepLevel.SUSPICIOUS) weight = 1f;
                 else if (repLevel == RepLevel.INHOSPITABLE) weight = 3f;
@@ -192,6 +195,14 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         else if (actionType == CovertActionType.DESTABILIZE_MARKET)
         {
             agentDestabilizeMarket(market, agentFaction, targetFaction, false);
+        }
+        else if (actionType == CovertActionType.SABOTAGE_RESERVE)
+        {
+            saboteurSabotageReserve(market, agentFaction, targetFaction, false);
+        }
+        else if (actionType == CovertActionType.DESTROY_FOOD)
+        {
+            saboteurDestroyFood(market, agentFaction, targetFaction, false);
         }
     }
 
@@ -439,6 +450,66 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             }
         }
     }    
+    
+    public static void saboteurDestroyFood(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
+    {
+        log.info("Saboteur destroying food");
+        if (Math.random() <= (double)config.get("sabotageDestroyFoodSuccessChance") )
+        {
+            SectorAPI sector = Global.getSector();
+            float effectMin = (float)(double)config.get("sabotageDestroyFoodEffectMin");
+            float effectMax = (float)(double)config.get("sabotageDestroyFoodEffectMax");
+            float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
+            
+            float foodDestroyed = (float)Math.pow(market.getSize(), 3) * effect;
+            
+            CommodityOnMarketAPI food = market.getCommodityData(Commodities.FOOD);
+            float before = food.getStockpile();
+            food.removeFromAverageStockpile(foodDestroyed);
+            food.removeFromStockpile(foodDestroyed);
+            float after = food.getStockpile();
+            log.info("Remaining food: " + food.getStockpile() + ", " + food.getAverageStockpile());
+            
+            Map<String, Object> params = makeEventParams(agentFaction, "success", 0, playerInvolved);
+            params.put("foodDestroyed", before - after);
+            
+            // detected after successful attack?
+            if (Math.random() <= (double)config.get("sabotageDestroyFoodDetectionChance") )
+            {
+                float repMin = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMin");
+                float repMax = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMax");
+                float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
+                params.put("repEffect", repResult.delta);
+                params.put("stage", "success_detected");
+            }
+            
+            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_destroy_food", params);
+        }
+        else
+        {
+            if (Math.random() <= (double)config.get("sabotageDestroyFoodDetectionChanceFail") )
+            {
+                float repMin = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMin");
+                float repMax = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMax");
+                float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, RepLevel.HOSTILE);
+                if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
+                {
+                    Map<String, Object> params = makeEventParams(agentFaction, "failure_detected", repResult.delta, playerInvolved);
+                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_destroy_food", params);
+                }
+            }
+            else    // failed but undetected
+            {
+                if (playerInvolved)
+                {
+                    Map<String, Object> params = makeEventParams(agentFaction, "failure", 0, playerInvolved);
+                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_destroy_food", params);
+                }
+            }
+        }
+    }
     
     public static CovertOpsManager create()
     {

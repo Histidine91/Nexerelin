@@ -31,5 +31,11 @@
 	"sabotageReserveRepLossOnDetectionMin":0.15,
 	"sabotageReserveRepLossOnDetectionMax":0.2,
 	
-	"prisonerRelationBonus":0.1
+	"sabotageDestroyFoodSuccessChance":0.65,
+	"sabotageDestroyFoodDetectionChance":0.35,
+	"sabotageDestroyFoodDetectionChanceFail":0.6,
+	"sabotageDestroyFoodEffectMin":45.0,
+	"sabotageDestroyFoodEffectMax":55.0,
+	"sabotageDestroyFoodRepLossOnDetectionMin":0.15,
+	"sabotageDestroyFoodRepLossOnDetectionMax":0.2,
 }

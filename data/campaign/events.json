@@ -27,6 +27,9 @@
 	"exerelin_saboteur_sabotage_reserve":{
 		"script":"exerelin.campaign.events.SaboteurSabotageReserveEvent"
 	},
+	"exerelin_saboteur_destroy_food":{
+		"script":"exerelin.campaign.events.SaboteurDestroyFoodEvent"
+	},
 	"exerelin_slaves_sold":{
 		"script":"exerelin.campaign.events.SlavesSoldEvent"
 	},
