@@ -142,12 +142,13 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 else if (repLevel == RepLevel.VENGEFUL) weight = 8f;
                 else continue;
             }
-            else if (actionType == CovertActionType.DESTABILIZE_MARKET || actionType == CovertActionType.DESTROY_FOOD)
+            else if (actionType == CovertActionType.DESTABILIZE_MARKET 
+                    || actionType == CovertActionType.DESTROY_FOOD
+                    || actionType == CovertActionType.SABOTAGE_RESERVE)
             {
-                if (repLevel == RepLevel.SUSPICIOUS) weight = 1f;
-                else if (repLevel == RepLevel.INHOSPITABLE) weight = 3f;
-                else if (repLevel == RepLevel.HOSTILE) weight = 5f;
-                else if (repLevel == RepLevel.VENGEFUL) weight = 8f;
+                if (repLevel == RepLevel.INHOSPITABLE) weight = 1f;
+                else if (repLevel == RepLevel.HOSTILE) weight = 3f;
+                else if (repLevel == RepLevel.VENGEFUL) weight = 5f;
                 else continue;
             }
             if (ExerelinUtilsFaction.isPirateFaction(faction.getId()))
