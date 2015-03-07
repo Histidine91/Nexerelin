@@ -19,6 +19,8 @@ exerelinNGCIntroEnd:Skip",
 ExerelinNGCIntro2,ExerelinNGCIntroPage,"$introPage == 2.0
 $isInIntro",,"Your actions will gain/lose you influence with the factions in the Sector. The higher your influence with a faction, the greater access to their support and technology you will have.
 
+At the start of the game, you pick a faction to join. You are a representative of your chosen faction, and your actions in the Sector will reflect on them.
+
 At present, you cannot change your faction or attempt to go it alone in Exerelin.","exerelinNGCIntroNextPage:Next
 exerelinNGCIntroPrevPage:Previous
 exerelinNGCIntroEnd:Skip",
@@ -35,15 +37,17 @@ ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptio
 ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,,,"exerelinNGCOptionsDone:Proceed
 exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
 exerelinNGCSetMaxPlanets:Set max planets per system ($maxPlanets)
-exerelinNGCSetMaxStations:Set max stations per system ($maxStations)",
+exerelinNGCSetMaxStations:Set max stations per system ($maxStations)
+exerelinNGCOtherOptions:Other options",
 ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
 ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone,FireBest ExerelinNGCStep2,,,
 ,,,,,,
-ExerelinNGCNumStarSystemsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumSystems,,Current number of systems: $numSystems,"exerelinNGCNumSystems1:One
+ExerelinNGCNumStarSystemsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumSystems,,,"exerelinNGCNumSystems1:One
 exerelinNGCNumSystems2:Two
 exerelinNGCNumSystems4:Four
 exerelinNGCNumSystems6:Six
 exerelinNGCNumSystems8:Eight
+exerelinNGCNumSystems10:Ten
 exerelinNGCOptionsBack:Back",
 ExerelinNGCNumSystems1,NewGameOptionSelected,$option==exerelinNGCNumSystems1,"NGCSetNumSystems 1
 AddText ""Set number of star systems to 1"" textFriendColor
@@ -60,8 +64,11 @@ FireAll ExerelinNGCOptions",,,
 ExerelinNGCNumSystems8,NewGameOptionSelected,$option==exerelinNGCNumSystems8,"NGCSetNumSystems 8
 AddText ""Set number of star systems to 8"" textFriendColor
 FireAll ExerelinNGCOptions",,,
+ExerelinNGCNumSystems10,NewGameOptionSelected,$option==exerelinNGCNumSystems10,"NGCSetNumSystems 10
+AddText ""Set number of star systems to 10"" textFriendColor
+FireAll ExerelinNGCOptions",,,
 ,,,,,,
-ExerelinNGCMaxPlanetsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxPlanets,,Current maximum planets: $maxPlanets,"exerelinNGCMaxPlanets2:Two
+ExerelinNGCMaxPlanetsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxPlanets,,,"exerelinNGCMaxPlanets2:Two
 exerelinNGCMaxPlanets3:Three
 exerelinNGCMaxPlanets4:Four
 exerelinNGCMaxPlanets5:Five
@@ -87,7 +94,7 @@ ExerelinNGCMaxPlanets8,NewGameOptionSelected,$option==exerelinNGCMaxPlanets8,"NG
 AddText ""Set maximum planets per system to 8"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
-ExerelinNGCMaxStationsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxStations,,Current maximum stations: $maxStations,"exerelinNGCMaxStations1:One
+ExerelinNGCMaxStationsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxStations,,,"exerelinNGCMaxStations1:One
 exerelinNGCMaxStations2:Two
 exerelinNGCMaxStations3:Three
 exerelinNGCMaxStations4:Four
@@ -112,17 +119,38 @@ ExerelinNGCMaxStations5,NewGameOptionSelected,$option==exerelinNGCMaxStations5,"
 AddText ""Set maximum stations per system to 5"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
+ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,$option==exerelinNGCOtherOptions,FireAll ExerelinNGCOtherOptions,,,
+ExerelinNGCListOptionEnableOmnifactory,ExerelinNGCOtherOptions,!IsOmnifacEnabled,,,exerelinNGCEnableOmnifactory:Enable Omnifactory,
+ExerelinNGCListOptionDisableOmnifactory,ExerelinNGCOtherOptions,IsOmnifacEnabled,,,exerelinNGCDisableOmnifactory:Disable Omnifactory,
+ExerelinNGCListOptionSetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"IsOmnifacEnabled
+!IsOmnifacLocationRandomized",,,exerelinNGCSetOmnifactoryRandomLocation:Enable random location for Omnifactory,
+ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"IsOmnifacEnabled
+IsOmnifacLocationRandomized",,,exerelinNGCUnsetOmnifactoryRandomLocation:Disable random location for Omnifactory,
+ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,,,10:exerelinNGCOptionsBack:Back,
+,,,,,,
+ExerelinNGCEnableOmnifactory,NewGameOptionSelected,$option==exerelinNGCEnableOmnifactory,"NGCSetOmnifacEnabled true
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCDisableOmnifactory,NewGameOptionSelected,$option==exerelinNGCDisableOmnifactory,"NGCSetOmnifacEnabled false
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCSetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCSetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation true
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCUnsetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCUnsetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation false
+FireAll ExerelinNGCOtherOptions",,,
+,,,,,,
 ,,,,,,
 ExerelinNGCJoin,ExerelinNGCStep2,,FireAll ExerelinNGCListFactions,Which faction would you like to join?,,
 ExerelinNGCFactionsBackToMain,NewGameOptionSelected,$option==exerelinNGCFactionsBack,FireAll ExerelinNGCListFactions,,,
-ExerelinNGCFactionsMain,ExerelinNGCListFactions,,,,exerelinNGCViewVanillaFactions:Vanilla factions,maybe we should just do it straight alphabetical instead of segregating vanilla factions into their own category
+ExerelinNGCFactionsMain,ExerelinNGCListFactions,,,,"exerelinNGCViewVanillaFactions:Vanilla factions
+99:exerelinNGCOptionsBack:Back",maybe we should just do it straight alphabetical instead of segregating vanilla factions into their own category
 ExerelinNGCViewVanillaFactions,NewGameOptionSelected,$option == exerelinNGCViewVanillaFactions,FireAll ExerelinNGCListFactionsVanilla,,,
-ExerelinNGCModFactions1,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions1:Mod factions (A-H),Should check if factions are actually there
+ExerelinNGCModFactions1,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions1:Mod factions (A-D),Should check if factions are actually there
 ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModFactions1,FireAll ExerelinNGCListFactions1,,,
-ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (I-P),ditto
+ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (E-O),ditto
 ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModFactions2,FireAll ExerelinNGCListFactions2,,,
-ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:Mod factions (Q-Z),
+ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:Mod factions (P-R),
 ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,FireAll ExerelinNGCListFactions3,,,
+ExerelinNGCModFactions4,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions4:Mod factions (S-Z),
+ExerelinNGCViewModFactions4,NewGameOptionSelected,$option == exerelinNGCViewModFactions4,FireAll ExerelinNGCListFactions4,,,
 ExerelinNGCFactionsQuickStart,ExerelinNGCListFactions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
 ,,,,,,
 ExerelinNGCListHegemony,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist hegemony,,,exerelinNGCJoinHegemony:Hegemony,
@@ -132,28 +160,33 @@ ExerelinNGCListSindrianDiktat,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist
 ExerelinNGCListPirates,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist pirates,,,exerelinNGCJoinPirate:Pirates (hard),
 ExerelinNGCListVanillaFactionsBack,ExerelinNGCListFactionsVanilla,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
+ExerelinNGCListExipiarted,ExerelinNGCListFactions1,NGCDoesFactionExist exipirated,,,exerelinNGCJoinExipirated:Ahriman Association,
 ExerelinNGCListASPSyndicate,ExerelinNGCListFactions1,NGCDoesFactionExist syndicate_asp,,,exerelinNGCJoinASPSyndicate:ASP Syndicate,
-ExerelinNGCListBlackrock,ExerelinNGCListFactions1,NGCDoesFactionExist blackrock_driveyards,,,exerelinNGCJoinBlackrock:Blackrock,
+ExerelinNGCListBlackrock,ExerelinNGCListFactions1,NGCDoesFactionExist blackrock_driveyards,,,exerelinNGCJoinBlackrock:Blackrock Drive Yards,
 ExerelinNGCListCitadel,ExerelinNGCListFactions1,NGCDoesFactionExist citadeldefenders,,,exerelinNGCJoinCitadel:Citadel,
 ExerelinNGCListCrystanite,ExerelinNGCListFactions1,NGCDoesFactionExist crystanite,,,exerelinNGCJoinCrystanite:Crystanite,
 ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
-ExerelinNGCListHiigaranDescendants,ExerelinNGCListFactions1,NGCDoesFactionExist hiigaran_descendants,,,exerelinNGCJoinHiigaranDescendants:Hiigaran Descendants,
 ExerelinNGCListModFactions1Back,ExerelinNGCListFactions1,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
-#ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions2,NGCDoesFactionExist interstellarimperium,,,exerelinNGCJoinInterstellarImperium:Interstellar Imperium,
+ExerelinNGCListExigency,ExerelinNGCListFactions2,NGCDoesFactionExist exigency,,,exerelinNGCJoinExigency:Exigency Corp,
+ExerelinNGCListHiigaranDescendants,ExerelinNGCListFactions2,NGCDoesFactionExist hiigaran_descendants,,,exerelinNGCJoinHiigaranDescendants:Hiigaran Descendants,
+ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions2,NGCDoesFactionExist interstellarimperium,,,exerelinNGCJoinInterstellarImperium:Interstellar Imperium,
 ExerelinNGCListJunkPirates,ExerelinNGCListFactions2,NGCDoesFactionExist junk_pirates,,,exerelinNGCJoinJunkPirates:Junk Pirates,
-#ExerelinNGCListTemplars,ExerelinNGCListFactions2,NGCDoesFactionExist templars,,,exerelinNGCJoinTemplars:Knights Templar,
+ExerelinNGCListTemplars,ExerelinNGCListFactions2,NGCDoesFactionExist templars,,,exerelinNGCJoinTemplars:Knights Templar,
 ExerelinNGCListORI,ExerelinNGCListFactions2,NGCDoesFactionExist ori,,,exerelinNGCJoinORI:ORI,
-ExerelinNGCListPACK,ExerelinNGCListFactions2,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:PACK,
-ExerelinNGCListPatria,ExerelinNGCListFactions2,NGCDoesFactionExist patnavy,,,exerelinNGCJoinPatria:Patrian Principate,
 ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
+ExerelinNGCListPACK,ExerelinNGCListFactions3,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
+ExerelinNGCListPatria,ExerelinNGCListFactions3,NGCDoesFactionExist patnavy,,,exerelinNGCJoinPatria:Patrian Principate,
 ExerelinNGCListMayorate,ExerelinNGCListFactions3,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
 ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
 ExerelinNGCListRadicalORI,ExerelinNGCListFactions3,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
-#ExerelinNGCListSCY,ExerelinNGCListFactions3,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY,
-ExerelinNGCListShadowyards,ExerelinNGCListFactions3,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
 ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCFactionsBack:Back,
+,,,,,,
+#ExerelinNGCListSCY,ExerelinNGCListFactions4,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY Nation,
+ExerelinNGCListShadowyards,ExerelinNGCListFactions4,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
+ExerelinNGCListValkyrians,ExerelinNGCListFactions4,NGCDoesFactionExist valkyrian,,,exerelinNGCJoinValkyrians:Valkyrians,
+ExerelinNGCListModFactions4Back,ExerelinNGCListFactions4,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""independent""
 NGCAddShip ""tempest_Starting""
@@ -207,11 +240,19 @@ ExerelinNGCJoinDiableAvionics,NewGameOptionSelected,$option == exerelinNGCJoinDi
 NGCAddShipAndComplement ""diableavionics_vapor_standard""
 AddText ""Added Vapor-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinExigency,NewGameOptionSelected,$option == exerelinNGCJoinExigency,"NGCSetPlayerFaction ""exigency""
+NGCAddShipAndComplement ""exigency_yria_Assault""
+AddText ""Added Yria-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinExipirated,NewGameOptionSelected,$option == exerelinNGCJoinExipirated,"NGCSetPlayerFaction ""exipirated""
+NGCAddShipAndComplement ""exipirated_rauwel_Standard""
+AddText ""Added Rauwel-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinHiigaranDescendants,NewGameOptionSelected,$option == exerelinNGCJoinHiigaranDescendants,"NGCSetPlayerFaction ""hiigaran_descendants""
 NGCAddShipAndComplement ""hii_jet_Standard""
 AddText ""Added Jet-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
-#ExerelinNGCJoinInterstellarImperium,NewGameOptionSelected,$option == exerelinNGCJoinInterstellarImperium,"NGCSetPlayerFaction ""interstellarimperium""
+ExerelinNGCJoinInterstellarImperium,NewGameOptionSelected,$option == exerelinNGCJoinInterstellarImperium,"NGCSetPlayerFaction ""interstellarimperium""
 NGCAddShipAndComplement ""ii_decurion_sta""
 AddText ""Added Decurion-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
@@ -255,6 +296,10 @@ ExerelinNGCJoinShadowyards,NewGameOptionSelected,$option == exerelinNGCJoinShado
 NGCAddShipAndComplement ""ms_enlil_Balanced""
 AddText ""Added Enlil-class gunship"" textFriendColor
 FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinValkyrians,NewGameOptionSelected,$option == exerelinNGCJoinValkyrians,"NGCSetPlayerFaction ""valkyrian""
+NGCAddShipAndComplement ""valk_longinus_A""
+AddText ""Added Longinus-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
 ,,,,,,
 ExerelinNGCFinalize,ExerelinNGCStep3,,"AddText ""Added $crewAdded crew"" textFriendColor
 AddText ""Added $suppliesAdded supplies"" textFriendColor
@@ -274,14 +319,18 @@ ExerelinMarketAddOptionSpecial,PopulateOptions,"$menuState == main
 !$faction.isNeutralFaction","SetShortcut exerelinMarketSpecial ""S"" true",,6:exerelinMarketSpecial:Special functions,
 ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,FireAll ExerelinMarketSpecial,,,
 ExerelinMarketLeaveOption,ExerelinMarketSpecial,,,,10:exerelinMarketSpecialBack:Back,
-ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,FireAll PopulateOptions,,,
+ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,"ShowDefaultVisual
+$menuState = main 0
+FireAll PopulateOptions",,,
 ,,,,,,
 # START INVASION OPTIONS,,,,,,
 ExerelinMarketInvadeOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
+$faction.id != ""neutral""
 HasMarines",SetEnabled exerelinInvasion true,,1:exerelinInvasion:Invade the planet/station,
 ExerelinMarketInvadeOptionNoMarines,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
+$faction.id != ""neutral""
 !HasMarines","SetTooltip exerelinInvasion ""You have no marines!""
 SetEnabled exerelinInvasion false",,1:exerelinInvasion:Invade the planet/station,
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
@@ -306,9 +355,8 @@ MakePlayerImmediatelyAttackable
 TriggerResponseFleet
 $player.invasionTarget = $id 1.01",,,
 ExerelinInvasionCancel,DialogOptionSelected,"$option == exerelinInvasionCancel
-$hasMarket","$menuState = main 0
-ShowDefaultVisual
-FireAll PopulateOptions",You decide not to attack $entityName.,,
+$hasMarket","ShowDefaultVisual
+FireAll ExerelinMarketSpecial",You decide not to attack $entityName.,,
 ExerelinInvasionLeave,DialogOptionSelected,"$option == exerelinInvasionLeave
 $hasMarket",DismissDialog,You decide not to continue the invasion.,,
 ExerelinInvasionDone,DialogOptionSelected,"$option == exerelinInvasionLeave
@@ -319,7 +367,7 @@ FireBest ExerelinInitInvadeDialog",,,
 ExerelinInvasionRoundComplete,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionRoundComplete score:100","ExecuteInvasionRound
 FireBest ExerelinInvasionResults
-AdjustRep $faction.id COMBAT_NORMAL",INVASION OUTCOME:,,
+",INVASION OUTCOME:,,
 ExerelinInvasionResultsComplete,ExerelinInvasionResults,$exerelinInvasionSuccessful,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
 unset $player.invasionTarget
 FireAll PopulateOptions",You've successfully captured $entityName!,,
@@ -336,7 +384,7 @@ ExerelinInvasionInterupted,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionInterrupted","unset $global.exerelinInvasionInterrupted
 unset $player.invasionTarget
 $menuState = main 0
-FireAll PopulateOptions",Your invasion was interrupted.,,
+FireBest MarketPostOpen",Your invasion was interrupted.,,
 ExerelinInitInvasionInProgress,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionInProgress
 !$global.exerelinInvasionInterrupted
@@ -354,6 +402,7 @@ unset $player.invasionTarget
 AdjustRep $faction.id COMBAT_NORMAL
 BroadcastCancelPlayerAction 1500 $exerelinRespondingToInvasion",The appearance of a $faction $otherShipOrFleet disrupts your invasion preparations.,,
 ExerelinInvasionInterference_cancelledAndRan,BeginFleetEncounter,$exerelinRespondingToInvasion score:100,"MakeOtherFleetHostile true
+MakeOtherFleetAggressive true
 unset $ignorePlayerCommRequests
 unset $player.invasionTarget
 AdjustRep $faction.id COMBAT_NORMAL
@@ -366,34 +415,40 @@ ExerelinMarketFactionDirectoryOption,ExerelinMarketSpecial,,,,5:exerelinFactionD
 ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirectoryMain,,Which faction do you want to look up?,"exerelinFactionDirectoryList1:A-H
 exerelinFactionDirectoryList2:I-O
 exerelinFactionDirectoryList3:P-Z
+exerelinMarketIntel:Open intel screen
 exerelinMarketSpecial:Back",
 ExerelinFactionDirectoryList1,DialogOptionSelected,$option == exerelinFactionDirectoryList1,FireAll ExerelinFactionDirectoryList1,,,
 ExerelinFactionDirectoryList2,DialogOptionSelected,$option == exerelinFactionDirectoryList2,FireAll ExerelinFactionDirectoryList2,,,
 ExerelinFactionDirectoryList3,DialogOptionSelected,$option == exerelinFactionDirectoryList3,FireAll ExerelinFactionDirectoryList3,,,
 ,,,,,,
+ExerelinFactionDirectoryListExipirated,ExerelinFactionDirectoryList1,IsFactionAlive exipirated,,,exerelinFactionDirectoryGetExipirated:Ahriman Association,
 ExerelinFactionDirectoryListASPSyindicate,ExerelinFactionDirectoryList1,IsFactionAlive syndicate_asp,,,exerelinFactionDirectoryGetASPSyndicate:ASP Syndicate,
 ExerelinFactionDirectoryListBlackrock,ExerelinFactionDirectoryList1,IsFactionAlive blackrock_driveyards,,,exerelinFactionDirectoryGetBlackrock:Blackrock,
 ExerelinFactionDirectoryListCitadel,ExerelinFactionDirectoryList1,IsFactionAlive citadeldefenders,,,exerelinFactionDirectoryGetCitadel:Citadel,
 ExerelinFactionDirectoryListCrystanite,ExerelinFactionDirectoryList1,IsFactionAlive crystanite,,,exerelinFactionDirectoryGetCrystanite:Crystanite,
 ExerelinFactionDirectoryListDiableAvionics,ExerelinFactionDirectoryList1,IsFactionAlive diableavionics,,,exerelinFactionDirectoryGetDiableAvionics:Diable Avionics,
+ExerelinFactionDirectoryListExigency,ExerelinFactionDirectoryList1,IsFactionAlive exigency,,,exerelinFactionDirectoryGetExigency:Exigency Corp,
 ExerelinFactionDirectoryListHegemony,ExerelinFactionDirectoryList1,IsFactionAlive hegemony,,,exerelinFactionDirectoryGetHegemony:Hegemony,
 ExerelinFactionDirectoryListHiigaranDescendants,ExerelinFactionDirectoryList1,IsFactionAlive hiigaran_descendants,,,exerelinFactionDirectoryGetHiigaranDescendants:Hiigaran Descendants,
 ExerelinFactionDirectoryList1Back,ExerelinFactionDirectoryList1,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
+ExerelinFactionDirectoryListInterstellarImperium,ExerelinFactionDirectoryList2,IsFactionAlive interstellarimperium,,,exerelinFactionDirectoryGetInterstellarImperium:Interstellar Imperium,
 ExerelinFactionDirectoryListJunkPirates,ExerelinFactionDirectoryList2,IsFactionAlive junk_pirates,,,exerelinFactionDirectoryGetJunkPirates:Junk Pirates,
+ExerelinFactionDirectoryListTemplars,ExerelinFactionDirectoryList2,IsFactionAlive templars,,,exerelinFactionDirectoryGetTemplars:Knights Templar,
 ExerelinFactionDirectoryListLuddicChurch,ExerelinFactionDirectoryList2,IsFactionAlive luddic_church,,,exerelinFactionDirectoryGetLuddicChurch:Luddic Church,
 ExerelinFactionDirectoryListMayorate,ExerelinFactionDirectoryList2,IsFactionAlive mayorate,,,exerelinFactionDirectoryGetMayorate:Mayorate,
 ExerelinFactionDirectoryListNeutrinoCorp,ExerelinFactionDirectoryList2,IsFactionAlive neutrinocorp,,,exerelinFactionDirectoryGetNeutrinoCorp:Neutrino Corp,
 ExerelinFactionDirectoryListORI,ExerelinFactionDirectoryList2,IsFactionAlive ori,,,exerelinFactionDirectoryGetORI:ORI,
 ExerelinFactionDirectoryList2Back,ExerelinFactionDirectoryList2,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
-ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList3,IsFactionAlive pack,,,exerelinFactionDirectoryGetPACK:PACK,
+ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList3,IsFactionAlive pack,,,exerelinFactionDirectoryGetPACK:P.A.C.K.,
 ExerelinFactionDirectoryListPatria,ExerelinFactionDirectoryList3,IsFactionAlive patnavy,,,exerelinFactionDirectoryGetPatria:Patrian Principate,
 ExerelinFactionDirectoryListPirates,ExerelinFactionDirectoryList3,IsFactionAlive pirates,,,exerelinFactionDirectoryGetPirates:Pirates,
 ExerelinFactionDirectoryListRadicalORI,ExerelinFactionDirectoryList3,IsFactionAlive rori,,,exerelinFactionDirectoryGetRadicalORI:Radical ORI,
 ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList3,IsFactionAlive shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
 ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList3,IsFactionAlive sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
 ExerelinFactionDirectoryListTriTachyon,ExerelinFactionDirectoryList3,IsFactionAlive tritachyon,,,exerelinFactionDirectoryGetTriTachyon:Tri-Tachyon,
+ExerelinFactionDirectoryListValkyrians,ExerelinFactionDirectoryList3,IsFactionAlive valkyrian,,,exerelinFactionDirectoryGetValkyrians:Valkyrians,
 ExerelinFactionDirectoryList3Back,ExerelinFactionDirectoryList3,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
 # this feels like it could be a billion times more efficient,,,,,,
@@ -402,8 +457,11 @@ ExerelinFactionDirectoryGetBlackrock,DialogOptionSelected,$option == exerelinFac
 ExerelinFactionDirectoryGetCitadel,DialogOptionSelected,$option == exerelinFactionDirectoryGetCitadel,PrintFactionMarkets citadeldefenders,,,
 ExerelinFactionDirectoryGetCrystanite,DialogOptionSelected,$option == exerelinFactionDirectoryGetCrystanite,PrintFactionMarkets crystanite,,,
 ExerelinFactionDirectoryGetDiableAvionics,DialogOptionSelected,$option == exerelinFactionDirectoryGetDiableAvionics,PrintFactionMarkets diableavionics,,,
+ExerelinFactionDirectoryGetExigency,DialogOptionSelected,$option == exerelinFactionDirectoryGetExigency,PrintFactionMarkets exigency,,,
+ExerelinFactionDirectoryGetExipirated,DialogOptionSelected,$option == exerelinFactionDirectoryGetExipirated,PrintFactionMarkets exipirated,,,
 ExerelinFactionDirectoryGetHegemony,DialogOptionSelected,$option == exerelinFactionDirectoryGetHegemony,PrintFactionMarkets hegemony,,,
 ExerelinFactionDirectoryGetHiigaranDescendants,DialogOptionSelected,$option == exerelinFactionDirectoryGetHiigaranDescendants,PrintFactionMarkets hiigaran_descendants,,,
+ExerelinFactionDirectoryGetInterstellarImperium,DialogOptionSelected,$option == exerelinFactionDirectoryGetInterstellarImperium,PrintFactionMarkets interstellarimperium,,,
 ExerelinFactionDirectoryGetJunkPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetJunkPirates,PrintFactionMarkets junk_pirates,,,
 ExerelinFactionDirectoryGetLuddicChurch,DialogOptionSelected,$option == exerelinFactionDirectoryGetLuddicChurch,PrintFactionMarkets luddic_church,,,
 ExerelinFactionDirectoryGetMayorate,DialogOptionSelected,$option == exerelinFactionDirectoryGetMayorate,PrintFactionMarkets mayorate,,,
@@ -415,5 +473,148 @@ ExerelinFactionDirectoryGetPirates,DialogOptionSelected,$option == exerelinFacti
 ExerelinFactionDirectoryGetRadicalORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetRadicalORI,PrintFactionMarkets rori,,,
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,PrintFactionMarkets shadow_industry,,,
 ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerelinFactionDirectoryGetSindrianDiktat,PrintFactionMarkets sindrian_diktat,,,
+ExerelinFactionDirectoryGetTemplars,DialogOptionSelected,$option == exerelinFactionDirectoryGetTemplars,PrintFactionMarkets templars,,,
 ExerelinFactionDirectoryGetTriTachyon,DialogOptionSelected,$option == exerelinFactionDirectoryGetTriTachyon,PrintFactionMarkets tritachyon,,,
+ExerelinFactionDirectoryGetValkyrians,DialogOptionSelected,$option == exerelinFactionDirectoryGetValkyrians,PrintFactionMarkets valkyrian,,,
 #END MARKET DIRECTORY OPTIONS,,,,,,
+,,,,,,
+#START AGENT OPTIONS,,,,,,
+ExerelinMarketAgentOption,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+HasItem agent",SetEnabled exerelinUseAgent true,,2:exerelinUseAgent:Deploy an agent,
+ExerelinMarketAgentOptionNoAgents,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+!HasItem agent","SetTooltip exerelinUseAgent ""You have no agents!""
+SetEnabled exerelinUseAgent false",,2:exerelinUseAgent:Deploy an agent,
+ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+$tradeMode == NONE
+ArePatrolsNearby $faction.id 750 score:10","SetTooltip exerelinUseAgent ""The port is closed to you, and $faction patrols nearby prevent agent insertion.""
+SetEnabled exerelinUseAgent false",,,
+ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"GetNumSpecialPeople
+ShowVisual ""graphics/illustrations/quartermaster.jpg""
+FireAll ExerelinAgentOption",,,
+ExerelinAgentOptionNumAgents,ExerelinAgentOption,,SetTextHighlights $numAgents,You have $numAgents agent(s) to deploy.,,
+ExerelinAgentOptionListRaiseRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentRaiseRelations ""Influence $theFaction to like your faction more. If it fails, there is a chance they will turn more hostile instead.""",,exerelinAgentRaiseRelations:Raise relations,
+ExerelinAgentOptionListLowerRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentLowerRelations ""Influence $theFaction to dislike one of your factions' enemies more. If your attempt is detected, both factions will be angry with you.""",,exerelinAgentLowerRelations:Lower relations,
+ExerelinAgentOptionListDestabilizeMarket,ExerelinAgentOption,,"SetTooltip exerelinAgentDestabilizeMarket ""Attempt the use of terror methods to destabilize $market. There is a chance your agent will be detected, with serious diplomatic repercussions.""",,exerelinAgentDestabilizeMarket:Destabilize market,
+ExerelinAgentOptionListBack,ExerelinAgentOption,,,,exerelinMarketSpecial:Back,
+,,,,,,
+ExerelinAgentRaiseRelations,DialogOptionSelected,$option == exerelinAgentRaiseRelations,"AgentRaiseRelations
+FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+ExerelinAgentLowerRelations,DialogOptionSelected,$option == exerelinAgentLowerRelations,"AgentLowerRelations
+FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+ExerelinAgentDestabilizeMarket,DialogOptionSelected,"$option == exerelinAgentDestabilizeMarket
+","AgentDestabilizeMarket
+FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasItem agent,"GetNumSpecialPeople
+FireAll ExerelinAgentOption",,,
+ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasItem agent,"$menuState = main 0
+ShowDefaultVisual
+FireAll PopulateOptions",You have no more agents to deploy.,,
+#END AGENT OPTIONS,,,,,,
+,,,,,,
+#START SABOTEUR OPTIONS,,,,,,
+ExerelinMarketSaboteurOption,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+HasItem saboteur",SetEnabled exerelinUseSaboteur true,,2:exerelinUseSaboteur:Deploy a saboteur,
+ExerelinMarketSaboteurOptionNoSaboteurs,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+!HasItem saboteur","SetTooltip exerelinUseSaboteur ""You have no saboteurs!""
+SetEnabled exerelinUseSaboteur false",,2:exerelinUseSaboteur:Deploy a saboteur,
+ExerelinMarketSaboteurOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+$tradeMode == NONE
+ArePatrolsNearby $faction.id 750 score:10","SetTooltip exerelinUseSaboteur ""The port is closed to you, and $faction patrols nearby prevent saboteur insertion.""
+SetEnabled exerelinUseSaboteur false",,,
+ExerelinSaboteurOptionListMain,DialogOptionSelected,$option == exerelinUseSaboteur,"GetNumSpecialPeople
+ShowVisual ""graphics/illustrations/cargo_loading.jpg""
+FireAll ExerelinSaboteurOption",,,
+ExerelinSaboteurOptionNumSaboteurs,ExerelinSaboteurOption,,SetTextHighlights $numSaboteurs,You have $numSaboteurs saboteur(s) to deploy.,,
+ExerelinSaboteurOptionListSabotageReserve,ExerelinSaboteurOption,,"SetTooltip exerelinSaboteurSabotageReserve ""Sabotages the reserve fleet on $market, weakening its ability to respond to invasions. Needless to say, this will be considered a hostile act if discovered.""",,exerelinSaboteurSabotageReserve:Sabotage reserve fleet,
+ExerelinSaboteurOptionListDestroyFood,ExerelinSaboteurOption,,"SetTooltip exerelinSaboteurDestroyFood ""Destroys a large amount of food on $market, possibly provoking a destabilizing crisis.""",,exerelinSaboteurDestroyFood:Destroy food stockpiles,
+ExerelinSaboteurOptionListBack,ExerelinSaboteurOption,,,,exerelinMarketSpecial:Back,
+ExerelinSaboteurSabotageReserve,DialogOptionSelected,$option == exerelinSaboteurSabotageReserve,"SaboteurSabotageReserve
+FireAll ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
+ExerelinSaboteurDestroyFood,DialogOptionSelected,$option == exerelinSaboteurDestroyFood,"SaboteurDestroyFood
+FireAll ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
+ExerelinSaboteurAfterDeploy,ExerelinSaboteurPostDeploy,HasItem saboteur,"GetNumSpecialPeople
+FireAll ExerelinSaboteurOption",,,
+ExerelinSaboteurAfterDeployNoMoreSaboteurs,ExerelinSaboteurPostDeploy,!HasItem saboteur,"$menuState = main 0
+ShowDefaultVisual
+FireAll PopulateOptions",You have no more saboteurs to deploy.,,
+#END SABOTEUR OPTIONS,,,,,,
+,,,,,,
+#START PRISONER OPTIONS,,,,,,
+ExerelinMarketPrisonerOption,ExerelinMarketSpecial,"$hasMarket
+$faction.id != ""neutral""
+HasItem prisoner",SetEnabled exerelinUsePrisoner true,,3:exerelinUsePrisoner:Prisoner actions,
+ExerelinMarketPrisonerOptionNoPrisoners,ExerelinMarketSpecial,"$hasMarket
+$faction.id != ""neutral""
+!HasItem prisoner","SetTooltip exerelinUsePrisoner ""You have no prisoners!""
+SetEnabled exerelinUsePrisoner false",,3:exerelinUsePrisoner:Prisoner actions,
+ExerelinPrisonerOptionListMain,DialogOptionSelected,$option == exerelinUsePrisoner,"GetNumSpecialPeople
+ShowVisual ""graphics/illustrations/pirate_station.jpg""
+FireAll ExerelinPrisonerOption",,,
+ExerelinPrisonerOptionNumPrisoners,ExerelinPrisonerOption,,SetTextHighlights $numPrisoners,You have $numPrisoners prisoner(s).,,
+ExerelinPrisonerOptionListRepatriate,ExerelinPrisonerOption,,"SetTooltip exerelinPrisonerRepatriate ""Release a prisoner for a reputation boost with $theFaction.""",,exerelinPrisonerRepatriate:Repatriate prisoner,
+ExerelinPrisonerOptionListRansom,ExerelinPrisonerOption,"RepIsAtWorst $faction.id INHOSPITABLE
+!IsPirateFaction $faction.id","GetPrisonerValue
+SetTooltip exerelinPrisonerRansom ""Return a prisoner in exchange for a ransom of $ransomValue credits.""
+SetTooltipHighlightColors exerelinPrisonerRansom buttonShortcut 
+SetTooltipHighlights exerelinPrisonerRansom $ransomValue
+SetEnabled exerelinPrisonerRansom true",,exerelinPrisonerRansom:Collect ransom,
+ExerelinPrisonerOptionListRansomHostile,ExerelinPrisonerOption,"RepIsAtBest $faction.id HOSTILE
+!IsPirateFaction $faction.id","SetTooltip exerelinPrisonerRansom ""$TheFaction is $relAdjective to you and refuses to consider any ransom payment.""
+SetEnabled exerelinPrisonerRansom false",,exerelinPrisonerRansom:Collect ransom,
+ExerelinPrisonerOptionListRansomPirates,ExerelinPrisonerOption,IsPirateFaction $faction.id,"SetTooltip exerelinPrisonerRansom ""Pirates do not pay ransom.""
+SetEnabled exerelinPrisonerRansom false",,exerelinPrisonerRansom:Collect ransom,
+ExerelinPrisonerOptionListSellSlave,ExerelinPrisonerOption,$tradeMode != NONE,"GetPrisonerValue
+SetTooltip exerelinPrisonerSellSlave ""Sell a prisoner as a slave for $slaveValue credits. This will anger lawful factions.""
+SetTooltipHighlightColors exerelinPrisonerSellSlave buttonShortcut 
+SetTooltipHighlights exerelinPrisonerSellSlave $slaveValue
+SetEnabled exerelinPrisonerSellSlave true",,exerelinPrisonerSellSlave:Sell as slave,
+ExerelinPrisonerOptionListSellSlaveNoMarket,ExerelinPrisonerOption,$tradeMode == NONE,"SetTooltip exerelinPrisonerSellSlave ""You cannot dock with $market to perform this trade.""
+SetEnabled exerelinPrisonerSellSlave false",,exerelinPrisonerSellSlave:Sell as slave,
+ExerelinPrisonerOptionListBack,ExerelinPrisonerOption,,,,exerelinMarketSpecial:Back,
+ExerelinPrisonerRepatriate,DialogOptionSelected,$option == exerelinPrisonerRepatriate,"PrisonerRepatriate
+FireAll ExerelinPrisonerPostTrade",The prisoner has been repatriated.,,
+ExerelinPrisonerRansom,DialogOptionSelected,$option == exerelinPrisonerRansom,"PrisonerRansom
+SetTextHighlights $ransomValue
+FireAll ExerelinPrisonerPostTrade",The prisoner has been ransomed for $ransomValue credits.,,
+ExerelinPrisonerSellSlave,DialogOptionSelected,$option == exerelinPrisonerSellSlave,"PrisonerSellSlave
+SetTextHighlights $slaveValue
+FireAll ExerelinPrisonerPostTrade",You have sold the prisoner into slavery for $slaveValue credits.,,
+ExerelinPrisonerAfterTrade,ExerelinPrisonerPostTrade,HasItem prisoner,"GetNumSpecialPeople
+FireAll ExerelinPrisonerOption",,,
+ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem prisoner,"$menuState = main 0
+ShowDefaultVisual
+FireAll PopulateOptions",You have no more prisoners.,,
+#END PRISONER OPTIONS,,,,,,
+,,,,,,
+# bla,,,,,,
+ExerelinFlavorTextMarketOmnifactory,TradePanelFlavorText,"$global.tradePanelMode == MARKET
+$market.id == omnifac","AddText ""The Omnifactory's main loading bay is a dark, brooding chamber gaping cavernously around stacks of replicated items - clearly, the maintaining AI lacks the cleanliness sensibility of the average human. A loading bots shuffles about with large crates in hand as nano-fabricators hum in the distance."" textGrayColor",,,
+ExerelinMarketOptionIntel,DialogOptionSelected,$option == exerelinMarketIntel,OpenCoreTab INTEL $tradeMode,,,
+,,,,,,
+# vanilla overrides,,,,,,
+marketPostOpenInhospitable,MarketPostOpen,"$hasMarket
+RepIsAtBest $faction.id INHOSPITABLE
+!IsPirateFaction $faction.id","FireBest PickSneakType
+FireAll PopulateOptions","$TheFactionLong is $relAdjective towards you, and the port authority refuses your request for docking clearance.",,
+marketPostOpenInhospitablePirates,MarketPostOpen,"$hasMarket
+RepIsAtBest $faction.id VENGEFUL
+IsPirateFaction $faction.id","FireBest PickSneakType
+FireAll PopulateOptions","You're rather well known among $theFaction, and not for the right reasons, as far as they're concerned.",,
+marketPostOpenPiratesHostile,MarketPostOpen,"$hasMarket
+IsPirateFaction $faction.id
+RepIsAtBest $faction.id INHOSPITABLE
+RepIsAtWorst $faction.id HOSTILE","$menuState = main 0
+$tradeMode = OPEN 0
+FireAll PopulateOptions","While $theFaction are generally $relAdjective towards you, that's not all that different from how they see other rival captains. The port authority, such as it is, grants you docking clearance after only a slight delay.",,
