@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import exerelin.utilities.ExerelinConfig;
@@ -221,8 +222,27 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
-    public static void notifyMarketCaptured(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner)
+    public static void captureMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, List<String> factionsToNotify)
     {
+        // transfer market and associated entities
+        String newOwnerId = newOwner.getId();
+        List<SectorEntityToken> linkedEntities = market.getConnectedEntities();
+        for (SectorEntityToken entity : linkedEntities)
+        {
+                entity.setFaction(newOwnerId);
+        }
+        market.setFactionId(newOwnerId);
+        List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
+        for (SubmarketAPI submarket : submarkets)
+        {
+                String submarketName = submarket.getNameOneLine().toLowerCase();
+                if(!submarketName.contains("storage") && !submarketName.contains("black market"))
+                {
+                        submarket.setFaction(newOwner);
+                }
+        }
+        market.reapplyConditions();
+                
         DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
         
         int marketsRemaining = ExerelinUtilsFaction.getFactionMarkets(oldOwner.getId()).size();
@@ -248,7 +268,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 if (relayId != null)
                 {
                     SectorEntityToken relay = Global.getSector().getEntityById(relayId);
-                    relay.setFaction(newOwner.getId());
+                    relay.setFaction(newOwnerId);
                 }
             }
         }

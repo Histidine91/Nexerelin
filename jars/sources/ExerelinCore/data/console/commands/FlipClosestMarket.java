@@ -66,23 +66,7 @@ public class FlipClosestMarket implements BaseCommand {
         }
         String attackerFactionId = picker.pick();
         FactionAPI attackerFaction = Global.getSector().getFaction(attackerFactionId);
-        
-        List<SectorEntityToken> linkedEntities = market.getConnectedEntities();
-        for (SectorEntityToken entity : linkedEntities)
-        {
-                entity.setFaction(attackerFactionId);
-        }
-        market.setFactionId(attackerFactionId);
-        List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
-        for (SubmarketAPI submarket : submarkets)
-        {
-                if(!submarket.getNameOneLine().toLowerCase().contains("black market"))
-                {
-                        submarket.setFaction(attackerFaction);
-                }
-        }
-        market.reapplyConditions();
-        
+                
         Map<String, Object> params = new HashMap<>();
         params.put("newOwner", attackerFaction);
         params.put("oldOwner", defenderFaction);
@@ -90,7 +74,8 @@ public class FlipClosestMarket implements BaseCommand {
         params.put("factionsToNotify", new ArrayList<>());
         params.put("repChangeStrength", 0f);
         sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
-        SectorManager.notifyMarketCaptured(market, attackerFaction, defenderFaction);
+        
+        SectorManager.captureMarket(market, attackerFaction, defenderFaction, false, null);
         Console.showMessage("Transferred market " + market.getName() + " from " + defenderFaction.getDisplayName() + " to " + attackerFaction.getDisplayName());
         
         return CommandResult.SUCCESS;

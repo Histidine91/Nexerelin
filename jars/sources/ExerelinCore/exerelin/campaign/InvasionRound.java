@@ -297,22 +297,7 @@ public class InvasionRound {
 		if (!isRaid && success)
 		{
 			captured = true;
-			// transfer market and associated entities
-			List<SectorEntityToken> linkedEntities = market.getConnectedEntities();
-			for (SectorEntityToken entity : linkedEntities)
-			{
-				entity.setFaction(attackerFactionId);
-			}
-			market.setFactionId(attackerFactionId);
-			List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
-			for (SubmarketAPI submarket : submarkets)
-			{
-				if(!submarket.getNameOneLine().toLowerCase().contains("black market"))
-                                {
-                                        submarket.setFaction(attackerFaction);
-                                }
-			}
-			market.reapplyConditions();
+			
 		}
 		// relationship changes
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
@@ -336,25 +321,22 @@ public class InvasionRound {
 				if (playerInvolved)
 				{
 					factionsToNotify.add(otherMarket.getFactionId());
-					/*sector.adjustPlayerReputation(
-						new RepActionEnvelope(RepActions.COMBAT_WITH_ENEMY, repChangeStrength),
-						otherMarket.getFaction().getId());*/
 				}
-				//log.info(String.format("Improving reputation with owner of market [%s] due to conquest of " + defender.getName(), otherMarket.getName()));
 			}
 		}
 
 		// add intel event if captured
 		if (captured)
 		{
-			Map<String, Object> params = new HashMap<>();
+                        Map<String, Object> params = new HashMap<>();
 			params.put("newOwner", attackerFaction);
 			params.put("oldOwner", defenderFaction);
 			params.put("playerInvolved", playerInvolved);
 			params.put("factionsToNotify", factionsToNotify);
 			params.put("repChangeStrength", repChangeStrength);
 			sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
-			SectorManager.notifyMarketCaptured(market, attackerFaction, defenderFaction);
+                    
+			SectorManager.captureMarket(market, attackerFaction, defenderFaction, playerInvolved, factionsToNotify);
 			
 			if (playerInvolved)
 			{
