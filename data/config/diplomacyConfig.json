@@ -1,7 +1,7 @@
 {
 	"pirateFactions": [ "pirates", "exipirated", "junk_pirates", "rori" ],
 	"warWearinessPerInterval":20,	#20
-	"eventFrequency":20,	#20
+	"eventFrequency":30,	#30
 	"events":[
 		{
 			"name":"Official Aid",

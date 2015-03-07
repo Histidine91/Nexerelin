@@ -75,7 +75,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     private static DiplomacyEventDef peaceTreatyEvent;
     private static DiplomacyEventDef ceasefireEvent;
     
-    private static float baseInterval = 20f;
+    private static float baseInterval = 30f;
     private float interval = baseInterval;
     private final IntervalUtil intervalUtil;
     
