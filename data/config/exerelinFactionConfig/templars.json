@@ -1,7 +1,8 @@
 {
-    "uniqueModClassName":"", # String
+    "uniqueModClassName":"data.scripts.TEMModPlugin", # String
     "factionNiceName":"Knights Templar", # String
     "playableFaction":"true", # Boolean
+    "isPirateNeutral":"false", # Boolean
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
