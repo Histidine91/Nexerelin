@@ -401,6 +401,7 @@ ExerelinMarketFactionDirectoryOption,ExerelinMarketSpecial,,,,5:exerelinFactionD
 ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirectoryMain,,Which faction do you want to look up?,"exerelinFactionDirectoryList1:A-H
 exerelinFactionDirectoryList2:I-O
 exerelinFactionDirectoryList3:P-Z
+exerelinMarketIntel:Open intel screen
 exerelinMarketSpecial:Back",
 ExerelinFactionDirectoryList1,DialogOptionSelected,$option == exerelinFactionDirectoryList1,FireAll ExerelinFactionDirectoryList1,,,
 ExerelinFactionDirectoryList2,DialogOptionSelected,$option == exerelinFactionDirectoryList2,FireAll ExerelinFactionDirectoryList2,,,
@@ -577,6 +578,7 @@ FireAll PopulateOptions",You have no more prisoners.,,
 # bla,,,,,,
 ExerelinFlavorTextMarketOmnifactory,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $market.id == omnifac","AddText ""The Omnifactory's main loading bay is a dark, brooding chamber gaping cavernously around stacks of replicated items - clearly, the maintaining AI lacks the cleanliness sensibility of the average human. A loading bots shuffles about with large crates in hand as nano-fabricators hum in the distance."" textGrayColor",,,
+ExerelinMarketOptionIntel,DialogOptionSelected,$option == exerelinMarketIntel,OpenCoreTab INTEL $tradeMode,,,
 ,,,,,,
 # vanilla overrides,,,,,,
 marketPostOpenInhospitable,MarketPostOpen,"$hasMarket
