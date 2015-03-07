@@ -386,7 +386,8 @@ unset $ignorePlayerCommRequests
 unset $player.invasionTarget
 AdjustRep $faction.id COMBAT_NORMAL
 BroadcastCancelPlayerAction 1500 $exerelinRespondingToInvasion",The appearance of a $faction $otherShipOrFleet disrupts your invasion preparations.,,
-ExerelinInvasionInterference_cancelledAndRan,BeginFleetEncounter,$exerelinRespondingToInvasion score:100,"MakeOtherFleetHostile true
+ExerelinInvasionInterference_cancelledAndRan,BeginFleetEncounter,$exerelinRespondingToInvasion score:100,"AbortWait $global.exerelinInvasionWait
+MakeOtherFleetHostile true
 MakeOtherFleetAggressive true
 unset $ignorePlayerCommRequests
 unset $player.invasionTarget
