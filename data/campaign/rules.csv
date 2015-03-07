@@ -370,7 +370,7 @@ ExerelinInvasionInterupted,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionInterrupted","unset $global.exerelinInvasionInterrupted
 unset $player.invasionTarget
 $menuState = main 0
-FireAll PopulateOptions",Your invasion was interrupted.,,
+FireBest MarketPostOpen",Your invasion was interrupted.,,
 ExerelinInitInvasionInProgress,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionInProgress
 !$global.exerelinInvasionInterrupted
