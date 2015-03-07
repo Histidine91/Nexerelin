@@ -464,10 +464,11 @@ $faction.id != $player.factionId
 $faction.id != ""neutral""
 !HasItem agent","SetTooltip exerelinUseAgent ""You have no agents!""
 SetEnabled exerelinUseAgent false",,2:exerelinUseAgent:Deploy an agent,
-#ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
+ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
-$tradeMode == NONE","SetTooltip exerelinUseAgent ""The port is closed to you, and your agents are unable to infiltrate.""
+$tradeMode == NONE
+ArePatrolsNearby $faction.id 400 score:10","SetTooltip exerelinUseAgent ""The port is closed to you, and $faction patrols nearby prevent agent insertion.""
 SetEnabled exerelinUseAgent false",,,
 ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
@@ -501,6 +502,12 @@ $faction.id != $player.factionId
 $faction.id != ""neutral""
 !HasItem saboteur","SetTooltip exerelinUseSaboteur ""You have no saboteurs!""
 SetEnabled exerelinUseSaboteur false",,2:exerelinUseSaboteur:Deploy a saboteur,
+ExerelinMarketSaboteurOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+$tradeMode == NONE
+ArePatrolsNearby $faction.id 400 score:10","SetTooltip exerelinUseSaboteur ""The port is closed to you, and $faction patrols nearby prevent saboteur insertion.""
+SetEnabled exerelinUseSaboteur false",,,
 ExerelinSaboteurOptionListMain,DialogOptionSelected,$option == exerelinUseSaboteur,"GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/cargo_loading.jpg""
 FireAll ExerelinSaboteurOption",,,
