@@ -11,7 +11,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
  */
 public class MarketAttackedEvent extends BaseEventPlugin {
 
-	public static final float DAYS_PER_STAGE = 30f;
+	public static final float DAYS_PER_STAGE = 20f;
 	protected float elapsedDays = 0f;
 	protected int stabilityPenalty = 0;
 	protected String conditionToken = null;

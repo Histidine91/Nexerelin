@@ -165,7 +165,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     {
         int numFactions = SectorManager.getLiveFactionIdsCopy().size() - 2;
         if (numFactions < 0) numFactions = 0;
-        return baseInterval * (float)Math.pow(0.9, numFactions);
+        return baseInterval * (float)Math.pow(0.95, numFactions);
     }
     
     public static ReputationAdjustmentResult adjustRelations(MarketAPI market, FactionAPI faction1, FactionAPI faction2, float delta,

@@ -16,7 +16,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 public class AgentDestabilizeMarketEventForCondition extends CovertOpsEventBase {
 
 	public static Logger log = Global.getLogger(AgentDestabilizeMarketEventForCondition.class);
-	public static final float DAYS_PER_STAGE = 30f;
+	public static final float DAYS_PER_STAGE = 20f;
 	protected float elapsedDays = 0f;
 	protected String conditionToken = null;
 	protected int stabilityPenalty;

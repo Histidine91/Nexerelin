@@ -238,7 +238,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     {
         int numFactions = SectorManager.getLiveFactionIdsCopy().size() - 2;
         if (numFactions < 0) numFactions = 0;
-        return baseInterval * (float)Math.pow(0.9, numFactions);
+        return baseInterval * (float)Math.pow(0.95, numFactions);
     }
     
     public static Map<String, Object> makeEventParams(FactionAPI agentFaction, String stage, float repEffect, boolean playerInvolved)
