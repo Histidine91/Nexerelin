@@ -5,7 +5,7 @@ import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import exerelin.utilities.ExerelinUtils;
-import exerelin.ExerelinUtilsPlayer;
+import exerelin.utilities.ExerelinUtilsPlayer;
 import exerelin.SectorManager;
 import exerelin.SystemManager;
 import exerelin.utilities.ExerelinConfig;

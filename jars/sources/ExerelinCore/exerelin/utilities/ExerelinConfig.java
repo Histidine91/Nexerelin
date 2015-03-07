@@ -43,7 +43,8 @@ public class ExerelinConfig
     public static int miningAmountPerDayPerMiner = 50;
 
     // Player settings
-    public static int playerBaseWage = 1000;
+    public static float playerBaseSalary = 5000f;
+    public static float playerSalaryIncrementPerLevel = 1000f;
     public static boolean playerFactionFreeTransfer = false;
 
     // Special Ships
@@ -81,7 +82,8 @@ public class ExerelinConfig
             fleetCostResource = settings.getString("fleetCostResource");
             miningAmountPerDayPerMiner = settings.getInt("miningAmountPerDayPerMiner");
 
-            playerBaseWage = settings.getInt("playerBaseWage");
+            playerBaseSalary = (float)settings.optDouble("playerBaseSalary");
+            playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel");
             playerFactionFreeTransfer = settings.getBoolean("playerFactionFreeTransfer");
 
             validBoardingFlagships = JSONArrayToStringArray(settings.getJSONArray("validBoardingFlagships"));

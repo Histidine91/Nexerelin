@@ -1,5 +1,6 @@
 package exerelin;
 
+import exerelin.utilities.ExerelinUtilsPlayer;
 import exerelin.utilities.ExerelinUtils;
 import java.awt.*;
 import java.util.Arrays;

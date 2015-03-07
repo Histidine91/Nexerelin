@@ -1,7 +1,7 @@
 {
-	"pirateFactions": [ "pirates", "exipirated", "junkpirates" ],
+	"pirateFactions": [ "pirates", "exipirated", "junk_pirates", "rori" ],
 	"warWearinessPerInterval":20,	#20
-	"eventFrequency":10,	#10
+	"eventFrequency":20,	#20
 	"events":[
 		{
 			"name":"Official Aid",
@@ -66,13 +66,21 @@
 			"maxRepChange":0.15,
 		},
 		{
+			"name":"Antiwar Protests",
+			"stage":"antiwar_protest",
+			"maxRepLevelToOccur":"hostile",
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
+		},
+		{
 			"name":"Star-crossed Lovers",	# love conquers all
 			"stage":"starcrossed",
 			"maxRepLevelToOccur":"inhospitable",
-			"minRepChange":0.1,
-			"maxRepChange":0.15,
+			"repEnsureAtWorst":"hostile",
+			"minRepChange":0.15,
+			"maxRepChange":0.2,
 			"allowPirates":true,
-			"chance":0.3
+			"chance":0.2
 		},		
 		{
 			"name":"Diplomatic Blunder",
@@ -167,7 +175,8 @@
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
-			"repLimit":"inhospitable"
+			"repLimit":"inhospitable",
+			"chance":0.5
 		},
 		{
 			"name":"Privateering",
@@ -273,7 +282,8 @@
 			"maxRepChange":-0.1,
 			"repLimit":"hostile",
 			"allowPirates":true,
-			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","interstellarimperium","mayorate"]
+			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders",
+				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants"]
 		}
 	]
 }

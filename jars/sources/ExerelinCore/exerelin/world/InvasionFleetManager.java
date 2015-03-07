@@ -170,8 +170,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
         
         // now we pick a target
+        List<String> pirateFactions = DiplomacyManager.getPirateFactionsCopy();
         for (MarketAPI market : markets) {
-            if  ( market.getFaction().isHostileTo(invader) && !market.getFactionId().equals("pirates") )
+            if  ( market.getFaction().isHostileTo(invader) && !pirateFactions.contains(market.getFactionId()) )
             {
                 /*
                 float defenderStrength = InvasionRound.GetDefenderStrength(market);

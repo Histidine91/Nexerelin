@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtilsFaction;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -127,21 +128,29 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		String newOwnerStr = newOwner.getDisplayName();
-		String oldOwnerStr = oldOwner.getDisplayName();
+		String newOwnerStr = newOwner.getEntityNamePrefix();
+		String oldOwnerStr = oldOwner.getEntityNamePrefix();
 		String theNewOwnerStr = newOwner.getDisplayNameWithArticle();
 		String theOldOwnerStr = oldOwner.getDisplayNameWithArticle();
 		map.put("$newOwner", newOwnerStr);
 		map.put("$oldOwner", oldOwnerStr);
 		map.put("$NewOwner", Misc.ucFirst(newOwnerStr));
 		map.put("$OldOwner", Misc.ucFirst(oldOwnerStr));
-		map.put("$theOldOwner", theNewOwnerStr);
+		map.put("$theNewOwner", theNewOwnerStr);
 		map.put("$theOldOwner", theOldOwnerStr);
-		map.put("$TheOldOwner", Misc.ucFirst(theNewOwnerStr));
+		map.put("$TheNewOwner", Misc.ucFirst(theNewOwnerStr));
 		map.put("$TheOldOwner", Misc.ucFirst(theOldOwnerStr));
 		
-		map.put("$marketsRemaining", "" + ExerelinUtilsFaction.getFactionMarkets(oldOwner.getId()).size());
+		map.put("$oldOwnerMarketsNum", "" + ExerelinUtilsFaction.getFactionMarkets(oldOwner.getId()).size());
+		map.put("$newOwnerMarketsNum", "" + ExerelinUtilsFaction.getFactionMarkets(newOwner.getId()).size());
 		return map;
+	}
+	@Override
+	public String[] getHighlights(String stageId) {
+		List<String> result = new ArrayList<>();
+		addTokensToList(result, "$oldOwnerMarketsNum");
+		addTokensToList(result, "$newOwnerMarketsNum");
+		return result.toArray(new String[0]);
 	}
 
 	@Override
