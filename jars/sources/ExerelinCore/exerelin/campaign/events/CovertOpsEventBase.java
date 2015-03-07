@@ -20,7 +20,7 @@ import com.fs.starfarer.api.util.Misc;
 public class CovertOpsEventBase extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(CovertOpsEventBase.class);
-	protected static final int DAYS_TO_KEEP = 90;
+	protected static final int DAYS_TO_KEEP = 45;
 	
 	protected FactionAPI agentFaction;
 	protected String stage;

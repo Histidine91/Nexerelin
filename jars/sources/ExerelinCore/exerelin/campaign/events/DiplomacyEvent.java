@@ -25,7 +25,7 @@ import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 public class DiplomacyEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(DiplomacyEvent.class);
-	protected static final int DAYS_TO_KEEP = 90;
+	protected static final int DAYS_TO_KEEP = 30;
 	
 	protected FactionAPI otherFaction;
 	protected DiplomacyEventDef event;

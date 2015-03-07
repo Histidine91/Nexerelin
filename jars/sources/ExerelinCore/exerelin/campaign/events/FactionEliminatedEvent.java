@@ -16,7 +16,7 @@ import com.fs.starfarer.api.util.Misc;
 public class FactionEliminatedEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(FactionEliminatedEvent.class);
-	private static final int DAYS_TO_KEEP = 180;
+	private static final int DAYS_TO_KEEP = 90;
 	
 	private FactionAPI defeatedFaction;
 	private FactionAPI victorFaction;

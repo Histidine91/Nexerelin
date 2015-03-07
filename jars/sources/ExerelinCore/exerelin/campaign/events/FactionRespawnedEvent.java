@@ -14,7 +14,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 public class FactionRespawnedEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(FactionRespawnedEvent.class);
-	private static final int DAYS_TO_KEEP = 180;
+	private static final int DAYS_TO_KEEP = 90;
 	
 	float age;
 	boolean originalFaction;

@@ -22,7 +22,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(MarketCapturedEvent.class);
 	
-	private static final int DAYS_TO_KEEP = 120;
+	private static final int DAYS_TO_KEEP = 60;
 	
 	private FactionAPI newOwner;
 	private FactionAPI oldOwner;
