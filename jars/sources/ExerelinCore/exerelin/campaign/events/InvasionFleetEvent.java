@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
@@ -20,36 +22,36 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	public static Logger log = Global.getLogger(InvasionFleetEvent.class);
 	private static final int DAYS_TO_KEEP = 30;
 	private Map<String, Object> params;
-        private MarketAPI target;
+	private MarketAPI target;
 	public boolean done;
-        private float age;
+	private float age;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
 		done = false;
-                target = null;
-                age = 0;
+		target = null;
+		age = 0;
 	}
 	
 	@Override
 	public void setParam(Object param) {
 		params = (HashMap)param;
-                target = (MarketAPI)params.get("target");
+		target = (MarketAPI)params.get("target");
 	}
 		
 	@Override
 	public void startEvent()
 	{
 		MessagePriority priority = MessagePriority.SECTOR;
-                String stage = "report";
+		String stage = "report";
 		if (faction.getId().equals(PlayerFactionStore.getPlayerFactionId()))
-                        stage = "report_player";
+			stage = "report_player";
 		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
 	}
 
-        @Override
+	@Override
 	public void advance(float amount)
 	{
 		if (done)
@@ -62,7 +64,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 			return;
 		}
 	}
-        
+	
 	@Override
 	public String getEventName() {
 		return (faction.getDisplayName() + " invasion fleet launched");
@@ -78,21 +80,26 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 		return CampaignEventPlugin.CampaignEventCategory.DO_NOT_SHOW_IN_MESSAGE_FILTER;
 	}
 	
-        @Override
+	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
 		FactionAPI targetFaction = target.getFaction();
+		LocationAPI loc = market.getContainingLocation();
+		String locName = loc.getName();
+		if (loc instanceof StarSystemAPI)
+			locName = "the " + ((StarSystemAPI)loc).getName();
 		String targetFactionStr = targetFaction.getEntityNamePrefix();
 		String theTargetFactionStr = targetFaction.getDisplayNameWithArticle();
-                map.put("$sender", faction.getEntityNamePrefix());
-                map.put("$target", target.getName());
+		map.put("$sender", faction.getEntityNamePrefix());
+		map.put("$target", target.getName());
+		map.put("$targetLocation", locName);
 		map.put("$targetFaction", targetFactionStr);
 		map.put("$TargetFaction", Misc.ucFirst(targetFactionStr));
 		map.put("$theTargetFaction", theTargetFactionStr);
 		map.put("$TheTargetFaction", Misc.ucFirst(theTargetFactionStr));
 		return map;
 	}
-        
+	
 	@Override
 	public boolean isDone() {
 		return false;
