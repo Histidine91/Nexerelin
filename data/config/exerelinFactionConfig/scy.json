@@ -1,65 +1,168 @@
 {
-    "uniqueModClassName":"data.scripts.world.SCY_homeSystem", # String
-    "factionNiceName":"Scy", # String
-    "playableFaction":"true", # Boolean
+	"uniqueModClassName":"data.scripts.world.SCY_homeSystem", # String
+	"factionNiceName":"Scy", # String
+	"playableFaction":"true", # Boolean
 
-    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+	"stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
-    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
-    "preferredBackgroundImagePath":"graphics/SCY/backgrounds/SCY_background1.jpg", # String
-    "preferredStarType":"SCY_star", # String
-    "preferredStarLight":"", # String, 0xFFFFFF
+	"changeSystemSpecsOnSystemLockdown":"false", # Boolean
+	"preferredBackgroundImagePath":"graphics/SCY/backgrounds/SCY_background1.jpg", # String
+	"preferredStarType":"SCY_star", # String
+	"preferredStarLight":"", # String, 0xFFFFFF
 
-    "stationNameSuffixes":["Outpost", "Relay", "Supply Cache", "Forward HQ", "Hideout", "Stash", "Depot", "Port", "Terminal", "Habitat", "Shipyard"], # String array
+	"stationNameSuffixes":["Outpost", "Relay", "Supply Cache", "Forward HQ", "Hideout", "Stash", "Depot", "Port", "Terminal", "Habitat", "Shipyard"], # String array
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+	"crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+	"baseFleetCostMultiplier":1.0, # Double
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Slaves", # String
+	"customRebelFaction":"", # String
+	"customRebelFleetId":"", # String
+	"rebelFleetSuffix":"Slaves", # String
 
-    "smallAttackFleetName":"Intel Gathering", # String
-    "mediumAttackFleetName":"Task Force", # String
-    "largeAttackFleetName":"Expedition Fleet", # String
+	"smallAttackFleetName":"Intel Gathering", # String
+	"mediumAttackFleetName":"Task Force", # String
+	"largeAttackFleetName":"Expedition Fleet", # String
 
-    "smallDefenceFleetName":"Early Warning Division", # String
-    "mediumDefenceFleetName":"Warden", # String
-    "largeDefenceFleetName":"Rear Guard", # String
+	"smallDefenceFleetName":"Early Warning Division", # String
+	"mediumDefenceFleetName":"Warden", # String
+	"largeDefenceFleetName":"Rear Guard", # String
 
-    "smallPatrolFleetName":"Remote Patrol", # String
-    "mediumPatrolFleetName":"Reinforced Patrol", # String
-    "largePatrolFleetName":"Offensive Recon", # String
+	"smallPatrolFleetName":"Remote Patrol", # String
+	"mediumPatrolFleetName":"Reinforced Patrol", # String
+	"largePatrolFleetName":"Offensive Recon", # String
 
-    "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
-    "gasMiningFleetName":"Gas Mining Fleet", # String
-    "logisticsFleetName":"Logistics Convoy", # String
-    "boardingFleetName":"Boarding Fleet", # String
-    "commandFleetName":"Command Fleet", # String
+	"asteroidMiningFleetName":"Asteroid Mining Fleet", # String
+	"gasMiningFleetName":"Gas Mining Fleet", # String
+	"logisticsFleetName":"Logistics Convoy", # String
+	"boardingFleetName":"Boarding Fleet", # String
+	"commandFleetName":"Command Fleet", # String
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":["shadow_industry", "citadeldefenders"], # String array
-    "factionsDisliked":["Hegemony", "tritachyon", "neutrinocorp", "valkyrian", "blackrock_driveyards"], # String array
+	"positiveDiplomacyExtra":0, # Integer
+	"negativeDiplomacyExtra":0, # Integer
+	"factionsLiked":["shadow_industry", "citadeldefenders"], # String array
+	"factionsDisliked":["Hegemony", "tritachyon", "neutrinocorp", "valkyrian", "blackrock_driveyards"], # String array
 
-    "freighterVariants":["SCY_balius_recon"], # String array
-    "tankerVariants":["SCY_balius_recon"], # String array
-    "miningVariantsOrWings":["mining_drone_wing"], # String array
+	"freighterVariants":[
+		"SCY_balius_recon",
+		"SCY_centaur_recon",
+		"SCY_centaur_standard"
+		], # String array
+		
+	"tankerVariants":[
+		"SCY_baliusT_recon",
+		"SCY_centaurT_recon",
+		"SCY_centaurT_standard"
+		], # String array
+		
+	"miningVariantsOrWings":["mining_drone_wing"], # String array
+	#if someday we can use ships instead of wings as miners:
+	#"miningVariantsOrWings":["SCY_telchine_miner"],  
 
-    "troopTransportVariants":["SCY_hydra_recon"], # String array
-    "superFreighterVariants":["SCY_xanthus_standard"], # String array
+	"troopTransportVariants":["SCY_hydra_recon"], # String array
+	"superFreighterVariants":["SCY_xanthus_standard"], # String array
 
-    "carrierVariants":["SCY_manticoreCarrier_recon", "SCY_hydra_recon"], # String array
+	"carrierVariants":[
+		"SCY_argus_recon", 
+		"SCY_argus_support",
+		"SCY_manticoreCarrier_recon", 
+		"SCY_keto_combat",
+		"SCY_keto_elite",
+		"SCY_keto_recon",
+		], # String array
 
-    "fighterWings":["SCY_sufiPd_wing", "SCY_sufiInterceptor_wing", "SCY_sufiCombat_wing", "SCY_atfiPd_wing", "SCY_atfiInterceptor_wing", "SCY_atfiCombat_wing"], # String array
+	"fighterWings":
+		"SCY_sufiPd_wing",
+		"SCY_sufiInterceptor_wing",
+		"SCY_sufiCombat_wing",
+		"SCY_atfiPd_wing",
+		"SCY_atfiInterceptor_wing",
+		"SCY_atfiCombat_wing",
+		"SCY_tobo_wing"
+		], # String array
 
-    "frigateVariants":["SCY_alecto_mixte", "SCY_megaera_suckerPunch", "SCY_tisiphone_elite", "SCY_tisiphone_recon", "SCY_medusa_recon", "SCY_megaera_recon", "SCY_lealaps_recon", "SCY_alecto_recon", "SCY_tisiphone_combat", "SCY_lealaps_combat", "SCY_alecto_combat"], # String array
-    
-	"destroyerVariants":["SCY_lamia_recon", "SCY_orthrus_recon", "SCY_hydra_recon", "SCY_balius_recon", "SCY_lamia_combat", "SCY_orthrus_combat","SCY_lamia_elite", "SCY_orthrus_elite", "SCY_euryale_recon"], # String array
+	"frigateVariants":[
+		"SCY_tisiphone_beamer",
+		"SCY_tisiphone_combat",
+		"SCY_tisiphone_elite",
+		"SCY_tisiphone_recon",
+		"SCY_talos_combat",
+		"SCY_talos_escort",
+		"SCY_talos_recon",
+		"SCY_alecto_mixte",
+		"SCY_alecto_recon",
+		"SCY_alecto_combat",
+		"SCY_lealaps_combat",
+		"SCY_lealaps_recon",
+		"SCY_lealaps_torpedo",
+		"SCY_medusa_recon",
+		"SCY_megaera_combat",
+		"SCY_megaera_recon",
+		"SCY_megaera_suckerPunch",
+		], # String array
+	
+	"destroyerVariants":[
+		"SCY_lamia_recon", 
+		"SCY_lamia_combat", 
+		"SCY_lamia_elite", 
+		"SCY_lamia_beamer", 
+		"SCY_lamiaArmored_recon", 
+		"SCY_lamiaArmored_combat", 
+		"SCY_lamiaArmored_elite", 
+		"SCY_lamiaArmored_beamer", 
+		"SCY_orthrus_recon", 
+		"SCY_orthrus_combat",
+		"SCY_orthrus_elite",
+		"SCY_euryale_recon"
+		], # String array
 
-    "cruiserVariants":["SCY_sthenos_missiles","SCY_erymanthianBoar_special","SCY_erymanthianBoar_recon","SCY_erymanthianBoar_cover","SCY_erymanthianBoar_brawler","SCY_manticoreMirv_support", "SCY_manticorePhase_support", "SCY_manticore_support", "SCY_sthenos_flak", "SCY_sthenos_antiFrigate", "SCY_sthenos_recon", "SCY_siren_recon", "SCY_khalkotauroi_recon", "SCY_manticore_recon", "SCY_manticoreMirv_recon", "SCY_manticorePhase_recon", "SCY_sthenos_combat", "SCY_siren_combat", "SCY_khalkotauroi_combat", "SCY_manticore_combat", "SCY_manticoreMirv_combat", "SCY_manticorePhase_combat"], # String array
+	"cruiserVariants":[
+		"SCY_sthenos_combat",
+		"SCY_sthenos_missiles",
+		"SCY_sthenos_flak", 
+		"SCY_sthenos_antiFrigate", 
+		"SCY_sthenos_recon", 
+		"SCY_sthenosArmored_combat",
+		"SCY_sthenosArmored_missiles",
+		"SCY_sthenosArmored_flak", 
+		"SCY_sthenosArmored_antiFrigate", 
+		"SCY_sthenosArmored_recon", 
+		"SCY_erymanthianBoar_special",
+		"SCY_erymanthianBoar_recon",
+		"SCY_erymanthianBoar_cover",
+		"SCY_erymanthianBoar_brawler",
+		"SCY_erymanthianBoarArmored_special",
+		"SCY_erymanthianBoarArmored_recon",
+		"SCY_erymanthianBoarArmored_cover",
+		"SCY_erymanthianBoarArmored_brawler",
+		"SCY_manticoreMirv_support", 
+		"SCY_manticorePhase_support", 
+		"SCY_manticore_support", 
+		"SCY_manticore_combat",
+		"SCY_manticoreMirv_combat",
+		"SCY_manticorePhase_combat"
+		"SCY_manticore_recon",
+		"SCY_manticoreMirv_recon",
+		"SCY_manticorePhase_recon",
+		"SCY_siren_recon", 
+		"SCY_siren_combat", 
+		"SCY_khalkotauroi_recon",
+		"SCY_khalkotauroi_combat", 
+		"SCY_khalkotauroi_beamer", 
+		], # String array
 
-    "capitalVariants":["SCY_conquest_captured", "SCY_onslaugh_captured"], # String array
+	"capitalVariants":[
+		"SCY_nemeanLion_beamer",
+		"SCY_nemeanLion_combat",
+		"SCY_nemeanLion_elite",
+		"SCY_nemeanLion_missile",
+		"SCY_nemeanLion_recon",
+		"SCY_nemeanLion_special",
+		"SCY_nemeanLion_support",
+		], # String array
 
-    "startingVariants":["SCY_tisiphone_recon", "SCY_megaera_recon", "SCY_lealaps_recon"], # String array
+	"startingVariants":[
+		"SCY_tisiphone_recon",
+		"SCY_talos_recon",
+		"SCY_lealaps_recon"
+		], # String array
 }
