@@ -12,10 +12,12 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
+import exerelin.utilities.ExerelinUtilsFaction;
 
 public class ExecuteInvasionRound extends BaseCommandPlugin {
 
@@ -78,6 +80,14 @@ t			ext.highlightInLastPara(hl, "" + (int) fine);
                 text.addParagraph("-----------------------------------------------------------------------------");
                 text.setFontInsignia();
 
+                int defenderMarketsLeft = ExerelinUtilsFaction.getFactionMarkets(faction.getId()).size();
+                if (defenderMarketsLeft > 0)
+                {
+                        Global.getSector().adjustPlayerReputation(
+                            new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.COMBAT_AGGRESSIVE, 0),
+                            faction.getId());
+                }
+                
                 return true;
         }
 }
