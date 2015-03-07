@@ -352,8 +352,7 @@ $id == $player.invasionTarget","ShowDefaultVisual
 FireBest ExerelinInitInvadeDialog",,,
 ExerelinInvasionRoundComplete,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionRoundComplete score:100","ExecuteInvasionRound
-FireBest ExerelinInvasionResults
-AdjustRep $faction.id COMBAT_NORMAL",INVASION OUTCOME:,,
+FireBest ExerelinInvasionResults",INVASION OUTCOME:,,
 ExerelinInvasionResultsComplete,ExerelinInvasionResults,$exerelinInvasionSuccessful,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
 unset $player.invasionTarget
 FireAll PopulateOptions",You've successfully captured $entityName!,,
