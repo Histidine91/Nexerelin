@@ -468,7 +468,7 @@ ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
 $tradeMode == NONE
-ArePatrolsNearby $faction.id 400 score:10","SetTooltip exerelinUseAgent ""The port is closed to you, and $faction patrols nearby prevent agent insertion.""
+ArePatrolsNearby $faction.id 750 score:10","SetTooltip exerelinUseAgent ""The port is closed to you, and $faction patrols nearby prevent agent insertion.""
 SetEnabled exerelinUseAgent false",,,
 ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
@@ -506,7 +506,7 @@ ExerelinMarketSaboteurOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
 $tradeMode == NONE
-ArePatrolsNearby $faction.id 400 score:10","SetTooltip exerelinUseSaboteur ""The port is closed to you, and $faction patrols nearby prevent saboteur insertion.""
+ArePatrolsNearby $faction.id 750 score:10","SetTooltip exerelinUseSaboteur ""The port is closed to you, and $faction patrols nearby prevent saboteur insertion.""
 SetEnabled exerelinUseSaboteur false",,,
 ExerelinSaboteurOptionListMain,DialogOptionSelected,$option == exerelinUseSaboteur,"GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/cargo_loading.jpg""
