@@ -573,36 +573,63 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         List<String> factionIds = SectorManager.getLiveFactionIdsCopy();
         factionIds.add("independent");
 
-        // start hostile with hated factions
+        boolean randomize = ExerelinSetupData.getInstance().randomStartRelationships;
+        List<String> alreadyRandomizedIds = new ArrayList<>();
+        alreadyRandomizedIds.add("independent");
+        
         for (String factionId : factionIds) {
             FactionAPI faction = sector.getFaction(factionId);
-            ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
-            log.info("Testing config for " + factionId + ": " + factionConfig);
-            if ((factionConfig != null && factionConfig.factionsDisliked.length > 0))
+            if (randomize)
             {
-                for (String likedFactionId : factionConfig.factionsLiked) {
-                    FactionAPI dislikedFaction = sector.getFaction(likedFactionId);
-                    if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
-                    {
-                        //log.info(faction.getDisplayName() + " likes " + dislikedFaction.getDisplayName());
-                        faction.setRelationship(likedFactionId, RepLevel.FRIENDLY);
+                if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
+                alreadyRandomizedIds.add(factionId);
+                for (String otherFactionId: factionIds)
+                {
+                    if (alreadyRandomizedIds.contains(otherFactionId)) continue;
+                    if (otherFactionId.equals(factionId)) continue;
+                    
+                    FactionAPI otherFaction = sector.getFaction(otherFactionId);
+                    if (otherFaction.isNeutralFaction() ||otherFaction.isPlayerFaction()) continue;
+                    
+                    if (Math.random() < 0.5) continue;  // 50% chance to do nothing (lower clutter)
+                    faction.setRelationship(otherFactionId, MathUtils.getRandomNumberInRange(-1f, 1f));
+                }
+            }
+            
+            else    // start hostile with hated factions, friendly with liked ones (from config)
+            {
+                ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+                if (factionConfig == null) continue;
+                if (factionConfig.factionsLiked.length > 0)
+                {
+                    for (String likedFactionId : factionConfig.factionsLiked) {
+                        FactionAPI dislikedFaction = sector.getFaction(likedFactionId);
+                        if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
+                        {
+                            //log.info(faction.getDisplayName() + " likes " + dislikedFaction.getDisplayName());
+                            faction.setRelationship(likedFactionId, RepLevel.FRIENDLY);
+                        }
                     }
                 }
-                
-                for (String dislikedFactionId : factionConfig.factionsDisliked) {
-                    FactionAPI dislikedFaction = sector.getFaction(dislikedFactionId);
-                    if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
-                    {
-                        //log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
-                        faction.setRelationship(dislikedFactionId, RepLevel.HOSTILE);
+                if (factionConfig.factionsDisliked.length > 0)
+                {
+                    for (String dislikedFactionId : factionConfig.factionsDisliked) {
+                        FactionAPI dislikedFaction = sector.getFaction(dislikedFactionId);
+                        if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
+                        {
+                            //log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
+                            faction.setRelationship(dislikedFactionId, RepLevel.HOSTILE);
+                        }
                     }
                 }
             }
         }
 
         // pirates are hostile to everyone, except some factions like Mayorate
-        for (String factionId : factionIds) 
+        if (randomize)
         {
+            for (String factionId : factionIds) 
+            {
                 FactionAPI faction = sector.getFaction(factionId);
                 ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
                 if ((factionConfig== null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !ExerelinUtilsFaction.isPirateFaction(factionId))
@@ -613,6 +640,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                             pirateFaction.setRelationship(factionId, RepLevel.HOSTILE);
                     }
                 }
+            }
         }
 
         // Templars just plain hate everyone
@@ -622,9 +650,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             for (String factionId : factionIds)
             {
                 FactionAPI faction = sector.getFaction(factionId);
-                if (!faction.isNeutralFaction())
+                if (!faction.isNeutralFaction() && !factionId.equals("templars"))
                 {
-                        templars.setRelationship(factionId, RepLevel.HOSTILE);
+                    templars.setRelationship(factionId, RepLevel.HOSTILE);
                 }
             }
         }
@@ -632,12 +660,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         // set player relations based on selected faction
         for (String factionId : factionIds)
         {
-                FactionAPI faction = sector.getFaction(factionId);
-                if (faction != player && faction != selectedFaction)
-                {
-                        float relationship = selectedFaction.getRelationship(faction.getId());
-                        player.setRelationship(faction.getId(), relationship);
-                }
+            FactionAPI faction = sector.getFaction(factionId);
+            if (faction != player && faction != selectedFaction)
+            {
+                float relationship = selectedFaction.getRelationship(faction.getId());
+                player.setRelationship(faction.getId(), relationship);
+            }
         }
 
         player.setRelationship(selectedFactionId, RepLevel.FRIENDLY);

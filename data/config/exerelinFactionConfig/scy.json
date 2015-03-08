@@ -70,7 +70,7 @@
 		"SCY_keto_recon",
 		], # String array
 
-	"fighterWings":
+	"fighterWings":[
 		"SCY_sufiPd_wing",
 		"SCY_sufiInterceptor_wing",
 		"SCY_sufiCombat_wing",
@@ -139,7 +139,7 @@
 		"SCY_manticore_support", 
 		"SCY_manticore_combat",
 		"SCY_manticoreMirv_combat",
-		"SCY_manticorePhase_combat"
+		"SCY_manticorePhase_combat",
 		"SCY_manticore_recon",
 		"SCY_manticoreMirv_recon",
 		"SCY_manticorePhase_recon",

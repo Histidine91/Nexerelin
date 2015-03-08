@@ -120,12 +120,14 @@ AddText ""Set maximum stations per system to 5"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
 ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,$option==exerelinNGCOtherOptions,FireAll ExerelinNGCOtherOptions,,,
-ExerelinNGCListOptionEnableOmnifactory,ExerelinNGCOtherOptions,!IsOmnifacEnabled,,,exerelinNGCEnableOmnifactory:Enable Omnifactory,
-ExerelinNGCListOptionDisableOmnifactory,ExerelinNGCOtherOptions,IsOmnifacEnabled,,,exerelinNGCDisableOmnifactory:Disable Omnifactory,
-ExerelinNGCListOptionSetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"IsOmnifacEnabled
-!IsOmnifacLocationRandomized",,,exerelinNGCSetOmnifactoryRandomLocation:Enable random location for Omnifactory,
-ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"IsOmnifacEnabled
-IsOmnifacLocationRandomized",,,exerelinNGCUnsetOmnifactoryRandomLocation:Disable random location for Omnifactory,
+ExerelinNGCListOptionEnableOmnifactory,ExerelinNGCOtherOptions,!$omniFacPresent,,,exerelinNGCEnableOmnifactory:Enable Omnifactory,
+ExerelinNGCListOptionDisableOmnifactory,ExerelinNGCOtherOptions,$omniFacPresent,,,exerelinNGCDisableOmnifactory:Disable Omnifactory,
+ExerelinNGCListOptionSetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"$omniFacPresent
+!$randomOmnifactoryLocation",,,exerelinNGCSetOmnifactoryRandomLocation:Enable random location for Omnifactory,
+ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"$omniFacPresent
+$randomOmnifactoryLocation",,,exerelinNGCUnsetOmnifactoryRandomLocation:Disable random location for Omnifactory,
+ExerelinNGCListOptionEnableRandomStartRelationships,ExerelinNGCOtherOptions,!$randomStartRelationships,,,exerelinNGCEnableRandomStartRelationships:Enable random faction relationships at start,
+ExerelinNGCListOptionDisableRandomStartRelationships,ExerelinNGCOtherOptions,$randomStartRelationships,,,exerelinNGCDisableRandomStartRelationships:Disable random faction relationships at start,
 ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,,,10:exerelinNGCOptionsBack:Back,
 ,,,,,,
 ExerelinNGCEnableOmnifactory,NewGameOptionSelected,$option==exerelinNGCEnableOmnifactory,"NGCSetOmnifacEnabled true
@@ -135,6 +137,10 @@ FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCSetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCSetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation true
 FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCUnsetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCUnsetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation false
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCEnableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartRelationships,"NGCSetRandomStartRelationships true
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCDisableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCDisableRandomStartRelationships,"NGCSetRandomStartRelationships false
 FireAll ExerelinNGCOtherOptions",,,
 ,,,,,,
 ,,,,,,
@@ -183,7 +189,7 @@ ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrin
 ExerelinNGCListRadicalORI,ExerelinNGCListFactions3,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
 ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
-#ExerelinNGCListSCY,ExerelinNGCListFactions4,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY Nation,
+ExerelinNGCListSCY,ExerelinNGCListFactions4,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY Nation,
 ExerelinNGCListShadowyards,ExerelinNGCListFactions4,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
 ExerelinNGCListValkyrians,ExerelinNGCListFactions4,NGCDoesFactionExist valkyrian,,,exerelinNGCJoinValkyrians:Valkyrians,
 ExerelinNGCListModFactions4Back,ExerelinNGCListFactions4,,,,20:exerelinNGCFactionsBack:Back,
@@ -261,8 +267,8 @@ NGCAddShipAndComplement ""junk_pirates_clam_Standard""
 AddText ""Added Clam-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinTemplars,NewGameOptionSelected,$option == exerelinNGCJoinTemplars,"NGCSetPlayerFaction ""templars""
-NGCAddShipAndComplement ""tem_martyr_def""
-AddText ""Added Matyr-class corvette"" textFriendColor
+NGCAddShipAndComplement ""tem_martyr_sal""
+AddText ""Added Martyr-class corvette"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinMayorate,NewGameOptionSelected,$option == exerelinNGCJoinMayorate,"NGCSetPlayerFaction ""mayorate""
 NGCAddShipAndComplement ""ilk_lilith_assault""
@@ -288,7 +294,7 @@ ExerelinNGCJoinRadicalORI,NewGameOptionSelected,$option == exerelinNGCJoinRadica
 NGCAddShipAndComplement ""ori_bastion_variant""
 AddText ""Added Bastion-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
-#ExerelinNGCJoinSCY,NewGameOptionSelected,$option == exerelinNGCJoinSCY,"NGCSetPlayerFaction ""SCY""
+ExerelinNGCJoinSCY,NewGameOptionSelected,$option == exerelinNGCJoinSCY,"NGCSetPlayerFaction ""SCY""
 NGCAddShipAndComplement ""SCY_tisiphone_combat""
 AddText ""Added Tisiphone-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
@@ -412,14 +418,16 @@ ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion
 ,,,,,,
 #START MARKET DIRECTORY OPTIONS,,,,,,
 ExerelinMarketFactionDirectoryOption,ExerelinMarketSpecial,,,,5:exerelinFactionDirectoryMain:Faction directory,
-ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirectoryMain,,Which faction do you want to look up?,"exerelinFactionDirectoryList1:A-H
-exerelinFactionDirectoryList2:I-O
-exerelinFactionDirectoryList3:P-Z
+ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirectoryMain,,Which faction do you want to look up?,"exerelinFactionDirectoryList1:A-G
+exerelinFactionDirectoryList2:H-M
+exerelinFactionDirectoryList3:N-Q
+exerelinFactionDirectoryList4:R-Z
 exerelinMarketIntel:Open intel screen
 exerelinMarketSpecial:Back",
 ExerelinFactionDirectoryList1,DialogOptionSelected,$option == exerelinFactionDirectoryList1,FireAll ExerelinFactionDirectoryList1,,,
 ExerelinFactionDirectoryList2,DialogOptionSelected,$option == exerelinFactionDirectoryList2,FireAll ExerelinFactionDirectoryList2,,,
 ExerelinFactionDirectoryList3,DialogOptionSelected,$option == exerelinFactionDirectoryList3,FireAll ExerelinFactionDirectoryList3,,,
+ExerelinFactionDirectoryList4,DialogOptionSelected,$option == exerelinFactionDirectoryList4,FireAll ExerelinFactionDirectoryList4,,,
 ,,,,,,
 ExerelinFactionDirectoryListExipirated,ExerelinFactionDirectoryList1,IsFactionAlive exipirated,,,exerelinFactionDirectoryGetExipirated:Ahriman Association,
 ExerelinFactionDirectoryListASPSyindicate,ExerelinFactionDirectoryList1,IsFactionAlive syndicate_asp,,,exerelinFactionDirectoryGetASPSyndicate:ASP Syndicate,
@@ -428,28 +436,31 @@ ExerelinFactionDirectoryListCitadel,ExerelinFactionDirectoryList1,IsFactionAlive
 ExerelinFactionDirectoryListCrystanite,ExerelinFactionDirectoryList1,IsFactionAlive crystanite,,,exerelinFactionDirectoryGetCrystanite:Crystanite,
 ExerelinFactionDirectoryListDiableAvionics,ExerelinFactionDirectoryList1,IsFactionAlive diableavionics,,,exerelinFactionDirectoryGetDiableAvionics:Diable Avionics,
 ExerelinFactionDirectoryListExigency,ExerelinFactionDirectoryList1,IsFactionAlive exigency,,,exerelinFactionDirectoryGetExigency:Exigency Corp,
-ExerelinFactionDirectoryListHegemony,ExerelinFactionDirectoryList1,IsFactionAlive hegemony,,,exerelinFactionDirectoryGetHegemony:Hegemony,
-ExerelinFactionDirectoryListHiigaranDescendants,ExerelinFactionDirectoryList1,IsFactionAlive hiigaran_descendants,,,exerelinFactionDirectoryGetHiigaranDescendants:Hiigaran Descendants,
 ExerelinFactionDirectoryList1Back,ExerelinFactionDirectoryList1,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
+ExerelinFactionDirectoryListHegemony,ExerelinFactionDirectoryList2,IsFactionAlive hegemony,,,exerelinFactionDirectoryGetHegemony:Hegemony,
+ExerelinFactionDirectoryListHiigaranDescendants,ExerelinFactionDirectoryList2,IsFactionAlive hiigaran_descendants,,,exerelinFactionDirectoryGetHiigaranDescendants:Hiigaran Descendants,
 ExerelinFactionDirectoryListInterstellarImperium,ExerelinFactionDirectoryList2,IsFactionAlive interstellarimperium,,,exerelinFactionDirectoryGetInterstellarImperium:Interstellar Imperium,
 ExerelinFactionDirectoryListJunkPirates,ExerelinFactionDirectoryList2,IsFactionAlive junk_pirates,,,exerelinFactionDirectoryGetJunkPirates:Junk Pirates,
 ExerelinFactionDirectoryListTemplars,ExerelinFactionDirectoryList2,IsFactionAlive templars,,,exerelinFactionDirectoryGetTemplars:Knights Templar,
 ExerelinFactionDirectoryListLuddicChurch,ExerelinFactionDirectoryList2,IsFactionAlive luddic_church,,,exerelinFactionDirectoryGetLuddicChurch:Luddic Church,
 ExerelinFactionDirectoryListMayorate,ExerelinFactionDirectoryList2,IsFactionAlive mayorate,,,exerelinFactionDirectoryGetMayorate:Mayorate,
-ExerelinFactionDirectoryListNeutrinoCorp,ExerelinFactionDirectoryList2,IsFactionAlive neutrinocorp,,,exerelinFactionDirectoryGetNeutrinoCorp:Neutrino Corp,
-ExerelinFactionDirectoryListORI,ExerelinFactionDirectoryList2,IsFactionAlive ori,,,exerelinFactionDirectoryGetORI:ORI,
 ExerelinFactionDirectoryList2Back,ExerelinFactionDirectoryList2,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
+ExerelinFactionDirectoryListNeutrinoCorp,ExerelinFactionDirectoryList3,IsFactionAlive neutrinocorp,,,exerelinFactionDirectoryGetNeutrinoCorp:Neutrino Corp,
+ExerelinFactionDirectoryListORI,ExerelinFactionDirectoryList3,IsFactionAlive ori,,,exerelinFactionDirectoryGetORI:ORI,
 ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList3,IsFactionAlive pack,,,exerelinFactionDirectoryGetPACK:P.A.C.K.,
 ExerelinFactionDirectoryListPatria,ExerelinFactionDirectoryList3,IsFactionAlive patnavy,,,exerelinFactionDirectoryGetPatria:Patrian Principate,
 ExerelinFactionDirectoryListPirates,ExerelinFactionDirectoryList3,IsFactionAlive pirates,,,exerelinFactionDirectoryGetPirates:Pirates,
 ExerelinFactionDirectoryListRadicalORI,ExerelinFactionDirectoryList3,IsFactionAlive rori,,,exerelinFactionDirectoryGetRadicalORI:Radical ORI,
-ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList3,IsFactionAlive shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
-ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList3,IsFactionAlive sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
-ExerelinFactionDirectoryListTriTachyon,ExerelinFactionDirectoryList3,IsFactionAlive tritachyon,,,exerelinFactionDirectoryGetTriTachyon:Tri-Tachyon,
-ExerelinFactionDirectoryListValkyrians,ExerelinFactionDirectoryList3,IsFactionAlive valkyrian,,,exerelinFactionDirectoryGetValkyrians:Valkyrians,
 ExerelinFactionDirectoryList3Back,ExerelinFactionDirectoryList3,,,,exerelinFactionDirectoryMain:Back,
+,,,,,,
+ExerelinFactionDirectoryListSCY,ExerelinFactionDirectoryList4,IsFactionAlive SCY,,,exerelinFactionDirectoryGetShadowyards:SCY,
+ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList4,IsFactionAlive shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
+ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList4,IsFactionAlive sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
+ExerelinFactionDirectoryListTriTachyon,ExerelinFactionDirectoryList4,IsFactionAlive tritachyon,,,exerelinFactionDirectoryGetTriTachyon:Tri-Tachyon,
+ExerelinFactionDirectoryListValkyrians,ExerelinFactionDirectoryList4,IsFactionAlive valkyrian,,,exerelinFactionDirectoryGetValkyrians:Valkyrians,
+ExerelinFactionDirectoryList4Back,ExerelinFactionDirectoryList4,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
 # this feels like it could be a billion times more efficient,,,,,,
 ExerelinFactionDirectoryGetASPSyndicate,DialogOptionSelected,$option == exerelinFactionDirectoryGetASPSyndicate,PrintFactionMarkets syndicate_asp,,,
@@ -471,6 +482,7 @@ ExerelinFactionDirectoryGetPACK,DialogOptionSelected,$option == exerelinFactionD
 ExerelinFactionDirectoryGetPatria,DialogOptionSelected,$option == exerelinFactionDirectoryGetPatria,PrintFactionMarkets patnavy,,,
 ExerelinFactionDirectoryGetPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetPirates,PrintFactionMarkets pirates,,,
 ExerelinFactionDirectoryGetRadicalORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetRadicalORI,PrintFactionMarkets rori,,,
+ExerelinFactionDirectoryGetSCY,DialogOptionSelected,$option == exerelinFactionDirectoryGetRadicalSCY,PrintFactionMarkets SCY,,,
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,PrintFactionMarkets shadow_industry,,,
 ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerelinFactionDirectoryGetSindrianDiktat,PrintFactionMarkets sindrian_diktat,,,
 ExerelinFactionDirectoryGetTemplars,DialogOptionSelected,$option == exerelinFactionDirectoryGetTemplars,PrintFactionMarkets templars,,,

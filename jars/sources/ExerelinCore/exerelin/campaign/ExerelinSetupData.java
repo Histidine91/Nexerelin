@@ -40,8 +40,9 @@ public final class ExerelinSetupData
     public boolean onlyRespawnStartingFactions = false;
     public int respawnDelay = 60;
     public int numStartFactions = 3;
-    public boolean omniFacPresent = false;
     public int maxFactionsInExerelinAtOnce = 16;
+    public boolean randomStartRelationships = false;
+    public boolean omniFacPresent = false;
     public boolean isSectorPopulated = false;
     public boolean isSectorPartiallyPopulated = false;
 

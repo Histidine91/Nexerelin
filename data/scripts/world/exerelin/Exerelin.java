@@ -1,6 +1,5 @@
 package data.scripts.world.exerelin;
 
-import java.awt.*;
 import java.util.List;
 import org.apache.log4j.Logger;
 import com.fs.starfarer.api.Global;
@@ -14,9 +13,7 @@ import exerelin.SystemStationManager;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.events.EventPirateFleetSpawn;
 import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.util.Collections;
 import org.lwjgl.util.vector.Vector2f;
@@ -80,12 +77,8 @@ public class Exerelin //implements SectorGeneratorPlugin
 		// Add trader spawns
 		//this.initTraderSpawns(sector);
 		
-		
 		// set player start location at the largest faction market with a military base
-		setPlayerSpawnLocation();
-	
-		// Remove any data stored in ExerelinSetupData
-		ExerelinSetupData.resetInstance();
+		//setPlayerSpawnLocation();
 	
 		System.out.println("Finished sector setup...");
 	}
@@ -223,67 +216,43 @@ public class Exerelin //implements SectorGeneratorPlugin
 	
 		// If empty sector, only leave one station
 		if(!ExerelinSetupData.getInstance().isSectorPopulated)
-		finishedPopulating = true;
+			finishedPopulating = true;
 	
 		while(!finishedPopulating)
 		{
-		for(int i = 0; i < factionsInSector.length; i++)
-		{
-			String factionId = factionsInSector[i];
-	
-			// Check home system for available stations
-			StarSystemAPI homeSystem = FactionDirector.getFactionDirectorForFactionId(factionId).getHomeSystem();
-			StarSystemAPI system = homeSystem;
-			SectorEntityToken station = ExerelinUtils.getClosestEnemyStation(factionId, homeSystem, ExerelinUtils.getRandomStationInSystemForFaction(factionId, homeSystem));
-	
-			if(station == null)
+			for(int i = 0; i < factionsInSector.length; i++)
 			{
-			// Couldn't find station in home system so find closest available system
-			system = ExerelinUtils.getClosestSystemForFaction(homeSystem, factionId, -1f, -0.0001f);
-			if(system != null)
-				station = ExerelinUtils.getClosestEntityToSystemEntrance(system, factionId, -1f, -0.0001f);
+				String factionId = factionsInSector[i];
+
+				// Check home system for available stations
+				StarSystemAPI homeSystem = FactionDirector.getFactionDirectorForFactionId(factionId).getHomeSystem();
+				StarSystemAPI system = homeSystem;
+				SectorEntityToken station = ExerelinUtils.getClosestEnemyStation(factionId, homeSystem, ExerelinUtils.getRandomStationInSystemForFaction(factionId, homeSystem));
+
+				if(station == null)
+				{
+				// Couldn't find station in home system so find closest available system
+				system = ExerelinUtils.getClosestSystemForFaction(homeSystem, factionId, -1f, -0.0001f);
+				if(system != null)
+					station = ExerelinUtils.getClosestEntityToSystemEntrance(system, factionId, -1f, -0.0001f);
+				}
+
+				if(station == null)
+				continue; // Move to next faction
+
+				SystemStationManager systemStationManager = SystemManager.getSystemManagerForAPI(system).getSystemStationManager();
+				StationRecord stationRecord = systemStationManager.getStationRecordForToken(station);
+				stationRecord.setOwner(factionId, false, false);
+				System.out.println("Setting station in " + system.getName() + " for: " + factionId);
+				populated++;
+
+				if((sectorManager.isSectorPartiallyPopulated() && populated > (((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size()*Global.getSector().getStarSystems().size())/2)
+					|| populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size()*Global.getSector().getStarSystems().size())
+				{
+					finishedPopulating = true;
+					break;
+				}
 			}
-	
-			if(station == null)
-			continue; // Move to next faction
-	
-			SystemStationManager systemStationManager = SystemManager.getSystemManagerForAPI(system).getSystemStationManager();
-			StationRecord stationRecord = systemStationManager.getStationRecordForToken(station);
-			stationRecord.setOwner(factionId, false, false);
-			System.out.println("Setting station in " + system.getName() + " for: " + factionId);
-			populated++;
-	
-			if((sectorManager.isSectorPartiallyPopulated() && populated > (((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size()*Global.getSector().getStarSystems().size())/2)
-				|| populated >= ((StarSystemAPI)Global.getSector().getStarSystems().get(0)).getOrbitalStations().size()*Global.getSector().getStarSystems().size())
-			{
-				finishedPopulating = true;
-				break;
-			}
-		}
-	
-	
-	
-	
-		}
-	
-		// Setup some initial pirate spawns
-		try {
-			EventPirateFleetSpawn pirateFleetSpawn = new EventPirateFleetSpawn();
-			List systems = sector.getStarSystems();
-			systemLoop:
-			for (int j = 0; j < systems.size(); j++) {
-				StarSystemAPI systemAPI = (StarSystemAPI) systems.get(j);
-				pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
-				pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
-				pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
-				pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
-				pirateFleetSpawn.spawnPirateFleet(systemAPI, true);
-			}
-		}
-		catch (Exception e)
-		{
-			ExerelinUtilsMessaging.addMessage("ERROR: Exerelin mod out of sync with another mod. See log for details.", Color.white.ORANGE);
-			System.out.println(e.getMessage());
 		}
 	}
 }

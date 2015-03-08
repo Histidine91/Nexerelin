@@ -402,6 +402,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		SectorManager.setSystemToRelayMap(systemToRelay);
 		
+		// Remove any data stored in ExerelinSetupData
+		ExerelinSetupData.resetInstance();
+		
 		log.info("Finished sector generation");
 	}
 
