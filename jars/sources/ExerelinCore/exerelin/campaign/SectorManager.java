@@ -222,7 +222,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
-    public static void captureMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, List<String> factionsToNotify)
+    public static void captureMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, List<String> factionsToNotify, float repChangeStrength)
     {
         // transfer market and associated entities
         String newOwnerId = newOwner.getId();
@@ -242,6 +242,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 }
         }
         market.reapplyConditions();
+        Map<String, Object> params = new HashMap<>();
+        params.put("newOwner", newOwner);
+        params.put("oldOwner", oldOwner);
+        params.put("playerInvolved", playerInvolved);
+        params.put("factionsToNotify", factionsToNotify);
+        params.put("repChangeStrength", repChangeStrength);
+        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
                 
         DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
         

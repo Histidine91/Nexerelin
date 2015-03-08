@@ -328,15 +328,7 @@ public class InvasionRound {
 		// add intel event if captured
 		if (captured)
 		{
-                        Map<String, Object> params = new HashMap<>();
-			params.put("newOwner", attackerFaction);
-			params.put("oldOwner", defenderFaction);
-			params.put("playerInvolved", playerInvolved);
-			params.put("factionsToNotify", factionsToNotify);
-			params.put("repChangeStrength", repChangeStrength);
-			sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
-                    
-			SectorManager.captureMarket(market, attackerFaction, defenderFaction, playerInvolved, factionsToNotify);
+			SectorManager.captureMarket(market, attackerFaction, defenderFaction, playerInvolved, factionsToNotify, repChangeStrength);
 			
 			if (playerInvolved)
 			{
