@@ -291,7 +291,8 @@
 			"maxRepChange":-0.1,
 			"repLimit":"hostile",
 			"allowPirates":true,
-			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","interstellarimperium","mayorate"]
+			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders",
+				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants"]
 		}
 	]
 }
