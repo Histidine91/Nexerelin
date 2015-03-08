@@ -14,6 +14,9 @@ import org.lazywizard.lazylib.MathUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * OUT OF DATE, use exerelin.campaign.SectorManager instead!.
+ */
 @SuppressWarnings("unchecked")
 public class SectorManager
 {
