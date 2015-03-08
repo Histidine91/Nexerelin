@@ -151,9 +151,9 @@ ExerelinNGCFactionsMain,ExerelinNGCListFactions,,,,"exerelinNGCViewVanillaFactio
 ExerelinNGCViewVanillaFactions,NewGameOptionSelected,$option == exerelinNGCViewVanillaFactions,FireAll ExerelinNGCListFactionsVanilla,,,
 ExerelinNGCModFactions1,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions1:Mod factions (A-D),Should check if factions are actually there
 ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModFactions1,FireAll ExerelinNGCListFactions1,,,
-ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (E-O),ditto
+ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (E-M),ditto
 ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModFactions2,FireAll ExerelinNGCListFactions2,,,
-ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:Mod factions (P-R),
+ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:Mod factions (N-R),
 ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,FireAll ExerelinNGCListFactions3,,,
 ExerelinNGCModFactions4,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions4:Mod factions (S-Z),
 ExerelinNGCViewModFactions4,NewGameOptionSelected,$option == exerelinNGCViewModFactions4,FireAll ExerelinNGCListFactions4,,,
@@ -179,12 +179,13 @@ ExerelinNGCListHiigaranDescendants,ExerelinNGCListFactions2,NGCDoesFactionExist 
 ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions2,NGCDoesFactionExist interstellarimperium,,,exerelinNGCJoinInterstellarImperium:Interstellar Imperium,
 ExerelinNGCListJunkPirates,ExerelinNGCListFactions2,NGCDoesFactionExist junk_pirates,,,exerelinNGCJoinJunkPirates:Junk Pirates,
 ExerelinNGCListTemplars,ExerelinNGCListFactions2,NGCDoesFactionExist templars,,,exerelinNGCJoinTemplars:Knights Templar,
-ExerelinNGCListORI,ExerelinNGCListFactions2,NGCDoesFactionExist ori,,,exerelinNGCJoinORI:ORI,
+ExerelinNGCListMayorate,ExerelinNGCListFactions2,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
+,,,,,,
 ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
+ExerelinNGCListORI,ExerelinNGCListFactions3,NGCDoesFactionExist ori,,,exerelinNGCJoinORI:ORI,
 ExerelinNGCListPACK,ExerelinNGCListFactions3,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
 ExerelinNGCListPatria,ExerelinNGCListFactions3,NGCDoesFactionExist patnavy,,,exerelinNGCJoinPatria:Patrian Principate,
-ExerelinNGCListMayorate,ExerelinNGCListFactions3,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
 ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
 ExerelinNGCListRadicalORI,ExerelinNGCListFactions3,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
 ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCFactionsBack:Back,
