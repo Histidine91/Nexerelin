@@ -11,7 +11,6 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
@@ -417,6 +416,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         String winFactionId = winFaction.getId();
         String loseFactionId = loseFaction.getId();
         
+        // e.g. independents
+        if (!warWeariness.containsKey(winFactionId) || !warWeariness.containsKey(loseFactionId))
+        {
+            return;
+        }
         // pirate battles don't cause war weariness
         if (pirateFactions.contains(winFactionId)) {
             return;
