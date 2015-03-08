@@ -2,6 +2,7 @@
     "uniqueModClassName":"data.scripts.IIModPlugin", # String
     "factionNiceName":"Interstellar Imperium", # String
     "playableFaction":"true", # Boolean
+    "isPirateNeutral":"false", # Boolean
 
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
 
