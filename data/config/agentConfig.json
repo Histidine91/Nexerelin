@@ -1,5 +1,5 @@
 {
-	"eventFrequency":30,	#30
+	"eventFrequency":45,	#45
 
 	"agentRaiseRelationsSuccessChance":0.7,
 	"agentRaiseRelationsDetectionChance":0,	# it logically won't work if you get found out

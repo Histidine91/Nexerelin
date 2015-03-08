@@ -52,7 +52,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     private static final List<String> disallowedFactions;
     
-    private static float baseInterval = 30f;
+    private static float baseInterval = 45f;
     private float interval = baseInterval;
     private final IntervalUtil intervalUtil;
     
