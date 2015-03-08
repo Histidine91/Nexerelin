@@ -178,7 +178,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
 		boolean isStation = (entityType.equals("station")); 
-		if (isStation) marketSize = ExerelinUtils.getRandomInRange(1, 2) + ExerelinUtils.getRandomInRange(1, 2);	// stations are on average smaller
+		if (isStation) marketSize = 2 + ExerelinUtils.getRandomInRange(1, 2);	// stations are on average smaller
 		else if (entityType.equals("moon")) marketSize = ExerelinUtils.getRandomInRange(1, 2) + ExerelinUtils.getRandomInRange(2, 3);
 		else marketSize = ExerelinUtils.getRandomInRange(2, 3) + ExerelinUtils.getRandomInRange(2, 3);
 		
