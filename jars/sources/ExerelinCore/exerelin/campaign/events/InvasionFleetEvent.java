@@ -15,6 +15,8 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class InvasionFleetEvent extends BaseEventPlugin {
@@ -23,6 +25,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	private static final int DAYS_TO_KEEP = 30;
 	private Map<String, Object> params;
 	private MarketAPI target;
+        private int dp;
 	public boolean done;
 	private float age;
 		
@@ -32,6 +35,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 		params = new HashMap<>();
 		done = false;
 		target = null;
+                dp = 0;
 		age = 0;
 	}
 	
@@ -39,6 +43,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	public void setParam(Object param) {
 		params = (HashMap)param;
 		target = (MarketAPI)params.get("target");
+                dp = (int)(float)params.get("dp");
 	}
 		
 	@Override
@@ -84,10 +89,12 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
 		FactionAPI targetFaction = target.getFaction();
-		LocationAPI loc = market.getContainingLocation();
+		LocationAPI loc = target.getContainingLocation();
 		String locName = loc.getName();
 		if (loc instanceof StarSystemAPI)
 			locName = "the " + ((StarSystemAPI)loc).getName();
+                int dpEstimate = Math.round(dp/10f) * 10;
+                
 		String targetFactionStr = targetFaction.getEntityNamePrefix();
 		String theTargetFactionStr = targetFaction.getDisplayNameWithArticle();
 		map.put("$sender", faction.getEntityNamePrefix());
@@ -97,7 +104,15 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 		map.put("$TargetFaction", Misc.ucFirst(targetFactionStr));
 		map.put("$theTargetFaction", theTargetFactionStr);
 		map.put("$TheTargetFaction", Misc.ucFirst(theTargetFactionStr));
+                map.put("$dp", "" + dpEstimate);
 		return map;
+	}
+        
+        @Override
+        public String[] getHighlights(String stageId) {
+		List<String> result = new ArrayList<>();
+                addTokensToList(result, "$dp");
+		return result.toArray(new String[0]);
 	}
 	
 	@Override

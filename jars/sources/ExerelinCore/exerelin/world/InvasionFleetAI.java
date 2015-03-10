@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
@@ -18,6 +19,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.lwjgl.util.vector.Vector2f;
 
 public class InvasionFleetAI implements EveryFrameScript
 {
@@ -140,16 +142,25 @@ public class InvasionFleetAI implements EveryFrameScript
         {
             MarketAPI market = data.targetMarket;
             StarSystemAPI system = market.getStarSystem();
+            String locName = market.getPrimaryEntity().getContainingLocation().getName();
+            
             if (system != null)
             {
-                //log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " en route to target");
-                if (system != this.fleet.getContainingLocation()) {
-                    this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, "travelling to the " + system.getBaseName() + " star system");
-                }
-                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), INVADE_ORBIT_TIME, "beginning invasion of " + market.getName());
-                // once it reaches the "hold" part, that's our cue to actually run the invasion code
-                this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 1.0F, "invading " + market.getName());
+                locName = "the " + system.getName();
             }
+            if (system != null && system != this.fleet.getContainingLocation()) {
+                LocationAPI hyper = Global.getSector().getHyperspace();
+                Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
+                SectorEntityToken token = hyper.createToken(dest.x, dest.y);
+                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, "travelling to " + locName);
+            }
+            else {
+                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, "travelling to " + market.getName());
+            }
+            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), INVADE_ORBIT_TIME, "beginning invasion of " + market.getName());
+            // once it reaches the "hold" part, that's our cue to actually run the invasion code
+            this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 1.0F, "invading " + market.getName());
+
         }
     }
   

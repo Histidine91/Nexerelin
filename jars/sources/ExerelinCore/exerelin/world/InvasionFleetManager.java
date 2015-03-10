@@ -34,6 +34,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 {
     private static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
     private static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
+    private static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
     private static final float DEFENDER_STRENGTH_MARINE_MULT = 1.1f;
     
     public static Logger log = Global.getLogger(InvasionFleetManager.class);
@@ -51,10 +52,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         this.tracker = new IntervalUtil(interval * 0.75F, interval * 1.25F);
         this.maxFleets = 20;
     }
-  
-    public static InvasionFleetData spawnFleet(FactionAPI invader, MarketAPI originMarket, MarketAPI targetMarket, boolean noWait)
+    
+    public static float calculateMaxFPforFleet(MarketAPI originMarket, MarketAPI targetMarket)
     {
-        float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket);
+        // old formula
+        /*
         float marketScalar = originMarket.getSize() * originMarket.getStabilityValue();
         if (originMarket.hasCondition("military_base") || originMarket.hasCondition("exerelin_military_base")) {
             marketScalar += 20.0F;
@@ -71,11 +73,65 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         if (originMarket.hasCondition("regional_capital")) {
             marketScalar += 10.0F;
         }
-        float qf = originMarket.getShipQualityFactor();
         int maxFP = (int)MathUtils.getRandomNumberInRange(marketScalar * 0.75F, MathUtils.getRandomNumberInRange(marketScalar * 1.5F, marketScalar * 2.5F));
+        return maxFP;
+        */
+       
+        // new; should be in the same general ballpark for an average case
+        float responseFleetSize = ResponseFleetManager.getMaxReserveSize(targetMarket, true);
+        float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + 8 * (2 + originMarket.getSize()));
+        maxFPbase = maxFPbase * (float)(0.5 + originMarket.getStabilityValue()/10);
+        //maxFPbase *= 0.95;
+        
+        float maxFP = maxFPbase;
+        if (originMarket.hasCondition("military_base")) maxFP += maxFPbase * 0.15;
+        if (originMarket.hasCondition("orbital_station")) maxFP += maxFPbase * 0.05;
+        if (originMarket.hasCondition("spaceport")) maxFP += maxFPbase * 0.05;
+        if (originMarket.hasCondition("regional_capital")) maxFP += maxFPbase * 0.05;
+        if (originMarket.hasCondition("headquarters")) maxFP += maxFPbase * 0.1;
+        
+        return (maxFP * (MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f)));
+    }
+    
+    public static InvasionFleetData spawnSupportFleet(FactionAPI invader, MarketAPI originMarket, MarketAPI targetMarket)
+    {
+        int maxFP = (int)(calculateMaxFPforFleet(originMarket, targetMarket) * 0.66f);
+        float qf = originMarket.getShipQualityFactor();
+        
+        String name = "Strike Fleet";
+        if (maxFP < 50) name = "Small " + name;
+        else if (maxFP > 150) name = "Large " + name;
+        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(originMarket.getFactionId(), name, qf, maxFP);
+        
+        fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinInvasionSupportFleet");
+        fleet.getMemoryWithoutUpdate().set("$maxFP", maxFP);
+        fleet.getMemoryWithoutUpdate().set("$originMarket", originMarket);
+        
+        InvasionFleetData data = new InvasionFleetData(fleet);
+        data.startingFleetPoints = fleet.getFleetPoints();
+        data.sourceMarket = originMarket;
+        data.source = originMarket.getPrimaryEntity();
+        data.targetMarket = targetMarket;
+        data.target = targetMarket.getPrimaryEntity();
+        data.marineCount = 0;
+        data.noWait = false;
+        
+        InvasionSupportFleetAI ai = new InvasionSupportFleetAI(fleet, data);
+        fleet.addScript(ai);
+        log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
+        return data;
+    }
+  
+    public static InvasionFleetData spawnFleet(FactionAPI invader, MarketAPI originMarket, MarketAPI targetMarket, boolean noWait)
+    {
+        float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket);
+        
+        int maxFP = (int)calculateMaxFPforFleet(originMarket, targetMarket);
+        float qf = originMarket.getShipQualityFactor();
         
         String name = "Invasion Fleet";
         if (maxFP < 50) name = "Small " + name;
+        else if (maxFP > 150) name = "Grand " + name;
         CampaignFleetAPI fleet = FleetFactory.createGenericFleet(originMarket.getFactionId(), name, qf, maxFP);
         
         for (int i=0; i<defenderStrength/100; i++)
@@ -105,9 +161,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         InvasionFleetAI ai = new InvasionFleetAI(fleet, data);
         fleet.addScript(ai);
         log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
-        Map<String, Object> params = new HashMap<>();
-        params.put("target", targetMarket);
-        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
         return data;
     }
     
@@ -140,8 +193,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         // now pick source market
         for (MarketAPI market : markets) {
             if  ( market.getFaction() == invader && !market.hasCondition("decivilized") && 
-                ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) 
-                    || (market.hasCondition("military_base")) || market.hasCondition("exerelin_military_base")
+                ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) || (market.hasCondition("military_base"))
                     || (market.hasCondition("regional_capital")) || (market.hasCondition("headquarters"))
                 ) && market.getSize() >= 3 )
             {
@@ -173,7 +225,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             return;
         }
         //log.info("\tStaging from " + originMarket.getName());
-        marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
+        //marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
         
         // now we pick a target
         Vector2f originMarketLoc = originMarket.getLocationInHyperspace();
@@ -205,6 +257,19 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         // okay, assemble battlegroup
         InvasionFleetData data = spawnFleet(invader, originMarket, targetMarket, false);
         this.activeFleets.add(data);
+        if (originMarket.getSize() >= 4)
+        {
+            this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
+            if (originMarket.getSize() >= 6)
+            {
+                this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
+            }
+        }
+        
+        Map<String, Object> params = new HashMap<>();
+        params.put("target", targetMarket);
+        params.put("dp", data.startingFleetPoints);
+        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
     }
   
     @Override

@@ -50,7 +50,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             reserves = new HashMap<>();
             List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
             for(MarketAPI market:markets)
-                reserves.put(market.getId(), getMaxReserveSize(market)*INITIAL_RESERVE_SIZE_MULT);
+                reserves.put(market.getId(), getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
             
             //data.put(RESERVE_SIZE_MAP_KEY, reserves);
         }
@@ -93,9 +93,19 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         reserves.put(origin.getId(), 0f);
     }
     
-    public static float getMaxReserveSize(MarketAPI market)
+    public static float getMaxReserveSize(MarketAPI market, boolean raw)
     {
-        return market.getSize() * 20 + 40;
+        float baseSize = market.getSize() * 20 + 30;
+        float size = baseSize;
+        if (raw) return size;
+        
+        if (market.hasCondition("military_base")) size += baseSize * 0.1;
+        if (market.hasCondition("orbital_station")) size += baseSize * 0.05;
+        if (market.hasCondition("spaceport")) size += baseSize * 0.05;
+        if (market.hasCondition("regional_capital")) size += baseSize * 0.05;
+        if (market.hasCondition("headquarters")) size += baseSize * 0.1;
+        
+        return size;
     }
     
     public void updateReserves(float days)
@@ -108,7 +118,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         for(MarketAPI market:markets)
         {
             float increment = market.getSize() * (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR) * RESERVE_INCREMENT_PER_DAY * days;
-            float newValue = Math.min(reserves.get(market.getId()) + increment, getMaxReserveSize(market));
+            float newValue = Math.min(reserves.get(market.getId()) + increment, getMaxReserveSize(market, false));
             
             reserves.put(market.getId(), newValue);
         }
@@ -127,7 +137,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         if (!responseFleetManager.reserves.containsKey(marketId)) return 0f;
         float current = responseFleetManager.reserves.get(marketId);
         float newValue = current + delta;
-        float max = getMaxReserveSize(market);
+        float max = getMaxReserveSize(market, false);
         if (newValue < 0) newValue = 0;
         else if (newValue > max) newValue = max;
         responseFleetManager.reserves.put(marketId, newValue);
