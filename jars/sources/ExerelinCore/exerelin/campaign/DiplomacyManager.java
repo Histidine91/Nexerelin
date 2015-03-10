@@ -626,7 +626,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
 
         // pirates are hostile to everyone, except some factions like Mayorate
-        if (randomize)
+        if (!randomize)
         {
             for (String factionId : factionIds) 
             {
