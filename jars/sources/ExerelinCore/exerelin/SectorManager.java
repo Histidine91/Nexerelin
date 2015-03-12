@@ -7,7 +7,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import exerelin.commandQueue.CommandQueue;
 import exerelin.fleets.ExerelinFleetBase;
-import exerelin.plugins.ExerelinWelcomeDialogPlugin;
 import exerelin.utilities.ExerelinConfig;
 import org.lazywizard.lazylib.MathUtils;
 
