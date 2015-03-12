@@ -10,6 +10,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.world.ResponseFleetManager;
 
 @SuppressWarnings("unchecked")
@@ -29,6 +30,8 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 	@Override
 	public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
 		if (interactionTarget instanceof CampaignFleetAPI) {
+			if (ExerelinUtils.isSSPInstalled())
+				return new  PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPluginWithSSP(), PickPriority.MOD_GENERAL);
 			return new PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPlugin(), PickPriority.MOD_GENERAL);
 		}
 		return super.pickInteractionDialogPlugin(interactionTarget);

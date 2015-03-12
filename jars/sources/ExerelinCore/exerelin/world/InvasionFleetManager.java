@@ -53,7 +53,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         this.maxFleets = 20;
     }
     
-    public static float calculateMaxFPforFleet(MarketAPI originMarket, MarketAPI targetMarket)
+    public static float calculateMaxFpForFleet(MarketAPI originMarket, MarketAPI targetMarket)
     {
         // old formula
         /*
@@ -95,7 +95,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     
     public static InvasionFleetData spawnSupportFleet(FactionAPI invader, MarketAPI originMarket, MarketAPI targetMarket)
     {
-        int maxFP = (int)(calculateMaxFPforFleet(originMarket, targetMarket) * 0.66f);
+        int maxFP = (int)(calculateMaxFpForFleet(originMarket, targetMarket) * 0.66f);
         float qf = originMarket.getShipQualityFactor();
         
         String name = "Strike Fleet";
@@ -126,7 +126,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     {
         float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket);
         
-        int maxFP = (int)calculateMaxFPforFleet(originMarket, targetMarket);
+        int maxFP = (int)calculateMaxFpForFleet(originMarket, targetMarket);
         float qf = originMarket.getShipQualityFactor();
         
         String name = "Invasion Fleet";

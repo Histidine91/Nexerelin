@@ -754,6 +754,19 @@ public class ExerelinUtils
         }
     }
     
+    public static boolean isSSPInstalled()
+    {
+        try
+        {
+            Global.getSettings().getScriptClassLoader().loadClass("data.scripts.SSPModPlugin");
+            return true;
+        }
+        catch (ClassNotFoundException ex)
+        {
+            return false;
+        }
+    }
+    
     public static String[] JSONArrayToStringArray(JSONArray jsonArray)
     {
         try

@@ -9,9 +9,17 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import data.scripts.campaign.SSP_FleetFactory;
+import data.scripts.plugins.LevelupPluginImpl;
+import data.scripts.world.SSP_FleetInjector;
+import data.scripts.world.SSP_FleetInjector.CommanderType;
+import data.scripts.world.SSP_FleetInjector.CrewType;
+import data.scripts.world.SSP_FleetInjector.FleetStyle;
 
 
 public class ExerelinUtilsFleet
@@ -51,12 +59,49 @@ public class ExerelinUtilsFleet
         FRIGATE,
         MEDIUM_SHIPS
     }
-
+    
     private static int SMALL_FLEET_SUPPLIES_DAY = 10;
     private static int MEDIUM_FLEET_SUPPLIES_DAY = 25;
     private static int LARGE_FLEET_SUPPLIES_DAY = 60;
     private static int EXTRA_LARGE_FLEET_SUPPLIES_DAY = 90;
+    
+    private static final LevelupPluginImpl levelUp = new LevelupPluginImpl();
+   
+    /**
+     * Used by Starsector Plus
+     * @param fleet
+     * @param market
+     * @param stability
+     * @param qualityFactor
+     * @param type 
+     */
+    public static void injectFleet(CampaignFleetAPI fleet, MarketAPI market, Float stability, Float qualityFactor, String type) {      
+        String faction = fleet.getFaction().getId();
+        MemoryAPI memory = fleet.getMemoryWithoutUpdate();
+        int maxFP = memory.contains("$maxFP") ? ((Integer)memory.get("$maxFP")).intValue() : fleet.getFleetPoints();
+        
+        SSP_FleetInjector injector = SSP_FleetInjector.getInjector();
+        if (injector == null) return;
 
+        switch (type)
+        {
+            case "exerelinInvasionFleet":
+                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.ELITE, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
+                SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
+                injector.levelFleet(fleet, CrewType.ELITE, FleetStyle.ELITE, faction);
+                break;
+            case "exerelinInvasionSupportFleet":
+                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.WAR, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
+                SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
+                injector.levelFleet(fleet, CrewType.MILITARY, FleetStyle.MILITARY, faction);
+                break;
+            case "exerelinResponseFleet":
+                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.WAR, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
+                SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
+                injector.levelFleet(fleet, CrewType.MILITARY, FleetStyle.MILITARY, faction);
+                break;   
+        }
+    }
 
     public static void sortByFleetCost(CampaignFleetAPI fleet)
     {

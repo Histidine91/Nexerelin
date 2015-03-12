@@ -4,20 +4,18 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.DisengageHarryAvailability;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.PursueAvailability;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import exerelin.campaign.PlayerFactionStore;
 
-/**
- *
- * @author Rattlesnark
- */
+
 public class ExerelinFleetInteractionDialogPlugin extends FleetInteractionDialogPluginImpl {
-        
-        // same as vanilla, but disallows fighting your own faction fleets (unless they're already hostile for some other reason)
-        @Override
-        protected void updateMainState() {
+	   
+	// same as vanilla, but disallows fighting your own faction fleets (unless they're already hostile for some other reason)
+	@Override
+	protected void updateMainState() {
 		options.clearOptions();
 		
 		if (isFightingOver()) {
@@ -26,20 +24,20 @@ public class ExerelinFleetInteractionDialogPlugin extends FleetInteractionDialog
 		}
 		
 		options.addOption("Open a comm link", OptionId.OPEN_COMM, null);
-                
-                FactionAPI otherFaction = otherFleet.getFaction();
+		
+		FactionAPI otherFaction = otherFleet.getFaction();
 		boolean isPlayerAlignedFaction = otherFaction.getId().equals(PlayerFactionStore.getPlayerFactionId());
-                
+		
 		boolean otherWantsToRun = otherFleetWantsToDisengage() && otherCanDisengage();
 		
 		boolean playerHasReadyShips = !playerFleet.getFleetData().getCombatReadyMembersListCopy().isEmpty();
-                
-                CampaignFleetAIAPI ai = otherFleet.getAI();
-                boolean hostile = false;
-                if (ai != null) {
-                        hostile = ai.isHostileTo(playerFleet) || context.isEngagedInHostilities();
-                }
-                
+		
+		CampaignFleetAIAPI ai = otherFleet.getAI();
+		boolean hostile = false;
+		if (ai != null) {
+			hostile = ai.isHostileTo(playerFleet) || context.isEngagedInHostilities();
+		}
+		
 		if (otherWantsToRun && canDisengageCleanly(otherFleet)) {
 			addText(getString("enemyCleanDisengage"));
 			goToEncounterEndPath();
@@ -85,11 +83,11 @@ public class ExerelinFleetInteractionDialogPlugin extends FleetInteractionDialog
 				break;
 			}		
 			
-                        if (!isPlayerAlignedFaction || hostile)
-                        {
-                                options.addOption("Pursue them", OptionId.PURSUE, getString(pursueTooltip));
-                                options.addOption("Harry their retreat", OptionId.HARRY_PURSUE, getString(harassTooltip));
-                        }
+			if (!isPlayerAlignedFaction || hostile)
+			{
+				options.addOption("Pursue them", OptionId.PURSUE, getString(pursueTooltip));
+				options.addOption("Harry their retreat", OptionId.HARRY_PURSUE, getString(harassTooltip));
+			}
 			if (hostile) {
 				options.addOption("Let them go", OptionId.LET_THEM_GO, getString(letThemGoTooltip));
 			} else {
@@ -103,15 +101,15 @@ public class ExerelinFleetInteractionDialogPlugin extends FleetInteractionDialog
 				options.setEnabled(OptionId.HARRY_PURSUE, false);
 			}
 		} else {
-                        if (!isPlayerAlignedFaction || hostile || otherFleetWantsToFight())
-                        {
-                            if (playerHasReadyShips) {
-                                    options.addOption("Move in to engage", OptionId.ENGAGE, getString("tooltipEngage"));
-                            } else {
-                                    options.addOption("Move in to engage", OptionId.ENGAGE, getString("tooltipNoReadyShips"));
-                                    options.setEnabled(OptionId.ENGAGE, false);
-                            }
-                        }
+			if (!isPlayerAlignedFaction || hostile || otherFleetWantsToFight())
+			{
+				if (playerHasReadyShips) {
+					options.addOption("Move in to engage", OptionId.ENGAGE, getString("tooltipEngage"));
+				} else {
+					options.addOption("Move in to engage", OptionId.ENGAGE, getString("tooltipNoReadyShips"));
+					options.setEnabled(OptionId.ENGAGE, false);
+				}
+			}
 			if (otherFleetWantsToFight() || (hostile && !otherFleetWantsToDisengage())) {
 				if (canDisengageCleanly(playerFleet)) {
 					options.addOption("Disengage", OptionId.DISENGAGE, getString("tooltipCleanDisengage"));
