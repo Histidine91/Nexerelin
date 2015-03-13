@@ -2,7 +2,7 @@ id,type,text1,text2,text3,notes
 ,,,,,
 prisoner,RESOURCE,"A highly valuable prisoner of war. Exchange at another factions station to improve your faction's relationship with them, or ransom them for cash.",,,
 agent,RESOURCE,A covert operative capable of tampering with other factions' diplomatic relations or destabilizing their markets.,,,
-saboteur,RESOURCE,A saboteur special agent. Can damage reserve fleets to soften a planet or station's defenses.,,,
+saboteur,RESOURCE,"A saboteur special agent. Can damage reserve fleets at markets, or destroy stockpiled food.",,,
 ,,,,,
 star_blue,PLANET,Blue Star,,,
 star_white,PLANET,White Star,,,
