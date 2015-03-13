@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.utilities.ExerelinConfig;
@@ -23,13 +24,13 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 {
     public static final String MANAGER_MAP_KEY = "exerelin_responseFleetManager";
     public static final String RESERVE_SIZE_MAP_KEY = "exerelin_reserveFleetSize";
-    private static final float RESERVE_INCREMENT_PER_DAY = 40f;
+    private static final float RESERVE_INCREMENT_PER_DAY = 0.32f;
     private static final float RESERVE_MARKET_STABILITY_DIVISOR = 5f;
     private static final float INITIAL_RESERVE_SIZE_MULT = 0.75f;
     private static final float MIN_FP_TO_SPAWN = 20f;
     private Map<String, Float> reserves;
     
-    public static Logger log = Global.getLogger(InvasionFleetManager.class);
+    public static Logger log = Global.getLogger(ResponseFleetManager.class);
     
     private final List<ResponseFleetData> activeFleets = new LinkedList();
     private final IntervalUtil tracker;
@@ -164,13 +165,21 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         return reserves.get(marketId);
     }
   
+    
+    float lastReserveUpdateAge = 0f;
     @Override
     public void advance(float amount)
     {
         float days = Global.getSector().getClock().convertToDays(amount);
-    
+        lastReserveUpdateAge += days;
+        if (lastReserveUpdateAge > 0.5f)
+        {
+            lastReserveUpdateAge -= 0.5f;
+            updateReserves(0.5f);
+        }
+        
         this.tracker.advance(days);
-        if (!this.tracker.intervalElapsed()) {
+        if (this.tracker.intervalElapsed()) {
             return;
         }
         List<ResponseFleetData> remove = new LinkedList();
@@ -180,8 +189,6 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             }
         }
         this.activeFleets.removeAll(remove);
-        
-        updateReserves(days);
     }
   
     @Override
@@ -197,13 +204,24 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         for (ResponseFleetData data : this.activeFleets) {
             if (data.fleet == fleet)
             {
-                // return the ships to reserve if applicable
+                //log.info("Despawning response fleet " + fleet.getName());
+                // return the ships to reserve if applicable - donut work
+                /*
                 if(reason != CampaignEventListener.FleetDespawnReason.DESTROYED_BY_FLEET
-                        && data.sourceMarket.getFaction() == data.fleet.getFaction())
+                        && data.sourceMarket.getFaction().getId().equals(data.fleet.getFaction().getId()))
                 {
-                    String marketId = data.sourceMarket.getId();
-                    reserves.put(marketId, reserves.get(marketId) + fleet.getFleetPoints());
+                    float fp = 0;
+                    int numShips = 0;
+                    List<FleetMemberAPI> snapshot = fleet.getFleetData().getSnapshot();
+                    for (FleetMemberAPI member : snapshot) {
+                        fp += member.getFleetPointCost();
+                        numShips++;
+                    }
+                    //reserves.put(marketId, reserves.get(marketId) + fp);
+                    modifyReserveSize(data.sourceMarket, fp);
+                    log.info("Returning points to reserve: " + fp + " (from " + numShips + " ships)");
                 }
+                */
                 this.activeFleets.remove(data);
                 break;
             }

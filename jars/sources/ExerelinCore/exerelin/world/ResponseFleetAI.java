@@ -89,8 +89,11 @@ public class ResponseFleetAI implements EveryFrameScript
   
     private void giveInitialAssignment()
     {
+        String targetName = this.data.target.getName();
+        if (this.data.target == Global.getSector().getPlayerFleet())
+            targetName = "your fleet";
         this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, 0.1f, "scrambling from " + this.data.sourceMarket.getName());
-        this.fleet.addAssignment(FleetAssignment.INTERCEPT, this.data.target, 3f, "intercepting " + this.data.target.getName());
+        this.fleet.addAssignment(FleetAssignment.INTERCEPT, this.data.target, 3f, "intercepting " + targetName);
     }
   
     private void giveStandDownOrders()
