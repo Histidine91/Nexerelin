@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.lazywizard.lazylib.CollectionUtils;
+import org.lazywizard.lazylib.MathUtils;
 
 @SuppressWarnings("unchecked")
 
@@ -69,24 +70,24 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"exerelin/backgrounds/orange_background1.jpg", "exerelin/backgrounds/orange_background2.jpg",
 		"exerelin/backgrounds/purple_background1.jpg", "exerelin/backgrounds/purple_background2.jpg",
 		"exerelin/backgrounds/white_background1.jpg", "exerelin/backgrounds/white_background2.jpg",
-		"backgrounds/2_2.jpg", "backgrounds/2_4.jpg", "backgrounds/3_1.jpg", "backgrounds/4_1.jpg", "backgrounds/4_2.jpg", "backgrounds/5_1.jpg", "backgrounds/5_2.jpg",
-		"backgrounds/6_1.jpg", "backgrounds/7_1.jpg", "backgrounds/7_3.jpg", "backgrounds/8_2.jpg", "backgrounds/9_1.jpg", "backgrounds/9_3.jpg", "backgrounds/9_4.jpg",
-		"backgrounds/9_5.jpg",
+		"backgrounds/2-2.jpg", "backgrounds/2-4.jpg", "backgrounds/3-1.jpg", "backgrounds/4-1.jpg", "backgrounds/4-2.jpg", "backgrounds/5-1.jpg", "backgrounds/5-2.jpg",
+		"backgrounds/6-1.jpg", "backgrounds/7-1.jpg", "backgrounds/7-3.jpg", "backgrounds/8-1.jpg", "backgrounds/8-2.jpg", "backgrounds/9-1.jpg", "backgrounds/9-3.jpg",
+		"backgrounds/9-4.jpg", "backgrounds/9-5.jpg",
 	};
 
 	
 	private List possibleSystemNamesList = new LinkedList(Arrays.asList(possibleSystemNames));
 	private List possiblePlanetNamesList = new LinkedList(Arrays.asList(possiblePlanetNames));
 	
-	private static final String[] possiblePlanetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren"};
-	private static final String[] possiblePlanetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable",
+	private static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren"};
+	private static final String[] planetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable",
 		"gas_giant", "ice_giant", "frozen", "rocky_ice"};
-	private static final String[] possibleMoonTypes = new String[] {"frozen", "barren", "rocky_ice", "rocky_metallic"};
-	private static final String[] possibleMoonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice"};
-	private static final String[] possibleStationImages = new String[] {"station_side00", "station_side02", "station_side04"};
+	private static final String[] moonTypes = new String[] {"frozen", "barren", "rocky_ice", "rocky_metallic"};
+	private static final String[] moonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice"};
+	private static final String[] stationImages = new String[] {"station_side00", "station_side02", "station_side04"};
 	
-	//private static String[] possibleFactionIds = new String[]{"sindrian_diktat", "tritachyon", "luddic_church", "pirates", "hegemony", "independent"};
 	private String[] factionIds = new String[]{};
+	private List starPositions = new ArrayList();	
 	private boolean isStartSystemChosen = false;
 	private int starNum = 0;
 	private String relayOwner = "neutral";
@@ -320,56 +321,56 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return newMarket;
 	}
 		
-		public void addOmnifactory()
+	public void addOmnifactory()
+	{
+		if (!ExerelinSetupData.getInstance().omniFacPresent) return;
+
+		SectorEntityToken toOrbit = null;
+		if (ExerelinConfig.randomOmnifactoryLocation)
 		{
-			if (!ExerelinSetupData.getInstance().omniFacPresent) return;
-			
-			SectorEntityToken toOrbit = null;
-			if (ExerelinConfig.randomOmnifactoryLocation)
+			List systems = new ArrayList(Global.getSector().getStarSystems());
+			Collections.shuffle(systems);
+			for (int i=0; i > systems.size(); i++)
 			{
-				List systems = new ArrayList(Global.getSector().getStarSystems());
-				Collections.shuffle(systems);
-				for (int i=0; i > systems.size(); i++)
-				{
-					StarSystemAPI system = (StarSystemAPI)systems.get(i);
-					CollectionUtils.CollectionFilter planetFilter = new CollectionUtils.CollectionFilter() {
-						public boolean accept (Object object)
-						{
-							SectorEntityToken token = (SectorEntityToken)object;
-							String factionId = token.getFaction().getId();
-							String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-							return factionId.equals("neutral") || factionId.equals(alignedFactionId);
-						}
-					};
-					List planets = CollectionUtils.filter(system.getPlanets(), planetFilter);
-					if (!planets.isEmpty())
+				StarSystemAPI system = (StarSystemAPI)systems.get(i);
+				CollectionUtils.CollectionFilter planetFilter = new CollectionUtils.CollectionFilter() {
+					public boolean accept (Object object)
 					{
-						Collections.shuffle(planets);
-						toOrbit = (SectorEntityToken)planets.get(0);
+						SectorEntityToken token = (SectorEntityToken)object;
+						String factionId = token.getFaction().getId();
+						String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+						return factionId.equals("neutral") || factionId.equals(alignedFactionId);
 					}
+				};
+				List planets = CollectionUtils.filter(system.getPlanets(), planetFilter);
+				if (!planets.isEmpty())
+				{
+					Collections.shuffle(planets);
+					toOrbit = (SectorEntityToken)planets.get(0);
 				}
 			}
-			if (toOrbit == null)
-				toOrbit = homeworld;
-			
-			LocationAPI system = toOrbit.getContainingLocation();
-			String image = possibleStationImages[ExerelinUtils.getRandomInRange(0, possibleStationImages.length - 1)];
-			SectorEntityToken omnifac = system.addCustomEntity("omnifactory", "Omnifactory", image, "neutral");
-			omnifac.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), 300, 300/25);
-			OmniFacModPlugin.initOmnifactory(omnifac);
-			omnifac.setInteractionImage("illustrations", "abandoned_station");
-			omnifac.setCustomDescriptionId("omnifactory");
-			
-			omnifac.setFaction("neutral");
-			MarketAPI market = omnifac.getMarket();
-			market.setFactionId("neutral");
-			List submarkets = market.getSubmarketsCopy();
-			for (int i=0; i<submarkets.size(); i++)
-			{
-				SubmarketAPI submarket = (SubmarketAPI)submarkets.get(i);
-		submarket.setFaction(Global.getSector().getFaction("neutral"));
-			}
 		}
+		if (toOrbit == null)
+			toOrbit = homeworld;
+
+		LocationAPI system = toOrbit.getContainingLocation();
+		String image = stationImages[ExerelinUtils.getRandomInRange(0, stationImages.length - 1)];
+		SectorEntityToken omnifac = system.addCustomEntity("omnifactory", "Omnifactory", image, "neutral");
+		omnifac.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), 300, 300/25);
+		OmniFacModPlugin.initOmnifactory(omnifac);
+		omnifac.setInteractionImage("illustrations", "abandoned_station");
+		omnifac.setCustomDescriptionId("omnifactory");
+
+		omnifac.setFaction("neutral");
+		MarketAPI market = omnifac.getMarket();
+		market.setFactionId("neutral");
+		List submarkets = market.getSubmarketsCopy();
+		for (int i=0; i<submarkets.size(); i++)
+		{
+			SubmarketAPI submarket = (SubmarketAPI)submarkets.get(i);
+			submarket.setFaction(Global.getSector().getFaction("neutral"));
+		}
+	}
 	
 	@Override
 	public void generate(SectorAPI sector)
@@ -400,7 +401,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		} catch (IOException ex) {
 			Global.getLogger(ExerelinSectorGen.class).log(Level.ERROR, ex);
 		}
-		
+		 
+		// stars will be distributed in a concentric pattern
+		float angle = 0;
+		float distance = 0;
+		for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
+		{
+			angle += MathUtils.getRandomNumberInRange((float)Math.PI/4, (float)Math.PI);
+			distance = distance + MathUtils.getRandomNumberInRange(0, 1500) + MathUtils.getRandomNumberInRange(0, 1500);
+			int x = (int)(Math.sin(angle) * distance);
+			int y = (int)(Math.cos(angle) * distance);
+			starPositions.add(new int[] {x, y});
+		}
+		Collections.shuffle(starPositions);
+		 
 		// build systems
 		for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
 			buildSystem(sector, i);
@@ -431,6 +445,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		log.info("Finished sector generation");
 	}
 
+	public SectorEntityToken makeStar(int index, String systemId, StarSystemAPI system, String type, float size)
+	{
+		int[] pos = (int[])starPositions.get(index);
+		int x = pos[0];
+		int y = pos[1];
+		return system.initStar(systemId, type, 500f, x, y);
+	}
+	
 	public void buildSystem(SectorAPI sector, int systemNum)
 	{
 		// Create star system with random name
@@ -443,8 +465,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		int maxSectorSize = ExerelinSetupData.getInstance().maxSectorSize;
 		if((ExerelinSetupData.getInstance().numSystems == sector.getStarSystems().size()
-		|| ExerelinUtils.getRandomInRange(0,2) == 0)
-		&& !isStartSystemChosen)
+			|| ExerelinUtils.getRandomInRange(0,2) == 0)
+			&& !isStartSystemChosen)
 		{
 			log.info("Setting start location " + systemName);
 			sector.setRespawnLocation(system);
@@ -465,61 +487,60 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// TODO refactor to remove endless nested ifs
 		if(starType == 0)
 		{
-			star = system.initStar(systemId, "star_yellow", 500f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = makeStar(systemNum, systemId, system, "star_yellow", 500f);
 			//system.setLightColor(new Color(255, 180, 180));
 		}
 		else if(starType == 1)
 		{
-			star = system.initStar(systemId, "star_red", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = makeStar(systemNum, systemId, system, "star_red", 900f);
 			system.setLightColor(new Color(255, 180, 180));
 		}
 		else if(starType == 2)
 		{
-			star = system.initStar(systemId, "star_blue", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = makeStar(systemNum, systemId, system, "star_blue", 400f);
 			system.setLightColor(new Color(135,206,250));
 		}
 		else if(starType == 3)
 		{
-			star = system.initStar(systemId, "star_white", 300f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = makeStar(systemNum, systemId, system, "star_white", 300f);
 			//system.setLightColor(new Color(185,185,240));
 		}
 		else if(starType == 4)
 		{
-			star = system.initStar(systemId, "star_orange", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = makeStar(systemNum, systemId, system, "star_orange", 900f);
 			system.setLightColor(new Color(255,220,0));
 		}
 		else if(starType == 5)
 		{
-			star = system.initStar(systemId, "star_yellowwhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = makeStar(systemNum, systemId, system, "star_yellowwhite", 400f);
 			system.setLightColor(new Color(255,255,224));
 		}
 		else if(starType == 6)
 		{
-			star = system.initStar(systemId, "star_bluewhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = makeStar(systemNum, systemId, system, "star_bluewhite", 400f);
 			system.setLightColor(new Color(135,206,250));
 		}
 		else if(starType == 7)
 		{
-			star = system.initStar(systemId, "star_purple", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = makeStar(systemNum, systemId, system, "star_purple", 700f);
 			system.setLightColor(new Color(218,112,214));
 		}
 		else if(starType == 8)
 		{
-			star = system.initStar(systemId, "star_dark", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = makeStar(systemNum, systemId, system, "star_dark", 100f);
 			system.setLightColor(new Color(105,105,105));
 		}
 		else if(starType == 9)
 		{
-			star = system.initStar(systemId, "star_green", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = makeStar(systemNum, systemId, system, "star_green", 600f);
 			system.setLightColor(new Color(240,255,240));
 		}
 		else
 		{
-			star = system.initStar(systemId, "star_greenwhite", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
+			star = makeStar(systemNum, systemId, system, "star_greenwhite", 500f);
 			system.setLightColor(new Color(240,255,240));
 		}
 		system.setBackgroundTextureFilename("graphics/" + starBackgrounds[ExerelinUtils.getRandomInRange(0, starBackgrounds.length - 1)]);
-
 
 		// Build base planets
 		int numBasePlanets;
@@ -548,9 +569,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 			
 			if (inhabitable)
-				planetType = possiblePlanetTypes[ExerelinUtils.getRandomInRange(0, possiblePlanetTypes.length - 1)];
+				planetType = planetTypes[ExerelinUtils.getRandomInRange(0, planetTypes.length - 1)];
 			else
-				planetType = possiblePlanetTypesUninhabitable[ExerelinUtils.getRandomInRange(0, possiblePlanetTypesUninhabitable.length - 1)];
+				planetType = planetTypesUninhabitable[ExerelinUtils.getRandomInRange(0, planetTypesUninhabitable.length - 1)];
 
 			String name = "";
 			String id = "";
@@ -606,9 +627,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					boolean moonInhabitable = Math.random() <= ExerelinConfig.moonHabitableChance;
 					String moonType = "";
 					if (moonInhabitable)
-						moonType = possibleMoonTypes[ExerelinUtils.getRandomInRange(0, possibleMoonTypes.length - 1)];
+						moonType = moonTypes[ExerelinUtils.getRandomInRange(0, moonTypes.length - 1)];
 					else
-						moonType = possibleMoonTypesUninhabitable[ExerelinUtils.getRandomInRange(0, possibleMoonTypesUninhabitable.length - 1)];
+						moonType = moonTypesUninhabitable[ExerelinUtils.getRandomInRange(0, moonTypesUninhabitable.length - 1)];
 						
 					angle = ExerelinUtils.getRandomInRange(1, 360);
 					distance = ExerelinUtils.getRandomInRange(650, 1300);
@@ -797,7 +818,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				owningFactionId = planetFaction.getId();
 			name = planet.getName() + " " + name;
 			String id = name.replace(' ','_');
-			String image = possibleStationImages[ExerelinUtils.getRandomInRange(0, possibleStationImages.length - 1)];
+			String image = stationImages[ExerelinUtils.getRandomInRange(0, stationImages.length - 1)];
 			if (owningFactionId.equals("shadow_industry"))
 				image = "station_shi_prana";	// custom station image for Shadowyards
 			
