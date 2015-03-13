@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
 
 /**
  * Creates diplomacy events at regular intervals; handles war weariness
@@ -94,7 +95,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 loot.addCommodity("prisoner", 1);
             }
         }
-        //loot.addCrew(CargoAPI.CrewXPLevel.GREEN, crew*ExerelinConfig.crewLootMult);
+        crew = (int)(crew*ExerelinConfig.crewLootMult*MathUtils.getRandomNumberInRange(0.5f, 1.5f));
+        crew = crew + MathUtils.getRandomNumberInRange(-3, 3);
+        if (crew > 0) loot.addCrew(CargoAPI.CrewXPLevel.GREEN, crew);
     }
     
     @Override

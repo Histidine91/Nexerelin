@@ -19,14 +19,17 @@
     "playerBaseSalary": 5000, # Double
     "playerSalaryIncrementPerLevel": 1000, # Double
     "playerInsuranceMult": 0.5,
+    "fleetBonusFpPerPlayerLevel": 1.0,
     
-    "prisonerRepatriateRepValue": 0.05;
-    "prisonerBaseRansomValue": 2000;
-    "prisonerRansomValueIncrementPerLevel": 200;
-    "prisonerBaseSlaveValue": 4000;
-    "prisonerSlaveValueIncrementPerLevel": 400;
-    "prisonerSlaveRepValue": -0.05;
-    "prisonerLootChancePer10Fp": 0.07;
+    "prisonerRepatriateRepValue": 0.05,
+    "prisonerBaseRansomValue": 2000,
+    "prisonerRansomValueIncrementPerLevel": 200,
+    "prisonerBaseSlaveValue": 4000,
+    "prisonerSlaveValueIncrementPerLevel": 400,
+    "prisonerSlaveRepValue": -0.05,
+    "prisonerLootChancePer10Fp": 0.07,
+    
+    "crewLootMult": 0.02,
 
     "validBoardingFlagships":["atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2", "ori_butterflier", "brdy_eschaton", "sun_ice_shalom"], # String array
     "validTroopTransportShips":["valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_auxiliary", "qua_yidato", "cane", "ms_potnia", "pb_vanghentmk2", "pn_valkyrie", "sun_ice_shalom", "SCY_hydra"], # String array

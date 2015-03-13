@@ -37,8 +37,9 @@ public class ExerelinConfig
     // Player settings
     public static float playerBaseSalary = 5000f;
     public static float playerSalaryIncrementPerLevel = 1000f;
-    public static boolean playerFactionFreeTransfer = false;
     public static float playerInsuranceMult = 0.5f;
+    
+    public static float fleetBonusFpPerPlayerLevel = 1f;
     
     // Prisoners
     public static float prisonerRepatriateRepValue = 0.05f;
@@ -49,7 +50,7 @@ public class ExerelinConfig
     public static float prisonerSlaveRepValue = -0.05f;
     public static float prisonerLootChancePer10Fp = 0.05f;
     
-    //public static float crewLootMult = 0.05f;
+    public static float crewLootMult = 0.02f;
     
     // Special Ships
     public static String[] validBoardingFlagships = new String[]{};
@@ -87,6 +88,7 @@ public class ExerelinConfig
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary");
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel");
             playerInsuranceMult = (float)settings.optDouble("playerInsuranceMult");
+            fleetBonusFpPerPlayerLevel = (float)settings.optDouble("fleetBonusFpPerPlayerLevel");
             
             prisonerRepatriateRepValue = (float)settings.optDouble("prisonerRepatriateRepValue");
             prisonerBaseRansomValue = (float)settings.optDouble("prisonerBaseRansomValue");
@@ -96,6 +98,8 @@ public class ExerelinConfig
             prisonerLootChancePer10Fp  = (float)settings.optDouble("prisonerLootChancePer10Fp");
             prisonerSlaveRepValue = (float)settings.optDouble("prisonerSlaveRepValue");
 
+            crewLootMult = (float)settings.optDouble("crewLootMult");
+            
             validBoardingFlagships = JSONArrayToStringArray(settings.getJSONArray("validBoardingFlagships"));
             validTroopTransportShips = JSONArrayToStringArray(settings.getJSONArray("validTroopTransportShips"));
             validMiningShips = JSONArrayToStringArray(settings.getJSONArray("validMiningShips"));

@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
 import com.fs.starfarer.api.util.IntervalUtil;
+import exerelin.utilities.ExerelinConfig;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -105,6 +106,8 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         if (market.hasCondition("regional_capital")) size += baseSize * 0.05;
         if (market.hasCondition("headquarters")) size += baseSize * 0.1;
         
+        size = size + Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
+        
         return size;
     }
     
@@ -154,7 +157,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         // so we have this check to prevent NPEs
         if (!reserves.containsKey(marketId))
         {
-            log.info("Get reserve size - failed to get key " + marketId);
+            //log.info("Get reserve size - failed to get key " + marketId);
             //log.info(reserves);
             return -1f;
         }

@@ -18,6 +18,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
+import exerelin.utilities.ExerelinConfig;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,6 +90,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         if (originMarket.hasCondition("spaceport")) maxFP += maxFPbase * 0.05;
         if (originMarket.hasCondition("regional_capital")) maxFP += maxFPbase * 0.05;
         if (originMarket.hasCondition("headquarters")) maxFP += maxFPbase * 0.1;
+        
+        maxFP = maxFP + Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
         
         return (maxFP * (MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f)));
     }

@@ -149,11 +149,6 @@ public class StationRecord
 
 		owningFaction = SectorManager.getCurrentSectorManager().getDiplomacyManager().getRecordForFaction(newOwnerFactionId);
 
-		if(newOwnerFactionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
-			stationToken.getCargo().setFreeTransfer(ExerelinConfig.playerFactionFreeTransfer);
-		else
-			stationToken.getCargo().setFreeTransfer(false);
-
 		// Update relationship
 		if(!originalOwnerId.equalsIgnoreCase("") && updateRelationship)
 			SectorManager.getCurrentSectorManager().getDiplomacyManager().updateRelationshipOnEvent(originalOwnerId, newOwnerFactionId, "LostStation");

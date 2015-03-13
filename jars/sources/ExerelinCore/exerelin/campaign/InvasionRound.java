@@ -221,7 +221,7 @@ public class InvasionRound {
 		}
 		
 		float outcome = attackerStrength - defenderStrength;
-		float marineLossFactor = defenderStrength * defenderStrength/attackerStrength;		
+		float marineLossFactor = defenderStrength * (0.5f + 0.5f*defenderStrength/attackerStrength);		
 		float marineLossMod = MARINE_LOSS_MULT - MARINE_LOSS_RANDOM_MOD;
 		if (simType == InvasionSimulationType.REALISTIC)
 			marineLossMod += (float)(2 * Math.random() * MARINE_LOSS_RANDOM_MOD);
