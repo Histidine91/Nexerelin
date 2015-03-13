@@ -1,5 +1,5 @@
 {
-	"uniqueModClassName":"data.scripts.world.SCY_homeSystem", # String
+	"uniqueModClassName":"data.scripts.world.SCY_gen", # String
 	"factionNiceName":"Scy", # String
 	"playableFaction":"true", # Boolean
 
@@ -45,7 +45,8 @@
 	"freighterVariants":[
 		"SCY_balius_recon",
 		"SCY_centaur_recon",
-		"SCY_centaur_standard"
+		"SCY_centaur_standard",
+		"SCY_xanthus_standard",
 		], # String array
 		
 	"tankerVariants":[
@@ -98,6 +99,9 @@
 		"SCY_megaera_combat",
 		"SCY_megaera_recon",
 		"SCY_megaera_suckerPunch",
+		"SCY_stymphalian_recon",
+		"SCY_stymphalian_combat",
+		"SCY_stymphalian_elite"
 		], # String array
 	
 	"destroyerVariants":[
