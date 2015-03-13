@@ -263,8 +263,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         if (originMarket.getSize() >= 4)
         {
             this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
+            this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
             if (originMarket.getSize() >= 6)
             {
+                this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
+                this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
                 this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
             }
         }
