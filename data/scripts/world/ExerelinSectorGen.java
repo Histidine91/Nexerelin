@@ -59,6 +59,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"Rutherford", "Maxwell", "Bohr", "Pauli", "Curie", "Meitner", "Heisenberg", "Feynman"};
 	private static final String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
 		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
+	private static final String[] starBackgrounds = new String[]
+	{
+		"backgrounds/background1.jpg", "backgrounds/background2.jpg", "backgrounds/background3.jpg", "backgrounds/background4.jpg",
+		"exerelin/backgrounds/blue_background1.jpg", "exerelin/backgrounds/blue_background2.jpg",
+		"exerelin/backgrounds/bluewhite_background1.jpg", "exerelin/backgrounds/bluewhite_background2.jpg", 
+		"exerelin/backgrounds/dark_background1.jpg", "exerelin/backgrounds/dark_background2.jpg",
+		"exerelin/backgrounds/green_background1.jpg", "exerelin/backgrounds/green_background2.jpg",
+		"exerelin/backgrounds/orange_background1.jpg", "exerelin/backgrounds/orange_background2.jpg",
+		"exerelin/backgrounds/purple_background1.jpg", "exerelin/backgrounds/purple_background2.jpg",
+		"exerelin/backgrounds/white_background1.jpg", "exerelin/backgrounds/white_background2.jpg",
+		"backgrounds/2_2.jpg", "backgrounds/2_4.jpg", "backgrounds/3_1.jpg", "backgrounds/4_1.jpg", "backgrounds/4_2.jpg", "backgrounds/5_1.jpg", "backgrounds/5_2.jpg",
+		"backgrounds/6_1.jpg", "backgrounds/7_1.jpg", "backgrounds/7_3.jpg", "backgrounds/8_2.jpg", "backgrounds/9_1.jpg", "backgrounds/9_3.jpg", "backgrounds/9_4.jpg",
+		"backgrounds/9_5.jpg",
+	};
 
 	
 	private List possibleSystemNamesList = new LinkedList(Arrays.asList(possibleSystemNames));
@@ -198,7 +212,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		newMarket.setFactionId(owningFactionId);
 		newMarket.setBaseSmugglingStabilityValue(0);
-		newMarket.getTariff().modifyFlat("generator", 0.2f);	// TODO put in a config or something 
 		
 		newMarket.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		newMarket.addSubmarket(Submarkets.SUBMARKET_BLACK);
@@ -290,6 +303,16 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		addCommodityStockpile(newMarket, "lobster", 0.7f, 0.8f);
 		//if (marketSize >= 4)
 		//	addCommodityStockpile(newMarket, "agent", marketSize);
+		
+		// set tariffs
+		if (newMarket.hasCondition("free_market"))
+		{
+			newMarket.getTariff().modifyFlat("generator", 0.1f);
+		}
+		else
+		{
+			newMarket.getTariff().modifyFlat("generator", 0.2f);	// TODO put in a config or something 
+		}
 		
 		Global.getSector().getEconomy().addMarket(newMarket);
 		entity.setFaction(owningFactionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
@@ -444,101 +467,58 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			star = system.initStar(systemId, "star_yellow", 500f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			//system.setLightColor(new Color(255, 180, 180));
-			if(ExerelinUtils.getRandomInRange(0,1) == 0)
-				system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
-			else
-				system.setBackgroundTextureFilename("graphics/backgrounds/background2.jpg");
 		}
 		else if(starType == 1)
 		{
 			star = system.initStar(systemId, "star_red", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(255, 180, 180));
-			if(ExerelinUtils.getRandomInRange(0,1) == 0)
-				system.setBackgroundTextureFilename("graphics/backgrounds/background3.jpg");
-			else
-				system.setBackgroundTextureFilename("graphics/backgrounds/background1.jpg");
 		}
 		else if(starType == 2)
 		{
 			star = system.initStar(systemId, "star_blue", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(135,206,250));
-			if(ExerelinUtils.getRandomInRange(0,1) == 0)
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/blue_background1.jpg");
-			else
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/blue_background2.jpg");
 		}
 		else if(starType == 3)
 		{
 			star = system.initStar(systemId, "star_white", 300f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			//system.setLightColor(new Color(185,185,240));
-			if(ExerelinUtils.getRandomInRange(0,1) == 0)
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/white_background1.jpg");
-			else
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/white_background2.jpg");
 		}
 		else if(starType == 4)
 		{
 			star = system.initStar(systemId, "star_orange", 900f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(255,220,0));
-			if(ExerelinUtils.getRandomInRange(0,1) == 0)
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/orange_background1.jpg");
-			else
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/orange_background2.jpg");
 		}
 		else if(starType == 5)
 		{
 			star = system.initStar(systemId, "star_yellowwhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(255,255,224));
-			if(ExerelinUtils.getRandomInRange(0,1) == 0)
-				system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
-			else
-				system.setBackgroundTextureFilename("graphics/backgrounds/background2.jpg");
 		}
 		else if(starType == 6)
 		{
 			star = system.initStar(systemId, "star_bluewhite", 400f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(135,206,250));
-			if(ExerelinUtils.getRandomInRange(0,1) == 0)
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/bluewhite_background1.jpg");
-			else
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/bluewhite_background2.jpg");
 		}
 		else if(starType == 7)
 		{
 			star = system.initStar(systemId, "star_purple", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(218,112,214));
-			if(ExerelinUtils.getRandomInRange(0,1) == 0)
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/purple_background1.jpg");
-			else
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/purple_background2.jpg");
 		}
 		else if(starType == 8)
 		{
 			star = system.initStar(systemId, "star_dark", 700f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(105,105,105));
-			if(ExerelinUtils.getRandomInRange(0,1) == 0)
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/dark_background1.jpg");
-			else
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/dark_background2.jpg");
 		}
 		else if(starType == 9)
 		{
 			star = system.initStar(systemId, "star_green", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(240,255,240));
-			if(ExerelinUtils.getRandomInRange(0,1) == 0)
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/green_background1.jpg");
-			else
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/green_background2.jpg");
 		}
 		else
 		{
 			star = system.initStar(systemId, "star_greenwhite", 600f, (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize), (float)ExerelinUtils.getRandomInRange(maxSectorSize*-1, maxSectorSize));
 			system.setLightColor(new Color(240,255,240));
-			if(ExerelinUtils.getRandomInRange(0,1) == 0)
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/greenwhite_background1.jpg");
-			else
-				system.setBackgroundTextureFilename("graphics/exerelin/backgrounds/greenwhite_background1.jpg");
 		}
+		system.setBackgroundTextureFilename("graphics/" + starBackgrounds[ExerelinUtils.getRandomInRange(0, starBackgrounds.length - 1)]);
 
 
 		// Build base planets
