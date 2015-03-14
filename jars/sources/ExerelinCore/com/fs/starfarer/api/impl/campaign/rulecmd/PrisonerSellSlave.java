@@ -26,7 +26,7 @@ public class PrisonerSellSlave extends AgentActionBase {
 		int ransomValue = (int)(ExerelinConfig.prisonerBaseSlaveValue + ExerelinConfig.prisonerSlaveValueIncrementPerLevel * (level - 1));
                 Global.getSector().getPlayerFleet().getCargo().getCredits().add(ransomValue);
                 
-                SectorManager.notifySlavesSold(target.getMarket(), level);
+                SectorManager.notifySlavesSold(target.getMarket(), 1);
                 
                 return true;
         }

@@ -133,12 +133,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         for (final MarketAPI market : markets) {
             String factionId = market.getFactionId();
             if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
+            if (factionId.equals("templars")) continue;
             if (marketLastSoldSlaves.getPrimaryEntity().isInOrNearSystem(market.getStarSystem())) continue;	// station capture news is sector-wide
             if (seenFactions.contains(factionId)) continue;
 
             seenFactions.add(factionId);
             factionsToNotify.add(factionId);
         }
+        //log.info("Selling " + numSlavesRecentlySold + " slaves; rep penalty for each is " + ExerelinConfig.prisonerSlaveRepValue);
         float repPenalty = ExerelinConfig.prisonerSlaveRepValue * numSlavesRecentlySold;
         
         Map<String, Object> params = new HashMap<>();
