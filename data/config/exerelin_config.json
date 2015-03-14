@@ -31,10 +31,8 @@
     
     "crewLootMult": 0.02,
 
-    "validBoardingFlagships":["atlas", "mazerk", "neerin", "thule_hansa", "qua_cesall", "zorg_auxiliary", "neutrino_nausicaa", "neutrino_nausicaa2", "ori_butterflier", "brdy_eschaton", "sun_ice_shalom"], # String array
-    "validTroopTransportShips":["valkyrie", "hadd_stonehead", "bushi_sangu", "hii_saari", "zorg_auxiliary", "qua_yidato", "cane", "ms_potnia", "pb_vanghentmk2", "pn_valkyrie", "sun_ice_shalom", "SCY_hydra"], # String array
     "validMiningShips":["mining_drone", "zorg_sphere", "pn_mlmv"], # String array
 
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "luddic_church", "pirates"], # String array
-    "supportedModFactions":["batavia", "blackrock_driveyards", "bushi", "citadeldefenders", "dstech", "gedune", "hiigaran_descendants", "insurgency", "interstellarFederation", "junk_pirates", "mayorate", "neutrinocorp", "nomads", "ori", "rori", "pack", "patnavy", "pn", "regime", "shadow_industry", "syndicate_asp", "valkyrian", "zorg", "relics", "BGE", "qualljom", "scavengers", "sun_ice", "exigency", "exipirated", "interstellarimperium", "eleutheria", "SCY", "lotus_pirates", "diableavionics", "crystanite", "templars"], # String array
+    "supportedModFactions":["blackrock_driveyards", "bushi", "citadeldefenders", "hiigaran_descendants", "junk_pirates", "mayorate", "neutrinocorp", "ori", "rori", "pack", "patnavy", "shadow_industry", "syndicate_asp", "valkyrian", "exigency", "exipirated", "interstellarimperium", "SCY", "diableavionics", "crystanite", "templars"], # String array
 }

@@ -100,8 +100,6 @@ public class ExerelinConfig
 
             crewLootMult = (float)settings.optDouble("crewLootMult");
             
-            validBoardingFlagships = JSONArrayToStringArray(settings.getJSONArray("validBoardingFlagships"));
-            validTroopTransportShips = JSONArrayToStringArray(settings.getJSONArray("validTroopTransportShips"));
             validMiningShips = JSONArrayToStringArray(settings.getJSONArray("validMiningShips"));
 
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
