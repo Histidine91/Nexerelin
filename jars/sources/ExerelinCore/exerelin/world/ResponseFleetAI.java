@@ -37,12 +37,9 @@ public class ResponseFleetAI implements EveryFrameScript
             return;
         }
         FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
-        if (assignment != null)
-        {
-            float fp = this.fleet.getFleetPoints();
-            if (fp < this.data.startingFleetPoints / 2.0F) {
-                //giveStandDownOrders();
-            }
+        float fp = this.fleet.getFleetPoints();
+        if (fp < this.data.startingFleetPoints / 2.0F) {
+            giveStandDownOrders();
         }
         else
         {
@@ -50,7 +47,6 @@ public class ResponseFleetAI implements EveryFrameScript
             StarSystemAPI system = market.getStarSystem();
             if (system != null)
             {
-                //log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " en route to target");
                 if (system != this.fleet.getContainingLocation()) {
                     this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, "travelling to the " + system.getBaseName() + " star system");
                 }
