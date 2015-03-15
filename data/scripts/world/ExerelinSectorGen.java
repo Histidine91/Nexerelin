@@ -884,7 +884,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(primaryWorld.getId() + "_jump", primaryWorld.getName() + " Gate");
 			float radius = primaryWorld.getRadius();
-			float orbitDistance = 250f;
+			float orbitDistance = radius + 250f;
 			float orbitDays = getOrbitalPeriod(radius, orbitDistance, 2);
 			jumpPoint.setCircularOrbit(primaryWorld, (float)Math.random() * 360, orbitDistance, orbitDays);
 
