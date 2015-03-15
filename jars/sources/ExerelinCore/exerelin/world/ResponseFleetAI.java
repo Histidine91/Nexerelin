@@ -38,7 +38,7 @@ public class ResponseFleetAI implements EveryFrameScript
         }
         FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
         float fp = this.fleet.getFleetPoints();
-        if (fp < this.data.startingFleetPoints / 2.0F) {
+        if (fp < this.data.startingFleetPoints / 2.0F && fp < 25f) {
             giveStandDownOrders();
         }
         else
