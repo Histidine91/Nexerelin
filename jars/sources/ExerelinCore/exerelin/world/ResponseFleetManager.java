@@ -74,7 +74,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         if (maxFP < 50) name = "Small " + name;
         CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
              
-        fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinInvasionFleet");
+        fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinResponseFleet");
         fleet.getMemoryWithoutUpdate().set("$maxFP", maxFP);
         fleet.getMemoryWithoutUpdate().set("$originMarket", origin);
         

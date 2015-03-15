@@ -14,12 +14,14 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import data.scripts.campaign.SSP_FleetFactory;
 import data.scripts.plugins.LevelupPluginImpl;
 import data.scripts.world.SSP_FleetInjector;
 import data.scripts.world.SSP_FleetInjector.CommanderType;
 import data.scripts.world.SSP_FleetInjector.CrewType;
 import data.scripts.world.SSP_FleetInjector.FleetStyle;
+import org.apache.log4j.Logger;
 
 
 public class ExerelinUtilsFleet
@@ -65,7 +67,7 @@ public class ExerelinUtilsFleet
     private static int LARGE_FLEET_SUPPLIES_DAY = 60;
     private static int EXTRA_LARGE_FLEET_SUPPLIES_DAY = 90;
     
-    private static final LevelupPluginImpl levelUp = new LevelupPluginImpl();
+    public static Logger log = Global.getLogger(ExerelinUtilsFleet.class);
    
     /**
      * Used by Starsector Plus
@@ -88,6 +90,13 @@ public class ExerelinUtilsFleet
             case "exerelinInvasionFleet":
                 injector.levelCommander(fleet.getCommander(), fleet, CommanderType.ELITE, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
                 SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
+                int numMarines = fleet.getCargo().getMarines();
+                log.info("Invasion fleet " + fleet.getNameWithFaction() + " has " + numMarines + " marines");
+                for (int i=0; i<numMarines; i=i+100)
+                {
+                    fleet.getFaction().pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, qualityFactor, fleet);
+                }
+                fleet.updateCounts();
                 injector.levelFleet(fleet, CrewType.ELITE, FleetStyle.ELITE, faction);
                 break;
             case "exerelinInvasionSupportFleet":

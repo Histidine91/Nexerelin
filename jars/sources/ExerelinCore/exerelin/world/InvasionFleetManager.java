@@ -19,6 +19,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -137,7 +138,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         else if (maxFP > 150) name = "Grand " + name;
         CampaignFleetAPI fleet = FleetFactory.createGenericFleet(originMarket.getFactionId(), name, qf, maxFP);
         
-        for (int i=0; i<defenderStrength/100; i++)
+        for (int i=0; i<defenderStrength; i=i+100)
         {
             invader.pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, qf, fleet);
         }
@@ -183,11 +184,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         {
             if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
             List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, false);
-            for (String otherFaction: enemies)
-            {
-                factionPicker.add(sector.getFaction(otherFaction));
-                break;
-            }
+
+            if (!enemies.isEmpty()) factionPicker.add(faction);
         }
         FactionAPI invader = factionPicker.pick();
         if (invader == null) return;
@@ -232,9 +230,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         
         // now we pick a target
         Vector2f originMarketLoc = originMarket.getLocationInHyperspace();
-        List<String> pirateFactions = DiplomacyManager.getPirateFactionsCopy();
-        for (MarketAPI market : markets) {
-            if  ( market.getFaction().isHostileTo(invader) && !pirateFactions.contains(market.getFactionId()) )
+        for (MarketAPI market : markets) 
+        {
+            FactionAPI marketFaction = market.getFaction();
+            if  ( marketFaction.isHostileTo(invader) && !ExerelinUtilsFaction.isPirateFaction(marketFaction.getId())) 
             {
                 /*
                 float defenderStrength = InvasionRound.GetDefenderStrength(market);
