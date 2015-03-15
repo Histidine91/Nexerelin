@@ -448,6 +448,18 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		log.info("Finished sector generation");
 	}
+		
+	public float getOrbitalPeriod(float primaryRadius, float orbitRadius, float density)
+	{
+		primaryRadius *= 0.01;
+		orbitRadius *= 0.01;
+		
+		float mass = (float)Math.floor(4f / 3f * Math.PI * Math.pow(primaryRadius, 3));
+		mass *= density;
+		float radiusCubed = (float)Math.pow(orbitRadius, 3);
+		float period = (float)(2 * Math.PI * Math.sqrt(radiusCubed/mass) * 2);
+		return period;
+	}
 
 	public SectorEntityToken makeStar(int index, String systemId, StarSystemAPI system, String type, float size)
 	{
@@ -592,7 +604,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float radius;
 			float angle = ExerelinUtils.getRandomInRange(1, 360);
 			float distance = 3000 + (distanceStepping * (i  + 1)) + ExerelinUtils.getRandomInRange((distanceStepping/3)*-1, distanceStepping/3);
-			float orbitDays = distance / 16 * ExerelinUtils.getRandomInRange(1, 3);
+			float orbitDays = getOrbitalPeriod(star.getRadius(), distance + star.getRadius(), 1);
 			if(planetType.equalsIgnoreCase("gas_giant") || planetType.equalsIgnoreCase("ice_giant"))
 			{
 				radius = ExerelinUtils.getRandomInRange(325, 375);
@@ -640,7 +652,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					angle = ExerelinUtils.getRandomInRange(1, 360);
 					distance = ExerelinUtils.getRandomInRange(650, 1300);
 					float moonRadius = ExerelinUtils.getRandomInRange(50, 100);
-					orbitDays = distance / 16 * ExerelinUtils.getRandomInRange(1, 3);
+					orbitDays = getOrbitalPeriod(star.getRadius(), distance + star.getRadius(), 2);
 					PlanetAPI newMoon = system.addPlanet(name + " " + ext, newPlanet, name + " " + ext, moonType, angle, moonRadius, distance, orbitDays);
 					if(moonInhabitable)
 					{	
@@ -739,22 +751,41 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 
 			float width = ExerelinUtils.getRandomInRange(10, 50);
-			float minOrbitDays = ExerelinUtils.getRandomInRange(240, 360);
-			float maxOrbitDays = ExerelinUtils.getRandomInRange(360, 480);
+			float baseOrbitDays = getOrbitalPeriod(planet.getRadius(), orbitRadius, planet.isStar() ? 1 : 2);
+			float minOrbitDays = baseOrbitDays * 0.75f;
+			float maxOrbitDays = baseOrbitDays * 1.25f;
 			system.addAsteroidBelt(planet, numAsteroids, orbitRadius, width, minOrbitDays, maxOrbitDays);
 		}
 
 		// Always put an asteroid belt around the sun
-		system.addAsteroidBelt(star, 25, ExerelinUtils.getRandomInRange(1000, 8000), ExerelinUtils.getRandomInRange(10, 50), ExerelinUtils.getRandomInRange(240, 360), ExerelinUtils.getRandomInRange(360, 480));
+		do {
+			float distance = ExerelinUtils.getRandomInRange(1500, 8000);
+			float baseOrbitDays = getOrbitalPeriod(star.getRadius(), distance, 1);
+			float minOrbitDays = baseOrbitDays * 0.75f;
+			float maxOrbitDays = baseOrbitDays * 1.25f;
+			
+			system.addAsteroidBelt(star, 25, distance, ExerelinUtils.getRandomInRange(10, 50), minOrbitDays, maxOrbitDays);
 
-		// Another one if medium system size
-		if(ExerelinSetupData.getInstance().maxSystemSize > 16000)
-			system.addAsteroidBelt(star, 50, ExerelinUtils.getRandomInRange(12000, 25000), ExerelinUtils.getRandomInRange(50, 100), ExerelinUtils.getRandomInRange(480, 720), ExerelinUtils.getRandomInRange(720, 960));
-
-		// And another one if a large system
-		if(ExerelinSetupData.getInstance().maxSystemSize > 32000)
-			system.addAsteroidBelt(star, 75, ExerelinUtils.getRandomInRange(25000, 35000), ExerelinUtils.getRandomInRange(100, 150), ExerelinUtils.getRandomInRange(960, 1440), ExerelinUtils.getRandomInRange(1440, 1920));
-
+			// Another one if medium system size
+			if(ExerelinSetupData.getInstance().maxSystemSize > 16000)
+			{
+				distance = ExerelinUtils.getRandomInRange(12000, 25000);
+				baseOrbitDays = getOrbitalPeriod(star.getRadius(), distance, 1);
+				minOrbitDays = baseOrbitDays * 0.75f;
+				maxOrbitDays = baseOrbitDays * 1.25f;
+				system.addAsteroidBelt(star, 50, distance, ExerelinUtils.getRandomInRange(50, 100), minOrbitDays, maxOrbitDays);
+			}
+			// And another one if a large system
+			if(ExerelinSetupData.getInstance().maxSystemSize > 32000)
+			{
+				distance = ExerelinUtils.getRandomInRange(12000, 25000);
+				baseOrbitDays = getOrbitalPeriod(star.getRadius(), distance, 1);
+				minOrbitDays = baseOrbitDays * 0.75f;
+				maxOrbitDays = baseOrbitDays * 1.25f;
+				system.addAsteroidBelt(star, 75, distance, ExerelinUtils.getRandomInRange(100, 150),  minOrbitDays, maxOrbitDays);
+			}
+		} while (false);
+		
 		// Build stations
 		int numStation;
 		if(ExerelinSetupData.getInstance().numSystems != 1)
@@ -813,7 +844,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				orbitRadius = 500;
 			else if (planet.isStar())
 				orbitRadius = ExerelinUtils.getRandomInRange(1000, 16000);
-			int orbitDays = orbitRadius / 25;	// ExerelinUtils.getRandomInRange(50, 100);
+			float orbitDays = getOrbitalPeriod(planet.getRadius(), orbitRadius + planet.getRadius(), 2);
 				
 			String owningFactionId = getRandomFaction();
 			FactionAPI planetFaction = planet.getFaction();
@@ -852,7 +883,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (ExerelinSetupData.getInstance().numSystems > 1)
 		{
 			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(primaryWorld.getId() + "_jump", primaryWorld.getName() + " Gate");
-			jumpPoint.setCircularOrbit(primaryWorld, (float)Math.random() * 360, primaryWorld.getRadius() + 250, 120);
+			float radius = primaryWorld.getRadius();
+			float orbitDistance = 250f;
+			float orbitDays = getOrbitalPeriod(radius, orbitDistance, 2);
+			jumpPoint.setCircularOrbit(primaryWorld, (float)Math.random() * 360, orbitDistance, orbitDays);
 
 			jumpPoint.setStandardWormholeToHyperspaceVisual();
 			system.addEntity(jumpPoint);
@@ -865,7 +899,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
 				"comm_relay", // type of object, defined in custom_entities.json
 				relayOwner); // faction
-		relay.setCircularOrbit(star, 90, 1200, 180);
+		relay.setCircularOrbit(star, (float)Math.random() * 360, 1500, getOrbitalPeriod(star.getRadius(), 1500, 1));
 		systemToRelay.put(system.getId(), system.getId() + "_relay");
 		
 		starNum++;
