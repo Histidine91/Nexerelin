@@ -462,6 +462,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		possibleSystemNamesList.remove(systemNameIndex);
 		String systemName = system.getName();
 		String systemId = system.getId();
+		SectorEntityToken primaryWorld = null;
 		
 		int maxSectorSize = ExerelinSetupData.getInstance().maxSectorSize;
 		if((ExerelinSetupData.getInstance().numSystems == sector.getStarSystems().size()
@@ -609,6 +610,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 
 			SectorEntityToken newPlanet = system.addPlanet(id, star, name, planetType, angle, radius, distance, orbitDays);
+			if (i == 0) primaryWorld = newPlanet;
 
 			// 50% Chance to build moons around planet
 			if(ExerelinUtils.getRandomInRange(0, 1) == 1)
@@ -848,9 +850,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// Build hyperspace exits
 		if (ExerelinSetupData.getInstance().numSystems > 1)
 		{
-			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(system.getId() + "_jump", "Jump Point Alpha");
-			OrbitAPI orbit = Global.getFactory().createCircularOrbit(system.createToken(0,0), 0f, 1200, 120);
-			jumpPoint.setOrbit(orbit);
+			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(primaryWorld.getId() + "_jump", primaryWorld.getName() + " Gate");
+                        jumpPoint.setCircularOrbit(primaryWorld, (float)Math.random() * 360, primaryWorld.getRadius() + 250, 120);
 
 			jumpPoint.setStandardWormholeToHyperspaceVisual();
 			system.addEntity(jumpPoint);
