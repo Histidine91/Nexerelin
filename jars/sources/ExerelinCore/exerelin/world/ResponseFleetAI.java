@@ -31,7 +31,7 @@ public class ResponseFleetAI implements EveryFrameScript
     {
         float days = Global.getSector().getClock().convertToDays(amount);
         this.daysTotal += days;
-        if (this.daysTotal > 30.0F)
+        if (this.daysTotal > 60.0F)
         {
             giveStandDownOrders();
             return;
