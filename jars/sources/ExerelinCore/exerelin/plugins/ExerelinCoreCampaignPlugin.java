@@ -17,6 +17,12 @@ import exerelin.world.ResponseFleetManager;
 public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 
 	@Override
+	public String getId()
+	{
+		return "ExerelinCoreCampaignPlugin";
+	}
+	
+	@Override
 	public PluginPick<ReputationActionResponsePlugin> pickReputationActionResponsePlugin(Object action, String factionId) {
 		if (action instanceof RepActions || action instanceof RepActionEnvelope) {
 			return new PluginPick<ReputationActionResponsePlugin>(
@@ -29,10 +35,10 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 	
 	@Override
 	public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
-		if (interactionTarget instanceof CampaignFleetAPI) {
-			if (ExerelinUtils.isSSPInstalled())
-				return new  PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPluginWithSSP(), PickPriority.MOD_GENERAL);
-			return new PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPlugin(), PickPriority.MOD_GENERAL);
+		String factionId = interactionTarget.getFaction().getId();
+		if (interactionTarget instanceof CampaignFleetAPI && factionId.equals(PlayerFactionStore.getPlayerFactionId())) 
+		{
+			return new PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPlugin(), PickPriority.MOD_SPECIFIC);
 		}
 		return super.pickInteractionDialogPlugin(interactionTarget);
 	}

@@ -19,7 +19,6 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
-import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
@@ -37,6 +36,7 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.ResponseFleetManager;
 import exerelin.world.ExerelinMarketConditionPicker;
+import exerelin.world.ForcePatrolFleetsScript;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -422,13 +422,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		new Exerelin().generate(sector);
 
-		sector.registerPlugin(new CoreCampaignPluginImpl());
+		if (ExerelinUtils.isSSPInstalled())
+			sector.registerPlugin(new ExerelinCoreCampaignPluginWithSSP());
+		else
+			sector.registerPlugin(new ExerelinCoreCampaignPlugin());
+		
 		sector.addScript(new CoreScript());
+		sector.addScript(new ForcePatrolFleetsScript());
 		sector.addScript(new EconomyLogger());
 		sector.addScript(new CoreEventProbabilityManager());
 		sector.addScript(new EconomyFleetManager());
 		
-		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		sector.addScript(SectorManager.create());
 		sector.addScript(DiplomacyManager.create());
 		sector.addScript(new InvasionFleetManager());
@@ -759,6 +763,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			numStation = ExerelinSetupData.getInstance().maxStations;
 		int currentPlanet = 0;
 		int k = 0;
+		List alreadyUsedStationNames = new ArrayList();
 		while(k < numStation)
 		{
 			PlanetAPI planet = (PlanetAPI)planets.get(currentPlanet);
@@ -795,14 +800,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			while(!nameOK)
 			{
 				name = possibleStationNames[ExerelinUtils.getRandomInRange(0, possibleStationNames.length - 1)];
-				nameOK = true;
-				for(int l = 0; l < system.getOrbitalStations().size(); l++)
-				{
-					String possibleName = planet.getFullName() + " " + name;
-					if(((SectorEntityToken)system.getOrbitalStations().get(l)).getFullName().contains(possibleName))
-						nameOK = false;
-				}
+				if (!alreadyUsedStationNames.contains(name))
+					nameOK = true;
 			}
+			alreadyUsedStationNames.add(name);
 
 			int angle = ExerelinUtils.getRandomInRange(1, 360);
 			int orbitRadius = 300;
@@ -851,7 +852,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (ExerelinSetupData.getInstance().numSystems > 1)
 		{
 			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(primaryWorld.getId() + "_jump", primaryWorld.getName() + " Gate");
-                        jumpPoint.setCircularOrbit(primaryWorld, (float)Math.random() * 360, primaryWorld.getRadius() + 250, 120);
+			jumpPoint.setCircularOrbit(primaryWorld, (float)Math.random() * 360, primaryWorld.getRadius() + 250, 120);
 
 			jumpPoint.setStandardWormholeToHyperspaceVisual();
 			system.addEntity(jumpPoint);

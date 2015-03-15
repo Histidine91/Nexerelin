@@ -19,7 +19,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager;
-import exerelin.plugins.ExerelinReputationPlugin;
+import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 
@@ -33,12 +33,12 @@ public class PrisonerRepatriate extends AgentActionBase {
                 if (superResult == false)
                     return false;
                 
-                // FIXME: may want to migrate to ExerelinReputationPlugin
+                // FIXME: may want to migrate to ExerelinUtilsReputation
                 SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
                 
                 FactionAPI faction = target.getFaction();
                 TextPanelAPI text = dialog.getTextPanel();
-                ExerelinReputationPlugin.adjustPlayerReputation(faction, ExerelinConfig.prisonerRepatriateRepValue, null, text);
+                ExerelinUtilsReputation.adjustPlayerReputation(faction, ExerelinConfig.prisonerRepatriateRepValue, null, text);
                 return true;
         }
 }

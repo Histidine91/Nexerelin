@@ -13,7 +13,7 @@ import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
-import exerelin.plugins.ExerelinReputationPlugin;
+import exerelin.utilities.ExerelinUtilsReputation;
 
 
 public class SlavesSoldEvent extends BaseEventPlugin {
@@ -70,7 +70,7 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 			public void beforeDelivery(CommMessageAPI message) {
                                 for (String factionId : factionsToNotify)
                                 {
-                                        ExerelinReputationPlugin.adjustPlayerReputation(Global.getSector().getFaction(factionId), repPenalty);
+                                        ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), repPenalty);
                                 }
 			}
 		});

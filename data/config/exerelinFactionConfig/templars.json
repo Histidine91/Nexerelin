@@ -3,6 +3,7 @@
     "factionNiceName":"Knights Templar", # String
     "playableFaction":"true", # Boolean
     "isPirateNeutral":"false", # Boolean
+    "spawnPiratesAndMercs":"false",
 
     "stationInteriorIllustrationKeys":["cargo_loading"], # String array
 
