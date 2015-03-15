@@ -102,7 +102,7 @@ public class ResponseFleetAI implements EveryFrameScript
             
             SectorEntityToken destination = data.source;          
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, destination, 1000.0F, "returning to " + destination.getName());
-            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), "standing down");
+            //this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), "standing down");
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }
     }
