@@ -296,16 +296,16 @@ NGCAddShipAndComplement ""ori_bastion_variant""
 AddText ""Added Bastion-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinSCY,NewGameOptionSelected,$option == exerelinNGCJoinSCY,"NGCSetPlayerFaction ""SCY""
-NGCAddShipAndComplement ""SCY_tisiphone_combat""
-AddText ""Added Tisiphone-class frigate"" textFriendColor
+NGCAddShipAndComplement ""SCY_talos_recon""
+AddText ""Added Talos-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinShadowyards,NewGameOptionSelected,$option == exerelinNGCJoinShadowyards,"NGCSetPlayerFaction ""shadow_industry""
 NGCAddShipAndComplement ""ms_enlil_Balanced""
 AddText ""Added Enlil-class gunship"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinValkyrians,NewGameOptionSelected,$option == exerelinNGCJoinValkyrians,"NGCSetPlayerFaction ""valkyrian""
-NGCAddShipAndComplement ""valk_longinus_A""
-AddText ""Added Longinus-class frigate"" textFriendColor
+NGCAddShipAndComplement ""valk_inquisitor_A""
+AddText ""Added Inquisitor-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ,,,,,,
 ExerelinNGCFinalize,ExerelinNGCStep3,,"AddText ""Added $crewAdded crew"" textFriendColor
@@ -419,12 +419,13 @@ ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion
 ,,,,,,
 #START MARKET DIRECTORY OPTIONS,,,,,,
 ExerelinMarketFactionDirectoryOption,ExerelinMarketSpecial,,,,5:exerelinFactionDirectoryMain:Faction directory,
-ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirectoryMain,,Which faction do you want to look up?,"exerelinFactionDirectoryList1:A-G
+ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirectoryMain,FireAll ExerelinFactionDirectory,Which faction do you want to look up?,,
+ExerelinFactionDirectoryOptions,ExerelinFactionDirectory,,,,"exerelinFactionDirectoryList1:A-G
 exerelinFactionDirectoryList2:H-M
 exerelinFactionDirectoryList3:N-Q
 exerelinFactionDirectoryList4:R-Z
-exerelinMarketIntel:Open intel screen
-exerelinMarketSpecial:Back",
+10:exerelinMarketSpecial:Back",
+ExerelinFactionDirectoryOptionIntel,ExerelinFactionDirectory,$hasMarket,,,exerelinMarketIntel:Open intel screen,
 ExerelinFactionDirectoryList1,DialogOptionSelected,$option == exerelinFactionDirectoryList1,FireAll ExerelinFactionDirectoryList1,,,
 ExerelinFactionDirectoryList2,DialogOptionSelected,$option == exerelinFactionDirectoryList2,FireAll ExerelinFactionDirectoryList2,,,
 ExerelinFactionDirectoryList3,DialogOptionSelected,$option == exerelinFactionDirectoryList3,FireAll ExerelinFactionDirectoryList3,,,
