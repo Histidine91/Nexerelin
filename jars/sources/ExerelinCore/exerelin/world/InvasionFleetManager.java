@@ -183,6 +183,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         for (FactionAPI faction: factions)
         {
             if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
+            if (ExerelinUtilsFaction.isPirateFaction(faction.getId())) continue;
             List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, false);
 
             if (!enemies.isEmpty()) factionPicker.add(faction);
