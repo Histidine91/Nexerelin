@@ -70,7 +70,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     
     private Map<String, Float> warWeariness;
-    private static float warWearinessPerInterval = 20f;
+    private static float warWearinessPerInterval = 10f;
     private static DiplomacyEventDef peaceTreatyEvent;
     private static DiplomacyEventDef ceasefireEvent;
     
@@ -93,8 +93,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     private static void loadSettings() throws IOException, JSONException {
         JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
-        baseInterval = (float)config.optDouble("eventFrequency", 20f);
-        warWearinessPerInterval = (float)config.optDouble("warWearinessPerInterval", 20f);
+        baseInterval = (float)config.optDouble("eventFrequency", 10f);
+        warWearinessPerInterval = (float)config.optDouble("warWearinessPerInterval", 10f);
         
         JSONArray pirateFactionsJson = config.getJSONArray("pirateFactions");
         for (int i=0;i<pirateFactionsJson.length();i++){ 

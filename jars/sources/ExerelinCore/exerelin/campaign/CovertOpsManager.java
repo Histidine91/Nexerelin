@@ -72,7 +72,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 
         config = ExerelinUtils.jsonToMap(configJson);
         //baseInterval = (float)config.get("eventFrequency");   // ClassCastException
-        baseInterval = (float)configJson.optDouble("eventFrequency", 30f);
+        baseInterval = (float)configJson.optDouble("eventFrequency", 20f);
     }
 
     public CovertOpsManager()

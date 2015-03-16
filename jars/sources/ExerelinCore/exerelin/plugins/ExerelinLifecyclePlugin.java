@@ -29,10 +29,10 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         Global.getSector().getRules().addTokenReplacementGenerator(new CoreRuleTokenReplacementGeneratorImpl());
         
         ExerelinConfig.loadSettings();
-        Global.getSector().addScript(SectorManager.create());
-        Global.getSector().addScript(DiplomacyManager.create());
-        Global.getSector().addScript(ResponseFleetManager.create());
-        Global.getSector().addScript(CovertOpsManager.create());
+        SectorManager.create();
+        DiplomacyManager.create();
+        ResponseFleetManager.create();
+        CovertOpsManager.create();
         
         if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_salary")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_salary", null);
