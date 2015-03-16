@@ -422,10 +422,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		new Exerelin().generate(sector);
 
-		if (ExerelinUtils.isSSPInstalled())
-			sector.registerPlugin(new ExerelinCoreCampaignPluginWithSSP());
-		else
-			sector.registerPlugin(new ExerelinCoreCampaignPlugin());
+		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		
 		sector.addScript(new CoreScript());
 		sector.addScript(new ForcePatrolFleetsScript());
