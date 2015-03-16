@@ -105,13 +105,22 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private void addCommodityStockpile(MarketAPI market, String commodityID, float amountToAdd)
 	{
 		CommodityOnMarketAPI commodity = market.getCommodityData(commodityID);
+		
+		commodity.addToStockpile(amountToAdd);
+		commodity.addToAverageStockpile(amountToAdd);
+		
+		if (market.getFactionId().equals("templars"))
+		{
+			CargoAPI cargoTemplars = market.getSubmarket("tem_templarmarket").getCargo();
+			cargoTemplars.addCommodity(commodityID, amountToAdd * 0.2f);
+			return;
+		}
+		
 		CargoAPI cargoOpen = market.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
 		CargoAPI cargoBlack = market.getSubmarket(Submarkets.SUBMARKET_BLACK).getCargo();
 		CargoAPI cargoMilitary = null;
-		if (market.getSubmarket(Submarkets.GENERIC_MILITARY) != null)
+		if (market.hasSubmarket(Submarkets.GENERIC_MILITARY))
 			cargoMilitary = market.getSubmarket(Submarkets.GENERIC_MILITARY).getCargo();
-		commodity.addToStockpile(amountToAdd);
-		commodity.addToAverageStockpile(amountToAdd);
 		
 		if (commodityID.equals("agent"))
 		{
@@ -214,10 +223,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		newMarket.setFactionId(owningFactionId);
 		newMarket.setBaseSmugglingStabilityValue(0);
 		
-		newMarket.addSubmarket(Submarkets.SUBMARKET_OPEN);
-		newMarket.addSubmarket(Submarkets.SUBMARKET_BLACK);
-		newMarket.addSubmarket(Submarkets.SUBMARKET_STORAGE);
-		
 		newMarket.addCondition("population_" + marketSize);
 
 		if (planetIndex == 0)
@@ -231,7 +236,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (marketSize >= minSizeForMilitaryBase)
 		{
 			newMarket.addCondition("military_base");
-			newMarket.addSubmarket(Submarkets.GENERIC_MILITARY);
 		}
 		
 		// planet type conditions
@@ -279,6 +283,18 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if(factionId.equals("pirates")) {
 			newMarket.addCondition("free_market");
 		}
+		
+		if (owningFactionId.equals("templars"))
+		{
+			newMarket.addSubmarket("tem_templarmarket");
+			//newMarket.removeSubmarket(Submarkets.GENERIC_MILITARY); // auto added by military base; remove it
+		}
+		else
+		{
+			newMarket.addSubmarket(Submarkets.SUBMARKET_OPEN);
+			newMarket.addSubmarket(Submarkets.SUBMARKET_BLACK);
+		}
+		newMarket.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		
 		// seed the market with some stuff to prevent initial shortage
 		// because the vanilla one is broken for some reason
@@ -439,6 +455,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		DiplomacyManager.initFactionRelationships();
 		
 		SectorManager.setSystemToRelayMap(systemToRelay);
+		
+		// some cleanup
+		List markets = Global.getSector().getEconomy().getMarketsCopy();
+		for (int i=0; i<markets.size(); i++)
+		{
+			MarketAPI market = (MarketAPI)markets.get(i);
+			if (market.getFactionId().equals("templars"))
+			{
+			market.removeSubmarket(Submarkets.GENERIC_MILITARY); // auto added by military base; remove it
+			}
+		}
 		
 		// Remove any data stored in ExerelinSetupData
 		ExerelinSetupData.resetInstance();

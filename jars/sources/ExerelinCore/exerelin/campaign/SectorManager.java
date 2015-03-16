@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
@@ -231,13 +232,31 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         // transfer market and associated entities
         String newOwnerId = newOwner.getId();
+        String oldOwnerId = oldOwner.getId();
         List<SectorEntityToken> linkedEntities = market.getConnectedEntities();
         for (SectorEntityToken entity : linkedEntities)
         {
                 entity.setFaction(newOwnerId);
         }
         market.setFactionId(newOwnerId);
+        if (newOwnerId.equals("templars") && !oldOwnerId.equals("templars"))
+        {
+            market.removeSubmarket(Submarkets.SUBMARKET_OPEN);
+            market.removeSubmarket(Submarkets.SUBMARKET_BLACK);
+            market.removeSubmarket(Submarkets.GENERIC_MILITARY);
+            
+            market.addSubmarket("tem_templarmarket");
+        }
+        else if (!newOwnerId.equals("templars") && oldOwnerId.equals("templars"))
+        {
+            market.addSubmarket(Submarkets.SUBMARKET_OPEN);
+            market.addSubmarket(Submarkets.SUBMARKET_BLACK);
+            if (market.hasCondition("military_base")) market.addSubmarket(Submarkets.GENERIC_MILITARY);
+            
+            market.removeSubmarket("tem_templarmarket");
+        }
         List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
+        
         for (SubmarketAPI submarket : submarkets)
         {
                 String submarketName = submarket.getNameOneLine().toLowerCase();

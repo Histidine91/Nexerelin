@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.events.EventProbabilityAPI;
 import com.fs.starfarer.api.impl.campaign.CoreRuleTokenReplacementGeneratorImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.CustomFleets;
 import com.fs.starfarer.api.impl.campaign.ids.Events;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
@@ -22,6 +23,22 @@ import org.lazywizard.omnifac.OmniFacSettings;
 
 public class ExerelinLifecyclePlugin extends BaseModPlugin {
 
+    // added in 0.3.2; remove after a few versions have passed
+    protected void fixTemplarMarkets()
+    {
+        List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+        for (MarketAPI market : markets) {
+            if (market.getFactionId().equals("templars"))
+            {
+                market.removeSubmarket(Submarkets.SUBMARKET_OPEN);
+                market.removeSubmarket(Submarkets.SUBMARKET_BLACK);
+                market.removeSubmarket(Submarkets.GENERIC_MILITARY);
+            
+                market.addSubmarket("tem_templarmarket");
+            }
+        }
+    }
+    
     @Override
     public void onGameLoad() {
         // the token replacement generators don't get saved
@@ -37,9 +54,11 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_salary")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_salary", null);
         }
-		if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
+        if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_insurance", null);
         }
+                
+        fixTemplarMarkets();
     }
     
     @Override

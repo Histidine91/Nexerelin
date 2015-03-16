@@ -198,8 +198,6 @@ public class ExerelinMarketConditionPicker
                                 market.addCondition(name);
                         if (!cond.getAllowDuplicates())
                                 picker.remove(cond);
-                        if (name.equals("military_base"))
-                                market.addSubmarket(Submarkets.GENERIC_MILITARY);
                         log.info("\tCondition added: " + name);
                 }
 	}
