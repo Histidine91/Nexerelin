@@ -25,7 +25,8 @@ public class ExerelinFactionConfig
     public String[] stationNameSuffixes = new String[]{"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge"};
     
     public Boolean isPirateNeutral = false;
-    public Boolean spawnsPiratesAndMercs = true;    // only used for factions set to not spawn patrols in .faction file
+    public Boolean spawnPatrols = true;    // only used for factions set to not spawn patrols in .faction file
+    public Boolean spawnPiratesAndMercs = true;    // ditto
 
     public double crewExpereinceLevelIncreaseChance = 0.0;
     public double baseFleetCostMultiplier = 1.0;
@@ -90,7 +91,8 @@ public class ExerelinFactionConfig
             factionNiceName = settings.getString("factionNiceName");
             playableFaction = settings.optBoolean("playableFaction", true);
             isPirateNeutral = settings.optBoolean("isPirateNeutral", false);
-            spawnsPiratesAndMercs = settings.optBoolean("spawnsPiratesAndMercs", false);
+            spawnPatrols = settings.optBoolean("spawnPatrols", true);
+            spawnPiratesAndMercs = settings.optBoolean("spawnPiratesAndMercs", true);
 
             stationInteriorIllustrationKeys = JSONArrayToStringArray(settings.getJSONArray("stationInteriorIllustrationKeys"));
 

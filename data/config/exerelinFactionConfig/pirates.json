@@ -2,6 +2,8 @@
     "uniqueModClassName":"", # String
     "factionNiceName":"Pirates", # String
     "playableFaction":"true", # Boolean
+    "spawnPatrols":"true",
+    "spawnPiratesAndMercs":"false",
 
     "stationInteriorIllustrationKeys":["hound_hangar"], # String array
 

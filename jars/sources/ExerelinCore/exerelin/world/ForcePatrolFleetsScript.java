@@ -60,19 +60,26 @@ public class ForcePatrolFleetsScript extends BaseCampaignEventListener implement
 
 			// corescript already took care of the ones where this is true
 			if (!market.getFaction().getCustom().optBoolean(Factions.CUSTOM_NO_PATROLS)) continue;
-
+			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+			if (factionConfig == null) continue;
+			
 			String id = market.getId();
 			if (marketsWithAssignedPatrolScripts.contains(id)) continue;
 			marketsWithAssignedPatrolScripts.add(id);
 
-			PatrolFleetManager script = new PatrolFleetManager(market);
 			SectorEntityToken entity = market.getPrimaryEntity();
-			entity.addScript(script);
-			log.info("Added patrol fleet spawning script to market [" + market.getName() + "]");
-
-			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-			if (factionConfig != null && factionConfig.spawnsPiratesAndMercs)
+			if (factionConfig.spawnPatrols)
 			{
+				//log.info("Faction " + market.getFactionId() + " can spawn patrols");
+				PatrolFleetManager script = new PatrolFleetManager(market);
+				entity.addScript(script);
+				log.info("Added patrol fleet spawning script to market [" + market.getName() + "]");
+			}
+
+			
+			if (factionConfig.spawnPiratesAndMercs)
+			{
+				//log.info("Faction " + market.getFactionId() + " can spawn pirates/mercs");
 				MercAndPirateFleetManager pirateScript = new MercAndPirateFleetManager(market);
 				entity.addScript(pirateScript);
 				log.info("Added pirate fleet spawning script to market [" + market.getName() + "]");
