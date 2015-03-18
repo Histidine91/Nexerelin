@@ -15,7 +15,7 @@ public class NGCSetOmnifacEnabled extends BaseCommandPlugin {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		boolean setting = params.get(0).getBoolean(memoryMap);
-		ExerelinSetupData.getInstance().omniFacPresent = setting;
+		ExerelinSetupData.getInstance().omnifactoryPresent = setting;
 		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
 		memory.set("$omniFacPresent", setting, 0);
 		return true;

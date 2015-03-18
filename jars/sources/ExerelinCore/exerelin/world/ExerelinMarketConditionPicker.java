@@ -143,7 +143,7 @@ public class ExerelinMarketConditionPicker
 		cond = new ExerelinPossibleMarketCondition("volturnian_lobster_pens", 0.5f, 3);
 		cond.setAllowStations(false);
 		industryConds.add(cond);
-		cond = new ExerelinPossibleMarketCondition("aquaculture", 0.4f, 3, false);
+		cond = new ExerelinPossibleMarketCondition("aquaculture", 0.55f, 3, false);
 		cond.setAllowStations(false);
 		primaryResourceConds.add(cond);
 		
@@ -189,15 +189,26 @@ public class ExerelinMarketConditionPicker
 		if (numConds == 0)
 			return;	// out of possible conditions; nothing more to do
 		
-                for (int i=0; i<count; i++)
+                int numAdded = 0;
+                while (numAdded < count)
                 {
                         ExerelinPossibleMarketCondition cond = picker.pick();
                         if (cond == null) break;
                         String name = cond.getName();
-                        for (int j=0; j<count; j++)
-                                market.addCondition(name);
-                        if (!cond.getAllowDuplicates())
+                        if (cond.getAllowDuplicates())
+                        {
+                            for (int i=numAdded; i<count; i++)
+                            {
+                                market.addCondition(cond.name);
+                                numAdded++;
+                            }
+                        }
+                        else
+                        {
+                                market.addCondition(cond.name);
                                 picker.remove(cond);
+                                numAdded++;
+                        }
                         log.info("\tCondition added: " + name);
                 }
 	}
@@ -207,18 +218,19 @@ public class ExerelinMarketConditionPicker
 		log.info("Processing market conditions for " + market.getPrimaryEntity().getName() + " (" + market.getFaction().getDisplayName() + ")");
 		
 		// add primary resource conditions
-		TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
 		if (size >= 4)
-			TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
+			TryAddMarketCondition(market, primaryResourceConds, 2, size, planetType, isStation);
+                else
+                        TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
 		if (size >= 7)
 			TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
 		
 		// add industry
-		
-		if (size >= 4)
-			TryAddMarketCondition(market, industryConds, size, planetType, isStation);
 		if (size >= 5)
+			TryAddMarketCondition(market, industryConds, 2, size, planetType, isStation);
+                else if (size == 4)
 			TryAddMarketCondition(market, industryConds, size, planetType, isStation);
+                
 		if (size >= 7)
 			TryAddMarketCondition(market, industryConds, size, planetType, isStation);
 				

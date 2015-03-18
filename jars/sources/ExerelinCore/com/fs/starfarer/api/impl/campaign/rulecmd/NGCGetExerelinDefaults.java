@@ -22,8 +22,8 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$maxPlanets", setupData.maxPlanets, 0);
 		map.set("$maxStations", setupData.maxStations, 0);
 		map.set("$randomStartRelationships", setupData.randomStartRelationships, 0);
-		map.set("$omniFacPresent", setupData.omniFacPresent, 0);
-		map.set("$randomOmnifactoryLocation", ExerelinConfig.randomOmnifactoryLocation, 0);
+		map.set("$omniFacPresent", setupData.omnifactoryPresent, 0);
+		map.set("$randomOmnifactoryLocation", setupData.randomOmnifactoryLocation, 0);
 		return true;
 	}
 }

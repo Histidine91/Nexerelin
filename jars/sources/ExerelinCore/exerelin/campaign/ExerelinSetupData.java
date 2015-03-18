@@ -29,8 +29,8 @@ public final class ExerelinSetupData
 
     public int maxPlanets = 5;
     public int maxStations = 3;
-    public int maxAsteroidBelts = 2;
-    public int maxSystemSize = 16000;
+    public int maxAsteroidBelts = 3;
+    public int maxSystemSize = 14000;
     public int maxSectorSize = 12000;
 
     // Game defaults
@@ -42,7 +42,8 @@ public final class ExerelinSetupData
     public int numStartFactions = 3;
     public int maxFactionsInExerelinAtOnce = 16;
     public boolean randomStartRelationships = false;
-    public boolean omniFacPresent = false;
+    public boolean omnifactoryPresent = false;
+    public boolean randomOmnifactoryLocation = false;
     public boolean isSectorPopulated = false;
     public boolean isSectorPartiallyPopulated = false;
 

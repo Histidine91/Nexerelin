@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import exerelin.campaign.ExerelinSetupData;
 import exerelin.commandQueue.CommandQueue;
 import exerelin.fleets.ExerelinFleetBase;
 import exerelin.utilities.ExerelinConfig;
@@ -288,7 +289,7 @@ public class SectorManager
                 if(!this.playerFreeTransfer)
                     new OutSystemStationConstructionFleet(sector,  system,  system, "neutral", planet, "storage").spawnFleet();
 
-                if(ExerelinConfig.randomOmnifactoryLocation)
+                if(ExerelinSetupData.getInstance().randomOmnifactoryLocation)
                 {
                     // Choose a random location for the omnifactory
                     system = (StarSystemAPI)Global.getSector().getStarSystems().get(ExerelinUtils.getRandomInRange(0, Global.getSector().getStarSystems().size() - 1));

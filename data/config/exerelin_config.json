@@ -8,8 +8,6 @@
     "minimumPlanets": 3, # Integer
     "minimumStations": 3, # Integer
     "minimumAsteroidBelts": 0, # Integer
-    "planetHabitableChance": 0.7,   # Double
-    "moonHabitableChance": 0.3,   # Double
 
     "asteroidMiningResource": "supplies", # String
     "gasgiantMiningResource": "fuel", # String

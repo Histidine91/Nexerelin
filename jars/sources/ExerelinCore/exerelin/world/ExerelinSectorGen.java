@@ -1,4 +1,4 @@
-package data.scripts.world;
+package exerelin.world;
 
 import java.awt.Color;
 import java.util.List;
@@ -22,9 +22,9 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import data.scripts.campaign.EconomyLogger;
-import data.scripts.world.exerelin.*;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinSetupData;
@@ -33,14 +33,13 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
-import exerelin.world.InvasionFleetManager;
-import exerelin.world.ResponseFleetManager;
-import exerelin.world.ExerelinMarketConditionPicker;
-import exerelin.world.ForcePatrolFleetsScript;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.lazywizard.lazylib.CollectionUtils;
+import org.lazywizard.lazylib.CollectionUtils.CollectionFilter;
 import org.lazywizard.lazylib.MathUtils;
 
 @SuppressWarnings("unchecked")
@@ -64,10 +63,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	{
 		"backgrounds/background1.jpg", "backgrounds/background2.jpg", "backgrounds/background3.jpg", "backgrounds/background4.jpg",
 		"exerelin/backgrounds/blue_background1.jpg", "exerelin/backgrounds/blue_background2.jpg",
-		"exerelin/backgrounds/bluewhite_background1.jpg", "exerelin/backgrounds/bluewhite_background2.jpg", 
+		"exerelin/backgrounds/bluewhite_background1.jpg", "exerelin/backgrounds/orange_background1.jpg",
 		"exerelin/backgrounds/dark_background1.jpg", "exerelin/backgrounds/dark_background2.jpg",
 		"exerelin/backgrounds/green_background1.jpg", "exerelin/backgrounds/green_background2.jpg",
-		"exerelin/backgrounds/orange_background1.jpg", "exerelin/backgrounds/orange_background2.jpg",
 		"exerelin/backgrounds/purple_background1.jpg", "exerelin/backgrounds/purple_background2.jpg",
 		"exerelin/backgrounds/white_background1.jpg", "exerelin/backgrounds/white_background2.jpg",
 		"backgrounds/2-2.jpg", "backgrounds/2-4.jpg", "backgrounds/3-1.jpg", "backgrounds/4-1.jpg", "backgrounds/4-2.jpg", "backgrounds/5-1.jpg", "backgrounds/5-2.jpg",
@@ -82,25 +80,41 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren"};
 	private static final String[] planetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable",
 		"gas_giant", "ice_giant", "frozen", "rocky_ice"};
+        private static final String[] planetTypesGasGiant = new String[] {"gas_giant", "ice_giant"};
 	private static final String[] moonTypes = new String[] {"frozen", "barren", "rocky_ice", "rocky_metallic"};
 	private static final String[] moonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice"};
 	private static final String[] stationImages = new String[] {"station_side00", "station_side02", "station_side04"};
 	
 	private String[] factionIds = new String[]{};
 	private List starPositions = new ArrayList();	
-	private boolean isStartSystemChosen = false;
-	private int starNum = 0;
-	private String relayOwner = "neutral";
-	SectorEntityToken homeworld = null;
-	
-	private Map systemToRelay = new HashMap();
+	private EntityData homeworld = null;
 
+        private List<EntityData> habitablePlanets = new ArrayList<>();
+	private List<EntityData> stations = new ArrayList<>();
+	private Map<String, String> systemToRelay = new HashMap();
+        
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
 
 	private String getRandomFaction()
 	{
 		return factionIds[ExerelinUtils.getRandomInRange(0, factionIds.length-1)];
 	}
+        
+        private void resetVars()
+        {
+            habitablePlanets = new ArrayList<>();
+            stations = new ArrayList<>();
+            ExerelinSetupData.getInstance().resetAvailableFactions();
+            factionIds = ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector());
+        }
+        
+        private void addListToPicker(List list, WeightedRandomPicker picker)
+        {
+            for (Object object : list)
+            {
+                picker.add(object);
+            }
+        }
 	
 	private void addCommodityStockpile(MarketAPI market, String commodityID, float amountToAdd)
 	{
@@ -158,60 +172,63 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		addCommodityStockpile(market, commodityID, amountToAdd);
 	}
 		
-		private void pickEntityInteractionImage(SectorEntityToken entity, MarketAPI market, String planetType, String entityType)
-		{
-			List allowedImages = new ArrayList();
-			allowedImages.add(new String[]{"illustrations", "cargo_loading"} );
-			allowedImages.add(new String[]{"illustrations", "hound_hangar"} );
-			allowedImages.add(new String[]{"illustrations", "space_bar"} );
+        private void pickEntityInteractionImage(SectorEntityToken entity, MarketAPI market, String planetType, String entityType)
+        {
+                List allowedImages = new ArrayList();
+                allowedImages.add(new String[]{"illustrations", "cargo_loading"} );
+                allowedImages.add(new String[]{"illustrations", "hound_hangar"} );
+                allowedImages.add(new String[]{"illustrations", "space_bar"} );
 
-			boolean isStation = (entityType.equals("station"));
-			boolean isMoon = (entityType.equals("moon")); 
-			int size = market.getSize();
+                boolean isStation = (entityType.equals("station"));
+                boolean isMoon = (entityType.equals("moon")); 
+                int size = market.getSize();
 
-			if(market.hasCondition("urbanized_polity") || size >= 4)
-			{
-				allowedImages.add(new String[]{"illustrations", "urban00"} );
-				allowedImages.add(new String[]{"illustrations", "urban01"} );
-				allowedImages.add(new String[]{"illustrations", "urban02"} );
-				allowedImages.add(new String[]{"illustrations", "urban03"} );
-			}
-			if(size >= 4)
-			{
-				allowedImages.add(new String[]{"illustrations", "industrial_megafacility"} );
-				allowedImages.add(new String[]{"illustrations", "city_from_above"} );
-			}
-			if(isStation && size >= 3)
-				allowedImages.add(new String[]{"illustrations", "jangala_station"} );
-			if(entity.getFaction().getId().equals("pirates"))
-				allowedImages.add(new String[]{"illustrations", "pirate_station"} );
-			if(!isStation && (planetType.equals("rocky_metallic") || planetType.equals("rocky_barren")))
-				allowedImages.add(new String[]{"illustrations", "vacuum_colony"} );
-			//if (isMoon)
-			//	allowedImages.add(new String[]{"illustrations", "asteroid_belt_moon"} );
-			if(planetType.equals("desert") && isMoon)
-				allowedImages.add(new String[]{"illustrations", "desert_moons_ruins"} );
-			
-			int index = ExerelinUtils.getRandomInRange(0,allowedImages.size()-1);
-			String[] illustration = (String[])allowedImages.get(index);
-			entity.setInteractionImage(illustration[0], illustration[1]);
-		}
+                if(market.hasCondition("urbanized_polity") || size >= 4)
+                {
+                        allowedImages.add(new String[]{"illustrations", "urban00"} );
+                        allowedImages.add(new String[]{"illustrations", "urban01"} );
+                        allowedImages.add(new String[]{"illustrations", "urban02"} );
+                        allowedImages.add(new String[]{"illustrations", "urban03"} );
+                }
+                if(size >= 4)
+                {
+                        allowedImages.add(new String[]{"illustrations", "industrial_megafacility"} );
+                        allowedImages.add(new String[]{"illustrations", "city_from_above"} );
+                }
+                if(isStation && size >= 3)
+                        allowedImages.add(new String[]{"illustrations", "jangala_station"} );
+                if(entity.getFaction().getId().equals("pirates"))
+                        allowedImages.add(new String[]{"illustrations", "pirate_station"} );
+                if(!isStation && (planetType.equals("rocky_metallic") || planetType.equals("rocky_barren")))
+                        allowedImages.add(new String[]{"illustrations", "vacuum_colony"} );
+                //if (isMoon)
+                //	allowedImages.add(new String[]{"illustrations", "asteroid_belt_moon"} );
+                if(planetType.equals("desert") && isMoon)
+                        allowedImages.add(new String[]{"illustrations", "desert_moons_ruins"} );
+
+                int index = ExerelinUtils.getRandomInRange(0,allowedImages.size()-1);
+                String[] illustration = (String[])allowedImages.get(index);
+                entity.setInteractionImage(illustration[0], illustration[1]);
+        }
 	
-	private MarketAPI addMarketToEntity(int starIndex, int planetIndex, SectorEntityToken entity, String owningFactionId, String planetType, String entityType)
+	private MarketAPI addMarketToEntity(SectorEntityToken entity, EntityData data, String owningFactionId, boolean isCapital)
 	{
 		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
-		boolean isStation = (entityType.equals("station")); 
+                EntityType entityType = data.type;
+                String planetType = data.planetType;
+		boolean isStation = (entityType == EntityType.STATION); 
 		if (isStation) marketSize = 2 + ExerelinUtils.getRandomInRange(1, 2);	// stations are on average smaller
-		else if (entityType.equals("moon")) marketSize = ExerelinUtils.getRandomInRange(1, 2) + ExerelinUtils.getRandomInRange(2, 3);
+		else if (entityType == EntityType.MOON) marketSize = ExerelinUtils.getRandomInRange(1, 2) + ExerelinUtils.getRandomInRange(2, 3);
 		else marketSize = ExerelinUtils.getRandomInRange(2, 3) + ExerelinUtils.getRandomInRange(2, 3);
 		
-		// first planet in the system is a regional capital (or HQ if in Exerelin system)
-		// it is always at least size 5
-		if (planetIndex == 0)
+		if (isCapital)
 		{
-			if (marketSize < 5)
-				marketSize = 5;
+                        if (data == homeworld)
+                        {
+                            if (marketSize < 6) marketSize = 6;
+                        }
+                        else if (marketSize < 5) marketSize = 5;
 		}
 		// Alex says "You can set marketSize via MarketAPI, but it's not "nicely" mutable like other stats at the moment."
 		// so to be safe we only spawn the market after we already know what size it'll be
@@ -225,9 +242,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		newMarket.addCondition("population_" + marketSize);
 
-		if (planetIndex == 0)
+		if (isCapital)
 		{
-			newMarket.addCondition(starIndex == 0 ? "headquarters" : "regional_capital");
+			newMarket.addCondition(data == homeworld ? "headquarters" : "regional_capital");
+                        newMarket.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
 		}
 		
 		int minSizeForMilitaryBase = 5;
@@ -339,25 +357,18 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 	public void addOmnifactory()
 	{
-		if (!ExerelinSetupData.getInstance().omniFacPresent) return;
+		if (!ExerelinSetupData.getInstance().omnifactoryPresent) return;
 
 		SectorEntityToken toOrbit = null;
-		if (ExerelinConfig.randomOmnifactoryLocation)
+                log.info("Randomized omnifac location: " + ExerelinSetupData.getInstance().randomOmnifactoryLocation);
+                
+		if (ExerelinSetupData.getInstance().randomOmnifactoryLocation)
 		{
-			List systems = new ArrayList(Global.getSector().getStarSystems());
+			List<StarSystemAPI> systems = new ArrayList(Global.getSector().getStarSystems());
 			Collections.shuffle(systems);
-			for (int i=0; i > systems.size(); i++)
+			for (StarSystemAPI system : systems)
 			{
-				StarSystemAPI system = (StarSystemAPI)systems.get(i);
-				CollectionUtils.CollectionFilter planetFilter = new CollectionUtils.CollectionFilter() {
-					public boolean accept (Object object)
-					{
-						SectorEntityToken token = (SectorEntityToken)object;
-						String factionId = token.getFaction().getId();
-						String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-						return factionId.equals("neutral") || factionId.equals(alignedFactionId);
-					}
-				};
+                                CollectionFilter planetFilter = new OmnifacFilter(system); 
 				List planets = CollectionUtils.filter(system.getPlanets(), planetFilter);
 				if (!planets.isEmpty())
 				{
@@ -367,12 +378,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 		}
 		if (toOrbit == null)
-			toOrbit = homeworld;
-
+			toOrbit = homeworld.entity;
+                
+                
 		LocationAPI system = toOrbit.getContainingLocation();
+                log.info("Placing Omnifactory around " + toOrbit.getName() + ", in the " + system.getName());
 		String image = stationImages[ExerelinUtils.getRandomInRange(0, stationImages.length - 1)];
 		SectorEntityToken omnifac = system.addCustomEntity("omnifactory", "Omnifactory", image, "neutral");
-		omnifac.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), 300, 300/25);
+                float radius = toOrbit.getRadius();
+                float orbitDistance = radius + 150;
+                if (toOrbit instanceof PlanetAPI)
+                {
+                    orbitDistance = radius + ExerelinUtils.getRandomInRange(3000, 12000);
+                }
+		omnifac.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, 2));
 		OmniFacModPlugin.initOmnifactory(omnifac);
 		omnifac.setInteractionImage("illustrations", "abandoned_station");
 		omnifac.setCustomDescriptionId("omnifactory");
@@ -380,12 +399,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		omnifac.setFaction("neutral");
 		MarketAPI market = omnifac.getMarket();
 		market.setFactionId("neutral");
-		List submarkets = market.getSubmarketsCopy();
-		for (int i=0; i<submarkets.size(); i++)
-		{
-			SubmarketAPI submarket = (SubmarketAPI)submarkets.get(i);
-			submarket.setFaction(Global.getSector().getFaction("neutral"));
-		}
+		List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
+                for (SubmarketAPI submarket : submarkets) {
+                    submarket.setFaction(Global.getSector().getFaction("neutral"));
+                }
 	}
 	
 	@Override
@@ -393,7 +410,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	{
 		log.info("Starting sector generation...");
 		// load planet/star names from config
-		factionIds = ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector());
 		try {
 			JSONObject planetConfig = Global.getSettings().loadJSON(PLANET_NAMES_FILE);
 			JSONArray systemNames = planetConfig.getJSONArray("stars");
@@ -412,37 +428,42 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			for (int i=0; i < possiblePlanetNames.length; i++)
 				possiblePlanetNamesList.add(possiblePlanetNames[i]);
 			
-		} catch (JSONException ex) {
-			Global.getLogger(ExerelinSectorGen.class).log(Level.ERROR, ex);
-		} catch (IOException ex) {
+		} catch (JSONException | IOException ex) {
 			Global.getLogger(ExerelinSectorGen.class).log(Level.ERROR, ex);
 		}
-		 
+		
+                resetVars();
+                
 		// stars will be distributed in a concentric pattern
 		float angle = 0;
 		float distance = 0;
 		for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
 		{
 			angle += MathUtils.getRandomNumberInRange((float)Math.PI/4, (float)Math.PI);
-			distance = distance + MathUtils.getRandomNumberInRange(0, 1500) + MathUtils.getRandomNumberInRange(0, 1500);
+			distance = distance + MathUtils.getRandomNumberInRange(250, 1250) + MathUtils.getRandomNumberInRange(250, 1250);
 			int x = (int)(Math.sin(angle) * distance);
 			int y = (int)(Math.cos(angle) * distance);
 			starPositions.add(new int[] {x, y});
 		}
 		Collections.shuffle(starPositions);
-		 
+		
+                
+                
 		// build systems
 		for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
 			buildSystem(sector, i);
+                populateSector();
 		addOmnifactory();
 		
-		new Exerelin().generate(sector);
+		ExerelinConfig.loadSettings();
+		String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
+		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
 
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		
 		sector.addScript(new CoreScript());
 		sector.addScript(new ForcePatrolFleetsScript());
-		sector.addScript(new EconomyLogger());
+		//sector.addScript(new EconomyLogger());
 		sector.addScript(new CoreEventProbabilityManager());
 		sector.addScript(new EconomyFleetManager());
 		
@@ -457,15 +478,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		SectorManager.setSystemToRelayMap(systemToRelay);
 		
 		// some cleanup
-		List markets = Global.getSector().getEconomy().getMarketsCopy();
-		for (int i=0; i<markets.size(); i++)
-		{
-			MarketAPI market = (MarketAPI)markets.get(i);
-			if (market.getFactionId().equals("templars"))
-			{
-			market.removeSubmarket(Submarkets.GENERIC_MILITARY); // auto added by military base; remove it
-			}
-		}
+		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+                for (MarketAPI market : markets) {
+                    if (market.getFactionId().equals("templars"))
+                    {
+                        market.removeSubmarket(Submarkets.GENERIC_MILITARY); // auto added by military base; remove it
+                    }
+                }
 		
 		// Remove any data stored in ExerelinSetupData
 		ExerelinSetupData.resetInstance();
@@ -484,6 +503,92 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		float period = (float)(2 * Math.PI * Math.sqrt(radiusCubed/mass) * 2);
 		return period;
 	}
+        
+        private SectorEntityToken makeStation(EntityData data, String factionId)
+        {
+                int angle = ExerelinUtils.getRandomInRange(1, 360);
+                int orbitRadius = 300;
+                PlanetAPI planet = (PlanetAPI)data.primary.entity;
+                if (data.primary.type == EntityType.MOON)
+                        orbitRadius = 200;
+                else if (planet.isGasGiant())
+                        orbitRadius = 500;
+                else if (planet.isStar())
+                        orbitRadius = (int)data.orbitDistance;
+                float orbitDays = getOrbitalPeriod(planet.getRadius(), orbitRadius + planet.getRadius(), 2);
+
+                String name = planet.getName() + " " + data.name;
+                String id = name.replace(' ','_');
+                String image = stationImages[ExerelinUtils.getRandomInRange(0, stationImages.length - 1)];
+                if (factionId.equals("shadow_industry"))
+                        image = "station_shi_prana";	// custom station image for Shadowyards
+                
+                SectorEntityToken newStation = data.starSystem.addCustomEntity(id, name, image, factionId);
+                newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
+                
+                MarketAPI existingMarket = planet.getMarket();
+                if (existingMarket != null)
+                {
+                        existingMarket.addCondition("orbital_station");
+                        existingMarket.addCondition("exerelin_recycling_plant");
+                        newStation.setMarket(existingMarket);
+                        existingMarket.getConnectedEntities().add(newStation);
+                }
+                else
+                {        
+                        addMarketToEntity(newStation, data, factionId, false);
+                }
+                pickEntityInteractionImage(newStation, newStation.getMarket(), "", "station");
+                
+                return newStation;
+        }
+        
+        public void populateSector()
+        {
+                SectorAPI sector = Global.getSector();
+                WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>();
+                List<String> factions = Arrays.asList(factionIds);
+                
+                // before we do anything else give the "homeworld" to our faction
+                String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+                addMarketToEntity(homeworld.entity, homeworld, alignedFactionId, true);
+                SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
+                relay.setFaction(alignedFactionId);
+                
+                Collections.shuffle(habitablePlanets);
+                Collections.shuffle(stations);
+                
+                for (EntityData habitable : habitablePlanets)
+                {
+                    if (habitable == homeworld) continue;
+                    if (factionPicker.isEmpty()) addListToPicker(factions, factionPicker);
+                    String factionId = factionPicker.pickAndRemove();
+                    addMarketToEntity(habitable.entity, habitable, factionId, habitable.isCapital);
+                    
+                    // assign relay
+                    if (habitable.isCapital)
+                    {   
+                            relay = sector.getEntityById(systemToRelay.get(habitable.starSystem.getId()));
+                            relay.setFaction(factionId);
+                    }
+                }
+                
+                // we didn't actually create the stations before, so do so now
+                for (EntityData station : stations)
+                {
+                    String factionId = "neutral";
+                    if (station.primary.entity.getMarket() == null)
+                    {
+                        if (factionPicker.isEmpty()) addListToPicker(factions, factionPicker);
+                        factionId = factionPicker.pickAndRemove();
+                    }
+                    else
+                    {
+                        factionId = station.primary.entity.getFaction().getId();
+                    }
+                    makeStation(station, factionId);
+                }
+        }
 
 	public SectorEntityToken makeStar(int index, String systemId, StarSystemAPI system, String type, float size)
 	{
@@ -492,31 +597,31 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		int y = pos[1];
 		return system.initStar(systemId, type, 500f, x, y);
 	}
-	
-	public void buildSystem(SectorAPI sector, int systemNum)
+        
+        private float getHabitableChance(int planetNum, boolean isMoon)
+        {
+            float habitableChance = 0.3f;
+            if (planetNum == 0) habitableChance = 0.4f;
+            else if (planetNum == 1 || planetNum == 3) habitableChance = 0.7f;
+            else if (planetNum == 2) habitableChance = 0.9f;
+                        
+            if (isMoon) habitableChance *= 0.7f;
+            
+            return habitableChance;
+        }
+        	
+	public void buildSystem(SectorAPI sector, int systemIndex)
 	{
-		// Create star system with random name
+		// First we make a star system with random name
 		int systemNameIndex = ExerelinUtils.getRandomInRange(0, possibleSystemNamesList.size() - 1);
-		if (systemNum == 0) systemNameIndex = 0;	// there is always a star named Exerelin
+		if (systemIndex == 0) systemNameIndex = 0;	// there is always a starSystem named Exerelin
 		StarSystemAPI system = sector.createStarSystem((String)possibleSystemNamesList.get(systemNameIndex));
 		possibleSystemNamesList.remove(systemNameIndex);
 		String systemName = system.getName();
 		String systemId = system.getId();
-		SectorEntityToken primaryWorld = null;
+                EntityData capital = null;
 		
-		int maxSectorSize = ExerelinSetupData.getInstance().maxSectorSize;
-		if((ExerelinSetupData.getInstance().numSystems == sector.getStarSystems().size()
-			|| ExerelinUtils.getRandomInRange(0,2) == 0)
-			&& !isStartSystemChosen)
-		{
-			log.info("Setting start location " + systemName);
-			sector.setRespawnLocation(system);
-			sector.getRespawnCoordinates().set(-2500, -3500);
-			//sector.setCurrentLocation(system);
-			isStartSystemChosen = true;
-		}
-
-		// Set star/light colour/background
+		// Set starSystem/light colour/background
 		SectorEntityToken star;
 	
 		int starType = 0;
@@ -528,134 +633,177 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// TODO refactor to remove endless nested ifs
 		if(starType == 0)
 		{
-			star = makeStar(systemNum, systemId, system, "star_yellow", 500f);
+			star = makeStar(systemIndex, systemId, system, "star_yellow", 500f);
 			//system.setLightColor(new Color(255, 180, 180));
 		}
 		else if(starType == 1)
 		{
-			star = makeStar(systemNum, systemId, system, "star_red", 900f);
+			star = makeStar(systemIndex, systemId, system, "star_red", 900f);
 			system.setLightColor(new Color(255, 180, 180));
 		}
 		else if(starType == 2)
 		{
-			star = makeStar(systemNum, systemId, system, "star_blue", 400f);
+			star = makeStar(systemIndex, systemId, system, "star_blue", 400f);
 			system.setLightColor(new Color(135,206,250));
 		}
 		else if(starType == 3)
 		{
-			star = makeStar(systemNum, systemId, system, "star_white", 300f);
+			star = makeStar(systemIndex, systemId, system, "star_white", 300f);
 			//system.setLightColor(new Color(185,185,240));
 		}
 		else if(starType == 4)
 		{
-			star = makeStar(systemNum, systemId, system, "star_orange", 900f);
+			star = makeStar(systemIndex, systemId, system, "star_orange", 900f);
 			system.setLightColor(new Color(255,220,0));
 		}
 		else if(starType == 5)
 		{
-			star = makeStar(systemNum, systemId, system, "star_yellowwhite", 400f);
+			star = makeStar(systemIndex, systemId, system, "star_yellowwhite", 400f);
 			system.setLightColor(new Color(255,255,224));
 		}
 		else if(starType == 6)
 		{
-			star = makeStar(systemNum, systemId, system, "star_bluewhite", 400f);
+			star = makeStar(systemIndex, systemId, system, "star_bluewhite", 400f);
 			system.setLightColor(new Color(135,206,250));
 		}
 		else if(starType == 7)
 		{
-			star = makeStar(systemNum, systemId, system, "star_purple", 700f);
+			star = makeStar(systemIndex, systemId, system, "star_purple", 700f);
 			system.setLightColor(new Color(218,112,214));
 		}
 		else if(starType == 8)
 		{
-			star = makeStar(systemNum, systemId, system, "star_dark", 100f);
+			star = makeStar(systemIndex, systemId, system, "star_dark", 100f);
 			system.setLightColor(new Color(105,105,105));
 		}
 		else if(starType == 9)
 		{
-			star = makeStar(systemNum, systemId, system, "star_green", 600f);
+			star = makeStar(systemIndex, systemId, system, "star_green", 600f);
 			system.setLightColor(new Color(240,255,240));
 		}
 		else
 		{
-			star = makeStar(systemNum, systemId, system, "star_greenwhite", 500f);
+			star = makeStar(systemIndex, systemId, system, "star_greenwhite", 500f);
 			system.setLightColor(new Color(240,255,240));
 		}
 		system.setBackgroundTextureFilename("graphics/" + starBackgrounds[ExerelinUtils.getRandomInRange(0, starBackgrounds.length - 1)]);
 
-		// Build base planets
-		int numBasePlanets;
+                List<EntityData> entities = new ArrayList<>();
+                EntityData starData = new EntityData(system);
+                starData.entity = star;
+                starData.type = EntityType.STAR;
+		
+                // now let's start seeding planets
+                // note that we don't create the PlanetAPI right away, but set up EntityDatas first
+                // so we can check that the system has enough of the types of planets we want
+                int numBasePlanets;
+                int maxPlanets = ExerelinSetupData.getInstance().maxPlanets;
 		if(ExerelinSetupData.getInstance().numSystems != 1)
-			numBasePlanets = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumPlanets, ExerelinSetupData.getInstance().maxPlanets);
+			numBasePlanets = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumPlanets, maxPlanets);
 		else
-			numBasePlanets = ExerelinSetupData.getInstance().maxPlanets;
-		int distanceStepping = (ExerelinSetupData.getInstance().maxSystemSize-4000)/numBasePlanets;
-		Boolean gasPlanetCreated = false;
+			numBasePlanets = maxPlanets;
+		int distanceStepping = (ExerelinSetupData.getInstance().maxSystemSize-4000)/ExerelinUtils.getRandomInRange(numBasePlanets, maxPlanets+1);
+                
+		boolean gasPlanetCreated = false;
+                int habitableCount = 0;
+                List<EntityData> uninhabitables1To4 = new ArrayList<>();
+                
 		for(int i = 0; i < numBasePlanets; i = i + 1)
 		{
-			boolean inhabitable = Math.random() <= ExerelinConfig.planetHabitableChance;
+                        float habitableChance = getHabitableChance(i, false);
+                        
+			boolean habitable = Math.random() <= habitableChance;
 			String planetType = "";
 			String owningFactionId = getRandomFaction();
-			
-			// set some stuff for first planet
-			if (i == 0)
-			{
-				// make sure player faction has a presence in Exerelin
-				if (starNum == 0)
-				{
-					owningFactionId = PlayerFactionStore.getPlayerFactionId();
-				}
-				inhabitable = true;
-				relayOwner = owningFactionId;
-			}
-			
-			if (inhabitable)
-				planetType = planetTypes[ExerelinUtils.getRandomInRange(0, planetTypes.length - 1)];
-			else
-				planetType = planetTypesUninhabitable[ExerelinUtils.getRandomInRange(0, planetTypesUninhabitable.length - 1)];
-
-			String name = "";
+                        EntityData entityData = new EntityData(system, i);
+                        entityData.habitable = habitable;
+                        entityData.primary = starData;
+                        
+			if (habitable)
+                        {
+				habitableCount++;
+                        }
+                        else if (i <= 3)
+                        {
+				uninhabitables1To4.add(entityData);
+                        }
+                        entities.add(entityData);
+                }
+                
+                // make sure there are at least two planetData planets
+                if (habitableCount < 2)
+                {
+                    WeightedRandomPicker<EntityData> picker = new WeightedRandomPicker<>();
+                    addListToPicker(uninhabitables1To4, picker);
+                    for (int i=habitableCount; i < 2; i++)
+                    {
+                        picker.pickAndRemove().habitable = true;
+                    }    
+                }
+                
+                List<EntityData> moons = new ArrayList<>();
+                                
+                // okay, now we can actually create the planets
+                for(EntityData planetData : entities)
+                {
+                        String planetType = "";
+                        boolean isGasGiant = false;
+                        
+                        String name = "";
 			String id = "";
 			int planetNameIndex = ExerelinUtils.getRandomInRange(0, possiblePlanetNamesList.size() - 1);
 			name = (String)(possiblePlanetNamesList.get(planetNameIndex));
 			possiblePlanetNamesList.remove(planetNameIndex);
 
-			// Assign system name to planet as a prefix
-			// no need anymore, intel screen already gives star name on everything
-			//name = system.getStar().getName() + "-" + name;
 			id = name.replace(' ','_');
-
-			float radius;
+                        
+			if (planetData.habitable)
+                        {
+				planetType = planetTypes[ExerelinUtils.getRandomInRange(0, planetTypes.length - 1)];
+                        }
+			else
+                        {
+                                float gasGiantChance = 0.45f;
+                                if (planetData.planetNum == 3) gasGiantChance = 0.3f;
+                                else if (planetData.planetNum < 3) gasGiantChance = 0;
+                                
+                                isGasGiant = Math.random() < gasGiantChance;
+                                if (isGasGiant) planetType = planetTypesGasGiant[ExerelinUtils.getRandomInRange(0, planetTypesGasGiant.length - 1)];
+                                else planetType = planetTypesUninhabitable[ExerelinUtils.getRandomInRange(0, planetTypesUninhabitable.length - 1)];
+                        }
+                    
+                        float radius;
 			float angle = ExerelinUtils.getRandomInRange(1, 360);
-			float distance = 3000 + (distanceStepping * (i  + 1)) + ExerelinUtils.getRandomInRange((distanceStepping/3)*-1, distanceStepping/3);
+			float distance = 3000 + (distanceStepping * (planetData.planetNum)) + ExerelinUtils.getRandomInRange((distanceStepping/3)*-1, distanceStepping/3);
 			float orbitDays = getOrbitalPeriod(star.getRadius(), distance + star.getRadius(), 1);
-			if(planetType.equalsIgnoreCase("gas_giant") || planetType.equalsIgnoreCase("ice_giant"))
+			if (isGasGiant)
 			{
 				radius = ExerelinUtils.getRandomInRange(325, 375);
-				//name = name + " Gaseous";
 				gasPlanetCreated = true;
-				inhabitable = false;
 			}
 			else
 				radius = ExerelinUtils.getRandomInRange(150, 250);
 
 			// At least one gas giant per system
-			if(!gasPlanetCreated && i == numBasePlanets - 1)
+			if(!gasPlanetCreated && planetData.planetNum == numBasePlanets - 1)
 			{
-				planetType = (ExerelinUtils.getRandomInRange(0, 1) == 1) ? "gas_giant" : "ice_giant";
+				planetType = planetTypesGasGiant[ExerelinUtils.getRandomInRange(0, planetTypesGasGiant.length - 1)];
 				radius = ExerelinUtils.getRandomInRange(325, 375);
-				//name = name + " Gaseous";
 				gasPlanetCreated = true;
-				inhabitable = false;
+				planetData.habitable = false;
+                                isGasGiant = true;
 			}
-
+                        
 			SectorEntityToken newPlanet = system.addPlanet(id, star, name, planetType, angle, radius, distance, orbitDays);
-			if (i == 0) primaryWorld = newPlanet;
-
-			// 50% Chance to build moons around planet
-			if(ExerelinUtils.getRandomInRange(0, 1) == 1)
+                        planetData.entity = newPlanet;
+                        planetData.planetType = planetType;
+                        
+			// Now we make moons
+                        float moonChance = 0.4f;
+                        if (isGasGiant)
+                            moonChance = 0.8f;
+			if(Math.random() <= moonChance)
 			{
-				// Build moons
 				for(int j = 0; j < ExerelinUtils.getRandomInRange(0, ExerelinSetupData.getInstance().maxMoonsPerPlanet - 1); j = j + 1)
 				{
 					String ext = "";
@@ -666,7 +814,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					if(j == 2)
 						ext = "III";
 					
-					boolean moonInhabitable = Math.random() <= ExerelinConfig.moonHabitableChance;
+					boolean moonInhabitable = Math.random() <= getHabitableChance(planetData.planetNum, true);
 					String moonType = "";
 					if (moonInhabitable)
 						moonType = moonTypes[ExerelinUtils.getRandomInRange(0, moonTypes.length - 1)];
@@ -678,16 +826,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					float moonRadius = ExerelinUtils.getRandomInRange(50, 100);
 					orbitDays = getOrbitalPeriod(star.getRadius(), distance + star.getRadius(), 2);
 					PlanetAPI newMoon = system.addPlanet(name + " " + ext, newPlanet, name + " " + ext, moonType, angle, moonRadius, distance, orbitDays);
-					if(moonInhabitable)
-					{	
-						String moonOwnerId = getRandomFaction();
-						newMoon.setFaction(moonOwnerId);
-						addMarketToEntity(starNum, -1, newMoon, moonOwnerId, moonType, "moon");
-						pickEntityInteractionImage(newMoon, newMoon.getMarket(), moonType, "moon");
-					}
+					
+                                        EntityData moonData = new EntityData(system);
+                                        moonData.entity = newMoon;
+                                        moonData.planetType = moonType;
+                                        moonData.primary = planetData;
+                                        moonData.habitable = moonInhabitable;
+                                        moonData.type = EntityType.MOON;
+                                        
+                                        // concurrency exception - don't add it direct; add to another list and merge
+                                        //entities.add(moonData);
+                                        moons.add(moonData);
 				}
 			}
-
+                        
 			// 20% chance of rings around planet / 50% chance if a gas giant
 			float ringChance = (planetType.equalsIgnoreCase("gas_giant") || planetType.equalsIgnoreCase("ice_giant")) ? 0.5f : 0.2f;
 			if(Math.random() < ringChance)
@@ -721,22 +873,37 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					system.addRingBand(newPlanet, "misc", "rings1", 256f, 1, Color.white, 256f, (int)(radius*2.5), 90f);
 				}
 			}
-
-			// Add market to inhabitable planets
-			if(inhabitable)
-			{			
-				newPlanet.setFaction(owningFactionId);
-				addMarketToEntity(starNum, i, newPlanet, owningFactionId, planetType, "planet");
-				pickEntityInteractionImage(newPlanet, newPlanet.getMarket(), "", "planet");
-				
-				if (starNum == 0 && i == 0)
-					homeworld = newPlanet;
-			}
 		}
-
+                
+                // add the moons back to our main entity list
+                for (EntityData moon: moons)
+                {
+                    entities.add(moon);
+                }
+                
+                // set sector capital
+                WeightedRandomPicker<EntityData> capitalPicker = new WeightedRandomPicker<>();
+                for (EntityData planetData : entities)
+                {
+                    if (!planetData.habitable || planetData.type != EntityType.PLANET) continue;
+                    float weight = 1f;
+                    if (planetData.planetNum == 2 || planetData.planetNum == 3)
+                    {
+                        weight = 4f;
+                    }
+                    capitalPicker.add(planetData, weight);
+                }
+                capital = capitalPicker.pick();
+                capital.isCapital = true;
+                if (systemIndex == 0)
+                {
+                    homeworld = capital;
+                }
 
 		// Build asteroid belts
-		List planets = system.getPlanets();
+                // If the belt orbits a star, add it to a list so that we can seed belter stations later
+		List<PlanetAPI> planets = system.getPlanets();
+                List<Float> starBelts = new ArrayList<>();
 		int numAsteroidBelts;
 		if(ExerelinSetupData.getInstance().numSystems != 1)
 			numAsteroidBelts = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumAsteroidBelts, ExerelinSetupData.getInstance().maxAsteroidBelts);
@@ -745,9 +912,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		for(int j = 0; j < numAsteroidBelts; j = j + 1)
 		{
-			PlanetAPI planet = null;
-			while(planet == null)
-				planet = (PlanetAPI)planets.get(ExerelinUtils.getRandomInRange(0, planets.size() - 1));
+			PlanetAPI planet = planets.get(ExerelinUtils.getRandomInRange(0, planets.size() - 1));
 
 			float orbitRadius;
 			int numAsteroids;
@@ -773,12 +938,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				numAsteroids = 6;
 			}
 
-
 			float width = ExerelinUtils.getRandomInRange(10, 50);
 			float baseOrbitDays = getOrbitalPeriod(planet.getRadius(), orbitRadius, planet.isStar() ? 1 : 2);
 			float minOrbitDays = baseOrbitDays * 0.75f;
 			float maxOrbitDays = baseOrbitDays * 1.25f;
 			system.addAsteroidBelt(planet, numAsteroids, orbitRadius, width, minOrbitDays, maxOrbitDays);
+                        if (planet.isStar()) starBelts.add(orbitRadius);
 		}
 
 		// Always put an asteroid belt around the sun
@@ -789,6 +954,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float maxOrbitDays = baseOrbitDays * 1.25f;
 			
 			system.addAsteroidBelt(star, 25, distance, ExerelinUtils.getRandomInRange(10, 50), minOrbitDays, maxOrbitDays);
+                        starBelts.add(distance);
 
 			// Another one if medium system size
 			if(ExerelinSetupData.getInstance().maxSystemSize > 16000)
@@ -798,6 +964,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				minOrbitDays = baseOrbitDays * 0.75f;
 				maxOrbitDays = baseOrbitDays * 1.25f;
 				system.addAsteroidBelt(star, 50, distance, ExerelinUtils.getRandomInRange(50, 100), minOrbitDays, maxOrbitDays);
+                                starBelts.add(distance);
 			}
 			// And another one if a large system
 			if(ExerelinSetupData.getInstance().maxSystemSize > 32000)
@@ -807,51 +974,51 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				minOrbitDays = baseOrbitDays * 0.75f;
 				maxOrbitDays = baseOrbitDays * 1.25f;
 				system.addAsteroidBelt(star, 75, distance, ExerelinUtils.getRandomInRange(100, 150),  minOrbitDays, maxOrbitDays);
+                                starBelts.add(distance);
 			}
 		} while (false);
 		
+                for (EntityData entity : entities)
+                {
+                    if (entity.habitable) habitablePlanets.add(entity);
+                }
+                
 		// Build stations
+                // Note: to enable special faction stations, we don't actually generate the stations until much later,
+                // when we're dealing out planets to factions
 		int numStation;
 		if(ExerelinSetupData.getInstance().numSystems != 1)
 			numStation = ExerelinUtils.getRandomInRange(ExerelinConfig.minimumStations, Math.min(ExerelinSetupData.getInstance().maxStations, numBasePlanets*2));
 		else
 			numStation = ExerelinSetupData.getInstance().maxStations;
-		int currentPlanet = 0;
+		
+                WeightedRandomPicker<EntityData> picker = new WeightedRandomPicker<>();
+                //addListToPicker(entities, picker);
+                for (EntityData entityData : entities)
+                {
+                    float weight = 1f;
+                    if (entityData.type == EntityType.STAR) weight = 0.5f;
+                    else if (entityData.habitable == false) weight = 2f;
+                    picker.add(entityData, weight);
+                }
+                
 		int k = 0;
 		List alreadyUsedStationNames = new ArrayList();
 		while(k < numStation)
 		{
-			PlanetAPI planet = (PlanetAPI)planets.get(currentPlanet);
-			currentPlanet = currentPlanet + 1;
+                        if (picker.isEmpty()) picker.add(starData);
+                        EntityData primaryData = picker.pickAndRemove();
+                        boolean isGasGiant = primaryData.type == EntityType.PLANET && ((PlanetAPI)primaryData.entity).isGasGiant();
+                        boolean isStar = primaryData.type == EntityType.STAR;
+                        SectorEntityToken planet = primaryData.entity;
 
-			if(currentPlanet == planets.size())
-			{
-				currentPlanet = 0;
-			}
-
-			if(planet.isStar())
-			{
-				//continue; // Skip sun
-				if (Math.random() < 0.67)
-					continue;	// one-third chance of deciding to let our station orbit the sun independently without a planet
-			}
-				
-			boolean isGasGiant = planet.isGasGiant();
-			MarketAPI existingMarket = planet.getMarket();
-			
-			if (existingMarket == null)
-			{
-				if (Math.random() < 0.2)
-					continue; // 20% chance to skip uninhabited planet
-			}
-			else
-			{
-				if (Math.random() < 0.35)
-					continue; // 35% chance to skip an inhabited planet
-			}
-
-			Boolean nameOK = false;
-			String name = "";
+                        EntityData stationData = new EntityData(system);
+                        stationData.primary = primaryData;
+                        stationData.type = EntityType.STATION;
+                        if (isStar) stationData.orbitDistance = starBelts.get(ExerelinUtils.getRandomInRange(0, starBelts.size() - 1));
+                        
+                        boolean nameOK = false;
+                        String name = "";
 			while(!nameOK)
 			{
 				name = possibleStationNames[ExerelinUtils.getRandomInRange(0, possibleStationNames.length - 1)];
@@ -859,62 +1026,24 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					nameOK = true;
 			}
 			alreadyUsedStationNames.add(name);
+                        stationData.name = name;                        
+                        stations.add(stationData);
 
-			int angle = ExerelinUtils.getRandomInRange(1, 360);
-			int orbitRadius = 300;
-			if (planet.getFullName().contains(" I") || planet.getFullName().contains(" II") || planet.getFullName().contains(" III"))
-				orbitRadius = 200;
-			else if (isGasGiant)
-				orbitRadius = 500;
-			else if (planet.isStar())
-				orbitRadius = ExerelinUtils.getRandomInRange(1000, 16000);
-			float orbitDays = getOrbitalPeriod(planet.getRadius(), orbitRadius + planet.getRadius(), 2);
-				
-			String owningFactionId = getRandomFaction();
-			FactionAPI planetFaction = planet.getFaction();
-			if (planetFaction != null && !planetFaction.getId().equalsIgnoreCase("neutral"))
-				owningFactionId = planetFaction.getId();
-			name = planet.getName() + " " + name;
-			String id = name.replace(' ','_');
-			String image = stationImages[ExerelinUtils.getRandomInRange(0, stationImages.length - 1)];
-			if (owningFactionId.equals("shadow_industry"))
-				image = "station_shi_prana";	// custom station image for Shadowyards
-			
-			if (existingMarket == null)	// de novo station, probably orbiting an uninhabitable planet
-			{
-				SectorEntityToken newStation = system.addCustomEntity(id, name, image, owningFactionId);
-				newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
-				addMarketToEntity(starNum, -1, newStation, owningFactionId, "", "station");
-				pickEntityInteractionImage(newStation, newStation.getMarket(), "", "station");
-			}
-			else	// append a station to an existing inhabited planet
-			{
-				// these are smaller on the system map than the other ones when zoomed out
-				SectorEntityToken newStation = system.addCustomEntity(id, name, image, owningFactionId);
-				newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
-				existingMarket.addCondition("orbital_station");
-				existingMarket.addCondition("exerelin_recycling_plant");
-				newStation.setMarket(existingMarket);
-				existingMarket.getConnectedEntities().add(newStation);
-				pickEntityInteractionImage(newStation, existingMarket, "", "station");
-			}
-			
 			k = k + 1;
 		}
-
 
 		// Build hyperspace exits
 		if (ExerelinSetupData.getInstance().numSystems > 1)
 		{
-			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(primaryWorld.getId() + "_jump", primaryWorld.getName() + " Gate");
-			float radius = primaryWorld.getRadius();
+                        SectorEntityToken capitalToken = capital.entity;
+                        JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(capitalToken.getId() + "_jump", capitalToken.getName() + " Gate");
+			float radius = capitalToken.getRadius();
 			float orbitDistance = radius + 250f;
 			float orbitDays = getOrbitalPeriod(radius, orbitDistance, 2);
-			jumpPoint.setCircularOrbit(primaryWorld, (float)Math.random() * 360, orbitDistance, orbitDays);
+			jumpPoint.setCircularOrbit(capitalToken, (float)Math.random() * 360, orbitDistance, orbitDays);
 
 			jumpPoint.setStandardWormholeToHyperspaceVisual();
 			system.addEntity(jumpPoint);
-
 			system.autogenerateHyperspaceJumpPoints(true, true);
 		}
 
@@ -922,10 +1051,97 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		SectorEntityToken relay = system.addCustomEntity(system.getId() + "_relay", // unique id
 				system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
 				"comm_relay", // type of object, defined in custom_entities.json
-				relayOwner); // faction
+				"neutral"); // faction
 		relay.setCircularOrbit(star, (float)Math.random() * 360, 1500, getOrbitalPeriod(star.getRadius(), 1500, 1));
 		systemToRelay.put(system.getId(), system.getId() + "_relay");
-		
-		starNum++;
 	}
+        
+        public static class OmnifacFilter implements CollectionUtils.CollectionFilter<SectorEntityToken>
+        {
+                final Set<SectorEntityToken> blocked;
+                private OmnifacFilter(StarSystemAPI system)
+                {
+                    blocked = new HashSet<>();
+                    for (SectorEntityToken planet : system.getPlanets() )
+                    {
+                        String factionId = planet.getFaction().getId();
+                        String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+                        if (!factionId.equals("neutral") && !factionId.equals(alignedFactionId))
+                            blocked.add(planet);
+                        //else
+                            //log.info("Authorizing planet " + planet.getName() + " (faction " + factionId + ")");
+                    }
+                }
+
+                @Override
+                public boolean accept(SectorEntityToken token)
+                {
+                    return !blocked.contains(token);
+                }
+        }
+        
+        enum EntityType {
+            STAR, PLANET, MOON, STATION
+        }
+        
+        static class EntityData {
+            String name;
+            SectorEntityToken entity;
+            String planetType = "";
+            boolean habitable = false;
+            boolean isCapital = false;
+            EntityType type = EntityType.PLANET;
+            StarSystemAPI starSystem;
+            EntityData primary;
+            MarketAPI market;
+            int planetNum = -1;
+            float orbitDistance = 0;    // only used for belter stations
+            
+            public EntityData(StarSystemAPI starSystem) 
+            {
+                this.starSystem = starSystem;
+            }          
+            public EntityData(StarSystemAPI starSystem, int planetNum) 
+            {
+                this.starSystem = starSystem;
+                this.planetNum = planetNum;
+            }          
+            
+        }
+        
+        // ALGO
+        /*
+            First create planets according to the following rules:
+                first planet: 40% planetData chance
+                second planet: 70% planetData chance
+                third planet: 90% planetData chance
+                fourth planet: 70% planetData chance, 30% gas giant chance if fail habitability check
+                fifth and higher planet: 30% planetData chance, 45% gas giant chance
+                last planet will always be gas giant if one hasn't been added yet 
+                moon: 70% planet's planetData chance
+                if not at least two planetData entities, randomly pick planets 1-4 and force them to be planetData
+                Don't actually generate PlanetAPIs until all EntityDatas have been created
+        
+            Next seed stations randomly around planets/moons or in asteroid belts
+                
+            Next go through all entities
+                If planetData planet/moon, add to list of habitables
+                If station orbiting uninhabitable, add to list of independent stations
+                If station orbiting planetData, add to list of associated stations
+        
+            Next go through all inhabitables
+                First off we go to Exerelin and give our faction a planet with HQ
+                Next line up factions (exclude our own faction for this round), pick at random and remove from list
+                Give this faction an inhabitable planet; add market to it
+                If this is the first inhabitable in a starSystem system, mark this as regional capital
+                    Set minimum size and assign relay/jumpgate accordingly
+                Once list is empty, refill with all factions (including ours) again
+                Repeat until all habitables have been populated
+        
+            Do that again except for independent stations
+        
+            Lastly we go through all associated stations
+                Associate them with the market of the planet/moon they orbit
+        */
 }
+

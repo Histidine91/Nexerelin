@@ -17,16 +17,11 @@ public class ExerelinConfig
     public static boolean useMultipleBackgroundsAndStars = true;
     // Use custom faction configs
     public static boolean useCustomFactionConfigs = true;
-
-    // Randomise the location of the omnifactory
-    public static boolean randomOmnifactoryLocation = false;
    
     // System Generation settings
     public static int minimumPlanets = 2;
     public static int minimumStations = 0;
     public static int minimumAsteroidBelts = 0;
-    public static float planetHabitableChance = 0.7f;
-    public static float moonHabitableChance = 0.3f;
 
     // Resourcing
     public static String asteroidMiningResource = "supplies";
@@ -72,13 +67,11 @@ public class ExerelinConfig
             useMultipleBackgroundsAndStars = settings.optBoolean("useMultipleBackgroundsAndStars");
             useCustomFactionConfigs = settings.optBoolean("useCustomFactionConfigs");
 
-            randomOmnifactoryLocation = settings.optBoolean("randomOmnifactoryLocation");
+            
 
             minimumPlanets = settings.optInt("minimumPlanets");
             minimumStations = settings.optInt("minimumStations");
             minimumAsteroidBelts = settings.optInt("minimumAsteroidBelts");
-            planetHabitableChance = (float)settings.optDouble("planetHabitableChance");
-            moonHabitableChance = (float)settings.optDouble("moonHabitableChance");
 
             asteroidMiningResource = settings.optString("asteroidMiningResource");
             gasgiantMiningResource = settings.optString("gasgiantMiningResource");
