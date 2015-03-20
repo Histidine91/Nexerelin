@@ -245,7 +245,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (isCapital)
 		{
 			newMarket.addCondition(data == homeworld ? "headquarters" : "regional_capital");
-                        newMarket.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
+			newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
 		}
 		
 		int minSizeForMilitaryBase = 5;
@@ -814,7 +814,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					if(j == 2)
 						ext = "III";
 					
-					boolean moonInhabitable = Math.random() <= getHabitableChance(planetData.planetNum, true);
+					boolean moonInhabitable = Math.random() <= 0.4;	//getHabitableChance(planetData.planetNum, true);
 					String moonType = "";
 					if (moonInhabitable)
 						moonType = moonTypes[ExerelinUtils.getRandomInRange(0, moonTypes.length - 1)];

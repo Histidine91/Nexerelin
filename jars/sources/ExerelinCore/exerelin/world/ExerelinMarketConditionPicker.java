@@ -160,9 +160,10 @@ public class ExerelinMarketConditionPicker
 		// size 5
 		heavyIndustryConds.add(new ExerelinPossibleMarketCondition("autofac_heavy_industry", 1f, 5));
 		heavyIndustryConds.add(new ExerelinPossibleMarketCondition("antimatter_fuel_production", 1f, 5));
+		heavyIndustryConds.add(new ExerelinPossibleMarketCondition("shipbreaking_center", 0.7f, 5, false));
 		
 		// size 6
-		heavyIndustryConds.add(new ExerelinPossibleMarketCondition("shipbreaking_center", 0.5f, 6, false));
+		
 	}
 	
 	private void TryAddMarketCondition(MarketAPI market, List possibleConds, int size, String planetType, boolean isStation)
