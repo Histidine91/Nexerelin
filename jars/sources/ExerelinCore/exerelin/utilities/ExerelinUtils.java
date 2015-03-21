@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.FactionDirector;
 import exerelin.SectorManager;
 import exerelin.SystemManager;
@@ -105,6 +106,27 @@ public class ExerelinUtils
         return stationToken.getFaction().getId();
 	}
 
+    public static MarketAPI getClosestMarket(String factionId)
+    {
+        List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+        FactionAPI faction = Global.getSector().getFaction(factionId);
+        CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+        
+        MarketAPI closestMarket = null;
+        float closestDist = 999999f;
+        Vector2f playerLoc = playerFleet.getLocationInHyperspace();
+        for (MarketAPI market : markets)
+        {
+            float dist = Misc.getDistance(market.getLocationInHyperspace(), playerLoc);
+            if (dist < closestDist && market.getFaction() == faction)
+            {
+                closestMarket = market;
+                closestDist = dist;
+            }
+        }
+        return closestMarket;
+    }
+        
     public static SectorEntityToken getClosestStationForFaction(String factionId, StarSystemAPI starSystemAPI, SectorEntityToken anchor)
     {
         List stations = starSystemAPI.getOrbitalStations();

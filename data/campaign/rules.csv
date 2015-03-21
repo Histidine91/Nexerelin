@@ -19,9 +19,9 @@ exerelinNGCIntroEnd:Skip",
 ExerelinNGCIntro2,ExerelinNGCIntroPage,"$introPage == 2.0
 $isInIntro",,"Your actions will gain/lose you influence with the factions in the Sector. The higher your influence with a faction, the greater access to their support and technology you will have.
 
-At the start of the game, you pick a faction to join. You are a representative of your chosen faction, and your actions in the Sector will reflect on them.
+At the start of the game, you pick a faction to join. You are a representative of your chosen faction, and your actions in the Sector will reflect on them. You can move to another faction later, if you can earn their trust.
 
-At present, you cannot change your faction or attempt to go it alone in Exerelin.","exerelinNGCIntroNextPage:Next
+You can also choose to go it alone and set up your own empire, although this can be considerably harder.","exerelinNGCIntroNextPage:Next
 exerelinNGCIntroPrevPage:Previous
 exerelinNGCIntroEnd:Skip",
 ExerelinNGCIntro3,ExerelinNGCIntroPage,"$introPage == 3.0
@@ -157,6 +157,7 @@ ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:M
 ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,FireAll ExerelinNGCListFactions3,,,
 ExerelinNGCModFactions4,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions4:Mod factions (S-Z),
 ExerelinNGCViewModFactions4,NewGameOptionSelected,$option == exerelinNGCViewModFactions4,FireAll ExerelinNGCListFactions4,,,
+,,,,,,
 ExerelinNGCFactionsQuickStart,ExerelinNGCListFactions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
 ,,,,,,
 ExerelinNGCListHegemony,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist hegemony,,,exerelinNGCJoinHegemony:Hegemony,
@@ -164,6 +165,7 @@ ExerelinNGCListTriTachyon,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist tri
 ExerelinNGCListLuddicChurch,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist luddic_church,,,exerelinNGCJoinLuddicChurch:Luddic Church,
 ExerelinNGCListSindrianDiktat,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist sindrian_diktat,,,exerelinNGCJoinSindrianDiktat:Sindrian Diktat,
 ExerelinNGCListPirates,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist pirates,,,exerelinNGCJoinPirate:Pirates (hard),
+ExerelinNGCFactionsOwnFaction,ExerelinNGCListFactionsVanilla,,,,exerelinNGCOwnFaction:Own faction,
 ExerelinNGCListVanillaFactionsBack,ExerelinNGCListFactionsVanilla,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCListExipiarted,ExerelinNGCListFactions1,NGCDoesFactionExist exipirated,,,exerelinNGCJoinExipirated:Ahriman Association,
@@ -195,7 +197,7 @@ ExerelinNGCListShadowyards,ExerelinNGCListFactions4,NGCDoesFactionExist shadow_i
 ExerelinNGCListValkyrians,ExerelinNGCListFactions4,NGCDoesFactionExist valkyrian,,,exerelinNGCJoinValkyrians:Valkyrians,
 ExerelinNGCListModFactions4Back,ExerelinNGCListFactions4,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
-ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""independent""
+ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""player_npc""
 NGCAddShip ""tempest_Starting""
 NGCAddCargo RESOURCES elite_crew 20
 NGCAddCargo RESOURCES supplies 20
@@ -207,6 +209,10 @@ NGCAddSkillPoints 200
 NGCAddAptitudePoints 10
 NGCSetStartingLocation Exerelin -2700 3250
 NGCDone",,,
+ExerelinNGCOwnFaction,NewGameOptionSelected,$option == exerelinNGCOwnFaction,"NGCSetPlayerFaction ""player_npc""
+NGCAddShipAndComplement ""monitor_Indie""
+AddText ""Added Monitor-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == exerelinNGCJoinHegemony,"NGCSetPlayerFaction ""hegemony""
 NGCAddShipAndComplement ""lasher_Starting""
 AddText ""Added Lasher-class frigate"" textFriendColor
@@ -425,6 +431,7 @@ exerelinFactionDirectoryList2:H-M
 exerelinFactionDirectoryList3:N-Q
 exerelinFactionDirectoryList4:R-Z
 10:exerelinMarketSpecial:Back",
+ExerelinFactionDirectoryListPlayer,ExerelinFactionDirectory,IsFactionAlive player,,,exerelinFactionDirectoryGetPlayer:Player,
 ExerelinFactionDirectoryOptionIntel,ExerelinFactionDirectory,$hasMarket,,,exerelinMarketIntel:Open intel screen,
 ExerelinFactionDirectoryList1,DialogOptionSelected,$option == exerelinFactionDirectoryList1,FireAll ExerelinFactionDirectoryList1,,,
 ExerelinFactionDirectoryList2,DialogOptionSelected,$option == exerelinFactionDirectoryList2,FireAll ExerelinFactionDirectoryList2,,,
@@ -483,6 +490,7 @@ ExerelinFactionDirectoryGetORI,DialogOptionSelected,$option == exerelinFactionDi
 ExerelinFactionDirectoryGetPACK,DialogOptionSelected,$option == exerelinFactionDirectoryGetPACK,PrintFactionMarkets pack,,,
 ExerelinFactionDirectoryGetPatria,DialogOptionSelected,$option == exerelinFactionDirectoryGetPatria,PrintFactionMarkets patnavy,,,
 ExerelinFactionDirectoryGetPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetPirates,PrintFactionMarkets pirates,,,
+ExerelinFactionDirectoryGetPlayer,DialogOptionSelected,$option == exerelinFactionDirectoryGetPlayer,PrintFactionMarkets player,,,
 ExerelinFactionDirectoryGetRadicalORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetRadicalORI,PrintFactionMarkets rori,,,
 ExerelinFactionDirectoryGetSCY,DialogOptionSelected,$option == exerelinFactionDirectoryGetSCY,PrintFactionMarkets SCY,,,
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,PrintFactionMarkets shadow_industry,,,
@@ -611,6 +619,55 @@ ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem pri
 ShowDefaultVisual
 FireAll PopulateOptions",You have no more prisoners.,,
 #END PRISONER OPTIONS,,,,,,
+,,,,,,
+#START FACTION CHANGE OPTIONS,,,,,,
+ExerelinMarketJoinFactionOption,ExerelinMarketSpecial,"$hasMarket
+$faction.id != ""neutral""
+$faction.id != ""player_npc""
+$faction.id != $player.factionId
+RepIsAtWorst $faction.id FRIENDLY",SetEnabled exerelinJoinFaction true,,exerelinJoinFaction:Join faction,
+ExerelinMarketJoinFactionOptionUntrusted,ExerelinMarketSpecial,"$hasMarket
+$faction.id != ""neutral""
+$faction.id != ""player_npc""
+$faction.id != $player.factionId
+!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinJoinFaction ""$TheFaction do not trust you enough yet.""
+SetEnabled exerelinJoinFaction false",,exerelinJoinFaction:Join faction,
+ExerelinMarketLeaveFactionOption,ExerelinMarketSpecial,"$hasMarket
+$faction.id != ""neutral""
+$faction.id != ""player_npc""
+$faction.id == $player.factionId
+RepIsAtWorst $faction.id FRIENDLY",,,exerelinLeaveFaction:Leave faction,
+,,,,,,
+ExerelinJoinFaction,DialogOptionSelected,$option == exerelinJoinFaction,,Are you sure you want to join $theFaction?,"exerelinJoinFactionConfirm:Yes
+exerelinMarketSpecial:No",
+ExerelinJoinFactionConfirm,DialogOptionSelected,$option == exerelinJoinFactionConfirm,"JoinFaction $faction.id
+FireAll ExerelinMarketSpecial",,,
+ExerelinLeaveFaction,DialogOptionSelected,$option == exerelinLeaveFaction,,Are you sure you want to leave $theFaction?,"exerelinLeaveFactionConfirm:Yes
+exerelinMarketSpecial:No",
+ExerelinLeaveFactionConfirm,DialogOptionSelected,$option == exerelinLeaveFactionConfirm,"LeaveFaction
+FireAll ExerelinMarketSpecial",,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+# Player fleet greeting lines,,,,,,
+greetingHegemonyFriendly,OpenCommLink,"$faction.id == player_npc
+$faction.friendlyToPlayer","$menuState = fleetConvMain 0
+FireAll PopulateOptions","""Good to see you, chief. Is there anything we can do for you?""",,
+greetingHegemonyHostileWeaker,OpenCommLink,"$faction.id == player_npc
+$faction.hostileToPlayer
+$relativeStrength < 0",$ignorePlayerCommRequests = true 1,"""Fine, fine, we're sorry for defying you! Just don't kill us!""",,
+greetingHegemonyHostileWeakerDefiant,OpenCommLink,"$faction.id == player_npc
+$faction.hostileToPlayer
+$relativeStrength < 0
+$weakerThanPlayerButHolding",$ignorePlayerCommRequests = true 1,"The $personRank looks grim but defiant. ""We won't back down from you, tyrant,"" $heOrShe says.",,
+greetingHegemonyHostileStronger,OpenCommLink,"$faction.id == player_npc
+$faction.hostileToPlayer
+$relativeStrength >= 0",$ignorePlayerCommRequests = true 1,"""You have betrayed us. Prepare to die.""",,
+greetingHegemonyNeutral,OpenCommLink,"$faction.id == player_npc
+$faction.neutralToPlayer","$menuState = fleetConvMain 0
+FireAll PopulateOptions","""Just another day at the office.""",,
 ,,,,,,
 # bla,,,,,,
 ExerelinFlavorTextMarketOmnifactory,TradePanelFlavorText,"$global.tradePanelMode == MARKET

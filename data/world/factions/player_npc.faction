@@ -1,0 +1,291 @@
+{
+	id:"player_npc",
+	"color":[216,255,216,255],
+	"displayName":"player",
+	"displayNameWithArticle":"the player",
+	"displayNameLong":"the player's organization",
+	"displayNameLongWithArticle":"the player's organization",
+	"entityNamePrefix":"",
+	"logo":"graphics/factions/player_flag.png",
+	"shipNamePrefix":"ISS",
+	"shipNameSources":{
+		"ALL":1,
+	},
+	"description":"No description yet.",
+	"names":{
+		"modern":1,
+	},
+	"illegalCommodities":[
+	],
+	"showInIntelTab":false,
+	"portraits":{
+		"standard_male":[
+			"graphics/portraits/portrait_hegemony01.png",
+			"graphics/portraits/portrait_hegemony02.png",
+			"graphics/portraits/portrait_hegemony05.png",
+			#"graphics/portraits/portrait_hegemony06.png",
+			"graphics/portraits/portrait_mercenary01.png",
+			"graphics/portraits/portrait_mercenary03.png",
+			"graphics/portraits/portrait_corporate01.png",
+			"graphics/portraits/portrait_corporate03.png",
+			"graphics/portraits/portrait12.png",
+			"graphics/portraits/portrait13.png",
+			"graphics/portraits/portrait15.png",
+			"graphics/portraits/portrait17.png",
+			"graphics/portraits/portrait18.png",
+			"graphics/portraits/portrait20.png",
+			"graphics/portraits/portrait23.png",
+		],
+		"standard_female":[
+			"graphics/portraits/portrait_hegemony03.png",
+			"graphics/portraits/portrait_hegemony04.png",
+			"graphics/portraits/portrait_hegemony06.png",
+			"graphics/portraits/portrait_mercenary02.png",
+			"graphics/portraits/portrait_corporate02.png",
+			"graphics/portraits/portrait14.png",
+			"graphics/portraits/portrait16.png",
+			"graphics/portraits/portrait21.png",
+			"graphics/portraits/portrait22.png",
+			"graphics/portraits/portrait24.png",
+		],
+	},
+	"shipRoles":{
+		"interceptor":{
+			"talon_wing":10,
+			"wasp_wing":10,
+			"thunder_wing":10,
+			"fallback":{"fighter":1},
+		},
+		"fighter":{
+			"broadsword_wing":10,
+			"gladius_wing":10,
+			"xyphos_wing":10,
+			"warthog_wing":10,
+			"fallback":{"interceptor":1},
+		},
+		"bomber":{
+			"piranha_wing":10,
+			"dagger_wing":10,
+		},
+		
+		"fastAttack":{
+			"hound_d_Standard":10,
+			"wolf_d_Attack":10,	
+		
+			"lasher_Standard":10,
+			"hound_Standard":10,
+			"tempest_Attack":10,
+			"hyperion_Attack":1,
+			"wolf_Assault":10,
+			"fallback":{"combatSmall":1},
+		},
+	
+		"escortSmall":{
+			"lasher_d_CS":10,
+			"wolf_d_Attack":10,
+		
+			"lasher_CS":10,
+			"omen_PD":10,
+			"monitor_Escort":2,
+			"wolf_PD":10,
+			"shade_Assault":10,
+			"fallback":{"combatSmall":1},
+		},
+		"escortMedium":{
+			"enforcer_d_Strike":10,
+			"hammerhead_d_CS":10,
+			"sunder_d_Assault":10,
+			"buffalo2_FS":10,
+		
+			"enforcer_Assault":10,
+			"medusa_PD":10,
+			"fallback":{"combatMedium":1},
+		},
+		
+		"combatSmall":{
+			"lasher_d_CS":10,
+			"wolf_d_Attack":10,
+			
+			"wolf_CS":10,
+			"lasher_CS":10,
+			"lasher_Assault":10,
+			"vigilance_Standard":10,
+			"brawler_Assault":10,
+			"afflictor_Strike":10,
+			"shade_Assault":10,
+			
+			"fallback":{"escortSmall":1},
+		},
+		"combatMedium":{
+			"enforcer_d_Strike":10,
+			"hammerhead_d_CS":10,
+			"sunder_d_Assault":10,
+			"buffalo2_FS":10,
+			
+			"enforcer_Assault":10,
+			"enforcer_CS":10,
+			"enforcer_Balanced":10,
+			"enforcer_Outdated":10,
+			"enforcer_Elite":10,
+			"hammerhead_Balanced":10,
+			"hammerhead_Elite":10,
+			"sunder_Assault":10,
+			"sunder_CS":10,
+			"medusa_Attack":10,
+			"medusa_CS":10,
+			"fallback":{"combatSmall":2},
+		},
+		"combatLarge":{
+			"falcon_d_CS":20,
+			"eagle_d_Assault":10,
+			"dominator_d_Assault":10,
+		
+			"falcon_Attack":10,
+			"falcon_CS":10,
+			"eagle_Assault":10,
+			"eagle_Balanced":10,
+			"apogee_Balanced":10,
+			"dominator_Assault":10,
+			"dominator_Support":10,
+			"dominator_Outdated":10,
+			"aurora_Balanced":10,
+			"doom_Strike":10,
+			"fallback":{"combatMedium":2},
+		},
+		"combatCapital":{
+			"onslaught_Standard":10,
+			"onslaught_Outdated":10,
+			"onslaught_Elite":10,
+			"conquest_Elite":10,
+			"paragon_Elite":10,
+			"odyssey_Balanced":10,
+			"fallback":{"combatLarge":2},
+		},
+		
+		
+		# hybrid ships with good combat and cargo capacity
+		"combatFreighterSmall":{
+			"hound_d_Standard":10,
+			"cerberus_d_Standard":10,
+		
+			"hound_Standard":10,
+			"shepherd_Frontier":10,
+			"cerberus_Standard":10,
+			"fallback":{"freighterSmall":1},
+		},
+		"combatFreighterMedium":{
+			"mule_d_Standard":10,
+			"mule_Standard":10,
+			"fallback":{"combatFreighterSmall":2},
+		},
+		"combatFreighterLarge":{
+			"venture_Balanced":10,
+			"fallback":{"combatFreighterMedium":2},
+		},
+		
+		"civilianRandom":{
+			"mercury_d_Standard":10,
+			"hermes_d_Standard":10,
+			
+			"mercury_Standard":10,
+			"hermes_Standard":10,
+			"fallback":{"freighterSmall":1},
+		},
+	
+	
+		# carriers
+		"carrierSmall":{
+			"condor_FS":10,
+			"gemini_Standard":10,
+			"fallback":{"carrierMedium":1},
+		},
+		"carrierMedium":{
+			"heron_Standard":10,
+			"fallback":{"carrierSmall":2},
+		},
+		"carrierLarge":{
+			"astral_Elite":10,
+			"fallback":{"carrierMedium":2},
+		},
+	
+		# freighters and such
+		"freighterSmall":{
+			"hermes_d_Standard":10,
+			
+			"hermes_Standard":10,
+			"fallback":{"freighterMedium":1},
+		},
+		"freighterMedium":{
+			"tarsus_d_Standard":10,
+			"buffalo_d_Standard":10,
+			
+			"tarsus_Standard":10,
+			"buffalo_Standard":10,
+			"fallback":{"freighterSmall":2},
+		},
+		"freighterLarge":{
+			"atlas_Standard":10,
+			"fallback":{"freighterMedium":2},
+		},
+		
+		"tankerSmall":{
+			"dram_Light":10,
+			"fallback":{"tankerMedium":1},
+		},
+		"tankerMedium":{
+			"phaeton_Standard":10,
+			"fallback":{"tankerSmall":2},
+		},
+		"tankerLarge":{
+			"prometheus_Super":10,
+			"fallback":{"tankerMedium":2},
+		},
+		
+		"personnelSmall":{
+			"mercury_d_Standard":10,
+			"mercury_Standard":10,
+			"fallback":{"personnelMedium":1},
+		},
+		"personnelMedium":{
+			"valkyrie_Elite":10,
+			"fallback":{"personnelSmall":2},
+		},
+		"personnelLarge":{
+			"fallback":{"personnelMedium":2},
+		},
+		
+		# utility ships
+		"tug":{
+			"ox_Standard":10,
+			"fallback":{"utility":1},
+		},
+		"crig":{
+			"crig_Standard":10,
+			"fallback":{"utility":1},
+		},
+		"utility":{
+			"crig_Standard":10,
+			"ox_Standard":10,
+		},
+	},
+	"traits":{
+		"admiral":{
+			
+		},
+		"captain":{
+			"cowardly":1,
+			"cautious":1,
+			"steady":1,
+			"aggressive":1,
+			"suicidal":1,
+			"fearless":1,
+		},
+	},
+	"dialogue":{
+		"greetingFriendly":"Good to see you, chief. Is there anything we can do for you?",
+		"greetingNeutral":"Just another day at the office.",
+		"greetingHostileAggressive":"You have betrayed us. Prepare to die.",
+		"greetingHostileTimid":"Fine, fine, we're sorry for defying you! Just don't kill us!",
+	}
+	
+}

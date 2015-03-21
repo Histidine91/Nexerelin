@@ -42,30 +42,33 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 		}
 		CampaignClockAPI clock = Global.getSector().getClock();
 		if (clock.getDay() == 1 && clock.getMonth() != month) {
-		month = Global.getSector().getClock().getMonth();
-		int level = Global.getSector().getPlayerPerson().getStats().getLevel();
-		String stage = "report";
-		paidAmount = ExerelinConfig.playerBaseSalary + ExerelinConfig.playerSalaryIncrementPerLevel * (level - 1);
-		if (paidAmount == 0)
-			return;
-		
-		FactionAPI alignedFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
-		RepLevel relation = alignedFaction.getRelationshipLevel("player");
-		if (alignedFaction.isAtBest("player", RepLevel.INHOSPITABLE))
-		{
-			paidAmount = 0;
-			stage = "report_unpaid";
-		}
-		else if (relation == RepLevel.SUSPICIOUS)
-			paidAmount *= 0.25f;
-		else if (relation == RepLevel.NEUTRAL)
-			paidAmount *= 0.5f;
-		else if (relation == RepLevel.FAVORABLE)
-			paidAmount *= 0.75f;
-		
-		playerFleet.getCargo().getCredits().add(paidAmount);
-		Global.getSector().reportEventStage(this, stage, playerFleet, MessagePriority.DELIVER_IMMEDIATELY);
-		Global.getSector().getPersistentData().put("salariesClock", Global.getSector().getClock().createClock(Global.getSector().getClock().getTimestamp()));
+			month = Global.getSector().getClock().getMonth();
+			int level = Global.getSector().getPlayerPerson().getStats().getLevel();
+			String stage = "report";
+			paidAmount = ExerelinConfig.playerBaseSalary + ExerelinConfig.playerSalaryIncrementPerLevel * (level - 1);
+			if (paidAmount == 0)
+				return;
+
+			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+			//if (alignedFactionId.equals("player_npc")) return;  // no self-salary
+			FactionAPI alignedFaction = Global.getSector().getFaction(alignedFactionId);
+
+			RepLevel relation = alignedFaction.getRelationshipLevel("player");
+			if (alignedFaction.isAtBest("player", RepLevel.SUSPICIOUS))
+			{
+				paidAmount = 0;
+				stage = "report_unpaid";
+			}
+			else if (relation == RepLevel.NEUTRAL)
+				paidAmount *= 0.25f;
+			else if (relation == RepLevel.FAVORABLE)
+				paidAmount *= 0.5f;
+			else if (relation == RepLevel.WELCOMING)
+				paidAmount *= 0.75f;
+
+			playerFleet.getCargo().getCredits().add(paidAmount);
+			Global.getSector().reportEventStage(this, stage, playerFleet, MessagePriority.DELIVER_IMMEDIATELY);
+			Global.getSector().getPersistentData().put("salariesClock", Global.getSector().getClock().createClock(Global.getSector().getClock().getTimestamp()));
 		}
 	}
 

@@ -18,6 +18,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.HashMap;
@@ -182,7 +183,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         // pick a faction to invade someone
         for (FactionAPI faction: factions)
         {
-            if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
+            if (faction.isNeutralFaction()) continue;
+            if (faction.isPlayerFaction()) continue;
             if (ExerelinUtilsFaction.isPirateFaction(faction.getId())) continue;
             List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, false);
 

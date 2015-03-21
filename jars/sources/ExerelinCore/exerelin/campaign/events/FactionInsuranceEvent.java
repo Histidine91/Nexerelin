@@ -21,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtils;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
@@ -51,8 +52,9 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		float value = 0f;
 		String stage = "report";
 		
-		FactionAPI alignedFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
-		RepLevel relation = alignedFaction.getRelationshipLevel("player");
+		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+		//if (alignedFactionId.equals("player_npc")) return;  // no self-insurance
+		FactionAPI alignedFaction = Global.getSector().getFaction(alignedFactionId);
 		
 		List<FleetMemberAPI> fleetCurrent = fleet.getFleetData().getMembersListCopy();
 		for (FleetMemberAPI member : fleet.getFleetData().getSnapshot()) {
@@ -62,33 +64,21 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		}
 		if (value <= 0) return;
 		
-		if (alignedFaction.isAtBest("player", RepLevel.INHOSPITABLE))
+		if (alignedFaction.isAtBest("player", RepLevel.SUSPICIOUS))
 		{
 			paidAmount = 0;
 			stage = "report_unpaid";
 		}
 		else paidAmount = value * ExerelinConfig.playerInsuranceMult;
 		
-		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
-		MarketAPI closestMarket = null;
-		float closestDist = 999999f;
-		Vector2f playerLoc = playerFleet.getLocationInHyperspace();
-		for (MarketAPI market : markets)
-		{
-			float dist = Misc.getDistance(market.getLocationInHyperspace(), playerLoc);
-			if (dist < closestDist && market.getFaction() == alignedFaction)
-			{
-				closestMarket = market;
-				closestDist = dist;
-			}
-		}
+		MarketAPI closestMarket = ExerelinUtils.getClosestMarket(alignedFactionId);
 		if (closestMarket != null)
 		{
-		Global.getSector().reportEventStage(this, stage, closestMarket.getPrimaryEntity(), MessagePriority.ENSURE_DELIVERY, new BaseOnMessageDeliveryScript() {
-			public void beforeDelivery(CommMessageAPI message) {
-				Global.getSector().getPlayerFleet().getCargo().getCredits().add(paidAmount);
-			}
-		});
+			Global.getSector().reportEventStage(this, stage, closestMarket.getPrimaryEntity(), MessagePriority.ENSURE_DELIVERY, new BaseOnMessageDeliveryScript() {
+				public void beforeDelivery(CommMessageAPI message) {
+					Global.getSector().getPlayerFleet().getCargo().getCredits().add(paidAmount);
+				}
+			});
 		}
 	}
 	

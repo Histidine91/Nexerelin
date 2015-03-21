@@ -13,11 +13,15 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsReputation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,8 +45,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     private Map<String, String> systemToRelayMap;
     private boolean victoryHasOccured;
     
-    private int numSlavesRecentlySold;
-    private MarketAPI marketLastSoldSlaves;
+    private int numSlavesRecentlySold = 0;
+    private MarketAPI marketLastSoldSlaves = null;
+    
+    private boolean wantExpelPlayerFromFaction = false;
 
     public SectorManager()
     {
@@ -50,8 +56,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         String[] temp = ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector());
         liveFactionIds = new ArrayList<>();
         factionIdsAtStart = new ArrayList<>();
-        numSlavesRecentlySold = 0;
-        marketLastSoldSlaves = null;
         
         for (String factionId:temp)
         {
@@ -71,6 +75,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             handleSlaveTradeRep();
             numSlavesRecentlySold = 0;
+        }
+        if (wantExpelPlayerFromFaction)
+        {
+            wantExpelPlayerFromFaction = false;
+            expelPlayerFromFaction();
         }
     }
     
@@ -342,5 +351,34 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return;
         sectorManager.systemToRelayMap = map;
+    }
+    
+    private static void expelPlayerFromFaction()
+    {
+        String oldFactionId = PlayerFactionStore.getPlayerFactionId();
+        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+        if (playerAlignedFactionId.equals("player_npc")) return;
+
+        SectorAPI sector = Global.getSector();
+        FactionAPI newFaction = sector.getFaction("player_npc");
+        FactionAPI oldFaction = sector.getFaction(oldFactionId);
+
+        PlayerFactionStore.loadIndependentPlayerRelations(true);
+        PlayerFactionStore.setPlayerFactionId("player_npc");
+        ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
+
+        CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
+        if (eventSuper == null) 
+            eventSuper = sector.getEventManager().startEvent(null, "exerelin_faction_changed", null);
+        FactionChangedEvent event = (FactionChangedEvent)eventSuper;
+
+        MarketAPI market = ExerelinUtils.getClosestMarket(oldFactionId);
+        event.reportEvent(oldFaction, newFaction, "expelled", market.getPrimaryEntity());
+    }
+    
+    public static void scheduleExpelPlayerFromFaction()
+    {
+        if (sectorManager == null) return;
+        sectorManager.wantExpelPlayerFromFaction = true;
     }
 }

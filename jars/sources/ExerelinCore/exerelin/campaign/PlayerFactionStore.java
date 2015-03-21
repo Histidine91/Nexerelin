@@ -1,13 +1,21 @@
 package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.SectorAPI;
+import exerelin.utilities.ExerelinUtilsReputation;
+import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
 public class PlayerFactionStore {
     private static final String PLAYER_FACTION_ID_KEY = "exerelin_playerFactionId";
+    private static final String PLAYER_RELATIONS_KEY = "exerelin_independentPlayerRelations";
     
-    private static String factionId = "independent";
+    private static String factionId = "player_npc";
+    
+    //private static Map<String, Float> independentPlayerRelations = new HashSet<>();
     
     public static Logger log = Global.getLogger(PlayerFactionStore.class);
     
@@ -38,5 +46,53 @@ public class PlayerFactionStore {
             return (String)storedId;
         }
         return factionId;
+    }
+    
+    public static void saveIndependentPlayerRelation(String factionId)
+    {
+        SectorAPI sector = Global.getSector();
+        Map<String, Object> data = sector.getPersistentData();
+        Map<String, Float> storedRelations = (HashMap<String, Float>)data.get(PLAYER_RELATIONS_KEY);
+        if (storedRelations == null) storedRelations = new HashMap<>();
+        
+        FactionAPI playerFaction = sector.getFaction("player");
+        float relation = playerFaction.getRelationship(factionId);
+        storedRelations.put(factionId, relation);
+        data.put(PLAYER_RELATIONS_KEY, storedRelations);
+    }
+    
+    public static void saveIndependentPlayerRelations()
+    {
+        SectorAPI sector = Global.getSector();
+        Map<String, Object> data = sector.getPersistentData();
+        Map<String, Float> storedRelations = new HashMap<>();
+        FactionAPI playerFaction = sector.getFaction("player");
+        for (FactionAPI faction : sector.getAllFactions())
+        {
+            float relation = playerFaction.getRelationship(faction.getId());
+            storedRelations.put(faction.getId(), relation);
+            log.info("Saving independent player relations with " + faction.getDisplayName() + " as " + relation);
+        }
+        data.put(PLAYER_RELATIONS_KEY, storedRelations);
+    }
+    
+    public static void loadIndependentPlayerRelations(boolean retainWithCurrentFaction)
+    {
+        SectorAPI sector = Global.getSector();
+        Map<String, Object> data = sector.getPersistentData();
+        Map<String, Float> storedRelations = (HashMap<String, Float>)data.get(PLAYER_RELATIONS_KEY);
+        if (storedRelations == null) return;
+        
+        FactionAPI playerFaction = sector.getFaction("player");
+        for (FactionAPI faction : sector.getAllFactions())
+        {
+            Float relation = storedRelations.get(faction.getId());
+            if (relation != null && (!retainWithCurrentFaction || !faction.getId().equals(factionId)))
+            {
+                faction.setRelationship("player", relation);
+                log.info("Loading independent player relations with " + faction.getDisplayName() + " as " + relation);
+            }
+        }
+        ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
     }
 }

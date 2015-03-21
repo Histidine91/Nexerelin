@@ -1,0 +1,27 @@
+{
+    "displayName": "Indie",
+    "fluxCapacitors": 3,
+    "fluxVents": 10,
+    "hullId": "monitor",
+    "hullMods": [],
+    "quality": 0.75,
+    "variantId": "monitor_Indie",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "flak",
+                "WS 002": "flak"
+            }
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 003": "irpulse",
+                "WS 004": "irpulse"
+            }
+        }
+    ]
+}

@@ -1,0 +1,10 @@
+{
+    "uniqueModClassName":"", # String
+    "factionNiceName":"Player", # String
+    "playableFaction":"true", # Boolean
+
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
+    
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+}

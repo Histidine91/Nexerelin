@@ -47,5 +47,9 @@
 	},
 	"exerelin_faction_insurance":{
 		"script":"exerelin.campaign.events.FactionInsuranceEvent"
+	},
+	"exerelin_faction_changed":{
+		"script":"exerelin.campaign.events.FactionChangedEvent",
+		"image":"graphics/icons/intel/reputation.png"
 	}
 }

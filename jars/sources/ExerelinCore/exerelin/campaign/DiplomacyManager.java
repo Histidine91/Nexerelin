@@ -17,6 +17,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsReputation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -192,9 +193,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         delta = after - before;
 
         if(faction1 == playerAlignedFaction)
-           playerFaction.setRelationship(faction2.getId(), after);
+        {
+            playerFaction.setRelationship(faction2.getId(), after);
+            faction2.setRelationship("player_npc", after);
+        }
         else if(faction2 == playerAlignedFaction)
-           playerFaction.setRelationship(faction1.getId(), after);
+        {
+            playerFaction.setRelationship(faction1.getId(), after);
+            faction1.setRelationship("player_npc", after);
+        }
         
         SectorManager.checkForVictory();
         return new ReputationAdjustmentResult(delta);
@@ -245,7 +252,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         int factionCount = 0;
         for (FactionAPI faction: factions)
         {
-            if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
+            if (faction.isNeutralFaction()) continue;
+            if (faction.getId().equals("player_npc") && !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
+            
             if (disallowedFactions.contains(faction.getId())) continue;
             factionPicker.add(faction);
             factionCount++;
@@ -320,7 +329,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (pirateFactions.contains(factionId)) continue;
             if (disallowedFactions.contains(factionId)) continue;
             FactionAPI faction = sector.getFaction(factionId);
-            if(faction.isPlayerFaction() || faction.isNeutralFaction()) continue;
+            if (faction.isNeutralFaction()) continue;
+            if (faction.getId().equals("player_npc") && !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
 
             float weariness = warWeariness.get(factionId);
             List<String> enemies = getFactionsAtWarWithFaction(faction, false);
@@ -625,6 +635,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             }
         }
 
+        factionIds.add("player");
         // pirates are hostile to everyone, except some factions like Mayorate
         if (!randomize)
         {
@@ -632,7 +643,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             {
                 FactionAPI faction = sector.getFaction(factionId);
                 ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
-                if ((factionConfig== null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !ExerelinUtilsFaction.isPirateFaction(factionId))
+                if ((factionConfig == null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !ExerelinUtilsFaction.isPirateFaction(factionId))
                 {
                     for (String pirateFactionId : pirateFactions) {
                         FactionAPI pirateFaction = sector.getFaction(pirateFactionId);
@@ -650,7 +661,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             for (String factionId : factionIds)
             {
                 FactionAPI faction = sector.getFaction(factionId);
-                if (!faction.isNeutralFaction() && !factionId.equals("templars"))
+                if (factionId.equals("player"))
+                {
+                    templars.setRelationship(factionId, RepLevel.INHOSPITABLE);
+                }
+                else if (!faction.isNeutralFaction() && !factionId.equals("templars"))
                 {
                     templars.setRelationship(factionId, RepLevel.HOSTILE);
                 }
@@ -658,16 +673,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
 
         // set player relations based on selected faction
-        for (String factionId : factionIds)
-        {
-            FactionAPI faction = sector.getFaction(factionId);
-            if (faction != player && faction != selectedFaction)
-            {
-                float relationship = selectedFaction.getRelationship(faction.getId());
-                player.setRelationship(faction.getId(), relationship);
-            }
-        }
-
+        PlayerFactionStore.saveIndependentPlayerRelations();
+        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId);
         player.setRelationship(selectedFactionId, RepLevel.FRIENDLY);
+        ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
     }
 }
