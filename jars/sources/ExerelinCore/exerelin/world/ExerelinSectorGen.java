@@ -245,7 +245,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (isCapital)
 		{
 			newMarket.addCondition(data == homeworld ? "headquarters" : "regional_capital");
-			newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
+			if (data == homeworld) newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
 		}
 		
 		int minSizeForMilitaryBase = 5;
