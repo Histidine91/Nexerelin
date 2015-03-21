@@ -34,13 +34,16 @@
 		"script":"exerelin.campaign.events.SlavesSoldEvent"
 	},
 	"exerelin_faction_eliminated":{
-		"script":"exerelin.campaign.events.FactionEliminatedEvent"
+		"script":"exerelin.campaign.events.FactionEliminatedEvent",
+		"image":"graphics/icons/intel/star.png"
 	},
 	"exerelin_victory":{
-		"script":"exerelin.campaign.events.VictoryEvent"
+		"script":"exerelin.campaign.events.VictoryEvent",
+		"image":"graphics/icons/intel/star.png"
 	},
 	"exerelin_faction_respawned":{
-		"script":"exerelin.campaign.events.FactionRespawnedEvent"
+		"script":"exerelin.campaign.events.FactionRespawnedEvent",
+		"image":"graphics/icons/intel/star.png"
 	},
 	"exerelin_faction_salary":{
 		"script":"exerelin.campaign.events.FactionSalaryEvent"
