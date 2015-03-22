@@ -127,7 +127,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         return data;
     }
   
-    public static InvasionFleetData spawnFleet(FactionAPI invader, MarketAPI originMarket, MarketAPI targetMarket, boolean noWait)
+    public static InvasionFleetData spawnFleet(FactionAPI invader, MarketAPI originMarket, MarketAPI targetMarket, float marineMult, boolean noWait)
     {
         float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket);
         
@@ -143,7 +143,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         {
             invader.pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, qf, fleet);
         }
-        int marinesToSend = (int)(defenderStrength * DEFENDER_STRENGTH_MARINE_MULT);
+        int marinesToSend = (int)(defenderStrength * marineMult);
         fleet.getCargo().addMarines(marinesToSend);
         
         fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinInvasionFleet");
@@ -260,7 +260,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         //log.info("\tTarget: " + targetMarket.getName());
         
         // okay, assemble battlegroup
-        InvasionFleetData data = spawnFleet(invader, originMarket, targetMarket, false);
+        InvasionFleetData data = spawnFleet(invader, originMarket, targetMarket, DEFENDER_STRENGTH_MARINE_MULT, false);
         this.activeFleets.add(data);
         if (originMarket.getSize() >= 4)
         {

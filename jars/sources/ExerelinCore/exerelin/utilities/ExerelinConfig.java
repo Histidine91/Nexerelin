@@ -47,6 +47,8 @@ public class ExerelinConfig
     
     public static float crewLootMult = 0.02f;
     
+    public static float invasionFleetCostPerMarine = 500f;
+    
     // Special Ships
     public static String[] validBoardingFlagships = new String[]{};
     public static String[] validTroopTransportShips = new String[]{};
@@ -66,8 +68,6 @@ public class ExerelinConfig
             enableThreading = settings.optBoolean("enableThreading");
             useMultipleBackgroundsAndStars = settings.optBoolean("useMultipleBackgroundsAndStars");
             useCustomFactionConfigs = settings.optBoolean("useCustomFactionConfigs");
-
-            
 
             minimumPlanets = settings.optInt("minimumPlanets");
             minimumStations = settings.optInt("minimumStations");
@@ -92,6 +92,7 @@ public class ExerelinConfig
             prisonerSlaveRepValue = (float)settings.optDouble("prisonerSlaveRepValue");
 
             crewLootMult = (float)settings.optDouble("crewLootMult");
+            invasionFleetCostPerMarine = (float)settings.optDouble("invasionFleetCostPerMarine");
             
             validMiningShips = JSONArrayToStringArray(settings.getJSONArray("validMiningShips"));
 

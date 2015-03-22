@@ -184,12 +184,16 @@ public class InvasionRound {
 	
 	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, SectorEntityToken defender, boolean isRaid, InvasionSimulationType simType)
 	{
+                MarketAPI market = defender.getMarket();
+		if (market == null) return new InvasionRoundResult(true);
+            
 		CargoAPI attackerCargo = attacker.getCargo();
 		int marineCount = attackerCargo.getMarines();
-		if (marineCount <= 0) return new InvasionRoundResult();
-		
-		MarketAPI market = defender.getMarket();
-		if (market == null) return new InvasionRoundResult(true);
+		if (marineCount <= 0) {
+                    InvasionRoundResult result = new InvasionRoundResult(false);
+                    result.defenderStrength = GetDefenderStrength(market);
+                    return result;
+                }
 		
 		// combat resolution (TODO: incomplete)
 		float randomBonus = (float)(Math.random()) * ATTACKER_RANDOM_BONUS;

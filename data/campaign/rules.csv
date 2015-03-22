@@ -340,19 +340,31 @@ FireAll PopulateOptions",,,
 ExerelinMarketInvadeOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
-$faction.id != ""player_npc""
-HasMarines",SetEnabled exerelinInvasion true,,1:exerelinInvasion:Invade the planet/station,
-ExerelinMarketInvadeOptionNoMarines,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""
-!HasMarines","SetTooltip exerelinInvasion ""You have no marines!""
-SetEnabled exerelinInvasion false",,1:exerelinInvasion:Invade the planet/station,
+$faction.id != ""player_npc""",,,1:exerelinInvasion:Invade the planet/station,
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
-PredictInvasionResults",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,"exerelinInvasionProceed:Proceed
-exerelinInvasionHelp:Consult a help file
-exerelinInvasionCancel:Cancel",
-ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,,"Base attacker strength = (marine strength + fleet DP/2) * 0.7 (average)
+PredictInvasionResults
+FireAll ExerelinInvadeListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
+ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,,,"
+2:exerelinInvasionHelp:Consult a help file
+4:exerelinInvasionCancel:Cancel",
+ExerelinInvadeListOptionInvade,ExerelinInvadeListOptions,HasMarines,SetEnabled exerelinInvasionProceed true,,1:exerelinInvasionProceed:Proceed,
+ExerelinInvadeListOptionInvadeNoMarines,ExerelinInvadeListOptions,!HasMarines,"SetTooltip exerelinInvasionProceed ""You have no marines!""
+SetEnabled exerelinInvasionProceed false",,1:exerelinInvasionProceed:Proceed,
+ExerelinInvadeListOptionRequestFleet,ExerelinInvadeListOptions,"CanAffordInvasion
+IsFactionAlive $player.factionId","SetTooltip exerelinInvasionRequestFleet ""Deploying a fleet to invade $market will require $creditsRequiredForInvasionFleet credits. $player.creditsHave credits are available.""
+SetEnabled exerelinInvasionRequestFleet true
+SetTooltipHighlightColors exerelinInvasionRequestFleet buttonShortcut buttonShortcut
+SetTooltipHighlights exerelinInvasionRequestFleet $creditsRequiredForInvasionFleet $player.creditsHave",,3:exerelinInvasionRequestFleet:Request a fleet,
+ExerelinInvadeListOptionRequestFleetNoMarkets,ExerelinInvadeListOptions,"CanAffordInvasion
+!IsFactionAlive $player.factionId score:100","SetTooltip exerelinInvasionRequestFleet ""Your faction has no base to launch the invasion from.""
+SetEnabled exerelinInvasionRequestFleet false",,3:exerelinInvasionRequestFleet:Request a fleet,
+ExerelinInvadeListOptionRequestFleetNotEnoughCredits,ExerelinInvadeListOptions,"!CanAffordInvasion score:100
+IsFactionAlive $player.factionId","SetTooltip exerelinInvasionRequestFleet ""Deploying a fleet to invade $market will require $creditsRequiredForInvasionFleet credits. Only $player.creditsHave credits are available.""
+SetEnabled exerelinInvasionRequestFleet false
+SetTooltipHighlightColors exerelinInvasionRequestFleet buttonShortcut buttonShortcut
+SetTooltipHighlights exerelinInvasionRequestFleet $creditsRequiredForInvasionFleet $player.creditsHave",,3:exerelinInvasionRequestFleet:Request a fleet,
+,,,,,,
+ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,FireAll ExerelinInvadeListOptions,"Base attacker strength = (marine strength + fleet DP/2) * 0.7 (average)
 Base defender strength = (market size^3) * (stability + 0.25) * 0.75
 Each Military Base and Regional Capital adds 25% to defender strength, Headquarters adds 40%.
 Attacker strength varies by up to 1/7th in either direction.
@@ -360,9 +372,11 @@ Attacker strength varies by up to 1/7th in either direction.
 If attacker roll exceeds defender strength, the market is captured.
 Marine losses depend on both strength values, plus a random factor.
 
-Markets accumulate a reserve force over time that can be quickly deployed in response to invasions.","exerelinInvasionProceed:Proceed
-exerelinInvasionHelp:Consult a help file
-exerelinInvasionCancel:Cancel",
+Markets accumulate a reserve force over time that can be quickly deployed in response to invasions.",,
+ExerelinInvasionRequestFleet,DialogOptionSelected,$option == exerelinInvasionRequestFleet,"RequestInvasionFleet
+$menuState = main 0
+ShowDefaultVisual
+FireAll PopulateOptions",,,
 ExerelinInvasionProceed,DialogOptionSelected,"$option == exerelinInvasionProceed
 $hasMarket ","Wait $global.exerelinInvasionWait 1 $global.exerelinInvasionRoundComplete $global.exerelinInvasionInterrupted $global.exerelinInvasionInProgress ""Invading...""
 BroadcastPlayerWaitAction $global.exerelinInvasionWait HOSTILE 750 $exerelinRespondingToInvasion

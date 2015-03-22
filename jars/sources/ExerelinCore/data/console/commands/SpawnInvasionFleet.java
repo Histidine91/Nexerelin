@@ -62,7 +62,7 @@ public class SpawnInvasionFleet implements BaseCommand {
                 return CommandResult.ERROR;
         }
         
-        InvasionFleetManager.InvasionFleetData data = InvasionFleetManager.spawnFleet(playerAlignedFaction, closestOriginMarket, closestTargetMarket, true);
+        InvasionFleetManager.InvasionFleetData data = InvasionFleetManager.spawnFleet(playerAlignedFaction, closestOriginMarket, closestTargetMarket, 1.1f, true);
         Console.showMessage("Spawning " + data.fleet.getName() + " from " + closestOriginMarket.getName());
         Console.showMessage("Oscar Mike to " + closestTargetMarket.getName());
         data.fleet.setLocation(playerPos.x, playerPos.y);
