@@ -18,7 +18,6 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 
 
