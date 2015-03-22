@@ -5,8 +5,8 @@
 	"displayNameWithArticle":"the player",
 	"displayNameLong":"the player's organization",
 	"displayNameLongWithArticle":"the player's organization",
-	"entityNamePrefix":"Player",
-	"logo":"graphics/factions/player_flag.png",
+	"entityNamePrefix":"player",
+	"logo":"graphics/factions/player_flag2.png",
 	"shipNamePrefix":"ISS",
 	"shipNameSources":{
 		"ALL":1,
