@@ -26,7 +26,7 @@ public class ExerelinFleetInteractionDialogPlugin extends FleetInteractionDialog
 		options.addOption("Open a comm link", OptionId.OPEN_COMM, null);
 		
 		FactionAPI otherFaction = otherFleet.getFaction();
-		boolean isPlayerAlignedFaction = otherFaction.getId().equals(PlayerFactionStore.getPlayerFactionId());
+		boolean isPlayerAlignedFaction = otherFaction.getId().equals(PlayerFactionStore.getPlayerFactionId()) || otherFaction.getId().equals("player_npc");
 		
 		boolean otherWantsToRun = otherFleetWantsToDisengage() && otherCanDisengage();
 		
