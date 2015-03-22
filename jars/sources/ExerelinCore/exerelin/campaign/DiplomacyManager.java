@@ -332,7 +332,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (faction.isNeutralFaction()) continue;
             if (faction.getId().equals("player_npc") && !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
 
-            float weariness = warWeariness.get(factionId);
+            Float weariness = warWeariness.get(factionId);
+            if (weariness == null) weariness = 0f;
             List<String> enemies = getFactionsAtWarWithFaction(faction, false);
             int warCount = enemies.size();
             if (warCount > 0)
@@ -350,7 +351,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 }
             }
             else weariness -= warWearinessPerInterval;
-            if (weariness < 0) weariness = 0;
+            if (weariness < 0) weariness = 0f;
             
             warWeariness.put(factionId, weariness);
         }
@@ -678,7 +679,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         player.setRelationship(selectedFactionId, RepLevel.FRIENDLY);
         if (selectedFactionId.equals("player_npc"))
         {
-            player.setRelationship(selectedFactionId, RepLevel.COOPERATIVE);
+            player.setRelationship(selectedFactionId, 1f);
             PlayerFactionStore.saveIndependentPlayerRelations();
         }
         else {
