@@ -38,7 +38,14 @@ public class ResponseFleetAI implements EveryFrameScript
         }
         FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
         float fp = this.fleet.getFleetPoints();
-        if (fp < this.data.startingFleetPoints / 2.0F && fp < 25f) {
+        boolean tooWeak = true;
+        SectorEntityToken target = this.data.target;
+        if (target != null && target.isAlive())
+        {
+            CampaignFleetAPI targetFleet = (CampaignFleetAPI)this.data.target;
+            if (targetFleet.getFleetPoints() < fp * 2) tooWeak = false;
+        }
+        if (fp < this.data.startingFleetPoints / 2.0F && tooWeak) {
             giveStandDownOrders();
         }
         else
