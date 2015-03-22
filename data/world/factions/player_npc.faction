@@ -5,7 +5,7 @@
 	"displayNameWithArticle":"the player",
 	"displayNameLong":"the player's organization",
 	"displayNameLongWithArticle":"the player's organization",
-	"entityNamePrefix":"",
+	"entityNamePrefix":"Player",
 	"logo":"graphics/factions/player_flag.png",
 	"shipNamePrefix":"ISS",
 	"shipNameSources":{
@@ -23,7 +23,7 @@
 			"graphics/portraits/portrait_hegemony01.png",
 			"graphics/portraits/portrait_hegemony02.png",
 			"graphics/portraits/portrait_hegemony05.png",
-			#"graphics/portraits/portrait_hegemony06.png",
+			"graphics/portraits/portrait_hegemony06.png",
 			"graphics/portraits/portrait_mercenary01.png",
 			"graphics/portraits/portrait_mercenary03.png",
 			"graphics/portraits/portrait_corporate01.png",

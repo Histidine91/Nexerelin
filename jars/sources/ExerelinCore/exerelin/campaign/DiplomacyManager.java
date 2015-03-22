@@ -582,6 +582,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 
         List<String> factionIds = SectorManager.getLiveFactionIdsCopy();
         factionIds.add("independent");
+        factionIds.add("player_npc");
 
         boolean randomize = ExerelinSetupData.getInstance().randomStartRelationships;
         List<String> alreadyRandomizedIds = new ArrayList<>();
@@ -634,8 +635,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 }
             }
         }
-
-        factionIds.add("player");
+        
         // pirates are hostile to everyone, except some factions like Mayorate
         if (!randomize)
         {
@@ -676,6 +676,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         PlayerFactionStore.saveIndependentPlayerRelations();
         ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId);
         player.setRelationship(selectedFactionId, RepLevel.FRIENDLY);
-        ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
+        if (selectedFactionId.equals("player_npc"))
+        {
+            player.setRelationship(selectedFactionId, RepLevel.COOPERATIVE);
+            PlayerFactionStore.saveIndependentPlayerRelations();
+        }
+        else {
+            ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
+        }
     }
 }

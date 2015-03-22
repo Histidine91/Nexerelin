@@ -546,7 +546,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	{
 		SectorAPI sector = Global.getSector();
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>();
-		List<String> factions = Arrays.asList(factionIds);
+		List<String> factions = new ArrayList<>(Arrays.asList(factionIds));
+		factions.remove("player_npc");  // player NPC faction only gets homeworld (if applicable)
 		
 		// before we do anything else give the "homeworld" to our faction
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -557,6 +558,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		Collections.shuffle(habitablePlanets);
 		Collections.shuffle(stations);
 		
+		// add factions and markets to planets
 		for (EntityData habitable : habitablePlanets)
 		{
 			if (habitable == homeworld) continue;

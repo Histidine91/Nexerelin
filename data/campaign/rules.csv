@@ -19,9 +19,9 @@ exerelinNGCIntroEnd:Skip",
 ExerelinNGCIntro2,ExerelinNGCIntroPage,"$introPage == 2.0
 $isInIntro",,"Your actions will gain/lose you influence with the factions in the Sector. The higher your influence with a faction, the greater access to their support and technology you will have.
 
-At the start of the game, you pick a faction to join. You are a representative of your chosen faction, and your actions in the Sector will reflect on them. You can move to another faction later, if you can earn their trust.
+At the start of the game, you pick a faction to join. You are a representative of your chosen faction, and your actions in the Sector will reflect on them. 
 
-You can also choose to go it alone and set up your own empire, although this can be considerably harder.","exerelinNGCIntroNextPage:Next
+You can move to another faction later, if you can earn their trust. You can also choose to go it alone and set up your own empire.","exerelinNGCIntroNextPage:Next
 exerelinNGCIntroPrevPage:Previous
 exerelinNGCIntroEnd:Skip",
 ExerelinNGCIntro3,ExerelinNGCIntroPage,"$introPage == 3.0
@@ -431,7 +431,7 @@ exerelinFactionDirectoryList2:H-M
 exerelinFactionDirectoryList3:N-Q
 exerelinFactionDirectoryList4:R-Z
 10:exerelinMarketSpecial:Back",
-ExerelinFactionDirectoryListPlayer,ExerelinFactionDirectory,IsFactionAlive player,,,exerelinFactionDirectoryGetPlayer:Player,
+ExerelinFactionDirectoryListPlayer,ExerelinFactionDirectory,IsFactionAlive player_npc,,,exerelinFactionDirectoryGetPlayer:Player,
 ExerelinFactionDirectoryOptionIntel,ExerelinFactionDirectory,$hasMarket,,,exerelinMarketIntel:Open intel screen,
 ExerelinFactionDirectoryList1,DialogOptionSelected,$option == exerelinFactionDirectoryList1,FireAll ExerelinFactionDirectoryList1,,,
 ExerelinFactionDirectoryList2,DialogOptionSelected,$option == exerelinFactionDirectoryList2,FireAll ExerelinFactionDirectoryList2,,,
@@ -490,7 +490,7 @@ ExerelinFactionDirectoryGetORI,DialogOptionSelected,$option == exerelinFactionDi
 ExerelinFactionDirectoryGetPACK,DialogOptionSelected,$option == exerelinFactionDirectoryGetPACK,PrintFactionMarkets pack,,,
 ExerelinFactionDirectoryGetPatria,DialogOptionSelected,$option == exerelinFactionDirectoryGetPatria,PrintFactionMarkets patnavy,,,
 ExerelinFactionDirectoryGetPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetPirates,PrintFactionMarkets pirates,,,
-ExerelinFactionDirectoryGetPlayer,DialogOptionSelected,$option == exerelinFactionDirectoryGetPlayer,PrintFactionMarkets player,,,
+ExerelinFactionDirectoryGetPlayer,DialogOptionSelected,$option == exerelinFactionDirectoryGetPlayer,PrintFactionMarkets player_npc,,,
 ExerelinFactionDirectoryGetRadicalORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetRadicalORI,PrintFactionMarkets rori,,,
 ExerelinFactionDirectoryGetSCY,DialogOptionSelected,$option == exerelinFactionDirectoryGetSCY,PrintFactionMarkets SCY,,,
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,PrintFactionMarkets shadow_industry,,,
