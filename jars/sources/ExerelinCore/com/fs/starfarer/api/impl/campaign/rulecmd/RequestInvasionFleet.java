@@ -43,10 +43,11 @@ public class RequestInvasionFleet extends InvasionFleetActionBase {
                 LocationAPI originLoc = sourceMarket.getPrimaryEntity().getContainingLocation();
                 String origin = originLoc.getName();
                 String sourceMarketName = sourceMarket.getName();
+                if (!originLoc.isHyperspace()) origin = "the " + origin;
                 
                 text.addParagraph("An invasion fleet is being assembled at " + sourceMarketName + ", in " + origin + ". It will be underway within a few days.");
                 text.highlightInLastPara(hl, sourceMarketName);
-                text.highlightInLastPara(hl, origin);
+                //text.highlightInLastPara(hl, origin);
                 
 		RepActionEnvelope envelope = new RepActionEnvelope(RepActions.COMBAT_NORMAL, null, dialog.getTextPanel());
 		Global.getSector().adjustPlayerReputation(envelope, targetMarket.getFactionId());
