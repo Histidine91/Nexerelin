@@ -7,54 +7,54 @@
 			"name":"Official Aid",
 			"stage":"official_aid",
 			"minRepLevelToOccur":"inhospitable",
-			"minRepChange":0.1,
-			"maxRepChange":0.15,
+			"minRepChange":0.15,
+			"maxRepChange":0.2,
 			"allowPirates":true
 		},
 		{
 			"name":"Philanthropy",
 			"stage":"philanthropy",
 			"minRepLevelToOccur":"inhospitable",
-			"minRepChange":0.05,
-			"maxRepChange":0.1,
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
 			"allowPirates":true
 		},
 		{
 			"name":"Cultural Boom",
 			"stage":"culture_boom",
 			"minRepLevelToOccur":"suspicious",
-			"minRepChange":0.05,
-			"maxRepChange":0.1
+			"minRepChange":0.1,
+			"maxRepChange":0.15
 		},
 		{
 			"name":"Cooperation Deal",
 			"stage":"cooperation_deal",
 			"minRepLevelToOccur":"suspicious",
-			"minRepChange":0.1,
-			"maxRepChange":0.15,
+			"minRepChange":0.15,
+			"maxRepChange":0.2,
 			"allowPirates":true
 		},
 		{
 			"name":"Major Cooperation Deal",
 			"stage":"cooperation_deal_major",
 			"minRepLevelToOccur":"favorable",
-			"minRepChange":0.15,
-			"maxRepChange":0.2,
+			"minRepChange":0.25,
+			"maxRepChange":0.3,
 			"allowPirates":true
 		},
 		{
 			"name":"Celebrity Wedding",
 			"stage":"celebrity_wedding",
 			"minRepLevelToOccur":"favorable",
-			"minRepChange":0.05,
-			"maxRepChange":0.1,
+			"minRepChange":0.1,
+			"maxRepChange":0.15,
 			"chance":0.3	# because realistically, how often would this happen?
 		},
 		{
 			"name":"Helped Foil Terror Plot",
 			"stage":"helped_foil_terror",
 			"minRepLevelToOccur":"suspicious",
-			"minRepChange":0.1,
+			"minRepChange":0.15,
 			"maxRepChange":0.2,
 			"allowPirates":true
 		},
@@ -62,16 +62,16 @@
 			"name":"Criminal Extradited",
 			"stage":"extradition",
 			"minRepLevelToOccur":"suspicious",
-			"minRepChange":0.1,
-			"maxRepChange":0.15,
+			"minRepChange":0.15,
+			"maxRepChange":0.2,
 		},
 		{
 			"name":"Prisoner Exchange",
 			"stage":"prisoner_exchange",
 			"maxRepLevelToOccur":"hostile",
 			"repEnsureAtWorst":"hostile",
-			"minRepChange":0.1,
-			"maxRepChange":0.15,
+			"minRepChange":0.15,
+			"maxRepChange":0.2,
 			"repLimit":"inhospitable"
 		},
 		{
@@ -87,7 +87,7 @@
 			"maxRepLevelToOccur":"inhospitable",
 			"repEnsureAtWorst":"hostile",
 			"minRepChange":0.15,
-			"maxRepChange":0.2,
+			"maxRepChange":0.25,
 			"allowPirates":true,
 			"chance":0.2
 		},		
@@ -95,16 +95,16 @@
 			"name":"Diplomatic Blunder",
 			"stage":"diplomatic_blunder",
 			"minRepLevelToOccur":"inhospitable",
-			"minRepChange":-0.1,
-			"maxRepChange":-0.05,
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
 			"repLimit":"inhospitable"
 		},
 		{
 			"name":"Failed Deal",
 			"stage":"failed_deal",
 			"minRepLevelToOccur":"inhospitable",
-			"minRepChange":-0.15,
-			"maxRepChange":-0.1,
+			"minRepChange":-0.2,
+			"maxRepChange":-0.15,
 			"repLimit":"inhospitable",
 			"allowPirates":true
 		},
@@ -112,8 +112,8 @@
 			"name":"Celebrity Wedding Jilted",
 			"stage":"celebrity_wedding_jilted",
 			"minRepLevelToOccur":"neutral",
-			"minRepChange":-0.15,
-			"maxRepChange":-0.1,
+			"minRepChange":-0.2,
+			"maxRepChange":-0.15,
 			"repLimit":"inhospitable",
 			"chance":0.3
 		},
@@ -122,8 +122,8 @@
 			"stage":"political_funding_uncovered",
 			"minRepLevelToOccur":"inhospitable",
 			"maxRepLevelToOccur":"favorable",
-			"minRepChange":-0.15,
-			"maxRepChange":-0.1,
+			"minRepChange":-0.25,
+			"maxRepChange":-0.15,
 			"repLimit":"hostile",	# probably an overreaction but meh
 			"allowPirates":true
 		},
@@ -132,16 +132,16 @@
 			"stage":"xenophobia",
 			"minRepLevelToOccur":"inhospitable",
 			"maxRepLevelToOccur":"friendly",
-			"minRepChange":-0.15,
-			"maxRepChange":-0.1,
+			"minRepChange":-0.2,
+			"maxRepChange":-0.15,
 			"repLimit":"inhospitable"
 		},
 		{
 			"name":"Criminal Extradition Refused",
 			"stage":"extradition_refused",
 			"minRepLevelToOccur":"inhospitable",
-			"minRepChange":-0.15,
-			"maxRepChange":-0.1,
+			"minRepChange":-0.2,
+			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"chance":1.2
 		},
@@ -150,8 +150,8 @@
 			"stage":"spy_ring_uncovered",
 			"maxRepLevelToOccur":"welcoming",
 			"repEnsureAtBest":"favorable",
-			"minRepChange":-0.2,
-			"maxRepChange":-0.1,
+			"minRepChange":-0.25,
+			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"allowPirates":true,
 			"chance":1.2
@@ -161,7 +161,7 @@
 			"stage":"sabotage_uncovered",
 			"repEnsureAtBest":"suspicious",
 			"maxRepLevelToOccur":"welcoming",
-			"minRepChange":-0.2,
+			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
 			"repLimit":"hostile",
 			"allowPirates":true,
@@ -172,8 +172,8 @@
 			"stage":"support_rebels",
 			"repEnsureAtBest":"inhospitable",
 			"maxRepLevelToOccur":"suspicious",
-			"minRepChange":-0.2,
-			"maxRepChange":-0.1,
+			"minRepChange":-0.25,
+			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"allowPirates":true,
 			"chance":1.2
@@ -192,6 +192,7 @@
 			"stage":"privateering",
 			"minRepLevelToOccur":"inhospitable",
 			"maxRepLevelToOccur":"neutral",
+			"repEnsureAtBest":"suspicious",
 			"minRepChange":-0.25,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
@@ -203,8 +204,8 @@
 			"minRepLevelToOccur":"inhospitable",
 			"maxRepLevelToOccur":"suspicious",
 			"repEnsureAtBest":"hostile",
-			"minRepChange":-0.1,	# the repEnsureAtBest will take care of the expected rep change from such an event
-			"maxRepChange":-0.05,
+			"minRepChange":-0.3,
+			"maxRepChange":-0.2,
 			"repLimit":"hostile",
 			"allowPirates":true,
 			"chance":2	# help tip things over into outright violence
@@ -214,8 +215,8 @@
 			"stage":"ceasefire",
 			"maxRepLevelToOccur":"hostile",
 			"repEnsureAtWorst":"inhospitable",
-			"minRepChange":0.1,
-			"maxRepChange":0.15,
+			"minRepChange":0.25,
+			"maxRepChange":0.35,
 			"repLimit":"neutral",
 			"chance":0	# only occurs when DiplomacyManager calls it directly
 		},
@@ -224,8 +225,8 @@
 			"stage":"peace_treaty",
 			"maxRepLevelToOccur":"hostile",
 			"repEnsureAtWorst":"suspicious",
-			"minRepChange":0.25,
-			"maxRepChange":0.15,
+			"minRepChange":0.4,
+			"maxRepChange":0.55,
 			"repLimit":"favorable",
 			"chance":0	# only occurs when DiplomacyManager calls it directly
 		},

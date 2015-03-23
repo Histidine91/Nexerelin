@@ -178,16 +178,17 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         FactionAPI playerAlignedFaction = sector.getFaction(playerAlignedFactionId);
         FactionAPI playerFaction = sector.getPlayerFleet().getFaction();
         
+        if (limit != null)
+            faction1.adjustRelationship(faction2.getId(), delta, limit);
+        else
+            faction1.adjustRelationship(faction2.getId(), delta);
+        
         if (ensureAtBest != null) {
                 faction1.ensureAtBest(faction2.getId(), ensureAtBest);
         }
         if (ensureAtWorst != null) {
                 faction1.ensureAtWorst(faction2.getId(), ensureAtWorst);
         }
-        if (limit != null)
-            faction1.adjustRelationship(faction2.getId(), delta, limit);
-        else
-            faction1.adjustRelationship(faction2.getId(), delta);
        
         float after = faction1.getRelationship(faction2.getId());
         delta = after - before;

@@ -12,8 +12,8 @@
 	"agentLowerRelationsSuccessChance":0.65,
 	"agentLowerRelationsDetectionChance":0,
 	"agentLowerRelationsDetectionChanceFail":0.35,
-	"agentLowerRelationsEffectMin":0.1,
-	"agentLowerRelationsEffectMax":0.15,
+	"agentLowerRelationsEffectMin":0.15,
+	"agentLowerRelationsEffectMax":0.2,
 	"agentLowerRelationsRepLossOnDetectionMin":0.1,
 	"agentLowerRelationsRepLossOnDetectionMax":0.15,
 	
