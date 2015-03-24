@@ -1,12 +1,12 @@
 {
-    "masterVersionFile":"https://bitbucket.org/Histidine/exerelin/downloads/nexerelin.version",
-    "modName":"Nexerelin",
+	"masterVersionFile":"https://bitbucket.org/Histidine/exerelin/downloads/nexerelin.version",
+	"modName":"Nexerelin",
 	"modThreadId":9175,
-    "modVersion":
-    {
-        "major":0,
-        "minor":3,
-        "patch":2
-    },
-    "starsectorVersion":".6.5.2a"
+	"modVersion":
+	{
+		"major":0,
+		"minor":3,
+		"patch":3
+	},
+	"starsectorVersion":".6.5.2a"
 }
