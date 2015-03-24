@@ -28,6 +28,7 @@
     "prisonerLootChancePer10Fp": 0.07,
     
     "crewLootMult": 0.02,   # loot about this many green crew per enemy FP destroyed
+    "allowPirateInvasions": false,
     "invasionFleetCostPerMarine": 250,  # used for player-requested invasion fleets
 
     "validMiningShips":["mining_drone", "zorg_sphere", "pn_mlmv"], # String array

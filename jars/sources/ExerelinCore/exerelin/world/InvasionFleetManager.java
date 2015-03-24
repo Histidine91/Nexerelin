@@ -112,6 +112,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         fleet.getMemoryWithoutUpdate().set("$maxFP", maxFP);
         fleet.getMemoryWithoutUpdate().set("$originMarket", originMarket);
         
+        SectorEntityToken entity = originMarket.getPrimaryEntity();
+        entity.getContainingLocation().addEntity(fleet);
+        fleet.setLocation(entity.getLocation().x, entity.getLocation().y);
+        
         InvasionFleetData data = new InvasionFleetData(fleet);
         data.startingFleetPoints = fleet.getFleetPoints();
         data.sourceMarket = originMarket;
@@ -123,7 +127,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         
         InvasionSupportFleetAI ai = new InvasionSupportFleetAI(fleet, data);
         fleet.addScript(ai);
-        log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
+        log.info("\tSpawned invasion support fleet " + fleet.getNameWithFaction() + " of size " + maxFP);
         return data;
     }
   
@@ -165,7 +169,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         
         InvasionFleetAI ai = new InvasionFleetAI(fleet, data);
         fleet.addScript(ai);
-        log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
+        log.info("\tSpawned invasion fleet " + fleet.getNameWithFaction() + " of size " + maxFP);
         return data;
     }
     
@@ -180,12 +184,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         float marineStockpile = 0;
         //log.info("Starting invasion fleet check");
         
+        boolean allowPirates = ExerelinConfig.allowPirateInvasions;
+        
         // pick a faction to invade someone
         for (FactionAPI faction: factions)
         {
             if (faction.isNeutralFaction()) continue;
             if (faction.isPlayerFaction()) continue;
-            if (ExerelinUtilsFaction.isPirateFaction(faction.getId())) continue;
+            if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(faction.getId())) continue;
             List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, false);
 
             if (!enemies.isEmpty()) factionPicker.add(faction);
@@ -236,8 +242,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         for (MarketAPI market : markets) 
         {
             FactionAPI marketFaction = market.getFaction();
-            if  ( marketFaction.isHostileTo(invader) && !ExerelinUtilsFaction.isPirateFaction(marketFaction.getId())) 
+            if  ( marketFaction.isHostileTo(invader)) 
             {
+                if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
+                    continue;
                 /*
                 float defenderStrength = InvasionRound.GetDefenderStrength(market);
                 float estimateMarinesRequired = defenderStrength * 1.2f;
@@ -265,12 +273,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         if (originMarket.getSize() >= 4)
         {
             this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
-            this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
+            //this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
             if (originMarket.getSize() >= 6)
             {
                 this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
-                this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
-                this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
+                //this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
             }
         }
         

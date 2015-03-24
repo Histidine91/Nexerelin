@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.utilities.ExerelinConfig;
@@ -121,7 +120,8 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
         for(MarketAPI market:markets)
         {
-            float increment = market.getSize() * (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR) * RESERVE_INCREMENT_PER_DAY * days;
+            float increment = market.getSize() * (0.5f + (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR));
+            increment *= RESERVE_INCREMENT_PER_DAY * days;
             float newValue = Math.min(reserves.get(market.getId()) + increment, getMaxReserveSize(market, false));
             
             reserves.put(market.getId(), newValue);

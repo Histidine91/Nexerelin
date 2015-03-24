@@ -54,10 +54,8 @@ public class InvasionSupportFleetAI implements EveryFrameScript
         {
             MarketAPI market = data.targetMarket;
             StarSystemAPI system = market.getStarSystem();
-            String locName = market.getPrimaryEntity().getContainingLocation().getName();
             if (system != null)
             {
-                locName = system.getBaseName();
                 Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
                 LocationAPI loc = Global.getSector().getHyperspace();
                 SectorEntityToken token = loc.createToken(dest.x, dest.y);
