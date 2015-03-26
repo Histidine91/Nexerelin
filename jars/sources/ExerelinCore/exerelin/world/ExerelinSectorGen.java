@@ -387,7 +387,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		float orbitDistance = radius + 150;
 		if (toOrbit instanceof PlanetAPI)
 		{
-			orbitDistance = radius + ExerelinUtils.getRandomInRange(3000, 12000);
+			PlanetAPI planet = (PlanetAPI)toOrbit;
+			if (planet.isStar()) orbitDistance = radius + ExerelinUtils.getRandomInRange(3000, 12000);
 		}
 		omnifac.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, 2));
 		OmniFacModPlugin.initOmnifactory(omnifac);
