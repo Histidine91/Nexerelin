@@ -480,7 +480,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		for (MarketAPI market : markets) {
 			if (market.getFactionId().equals("templars"))
 			{
-			market.removeSubmarket(Submarkets.GENERIC_MILITARY); // auto added by military base; remove it
+				market.removeSubmarket(Submarkets.GENERIC_MILITARY); // auto added by military base; remove it
 			}
 		}
 		
@@ -549,11 +549,15 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		factions.remove("player_npc");  // player NPC faction only gets homeworld (if applicable)
 		
 		// before we do anything else give the "homeworld" to our faction
-		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-		addMarketToEntity(homeworld.entity, homeworld, alignedFactionId, true);
-		SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
-		relay.setFaction(alignedFactionId);
-                pickEntityInteractionImage(homeworld.entity, homeworld.entity.getMarket(), homeworld.planetType, homeworld.type);
+		if (!ExerelinSetupData.getInstance().freeStart)
+		{
+			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+			addMarketToEntity(homeworld.entity, homeworld, alignedFactionId, true);
+			SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
+			relay.setFaction(alignedFactionId);
+			pickEntityInteractionImage(homeworld.entity, homeworld.entity.getMarket(), homeworld.planetType, homeworld.type);
+			habitablePlanets.remove(homeworld);
+		}
 		
 		Collections.shuffle(habitablePlanets);
 		Collections.shuffle(stations);
@@ -561,7 +565,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// add factions and markets to planets
 		for (EntityData habitable : habitablePlanets)
 		{
-			if (habitable == homeworld) continue;
 			if (factionPicker.isEmpty()) addListToPicker(factions, factionPicker);
 			String factionId = factionPicker.pickAndRemove();
 			addMarketToEntity(habitable.entity, habitable, factionId, habitable.isCapital);
@@ -569,10 +572,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// assign relay
 			if (habitable.isCapital)
 			{   
-				relay = sector.getEntityById(systemToRelay.get(habitable.starSystem.getId()));
+				SectorEntityToken relay = sector.getEntityById(systemToRelay.get(habitable.starSystem.getId()));
 				relay.setFaction(factionId);
 			}
-                        pickEntityInteractionImage(habitable.entity, habitable.entity.getMarket(), habitable.planetType, habitable.type);
+			pickEntityInteractionImage(habitable.entity, habitable.entity.getMarket(), habitable.planetType, habitable.type);
 		}
 		
 		// we didn't actually create the stations before, so do so now

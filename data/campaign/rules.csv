@@ -166,6 +166,7 @@ ExerelinNGCListLuddicChurch,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist l
 ExerelinNGCListSindrianDiktat,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist sindrian_diktat,,,exerelinNGCJoinSindrianDiktat:Sindrian Diktat,
 ExerelinNGCListPirates,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist pirates,,,exerelinNGCJoinPirate:Pirates (hard),
 ExerelinNGCFactionsOwnFaction,ExerelinNGCListFactionsVanilla,,,,exerelinNGCOwnFaction:Own faction,
+ExerelinNGCFactionsFreeStart,ExerelinNGCListFactionsVanilla,,,,exerelinNGCFreeStart:Free start (hard),
 ExerelinNGCListVanillaFactionsBack,ExerelinNGCListFactionsVanilla,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCListExipiarted,ExerelinNGCListFactions1,NGCDoesFactionExist exipirated,,,exerelinNGCJoinExipirated:Ahriman Association,
@@ -211,6 +212,11 @@ NGCSetStartingLocation Exerelin -2700 3250
 NGCDone",,,
 ExerelinNGCOwnFaction,NewGameOptionSelected,$option == exerelinNGCOwnFaction,"NGCSetPlayerFaction ""player_npc""
 NGCAddShipAndComplement ""monitor_Indie""
+AddText ""Added Monitor-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCFreeStart,NewGameOptionSelected,$option == exerelinNGCFreeStart,"NGCSetPlayerFaction ""player_npc""
+NGCAddShipAndComplement ""monitor_Indie""
+NGCSetFreeStart true
 AddText ""Added Monitor-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == exerelinNGCJoinHegemony,"NGCSetPlayerFaction ""hegemony""
@@ -316,15 +322,25 @@ FireBest ExerelinNGCStep3",,,
 ,,,,,,
 ExerelinNGCFinalize,ExerelinNGCStep3,,"AddText ""Added $crewAdded crew"" textFriendColor
 AddText ""Added $suppliesAdded supplies"" textFriendColor
-AddText ""Added $suppliesAdded fuel"" textFriendColor",,exerelinNGCDone:Continue,
-ExerelinNGCDoneOptionDefault,NewGameOptionSelected,$option == exerelinNGCDone,"NGCAddCredits 10000
+AddText ""Added $suppliesAdded fuel"" textFriendColor",,"exerelinNGCNormalStart:Normal start
+exerelinNGCEasyStart:Easy start (more credits, start at level 6)",
+ExerelinNGCNormalStart,NewGameOptionSelected,$option == exerelinNGCNormalStart,"NGCAddCredits 10000
 NGCAddAptitudePoints 2
 NGCAddSkillPoints 6
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 6 skill points"" textFriendColor
 AddText ""Added 10000 credits"" textFriendColor
-NGCSetStartingLocation Exerelin 600 600
-NGCDone",,,
+NGCSetStartingLocation Exerelin 600 600",,1:exerelinNGCDone:Continue,
+ExerelinNGCEasyStart,NewGameOptionSelected,$option == exerelinNGCEasyStart,"NGCAddCredits 50000
+NGCAddAptitudePoints 2
+NGCAddSkillPoints 6
+NGCAddXP 31500
+AddText ""Added 2 aptitude points"" textFriendColor
+AddText ""Added 6 skill points"" textFriendColor
+AddText ""Added 50000 credits"" textFriendColor
+AddText ""Added 31500 XP"" textFriendColor
+NGCSetStartingLocation Exerelin 600 600",,1:exerelinNGCDone:Continue,
+ExerelinNGCDoneOption,NewGameOptionSelected,$option == exerelinNGCDone,NGCDone,,,
 # END NGC OPTIONS,,,,,,
 ,,,,,,
 ,,,,,,

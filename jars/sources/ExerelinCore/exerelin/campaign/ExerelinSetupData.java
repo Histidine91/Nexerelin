@@ -46,6 +46,7 @@ public final class ExerelinSetupData
     public boolean randomOmnifactoryLocation = false;
     public boolean isSectorPopulated = false;
     public boolean isSectorPartiallyPopulated = false;
+    public boolean freeStart = false;
 
     private ExerelinSetupData()
     {
