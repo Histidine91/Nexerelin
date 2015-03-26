@@ -663,7 +663,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             for (String factionId : factionIds)
             {
                 FactionAPI faction = sector.getFaction(factionId);
-                if (factionId.equals("player"))
+                if (factionId.equals("player_npc") && factionId.equals(selectedFactionId))
                 {
                     templars.setRelationship(factionId, RepLevel.INHOSPITABLE);
                 }
