@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 
 			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
 			//if (alignedFactionId.equals("player_npc")) return;  // no self-salary
+                        if (!SectorManager.isFactionAlive(alignedFactionId)) return;
 			FactionAPI alignedFaction = Global.getSector().getFaction(alignedFactionId);
 
 			RepLevel relation = alignedFaction.getRelationshipLevel("player");

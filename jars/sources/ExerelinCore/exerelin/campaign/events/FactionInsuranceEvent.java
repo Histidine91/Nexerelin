@@ -20,6 +20,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		//if (alignedFactionId.equals("player_npc")) return;  // no self-insurance
+                if (!SectorManager.isFactionAlive(alignedFactionId)) return;
 		FactionAPI alignedFaction = Global.getSector().getFaction(alignedFactionId);
 		
 		List<FleetMemberAPI> fleetCurrent = fleet.getFleetData().getMembersListCopy();
