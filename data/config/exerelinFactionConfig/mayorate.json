@@ -19,7 +19,7 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":["tritachyon"], # String array
-    "factionsDisliked":["luddic_church"], # String array
+    "factionsDisliked":["luddic_church","blackrock_driveyards"], # String array
 
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }
