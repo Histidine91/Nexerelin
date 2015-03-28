@@ -54,5 +54,23 @@
 	"exerelin_faction_changed":{
 		"script":"exerelin.campaign.events.FactionChangedEvent",
 		"image":"graphics/icons/intel/reputation.png"
-	}
+	},
+	
+	# vanilla overrides
+	"investigation":{
+		"script":"exerelin.campaign.events.ExerelinInvestigationEvent",
+	},
+	"investigation_smuggling":{
+		"script":"exerelin.campaign.events.ExerelinInvestigationEventSmuggling",
+	},
+	"investigation_comm_sniffer":{
+		"script":"exerelin.campaign.events.ExerelinInvestigationEventCommSniffer",
+	},
+	"customs_inspection":{
+		"script":"exerelin.campaign.events.ExerelinCustomsInspectionEvent",
+	},
+	"rep_tracker":{
+		"script":"exerelin.campaign.events.ExerelinRepTrackerEvent",
+		"image":"graphics/icons/intel/reputation.png",
+	},
 }
