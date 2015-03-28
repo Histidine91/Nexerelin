@@ -1,17 +1,7 @@
 {
     "uniqueModClassName":"data.scripts.IIModPlugin", # String
-    "factionNiceName":"Interstellar Imperium", # String
     "playableFaction":"true", # Boolean
     "isPirateNeutral":"false", # Boolean
-
-    "stationInteriorIllustrationKeys":["hound_hangar"], # String array
-
-    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
-    "preferredBackgroundImagePath":"", # String
-    "preferredStarType":"", # String
-    "preferredStarLight":"", # String, 0xFFFFFF
-
-    "stationNameSuffixes":["Castellum", "Robur", "Arx", "Navalia", "Portus", "Praesidium"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
@@ -20,33 +10,16 @@
     "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Malefactors", # String
 
-    "smallAttackFleetName":"Speculator", # String
-    "mediumAttackFleetName":"Classis", # String
-    "largeAttackFleetName":"Exercitus", # String
-
-    "smallDefenceFleetName":"Custos", # String
-    "mediumDefenceFleetName":"Defensio", # String
-    "largeDefenceFleetName":"Uigiliarum", # String
-
-    "smallPatrolFleetName":"Circuitus", # String
-    "mediumPatrolFleetName":"Vigil", # String
-    "largePatrolFleetName":"Excubiae", # String
-
     "asteroidMiningFleetName":"Metallicus", # String
     "gasMiningFleetName":"Cuniculator", # String
     "logisticsFleetName":"Prosecutae", # String
-    "boardingFleetName":"Auceps", # String
-    "commandFleetName":"Praefectus", # String
+    "invasionFleetName":"Auceps", # String
+    "invasionSupportFleetName":"Classis", # String
 
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":["hegemony"], # String array
 
-    "freighterVariants":["ii_basileus_f_arm", "ii_basileus_f_art", "ii_basileus_f_eli", "ii_basileus_f_sta"], # String array
-    "tankerVariants":["dram_Light"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
-
-    "troopTransportVariants":["valkyrie_Elite"], # String array
-    "superFreighterVariants":["atlas_Standard"], # String array
 }

@@ -1,17 +1,7 @@
 {
     "uniqueModClassName":"data.scripts.JunkPiratesModPlugin", # String
-    "factionNiceName":"Junk Pirates", # String
     "playableFaction":"true", # Boolean
     "isPirateNeutral":"true", # Boolean
-
-    "stationInteriorIllustrationKeys":["hound_hangar"], # String array
-
-    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
-    "preferredBackgroundImagePath":"", # String
-    "preferredStarType":"", # String
-    "preferredStarLight":"", # String, 0xFFFFFF
-
-    "stationNameSuffixes":["Hideout", "Trading Post", "Post", "Dock", "Port", "Quey", "Terminal", "Backwater", "Nest"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
@@ -20,22 +10,10 @@
     "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Outlaws", # String
 
-    "smallAttackFleetName":"Scout", # String
-    "mediumAttackFleetName":"Salvage Fleet", # String
-    "largeAttackFleetName":"Breakers", # String
-
-    "smallDefenceFleetName":"Picket Defense", # String
-    "mediumDefenceFleetName":"Defense Fleet", # String
-    "largeDefenceFleetName":"Retained Defense Fleet", # String
-
-    "smallPatrolFleetName":"Lookout Fleet", # String
-    "mediumPatrolFleetName":"Bandit Patrol", # String
-    "largePatrolFleetName":"Corsairs", # String
-
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
     "logisticsFleetName":"Logistics Convoy", # String
-    "boardingFleetName":"Boarding Fleet", # String
+    "invasionFleetName":"Boarding Fleet", # String
     "commandFleetName":"Command Fleet", # String
 
     "positiveDiplomacyExtra":0, # Integer
@@ -43,42 +21,5 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["junk_pirates_octopus_Standard"], # String array
-    "tankerVariants":["junk_pirates_octopus_Standard", "junk_pirates_stoatA_Standard"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
-
-    "troopTransportVariants":["valkyrie_Elite"], # String array
-    "superFreighterVariants":["atlas_Standard"], # String array
-
-    "carrierVariants":["junk_pirates_octopus_Standard", "junk_pirates_orca_Standard", "junk_pirates_the_reaper_Standard"], # String array
-
-    "fighterWings":["junk_pirates_cleat_wing",
-                    "junk_pirates_shard_wing",
-                    "junk_pirates_spike_wing",
-                    "junk_pirates_splinter_wing"], # String array
-
-    "frigateVariants":["junk_pirates_clam_CS",
-                       "junk_pirates_clam_Standard",
-                       "junk_pirates_sickle_Standard",
-                       "junk_pirates_sickle_Pointdefense",
-                       "junk_pirates_hammer_Assault",
-                       "junk_pirates_scythe_Assault"], # String array
-
-    "destroyerVariants":["junk_pirates_boxenstein_Support",
-                         "junk_pirates_boxenstein_Slugger",
-                         "junk_pirates_boxer_Fighter",
-                         "junk_pirates_boxer_Standard",
-                         "junk_pirates_turbot_Assault",
-                         "junk_pirates_langoustine_Standard",
-                         "junk_pirates_langoustine_CS",
-                         "junk_pirates_octopus_Standard"], # String array
-
-    "cruiserVariants":["junk_pirates_dugong_Support",
-                       "junk_pirates_goat_CS"], # String array
-
-    "capitalVariants":["junk_pirates_the_reaper_Standard",
-                       "junk_pirates_kraken_Standard",
-                       "junk_pirates_orca_Standard"], # String array
-
-    "startingVariants":["junk_pirates_sickle_Standard", "junk_pirates_stoatA_Standard"], # String array
 }

@@ -1,16 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.BushiModPlugin", # String
-    "factionNiceName":"Bushi", # String
     "playableFaction":"true", # Boolean
-
-    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
-
-    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
-    "preferredBackgroundImagePath":"", # String
-    "preferredStarType":"", # String
-    "preferredStarLight":"", # String, 0xFFFFFF
-
-    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Port", "Quey", "Habitat", "Shipyard"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.1, # Double
@@ -19,22 +9,10 @@
     "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Rogue AI", # String
 
-    "smallAttackFleetName":"Scout", # String
-    "mediumAttackFleetName":"Strike Force", # String
-    "largeAttackFleetName":"Warfleet", # String
-
-    "smallDefenceFleetName":"Picket Defense", # String
-    "mediumDefenceFleetName":"Guard Fleet", # String
-    "largeDefenceFleetName":"System Defense Fleet", # String
-
-    "smallPatrolFleetName":"Patrol", # String
-    "mediumPatrolFleetName":"Warden Patrol", # String
-    "largePatrolFleetName":"Garrison Fleet", # String
-
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
     "logisticsFleetName":"Logistics Convoy", # String
-    "boardingFleetName":"Boarding Fleet", # String
+    "invasionFleetName":"Boarding Fleet", # String
     "commandFleetName":"Command Fleet", # String
 
     "positiveDiplomacyExtra":0, # Integer
@@ -42,35 +20,5 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["bushi_haramaki_Standard"], # String array
-    "tankerVariants":["bushi_kikko_Standard"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
-
-    "troopTransportVariants":["bushi_sangu_Standard"], # String array
-    "superFreighterVariants":["atlas_Standard"], # String array
-
-    "carrierVariants":["bushi_chigiriki_Standard", "bushi_tanto_Standard", "bushi_kabuto_Standard"], # String array
-
-    "fighterWings":["bushi_higonokami_wing",
-                    "bushi_honyaki_wing",
-                    "bushi_suntetsu_wing"], # String array
-
-    "frigateVariants":["bushi_yari_Standard",
-                       "bushi_kaiken_Standard",
-                       "bushi_datsu_Standard"], # String array
-
-    "destroyerVariants":[   "bushi_chigiriki_Standard",
-                            "bushi_tachi_Standard"], # String array
-
-    "cruiserVariants":[ "bushi_katana_Standard",
-                        "bushi_nagamaki_Standard",
-                        "bushi_tanto_Standard",
-                        "bushi_wakizashi_Standard"], # String array
-
-    "capitalVariants":[ "bushi_kabuto_Standard",
-                        "bushi_odachi_Standard",
-                        "bushi_raiu_Standard"], # String array
-
-    "startingVariants":["bushi_kaiken_Standard",
-                        "bushi_yari_Standard"], # String array
 }

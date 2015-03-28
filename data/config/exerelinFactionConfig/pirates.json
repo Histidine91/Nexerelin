@@ -1,18 +1,8 @@
 {
     "uniqueModClassName":"", # String
-    "factionNiceName":"Pirates", # String
     "playableFaction":"true", # Boolean
     "spawnPatrols":"true",
     "spawnPiratesAndMercs":"false",
-
-    "stationInteriorIllustrationKeys":["hound_hangar"], # String array
-
-    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
-    "preferredBackgroundImagePath":"", # String
-    "preferredStarType":"", # String
-    "preferredStarLight":"", # String, 0xFFFFFF
-
-    "stationNameSuffixes":["Base", "Orbital", "HQ", "Dock", "Shipyard"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
@@ -21,22 +11,10 @@
     "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Traitors", # String
 
-    "smallAttackFleetName":"Scout", # String
-    "mediumAttackFleetName":"Raiders", # String
-    "largeAttackFleetName":"Armada", # String
-
-    "smallDefenceFleetName":"Watch Fleet", # String
-    "mediumDefenceFleetName":"Guard Fleet", # String
-    "largeDefenceFleetName":"System Defense Fleet", # String
-
-    "smallPatrolFleetName":"Patrol", # String
-    "mediumPatrolFleetName":"Patrol Fleet", # String
-    "largePatrolFleetName":"Patrol Division", # String
-
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
     "logisticsFleetName":"Logistics Convoy", # String
-    "boardingFleetName":"Boarding Fleet", # String
+    "invasionFleetName":"Boarding Fleet", # String
     "commandFleetName":"Command Fleet", # String
 
     "positiveDiplomacyExtra":0, # Integer
@@ -44,10 +22,5 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["tarsus_Standard", "mule_Standard"], # String array
-    "tankerVariants":["dram_Light"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
-
-    "troopTransportVariants":["valkyrie_Elite"], # String array
-    "superFreighterVariants":["atlas_Standard"], # String array
 }

@@ -110,20 +110,10 @@ public class StationRecord
 		}
 
 		stationToken.setFaction(newOwnerFactionId);
-        stationToken.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).stationInteriorIllustrationKeys[ExerelinUtils.getRandomInRange(0, ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).stationInteriorIllustrationKeys.length - 1)], 640, 400));
+        //stationToken.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).stationInteriorIllustrationKeys[ExerelinUtils.getRandomInRange(0, ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).stationInteriorIllustrationKeys.length - 1)], 640, 400));
 
         if(ExerelinUtilsFaction.doesFactionOwnSystem(newOwnerFactionId, (StarSystemAPI)this.getStationToken().getContainingLocation()))
         {
-            // Check if we should switch background image to faction specific one
-            if(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).changeSystemSpecsOnSystemLockdown)
-            {
-                /*StarSystemAPI system = (StarSystemAPI)this.getStationToken().getContainingLocation();
-                system.setBackgroundTextureFilename(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredBackgroundImagePath);
-                system.removeEntity(system.getStar());
-                system.initStar(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredStarType, 700f);
-                system.setLightColor(Color.decode(ExerelinConfig.getExerelinFactionConfig(newOwnerFactionId).preferredStarLight));*/
-            }
-
             if(newOwnerFactionId.equalsIgnoreCase(SectorManager.getCurrentSectorManager().getPlayerFactionId()))
                 ExerelinUtilsMessaging.addMessage(((StarSystemAPI)this.getStationToken().getContainingLocation()).getName() + " conquered by " + Global.getSector().getFaction(newOwnerFactionId).getDisplayName() + "!", Color.magenta);
             else
@@ -131,16 +121,7 @@ public class StationRecord
         }
         else
         {
-            // Check to see if we need to switch background image back
-            if(!originalOwnerId.equalsIgnoreCase("") && ((StarSystemAPI)this.getStationToken().getContainingLocation()).getBackgroundTextureFilename().equalsIgnoreCase(ExerelinConfig.getExerelinFactionConfig(originalOwnerId).preferredBackgroundImagePath))
-            {
-                /*StarSystemAPI system = (StarSystemAPI)this.getStationToken().getContainingLocation();
-                SystemManager systemManager = SystemManager.getSystemManagerForAPI(system);
-                system.setBackgroundTextureFilename(systemManager.getOriginalBackgroundImage());
-                system.removeEntity(system.getStar());
-                system.initStar(systemManager.getOriginalStarSpec(), 700f);
-                system.setLightColor(systemManager.getOriginalLightColor());*/
-            }
+
         }
 
         this.stationFleetStance = StationFleetStance.BALANCED;

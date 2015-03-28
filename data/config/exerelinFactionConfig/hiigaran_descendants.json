@@ -1,16 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.HiiModPlugin", # String
-    "factionNiceName":"Hiigaran Descendants", # String
     "playableFaction":"true", # Boolean
-
-    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
-
-    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
-    "preferredBackgroundImagePath":"", # String
-    "preferredStarType":"", # String
-    "preferredStarLight":"", # String, 0xFFFFFF
-
-    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Port", "Quey", "Habitat", "Shipyard"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.1, # Double
@@ -19,22 +9,10 @@
     "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Betrayers", # String
 
-    "smallAttackFleetName":"Scout", # String
-    "mediumAttackFleetName":"Strike Force", # String
-    "largeAttackFleetName":"Warfleet", # String
-
-    "smallDefenceFleetName":"Picket Defense", # String
-    "mediumDefenceFleetName":"Guard Fleet", # String
-    "largeDefenceFleetName":"System Defense Fleet", # String
-
-    "smallPatrolFleetName":"Patrol", # String
-    "mediumPatrolFleetName":"Warden Patrol", # String
-    "largePatrolFleetName":"Garrison Fleet", # String
-
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
     "logisticsFleetName":"Logistics Convoy", # String
-    "boardingFleetName":"Boarding Fleet", # String
+    "invasionFleetName":"Boarding Fleet", # String
     "commandFleetName":"Command Fleet", # String
 
     "positiveDiplomacyExtra":0, # Integer
@@ -42,10 +20,5 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["hii_vihr_Standard"], # String array
-    "tankerVariants":["hii_taarel_Standard"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
-
-    "troopTransportVariants":["hii_saari_Standard"], # String array
-    "superFreighterVariants":["hii_neerin_Standard"], # String array
 }

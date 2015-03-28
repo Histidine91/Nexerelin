@@ -1,6 +1,5 @@
 {
     "uniqueModClassName":"", # String
-    "factionNiceName":"Player", # String
     "playableFaction":"true", # Boolean
 
     "factionsLiked":[], # String array

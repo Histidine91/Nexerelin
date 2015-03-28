@@ -12,18 +12,8 @@ public class ExerelinFactionConfig
     public String factionId;
 
     public String uniqueModClassName = "";
-    public String factionNiceName = "";
     public Boolean playableFaction = true;
-
-    public String[] stationInteriorIllustrationKeys = new String[]{"hound_hangar"};
-
-    public Boolean changeSystemSpecsOnSystemLockdown = false;
-    public String preferredBackgroundImagePath = "";
-    public String preferredStarType = "";
-    public String preferredStarLight = "";
-
-    public String[] stationNameSuffixes = new String[]{"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge"};
-    
+   
     public Boolean isPirateNeutral = false;
     public Boolean spawnPatrols = true;    // only used for factions set to not spawn patrols in .faction file
     public Boolean spawnPiratesAndMercs = true;    // ditto
@@ -35,37 +25,18 @@ public class ExerelinFactionConfig
     public String customRebelFleetId = "";
     public String rebelFleetSuffix = "Dissenters";
 
-    public String smallAttackFleetName = "Advance Force";
-    public String mediumAttackFleetName = "Strike Force";
-    public String largeAttackFleetName = "Crusaders";
-
-    public String smallDefenceFleetName = "Watch Fleet";
-    public String mediumDefenceFleetName = "Guard Fleet";
-    public String largeDefenceFleetName = "Sentinels";
-
-    public String smallPatrolFleetName = "Recon Patrol";
-    public String mediumPatrolFleetName = "Ranger Patrol";
-    public String largePatrolFleetName = "Wayfarers";
-
     public String asteroidMiningFleetName = "Asteroid Mining Fleet";
     public String gasMiningFleetName = "Gas Mining Fleet";
     public String logisticsFleetName = "Logistics Convoy";
-    public String boardingFleetName = "Boarding Fleet";
-    public String commandFleetName = "Command Fleet";
-
+    public String invasionFleetName = "Invasion Fleet";
+    public String invasionSupportFleetName = "Strike Fleet";
+    
     public int positiveDiplomacyExtra = 0;
     public int negativeDiplomacyExtra = 0;
     public String[] factionsLiked = new String[]{};
     public String[] factionsDisliked = new String[]{};
 
-    public String[] startingVariants = new String[]{};
-
-    public List<String> freighterVariants = new ArrayList<String>() {};
-    public List<String> tankerVariants = new ArrayList<String>() {};
     public List<String> miningVariantsOrWings = new ArrayList<String>() {};
-
-    public List<String> troopTransportVariants = new ArrayList<String>() {};
-    public List<String> superFreighterVariants = new ArrayList<String>() {};
 
     public List<String> carrierVariants = new ArrayList<String>() {};
 
@@ -88,68 +59,30 @@ public class ExerelinFactionConfig
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelinFactionConfig/" + factionId + ".json");
 
             uniqueModClassName = settings.getString("uniqueModClassName");
-            factionNiceName = settings.getString("factionNiceName");
             playableFaction = settings.optBoolean("playableFaction", true);
             isPirateNeutral = settings.optBoolean("isPirateNeutral", false);
             spawnPatrols = settings.optBoolean("spawnPatrols", true);
             spawnPiratesAndMercs = settings.optBoolean("spawnPiratesAndMercs", true);
 
-            stationInteriorIllustrationKeys = JSONArrayToStringArray(settings.getJSONArray("stationInteriorIllustrationKeys"));
-
-            changeSystemSpecsOnSystemLockdown = settings.getBoolean("changeSystemSpecsOnSystemLockdown");
-            preferredBackgroundImagePath = settings.getString("preferredBackgroundImagePath");
-            preferredStarType = settings.getString("preferredStarType");
-            preferredStarLight = settings.getString("preferredStarLight");
-
-            stationNameSuffixes = JSONArrayToStringArray(settings.getJSONArray("stationNameSuffixes"));
-
             crewExpereinceLevelIncreaseChance = settings.optDouble("crewExpereinceLevelIncreaseChance", 0);
             baseFleetCostMultiplier = settings.optDouble("baseFleetCostMultiplier", 1);
 
-            customRebelFaction = settings.optString("customRebelFaction");
-            customRebelFleetId = settings.optString("customRebelFleetId");
-            rebelFleetSuffix = settings.optString("rebelFleetSuffix");
+            customRebelFaction = settings.optString("customRebelFaction", customRebelFaction);
+            customRebelFleetId = settings.optString("customRebelFleetId", customRebelFleetId);
+            rebelFleetSuffix = settings.optString("rebelFleetSuffix", rebelFleetSuffix);
+            
+            asteroidMiningFleetName = settings.optString("asteroidMiningFleetName", asteroidMiningFleetName);
+            gasMiningFleetName = settings.optString("gasMiningFleetName", gasMiningFleetName);
+            logisticsFleetName = settings.optString("logisticsFleetName", logisticsFleetName);
+            invasionFleetName = settings.optString("boardingFleetName", invasionFleetName);
+            invasionSupportFleetName = settings.optString("commandFleetName", invasionSupportFleetName);
 
-            /*
-            smallAttackFleetName = settings.getString("smallAttackFleetName");
-            mediumAttackFleetName = settings.getString("mediumAttackFleetName");
-            largeAttackFleetName = settings.getString("largeAttackFleetName");
-
-            smallDefenceFleetName = settings.getString("smallDefenceFleetName");
-            mediumDefenceFleetName = settings.getString("mediumDefenceFleetName");
-            largeDefenceFleetName = settings.getString("largeDefenceFleetName");
-
-            smallPatrolFleetName = settings.getString("smallPatrolFleetName");
-            mediumPatrolFleetName = settings.getString("mediumPatrolFleetName");
-            largePatrolFleetName = settings.getString("largePatrolFleetName");
-
-            asteroidMiningFleetName = settings.getString("asteroidMiningFleetName");
-            gasMiningFleetName = settings.getString("gasMiningFleetName");
-            logisticsFleetName = settings.getString("logisticsFleetName");
-            boardingFleetName = settings.getString("boardingFleetName");
-            commandFleetName = settings.getString("commandFleetName");
-            */
-            positiveDiplomacyExtra = settings.getInt("positiveDiplomacyExtra");
-            negativeDiplomacyExtra = settings.getInt("negativeDiplomacyExtra");
+            positiveDiplomacyExtra = settings.optInt("positiveDiplomacyExtra");
+            negativeDiplomacyExtra = settings.optInt("negativeDiplomacyExtra");
             factionsLiked = JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
             factionsDisliked = JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
-
-            //startingVariants = JSONArrayToStringArray(settings.getJSONArray("startingVariants"));
-
-            freighterVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("freighterVariants")));
-            tankerVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("tankerVariants")));
+            
             miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
-
-            troopTransportVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("troopTransportVariants")));
-            superFreighterVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("superFreighterVariants")));
-
-            //carrierVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("carrierVariants")));
-
-            //fighterWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("fighterWings")));
-            //frigateVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("frigateVariants")));
-            //destroyerVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("destroyerVariants")));
-            //cruiserVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("cruiserVariants")));
-            //capitalVariants = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("capitalVariants")));
         }
         catch(Exception e)
         {

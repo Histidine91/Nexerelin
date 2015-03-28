@@ -250,45 +250,14 @@ public class ExerelinUtils
 		}
 	}
 
+	@Deprecated
 	public static void renameFleet(CampaignFleetAPI fleet, String type)
 	{
 		String fleetTypeName = "";
 		float fleetSize = fleet.getFleetData().getFleetPointsUsed();
 
-        //System.out.println("Renaming fleet for: " + fleet.getFaction().getId());
-
-		if(type.equalsIgnoreCase("attack"))
-		{
-			if(fleetSize < 50)
-				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).smallAttackFleetName;
-			else if (fleetSize < 90)
-				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).mediumAttackFleetName;
-			else
-				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).largeAttackFleetName;
-		}
-		else if(type.equalsIgnoreCase("defense"))
-		{
-			if(fleetSize < 40)
-				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).smallDefenceFleetName;
-			else if (fleetSize < 90)
-				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).mediumDefenceFleetName;
-			else
-				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).largeDefenceFleetName;
-		}
-		else if(type.equalsIgnoreCase("patrol"))
-		{
-			if(fleetSize < 40)
-				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).smallPatrolFleetName;
-			else if (fleetSize < 90)
-				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).mediumPatrolFleetName;
-			else
-				fleetTypeName = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId()).largePatrolFleetName;
-		}
-		else
-		{
-			System.out.println("EXERELIN ERROR: Invalid fleet type to rename: " + type);
-		}
-		fleet.setName(fleetTypeName);
+		//System.out.println("Renaming fleet for: " + fleet.getFaction().getId());
+		//fleet.setName(fleetTypeName);
 	}
 
 	public static void removeRandomShipsFromCargo(CargoAPI cargoAPI, int numToRemove)

@@ -1,16 +1,6 @@
 {
     "uniqueModClassName":"", # String
-    "factionNiceName":"Sindrian Diktat", # String
     "playableFaction":"true", # Boolean
-
-    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
-
-    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
-    "preferredBackgroundImagePath":"", # String
-    "preferredStarType":"", # String
-    "preferredStarLight":"", # String, 0xFFFFFF
-
-    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Port", "Quey", "Habitat", "Shipyard"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
@@ -19,22 +9,10 @@
     "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Dissenters", # String
 
-    "smallAttackFleetName":"Scout", # String
-    "mediumAttackFleetName":"Invader Fleet", # String
-    "largeAttackFleetName":"Crusaders", # String
-
-    "smallDefenceFleetName":"Picket Defense", # String
-    "mediumDefenceFleetName":"Guard Fleet", # String
-    "largeDefenceFleetName":"Lion's Guard", # String
-
-    "smallPatrolFleetName":"Patrol", # String
-    "mediumPatrolFleetName":"Warden Patrol", # String
-    "largePatrolFleetName":"Garrison Fleet", # String
-
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
     "logisticsFleetName":"Logistics Convoy", # String
-    "boardingFleetName":"Boarding Fleet", # String
+    "invasionFleetName":"Boarding Fleet", # String
     "commandFleetName":"Command Fleet", # String
 
     "positiveDiplomacyExtra":0, # Integer
@@ -42,20 +20,5 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
 
-    "freighterVariants":["gemini_Standard"], # String array
-    "tankerVariants":["dram_Light"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
-
-    "troopTransportVariants":["valkyrie_Elite"], # String array
-    "superFreighterVariants":["atlas_Standard"], # String array
-
-    "carrierVariants":["gemini_Standard"], # String array
-
-    "fighterWings":["thunder_wing", "warthog_wing", "gladius_wing"], # String array
-    "frigateVariants":["brawler_Assault", "vigilance_Standard", "brawler_Elite", "brawler_Assault"], # String array
-    "destroyerVariants":["sunder_CS", "hammerhead_Balanced", "gemini_Standard"], # String array
-    "cruiserVariants":["heron_Standard", "apogee_Balanced", "falcon_Attack", "eagle_Assault", "eagle_Balanced"], # String array
-    "capitalVariants":["conquest_Elite"], # String array
-
-    "startingVariants":["brawler_Assault", "vigilance_Standard"], # String array
 }

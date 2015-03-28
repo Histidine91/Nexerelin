@@ -1,17 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.ORIModPlugin", # String
-    "factionNiceName":"Radicals of ORI", # String
-    "playableFaction":"true", # Boolean
     "isPirateNeutral":"true", # Boolean
-
-    "stationInteriorIllustrationKeys":["hound_hangar"], # String array
-
-    "changeSystemSpecsOnSystemLockdown":"false", # Boolean
-    "preferredBackgroundImagePath":"", # String
-    "preferredStarType":"", # String
-    "preferredStarLight":"", # String, 0xFFFFFF
-
-    "stationNameSuffixes":["Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Port", "Quey", "Habitat", "Shipyard"], # String array
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
@@ -20,22 +9,10 @@
     "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Raiders", # String
 
-    "smallAttackFleetName":"Prospector", # String
-    "mediumAttackFleetName":"Expedition Fleet", # String
-    "largeAttackFleetName":"Conquerers", # String
-
-    "smallDefenceFleetName":"Outer Perimeter Guard", # String
-    "mediumDefenceFleetName":"Perimeter Guard Fleet", # String
-    "largeDefenceFleetName":"Security Detachment", # String
-
-    "smallPatrolFleetName":"Explorer", # String
-    "mediumPatrolFleetName":"Exploration Patrol", # String
-    "largePatrolFleetName":"Garrison Fleet", # String
-
     "asteroidMiningFleetName":"Asteroid Propspecting Fleet", # String
     "gasMiningFleetName":"Gas Propecting Fleet", # String
     "logisticsFleetName":"Supply Convoy", # String
-    "boardingFleetName":"Boarding Fleet", # String
+    "invasionFleetName":"Boarding Fleet", # String
     "commandFleetName":"Alpha Research Fleet", # String
 
     "positiveDiplomacyExtra":0, # Integer
@@ -43,12 +20,5 @@
     "factionsLiked":[], # String array
     "factionsDisliked":["ori"], # String array
 
-    "freighterVariants":["wind_variant"], # String array
-    "tankerVariants":["barrel_variant"], # String array
     "miningVariantsOrWings":["mining_drone_wing"], # String array
-
-    "troopTransportVariants":["cane_variant"], # String array
-    "superFreighterVariants":["ori_butterflier_variant"], # String array
-
-    "startingVariants":["grib_variant", "openok_variant"], # String array
 }

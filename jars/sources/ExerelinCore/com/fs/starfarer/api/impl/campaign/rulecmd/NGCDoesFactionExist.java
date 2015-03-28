@@ -20,7 +20,7 @@ public class NGCDoesFactionExist extends BaseCommandPlugin {
 		if(factions == null)
 		{
 			ExerelinSetupData data = ExerelinSetupData.getInstance();   
-			factions = Arrays.asList(data.getPossibleFactions(false));
+			factions = Arrays.asList(data.getPossibleFactions());
 		}
 		return factions.contains(factionId);
 	}
