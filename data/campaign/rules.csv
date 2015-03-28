@@ -740,7 +740,7 @@ $faction.id == templars score:1000
 RepIsAtBest $faction.id SUSPICIOUS","$marketLeaveTooltip = ""$TheFaction do not trade with outsiders."" 0
 $menuState = main 0
 $tradeMode = NONE 0
-FireAll PopulateOptions","Your scanners pick up a massive energy signature manifesting on the planet's surface, followed by a high-power burst transmission from below: ""Come no further, lest the light of judgment be called upon you to ascend thy soul, in flames, to the great star above.""",,
+FireAll PopulateOptions","The only communication you can get from the port is: ""Begone from this holy land, heathen. Thy cleansing shall yet come.""",,
 ExerelinMarketPostOpenTemplarsUntrustworthy,MarketPostOpen,"!$doesFakeVariableExist score:999
 $hasMarket
 $faction.id == templars score:1000
