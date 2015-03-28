@@ -74,8 +74,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	};
 
 	
-	private List possibleSystemNamesList = new LinkedList(Arrays.asList(possibleSystemNames));
-	private List possiblePlanetNamesList = new LinkedList(Arrays.asList(possiblePlanetNames));
+	private List possibleSystemNamesList = new ArrayList(Arrays.asList(possibleSystemNames));
+	private List possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
 	
 	private static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren"};
 	private static final String[] planetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable",
@@ -484,6 +484,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				market.removeSubmarket(Submarkets.GENERIC_MILITARY); // auto added by military base; remove it
 			}
 		}
+		
+		//sector.setRespawnLocation(homeworld.starSystem);
+		//sector.getRespawnCoordinates().set(homeworld.entity.getLocation().x, homeworld.entity.getLocation().y);
 		
 		// Remove any data stored in ExerelinSetupData
 		ExerelinSetupData.resetInstance();
