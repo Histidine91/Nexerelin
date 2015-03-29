@@ -1,0 +1,25 @@
+{
+    "uniqueModClassName":"data.scripts.PTechPlugin", # String
+    "playableFaction":"true", # Boolean
+    "isPirateNeutral":"true", # Boolean
+
+    "crewExpereinceLevelIncreaseChance":0.4, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.3, # Double
+
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Fascists", # String
+
+    "asteroidMiningFleetName":"Astrominers", # String
+    "gasMiningFleetName":"Nebula Miners", # String
+    "logisticsFleetName":"Humanitarian Aide", # String
+    "invasionFleetName":"Pacifier", # String
+    "commandFleetName":"Command Hub", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":["blackrock_driveyards", "neutrinocorp", "pirates"], # String array
+    "factionsDisliked":["player_npc", "sindrian_diktat", "templars", "interstellarimperium", "patnavy"], # String array
+
+    "miningVariantsOrWings":["pt_sandoval_standard", "pt_porcelain_standard"], # String array
+}
