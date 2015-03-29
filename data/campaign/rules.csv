@@ -186,9 +186,11 @@ ExerelinNGCListMayorate,ExerelinNGCListFactions2,NGCDoesFactionExist mayorate,,,
 ,,,,,,
 ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
+ExerelinNGCListOculusBerserk,ExerelinNGCListFactions3,NGCDoesFactionExist OculusBerserk,,,exerelinNGCJoinOculusBerserk:Oculian Berserks,
 ExerelinNGCListORI,ExerelinNGCListFactions3,NGCDoesFactionExist ori,,,exerelinNGCJoinORI:ORI,
 ExerelinNGCListPACK,ExerelinNGCListFactions3,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
 ExerelinNGCListPatria,ExerelinNGCListFactions3,NGCDoesFactionExist patnavy,,,exerelinNGCJoinPatria:Patrian Navy,
+ExerelinNGCListPTech,ExerelinNGCListFactions3,NGCDoesFactionExist PTech,,,exerelinNGCJoinPTech:Protonian Technologies,
 ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
 ExerelinNGCListRadicalORI,ExerelinNGCListFactions3,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
 ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCFactionsBack:Back,
@@ -291,6 +293,10 @@ ExerelinNGCJoinNeutrinoCorp,NewGameOptionSelected,$option == exerelinNGCJoinNeut
 NGCAddShipAndComplement ""neutrino_singularity_standard""
 AddText ""Added Singularity-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
+exerelinNGCJoinOculusBerserk,NewGameOptionSelected,$option == exerelinNGCJoinOculusBerserk,"NGCSetPlayerFaction ""oculusberserk""
+NGCAddShipAndComplement ""ob_tigris_standard""
+AddText ""Enjoy your Tigris-class destroyer :p"" textFriendColor
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinORI,NewGameOptionSelected,$option == exerelinNGCJoinORI,"NGCSetPlayerFaction ""ori""
 NGCAddShipAndComplement ""ori_bastion_variant""
 AddText ""Added Bastion-class frigate"" textFriendColor
@@ -302,6 +308,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinPatria,NewGameOptionSelected,$option == exerelinNGCJoinPatria,"NGCSetPlayerFaction ""patnavy""
 NGCAddShipAndComplement ""pat_kortenaer_patrian""
 AddText ""Added Kortenaer-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinPTech,NewGameOptionSelected,$option == exerelinNGCJoinPTech,"NGCSetPlayerFaction ""PTech""
+NGCAddShipAndComplement ""pt_pieta_standard""
+AddText ""Added Pieta-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinRadicalORI,NewGameOptionSelected,$option == exerelinNGCJoinRadicalORI,"NGCSetPlayerFaction ""rori""
 NGCAddShipAndComplement ""ori_bastion_variant""
@@ -488,10 +498,12 @@ ExerelinFactionDirectoryListMayorate,ExerelinFactionDirectoryList2,IsFactionAliv
 ExerelinFactionDirectoryList2Back,ExerelinFactionDirectoryList2,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
 ExerelinFactionDirectoryListNeutrinoCorp,ExerelinFactionDirectoryList3,IsFactionAlive neutrinocorp,,,exerelinFactionDirectoryGetNeutrinoCorp:Neutrino Corp,
+ExerelinFactionDirectoryListOculusBerserk,ExerelinFactionDirectoryList3,IsFactionAlive OculusBerserk,,,exerelinFactionDirectoryGetOculusBerserk:Oculian Berserks,
 ExerelinFactionDirectoryListORI,ExerelinFactionDirectoryList3,IsFactionAlive ori,,,exerelinFactionDirectoryGetORI:ORI,
 ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList3,IsFactionAlive pack,,,exerelinFactionDirectoryGetPACK:P.A.C.K.,
 ExerelinFactionDirectoryListPatria,ExerelinFactionDirectoryList3,IsFactionAlive patnavy,,,exerelinFactionDirectoryGetPatria:Patrian Navy,
 ExerelinFactionDirectoryListPirates,ExerelinFactionDirectoryList3,IsFactionAlive pirates,,,exerelinFactionDirectoryGetPirates:Pirates,
+ExerelinFactionDirectoryListPTech,ExerelinFactionDirectoryList3,IsFactionAlive PTech,,,exerelinFactionDirectoryGetPTech:Protonian Technologies,
 ExerelinFactionDirectoryListRadicalORI,ExerelinFactionDirectoryList3,IsFactionAlive rori,,,exerelinFactionDirectoryGetRadicalORI:Radical ORI,
 ExerelinFactionDirectoryList3Back,ExerelinFactionDirectoryList3,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
@@ -517,11 +529,13 @@ ExerelinFactionDirectoryGetJunkPirates,DialogOptionSelected,$option == exerelinF
 ExerelinFactionDirectoryGetLuddicChurch,DialogOptionSelected,$option == exerelinFactionDirectoryGetLuddicChurch,PrintFactionMarkets luddic_church,,,
 ExerelinFactionDirectoryGetMayorate,DialogOptionSelected,$option == exerelinFactionDirectoryGetMayorate,PrintFactionMarkets mayorate,,,
 ExerelinFactionDirectoryGetNeutrinoCorp,DialogOptionSelected,$option == exerelinFactionDirectoryGetNeutrinoCorp,PrintFactionMarkets neutrinocorp,,,
+ExerelinFactionDirectoryGetOculusBerserk,DialogOptionSelected,$option == exerelinFactionDirectoryGetOculusBerserk,PrintFactionMarkets OculusBerserk,,,
 ExerelinFactionDirectoryGetORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetORI,PrintFactionMarkets ori,,,
 ExerelinFactionDirectoryGetPACK,DialogOptionSelected,$option == exerelinFactionDirectoryGetPACK,PrintFactionMarkets pack,,,
 ExerelinFactionDirectoryGetPatria,DialogOptionSelected,$option == exerelinFactionDirectoryGetPatria,PrintFactionMarkets patnavy,,,
 ExerelinFactionDirectoryGetPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetPirates,PrintFactionMarkets pirates,,,
 ExerelinFactionDirectoryGetPlayer,DialogOptionSelected,$option == exerelinFactionDirectoryGetPlayer,PrintFactionMarkets player_npc,,,
+ExerelinFactionDirectoryGetPTech,DialogOptionSelected,$option == exerelinFactionDirectoryGetPTech,PrintFactionMarkets PTech,,,
 ExerelinFactionDirectoryGetRadicalORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetRadicalORI,PrintFactionMarkets rori,,,
 ExerelinFactionDirectoryGetSCY,DialogOptionSelected,$option == exerelinFactionDirectoryGetSCY,PrintFactionMarkets SCY,,,
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,PrintFactionMarkets shadow_industry,,,
