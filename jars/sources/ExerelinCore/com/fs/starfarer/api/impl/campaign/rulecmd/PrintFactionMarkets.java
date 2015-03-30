@@ -7,6 +7,8 @@ import java.util.Map;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -70,8 +72,12 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                 text.addParagraph("-----------------------------------------------------------------------------");
                 for (MarketAPI market: markets)
                 {
+                    
                     String marketName = market.getName();
-                    String locName = market.getContainingLocation().getName();
+                    LocationAPI loc = market.getContainingLocation();
+                    String locName = loc.getName();
+                    if (loc instanceof StarSystemAPI)
+                            locName = ((StarSystemAPI)loc).getBaseName();
                     int size = market.getSize();
                     Color sizeColor = Color.WHITE;
                     if (colorByMarketSize.containsKey(size))

@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
@@ -17,10 +18,13 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 
 /**
  * Handles invasion fleets (the ones that capture stations)
@@ -52,7 +56,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     {
         float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket);
         float marketScalar = originMarket.getSize() * originMarket.getStabilityValue();
-        if (originMarket.hasCondition("military_base")) {
+        if (originMarket.hasCondition("military_base") || originMarket.hasCondition("exerelin_military_base")) {
             marketScalar += 20.0F;
         }
         if (originMarket.hasCondition("orbital_station")) {
@@ -101,7 +105,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         InvasionFleetAI ai = new InvasionFleetAI(fleet, data);
         fleet.addScript(ai);
         log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
-        
+        Map<String, Object> params = new HashMap<>();
+        params.put("target", targetMarket);
+        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
         return data;
     }
     
@@ -135,8 +141,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         for (MarketAPI market : markets) {
             if  ( market.getFaction() == invader && !market.hasCondition("decivilized") && 
                 ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) 
-                    || (market.hasCondition("military_base")) || (market.hasCondition("regional_capital")) 
-                    || (market.hasCondition("headquarters"))
+                    || (market.hasCondition("military_base")) || market.hasCondition("exerelin_military_base")
+                    || (market.hasCondition("regional_capital")) || (market.hasCondition("headquarters"))
                 ) && market.getSize() >= 3 )
             {
                 marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
@@ -170,6 +176,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
         
         // now we pick a target
+        Vector2f originMarketLoc = originMarket.getLocationInHyperspace();
         List<String> pirateFactions = DiplomacyManager.getPirateFactionsCopy();
         for (MarketAPI market : markets) {
             if  ( market.getFaction().isHostileTo(invader) && !pirateFactions.contains(market.getFactionId()) )
@@ -180,7 +187,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 if (estimateMarinesRequired > marineStockpile * MAX_MARINE_STOCKPILE_TO_DEPLOY)
                     continue;   // too strong for us
                 */
-                float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarket.getLocationInHyperspace());
+                float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
                 if (dist < 5000.0F) {
                     dist = 5000.0F;
                 }

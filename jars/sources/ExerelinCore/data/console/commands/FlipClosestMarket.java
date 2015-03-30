@@ -76,8 +76,10 @@ public class FlipClosestMarket implements BaseCommand {
         List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
         for (SubmarketAPI submarket : submarkets)
         {
-                if(submarket.getFaction() == defenderFaction)
-                submarket.setFaction(attackerFaction);
+                if(!submarket.getNameOneLine().toLowerCase().contains("black market"))
+                {
+                        submarket.setFaction(attackerFaction);
+                }
         }
         market.reapplyConditions();
         

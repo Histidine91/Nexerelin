@@ -3,19 +3,25 @@ package exerelin.campaign;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import static exerelin.campaign.InvasionRound.log;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.log4j.Logger;
 
 /**
@@ -31,6 +37,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     private List<String> liveFactionIds;
     private Map<String, String> systemToRelayMap;
     private boolean victoryHasOccured;
+    
+    private int numSlavesRecentlySold;
+    private MarketAPI marketLastSoldSlaves;
 
     public SectorManager()
     {
@@ -38,6 +47,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         String[] temp = ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector());
         liveFactionIds = new ArrayList<>();
         factionIdsAtStart = new ArrayList<>();
+        numSlavesRecentlySold = 0;
+        marketLastSoldSlaves = null;
+        
         for (String factionId:temp)
         {
             if (ExerelinUtilsFaction.getFactionMarkets(factionId).size() > 0)
@@ -48,11 +60,40 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         victoryHasOccured = false;
     }
-
+   
     @Override
     public void advance(float amount)
     {
+        if (numSlavesRecentlySold > 0)
+        {
+            handleSlaveTradeRep();
+            numSlavesRecentlySold = 0;
+        }
+    }
+    
+    // adds prisoners to loot
+    @Override
+    public void reportEncounterLootGenerated(FleetEncounterContextPlugin plugin, CargoAPI loot) {
+        CampaignFleetAPI loser = plugin.getLoser();
+        if (loser == null) return;
         
+        int fp = 0;
+        int crew = 0;
+        List<FleetMemberAPI> fleetCurrent = loser.getFleetData().getMembersListCopy();
+        for (FleetMemberAPI member : loser.getFleetData().getSnapshot()) {
+            if (!fleetCurrent.contains(member)) {
+                fp += member.getFleetPointCost();
+                crew += member.getNeededCrew();
+            }
+        }
+        for (int i=0; i<fp; i = i + 10)
+        {
+            if (Math.random() < ExerelinConfig.prisonerLootChancePer10Fp)
+            {
+                loot.addCommodity("prisoner", 1);
+            }
+        }
+        //loot.addCrew(CargoAPI.CrewXPLevel.GREEN, crew*ExerelinConfig.crewLootMult);
     }
     
     @Override
@@ -79,6 +120,30 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return sectorManager;
     }
     
+    public void handleSlaveTradeRep()
+    {
+        List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+        List<String> factionsToNotify = new ArrayList<>();  
+        Set<String> seenFactions = new HashSet<>();
+
+        for (final MarketAPI market : markets) {
+            String factionId = market.getFactionId();
+            if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
+            if (marketLastSoldSlaves.getPrimaryEntity().isInOrNearSystem(market.getStarSystem())) continue;	// station capture news is sector-wide
+            if (seenFactions.contains(factionId)) continue;
+
+            seenFactions.add(factionId);
+            factionsToNotify.add(factionId);
+        }
+        float repPenalty = ExerelinConfig.prisonerSlaveRepValue * numSlavesRecentlySold;
+        
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("factionsToNotify", factionsToNotify);
+        params.put("repPenalty", repPenalty);
+        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(marketLastSoldSlaves), "exerelin_slaves_sold", params);
+    }
+    
     public static void factionEliminated(FactionAPI victor, FactionAPI defeated, MarketAPI market)
     {
         if (defeated.getId().equals("independent"))
@@ -92,15 +157,17 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("playerVictory", victor == playerFaction && getLiveFactionIdsCopy().size() == 1);
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
         
-        if (!defeated.getId().equals(PlayerFactionStore.getPlayerFactionId()))
+        String defeatedId = defeated.getId();
+        if (!defeatedId.equals(PlayerFactionStore.getPlayerFactionId()))
         {
-            List<String> pirateFactions = DiplomacyManager.getPirateFactionsCopy();
-            if (!pirateFactions.contains(defeated.getId()))
+            if (!ExerelinUtilsFaction.isPirateFaction(defeatedId))
             {
                 for (FactionAPI faction : Global.getSector().getAllFactions())
                 {
-                    if (!pirateFactions.contains(faction.getId()))
-                        faction.setRelationship(defeated.getId(), 0);
+                    if (!ExerelinUtilsFaction.isPirateFaction(faction.getId()) && !faction.getId().equals(defeatedId))
+                    {
+                        faction.setRelationship(defeatedId, 0f);
+                    }
                 }
             }
         }
@@ -172,20 +239,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         // FIXME: probably needs to be more robust (what if the star system has both a HQ and regional capital?
-        // do something in SectorManager
         if (market.hasCondition("regional_capital") || market.hasCondition("headquarters"))
         {
             StarSystemAPI loc = market.getStarSystem();
-            log.info("System location: " + loc.getBaseName());
             if (sectorManager != null)
             {
-                //List<SectorEntityToken> relays = loc.getEntitiesWithTag("comm_relay");
-                //if (!relays.isEmpty())
-                //{
-                //    relays.get(0).setFaction(attackerFactionId);
-                //}
                 String relayId = sectorManager.systemToRelayMap.get(loc.getId());
-                log.info("Relay test ID: " + relayId);
                 if (relayId != null)
                 {
                     SectorEntityToken relay = Global.getSector().getEntityById(relayId);
@@ -193,6 +252,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 }
             }
         }
+    }
+    
+    public static void notifySlavesSold(MarketAPI market, int count)
+    {
+        if (sectorManager == null) return;
+        sectorManager.numSlavesRecentlySold += count;
+        sectorManager.marketLastSoldSlaves = market;
     }
 
     public static void addLiveFactionId(String factionId)

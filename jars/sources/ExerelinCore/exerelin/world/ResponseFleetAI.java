@@ -89,7 +89,7 @@ public class ResponseFleetAI implements EveryFrameScript
   
     private void giveInitialAssignment()
     {
-        this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, 0.2f, "scrambling from " + this.data.sourceMarket.getName());
+        //this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, 0.05f, "scrambling from " + this.data.sourceMarket.getName());
         this.fleet.addAssignment(FleetAssignment.INTERCEPT, this.data.target, 3f, "intercepting " + this.data.target.getName());
     }
   

@@ -9,11 +9,6 @@ import static exerelin.utilities.ExerelinUtils.JSONArrayToStringArray;
 
 public class ExerelinConfig
 {
-    // List of ships that can be produced at any station regardless of owner
-    public static String[] commonShipList = new String[]{"ox_Hull", "crig_Hull", "shuttle_Attack", "hermes_Standard"};
-
-    // Factions classed as neutral for relationship calculations
-    public static String[] neutralFactions = new String[]{"neutral", "independent"};
     public static List<ExerelinFactionConfig> exerelinFactionConfigs;
 
     // Threading support for improving/smoothing performance
@@ -25,16 +20,13 @@ public class ExerelinConfig
 
     // Randomise the location of the omnifactory
     public static boolean randomOmnifactoryLocation = false;
-
-    // Supply reduction
-    public static boolean reduceSupplies = true;
-    public static boolean capSupplyDropToCargo = true;
-    public static double reduceSuppliesFactor = 1.0;
-    
-    // System Generation Minimums
+   
+    // System Generation settings
     public static int minimumPlanets = 2;
     public static int minimumStations = 0;
     public static int minimumAsteroidBelts = 0;
+    public static float planetHabitableChance = 0.7f;
+    public static float moonHabitableChance = 0.3f;
 
     // Resourcing
     public static String asteroidMiningResource = "supplies";
@@ -46,7 +38,19 @@ public class ExerelinConfig
     public static float playerBaseSalary = 5000f;
     public static float playerSalaryIncrementPerLevel = 1000f;
     public static boolean playerFactionFreeTransfer = false;
-
+    public static float playerInsuranceMult = 0.5f;
+    
+    // Prisoners
+    public static float prisonerRepatriateRepValue = 0.05f;
+    public static float prisonerBaseRansomValue = 2000f;
+    public static float prisonerRansomValueIncrementPerLevel = 200f;
+    public static float prisonerBaseSlaveValue = 4000f;
+    public static float prisonerSlaveValueIncrementPerLevel = 400f;
+    public static float prisonerSlaveRepValue = -0.05f;
+    public static float prisonerLootChancePer10Fp = 0.05f;
+    
+    //public static float crewLootMult = 0.05f;
+    
     // Special Ships
     public static String[] validBoardingFlagships = new String[]{};
     public static String[] validTroopTransportShips = new String[]{};
@@ -63,28 +67,34 @@ public class ExerelinConfig
 
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelin_config.json");
 
-            enableThreading = settings.getBoolean("enableThreading");
-            useMultipleBackgroundsAndStars = settings.getBoolean("useMultipleBackgroundsAndStars");
-            useCustomFactionConfigs = settings.getBoolean("useCustomFactionConfigs");
+            enableThreading = settings.optBoolean("enableThreading");
+            useMultipleBackgroundsAndStars = settings.optBoolean("useMultipleBackgroundsAndStars");
+            useCustomFactionConfigs = settings.optBoolean("useCustomFactionConfigs");
 
-            randomOmnifactoryLocation = settings.getBoolean("randomOmnifactoryLocation");
+            randomOmnifactoryLocation = settings.optBoolean("randomOmnifactoryLocation");
 
-            reduceSupplies = settings.getBoolean("reduceSupplies");
-            capSupplyDropToCargo = settings.getBoolean("capSupplyDropToCargo");
-            reduceSuppliesFactor = settings.getDouble("reduceSuppliesFactor");
+            minimumPlanets = settings.optInt("minimumPlanets");
+            minimumStations = settings.optInt("minimumStations");
+            minimumAsteroidBelts = settings.optInt("minimumAsteroidBelts");
+            planetHabitableChance = (float)settings.optDouble("planetHabitableChance");
+            moonHabitableChance = (float)settings.optDouble("moonHabitableChance");
 
-            minimumPlanets = settings.getInt("minimumPlanets");
-            minimumStations = settings.getInt("minimumStations");
-            minimumAsteroidBelts = settings.getInt("minimumAsteroidBelts");
-
-            asteroidMiningResource = settings.getString("asteroidMiningResource");
-            gasgiantMiningResource = settings.getString("gasgiantMiningResource");
-            fleetCostResource = settings.getString("fleetCostResource");
-            miningAmountPerDayPerMiner = settings.getInt("miningAmountPerDayPerMiner");
+            asteroidMiningResource = settings.optString("asteroidMiningResource");
+            gasgiantMiningResource = settings.optString("gasgiantMiningResource");
+            fleetCostResource = settings.optString("fleetCostResource");
+            miningAmountPerDayPerMiner = settings.optInt("miningAmountPerDayPerMiner");
 
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary");
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel");
-            playerFactionFreeTransfer = settings.getBoolean("playerFactionFreeTransfer");
+            playerInsuranceMult = (float)settings.optDouble("playerInsuranceMult");
+            
+            prisonerRepatriateRepValue = (float)settings.optDouble("prisonerRepatriateRepValue");
+            prisonerBaseRansomValue = (float)settings.optDouble("prisonerBaseRansomValue");
+            prisonerRansomValueIncrementPerLevel = (float)settings.optDouble("prisonerRansomValueIncrementPerLevel");
+            prisonerBaseSlaveValue = (float)settings.optDouble("prisonerBaseSlaveValue");
+            prisonerSlaveValueIncrementPerLevel = (float)settings.optDouble("prisonerSlaveValueIncrementPerLevel");
+            prisonerLootChancePer10Fp  = (float)settings.optDouble("prisonerLootChancePer10Fp");
+            prisonerSlaveRepValue = (float)settings.optDouble("prisonerSlaveRepValue");
 
             validBoardingFlagships = JSONArrayToStringArray(settings.getJSONArray("validBoardingFlagships"));
             validTroopTransportShips = JSONArrayToStringArray(settings.getJSONArray("validTroopTransportShips"));
@@ -101,7 +111,7 @@ public class ExerelinConfig
         // Reset and load faction configuration data
         if(ExerelinConfig.exerelinFactionConfigs != null)
             ExerelinConfig.exerelinFactionConfigs.clear();
-        ExerelinConfig.exerelinFactionConfigs = new ArrayList<ExerelinFactionConfig>();
+        ExerelinConfig.exerelinFactionConfigs = new ArrayList<>();
 
         for(String factionId : builtInFactions)
             ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(factionId));

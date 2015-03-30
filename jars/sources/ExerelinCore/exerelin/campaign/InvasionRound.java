@@ -160,7 +160,7 @@ public class InvasionRound {
 		baseDefenderStrength = baseDefenderStrength * (market.getStabilityValue() + 1 - DEFENDER_STABILITY_MOD) * DEFENDER_STABILITY_MOD;
 		float defenderStrength = baseDefenderStrength;
 		
-		if(market.hasCondition("military_base"))
+		if(market.hasCondition("military_base") || market.hasCondition("exerelin_military_base"))
 		{
 			defenderStrength += baseDefenderStrength * DEFENDER_MILITARY_BASE_MOD;
 		}
@@ -207,7 +207,7 @@ public class InvasionRound {
 		float defenderStrength = GetDefenderStrength(market);
 		InvasionRoundResult result = new InvasionRoundResult();
 		
-		if(market.hasCondition("military_base"))
+		if(market.hasCondition("military_base") || market.hasCondition("exerelin_military_base"))
 		{
 			result.addDefenderBonus("Military base", DEFENDER_MILITARY_BASE_MOD);
 		}
@@ -307,8 +307,10 @@ public class InvasionRound {
 			List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
 			for (SubmarketAPI submarket : submarkets)
 			{
-				if(submarket.getFaction() == defenderFaction)
-				submarket.setFaction(attackerFaction);
+				if(!submarket.getNameOneLine().toLowerCase().contains("black market"))
+                                {
+                                        submarket.setFaction(attackerFaction);
+                                }
 			}
 			market.reapplyConditions();
 		}
@@ -334,9 +336,9 @@ public class InvasionRound {
 				if (playerInvolved)
 				{
 					factionsToNotify.add(otherMarket.getFactionId());
-					sector.adjustPlayerReputation(
+					/*sector.adjustPlayerReputation(
 						new RepActionEnvelope(RepActions.COMBAT_WITH_ENEMY, repChangeStrength),
-						otherMarket.getFaction().getId());
+						otherMarket.getFaction().getId());*/
 				}
 				//log.info(String.format("Improving reputation with owner of market [%s] due to conquest of " + defender.getName(), otherMarket.getName()));
 			}

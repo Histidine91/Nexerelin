@@ -12,12 +12,13 @@ import com.fs.starfarer.api.impl.campaign.CoreRuleTokenReplacementGeneratorImpl;
 import com.fs.starfarer.api.impl.campaign.fleets.CustomFleets;
 import com.fs.starfarer.api.impl.campaign.ids.Events;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-//import exerelin.campaign.CovertWarfareManager;
+import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.world.ResponseFleetManager;
 import java.util.List;
+import org.lazywizard.omnifac.OmniFacSettings;
 
 public class ExerelinLifecyclePlugin extends BaseModPlugin {
 
@@ -31,11 +32,20 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         Global.getSector().addScript(SectorManager.create());
         Global.getSector().addScript(DiplomacyManager.create());
         Global.getSector().addScript(ResponseFleetManager.create());
-        //Global.getSector().addScript(CovertWarfareManager.create());
+        Global.getSector().addScript(CovertOpsManager.create());
         
         if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_salary")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_salary", null);
         }
+		if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
+            Global.getSector().getEventManager().startEvent(null, "exerelin_faction_insurance", null);
+        }
+    }
+    
+    @Override
+    public void onApplicationLoad() throws Exception
+    {
+        OmniFacSettings.reloadSettings();
     }
 
     @Override

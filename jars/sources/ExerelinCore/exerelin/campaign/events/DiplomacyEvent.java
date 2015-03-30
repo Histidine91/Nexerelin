@@ -25,23 +25,21 @@ import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 public class DiplomacyEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(DiplomacyEvent.class);
-	private static final int DAYS_TO_KEEP = 90;
+	protected static final int DAYS_TO_KEEP = 30;
 	
-	private FactionAPI otherFaction;
-	private DiplomacyEventDef event;
-	private float delta;
-	float age;
-	private Map<String, Object> params;
-	    
-	public boolean done;
-	public boolean transmitted;
+	protected FactionAPI otherFaction;
+	protected DiplomacyEventDef event;
+	protected float delta;
+	protected float age;
+	protected Map<String, Object> params;
+		
+	protected boolean done;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
 		done = false;
-		transmitted = false;
 		age = 0;
 	}
 	
@@ -51,9 +49,6 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		otherFaction = (FactionAPI)params.get("otherFaction");
 		delta = (Float)params.get("delta");
 		event = (DiplomacyEventDef)params.get("event");
-		//log.info("Params newOwner: " + newOwner);
-		//log.info("Params oldOwner: " + oldOwner);
-		//log.info("Params playerInvolved: " + playerInvolved);
 	}
 		
 	@Override
@@ -69,25 +64,26 @@ public class DiplomacyEvent extends BaseEventPlugin {
 			done = true;
 			return;
 		}
-		if (!transmitted)
-		{
-			// we can set the reputation change only on message delivery
-			// but problem is, the token replacement method needs to know the relationship change NOW
-			//DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
-			MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
-			Global.getSector().reportEventStage(this, event.stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
-					final DiplomacyEventDef thisEvent = event;
-					final float thisDelta = delta;
-					final MarketAPI thisMarket = market;
-					final FactionAPI fac = market.getFaction();
-					final FactionAPI otherFac = otherFaction;
-					
-					public void beforeDelivery(CommMessageAPI message) {
-					//DiplomacyManager.adjustRelations(thisEvent, thisMarket, fac, otherFac, thisDelta);
-					}});
-			log.info("Diplomacy event: " + event.stage);
-			transmitted = true;
-		}
+	}
+	
+	@Override
+	public void startEvent() {
+		// we can set the reputation change only on message delivery
+		// but problem is, the token replacement method needs to know the relationship change NOW
+		//DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
+		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
+		Global.getSector().reportEventStage(this, event.stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
+			final DiplomacyEventDef thisEvent = event;
+			final float thisDelta = delta;
+			final MarketAPI thisMarket = market;
+			final FactionAPI fac = market.getFaction();
+			final FactionAPI otherFac = otherFaction;
+
+			public void beforeDelivery(CommMessageAPI message) {
+			//DiplomacyManager.adjustRelations(thisEvent, thisMarket, fac, otherFac, thisDelta);
+			}
+		});
+		log.info("Diplomacy event: " + event.stage);
 	}
 
 	@Override
@@ -112,7 +108,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		return CampaignEventPlugin.CampaignEventCategory.DO_NOT_SHOW_IN_MESSAGE_FILTER;
 	}
 	
-	private String getNewRelationStr()
+	protected String getNewRelationStr()
 	{
 		RepLevel level = faction.getRelationshipLevel(otherFaction.getId());
 		int repInt = (int) Math.ceil((faction.getRelationship(otherFaction.getId())) * 100f);

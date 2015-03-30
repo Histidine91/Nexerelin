@@ -17,6 +17,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsFaction;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +75,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     private static DiplomacyEventDef peaceTreatyEvent;
     private static DiplomacyEventDef ceasefireEvent;
     
-    private static float baseInterval = 20f;
+    private static float baseInterval = 30f;
     private float interval = baseInterval;
     private final IntervalUtil intervalUtil;
     
@@ -160,11 +161,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
     }
     
-    public float getDiplomacyInterval()
+    protected float getDiplomacyInterval()
     {
         int numFactions = SectorManager.getLiveFactionIdsCopy().size() - 2;
         if (numFactions < 0) numFactions = 0;
-        return baseInterval * (float)Math.pow(0.9, numFactions);
+        return baseInterval * (float)Math.pow(0.95, numFactions);
     }
     
     public static ReputationAdjustmentResult adjustRelations(MarketAPI market, FactionAPI faction1, FactionAPI faction2, float delta,
@@ -196,6 +197,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         else if(faction2 == playerAlignedFaction)
            playerFaction.setRelationship(faction1.getId(), after);
         
+        SectorManager.checkForVictory();
         return new ReputationAdjustmentResult(delta);
     }
     
@@ -225,7 +227,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             params.put("otherFaction", faction2);
             sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
         }
-        SectorManager.checkForVictory();
     }
     
     public void createDiplomacyEvent()
@@ -575,11 +576,20 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             log.info("Testing config for " + factionId + ": " + factionConfig);
             if ((factionConfig != null && factionConfig.factionsDisliked.length > 0))
             {
+                for (String likedFactionId : factionConfig.factionsLiked) {
+                    FactionAPI dislikedFaction = sector.getFaction(likedFactionId);
+                    if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
+                    {
+                        //log.info(faction.getDisplayName() + " likes " + dislikedFaction.getDisplayName());
+                        faction.setRelationship(likedFactionId, RepLevel.FRIENDLY);
+                    }
+                }
+                
                 for (String dislikedFactionId : factionConfig.factionsDisliked) {
                     FactionAPI dislikedFaction = sector.getFaction(dislikedFactionId);
                     if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
                     {
-                        log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
+                        //log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
                         faction.setRelationship(dislikedFactionId, RepLevel.HOSTILE);
                     }
                 }
@@ -591,7 +601,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         {
                 FactionAPI faction = sector.getFaction(factionId);
                 ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
-                if ((factionConfig== null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !pirateFactions.contains(factionId))
+                if ((factionConfig== null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !ExerelinUtilsFaction.isPirateFaction(factionId))
                 {
                     for (String pirateFactionId : pirateFactions) {
                         FactionAPI pirateFaction = sector.getFaction(pirateFactionId);

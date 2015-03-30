@@ -120,6 +120,20 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         responseFleetManager.generateResponseFleet(market, attacker);
     }
     
+    public static float modifyReserveSize(MarketAPI market, float delta)
+    {
+        if (responseFleetManager == null) return 0f;
+        String marketId = market.getId();
+        if (!responseFleetManager.reserves.containsKey(marketId)) return 0f;
+        float current = responseFleetManager.reserves.get(marketId);
+        float newValue = current + delta;
+        float max = getMaxReserveSize(market);
+        if (newValue < 0) newValue = 0;
+        else if (newValue > max) newValue = max;
+        responseFleetManager.reserves.put(marketId, newValue);
+        return newValue - current;
+    }
+    
     public static float getReserveSize(MarketAPI market)
     {
         if (responseFleetManager == null) return -1f;
@@ -171,7 +185,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             if (data.fleet == fleet)
             {
                 // return the ships to reserve if applicable
-                if(reason == CampaignEventListener.FleetDespawnReason.REACHED_DESTINATION 
+                if(reason != CampaignEventListener.FleetDespawnReason.DESTROYED_BY_FLEET
                         && data.sourceMarket.getFaction() == data.fleet.getFaction())
                 {
                     String marketId = data.sourceMarket.getId();

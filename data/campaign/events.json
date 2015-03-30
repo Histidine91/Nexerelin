@@ -4,10 +4,34 @@
 	},
 	"exerelin_market_attacked":{
 		"script":"exerelin.campaign.events.MarketAttackedEvent",
-		"image":"graphics/icons/markets/recent_unrest.png"
+		"image":"graphics/icons/markets/mercenaries.png"
 	},
 	"exerelin_diplomacy":{
 		"script":"exerelin.campaign.events.DiplomacyEvent"
+	},
+	"exerelin_invasion_fleet":{
+		"script":"exerelin.campaign.events.InvasionFleetEvent"
+	},
+	"exerelin_agent_raise_relations":{
+		"script":"exerelin.campaign.events.CovertOpsEventBase"
+	},
+	"exerelin_agent_lower_relations":{
+		"script":"exerelin.campaign.events.AgentLowerRelationsEvent"
+	},
+	"exerelin_agent_destabilize_market":{
+		"script":"exerelin.campaign.events.AgentDestabilizeMarketEvent"
+	},
+	"exerelin_agent_destabilize_market_for_condition":{
+		"script":"exerelin.campaign.events.AgentDestabilizeMarketEventForCondition"
+	},
+	"exerelin_saboteur_sabotage_reserve":{
+		"script":"exerelin.campaign.events.SaboteurSabotageReserveEvent"
+	},
+	"exerelin_saboteur_destroy_food":{
+		"script":"exerelin.campaign.events.SaboteurDestroyFoodEvent"
+	},
+	"exerelin_slaves_sold":{
+		"script":"exerelin.campaign.events.SlavesSoldEvent"
 	},
 	"exerelin_faction_eliminated":{
 		"script":"exerelin.campaign.events.FactionEliminatedEvent"
@@ -20,5 +44,8 @@
 	},
 	"exerelin_faction_salary":{
 		"script":"exerelin.campaign.events.FactionSalaryEvent"
+	},
+	"exerelin_faction_insurance":{
+		"script":"exerelin.campaign.events.FactionInsuranceEvent"
 	}
 }

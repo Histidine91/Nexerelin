@@ -1,4 +1,4 @@
-package data.scripts.world.exerelin;
+package exerelin.world;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinUtils;
 
 /*
@@ -152,7 +153,10 @@ public class ExerelinMarketConditionPicker
 		industryConds.add(new ExerelinPossibleMarketCondition("spaceport", 0.9f, 4));
 		specialConds.add(new ExerelinPossibleMarketCondition("organized_crime", 0.7f, 4));
 		specialConds.add(new ExerelinPossibleMarketCondition("large_refugee_population", 0.7f, 4, false));
-	
+		cond = new ExerelinPossibleMarketCondition("urbanized_polity", 0.7f, 3, false);
+		cond.setAllowStations(false);
+		specialConds.add(cond);
+		
 		// size 5
 		heavyIndustryConds.add(new ExerelinPossibleMarketCondition("autofac_heavy_industry", 1f, 5));
 		heavyIndustryConds.add(new ExerelinPossibleMarketCondition("antimatter_fuel_production", 1f, 5));
@@ -168,47 +172,36 @@ public class ExerelinMarketConditionPicker
 		
 	private void TryAddMarketCondition(MarketAPI market, List possibleConds, int count, int size, String planetType, boolean isStation)
 	{
-		List allowedConds = new ArrayList();
-		for (int i=0; i<possibleConds.size(); i++)
-		{
-			ExerelinPossibleMarketCondition possibleCond = (ExerelinPossibleMarketCondition)(possibleConds.get(i));
-			if (possibleCond.getMinSize() <= size && possibleCond.getMaxSize() >= size
-			&& (possibleCond.getAllowStations() || !isStation)
-			&& (possibleCond.getAllowDuplicates() || !market.hasCondition(possibleCond.name))
-			)
-				allowedConds.add(possibleCond);
-		}
+                WeightedRandomPicker <ExerelinPossibleMarketCondition> picker = new WeightedRandomPicker<>();
+                int numConds = 0;
+                for (Object possibleCond1 : possibleConds) {
+                    ExerelinPossibleMarketCondition possibleCond = (ExerelinPossibleMarketCondition) (possibleCond1);
+                    if (possibleCond.getMinSize() <= size && possibleCond.getMaxSize() >= size
+                            && (possibleCond.getAllowStations() || !isStation)
+                            && (possibleCond.getAllowDuplicates() || !market.hasCondition(possibleCond.name))
+                            )
+                    {
+                        picker.add(possibleCond, possibleCond.getChance());
+                        numConds++;
+                    }
+                }
 		
-		if (allowedConds.size() == 0)
+		if (numConds == 0)
 			return;	// out of possible conditions; nothing more to do
 		
-		// normalise chance
-		float sumChanceValues = 0;
-		float accumulatedChance = 0;
-		for (int i=0; i<allowedConds.size(); i++)
-		{
-			ExerelinPossibleMarketCondition cond = (ExerelinPossibleMarketCondition)(allowedConds.get(i));
-			sumChanceValues += cond.getChance();
-		}
-		float roll = (float)(Math.random()) * sumChanceValues;
-		
-		for (int i=0; i<allowedConds.size(); i++)
-		{
-			ExerelinPossibleMarketCondition cond = (ExerelinPossibleMarketCondition)(allowedConds.get(i));
-			accumulatedChance += cond.getChance();
-			if( accumulatedChance >= roll )
-			{
-				String name = cond.getName();
-				for (int j=0; j<count; j++)
-					market.addCondition(name);
-				if (!cond.getAllowDuplicates())
-					allowedConds.remove(cond);
-				if (name == "military_base")
-					market.addSubmarket(Submarkets.GENERIC_MILITARY);
-				log.info("\tCondition added: " + name);
-				break;
-			}
-		}
+                for (int i=0; i<count; i++)
+                {
+                        ExerelinPossibleMarketCondition cond = picker.pick();
+                        if (cond == null) break;
+                        String name = cond.getName();
+                        for (int j=0; j<count; j++)
+                                market.addCondition(name);
+                        if (!cond.getAllowDuplicates())
+                                picker.remove(cond);
+                        if (name.equals("military_base"))
+                                market.addSubmarket(Submarkets.GENERIC_MILITARY);
+                        log.info("\tCondition added: " + name);
+                }
 	}
 	
 	public void AddMarketConditions(MarketAPI market, int size, String planetType, boolean isStation)
