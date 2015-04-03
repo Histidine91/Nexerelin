@@ -3,7 +3,6 @@ package exerelin.world;
 import java.awt.Color;
 import java.util.List;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
@@ -33,6 +32,8 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
+import java.io.File;
+import java.io.FileFilter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,7 +60,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"Rutherford", "Maxwell", "Bohr", "Pauli", "Curie", "Meitner", "Heisenberg", "Feynman"};
 	private static final String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
 		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
-	private static final String[] starBackgrounds = new String[]
+	private static final ArrayList<String> starBackgrounds = new ArrayList<>(Arrays.asList(new String[]
 	{
 		"backgrounds/background1.jpg", "backgrounds/background2.jpg", "backgrounds/background3.jpg", "backgrounds/background4.jpg",
 		"exerelin/backgrounds/blue_background1.jpg", "exerelin/backgrounds/blue_background2.jpg",
@@ -71,7 +72,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"backgrounds/2-2.jpg", "backgrounds/2-4.jpg", "backgrounds/3-1.jpg", "backgrounds/4-1.jpg", "backgrounds/4-2.jpg", "backgrounds/5-1.jpg", "backgrounds/5-2.jpg",
 		"backgrounds/6-1.jpg", "backgrounds/7-1.jpg", "backgrounds/7-3.jpg", "backgrounds/8-1.jpg", "backgrounds/8-2.jpg", "backgrounds/9-1.jpg", "backgrounds/9-3.jpg",
 		"backgrounds/9-4.jpg", "backgrounds/9-5.jpg",
-	};
+	}));
 
 	
 	private List possibleSystemNamesList = new ArrayList(Arrays.asList(possibleSystemNames));
@@ -83,7 +84,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private static final String[] planetTypesGasGiant = new String[] {"gas_giant", "ice_giant"};
 	private static final String[] moonTypes = new String[] {"frozen", "barren", "rocky_ice", "rocky_metallic", "desert", "water"};
 	private static final String[] moonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice"};
-	private static final String[] stationImages = new String[] {"station_side00", "station_side02", "station_side04"};
+	
+	private static final Map<String, String[]> stationImages = new HashMap<>();
 	
 	private String[] factionIds = new String[]{};
 	private List starPositions = new ArrayList();	
@@ -94,6 +96,53 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private Map<String, String> systemToRelay = new HashMap();
 	
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
+	
+	public static class ImageFileFilter implements FileFilter
+	{
+		private final String[] okFileExtensions = new String[] {"jpg", "jpeg", "png"};
+		public boolean accept(File file)
+		{
+		for (String extension : okFileExtensions)
+		{
+			if (file.getName().toLowerCase().endsWith(extension))
+			{
+			return true;
+			}
+		}
+		return false;
+		}
+	}
+	 
+	static 
+	{
+		for (int i = 0; i < starBackgrounds.size(); i++)
+		{
+		starBackgrounds.set(i, "graphics/" + starBackgrounds.get(i));
+		}	
+		
+		// add Tartiflette BGs
+		/*
+		File extraBgDir = new File("graphics/backgrounds/extra");
+		if (extraBgDir.exists() && extraBgDir.isDirectory())
+		{
+		File[] files = extraBgDir.listFiles(new ImageFileFilter());
+		for (File file : files)
+		{
+			starBackgrounds.add(file.getPath());
+		}
+		}
+		*/
+		
+		// station images
+		stationImages.put("default", new String[] {"station_side00", "station_side02", "station_side04", "station_jangala_type"});
+		stationImages.put("shadow_industry", new String[] {"station_shi_prana","station_shi_med"} );
+		stationImages.put("SCY", new String[] {"SCY_overwatchStation_type","SCY_refinery_type", "SCY_processing_type", "SCY_conditioning_type"} );
+		stationImages.put("hiigaran_descendants", new String[] {"new_hiigara_type","hiigara_security_type"} );
+		stationImages.put("citadeldefenders", new String[] {"station_citadel_type"} );
+		stationImages.put("neutrinocorp", new String[] {"neutrino_station_powerplant", "neutrino_station_largeprocessing", "neutrino_station_experimental"} );
+		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
+		
+	}
 
 	private String getRandomFaction()
 	{
@@ -381,7 +430,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		LocationAPI system = toOrbit.getContainingLocation();
 		log.info("Placing Omnifactory around " + toOrbit.getName() + ", in the " + system.getName());
-		String image = stationImages[ExerelinUtils.getRandomInRange(0, stationImages.length - 1)];
+		String[] images = stationImages.get("default");
+		String image = images[ExerelinUtils.getRandomInRange(0, images.length - 1)];
 		SectorEntityToken omnifac = system.addCustomEntity("omnifactory", "Omnifactory", image, "neutral");
 		float radius = toOrbit.getRadius();
 		float orbitDistance = radius + 150;
@@ -521,9 +571,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		String name = planet.getName() + " " + data.name;
 		String id = name.replace(' ','_');
-		String image = stationImages[ExerelinUtils.getRandomInRange(0, stationImages.length - 1)];
-		if (factionId.equals("shadow_industry"))
-			image = "station_shi_prana";	// custom station image for Shadowyards
+		String[] images = stationImages.get("default");
+		if (stationImages.containsKey(factionId))
+			images = stationImages.get(factionId);
+		
+		String image = images[ExerelinUtils.getRandomInRange(0, images.length - 1)];
 		
 		SectorEntityToken newStation = data.starSystem.addCustomEntity(id, name, image, factionId);
 		newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
@@ -541,6 +593,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			addMarketToEntity(newStation, data, factionId, false);
 		}
 		pickEntityInteractionImage(newStation, newStation.getMarket(), planet.getTypeId(), EntityType.STATION);
+		newStation.setCustomDescriptionId("orbital_station_default");
 		
 		return newStation;
 	}
@@ -695,7 +748,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			star = makeStar(systemIndex, systemId, system, "star_greenwhite", 500f);
 			system.setLightColor(new Color(240,255,240));
 		}
-		system.setBackgroundTextureFilename("graphics/" + starBackgrounds[ExerelinUtils.getRandomInRange(0, starBackgrounds.length - 1)]);
+		system.setBackgroundTextureFilename( starBackgrounds.get(ExerelinUtils.getRandomInRange(0, starBackgrounds.size() - 1)) );
 
 		List<EntityData> entities = new ArrayList<>();
 		EntityData starData = new EntityData(system);
