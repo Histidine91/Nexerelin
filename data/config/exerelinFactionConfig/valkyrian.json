@@ -12,7 +12,7 @@
     "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
     "gasMiningFleetName":"Gas Mining Fleet", # String
     "logisticsFleetName":"Resupply Convoy", # String
-    "invasionFleetName":"Boarding Fleet", # String
+    "invasionFleetName":"Invasion Fleet", # String
     "commandFleetName":"Command Fleet", # String
 
     "positiveDiplomacyExtra":0, # Integer
