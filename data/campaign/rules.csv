@@ -153,9 +153,9 @@ ExerelinNGCModFactions1,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions1:M
 ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModFactions1,FireAll ExerelinNGCListFactions1,,,
 ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (E-M),ditto
 ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModFactions2,FireAll ExerelinNGCListFactions2,,,
-ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:Mod factions (N-R),
+ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:Mod factions (N-Q),
 ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,FireAll ExerelinNGCListFactions3,,,
-ExerelinNGCModFactions4,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions4:Mod factions (S-Z),
+ExerelinNGCModFactions4,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions4:Mod factions (R-Z),
 ExerelinNGCViewModFactions4,NewGameOptionSelected,$option == exerelinNGCViewModFactions4,FireAll ExerelinNGCListFactions4,,,
 ,,,,,,
 ExerelinNGCFactionsQuickStart,ExerelinNGCListFactions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
@@ -191,10 +191,11 @@ ExerelinNGCListORI,ExerelinNGCListFactions3,NGCDoesFactionExist ori,,,exerelinNG
 ExerelinNGCListPACK,ExerelinNGCListFactions3,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
 ExerelinNGCListPatria,ExerelinNGCListFactions3,NGCDoesFactionExist patnavy,,,exerelinNGCJoinPatria:Patrian Navy,
 ExerelinNGCListPTech,ExerelinNGCListFactions3,NGCDoesFactionExist PTech,,,exerelinNGCJoinPTech:Protonian Technologies,
+ExerelinNGCListP9,ExerelinNGCListFactions3,NGCDoesFactionExist pn_colony,,,exerelinNGCJoinP9:P9 Colony Group,
 ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
-ExerelinNGCListRadicalORI,ExerelinNGCListFactions3,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
 ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
+ExerelinNGCListRadicalORI,ExerelinNGCListFactions4,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
 ExerelinNGCListSCY,ExerelinNGCListFactions4,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY Nation,
 ExerelinNGCListShadowyards,ExerelinNGCListFactions4,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
 ExerelinNGCListValkyrians,ExerelinNGCListFactions4,NGCDoesFactionExist valkyrian,,,exerelinNGCJoinValkyrians:Valkyrians,
@@ -312,6 +313,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinPTech,NewGameOptionSelected,$option == exerelinNGCJoinPTech,"NGCSetPlayerFaction ""PTech""
 NGCAddShipAndComplement ""pt_pieta_standard""
 AddText ""Added Pieta-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinP9,NewGameOptionSelected,$option == exerelinNGCJoinP9,"NGCSetPlayerFaction ""pn_colony""
+NGCAddShipAndComplement ""cs_pn_sike""
+AddText ""Added Sike-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinRadicalORI,NewGameOptionSelected,$option == exerelinNGCJoinRadicalORI,"NGCSetPlayerFaction ""rori""
 NGCAddShipAndComplement ""ori_bastion_variant""
@@ -504,9 +509,10 @@ ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList3,IsFactionAlive pa
 ExerelinFactionDirectoryListPatria,ExerelinFactionDirectoryList3,IsFactionAlive patnavy,,,exerelinFactionDirectoryGetPatria:Patrian Navy,
 ExerelinFactionDirectoryListPirates,ExerelinFactionDirectoryList3,IsFactionAlive pirates,,,exerelinFactionDirectoryGetPirates:Pirates,
 ExerelinFactionDirectoryListPTech,ExerelinFactionDirectoryList3,IsFactionAlive PTech,,,exerelinFactionDirectoryGetPTech:Protonian Technologies,
-ExerelinFactionDirectoryListRadicalORI,ExerelinFactionDirectoryList3,IsFactionAlive rori,,,exerelinFactionDirectoryGetRadicalORI:Radical ORI,
+ExerelinFactionDirectoryListP9,ExerelinFactionDirectoryList3,IsFactionAlive pn_colony,,,exerelinFactionDirectoryGetP9:P9 Colony Group,
 ExerelinFactionDirectoryList3Back,ExerelinFactionDirectoryList3,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
+ExerelinFactionDirectoryListRadicalORI,ExerelinFactionDirectoryList4,IsFactionAlive rori,,,exerelinFactionDirectoryGetRadicalORI:Radical ORI,
 ExerelinFactionDirectoryListSCY,ExerelinFactionDirectoryList4,IsFactionAlive SCY,,,exerelinFactionDirectoryGetSCY:SCY,
 ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList4,IsFactionAlive shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
 ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList4,IsFactionAlive sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
@@ -536,6 +542,7 @@ ExerelinFactionDirectoryGetPatria,DialogOptionSelected,$option == exerelinFactio
 ExerelinFactionDirectoryGetPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetPirates,PrintFactionMarkets pirates,,,
 ExerelinFactionDirectoryGetPlayer,DialogOptionSelected,$option == exerelinFactionDirectoryGetPlayer,PrintFactionMarkets player_npc,,,
 ExerelinFactionDirectoryGetPTech,DialogOptionSelected,$option == exerelinFactionDirectoryGetPTech,PrintFactionMarkets PTech,,,
+ExerelinFactionDirectoryGetP9,DialogOptionSelected,$option == exerelinFactionDirectoryGetP9,PrintFactionMarkets pn_colony,,,
 ExerelinFactionDirectoryGetRadicalORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetRadicalORI,PrintFactionMarkets rori,,,
 ExerelinFactionDirectoryGetSCY,DialogOptionSelected,$option == exerelinFactionDirectoryGetSCY,PrintFactionMarkets SCY,,,
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,PrintFactionMarkets shadow_industry,,,
