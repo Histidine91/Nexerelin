@@ -13,7 +13,7 @@
     "asteroidMiningFleetName":"Metallicus", # String
     "gasMiningFleetName":"Cuniculator", # String
     "logisticsFleetName":"Prosecutae", # String
-    "invasionFleetName":"Auceps", # String
+    "invasionFleetName":"Exercitus", # String
     "invasionSupportFleetName":"Classis", # String
 
     "positiveDiplomacyExtra":0, # Integer

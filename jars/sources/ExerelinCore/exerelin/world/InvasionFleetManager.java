@@ -20,6 +20,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -104,6 +105,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         float qf = originMarket.getShipQualityFactor();
         
         String name = "Strike Fleet";
+        ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(invader.getId());
+        if (factionConfig != null)
+        {
+            name = factionConfig.invasionSupportFleetName;
+        }
         if (maxFP < 50) name = "Small " + name;
         else if (maxFP > 150) name = "Large " + name;
         CampaignFleetAPI fleet = FleetFactory.createGenericFleet(originMarket.getFactionId(), name, qf, maxFP);
@@ -139,6 +145,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         float qf = originMarket.getShipQualityFactor();
         
         String name = "Invasion Fleet";
+        ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(invader.getId());
+        if (factionConfig != null)
+        {
+            name = factionConfig.invasionFleetName;
+        }
         if (maxFP < 50) name = "Small " + name;
         else if (maxFP > 150) name = "Grand " + name;
         CampaignFleetAPI fleet = FleetFactory.createGenericFleet(originMarket.getFactionId(), name, qf, maxFP);

@@ -74,8 +74,8 @@ public class ExerelinFactionConfig
             asteroidMiningFleetName = settings.optString("asteroidMiningFleetName", asteroidMiningFleetName);
             gasMiningFleetName = settings.optString("gasMiningFleetName", gasMiningFleetName);
             logisticsFleetName = settings.optString("logisticsFleetName", logisticsFleetName);
-            invasionFleetName = settings.optString("boardingFleetName", invasionFleetName);
-            invasionSupportFleetName = settings.optString("commandFleetName", invasionSupportFleetName);
+            invasionFleetName = settings.optString("invasionFleetName", invasionFleetName);
+            invasionSupportFleetName = settings.optString("invasionSupportFleetName", invasionSupportFleetName);
 
             positiveDiplomacyExtra = settings.optInt("positiveDiplomacyExtra");
             negativeDiplomacyExtra = settings.optInt("negativeDiplomacyExtra");
