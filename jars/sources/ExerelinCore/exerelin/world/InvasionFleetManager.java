@@ -39,7 +39,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     private static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
     private static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
     private static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
-    private static final float DEFENDER_STRENGTH_MARINE_MULT = 1.1f;
+    private static final float DEFENDER_STRENGTH_MARINE_MULT = 1.15f;
     
     public static Logger log = Global.getLogger(InvasionFleetManager.class);
     
@@ -139,7 +139,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
   
     public static InvasionFleetData spawnFleet(FactionAPI invader, MarketAPI originMarket, MarketAPI targetMarket, float marineMult, boolean noWait)
     {
-        float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket);
+        float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket, 0.5f, false);
         
         int maxFP = (int)calculateMaxFpForFleet(originMarket, targetMarket);
         float qf = originMarket.getShipQualityFactor();

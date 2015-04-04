@@ -20,12 +20,11 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import exerelin.campaign.events.MarketAttackedEvent;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import java.util.ArrayList;
 
 /**
@@ -150,28 +149,38 @@ public class InvasionRound {
 	
 	public static float GetDefenderStrength(MarketAPI market)
 	{
-		return GetDefenderStrength(market, false);
+		return GetDefenderStrength(market, 1, false);
 	}
 	
-	public static float GetDefenderStrength(MarketAPI market, boolean isRaid)
+	public static float GetDefenderStrength(MarketAPI market, float bonusMult, boolean isRaid)
 	{
 		float marketSize = market.getSize();
 		float baseDefenderStrength = DEFENDER_BASE_STRENGTH * (float)(Math.pow(marketSize, 3));
 		baseDefenderStrength = baseDefenderStrength * (market.getStabilityValue() + 1 - DEFENDER_STABILITY_MOD) * DEFENDER_STABILITY_MOD;
 		float defenderStrength = baseDefenderStrength;
+                float defenderBonus = 0;
 		
-		if(market.hasCondition("military_base") || market.hasCondition("exerelin_military_base"))
+		if(market.hasCondition("military_base"))
 		{
-			defenderStrength += baseDefenderStrength * DEFENDER_MILITARY_BASE_MOD;
+			defenderBonus += baseDefenderStrength * DEFENDER_MILITARY_BASE_MOD;
 		}
 		if(market.hasCondition("regional_capital"))
 		{
-			defenderStrength += baseDefenderStrength * DEFENDER_REGIONAL_CAPITAL_MOD;
+			defenderBonus += baseDefenderStrength * DEFENDER_REGIONAL_CAPITAL_MOD;
 		}
 		if(market.hasCondition("headquarters"))
 		{
-			defenderStrength += baseDefenderStrength * DEFENDER_HEADQUARTERS_MOD;
+			defenderBonus += baseDefenderStrength * DEFENDER_HEADQUARTERS_MOD;
 		}
+                
+                ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+                if (factionConfig != null)
+                {
+                        defenderBonus += baseDefenderStrength * factionConfig.invasionStrengthBonusDefend;
+                }
+                
+                defenderStrength += (defenderBonus * bonusMult);
+                
 		if (isRaid)
 			defenderStrength *= DEFENDER_RAID_STRENGTH_MULT;
 		return defenderStrength;
@@ -203,15 +212,22 @@ public class InvasionRound {
 			randomBonus = ATTACKER_RANDOM_BONUS;
 		
 		float marketSize = market.getSize();
+                
 		float attackerMarineMult = attacker.getCommanderStats().getMarineEffectivnessMult().getModifiedValue();
 		float attackerAssets = (marineCount * attackerMarineMult) + (attacker.getFleetPoints() * ATTACKER_FLEET_MULT);
 		float baseAttackerStrength = (ATTACKER_BASE_STRENGTH  + randomBonus) * attackerAssets;
-
 		float attackerStrength = baseAttackerStrength;
+                ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(attacker.getFaction().getId());
+                if (factionConfig != null)
+                {
+                        attackerStrength += baseAttackerStrength * factionConfig.invasionStrengthBonusAttack;
+                }
+                
 		float defenderStrength = GetDefenderStrength(market);
-		InvasionRoundResult result = new InvasionRoundResult();
 		
-		if(market.hasCondition("military_base") || market.hasCondition("exerelin_military_base"))
+                InvasionRoundResult result = new InvasionRoundResult();
+		
+		if(market.hasCondition("military_base"))
 		{
 			result.addDefenderBonus("Military base", DEFENDER_MILITARY_BASE_MOD);
 		}

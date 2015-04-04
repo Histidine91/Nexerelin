@@ -21,6 +21,9 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+    
+    "invasionStrengthBonusAttack":0.25,
+    "invasionStrengthBonusDefend":0.25,
 
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

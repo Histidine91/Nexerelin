@@ -36,6 +36,9 @@ public class ExerelinFactionConfig
     public String[] factionsLiked = new String[]{};
     public String[] factionsDisliked = new String[]{};
 
+    public float invasionStrengthBonusAttack = 0;
+    public float invasionStrengthBonusDefend = 0;
+    
     public List<String> miningVariantsOrWings = new ArrayList<String>() {};
 
     public List<String> carrierVariants = new ArrayList<String>() {};
@@ -81,6 +84,9 @@ public class ExerelinFactionConfig
             negativeDiplomacyExtra = settings.optInt("negativeDiplomacyExtra");
             factionsLiked = JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
             factionsDisliked = JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
+            
+            invasionStrengthBonusAttack = (float)settings.optDouble("invasionStrengthBonusAttack", 0);
+            invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);
             
             miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
         }
