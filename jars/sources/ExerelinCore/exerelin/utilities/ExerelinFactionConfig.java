@@ -41,14 +41,6 @@ public class ExerelinFactionConfig
     
     public List<String> miningVariantsOrWings = new ArrayList<String>() {};
 
-    public List<String> carrierVariants = new ArrayList<String>() {};
-
-    public List<String> fighterWings = new ArrayList<String>() {};
-    public List<String> frigateVariants = new ArrayList<String>() {};
-    public List<String> destroyerVariants = new ArrayList<String>() {};
-    public List<String> cruiserVariants = new ArrayList<String>() {};
-    public List<String> capitalVariants = new ArrayList<String>() {};
-
     public ExerelinFactionConfig(String factionId)
     {
         this.factionId = factionId;

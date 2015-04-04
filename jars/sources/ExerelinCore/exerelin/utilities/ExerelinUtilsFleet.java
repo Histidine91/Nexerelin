@@ -162,24 +162,26 @@ public class ExerelinUtilsFleet
         return "";
     }
 
+    @Deprecated
     public static String getRandomVariantIdForFactionByHullsize(String factionId, ShipAPI.HullSize hullSize)
     {
         ExerelinFactionConfig exerelinFactionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
 
         switch (hullSize) {
             case FIGHTER:
-                return exerelinFactionConfig.fighterWings.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.fighterWings.size() - 1));
+                //return exerelinFactionConfig.fighterWings.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.fighterWings.size() - 1));
             case FRIGATE:
-                return exerelinFactionConfig.frigateVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.frigateVariants.size() - 1));
+                //return exerelinFactionConfig.frigateVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.frigateVariants.size() - 1));
             case DESTROYER:
-                return exerelinFactionConfig.destroyerVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.destroyerVariants.size() - 1));
+                //return exerelinFactionConfig.destroyerVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.destroyerVariants.size() - 1));
             case CRUISER:
-                return exerelinFactionConfig.cruiserVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.cruiserVariants.size() - 1));
+                //return exerelinFactionConfig.cruiserVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.cruiserVariants.size() - 1));
             case CAPITAL_SHIP:
-                return exerelinFactionConfig.capitalVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.capitalVariants.size() - 1));
+                //return exerelinFactionConfig.capitalVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.capitalVariants.size() - 1));
             default:
-                return exerelinFactionConfig.frigateVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.fighterWings.size() - 1));
+                //return exerelinFactionConfig.frigateVariants.get(ExerelinUtils.getRandomInRange(0, exerelinFactionConfig.fighterWings.size() - 1));
         }
+        return "";
     }
 
     public static String getRandomVariantIdForFaction(String factionId, Boolean includeFighters, Boolean includeLargeShips)
@@ -252,25 +254,10 @@ public class ExerelinUtilsFleet
         return ExerelinUtilsFleet.getRandomVariantIdForFactionByHullsize(factionId, hullSize);
     }
 
-    // TODO: DOESN'T SEEM TO WORK WHEN LISTS ARE EMPTY
+    @Deprecated
     public static Boolean doesFactionHaveVariantOfHullsize(String factionId, ShipAPI.HullSize hullSize)
     {
-        ExerelinFactionConfig exerelinFactionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
-
-        switch (hullSize) {
-            case FIGHTER:
-                return exerelinFactionConfig.fighterWings.size() > 0;
-            case FRIGATE:
-                return exerelinFactionConfig.frigateVariants.size() > 0;
-            case DESTROYER:
-                return exerelinFactionConfig.destroyerVariants.size() > 0;
-            case CRUISER:
-                return exerelinFactionConfig.cruiserVariants.size() > 0;
-            case CAPITAL_SHIP:
-                return exerelinFactionConfig.capitalVariants.size() > 0;
-            default:
-                return exerelinFactionConfig.frigateVariants.size() > 0;
-        }
+        return true;
     }
 
     public static CampaignFleetAPI createPirateFleet(String[] factions, int size)
