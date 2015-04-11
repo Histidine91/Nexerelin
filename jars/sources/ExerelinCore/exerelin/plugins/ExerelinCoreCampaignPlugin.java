@@ -8,9 +8,9 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
+import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinUtils;
 import exerelin.world.ResponseFleetManager;
 
 @SuppressWarnings("unchecked")
@@ -56,6 +56,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 	public void updateMarketFacts(MarketAPI market, MemoryAPI memory) {
 		super.updateMarketFacts(market, memory);
 		memory.set("$reserveSize", ResponseFleetManager.getReserveSize(market), 0);
+                memory.set("$alertLevel", CovertOpsManager.getAlertLevel(market), 0);
 	}
 	
 	@Override

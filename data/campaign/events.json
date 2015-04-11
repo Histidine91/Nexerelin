@@ -30,6 +30,9 @@
 	"exerelin_saboteur_destroy_food":{
 		"script":"exerelin.campaign.events.SaboteurDestroyFoodEvent"
 	},
+	"exerelin_security_alert":{
+		"script":"exerelin.campaign.events.SecurityAlertEvent"
+	},
 	"exerelin_slaves_sold":{
 		"script":"exerelin.campaign.events.SlavesSoldEvent"
 	},

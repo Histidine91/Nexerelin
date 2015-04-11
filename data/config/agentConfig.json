@@ -22,6 +22,7 @@
 	"agentDestabilizeDetectionChanceFail":0.5,
 	"agentDestabilizeRepLossOnDetectionMin":0.15,
 	"agentDestabilizeRepLossOnDetectionMax":0.2,
+	"agentDestabilizeSecurityLevelRise":0.2,
 	
 	"sabotageReserveSuccessChance":0.6,
 	"sabotageReserveDetectionChance":0.4,
@@ -30,6 +31,7 @@
 	"sabotageReserveEffectMax":25.0,
 	"sabotageReserveRepLossOnDetectionMin":0.15,
 	"sabotageReserveRepLossOnDetectionMax":0.2,
+	"sabotageReserveSecurityLevelRise":0.25,
 	
 	"sabotageDestroyFoodSuccessChance":0.65,
 	"sabotageDestroyFoodDetectionChance":0.2,
@@ -38,4 +40,5 @@
 	"sabotageDestroyFoodEffectMax":55.0,
 	"sabotageDestroyFoodRepLossOnDetectionMin":0.15,
 	"sabotageDestroyFoodRepLossOnDetectionMax":0.2,
+	"sabotageDestroyFoodSecurityLevelRise":0.1,
 }

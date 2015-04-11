@@ -381,8 +381,7 @@ NGCDone",,,
 # END NGC OPTIONS,,,,,,
 ,,,,,,
 ,,,,,,
-ExerelinMarketAddOptionSpecial,PopulateOptions,"$menuState == main
-!$faction.isNeutralFaction","SetShortcut exerelinMarketSpecial ""S"" true",,6:exerelinMarketSpecial:Special functions,
+ExerelinMarketAddOptionSpecial,PopulateOptions,$menuState == main,"SetShortcut exerelinMarketSpecial ""S"" true",,6:exerelinMarketSpecial:Special functions,
 ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,FireAll ExerelinMarketSpecial,,,
 ExerelinMarketLeaveOption,ExerelinMarketSpecial,,,,10:exerelinMarketSpecialBack:Back,
 ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,"ShowDefaultVisual
@@ -598,11 +597,14 @@ ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"Ge
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 FireAll ExerelinAgentOption",,,
 ExerelinAgentOptionNumAgents,ExerelinAgentOption,,SetTextHighlights $numAgents,You have $numAgents agent(s) to deploy.,,
+ExerelinAgentOptionListGatherIntel,ExerelinAgentOption,,"SetTooltip exerelinAgentGatherIntel ""Gets the market's current stability, reserve size and security alert level.""",,exerelinAgentGatherIntel:Gather intel,
 ExerelinAgentOptionListRaiseRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentRaiseRelations ""Influence $theFaction to like your faction more. If it fails, there is a chance they will turn more hostile instead.""",,exerelinAgentRaiseRelations:Raise relations,
 ExerelinAgentOptionListLowerRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentLowerRelations ""Influence $theFaction to dislike one of your factions' enemies more. If your attempt is detected, both factions will be angry with you.""",,exerelinAgentLowerRelations:Lower relations,
 ExerelinAgentOptionListDestabilizeMarket,ExerelinAgentOption,,"SetTooltip exerelinAgentDestabilizeMarket ""Attempt the use of terror methods to destabilize $market. There is a chance your agent will be detected, with serious diplomatic repercussions.""",,exerelinAgentDestabilizeMarket:Destabilize market,
 ExerelinAgentOptionListBack,ExerelinAgentOption,,,,exerelinMarketSpecial:Back,
 ,,,,,,
+ExerelinAgentGatherIntel,DialogOptionSelected,$option == exerelinAgentGatherIntel,"AgentGatherIntel
+FireAll ExerelinAgentPostDeploy",,,
 ExerelinAgentRaiseRelations,DialogOptionSelected,$option == exerelinAgentRaiseRelations,"AgentRaiseRelations
 FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
 ExerelinAgentLowerRelations,DialogOptionSelected,$option == exerelinAgentLowerRelations,"AgentLowerRelations
@@ -753,6 +755,8 @@ FireAll PopulateOptions","""Just another day at the office.""",,
 # bla,,,,,,
 ExerelinFlavorTextMarketOmnifactory,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $market.id == omnifac","AddText ""The Omnifactory's main loading bay is a dark, brooding chamber gaping cavernously around stacks of replicated items - clearly, the maintaining AI lacks the cleanliness sensibility of the average human. A loading bots shuffles about with large crates in hand as nano-fabricators hum in the distance."" textGrayColor",,,
+ExerelinFlavorTextMarketPrismFreeport,TradePanelFlavorText,"$global.tradePanelMode == MARKET
+$market.id == prismFreeport_market","AddText ""Bright, slick, overusing chrome and opal ornaments, the concourse is quite the unusual sight for a station lost in hyperspace. Wherever the eye look, every detail spell luxury. On the sides, behind extravagant transparent promenades, the source of all this wealth is offered to the observation of all potential buyers: the menacing and yet reassuring silhouettes of ships from all origins, all pristine looking and advantageously lit. A bit further it's the weapons that are exposed in the same fashion. Holo displays and simulators are available everywhere to help clients to find the perfect tool to fit their needs."" textGrayColor",,,
 ExerelinMarketOptionIntel,DialogOptionSelected,$option == exerelinMarketIntel,OpenCoreTab INTEL $tradeMode,,,
 ,,,,,,
 # vanilla overrides,,,,,,
