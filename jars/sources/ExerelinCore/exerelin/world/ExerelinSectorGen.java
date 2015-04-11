@@ -94,9 +94,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private List<EntityData> habitablePlanets = new ArrayList<>();
 	private List<EntityData> stations = new ArrayList<>();
 	private Map<String, String> systemToRelay = new HashMap();
+	private Map<String, String> planetToRelay = new HashMap();
 	
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
 	
+	/*
 	public static class ImageFileFilter implements FileFilter
 	{
 		private final String[] okFileExtensions = new String[] {"jpg", "jpeg", "png"};
@@ -112,6 +114,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return false;
 		}
 	}
+	*/
 	 
 	static 
 	{
@@ -133,7 +136,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		*/
 		
-		// station images
+		// station images (FIXME: move to faction config)
 		stationImages.put("default", new String[] {"station_side00", "station_side02", "station_side04", "station_jangala_type"});
 		stationImages.put("shadow_industry", new String[] {"station_shi_prana","station_shi_med"} );
 		stationImages.put("SCY", new String[] {"SCY_overwatchStation_type","SCY_refinery_type", "SCY_processing_type", "SCY_conditioning_type"} );
@@ -141,7 +144,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stationImages.put("citadeldefenders", new String[] {"station_citadel_type"} );
 		stationImages.put("neutrinocorp", new String[] {"neutrino_station_powerplant", "neutrino_station_largeprocessing", "neutrino_station_experimental"} );
 		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
-		
+		stationImages.put("exipirated", new String[] {"exipirated_avesta_station"} );
 	}
 
 	private String getRandomFaction()
@@ -259,7 +262,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		entity.setInteractionImage(illustration[0], illustration[1]);
 	}
 	
-	private MarketAPI addMarketToEntity(SectorEntityToken entity, EntityData data, String owningFactionId, boolean isCapital)
+	private MarketAPI addMarketToEntity(SectorEntityToken entity, EntityData data, String owningFactionId)
 	{
 		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
@@ -268,18 +271,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		boolean isStation = (entityType == EntityType.STATION); 
 		if (isStation) marketSize = 2 + ExerelinUtils.getRandomInRange(1, 2);	// stations are on average smaller
 		else if (entityType == EntityType.MOON) marketSize = ExerelinUtils.getRandomInRange(1, 2) + ExerelinUtils.getRandomInRange(2, 3);
-		else marketSize = ExerelinUtils.getRandomInRange(2, 3) + ExerelinUtils.getRandomInRange(2, 3);
-		
-		if (isCapital)
-		{
-			if (data == homeworld)
-			{
-				if (marketSize < 6) marketSize = 6;
-			}
-			else if (marketSize < 5) marketSize = 5;
-		}
-		// Alex says "You can set marketSize via MarketAPI, but it's not "nicely" mutable like other stats at the moment."
-		// so to be safe we only spawn the market after we already know what size it'll be
+		else marketSize = 2 + ExerelinUtils.getRandomInRange(2, 3);
 		
 		MarketAPI newMarket = Global.getFactory().createMarket(entity.getId() + "_market", entity.getName(), marketSize);
 		newMarket.setPrimaryEntity(entity);
@@ -288,13 +280,19 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		newMarket.setFactionId(owningFactionId);
 		newMarket.setBaseSmugglingStabilityValue(0);
 		
-		newMarket.addCondition("population_" + marketSize);
-
-		if (isCapital)
+		if (data.isHQ)
 		{
-			newMarket.addCondition(data == homeworld ? "headquarters" : "regional_capital");
+			if (marketSize < 6) marketSize = 6;
+			newMarket.addCondition("headquarters");
 			if (data == homeworld) newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
 		}
+		else if (data.isCapital)
+		{
+			if (marketSize < 5) marketSize = 5;
+			newMarket.addCondition("regional_capital");
+		}
+		newMarket.setSize(marketSize);
+		newMarket.addCondition("population_" + marketSize);
 		
 		int minSizeForMilitaryBase = 5;
 		if (isStation) minSizeForMilitaryBase = 4;
@@ -438,9 +436,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (toOrbit instanceof PlanetAPI)
 		{
 			PlanetAPI planet = (PlanetAPI)toOrbit;
-			if (planet.isStar()) orbitDistance = radius + ExerelinUtils.getRandomInRange(3000, 12000);
+			if (planet.isStar()) 
+			{
+				orbitDistance = radius + ExerelinUtils.getRandomInRange(3000, 12000);
+			}
 		}
-		omnifac.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, 2));
+		omnifac.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, getDensity(toOrbit)));
 		OmniFacModPlugin.initOmnifactory(omnifac);
 		omnifac.setInteractionImage("illustrations", "abandoned_station");
 		omnifac.setCustomDescriptionId("omnifactory");
@@ -486,16 +487,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// stars will be distributed in a concentric pattern
 		float angle = 0;
 		float distance = 0;
-		for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
+		int numSystems = ExerelinSetupData.getInstance().numSystems;
+		for(int i = 0; i < numSystems; i ++)
 		{
 			angle += MathUtils.getRandomNumberInRange((float)Math.PI/4, (float)Math.PI);
-			distance = distance + MathUtils.getRandomNumberInRange(250, 1250) + MathUtils.getRandomNumberInRange(250, 1250);
+			float increment = MathUtils.getRandomNumberInRange(250, 1250) + MathUtils.getRandomNumberInRange(250, 1250);
+			distance += increment * ((8f/(float)numSystems) * 0.75f + 0.25f);   // put stars closer together if there are a lot of them
 			int x = (int)(Math.sin(angle) * distance);
 			int y = (int)(Math.cos(angle) * distance);
 			starPositions.add(new int[] {x, y});
 		}
 		Collections.shuffle(starPositions);
-		
 		
 		
 		// build systems
@@ -525,6 +527,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		DiplomacyManager.initFactionRelationships();
 		
 		SectorManager.setSystemToRelayMap(systemToRelay);
+		SectorManager.setPlanetToRelayMap(planetToRelay);
 		
 		// some cleanup
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
@@ -556,6 +559,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return period;
 	}
 	
+	public float getDensity(SectorEntityToken primary)
+	{
+		if (primary instanceof PlanetAPI)
+		{
+			PlanetAPI planet = (PlanetAPI)primary;
+			if (planet.getTypeId().equals("star_dark")) return 8;
+			else if (planet.isStar()) return 1;
+		}
+		return 2;
+	}
+	
 	private SectorEntityToken makeStation(EntityData data, String factionId)
 	{
 		int angle = ExerelinUtils.getRandomInRange(1, 360);
@@ -567,7 +581,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			orbitRadius = 500;
 		else if (planet.isStar())
 			orbitRadius = (int)data.orbitDistance;
-		float orbitDays = getOrbitalPeriod(planet.getRadius(), orbitRadius + planet.getRadius(), 2);
+
+		float orbitDays = getOrbitalPeriod(planet.getRadius(), orbitRadius + planet.getRadius(), getDensity(planet));
 
 		String name = planet.getName() + " " + data.name;
 		String id = name.replace(' ','_');
@@ -590,7 +605,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 		{	
-			addMarketToEntity(newStation, data, factionId, false);
+			addMarketToEntity(newStation, data, factionId);
 		}
 		pickEntityInteractionImage(newStation, newStation.getMarket(), planet.getTypeId(), EntityType.STATION);
 		newStation.setCustomDescriptionId("orbital_station_default");
@@ -604,12 +619,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>();
 		List<String> factions = new ArrayList<>(Arrays.asList(factionIds));
 		factions.remove("player_npc");  // player NPC faction only gets homeworld (if applicable)
+		addListToPicker(factions, factionPicker);
+		boolean hqsSpawned = false;
 		
 		// before we do anything else give the "homeworld" to our faction
 		if (!ExerelinSetupData.getInstance().freeStart)
 		{
 			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-			addMarketToEntity(homeworld.entity, homeworld, alignedFactionId, true);
+			addMarketToEntity(homeworld.entity, homeworld, alignedFactionId);
 			SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
 			relay.setFaction(alignedFactionId);
 			pickEntityInteractionImage(homeworld.entity, homeworld.entity.getMarket(), homeworld.planetType, homeworld.type);
@@ -622,13 +639,18 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// add factions and markets to planets
 		for (EntityData habitable : habitablePlanets)
 		{
-			if (factionPicker.isEmpty()) addListToPicker(factions, factionPicker);
+			if (factionPicker.isEmpty()) 
+			{
+				addListToPicker(factions, factionPicker);
+				hqsSpawned = true;
+			}
 			String factionId = factionPicker.pickAndRemove();
-			addMarketToEntity(habitable.entity, habitable, factionId, habitable.isCapital);
+			if (!hqsSpawned) habitable.isHQ = true;
+			addMarketToEntity(habitable.entity, habitable, factionId);
 			
 			// assign relay
 			if (habitable.isCapital)
-			{   
+			{
 				SectorEntityToken relay = sector.getEntityById(systemToRelay.get(habitable.starSystem.getId()));
 				relay.setFaction(factionId);
 			}
@@ -641,23 +663,26 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			String factionId = "neutral";
 			if (station.primary.entity.getMarket() == null)
 			{
-			if (factionPicker.isEmpty()) addListToPicker(factions, factionPicker);
-			factionId = factionPicker.pickAndRemove();
+				if (factionPicker.isEmpty()) 
+				{
+					addListToPicker(factions, factionPicker);
+				}
+				factionId = factionPicker.pickAndRemove();
 			}
 			else
 			{
-			factionId = station.primary.entity.getFaction().getId();
+				factionId = station.primary.entity.getFaction().getId();
 			}
 			makeStation(station, factionId);
 		}
 	}
 
-	public SectorEntityToken makeStar(int index, String systemId, StarSystemAPI system, String type, float size)
+	public PlanetAPI makeStar(int index, String systemId, StarSystemAPI system, String type, float size)
 	{
 		int[] pos = (int[])starPositions.get(index);
 		int x = pos[0];
 		int y = pos[1];
-		return system.initStar(systemId, type, 500f, x, y);
+		return system.initStar(systemId, type, size, x, y);
 	}
 	
 	private float getHabitableChance(int planetNum, boolean isMoon)
@@ -684,7 +709,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		EntityData capital = null;
 		
 		// Set starSystem/light colour/background
-		SectorEntityToken star;
+		PlanetAPI star;
 	
 		int starType = 0;
 		if(ExerelinConfig.useMultipleBackgroundsAndStars)
@@ -837,7 +862,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float radius;
 			float angle = ExerelinUtils.getRandomInRange(1, 360);
 			float distance = 3000 + (distanceStepping * (planetData.planetNum)) + ExerelinUtils.getRandomInRange((distanceStepping/3)*-1, distanceStepping/3);
-			float orbitDays = getOrbitalPeriod(star.getRadius(), distance + star.getRadius(), 1);
+			float orbitDays = getOrbitalPeriod(star.getRadius(), distance + star.getRadius(), getDensity(star));
+			
 			if (isGasGiant)
 			{
 				radius = ExerelinUtils.getRandomInRange(325, 375);
@@ -960,6 +986,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (systemIndex == 0)
 		{
 			homeworld = capital;
+			homeworld.isHQ = true;
 		}
 
 		// Build asteroid belts
@@ -1116,6 +1143,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				"neutral"); // faction
 		relay.setCircularOrbit(star, (float)Math.random() * 360, 1500, getOrbitalPeriod(star.getRadius(), 1500, 1));
 		systemToRelay.put(system.getId(), system.getId() + "_relay");
+		planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
 	}
 	
 	public static class OmnifacFilter implements CollectionUtils.CollectionFilter<SectorEntityToken>
@@ -1152,6 +1180,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		String planetType = "";
 		boolean habitable = false;
 		boolean isCapital = false;
+		boolean isHQ = false;
 		EntityType type = EntityType.PLANET;
 		StarSystemAPI starSystem;
 		EntityData primary;
@@ -1161,14 +1190,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		public EntityData(StarSystemAPI starSystem) 
 		{
-		this.starSystem = starSystem;
+			this.starSystem = starSystem;
 		}	  
 		public EntityData(StarSystemAPI starSystem, int planetNum) 
 		{
-		this.starSystem = starSystem;
-		this.planetNum = planetNum;
+			this.starSystem = starSystem;
+			this.planetNum = planetNum;
 		}	  
-		
 	}
 	
 	// ALGO

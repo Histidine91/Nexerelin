@@ -48,6 +48,8 @@ exerelinNGCNumSystems4:Four
 exerelinNGCNumSystems6:Six
 exerelinNGCNumSystems8:Eight
 exerelinNGCNumSystems10:Ten
+exerelinNGCNumSystems12:Twelve
+exerelinNGCNumSystems16:Sixteen
 exerelinNGCOptionsBack:Back",
 ExerelinNGCNumSystems1,NewGameOptionSelected,$option==exerelinNGCNumSystems1,"NGCSetNumSystems 1
 AddText ""Set number of star systems to 1"" textFriendColor
@@ -67,6 +69,13 @@ FireAll ExerelinNGCOptions",,,
 ExerelinNGCNumSystems10,NewGameOptionSelected,$option==exerelinNGCNumSystems10,"NGCSetNumSystems 10
 AddText ""Set number of star systems to 10"" textFriendColor
 FireAll ExerelinNGCOptions",,,
+ExerelinNGCNumSystems12,NewGameOptionSelected,$option==exerelinNGCNumSystems12,"NGCSetNumSystems 12
+AddText ""Set number of star systems to 12"" textFriendColor
+FireAll ExerelinNGCOptions",,,
+ExerelinNGCNumSystems16,NewGameOptionSelected,$option==exerelinNGCNumSystems16,"NGCSetNumSystems 16
+AddText ""Set number of star systems to 16"" textFriendColor
+FireAll ExerelinNGCOptions",,,
+,,,,,,
 ,,,,,,
 ExerelinNGCMaxPlanetsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxPlanets,,,"exerelinNGCMaxPlanets2:Two
 exerelinNGCMaxPlanets3:Three
@@ -128,6 +137,12 @@ ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"$om
 $randomOmnifactoryLocation",,,exerelinNGCUnsetOmnifactoryRandomLocation:Disable random location for Omnifactory,
 ExerelinNGCListOptionEnableRandomStartRelationships,ExerelinNGCOtherOptions,!$randomStartRelationships,,,exerelinNGCEnableRandomStartRelationships:Enable random faction relationships at start,
 ExerelinNGCListOptionDisableRandomStartRelationships,ExerelinNGCOtherOptions,$randomStartRelationships,,,exerelinNGCDisableRandomStartRelationships:Disable random faction relationships at start,
+ExerelinNGCListOptionEnableRespawnFactions,ExerelinNGCOtherOptions,!$respawnFactions,,,exerelinNGCEnableRespawnFactions:Enable faction respawning,
+ExerelinNGCListOptionDisableRespawnFactions,ExerelinNGCOtherOptions,$respawnFactions,,,exerelinNGCDisableRespawnFactions:Disable faction respawning,
+ExerelinNGCListOptionEnableRespawnAllFactions,ExerelinNGCOtherOptions,"$respawnFactions
+$onlyRespawnStartingFactions",,,exerelinNGCEnableRespawnAllFactions:Enable respawning of factions not present at start,
+ExerelinNGCListOptionDisableRespawnAllFactions,ExerelinNGCOtherOptions,"$respawnFactions
+!$onlyRespawnStartingFactions",,,exerelinNGCDisableRespawnAllFactions:Disable respawning of factions not present at start,
 ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,,,10:exerelinNGCOptionsBack:Back,
 ,,,,,,
 ExerelinNGCEnableOmnifactory,NewGameOptionSelected,$option==exerelinNGCEnableOmnifactory,"NGCSetOmnifacEnabled true
@@ -141,6 +156,14 @@ FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCEnableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartRelationships,"NGCSetRandomStartRelationships true
 FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCDisableRandomStartRelationships,"NGCSetRandomStartRelationships false
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCEnableRespawnFactions,NewGameOptionSelected,$option==exerelinNGCEnableRespawnFactions,"NGCSetRespawnFactions true
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCDisableRespawnFactions,NewGameOptionSelected,$option==exerelinNGCDisableRespawnFactions,"NGCSetRespawnFactions false
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCEnableRespawnAllFactions,NewGameOptionSelected,$option==exerelinNGCEnableRespawnAllFactions,"NGCSetRespawnAllFactions true
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCDisableRespawnAllFactions,NewGameOptionSelected,$option==exerelinNGCDisableRespawnAllFactions,"NGCSetRespawnAllFactions false
 FireAll ExerelinNGCOtherOptions",,,
 ,,,,,,
 ,,,,,,

@@ -17,7 +17,7 @@ public class FactionRespawnedEvent extends BaseEventPlugin {
 	private static final int DAYS_TO_KEEP = 90;
 	
 	float age;
-	boolean originalFaction;
+	boolean existedBefore;
 	private Map<String, Object> params;
 		
 	public boolean done;
@@ -28,13 +28,13 @@ public class FactionRespawnedEvent extends BaseEventPlugin {
 		params = new HashMap<>();
 		done = false;
 		age = 0;
-		originalFaction = false;
+		existedBefore = false;
 	}
 	
 	@Override
 	public void setParam(Object param) {
 		params = (HashMap)param;
-		originalFaction = (boolean)params.get("originalFaction");
+		existedBefore = (boolean)params.get("existedBefore");
 	}
 		
 	@Override
@@ -57,7 +57,7 @@ public class FactionRespawnedEvent extends BaseEventPlugin {
 	{
 		MessagePriority priority = MessagePriority.SECTOR;
 		String stage = "new";
-		if (originalFaction) stage = "respawned";
+		if (existedBefore) stage = "respawned";
 		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
 	}
 	

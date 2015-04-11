@@ -17,12 +17,17 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.world.InvasionFleetManager;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,11 +47,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     private List<String> factionIdsAtStart;
     private List<String> liveFactionIds;
+    private List<String> historicFactionIds;
     private Map<String, String> systemToRelayMap;
-    private boolean victoryHasOccured;
+    private Map<String, String> planetToRelayMap;
+    private boolean victoryHasOccured = false;
+    private boolean respawnFactions = false;
+    private boolean onlyRespawnStartingFactions = false;
     
     private int numSlavesRecentlySold = 0;
     private MarketAPI marketLastSoldSlaves = null;
+    
+    private float respawnInterval = 60f;
+    private final IntervalUtil respawnIntervalUtil;
     
     private boolean wantExpelPlayerFromFaction = false;
 
@@ -56,6 +68,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         String[] temp = ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector());
         liveFactionIds = new ArrayList<>();
         factionIdsAtStart = new ArrayList<>();
+        historicFactionIds = new ArrayList<>();
         
         for (String factionId:temp)
         {
@@ -63,9 +76,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             {
                 liveFactionIds.add(factionId);
                 factionIdsAtStart.add(factionId);
+                historicFactionIds.add(factionId);
             }   
         }
-        victoryHasOccured = false;
+        respawnFactions = ExerelinSetupData.getInstance().respawnFactions;
+        onlyRespawnStartingFactions = ExerelinSetupData.getInstance().onlyRespawnStartingFactions;
+        respawnInterval = ExerelinConfig.factionRespawnInterval;
+        respawnIntervalUtil = new IntervalUtil(respawnInterval * 0.75F, respawnInterval * 1.25F);
     }
    
     @Override
@@ -80,6 +97,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             wantExpelPlayerFromFaction = false;
             expelPlayerFromFaction();
+        }
+        
+        float days = Global.getSector().getClock().convertToDays(amount);
+        respawnIntervalUtil.advance(days);
+        if (respawnIntervalUtil.intervalElapsed()) {
+            handleFactionRespawn();
         }
     }
     
@@ -160,6 +183,64 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(marketLastSoldSlaves), "exerelin_slaves_sold", params);
     }
     
+    public void handleFactionRespawn()
+    {
+        if (!respawnFactions) return;
+        
+        SectorAPI sector = Global.getSector();
+        WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();
+        WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
+        WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
+        List<String> factionIds = factionIdsAtStart;
+        if (!onlyRespawnStartingFactions)
+        {
+            factionIds = new ArrayList<>(Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(sector)));
+        }
+        
+        for(String factionId : factionIds)
+        {
+            if (factionId.equals("player_npc")) continue;
+            if (!liveFactionIds.contains(factionId)) factionPicker.add(Global.getSector().getFaction(factionId));
+        }
+        
+        FactionAPI respawnFaction = factionPicker.pick();
+        if (respawnFaction == null) return;
+        
+        boolean allowPirates = ExerelinConfig.allowPirateInvasions;
+        List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+        for (MarketAPI market : markets) 
+        {
+            FactionAPI marketFaction = market.getFaction();
+            if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
+                continue;
+            int size = market.getSize();
+            if (size < 4) continue;
+            
+            if (market.hasCondition("headquarters")) size *= 0.1f;
+            targetPicker.add(market, size);
+        }
+        MarketAPI targetMarket = (MarketAPI)targetPicker.pick();
+        if (targetMarket == null) {
+            return;
+        }
+        
+        for (MarketAPI market : markets) 
+        {
+            FactionAPI marketFaction = market.getFaction();
+            float weight = 100;
+            if (marketFaction.isHostileTo(respawnFaction)) weight = 0.0001f;
+            sourcePicker.add(market, weight);
+        }
+        
+        MarketAPI sourceMarket = (MarketAPI)sourcePicker.pick();
+        if (sourceMarket == null) {
+            return;
+        }
+        
+        log.info("Respawn fleet created for " + respawnFaction.getDisplayName() + " in " + targetMarket.getPrimaryEntity().getContainingLocation());
+        InvasionFleetManager.spawnRespawnFleet(respawnFaction, sourceMarket, targetMarket);
+    }
+    
     public static void factionEliminated(FactionAPI victor, FactionAPI defeated, MarketAPI market)
     {
         if (defeated.getId().equals("independent"))
@@ -193,12 +274,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static void factionRespawned(FactionAPI faction, MarketAPI market)
     {
         Map<String, Object> params = new HashMap<>();
-        boolean originalFaction = false;
+        boolean existedBefore = false;
         if (sectorManager != null)
-            originalFaction = sectorManager.factionIdsAtStart.contains(faction.getId());
-        params.put("originalFaction", originalFaction);
+        {
+            existedBefore = sectorManager.historicFactionIds.contains(faction.getId());
+        }
+        params.put("existedBefore", existedBefore);
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_respawned", params);
         SectorManager.addLiveFactionId(faction.getId());
+        if (sectorManager != null && !existedBefore)
+        {
+            sectorManager.historicFactionIds.add(faction.getId());
+        }
     }
     
     public static void checkForVictory()
@@ -298,12 +385,22 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             factionRespawned(newOwner, market);
         }
         
-        // FIXME: probably needs to be more robust (what if the star system has both a HQ and regional capital?
-        if (market.hasCondition("regional_capital") || market.hasCondition("headquarters"))
+        // flip relay
+        if (sectorManager != null)
         {
-            StarSystemAPI loc = market.getStarSystem();
-            if (sectorManager != null)
+            boolean flipRelay = false;
+            if (sectorManager.planetToRelayMap != null)   // reverse compatibility; may not have been set
             {
+                flipRelay = sectorManager.planetToRelayMap.containsKey(market.getPrimaryEntity().getId());
+            }
+            else
+            {
+                flipRelay = market.hasCondition("regional_capital") || market.hasCondition("headquarters");
+            }
+            
+            if (flipRelay)
+            {
+                StarSystemAPI loc = market.getStarSystem();
                 String relayId = sectorManager.systemToRelayMap.get(loc.getId());
                 if (relayId != null)
                 {
@@ -351,6 +448,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return;
         sectorManager.systemToRelayMap = map;
+    }
+    
+    public static void setPlanetToRelayMap(Map<String, String> map)
+    {
+        if (sectorManager == null) return;
+        sectorManager.planetToRelayMap = map;
     }
     
     private static void expelPlayerFromFaction()

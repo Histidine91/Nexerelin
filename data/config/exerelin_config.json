@@ -30,7 +30,10 @@
     "crewLootMult": 0.02,   # loot about this many green crew per enemy FP destroyed
     "allowPirateInvasions": false,
     "invasionFleetCostPerMarine": 250,  # used for player-requested invasion fleets
-
+    
+    "invasionGracePeriod": 30,  # factions won't launch invasion fleets at each other for this long
+    "factionRespawnInterval": 30,
+    
     "validMiningShips":["mining_drone", "zorg_sphere", "pn_mlmv"], # String array
 
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "luddic_church", "pirates", "player_npc"], # String array

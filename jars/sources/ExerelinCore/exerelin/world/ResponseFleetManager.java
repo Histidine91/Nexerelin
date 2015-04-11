@@ -66,6 +66,12 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             log.info(origin.getName() + " has insufficient FP for response fleet: " + maxFP);
             return;
         }
+        int enemyFP = ((CampaignFleetAPI)target).getFleetPoints();
+        if (enemyFP > maxFP * 2)
+        {
+            log.info(target.getName() + " is more than twice our size: " + enemyFP);
+            return;
+        }
         
         float qf = origin.getShipQualityFactor();
         
@@ -103,8 +109,8 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         if (market.hasCondition("military_base")) size += baseSize * 0.1;
         if (market.hasCondition("orbital_station")) size += baseSize * 0.05;
         if (market.hasCondition("spaceport")) size += baseSize * 0.05;
-        if (market.hasCondition("regional_capital")) size += baseSize * 0.05;
-        if (market.hasCondition("headquarters")) size += baseSize * 0.1;
+        if (market.hasCondition("regional_capital")) size += baseSize * 0.1;
+        if (market.hasCondition("headquarters")) size += baseSize * 0.2;
         
         size = size + Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
         
@@ -120,8 +126,12 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
         for(MarketAPI market:markets)
         {
-            float increment = market.getSize() * (0.5f + (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR));
-            increment *= RESERVE_INCREMENT_PER_DAY * days;
+            float baseIncrement = market.getSize() * (0.5f + (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR));
+            float increment = baseIncrement;
+            //if (market.hasCondition("regional_capital")) increment += baseIncrement * 0.1f;
+            if (market.hasCondition("headquarters")) increment += baseIncrement * 0.25f;
+            
+            increment = increment * RESERVE_INCREMENT_PER_DAY * days;
             float newValue = Math.min(reserves.get(market.getId()) + increment, getMaxReserveSize(market, false));
             
             reserves.put(market.getId(), newValue);

@@ -25,15 +25,15 @@ public class InvasionFleetAI implements EveryFrameScript
 {
     public static Logger log = Global.getLogger(InvasionFleetAI.class);
     
-    private static final float INVADE_ORBIT_TIME = 3f;
-    private static final float INVADE_RESPONSE_DISTANCE = 1500f;
+    public static final float INVADE_ORBIT_TIME = 2.5f;
+    public static final float INVADE_RESPONSE_DISTANCE = 1500f;
     
-    private final InvasionFleetManager.InvasionFleetData data;
-    private float daysTotal = 0.0F;
-    private final CampaignFleetAPI fleet;
-    private boolean orderedReturn = false;
-    private boolean responseFleetRequested = false;
-    private EveryFrameScript broadcastScript;
+    protected final InvasionFleetManager.InvasionFleetData data;
+    protected float daysTotal = 0.0F;
+    protected final CampaignFleetAPI fleet;
+    protected boolean orderedReturn = false;
+    protected boolean responseFleetRequested = false;
+    //protected EveryFrameScript broadcastScript;
   
     public InvasionFleetAI(CampaignFleetAPI fleet, InvasionFleetManager.InvasionFleetData data)
     {
@@ -43,51 +43,69 @@ public class InvasionFleetAI implements EveryFrameScript
     }
     
     // TODO fix + test
-    public void broadcastHostile()
+    protected void broadcastHostile()
     {
-            broadcastScript = new EveryFrameScript() {
-                    private float timeElapsed = 0;
-                    private final IntervalUtil tracker = new IntervalUtil(0.05f, 0.15f);
-                    private final CampaignFleetAPI ourFleet = data.fleet;
-                    private boolean done = false;
-                    public boolean runWhilePaused() {
-                            return false;
-                    }
-                    public boolean isDone() {
-                            return done;
-                    }
-                    public void advance(float amount) {
-                            CampaignClockAPI clock = Global.getSector().getClock();
+        /*
+        broadcastScript = new EveryFrameScript() {
+            private float timeElapsed = 0;
+            private final IntervalUtil tracker = new IntervalUtil(0.05f, 0.15f);
+            private final CampaignFleetAPI ourFleet = data.fleet;
+            private boolean done = false;
+            public boolean runWhilePaused() {
+                return false;
+            }
+            public boolean isDone() {
+                return done;
+            }
+            public void advance(float amount) {
+                CampaignClockAPI clock = Global.getSector().getClock();
 
-                            float days = clock.convertToDays(amount);
-                            timeElapsed = timeElapsed + days;
+                float days = clock.convertToDays(amount);
+                timeElapsed = timeElapsed + days;
 
-                            if (tracker.intervalElapsed() && !done) {
-                                    if (timeElapsed > INVADE_ORBIT_TIME+ 1f)
-                                    {
-                                            done = true;
-                                            return;
-                                    }
-                                    BroadcastPlayerAction.broadcast(ActionType.HOSTILE, 750, "$exerelinRespondingToInvasion", data.fleet, data.target);
-                                    List<CampaignFleetAPI> fleets = ourFleet.getContainingLocation().getFleets();
-                                    for (CampaignFleetAPI fleet : fleets) {
-                                            if (fleet == ourFleet) continue;
-                                            if (fleet.getAI() instanceof CampaignFleetAIAPI 
-                                                    && fleet.getFaction().isHostileTo(ourFleet.getFaction())) {
-                                                    float dist = Misc.getDistance(ourFleet.getLocation(), fleet.getLocation());
-                                                    if (dist <= INVADE_RESPONSE_DISTANCE) {
-                                                            CampaignFleetAIAPI ai = (CampaignFleetAIAPI) fleet.getAI();
-                                                            ai.addAssignmentAtStart(FleetAssignment.INTERCEPT, ourFleet, 3f, "intercepting " + ourFleet.getName(), null);
-                                                    }
-                                            }
-                                    }
+                if (tracker.intervalElapsed() && !done) {
+                    if (timeElapsed > INVADE_ORBIT_TIME+ 1f)
+                    {
+                        done = true;
+                        return;
+                    }
+                    BroadcastPlayerAction.broadcast(ActionType.HOSTILE, 750, "$exerelinRespondingToInvasion", data.fleet, data.target);
+                    List<CampaignFleetAPI> fleets = ourFleet.getContainingLocation().getFleets();
+                    for (CampaignFleetAPI fleet : fleets) {
+                        if (fleet == ourFleet) continue;
+                        if (fleet.getAI() instanceof CampaignFleetAIAPI 
+                            && fleet.getFaction().isHostileTo(ourFleet.getFaction())) {
+                            float dist = Misc.getDistance(ourFleet.getLocation(), fleet.getLocation());
+                            if (dist <= INVADE_RESPONSE_DISTANCE) {
+                                CampaignFleetAIAPI ai = (CampaignFleetAIAPI) fleet.getAI();
+                                ai.addAssignmentAtStart(FleetAssignment.INTERCEPT, ourFleet, 3f, "intercepting " + ourFleet.getName(), null);
                             }
+                        }
                     }
-            };
+                }
+            }
+        };
+        data.fleet.addScript(broadcastScript);
+        */
+        List<CampaignFleetAPI> fleets = fleet.getContainingLocation().getFleets();
+        for (CampaignFleetAPI otherFleet : fleets) {
+            if (otherFleet == fleet) continue;
+            if (otherFleet.getAI() instanceof CampaignFleetAIAPI && otherFleet.getFaction().isHostileTo(otherFleet.getFaction())) 
+            {
+                int otherFP = otherFleet.getFleetPoints();
+                if (otherFP < fleet.getFleetPoints()/2) continue;
 
-            data.fleet.addScript(broadcastScript);
+                float dist = Misc.getDistance(otherFleet.getLocation(), fleet.getLocation());
+                if (dist <= INVADE_RESPONSE_DISTANCE) {
+                    CampaignFleetAIAPI ai = (CampaignFleetAIAPI) fleet.getAI();
+                    ai.addAssignmentAtStart(FleetAssignment.INTERCEPT, fleet, 2f, "intercepting " + fleet.getName(), null);
+                }
+            }
+        }
     }
   
+    float interval = 0;
+    
     @Override
     public void advance(float amount)
     {
@@ -98,6 +116,11 @@ public class InvasionFleetAI implements EveryFrameScript
             giveStandDownOrders();
             return;
         }
+        
+        interval += days;
+        if (interval > 0.25f) interval -= 0.25f;
+        else return;
+        
         FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
         if (assignment != null)
         {
@@ -106,12 +129,12 @@ public class InvasionFleetAI implements EveryFrameScript
                 giveStandDownOrders();
             }
             int marines = this.fleet.getCargo().getMarines();
-            if (marines < data.marineCount * 0.6f) {
-                // we lost over 40% of our marines, no more invading
+            if (marines < data.marineCount * 0.4f) {
+                // we lost over 60% of our marines, no more invading
                 giveStandDownOrders();
             }
             if(!data.target.getFaction().isHostileTo(fleet.getFaction()))
-                    giveStandDownOrders();  // market is no longer hostile; abort invasion
+                giveStandDownOrders();  // market is no longer hostile; abort invasion
             
             if (orderedReturn)
                 return;
@@ -123,8 +146,8 @@ public class InvasionFleetAI implements EveryFrameScript
                 if (!responseFleetRequested)
                 {
                     ResponseFleetManager.requestResponseFleet(data.targetMarket, data.fleet);
-                    //broadcastHostile();   // TODO
-                    responseFleetRequested = true;
+                    broadcastHostile();
+                    //responseFleetRequested = true;
                 }
             }
             // invade
@@ -160,7 +183,7 @@ public class InvasionFleetAI implements EveryFrameScript
             }
             this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), INVADE_ORBIT_TIME, "beginning invasion of " + market.getName());
             // once it reaches the "hold" part, that's our cue to actually run the invasion code
-            this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 1.0F, "invading " + market.getName());
+            this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 2.0F, "invading " + market.getName());
 
         }
     }
@@ -176,8 +199,8 @@ public class InvasionFleetAI implements EveryFrameScript
     {
         return false;
     }
-  
-    private float getDaysToOrbit()
+    
+    protected float getDaysToOrbit()
     {
         float daysToOrbit = 0.0F;
         if (this.fleet.getFleetPoints() <= 50.0F) {
@@ -193,14 +216,14 @@ public class InvasionFleetAI implements EveryFrameScript
         return daysToOrbit;
     }
   
-    private void giveInitialAssignment()
+    protected void giveInitialAssignment()
     {
         if (data.noWait) return;
         float daysToOrbit = getDaysToOrbit();
         this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, "preparing for invasion at " + this.data.source.getName());
     }
   
-    private void giveStandDownOrders()
+    protected void giveStandDownOrders()
     {
         if (!this.orderedReturn)
         {

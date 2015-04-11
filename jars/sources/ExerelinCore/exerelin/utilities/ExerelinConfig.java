@@ -57,6 +57,10 @@ public class ExerelinConfig
 
     public static String[] builtInFactions = new String[]{};
     public static String[] supportedModFactions = new String[]{};
+    
+    // Misc
+    public static float invasionGracePeriod = 30f;
+    public static float factionRespawnInterval = 60f;
 
     public static void loadSettings()
     {
@@ -79,31 +83,32 @@ public class ExerelinConfig
             fleetCostResource = settings.optString("fleetCostResource");
             miningAmountPerDayPerMiner = settings.optInt("miningAmountPerDayPerMiner");
 
-            playerBaseSalary = (float)settings.optDouble("playerBaseSalary");
-            playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel");
-            playerInsuranceMult = (float)settings.optDouble("playerInsuranceMult");
-            fleetBonusFpPerPlayerLevel = (float)settings.optDouble("fleetBonusFpPerPlayerLevel");
+            playerBaseSalary = (float)settings.optDouble("playerBaseSalary",  playerBaseSalary);
+            playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel", playerSalaryIncrementPerLevel);
+            playerInsuranceMult = (float)settings.optDouble("playerInsuranceMult", playerInsuranceMult);
+            fleetBonusFpPerPlayerLevel = (float)settings.optDouble("fleetBonusFpPerPlayerLevel", fleetBonusFpPerPlayerLevel);
             
-            prisonerRepatriateRepValue = (float)settings.optDouble("prisonerRepatriateRepValue");
-            prisonerBaseRansomValue = (float)settings.optDouble("prisonerBaseRansomValue");
-            prisonerRansomValueIncrementPerLevel = (float)settings.optDouble("prisonerRansomValueIncrementPerLevel");
-            prisonerBaseSlaveValue = (float)settings.optDouble("prisonerBaseSlaveValue");
-            prisonerSlaveValueIncrementPerLevel = (float)settings.optDouble("prisonerSlaveValueIncrementPerLevel");
-            prisonerLootChancePer10Fp  = (float)settings.optDouble("prisonerLootChancePer10Fp");
-            prisonerSlaveRepValue = (float)settings.optDouble("prisonerSlaveRepValue");
+            prisonerRepatriateRepValue = (float)settings.optDouble("prisonerRepatriateRepValue", prisonerRepatriateRepValue);
+            prisonerBaseRansomValue = (float)settings.optDouble("prisonerBaseRansomValue", prisonerBaseRansomValue);
+            prisonerRansomValueIncrementPerLevel = (float)settings.optDouble("prisonerRansomValueIncrementPerLevel", prisonerRansomValueIncrementPerLevel);
+            prisonerBaseSlaveValue = (float)settings.optDouble("prisonerBaseSlaveValue", prisonerBaseSlaveValue);
+            prisonerSlaveValueIncrementPerLevel = (float)settings.optDouble("prisonerSlaveValueIncrementPerLevel", prisonerSlaveValueIncrementPerLevel);
+            prisonerLootChancePer10Fp  = (float)settings.optDouble("prisonerLootChancePer10Fp", prisonerLootChancePer10Fp);
+            prisonerSlaveRepValue = (float)settings.optDouble("prisonerSlaveRepValue", prisonerSlaveRepValue);
 
-            crewLootMult = (float)settings.optDouble("crewLootMult");
+            crewLootMult = (float)settings.optDouble("crewLootMult", crewLootMult);
             allowPirateInvasions = settings.optBoolean("allowPirateInvasions", false);
-            invasionFleetCostPerMarine = (float)settings.optDouble("invasionFleetCostPerMarine");
+            invasionFleetCostPerMarine = (float)settings.optDouble("invasionFleetCostPerMarine", invasionFleetCostPerMarine);
             
-            validMiningShips = JSONArrayToStringArray(settings.getJSONArray("validMiningShips"));
-
+            invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
+            factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
+            
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             supportedModFactions = JSONArrayToStringArray(settings.getJSONArray("supportedModFactions"));
         }
         catch(Exception e)
         {
-            System.out.println("EXERELIN ERROR: Unable to load settings: " + e.getMessage());
+            Global.getLogger(ExerelinConfig.class).error("Unable to load settings: " + e.getMessage());
         }
 
         // Reset and load faction configuration data
@@ -126,7 +131,7 @@ public class ExerelinConfig
                 return exerelinFactionConfig;
         }
 
-        System.out.println("EXERELIN ERROR: Faction config not found: " + factionId);
+        Global.getLogger(ExerelinConfig.class).warn("Faction config not found: " + factionId);
         return null;
     }
 

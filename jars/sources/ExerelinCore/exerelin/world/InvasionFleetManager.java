@@ -18,7 +18,6 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
-import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -40,21 +39,24 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     private static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
     private static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
     private static final float DEFENDER_STRENGTH_MARINE_MULT = 1.15f;
+    public static final float RESPAWN_FLEET_SPAWN_DISTANCE = 18000f;
     
     public static Logger log = Global.getLogger(InvasionFleetManager.class);
     
     private final List<InvasionFleetData> activeFleets = new LinkedList();
-    private int maxFleets;
+    private final int maxFleets = 20;
     private final IntervalUtil tracker;
+    
+    private float gracePeriod = ExerelinConfig.invasionGracePeriod;
+    private float daysElapsed = 0;
   
     public InvasionFleetManager()
     {
         super(true);
     
-        float interval = Global.getSettings().getFloat("averagePatrolSpawnInterval");
+        float interval = 8; //Global.getSettings().getFloat("averagePatrolSpawnInterval");
         //interval = 2;   // debug
         this.tracker = new IntervalUtil(interval * 0.75F, interval * 1.25F);
-        this.maxFleets = 20;
     }
     
     public static float calculateMaxFpForFleet(MarketAPI originMarket, MarketAPI targetMarket)
@@ -99,6 +101,57 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         return (maxFP * (MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f)));
     }
     
+    public static InvasionFleetData spawnRespawnFleet(FactionAPI invader, MarketAPI originMarket, MarketAPI targetMarket)
+    {
+        float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket, 1f, false);
+        float responseFleetSize = ResponseFleetManager.getMaxReserveSize(targetMarket, false);
+        float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + 8 * (2 + originMarket.getSize()));
+        float maxFP = maxFPbase + Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
+        maxFP *= MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f);
+        maxFP *= 1.25;
+        
+        String name = "Invasion Fleet";
+        ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(invader.getId());
+        if (factionConfig != null)
+        {
+            name = factionConfig.invasionFleetName;
+        }
+        if (maxFP < 50) name = "Small " + name;
+        else if (maxFP > 150) name = "Grand " + name;
+        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(invader.getId(), name, 1, (int)maxFP);
+        
+        for (int i=0; i<defenderStrength; i=i+100)
+        {
+            invader.pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, 1, fleet);
+        }
+        int marinesToSend = (int)(defenderStrength * 1.4);
+        fleet.getCargo().addMarines(marinesToSend);
+        
+        fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinInvasionFleet");
+        fleet.getMemoryWithoutUpdate().set("$maxFP", maxFP);
+        fleet.getMemoryWithoutUpdate().set("$originMarket", originMarket);
+        
+        SectorEntityToken entity = originMarket.getPrimaryEntity();
+        entity.getContainingLocation().addEntity(fleet);
+        float distance = RESPAWN_FLEET_SPAWN_DISTANCE;
+        float angle = MathUtils.getRandomNumberInRange(0, 359);
+        fleet.setLocation((float)Math.cos(angle) * distance, (float)Math.sin(angle) * distance);
+        
+        InvasionFleetData data = new InvasionFleetData(fleet);
+        data.startingFleetPoints = fleet.getFleetPoints();
+        data.sourceMarket = originMarket;
+        data.source = originMarket.getPrimaryEntity();
+        data.targetMarket = targetMarket;
+        data.target = targetMarket.getPrimaryEntity();
+        data.marineCount = marinesToSend;
+        data.noWait = true;
+        
+        InvasionFleetAI ai = new RespawnFleetAI(fleet, data);
+        fleet.addScript(ai);
+        log.info("\tSpawned respawn fleet " + fleet.getNameWithFaction() + " of size " + maxFP);
+        return data;
+    }
+    
     public static InvasionFleetData spawnSupportFleet(FactionAPI invader, MarketAPI originMarket, MarketAPI targetMarket)
     {
         int maxFP = (int)(calculateMaxFpForFleet(originMarket, targetMarket) * 0.66f);
@@ -112,7 +165,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         }
         if (maxFP < 50) name = "Small " + name;
         else if (maxFP > 150) name = "Large " + name;
-        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(originMarket.getFactionId(), name, qf, maxFP);
+        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(invader.getId(), name, qf, maxFP);
         
         fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinInvasionSupportFleet");
         fleet.getMemoryWithoutUpdate().set("$maxFP", maxFP);
@@ -136,7 +189,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         log.info("\tSpawned invasion support fleet " + fleet.getNameWithFaction() + " of size " + maxFP);
         return data;
     }
-  
+    
     public static InvasionFleetData spawnFleet(FactionAPI invader, MarketAPI originMarket, MarketAPI targetMarket, float marineMult, boolean noWait)
     {
         float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket, 0.5f, false);
@@ -152,7 +205,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         }
         if (maxFP < 50) name = "Small " + name;
         else if (maxFP > 150) name = "Grand " + name;
-        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(originMarket.getFactionId(), name, qf, maxFP);
+        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(invader.getId(), name, qf, maxFP);
         
         for (int i=0; i<defenderStrength; i=i+100)
         {
@@ -303,6 +356,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     {
         float days = Global.getSector().getClock().convertToDays(amount);
     
+        if (daysElapsed < gracePeriod)
+        {
+            daysElapsed += days;
+            return;
+        }
+        
         this.tracker.advance(days);
         if (!this.tracker.intervalElapsed()) {
             return;

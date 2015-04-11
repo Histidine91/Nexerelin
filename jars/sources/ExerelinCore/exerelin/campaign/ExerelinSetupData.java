@@ -36,7 +36,7 @@ public final class ExerelinSetupData
     // Game defaults
     public Boolean playerOwnedStationFreeTransfer = false;
     public Boolean confirmedFreeTransfer = false;
-    public boolean respawnFactions = true;
+    public boolean respawnFactions = false;
     public boolean onlyRespawnStartingFactions = false;
     public int respawnDelay = 60;
     public int numStartFactions = 3;
