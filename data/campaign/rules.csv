@@ -135,6 +135,8 @@ ExerelinNGCListOptionSetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"$omni
 !$randomOmnifactoryLocation",,,exerelinNGCSetOmnifactoryRandomLocation:Enable random location for Omnifactory,
 ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"$omniFacPresent
 $randomOmnifactoryLocation",,,exerelinNGCUnsetOmnifactoryRandomLocation:Disable random location for Omnifactory,
+#ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCOtherOptions,!$prismMarketPresent,,,exerelinNGCEnablePrismMarket:Enable Prism Freeport,
+#ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCOtherOptions,$prismMarketPresent,,,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
 ExerelinNGCListOptionEnableRandomStartRelationships,ExerelinNGCOtherOptions,!$randomStartRelationships,,,exerelinNGCEnableRandomStartRelationships:Enable random faction relationships at start,
 ExerelinNGCListOptionDisableRandomStartRelationships,ExerelinNGCOtherOptions,$randomStartRelationships,,,exerelinNGCDisableRandomStartRelationships:Disable random faction relationships at start,
 ExerelinNGCListOptionEnableRespawnFactions,ExerelinNGCOtherOptions,!$respawnFactions,,,exerelinNGCEnableRespawnFactions:Enable faction respawning,
@@ -148,6 +150,10 @@ ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,,,10:exerelinNGCOptionsBack
 ExerelinNGCEnableOmnifactory,NewGameOptionSelected,$option==exerelinNGCEnableOmnifactory,"NGCSetOmnifacEnabled true
 FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisableOmnifactory,NewGameOptionSelected,$option==exerelinNGCDisableOmnifactory,"NGCSetOmnifacEnabled false
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCEnablePrismMarket,NewGameOptionSelected,$option==exerelinNGCEnablePrismMarket,"NGCSetPrismMarketEnabled true
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCDisablePrismMarket,NewGameOptionSelected,$option==exerelinNGCDisablePrismMarket,"NGCSetPrismMarketEnabled false
 FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCSetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCSetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation true
 FireAll ExerelinNGCOtherOptions",,,

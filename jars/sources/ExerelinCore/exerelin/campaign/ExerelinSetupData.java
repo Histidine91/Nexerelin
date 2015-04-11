@@ -44,6 +44,7 @@ public final class ExerelinSetupData
     public boolean randomStartRelationships = false;
     public boolean omnifactoryPresent = false;
     public boolean randomOmnifactoryLocation = false;
+    public boolean prismMarketPresent = false;
     public boolean isSectorPopulated = false;
     public boolean isSectorPartiallyPopulated = false;
     public boolean freeStart = false;

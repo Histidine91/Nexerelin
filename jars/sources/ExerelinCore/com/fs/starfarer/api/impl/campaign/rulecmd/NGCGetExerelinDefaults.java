@@ -23,8 +23,9 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$randomStartRelationships", setupData.randomStartRelationships, 0);
 		map.set("$omniFacPresent", setupData.omnifactoryPresent, 0);
 		map.set("$randomOmnifactoryLocation", setupData.randomOmnifactoryLocation, 0);
-                map.set("$respawnFactions", setupData.respawnFactions, 0);
-                map.set("$onlyRespawnStartingFactions", setupData.onlyRespawnStartingFactions, 0);
+		map.set("$primsMarketPreset", setupData.prismMarketPresent, 0);
+		map.set("$respawnFactions", setupData.respawnFactions, 0);
+		map.set("$onlyRespawnStartingFactions", setupData.onlyRespawnStartingFactions, 0);
 		return true;
 	}
 }

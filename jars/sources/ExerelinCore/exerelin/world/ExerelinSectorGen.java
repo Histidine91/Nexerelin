@@ -291,6 +291,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (marketSize < 5) marketSize = 5;
 			newMarket.addCondition("regional_capital");
 		}
+		if (data.forceMarketSize != -1) marketSize = data.forceMarketSize;
 		newMarket.setSize(marketSize);
 		newMarket.addCondition("population_" + marketSize);
 		
@@ -397,6 +398,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		Global.getSector().getEconomy().addMarket(newMarket);
 		entity.setFaction(owningFactionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
 		
+		data.market = newMarket;
 		return newMarket;
 	}
 		
@@ -450,9 +452,58 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		MarketAPI market = omnifac.getMarket();
 		market.setFactionId("neutral");
 		List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
-		for (SubmarketAPI submarket : submarkets) {
-			submarket.setFaction(Global.getSector().getFaction("neutral"));
+	}
+	
+	public void addPrismMarket()
+	{
+		if (!ExerelinSetupData.getInstance().prismMarketPresent) return;
+		
+		String[] images = stationImages.get("default");
+		String image = images[ExerelinUtils.getRandomInRange(0, images.length - 1)];
+		
+		SectorEntityToken prismEntity;
+		
+		if (ExerelinSetupData.getInstance().numSystems == 1)
+		{
+			SectorEntityToken toOrbit = homeworld.primary.entity;
+			float radius = toOrbit.getRadius();
+			float orbitDistance = radius + 150;
+			if (toOrbit instanceof PlanetAPI)
+			{
+				PlanetAPI planet = (PlanetAPI)toOrbit;
+				if (planet.isStar()) 
+				{
+					orbitDistance = radius + ExerelinUtils.getRandomInRange(2000, 2500);
+				}
+			}
+			prismEntity = toOrbit.getContainingLocation().addCustomEntity("prismFreeport", "Prism Freeport", image, "neutral");
+			prismEntity.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, getDensity(toOrbit)));
 		}
+		else
+		{
+			prismEntity = Global.getSector().getHyperspace().addCustomEntity("prismFreeport", "Prism Freeport", image, "neutral");
+			prismEntity.setFixedLocation(0, 0);
+		}
+		
+		EntityData data = new EntityData(null);
+		data.name = "Prism Freeport";
+		data.type = EntityType.STATION;
+		data.forceMarketSize = 4;
+		
+		MarketAPI market = addMarketToEntity(prismEntity, data, "neutral");
+		/*
+		MarketAPI market = Global.getFactory().createMarket("prismFreeport" + "_market", "Prism Freeport", 1);
+		market.setFactionId(image);
+		market.setPrimaryEntity(prismEntity);
+		prismEntity.setMarket(market);
+		
+		market.setFactionId("neutral");
+		market.setBaseSmugglingStabilityValue(0);
+		*/
+		market.removeSubmarket(Submarkets.GENERIC_MILITARY);
+		market.addSubmarket("exerelin_prismMarket");
+		pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
+		prismEntity.setCustomDescriptionId("exerelin_prismFreeport");
 	}
 	
 	@Override
@@ -505,6 +556,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			buildSystem(sector, i);
 		populateSector();
 		addOmnifactory();
+		addPrismMarket();
 		
 		ExerelinConfig.loadSettings();
 		String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -602,10 +654,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			existingMarket.addCondition("exerelin_recycling_plant");
 			newStation.setMarket(existingMarket);
 			existingMarket.getConnectedEntities().add(newStation);
+			data.market = existingMarket;
 		}
 		else
 		{	
-			addMarketToEntity(newStation, data, factionId);
+			MarketAPI market = addMarketToEntity(newStation, data, factionId);
 		}
 		pickEntityInteractionImage(newStation, newStation.getMarket(), planet.getTypeId(), EntityType.STATION);
 		newStation.setCustomDescriptionId("orbital_station_default");
@@ -1185,6 +1238,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		StarSystemAPI starSystem;
 		EntityData primary;
 		MarketAPI market;
+		int forceMarketSize = -1;
 		int planetNum = -1;
 		float orbitDistance = 0;	// only used for belter stations
 		
