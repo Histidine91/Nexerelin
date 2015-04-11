@@ -710,20 +710,20 @@ FireAll ExerelinMarketSpecial",,,
 ,,,,,,
 ,,,,,,
 # Player fleet greeting lines,,,,,,
-greetingHegemonyFriendly,OpenCommLink,"$faction.id == player_npc
+greetingPlayerNPCFriendly,OpenCommLink,"$faction.id == player_npc
 $faction.friendlyToPlayer","$menuState = fleetConvMain 0
 FireAll PopulateOptions","""Good to see you, chief. Is there anything we can do for you?""",,
-greetingHegemonyHostileWeaker,OpenCommLink,"$faction.id == player_npc
+greetingPlayerNPCHostileWeaker,OpenCommLink,"$faction.id == player_npc
 $faction.hostileToPlayer
 $relativeStrength < 0",$ignorePlayerCommRequests = true 1,"""Fine, fine, we're sorry for defying you! Just don't kill us!""",,
-greetingHegemonyHostileWeakerDefiant,OpenCommLink,"$faction.id == player_npc
+greetingPlayerNPCHostileWeakerDefiant,OpenCommLink,"$faction.id == player_npc
 $faction.hostileToPlayer
 $relativeStrength < 0
 $weakerThanPlayerButHolding",$ignorePlayerCommRequests = true 1,"The $personRank looks grim but defiant. ""We won't back down from you, tyrant,"" $heOrShe says.",,
-greetingHegemonyHostileStronger,OpenCommLink,"$faction.id == player_npc
+greetingPlayerNPCHostileStronger,OpenCommLink,"$faction.id == player_npc
 $faction.hostileToPlayer
 $relativeStrength >= 0",$ignorePlayerCommRequests = true 1,"""You have betrayed us. Prepare to die.""",,
-greetingHegemonyNeutral,OpenCommLink,"$faction.id == player_npc
+greetingPlayerNPCNeutral,OpenCommLink,"$faction.id == player_npc
 $faction.neutralToPlayer","$menuState = fleetConvMain 0
 FireAll PopulateOptions","""Just another day at the office.""",,
 ,,,,,,
