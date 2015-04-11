@@ -99,10 +99,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             expelPlayerFromFaction();
         }
         
-        float days = Global.getSector().getClock().convertToDays(amount);
-        respawnIntervalUtil.advance(days);
-        if (respawnIntervalUtil.intervalElapsed()) {
-            handleFactionRespawn();
+        if (respawnFactions){
+            float days = Global.getSector().getClock().convertToDays(amount);
+            respawnIntervalUtil.advance(days);
+            if (respawnIntervalUtil.intervalElapsed()) {
+                handleFactionRespawn();
+            }
         }
     }
     
@@ -185,8 +187,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public void handleFactionRespawn()
     {
-        if (!respawnFactions) return;
-        
         SectorAPI sector = Global.getSector();
         WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();
         WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
