@@ -70,7 +70,7 @@ public class ExerelinUtilsFleet
     public static Logger log = Global.getLogger(ExerelinUtilsFleet.class);
    
     /**
-     * Used by Starsector Plus
+     * Used by Starsector Plus to create its custom fleets
      * @param fleet
      * @param market
      * @param stability
@@ -89,7 +89,18 @@ public class ExerelinUtilsFleet
         {
             case "exerelinInvasionFleet":
                 injector.levelCommander(fleet.getCommander(), fleet, CommanderType.ELITE, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
-                SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
+                
+                if (faction.equals("luddic_church"))
+                    SSP_FleetFactory.createPurificationFleet(fleet, faction, qualityFactor, maxFP);
+                else if (faction.equals("exigency"))
+                    SSP_FleetFactory.createExigencyFleet(fleet, faction, qualityFactor, maxFP);
+                else if (faction.equals("interstellarimperium"))
+                    SSP_FleetFactory.createSiegeFleet(fleet, faction, qualityFactor, maxFP);
+                else if (faction.equals("templars"))
+                    SSP_FleetFactory.createTemplarFleet(fleet, faction, qualityFactor, maxFP);
+                else
+                    SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
+                
                 int numMarines = fleet.getCargo().getMarines();
                 log.info("Invasion fleet " + fleet.getNameWithFaction() + " has " + numMarines + " marines");
                 for (int i=0; i<numMarines; i=i+100)
@@ -97,6 +108,7 @@ public class ExerelinUtilsFleet
                     fleet.getFaction().pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, qualityFactor, fleet);
                 }
                 fleet.updateCounts();
+                
                 injector.levelFleet(fleet, CrewType.ELITE, FleetStyle.ELITE, faction);
                 break;
             case "exerelinInvasionSupportFleet":
@@ -106,7 +118,14 @@ public class ExerelinUtilsFleet
                 break;
             case "exerelinResponseFleet":
                 injector.levelCommander(fleet.getCommander(), fleet, CommanderType.WAR, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
-                SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
+                
+                if (faction.equals("exigency"))
+                    SSP_FleetFactory.createExigencyFleet(fleet, faction, qualityFactor, maxFP);
+                else if (faction.equals("templars"))
+                    SSP_FleetFactory.createTemplarFleet(fleet, faction, qualityFactor, maxFP);
+                else
+                    SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
+                
                 injector.levelFleet(fleet, CrewType.MILITARY, FleetStyle.MILITARY, faction);
                 break;   
         }
