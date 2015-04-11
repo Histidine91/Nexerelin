@@ -96,6 +96,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         if (originMarket.hasCondition("regional_capital")) maxFP += maxFPbase * 0.05;
         if (originMarket.hasCondition("headquarters")) maxFP += maxFPbase * 0.1;
         
+        ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(originMarket.getFactionId());
+        if (factionConfig != null)
+        {
+            maxFP += maxFPbase * factionConfig.invasionFleetSizeMod;
+        }
+        
         maxFP = maxFP + Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
         
         return (maxFP * (MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f)));

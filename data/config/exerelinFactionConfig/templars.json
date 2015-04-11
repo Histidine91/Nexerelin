@@ -24,6 +24,8 @@
     
     "invasionStrengthBonusAttack":0.25,
     "invasionStrengthBonusDefend":0.25,
+    "invasionFleetSizeMod":0.25,
+    "responseFleetSizeMod":0.25,
 
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

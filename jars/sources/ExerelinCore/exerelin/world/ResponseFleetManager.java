@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -112,6 +113,12 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         if (market.hasCondition("regional_capital")) size += baseSize * 0.1;
         if (market.hasCondition("headquarters")) size += baseSize * 0.2;
         
+        ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+        if (factionConfig != null)
+        {
+            size += baseSize * factionConfig.responseFleetSizeMod;
+        }
+        
         size = size + Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
         
         return size;
@@ -130,6 +137,12 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             float increment = baseIncrement;
             //if (market.hasCondition("regional_capital")) increment += baseIncrement * 0.1f;
             if (market.hasCondition("headquarters")) increment += baseIncrement * 0.25f;
+            
+            ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+            if (factionConfig != null)
+            {
+                increment += baseIncrement * factionConfig.responseFleetSizeMod;
+            }
             
             increment = increment * RESERVE_INCREMENT_PER_DAY * days;
             float newValue = Math.min(reserves.get(market.getId()) + increment, getMaxReserveSize(market, false));

@@ -38,6 +38,8 @@ public class ExerelinFactionConfig
 
     public float invasionStrengthBonusAttack = 0;
     public float invasionStrengthBonusDefend = 0;
+    public float invasionFleetSizeMod = 0;
+    public float responseFleetSizeMod = 0;
     
     public List<String> miningVariantsOrWings = new ArrayList<String>() {};
 
@@ -79,6 +81,8 @@ public class ExerelinFactionConfig
             
             invasionStrengthBonusAttack = (float)settings.optDouble("invasionStrengthBonusAttack", 0);
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);
+            invasionFleetSizeMod = (float)settings.optDouble("invasionFleetSizeMod", 0);
+            responseFleetSizeMod = (float)settings.optDouble("responseFleetSizeMod", 0);
             
             miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
         }
