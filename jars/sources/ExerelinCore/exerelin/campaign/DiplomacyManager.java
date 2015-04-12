@@ -401,8 +401,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     private void handleMarketCapture(MarketAPI market, FactionAPI oldOwner, FactionAPI newOwner)
     {
-        float value = (market.getSize()^3) * 5;
         String loseFactionId = oldOwner.getId();
+        if (!warWeariness.containsKey(loseFactionId)) return;
+        float value = (market.getSize()^3) * 5;
+        
         warWeariness.put(loseFactionId, warWeariness.get(loseFactionId) + value);
     }
     

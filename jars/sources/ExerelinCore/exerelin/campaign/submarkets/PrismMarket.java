@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 public class PrismMarket extends BaseSubmarketPlugin {
 
     private static final int MIN_NUMBER_OF_SHIPS = 5;
-    private static final int MAX_WEAPONS_PER_FACTION = 2;
+    private static final int MAX_WEAPONS_PER_FACTION = 3;
     
     public static Logger log = Global.getLogger(PrismMarket.class);
 
@@ -142,13 +142,21 @@ public class PrismMarket extends BaseSubmarketPlugin {
 
     @Override
     public boolean isIllegalOnSubmarket(CargoStackAPI stack, TransferAction action) {
-            return false;
+        if (action == TransferAction.PLAYER_SELL) return true;
+        return false;
     }
 
 
     @Override
     public boolean isIllegalOnSubmarket(String commodityId, TransferAction action) {
-            return false;
+        if (action == TransferAction.PLAYER_SELL) return true;
+        return false;
+    }
+    
+    @Override
+    public String getIllegalTransferText(CargoStackAPI stack, TransferAction action)
+    {
+        return "No sales/returns";
     }
 
     @Override

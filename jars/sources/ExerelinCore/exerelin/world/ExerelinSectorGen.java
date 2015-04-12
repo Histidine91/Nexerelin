@@ -476,12 +476,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					orbitDistance = radius + ExerelinUtils.getRandomInRange(2000, 2500);
 				}
 			}
-			prismEntity = toOrbit.getContainingLocation().addCustomEntity("prismFreeport", "Prism Freeport", image, "neutral");
+			prismEntity = toOrbit.getContainingLocation().addCustomEntity("prismFreeport", "Prism Freeport", image, "independent");
 			prismEntity.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, getDensity(toOrbit)));
 		}
 		else
 		{
-			prismEntity = Global.getSector().getHyperspace().addCustomEntity("prismFreeport", "Prism Freeport", image, "neutral");
+			prismEntity = Global.getSector().getHyperspace().addCustomEntity("prismFreeport", "Prism Freeport", image, "independent");
 			prismEntity.setFixedLocation(0, 0);
 		}
 		
@@ -490,19 +490,53 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		data.type = EntityType.STATION;
 		data.forceMarketSize = 4;
 		
-		MarketAPI market = addMarketToEntity(prismEntity, data, "neutral");
-		/*
-		MarketAPI market = Global.getFactory().createMarket("prismFreeport" + "_market", "Prism Freeport", 1);
-		market.setFactionId(image);
+		//MarketAPI market = addMarketToEntity(prismEntity, data, "independent");
+
+		MarketAPI market = Global.getFactory().createMarket("prismFreeport" + "_market", "Prism Freeport", 4);
+		market.setFactionId("independent");
+		market.addCondition("population_4");
+		market.addCondition("spaceport");
+		market.addCondition("exerelin_recycling_plant");
+		market.addCondition("exerelin_recycling_plant");
+		market.addCondition("trade_center");
+		market.addCondition("stealth_minefields");
+		market.addCondition("cryosanctum");
+		market.addCondition("military_base");
+		market.addCondition("free_market");
+		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
+		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
+		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
+		market.setBaseSmugglingStabilityValue(0);
+		
+		addCommodityStockpile(market, "green_crew", 0.45f, 0.55f);
+		addCommodityStockpile(market, "regular_crew", 0.45f, 0.55f);
+		addCommodityStockpile(market, "veteran_crew", 0.1f, 0.2f);
+		addCommodityStockpile(market, "marines", 0.8f, 1.0f);
+		addCommodityStockpile(market, "supplies", 0.7f, 0.8f);
+		addCommodityStockpile(market, "fuel", 0.7f, 0.8f);
+		addCommodityStockpile(market, "food", 0.7f, 0.8f);
+		addCommodityStockpile(market, "domestic_goods", 0.7f, 0.8f);
+		addCommodityStockpile(market, "luxury_goods", 0.7f, 0.8f);
+		addCommodityStockpile(market, "heavy_machinery", 0.7f, 0.8f);
+		addCommodityStockpile(market, "metals", 0.7f, 0.8f);
+		addCommodityStockpile(market, "rare_metals", 0.7f, 0.8f);
+		addCommodityStockpile(market, "ore", 0.7f, 0.8f);
+		addCommodityStockpile(market, "rare_ore", 0.7f, 0.8f);
+		addCommodityStockpile(market, "organics", 0.7f, 0.8f);
+		addCommodityStockpile(market, "volatiles", 0.7f, 0.8f);
+		addCommodityStockpile(market, "hand_weapons", 0.7f, 0.8f);
+		addCommodityStockpile(market, "drugs", 0.7f, 0.8f);
+		addCommodityStockpile(market, "organs", 0.7f, 0.8f);
+		addCommodityStockpile(market, "lobster", 0.7f, 0.8f);
+		
+		market.getTariff().modifyFlat("generator", 0.1f);
+		market.addSubmarket("exerelin_prismMarket");
 		market.setPrimaryEntity(prismEntity);
 		prismEntity.setMarket(market);
-		
-		market.setFactionId("neutral");
-		market.setBaseSmugglingStabilityValue(0);
-		*/
-		market.removeSubmarket(Submarkets.GENERIC_MILITARY);
-		market.addSubmarket("exerelin_prismMarket");
-		pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
+		prismEntity.setFaction("independent");
+		Global.getSector().getEconomy().addMarket(market);
+		//pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
+		prismEntity.setInteractionImage("illustrations", "space_bar");
 		prismEntity.setCustomDescriptionId("exerelin_prismFreeport");
 	}
 	
