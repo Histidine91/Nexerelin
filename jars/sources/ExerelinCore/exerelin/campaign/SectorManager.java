@@ -298,7 +298,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         //FactionAPI faction = Global.getSector().getFaction(factionId);
         SectorAPI sector = Global.getSector();
         String playerFactionId = PlayerFactionStore.getPlayerFactionId();
+        
         List<String> liveFactions = getLiveFactionIdsCopy();
+        for (String factionId : getLiveFactionIdsCopy())
+        {
+            if (ExerelinUtilsFaction.isPirateFaction(factionId) && !ExerelinConfig.countPiratesForVictory)
+            {
+                liveFactions.remove(factionId);
+            }
+        }
+        
         if (liveFactions.size() == 1)   // conquest victory
         {
             String victorFactionId = liveFactions.get(0);
