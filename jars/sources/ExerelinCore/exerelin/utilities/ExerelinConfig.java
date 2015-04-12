@@ -47,9 +47,6 @@ public class ExerelinConfig
     
     public static float crewLootMult = 0.02f;
     
-    public static boolean allowPirateInvasions = false;
-    public static float invasionFleetCostPerMarine = 500f;
-    
     // Special Ships
     public static String[] validBoardingFlagships = new String[]{};
     public static String[] validTroopTransportShips = new String[]{};
@@ -59,8 +56,11 @@ public class ExerelinConfig
     public static String[] supportedModFactions = new String[]{};
     
     // Misc
+    public static boolean allowPirateInvasions = false;
+    public static float invasionFleetCostPerMarine = 500f;
     public static float invasionGracePeriod = 30f;
-    public static float factionRespawnInterval = 60f;
+    public static float factionRespawnInterval = 30f;
+    public static boolean countPiratesForVictory = true;
 
     public static void loadSettings()
     {
@@ -97,11 +97,12 @@ public class ExerelinConfig
             prisonerSlaveRepValue = (float)settings.optDouble("prisonerSlaveRepValue", prisonerSlaveRepValue);
 
             crewLootMult = (float)settings.optDouble("crewLootMult", crewLootMult);
-            allowPirateInvasions = settings.optBoolean("allowPirateInvasions", false);
+            allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
             invasionFleetCostPerMarine = (float)settings.optDouble("invasionFleetCostPerMarine", invasionFleetCostPerMarine);
             
             invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
+            countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             supportedModFactions = JSONArrayToStringArray(settings.getJSONArray("supportedModFactions"));

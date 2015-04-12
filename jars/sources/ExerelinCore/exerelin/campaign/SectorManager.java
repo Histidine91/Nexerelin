@@ -104,6 +104,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             respawnIntervalUtil.advance(days);
             if (respawnIntervalUtil.intervalElapsed()) {
                 handleFactionRespawn();
+                
+                respawnInterval = ExerelinConfig.factionRespawnInterval;
+                respawnIntervalUtil.setInterval(respawnInterval * 0.75F, respawnInterval * 1.25F);
             }
         }
     }
@@ -237,7 +240,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             return;
         }
         
-        log.info("Respawn fleet created for " + respawnFaction.getDisplayName() + " in " + targetMarket.getPrimaryEntity().getContainingLocation());
+        //log.info("Respawn fleet created for " + respawnFaction.getDisplayName());
         InvasionFleetManager.spawnRespawnFleet(respawnFaction, sourceMarket, targetMarket);
     }
     
@@ -312,6 +315,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             for(String factionId : liveFactions)
             {
                 FactionAPI faction = sector.getFaction(factionId);
+                if (faction.isNeutralFaction()) continue;
                 if (!faction.isAtWorst(playerFactionId, RepLevel.FRIENDLY))
                     return;
             }
@@ -355,11 +359,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         for (SubmarketAPI submarket : submarkets)
         {
-                String submarketName = submarket.getNameOneLine().toLowerCase();
-                if(!submarketName.contains("storage") && !submarketName.contains("black market"))
-                {
-                        submarket.setFaction(newOwner);
-                }
+            if (submarket.getFaction() != oldOwner) continue;
+            String submarketName = submarket.getNameOneLine().toLowerCase();
+            if(!submarketName.contains("storage") && !submarketName.contains("black market"))
+            {
+                submarket.setFaction(newOwner);
+            }
         }
         market.reapplyConditions();
         Map<String, Object> params = new HashMap<>();

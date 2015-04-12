@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -137,8 +138,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         fleet.getMemoryWithoutUpdate().set("$maxFP", maxFP);
         fleet.getMemoryWithoutUpdate().set("$originMarket", originMarket);
         
-        SectorEntityToken entity = originMarket.getPrimaryEntity();
-        entity.getContainingLocation().addEntity(fleet);
+        LocationAPI spawnLoc = Global.getSector().getHyperspace();
+        if (Global.getSector().getStarSystems().size() == 1)    // one-star start; target will be inaccessible from hyper
+        {
+            SectorEntityToken entity = originMarket.getPrimaryEntity();
+            spawnLoc = entity.getContainingLocation();
+        }
+        
+        spawnLoc.addEntity(fleet);
         float distance = RESPAWN_FLEET_SPAWN_DISTANCE;
         float angle = MathUtils.getRandomNumberInRange(0, 359);
         fleet.setLocation((float)Math.cos(angle) * distance, (float)Math.sin(angle) * distance);
