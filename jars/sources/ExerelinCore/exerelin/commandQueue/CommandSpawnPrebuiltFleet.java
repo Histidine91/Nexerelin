@@ -3,6 +3,7 @@ package exerelin.commandQueue;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 
+@Deprecated
 public class CommandSpawnPrebuiltFleet implements  BaseCommand {
 
     private SectorEntityToken spawnLocation;

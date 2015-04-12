@@ -14,6 +14,7 @@ import exerelin.utilities.*;
 import java.awt.*;
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public class StationAttackFleet extends ExerelinFleetBase
 {
     SectorEntityToken anchor;

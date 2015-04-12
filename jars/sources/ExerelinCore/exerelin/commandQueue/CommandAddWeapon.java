@@ -2,6 +2,7 @@ package exerelin.commandQueue;
 
 import com.fs.starfarer.api.campaign.CargoAPI;
 
+@Deprecated
 public class CommandAddWeapon implements BaseCommand
 {
     private CargoAPI cargo;

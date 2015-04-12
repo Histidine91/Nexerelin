@@ -5,6 +5,7 @@ package exerelin.diplomacy;
 
 import exerelin.utilities.ExerelinUtils;
 
+@Deprecated
 public class AllianceManager
 {
 	private AllianceRecord[] allianceRecords;

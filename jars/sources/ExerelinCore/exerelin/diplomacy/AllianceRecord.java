@@ -9,6 +9,7 @@ import java.util.Iterator;
 /* This class holds the details of a multi-faction alliance.
  */
 @SuppressWarnings("unchecked")
+@Deprecated
 public class AllianceRecord
 {
 	private String allianceId;

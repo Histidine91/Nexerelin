@@ -12,6 +12,7 @@ import exerelin.utilities.ExerelinUtilsStation;
 
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public class WarFleet extends ExerelinFleetBase
 {
     public static enum FleetStance

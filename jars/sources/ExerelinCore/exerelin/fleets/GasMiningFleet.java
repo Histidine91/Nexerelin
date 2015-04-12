@@ -14,6 +14,7 @@ import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public class GasMiningFleet extends ExerelinFleetBase
 {
 	SectorEntityToken targetPlanet;

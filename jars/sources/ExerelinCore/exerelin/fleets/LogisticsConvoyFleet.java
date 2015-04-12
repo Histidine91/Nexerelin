@@ -12,6 +12,7 @@ import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public class LogisticsConvoyFleet extends ExerelinFleetBase
 {
 	String convoyType;

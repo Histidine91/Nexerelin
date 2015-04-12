@@ -11,6 +11,7 @@ import exerelin.utilities.ExerelinUtilsFleet;
 
 import java.util.List;
 
+@Deprecated
 public class EventRebelFleetSpawn extends EventBase
 {
 

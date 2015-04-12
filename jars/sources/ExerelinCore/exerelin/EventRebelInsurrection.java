@@ -10,6 +10,7 @@ import java.awt.*;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public class EventRebelInsurrection extends EventBase
 {
 

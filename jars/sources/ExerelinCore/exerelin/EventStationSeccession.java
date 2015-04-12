@@ -8,6 +8,7 @@ import exerelin.utilities.ExerelinUtilsMessaging;
 
 import java.awt.*;
 
+@Deprecated
 public class EventStationSeccession extends EventBase
 {
 

@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 
 import java.util.List;
 
+@Deprecated
 public class FactionDirector {
 
     private String factionId;

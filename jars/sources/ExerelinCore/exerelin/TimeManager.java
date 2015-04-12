@@ -7,6 +7,7 @@ import exerelin.utilities.ExerelinConfig;
 
 import java.util.*;
 
+@Deprecated
 public class TimeManager implements EveryFrameScript
 {
 	private static final float BASE_INTERVAL = 1.0f;

@@ -1,5 +1,6 @@
 package exerelin;
 
+@Deprecated
 public class SectorEventManager
 {
     private EventAddObjectToStorage eventAddObjectToStorage;

@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 // Keep a reference to this object in your mod's
 // master script, otherwise it's worthless
 @SuppressWarnings("unchecked")
+@Deprecated
 public class CommandQueue implements EveryFrameScript
 {
     private final Queue queuedCommands = new ConcurrentLinkedQueue();

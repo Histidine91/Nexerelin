@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.*;
 //import data.scripts.world.OmniFac;
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public class OutSystemStationConstructionFleet
 {
 	SectorEntityToken theTarget;

@@ -8,6 +8,7 @@ import exerelin.utilities.ExerelinUtilsMessaging;
 import java.awt.*;
 import java.util.List;
 
+@Deprecated
 public class EventStationExplosion extends EventBase
 {
 	public EventStationExplosion()

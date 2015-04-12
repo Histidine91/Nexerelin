@@ -24,6 +24,7 @@ import java.util.ArrayList;
  * Also handles player influence with factions
  */
 
+@Deprecated
 public class DiplomacyManager
 {
 	private AllianceManager allianceManager;

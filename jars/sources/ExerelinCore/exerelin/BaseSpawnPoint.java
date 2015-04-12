@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpawnPointPlugin;
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public abstract class BaseSpawnPoint implements EveryFrameScript, SpawnPointPlugin {
 
     protected float daysInterval;

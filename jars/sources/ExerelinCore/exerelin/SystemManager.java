@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 import java.awt.*;
 import java.util.*;
 
+@Deprecated
 public class SystemManager
 {
 	private SystemStationManager systemStationManager;

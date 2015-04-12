@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 
+@Deprecated
 public class CommandAddShip implements BaseCommand
 {
     private CargoAPI cargo;

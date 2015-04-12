@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public class SystemStationManager
 {
 	private StationRecord[] stationRecords;

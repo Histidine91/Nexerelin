@@ -22,6 +22,7 @@ import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMessaging;
 
+@Deprecated
 public class StationRecord
 {
     public static enum StationFleetStance

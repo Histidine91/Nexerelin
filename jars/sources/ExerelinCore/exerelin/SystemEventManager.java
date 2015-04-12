@@ -4,6 +4,7 @@ import exerelin.utilities.ExerelinUtils;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import exerelin.utilities.ExerelinConfig;
 
+@Deprecated
 public class SystemEventManager
 {
 	private EventRebelInsurrection eventRebelInsurrection;

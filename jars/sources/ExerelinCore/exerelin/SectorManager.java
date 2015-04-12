@@ -18,6 +18,7 @@ import java.util.List;
  * OUT OF DATE, use exerelin.campaign.SectorManager instead!.
  */
 @SuppressWarnings("unchecked")
+@Deprecated
 public class SectorManager
 {
     private SectorEventManager sectorEventManager;

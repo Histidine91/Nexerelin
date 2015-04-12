@@ -14,6 +14,7 @@ import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public class AsteroidMiningFleet extends ExerelinFleetBase
 {
 	SectorEntityToken targetAsteroid;

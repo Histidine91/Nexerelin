@@ -15,6 +15,7 @@ import java.util.Arrays;
  */
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public class DiplomacyRecord
 {
 	private String factionId;

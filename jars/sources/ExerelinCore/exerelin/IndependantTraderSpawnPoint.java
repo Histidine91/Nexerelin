@@ -7,6 +7,7 @@ import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFleet;
 
 @SuppressWarnings("unchecked")
+@Deprecated
 public class IndependantTraderSpawnPoint extends BaseSpawnPoint
 {
 	CampaignFleetAPI theFleet;
