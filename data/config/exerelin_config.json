@@ -38,6 +38,7 @@
     
     "validMiningShips":["mining_drone", "zorg_sphere", "pn_mlmv"], # String array
 
+    # CASE SENSITIVE!!!
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "luddic_church", "pirates", "player_npc"], # String array
     "supportedModFactions":["blackrock_driveyards", "bushi", "citadeldefenders", "hiigaran_descendants", "junk_pirates", "mayorate", "neutrinocorp", "ori", "rori", "pack", "patnavy", "shadow_industry", "syndicate_asp", "valkyrian", "exigency", "exipirated", "interstellarimperium", "SCY", "diableavionics", "crystanite", "templars", "PTech", "OculusBerserk", "pn_colony"], # String array
 }
