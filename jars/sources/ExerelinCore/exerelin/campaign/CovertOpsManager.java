@@ -255,6 +255,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     public static float getAlertLevel(MarketAPI market)
     {
+        if (market.getId().equals("fake_market")) return 0;
         SectorAPI sector = Global.getSector();
         CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_security_alert");
         if (eventSuper == null) 
