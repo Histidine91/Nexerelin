@@ -368,8 +368,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static void agentDestabilizeMarket(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Agent trying to destablize market");
-        modifyAlertLevel(market, (float)(double)config.get("agentDestabilizeSecurityLevelRise"));
-        if (Math.random() <= (double)config.get("agentDestabilizeSuccessChance") * getAlertLevel(market))
+        if ( Math.random() <= (double)config.get("agentDestabilizeSuccessChance") * (1 - getAlertLevel(market)) )
         {
             SectorAPI sector = Global.getSector();
             CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market_for_condition");
@@ -421,13 +420,13 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 }
             }
         }
+        modifyAlertLevel(market, (float)(double)config.get("agentDestabilizeSecurityLevelRise"));
     }
     
     public static void saboteurSabotageReserve(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Saboteur attacking reserve fleet");
-        modifyAlertLevel(market, (float)(double)config.get("sabotageReserveSecurityLevelRise"));
-        if (Math.random() <= (double)config.get("sabotageReserveSuccessChance") * getAlertLevel(market))
+        if ( Math.random() <= (double)config.get("sabotageReserveSuccessChance") * (1 - getAlertLevel(market)) )
         {
             SectorAPI sector = Global.getSector();
             float effectMin = (float)(double)config.get("sabotageReserveEffectMin");
@@ -475,13 +474,13 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 }
             }
         }
+        modifyAlertLevel(market, (float)(double)config.get("sabotageReserveSecurityLevelRise"));
     }    
     
     public static void saboteurDestroyFood(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Saboteur destroying food");
-        modifyAlertLevel(market, (float)(double)config.get("sabotageDestroyFoodSecurityLevelRise"));
-        if (Math.random() <= (double)config.get("sabotageDestroyFoodSuccessChance") )
+        if ( Math.random() <= (double)config.get("sabotageDestroyFoodSuccessChance") * (1 - getAlertLevel(market)) )
         {
             SectorAPI sector = Global.getSector();
             float effectMin = (float)(double)config.get("sabotageDestroyFoodEffectMin");
@@ -536,6 +535,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 }
             }
         }
+        modifyAlertLevel(market, (float)(double)config.get("sabotageDestroyFoodSecurityLevelRise"));
     }
     
     public static CovertOpsManager create()
