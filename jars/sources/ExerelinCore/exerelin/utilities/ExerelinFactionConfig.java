@@ -5,8 +5,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.*;
 
-// TODO: clean up most of this
-// I really don't think most of it is neeeded any more in current SS versions
 public class ExerelinFactionConfig
 {
     public String factionId;
@@ -35,6 +33,8 @@ public class ExerelinFactionConfig
     public int negativeDiplomacyExtra = 0;
     public String[] factionsLiked = new String[]{};
     public String[] factionsDisliked = new String[]{};
+    
+    public boolean freeMarket = false;
 
     public float invasionStrengthBonusAttack = 0;
     public float invasionStrengthBonusDefend = 0;
@@ -78,6 +78,8 @@ public class ExerelinFactionConfig
             negativeDiplomacyExtra = settings.optInt("negativeDiplomacyExtra");
             factionsLiked = JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
             factionsDisliked = JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
+            
+            freeMarket = settings.optBoolean("freeMarket", freeMarket);
             
             invasionStrengthBonusAttack = (float)settings.optDouble("invasionStrengthBonusAttack", 0);
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);

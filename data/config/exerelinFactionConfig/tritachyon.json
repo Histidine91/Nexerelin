@@ -19,6 +19,8 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":["hegemony","luddic_church"], # String array
+    
+    "freeMarket":true,
 
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

@@ -31,6 +31,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import java.io.File;
 import java.io.FileFilter;
@@ -338,15 +339,21 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				
 		// add per-faction market conditions
 		String factionId = newMarket.getFaction().getId();
-		if(factionId.equals("tritachyon")) {
+		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+		
+		if (config.freeMarket)
+		{
 			newMarket.addCondition("free_market");
+			newMarket.getTariff().modifyFlat("isFreeMarket", 0.1f); // TODO: put in a config or something
 		}
+		else
+		{
+			newMarket.getTariff().modifyFlat("isFreeMarket", 0.2f);
+		}
+		
 		if(factionId.equals("luddic_church")) {
 			newMarket.addCondition("luddic_majority");
 			//newMarket.addCondition("cottage_industry");
-		}
-		if(factionId.equals("pirates")) {
-			newMarket.addCondition("free_market");
 		}
 		
 		if (owningFactionId.equals("templars"))
@@ -384,16 +391,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		addCommodityStockpile(newMarket, "lobster", 0.7f, 0.8f);
 		//if (marketSize >= 4)
 		//	addCommodityStockpile(newMarket, "agent", marketSize);
-		
-		// set tariffs
-		if (newMarket.hasCondition("free_market"))
-		{
-			newMarket.getTariff().modifyFlat("generator", 0.1f);
-		}
-		else
-		{
-			newMarket.getTariff().modifyFlat("generator", 0.2f);	// TODO put in a config or something 
-		}
 		
 		Global.getSector().getEconomy().addMarket(newMarket);
 		entity.setFaction(owningFactionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0

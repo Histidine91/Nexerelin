@@ -22,6 +22,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
@@ -362,6 +363,19 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             
             market.removeSubmarket("tem_templarmarket");
         }
+        
+        ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(newOwnerId);
+        if (newOwnerConfig.freeMarket)
+        {
+            if (!market.hasCondition("free_market")) market.addCondition("free_market");
+            market.getTariff().modifyFlat("isFreeMarket", 0.1f);
+        }
+        else 
+        {
+            market.removeCondition("free_market");
+            market.getTariff().modifyFlat("isFreeMarket", 0.2f);
+        }
+        
         List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
         
         for (SubmarketAPI submarket : submarkets)

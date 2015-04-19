@@ -23,18 +23,17 @@ import org.lazywizard.omnifac.OmniFacSettings;
 
 public class ExerelinLifecyclePlugin extends BaseModPlugin {
 
-    // added in 0.3.2; remove after a few versions have passed
-    protected void fixTemplarMarkets()
+    protected void reverseCompatibility()
     {
-        List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
-        for (MarketAPI market : markets) {
-            if (market.getFactionId().equals("templars"))
+        // fix tariffs for new free port handling (0.37)
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        {
+            if (market.getTariff().getFlatMods().containsKey("generator"))
             {
-                market.removeSubmarket(Submarkets.SUBMARKET_OPEN);
-                market.removeSubmarket(Submarkets.SUBMARKET_BLACK);
-                market.removeSubmarket(Submarkets.GENERIC_MILITARY);
-            
-                market.addSubmarket("tem_templarmarket");
+                Global.getLogger(ExerelinLifecyclePlugin.class).info("Resetting tariffs for market " + market.getName());
+                market.getTariff().unmodify("generator");
+                if (market.hasCondition("free_market")) market.getTariff().modifyFlat("isFreeMarket", 0.1f);
+                else market.getTariff().modifyFlat("isFreeMarket", 0.2f);
             }
         }
     }
@@ -58,7 +57,7 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_insurance", null);
         }
                 
-        fixTemplarMarkets();
+        reverseCompatibility();
     }
     
     @Override

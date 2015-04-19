@@ -20,6 +20,8 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+    
+    "freeMarket":true,
 
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }
