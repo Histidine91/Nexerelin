@@ -62,6 +62,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
     private static List<DiplomacyEventDef> eventDefs;
     
+    private static final float STARTING_RELATIONSHIP_HOSTILE = -0.6f;
+    private static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.4f;
     private static final float WAR_WEARINESS_DIVISOR = 6000f;
     private static final float MIN_WAR_WEARINESS_FOR_PEACE = 2500f;
     private static final float WAR_WEARINESS_CEASEFIRE_REDUCTION = 1600f;
@@ -607,7 +609,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     if (otherFaction.isNeutralFaction() ||otherFaction.isPlayerFaction()) continue;
                     
                     if (Math.random() < 0.5) continue;  // 50% chance to do nothing (lower clutter)
-                    faction.setRelationship(otherFactionId, MathUtils.getRandomNumberInRange(-1f, 1f));
+                    faction.setRelationship(otherFactionId, MathUtils.getRandomNumberInRange(-1f, 0.55f));
                 }
             }
             
@@ -633,7 +635,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                         if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
                         {
                             //log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
-                            faction.setRelationship(dislikedFactionId, RepLevel.HOSTILE);
+                            faction.setRelationship(dislikedFactionId, STARTING_RELATIONSHIP_HOSTILE);
                         }
                     }
                 }
@@ -652,7 +654,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     for (String pirateFactionId : pirateFactions) {
                         FactionAPI pirateFaction = sector.getFaction(pirateFactionId);
                         if (pirateFaction != null)
-                            pirateFaction.setRelationship(factionId, RepLevel.HOSTILE);
+                            pirateFaction.setRelationship(factionId, STARTING_RELATIONSHIP_HOSTILE);
                     }
                 }
             }
@@ -667,11 +669,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 FactionAPI faction = sector.getFaction(factionId);
                 if (factionId.equals("player_npc") && factionId.equals(selectedFactionId))
                 {
-                    templars.setRelationship(factionId, RepLevel.INHOSPITABLE);
+                    templars.setRelationship(factionId, STARTING_RELATIONSHIP_INHOSPITABLE);
                 }
                 else if (!faction.isNeutralFaction() && !factionId.equals("templars"))
                 {
-                    templars.setRelationship(factionId, RepLevel.HOSTILE);
+                    templars.setRelationship(factionId, STARTING_RELATIONSHIP_HOSTILE);
                 }
             }
         }
