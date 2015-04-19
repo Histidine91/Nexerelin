@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.ActionType;
+import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -93,12 +94,14 @@ public class InvasionFleetAI implements EveryFrameScript
             if (otherFleet.getAI() instanceof CampaignFleetAIAPI && otherFleet.getFaction().isHostileTo(otherFleet.getFaction())) 
             {
                 int otherFP = otherFleet.getFleetPoints();
-                if (otherFP < fleet.getFleetPoints()/2) continue;
+                //if (otherFP < fleet.getFleetPoints()/2) continue;
 
                 float dist = Misc.getDistance(otherFleet.getLocation(), fleet.getLocation());
                 if (dist <= INVADE_RESPONSE_DISTANCE) {
                     CampaignFleetAIAPI ai = (CampaignFleetAIAPI) fleet.getAI();
-                    ai.addAssignmentAtStart(FleetAssignment.INTERCEPT, fleet, 2f, "intercepting " + fleet.getName(), null);
+                    EncounterOption option = ai.pickEncounterOption(null, fleet);
+                    if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD)
+                        ai.addAssignmentAtStart(FleetAssignment.INTERCEPT, fleet, 2f, "intercepting " + fleet.getName(), null);
                 }
             }
         }
