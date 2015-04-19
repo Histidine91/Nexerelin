@@ -11,6 +11,8 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.events.CustomsInspectionEvent;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinConfig;
 
 // stupid private variables in parent class
 public class ExerelinCustomsInspectionEvent extends CustomsInspectionEvent {
@@ -25,10 +27,15 @@ public class ExerelinCustomsInspectionEvent extends CustomsInspectionEvent {
         //String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
         if (market != null) {
             String marketFactionId = market.getFactionId();
-            if (marketFactionId.equals("player_npc"))
+            boolean ownFaction = marketFactionId.equals("player_npc");
+            if (ExerelinConfig.ownFactionCustomsInspections && marketFactionId.equals(PlayerFactionStore.getPlayerFactionId())) 
+                ownFaction = true;
+            
+            if (ownFaction)
             {
                 log.info("Customs inspection by own faction; aborting");
                 endEvent(InspectionOutcome.ENDED_PEACEFULLY);
+                return;
             }
         }
         super.startEvent();

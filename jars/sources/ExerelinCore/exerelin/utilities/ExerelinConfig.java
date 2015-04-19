@@ -61,6 +61,7 @@ public class ExerelinConfig
     public static float invasionGracePeriod = 30f;
     public static float factionRespawnInterval = 30f;
     public static boolean countPiratesForVictory = true;
+    public static boolean ownFactionCustomsInspections = false;
 
     public static void loadSettings()
     {
@@ -103,6 +104,7 @@ public class ExerelinConfig
             invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
+            ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             supportedModFactions = JSONArrayToStringArray(settings.getJSONArray("supportedModFactions"));
