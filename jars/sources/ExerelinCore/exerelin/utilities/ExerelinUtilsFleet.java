@@ -83,7 +83,16 @@ public class ExerelinUtilsFleet
         int maxFP = memory.contains("$maxFP") ? ((Integer)memory.get("$maxFP")).intValue() : fleet.getFleetPoints();
         
         SSP_FleetInjector injector = SSP_FleetInjector.getInjector();
-        if (injector == null) return;
+        if (injector == null) 
+        {
+            log.error("Missing SS+ injector");
+            return;
+        }
+        
+        log.info("Fleet " + fleet.getName() + ": stability " + stability + "; qf " + qualityFactor);
+
+        // Templar fleets break if the quality factor is too low
+        if (faction.equals("templars")) qualityFactor = Math.max(qualityFactor, 0.7f);
 
         switch (type)
         {
