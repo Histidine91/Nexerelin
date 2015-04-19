@@ -26,9 +26,9 @@ public class AgentLowerRelations extends AgentActionBase {
         static {
             TARGET_WEIGHTINGS.put(RepLevel.NEUTRAL, 0.5f);
             TARGET_WEIGHTINGS.put(RepLevel.SUSPICIOUS, 1f);
-            TARGET_WEIGHTINGS.put(RepLevel.INHOSPITABLE, 2f);
-            TARGET_WEIGHTINGS.put(RepLevel.HOSTILE, 5f);
-            TARGET_WEIGHTINGS.put(RepLevel.VENGEFUL, 8f);
+            TARGET_WEIGHTINGS.put(RepLevel.INHOSPITABLE, 1.5f);
+            TARGET_WEIGHTINGS.put(RepLevel.HOSTILE, 2f);
+            TARGET_WEIGHTINGS.put(RepLevel.VENGEFUL, 2.5f);
         }
     
         @Override

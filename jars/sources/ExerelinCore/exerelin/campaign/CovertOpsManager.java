@@ -129,18 +129,20 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             float weight = 1f;
             if (actionType == CovertActionType.RAISE_RELATIONS)
             {
-                if (repLevel == RepLevel.NEUTRAL || repLevel == RepLevel.FAVORABLE) weight = 1f;
-                if (repLevel == RepLevel.SUSPICIOUS) weight = 2f;
+		if (repLevel == RepLevel.FAVORABLE || repLevel == RepLevel.WELCOMING) weight = 1f;
+                else if (repLevel == RepLevel.NEUTRAL) weight = 1.5f;
+                else if (repLevel == RepLevel.SUSPICIOUS) weight = 2f;
                 else if (repLevel == RepLevel.INHOSPITABLE) weight = 3f;
                 else continue;
             }
             else if (actionType == CovertActionType.LOWER_RELATIONS)
             {
-                if (repLevel == RepLevel.NEUTRAL || repLevel == RepLevel.FAVORABLE) weight = 1f;
-                else if (repLevel == RepLevel.SUSPICIOUS) weight = 2f;
-                else if (repLevel == RepLevel.INHOSPITABLE) weight = 3f;
-                else if (repLevel == RepLevel.HOSTILE) weight = 5f;
-                else if (repLevel == RepLevel.VENGEFUL) weight = 8f;
+		if (repLevel == RepLevel.FAVORABLE) weight = 0.25f;
+                else if (repLevel == RepLevel.NEUTRAL) weight = 1f;
+                else if (repLevel == RepLevel.SUSPICIOUS) weight = 1.5f;
+                else if (repLevel == RepLevel.INHOSPITABLE) weight = 2f;
+                else if (repLevel == RepLevel.HOSTILE) weight = 2.5f;
+                else if (repLevel == RepLevel.VENGEFUL) weight = 3f;
                 else continue;
             }
             else if (actionType == CovertActionType.DESTABILIZE_MARKET 
