@@ -99,7 +99,7 @@ public class ExerelinUtilsFleet
             case "exerelinInvasionFleet":
                 injector.levelCommander(fleet.getCommander(), fleet, CommanderType.ELITE, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
                 
-                if (faction.equals("luddic_church"))
+                if (faction.equals("luddic_church") && maxFP >= 120)
                     SSP_FleetFactory.createPurificationFleet(fleet, faction, qualityFactor, maxFP);
                 else if (faction.equals("exigency"))
                     SSP_FleetFactory.createExigencyFleet(fleet, faction, qualityFactor, maxFP);
@@ -128,7 +128,9 @@ public class ExerelinUtilsFleet
             case "exerelinResponseFleet":
                 injector.levelCommander(fleet.getCommander(), fleet, CommanderType.WAR, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
                 
-                if (faction.equals("exigency"))
+                if (faction.equals("luddic_church") && maxFP >= 120)
+                    SSP_FleetFactory.createPurificationFleet(fleet, faction, qualityFactor, maxFP);
+                else if (faction.equals("exigency"))
                     SSP_FleetFactory.createExigencyFleet(fleet, faction, qualityFactor, maxFP);
                 else if (faction.equals("templars"))
                     SSP_FleetFactory.createTemplarFleet(fleet, faction, qualityFactor, maxFP);
