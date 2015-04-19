@@ -25,7 +25,7 @@ public class exerelin_RecyclingPlant extends BaseMarketConditionPlugin {
 		market.getCommodityData(Commodities.VOLATILES).getSupply().modifyFlat(id, RECYCLING_VOLATILES * crewDemandMet);
 		market.getCommodityData(Commodities.ORGANICS).getSupply().modifyFlat(id, RECYCLING_ORGANICS * crewDemandMet);
 		market.getCommodityData(Commodities.METALS).getSupply().modifyFlat(id, RECYCLING_METALS * crewDemandMet);
-		market.getCommodityData(Commodities.RARE_METALS).getSupply().modifyFlat(id, RECYCLING_METALS * crewDemandMet);
+		market.getCommodityData(Commodities.RARE_METALS).getSupply().modifyFlat(id, RECYCLING_RARE_METALS * crewDemandMet);
 		market.getCommodityData(Commodities.SUPPLIES).getSupply().modifyFlat(id, RECYCLING_SUPPLIES * crewDemandMet);
 		market.getCommodityData(Commodities.HEAVY_MACHINERY).getSupply().modifyFlat(id, RECYCLING_HEAVY_MACHINERY * crewDemandMet);
 	}
