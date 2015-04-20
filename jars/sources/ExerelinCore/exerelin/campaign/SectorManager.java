@@ -264,7 +264,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             for (FactionAPI faction : Global.getSector().getAllFactions())
             {
                 String factionId = faction.getId();
-                if (!ExerelinUtilsFaction.isPirateFaction(factionId) && !factionId.equals(defeatedId) && factionId.equals("templars"))
+                if (!ExerelinUtilsFaction.isPirateFaction(factionId) && !factionId.equals(defeatedId) && !factionId.equals("templars"))
                 {
                     faction.setRelationship(defeatedId, 0f);
                 }
