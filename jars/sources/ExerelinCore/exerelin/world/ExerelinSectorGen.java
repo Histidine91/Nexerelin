@@ -573,7 +573,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		for(int i = 0; i < numSystems; i ++)
 		{
 			angle += MathUtils.getRandomNumberInRange((float)Math.PI/4, (float)Math.PI);
-			float increment = MathUtils.getRandomNumberInRange(250, 1250) + MathUtils.getRandomNumberInRange(250, 1250);
+			float increment = MathUtils.getRandomNumberInRange(250, 1000) + MathUtils.getRandomNumberInRange(250, 1000);
 			distance += increment * ((8f/(float)numSystems) * 0.75f + 0.25f);   // put stars closer together if there are a lot of them
 			int x = (int)(Math.sin(angle) * distance);
 			int y = (int)(Math.cos(angle) * distance);
