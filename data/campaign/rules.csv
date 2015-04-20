@@ -461,7 +461,7 @@ unset $player.invasionTarget
 FireAll PopulateOptions",You've successfully captured $entityName!,,
 ExerelinInvasionResultsIncomplete,ExerelinInvasionResults,"!$exerelinInvasionSuccessful
 HasMarines","ShowVisual ""graphics/illustrations/hull_breach.jpg""
-unset $player.invasionTarget",You have not yet captured $entityName.,"exerelinInvasionStart:Attack again
+unset $player.invasionTarget",You have not yet captured $entityName.,"exerelinInvasion:Attack again
 exerelinInvasionLeave:Leave",
 ExerelinInvasionResultsIncompleteNoMoreMarines,ExerelinInvasionResults,"!$exerelinInvasionSuccessful
 !HasMarines","ShowVisual ""graphics/illustrations/hull_breach.jpg""
