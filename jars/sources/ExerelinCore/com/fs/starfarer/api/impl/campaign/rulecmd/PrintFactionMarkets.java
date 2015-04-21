@@ -23,20 +23,26 @@ import java.util.HashMap;
 
 
 public class PrintFactionMarkets extends BaseCommandPlugin {
-        public static Comparator<MarketAPI> marketSizeComparator 
-                          = new Comparator<MarketAPI>() {
-
+    
+        public class MarketComparator implements Comparator<MarketAPI>
+        {
+            @Override
             public int compare(MarketAPI market1, MarketAPI market2) {
 
-              int size1 = market1.getSize();
-              int size2 = market2.getSize();
+                String loc1 = market1.getContainingLocation().getName();
+                String loc2 = market2.getContainingLocation().getName();
+                
+                if (loc1.compareToIgnoreCase(loc2) > 0) return 1;
+                else if (loc2.compareToIgnoreCase(loc1) > 0) return -1;
+                
+                int size1 = market1.getSize();
+                int size2 = market2.getSize();
 
-              if (size1 < size2) return -1;
-              else if (size2 > size1) return 1;
-              else return 0;
+                if (size1 > size2) return -1;
+                else if (size2 > size1) return 1;
+                else return 0;
             }
-
-        };
+        }
     
         static final HashMap<Integer, Color> colorByMarketSize = new HashMap<>();
         static {
@@ -59,7 +65,7 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                 if (markets.isEmpty())
                         return false;
                 
-                //markets.sort(marketSizeComparator);  // crashes with MethodNotFound exception
+                Collections.sort(markets,new MarketComparator());
                 //Collections.reverse(markets);
                 FactionAPI faction = Global.getSector().getFaction(factionId);
                 TextPanelAPI text = dialog.getTextPanel();
