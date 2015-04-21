@@ -593,7 +593,7 @@ $faction.id != ""neutral""
 $faction.id != ""player_npc""
 !HasItem agent","SetTooltip exerelinUseAgent ""You have no agents!""
 SetEnabled exerelinUseAgent false",,2:exerelinUseAgent:Deploy an agent,
-ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
+#ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
 $faction.id != ""player_npc""
@@ -638,7 +638,7 @@ $faction.id != ""neutral""
 $faction.id != ""player_npc""
 !HasItem saboteur","SetTooltip exerelinUseSaboteur ""You have no saboteurs!""
 SetEnabled exerelinUseSaboteur false",,2:exerelinUseSaboteur:Deploy a saboteur,
-ExerelinMarketSaboteurOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
+#ExerelinMarketSaboteurOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
 $faction.id != ""player_npc""
