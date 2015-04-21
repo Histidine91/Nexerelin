@@ -20,9 +20,9 @@
     "fleetBonusFpPerPlayerLevel": 1.0,
     
     "prisonerRepatriateRepValue": 0.05,
-    "prisonerBaseRansomValue": 2000,
+    "prisonerBaseRansomValue": 4000,
     "prisonerRansomValueIncrementPerLevel": 200,
-    "prisonerBaseSlaveValue": 4000,
+    "prisonerBaseSlaveValue": 8000,
     "prisonerSlaveValueIncrementPerLevel": 400,
     "prisonerSlaveRepValue": -0.02,
     "prisonerLootChancePer10Fp": 0.07,
