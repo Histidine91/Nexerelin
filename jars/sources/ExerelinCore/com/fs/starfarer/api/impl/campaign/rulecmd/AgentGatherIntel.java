@@ -53,8 +53,8 @@ public class AgentGatherIntel extends AgentActionBase {
                 text.addParagraph("Stability: " + stability);
                 text.highlightInLastPara(getColorFromScale(stability, 10, false), "" + stability);
                 
-                float alertLevel = Math.round(CovertOpsManager.getAlertLevel(market) * 100);
-                text.addParagraph("Alert level: " + alertLevel);
+                int alertLevel = Math.round(CovertOpsManager.getAlertLevel(market) * 100);
+                text.addParagraph("Alert level: " + alertLevel + "%");
                 text.highlightInLastPara(getColorFromScale(alertLevel, 100, true), "" + alertLevel);
                 
                 float reserveSize = ResponseFleetManager.getReserveSize(market);
