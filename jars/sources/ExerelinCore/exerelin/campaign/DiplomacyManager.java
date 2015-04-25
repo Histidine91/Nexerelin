@@ -594,6 +594,22 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         List<String> alreadyRandomizedIds = new ArrayList<>();
         alreadyRandomizedIds.add("independent");
         
+        // pirates are hostile to everyone, except some factions like Mayorate
+        for (String factionId : factionIds) 
+        {
+            FactionAPI faction = sector.getFaction(factionId);
+            ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+            if ((factionConfig == null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !ExerelinUtilsFaction.isPirateFaction(factionId))
+            {
+                for (String pirateFactionId : pirateFactions) {
+                    FactionAPI pirateFaction = sector.getFaction(pirateFactionId);
+                    if (pirateFaction != null)
+                        pirateFaction.setRelationship(factionId, STARTING_RELATIONSHIP_HOSTILE);
+                }
+            }
+        }
+        
+        // randomize if needed
         for (String factionId : factionIds) {
             FactionAPI faction = sector.getFaction(factionId);
             if (randomize)
@@ -637,24 +653,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                             //log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
                             faction.setRelationship(dislikedFactionId, STARTING_RELATIONSHIP_HOSTILE);
                         }
-                    }
-                }
-            }
-        }
-        
-        // pirates are hostile to everyone, except some factions like Mayorate
-        if (!randomize)
-        {
-            for (String factionId : factionIds) 
-            {
-                FactionAPI faction = sector.getFaction(factionId);
-                ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
-                if ((factionConfig == null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !ExerelinUtilsFaction.isPirateFaction(factionId))
-                {
-                    for (String pirateFactionId : pirateFactions) {
-                        FactionAPI pirateFaction = sector.getFaction(pirateFactionId);
-                        if (pirateFaction != null)
-                            pirateFaction.setRelationship(factionId, STARTING_RELATIONSHIP_HOSTILE);
                     }
                 }
             }
