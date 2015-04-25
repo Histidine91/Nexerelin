@@ -91,17 +91,19 @@ public class InvasionFleetAI implements EveryFrameScript
         List<CampaignFleetAPI> fleets = fleet.getContainingLocation().getFleets();
         for (CampaignFleetAPI otherFleet : fleets) {
             if (otherFleet == fleet) continue;
-            if (otherFleet.getAI() instanceof CampaignFleetAIAPI && otherFleet.getFaction().isHostileTo(otherFleet.getFaction())) 
+            if (otherFleet.getAI() instanceof CampaignFleetAIAPI && fleet.getFaction().isHostileTo(otherFleet.getFaction())) 
             {
-                int otherFP = otherFleet.getFleetPoints();
-                //if (otherFP < fleet.getFleetPoints()/2) continue;
-
                 float dist = Misc.getDistance(otherFleet.getLocation(), fleet.getLocation());
+                //log.info("Distance of fleet " + otherFleet.getName() + ": " + dist);
                 if (dist <= INVADE_RESPONSE_DISTANCE) {
-                    CampaignFleetAIAPI ai = (CampaignFleetAIAPI) fleet.getAI();
+                    CampaignFleetAIAPI ai = (CampaignFleetAIAPI) otherFleet.getAI();
                     EncounterOption option = ai.pickEncounterOption(null, fleet);
+                    //log.info("Response type of fleet " + otherFleet.getName() + ": " + option.name());
                     if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD)
+                    {
                         ai.addAssignmentAtStart(FleetAssignment.INTERCEPT, fleet, 2f, "intercepting " + fleet.getName(), null);
+                        //log.info("Responding to invasion: " + otherFleet.getName() + ", " + fleet.getName());
+                    }
                 }
             }
         }
