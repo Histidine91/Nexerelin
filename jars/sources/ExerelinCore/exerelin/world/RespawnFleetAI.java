@@ -12,12 +12,14 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
+import exerelin.utilities.ExerelinUtilsReputation;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
 public class RespawnFleetAI extends InvasionFleetAI
 {
     public static Logger log = Global.getLogger(RespawnFleetAI.class);
+    protected boolean captureSuccessful = false;
     
     public RespawnFleetAI(CampaignFleetAPI fleet, InvasionFleetManager.InvasionFleetData data)
     {
@@ -48,6 +50,13 @@ public class RespawnFleetAI extends InvasionFleetAI
         FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
         if (assignment != null)
         {
+            if (data.targetMarket.getFaction() == fleet.getFaction())
+            {
+                // we already own this market
+                captureSuccessful = true;
+                giveStandDownOrders();
+            }
+            
             float fp = this.fleet.getFleetPoints();
             if (fp < this.data.startingFleetPoints / 2.0F) {
                 giveStandDownOrders();
@@ -55,12 +64,6 @@ public class RespawnFleetAI extends InvasionFleetAI
             int marines = this.fleet.getCargo().getMarines();
             if (marines < data.marineCount * 0.4f) {
                 // we lost over 60% of our marines, no more invading
-                giveStandDownOrders();
-            }
-            
-            if (data.targetMarket.getFaction() == fleet.getFaction())
-            {
-                // we already own this market
                 giveStandDownOrders();
             }
             
@@ -73,7 +76,10 @@ public class RespawnFleetAI extends InvasionFleetAI
                 fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, INVADE_ORBIT_TIME);
                 
                 if (!fleet.getFaction().isHostileTo(data.targetMarket.getFactionId()))
+                {
                     fleet.getFaction().setRelationship(data.targetMarket.getFactionId(), RepLevel.HOSTILE);
+                    ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
+                }
                 
                 if (!responseFleetRequested)
                 {
@@ -123,8 +129,11 @@ public class RespawnFleetAI extends InvasionFleetAI
     protected void giveStandDownOrders()
     {
         // failed capture, reset relationship
-        if (data.targetMarket.getFaction() != fleet.getFaction() && fleet.getFaction().isHostileTo(data.targetMarket.getFactionId()))
+        if (!captureSuccessful && fleet.getFaction().isHostileTo(data.targetMarket.getFactionId()))
+        {
             fleet.getFaction().setRelationship(data.targetMarket.getFactionId(), 0);
+            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
+        }
         
         super.giveStandDownOrders();
     }
