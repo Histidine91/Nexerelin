@@ -217,6 +217,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             FactionAPI marketFaction = market.getFaction();
             if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
                 continue;
+            if (marketFaction.isNeutralFaction() || marketFaction.isPlayerFaction()) continue; 
+            if (marketFaction.getId().equals("independent")) continue;
             int size = market.getSize();
             if (size < 4) continue;
             
@@ -365,15 +367,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(newOwnerId);
-        if (newOwnerConfig.freeMarket)
+        if (newOwnerConfig != null)
         {
-            if (!market.hasCondition("free_market")) market.addCondition("free_market");
-            market.getTariff().modifyFlat("isFreeMarket", 0.1f);
-        }
-        else 
-        {
-            market.removeCondition("free_market");
-            market.getTariff().modifyFlat("isFreeMarket", 0.2f);
+            if (newOwnerConfig.freeMarket)
+            {
+                if (!market.hasCondition("free_market")) market.addCondition("free_market");
+                market.getTariff().modifyFlat("isFreeMarket", 0.1f);
+            }
+            else 
+            {
+                market.removeCondition("free_market");
+                market.getTariff().modifyFlat("isFreeMarket", 0.2f);
+            }
         }
         
         List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
