@@ -31,8 +31,8 @@
     
     "allowPirateInvasions": false,
     "invasionFleetCostPerMarine": 250,  # used for player-requested invasion fleets
-    "invasionGracePeriod": 30,  # factions won't launch invasion fleets at each other for this long
-    "factionRespawnInterval": 30,   # will spawn an invasion fleet for a not-alive faction this often
+    "invasionGracePeriod": 60,  # factions won't launch invasion fleets at each other for this long
+    "factionRespawnInterval": 30,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
     "ownFactionCustomsInspections": false,  # will your faction perform customs inspections on you? (always off for player_npc)
     
     "countPiratesForVictory": true,
