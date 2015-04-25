@@ -57,7 +57,8 @@ public class ExerelinConfig
     
     // Misc
     public static boolean allowPirateInvasions = false;
-    public static float invasionFleetCostPerMarine = 500f;
+    public static float fleetRequestCostPerMarine = 250f;
+    public static float fleetRequestCostPerFP = 1000f;
     public static float invasionGracePeriod = 30f;
     public static float factionRespawnInterval = 30f;
     public static boolean countPiratesForVictory = true;
@@ -96,12 +97,13 @@ public class ExerelinConfig
             prisonerSlaveValueIncrementPerLevel = (float)settings.optDouble("prisonerSlaveValueIncrementPerLevel", prisonerSlaveValueIncrementPerLevel);
             prisonerLootChancePer10Fp  = (float)settings.optDouble("prisonerLootChancePer10Fp", prisonerLootChancePer10Fp);
             prisonerSlaveRepValue = (float)settings.optDouble("prisonerSlaveRepValue", prisonerSlaveRepValue);
-
             crewLootMult = (float)settings.optDouble("crewLootMult", crewLootMult);
-            allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
-            invasionFleetCostPerMarine = (float)settings.optDouble("invasionFleetCostPerMarine", invasionFleetCostPerMarine);
             
+            allowPirateInvasions = settings.optBoolean("allowPirateInvasions", allowPirateInvasions);
+            fleetRequestCostPerMarine = (float)settings.optDouble("fleetRequestCostPerMarine", fleetRequestCostPerMarine);
+            fleetRequestCostPerFP = (float)settings.optDouble("fleetRequestCostPerFP", fleetRequestCostPerFP);
             invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
+            
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);

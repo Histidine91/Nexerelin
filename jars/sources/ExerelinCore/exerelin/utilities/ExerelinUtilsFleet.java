@@ -3,7 +3,6 @@ package exerelin.utilities;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.*;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -16,7 +15,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import data.scripts.campaign.SSP_FleetFactory;
-import data.scripts.plugins.LevelupPluginImpl;
 import data.scripts.world.SSP_FleetInjector;
 import data.scripts.world.SSP_FleetInjector.CommanderType;
 import data.scripts.world.SSP_FleetInjector.CrewType;
@@ -121,6 +119,7 @@ public class ExerelinUtilsFleet
                 injector.levelFleet(fleet, CrewType.ELITE, FleetStyle.ELITE, faction);
                 break;
             case "exerelinInvasionSupportFleet":
+            case "exerelinDefenceFleet":
                 injector.levelCommander(fleet.getCommander(), fleet, CommanderType.WAR, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
                 SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
                 injector.levelFleet(fleet, CrewType.MILITARY, FleetStyle.MILITARY, faction);

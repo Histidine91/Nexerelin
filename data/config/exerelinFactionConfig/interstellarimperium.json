@@ -15,6 +15,7 @@
     "logisticsFleetName":"Prosecutae", # String
     "invasionFleetName":"Exercitus", # String
     "invasionSupportFleetName":"Classis", # String
+    "defenceFleetName":"Custodia",
 
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer

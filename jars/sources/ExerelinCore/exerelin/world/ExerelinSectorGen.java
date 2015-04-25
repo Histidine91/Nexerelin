@@ -603,7 +603,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		sector.addScript(SectorManager.create());
 		sector.addScript(DiplomacyManager.create());
-		sector.addScript(new InvasionFleetManager());
+		sector.addScript(InvasionFleetManager.create());
 		sector.addScript(ResponseFleetManager.create());
 		sector.addScript(CovertOpsManager.create());
 		

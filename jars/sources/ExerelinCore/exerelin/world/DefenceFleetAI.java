@@ -13,16 +13,16 @@ import com.fs.starfarer.api.util.Misc;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
-public class InvasionSupportFleetAI implements EveryFrameScript
+public class DefenceFleetAI implements EveryFrameScript
 {
-    public static Logger log = Global.getLogger(InvasionSupportFleetAI.class);
+    public static Logger log = Global.getLogger(DefenceFleetAI.class);
        
     private final InvasionFleetManager.InvasionFleetData data;
     private float daysTotal = 0.0F;
     private final CampaignFleetAPI fleet;
     private boolean orderedReturn = false;
   
-    public InvasionSupportFleetAI(CampaignFleetAPI fleet, InvasionFleetManager.InvasionFleetData data)
+    public DefenceFleetAI(CampaignFleetAPI fleet, InvasionFleetManager.InvasionFleetData data)
     {
         this.fleet = fleet;
         this.data = data;
@@ -63,18 +63,18 @@ public class InvasionSupportFleetAI implements EveryFrameScript
                   this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, "travelling to the " + system.getBaseName() + " star system");
                 }
                 if (this.data.noWander) {
-                    this.fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, market.getPrimaryEntity(), 40.0F, "attacking " + market.getName());
+                    this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 40.0F, "defending " + market.getName());
                 } else if (Math.random() > 0.8D) {
-                  this.fleet.addAssignment(FleetAssignment.RAID_SYSTEM, system.getHyperspaceAnchor(), 40.0F, "attacking around the " + system.getBaseName() + " star system");
+                  this.fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, system.getHyperspaceAnchor(), 40.0F, "patrolling around the " + system.getBaseName() + " star system");
                 } else if (Math.random() > 0.5D) {
-                  this.fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, market.getPrimaryEntity(), 40.0F, "attacking " + market.getName());
+                  this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 40.0F, "defending " + market.getName());
                 } else {
-                  this.fleet.addAssignment(FleetAssignment.RAID_SYSTEM, system.getStar(), 40.0F, "attacking the " + system.getBaseName() + " star system");
+                  this.fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, system.getStar(), 40.0F, "patrolling the " + system.getBaseName() + " star system");
                 }
             }
             else
             {
-                this.fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, market.getPrimaryEntity(), 40.0F, "attacking " + market.getName());
+                this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 40.0F, "defending " + market.getName());
             }
 
         }
@@ -112,27 +112,18 @@ public class InvasionSupportFleetAI implements EveryFrameScript
     {
         if (data.noWait) return;
         float daysToOrbit = getDaysToOrbit();
-        this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, "preparing for invasion at " + this.data.source.getName());
+        this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, "preparing for patrol at " + this.data.source.getName());
     }
   
     private void giveStandDownOrders()
     {
         if (!this.orderedReturn)
         {
-            log.info("Invasion support fleet " + this.fleet.getNameWithFaction() + " standing down");
+            log.info("Patrol fleet " + this.fleet.getNameWithFaction() + " standing down");
             this.orderedReturn = true;
             this.fleet.clearAssignments();
             
             SectorEntityToken destination = data.source;
-            if (data.target.getFaction() == data.fleet.getFaction())
-            {
-                // our faction controls the original target, perhaps we captured it?
-                // anyway, go ahead and despawn there if it's closer
-                float distToSource = Misc.getDistance(data.fleet.getLocationInHyperspace(), data.source.getLocationInHyperspace());
-                float distToTarget = Misc.getDistance(data.fleet.getLocationInHyperspace(), data.target.getLocationInHyperspace());
-                if (distToSource > distToTarget)
-                    destination = data.target;
-            }
             
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, destination, 1000.0F, "returning to " + destination.getName());
             this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), "ending mission at " + destination.getName());

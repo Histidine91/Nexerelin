@@ -17,6 +17,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.world.InvasionFleetManager;
 import exerelin.world.ResponseFleetManager;
 import java.util.List;
 import org.lazywizard.omnifac.OmniFacSettings;
@@ -47,6 +48,7 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         ExerelinConfig.loadSettings();
         SectorManager.create();
         DiplomacyManager.create();
+        InvasionFleetManager.create();
         ResponseFleetManager.create();
         CovertOpsManager.create();
         

@@ -62,7 +62,7 @@ public class SpawnInvasionFleetHostile implements BaseCommand {
                 return CommandResult.ERROR;
         }
         
-        InvasionFleetManager.InvasionFleetData data = InvasionFleetManager.spawnFleet(closestOriginMarket.getFaction(), closestOriginMarket, closestTargetMarket, 1.1f, true);
+        InvasionFleetManager.InvasionFleetData data = InvasionFleetManager.spawnInvasionFleet(closestOriginMarket.getFaction(), closestOriginMarket, closestTargetMarket, 1.1f, true);
         Console.showMessage("Spawning " + data.fleet.getName() + " from " + closestOriginMarket.getName());
         Console.showMessage("Oscar Mike to " + closestTargetMarket.getName());
         data.fleet.setLocation(playerPos.x, playerPos.y);

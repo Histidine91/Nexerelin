@@ -6,20 +6,17 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.InvasionRound;
 import exerelin.utilities.ExerelinConfig;
 import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
 
-public abstract class InvasionFleetActionBase extends BaseCommandPlugin {
+public abstract class FleetRequestActionBase extends BaseCommandPlugin {
         
         protected static final float MARINE_DEFENDER_MULT = 1.25f; 
     
-        protected float getMoneyRequiredForInvasion(MarketAPI targetMarket)
+        protected float getMoneyRequiredForFleet(int fp, int numMarines)
         {
-            float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket);
-            float numMarines = defenderStrength * MARINE_DEFENDER_MULT;
-            return numMarines * ExerelinConfig.invasionFleetCostPerMarine;
+            return numMarines * ExerelinConfig.fleetRequestCostPerMarine + fp * ExerelinConfig.fleetRequestCostPerFP;
         }
         
         protected MarketAPI getSourceMarketForInvasion(FactionAPI invader, MarketAPI targetMarket)
@@ -59,10 +56,9 @@ public abstract class InvasionFleetActionBase extends BaseCommandPlugin {
             return originMarket;
         }
     
-        protected boolean payForInvasion(MarketAPI targetMarket)
-        {
-            // TODO
-            float moneyRequired = getMoneyRequiredForInvasion(targetMarket);
+        protected boolean payForInvasion(int fp, int marines)
+        {             
+            float moneyRequired = getMoneyRequiredForFleet(fp, marines);
             CargoAPI playerCargo = Global.getSector().getPlayerFleet().getCargo();
             if (playerCargo.getCredits().get() >= moneyRequired)
             {

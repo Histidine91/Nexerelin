@@ -23,7 +23,6 @@ import org.apache.log4j.Logger;
 public class ResponseFleetManager extends BaseCampaignEventListener implements EveryFrameScript
 {
     public static final String MANAGER_MAP_KEY = "exerelin_responseFleetManager";
-    public static final String RESERVE_SIZE_MAP_KEY = "exerelin_reserveFleetSize";
     private static final float RESERVE_INCREMENT_PER_DAY = 0.32f;
     private static final float RESERVE_MARKET_STABILITY_DIVISOR = 5f;
     private static final float INITIAL_RESERVE_SIZE_MULT = 0.75f;
@@ -77,7 +76,8 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         float qf = origin.getShipQualityFactor();
         
         String name = "Response Fleet";
-        if (maxFP < 50) name = "Small " + name;
+        if (maxFP < 70) name = "Small " + name;
+        else if (maxFP > 210) name = "Prime " + name;
         CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
              
         fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinResponseFleet");

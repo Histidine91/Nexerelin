@@ -212,7 +212,6 @@ ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions2,NGCDoesFactionExist
 ExerelinNGCListJunkPirates,ExerelinNGCListFactions2,NGCDoesFactionExist junk_pirates,,,exerelinNGCJoinJunkPirates:Junk Pirates,
 ExerelinNGCListTemplars,ExerelinNGCListFactions2,NGCDoesFactionExist templars,,,exerelinNGCJoinTemplars:Knights Templar,
 ExerelinNGCListMayorate,ExerelinNGCListFactions2,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
-,,,,,,
 ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCListOculusBerserk,ExerelinNGCListFactions3,NGCDoesFactionExist OculusBerserk,,,exerelinNGCJoinOculusBerserk:Oculian Berserks,
@@ -409,21 +408,7 @@ ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,,,"
 ExerelinInvadeListOptionInvade,ExerelinInvadeListOptions,HasMarines,SetEnabled exerelinInvasionProceed true,,1:exerelinInvasionProceed:Proceed,
 ExerelinInvadeListOptionInvadeNoMarines,ExerelinInvadeListOptions,!HasMarines,"SetTooltip exerelinInvasionProceed ""You have no marines!""
 SetEnabled exerelinInvasionProceed false",,1:exerelinInvasionProceed:Proceed,
-ExerelinInvadeListOptionRequestFleet,ExerelinInvadeListOptions,"CanAffordInvasion
-IsFactionAlive $player.factionId","SetTooltip exerelinInvasionRequestFleet ""Deploying a fleet to invade $market will require $creditsRequiredForInvasionFleet credits. $player.creditsHave credits are available.""
-SetEnabled exerelinInvasionRequestFleet true
-SetTooltipHighlightColors exerelinInvasionRequestFleet buttonShortcut buttonShortcut
-SetTooltipHighlights exerelinInvasionRequestFleet $creditsRequiredForInvasionFleet $player.creditsHave",,3:exerelinInvasionRequestFleet:Request a fleet,
-ExerelinInvadeListOptionRequestFleetNoMarkets,ExerelinInvadeListOptions,"CanAffordInvasion
-!IsFactionAlive $player.factionId score:100","SetTooltip exerelinInvasionRequestFleet ""Your faction has no base to launch the invasion from.""
-SetEnabled exerelinInvasionRequestFleet false",,3:exerelinInvasionRequestFleet:Request a fleet,
-ExerelinInvadeListOptionRequestFleetNotEnoughCredits,ExerelinInvadeListOptions,"!CanAffordInvasion score:100
-IsFactionAlive $player.factionId","SetTooltip exerelinInvasionRequestFleet ""Deploying a fleet to invade $market will require $creditsRequiredForInvasionFleet credits. Only $player.creditsHave credits are available.""
-SetEnabled exerelinInvasionRequestFleet false
-SetTooltipHighlightColors exerelinInvasionRequestFleet buttonShortcut buttonShortcut
-SetTooltipHighlights exerelinInvasionRequestFleet $creditsRequiredForInvasionFleet $player.creditsHave",,3:exerelinInvasionRequestFleet:Request a fleet,
-,,,,,,
-ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,FireAll ExerelinInvadeListOptions,"Base attacker strength = (marine strength + fleet DP/2) * 0.7 (average)
+ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,FireAll ExerelinInvadeListOptions,"Base attacker strength = (marine strength + fleet DP/2) * 0.7
 Base defender strength = (market size^3) * (stability + 0.25) * 0.75
 Each Military Base and Regional Capital adds 25% to defender strength, Headquarters adds 40%.
 Attacker strength varies by up to 1/7th in either direction.
@@ -432,10 +417,7 @@ If attacker roll exceeds defender strength, the market is captured.
 Marine losses depend on both strength values, plus a random factor.
 
 Markets accumulate a reserve force over time that can be quickly deployed in response to invasions.",,
-ExerelinInvasionRequestFleet,DialogOptionSelected,$option == exerelinInvasionRequestFleet,"RequestInvasionFleet
-$menuState = main 0
-ShowDefaultVisual
-FireAll PopulateOptions",,,
+,,,,,,
 ExerelinInvasionProceed,DialogOptionSelected,"$option == exerelinInvasionProceed
 $hasMarket ","Wait $global.exerelinInvasionWait 1 $global.exerelinInvasionRoundComplete $global.exerelinInvasionInterrupted $global.exerelinInvasionInProgress ""Invading...""
 BroadcastPlayerWaitAction $global.exerelinInvasionWait HOSTILE 750 $exerelinRespondingToInvasion
@@ -499,7 +481,7 @@ ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion
 # END INVASION OPTIONS,,,,,,
 ,,,,,,
 #START MARKET DIRECTORY OPTIONS,,,,,,
-ExerelinMarketFactionDirectoryOption,ExerelinMarketSpecial,,,,5:exerelinFactionDirectoryMain:Faction directory,
+ExerelinMarketFactionDirectoryOption,ExerelinMarketSpecial,,,,7:exerelinFactionDirectoryMain:Faction directory,
 ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirectoryMain,FireAll ExerelinFactionDirectory,Which faction do you want to look up?,,
 ExerelinFactionDirectoryOptions,ExerelinFactionDirectory,,,,"exerelinFactionDirectoryList1:A-G
 exerelinFactionDirectoryList2:H-M
@@ -631,13 +613,13 @@ ExerelinMarketSaboteurOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
 $faction.id != ""player_npc""
-HasItem saboteur",SetEnabled exerelinUseSaboteur true,,2:exerelinUseSaboteur:Deploy a saboteur,
+HasItem saboteur",SetEnabled exerelinUseSaboteur true,,3:exerelinUseSaboteur:Deploy a saboteur,
 ExerelinMarketSaboteurOptionNoSaboteurs,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
 $faction.id != ""player_npc""
 !HasItem saboteur","SetTooltip exerelinUseSaboteur ""You have no saboteurs!""
-SetEnabled exerelinUseSaboteur false",,2:exerelinUseSaboteur:Deploy a saboteur,
+SetEnabled exerelinUseSaboteur false",,3:exerelinUseSaboteur:Deploy a saboteur,
 #ExerelinMarketSaboteurOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
@@ -666,11 +648,11 @@ FireAll PopulateOptions",You have no more saboteurs to deploy.,,
 #START PRISONER OPTIONS,,,,,,
 ExerelinMarketPrisonerOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""
-HasItem prisoner",SetEnabled exerelinUsePrisoner true,,3:exerelinUsePrisoner:Prisoner actions,
+HasItem prisoner",SetEnabled exerelinUsePrisoner true,,4:exerelinUsePrisoner:Prisoner actions,
 ExerelinMarketPrisonerOptionNoPrisoners,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""
 !HasItem prisoner","SetTooltip exerelinUsePrisoner ""You have no prisoners!""
-SetEnabled exerelinUsePrisoner false",,3:exerelinUsePrisoner:Prisoner actions,
+SetEnabled exerelinUsePrisoner false",,4:exerelinUsePrisoner:Prisoner actions,
 ExerelinPrisonerOptionListMain,DialogOptionSelected,$option == exerelinUsePrisoner,"GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
 FireAll ExerelinPrisonerOption",,,
@@ -738,9 +720,41 @@ ExerelinLeaveFaction,DialogOptionSelected,$option == exerelinLeaveFaction,,Are y
 exerelinMarketSpecial:No",
 ExerelinLeaveFactionConfirm,DialogOptionSelected,$option == exerelinLeaveFactionConfirm,"LeaveFaction
 FireAll ExerelinMarketSpecial",,,
+#END FACTION CHANGE OPTIONS,,,,,,
 ,,,,,,
+#START FLEET REQUEST OPTIONS,,,,,,
+ExerelinMarketFleetRequestOption,ExerelinMarketSpecial,"$hasMarket
+$faction.id != ""neutral""",,,5:exerelinFleetRequestMenu:Request a fleet,
+ExerelinFleetRequestOptionListMain,DialogOptionSelected,$option == exerelinFleetRequestMenu,"$fleetRequestFP = 60
+$fleetRequestMarines=0
+ShowVisual ""graphics/illustrations/hound_hangar.jpg""
+FireAll ExerelinFleetRequestOption",,,
+ExerelinFleetRequestOptionListFire,ExerelinFleetRequestOption,"FleetRequestCanAfford
+IsFactionAlive $player.factionId","SetTooltip exerelinFleetRequestFire ""Deploying this fleet to $market will require $creditsRequiredForFleet credits. $player.creditsHave credits are available.""
+SetEnabled exerelinFleetRequestFire true
+SetTooltipHighlightColors exerelinFleetRequestFire buttonShortcut buttonShortcut
+SetTooltipHighlights exerelinFleetRequestFire $creditsRequiredForFleet $player.creditsHave",,exerelinFleetRequestFire:Request a fleet,
+ExerelinFleetRequestOptionListFireNoMarkets,ExerelinFleetRequestOption,"FleetRequestCanAfford
+!IsFactionAlive $player.factionId score:100","SetTooltip exerelinFleetRequestFire ""Your faction has no base to launch the fleet from.""
+SetEnabled exerelinFleetRequestFire false",,exerelinFleetRequestFire:Request a fleet,
+ExerelinFleetRequestOptionListFireNotEnoughCredits,ExerelinFleetRequestOption,"!FleetRequestCanAfford score:100
+IsFactionAlive $player.factionId","SetTooltip exerelinFleetRequestFire ""Deploying this fleet to $market will require $creditsRequiredForFleet credits. Only $player.creditsHave credits are available.""
+SetEnabled exerelinFleetRequestFire false
+SetTooltipHighlightColors exerelinFleetRequestFire buttonShortcut buttonShortcut
+SetTooltipHighlights exerelinFleetRequestFire $creditsRequiredForFleet $player.creditsHave",,exerelinFleetRequestFire:Request a fleet,
+ExerelinFleetRequestOptionListChangeFP,ExerelinFleetRequestOption,,,,exerelinFleetRequestChangeFP:Fleet points - $fleetRequestFP,
+ExerelinFleetRequestOptionListChangeMarineCount,ExerelinFleetRequestOption,FleetRequestCanInvade,"SetEnabled exerelinFleetRequestChangeMarineCount true
+SetTooltip exerelinFleetRequestChangeMarineCount ""Carrying marines will make this fleet an invasion fleet. Dispatching one will be considered a hostile act.""",,exerelinFleetRequestChangeMarineCount:Marines to deploy - $fleetRequestMarines,
+ExerelinFleetRequestOptionListChangeMarineCountInvalid,ExerelinFleetRequestOption,!FleetRequestCanInvade,"SetTooltip exerelinFleetRequestChangeMarineCount ""This market is not an eligible invasion target.""
+SetEnabled exerelinFleetRequestChangeMarineCount false",,exerelinFleetRequestChangeMarineCount:Marines to deploy - $fleetRequestMarines,
+ExerelinFleetRequestOptionListBack,ExerelinFleetRequestOption,,,,exerelinMarketSpecial:Back,
 ,,,,,,
-,,,,,,
+ExerelinFleetRequestChangeFP,DialogOptionSelected,$option == exerelinFleetRequestChangeFP,"FleetRequestChangeFP
+FireAll ExerelinFleetRequestOption",,,
+ExerelinFleetRequestChangeMarineCount,DialogOptionSelected,$option == exerelinFleetRequestChangeMarineCount,"FleetRequestChangeMarineCount
+FireAll ExerelinFleetRequestOption",,,
+ExerelinFleetRequestFire,DialogOptionSelected,$option == exerelinFleetRequestFire,"FleetRequestFire
+FireAll ExerelinFleetRequestOption",,,
 ,,,,,,
 ,,,,,,
 # Player fleet greeting lines,,,,,,
