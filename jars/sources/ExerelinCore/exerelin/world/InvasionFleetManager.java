@@ -397,6 +397,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             FactionAPI marketFaction = market.getFaction();
             if  ( marketFaction.isHostileTo(invader)) 
             {
+                if (marketFaction.getId().equals("independent")) continue;
                 if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
                     continue;
                 /*

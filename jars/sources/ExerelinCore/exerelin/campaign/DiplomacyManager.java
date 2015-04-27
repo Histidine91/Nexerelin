@@ -82,7 +82,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     private final IntervalUtil intervalUtil;
     
     static {
-        String[] factions = {"templars"};
+        String[] factions = {"templars", "independent"};
         disallowedFactions = Arrays.asList(factions);
         pirateFactions = new ArrayList<>();
         eventDefs = new ArrayList<>();
