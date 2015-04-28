@@ -13,6 +13,7 @@ public class ExerelinInvestigationEventSmuggling extends InvestigationEventSmugg
             {
                 log.info("Investigation by own faction; aborting");
                 endEvent();
+                return;
             }
         }
         super.startEvent();

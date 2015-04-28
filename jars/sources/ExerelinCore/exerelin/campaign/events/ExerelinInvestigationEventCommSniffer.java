@@ -13,6 +13,7 @@ public class ExerelinInvestigationEventCommSniffer extends InvestigationEventCom
             {
                 log.info("Investigation by own faction; aborting");
                 endEvent();
+                return;
             }
         }
         super.startEvent();
