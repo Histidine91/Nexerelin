@@ -4,6 +4,8 @@ import com.fs.starfarer.api.impl.campaign.events.InvestigationEventCommSniffer;
 
 public class ExerelinInvestigationEventCommSniffer extends InvestigationEventCommSniffer {
     
+    protected String factionId = "neutral";
+    
     @Override
     public void startEvent() {
         //String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -17,5 +19,22 @@ public class ExerelinInvestigationEventCommSniffer extends InvestigationEventCom
             }
         }
         super.startEvent();
+        factionId = market.getFactionId();
+    }
+    
+    @Override
+    public void advance(float amount) {
+        if (!isEventStarted()) return;
+        if (isDone()) return;
+
+        // market has changed hands since investigation started; kill it
+        if (!market.getFactionId().equals(factionId))
+        {
+            log.info("Market changed hands; cancelling investigation");
+            super.endEvent();
+            return;
+        }
+        
+        super.advance(amount);
     }
 }
