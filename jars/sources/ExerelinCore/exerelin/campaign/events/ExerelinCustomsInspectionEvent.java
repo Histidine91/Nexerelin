@@ -25,13 +25,14 @@ public class ExerelinCustomsInspectionEvent extends CustomsInspectionEvent {
     @Override
     public void startEvent() {
         //String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+        log.info("Customs inspection event starting : " + (market != null));
         if (market != null) {
             String marketFactionId = market.getFactionId();
-            boolean ownFaction = marketFactionId.equals("player_npc");
-            if (ExerelinConfig.ownFactionCustomsInspections && marketFactionId.equals(PlayerFactionStore.getPlayerFactionId())) 
-                ownFaction = true;
+            boolean blockOwnFaction = marketFactionId.equals("player_npc");
+            if (!ExerelinConfig.ownFactionCustomsInspections || marketFactionId.equals(PlayerFactionStore.getPlayerFactionId())) 
+                blockOwnFaction = true;
             
-            if (ownFaction)
+            if (blockOwnFaction)
             {
                 log.info("Customs inspection by own faction; aborting");
                 endEvent(InspectionOutcome.ENDED_PEACEFULLY);
