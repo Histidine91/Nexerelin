@@ -423,7 +423,8 @@ $hasMarket ","Wait $global.exerelinInvasionWait 1 $global.exerelinInvasionRoundC
 BroadcastPlayerWaitAction $global.exerelinInvasionWait HOSTILE 750 $exerelinRespondingToInvasion
 MakePlayerImmediatelyAttackable
 TriggerResponseFleet
-$player.invasionTarget = $id 1.01",,,
+$player.invasionTarget = $id 1.01
+AdjustRep $faction.id COMBAT_NORMAL",,,
 ExerelinInvasionCancel,DialogOptionSelected,"$option == exerelinInvasionCancel
 $hasMarket","ShowDefaultVisual
 FireAll ExerelinMarketSpecial",You decide not to attack $entityName.,,
@@ -469,13 +470,11 @@ MakeOtherFleetHostile true
 MakeOtherFleetAggressive true
 unset $ignorePlayerCommRequests
 unset $player.invasionTarget
-AdjustRep $faction.id COMBAT_NORMAL
 BroadcastCancelPlayerAction 1500 $exerelinRespondingToInvasion",The appearance of a $faction $otherShipOrFleet disrupts your invasion preparations.,,
 ExerelinInvasionInterference_cancelledAndRan,BeginFleetEncounter,$exerelinRespondingToInvasion score:100,"MakeOtherFleetHostile true
 MakeOtherFleetAggressive true
 unset $ignorePlayerCommRequests
 unset $player.invasionTarget
-AdjustRep $faction.id COMBAT_NORMAL
 BroadcastCancelPlayerAction 1500 $exerelinRespondingToInvasion","The $faction $otherShipOrFleet catches up with you, weapons hot.",,
 ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion score:100,$ignorePlayerCommRequests = true 1,"""You'll pay for trying to invade our territory!"" The comm link is cut before you can begin to respond.",continueCutComm:Continue,
 # END INVASION OPTIONS,,,,,,
