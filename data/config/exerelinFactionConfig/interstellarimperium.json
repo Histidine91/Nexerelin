@@ -14,6 +14,7 @@
     "gasMiningFleetName":"Cuniculator", # String
     "logisticsFleetName":"Prosecutae", # String
     "invasionFleetName":"Exercitus", # String
+    "responseFleetName":"Praesidium",
     "invasionSupportFleetName":"Classis", # String
     "defenceFleetName":"Custodia",
 

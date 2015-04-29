@@ -76,6 +76,11 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         float qf = origin.getShipQualityFactor();
         
         String name = "Response Fleet";
+        ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(origin.getFactionId());
+        if (factionConfig != null)
+        {
+            name = factionConfig.responseFleetName;
+        }
         if (maxFP < 70) name = "Small " + name;
         else if (maxFP > 210) name = "Prime " + name;
         CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);

@@ -28,6 +28,7 @@ public class ExerelinFactionConfig
     public String logisticsFleetName = "Logistics Convoy";
     public String invasionFleetName = "Invasion Fleet";
     public String invasionSupportFleetName = "Strike Fleet";
+    public String responseFleetName = "Response Fleet";
     public String defenceFleetName = "Defence Fleet";
     
     public int positiveDiplomacyExtra = 0;
@@ -75,6 +76,7 @@ public class ExerelinFactionConfig
             invasionFleetName = settings.optString("invasionFleetName", invasionFleetName);
             invasionSupportFleetName = settings.optString("invasionSupportFleetName", invasionSupportFleetName);
             defenceFleetName = settings.optString("defenceFleetName", defenceFleetName);
+            responseFleetName = settings.optString("responseFleetName", responseFleetName);
             
             positiveDiplomacyExtra = settings.optInt("positiveDiplomacyExtra");
             negativeDiplomacyExtra = settings.optInt("negativeDiplomacyExtra");
