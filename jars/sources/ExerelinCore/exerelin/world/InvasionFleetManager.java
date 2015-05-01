@@ -423,9 +423,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         
         // okay, assemble battlegroup
         InvasionFleetData data = spawnInvasionFleet(invader, originMarket, targetMarket, DEFENDER_STRENGTH_MARINE_MULT, false);
-        this.activeFleets.add(data);
-        this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
-        this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
+        spawnSupportFleet(invader, originMarket, targetMarket);
+        spawnSupportFleet(invader, originMarket, targetMarket);
         
         /*
         if (originMarket.getSize() >= 4)
