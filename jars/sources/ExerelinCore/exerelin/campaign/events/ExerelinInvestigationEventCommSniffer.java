@@ -19,7 +19,7 @@ public class ExerelinInvestigationEventCommSniffer extends InvestigationEventCom
             }
         }
         super.startEvent();
-        factionId = market.getFactionId();
+        factionId = entity.getFaction().getId();
     }
     
     @Override
@@ -27,10 +27,10 @@ public class ExerelinInvestigationEventCommSniffer extends InvestigationEventCom
         if (!isEventStarted()) return;
         if (isDone()) return;
 
-        // market has changed hands since investigation started; kill it
-        if (!market.getFactionId().equals(factionId))
+        // relay has changed hands since investigation started; kill it
+        if (!entity.getFaction().getId().equals(factionId))
         {
-            log.info("Market changed hands; cancelling investigation");
+            log.info("Relay changed hands; cancelling investigation");
             super.endEvent();
             return;
         }
