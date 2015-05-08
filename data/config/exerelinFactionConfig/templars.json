@@ -24,10 +24,10 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
     
-    "invasionStrengthBonusAttack":0.125,
-    "invasionStrengthBonusDefend":0.125,
-    "invasionFleetSizeMod":0.125,
-    "responseFleetSizeMod":0.125,
+    "invasionStrengthBonusAttack":0.1875,
+    "invasionStrengthBonusDefend":0.1875,
+    "invasionFleetSizeMod":0.1875,
+    "responseFleetSizeMod":0.1875,
 
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }
