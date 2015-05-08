@@ -17,6 +17,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -84,6 +85,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         onlyRespawnStartingFactions = ExerelinSetupData.getInstance().onlyRespawnStartingFactions;
         respawnInterval = ExerelinConfig.factionRespawnInterval;
         respawnIntervalUtil = new IntervalUtil(respawnInterval * 0.75F, respawnInterval * 1.25F);
+        
+        // Templars don't normally post bounties, but they do here
+        if (Arrays.asList(ExerelinSetupData.getInstance().getPossibleFactions()).contains("templars"))
+            SharedData.getData().getPersonBountyEventData().addParticipatingFaction("templars");
     }
    
     @Override
