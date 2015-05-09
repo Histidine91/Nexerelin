@@ -337,7 +337,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 
             Float weariness = warWeariness.get(factionId);
             if (weariness == null) weariness = 0f;
-            List<String> enemies = getFactionsAtWarWithFaction(faction, false);
+            List<String> enemies = getFactionsAtWarWithFaction(faction, false, false);
             int warCount = enemies.size();
             if (warCount > 0)
             {
@@ -511,12 +511,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return diplomacyManager;
     }
     
-    public static List<String> getFactionsAtWarWithFaction(String factionId, boolean includePirates)
+    public static List<String> getFactionsAtWarWithFaction(String factionId, boolean includePirates, boolean includeTemplars)
     {
-        return getFactionsAtWarWithFaction(Global.getSector().getFaction(factionId), includePirates);
+        return getFactionsAtWarWithFaction(Global.getSector().getFaction(factionId), includePirates, includeTemplars);
     }
     
-    public static List<String> getFactionsAtWarWithFaction(FactionAPI faction, boolean includePirates)
+    public static List<String> getFactionsAtWarWithFaction(FactionAPI faction, boolean includePirates, boolean includeTemplars)
     {
         SectorAPI sector = Global.getSector();
         List<String> enemies = new ArrayList<>();
@@ -525,7 +525,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         for(String otherFactionId : factions)
         {
             if (faction.isAtBest(otherFactionId, RepLevel.HOSTILE) && (includePirates || !pirateFactions.contains(otherFactionId))
-                    && !disallowedFactions.contains(otherFactionId))
+                    && (otherFactionId.equals("templars") && includeTemplars || !disallowedFactions.contains(otherFactionId) ))
             {
                 enemies.add(otherFactionId);
             }
@@ -535,7 +535,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     public static boolean isFactionAtWar(String factionId, boolean excludeNeutralAndRebels)
     {
-        if(getFactionsAtWarWithFaction(factionId, !excludeNeutralAndRebels).size() > 0)
+        if(getFactionsAtWarWithFaction(factionId, !excludeNeutralAndRebels, true).size() > 0)
             return true;
         else
             return false;

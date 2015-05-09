@@ -40,7 +40,7 @@ public class StationAttackFleet extends ExerelinFleetBase
 
         this.fleet = ExerelinUtilsFleet.createFleetForFaction(faction, ExerelinUtilsFleet.ExerelinFleetType.BOARDING, null);
 
-        if (DiplomacyManager.getFactionsAtWarWithFaction(faction, false).size() > 0)
+        if (DiplomacyManager.getFactionsAtWarWithFaction(faction, false, true).size() > 0)
             ExerelinUtilsFleet.addEscortsToFleet(this.fleet, 4);
         else
             ExerelinUtilsFleet.addEscortsToFleet(this.fleet, 2);

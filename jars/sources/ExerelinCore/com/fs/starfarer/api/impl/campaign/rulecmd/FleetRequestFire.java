@@ -58,6 +58,7 @@ public class FleetRequestFire extends FleetRequestActionBase {
                 fleetParams.targetMarket = targetMarket;
                 fleetParams.numMarines = marines;
                 fleetParams.noWander = true;
+                fleetParams.noWait = true;
                 InvasionFleetManager.spawnFleet(fleetParams);
                 
                 TextPanelAPI text = dialog.getTextPanel();
@@ -69,11 +70,11 @@ public class FleetRequestFire extends FleetRequestActionBase {
                 
                 if (isDefenceFleet)
                 {
-                    text.addParagraph("An fleet is being assembled and will begin defending " + sourceMarketName + "shortly.");
+                    text.addParagraph("An fleet is being launched and will begin defending " + sourceMarketName + " shortly.");
                 }
                 else
                 {
-                    text.addParagraph("A fleet is being assembled at " + sourceMarketName + ", in " + origin + ". It will be underway within a few days.");
+                    text.addParagraph("A fleet is being launched at " + sourceMarketName + ", in " + origin + ". It will be underway shortly.");
                     text.highlightInLastPara(hl, sourceMarketName);
                     //text.highlightInLastPara(hl, origin);
                 }

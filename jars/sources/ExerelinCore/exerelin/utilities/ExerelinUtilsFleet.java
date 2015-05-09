@@ -89,9 +89,6 @@ public class ExerelinUtilsFleet
         
         log.info("Fleet " + fleet.getName() + ": stability " + stability + "; qf " + qualityFactor);
 
-        // Templar fleets break if the quality factor is too low
-        if (faction.equals("templars")) qualityFactor = Math.max(qualityFactor, 0.7f);
-
         switch (type)
         {
             case "exerelinInvasionFleet":

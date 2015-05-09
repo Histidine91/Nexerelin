@@ -43,14 +43,17 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     private static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
     private static final float DEFENDER_STRENGTH_MARINE_MULT = 1.15f;
     public static final float RESPAWN_FLEET_SPAWN_DISTANCE = 18000f;
+    private static final float TEMPLAR_INVASION_WEIGHT_BONUS = 0.4f;
+    private static final float TEMPLAR_INVASION_TARGET_MOD = 0.25f;
+    private static final int MAX_FLEETS = 50;
     
     public static Logger log = Global.getLogger(InvasionFleetManager.class);
     
     private final List<InvasionFleetData> activeFleets = new LinkedList();
-    private final int maxFleets = 20;
+    
     private final IntervalUtil tracker;
     
-    private float gracePeriod = ExerelinConfig.invasionGracePeriod;
+    private final float gracePeriod = ExerelinConfig.invasionGracePeriod;
     private float daysElapsed = 0;
     
     private static InvasionFleetManager invasionFleetManager;
@@ -254,10 +257,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         return fleetData;
     }
     
-    public static InvasionFleetData spawnDefenceFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, boolean noWander)
+    public static InvasionFleetData spawnDefenceFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, boolean noWander, boolean noWait)
     {
         int maxFP = (int)(calculateMaxFpForFleet(originMarket, targetMarket) * 0.66f);
         float qf = originMarket.getShipQualityFactor();
+        qf = Math.max(qf, 0.7f);
         
         String name = getFleetName("exerelinDefenseFleet", faction.getId(), maxFP);
         
@@ -270,6 +274,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         params.originMarket = originMarket;
         params.targetMarket = targetMarket;
         params.noWander = noWander;
+        params.noWait = noWait;
         //params.aiClass = InvasionSupportFleetAI.class.getName();
         
         InvasionFleetData fleetData = spawnFleet(params);
@@ -277,10 +282,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         return fleetData;
     }
     
-    public static InvasionFleetData spawnSupportFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket)
+    public static InvasionFleetData spawnSupportFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, boolean noWander, boolean noWait)
     {
         int maxFP = (int)(calculateMaxFpForFleet(originMarket, targetMarket) * 0.66f);
         float qf = originMarket.getShipQualityFactor();
+        qf = Math.max(qf, 0.7f);
         
         String name = getFleetName("exerelinInvasionSupportFleet", faction.getId(), maxFP);
 
@@ -293,6 +299,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         params.originMarket = originMarket;
         params.targetMarket = targetMarket;
         params.noWander = true;
+        params.noWait = noWait;
         //params.aiClass = InvasionSupportFleetAI.class.getName();
         
         InvasionFleetData fleetData = spawnFleet(params);
@@ -306,6 +313,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         
         int maxFP = (int)calculateMaxFpForFleet(originMarket, targetMarket);
         float qf = originMarket.getShipQualityFactor();
+        qf = Math.max(qf, 0.7f);
         
         String name = getFleetName("exerelinInvasionFleet", faction.getId(), maxFP);
                 
@@ -345,9 +353,21 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             if (faction.isNeutralFaction()) continue;
             if (faction.isPlayerFaction()) continue;
             if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(faction.getId())) continue;
-            List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, ExerelinConfig.allowPirateInvasions);
+            List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, ExerelinConfig.allowPirateInvasions, true);
 
-            if (!enemies.isEmpty()) factionPicker.add(faction);
+            if (enemies.isEmpty()) continue;
+            int numWars = enemies.size();
+            
+            float weight = 1;
+            if (faction.getId().equals("templars")) // TODO don't hardcode faction
+            {
+                weight = numWars*TEMPLAR_INVASION_WEIGHT_BONUS + (1 - TEMPLAR_INVASION_WEIGHT_BONUS);
+            }
+            else if (numWars == 1 && enemies.get(0).equals("templars"))
+            {
+                weight = TEMPLAR_INVASION_TARGET_MOD;
+            }
+            factionPicker.add(faction, weight);
         }
         FactionAPI invader = factionPicker.pick();
         if (invader == null) return;
@@ -412,6 +432,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 }
                 float weight = 20000.0F / dist;
                 //weight *= market.getSize() * market.getStabilityValue();    // try to go after high value targets
+                if (marketFaction.getId().equals("templars")) weight *= TEMPLAR_INVASION_TARGET_MOD;
+                
                 targetPicker.add(market, weight);
             }
         }
@@ -423,8 +445,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         
         // okay, assemble battlegroup
         InvasionFleetData data = spawnInvasionFleet(invader, originMarket, targetMarket, DEFENDER_STRENGTH_MARINE_MULT, false);
-        spawnSupportFleet(invader, originMarket, targetMarket);
-        spawnSupportFleet(invader, originMarket, targetMarket);
+        spawnSupportFleet(invader, originMarket, targetMarket, false, false);
+        spawnSupportFleet(invader, originMarket, targetMarket, false, false);
         
         /*
         if (originMarket.getSize() >= 4)
@@ -468,7 +490,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         }
         this.activeFleets.removeAll(remove);
     
-        if (this.activeFleets.size() < this.maxFleets)
+        if (this.activeFleets.size() < this.MAX_FLEETS)
         {
             generateInvasionFleet();
         }
