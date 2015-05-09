@@ -1,0 +1,7 @@
+{
+	"music_campaign_victory_theme":{
+		"sounds":[
+			{"file":"sounds/Exerelin/music/Posthumus_Regnum_Finale.ogg","pitch":1.0,"volume":1.0},
+		],
+	},
+}

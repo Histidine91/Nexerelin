@@ -304,6 +304,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         //FactionAPI faction = Global.getSector().getFaction(factionId);
         SectorAPI sector = Global.getSector();
         String playerFactionId = PlayerFactionStore.getPlayerFactionId();
+        String victorFactionId = playerFactionId;
+        boolean playerVictory = true;
+        VictoryType victoryType = VictoryType.CONQUEST;
         
         List<String> liveFactions = getLiveFactionIdsCopy();
         for (String factionId : getLiveFactionIdsCopy())
@@ -316,13 +319,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         if (liveFactions.size() == 1)   // conquest victory
         {
-            String victorFactionId = liveFactions.get(0);
-            Map<String, Object> params = new HashMap<>();
-            boolean playerVictory = victorFactionId.equals(PlayerFactionStore.getPlayerFactionId());
-            params.put("victorFactionId", victorFactionId);
-            params.put("diplomaticVictory", false);
-            params.put("playerVictory", playerVictory);
-            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(sector.getPlayerFleet()), "exerelin_victory", params);
+            victorFactionId = liveFactions.get(0);
+            playerVictory = victorFactionId.equals(PlayerFactionStore.getPlayerFactionId());
             sectorManager.victoryHasOccured = true;
         }
         else {
@@ -334,12 +332,25 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 if (!faction.isAtWorst(playerFactionId, RepLevel.FRIENDLY))
                     return;
             }
-            Map<String, Object> params = new HashMap<>();
-            params.put("victorFactionId", playerFactionId);
-            params.put("diplomaticVictory", true);
-            params.put("playerVictory", true);
-            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(sector.getPlayerFleet()), "exerelin_victory", params);
+            victoryType = VictoryType.DIPLOMATIC;
             sectorManager.victoryHasOccured = true;
+        }
+        
+        if (sectorManager.victoryHasOccured)
+        {
+            if (playerVictory)
+            {
+                Global.getSector().addScript(new VictoryScreenScript(playerFactionId, victoryType));
+            }
+            else
+            {
+                Map<String, Object> params = new HashMap<>();
+                playerVictory = victorFactionId.equals(PlayerFactionStore.getPlayerFactionId());
+                params.put("victorFactionId", victorFactionId);
+                params.put("diplomaticVictory", false);
+                params.put("playerVictory", playerVictory);
+                Global.getSector().getEventManager().startEvent(new CampaignEventTarget(sector.getPlayerFleet()), "exerelin_victory", params);
+            }
         }
     }
     
@@ -519,5 +530,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return;
         sectorManager.wantExpelPlayerFromFaction = true;
+    }
+    
+    public enum VictoryType
+    {
+        CONQUEST,
+        DIPLOMATIC
     }
 }
