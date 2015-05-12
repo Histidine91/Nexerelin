@@ -74,6 +74,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         }
         
         float qf = origin.getShipQualityFactor();
+        qf = Math.max(qf, 0.7f);
         
         String name = "Response Fleet";
         ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(origin.getFactionId());

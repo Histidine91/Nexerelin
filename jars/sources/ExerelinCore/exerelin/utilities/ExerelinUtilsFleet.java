@@ -88,6 +88,7 @@ public class ExerelinUtilsFleet
         }
         
         log.info("Fleet " + fleet.getName() + ": stability " + stability + "; qf " + qualityFactor);
+        qualityFactor = Math.max(qualityFactor, 0.7f);
 
         switch (type)
         {
