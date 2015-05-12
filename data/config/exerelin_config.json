@@ -33,6 +33,9 @@
     "fleetRequestCostPerMarine": 125,  # used for player-requested fleets
     "fleetRequestCostPerFP": 500,  # used for player-requested fleets
     "invasionGracePeriod": 60,  # factions won't launch invasion fleets at each other for this long
+    "pointsRequiredForInvasionFleet": 5000,    # bigger = longer delay between invasion fleets
+    "baseInvasionPointsPerFaction": 25, # each market also contributes stability * size
+    
     "factionRespawnInterval": 30,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
     "ownFactionCustomsInspections": false,  # will your faction perform customs inspections on you? (always off for player_npc)
     
@@ -42,5 +45,5 @@
 
     # CASE SENSITIVE!!!
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "luddic_church", "pirates", "player_npc"], # String array
-    "supportedModFactions":["blackrock_driveyards", "bushi", "citadeldefenders", "hiigaran_descendants", "junk_pirates", "mayorate", "neutrinocorp", "ori", "rori", "pack", "patnavy", "shadow_industry", "syndicate_asp", "valkyrian", "exigency", "exipirated", "interstellarimperium", "SCY", "diableavionics", "crystanite", "templars", "PTech", "OculusBerserk", "pn_colony"], # String array
+    "supportedModFactions":["blackrock_driveyards", "bushi", "citadeldefenders", "hiigaran_descendants", "junk_pirates", "mayorate", "neutrinocorp", "ori", "rori", "pack", "patnavy", "shadow_industry", "syndicate_asp", "valkyrian", "exigency", "exipirated", "interstellarimperium", "SCY", "diableavionics", "crystanite", "templars", "PTech", "OculusBerserk", "pn_colony", "spire"], # String array
 }

@@ -55,11 +55,15 @@ public class ExerelinConfig
     public static String[] builtInFactions = new String[]{};
     public static String[] supportedModFactions = new String[]{};
     
-    // Misc
+    // Invasion stuff
     public static boolean allowPirateInvasions = false;
     public static float fleetRequestCostPerMarine = 250f;
     public static float fleetRequestCostPerFP = 1000f;
     public static float invasionGracePeriod = 30f;
+    public static float pointsRequiredForInvasionFleet = 5000f;
+    public static float baseInvasionPointsPerFaction = 25f;
+    
+    // Misc
     public static float factionRespawnInterval = 30f;
     public static boolean countPiratesForVictory = true;
     public static boolean ownFactionCustomsInspections = false;
@@ -103,6 +107,8 @@ public class ExerelinConfig
             fleetRequestCostPerMarine = (float)settings.optDouble("fleetRequestCostPerMarine", fleetRequestCostPerMarine);
             fleetRequestCostPerFP = (float)settings.optDouble("fleetRequestCostPerFP", fleetRequestCostPerFP);
             invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
+            pointsRequiredForInvasionFleet = (float)settings.optDouble("pointsRequiredForInvasionFleet", pointsRequiredForInvasionFleet);
+            baseInvasionPointsPerFaction = (float)settings.optDouble("baseInvasionPointsPerFaction", baseInvasionPointsPerFaction);
             
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);

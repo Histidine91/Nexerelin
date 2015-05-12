@@ -19,6 +19,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -32,29 +33,30 @@ import org.lwjgl.util.vector.Vector2f;
 
 /**
  * Handles invasion fleets (the ones that capture stations)
- * Based on Dark.Revenant's II_WarFleetManager
+ * Originally derived from Dark.Revenant's II_WarFleetManager
  */
 public class InvasionFleetManager extends BaseCampaignEventListener implements EveryFrameScript
 {
     public static final String MANAGER_MAP_KEY = "exerelin_invasionFleetManager";
     
-    private static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
-    private static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
-    private static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
-    private static final float DEFENDER_STRENGTH_MARINE_MULT = 1.15f;
+    public static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
+    public static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
+    public static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
+    public static final float DEFENDER_STRENGTH_MARINE_MULT = 1.15f;
     public static final float RESPAWN_FLEET_SPAWN_DISTANCE = 18000f;
-    private static final float TEMPLAR_INVASION_WEIGHT_BONUS = 0.4f;
-    private static final float TEMPLAR_INVASION_TARGET_MOD = 0.25f;
-    private static final int MAX_FLEETS = 50;
+    public static final float HOSTILE_TO_ALL_INVASION_POINT_MOD = 0.25f;
+    public static final float HOSTILE_TO_ALL_INVASION_TARGET_MOD = 0.125f;
+    public static final int MAX_FLEETS = 50;
     
     public static Logger log = Global.getLogger(InvasionFleetManager.class);
     
-    private final List<InvasionFleetData> activeFleets = new LinkedList();
+    protected final List<InvasionFleetData> activeFleets = new LinkedList();
+    protected HashMap<String, Float> spawnCounter = new HashMap<>();
     
     private final IntervalUtil tracker;
     
-    private final float gracePeriod = ExerelinConfig.invasionGracePeriod;
-    private float daysElapsed = 0;
+    protected final float gracePeriod = ExerelinConfig.invasionGracePeriod;
+    protected float daysElapsed = 0;
     
     private static InvasionFleetManager invasionFleetManager;
   
@@ -64,7 +66,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     
         float interval = 8; //Global.getSettings().getFloat("averagePatrolSpawnInterval");
         //interval = 2;   // debug
-        this.tracker = new IntervalUtil(interval * 0.75F, interval * 1.25F);
+        //this.tracker = new IntervalUtil(interval * 0.75F, interval * 1.25F);
+        this.tracker = new IntervalUtil(1, 1);
     }
     
     public static float calculateMaxFpForFleet(MarketAPI originMarket, MarketAPI targetMarket)
@@ -348,6 +351,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         boolean allowPirates = ExerelinConfig.allowPirateInvasions;
         
         // pick a faction to invade someone
+        
+        // old random way meh
+        /*
         for (FactionAPI faction: factions)
         {
             if (faction.isNeutralFaction()) continue;
@@ -361,110 +367,170 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             float weight = 1;
             if (faction.getId().equals("templars")) // TODO don't hardcode faction
             {
-                weight = numWars*TEMPLAR_INVASION_WEIGHT_BONUS + (1 - TEMPLAR_INVASION_WEIGHT_BONUS);
+                weight = numWars*HOSTILE_TO_ALL_INVASION_POINT_MOD + (1 - HOSTILE_TO_ALL_INVASION_POINT_MOD);
             }
             else if (numWars == 1 && enemies.get(0).equals("templars"))
             {
-                weight = TEMPLAR_INVASION_TARGET_MOD;
+                weight = HOSTILE_TO_ALL_INVASION_TARGET_MOD;
             }
             factionPicker.add(faction, weight);
         }
         FactionAPI invader = factionPicker.pick();
         if (invader == null) return;
         //log.info("\t" + invader.getDisplayName() + " picked to launch invasion");
+        */
         
-        // now pick source market
-        for (MarketAPI market : markets) {
-            if  ( market.getFaction() == invader && !market.hasCondition("decivilized") && 
-                ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) || (market.hasCondition("military_base"))
-                    || (market.hasCondition("regional_capital")) || (market.hasCondition("headquarters"))
-                ) && market.getSize() >= 3 )
+        // new "everyone gets a chance way"
+        if (spawnCounter == null) spawnCounter = new HashMap<>();
+        HashMap<String, Float> pointsPerFaction = new HashMap<>();
+        for (MarketAPI market : markets)
+        {
+            String factionId = market.getFactionId();
+            if (!pointsPerFaction.containsKey(factionId))
+                pointsPerFaction.put(factionId, 0f);
+            
+            float points = pointsPerFaction.get(factionId);
+            points += market.getSize() * market.getStabilityValue();
+            pointsPerFaction.put(factionId, points);
+        }
+        
+        List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
+        for (String factionId: liveFactionIds)
+        {
+            FactionAPI faction = sector.getFaction(factionId);
+            if (faction.isNeutralFaction()) continue;
+            if (faction.isPlayerFaction()) continue;
+            boolean isPirateFaction = ExerelinUtilsFaction.isPirateFaction(factionId);
+            if (!allowPirates && isPirateFaction) continue;
+            
+            float mult = 1f;
+            List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, ExerelinConfig.allowPirateInvasions, true);
+            if (enemies.isEmpty()) continue;
+            
+            int numWars = enemies.size();
+            if (faction.getId().equals("templars") || isPirateFaction) // TODO don't hardcode faction
             {
-                marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
-                if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
+                mult = numWars*HOSTILE_TO_ALL_INVASION_POINT_MOD + (1 - HOSTILE_TO_ALL_INVASION_POINT_MOD);
+            }
+            else if (numWars == 1 && enemies.get(0).equals("templars"))
+            {
+                mult = HOSTILE_TO_ALL_INVASION_TARGET_MOD;
+            }
+            
+            // increment invasion counter
+            if (!spawnCounter.containsKey(factionId))
+                spawnCounter.put(factionId, 0f);
+            
+            float counter = spawnCounter.get(factionId);
+            float increment = pointsPerFaction.get(factionId) + ExerelinConfig.baseInvasionPointsPerFaction;
+            increment *= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+            spawnCounter.put(factionId, counter + increment);
+            
+            if (counter < ExerelinConfig.pointsRequiredForInvasionFleet)
+            {
+                spawnCounter.put(factionId, counter);
+                continue;   // done here
+            }
+            
+            // okay, we can invade
+            counter -= ExerelinConfig.pointsRequiredForInvasionFleet;
+            spawnCounter.put(factionId, counter);
+            FactionAPI invader = faction;
+            
+            // pick a source market
+            for (MarketAPI market : markets) {
+                if  ( market.getFaction() == invader && !market.hasCondition("decivilized") && 
+                    ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) || (market.hasCondition("military_base"))
+                        || (market.hasCondition("regional_capital")) || (market.hasCondition("headquarters"))
+                    ) && market.getSize() >= 3 )
+                {
+                    marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
+                    if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
+                            continue;
+                    float weight = marineStockpile;
+                    if (market.hasCondition("military_base")) {
+                        weight *= 2.0F;
+                    }
+                    if (market.hasCondition("orbital_station")) {
+                        weight *= 1.25F;
+                    }
+                    if (market.hasCondition("spaceport")) {
+                        weight *= 1.5F;
+                    }
+                    if (market.hasCondition("headquarters")) {
+                        weight *= 1.5F;
+                    }
+                    if (market.hasCondition("regional_capital")) {
+                        weight *= 1.25F;
+                    }
+                    weight *= market.getSize() * market.getStabilityValue();
+                    sourcePicker.add(market, weight);
+                }
+            }
+            MarketAPI originMarket = (MarketAPI)sourcePicker.pick();
+            if (originMarket == null) {
+                return;
+            }
+            //log.info("\tStaging from " + originMarket.getName());
+            //marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
+
+            // now we pick a target
+            Vector2f originMarketLoc = originMarket.getLocationInHyperspace();
+            for (MarketAPI market : markets) 
+            {
+                FactionAPI marketFaction = market.getFaction();
+                if  ( marketFaction.isHostileTo(invader)) 
+                {
+                    if (marketFaction.getId().equals("independent")) continue;
+                    if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
                         continue;
-                float weight = marineStockpile;
-                if (market.hasCondition("military_base")) {
-                    weight *= 2.0F;
+                    /*
+                    float defenderStrength = InvasionRound.GetDefenderStrength(market);
+                    float estimateMarinesRequired = defenderStrength * 1.2f;
+                    if (estimateMarinesRequired > marineStockpile * MAX_MARINE_STOCKPILE_TO_DEPLOY)
+                        continue;   // too strong for us
+                    */
+                    float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
+                    if (dist < 5000.0F) {
+                        dist = 5000.0F;
+                    }
+                    float weight = 20000.0F / dist;
+                    //weight *= market.getSize() * market.getStabilityValue();    // try to go after high value targets
+                    if (marketFaction.getId().equals("templars") || ExerelinUtilsFaction.isPirateFaction(marketFaction.getId())) 
+                        weight *= HOSTILE_TO_ALL_INVASION_TARGET_MOD;
+
+                    targetPicker.add(market, weight);
                 }
-                if (market.hasCondition("orbital_station")) {
-                    weight *= 1.25F;
-                }
-                if (market.hasCondition("spaceport")) {
-                    weight *= 1.5F;
-                }
-                if (market.hasCondition("headquarters")) {
-                    weight *= 1.5F;
-                }
-                if (market.hasCondition("regional_capital")) {
-                    weight *= 1.25F;
-                }
-                weight *= market.getSize() * market.getStabilityValue();
-                sourcePicker.add(market, weight);
             }
-        }
-        MarketAPI originMarket = (MarketAPI)sourcePicker.pick();
-        if (originMarket == null) {
-            return;
-        }
-        //log.info("\tStaging from " + originMarket.getName());
-        //marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
-        
-        // now we pick a target
-        Vector2f originMarketLoc = originMarket.getLocationInHyperspace();
-        for (MarketAPI market : markets) 
-        {
-            FactionAPI marketFaction = market.getFaction();
-            if  ( marketFaction.isHostileTo(invader)) 
-            {
-                if (marketFaction.getId().equals("independent")) continue;
-                if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
-                    continue;
-                /*
-                float defenderStrength = InvasionRound.GetDefenderStrength(market);
-                float estimateMarinesRequired = defenderStrength * 1.2f;
-                if (estimateMarinesRequired > marineStockpile * MAX_MARINE_STOCKPILE_TO_DEPLOY)
-                    continue;   // too strong for us
-                */
-                float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
-                if (dist < 5000.0F) {
-                    dist = 5000.0F;
-                }
-                float weight = 20000.0F / dist;
-                //weight *= market.getSize() * market.getStabilityValue();    // try to go after high value targets
-                if (marketFaction.getId().equals("templars")) weight *= TEMPLAR_INVASION_TARGET_MOD;
-                
-                targetPicker.add(market, weight);
+            MarketAPI targetMarket = (MarketAPI)targetPicker.pick();
+            if (targetMarket == null) {
+                return;
             }
-        }
-        MarketAPI targetMarket = (MarketAPI)targetPicker.pick();
-        if (targetMarket == null) {
-            return;
-        }
-        //log.info("\tTarget: " + targetMarket.getName());
-        
-        // okay, assemble battlegroup
-        InvasionFleetData data = spawnInvasionFleet(invader, originMarket, targetMarket, DEFENDER_STRENGTH_MARINE_MULT, false);
-        spawnSupportFleet(invader, originMarket, targetMarket, false, false);
-        spawnSupportFleet(invader, originMarket, targetMarket, false, false);
-        
-        /*
-        if (originMarket.getSize() >= 4)
-        {
-            this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
-            //this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
-            if (originMarket.getSize() >= 6)
+            //log.info("\tTarget: " + targetMarket.getName());
+
+            // okay, assemble battlegroup
+            InvasionFleetData data = spawnInvasionFleet(invader, originMarket, targetMarket, DEFENDER_STRENGTH_MARINE_MULT, false);
+            spawnSupportFleet(invader, originMarket, targetMarket, false, false);
+            spawnSupportFleet(invader, originMarket, targetMarket, false, false);
+
+            /*
+            if (originMarket.getSize() >= 4)
             {
                 this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
                 //this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
+                if (originMarket.getSize() >= 6)
+                {
+                    this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
+                    //this.activeFleets.add(spawnSupportFleet(invader, originMarket, targetMarket));
+                }
             }
-        }
-        */
-        
-        Map<String, Object> params = new HashMap<>();
-        params.put("target", targetMarket);
-        params.put("dp", data.startingFleetPoints);
-        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
+            */
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("target", targetMarket);
+            params.put("dp", data.startingFleetPoints);
+            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
+        }        
     }
   
     @Override
@@ -490,7 +556,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         }
         this.activeFleets.removeAll(remove);
     
-        if (this.activeFleets.size() < this.MAX_FLEETS)
+        if (this.activeFleets.size() < MAX_FLEETS)
         {
             generateInvasionFleet();
         }
