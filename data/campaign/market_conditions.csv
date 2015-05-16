@@ -1,6 +1,7 @@
 name,id,script,desc,icon,order
 Recycling Plant,exerelin_recycling_plant,data.scripts.campaign.econ.exerelin_RecyclingPlant,"This ubiquitous facility turns the usual wastes of a station or city into organics, volatiles, (rare) metals, supplies and heavy machinery. Requires crew to operate.",graphics/exerelin/icons/markets/exerelin_recycling_plant.png,30
 Cloning Vats,exerelin_cloning_vats,data.scripts.campaign.econ.exerelin_CloningVats,"An efficient (if unethical) way of producing large amounts of crew quickly from organics, volatiles and food. Failed clones can be recycled for organs.",graphics/exerelin/icons/markets/exerelin_cloning_vats.png,30
+Templar Control,exerelin_templar_control,data.scripts.campaign.econ.exerelin_TemplarControl,The Templars exert all-pervasive control over every aspect of the markets they control. Increases stability and removes stability penalty from smuggling. Creates some demand for marines to enforce control.,graphics/templars/icons/intel/tem_crusade_event.png,30
 ,,,,,
 Market Attacked,exerelin_market_attacked_condition,exerelin.campaign.econ.MarketAttackedCondition,"$market has recently been attacked by a hostile force, causing widespread damage to infrastructure and panic amongst the populace.
 
