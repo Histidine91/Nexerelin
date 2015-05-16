@@ -239,7 +239,8 @@
 			"minRepChange":0.1,
 			"maxRepChange":0.15,
 			"allowedFactions2":["luddic_church"],
-			"allowPirates":true
+			"allowPirates":true,
+			"chance":1.5,
 		},
 		{
 			"name":"Religious Minority Persecuted",
@@ -247,14 +248,16 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"allowedFactions2":["luddic_church"],
-			"allowPirates":true
+			"allowPirates":true,
+			"chance":1.5,
 		},
 		{
 			"name":"Religious Majority Persecutes",
 			"stage":"persecution_majority",
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
-			"allowedFactions1":["luddic_church"]
+			"allowedFactions1":["luddic_church"],
+			"chance":1.5,
 		},
 		{
 			"name":"Priest Scandal",
@@ -262,7 +265,8 @@
 			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
 			"repLimit":"inhospitable",
-			"allowedFactions2":["luddic_church"]
+			"allowedFactions2":["luddic_church"],
+			"chance":1.5,
 		},
 		{
 			"name":"Condemn Treatment of Dissidents",
@@ -271,7 +275,8 @@
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"allowedFactions1":["hegemony","sindrian_diktat","mayorate","interstellarimperium"],
-			"allowedFactions2":["luddic_church","shadow_industry","citadeldefenders"]
+			"allowedFactions2":["luddic_church","shadow_industry","pack"],
+			"chance":1.5,
 		},
 		{
 			"name":"Anti-Corporation Movement",
@@ -281,7 +286,8 @@
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"allowedFactions1":["hegemony","luddic_church","pack","interstellarimperium"],
-			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","exigency"]
+			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","exigency"],
+			"chance":1.5,
 		},
 		{
 			"name":"Technology Stolen",
@@ -293,7 +299,8 @@
 			"repLimit":"hostile",
 			"allowPirates":true,
 			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders",
-				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","scy"]
+				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","SCY","valkyrian","pn_colony"],
+			"chance":1.5,
 		}
 	]
 }
