@@ -19,6 +19,11 @@
 	"negativeDiplomacyExtra":0, # Integer
 	"factionsLiked":["shadow_industry", "citadeldefenders"], # String array
 	"factionsDisliked":["hegemony", "tritachyon", "neutrinocorp", "valkyrian", "blackrock_driveyards"], # String array
-		
+	
+	"alignments":{
+		"technocratic":0.5,
+		"militarist":0.5,
+	},
+	
 	"miningVariantsOrWings":["SCY_telchine_miner"],  
 }

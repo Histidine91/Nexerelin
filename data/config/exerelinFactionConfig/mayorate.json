@@ -21,5 +21,12 @@
     "factionsLiked":["tritachyon"], # String array
     "factionsDisliked":["luddic_church","blackrock_driveyards"], # String array
 
+    "alignments":{
+        "technocratic":1,
+        "militarist":0.5,
+        "diplomatic":-0.5,
+        "ideological":1,
+    },
+    
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

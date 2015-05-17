@@ -3,8 +3,6 @@
     "useMultipleBackgroundsAndStars":true, # Boolean
     "useCustomFactionConfigs":true, # Boolean
 
-    "randomOmnifactoryLocation":false, # Boolean
-
     "minimumPlanets": 3, # Integer
     "minimumStations": 3, # Integer
     "minimumAsteroidBelts": 0, # Integer
@@ -32,9 +30,13 @@
     "allowPirateInvasions": false,
     "fleetRequestCostPerMarine": 125,  # used for player-requested fleets
     "fleetRequestCostPerFP": 500,  # used for player-requested fleets
-    "invasionGracePeriod": 60,  # factions won't launch invasion fleets at each other for this long
+    "invasionGracePeriod": 60,  # factions won't launch invasion fleets at each other for this long at start
     "pointsRequiredForInvasionFleet": 5000,    # bigger = longer delay between invasion fleets
     "baseInvasionPointsPerFaction": 25, # each market also contributes stability * size
+    
+    "allianceGracePeriod": 90,  # no alliances can form for this long at start
+    "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
+    "ignoreAlignmentForAlliances": false,
     
     "factionRespawnInterval": 30,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
     "ownFactionCustomsInspections": false,  # will your faction perform customs inspections on you? (always off for player_npc)

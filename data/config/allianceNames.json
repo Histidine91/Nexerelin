@@ -1,0 +1,13 @@
+{
+	# please don't break this file if you don't want your game crashing at unexpected moments
+	"namesByAlignment":{
+		"corporate": ["Consortium", "Conglomerate", "Consolidated", "Industries", "Guild", "Trade Union"],
+		"technocratic": ["Research", "Academy", "Institute", "Engineering", "Laboratories"],
+		"militarist": ["Pact", "Alliance", "Empire", "Axis"],
+		"diplomatic": ["League", "Federation", "Confederacy", "Coalition", "Cooperative", "Union"],
+		"ideological": ["Brotherhood", "Clan", "Fellowship", "Sodality", "Order"],
+	},
+	"prefixes":[
+		"Northern", "Southern", "Eastern", "Western", "Stellar", "Interstellar", "Darkstar", "Solar", "Nebula", "Outland", "Far Reach", "Unified", "United", "Superior"
+	]
+}

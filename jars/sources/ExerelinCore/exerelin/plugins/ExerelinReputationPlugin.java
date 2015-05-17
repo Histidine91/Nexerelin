@@ -2,6 +2,7 @@ package exerelin.plugins;
 
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
+import exerelin.campaign.AllianceManager;
 import static exerelin.utilities.ExerelinUtilsReputation.syncFactionRelationshipsToPlayer;
 
 /**
@@ -13,6 +14,7 @@ public class ExerelinReputationPlugin extends CoreReputationPlugin {
     public ReputationActionResponsePlugin.ReputationAdjustmentResult handlePlayerReputationAction(Object actionObject, String factionId)
     {
         ReputationActionResponsePlugin.ReputationAdjustmentResult result = super.handlePlayerReputationAction(actionObject, factionId);
+        AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", factionId);
         syncFactionRelationshipsToPlayer();
         return result;
     }

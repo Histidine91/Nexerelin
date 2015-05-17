@@ -24,6 +24,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinSetupData;
@@ -606,6 +607,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(InvasionFleetManager.create());
 		sector.addScript(ResponseFleetManager.create());
 		sector.addScript(CovertOpsManager.create());
+                sector.addScript(AllianceManager.create());
 		
 		DiplomacyManager.initFactionRelationships();
 		

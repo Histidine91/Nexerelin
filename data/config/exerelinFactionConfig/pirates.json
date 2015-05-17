@@ -22,7 +22,11 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
     
+    "alignments":{
+        "ideological":0.5,
+    },
+    
     "freeMarket":true,
-
+    
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

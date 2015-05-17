@@ -19,8 +19,12 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+     
+    "alignments":{
+        "corporate":1,
+    },
     
     "freeMarket":true,
-
+    
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

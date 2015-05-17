@@ -20,5 +20,10 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array   #tritachyon has too many people picking on it already
 
+    "alignments":{
+        "corporate":1,
+        "technocratic":1,
+    },
+    
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

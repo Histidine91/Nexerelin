@@ -179,32 +179,36 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         FactionAPI playerAlignedFaction = sector.getFaction(playerAlignedFactionId);
         FactionAPI playerFaction = sector.getPlayerFleet().getFaction();
+        String faction1Id = faction1.getId();
+        String faction2Id = faction2.getId();
         
         if (limit != null)
-            faction1.adjustRelationship(faction2.getId(), delta, limit);
+            faction1.adjustRelationship(faction2Id, delta, limit);
         else
-            faction1.adjustRelationship(faction2.getId(), delta);
+            faction1.adjustRelationship(faction2Id, delta);
         
         if (ensureAtBest != null) {
-                faction1.ensureAtBest(faction2.getId(), ensureAtBest);
+                faction1.ensureAtBest(faction2Id, ensureAtBest);
         }
         if (ensureAtWorst != null) {
-                faction1.ensureAtWorst(faction2.getId(), ensureAtWorst);
+                faction1.ensureAtWorst(faction2Id, ensureAtWorst);
         }
        
-        float after = faction1.getRelationship(faction2.getId());
+        float after = faction1.getRelationship(faction2Id);
         delta = after - before;
 
         if(faction1 == playerAlignedFaction)
         {
-            playerFaction.setRelationship(faction2.getId(), after);
+            playerFaction.setRelationship(faction2Id, after);
             faction2.setRelationship("player_npc", after);
         }
         else if(faction2 == playerAlignedFaction)
         {
-            playerFaction.setRelationship(faction1.getId(), after);
+            playerFaction.setRelationship(faction1Id, after);
             faction1.setRelationship("player_npc", after);
         }
+        AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
+        AllianceManager.syncAllianceRelationshipsToFactionRelationship(faction1Id, faction2Id);
         
         SectorManager.checkForVictory();
         return new ReputationAdjustmentResult(delta);

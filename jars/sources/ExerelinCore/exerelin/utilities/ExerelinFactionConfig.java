@@ -1,6 +1,7 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import exerelin.campaign.AllianceManager.Alignment;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.*;
@@ -35,6 +36,7 @@ public class ExerelinFactionConfig
     public int negativeDiplomacyExtra = 0;
     public String[] factionsLiked = new String[]{};
     public String[] factionsDisliked = new String[]{};
+    public Map<Alignment, Float> alignments = new HashMap<>();
     
     public boolean freeMarket = false;
 
@@ -91,6 +93,15 @@ public class ExerelinFactionConfig
             responseFleetSizeMod = (float)settings.optDouble("responseFleetSizeMod", 0);
             
             miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
+            
+            if (settings.has("alignments"))
+            {
+                JSONObject alignmentsJson = settings.getJSONObject("alignments");
+                for (Alignment alignment : Alignment.values())
+                {
+                    alignments.put(alignment, (float)alignmentsJson.optDouble(alignment.toString().toLowerCase(), 0));
+                }
+            }
         }
         catch(Exception e)
         {

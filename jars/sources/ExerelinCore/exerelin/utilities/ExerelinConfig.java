@@ -63,6 +63,11 @@ public class ExerelinConfig
     public static float pointsRequiredForInvasionFleet = 5000f;
     public static float baseInvasionPointsPerFaction = 25f;
     
+    // Alliances
+    public static float allianceGracePeriod = 90f;
+    public static float allianceFormationInterval = 30f;
+    public static boolean ignoreAlignmentForAlliances = false;
+    
     // Misc
     public static float factionRespawnInterval = 30f;
     public static boolean countPiratesForVictory = true;
@@ -109,6 +114,10 @@ public class ExerelinConfig
             invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
             pointsRequiredForInvasionFleet = (float)settings.optDouble("pointsRequiredForInvasionFleet", pointsRequiredForInvasionFleet);
             baseInvasionPointsPerFaction = (float)settings.optDouble("baseInvasionPointsPerFaction", baseInvasionPointsPerFaction);
+            
+            allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
+            allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
+            ignoreAlignmentForAlliances = settings.optBoolean("ignoreAlignmentForAlliances", ignoreAlignmentForAlliances);
             
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);

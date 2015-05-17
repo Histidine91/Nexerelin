@@ -13,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.CustomFleets;
 import com.fs.starfarer.api.impl.campaign.ids.Events;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
@@ -51,6 +52,7 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         InvasionFleetManager.create();
         ResponseFleetManager.create();
         CovertOpsManager.create();
+        AllianceManager.create();
         
         if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_salary")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_salary", null);

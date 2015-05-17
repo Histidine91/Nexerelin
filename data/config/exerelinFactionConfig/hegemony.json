@@ -19,6 +19,11 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":["interstellarimperium","tritachyon"], # String array
+    
+    "alignments":{
+        "militarist":1,
+        "ideological":0.5,
+    },
 
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

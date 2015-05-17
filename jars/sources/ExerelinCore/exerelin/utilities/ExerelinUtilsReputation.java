@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import static com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.addAdjustmentMessage;
 import static com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.addNoChangeMessage;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import java.util.List;
@@ -44,6 +45,7 @@ public class ExerelinUtilsReputation
 		
 		syncFactionRelationshipToPlayer(PlayerFactionStore.getPlayerFactionId(), factionId);
 		syncFactionRelationshipToPlayer("player_npc", factionId);
+                AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", factionId);
 		
 		if (player.isAtBest(PlayerFactionStore.getPlayerFactionId(), RepLevel.INHOSPITABLE))
 			SectorManager.scheduleExpelPlayerFromFaction();
@@ -59,6 +61,8 @@ public class ExerelinUtilsReputation
 		FactionAPI factionToSync = sector.getFaction(factionIdToSync);
 		float relationship = playerFaction.getRelationship(otherFactionId);
 		factionToSync.setRelationship(otherFactionId, relationship);
+                AllianceManager.remainInAllianceCheck(factionIdToSync, otherFactionId);
+                AllianceManager.syncAllianceRelationshipsToFactionRelationship(factionIdToSync, otherFactionId);
 	}
 	
 	// re-set our faction's relations to match our own
@@ -74,8 +78,7 @@ public class ExerelinUtilsReputation
 		{
 			if (otherFaction != playerFaction && otherFaction != faction)
 			{
-				float relationship = playerFaction.getRelationship(otherFaction.getId());
-				otherFaction.setRelationship(factionId, relationship);
+				syncFactionRelationshipToPlayer(factionId, otherFaction.getId());
 			}
 		}
 		SectorManager.checkForVictory();
@@ -98,8 +101,10 @@ public class ExerelinUtilsReputation
 		{
 			if (otherFaction != playerFaction && otherFaction != faction)
 			{
-				float relationship = faction.getRelationship(otherFaction.getId());
-				playerFaction.setRelationship(otherFaction.getId(), relationship);
+                                String otherFactionId = otherFaction.getId();
+				float relationship = faction.getRelationship(otherFactionId);
+				playerFaction.setRelationship(otherFactionId, relationship);
+                                AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", otherFactionId);
 			}
 		}
 		SectorManager.checkForVictory();

@@ -2,6 +2,7 @@ package exerelin.world;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
@@ -11,6 +12,7 @@ import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.utilities.ExerelinUtilsReputation;
 import org.apache.log4j.Logger;
@@ -74,10 +76,13 @@ public class RespawnFleetAI extends InvasionFleetAI
                     && Misc.getDistance(data.target.getLocation(), data.fleet.getLocation()) < 600f)
             {
                 fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, INVADE_ORBIT_TIME);
+                FactionAPI fleetFaction = fleet.getFaction();
+                FactionAPI targetFaction = data.targetMarket.getFaction();
                 
-                if (!fleet.getFaction().isHostileTo(data.targetMarket.getFactionId()))
+                if (!fleetFaction.isHostileTo(targetFaction))
                 {
-                    fleet.getFaction().setRelationship(data.targetMarket.getFactionId(), RepLevel.HOSTILE);
+                    fleetFaction.setRelationship(targetFaction.getId(), RepLevel.HOSTILE);
+                    AllianceManager.syncAllianceRelationshipsToFactionRelationship(fleetFaction.getId(), targetFaction.getId());
                     ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
                 }
                 
@@ -132,6 +137,7 @@ public class RespawnFleetAI extends InvasionFleetAI
         if (!captureSuccessful && fleet.getFaction().isHostileTo(data.targetMarket.getFactionId()))
         {
             fleet.getFaction().setRelationship(data.targetMarket.getFactionId(), 0);
+            AllianceManager.syncAllianceRelationshipsToFactionRelationship(fleet.getFaction().getId(), data.targetMarket.getFactionId());
             ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
         }
         

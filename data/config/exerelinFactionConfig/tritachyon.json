@@ -20,6 +20,11 @@
     "factionsLiked":[], # String array
     "factionsDisliked":["hegemony","luddic_church"], # String array
     
+    "alignments":{
+        "corporate":1,
+        "technocratic":1,
+    },
+    
     "freeMarket":true,
 
     "miningVariantsOrWings":["mining_drone_wing"], # String array

@@ -24,6 +24,12 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
     
+    "alignments":{
+        "militarist":1,
+        "diplomatic":-1,
+        "ideological":1,
+    },
+    
     "invasionStrengthBonusAttack":0.15,
     "invasionStrengthBonusDefend":0.2,
     "invasionFleetSizeMod":0.15,
