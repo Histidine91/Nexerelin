@@ -1,6 +1,7 @@
 {
 	"exerelin_market_captured":{
-		"script":"exerelin.campaign.events.MarketCapturedEvent"
+		"script":"exerelin.campaign.events.MarketCapturedEvent",
+		"image":"graphics/icons/markets/mercenaries.png"
 	},
 	"exerelin_market_attacked":{
 		"script":"exerelin.campaign.events.MarketAttackedEvent",
