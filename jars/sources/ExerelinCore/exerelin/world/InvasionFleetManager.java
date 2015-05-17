@@ -55,7 +55,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     
     private final IntervalUtil tracker;
     
-    protected final float gracePeriod = ExerelinConfig.invasionGracePeriod;
     protected float daysElapsed = 0;
     
     private static InvasionFleetManager invasionFleetManager;
@@ -538,7 +537,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     {
         float days = Global.getSector().getClock().convertToDays(amount);
     
-        if (daysElapsed < gracePeriod)
+        if (daysElapsed < ExerelinConfig.invasionGracePeriod)
         {
             daysElapsed += days;
             return;

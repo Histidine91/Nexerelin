@@ -4,35 +4,19 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
-import com.fs.starfarer.api.campaign.CampaignClockAPI;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
-import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinConfig;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import org.lwjgl.util.vector.Vector2f;
 
 
 public class FactionChangedEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(FactionChangedEvent.class);
 	
-	private float paidAmount = 0f;
 	private FactionAPI oldFaction;
 	private FactionAPI newFaction;
 	private Map<String, Object> params;
