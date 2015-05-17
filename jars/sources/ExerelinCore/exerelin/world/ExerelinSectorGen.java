@@ -264,7 +264,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		entity.setInteractionImage(illustration[0], illustration[1]);
 	}
 	
-	private MarketAPI addMarketToEntity(SectorEntityToken entity, EntityData data, String owningFactionId)
+	private MarketAPI addMarketToEntity(SectorEntityToken entity, EntityData data, String factionId)
 	{
 		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
@@ -279,7 +279,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		newMarket.setPrimaryEntity(entity);
 		entity.setMarket(newMarket);
 		
-		newMarket.setFactionId(owningFactionId);
+		newMarket.setFactionId(factionId);
 		newMarket.setBaseSmugglingStabilityValue(0);
 		
 		if (data.isHQ)
@@ -339,7 +339,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 				
 		// add per-faction market conditions
-		String factionId = newMarket.getFaction().getId();
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 		
 		if (config.freeMarket)
@@ -352,14 +351,15 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			newMarket.getTariff().modifyFlat("isFreeMarket", 0.2f);
 		}
 		
-		if(factionId.equals("luddic_church")) {
+		if (factionId.equals("luddic_church")) {
 			newMarket.addCondition("luddic_majority");
 			//newMarket.addCondition("cottage_industry");
 		}
 		
-		if (owningFactionId.equals("templars"))
+		if (factionId.equals("templars"))
 		{
 			newMarket.addSubmarket("tem_templarmarket");
+                        newMarket.addCondition("exerelin_templar_control");
 		}
 		else
 		{
@@ -394,7 +394,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		//	addCommodityStockpile(newMarket, "agent", marketSize);
 		
 		Global.getSector().getEconomy().addMarket(newMarket);
-		entity.setFaction(owningFactionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
+		entity.setFaction(factionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
 		
 		data.market = newMarket;
 		return newMarket;

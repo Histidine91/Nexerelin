@@ -365,6 +365,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 entity.setFaction(newOwnerId);
         }
         market.setFactionId(newOwnerId);
+        
+        // Templar stuff
         if (newOwnerId.equals("templars") && !oldOwnerId.equals("templars"))
         {
             market.removeSubmarket(Submarkets.SUBMARKET_OPEN);
@@ -372,6 +374,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             market.removeSubmarket(Submarkets.GENERIC_MILITARY);
             
             market.addSubmarket("tem_templarmarket");
+            if (!market.hasCondition("exerelin_templar_control")) market.addCondition("exerelin_templar_control");
         }
         else if (!newOwnerId.equals("templars") && oldOwnerId.equals("templars"))
         {
@@ -380,6 +383,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (market.hasCondition("military_base")) market.addSubmarket(Submarkets.GENERIC_MILITARY);
             
             market.removeSubmarket("tem_templarmarket");
+            if (market.hasCondition("exerelin_templar_control")) market.removeCondition("exerelin_templar_control");
         }
         
         ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(newOwnerId);
