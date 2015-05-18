@@ -277,7 +277,17 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 ExerelinFactionConfig config2 = ExerelinConfig.getExerelinFactionConfig(otherFactionId);   
                 for (Alignment alignment : Alignment.values())
                 {
-                    float sum = config1.alignments.get(alignment) + config2.alignments.get(alignment);
+                    float alignment1 = 0;
+                    float alignment2 = 0;
+                    if (config1 != null)
+                    {
+                        alignment1 = config1.alignments.get(alignment);
+                    }
+                    if (config2 != null)
+                    {
+                        alignment2 = config2.alignments.get(alignment);
+                    }
+                    float sum = alignment1 + alignment2;
                     if (sum < MIN_ALIGNMENT_FOR_NEW_ALLIANCE && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
                     if (sum > bestAlignmentValue)
                     {
@@ -307,11 +317,15 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             FactionAPI faction = sector.getFaction(factionId);
             
             WeightedRandomPicker<Alliance> picker = new WeightedRandomPicker<>(); 
+            ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
             
             for (Alliance alliance : alliances)
             {
-                ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-                float value = config.alignments.get(alliance.alignment);
+                float value = 0;
+                if (config!= null && config.alignments != null)
+                {
+                    value = config.alignments.get(alliance.alignment);
+                }
                 if (value < MIN_ALIGNMENT_TO_JOIN_ALLIANCE  && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
                 
                 float sumRelationships = 0;
@@ -548,6 +562,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return new ArrayList<>(allianceManager.alliances);
     }
     
+    public static Alliance getFactionAlliance(String factionId)
+    {
+        if (allianceManager == null) return null;
+        return allianceManager.alliancesByFactionId.get(factionId);
+    }
+    
     public static AllianceManager create()
     {
         Map<String, Object> data = Global.getSector().getPersistentData();
@@ -572,6 +592,17 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             members = new HashSet<>();
             members.add(member1);
             members.add(member2);
+        }
+        
+        public List<MarketAPI> getAllianceMarkets()
+        {
+            List<MarketAPI> markets = new ArrayList<>();
+            for (String memberId : members)
+            {
+                List<MarketAPI> factionMarkets = ExerelinUtilsFaction.getFactionMarkets(memberId);
+                markets.addAll(factionMarkets);
+            }
+            return markets;
         }
         
         public int getNumAllianceMarkets()
