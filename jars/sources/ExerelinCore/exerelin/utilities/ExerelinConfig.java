@@ -68,6 +68,10 @@ public class ExerelinConfig
     public static float allianceFormationInterval = 30f;
     public static boolean ignoreAlignmentForAlliances = false;
     
+    // Prism Freeport
+    public static int prismMaxWeaponsPerFaction = 3;
+    public static float prismNumShipsPerFaction = 0.5f;
+    
     // Misc
     public static float factionRespawnInterval = 30f;
     public static boolean countPiratesForVictory = true;
@@ -118,6 +122,9 @@ public class ExerelinConfig
             allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
             ignoreAlignmentForAlliances = settings.optBoolean("ignoreAlignmentForAlliances", ignoreAlignmentForAlliances);
+            
+            prismMaxWeaponsPerFaction = settings.optInt("prismMaxWeaponsPerFaction", prismMaxWeaponsPerFaction);
+            prismNumShipsPerFaction = (float)settings.optDouble("prismNumShipsPerFaction", prismNumShipsPerFaction);
             
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);

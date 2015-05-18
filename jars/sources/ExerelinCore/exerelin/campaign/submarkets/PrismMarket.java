@@ -16,13 +16,13 @@ import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.utilities.ExerelinConfig;
 import java.util.List;
 import org.apache.log4j.Logger;
 
 public class PrismMarket extends BaseSubmarketPlugin {
-
+    
     private static final int MIN_NUMBER_OF_SHIPS = 5;
-    private static final int MAX_WEAPONS_PER_FACTION = 3;
     
     public static Logger log = Global.getLogger(PrismMarket.class);
 
@@ -40,7 +40,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         CargoAPI cargo = getCargo();
 
         pruneWeapons(1f);
-        addRandomWeapons(MAX_WEAPONS_PER_FACTION*Global.getSector().getAllFactions().size(), 3);
+        addRandomWeapons(ExerelinConfig.prismMaxWeaponsPerFaction*Global.getSector().getAllFactions().size(), 3);
         for (CargoStackAPI s : cargo.getStacksCopy()) {
             //remove all low tier weapons
             if (s.isWeaponStack() && (s.getWeaponSpecIfWeapon().getTier()<2 || s.getWeaponSpecIfWeapon().getWeaponId().startsWith("tem_"))){
@@ -90,7 +90,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
             }
         }
         
-        for (int i=0; i<MIN_NUMBER_OF_SHIPS+(Global.getSector().getAllFactions().size()/2); i++){
+        for (int i=0; i<MIN_NUMBER_OF_SHIPS+(Global.getSector().getAllFactions().size()*ExerelinConfig.prismNumShipsPerFaction); i++){
             //pick the role and faction
             FactionAPI faction = factionPicker.pick();
             String role = rolePicker.pick();            
