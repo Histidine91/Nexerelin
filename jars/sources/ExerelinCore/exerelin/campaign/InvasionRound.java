@@ -50,6 +50,7 @@ public class InvasionRound {
 	public static final float MARINE_LOSS_MULT = 0.4f;
 	public static final float MARINE_LOSS_RANDOM_MOD = 0.1f;
 	public static final float MARINE_LOSS_RAID_MULT = 0.5f;
+	public static final int BASE_DESTABILIZATION = 2;
 	
 	/**
 	* PESSIMISTIC and OPTIMISTIC are used for prediction;
@@ -158,7 +159,7 @@ public class InvasionRound {
 		float baseDefenderStrength = DEFENDER_BASE_STRENGTH * (float)(Math.pow(marketSize, 3));
 		baseDefenderStrength = baseDefenderStrength * (market.getStabilityValue() + 1 - DEFENDER_STABILITY_MOD) * DEFENDER_STABILITY_MOD;
 		float defenderStrength = baseDefenderStrength;
-                float defenderBonus = 0;
+		float defenderBonus = 0;
 		
 		if(market.hasCondition("military_base"))
 		{
@@ -172,15 +173,15 @@ public class InvasionRound {
 		{
 			defenderBonus += baseDefenderStrength * DEFENDER_HEADQUARTERS_MOD;
 		}
-                
-                ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-                if (factionConfig != null)
-                {
-                        defenderBonus += baseDefenderStrength * factionConfig.invasionStrengthBonusDefend;
-                }
-                
-                defenderStrength += (defenderBonus * bonusMult);
-                
+		
+		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+		if (factionConfig != null)
+		{
+			defenderBonus += baseDefenderStrength * factionConfig.invasionStrengthBonusDefend;
+		}
+		
+		defenderStrength += (defenderBonus * bonusMult);
+		
 		if (isRaid)
 			defenderStrength *= DEFENDER_RAID_STRENGTH_MULT;
 		return defenderStrength;
@@ -193,16 +194,16 @@ public class InvasionRound {
 	
 	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, SectorEntityToken defender, boolean isRaid, InvasionSimulationType simType)
 	{
-                MarketAPI market = defender.getMarket();
+		MarketAPI market = defender.getMarket();
 		if (market == null) return new InvasionRoundResult(true);
-            
+		
 		CargoAPI attackerCargo = attacker.getCargo();
 		int marineCount = attackerCargo.getMarines();
 		if (marineCount <= 0) {
-                    InvasionRoundResult result = new InvasionRoundResult(false);
-                    result.defenderStrength = GetDefenderStrength(market);
-                    return result;
-                }
+			InvasionRoundResult result = new InvasionRoundResult(false);
+			result.defenderStrength = GetDefenderStrength(market);
+			return result;
+		}
 		
 		// combat resolution (TODO: incomplete)
 		float randomBonus = (float)(Math.random()) * ATTACKER_RANDOM_BONUS;
@@ -212,20 +213,20 @@ public class InvasionRound {
 			randomBonus = ATTACKER_RANDOM_BONUS;
 		
 		float marketSize = market.getSize();
-                
+		
 		float attackerMarineMult = attacker.getCommanderStats().getMarineEffectivnessMult().getModifiedValue();
 		float attackerAssets = (marineCount * attackerMarineMult) + (attacker.getFleetPoints() * ATTACKER_FLEET_MULT);
 		float baseAttackerStrength = (ATTACKER_BASE_STRENGTH  + randomBonus) * attackerAssets;
 		float attackerStrength = baseAttackerStrength;
-                ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(attacker.getFaction().getId());
-                if (factionConfig != null)
-                {
-                        attackerStrength += baseAttackerStrength * factionConfig.invasionStrengthBonusAttack;
-                }
-                
+		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(attacker.getFaction().getId());
+		if (factionConfig != null)
+		{
+			attackerStrength += baseAttackerStrength * factionConfig.invasionStrengthBonusAttack;
+		}
+		
 		float defenderStrength = GetDefenderStrength(market);
 		
-                InvasionRoundResult result = new InvasionRoundResult();
+		InvasionRoundResult result = new InvasionRoundResult();
 		
 		if(market.hasCondition("military_base"))
 		{
@@ -293,13 +294,13 @@ public class InvasionRound {
 		int currentPenalty = event.getStabilityPenalty();
 		if ((isRaid && success) || (!isRaid && !success))
 		{
-			if (currentPenalty < 2)
+			if (currentPenalty < BASE_DESTABILIZATION)
 			event.increaseStabilityPenalty(1);
 		}
 		else if (!isRaid && success)
 		{
-			if (currentPenalty < 2)
-			event.increaseStabilityPenalty(2);
+			if (currentPenalty < BASE_DESTABILIZATION)
+			event.increaseStabilityPenalty(BASE_DESTABILIZATION);
 			else event.increaseStabilityPenalty(1);
 		}
 		
