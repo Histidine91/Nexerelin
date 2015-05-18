@@ -226,6 +226,7 @@ ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCFactio
 ExerelinNGCListRadicalORI,ExerelinNGCListFactions4,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
 ExerelinNGCListSCY,ExerelinNGCListFactions4,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY Nation,
 ExerelinNGCListShadowyards,ExerelinNGCListFactions4,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
+ExerelinNGCListSpire,ExerelinNGCListFactions4,NGCDoesFactionExist spire,,,exerelinNGCJoinSpire:Spire,
 ExerelinNGCListValkyrians,ExerelinNGCListFactions4,NGCDoesFactionExist valkyrian,,,exerelinNGCJoinValkyrians:Valkyrians,
 ExerelinNGCListModFactions4Back,ExerelinNGCListFactions4,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
@@ -357,6 +358,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinShadowyards,NewGameOptionSelected,$option == exerelinNGCJoinShadowyards,"NGCSetPlayerFaction ""shadow_industry""
 NGCAddShipAndComplement ""ms_enlil_Balanced""
 AddText ""Added Enlil-class gunship"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinSpire,NewGameOptionSelected,$option == exerelinNGCJoinSpire,"NGCSetPlayerFaction ""spire""
+NGCAddShipAndComplement ""spire_corvette_Standoff""
+AddText ""Added Feldspar-class corvette"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinValkyrians,NewGameOptionSelected,$option == exerelinNGCJoinValkyrians,"NGCSetPlayerFaction ""valkyrian""
 NGCAddShipAndComplement ""valk_inquisitor_A""
@@ -527,6 +532,7 @@ ExerelinFactionDirectoryListRadicalORI,ExerelinFactionDirectoryList4,IsFactionAl
 ExerelinFactionDirectoryListSCY,ExerelinFactionDirectoryList4,IsFactionAlive SCY,,,exerelinFactionDirectoryGetSCY:SCY,
 ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList4,IsFactionAlive shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
 ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList4,IsFactionAlive sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
+ExerelinFactionDirectoryListSpire,ExerelinFactionDirectoryList4,IsFactionAlive spire,,,exerelinFactionDirectoryGetSpire:Spire,
 ExerelinFactionDirectoryListTriTachyon,ExerelinFactionDirectoryList4,IsFactionAlive tritachyon,,,exerelinFactionDirectoryGetTriTachyon:Tri-Tachyon,
 ExerelinFactionDirectoryListValkyrians,ExerelinFactionDirectoryList4,IsFactionAlive valkyrian,,,exerelinFactionDirectoryGetValkyrians:Valkyrians,
 ExerelinFactionDirectoryList4Back,ExerelinFactionDirectoryList4,,,,exerelinFactionDirectoryMain:Back,
@@ -558,6 +564,7 @@ ExerelinFactionDirectoryGetRadicalORI,DialogOptionSelected,$option == exerelinFa
 ExerelinFactionDirectoryGetSCY,DialogOptionSelected,$option == exerelinFactionDirectoryGetSCY,PrintFactionMarkets SCY,,,
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,PrintFactionMarkets shadow_industry,,,
 ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerelinFactionDirectoryGetSindrianDiktat,PrintFactionMarkets sindrian_diktat,,,
+ExerelinFactionDirectoryGetSpire,DialogOptionSelected,$option == exerelinFactionDirectoryGetSpire,PrintFactionMarkets spire,,,
 ExerelinFactionDirectoryGetTemplars,DialogOptionSelected,$option == exerelinFactionDirectoryGetTemplars,PrintFactionMarkets templars,,,
 ExerelinFactionDirectoryGetTriTachyon,DialogOptionSelected,$option == exerelinFactionDirectoryGetTriTachyon,PrintFactionMarkets tritachyon,,,
 ExerelinFactionDirectoryGetValkyrians,DialogOptionSelected,$option == exerelinFactionDirectoryGetValkyrians,PrintFactionMarkets valkyrian,,,
