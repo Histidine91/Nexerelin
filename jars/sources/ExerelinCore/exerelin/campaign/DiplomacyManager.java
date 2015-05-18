@@ -55,35 +55,34 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static Logger log = Global.getLogger(DiplomacyManager.class);
     private static DiplomacyManager diplomacyManager;
     
-    private static final String CONFIG_FILE = "data/config/diplomacyConfig.json";
-    private static final String MANAGER_MAP_KEY = "exerelin_diplomacyManager";
+    protected static final String CONFIG_FILE = "data/config/diplomacyConfig.json";
+    protected static final String MANAGER_MAP_KEY = "exerelin_diplomacyManager";
     
-    private static final List<String> disallowedFactions;
-    private static List<String> pirateFactions;
+    protected static final List<String> disallowedFactions;
+    protected static List<String> pirateFactions;
         
-    private static List<DiplomacyEventDef> eventDefs;
+    protected static List<DiplomacyEventDef> eventDefs;
     
-    private static final float STARTING_RELATIONSHIP_HOSTILE = -0.6f;
-    private static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.4f;
-    private static final float WAR_WEARINESS_DIVISOR = 6000f;
-    private static final float MIN_WAR_WEARINESS_FOR_PEACE = 2500f;
-    private static final float WAR_WEARINESS_CEASEFIRE_REDUCTION = 1600f;
-    private static final float WAR_WEARINESS_PEACE_TREATY_REDUCTION = 2500f;
-    private static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
-    private static final float PEACE_TREATY_CHANCE = 0.3f;
+    public static final float STARTING_RELATIONSHIP_HOSTILE = -0.6f;
+    public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.4f;
+    public static final float WAR_WEARINESS_INTERVAL = 10f;
+    public static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
+    public static final float PEACE_TREATY_CHANCE = 0.3f;
     
-    private static final float DOMINANCE_MIN = 0.25f;
-    private static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.5f;
-    private static final float DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD = 2f;
+    public static final float DOMINANCE_MIN = 0.25f;
+    public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.5f;
+    public static final float DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD = 2f;
     
-    private Map<String, Float> warWeariness;
-    private static float warWearinessPerInterval = 10f;
-    private static DiplomacyEventDef peaceTreatyEvent;
-    private static DiplomacyEventDef ceasefireEvent;
+    protected Map<String, Float> warWeariness;
+    protected static float warWearinessPerInterval = 10f;
+    protected static DiplomacyEventDef peaceTreatyEvent;
+    protected static DiplomacyEventDef ceasefireEvent;
     
-    private static float baseInterval = 10f;
-    private float interval = baseInterval;
-    private final IntervalUtil intervalUtil;
+    protected static float baseInterval = 10f;
+    protected float interval = baseInterval;
+    protected final IntervalUtil intervalUtil;
+    
+    protected float daysElapsed = 0;
     
     static {
         String[] factions = {"templars", "independent"};
@@ -382,7 +381,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             {
                 log.info("Incrementing war weariness for " + faction.getDisplayName());
                 weariness += enemies.size() * warWearinessPerInterval;
-                if (weariness >= MIN_WAR_WEARINESS_FOR_PEACE)
+                if (weariness >= ExerelinConfig.minWarWearinessForPeace)
                 {
                     if (warCount > mostWarCount)
                     {
@@ -409,7 +408,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             
             float sumWeariness = warWeariness.get(factionWithMostWars.getId()) + warWeariness.get(toPeace);
             log.info("Sum with " + sector.getFaction(toPeace).getDisplayName() + ": " + sumWeariness);
-            if (Math.random() > sumWeariness/WAR_WEARINESS_DIVISOR)
+            if (Math.random() > sumWeariness/ExerelinConfig.warWearinessDivisor)
                 return;
             log.info("Negotiating treaty");
             boolean peaceTreaty = false;    // if false, only ceasefire
@@ -419,7 +418,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 peaceTreaty = Math.random() < PEACE_TREATY_CHANCE;
             }
             DiplomacyEventDef event = peaceTreaty ? peaceTreatyEvent : ceasefireEvent;
-            float reduction = peaceTreaty ? WAR_WEARINESS_PEACE_TREATY_REDUCTION : WAR_WEARINESS_CEASEFIRE_REDUCTION;
+            float reduction = peaceTreaty ? ExerelinConfig.warWearinessPeaceTreatyReduction : ExerelinConfig.warWearinessCeasefireReduction;
             // find someplace to sign the treaty
             List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
             for (MarketAPI market : markets)
@@ -509,12 +508,18 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     {
         float days = Global.getSector().getClock().convertToDays(amount);
     
+        daysElapsed += amount;
+        if (daysElapsed >= WAR_WEARINESS_INTERVAL)
+        {
+            daysElapsed -= WAR_WEARINESS_INTERVAL;
+            updateWarWeariness();
+        }
+        
         this.intervalUtil.advance(days);
         if (!this.intervalUtil.intervalElapsed()) {
             return;
         }
         createDiplomacyEvent();
-        updateWarWeariness();
         interval = getDiplomacyInterval();
         intervalUtil.setInterval(interval * 0.75f, interval * 1.25f);
     }

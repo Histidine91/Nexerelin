@@ -72,6 +72,12 @@ public class ExerelinConfig
     public static int prismMaxWeaponsPerFaction = 3;
     public static float prismNumShipsPerFaction = 0.5f;
     
+    // War weariness
+    public static float warWearinessDivisor = 10000f;
+    public static float minWarWearinessForPeace = 4000f;
+    public static float warWearinessCeasefireReduction = 3000f;
+    public static float warWearinessPeaceTreatyReduction = 4500f;
+    
     // Misc
     public static float factionRespawnInterval = 30f;
     public static boolean countPiratesForVictory = true;
@@ -125,6 +131,11 @@ public class ExerelinConfig
             
             prismMaxWeaponsPerFaction = settings.optInt("prismMaxWeaponsPerFaction", prismMaxWeaponsPerFaction);
             prismNumShipsPerFaction = (float)settings.optDouble("prismNumShipsPerFaction", prismNumShipsPerFaction);
+            
+            warWearinessDivisor = (float)settings.optDouble("warWearinessDivisor", warWearinessDivisor);
+            minWarWearinessForPeace = (float)settings.optDouble("minWarWearinessForPeace", minWarWearinessForPeace);
+            warWearinessCeasefireReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
+            warWearinessPeaceTreatyReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
             
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
