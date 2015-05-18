@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.AllianceManager.Alliance;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -71,6 +72,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     private static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
     private static final float PEACE_TREATY_CHANCE = 0.3f;
     
+    private static final float DOMINANCE_MIN = 0.25f;
+    private static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.5f;
+    private static final float DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD = 2f;
     
     private Map<String, Float> warWeariness;
     private static float warWearinessPerInterval = 10f;
@@ -161,6 +165,25 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             for( String factionId : factionIds)
                 warWeariness.put(factionId, 0f);
         }
+    }
+    
+    public float getDominanceFactor(String factionId)
+    {
+        List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
+        int globalSize = 0;
+        for (MarketAPI market: allMarkets) globalSize += market.getSize();
+        
+        List<MarketAPI> ourMarkets = null;
+        Alliance alliance = AllianceManager.getFactionAlliance(factionId);
+        if (alliance != null) ourMarkets = alliance.getAllianceMarkets();
+        else ourMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
+        //ourMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
+        
+        int ourSize = 0;
+        for (MarketAPI market: ourMarkets) ourSize += market.getSize();
+        
+        if (ourSize == 0) return 0;
+        return (float)ourSize / globalSize;
     }
     
     protected float getDiplomacyInterval()
@@ -295,8 +318,20 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 continue;
             if (eventDef.allowedFactions2 != null && !eventDef.allowedFactions2.contains(faction2.getId()))
                 continue;
+            
+            boolean isNegative = (eventDef.maxRepChange + eventDef.minRepChange)/2 < 0;
+            float dominance = getDominanceFactor(faction1.getId()) + getDominanceFactor(faction2.getId());
+            dominance = dominance/2;
+            
+            float chance = eventDef.chance;
+            if (dominance > DOMINANCE_MIN)
+            {
+                float strength = (dominance - DOMINANCE_MIN)/(1 - DOMINANCE_MIN);
+                if (isNegative) chance = chance + (DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD * strength);
+                else chance = chance + (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
+            }
                 
-            eventPicker.add(eventDef, eventDef.chance);
+            eventPicker.add(eventDef, chance);
         }
         DiplomacyEventDef event = eventPicker.pick();
         if (event == null)
