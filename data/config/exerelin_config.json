@@ -38,6 +38,9 @@
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
     "ignoreAlignmentForAlliances": false,
     
+    "prismMaxWeaponsPerFaction": 3, # integer. Weapons are randomly picked; may then be pruned if quality too low
+    "prismNumShipsPerFaction": 0.5, # float. Min 5 ships
+    
     "factionRespawnInterval": 30,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
     "ownFactionCustomsInspections": false,  # will your faction perform customs inspections on you? (always off for player_npc)
     
