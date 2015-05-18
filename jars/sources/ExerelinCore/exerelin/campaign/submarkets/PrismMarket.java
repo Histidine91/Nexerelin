@@ -154,6 +154,17 @@ public class PrismMarket extends BaseSubmarketPlugin {
     }
     
     @Override
+    public boolean isIllegalOnSubmarket(FleetMemberAPI member, TransferAction action) {
+        if (action == TransferAction.PLAYER_SELL) return true;
+        return false;
+    }
+    
+    @Override
+    public String getIllegalTransferText(FleetMemberAPI member, TransferAction action) {
+        return "No sales/returns";
+    }
+    
+    @Override
     public String getIllegalTransferText(CargoStackAPI stack, TransferAction action)
     {
         return "No sales/returns";
