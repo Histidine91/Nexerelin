@@ -102,6 +102,13 @@ public class ExerelinFactionConfig
                     alignments.put(alignment, (float)alignmentsJson.optDouble(alignment.toString().toLowerCase(), 0));
                 }
             }
+            else
+            {
+                for (Alignment alignment : Alignment.values())
+                {
+                    alignments.put(alignment, 0f);
+                }
+            }
         }
         catch(Exception e)
         {
