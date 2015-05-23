@@ -1,6 +1,5 @@
 package exerelin.campaign;
 
-import java.awt.Color;
 import java.util.Map;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
@@ -17,6 +16,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager.VictoryType;
 import java.util.HashMap;
 
+// adapted from UpdateNotificationScript in LazyWizard's Version Checker
 public class VictoryScreenScript implements EveryFrameScript
 {
     private boolean isDone = false;
@@ -144,7 +144,9 @@ public class VictoryScreenScript implements EveryFrameScript
         @Override
         public void optionSelected(String optionText, Object optionData)
         {
-            text.addParagraph(optionText, Color.CYAN);
+            if (optionText != null) {
+                    text.addParagraph(optionText, Global.getSettings().getColor("buttonText"));
+            }
 
             // Option was a menu? Go to that menu
             if (optionData == Menu.CREDITS)

@@ -1,4 +1,6 @@
 {
+    "directoryDialogKey": 32,   # integer, default 32 (D)
+    
     "enableThreading":true, # Boolean
     "useMultipleBackgroundsAndStars":true, # Boolean
     "useCustomFactionConfigs":true, # Boolean

@@ -16,6 +16,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.DirectoryScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.world.InvasionFleetManager;
@@ -62,6 +63,8 @@ public class ExerelinLifecyclePlugin extends BaseModPlugin {
         }
                 
         reverseCompatibility();
+        
+        Global.getSector().addTransientScript(new DirectoryScreenScript());
     }
     
     @Override

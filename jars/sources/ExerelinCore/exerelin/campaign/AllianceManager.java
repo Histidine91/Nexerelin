@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -678,5 +679,19 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         MILITARIST,
         DIPLOMATIC,
         IDEOLOGICAL
+    }
+    
+    public static class AllianceComparator implements Comparator<AllianceManager.Alliance>
+    {
+        @Override
+        public int compare(AllianceManager.Alliance alliance1, AllianceManager.Alliance alliance2) {
+
+            int size1 = alliance1.members.size();
+            int size2 = alliance2.members.size();
+
+            if (size1 > size2) return -1;
+            else if (size2 > size1) return 1;
+            else return 0;
+        }
     }
 }
