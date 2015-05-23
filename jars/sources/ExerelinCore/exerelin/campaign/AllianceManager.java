@@ -41,8 +41,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final String ALLIANCE_NAMES_FILE = "data/config/allianceNames.json";
     protected static final float MIN_ALIGNMENT_FOR_NEW_ALLIANCE = 1f;
     protected static final float MIN_ALIGNMENT_TO_JOIN_ALLIANCE = 0f;
-    protected static final float MIN_RELATIONSHIP_TO_JOIN = RepLevel.WELCOMING.getMin();
+    protected static final float MIN_RELATIONSHIP_TO_JOIN = RepLevel.FRIENDLY.getMin();
     protected static final float MIN_RELATIONSHIP_TO_STAY = RepLevel.FAVORABLE.getMin();
+    protected static final float JOIN_CHANCE_MULT = 0.5f;
+    protected static final float FORM_CHANCE_MULT = 0.5f;
+    protected static final float JOIN_CHANCE_FAIL_PER_NEW_ENEMY = 0.4f;
     
     protected static Map<Alignment, List<String>> allianceNamesByAlignment = new HashMap<>();
     protected static List<String> allianceNamePrefixes;
@@ -269,7 +272,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 
                 // better relationships are more likely to form alliances
                 float rel = faction.getRelationship(otherFactionId);
-                if (Math.random() > rel) continue;
+                if (Math.random() > rel * FORM_CHANCE_MULT ) continue;
                 
                 float bestAlignmentValue = 0;
                 List<Alignment> bestAlignments = new ArrayList<>();
@@ -324,12 +327,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 float value = 0;
                 if (config!= null && config.alignments != null)
                 {
+                    //log.info("Alliance alignment: " + alliance.alignment.toString());
                     value = config.alignments.get(alliance.alignment);
                 }
                 if (value < MIN_ALIGNMENT_TO_JOIN_ALLIANCE  && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
                 
-                float sumRelationships = 0;
-                int numFactions = 0;
+                float relationship = 0;
                 boolean abort = false;
                 
                 for (String memberId : alliance.members)
@@ -337,18 +340,30 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                     if (faction.isHostileTo(memberId))
                     {
                         abort = true;
-                        break;
                     }
-                    sumRelationships += faction.getRelationship(memberId);
-                    numFactions++;
+                    relationship = faction.getRelationship(memberId);
+                    if (relationship < MIN_RELATIONSHIP_TO_JOIN || Math.random() > relationship * JOIN_CHANCE_MULT)
+                    {
+                        abort = true;
+                    }
+                    
+                    // don't go joining alliances if it just drags us into multiple wars
+                    List<String> theirEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, false);
+                    List<String> ourEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, false);
+                    int numNewEnemies = 0;
+                    for (String enemy: theirEnemies)
+                    {
+                        if (!ourEnemies.contains(enemy)) numNewEnemies++;
+                    }
+                    //log.info("Joining alliance " + alliance.name + " would add enemies: " + numNewEnemies);
+                    if (Math.random() < numNewEnemies * JOIN_CHANCE_FAIL_PER_NEW_ENEMY)
+                        abort = true;
+                    
+                    break;
                 }
                 if (abort) continue;
                 
-                float averageRelationship = sumRelationships/numFactions;
-                if (averageRelationship > MIN_RELATIONSHIP_TO_JOIN)
-                {
-                    picker.add(alliance, averageRelationship * (value + 1));
-                }
+                picker.add(alliance, relationship * (value + 1));
             }
             // okay, join an alliance
             if (!picker.isEmpty())
@@ -469,17 +484,17 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return highestDelta;
     }
     
-    public static void syncAllianceRelationshipsToFactionRelationship(String factionId1, String factionId2)
+    public static AllianceSyncMessage syncAllianceRelationshipsToFactionRelationship(String factionId1, String factionId2)
     {
-        if (allianceManager == null) return;
+        if (allianceManager == null) return null;
         
         Alliance alliance1 = allianceManager.alliancesByFactionId.get(factionId1);
         Alliance alliance2 = allianceManager.alliancesByFactionId.get(factionId2);
         
         if (alliance1 == alliance2) // e.g. if both are null
         {
-            //log.info("Same alliance, do not modify relationship with each other");
-            return; 
+            if (alliance1 != null) log.info("Same alliance: " + alliance1.name);
+            return null; 
         }
         
         SectorAPI sector = Global.getSector();
@@ -519,13 +534,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         float hostileBoundary = -RepLevel.HOSTILE.getMin();
         if (relationship < hostileBoundary && relationship - highestDelta >= hostileBoundary) peaceState = -1;  // now hostile, was not hostile
         else if (relationship >= hostileBoundary && relationship - highestDelta < hostileBoundary) peaceState = 1; // now not hostile, was hostile
-        log.info("Peace state: " + peaceState + " (delta " + highestDelta + ")");
+        //log.info("Peace state: " + peaceState + " (delta " + highestDelta + ")");
         
         if (peaceState != 0)
         {
-            FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
-            if (faction1.getId().equals("player")) return;
-            else if (faction2.getId().equals("player")) return;
+            if (faction1.getId().equals("player")) return null;
+            else if (faction2.getId().equals("player")) return null;
             
             String party1 = Misc.ucFirst(faction1.getEntityNamePrefix());
             if (alliance1 != null) party1 = alliance1.getAllianceNameAndMembers();
@@ -538,14 +552,16 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             String action = " joins war against ";
             if (peaceState == 1) action = " makes peace with ";
             
-            String message = "";
-            if (alliance1 == null) message = party2 + action + party1;
-            else message = party1 + action + party2;
-            if (peaceState == -1) message += "!";
-                       
+            String messageStr = "";
+            if (alliance1 == null) messageStr = party2 + action + party1;
+            else messageStr = party1 + action + party2;
+            if (peaceState == -1) messageStr += "!";
+            
+            AllianceSyncMessage message = new AllianceSyncMessage(messageStr, party1, party2);
             CampaignUIAPI ui = sector.getCampaignUI();
-            ui.addMessage(message, Color.WHITE, party1, party2, Misc.getHighlightColor(), Misc.getHighlightColor());
+            ui.addMessage(messageStr, Color.WHITE, party1, party2, Misc.getHighlightColor(), Misc.getHighlightColor());
         }
+        return null;
     }
     
     public static void leaveAlliance(String factionId, boolean noEvent)
@@ -640,6 +656,19 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (num < members.size()) factions += ", ";
             }
             return name + " (" + factions + ")";
+        }
+    }
+    
+    public static class AllianceSyncMessage {
+        public String message;
+        public String party1;
+        public String party2;
+        
+        public AllianceSyncMessage(String message, String party1, String party2)
+        {
+            this.message = message;
+            this.party1 = party1;
+            this.party2 = party2;
         }
     }
     
