@@ -359,7 +359,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (factionId.equals("templars"))
 		{
 			newMarket.addSubmarket("tem_templarmarket");
-                        newMarket.addCondition("exerelin_templar_control");
+			newMarket.addCondition("exerelin_templar_control");
 		}
 		else
 		{
@@ -607,7 +607,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(InvasionFleetManager.create());
 		sector.addScript(ResponseFleetManager.create());
 		sector.addScript(CovertOpsManager.create());
-                sector.addScript(AllianceManager.create());
+		sector.addScript(AllianceManager.create());
 		
 		DiplomacyManager.initFactionRelationships();
 		
@@ -717,6 +717,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			relay.setFaction(alignedFactionId);
 			pickEntityInteractionImage(homeworld.entity, homeworld.entity.getMarket(), homeworld.planetType, homeworld.type);
 			habitablePlanets.remove(homeworld);
+			factionPicker.remove(alignedFactionId);
 		}
 		
 		Collections.shuffle(habitablePlanets);
@@ -1216,7 +1217,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float orbitDistance = radius + 250f;
 			float orbitDays = getOrbitalPeriod(radius, orbitDistance, 2);
 			jumpPoint.setCircularOrbit(capitalToken, (float)Math.random() * 360, orbitDistance, orbitDays);
-                        jumpPoint.setRelatedPlanet(capitalToken);
+			jumpPoint.setRelatedPlanet(capitalToken);
 
 			jumpPoint.setStandardWormholeToHyperspaceVisual();
 			system.addEntity(jumpPoint);
