@@ -50,7 +50,7 @@ public class InvasionRound {
 	public static final float MARINE_LOSS_MULT = 0.4f;
 	public static final float MARINE_LOSS_RANDOM_MOD = 0.1f;
 	public static final float MARINE_LOSS_RAID_MULT = 0.5f;
-	public static final int BASE_DESTABILIZATION = 2;
+	public static final int BASE_DESTABILIZATION = 3;
 	
 	/**
 	* PESSIMISTIC and OPTIMISTIC are used for prediction;
@@ -300,7 +300,11 @@ public class InvasionRound {
 		else if (!isRaid && success)
 		{
 			if (currentPenalty < BASE_DESTABILIZATION)
-			event.increaseStabilityPenalty(BASE_DESTABILIZATION);
+                        {
+                            event.increaseStabilityPenalty(BASE_DESTABILIZATION);
+                            if (event.getStabilityPenalty() > BASE_DESTABILIZATION + 1)
+                                event.setStabilityPenalty(BASE_DESTABILIZATION + 1);
+                        }
 			else event.increaseStabilityPenalty(1);
 		}
 		
