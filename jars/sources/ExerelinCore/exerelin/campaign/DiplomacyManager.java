@@ -264,35 +264,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
     }
     
-    public void createDiplomacyEvent()
+    public static void createDiplomacyEvent(FactionAPI faction1, FactionAPI faction2)
     {
-        log.info("Starting diplomacy event creation");
-        SectorAPI sector = Global.getSector();
-        WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();
-        WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker();
+        if (diplomacyManager == null) return;
+        
         WeightedRandomPicker<DiplomacyEventDef> eventPicker = new WeightedRandomPicker();
+        WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker();
+        List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(faction1.getId());
         
-        List<FactionAPI> factions = new ArrayList<>();
-        for( String factionId : SectorManager.getLiveFactionIdsCopy())
-            factions.add(sector.getFaction(factionId));
-        
-        List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
-
-        int factionCount = 0;
-        for (FactionAPI faction: factions)
-        {
-            if (faction.isNeutralFaction()) continue;
-            if (faction.getId().equals("player_npc") && !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
-            
-            if (disallowedFactions.contains(faction.getId())) continue;
-            factionPicker.add(faction);
-            factionCount++;
-        }
-        //log.info("Possible factions: " + factionCount);
-        if (factionCount < 2) return;
-        
-        FactionAPI faction1 = factionPicker.pickAndRemove();
-        FactionAPI faction2 = factionPicker.pickAndRemove();
         log.info("Factions are: " + faction1.getDisplayName() + ", " + faction2.getDisplayName());
         for (DiplomacyEventDef eventDef: eventDefs)
         {
@@ -319,7 +298,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 continue;
             
             boolean isNegative = (eventDef.maxRepChange + eventDef.minRepChange)/2 < 0;
-            float dominance = getDominanceFactor(faction1.getId()) + getDominanceFactor(faction2.getId());
+            float dominance = diplomacyManager.getDominanceFactor(faction1.getId()) + diplomacyManager.getDominanceFactor(faction2.getId());
             dominance = dominance/2;
             
             float chance = eventDef.chance;
@@ -341,10 +320,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         log.info("Trying event: " + event.name);
         for (MarketAPI market:markets)
         {
-            if(market.getFaction() == faction1)
-            {
-                marketPicker.add(market);
-            }
+            marketPicker.add(market);
         }
         
         MarketAPI market = marketPicker.pick();
@@ -354,7 +330,37 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             return;
         }
         
-        doDiplomacyEvent(event, market, faction1, faction2);
+        diplomacyManager.doDiplomacyEvent(event, market, faction1, faction2);
+    }
+    
+    public static void createDiplomacyEvent()
+    {
+        if (diplomacyManager == null) return;
+        
+        log.info("Starting diplomacy event creation");
+        SectorAPI sector = Global.getSector();
+        WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();
+        
+        List<FactionAPI> factions = new ArrayList<>();
+        for( String factionId : SectorManager.getLiveFactionIdsCopy())
+            factions.add(sector.getFaction(factionId));
+
+        int factionCount = 0;
+        for (FactionAPI faction: factions)
+        {
+            if (faction.isNeutralFaction()) continue;
+            if (faction.getId().equals("player_npc") && !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
+            
+            if (disallowedFactions.contains(faction.getId())) continue;
+            factionPicker.add(faction);
+            factionCount++;
+        }
+        //log.info("Possible factions: " + factionCount);
+        if (factionCount < 2) return;
+        
+        FactionAPI faction1 = factionPicker.pickAndRemove();
+        FactionAPI faction2 = factionPicker.pickAndRemove();
+        createDiplomacyEvent(faction1, faction2);
     }
     
     private void updateWarWeariness()

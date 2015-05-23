@@ -7,5 +7,6 @@ ClearAgentDestabilization,data.console.commands.ClearAgentDestabilization,"campa
 #ResetClosestMarket,data.console.commands.ResetClosestMarket,"campaign,exerelin",resetclosestmarket,Debug command
 #GetTime,data.console.commands.GetTime,"campaign,exerelin",gettime,Prints some clock info
 SyncFactionRelationships,data.console.commands.SyncFactionRelationships,"campaign,exerelin",syncfactionrelationships,Syncs faction relationships to match player's. Use after using Save Transfer or SetFactionRelationship.
+CreateDiplomacyEvent,data.console.commands.CreateDiplomacyEvent,"campaign,exerelin",creatediplomacyevent <faction1> <faction2>,Creates a new diplomacy event between the two factions.
 CreateAlliance,data.console.commands.CreateAlliance,"campaign,exerelin",createalliance <faction1> <faction2> [alignment],"Creates an alliance between the two factions, with the specified alignment (random if not specified). If one faction is already in an alliance, add the other faction to its alliance instead. Does nothing if both factions are already in an alliance."
 LeaveAlliance,data.console.commands.LeaveAlliance,"campaign,exerelin",leavealliance <faction>,"Makes the specified faction leave its alliance, if it has one."
