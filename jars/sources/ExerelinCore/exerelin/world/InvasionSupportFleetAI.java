@@ -112,7 +112,7 @@ public class InvasionSupportFleetAI implements EveryFrameScript
     {
         if (data.noWait) return;
         float daysToOrbit = getDaysToOrbit();
-        this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, "preparing for invasion at " + this.data.source.getName());
+        this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, "preparing for strike mission at " + this.data.source.getName());
     }
   
     private void giveStandDownOrders()
