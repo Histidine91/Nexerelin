@@ -1,6 +1,6 @@
 {
     "displayName": "Indie",
-    "fluxCapacitors": 3,
+    "fluxCapacitors": 5,
     "fluxVents": 10,
     "hullId": "monitor",
     "hullMods": [],
@@ -19,8 +19,8 @@
             "autofire": true,
             "mode": "LINKED",
             "weapons": {
-                "WS 003": "irpulse",
-                "WS 004": "irpulse"
+                "WS 003": "lightdualac",
+                "WS 004": "lightag"
             }
         }
     ]
