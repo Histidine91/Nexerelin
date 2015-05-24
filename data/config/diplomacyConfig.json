@@ -215,8 +215,8 @@
 			"stage":"ceasefire",
 			"maxRepLevelToOccur":"hostile",
 			"repEnsureAtWorst":"inhospitable",
-			"minRepChange":0.35,
-			"maxRepChange":0.5,
+			"minRepChange":0.3,
+			"maxRepChange":0.45,
 			"repLimit":"neutral",
 			"chance":0	# only occurs when DiplomacyManager calls it directly
 		},
@@ -225,8 +225,8 @@
 			"stage":"peace_treaty",
 			"maxRepLevelToOccur":"hostile",
 			"repEnsureAtWorst":"suspicious",
-			"minRepChange":0.6,
-			"maxRepChange":0.75,
+			"minRepChange":0.5,
+			"maxRepChange":0.65,
 			"repLimit":"favorable",
 			"chance":0	# only occurs when DiplomacyManager calls it directly
 		},

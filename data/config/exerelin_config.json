@@ -34,7 +34,7 @@
     "fleetRequestCostPerFP": 500,  # used for player-requested fleets
     "invasionGracePeriod": 60,  # factions won't launch invasion fleets at each other for this long at start
     "pointsRequiredForInvasionFleet": 5000,    # bigger = longer delay between invasion fleets
-    "baseInvasionPointsPerFaction": 25, # each market also contributes stability * size
+    "baseInvasionPointsPerFaction": 45, # each market also contributes stability * size
     
     "allianceGracePeriod": 90,  # no alliances can form for this long at start
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
@@ -43,8 +43,8 @@
     "prismMaxWeaponsPerFaction": 3, # integer. Weapons are randomly picked; may then be pruned if quality too low
     "prismNumShipsPerFaction": 0.5, # float. Min 5 ships
     
-    "warWearinessDivisor": 10000,   # float; higher means factions take longer on average to sign a ceasefire
-    "minWarWearinessForPeace": 4000,    # float
+    "warWearinessDivisor": 20000,   # float; higher means factions take longer on average to sign a ceasefire
+    "minWarWearinessForPeace": 8000,    # float
     "warWearinessCeasefireReduction": 3000, # float; note the reduction is applied to both parties
     "warWearinessPeaceTreatyReduction": 4500,
     

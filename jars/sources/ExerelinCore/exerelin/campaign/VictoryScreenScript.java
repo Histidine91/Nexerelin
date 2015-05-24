@@ -58,7 +58,7 @@ public class VictoryScreenScript implements EveryFrameScript
             Map<String, Object> params = new HashMap<>();
             boolean playerVictory = faction.equals(PlayerFactionStore.getPlayerFactionId());
             params.put("victorFactionId", faction);
-            params.put("diplomaticVictory", false);
+            params.put("diplomaticVictory", victoryType == VictoryType.DIPLOMATIC);
             params.put("playerVictory", playerVictory);
             Global.getSector().getEventManager().startEvent(
                     new CampaignEventTarget(Global.getSector().getPlayerFleet()), "exerelin_victory", params);
@@ -117,19 +117,20 @@ public class VictoryScreenScript implements EveryFrameScript
             
             String factionName = Global.getSector().getFaction(faction).getDisplayName();
             String theFactionName = Global.getSector().getFaction(faction).getDisplayNameWithArticle();
+            String TheFactionName =  Misc.ucFirst(theFactionName);
             if (victoryType == VictoryType.CONQUEST)
             {
-                text.addParagraph("Congratulations! " + Misc.ucFirst(theFactionName)
+                text.addParagraph("Congratulations! " + TheFactionName
                         + " has crushed all opposition and now reigns supreme over the Exerelin cluster!");
-                text.highlightInLastPara(factionName);
+                text.highlightInLastPara(TheFactionName);
                 text.addParagraph("You have won a conquest victory!");
                 text.highlightInLastPara("conquest");
             }
             else if (victoryType == VictoryType.DIPLOMATIC)
             {
-                text.addParagraph("Congratulations! " + Misc.ucFirst(theFactionName)
+                text.addParagraph("Congratulations! " + TheFactionName
                         + " and its allies control the Exerelin cluster!");
-                text.highlightInLastPara(factionName);
+                text.highlightInLastPara(TheFactionName);
                 text.addParagraph("You have won a diplomatic victory!");
                 text.highlightInLastPara("diplomatic");
             }
