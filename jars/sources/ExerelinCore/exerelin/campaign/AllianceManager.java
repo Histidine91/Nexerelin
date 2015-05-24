@@ -131,16 +131,20 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         List<String> namePrefixes = new ArrayList<>(allianceNamePrefixes);
         
         List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(member1);
+        float pop1 = 0;
         for (MarketAPI market : markets)
         {
+            pop1 += market.getSize();
             if (market.getPrimaryEntity().isInHyperspace()) continue;
             String systemName = ((StarSystemAPI)market.getContainingLocation()).getBaseName();
             //if (!namePrefixes.contains(systemName))
                namePrefixes.add(systemName);
         }
         markets = ExerelinUtilsFaction.getFactionMarkets(member2);
+        float pop2 = 0;
         for (MarketAPI market : markets)
         {
+            pop2 += market.getSize();
             if (market.getPrimaryEntity().isInHyperspace()) continue;
             String systemName = ((StarSystemAPI)market.getContainingLocation()).getBaseName();
             //if (!namePrefixes.contains(systemName))
@@ -180,7 +184,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             
             float rel1 = faction.getRelationship(member1);
             float rel2 = faction.getRelationship(member2);
-            float average = (rel1+rel2)*0.5f;
+            float average = (rel1*pop1 + rel2*pop2)/(pop1 + pop2);
             faction.setRelationship(member1, average);
             faction.setRelationship(member2, average);
         }
