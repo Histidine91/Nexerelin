@@ -26,7 +26,7 @@ public class PrintAlliances extends BaseCommandPlugin {
 		
 		Color hl = Misc.getHighlightColor();
 
-		text.addParagraph("There are " + alliances.size() + " alliances in the cluster");
+		text.addParagraph("There are " + alliances.size() + " alliance(s) in the cluster");
 		text.highlightInLastPara(hl, "" + alliances.size());
 		text.setFontSmallInsignia();
 		text.addParagraph("-----------------------------------------------------------------------------");

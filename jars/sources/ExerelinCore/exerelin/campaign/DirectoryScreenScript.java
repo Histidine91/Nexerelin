@@ -29,38 +29,38 @@ public class DirectoryScreenScript implements EveryFrameScript
 	
 	public DirectoryScreenScript()
 	{
-	//count++;
-	//Global.getLogger(DirectoryScreenScript.class).info("Number of directory screen scripts running: " + count);
+		//count++;
+		//Global.getLogger(DirectoryScreenScript.class).info("Number of directory screen scripts running: " + count);
 	}
 
 	@Override
 	public boolean isDone()
 	{
-	return false;
+		return false;
 	}
 
 	@Override
 	public boolean runWhilePaused()
 	{
-	return true;
+		return true;
 	}
 
 	
 	@Override
 	public void advance(float amount)
 	{
-	// Don't do anything while in a menu/dialog
-	CampaignUIAPI ui = Global.getSector().getCampaignUI();
-	
-	if (Global.getSector().isInNewGameAdvance() || ui.isShowingDialog())
-	{
-		return;
-	}
-	
-	if (Keyboard.isKeyDown(ExerelinConfig.directoryDialogKey))
-	{
-		ui.showInteractionDialog(new FactionDirectoryDialog(), Global.getSector().getPlayerFleet());
-	}
+		// Don't do anything while in a menu/dialog
+		CampaignUIAPI ui = Global.getSector().getCampaignUI();
+		
+		if (Global.getSector().isInNewGameAdvance() || ui.isShowingDialog())
+		{
+			return;
+		}
+		
+		if (Keyboard.isKeyDown(ExerelinConfig.directoryDialogKey))
+		{
+			ui.showInteractionDialog(new FactionDirectoryDialog(), Global.getSector().getPlayerFleet());
+		}
 	}
 
 	private static class FactionDirectoryDialog implements InteractionDialogPlugin, CoreInteractionListener
@@ -83,6 +83,7 @@ public class DirectoryScreenScript implements EveryFrameScript
 	@Override
 	public void init(InteractionDialogAPI dialog)
 	{
+		FleetInteractionDialogPluginImpl.inConversation = false;
 		this.dialog = dialog;
 		this.options = dialog.getOptionPanel();
 		this.text = dialog.getTextPanel();
@@ -108,8 +109,16 @@ public class DirectoryScreenScript implements EveryFrameScript
 	
 	@Override
 	public void optionSelected(String optionText, Object optionData)
-	{		
+	{
+		if (optionData == null) return;
 		if (FleetInteractionDialogPluginImpl.inConversation) {
+			if (optionsDialogDelegate == null)
+			{
+				optionsDialogDelegate = new RuleBasedInteractionDialogPluginImpl();
+				optionsDialogDelegate.setEmbeddedMode(true);
+				optionsDialogDelegate.init(dialog);
+			}
+			
 			optionsDialogDelegate.optionSelected(optionText, optionData);
 			if (!FleetInteractionDialogPluginImpl.inConversation) {
 				optionSelected(null, Menu.INIT);
@@ -122,20 +131,20 @@ public class DirectoryScreenScript implements EveryFrameScript
 
 		if (optionData == Menu.INIT)
 		{
-		initMenu();
+			initMenu();
 		}
 		if (optionData == Menu.DIRECTORY)
 		{
-		FleetInteractionDialogPluginImpl.inConversation = true;
-		
-		optionsDialogDelegate = new RuleBasedInteractionDialogPluginImpl();
-		optionsDialogDelegate.setEmbeddedMode(true);
-		optionsDialogDelegate.init(dialog);
-		
-		MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
-		mem.set("$specialDialog", true);
-		
-		optionsDialogDelegate.fireAll("ExerelinFactionDirectory");
+			FleetInteractionDialogPluginImpl.inConversation = true;
+			
+			optionsDialogDelegate = new RuleBasedInteractionDialogPluginImpl();
+			optionsDialogDelegate.setEmbeddedMode(true);
+			optionsDialogDelegate.init(dialog);
+			
+			MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
+			mem.set("$specialDialog", true, 0);
+			
+			optionsDialogDelegate.fireAll("ExerelinFactionDirectory");
 		}
 		else if (optionData == Menu.ALLIANCES)
 		{
@@ -153,33 +162,34 @@ public class DirectoryScreenScript implements EveryFrameScript
 			optionsDialogDelegate.fireBest("DialogOptionSelected");
 		*/
 		
-		List<AllianceManager.Alliance> alliances = AllianceManager.getAllianceList();		
-		Collections.sort(alliances, new AllianceManager.AllianceComparator());
-		
-		Color hl = Misc.getHighlightColor();
-
-		text.addParagraph("There are " + alliances.size() + " alliances in the cluster");
-		text.highlightInLastPara(hl, "" + alliances.size());
-		text.setFontSmallInsignia();
-		text.addParagraph("-----------------------------------------------------------------------------");
-		for (AllianceManager.Alliance alliance : alliances)
-		{
-			String allianceName = alliance.name;
-			String allianceString = alliance.getAllianceNameAndMembers();
-
-			text.addParagraph(allianceString);
-			text.highlightInLastPara(hl, allianceName);
-		}
-		text.addParagraph("-----------------------------------------------------------------------------");
-		text.setFontInsignia();
+			List<AllianceManager.Alliance> alliances = AllianceManager.getAllianceList();		
+			Collections.sort(alliances, new AllianceManager.AllianceComparator());
+			
+			Color hl = Misc.getHighlightColor();
+	
+			text.addParagraph("There are " + alliances.size() + " alliance(s) in the cluster");
+			text.highlightInLastPara(hl, "" + alliances.size());
+			text.setFontSmallInsignia();
+			text.addParagraph("-----------------------------------------------------------------------------");
+			for (AllianceManager.Alliance alliance : alliances)
+			{
+				String allianceName = alliance.name;
+				String allianceString = alliance.getAllianceNameAndMembers();
+	
+				text.addParagraph(allianceString);
+				text.highlightInLastPara(hl, allianceName);
+			}
+			text.addParagraph("-----------------------------------------------------------------------------");
+			text.setFontInsignia();
 		}
 		else if (optionData == Menu.INTEL_SCREEN)
 		{
-		dialog.getVisualPanel().showCore(CoreUITabId.INTEL, dialog.getInteractionTarget(), this);
+			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, dialog.getInteractionTarget(), this);
 		}
 		else if (optionData == Menu.EXIT)
 		{
-		dialog.dismiss();
+			FleetInteractionDialogPluginImpl.inConversation = false;
+			dialog.dismiss();
 		}
 	}
 
