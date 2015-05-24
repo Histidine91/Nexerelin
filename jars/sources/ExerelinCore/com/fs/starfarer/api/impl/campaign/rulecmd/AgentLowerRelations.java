@@ -13,6 +13,8 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.AllianceManager;
+import exerelin.campaign.AllianceManager.Alliance;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
@@ -46,6 +48,7 @@ public class AgentLowerRelations extends AgentActionBase {
                 String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
                 FactionAPI playerAlignedFaction = sector.getFaction(playerAlignedFactionId);
                 WeightedRandomPicker<String> targetPicker = new WeightedRandomPicker<>();
+                Alliance targetAlliance = AllianceManager.getFactionAlliance(targetFactionId);
                 
                 List<String> factions = SectorManager.getLiveFactionIdsCopy();
                 for (String factionId : factions)
@@ -57,6 +60,8 @@ public class AgentLowerRelations extends AgentActionBase {
                         weight = TARGET_WEIGHTINGS.get(rep);
                     if (ExerelinUtilsFaction.isPirateFaction(factionId))
                         weight *= 0.25f;
+                    if (AllianceManager.getFactionAlliance(factionId) == targetAlliance)
+                        weight *= 4f;
                     
                     targetPicker.add(factionId, weight);
                 }
