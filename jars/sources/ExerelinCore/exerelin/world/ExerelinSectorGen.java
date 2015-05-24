@@ -1096,22 +1096,22 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (planet.getFullName().contains(" I") || planet.getFullName().contains(" II") || planet.getFullName().contains(" III"))
 			{
 				orbitRadius = ExerelinUtils.getRandomInRange(250, 350);
-				numAsteroids = 2;
+				numAsteroids = 5;
 			}
 			else if(planet.isGasGiant())
 			{
 				orbitRadius = ExerelinUtils.getRandomInRange(700, 900);
-				numAsteroids = 10;
+				numAsteroids = 20;
 			}
 			else if (planet.isStar())
 			{
 				orbitRadius = ExerelinUtils.getRandomInRange(1000, 8000);
-				numAsteroids = 50;
+				numAsteroids = 100;
 			}
 			else
 			{
 				orbitRadius = ExerelinUtils.getRandomInRange(400, 550);
-				numAsteroids = 6;
+				numAsteroids = 15;
 			}
 
 			float width = ExerelinUtils.getRandomInRange(10, 50);
