@@ -73,7 +73,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 
         config = ExerelinUtils.jsonToMap(configJson);
         //baseInterval = (float)(double)config.get("eventFrequency");   // ClassCastException
-        baseInterval = (float)configJson.optDouble("eventFrequency", 20f);
+        baseInterval = (float)configJson.optDouble("eventFrequency", 15f);
     }
 
     public CovertOpsManager()
@@ -97,10 +97,11 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 
-        actionPicker.add(CovertActionType.RAISE_RELATIONS, 1f);
-        actionPicker.add(CovertActionType.LOWER_RELATIONS, 1f);
-        actionPicker.add(CovertActionType.DESTABILIZE_MARKET, 1f);
-        actionPicker.add(CovertActionType.SABOTAGE_RESERVE, 1f);
+        actionPicker.add(CovertActionType.RAISE_RELATIONS, 1.2f);
+        actionPicker.add(CovertActionType.LOWER_RELATIONS, 1.5f);
+        actionPicker.add(CovertActionType.DESTABILIZE_MARKET, 1.25f);
+        actionPicker.add(CovertActionType.SABOTAGE_RESERVE, 1.25f);
+        //actionPicker.add(CovertActionType.DESTROY_FOOD, 1.25f);
         
         CovertActionType actionType = actionPicker.pick();
         
