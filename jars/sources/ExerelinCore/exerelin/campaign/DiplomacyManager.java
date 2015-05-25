@@ -65,6 +65,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     public static final float STARTING_RELATIONSHIP_HOSTILE = -0.6f;
     public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.4f;
+    public static final float STARTING_RELATIONSHIP_WELCOMING = 0.4f;
     public static final float WAR_WEARINESS_INTERVAL = 10f;
     public static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
     public static final float PEACE_TREATY_CHANCE = 0.3f;
@@ -300,6 +301,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             boolean isNegative = (eventDef.maxRepChange + eventDef.minRepChange)/2 < 0;
             float dominance = diplomacyManager.getDominanceFactor(faction1.getId()) + diplomacyManager.getDominanceFactor(faction2.getId());
             dominance = dominance/2;
+            log.info("Dominance factor: " + dominance);
             
             float chance = eventDef.chance;
             if (dominance > DOMINANCE_MIN)
@@ -690,7 +692,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                         if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
                         {
                             //log.info(faction.getDisplayName() + " likes " + dislikedFaction.getDisplayName());
-                            faction.setRelationship(likedFactionId, RepLevel.FRIENDLY);
+                            faction.setRelationship(likedFactionId, STARTING_RELATIONSHIP_WELCOMING);
                         }
                     }
                 }
