@@ -23,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
@@ -712,12 +713,15 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (!ExerelinSetupData.getInstance().freeStart)
 		{
 			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-			addMarketToEntity(homeworld.entity, homeworld, alignedFactionId);
+			MarketAPI homeMarket = addMarketToEntity(homeworld.entity, homeworld, alignedFactionId);
 			SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
 			relay.setFaction(alignedFactionId);
 			pickEntityInteractionImage(homeworld.entity, homeworld.entity.getMarket(), homeworld.planetType, homeworld.type);
 			habitablePlanets.remove(homeworld);
 			factionPicker.remove(alignedFactionId);
+			
+			StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
+			plugin.setPlayerPaidToUnlock(true);
 		}
 		
 		Collections.shuffle(habitablePlanets);
