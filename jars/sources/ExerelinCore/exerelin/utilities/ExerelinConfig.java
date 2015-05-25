@@ -62,6 +62,7 @@ public class ExerelinConfig
     public static float invasionGracePeriod = 30f;
     public static float pointsRequiredForInvasionFleet = 5000f;
     public static float baseInvasionPointsPerFaction = 25f;
+    public static float invasionPointEconomyMult = 1f;
     
     // Alliances
     public static float allianceGracePeriod = 90f;
@@ -125,6 +126,7 @@ public class ExerelinConfig
             invasionGracePeriod = (float)settings.optDouble("invasionGracePeriod", invasionGracePeriod);
             pointsRequiredForInvasionFleet = (float)settings.optDouble("pointsRequiredForInvasionFleet", pointsRequiredForInvasionFleet);
             baseInvasionPointsPerFaction = (float)settings.optDouble("baseInvasionPointsPerFaction", baseInvasionPointsPerFaction);
+            invasionPointEconomyMult = (float)settings.optDouble("invasionPointEconomyMult", invasionPointEconomyMult);
             
             allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);

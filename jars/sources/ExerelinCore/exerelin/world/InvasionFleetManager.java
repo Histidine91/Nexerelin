@@ -44,8 +44,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     public static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
     public static final float DEFENDER_STRENGTH_MARINE_MULT = 1.15f;
     public static final float RESPAWN_FLEET_SPAWN_DISTANCE = 18000f;
-    public static final float HOSTILE_TO_ALL_INVASION_POINT_MOD = 0.4f;
-    public static final float HOSTILE_TO_ALL_INVASION_TARGET_MOD = 0.25f;
+    public static final float HOSTILE_TO_ALL_INVASION_POINT_MOD = 0.3f;
+    public static final float HOSTILE_TO_ALL_INVASION_TARGET_MOD = 0.3f;
     public static final int MAX_FLEETS = 50;
     
     public static Logger log = Global.getLogger(InvasionFleetManager.class);
@@ -389,7 +389,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 pointsPerFaction.put(factionId, 0f);
             
             float points = pointsPerFaction.get(factionId);
-            points += market.getSize() * market.getStabilityValue();
+            points += market.getSize() * market.getStabilityValue() * ExerelinConfig.invasionPointEconomyMult;
             pointsPerFaction.put(factionId, points);
         }
         
@@ -456,26 +456,26 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                         || (market.hasCondition("regional_capital")) || (market.hasCondition("headquarters"))
                     ) && market.getSize() >= 3 )
                 {
-                    marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
-                    if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
-                            continue;
+                    //marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
+                    //if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
+                    //        continue;
                     float weight = marineStockpile;
                     if (market.hasCondition("military_base")) {
-                        weight *= 2.0F;
+                        weight *= 1.5F;
                     }
                     if (market.hasCondition("orbital_station")) {
-                        weight *= 1.25F;
+                        weight *= 1.15F;
                     }
                     if (market.hasCondition("spaceport")) {
-                        weight *= 1.5F;
+                        weight *= 1.35F;
                     }
                     if (market.hasCondition("headquarters")) {
-                        weight *= 1.5F;
+                        weight *= 1.3F;
                     }
                     if (market.hasCondition("regional_capital")) {
-                        weight *= 1.25F;
+                        weight *= 1.1F;
                     }
-                    weight *= market.getSize() * market.getStabilityValue();
+                    weight *= 0.5f + (0.5f * market.getSize() * market.getStabilityValue());
                     sourcePicker.add(market, weight);
                 }
             }
@@ -491,6 +491,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             for (MarketAPI market : markets) 
             {
                 FactionAPI marketFaction = market.getFaction();
+                if (marketFaction == invader) continue; // yeah, no idea why this happens
                 if  ( marketFaction.isHostileTo(invader)) 
                 {
                     if (marketFaction.getId().equals("independent")) continue;

@@ -30,10 +30,10 @@
         "ideological":1,
     },
     
-    "invasionStrengthBonusAttack":0.125,
-    "invasionStrengthBonusDefend":0.15,
-    "invasionFleetSizeMod":0.125,
-    "responseFleetSizeMod":0.15,
+    "invasionStrengthBonusAttack":0.1,
+    "invasionStrengthBonusDefend":0.125,
+    "invasionFleetSizeMod":0.1,
+    "responseFleetSizeMod":0.125,
 
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }
