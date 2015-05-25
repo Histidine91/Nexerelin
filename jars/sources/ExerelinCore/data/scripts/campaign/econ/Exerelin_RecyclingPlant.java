@@ -4,7 +4,7 @@ import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
-public class exerelin_RecyclingPlant extends BaseMarketConditionPlugin {
+public class Exerelin_RecyclingPlant extends BaseMarketConditionPlugin {
 	
 	public static final float RECYCLING_CREW = 100f;
 	public static final float RECYCLING_VOLATILES = 2000f;

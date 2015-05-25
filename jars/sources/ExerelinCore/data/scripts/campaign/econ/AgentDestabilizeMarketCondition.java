@@ -1,4 +1,4 @@
-package exerelin.campaign.econ;
+package data.scripts.campaign.econ;
 
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;

@@ -1,7 +1,5 @@
-package data.scripts.campaign;
+package exerelin.campaign;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -9,13 +7,9 @@ import org.apache.log4j.Logger;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
-import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.EconomyAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.MarketDemandAPI;
-import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 
 public class EconomyLogger extends BaseCampaignEventListener implements EveryFrameScript {

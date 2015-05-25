@@ -4,7 +4,7 @@ import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
-public class exerelin_TemplarControl extends BaseMarketConditionPlugin {
+public class Exerelin_TemplarControl extends BaseMarketConditionPlugin {
 	
 	@Override
 	public void apply(String id) {
