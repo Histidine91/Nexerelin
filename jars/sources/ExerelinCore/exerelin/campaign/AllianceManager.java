@@ -267,12 +267,14 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         for (String factionId : liveFactionIds)
         {
             if (alliancesByFactionId.containsKey(factionId)) continue;
+            if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             for (String otherFactionId : liveFactionIds)
             {
                 if (alliancesByFactionId.containsKey(otherFactionId)) continue;
                 if (otherFactionId.equals(factionId)) continue;
+                if (ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
                 if (faction.isAtBest(otherFactionId, RepLevel.WELCOMING)) continue;
                 
                 // better relationships are more likely to form alliances
@@ -547,11 +549,21 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             else if (faction2.getId().equals("player")) return null;
             
             String party1 = Misc.ucFirst(faction1.getEntityNamePrefix());
-            if (alliance1 != null) party1 = alliance1.getAllianceNameAndMembers();
+            String highlight1 = party1;
+            if (alliance1 != null) 
+            {
+                party1 = alliance1.getAllianceNameAndMembers();
+                highlight1 = alliance1.name;
+            }
             //else if (faction1.getId().equals("player")) party1 = Misc.ucFirst(playerAlignedFaction.getEntityNamePrefix());
             
             String party2 = Misc.ucFirst(faction2.getEntityNamePrefix());
-            if (alliance2 != null) party2 = alliance2.getAllianceNameAndMembers();
+            String highlight2 = party2;
+            if (alliance2 != null) 
+            {
+                party2 = alliance2.getAllianceNameAndMembers();
+                highlight2 = alliance2.name;
+            }
             //else if (faction2.getId().equals("player")) party2 = Misc.ucFirst(playerAlignedFaction.getEntityNamePrefix());
             
             String action = " joins war against ";
@@ -564,7 +576,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             
             AllianceSyncMessage message = new AllianceSyncMessage(messageStr, party1, party2);
             CampaignUIAPI ui = sector.getCampaignUI();
-            ui.addMessage(messageStr, Color.WHITE, party1, party2, Misc.getHighlightColor(), Misc.getHighlightColor());
+            ui.addMessage(messageStr, Color.WHITE, highlight1, highlight2, Misc.getHighlightColor(), Misc.getHighlightColor());
         }
         return null;
     }
