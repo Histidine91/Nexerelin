@@ -139,6 +139,9 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
         for(MarketAPI market:markets)
         {
+            if (!reserves.containsKey(market.getId()))
+                reserves.put(market.getId(), 0f);
+            
             float baseIncrement = market.getSize() * (0.5f + (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR));
             float increment = baseIncrement;
             //if (market.hasCondition("regional_capital")) increment += baseIncrement * 0.1f;
