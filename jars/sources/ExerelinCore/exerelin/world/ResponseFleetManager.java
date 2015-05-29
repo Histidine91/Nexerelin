@@ -140,7 +140,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         for(MarketAPI market:markets)
         {
             if (!reserves.containsKey(market.getId()))
-                reserves.put(market.getId(), 0f);
+                reserves.put(market.getId(), getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
             
             float baseIncrement = market.getSize() * (0.5f + (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR));
             float increment = baseIncrement;

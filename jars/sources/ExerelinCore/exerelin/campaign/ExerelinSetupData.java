@@ -42,6 +42,7 @@ public final class ExerelinSetupData
 	public int numStartFactions = 3;
 	public int maxFactionsInExerelinAtOnce = 16;
 	public boolean randomStartRelationships = false;
+	//public boolean corvusMode = false;	// currently not set
 	public boolean omnifactoryPresent = false;
 	public boolean randomOmnifactoryLocation = false;
 	public boolean prismMarketPresent = false;

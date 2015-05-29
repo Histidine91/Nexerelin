@@ -80,6 +80,8 @@ public class ExerelinConfig
     public static float warWearinessPeaceTreatyReduction = 4500f;
     
     // Misc
+    public static boolean corvusMode = false;
+    
     public static float factionRespawnInterval = 30f;
     public static boolean countPiratesForVictory = true;
     public static boolean ownFactionCustomsInspections = false;
@@ -144,6 +146,8 @@ public class ExerelinConfig
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
+            
+            corvusMode = settings.optBoolean("corvusMode", corvusMode);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             supportedModFactions = JSONArrayToStringArray(settings.getJSONArray("supportedModFactions"));

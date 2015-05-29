@@ -10,11 +10,8 @@
     "modPlugin":"data.scripts.ExerelinModPlugin",
     "replace":
     [
-	"data/config/settings.json",
-	"data/campaign/econ/economy.json",
-	"data/campaign/starmap.json",
-
-        "data/world/factions/abandoned.faction",
-        "data/world/factions/rebel.faction",
+    # comment out to use Corvus mode, uncomment to turn it off (MANDATORY)
+    # NOTE: you need to edit exerelin_config.json as well
+        "data/campaign/econ/economy.json",
     ],
 }

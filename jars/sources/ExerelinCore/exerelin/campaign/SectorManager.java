@@ -47,14 +47,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
 
     private static final String MANAGER_MAP_KEY = "exerelin_sectorManager";
     
-    private List<String> factionIdsAtStart;
-    private List<String> liveFactionIds;
-    private List<String> historicFactionIds;
+    private List<String> factionIdsAtStart = new ArrayList<>();
+    private List<String> liveFactionIds = new ArrayList<>();
+    private List<String> historicFactionIds = new ArrayList<>();
     private Map<String, String> systemToRelayMap;
     private Map<String, String> planetToRelayMap;
     private boolean victoryHasOccured = false;
     private boolean respawnFactions = false;
     private boolean onlyRespawnStartingFactions = false;
+    
+    protected boolean corvusMode = false;
     
     private int numSlavesRecentlySold = 0;
     private MarketAPI marketLastSoldSlaves = null;
@@ -67,20 +69,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public SectorManager()
     {
         super(true);
-        String[] temp = ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector());
-        liveFactionIds = new ArrayList<>();
-        factionIdsAtStart = new ArrayList<>();
-        historicFactionIds = new ArrayList<>();
-        
-        for (String factionId:temp)
-        {
-            if (ExerelinUtilsFaction.getFactionMarkets(factionId).size() > 0)
-            {
-                liveFactionIds.add(factionId);
-                factionIdsAtStart.add(factionId);
-                historicFactionIds.add(factionId);
-            }   
-        }
+        //SectorManager.reinitLiveFactions();
         respawnFactions = ExerelinSetupData.getInstance().respawnFactions;
         onlyRespawnStartingFactions = ExerelinSetupData.getInstance().onlyRespawnStartingFactions;
         respawnInterval = ExerelinConfig.factionRespawnInterval;
@@ -166,6 +155,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         sectorManager = new SectorManager();
         data.put(MANAGER_MAP_KEY, sectorManager);
         return sectorManager;
+    }
+    
+    public static void setCorvusMode(boolean mode)
+    {
+        if (sectorManager == null) return;
+        sectorManager.corvusMode = mode;
+    }
+    
+    public static boolean getCorvusMode()
+    {
+        if (sectorManager == null) return false;
+        return sectorManager.corvusMode;
     }
     
     public void handleSlaveTradeRep()
@@ -303,6 +304,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (sectorManager.victoryHasOccured) return;
         //FactionAPI faction = Global.getSector().getFaction(factionId);
         SectorAPI sector = Global.getSector();
+        
+        if (sector.isInNewGameAdvance()) return;
+        
         String playerFactionId = PlayerFactionStore.getPlayerFactionId();
         String victorFactionId = playerFactionId;
         boolean playerVictory = true;
@@ -534,6 +538,25 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return;
         sectorManager.wantExpelPlayerFromFaction = true;
+    }
+    
+    public static void reinitLiveFactions()
+    {
+        if (sectorManager == null) return;
+        String[] temp = ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector());
+        sectorManager.liveFactionIds = new ArrayList<>();
+        sectorManager.factionIdsAtStart = new ArrayList<>();
+        sectorManager.historicFactionIds = new ArrayList<>();
+        
+        for (String factionId:temp)
+        {
+            if (ExerelinUtilsFaction.getFactionMarkets(factionId).size() > 0)
+            {
+                sectorManager.liveFactionIds.add(factionId);
+                sectorManager.factionIdsAtStart.add(factionId);
+                sectorManager.historicFactionIds.add(factionId);
+            }   
+        }
     }
     
     public enum VictoryType

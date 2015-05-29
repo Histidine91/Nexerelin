@@ -1,4 +1,10 @@
 {
+    # Corvus mode: use manually created starmap (vanilla + mods) instead of Nexerelin's randomly generated one
+    # Not supported by mods (except SS+) at present
+    # IMPORTANT: you need to modify mod_info.json as well or it'll crash
+    # Only affects new games
+    "corvusMode": false,
+
     "directoryDialogKey": 32,   # integer, default 32 (D)
     
     "enableThreading":true, # Boolean

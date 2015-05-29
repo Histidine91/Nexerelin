@@ -25,6 +25,21 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.campaign.SSP_CampaignPlugin;
+import data.scripts.campaign.SSP_CoreScript;
+import data.scripts.campaign.events.SSP_EventProbabilityManager;
+import data.scripts.world.corvus.Corvus;
+import data.scripts.world.systems.Arcadia;
+import data.scripts.world.systems.Askonia;
+import data.scripts.world.systems.Eos;
+import data.scripts.world.systems.Magec;
+import data.scripts.world.systems.SSP_Arcadia;
+import data.scripts.world.systems.SSP_Askonia;
+import data.scripts.world.systems.SSP_Corvus;
+import data.scripts.world.systems.SSP_Eos;
+import data.scripts.world.systems.SSP_Magec;
+import data.scripts.world.systems.SSP_Valhalla;
+import data.scripts.world.systems.Valhalla;
 import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
@@ -487,7 +502,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 		}
 		if (toOrbit == null)
-			toOrbit = homeworld.entity;
+		{
+			if (ExerelinConfig.corvusMode) toOrbit = Global.getSector().getEntityById("somnus");   // TODO
+			else toOrbit = homeworld.entity;
+		}
 		
 		
 		LocationAPI system = toOrbit.getContainingLocation();
@@ -602,6 +620,92 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		prismEntity.setCustomDescriptionId("exerelin_prismFreeport");
 	}
 	
+	void generateSSPSector(SectorAPI sector)
+	{
+		new SSP_Askonia().generate(sector);
+		new SSP_Eos().generate(sector);
+		new SSP_Valhalla().generate(sector);
+		new SSP_Arcadia().generate(sector);
+		new SSP_Magec().generate(sector);
+		new SSP_Corvus().generate(sector);
+
+		LocationAPI hyper = Global.getSector().getHyperspace();
+		SectorEntityToken zinLabel = hyper.addCustomEntity("zin_label_id", null, "zin_label", null);
+		SectorEntityToken abyssLabel = hyper.addCustomEntity("opabyss_label_id", null, "opabyss_label", null);
+		SectorEntityToken telmunLabel = hyper.addCustomEntity("telmun_label_id", null, "telmun_label", null);
+		SectorEntityToken cathedralLabel = hyper.addCustomEntity("cathedral_label_id", null, "cathedral_label", null);
+		SectorEntityToken coreLabel = hyper.addCustomEntity("core_label_id", null, "core_label", null);
+
+		zinLabel.setFixedLocation(-14500, -8000);
+		abyssLabel.setFixedLocation(-12000, -19000);
+		telmunLabel.setFixedLocation(-16000, 8000);
+		cathedralLabel.setFixedLocation(-20000, 2000);
+		coreLabel.setFixedLocation(17000, -6000);
+
+		SSP_EventProbabilityManager probabilityManager = new SSP_EventProbabilityManager();
+		sector.getPersistentData().put("ssp_eventProbabilityManager", probabilityManager);
+		sector.registerPlugin(new SSP_CampaignPlugin());
+		sector.addScript(new SSP_CoreScript());
+		sector.addScript(probabilityManager);
+		sector.addScript(new EconomyFleetManager());
+	}
+	
+	public void generateVanillaSector(SectorAPI sector)
+	{
+		StarSystemAPI system = sector.createStarSystem("Corvus");
+		system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
+		
+		PlanetAPI star = system.initStar("corvus", "star_yellow", 500f);
+
+		PlanetAPI corvusI = system.addPlanet("asharu", star, "Asharu", "desert", 55, 150, 3000, 100);
+		corvusI.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "asharu"));
+		corvusI.getSpec().setGlowColor(new Color(255,255,255,255));
+		corvusI.getSpec().setUseReverseLightForGlow(true);
+		corvusI.applySpecChanges();
+		corvusI.setCustomDescriptionId("planet_asharu");
+		
+		PlanetAPI corvusII = system.addPlanet("jangala", star, "Jangala", "jungle", 235, 200, 4500, 200);		
+		corvusII.setCustomDescriptionId("planet_jangala");
+		corvusII.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "volturn"));
+		corvusII.getSpec().setGlowColor(new Color(255,255,255,255));
+		corvusII.getSpec().setUseReverseLightForGlow(true);
+		corvusII.applySpecChanges();
+
+		system.addAsteroidBelt(star, 100, 5500, 1000, 150, 300);
+		
+		SectorEntityToken corvusIII = system.addPlanet("barad", star, "Barad", "gas_giant", 200, 300, 7500, 400);
+		SectorEntityToken corvusIIIA = system.addPlanet("corvus_IIIa", corvusIII, "Barad A", "cryovolcanic", 235, 120, 800, 20);
+		corvusIIIA.setCustomDescriptionId("planet_barad_a");
+		system.addAsteroidBelt(corvusIII, 50, 1000, 200, 10, 45);
+		SectorEntityToken corvusIIIB = system.addPlanet("corvus_IIIb", corvusIII, "Barad B", "barren", 235, 100, 1300, 60);
+			corvusIIIB.setInteractionImage("illustrations", "vacuum_colony");
+		
+		SectorEntityToken corvusIV = system.addPlanet("corvus_IV", star, "Somnus", "barren-bombarded", 0, 100, 10000, 700);
+		SectorEntityToken corvusV = system.addPlanet("corvus_V", star, "Mors", "frozen", 330, 175, 12000, 500);
+		
+		//corvusV.setFaction("tritachyon");
+		
+		new Askonia().generate(sector);
+		new Eos().generate(sector);
+		new Valhalla().generate(sector);
+		new Arcadia().generate(sector);
+		new Magec().generate(sector);
+		new Corvus().generate(sector);
+		
+		LocationAPI hyper = Global.getSector().getHyperspace();
+		SectorEntityToken zinLabel = hyper.addCustomEntity("zin_label_id", null, "zin_label", null);
+		SectorEntityToken abyssLabel = hyper.addCustomEntity("opabyss_label_id", null, "opabyss_label", null);
+		SectorEntityToken telmunLabel = hyper.addCustomEntity("telmun_label_id", null, "telmun_label", null);
+		SectorEntityToken cathedralLabel = hyper.addCustomEntity("cathedral_label_id", null, "cathedral_label", null);
+		SectorEntityToken coreLabel = hyper.addCustomEntity("core_label_id", null, "core_label", null);
+		
+		zinLabel.setFixedLocation(-14500, -8000);
+		abyssLabel.setFixedLocation(-12000, -19000);
+		telmunLabel.setFixedLocation(-16000, 8000);
+		cathedralLabel.setFixedLocation(-20000, 2000);
+		coreLabel.setFixedLocation(17000, -6000);
+	}
+	
 	@Override
 	public void generate(SectorAPI sector)
 	{
@@ -633,26 +737,70 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		resetVars();
 		
-		// stars will be distributed in a concentric pattern
-		float angle = 0;
-		float distance = 0;
-		int numSystems = ExerelinSetupData.getInstance().numSystems;
-		for(int i = 0; i < numSystems; i ++)
+                boolean corvusMode = ExerelinConfig.corvusMode;
+                
+		if (!corvusMode)
 		{
-			angle += MathUtils.getRandomNumberInRange((float)Math.PI/4, (float)Math.PI);
-			float increment = MathUtils.getRandomNumberInRange(250, 1000) + MathUtils.getRandomNumberInRange(250, 1000);
-			distance += increment * ((8f/(float)numSystems) * 0.75f + 0.25f);   // put stars closer together if there are a lot of them
-			int x = (int)(Math.sin(angle) * distance);
-			int y = (int)(Math.cos(angle) * distance);
-			starPositions.add(new Integer[] {x, y});
+			// purge existing star systems
+                        /*
+			List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
+			
+			for (MarketAPI market : markets)
+			{
+				sector.getEconomy().removeMarket(market);
+			}
+			List<LocationAPI> locs = new ArrayList<>();
+			for (StarSystemAPI system : sector.getStarSystems())
+			{
+				locs.add(system);
+			}
+			locs.add(Global.getSector().getHyperspace());
+			for (LocationAPI loc : locs)
+			{
+				if (loc instanceof StarSystemAPI)
+					log.info("Removing " + loc.getName());
+				List entities = loc.getEntities(SectorEntityToken.class);
+				List<SectorEntityToken> entitiesToRemove = new ArrayList<>();
+				for (Object entity : entities) {
+					entitiesToRemove.add((SectorEntityToken)entity);
+				}
+				for (SectorEntityToken entity : entitiesToRemove) {
+					loc.removeEntity(entity);
+				}
+				if (loc instanceof StarSystemAPI)
+					sector.removeStarSystem((StarSystemAPI)loc);
+			}
+                        */
+			
+			// stars will be distributed in a concentric pattern
+			float angle = 0;
+			float distance = 0;
+			int numSystems = ExerelinSetupData.getInstance().numSystems;
+			for(int i = 0; i < numSystems; i ++)
+			{
+				angle += MathUtils.getRandomNumberInRange((float)Math.PI/4, (float)Math.PI);
+				float increment = MathUtils.getRandomNumberInRange(250, 1000) + MathUtils.getRandomNumberInRange(250, 1000);
+				distance += increment * ((8f/(float)numSystems) * 0.75f + 0.25f);   // put stars closer together if there are a lot of them
+				int x = (int)(Math.sin(angle) * distance);
+				int y = (int)(Math.cos(angle) * distance);
+				starPositions.add(new Integer[] {x, y});
+			}
+			Collections.shuffle(starPositions);
+
+
+			// build systems
+			for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
+				buildSystem(sector, i);
+			populateSector();
 		}
-		Collections.shuffle(starPositions);
-		
-		
-		// build systems
-		for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
-			buildSystem(sector, i);
-		populateSector();
+		else
+		{
+			if (ExerelinUtils.isSSPInstalled())
+			{
+				generateSSPSector(sector);
+			}
+			else generateVanillaSector(sector);
+		}
 		addOmnifactory();
 		addPrismMarket();
 		
@@ -662,10 +810,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		
 		sector.addScript(new CoreScript());
-		sector.addScript(new ForcePatrolFleetsScript());
+		if (corvusMode && ExerelinUtils.isSSPInstalled())
+		{
+			SSP_EventProbabilityManager probabilityManager = new SSP_EventProbabilityManager();
+			sector.getPersistentData().put("ssp_eventProbabilityManager", probabilityManager);
+			sector.addScript(probabilityManager);
+		}
+		else
+		{
+			sector.addScript(new CoreEventProbabilityManager());
+		}
+		sector.addScript(new EconomyFleetManager());       
+		
+                if (!corvusMode) sector.addScript(new ForcePatrolFleetsScript());
 		//sector.addScript(new EconomyLogger());
-		sector.addScript(new CoreEventProbabilityManager());
-		sector.addScript(new EconomyFleetManager());
 		
 		sector.addScript(SectorManager.create());
 		sector.addScript(DiplomacyManager.create());
@@ -678,6 +836,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		SectorManager.setSystemToRelayMap(systemToRelay);
 		SectorManager.setPlanetToRelayMap(planetToRelay);
+		SectorManager.setCorvusMode(ExerelinConfig.corvusMode);
 		
 		// some cleanup
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();

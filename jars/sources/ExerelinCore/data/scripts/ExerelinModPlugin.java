@@ -26,7 +26,6 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onNewGame() {
         ExerelinSetupData.resetInstance();
         ExerelinConfig.loadSettings();
-        //new ExerelinSectorGen().generate(Global.getSector());
         //ExerelinCheck.checkModCompatability();
     }
     
@@ -75,12 +74,11 @@ public class ExerelinModPlugin extends BaseModPlugin
 
     @Override
     public void onNewGameAfterTimePass() {
-        Global.getLogger(ExerelinModPlugin.class).info("lololol 1");
     }
 
     @Override
     public void onNewGameAfterEconomyLoad() {
-        //new ExerelinSectorGen().generate(Global.getSector());
-        Global.getLogger(ExerelinModPlugin.class).info("lololol 2");
+        SectorManager.reinitLiveFactions();
+        DiplomacyManager.initFactionRelationships();
     }
 }
