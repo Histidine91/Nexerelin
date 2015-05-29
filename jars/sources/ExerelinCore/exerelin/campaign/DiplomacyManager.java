@@ -290,6 +290,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(faction1.getId());
         
         log.info("Factions are: " + faction1.getDisplayName() + ", " + faction2.getDisplayName());
+        float dominance = diplomacyManager.getDominanceFactor(faction1.getId()) + diplomacyManager.getDominanceFactor(faction2.getId());
+        dominance = dominance/2;
+        log.info("Dominance factor: " + dominance);
         for (DiplomacyEventDef eventDef: eventDefs)
         {
             if ((pirateFactions.contains(faction1.getId()) || pirateFactions.contains(faction2.getId())) && !eventDef.allowPirates)
@@ -315,9 +318,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 continue;
             
             boolean isNegative = (eventDef.maxRepChange + eventDef.minRepChange)/2 < 0;
-            float dominance = diplomacyManager.getDominanceFactor(faction1.getId()) + diplomacyManager.getDominanceFactor(faction2.getId());
-            dominance = dominance/2;
-            log.info("Dominance factor: " + dominance);
             
             float chance = eventDef.chance;
             if (dominance > DOMINANCE_MIN)
