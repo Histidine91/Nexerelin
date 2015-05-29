@@ -2,6 +2,6 @@
 	"plugins":{
 		#"newGameDialogPlugin":"exerelin.plugins.ExerelinNewGameDialogPlugin",
 		"newGameCreationEntryPoint":"exerelin.world.ExerelinSectorGen",
-		"coreLifecyclePlugin":"exerelin.plugins.ExerelinLifecyclePlugin",
+		#"coreLifecyclePlugin":"exerelin.plugins.ExerelinLifecyclePlugin",
 	}
 }
