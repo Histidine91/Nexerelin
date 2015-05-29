@@ -90,8 +90,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	private static final Map<String, String[]> stationImages = new HashMap<>();
 	
-	private String[] factionIds = new String[]{};
-	private List starPositions = new ArrayList();	
+	private List<String> factionIds = new ArrayList<>();
+	private List<Integer[]> starPositions = new ArrayList<>();	
 	private EntityData homeworld = null;
 
 	private List<EntityData> habitablePlanets = new ArrayList<>();
@@ -120,25 +120,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	*/
 	 
 	static 
-	{
-		for (int i = 0; i < starBackgrounds.size(); i++)
-		{
-		starBackgrounds.set(i, "graphics/" + starBackgrounds.get(i));
-		}	
-		
-		// add Tartiflette BGs
-		/*
-		File extraBgDir = new File("graphics/backgrounds/extra");
-		if (extraBgDir.exists() && extraBgDir.isDirectory())
-		{
-		File[] files = extraBgDir.listFiles(new ImageFileFilter());
-		for (File file : files)
-		{
-			starBackgrounds.add(file.getPath());
-		}
-		}
-		*/
-		
+	{		
 		// station images (FIXME: move to faction config)
 		stationImages.put("default", new String[] {"station_side00", "station_side02", "station_side04", "station_jangala_type"});
 		stationImages.put("shadow_industry", new String[] {"station_shi_prana","station_shi_med"} );
@@ -149,10 +131,81 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
 		stationImages.put("exipirated", new String[] {"exipirated_avesta_station"} );
 	}
+	
+	private void loadBackgrounds()
+	{
+		List<String> factions = Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector()));
+		if (factions.contains("blackrock_driveyards"))
+		{
+			starBackgrounds.add("BR/backgrounds/obsidianBG (2).jpg");
+		}
+		if (factions.contains("exigency"))
+		{
+		}
+		if (factions.contains("hiigaran_descendants"))
+		{
+			starBackgrounds.add("HD/backgrounds/hii_background.jpg");
+		}
+		if (factions.contains("interstellarimperium"))
+		{
+			starBackgrounds.add("imperium/backgrounds/ii_corsica.jpg");
+			starBackgrounds.add("imperium/backgrounds/ii_thracia.jpg");
+		}
+		if (factions.contains("mayorate"))
+		{
+			starBackgrounds.add("ilk/backgrounds/ilk_background2.jpg");
+		}
+		if (factions.contains("neutrinocorp"))
+		{
+			starBackgrounds.add("neut/backgrounds/CoronaAustralis.jpg");
+		}
+		if (factions.contains("pn_colony"))
+		{
+			starBackgrounds.add("backgrounds/tolpbg.jpg");
+		}
+		if (factions.contains("SCY"))
+		{
+			starBackgrounds.add("SCY/backgrounds/SCY_acheron.jpg");
+			starBackgrounds.add("SCY/backgrounds/SCY_acheron.jpg");
+		}
+		if (factions.contains("shadow_industry"))
+		{
+			starBackgrounds.add("shadow_ships/backgrounds/anarbg.jpg");
+		}
+		if (factions.contains("shadow_industry"))
+		{
+			starBackgrounds.add("shadow_ships/backgrounds/anarbg.jpg");
+		}
+		if (ExerelinUtils.isSSPInstalled())
+		{
+			starBackgrounds.add("ssp/backgrounds/ssp_arcade.jpg");
+			starBackgrounds.add("ssp/backgrounds/ssp_atopthemountain.jpg");
+			starBackgrounds.add("ssp/backgrounds/ssp_conflictofinterest.jpg");
+			starBackgrounds.add("ssp/backgrounds/ssp_corporateindirection.jpg");
+			starBackgrounds.add("ssp/backgrounds/ssp_overreachingexpansion.jpg");
+		}
+		if (factions.contains("templars"))
+		{
+			starBackgrounds.add("templars/backgrounds/tem_atallcosts_background.jpg");
+			starBackgrounds.add("templars/backgrounds/tem_excommunication_background.jpg");
+			starBackgrounds.add("templars/backgrounds/tem_massacre_background.jpg");
+			starBackgrounds.add("templars/backgrounds/tem_smite_background.jpg");
+		}
+		if (factions.contains("valkyrian"))
+		{
+			starBackgrounds.add("valkyrians/backgrounds/valk_extra_background.jpg");
+		}
+		
+		// prepend "graphics/" to item paths
+		for (int i = 0; i < starBackgrounds.size(); i++)
+		{
+			starBackgrounds.set(i, "graphics/" + starBackgrounds.get(i));
+		}
+	}
 
 	private String getRandomFaction()
 	{
-		return factionIds[ExerelinUtils.getRandomInRange(0, factionIds.length-1)];
+		return factionIds.get(ExerelinUtils.getRandomInRange(0, factionIds.size()-1));
 	}
 	
 	private void resetVars()
@@ -160,7 +213,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		habitablePlanets = new ArrayList<>();
 		stations = new ArrayList<>();
 		ExerelinSetupData.getInstance().resetAvailableFactions();
-		factionIds = ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector());
+		factionIds = new ArrayList<>( Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector())) );
 	}
 	
 	private void addListToPicker(List list, WeightedRandomPicker picker)
@@ -244,6 +297,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			allowedImages.add(new String[]{"illustrations", "urban01"} );
 			allowedImages.add(new String[]{"illustrations", "urban02"} );
 			allowedImages.add(new String[]{"illustrations", "urban03"} );
+			
+			if (factionIds.contains("citadeldefenders"))
+			{
+				allowedImages.add(new String[]{"illustrations", "streets.png"} );
+				allowedImages.add(new String[]{"illustrations", "twin_cities.png"} );
+			}
+			
 		}
 		if(size >= 4)
 		{
@@ -566,6 +626,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			Global.getLogger(ExerelinSectorGen.class).log(Level.ERROR, ex);
 		}
 		
+		loadBackgrounds();
+		
 		resetVars();
 		
 		// stars will be distributed in a concentric pattern
@@ -579,7 +641,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			distance += increment * ((8f/(float)numSystems) * 0.75f + 0.25f);   // put stars closer together if there are a lot of them
 			int x = (int)(Math.sin(angle) * distance);
 			int y = (int)(Math.cos(angle) * distance);
-			starPositions.add(new int[] {x, y});
+			starPositions.add(new Integer[] {x, y});
 		}
 		Collections.shuffle(starPositions);
 		
@@ -591,7 +653,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		addOmnifactory();
 		addPrismMarket();
 		
-		ExerelinConfig.loadSettings();
 		String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
 		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
 
@@ -704,7 +765,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	{
 		SectorAPI sector = Global.getSector();
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>();
-		List<String> factions = new ArrayList<>(Arrays.asList(factionIds));
+		List<String> factions = new ArrayList<>(factionIds);
 		factions.remove("player_npc");  // player NPC faction only gets homeworld (if applicable)
 		addListToPicker(factions, factionPicker);
 		boolean hqsSpawned = false;
@@ -770,7 +831,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 	public PlanetAPI makeStar(int index, String systemId, StarSystemAPI system, String type, float size)
 	{
-		int[] pos = (int[])starPositions.get(index);
+		Integer[] pos = (Integer[])starPositions.get(index);
 		int x = pos[0];
 		int y = pos[1];
 		return system.initStar(systemId, type, size, x, y);
@@ -891,8 +952,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float habitableChance = getHabitableChance(i, false);
 			
 			boolean habitable = Math.random() <= habitableChance;
-			String planetType = "";
-			String owningFactionId = getRandomFaction();
 			EntityData entityData = new EntityData(system, i);
 			entityData.habitable = habitable;
 			entityData.primary = starData;
