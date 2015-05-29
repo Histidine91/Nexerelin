@@ -416,6 +416,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			newMarket.addCondition("luddic_majority");
 			//newMarket.addCondition("cottage_industry");
 		}
+		else if (factionId.equals("spire")) {
+			newMarket.addCondition("aiw_inorganic_populace");
+		}
 		
 		if (factionId.equals("templars"))
 		{
