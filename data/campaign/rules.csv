@@ -240,7 +240,7 @@ NGCSetAptitude technology 10
 NGCSetAptitude combat 10
 NGCAddSkillPoints 200
 NGCAddAptitudePoints 10
-NGCSetStartingLocation Exerelin -2700 3250
+NGCSetStartingLocationExerelin
 NGCDone",,,
 ExerelinNGCOwnFaction,NewGameOptionSelected,$option == exerelinNGCOwnFaction,"NGCSetPlayerFaction ""player_npc""
 NGCAddShipAndComplement ""monitor_Indie""
