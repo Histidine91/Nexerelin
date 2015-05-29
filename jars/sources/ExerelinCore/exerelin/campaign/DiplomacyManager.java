@@ -654,9 +654,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         FactionAPI selectedFaction = sector.getFaction(selectedFactionId);
         log.info("Selected faction is " + selectedFaction + " | " + selectedFactionId);
 
-        List<String> factionIds = SectorManager.getLiveFactionIdsCopy();
-        factionIds.add("independent");
-        factionIds.add("player_npc");
+        //List<String> factionIds = ectorManager.getLiveFactionIdsCopy();
+        //factionIds.add("independent");
+        //factionIds.add("player_npc");
+        
+        List<String> factionIds = new ArrayList<>();
+        for (FactionAPI faction : sector.getAllFactions())
+            factionIds.add(faction.getId());
 
         boolean randomize = ExerelinSetupData.getInstance().randomStartRelationships;
         List<String> alreadyRandomizedIds = new ArrayList<>();
@@ -683,6 +687,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (randomize)
             {
                 if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
+                if (alreadyRandomizedIds.contains(factionId)) continue;
                 alreadyRandomizedIds.add(factionId);
                 for (String otherFactionId: factionIds)
                 {
