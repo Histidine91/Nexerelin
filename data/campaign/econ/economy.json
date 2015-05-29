@@ -1,7 +1,7 @@
 {
 	"version":2.0,
 	
-	"initialStepsToRun":200,
+	"initialStepsToRun":500,
 	"maxExoticUtilityAtRange":14000,
 	"defaultConnectionMult":1,
 	"defaultConnectionFlat":1,
