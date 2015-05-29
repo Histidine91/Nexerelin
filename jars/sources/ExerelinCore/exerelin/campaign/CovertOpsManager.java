@@ -49,6 +49,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     private static final String MANAGER_MAP_KEY = "exerelin_covertWarfareManager";
     private static final String CONFIG_FILE = "data/config/agentConfig.json";
+    protected static final float NPC_EFFECT_MULT = 1.5f;
     private static Map<String, Object> config;
     
     private static final List<String> disallowedFactions;
@@ -285,6 +286,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             float effectMin = (float)(double)config.get("agentRaiseRelationsEffectMin");
             float effectMax = (float)(double)config.get("agentRaiseRelationsEffectMax");
             float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
+            if (!playerInvolved) effect *= NPC_EFFECT_MULT;
             ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, effect, null, null, null);
             
             if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
@@ -301,6 +303,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float effectMin = (float)(double)config.get("agentRaiseRelationsRepLossOnDetectionMin");
                 float effectMax = (float)(double)config.get("agentRaiseRelationsRepLossOnDetectionMax");
                 float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
+                if (!playerInvolved) effect *= NPC_EFFECT_MULT;
                 ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, effect, RepLevel.FAVORABLE, null, RepLevel.INHOSPITABLE);
                 
                 if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
@@ -328,6 +331,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             float effectMin = (float)(double)config.get("agentLowerRelationsEffectMin");
             float effectMax = (float)(double)config.get("agentLowerRelationsEffectMax");
             float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
+            if (!playerInvolved) effect *= NPC_EFFECT_MULT;
             ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(thirdFaction, targetFaction, effect, null, null, RepLevel.HOSTILE);
             
             if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
@@ -345,6 +349,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float effectMin = (float)(double)config.get("agentLowerRelationsRepLossOnDetectionMin");
                 float effectMax = (float)(double)config.get("agentLowerRelationsRepLossOnDetectionMax");
                 float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
+                if (!playerInvolved) effect *= NPC_EFFECT_MULT;
                 ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, effect, RepLevel.NEUTRAL, null, RepLevel.HOSTILE);
                 ReputationAdjustmentResult repResult2 = DiplomacyManager.adjustRelations(agentFaction, thirdFaction, effect, RepLevel.NEUTRAL, null, RepLevel.HOSTILE);
                 
@@ -382,6 +387,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             int currentPenalty = event.getStabilityPenalty();
             int delta = 1;
             if (currentPenalty < 2) delta = 2;
+            if (!playerInvolved) delta = Math.round(delta * NPC_EFFECT_MULT);
             event.increaseStabilityPenalty(delta);
             
             Map<String, Object> params = makeEventParams(agentFaction, "success", 0, playerInvolved);
@@ -435,6 +441,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             float effectMin = (float)(double)config.get("sabotageReserveEffectMin");
             float effectMax = (float)(double)config.get("sabotageReserveEffectMax");
             float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
+            if (!playerInvolved) effect *= NPC_EFFECT_MULT;
             
             float delta = ResponseFleetManager.modifyReserveSize(market, effect);
             
@@ -489,6 +496,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             float effectMin = (float)(double)config.get("sabotageDestroyFoodEffectMin");
             float effectMax = (float)(double)config.get("sabotageDestroyFoodEffectMax");
             float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
+            if (!playerInvolved) effect *= NPC_EFFECT_MULT;
             
             float foodDestroyed = (float)Math.pow(market.getSize(), 3) * effect;
             
