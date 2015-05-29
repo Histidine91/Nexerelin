@@ -276,7 +276,16 @@ public class InvasionRound {
 		String defenderFactionId = defenderFaction.getId();
 		MarketAPI market = defender.getMarket();
 		
-		if (attackerFaction == defenderFaction)
+		boolean playerInvolved = false;
+		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
+		if ( attacker == playerFleet )
+		{
+			playerInvolved = true;
+			attackerFactionId = PlayerFactionStore.getPlayerFactionId();
+			attackerFaction = sector.getFaction(attackerFactionId);
+		}
+		
+		if (attackerFaction == defenderFaction || !attackerFaction.isHostileTo(defenderFaction))
 		{
 			return result;
 		}
@@ -300,25 +309,17 @@ public class InvasionRound {
 		else if (!isRaid && success)
 		{
 			if (currentPenalty < BASE_DESTABILIZATION)
-                        {
-                            event.increaseStabilityPenalty(BASE_DESTABILIZATION);
-                            if (event.getStabilityPenalty() > BASE_DESTABILIZATION + 1)
-                                event.setStabilityPenalty(BASE_DESTABILIZATION + 1);
-                        }
+			{
+				event.increaseStabilityPenalty(BASE_DESTABILIZATION);
+				if (event.getStabilityPenalty() > BASE_DESTABILIZATION + 1)
+				event.setStabilityPenalty(BASE_DESTABILIZATION + 1);
+			}
 			else event.increaseStabilityPenalty(1);
 		}
 		
 		CargoAPI attackerCargo = attacker.getCargo();
 		attackerCargo.removeMarines(result.getMarinesLost());
 		
-		boolean playerInvolved = false;
-		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
-		if ( attacker == playerFleet )
-		{
-			playerInvolved = true;
-			attackerFactionId = PlayerFactionStore.getPlayerFactionId();
-			attackerFaction = sector.getFaction(attackerFactionId);
-		}
 		if (!isRaid && success)
 		{
 			captured = true;
