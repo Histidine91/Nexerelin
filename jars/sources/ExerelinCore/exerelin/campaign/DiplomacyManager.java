@@ -193,7 +193,23 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return baseInterval * (float)Math.pow(0.95, numFactions);
     }
     
-    public static ReputationAdjustmentResult adjustRelations(MarketAPI market, FactionAPI faction1, FactionAPI faction2, float delta,
+    // started working on this but decided I don't need it no more
+    /*
+    public static ReputationAdjustmentResult testAdjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
+            RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit)
+    {
+        SectorAPI sector = Global.getSector();
+        
+        float before = faction1.getRelationship(faction2.getId());
+        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+        FactionAPI playerAlignedFaction = sector.getFaction(playerAlignedFactionId);
+        FactionAPI playerFaction = sector.getPlayerFleet().getFaction();
+        String faction1Id = faction1.getId();
+        String faction2Id = faction2.getId();
+    }
+    */
+    
+    public static ReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
             RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit)
     {   
         SectorAPI sector = Global.getSector();
@@ -237,9 +253,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return new ReputationAdjustmentResult(delta);
     }
     
-    public static ReputationAdjustmentResult adjustRelations(DiplomacyEventDef event, MarketAPI market, FactionAPI faction1, FactionAPI faction2, float delta)
+    public static ReputationAdjustmentResult adjustRelations(DiplomacyEventDef event, FactionAPI faction1, FactionAPI faction2, float delta)
     {
-        return adjustRelations(market, faction1, faction2, delta, event.repEnsureAtBest, event.repEnsureAtWorst, event.repLimit);
+        return adjustRelations(faction1, faction2, delta, event.repEnsureAtBest, event.repEnsureAtWorst, event.repLimit);
     }
     
     public void doDiplomacyEvent(DiplomacyEventDef event, MarketAPI market, FactionAPI faction1, FactionAPI faction2)
@@ -252,7 +268,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (delta > 0 && delta < 0.01f) delta = 0.01f;
         delta = Math.round(delta * 100f) / 100f;
        
-        delta = DiplomacyManager.adjustRelations(event, market, faction1, faction2, delta).delta;
+        delta = DiplomacyManager.adjustRelations(event, faction1, faction2, delta).delta;
         
         if (Math.abs(delta) >= 0.01f) {
             log.info("Transmitting event: " + event.name);

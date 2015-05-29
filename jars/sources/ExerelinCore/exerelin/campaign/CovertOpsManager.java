@@ -285,7 +285,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             float effectMin = (float)(double)config.get("agentRaiseRelationsEffectMin");
             float effectMax = (float)(double)config.get("agentRaiseRelationsEffectMax");
             float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
-            ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, effect, null, null, null);
+            ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, effect, null, null, null);
             
             if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
             {
@@ -301,7 +301,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float effectMin = (float)(double)config.get("agentRaiseRelationsRepLossOnDetectionMin");
                 float effectMax = (float)(double)config.get("agentRaiseRelationsRepLossOnDetectionMax");
                 float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
-                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, effect, RepLevel.FAVORABLE, null, RepLevel.INHOSPITABLE);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, effect, RepLevel.FAVORABLE, null, RepLevel.INHOSPITABLE);
                 
                 if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
                 {
@@ -328,7 +328,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             float effectMin = (float)(double)config.get("agentLowerRelationsEffectMin");
             float effectMax = (float)(double)config.get("agentLowerRelationsEffectMax");
             float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
-            ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, thirdFaction, targetFaction, effect, null, null, RepLevel.HOSTILE);
+            ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(thirdFaction, targetFaction, effect, null, null, RepLevel.HOSTILE);
             
             if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
             {
@@ -345,8 +345,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float effectMin = (float)(double)config.get("agentLowerRelationsRepLossOnDetectionMin");
                 float effectMax = (float)(double)config.get("agentLowerRelationsRepLossOnDetectionMax");
                 float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
-                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, effect, RepLevel.NEUTRAL, null, RepLevel.HOSTILE);
-                ReputationAdjustmentResult repResult2 = DiplomacyManager.adjustRelations(market, agentFaction, thirdFaction, effect, RepLevel.NEUTRAL, null, RepLevel.HOSTILE);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, effect, RepLevel.NEUTRAL, null, RepLevel.HOSTILE);
+                ReputationAdjustmentResult repResult2 = DiplomacyManager.adjustRelations(agentFaction, thirdFaction, effect, RepLevel.NEUTRAL, null, RepLevel.HOSTILE);
                 
                 if (Math.abs(repResult.delta) >= 0.01f || Math.abs(repResult2.delta) >= 0.01f || playerInvolved)
                 {
@@ -393,7 +393,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float repMin = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMin");
                 float repMax = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMax");
                 float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
                 params.put("repEffect", repResult.delta);
                 params.put("stage", "success_detected");
             }
@@ -407,7 +407,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float repMin = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMin");
                 float repMax = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMax");
                 float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, RepLevel.HOSTILE);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, RepLevel.HOSTILE);
                 if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
                 {
                     Map<String, Object> params = makeEventParams(agentFaction, "failure_detected", repResult.delta, playerInvolved);
@@ -447,7 +447,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float repMin = (float)(double)config.get("sabotageReserveRepLossOnDetectionMin");
                 float repMax = (float)(double)config.get("sabotageReserveRepLossOnDetectionMax");
                 float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
                 params.put("repEffect", repResult.delta);
                 params.put("stage", "success_detected");
             }
@@ -461,7 +461,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float repMin = (float)(double)config.get("sabotageReserveRepLossOnDetectionMin");
                 float repMax = (float)(double)config.get("sabotageReserveRepLossOnDetectionMax");
                 float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, RepLevel.HOSTILE);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, RepLevel.HOSTILE);
                 if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
                 {
                     Map<String, Object> params = makeEventParams(agentFaction, "failure_detected", repResult.delta, playerInvolved);
@@ -508,7 +508,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float repMin = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMin");
                 float repMax = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMax");
                 float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
                 params.put("repEffect", repResult.delta);
                 params.put("stage", "success_detected");
             }
@@ -522,7 +522,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float repMin = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMin");
                 float repMax = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMax");
                 float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(market, agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, RepLevel.HOSTILE);
+                ReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, RepLevel.HOSTILE);
                 if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
                 {
                     Map<String, Object> params = makeEventParams(agentFaction, "failure_detected", repResult.delta, playerInvolved);
