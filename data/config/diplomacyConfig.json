@@ -275,7 +275,7 @@
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"allowedFactions1":["hegemony","sindrian_diktat","mayorate","interstellarimperium"],
-			"allowedFactions2":["luddic_church","shadow_industry","pack"],
+			"allowedFactions2":["luddic_church","shadow_industry","pack","spire"],
 			"chance":1.5,
 		},
 		{
@@ -299,7 +299,7 @@
 			"repLimit":"hostile",
 			"allowPirates":true,
 			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders",
-				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","SCY","valkyrian","pn_colony"],
+				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","SCY","valkyrian","pn_colony","spire"],
 			"chance":1.5,
 		}
 	]
