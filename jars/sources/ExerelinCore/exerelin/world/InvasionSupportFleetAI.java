@@ -63,7 +63,7 @@ public class InvasionSupportFleetAI implements EveryFrameScript
                   this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, "travelling to the " + system.getBaseName() + " star system");
                 }
                 if (this.data.noWander) {
-                    this.fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, market.getPrimaryEntity(), 40.0F, "attacking " + market.getName());
+                    this.fleet.addAssignment(FleetAssignment.ORBIT_AGGRESSIVE, market.getPrimaryEntity(), 40.0F, "attacking " + market.getName());
                 } else if (Math.random() > 0.8D) {
                   this.fleet.addAssignment(FleetAssignment.RAID_SYSTEM, system.getHyperspaceAnchor(), 40.0F, "attacking around the " + system.getBaseName() + " star system");
                 } else if (Math.random() > 0.5D) {
