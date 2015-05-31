@@ -93,6 +93,7 @@ public class ExerelinUtilsFleet
         switch (type)
         {
             case "exerelinInvasionFleet":
+            case "exerelinRespawnFleet":
                 injector.levelCommander(fleet.getCommander(), fleet, CommanderType.ELITE, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
                 
                 if (faction.equals("luddic_church") && maxFP >= 120)

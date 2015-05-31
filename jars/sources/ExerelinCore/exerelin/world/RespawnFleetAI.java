@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.utilities.ExerelinUtilsReputation;
 import org.apache.log4j.Logger;
@@ -81,9 +82,7 @@ public class RespawnFleetAI extends InvasionFleetAI
                 
                 if (!fleetFaction.isHostileTo(targetFaction))
                 {
-                    fleetFaction.setRelationship(targetFaction.getId(), RepLevel.HOSTILE);
-                    AllianceManager.syncAllianceRelationshipsToFactionRelationship(fleetFaction.getId(), targetFaction.getId());
-                    ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
+                    DiplomacyManager.adjustRelations(fleetFaction, targetFaction, 0, RepLevel.HOSTILE, null, null);
                 }
                 
                 if (!responseFleetRequested)
@@ -138,7 +137,7 @@ public class RespawnFleetAI extends InvasionFleetAI
         {
             fleet.getFaction().setRelationship(data.targetMarket.getFactionId(), 0);
             AllianceManager.syncAllianceRelationshipsToFactionRelationship(fleet.getFaction().getId(), data.targetMarket.getFactionId());
-            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
+            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(false);
         }
         
         super.giveStandDownOrders();

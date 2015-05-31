@@ -155,6 +155,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         {
             ai = new InvasionFleetAI(fleet, data);
         }
+        else if (params.fleetType.equals("exerelinRespawnFleet"))
+        {
+            ai = new RespawnFleetAI(fleet, data);
+        }
         else if (params.fleetType.equals("exerelinDefenceFleet"))
         {
             ai = new DefenceFleetAI(fleet, data);
@@ -186,7 +190,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         String name = "Fleet";
         ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
         
-        if (fleetType.equals("exerelinInvasionFleet"))
+        if (fleetType.equals("exerelinInvasionFleet") || fleetType.equals("exerelinRespawnFleet"))
         {
             name = "Invasion Fleet";
             if (factionConfig != null)
@@ -229,7 +233,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         maxFP *= MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f);
         maxFP *= 1.25;
         
-        String name = getFleetName("exerelinInvasionFleet", faction.getId(), maxFP);
+        String name = getFleetName("exerelinRespawnFleet", faction.getId(), maxFP);
         
         LocationAPI spawnLoc = Global.getSector().getHyperspace();
         if (Global.getSector().getStarSystems().size() == 1)    // one-star start; target will be inaccessible from hyper
@@ -240,7 +244,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         
         FleetSpawnParams params = new FleetSpawnParams();
         params.name = name;
-        params.fleetType = "exerelinInvasionFleet";
+        params.fleetType = "exerelinRespawnFleet";
         params.faction = faction;
         params.fp = (int)maxFP;
         params.qf = 1;
