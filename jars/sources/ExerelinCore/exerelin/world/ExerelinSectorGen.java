@@ -78,7 +78,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"Rutherford", "Maxwell", "Bohr", "Pauli", "Curie", "Meitner", "Heisenberg", "Feynman"};
 	private static final String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
 		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
-	private static final ArrayList<String> starBackgrounds = new ArrayList<>(Arrays.asList(new String[]
+	private static final String[] starBackgroundsArray = new String[]
 	{
 		"backgrounds/background1.jpg", "backgrounds/background2.jpg", "backgrounds/background3.jpg", "backgrounds/background4.jpg", "backgrounds/background5.jpg",
 		"exerelin/backgrounds/blue_background1.jpg", "exerelin/backgrounds/blue_background2.jpg",
@@ -90,7 +90,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"backgrounds/2-2.jpg", "backgrounds/2-4.jpg", "backgrounds/3-1.jpg", "backgrounds/4-1.jpg", "backgrounds/4-2.jpg", "backgrounds/5-1.jpg", "backgrounds/5-2.jpg",
 		"backgrounds/6-1.jpg", "backgrounds/7-1.jpg", "backgrounds/7-3.jpg", "backgrounds/8-1.jpg", "backgrounds/8-2.jpg", "backgrounds/9-1.jpg", "backgrounds/9-3.jpg",
 		"backgrounds/9-4.jpg", "backgrounds/9-5.jpg",
-	}));
+	};
+	
+	private static ArrayList<String> starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
 
 	
 	private List possibleSystemNamesList = new ArrayList(Arrays.asList(possibleSystemNames));
@@ -149,6 +151,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	private void loadBackgrounds()
 	{
+		starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
 		List<String> factions = Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector()));
 		if (factions.contains("blackrock_driveyards"))
 		{
