@@ -35,7 +35,14 @@ public class FleetRequestFire extends FleetRequestActionBase {
                 FactionAPI fleetFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
                 
                 MarketAPI sourceMarket = getSourceMarketForInvasion(fleetFaction, targetMarket);
-                if (targetMarket.getFaction() == fleetFaction) sourceMarket = targetMarket;
+                if (targetMarket.getFactionId().equals("player_npc"))
+                {
+                    sourceMarket = targetMarket;
+                    fleetFaction = sector.getFaction("player_npc");
+                }
+                else if (targetMarket.getFaction() == fleetFaction) 
+                    sourceMarket = targetMarket;
+                
                 MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
                 int fp = (int)memory.getFloat("$fleetRequestFP");
                 int marines = (int)memory.getFloat("$fleetRequestMarines");
@@ -68,7 +75,7 @@ public class FleetRequestFire extends FleetRequestActionBase {
                 String sourceMarketName = sourceMarket.getName();
                 if (!originLoc.isHyperspace()) origin = "the " + origin;
                 
-                if (isDefenceFleet)
+                if (sourceMarket == targetMarket)
                 {
                     text.addParagraph("An fleet is being launched and will begin defending " + sourceMarketName + " shortly.");
                 }
