@@ -38,9 +38,10 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 	@Override
 	public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
 		String factionId = interactionTarget.getFaction().getId();
-		if (interactionTarget instanceof CampaignFleetAPI && factionId.equals(PlayerFactionStore.getPlayerFactionId())) 
+		if (interactionTarget instanceof CampaignFleetAPI) 
 		{
-			return new PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPlugin(), PickPriority.MOD_SPECIFIC);
+                        if (factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals("player_npc"))
+                                return new PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPlugin(), PickPriority.MOD_SPECIFIC);
 		}
 		return super.pickInteractionDialogPlugin(interactionTarget);
 	}
