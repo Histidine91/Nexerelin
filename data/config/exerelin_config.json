@@ -52,8 +52,8 @@
     
     "warWearinessDivisor": 20000,   # float; higher means factions take longer on average to sign a ceasefire
     "minWarWearinessForPeace": 8000,    # float
-    "warWearinessCeasefireReduction": 3000, # float; note the reduction is applied to both parties
-    "warWearinessPeaceTreatyReduction": 4500,
+    "warWearinessCeasefireReduction": 4500, # float; note the reduction is applied to both parties
+    "warWearinessPeaceTreatyReduction": 7500,
     
     "factionRespawnInterval": 30,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
     "ownFactionCustomsInspections": false,  # will your faction perform customs inspections on you? (always off for player_npc)

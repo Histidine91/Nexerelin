@@ -66,6 +66,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float STARTING_RELATIONSHIP_HOSTILE = -0.6f;
     public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.4f;
     public static final float STARTING_RELATIONSHIP_WELCOMING = 0.4f;
+    public static final float STARTING_RELATIONSHIP_FRIENDLY = 0.6f;
     public static final float WAR_WEARINESS_INTERVAL = 10f;
     public static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
     public static final float PEACE_TREATY_CHANCE = 0.3f;
@@ -235,6 +236,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
        
         float after = faction1.getRelationship(faction2Id);
         delta = after - before;
+        //log.info("Relationship delta: " + delta);
 
         if(faction1 == playerAlignedFaction)
         {
@@ -381,6 +383,26 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         createDiplomacyEvent(faction1, faction2);
     }
     
+    private void reduceWarWeariness(String factionId, float amount)
+    {
+        Alliance alliance = AllianceManager.getFactionAlliance(factionId);
+        if (alliance != null)
+        {
+            for (String member : alliance.members) 
+            {
+                float weariness = warWeariness.get(member);
+                weariness = Math.max(weariness - amount, 0);
+                warWeariness.put(member, weariness);
+            }
+        }
+        else
+        {
+            float weariness = warWeariness.get(factionId);
+            weariness = Math.max(weariness - amount, 0);
+            warWeariness.put(factionId, weariness);
+        }
+    }
+    
     private void updateWarWeariness()
     {
         SectorAPI sector = Global.getSector();
@@ -450,13 +472,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 if (market.getFaction() == factionWithMostWars)
                 {
                     doDiplomacyEvent(event, market, factionWithMostWars, sector.getFaction(toPeace));
-                    
-                    float weariness1 = warWeariness.get(factionWithMostWars.getId());
-                    weariness1 = Math.max(weariness1 - reduction, 0);
-                    float weariness2 = warWeariness.get(toPeace);
-                    weariness2 = Math.max(weariness2 - reduction, 0);
-                    warWeariness.put(factionWithMostWars.getId(), weariness1);
-                    warWeariness.put(toPeace, weariness2);
+                    reduceWarWeariness(factionWithMostWars.getId(), reduction);
+                    reduceWarWeariness(toPeace, reduction);
                     return; // done here
                 }
             } 
@@ -546,6 +563,22 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         createDiplomacyEvent();
         interval = getDiplomacyInterval();
         intervalUtil.setInterval(interval * 0.75f, interval * 1.25f);
+    }
+    
+    @Override
+    public void reportPlayerReputationChange(String faction, float delta) {
+        FactionAPI player = Global.getSector().getFaction("player");
+        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+        
+        ExerelinUtilsReputation.syncFactionRelationshipToPlayer(playerAlignedFactionId, faction);
+        if (!playerAlignedFactionId.equals("player_npc"))
+            ExerelinUtilsReputation.syncFactionRelationshipToPlayer("player_npc", faction);
+            
+        
+        if (player.isAtBest(PlayerFactionStore.getPlayerFactionId(), RepLevel.INHOSPITABLE))
+            SectorManager.scheduleExpelPlayerFromFaction();
+
+        SectorManager.checkForVictory();
     }
   
     @Override
@@ -751,8 +784,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 
         // set player relations based on selected faction
         PlayerFactionStore.saveIndependentPlayerRelations();
-        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId);
-        player.setRelationship(selectedFactionId, RepLevel.FRIENDLY);
+        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId, true);
+        player.setRelationship(selectedFactionId, STARTING_RELATIONSHIP_FRIENDLY);
         if (selectedFactionId.equals("player_npc"))
         {
             player.setRelationship(selectedFactionId, 1f);

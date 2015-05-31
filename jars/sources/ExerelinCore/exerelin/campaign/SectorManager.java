@@ -257,6 +257,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (defeated.getId().equals("independent"))
             return;
+        AllianceManager.leaveAlliance(defeated.getId(), true);
         removeLiveFactionId(defeated.getId());
         Map<String, Object> params = new HashMap<>();
         params.put("defeatedFaction", defeated);

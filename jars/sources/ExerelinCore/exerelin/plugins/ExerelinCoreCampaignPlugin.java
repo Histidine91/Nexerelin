@@ -22,6 +22,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		return "ExerelinCoreCampaignPlugin";
 	}
 	
+	/*
 	@Override
 	public PluginPick<ReputationActionResponsePlugin> pickReputationActionResponsePlugin(Object action, String factionId) {
 		if (action instanceof RepActions || action instanceof RepActionEnvelope) {
@@ -32,6 +33,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		}
 		return null;
 	}
+	*/
 	
 	@Override
 	public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
@@ -56,7 +58,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 	public void updateMarketFacts(MarketAPI market, MemoryAPI memory) {
 		super.updateMarketFacts(market, memory);
 		memory.set("$reserveSize", ResponseFleetManager.getReserveSize(market), 0);
-                memory.set("$alertLevel", CovertOpsManager.getAlertLevel(market), 0);
+		memory.set("$alertLevel", CovertOpsManager.getAlertLevel(market), 0);
 	}
 	
 	@Override

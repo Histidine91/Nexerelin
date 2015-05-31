@@ -43,13 +43,14 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final float MIN_ALIGNMENT_FOR_NEW_ALLIANCE = 1f;
     protected static final float MIN_ALIGNMENT_TO_JOIN_ALLIANCE = 0f;
     protected static final float MIN_RELATIONSHIP_TO_JOIN = RepLevel.FRIENDLY.getMin();
-    protected static final float MIN_RELATIONSHIP_TO_STAY = RepLevel.FAVORABLE.getMin();
+    protected static final float MIN_RELATIONSHIP_TO_STAY = RepLevel.WELCOMING.getMin();
     protected static final float JOIN_CHANCE_MULT = 0.5f;
     protected static final float FORM_CHANCE_MULT = 0.5f;
     protected static final float JOIN_CHANCE_FAIL_PER_NEW_ENEMY = 0.4f;
     
     protected static Map<Alignment, List<String>> allianceNamesByAlignment = new HashMap<>();
-    protected static List<String> allianceNamePrefixes;
+    protected static Map<Alignment, List<String>> alliancePrefixesByAlignment = new HashMap<>();
+    protected static List<String> allianceNameCommonPrefixes;
     
     protected final Set<Alliance> alliances = new HashSet<>();
     protected final Map<String, Alliance> alliancesByFactionId = new HashMap<>();
@@ -73,12 +74,15 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         try {
             JSONObject nameConfig = Global.getSettings().loadJSON(ALLIANCE_NAMES_FILE);
             JSONObject namesByAlignment = nameConfig.getJSONObject("namesByAlignment");
-            JSONArray namePrefixes = nameConfig.getJSONArray("prefixes");
-            allianceNamePrefixes = ExerelinUtils.JSONArrayToArrayList(namePrefixes);
+            JSONObject namePrefixes = nameConfig.getJSONObject("prefixes");
+            JSONArray namePrefixesCommon = namePrefixes.getJSONArray("common");
+            allianceNameCommonPrefixes = ExerelinUtils.JSONArrayToArrayList(namePrefixesCommon);
             for (Alignment alignment : Alignment.values())
             {
                 List<String> names =  ExerelinUtils.JSONArrayToArrayList( namesByAlignment.getJSONArray(alignment.toString().toLowerCase()) );
                 allianceNamesByAlignment.put(alignment, names);
+                List<String> prefixes = ExerelinUtils.JSONArrayToArrayList( namePrefixes.getJSONArray(alignment.toString().toLowerCase()) );
+                alliancePrefixesByAlignment.put(alignment, prefixes);
             }
         } catch (JSONException | IOException ex) {
                 Global.getLogger(AllianceManager.class).log(Level.ERROR, ex);
@@ -91,7 +95,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         SectorAPI sector = Global.getSector();
         String eventType = "exerelin_alliance_changed";
         params.put("faction1", sector.getFaction(faction1));
-        params.put("faction2", sector.getFaction(faction2));
+        if (faction2 != null) params.put("faction2", sector.getFaction(faction2));
         params.put("alliance", alliance);
         params.put("stage", stage);
         
@@ -128,7 +132,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         String name = "";
         boolean validName = true;
         int tries = 0;
-        List<String> namePrefixes = new ArrayList<>(allianceNamePrefixes);
+        List<String> namePrefixes = new ArrayList<>(allianceNameCommonPrefixes);
+        namePrefixes.addAll(alliancePrefixesByAlignment.get(type));
         
         List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(member1);
         float pop1 = 0;
@@ -186,17 +191,19 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             float rel2 = faction.getRelationship(member2);
             float average = (rel1*pop1 + rel2*pop2)/(pop1 + pop2);
             faction.setRelationship(member1, average);
-            faction.setRelationship(member2, average);
+            //faction.setRelationship(member2, average);
+            syncAllianceRelationshipsToFactionRelationship(member1, faction.getId());
         }
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         if (member1.equals(playerAlignedFactionId) || member2.equals(playerAlignedFactionId))
         {
-            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(playerAlignedFactionId);
-            ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
+            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(playerAlignedFactionId, true);
+            if (!playerAlignedFactionId.equals("player_npc"))
+                ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
         }
         
         allianceManager.createAllianceEvent(member1, member2, alliance, "formed");
-        
+        SectorManager.checkForVictory();
         return alliance;
     }
     
@@ -215,6 +222,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         List<FactionAPI> factions = sector.getAllFactions();
         for (FactionAPI otherFaction: factions)
         {
+            if (getFactionAlliance(otherFaction.getId()) == alliance) continue;
+            if (otherFaction == faction) continue;
             faction.setRelationship( otherFaction.getId(), firstMember.getRelationship(otherFaction.getId()) );
         }
         
@@ -222,6 +231,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         alliancesByFactionId.put(factionId, alliance);
         
         createAllianceEvent(factionId, null, alliance, "join");
+        SectorManager.checkForVictory();
     }
        
     public void leaveAlliance(String factionId, Alliance alliance, boolean noEvent)
@@ -235,6 +245,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
         
         if (!noEvent) createAllianceEvent(factionId, null, alliance, "leave");
+        SectorManager.checkForVictory();
     }
     
     public void leaveAlliance(String factionId, Alliance alliance)
@@ -253,7 +264,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             randomMember = member;
         }
         alliances.remove(alliance);
-        if (randomMember != null) createAllianceEvent(randomMember, null, alliance, "dissolve");
+        if (randomMember != null) createAllianceEvent(randomMember, null, alliance, "dissolved");
+        SectorManager.checkForVictory();
     }  
     
     // check factions for eligibility to join/form an alliance
@@ -483,8 +495,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     
     protected static float setRelationshipAndUpdateDelta(FactionAPI faction, String otherFactionId, float newRel, float highestDelta)
     {
+        String factionId = faction.getId();
+        if (factionId.equals("player") && otherFactionId.equals("player_npc")) return highestDelta;
+        if (factionId.equals("player_npc") && otherFactionId.equals("player")) return highestDelta;
         float oldRel = faction.getRelationship(otherFactionId);
         if (oldRel == newRel) return highestDelta;
+        //log.info("Setting relationship of " + faction.getId() + " and " + otherFactionId + ": " + newRel);
         faction.setRelationship(otherFactionId, newRel);
         float delta = newRel - oldRel;
         if (Math.abs(delta) > Math.abs(highestDelta)) highestDelta = delta;
@@ -495,12 +511,19 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         if (allianceManager == null) return null;
         
+        if (factionId1.equals("player"))
+            factionId1 = PlayerFactionStore.getPlayerFactionId();
+        else if (factionId2.equals("player"))
+            factionId2 = PlayerFactionStore.getPlayerFactionId();
+        
         Alliance alliance1 = allianceManager.alliancesByFactionId.get(factionId1);
         Alliance alliance2 = allianceManager.alliancesByFactionId.get(factionId2);
         
-        if (alliance1 == alliance2) // e.g. if both are null
+        if (alliance1 == null && alliance2 == null) return null;
+        
+        if (alliance1 == alliance2)
         {
-            if (alliance1 != null) log.info("Same alliance: " + alliance1.name);
+            //log.info("Same alliance: " + alliance1.name);
             return null; 
         }
         
@@ -533,6 +556,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 highestDelta = setRelationshipAndUpdateDelta(member, factionId1, relationship, highestDelta);
             }
         }
+        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
         
         // 1 = was at war, now at peace
         // -1 = was at peace, now at war
@@ -578,6 +602,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             CampaignUIAPI ui = sector.getCampaignUI();
             ui.addMessage(messageStr, Color.WHITE, highlight1, highlight2, Misc.getHighlightColor(), Misc.getHighlightColor());
         }
+        SectorManager.checkForVictory();
         return null;
     }
     

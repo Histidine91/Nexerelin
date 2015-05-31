@@ -40,7 +40,7 @@ public class JoinFaction extends BaseCommandPlugin {
 			str = "You have joined " + newFaction.getDisplayNameWithArticle() + ".";
 			isDefection = false;
 		}
-		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId);
+		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId, false);
 		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
 		
                 MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);

@@ -43,14 +43,17 @@ public class ExerelinUtilsReputation
 			Global.getSector().reportPlayerReputationChange(factionId, delta);
 		}
 		
+		// moved to DiplomacyManager listener
+		/*
 		syncFactionRelationshipToPlayer(PlayerFactionStore.getPlayerFactionId(), factionId);
 		syncFactionRelationshipToPlayer("player_npc", factionId);
-                AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", factionId);
+		AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", factionId);
 		
 		if (player.isAtBest(PlayerFactionStore.getPlayerFactionId(), RepLevel.INHOSPITABLE))
 			SectorManager.scheduleExpelPlayerFromFaction();
 		
 		SectorManager.checkForVictory();
+		*/
 		return new ReputationAdjustmentResult(delta);
 	}
 	
@@ -61,8 +64,8 @@ public class ExerelinUtilsReputation
 		FactionAPI factionToSync = sector.getFaction(factionIdToSync);
 		float relationship = playerFaction.getRelationship(otherFactionId);
 		factionToSync.setRelationship(otherFactionId, relationship);
-                AllianceManager.remainInAllianceCheck(factionIdToSync, otherFactionId);
-                AllianceManager.syncAllianceRelationshipsToFactionRelationship(factionIdToSync, otherFactionId);
+		AllianceManager.remainInAllianceCheck(factionIdToSync, otherFactionId);
+		AllianceManager.syncAllianceRelationshipsToFactionRelationship(factionIdToSync, otherFactionId);
 	}
 	
 	// re-set our faction's relations to match our own
@@ -88,9 +91,13 @@ public class ExerelinUtilsReputation
 	{
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		syncFactionRelationshipsToPlayer(playerAlignedFactionId);
+		if (!playerAlignedFactionId.equals("player_npc"))
+		{
+			syncFactionRelationshipsToPlayer("player_npc");
+		}
 	}
 	
-	public static void syncPlayerRelationshipsToFaction(String factionId)
+	public static void syncPlayerRelationshipsToFaction(String factionId, boolean noUpdateAlliance)
 	{
 		SectorAPI sector = Global.getSector();	
 		FactionAPI playerFaction = sector.getFaction("player");
@@ -101,18 +108,19 @@ public class ExerelinUtilsReputation
 		{
 			if (otherFaction != playerFaction && otherFaction != faction)
 			{
-                                String otherFactionId = otherFaction.getId();
+				String otherFactionId = otherFaction.getId();
 				float relationship = faction.getRelationship(otherFactionId);
 				playerFaction.setRelationship(otherFactionId, relationship);
-                                AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", otherFactionId);
+				if (!noUpdateAlliance)
+					AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", otherFactionId);
 			}
 		}
 		SectorManager.checkForVictory();
 	}
 	
-	public static void syncPlayerRelationshipsToFaction()
+	public static void syncPlayerRelationshipsToFaction(boolean noUpdateAlliance)
 	{
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-		syncPlayerRelationshipsToFaction(playerAlignedFactionId);
+		syncPlayerRelationshipsToFaction(playerAlignedFactionId, noUpdateAlliance);
 	}
 }
