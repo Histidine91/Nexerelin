@@ -2,7 +2,7 @@
 	id:"player_npc",
 	"color":[216,255,216,255],
 	"displayName":"player",
-	"displayNameWithArticle":"the player",
+	"displayNameWithArticle":"the player faction",
 	"displayNameLong":"the player's organization",
 	"displayNameLongWithArticle":"the player's organization",
 	"entityNamePrefix":"player",
