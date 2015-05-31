@@ -23,73 +23,73 @@ import java.awt.Color;
 
 public class FleetRequestFire extends FleetRequestActionBase {
 
-        @Override
+	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
-                
-                SectorAPI sector = Global.getSector();
-                SectorEntityToken target = dialog.getInteractionTarget();
-                MarketAPI targetMarket = target.getMarket();
-                if (targetMarket == null) return false;
-                
-                FactionAPI fleetFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
-                
-                MarketAPI sourceMarket = getSourceMarketForInvasion(fleetFaction, targetMarket);
-                if (targetMarket.getFactionId().equals("player_npc"))
-                {
-                    sourceMarket = targetMarket;
-                    fleetFaction = sector.getFaction("player_npc");
-                }
-                else if (targetMarket.getFaction() == fleetFaction) 
-                    sourceMarket = targetMarket;
-                
-                MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-                int fp = (int)memory.getFloat("$fleetRequestFP");
-                int marines = (int)memory.getFloat("$fleetRequestMarines");
-                payForInvasion(fp, marines);
-                
-                boolean isInvasionFleet = marines > 0;
-                boolean isDefenceFleet = !targetMarket.getFaction().isHostileTo(fleetFaction);
-                
-                String fleetType = "exerelinInvasionSupportFleet";
-                if (isInvasionFleet) fleetType = "exerelinInvasionFleet";
-                else if (isDefenceFleet) fleetType = "exerelinDefenceFleet";
-                
-                InvasionFleetManager.FleetSpawnParams fleetParams = new InvasionFleetManager.FleetSpawnParams();
-                fleetParams.name = InvasionFleetManager.getFleetName(fleetType, fleetFaction.getId(), fp);
-                fleetParams.fleetType = fleetType;
-                fleetParams.faction = fleetFaction;
-                fleetParams.fp = fp;
-                fleetParams.qf = sourceMarket.getShipQualityFactor();
-                fleetParams.originMarket = sourceMarket;
-                fleetParams.targetMarket = targetMarket;
-                fleetParams.numMarines = marines;
-                fleetParams.noWander = true;
-                fleetParams.noWait = true;
-                InvasionFleetManager.spawnFleet(fleetParams);
-                
-                TextPanelAPI text = dialog.getTextPanel();
-                Color hl = Misc.getHighlightColor();
-                LocationAPI originLoc = sourceMarket.getPrimaryEntity().getContainingLocation();
-                String origin = originLoc.getName();
-                String sourceMarketName = sourceMarket.getName();
-                if (!originLoc.isHyperspace()) origin = "the " + origin;
-                
-                if (sourceMarket == targetMarket)
-                {
-                    text.addParagraph("An fleet is being launched and will begin defending " + sourceMarketName + " shortly.");
-                }
-                else
-                {
-                    text.addParagraph("A fleet is being launched at " + sourceMarketName + ", in " + origin + ". It will be underway shortly.");
-                    text.highlightInLastPara(hl, sourceMarketName);
-                    //text.highlightInLastPara(hl, origin);
-                }
-                if (isInvasionFleet)
-                {
-                    RepActionEnvelope envelope = new RepActionEnvelope(RepActions.COMBAT_NORMAL, null, dialog.getTextPanel());
-                    Global.getSector().adjustPlayerReputation(envelope, targetMarket.getFactionId());
-                }
-                return true;
-        }
+		
+		SectorAPI sector = Global.getSector();
+		SectorEntityToken target = dialog.getInteractionTarget();
+		MarketAPI targetMarket = target.getMarket();
+		if (targetMarket == null) return false;
+		
+		FactionAPI fleetFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
+		
+		MarketAPI sourceMarket = getSourceMarketForInvasion(fleetFaction, targetMarket);
+		if (targetMarket.getFactionId().equals("player_npc"))
+		{
+			sourceMarket = targetMarket;
+			fleetFaction = sector.getFaction("player_npc");
+		}
+		else if (targetMarket.getFaction() == fleetFaction) 
+			sourceMarket = targetMarket;
+		
+		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
+		int fp = (int)memory.getFloat("$fleetRequestFP");
+		int marines = (int)memory.getFloat("$fleetRequestMarines");
+		payForInvasion(fp, marines);
+		
+		boolean isInvasionFleet = marines > 0;
+		boolean isDefenceFleet = !targetMarket.getFaction().isHostileTo(fleetFaction);
+		
+		String fleetType = "exerelinInvasionSupportFleet";
+		if (isInvasionFleet) fleetType = "exerelinInvasionFleet";
+		else if (isDefenceFleet) fleetType = "exerelinDefenceFleet";
+		
+		InvasionFleetManager.FleetSpawnParams fleetParams = new InvasionFleetManager.FleetSpawnParams();
+		fleetParams.name = InvasionFleetManager.getFleetName(fleetType, fleetFaction.getId(), fp);
+		fleetParams.fleetType = fleetType;
+		fleetParams.faction = fleetFaction;
+		fleetParams.fp = fp;
+		fleetParams.qf = sourceMarket.getShipQualityFactor();
+		fleetParams.originMarket = sourceMarket;
+		fleetParams.targetMarket = targetMarket;
+		fleetParams.numMarines = marines;
+		fleetParams.noWander = true;
+		fleetParams.noWait = true;
+		InvasionFleetManager.spawnFleet(fleetParams);
+		
+		TextPanelAPI text = dialog.getTextPanel();
+		Color hl = Misc.getHighlightColor();
+		LocationAPI originLoc = sourceMarket.getPrimaryEntity().getContainingLocation();
+		String origin = originLoc.getName();
+		String sourceMarketName = sourceMarket.getName();
+		if (!originLoc.isHyperspace()) origin = "the " + origin;
+		
+		if (sourceMarket == targetMarket)
+		{
+			text.addParagraph("An fleet is being launched and will begin defending " + sourceMarketName + " shortly.");
+		}
+		else
+		{
+			text.addParagraph("A fleet is being launched at " + sourceMarketName + ", in " + origin + ". It will be underway shortly.");
+			text.highlightInLastPara(hl, sourceMarketName);
+			//text.highlightInLastPara(hl, origin);
+		}
+		if (isInvasionFleet)
+		{
+			RepActionEnvelope envelope = new RepActionEnvelope(RepActions.COMBAT_NORMAL, null, dialog.getTextPanel());
+			Global.getSector().adjustPlayerReputation(envelope, targetMarket.getFactionId());
+		}
+		return true;
+	}
 }

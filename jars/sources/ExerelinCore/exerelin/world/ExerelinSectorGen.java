@@ -235,7 +235,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	{
 		for (Object object : list)
 		{
-		picker.add(object);
+			picker.add(object);
 		}
 	}
 	
@@ -737,12 +737,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		resetVars();
 		
-                boolean corvusMode = ExerelinConfig.corvusMode;
-                
+		boolean corvusMode = ExerelinConfig.corvusMode;
+		
 		if (!corvusMode)
 		{
 			// purge existing star systems
-                        /*
+			/*
 			List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 			
 			for (MarketAPI market : markets)
@@ -770,7 +770,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				if (loc instanceof StarSystemAPI)
 					sector.removeStarSystem((StarSystemAPI)loc);
 			}
-                        */
+			*/
 			
 			// stars will be distributed in a concentric pattern
 			float angle = 0;
@@ -822,7 +822,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		sector.addScript(new EconomyFleetManager());       
 		
-                if (!corvusMode) sector.addScript(new ForcePatrolFleetsScript());
+		if (!corvusMode) sector.addScript(new ForcePatrolFleetsScript());
 		//sector.addScript(new EconomyLogger());
 		
 		sector.addScript(SectorManager.create());
