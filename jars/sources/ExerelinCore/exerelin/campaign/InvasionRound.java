@@ -45,6 +45,7 @@ public class InvasionRound {
 	public static final float DEFENDER_MILITARY_BASE_MOD = 0.25f;
 	public static final float DEFENDER_REGIONAL_CAPITAL_MOD = 0.25f;
 	public static final float DEFENDER_HEADQUARTERS_MOD = 0.4f;
+	public static final float DEFENDER_AVALON_MOD = 1.0f;
 	public static final float DEFENDER_RAID_STRENGTH_MULT = 0.75f;
 	public static final float DEFENDER_STRENGTH_XP_MULT = 500f;
 	public static final float MARINE_LOSS_MULT = 0.4f;
@@ -173,6 +174,10 @@ public class InvasionRound {
 		{
 			defenderBonus += baseDefenderStrength * DEFENDER_HEADQUARTERS_MOD;
 		}
+		if(market.hasCondition("tem_avalon"))
+		{
+			defenderBonus += baseDefenderStrength * DEFENDER_AVALON_MOD;
+		}
 		
 		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		if (factionConfig != null)
@@ -239,6 +244,10 @@ public class InvasionRound {
 		if(market.hasCondition("headquarters"))
 		{
 			result.addDefenderBonus("Headquarters", DEFENDER_HEADQUARTERS_MOD);
+		}
+		if(market.hasCondition("tem_avalon"))
+		{
+			result.addDefenderBonus("Avalon", DEFENDER_AVALON_MOD);
 		}
 		
 		float outcome = attackerStrength - defenderStrength;
