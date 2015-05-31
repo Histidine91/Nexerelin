@@ -1,6 +1,7 @@
 command,class,tags,syntax,help
 SpawnInvasionFleet,data.console.commands.SpawnInvasionFleet,"campaign,exerelin",spawninvasionfleet,"Spawns an invasion fleet from the closest player-aligned market to go to the closest not-player-aligned market, and teleports fleet to player location."
 SpawnInvasionFleetHostile,data.console.commands.SpawnInvasionFleetHostile,"campaign,exerelin",spawninvasionfleethostile,"Spawns an invasion fleet from the closest not-player-aligned market to go to the closest player-aligned market, and teleports fleet to player location."
+SpawnRespawnFleet,data.console.commands.SpawnRespawnFleet,"campaign,exerelin",spawnrespawnfleet,"Spawns a respawn fleet to go to the closest market, and teleports fleet to player location."
 SetClosestMarketOwner,data.console.commands.SetClosestMarketOwner,"campaign,exerelin",setclosestmarketowner [owner],"Causes the closest market to be captured by <owner>, or a random live faction if not specified."
 #PingDistance,data.console.commands.PingDistance,"campaign,exerelin",pingdistance,Prints distance to closest market.
 ClearAgentDestabilization,data.console.commands.ClearAgentDestabilization,"campaign,exerelin",clearagentdestabilization,Removes all agent destabilization events across the sector.
