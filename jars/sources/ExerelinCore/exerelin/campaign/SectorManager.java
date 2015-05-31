@@ -76,8 +76,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         respawnIntervalUtil = new IntervalUtil(respawnInterval * 0.75F, respawnInterval * 1.25F);
         
         // Templars don't normally post bounties, but they do here
-        if (Arrays.asList(ExerelinSetupData.getInstance().getPossibleFactions()).contains("templars"))
-            SharedData.getData().getPersonBountyEventData().addParticipatingFaction("templars");
+        //if (Arrays.asList(ExerelinSetupData.getInstance().getPossibleFactions()).contains("templars"))
+        //    SharedData.getData().getPersonBountyEventData().addParticipatingFaction("templars");
     }
    
     @Override
