@@ -44,7 +44,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     public static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
     public static final float DEFENDER_STRENGTH_MARINE_MULT = 1.15f;
     public static final float RESPAWN_FLEET_SPAWN_DISTANCE = 18000f;
-    public static final float HOSTILE_TO_ALL_INVASION_POINT_MOD = 0.3f;
+    public static final float HOSTILE_TO_ALL_INVASION_POINT_MOD = 0.25f;
     public static final float HOSTILE_TO_ALL_INVASION_TARGET_MOD = 0.3f;
     public static final int MAX_FLEETS = 50;
     
@@ -426,7 +426,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                         float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, ExerelinConfig.allowPirateInvasions, true).size();
                         enemyWars = (float)Math.sqrt(enemyWars);
                         if (enemyWars > 0 )
-                            mult += 1/((enemyWars*HOSTILE_TO_ALL_INVASION_POINT_MOD) + (1 - HOSTILE_TO_ALL_INVASION_POINT_MOD));
+                            mult += 1/((enemyWars*HOSTILE_TO_ALL_INVASION_POINT_MOD) + (1));
                     }
                     else mult +=1;
                 }
