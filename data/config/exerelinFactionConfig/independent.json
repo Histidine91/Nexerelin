@@ -21,7 +21,7 @@
     "factionsDisliked":[], # String array
     
     "alignments":{
-
+	"diplomatic":0.5,
     },
 
     "miningVariantsOrWings":["mining_drone_wing"], # String array

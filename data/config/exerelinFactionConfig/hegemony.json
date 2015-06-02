@@ -21,7 +21,9 @@
     "factionsDisliked":["interstellarimperium","tritachyon"], # String array
     
     "alignments":{
+	"technocratic":-0.5,
         "militarist":1,
+	"diplomatic":-0.5,
         "ideological":0.5,
     },
 

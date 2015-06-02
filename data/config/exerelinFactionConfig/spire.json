@@ -21,7 +21,6 @@
     "factionsDisliked":[], # String array
 
     "alignments":{
-        "technocratic":0.5,
         "diplomatic":0.5,
         "militarist":1,
     },
