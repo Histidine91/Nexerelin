@@ -7,10 +7,7 @@ import exerelin.utilities.ExerelinConfig;
 
 // stupid private variables in parent class
 public class ExerelinCustomsInspectionEvent extends CustomsInspectionEvent {
-	
-    private boolean done = false;
-    protected String starSystemId = null;
-        
+	        
     @Override
     public void startEvent() {
         //String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -19,14 +16,15 @@ public class ExerelinCustomsInspectionEvent extends CustomsInspectionEvent {
         {
             String factionId = faction.getId();
             boolean blockOwnFaction = factionId.equals("player_npc");
-            if (!ExerelinConfig.ownFactionCustomsInspections || factionId.equals(PlayerFactionStore.getPlayerFactionId())) 
-                blockOwnFaction = true;
+            if (ExerelinConfig.ownFactionCustomsInspections)
+            {
+                blockOwnFaction = blockOwnFaction || factionId.equals(PlayerFactionStore.getPlayerFactionId());
+            }
 
             if (blockOwnFaction)
             {
-                log.info("Customs inspection by own faction; aborting");
+                log.info("Customs inspection by own faction (" + faction.getDisplayName() + "); aborting");
                 Global.getSector().getMemory().unset("$customsInspectionFactionId");
-                done = true;
                 return;
             }
         }
