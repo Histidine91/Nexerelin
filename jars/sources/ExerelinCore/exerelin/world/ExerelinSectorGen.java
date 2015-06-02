@@ -581,6 +581,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.addCondition("spaceport");
 		market.addCondition("exerelin_recycling_plant");
 		market.addCondition("exerelin_recycling_plant");
+		market.addCondition("light_industrial_complex");
 		market.addCondition("trade_center");
 		market.addCondition("stealth_minefields");
 		market.addCondition("cryosanctum");
