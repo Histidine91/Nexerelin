@@ -368,7 +368,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             int numWars = enemies.size();
             
             float weight = 1;
-            if (faction.getId().equals("templars")) // TODO don't hardcode faction
+            if (ExerelinUtilsFaction.isPirateOrTemplarFaction(faction.getId())) // TODO don't hardcode faction
             {
                 weight = numWars*HOSTILE_TO_ALL_INVASION_POINT_MOD + (1 - HOSTILE_TO_ALL_INVASION_POINT_MOD);
             }
@@ -421,7 +421,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             {
                 for (String enemyId : enemies)
                 {
-                    if (enemyId.equals("templars") || ExerelinUtilsFaction.isPirateFaction(enemyId))
+                    if (ExerelinUtilsFaction.isPirateOrTemplarFaction(enemyId))
                     {
                         float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, ExerelinConfig.allowPirateInvasions, true).size();
                         enemyWars = (float)Math.sqrt(enemyWars);
@@ -513,7 +513,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                     }
                     float weight = 20000.0F / dist;
                     //weight *= market.getSize() * market.getStabilityValue();    // try to go after high value targets
-                    if (marketFaction.getId().equals("templars") || ExerelinUtilsFaction.isPirateFaction(marketFaction.getId())) 
+                    if (ExerelinUtilsFaction.isPirateOrTemplarFaction(marketFaction.getId()))
                         weight *= HOSTILE_TO_ALL_INVASION_TARGET_MOD;
 
                     targetPicker.add(market, weight);

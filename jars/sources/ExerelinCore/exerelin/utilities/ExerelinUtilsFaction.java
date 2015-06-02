@@ -45,5 +45,11 @@ public class ExerelinUtilsFaction {
         List<String> pirates = DiplomacyManager.getPirateFactionsCopy();
         return pirates.contains(factionId);
     }
+    
+    public static boolean isPirateOrTemplarFaction(String factionId)
+    {
+        if (factionId.equals("templars")) return true;
+        return isPirateFaction(factionId);
+    }
 
 }
