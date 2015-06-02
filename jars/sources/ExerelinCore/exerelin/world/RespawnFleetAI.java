@@ -15,6 +15,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
@@ -133,11 +134,22 @@ public class RespawnFleetAI extends InvasionFleetAI
     protected void giveStandDownOrders()
     {
         // failed capture, reset relationship
-        if (!captureSuccessful && fleet.getFaction().isHostileTo(data.targetMarket.getFactionId()))
+        FactionAPI faction = fleet.getFaction();
+        String targetFactionId = data.targetMarket.getFactionId();
+        
+        if (!captureSuccessful && faction.isHostileTo(targetFactionId))
         {
-            fleet.getFaction().setRelationship(data.targetMarket.getFactionId(), 0);
-            AllianceManager.syncAllianceRelationshipsToFactionRelationship(fleet.getFaction().getId(), data.targetMarket.getFactionId());
-            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(false);
+            boolean reset = true;
+            String factionId = faction.getId();
+            if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId)) reset = false;
+            else if (ExerelinUtilsFaction.isPirateOrTemplarFaction(targetFactionId)) reset = false;
+
+            if (reset)
+            {
+                faction.setRelationship(targetFactionId, 0);
+                AllianceManager.syncAllianceRelationshipsToFactionRelationship(factionId, data.targetMarket.getFactionId());
+                ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(false);
+            }
         }
         
         super.giveStandDownOrders();
