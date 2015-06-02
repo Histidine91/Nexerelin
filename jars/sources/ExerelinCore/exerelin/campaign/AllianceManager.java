@@ -44,8 +44,9 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final float MIN_ALIGNMENT_TO_JOIN_ALLIANCE = 0f;
     protected static final float MIN_RELATIONSHIP_TO_JOIN = RepLevel.FRIENDLY.getMin();
     protected static final float MIN_RELATIONSHIP_TO_STAY = RepLevel.WELCOMING.getMin();
-    protected static final float JOIN_CHANCE_MULT = 0.5f;
-    protected static final float FORM_CHANCE_MULT = 0.5f;
+    protected static final float JOIN_CHANCE_MULT = 0.7f;   // multiplies relationship to get chance to join alliance
+    protected static final float JOIN_CHANCE_MULT_PER_MEMBER = 0.8f;
+    protected static final float FORM_CHANCE_MULT = 0.6f;   // multiplies relationship to get chance to form alliance
     protected static final float JOIN_CHANCE_FAIL_PER_NEW_ENEMY = 0.4f;
     
     protected static Map<Alignment, List<String>> allianceNamesByAlignment = new HashMap<>();
@@ -354,16 +355,25 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 float relationship = 0;
                 boolean abort = false;
                 
+                // DOES NOT ACTUALLY LOOP - just used to get a member at random
                 for (String memberId : alliance.members)
                 {
                     if (faction.isHostileTo(memberId))
                     {
                         abort = true;
+                        break;
                     }
                     relationship = faction.getRelationship(memberId);
                     if (relationship < MIN_RELATIONSHIP_TO_JOIN || Math.random() > relationship * JOIN_CHANCE_MULT)
                     {
                         abort = true;
+                        break;
+                    }
+                    
+                    if (Math.random() > Math.pow(JOIN_CHANCE_MULT_PER_MEMBER, alliance.members.size() ))
+                    {
+                        abort = true;
+                        break;
                     }
                     
                     // don't go joining alliances if it just drags us into multiple wars
