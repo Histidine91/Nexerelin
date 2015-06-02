@@ -1,16 +1,16 @@
 {
 	# please don't break this file if you don't want your game crashing at unexpected moments
 	"namesByAlignment":{
-		"corporate": ["Consortium", "Conglomerate", "Consolidated", "Industries", "Guild", "Trade Union"],
-		"technocratic": ["Research", "Academy", "Institute", "Engineering", "Laboratories", "Dynamics"],
+		"corporate": ["Consortium", "Conglomerate", "Industries", "Guild", "Trade Union"],
+		"technocratic": ["Research", "Academy", "Institute", "Engineering", "Laboratories", "Technologies", "Dynamics"],
 		"militarist": ["Pact", "Alliance", "Empire", "Axis", "Dominion"],
 		"diplomatic": ["League", "Federation", "Confederacy", "Coalition", "Cooperative", "Union"],
 		"ideological": ["Brotherhood", "Clan", "Fellowship", "Sodality", "Order"],
 	},
 	"prefixes":{
 		"common": ["Northern", "Southern", "Eastern", "Western", "Central", "Stellar", "Interstellar", "Darkstar", "Solar", "Nebula", "Outland", "Far Reach", "Unified", "United", "Superior", "Integrated"],
-		"corporate": ["Advanced", "Future", "Femtotech", "General"],
-		"technocratic": ["Advanced", "Future", "Femtotech", "General"],
+		"corporate": ["Advanced", "Consolidated", "Future", "Femtotech", "General"],
+		"technocratic": ["Advanced", "Consolidated", "Future", "Femtotech", "General"],
 		"militarist": ["Dragon", "Fury", "Guardian", "Thunder", "Titan"],
 		"diplomatic": ["Freedom", "Phoenix"],
 		"ideological": ["Dragon", "Phoenix", "Eternal", "Free", "Renaissance"]
