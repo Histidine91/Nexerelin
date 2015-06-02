@@ -128,6 +128,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             if (faction == agentFaction) continue;
             
             RepLevel repLevel = faction.getRelationshipLevel(agentFaction);
+            float dominance = DiplomacyManager.getDominanceFactor(faction.getId());
             float weight = 1f;
             if (actionType == CovertActionType.RAISE_RELATIONS)
             {
@@ -136,6 +137,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 else if (repLevel == RepLevel.SUSPICIOUS) weight = 2f;
                 else if (repLevel == RepLevel.INHOSPITABLE) weight = 3f;
                 else continue;
+                
+                weight = weight * (1.25f - dominance);
             }
             else if (actionType == CovertActionType.LOWER_RELATIONS)
             {
@@ -146,6 +149,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 else if (repLevel == RepLevel.HOSTILE) weight = 2.5f;
                 else if (repLevel == RepLevel.VENGEFUL) weight = 3f;
                 else continue;
+                
+                weight = weight * (1 + dominance*2);
             }
             else if (actionType == CovertActionType.DESTABILIZE_MARKET 
                     || actionType == CovertActionType.DESTROY_FOOD
@@ -155,6 +160,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 else if (repLevel == RepLevel.HOSTILE) weight = 3f;
                 else if (repLevel == RepLevel.VENGEFUL) weight = 5f;
                 else continue;
+                
+                weight = weight * (1 + dominance);
             }
             if (ExerelinUtilsFaction.isPirateFaction(faction.getId()))
                 weight *= 0.25f;    // reduces factions constantly targeting pirates for covert action

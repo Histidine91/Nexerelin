@@ -168,7 +168,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
     }
     
-    public float getDominanceFactor(String factionId)
+    public static float getDominanceFactor(String factionId)
     {
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
         int globalSize = 0;

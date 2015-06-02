@@ -16,6 +16,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.AllianceManager.Alliance;
 import exerelin.campaign.CovertOpsManager;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -62,6 +63,9 @@ public class AgentLowerRelations extends AgentActionBase {
                         weight *= 0.25f;
                     if (AllianceManager.getFactionAlliance(factionId) == targetAlliance)
                         weight *= 4f;
+                    
+                    float dominance = DiplomacyManager.getDominanceFactor(factionId);
+                    weight = weight * (1 + dominance*2);
                     
                     targetPicker.add(factionId, weight);
                 }
