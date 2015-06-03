@@ -173,6 +173,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
         int globalSize = 0;
         for (MarketAPI market: allMarkets) globalSize += market.getSize();
+        if (globalSize == 0) return 0;
         
         List<MarketAPI> ourMarkets = null;
         Alliance alliance = AllianceManager.getFactionAlliance(factionId);
