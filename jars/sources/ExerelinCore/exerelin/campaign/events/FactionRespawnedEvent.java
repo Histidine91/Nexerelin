@@ -9,6 +9,8 @@ import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.SectorManager;
 
 
 public class FactionRespawnedEvent extends BaseEventPlugin {
@@ -59,6 +61,13 @@ public class FactionRespawnedEvent extends BaseEventPlugin {
 		String stage = "new";
 		if (existedBefore) stage = "respawned";
 		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
+	}
+        
+        @Override
+	public Map<String, String> getTokenReplacements() {
+		Map<String, String> map = super.getTokenReplacements();
+                map.put("$clusterName", SectorManager.getFirstStarName());
+		return map;
 	}
 	
 	@Override

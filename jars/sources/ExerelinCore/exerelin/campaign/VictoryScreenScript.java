@@ -118,10 +118,11 @@ public class VictoryScreenScript implements EveryFrameScript
             String factionName = Global.getSector().getFaction(faction).getDisplayName();
             String theFactionName = Global.getSector().getFaction(faction).getDisplayNameWithArticle();
             String TheFactionName =  Misc.ucFirst(theFactionName);
+            String firstStar = SectorManager.getFirstStarName();
             if (victoryType == VictoryType.CONQUEST)
             {
                 text.addParagraph("Congratulations! " + TheFactionName
-                        + " has crushed all opposition and now reigns supreme over the Exerelin cluster!");
+                        + " has crushed all opposition and now reigns supreme over the " + firstStar + " cluster!");
                 text.highlightInLastPara(TheFactionName);
                 text.addParagraph("You have won a conquest victory!");
                 text.highlightInLastPara("conquest");
@@ -129,7 +130,7 @@ public class VictoryScreenScript implements EveryFrameScript
             else if (victoryType == VictoryType.DIPLOMATIC)
             {
                 text.addParagraph("Congratulations! " + TheFactionName
-                        + " and its allies control the Exerelin cluster!");
+                        + " and its allies control the "  + firstStar + " cluster!");
                 text.highlightInLastPara(TheFactionName);
                 text.addParagraph("You have won a diplomatic victory!");
                 text.highlightInLastPara("diplomatic");

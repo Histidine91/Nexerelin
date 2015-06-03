@@ -17,6 +17,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.rulecmd.NGCSetStartingLocationExerelin;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -28,6 +29,7 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.world.InvasionFleetManager;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,7 +37,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.lazywizard.lazylib.MathUtils;
 
 /**
@@ -558,6 +564,22 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 sectorManager.historicFactionIds.add(factionId);
             }   
         }
+    }
+    
+    public static String getFirstStarName()
+    {
+        if (sectorManager != null && sectorManager.corvusMode == true) return "Corvus";
+        
+        String firstStar = "Exerelin";
+        try {
+                JSONObject planetConfig = Global.getSettings().loadJSON("data/config/planetNames.json");
+                JSONArray systemNames = planetConfig.getJSONArray("stars");
+                firstStar = systemNames.getString(0);
+        } catch (JSONException | IOException ex) {
+                log.error(ex);
+        }
+        
+        return firstStar;
     }
     
     public enum VictoryType

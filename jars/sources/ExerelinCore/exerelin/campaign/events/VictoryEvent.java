@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.SectorManager;
 
 
 public class VictoryEvent extends BaseEventPlugin {
@@ -84,6 +85,7 @@ public class VictoryEvent extends BaseEventPlugin {
 		map.put("$VictorFaction", Misc.ucFirst(victorFactionStr));
 		map.put("$theVictorFaction", theVictorFactionStr);
 		map.put("$TheVictorFaction", Misc.ucFirst(theVictorFactionStr));
+                map.put("$clusterName", SectorManager.getFirstStarName());
 		return map;
 	}
 
