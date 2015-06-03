@@ -35,10 +35,11 @@ ExerelinNewGameOptionsEnter,ExerelinNGCStep1,,"NGCGetExerelinDefaults
 FireAll ExerelinNGCOptions",Configure the Exerelin cluster?,,"make sure this runs once per new game, so that Exerelin sector generation data is set up properly"
 ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptionsBack,FireAll ExerelinNGCOptions,,,
 ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,,,"exerelinNGCOptionsDone:Proceed
+6:exerelinNGCOtherOptions:Other options",
+ExerelinNewGameSectorConfig,ExerelinNGCOptions,!$corvusMode,,,"
 exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
 exerelinNGCSetMaxPlanets:Set max planets per system ($maxPlanets)
-exerelinNGCSetMaxStations:Set max stations per system ($maxStations)
-exerelinNGCOtherOptions:Other options",
+exerelinNGCSetMaxStations:Set max stations per system ($maxStations)",
 ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
 ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone,FireBest ExerelinNGCStep2,,,
 ,,,,,,

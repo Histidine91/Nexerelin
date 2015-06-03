@@ -1,44 +1,58 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationPlugin.CharacterCreationData;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Level;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class NGCSetStartingLocationExerelin extends BaseCommandPlugin {
+    
+    public static final Map<String, String> FACTION_HOME_SYSTEMS = new HashMap<>();
+    static {
+        FACTION_HOME_SYSTEMS.put("hegemony", "Corvus");
+        FACTION_HOME_SYSTEMS.put("tritachyon", "Magec");
+        FACTION_HOME_SYSTEMS.put("sindrian_diktat", "Askonia");
+        FACTION_HOME_SYSTEMS.put("luddic_church", "Eos");
+        FACTION_HOME_SYSTEMS.put("citadel", "Citadel");
+        FACTION_HOME_SYSTEMS.put("blackrock_driveyards", "Gneiss");
+        FACTION_HOME_SYSTEMS.put("exigency", "Tasserus");
+        FACTION_HOME_SYSTEMS.put("interstellarimperium", "Thracia");
+        FACTION_HOME_SYSTEMS.put("neutrinocorp", "Corona Australis");
+        FACTION_HOME_SYSTEMS.put("pn_colony", "Tolp");
+        FACTION_HOME_SYSTEMS.put("SCY", "Tartarus");
+        FACTION_HOME_SYSTEMS.put("shadow_industry", "Anar");
+        FACTION_HOME_SYSTEMS.put("spire", "Gemstone");
+        FACTION_HOME_SYSTEMS.put("templars", "Antioch");
+    }
     
     @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
         CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
         if (ExerelinConfig.corvusMode)
         {
-            data.setStartingLocationName("Corvus");
-            data.getStartingCoordinates().set(600, -600);
-            return true;
+            String factionId = PlayerFactionStore.getPlayerFactionId();
+            if (FACTION_HOME_SYSTEMS.containsKey(factionId))
+            {
+                data.setStartingLocationName(FACTION_HOME_SYSTEMS.get(factionId));
+                data.getStartingCoordinates().set(600, -600);
+            }
+            else data.setStartingLocationName("hyperspace");
         }
-        
-        String homestar = "Exerelin";
-        try {
-                JSONObject planetConfig = Global.getSettings().loadJSON("data/config/planetNames.json");
-                JSONArray systemNames = planetConfig.getJSONArray("stars");
-                homestar = systemNames.getString(0);
+        else
+        {
+            String homeStar = SectorManager.getFirstStarName();
 
-        } catch (JSONException | IOException ex) {
-                Global.getLogger(NGCSetStartingLocationExerelin.class).log(Level.ERROR, ex);
+            data.setStartingLocationName(homeStar);
+            data.getStartingCoordinates().set(1200, -1200);
         }
-        data.setStartingLocationName(homestar);
-        data.getStartingCoordinates().set(1200, -1200);
         
         return true;
     }

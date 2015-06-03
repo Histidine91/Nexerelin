@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.utilities.ExerelinConfig;
 
 
 public class NGCGetExerelinDefaults extends BaseCommandPlugin {
@@ -26,6 +27,8 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$primsMarketPreset", setupData.prismMarketPresent, 0);
 		map.set("$respawnFactions", setupData.respawnFactions, 0);
 		map.set("$onlyRespawnStartingFactions", setupData.onlyRespawnStartingFactions, 0);
+		
+		map.set("$corvusMode", ExerelinConfig.corvusMode);
 		return true;
 	}
 }
