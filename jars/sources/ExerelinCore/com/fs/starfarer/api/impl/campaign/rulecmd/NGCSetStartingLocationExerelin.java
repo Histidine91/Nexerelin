@@ -21,16 +21,22 @@ public class NGCSetStartingLocationExerelin extends BaseCommandPlugin {
         FACTION_HOME_SYSTEMS.put("tritachyon", "Magec");
         FACTION_HOME_SYSTEMS.put("sindrian_diktat", "Askonia");
         FACTION_HOME_SYSTEMS.put("luddic_church", "Eos");
-        FACTION_HOME_SYSTEMS.put("citadel", "Citadel");
         FACTION_HOME_SYSTEMS.put("blackrock_driveyards", "Gneiss");
+        FACTION_HOME_SYSTEMS.put("citadel", "Citadel");
         FACTION_HOME_SYSTEMS.put("exigency", "Tasserus");
         FACTION_HOME_SYSTEMS.put("interstellarimperium", "Thracia");
+        FACTION_HOME_SYSTEMS.put("junk_pirates", "Breh'Inni");
+        FACTION_HOME_SYSTEMS.put("mayorate", "Rasht");
         FACTION_HOME_SYSTEMS.put("neutrinocorp", "Corona Australis");
+        FACTION_HOME_SYSTEMS.put("pack", "Canis");
+        FACTION_HOME_SYSTEMS.put("patnavy", "Patria");
         FACTION_HOME_SYSTEMS.put("pn_colony", "Tolp");
         FACTION_HOME_SYSTEMS.put("SCY", "Tartarus");
         FACTION_HOME_SYSTEMS.put("shadow_industry", "Anar");
+        FACTION_HOME_SYSTEMS.put("syndicate_asp", "Ursulo");
         FACTION_HOME_SYSTEMS.put("spire", "Gemstone");
         FACTION_HOME_SYSTEMS.put("templars", "Antioch");
+        FACTION_HOME_SYSTEMS.put("valkyrian", "Enigma");
     }
     
     @Override
