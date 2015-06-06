@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.Collections;
 import java.util.Comparator;
@@ -61,9 +62,12 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                 if (dialog == null) return false;
                 
                 String factionId = params.get(0).getString(memoryMap);
+                boolean isExiInCorvus = factionId.equals("exigency") && SectorManager.getCorvusMode();
                 List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId);
                 if (markets.isEmpty())
-                        return false;
+                {
+                        if (!isExiInCorvus) return false;
+                }
                 
                 Collections.sort(markets,new MarketComparator());
                 //Collections.reverse(markets);
@@ -72,13 +76,22 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                 
                 Color hl = Misc.getHighlightColor();
 
-                text.addParagraph(Misc.ucFirst(faction.getDisplayNameWithArticle()) + " have " + markets.size() + " markets");
-                text.highlightInLastPara(hl, "" + markets.size());
+                int numMarkets = markets.size();
+                if (isExiInCorvus) numMarkets++;
+                text.addParagraph(Misc.ucFirst(faction.getDisplayNameWithArticle()) + " have " + numMarkets + " markets");
+                text.highlightInLastPara(hl, "" + numMarkets);
                 text.setFontSmallInsignia();
                 text.addParagraph("-----------------------------------------------------------------------------");
+                
+                if (isExiInCorvus)
+                {
+                    text.addParagraph("Tasserus (size ??)");
+                    text.highlightInLastPara(hl, "Tasserus");
+                    text.highlightInLastPara(hl, "??");
+                }
+                
                 for (MarketAPI market: markets)
                 {
-                    
                     String marketName = market.getName();
                     LocationAPI loc = market.getContainingLocation();
                     String locName = loc.getName();
