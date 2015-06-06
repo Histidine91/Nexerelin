@@ -1,5 +1,6 @@
 package exerelin.world;
 
+import com.fs.starfarer.api.EveryFrameScript;
 import java.awt.Color;
 import java.util.List;
 import java.util.Arrays;
@@ -60,6 +61,7 @@ import java.util.Set;
 import org.lazywizard.lazylib.CollectionUtils;
 import org.lazywizard.lazylib.CollectionUtils.CollectionFilter;
 import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 
 @SuppressWarnings("unchecked")
 
@@ -107,6 +109,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	private static final Map<String, String[]> stationImages = new HashMap<>();
 	
+	public static final Map<String, String> FACTION_HOME_ENTITIES = new HashMap<>();
+	
 	private List<String> factionIds = new ArrayList<>();
 	private List<Integer[]> starPositions = new ArrayList<>();	
 	private EntityData homeworld = null;
@@ -147,6 +151,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stationImages.put("neutrinocorp", new String[] {"neutrino_station_powerplant", "neutrino_station_largeprocessing", "neutrino_station_experimental"} );
 		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
 		stationImages.put("exipirated", new String[] {"exipirated_avesta_station"} );
+	}
+	
+	static
+	{
+		FACTION_HOME_ENTITIES.put("hegemony", "jangala");
+		FACTION_HOME_ENTITIES.put("tritachyon", "tibicena");
+		FACTION_HOME_ENTITIES.put("sindrian_diktat", "sindria");
+		FACTION_HOME_ENTITIES.put("luddic_church", "tartessus");
+		FACTION_HOME_ENTITIES.put("pirates", "umbra");
+		FACTION_HOME_ENTITIES.put("exipirated", "exipirated_avesta");
+		//FACTION_HOME_ENTITIES.put("spire", "aiw_diamond");
 	}
 	
 	private void loadBackgrounds()
@@ -824,7 +839,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			sector.addScript(new CoreEventProbabilityManager());
 		}
-		sector.addScript(new EconomyFleetManager());       
+		sector.addScript(new EconomyFleetManager());
 		
 		if (!corvusMode) sector.addScript(new ForcePatrolFleetsScript());
 		//sector.addScript(new EconomyLogger());
@@ -849,6 +864,54 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			{
 				market.removeSubmarket(Submarkets.GENERIC_MILITARY); // auto added by military base; remove it
 			}
+		}
+		
+		if (corvusMode)
+		{
+			String factionId = PlayerFactionStore.getPlayerFactionId();
+			if (FACTION_HOME_ENTITIES.containsKey(factionId))
+			{
+			// moves player fleet to a suitable location; e.g. Avesta for Association
+			EveryFrameScript teleportScript = new EveryFrameScript() {
+				private boolean done = false;
+				public boolean runWhilePaused() {
+				return false;
+				}
+				public boolean isDone() {
+				return done;
+				}
+				public void advance(float amount) {
+				if (Global.getSector().isInNewGameAdvance()) return;
+				String entityId = FACTION_HOME_ENTITIES.get(PlayerFactionStore.getPlayerFactionId());
+				SectorEntityToken entity = Global.getSector().getEntityById(entityId);
+				
+				Vector2f loc = entity.getLocation();
+				Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
+				done = true;
+				}
+			};
+			sector.addTransientScript(teleportScript);
+			}
+		}
+		else if (!ExerelinSetupData.getInstance().freeStart)
+		{
+			EveryFrameScript teleportScript = new EveryFrameScript() {
+			private boolean done = false;
+			public boolean runWhilePaused() {
+				return false;
+			}
+			public boolean isDone() {
+				return done;
+			}
+			public void advance(float amount) {
+				if (Global.getSector().isInNewGameAdvance()) return;
+				SectorEntityToken entity = homeworld.entity;
+				Vector2f loc = entity.getLocation();
+				Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
+				done = true;
+			}
+			};
+			sector.addTransientScript(teleportScript);
 		}
 		
 		//sector.setRespawnLocation(homeworld.starSystem);

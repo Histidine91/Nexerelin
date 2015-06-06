@@ -16,11 +16,13 @@ import java.util.Map;
 public class NGCSetStartingLocationExerelin extends BaseCommandPlugin {
     
     public static final Map<String, String> FACTION_HOME_SYSTEMS = new HashMap<>();
+    
     static {
         FACTION_HOME_SYSTEMS.put("hegemony", "Corvus");
         FACTION_HOME_SYSTEMS.put("tritachyon", "Magec");
         FACTION_HOME_SYSTEMS.put("sindrian_diktat", "Askonia");
         FACTION_HOME_SYSTEMS.put("luddic_church", "Eos");
+        FACTION_HOME_SYSTEMS.put("pirates", "Askonia");
         FACTION_HOME_SYSTEMS.put("blackrock_driveyards", "Gneiss");
         FACTION_HOME_SYSTEMS.put("citadel", "Citadel");
         FACTION_HOME_SYSTEMS.put("exigency", "Tasserus");
