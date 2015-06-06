@@ -392,7 +392,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             market.addSubmarket(Submarkets.SUBMARKET_OPEN);
             market.addSubmarket(Submarkets.SUBMARKET_BLACK);
-            if (market.hasCondition("military_base")) market.addSubmarket(Submarkets.GENERIC_MILITARY);
+            if (market.hasCondition("military_base") || market.hasCondition("tem_avalon")) 
+                market.addSubmarket(Submarkets.GENERIC_MILITARY);
             
             market.removeSubmarket("tem_templarmarket");
             if (market.hasCondition("exerelin_templar_control")) market.removeCondition("exerelin_templar_control");
