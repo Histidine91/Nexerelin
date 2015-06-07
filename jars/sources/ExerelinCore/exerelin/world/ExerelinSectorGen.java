@@ -521,7 +521,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		if (toOrbit == null)
 		{
-			if (ExerelinConfig.corvusMode) toOrbit = Global.getSector().getEntityById("somnus");   // TODO
+			if (ExerelinConfig.corvusMode) toOrbit = Global.getSector().getEntityById("corvus_IV");
 			else toOrbit = homeworld.entity;
 		}
 		
