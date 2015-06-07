@@ -293,12 +293,12 @@ NGCAddShipAndComplement ""diableavionics_vapor_standard""
 AddText ""Added Vapor-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinExigency,NewGameOptionSelected,$option == exerelinNGCJoinExigency,"NGCSetPlayerFaction ""exigency""
-NGCAddShipAndComplement ""exigency_yria_Assault""
-AddText ""Added Yria-class frigate"" textFriendColor
+NGCAddShipAndComplement ""exigency_destroyer_Disruptor""
+AddText ""Added Zephos-class destroyer"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinExipirated,NewGameOptionSelected,$option == exerelinNGCJoinExipirated,"NGCSetPlayerFaction ""exipirated""
-NGCAddShipAndComplement ""exipirated_rauwel_Standard""
-AddText ""Added Rauwel-class frigate"" textFriendColor
+NGCAddShipAndComplement ""exipirated_azryel_Standard""
+AddText ""Added Azryel-class destroyer"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinHiigaranDescendants,NewGameOptionSelected,$option == exerelinNGCJoinHiigaranDescendants,"NGCSetPlayerFaction ""hiigaran_descendants""
 NGCAddShipAndComplement ""hii_jet_Standard""
