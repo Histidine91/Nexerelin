@@ -92,6 +92,6 @@ public class PlayerFactionStore {
                 log.info("Loading independent player relations with " + faction.getDisplayName() + " as " + relation);
             }
         }
-        ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+        //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
     }
 }
