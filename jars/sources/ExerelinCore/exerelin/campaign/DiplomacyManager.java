@@ -797,6 +797,19 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     }
                 }
             }
+            // Dark Spire even more so
+            FactionAPI darkspire = sector.getFaction("darkspire");
+            if (darkspire != null)
+            {
+                for (String factionId : factionIds)
+                {
+                    FactionAPI faction = sector.getFaction(factionId);
+                    if (!faction.isNeutralFaction() && !factionId.equals("darkspire"))
+                    {
+                        darkspire.setRelationship(factionId, -1f);
+                    }
+                }
+            }
         }
          // set player relations based on selected faction
         PlayerFactionStore.saveIndependentPlayerRelations();
