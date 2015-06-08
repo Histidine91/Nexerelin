@@ -26,7 +26,7 @@ public abstract class FleetRequestActionBase extends BaseCommandPlugin {
             Vector2f targetMarketLoc = targetMarket.getLocationInHyperspace();
             
             for (MarketAPI market : markets) {
-                if  ( market.getFaction() == invader)
+                if ( market.getFaction() == invader || market.getFactionId().equals("player_npc"))
                 {
                     float dist = Misc.getDistance(market.getLocationInHyperspace(), targetMarketLoc);
                     if (dist < 5000.0F) {

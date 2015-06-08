@@ -734,13 +734,17 @@ FireAll ExerelinMarketSpecial",,,
 ,,,,,,
 #START FLEET REQUEST OPTIONS,,,,,,
 ExerelinMarketFleetRequestOption,ExerelinMarketSpecial,"$hasMarket
-$faction.id != ""neutral""",,,5:exerelinFleetRequestMenu:Request a fleet,
+$faction.id != ""neutral""",SetEnabled exerelinFleetRequestMenu true,,5:exerelinFleetRequestMenu:Request a fleet,
+ExerelinMarketFleetRequestOptionNoBase,ExerelinMarketSpecial,"$hasMarket
+$faction.id != ""neutral""
+!IsFactionAlive $player.factionId
+!IsFactionAlive player_npc","SetTooltip exerelinFleetRequestMenu ""Your faction has no base to launch a fleet from.""
+SetEnabled exerelinFleetRequestMenu false",,,
 ExerelinFleetRequestOptionListMain,DialogOptionSelected,$option == exerelinFleetRequestMenu,"$fleetRequestFP = 60
 $fleetRequestMarines=0
 ShowVisual ""graphics/illustrations/hound_hangar.jpg""
 FireAll ExerelinFleetRequestOption",,,
-ExerelinFleetRequestOptionListFire,ExerelinFleetRequestOption,"FleetRequestCanAfford
-IsFactionAlive $player.factionId","SetTooltip exerelinFleetRequestFire ""Deploying this fleet to $market will require $creditsRequiredForFleet credits. $player.creditsHave credits are available.""
+ExerelinFleetRequestOptionListFire,ExerelinFleetRequestOption,FleetRequestCanAfford,"SetTooltip exerelinFleetRequestFire ""Deploying this fleet to $market will require $creditsRequiredForFleet credits. $player.creditsHave credits are available.""
 SetEnabled exerelinFleetRequestFire true
 SetTooltipHighlightColors exerelinFleetRequestFire buttonShortcut buttonShortcut
 SetTooltipHighlights exerelinFleetRequestFire $creditsRequiredForFleet $player.creditsHave",,exerelinFleetRequestFire:Request a fleet,
