@@ -34,9 +34,13 @@ public class PlayerFactionStore {
         factionId = newFactionId;
     }
     
+    public static String getPlayerFactionIdNGC()
+    {
+        return factionId;
+    }
+    
     public static String getPlayerFactionId()
     {
-        if (factionId != null) return factionId;
         Map<String, Object> data = Global.getSector().getPersistentData();
         String storedId = (String)data.get(PLAYER_FACTION_ID_KEY);
         if (storedId != null) 
@@ -44,7 +48,7 @@ public class PlayerFactionStore {
             factionId = (String)storedId;
             return (String)storedId;
         }
-        return "player_npc";
+        return factionId;
     }
     
     public static void saveIndependentPlayerRelation(String factionId)

@@ -160,7 +160,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		FACTION_HOME_ENTITIES.put("sindrian_diktat", "sindria");
 		FACTION_HOME_ENTITIES.put("luddic_church", "tartessus");
 		FACTION_HOME_ENTITIES.put("pirates", "umbra");
+		FACTION_HOME_ENTITIES.put("blackrock_driveyards", "lodestone");
+		FACTION_HOME_ENTITIES.put("citadeldefenders", "citadelprime");
 		FACTION_HOME_ENTITIES.put("exipirated", "exipirated_avesta");
+		FACTION_HOME_ENTITIES.put("shadow_industry", "euripides");
 		//FACTION_HOME_ENTITIES.put("spire", "aiw_diamond");
 	}
 	
@@ -823,7 +826,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		addOmnifactory();
 		addPrismMarket();
 		
-		String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
+		final String selectedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
 		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
 
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
@@ -868,8 +871,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		if (corvusMode)
 		{
-			String factionId = PlayerFactionStore.getPlayerFactionId();
-			if (FACTION_HOME_ENTITIES.containsKey(factionId))
+			if (FACTION_HOME_ENTITIES.containsKey(selectedFactionId))
 			{
 			// moves player fleet to a suitable location; e.g. Avesta for Association
 			EveryFrameScript teleportScript = new EveryFrameScript() {
@@ -882,7 +884,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				}
 				public void advance(float amount) {
 				if (Global.getSector().isInNewGameAdvance()) return;
-				String entityId = FACTION_HOME_ENTITIES.get(PlayerFactionStore.getPlayerFactionId());
+				String entityId = FACTION_HOME_ENTITIES.get(selectedFactionId);
 				SectorEntityToken entity = Global.getSector().getEntityById(entityId);
 				
 				Vector2f loc = entity.getLocation();

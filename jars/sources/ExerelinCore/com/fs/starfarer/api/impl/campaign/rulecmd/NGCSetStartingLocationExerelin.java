@@ -46,7 +46,7 @@ public class NGCSetStartingLocationExerelin extends BaseCommandPlugin {
         CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
         if (ExerelinConfig.corvusMode)
         {
-            String factionId = PlayerFactionStore.getPlayerFactionId();
+            String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
             if (FACTION_HOME_SYSTEMS.containsKey(factionId))
             {
                 data.setStartingLocationName(FACTION_HOME_SYSTEMS.get(factionId));
