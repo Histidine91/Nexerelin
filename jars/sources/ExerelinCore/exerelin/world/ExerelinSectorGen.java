@@ -206,11 +206,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		if (factions.contains("shadow_industry"))
 		{
-			starBackgrounds.add("shadow_ships/backgrounds/anarbg.jpg");
-		}
-		if (factions.contains("shadow_industry"))
-		{
-			starBackgrounds.add("shadow_ships/backgrounds/anarbg.jpg");
+			starBackgrounds.add("backgrounds/anarbg.jpg");
 		}
 		if (ExerelinUtils.isSSPInstalled())
 		{
@@ -229,7 +225,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		if (factions.contains("valkyrian"))
 		{
-			starBackgrounds.add("valkyrians/backgrounds/valk_extra_background.jpg");
+			starBackgrounds.add("backgrounds/valk_extra_background.jpg");
 		}
 		
 		// prepend "graphics/" to item paths
