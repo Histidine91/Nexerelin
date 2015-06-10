@@ -12,11 +12,8 @@ public class ExerelinConfig
     public static List<ExerelinFactionConfig> exerelinFactionConfigs;
 
     // Threading support for improving/smoothing performance
+    @Deprecated
     public static boolean enableThreading = true;
-    // Use multiple larger backgrounds
-    public static boolean useMultipleBackgroundsAndStars = true;
-    // Use custom faction configs
-    public static boolean useCustomFactionConfigs = true;
    
     // System Generation settings
     public static int minimumPlanets = 2;
@@ -94,10 +91,6 @@ public class ExerelinConfig
             System.out.println("Loading exerelinSettings");
 
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelin_config.json");
-
-            enableThreading = settings.optBoolean("enableThreading", true);
-            useMultipleBackgroundsAndStars = settings.optBoolean("useMultipleBackgroundsAndStars", true);
-            useCustomFactionConfigs = settings.optBoolean("useCustomFactionConfigs", true);
 
             minimumPlanets = settings.optInt("minimumPlanets");
             minimumStations = settings.optInt("minimumStations");

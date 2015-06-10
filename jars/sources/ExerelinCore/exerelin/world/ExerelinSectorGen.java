@@ -1090,11 +1090,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// Set starSystem/light colour/background
 		PlanetAPI star;
 	
-		int starType = 0;
-		if(ExerelinConfig.useMultipleBackgroundsAndStars)
-			starType = ExerelinUtils.getRandomInRange(0, 10);
-		else
-			starType = ExerelinUtils.getRandomInRange(0, 1);
+		int starType = ExerelinUtils.getRandomInRange(0, 10);
 
 		// TODO refactor to remove endless nested ifs
 		if(starType == 0)
