@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.SectorManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,4 +53,9 @@ public class ExerelinUtilsFaction {
         return isPirateFaction(factionId);
     }
 
+    public static boolean isExiInCorvus(String factionId)
+    {
+        return factionId.equals("exigency") && SectorManager.getCorvusMode();
+    }
+    
 }

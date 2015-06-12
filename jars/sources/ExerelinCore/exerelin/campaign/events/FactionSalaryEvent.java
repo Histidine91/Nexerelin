@@ -17,6 +17,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +53,15 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 
 			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
 			//if (alignedFactionId.equals("player_npc")) return;  // no self-salary
-                        if (!SectorManager.isFactionAlive(alignedFactionId)) return;
+			
+			// Exi is not technically alive in Corvus mode, but still treated as present due to Tasserus
+			if (ExerelinUtilsFaction.isExiInCorvus(alignedFactionId))
+			{
+				// do nothing
+			}
+			else if (!SectorManager.isFactionAlive(alignedFactionId)) 
+				return;
+			
 			FactionAPI alignedFaction = Global.getSector().getFaction(alignedFactionId);
 
 			RepLevel relation = alignedFaction.getRelationshipLevel("player");

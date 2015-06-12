@@ -62,7 +62,7 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                 if (dialog == null) return false;
                 
                 String factionId = params.get(0).getString(memoryMap);
-                boolean isExiInCorvus = factionId.equals("exigency") && SectorManager.getCorvusMode();
+                boolean isExiInCorvus = ExerelinUtilsFaction.isExiInCorvus(factionId);
                 List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId);
                 if (markets.isEmpty())
                 {

@@ -23,6 +23,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
@@ -55,7 +56,15 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		//if (alignedFactionId.equals("player_npc")) return;  // no self-insurance
-                if (!SectorManager.isFactionAlive(alignedFactionId)) return;
+		
+		// Exi is not technically alive in Corvus mode, but still treated as present due to Tasserus
+		if (ExerelinUtilsFaction.isExiInCorvus(alignedFactionId))
+		{
+			// do nothing
+		}
+		else if (!SectorManager.isFactionAlive(alignedFactionId)) 
+			return;
+		
 		FactionAPI alignedFaction = Global.getSector().getFaction(alignedFactionId);
 		
 		List<FleetMemberAPI> fleetCurrent = fleet.getFleetData().getMembersListCopy();
