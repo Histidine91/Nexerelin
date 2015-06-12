@@ -29,6 +29,6 @@ public class SaboteurDestroyFood extends AgentActionBase {
                 MarketAPI market = target.getMarket();
                 FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
                 CovertOpsManager.saboteurDestroyFood(market, playerAlignedFaction, market.getFaction(), true);
-                return true;
+                return super.execute(ruleId, dialog, params, memoryMap);
         }
 }

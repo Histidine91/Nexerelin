@@ -16,19 +16,19 @@ import exerelin.campaign.PlayerFactionStore;
 
 public class AgentDestabilizeMarket extends AgentActionBase {
 
-        @Override
+	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
-                
-                boolean superResult = useSpecialPerson("agent", 1);
-                if (superResult == false)
-                    return false;
-                
-                SectorAPI sector = Global.getSector();
-                SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
-                MarketAPI market = target.getMarket();
-                FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
-                CovertOpsManager.agentDestabilizeMarket(market, playerAlignedFaction, market.getFaction(), true);
-                return true;
-        }
+		
+		boolean superResult = useSpecialPerson("agent", 1);
+		if (superResult == false)
+			return false;
+		
+		SectorAPI sector = Global.getSector();
+		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+		MarketAPI market = target.getMarket();
+		FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
+		CovertOpsManager.agentDestabilizeMarket(market, playerAlignedFaction, market.getFaction(), true);
+		return super.execute(ruleId, dialog, params, memoryMap);
+	}
 }

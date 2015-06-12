@@ -3,8 +3,14 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.CovertOpsManager;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AgentActionBase extends BaseCommandPlugin {
 	
@@ -27,5 +33,12 @@ public abstract class AgentActionBase extends BaseCommandPlugin {
 			}
 		}
 		return agentSpent;
+	}
+	
+	@Override
+	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
+		MemoryAPI memory = memoryMap.get(MemKeys.MARKET);
+		memory.set("$alertLevel", CovertOpsManager.getAlertLevel(dialog.getInteractionTarget().getMarket()), 0);
+		return true;
 	}
 }

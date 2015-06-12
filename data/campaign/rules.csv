@@ -577,20 +577,26 @@ ExerelinFactionDirectoryGetValkyrians,DialogOptionSelected,$option == exerelinFa
 ExerelinMarketAgentOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
-$faction.id != ""player_npc""
-HasItem agent",SetEnabled exerelinUseAgent true,,2:exerelinUseAgent:Deploy an agent,
+$faction.id != ""player_npc""",SetEnabled exerelinUseAgent true,,2:exerelinUseAgent:Deploy an agent,
 ExerelinMarketAgentOptionNoAgents,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
 $faction.id != ""player_npc""
-!HasItem agent","SetTooltip exerelinUseAgent ""You have no agents!""
-SetEnabled exerelinUseAgent false",,2:exerelinUseAgent:Deploy an agent,
+!HasItem agent score:10","SetTooltip exerelinUseAgent ""You have no agents!""
+SetEnabled exerelinUseAgent false",,,
 #ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
 $faction.id != ""player_npc""
 $tradeMode == NONE
 ArePatrolsNearby $faction.id 750 score:10","SetTooltip exerelinUseAgent ""The port is closed to you, and $faction patrols nearby prevent agent insertion.""
+SetEnabled exerelinUseAgent false",,,
+ExerelinMarketAgentOptionAlertLevelMaxed,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+$faction.id != ""player_npc""
+HasItem agent
+$market.alertLevel >= 1","SetTooltip exerelinUseAgent ""Security forces are at maximum alertness; infiltration is not possible.""
 SetEnabled exerelinUseAgent false",,,
 ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
@@ -603,39 +609,48 @@ ExerelinAgentOptionListDestabilizeMarket,ExerelinAgentOption,,"SetTooltip exerel
 ExerelinAgentOptionListBack,ExerelinAgentOption,,,,exerelinMarketSpecial:Back,
 ,,,,,,
 ExerelinAgentGatherIntel,DialogOptionSelected,$option == exerelinAgentGatherIntel,"AgentGatherIntel
-FireAll ExerelinAgentPostDeploy",,,
+FireBest ExerelinAgentPostDeploy",,,
 ExerelinAgentRaiseRelations,DialogOptionSelected,$option == exerelinAgentRaiseRelations,"AgentRaiseRelations
-FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+FireBest ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
 ExerelinAgentLowerRelations,DialogOptionSelected,$option == exerelinAgentLowerRelations,"AgentLowerRelations
-FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+FireBest ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
 ExerelinAgentDestabilizeMarket,DialogOptionSelected,"$option == exerelinAgentDestabilizeMarket
 ","AgentDestabilizeMarket
-FireAll ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+FireBest ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
 ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasItem agent,"GetNumSpecialPeople
 FireAll ExerelinAgentOption",,,
-ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasItem agent,"$menuState = main 0
+ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasItem agent score:10,"$menuState = main 0
 ShowDefaultVisual
 FireAll PopulateOptions",You have no more agents to deploy.,,
+ExerelinAgentAfterDeployAlertLevelMaxed,ExerelinAgentPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = main 0
+ShowDefaultVisual
+FireAll PopulateOptions",Security is too tight for further agent insertions.,,
 #END AGENT OPTIONS,,,,,,
 ,,,,,,
 #START SABOTEUR OPTIONS,,,,,,
 ExerelinMarketSaboteurOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
-$faction.id != ""player_npc""
-HasItem saboteur",SetEnabled exerelinUseSaboteur true,,3:exerelinUseSaboteur:Deploy a saboteur,
+$faction.id != ""player_npc""",SetEnabled exerelinUseSaboteur true,,3:exerelinUseSaboteur:Deploy a saboteur,
 ExerelinMarketSaboteurOptionNoSaboteurs,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
 $faction.id != ""player_npc""
 !HasItem saboteur","SetTooltip exerelinUseSaboteur ""You have no saboteurs!""
-SetEnabled exerelinUseSaboteur false",,3:exerelinUseSaboteur:Deploy a saboteur,
+SetEnabled exerelinUseSaboteur false",,,
 #ExerelinMarketSaboteurOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
 $faction.id != ""player_npc""
 $tradeMode == NONE
 ArePatrolsNearby $faction.id 750 score:10","SetTooltip exerelinUseSaboteur ""The port is closed to you, and $faction patrols nearby prevent saboteur insertion.""
+SetEnabled exerelinUseSaboteur false",,,
+ExerelinMarketSaboteurOptionAlertLevelMaxed,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+$faction.id != ""player_npc""
+HasItem agent
+$market.alertLevel >= 1","SetTooltip exerelinUseAgent ""Security forces are at maximum alertness; infiltration is not possible.""
 SetEnabled exerelinUseSaboteur false",,,
 ExerelinSaboteurOptionListMain,DialogOptionSelected,$option == exerelinUseSaboteur,"GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/cargo_loading.jpg""
@@ -645,14 +660,17 @@ ExerelinSaboteurOptionListSabotageReserve,ExerelinSaboteurOption,,"SetTooltip ex
 ExerelinSaboteurOptionListDestroyFood,ExerelinSaboteurOption,,"SetTooltip exerelinSaboteurDestroyFood ""Destroys a large amount of food on $market, possibly provoking a destabilizing crisis.""",,exerelinSaboteurDestroyFood:Destroy food stockpiles,
 ExerelinSaboteurOptionListBack,ExerelinSaboteurOption,,,,exerelinMarketSpecial:Back,
 ExerelinSaboteurSabotageReserve,DialogOptionSelected,$option == exerelinSaboteurSabotageReserve,"SaboteurSabotageReserve
-FireAll ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
+FireBest ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
 ExerelinSaboteurDestroyFood,DialogOptionSelected,$option == exerelinSaboteurDestroyFood,"SaboteurDestroyFood
-FireAll ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
+FireBest ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
 ExerelinSaboteurAfterDeploy,ExerelinSaboteurPostDeploy,HasItem saboteur,"GetNumSpecialPeople
 FireAll ExerelinSaboteurOption",,,
-ExerelinSaboteurAfterDeployNoMoreSaboteurs,ExerelinSaboteurPostDeploy,!HasItem saboteur,"$menuState = main 0
+ExerelinSaboteurAfterDeployNoMoreSaboteurs,ExerelinSaboteurPostDeploy,!HasItem saboteur score:10,"$menuState = main 0
 ShowDefaultVisual
 FireAll PopulateOptions",You have no more saboteurs to deploy.,,
+ExerelinSaboteurAfterDeployAlertLevelMaxed,ExerelinSaboteurPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = main 0
+ShowDefaultVisual
+FireAll PopulateOptions",Security is too tight for further saboteur insertions.,,
 #END SABOTEUR OPTIONS,,,,,,
 ,,,,,,
 #START PRISONER OPTIONS,,,,,,
