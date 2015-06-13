@@ -11,9 +11,9 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.world.SectorGen;
 import exerelin.campaign.AllianceManager.Alliance;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -705,7 +705,48 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (SectorManager.getCorvusMode() && !randomize)
         {
             // load vanilla relationships
-            SectorGen.initFactionRelationships(sector);
+            FactionAPI hegemony = sector.getFaction(Factions.HEGEMONY);
+            FactionAPI tritachyon = sector.getFaction(Factions.TRITACHYON);
+            FactionAPI pirates = sector.getFaction(Factions.PIRATES);
+            FactionAPI independent = sector.getFaction(Factions.INDEPENDENT);
+            FactionAPI kol = sector.getFaction(Factions.KOL);
+            FactionAPI church = sector.getFaction(Factions.LUDDIC_CHURCH);
+            FactionAPI path = sector.getFaction(Factions.LUDDIC_PATH);
+            FactionAPI playerFac = sector.getFaction(Factions.PLAYER);
+            FactionAPI diktat = sector.getFaction(Factions.DIKTAT);
+
+            playerFac.setRelationship(hegemony.getId(), 0);
+            playerFac.setRelationship(tritachyon.getId(), 0);
+            playerFac.setRelationship(pirates.getId(), -0.65f);
+            playerFac.setRelationship(independent.getId(), 0);
+            playerFac.setRelationship(kol.getId(), 0);
+            playerFac.setRelationship(church.getId(), 0);
+            playerFac.setRelationship(path.getId(), 0);
+
+            hegemony.setRelationship(tritachyon.getId(), RepLevel.HOSTILE);
+            hegemony.setRelationship(pirates.getId(), RepLevel.HOSTILE);
+            hegemony.setRelationship(path.getId(), RepLevel.HOSTILE);
+
+            tritachyon.setRelationship(pirates.getId(), RepLevel.HOSTILE);
+            tritachyon.setRelationship(kol.getId(), RepLevel.HOSTILE);
+            tritachyon.setRelationship(church.getId(), RepLevel.HOSTILE);
+            tritachyon.setRelationship(path.getId(), RepLevel.VENGEFUL);
+
+            pirates.setRelationship(kol.getId(), RepLevel.HOSTILE);
+            pirates.setRelationship(church.getId(), RepLevel.HOSTILE);
+            pirates.setRelationship(path.getId(), RepLevel.HOSTILE);
+            pirates.setRelationship(independent.getId(), RepLevel.HOSTILE);
+            pirates.setRelationship(diktat.getId(), RepLevel.HOSTILE);
+
+            church.setRelationship(kol.getId(), RepLevel.COOPERATIVE);
+            church.setRelationship(path.getId(), RepLevel.SUSPICIOUS);
+            path.setRelationship(kol.getId(), RepLevel.FAVORABLE);
+
+            if (sector.getFaction("merc_hostile") != null)
+            {
+                independent.setRelationship("merc_hostile", 1f);
+                playerFac.setRelationship("merc_hostile", -1f);
+            }
         }
         else
         {
