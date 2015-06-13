@@ -6,11 +6,10 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.world.ResponseFleetManager;
 
 @SuppressWarnings("unchecked")
@@ -22,19 +21,12 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		return "ExerelinCoreCampaignPlugin";
 	}
 	
-	/*
 	@Override
-	public PluginPick<ReputationActionResponsePlugin> pickReputationActionResponsePlugin(Object action, String factionId) {
-		if (action instanceof RepActions || action instanceof RepActionEnvelope) {
-			return new PluginPick<ReputationActionResponsePlugin>(
-				new ExerelinReputationPlugin(),
-				PickPriority.MOD_GENERAL
-			);
-		}
-		return null;
+	public boolean isTransient()
+	{
+		return false;
 	}
-	*/
-	
+		
 	@Override
 	public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
 		String factionId = interactionTarget.getFaction().getId();
@@ -43,7 +35,8 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
                         if (factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals("player_npc"))
                                 return new PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPlugin(), PickPriority.MOD_SPECIFIC);
 		}
-		return super.pickInteractionDialogPlugin(interactionTarget);
+		if (!ExerelinUtils.isSSPInstalled()) return super.pickInteractionDialogPlugin(interactionTarget);
+		return null;
 	}
 	
 	@Override
