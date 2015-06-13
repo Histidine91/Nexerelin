@@ -24,6 +24,7 @@ public class RespawnFleetAI extends InvasionFleetAI
 {
     public static Logger log = Global.getLogger(RespawnFleetAI.class);
     protected boolean captureSuccessful = false;
+    protected boolean forceHostile = false;
     
     public RespawnFleetAI(CampaignFleetAPI fleet, InvasionFleetManager.InvasionFleetData data)
     {
@@ -84,6 +85,7 @@ public class RespawnFleetAI extends InvasionFleetAI
                 if (!fleetFaction.isHostileTo(targetFaction))
                 {
                     DiplomacyManager.adjustRelations(fleetFaction, targetFaction, 0, RepLevel.HOSTILE, null, null);
+                    forceHostile = true;
                 }
                 
                 if (!responseFleetRequested)
@@ -133,13 +135,13 @@ public class RespawnFleetAI extends InvasionFleetAI
     @Override
     protected void giveStandDownOrders()
     {
-        // failed capture, reset relationship
+        // if failed capture, reset relationship
         FactionAPI faction = fleet.getFaction();
         String targetFactionId = data.targetMarket.getFactionId();
         
         if (!captureSuccessful && faction.isHostileTo(targetFactionId))
         {
-            boolean reset = true;
+            boolean reset = forceHostile;
             String factionId = faction.getId();
             if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId)) reset = false;
             else if (ExerelinUtilsFaction.isPirateOrTemplarFaction(targetFactionId)) reset = false;
