@@ -402,12 +402,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (newOwnerConfig.freeMarket)
             {
                 if (!market.hasCondition("free_market")) market.addCondition("free_market");
-                market.getTariff().modifyFlat("isFreeMarket", 0.1f);
+                market.getTariff().modifyMult("isFreeMarket", 0.5f);
             }
             else 
             {
                 market.removeCondition("free_market");
-                market.getTariff().modifyFlat("isFreeMarket", 0.2f);
+                market.getTariff().unmodify("isFreeMarket");
             }
         }
         

@@ -434,14 +434,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// add per-faction market conditions
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 		
+		newMarket.getTariff().modifyFlat("default_tariff", 0.2f);
 		if (config.freeMarket)
 		{
 			newMarket.addCondition("free_market");
-			newMarket.getTariff().modifyFlat("isFreeMarket", 0.1f); // TODO: put in a config or something
-		}
-		else
-		{
-			newMarket.getTariff().modifyFlat("isFreeMarket", 0.2f);
+			newMarket.getTariff().modifyMult("isFreeMarket", 0.5f);
 		}
 		
 		if (factionId.equals("luddic_church")) {

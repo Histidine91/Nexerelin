@@ -3,6 +3,8 @@ package data.scripts;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.combat.MutableStat.StatMod;
+import com.fs.starfarer.api.combat.ShipAPI;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
@@ -12,6 +14,8 @@ import exerelin.campaign.SectorManager;
 import exerelin.utilities.*;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.ResponseFleetManager;
+import java.util.Iterator;
+import java.util.Map;
 import org.lazywizard.omnifac.OmniFacSettings;
 
 public class ExerelinModPlugin extends BaseModPlugin
@@ -31,15 +35,19 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        // fix tariffs for new free port handling (0.37)
+        // fix tariffs for new free port handling (0.4.1)
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
-            if (market.getTariff().getFlatMods().containsKey("generator"))
+            if (market.getTariff().getFlatMods().containsKey("isFreeMarket"))
             {
                 Global.getLogger(ExerelinModPlugin.class).info("Resetting tariffs for market " + market.getName());
-                market.getTariff().unmodify("generator");
-                if (market.hasCondition("free_market")) market.getTariff().modifyFlat("isFreeMarket", 0.1f);
-                else market.getTariff().modifyFlat("isFreeMarket", 0.2f);
+                market.getTariff().unmodifyFlat("isFreeMarket");
+                
+                if (!market.getTariff().getFlatMods().containsKey("default_tariff"))
+                    market.getTariff().modifyFlat("default_tariff", 0.2f);
+                
+                if (market.hasCondition("free_market")) 
+                    market.getTariff().modifyMult("isFreeMarket", 0.5f);
             }
         }
     }
