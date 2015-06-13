@@ -78,7 +78,7 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
 
                 int numMarkets = markets.size();
                 if (isExiInCorvus) numMarkets++;
-                text.addParagraph(Misc.ucFirst(faction.getDisplayNameWithArticle()) + " have " + numMarkets + " markets");
+                text.addParagraph(Misc.ucFirst(faction.getDisplayNameWithArticle()) + " have " + numMarkets + " market(s)");
                 text.highlightInLastPara(hl, "" + numMarkets);
                 text.setFontSmallInsignia();
                 text.addParagraph("-----------------------------------------------------------------------------");
