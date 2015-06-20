@@ -254,6 +254,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         params.jumpToOrigin = false;
         params.noWait = true;
         //params.aiClass = RespawnFleetAI.class.getName();
+        params.numMarines = (int)(defenderStrength * DEFENDER_STRENGTH_MARINE_MULT);
         
         InvasionFleetData fleetData = spawnFleet(params);
         float distance = RESPAWN_FLEET_SPAWN_DISTANCE;
