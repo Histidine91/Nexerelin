@@ -538,9 +538,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	{
 		if (!ExerelinSetupData.getInstance().prismMarketPresent) return;
 		
-		String[] images = stationImages.get("default");
-		String image = images[ExerelinUtils.getRandomInRange(0, images.length - 1)];
-		
 		SectorEntityToken prismEntity;
 		
 		if (ExerelinSetupData.getInstance().numSystems == 1)
@@ -556,13 +553,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					orbitDistance = radius + ExerelinUtils.getRandomInRange(2000, 2500);
 				}
 			}
-			prismEntity = toOrbit.getContainingLocation().addCustomEntity("prismFreeport", "Prism Freeport", image, "independent");
+			prismEntity = toOrbit.getContainingLocation().addCustomEntity("prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
 			prismEntity.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, getDensity(toOrbit)));
 		}
 		else
 		{
-			prismEntity = Global.getSector().getHyperspace().addCustomEntity("prismFreeport", "Prism Freeport", image, "independent");
-			prismEntity.setFixedLocation(0, 0);
+			LocationAPI hyperspace = Global.getSector().getHyperspace();
+			prismEntity = hyperspace.addCustomEntity("prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
+			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(0, 0), MathUtils.getRandomNumberInRange(0, 360), 150, 60, 30, 30);
 		}
 		
 		EntityData data = new EntityData(null);
@@ -617,7 +615,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		prismEntity.setFaction("independent");
 		Global.getSector().getEconomy().addMarket(market);
 		//pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
-		prismEntity.setInteractionImage("illustrations", "space_bar");
+		//prismEntity.setInteractionImage("illustrations", "space_bar");
 		prismEntity.setCustomDescriptionId("exerelin_prismFreeport");
 	}
 	
