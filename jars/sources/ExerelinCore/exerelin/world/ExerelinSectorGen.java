@@ -29,6 +29,8 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.SSP_CampaignPlugin;
 import data.scripts.campaign.SSP_CoreScript;
 import data.scripts.campaign.events.SSP_EventProbabilityManager;
+import data.scripts.world.ExerelinCorvusSpawnPoints;
+import data.scripts.world.ExerelinCorvusSpawnPoints.SpawnPointEntry;
 import data.scripts.world.corvus.Corvus;
 import data.scripts.world.systems.Arcadia;
 import data.scripts.world.systems.Askonia;
@@ -109,8 +111,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	private static final Map<String, String[]> stationImages = new HashMap<>();
 	
-	public static final Map<String, String> FACTION_HOME_ENTITIES = new HashMap<>();
-	
 	private List<String> factionIds = new ArrayList<>();
 	private List<Integer[]> starPositions = new ArrayList<>();	
 	private EntityData homeworld = null;
@@ -151,20 +151,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stationImages.put("neutrinocorp", new String[] {"neutrino_station_powerplant", "neutrino_station_largeprocessing", "neutrino_station_experimental"} );
 		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
 		stationImages.put("exipirated", new String[] {"exipirated_avesta_station"} );
-	}
-	
-	static
-	{
-		FACTION_HOME_ENTITIES.put("hegemony", "jangala");
-		FACTION_HOME_ENTITIES.put("tritachyon", "tibicena");
-		FACTION_HOME_ENTITIES.put("sindrian_diktat", "sindria");
-		FACTION_HOME_ENTITIES.put("luddic_church", "tartessus");
-		FACTION_HOME_ENTITIES.put("pirates", "umbra");
-		FACTION_HOME_ENTITIES.put("blackrock_driveyards", "lodestone");
-		FACTION_HOME_ENTITIES.put("citadeldefenders", "citadelprime");
-		FACTION_HOME_ENTITIES.put("exipirated", "exipirated_avesta");
-		FACTION_HOME_ENTITIES.put("shadow_industry", "euripides");
-		//FACTION_HOME_ENTITIES.put("spire", "aiw_diamond");
 	}
 	
 	private void loadBackgrounds()
@@ -855,27 +841,33 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 		}
 		
+		// teleport player to homeworld at start
+		// FIXME: doesn't get into the save at start
 		if (corvusMode)
 		{
-			if (FACTION_HOME_ENTITIES.containsKey(selectedFactionId))
+			SpawnPointEntry spawnPoint = ExerelinCorvusSpawnPoints.getFactionSpawnPoint(selectedFactionId);
+			if (spawnPoint != null)
 			{
 			// moves player fleet to a suitable location; e.g. Avesta for Association
+			final String HOME_ENTITY = spawnPoint.entityName;
 			EveryFrameScript teleportScript = new EveryFrameScript() {
 				private boolean done = false;
 				public boolean runWhilePaused() {
-				return false;
+					return false;
 				}
 				public boolean isDone() {
-				return done;
+					return done;
 				}
 				public void advance(float amount) {
-				if (Global.getSector().isInNewGameAdvance()) return;
-				String entityId = FACTION_HOME_ENTITIES.get(selectedFactionId);
-				SectorEntityToken entity = Global.getSector().getEntityById(entityId);
-				
-				Vector2f loc = entity.getLocation();
-				Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
-				done = true;
+					if (Global.getSector().isInNewGameAdvance()) return;
+					SectorEntityToken entity = Global.getSector().getEntityById(HOME_ENTITY);
+
+					if (entity != null)
+					{
+						Vector2f loc = entity.getLocation();
+						Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
+						done = true;
+					}
 				}
 			};
 			sector.addTransientScript(teleportScript);

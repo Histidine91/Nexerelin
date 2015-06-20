@@ -18,9 +18,11 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.world.ExerelinCorvusSpawnPoints;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -182,8 +184,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
 
         for (final MarketAPI market : markets) {
             String factionId = market.getFactionId();
-            if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
-            if (factionId.equals("templars")) continue;
+            if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId)) continue;
+            if (factionId.equals("player_npc")) continue;
             if (seenFactions.contains(factionId)) continue;
 
             seenFactions.add(factionId);
@@ -272,12 +274,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
         
         String defeatedId = defeated.getId();
-        if (!defeatedId.equals(PlayerFactionStore.getPlayerFactionId()) && !ExerelinUtilsFaction.isPirateOrTemplarFaction(defeatedId))
+        if (!defeatedId.equals(PlayerFactionStore.getPlayerFactionId()) 
+                && !ExerelinUtilsFaction.isPirateOrTemplarFaction(defeatedId)
+                && !ExerelinUtilsFaction.isExiInCorvus(defeatedId))
         {
             for (FactionAPI faction : Global.getSector().getAllFactions())
             {
                 String factionId = faction.getId();
-                if (!ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId) && !factionId.equals(defeatedId))
+                if (!ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId)
+                        && !ExerelinUtilsFaction.isExiInCorvus(factionId)
+                        && !factionId.equals(defeatedId))
                 {
                     faction.setRelationship(defeatedId, 0f);
                 }
@@ -454,9 +460,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             {
                 flipRelay = sectorManager.planetToRelayMap.containsKey(market.getPrimaryEntity().getId());
             }
-            else
+            
+            if (!flipRelay)
             {
-                flipRelay = market.hasCondition("regional_capital") || market.hasCondition("headquarters");
+                if (ExerelinCorvusSpawnPoints.getSystemCapitalsCopy().containsValue(market.getPrimaryEntity().getId()))
+                    flipRelay = true;
+                else flipRelay = market.hasCondition("regional_capital") || market.hasCondition("headquarters");
             }
             
             if (flipRelay)
@@ -467,6 +476,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 {
                     SectorEntityToken relay = Global.getSector().getEntityById(relayId);
                     relay.setFaction(newOwnerId);
+                }
+                else 
+                {
+                    List<SectorEntityToken> relays = loc.getEntitiesWithTag(Tags.COMM_RELAY);
+                    log.info("#entities: " + relays.size());
+                    if (!relays.isEmpty()) relays.get(0).setFaction(newOwnerId);
                 }
             }
         }
