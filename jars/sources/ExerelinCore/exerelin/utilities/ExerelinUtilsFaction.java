@@ -1,13 +1,16 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ExerelinUtilsFaction {
@@ -55,7 +58,14 @@ public class ExerelinUtilsFaction {
 
     public static boolean isExiInCorvus(String factionId)
     {
-        return factionId.equals("exigency") && SectorManager.getCorvusMode();
+        if (factionId.equals("exigency") && SectorManager.getCorvusMode()) 
+        {
+            //List<String> factions = Arrays.asList(ExerelinSetupData.getInstance().getPossibleFactions());
+            //return (factions.contains("exigency") && SectorManager.getCorvusMode());
+            SectorEntityToken tasserus = Global.getSector().getEntityById("exigency_tasserus");
+            return tasserus != null;
+        }
+        return false;
     }
     
 }
