@@ -656,13 +656,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		telmunLabel.setFixedLocation(-16000, 8000);
 		cathedralLabel.setFixedLocation(-20000, 2000);
 		coreLabel.setFixedLocation(17000, -6000);
-
-		SSP_EventProbabilityManager probabilityManager = new SSP_EventProbabilityManager();
-		sector.getPersistentData().put("ssp_eventProbabilityManager", probabilityManager);
-		sector.registerPlugin(new SSP_CampaignPlugin());
-		sector.addScript(new SSP_CoreScript());
-		sector.addScript(probabilityManager);
-		sector.addScript(new EconomyFleetManager());
 	}
 	
 	public void generateVanillaSector(SectorAPI sector)
@@ -821,15 +814,15 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		final String selectedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
 		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
-
-		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		
 		sector.addScript(new CoreScript());
+                
+                // SS+ mod plugin already has this covered
 		if (corvusMode && ExerelinUtils.isSSPInstalled())
 		{
-			SSP_EventProbabilityManager probabilityManager = new SSP_EventProbabilityManager();
-			sector.getPersistentData().put("ssp_eventProbabilityManager", probabilityManager);
-			sector.addScript(probabilityManager);
+			//SSP_EventProbabilityManager probabilityManager = new SSP_EventProbabilityManager();
+			//sector.getPersistentData().put("ssp_eventProbabilityManager", probabilityManager);
+			//sector.addScript(probabilityManager);
 		}
 		else
 		{

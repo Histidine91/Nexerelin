@@ -6,6 +6,8 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
+import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
@@ -35,9 +37,36 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
                         if (factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals("player_npc"))
                                 return new PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPlugin(), PickPriority.MOD_SPECIFIC);
 		}
+                
+                // FIXME: hack for Avesta handling
+                if (interactionTarget.getId().equals("exipirated_avesta"))
+                {
+                    interactionTarget.removeTag(Tags.COMM_RELAY);
+                    return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_SPECIFIC);
+                }
+                
 		if (!ExerelinUtils.isSSPInstalled()) return super.pickInteractionDialogPlugin(interactionTarget);
 		return null;
 	}
+        
+
+        @Override
+        public PluginPick<BattleAutoresolverPlugin> pickBattleAutoresolverPlugin(SectorEntityToken one, SectorEntityToken two) {
+            if (!ExerelinUtils.isSSPInstalled()) return super.pickBattleAutoresolverPlugin(one, two);
+            return null;
+        }
+        
+        @Override
+        public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(Object param, SectorEntityToken interactionTarget) {
+            if (!ExerelinUtils.isSSPInstalled()) return super.pickInteractionDialogPlugin(param, interactionTarget);
+            return null;
+        }
+
+        @Override
+        public PluginPick<ReputationActionResponsePlugin> pickReputationActionResponsePlugin(Object action, String factionId) {
+            if (!ExerelinUtils.isSSPInstalled()) return super.pickReputationActionResponsePlugin(action, factionId);
+            return null;
+        }
 	
 	@Override
 	public void updatePlayerFacts(MemoryAPI memory) {
