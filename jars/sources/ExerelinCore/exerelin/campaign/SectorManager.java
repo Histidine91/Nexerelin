@@ -272,12 +272,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
         
         String defeatedId = defeated.getId();
-        if (!defeatedId.equals(PlayerFactionStore.getPlayerFactionId()) && !ExerelinUtilsFaction.isPirateOrTemplarFaction(defeatedId))
+        if (!defeatedId.equals(PlayerFactionStore.getPlayerFactionId()) 
+                && !ExerelinUtilsFaction.isPirateOrTemplarFaction(defeatedId)
+                && !ExerelinUtilsFaction.isExiInCorvus(defeatedId))
         {
             for (FactionAPI faction : Global.getSector().getAllFactions())
             {
                 String factionId = faction.getId();
-                if (!ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId) && !factionId.equals(defeatedId))
+                if (!ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId)
+                        && !ExerelinUtilsFaction.isExiInCorvus(factionId)
+                        && !factionId.equals(defeatedId))
                 {
                     faction.setRelationship(defeatedId, 0f);
                 }
