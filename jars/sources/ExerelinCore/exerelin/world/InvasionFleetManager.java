@@ -344,10 +344,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     public void generateInvasionFleet()
     {
         SectorAPI sector = Global.getSector();
-        WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();
+        //WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();
         WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
         WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
-        List<FactionAPI> factions = sector.getAllFactions();
+        //List<FactionAPI> factions = sector.getAllFactions();
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
         float marineStockpile = 0;
         //log.info("Starting invasion fleet check");
@@ -455,6 +455,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             FactionAPI invader = faction;
             
             // pick a source market
+            sourcePicker.clear();
             for (MarketAPI market : markets) {
                 if  ( market.getFactionId().equals(invader.getId()) && !market.hasCondition("decivilized") && 
                     ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) || (market.hasCondition("military_base"))
@@ -493,10 +494,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 
             // now we pick a target
             Vector2f originMarketLoc = originMarket.getLocationInHyperspace();
+            targetPicker.clear();
             for (MarketAPI market : markets) 
             {
                 FactionAPI marketFaction = market.getFaction();
-                if (marketFaction == invader) continue; // yeah, no idea why this happens
                 if  ( marketFaction.isHostileTo(invader)) 
                 {
                     if (marketFaction.getId().equals("independent")) continue;
@@ -527,6 +528,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             //log.info("\tTarget: " + targetMarket.getName());
 
             // okay, assemble battlegroup
+            log.info("Spawning invasion fleet for " + faction.getDisplayName() + "; source " + originMarket.getName() + "; target " + targetMarket.getName());
             InvasionFleetData data = spawnInvasionFleet(invader, originMarket, targetMarket, DEFENDER_STRENGTH_MARINE_MULT, false);
             spawnSupportFleet(invader, originMarket, targetMarket, false, false);
             spawnSupportFleet(invader, originMarket, targetMarket, false, false);
