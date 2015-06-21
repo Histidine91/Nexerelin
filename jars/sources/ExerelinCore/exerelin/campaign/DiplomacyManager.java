@@ -427,7 +427,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             int warCount = enemies.size();
             if (warCount > 0)
             {
-                log.info("Incrementing war weariness for " + faction.getDisplayName());
+                //log.info("Incrementing war weariness for " + faction.getDisplayName());
                 weariness += enemies.size() * warWearinessPerInterval;
                 if (weariness >= ExerelinConfig.minWarWearinessForPeace)
                 {
