@@ -800,8 +800,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
 		
 		sector.addScript(new CoreScript());
-                
-                // SS+ mod plugin already has this covered
+		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
+		
+		// SS+ mod plugin already has this covered
 		if (corvusMode && ExerelinUtils.isSSPInstalled())
 		{
 			//SSP_EventProbabilityManager probabilityManager = new SSP_EventProbabilityManager();
