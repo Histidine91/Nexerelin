@@ -172,7 +172,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
 
     @Override
     public float getTariff() {
-            return 2f;
+            return ExerelinConfig.prismTariff;
     }
 
 
