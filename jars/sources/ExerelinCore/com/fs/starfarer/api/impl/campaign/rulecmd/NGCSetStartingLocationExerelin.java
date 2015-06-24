@@ -5,8 +5,8 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationPlugin.CharacterCreationData;
 import com.fs.starfarer.api.util.Misc;
-import data.scripts.world.ExerelinCorvusSpawnPoints;
-import data.scripts.world.ExerelinCorvusSpawnPoints.SpawnPointEntry;
+import data.scripts.world.ExerelinCorvusLocations;
+import data.scripts.world.ExerelinCorvusLocations.SpawnPointEntry;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
@@ -22,7 +22,7 @@ public class NGCSetStartingLocationExerelin extends BaseCommandPlugin {
         if (ExerelinConfig.corvusMode)
         {
             String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
-            SpawnPointEntry spawnPoint = ExerelinCorvusSpawnPoints.getFactionSpawnPoint(factionId);
+            SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(factionId);
             if (spawnPoint != null)
             {
                 data.setStartingLocationName(spawnPoint.systemName);

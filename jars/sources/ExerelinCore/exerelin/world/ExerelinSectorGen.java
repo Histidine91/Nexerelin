@@ -29,8 +29,8 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.SSP_CampaignPlugin;
 import data.scripts.campaign.SSP_CoreScript;
 import data.scripts.campaign.events.SSP_EventProbabilityManager;
-import data.scripts.world.ExerelinCorvusSpawnPoints;
-import data.scripts.world.ExerelinCorvusSpawnPoints.SpawnPointEntry;
+import data.scripts.world.ExerelinCorvusLocations;
+import data.scripts.world.ExerelinCorvusLocations.SpawnPointEntry;
 import data.scripts.world.corvus.Corvus;
 import data.scripts.world.systems.Arcadia;
 import data.scripts.world.systems.Askonia;
@@ -844,7 +844,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// FIXME: doesn't get into the save at start
 		if (corvusMode)
 		{
-			SpawnPointEntry spawnPoint = ExerelinCorvusSpawnPoints.getFactionSpawnPoint(selectedFactionId);
+			SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(selectedFactionId);
 			if (spawnPoint != null)
 			{
 			// moves player fleet to a suitable location; e.g. Avesta for Association

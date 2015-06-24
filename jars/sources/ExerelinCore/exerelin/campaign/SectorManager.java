@@ -22,7 +22,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.world.ExerelinCorvusSpawnPoints;
+import data.scripts.world.ExerelinCorvusLocations;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -463,7 +463,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             
             if (!flipRelay)
             {
-                if (ExerelinCorvusSpawnPoints.getSystemCapitalsCopy().containsValue(market.getPrimaryEntity().getId()))
+                if (ExerelinCorvusLocations.getSystemCapitalsCopy().containsValue(market.getPrimaryEntity().getId()))
                     flipRelay = true;
                 else flipRelay = market.hasCondition("regional_capital") || market.hasCondition("headquarters");
             }
