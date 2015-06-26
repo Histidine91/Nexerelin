@@ -84,6 +84,8 @@ public class InvasionFleetAI implements EveryFrameScript
         };
         data.fleet.addScript(broadcastScript);
         */
+        if (orderedReturn) return;
+        
         List<CampaignFleetAPI> fleets = fleet.getContainingLocation().getFleets();
         for (CampaignFleetAPI otherFleet : fleets) {
             if (otherFleet == fleet) continue;
