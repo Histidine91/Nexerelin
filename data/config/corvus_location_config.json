@@ -8,6 +8,7 @@
 		"Arcadia":"arcadia_station",
 		
 		"Acheron":"SCY_prismFreeport",
+		"Aesir":"breidablik",
 		"Anar":"euripedes",
 		"Antioch":"tem_ascalon",
 		"Baka":"crystanos2",
@@ -93,6 +94,10 @@
 		"neutrinocorp":{
 			"system":"Corona Australis",
 			"entity":"neut_experimental"
+		},
+		"new_galactic_order":{
+			"system":"Aesir",
+			"entity":"breidablik"
 		},
 		"pack":{
 			"system":"Canis",

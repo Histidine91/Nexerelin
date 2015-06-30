@@ -222,6 +222,7 @@ ExerelinNGCListPatria,ExerelinNGCListFactions3,NGCDoesFactionExist patnavy,,,exe
 ExerelinNGCListPTech,ExerelinNGCListFactions3,NGCDoesFactionExist PTech,,,exerelinNGCJoinPTech:Protonian Technologies,
 ExerelinNGCListP9,ExerelinNGCListFactions3,NGCDoesFactionExist pn_colony,,,exerelinNGCJoinP9:P9 Colony Group,
 ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
+ExerelinNGCListNGO,ExerelinNGCListFactions3,NGCDoesFactionExist new_galactic_order,,,exerelinNGCJoinNGO:New Galactic Order,
 ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCListRadicalORI,ExerelinNGCListFactions4,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
@@ -323,6 +324,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinNeutrinoCorp,NewGameOptionSelected,$option == exerelinNGCJoinNeutrinoCorp,"NGCSetPlayerFaction ""neutrinocorp""
 NGCAddShipAndComplement ""neutrino_singularity_standard""
 AddText ""Added Singularity-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinNGO,NewGameOptionSelected,$option == exerelinNGCJoinNGO,"NGCSetPlayerFaction ""new_galactic_order""
+NGCAddShipAndComplement ""ngo_frigate_low""
+AddText ""Added Freyr-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 exerelinNGCJoinOculusBerserk,NewGameOptionSelected,$option == exerelinNGCJoinOculusBerserk,"NGCSetPlayerFaction ""oculusberserk""
 NGCAddShipAndComplement ""ob_tigris_standard""
@@ -531,6 +536,7 @@ ExerelinFactionDirectoryListMayorate,ExerelinFactionDirectoryList2,IsFactionAliv
 ExerelinFactionDirectoryList2Back,ExerelinFactionDirectoryList2,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
 ExerelinFactionDirectoryListNeutrinoCorp,ExerelinFactionDirectoryList3,IsFactionAlive neutrinocorp,,,exerelinFactionDirectoryGetNeutrinoCorp:Neutrino Corp,
+ExerelinFactionDirectoryListNGO,ExerelinFactionDirectoryList3,IsFactionAlive new_galactic_order,,,exerelinFactionDirectoryGetNGO:New Galactic Order,
 ExerelinFactionDirectoryListOculusBerserk,ExerelinFactionDirectoryList3,IsFactionAlive OculusBerserk,,,exerelinFactionDirectoryGetOculusBerserk:Oculian Berserks,
 ExerelinFactionDirectoryListORI,ExerelinFactionDirectoryList3,IsFactionAlive ori,,,exerelinFactionDirectoryGetORI:ORI,
 ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList3,IsFactionAlive pack,,,exerelinFactionDirectoryGetPACK:P.A.C.K.,
@@ -564,6 +570,7 @@ ExerelinFactionDirectoryGetJunkPirates,DialogOptionSelected,$option == exerelinF
 ExerelinFactionDirectoryGetLuddicChurch,DialogOptionSelected,$option == exerelinFactionDirectoryGetLuddicChurch,PrintFactionMarkets luddic_church,,,
 ExerelinFactionDirectoryGetMayorate,DialogOptionSelected,$option == exerelinFactionDirectoryGetMayorate,PrintFactionMarkets mayorate,,,
 ExerelinFactionDirectoryGetNeutrinoCorp,DialogOptionSelected,$option == exerelinFactionDirectoryGetNeutrinoCorp,PrintFactionMarkets neutrinocorp,,,
+ExerelinFactionDirectoryGetNGO,DialogOptionSelected,$option == exerelinFactionDirectoryGetNGO,PrintFactionMarkets new_galactic_order,,,
 ExerelinFactionDirectoryGetOculusBerserk,DialogOptionSelected,$option == exerelinFactionDirectoryGetOculusBerserk,PrintFactionMarkets OculusBerserk,,,
 ExerelinFactionDirectoryGetORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetORI,PrintFactionMarkets ori,,,
 ExerelinFactionDirectoryGetPACK,DialogOptionSelected,$option == exerelinFactionDirectoryGetPACK,PrintFactionMarkets pack,,,

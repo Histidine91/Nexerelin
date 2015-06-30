@@ -1,0 +1,35 @@
+{
+    "uniqueModClassName":"data.scripts.NGOModPlugin", # String
+    "playableFaction":"true", # Boolean
+    "isPirateNeutral":"false", # Boolean
+    "spawnPiratesAndMercs":"false",
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
+
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Splinter Group", # String
+
+    "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
+    "gasMiningFleetName":"Gas Mining Fleet", # String
+    "logisticsFleetName":"Logistics Fleet", # String
+    "invasionFleetName":"Invasion Fleet", # String
+    "responseFleetName":"Vengeance Fleet",
+    "invasionSupportFleetName":"Breakthrough Fleet", # String
+    "defenceFleetName":"Border Protection Fleet",
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":["interstellarimperium","independent"], # String array
+    "factionsDisliked":["exigency","exipirated","junk_pirates","pack","syndicate_asp","hiigaran_descendents","hegemony","tritachyon","pirates","luddic_church","sindrian_diktat","templars","valkyrian"], # String array
+    
+
+    "invasionStrengthBonusAttack":0.1,
+    "invasionStrengthBonusDefend":0.125,
+    "invasionFleetSizeMod":0.1,
+    "responseFleetSizeMod":0.125,
+	
+	
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+}
