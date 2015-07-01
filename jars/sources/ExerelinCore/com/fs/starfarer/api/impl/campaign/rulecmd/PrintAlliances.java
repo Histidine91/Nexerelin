@@ -12,6 +12,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.AllianceManager.Alliance;
 import exerelin.campaign.AllianceManager.AllianceComparator;
+import exerelin.utilities.StringHelper;
 import java.util.Collections;
 
 public class PrintAlliances extends BaseCommandPlugin {
@@ -26,7 +27,7 @@ public class PrintAlliances extends BaseCommandPlugin {
 		
 		Color hl = Misc.getHighlightColor();
 
-		text.addParagraph("There are " + alliances.size() + " alliance(s) in the cluster");
+		text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_alliances", "numAlliances", "$numAlliances", alliances.size()+""));
 		text.highlightInLastPara(hl, "" + alliances.size());
 		text.setFontSmallInsignia();
 		text.addParagraph("-----------------------------------------------------------------------------");

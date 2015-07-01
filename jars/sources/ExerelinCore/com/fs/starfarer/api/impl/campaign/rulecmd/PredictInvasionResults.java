@@ -17,6 +17,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import exerelin.campaign.InvasionRound.InvasionSimulationType;
+import exerelin.utilities.StringHelper;
 
 
 /**
@@ -72,34 +73,18 @@ public class PredictInvasionResults extends BaseCommandPlugin {
                 Color hl = Misc.getHighlightColor();
                 Color red = Misc.getNegativeHighlightColor();
                 text.addParagraph("-----------------------------------------------------------------------------");
-                text.addParagraph("Attacker strength: " + attackerStrength);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "attackerStrength")) + ": " + attackerStrength);
                 text.highlightInLastPara(hl, "" + attackerStrength);
-                text.addParagraph("Defender strength: " + defenderStrengthStr);
-                text.highlightInLastPara(red, "" + defenderStrengthStr);
-                text.addParagraph("Capture chance: " + winChanceStr);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "defenderStrength")) + ": " + defenderStrength);
+                text.highlightInLastPara(red, "" + defenderStrength);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "captureChance")) + ": " + winChanceStr);
                 if (winChance < 50)
                         text.highlightInLastPara(red, "" + winChanceStr);
                 else
                         text.highlightInLastPara(hl, "" + winChanceStr);
-                text.addParagraph("Projected losses: " + marinesLost);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "projectedLosses")) + ": " + marinesLost);
                 text.highlightInLastPara(red, "" + marinesLost);
-                /*
-                if (!illegalFound.isEmpty()) {
-                                text.addParagraph("Contraband found!", red);
-                                String para = "";
-                                List<String> highlights = new ArrayList<String>();
-                                for (CargoStackAPI stack : illegalFound.getStacksCopy()) {
-                                                para += stack.getDisplayName() + " x " + (int)stack.getSize() + "\n";
-                                                highlights.add("" + (int)stack.getSize());
-                                }
-                                para = para.substring(0, para.length() - 1);
-                                text.addParagraph(para);
-                                text.highlightInLastPara(hl, highlights.toArray(new String [0]));
-
-                                text.addParagraph("Fine: " + (int) fine);
-                                text.highlightInLastPara(hl, "" + (int) fine);
-                }
-                */
+ 
                 text.addParagraph("-----------------------------------------------------------------------------");
                 text.setFontInsignia();
                 MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);

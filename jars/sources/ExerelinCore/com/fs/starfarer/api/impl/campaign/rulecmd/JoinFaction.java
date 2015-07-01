@@ -15,6 +15,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.StringHelper;
 
 
 public class JoinFaction extends BaseCommandPlugin {
@@ -31,13 +32,13 @@ public class JoinFaction extends BaseCommandPlugin {
 		FactionAPI oldFaction = sector.getFaction(oldFactionId);
 		TextPanelAPI text = dialog.getTextPanel();
 		boolean isDefection = true;
-		String str = "You have left " + oldFaction.getDisplayNameWithArticle() + " for " + newFaction.getDisplayNameWithArticle() + ".";
+		String str = StringHelper.getString("exerelin_factions", "switchedFactions");
 		
 		PlayerFactionStore.setPlayerFactionId(newFactionId);
 		if (oldFactionId.equals("player_npc"))
 		{
 			PlayerFactionStore.saveIndependentPlayerRelations();
-			str = "You have joined " + newFaction.getDisplayNameWithArticle() + ".";
+			str = StringHelper.getString("exerelin_factions", "joinedFaction");
 			isDefection = false;
 		}
 		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId, false);
@@ -53,6 +54,8 @@ public class JoinFaction extends BaseCommandPlugin {
 		FactionChangedEvent event = (FactionChangedEvent)eventSuper;
 		event.reportEvent(oldFaction, newFaction, isDefection ? "switch" : "join", dialog.getInteractionTarget());
 		
+                str = StringHelper.substituteToken(str, "$theOldFaction", oldFaction.getDisplayNameWithArticle());
+                str = StringHelper.substituteToken(str, "$theNewFaction", newFaction.getDisplayNameWithArticle());
 		text.addParagraph(str);
 		return true;
 	}

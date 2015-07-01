@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.StringHelper;
 import exerelin.world.InvasionFleetManager;
 import java.awt.Color;
 
@@ -75,16 +76,21 @@ public class FleetRequestFire extends FleetRequestActionBase {
 		String sourceMarketName = sourceMarket.getName();
 		if (!originLoc.isHyperspace()) origin = "the " + origin;
 		
+                String message = "";
 		if (sourceMarket == targetMarket)
 		{
-			text.addParagraph("An fleet is being launched and will begin defending " + sourceMarketName + " shortly.");
+			message = StringHelper.getStringAndSubstituteToken("exerelin_fleets", "fleetSpawnMessageLocal", "$market", sourceMarketName);
 		}
 		else
 		{
-			text.addParagraph("A fleet is being launched at " + sourceMarketName + ", in " + origin + ". It will be underway shortly.");
-			text.highlightInLastPara(hl, sourceMarketName);
-			//text.highlightInLastPara(hl, origin);
+                        message = StringHelper.getString("exerelin_fleets", "fleetSpawnMessage");
+                        message = StringHelper.substituteToken(message, "$market", sourceMarketName);
+                        message = StringHelper.substituteToken(message, "$location", origin);
 		}
+                text.addParagraph(message);
+                text.highlightInLastPara(hl, sourceMarketName);
+                //text.highlightInLastPara(hl, origin);
+                
 		if (isInvasionFleet)
 		{
 			RepActionEnvelope envelope = new RepActionEnvelope(RepActions.COMBAT_NORMAL, null, dialog.getTextPanel());

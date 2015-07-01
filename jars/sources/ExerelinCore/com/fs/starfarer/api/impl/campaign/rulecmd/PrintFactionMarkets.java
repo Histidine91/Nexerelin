@@ -16,6 +16,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.StringHelper;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -78,14 +79,22 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
 
                 int numMarkets = markets.size();
                 if (isExiInCorvus) numMarkets++;
-                text.addParagraph(Misc.ucFirst(faction.getDisplayNameWithArticle()) + " have " + numMarkets + " market(s)");
+                
+                String str = StringHelper.getString("exerelin_factions", "numMarkets");
+                str = StringHelper.substituteFactionTokens(str, faction);
+                str = StringHelper.substituteToken(str, "$numMarkets", numMarkets + "");
+                
+                text.addParagraph(str);
                 text.highlightInLastPara(hl, "" + numMarkets);
                 text.setFontSmallInsignia();
                 text.addParagraph("-----------------------------------------------------------------------------");
                 
                 if (isExiInCorvus)
                 {
-                    text.addParagraph("Tasserus (size ??)");
+                    String entry = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");
+                    entry = StringHelper.substituteToken(entry, "$market", "Tasserus");
+                    entry = StringHelper.substituteToken(entry, "$size", "??");
+                    text.addParagraph(entry);
                     text.highlightInLastPara(hl, "Tasserus");
                     text.highlightInLastPara(hl, "??");
                 }
@@ -102,7 +111,11 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                     if (colorByMarketSize.containsKey(size))
                             sizeColor = colorByMarketSize.get(size);
                     
-                    text.addParagraph(marketName + ", " + locName + " (size " + size + ")");
+                    String entry = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");
+                    entry = StringHelper.substituteToken(entry, "$market", marketName);
+                    entry = StringHelper.substituteToken(entry, "$location", locName);
+                    entry = StringHelper.substituteToken(entry, "$size", "??");
+                    text.addParagraph(entry);
                     text.highlightInLastPara(hl, marketName);
                     text.highlightInLastPara(sizeColor, "" + size);
                 }

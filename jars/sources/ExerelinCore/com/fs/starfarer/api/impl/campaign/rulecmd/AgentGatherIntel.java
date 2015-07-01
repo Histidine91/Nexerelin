@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager;
+import exerelin.utilities.StringHelper;
 import exerelin.world.ResponseFleetManager;
 import java.awt.Color;
 
@@ -50,15 +51,15 @@ public class AgentGatherIntel extends AgentActionBase {
 		text.addParagraph("-----------------------------------------------------------------------------");
 		
 		float stability = market.getStabilityValue();
-		text.addParagraph("Stability: " + stability);
+		text.addParagraph(Misc.ucFirst(StringHelper.getString("stability")) + ": " + stability);
 		text.highlightInLastPara(getColorFromScale(stability, 10, false), "" + stability);
 		
 		int alertLevel = Math.round(CovertOpsManager.getAlertLevel(market) * 100);
-		text.addParagraph("Alert level: " + alertLevel + "%");
+		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "alertLevel")) + alertLevel + "%");
 		text.highlightInLastPara(getColorFromScale(alertLevel, 100, true), "" + alertLevel);
 		
 		float reserveSize = ResponseFleetManager.getReserveSize(market);
-		text.addParagraph("Response fleet size: " + reserveSize);
+		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "reserveSize")) + reserveSize);
 		text.highlightInLastPara(Misc.getHighlightColor(), "" + reserveSize);
 				
 		text.addParagraph("-----------------------------------------------------------------------------");

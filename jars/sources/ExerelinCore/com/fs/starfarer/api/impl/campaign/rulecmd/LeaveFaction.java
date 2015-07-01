@@ -15,6 +15,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.StringHelper;
 
 
 public class LeaveFaction extends BaseCommandPlugin {
@@ -30,7 +31,7 @@ public class LeaveFaction extends BaseCommandPlugin {
 		String oldFactionId = PlayerFactionStore.getPlayerFactionId();
 		FactionAPI oldFaction = sector.getFaction(oldFactionId);
 		TextPanelAPI text = dialog.getTextPanel();
-		String str = "You have left " + oldFaction.getDisplayNameWithArticle() + ".";
+		String str = StringHelper.getString("exerelin_factions", "leftFaction");
 		
 		PlayerFactionStore.loadIndependentPlayerRelations(true);
 		PlayerFactionStore.setPlayerFactionId(newFactionId);
@@ -46,6 +47,7 @@ public class LeaveFaction extends BaseCommandPlugin {
 		FactionChangedEvent event = (FactionChangedEvent)eventSuper;
 		event.reportEvent(oldFaction, newFaction, "leave", dialog.getInteractionTarget());
 		
+                str = StringHelper.substituteToken(str, "$theOldFaction", oldFaction.getDisplayNameWithArticle());
 		text.addParagraph(str);
 		return true;
 	}

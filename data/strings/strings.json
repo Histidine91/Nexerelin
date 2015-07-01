@@ -1,0 +1,60 @@
+{
+	"general":{
+		"alliance":"alliance",
+		"alliances":"alliances",
+		"alliance(s)":"alliance(s)",
+		"close":"close",
+		"conquest":"conquest",
+		"credits":"credits",
+		"diplomatic":"diplomatic",
+		"intelReport":"intel report",
+		"marine":"marine",
+		"size":"size",
+		"stability":"stability"
+	},
+	
+	"exerelin_alliances":{
+		"numAlliances":"There are $numAlliances alliance(s) in the cluster",
+	},
+	"exerelin_agents":{
+		"alertLevel":"alert level",
+		"reserveSize":"response fleet size"
+	},
+	"exerelin_factions":{
+		"joinedFaction":"You have joined $theNewFaction.",
+		"leftFaction":"You have left $theOldFaction.",
+		"numMarkets":"$TheFaction have $numMarkets market(s)",
+		"switchedFactions":"You have $theOldFaction for $theNewFaction."
+	},
+	"exerelin_fleets":{
+		"fleetSpawnMessage":"A fleet is being launched and will begin defending $market shortly.",
+		"fleetSpawnMessageLocal":"A fleet is being launched at $market, in $location. It will be underway shortly."
+	},
+	"exerelin_invasion":{
+		"attackerStrength":"attacker strength",
+		"captureChance":"capture chance",
+		"defenderStrength":"defender strength",
+		"marinesLost":"marines lost",
+		"marinesRemaining":"marines remaining",
+		"projectedLosses":"projected losses"
+	},
+	"exerelin_markets":{
+		"marketDirectoryEntry":"$market, $location (size $size)",
+		"marketDirectoryEntryNoLocation":"$market (size $size)"
+	},
+	"exerelin_victoryScreen":{
+		"victoryConquest":"Congratulations! $TheFaction has crushed all opposition and now reigns supreme over the $clusterName cluster!",
+		"victoryDiplomatic":"Congratulations! $TheFaction and its allies control the $clusterName cluster!",
+		"whatNow":"What now?",
+		"youHaveWon":"You have won a $victoryType victory!"
+	},
+}
+
+
+
+
+
+
+
+
+

@@ -18,6 +18,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.StringHelper;
 
 public class ExecuteInvasionRound extends BaseCommandPlugin {
 
@@ -52,13 +53,13 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
                 Color hl = Misc.getHighlightColor();
                 Color red = Misc.getNegativeHighlightColor();
                 text.addParagraph("-----------------------------------------------------------------------------");
-                text.addParagraph("Attacker strength: " + attackerStrength);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "attackerStrength")) + ": " + attackerStrength);
                 text.highlightInLastPara(hl, "" + attackerStrength);
-                text.addParagraph("Defender strength: " + defenderStrength);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "defenderStrength")) + ": " + defenderStrength);
                 text.highlightInLastPara(red, "" + defenderStrength);
-                text.addParagraph("Marines lost: " + marinesLost);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "marinesLost")) + ": " + marinesLost);
                 text.highlightInLastPara(red, "" + marinesLost);
-                text.addParagraph("Marines remaining: " + marinesRemaining);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "marinesRemaining")) + ": " + marinesRemaining);
                 text.highlightInLastPara(hl, "" + marinesRemaining);
                 /*
                 if (!illegalFound.isEmpty()) {

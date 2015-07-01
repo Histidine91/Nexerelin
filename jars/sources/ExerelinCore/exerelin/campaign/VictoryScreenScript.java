@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager.VictoryType;
+import exerelin.utilities.StringHelper;
 import java.util.HashMap;
 
 // adapted from UpdateNotificationScript in LazyWizard's Version Checker
@@ -119,28 +120,27 @@ public class VictoryScreenScript implements EveryFrameScript
             String theFactionName = Global.getSector().getFaction(faction).getDisplayNameWithArticle();
             String TheFactionName =  Misc.ucFirst(theFactionName);
             String firstStar = SectorManager.getFirstStarName();
+            String message = "";
             if (victoryType == VictoryType.CONQUEST)
             {
-                text.addParagraph("Congratulations! " + TheFactionName
-                        + " has crushed all opposition and now reigns supreme over the " + firstStar + " cluster!");
-                text.highlightInLastPara(TheFactionName);
-                text.addParagraph("You have won a conquest victory!");
-                text.highlightInLastPara("conquest");
+                message = StringHelper.getString("exerelin_victoryScreen", "victoryConquest");
             }
             else if (victoryType == VictoryType.DIPLOMATIC)
             {
-                text.addParagraph("Congratulations! " + TheFactionName
-                        + " and its allies control the "  + firstStar + " cluster!");
-                text.highlightInLastPara(TheFactionName);
-                text.addParagraph("You have won a diplomatic victory!");
-                text.highlightInLastPara("diplomatic");
+                message = StringHelper.getString("exerelin_victoryScreen", "victoryDiplomatic");
             }
+            message = StringHelper.substituteToken(message, "$TheFactionName", theFactionName);
+            text.addParagraph(message);
+            text.highlightInLastPara(TheFactionName);
+            text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_victoryScreen", "youHaveWon", "$victoryType", victoryType.toString().toLowerCase()));
+            text.highlightInLastPara(victoryType.toString().toLowerCase());
+            
             dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("graphics/illustrations/terran_orbit.jpg", 640, 400));
             Global.getSoundPlayer().playUISound("music_campaign_victory_theme", 1, 1);
             
-            options.addOption("Credits", Menu.CREDITS);
-            options.addOption("Close", Menu.EXIT);
-            dialog.setPromptText("What now?");
+            options.addOption(Misc.ucFirst(StringHelper.getString("credits")), Menu.CREDITS);
+            options.addOption(Misc.ucFirst(StringHelper.getString("close")), Menu.EXIT);
+            dialog.setPromptText(StringHelper.getString("exerelin_victoryScreen", "whatNow"));
         }
 
         @Override
@@ -154,8 +154,8 @@ public class VictoryScreenScript implements EveryFrameScript
             if (optionData == Menu.CREDITS)
             {
                 printCredits();
-                options.clearOptions();
-                options.addOption("Close", Menu.EXIT);
+                //options.clearOptions();
+                //options.addOption("Close", Menu.EXIT);
             }
             else if (optionData == Menu.EXIT)
             {

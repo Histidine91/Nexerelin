@@ -17,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
@@ -167,7 +168,7 @@ public class DirectoryScreenScript implements EveryFrameScript
 			
 			Color hl = Misc.getHighlightColor();
 	
-			text.addParagraph("There are " + alliances.size() + " alliance(s) in the cluster");
+			text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_alliances", "numAlliances", "$numAlliances", alliances.size()+""));
 			text.highlightInLastPara(hl, "" + alliances.size());
 			text.setFontSmallInsignia();
 			text.addParagraph("-----------------------------------------------------------------------------");
