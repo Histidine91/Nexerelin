@@ -98,12 +98,12 @@ public class DirectoryScreenScript implements EveryFrameScript
 	void initMenu()
 	{
 		options.clearOptions();
-		options.addOption("Faction directory", Menu.DIRECTORY);
-		options.addOption("Alliance list", Menu.ALLIANCES);
-		options.addOption("Intel screen", Menu.INTEL_SCREEN);
-		options.addOption("Close", Menu.EXIT);
+		options.addOption(StringHelper.getString("exerelin_factions", "factionDirectoryOption"), Menu.DIRECTORY);
+		options.addOption(StringHelper.getString("exerelin_alliances", "allianceListOption"), Menu.ALLIANCES);
+		options.addOption(StringHelper.getString("exerelin_misc", "intelScreen"), Menu.INTEL_SCREEN);
+		options.addOption(StringHelper.getString("close"), Menu.EXIT);
 		options.setShortcut(Menu.EXIT, Keyboard.KEY_ESCAPE, false, false, false, true);
-		dialog.setPromptText("Directory options:");
+		dialog.setPromptText(StringHelper.getString("exerelin_misc", "directoryOptions") + ":");
 	}
 
 	// NOTE: we use FleetInteractionDialogPluginImpl.inConversation to tell whether we're currently delegating stuff to the RuleBasedInteractionDialogPlugin

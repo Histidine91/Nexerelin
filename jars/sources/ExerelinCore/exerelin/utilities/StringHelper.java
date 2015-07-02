@@ -20,7 +20,7 @@ public class StringHelper {
     
     public static String substituteToken(String toModify, String token, String replace)
     {
-        return toModify.replaceAll(token, replace);
+        return toModify.replaceAll("\\"+token, replace);
     }
     
     public static String substituteTokens(String toModify, Map<String, String> replacements)
@@ -29,7 +29,7 @@ public class StringHelper {
         while (iter.hasNext())
         {
             Map.Entry<String, String> tmp = iter.next();
-            substituteToken(toModify, tmp.getKey(), tmp.getValue());
+            toModify = substituteToken(toModify, tmp.getKey(), tmp.getValue());
         }
         return toModify;
     }

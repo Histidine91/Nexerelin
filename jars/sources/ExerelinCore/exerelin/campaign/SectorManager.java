@@ -599,6 +599,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public enum VictoryType
     {
         CONQUEST,
-        DIPLOMATIC
+        DIPLOMATIC,
+        DEFEAT  //not a victory type but who's counting?
     }
 }

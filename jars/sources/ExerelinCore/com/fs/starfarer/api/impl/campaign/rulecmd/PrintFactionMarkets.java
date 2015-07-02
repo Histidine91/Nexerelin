@@ -114,9 +114,9 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                     String entry = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");
                     entry = StringHelper.substituteToken(entry, "$market", marketName);
                     entry = StringHelper.substituteToken(entry, "$location", locName);
-                    entry = StringHelper.substituteToken(entry, "$size", "??");
+                    entry = StringHelper.substituteToken(entry, "$size", size+"");
                     text.addParagraph(entry);
-                    text.highlightInLastPara(hl, marketName);
+                    //text.highlightInLastPara(hl, marketName);
                     text.highlightInLastPara(sizeColor, "" + size);
                 }
                 text.addParagraph("-----------------------------------------------------------------------------");

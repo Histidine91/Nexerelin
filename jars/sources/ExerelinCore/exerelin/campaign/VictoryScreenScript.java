@@ -80,6 +80,7 @@ public class VictoryScreenScript implements EveryFrameScript
         private enum Menu
         {
             CREDITS,
+            STATS,
             EXIT
         }
 
@@ -97,14 +98,14 @@ public class VictoryScreenScript implements EveryFrameScript
         
         private void printCredits()
         {
-            printCreditLine("Zaphide", "The original Exerelin");
-            printCreditLine("Histidine", "Update for Starsector 0.65");
-            printCreditLine("Dark.Revenant", "Much coding help; SS+ compatibility");
-            printCreditLine("LazyWizard", "Omnifactory, Console Commands, Version Checker");
-            printCreditLine("Psiyon", "Backgrounds");
-            printCreditLine("Tartiflette", "Prism Freeport");
-            printCreditLine("The SS mod community", "Various tips, pointers and feedback");
-            printCreditLine("Alex, David, Stian, Ivaylo", "The Fractal Softworks team that made Starsector");
+            printCreditLine("Zaphide", StringHelper.getString("exerelin_credits", "contribution_zaphide"));
+            printCreditLine("Histidine", StringHelper.getString("exerelin_credits", "contribution_histidine"));
+            printCreditLine("Dark.Revenant", StringHelper.getString("exerelin_credits", "contribution_darkRevenant"));
+            printCreditLine("LazyWizard", StringHelper.getString("exerelin_credits", "contribution_lazyWizard"));
+            printCreditLine("Psiyon", StringHelper.getString("exerelin_credits", "contribution_psiyon"));
+            printCreditLine("Tartiflette", StringHelper.getString("exerelin_credits", "contribution_tartiflette"));
+            printCreditLine("The SS mod community", StringHelper.getString("exerelin_credits", "contribution_ssModCommunity"));
+            printCreditLine("Alex, David, Stian, Ivaylo", StringHelper.getString("exerelin_credits", "contribution_fractalSoftworks"));
         }
 
         @Override

@@ -11,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.StringHelper;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,14 +77,14 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         float qf = origin.getShipQualityFactor();
         qf = Math.max(qf, 0.7f);
         
-        String name = "Response Fleet";
+        String name = StringHelper.getString("exerelin_fleets", "responseFleetName");
         ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(origin.getFactionId());
         if (factionConfig != null)
         {
             name = factionConfig.responseFleetName;
         }
-        if (maxFP < 70) name = "Small " + name;
-        else if (maxFP > 210) name = "Prime " + name;
+        if (maxFP < 70) name = StringHelper.getString("exerelin_fleets", "responseFleetSmallPrefix") + " " + name;
+        else if (maxFP > 210) name = StringHelper.getString("exerelin_fleets", "responseFleetLargePrefix") + " " + name;
         CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
              
         fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinResponseFleet");

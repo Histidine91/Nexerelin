@@ -14,19 +14,49 @@
 	},
 	
 	"exerelin_alliances":{
+		"allianceListOption":"Alliance list",
+	
 		"numAlliances":"There are $numAlliances alliance(s) in the cluster",
 	},
 	"exerelin_agents":{
 		"alertLevel":"alert level",
 		"reserveSize":"response fleet size"
 	},
+	"exerelin_credits":{
+		"contribution_zaphide":"The original Exerelin",
+		"contribution_histidine":"Update for Starsector 0.65",
+		"contribution_darkRevenant":"Much coding help; SS+ compatibility",
+		"contribution_lazyWizard":"Omnifactory:Console Commands:Version Checker",
+		"contribution_psiyon":"Backgrounds",
+		"contribution_tartiflette":"Prism Freeport",
+		"contribution_ssModCommunity":"Various tips:pointers and feedback",
+		"contribution_fractalsoftworks":"The Fractal Softworks team that made Starsector",
+	},
 	"exerelin_factions":{
+		"factionDirectoryOption":"Faction directory",
+		
 		"joinedFaction":"You have joined $theNewFaction.",
 		"leftFaction":"You have left $theOldFaction.",
 		"numMarkets":"$TheFaction have $numMarkets market(s)",
 		"switchedFactions":"You have $theOldFaction for $theNewFaction."
 	},
 	"exerelin_fleets":{
+		"invasionFleetName":"Invasion Fleet",
+		"invasionFleetPrefixSmall":"Small",
+		"invasionFleetPrefixLarge":"Grand",
+		
+		"invasionSupportFleetName":"Strike Fleet",
+		"invasionSupportFleetPrefixSmall":"Small",
+		"invasionSupportFleetPrefixLarge":"Large",
+		
+		"responseFleetName":"Response Fleet",
+		"responseFleetPrefixSmall":"Small",
+		"responseFleetPrefixLarge":"Prime",
+		
+		"defenceFleetName":"Defence Fleet",
+		"defenceFleetPrefixSmall":"Small",
+		"defenceFleetPrefixLarge":"Large",
+	
 		"fleetSpawnMessage":"A fleet is being launched and will begin defending $market shortly.",
 		"fleetSpawnMessageLocal":"A fleet is being launched at $market, in $location. It will be underway shortly."
 	},
@@ -38,7 +68,7 @@
 		"marinesRemaining":"marines remaining",
 		"projectedLosses":"projected losses"
 	},
-	"exerelin_markets":{
+	"exerelin_markets":{		
 		"marketDirectoryEntry":"$market, $location (size $size)",
 		"marketDirectoryEntryNoLocation":"$market (size $size)"
 	},
@@ -47,6 +77,11 @@
 		"victoryDiplomatic":"Congratulations! $TheFaction and its allies control the $clusterName cluster!",
 		"whatNow":"What now?",
 		"youHaveWon":"You have won a $victoryType victory!"
+	},
+	
+	"exerelin_misc":{
+		"intelScreen":"Intel screen",
+		"directoryOptions":"Directory options",
 	},
 }
 
