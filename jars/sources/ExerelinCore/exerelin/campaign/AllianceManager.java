@@ -281,6 +281,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         {
             if (alliancesByFactionId.containsKey(factionId)) continue;
             if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
+            if (factionId.equals("player_npc")) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             for (String otherFactionId : liveFactionIds)
@@ -288,6 +289,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (alliancesByFactionId.containsKey(otherFactionId)) continue;
                 if (otherFactionId.equals(factionId)) continue;
                 if (ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
+                if (factionId.equals("player_npc")) continue;
                 if (faction.isAtBest(otherFactionId, RepLevel.WELCOMING)) continue;
                 
                 // better relationships are more likely to form alliances
@@ -337,6 +339,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         for (String factionId : liveFactionIds)
         {
             if (alliancesByFactionId.containsKey(factionId)) continue;
+            if (factionId.equals("player_npc")) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             WeightedRandomPicker<Alliance> picker = new WeightedRandomPicker<>(); 
