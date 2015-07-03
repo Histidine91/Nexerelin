@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.StatsTracker;
 
 public class AgentRaiseRelations extends AgentActionBase {
 
@@ -29,7 +30,7 @@ public class AgentRaiseRelations extends AgentActionBase {
 		MarketAPI market = target.getMarket();
 		FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
 		CovertOpsManager.agentRaiseRelations(market, playerAlignedFaction, market.getFaction(), true);
-		
+		StatsTracker.getStatsTracker().notifyAgentsUsed(1);
 		return super.execute(ruleId, dialog, params, memoryMap);
 	}
 }

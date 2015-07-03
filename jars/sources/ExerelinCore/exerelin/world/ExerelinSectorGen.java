@@ -50,6 +50,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -824,6 +825,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(ResponseFleetManager.create());
 		sector.addScript(CovertOpsManager.create());
 		sector.addScript(AllianceManager.create());
+                Global.getSector().addListener(StatsTracker.create());
 		
 		DiplomacyManager.initFactionRelationships();
 		

@@ -10,7 +10,8 @@
 		"intelReport":"intel report",
 		"marine":"marine",
 		"size":"size",
-		"stability":"stability"
+		"stability":"stability",
+		"stats":"stats"
 	},
 	
 	"exerelin_alliances":{
@@ -30,7 +31,7 @@
 		"contribution_psiyon":"Backgrounds",
 		"contribution_tartiflette":"Prism Freeport",
 		"contribution_ssModCommunity":"Various tips:pointers and feedback",
-		"contribution_fractalsoftworks":"The Fractal Softworks team that made Starsector",
+		"contribution_fractalSoftworks":"The Fractal Softworks team that made Starsector",
 	},
 	"exerelin_factions":{
 		"factionDirectoryOption":"Faction directory",
@@ -75,8 +76,22 @@
 	"exerelin_victoryScreen":{
 		"victoryConquest":"Congratulations! $TheFaction has crushed all opposition and now reigns supreme over the $clusterName cluster!",
 		"victoryDiplomatic":"Congratulations! $TheFaction and its allies control the $clusterName cluster!",
+		"defeat":"Alas, $theFaction has conquered the $clusterName cluster. All your efforts have come to naught.",
 		"whatNow":"What now?",
-		"youHaveWon":"You have won a $victoryType victory!"
+		"youHaveWon":"You have won a $victoryType victory!",
+		
+		"statsLevel":"Level",
+		"statsDaysElapsed":"Days elapsed",
+		"statsShipsKilled":"Ships killed",
+		"statsShipsLost":"Ships lost",
+		"statsFpKilled":"FP killed",
+		"statsFpLost":"FP lost",
+		"statsMarketsCaptured":"Markets captured",
+		"statsAgentsUsed":"Agents used",
+		"statsSaboteursUsed":"Saboteurs used",
+		"statsPrisonersRepatriated":"Prisoners repatriated",
+		"statsPrisonersRansomed":"Prisoners ransomed",
+		"statsSlavesSold":"Slaves sold",
 	},
 	
 	"exerelin_misc":{

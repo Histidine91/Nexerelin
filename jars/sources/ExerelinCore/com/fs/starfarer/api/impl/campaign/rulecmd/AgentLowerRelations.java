@@ -19,6 +19,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.HashMap;
 
@@ -73,7 +74,7 @@ public class AgentLowerRelations extends AgentActionBase {
 		if (targetId == null) return false;
 		
 		CovertOpsManager.agentLowerRelations(market, playerAlignedFaction, target.getFaction(), sector.getFaction(targetId), true);
-
+                StatsTracker.getStatsTracker().notifyAgentsUsed(1);
 		return super.execute(ruleId, dialog, params, memoryMap);
 	}
 }

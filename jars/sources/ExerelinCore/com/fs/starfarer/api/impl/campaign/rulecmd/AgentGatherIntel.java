@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager;
+import exerelin.campaign.StatsTracker;
 import exerelin.utilities.StringHelper;
 import exerelin.world.ResponseFleetManager;
 import java.awt.Color;
@@ -64,7 +65,8 @@ public class AgentGatherIntel extends AgentActionBase {
 				
 		text.addParagraph("-----------------------------------------------------------------------------");
 		text.setFontInsignia();
-		
+                
+		StatsTracker.getStatsTracker().notifyAgentsUsed(1);
 		return super.execute(ruleId, dialog, params, memoryMap);
 	}
 }

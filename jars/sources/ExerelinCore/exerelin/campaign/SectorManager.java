@@ -335,7 +335,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (liveFactions.size() == 1)   // conquest victory
         {
             victorFactionId = liveFactions.get(0);
-            playerVictory = victorFactionId.equals(PlayerFactionStore.getPlayerFactionId());
+            if (!victorFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
+            {
+                playerVictory = false;
+                victoryType = VictoryType.DEFEAT;
+            }
             sectorManager.victoryHasOccured = true;
         }
         else {
@@ -348,24 +352,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     return;
             }
             victoryType = VictoryType.DIPLOMATIC;
+            victorFactionId = playerFactionId;
             sectorManager.victoryHasOccured = true;
         }
         
         if (sectorManager.victoryHasOccured)
         {
-            if (playerVictory)
-            {
-                Global.getSector().addScript(new VictoryScreenScript(playerFactionId, victoryType));
-            }
-            else
-            {
-                Map<String, Object> params = new HashMap<>();
-                playerVictory = victorFactionId.equals(PlayerFactionStore.getPlayerFactionId());
-                params.put("victorFactionId", victorFactionId);
-                params.put("diplomaticVictory", false);
-                params.put("playerVictory", playerVictory);
-                Global.getSector().getEventManager().startEvent(new CampaignEventTarget(sector.getPlayerFleet()), "exerelin_victory", params);
-            }
+            Global.getSector().addScript(new VictoryScreenScript(victorFactionId, victoryType));
         }
     }
     
@@ -438,6 +431,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
                 
         DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
+        if (playerInvolved) StatsTracker.getStatsTracker().notifyMarketCaptured(market);
         
         int marketsRemaining = ExerelinUtilsFaction.getFactionMarkets(oldOwner.getId()).size();
         log.info("Faction " + oldOwner.getDisplayName() + " has " + marketsRemaining + " markets left");

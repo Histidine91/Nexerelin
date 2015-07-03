@@ -5,6 +5,7 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.InteractionDialogImageVisual;
 import com.fs.starfarer.api.campaign.CampaignUIAPI;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
@@ -74,7 +75,7 @@ public class VictoryScreenScript implements EveryFrameScript
         private InteractionDialogAPI dialog;
         private TextPanelAPI text;
         private OptionPanelAPI options;
-        private final String faction;
+        private final String factionId;
         private final VictoryType victoryType;
 
         private enum Menu
@@ -84,16 +85,27 @@ public class VictoryScreenScript implements EveryFrameScript
             EXIT
         }
 
-        private VictoryDialog(String faction, VictoryType victoryType)
+        private VictoryDialog(String factionId, VictoryType victoryType)
         {
-            this.faction = faction;
+            this.factionId = factionId;
             this.victoryType = victoryType;
+        }
+        
+        protected String getString(String id)
+        {
+            return StringHelper.getString("exerelin_victoryScreen", id);
         }
         
         private void printCreditLine(String name, String contribution)
         {
             text.addParagraph(name + ": " + contribution);
             text.highlightInLastPara(name);
+        }
+               
+        private void printKeyValueLine(String key, String value)
+        {
+            text.addParagraph(key + ": " + value);
+            text.highlightInLastPara(value);
         }
         
         private void printCredits()
@@ -107,6 +119,22 @@ public class VictoryScreenScript implements EveryFrameScript
             printCreditLine("The SS mod community", StringHelper.getString("exerelin_credits", "contribution_ssModCommunity"));
             printCreditLine("Alex, David, Stian, Ivaylo", StringHelper.getString("exerelin_credits", "contribution_fractalSoftworks"));
         }
+        
+        private void printStats()
+        {
+            StatsTracker tracker = StatsTracker.getStatsTracker();
+            float time = Global.getSector().getClock().getTimestamp();
+            printKeyValueLine(getString("statsLevel"), Global.getSector().getPlayerPerson().getStats().getLevel()+"");
+            //printKeyValueLine(getString("statsDaysElapsed"), Global.getSector().getClock().convertToDays(time)+"");
+            printKeyValueLine(getString("statsFpKilled"), tracker.getFpKilled()+"");
+            printKeyValueLine(getString("statsFpLost"), tracker.getFpLost()+"");
+            printKeyValueLine(getString("statsMarketsCaptured"), tracker.getMarketsCaptured()+"");
+            printKeyValueLine(getString("statsAgentsUsed"), tracker.getAgentsUsed()+"");
+            printKeyValueLine(getString("statsSaboteursUsed"), tracker.getSaboteursUsed()+"");
+            printKeyValueLine(getString("statsPrisonersRepatriated"), tracker.getPrisonersRepatriated()+"");
+            printKeyValueLine(getString("statsPrisonersRansomed"), tracker.getPrisonersRansomed()+"");
+            printKeyValueLine(getString("statsSlavesSold"), tracker.getSlavesSold()+"");
+        }
 
         @Override
         public void init(InteractionDialogAPI dialog)
@@ -117,31 +145,45 @@ public class VictoryScreenScript implements EveryFrameScript
 
             //dialog.setTextWidth(Display.getWidth() * .9f);
             
-            String factionName = Global.getSector().getFaction(faction).getDisplayName();
-            String theFactionName = Global.getSector().getFaction(faction).getDisplayNameWithArticle();
+            FactionAPI faction = Global.getSector().getFaction(factionId);
+            String factionName = faction.getDisplayName();
+            String theFactionName = faction.getDisplayNameWithArticle();
             String TheFactionName =  Misc.ucFirst(theFactionName);
             String firstStar = SectorManager.getFirstStarName();
             String message = "";
             if (victoryType == VictoryType.CONQUEST)
             {
-                message = StringHelper.getString("exerelin_victoryScreen", "victoryConquest");
+                message = getString("victoryConquest");
             }
             else if (victoryType == VictoryType.DIPLOMATIC)
             {
-                message = StringHelper.getString("exerelin_victoryScreen", "victoryDiplomatic");
+                message = getString("victoryDiplomatic");
             }
-            message = StringHelper.substituteToken(message, "$TheFactionName", theFactionName);
+            else if (victoryType == VictoryType.DEFEAT)
+            {
+                message = getString("defeat");
+            }
+            message = StringHelper.substituteFactionTokens(message, faction);
+            message = StringHelper.substituteToken(message, "$clusterName", firstStar);
             text.addParagraph(message);
-            text.highlightInLastPara(TheFactionName);
-            text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_victoryScreen", "youHaveWon", "$victoryType", victoryType.toString().toLowerCase()));
-            text.highlightInLastPara(victoryType.toString().toLowerCase());
+            text.highlightInLastPara(Misc.getHighlightColor(), TheFactionName, theFactionName);
             
-            dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("graphics/illustrations/terran_orbit.jpg", 640, 400));
-            Global.getSoundPlayer().playUISound("music_campaign_victory_theme", 1, 1);
+            if (victoryType != VictoryType.DEFEAT)
+            {
+                text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_victoryScreen", "youHaveWon", "$victoryType", victoryType.toString().toLowerCase()));
+                text.highlightInLastPara(victoryType.toString().toLowerCase());
+                dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("graphics/illustrations/terran_orbit.jpg", 640, 400));
+                Global.getSoundPlayer().playUISound("music_campaign_victory_theme", 1, 1);
+            }
+            else {
+                dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("graphics/illustrations/space_wreckage.jpg", 640, 400));
+                Global.getSoundPlayer().playUISound("music_campaign_defeat_theme", 1, 1);
+            }
             
+            options.addOption(Misc.ucFirst(StringHelper.getString("stats")), Menu.STATS);
             options.addOption(Misc.ucFirst(StringHelper.getString("credits")), Menu.CREDITS);
             options.addOption(Misc.ucFirst(StringHelper.getString("close")), Menu.EXIT);
-            dialog.setPromptText(StringHelper.getString("exerelin_victoryScreen", "whatNow"));
+            dialog.setPromptText(getString("whatNow"));
         }
 
         @Override
@@ -158,10 +200,15 @@ public class VictoryScreenScript implements EveryFrameScript
                 //options.clearOptions();
                 //options.addOption("Close", Menu.EXIT);
             }
+            else if (optionData == Menu.STATS)
+            {
+                printStats();
+            }
             else if (optionData == Menu.EXIT)
             {
                 dialog.dismiss();
             }
+            
         }
 
         @Override

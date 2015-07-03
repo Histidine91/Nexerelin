@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
 
 public class PrisonerSellSlave extends AgentActionBase {
@@ -27,7 +28,7 @@ public class PrisonerSellSlave extends AgentActionBase {
                 Global.getSector().getPlayerFleet().getCargo().getCredits().add(ransomValue);
                 
                 SectorManager.notifySlavesSold(target.getMarket(), 1);
-                
+                StatsTracker.getStatsTracker().notifySlavesSold(1);
                 return true;
         }
 }
