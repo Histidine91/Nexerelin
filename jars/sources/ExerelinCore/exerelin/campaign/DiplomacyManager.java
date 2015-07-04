@@ -494,7 +494,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     @Override
     public void reportBattleOccurred(CampaignFleetAPI winner, CampaignFleetAPI loser)
     {
-        super.reportBattleOccurred(winner, loser);
+        //log.info("Battle occured between " + winner.getName() + " and " + loser.getName());
         FactionAPI winFaction = winner.getFaction();
         FactionAPI loseFaction = loser.getFaction();
         

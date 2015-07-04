@@ -4,6 +4,7 @@ import java.util.Map;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.InteractionDialogImageVisual;
+import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
@@ -123,11 +124,12 @@ public class VictoryScreenScript implements EveryFrameScript
         private void printStats()
         {
             StatsTracker tracker = StatsTracker.getStatsTracker();
-            float time = Global.getSector().getClock().getTimestamp();
+            //CampaignClockAPI clock = Global.getSector().getClock();
+            
             printKeyValueLine(getString("statsLevel"), Global.getSector().getPlayerPerson().getStats().getLevel()+"");
             //printKeyValueLine(getString("statsDaysElapsed"), Global.getSector().getClock().convertToDays(time)+"");
-            printKeyValueLine(getString("statsFpKilled"), tracker.getFpKilled()+"");
-            printKeyValueLine(getString("statsFpLost"), tracker.getFpLost()+"");
+            printKeyValueLine(getString("statsFpKilled"), (int)tracker.getFpKilled()+"");
+            printKeyValueLine(getString("statsFpLost"), (int)tracker.getFpLost()+"");
             printKeyValueLine(getString("statsMarketsCaptured"), tracker.getMarketsCaptured()+"");
             printKeyValueLine(getString("statsAgentsUsed"), tracker.getAgentsUsed()+"");
             printKeyValueLine(getString("statsSaboteursUsed"), tracker.getSaboteursUsed()+"");

@@ -106,7 +106,7 @@ public class StatsTracker extends BaseCampaignEventListener{
         CampaignFleetAPI killFleet;
         CampaignFleetAPI lossFleet;
         
-        Global.getLogger(StatsTracker.class).info("Tracker tracking battle");
+        //Global.getLogger(StatsTracker.class).info("Tracker tracking battle");
         
         if (winner == playerFleet)
         {
