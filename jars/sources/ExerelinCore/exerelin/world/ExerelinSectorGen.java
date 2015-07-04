@@ -825,7 +825,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(ResponseFleetManager.create());
 		sector.addScript(CovertOpsManager.create());
 		sector.addScript(AllianceManager.create());
-                Global.getSector().addListener(StatsTracker.create());
+		StatsTracker.create();
 		
 		DiplomacyManager.initFactionRelationships();
 		
