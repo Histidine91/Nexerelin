@@ -34,6 +34,8 @@
     "invasionStrengthBonusDefend":0.125,
     "invasionFleetSizeMod":0.1,
     "responseFleetSizeMod":0.125,
+    
+    "dropPrisoners":false,
 
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

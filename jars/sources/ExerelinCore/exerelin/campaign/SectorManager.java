@@ -117,6 +117,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public void reportEncounterLootGenerated(FleetEncounterContextPlugin plugin, CargoAPI loot) {
         CampaignFleetAPI loser = plugin.getLoser();
         if (loser == null) return;
+        ExerelinFactionConfig loserConfig = ExerelinConfig.getExerelinFactionConfig(loser.getFaction().getId());
+        if (loserConfig != null && loserConfig.dropPrisoners == false)
+            return;
         
         int fp = 0;
         int crew = 0;

@@ -45,6 +45,8 @@ public class ExerelinFactionConfig
     public float invasionFleetSizeMod = 0;
     public float responseFleetSizeMod = 0;
     
+    public boolean dropPrisoners = true;
+    
     public List<String> miningVariantsOrWings = new ArrayList<String>() {};
 
     public ExerelinFactionConfig(String factionId)
@@ -91,6 +93,8 @@ public class ExerelinFactionConfig
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);
             invasionFleetSizeMod = (float)settings.optDouble("invasionFleetSizeMod", 0);
             responseFleetSizeMod = (float)settings.optDouble("responseFleetSizeMod", 0);
+            
+            dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
             
             miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
             

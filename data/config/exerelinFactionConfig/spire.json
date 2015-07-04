@@ -25,5 +25,7 @@
         "militarist":1,
     },
     
+    "dropPrisoners":false,
+    
     "miningVariantsOrWings":["mining_drone_wing"], # String array
 }
