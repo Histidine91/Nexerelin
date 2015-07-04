@@ -121,6 +121,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (loserConfig != null && loserConfig.dropPrisoners == false)
             return;
         
+        int numSurvivors = 0;
         int fp = 0;
         int crew = 0;
         List<FleetMemberAPI> fleetCurrent = loser.getFleetData().getMembersListCopy();
@@ -130,16 +131,23 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 crew += member.getNeededCrew();
             }
         }
+        
         for (int i=0; i<fp; i = i + 10)
         {
             if (Math.random() < ExerelinConfig.prisonerLootChancePer10Fp)
             {
                 loot.addCommodity("prisoner", 1);
+                numSurvivors++;
             }
         }
         crew = (int)(crew*ExerelinConfig.crewLootMult*MathUtils.getRandomNumberInRange(0.5f, 1.5f));
         crew = crew + MathUtils.getRandomNumberInRange(-3, 3);
-        if (crew > 0) loot.addCrew(CargoAPI.CrewXPLevel.GREEN, crew);
+        if (crew > 0) {
+            loot.addCrew(CargoAPI.CrewXPLevel.GREEN, crew);
+            numSurvivors += crew;
+        }
+        
+        StatsTracker.getStatsTracker().modifyOrphansMade(-numSurvivors);
     }
     
     @Override

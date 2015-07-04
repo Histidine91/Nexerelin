@@ -26,6 +26,7 @@ import exerelin.campaign.events.MarketAttackedEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import java.util.ArrayList;
+import org.lazywizard.lazylib.MathUtils;
 
 /**
  *
@@ -332,7 +333,6 @@ public class InvasionRound {
 		if (!isRaid && success)
 		{
 			captured = true;
-			
 		}
 		// relationship changes
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
@@ -371,6 +371,18 @@ public class InvasionRound {
 				playerFleet.getCargo().gainCrewXP(xp);
 				playerFleet.getCommander().getStats().addXP((long) xp);
 				playerFleet.getCommander().getStats().levelUpIfNeeded();
+			}
+		}
+		
+		// make orphans
+		if (playerInvolved)
+		{
+			// Spire biology is different
+			if (!defenderFactionId.equals("spire") &&  !defenderFactionId.equals("darkspire"))
+			{
+			float deathsInflicted = GetDefenderStrength(market, 0.5f, isRaid);
+			float numAvgKids = MathUtils.getRandomNumberInRange(0f, 1.5f) + MathUtils.getRandomNumberInRange(0f, 1.5f);
+			StatsTracker.getStatsTracker().modifyOrphansMade((int)(deathsInflicted * numAvgKids));
 			}
 		}
 		

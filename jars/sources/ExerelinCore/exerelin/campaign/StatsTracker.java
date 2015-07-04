@@ -6,8 +6,11 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import java.util.List;
 import java.util.Map;
+import org.lazywizard.lazylib.MathUtils;
 
 /**
  *  Tracks lifetime stats: kills, losses, planets captured, etc.
@@ -27,7 +30,7 @@ public class StatsTracker extends BaseCampaignEventListener{
     protected int prisonersRepatriated = 0;
     protected int prisonersRansomed = 0;
     protected int slavesSold = 0;
-    protected int orphansMade = 0;  // TODO hee hee
+    protected int orphansMade = 0;  // hee hee
     
     public StatsTracker() {
         super(true);
@@ -63,6 +66,14 @@ public class StatsTracker extends BaseCampaignEventListener{
 
     public int getSlavesSold() {
         return slavesSold;
+    }
+    
+    public int getOrphansMade() {
+        return orphansMade;
+    }
+    
+    public void modifyOrphansMade(int num) {
+        orphansMade += num;
     }
 
     public void notifyAgentsUsed(int num)
@@ -107,6 +118,7 @@ public class StatsTracker extends BaseCampaignEventListener{
         CampaignFleetAPI lossFleet;
         
         //Global.getLogger(StatsTracker.class).info("Tracker tracking battle");
+        int crewKilled = 0;
         
         if (winner == playerFleet)
         {
@@ -118,13 +130,17 @@ public class StatsTracker extends BaseCampaignEventListener{
             killFleet = winner;
             lossFleet = loser;
         }
-        else return; 
+        else return;
+        
+        String killedFaction = killFleet.getFaction().getId();
+        if (killedFaction.equals("spire") || killedFaction.equals("darkspire")) return; // Spire biology is different
 
         List<FleetMemberAPI> killCurrent = killFleet.getFleetData().getMembersListCopy();
         for (FleetMemberAPI member : killFleet.getFleetData().getSnapshot()) {
             if (!killCurrent.contains(member)) {
                 fpKilled += member.getFleetPointCost();
                 shipsKilled++;
+                crewKilled += member.getMinCrew();
             }
         }
         
@@ -135,6 +151,11 @@ public class StatsTracker extends BaseCampaignEventListener{
                 shipsLost++;
             }
         }
+        
+        float numAvgKids = MathUtils.getRandomNumberInRange(0f, 1.5f) + MathUtils.getRandomNumberInRange(0f, 1.5f);
+        if (killedFaction.equals("templars"))   // High-ranking Templars (including those who'd get to serve on a ship) have large (adopted) families
+            numAvgKids = MathUtils.getRandomNumberInRange(0f, 5f) + MathUtils.getRandomNumberInRange(0f, 5f);
+        orphansMade += crewKilled * numAvgKids;
     }
     
     public static StatsTracker getStatsTracker()
