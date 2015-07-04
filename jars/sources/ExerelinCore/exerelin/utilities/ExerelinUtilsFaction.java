@@ -44,6 +44,18 @@ public class ExerelinUtilsFaction {
         return ret;
     }
     
+    public static int getFactionPopulation(String factionId)
+    {
+        List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
+        int pop = 0;
+        for (MarketAPI market : allMarkets)
+        {
+            if (market.getFactionId().equals(factionId))
+                pop += market.getSize();
+        }
+        return pop;
+    }
+    
     public static boolean isPirateFaction(String factionId)
     {
         List<String> pirates = DiplomacyManager.getPirateFactionsCopy();

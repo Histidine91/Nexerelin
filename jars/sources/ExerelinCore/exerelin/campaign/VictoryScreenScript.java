@@ -153,27 +153,22 @@ public class VictoryScreenScript implements EveryFrameScript
             String TheFactionName =  Misc.ucFirst(theFactionName);
             String firstStar = SectorManager.getFirstStarName();
             String message = "";
-            if (victoryType == VictoryType.CONQUEST)
-            {
-                message = getString("victoryConquest");
-            }
-            else if (victoryType == VictoryType.DIPLOMATIC)
-            {
-                message = getString("victoryDiplomatic");
-            }
-            else if (victoryType == VictoryType.DEFEAT)
-            {
-                message = getString("defeat");
-            }
+            String victoryTypeStr = victoryType.toString().toLowerCase();
+            
+            if (victoryTypeStr.startsWith("defeat_"))
+                message = getString(victoryTypeStr);
+            else
+                message = getString("victory_" + victoryTypeStr);
             message = StringHelper.substituteFactionTokens(message, faction);
             message = StringHelper.substituteToken(message, "$clusterName", firstStar);
             text.addParagraph(message);
             text.highlightInLastPara(Misc.getHighlightColor(), TheFactionName, theFactionName);
             
-            if (victoryType != VictoryType.DEFEAT)
+            if (victoryType != VictoryType.DEFEAT_CONQUEST && victoryType != VictoryType.DEFEAT_DIPLOMATIC)
             {
-                text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_victoryScreen", "youHaveWon", "$victoryType", victoryType.toString().toLowerCase()));
-                text.highlightInLastPara(victoryType.toString().toLowerCase());
+                victoryTypeStr = victoryTypeStr.replaceAll("_", " ");
+                text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_victoryScreen", "youHaveWon", "$victoryType", victoryTypeStr));
+                text.highlightInLastPara(victoryTypeStr);
                 dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("graphics/illustrations/terran_orbit.jpg", 640, 400));
                 Global.getSoundPlayer().playUISound("music_campaign_victory_theme", 1, 1);
             }

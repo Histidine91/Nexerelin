@@ -319,8 +319,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (sector.isInNewGameAdvance()) return;
         
         String playerFactionId = PlayerFactionStore.getPlayerFactionId();
+        FactionAPI playerFaction = Global.getSector().getFaction(playerFactionId);
         String victorFactionId = playerFactionId;
-        boolean playerVictory = true;
         VictoryType victoryType = VictoryType.CONQUEST;
         
         List<String> liveFactions = getLiveFactionIdsCopy();
@@ -337,22 +337,54 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             victorFactionId = liveFactions.get(0);
             if (!victorFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
             {
-                playerVictory = false;
-                victoryType = VictoryType.DEFEAT;
+                if (playerFaction.isAtBest(victorFactionId, RepLevel.WELCOMING))
+                {
+                    victoryType = VictoryType.DEFEAT_CONQUEST;
+                }
+                else {
+                    victoryType = VictoryType.CONQUEST_ALLY;
+                }
             }
             sectorManager.victoryHasOccured = true;
         }
         else {
-            // diplomatic victory
+            // diplomatic victory         
+            List<String> eligibleWinners = new ArrayList<>();
             for(String factionId : liveFactions)
             {
+                boolean canWin = true;
                 FactionAPI faction = sector.getFaction(factionId);
                 if (faction.isNeutralFaction()) continue;
-                if (!faction.isAtWorst(playerFactionId, RepLevel.FRIENDLY))
-                    return;
+                for (String otherFactionId: liveFactions)
+                {
+                    if (!faction.isAtWorst(otherFactionId, RepLevel.FRIENDLY))
+                    {
+                        canWin = false;
+                        break;
+                    }
+                }
+                if (canWin) eligibleWinners.add(factionId);
             }
-            victoryType = VictoryType.DIPLOMATIC;
-            victorFactionId = playerFactionId;
+            if (eligibleWinners.isEmpty()) return;
+            String winner = eligibleWinners.get(0);
+            int largestPopulation = 0;
+            if (eligibleWinners.size() > 1)
+            {
+                for (String factionId : eligibleWinners)
+                {
+                    int pop = ExerelinUtilsFaction.getFactionPopulation(factionId);
+                    if (pop > largestPopulation)
+                    {
+                        winner = factionId;
+                        largestPopulation = pop;
+                    }
+                }
+            }
+            if (winner.equals(playerFactionId)) victoryType = VictoryType.DIPLOMATIC;
+            else if (playerFaction.isAtWorst(winner, RepLevel.FRIENDLY)) victoryType = VictoryType.DIPLOMATIC_ALLY;
+            else victoryType = VictoryType.DEFEAT_DIPLOMATIC;
+            
+            victorFactionId = winner;
             sectorManager.victoryHasOccured = true;
         }
         
@@ -593,7 +625,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public enum VictoryType
     {
         CONQUEST,
+        CONQUEST_ALLY,
         DIPLOMATIC,
-        DEFEAT  //not a victory type but who's counting?
+        DIPLOMATIC_ALLY,
+        DEFEAT_CONQUEST,  //not a victory type but who's counting?
+        DEFEAT_DIPLOMATIC
     }
 }

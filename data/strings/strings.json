@@ -74,9 +74,14 @@
 		"marketDirectoryEntryNoLocation":"$market (size $size)"
 	},
 	"exerelin_victoryScreen":{
-		"victoryConquest":"Congratulations! $TheFaction has crushed all opposition and now reigns supreme over the $clusterName cluster!",
-		"victoryDiplomatic":"Congratulations! $TheFaction and its allies control the $clusterName cluster!",
-		"defeat":"Alas, $theFaction has conquered the $clusterName cluster. All your efforts have come to naught.",
+		"victory_conquest":"Congratulations! $TheFaction has crushed all opposition and now reigns supreme over the $clusterName cluster!",
+		"victory_diplomatic":"Congratulations! $TheFaction and its allies control the $clusterName cluster!",
+		"victory_conquest_ally":"Congratulations! Your ally $theFaction has crushed all opposition and now reigns supreme over the $clusterName cluster!",
+		"victory_diplomatic_ally":"Congratulations! You have joined $theFaction and its other allies in controlling the $clusterName cluster!",
+		
+		"defeat_conquest":"Alas, $theFaction has conquered the $clusterName cluster. All your efforts have come to naught.",
+		"defeat_diplomatic":"$TheFaction and its allies now dominate the $clusterName cluster. Unforunately, you are not one of them...",
+		
 		"whatNow":"What now?",
 		"youHaveWon":"You have won a $victoryType victory!",
 		
