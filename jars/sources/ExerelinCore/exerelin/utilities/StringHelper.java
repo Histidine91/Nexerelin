@@ -10,7 +10,15 @@ import java.util.Map;
 public class StringHelper {
     
     public static String getString(String category, String id) {
-        String str = Global.getSettings().getString(category, id);
+        String str = "";
+        try {
+            str = Global.getSettings().getString(category, id);
+        }
+        catch (Exception ex)
+        {
+            // could be a string not found
+            str = ex.toString();
+        }
         return str;
     }
     
