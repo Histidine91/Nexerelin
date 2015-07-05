@@ -1,11 +1,10 @@
 package data.console.commands;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
 import java.util.List;
@@ -13,9 +12,8 @@ import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommandUtils;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
-import org.lwjgl.util.vector.Vector2f;
 
-public class SetClosestMarketOwner implements BaseCommand {
+public class SetMarketOwner implements BaseCommand {
 
     @Override
     public CommandResult runCommand(String args, CommandContext context) {
@@ -26,34 +24,38 @@ public class SetClosestMarketOwner implements BaseCommand {
 
         // do me!
         SectorAPI sector = Global.getSector();
-        CampaignFleetAPI playerFleet = sector.getPlayerFleet();
-        List<MarketAPI> markets = Misc.getMarketsInLocation(playerFleet.getContainingLocation());
         
-        Vector2f playerPos = playerFleet.getLocation();
-        MarketAPI market = null;
-        float closestDist = 9999999;
-        
-        for (MarketAPI tryMarket : markets) {
-            float distance = Misc.getDistance(playerPos, tryMarket.getPrimaryEntity().getLocation());
-            if (distance < closestDist)
-            {
-                closestDist = distance;
-                market = tryMarket;
-            }
-        }
-        
-        if (market == null)
+        if (args.isEmpty())
         {
-            Console.showMessage("Unable to find target");
-                return CommandResult.ERROR;
+            return CommandResult.BAD_SYNTAX;
         }
+        
+        String[] tmp = args.split(" ");
+        
+        
+        String targetName = tmp[0];
+        List<SectorEntityToken> entitiesToSearch = sector.getEntitiesWithTag("planet");
+        entitiesToSearch.addAll(sector.getEntitiesWithTag("station"));
+        
+        SectorEntityToken target = CommandUtils.findBestTokenMatch(args, entitiesToSearch);          
+        if (target == null)
+        {
+            Console.showMessage("Error: could not find entity with name '" + targetName + "'!");
+            return CommandResult.ERROR;
+        }
+        
+        MarketAPI market = target.getMarket();
+        if (market == null) 
+        {
+            Console.showMessage("Error: entity '" + target.getName() + "' does not have a market");
+            return CommandResult.ERROR;
+        }
+        
         FactionAPI defenderFaction = market.getFaction();
         String defenderFactionId = defenderFaction.getId();
         String attackerFactionId = "player_npc";
         
-        //Console.showMessage("Arguments: " + args);
-        
-        if (args.isEmpty())
+        if (tmp.length < 2)
         {
             List<String> factions = SectorManager.getLiveFactionIdsCopy();
             WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
@@ -66,14 +68,7 @@ public class SetClosestMarketOwner implements BaseCommand {
         }
         else
         {
-            String[] tmp = args.split(" ");
-
-            if (tmp.length > 1)
-            {
-                return CommandResult.BAD_SYNTAX;
-            }
-
-            String factionStr = tmp[0];
+            String factionStr = tmp[1];
             FactionAPI fac = CommandUtils.findBestFactionMatch(factionStr);
 
             if (fac == null)
