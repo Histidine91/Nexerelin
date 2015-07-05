@@ -75,8 +75,8 @@ public class PredictInvasionResults extends BaseCommandPlugin {
                 text.addParagraph("-----------------------------------------------------------------------------");
                 text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "attackerStrength")) + ": " + attackerStrength);
                 text.highlightInLastPara(hl, "" + attackerStrength);
-                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "defenderStrength")) + ": " + defenderStrength);
-                text.highlightInLastPara(red, "" + defenderStrength);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "defenderStrength")) + ": " + defenderStrengthStr);
+                text.highlightInLastPara(red, "" + defenderStrengthStr);
                 text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "captureChance")) + ": " + winChanceStr);
                 if (winChance < 50)
                         text.highlightInLastPara(red, "" + winChanceStr);

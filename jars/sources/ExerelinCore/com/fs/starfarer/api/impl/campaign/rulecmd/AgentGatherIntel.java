@@ -56,11 +56,11 @@ public class AgentGatherIntel extends AgentActionBase {
 		text.highlightInLastPara(getColorFromScale(stability, 10, false), "" + stability);
 		
 		int alertLevel = Math.round(CovertOpsManager.getAlertLevel(market) * 100);
-		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "alertLevel")) + alertLevel + "%");
+		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "alertLevel")) + ": " + alertLevel + "%");
 		text.highlightInLastPara(getColorFromScale(alertLevel, 100, true), "" + alertLevel);
 		
 		float reserveSize = ResponseFleetManager.getReserveSize(market);
-		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "reserveSize")) + reserveSize);
+		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "reserveSize")) + ": " + reserveSize);
 		text.highlightInLastPara(Misc.getHighlightColor(), "" + reserveSize);
 				
 		text.addParagraph("-----------------------------------------------------------------------------");
