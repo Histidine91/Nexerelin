@@ -88,7 +88,7 @@ public class FleetRequestFire extends FleetRequestActionBase {
                         message = StringHelper.substituteToken(message, "$location", origin);
 		}
                 text.addParagraph(message);
-                text.highlightInLastPara(hl, sourceMarketName);
+                text.highlightInLastPara(hl, sourceMarketName, origin);
                 //text.highlightInLastPara(hl, origin);
                 
 		if (isInvasionFleet)

@@ -198,24 +198,27 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 if (factionConfig != null)
                 {
                     name = factionConfig.invasionFleetName;
-                }   if (fp < 70) name = StringHelper.getString("exerelin_fleets", "invasionFleetSmallPrefix") + " " + name;
-                else if (fp >= 210) name = StringHelper.getString("exerelin_fleets", "invasionFleetLargePrefix") + " " + name;
+                }   
+                if (fp <= 70) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixSmall") + " " + name;
+                else if (fp >= 210) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixLarge") + " " + name;
                 break;
             case "exerelinInvasionSupportFleet":
                 name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetName");
                 if (factionConfig != null)
                 {
                     name = factionConfig.invasionSupportFleetName;
-                }   if (fp < 60) name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetSmallPrefix") + " " + name;
-                else if (fp >= 180) name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetLargePrefix") + " " + name;
+                }   
+                if (fp <= 60) name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetPrefixSmall") + " " + name;
+                else if (fp >= 180) name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetPrefixLarge") + " " + name;
                 break;
             case "exerelinDefenceFleet":
                 name = StringHelper.getString("exerelin_fleets", "defenceFleetName");
                 if (factionConfig != null)
                 {
                     name = factionConfig.defenceFleetName;
-                }   if (fp < 70) name = StringHelper.getString("exerelin_fleets", "defenceFleetSmallPrefix") + " " + name;
-                else if (fp >= 210) name = StringHelper.getString("exerelin_fleets", "defenceFleetLargePrefix") + " " + name;
+                }   
+                if (fp <= 70) name = StringHelper.getString("exerelin_fleets", "defenceFleetPrefixSmall") + " " + name;
+                else if (fp >= 210) name = StringHelper.getString("exerelin_fleets", "defenceFleetPrefixLarge") + " " + name;
                 break;
         }
         
