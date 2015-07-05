@@ -76,21 +76,21 @@ public class FleetRequestFire extends FleetRequestActionBase {
 		String sourceMarketName = sourceMarket.getName();
 		if (!originLoc.isHyperspace()) origin = "the " + origin;
 		
-                String message = "";
+		String message = "";
 		if (sourceMarket == targetMarket)
 		{
 			message = StringHelper.getStringAndSubstituteToken("exerelin_fleets", "fleetSpawnMessageLocal", "$market", sourceMarketName);
 		}
 		else
 		{
-                        message = StringHelper.getString("exerelin_fleets", "fleetSpawnMessage");
-                        message = StringHelper.substituteToken(message, "$market", sourceMarketName);
-                        message = StringHelper.substituteToken(message, "$location", origin);
+			message = StringHelper.getString("exerelin_fleets", "fleetSpawnMessage");
+			message = StringHelper.substituteToken(message, "$market", sourceMarketName);
+			message = StringHelper.substituteToken(message, "$location", origin);
 		}
-                text.addParagraph(message);
-                text.highlightInLastPara(hl, sourceMarketName, origin);
-                //text.highlightInLastPara(hl, origin);
-                
+		text.addParagraph(message);
+		text.highlightInLastPara(hl, sourceMarketName, origin);
+		//text.highlightInLastPara(hl, origin);
+		
 		if (isInvasionFleet)
 		{
 			RepActionEnvelope envelope = new RepActionEnvelope(RepActions.COMBAT_NORMAL, null, dialog.getTextPanel());

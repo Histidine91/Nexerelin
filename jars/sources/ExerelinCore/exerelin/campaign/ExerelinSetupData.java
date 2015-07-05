@@ -141,7 +141,7 @@ public final class ExerelinSetupData
 
 	public String[] getModdedFactionsList()
 	{
-	log.info("EXERELIN: Getting modded factions");
+	log.info("Getting modded factions");
 	ArrayList possibleModdedFactionList = new ArrayList();
 
 	for(int i = 0; i < ExerelinConfig.exerelinFactionConfigs.size(); i++)
