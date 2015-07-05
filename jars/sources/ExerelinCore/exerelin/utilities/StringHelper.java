@@ -17,7 +17,8 @@ public class StringHelper {
         catch (Exception ex)
         {
             // could be a string not found
-            str = ex.toString();
+            //str = ex.toString();  // looks really silly
+            Global.getLogger(StringHelper.class).warn(ex);
         }
         return str;
     }
