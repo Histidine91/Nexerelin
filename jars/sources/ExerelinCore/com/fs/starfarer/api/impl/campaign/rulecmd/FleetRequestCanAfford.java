@@ -32,6 +32,6 @@ public class FleetRequestCanAfford extends FleetRequestActionBase {
                 memory = memoryMap.get(MemKeys.PLAYER);
 		memory.set("$creditsHave", (int)moneyHave, 0);
                 
-                return moneyHave > moneyRequired;
+                return moneyHave >= moneyRequired;
         }
 }
