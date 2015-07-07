@@ -208,6 +208,7 @@ ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diabl
 ExerelinNGCListModFactions1Back,ExerelinNGCListFactions1,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCListExigency,ExerelinNGCListFactions2,NGCDoesFactionExist exigency,,,exerelinNGCJoinExigency:Exigency Corp,
+ExerelinNGCListFirestormFederation,ExerelinNGCListFactions2,NGCDoesFactionExist firestorm_federation,,,exerelinNGCJoinFirestormFederation:Firestorm Federation,
 ExerelinNGCListHiigaranDescendants,ExerelinNGCListFactions2,NGCDoesFactionExist hiigaran_descendants,,,exerelinNGCJoinHiigaranDescendants:Hiigaran Descendants,
 ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions2,NGCDoesFactionExist interstellarimperium,,,exerelinNGCJoinInterstellarImperium:Interstellar Imperium,
 ExerelinNGCListJunkPirates,ExerelinNGCListFactions2,NGCDoesFactionExist junk_pirates,,,exerelinNGCJoinJunkPirates:Junk Pirates,
@@ -300,6 +301,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinExipirated,NewGameOptionSelected,$option == exerelinNGCJoinExipirated,"NGCSetPlayerFaction ""exipirated""
 NGCAddShipAndComplement ""exipirated_azryel_Standard""
 AddText ""Added Azryel-class destroyer"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinFirestormFederation,NewGameOptionSelected,$option == exerelinNGCJoinFirestormFederation,"NGCSetPlayerFaction ""firestorm_federation""
+NGCAddShipAndComplement ""EM_Frigate_variant""
+AddText ""Added Torch-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinHiigaranDescendants,NewGameOptionSelected,$option == exerelinNGCJoinHiigaranDescendants,"NGCSetPlayerFaction ""hiigaran_descendants""
 NGCAddShipAndComplement ""hii_jet_Standard""
@@ -524,6 +529,7 @@ ExerelinFactionDirectoryListCitadel,ExerelinFactionDirectoryList1,IsFactionAlive
 ExerelinFactionDirectoryListCrystanite,ExerelinFactionDirectoryList1,IsFactionAlive crystanite,,,exerelinFactionDirectoryGetCrystanite:Crystanite,
 ExerelinFactionDirectoryListDiableAvionics,ExerelinFactionDirectoryList1,IsFactionAlive diableavionics,,,exerelinFactionDirectoryGetDiableAvionics:Diable Avionics,
 ExerelinFactionDirectoryListExigency,ExerelinFactionDirectoryList1,IsFactionAlive exigency,,,exerelinFactionDirectoryGetExigency:Exigency Corp,
+ExerelinFactionDirectoryListFirestormFederation,ExerelinFactionDirectoryList1,IsFactionAlive firestorm_federation,,,exerelinFactionDirectoryGetFirestormFederation:Firestorm Federation,
 ExerelinFactionDirectoryList1Back,ExerelinFactionDirectoryList1,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
 ExerelinFactionDirectoryListHegemony,ExerelinFactionDirectoryList2,IsFactionAlive hegemony,,,exerelinFactionDirectoryGetHegemony:Hegemony,
@@ -563,6 +569,7 @@ ExerelinFactionDirectoryGetCrystanite,DialogOptionSelected,$option == exerelinFa
 ExerelinFactionDirectoryGetDiableAvionics,DialogOptionSelected,$option == exerelinFactionDirectoryGetDiableAvionics,PrintFactionMarkets diableavionics,,,
 ExerelinFactionDirectoryGetExigency,DialogOptionSelected,$option == exerelinFactionDirectoryGetExigency,PrintFactionMarkets exigency,,,
 ExerelinFactionDirectoryGetExipirated,DialogOptionSelected,$option == exerelinFactionDirectoryGetExipirated,PrintFactionMarkets exipirated,,,
+ExerelinFactionDirectoryGetFirestormFederation,DialogOptionSelected,$option == exerelinFactionDirectoryGetFirestormFederation,PrintFactionMarkets firestorm_federation,,,
 ExerelinFactionDirectoryGetHegemony,DialogOptionSelected,$option == exerelinFactionDirectoryGetHegemony,PrintFactionMarkets hegemony,,,
 ExerelinFactionDirectoryGetHiigaranDescendants,DialogOptionSelected,$option == exerelinFactionDirectoryGetHiigaranDescendants,PrintFactionMarkets hiigaran_descendants,,,
 ExerelinFactionDirectoryGetInterstellarImperium,DialogOptionSelected,$option == exerelinFactionDirectoryGetInterstellarImperium,PrintFactionMarkets interstellarimperium,,,

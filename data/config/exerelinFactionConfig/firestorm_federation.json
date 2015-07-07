@@ -1,0 +1,27 @@
+{
+    "uniqueModClassName":"data.scripts.world.FirestormModPlugin", # String
+    "playableFaction":"true", # Boolean
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
+
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Traitors", # String
+
+    "asteroidMiningFleetName":"Asteroid Mining Fleet", # String
+    "gasMiningFleetName":"Gas Mining Fleet", # String
+    "logisticsFleetName":"Logistics Convoy", # String
+    "invasionFleetName":"Invasion Fleet", # String
+    "commandFleetName":"Command Fleet", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
+    
+    "alignments":{
+    },
+
+    "miningVariantsOrWings":["mining_drone_wing"], # String array
+}
