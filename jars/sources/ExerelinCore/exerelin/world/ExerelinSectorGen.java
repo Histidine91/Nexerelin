@@ -1054,7 +1054,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		else if (planetNum == 1 || planetNum == 3) habitableChance = 0.7f;
 		else if (planetNum == 2) habitableChance = 0.9f;
 			
-		if (isMoon) habitableChance *= 0.7f;
+		//if (isMoon) habitableChance *= 0.7f;
+		if (isMoon) habitableChance = 0.4f;
 		
 		return habitableChance;
 	}
@@ -1173,7 +1174,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			entities.add(entityData);
 		}
 		
-		// make sure there are at least two planetData planets
+		// make sure there are at least two habitable planets
 		if (habitableCount < 2)
 		{
 			WeightedRandomPicker<EntityData> picker = new WeightedRandomPicker<>();
@@ -1258,7 +1259,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					if(j == 2)
 						ext = "III";
 					
-					boolean moonInhabitable = Math.random() <= 0.4;	//getHabitableChance(planetData.planetNum, true);
+					boolean moonInhabitable = Math.random() < getHabitableChance(planetData.planetNum, true);
 					String moonType = "";
 					if (moonInhabitable)
 						moonType = moonTypes[ExerelinUtils.getRandomInRange(0, moonTypes.length - 1)];
@@ -1268,7 +1269,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					angle = ExerelinUtils.getRandomInRange(1, 360);
 					distance = ExerelinUtils.getRandomInRange(650, 1300);
 					float moonRadius = ExerelinUtils.getRandomInRange(50, 100);
-					orbitDays = getOrbitalPeriod(star.getRadius(), distance + star.getRadius(), 2);
+					orbitDays = getOrbitalPeriod(newPlanet.getRadius(), distance + newPlanet.getRadius(), 2);
 					PlanetAPI newMoon = system.addPlanet(name + " " + ext, newPlanet, name + " " + ext, moonType, angle, moonRadius, distance, orbitDays);
 					
 					EntityData moonData = new EntityData(system);
@@ -1333,7 +1334,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float weight = 1f;
 			if (planetData.planetNum == 2 || planetData.planetNum == 3)
 			{
-			weight = 4f;
+				weight = 4f;
 			}
 			capitalPicker.add(planetData, weight);
 		}
@@ -1557,33 +1558,41 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}	  
 	}
 	
-	// ALGO
+	// System generation algorithm
 	/*
-		First create planets according to the following rules:
-		first planet: 40% planetData chance
-		second planet: 70% planetData chance
-		third planet: 90% planetData chance
-		fourth planet: 70% planetData chance, 30% gas giant chance if fail habitability check
-		fifth and higher planet: 30% planetData chance, 45% gas giant chance
-		last planet will always be gas giant if one hasn't been added yet 
-		moon: 70% planet's planetData chance
-		if not at least two planetData entities, randomly pick planets 1-4 and force them to be planetData
-		Don't actually generate PlanetAPIs until all EntityDatas have been created
+		For each system:
+			First create a star using one of the ten possible options picked at random
+			Create planets according to the following rules:
+				first planet: 40% habitable chance
+				second planet: 70% habitable chance
+				third planet: 90% habitable chance
+				fourth planet: 70% habitable chance, 30% gas giant chance if fail habitability check
+				fifth and higher planet: 30% habitable chance, 45% gas giant chance
+				last planet will always be gas giant if one hasn't been added yet 
+				moon: 40% habitable chance
+				if not at least two habitable entities, randomly pick planets 1-4 and force them to be habitable
+				designate one habitable planet from these four as system capital
+			Don't actually generate PlanetAPIs until all EntityDatas have been created
+
+			Add random asteroid belts
 	
-		Next seed stations randomly around planets/moons or in asteroid belts
+			Next seed stations randomly around planets/moons or in asteroid belts
+
+			Now add relay around star, add jump point to system capital, add automatic jump points
+			Associate relay with capital and system
 		
-		Next go through all entities
-		If planetData planet/moon, add to list of habitables
-		If station orbiting uninhabitable, add to list of independent stations
-		If station orbiting planetData, add to list of associated stations
+		Next go through all entities in sector
+			If habitable planet/moon, add to list of habitables
+			If station orbiting uninhabitable, add to list of independent stations
+			If station orbiting habitable, add to list of associated stations
 	
-		Next go through all inhabitables
-		First off we go to Exerelin and give our faction a planet with HQ
-		Next line up factions (exclude our own faction for this round), pick at random and remove from list
-		Give this faction an inhabitable planet; add market to it
-		If this is the first inhabitable in a starSystem system, mark this as regional capital
-			Set minimum size and assign relay/jumpgate accordingly
-		Once list is empty, refill with all factions (including ours) again
+		Next go through all habitables and assign them to factions
+			First off we go to Exerelin and give our faction a planet with HQ
+			Next line up factions (exclude our own faction for this round), pick at random and remove from list
+			Give this faction a habitable planet; add market to it
+			If this is the faction's first habitable, make it their headquarters
+			If this is a system capital or headquarters, set minimum size accordingly
+			Once list is empty, refill with all factions (including ours) again
 		Repeat until all habitables have been populated
 	
 		Do that again except for independent stations
