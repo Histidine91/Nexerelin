@@ -179,9 +179,9 @@ ExerelinNGCFactionsBackToMain,NewGameOptionSelected,$option==exerelinNGCFactions
 ExerelinNGCFactionsMain,ExerelinNGCListFactions,,,,"exerelinNGCViewVanillaFactions:Vanilla factions
 99:exerelinNGCOptionsBack:Back",maybe we should just do it straight alphabetical instead of segregating vanilla factions into their own category
 ExerelinNGCViewVanillaFactions,NewGameOptionSelected,$option == exerelinNGCViewVanillaFactions,FireAll ExerelinNGCListFactionsVanilla,,,
-ExerelinNGCModFactions1,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions1:Mod factions (A-D),Should check if factions are actually there
+ExerelinNGCModFactions1,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions1:Mod factions (A-E),Should check if factions are actually there
 ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModFactions1,FireAll ExerelinNGCListFactions1,,,
-ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (E-M),ditto
+ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (F-M),ditto
 ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModFactions2,FireAll ExerelinNGCListFactions2,,,
 ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:Mod factions (N-Q),
 ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,FireAll ExerelinNGCListFactions3,,,
@@ -199,21 +199,22 @@ ExerelinNGCFactionsOwnFaction,ExerelinNGCListFactionsVanilla,,,,exerelinNGCOwnFa
 ExerelinNGCFactionsFreeStart,ExerelinNGCListFactionsVanilla,,,,exerelinNGCFreeStart:Free start (hard),
 ExerelinNGCListVanillaFactionsBack,ExerelinNGCListFactionsVanilla,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
-ExerelinNGCListExipiarted,ExerelinNGCListFactions1,NGCDoesFactionExist exipirated,,,exerelinNGCJoinExipirated:Ahriman Association,
+ExerelinNGCListExipirated,ExerelinNGCListFactions1,NGCDoesFactionExist exipirated,,,exerelinNGCJoinExipirated:Ahriman Association,
 ExerelinNGCListASPSyndicate,ExerelinNGCListFactions1,NGCDoesFactionExist syndicate_asp,,,exerelinNGCJoinASPSyndicate:ASP Syndicate,
 ExerelinNGCListBlackrock,ExerelinNGCListFactions1,NGCDoesFactionExist blackrock_driveyards,,,exerelinNGCJoinBlackrock:Blackrock Drive Yards,
 ExerelinNGCListCitadel,ExerelinNGCListFactions1,NGCDoesFactionExist citadeldefenders,,,exerelinNGCJoinCitadel:Citadel,
 ExerelinNGCListCrystanite,ExerelinNGCListFactions1,NGCDoesFactionExist crystanite,,,exerelinNGCJoinCrystanite:Crystanite,
 ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
+ExerelinNGCListExigency,ExerelinNGCListFactions1,NGCDoesFactionExist exigency,,,exerelinNGCJoinExigency:Exigency Corp,
 ExerelinNGCListModFactions1Back,ExerelinNGCListFactions1,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
-ExerelinNGCListExigency,ExerelinNGCListFactions2,NGCDoesFactionExist exigency,,,exerelinNGCJoinExigency:Exigency Corp,
 ExerelinNGCListFirestormFederation,ExerelinNGCListFactions2,NGCDoesFactionExist firestorm_federation,,,exerelinNGCJoinFirestormFederation:Firestorm Federation,
 ExerelinNGCListHiigaranDescendants,ExerelinNGCListFactions2,NGCDoesFactionExist hiigaran_descendants,,,exerelinNGCJoinHiigaranDescendants:Hiigaran Descendants,
 ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions2,NGCDoesFactionExist interstellarimperium,,,exerelinNGCJoinInterstellarImperium:Interstellar Imperium,
 ExerelinNGCListJunkPirates,ExerelinNGCListFactions2,NGCDoesFactionExist junk_pirates,,,exerelinNGCJoinJunkPirates:Junk Pirates,
 ExerelinNGCListTemplars,ExerelinNGCListFactions2,NGCDoesFactionExist templars,,,exerelinNGCJoinTemplars:Knights Templar,
 ExerelinNGCListMayorate,ExerelinNGCListFactions2,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
+ExerelinNGCListMetelson,ExerelinNGCListFactions2,NGCDoesFactionExist metelson,,,exerelinNGCJoinMetelson:Metelson Industries,
 ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCListOculusBerserk,ExerelinNGCListFactions3,NGCDoesFactionExist OculusBerserk,,,exerelinNGCJoinOculusBerserk:Oculian Berserks,
@@ -325,6 +326,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinMayorate,NewGameOptionSelected,$option == exerelinNGCJoinMayorate,"NGCSetPlayerFaction ""mayorate""
 NGCAddShipAndComplement ""ilk_lilith_assault""
 AddText ""Added Lilith-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinMetelson,NewGameOptionSelected,$option == exerelinNGCJoinMetelson,"NGCSetPlayerFaction ""metelson""
+NGCAddShipAndComplement ""mi_soldat_support""
+AddText ""Added Soldat-class gunship"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinNeutrinoCorp,NewGameOptionSelected,$option == exerelinNGCJoinNeutrinoCorp,"NGCSetPlayerFaction ""neutrinocorp""
 NGCAddShipAndComplement ""neutrino_singularity_standard""
@@ -539,6 +544,7 @@ ExerelinFactionDirectoryListJunkPirates,ExerelinFactionDirectoryList2,IsFactionA
 ExerelinFactionDirectoryListTemplars,ExerelinFactionDirectoryList2,IsFactionAlive templars,,,exerelinFactionDirectoryGetTemplars:Knights Templar,
 ExerelinFactionDirectoryListLuddicChurch,ExerelinFactionDirectoryList2,IsFactionAlive luddic_church,,,exerelinFactionDirectoryGetLuddicChurch:Luddic Church,
 ExerelinFactionDirectoryListMayorate,ExerelinFactionDirectoryList2,IsFactionAlive mayorate,,,exerelinFactionDirectoryGetMayorate:Mayorate,
+ExerelinFactionDirectoryListMetelson,ExerelinFactionDirectoryList2,IsFactionAlive metelson,,,exerelinFactionDirectoryGetMetelson:Metelson Industries,
 ExerelinFactionDirectoryList2Back,ExerelinFactionDirectoryList2,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
 ExerelinFactionDirectoryListNeutrinoCorp,ExerelinFactionDirectoryList3,IsFactionAlive neutrinocorp,,,exerelinFactionDirectoryGetNeutrinoCorp:Neutrino Corp,
@@ -576,6 +582,7 @@ ExerelinFactionDirectoryGetInterstellarImperium,DialogOptionSelected,$option == 
 ExerelinFactionDirectoryGetJunkPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetJunkPirates,PrintFactionMarkets junk_pirates,,,
 ExerelinFactionDirectoryGetLuddicChurch,DialogOptionSelected,$option == exerelinFactionDirectoryGetLuddicChurch,PrintFactionMarkets luddic_church,,,
 ExerelinFactionDirectoryGetMayorate,DialogOptionSelected,$option == exerelinFactionDirectoryGetMayorate,PrintFactionMarkets mayorate,,,
+ExerelinFactionDirectoryGetMetelson,DialogOptionSelected,$option == exerelinFactionDirectoryGetMetelson,PrintFactionMarkets metelson,,,
 ExerelinFactionDirectoryGetNeutrinoCorp,DialogOptionSelected,$option == exerelinFactionDirectoryGetNeutrinoCorp,PrintFactionMarkets neutrinocorp,,,
 ExerelinFactionDirectoryGetNGO,DialogOptionSelected,$option == exerelinFactionDirectoryGetNGO,PrintFactionMarkets new_galactic_order,,,
 ExerelinFactionDirectoryGetOculusBerserk,DialogOptionSelected,$option == exerelinFactionDirectoryGetOculusBerserk,PrintFactionMarkets OculusBerserk,,,
