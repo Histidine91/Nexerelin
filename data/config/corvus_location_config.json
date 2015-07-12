@@ -1,7 +1,7 @@
 {
 	"systemCapitals":{
 		"Corvus":"jangala",
-		"Magec":"achaman",
+		"Magec":"tibicena",
 		"Askonia":"sindria",
 		"Eos":"tartessus",
 		"Valhalla":"ragnar_complex",
@@ -38,7 +38,7 @@
 		},
 		"tritachyon":{
 			"system":"Magec",
-			"entity":"achaman"
+			"entity":"tibicena"
 		},
 		"sindrian_diktat":{
 			"system":"Askonia",
