@@ -150,7 +150,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
 		stationImages.put("exipirated", new String[] {"exipirated_avesta_station"} );
 	}
-    private Object OmnifactoryImpl;
+	private Object OmnifactoryImpl;
 	
 	private void loadBackgrounds()
 	{
@@ -868,6 +868,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				final String HOME_ENTITY = spawnPoint.entityName;
 				EveryFrameScript teleportScript = new EveryFrameScript() {
 					private boolean done = false;
+					private boolean unlockedStorage = false;
+					
 					public boolean runWhilePaused() {
 						return false;
 					}
@@ -875,9 +877,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 						return done;
 					}
 					public void advance(float amount) {
-						if (Global.getSector().isInNewGameAdvance()) return;
 						SectorEntityToken entity = Global.getSector().getEntityById(HOME_ENTITY);
-
+						if (!unlockedStorage && entity != null)
+						{
+							MarketAPI homeMarket = entity.getMarket();
+							if (homeMarket != null)
+							{
+								StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
+								if (plugin != null)
+								plugin.setPlayerPaidToUnlock(true);
+							}
+							unlockedStorage = true;
+						}
+						
+						if (Global.getSector().isInNewGameAdvance()) return;
 						if (entity != null)
 						{
 							Vector2f loc = entity.getLocation();
@@ -892,20 +905,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		else if (!ExerelinSetupData.getInstance().freeStart)
 		{
 			EveryFrameScript teleportScript = new EveryFrameScript() {
-			private boolean done = false;
-			public boolean runWhilePaused() {
-				return false;
-			}
-			public boolean isDone() {
-				return done;
-			}
-			public void advance(float amount) {
-				if (Global.getSector().isInNewGameAdvance()) return;
-				SectorEntityToken entity = homeworld.entity;
-				Vector2f loc = entity.getLocation();
-				Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
-				done = true;
-			}
+				private boolean done = false;
+				public boolean runWhilePaused() {
+					return false;
+				}
+				public boolean isDone() {
+					return done;
+				}
+				public void advance(float amount) {
+					if (Global.getSector().isInNewGameAdvance()) return;
+
+					SectorEntityToken entity = homeworld.entity;
+					Vector2f loc = entity.getLocation();
+					Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
+				}
 			};
 			sector.addTransientScript(teleportScript);
 		}
