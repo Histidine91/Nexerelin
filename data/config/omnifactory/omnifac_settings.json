@@ -1,10 +1,11 @@
 {
-    "randomStartingLocation":true, # Boolean
-    "showAddedCargo":false, # Boolean
-    "showAnalysisComplete":true, # Boolean
-    "showLimitReached":true, # Boolean
-    "ignoreGoodRestrictions":false, # Boolean
-    "removeBrokenGoods":false, # Boolean
+    "randomStartingLocation":false, # If false, will orbit Somnus in Corvus
+    "numberOfFactories":1, # TODO, Only works if randomStartingLocation is true
+    "showAddedCargo":false, # Incredibly spammy, only useful for debug
+    "showAnalysisComplete":true, # Notify player when production starts
+    "showLimitReached":true, # Notify player when factory is full of a good
+    "ignoreGoodRestrictions":false, # If true, factory can replicate anything
+    "removeBrokenGoods":false, # If a required mod is removed, remove its goods
     "shipAnalysisTimeMod":0.5, # Double
     "weaponAnalysisTimeMod":0.5, # Double
     "shipProductionTimeMod":1.0, # Double

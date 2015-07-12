@@ -11,7 +11,6 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.lazywizard.omnifac.OmniFacModPlugin;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
@@ -24,11 +23,9 @@ import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.campaign.SSP_CampaignPlugin;
-import data.scripts.campaign.SSP_CoreScript;
-import data.scripts.campaign.events.SSP_EventProbabilityManager;
 import data.scripts.world.ExerelinCorvusLocations;
 import data.scripts.world.ExerelinCorvusLocations.SpawnPointEntry;
 import data.scripts.world.corvus.Corvus;
@@ -54,8 +51,6 @@ import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
-import java.io.File;
-import java.io.FileFilter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +59,7 @@ import java.util.Set;
 import org.lazywizard.lazylib.CollectionUtils;
 import org.lazywizard.lazylib.CollectionUtils.CollectionFilter;
 import org.lazywizard.lazylib.MathUtils;
+import org.lazywizard.omnifac.OmniFac;
 import org.lwjgl.util.vector.Vector2f;
 
 @SuppressWarnings("unchecked")
@@ -121,6 +117,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private Map<String, String> systemToRelay = new HashMap();
 	private Map<String, String> planetToRelay = new HashMap();
 	
+	private float numOmnifacs = 0;
+	
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
 	
 	/*
@@ -153,6 +151,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
 		stationImages.put("exipirated", new String[] {"exipirated_avesta_station"} );
 	}
+    private Object OmnifactoryImpl;
 	
 	private void loadBackgrounds()
 	{
@@ -233,6 +232,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stations = new ArrayList<>();
 		ExerelinSetupData.getInstance().resetAvailableFactions();
 		factionIds = new ArrayList<>( Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector())) );
+		numOmnifacs = 0;
 	}
 	
 	private void addListToPicker(List list, WeightedRandomPicker picker)
@@ -435,6 +435,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		else if (factionId.equals("spire")) {
 			newMarket.addCondition("aiw_inorganic_populace");
 		}
+		else if (factionId.equals("crystanite")) {
+			//newMarket.addCondition("crys_population");
+		}
 		
 		if (factionId.equals("templars"))
 		{
@@ -485,9 +488,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (!ExerelinSetupData.getInstance().omnifactoryPresent) return;
 
 		SectorEntityToken toOrbit = null;
-		log.info("Randomized omnifac location: " + ExerelinSetupData.getInstance().randomOmnifactoryLocation);
+		//log.info("Randomized omnifac location: " + ExerelinSetupData.getInstance().randomOmnifactoryLocation);
+		boolean random = ExerelinSetupData.getInstance().randomOmnifactoryLocation;
+		if (numOmnifacs > 0) random = true;
 		
-		if (ExerelinSetupData.getInstance().randomOmnifactoryLocation)
+		if (random)
 		{
 			List<StarSystemAPI> systems = new ArrayList(Global.getSector().getStarSystems());
 			Collections.shuffle(systems);
@@ -525,14 +530,23 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 		}
 		omnifac.setCircularOrbitPointingDown(toOrbit, ExerelinUtils.getRandomInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, getDensity(toOrbit)));
-		OmniFacModPlugin.initOmnifactory(omnifac);
 		omnifac.setInteractionImage("illustrations", "abandoned_station");
 		omnifac.setCustomDescriptionId("omnifactory");
 
-		omnifac.setFaction("neutral");
-		MarketAPI market = omnifac.getMarket();
+		MarketAPI market = Global.getFactory().createMarket("omnifactory_market", "Omnifactory", 0);
+		SharedData.getData().getMarketsWithoutPatrolSpawn().add("omnifactory_market");
+		SharedData.getData().getMarketsWithoutTradeFleetSpawn().add("omnifactory_market");
+		market.setPrimaryEntity(omnifac);
 		market.setFactionId("neutral");
-		List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
+		market.addCondition(Conditions.ABANDONED_STATION);
+		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
+		((StoragePlugin) market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin()).setPlayerPaidToUnlock(true);
+		omnifac.setMarket(market);
+		Global.getSector().getEconomy().addMarket(market);
+		
+		omnifac.setFaction("neutral");
+		
+		OmniFac.initOmnifactory(omnifac);
 	}
 	
 	public void addPrismMarket()
@@ -794,6 +808,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 			else generateVanillaSector(sector);
 		}
+		//for (int i=0; i<OmniFacSettings.) // TODO: use Omnifactory's numberOfFactories setting when it's supported
 		addOmnifactory();
 		addPrismMarket();
 		
