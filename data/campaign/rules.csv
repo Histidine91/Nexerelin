@@ -336,7 +336,7 @@ NGCAddShipAndComplement ""neutrino_singularity_standard""
 AddText ""Added Singularity-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinNGO,NewGameOptionSelected,$option == exerelinNGCJoinNGO,"NGCSetPlayerFaction ""new_galactic_order""
-NGCAddShipAndComplement ""ngo_frigate_low""
+NGCAddShipAndComplement ""ngo_frigate_standard""
 AddText ""Added Freyr-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 exerelinNGCJoinOculusBerserk,NewGameOptionSelected,$option == exerelinNGCJoinOculusBerserk,"NGCSetPlayerFaction ""oculusberserk""
