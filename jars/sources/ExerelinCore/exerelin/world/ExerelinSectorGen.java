@@ -17,7 +17,6 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
-import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
@@ -77,7 +76,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"Effecer", "Gunsa", "Patiota", "Rayma", "Origea", "Litsoa", "Bimo", "Plasert", "Pizzart", "Shaper", "Coruscent", "Hoth", "Gibraltar", "Aurora",
 		"Darwin", "Mendel", "Crick", "Franklin", "Watson", "Pauling",
 		"Rutherford", "Maxwell", "Bohr", "Pauli", "Curie", "Meitner", "Heisenberg", "Feynman"};
-	private static final String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
+	private static String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
 		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
 	private static final String[] starBackgroundsArray = new String[]
 	{
@@ -95,9 +94,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	private static ArrayList<String> starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
 
-	
-	private List possibleSystemNamesList = new ArrayList(Arrays.asList(possibleSystemNames));
-	private List possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
+	private List<String> possibleSystemNamesList = new ArrayList(Arrays.asList(possibleSystemNames));
+	private List<String> possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
+	private List<String> possibleStationNamesList = new ArrayList(Arrays.asList(possibleStationNames));
 	
 	private static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren"};
 	private static final String[] planetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable",
@@ -720,22 +719,23 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// load planet/star names from config
 		try {
 			JSONObject planetConfig = Global.getSettings().loadJSON(PLANET_NAMES_FILE);
+			
 			JSONArray systemNames = planetConfig.getJSONArray("stars");
 			possibleSystemNames = new String[systemNames.length()];
 			for (int i = 0; i < systemNames.length(); i++)
 				possibleSystemNames[i] = systemNames.getString(i);
+			
 			JSONArray planetNames = planetConfig.getJSONArray("planets");
 			possiblePlanetNames = new String[planetNames.length()];
 			for (int i = 0; i < planetNames.length(); i++)
 				possiblePlanetNames[i] = planetNames.getString(i);
-				
-			possibleSystemNamesList = new ArrayList();
-			for (int i=0; i < possibleSystemNames.length; i++)
-				possibleSystemNamesList.add(possibleSystemNames[i]);
-			possiblePlanetNamesList = new ArrayList();
-			for (int i=0; i < possiblePlanetNames.length; i++)
-				possiblePlanetNamesList.add(possiblePlanetNames[i]);
 			
+			JSONArray stationNames = planetConfig.getJSONArray("stations");
+			possibleStationNames = new String[stationNames.length()];
+				
+			possibleSystemNamesList = new ArrayList(Arrays.asList(possibleSystemNames));
+			possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
+			possibleStationNamesList = new ArrayList(Arrays.asList(possibleStationNames));
 		} catch (JSONException | IOException ex) {
 			Global.getLogger(ExerelinSectorGen.class).log(Level.ERROR, ex);
 		}
@@ -864,29 +864,29 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(selectedFactionId);
 			if (spawnPoint != null)
 			{
-			// moves player fleet to a suitable location; e.g. Avesta for Association
-			final String HOME_ENTITY = spawnPoint.entityName;
-			EveryFrameScript teleportScript = new EveryFrameScript() {
-				private boolean done = false;
-				public boolean runWhilePaused() {
-					return false;
-				}
-				public boolean isDone() {
-					return done;
-				}
-				public void advance(float amount) {
-					if (Global.getSector().isInNewGameAdvance()) return;
-					SectorEntityToken entity = Global.getSector().getEntityById(HOME_ENTITY);
-
-					if (entity != null)
-					{
-						Vector2f loc = entity.getLocation();
-						Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
-						done = true;
+				// moves player fleet to a suitable location; e.g. Avesta for Association
+				final String HOME_ENTITY = spawnPoint.entityName;
+				EveryFrameScript teleportScript = new EveryFrameScript() {
+					private boolean done = false;
+					public boolean runWhilePaused() {
+						return false;
 					}
-				}
-			};
-			sector.addTransientScript(teleportScript);
+					public boolean isDone() {
+						return done;
+					}
+					public void advance(float amount) {
+						if (Global.getSector().isInNewGameAdvance()) return;
+						SectorEntityToken entity = Global.getSector().getEntityById(HOME_ENTITY);
+
+						if (entity != null)
+						{
+							Vector2f loc = entity.getLocation();
+							Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
+							done = true;
+						}
+					}
+				};
+				sector.addTransientScript(teleportScript);
 			}
 		}
 		else if (!ExerelinSetupData.getInstance().freeStart)
@@ -1080,7 +1080,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// First we make a star system with random name
 		int systemNameIndex = ExerelinUtils.getRandomInRange(0, possibleSystemNamesList.size() - 1);
 		if (systemIndex == 0) systemNameIndex = 0;	// there is always a starSystem named Exerelin
-		StarSystemAPI system = sector.createStarSystem((String)possibleSystemNamesList.get(systemNameIndex));
+		StarSystemAPI system = sector.createStarSystem(possibleSystemNamesList.get(systemNameIndex));
 		possibleSystemNamesList.remove(systemNameIndex);
 		String systemName = system.getName();
 		String systemId = system.getId();
@@ -1211,7 +1211,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			String name = "";
 			String id = "";
 			int planetNameIndex = ExerelinUtils.getRandomInRange(0, possiblePlanetNamesList.size() - 1);
-			name = (String)(possiblePlanetNamesList.get(planetNameIndex));
+			name = possiblePlanetNamesList.get(planetNameIndex);
 			possiblePlanetNamesList.remove(planetNameIndex);
 
 			id = name.replace(' ','_');
@@ -1482,7 +1482,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			String name = "";
 			while(!nameOK)
 			{
-				name = possibleStationNames[ExerelinUtils.getRandomInRange(0, possibleStationNames.length - 1)];
+				name = possibleStationNamesList.get(ExerelinUtils.getRandomInRange(0, possibleStationNames.length - 1));
 				if (!alreadyUsedStationNames.contains(name))
 					nameOK = true;
 			}

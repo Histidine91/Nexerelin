@@ -24,5 +24,9 @@
 		"Cid", "Aerith", "Tifa", "Barret", "Yuffie", "Cait Sith", "Valentine", "Squall", "Rinoa", "Zell", "Irvine", "Laguna", "Kiros", "Ward", "Zidane", "Vivi", "Dagger", "Steiner", "Freya", "Eiko", "Amarant", "Setzer", "Locke", "Celes", "Cyan", "Sabin", "Strago", "Shadow", "Gau", "Mog", "Relm", "Figaro", "Edea", "Esuna",
 		"Thessia", "Palaeven", "Sur'Kesh", "Dekuuna", "Heshtok", "Irune", "Kahje", "Khar'shan", "Tuchanka", "Rakhana", "Rannoch", "Suen",
 		"Iserlohn", "Fezzan", "Heinessen", "Yang", "Julian", "Reinhard", "Kircheis", "Oberstein", "Reuenthal", "Mittermeyer", "El Facil",
+	],
+	"stations":[
+		"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
+		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"
 	]
 }

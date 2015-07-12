@@ -3,8 +3,6 @@ package data.scripts;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.combat.MutableStat.StatMod;
-import com.fs.starfarer.api.combat.ShipAPI;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
@@ -14,8 +12,6 @@ import exerelin.campaign.SectorManager;
 import exerelin.utilities.*;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.ResponseFleetManager;
-import java.util.Iterator;
-import java.util.Map;
 import org.lazywizard.omnifac.OmniFacSettings;
 
 public class ExerelinModPlugin extends BaseModPlugin
