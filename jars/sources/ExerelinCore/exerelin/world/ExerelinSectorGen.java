@@ -150,7 +150,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
 		stationImages.put("exipirated", new String[] {"exipirated_avesta_station"} );
 	}
-	private Object OmnifactoryImpl;
 	
 	private void loadBackgrounds()
 	{
@@ -732,6 +731,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			JSONArray stationNames = planetConfig.getJSONArray("stations");
 			possibleStationNames = new String[stationNames.length()];
+			for (int i = 0; i < stationNames.length(); i++)
+				possibleStationNames[i] = stationNames.getString(i);
 				
 			possibleSystemNamesList = new ArrayList(Arrays.asList(possibleSystemNames));
 			possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
@@ -740,8 +741,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			Global.getLogger(ExerelinSectorGen.class).log(Level.ERROR, ex);
 		}
 		
+		log.info("Loading backgrounds");
 		loadBackgrounds();
 		
+		log.info("resetting vars");
 		resetVars();
 		
 		boolean corvusMode = ExerelinConfig.corvusMode;
@@ -796,8 +799,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 
 			// build systems
+			log.info("Building systems");
 			for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
 				buildSystem(sector, i);
+			log.info("Populating sector");
 			populateSector();
 		}
 		else
@@ -815,6 +820,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		final String selectedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
 		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
 		
+		log.info("Adding scripts and plugins");
 		sector.addScript(new CoreScript());
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		
@@ -857,6 +863,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 		}
 		
+		log.info("Adding teleport script");
 		// teleport player to homeworld at start
 		// FIXME: doesn't get into the save at start
 		if (corvusMode)
@@ -918,6 +925,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					SectorEntityToken entity = homeworld.entity;
 					Vector2f loc = entity.getLocation();
 					Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
+					done = true;
 				}
 			};
 			sector.addTransientScript(teleportScript);
@@ -1226,7 +1234,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			int planetNameIndex = ExerelinUtils.getRandomInRange(0, possiblePlanetNamesList.size() - 1);
 			name = possiblePlanetNamesList.get(planetNameIndex);
 			possiblePlanetNamesList.remove(planetNameIndex);
-
+			log.info("Creating planet " + name);
 			id = name.replace(' ','_');
 			
 			if (planetData.habitable)
@@ -1299,6 +1307,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					float moonRadius = ExerelinUtils.getRandomInRange(50, 100);
 					orbitDays = getOrbitalPeriod(newPlanet.getRadius(), distance + newPlanet.getRadius(), 2);
 					PlanetAPI newMoon = system.addPlanet(name + " " + ext, newPlanet, name + " " + ext, moonType, angle, moonRadius, distance, orbitDays);
+					log.info("Creating moon " + name + " " + ext);
 					
 					EntityData moonData = new EntityData(system);
 					moonData.entity = newMoon;
@@ -1495,13 +1504,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			String name = "";
 			while(!nameOK)
 			{
-				name = possibleStationNamesList.get(ExerelinUtils.getRandomInRange(0, possibleStationNames.length - 1));
+				name = possibleStationNamesList.get(ExerelinUtils.getRandomInRange(0, possibleStationNamesList.size() - 1));
 				if (!alreadyUsedStationNames.contains(name))
 					nameOK = true;
 			}
 			alreadyUsedStationNames.add(name);
 			stationData.name = name;			
 			stations.add(stationData);
+			log.info("Prepping station " + name);
 
 			k = k + 1;
 		}
