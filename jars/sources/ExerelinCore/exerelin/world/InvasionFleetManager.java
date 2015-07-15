@@ -45,8 +45,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     public static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
     public static final float DEFENDER_STRENGTH_MARINE_MULT = 1.15f;
     public static final float RESPAWN_FLEET_SPAWN_DISTANCE = 18000f;
-    public static final float HOSTILE_TO_ALL_INVASION_POINT_MOD = 0.25f;
-    public static final float HOSTILE_TO_ALL_INVASION_TARGET_MOD = 0.3f;
+    public static final float ALL_AGAINST_ONE_INVASION_POINT_MOD = 0.3f;
+    public static final float ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD = 0.35f;
+    public static final float ONE_AGAINST_ALL_INVASION_POINT_MOD = 0.225f;
     public static final int MAX_FLEETS = 50;
     
     public static Logger log = Global.getLogger(InvasionFleetManager.class);
@@ -417,7 +418,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             {
                 float numWars = enemies.size();
                 numWars = (float)Math.sqrt(numWars);
-                mult = numWars*HOSTILE_TO_ALL_INVASION_POINT_MOD + (1 - HOSTILE_TO_ALL_INVASION_POINT_MOD);
+                mult = numWars*ONE_AGAINST_ALL_INVASION_POINT_MOD + (1 - ONE_AGAINST_ALL_INVASION_POINT_MOD);
             }
             else
             {
@@ -428,7 +429,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                         float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, ExerelinConfig.allowPirateInvasions, true).size();
                         enemyWars = (float)Math.sqrt(enemyWars);
                         if (enemyWars > 0 )
-                            mult += 1/((enemyWars*HOSTILE_TO_ALL_INVASION_POINT_MOD) + (1));
+                            mult += 1/((enemyWars*ALL_AGAINST_ONE_INVASION_POINT_MOD) + (1));
                     }
                     else mult +=1;
                 }
@@ -517,7 +518,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                     float weight = 20000.0F / dist;
                     //weight *= market.getSize() * market.getStabilityValue();    // try to go after high value targets
                     if (ExerelinUtilsFaction.isPirateOrTemplarFaction(marketFaction.getId()))
-                        weight *= HOSTILE_TO_ALL_INVASION_TARGET_MOD;
+                        weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
 
                     targetPicker.add(market, weight);
                 }
