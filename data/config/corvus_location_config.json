@@ -11,6 +11,7 @@
 		"Aesir":"breidablik",
 		"Anar":"euripedes",
 		"Antioch":"tem_ascalon",
+		"atalie":"atalieB2a",
 		"Baka":"crystanos2",
 		"Breh'Inni":"glory",
 		"Canis":"petra",
@@ -21,6 +22,7 @@
 		"Gemstone":"aiw_diamond",
 		"Gigas":"stillness",
 		"Gneiss":"lodestone",
+		"Nemvis":"mytoselle",
 		"Polaris":"newhiigara",
 		"Rama":"moriaplanet",
 		"Rock":"rangus",
@@ -115,6 +117,14 @@
 		"pn_colony":{
 			"system":"Tolp",
 			"entity":"tolpIV"
+		},
+		"ptech":{
+			"system":"Nemvis",
+			"entity":"mytoselle"
+		},
+		"oculus":{
+			"system":"atalie",
+			"entity":"atalieB2a"
 		},
 		"SCY":{
 			"system":"Tartarus",
