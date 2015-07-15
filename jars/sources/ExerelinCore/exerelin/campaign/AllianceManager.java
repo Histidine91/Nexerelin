@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -18,6 +19,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -649,6 +651,29 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         allianceManager = new AllianceManager();
         data.put(MANAGER_MAP_KEY, allianceManager);
         return allianceManager;
+    }
+    
+    public static void printAllianceList(TextPanelAPI text)
+    {
+        List<AllianceManager.Alliance> alliances = AllianceManager.getAllianceList();		
+        Collections.sort(alliances, new AllianceManager.AllianceComparator());
+
+        Color hl = Misc.getHighlightColor();
+
+        text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_alliances", "numAlliances", "$numAlliances", alliances.size()+""));
+        text.highlightInLastPara(hl, "" + alliances.size());
+        text.setFontSmallInsignia();
+        text.addParagraph("-----------------------------------------------------------------------------");
+        for (AllianceManager.Alliance alliance : alliances)
+        {
+            String allianceName = alliance.name;
+            String allianceString = alliance.getAllianceNameAndMembers();
+
+            text.addParagraph(allianceString);
+            text.highlightInLastPara(hl, allianceName);
+        }
+        text.addParagraph("-----------------------------------------------------------------------------");
+        text.setFontInsignia();
     }
     
     public static class Alliance {

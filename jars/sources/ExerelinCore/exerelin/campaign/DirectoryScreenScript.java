@@ -18,9 +18,6 @@ import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
-import java.util.Collections;
-import java.util.List;
 import org.lwjgl.input.Keyboard;
 
 // adapted from UpdateNotificationScript in LazyWizard's Version Checker
@@ -149,39 +146,7 @@ public class DirectoryScreenScript implements EveryFrameScript
 		}
 		else if (optionData == Menu.ALLIANCES)
 		{
-		/*
-			FleetInteractionDialogPluginImpl.inConversation = true;
-
-			optionsDialogDelegate = new RuleBasedInteractionDialogPluginImpl();
-			optionsDialogDelegate.setEmbeddedMode(true);
-			optionsDialogDelegate.init(dialog);
-
-			MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
-			mem.set("$specialDialog", true);
-
-			mem.set("$option", "exerelinAllianceReport", 0);
-			optionsDialogDelegate.fireBest("DialogOptionSelected");
-		*/
-		
-			List<AllianceManager.Alliance> alliances = AllianceManager.getAllianceList();		
-			Collections.sort(alliances, new AllianceManager.AllianceComparator());
-			
-			Color hl = Misc.getHighlightColor();
-	
-			text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_alliances", "numAlliances", "$numAlliances", alliances.size()+""));
-			text.highlightInLastPara(hl, "" + alliances.size());
-			text.setFontSmallInsignia();
-			text.addParagraph("-----------------------------------------------------------------------------");
-			for (AllianceManager.Alliance alliance : alliances)
-			{
-				String allianceName = alliance.name;
-				String allianceString = alliance.getAllianceNameAndMembers();
-	
-				text.addParagraph(allianceString);
-				text.highlightInLastPara(hl, allianceName);
-			}
-			text.addParagraph("-----------------------------------------------------------------------------");
-			text.setFontInsignia();
+			AllianceManager.printAllianceList(text);
 		}
 		else if (optionData == Menu.INTEL_SCREEN)
 		{
