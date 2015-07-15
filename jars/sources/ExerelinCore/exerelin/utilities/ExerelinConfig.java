@@ -54,11 +54,11 @@ public class ExerelinConfig
     
     // Invasion stuff
     public static boolean allowPirateInvasions = false;
-    public static float fleetRequestCostPerMarine = 250f;
-    public static float fleetRequestCostPerFP = 1000f;
+    public static float fleetRequestCostPerMarine = 125f;
+    public static float fleetRequestCostPerFP = 500f;
     public static float invasionGracePeriod = 30f;
-    public static float pointsRequiredForInvasionFleet = 5000f;
-    public static float baseInvasionPointsPerFaction = 25f;
+    public static float pointsRequiredForInvasionFleet = 4000f;
+    public static float baseInvasionPointsPerFaction = 45f;
     public static float invasionPointEconomyMult = 1f;
     
     // Alliances
