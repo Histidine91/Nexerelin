@@ -35,7 +35,7 @@
     "fleetRequestCostPerMarine": 125,  # used for player-requested fleets
     "fleetRequestCostPerFP": 500,  # used for player-requested fleets
     "invasionGracePeriod": 60,  # factions won't launch invasion fleets at each other for this long at start
-    "pointsRequiredForInvasionFleet": 5000,    # bigger = longer delay between invasion fleets
+    "pointsRequiredForInvasionFleet": 4000,    # bigger = longer delay between invasion fleets
     "baseInvasionPointsPerFaction": 45, # added to economy-generated points
     "invasionPointEconomyMult": 1.0, # each market contributes invastion points at regular intervals: stability * size * this number
     
