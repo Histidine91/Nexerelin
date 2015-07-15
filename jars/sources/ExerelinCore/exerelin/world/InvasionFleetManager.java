@@ -400,6 +400,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             pointsPerFaction.put(factionId, points);
         }
         
+        int playerLevel = Global.getSector().getPlayerPerson().getStats().getLevel();
+        
         List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
         for (String factionId: liveFactionIds)
         {
@@ -442,6 +444,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             
             float counter = spawnCounter.get(factionId);
             float increment = pointsPerFaction.get(factionId) + ExerelinConfig.baseInvasionPointsPerFaction;
+            increment += ExerelinConfig.invasionPointsPerPlayerLevel * playerLevel;
             increment *= mult * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
             counter += increment;
             

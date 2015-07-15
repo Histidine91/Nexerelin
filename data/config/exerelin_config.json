@@ -36,8 +36,10 @@
     "fleetRequestCostPerFP": 500,  # used for player-requested fleets
     "invasionGracePeriod": 60,  # factions won't launch invasion fleets at each other for this long at start
     "pointsRequiredForInvasionFleet": 4000,    # bigger = longer delay between invasion fleets
-    "baseInvasionPointsPerFaction": 45, # added to economy-generated points
-    "invasionPointEconomyMult": 1.0, # each market contributes invastion points at regular intervals: stability * size * this number
+    # invasion points are added daily
+    "baseInvasionPointsPerFaction": 45,
+    "invasionPointsPerPlayerLevel": 1,
+    "invasionPointEconomyMult": 1.0, # each market contributes invasion points: stability * size * this number
     
     "allianceGracePeriod": 90,  # no alliances can form for this long at start
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
