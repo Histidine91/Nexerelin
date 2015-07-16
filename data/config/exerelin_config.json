@@ -45,8 +45,8 @@
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
     "ignoreAlignmentForAlliances": false,
     
-    "prismMaxWeaponsPerFaction": 3, # integer. Weapons are randomly picked; may then be pruned if quality too low
-    "prismNumShipsPerFaction": 0.5, # float. Min 5 ships
+    "prismMaxWeaponsPerFaction": 3, # integer; min 20 weapons
+    "prismNumShipsPerFaction": 0.5, # float; min 5 ships
     "prismTariff": 2.0,  # float, 1.0 = 100% tariff
     
     "warWearinessDivisor": 20000,   # float; higher means factions take longer on average to sign a ceasefire

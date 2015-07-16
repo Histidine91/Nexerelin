@@ -40,13 +40,23 @@ public class PrismMarket extends BaseSubmarketPlugin {
         CargoAPI cargo = getCargo();
 
         pruneWeapons(1f);
-        addRandomWeapons(ExerelinConfig.prismMaxWeaponsPerFaction*Global.getSector().getAllFactions().size(), 3);
-        for (CargoStackAPI s : cargo.getStacksCopy()) {
-            //remove all low tier weapons
-            if (s.isWeaponStack() && (s.getWeaponSpecIfWeapon().getTier()<2 || s.getWeaponSpecIfWeapon().getWeaponId().startsWith("tem_"))){
-                float qty = s.getSize();
-                cargo.removeItems(s.getType(), s.getData(), qty );
-                cargo.removeEmptyStacks();
+        // add 10 weapons at a time
+        // then prune cheapo ones
+        // repeat until have at least prismMaxWeaponsPerFaction*numFactions OR 20 weapons, whichever is higher
+        float numFactions = Global.getSector().getAllFactions().size();
+        float maxWeaponsPerFaction = ExerelinConfig.prismMaxWeaponsPerFaction;
+        for ( float i=0f; i < Math.max (20, maxWeaponsPerFaction*numFactions); i = (float) cargo.getStacksCopy().size()) 
+        {
+            addRandomWeapons(10, 3);
+            for (CargoStackAPI s : cargo.getStacksCopy()) {
+                //remove all low tier weapons
+                if (s.isWeaponStack() && (s.getWeaponSpecIfWeapon().getTier()<2 
+                        || s.getWeaponSpecIfWeapon().getWeaponId().startsWith("tem_")))
+                {
+                    float qty = s.getSize();
+                    cargo.removeItems(s.getType(), s.getData(), qty );
+                    cargo.removeEmptyStacks();
+                }
             }
         }
         addShips();
