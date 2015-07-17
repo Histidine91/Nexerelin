@@ -98,12 +98,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	private List<String> possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
 	private List<String> possibleStationNamesList = new ArrayList(Arrays.asList(possibleStationNames));
 	
-	private static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren"};
+	private static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren", "barren-bombarded"};
 	private static final String[] planetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable",
-		"gas_giant", "ice_giant", "frozen", "rocky_ice"};
+		"gas_giant", "ice_giant", "frozen", "rocky_ice", "radiated", "barren_bombarded"};
 	private static final String[] planetTypesGasGiant = new String[] {"gas_giant", "ice_giant"};
-	private static final String[] moonTypes = new String[] {"frozen", "barren", "rocky_ice", "rocky_metallic", "desert", "water", "jungle"};
-	private static final String[] moonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice"};
+	private static final String[] moonTypes = new String[] {"frozen", "barren", "barren-bombarded", "rocky_ice", "rocky_metallic", "desert", "water", "jungle"};
+	private static final String[] moonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "radiated", "barren-bombarded"};
 	
 	private static final Map<String, String[]> stationImages = new HashMap<>();
 	
@@ -327,11 +327,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			allowedImages.add(new String[]{"illustrations", "industrial_megafacility"} );
 			allowedImages.add(new String[]{"illustrations", "city_from_above"} );
 		}
-		if(isStation && size >= 3)
+		if (isStation && size >= 3)
 			allowedImages.add(new String[]{"illustrations", "jangala_station"} );
-		if(entity.getFaction().getId().equals("pirates"))
+		if (entity.getFaction().getId().equals("pirates"))
 			allowedImages.add(new String[]{"illustrations", "pirate_station"} );
-		if(!isStation && (planetType.equals("rocky_metallic") || planetType.equals("rocky_barren")))
+		if (!isStation && (planetType.equals("rocky_metallic") || planetType.equals("rocky_barren") || planetType.equals("barren-bombarded")) )
 			allowedImages.add(new String[]{"illustrations", "vacuum_colony"} );
 		//if (isMoon)
 		//	allowedImages.add(new String[]{"illustrations", "asteroid_belt_moon"} );
@@ -384,24 +384,34 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		
 		// planet type conditions
-		if (planetType.equals("jungle")) {
-			newMarket.addCondition("jungle");
-
-			if(ExerelinUtils.getRandomInRange(0, 3) == 0)
-				newMarket.addCondition("orbital_burns");
+		switch (planetType) {
+			case "jungle":
+				newMarket.addCondition("jungle");
+				if(ExerelinUtils.getRandomInRange(0, 3) == 0)
+					newMarket.addCondition("orbital_burns");
+				break;
+			case "water":
+				newMarket.addCondition("water");
+				break;
+			case "arid":
+				newMarket.addCondition("arid");
+				break;
+			case "terran":
+				newMarket.addCondition("terran");
+				break;
+			case "desert":
+				newMarket.addCondition("desert");
+				break;
+			case "frozen":
+			case "rocky_ice":
+				newMarket.addCondition("ice");
+				break;
+			case "barren":
+			case "rocky_metallic":
+			case "barren-bombarded":
+				newMarket.addCondition("uninhabitable");
+				break;
 		}
-		if (planetType.equals("water"))
-			newMarket.addCondition("water");
-		if (planetType.equals("arid"))
-			newMarket.addCondition("arid");
-		if (planetType.equals("terran"))
-			newMarket.addCondition("terran");
-		if (planetType.equals("desert"))
-			newMarket.addCondition("desert");
-		if (planetType.equals("frozen") || planetType.equals("rocky_ice"))
-			newMarket.addCondition("ice");
-		if (planetType.equals("barren") || planetType.equals("rocky_metallic"))
-			newMarket.addCondition("uninhabitable");
 				
 		if(marketSize < 4 && !isStation){
 			newMarket.addCondition("frontier");
