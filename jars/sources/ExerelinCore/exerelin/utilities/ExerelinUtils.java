@@ -17,7 +17,6 @@ import java.awt.*;
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +27,8 @@ import org.json.JSONObject;
 @SuppressWarnings("unchecked")
 public class ExerelinUtils
 {
+	// use LazyLib's MathUtils.getRandomNumberInRange() instead
+	@Deprecated
 	public static int getRandomInRange(int min, int max)
 	{
 		return min + (int)(Math.random() * ((max - min) + 1)); // hate java
@@ -284,6 +285,7 @@ public class ExerelinUtils
 		}
 	}
 
+	@Deprecated
 	public static boolean isValidMiningFleet(CampaignFleetAPI fleet)
 	{
 		List members = fleet.getFleetData().getMembersListCopy();
@@ -301,6 +303,7 @@ public class ExerelinUtils
 		return (hasMiningShip && hasShip);
 	}
 
+	@Deprecated
 	public static int getMiningPower(CampaignFleetAPI fleet)
 	{
 		int power = 0;
@@ -317,6 +320,7 @@ public class ExerelinUtils
 	}
 
     // Check if a fleet is a valid boarding fleet
+	@Deprecated
 	public static boolean isValidBoardingFleet(CampaignFleetAPI fleet, Boolean checkForTroopTransport)
 	{
 		List members = fleet.getFleetData().getMembersListCopy();
@@ -344,6 +348,7 @@ public class ExerelinUtils
 		return (hasValidFlagship && hasValidTroopTransport);
 	}
 
+	@Deprecated
 	public static void handlePlayerFleetMining(CampaignFleetAPI playerFleet)
 	{
 
@@ -386,6 +391,7 @@ public class ExerelinUtils
         }
 	}
 
+	@Deprecated
 	public static void populateStartingStorageFacility(SectorEntityToken storageFacility)
 	{
 		CargoAPI cargo = storageFacility.getCargo();
@@ -394,6 +400,7 @@ public class ExerelinUtils
         cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, "mining_drone_wing"));
 	}
 
+	@Deprecated
     public static void handlePlayerBoarding(CampaignFleetAPI playerFleet)
     {
         // Check player isn't in hyperspace
@@ -468,6 +475,7 @@ public class ExerelinUtils
     // Play out a station boarding attempt
     // Returns true if board successful, false if not
     // Subsequent code must handle any station ownership changes etc.
+	@Deprecated
     public static boolean boardStationAttempt(CampaignFleetAPI fleet, SectorEntityToken station, Boolean playerFleet, Boolean resetCargo)
     {
         final int NORMAL_DICE_ROLL_MAX = 12;
