@@ -43,13 +43,6 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 			return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
 		}
 		
-		// FIXME: hack for Avesta handling
-		if (interactionTarget.getId().equals("exipirated_avesta"))
-		{
-			interactionTarget.removeTag(Tags.COMM_RELAY);
-			return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_SPECIFIC);
-		}
-		
 		if (!ExerelinUtils.isSSPInstalled()) return super.pickInteractionDialogPlugin(interactionTarget);
 		return null;
 	}

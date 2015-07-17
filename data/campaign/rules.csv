@@ -890,6 +890,28 @@ RepIsAtWorst $faction.id HOSTILE","$menuState = main 0
 $tradeMode = OPEN 0
 FireAll PopulateOptions","While $theFaction are generally $relAdjective towards you, that's not all that different from how they see other rival captains. The port authority, such as it is, grants you docking clearance after only a slight delay.",,
 ,,,,,,
+commRelayOpen,OpenInteractionDialog,"$tag:comm_relay
+!$hasMarket","ShowDefaultVisual
+FireBest InitCommRelayDialog",,,
+commRelayAddOptionInstallSniffer,PopulateOptions,"$tag:comm_relay
+!$hasMarket
+$menuState == main
+!$commSnifferInstalled",,,0:csInstall:Install a comm sniffer,
+commRelaySaySnifferRunning,PopulateOptions,"$tag:comm_relay
+!$hasMarket
+$menuState == main
+$commSnifferInstalled
+!$saidCommSnifferRunning",$saidCommSnifferRunning = true 0,You've got a comm sniffer running on this relay.,,
+commRelayAddOptionUninstallSniffer,PopulateOptions,"$tag:comm_relay
+!$hasMarket
+$menuState == main
+$commSnifferInstalled",,,0:csUninstall:Uninstall the comm sniffer,
+,,,,,,
+commRelayAddOptionLeave,PopulateOptions,"$tag:comm_relay
+!$hasMarket
+$menuState == main","SetShortcut crLeave ""ESCAPE""",,100:crLeave:Leave,
+commRelayAddOptionInstallSniffer,PopulateOptions,,,,,
+,,,,,,
 #Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplars,MarketPostOpen,"!$doesFakeVariableExist score:999
 $hasMarket
