@@ -106,13 +106,13 @@ public class MiningHelper {
 		cacheDefs.add(new CacheDef("weapon", CacheType.WEAPON, null, 1, 0.8f));
 		cacheDefs.add(new CacheDef("frigate", CacheType.FRIGATE, null, 1, 0.2f));
 		cacheDefs.add(new CacheDef("fighters", CacheType.FIGHTER_WING, null, 1, 0.3f));
-		cacheDefs.add(new CacheDef("supplies", CacheType.COMMODITY, "supplies", 10, 1f));
-		cacheDefs.add(new CacheDef("fuel", CacheType.COMMODITY, "fuel", 10, 1f));
-		cacheDefs.add(new CacheDef("food", CacheType.COMMODITY, "food", 15, 1f));
-		cacheDefs.add(new CacheDef("hand_weapons", CacheType.COMMODITY, "hand_weapons", 10, 1f));
-		cacheDefs.add(new CacheDef("heavy_machinery", CacheType.COMMODITY, "heavy_machinery", 5, 0.7f));
-		cacheDefs.add(new CacheDef("rare_metals", CacheType.COMMODITY, "rare_metals", 4, 0.7f));
-		cacheDefs.add(new CacheDef("drugs", CacheType.COMMODITY, "drugs", 2, 0.5f));
+		cacheDefs.add(new CacheDef("supplies", CacheType.COMMODITY, "supplies", 6, 1f));
+		cacheDefs.add(new CacheDef("fuel", CacheType.COMMODITY, "fuel", 8, 1f));
+		cacheDefs.add(new CacheDef("food", CacheType.COMMODITY, "food", 10, 1f));
+		cacheDefs.add(new CacheDef("hand_weapons", CacheType.COMMODITY, "hand_weapons", 6, 1f));
+		cacheDefs.add(new CacheDef("heavy_machinery", CacheType.COMMODITY, "heavy_machinery", 4, 0.7f));
+		cacheDefs.add(new CacheDef("rare_metals", CacheType.COMMODITY, "rare_metals", 3, 0.7f));
+		cacheDefs.add(new CacheDef("drugs", CacheType.COMMODITY, "drugs", 2.5f, 0.5f));
 	}
 	
     public static boolean canMine(SectorEntityToken entity)
