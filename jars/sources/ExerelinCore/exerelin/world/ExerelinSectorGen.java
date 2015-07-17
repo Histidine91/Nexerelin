@@ -100,7 +100,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	private static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren", "barren-bombarded"};
 	private static final String[] planetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable",
-		"gas_giant", "ice_giant", "frozen", "rocky_ice", "radiated", "barren_bombarded"};
+		"gas_giant", "ice_giant", "frozen", "rocky_ice", "radiated", "barren-bombarded"};
 	private static final String[] planetTypesGasGiant = new String[] {"gas_giant", "ice_giant"};
 	private static final String[] moonTypes = new String[] {"frozen", "barren", "barren-bombarded", "rocky_ice", "rocky_metallic", "desert", "water", "jungle"};
 	private static final String[] moonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "radiated", "barren-bombarded"};
