@@ -38,9 +38,8 @@ class ExerelinPossibleMarketCondition	// this is the most annoyingly bloated obj
 	private int maxSize;
 	boolean allowDuplicates;
 	boolean allowStations = true;
-	// todo: invalid planet types (e.g. no aquaculture on a desert world)
-	// also permitted planet types (e.g. lobster could require water world)
-	// some other stuff I forgot
+	public final List<String> allowedPlanets = new ArrayList<>();
+	public final List<String> disallowedPlanets  = new ArrayList<>();
 	
 	public ExerelinPossibleMarketCondition(String name, float chance)
 	{
@@ -166,6 +165,20 @@ public class ExerelinMarketConditionPicker
 		// size 6
 	}
 	
+	private void allowWateryWorlds(ExerelinPossibleMarketCondition cond)
+	{
+		cond.allowedPlanets.add("terran");
+		cond.allowedPlanets.add("water");
+		cond.allowedPlanets.add("jungle");
+	}
+	
+	private void disallowFertileWorlds(ExerelinPossibleMarketCondition cond)
+	{
+		cond.disallowedPlanets.add("terran");
+		cond.disallowedPlanets.add("water");
+		cond.disallowedPlanets.add("jungle");
+		//cond.inallowedPlanets.add("arid");
+	}
 	
 	private void tryAddMarketCondition(MarketAPI market, List possibleConds, int size, String planetType, boolean isStation)
 	{
@@ -178,14 +191,23 @@ public class ExerelinMarketConditionPicker
 		int numConds = 0;
 		for (Object possibleCond1 : possibleConds) {
 			ExerelinPossibleMarketCondition possibleCond = (ExerelinPossibleMarketCondition) (possibleCond1);
-			if (possibleCond.getMinSize() <= size && possibleCond.getMaxSize() >= size
-					&& (possibleCond.getAllowStations() || !isStation)
-					&& (possibleCond.getAllowDuplicates() || !market.hasCondition(possibleCond.name))
-					)
+			
+			if (possibleCond.getMinSize() >= size || possibleCond.getMaxSize() <= size) continue;
+			if (!possibleCond.getAllowStations() && isStation) continue;
+			if (!possibleCond.getAllowDuplicates() && market.hasCondition(possibleCond.name)) continue;
+			if (!possibleCond.allowedPlanets.isEmpty())
 			{
-				picker.add(possibleCond, possibleCond.getChance());
-				numConds++;
+				if (!possibleCond.allowedPlanets.contains(planetType))
+					continue;
 			}
+			if (!possibleCond.disallowedPlanets.isEmpty())
+			{
+				if (possibleCond.disallowedPlanets.contains(planetType))
+					continue;
+			}
+			
+			picker.add(possibleCond, possibleCond.getChance());
+			numConds++;
 		}
 		
 		if (numConds == 0)
