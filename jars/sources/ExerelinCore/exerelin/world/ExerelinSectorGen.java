@@ -256,7 +256,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		
 		CargoAPI cargoOpen = market.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
-		CargoAPI cargoBlack = market.getSubmarket(Submarkets.SUBMARKET_BLACK).getCargo();
+		CargoAPI cargoBlack = cargoOpen;
+		if (market.hasSubmarket(Submarkets.SUBMARKET_BLACK))
+			cargoBlack = market.getSubmarket(Submarkets.SUBMARKET_BLACK).getCargo();
 		CargoAPI cargoMilitary = null;
 		if (market.hasSubmarket(Submarkets.GENERIC_MILITARY))
 			cargoMilitary = market.getSubmarket(Submarkets.GENERIC_MILITARY).getCargo();
@@ -586,12 +588,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(0, 0), MathUtils.getRandomNumberInRange(0, 360), 150, 60, 30, 30);
 		}
 		
+		/*
 		EntityData data = new EntityData(null);
 		data.name = "Prism Freeport";
 		data.type = EntityType.STATION;
 		data.forceMarketSize = 4;
 		
-		//MarketAPI market = addMarketToEntity(prismEntity, data, "independent");
+		MarketAPI market = addMarketToEntity(prismEntity, data, "independent");
+		*/
 
 		MarketAPI market = Global.getFactory().createMarket("prismFreeport" + "_market", "Prism Freeport", 4);
 		market.setFactionId("independent");
@@ -632,12 +636,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		addCommodityStockpile(market, "organs", 0.7f, 0.8f);
 		addCommodityStockpile(market, "lobster", 0.7f, 0.8f);
 		
-		market.getTariff().modifyFlat("generator", 0.1f);
+		market.getTariff().modifyFlat("default_tariff", 0.1f);
+		market.getTariff().modifyMult("isFreeMarket", 0.5f);
 		market.addSubmarket("exerelin_prismMarket");
 		market.setPrimaryEntity(prismEntity);
 		prismEntity.setMarket(market);
 		prismEntity.setFaction("independent");
 		Global.getSector().getEconomy().addMarket(market);
+		
 		//pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
 		//prismEntity.setInteractionImage("illustrations", "space_bar");
 		prismEntity.setCustomDescriptionId("exerelin_prismFreeport");
