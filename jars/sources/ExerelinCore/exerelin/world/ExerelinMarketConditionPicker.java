@@ -120,8 +120,12 @@ public class ExerelinMarketConditionPicker
 		specialConds.add(new MarketConditionDef("outpost", 1f, 2, 4, false));
 		specialConds.add(new MarketConditionDef("cryosanctum", 0.5f, 2, 4, false));
 		specialConds.add(new MarketConditionDef("volatiles_depot", 0.6f, 2));
+		
 		cond = new MarketConditionDef("cottage_industry", 0.6f, 2, false);
 		cond.setAllowStations(false);
+		primaryResourceConds.add(cond);
+		cond = new MarketConditionDef("exerelin_hydroponics", 1f, 2);
+		disallowFertileWorlds(cond);
 		primaryResourceConds.add(cond);
 
 		// size 3
@@ -134,11 +138,11 @@ public class ExerelinMarketConditionPicker
 		specialConds.add(new MarketConditionDef("stealth_minefields", 0.7f, 3, 5, false));
 		specialConds.add(new MarketConditionDef("military_base", 1.1f, 4, false));
 		
-		cond = new MarketConditionDef("volturnian_lobster_pens", 0.5f, 3);
+		cond = new MarketConditionDef("volturnian_lobster_pens", 1f, 3);
 		cond.setAllowStations(false);
 		industryConds.add(cond);
 		allowWateryWorlds(cond);
-		cond = new MarketConditionDef("aquaculture", 0.55f, 3, false);
+		cond = new MarketConditionDef("aquaculture", 1f, 3, false);
 		cond.setAllowStations(false);
 		allowWateryWorlds(cond);
 		primaryResourceConds.add(cond);
