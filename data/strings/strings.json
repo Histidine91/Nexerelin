@@ -74,12 +74,20 @@
 		"marketDirectoryEntryNoLocation":"$market (size $size)"
 	},
 	"exerelin_mining":{
+		"crewLost":"crew lost",
+		"danger":"hazard rating",
+		"miningAccident":"mining accident",
 		"miningReport":"mining report",
 		"miningStrength":"mining strength",
 		"planetType":"type",
-		"danger":"hazard rating",
+		"resourcesExtracted":"resources extracted",
 		"theAsteroid":"the asteroid",
+		
 		"cacheFound":"Hidden cache found!",
+		"accidentsOccured":"Accidents occured!",
+		"shipDamaged":"$ship took $damage damage",
+		"shipDestroyed":"$ship destroyed",
+		"shipLostCR":"$ship lost $crLost CR"
 	},
 	"exerelin_victoryScreen":{
 		"victory_conquest":"Congratulations! $TheFaction has crushed all opposition and now reigns supreme over the $clusterName cluster!",

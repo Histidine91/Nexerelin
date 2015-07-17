@@ -50,9 +50,9 @@ public class PrintMiningInfo extends BaseCommandPlugin {
 		text.highlightInLastPara(hl, planetType);
 		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_mining", "miningStrength")) + ": " + miningStrengthStr);
 		text.highlightInLastPara(hl, miningStrengthStr);
-		//text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_mining", "danger")) + ": " + dangerStr);
-		//if (danger >= 1.0) text.highlightInLastPara(red, dangerStr);
-		//else text.highlightInLastPara(hl, dangerStr);
+		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_mining", "danger")) + ": " + dangerStr);
+		if (danger > 0.5) text.highlightInLastPara(red, dangerStr);
+		else text.highlightInLastPara(hl, dangerStr);
 		
 		text.setFontVictor();
 		text.setFontSmallInsignia();

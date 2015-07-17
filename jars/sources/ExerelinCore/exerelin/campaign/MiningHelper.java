@@ -3,18 +3,22 @@ package exerelin.campaign;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.AsteroidAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.combat.WeaponAPI.AIHints;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
+import com.fs.starfarer.api.fleet.CrewCompositionAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -231,27 +235,128 @@ public class MiningHelper {
 		return weaponPicker.pick();
 	}
 	
-	// TODO
-	public static List<MiningAccident> handleAccidents(CampaignFleetAPI fleet, float danger)
+	protected static float computeCrewLossFraction(FleetMemberAPI member,  float hullFraction, float hullDamage) {		
+		if (hullFraction == 0) {
+			return (0.75f + (float) Math.random() * 0.25f) * member.getStats().getCrewLossMult().getModifiedValue(); 
+		}
+		return hullDamage * hullDamage * (0.5f + (float) Math.random() * 0.5f) * member.getStats().getCrewLossMult().getModifiedValue();
+	}
+	
+	protected static CrewCompositionAPI applyCrewLosses(CampaignFleetAPI fleet, CrewCompositionAPI losses)
 	{
-		List<MiningAccident> accidents = new ArrayList<>();
+		CargoAPI cargo = fleet.getCargo();
+		cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, CargoAPI.CrewXPLevel.GREEN.getId(), losses.getGreen());
+		cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, CargoAPI.CrewXPLevel.REGULAR.getId(), losses.getRegular());
+		cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, CargoAPI.CrewXPLevel.VETERAN.getId(), losses.getVeteran());
+		cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, CargoAPI.CrewXPLevel.ELITE.getId(), losses.getElite());
 		
-		float accidentChance = MathUtils.getRandomNumberInRange(-1, 3);
+		return losses;
+	}
+	
+	protected static CrewCompositionAPI applyCrewLossesBottomUp(CampaignFleetAPI fleet, int dead)
+	{
+		int levelIndex = 0;
+		
+		CrewCompositionAPI currentCrew = Global.getFactory().createCrewComposition();
+		CrewCompositionAPI crewToLose = Global.getFactory().createCrewComposition();
+		List<FleetMemberAPI> ships = fleet.getFleetData().getCombatReadyMembersListCopy();
+		for (FleetMemberAPI ship : ships)
+		{
+			currentCrew.addAll(ship.getCrewComposition());
+		}
+		while (dead > 0 && levelIndex < CrewXPLevel.values().length)
+		{
+			CrewXPLevel level = CrewXPLevel.values()[levelIndex];
+			int currentCrewForLevel = (int)currentCrew.getCrew(level);
+			if (currentCrewForLevel >= dead)
+			{
+				crewToLose.addCrew(level, dead);
+				dead = 0;
+			}
+			else
+			{
+				crewToLose.addCrew(level, currentCrewForLevel);
+				dead -= currentCrewForLevel;
+			}
+			levelIndex++;
+		}
+		return applyCrewLosses(fleet, crewToLose);
+	}
+	
+	// TODO
+	public static MiningAccident handleAccidents(CampaignFleetAPI fleet, float strength, float danger)
+	{
+		MiningAccident accident = null;
+		
+		float accidentChance = MathUtils.getRandomNumberInRange(-1, 3) * (float)Math.sqrt(strength);
 		while (accidentChance > 0)
 		{
-			accidentChance -= Math.random();
+			accidentChance -= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 			if (Math.random() < danger*baseAccidentChance)
 			{
+				if (accident == null) accident = new MiningAccident();
 				
+				// ship takes damage
+				if (Math.random() < 0.25f)
+				{
+					// TODO maybe only apply to ships particpating in mining?
+					List<FleetMemberAPI> ships = fleet.getFleetData().getCombatReadyMembersListCopy();
+					FleetMemberAPI fm = ships.get(MathUtils.getRandomNumberInRange(0, ships.size() - 1));
+					float hull = fm.getStatus().getHullFraction();
+					float hullDamageFactor = 0f;
+					float damage = baseAccidentHullDamage * MathUtils.getRandomNumberInRange(0.5f, 1.5f);
+					fm.getStatus().applyDamage(damage);
+					if (fm.getStatus().getHullFraction() <= 0) 
+					{
+						fm.getStatus().disable();
+						fleet.getFleetData().removeFleetMember(fm);
+						hullDamageFactor = 1f;
+						if (accident.damage.containsKey(fm))
+							accident.damage.remove(fm);
+						if (accident.crLost.containsKey(fm))
+							accident.crLost.remove(fm);
+						accident.shipsDestroyed.add(fm);
+					} else {
+						float newHull = fm.getStatus().getHullFraction();
+						float diff = hull - newHull;
+						if (diff < 0) diff = 0;
+						hullDamageFactor = diff;
+						accident.damage.put(fm, damage);
+					}
+					
+					// kill crew as applicable
+					CrewCompositionAPI temp = Global.getFactory().createCrewComposition();
+					temp.addAll(fm.getCrewComposition());
+					float lossFraction = computeCrewLossFraction(fm, fm.getStatus().getHullFraction(), hullDamageFactor);
+					temp.multiplyBy(lossFraction);
+					accident.crewLost.addAll(temp);
+					applyCrewLosses(fleet, temp);
+				}
+				// CR loss
+				else if (Math.random() < 0.4f)
+				{
+					List<FleetMemberAPI> ships = fleet.getFleetData().getCombatReadyMembersListCopy();
+					FleetMemberAPI fm = ships.get(MathUtils.getRandomNumberInRange(0, ships.size() - 1));
+					float crLost = baseAccidentCRLoss * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+					fm.getRepairTracker().applyCREvent(-crLost, StringHelper.getString("exerelin_mining", "miningAccident"));
+					accident.crLost.put(fm, crLost);
+				}
+				// crew loss
+				else
+				{
+					int dead = MathUtils.getRandomNumberInRange(1, 5);
+					dead = Math.min(dead, fleet.getCargo().getTotalCrew());
+					CrewCompositionAPI temp = applyCrewLossesBottomUp(fleet, dead);
+					accident.crewLost.addAll(temp);
+				}
 			}
 		}
 		
-		return accidents;
+		return accident;
 	}
 	
-	public static List<CacheResult> findCaches(CampaignFleetAPI fleet, SectorEntityToken entity)
+	public static List<CacheResult> findCaches(CampaignFleetAPI fleet, float strength, SectorEntityToken entity)
 	{
-		float strength = getFleetMiningStrength(fleet);
 		List<CacheResult> caches = new ArrayList<>();
 		
 		int numCaches = MathUtils.getRandomNumberInRange(0, 2) + MathUtils.getRandomNumberInRange(0, 1);
@@ -328,7 +433,12 @@ public class MiningHelper {
 		
 		if (Math.random() < baseCacheChance)
 		{
-			result.cachesFound = findCaches(fleet, entity);
+			result.cachesFound = findCaches(fleet, strength, entity);
+		}
+		
+		if (enableAccidents)
+		{
+			result.accidents = handleAccidents(fleet, strength, getDanger(entity));
 		}
 		
 		return result;
@@ -336,7 +446,7 @@ public class MiningHelper {
 	
 	public static class MiningResult {
 		public Map<String, Float> resources;
-		public List<MiningAccident> accidents = new ArrayList<>();
+		public MiningAccident accidents;
 		public List<CacheResult> cachesFound = new ArrayList<>();
 	}
 	
@@ -371,8 +481,9 @@ public class MiningHelper {
 	}
 	
 	public static class MiningAccident {
-		public int crewLost = 0;
+		public CrewCompositionAPI crewLost = Global.getFactory().createCrewComposition();
 		public Map<FleetMemberAPI, Float> damage = new HashMap<>();
+		public List<FleetMemberAPI> shipsDestroyed = new ArrayList<>();
 		public Map<FleetMemberAPI, Float> crLost = new HashMap<>();
 	}
 	
