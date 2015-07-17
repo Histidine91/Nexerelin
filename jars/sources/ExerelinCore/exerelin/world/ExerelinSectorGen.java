@@ -419,7 +419,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		// add random market conditions
 		ExerelinMarketConditionPicker picker = new ExerelinMarketConditionPicker();
-		picker.AddMarketConditions(newMarket, marketSize, planetType, isStation);
+		picker.addMarketConditions(newMarket, marketSize, planetType, isStation);
 
 		if (isStation && marketSize >= 3)
 		{

@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinUtils;
 
@@ -37,8 +36,8 @@ class ExerelinPossibleMarketCondition	// this is the most annoyingly bloated obj
 	private float chance;
 	private int minSize;
 	private int maxSize;
-		boolean allowDuplicates;
-	boolean allowStations;
+	boolean allowDuplicates;
+	boolean allowStations = true;
 	// todo: invalid planet types (e.g. no aquaculture on a desert world)
 	// also permitted planet types (e.g. lobster could require water world)
 	// some other stuff I forgot
@@ -70,7 +69,6 @@ class ExerelinPossibleMarketCondition	// this is the most annoyingly bloated obj
 		this.minSize = minSize;
 		this.maxSize = maxSize;
 		this.allowDuplicates = allowDuplicates;
-		this.allowStations = true;
 	}	
 	
 	public void setMaxSize(int size)
@@ -140,11 +138,14 @@ public class ExerelinMarketConditionPicker
 		specialConds.add(new ExerelinPossibleMarketCondition("dissident", 0.6f, 3, 5, false));
 		specialConds.add(new ExerelinPossibleMarketCondition("stealth_minefields", 0.7f, 3, 5, false));
 		specialConds.add(new ExerelinPossibleMarketCondition("military_base", 1.1f, 4, false));
+		
 		cond = new ExerelinPossibleMarketCondition("volturnian_lobster_pens", 0.5f, 3);
 		cond.setAllowStations(false);
 		industryConds.add(cond);
+		allowWateryWorlds(cond);
 		cond = new ExerelinPossibleMarketCondition("aquaculture", 0.55f, 3, false);
 		cond.setAllowStations(false);
+		allowWateryWorlds(cond);
 		primaryResourceConds.add(cond);
 		
 		// size 4
@@ -163,111 +164,111 @@ public class ExerelinMarketConditionPicker
 		heavyIndustryConds.add(new ExerelinPossibleMarketCondition("shipbreaking_center", 0.7f, 5, false));
 		
 		// size 6
-		
 	}
 	
-	private void TryAddMarketCondition(MarketAPI market, List possibleConds, int size, String planetType, boolean isStation)
+	
+	private void tryAddMarketCondition(MarketAPI market, List possibleConds, int size, String planetType, boolean isStation)
 	{
-		TryAddMarketCondition(market, possibleConds, 1, size, planetType, isStation);
+		tryAddMarketCondition(market, possibleConds, 1, size, planetType, isStation);
 	}
 		
-	private void TryAddMarketCondition(MarketAPI market, List possibleConds, int count, int size, String planetType, boolean isStation)
+	private void tryAddMarketCondition(MarketAPI market, List possibleConds, int count, int size, String planetType, boolean isStation)
 	{
-                WeightedRandomPicker <ExerelinPossibleMarketCondition> picker = new WeightedRandomPicker<>();
-                int numConds = 0;
-                for (Object possibleCond1 : possibleConds) {
-                    ExerelinPossibleMarketCondition possibleCond = (ExerelinPossibleMarketCondition) (possibleCond1);
-                    if (possibleCond.getMinSize() <= size && possibleCond.getMaxSize() >= size
-                            && (possibleCond.getAllowStations() || !isStation)
-                            && (possibleCond.getAllowDuplicates() || !market.hasCondition(possibleCond.name))
-                            )
-                    {
-                        picker.add(possibleCond, possibleCond.getChance());
-                        numConds++;
-                    }
-                }
+		WeightedRandomPicker <ExerelinPossibleMarketCondition> picker = new WeightedRandomPicker<>();
+		int numConds = 0;
+		for (Object possibleCond1 : possibleConds) {
+			ExerelinPossibleMarketCondition possibleCond = (ExerelinPossibleMarketCondition) (possibleCond1);
+			if (possibleCond.getMinSize() <= size && possibleCond.getMaxSize() >= size
+					&& (possibleCond.getAllowStations() || !isStation)
+					&& (possibleCond.getAllowDuplicates() || !market.hasCondition(possibleCond.name))
+					)
+			{
+				picker.add(possibleCond, possibleCond.getChance());
+				numConds++;
+			}
+		}
 		
 		if (numConds == 0)
 			return;	// out of possible conditions; nothing more to do
 		
-                int numAdded = 0;
-                while (numAdded < count)
-                {
-                        ExerelinPossibleMarketCondition cond = picker.pick();
-                        if (cond == null) break;
-                        String name = cond.getName();
-                        if (cond.getAllowDuplicates())
-                        {
-                            for (int i=numAdded; i<count; i++)
-                            {
-                                market.addCondition(cond.name);
-                                numAdded++;
-                            }
-                        }
-                        else
-                        {
-                                market.addCondition(cond.name);
-                                picker.remove(cond);
-                                numAdded++;
-                        }
-                        log.info("\tCondition added: " + name);
-                }
+		int numAdded = 0;
+		while (numAdded < count)
+		{
+			ExerelinPossibleMarketCondition cond = picker.pick();
+			if (cond == null) break;
+			String name = cond.getName();
+			if (cond.getAllowDuplicates())
+			{
+				for (int i=numAdded; i<count; i++)
+				{
+					market.addCondition(cond.name);
+					numAdded++;
+				}
+			}
+			else
+			{
+				market.addCondition(cond.name);
+				picker.remove(cond);
+				numAdded++;
+			}
+			log.info("\tCondition added: " + name);
+		}
 	}
 	
-	public void AddMarketConditions(MarketAPI market, int size, String planetType, boolean isStation)
+	public void addMarketConditions(MarketAPI market, int size, String planetType, boolean isStation)
 	{
 		log.info("Processing market conditions for " + market.getPrimaryEntity().getName() + " (" + market.getFaction().getDisplayName() + ")");
 		
 		// add primary resource conditions
 		if (size >= 4)
-			TryAddMarketCondition(market, primaryResourceConds, 2, size, planetType, isStation);
-                else
-                        TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
+			tryAddMarketCondition(market, primaryResourceConds, 2, size, planetType, isStation);
+		else
+			tryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
 		if (size >= 7)
-			TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
+			tryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
 		
 		// add industry
 		if (size >= 5)
-			TryAddMarketCondition(market, industryConds, 2, size, planetType, isStation);
-                else if (size == 4)
-			TryAddMarketCondition(market, industryConds, size, planetType, isStation);
-                
+			tryAddMarketCondition(market, industryConds, 2, size, planetType, isStation);
+		else if (size == 4)
+			tryAddMarketCondition(market, industryConds, size, planetType, isStation);
+		
 		if (size >= 7)
-			TryAddMarketCondition(market, industryConds, size, planetType, isStation);
+			tryAddMarketCondition(market, industryConds, size, planetType, isStation);
 				
 		// add heavy industry
 		if (size >= 5)
-			TryAddMarketCondition(market, heavyIndustryConds, size, planetType, isStation);
+			tryAddMarketCondition(market, heavyIndustryConds, size, planetType, isStation);
 		
 		// add primary OR industry
 		if (size == 3 || size == 5 || size == 6)
 		{
 			if (ExerelinUtils.getRandomInRange(0, 1) == 0)
-				TryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
+				tryAddMarketCondition(market, primaryResourceConds, size, planetType, isStation);
 			else
-				TryAddMarketCondition(market, industryConds, size, planetType, isStation);
+				tryAddMarketCondition(market, industryConds, size, planetType, isStation);
 		}
 				
 		// add industry OR heavy industry
 		if (size == 7)
 		{
 			if (ExerelinUtils.getRandomInRange(0, 1) == 0)
-				TryAddMarketCondition(market, industryConds, size, planetType, isStation);
+				tryAddMarketCondition(market, industryConds, size, planetType, isStation);
 			else
-				TryAddMarketCondition(market, heavyIndustryConds, size, planetType, isStation);
+				tryAddMarketCondition(market, heavyIndustryConds, size, planetType, isStation);
 		}
 				
 		// add special
 		if (size == 2)
 		{
 			if (ExerelinUtils.getRandomInRange(0, 1) == 0)
-				TryAddMarketCondition(market, specialConds, size, planetType, isStation);
+				tryAddMarketCondition(market, specialConds, size, planetType, isStation);
 		}
 		else if (size >= 3)
 		{
-			TryAddMarketCondition(market, specialConds, size, planetType, isStation);
+			tryAddMarketCondition(market, specialConds, size, planetType, isStation);
 			if (size >= 5)
-				TryAddMarketCondition(market, specialConds, size, planetType, isStation);
+				tryAddMarketCondition(market, specialConds, size, planetType, isStation);
 		}
 	}
 }
