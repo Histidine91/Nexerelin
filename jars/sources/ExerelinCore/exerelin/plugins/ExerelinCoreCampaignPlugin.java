@@ -12,6 +12,8 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.campaign.MiningHelper;
+import exerelin.utilities.StringHelper;
 import exerelin.world.ResponseFleetManager;
 
 @SuppressWarnings("unchecked")
@@ -34,39 +36,55 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		String factionId = interactionTarget.getFaction().getId();
 		if (interactionTarget instanceof CampaignFleetAPI) 
 		{
-                        if (factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals("player_npc"))
-                                return new PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPlugin(), PickPriority.MOD_SPECIFIC);
+			if (factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals("player_npc"))
+				return new PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPlugin(), PickPriority.MOD_SPECIFIC);
 		}
-                
-                // FIXME: hack for Avesta handling
-                if (interactionTarget.getId().equals("exipirated_avesta"))
-                {
-                    interactionTarget.removeTag(Tags.COMM_RELAY);
-                    return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_SPECIFIC);
-                }
-                
+		if (MiningHelper.canMine(interactionTarget)) {
+			return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
+		}
+		
+		// FIXME: hack for Avesta handling
+		if (interactionTarget.getId().equals("exipirated_avesta"))
+		{
+			interactionTarget.removeTag(Tags.COMM_RELAY);
+			return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_SPECIFIC);
+		}
+		
 		if (!ExerelinUtils.isSSPInstalled()) return super.pickInteractionDialogPlugin(interactionTarget);
 		return null;
 	}
-        
+	
 
-        @Override
-        public PluginPick<BattleAutoresolverPlugin> pickBattleAutoresolverPlugin(SectorEntityToken one, SectorEntityToken two) {
-            if (!ExerelinUtils.isSSPInstalled()) return super.pickBattleAutoresolverPlugin(one, two);
-            return null;
-        }
-        
-        @Override
-        public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(Object param, SectorEntityToken interactionTarget) {
-            if (!ExerelinUtils.isSSPInstalled()) return super.pickInteractionDialogPlugin(param, interactionTarget);
-            return null;
-        }
+	@Override
+	public PluginPick<BattleAutoresolverPlugin> pickBattleAutoresolverPlugin(SectorEntityToken one, SectorEntityToken two) {
+		if (!ExerelinUtils.isSSPInstalled()) return super.pickBattleAutoresolverPlugin(one, two);
+		return null;
+	}
+	
+	@Override
+	public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(Object param, SectorEntityToken interactionTarget) {
+		if (!ExerelinUtils.isSSPInstalled()) return super.pickInteractionDialogPlugin(param, interactionTarget);
+		return null;
+	}
 
-        @Override
-        public PluginPick<ReputationActionResponsePlugin> pickReputationActionResponsePlugin(Object action, String factionId) {
-            if (!ExerelinUtils.isSSPInstalled()) return super.pickReputationActionResponsePlugin(action, factionId);
-            return null;
-        }
+	@Override
+	public PluginPick<ReputationActionResponsePlugin> pickReputationActionResponsePlugin(Object action, String factionId) {
+		if (!ExerelinUtils.isSSPInstalled()) return super.pickReputationActionResponsePlugin(action, factionId);
+		return null;
+	}
+
+	@Override
+	public void updateEntityFacts(SectorEntityToken entity, MemoryAPI memory) {
+		super.updateEntityFacts(entity, memory);
+		boolean canMine = MiningHelper.canMine(entity);
+		memory.set("$canMine", canMine, 0);
+		
+		if (entity instanceof AsteroidAPI)
+		{
+			memory.set("$entityName", StringHelper.getString("exerelin_mining", "theAsteroid"));
+			memory.set("$isAsteroid", true, 0);
+		}
+	}
 	
 	@Override
 	public void updatePlayerFacts(MemoryAPI memory) {

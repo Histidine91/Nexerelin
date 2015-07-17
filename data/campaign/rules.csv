@@ -817,7 +817,31 @@ ExerelinFleetRequestChangeMarineCount,DialogOptionSelected,$option == exerelinFl
 FireAll ExerelinFleetRequestOption",,,
 ExerelinFleetRequestFire,DialogOptionSelected,$option == exerelinFleetRequestFire,"FleetRequestFire
 FireAll ExerelinFleetRequestOption",,,
+#END FLEET REQUEST OPTIONS,,,,,,
 ,,,,,,
+#START MINING OPTIONS,,,,,,
+ExerelinMiningOpen,OpenInteractionDialog,$canMine,"ShowDefaultVisual
+PrintDescription 3",Your $shipOrFleet approaches $entityName.,"exerelinMiningPreview:Mine planet
+marketLeave:Leave",
+ExerelinMiningPreview,DialogOptionSelected,$option == exerelinMiningPreview,"PrintMiningInfo
+FireAll ExerelinMiningOption",,,
+ExerelinMiningMineOption,ExerelinMiningOption,$global.miningStrength > 0,SetEnabled exerelinMiningStart true,,"exerelinMiningStart:Start mining
+marketLeave:Leave",
+ExerelinMiningMineOptionNoMiners,ExerelinMiningOption,$global.miningStrength <= 0,"SetTooltip exerelinMiningStart""You have no ships capable of mining.""
+SetEnabled exerelinMiningStart false",,"exerelinMiningStart:Start mining
+marketLeave:Leave",
+ExerelinMiningStart,DialogOptionSelected,"$canMine
+$option == exerelinMiningStart","Wait $global.miningWait 2.0 $global.miningFinished $global.miningInterrupted $global.miningInProgress ""Mining...""
+MakePlayerImmediatelyAttackable",,,
+ExerelinMiningInterrupted,BeginFleetEncounter,$global.miningInProgress,AbortWait $global.miningWait,Contact with the other fleet suspends mining operations.,,
+ExerelinMiningComplete,OpenInteractionDialog,"$canMine
+$global.miningFinished","GetMiningResults
+ShowDefaultVisual",Your $shipOrFleet has completed mining on $entityName.,"exerelinMiningPreview:Mine again
+marketLeave:Leave",
+,,,,,,
+#ExerelinMiningBack,DialogOptionSelected,$option == exerelinMiningBack,"$menuState = main 0
+FireAll PopulateOptions",,,
+#END MINING OPTIONS,,,,,,
 ,,,,,,
 # Player fleet greeting lines,,,,,,
 greetingPlayerNPCFriendly,OpenCommLink,"$faction.id == player_npc

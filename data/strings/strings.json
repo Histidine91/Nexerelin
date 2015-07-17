@@ -73,6 +73,14 @@
 		"marketDirectoryEntry":"$market, $location (size $size)",
 		"marketDirectoryEntryNoLocation":"$market (size $size)"
 	},
+	"exerelin_mining":{
+		"miningReport":"mining report",
+		"miningStrength":"mining strength",
+		"planetType":"type",
+		"danger":"hazard rating",
+		"theAsteroid":"the asteroid",
+		"cacheFound":"Hidden cache found!",
+	},
 	"exerelin_victoryScreen":{
 		"victory_conquest":"Congratulations! $TheFaction has crushed all opposition and now reigns supreme over the $clusterName cluster!",
 		"victory_diplomatic":"Congratulations! $TheFaction and its allies control the $clusterName cluster!",
