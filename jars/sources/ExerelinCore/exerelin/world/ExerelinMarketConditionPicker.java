@@ -177,7 +177,7 @@ public class ExerelinMarketConditionPicker
 		cond.disallowedPlanets.add("terran");
 		cond.disallowedPlanets.add("water");
 		cond.disallowedPlanets.add("jungle");
-		//cond.inallowedPlanets.add("arid");
+		cond.disallowedPlanets.add("arid");
 	}
 	
 	private void tryAddMarketCondition(MarketAPI market, List possibleConds, int size, String planetType, boolean isStation)
