@@ -288,35 +288,13 @@ public class ExerelinUtils
 	@Deprecated
 	public static boolean isValidMiningFleet(CampaignFleetAPI fleet)
 	{
-		List members = fleet.getFleetData().getMembersListCopy();
-		Boolean hasMiningShip = false;
-		Boolean hasShip = false;
-		for(int i = 0; i < members.size(); i++)
-		{
-			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinConfig.validMiningShips, true))
-				hasMiningShip = true;
-			else if(!fmAPI.isFighterWing())
-				hasShip = true;
-		}
-
-		return (hasMiningShip && hasShip);
+		return true;
 	}
 
 	@Deprecated
 	public static int getMiningPower(CampaignFleetAPI fleet)
 	{
-		int power = 0;
-
-		List members = fleet.getFleetData().getMembersListCopy();
-		for(int i = 0; i < members.size(); i++)
-		{
-			FleetMemberAPI fmAPI = (FleetMemberAPI)members.get(i);
-			if((! fmAPI.isMothballed()) && ExerelinUtils.doesStringArrayContainValue(fmAPI.getSpecId(), ExerelinConfig.validMiningShips, true))
-				power = power + 1;
-		}
-
-		return power;
+		return 0;
 	}
 
     // Check if a fleet is a valid boarding fleet
@@ -351,44 +329,7 @@ public class ExerelinUtils
 	@Deprecated
 	public static void handlePlayerFleetMining(CampaignFleetAPI playerFleet)
 	{
-
-        SectorEntityToken interactionTarget =  SectorManager.getCurrentSectorManager().getLastInteractionToken();
-        if(interactionTarget == null)
-            return; // Not interacting with anything
-
-        if(playerFleet.isInHyperspace())
-            return; // Nothing to mine in hyperspace, although that would be COOL
-
-        if(!ExerelinUtils.isValidMiningFleet(playerFleet))
-            return; // Not a mining fleet
-
-        int distanceAllowable = 0;
-        if(interactionTarget instanceof AsteroidAPI)
-            distanceAllowable = 2500;
-        else if(interactionTarget instanceof PlanetAPI)
-            distanceAllowable = 7000;
-
-
-        if(MathUtils.getDistanceSquared(interactionTarget.getLocation(), playerFleet.getLocation()) < distanceAllowable)
-        {
-            int miningPower = getMiningPower(playerFleet);
-            if(miningPower > 0)
-            {
-                if(interactionTarget instanceof AsteroidAPI)
-                {
-                    playerFleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource, ExerelinConfig.miningAmountPerDayPerMiner*miningPower);
-                    ExerelinUtilsMessaging.addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner * miningPower + " " + ExerelinConfig.asteroidMiningResource, Color.green);
-                    Global.getSector().getPlayerFleet().getCommanderStats().addXP(400);
-                }
-                else if(interactionTarget instanceof PlanetAPI && ((PlanetAPI)interactionTarget).isGasGiant())
-                {
-                    playerFleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.gasgiantMiningResource, ExerelinConfig.miningAmountPerDayPerMiner*miningPower);
-                    ExerelinUtilsMessaging.addMessage("Mined " + ExerelinConfig.miningAmountPerDayPerMiner*miningPower + " " + ExerelinConfig.gasgiantMiningResource, Color.green);
-                    Global.getSector().getPlayerFleet().getCommanderStats().addXP(400);
-                }
-                Global.getSector().getPlayerFleet().getCommanderStats().levelUpIfNeeded();
-            }
-        }
+		
 	}
 
 	@Deprecated
