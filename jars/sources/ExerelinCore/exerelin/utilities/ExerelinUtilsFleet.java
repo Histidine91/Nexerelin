@@ -20,6 +20,7 @@ import data.scripts.world.SSP_FleetInjector.CommanderType;
 import data.scripts.world.SSP_FleetInjector.CrewType;
 import data.scripts.world.SSP_FleetInjector.FleetStyle;
 import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
 
 
 public class ExerelinUtilsFleet
@@ -88,6 +89,7 @@ public class ExerelinUtilsFleet
         }
         
         log.info("Fleet " + fleet.getName() + ": stability " + stability + "; qf " + qualityFactor);
+        float qualityFactorOriginal = qualityFactor;
         qualityFactor = Math.max(qualityFactor, 0.7f);
 
         switch (type)
@@ -136,8 +138,32 @@ public class ExerelinUtilsFleet
                     SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
                 
                 injector.levelFleet(fleet, CrewType.MILITARY, FleetStyle.MILITARY, faction);
-                break;   
+                break;  
+            case "exerelinMiningFleet":
+                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.TRADER, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
+                SSP_FleetFactory.createTradeFleet(fleet, faction, stability, qualityFactorOriginal, maxFP/15, 1, 0, 0);
+                
+                maxFP *= 1.5;
+                float minerFP = maxFP - fleet.getFleetPoints();
+                while (minerFP > 0)
+                {
+                    ExerelinUtilsFleet.addMiningShipToFleet(fleet);
+                    minerFP = maxFP - fleet.getFleetPoints();
+                }
+                fleet.updateCounts();
+                injector.levelFleet(fleet, CrewType.CIVILIAN, FleetStyle.CIVILIAN, faction);
+                break;
         }
+    }
+    
+    public static void addMiningShipToFleet(CampaignFleetAPI fleet)
+    {
+        ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId());
+        String variantId = config.miningVariantsOrWings.get(MathUtils.getRandomNumberInRange(0, config.miningVariantsOrWings.size() - 1));
+        FleetMemberType type = FleetMemberType.SHIP;
+        if (variantId.contains("wing")) type = FleetMemberType.FIGHTER_WING;
+        FleetMemberAPI miner = Global.getFactory().createFleetMember(type, variantId);
+        fleet.getFleetData().addFleetMember(miner);
     }
 
     public static void sortByFleetCost(CampaignFleetAPI fleet)

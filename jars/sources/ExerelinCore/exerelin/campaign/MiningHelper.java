@@ -412,7 +412,7 @@ public class MiningHelper {
 		return caches;
 	}
 	
-	public static MiningResult getMiningResults(CampaignFleetAPI fleet, SectorEntityToken entity, boolean enableAccidents)
+	public static MiningResult getMiningResults(CampaignFleetAPI fleet, SectorEntityToken entity, float mult, boolean isPlayer)
 	{
 		float strength = getFleetMiningStrength(fleet);
 		Map<String, Float> planetResources = getResources(entity);
@@ -422,21 +422,22 @@ public class MiningHelper {
         while (iter.hasNext())
 		{
 			String res = iter.next();
-			float amount = planetResources.get(res) * strength * miningProductionMult;
+			float amount = planetResources.get(res) * strength * miningProductionMult * mult;
 			amount *= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 			amount = Math.round(amount);
+			fleet.getCargo().addCommodity(res, amount);
 			output.put(res, amount);
 		}
 		
 		MiningResult result = new MiningResult();
 		result.resources = output;
 		
-		if (Math.random() < baseCacheChance)
+		if (isPlayer && Math.random() < baseCacheChance)
 		{
 			result.cachesFound = findCaches(fleet, strength, entity);
 		}
 		
-		if (enableAccidents)
+		if (isPlayer)
 		{
 			result.accidents = handleAccidents(fleet, strength, getDanger(entity));
 		}

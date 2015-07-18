@@ -5,15 +5,76 @@ import java.util.List;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 
 import exerelin.SectorManager;
 import exerelin.commandQueue.*;
 
 public class ExerelinUtilsCargo
 {
+    public static void addCommodityStockpile(MarketAPI market, String commodityID, float amountToAdd)
+    {
+        CommodityOnMarketAPI commodity = market.getCommodityData(commodityID);
+        
+        commodity.addToStockpile(amountToAdd);
+        commodity.addToAverageStockpile(amountToAdd);
+        
+        if (market.getFactionId().equals("templars"))
+        {
+            CargoAPI cargoTemplars = market.getSubmarket("tem_templarmarket").getCargo();
+            cargoTemplars.addCommodity(commodityID, amountToAdd * 0.2f);
+            return;
+        }
+        
+        CargoAPI cargoOpen = market.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
+        CargoAPI cargoBlack = cargoOpen;
+        if (market.hasSubmarket(Submarkets.SUBMARKET_BLACK))
+            cargoBlack = market.getSubmarket(Submarkets.SUBMARKET_BLACK).getCargo();
+        CargoAPI cargoMilitary = null;
+        if (market.hasSubmarket(Submarkets.GENERIC_MILITARY))
+            cargoMilitary = market.getSubmarket(Submarkets.GENERIC_MILITARY).getCargo();
+        
+        if (commodityID.equals("agent") || commodityID.equals("saboteur"))
+        {
+            if (cargoMilitary != null)
+            {
+                cargoOpen.addCommodity(commodityID, amountToAdd * 0.02f);
+                cargoMilitary.addCommodity(commodityID, amountToAdd * 0.11f);
+                cargoBlack.addCommodity(commodityID, amountToAdd * 0.02f);
+            }
+            else
+            {
+                cargoOpen.addCommodity(commodityID, amountToAdd * 0.04f);
+                cargoBlack.addCommodity(commodityID, amountToAdd * 0.11f);
+            }
+        }
+        else if(!market.isIllegal(commodity))
+            cargoOpen.addCommodity(commodityID, amountToAdd * 0.15f);
+        else if (commodityID.equals("hand_weapons") && cargoMilitary != null)
+        {
+            cargoMilitary.addCommodity(commodityID, amountToAdd * 0.1f);
+            cargoBlack.addCommodity(commodityID, amountToAdd * 0.05f);
+        }
+        else
+            cargoBlack.addCommodity(commodityID, amountToAdd * 0.1f);
+        //log.info("Adding " + amount + " " + commodityID + " to " + market.getName());
+    }
+    
+    public static void addCommodityStockpile(MarketAPI market, String commodityID, float minMult, float maxMult)
+    {
+        float multDiff = maxMult - minMult;
+        float mult = minMult + (float)(Math.random()) * multDiff;
+        CommodityOnMarketAPI commodity = market.getCommodityData(commodityID);
+        float demand = commodity.getDemand().getDemandValue();
+        float amountToAdd = demand*mult;
+        addCommodityStockpile(market, commodityID, amountToAdd);
+    }
+    
     public static void addFactionVariantsToCargo(CargoAPI cargo, String factionId, int number)
     {
         for(int i = 0; i < number; i++)

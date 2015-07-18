@@ -11,6 +11,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.*;
 import exerelin.world.InvasionFleetManager;
+import exerelin.world.MiningFleetManager;
 import exerelin.world.ResponseFleetManager;
 import org.lazywizard.omnifac.OmniFacSettings;
 
@@ -55,6 +56,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         DiplomacyManager.create();
         InvasionFleetManager.create();
         ResponseFleetManager.create();
+        MiningFleetManager.create();
         CovertOpsManager.create();
         AllianceManager.create();
         

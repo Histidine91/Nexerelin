@@ -8,6 +8,8 @@ import java.util.*;
 
 public class ExerelinFactionConfig
 {
+    public static final String[] DEFAULT_MINERS = {"mining_drone_wing", "shepherd_Frontier"};
+    
     public String factionId;
 
     public String uniqueModClassName = "";
@@ -96,7 +98,8 @@ public class ExerelinFactionConfig
             
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
             
-            miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
+            if (settings.has("miningVariantsOrWings"))
+                miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
             
             if (settings.has("alignments"))
             {
@@ -117,6 +120,11 @@ public class ExerelinFactionConfig
         catch(Exception e)
         {
             Global.getLogger(ExerelinFactionConfig.class).error(e);
+        }
+        
+        if (miningVariantsOrWings.isEmpty())
+        {
+            miningVariantsOrWings = Arrays.asList(DEFAULT_MINERS);
         }
     }
 
