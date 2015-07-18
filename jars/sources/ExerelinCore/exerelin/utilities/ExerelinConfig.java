@@ -21,8 +21,6 @@ public class ExerelinConfig
     public static int minimumAsteroidBelts = 0;
 
     // Resourcing
-    public static String asteroidMiningResource = "supplies";
-    public static String gasgiantMiningResource = "fuel";
     public static String fleetCostResource = "supplies";
     public static int miningAmountPerDayPerMiner = 50;
 
@@ -47,7 +45,6 @@ public class ExerelinConfig
     // Special Ships
     public static String[] validBoardingFlagships = new String[]{};
     public static String[] validTroopTransportShips = new String[]{};
-    public static String[] validMiningShips = new String[]{};
 
     public static String[] builtInFactions = new String[]{};
     public static String[] supportedModFactions = new String[]{};
@@ -98,10 +95,7 @@ public class ExerelinConfig
             minimumStations = settings.optInt("minimumStations");
             minimumAsteroidBelts = settings.optInt("minimumAsteroidBelts");
 
-            asteroidMiningResource = settings.optString("asteroidMiningResource");
-            gasgiantMiningResource = settings.optString("gasgiantMiningResource");
             fleetCostResource = settings.optString("fleetCostResource");
-            miningAmountPerDayPerMiner = settings.optInt("miningAmountPerDayPerMiner");
 
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary",  playerBaseSalary);
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel", playerSalaryIncrementPerLevel);

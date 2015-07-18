@@ -58,8 +58,6 @@
     "ownFactionCustomsInspections": false,  # will your faction perform customs inspections on you? (always off for player_npc)
     
     "countPiratesForVictory": true,
-    
-    "validMiningShips":["mining_drone", "zorg_sphere", "pn_mlmv"], # String array
 
     # CASE SENSITIVE!!!
     # note factions will still not appear if set to unplayable in config
