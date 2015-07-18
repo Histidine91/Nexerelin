@@ -36,6 +36,4 @@
     "responseFleetSizeMod":0.125,
     
     "dropPrisoners":false,
-
-    "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

@@ -25,6 +25,4 @@
     },
     
     "freeMarket":true,
-    
-    "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

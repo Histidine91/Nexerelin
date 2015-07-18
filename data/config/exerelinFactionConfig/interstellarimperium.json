@@ -29,6 +29,4 @@
 	"diplomatic":0,
         "militarist":1,
     },
-    
-    "miningVariantsOrWings":["mining_drone_wing"], # String array
 }

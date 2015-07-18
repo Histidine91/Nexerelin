@@ -23,6 +23,4 @@
     "alignments":{
         "corporate":0.5,
     },
-
-    "miningVariantsOrWings":["mining_drone_wing"], # String array
 }
