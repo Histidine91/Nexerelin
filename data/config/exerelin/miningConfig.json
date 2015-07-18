@@ -5,14 +5,13 @@
 	"baseAccidentChance":1.0,
 	
 	"miningWeapons":{
-		"miningblaster":8,
-		"mininglaser":1
+		"miningblaster":10,
+		"mininglaser":1.5
 	},
 	"miningShips":{
 		"shepherd":10,
 		"SCY_telchine":35,
 		"brdy_gonodactylus":28,
-		"mining_drone":0.5
 	},
 	"resources":{
 		"default":{
