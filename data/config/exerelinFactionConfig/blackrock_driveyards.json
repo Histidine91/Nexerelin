@@ -26,4 +26,6 @@
         "militarist":0.5,
         "ideological":0.5,
     },
+    
+    "miningVariantsOrWings":["gonodactylus_cc", "gonodactylus_CS", "gonodactylus_Elite"]
 }

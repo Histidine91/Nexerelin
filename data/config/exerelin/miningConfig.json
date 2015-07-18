@@ -11,6 +11,7 @@
 	"miningShips":{
 		"shepherd":10,
 		"SCY_telchine":35,
+		"brdy_gonodactylus":28,
 		"mining_drone":0.5
 	},
 	"resources":{
