@@ -78,52 +78,10 @@ public class AsteroidMiningFleet extends ExerelinFleetBase
 		}
 	}
 
-	private Script createTestTargetScript(CampaignFleetAPI inFleet) {
-        final CampaignFleetAPI fleet = inFleet;
-
-		return new Script() {
-			public void run() {
-                if(SectorManager.getCurrentSectorManager() == null)
-                    return; //TODO - Remove when scripts do not run before after game load
-
-				if(!returningHome && fleet.getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource) < fleetCargoCapacity)
-				{
-					// Mine more supplies
-                    if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) > 1)
-                    {
-                        lastTimeCheck = Global.getSector().getClock().getTimestamp();
-                        fleet.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource, ExerelinConfig.miningAmountPerDayPerMiner * 2);
-                    }
-				}
-				else if(!returningHome)
-				{
-					// Head for home
-					returningHome = true;
-					validFleet = ExerelinUtils.isValidMiningFleet(fleet);
-					miningPower = ExerelinUtils.getMiningPower(fleet);
-				}
-				else if (fleet.getCargo().getQuantity(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource) > 0)
-				{
-					// Reached home so unload
-                    if(Global.getSector().getClock().getElapsedDaysSince(lastTimeCheck) > 1)
-                    {
-                        lastTimeCheck = Global.getSector().getClock().getTimestamp();
-                        fleet.getCargo().removeItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource, ExerelinConfig.miningAmountPerDayPerMiner * 4);
-                        anchor.getCargo().addItems(CargoAPI.CargoItemType.RESOURCES, ExerelinConfig.asteroidMiningResource, ExerelinConfig.miningAmountPerDayPerMiner * 4 * SystemManager.getSystemManagerForAPI((StarSystemAPI) fleet.getContainingLocation()).getSystemStationManager().getStationRecordForToken(anchor).getEfficiency(false));
-                    }
-				}
-				else
-				{
-					// Head out to mine again
-					returningHome = false;
-					fleetCargoCapacity = getFleetCargoCapacity(fleet);
-					validFleet = ExerelinUtils.isValidMiningFleet(fleet);
-					miningPower = ExerelinUtils.getMiningPower(fleet);
-				}
-
-				setFleetAssignments();
-			}
-		};
+	@Deprecated
+	private Script createTestTargetScript(CampaignFleetAPI inFleet) 
+	{
+		return null;
 	}
 
 	private float getFleetCargoCapacity(CampaignFleetAPI fleet)
