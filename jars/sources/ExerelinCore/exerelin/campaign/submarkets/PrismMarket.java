@@ -22,7 +22,8 @@ import org.apache.log4j.Logger;
 
 public class PrismMarket extends BaseSubmarketPlugin {
     
-    private static final int MIN_NUMBER_OF_SHIPS = 5;
+    protected static final int MIN_NUMBER_OF_SHIPS = 5;
+    protected static final int MAX_TRIES_WEAPONS = 5;
     
     public static Logger log = Global.getLogger(PrismMarket.class);
 
@@ -40,9 +41,11 @@ public class PrismMarket extends BaseSubmarketPlugin {
         CargoAPI cargo = getCargo();
 
         pruneWeapons(1f);
+        
         // add 10 weapons at a time
         // then prune cheapo ones
         // repeat until have at least prismMaxWeaponsPerFaction*numFactions OR 20 weapons, whichever is higher
+        int tries = 0;
         float numFactions = Global.getSector().getAllFactions().size();
         float maxWeaponsPerFaction = ExerelinConfig.prismMaxWeaponsPerFaction;
         for ( float i=0f; i < Math.max (20, maxWeaponsPerFaction*numFactions); i = (float) cargo.getStacksCopy().size()) 
@@ -58,6 +61,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
                     cargo.removeEmptyStacks();
                 }
             }
+            tries++;
+            if (tries > MAX_TRIES_WEAPONS) break;
         }
         addShips();
         cargo.sort();
@@ -100,7 +105,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
             }
         }
         
-        for (int i=0; i<MIN_NUMBER_OF_SHIPS+(Global.getSector().getAllFactions().size()*ExerelinConfig.prismNumShipsPerFaction); i++){
+        for (int i=0; i<MIN_NUMBER_OF_SHIPS + (Global.getSector().getAllFactions().size()*ExerelinConfig.prismNumShipsPerFaction); i++){
             //pick the role and faction
             FactionAPI faction = factionPicker.pick();
             String role = rolePicker.pick();            
