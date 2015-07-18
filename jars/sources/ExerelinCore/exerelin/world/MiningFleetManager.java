@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.MiningHelper;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -162,6 +163,8 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
         fleet.getMemoryWithoutUpdate().set("$maxFP", maxFP);
         fleet.getMemoryWithoutUpdate().set("$originMarket", origin);
         
+		float miningStrength = MiningHelper.getFleetMiningStrength(fleet);
+		
         SectorEntityToken entity = origin.getPrimaryEntity();
         entity.getContainingLocation().addEntity(fleet);
         fleet.setLocation(entity.getLocation().x, entity.getLocation().y);
@@ -171,6 +174,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
         data.sourceMarket = origin;
         data.source = origin.getPrimaryEntity();
         data.target = target;
+		data.miningStrength = miningStrength;
         this.activeFleets.add(data);
         
         MiningFleetAI ai = new MiningFleetAI(fleet, data);
@@ -282,6 +286,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
         public SectorEntityToken target;
         public MarketAPI sourceMarket;
         public float startingFleetPoints = 0.0F;
+		public float miningStrength = 0;
         public boolean noWait = false;
     
         public MiningFleetData(CampaignFleetAPI fleet)

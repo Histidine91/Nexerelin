@@ -100,7 +100,10 @@ public class MiningFleetAI implements EveryFrameScript
 				if (miningDailyProgress > 1)
 				{
 					miningDailyProgress -= 1;
-					MiningHelper.getMiningResults(fleet, data.target, 0.5f, false);
+					if (MiningHelper.getFleetMiningStrength(fleet) < data.miningStrength * 0.5f)
+						giveStandDownOrders();
+					else
+						MiningHelper.getMiningResults(fleet, data.target, 0.5f, false);
 					//log.info("Fleet " + fleet.getName() + " has cargo " + cargo.getSpaceUsed() + " of " + cargo.getMaxCapacity());
 				}
             }

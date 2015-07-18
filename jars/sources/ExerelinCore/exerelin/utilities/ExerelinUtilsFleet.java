@@ -15,6 +15,10 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import data.scripts.campaign.SSP_FleetFactory;
+import data.scripts.campaign.SSP_LevelUpper;
+import data.scripts.variants.SSP_FleetRandomizer;
+import static data.scripts.variants.SSP_FleetRandomizer.getArchetypeFromRole;
+import data.scripts.variants.SSP_VariantRandomizer;
 import data.scripts.world.SSP_FleetInjector;
 import data.scripts.world.SSP_FleetInjector.CommanderType;
 import data.scripts.world.SSP_FleetInjector.CrewType;
@@ -114,6 +118,7 @@ public class ExerelinUtilsFleet
                 for (int i=0; i<numMarines; i=i+100)
                 {
                     fleet.getFaction().pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, qualityFactor, fleet);
+                    //SSP_FleetRandomizer.addRandomVariantToFleet(fleet, faction, ShipRoles.PERSONNEL_MEDIUM, qualityFactor);
                 }
                 fleet.updateCounts();
                 
@@ -147,7 +152,9 @@ public class ExerelinUtilsFleet
                 float minerFP = maxFP - fleet.getFleetPoints();
                 while (minerFP > 0)
                 {
-                    ExerelinUtilsFleet.addMiningShipToFleet(fleet);
+                    FleetMemberAPI miner = ExerelinUtilsFleet.addMiningShipToFleet(fleet);
+                    //miner.setVariant(SSP_VariantRandomizer.createVariant(miner, faction, fleet.getCommanderStats(), getArchetypeFromRole(null, qualityFactor, null),
+                    //                                              qualityFactor, SSP_LevelUpper.getAICommanderOPBonus(fleet.getCommander())), false, true);
                     minerFP = maxFP - fleet.getFleetPoints();
                 }
                 fleet.updateCounts();
@@ -156,7 +163,7 @@ public class ExerelinUtilsFleet
         }
     }
     
-    public static void addMiningShipToFleet(CampaignFleetAPI fleet)
+    public static FleetMemberAPI addMiningShipToFleet(CampaignFleetAPI fleet)
     {
         ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId());
         String variantId = config.miningVariantsOrWings.get(MathUtils.getRandomNumberInRange(0, config.miningVariantsOrWings.size() - 1));
@@ -164,6 +171,7 @@ public class ExerelinUtilsFleet
         if (variantId.contains("wing")) type = FleetMemberType.FIGHTER_WING;
         FleetMemberAPI miner = Global.getFactory().createFleetMember(type, variantId);
         fleet.getFleetData().addFleetMember(miner);
+        return miner;
     }
 
     public static void sortByFleetCost(CampaignFleetAPI fleet)
