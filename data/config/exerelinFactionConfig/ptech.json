@@ -24,8 +24,8 @@
 	"alignments":{
 		"technocratic":0.5,
 		"militarist":0.5,
-        "corporate":0.25,
+		"corporate":0.25,
 	},
 	
-    "miningVariantsOrWings":["pt_sandoval_standard", "pt_porcelain_standard"], # String array
+    #"miningVariantsOrWings":["pt_sandoval_standard", "pt_porcelain_standard"], # String array
 }

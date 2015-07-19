@@ -27,5 +27,5 @@
 		"corporate":-0.25,
 	},
 	
-    "miningVariantsOrWings":["ob_gretel_mining"], # String array
+    #"miningVariantsOrWings":["ob_gretel_mining"], # String array
 }
