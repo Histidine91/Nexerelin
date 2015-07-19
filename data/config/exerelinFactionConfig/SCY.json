@@ -9,8 +9,8 @@
 	"customRebelFleetId":"", # String
 	"rebelFleetSuffix":"Slaves", # String
 
-	"asteroidMiningFleetName":"Asteroid Mining Fleet", # String
-	"gasMiningFleetName":"Gas Mining Fleet", # String
+	"asteroidMiningFleetName":"Mining Fleet", # String
+	"gasMiningFleetName":"Gas Fleet", # String
 	"logisticsFleetName":"Logistics Convoy", # String
 	"invasionFleetName":"Invasion Fleet", # String
 	"commandFleetName":"Command Fleet", # String
