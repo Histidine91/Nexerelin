@@ -19,4 +19,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+    
+    "miningVariantsOrWings":["pn_mlmv_tug","pn_mlmv_wing"]
 }
