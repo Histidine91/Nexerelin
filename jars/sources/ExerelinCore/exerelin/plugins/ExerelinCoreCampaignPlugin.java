@@ -74,7 +74,6 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		
 		if (entity instanceof AsteroidAPI)
 		{
-			memory.set("$entityName", StringHelper.getString("exerelin_mining", "theAsteroid"));
 			memory.set("$isAsteroid", true, 0);
 		}
 	}

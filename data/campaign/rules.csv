@@ -823,6 +823,10 @@ FireAll ExerelinFleetRequestOption",,,
 ExerelinMiningOpen,OpenInteractionDialog,$canMine,"ShowDefaultVisual
 PrintDescription 3",Your $shipOrFleet approaches $entityName.,"exerelinMiningPreview:Mine planet
 marketLeave:Leave",
+ExerelinMiningOpenAsteroid,OpenInteractionDialog,"$canMine
+$isAsteroid","ShowDefaultVisual
+PrintDescription 3",Your $shipOrFleet approaches the asteroid.,"exerelinMiningPreview:Mine asteroid
+marketLeave:Leave",
 ExerelinMiningPreview,DialogOptionSelected,$option == exerelinMiningPreview,"PrintMiningInfo
 FireAll ExerelinMiningOption",,,
 ExerelinMiningMineOption,ExerelinMiningOption,$global.miningStrength > 0,SetEnabled exerelinMiningStart true,,"exerelinMiningStart:Start mining
