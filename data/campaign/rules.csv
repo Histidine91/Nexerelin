@@ -839,7 +839,7 @@ $option == exerelinMiningStart","Wait $global.miningWait 2.0 $global.miningFinis
 MakePlayerImmediatelyAttackable",,,
 ExerelinMiningInterrupted,BeginFleetEncounter,$global.miningInProgress,AbortWait $global.miningWait,Contact with the other fleet suspends mining operations.,,
 ExerelinMiningComplete,OpenInteractionDialog,"$canMine
-$global.miningFinished","GetMiningResults
+$global.miningFinished score:3","GetMiningResults
 ShowDefaultVisual",Your $shipOrFleet has completed mining on $entityName.,"exerelinMiningPreview:Mine again
 marketLeave:Leave",
 ,,,,,,
