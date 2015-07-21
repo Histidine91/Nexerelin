@@ -32,78 +32,78 @@ import org.json.JSONObject;
 import org.lazywizard.lazylib.MathUtils;
 
 public class MiningHelper {
-    
-    protected static final String CONFIG_FILE = "data/config/exerelin/miningConfig.json";
-    protected static float miningProductionMult = 4f;
+	
+	protected static final String CONFIG_FILE = "data/config/exerelin/miningConfig.json";
+	protected static float miningProductionMult = 4f;
 	protected static float cacheSizeMult = 1;
 	protected static float baseCacheChance = 0.1f;
 	protected static float baseAccidentChance = 1;
 	protected static float baseAccidentCRLoss = 0.1f;
 	protected static float baseAccidentHullDamage = 500;
 	protected static float xpPerMiningStrength = 10;
-    protected static final Map<String, Float> miningWeapons = new HashMap<>();
-    protected static final Map<String, Float> miningShips = new HashMap<>();
-    protected static final Map<String, Map<String,Float>> resources = new HashMap<>();
-    protected static final Map<String, Float> danger = new HashMap<>();
+	protected static final Map<String, Float> miningWeapons = new HashMap<>();
+	protected static final Map<String, Float> miningShips = new HashMap<>();
+	protected static final Map<String, Map<String,Float>> resources = new HashMap<>();
+	protected static final Map<String, Float> danger = new HashMap<>();
 	protected static final List<CacheDef> cacheDefs = new ArrayList<>();
 	//protected static final
-    
-    public static final Logger log = Global.getLogger(MiningHelper.class);
-    
-    static {
-        try {
-            JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
-            miningProductionMult = (float)config.optDouble("miningProductionMult", miningProductionMult);
+	
+	public static final Logger log = Global.getLogger(MiningHelper.class);
+	
+	static {
+		try {
+			JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
+			miningProductionMult = (float)config.optDouble("miningProductionMult", miningProductionMult);
 			cacheSizeMult = (float)config.optDouble("cacheSizeMult", cacheSizeMult);
 			baseCacheChance = (float)config.optDouble("baseCacheChance", baseCacheChance);
 			baseAccidentChance = (float)config.optDouble("baseAccidentChance", baseAccidentChance);
 			xpPerMiningStrength = (float)config.optDouble("xpPerMiningStrength", xpPerMiningStrength);
 
-            
-            JSONObject weaponsJson = config.getJSONObject("miningWeapons");
-            Iterator<?> keys = weaponsJson.keys();
-            while( keys.hasNext() ) {
-                String key = (String)keys.next();
-                miningWeapons.put(key, (float)weaponsJson.getDouble(key));
-            }
-            
-            JSONObject shipsJson = config.getJSONObject("miningShips");
-            keys = shipsJson.keys();
-            while( keys.hasNext() ) {
-                String key = (String)keys.next();
-                miningShips.put(key, (float)shipsJson.getDouble(key));
-            }
-            
-            JSONObject resourcesJson = config.getJSONObject("resources");
-            keys = resourcesJson.keys();
-            while( keys.hasNext() ) {
-                String planetType = (String)keys.next();
-                Map<String, Float> resMap = new HashMap<>();
-                JSONObject resDef = resourcesJson.getJSONObject(planetType);
-                Iterator<?> resKeys = resDef.keys();
-                while (resKeys.hasNext())
-                {
-                    String res = (String)resKeys.next();
-                    resMap.put(res, (float)resDef.getDouble(res));
-                }
-                resources.put(planetType, resMap);
-            }
-            
-            JSONObject dangerJson = config.getJSONObject("danger");
-            keys = dangerJson.keys();
-            while( keys.hasNext() ) {
-                String key = (String)keys.next();
-                danger.put(key, (float)dangerJson.getDouble(key));
-            }
-            
-            //generatorSystems = config.getJSONArray("systems");
-        } catch (IOException | JSONException ex) {
-            log.error(ex);
-        }
+			
+			JSONObject weaponsJson = config.getJSONObject("miningWeapons");
+			Iterator<?> keys = weaponsJson.keys();
+			while( keys.hasNext() ) {
+				String key = (String)keys.next();
+				miningWeapons.put(key, (float)weaponsJson.getDouble(key));
+			}
+			
+			JSONObject shipsJson = config.getJSONObject("miningShips");
+			keys = shipsJson.keys();
+			while( keys.hasNext() ) {
+				String key = (String)keys.next();
+				miningShips.put(key, (float)shipsJson.getDouble(key));
+			}
+			
+			JSONObject resourcesJson = config.getJSONObject("resources");
+			keys = resourcesJson.keys();
+			while( keys.hasNext() ) {
+				String planetType = (String)keys.next();
+				Map<String, Float> resMap = new HashMap<>();
+				JSONObject resDef = resourcesJson.getJSONObject(planetType);
+				Iterator<?> resKeys = resDef.keys();
+				while (resKeys.hasNext())
+				{
+					String res = (String)resKeys.next();
+					resMap.put(res, (float)resDef.getDouble(res));
+				}
+				resources.put(planetType, resMap);
+			}
+			
+			JSONObject dangerJson = config.getJSONObject("danger");
+			keys = dangerJson.keys();
+			while( keys.hasNext() ) {
+				String key = (String)keys.next();
+				danger.put(key, (float)dangerJson.getDouble(key));
+			}
+			
+			//generatorSystems = config.getJSONArray("systems");
+		} catch (IOException | JSONException ex) {
+			log.error(ex);
+		}
 		
 		initCacheDefs();
-    }
-    
+	}
+	
 	public static void initCacheDefs()
 	{
 		cacheDefs.add(new CacheDef("weapon", CacheType.WEAPON, null, 1, 0.8f));
@@ -118,67 +118,67 @@ public class MiningHelper {
 		cacheDefs.add(new CacheDef("drugs", CacheType.COMMODITY, "drugs", 1.25f, 0.5f));
 	}
 	
-    public static boolean canMine(SectorEntityToken entity)
-    {
-        if (entity instanceof AsteroidAPI) return true;
-        if (entity.getMarket() != null) return false;
-        if (entity instanceof PlanetAPI)
-        {
-            PlanetAPI planet = (PlanetAPI)entity;
-            if (planet.isMoon()) return true;
-            if (planet.isGasGiant()) return true;
-        }
-        return false;
-    }
-    
-    public static float getDanger(SectorEntityToken entity)
-    {
-        String type = "default";
-        if (entity instanceof PlanetAPI)
-        {
-            type = ((PlanetAPI)entity).getTypeId();
-        }
-        if (danger.containsKey(type)) return danger.get(type);
+	public static boolean canMine(SectorEntityToken entity)
+	{
+		if (entity instanceof AsteroidAPI) return true;
+		if (entity.getMarket() != null) return false;
+		if (entity instanceof PlanetAPI)
+		{
+			PlanetAPI planet = (PlanetAPI)entity;
+			if (planet.isMoon()) return true;
+			if (planet.isGasGiant()) return true;
+		}
+		return false;
+	}
+	
+	public static float getDanger(SectorEntityToken entity)
+	{
+		String type = "default";
+		if (entity instanceof PlanetAPI)
+		{
+			type = ((PlanetAPI)entity).getTypeId();
+		}
+		if (danger.containsKey(type)) return danger.get(type);
 		//else if (((PlanetAPI)entity).isGasGiant()) return danger.get("gas_giant");
-        return danger.get("default");
-    }
-    
-    public static Map<String, Float> getResources(SectorEntityToken entity)
-    {
-        String type = "default";
-        if (entity instanceof PlanetAPI)
-        {
-            type = ((PlanetAPI)entity).getTypeId();
-        }
-        if (resources.containsKey(type)) return resources.get(type);
+		return danger.get("default");
+	}
+	
+	public static Map<String, Float> getResources(SectorEntityToken entity)
+	{
+		String type = "default";
+		if (entity instanceof PlanetAPI)
+		{
+			type = ((PlanetAPI)entity).getTypeId();
+		}
+		if (resources.containsKey(type)) return resources.get(type);
 		//else if (((PlanetAPI)entity).isGasGiant()) return resources.get("gas_giant");
 		return resources.get("default");
-    }
-    
-    public static float getFleetMiningStrength(CampaignFleetAPI fleet)
-    {
-        float strength = 0;
-        for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
-        {
+	}
+	
+	public static float getFleetMiningStrength(CampaignFleetAPI fleet)
+	{
+		float strength = 0;
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
+		{
 			int count = 1;
 			if (member.isFighterWing())
 				count = member.getNumFightersInWing();
 			
-            String hullId = member.getHullId();
-            if (miningShips.containsKey(hullId))
-                strength += miningShips.get(hullId) * count;
+			String hullId = member.getHullId();
+			if (miningShips.containsKey(hullId))
+				strength += miningShips.get(hullId) * count;
 						
-            Collection<String> weaponSlots = member.getVariant().getFittedWeaponSlots();
-            for (String slot : weaponSlots)
-            {
-                String weaponId = member.getVariant().getWeaponSpec(slot).getWeaponId();
-                if (miningWeapons.containsKey(weaponId))
-                    strength+= miningWeapons.get(weaponId) * count;
-            }
-        }
-        
-        return strength;
-    }
+			Collection<String> weaponSlots = member.getVariant().getFittedWeaponSlots();
+			for (String slot : weaponSlots)
+			{
+				String weaponId = member.getVariant().getWeaponSpec(slot).getWeaponId();
+				if (miningWeapons.containsKey(weaponId))
+					strength+= miningWeapons.get(weaponId) * count;
+			}
+		}
+		
+		return strength;
+	}
 	
 	public static FleetMemberAPI getRandomSmallShipOrWing(boolean isFighter)
 	{
@@ -208,7 +208,7 @@ public class MiningHelper {
 			if (faction.getId().equals("templars")) continue;
 			
 			List<ShipRolePick> picks = faction.pickShip(role, 1, rolePicker.getRandom());
-            for (ShipRolePick pick : picks) {
+			for (ShipRolePick pick : picks) {
 				FleetMemberType type = FleetMemberType.SHIP;
 				if (isFighter) type = FleetMemberType.FIGHTER_WING;
 				
@@ -255,8 +255,6 @@ public class MiningHelper {
 		
 		return losses;
 	}
-	
-	
 	
 	protected static CrewCompositionAPI applyCrewLossesBottomUp(CampaignFleetAPI fleet, int dead)
 	{
@@ -431,7 +429,7 @@ public class MiningHelper {
 		Map<String, Float> output = new HashMap<>();
 		
 		Iterator<String> iter = planetResources.keySet().iterator();
-        while (iter.hasNext())
+		while (iter.hasNext())
 		{
 			String res = iter.next();
 			float amount = planetResources.get(res) * strength * miningProductionMult * mult;
