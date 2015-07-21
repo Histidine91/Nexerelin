@@ -7,8 +7,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 public class Exerelin_Hydroponics extends BaseMarketConditionPlugin {
 	
 	public static final float HYDROPONICS_CREW = 100f;
-	public static final float HYDROPONICS_FOOD = 5000f;
-	public static final float HYDROPONICS_HEAVY_MACHINERY = 10f;
+	public static final float HYDROPONICS_FOOD = 3000f;
+	public static final float HYDROPONICS_HEAVY_MACHINERY = 20f;
 	
 	@Override
 	public void apply(String id) {
