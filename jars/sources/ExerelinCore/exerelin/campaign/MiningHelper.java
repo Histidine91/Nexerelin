@@ -40,6 +40,7 @@ public class MiningHelper {
 	protected static float baseAccidentChance = 1;
 	protected static float baseAccidentCRLoss = 0.1f;
 	protected static float baseAccidentHullDamage = 500;
+	protected static float xpPerMiningStrength = 10;
     protected static final Map<String, Float> miningWeapons = new HashMap<>();
     protected static final Map<String, Float> miningShips = new HashMap<>();
     protected static final Map<String, Map<String,Float>> resources = new HashMap<>();
@@ -56,6 +57,8 @@ public class MiningHelper {
 			cacheSizeMult = (float)config.optDouble("cacheSizeMult", cacheSizeMult);
 			baseCacheChance = (float)config.optDouble("baseCacheChance", baseCacheChance);
 			baseAccidentChance = (float)config.optDouble("baseAccidentChance", baseAccidentChance);
+			xpPerMiningStrength = (float)config.optDouble("xpPerMiningStrength", xpPerMiningStrength);
+
             
             JSONObject weaponsJson = config.getJSONObject("miningWeapons");
             Iterator<?> keys = weaponsJson.keys();
@@ -106,13 +109,13 @@ public class MiningHelper {
 		cacheDefs.add(new CacheDef("weapon", CacheType.WEAPON, null, 1, 0.8f));
 		cacheDefs.add(new CacheDef("frigate", CacheType.FRIGATE, null, 1, 0.2f));
 		cacheDefs.add(new CacheDef("fighters", CacheType.FIGHTER_WING, null, 1, 0.3f));
-		cacheDefs.add(new CacheDef("supplies", CacheType.COMMODITY, "supplies", 6, 1f));
-		cacheDefs.add(new CacheDef("fuel", CacheType.COMMODITY, "fuel", 8, 1f));
-		cacheDefs.add(new CacheDef("food", CacheType.COMMODITY, "food", 10, 1f));
-		cacheDefs.add(new CacheDef("hand_weapons", CacheType.COMMODITY, "hand_weapons", 6, 1f));
-		cacheDefs.add(new CacheDef("heavy_machinery", CacheType.COMMODITY, "heavy_machinery", 4, 0.7f));
-		cacheDefs.add(new CacheDef("rare_metals", CacheType.COMMODITY, "rare_metals", 3, 0.7f));
-		cacheDefs.add(new CacheDef("drugs", CacheType.COMMODITY, "drugs", 2.5f, 0.5f));
+		cacheDefs.add(new CacheDef("supplies", CacheType.COMMODITY, "supplies", 3, 1f));
+		cacheDefs.add(new CacheDef("fuel", CacheType.COMMODITY, "fuel", 4, 1f));
+		cacheDefs.add(new CacheDef("food", CacheType.COMMODITY, "food", 5, 1f));
+		cacheDefs.add(new CacheDef("hand_weapons", CacheType.COMMODITY, "hand_weapons", 3, 1f));
+		cacheDefs.add(new CacheDef("heavy_machinery", CacheType.COMMODITY, "heavy_machinery", 2, 0.7f));
+		cacheDefs.add(new CacheDef("rare_metals", CacheType.COMMODITY, "rare_metals", 1.5f, 0.7f));
+		cacheDefs.add(new CacheDef("drugs", CacheType.COMMODITY, "drugs", 1.25f, 0.5f));
 	}
 	
     public static boolean canMine(SectorEntityToken entity)
@@ -253,6 +256,8 @@ public class MiningHelper {
 		return losses;
 	}
 	
+	
+	
 	protected static CrewCompositionAPI applyCrewLossesBottomUp(CampaignFleetAPI fleet, int dead)
 	{
 		int levelIndex = 0;
@@ -289,6 +294,15 @@ public class MiningHelper {
 		MiningAccident accident = null;
 		
 		float accidentChance = MathUtils.getRandomNumberInRange(-1, 3) * (float)Math.sqrt(strength);
+		if (accidentChance < 0) return null;
+		
+		List<FleetMemberAPI> ships = fleet.getFleetData().getCombatReadyMembersListCopy();
+		WeightedRandomPicker<FleetMemberAPI> picker = new WeightedRandomPicker<>();
+		for (FleetMemberAPI ship : ships)
+		{
+			if (!ship.isFighterWing()) picker.add(ship);
+		}
+		
 		while (accidentChance > 0)
 		{
 			accidentChance -= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
@@ -300,8 +314,7 @@ public class MiningHelper {
 				if (Math.random() < 0.25f)
 				{
 					// TODO maybe only apply to ships particpating in mining?
-					List<FleetMemberAPI> ships = fleet.getFleetData().getCombatReadyMembersListCopy();
-					FleetMemberAPI fm = ships.get(MathUtils.getRandomNumberInRange(0, ships.size() - 1));
+					FleetMemberAPI fm = picker.pick();
 					float hull = fm.getStatus().getHullFraction();
 					float hullDamageFactor = 0f;
 					float damage = baseAccidentHullDamage * MathUtils.getRandomNumberInRange(0.5f, 1.5f);
@@ -335,8 +348,7 @@ public class MiningHelper {
 				// CR loss
 				else if (Math.random() < 0.4f)
 				{
-					List<FleetMemberAPI> ships = fleet.getFleetData().getCombatReadyMembersListCopy();
-					FleetMemberAPI fm = ships.get(MathUtils.getRandomNumberInRange(0, ships.size() - 1));
+					FleetMemberAPI fm = picker.pick();
 					float crLost = baseAccidentCRLoss * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 					fm.getRepairTracker().applyCREvent(-crLost, StringHelper.getString("exerelin_mining", "miningAccident"));
 					accident.crLost.put(fm, crLost);
@@ -440,6 +452,11 @@ public class MiningHelper {
 		if (isPlayer)
 		{
 			result.accidents = handleAccidents(fleet, strength, getDanger(entity));
+			
+			float xp = strength * xpPerMiningStrength;
+			fleet.getCargo().gainCrewXP(xp);
+			fleet.getCommander().getStats().addXP((long) xp);
+			fleet.getCommander().getStats().levelUpIfNeeded();
 		}
 		
 		return result;
