@@ -9,6 +9,7 @@
 		"Elgava", "Kalymnos", "Nacio", "Regeinland", "Enemonzo", "Zenito", "Adis", "Escondido", "Libertas", "Lugovalos",
 		"Trantor", "Terminus",
 		"Vermillion", "Lycus", "Amritsar", "Rantemario", "Astarte",
+		"Azea", "Braxi", "Lugast",
 	],
 	"planets":[
 		"Baresh", "Zaril", "Vardu", "Drewler", "Trilar", "Polres", "Laret", "Erilatir",
@@ -24,6 +25,7 @@
 		"Cid", "Aerith", "Tifa", "Barret", "Yuffie", "Cait Sith", "Valentine", "Squall", "Rinoa", "Zell", "Irvine", "Laguna", "Kiros", "Ward", "Zidane", "Vivi", "Dagger", "Steiner", "Freya", "Eiko", "Amarant", "Setzer", "Locke", "Celes", "Cyan", "Sabin", "Strago", "Shadow", "Gau", "Mog", "Relm", "Figaro", "Edea", "Esuna",
 		"Thessia", "Palaeven", "Sur'Kesh", "Dekuuna", "Heshtok", "Irune", "Kahje", "Khar'shan", "Tuchanka", "Rakhana", "Rannoch", "Suen",
 		"Iserlohn", "Fezzan", "Heinessen", "Yang", "Julian", "Reinhard", "Kircheis", "Oberstein", "Reuenthal", "Mittermeyer", "El Facil",
+		"Anzha", "Zatar", "Feran", "Pazua", "Sechaveh", "Torzha", "Yiril" 
 	],
 	"stations":[
 		"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
