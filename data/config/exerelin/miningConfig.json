@@ -20,7 +20,6 @@
 			"ore":1,
 			"rare_ore":0.1,
 			#"organics":0.1,
-			"volatiles":0.1,
 		},
 		"gas_giant":{
 			"volatiles":2
@@ -66,13 +65,13 @@
 			"ore":0.6,
 			"rare_ore":0.06,
 			"organics":1,
-			"food":0.5
+			"food":0.3
 		},
 		"water":{
 			"ore":0.6,
 			"rare_ore":0.06,
 			"organics":1,
-			"food":0.5
+			"food":0.3
 		},
 		"toxic":{
 			"ore":1,
