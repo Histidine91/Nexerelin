@@ -64,7 +64,7 @@ public class PrintMiningInfo extends BaseCommandPlugin {
 		{
 			String res = iter.next();
 			float amount = resources.get(res);
-			String amountStr = String.format("%.1f", amount);
+			String amountStr = String.format("%.2f", amount);
 			String resName = economy.getCommoditySpec(res).getName();
 			text.addParagraph(resName + ": " + amountStr);
 			text.highlightInLastPara(hl, resName);
