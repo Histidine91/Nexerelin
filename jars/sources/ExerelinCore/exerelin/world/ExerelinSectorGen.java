@@ -577,7 +577,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		ExerelinUtilsCargo.addCommodityStockpile(market, "organs", 0.7f, 0.8f);
 		ExerelinUtilsCargo.addCommodityStockpile(market, "lobster", 0.7f, 0.8f);
 		
-		market.getTariff().modifyFlat("default_tariff", 0.1f);
+		market.getTariff().modifyFlat("default_tariff", 0.2f);
 		market.getTariff().modifyMult("isFreeMarket", 0.5f);
 		market.addSubmarket("exerelin_prismMarket");
 		market.setPrimaryEntity(prismEntity);
