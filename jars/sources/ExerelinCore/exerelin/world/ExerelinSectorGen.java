@@ -261,7 +261,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (factionIds.contains("citadeldefenders"))
 			{
 				allowedImages.add(new String[]{"illustrationz", "streets"} );
-				allowedImages.add(new String[]{"illustrationz", "twin_cities"} );
+				if (!isStation) allowedImages.add(new String[]{"illustrationz", "twin_cities"} );
 			}
 			
 		}
