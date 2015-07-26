@@ -16,9 +16,13 @@ import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtils;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
 
 public class PrismMarket extends BaseSubmarketPlugin {
     
@@ -27,6 +31,25 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     public static Logger log = Global.getLogger(PrismMarket.class);
 
+    public static final List<String> SSP_BOSS_SHIPS = new ArrayList<>();
+    
+    static {
+        if (ExerelinUtils.isSSPInstalled())
+        {
+            SSP_BOSS_SHIPS.add("ssp_boss_aurora");
+            SSP_BOSS_SHIPS.add("ssp_boss_falcon");
+            SSP_BOSS_SHIPS.add("ssp_boss_hammerhead");
+            SSP_BOSS_SHIPS.add("ssp_boss_hyperion");
+            SSP_BOSS_SHIPS.add("ssp_boss_medusa");
+            SSP_BOSS_SHIPS.add("ssp_boss_mule");
+            SSP_BOSS_SHIPS.add("ssp_boss_odyssey");
+            SSP_BOSS_SHIPS.add("ssp_boss_paragon");
+            SSP_BOSS_SHIPS.add("ssp_boss_phaeton");
+            SSP_BOSS_SHIPS.add("ssp_boss_sunder");
+            SSP_BOSS_SHIPS.add("ssp_boss_tarsus");
+        }
+    }
+    
     @Override
     public void init(SubmarketAPI submarket) {
         super.init(submarket);
@@ -151,6 +174,14 @@ public class PrismMarket extends BaseSubmarketPlugin {
                     i-=1;
                 }
             }
+        }
+        if (!SSP_BOSS_SHIPS.isEmpty())
+        {
+            String variantId = SSP_BOSS_SHIPS.get(MathUtils.getRandomNumberInRange(0, SSP_BOSS_SHIPS.size()-1));
+            variantId += "_Hull";
+            FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+            member.getRepairTracker().setMothballed(true);
+            getCargo().getMothballedShips().addFleetMember(member);
         }
     }
 
