@@ -274,7 +274,7 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
-			"allowedFactions1":["hegemony","sindrian_diktat","mayorate","interstellarimperium"],
+			"allowedFactions1":["hegemony","sindrian_diktat","mayorate","interstellarimperium","new_galactic_order"],
 			"allowedFactions2":["luddic_church","shadow_industry","pack","spire"],
 			"chance":1.5,
 		},
@@ -285,8 +285,8 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
-			"allowedFactions1":["hegemony","luddic_church","pack","interstellarimperium"],
-			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","exigency"],
+			"allowedFactions1":["hegemony","luddic_church","pack","interstellarimperium","new_galactic_order"],
+			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","exigency","metelson","ptech"],
 			"chance":1.5,
 		},
 		{
@@ -299,7 +299,7 @@
 			"repLimit":"hostile",
 			"allowPirates":true,
 			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders",
-				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","SCY","valkyrian","pn_colony","spire"],
+				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","SCY","valkyrian","pn_colony","spire","metelson","ptech","oculus"],
 			"chance":1.5,
 		}
 	]
