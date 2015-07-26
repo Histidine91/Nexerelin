@@ -1569,27 +1569,26 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				moon: 40% habitable chance
 				if not at least two habitable entities, randomly pick planets 1-4 and force them to be habitable
 				designate one habitable planet from these four as system capital
+					If this is the first star (Exerelin), mark it as HQ instead (we'll come back to it later)
 			Don't actually generate PlanetAPIs until all EntityDatas have been created
+			If habitable planet/moon, add to list of habitables
 
 			Add random asteroid belts
 	
 			Next seed stations randomly around planets/moons or in asteroid belts
+				If station orbiting uninhabitable, add to list of "independent" stations
+				If station orbiting habitable, add to list of "associated" stations
 
 			Now add relay around star, add jump point to system capital, add automatic jump points
 			Associate relay with capital and system
-		
-		Next go through all entities in sector
-			If habitable planet/moon, add to list of habitables
-			If station orbiting uninhabitable, add to list of independent stations
-			If station orbiting habitable, add to list of associated stations
-	
+					
 		Next go through all habitables and assign them to factions
-			First off we go to Exerelin and give our faction a planet with HQ
-			Next line up factions (exclude our own faction for this round), pick at random and remove from list
+			First off we go to the first star (Exerelin) and give our faction the HQ planet we picked earlier
+			Next line up factions (exclude our own faction for this round), pick one at random and remove from list
 			Give this faction a habitable planet; add market to it
 			If this is the faction's first habitable, make it their headquarters
 			If this is a system capital or headquarters, set minimum size accordingly
-			Once list is empty, refill with all factions (including ours) again
+			Once list is empty, refill with all factions (including ours) again and repeat process
 		Repeat until all habitables have been populated
 	
 		Do that again except for independent stations
