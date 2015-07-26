@@ -32,21 +32,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        // fix tariffs for new free port handling (0.4.1)
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-        {
-            if (market.getTariff().getFlatMods().containsKey("isFreeMarket"))
-            {
-                Global.getLogger(ExerelinModPlugin.class).info("Resetting tariffs for market " + market.getName());
-                market.getTariff().unmodifyFlat("isFreeMarket");
-                
-                if (!market.getTariff().getFlatMods().containsKey("default_tariff"))
-                    market.getTariff().modifyFlat("default_tariff", 0.2f);
-                
-                if (market.hasCondition("free_market")) 
-                    market.getTariff().modifyMult("isFreeMarket", 0.5f);
-            }
-        }
+
     }
     
     @Override
@@ -87,5 +73,15 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onNewGameAfterEconomyLoad() {
         SectorManager.reinitLiveFactions();
         DiplomacyManager.initFactionRelationships();
+        
+        // fix Corvus mode tariffs
+        if (SectorManager.getCorvusMode())
+        {
+            for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+            {
+                if (market.hasCondition("free_market")) 
+                    market.getTariff().modifyMult("isFreeMarket", 0.5f);
+            }
+        }
     }
 }
