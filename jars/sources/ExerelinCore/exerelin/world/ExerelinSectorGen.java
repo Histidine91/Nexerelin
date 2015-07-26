@@ -1439,7 +1439,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		for (EntityData entityData : entities)
 		{
 			float weight = 1f;
-			if (entityData.type == EntityType.STAR) weight = 0.5f;
+			if (entityData.type == EntityType.STAR) weight = 3f;
 			else if (entityData.habitable == false) weight = 2f;
 			picker.add(entityData, weight);
 		}
