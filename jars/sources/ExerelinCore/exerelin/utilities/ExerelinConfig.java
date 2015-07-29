@@ -67,6 +67,7 @@ public class ExerelinConfig
     // Prism Freeport
     public static int prismMaxWeaponsPerFaction = 3;
     public static float prismNumShipsPerFaction = 0.5f;
+    public static boolean prismSellBossShips = false;
     public static float prismTariff = 2f;
     
     // War weariness
@@ -126,6 +127,7 @@ public class ExerelinConfig
             
             prismMaxWeaponsPerFaction = settings.optInt("prismMaxWeaponsPerFaction", prismMaxWeaponsPerFaction);
             prismNumShipsPerFaction = (float)settings.optDouble("prismNumShipsPerFaction", prismNumShipsPerFaction);
+            prismSellBossShips = settings.optBoolean("prismSellBossShips", prismSellBossShips);
             prismTariff = (float)settings.optDouble("prismTariff", prismTariff);
             
             warWearinessDivisor = (float)settings.optDouble("warWearinessDivisor", warWearinessDivisor);

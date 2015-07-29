@@ -47,6 +47,7 @@
     
     "prismMaxWeaponsPerFaction": 3, # integer; min 20 weapons
     "prismNumShipsPerFaction": 0.5, # float; min 5 ships
+    "prismSellBossShips": false,    # boolean; boss ships being the modified versions of normal ships that appear in Starsector+'s arcade mode (requires the relevant mods be active)
     "prismTariff": 2.0,  # float, 1.0 = 100% tariff
     
     "warWearinessDivisor": 20000,   # float; higher means factions take longer on average to sign a ceasefire

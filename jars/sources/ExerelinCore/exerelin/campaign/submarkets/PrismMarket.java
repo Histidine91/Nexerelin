@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetDataAPI;
+import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
@@ -47,7 +48,27 @@ public class PrismMarket extends BaseSubmarketPlugin {
             SSP_BOSS_SHIPS.add("ssp_boss_phaeton");
             SSP_BOSS_SHIPS.add("ssp_boss_sunder");
             SSP_BOSS_SHIPS.add("ssp_boss_tarsus");
+            
+            // maybe check for their respective mods as well?
+            SSP_BOSS_SHIPS.add("syndicate_asp_boss_copperhead");
+            SSP_BOSS_SHIPS.add("junk_pirates_boss_dugong");
         }
+        SectorAPI sector = Global.getSector();
+        if (sector.getFaction("shadow_industry") != null)
+        {
+            SSP_BOSS_SHIPS.add("ms_boss_mimir");
+            SSP_BOSS_SHIPS.add("ms_boss_charybdis");
+            SSP_BOSS_SHIPS.add("msp_boss_potniaBis");
+        }
+        if (sector.getFaction("templars") != null)
+        {
+            //SSP_BOSS_SHIPS.add("tem_boss_paladin");
+        }
+        if (sector.getFaction("interstellarimperium") != null)
+        {
+            SSP_BOSS_SHIPS.add("ii_boss_praetorian");
+            SSP_BOSS_SHIPS.add("ii_boss_olympus");
+        }    
     }
     
     @Override
@@ -175,7 +196,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 }
             }
         }
-        if (!SSP_BOSS_SHIPS.isEmpty())
+        if (ExerelinConfig.prismSellBossShips && !SSP_BOSS_SHIPS.isEmpty())
         {
             String variantId = SSP_BOSS_SHIPS.get(MathUtils.getRandomNumberInRange(0, SSP_BOSS_SHIPS.size()-1));
             variantId += "_Hull";
