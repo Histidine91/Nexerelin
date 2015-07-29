@@ -2,6 +2,7 @@ package data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
@@ -32,7 +33,13 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-
+		for (StarSystemAPI system : Global.getSector().getStarSystems())
+		{
+			if (system.getBackgroundTextureFilename().equals("graphics/ssp/backgrounds/ssp_arcade.jpg"))
+			{
+				system.setBackgroundTextureFilename("graphics/ssp/backgrounds/ssp_arcade.png");
+			}
+		}
     }
     
     @Override
