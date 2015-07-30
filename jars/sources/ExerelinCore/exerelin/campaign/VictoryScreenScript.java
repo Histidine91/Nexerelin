@@ -61,7 +61,7 @@ public class VictoryScreenScript implements EveryFrameScript
             Map<String, Object> params = new HashMap<>();
             boolean playerVictory = faction.equals(PlayerFactionStore.getPlayerFactionId());
             params.put("victorFactionId", faction);
-            params.put("diplomaticVictory", victoryType == VictoryType.DIPLOMATIC);
+            params.put("diplomaticVictory", victoryType == VictoryType.DIPLOMATIC || victoryType == VictoryType.DIPLOMATIC_ALLY);
             params.put("playerVictory", playerVictory);
             Global.getSector().getEventManager().startEvent(
                     new CampaignEventTarget(Global.getSector().getPlayerFleet()), "exerelin_victory", params);

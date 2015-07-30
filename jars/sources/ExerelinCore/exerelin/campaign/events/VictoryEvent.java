@@ -47,11 +47,13 @@ public class VictoryEvent extends BaseEventPlugin {
 		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
 		String stage = "conquest";
 		if (diplomaticVictory) stage = "diplomatic";
-		else if (playerVictory) stage = "conquest_player";
+		if (playerVictory) stage += "_player";
 		Global.getSector().reportEventStage(this, stage, Global.getSector().getPlayerFleet(), priority);
 		log.info("VICTORY EVENT: " + stage);
 		if (playerVictory) 
 			Global.getSector().getCampaignUI().addMessage("You have won the game!", Global.getSettings().getColor("textFriendColor"));
+		else
+			Global.getSector().getCampaignUI().addMessage("You have lost the game...", Global.getSettings().getColor("textEnemyColor"));
 	}
 
 	@Override

@@ -281,7 +281,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("victorFaction", victor);
         FactionAPI playerFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
         params.put("playerDefeated", defeated == playerFaction);
-        params.put("playerVictory", victor == playerFaction && getLiveFactionIdsCopy().size() == 1);
+        //params.put("playerVictory", victor == playerFaction && getLiveFactionIdsCopy().size() == 1);
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
         
         String defeatedId = defeated.getId();
