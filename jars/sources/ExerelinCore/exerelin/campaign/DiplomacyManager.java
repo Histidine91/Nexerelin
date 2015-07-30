@@ -176,11 +176,18 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         for (MarketAPI market: allMarkets) globalSize += market.getSize();
         if (globalSize == 0) return 0;
         
+        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+        
         List<MarketAPI> ourMarkets = null;
         Alliance alliance = AllianceManager.getFactionAlliance(factionId);
         if (alliance != null) ourMarkets = alliance.getAllianceMarkets();
         else ourMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
         //ourMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
+        if (factionId.equals(playerAlignedFactionId) && !playerAlignedFactionId.equals("player_npc"))
+        {
+            List<MarketAPI> playerNpcMarkets = ExerelinUtilsFaction.getFactionMarkets("player_npc");
+            ourMarkets.addAll(playerNpcMarkets);
+        }
         
         int ourSize = 0;
         for (MarketAPI market: ourMarkets) ourSize += market.getSize();
