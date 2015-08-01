@@ -23,21 +23,20 @@ public class SetMarketOwner implements BaseCommand {
         }
 
         // do me!
-        SectorAPI sector = Global.getSector();
-        
         if (args.isEmpty())
         {
             return CommandResult.BAD_SYNTAX;
         }
         
+		SectorAPI sector = Global.getSector();
         String[] tmp = args.split(" ");
-        
         
         String targetName = tmp[0];
         List<SectorEntityToken> entitiesToSearch = sector.getEntitiesWithTag("planet");
         entitiesToSearch.addAll(sector.getEntitiesWithTag("station"));
+		//Console.showMessage(entitiesToSearch.size() + " valid targets for search found");
         
-        SectorEntityToken target = CommandUtils.findBestTokenMatch(args, entitiesToSearch);          
+        SectorEntityToken target = CommandUtils.findBestTokenMatch(targetName, entitiesToSearch);          
         if (target == null)
         {
             Console.showMessage("Error: could not find entity with name '" + targetName + "'!");
