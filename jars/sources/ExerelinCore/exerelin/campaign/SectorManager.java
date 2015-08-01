@@ -636,7 +636,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         String firstStar = "Exerelin";
         try {
-                JSONObject planetConfig = Global.getSettings().loadJSON("data/config/planetNames.json");
+                JSONObject planetConfig = Global.getSettings().loadJSON("data/config/exerelin/planetNames.json");
                 JSONArray systemNames = planetConfig.getJSONArray("stars");
                 firstStar = systemNames.getString(0);
         } catch (JSONException | IOException ex) {

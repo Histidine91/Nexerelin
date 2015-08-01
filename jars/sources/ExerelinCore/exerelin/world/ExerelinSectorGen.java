@@ -65,7 +65,7 @@ import org.lwjgl.util.vector.Vector2f;
 public class ExerelinSectorGen implements SectorGeneratorPlugin
 {
 	// NOTE: system names and planet names are overriden by planetNames.json
-	private static final String PLANET_NAMES_FILE = "data/config/planetNames.json";
+	private static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
 	private static String[] possibleSystemNames = {"Exerelin", "Askar", "Garil", "Yaerol", "Plagris", "Marot", "Caxort", "Laret", "Narbil", "Karit",
 		"Raestal", "Bemortis", "Xanador", "Tralor", "Exoral", "Oldat", "Pirata", "Zamaror", "Servator", "Bavartis", "Valore", "Charbor", "Dresnen",
 		"Firort", "Haidu", "Jira", "Wesmon", "Uxor"};

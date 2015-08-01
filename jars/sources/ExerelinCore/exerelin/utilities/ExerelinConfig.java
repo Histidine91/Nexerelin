@@ -90,7 +90,7 @@ public class ExerelinConfig
         {
             System.out.println("Loading exerelinSettings");
 
-            JSONObject settings = Global.getSettings().loadJSON("data/config/exerelin_config.json");
+            JSONObject settings = Global.getSettings().loadJSON("data/config/exerelin/exerelin_config.json");
 
             minimumPlanets = settings.optInt("minimumPlanets");
             minimumStations = settings.optInt("minimumStations");

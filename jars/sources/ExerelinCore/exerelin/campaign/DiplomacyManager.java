@@ -56,7 +56,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static Logger log = Global.getLogger(DiplomacyManager.class);
     private static DiplomacyManager diplomacyManager;
     
-    protected static final String CONFIG_FILE = "data/config/diplomacyConfig.json";
+    protected static final String CONFIG_FILE = "data/config/exerelin/diplomacyConfig.json";
     protected static final String MANAGER_MAP_KEY = "exerelin_diplomacyManager";
     
     protected static final List<String> disallowedFactions;

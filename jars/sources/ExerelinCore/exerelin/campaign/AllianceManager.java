@@ -41,7 +41,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     public static Logger log = Global.getLogger(AllianceManager.class);
     protected static AllianceManager allianceManager;   
     protected static final String MANAGER_MAP_KEY = "exerelin_allianceManager";
-    protected static final String ALLIANCE_NAMES_FILE = "data/config/allianceNames.json";
+    protected static final String ALLIANCE_NAMES_FILE = "data/config/exerelin/allianceNames.json";
     protected static final float MIN_ALIGNMENT_FOR_NEW_ALLIANCE = 1f;
     protected static final float MIN_ALIGNMENT_TO_JOIN_ALLIANCE = 0f;
     protected static final float MIN_RELATIONSHIP_TO_JOIN = RepLevel.FRIENDLY.getMin();

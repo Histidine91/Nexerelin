@@ -11,7 +11,7 @@ import org.json.JSONObject;
 // should probably be a singleton instead of static but meh
 public class ExerelinCorvusLocations {
     
-    protected static final String CONFIG_FILE = "data/config/corvus_location_config.json";
+    protected static final String CONFIG_FILE = "data/config/exerelin/corvus_location_config.json";
     
     protected static final Map<String, SpawnPointEntry> SPAWN_POINTS = new HashMap<>();
     protected static final Map<String, String> SYSTEM_CAPITALS = new HashMap<>();
