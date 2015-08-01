@@ -17,6 +17,7 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -342,9 +343,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         if (sector.isInNewGameAdvance()) return;
         
-        String playerFactionId = PlayerFactionStore.getPlayerFactionId();
-        FactionAPI playerFaction = Global.getSector().getFaction(playerFactionId);
-        String victorFactionId = playerFactionId;
+        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+        FactionAPI playerAlignedFaction = Global.getSector().getFaction(playerAlignedFactionId);
+        String victorFactionId = playerAlignedFactionId;
         VictoryType victoryType = VictoryType.CONQUEST;
         
         List<String> liveFactions = getLiveFactionIdsCopy();
@@ -359,9 +360,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (liveFactions.size() == 1)   // conquest victory
         {
             victorFactionId = liveFactions.get(0);
-            if (!victorFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
+            if (!victorFactionId.equals(playerAlignedFactionId))
             {
-                if (playerFaction.isAtBest(victorFactionId, RepLevel.WELCOMING))
+                if (sector.getFaction(Factions.PLAYER).isAtBest(victorFactionId, RepLevel.WELCOMING))
                 {
                     victoryType = VictoryType.DEFEAT_CONQUEST;
                 }
@@ -404,8 +405,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     }
                 }
             }
-            if (winner.equals(playerFactionId)) victoryType = VictoryType.DIPLOMATIC;
-            else if (playerFaction.isAtWorst(winner, RepLevel.FRIENDLY)) victoryType = VictoryType.DIPLOMATIC_ALLY;
+            if (winner.equals(playerAlignedFactionId)) victoryType = VictoryType.DIPLOMATIC;
+            else if (playerAlignedFaction.isAtWorst(winner, RepLevel.FRIENDLY)) victoryType = VictoryType.DIPLOMATIC_ALLY;
             else victoryType = VictoryType.DEFEAT_DIPLOMATIC;
             
             victorFactionId = winner;

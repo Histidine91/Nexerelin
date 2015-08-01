@@ -17,14 +17,14 @@ import exerelin.campaign.SectorManager;
 public class FactionEliminatedEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(FactionEliminatedEvent.class);
-	private static final int DAYS_TO_KEEP = 90;
+	protected static final int DAYS_TO_KEEP = 90;
 	
-	private FactionAPI defeatedFaction;
-	private FactionAPI victorFaction;
-	private boolean playerDefeated;
-	private boolean playerVictory;
-	float age;
-	private Map<String, Object> params;
+	protected FactionAPI defeatedFaction;
+	protected FactionAPI victorFaction;
+	protected boolean playerDefeated = false;
+	protected boolean playerVictory = false;
+	protected float age;
+	protected Map<String, Object> params;
 		
 	public boolean done;
 		
@@ -42,7 +42,7 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 		defeatedFaction = (FactionAPI)params.get("defeatedFaction");
 		victorFaction = (FactionAPI)params.get("victorFaction");
 		playerDefeated = (boolean)params.get("playerDefeated");
-		playerVictory = (boolean)params.get("playerVictory");
+		//playerVictory = (boolean)params.get("playerVictory");
 	}
 		
 	@Override
