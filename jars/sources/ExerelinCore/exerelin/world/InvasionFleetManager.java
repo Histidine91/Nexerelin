@@ -45,12 +45,13 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     public static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
     public static final float DEFENDER_STRENGTH_MARINE_MULT = 1.15f;
     public static final float RESPAWN_FLEET_SPAWN_DISTANCE = 18000f;
-	// higher = factions (who aren't otherwise at war) invade Templars/pirates less often
+    // higher = factions (who aren't otherwise at war) invade Templars/pirates less often
     public static final float ALL_AGAINST_ONE_INVASION_POINT_MOD = 0.27f;
-	// higher = factions are less likely to target Templars/pirates (does nothing if Templars/pirates are their only enemies)
+    // higher = factions are less likely to target Templars/pirates (does nothing if Templars/pirates are their only enemies)
     public static final float ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD = 0.35f;
-	// Templars/pirates get this multiplier bonus to their invasion point growth the more enemies they have
+    // Templars/pirates get this multiplier bonus to their invasion point growth the more enemies they have
     public static final float ONE_AGAINST_ALL_INVASION_POINT_MOD = 0.215f;
+    public static final float HARD_MODE_INVASION_TARGETING_CHANCE = 1.5f;
     public static final int MAX_FLEETS = 50;
     
     public static Logger log = Global.getLogger(InvasionFleetManager.class);
@@ -417,6 +418,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 //weight *= market.getSize() * market.getStabilityValue();    // try to go after high value targets
                 if (ExerelinUtilsFaction.isPirateOrTemplarFaction(marketFaction.getId()))
                     weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
+                
+                if (SectorManager.getHardMode() && marketFaction.isPlayerFaction())
+                    weight *= HARD_MODE_INVASION_TARGETING_CHANCE;
 
                 targetPicker.add(market, weight);
             }
@@ -531,10 +535,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                             mult += 1/((enemyWars*ALL_AGAINST_ONE_INVASION_POINT_MOD) + (1));
                     }
                     else 
-					{
-						mult = 1;
-						break;
-					}
+                    {
+                        mult = 1;
+                        break;
+                    }
                 }
                 if (mult > 1) mult = 1;
             }

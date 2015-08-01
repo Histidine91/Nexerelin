@@ -75,6 +75,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float DOMINANCE_MIN = 0.25f;
     public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.5f;
     public static final float DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD = 2f;
+    public static final float HARD_MODE_DOMINANCE_MOD = 1.25f;
     
     protected Map<String, Float> warWeariness;
     protected static float warWearinessPerInterval = 10f;
@@ -193,6 +194,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         for (MarketAPI market: ourMarkets) ourSize += market.getSize();
         
         if (ourSize == 0) return 0;
+        if (SectorManager.getHardMode() && factionId.equals("playerFactionId"))
+            ourSize *= HARD_MODE_DOMINANCE_MOD;
+        
         return (float)ourSize / globalSize;
     }
     

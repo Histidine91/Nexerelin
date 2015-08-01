@@ -63,6 +63,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     private boolean onlyRespawnStartingFactions = false;
     
     protected boolean corvusMode = false;
+    protected boolean hardMode = false;
     
     private int numSlavesRecentlySold = 0;
     private MarketAPI marketLastSoldSlaves = null;
@@ -184,6 +185,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return false;
         return sectorManager.corvusMode;
+    }
+	
+	public static void setHardMode(boolean mode)
+    {
+        if (sectorManager == null) return;
+        sectorManager.hardMode = mode;
+    }
+    
+    public static boolean getHardMode()
+    {
+        if (sectorManager == null) return false;
+        return sectorManager.hardMode;
     }
     
     public void handleSlaveTradeRep()
