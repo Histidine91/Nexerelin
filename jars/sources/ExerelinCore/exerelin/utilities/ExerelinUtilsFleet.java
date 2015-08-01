@@ -148,7 +148,7 @@ public class ExerelinUtilsFleet
                 injector.levelCommander(fleet.getCommander(), fleet, CommanderType.TRADER, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
                 SSP_FleetFactory.createTradeFleet(fleet, faction, stability, qualityFactorOriginal, maxFP/15, 1, 0, 0);
                 
-                maxFP *= 1.5;
+                maxFP *= 1.4;
                 float minerFP = maxFP - fleet.getFleetPoints();
                 while (minerFP > 0)
                 {
