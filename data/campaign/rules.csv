@@ -877,23 +877,23 @@ ExerelinPostOpenMarketPrismHostile,MarketPostOpen,"$hasMarket
 $market.id == prismFreeport_market score:100
 RepIsAtBest $faction.id INHOSPITABLE","$menuState = main 0
 $tradeMode = OPEN 0
-FireAll PopulateOptions","While $theFaction are generally $relAdjective towards you, the Prism Freeport itself takes no sides. The port authority grants you docking clearance after only a slight delay.",,
+FireAll PopulateOptions","While $theFactionLong are generally $relAdjective towards you, the Prism Freeport itself takes no sides. The port authority grants you docking clearance after only a slight delay.",,
 ,,,,,,
 # vanilla overrides,,,,,,
 marketPostOpenInhospitable,MarketPostOpen,"$hasMarket
 RepIsAtBest $faction.id INHOSPITABLE
 !IsPirateFaction $faction.id","FireBest PickSneakType
-FireAll PopulateOptions","$TheFactionLong is $relAdjective towards you, and the port authority refuses your request for docking clearance.",,
+FireAll PopulateOptions","$TheFactionLong are $relAdjective towards you, and the port authority refuses your request for docking clearance.",,
 marketPostOpenInhospitablePirates,MarketPostOpen,"$hasMarket
 RepIsAtBest $faction.id VENGEFUL
 IsPirateFaction $faction.id","FireBest PickSneakType
-FireAll PopulateOptions","You're rather well known among $theFaction, and not for the right reasons, as far as they're concerned.",,
+FireAll PopulateOptions","You're rather well known among $theFactionLong, and not for the right reasons, as far as they're concerned.",,
 marketPostOpenPiratesHostile,MarketPostOpen,"$hasMarket
 IsPirateFaction $faction.id
 RepIsAtBest $faction.id INHOSPITABLE
 RepIsAtWorst $faction.id HOSTILE","$menuState = main 0
 $tradeMode = OPEN 0
-FireAll PopulateOptions","While $theFaction are generally $relAdjective towards you, that's not all that different from how they see other rival captains. The port authority, such as it is, grants you docking clearance after only a slight delay.",,
+FireAll PopulateOptions","While $theFactionLong are generally $relAdjective towards you, that's not all that different from how they see other rival captains. The port authority, such as it is, grants you docking clearance after only a slight delay.",,
 ,,,,,,
 commRelayOpen,OpenInteractionDialog,"$tag:comm_relay
 !$hasMarket","ShowDefaultVisual
