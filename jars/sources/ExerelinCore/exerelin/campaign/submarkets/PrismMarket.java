@@ -17,7 +17,6 @@ import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import java.util.ArrayList;
@@ -32,48 +31,51 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     public static Logger log = Global.getLogger(PrismMarket.class);
 
-    public static final List<String> SSP_BOSS_SHIPS = new ArrayList<>();
-    
-    static {
-        if (ExerelinUtils.isSSPInstalled())
-        {
-            SSP_BOSS_SHIPS.add("ssp_boss_aurora");
-            SSP_BOSS_SHIPS.add("ssp_boss_falcon");
-            SSP_BOSS_SHIPS.add("ssp_boss_hammerhead");
-            SSP_BOSS_SHIPS.add("ssp_boss_hyperion");
-            SSP_BOSS_SHIPS.add("ssp_boss_medusa");
-            SSP_BOSS_SHIPS.add("ssp_boss_mule");
-            SSP_BOSS_SHIPS.add("ssp_boss_odyssey");
-            SSP_BOSS_SHIPS.add("ssp_boss_paragon");
-            SSP_BOSS_SHIPS.add("ssp_boss_phaeton");
-            SSP_BOSS_SHIPS.add("ssp_boss_sunder");
-            SSP_BOSS_SHIPS.add("ssp_boss_tarsus");
-            
-            // maybe check for their respective mods as well?
-            SSP_BOSS_SHIPS.add("syndicate_asp_boss_copperhead");
-            SSP_BOSS_SHIPS.add("junk_pirates_boss_dugong");
-        }
-        SectorAPI sector = Global.getSector();
-        if (sector.getFaction("shadow_industry") != null)
-        {
-            SSP_BOSS_SHIPS.add("ms_boss_mimir");
-            SSP_BOSS_SHIPS.add("ms_boss_charybdis");
-            SSP_BOSS_SHIPS.add("msp_boss_potniaBis");
-        }
-        if (sector.getFaction("templars") != null)
-        {
-            //SSP_BOSS_SHIPS.add("tem_boss_paladin");
-        }
-        if (sector.getFaction("interstellarimperium") != null)
-        {
-            SSP_BOSS_SHIPS.add("ii_boss_praetorian");
-            SSP_BOSS_SHIPS.add("ii_boss_olympus");
-        }    
-    }
-    
+    public final List<String> SSP_BOSS_SHIPS = new ArrayList<>();
+        
     @Override
     public void init(SubmarketAPI submarket) {
         super.init(submarket);
+		
+		// this used to be static, but was moved here to help find a crash bug
+		try {
+			if (ExerelinUtils.isSSPInstalled())
+			{
+				SSP_BOSS_SHIPS.add("ssp_boss_aurora");
+				SSP_BOSS_SHIPS.add("ssp_boss_falcon");
+				SSP_BOSS_SHIPS.add("ssp_boss_hammerhead");
+				SSP_BOSS_SHIPS.add("ssp_boss_hyperion");
+				SSP_BOSS_SHIPS.add("ssp_boss_medusa");
+				SSP_BOSS_SHIPS.add("ssp_boss_mule");
+				SSP_BOSS_SHIPS.add("ssp_boss_odyssey");
+				SSP_BOSS_SHIPS.add("ssp_boss_paragon");
+				SSP_BOSS_SHIPS.add("ssp_boss_phaeton");
+				SSP_BOSS_SHIPS.add("ssp_boss_sunder");
+				SSP_BOSS_SHIPS.add("ssp_boss_tarsus");
+
+				// maybe check for their respective mods as well?
+				SSP_BOSS_SHIPS.add("syndicate_asp_boss_copperhead");
+				SSP_BOSS_SHIPS.add("junk_pirates_boss_dugong");
+			}
+			SectorAPI sector = Global.getSector();
+			if (sector.getFaction("shadow_industry") != null)
+			{
+				SSP_BOSS_SHIPS.add("ms_boss_mimir");
+				SSP_BOSS_SHIPS.add("ms_boss_charybdis");
+				SSP_BOSS_SHIPS.add("msp_boss_potniaBis");
+			}
+			if (sector.getFaction("templars") != null)
+			{
+				//SSP_BOSS_SHIPS.add("tem_boss_paladin");
+			}
+			if (sector.getFaction("interstellarimperium") != null)
+			{
+				SSP_BOSS_SHIPS.add("ii_boss_praetorian");
+				SSP_BOSS_SHIPS.add("ii_boss_olympus");
+			}
+		} catch (Exception ex) {
+			log.error(ex);
+		}
     }
 
     @Override
