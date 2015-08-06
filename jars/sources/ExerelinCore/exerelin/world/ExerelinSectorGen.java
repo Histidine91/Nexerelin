@@ -1139,7 +1139,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		int numBasePlanets;
 		int maxPlanets = ExerelinSetupData.getInstance().maxPlanets;
 		if(ExerelinSetupData.getInstance().numSystems != 1)
-			numBasePlanets = MathUtils.getRandomNumberInRange(ExerelinConfig.minimumPlanets, maxPlanets);
+		{
+			int minPlanets = ExerelinConfig.minimumPlanets;
+			if (minPlanets > maxPlanets) minPlanets = maxPlanets;
+			numBasePlanets = MathUtils.getRandomNumberInRange(minPlanets, maxPlanets);
+		}
 		else
 			numBasePlanets = maxPlanets;
 		int distanceStepping = (ExerelinSetupData.getInstance().maxSystemSize-4000)/MathUtils.getRandomNumberInRange(numBasePlanets, maxPlanets+1);
@@ -1427,11 +1431,16 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// Build stations
 		// Note: to enable special faction stations, we don't actually generate the stations until much later,
 		// when we're dealing out planets to factions
-		int numStation;
+		int numStations;
+		int maxStations = ExerelinSetupData.getInstance().maxStations;
 		if(ExerelinSetupData.getInstance().numSystems != 1)
-			numStation = MathUtils.getRandomNumberInRange(ExerelinConfig.minimumStations, Math.min(ExerelinSetupData.getInstance().maxStations, numBasePlanets*2));
+		{
+			int minStations = ExerelinConfig.minimumPlanets;
+			if (minStations > maxStations) minStations = maxStations;
+			numStations = MathUtils.getRandomNumberInRange(minStations, Math.min(maxStations, numBasePlanets*2));
+		}
 		else
-			numStation = ExerelinSetupData.getInstance().maxStations;
+			numStations = maxStations;
 		
 		WeightedRandomPicker<EntityData> picker = new WeightedRandomPicker<>();
 		//addListToPicker(entities, picker);
@@ -1445,7 +1454,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		int k = 0;
 		List alreadyUsedStationNames = new ArrayList();
-		while(k < numStation)
+		while(k < numStations)
 		{
 			if (picker.isEmpty()) picker.add(starData);
 			EntityData primaryData = picker.pickAndRemove();
