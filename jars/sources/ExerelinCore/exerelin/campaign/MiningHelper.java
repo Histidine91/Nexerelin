@@ -125,6 +125,8 @@ public class MiningHelper {
 		if (entity instanceof PlanetAPI)
 		{
 			PlanetAPI planet = (PlanetAPI)entity;
+			if (planet == null) return false;
+			if (planet.isStar()) return false;
 			if (planet.isMoon()) return true;
 			if (planet.isGasGiant()) return true;
 		}
