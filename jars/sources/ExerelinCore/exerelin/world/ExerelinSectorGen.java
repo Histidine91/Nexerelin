@@ -83,7 +83,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"exerelin/backgrounds/blue_background1.jpg", "exerelin/backgrounds/blue_background2.jpg",
 		"exerelin/backgrounds/bluewhite_background1.jpg", "exerelin/backgrounds/orange_background1.jpg",
 		"exerelin/backgrounds/dark_background1.jpg", "exerelin/backgrounds/dark_background2.jpg",
-		"exerelin/backgrounds/green_background1.jpg", "exerelin/backgrounds/green_background2.jpg",
+		"exerelin/backgrounds/green_background1.jpg", //"exerelin/backgrounds/green_background2.jpg",
 		"exerelin/backgrounds/purple_background1.jpg", "exerelin/backgrounds/purple_background2.jpg",
 		"exerelin/backgrounds/white_background1.jpg", "exerelin/backgrounds/white_background2.jpg",
 		"backgrounds/2-2.jpg", "backgrounds/2-4.jpg", "backgrounds/3-1.jpg", "backgrounds/4-1.jpg", "backgrounds/4-2.jpg", "backgrounds/5-1.jpg", "backgrounds/5-2.jpg",
@@ -175,7 +175,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		if (factions.contains("neutrinocorp"))
 		{
-			starBackgrounds.add("neut/backgrounds/CoronaAustralis.jpg");
+			//starBackgrounds.add("neut/backgrounds/CoronaAustralis.jpg");
 		}
 		if (factions.contains("pn_colony"))
 		{
@@ -184,7 +184,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (factions.contains("SCY"))
 		{
 			starBackgrounds.add("SCY/backgrounds/SCY_acheron.jpg");
-			starBackgrounds.add("SCY/backgrounds/SCY_acheron.jpg");
+			starBackgrounds.add("SCY/backgrounds/SCY_tartarus.jpg");
 		}
 		if (factions.contains("shadow_industry"))
 		{
