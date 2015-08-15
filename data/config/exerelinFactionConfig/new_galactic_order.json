@@ -22,7 +22,7 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":["interstellarimperium","independent"], # String array
-    "factionsDisliked":["exigency","exipirated","junk_pirates","pack","syndicate_asp","hiigaran_descendents","hegemony","tritachyon","pirates","luddic_church","sindrian_diktat","templars","valkyrian"], # String array
+    "factionsDisliked":["exigency","exipirated","junk_pirates","pack","syndicate_asp","hiigaran_descendents","hegemony","pirates","luddic_church","sindrian_diktat","templars","valkyrian"], # String array
     
     "alignments":{
         "militarist":1,
