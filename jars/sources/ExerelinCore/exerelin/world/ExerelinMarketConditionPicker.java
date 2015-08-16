@@ -114,7 +114,7 @@ public class ExerelinMarketConditionPicker
 		MarketConditionDef cond;
 		
 		// size 2
-		primaryResourceConds.add(new MarketConditionDef("ore_complex", 1.4f, 2));
+		primaryResourceConds.add(new MarketConditionDef("ore_complex", 1.2f, 2));
 		primaryResourceConds.add(new MarketConditionDef("volatiles_complex", 1f, 2));
 		primaryResourceConds.add(new MarketConditionDef("organics_complex", 1f, 2));
 		specialConds.add(new MarketConditionDef("outpost", 1f, 2, 4, false));
@@ -124,12 +124,12 @@ public class ExerelinMarketConditionPicker
 		cond = new MarketConditionDef("cottage_industry", 0.6f, 2, false);
 		cond.setAllowStations(false);
 		primaryResourceConds.add(cond);
-		cond = new MarketConditionDef("exerelin_hydroponics", 1f, 2);
+		cond = new MarketConditionDef("exerelin_hydroponics", 1.2f, 2);
 		disallowFertileWorlds(cond);
 		primaryResourceConds.add(cond);
 
 		// size 3
-		industryConds.add(new MarketConditionDef("ore_refining_complex", 1.3f, 3));
+		industryConds.add(new MarketConditionDef("ore_refining_complex", 1.1f, 3));
 		//industryConds.add(new MarketConditionDef("ssp_light_fuel_production", 0.8f, 3));
 		industryConds.add(new MarketConditionDef("light_industrial_complex", 1f, 3, false));
 		//industryConds.add(new MarketConditionDef("exerelin_cloning_vats", 1f, 3));
@@ -154,6 +154,9 @@ public class ExerelinMarketConditionPicker
 		specialConds.add(new MarketConditionDef("organized_crime", 0.7f, 4));
 		specialConds.add(new MarketConditionDef("large_refugee_population", 0.7f, 4, false));
 		cond = new MarketConditionDef("urbanized_polity", 0.7f, 3, false);
+		cond.setAllowStations(false);
+		specialConds.add(cond);
+		cond = new MarketConditionDef("rural_polity", 0.7f, 3, false);
 		cond.setAllowStations(false);
 		specialConds.add(cond);
 		
