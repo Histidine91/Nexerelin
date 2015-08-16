@@ -102,6 +102,14 @@ public class StatsTracker extends BaseCampaignEventListener{
         marketsCaptured++;
     }
     
+    public void modifyOrphansMadeByCrewCount(int crew, String faction)
+    {
+        float numAvgKids = MathUtils.getRandomNumberInRange(0f, 1.5f) + MathUtils.getRandomNumberInRange(0f, 1.5f);
+        if (faction.equals("templars"))   // High-ranking Templars (including those who'd get to serve on a ship) have large (adopted) families
+            numAvgKids = MathUtils.getRandomNumberInRange(0f, 5f) + MathUtils.getRandomNumberInRange(0f, 5f);
+        orphansMade += crew * numAvgKids;
+    }
+    
     @Override
     public void reportBattleOccurred(CampaignFleetAPI winner, CampaignFleetAPI loser)
     {
@@ -152,10 +160,7 @@ public class StatsTracker extends BaseCampaignEventListener{
             }
         }
         
-        float numAvgKids = MathUtils.getRandomNumberInRange(0f, 1.5f) + MathUtils.getRandomNumberInRange(0f, 1.5f);
-        if (killedFaction.equals("templars"))   // High-ranking Templars (including those who'd get to serve on a ship) have large (adopted) families
-            numAvgKids = MathUtils.getRandomNumberInRange(0f, 5f) + MathUtils.getRandomNumberInRange(0f, 5f);
-        orphansMade += crewKilled * numAvgKids;
+        modifyOrphansMadeByCrewCount(crewKilled, killedFaction);
     }
     
     public static StatsTracker getStatsTracker()

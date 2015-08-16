@@ -119,7 +119,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public void reportEncounterLootGenerated(FleetEncounterContextPlugin plugin, CargoAPI loot) {
         CampaignFleetAPI loser = plugin.getLoser();
         if (loser == null) return;
-        ExerelinFactionConfig loserConfig = ExerelinConfig.getExerelinFactionConfig(loser.getFaction().getId());
+        String loserFactionId = loser.getFaction().getId();
+        ExerelinFactionConfig loserConfig = ExerelinConfig.getExerelinFactionConfig(loserFactionId);
         if (loserConfig != null && loserConfig.dropPrisoners == false)
             return;
         
@@ -149,7 +150,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             numSurvivors += crew;
         }
         
-        StatsTracker.getStatsTracker().modifyOrphansMade(-numSurvivors);
+        StatsTracker.getStatsTracker().modifyOrphansMadeByCrewCount(-numSurvivors, loserFactionId);
     }
     
     @Override
