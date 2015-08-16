@@ -31,51 +31,60 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     public static Logger log = Global.getLogger(PrismMarket.class);
 
-    public final List<String> SSP_BOSS_SHIPS = new ArrayList<>();
+    public List<String> sspBossShips = new ArrayList<>();
         
     @Override
     public void init(SubmarketAPI submarket) {
         super.init(submarket);
-		
-		// this used to be static, but was moved here to help find a crash bug
-		try {
-			if (ExerelinUtils.isSSPInstalled())
-			{
-				SSP_BOSS_SHIPS.add("ssp_boss_aurora");
-				SSP_BOSS_SHIPS.add("ssp_boss_falcon");
-				SSP_BOSS_SHIPS.add("ssp_boss_hammerhead");
-				SSP_BOSS_SHIPS.add("ssp_boss_hyperion");
-				SSP_BOSS_SHIPS.add("ssp_boss_medusa");
-				SSP_BOSS_SHIPS.add("ssp_boss_mule");
-				SSP_BOSS_SHIPS.add("ssp_boss_odyssey");
-				SSP_BOSS_SHIPS.add("ssp_boss_paragon");
-				SSP_BOSS_SHIPS.add("ssp_boss_phaeton");
-				SSP_BOSS_SHIPS.add("ssp_boss_sunder");
-				SSP_BOSS_SHIPS.add("ssp_boss_tarsus");
+        
+        //initBossShips();
+    }
+    
+    public void loadBossShips()
+    {
+        if (sspBossShips == null)
+            sspBossShips = new ArrayList<>();
+        sspBossShips.clear();
+        
+        // this used to be static, but was moved here to help find a crash bug
+        try {
+            if (ExerelinUtils.isSSPInstalled())
+            {
+                sspBossShips.add("ssp_boss_aurora");
+                sspBossShips.add("ssp_boss_falcon");
+                sspBossShips.add("ssp_boss_hammerhead");
+                sspBossShips.add("ssp_boss_hyperion");
+                sspBossShips.add("ssp_boss_medusa");
+                sspBossShips.add("ssp_boss_mule");
+                sspBossShips.add("ssp_boss_odyssey");
+                sspBossShips.add("ssp_boss_paragon");
+                sspBossShips.add("ssp_boss_phaeton");
+                sspBossShips.add("ssp_boss_sunder");
+                sspBossShips.add("ssp_boss_tarsus");
 
-				// maybe check for their respective mods as well?
-				SSP_BOSS_SHIPS.add("syndicate_asp_boss_copperhead");
-				SSP_BOSS_SHIPS.add("junk_pirates_boss_dugong");
-			}
-			SectorAPI sector = Global.getSector();
-			if (sector.getFaction("shadow_industry") != null)
-			{
-				SSP_BOSS_SHIPS.add("ms_boss_mimir");
-				SSP_BOSS_SHIPS.add("ms_boss_charybdis");
-				SSP_BOSS_SHIPS.add("msp_boss_potniaBis");
-			}
-			if (sector.getFaction("templars") != null)
-			{
-				//SSP_BOSS_SHIPS.add("tem_boss_paladin");
-			}
-			if (sector.getFaction("interstellarimperium") != null)
-			{
-				SSP_BOSS_SHIPS.add("ii_boss_praetorian");
-				SSP_BOSS_SHIPS.add("ii_boss_olympus");
-			}
-		} catch (Exception ex) {
-			log.error(ex);
-		}
+                // maybe check for their respective mods as well?
+                sspBossShips.add("syndicate_asp_boss_copperhead");
+                sspBossShips.add("junk_pirates_boss_dugong");
+            }
+            SectorAPI sector = Global.getSector();
+            if (sector.getFaction("shadow_industry") != null)
+            {
+                sspBossShips.add("ms_boss_mimir");
+                sspBossShips.add("ms_boss_charybdis");
+                sspBossShips.add("msp_boss_potniaBis");
+            }
+            if (sector.getFaction("templars") != null)
+            {
+                //sspBossShips.add("tem_boss_paladin");
+            }
+            if (sector.getFaction("interstellarimperium") != null)
+            {
+                sspBossShips.add("ii_boss_praetorian");
+                sspBossShips.add("ii_boss_olympus");
+            }
+        } catch (Exception ex) {
+            log.error(ex);
+        }
     }
 
     @Override
@@ -84,6 +93,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
         if (!okToUpdateCargo()) return;
         sinceLastCargoUpdate = 0f;
 
+        loadBossShips();
+        
         CargoAPI cargo = getCargo();
 
         pruneWeapons(1f);
@@ -198,9 +209,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 }
             }
         }
-        if (ExerelinConfig.prismSellBossShips && !SSP_BOSS_SHIPS.isEmpty())
+        if (ExerelinConfig.prismSellBossShips && !sspBossShips.isEmpty())
         {
-            String variantId = SSP_BOSS_SHIPS.get(MathUtils.getRandomNumberInRange(0, SSP_BOSS_SHIPS.size()-1));
+            String variantId = sspBossShips.get(MathUtils.getRandomNumberInRange(0, sspBossShips.size()-1));
             variantId += "_Hull";
             FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
             member.getRepairTracker().setMothballed(true);
