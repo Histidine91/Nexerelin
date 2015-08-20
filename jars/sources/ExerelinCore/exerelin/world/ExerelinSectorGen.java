@@ -105,6 +105,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	private static final Map<String, String[]> stationImages = new HashMap<>();
 	
+	private static final WeightedRandomPicker<String> planetTypePicker = new WeightedRandomPicker<>();
+	private static final float NON_HOSTILE_WORLD_CHANCE_MULT = 1.25f;
+	
 	private List<String> factionIds = new ArrayList<>();
 	private List<Integer[]> starPositions = new ArrayList<>();	
 	private EntityData homeworld = null;
@@ -147,6 +150,16 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stationImages.put("neutrinocorp", new String[] {"neutrino_station_powerplant", "neutrino_station_largeprocessing", "neutrino_station_experimental"} );
 		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
 		stationImages.put("exipirated", new String[] {"exipirated_avesta_station"} );
+		
+		for (String planetType : planetTypes)
+		{
+			float weight = 1;
+			if (planetType.equals("terran") || planetType.equals("jungle") || planetType.equals("water") || planetType.equals("arid") || planetType.equals("desert"))
+			{
+				weight = NON_HOSTILE_WORLD_CHANCE_MULT;
+			}
+			planetTypePicker.add(planetType, weight);
+		}
 	}
 	
 	private void loadBackgrounds()
@@ -1201,7 +1214,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			if (planetData.habitable)
 			{
-				planetType = planetTypes[MathUtils.getRandomNumberInRange(0, planetTypes.length - 1)];
+				planetType = planetTypePicker.pick();
 			}
 			else
 			{
