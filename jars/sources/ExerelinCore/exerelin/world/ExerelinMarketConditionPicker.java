@@ -153,11 +153,11 @@ public class ExerelinMarketConditionPicker
 		industryConds.add(new MarketConditionDef("spaceport", 0.9f, 4));
 		specialConds.add(new MarketConditionDef("organized_crime", 0.7f, 4));
 		specialConds.add(new MarketConditionDef("large_refugee_population", 0.7f, 4, false));
-		cond = new MarketConditionDef("urbanized_polity", 0.7f, 3, false);
+		cond = new MarketConditionDef("urbanized_polity", 0.6f, 3, false);
 		cond.setAllowStations(false);
 		allowNonHostileWorlds(cond);
 		specialConds.add(cond);
-		cond = new MarketConditionDef("rural_polity", 0.5f, 3, false);
+		cond = new MarketConditionDef("rural_polity", 0.6f, 3, false);
 		cond.setAllowStations(false);
 		allowNonHostileWorlds(cond);
 		specialConds.add(cond);
