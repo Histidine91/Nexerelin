@@ -153,12 +153,15 @@ public class ExerelinMarketConditionPicker
 		industryConds.add(new MarketConditionDef("spaceport", 0.9f, 4));
 		specialConds.add(new MarketConditionDef("organized_crime", 0.7f, 4));
 		specialConds.add(new MarketConditionDef("large_refugee_population", 0.7f, 4, false));
-		cond = new MarketConditionDef("urbanized_polity", 0.7f, 3, false);
+		cond = new MarketConditionDef("urbanized_polity", 0.6f, 3, false);
 		cond.setAllowStations(false);
+		allowNonHostileWorlds(cond);
 		specialConds.add(cond);
-		cond = new MarketConditionDef("rural_polity", 0.7f, 3, false);
+		cond = new MarketConditionDef("rural_polity", 0.6f, 3, false);
 		cond.setAllowStations(false);
+		allowNonHostileWorlds(cond);
 		specialConds.add(cond);
+		
 		
 		// size 5
 		heavyIndustryConds.add(new MarketConditionDef("autofac_heavy_industry", 1f, 5));
@@ -182,6 +185,16 @@ public class ExerelinMarketConditionPicker
 		cond.disallowedPlanets.add("jungle");
 		cond.disallowedPlanets.add("arid");
 	}
+	
+	private void allowNonHostileWorlds(MarketConditionDef cond)
+	{
+		cond.allowedPlanets.add("terran");
+		cond.allowedPlanets.add("water");
+		cond.allowedPlanets.add("jungle");
+		cond.allowedPlanets.add("arid");
+		cond.allowedPlanets.add("desert");
+	}
+	
 	
 	private void tryAddMarketCondition(MarketAPI market, List possibleConds, int size, String planetType, boolean isStation)
 	{
