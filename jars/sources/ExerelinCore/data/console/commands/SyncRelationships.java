@@ -5,7 +5,7 @@ import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
 
-public class SyncFactionRelationships implements BaseCommand {
+public class SyncRelationships implements BaseCommand {
 
     @Override
     public CommandResult runCommand(String args, CommandContext context) {

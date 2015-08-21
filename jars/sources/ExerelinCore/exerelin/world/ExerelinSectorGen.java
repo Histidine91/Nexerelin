@@ -806,6 +806,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(AllianceManager.create());
 		StatsTracker.create();
 		
+		DiplomacyManager.setRandomFactionRelationships(ExerelinSetupData.getInstance().randomStartRelationships);
 		DiplomacyManager.initFactionRelationships();
 		
 		SectorManager.setSystemToRelayMap(systemToRelay);

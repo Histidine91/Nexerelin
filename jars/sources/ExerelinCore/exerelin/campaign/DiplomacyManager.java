@@ -87,6 +87,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     protected final IntervalUtil intervalUtil;
     
     protected float daysElapsed = 0;
+    protected boolean randomFactionRelationships = false;
     
     static {
         String[] factions = {"templars", "independent"};
@@ -708,7 +709,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         for (FactionAPI faction : sector.getAllFactions())
             factionIds.add(faction.getId());
 
-        boolean randomize = ExerelinSetupData.getInstance().randomStartRelationships;
+        boolean randomize = false;
+        if (diplomacyManager != null)
+        {
+            randomize = diplomacyManager.randomFactionRelationships;
+        }
         List<String> alreadyRandomizedIds = new ArrayList<>();
         alreadyRandomizedIds.add("independent");
         
@@ -761,6 +766,16 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         else
         {
+            // first make everyone neutral to each other (for midgame reset)
+            for (String factionId : factionIds) 
+            {
+                FactionAPI faction = sector.getFaction(factionId);
+                for (String otherFactionId: factionIds)
+                {
+                    faction.setRelationship(otherFactionId, 0);
+                }
+            }
+            
             // pirates are hostile to everyone, except some factions like Mayorate
             for (String factionId : factionIds) 
             {
@@ -876,5 +891,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
         }
         
+    }
+    
+    public static void setRandomFactionRelationships(boolean random)
+    {
+        if (diplomacyManager == null) return;
+        diplomacyManager.randomFactionRelationships = random;
     }
 }
