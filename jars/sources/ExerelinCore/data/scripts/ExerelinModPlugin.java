@@ -33,13 +33,14 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-		for (StarSystemAPI system : Global.getSector().getStarSystems())
-		{
-			if (system.getBackgroundTextureFilename().equals("graphics/ssp/backgrounds/ssp_arcade.jpg"))
-			{
-				system.setBackgroundTextureFilename("graphics/ssp/backgrounds/ssp_arcade.png");
-			}
-		}
+        // fix using background from unreleased SS+ version; remove after new version is released
+        for (StarSystemAPI system : Global.getSector().getStarSystems())
+        {
+            if (system.getBackgroundTextureFilename().equals("graphics/ssp/backgrounds/ssp_arcade.png"))
+            {
+                system.setBackgroundTextureFilename("graphics/ssp/backgrounds/ssp_randombattle.jpg");
+            }
+        }
     }
     
     @Override
