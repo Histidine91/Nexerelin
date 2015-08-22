@@ -65,19 +65,19 @@ import org.lwjgl.util.vector.Vector2f;
 public class ExerelinSectorGen implements SectorGeneratorPlugin
 {
 	// NOTE: system names and planet names are overriden by planetNames.json
-	private static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
-	private static String[] possibleSystemNames = {"Exerelin", "Askar", "Garil", "Yaerol", "Plagris", "Marot", "Caxort", "Laret", "Narbil", "Karit",
+	protected static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
+	protected static String[] possibleSystemNames = {"Exerelin", "Askar", "Garil", "Yaerol", "Plagris", "Marot", "Caxort", "Laret", "Narbil", "Karit",
 		"Raestal", "Bemortis", "Xanador", "Tralor", "Exoral", "Oldat", "Pirata", "Zamaror", "Servator", "Bavartis", "Valore", "Charbor", "Dresnen",
 		"Firort", "Haidu", "Jira", "Wesmon", "Uxor"};
-	private static String[] possiblePlanetNames = new String[] {"Baresh", "Zaril", "Vardu", "Drewler", "Trilar", "Polres", "Laret", "Erilatir",
+	protected static String[] possiblePlanetNames = new String[] {"Baresh", "Zaril", "Vardu", "Drewler", "Trilar", "Polres", "Laret", "Erilatir",
 		"Nambor", "Zat", "Raqueler", "Garret", "Carashil", "Qwerty", "Azerty", "Tyrian", "Savarra", "Torm", "Gyges", "Camanis", "Ixmucane", "Yar", "Tyrel",
 		"Tywin", "Arya", "Sword", "Centuri", "Heaven", "Hell", "Sanctuary", "Hyperion", "Zaphod", "Vagar", "Green", "Blond", "Gabrielle", "Masset",
 		"Effecer", "Gunsa", "Patiota", "Rayma", "Origea", "Litsoa", "Bimo", "Plasert", "Pizzart", "Shaper", "Coruscent", "Hoth", "Gibraltar", "Aurora",
 		"Darwin", "Mendel", "Crick", "Franklin", "Watson", "Pauling",
 		"Rutherford", "Maxwell", "Bohr", "Pauli", "Curie", "Meitner", "Heisenberg", "Feynman"};
-	private static String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
+	protected static String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
 		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
-	private static final String[] starBackgroundsArray = new String[]
+	protected static final String[] starBackgroundsArray = new String[]
 	{
 		"backgrounds/background1.jpg", "backgrounds/background2.jpg", "backgrounds/background3.jpg", "backgrounds/background4.jpg", "backgrounds/background5.jpg",
 		"exerelin/backgrounds/blue_background1.jpg", "exerelin/backgrounds/blue_background2.jpg",
@@ -91,40 +91,44 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"backgrounds/9-4.jpg", "backgrounds/9-5.jpg",
 	};
 	
-	private static ArrayList<String> starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
+	protected static ArrayList<String> starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
 
-	private List<String> possibleSystemNamesList = new ArrayList(Arrays.asList(possibleSystemNames));
-	private List<String> possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
-	private List<String> possibleStationNamesList = new ArrayList(Arrays.asList(possibleStationNames));
+	protected List<String> possibleSystemNamesList = new ArrayList(Arrays.asList(possibleSystemNames));
+	protected List<String> possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
+	protected List<String> possibleStationNamesList = new ArrayList(Arrays.asList(possibleStationNames));
 	
-	private static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren", "barren-bombarded"};
-	private static final String[] planetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "frozen", "rocky_ice", "radiated", "barren-bombarded"};
-	private static final String[] planetTypesGasGiant = new String[] {"gas_giant", "ice_giant"};
-	private static final String[] moonTypes = new String[] {"frozen", "barren", "barren-bombarded", "rocky_ice", "rocky_metallic", "desert", "water", "jungle"};
-	private static final String[] moonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "radiated", "barren-bombarded"};
+	protected static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren", "barren-bombarded"};
+	protected static final String[] planetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "frozen", "rocky_ice", "radiated", "barren-bombarded"};
+	protected static final String[] planetTypesGasGiant = new String[] {"gas_giant", "ice_giant"};
+	protected static final String[] moonTypes = new String[] {"frozen", "barren", "barren-bombarded", "rocky_ice", "rocky_metallic", "desert", "water", "jungle"};
+	protected static final String[] moonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "radiated", "barren-bombarded"};
 	
-	private static final Map<String, String[]> stationImages = new HashMap<>();
+	protected static final Map<String, String[]> stationImages = new HashMap<>();
 	
-	private static final WeightedRandomPicker<String> planetTypePicker = new WeightedRandomPicker<>();
-	private static final float NON_HOSTILE_WORLD_CHANCE_MULT = 1.25f;
+	protected static final WeightedRandomPicker<String> planetTypePicker = new WeightedRandomPicker<>();
+	protected static final float NON_HOSTILE_WORLD_CHANCE_MULT = 1.25f;
+	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
+	protected static final float BINARY_SYSTEM_CHANCE = 1f;
+	protected static final float BINARY_STAR_DISTANCE = 14000;
+	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.5f;
 	
-	private List<String> factionIds = new ArrayList<>();
-	private List<Integer[]> starPositions = new ArrayList<>();	
-	private EntityData homeworld = null;
+	protected List<String> factionIds = new ArrayList<>();
+	protected List<Integer[]> starPositions = new ArrayList<>();	
+	protected EntityData homeworld = null;
 
-	private List<EntityData> habitablePlanets = new ArrayList<>();
-	private List<EntityData> stations = new ArrayList<>();
-	private Map<String, String> systemToRelay = new HashMap();
-	private Map<String, String> planetToRelay = new HashMap();
+	protected List<EntityData> habitablePlanets = new ArrayList<>();
+	protected List<EntityData> stations = new ArrayList<>();
+	protected Map<String, String> systemToRelay = new HashMap();
+	protected Map<String, String> planetToRelay = new HashMap();
 	
-	private float numOmnifacs = 0;
+	protected float numOmnifacs = 0;
 	
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
 	
 	/*
 	public static class ImageFileFilter implements FileFilter
 	{
-		private final String[] okFileExtensions = new String[] {"jpg", "jpeg", "png"};
+		protected final String[] okFileExtensions = new String[] {"jpg", "jpeg", "png"};
 		public boolean accept(File file)
 		{
 		for (String extension : okFileExtensions)
@@ -162,7 +166,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 	}
 	
-	private void loadBackgrounds()
+	protected void loadBackgrounds()
 	{
 		starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
 		List<String> factions = Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector()));
@@ -230,12 +234,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 	}
 
-	private String getRandomFaction()
+	protected String getRandomFaction()
 	{
 		return factionIds.get(MathUtils.getRandomNumberInRange(0, factionIds.size()-1));
 	}
 	
-	private void resetVars()
+	protected void resetVars()
 	{
 		habitablePlanets = new ArrayList<>();
 		stations = new ArrayList<>();
@@ -244,7 +248,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		numOmnifacs = 0;
 	}
 	
-	private void addListToPicker(List list, WeightedRandomPicker picker)
+	protected void addListToPicker(List list, WeightedRandomPicker picker)
 	{
 		for (Object object : list)
 		{
@@ -252,7 +256,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 	}
 			
-	private void pickEntityInteractionImage(SectorEntityToken entity, MarketAPI market, String planetType, EntityType entityType)
+	protected void pickEntityInteractionImage(SectorEntityToken entity, MarketAPI market, String planetType, EntityType entityType)
 	{
 		WeightedRandomPicker<String[]> allowedImages = new WeightedRandomPicker();
 		allowedImages.add(new String[]{"illustrations", "cargo_loading"} );
@@ -297,7 +301,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		entity.setInteractionImage(illustration[0], illustration[1]);
 	}
 	
-	private MarketAPI addMarketToEntity(SectorEntityToken entity, EntityData data, String factionId)
+	protected MarketAPI addMarketToEntity(SectorEntityToken entity, EntityData data, String factionId)
 	{
 		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
@@ -921,6 +925,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		mass *= density;
 		float radiusCubed = (float)Math.pow(orbitRadius, 3);
 		float period = (float)(2 * Math.PI * Math.sqrt(radiusCubed/mass) * 2);
+		
+		if (Math.random() < REVERSE_ORBIT_CHANCE) period *=-1;
+		
 		return period;
 	}
 	
@@ -935,7 +942,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return 2;
 	}
 	
-	private SectorEntityToken makeStation(EntityData data, String factionId)
+	protected SectorEntityToken makeStation(EntityData data, String factionId)
 	{
 		int angle = MathUtils.getRandomNumberInRange(1, 360);
 		int orbitRadius = 300;
@@ -1047,15 +1054,101 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 	}
 
-	public PlanetAPI makeStar(int index, String systemId, StarSystemAPI system, String type, float size)
+	public PlanetAPI createStarToken(int index, String systemId, StarSystemAPI system, String type, float size, boolean isSecondStar)
 	{
-		Integer[] pos = (Integer[])starPositions.get(index);
-		int x = pos[0];
-		int y = pos[1];
-		return system.initStar(systemId, type, size, x, y);
+		if (!isSecondStar) 
+		{
+			Integer[] pos = (Integer[])starPositions.get(index);
+			int x = pos[0];
+			int y = pos[1];
+			return system.initStar(systemId, type, size, x, y);
+		}
+		else 
+		{
+			size = size * 0.75f;
+			
+			int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNamesList.size() - 1);
+			String name = possibleSystemNamesList.get(systemNameIndex);
+			possibleSystemNamesList.remove(systemNameIndex);
+			
+			PlanetAPI star = system.getStar();
+			
+			float angle = MathUtils.getRandomNumberInRange(1, 360);
+			float distance = (BINARY_STAR_DISTANCE + star.getRadius()*5 + size*5) * MathUtils.getRandomNumberInRange(0.9f, 1.2f) ;
+			float orbitDays = getOrbitalPeriod(star.getRadius(), distance + star.getRadius(), getDensity(star));
+			
+			return system.addPlanet(systemId, star, name, type, angle, size, distance, orbitDays);
+		}
 	}
 	
-	private float getHabitableChance(int planetNum, boolean isMoon)
+	public PlanetAPI makeStar(int systemIndex, StarSystemAPI system, boolean isSecondStar)
+	{
+		PlanetAPI star;
+		int starType = MathUtils.getRandomNumberInRange(0, 10);
+		String systemId = system.getId();
+		
+		// TODO refactor to remove endless nested ifs
+		if (starType == 0)
+		{
+			star = createStarToken(systemIndex, systemId, system, "star_yellow", 500f, isSecondStar);
+			//system.setLightColor(new Color(255, 180, 180));
+		}
+		else if(starType == 1)
+		{
+			star = createStarToken(systemIndex, systemId, system, "star_red", 900f, isSecondStar);
+			system.setLightColor(new Color(255, 180, 180));
+		}
+		else if(starType == 2)
+		{
+			star = createStarToken(systemIndex, systemId, system, "star_blue", 400f, isSecondStar);
+			system.setLightColor(new Color(135,206,250));
+		}
+		else if(starType == 3)
+		{
+			star = createStarToken(systemIndex, systemId, system, "star_white", 300f, isSecondStar);
+			//system.setLightColor(new Color(185,185,240));
+		}
+		else if(starType == 4)
+		{
+			star = createStarToken(systemIndex, systemId, system, "star_orange", 900f, isSecondStar);
+			system.setLightColor(new Color(255,220,0));
+		}
+		else if(starType == 5)
+		{
+			star = createStarToken(systemIndex, systemId, system, "star_yellowwhite", 400f, isSecondStar);
+			system.setLightColor(new Color(255,255,224));
+		}
+		else if(starType == 6)
+		{
+			star = createStarToken(systemIndex, systemId, system, "star_bluewhite", 400f, isSecondStar);
+			system.setLightColor(new Color(135,206,250));
+		}
+		else if(starType == 7)
+		{
+			star = createStarToken(systemIndex, systemId, system, "star_purple", 700f, isSecondStar);
+			system.setLightColor(new Color(218,112,214));
+		}
+		else if(starType == 8)
+		{
+			star = createStarToken(systemIndex, systemId, system, "star_dark", 100f, isSecondStar);
+			system.setLightColor(new Color(105,105,105));
+		}
+		else if(starType == 9)
+		{
+			star = createStarToken(systemIndex, systemId, system, "star_green", 600f, isSecondStar);
+			system.setLightColor(new Color(240,255,240));
+		}
+		else
+		{
+			star = createStarToken(systemIndex, systemId, system, "star_greenwhite", 500f, isSecondStar);
+			system.setLightColor(new Color(240,255,240));
+		}
+		if (!isSecondStar)
+			system.setBackgroundTextureFilename( starBackgrounds.get(MathUtils.getRandomNumberInRange(0, starBackgrounds.size() - 1)) );
+		return star;
+	}
+	
+	protected float getHabitableChance(int planetNum, boolean isMoon)
 	{
 		float habitableChance = 0.3f;
 		if (planetNum == 0) habitableChance = 0.4f;
@@ -1080,67 +1173,16 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		EntityData capital = null;
 		
 		// Set starSystem/light colour/background
-		PlanetAPI star;
-	
-		int starType = MathUtils.getRandomNumberInRange(0, 10);
-
-		// TODO refactor to remove endless nested ifs
-		if(starType == 0)
+		PlanetAPI star = makeStar(systemIndex, system, false);
+		PlanetAPI star2 = null;
+		int numPlanetsStar1 = 0;
+		int numPlanetsStar2 = 0;
+		
+		boolean isBinary = Math.random() < BINARY_SYSTEM_CHANCE;
+		if (isBinary)
 		{
-			star = makeStar(systemIndex, systemId, system, "star_yellow", 500f);
-			//system.setLightColor(new Color(255, 180, 180));
+			star2 = makeStar(systemIndex, system, true);
 		}
-		else if(starType == 1)
-		{
-			star = makeStar(systemIndex, systemId, system, "star_red", 900f);
-			system.setLightColor(new Color(255, 180, 180));
-		}
-		else if(starType == 2)
-		{
-			star = makeStar(systemIndex, systemId, system, "star_blue", 400f);
-			system.setLightColor(new Color(135,206,250));
-		}
-		else if(starType == 3)
-		{
-			star = makeStar(systemIndex, systemId, system, "star_white", 300f);
-			//system.setLightColor(new Color(185,185,240));
-		}
-		else if(starType == 4)
-		{
-			star = makeStar(systemIndex, systemId, system, "star_orange", 900f);
-			system.setLightColor(new Color(255,220,0));
-		}
-		else if(starType == 5)
-		{
-			star = makeStar(systemIndex, systemId, system, "star_yellowwhite", 400f);
-			system.setLightColor(new Color(255,255,224));
-		}
-		else if(starType == 6)
-		{
-			star = makeStar(systemIndex, systemId, system, "star_bluewhite", 400f);
-			system.setLightColor(new Color(135,206,250));
-		}
-		else if(starType == 7)
-		{
-			star = makeStar(systemIndex, systemId, system, "star_purple", 700f);
-			system.setLightColor(new Color(218,112,214));
-		}
-		else if(starType == 8)
-		{
-			star = makeStar(systemIndex, systemId, system, "star_dark", 100f);
-			system.setLightColor(new Color(105,105,105));
-		}
-		else if(starType == 9)
-		{
-			star = makeStar(systemIndex, systemId, system, "star_green", 600f);
-			system.setLightColor(new Color(240,255,240));
-		}
-		else
-		{
-			star = makeStar(systemIndex, systemId, system, "star_greenwhite", 500f);
-			system.setLightColor(new Color(240,255,240));
-		}
-		system.setBackgroundTextureFilename( starBackgrounds.get(MathUtils.getRandomNumberInRange(0, starBackgrounds.size() - 1)) );
 
 		List<EntityData> entities = new ArrayList<>();
 		EntityData starData = new EntityData(system);
@@ -1160,7 +1202,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 			numBasePlanets = maxPlanets;
+		
 		int distanceStepping = (ExerelinSetupData.getInstance().maxSystemSize-4000)/MathUtils.getRandomNumberInRange(numBasePlanets, maxPlanets+1);
+		
+		if (isBinary) numBasePlanets *= BINARY_SYSTEM_PLANET_MULT;
 		
 		boolean gasPlanetCreated = false;
 		int habitableCount = 0;
@@ -1213,6 +1258,21 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			log.info("Creating planet " + name);
 			id = name.replace(' ','_');
 			
+			// binary star handling
+			PlanetAPI toOrbit = star;
+			if (isBinary && Math.random() < 0.4f) 
+			{
+				toOrbit = star2;
+				numPlanetsStar2++;
+				planetData.planetNum = numPlanetsStar2;
+			}
+			else
+			{
+				numPlanetsStar1++;
+				planetData.planetNum = numPlanetsStar1;
+			}
+			
+			// planet type
 			if (planetData.habitable)
 			{
 				planetType = planetTypePicker.pick();
@@ -1228,11 +1288,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				else planetType = planetTypesUninhabitable[MathUtils.getRandomNumberInRange(0, planetTypesUninhabitable.length - 1)];
 			}
 			
+			// orbital mechanics
 			float radius;
 			float angle = MathUtils.getRandomNumberInRange(1, 360);
-			float distance = 3000 + (distanceStepping * (planetData.planetNum)) + MathUtils.getRandomNumberInRange((distanceStepping/3)*-1, distanceStepping/3);
-			float orbitDays = getOrbitalPeriod(star.getRadius(), distance + star.getRadius(), getDensity(star));
+			float distance = 3000 + (distanceStepping * (planetData.planetNum - 1) * MathUtils.getRandomNumberInRange(2/3f, 4/3f));
+			distance = (int)distance;
+			float orbitDays = getOrbitalPeriod(toOrbit.getRadius(), distance + toOrbit.getRadius(), getDensity(toOrbit));
 			
+			// size
 			if (isGasGiant)
 			{
 				radius = MathUtils.getRandomNumberInRange(325, 375);
@@ -1251,7 +1314,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				isGasGiant = true;
 			}
 			
-			SectorEntityToken newPlanet = system.addPlanet(id, star, name, planetType, angle, radius, distance, orbitDays);
+			// create the planet token
+			SectorEntityToken newPlanet = system.addPlanet(id, toOrbit, name, planetType, angle, radius, distance, orbitDays);
 			planetData.entity = newPlanet;
 			planetData.planetType = planetType;
 			
