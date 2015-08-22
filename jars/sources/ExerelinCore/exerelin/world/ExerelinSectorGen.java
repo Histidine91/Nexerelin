@@ -108,7 +108,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final WeightedRandomPicker<String> planetTypePicker = new WeightedRandomPicker<>();
 	protected static final float NON_HOSTILE_WORLD_CHANCE_MULT = 1.25f;
 	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
-	protected static final float BINARY_SYSTEM_CHANCE = 1f;
+	protected static final float BINARY_SYSTEM_CHANCE = 0.15f;
 	protected static final float BINARY_STAR_DISTANCE = 14000;
 	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.5f;
 	
@@ -1645,6 +1645,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	/*
 		For each system:
 			First create a star using one of the ten possible options picked at random
+			If binary system, add another star as a "planet"
+	
 			Create planets according to the following rules:
 				first planet: 40% habitable chance
 				second planet: 70% habitable chance
@@ -1656,6 +1658,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				if not at least two habitable entities, randomly pick planets 1-4 and force them to be habitable
 				designate one habitable planet from these four as system capital
 					If this is the first star (Exerelin), mark it as HQ instead (we'll come back to it later)
+				Binary systems have 50% more planets; planets will randomly orbit either star
 			Don't actually generate PlanetAPIs until all EntityDatas have been created
 			If habitable planet/moon, add to list of habitables
 
