@@ -1264,12 +1264,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			{
 				toOrbit = star2;
 				numPlanetsStar2++;
-				planetData.planetNum = numPlanetsStar2;
+				planetData.planetNumByStar = numPlanetsStar2;
 			}
 			else
 			{
 				numPlanetsStar1++;
-				planetData.planetNum = numPlanetsStar1;
+				planetData.planetNumByStar = numPlanetsStar1;
 			}
 			
 			// planet type
@@ -1280,8 +1280,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			else
 			{
 				float gasGiantChance = 0.45f;
-				if (planetData.planetNum == 3) gasGiantChance = 0.3f;
-				else if (planetData.planetNum < 3) gasGiantChance = 0;
+				if (planetData.planetNumByStar == 3) gasGiantChance = 0.3f;
+				else if (planetData.planetNumByStar < 3) gasGiantChance = 0;
 				
 				isGasGiant = Math.random() < gasGiantChance;
 				if (isGasGiant) planetType = planetTypesGasGiant[MathUtils.getRandomNumberInRange(0, planetTypesGasGiant.length - 1)];
@@ -1291,7 +1291,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// orbital mechanics
 			float radius;
 			float angle = MathUtils.getRandomNumberInRange(1, 360);
-			float distance = 3000 + (distanceStepping * (planetData.planetNum - 1) * MathUtils.getRandomNumberInRange(2/3f, 4/3f));
+			float distance = 3000 + (distanceStepping * (planetData.planetNumByStar - 1) * MathUtils.getRandomNumberInRange(2/3f, 4/3f));
 			distance = (int)distance;
 			float orbitDays = getOrbitalPeriod(toOrbit.getRadius(), distance + toOrbit.getRadius(), getDensity(toOrbit));
 			
@@ -1628,6 +1628,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		MarketAPI market;
 		int forceMarketSize = -1;
 		int planetNum = -1;
+		int planetNumByStar = -1;
 		float orbitDistance = 0;	// only used for belter stations
 		
 		public EntityData(StarSystemAPI starSystem) 
@@ -1638,6 +1639,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			this.starSystem = starSystem;
 			this.planetNum = planetNum;
+			this.planetNumByStar = planetNum;
 		}	  
 	}
 	
