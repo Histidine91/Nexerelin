@@ -108,7 +108,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final WeightedRandomPicker<String> planetTypePicker = new WeightedRandomPicker<>();
 	protected static final float NON_HOSTILE_WORLD_CHANCE_MULT = 1.25f;
 	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
-	protected static final float BINARY_SYSTEM_CHANCE = 0.15f;
+	protected static final float BINARY_SYSTEM_CHANCE = 0;	//0.15f;
 	protected static final float BINARY_STAR_DISTANCE = 14000;
 	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.5f;
 	
