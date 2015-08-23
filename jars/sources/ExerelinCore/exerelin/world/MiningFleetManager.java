@@ -38,15 +38,15 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	public static final String MANAGER_MAP_KEY = "exerelin_miningFleetManager";
 		
 	public static Logger log = Global.getLogger(MiningFleetManager.class);
-	protected static final float POINT_INCREMENT_PER_DAY = 4f;
+	protected static final float POINT_INCREMENT_PER_DAY = 2f;
 	protected static final float MARKET_STABILITY_DIVISOR = 5f;
 	protected static final float POINTS_TO_SPAWN = 100f;
+	protected static final float POINT_INCREMENT_PERIOD = 1;
 	
 	protected final List<MiningFleetData> activeFleets = new LinkedList();
 	protected HashMap<String, Float> spawnCounter = new HashMap<>();
 	
-	private final IntervalUtil tracker;
-	
+	protected float timer = 0;
 	protected float daysElapsed = 0;
 	
 	private static MiningFleetManager miningFleetManager;
@@ -54,7 +54,6 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	public MiningFleetManager()
 	{
 		super(true);
-		this.tracker = new IntervalUtil(1, 1);
 	}
 	
 	public void spawnMiningFleet(MarketAPI origin)
@@ -184,6 +183,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	
 	public void updateMiningFleetPoints(float days)
 	{
+		log.info("Incrementing mining points");
 		// prevents NPE of unknown origin
 		if (Global.getSector() == null || Global.getSector().getEconomy() == null)
 			return;
@@ -205,7 +205,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 			
 			increment = increment * POINT_INCREMENT_PER_DAY * days;
 			float newValue = spawnCounter.get(market.getId()) + increment;
-			
+			//log.info("Market " + market.getName() + " has " + newValue + " mining points");
 			if (newValue > POINTS_TO_SPAWN)
 			{
 				newValue -= POINTS_TO_SPAWN;
@@ -221,8 +221,8 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	{
 		float days = Global.getSector().getClock().convertToDays(amount);
 			
-		this.tracker.advance(days);
-		if (!this.tracker.intervalElapsed()) {
+		timer += days;
+		if (timer < POINT_INCREMENT_PERIOD) {
 			return;
 		}
 		List<MiningFleetData> remove = new LinkedList();
@@ -233,7 +233,8 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		}
 		this.activeFleets.removeAll(remove);
 	
-		updateMiningFleetPoints(days);
+		updateMiningFleetPoints(POINT_INCREMENT_PERIOD);
+		timer -= POINT_INCREMENT_PERIOD;
 	}
 	
 	public static MiningFleetManager create()
