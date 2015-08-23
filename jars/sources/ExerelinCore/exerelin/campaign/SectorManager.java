@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin;
 import com.fs.starfarer.api.campaign.LocationAPI;
@@ -16,6 +17,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
@@ -153,6 +155,21 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         StatsTracker.getStatsTracker().modifyOrphansMadeByCrewCount(-numSurvivors, loserFactionId);
     }
     
+    /*
+    @Override
+    public void reportPlayerEngagement(EngagementResultAPI result) {
+        boolean playerWin = result.didPlayerWin();
+        EngagementResultForFleetAPI fleetResult = result.getWinnerResult();
+        if (playerWin) fleetResult = result.getLoserResult();
+        FactionAPI faction = fleetResult.getFleet().getFaction();
+        
+        // relationship is _before_ the reputation penalty caused by the combat
+        if (faction.isHostileTo("player")) return;
+        
+        createWarmongerEvent(faction.getId());
+    }
+    */
+    
     @Override
     public boolean isDone()
     {
@@ -188,8 +205,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (sectorManager == null) return false;
         return sectorManager.corvusMode;
     }
-	
-	public static void setHardMode(boolean mode)
+    
+    public static void setHardMode(boolean mode)
     {
         if (sectorManager == null) return;
         sectorManager.hardMode = mode;
@@ -199,6 +216,58 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return false;
         return sectorManager.hardMode;
+    }
+    
+    public static void createWarmongerEvent(String targetFactionId)
+    {
+        FactionAPI targetFaction = Global.getSector().getFaction(targetFactionId);
+        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+        int numFactions = 0;
+        float totalRepLoss = 0;
+        float myFactionLoss = 0;
+        Map<String, Float> repLoss = new HashMap<>();
+        List<String> factions = SectorManager.getLiveFactionIdsCopy();
+        for (String factionId : factions)
+        {
+            if (factionId.equals(targetFactionId)) continue;
+            if (targetFaction.isHostileTo(factionId)) continue;
+            
+            float loss = 0;
+            RepLevel level = targetFaction.getRelationshipLevel(factionId);
+            if (level == RepLevel.COOPERATIVE)
+                loss = 25;
+            else if (level == RepLevel.FRIENDLY)
+                loss = 20;
+            else if (level == RepLevel.WELCOMING)
+                loss = 15;
+            else if (level == RepLevel.FAVORABLE)
+                loss = 10;
+            else if (level == RepLevel.NEUTRAL)
+                loss = 6;
+            else if (level == RepLevel.SUSPICIOUS)
+                loss = 3;
+            //else if (level == RepLevel.INHOSPITABLE)
+            //    loss = 2;
+            
+            loss *= 0.01f;
+            
+            if (factionId.equals(playerAlignedFactionId))
+            {
+                myFactionLoss = (2*loss) + 0.05f;
+                continue;
+            }
+            if (loss <= 0) continue;
+            numFactions++;
+            totalRepLoss += loss;
+        }
+        if (numFactions == 0 && myFactionLoss == 0) return;
+        
+        Map<String, Object> params = new HashMap<>();
+        params.put("avgRepLoss", totalRepLoss/(float)numFactions);
+        params.put("numFactions", numFactions);
+        params.put("repLoss", repLoss);
+        params.put("myFactionLoss", myFactionLoss);
+        Global.getSector().getEventManager().startEvent(null, "exerelin_warmonger", params);
     }
     
     public void handleSlaveTradeRep()

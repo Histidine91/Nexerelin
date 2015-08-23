@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.SectorManager;
 import exerelin.utilities.StringHelper;
 import exerelin.world.InvasionFleetManager;
 import java.awt.Color;
@@ -95,6 +96,7 @@ public class FleetRequestFire extends FleetRequestActionBase {
 		{
 			RepActionEnvelope envelope = new RepActionEnvelope(RepActions.COMBAT_NORMAL, null, dialog.getTextPanel());
 			Global.getSector().adjustPlayerReputation(envelope, targetMarket.getFactionId());
+			//SectorManager.createWarmongerEvent(targetMarket.getFactionId());
 		}
 		return true;
 	}
