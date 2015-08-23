@@ -767,17 +767,17 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         else
         {
             // first make everyone neutral to each other (for midgame reset)
-			if (midgameReset)
-			{
-				for (String factionId : factionIds) 
-				{
-					FactionAPI faction = sector.getFaction(factionId);
-					for (String otherFactionId: factionIds)
-					{
-						faction.setRelationship(otherFactionId, 0);
-					}
-				}
-			}
+            if (midgameReset)
+            {
+                for (String factionId : factionIds) 
+                {
+                    FactionAPI faction = sector.getFaction(factionId);
+                    for (String otherFactionId: factionIds)
+                    {
+                        faction.setRelationship(otherFactionId, 0);
+                    }
+                }
+            }
             
             // pirates are hostile to everyone, except some factions like Mayorate
             for (String factionId : factionIds) 
