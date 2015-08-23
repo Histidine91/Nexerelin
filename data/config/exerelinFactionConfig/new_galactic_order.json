@@ -22,15 +22,15 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":["interstellarimperium","independent"], # String array
-    "factionsDisliked":["exigency","exipirated","junk_pirates","pack","syndicate_asp","hiigaran_descendents","hegemony","pirates","luddic_church","sindrian_diktat","templars","valkyrian"], # String array
+    "factionsDisliked":["pack","hegemony","pirates","luddic_church"], # String array
     
     "alignments":{
         "militarist":1,
         "ideological":0.5,
     },
 
-    "invasionStrengthBonusAttack":0.1,
-    "invasionStrengthBonusDefend":0.125,
-    "invasionFleetSizeMod":0.1,
-    "responseFleetSizeMod":0.125,
+    #"invasionStrengthBonusAttack":0.1,
+    #"invasionStrengthBonusDefend":0.125,
+    #"invasionFleetSizeMod":0.1,
+    #"responseFleetSizeMod":0.125,
 }

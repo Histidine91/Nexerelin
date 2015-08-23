@@ -26,8 +26,8 @@ public class ExerelinFactionConfig
     public String customRebelFleetId = "";
     public String rebelFleetSuffix = "Dissenters";
 
-    public String asteroidMiningFleetName = "Asteroid Mining Fleet";
-    public String gasMiningFleetName = "Gas Mining Fleet";
+    public String asteroidMiningFleetName = "Mining Fleet";
+    public String gasMiningFleetName = "Mining Fleet";
     public String logisticsFleetName = "Logistics Convoy";
     public String invasionFleetName = "Invasion Fleet";
     public String invasionSupportFleetName = "Strike Fleet";

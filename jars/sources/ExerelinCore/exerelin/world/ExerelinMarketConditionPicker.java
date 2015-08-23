@@ -162,9 +162,8 @@ public class ExerelinMarketConditionPicker
 		allowNonHostileWorlds(cond);
 		specialConds.add(cond);
 		
-		
 		// size 5
-		heavyIndustryConds.add(new MarketConditionDef("autofac_heavy_industry", 1f, 5));
+		heavyIndustryConds.add(new MarketConditionDef("autofac_heavy_industry", 1.2f, 5));
 		heavyIndustryConds.add(new MarketConditionDef("antimatter_fuel_production", 1f, 5));
 		heavyIndustryConds.add(new MarketConditionDef("shipbreaking_center", 0.7f, 5, false));
 		
