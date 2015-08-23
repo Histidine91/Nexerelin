@@ -356,7 +356,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         boolean allowPirates = ExerelinConfig.allowPirateInvasions;
         
         // pick a source market
-        sourcePicker.clear();
         for (MarketAPI market : markets) {
             if  ( market.getFactionId().equals(faction.getId()) && !market.hasCondition("decivilized") && 
                 ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) || (market.hasCondition("military_base"))
@@ -395,7 +394,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 
         // now we pick a target
         Vector2f originMarketLoc = originMarket.getLocationInHyperspace();
-        targetPicker.clear();
         for (MarketAPI market : markets) 
         {
             FactionAPI marketFaction = market.getFaction();
