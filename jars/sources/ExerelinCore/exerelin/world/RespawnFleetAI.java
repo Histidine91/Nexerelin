@@ -150,7 +150,7 @@ public class RespawnFleetAI extends InvasionFleetAI
             {
                 faction.setRelationship(targetFactionId, 0);
                 AllianceManager.syncAllianceRelationshipsToFactionRelationship(factionId, data.targetMarket.getFactionId());
-                ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(false);
+                ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
             }
         }
         

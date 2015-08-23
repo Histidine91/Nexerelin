@@ -23,6 +23,7 @@ import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -50,6 +51,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final float JOIN_CHANCE_MULT_PER_MEMBER = 0.8f;
     protected static final float FORM_CHANCE_MULT = 0.6f;   // multiplies relationship to get chance to form alliance
     protected static final float JOIN_CHANCE_FAIL_PER_NEW_ENEMY = 0.4f;
+    protected static final List<String> INVALID_FACTIONS = Arrays.asList(new String[] {"player_npc", "templars"});
     
     protected static Map<Alignment, List<String>> allianceNamesByAlignment = new HashMap<>();
     protected static Map<Alignment, List<String>> alliancePrefixesByAlignment = new HashMap<>();
@@ -283,7 +285,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         {
             if (alliancesByFactionId.containsKey(factionId)) continue;
             if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
-            if (factionId.equals("player_npc")) continue;
+            if (INVALID_FACTIONS.contains(factionId)) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             for (String otherFactionId : liveFactionIds)
@@ -291,7 +293,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (alliancesByFactionId.containsKey(otherFactionId)) continue;
                 if (otherFactionId.equals(factionId)) continue;
                 if (ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
-                if (factionId.equals("player_npc")) continue;
+                if (INVALID_FACTIONS.contains(otherFactionId)) continue;
                 if (faction.isAtBest(otherFactionId, RepLevel.WELCOMING)) continue;
                 
                 // better relationships are more likely to form alliances
@@ -341,7 +343,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         for (String factionId : liveFactionIds)
         {
             if (alliancesByFactionId.containsKey(factionId)) continue;
-            if (factionId.equals("player_npc")) continue;
+            if (INVALID_FACTIONS.contains(factionId)) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             WeightedRandomPicker<Alliance> picker = new WeightedRandomPicker<>(); 
@@ -526,10 +528,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         if (allianceManager == null) return null;
         
-        if (factionId1.equals("player"))
-            factionId1 = PlayerFactionStore.getPlayerFactionId();
-        else if (factionId2.equals("player"))
-            factionId2 = PlayerFactionStore.getPlayerFactionId();
+        //if (factionId1.equals("player"))
+        //    factionId1 = PlayerFactionStore.getPlayerFactionId();
+        //else if (factionId2.equals("player"))
+        //    factionId2 = PlayerFactionStore.getPlayerFactionId();
         
         Alliance alliance1 = allianceManager.alliancesByFactionId.get(factionId1);
         Alliance alliance2 = allianceManager.alliancesByFactionId.get(factionId2);
@@ -571,7 +573,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 highestDelta = setRelationshipAndUpdateDelta(member, factionId1, relationship, highestDelta);
             }
         }
-        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
+        //ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
         
         // 1 = was at war, now at peace
         // -1 = was at peace, now at war
@@ -655,7 +657,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     
     public static void printAllianceList(TextPanelAPI text)
     {
-        List<AllianceManager.Alliance> alliances = AllianceManager.getAllianceList();		
+        List<AllianceManager.Alliance> alliances = AllianceManager.getAllianceList();
         Collections.sort(alliances, new AllianceManager.AllianceComparator());
 
         Color hl = Misc.getHighlightColor();
