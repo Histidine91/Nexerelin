@@ -14,7 +14,7 @@ public class ResetRelationships implements BaseCommand {
             return CommandResult.WRONG_CONTEXT;
         }
         
-        DiplomacyManager.initFactionRelationships();
+        DiplomacyManager.initFactionRelationships(true);
         Console.showMessage("Faction relationships reset.");
         
         return CommandResult.SUCCESS;

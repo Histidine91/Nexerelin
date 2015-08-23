@@ -80,11 +80,12 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onNewGameAfterEconomyLoad() {
         SectorManager.reinitLiveFactions();
-        DiplomacyManager.initFactionRelationships();
         
-        // fix Corvus mode tariffs
         if (SectorManager.getCorvusMode())
         {
+            DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
+            
+            // fix Corvus mode tariffs
             for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
             {
                 if (market.hasCondition("free_market")) 

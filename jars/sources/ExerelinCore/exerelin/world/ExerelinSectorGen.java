@@ -824,7 +824,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		StatsTracker.create();
 		
 		DiplomacyManager.setRandomFactionRelationships(ExerelinSetupData.getInstance().randomStartRelationships);
-		DiplomacyManager.initFactionRelationships();
+		if (!corvusMode) DiplomacyManager.initFactionRelationships(false);
 		
 		SectorManager.setSystemToRelayMap(systemToRelay);
 		SectorManager.setPlanetToRelayMap(planetToRelay);
