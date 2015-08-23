@@ -919,7 +919,6 @@ $commSnifferInstalled",,,0:csUninstall:Uninstall the comm sniffer,
 commRelayAddOptionLeave,PopulateOptions,"$tag:comm_relay
 !$hasMarket
 $menuState == main","SetShortcut crLeave ""ESCAPE""",,100:crLeave:Leave,
-commRelayAddOptionInstallSniffer,PopulateOptions,,,,,
 ,,,,,,
 #Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplars,MarketPostOpen,"!$doesFakeVariableExist score:999
