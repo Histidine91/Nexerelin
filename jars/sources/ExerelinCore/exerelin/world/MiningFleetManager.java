@@ -203,12 +203,6 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 			if (market.hasCondition(Conditions.SPACEPORT)) increment += baseIncrement * 0.25f;
 			if (market.hasCondition(Conditions.ORBITAL_STATION)) increment += baseIncrement * 0.25f;
 			
-			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-			if (factionConfig != null)
-			{
-				increment += baseIncrement * factionConfig.responseFleetSizeMod;
-			}
-			
 			increment = increment * POINT_INCREMENT_PER_DAY * days;
 			float newValue = spawnCounter.get(market.getId()) + increment;
 			
