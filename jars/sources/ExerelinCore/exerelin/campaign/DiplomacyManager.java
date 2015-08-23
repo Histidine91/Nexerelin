@@ -584,10 +584,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         FactionAPI player = Global.getSector().getFaction("player");
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         
+        AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", faction);
         ExerelinUtilsReputation.syncFactionRelationshipToPlayer(playerAlignedFactionId, faction);
         if (!playerAlignedFactionId.equals("player_npc"))
             ExerelinUtilsReputation.syncFactionRelationshipToPlayer("player_npc", faction);
-            
         
         if (player.isAtBest(PlayerFactionStore.getPlayerFactionId(), RepLevel.INHOSPITABLE))
             SectorManager.scheduleExpelPlayerFromFaction();
