@@ -11,7 +11,7 @@ SyncRelationships,data.console.commands.SyncRelationships,"campaign,exerelin",sy
 CreateDiplomacyEvent,data.console.commands.CreateDiplomacyEvent,"campaign,exerelin",creatediplomacyevent <faction1> <faction2>,Creates a new diplomacy event between the two factions.
 CreateAlliance,data.console.commands.CreateAlliance,"campaign,exerelin",createalliance <faction1> <faction2> [alignment],"Creates an alliance between the two factions, with the specified alignment (random if not specified). If one faction is already in an alliance, add the other faction to its alliance instead. Does nothing if both factions are already in an alliance."
 LeaveAlliance,data.console.commands.LeaveAlliance,"campaign,exerelin",leavealliance <faction>,"Makes the specified faction leave its alliance, if it has one."
-#ResetRelationships,data.console.commands.ResetRelationships,"campaign,exerelin",resetrelationships,Resets faction relationships as if launching a new game. Doesn't work for mod factions in Corvus mode.
+ResetRelationships,data.console.commands.ResetRelationships,"campaign,exerelin",resetrelationships,Resets faction relationships as if launching a new game. Doesn't work for mod factions in Corvus mode.
 #,,,,
 # Omnifactory,,,,
 OmnifacStatus,org.lazywizard.omnifac.commands.OmnifacStatus,"omnifac,campaign",omnifacstatus [detailed],"Shows the location of all active Omnifactories, including their known blueprints if ""detailed"" is entered as an argument."

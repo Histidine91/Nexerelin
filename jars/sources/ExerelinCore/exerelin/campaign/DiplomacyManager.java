@@ -774,6 +774,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     FactionAPI faction = sector.getFaction(factionId);
                     for (String otherFactionId: factionIds)
                     {
+                        if (factionId.equals(otherFactionId)) continue;
                         faction.setRelationship(otherFactionId, 0);
                     }
                 }

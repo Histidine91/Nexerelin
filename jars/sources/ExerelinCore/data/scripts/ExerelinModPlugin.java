@@ -2,6 +2,7 @@ package data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.AllianceManager;
@@ -40,6 +41,12 @@ public class ExerelinModPlugin extends BaseModPlugin
             {
                 system.setBackgroundTextureFilename("graphics/ssp/backgrounds/ssp_randombattle.jpg");
             }
+        }
+        
+        // fix factions that were accidentally set to be neutral to themselves
+        for (FactionAPI faction : Global.getSector().getAllFactions()) 
+        {
+            faction.setRelationship(faction.getId(), 1);
         }
     }
     
