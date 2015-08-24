@@ -109,8 +109,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final float NON_HOSTILE_WORLD_CHANCE_MULT = 1.25f;
 	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
 	protected static final float BINARY_SYSTEM_CHANCE = 0;	//0.15f;
-	protected static final float BINARY_STAR_DISTANCE = 14000;
-	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.5f;
+	protected static final float BINARY_STAR_DISTANCE = 11000;
+	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
 	
 	protected List<String> factionIds = new ArrayList<>();
 	protected List<Integer[]> starPositions = new ArrayList<>();	
@@ -1216,7 +1216,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float habitableChance = getHabitableChance(i, false);
 			
 			boolean habitable = Math.random() <= habitableChance;
-			EntityData entityData = new EntityData(system, i);
+			EntityData entityData = new EntityData(system, i+1);
 			entityData.habitable = habitable;
 			entityData.primary = starData;
 			
@@ -1291,7 +1291,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// orbital mechanics
 			float radius;
 			float angle = MathUtils.getRandomNumberInRange(1, 360);
-			float distance = 3000 + (distanceStepping * (planetData.planetNumByStar - 1) * MathUtils.getRandomNumberInRange(2/3f, 4/3f));
+			float distance = 3000 + (distanceStepping * (planetData.planetNumByStar - 1) * MathUtils.getRandomNumberInRange(0.75f, 1.25f));
 			distance = (int)distance;
 			float orbitDays = getOrbitalPeriod(toOrbit.getRadius(), distance + toOrbit.getRadius(), getDensity(toOrbit));
 			
@@ -1305,7 +1305,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				radius = MathUtils.getRandomNumberInRange(150, 250);
 
 			// At least one gas giant per system
-			if(!gasPlanetCreated && planetData.planetNum == numBasePlanets - 1)
+			if (!gasPlanetCreated && planetData.planetNum == numBasePlanets)
 			{
 				planetType = planetTypesGasGiant[MathUtils.getRandomNumberInRange(0, planetTypesGasGiant.length - 1)];
 				radius = MathUtils.getRandomNumberInRange(325, 375);
@@ -1582,7 +1582,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
 				"comm_relay", // type of object, defined in custom_entities.json
 				"neutral"); // faction
-		relay.setCircularOrbit(star, (float)Math.random() * 360, 1500, getOrbitalPeriod(star.getRadius(), 1500, 1));
+		relay.setCircularOrbit(star, (float)Math.random() * 360, star.getRadius() + 1200, getOrbitalPeriod(star.getRadius(), 1500, 1));
 		systemToRelay.put(system.getId(), system.getId() + "_relay");
 		planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
 	}
