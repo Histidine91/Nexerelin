@@ -162,20 +162,27 @@ public class MiningHelper {
 		float strength = 0;
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
 		{
+			if (member.isMothballed()) continue;
 			int count = 1;
 			if (member.isFighterWing())
 				count = member.getNumFightersInWing();
+			float crModifier = 1f;
+			float cr = member.getRepairTracker().getCR();
+			if (cr < 0.4f)
+			{
+				crModifier = cr/0.4f;
+			}
 			
 			String hullId = member.getHullId();
 			if (miningShips.containsKey(hullId))
-				strength += miningShips.get(hullId) * count;
+				strength += miningShips.get(hullId) * count * crModifier;
 						
 			Collection<String> weaponSlots = member.getVariant().getFittedWeaponSlots();
 			for (String slot : weaponSlots)
 			{
 				String weaponId = member.getVariant().getWeaponSpec(slot).getWeaponId();
 				if (miningWeapons.containsKey(weaponId))
-					strength+= miningWeapons.get(weaponId) * count;
+					strength+= miningWeapons.get(weaponId) * count * crModifier;
 			}
 		}
 		
