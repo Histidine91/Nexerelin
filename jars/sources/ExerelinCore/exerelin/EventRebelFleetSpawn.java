@@ -3,8 +3,6 @@ package exerelin;
 import exerelin.utilities.ExerelinUtils;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
@@ -24,7 +22,7 @@ public class EventRebelFleetSpawn extends EventBase
 	{
         // Get count of current rebel fleets in system
         int rebelFleetCount = 0;
-        java.util.List fleets = starSystemAPI.getFleets();
+        List fleets = starSystemAPI.getFleets();
 		for(int i = 0; i < fleets.size(); i++)
 		{
 			CampaignFleetAPI fleet = (CampaignFleetAPI)fleets.get(i);

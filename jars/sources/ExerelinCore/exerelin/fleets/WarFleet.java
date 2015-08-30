@@ -3,7 +3,6 @@ package exerelin.fleets;
 import exerelin.utilities.ExerelinUtilsPlayer;
 import exerelin.utilities.ExerelinUtils;
 import com.fs.starfarer.api.campaign.*;
-import exerelin.*;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.commandQueue.CommandSpawnPrebuiltFleet;
 import exerelin.SectorManager;

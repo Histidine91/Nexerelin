@@ -1,14 +1,6 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.fleet.FleetMemberType;
-import exerelin.SectorManager;
-
-import java.awt.*;
-import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
 
 public class ExerelinCheck
 {

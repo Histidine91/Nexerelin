@@ -6,9 +6,7 @@ import com.fs.starfarer.api.campaign.*;
 
 import exerelin.utilities.ExerelinUtils;
 import exerelin.campaign.DiplomacyManager;
-import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsCargo;
-import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 
 @SuppressWarnings("unchecked")

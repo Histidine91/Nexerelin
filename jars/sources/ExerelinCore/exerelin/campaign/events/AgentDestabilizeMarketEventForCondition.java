@@ -1,12 +1,9 @@
 package exerelin.campaign.events;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import java.util.HashMap;
