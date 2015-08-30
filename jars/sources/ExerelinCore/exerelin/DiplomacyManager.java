@@ -4,14 +4,11 @@ import exerelin.utilities.ExerelinUtilsPlayer;
 import exerelin.utilities.ExerelinUtils;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
 import exerelin.diplomacy.AllianceManager;
 import exerelin.diplomacy.AllianceRecord;
 import exerelin.diplomacy.DiplomacyRecord;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMessaging;
-import org.lazywizard.lazylib.MathUtils;
-
 import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;

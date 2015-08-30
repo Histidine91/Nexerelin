@@ -2,12 +2,9 @@ package data.console.commands;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.world.InvasionFleetManager;
 import java.util.List;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommonStrings;

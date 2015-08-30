@@ -14,7 +14,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.util.Collections;

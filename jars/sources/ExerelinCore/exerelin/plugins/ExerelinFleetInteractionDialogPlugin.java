@@ -4,7 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.DisengageHarryAvailability;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.PursueAvailability;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;

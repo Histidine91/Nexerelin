@@ -8,7 +8,6 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsPlayer;
 import exerelin.SectorManager;
 import exerelin.SystemManager;
-import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
 
 import java.util.List;

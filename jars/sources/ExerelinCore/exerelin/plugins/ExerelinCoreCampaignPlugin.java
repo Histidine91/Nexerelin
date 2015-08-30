@@ -7,13 +7,11 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.campaign.MiningHelper;
-import exerelin.utilities.StringHelper;
 import exerelin.world.ResponseFleetManager;
 
 @SuppressWarnings("unchecked")
