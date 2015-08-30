@@ -525,7 +525,7 @@ ExerelinFactionDirectoryListBack,ExerelinFactionDirectory,!$specialDialog,,,10:e
 ExerelinFactionDirectoryListBackSpecialDialog,ExerelinFactionDirectory,$specialDialog,,,10:continueCutComm:Back,
 ExerelinFactionDirectoryListPlayer,ExerelinFactionDirectory,IsFactionAlive player_npc,,,exerelinFactionDirectoryGetPlayer:Player,
 ExerelinFactionDirectoryOptionAlliance,ExerelinFactionDirectory,!$specialDialog,,,exerelinAllianceReport:List alliances,
-ExerelinFactionDirectoryOptionIntel,ExerelinFactionDirectory,"$hasMarket
+#ExerelinFactionDirectoryOptionIntel,ExerelinFactionDirectory,"$hasMarket
 !$specialDialog",,,exerelinMarketIntel:Open intel screen,
 ExerelinFactionDirectoryList1,DialogOptionSelected,$option == exerelinFactionDirectoryList1,FireAll ExerelinFactionDirectoryList1,,,
 ExerelinFactionDirectoryList2,DialogOptionSelected,$option == exerelinFactionDirectoryList2,FireAll ExerelinFactionDirectoryList2,,,
