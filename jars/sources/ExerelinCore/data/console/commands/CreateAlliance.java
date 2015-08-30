@@ -1,6 +1,7 @@
 package data.console.commands;
 
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.AllianceManager.Alignment;
 import org.lazywizard.console.BaseCommand;
@@ -40,11 +41,17 @@ public class CreateAlliance implements BaseCommand {
             {
                 alignment = Alignment.valueOf(tmp[2].toUpperCase());
             }
-            catch (NumberFormatException ex)
+            catch (Exception ex)
             {
                 Console.showMessage("Error: invalid alignment for alliance!");
                 return CommandResult.BAD_SYNTAX;
             }
+        }
+        if (faction1.equals(Factions.PLAYER) || faction2.equals(Factions.PLAYER))
+        {
+            Console.showMessage("Error: player faction not supported for alliances!");
+            Console.showMessage("(player_npc works but we don't recommend it)");
+            return CommandResult.ERROR;
         }
 
         FactionAPI fac1 = CommandUtils.findBestFactionMatch(faction1);
@@ -61,7 +68,7 @@ public class CreateAlliance implements BaseCommand {
             return CommandResult.ERROR;
         }
 
-        AllianceManager.createAlliance(faction1, faction2, alignment);
+        AllianceManager.createAlliance(fac1.getId(), fac2.getId(), alignment);
         Console.showMessage("Created " + alignment.toString().toLowerCase() + " alliance between "
                 + CommandUtils.getFactionName(fac1) + " and "
                 + CommandUtils.getFactionName(fac2));

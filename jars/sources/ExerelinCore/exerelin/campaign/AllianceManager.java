@@ -223,6 +223,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             firstMember = sector.getFaction(memberId);
             break;
         }
+        if (firstMember == null)
+        {
+            log.error("Alliance does not exist");
+            return;
+        }
         
         List<FactionAPI> factions = sector.getAllFactions();
         for (FactionAPI otherFaction: factions)
