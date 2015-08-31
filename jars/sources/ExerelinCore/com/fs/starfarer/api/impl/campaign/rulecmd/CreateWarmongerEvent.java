@@ -13,7 +13,7 @@ public class CreateWarmongerEvent extends BaseCommandPlugin {
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
 		
 		String targetFactionId = params.get(0).getString(memoryMap);
-		SectorManager.createWarmongerEvent(targetFactionId);
+		SectorManager.createWarmongerEvent(targetFactionId, dialog.getInteractionTarget());
 		return true;
 	}
 

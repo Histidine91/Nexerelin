@@ -79,6 +79,7 @@ public class ExerelinConfig
     // Misc
     public static boolean corvusMode = false;
     
+    public static boolean warmongerPenalty = true;
     public static float factionRespawnInterval = 30f;
     public static boolean countPiratesForVictory = true;
     public static boolean ownFactionCustomsInspections = false;
@@ -135,6 +136,7 @@ public class ExerelinConfig
             warWearinessCeasefireReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
             warWearinessPeaceTreatyReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
             
+            warmongerPenalty = settings.optBoolean("warmongerPenalty", warmongerPenalty);
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);

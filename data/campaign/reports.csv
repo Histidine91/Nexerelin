@@ -34,9 +34,9 @@ exerelin_victory,conquest_player,,,player_intel_always,$VictorFaction is victori
 exerelin_victory,diplomatic,,,player_intel_always,$VictorFaction is victorious,"$TheVictorFaction and its allies are the only remaining powers in the $clusterName cluster. Peace has come to this corner of the Sector, at least for now.",,,,,,
 exerelin_victory,diplomatic_player,,,player_intel_always,$VictorFaction is victorious,"$TheVictorFaction and its allies are the only remaining powers in the $clusterName cluster. Peace has come to this corner of the Sector, at least for now.",You have won the game!,,,,,
 ,,,,,,,,,,,,
-exerelin_warmonger,report,,,player_intel_always,Unprovoked attack on $faction,"Your unprovoked attack on $theFaction has angered some of the other factions, and caused great consternation for $thePlayerFaction.","Reputation with $playerFaction reduced by $repPenaltyAbs, currently at $newRelationStr.
-Average reputation penalty with other factions: $repPenaltyAvgAbs",,,,,
-,,,,,,,,,,,,
+exerelin_warmonger,report,,,player_intel_always,Unprovoked attack on $faction,"Your unprovoked attack on $theFaction has angered some of the other factions, and caused great consternation for $thePlayerFaction.","Reputation with $playerFaction reduced by $repPenaltyMyFactionAbs, currently at $newRelationStr.
+Average reputation penalty with $numFactions other faction(s): $repPenaltyAvgAbs",,,,,
+#exerelin_warmonger,report_noFaction,,,player_intel_always,Unprovoked attack on $faction,Your unprovoked attack on $theFaction has angered some of the other factions.,Average reputation penalty with $numFactions other faction(s): $repPenaltyAvgAbs,,,,,
 ,,,,,,,,,,,,
 # diplomacy events,,,,,,,,,,,,
 exerelin_diplomacy,official_aid,,,news,Aid package by $otherFaction for $faction,$OtherFaction authorities have sent a charitable aid package to $faction citizens on $market. Local officials have expressed their gratitude.,"Relations between $faction and $otherFaction improved by $deltaAbs, currently at $newRelationStr.",,,,,

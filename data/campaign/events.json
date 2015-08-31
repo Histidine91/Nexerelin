@@ -64,6 +64,9 @@
 		"script":"exerelin.campaign.events.AllianceChangedEvent",
 		"image":"graphics/icons/intel/star.png"
 	},
+	"exerelin_warmonger":{
+		"script":"exerelin.campaign.events.WarmongerEvent"
+	},
 	
 	# vanilla overrides
 	"investigation":{

@@ -19,6 +19,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import exerelin.world.InvasionFleetManager;
 import java.awt.Color;
@@ -94,9 +95,9 @@ public class FleetRequestFire extends FleetRequestActionBase {
 		
 		if (isInvasionFleet)
 		{
+			SectorManager.createWarmongerEvent(targetMarket.getFactionId(), target);
 			RepActionEnvelope envelope = new RepActionEnvelope(RepActions.COMBAT_NORMAL, null, dialog.getTextPanel());
 			Global.getSector().adjustPlayerReputation(envelope, targetMarket.getFactionId());
-			//SectorManager.createWarmongerEvent(targetMarket.getFactionId());
 		}
 		return true;
 	}

@@ -458,6 +458,7 @@ BroadcastPlayerWaitAction $global.exerelinInvasionWait HOSTILE 750 $exerelinResp
 MakePlayerImmediatelyAttackable
 TriggerResponseFleet
 $player.invasionTarget = $id 1.01
+CreateWarmongerEvent $faction.id
 AdjustRep $faction.id COMBAT_NORMAL",,,
 ExerelinInvasionCancel,DialogOptionSelected,"$option == exerelinInvasionCancel
 $hasMarket","ShowDefaultVisual

@@ -155,7 +155,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         StatsTracker.getStatsTracker().modifyOrphansMadeByCrewCount(-numSurvivors, loserFactionId);
     }
     
-    /*
+    
     @Override
     public void reportPlayerEngagement(EngagementResultAPI result) {
         boolean playerWin = result.didPlayerWin();
@@ -166,9 +166,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // relationship is _before_ the reputation penalty caused by the combat
         if (faction.isHostileTo("player")) return;
         
-        createWarmongerEvent(faction.getId());
+        createWarmongerEvent(faction.getId(), fleetResult.getFleet());
     }
-    */
+    
     
     @Override
     public boolean isDone()
@@ -218,8 +218,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return sectorManager.hardMode;
     }
     
-    public static void createWarmongerEvent(String targetFactionId)
+    public static void createWarmongerEvent(String targetFactionId, SectorEntityToken location)
     {
+        if (!ExerelinConfig.warmongerPenalty) return;
+        
         FactionAPI targetFaction = Global.getSector().getFaction(targetFactionId);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         int numFactions = 0;
@@ -230,35 +232,38 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         for (String factionId : factions)
         {
             if (factionId.equals(targetFactionId)) continue;
+            //if (factionId.equals("player_npc")) continue;
             if (targetFaction.isHostileTo(factionId)) continue;
             
             float loss = 0;
             RepLevel level = targetFaction.getRelationshipLevel(factionId);
             if (level == RepLevel.COOPERATIVE)
-                loss = 25;
+                loss = 30;
             else if (level == RepLevel.FRIENDLY)
-                loss = 20;
+                loss = 24;
             else if (level == RepLevel.WELCOMING)
-                loss = 15;
+                loss = 18;
             else if (level == RepLevel.FAVORABLE)
-                loss = 10;
+                loss = 12;
             else if (level == RepLevel.NEUTRAL)
-                loss = 6;
+                loss = 8;
             else if (level == RepLevel.SUSPICIOUS)
-                loss = 3;
+                loss = 5;
             //else if (level == RepLevel.INHOSPITABLE)
             //    loss = 2;
             
             loss *= 0.01f;
             
-            if (factionId.equals(playerAlignedFactionId))
+            if (factionId.equals(playerAlignedFactionId) && !factionId.equals("player_npc"))
             {
                 myFactionLoss = (2*loss) + 0.05f;
+                repLoss.put(factionId, myFactionLoss);
                 continue;
             }
             if (loss <= 0) continue;
             numFactions++;
             totalRepLoss += loss;
+            repLoss.put(factionId, loss);
         }
         if (numFactions == 0 && myFactionLoss == 0) return;
         
@@ -267,7 +272,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("numFactions", numFactions);
         params.put("repLoss", repLoss);
         params.put("myFactionLoss", myFactionLoss);
-        Global.getSector().getEventManager().startEvent(null, "exerelin_warmonger", params);
+        params.put("targetFaction", targetFactionId);
+        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(location), "exerelin_warmonger", params);
     }
     
     public void handleSlaveTradeRep()

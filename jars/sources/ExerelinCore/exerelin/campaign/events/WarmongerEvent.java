@@ -16,8 +16,10 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinUtilsReputation;
+import java.awt.Color;
 import java.util.Iterator;
 
 
@@ -28,7 +30,7 @@ public class WarmongerEvent extends BaseEventPlugin {
 	
     protected Map<String, Float> repLoss = new HashMap<>();
 	protected float avgRepLoss = 0;
-	protected float numFactions = 0;
+	protected int numFactions = 0;
 	protected float myFactionLoss = 0;
 	protected Map<String, Object> params;
 	protected String targetFaction = "independent";
@@ -114,9 +116,9 @@ public class WarmongerEvent extends BaseEventPlugin {
 	
 	protected String getNewRelationStr()
 	{
-		FactionAPI target = Global.getSector().getFaction(targetFaction);
-		RepLevel level = target.getRelationshipLevel(Factions.PLAYER);
-		int repInt = (int) Math.ceil((target.getRelationship(Factions.PLAYER)) * 100f);
+		FactionAPI faction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
+		RepLevel level = faction.getRelationshipLevel(Factions.PLAYER);
+		int repInt = (int) Math.ceil((faction.getRelationship(Factions.PLAYER) - myFactionLoss) * 100f);
 		
 		String standing = "" + repInt + "/100" + " (" + level.getDisplayName().toLowerCase() + ")";
 		return standing;
@@ -127,12 +129,12 @@ public class WarmongerEvent extends BaseEventPlugin {
 		FactionAPI playerAlignedFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
 		
 		Map<String, String> map = super.getTokenReplacements();
-		map.put("$targetFaction", targetFaction);
-		map.put("$repPenaltyAvg", "" + (int)Math.ceil(Math.abs(avgRepLoss*100f)));
-		map.put("$numFactions", "" + numFactions);
 		map.put("$playerFaction", playerAlignedFaction.getDisplayName());
 		map.put("$thePlayerFaction", playerAlignedFaction.getDisplayNameWithArticle());
+		map.put("$repPenaltyMyFactionAbs", "" + (int)Math.ceil(myFactionLoss*100f));
 		map.put("$newRelationStr", getNewRelationStr());
+		map.put("$numFactions", "" + numFactions);
+		map.put("$repPenaltyAvgAbs", "" + (int)Math.ceil(avgRepLoss*100f));
 		
 		return map;
 	}
@@ -140,9 +142,25 @@ public class WarmongerEvent extends BaseEventPlugin {
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
-		addTokensToList(result, "$repPenaltyAvg");
+		addTokensToList(result, "$repPenaltyMyFactionAbs");
+		addTokensToList(result, "$newRelationStr");
 		addTokensToList(result, "$numFactions");
+		addTokensToList(result, "$repPenaltyAvgAbs");
+		
 		return result.toArray(new String[0]);
+	}
+	
+	@Override
+	public Color[] getHighlightColors(String stageId) {
+		FactionAPI faction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
+		Color colorRepEffect = Global.getSettings().getColor("textEnemyColor");
+		
+		// hax to get the right color
+		faction.adjustRelationship(Factions.PLAYER, -myFactionLoss);
+		Color colorNew = faction.getRelColor(Factions.PLAYER);
+		faction.adjustRelationship(Factions.PLAYER, +myFactionLoss);
+		
+		return new Color[] { colorRepEffect, colorNew, Misc.getHighlightColor(), colorRepEffect };
 	}
 	
 	@Override
