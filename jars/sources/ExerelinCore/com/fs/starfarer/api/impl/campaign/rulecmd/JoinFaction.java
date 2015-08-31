@@ -44,8 +44,8 @@ public class JoinFaction extends BaseCommandPlugin {
 		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId, false);
 		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
 		
-                MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
-                memory.set("$faction", newFaction, 0);
+		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
+		memory.set("$faction", newFaction, 0);
 		memory.set("$factionId", newFactionId, 0);
                 
 		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
@@ -54,8 +54,8 @@ public class JoinFaction extends BaseCommandPlugin {
 		FactionChangedEvent event = (FactionChangedEvent)eventSuper;
 		event.reportEvent(oldFaction, newFaction, isDefection ? "switch" : "join", dialog.getInteractionTarget());
 		
-                str = StringHelper.substituteToken(str, "$theOldFaction", oldFaction.getDisplayNameWithArticle());
-                str = StringHelper.substituteToken(str, "$theNewFaction", newFaction.getDisplayNameWithArticle());
+		str = StringHelper.substituteToken(str, "$theOldFaction", oldFaction.getDisplayNameWithArticle());
+		str = StringHelper.substituteToken(str, "$theNewFaction", newFaction.getDisplayNameWithArticle());
 		text.addParagraph(str);
 		return true;
 	}

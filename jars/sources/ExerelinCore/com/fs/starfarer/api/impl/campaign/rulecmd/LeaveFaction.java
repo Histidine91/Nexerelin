@@ -37,8 +37,8 @@ public class LeaveFaction extends BaseCommandPlugin {
 		PlayerFactionStore.setPlayerFactionId(newFactionId);
 		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
 		
-                MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
-                memory.set("$faction", newFaction, 0);
+		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
+		memory.set("$faction", newFaction, 0);
 		memory.set("$factionId", newFactionId, 0);
                 
 		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
@@ -47,7 +47,7 @@ public class LeaveFaction extends BaseCommandPlugin {
 		FactionChangedEvent event = (FactionChangedEvent)eventSuper;
 		event.reportEvent(oldFaction, newFaction, "leave", dialog.getInteractionTarget());
 		
-                str = StringHelper.substituteToken(str, "$theOldFaction", oldFaction.getDisplayNameWithArticle());
+		str = StringHelper.substituteToken(str, "$theOldFaction", oldFaction.getDisplayNameWithArticle());
 		text.addParagraph(str);
 		return true;
 	}
