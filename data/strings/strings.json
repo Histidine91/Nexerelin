@@ -39,7 +39,7 @@
 		"joinedFaction":"You have joined $theNewFaction.",
 		"leftFaction":"You have left $theOldFaction.",
 		"numMarkets":"$TheFaction have $numMarkets market(s)",
-		"switchedFactions":"You have $theOldFaction for $theNewFaction."
+		"switchedFactions":"You have left $theOldFaction for $theNewFaction."
 	},
 	"exerelin_fleets":{
 		"invasionFleetName":"Invasion Fleet",
