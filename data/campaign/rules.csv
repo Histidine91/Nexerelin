@@ -772,8 +772,7 @@ SetEnabled exerelinJoinFaction false",,exerelinJoinFaction:Join faction,
 ExerelinMarketLeaveFactionOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""
 $faction.id != ""player_npc""
-$faction.id == $player.factionId
-RepIsAtWorst $faction.id FRIENDLY",,,exerelinLeaveFaction:Leave faction,
+$faction.id == $player.factionId",,,exerelinLeaveFaction:Leave faction,
 ,,,,,,
 ExerelinJoinFaction,DialogOptionSelected,$option == exerelinJoinFaction,,Are you sure you want to join $theFaction?,"exerelinJoinFactionConfirm:Yes
 exerelinMarketSpecial:No",
