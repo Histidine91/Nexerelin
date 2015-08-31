@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
+
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
@@ -83,6 +85,12 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		FactionAPI associatedFaction = Global.getSector().getFaction(associatedFactionId);
 		memory.set("$faction", associatedFaction, 0);
 		memory.set("$factionId", associatedFactionId, 0);
+
+		AllianceManager.Alliance associatedAlliance = AllianceManager.getFactionAlliance(associatedFactionId);
+		memory.set("$isInAlliance", (associatedAlliance != null), 0);
+		if (associatedAlliance != null) {
+			memory.set("$allianceId", associatedAlliance.name, 0);
+		}
 	}
 	
 	@Override
@@ -97,5 +105,11 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		super.updateFactionFacts(faction, memory);
 		memory.set("$warWeariness", DiplomacyManager.getWarWeariness(faction.getId()), 0);
 		memory.set("$numWars", DiplomacyManager.getFactionsAtWarWithFaction(faction, false, false).size(), 0);
+
+		AllianceManager.Alliance associatedAlliance = AllianceManager.getFactionAlliance(faction.getId());
+		memory.set("$isInAlliance", (associatedAlliance != null), 0);
+		if (associatedAlliance != null) {
+			memory.set("$allianceId", associatedAlliance.name, 0);
+		}
 	}
 }
