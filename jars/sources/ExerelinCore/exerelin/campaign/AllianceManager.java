@@ -58,6 +58,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static List<String> allianceNameCommonPrefixes;
     
     protected final Set<Alliance> alliances = new HashSet<>();
+    protected final Map<String, Alliance> alliancesByName = new HashMap<>();
     protected final Map<String, Alliance> alliancesByFactionId = new HashMap<>();
     
     protected float daysElapsed = 0;
@@ -167,15 +168,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             List<String> alignmentNames = allianceNamesByAlignment.get(type);
             name = name + " " + alignmentNames.get(MathUtils.getRandomNumberInRange(0, alignmentNames.size() - 1));
             
-            validName = true;
-            for (Alliance alliance : allianceManager.alliances)
-            {
-                if (alliance.name.equals(name))
-                {
-                    validName = false;
-                    break;
-                }
-            }
+            validName = !allianceManager.alliancesByName.containsKey(name);
         }
         while (validName == false && tries < 25);
         
@@ -185,6 +178,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         Alliance alliance = new Alliance(name, type, member1, member2);
         allianceManager.alliancesByFactionId.put(member1, alliance);
         allianceManager.alliancesByFactionId.put(member2, alliance);
+        allianceManager.alliancesByName.put(name, alliance);
         allianceManager.alliances.add(alliance);
                
         //average out faction relationships
@@ -274,6 +268,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             alliancesByFactionId.remove(member);
             randomMember = member;
         }
+        alliancesByName.remove(alliance.name);
         alliances.remove(alliance);
         if (randomMember != null) createAllianceEvent(randomMember, null, alliance, "dissolved");
         SectorManager.checkForVictory();
@@ -641,6 +636,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         if (allianceManager == null) return new ArrayList<>();
         return new ArrayList<>(allianceManager.alliances);
+    }
+    
+    public static Alliance getAllianceByName(String allianceName)
+    {
+        if (allianceManager == null) return null;
+        return allianceManager.alliancesByName.get(allianceName);
     }
     
     public static Alliance getFactionAlliance(String factionId)
