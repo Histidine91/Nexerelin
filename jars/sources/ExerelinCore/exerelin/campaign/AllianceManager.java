@@ -135,7 +135,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         // generate alliance name
         String name = "";
-        boolean validName = true;
+        boolean validName;
         int tries = 0;
         List<String> namePrefixes = new ArrayList<>(allianceNameCommonPrefixes);
         namePrefixes.addAll(alliancePrefixesByAlignment.get(type));
@@ -167,6 +167,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             List<String> alignmentNames = allianceNamesByAlignment.get(type);
             name = name + " " + alignmentNames.get(MathUtils.getRandomNumberInRange(0, alignmentNames.size() - 1));
             
+            validName = true;
             for (Alliance alliance : allianceManager.alliances)
             {
                 if (alliance.name.equals(name))
