@@ -58,7 +58,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static List<String> allianceNameCommonPrefixes;
     
     protected final Set<Alliance> alliances = new HashSet<>();
-    protected final Map<String, Alliance> alliancesByName = new HashMap<>();
+    protected       Map<String, Alliance> alliancesByName = new HashMap<>();
     protected final Map<String, Alliance> alliancesByFactionId = new HashMap<>();
     
     protected float daysElapsed = 0;
@@ -654,8 +654,19 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         Map<String, Object> data = Global.getSector().getPersistentData();
         allianceManager = (AllianceManager)data.get(MANAGER_MAP_KEY);
-        if (allianceManager != null)
+        if (allianceManager != null) {
+            
+            // reverse compatibility
+            if (allianceManager.alliancesByName == null) {
+                allianceManager.alliancesByName = new HashMap<>();
+                
+                for (Alliance alliance : allianceManager.alliances) {
+                    allianceManager.alliancesByName.put(alliance.name, alliance);
+                }
+            }
+            
             return allianceManager;
+        }
         
         allianceManager = new AllianceManager();
         data.put(MANAGER_MAP_KEY, allianceManager);
