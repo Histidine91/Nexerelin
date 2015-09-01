@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.lazywizard.lazylib.MathUtils;
 
 public class AllianceManager  extends BaseCampaignEventListener implements EveryFrameScript {
     public static Logger log = Global.getLogger(AllianceManager.class);
@@ -106,7 +105,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         params.put("stage", stage);
         
         List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(faction1);
-        MarketAPI market = markets.get(MathUtils.getRandomNumberInRange(0, markets.size() - 1));
+        MarketAPI market = (MarketAPI) ExerelinUtils.getRandomListElement(markets);
         sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
     }
     
@@ -164,9 +163,9 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         do {
             tries++;
-            name = namePrefixes.get(MathUtils.getRandomNumberInRange(0, namePrefixes.size() - 1));
+            name = (String) ExerelinUtils.getRandomListElement(namePrefixes);
             List<String> alignmentNames = allianceNamesByAlignment.get(type);
-            name = name + " " + alignmentNames.get(MathUtils.getRandomNumberInRange(0, alignmentNames.size() - 1));
+            name = name + " " + (String) ExerelinUtils.getRandomListElement(alignmentNames);
             
             validName = !allianceManager.alliancesByName.containsKey(name);
         }
@@ -333,7 +332,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (!bestAlignments.isEmpty())
                 {
                     // okay, make alliance
-                    Alignment allianceAlignment = bestAlignments.get(MathUtils.getRandomNumberInRange(0, bestAlignments.size() - 1));
+                    Alignment allianceAlignment = (Alignment) ExerelinUtils.getRandomListElement(bestAlignments);
                     createAlliance(factionId, otherFactionId, allianceAlignment);
                     return; // only one alliance at a time
                 }

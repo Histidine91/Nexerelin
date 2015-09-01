@@ -829,7 +829,7 @@ public class DiplomacyManager
 		if(factions.size() == 0)
 			return "";
 
-		return factions.get(ExerelinUtils.getRandomInRange(0, factions.size() - 1));
+		return (String) ExerelinUtils.getRandomListElement(factions);
 	}
 
 	// Declares peace with all, no message displayed

@@ -30,7 +30,7 @@ public class IndependantTraderSpawnPoint extends BaseSpawnPoint
         if(factions.length == 0)
             return null;
 
-		String factionShips = factions[ExerelinUtils.getRandomInRange(0, factions.length - 1)];
+		String factionShips = (String) ExerelinUtils.getRandomArrayElement(factions);
 
 		fromStationFactionId = "";
 		this.setStationToTradeWith();
@@ -66,9 +66,9 @@ public class IndependantTraderSpawnPoint extends BaseSpawnPoint
 		int attempts = 0;
 		while(station == null && attempts < 20)
 		{
-            SystemStationManager systemStationManager = systemManagers[ExerelinUtils.getRandomInRange(0, systemManagers.length - 1)].getSystemStationManager();
+            SystemStationManager systemStationManager = ((SystemManager) ExerelinUtils.getRandomArrayElement(systemManagers)).getSystemStationManager();
             StationRecord[] stations = systemStationManager.getStationRecords();
-            station = stations[ExerelinUtils.getRandomInRange(0, stations.length - 1)];
+            station = (StationRecord) ExerelinUtils.getRandomArrayElement(stations);
 
 			attempts++;
 			if(station.getOwner() == null

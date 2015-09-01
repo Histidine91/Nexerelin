@@ -22,7 +22,6 @@ import exerelin.utilities.ExerelinUtils;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.lazywizard.lazylib.MathUtils;
 
 public class PrismMarket extends BaseSubmarketPlugin {
     
@@ -211,7 +210,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         }
         if (ExerelinConfig.prismSellBossShips && !sspBossShips.isEmpty())
         {
-            String variantId = sspBossShips.get(MathUtils.getRandomNumberInRange(0, sspBossShips.size()-1));
+            String variantId = (String) ExerelinUtils.getRandomListElement(sspBossShips);
             variantId += "_Hull";
             FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
             member.getRepairTracker().setMothballed(true);

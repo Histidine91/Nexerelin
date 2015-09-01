@@ -53,7 +53,7 @@ public class EventRebelFleetSpawn extends EventBase
             newRebelFleet.setFaction("rebel");
         }
 
-        SectorEntityToken planet = (SectorEntityToken)starSystemAPI.getPlanets().get(ExerelinUtils.getRandomInRange(0, starSystemAPI.getPlanets().size() - 1));
+        SectorEntityToken planet = (SectorEntityToken)ExerelinUtils.getRandomListElement(starSystemAPI.getPlanets());
 
         ExerelinUtilsFleet.sortByHullSize(newRebelFleet);
         ExerelinUtilsFleet.resetFleetCargoToDefaults(newRebelFleet, 0.3f, 0.1f, CargoAPI.CrewXPLevel.REGULAR);

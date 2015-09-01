@@ -24,7 +24,6 @@ import data.scripts.world.SSP_FleetInjector.CommanderType;
 import data.scripts.world.SSP_FleetInjector.CrewType;
 import data.scripts.world.SSP_FleetInjector.FleetStyle;
 import org.apache.log4j.Logger;
-import org.lazywizard.lazylib.MathUtils;
 
 
 public class ExerelinUtilsFleet
@@ -166,7 +165,7 @@ public class ExerelinUtilsFleet
     public static FleetMemberAPI addMiningShipToFleet(CampaignFleetAPI fleet)
     {
         ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId());
-        String variantId = config.miningVariantsOrWings.get(MathUtils.getRandomNumberInRange(0, config.miningVariantsOrWings.size() - 1));
+        String variantId = (String) ExerelinUtils.getRandomListElement(config.miningVariantsOrWings);
         FleetMemberType type = FleetMemberType.SHIP;
         if (variantId.contains("wing")) type = FleetMemberType.FIGHTER_WING;
         FleetMemberAPI miner = Global.getFactory().createFleetMember(type, variantId);
@@ -335,7 +334,7 @@ public class ExerelinUtilsFleet
 
         for(int i = 0; i < size; i++)
         {
-            String factionId = factions[ExerelinUtils.getRandomInRange(0, factions.length - 1)];
+            String factionId = (String) ExerelinUtils.getRandomArrayElement(factions);
             String variantId = ExerelinUtilsFleet.getRandomVariantIdForFaction(factionId, false, false);
             FleetMemberAPI newMember = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
             fleet.getFleetData().addFleetMember(newMember);

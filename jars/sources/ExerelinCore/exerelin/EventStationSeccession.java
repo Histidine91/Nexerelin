@@ -32,7 +32,7 @@ public class EventStationSeccession extends EventBase
 		while((factionId.equalsIgnoreCase("")) && attempts < 20)
 		{
 			attempts = attempts + 1;
-			factionId = factions[ExerelinUtils.getRandomInRange(0, factions.length - 1)];
+			factionId = (String) ExerelinUtils.getRandomArrayElement(factions);
 
 			Boolean inSystem = false;
 			for(int j = 0; j < factionsInSystem.length; j = j + 1)
@@ -56,7 +56,7 @@ public class EventStationSeccession extends EventBase
 		while(station == null & attempts < 20)
 		{
 			attempts = attempts + 1;
-			station = stations[ExerelinUtils.getRandomInRange(0, stations.length - 1)];
+			station = (StationRecord) ExerelinUtils.getRandomArrayElement(stations);
 			if(station.getOwner() == null
 					|| !station.getOwner().getFactionId().equalsIgnoreCase(SectorManager.getCurrentSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLeader())
 					|| SectorManager.getCurrentSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getNumStationsOwnedByFaction(SectorManager.getCurrentSectorManager().getSystemManager(starSystemAPI).getSystemStationManager().getFactionLeader()) <= 1)
