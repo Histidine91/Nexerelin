@@ -46,7 +46,7 @@ public class AgentDestabilizeMarketEvent extends CovertOpsEventBase {
         
         @Override
 	public Map<String, String> getTokenReplacements() {
-                String actionLine = ACTION_LINES[ExerelinUtils.getRandomInRange(0, ACTION_LINES.length - 1)];
+                String actionLine = (String) ExerelinUtils.getRandomArrayElement(ACTION_LINES);
 		Map<String, String> map = super.getTokenReplacements();
                 map.put("$stabilityPenalty", "" + stabilityPenalty);
                 map.put("$actionLine", "" + actionLine);

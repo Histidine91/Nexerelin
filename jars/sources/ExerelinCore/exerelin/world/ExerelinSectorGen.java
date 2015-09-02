@@ -236,7 +236,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 	protected String getRandomFaction()
 	{
-		return factionIds.get(MathUtils.getRandomNumberInRange(0, factionIds.size()-1));
+		return (String) ExerelinUtils.getRandomListElement(factionIds);
 	}
 	
 	protected void resetVars()
@@ -484,7 +484,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		LocationAPI system = toOrbit.getContainingLocation();
 		log.info("Placing Omnifactory around " + toOrbit.getName() + ", in the " + system.getName());
 		String[] images = stationImages.get("default");
-		String image = images[MathUtils.getRandomNumberInRange(0, images.length - 1)];
+		String image = (String) ExerelinUtils.getRandomArrayElement(images);
 		SectorEntityToken omnifac = system.addCustomEntity("omnifactory", "Omnifactory", image, "neutral");
 		float radius = toOrbit.getRadius();
 		float orbitDistance = radius + 150;
@@ -962,7 +962,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (stationImages.containsKey(factionId))
 			images = stationImages.get(factionId);
 		
-		String image = images[MathUtils.getRandomNumberInRange(0, images.length - 1)];
+		String image = (String) ExerelinUtils.getRandomArrayElement(images);
 		
 		SectorEntityToken newStation = data.starSystem.addCustomEntity(id, name, image, factionId);
 		newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
@@ -1144,7 +1144,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			system.setLightColor(new Color(240,255,240));
 		}
 		if (!isSecondStar)
-			system.setBackgroundTextureFilename( starBackgrounds.get(MathUtils.getRandomNumberInRange(0, starBackgrounds.size() - 1)) );
+			system.setBackgroundTextureFilename( (String) ExerelinUtils.getRandomListElement(starBackgrounds) );
 		return star;
 	}
 	
@@ -1284,8 +1284,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				else if (planetData.planetNumByStar < 3) gasGiantChance = 0;
 				
 				isGasGiant = Math.random() < gasGiantChance;
-				if (isGasGiant) planetType = planetTypesGasGiant[MathUtils.getRandomNumberInRange(0, planetTypesGasGiant.length - 1)];
-				else planetType = planetTypesUninhabitable[MathUtils.getRandomNumberInRange(0, planetTypesUninhabitable.length - 1)];
+				if (isGasGiant) planetType = (String) ExerelinUtils.getRandomArrayElement(planetTypesGasGiant);
+				else planetType = (String) ExerelinUtils.getRandomArrayElement(planetTypesUninhabitable);
 			}
 			
 			// orbital mechanics
@@ -1307,7 +1307,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// At least one gas giant per system
 			if (!gasPlanetCreated && planetData.planetNum == numBasePlanets)
 			{
-				planetType = planetTypesGasGiant[MathUtils.getRandomNumberInRange(0, planetTypesGasGiant.length - 1)];
+				planetType = (String) ExerelinUtils.getRandomArrayElement(planetTypesGasGiant);
 				radius = MathUtils.getRandomNumberInRange(325, 375);
 				gasPlanetCreated = true;
 				planetData.habitable = false;
@@ -1338,9 +1338,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					boolean moonInhabitable = Math.random() < getHabitableChance(planetData.planetNum, true);
 					String moonType = "";
 					if (moonInhabitable)
-						moonType = moonTypes[MathUtils.getRandomNumberInRange(0, moonTypes.length - 1)];
+						moonType = (String) ExerelinUtils.getRandomArrayElement(moonTypes);
 					else
-						moonType = moonTypesUninhabitable[MathUtils.getRandomNumberInRange(0, moonTypesUninhabitable.length - 1)];
+						moonType = (String) ExerelinUtils.getRandomArrayElement(moonTypesUninhabitable);
 						
 					angle = MathUtils.getRandomNumberInRange(1, 360);
 					distance = MathUtils.getRandomNumberInRange(650, 1300);
@@ -1435,7 +1435,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		for(int j = 0; j < numAsteroidBelts; j = j + 1)
 		{
-			PlanetAPI planet = planets.get(MathUtils.getRandomNumberInRange(0, planets.size() - 1));
+			PlanetAPI planet = (PlanetAPI) ExerelinUtils.getRandomListElement(planets);
 
 			float orbitRadius;
 			int numAsteroids;
@@ -1543,13 +1543,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			EntityData stationData = new EntityData(system);
 			stationData.primary = primaryData;
 			stationData.type = EntityType.STATION;
-			if (isStar) stationData.orbitDistance = starBelts.get(MathUtils.getRandomNumberInRange(0, starBelts.size() - 1));
+			if (isStar) stationData.orbitDistance = (Float) ExerelinUtils.getRandomListElement(starBelts);
 			
 			boolean nameOK = false;
 			String name = "";
 			while(!nameOK)
 			{
-				name = possibleStationNamesList.get(MathUtils.getRandomNumberInRange(0, possibleStationNamesList.size() - 1));
+				name = (String) ExerelinUtils.getRandomListElement(possibleStationNamesList);
 				if (!alreadyUsedStationNames.contains(name))
 					nameOK = true;
 			}

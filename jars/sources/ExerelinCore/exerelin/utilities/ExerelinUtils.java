@@ -44,6 +44,26 @@ public class ExerelinUtils
 		}
 	}
 
+	public static Object getRandomArrayElement(Object[] array)
+	{
+		if (array.length == 0)
+			return null;
+
+		int randomIndex = MathUtils.getRandomNumberInRange(0, array.length - 1);
+
+		return array[randomIndex];
+	}
+
+	public static Object getRandomListElement(List list)
+	{
+		if (list.isEmpty())
+			return null;
+
+		int randomIndex = MathUtils.getRandomNumberInRange(0, list.size() - 1);
+
+		return list.get(randomIndex);
+	}	
+
 	public static void shuffleStringArray (String[] array)
 	{
 		Random rng = new Random();   // i.e., java.util.Random.
@@ -267,9 +287,8 @@ public class ExerelinUtils
         int totalToRemove = Math.min(numToRemove, ships.size());
 		for(int j = 0; j < totalToRemove; j++)
 		{
-            int toRemove = ExerelinUtils.getRandomInRange(0, cargoAPI.getMothballedShips().getMembersListCopy().size() - 1);
-            //cargoAPI.getMothballedShips().removeFleetMember((FleetMemberAPI)cargoAPI.getMothballedShips().getMembersListCopy().get(toRemove));
-            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveShip(cargoAPI, (FleetMemberAPI)cargoAPI.getMothballedShips().getMembersListCopy().get(toRemove)));
+            //cargoAPI.getMothballedShips().removeFleetMember((FleetMemberAPI)ExerelinUtils.getRandomListElement(cargoAPI.getMothballedShips().getMembersListCopy()));
+            SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveShip(cargoAPI, (FleetMemberAPI)ExerelinUtils.getRandomListElement(cargoAPI.getMothballedShips().getMembersListCopy())));
 		}
 	}
 

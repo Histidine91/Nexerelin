@@ -293,8 +293,8 @@ public class SectorManager
                 if(ExerelinSetupData.getInstance().randomOmnifactoryLocation)
                 {
                     // Choose a random location for the omnifactory
-                    system = (StarSystemAPI)Global.getSector().getStarSystems().get(ExerelinUtils.getRandomInRange(0, Global.getSector().getStarSystems().size() - 1));
-                    planet = (SectorEntityToken)system.getPlanets().get(ExerelinUtils.getRandomInRange(0, system.getPlanets().size() - 1));
+                    system = (StarSystemAPI)ExerelinUtils.getRandomListElement(Global.getSector().getStarSystems());
+                    planet = (SectorEntityToken)ExerelinUtils.getRandomListElement(system.getPlanets());
                 }
 
                 if(this.buildOmnifactory)

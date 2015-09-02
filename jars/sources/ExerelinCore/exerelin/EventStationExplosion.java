@@ -25,7 +25,7 @@ public class EventStationExplosion extends EventBase
 
 		while(station == null && attempts < 20)
 		{
-			station = stations[ExerelinUtils.getRandomInRange(0, stations.length - 1)];
+			station = (StationRecord) ExerelinUtils.getRandomArrayElement(stations);
 			if(station.getOwner() == null || station.getOwner().getFactionId().equalsIgnoreCase(manager.getFactionLoser()))
 				station = null;
             attempts++;

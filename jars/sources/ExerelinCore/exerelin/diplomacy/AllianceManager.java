@@ -100,7 +100,7 @@ public class AllianceManager
 		String id = "";
 		while(id.equalsIgnoreCase(""))
 		{
-			id = alliancePrefixes[ExerelinUtils.getRandomInRange(0, alliancePrefixes.length - 1)] + DELIMETER + allianceSuffixes[ExerelinUtils.getRandomInRange(0, allianceSuffixes.length - 1)];
+			id = (String) ExerelinUtils.getRandomArrayElement(alliancePrefixes) + DELIMETER + (String) ExerelinUtils.getRandomArrayElement(allianceSuffixes);
 			if(!isAllianceIdAvailable(id))
 				id = "";
 		}
