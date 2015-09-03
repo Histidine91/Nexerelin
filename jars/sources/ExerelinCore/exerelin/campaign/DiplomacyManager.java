@@ -882,13 +882,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 }
             }
         }
+        player.setRelationship("player_npc", 1f);
+        
          // set player relations based on selected faction
         PlayerFactionStore.saveIndependentPlayerRelations();
         ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId, true);
         player.setRelationship(selectedFactionId, STARTING_RELATIONSHIP_FRIENDLY);
+        
         if (selectedFactionId.equals("player_npc"))
         {
-            player.setRelationship(selectedFactionId, 1f);
             PlayerFactionStore.saveIndependentPlayerRelations();
         }
         else {
