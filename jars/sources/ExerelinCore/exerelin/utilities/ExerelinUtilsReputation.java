@@ -59,9 +59,12 @@ public class ExerelinUtilsReputation
 	
 	public static void syncFactionRelationshipToPlayer(String factionIdToSync, String otherFactionId)
 	{
+		if (otherFactionId.equals("player_npc")) return;
+		
 		SectorAPI sector = Global.getSector();	
 		FactionAPI playerFaction = sector.getFaction("player");
 		FactionAPI factionToSync = sector.getFaction(factionIdToSync);
+		
 		float relationship = playerFaction.getRelationship(otherFactionId);
 		factionToSync.setRelationship(otherFactionId, relationship);
 		AllianceManager.remainInAllianceCheck(factionIdToSync, otherFactionId);
@@ -109,6 +112,7 @@ public class ExerelinUtilsReputation
 			if (otherFaction != playerFaction && otherFaction != faction)
 			{
 				String otherFactionId = otherFaction.getId();
+				if (otherFactionId.equals("player_npc")) continue;
 				float relationship = faction.getRelationship(otherFactionId);
 				playerFaction.setRelationship(otherFactionId, relationship);
 				if (!noUpdateAlliance)
