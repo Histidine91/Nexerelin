@@ -254,13 +254,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             
             loss *= 0.01f;
             
-            if (factionId.equals(playerAlignedFactionId) && !factionId.equals("player_npc"))
+            if (factionId.equals(playerAlignedFactionId))
             {
-                myFactionLoss = (2*loss) + 0.05f;
+                myFactionLoss = loss;
+                if (!factionId.equals("player_npc")) myFactionLoss = (2*loss) + 0.05f;
                 repLoss.put(factionId, myFactionLoss);
                 continue;
             }
             if (loss <= 0) continue;
+            
             numFactions++;
             totalRepLoss += loss;
             repLoss.put(factionId, loss);
