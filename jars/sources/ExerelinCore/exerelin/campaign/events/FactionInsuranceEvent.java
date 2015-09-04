@@ -29,11 +29,11 @@ import java.util.List;
 
 public class FactionInsuranceEvent extends BaseEventPlugin {
 
+	protected static final float HARD_MODE_MULT = 0.5f;
+	
 	public static Logger log = Global.getLogger(FactionInsuranceEvent.class);
 	
 	private float paidAmount = 0f;
-	private CampaignFleetAPI winner;
-	private CampaignFleetAPI loser;
 	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
@@ -79,6 +79,9 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 			stage = "report_unpaid";
 		}
 		else paidAmount = value * ExerelinConfig.playerInsuranceMult;
+		
+		if (SectorManager.getHardMode())
+			paidAmount *= HARD_MODE_MULT; 
 		
 		MarketAPI closestMarket = ExerelinUtils.getClosestMarket(alignedFactionId);
 		if (closestMarket != null)

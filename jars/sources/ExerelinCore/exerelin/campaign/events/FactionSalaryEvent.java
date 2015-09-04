@@ -25,6 +25,7 @@ import java.util.List;
 public class FactionSalaryEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(FactionSalaryEvent.class);
+	protected static float HARD_MODE_MULT = 0.5f;
 	
 	private int month;
 	private float paidAmount = 0f;
@@ -77,6 +78,9 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 			else if (relation == RepLevel.WELCOMING)
 				paidAmount *= 0.75f;
 
+			if (SectorManager.getHardMode())
+				paidAmount *= HARD_MODE_MULT; 
+			
 			playerFleet.getCargo().getCredits().add(paidAmount);
 			Global.getSector().reportEventStage(this, stage, playerFleet, MessagePriority.DELIVER_IMMEDIATELY);
 			Global.getSector().getPersistentData().put("salariesClock", Global.getSector().getClock().createClock(Global.getSector().getClock().getTimestamp()));
