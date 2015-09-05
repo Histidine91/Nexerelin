@@ -98,7 +98,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected List<String> possibleStationNamesList = new ArrayList(Arrays.asList(possibleStationNames));
 	
 	protected static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren", "barren-bombarded"};
-	protected static final String[] planetTypesUninhabitable = new String[] {"barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "frozen", "rocky_ice", "radiated", "barren-bombarded"};
+	protected static final String[] planetTypesUninhabitable = new String[] {"desert", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "frozen", "rocky_ice", "radiated", "barren-bombarded"};
 	protected static final String[] planetTypesGasGiant = new String[] {"gas_giant", "ice_giant"};
 	protected static final String[] moonTypes = new String[] {"frozen", "barren", "barren-bombarded", "rocky_ice", "rocky_metallic", "desert", "water", "jungle"};
 	protected static final String[] moonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "radiated", "barren-bombarded"};
@@ -377,8 +377,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		
 		// add random market conditions
-		ExerelinMarketConditionPicker picker = new ExerelinMarketConditionPicker();
-		picker.addMarketConditions(newMarket, marketSize, planetType, isStation);
+		marketSetup.addMarketConditions(newMarket, data);
 
 		if (isStation && marketSize >= 3)
 		{
@@ -721,6 +720,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		log.info("resetting vars");
 		resetVars();
 		
+		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		boolean corvusMode = ExerelinConfig.corvusMode;
 		
 		if (!corvusMode)
@@ -759,7 +759,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// stars will be distributed in a concentric pattern
 			float angle = 0;
 			float distance = 0;
-			int numSystems = ExerelinSetupData.getInstance().numSystems;
+			int numSystems = setupData.numSystems;
 			for(int i = 0; i < numSystems; i ++)
 			{
 				angle += MathUtils.getRandomNumberInRange((float)Math.PI/4, (float)Math.PI);
@@ -774,7 +774,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 			// build systems
 			log.info("Building systems");
-			for(int i = 0; i < ExerelinSetupData.getInstance().numSystems; i ++)
+			for(int i = 0; i < numSystems; i ++)
 				buildSystem(sector, i);
 			log.info("Populating sector");
 			populateSector();
@@ -823,12 +823,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(AllianceManager.create());
 		StatsTracker.create();
 		
-		DiplomacyManager.setRandomFactionRelationships(ExerelinSetupData.getInstance().randomStartRelationships);
+		DiplomacyManager.setRandomFactionRelationships(setupData.randomStartRelationships);
 		if (!corvusMode) DiplomacyManager.initFactionRelationships(false);
 		
 		SectorManager.setSystemToRelayMap(systemToRelay);
 		SectorManager.setPlanetToRelayMap(planetToRelay);
-		SectorManager.setCorvusMode(ExerelinConfig.corvusMode);
+		SectorManager.setCorvusMode(corvusMode);
+		SectorManager.setHardMode(setupData.hardMode);
 		
 		// some cleanup
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
