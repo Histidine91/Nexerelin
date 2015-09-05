@@ -49,6 +49,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsCargo;
+import exerelin.world.ExerelinMarketSetup.MarketArchetype;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -97,20 +98,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected List<String> possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
 	protected List<String> possibleStationNamesList = new ArrayList(Arrays.asList(possibleStationNames));
 	
-	protected static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren", "barren-bombarded"};
+	//protected static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren", "barren-bombarded"};
 	protected static final String[] planetTypesUninhabitable = new String[] {"desert", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "frozen", "rocky_ice", "radiated", "barren-bombarded"};
 	protected static final String[] planetTypesGasGiant = new String[] {"gas_giant", "ice_giant"};
-	protected static final String[] moonTypes = new String[] {"frozen", "barren", "barren-bombarded", "rocky_ice", "rocky_metallic", "desert", "water", "jungle"};
+	//protected static final String[] moonTypes = new String[] {"frozen", "barren", "barren-bombarded", "rocky_ice", "rocky_metallic", "desert", "water", "jungle"};
 	protected static final String[] moonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "radiated", "barren-bombarded"};
 	
 	protected static final Map<String, String[]> stationImages = new HashMap<>();
 	
-	protected static final WeightedRandomPicker<String> planetTypePicker = new WeightedRandomPicker<>();
-	protected static final float NON_HOSTILE_WORLD_CHANCE_MULT = 1.25f;
 	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
 	protected static final float BINARY_SYSTEM_CHANCE = 0;	//0.15f;
 	protected static final float BINARY_STAR_DISTANCE = 11000;
 	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
+	
+	protected ExerelinMarketSetup marketSetup = new ExerelinMarketSetup();
 	
 	protected List<String> factionIds = new ArrayList<>();
 	protected List<Integer[]> starPositions = new ArrayList<>();	
@@ -121,6 +122,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected Map<String, String> systemToRelay = new HashMap();
 	protected Map<String, String> planetToRelay = new HashMap();
 	
+	protected Map<MarketArchetype, Integer> numMarketsByArchetype = new HashMap<>();
 	protected float numOmnifacs = 0;
 	
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
@@ -154,16 +156,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stationImages.put("neutrinocorp", new String[] {"neutrino_station_powerplant", "neutrino_station_largeprocessing", "neutrino_station_experimental"} );
 		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
 		stationImages.put("exipirated", new String[] {"exipirated_avesta_station"} );
-		
-		for (String planetType : planetTypes)
-		{
-			float weight = 1;
-			if (planetType.equals("terran") || planetType.equals("jungle") || planetType.equals("water") || planetType.equals("arid") || planetType.equals("desert"))
-			{
-				weight = NON_HOSTILE_WORLD_CHANCE_MULT;
-			}
-			planetTypePicker.add(planetType, weight);
-		}
 	}
 	
 	protected void loadBackgrounds()
@@ -245,6 +237,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stations = new ArrayList<>();
 		ExerelinSetupData.getInstance().resetAvailableFactions();
 		factionIds = new ArrayList<>( Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector())) );
+		numMarketsByArchetype = new HashMap<>();
 		numOmnifacs = 0;
 	}
 	
@@ -254,6 +247,37 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			picker.add(object);
 		}
+	}
+	
+	protected int getNumMarketsOfArchetype(MarketArchetype type)
+	{
+		if (!numMarketsByArchetype.containsKey(type))
+		{
+			numMarketsByArchetype.put(type, 0);
+			return 0;
+		}
+		return numMarketsByArchetype.get(type);
+	}
+	
+	protected MarketArchetype pickMarketArchetype(boolean isStation)
+	{
+		int numAgriculture = getNumMarketsOfArchetype(MarketArchetype.AGRICULTURE) + 1;
+		int numOre = getNumMarketsOfArchetype(MarketArchetype.ORE) + 1;
+		int numOrganics = getNumMarketsOfArchetype(MarketArchetype.ORGANICS) + 1;
+		int numVolatiles = getNumMarketsOfArchetype(MarketArchetype.VOLATILES) + 1;
+		int numManufacturing = getNumMarketsOfArchetype(MarketArchetype.MANUFACTURING) + 1;
+		int numHeavyIndustry = getNumMarketsOfArchetype(MarketArchetype.HEAVY_INDUSTRY) + 1;
+		
+		WeightedRandomPicker<MarketArchetype> picker = new WeightedRandomPicker<>();
+		if (!isStation)
+			picker.add(MarketArchetype.AGRICULTURE, 10/numAgriculture);
+		picker.add(MarketArchetype.ORE, 10/numOre);
+		picker.add(MarketArchetype.ORGANICS, 8/numOrganics);
+		picker.add(MarketArchetype.VOLATILES, 6/numVolatiles);
+		picker.add(MarketArchetype.MANUFACTURING, 10/numManufacturing);
+		picker.add(MarketArchetype.HEAVY_INDUSTRY, 8/numHeavyIndustry);
+		
+		return picker.pick();
 	}
 			
 	protected void pickEntityInteractionImage(SectorEntityToken entity, MarketAPI market, String planetType, EntityType entityType)
@@ -346,8 +370,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		switch (planetType) {
 			case "jungle":
 				newMarket.addCondition("jungle");
-				if(MathUtils.getRandomNumberInRange(0, 3) == 0)
-					newMarket.addCondition("orbital_burns");
 				break;
 			case "water":
 				newMarket.addCondition("water");
@@ -717,7 +739,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		log.info("Loading backgrounds");
 		loadBackgrounds();
 		
-		log.info("resetting vars");
+		log.info("Resetting vars");
 		resetVars();
 		
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
@@ -1276,7 +1298,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// planet type
 			if (planetData.habitable)
 			{
-				planetType = planetTypePicker.pick();
+				planetData.archetype = pickMarketArchetype(false);
+				planetType = marketSetup.pickPlanetTypeFromArchetype(planetData.archetype, false);
 			}
 			else
 			{
@@ -1315,6 +1338,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				isGasGiant = true;
 			}
 			
+			
 			// create the planet token
 			SectorEntityToken newPlanet = system.addPlanet(id, toOrbit, name, planetType, angle, radius, distance, orbitDays);
 			planetData.entity = newPlanet;
@@ -1336,26 +1360,28 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					if(j == 2)
 						ext = "III";
 					
+					
+					EntityData moonData = new EntityData(system);
 					boolean moonInhabitable = Math.random() < getHabitableChance(planetData.planetNum, true);
-					String moonType = "";
 					if (moonInhabitable)
-						moonType = (String) ExerelinUtils.getRandomArrayElement(moonTypes);
+					{
+						moonData.archetype = pickMarketArchetype(false);
+						moonData.planetType = marketSetup.pickPlanetTypeFromArchetype(moonData.archetype, true);
+					}
 					else
-						moonType = (String) ExerelinUtils.getRandomArrayElement(moonTypesUninhabitable);
-						
+						moonData.planetType = (String) ExerelinUtils.getRandomArrayElement(moonTypesUninhabitable);
+					moonData.primary = planetData;
+					moonData.habitable = moonInhabitable;
+					moonData.type = EntityType.MOON;		
+					
+					// moon orbital mechanics
 					angle = MathUtils.getRandomNumberInRange(1, 360);
 					distance = MathUtils.getRandomNumberInRange(650, 1300);
 					float moonRadius = MathUtils.getRandomNumberInRange(50, 100);
 					orbitDays = getOrbitalPeriod(newPlanet.getRadius(), distance + newPlanet.getRadius(), 2);
-					PlanetAPI newMoon = system.addPlanet(name + " " + ext, newPlanet, name + " " + ext, moonType, angle, moonRadius, distance, orbitDays);
+					PlanetAPI newMoon = system.addPlanet(name + " " + ext, newPlanet, name + " " + ext, moonData.planetType, angle, moonRadius, distance, orbitDays);
 					log.info("Creating moon " + name + " " + ext);
-					
-					EntityData moonData = new EntityData(system);
 					moonData.entity = newMoon;
-					moonData.planetType = moonType;
-					moonData.primary = planetData;
-					moonData.habitable = moonInhabitable;
-					moonData.type = EntityType.MOON;
 					
 					// concurrency exception - don't add it direct; add to another list and merge
 					//entities.add(moonData);
@@ -1521,6 +1547,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		else
 			numStations = maxStations;
 		
+		// create random picker for our station locations
 		WeightedRandomPicker<EntityData> picker = new WeightedRandomPicker<>();
 		//addListToPicker(entities, picker);
 		for (EntityData entityData : entities)
@@ -1537,15 +1564,15 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			if (picker.isEmpty()) picker.add(starData);
 			EntityData primaryData = picker.pickAndRemove();
-			boolean isGasGiant = primaryData.type == EntityType.PLANET && ((PlanetAPI)primaryData.entity).isGasGiant();
 			boolean isStar = primaryData.type == EntityType.STAR;
-			SectorEntityToken planet = primaryData.entity;
 
 			EntityData stationData = new EntityData(system);
 			stationData.primary = primaryData;
 			stationData.type = EntityType.STATION;
+			stationData.archetype = pickMarketArchetype(true);
 			if (isStar) stationData.orbitDistance = (Float) ExerelinUtils.getRandomListElement(starBelts);
 			
+			// name our station
 			boolean nameOK = false;
 			String name = "";
 			while(!nameOK)
@@ -1612,7 +1639,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 	}
 	
-	enum EntityType {
+	protected enum EntityType {
 		STAR, PLANET, MOON, STATION
 	}
 	
@@ -1627,6 +1654,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		StarSystemAPI starSystem;
 		EntityData primary;
 		MarketAPI market;
+		MarketArchetype archetype = MarketArchetype.MIXED;
 		int forceMarketSize = -1;
 		int planetNum = -1;
 		int planetNumByStar = -1;
