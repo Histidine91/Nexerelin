@@ -3,8 +3,10 @@ package data.scripts;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
@@ -48,6 +50,10 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             faction.setRelationship(faction.getId(), 1);
         }
+		
+		FactionAPI playerFaction = Global.getSector().getFaction(Factions.PLAYER);
+		if (playerFaction.getRelationship("player_npc") <= 0)
+			playerFaction.setRelationship("player_npc", 1);
     }
     
     @Override
