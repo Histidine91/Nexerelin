@@ -129,7 +129,7 @@ FireAll ExerelinNGCOptions",,,
 ExerelinNGCMaxStations5,NewGameOptionSelected,$option==exerelinNGCMaxStations5,"NGCSetMaxStations 5
 AddText ""Set maximum stations per system to 5"" textFriendColor
 FireAll ExerelinNGCOptions",,,
-ExerelinNGCMaxStations6,NewGameOptionSelected,$option==exerelinNGCMaxStations6,"NGCSetMaxStations 5
+ExerelinNGCMaxStations6,NewGameOptionSelected,$option==exerelinNGCMaxStations6,"NGCSetMaxStations 6
 AddText ""Set maximum stations per system to 6"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
