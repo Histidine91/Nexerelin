@@ -13,6 +13,8 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -357,6 +359,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         
         // pick a source market
         for (MarketAPI market : markets) {
+            if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
             if  ( market.getFactionId().equals(faction.getId()) && !market.hasCondition("decivilized") && 
                 ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) || (market.hasCondition("military_base"))
                     || (market.hasCondition("regional_capital")) || (market.hasCondition("headquarters"))
@@ -399,7 +402,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             FactionAPI marketFaction = market.getFaction();
             if  ( marketFaction.isHostileTo(faction)) 
             {
-                if (marketFaction.getId().equals("independent")) continue;
+                if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
+                if (marketFaction.getId().equals(Factions.INDEPENDENT)) continue;
+                if (marketFaction.isNeutralFaction()) continue;
                 if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
                     continue;
                 /*
