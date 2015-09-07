@@ -117,7 +117,8 @@ public class WarmongerEvent extends BaseEventPlugin {
 	protected String getNewRelationStr()
 	{
 		FactionAPI faction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
-		RepLevel level = faction.getRelationshipLevel(Factions.PLAYER);
+		//RepLevel level = faction.getRelationshipLevel(Factions.PLAYER);
+		RepLevel level = RepLevel.getLevelFor(faction.getRelationship(Factions.PLAYER) - myFactionLoss);
 		int repInt = (int) Math.ceil((faction.getRelationship(Factions.PLAYER) - myFactionLoss) * 100f);
 		
 		String standing = "" + repInt + "/100" + " (" + level.getDisplayName().toLowerCase() + ")";
