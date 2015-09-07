@@ -850,6 +850,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     }
                 }
             }
+			
+			// bounty hunters hostile to player
+			FactionAPI bountyHunters = sector.getFaction("merc_hostile");
+			if (bountyHunters != null)
+            {
+				bountyHunters.setRelationship(Factions.INDEPENDENT, 1f);
+                bountyHunters.setRelationship(Factions.PLAYER, -1f);
+            }
 
             // Templars just plain hate everyone
             FactionAPI templars = sector.getFaction("templars");

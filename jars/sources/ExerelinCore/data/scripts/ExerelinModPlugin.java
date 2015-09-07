@@ -73,6 +73,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_insurance", null);
         }
+		if (SectorManager.getHardMode() && ExerelinUtils.isSSPInstalled())
+		{
+			if (!Global.getSector().getEventManager().isOngoing(null, "player_bounty")) {
+				Global.getSector().getEventManager().startEvent(null, "player_bounty", null);
+			}
+		}
         
         reverseCompatibility();
         
