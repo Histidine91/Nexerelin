@@ -12,6 +12,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DirectoryScreenScript;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.*;
 import exerelin.world.InvasionFleetManager;
@@ -51,9 +52,11 @@ public class ExerelinModPlugin extends BaseModPlugin
             faction.setRelationship(faction.getId(), 1);
         }
 		
+		// fix old issue with relationship with player_npc
 		FactionAPI playerFaction = Global.getSector().getFaction(Factions.PLAYER);
-		if (playerFaction.getRelationship("player_npc") <= 0)
-			playerFaction.setRelationship("player_npc", 1);
+		//if (playerFaction.getRelationship("player_npc") <= 0)
+		playerFaction.setRelationship("player_npc", 1);
+		PlayerFactionStore.saveIndependentPlayerRelation("player_npc");
     }
     
     @Override
