@@ -102,7 +102,7 @@
 		},
 		{
 			"name":"aquaculture",
-			"cost":200,
+			"cost":350,
 			"archetypes":{"default":1, "agriculture":2, "mixed":1.5},
 			"allowedPlanets":["terran","jungle","water"],
 			"allowStations":false,
@@ -183,7 +183,7 @@
 		# misc
 		{
 			"name":"rural_polity",
-			"cost":300,
+			"cost":400,
 			"archetypes":{"default":0.5,"agriculture":1,"manufacturing":0,"heavy_industry":0},
 			"allowedPlanets":["terran","jungle","arid","desert"],
 			"minSize":4,
@@ -193,11 +193,12 @@
 		},
 		{
 			"name":"orbital_burns",
-			"cost":200,
-			"archetypes":{"default":0.75, "agriculture":2},
+			"cost":350,
+			"archetypes":{"default":0.75, "agriculture":1.5},
 			"allowedPlanets":["jungle"],
 			"minSize":4,
 			"allowDuplicates":false,
+			#"conflictsWith":["urbanized_polity", "rural_polity"],
 		},
 		{
 			"name":"urbanized_polity",
