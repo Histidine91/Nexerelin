@@ -433,10 +433,7 @@ $menuState = main 0
 FireAll PopulateOptions",,,
 ,,,,,,
 # START INVASION OPTIONS,,,,,,
-ExerelinMarketInvadeOption,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""
+ExerelinMarketInvadeOption,ExerelinMarketSpecial,"IsValidInvasionTarget
 $market.id != prismFreeport_market",,,1:exerelinInvasion:Invade the planet/station,
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
 PredictInvasionResults
