@@ -28,7 +28,11 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
     private static final float RESERVE_MARKET_STABILITY_DIVISOR = 5f;
     private static final float INITIAL_RESERVE_SIZE_MULT = 0.75f;
     private static final float MIN_FP_TO_SPAWN = 20f;
-    private Map<String, Float> reserves;
+    protected static final float REVENGE_FLEET_BASE_SIZE = 300;
+    protected static final float REVENGE_GROWTH_MULT = 0.25f;
+    
+    protected Map<String, Float> revengeStrength = new HashMap<>();
+    protected Map<String, Float> reserves;
     
     public static Logger log = Global.getLogger(ResponseFleetManager.class);
     
@@ -45,16 +49,12 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         //interval = 2;   // debug
         this.tracker = new IntervalUtil(interval * 0.75F, interval * 1.25F);
         
-        //Map<String, Object> data = Global.getSector().getPersistentData();
-        //reserves = (Map<String, Float>)data.get(RESERVE_SIZE_MAP_KEY);
         if (reserves == null)
         {
             reserves = new HashMap<>();
             List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
             for(MarketAPI market:markets)
                 reserves.put(market.getId(), getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
-            
-            //data.put(RESERVE_SIZE_MAP_KEY, reserves);
         }
     }
   
@@ -260,6 +260,35 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             }
         }
     }
+    
+    /*
+    @Override
+    public void reportBattleOccurred(CampaignFleetAPI winner, CampaignFleetAPI loser)
+    {
+        FactionAPI winFaction = winner.getFaction();
+        FactionAPI loseFaction = loser.getFaction();
+        String winFactionId = winFaction.getId();
+        String loseFactionId = loseFaction.getId();
+        
+        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+        CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+        
+        CampaignFleetAPI killFleet;
+        CampaignFleetAPI lossFleet;
+               
+        if (winner == playerFleet)
+        {
+            killFleet = loser;
+            lossFleet = winner;
+        }
+        else if (loser == playerFleet)
+        {
+            killFleet = winner;
+            lossFleet = loser;
+        }
+        else return;
+    }
+    */
   
     @Override
     public boolean runWhilePaused()
