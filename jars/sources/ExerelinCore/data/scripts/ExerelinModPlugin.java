@@ -52,10 +52,12 @@ public class ExerelinModPlugin extends BaseModPlugin
             faction.setRelationship(faction.getId(), 1);
         }
 		
-		// fix old issue with relationship with player_npc
+		// fix old issue with relationship with player and player_npc
 		FactionAPI playerFaction = Global.getSector().getFaction(Factions.PLAYER);
+		playerFaction.setRelationship("player", 1);
 		//if (playerFaction.getRelationship("player_npc") <= 0)
 		playerFaction.setRelationship("player_npc", 1);
+		PlayerFactionStore.saveIndependentPlayerRelation("player");
 		PlayerFactionStore.saveIndependentPlayerRelation("player_npc");
     }
     
