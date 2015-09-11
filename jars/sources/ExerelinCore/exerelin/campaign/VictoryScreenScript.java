@@ -114,14 +114,15 @@ public class VictoryScreenScript implements EveryFrameScript
         
         private void printCredits()
         {
-            printCreditLine("Zaphide", StringHelper.getString("exerelin_credits", "contribution_zaphide"));
-            printCreditLine("Histidine", StringHelper.getString("exerelin_credits", "contribution_histidine"));
-            printCreditLine("Dark.Revenant", StringHelper.getString("exerelin_credits", "contribution_darkRevenant"));
-            printCreditLine("LazyWizard", StringHelper.getString("exerelin_credits", "contribution_lazyWizard"));
-            printCreditLine("Psiyon", StringHelper.getString("exerelin_credits", "contribution_psiyon"));
-            printCreditLine("Tartiflette", StringHelper.getString("exerelin_credits", "contribution_tartiflette"));
-            printCreditLine("The SS mod community", StringHelper.getString("exerelin_credits", "contribution_ssModCommunity"));
-            printCreditLine("Alex, David, Stian, Ivaylo", StringHelper.getString("exerelin_credits", "contribution_fractalSoftworks"));
+            String category = "exerelin_credits";
+            printCreditLine("Zaphide", StringHelper.getString(category, "contribution_zaphide"));
+            printCreditLine("Histidine", StringHelper.getString(category, "contribution_histidine"));
+            printCreditLine("Dark.Revenant", StringHelper.getString(category, "contribution_darkRevenant"));
+            printCreditLine("LazyWizard", StringHelper.getString(category, "contribution_lazyWizard"));
+            printCreditLine("Psiyon", StringHelper.getString(category, "contribution_psiyon"));
+            printCreditLine("Tartiflette", StringHelper.getString(category, "contribution_tartiflette"));
+            printCreditLine("The SS mod community", StringHelper.getString(category, "contribution_ssModCommunity"));
+            printCreditLine("Alex, David, Stian, Ivaylo", StringHelper.getString(category, "contribution_fractalSoftworks"));
         }
         
         private void printStats()

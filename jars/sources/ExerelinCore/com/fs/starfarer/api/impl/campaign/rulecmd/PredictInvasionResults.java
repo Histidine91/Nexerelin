@@ -28,6 +28,8 @@ import exerelin.utilities.StringHelper;
  */
 public class PredictInvasionResults extends BaseCommandPlugin {
 
+        protected static final String STRING_CATEGORY = "exerelin_invasion";
+        
         @Override
         public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
                 if (dialog == null) return false;
@@ -73,16 +75,16 @@ public class PredictInvasionResults extends BaseCommandPlugin {
                 Color hl = Misc.getHighlightColor();
                 Color red = Misc.getNegativeHighlightColor();
                 text.addParagraph("-----------------------------------------------------------------------------");
-                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "attackerStrength")) + ": " + attackerStrength);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "attackerStrength")) + ": " + attackerStrength);
                 text.highlightInLastPara(hl, "" + attackerStrength);
-                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "defenderStrength")) + ": " + defenderStrengthStr);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "defenderStrength")) + ": " + defenderStrengthStr);
                 text.highlightInLastPara(red, "" + defenderStrengthStr);
-                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "captureChance")) + ": " + winChanceStr);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "captureChance")) + ": " + winChanceStr);
                 if (winChance < 50)
                         text.highlightInLastPara(red, "" + winChanceStr);
                 else
                         text.highlightInLastPara(hl, "" + winChanceStr);
-                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "projectedLosses")) + ": " + marinesLost);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "projectedLosses")) + ": " + marinesLost);
                 text.highlightInLastPara(red, "" + marinesLost);
  
                 text.addParagraph("-----------------------------------------------------------------------------");

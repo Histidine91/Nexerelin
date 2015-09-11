@@ -24,6 +24,8 @@ import java.util.Iterator;
 
 public class GetMiningResults extends BaseCommandPlugin {
 
+	protected static final String STRING_CATEGORY = "exerelin_mining";
+	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
@@ -40,14 +42,14 @@ public class GetMiningResults extends BaseCommandPlugin {
 		Map<String, Float> resources = results.resources;
 		EconomyAPI economy = Global.getSector().getEconomy();
 		
-		//text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_mining", "miningReport")));
+		//text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "miningReport")));
 		
 		text.setFontVictor();
 		text.setFontSmallInsignia();
 
 		text.addParagraph("-----------------------------------------------------------------------------");
 		
-		String headerStr = Misc.ucFirst(StringHelper.getString("exerelin_mining", "resourcesExtracted"));
+		String headerStr = Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "resourcesExtracted"));
 		text.addParagraph(headerStr);
 		text.highlightInLastPara(hl, headerStr);
 		Iterator<String> iter = resources.keySet().iterator();
@@ -65,7 +67,7 @@ public class GetMiningResults extends BaseCommandPlugin {
 		if (!results.cachesFound.isEmpty())
 		{
 
-			headerStr = StringHelper.getString("exerelin_mining", "cacheFound");
+			headerStr = StringHelper.getString(STRING_CATEGORY, "cacheFound");
 			text.addParagraph(headerStr);
 			text.highlightInLastPara(hl, headerStr);
 			
@@ -82,13 +84,13 @@ public class GetMiningResults extends BaseCommandPlugin {
 		}
 		if (results.accidents != null)
 		{
-			headerStr = StringHelper.getString("exerelin_mining", "accidentsOccured");
+			headerStr = StringHelper.getString(STRING_CATEGORY, "accidentsOccured");
 			text.addParagraph(headerStr);
 			text.highlightInLastPara(red, headerStr);
 			
 			for (FleetMemberAPI ship : results.accidents.shipsDestroyed)
 			{
-				String displayStr = StringHelper.getStringAndSubstituteToken("exerelin_mining", "shipDestroyed", "$ship", ship.getShipName());
+				String displayStr = StringHelper.getStringAndSubstituteToken(STRING_CATEGORY, "shipDestroyed", "$ship", ship.getShipName());
 				text.addParagraph(displayStr);
 				text.highlightInLastPara(red, ship.getShipName());
 			}
@@ -98,7 +100,7 @@ public class GetMiningResults extends BaseCommandPlugin {
 			{
 				FleetMemberAPI ship = iterDmg.next();
 				int damage = (int)(float)results.accidents.damage.get(ship);
-				String displayStr = StringHelper.getString("exerelin_mining", "shipDamaged");
+				String displayStr = StringHelper.getString(STRING_CATEGORY, "shipDamaged");
 				displayStr = StringHelper.substituteToken(displayStr, "$ship", ship.getShipName());
 				displayStr = StringHelper.substituteToken(displayStr, "$damage", damage + "");
 				text.addParagraph("  " + displayStr);
@@ -111,7 +113,7 @@ public class GetMiningResults extends BaseCommandPlugin {
 				FleetMemberAPI ship = iterCRLoss.next();
 				int crLost = (int)((float)results.accidents.crLost.get(ship)*100);
 				String crLostStr = crLost + "%";
-				String displayStr = StringHelper.getString("exerelin_mining", "shipLostCR");
+				String displayStr = StringHelper.getString(STRING_CATEGORY, "shipLostCR");
 				displayStr = StringHelper.substituteToken(displayStr, "$ship", ship.getShipName());
 				displayStr = StringHelper.substituteToken(displayStr, "$crLost", crLostStr);
 				text.addParagraph("  " + displayStr);
@@ -121,7 +123,7 @@ public class GetMiningResults extends BaseCommandPlugin {
 			int crewLost = (int)results.accidents.crewLost.getTotalCrew();
 			if (crewLost > 0)
 			{
-				String displayStr = Misc.ucFirst(StringHelper.getString("exerelin_mining", "crewLost"));
+				String displayStr = Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "crewLost"));
 				text.addParagraph("  " + displayStr + ": " + crewLost);
 				text.highlightInLastPara(red, crewLost+"");
 			}

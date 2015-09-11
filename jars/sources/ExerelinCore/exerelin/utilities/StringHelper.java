@@ -8,7 +8,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class StringHelper {
-    
+    public static final String FLEET_ASSIGNMENT_CATEGORY = "exerelin_fleetAssignments";
+	
     public static String getString(String category, String id) {
         String str = "";
         try {
@@ -77,4 +78,12 @@ public class StringHelper {
         
         return substituteTokens(str, replacements);
     }
+	
+	public static String getFleetAssignmentString(String id, String target, String missionType)
+	{
+		String str = getString(FLEET_ASSIGNMENT_CATEGORY, id);
+		if (target != null) str = substituteToken(str, "$target", target);
+		if (missionType != null) str = substituteToken(str, "$missionType", getString(FLEET_ASSIGNMENT_CATEGORY, missionType));
+		return str;
+	}
 }

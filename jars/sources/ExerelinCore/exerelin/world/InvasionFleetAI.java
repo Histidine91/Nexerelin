@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
+import exerelin.utilities.StringHelper;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
@@ -99,7 +100,8 @@ public class InvasionFleetAI implements EveryFrameScript
                     //log.info("Response type of fleet " + otherFleet.getName() + ": " + option.name());
                     if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD)
                     {
-                        ai.addAssignmentAtStart(FleetAssignment.INTERCEPT, fleet, 2f, "intercepting " + fleet.getName(), null);
+                        ai.addAssignmentAtStart(FleetAssignment.INTERCEPT, fleet, 2f, 
+                                StringHelper.getFleetAssignmentString("intercepting", fleet.getName(), null), null);
                         //log.info("Responding to invasion: " + otherFleet.getName() + ", " + fleet.getName());
                     }
                 }
@@ -169,6 +171,7 @@ public class InvasionFleetAI implements EveryFrameScript
             MarketAPI market = data.targetMarket;
             StarSystemAPI system = market.getStarSystem();
             String locName = market.getPrimaryEntity().getContainingLocation().getName();
+            String marketName = market.getName();
             
             if (system != null)
             {
@@ -178,15 +181,15 @@ public class InvasionFleetAI implements EveryFrameScript
                 LocationAPI hyper = Global.getSector().getHyperspace();
                 Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
                 SectorEntityToken token = hyper.createToken(dest.x, dest.y);
-                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, "travelling to " + locName);
-                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, "travelling to " + market.getName());
+                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName, null));
+                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName, null));
             }
             else {
-                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, "travelling to " + market.getName());
+                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName, null));
             }
-            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), INVADE_ORBIT_TIME, "beginning invasion of " + market.getName());
+            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), INVADE_ORBIT_TIME, StringHelper.getFleetAssignmentString("beginningInvasion", marketName, null));
             // once it reaches the "hold" part, that's our cue to actually run the invasion code
-            this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 2.0F, "invading " + market.getName());
+            this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 2.0F, StringHelper.getFleetAssignmentString("invading", marketName, null));
 
         }
     }
@@ -223,7 +226,7 @@ public class InvasionFleetAI implements EveryFrameScript
     {
         if (data.noWait) return;
         float daysToOrbit = getDaysToOrbit();
-        this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, "preparing for invasion at " + this.data.source.getName());
+        this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, data.source, daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionInvasion"));
     }
   
     protected void giveStandDownOrders()
@@ -245,8 +248,8 @@ public class InvasionFleetAI implements EveryFrameScript
                     destination = data.target;
             }
             
-            this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, destination, 1000.0F, "returning to " + destination.getName());
-            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), "ending mission at " + destination.getName());
+            this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName(), null));
+            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName(), null));
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }
     }

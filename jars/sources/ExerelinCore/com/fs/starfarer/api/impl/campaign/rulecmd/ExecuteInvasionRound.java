@@ -22,7 +22,9 @@ import exerelin.utilities.StringHelper;
 
 public class ExecuteInvasionRound extends BaseCommandPlugin {
 
-        @Override
+    protected static final String STRING_CATEGORY = "exerelin_invasion";
+    
+    @Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
                 SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
@@ -53,13 +55,13 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
                 Color hl = Misc.getHighlightColor();
                 Color red = Misc.getNegativeHighlightColor();
                 text.addParagraph("-----------------------------------------------------------------------------");
-                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "attackerStrength")) + ": " + attackerStrength);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "attackerStrength")) + ": " + attackerStrength);
                 text.highlightInLastPara(hl, "" + attackerStrength);
-                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "defenderStrength")) + ": " + defenderStrength);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "defenderStrength")) + ": " + defenderStrength);
                 text.highlightInLastPara(red, "" + defenderStrength);
-                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "marinesLost")) + ": " + marinesLost);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "marinesLost")) + ": " + marinesLost);
                 text.highlightInLastPara(red, "" + marinesLost);
-                text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_invasion", "marinesRemaining")) + ": " + marinesRemaining);
+                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "marinesRemaining")) + ": " + marinesRemaining);
                 text.highlightInLastPara(hl, "" + marinesRemaining);
                 /*
                 if (!illegalFound.isEmpty()) {

@@ -555,6 +555,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             float increment = pointsPerFaction.get(factionId) + ExerelinConfig.baseInvasionPointsPerFaction;
             increment += ExerelinConfig.invasionPointsPerPlayerLevel * playerLevel;
             increment *= mult * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+			
+			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+			if (config != null) increment *= config.invasionPointMult; 
+			
             counter += increment;
             
             float pointsRequired = ExerelinConfig.pointsRequiredForInvasionFleet;

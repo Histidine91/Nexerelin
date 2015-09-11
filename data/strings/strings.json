@@ -65,6 +65,32 @@
 		"fleetSpawnMessage":"A fleet is being launched at $market, in $location. It will be underway shortly.",
 		"fleetSpawnMessageLocal":"A fleet is being launched and will begin defending $market shortly."
 	},
+	"exerelin_fleetAssignments":{
+		"preparingFor":"preparing for $missionType at $target",
+		"returningTo":"returning to $target",
+		"standingDown":"standing down from $missionType",
+		"endingMission":"ending mission at $target",
+		"travellingTo":"travelling to $target",
+		"travellingToStarSystem":"travelling to the $target star system",
+		
+		"attacking":"attacking $target",
+		"attackingStarSystem":"attacking the $target star system",
+		"attackingAroundStarSystem":"attacking around the $target star system",
+		"defending":"defending $target",
+		"patrolling":"patrolling $target",
+		"patrollingStarSystem":"patrolling the $target star system",
+		"patrollingAroundStarSystem":"patrolling around the $target star system",
+		"intercepting":"intercepting $target",
+		"beginningInvasion":"beginning invasion of $target",
+		"invading":"invading $target",
+		"mining":"mining $target",
+		"miningUnload":"unloading cargo and disbanding",
+		
+		"missionStrike":"strike mission",
+		"missionInvasion":"invasion",
+		"missionMining":"mining expedition",
+		"missionPatrol":"patrol",
+	},
 	"exerelin_invasion":{
 		"attackerStrength":"attacker strength",
 		"captureChance":"capture chance",

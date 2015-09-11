@@ -22,6 +22,8 @@ import java.util.Iterator;
 
 public class PrintMiningInfo extends BaseCommandPlugin {
 
+	protected static final String STRING_CATEGORY = "exerelin_mining";
+	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
@@ -46,11 +48,11 @@ public class PrintMiningInfo extends BaseCommandPlugin {
 			planetType = ((PlanetAPI)target).getSpec().getName();
 		}
 
-		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_mining", "planetType")) + ": " + planetType);
+		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "planetType")) + ": " + planetType);
 		text.highlightInLastPara(hl, planetType);
-		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_mining", "miningStrength")) + ": " + miningStrengthStr);
+		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "miningStrength")) + ": " + miningStrengthStr);
 		text.highlightInLastPara(hl, miningStrengthStr);
-		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_mining", "danger")) + ": " + dangerStr);
+		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "danger")) + ": " + dangerStr);
 		if (danger > 0.5) text.highlightInLastPara(red, dangerStr);
 		else text.highlightInLastPara(hl, dangerStr);
 		
