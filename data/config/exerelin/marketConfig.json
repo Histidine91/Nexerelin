@@ -202,7 +202,7 @@
 		},
 		{
 			"name":"urbanized_polity",
-			"isSpecial":true,
+			"special":true,
 			"archetypes":{"default":1,"agriculture":0,"manufacturing":2,"heavy_industry":3, "mixed":1.5},
 			"allowedPlanets":["terran","jungle","arid","desert"],
 			"minSize":4,
@@ -213,14 +213,14 @@
 		#special
 		{
 			"name":"outpost",
-			"isSpecial":true,
+			"special":true,
 			"archetypes":{"default":1},
 			"maxSize":3,
 			"allowDuplicates":false
 		},
 		{
 			"name":"cyrosanctum",
-			"isSpecial":true,
+			"special":true,
 			"archetypes":{"default":1},
 			"disallowedPlanets":["desert","jungle","arid"],
 			"maxSize":4,
@@ -228,28 +228,28 @@
 		},
 		{
 			"name":"outpost",
-			"isSpecial":true,
+			"special":true,
 			"archetypes":{"default":1},
 			"maxSize":3,
 			"allowDuplicates":false
 		},
 		{
 			"name":"vice_demand",
-			"isSpecial":true,
+			"special":true,
 			"archetypes":{"default":1},
 			"minSize":3,
 			"allowDuplicates":false
 		},
 		{
 			"name":"dissident",
-			"isSpecial":true,
+			"special":true,
 			"archetypes":{"default":1},
 			"minSize":3,
 			"allowDuplicates":false
 		},
 		{
 			"name":"stealth_minefields",
-			"isSpecial":true,
+			"special":true,
 			"archetypes":{"default":1},
 			"minSize":3,
 			"maxSize":5,
@@ -257,21 +257,21 @@
 		},
 		{
 			"name":"military_base",
-			"isSpecial":true,
+			"special":true,
 			"archetypes":{"default":1},
 			"minSize":4,
 			"allowDuplicates":false
 		},
 		{
 			"name":"organized_crime",
-			"isSpecial":true,
+			"special":true,
 			"archetypes":{"default":1,"agriculture":0.5},
 			"minSize":4,
 			"allowDuplicates":false
 		},
 		{
 			"name":"large_refugee_population",
-			"isSpecial":true,
+			"special":true,
 			"archetypes":{"default":1},
 			"minSize":4,
 			"allowDuplicates":false
