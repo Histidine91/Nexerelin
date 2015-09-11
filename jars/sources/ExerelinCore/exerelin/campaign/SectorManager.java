@@ -224,6 +224,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         FactionAPI targetFaction = Global.getSector().getFaction(targetFactionId);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+		if (targetFaction.isHostileTo(Factions.PLAYER)) return;
+		
         int numFactions = 0;
         float totalRepLoss = 0;
         float myFactionLoss = 0;
