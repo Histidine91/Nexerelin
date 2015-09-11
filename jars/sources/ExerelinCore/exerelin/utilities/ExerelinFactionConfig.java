@@ -46,6 +46,7 @@ public class ExerelinFactionConfig
     public float invasionStrengthBonusDefend = 0;
     public float invasionFleetSizeMod = 0;
     public float responseFleetSizeMod = 0;
+	public float invasionPointMult = 1;
     
     public boolean dropPrisoners = true;
     
@@ -95,6 +96,7 @@ public class ExerelinFactionConfig
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);
             invasionFleetSizeMod = (float)settings.optDouble("invasionFleetSizeMod", 0);
             responseFleetSizeMod = (float)settings.optDouble("responseFleetSizeMod", 0);
+			invasionPointMult = (float)settings.optDouble("invasionPointMult", 1);
             
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
             
