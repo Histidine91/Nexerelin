@@ -157,33 +157,38 @@ public class MiningHelper {
 		return resources.get("default");
 	}
 	
+	public static float getShipMiningStrength(FleetMemberAPI member)
+	{
+		if (member.isMothballed()) return 0;
+		
+		float strength = 0;
+		int count = 1;
+		if (member.isFighterWing())
+			count = member.getNumFightersInWing();
+		
+		float cr = member.getRepairTracker().getCR();
+		float crModifier = cr / 0.6f;
+
+		String hullId = member.getHullId();
+		if (miningShips.containsKey(hullId))
+			strength += miningShips.get(hullId) * count * crModifier;
+
+		Collection<String> weaponSlots = member.getVariant().getFittedWeaponSlots();
+		for (String slot : weaponSlots)
+		{
+			String weaponId = member.getVariant().getWeaponSpec(slot).getWeaponId();
+			if (miningWeapons.containsKey(weaponId))
+				strength+= miningWeapons.get(weaponId) * count * crModifier;
+		}
+		return strength;
+	}
+	
 	public static float getFleetMiningStrength(CampaignFleetAPI fleet)
 	{
 		float strength = 0;
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
 		{
-			if (member.isMothballed()) continue;
-			int count = 1;
-			if (member.isFighterWing())
-				count = member.getNumFightersInWing();
-			float crModifier = 1f;
-			float cr = member.getRepairTracker().getCR();
-			if (cr < 0.4f)
-			{
-				crModifier = cr/0.4f;
-			}
-			
-			String hullId = member.getHullId();
-			if (miningShips.containsKey(hullId))
-				strength += miningShips.get(hullId) * count * crModifier;
-						
-			Collection<String> weaponSlots = member.getVariant().getFittedWeaponSlots();
-			for (String slot : weaponSlots)
-			{
-				String weaponId = member.getVariant().getWeaponSpec(slot).getWeaponId();
-				if (miningWeapons.containsKey(weaponId))
-					strength+= miningWeapons.get(weaponId) * count * crModifier;
-			}
+			strength += getShipMiningStrength(member);
 		}
 		
 		return strength;
@@ -307,7 +312,11 @@ public class MiningHelper {
 		WeightedRandomPicker<FleetMemberAPI> picker = new WeightedRandomPicker<>();
 		for (FleetMemberAPI ship : ships)
 		{
-			if (!ship.isFighterWing()) picker.add(ship);
+			if (!ship.isFighterWing()) 
+			{
+				float shipStrength = getShipMiningStrength(ship);
+				if (shipStrength > 0) picker.add(ship, shipStrength);
+			}
 		}
 		
 		while (accidentChance > 0)
