@@ -1077,8 +1077,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			size = size * 0.75f;
 			
 			int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNamesList.size() - 1);
-			String name = possibleSystemNamesList.get(systemNameIndex);
-			possibleSystemNamesList.remove(systemNameIndex);
+			String name = system.getBaseName() + " B";	//possibleSystemNamesList.get(systemNameIndex);
+			//possibleSystemNamesList.remove(systemNameIndex);
 			
 			PlanetAPI star = system.getStar();
 			
@@ -1187,16 +1187,21 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		int numPlanetsStar1 = 0;
 		int numPlanetsStar2 = 0;
 		
+		EntityData starData = new EntityData(system);
+		EntityData starData2 = null;
+		starData.entity = star;
+		starData.type = EntityType.STAR;
+		
 		boolean isBinary = Math.random() < BINARY_SYSTEM_CHANCE;
 		if (isBinary)
 		{
 			star2 = makeStar(systemIndex, system, true);
+			starData2 = new EntityData(system);
+			starData.entity = star2;
+			starData.type = EntityType.STAR;
 		}
 
 		List<EntityData> entities = new ArrayList<>();
-		EntityData starData = new EntityData(system);
-		starData.entity = star;
-		starData.type = EntityType.STAR;
 		
 		// now let's start seeding planets
 		// note that we don't create the PlanetAPI right away, but set up EntityDatas first
@@ -1269,16 +1274,19 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			// binary star handling
 			PlanetAPI toOrbit = star;
-			if (isBinary && Math.random() < 0.4f) 
+			boolean orbitsSecondStar = isBinary && Math.random() < 0.3f;
+			if (orbitsSecondStar) 
 			{
 				toOrbit = star2;
 				numPlanetsStar2++;
 				planetData.planetNumByStar = numPlanetsStar2;
+				planetData.primary = starData2;
 			}
 			else
 			{
 				numPlanetsStar1++;
 				planetData.planetNumByStar = numPlanetsStar1;
+				planetData.primary = starData;
 			}
 			
 			// planet type
@@ -1425,6 +1433,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (planetData.planetNum == 2 || planetData.planetNum == 3)
 			{
 				weight = 4f;
+			}
+			if (planetData.primary == starData) 
+			{
+				if (systemIndex == 0) weight *= 0.00001f;
+				else weight *= 0.67f;
 			}
 			capitalPicker.add(planetData, weight);
 		}
