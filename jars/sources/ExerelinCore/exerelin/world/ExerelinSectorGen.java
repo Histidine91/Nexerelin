@@ -1258,8 +1258,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			star2 = makeStar(systemIndex, system, true);
 			starData2 = new EntityData(system);
-			starData.entity = star2;
-			starData.type = EntityType.STAR;
+			starData2.entity = star2;
+			starData2.type = EntityType.STAR;
 		}
 
 		List<EntityData> entities = new ArrayList<>();
@@ -1495,7 +1495,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			{
 				weight = 4f;
 			}
-			if (planetData.primary == starData) 
+			if (planetData.primary == starData2) 
 			{
 				if (systemIndex == 0) weight *= 0.00001f;
 				else weight *= 0.67f;
