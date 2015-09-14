@@ -325,6 +325,30 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		entity.setInteractionImage(illustration[0], illustration[1]);
 	}
 	
+	protected void addStartingMarketCommodities(MarketAPI market)
+	{
+		ExerelinUtilsCargo.addCommodityStockpile(market, "green_crew", 0.45f, 0.55f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "regular_crew", 0.45f, 0.55f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "veteran_crew", 0.1f, 0.2f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "marines", 0.8f, 1.0f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "supplies", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "fuel", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "food", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "domestic_goods", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "luxury_goods", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "heavy_machinery", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "metals", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "rare_metals", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "ore", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "rare_ore", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "organics", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "volatiles", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "hand_weapons", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "drugs", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "organs", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "lobster", 0.7f, 0.8f);
+	}
+	
 	protected MarketAPI addMarketToEntity(SectorEntityToken entity, EntityData data, String factionId)
 	{
 		// don't make the markets too big; they'll screw up the economy big time
@@ -441,26 +465,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		// seed the market with some stuff to prevent initial shortage
 		// because the vanilla one is broken for some reason
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "green_crew", 0.45f, 0.55f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "regular_crew", 0.45f, 0.55f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "veteran_crew", 0.1f, 0.2f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "marines", 0.8f, 1.0f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "supplies", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "fuel", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "food", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "domestic_goods", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "luxury_goods", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "heavy_machinery", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "metals", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "rare_metals", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "ore", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "rare_ore", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "organics", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "volatiles", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "hand_weapons", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "drugs", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "organs", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(newMarket, "lobster", 0.7f, 0.8f);
+		addStartingMarketCommodities(newMarket);
 		//if (marketSize >= 4)
 		//	ExerelinUtilsCargo.addCommodityStockpile(newMarket, "agent", marketSize);
 		
@@ -471,7 +476,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return newMarket;
 	}
 		
-	public void addOmnifactory()
+	protected void addOmnifactory()
 	{
 		if (!ExerelinSetupData.getInstance().omnifactoryPresent) return;
 
@@ -537,7 +542,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		OmniFac.initOmnifactory(omnifac);
 	}
 	
-	public void addPrismMarket()
+	protected void addPrismMarket()
 	{
 		if (!ExerelinSetupData.getInstance().prismMarketPresent) return;
 		
@@ -593,26 +598,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		market.setBaseSmugglingStabilityValue(0);
 		
-		ExerelinUtilsCargo.addCommodityStockpile(market, "green_crew", 0.45f, 0.55f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "regular_crew", 0.45f, 0.55f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "veteran_crew", 0.1f, 0.2f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "marines", 0.8f, 1.0f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "supplies", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "fuel", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "food", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "domestic_goods", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "luxury_goods", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "heavy_machinery", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "metals", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "rare_metals", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "ore", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "rare_ore", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "organics", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "volatiles", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "hand_weapons", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "drugs", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "organs", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "lobster", 0.7f, 0.8f);
+		addStartingMarketCommodities(market);
 		
 		market.getTariff().modifyFlat("default_tariff", 0.2f);
 		market.getTariff().modifyMult("isFreeMarket", 0.5f);
