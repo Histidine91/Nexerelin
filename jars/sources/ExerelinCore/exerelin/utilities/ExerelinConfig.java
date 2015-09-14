@@ -83,7 +83,9 @@ public class ExerelinConfig
     public static float factionRespawnInterval = 30f;
     public static boolean countPiratesForVictory = true;
     public static boolean ownFactionCustomsInspections = false;
+	public static boolean enableAvesta = true;
     public static int directoryDialogKey = 32;  // D
+	
 
     public static void loadSettings()
     {
@@ -140,6 +142,7 @@ public class ExerelinConfig
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
+			enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
             
             corvusMode = settings.optBoolean("corvusMode", corvusMode);

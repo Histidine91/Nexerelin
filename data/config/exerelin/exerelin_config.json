@@ -60,6 +60,8 @@
     "warmongerPenalty": true,   # take reputation hit from starting a war?
     
     "countPiratesForVictory": true,
+    
+    "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (non-Corvus mode only)
 
     # CASE SENSITIVE!!!
     # note factions will still not appear if set to unplayable in config

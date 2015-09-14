@@ -613,6 +613,59 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		prismEntity.setCustomDescriptionId("exerelin_prismFreeport");
 	}
 	
+	protected void addAvestaStation(StarSystemAPI system)
+	{
+		SectorEntityToken avestaEntity;
+		
+		if (ExerelinSetupData.getInstance().numSystems == 1)
+		{
+			SectorEntityToken toOrbit = system.getStar();
+			float radius = toOrbit.getRadius();
+			float orbitDistance = radius + MathUtils.getRandomNumberInRange(2000, 2500);
+			avestaEntity = toOrbit.getContainingLocation().addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
+			avestaEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, getDensity(toOrbit)));
+		}
+		else
+		{
+			LocationAPI hyperspace = Global.getSector().getHyperspace();
+			SectorEntityToken toOrbit = system.getHyperspaceAnchor();
+			avestaEntity = hyperspace.addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
+			avestaEntity.setCircularOrbitWithSpin(toOrbit, MathUtils.getRandomNumberInRange(0, 360), 5000, 60, 30, 30);
+		}
+		
+		/*
+		EntityData data = new EntityData(null);
+		data.name = "Prism Freeport";
+		data.type = EntityType.STATION;
+		data.forceMarketSize = 4;
+		
+		MarketAPI market = addMarketToEntity(avestaEntity, data, "independent");
+		*/
+
+		MarketAPI market = Global.getFactory().createMarket("exipirated_avesta" + "_market", "Avesta Station", 4);
+		market.setFactionId("exipirated");
+		market.addCondition(Conditions.POPULATION_4);
+		market.addCondition(Conditions.URBANIZED_POLITY);
+		market.addCondition(Conditions.ORGANIZED_CRIME);
+		market.addCondition(Conditions.STEALTH_MINEFIELDS);
+		market.addCondition(Conditions.HEADQUARTERS);
+		market.addCondition(Conditions.OUTPOST);
+		market.addCondition(Conditions.FREE_PORT);
+		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
+		market.addSubmarket("exipirated_avesta_market");
+		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
+		market.setBaseSmugglingStabilityValue(0);
+		
+		addStartingMarketCommodities(market);
+		
+		market.getTariff().modifyFlat("default_tariff", 0.2f);
+		market.getTariff().modifyMult("isFreeMarket", 0.5f);
+		market.setPrimaryEntity(avestaEntity);
+		avestaEntity.setMarket(market);
+		avestaEntity.setFaction("exipirated");
+		Global.getSector().getEconomy().addMarket(market);
+	}
+	
 	void generateSSPSector(SectorAPI sector)
 	{
 		new SSP_Askonia().generate(sector);
@@ -1017,6 +1070,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
 			plugin.setPlayerPaidToUnlock(true);
+			
+			if (alignedFactionId.equals("exipirated") && ExerelinConfig.enableAvesta)
+				addAvestaStation(homeworld.starSystem);
 		}
 		
 		Collections.shuffle(habitablePlanets);
@@ -1031,7 +1087,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				hqsSpawned = true;
 			}
 			String factionId = factionPicker.pickAndRemove();
-			if (!hqsSpawned) habitable.isHQ = true;
+			if (!hqsSpawned) 
+			{
+				habitable.isHQ = true;
+				if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
+					addAvestaStation(habitable.starSystem);
+			}
 			addMarketToEntity(habitable.entity, habitable, factionId);
 			
 			// assign relay
