@@ -7,16 +7,18 @@ import exerelin.utilities.ExerelinConfig;
 
 // stupid private variables in parent class
 public class ExerelinCustomsInspectionEvent extends CustomsInspectionEvent {
-	        
+            
     @Override
     public void startEvent() {
         //String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-        log.info("Customs inspection event starting");
+        
         if (faction != null)    // I haven't been able to properly test this yet so this is for safety
         {
             String factionId = faction.getId();
+            log.info("Customs inspection event starting: faction " + factionId);
+            
             boolean blockOwnFaction = factionId.equals("player_npc");
-            if (ExerelinConfig.ownFactionCustomsInspections)
+            if (!ExerelinConfig.ownFactionCustomsInspections)
             {
                 blockOwnFaction = blockOwnFaction || factionId.equals(PlayerFactionStore.getPlayerFactionId());
             }
