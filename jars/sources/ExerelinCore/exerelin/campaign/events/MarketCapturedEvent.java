@@ -98,7 +98,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	
 	@Override
 	public String getEventName() {
-		return (newOwner.getDisplayName() + " captures " + market.getName());
+		return (Misc.ucFirst(newOwner.getDisplayName()) + " captures " + market.getName());
 	}
 	
 	@Override

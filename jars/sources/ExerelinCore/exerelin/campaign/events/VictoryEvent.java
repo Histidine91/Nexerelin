@@ -59,7 +59,7 @@ public class VictoryEvent extends BaseEventPlugin {
 	@Override
 	public String getEventName() {
 		FactionAPI victorFaction = Global.getSector().getFaction(victorFactionId);
-		return (victorFaction.getDisplayName() + " victory");
+		return (Misc.ucFirst(victorFaction.getDisplayName()) + " victory");
 	}
 	
 	@Override

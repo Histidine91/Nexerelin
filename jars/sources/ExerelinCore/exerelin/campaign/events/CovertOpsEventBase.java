@@ -81,7 +81,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 
 	@Override
 	public String getEventName() {
-		return (agentFaction.getEntityNamePrefix() + " covert action against " + faction.getEntityNamePrefix());
+		return (Misc.ucFirst(agentFaction.getEntityNamePrefix()) + " covert action against " + faction.getEntityNamePrefix());
 	}
 	
 	/*

@@ -72,7 +72,7 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 
 	@Override
 	public String getEventName() {
-		return (defeatedFaction.getDisplayName() + " driven from Exerelin");
+		return (Misc.ucFirst(defeatedFaction.getDisplayName()) + " driven from Exerelin");
 	}
 	
 	@Override
