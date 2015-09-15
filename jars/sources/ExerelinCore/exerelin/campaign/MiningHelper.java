@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.combat.WeaponAPI.AIHints;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
 import com.fs.starfarer.api.fleet.CrewCompositionAPI;
@@ -18,6 +19,7 @@ import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.utilities.ExerelinUtilsShip;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class MiningHelper {
 	protected static float baseCacheChance = 0.1f;
 	protected static float baseAccidentChance = 1;
 	protected static float baseAccidentCRLoss = 0.1f;
+	//protected static float baseAccidentSupplyLoss = 12.5f;
 	protected static float baseAccidentHullDamage = 500;
 	protected static float xpPerMiningStrength = 10;
 	protected static final Map<String, Float> miningWeapons = new HashMap<>();
@@ -365,7 +368,14 @@ public class MiningHelper {
 				else if (Math.random() < 0.4f)
 				{
 					FleetMemberAPI fm = picker.pick();
+					//float crLost = baseAccidentSupplyLoss * ExerelinUtilsShip.getCRPerSupplyUnit(fm, true);
+					//crLost *= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 					float crLost = baseAccidentCRLoss * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+					HullSize size = fm.getHullSpec().getHullSize();
+					if (size == HullSize.DESTROYER) crLost *= 0.75f;
+					else if (size == HullSize.CRUISER) crLost *= 0.5f;
+					else if (size == HullSize.CAPITAL_SHIP) crLost *= 0.25f;
+					
 					fm.getRepairTracker().applyCREvent(-crLost, StringHelper.getString("exerelin_mining", "miningAccident"));
 					accident.crLost.put(fm, crLost);
 				}
