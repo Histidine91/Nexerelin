@@ -666,7 +666,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		Global.getSector().getEconomy().addMarket(market);
 	}
 	
-	void generateSSPSector(SectorAPI sector)
+	protected void generateSSPSector(SectorAPI sector)
 	{
 		new SSP_Askonia().generate(sector);
 		new SSP_Eos().generate(sector);
@@ -689,7 +689,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		coreLabel.setFixedLocation(17000, -6000);
 	}
 	
-	public void generateVanillaSector(SectorAPI sector)
+	protected void generateVanillaSector(SectorAPI sector)
 	{
 		StarSystemAPI system = sector.createStarSystem("Corvus");
 		system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
@@ -1151,7 +1151,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 	}
 	
-	public PlanetAPI makeStar(int systemIndex, StarSystemAPI system, boolean isSecondStar)
+	protected PlanetAPI makeStar(int systemIndex, StarSystemAPI system, boolean isSecondStar)
 	{
 		PlanetAPI star;
 		int starType = MathUtils.getRandomNumberInRange(0, 10);
@@ -1231,7 +1231,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return habitableChance;
 	}
 		
-	public void buildSystem(SectorAPI sector, int systemIndex)
+	protected void buildSystem(SectorAPI sector, int systemIndex)
 	{
 		// First we make a star system with random name
 		int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNamesList.size() - 1);
@@ -1703,7 +1703,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		STAR, PLANET, MOON, STATION
 	}
 	
-	static class EntityData {
+	protected static class EntityData {
 		String name;
 		SectorEntityToken entity;
 		String planetType = "";
