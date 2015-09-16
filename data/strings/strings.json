@@ -126,7 +126,7 @@
 		"victory_diplomatic_ally":"Congratulations! You have joined $theFaction and its other allies in controlling the $clusterName cluster!",
 		
 		"defeat_conquest":"Alas, $theFaction has conquered the $clusterName cluster. All your efforts have come to naught.",
-		"defeat_diplomatic":"$TheFaction and its allies now dominate the $clusterName cluster. Unforunately, you are not one of them...",
+		"defeat_diplomatic":"$TheFaction and its allies now dominate the $clusterName cluster. Unfortunately, you are not one of them...",
 		
 		"whatNow":"What now?",
 		"youHaveWon":"You have won a $victoryType victory!",
