@@ -240,6 +240,7 @@ ExerelinNGCListRadicalORI,ExerelinNGCListFactions4,NGCDoesFactionExist rori,,,ex
 ExerelinNGCListSCY,ExerelinNGCListFactions4,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY Nation,
 ExerelinNGCListShadowyards,ExerelinNGCListFactions4,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
 ExerelinNGCListSpire,ExerelinNGCListFactions4,NGCDoesFactionExist spire,,,exerelinNGCJoinSpire:Spire,
+ExerelinNGCListTiandong,ExerelinNGCListFactions4,NGCDoesFactionExist tiandong,,,exerelinNGCJoinTiandong:Tiandong Heavy Industries,
 ExerelinNGCListValkyrians,ExerelinNGCListFactions4,NGCDoesFactionExist valkyrian,,,exerelinNGCJoinValkyrians:Valkyrians,
 ExerelinNGCListModFactions4Back,ExerelinNGCListFactions4,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
@@ -387,6 +388,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinSpire,NewGameOptionSelected,$option == exerelinNGCJoinSpire,"NGCSetPlayerFaction ""spire""
 NGCAddShipAndComplement ""spire_corvette_Standoff""
 AddText ""Added Feldspar-class corvette"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinTiandong,NewGameOptionSelected,$option == exerelinNGCJoinTiandong,"NGCSetPlayerFaction ""tiandong""
+NGCAddShipAndComplement ""tiandong_nanzhong_Standard""
+AddText ""Added Nanzhong-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinValkyrians,NewGameOptionSelected,$option == exerelinNGCJoinValkyrians,"NGCSetPlayerFaction ""valkyrian""
 NGCAddShipAndComplement ""valk_inquisitor_A""
@@ -571,6 +576,7 @@ ExerelinFactionDirectoryListSCY,ExerelinFactionDirectoryList4,IsFactionAlive SCY
 ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList4,IsFactionAlive shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
 ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList4,IsFactionAlive sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
 ExerelinFactionDirectoryListSpire,ExerelinFactionDirectoryList4,IsFactionAlive spire,,,exerelinFactionDirectoryGetSpire:Spire,
+ExerelinFactionDirectoryListTiandong,ExerelinFactionDirectoryList4,IsFactionAlive tiandong,,,exerelinFactionDirectoryGetTiandong:Tiandong,
 ExerelinFactionDirectoryListTriTachyon,ExerelinFactionDirectoryList4,IsFactionAlive tritachyon,,,exerelinFactionDirectoryGetTriTachyon:Tri-Tachyon,
 ExerelinFactionDirectoryListValkyrians,ExerelinFactionDirectoryList4,IsFactionAlive valkyrian,,,exerelinFactionDirectoryGetValkyrians:Valkyrians,
 ExerelinFactionDirectoryList4Back,ExerelinFactionDirectoryList4,,,,exerelinFactionDirectoryMain:Back,
@@ -607,6 +613,7 @@ ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinF
 ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerelinFactionDirectoryGetSindrianDiktat,PrintFactionMarkets sindrian_diktat,,,
 ExerelinFactionDirectoryGetSpire,DialogOptionSelected,$option == exerelinFactionDirectoryGetSpire,PrintFactionMarkets spire,,,
 ExerelinFactionDirectoryGetTemplars,DialogOptionSelected,$option == exerelinFactionDirectoryGetTemplars,PrintFactionMarkets templars,,,
+ExerelinFactionDirectoryGetTiandong,DialogOptionSelected,$option == exerelinFactionDirectoryGetTiandong,PrintFactionMarkets tiandong,,,
 ExerelinFactionDirectoryGetTriTachyon,DialogOptionSelected,$option == exerelinFactionDirectoryGetTriTachyon,PrintFactionMarkets tritachyon,,,
 ExerelinFactionDirectoryGetValkyrians,DialogOptionSelected,$option == exerelinFactionDirectoryGetValkyrians,PrintFactionMarkets valkyrian,,,
 #END MARKET DIRECTORY OPTIONS,,,,,,
@@ -944,3 +951,9 @@ RepIsAtWorst $faction.id NEUTRAL","$marketLeaveTooltip = ""$TheFaction does not 
 $menuState = main 0
 $tradeMode = NONE 0
 FireAll PopulateOptions","While $theFaction are $relAdjective towards you, they do not trust you enough to grant you docking access at $market. You are issued a stern order to leave the system.",,
+,,,,,,
+# Tiandong overrides,,,,,,
+ExerelinFlavorTextMarketTiandongShanghai,TradePanelFlavorText,"$global.tradePanelMode == MARKET
+$faction.id == tiandong
+$tag:shanghai","AddText ""Posh olive-green pillows and scented candles greet you as you enter the grand lobby, a vast entry area for the myriad travellers who journey to Shanghai. A hundred-meter-tall holographic map of the station hovers overhead, illuminating the area in warm light. Ahead, a wide hallway leads to the primary trade center."" textGrayColor
+AddText ""The hallway opens to a large, open bazaar. While the structure is clearly a large warehouse being used as a flea market, in truth it resembles a small city. Market stalls of every shape and size, trading venues, infotainment booths, concession stands, and even a brothel is littered throughout, creating a haphazard series of streets and alleys. Armed Tiandong agents patrol the makeshift roads, breaking up fights and helping the occasional lost quartermaster."" textGrayColor",,,

@@ -157,6 +157,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		stationImages.put("neutrinocorp", new String[] {"neutrino_station_powerplant", "neutrino_station_largeprocessing", "neutrino_station_experimental"} );
 		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
 		stationImages.put("exipirated", new String[] {"exipirated_avesta_station"} );
+		stationImages.put("tiandong", new String[] {"tiandong_outpost"} );
 	}
 	
 	protected void loadBackgrounds()
@@ -674,6 +675,70 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		Global.getSector().getEconomy().addMarket(market);
 	}
 	
+	/*
+	protected void addShanghai(SectorEntityToken toOrbit)
+	{	
+		float radius = toOrbit.getRadius();
+		float orbitDistance = radius + 150;
+		SectorEntityToken shanghaiEntity = toOrbit.getContainingLocation().addCustomEntity("tiandong_shanghai", "Shanghai", "tiandong_shanghai", "tiandong");
+		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, getDensity(toOrbit)));
+		
+		//EntityData data = new EntityData(null);
+		//data.name = "Shanghai";
+		//data.type = EntityType.STATION;
+		//data.forceMarketSize = 4;
+		
+		//MarketAPI market = addMarketToEntity(shanghaiEntity, data, "independent");
+
+		MarketAPI market = Global.getFactory().createMarket("tiandong_shanghai" + "_market", "Avesta Station", 4);
+		market.setFactionId("tiandong");
+		market.addCondition(Conditions.POPULATION_5);
+		market.addCondition(Conditions.ORBITAL_STATION);
+		market.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
+		for (int i=0;i<6; i++)
+			market.addCondition(Conditions.ORE_COMPLEX);
+		market.addCondition(Conditions.ORE_REFINING_COMPLEX);
+		market.addCondition(Conditions.ORE_REFINING_COMPLEX);
+		market.addCondition(Conditions.TRADE_CENTER);
+		market.addCondition(Conditions.SHIPBREAKING_CENTER);
+		
+		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
+		market.addSubmarket(Submarkets.GENERIC_MILITARY);
+		market.addSubmarket("tiandong_retrofit");
+		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
+		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
+		market.setBaseSmugglingStabilityValue(0);
+		
+		addStartingMarketCommodities(market);
+		
+		market.getTariff().modifyFlat("default_tariff", 0.2f);
+		market.setPrimaryEntity(shanghaiEntity);
+		shanghaiEntity.setMarket(market);
+		shanghaiEntity.setFaction("tiandong");
+		Global.getSector().getEconomy().addMarket(market);
+		toOrbit.addTag("shanghai");
+		shanghaiEntity.addTag("shanghai");
+		shanghaiEntity.setCustomDescriptionId("tiandong_shanghai");
+	}
+	*/
+	
+	protected void addShanghai(MarketAPI market)
+	{
+		SectorEntityToken toOrbit = market.getPrimaryEntity();
+		float radius = toOrbit.getRadius();
+		float orbitDistance = radius + 150;
+		SectorEntityToken shanghaiEntity = toOrbit.getContainingLocation().addCustomEntity("tiandong_shanghai", "Shanghai", "tiandong_shanghai", "tiandong");
+		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, getDensity(toOrbit)));
+		
+		shanghaiEntity.setMarket(market);
+		if (!market.hasCondition(Conditions.ORBITAL_STATION)) 
+			market.addCondition(Conditions.ORBITAL_STATION);
+		market.addSubmarket("tiandong_retrofit");
+		toOrbit.addTag("shanghai");
+		shanghaiEntity.addTag("shanghai");
+		shanghaiEntity.setCustomDescriptionId("tiandong_shanghai");
+	}
+	
 	protected void generateSSPSector(SectorAPI sector)
 	{
 		new SSP_Askonia().generate(sector);
@@ -1081,6 +1146,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			if (alignedFactionId.equals("exipirated") && ExerelinConfig.enableAvesta)
 				addAvestaStation(homeworld.starSystem);
+			if (alignedFactionId.equals("tiandong") && ExerelinConfig.enableShanghai)
+				addShanghai(homeMarket);
 		}
 		
 		Collections.shuffle(habitablePlanets);
@@ -1100,6 +1167,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				habitable.isHQ = true;
 				if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
 					addAvestaStation(habitable.starSystem);
+				if (factionId.equals("tiandong") && ExerelinConfig.enableShanghai)
+					addShanghai(habitable.market);
 			}
 			addMarketToEntity(habitable.entity, habitable, factionId);
 			

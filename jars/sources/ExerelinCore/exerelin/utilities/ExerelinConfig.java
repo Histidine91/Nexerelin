@@ -84,6 +84,7 @@ public class ExerelinConfig
     public static boolean countPiratesForVictory = true;
     public static boolean ownFactionCustomsInspections = false;
 	public static boolean enableAvesta = true;
+	public static boolean enableShanghai = true;
     public static int directoryDialogKey = 32;  // D
 	
 
@@ -143,6 +144,7 @@ public class ExerelinConfig
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
 			enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
+			enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
             
             corvusMode = settings.optBoolean("corvusMode", corvusMode);

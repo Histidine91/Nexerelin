@@ -7,14 +7,17 @@
 	
 	"miningWeapons":{
 		"miningblaster":10,
-		"mininglaser":1.5
+		"mininglaser":1.5,
+		"tiandong_heavy_mininglaser":5,
 	},
 	"miningShips":{
 		"shepherd":10,
 		"SCY_telchine":35,
 		"brdy_gonodactylus":28,
 		"mi_rastrum":6,
-		"junk_pirates_the_reaper":180
+		"junk_pirates_the_reaper":180,
+		"tiandong_chengdu":6,
+		"tiandong_dingjun":6,
 	},
 	"resources":{
 		"default":{

@@ -62,9 +62,13 @@
     "countPiratesForVictory": true,
     
     "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (non-Corvus mode only)
+    "enableShanghai": true,   # adds Shanghai for Tiandong Heavy Industries, attached to homeworld (non-Corvus mode only)
 
     # CASE SENSITIVE!!!
     # note factions will still not appear if set to unplayable in config
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "luddic_church", "pirates", "player_npc", "independent"], # String array
-    "supportedModFactions":["blackrock_driveyards", "bushi", "citadeldefenders", "hiigaran_descendants", "junk_pirates", "mayorate", "neutrinocorp", "oculus", "ori", "rori", "pack", "patnavy", "shadow_industry", "syndicate_asp", "valkyrian", "exigency", "exipirated", "interstellarimperium", "SCY", "diableavionics", "crystanite", "templars", "ptech", "pn_colony", "spire", "darkspire", "new_galactic_order", "firestorm_federation", "metelson"], # String array
+    "supportedModFactions":["blackrock_driveyards", "bushi", "citadeldefenders", "hiigaran_descendants", "junk_pirates", "mayorate", "neutrinocorp",
+                            "oculus", "ori", "rori", "pack", "patnavy", "shadow_industry", "syndicate_asp", "valkyrian", "exigency", "exipirated",
+                            "interstellarimperium", "SCY", "diableavionics", "crystanite", "templars", "ptech", "pn_colony", "spire", "darkspire",
+                            "new_galactic_order", "firestorm_federation", "metelson", "tiandong"], # String array
 }

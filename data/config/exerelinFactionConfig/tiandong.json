@@ -1,0 +1,29 @@
+{
+    "uniqueModClassName":"data.scripts.TiandongModPlugin", # String
+    "playableFaction":"true", # Boolean
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
+
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Splinter Group", # String
+
+    "asteroidMiningFleetName":"Mining Fleet", # String
+    "gasMiningFleetName":"Gas Fleet", # String
+    "logisticsFleetName":"Logistics Convoy", # String
+    "invasionFleetName":"Invasion Fleet", # String
+    "commandFleetName":"Command Fleet", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":["citadeldefenders"], # String array
+    
+    "alignments":{
+        "corporate":1,
+        "technocratic":-0.5,
+    },
+    
+    "miningVariantsOrWings":["shepherd_Frontier", "tiandong_armoredminingdrone_wing"]
+}
