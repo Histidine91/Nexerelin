@@ -131,7 +131,7 @@
 		{
 			"name":"ore_refining_complex",
 			"cost":150,
-			"archetypes":{"ore":1.5,"manufacturing":3,"heavy_industry":2,"mixed":1},
+			"archetypes":{"ore":2,"manufacturing":3.5,"heavy_industry":2.5,"mixed":1.5},
 			"minSize":3,
 		},
 		{
