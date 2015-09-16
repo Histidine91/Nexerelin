@@ -168,8 +168,8 @@
 		},
 		{
 			"name":"antimatter_fuel_production",
-			"cost":300,
-			"archetypes":{"manufacturing":2.5,"heavy_industry":5,"mixed":1},
+			"cost":350,
+			"archetypes":{"manufacturing":2,"heavy_industry":4,"mixed":1},
 			"minSize":4,
 		},
 		{
