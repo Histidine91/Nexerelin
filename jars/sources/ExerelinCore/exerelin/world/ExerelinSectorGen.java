@@ -58,6 +58,7 @@ import java.util.Set;
 import org.lazywizard.lazylib.CollectionUtils;
 import org.lazywizard.lazylib.CollectionUtils.CollectionFilter;
 import org.lazywizard.lazylib.MathUtils;
+import org.lazywizard.lazylib.campaign.orbits.EllipticalOrbit;
 import org.lazywizard.omnifac.OmniFac;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -630,7 +631,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			LocationAPI hyperspace = Global.getSector().getHyperspace();
 			SectorEntityToken toOrbit = system.getHyperspaceAnchor();
 			avestaEntity = hyperspace.addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
-			avestaEntity.setCircularOrbitWithSpin(toOrbit, MathUtils.getRandomNumberInRange(0, 360), 5000, 60, 30, 30);
+			//avestaEntity.setCircularOrbitWithSpin(toOrbit, MathUtils.getRandomNumberInRange(0, 360), 5000, 60, 30, 30);
+			float ellipseMult = MathUtils.getRandomNumberInRange(1.4f, 1.8f);
+			float orbitDist = 4500;
+			float majorAxis = orbitDist * ellipseMult;
+			float minorAxis = orbitDist * (2 - ellipseMult);
+			float period = getOrbitalPeriod(500, orbitDist, 2);
+			avestaEntity.setOrbit(new EllipticalOrbit(toOrbit, MathUtils.getRandomNumberInRange(0, 360), 
+					majorAxis, minorAxis, MathUtils.getRandomNumberInRange(0, 360), period));
 		}
 		
 		/*
