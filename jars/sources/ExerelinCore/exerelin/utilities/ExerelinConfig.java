@@ -20,10 +20,6 @@ public class ExerelinConfig
     public static int minimumStations = 0;
     public static int minimumAsteroidBelts = 0;
 
-    // Resourcing
-    public static String fleetCostResource = "supplies";
-    public static int miningAmountPerDayPerMiner = 50;
-
     // Player settings
     public static float playerBaseSalary = 5000f;
     public static float playerSalaryIncrementPerLevel = 1000f;
@@ -99,8 +95,6 @@ public class ExerelinConfig
             minimumPlanets = settings.optInt("minimumPlanets");
             minimumStations = settings.optInt("minimumStations");
             minimumAsteroidBelts = settings.optInt("minimumAsteroidBelts");
-
-            fleetCostResource = settings.optString("fleetCostResource");
 
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary",  playerBaseSalary);
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel", playerSalaryIncrementPerLevel);
