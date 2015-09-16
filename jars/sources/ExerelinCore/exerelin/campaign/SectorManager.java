@@ -395,6 +395,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 }
             }
         }
+		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
         checkForVictory();
     }
     
