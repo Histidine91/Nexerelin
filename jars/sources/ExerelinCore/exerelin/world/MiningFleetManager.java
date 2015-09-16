@@ -246,6 +246,11 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		data.put(MANAGER_MAP_KEY, miningFleetManager);
 		return miningFleetManager;
 	}
+	
+	public static MiningFleetManager getFleetManager()
+	{
+		return miningFleetManager;
+	}
   
 	@Override
 	public boolean isDone()
