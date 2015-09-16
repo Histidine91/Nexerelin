@@ -296,6 +296,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             seenFactions.add(factionId);
             factionsToNotify.add(factionId);
         }
+		if (factionsToNotify.isEmpty()) return;
         //log.info("Selling " + numSlavesRecentlySold + " slaves; rep penalty for each is " + ExerelinConfig.prisonerSlaveRepValue);
         float repPenalty = ExerelinConfig.prisonerSlaveRepValue * numSlavesRecentlySold;
         
