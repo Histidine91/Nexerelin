@@ -1212,9 +1212,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else 
 		{
-			size = size * 0.75f;
+			size = Math.min(size * 0.75f, system.getStar().getRadius()*0.8f);
 			
-			int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNamesList.size() - 1);
+			//int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNamesList.size() - 1);
 			String name = system.getBaseName() + " B";	//possibleSystemNamesList.get(systemNameIndex);
 			//possibleSystemNamesList.remove(systemNameIndex);
 			
@@ -1330,7 +1330,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		starData.entity = star;
 		starData.type = EntityType.STAR;
 		
-		boolean isBinary = Math.random() < BINARY_SYSTEM_CHANCE;
+		boolean isBinary = (Math.random() < BINARY_SYSTEM_CHANCE) && (!star.getTypeId().equals("star_dark"));
 		if (isBinary)
 		{
 			star2 = makeStar(systemIndex, system, true);
