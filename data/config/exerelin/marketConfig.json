@@ -131,13 +131,13 @@
 		{
 			"name":"ore_refining_complex",
 			"cost":150,
-			"archetypes":{"ore":2,"manufacturing":3.5,"heavy_industry":2.5,"mixed":1.5},
+			"archetypes":{"ore":2,"manufacturing":3.5,"heavy_industry":1.5,"mixed":1.5},
 			"minSize":3,
 		},
 		{
 			"name":"light_industrial_complex",
 			"cost":300,
-			"archetypes":{"default":0.5,"manufacturing":3.5,"heavy_industry":2.5,"mixed":1},
+			"archetypes":{"default":0.5,"manufacturing":3,"heavy_industry":1,"mixed":1},
 			"minSize":3,
 			"allowDuplicates":false,
 		},
