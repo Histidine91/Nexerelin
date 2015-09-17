@@ -137,7 +137,7 @@
 		{
 			"name":"light_industrial_complex",
 			"cost":300,
-			"archetypes":{"default":0.5,"manufacturing":3,"heavy_industry":1,"mixed":1},
+			"archetypes":{"default":0.5,"manufacturing":2.5,"heavy_industry":1,"mixed":0.75},
 			"minSize":3,
 			"allowDuplicates":false,
 		},
