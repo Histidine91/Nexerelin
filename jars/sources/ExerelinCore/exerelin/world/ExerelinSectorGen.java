@@ -1165,15 +1165,19 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				hqsSpawned = true;
 			}
 			String factionId = factionPicker.pickAndRemove();
+			
 			if (!hqsSpawned) 
 			{
 				habitable.isHQ = true;
 				if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
 					addAvestaStation(habitable.starSystem);
+			}
+			addMarketToEntity(habitable.entity, habitable, factionId);
+			if (!hqsSpawned) 
+			{
 				if (factionId.equals("tiandong") && ExerelinConfig.enableShanghai)
 					addShanghai(habitable.market);
 			}
-			addMarketToEntity(habitable.entity, habitable, factionId);
 			
 			// assign relay
 			if (habitable.isCapital)
