@@ -654,12 +654,15 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		MarketAPI market = Global.getFactory().createMarket("exipirated_avesta" + "_market", "Avesta Station", 4);
 		market.setFactionId("exipirated");
 		market.addCondition(Conditions.POPULATION_4);
+		market.addCondition(Conditions.ORBITAL_STATION);
 		market.addCondition(Conditions.URBANIZED_POLITY);
 		market.addCondition(Conditions.ORGANIZED_CRIME);
 		market.addCondition(Conditions.STEALTH_MINEFIELDS);
 		market.addCondition(Conditions.HEADQUARTERS);
 		market.addCondition(Conditions.OUTPOST);
+		market.addCondition(Conditions.TRADE_CENTER);
 		market.addCondition(Conditions.FREE_PORT);
+		market.addCondition("exerelin_recycling_plant");
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		market.addSubmarket("exipirated_avesta_market");
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
