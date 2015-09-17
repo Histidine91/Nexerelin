@@ -10,7 +10,7 @@
     "minimumPlanets": 3, # Integer
     "minimumStations": 3, # Integer
     "minimumAsteroidBelts": 0, # Integer
-
+    "binarySystemChance": 0.2,  # float; about 10% less than listed because dark stars can't form the primary of binary systems
     "playerBaseSalary": 5000, # Double
     "playerSalaryIncrementPerLevel": 1000, # Double
     "playerInsuranceMult": 0.5,

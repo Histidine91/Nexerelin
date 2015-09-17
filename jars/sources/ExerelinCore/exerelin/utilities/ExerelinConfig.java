@@ -19,6 +19,7 @@ public class ExerelinConfig
     public static int minimumPlanets = 2;
     public static int minimumStations = 0;
     public static int minimumAsteroidBelts = 0;
+    public static float binarySystemChance = 0.2f;
 
     // Player settings
     public static float playerBaseSalary = 5000f;
@@ -95,6 +96,7 @@ public class ExerelinConfig
             minimumPlanets = settings.optInt("minimumPlanets");
             minimumStations = settings.optInt("minimumStations");
             minimumAsteroidBelts = settings.optInt("minimumAsteroidBelts");
+            binarySystemChance = (float)settings.optDouble("binarySystemChance", binarySystemChance);
 
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary",  playerBaseSalary);
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel", playerSalaryIncrementPerLevel);

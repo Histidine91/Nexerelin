@@ -108,7 +108,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final Map<String, String[]> stationImages = new HashMap<>();
 	
 	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
-	protected static final float BINARY_SYSTEM_CHANCE = 0.15f;
 	protected static final float BINARY_STAR_DISTANCE = 11000;
 	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
 	
@@ -1337,7 +1336,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		starData.entity = star;
 		starData.type = EntityType.STAR;
 		
-		boolean isBinary = (Math.random() < BINARY_SYSTEM_CHANCE) && (!star.getTypeId().equals("star_dark"));
+		boolean isBinary = (Math.random() < ExerelinConfig.binarySystemChance) && (!star.getTypeId().equals("star_dark"));
 		if (isBinary)
 		{
 			star2 = makeStar(systemIndex, system, true);
