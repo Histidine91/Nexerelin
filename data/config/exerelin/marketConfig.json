@@ -219,7 +219,7 @@
 			"allowDuplicates":false
 		},
 		{
-			"name":"cyrosanctum",
+			"name":"cryosanctum",
 			"special":true,
 			"archetypes":{"default":1},
 			"disallowedPlanets":["desert","jungle","arid"],
