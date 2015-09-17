@@ -13,7 +13,6 @@
 
     "asteroidMiningFleetName":"Miner", # String
     "gasMiningFleetName":"Collecter", # String
-    "logisticsFleetName":"Logistics Fleet", # String
     "invasionFleetName":"Conquest", # String
     "responseFleetName":"Revencher",
     "invasionSupportFleetName":"Destruire", # String

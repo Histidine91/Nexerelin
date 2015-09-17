@@ -11,12 +11,7 @@
     "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Splinter Group", # String
 
-    "asteroidMiningFleetName":"Mining Fleet", # String
-    "gasMiningFleetName":"Gas Fleet", # String
-    "logisticsFleetName":"Logistics Fleet", # String
-    "invasionFleetName":"Invasion Fleet", # String
     "responseFleetName":"Revenge Fleet",
-    "invasionSupportFleetName":"Strike Fleet", # String
     "defenceFleetName":"Guard Fleet",
 
     "positiveDiplomacyExtra":0, # Integer

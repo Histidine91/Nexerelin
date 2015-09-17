@@ -13,8 +13,8 @@
     "asteroidMiningFleetName":"Scavenge Fleet", # String
     "gasMiningFleetName":"Collector Fleet", # String
     "logisticsFleetName":"Perfectly Reasonable Relief", # String
-    "invasionFleetName":"Harassment Unit", # String
-    "commandFleetName":"Eradication Unit", # String
+    "invasionFleetName":"Eradication Unit", # String
+    "invasionSupportFleetName":"Harassment Unit", # String
 
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer

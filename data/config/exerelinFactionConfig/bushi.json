@@ -9,12 +9,6 @@
     "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Rogue AI", # String
 
-    "asteroidMiningFleetName":"Mining Fleet", # String
-    "gasMiningFleetName":"Gas Fleet", # String
-    "logisticsFleetName":"Logistics Convoy", # String
-    "invasionFleetName":"Invasion Fleet", # String
-    "commandFleetName":"Command Fleet", # String
-
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
