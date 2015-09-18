@@ -90,7 +90,7 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                 
                 if (isExiInCorvus)
                 {
-                    String entry = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");
+                    String entry = StringHelper.getString("exerelin_markets", "marketDirectoryEntryNoLocation");
                     entry = StringHelper.substituteToken(entry, "$market", "Tasserus");
                     entry = StringHelper.substituteToken(entry, "$size", "??");
                     text.addParagraph(entry);
