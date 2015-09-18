@@ -154,6 +154,11 @@
 		"valkyrian":{
 			"system":"Enigma",
 			"entity":"enigma_i"
+		},
+		
+		"player_npc":{
+			"system":"Corvus",
+			"entity":"jangala"
 		}
 	}
 }
