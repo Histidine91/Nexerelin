@@ -820,6 +820,80 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		coreLabel.setFixedLocation(17000, -6000);
 	}
 	
+	// teleport player to homeworld at start
+	// FIXME: doesn't get into the save at start
+	protected void applyTeleportScript(String factionId, boolean corvusMode)
+	{
+		log.info("Adding teleport script");
+		SectorAPI sector = Global.getSector();
+		if (corvusMode)
+		{
+			SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(factionId);
+			if (spawnPoint == null) return;
+			
+			// moves player fleet to a suitable location; e.g. Avesta for Association
+			final String HOME_ENTITY = spawnPoint.entityName;
+			if (HOME_ENTITY != null)
+			{
+				EveryFrameScript teleportScript = new EveryFrameScript() {
+					private boolean done = false;
+					private boolean unlockedStorage = false;
+
+					public boolean runWhilePaused() {
+						return false;
+					}
+					public boolean isDone() {
+						return done;
+					}
+					public void advance(float amount) {
+						SectorEntityToken entity = Global.getSector().getEntityById(HOME_ENTITY);
+						if (!unlockedStorage && entity != null)
+						{
+							MarketAPI homeMarket = entity.getMarket();
+							if (homeMarket != null)
+							{
+								StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
+								if (plugin != null)
+								plugin.setPlayerPaidToUnlock(true);
+							}
+							unlockedStorage = true;
+						}
+
+						if (Global.getSector().isInNewGameAdvance()) return;
+						if (entity != null)
+						{
+							Vector2f loc = entity.getLocation();
+							Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
+							done = true;
+						}
+					}
+				};
+				sector.addTransientScript(teleportScript);
+			}	
+		}
+		else if (!ExerelinSetupData.getInstance().freeStart)
+		{
+			EveryFrameScript teleportScript = new EveryFrameScript() {
+				private boolean done = false;
+				public boolean runWhilePaused() {
+					return false;
+				}
+				public boolean isDone() {
+					return done;
+				}
+				public void advance(float amount) {
+					if (Global.getSector().isInNewGameAdvance()) return;
+					
+					SectorEntityToken entity = homeworld.entity;
+					Vector2f loc = entity.getLocation();
+					Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
+					done = true;
+				}
+			};
+			sector.addTransientScript(teleportScript);
+		}
+	}
+	
 	@Override
 	public void generate(SectorAPI sector)
 	{
@@ -976,73 +1050,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 		}
 		
-		log.info("Adding teleport script");
-		// teleport player to homeworld at start
-		// FIXME: doesn't get into the save at start
-		if (corvusMode)
-		{
-			SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(selectedFactionId);
-			if (spawnPoint != null)
-			{
-				// moves player fleet to a suitable location; e.g. Avesta for Association
-				final String HOME_ENTITY = spawnPoint.entityName;
-				EveryFrameScript teleportScript = new EveryFrameScript() {
-					private boolean done = false;
-					private boolean unlockedStorage = false;
-					
-					public boolean runWhilePaused() {
-						return false;
-					}
-					public boolean isDone() {
-						return done;
-					}
-					public void advance(float amount) {
-						SectorEntityToken entity = Global.getSector().getEntityById(HOME_ENTITY);
-						if (!unlockedStorage && entity != null)
-						{
-							MarketAPI homeMarket = entity.getMarket();
-							if (homeMarket != null)
-							{
-								StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
-								if (plugin != null)
-								plugin.setPlayerPaidToUnlock(true);
-							}
-							unlockedStorage = true;
-						}
-						
-						if (Global.getSector().isInNewGameAdvance()) return;
-						if (entity != null)
-						{
-							Vector2f loc = entity.getLocation();
-							Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
-							done = true;
-						}
-					}
-				};
-				sector.addTransientScript(teleportScript);
-			}
-		}
-		else if (!ExerelinSetupData.getInstance().freeStart)
-		{
-			EveryFrameScript teleportScript = new EveryFrameScript() {
-				private boolean done = false;
-				public boolean runWhilePaused() {
-					return false;
-				}
-				public boolean isDone() {
-					return done;
-				}
-				public void advance(float amount) {
-					if (Global.getSector().isInNewGameAdvance()) return;
-
-					SectorEntityToken entity = homeworld.entity;
-					Vector2f loc = entity.getLocation();
-					Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
-					done = true;
-				}
-			};
-			sector.addTransientScript(teleportScript);
-		}
+		applyTeleportScript(selectedFactionId, corvusMode);
 		
 		//sector.setRespawnLocation(homeworld.starSystem);
 		//sector.getRespawnCoordinates().set(homeworld.entity.getLocation().x, homeworld.entity.getLocation().y);
