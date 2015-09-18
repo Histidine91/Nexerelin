@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
@@ -852,9 +853,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 							MarketAPI homeMarket = entity.getMarket();
 							if (homeMarket != null)
 							{
-								StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
-								if (plugin != null)
-								plugin.setPlayerPaidToUnlock(true);
+								SubmarketAPI storage = homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE);
+								if (storage != null)
+								{
+									StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
+									if (plugin != null)
+										plugin.setPlayerPaidToUnlock(true);
+								}
 							}
 							unlockedStorage = true;
 						}
