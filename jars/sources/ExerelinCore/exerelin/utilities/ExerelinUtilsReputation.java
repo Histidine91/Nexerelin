@@ -60,6 +60,7 @@ public class ExerelinUtilsReputation
 	public static void syncFactionRelationshipToPlayer(String factionIdToSync, String otherFactionId)
 	{
 		if (otherFactionId.equals("player_npc")) return;
+		if (otherFactionId.equals("merc_hostile") && !factionIdToSync.equals("merc_hostile")) return;
 		
 		SectorAPI sector = Global.getSector();	
 		FactionAPI playerFaction = sector.getFaction("player");
@@ -119,6 +120,7 @@ public class ExerelinUtilsReputation
 					AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", otherFactionId);
 			}
 		}
+		Global.getSector().getFaction(Factions.PLAYER).setRelationship("merc_hostile", -1);
 		SectorManager.checkForVictory();
 	}
 	
