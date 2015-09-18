@@ -753,6 +753,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             pirates.setRelationship(path.getId(), RepLevel.HOSTILE);
             pirates.setRelationship(independent.getId(), RepLevel.HOSTILE);
             pirates.setRelationship(diktat.getId(), RepLevel.HOSTILE);
+            pirates.setRelationship("player_npc", -0.65f);
 
             church.setRelationship(kol.getId(), RepLevel.COOPERATIVE);
             church.setRelationship(path.getId(), RepLevel.SUSPICIOUS);
