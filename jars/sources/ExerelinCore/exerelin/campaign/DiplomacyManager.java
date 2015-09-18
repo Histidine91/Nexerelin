@@ -757,12 +757,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             church.setRelationship(kol.getId(), RepLevel.COOPERATIVE);
             church.setRelationship(path.getId(), RepLevel.SUSPICIOUS);
             path.setRelationship(kol.getId(), RepLevel.FAVORABLE);
-
-            if (sector.getFaction("merc_hostile") != null)
-            {
-                independent.setRelationship("merc_hostile", 1f);
-                playerFac.setRelationship("merc_hostile", -1f);
-            }
         }
         else
         {
@@ -850,15 +844,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     }
                 }
             }
-			
-			// bounty hunters hostile to player
-			FactionAPI bountyHunters = sector.getFaction("merc_hostile");
-			if (bountyHunters != null)
-            {
-				bountyHunters.setRelationship(Factions.INDEPENDENT, 1f);
-                bountyHunters.setRelationship(Factions.PLAYER, -1f);
-            }
-
+            
             // Templars just plain hate everyone
             FactionAPI templars = sector.getFaction("templars");
             if (templars != null)
@@ -890,6 +876,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 }
             }
         }
+        
+        FactionAPI bountyHunters = sector.getFaction("merc_hostile");
+        if (bountyHunters != null)
+        {
+            bountyHunters.setRelationship(Factions.INDEPENDENT, 1f);
+            bountyHunters.setRelationship(Factions.PLAYER, -1f);
+            bountyHunters.setRelationship("player_npc", -1f);
+        }
+        
         player.setRelationship("player_npc", 1f);
          // set player relations based on selected faction
         PlayerFactionStore.saveIndependentPlayerRelations();
