@@ -1013,14 +1013,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(new CoreScript());
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		
-		// SS+ mod plugin already has this covered
-		if (corvusMode && ExerelinUtils.isSSPInstalled())
-		{
-			//SSP_EventProbabilityManager probabilityManager = new SSP_EventProbabilityManager();
-			//sector.getPersistentData().put("ssp_eventProbabilityManager", probabilityManager);
-			//sector.addScript(probabilityManager);
-		}
-		else
+		if (!ExerelinUtils.isSSPInstalled())
 		{
 			sector.addScript(new CoreEventProbabilityManager());
 		}
