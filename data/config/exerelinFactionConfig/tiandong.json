@@ -19,5 +19,5 @@
         "technocratic":-0.5,
     },
     
-    "miningVariantsOrWings":["shepherd_Frontier", "tiandong_armoredminingdrone_wing"]
+    "miningVariantsOrWings":["shepherd_Frontier", "tiandong_armoredminingdrone_wing", "tiandong_chengdu_Standard", "tiandong_chengdu_Assault"]
 }
