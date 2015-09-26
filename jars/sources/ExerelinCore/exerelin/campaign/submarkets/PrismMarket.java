@@ -234,7 +234,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
 	@Override
 	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
 		if (ExerelinConfig.prismRenewBossShips) return;
-		if (transaction.getSubmarket() != this) return;
 		List<ShipSaleInfo> shipsBought = transaction.getShipsBought();
 		for (ShipSaleInfo saleInfo : shipsBought)
 		{
