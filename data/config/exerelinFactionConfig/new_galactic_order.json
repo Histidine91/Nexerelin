@@ -1,6 +1,8 @@
 {
     "uniqueModClassName":"data.scripts.NGOModPlugin", # String
     "playableFaction":"true", # Boolean
+    "corvusCompatible":true,
+    
     "isPirateNeutral":"false", # Boolean
     "spawnPiratesAndMercs":"false",
 

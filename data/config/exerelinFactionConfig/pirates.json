@@ -1,6 +1,8 @@
 {
     "uniqueModClassName":"", # String
     "playableFaction":"true", # Boolean
+    "corvusCompatible":true,
+    
     "spawnPatrols":"true",
     "spawnPiratesAndMercs":"false",
 

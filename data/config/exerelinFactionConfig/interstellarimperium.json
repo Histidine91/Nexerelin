@@ -1,6 +1,8 @@
 {
     "uniqueModClassName":"data.scripts.IIModPlugin", # String
     "playableFaction":"true", # Boolean
+    "corvusCompatible":true,
+    
     "isPirateNeutral":"false", # Boolean
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0

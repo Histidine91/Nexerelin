@@ -23,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.ExerelinCorvusLocations;
 import data.scripts.world.ExerelinCorvusLocations.SpawnPointEntry;
@@ -50,6 +51,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsCargo;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.ExerelinMarketSetup.MarketArchetype;
 import java.util.Collections;
 import java.util.HashMap;
@@ -823,58 +825,75 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	// teleport player to homeworld at start
 	// FIXME: doesn't get into the save at start
-	protected void applyTeleportScript(String factionId, boolean corvusMode)
+	protected void applyTeleportScript(final String factionId, boolean corvusMode)
 	{
 		log.info("Adding teleport script");
 		SectorAPI sector = Global.getSector();
+		
 		if (corvusMode)
 		{
-			SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(factionId);
-			if (spawnPoint == null) return;
-			
 			// moves player fleet to a suitable location; e.g. Avesta for Association
-			final String HOME_ENTITY = spawnPoint.entityName;
-			if (HOME_ENTITY != null)
-			{
-				EveryFrameScript teleportScript = new EveryFrameScript() {
-					private boolean done = false;
-					private boolean unlockedStorage = false;
-
-					public boolean runWhilePaused() {
-						return false;
+			EveryFrameScript teleportScript = new EveryFrameScript() {
+				private boolean done = false;
+				SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(factionId);
+				String homeEntity = null;
+				SectorEntityToken entity = null;
+	
+				public boolean runWhilePaused() {
+					return false;
+				}
+				public boolean isDone() {
+					return done;
+				}
+				public void advance(float amount) 
+				{
+					if (Global.getSector().isInNewGameAdvance()) return;
+					if (ExerelinUtilsFaction.isCorvusCompatible(factionId, false) && spawnPoint != null)
+					{
+						homeEntity = spawnPoint.entityName;
+						if (homeEntity != null)
+							entity = Global.getSector().getEntityById(homeEntity);
 					}
-					public boolean isDone() {
-						return done;
-					}
-					public void advance(float amount) {
-						SectorEntityToken entity = Global.getSector().getEntityById(HOME_ENTITY);
-						if (!unlockedStorage && entity != null)
+					if (entity != null)
+					{
+						Vector2f loc = entity.getLocation();
+						Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
+						MarketAPI homeMarket = entity.getMarket();
+						if (homeMarket != null)
 						{
-							MarketAPI homeMarket = entity.getMarket();
-							if (homeMarket != null)
+							// unlock storage
+							SubmarketAPI storage = homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE);
+							if (storage != null)
 							{
-								SubmarketAPI storage = homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE);
-								if (storage != null)
-								{
-									StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
-									if (plugin != null)
-										plugin.setPlayerPaidToUnlock(true);
-								}
+								StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
+								if (plugin != null)
+									plugin.setPlayerPaidToUnlock(true);
 							}
-							unlockedStorage = true;
-						}
-
-						if (Global.getSector().isInNewGameAdvance()) return;
-						if (entity != null)
-						{
-							Vector2f loc = entity.getLocation();
-							Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
-							done = true;
 						}
 					}
-				};
-				sector.addTransientScript(teleportScript);
-			}	
+					// check that all factions support Corvus mode; warn player if not
+					int numIncompatibles = 0;
+					for (FactionAPI faction : Global.getSector().getAllFactions())
+					{
+						if (!ExerelinUtilsFaction.isCorvusCompatible(faction.getId(), true))
+						{
+							log.warn("Faction " + faction.getDisplayName() + " does not support Corvus mode!");
+							numIncompatibles++;
+						}
+					}
+					if (numIncompatibles > 0)
+					{
+						Color color = Misc.getHighlightColor();
+						Color color2 = Color.RED;
+						CampaignUIAPI ui = Global.getSector().getCampaignUI();
+						ui.addMessage("You are using " + numIncompatibles + " mod faction(s) that do not support Corvus mode!", color, numIncompatibles+"", color2);
+						ui.addMessage("See starsector.log for details", color);
+					}
+					
+					done = true;
+				}
+			};
+			sector.addTransientScript(teleportScript);
 		}
 		else if (!ExerelinSetupData.getInstance().freeStart)
 		{

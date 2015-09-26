@@ -1,6 +1,8 @@
 {
     "uniqueModClassName":"data.scripts.TEMModPlugin", # String
     "playableFaction":"true", # Boolean
+    "corvusCompatible":true,
+    
     "isPirateNeutral":"false", # Boolean
     "spawnPiratesAndMercs":"false",
 

@@ -1,6 +1,7 @@
 {
     "uniqueModClassName":"", # String
     "playableFaction":"true", # Boolean
+    "corvusCompatible":true,
 
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array

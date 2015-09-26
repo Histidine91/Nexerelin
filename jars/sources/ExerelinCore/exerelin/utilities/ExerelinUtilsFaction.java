@@ -80,4 +80,10 @@ public class ExerelinUtilsFaction {
         return false;
     }
     
+    public static boolean isCorvusCompatible(String factionId, boolean noConfigFallback)
+    {
+        ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+        if (config == null) return noConfigFallback;
+        return config.corvusCompatible;
+    }
 }
