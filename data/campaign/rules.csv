@@ -256,14 +256,27 @@ NGCAddSkillPoints 200
 NGCAddAptitudePoints 10
 NGCSetStartingLocationExerelin
 NGCDone",,,
-ExerelinNGCOwnFaction,NewGameOptionSelected,$option == exerelinNGCOwnFaction,"NGCSetPlayerFaction ""player_npc""
+ExerelinNGCOwnFaction,NewGameOptionSelected,"$option == exerelinNGCOwnFaction
+!$haveSSP","NGCSetPlayerFaction ""player_npc""
 NGCAddShipAndComplement ""monitor_Indie""
 AddText ""Added Monitor-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
-ExerelinNGCFreeStart,NewGameOptionSelected,$option == exerelinNGCFreeStart,"NGCSetPlayerFaction ""player_npc""
+ExerelinNGCFreeStart,NewGameOptionSelected,"$option == exerelinNGCFreeStart
+!$haveSSP","NGCSetPlayerFaction ""player_npc""
 NGCAddShipAndComplement ""monitor_Indie""
 NGCSetFreeStart true
 AddText ""Added Monitor-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCOwnFactionSSP,NewGameOptionSelected,"$option == exerelinNGCOwnFaction
+$haveSSP","NGCSetPlayerFaction ""player_npc""
+NGCAddShipAndComplement ""ssp_alastor_sta""
+AddText ""Added Alastor-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCFreeStartSSP,NewGameOptionSelected,"$option == exerelinNGCFreeStart
+$haveSSP","NGCSetPlayerFaction ""player_npc""
+NGCAddShipAndComplement ""ssp_alastor_sta""
+NGCSetFreeStart true
+AddText ""Added Alastor-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == exerelinNGCJoinHegemony,"NGCSetPlayerFaction ""hegemony""
 NGCAddShipAndComplement ""lasher_Starting""
