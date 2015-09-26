@@ -1,0 +1,48 @@
+{
+    "ssp":[
+        "ssp_boss_afflictor",
+        "ssp_boss_atlas",
+        "ssp_boss_aurora",
+        "ssp_boss_brawler",
+        "ssp_boss_cerberus",
+        "ssp_boss_conquest",
+        "ssp_boss_dominator",
+        "ssp_boss_doom",
+        "ssp_boss_eagle",
+        "ssp_boss_euryale",
+        "ssp_boss_falcon",
+        "ssp_boss_hammerhead",
+        "ssp_boss_heron",
+        "ssp_boss_hound",
+        "ssp_boss_hyperion",
+        "ssp_boss_lasher_b",
+        "ssp_boss_lasher_r",
+        "ssp_boss_medusa",
+        "ssp_boss_mule",
+        "ssp_boss_odyssey",
+        "ssp_boss_onslaught",
+        "ssp_boss_paragon",
+        "ssp_boss_phaeton",
+        "ssp_boss_shade",
+        "ssp_boss_stheno",
+        "ssp_boss_sunder",
+        "ssp_boss_tarsus",
+        "ssp_boss_tempest",
+        
+        "syndicate_asp_boss_copperhead",
+        "junk_pirates_boss_dugong",
+    ],
+    "shadow_industry":[
+        "ms_boss_mimir",
+        "ms_boss_charybdis",
+        "msp_boss_potniaBis",
+    ],
+    "interstellarimperium":[
+        "ii_boss_praetorian",
+        "ii_boss_olympus"
+    ],
+    # not actually a boss ship but it fits
+    "neutrinocorp":[
+        "neutrino_unsung",
+    ]
+}

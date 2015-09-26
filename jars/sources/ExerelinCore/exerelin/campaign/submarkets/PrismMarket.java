@@ -9,7 +9,8 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetDataAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
+import com.fs.starfarer.api.campaign.PlayerMarketTransaction.ShipSaleInfo;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
@@ -20,11 +21,16 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class PrismMarket extends BaseSubmarketPlugin {
     
+	public static final String CONFIG_FILE = "data/config/exerelin/prism_boss_ships.json";
+	
     protected static final int MIN_NUMBER_OF_SHIPS = 5;
     protected static final int MAX_TRIES_WEAPONS = 5;
     
@@ -36,51 +42,35 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public void init(SubmarketAPI submarket) {
         super.init(submarket);
         
-        //initBossShips();
+        loadBossShips();
     }
     
+	public boolean canLoadShips(String factionId)
+	{
+		if (factionId.equals("ssp")) return ExerelinUtils.isSSPInstalled();
+		return Global.getSector().getFaction(factionId) != null;
+	}
+	
     public void loadBossShips()
     {
-        if (sspBossShips == null)
-            sspBossShips = new ArrayList<>();
-        sspBossShips.clear();
-        
-        // this used to be static, but was moved here to help find a crash bug
+        //if (sspBossShips == null)
+        //    sspBossShips = new ArrayList<>();
+        //sspBossShips.clear();
+        		
         try {
-            if (ExerelinUtils.isSSPInstalled())
-            {
-                sspBossShips.add("ssp_boss_aurora");
-                sspBossShips.add("ssp_boss_falcon");
-                sspBossShips.add("ssp_boss_hammerhead");
-                sspBossShips.add("ssp_boss_hyperion");
-                sspBossShips.add("ssp_boss_medusa");
-                sspBossShips.add("ssp_boss_mule");
-                sspBossShips.add("ssp_boss_odyssey");
-                sspBossShips.add("ssp_boss_paragon");
-                sspBossShips.add("ssp_boss_phaeton");
-                sspBossShips.add("ssp_boss_sunder");
-                sspBossShips.add("ssp_boss_tarsus");
-
-                // maybe check for their respective mods as well?
-                sspBossShips.add("syndicate_asp_boss_copperhead");
-                sspBossShips.add("junk_pirates_boss_dugong");
-            }
-            SectorAPI sector = Global.getSector();
-            if (sector.getFaction("shadow_industry") != null)
-            {
-                sspBossShips.add("ms_boss_mimir");
-                sspBossShips.add("ms_boss_charybdis");
-                sspBossShips.add("msp_boss_potniaBis");
-            }
-            if (sector.getFaction("templars") != null)
-            {
-                //sspBossShips.add("tem_boss_paladin");
-            }
-            if (sector.getFaction("interstellarimperium") != null)
-            {
-                sspBossShips.add("ii_boss_praetorian");
-                sspBossShips.add("ii_boss_olympus");
-            }
+			JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
+			Iterator<?> keys = config.keys();
+			while( keys.hasNext() ) {
+                String factionId = (String)keys.next();
+				if (canLoadShips(factionId))
+				{
+					JSONArray ships = config.getJSONArray(factionId);
+					for(int i=0; i<ships.length(); i++)
+					{
+						sspBossShips.add(ships.getString(i));
+					}
+				}
+			}
         } catch (Exception ex) {
             log.error(ex);
         }
@@ -92,7 +82,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         if (!okToUpdateCargo()) return;
         sinceLastCargoUpdate = 0f;
 
-        loadBossShips();
+        //loadBossShips();
         
         CargoAPI cargo = getCargo();
 
@@ -135,13 +125,13 @@ public class PrismMarket extends BaseSubmarketPlugin {
         WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
         rolePicker.add(ShipRoles.CIV_RANDOM, 1f);
         rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1f);
-        rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 1f);
+        rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 2f);
         rolePicker.add(ShipRoles.FREIGHTER_LARGE, 5f);
         rolePicker.add(ShipRoles.TANKER_SMALL, 1f);
         rolePicker.add(ShipRoles.TANKER_MEDIUM, 1f);
-        rolePicker.add(ShipRoles.TANKER_LARGE, 1f);
+        rolePicker.add(ShipRoles.TANKER_LARGE, 2f);
         rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1f);
-        rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1f);
+        rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2f);
         rolePicker.add(ShipRoles.COMBAT_FREIGHTER_LARGE, 5f);
         rolePicker.add(ShipRoles.COMBAT_SMALL, 25f);
         rolePicker.add(ShipRoles.COMBAT_MEDIUM, 30f);
@@ -208,13 +198,16 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 }
             }
         }
-        if (ExerelinConfig.prismSellBossShips && !sspBossShips.isEmpty())
+        if (!sspBossShips.isEmpty())
         {
-            String variantId = (String) ExerelinUtils.getRandomListElement(sspBossShips);
-            variantId += "_Hull";
-            FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
-            member.getRepairTracker().setMothballed(true);
-            getCargo().getMothballedShips().addFleetMember(member);
+            for (int i=0; i<ExerelinConfig.prismNumBossShips; i++)
+            {
+                String variantId = (String) ExerelinUtils.getRandomListElement(sspBossShips);
+                variantId += "_Hull";
+                FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+                member.getRepairTracker().setMothballed(true);
+                getCargo().getMothballedShips().addFleetMember(member);
+            }
         }
     }
 
@@ -237,6 +230,22 @@ public class PrismMarket extends BaseSubmarketPlugin {
         if (action == TransferAction.PLAYER_SELL) return true;
         return false;
     }
+	
+	@Override
+	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
+		if (ExerelinConfig.prismRenewBossShips) return;
+		if (transaction.getSubmarket() != this) return;
+		List<ShipSaleInfo> shipsBought = transaction.getShipsBought();
+		for (ShipSaleInfo saleInfo : shipsBought)
+		{
+			String hullId = saleInfo.getMember().getHullId();
+			if (sspBossShips.contains(hullId))
+			{
+				log.info("Purchased boss ship " + hullId + "; will no longer appear");
+				sspBossShips.remove(hullId);
+			}
+		}
+	}
     
     @Override
     public String getIllegalTransferText(FleetMemberAPI member, TransferAction action) {
