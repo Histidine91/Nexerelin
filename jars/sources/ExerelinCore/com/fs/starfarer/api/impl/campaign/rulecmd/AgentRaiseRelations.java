@@ -29,7 +29,7 @@ public class AgentRaiseRelations extends AgentActionBase {
 		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
 		MarketAPI market = target.getMarket();
 		FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
-		CovertOpsManager.agentRaiseRelations(market, playerAlignedFaction, market.getFaction(), true);
+		result = CovertOpsManager.agentRaiseRelations(market, playerAlignedFaction, market.getFaction(), true);
 		StatsTracker.getStatsTracker().notifyAgentsUsed(1);
 		return super.execute(ruleId, dialog, params, memoryMap);
 	}

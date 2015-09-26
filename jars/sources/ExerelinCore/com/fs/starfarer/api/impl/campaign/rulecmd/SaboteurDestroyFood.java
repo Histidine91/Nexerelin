@@ -17,7 +17,7 @@ import exerelin.campaign.StatsTracker;
 
 public class SaboteurDestroyFood extends AgentActionBase {
 
-        @Override
+	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
                 
@@ -29,7 +29,7 @@ public class SaboteurDestroyFood extends AgentActionBase {
                 SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
                 MarketAPI market = target.getMarket();
                 FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
-                CovertOpsManager.saboteurDestroyFood(market, playerAlignedFaction, market.getFaction(), true);
+                result = CovertOpsManager.saboteurDestroyFood(market, playerAlignedFaction, market.getFaction(), true);
                 StatsTracker.getStatsTracker().notifySaboteursUsed(1);
                 return super.execute(ruleId, dialog, params, memoryMap);
         }

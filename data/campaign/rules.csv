@@ -656,12 +656,12 @@ ExerelinAgentOptionListBack,ExerelinAgentOption,,,,exerelinMarketSpecial:Back,
 ExerelinAgentGatherIntel,DialogOptionSelected,$option == exerelinAgentGatherIntel,"AgentGatherIntel
 FireBest ExerelinAgentPostDeploy",,,
 ExerelinAgentRaiseRelations,DialogOptionSelected,$option == exerelinAgentRaiseRelations,"AgentRaiseRelations
-FireBest ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+FireBest ExerelinAgentPostDeploy",,,
 ExerelinAgentLowerRelations,DialogOptionSelected,$option == exerelinAgentLowerRelations,"AgentLowerRelations
-FireBest ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+FireBest ExerelinAgentPostDeploy",,,
 ExerelinAgentDestabilizeMarket,DialogOptionSelected,"$option == exerelinAgentDestabilizeMarket
 ","AgentDestabilizeMarket
-FireBest ExerelinAgentPostDeploy",The agent has been deployed. They will execute their task momentarily.,,
+FireBest ExerelinAgentPostDeploy",,,
 ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasItem agent,"GetNumSpecialPeople
 FireAll ExerelinAgentOption",,,
 ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasItem agent score:10,"$menuState = main 0
@@ -705,9 +705,9 @@ ExerelinSaboteurOptionListSabotageReserve,ExerelinSaboteurOption,,"SetTooltip ex
 ExerelinSaboteurOptionListDestroyFood,ExerelinSaboteurOption,,"SetTooltip exerelinSaboteurDestroyFood ""Destroys a large amount of food on $market, possibly provoking a destabilizing crisis.""",,exerelinSaboteurDestroyFood:Destroy food stockpiles,
 ExerelinSaboteurOptionListBack,ExerelinSaboteurOption,,,,exerelinMarketSpecial:Back,
 ExerelinSaboteurSabotageReserve,DialogOptionSelected,$option == exerelinSaboteurSabotageReserve,"SaboteurSabotageReserve
-FireBest ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
+FireBest ExerelinSaboteurPostDeploy",,,
 ExerelinSaboteurDestroyFood,DialogOptionSelected,$option == exerelinSaboteurDestroyFood,"SaboteurDestroyFood
-FireBest ExerelinSaboteurPostDeploy",The saboteur has been deployed. They will execute their task momentarily.,,
+FireBest ExerelinSaboteurPostDeploy",,,
 ExerelinSaboteurAfterDeploy,ExerelinSaboteurPostDeploy,HasItem saboteur,"GetNumSpecialPeople
 FireAll ExerelinSaboteurOption",,,
 ExerelinSaboteurAfterDeployNoMoreSaboteurs,ExerelinSaboteurPostDeploy,!HasItem saboteur score:10,"$menuState = main 0

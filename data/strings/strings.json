@@ -21,7 +21,16 @@
 	},
 	"exerelin_agents":{
 		"alertLevel":"alert level",
-		"reserveSize":"response fleet size"
+		"reserveSize":"response fleet size",
+		"agent":"agent",
+		"saboteur":"saboteur",
+		"verbSuccess":"completed",
+		"verbFailed":"failed",
+		
+		"resultSuccess":"Your $agentType has $resultVerb their mission.",
+		"resultSuccessDetected":"Your $agentType has $resultVerb their mission, but was detected in the process.",
+		"resultFailure":"Your $agentType has $resultVerb in their mission.",
+		"resultFailureDetected":"Your $agentType has $resultVerb in their mission and was caught!"
 	},
 	"exerelin_credits":{
 		"contribution_zaphide":"The original Exerelin",

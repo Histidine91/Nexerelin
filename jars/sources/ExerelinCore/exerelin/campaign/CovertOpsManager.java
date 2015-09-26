@@ -312,7 +312,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         return params;
     }
     
-    public static void agentRaiseRelations(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
+    public static CovertActionResult agentRaiseRelations(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Agent trying to raise relations");
         CovertActionResult result = covertActionRoll((double)config.get("agentRaiseRelationsSuccessChance"), 0, (double)config.get("agentRaiseRelationsDetectionChanceFail"));
@@ -356,9 +356,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 }
             }
         }
+        return result;
     }
     
-    public static void agentLowerRelations(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, FactionAPI thirdFaction, boolean playerInvolved)
+    public static CovertActionResult agentLowerRelations(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, FactionAPI thirdFaction, boolean playerInvolved)
     {
         log.info("Agent trying to lower relations");
         CovertActionResult result = covertActionRoll((double)config.get("agentLowerRelationsSuccessChance"), 0, (double)config.get("agentLowerRelationsDetectionChanceFail"));
@@ -407,9 +408,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 }
             }
         }
+        return result;
     }
     
-    public static void agentDestabilizeMarket(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
+    public static CovertActionResult agentDestabilizeMarket(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Agent trying to destablize market");
         CovertActionResult result = covertActionRoll((double)config.get("agentDestabilizeSuccessChance"), (double)config.get("agentDestabilizeDetectionChance"),
@@ -469,9 +471,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             }
         }
         modifyAlertLevel(market, (float)(double)config.get("agentDestabilizeSecurityLevelRise"));
+        return result;
     }
     
-    public static void saboteurSabotageReserve(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
+    public static CovertActionResult saboteurSabotageReserve(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Saboteur attacking reserve fleet");
         CovertActionResult result = covertActionRoll((double)config.get("sabotageReserveSuccessChance"), (double)config.get("sabotageReserveDetectionChance"),
@@ -526,16 +529,16 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             }
         }
         modifyAlertLevel(market, (float)(double)config.get("sabotageReserveSecurityLevelRise"));
+        return result;
     }    
     
-    public static void saboteurDestroyFood(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
+    public static CovertActionResult saboteurDestroyFood(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Saboteur destroying food");
         CovertActionResult result = covertActionRoll((double)config.get("sabotageDestroyFoodSuccessChance"), (double)config.get("sabotageDestroyFoodDetectionChance"),
                 (double)config.get("sabotageDestroyFoodDetectionChanceFail"), true, market);
         if (result.isSucessful())
         {
-            SectorAPI sector = Global.getSector();
             float effectMin = (float)(double)config.get("sabotageDestroyFoodEffectMin");
             float effectMax = (float)(double)config.get("sabotageDestroyFoodEffectMax");
             float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
@@ -590,10 +593,11 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             }
         }
         modifyAlertLevel(market, (float)(double)config.get("sabotageDestroyFoodSecurityLevelRise"));
+        return result;
     }
     
     // TODO
-    public static void CheckForWarmongerPenalty()
+    public static void checkForWarmongerPenalty()
     {
         
     }
