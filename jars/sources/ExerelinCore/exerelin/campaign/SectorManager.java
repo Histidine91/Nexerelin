@@ -598,7 +598,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             {
                 if (ExerelinCorvusLocations.getSystemCapitalsCopy().containsValue(market.getPrimaryEntity().getId()))
                     flipRelay = true;
-                else flipRelay = market.hasCondition("regional_capital") || market.hasCondition("headquarters");
+                //else flipRelay = market.hasCondition("regional_capital") || market.hasCondition("headquarters");
             }
             
             if (flipRelay)
