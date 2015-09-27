@@ -121,7 +121,8 @@ public class ExerelinUtilsReputation
 			}
 		}
 		Global.getSector().getFaction(Factions.PLAYER).setRelationship("merc_hostile", -1);
-		SectorManager.checkForVictory();
+		syncFactionRelationshipsToPlayer("player_npc");
+		//SectorManager.checkForVictory(); // already done in syncFactionRelationshipsToPlayer
 	}
 	
 	public static void syncPlayerRelationshipsToFaction(boolean noUpdateAlliance)

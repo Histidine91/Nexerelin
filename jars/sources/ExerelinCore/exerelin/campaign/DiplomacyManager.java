@@ -264,6 +264,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
         AllianceManager.syncAllianceRelationshipsToFactionRelationship(faction1Id, faction2Id);
+        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
         
         SectorManager.checkForVictory();
         return new ReputationAdjustmentResult(delta);

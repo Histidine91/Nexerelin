@@ -42,12 +42,11 @@ public class JoinFaction extends BaseCommandPlugin {
 			isDefection = false;
 		}
 		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId, false);
-		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
 		memory.set("$faction", newFaction, 0);
 		memory.set("$factionId", newFactionId, 0);
-                
+		
 		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
 		if (eventSuper == null) 
 			eventSuper = sector.getEventManager().startEvent(null, "exerelin_faction_changed", null);

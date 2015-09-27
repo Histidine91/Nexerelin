@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -197,8 +198,6 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (member1.equals(playerAlignedFactionId) || member2.equals(playerAlignedFactionId))
         {
             ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(playerAlignedFactionId, true);
-            if (!playerAlignedFactionId.equals("player_npc"))
-                ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
         }
         
         allianceManager.createAllianceEvent(member1, member2, alliance, "formed");
@@ -226,9 +225,15 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         List<FactionAPI> factions = sector.getAllFactions();
         for (FactionAPI otherFaction: factions)
         {
-            if (getFactionAlliance(otherFaction.getId()) == alliance) continue;
+            String otherFactionId = otherFaction.getId();
             if (otherFaction == faction) continue;
-            faction.setRelationship( otherFaction.getId(), firstMember.getRelationship(otherFaction.getId()) );
+            if (getFactionAlliance(otherFactionId) == alliance) continue;
+            if (otherFactionId.equals(Factions.PLAYER) || otherFactionId.equals("player_npc"))
+            {
+                String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+                if (getFactionAlliance(playerAlignedFactionId) == alliance) continue;
+            }
+            faction.setRelationship( otherFactionId, firstMember.getRelationship(otherFaction.getId()) );
         }
         
         alliance.members.add(factionId);
