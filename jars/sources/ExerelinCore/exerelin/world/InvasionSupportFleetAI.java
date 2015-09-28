@@ -22,6 +22,7 @@ public class InvasionSupportFleetAI implements EveryFrameScript
     private float daysTotal = 0.0F;
     private final CampaignFleetAPI fleet;
     private boolean orderedReturn = false;
+	private boolean criticalDamage = false;
   
     public InvasionSupportFleetAI(CampaignFleetAPI fleet, InvasionFleetManager.InvasionFleetData data)
     {
@@ -37,7 +38,7 @@ public class InvasionSupportFleetAI implements EveryFrameScript
         this.daysTotal += days;
         if (this.daysTotal > 150.0F)
         {
-            giveStandDownOrders();
+            giveStandDownOrders(false);
             return;
         }
         FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
@@ -45,10 +46,11 @@ public class InvasionSupportFleetAI implements EveryFrameScript
         {
             float fp = this.fleet.getFleetPoints();
             if (fp < this.data.startingFleetPoints / 2.0F) {
-                giveStandDownOrders();
+				criticalDamage = true;
+                giveStandDownOrders(true);
             }
             if(!data.target.getFaction().isHostileTo(fleet.getFaction()))    {
-                giveStandDownOrders();  // market is no longer hostile; abort strike mission
+                giveStandDownOrders(false);  // market is no longer hostile; abort strike mission
             }
             
             if (orderedReturn)
@@ -126,16 +128,33 @@ public class InvasionSupportFleetAI implements EveryFrameScript
         this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionStrike"));
     }
   
-    private void giveStandDownOrders()
+    private void giveStandDownOrders(boolean force)
     {
-        if (!this.orderedReturn)
+        if (force || !this.orderedReturn)
         {
             log.info("Invasion support fleet " + this.fleet.getNameWithFaction() + " standing down");
             this.orderedReturn = true;
             this.fleet.clearAssignments();
             
             SectorEntityToken destination = data.source;
-            if (data.target.getFaction() == data.fleet.getFaction())
+			
+			// if we're standing down from taking too much damage
+			if (criticalDamage)
+			{
+				if (data.target.getFaction() == data.fleet.getFaction())
+				{
+					// our faction controls the original target, perhaps we captured it?
+					// anyway, go ahead and despawn there if it's closer
+					float distToSource = Misc.getDistance(data.fleet.getLocationInHyperspace(), data.source.getLocationInHyperspace());
+					float distToTarget = Misc.getDistance(data.fleet.getLocationInHyperspace(), data.target.getLocationInHyperspace());
+					if (distToSource > distToTarget)
+						destination = data.target;
+				}
+				this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName(), null));
+				this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("standingDown", null, "missionStrike"));
+			}
+			//other stand down reasons
+			else if (data.target.getFaction() == data.fleet.getFaction())
             {
                 // our faction controls the original target, presumably we captured it
                 // go ahead and patrol around it
@@ -147,16 +166,15 @@ public class InvasionSupportFleetAI implements EveryFrameScript
                     SectorEntityToken token = loc.createToken(dest.x, dest.y);
                     this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingToStarSystem", system.getBaseName(), null));
                 }
-                this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, data.target, 40.0F, StringHelper.getFleetAssignmentString("defending", data.target.getName(), null));
+				this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, data.target, 40.0F, StringHelper.getFleetAssignmentString("defending", data.target.getName(), null));
                 this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName(), null));
-                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
             }
             else
             {
                 this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName(), null));
-                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("standingDown", null, "missionStrike"));
-                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
+                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName(), null));
             }
+			this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }
     }
 }
