@@ -541,6 +541,19 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         Alliance alliance1 = allianceManager.alliancesByFactionId.get(factionId1);
         Alliance alliance2 = allianceManager.alliancesByFactionId.get(factionId2);
         
+        if (factionId1.equals(Factions.PLAYER))
+        {
+            String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+            if (allianceManager.alliancesByFactionId.get(playerAlignedFactionId) == alliance2)
+                return null;    // don't sync with alliance peers
+        }
+        if (factionId2.equals(Factions.PLAYER))
+        {
+            String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+            if (allianceManager.alliancesByFactionId.get(playerAlignedFactionId) == alliance1)
+                return null;    // don't sync with alliance peers
+        }
+        
         if (alliance1 == null && alliance2 == null) return null;
         
         if (alliance1 == alliance2)
