@@ -99,7 +99,7 @@ public class ExerelinUtilsFleet
         {
             case "exerelinInvasionFleet":
             case "exerelinRespawnFleet":
-                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.ELITE, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
+                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.ELITE, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F), true);
                 
                 if (faction.equals("luddic_church") && maxFP >= 120)
                     SSP_FleetFactory.createPurificationFleet(fleet, faction, qualityFactor, maxFP);
@@ -125,12 +125,12 @@ public class ExerelinUtilsFleet
                 break;
             case "exerelinInvasionSupportFleet":
             case "exerelinDefenceFleet":
-                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.WAR, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
+                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.WAR, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F), true);
                 SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
                 injector.levelFleet(fleet, CrewType.MILITARY, FleetStyle.MILITARY, faction);
                 break;
             case "exerelinResponseFleet":
-                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.WAR, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
+                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.WAR, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F), true);
                 
                 if (faction.equals("luddic_church") && maxFP >= 120)
                     SSP_FleetFactory.createPurificationFleet(fleet, faction, qualityFactor, maxFP);
@@ -144,7 +144,7 @@ public class ExerelinUtilsFleet
                 injector.levelFleet(fleet, CrewType.MILITARY, FleetStyle.MILITARY, faction);
                 break;  
             case "exerelinMiningFleet":
-                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.TRADER, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F));
+                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.TRADER, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F), true);
                 SSP_FleetFactory.createTradeFleet(fleet, faction, stability, qualityFactorOriginal, maxFP/15, 1, 0, 0);
                 
                 maxFP *= 1.4;
