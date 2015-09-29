@@ -9,13 +9,15 @@
 		"Elgava", "Kalymnos", "Nacio", "Regeinland", "Enemonzo", "Zenito", "Adis", "Escondido", "Libertas", "Lugovalos",
 		"Trantor", "Terminus",
 		"Vermillion", "Lycus", "Amritsar", "Rantemario", "Astarte",
-		"Azea", "Braxi", "Lugast",
+		"Azea", "Braxi", "Lugast", "Aldous"
 	],
 	"planets":[
 		"Baresh", "Zaril", "Vardu", "Drewler", "Trilar", "Polres", "Laret", "Erilatir",
-		"Nambor", "Zat", "Raqueler", "Garret", "Carashil", "Qwerty", "Azerty", "Tyrian", "Savarra", "Torm", "Gyges", "Camanis", "Ixmucane", "Yar", "Tyrel",
+		"Nambor", "Zat", "Raqueler", "Garret", "Carashil", "Qwerty", "Azerty", "Yar", "Tyrel",
 		"Tywin", "Arya", "Sword", "Centuri", "Heaven", "Hell", "Sanctuary", "Hyperion", "Zaphod", "Vagar", "Green", "Blond", "Gabrielle", "Masset",
-		"Effecer", "Gunsa", "Patiota", "Rayma", "Origea", "Litsoa", "Bimo", "Plasert", "Pizzart", "Shaper", "Coruscent", "Hoth", "Gibraltar", "Aurora", "Solaria", "Baleyworld",
+		"Effecer", "Gunsa", "Patiota", "Rayma", "Origea", "Litsoa", "Bimo", "Plasert", "Pizzart", "Shaper", "Coruscent", "Hoth", "Gibraltar",
+		"Tyrian", "Savarra", "Torm", "Gyges", "Camanis", "Ixmucane",
+		"Aurora", "Solaria", "Baleyworld",
 		"Darwin", "Mendel", "Crick", "Franklin", "Watson", "Pauling", "Semmelweiss",
 		"Rutherford", "Maxwell", "Bohr", "Pauli", "Curie", "Meitner", "Heisenberg", "Sagan", "Feynman", "Newton", "Leibniz",
 		"Linen", "Flax", "Cotton", "Silk",
@@ -25,10 +27,10 @@
 		"Cid", "Aerith", "Tifa", "Barret", "Yuffie", "Cait Sith", "Valentine", "Squall", "Rinoa", "Zell", "Irvine", "Laguna", "Kiros", "Ward", "Zidane", "Vivi", "Dagger", "Steiner", "Freya", "Eiko", "Amarant", "Setzer", "Locke", "Celes", "Cyan", "Sabin", "Strago", "Shadow", "Gau", "Mog", "Relm", "Figaro", "Edea", "Esuna",
 		"Thessia", "Palaeven", "Sur'Kesh", "Dekuuna", "Heshtok", "Irune", "Kahje", "Khar'shan", "Tuchanka", "Rakhana", "Rannoch", "Suen",
 		"Iserlohn", "Fezzan", "Heinessen", "Yang", "Julian", "Reinhard", "Kircheis", "Oberstein", "Reuenthal", "Mittermeyer", "El Facil",
-		"Anzha", "Zatar", "Feran", "Pazua", "Sechaveh", "Torzha", "Yiril" 
+		"Anzha", "Zatar", "Feran", "Pazua", "Sechaveh", "Torzha", "Yiril", "Harkur", "Viton"
 	],
 	"stations":[
-		"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
-		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"
+		"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest", "Station",
+		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater", "Command"
 	]
 }
