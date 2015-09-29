@@ -1913,7 +1913,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				if not at least two habitable entities, randomly pick planets 1-4 and force them to be habitable
 				designate one habitable planet from these four as system capital
 					If this is the first star (Exerelin), mark it as HQ instead (we'll come back to it later)
-				Binary systems have 50% more planets; planets will randomly orbit either star
+				Binary systems have 25% more planets; planets will randomly orbit either star
 			Don't actually generate PlanetAPIs until all EntityDatas have been created
 			If habitable planet/moon, add to list of habitables
 
