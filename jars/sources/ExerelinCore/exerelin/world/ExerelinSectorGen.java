@@ -103,10 +103,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected List<String> possibleStationNamesList = new ArrayList(Arrays.asList(possibleStationNames));
 	
 	//protected static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren", "barren-bombarded"};
-	protected static final String[] planetTypesUninhabitable = new String[] {"desert", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "frozen", "rocky_ice", "radiated", "barren-bombarded"};
+	protected static final String[] planetTypesUninhabitable = new String[] 
+		{"desert", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "frozen", "rocky_ice", "radiated", "barren-bombarded"};
 	protected static final String[] planetTypesGasGiant = new String[] {"gas_giant", "ice_giant"};
 	//protected static final String[] moonTypes = new String[] {"frozen", "barren", "barren-bombarded", "rocky_ice", "rocky_metallic", "desert", "water", "jungle"};
-	protected static final String[] moonTypesUninhabitable = new String[] {"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "radiated", "barren-bombarded"};
+	protected static final String[] moonTypesUninhabitable = new String[] 
+		{"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "radiated", "barren-bombarded", "desert", "water", "jungle"};
 	
 	protected static final Map<String, String[]> stationImages = new HashMap<>();
 	
