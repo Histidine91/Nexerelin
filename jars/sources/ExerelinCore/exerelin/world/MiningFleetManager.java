@@ -36,10 +36,11 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	public static final String MANAGER_MAP_KEY = "exerelin_miningFleetManager";
 		
 	public static Logger log = Global.getLogger(MiningFleetManager.class);
-	protected static final float POINT_INCREMENT_PER_DAY = 2f;
+	protected static final float POINT_INCREMENT_PER_DAY = 4f;
 	protected static final float MARKET_STABILITY_DIVISOR = 5f;
 	protected static final float POINTS_TO_SPAWN = 100f;
 	protected static final float POINT_INCREMENT_PERIOD = 1;
+	protected static final float GAS_FLEET_CHANCE = 0.4f;
 	
 	protected final List<MiningFleetData> activeFleets = new LinkedList();
 	protected HashMap<String, Float> spawnCounter = new HashMap<>();
@@ -52,6 +53,20 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	public MiningFleetManager()
 	{
 		super(true);
+	}
+	
+	protected boolean hasOreFacilities(MarketAPI market)
+	{
+		FactionAPI faction = market.getFaction();
+		return market.hasCondition(Conditions.ORE_COMPLEX) || market.hasCondition(Conditions.ORE_REFINING_COMPLEX) 
+				|| faction.getId().equals("spire") || faction.getId().equals("darkspire");
+	}
+	
+	protected boolean hasGasFacilities(MarketAPI market)
+	{
+		return market.hasCondition(Conditions.VOLATILES_COMPLEX) || market.hasCondition(Conditions.VOLATILES_DEPOT)
+				|| market.hasCondition(Conditions.CRYOSANCTUM) || market.hasCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION)
+				|| market.hasCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
 	}
 	
 	public void spawnMiningFleet(MarketAPI origin)
@@ -69,13 +84,10 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		//qf = Math.max(qf, 0.7f);
 		
 		boolean isGasMiningFleet = false;
-		boolean hasOreFacilities = origin.hasCondition(Conditions.ORE_COMPLEX) || origin.hasCondition(Conditions.ORE_REFINING_COMPLEX) 
-				|| faction.getId().equals("spire") || faction.getId().equals("darkspire");
-		boolean hasGasFacilities = origin.hasCondition(Conditions.VOLATILES_COMPLEX) || origin.hasCondition(Conditions.VOLATILES_DEPOT)
-				|| origin.hasCondition(Conditions.CRYOSANCTUM) || origin.hasCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION)
-				|| origin.hasCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
+		boolean hasOreFacilities = hasOreFacilities(origin);
+		boolean hasGasFacilities = hasGasFacilities(origin);
 		if (hasOreFacilities && hasGasFacilities)
-			isGasMiningFleet = Math.random()<0.5f;
+			isGasMiningFleet = Math.random() < GAS_FLEET_CHANCE;
 		else if (hasOreFacilities)
 			isGasMiningFleet = false;
 		else if (hasGasFacilities)
@@ -181,7 +193,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	
 	public void updateMiningFleetPoints(float days)
 	{
-		log.info("Incrementing mining points");
+		//log.info("Incrementing mining points");
 		// prevents NPE of unknown origin
 		if (Global.getSector() == null || Global.getSector().getEconomy() == null)
 			return;

@@ -165,7 +165,7 @@ public class ExerelinMarketSetup
 		for (MarketConditionDef possibleCond : possibleConds) 
 		{
 			if (possibleCond.cost > budget) continue;
-			if (possibleCond.minSize>= size || possibleCond.maxSize <= size) continue;
+			if (possibleCond.minSize > size || possibleCond.maxSize < size) continue;
 			if (!possibleCond.allowStations && isStation) continue;
 			if (!possibleCond.allowDuplicates && market.hasCondition(possibleCond.name)) continue;
 			if (!possibleCond.allowedPlanets.isEmpty())
@@ -206,9 +206,9 @@ public class ExerelinMarketSetup
 		else if (size == 5) points = 700;
 		else if (size == 6) points = 1100;
 		else if (size >= 7) points = 1500;
-		for (int i=0; i<size; i++)
+		for (int i=0; i<size-1; i++)
 		{
-			if (Math.random() > 0.33) points += 50;
+			if (Math.random() > 0.4) points += 50;
 		}
 		
 		while (points > 0)

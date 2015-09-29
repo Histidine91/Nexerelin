@@ -121,11 +121,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected EntityData homeworld = null;
 
 	protected List<EntityData> habitablePlanets = new ArrayList<>();
+	//protected List<EntityData> habitableMoons = new ArrayList<>();	// TODO
 	protected List<EntityData> stations = new ArrayList<>();
 	protected Map<String, String> systemToRelay = new HashMap();
 	protected Map<String, String> planetToRelay = new HashMap();
 	
 	protected Map<MarketArchetype, Integer> numMarketsByArchetype = new HashMap<>();
+	protected WeightedRandomPicker<MarketArchetype> marketArchetypeQueue = new WeightedRandomPicker<>();
+	protected int marketArchetypeQueueNum = 0;
 	protected float numOmnifacs = 0;
 	
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
@@ -237,11 +240,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	protected void resetVars()
 	{
-		habitablePlanets = new ArrayList<>();
-		stations = new ArrayList<>();
+		habitablePlanets.clear();
+		//habitableMoons.clear();
+		stations.clear();
 		ExerelinSetupData.getInstance().resetAvailableFactions();
 		factionIds = new ArrayList<>( Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector())) );
 		numMarketsByArchetype = new HashMap<>();
+		marketArchetypeQueue.clear();
+		marketArchetypeQueueNum = 0;
 		numOmnifacs = 0;
 	}
 	
@@ -263,8 +269,26 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return numMarketsByArchetype.get(type);
 	}
 	
-	protected MarketArchetype pickMarketArchetype(boolean isStation)
+	// Tetris type archetype rotation
+	protected void queueMarketArchetypes()
 	{
+		marketArchetypeQueueNum++;
+		// always have at least one of each in the queue (usually)
+		marketArchetypeQueue.add(MarketArchetype.AGRICULTURE);
+		marketArchetypeQueue.add(MarketArchetype.ORE);
+		if (marketArchetypeQueueNum % 5 == 0)	// add an extra ore market every fifth round
+			marketArchetypeQueue.add(MarketArchetype.ORE);
+		if (marketArchetypeQueueNum % 6 != 3)	// skip every sixth organics market
+			marketArchetypeQueue.add(MarketArchetype.ORGANICS);
+		if (marketArchetypeQueueNum % 4 != 2)	// skip every fourth volatiles market
+			marketArchetypeQueue.add(MarketArchetype.VOLATILES);
+		marketArchetypeQueue.add(MarketArchetype.MANUFACTURING);
+		if (marketArchetypeQueueNum % 5 != 4)	// skip every fifth heavy industry market
+			marketArchetypeQueue.add(MarketArchetype.HEAVY_INDUSTRY);
+		marketArchetypeQueue.add(MarketArchetype.MIXED);
+		
+		// add up to three more distinct archetypes based on how many of each already exist
+		/*
 		int numAgriculture = getNumMarketsOfArchetype(MarketArchetype.AGRICULTURE) + 1;
 		int numOre = getNumMarketsOfArchetype(MarketArchetype.ORE) + 1;
 		int numOrganics = getNumMarketsOfArchetype(MarketArchetype.ORGANICS) + 1;
@@ -273,15 +297,33 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		int numHeavyIndustry = getNumMarketsOfArchetype(MarketArchetype.HEAVY_INDUSTRY) + 1;
 		
 		WeightedRandomPicker<MarketArchetype> picker = new WeightedRandomPicker<>();
-		if (!isStation)
-			picker.add(MarketArchetype.AGRICULTURE, 10/numAgriculture);
+		picker.add(MarketArchetype.AGRICULTURE, 10/numAgriculture);
 		picker.add(MarketArchetype.ORE, 10/numOre);
 		picker.add(MarketArchetype.ORGANICS, 8/numOrganics);
 		picker.add(MarketArchetype.VOLATILES, 6/numVolatiles);
 		picker.add(MarketArchetype.MANUFACTURING, 10/numManufacturing);
 		picker.add(MarketArchetype.HEAVY_INDUSTRY, 8/numHeavyIndustry);
 		
-		return picker.pick();
+		for (int i=0; i<MathUtils.getRandomNumberInRange(2, 3); i++)
+		{
+			marketArchetypeQueue.add(picker.pickAndRemove());
+		}
+		*/
+	}
+	
+	protected MarketArchetype pickMarketArchetype(boolean isStation)
+	{
+		int tries = 0;
+		while (true)
+		{
+			tries++;
+			if (marketArchetypeQueue.isEmpty())
+				queueMarketArchetypes();
+			MarketArchetype type = marketArchetypeQueue.pickAndRemove();
+			if (tries < 5 && isStation && type == MarketArchetype.AGRICULTURE)
+				continue;
+			return type;
+		}
 	}
 			
 	protected void pickEntityInteractionImage(SectorEntityToken entity, MarketAPI market, String planetType, EntityType entityType)
@@ -335,9 +377,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		ExerelinUtilsCargo.addCommodityStockpile(market, "regular_crew", 0.45f, 0.55f);
 		ExerelinUtilsCargo.addCommodityStockpile(market, "veteran_crew", 0.1f, 0.2f);
 		ExerelinUtilsCargo.addCommodityStockpile(market, "marines", 0.8f, 1.0f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "supplies", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "fuel", 0.7f, 0.8f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, "food", 0.7f, 0.8f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "supplies", 0.85f, 0.95f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "fuel", 0.85f, 0.95f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, "food", 0.8f, 0.9f);
 		ExerelinUtilsCargo.addCommodityStockpile(market, "domestic_goods", 0.7f, 0.8f);
 		ExerelinUtilsCargo.addCommodityStockpile(market, "luxury_goods", 0.7f, 0.8f);
 		ExerelinUtilsCargo.addCommodityStockpile(market, "heavy_machinery", 0.7f, 0.8f);
@@ -375,12 +417,23 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			if (marketSize < 6) marketSize = 6;
 			newMarket.addCondition("headquarters");
-			if (data == homeworld) newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
+			//newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);	// dependent on number of factions; bad idea
+			//newMarket.addCondition("exerelin_recycling_plant");
+			newMarket.addCondition("exerelin_recycling_plant");
+			newMarket.addCondition("exerelin_hydroponics");
+			if (data == homeworld) 
+			{
+				newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
+				//newMarket.addCondition(Conditions.SHIPBREAKING_CENTER);
+				newMarket.addCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION);
+			}
 		}
 		else if (data.isCapital)
 		{
 			if (marketSize < 5) marketSize = 5;
 			newMarket.addCondition("regional_capital");
+			newMarket.addCondition("exerelin_recycling_plant");
+			newMarket.addCondition("exerelin_hydroponics");
 		}
 		if (data.forceMarketSize != -1) marketSize = data.forceMarketSize;
 		newMarket.setSize(marketSize);
@@ -586,17 +639,18 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		MarketAPI market = Global.getFactory().createMarket("prismFreeport" + "_market", "Prism Freeport", 4);
 		market.setFactionId("independent");
-		market.addCondition("population_4");
-		market.addCondition("spaceport");
+		market.addCondition(Conditions.POPULATION_4);
+		market.addCondition(Conditions.SPACEPORT);
 		market.addCondition("exerelin_recycling_plant");
 		market.addCondition("exerelin_recycling_plant");
 		market.addCondition("exerelin_hydroponics");
-		market.addCondition("light_industrial_complex");
-		market.addCondition("trade_center");
-		market.addCondition("stealth_minefields");
-		market.addCondition("cryosanctum");
-		market.addCondition("military_base");
-		market.addCondition("free_market");
+		market.addCondition("exerelin_hydroponics");
+		market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
+		market.addCondition(Conditions.TRADE_CENTER);
+		market.addCondition(Conditions.STEALTH_MINEFIELDS);
+		market.addCondition(Conditions.CRYOSANCTUM);
+		market.addCondition(Conditions.MILITARY_BASE);
+		market.addCondition(Conditions.FREE_PORT);
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
@@ -736,7 +790,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, getDensity(toOrbit)));
 		
 		shanghaiEntity.setMarket(market);
-		if (!market.hasCondition(Conditions.ORBITAL_STATION)) 
+		if (!market.hasCondition(Conditions.ORBITAL_STATION) && !market.hasCondition(Conditions.SPACEPORT)) 
 			market.addCondition(Conditions.ORBITAL_STATION);
 		market.addSubmarket("tiandong_retrofit");
 		toOrbit.addTag("shanghai");
@@ -1132,7 +1186,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		MarketAPI existingMarket = planet.getMarket();
 		if (existingMarket != null)
 		{
-			existingMarket.addCondition("orbital_station");
+			if (!existingMarket.hasCondition(Conditions.SPACEPORT))
+				existingMarket.addCondition("orbital_station");
 			existingMarket.addCondition("exerelin_recycling_plant");
 			newStation.setMarket(existingMarket);
 			existingMarket.getConnectedEntities().add(newStation);
@@ -1616,6 +1671,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			homeworld = capital;
 			homeworld.isHQ = true;
+			//homeworld.archetype = MarketArchetype.MIXED;
 		}
 
 		// Build asteroid belts
