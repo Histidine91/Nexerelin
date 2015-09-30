@@ -22,7 +22,7 @@ import org.lazywizard.lazylib.MathUtils;
 /**
  * There are several possible market archetypes: Agriculture, Ore, Organics, Volatiles, Manufacturing, Heavy Industry
  * Pick a market archetype for each market on planet creation
- * Each time an archetype is picked, reduce its weighting for the random picker
+ * Archetypes are picked in a sequential rotation (so the number of markets with each archetype will be largely even)
  * Each archetype gets a certain selection of planet types to randomly pick from
  * Each market gets a number of points to spend on market condition based on market size
  * Each market condition has a cost and a number of weightings based on the market
@@ -201,6 +201,8 @@ public class ExerelinMarketSetup
 		
 		int size = market.getSize();
 		int points = 100;
+		
+		int bonusPoints = 0;
 		if (size == 3) points = 200;
 		else if (size == 4) points = 400;
 		else if (size == 5) points = 700;
@@ -208,9 +210,12 @@ public class ExerelinMarketSetup
 		else if (size >= 7) points = 1500;
 		for (int i=0; i<size-1; i++)
 		{
-			if (Math.random() > 0.4) points += 50;
+			if (Math.random() > 0.4) bonusPoints += 50;
 		}
+		entityData.bonusMarketPoints = bonusPoints;
+		points += bonusPoints;
 		
+		int startingPoints = points;
 		while (points > 0)
 		{
 			MarketConditionDef cond = pickMarketCondition(market, conditions, entityData, points);
@@ -219,6 +224,7 @@ public class ExerelinMarketSetup
 			market.addCondition(cond.name);
 			points -= cond.cost;
 		}
+		entityData.marketPoints = startingPoints - points;
 		
 		int numSpecial = 0;
 		if (size == 2 && Math.random() > 0.5) numSpecial = 1;

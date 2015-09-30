@@ -14,11 +14,13 @@ import org.json.JSONObject;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
@@ -131,6 +133,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected Map<MarketArchetype, Integer> numMarketsByArchetype = new HashMap<>();
 	protected WeightedRandomPicker<MarketArchetype> marketArchetypeQueue = new WeightedRandomPicker<>();
 	protected int marketArchetypeQueueNum = 0;
+	protected double domesticGoodsDemand = 0;
+	protected double domesticGoodsSupply = 0;
 	protected float numOmnifacs = 0;
 	
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
@@ -251,6 +255,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		marketArchetypeQueue.clear();
 		marketArchetypeQueueNum = 0;
 		numOmnifacs = 0;
+		domesticGoodsDemand = 0;
+		domesticGoodsSupply = 0;
 	}
 	
 	protected void addListToPicker(List list, WeightedRandomPicker picker)
@@ -371,6 +377,62 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		String[] illustration = allowedImages.pick();
 		entity.setInteractionImage(illustration[0], illustration[1]);
+	}
+	
+	// add enough light industrial complexes to balance out domestic good supply/demand
+	protected void addLightIndustrialComplexes(List<EntityData> candidateEntities)
+	{
+		final int HALFPOW5 = (int)Math.pow(10, 5)/2;
+		final int HALFPOW4 = (int)Math.pow(10, 4)/2;
+		
+		WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker<>();
+		for (EntityData entity:candidateEntities)
+		{
+			MarketAPI market = entity.market;
+			if (market == null) continue;
+			if (market.hasCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX)) continue;
+			float weight = 100 - (entity.bonusMarketPoints/(market.getSize()-1));
+			if (market.hasCondition(Conditions.COTTAGE_INDUSTRY)) weight *= 0.25f;
+			
+			switch (entity.archetype)
+			{
+				case AGRICULTURE:
+					weight *= 0.5f;
+					break;
+				case MANUFACTURING:
+					weight *= 4f;
+					break;
+				case HEAVY_INDUSTRY:
+					weight *= 2f;
+					break;
+				case MIXED:
+					weight *= 1.5f;
+					break;
+			}
+			
+			marketPicker.add(market, weight);
+		}
+		
+		while ((domesticGoodsDemand * 0.8) > domesticGoodsSupply)
+		{
+			if (marketPicker.isEmpty())	break;	// fuck it, we give up
+			
+			int maxSize = 6;
+			double shortfall = domesticGoodsDemand - domesticGoodsSupply;
+			if (shortfall < HALFPOW4)
+				maxSize = 4;
+			else if (shortfall < HALFPOW5)
+				maxSize = 5;
+			
+			MarketAPI market = marketPicker.pickAndRemove();
+			int size = market.getSize();
+			if (size > maxSize) continue;
+			
+			market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
+			domesticGoodsSupply += 0.1 * Math.pow(10, size);
+			log.info("Added balancing Light Industrial Complex to " + market.getName() + " (size " + size + ")");
+		}
+		log.info("Final domestic goods supply/demand: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
 	}
 	
 	protected void addStartingMarketCommodities(MarketAPI market)
@@ -530,6 +592,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		Global.getSector().getEconomy().addMarket(newMarket);
 		entity.setFaction(factionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
+		
+		CommodityOnMarketAPI dgData = newMarket.getCommodityData(Commodities.DOMESTIC_GOODS);
+		domesticGoodsDemand += dgData.getDemand().getDemand().modified;
+		domesticGoodsSupply += dgData.getSupply().modified;
+		//log.info("Cumulative domestic goods supply/demand thus far: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
 		
 		data.market = newMarket;
 		return newMarket;
@@ -1287,6 +1354,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 			makeStation(station, factionId);
 		}
+		
+		// add enough Light Industrial Complexes to meet demand for domestic goods
+		// TODO: use this for food and supplies as well?
+		List<EntityData> toAddLICs = new ArrayList<>(habitablePlanets);
+		toAddLICs.addAll(stations);
+		addLightIndustrialComplexes(toAddLICs);
 	}
 
 	public PlanetAPI createStarToken(int index, String systemId, StarSystemAPI system, String type, float size, boolean isSecondStar)
@@ -1885,6 +1958,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		int planetNum = -1;
 		int planetNumByStar = -1;
 		float orbitDistance = 0;	// only used for belter stations
+		int marketPoints = 0;
+		int bonusMarketPoints = 0;
 		
 		public EntityData(StarSystemAPI starSystem) 
 		{
