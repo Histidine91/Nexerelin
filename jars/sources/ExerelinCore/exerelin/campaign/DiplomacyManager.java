@@ -886,6 +886,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             bountyHunters.setRelationship(Factions.PLAYER, -1f);
             bountyHunters.setRelationship("player_npc", -1f);
         }
+        FactionAPI famousBounty = sector.getFaction("famous_bounty");
+        if (famousBounty != null)
+        {
+            famousBounty.setRelationship(Factions.PLAYER, -1f);
+            famousBounty.setRelationship("player_npc", -1f);
+        }
+        
         
         player.setRelationship("player_npc", 1f);
          // set player relations based on selected faction
