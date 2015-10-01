@@ -18,6 +18,7 @@ import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
+import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -380,6 +381,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	}
 	
 	// add enough light industrial complexes to balance out domestic good supply/demand
+	// can also remove excess ones
 	protected void addLightIndustrialComplexes(List<EntityData> candidateEntities)
 	{
 		final int HALFPOW5 = (int)Math.pow(10, 5)/2;
@@ -390,8 +392,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			MarketAPI market = entity.market;
 			if (market == null) continue;
-			if (market.hasCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX)) continue;
-			float weight = 100 - (entity.bonusMarketPoints/(market.getSize()-1));
+			int size = market.getSize();
+			float weight = 100 - (entity.bonusMarketPoints/(size-1));
+			if (market.hasCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX)) 
+			{
+				// oversupply; remove this LIC and prioritise the market for any readding later
+				if (domesticGoodsSupply > domesticGoodsDemand * 1.2)
+				{
+					market.removeCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
+					domesticGoodsSupply -= ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS_MULT * Math.pow(10, size);
+					weight *= 10;
+					log.info("Removed balancing Light Industrial Complex from " + market.getName() + " (size " + size + ")");
+				}
+				else continue;
+			}
 			if (market.hasCondition(Conditions.COTTAGE_INDUSTRY)) weight *= 0.25f;
 			
 			switch (entity.archetype)
@@ -413,7 +427,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			marketPicker.add(market, weight);
 		}
 		
-		while ((domesticGoodsDemand * 0.8) > domesticGoodsSupply)
+		while ((domesticGoodsDemand * 0.6) > domesticGoodsSupply)
 		{
 			if (marketPicker.isEmpty())	break;	// fuck it, we give up
 			
@@ -429,7 +443,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (size > maxSize) continue;
 			
 			market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
-			domesticGoodsSupply += 0.1 * Math.pow(10, size);
+			domesticGoodsSupply += ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS_MULT * Math.pow(10, size);
 			log.info("Added balancing Light Industrial Complex to " + market.getName() + " (size " + size + ")");
 		}
 		log.info("Final domestic goods supply/demand: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
