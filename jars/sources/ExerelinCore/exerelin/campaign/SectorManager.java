@@ -604,17 +604,20 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (flipRelay)
             {
                 StarSystemAPI loc = market.getStarSystem();
-                String relayId = sectorManager.systemToRelayMap.get(loc.getId());
-                if (relayId != null)
+                if (loc != null)
                 {
-                    SectorEntityToken relay = Global.getSector().getEntityById(relayId);
-                    relay.setFaction(newOwnerId);
-                }
-                else 
-                {
-                    List<SectorEntityToken> relays = loc.getEntitiesWithTag(Tags.COMM_RELAY);
-                    log.info("#entities: " + relays.size());
-                    if (!relays.isEmpty()) relays.get(0).setFaction(newOwnerId);
+                    String relayId = sectorManager.systemToRelayMap.get(loc.getId());
+                    if (relayId != null)
+                    {
+                        SectorEntityToken relay = Global.getSector().getEntityById(relayId);
+                        relay.setFaction(newOwnerId);
+                    }
+                    else 
+                    {
+                        List<SectorEntityToken> relays = loc.getEntitiesWithTag(Tags.COMM_RELAY);
+                        //log.info("#entities: " + relays.size());
+                        if (!relays.isEmpty()) relays.get(0).setFaction(newOwnerId);
+                    }
                 }
             }
         }
