@@ -37,28 +37,13 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        // fix using background from unreleased SS+ version; remove after new version is released
-        for (StarSystemAPI system : Global.getSector().getStarSystems())
-        {
-            if (system.getBackgroundTextureFilename().equals("graphics/ssp/backgrounds/ssp_arcade.png"))
-            {
-                system.setBackgroundTextureFilename("graphics/ssp/backgrounds/ssp_randombattle.jpg");
-            }
-        }
-        
-        // fix factions that were accidentally set to be neutral to themselves
+        // fix famous bounties fighting people they shouldn't
         for (FactionAPI faction : Global.getSector().getAllFactions()) 
         {
-            faction.setRelationship(faction.getId(), 1);
+            if (!faction.isPlayerFaction() && !faction.getId().equals("famous_bounty"))
+            faction.setRelationship("famous_bounty", 0);
         }
-		
-		// fix old issue with relationship with player and player_npc
-		FactionAPI playerFaction = Global.getSector().getFaction(Factions.PLAYER);
-		playerFaction.setRelationship("player", 1);
-		//if (playerFaction.getRelationship("player_npc") <= 0)
-		playerFaction.setRelationship("player_npc", 1);
-		PlayerFactionStore.saveIndependentPlayerRelation("player");
-		PlayerFactionStore.saveIndependentPlayerRelation("player_npc");
+        
     }
     
     @Override
