@@ -25,8 +25,8 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
     protected static final String STRING_CATEGORY = "exerelin_invasion";
     
     @Override
-	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
-		if (dialog == null) return false;
+    public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
+        if (dialog == null) return false;
                 SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
                 TextPanelAPI text = dialog.getTextPanel();
 
@@ -35,13 +35,19 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
                         text.addParagraph("Damnit, something's broken here!");
                         return false;
                 }*/
-
+                MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
+                
                 CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
                 FactionAPI faction = target.getFaction();
-
+                
                 InvasionRoundResult result = InvasionRound.AttackMarket(playerFleet, target, false);
+                if (result == null)
+                {
+                    memory.set("$exerelinInvasionCancelled", true, 0);
+                    return false;
+                }
 
-                MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
+                
                 memory.set("$exerelinInvasionSuccessful", result.getSuccess(), 0);
 
                 int marinesLost = result.getMarinesLost();
@@ -77,14 +83,14 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
                         text.highlightInLastPara(hl, highlights.toArray(new String [0]));
 
                         text.addParagraph("Fine: " + (int) fine);
-t			ext.highlightInLastPara(hl, "" + (int) fine);
+                        text.highlightInLastPara(hl, "" + (int) fine);
                 }
                 */
                 text.addParagraph("-----------------------------------------------------------------------------");
                 text.setFontInsignia();
 
                 int defenderMarketsLeft = ExerelinUtilsFaction.getFactionMarkets(faction.getId()).size();
-                if (defenderMarketsLeft > 0)
+                if (result.getSuccess() && defenderMarketsLeft > 0)
                 {
                         Global.getSector().adjustPlayerReputation(
                             new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.COMBAT_AGGRESSIVE, 0),

@@ -297,7 +297,7 @@ public class InvasionRound {
 		
 		if (attackerFaction == defenderFaction || !attackerFaction.isHostileTo(defenderFaction))
 		{
-			return result;
+			return null;
 		}
 		
 		boolean captured = false;

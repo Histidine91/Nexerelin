@@ -506,6 +506,9 @@ ExerelinInvasionResultsIncompleteNoMoreMarines,ExerelinInvasionResults,"!$exerel
 unset $player.invasionTarget","You have not yet captured $entityName.
 
 Your marine complement has been wiped out; you cannot continue the offensive.",exerelinInvasionLeave:Leave,
+ExerelinInvasionResultsCancelled,ExerelinInvasionResults,$exerelinInvasionCancelled score:100,"ShowDefaultVisual
+unset $player.invasionTarget
+FireAll PopulateOptions",This isn't a valid invasion target! Perhaps we already captured it?,,
 ExerelinInvasionInterupted,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionInterrupted","unset $global.exerelinInvasionInterrupted
 unset $player.invasionTarget
