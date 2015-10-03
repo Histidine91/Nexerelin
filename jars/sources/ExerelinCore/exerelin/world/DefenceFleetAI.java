@@ -125,7 +125,7 @@ public class DefenceFleetAI implements EveryFrameScript
     {
         if (!this.orderedReturn)
         {
-            log.info("Patrol fleet " + this.fleet.getNameWithFaction() + " standing down");
+            //log.info("Patrol fleet " + this.fleet.getNameWithFaction() + " standing down");
             this.orderedReturn = true;
             this.fleet.clearAssignments();
             

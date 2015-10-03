@@ -233,7 +233,7 @@ public class InvasionFleetAI implements EveryFrameScript
     {
         if (!this.orderedReturn)
         {
-            log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " standing down");
+            //log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " standing down");
             this.orderedReturn = true;
             this.fleet.clearAssignments();
             

@@ -103,7 +103,7 @@ public class ResponseFleetAI implements EveryFrameScript
     {
         if (!this.orderedReturn)
         {
-            log.info("Response fleet " + this.fleet.getNameWithFaction() + " standing down");
+            //log.info("Response fleet " + this.fleet.getNameWithFaction() + " standing down");
             this.orderedReturn = true;
             this.fleet.clearAssignments();
             
