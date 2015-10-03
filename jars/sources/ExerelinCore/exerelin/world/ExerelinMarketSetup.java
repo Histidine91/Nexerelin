@@ -38,6 +38,9 @@ import org.lazywizard.lazylib.MathUtils;
  *	Size 2: random(0, 1)
  *	Size 3-4: random(0,1) + random(0,1)
  *	Size 5-6: 1 + random(0,1)
+ * 
+ * Once it's done assigning markets, it does a second pass
+ * Add/remove market conditions to balance supply and demand of domestic goods, metal and supplies
 */
 
 @SuppressWarnings("unchecked")

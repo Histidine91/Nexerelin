@@ -28,6 +28,7 @@ import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.campaign.econ.Exerelin_RecyclingPlant;
 import data.scripts.world.ExerelinCorvusLocations;
 import data.scripts.world.ExerelinCorvusLocations.SpawnPointEntry;
 import data.scripts.world.corvus.Corvus;
@@ -55,6 +56,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.world.ExerelinMarketSetup.MarketArchetype;
 import java.util.Collections;
 import java.util.HashMap;
@@ -119,6 +121,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final float BINARY_STAR_DISTANCE = 11000;
 	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
 	
+	// TODO externalise?
+	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 3f;	// needs to be ridiculously high to be affordable
+	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 2.5f;	// yes, lower than min
+	
 	protected ExerelinMarketSetup marketSetup = new ExerelinMarketSetup();
 	
 	protected List<String> factionIds = new ArrayList<>();
@@ -136,6 +142,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected int marketArchetypeQueueNum = 0;
 	protected double domesticGoodsDemand = 0;
 	protected double domesticGoodsSupply = 0;
+	protected double suppliesDemand = 0;
+	protected double suppliesSupply = 0;
+	protected double metalDemand = 0;
+	protected double metalSupply = 0;
+	
 	protected float numOmnifacs = 0;
 	
 	public static Logger log = Global.getLogger(ExerelinSectorGen.class);
@@ -258,6 +269,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		numOmnifacs = 0;
 		domesticGoodsDemand = 0;
 		domesticGoodsSupply = 0;
+		metalDemand = 0;
+		metalSupply = 0;
+		suppliesDemand = 0;
+		suppliesSupply = 0;
 	}
 	
 	protected void addListToPicker(List list, WeightedRandomPicker picker)
@@ -282,19 +297,28 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected void queueMarketArchetypes()
 	{
 		marketArchetypeQueueNum++;
+		
 		// always have at least one of each in the queue (usually)
 		marketArchetypeQueue.add(MarketArchetype.AGRICULTURE);
+		if (marketArchetypeQueueNum % 5 == 1)	// add an extra agriculture market every fifth round
+			marketArchetypeQueue.add(MarketArchetype.AGRICULTURE);
+		
 		marketArchetypeQueue.add(MarketArchetype.ORE);
-		if (marketArchetypeQueueNum % 5 == 0)	// add an extra ore market every fifth round
-			marketArchetypeQueue.add(MarketArchetype.ORE);
+		//if (marketArchetypeQueueNum % 5 == 0)	// add an extra ore market every fifth round
+		//	marketArchetypeQueue.add(MarketArchetype.ORE);
+		
 		if (marketArchetypeQueueNum % 6 != 3)	// skip every sixth organics market
 			marketArchetypeQueue.add(MarketArchetype.ORGANICS);
+		
 		if (marketArchetypeQueueNum % 4 != 2)	// skip every fourth volatiles market
 			marketArchetypeQueue.add(MarketArchetype.VOLATILES);
+		
 		marketArchetypeQueue.add(MarketArchetype.MANUFACTURING);
-		if (marketArchetypeQueueNum % 5 != 4)	// skip every fifth heavy industry market
+		
+		if (marketArchetypeQueueNum % 4 != 3)	// skip every fourth heavy industry market
 			marketArchetypeQueue.add(MarketArchetype.HEAVY_INDUSTRY);
-		marketArchetypeQueue.add(MarketArchetype.MIXED);
+		
+		//marketArchetypeQueue.add(MarketArchetype.MIXED);
 		
 		// add up to three more distinct archetypes based on how many of each already exist
 		/*
@@ -401,7 +425,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				{
 					market.removeCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
 					domesticGoodsSupply -= ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS_MULT * Math.pow(10, size);
-					weight *= 10;
+					weight *= 25;
 					log.info("Removed balancing Light Industrial Complex from " + market.getName() + " (size " + size + ")");
 				}
 				else continue;
@@ -427,7 +451,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			marketPicker.add(market, weight);
 		}
 		
-		while ((domesticGoodsDemand * 0.6) > domesticGoodsSupply)
+		while ((domesticGoodsDemand * 0.75) > domesticGoodsSupply)
 		{
 			if (marketPicker.isEmpty())	break;	// fuck it, we give up
 			
@@ -447,6 +471,81 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			log.info("Added balancing Light Industrial Complex to " + market.getName() + " (size " + size + ")");
 		}
 		log.info("Final domestic goods supply/demand: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
+	}
+	
+	protected void balanceSuppliesAndMetal(List<EntityData> candidateEntities)
+	{	
+		log.info("Pre-balance supplies supply/demand: " + (int)suppliesSupply + " / " + (int)suppliesDemand);
+		log.info("Pre-balance metal supply/demand: " + (int)metalSupply + " / " + (int)metalDemand);
+		
+		WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker<>();
+		for (EntityData entity:candidateEntities)
+		{
+			MarketAPI market = entity.market;
+			if (market == null) continue;
+			int size = market.getSize();
+			if (size <= 3) continue;
+			float weight = 100 - (entity.bonusMarketPoints/(size-1));
+			if (market.hasCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY)) 
+			{
+				// not enough metal; remove this autofac and prioritise the market for any readding later
+				if (entity != homeworld)
+				{ 
+					if((metalDemand*0.5 > metalSupply) || ((suppliesSupply / suppliesDemand) > SUPPLIES_SUPPLY_DEMAND_RATIO_MAX))
+					{
+						int autofacCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.AUTOFAC_HEAVY_INDUSTRY);
+						market.removeCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);	// removes all
+						for (int i=0; i<autofacCount - 1; i++)
+							market.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);	// add back all but one
+						
+						suppliesSupply -= ConditionData.AUTOFAC_HEAVY_SUPPLIES;
+						metalDemand -= ConditionData.AUTOFAC_HEAVY_METALS;
+						//if (metalDemand < 20000) metalDemand = 20000;
+						weight *= 25;
+						log.info("Removed balancing heavy autofac from " + market.getName());
+					}
+				}
+			}
+			switch (entity.archetype)
+			{
+				case MANUFACTURING:
+					weight *= 1.5f;
+					break;
+				case HEAVY_INDUSTRY:
+					weight *= 3f;
+					break;
+				case MIXED:
+					weight *= 1f;
+					break;
+				default:
+					weight = 0;
+			}
+			if (weight == 0) continue;
+			marketPicker.add(market, weight);
+		}
+		
+		while ((suppliesSupply/suppliesDemand) < SUPPLIES_SUPPLY_DEMAND_RATIO_MIN)
+		{
+			if (marketPicker.isEmpty())	break;	// fuck it, we give up
+			
+			MarketAPI market = marketPicker.pickAndRemove();
+			if (metalSupply > metalDemand*1.2)
+			{
+				market.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
+				suppliesSupply += ConditionData.AUTOFAC_HEAVY_SUPPLIES;
+				metalDemand += ConditionData.AUTOFAC_HEAVY_METALS;
+				log.info("Added balancing heavy autofac to " + market.getName());
+			}
+			else if (market.getSize() >= 5)	// not enough metal to support an autofac; add a shipbreaking center instead
+			{
+				market.addCondition(Conditions.SHIPBREAKING_CENTER);
+				suppliesSupply += ConditionData.SHIPBREAKING_SUPPLIES;
+				metalSupply += ConditionData.SHIPBREAKING_METALS;
+				log.info("Added balancing shipbreaking center to " + market.getName());
+			}
+		}
+		log.info("Final supplies supply/demand: " + (int)suppliesSupply + " / " + (int)suppliesDemand);
+		log.info("Final metal supply/demand: " + (int)metalSupply + " / " + (int)metalDemand);
 	}
 	
 	protected void addStartingMarketCommodities(MarketAPI market)
@@ -607,9 +706,41 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		Global.getSector().getEconomy().addMarket(newMarket);
 		entity.setFaction(factionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
 		
-		CommodityOnMarketAPI dgData = newMarket.getCommodityData(Commodities.DOMESTIC_GOODS);
-		domesticGoodsDemand += dgData.getDemand().getDemand().modified;
-		domesticGoodsSupply += dgData.getSupply().modified;
+		// count some demand/supply values for market balancing
+		int population = ExerelinUtilsMarket.getPopulation(marketSize);
+		
+		domesticGoodsDemand += ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.DOMESTIC_GOODS);
+		//domesticGoodsSupply += ExerelinUtilsMarket.getCommoditySupply(newMarket, Commodities.DOMESTIC_GOODS);
+		//metalDemand += ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.METALS);
+		//metalSupply += ExerelinUtilsMarket.getCommoditySupply(newMarket, Commodities.METALS);
+		//suppliesDemand += ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.SUPPLIES);
+		//suppliesSupply += ExerelinUtilsMarket.getCommoditySupply(newMarket, Commodities.SUPPLIES);
+
+		int autofacCount = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.AUTOFAC_HEAVY_INDUSTRY);
+		int shipbreakingCount = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.SHIPBREAKING_CENTER);
+		int recyclingCount = ExerelinUtilsMarket.countMarketConditions(newMarket, "exerelin_recycling_plant");
+		
+		float dgSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.LIGHT_INDUSTRIAL_COMPLEX) * ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS_MULT;
+		dgSupply += ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.COTTAGE_INDUSTRY) * ConditionData.COTTAGE_INDUSTRY_DOMESTIC_GOODS_MULT;
+		dgSupply *= ExerelinUtilsMarket.getPopulation(marketSize);
+		domesticGoodsSupply += dgSupply;
+		
+		float mSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_METAL_PER_ORE * ConditionData.ORE_REFINING_ORE;
+		mSupply += shipbreakingCount * ConditionData.SHIPBREAKING_METALS;
+		mSupply += recyclingCount * Exerelin_RecyclingPlant.RECYCLING_METALS;
+		metalSupply += mSupply;
+		float mDemand = autofacCount * ConditionData.AUTOFAC_HEAVY_METALS;
+		metalDemand += mDemand;
+		
+		float sSupply = autofacCount * ConditionData.AUTOFAC_HEAVY_SUPPLIES; 
+		sSupply += shipbreakingCount * ConditionData.SHIPBREAKING_SUPPLIES;
+		sSupply += recyclingCount * Exerelin_RecyclingPlant.RECYCLING_SUPPLIES;
+		suppliesSupply += sSupply;
+		float sDemand = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.SPACEPORT) * ConditionData.SPACEPORT_SUPPLIES * 0.5f;
+		sDemand += ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORBITAL_STATION) * ConditionData.ORBITAL_STATION_SUPPLIES * 0.5f;
+		sDemand += ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.MILITARY_BASE) * ConditionData.MILITARY_BASE_SUPPLIES;
+		suppliesDemand += sDemand;
+		
 		//log.info("Cumulative domestic goods supply/demand thus far: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
 		
 		data.market = newMarket;
@@ -1369,11 +1500,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			makeStation(station, factionId);
 		}
 		
-		// add enough Light Industrial Complexes to meet demand for domestic goods
-		// TODO: use this for food and supplies as well?
-		List<EntityData> toAddLICs = new ArrayList<>(habitablePlanets);
-		toAddLICs.addAll(stations);
-		addLightIndustrialComplexes(toAddLICs);
+		// balance supply/demand by adding/removing relevant market conditions
+		List<EntityData> haveMarkets = new ArrayList<>(habitablePlanets);
+		haveMarkets.addAll(stations);
+		addLightIndustrialComplexes(haveMarkets);
+		balanceSuppliesAndMetal(haveMarkets);
 	}
 
 	public PlanetAPI createStarToken(int index, String systemId, StarSystemAPI system, String type, float size, boolean isSecondStar)

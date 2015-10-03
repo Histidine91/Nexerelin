@@ -36,7 +36,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	public static final String MANAGER_MAP_KEY = "exerelin_miningFleetManager";
 		
 	public static Logger log = Global.getLogger(MiningFleetManager.class);
-	protected static final float POINT_INCREMENT_PER_DAY = 4f;
+	protected static final float POINT_INCREMENT_PER_DAY = 3f;
 	protected static final float MARKET_STABILITY_DIVISOR = 5f;
 	protected static final float POINTS_TO_SPAWN = 100f;
 	protected static final float POINT_INCREMENT_PERIOD = 1;

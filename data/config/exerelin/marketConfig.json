@@ -84,7 +84,7 @@
 		{
 			"name":"volatiles_complex",
 			"cost":100,
-			"archetypes":{"default":0.5,"volatiles":3,"manufacturing":1,"heavy_industry":0.5,"mixed":1},
+			"archetypes":{"default":0.25,"volatiles":3,"manufacturing":1,"heavy_industry":0.5,"mixed":1},
 		},
 		{
 			"name":"volatiles_depot",
@@ -152,8 +152,9 @@
 		{
 			"name":"trade_center",
 			"cost":200,
-			"archetypes":{"default":0.5},
+			"archetypes":{"default":0.25},
 			"minSize":4,
+			"allowDuplicates":false
 		},
 		{
 			"name":"spaceport",
@@ -166,19 +167,19 @@
 		{
 			"name":"autofac_heavy_industry",
 			"cost":300,
-			"archetypes":{"default":1,"agriculture":0.5,"manufacturing":2.5,"heavy_industry":4,"mixed":1.5},
+			"archetypes":{"default":0.5,"agriculture":0,"manufacturing":2,"heavy_industry":3.75,"mixed":1},
 			"minSize":4,
 		},
 		{
 			"name":"antimatter_fuel_production",
 			"cost":350,
-			"archetypes":{"manufacturing":2,"heavy_industry":3.5,"mixed":1},
+			"archetypes":{"manufacturing":1.5,"heavy_industry":3.25,"mixed":0.5},
 			"minSize":4,
 		},
 		{
 			"name":"shipbreaking_center",
 			"cost":450,
-			"archetypes":{"heavy_industry":4.25},
+			"archetypes":{"manufacturing":1,"heavy_industry":4},
 			"minSize":5,
 			"allowDuplicates":false
 		},
@@ -190,7 +191,7 @@
 			"archetypes":{"default":0.5,"agriculture":1,"manufacturing":0,"heavy_industry":0},
 			"allowedPlanets":["terran","jungle","arid","desert"],
 			"minSize":4,
-			"maxSize":5,
+			#"maxSize":5,
 			"allowDuplicates":false,
 			"conflictsWith":["urbanized_polity"],
 		},
