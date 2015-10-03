@@ -21,8 +21,10 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,13 +38,13 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     public static Logger log = Global.getLogger(PrismMarket.class);
 
-    public List<String> sspBossShips = new ArrayList<>();
+    public Set<String> alreadyBoughtShips = new HashSet<>();
         
     @Override
     public void init(SubmarketAPI submarket) {
         super.init(submarket);
         
-        loadBossShips();
+        //loadBossShips();
     }
     
 	public boolean canLoadShips(String factionId)
@@ -51,12 +53,27 @@ public class PrismMarket extends BaseSubmarketPlugin {
 		return Global.getSector().getFaction(factionId) != null;
 	}
 	
-    public void loadBossShips()
+    public List<String> getBossShips()
     {
         //if (sspBossShips == null)
         //    sspBossShips = new ArrayList<>();
-        //sspBossShips.clear();
-        		
+        List<String> ret = new ArrayList<>();
+        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+        
+        int ibbProgress = 999;
+        if (ExerelinConfig.prismUseIBBProgressForBossShips)
+        {
+            if (!Global.getSector().getPersistentData().containsKey("ssp_famousBountyStage")) {
+                ibbProgress = 0;
+            }
+            else
+            {
+                ibbProgress = (int) Global.getSector().getPersistentData().get("ssp_famousBountyStage");
+            }
+        }
+        if (ibbProgress == -1) ibbProgress = 999;
+        log.info("Current IBB progress: " + ibbProgress);
+        
         try {
 			JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
 			Iterator<?> keys = config.keys();
@@ -67,13 +84,36 @@ public class PrismMarket extends BaseSubmarketPlugin {
 					JSONArray ships = config.getJSONArray(factionId);
 					for(int i=0; i<ships.length(); i++)
 					{
-						sspBossShips.add(ships.getString(i));
+                        JSONObject ship = ships.getJSONObject(i);
+                        String id = ship.getString("id");
+                        int ibbNum = ship.optInt("ibbNum", 0);
+                        //log.info("Ship " + id + " has IBB number " + ibbNum);
+                        if (ibbProgress < ibbNum) continue;
+                        if (!ExerelinConfig.prismRenewBossShips && alreadyBoughtShips.contains(id))
+                            continue;
+                        
+                        int weight = 3;
+                        if (ExerelinConfig.prismUseIBBProgressForBossShips && ibbNum > 0)
+                        {
+                            int diff = ibbProgress - ibbNum;
+                            if (diff > 3) diff = 3;
+                            weight = weight + 4*(3 - diff);
+                        }
+                        picker.add(id, weight);
 					}
 				}
 			}
         } catch (Exception ex) {
             log.error(ex);
         }
+        
+        for (int i=0; i<ExerelinConfig.prismNumBossShips; i++)
+        {
+            if (picker.isEmpty()) break;
+            ret.add(picker.pickAndRemove());
+        }
+        
+        return ret;
     }
 
     @Override
@@ -81,8 +121,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
 
         if (!okToUpdateCargo()) return;
         sinceLastCargoUpdate = 0f;
-
-        //loadBossShips();
         
         CargoAPI cargo = getCargo();
 
@@ -198,16 +236,13 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 }
             }
         }
-        if (!sspBossShips.isEmpty())
+        List<String> bossShips = getBossShips();
+        for (String variantId : bossShips)
         {
-            for (int i=0; i<ExerelinConfig.prismNumBossShips; i++)
-            {
-                String variantId = (String) ExerelinUtils.getRandomListElement(sspBossShips);
-                variantId += "_Hull";
-                FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
-                member.getRepairTracker().setMothballed(true);
-                getCargo().getMothballedShips().addFleetMember(member);
-            }
+            variantId += "_Hull";
+            FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+            member.getRepairTracker().setMothballed(true);
+            getCargo().getMothballedShips().addFleetMember(member);
         }
     }
 
@@ -233,15 +268,16 @@ public class PrismMarket extends BaseSubmarketPlugin {
 	
 	@Override
 	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
-		if (ExerelinConfig.prismRenewBossShips) return;
 		List<ShipSaleInfo> shipsBought = transaction.getShipsBought();
 		for (ShipSaleInfo saleInfo : shipsBought)
 		{
 			String hullId = saleInfo.getMember().getHullId();
-			if (sspBossShips.contains(hullId))
+            if (alreadyBoughtShips == null)
+                alreadyBoughtShips = new HashSet<>();
+            if (!alreadyBoughtShips.contains(hullId))
 			{
-				log.info("Purchased boss ship " + hullId + "; will no longer appear");
-				sspBossShips.remove(hullId);
+                //log.info("Purchased boss ship " + hullId + "; will no longer appear");
+                alreadyBoughtShips.add(hullId);
 			}
 		}
 	}
@@ -267,5 +303,4 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public boolean isBlackMarket() {
             return false;
     }
-
 }
