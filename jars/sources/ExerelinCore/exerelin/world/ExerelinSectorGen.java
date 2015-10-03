@@ -122,8 +122,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
 	
 	// TODO externalise?
-	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 2.5f;	// needs to be ridiculously high to be affordable
-	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 2f;	// yes, lower than min
+	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 3.25f;	// needs to be ridiculously high to be affordable
+	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 2.5f;	// yes, lower than min
 	
 	protected ExerelinMarketSetup marketSetup = new ExerelinMarketSetup();
 	
@@ -486,10 +486,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			int size = market.getSize();
 			if (size <= 3) continue;
 			float weight = 100 - (entity.bonusMarketPoints/(size-1));
+			
+			//log.info("Testing entity for supply/metal balance: " + entity.entity.getName() + " | " + homeworld.entity.getName() + " | " + (entity == homeworld));
+			
 			if (market.hasCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY)) 
 			{
 				// not enough metal; remove this autofac and prioritise the market for any readding later
-				if (entity != homeworld)
+				if (entity.market != homeworld.market)
 				{ 
 					if((metalDemand*0.5 > metalSupply) || ((suppliesSupply / suppliesDemand) > SUPPLIES_SUPPLY_DEMAND_RATIO_MAX))
 					{
@@ -736,8 +739,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sSupply += shipbreakingCount * ConditionData.SHIPBREAKING_SUPPLIES;
 		sSupply += recyclingCount * Exerelin_RecyclingPlant.RECYCLING_SUPPLIES;
 		suppliesSupply += sSupply;
-		float sDemand = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.SPACEPORT) * ConditionData.SPACEPORT_SUPPLIES * 0.5f;
-		sDemand += ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORBITAL_STATION) * ConditionData.ORBITAL_STATION_SUPPLIES * 0.5f;
+		float sDemand = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.SPACEPORT) * ConditionData.SPACEPORT_SUPPLIES * 0.6f;
+		sDemand += ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORBITAL_STATION) * ConditionData.ORBITAL_STATION_SUPPLIES * 0.6f;
 		sDemand += ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.MILITARY_BASE) * ConditionData.MILITARY_BASE_SUPPLIES;
 		suppliesDemand += sDemand;
 		
@@ -1004,8 +1007,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, getDensity(toOrbit)));
 		
 		shanghaiEntity.setMarket(market);
-		if (!market.hasCondition(Conditions.ORBITAL_STATION) && !market.hasCondition(Conditions.SPACEPORT)) 
+		if (!market.hasCondition(Conditions.ORBITAL_STATION) && !market.hasCondition(Conditions.SPACEPORT))
+		{
 			market.addCondition(Conditions.ORBITAL_STATION);
+			suppliesDemand += ConditionData.ORBITAL_STATION_SUPPLIES * 0.6f;
+		}
 		market.addSubmarket("tiandong_retrofit");
 		toOrbit.addTag("shanghai");
 		shanghaiEntity.addTag("shanghai");
@@ -1401,7 +1407,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (existingMarket != null)
 		{
 			if (!existingMarket.hasCondition(Conditions.SPACEPORT))
+			{
 				existingMarket.addCondition("orbital_station");
+				suppliesDemand += ConditionData.ORBITAL_STATION_SUPPLIES * 0.6f;
+			}
 			existingMarket.addCondition("exerelin_recycling_plant");
 			newStation.setMarket(existingMarket);
 			existingMarket.getConnectedEntities().add(newStation);
@@ -1414,6 +1423,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		pickEntityInteractionImage(newStation, newStation.getMarket(), planet.getTypeId(), EntityType.STATION);
 		newStation.setCustomDescriptionId("orbital_station_default");
 		
+		data.entity = newStation;		
 		return newStation;
 	}
 	
