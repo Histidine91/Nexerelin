@@ -165,8 +165,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         // relationship is _before_ the reputation penalty caused by the combat
         if (faction.isHostileTo("player")) return;
+        if (fleetResult.getDisabled().isEmpty() && fleetResult.getDestroyed().isEmpty()) return;
+        CampaignFleetAPI fleet = fleetResult.getFleet();
+        if (fleet.getMemoryWithoutUpdate().getBoolean("$exerelinFleetAggressAgainstPlayer")) return;
         
-        createWarmongerEvent(faction.getId(), fleetResult.getFleet());
+        createWarmongerEvent(faction.getId(), fleet);
     }
     
     

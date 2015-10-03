@@ -942,13 +942,36 @@ commRelayAddOptionLeave,PopulateOptions,"$tag:comm_relay
 !$hasMarket
 $menuState == main","SetShortcut crLeave ""ESCAPE""",,100:crLeave:Leave,
 ,,,,,,
+dialogHegRelayInterference_openWarnedBefore,OpenCommLink,"$respondingToCommRelayInterference score:100
+$timesSawPlayerInterferingWithRelay > 1","$ignorePlayerCommRequests = true 1
+$exerelinFleetAggressAgainstPlayer = true 1","""I've already told you not to mess with $faction hardware. Maybe this'll reinforce the message."" The comm link is cut before you can begin to respond.",,
+dialogHegRelayInterference_cut_1,DialogOptionSelected,"$respondingToCommRelayInterference score:100
+!$playerAcknowledgedRelayInterferenceWarning
+$option == cutCommLink","$ignorePlayerCommRequests = true 1
+$exerelinFleetAggressAgainstPlayer = true 1
+unset $respondingToCommRelayInterference
+EndConversation","You cut the comm link without acknowledging $PersonRank $personName's words. As $hisOrHer $otherShipOrFleet maintains an aggressive posture, that may not have been the best means of obtaining a peaceful resolution.",,
+,,,,,,
+customsInspectionDisagree,DialogOptionSelected,"$doingCustomsInspection score:100
+$option == ciDisagree","AdjustRep $faction.id CUSTOMS_REFUSED_TOLL
+$ignorePlayerCommRequests = true 1
+$exerelinFleetAggressAgainstPlayer = true 1
+#MakeNearbyFleetsHostile $faction.id 2000 10
+EndConversation","""Oh? That's something you're going to regret.""
+
+The comm link is cut before you have a chance to respond.",,
+customsInspectionEndingHostile,CustomsInspectionEndHostile,,"unset $doingCustomsInspection
+$exerelinFleetAggressAgainstPlayer = true 1
+$ignorePlayerCommRequests = true 1
+EndConversation",,,
+,,,,,,
 #Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplars,MarketPostOpen,"!$doesFakeVariableExist score:999
 $hasMarket
 $faction.id == templars score:1000
 RepIsAtWorst $faction.id WELCOMING","$menuState = main 0
 $tradeMode = OPEN 0
-FireAll PopulateOptions",Your $shipOrFleet approaches $market.,,
+FireAll PopulateOptions",,,
 ExerelinMarketPostOpenTemplarsHostile,MarketPostOpen,"!$doesFakeVariableExist score:999
 $hasMarket
 $faction.id == templars score:1000
