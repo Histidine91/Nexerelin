@@ -84,11 +84,11 @@
 		{
 			"name":"volatiles_complex",
 			"cost":100,
-			"archetypes":{"default":0.25,"volatiles":3,"manufacturing":1,"heavy_industry":0.5,"mixed":1},
+			"archetypes":{"volatiles":3,"manufacturing":1,"heavy_industry":0.5,"mixed":1},
 		},
 		{
 			"name":"volatiles_depot",
-			"cost":100,
+			"cost":150,
 			"archetypes":{"volatiles":2,"manufacturing":1.25,"heavy_industry":1,"mixed":0.5},
 		},
 		{

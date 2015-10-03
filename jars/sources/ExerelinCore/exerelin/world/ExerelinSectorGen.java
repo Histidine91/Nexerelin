@@ -310,7 +310,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (marketArchetypeQueueNum % 6 != 3)	// skip every sixth organics market
 			marketArchetypeQueue.add(MarketArchetype.ORGANICS);
 		
-		if (marketArchetypeQueueNum % 5 != 2)	// skip every fifth volatiles market
+		if (marketArchetypeQueueNum % 4 != 2)	// skip every fifth volatiles market
 			marketArchetypeQueue.add(MarketArchetype.VOLATILES);
 		
 		marketArchetypeQueue.add(MarketArchetype.MANUFACTURING);
@@ -451,7 +451,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			marketPicker.add(market, weight);
 		}
 		
-		while ((domesticGoodsDemand * 0.75) > domesticGoodsSupply)
+		while ((domesticGoodsDemand * 0.9) > domesticGoodsSupply)
 		{
 			if (marketPicker.isEmpty())	break;	// fuck it, we give up
 			
