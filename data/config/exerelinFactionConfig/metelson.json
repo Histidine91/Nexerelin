@@ -18,4 +18,6 @@
     "alignments":{
         "corporate":0.5,
     },
+    
+    "miningVariantsOrWings":["mi_pala_mining", "mining_drone_wing"]
 }
