@@ -122,8 +122,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
 	
 	// TODO externalise?
-	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 3f;	// needs to be ridiculously high to be affordable
-	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 2.5f;	// yes, lower than min
+	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 2.5f;	// needs to be ridiculously high to be affordable
+	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 2f;	// yes, lower than min
 	
 	protected ExerelinMarketSetup marketSetup = new ExerelinMarketSetup();
 	
@@ -310,7 +310,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (marketArchetypeQueueNum % 6 != 3)	// skip every sixth organics market
 			marketArchetypeQueue.add(MarketArchetype.ORGANICS);
 		
-		if (marketArchetypeQueueNum % 4 != 2)	// skip every fourth volatiles market
+		if (marketArchetypeQueueNum % 5 != 2)	// skip every fifth volatiles market
 			marketArchetypeQueue.add(MarketArchetype.VOLATILES);
 		
 		marketArchetypeQueue.add(MarketArchetype.MANUFACTURING);
@@ -609,7 +609,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			if (marketSize < 5) marketSize = 5;
 			newMarket.addCondition("regional_capital");
-			newMarket.addCondition("exerelin_recycling_plant");
+			//newMarket.addCondition("exerelin_recycling_plant");
 			newMarket.addCondition("exerelin_hydroponics");
 		}
 		if (data.forceMarketSize != -1) marketSize = data.forceMarketSize;
