@@ -914,7 +914,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         else {
             player.setRelationship(selectedFactionId, STARTING_RELATIONSHIP_FRIENDLY);
-            ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
+            //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");	// already done in syncPlayerRelationshipsToFaction
         }
         
     }
