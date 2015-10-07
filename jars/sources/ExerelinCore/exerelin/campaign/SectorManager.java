@@ -205,6 +205,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static boolean getCorvusMode()
     {
+        if (sectorManager == null) create();	// try to make sure we have an answer for whoever calls this
         if (sectorManager == null) return false;
         return sectorManager.corvusMode;
     }
