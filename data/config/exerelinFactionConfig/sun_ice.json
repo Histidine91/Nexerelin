@@ -1,7 +1,7 @@
 {
     "uniqueModClassName":"data.ICEModPlugin", # String
     "playableFaction":false, # for now
-    "corvusCompatible":false,
+    "corvusCompatible":true,
     
     "spawnPiratesAndMercs":false,
 
@@ -15,7 +15,7 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "factionsDisliked":["sun_ici"], # String array
     
     "alignments":{
         "militarist":0.5,

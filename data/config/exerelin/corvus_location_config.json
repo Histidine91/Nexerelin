@@ -131,6 +131,10 @@
 			"system":"Tartarus",
 			"entity":"SCY_hephaistosStation"
 		},
+		"sun_ici":{
+			"system":"Eos",
+			"entity":"sun_ice_idoneus_citadel"
+		},
 		"syndicate_asp":{
 			"system":"Ursulo",
 			"entity":"paddington"
