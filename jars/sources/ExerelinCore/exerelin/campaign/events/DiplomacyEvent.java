@@ -71,6 +71,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		// but problem is, the token replacement method needs to know the relationship change NOW
 		//DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
 		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
+		/*
 		Global.getSector().reportEventStage(this, event.stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
 			final DiplomacyEventDef thisEvent = event;
 			final float thisDelta = delta;
@@ -82,6 +83,8 @@ public class DiplomacyEvent extends BaseEventPlugin {
 			//DiplomacyManager.adjustRelations(thisEvent, thisMarket, fac, otherFac, thisDelta);
 			}
 		});
+		*/
+		Global.getSector().reportEventStage(this, event.stage, market.getPrimaryEntity(), priority);
 		log.info("Diplomacy event: " + event.stage);
 	}
 

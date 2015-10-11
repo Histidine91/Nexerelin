@@ -7,11 +7,16 @@
 		"conquest":"conquest",
 		"credits":"credits",
 		"diplomatic":"diplomatic",
+		"done":"done",
 		"intelReport":"intel report",
 		"marine":"marine",
+		"options":"options",
 		"size":"size",
 		"stability":"stability",
-		"stats":"stats"
+		"stats":"stats",
+		
+		"true":"true",
+		"false":"false",
 	},
 	
 	"exerelin_alliances":{
@@ -127,6 +132,14 @@
 		"shipDamaged":"$ship took $damage damage",
 		"shipDestroyed":"$ship destroyed",
 		"shipLostCR":"$ship lost $crLost CR"
+	},
+	"exerelin_reinitScreen":{
+		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",
+		
+		"allowRespawn":"Allow faction respawn",
+		"allowRespawnNonOriginal":"Allow respawn for factions not currently present",
+		"hardMode":"Starfarer Mode",
+		"randomizeRelationships":"Randomize faction relationships",
 	},
 	"exerelin_victoryScreen":{
 		"victory_conquest":"Congratulations! $TheFaction has crushed all opposition and now reigns supreme over the $clusterName cluster!",

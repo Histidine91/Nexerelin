@@ -736,6 +736,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return firstStar;
     }
     
+    public static void setAllowRespawnFactions(boolean respawn, boolean allowNew)
+    {
+        if (sectorManager == null) return;
+        sectorManager.respawnFactions = respawn;
+        sectorManager.onlyRespawnStartingFactions = !allowNew;
+    }
+    
     public enum VictoryType
     {
         CONQUEST,

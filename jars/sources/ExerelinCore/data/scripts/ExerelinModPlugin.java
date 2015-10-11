@@ -4,6 +4,7 @@ import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -13,7 +14,10 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DirectoryScreenScript;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.StatsTracker;
+import exerelin.plugins.ExerelinCoreCampaignPlugin;
 import exerelin.utilities.*;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.MiningFleetManager;
@@ -63,12 +67,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_insurance", null);
         }
-		if (SectorManager.getHardMode() && ExerelinUtils.isSSPInstalled())
-		{
-			if (!Global.getSector().getEventManager().isOngoing(null, "player_bounty")) {
-				Global.getSector().getEventManager().startEvent(null, "player_bounty", null);
-			}
-		}
+        if (SectorManager.getHardMode() && ExerelinUtils.isSSPInstalled())
+        {
+            if (!Global.getSector().getEventManager().isOngoing(null, "player_bounty")) {
+                Global.getSector().getEventManager().startEvent(null, "player_bounty", null);
+            }
+        }
         
         reverseCompatibility();
         
@@ -82,6 +86,37 @@ public class ExerelinModPlugin extends BaseModPlugin
         ExerelinConfig.loadSettings();
     }
 
+    @Override
+    public void onEnabled(boolean wasEnabledBefore)
+    {
+        if (!wasEnabledBefore)
+        {
+            Global.getLogger(this.getClass()).info("Applying Nexerelin to existing game");
+            
+            SectorAPI sector = Global.getSector();
+            InvasionFleetManager im = InvasionFleetManager.create();
+            AllianceManager am = AllianceManager.create();
+            sector.addScript(SectorManager.create());
+            sector.addScript(DiplomacyManager.create());
+            sector.addScript(im);
+            sector.addScript(ResponseFleetManager.create());
+            sector.addScript(MiningFleetManager.create());
+            sector.addScript(CovertOpsManager.create());
+            sector.addScript(am);
+            im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
+            am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
+            
+            StatsTracker.create();
+            
+            sector.registerPlugin(new ExerelinCoreCampaignPlugin());
+            SectorManager.setCorvusMode(true);
+            SectorManager.reinitLiveFactions();
+            PlayerFactionStore.setPlayerFactionId("player_npc");
+            
+            sector.addTransientScript(new ReinitScreenScript());
+        }
+    }
+    
     @Override
     public void onNewGameAfterTimePass() {
     }
