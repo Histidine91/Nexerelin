@@ -26,6 +26,34 @@ import org.lazywizard.omnifac.OmniFacSettings;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
+    
+    protected void applyToExistingSave()
+    {
+        Global.getLogger(this.getClass()).info("Applying Nexerelin to existing game");
+        
+        SectorAPI sector = Global.getSector();
+        InvasionFleetManager im = InvasionFleetManager.create();
+        AllianceManager am = AllianceManager.create();
+        sector.addScript(SectorManager.create());
+        sector.addScript(DiplomacyManager.create());
+        sector.addScript(im);
+        sector.addScript(ResponseFleetManager.create());
+        sector.addScript(MiningFleetManager.create());
+        sector.addScript(CovertOpsManager.create());
+        sector.addScript(am);
+        im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
+        am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
+        
+        StatsTracker.create();
+        
+        sector.registerPlugin(new ExerelinCoreCampaignPlugin());
+        SectorManager.setCorvusMode(true);
+        SectorManager.reinitLiveFactions();
+        PlayerFactionStore.setPlayerFactionId("player_npc");
+        
+        sector.addTransientScript(new ReinitScreenScript());
+    }
+    
     @Override
     public void beforeGameSave()
     {
@@ -51,7 +79,16 @@ public class ExerelinModPlugin extends BaseModPlugin
     }
     
     @Override
+    public void onEnabled(boolean wasEnabledBefore) {
+        Global.getLogger(this.getClass()).info("On enabled; " + wasEnabledBefore);
+    }
+    
+    @Override
     public void onGameLoad() {
+        Global.getLogger(this.getClass()).info("Game load; " + SectorManager.isSectorManagerSaved());
+        //if (!SectorManager.isSectorManagerSaved())
+        //    applyToExistingSave();
+        
         ExerelinConfig.loadSettings();
         SectorManager.create();
         DiplomacyManager.create();
@@ -84,37 +121,6 @@ public class ExerelinModPlugin extends BaseModPlugin
     {
         OmniFacSettings.reloadSettings();
         ExerelinConfig.loadSettings();
-    }
-
-    @Override
-    public void onEnabled(boolean wasEnabledBefore)
-    {
-        if (!wasEnabledBefore)
-        {
-            Global.getLogger(this.getClass()).info("Applying Nexerelin to existing game");
-            
-            SectorAPI sector = Global.getSector();
-            InvasionFleetManager im = InvasionFleetManager.create();
-            AllianceManager am = AllianceManager.create();
-            sector.addScript(SectorManager.create());
-            sector.addScript(DiplomacyManager.create());
-            sector.addScript(im);
-            sector.addScript(ResponseFleetManager.create());
-            sector.addScript(MiningFleetManager.create());
-            sector.addScript(CovertOpsManager.create());
-            sector.addScript(am);
-            im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
-            am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
-            
-            StatsTracker.create();
-            
-            sector.registerPlugin(new ExerelinCoreCampaignPlugin());
-            SectorManager.setCorvusMode(true);
-            SectorManager.reinitLiveFactions();
-            PlayerFactionStore.setPlayerFactionId("player_npc");
-            
-            sector.addTransientScript(new ReinitScreenScript());
-        }
     }
     
     @Override

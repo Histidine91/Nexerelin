@@ -20,8 +20,9 @@ import exerelin.utilities.StringHelper;
  */
 public class ReinitScreenScript implements EveryFrameScript
 {
+    private static final float DAYS_TO_WAIT = 0.2f;
     private boolean isDone = false;
-    private boolean popupNextFrame = false;
+    private float timer = 0;
 
     public ReinitScreenScript()
     {
@@ -51,11 +52,8 @@ public class ReinitScreenScript implements EveryFrameScript
             return;
         }
         
-        if (!popupNextFrame)
-        {
-            popupNextFrame = true;
-            return;
-        }
+        timer = timer + Global.getSector().getClock().convertToDays(amount);
+        if (timer < DAYS_TO_WAIT) return;
         
         if (!isDone)
         {

@@ -197,6 +197,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return sectorManager;
     }
     
+    public static boolean isSectorManagerSaved()
+    {
+        Map<String, Object> data = Global.getSector().getPersistentData();
+        sectorManager = (SectorManager)data.get(MANAGER_MAP_KEY);
+        if (sectorManager != null)
+            return true;
+        
+        return false;
+    }
+    
     public static void setCorvusMode(boolean mode)
     {
         if (sectorManager == null) return;
