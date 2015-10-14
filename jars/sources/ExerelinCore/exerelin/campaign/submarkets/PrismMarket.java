@@ -31,8 +31,8 @@ import org.json.JSONObject;
 
 public class PrismMarket extends BaseSubmarketPlugin {
     
-	public static final String CONFIG_FILE = "data/config/exerelin/prism_boss_ships.json";
-	
+    public static final String CONFIG_FILE = "data/config/exerelin/prism_boss_ships.json";
+    
     protected static final int MIN_NUMBER_OF_SHIPS = 5;
     protected static final int MAX_TRIES_WEAPONS = 5;
     
@@ -47,12 +47,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
         //loadBossShips();
     }
     
-	public boolean canLoadShips(String factionId)
-	{
-		if (factionId.equals("ssp")) return ExerelinUtils.isSSPInstalled();
-		return Global.getSector().getFaction(factionId) != null;
-	}
-	
+    public boolean canLoadShips(String factionId)
+    {
+        if (factionId.equals("ssp")) return ExerelinUtils.isSSPInstalled();
+        return Global.getSector().getFaction(factionId) != null;
+    }
+    
     public List<String> getBossShips()
     {
         //if (sspBossShips == null)
@@ -76,13 +76,13 @@ public class PrismMarket extends BaseSubmarketPlugin {
         int maxIBBNum = 0;
         
         try {
-			JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
-			Iterator<?> keys = config.keys();
-			while( keys.hasNext() ) {
+            JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
+            Iterator<?> keys = config.keys();
+            while( keys.hasNext() ) {
                 String factionId = (String)keys.next();
-				if (canLoadShips(factionId))
-				{
-					JSONArray ships = config.getJSONArray(factionId);
+                if (canLoadShips(factionId))
+                {
+                    JSONArray ships = config.getJSONArray(factionId);
                     
                     // ensure proper emphasis on last ships once IBB sidequest is complete
                     if (ibbProgress == 999)
@@ -97,8 +97,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
                         ibbProgress = maxIBBNum;    
                     }
                     
-					for(int i=0; i<ships.length(); i++)
-					{
+                    for(int i=0; i<ships.length(); i++)
+                    {
                         JSONObject ship = ships.getJSONObject(i);
                         String id = ship.getString("id");
                         int ibbNum = ship.optInt("ibbNum", 0);
@@ -116,9 +116,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
                             weight = weight + 4*(3 - diff);
                         }
                         picker.add(id, weight);
-					}
-				}
-			}
+                    }
+                }
+            }
         } catch (Exception ex) {
             log.error(ex);
         }
@@ -281,22 +281,22 @@ public class PrismMarket extends BaseSubmarketPlugin {
         if (action == TransferAction.PLAYER_SELL) return true;
         return false;
     }
-	
-	@Override
-	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
-		List<ShipSaleInfo> shipsBought = transaction.getShipsBought();
-		for (ShipSaleInfo saleInfo : shipsBought)
-		{
-			String hullId = saleInfo.getMember().getHullId();
+    
+    @Override
+    public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
+        List<ShipSaleInfo> shipsBought = transaction.getShipsBought();
+        for (ShipSaleInfo saleInfo : shipsBought)
+        {
+            String hullId = saleInfo.getMember().getHullId();
             if (alreadyBoughtShips == null)
                 alreadyBoughtShips = new HashSet<>();
             if (!alreadyBoughtShips.contains(hullId))
-			{
+            {
                 //log.info("Purchased boss ship " + hullId + "; will no longer appear");
                 alreadyBoughtShips.add(hullId);
-			}
-		}
-	}
+            }
+        }
+    }
     
     @Override
     public String getIllegalTransferText(FleetMemberAPI member, TransferAction action) {
