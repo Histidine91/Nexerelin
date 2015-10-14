@@ -63,132 +63,132 @@ public class DirectoryScreenScript implements EveryFrameScript
 
 	private static class FactionDirectoryDialog implements InteractionDialogPlugin, CoreInteractionListener
 	{
-	private InteractionDialogAPI dialog;
-	private TextPanelAPI text;
-	private OptionPanelAPI options;
-	
-	protected RuleBasedInteractionDialogPluginImpl optionsDialogDelegate;
+		private InteractionDialogAPI dialog;
+		private TextPanelAPI text;
+		private OptionPanelAPI options;
 
-	private enum Menu
-	{
-		INIT,
-		DIRECTORY,
-		ALLIANCES,
-		INTEL_SCREEN,
-		EXIT
-	}
+		protected RuleBasedInteractionDialogPluginImpl optionsDialogDelegate;
 
-	@Override
-	public void init(InteractionDialogAPI dialog)
-	{
-		FleetInteractionDialogPluginImpl.inConversation = false;
-		this.dialog = dialog;
-		this.options = dialog.getOptionPanel();
-		this.text = dialog.getTextPanel();
+		private enum Menu
+		{
+			INIT,
+			DIRECTORY,
+			ALLIANCES,
+			INTEL_SCREEN,
+			EXIT
+		}
 
-		//dialog.setTextWidth(Display.getWidth() * .9f);
-		
-		//dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("graphics/illustrations/terran_orbit.jpg", 640, 400));
-		initMenu();
-	}
-	
-	void initMenu()
-	{
-		options.clearOptions();
-		options.addOption(StringHelper.getString("exerelin_factions", "factionDirectoryOption"), Menu.DIRECTORY);
-		options.addOption(StringHelper.getString("exerelin_alliances", "allianceListOption"), Menu.ALLIANCES);
-		//options.addOption(StringHelper.getString("exerelin_misc", "intelScreen"), Menu.INTEL_SCREEN);
-		options.addOption(Misc.ucFirst(StringHelper.getString("close")), Menu.EXIT);
-		options.setShortcut(Menu.EXIT, Keyboard.KEY_ESCAPE, false, false, false, true);
-		dialog.setPromptText(StringHelper.getString("exerelin_misc", "directoryOptions") + ":");
-	}
+		@Override
+		public void init(InteractionDialogAPI dialog)
+		{
+			FleetInteractionDialogPluginImpl.inConversation = false;
+			this.dialog = dialog;
+			this.options = dialog.getOptionPanel();
+			this.text = dialog.getTextPanel();
 
-	// NOTE: we use FleetInteractionDialogPluginImpl.inConversation to tell whether we're currently delegating stuff to the RuleBasedInteractionDialogPlugin
-	
-	@Override
-	public void optionSelected(String optionText, Object optionData)
-	{
-		if (optionData == null) return;
-		if (FleetInteractionDialogPluginImpl.inConversation) {
-			if (optionsDialogDelegate == null)
+			//dialog.setTextWidth(Display.getWidth() * .9f);
+
+			//dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("graphics/illustrations/terran_orbit.jpg", 640, 400));
+			initMenu();
+		}
+
+		void initMenu()
+		{
+			options.clearOptions();
+			options.addOption(StringHelper.getString("exerelin_factions", "factionDirectoryOption"), Menu.DIRECTORY);
+			options.addOption(StringHelper.getString("exerelin_alliances", "allianceListOption"), Menu.ALLIANCES);
+			//options.addOption(StringHelper.getString("exerelin_misc", "intelScreen"), Menu.INTEL_SCREEN);
+			options.addOption(Misc.ucFirst(StringHelper.getString("close")), Menu.EXIT);
+			options.setShortcut(Menu.EXIT, Keyboard.KEY_ESCAPE, false, false, false, true);
+			dialog.setPromptText(StringHelper.getString("exerelin_misc", "directoryOptions") + ":");
+		}
+
+		// NOTE: we use FleetInteractionDialogPluginImpl.inConversation to tell whether we're currently delegating stuff to the RuleBasedInteractionDialogPlugin
+
+		@Override
+		public void optionSelected(String optionText, Object optionData)
+		{
+			if (optionData == null) return;
+			if (FleetInteractionDialogPluginImpl.inConversation) {
+				if (optionsDialogDelegate == null)
+				{
+					optionsDialogDelegate = new RuleBasedInteractionDialogPluginImpl();
+					optionsDialogDelegate.setEmbeddedMode(true);
+					optionsDialogDelegate.init(dialog);
+				}
+
+				optionsDialogDelegate.optionSelected(optionText, optionData);
+				if (!FleetInteractionDialogPluginImpl.inConversation) {
+					optionSelected(null, Menu.INIT);
+				}
+				return;
+			}
+			else if (optionText != null) {
+				text.addParagraph(optionText, Global.getSettings().getColor("buttonText"));
+			}
+
+			if (optionData == Menu.INIT)
 			{
+				initMenu();
+			}
+			if (optionData == Menu.DIRECTORY)
+			{
+				FleetInteractionDialogPluginImpl.inConversation = true;
+
 				optionsDialogDelegate = new RuleBasedInteractionDialogPluginImpl();
 				optionsDialogDelegate.setEmbeddedMode(true);
 				optionsDialogDelegate.init(dialog);
+
+				MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
+				mem.set("$specialDialog", true, 0);
+
+				optionsDialogDelegate.fireAll("ExerelinFactionDirectory");
 			}
-			
-			optionsDialogDelegate.optionSelected(optionText, optionData);
-			if (!FleetInteractionDialogPluginImpl.inConversation) {
-				optionSelected(null, Menu.INIT);
+			else if (optionData == Menu.ALLIANCES)
+			{
+				AllianceManager.printAllianceList(text);
 			}
-			return;
-		}
-		else if (optionText != null) {
-			text.addParagraph(optionText, Global.getSettings().getColor("buttonText"));
+			else if (optionData == Menu.INTEL_SCREEN)
+			{
+				dialog.getVisualPanel().showCore(CoreUITabId.INTEL, dialog.getInteractionTarget(), this);
+			}
+			else if (optionData == Menu.EXIT)
+			{
+				FleetInteractionDialogPluginImpl.inConversation = false;
+				dialog.dismiss();
+			}
 		}
 
-		if (optionData == Menu.INIT)
+		@Override
+		public void optionMousedOver(String optionText, Object optionData)
 		{
-			initMenu();
 		}
-		if (optionData == Menu.DIRECTORY)
+
+		@Override
+		public void advance(float amount)
 		{
-			FleetInteractionDialogPluginImpl.inConversation = true;
-			
-			optionsDialogDelegate = new RuleBasedInteractionDialogPluginImpl();
-			optionsDialogDelegate.setEmbeddedMode(true);
-			optionsDialogDelegate.init(dialog);
-			
-			MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
-			mem.set("$specialDialog", true, 0);
-			
-			optionsDialogDelegate.fireAll("ExerelinFactionDirectory");
 		}
-		else if (optionData == Menu.ALLIANCES)
+
+		@Override
+		public void backFromEngagement(EngagementResultAPI battleResult)
 		{
-			AllianceManager.printAllianceList(text);
 		}
-		else if (optionData == Menu.INTEL_SCREEN)
+
+		@Override
+		public Object getContext()
 		{
-			dialog.getVisualPanel().showCore(CoreUITabId.INTEL, dialog.getInteractionTarget(), this);
+			return null;
 		}
-		else if (optionData == Menu.EXIT)
+
+		@Override
+		public Map<String, MemoryAPI> getMemoryMap()
 		{
-			FleetInteractionDialogPluginImpl.inConversation = false;
-			dialog.dismiss();
+			return null;
 		}
-	}
 
-	@Override
-	public void optionMousedOver(String optionText, Object optionData)
-	{
-	}
+		@Override
+		public void coreUIDismissed() {
 
-	@Override
-	public void advance(float amount)
-	{
-	}
-
-	@Override
-	public void backFromEngagement(EngagementResultAPI battleResult)
-	{
-	}
-
-	@Override
-	public Object getContext()
-	{
-		return null;
-	}
-
-	@Override
-	public Map<String, MemoryAPI> getMemoryMap()
-	{
-		return null;
-	}
-	
-	@Override
-	public void coreUIDismissed() {
-		
-	}
+		}
 	}
 }
