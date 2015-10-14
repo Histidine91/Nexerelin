@@ -2,8 +2,8 @@
 	"planetsForArchetypes":{
 		"agriculture":{
 			"terran":1,
-			"water":1,
-			"jungle":1,
+			"water":0.7,
+			"jungle":0.7,
 			"arid":1,
 		},
 		"ore":{
@@ -98,8 +98,8 @@
 		},
 		{
 			"name":"exerelin_hydroponics",
-			"cost":100,
-			"archetypes":{"default":1.5, "agriculture":3, "mixed":2},
+			"cost":250,
+			"archetypes":{"default":1.25, "agriculture":2.5, "mixed":2},
 		},
 		{
 			"name":"aquaculture",

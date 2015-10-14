@@ -55,11 +55,6 @@ public class ExerelinMarketSetup
 	protected final List<MarketConditionDef> conditions = new ArrayList<>();
 	protected final List<MarketConditionDef> specialConditions = new ArrayList<>();
 	
-	private final List<MarketConditionDef> primaryResourceConds = new ArrayList<>();
-	private final List<MarketConditionDef> industryConds = new ArrayList<>();
-	private final List<MarketConditionDef> heavyIndustryConds = new ArrayList<>();
-	private final List<MarketConditionDef> specialConds = new ArrayList<>();
-	
 	public ExerelinMarketSetup()
 	{
 		try {
@@ -207,9 +202,9 @@ public class ExerelinMarketSetup
 		
 		int bonusPoints = 0;
 		if (size == 3) points = 200;
-		else if (size == 4) points = 400;
-		else if (size == 5) points = 700;
-		else if (size == 6) points = 1100;
+		else if (size == 4) points = 350;
+		else if (size == 5) points = 600;
+		else if (size == 6) points = 1000;
 		else if (size >= 7) points = 1500;
 		for (int i=0; i<size-1; i++)
 		{

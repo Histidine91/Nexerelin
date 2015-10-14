@@ -28,6 +28,7 @@ import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.campaign.econ.Exerelin_Hydroponics;
 import data.scripts.campaign.econ.Exerelin_RecyclingPlant;
 import data.scripts.world.ExerelinCorvusLocations;
 import data.scripts.world.ExerelinCorvusLocations.SpawnPointEntry;
@@ -121,6 +122,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final float BINARY_STAR_DISTANCE = 11000;
 	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
 	
+	// extremely sensitive to small changes, avoid touching these for now
 	// TODO externalise?
 	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 3.25f;	// needs to be ridiculously high to be affordable
 	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 2.5f;	// yes, lower than min
@@ -146,6 +148,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected double suppliesSupply = 0;
 	protected double metalDemand = 0;
 	protected double metalSupply = 0;
+	protected double foodDemand = 0;
+	protected double foodSupply = 0;
 	
 	protected float numOmnifacs = 0;
 	
@@ -310,7 +314,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (marketArchetypeQueueNum % 6 != 3)	// skip every sixth organics market
 			marketArchetypeQueue.add(MarketArchetype.ORGANICS);
 		
-		if (marketArchetypeQueueNum % 4 != 2)	// skip every fifth volatiles market
+		if (marketArchetypeQueueNum % 4 != 2)	// skip every fourth volatiles market
 			marketArchetypeQueue.add(MarketArchetype.VOLATILES);
 		
 		marketArchetypeQueue.add(MarketArchetype.MANUFACTURING);
@@ -406,10 +410,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	// add enough light industrial complexes to balance out domestic good supply/demand
 	// can also remove excess ones
-	protected void addLightIndustrialComplexes(List<EntityData> candidateEntities)
+	protected void balanceDomesticGoods(List<EntityData> candidateEntities)
 	{
 		final int HALFPOW5 = (int)Math.pow(10, 5)/2;
 		final int HALFPOW4 = (int)Math.pow(10, 4)/2;
+		
+		log.info("Pre-balance domestic goods supply/demand: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
 		
 		WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker<>();
 		for (EntityData entity:candidateEntities)
@@ -424,7 +430,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				if (domesticGoodsSupply > domesticGoodsDemand * 1.2)
 				{
 					market.removeCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
-					domesticGoodsSupply -= ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS_MULT * Math.pow(10, size);
+					domesticGoodsSupply -= ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS_MULT * ExerelinUtilsMarket.getPopulation(size);
 					weight *= 25;
 					log.info("Removed balancing Light Industrial Complex from " + market.getName() + " (size " + size + ")");
 				}
@@ -467,7 +473,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (size > maxSize) continue;
 			
 			market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
-			domesticGoodsSupply += ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS_MULT * Math.pow(10, size);
+			domesticGoodsSupply += ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS_MULT * ExerelinUtilsMarket.getPopulation(size);
 			log.info("Added balancing Light Industrial Complex to " + market.getName() + " (size " + size + ")");
 		}
 		log.info("Final domestic goods supply/demand: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
@@ -532,7 +538,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (marketPicker.isEmpty())	break;	// fuck it, we give up
 			
 			MarketAPI market = marketPicker.pickAndRemove();
-			if (metalSupply > metalDemand*1.2)
+			if (metalSupply > metalDemand*1.1)
 			{
 				market.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
 				suppliesSupply += ConditionData.AUTOFAC_HEAVY_SUPPLIES;
@@ -549,6 +555,72 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		log.info("Final supplies supply/demand: " + (int)suppliesSupply + " / " + (int)suppliesDemand);
 		log.info("Final metal supply/demand: " + (int)metalSupply + " / " + (int)metalDemand);
+	}
+	
+	protected void balanceFood(List<EntityData> candidateEntities)
+	{
+		final int HALFPOW5 = (int)Math.pow(10, 5)/2;
+		final int HALFPOW4 = (int)Math.pow(10, 4)/2;
+		
+		log.info("Pre-balance food supply/demand: " + (int)foodSupply + " / " + (int)foodDemand);
+		
+		WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker<>();
+		for (EntityData entity:candidateEntities)
+		{
+			MarketAPI market = entity.market;
+			if (market == null) continue;
+			int size = market.getSize();
+			float weight = 100 - (entity.bonusMarketPoints/(size-1));
+			if (market.hasCondition("exerelin_hydroponics")) 
+			{
+				if (foodSupply > foodDemand*1.1)
+				{
+					int hydroponicsCount = ExerelinUtilsMarket.countMarketConditions(market, "exerelin_hydroponics");
+					market.removeCondition("exerelin_hydroponics");	// removes all
+					for (int i=0; i<hydroponicsCount - 1; i++)
+						market.addCondition("exerelin_hydroponics");	// add back all but one
+					foodSupply -= Exerelin_Hydroponics.HYDROPONICS_FOOD_POP_MULT * ExerelinUtilsMarket.getPopulation(size);
+					weight *= 25;
+					log.info("Removed balancing Hydroponics Lab from " + market.getName() + " (size " + size + ")");
+				}
+				else continue;
+			}
+			
+			switch (entity.archetype)
+			{
+				case AGRICULTURE:
+					weight *= 2.5f;
+					break;
+				case MIXED:
+					weight *= 2f;
+					break;
+				default:
+					weight *= 1.25f;
+			}
+			
+			marketPicker.add(market, weight);
+		}
+		
+		while ((foodDemand * 0.8) > foodSupply)
+		{
+			if (marketPicker.isEmpty())	break;	// fuck it, we give up
+			
+			int maxSize = 6;
+			double shortfall = foodDemand - foodSupply;
+			if (shortfall < HALFPOW4)
+				maxSize = 4;
+			else if (shortfall < HALFPOW5)
+				maxSize = 5;
+			
+			MarketAPI market = marketPicker.pickAndRemove();
+			int size = market.getSize();
+			if (size > maxSize) continue;
+			
+			market.addCondition("exerelin_hydroponics");
+			foodSupply += Exerelin_Hydroponics.HYDROPONICS_FOOD_POP_MULT * ExerelinUtilsMarket.getPopulation(size);
+			log.info("Added balancing Hydroponics Lab to " + market.getName() + " (size " + size + ")");
+		}
+		log.info("Final food supply/demand: " + (int)foodSupply + " / " + (int)foodDemand);
 	}
 	
 	protected void addStartingMarketCommodities(MarketAPI market)
@@ -744,7 +816,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sDemand += ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.MILITARY_BASE) * ConditionData.MILITARY_BASE_SUPPLIES;
 		suppliesDemand += sDemand;
 		
+		foodSupply += getMarketBaseFoodSupply(newMarket);
+		foodDemand += 0.1 * ExerelinUtilsMarket.getPopulation(marketSize);
+		
 		//log.info("Cumulative domestic goods supply/demand thus far: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
+		
 		
 		data.market = newMarket;
 		return newMarket;
@@ -1513,8 +1589,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// balance supply/demand by adding/removing relevant market conditions
 		List<EntityData> haveMarkets = new ArrayList<>(habitablePlanets);
 		haveMarkets.addAll(stations);
-		addLightIndustrialComplexes(haveMarkets);
+		balanceDomesticGoods(haveMarkets);
 		balanceSuppliesAndMetal(haveMarkets);
+		balanceFood(haveMarkets);
 	}
 
 	public PlanetAPI createStarToken(int index, String systemId, StarSystemAPI system, String type, float size, boolean isSecondStar)
@@ -2067,6 +2144,41 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		relay.setCircularOrbit(star, (float)Math.random() * 360, star.getRadius() + 1200, getOrbitalPeriod(star.getRadius(), 1500, 1));
 		systemToRelay.put(system.getId(), system.getId() + "_relay");
 		planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
+	}
+	
+	public static float getMarketBaseFoodSupply(MarketAPI market)
+	{
+		float pop = ExerelinUtilsMarket.getPopulation(market.getSize());
+		float food = 0;
+		
+		// planet food
+		if (market.hasCondition(Conditions.TERRAN))
+			food += ConditionData.WORLD_TERRAN_FARMING_MULT * pop;
+		else if (market.hasCondition(Conditions.ARID))
+			food += ConditionData.WORLD_ARID_FARMING_MULT * pop;
+		else if (market.hasCondition(Conditions.WATER))
+		{
+			float thisFood = ConditionData.WORLD_WATER_FARMING_MULT * pop;
+			if (thisFood > ConditionData.WORLD_WATER_MAX_FOOD)
+				thisFood = ConditionData.WORLD_WATER_MAX_FOOD;
+			food += thisFood;
+		}
+		else if (market.hasCondition(Conditions.DESERT))
+			food += ConditionData.WORLD_DESERT_FARMING_MULT * pop;
+		else if (market.hasCondition(Conditions.JUNGLE))
+			food += ConditionData.WORLD_JUNGLE_FARMING_MULT * pop;
+		else if (market.hasCondition(Conditions.ICE))
+			food += ConditionData.WORLD_ICE_FARMING_MULT * pop;
+		
+		// market conditions
+		int hydroponicsCount = ExerelinUtilsMarket.countMarketConditions(market, "exerelin_hydroponics");
+		int aquacultureCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.AQUACULTURE);
+		food += hydroponicsCount * Exerelin_Hydroponics.HYDROPONICS_FOOD_POP_MULT * pop;
+		food += aquacultureCount * ConditionData.AQUACULTURE_FOOD_MULT;
+		
+		food *= market.getCommodityData(Commodities.FOOD).getSupply().computeMultMod();
+		
+		return food;
 	}
 	
 	public static class OmnifacFilter implements CollectionUtils.CollectionFilter<SectorEntityToken>

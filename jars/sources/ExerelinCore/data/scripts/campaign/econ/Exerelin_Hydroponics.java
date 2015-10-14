@@ -10,14 +10,33 @@ public class Exerelin_Hydroponics extends BaseMarketConditionPlugin {
 	public static final float HYDROPONICS_FOOD = 3000f;
 	public static final float HYDROPONICS_HEAVY_MACHINERY = 20f;
 	
+	public static final float HYDROPONICS_CAPACITY_MULT = 0.2f;	// 1.0 means feeds 100% of typical population demand
+	public static final float HYDROPONICS_CREW_POP_MULT = 0.001f * HYDROPONICS_CAPACITY_MULT;
+	public static final float HYDROPONICS_FOOD_POP_MULT = 0.1f * HYDROPONICS_CAPACITY_MULT;
+	public static final float HYDROPONICS_HEAVY_MACHINERY_POP_MULT = 0.003f * HYDROPONICS_CAPACITY_MULT;
+	
 	@Override
 	public void apply(String id) {
+
+		// constant
+		/*
 		market.getDemand(Commodities.REGULAR_CREW).getDemand().modifyFlat(id, HYDROPONICS_CREW);
 		market.getDemand(Commodities.REGULAR_CREW).getNonConsumingDemand().modifyFlat(id, HYDROPONICS_CREW * ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION );
 		float crewDemandMet = getCrewDemandMet(market);
 		market.getDemand(Commodities.HEAVY_MACHINERY).getDemand().modifyFlat(id, HYDROPONICS_HEAVY_MACHINERY);
 		
 		market.getCommodityData(Commodities.FOOD).getSupply().modifyFlat(id, HYDROPONICS_FOOD * crewDemandMet);
+		*/
+		
+		// population-based
+		float pop = getPopulation(market);
+		float crewDemand = HYDROPONICS_CREW_POP_MULT * pop;
+		market.getDemand(Commodities.REGULAR_CREW).getDemand().modifyFlat(id, crewDemand);
+		market.getDemand(Commodities.REGULAR_CREW).getNonConsumingDemand().modifyFlat(id, crewDemand * ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION );
+		float crewDemandMet = getCrewDemandMet(market);
+		market.getDemand(Commodities.HEAVY_MACHINERY).getDemand().modifyFlat(id, HYDROPONICS_HEAVY_MACHINERY_POP_MULT * pop);
+		
+		market.getCommodityData(Commodities.FOOD).getSupply().modifyFlat(id, HYDROPONICS_FOOD_POP_MULT * pop * crewDemandMet);
 	}
 	
 	@Override
