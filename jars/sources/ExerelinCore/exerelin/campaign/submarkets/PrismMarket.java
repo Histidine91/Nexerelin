@@ -73,6 +73,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         }
         if (ibbProgress == -1) ibbProgress = 999;
         log.info("Current IBB progress: " + ibbProgress);
+        int maxIBBNum = 0;
         
         try {
 			JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
@@ -82,6 +83,20 @@ public class PrismMarket extends BaseSubmarketPlugin {
 				if (canLoadShips(factionId))
 				{
 					JSONArray ships = config.getJSONArray(factionId);
+                    
+                    // ensure proper emphasis on last ships once IBB sidequest is complete
+                    if (ibbProgress == 999)
+                    {
+                        for(int i=0; i<ships.length(); i++)
+                        {
+                            JSONObject ship = ships.getJSONObject(i);
+                            int ibbNum = ship.optInt("ibbNum", 0);
+                            if (ibbNum > maxIBBNum)
+                                maxIBBNum = ibbNum;
+                        }
+                        ibbProgress = maxIBBNum;    
+                    }
+                    
 					for(int i=0; i<ships.length(); i++)
 					{
                         JSONObject ship = ships.getJSONObject(i);
@@ -92,6 +107,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                         if (!ExerelinConfig.prismRenewBossShips && alreadyBoughtShips.contains(id))
                             continue;
                         
+                        // favour ships from the last bounties we killed
                         int weight = 3;
                         if (ExerelinConfig.prismUseIBBProgressForBossShips && ibbNum > 0)
                         {
