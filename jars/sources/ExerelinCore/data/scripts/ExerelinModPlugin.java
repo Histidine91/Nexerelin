@@ -26,6 +26,8 @@ import org.lazywizard.omnifac.OmniFacSettings;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
+    // call order: onNewGame -> onEnabled -> onGameLoad
+    protected static boolean isNewGame = false;
     
     protected void applyToExistingSave()
     {
@@ -62,6 +64,8 @@ public class ExerelinModPlugin extends BaseModPlugin
 
     @Override
     public void onNewGame() {
+        Global.getLogger(this.getClass()).info("New game");
+        isNewGame = true;
         ExerelinSetupData.resetInstance();
         ExerelinConfig.loadSettings();
         //ExerelinCheck.checkModCompatability();
@@ -81,13 +85,17 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onEnabled(boolean wasEnabledBefore) {
         Global.getLogger(this.getClass()).info("On enabled; " + wasEnabledBefore);
+        if (!isNewGame && !wasEnabledBefore)
+		{
+			Global.getLogger(this.getClass()).info(!isNewGame + ", " + !wasEnabledBefore);
+            applyToExistingSave();
+		}
     }
     
     @Override
     public void onGameLoad() {
         Global.getLogger(this.getClass()).info("Game load; " + SectorManager.isSectorManagerSaved());
-        //if (!SectorManager.isSectorManagerSaved())
-        //    applyToExistingSave();
+        isNewGame = false;
         
         ExerelinConfig.loadSettings();
         SectorManager.create();
@@ -125,10 +133,12 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onNewGameAfterTimePass() {
+		Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);
     }
 
     @Override
     public void onNewGameAfterEconomyLoad() {
+		Global.getLogger(this.getClass()).info("New game after economy load; " + isNewGame);
         SectorManager.reinitLiveFactions();
         
         if (SectorManager.getCorvusMode())

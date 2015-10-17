@@ -20,7 +20,7 @@ import exerelin.utilities.StringHelper;
  */
 public class ReinitScreenScript implements EveryFrameScript
 {
-    private static final float DAYS_TO_WAIT = 0.2f;
+    private static final float DAYS_TO_WAIT = 0.1f;
     private boolean isDone = false;
     private float timer = 0;
 
