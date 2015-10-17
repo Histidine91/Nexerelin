@@ -232,6 +232,7 @@ ExerelinNGCListOculus,ExerelinNGCListFactions3,NGCDoesFactionExist oculus,,,exer
 ExerelinNGCListORI,ExerelinNGCListFactions3,NGCDoesFactionExist ori,,,exerelinNGCJoinORI:ORI,
 ExerelinNGCListPACK,ExerelinNGCListFactions3,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
 ExerelinNGCListPatria,ExerelinNGCListFactions3,NGCDoesFactionExist patnavy,,,exerelinNGCJoinPatria:Patrian Navy,
+ExerelinNGCListPbc,ExerelinNGCListFactions3,NGCDoesFactionExist pbc,,,exerelinNGCJoinPbc:Pegasus Belt Council,
 ExerelinNGCListPTech,ExerelinNGCListFactions3,NGCDoesFactionExist ptech,,,exerelinNGCJoinPTech:Protonian Technologies,
 ExerelinNGCListP9,ExerelinNGCListFactions3,NGCDoesFactionExist pn_colony,,,exerelinNGCJoinP9:P9 Colony Group,
 ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
@@ -416,6 +417,10 @@ ExerelinNGCJoinTiandong,NewGameOptionSelected,$option == exerelinNGCJoinTiandong
 NGCAddShipAndComplement ""tiandong_nanzhong_Standard""
 AddText ""Added Nanzhong-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinPbc,NewGameOptionSelected,$option == exerelinNGCJoinPbc,"NGCSetPlayerFaction ""pbc""
+NGCAddShipAndComplement ""pbc_orion_ff_assault""
+AddText ""Added Orion-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinValkyrians,NewGameOptionSelected,$option == exerelinNGCJoinValkyrians,"NGCSetPlayerFaction ""valkyrian""
 NGCAddShipAndComplement ""valk_inquisitor_A""
 AddText ""Added Inquisitor-class frigate"" textFriendColor
@@ -594,6 +599,7 @@ ExerelinFactionDirectoryListOculus,ExerelinFactionDirectoryList3,IsFactionAlive 
 ExerelinFactionDirectoryListORI,ExerelinFactionDirectoryList3,IsFactionAlive ori,,,exerelinFactionDirectoryGetORI:ORI,
 ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList3,IsFactionAlive pack,,,exerelinFactionDirectoryGetPACK:P.A.C.K.,
 ExerelinFactionDirectoryListPatria,ExerelinFactionDirectoryList3,IsFactionAlive patnavy,,,exerelinFactionDirectoryGetPatria:Patrian Navy,
+ExerelinFactionDirectoryListPbc,ExerelinFactionDirectoryList3,IsFactionAlive pbc,,,exerelinFactionDirectoryGetPbc:PBC,
 ExerelinFactionDirectoryListPirates,ExerelinFactionDirectoryList3,IsFactionAlive pirates,,,exerelinFactionDirectoryGetPirates:Pirates,
 ExerelinFactionDirectoryListPTech,ExerelinFactionDirectoryList3,IsFactionAlive ptech,,,exerelinFactionDirectoryGetPTech:Protonian Technologies,
 ExerelinFactionDirectoryListP9,ExerelinFactionDirectoryList3,IsFactionAlive pn_colony,,,exerelinFactionDirectoryGetP9:P9 Colony Group,
@@ -644,6 +650,7 @@ ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerel
 ExerelinFactionDirectoryGetSpire,DialogOptionSelected,$option == exerelinFactionDirectoryGetSpire,PrintFactionMarkets spire,,,
 ExerelinFactionDirectoryGetTemplars,DialogOptionSelected,$option == exerelinFactionDirectoryGetTemplars,PrintFactionMarkets templars,,,
 ExerelinFactionDirectoryGetTiandong,DialogOptionSelected,$option == exerelinFactionDirectoryGetTiandong,PrintFactionMarkets tiandong,,,
+ExerelinFactionDirectoryGetPbc,DialogOptionSelected,$option == exerelinFactionDirectoryGetPbc,PrintFactionMarkets pbc,,,
 ExerelinFactionDirectoryGetTriTachyon,DialogOptionSelected,$option == exerelinFactionDirectoryGetTriTachyon,PrintFactionMarkets tritachyon,,,
 ExerelinFactionDirectoryGetValkyrians,DialogOptionSelected,$option == exerelinFactionDirectoryGetValkyrians,PrintFactionMarkets valkyrian,,,
 #END MARKET DIRECTORY OPTIONS,,,,,,
