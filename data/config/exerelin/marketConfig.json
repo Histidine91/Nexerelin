@@ -79,7 +79,7 @@
 		{
 			"name":"ore_complex",
 			"cost":100,
-			"archetypes":{"default":0.5,"ore":4.5,"manufacturing":1.75,"heavy_industry":1.25,"mixed":1.5},
+			"archetypes":{"default":0.5,"ore":4,"manufacturing":1.5,"heavy_industry":1,"mixed":1.25},
 		},
 		{
 			"name":"volatiles_complex",
@@ -132,7 +132,7 @@
 		{
 			"name":"ore_refining_complex",
 			"cost":125,
-			"archetypes":{"ore":3,"manufacturing":6,"heavy_industry":4.5,"mixed":2},
+			"archetypes":{"ore":2.5,"manufacturing":5,"heavy_industry":4,"mixed":2},
 			"minSize":3,
 		},
 		{
@@ -166,7 +166,7 @@
 		},
 		{
 			"name":"autofac_heavy_industry",
-			"cost":300,
+			"cost":350,
 			"archetypes":{"default":0.5,"agriculture":0,"manufacturing":2,"heavy_industry":3.75,"mixed":1},
 			"minSize":4,
 		},

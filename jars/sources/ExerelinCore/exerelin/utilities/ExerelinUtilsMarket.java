@@ -16,6 +16,11 @@ public class ExerelinUtilsMarket {
 		return market.getCommodityData(commodity).getSupply().modified;
 	}
 	
+	public static float getCommoditySupplyMult(MarketAPI market, String commodity)
+	{
+		return market.getCommodityData(commodity).getSupply().computeMultMod();
+	}
+	
 	public static int countMarketConditions(MarketAPI market, String marketCondition)
 	{
 		int count = 0;
