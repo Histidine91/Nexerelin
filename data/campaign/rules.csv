@@ -188,11 +188,11 @@ ExerelinNGCFactionsBackToMain,NewGameOptionSelected,$option==exerelinNGCFactions
 ExerelinNGCFactionsMain,ExerelinNGCListFactions,,,,"exerelinNGCViewVanillaFactions:Vanilla factions
 99:exerelinNGCOptionsBack:Back",maybe we should just do it straight alphabetical instead of segregating vanilla factions into their own category
 ExerelinNGCViewVanillaFactions,NewGameOptionSelected,$option == exerelinNGCViewVanillaFactions,FireAll ExerelinNGCListFactionsVanilla,,,
-ExerelinNGCModFactions1,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions1:Mod factions (A-E),Should check if factions are actually there
+ExerelinNGCModFactions1,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions1:Mod factions (A-F),Should check if factions are actually there
 ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModFactions1,FireAll ExerelinNGCListFactions1,,,
-ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (F-M),ditto
+ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (H-M),ditto
 ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModFactions2,FireAll ExerelinNGCListFactions2,,,
-ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:Mod factions (N-Q),
+ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:Mod factions (N-P),
 ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,FireAll ExerelinNGCListFactions3,,,
 ExerelinNGCModFactions4,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions4:Mod factions (R-Z),
 ExerelinNGCViewModFactions4,NewGameOptionSelected,$option == exerelinNGCViewModFactions4,FireAll ExerelinNGCListFactions4,,,
@@ -215,10 +215,10 @@ ExerelinNGCListCitadel,ExerelinNGCListFactions1,NGCDoesFactionExist citadeldefen
 ExerelinNGCListCrystanite,ExerelinNGCListFactions1,NGCDoesFactionExist crystanite,,,exerelinNGCJoinCrystanite:Crystanite,
 ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
 ExerelinNGCListExigency,ExerelinNGCListFactions1,NGCDoesFactionExist exigency,,,exerelinNGCJoinExigency:Exigency Corp,
+ExerelinNGCListFirestormFederation,ExerelinNGCListFactions1,NGCDoesFactionExist firestorm_federation,,,exerelinNGCJoinFirestormFederation:Firestorm Federation,
+ExerelinNGCListFleaden,ExerelinNGCListFactions1,NGCDoesFactionExist Fleaden,,,exerelinNGCJoinFleaden:Fleaden,
 ExerelinNGCListModFactions1Back,ExerelinNGCListFactions1,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
-ExerelinNGCListFirestormFederation,ExerelinNGCListFactions2,NGCDoesFactionExist firestorm_federation,,,exerelinNGCJoinFirestormFederation:Firestorm Federation,
-ExerelinNGCListFleaden,ExerelinNGCListFactions2,NGCDoesFactionExist Fleaden,,,exerelinNGCJoinFleaden:Fleaden,
 ExerelinNGCListHiigaranDescendants,ExerelinNGCListFactions2,NGCDoesFactionExist hiigaran_descendants,,,exerelinNGCJoinHiigaranDescendants:Hiigaran Descendants,
 ExerelinNGCListICI,ExerelinNGCListFactions2,NGCDoesFactionExist sun_ici,,,exerelinNGCJoinICI:Idoneus Garrison,
 ExerelinNGCListInfected,ExerelinNGCListFactions2,NGCDoesFactionExist infected,,,exerelinNGCJoinInfected:Infected,
@@ -229,6 +229,8 @@ ExerelinNGCListMayorate,ExerelinNGCListFactions2,NGCDoesFactionExist mayorate,,,
 ExerelinNGCListMetelson,ExerelinNGCListFactions2,NGCDoesFactionExist metelson,,,exerelinNGCJoinMetelson:Metelson Industries,
 ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
+ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
+ExerelinNGCListNGO,ExerelinNGCListFactions3,NGCDoesFactionExist new_galactic_order,,,exerelinNGCJoinNGO:New Galactic Order,
 ExerelinNGCListOculus,ExerelinNGCListFactions3,NGCDoesFactionExist oculus,,,exerelinNGCJoinOculus:Oculian Berserks,
 ExerelinNGCListORI,ExerelinNGCListFactions3,NGCDoesFactionExist ori,,,exerelinNGCJoinORI:ORI,
 ExerelinNGCListPACK,ExerelinNGCListFactions3,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
@@ -236,8 +238,6 @@ ExerelinNGCListPatria,ExerelinNGCListFactions3,NGCDoesFactionExist patnavy,,,exe
 ExerelinNGCListPbc,ExerelinNGCListFactions3,NGCDoesFactionExist pbc,,,exerelinNGCJoinPbc:Pegasus Belt Council,
 ExerelinNGCListPTech,ExerelinNGCListFactions3,NGCDoesFactionExist ptech,,,exerelinNGCJoinPTech:Protonian Technologies,
 ExerelinNGCListP9,ExerelinNGCListFactions3,NGCDoesFactionExist pn_colony,,,exerelinNGCJoinP9:P9 Colony Group,
-ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
-ExerelinNGCListNGO,ExerelinNGCListFactions3,NGCDoesFactionExist new_galactic_order,,,exerelinNGCJoinNGO:New Galactic Order,
 ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCListRadicalORI,ExerelinNGCListFactions4,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
