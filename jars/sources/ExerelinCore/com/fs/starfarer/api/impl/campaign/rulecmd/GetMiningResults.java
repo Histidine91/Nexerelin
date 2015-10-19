@@ -37,8 +37,10 @@ public class GetMiningResults extends BaseCommandPlugin {
 		Color hl = Misc.getHighlightColor();
 		Color red = Misc.getNegativeHighlightColor();
 		
+		float miningTime = params.get(0).getFloat(memoryMap);
+		
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-		MiningResult results = MiningHelper.getMiningResults(playerFleet, target, 1, true);
+		MiningResult results = MiningHelper.getMiningResults(playerFleet, target, miningTime, true);
 		Map<String, Float> resources = results.resources;
 		EconomyAPI economy = Global.getSector().getEconomy();
 		

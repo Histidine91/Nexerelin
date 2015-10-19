@@ -893,11 +893,11 @@ ExerelinMiningMineOptionNoMiners,ExerelinMiningOption,$global.miningStrength <= 
 SetEnabled exerelinMiningStart false",,"exerelinMiningStart:Start mining
 marketLeave:Leave",
 ExerelinMiningStart,DialogOptionSelected,"$canMine
-$option == exerelinMiningStart","Wait $global.miningWait 2.0 $global.miningFinished $global.miningInterrupted $global.miningInProgress ""Mining...""
+$option == exerelinMiningStart","Wait $global.miningWait 1.0 $global.miningFinished $global.miningInterrupted $global.miningInProgress ""Mining...""
 MakePlayerImmediatelyAttackable",,,
 ExerelinMiningInterrupted,BeginFleetEncounter,$global.miningInProgress,AbortWait $global.miningWait,Contact with the other fleet suspends mining operations.,,
 ExerelinMiningComplete,OpenInteractionDialog,"$canMine
-$global.miningFinished score:3","GetMiningResults
+$global.miningFinished score:3","GetMiningResults 1
 ShowDefaultVisual",Your $shipOrFleet has completed mining on $entityName.,"exerelinMiningPreview:Mine again
 marketLeave:Leave",
 ,,,,,,

@@ -1,5 +1,5 @@
 {
-	"miningProductionMult":4,
+	"miningProductionMult":2,
 	"cacheSizeMult":1.0,
 	"baseCacheChance":0.1,
 	"baseAccidentChance":0.5,
