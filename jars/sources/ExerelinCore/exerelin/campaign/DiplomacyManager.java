@@ -864,6 +864,19 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     }
                 }
             }
+            // and Flu-X
+            FactionAPI infected = sector.getFaction("infected");
+            if (infected != null)
+            {
+                for (String factionId : factionIds)
+                {
+                    FactionAPI faction = sector.getFaction(factionId);
+                    if (!faction.isNeutralFaction() && !factionId.equals("infected"))
+                    {
+                        infected.setRelationship(factionId, STARTING_RELATIONSHIP_HOSTILE);
+                    }
+                }
+            }
             // Dark Spire even more so
             FactionAPI darkspire = sector.getFaction("darkspire");
             if (darkspire != null)

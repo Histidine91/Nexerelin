@@ -221,6 +221,7 @@ ExerelinNGCListFirestormFederation,ExerelinNGCListFactions2,NGCDoesFactionExist 
 ExerelinNGCListFleaden,ExerelinNGCListFactions2,NGCDoesFactionExist Fleaden,,,exerelinNGCJoinFleaden:Fleaden,
 ExerelinNGCListHiigaranDescendants,ExerelinNGCListFactions2,NGCDoesFactionExist hiigaran_descendants,,,exerelinNGCJoinHiigaranDescendants:Hiigaran Descendants,
 ExerelinNGCListICI,ExerelinNGCListFactions2,NGCDoesFactionExist sun_ici,,,exerelinNGCJoinICI:Idoneus Garrison,
+ExerelinNGCListInfected,ExerelinNGCListFactions2,NGCDoesFactionExist infected,,,exerelinNGCJoinInfected:Infected,
 ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions2,NGCDoesFactionExist interstellarimperium,,,exerelinNGCJoinInterstellarImperium:Interstellar Imperium,
 ExerelinNGCListJunkPirates,ExerelinNGCListFactions2,NGCDoesFactionExist junk_pirates,,,exerelinNGCJoinJunkPirates:Junk Pirates,
 ExerelinNGCListTemplars,ExerelinNGCListFactions2,NGCDoesFactionExist templars,,,exerelinNGCJoinTemplars:Knights Templar,
@@ -344,6 +345,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinICI,NewGameOptionSelected,$option == exerelinNGCJoinICI,"NGCSetPlayerFaction ""sun_ici""
 NGCAddShipAndComplement ""sun_ice_specter_Standard""
 AddText ""Added Specter-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinInfected,NewGameOptionSelected,$option == exerelinNGCJoinInfected,"NGCSetPlayerFaction ""infected""
+NGCAddShipAndComplement ""flx_necroraider_support""
+AddText ""Added Necro Raider-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinInterstellarImperium,NewGameOptionSelected,$option == exerelinNGCJoinInterstellarImperium,"NGCSetPlayerFaction ""interstellarimperium""
 NGCAddShipAndComplement ""ii_decurion_sta""
@@ -586,6 +591,7 @@ ExerelinFactionDirectoryListHegemony,ExerelinFactionDirectoryList2,IsFactionAliv
 ExerelinFactionDirectoryListHiigaranDescendants,ExerelinFactionDirectoryList2,IsFactionAlive hiigaran_descendants,,,exerelinFactionDirectoryGetHiigaranDescendants:Hiigaran Descendants,
 ExerelinFactionDirectoryListICI,ExerelinFactionDirectoryList2,IsFactionAlive sun_ici,,,exerelinFactionDirectoryGetICI:Idoneus Garrison,
 ExerelinFactionDirectoryListInterstellarImperium,ExerelinFactionDirectoryList2,IsFactionAlive interstellarimperium,,,exerelinFactionDirectoryGetInterstellarImperium:Interstellar Imperium,
+ExerelinFactionDirectoryListInfected,ExerelinFactionDirectoryList2,IsFactionAlive infected,,,exerelinFactionDirectoryGetInfected:Infected,
 ExerelinFactionDirectoryListJunkPirates,ExerelinFactionDirectoryList2,IsFactionAlive junk_pirates,,,exerelinFactionDirectoryGetJunkPirates:Junk Pirates,
 ExerelinFactionDirectoryListTemplars,ExerelinFactionDirectoryList2,IsFactionAlive templars,,,exerelinFactionDirectoryGetTemplars:Knights Templar,
 ExerelinFactionDirectoryListLuddicChurch,ExerelinFactionDirectoryList2,IsFactionAlive luddic_church,,,exerelinFactionDirectoryGetLuddicChurch:Luddic Church,
@@ -629,6 +635,7 @@ ExerelinFactionDirectoryGetHegemony,DialogOptionSelected,$option == exerelinFact
 ExerelinFactionDirectoryGetHiigaranDescendants,DialogOptionSelected,$option == exerelinFactionDirectoryGetHiigaranDescendants,PrintFactionMarkets hiigaran_descendants,,,
 ExerelinFactionDirectoryGetICI,DialogOptionSelected,$option == exerelinFactionDirectoryGetICI,PrintFactionMarkets sun_ici,,,
 ExerelinFactionDirectoryGetInterstellarImperium,DialogOptionSelected,$option == exerelinFactionDirectoryGetInterstellarImperium,PrintFactionMarkets interstellarimperium,,,
+ExerelinFactionDirectoryGetInfected,DialogOptionSelected,$option == exerelinFactionDirectoryGetInfected,PrintFactionMarkets infected,,,
 ExerelinFactionDirectoryGetJunkPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetJunkPirates,PrintFactionMarkets junk_pirates,,,
 ExerelinFactionDirectoryGetLuddicChurch,DialogOptionSelected,$option == exerelinFactionDirectoryGetLuddicChurch,PrintFactionMarkets luddic_church,,,
 ExerelinFactionDirectoryGetMayorate,DialogOptionSelected,$option == exerelinFactionDirectoryGetMayorate,PrintFactionMarkets mayorate,,,
