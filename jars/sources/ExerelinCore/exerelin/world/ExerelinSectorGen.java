@@ -2033,7 +2033,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 			else if (planet.isStar())
 			{
-				orbitRadius = MathUtils.getRandomNumberInRange(1000, 8000);
+				orbitRadius = MathUtils.getRandomNumberInRange(1000, 8000) + planet.getRadius();
 				numAsteroids = 100;
 			}
 			else
