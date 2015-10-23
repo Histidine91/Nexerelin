@@ -2,6 +2,7 @@
     "uniqueModClassName":"data.scripts.PTechPlugin", # String
     "playableFaction":"true", # Boolean
     "isPirateNeutral":"true", # Boolean
+    "corvusCompatible":true,	#technically
 
     "crewExpereinceLevelIncreaseChance":0.4, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.3, # Double

@@ -2,6 +2,7 @@
     "uniqueModClassName":"data.scripts.OculusPlugin", # String
     "playableFaction":"true", # Boolean
     "isPirateNeutral":"true", # Boolean
+    "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":0.5, # Double

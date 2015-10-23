@@ -11,7 +11,7 @@
 		"Aesir":"breidablik",
 		"Anar":"euripedes",
 		"Antioch":"tem_ascalon",
-		"atalie":"atalieB2a",
+		"Atalie":"atalieB2a",
 		"Baka":"crystanos2",
 		"Breh'Inni":"glory",
 		"Canis":"petra",
@@ -19,11 +19,13 @@
 		"Corona Australis":"neut_experimental",
 		"Corsica":"ii_aleria",
 		"Enigma":"enigma_i",
+		"Fleaden":"fleaden01",
 		"Gemstone":"aiw_diamond",
 		"Gigas":"stillness",
 		"Gneiss":"lodestone",
 		"Nemvis":"mytoselle",
 		"Polaris":"newhiigara",
+		"Radikius":"radiIII",
 		"Rama":"moriaplanet",
 		"Rock":"rangus",
 		"Rasht":"ilkhanna",
@@ -32,6 +34,7 @@
 		"Thracia":"ii_planet_byzantium",
 		"Tolp":"tolpIV",
 		"Ursulo":"paddington",
+		"Leibethra":"pbc_leibethra_pegasus_base",
 		"York":"lincoln",
 	},
 	"spawnPoints":{
@@ -79,9 +82,17 @@
 			"system":"hyperspace",
 			"entity":"exipirated_avesta"
 		},
+		"Fleaden":{
+			"system":"Fleaden",
+			"entity":"fleaden01"
+		},
 		"hiigaran_descendants":{
 			"system":"Polaris",
 			"entity":"newhiigara"
+		},
+		"infected":{
+			"system":"Radikius",
+			"entity":"radiIII"
 		},
 		"interstellarimperium":{
 			"system":"Thracia",
@@ -115,6 +126,10 @@
 			"system":"Patria",
 			"entity":"Patria Prime"
 		},
+		"pbc":{
+			"system":"Leibethra",
+			"entity":"pbc_leibethra_pegasus_base"
+		},
 		"pn_colony":{
 			"system":"Tolp",
 			"entity":"tolpIV"
@@ -124,7 +139,7 @@
 			"entity":"mytoselle"
 		},
 		"oculus":{
-			"system":"atalie",
+			"system":"Atalie",
 			"entity":"atalieB2a"
 		},
 		"SCY":{
