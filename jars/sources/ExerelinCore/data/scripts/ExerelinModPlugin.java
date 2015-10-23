@@ -43,8 +43,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(MiningFleetManager.create());
         sector.addScript(CovertOpsManager.create());
         sector.addScript(am);
-        im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
-        am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
+        //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
+        //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
         
         StatsTracker.create();
         

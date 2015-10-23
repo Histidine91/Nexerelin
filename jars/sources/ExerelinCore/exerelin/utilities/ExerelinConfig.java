@@ -50,14 +50,14 @@ public class ExerelinConfig
     public static boolean allowPirateInvasions = false;
     public static float fleetRequestCostPerMarine = 125f;
     public static float fleetRequestCostPerFP = 500f;
-    public static float invasionGracePeriod = 30f;
+    public static float invasionGracePeriod = 0;
     public static float pointsRequiredForInvasionFleet = 4000f;
     public static float baseInvasionPointsPerFaction = 45f;
     public static float invasionPointsPerPlayerLevel = 1f;
     public static float invasionPointEconomyMult = 1f;
     
     // Alliances
-    public static float allianceGracePeriod = 90f;
+    public static float allianceGracePeriod = 30;
     public static float allianceFormationInterval = 30f;
     public static boolean ignoreAlignmentForAlliances = false;
     

@@ -418,6 +418,9 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     @Override
     public void advance(float amount)
     {
+        if (Global.getSector().isInNewGameAdvance())
+            return;
+        
         float days = Global.getSector().getClock().convertToDays(amount);
     
         if (daysElapsed < ExerelinConfig.allianceGracePeriod)

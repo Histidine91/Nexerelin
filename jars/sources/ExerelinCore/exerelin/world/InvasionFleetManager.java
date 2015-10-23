@@ -581,6 +581,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     @Override
     public void advance(float amount)
     {
+        if (Global.getSector().isInNewGameAdvance())
+            return;
+        
         float days = Global.getSector().getClock().convertToDays(amount);
     
         if (daysElapsed < ExerelinConfig.invasionGracePeriod)
