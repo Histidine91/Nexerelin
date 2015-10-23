@@ -165,9 +165,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (warWeariness == null)
         {
             warWeariness = new HashMap<>();
-            List<String> factionIds = Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector()));
-            for( String factionId : factionIds)
-                warWeariness.put(factionId, 0f);
         }
     }
     

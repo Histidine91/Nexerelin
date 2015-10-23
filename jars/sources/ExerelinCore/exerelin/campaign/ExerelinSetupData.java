@@ -96,7 +96,20 @@ public final class ExerelinSetupData
 		{
 			String[] locPossibleFaction = this.getPossibleFactions();
 			ArrayList confirmedFactions = new ArrayList(locPossibleFaction.length);
-
+			
+			for(int i = 0; i < locPossibleFaction.length; i = i + 1)
+			{
+				FactionAPI fac = sector.getFaction(locPossibleFaction[i]);
+				if(fac != null)
+					confirmedFactions.add(fac.getId());
+				else
+					log.warn("EXERELIN ERROR: Couldn't determine faction for:" + locPossibleFaction[i]);
+			}
+			availableFactions = (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
+			
+			// FIXME: obsolete code
+			// we could theoretically use this to spawn only half the factions at start
+			/*
 			if(!onlyRespawnStartingFactions)
 			{
 				for(int i = 0; i < locPossibleFaction.length; i = i + 1)
@@ -136,6 +149,7 @@ public final class ExerelinSetupData
 
 				availableFactions = (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
 			}
+			*/
 		}
 		return availableFactions;
 	}
