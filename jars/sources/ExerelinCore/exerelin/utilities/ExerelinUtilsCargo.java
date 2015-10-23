@@ -30,6 +30,10 @@ public class ExerelinUtilsCargo
             cargoTemplars.addCommodity(commodityID, amountToAdd * 0.2f);
             return;
         }
+        if (market.getSubmarket(Submarkets.SUBMARKET_OPEN) == null)    // some weirdo mod
+        {
+            return;
+        }
         
         CargoAPI cargoOpen = market.getSubmarket(Submarkets.SUBMARKET_OPEN).getCargo();
         CargoAPI cargoBlack = cargoOpen;
