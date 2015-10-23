@@ -82,7 +82,7 @@ public class RespawnFleetAI extends InvasionFleetAI
                 FactionAPI fleetFaction = fleet.getFaction();
                 FactionAPI targetFaction = data.targetMarket.getFaction();
                 
-                if (!fleetFaction.isHostileTo(targetFaction))
+                if (!fleetFaction.isHostileTo(targetFaction) && !forceHostile)
                 {
                     DiplomacyManager.adjustRelations(fleetFaction, targetFaction, 0, RepLevel.HOSTILE, null, null);
                     forceHostile = true;
@@ -135,25 +135,27 @@ public class RespawnFleetAI extends InvasionFleetAI
     @Override
     protected void giveStandDownOrders()
     {
-        // if failed capture, reset relationship
-        FactionAPI faction = fleet.getFaction();
-        String targetFactionId = data.targetMarket.getFactionId();
-        
-        if (!captureSuccessful && faction.isHostileTo(targetFactionId))
+        if (!this.orderedReturn)
         {
-            boolean reset = forceHostile;
-            String factionId = faction.getId();
-            if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId)) reset = false;
-            else if (ExerelinUtilsFaction.isPirateOrTemplarFaction(targetFactionId)) reset = false;
+            // if failed capture, reset relationship
+            FactionAPI faction = fleet.getFaction();
+            String targetFactionId = data.targetMarket.getFactionId();
 
-            if (reset)
+            if (!captureSuccessful && faction.isHostileTo(targetFactionId))
             {
-                faction.setRelationship(targetFactionId, 0);
-                AllianceManager.syncAllianceRelationshipsToFactionRelationship(factionId, data.targetMarket.getFactionId());
-                ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
+                boolean reset = forceHostile;
+                String factionId = faction.getId();
+                if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId)) reset = false;
+                else if (ExerelinUtilsFaction.isPirateOrTemplarFaction(targetFactionId)) reset = false;
+                
+                if (reset)
+                {
+                    faction.setRelationship(targetFactionId, 0);
+                    AllianceManager.syncAllianceRelationshipsToFactionRelationship(factionId, data.targetMarket.getFactionId());
+                    ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
+                }
             }
         }
-        
         super.giveStandDownOrders();
     }
 }
