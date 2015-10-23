@@ -578,8 +578,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	protected void balanceFood(List<EntityData> candidateEntities)
 	{
-		final int HALFPOW5 = (int)Math.pow(10, 5)/2;
 		final int HALFPOW4 = (int)Math.pow(10, 4)/2;
+		final int HALFPOW3 = (int)Math.pow(10, 3)/2;
 		
 		log.info("Pre-balance food supply/demand: " + (int)foodSupply + " / " + (int)foodDemand);
 		
@@ -603,7 +603,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					weight *= 25;
 					log.info("Removed balancing Hydroponics Lab from " + market.getName() + " (size " + size + ")");
 				}
-				else continue;
 			}
 			
 			switch (entity.archetype)
@@ -627,10 +626,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			int maxSize = 6;
 			double shortfall = foodDemand - foodSupply;
-			if (shortfall < HALFPOW4)
+			if (shortfall < HALFPOW3)
 				maxSize = 4;
-			else if (shortfall < HALFPOW5)
+			else if (shortfall < HALFPOW4)
 				maxSize = 5;
+			//log.info("Shortfall: " + shortfall + ", max size: " + maxSize);
 			
 			MarketAPI market = marketPicker.pickAndRemove();
 			int size = market.getSize();
