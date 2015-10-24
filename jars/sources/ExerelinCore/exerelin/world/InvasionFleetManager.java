@@ -419,7 +419,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 }
                 float weight = 20000.0F / dist;
                 //weight *= market.getSize() * market.getStabilityValue();    // try to go after high value targets
-                if (ExerelinUtilsFaction.isPirateOrTemplarFaction(marketFaction.getId()))
+                if (ExerelinUtilsFaction.isFactionHostileToAll(marketFaction.getId()))
                     weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
                 
                 if (SectorManager.getHardMode() && marketFaction.isPlayerFaction())
@@ -530,7 +530,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             {
                 for (String enemyId : enemies)
                 {
-                    if (ExerelinUtilsFaction.isPirateOrTemplarFaction(enemyId))
+                    if (ExerelinUtilsFaction.isFactionHostileToAll(enemyId))
                     {
                         float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, ExerelinConfig.allowPirateInvasions, true).size();
                         enemyWars = (float)Math.sqrt(enemyWars);

@@ -1,6 +1,7 @@
 {
     "uniqueModClassName":"data.scripts.infectedModPlugin", # String
     "playableFaction":"true", # Boolean
+    "hostileToAll":2,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double

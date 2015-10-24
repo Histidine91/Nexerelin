@@ -19,6 +19,12 @@ public class ExerelinFactionConfig
     public Boolean isPirateNeutral = false;
     public Boolean spawnPatrols = true;    // only used for factions set to not spawn patrols in .faction file
     public Boolean spawnPiratesAndMercs = true;    // ditto
+    
+    // 0 = not hostile
+    // 1 = inhospitable to player, hostile to everyone else
+    // 2 = hostile to everyone
+    // 3 = vengeful to everyone
+    public int hostileToAll = 0;    
 
     public double crewExpereinceLevelIncreaseChance = 0.0;
     public double baseFleetCostMultiplier = 1.0;
@@ -72,6 +78,7 @@ public class ExerelinFactionConfig
             isPirateNeutral = settings.optBoolean("isPirateNeutral", false);
             spawnPatrols = settings.optBoolean("spawnPatrols", true);
             spawnPiratesAndMercs = settings.optBoolean("spawnPiratesAndMercs", true);
+            hostileToAll = settings.optInt("hostileToAll", hostileToAll);
 
             crewExpereinceLevelIncreaseChance = settings.optDouble("crewExpereinceLevelIncreaseChance", 0);
             baseFleetCostMultiplier = settings.optDouble("baseFleetCostMultiplier", 1);

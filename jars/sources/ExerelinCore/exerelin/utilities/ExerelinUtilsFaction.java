@@ -67,7 +67,15 @@ public class ExerelinUtilsFaction {
         if (factionId.equals("templars")) return true;
         return isPirateFaction(factionId);
     }
-
+    
+    public static boolean isFactionHostileToAll(String factionId)
+    {
+        if (isPirateFaction(factionId)) return true;
+        ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+        if (config == null) return false;
+        return config.hostileToAll > 0;
+    }
+    
     public static boolean isExiInCorvus(String factionId)
     {
         if (factionId.equals("exigency") && SectorManager.getCorvusMode()) 

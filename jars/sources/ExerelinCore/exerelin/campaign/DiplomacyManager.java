@@ -691,6 +691,59 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return new ArrayList<>(pirateFactions);
     }
     
+    public static void setRelationshipAtBest(String factionId, String otherFactionId, float rel)
+    {
+        FactionAPI faction = Global.getSector().getFaction(factionId);
+        float currentRel = faction.getRelationship(otherFactionId);
+        if (rel < currentRel)
+            faction.setRelationship(otherFactionId, rel);
+    }
+    
+    // set relationships for hostile-to-all factions (Templars, Dark Spire, infected)
+    public static void handleHostileToAllFaction(String factionId, List<String> factionIds)
+    {
+        ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+        if (factionConfig == null) return;
+        SectorAPI sector = Global.getSector();
+        String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
+        
+        switch (factionConfig.hostileToAll) {
+            case 3:
+                for (String otherFactionId : factionIds)
+                {
+                    FactionAPI otherFaction = sector.getFaction(otherFactionId);
+                    if (!otherFaction.isNeutralFaction() && !otherFactionId.equals(factionId))
+                    {
+                        setRelationshipAtBest(factionId, otherFactionId, -1f);
+                    }
+                }
+                break;
+            case 2:
+                for (String otherFactionId : factionIds)
+                {
+                    FactionAPI otherFaction = sector.getFaction(otherFactionId);
+                    if (!otherFaction.isNeutralFaction() && !otherFactionId.equals(factionId))
+                    {
+                        setRelationshipAtBest(factionId, otherFactionId, STARTING_RELATIONSHIP_HOSTILE);
+                    }
+                }
+                break;
+            case 1:
+                for (String otherFactionId : factionIds)
+                {
+                    FactionAPI otherFaction = sector.getFaction(otherFactionId);
+                    if (otherFactionId.equals("player_npc") && otherFactionId.equals(selectedFactionId))
+                    {
+                        otherFaction.setRelationship(factionId, STARTING_RELATIONSHIP_INHOSPITABLE);
+                    }
+                    else if (!otherFaction.isNeutralFaction() && !otherFactionId.equals("factionId"))
+                    {
+                        setRelationshipAtBest(factionId, otherFactionId, STARTING_RELATIONSHIP_HOSTILE);
+                    }
+                }
+        }
+    }
+    
     public static void initFactionRelationships(boolean midgameReset)
     {
         SectorAPI sector = Global.getSector();
@@ -704,16 +757,29 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         //factionIds.add("player_npc");
         
         List<String> factionIds = new ArrayList<>();
+        List<String> alreadyRandomizedIds = new ArrayList<>();
+        alreadyRandomizedIds.add("independent");
+        
         for (FactionAPI faction : sector.getAllFactions())
+        {
+            if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
             factionIds.add(faction.getId());
+        }
+        for (String factionId : factionIds)
+        {
+            if (!SectorManager.isFactionAlive(factionId) && !factionId.equals("player_npc"))
+            {
+                if (!ExerelinUtilsFaction.isExiInCorvus(factionId)) alreadyRandomizedIds.add(factionId);
+                handleHostileToAllFaction(factionId, factionIds);
+            }
+        }
 
         boolean randomize = false;
         if (diplomacyManager != null)
         {
             randomize = diplomacyManager.randomFactionRelationships;
         }
-        List<String> alreadyRandomizedIds = new ArrayList<>();
-        alreadyRandomizedIds.add("independent");
+        
         
         
         if (SectorManager.getCorvusMode() && !randomize)
@@ -796,6 +862,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
                     if (alreadyRandomizedIds.contains(factionId)) continue;
                     alreadyRandomizedIds.add(factionId);
+                                        
                     for (String otherFactionId: factionIds)
                     {
                         if (alreadyRandomizedIds.contains(otherFactionId)) continue;
@@ -813,12 +880,22 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                         }
                         faction.setRelationship(otherFactionId, MathUtils.getRandomNumberInRange(-1f, 0.55f));
                     }
+                    handleHostileToAllFaction(factionId, factionIds);
                 }
 
                 else    // start hostile with hated factions, friendly with liked ones (from config)
                 {
+                    // faction not currently alive; don't bother setting relationships
+                    if (!SectorManager.isFactionAlive(factionId))
+                    {
+                        continue;
+                    }
+                    
                     ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
                     if (factionConfig == null) continue;
+                    
+                    handleHostileToAllFaction(factionId, factionIds);
+                    
                     if (factionConfig.factionsLiked.length > 0)
                     {
                         for (String likedFactionId : factionConfig.factionsLiked) {
@@ -829,7 +906,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                                 faction.setRelationship(likedFactionId, STARTING_RELATIONSHIP_WELCOMING);
                             }
                         }
-                    }
+                    }  
+                    
                     if (factionConfig.factionsDisliked.length > 0)
                     {
                         for (String dislikedFactionId : factionConfig.factionsDisliked) {
@@ -837,54 +915,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                             if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
                             {
                                 //log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
-                                faction.setRelationship(dislikedFactionId, STARTING_RELATIONSHIP_HOSTILE);
+                                setRelationshipAtBest(factionId, dislikedFactionId, STARTING_RELATIONSHIP_HOSTILE);
                             }
                         }
-                    }
-                }
-            }
-            
-            // Templars just plain hate everyone
-            FactionAPI templars = sector.getFaction("templars");
-            if (templars != null)
-            {
-                for (String factionId : factionIds)
-                {
-                    FactionAPI faction = sector.getFaction(factionId);
-                    if (factionId.equals("player_npc") && factionId.equals(selectedFactionId))
-                    {
-                        templars.setRelationship(factionId, STARTING_RELATIONSHIP_INHOSPITABLE);
-                    }
-                    else if (!faction.isNeutralFaction() && !factionId.equals("templars"))
-                    {
-                        templars.setRelationship(factionId, STARTING_RELATIONSHIP_HOSTILE);
-                    }
-                }
-            }
-            // and Flu-X
-            FactionAPI infected = sector.getFaction("infected");
-            if (infected != null)
-            {
-                for (String factionId : factionIds)
-                {
-                    FactionAPI faction = sector.getFaction(factionId);
-                    if (!faction.isNeutralFaction() && !factionId.equals("infected"))
-                    {
-                        infected.setRelationship(factionId, STARTING_RELATIONSHIP_HOSTILE);
-                    }
-                }
-            }
-            // Dark Spire even more so
-            FactionAPI darkspire = sector.getFaction("darkspire");
-            if (darkspire != null)
-            {
-                for (String factionId : factionIds)
-                {
-                    FactionAPI faction = sector.getFaction(factionId);
-                    if (!faction.isNeutralFaction() && !factionId.equals("darkspire"))
-                    {
-                        darkspire.setRelationship(factionId, -1f);
-                    }
+                    }  
                 }
             }
         }
@@ -927,6 +961,25 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");	// already done in syncPlayerRelationshipsToFaction
         }
         
+    }
+    
+    public static void resetFactionRelationships(String factionId)
+    {
+        if (!factionId.equals(PlayerFactionStore.getPlayerFactionId()) 
+                && !ExerelinUtilsFaction.isFactionHostileToAll(factionId)
+                && !ExerelinUtilsFaction.isExiInCorvus(factionId))
+        {
+            for (FactionAPI faction : Global.getSector().getAllFactions())
+            {
+                String otherFactionId = faction.getId();
+                if (!ExerelinUtilsFaction.isFactionHostileToAll(otherFactionId)
+                        && !ExerelinUtilsFaction.isExiInCorvus(otherFactionId)
+                        && !otherFactionId.equals(factionId))
+                {
+                    faction.setRelationship(factionId, 0f);
+                }
+            }
+        }
     }
     
     public static void setRandomFactionRelationships(boolean random)

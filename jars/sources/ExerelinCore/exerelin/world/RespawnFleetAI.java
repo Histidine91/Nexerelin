@@ -145,8 +145,8 @@ public class RespawnFleetAI extends InvasionFleetAI
             {
                 boolean reset = forceHostile;
                 String factionId = faction.getId();
-                if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId)) reset = false;
-                else if (ExerelinUtilsFaction.isPirateOrTemplarFaction(targetFactionId)) reset = false;
+                if (ExerelinUtilsFaction.isFactionHostileToAll(factionId)) reset = false;
+                else if (ExerelinUtilsFaction.isFactionHostileToAll(targetFactionId)) reset = false;
                 
                 if (reset)
                 {
