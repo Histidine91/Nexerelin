@@ -28,6 +28,7 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$primsMarketPreset", setupData.prismMarketPresent, 0);
 		map.set("$respawnFactions", setupData.respawnFactions, 0);
 		map.set("$onlyRespawnStartingFactions", setupData.onlyRespawnStartingFactions, 0);
+		map.set("$numStartFactions", "all");
 		
 		map.set("$corvusMode", ExerelinConfig.corvusMode);
 		map.set("$haveSSP", ExerelinUtils.isSSPInstalled());

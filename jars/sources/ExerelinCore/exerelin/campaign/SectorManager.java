@@ -58,7 +58,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     private List<String> factionIdsAtStart = new ArrayList<>();
     private List<String> liveFactionIds = new ArrayList<>();
-    private List<String> historicFactionIds = new ArrayList<>();
+    private Set<String> historicFactionIds = new HashSet<>();
     private Map<String, String> systemToRelayMap;
     private Map<String, String> planetToRelayMap;
     private boolean victoryHasOccured = false;
@@ -330,7 +330,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         List<String> factionIds = factionIdsAtStart;
         if (!onlyRespawnStartingFactions)
         {
-            factionIds = new ArrayList<>(Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(sector)));
+            factionIds = new ArrayList<>(Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions()));
         }
         
         for(String factionId : factionIds)
@@ -714,10 +714,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static void reinitLiveFactions()
     {
         if (sectorManager == null) return;
-        String[] temp = ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector());
+        String[] temp = ExerelinSetupData.getInstance().getAvailableFactions();
         sectorManager.liveFactionIds = new ArrayList<>();
         sectorManager.factionIdsAtStart = new ArrayList<>();
-        sectorManager.historicFactionIds = new ArrayList<>();
+        sectorManager.historicFactionIds = new HashSet<>();
         
         for (String factionId:temp)
         {

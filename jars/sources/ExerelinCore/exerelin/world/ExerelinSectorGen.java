@@ -23,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
@@ -190,7 +191,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected void loadBackgrounds()
 	{
 		starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
-		List<String> factions = Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector()));
+		List<String> factions = Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions());
 		if (factions.contains("blackrock_driveyards"))
 		{
 			starBackgrounds.add("BR/backgrounds/obsidianBG (2).jpg");
@@ -260,13 +261,51 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return (String) ExerelinUtils.getRandomListElement(factionIds);
 	}
 	
+	protected List<String> getStartingFactions()
+	{
+		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
+		List<String> availableFactions = new ArrayList<>( Arrays.asList(setupData.getAvailableFactions()) );
+		int wantedFactionNum = setupData.numStartFactions;
+		if (wantedFactionNum <= 0) return availableFactions;
+		
+		int numFactions = 0;
+		Set<String> factions = new HashSet<>();
+		
+		if (!ExerelinSetupData.getInstance().freeStart)
+		{
+			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+			factions.add(alignedFactionId);
+			availableFactions.remove(alignedFactionId);
+			numFactions++;
+		}
+		
+		factions.add(Factions.PIRATES);
+		availableFactions.remove(Factions.PIRATES);
+		
+		availableFactions.remove("player_npc");
+		
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+		addListToPicker(availableFactions, picker);
+		
+		while (numFactions < wantedFactionNum)
+		{
+			if (picker.isEmpty()) break;
+			String factionId = picker.pickAndRemove();
+			factions.add(factionId);
+			log.info("Adding starting faction: " + factionId);
+			numFactions++;
+		}
+		log.info("Number of starting factions: " + numFactions);
+		return new ArrayList<>(factions);
+	}
+	
 	protected void resetVars()
 	{
 		habitablePlanets.clear();
 		//habitableMoons.clear();
 		stations.clear();
 		ExerelinSetupData.getInstance().resetAvailableFactions();
-		factionIds = new ArrayList<>( Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions(Global.getSector())) );
+		factionIds = getStartingFactions();
 		numMarketsByArchetype = new HashMap<>();
 		marketArchetypeQueue.clear();
 		marketArchetypeQueueNum = 0;

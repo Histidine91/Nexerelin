@@ -34,21 +34,15 @@ public final class ExerelinSetupData
 	public int maxSectorSize = 12000;
 
 	// Game defaults
-	public Boolean playerOwnedStationFreeTransfer = false;
-	public Boolean confirmedFreeTransfer = false;
 	public boolean respawnFactions = false;
 	public boolean onlyRespawnStartingFactions = false;
 	public int respawnDelay = 60;
-	public int numStartFactions = 3;
-	public int maxFactionsInExerelinAtOnce = 16;
+	public int numStartFactions = -1;
 	public boolean randomStartRelationships = false;
-	//public boolean corvusMode = false;	// currently not set
 	public boolean hardMode = false;
 	public boolean omnifactoryPresent = false;
 	public boolean randomOmnifactoryLocation = false;
 	public boolean prismMarketPresent = false;
-	public boolean isSectorPopulated = false;
-	public boolean isSectorPartiallyPopulated = false;
 	public boolean freeStart = false;
 
 	private ExerelinSetupData()
@@ -90,8 +84,9 @@ public final class ExerelinSetupData
 		availableFactions = null;
 	}
 
-	public String[] getAvailableFactions(SectorAPI sector)
+	public String[] getAvailableFactions()
 	{
+		SectorAPI sector = Global.getSector();
 		if (availableFactions == null)
 		{
 			String[] locPossibleFaction = this.getPossibleFactions();
@@ -106,50 +101,6 @@ public final class ExerelinSetupData
 					log.warn("EXERELIN ERROR: Couldn't determine faction for:" + locPossibleFaction[i]);
 			}
 			availableFactions = (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
-			
-			// FIXME: obsolete code
-			// we could theoretically use this to spawn only half the factions at start
-			/*
-			if(!onlyRespawnStartingFactions)
-			{
-				for(int i = 0; i < locPossibleFaction.length; i = i + 1)
-				{
-					FactionAPI fac = sector.getFaction(locPossibleFaction[i]);
-					if(fac != null)
-						confirmedFactions.add(fac.getId());
-					else
-						log.warn("EXERELIN ERROR: Couldn't determine faction for:" + locPossibleFaction[i]);
-				}
-				availableFactions = (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
-			}
-			else
-			{
-				ExerelinUtils.shuffleStringArray(locPossibleFaction);
-
-				int i = 0;
-				while(confirmedFactions.size() < Math.min(this.numStartFactions, locPossibleFaction.length - 1))
-				{
-					if(locPossibleFaction[i].equalsIgnoreCase(PlayerFactionStore.getPlayerFactionId()))
-					{
-						i = i + 1;
-						continue;
-					}
-
-					FactionAPI fac = sector.getFaction(locPossibleFaction[i]);
-					if(fac != null)
-					{
-						confirmedFactions.add(fac.getId());
-					}
-					else
-						log.warn("EXERELIN ERROR: Couldn't determine faction for:" + locPossibleFaction[i]);
-
-					i = i + 1;
-				}
-				confirmedFactions.add(PlayerFactionStore.getPlayerFactionId());
-
-				availableFactions = (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
-			}
-			*/
 		}
 		return availableFactions;
 	}
