@@ -231,7 +231,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		if (ExerelinUtils.isSSPInstalled())
 		{
-			//starBackgrounds.add("ssp/backgrounds/ssp_arcade.png");	// comment out until new SS+ version (file extension changed)
+			starBackgrounds.add("ssp/backgrounds/ssp_arcade.png");
 			starBackgrounds.add("ssp/backgrounds/ssp_atopthemountain.jpg");
 			starBackgrounds.add("ssp/backgrounds/ssp_conflictofinterest.jpg");
 			starBackgrounds.add("ssp/backgrounds/ssp_corporateindirection.jpg");
