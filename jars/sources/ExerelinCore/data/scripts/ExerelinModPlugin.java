@@ -86,10 +86,10 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onEnabled(boolean wasEnabledBefore) {
         Global.getLogger(this.getClass()).info("On enabled; " + wasEnabledBefore);
         if (!isNewGame && !wasEnabledBefore)
-		{
-			Global.getLogger(this.getClass()).info(!isNewGame + ", " + !wasEnabledBefore);
+        {
+            Global.getLogger(this.getClass()).info(!isNewGame + ", " + !wasEnabledBefore);
             applyToExistingSave();
-		}
+        }
     }
     
     @Override
@@ -133,12 +133,12 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onNewGameAfterTimePass() {
-		Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);
+        Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);
     }
 
     @Override
     public void onNewGameAfterEconomyLoad() {
-		Global.getLogger(this.getClass()).info("New game after economy load; " + isNewGame);
+        Global.getLogger(this.getClass()).info("New game after economy load; " + isNewGame);
         
         if (SectorManager.getCorvusMode())
         {
