@@ -944,12 +944,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.setPrimaryEntity(omnifac);
 		market.setFactionId("neutral");
 		market.addCondition(Conditions.ABANDONED_STATION);
-		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
-		((StoragePlugin) market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin()).setPlayerPaidToUnlock(true);
 		omnifac.setMarket(market);
 		Global.getSector().getEconomy().addMarket(market);
 		
-		omnifac.setFaction("neutral");
+		omnifac.setFaction("player");
 		
 		OmniFac.initOmnifactory(omnifac);
 	}
