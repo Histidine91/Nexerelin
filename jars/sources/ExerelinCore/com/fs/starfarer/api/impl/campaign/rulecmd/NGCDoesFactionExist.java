@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
-import java.util.Arrays;
 
 
 public class NGCDoesFactionExist extends BaseCommandPlugin {
@@ -20,7 +19,7 @@ public class NGCDoesFactionExist extends BaseCommandPlugin {
 		if(factions == null)
 		{
 			ExerelinSetupData data = ExerelinSetupData.getInstance();   
-			factions = Arrays.asList(data.getPossibleFactions());
+			factions = data.getAvailableFactions();
 		}
 		return factions.contains(factionId);
 	}

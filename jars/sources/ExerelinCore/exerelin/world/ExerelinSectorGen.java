@@ -191,7 +191,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected void loadBackgrounds()
 	{
 		starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
-		List<String> factions = Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions());
+		List<String> factions = ExerelinSetupData.getInstance().getAvailableFactions();
 		if (factions.contains("blackrock_driveyards"))
 		{
 			starBackgrounds.add("BR/backgrounds/obsidianBG (2).jpg");
@@ -264,7 +264,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected List<String> getStartingFactions()
 	{
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
-		List<String> availableFactions = new ArrayList<>( Arrays.asList(setupData.getAvailableFactions()) );
+		List<String> availableFactions = setupData.getAvailableFactions();
 		int wantedFactionNum = setupData.numStartFactions;
 		if (wantedFactionNum <= 0) return availableFactions;
 		

@@ -86,7 +86,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         respawnIntervalUtil = new IntervalUtil(respawnInterval * 0.75F, respawnInterval * 1.25F);
         
         // Templars don't normally post bounties, but they do here
-        //if (Arrays.asList(ExerelinSetupData.getInstance().getPossibleFactions()).contains("templars"))
+        //if (Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions()).contains("templars"))
         //    SharedData.getData().getPersonBountyEventData().addParticipatingFaction("templars");
     }
    
@@ -330,7 +330,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         List<String> factionIds = factionIdsAtStart;
         if (!onlyRespawnStartingFactions)
         {
-            factionIds = new ArrayList<>(Arrays.asList(ExerelinSetupData.getInstance().getAvailableFactions()));
+            factionIds = ExerelinSetupData.getInstance().getAvailableFactions();
         }
         
         for(String factionId : factionIds)
@@ -700,7 +700,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static void reinitLiveFactions()
     {
         if (sectorManager == null) return;
-        String[] temp = ExerelinSetupData.getInstance().getAvailableFactions();
+        List<String> temp = ExerelinSetupData.getInstance().getAvailableFactions();
         sectorManager.liveFactionIds = new ArrayList<>();
         sectorManager.factionIdsAtStart = new ArrayList<>();
         sectorManager.historicFactionIds = new HashSet<>();
