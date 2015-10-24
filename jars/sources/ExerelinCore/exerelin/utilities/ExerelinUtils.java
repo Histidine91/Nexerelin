@@ -177,12 +177,13 @@ public class ExerelinUtils
 		}
 	}
 	
-	// Returns a factions crew xp level
+	// FIXME: Returns a factions crew xp level
+	@Deprecated
     public static CargoAPI.CrewXPLevel getCrewXPLevelForFaction(String factionId)
     {
         if(factionId.equalsIgnoreCase(PlayerFactionStore.getPlayerFactionId()))
         {
-            float crewUpgradeChance = ExerelinUtilsPlayer.getPlayerFactionFleetCrewExperienceBonus() + (float)ExerelinConfig.getExerelinFactionConfig(factionId).crewExpereinceLevelIncreaseChance;
+            float crewUpgradeChance = 0;	//ExerelinUtilsPlayer.getPlayerFactionFleetCrewExperienceBonus() + (float)ExerelinConfig.getExerelinFactionConfig(factionId).crewExpereinceLevelIncreaseChance;
             if(MathUtils.getRandomNumberInRange(0, 99) <= -1 + crewUpgradeChance*100)
                 return CargoAPI.CrewXPLevel.VETERAN;
         }
