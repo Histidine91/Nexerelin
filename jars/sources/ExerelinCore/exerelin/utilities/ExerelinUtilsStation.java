@@ -2,16 +2,15 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import exerelin.SectorManager;
-import exerelin.commandQueue.CommandRemoveCargo;
 
 public class ExerelinUtilsStation
 {
-    private static int CREW_INCREMENT = 300;
-    private static float FUEL_INCREMENT = 300;
-    private static float SUPPLIES_INCREMENT = 600;
-    private static int MARINES_INCREMENT = 150;
-
+    private static final int CREW_INCREMENT = 300;
+    private static final float FUEL_INCREMENT = 300;
+    private static final float SUPPLIES_INCREMENT = 600;
+    private static final int MARINES_INCREMENT = 150;
+	
+	@Deprecated
     public static ExerelinUtilsFleet.ExerelinFleetSize getSpawnFleetSizeForStation(SectorEntityToken station)
     {
         ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(station.getFaction().getId());
@@ -80,10 +79,5 @@ public class ExerelinUtilsStation
                 marines = MARINES_INCREMENT * 6;
                 break;
         }
-
-        SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(station.getCargo(), "regular_crew", CargoAPI.CargoItemType.RESOURCES, crew));
-        SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(station.getCargo(), "fuel", CargoAPI.CargoItemType.RESOURCES, fuel));
-        SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(station.getCargo(), "supplies", CargoAPI.CargoItemType.RESOURCES, supplies));
-        SectorManager.getCurrentSectorManager().getCommandQueue().addCommandToQueue(new CommandRemoveCargo(station.getCargo(), "marines", CargoAPI.CargoItemType.RESOURCES, marines));
     }
 }

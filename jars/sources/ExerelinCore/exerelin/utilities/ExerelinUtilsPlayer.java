@@ -5,6 +5,7 @@ import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 
 import exerelin.skills.scripts.ExerelinSkillData;
 
+@Deprecated
 public class ExerelinUtilsPlayer {
 
     // -- SKILL FUNCTIONS -- //
