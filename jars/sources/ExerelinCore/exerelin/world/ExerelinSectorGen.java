@@ -1760,7 +1760,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		else if (planetNum == 2) habitableChance = 0.9f;
 			
 		//if (isMoon) habitableChance *= 0.7f;
-		if (isMoon) habitableChance = 0.4f;
+		if (isMoon) habitableChance = 0.35f;
 		
 		return habitableChance;
 	}
@@ -1934,12 +1934,15 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			planetData.planetType = planetType;
 			
 			// Now we make moons
-			float moonChance = 0.4f;
+			float moonChance = 0.35f;
 			if (isGasGiant)
-				moonChance = 0.8f;
+				moonChance = 0.7f;
 			if(Math.random() <= moonChance)
 			{
-				for(int j = 0; j < MathUtils.getRandomNumberInRange(0, ExerelinSetupData.getInstance().maxMoonsPerPlanet - 1); j = j + 1)
+				int maxMoons = ExerelinSetupData.getInstance().maxMoonsPerPlanet;
+				if (isGasGiant) maxMoons +=1;
+				int numMoons = MathUtils.getRandomNumberInRange(0, 1) + MathUtils.getRandomNumberInRange(0, maxMoons - 1);
+				for(int j = 0; j < numMoons; j++)
 				{
 					String ext = "";
 					if(j == 0)
