@@ -1,5 +1,5 @@
 {
-	"pirateFactions": [ "pirates", "exipirated", "junk_pirates", "rori", "infected" ],
+	"pirateFactions": [ "pirates", "exipirated", "junk_pirates", "rori" ],
 	"warWearinessPerInterval":20,	#20
 	"eventFrequency":10,	#10
 	"events":[
@@ -298,7 +298,7 @@
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"allowPirates":true,
-			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders",
+			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc",
 				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","SCY","valkyrian","pn_colony","spire","metelson","ptech","oculus"],
 			"chance":1.5,
 		}
