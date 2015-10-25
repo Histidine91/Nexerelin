@@ -21,6 +21,7 @@
 		"Enigma":"enigma_i",
 		"Fleaden":"fleaden01",
 		"Gemstone":"aiw_diamond",
+		"Genesis":"point_of_genesis",
 		"Gigas":"stillness",
 		"Gneiss":"lodestone",
 		"Nemvis":"mytoselle",
@@ -141,6 +142,10 @@
 		"oculus":{
 			"system":"Atalie",
 			"entity":"atalieB2a"
+		},
+		"scion":{
+			"system":"Genesis",
+			"entity":"point_of_genesis"
 		},
 		"SCY":{
 			"system":"Tartarus",

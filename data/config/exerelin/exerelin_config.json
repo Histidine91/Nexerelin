@@ -66,6 +66,6 @@
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "luddic_church", "pirates", "player_npc", "independent"], # String array
     "supportedModFactions":["blackrock_driveyards", "bushi", "citadeldefenders", "crystanite", "diableavionics", "exigency", "exipirated", "Fleaden",
                             "firestorm_federation", "hiigaran_descendants", "infected", "interstellarimperium", "junk_pirates", "mayorate", "metelson",
-                            "neutrinocorp", "new_galactic_order", "oculus", "ori", "pn_colony", "ptech", "rori", "pack", "patnavy", "pbc",
+                            "neutrinocorp", "new_galactic_order", "oculus", "ori", "pn_colony", "ptech", "rori", "pack", "patnavy", "pbc", "scion",
                             "SCY", "shadow_industry", "spire", "darkspire", "sun_ici", "syndicate_asp", "templars", "tiandong","valkyrian"], # String array
 }

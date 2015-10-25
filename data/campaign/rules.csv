@@ -265,6 +265,7 @@ ExerelinNGCListP9,ExerelinNGCListFactions3,NGCDoesFactionExist pn_colony,,,exere
 ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCListRadicalORI,ExerelinNGCListFactions4,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
+ExerelinNGCListScion,ExerelinNGCListFactions4,NGCDoesFactionExist scion,,,exerelinNGCJoinScion:Scion Collective,
 ExerelinNGCListSCY,ExerelinNGCListFactions4,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY Nation,
 ExerelinNGCListShadowyards,ExerelinNGCListFactions4,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
 ExerelinNGCListSpire,ExerelinNGCListFactions4,NGCDoesFactionExist spire,,,exerelinNGCJoinSpire:Spire,
@@ -429,6 +430,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinRadicalORI,NewGameOptionSelected,$option == exerelinNGCJoinRadicalORI,"NGCSetPlayerFaction ""rori""
 NGCAddShipAndComplement ""ori_bastion_variant""
 AddText ""Added Bastion-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinScion,NewGameOptionSelected,$option == exerelinNGCJoinScion,"NGCSetPlayerFaction ""scion""
+NGCAddShipAndComplement ""scion_bishop_standard""
+AddText ""Added Bishop-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinSCY,NewGameOptionSelected,$option == exerelinNGCJoinSCY,"NGCSetPlayerFaction ""SCY""
 NGCAddShipAndComplement ""SCY_talos_recon""
@@ -636,6 +641,7 @@ ExerelinFactionDirectoryListP9,ExerelinFactionDirectoryList3,IsFactionAlive pn_c
 ExerelinFactionDirectoryList3Back,ExerelinFactionDirectoryList3,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
 ExerelinFactionDirectoryListRadicalORI,ExerelinFactionDirectoryList4,IsFactionAlive rori,,,exerelinFactionDirectoryGetRadicalORI:Radical ORI,
+ExerelinFactionDirectoryListScion,ExerelinFactionDirectoryList4,IsFactionAlive scion,,,exerelinFactionDirectoryGetScion:Scion Collective,
 ExerelinFactionDirectoryListSCY,ExerelinFactionDirectoryList4,IsFactionAlive SCY,,,exerelinFactionDirectoryGetSCY:SCY,
 ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList4,IsFactionAlive shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
 ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList4,IsFactionAlive sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
@@ -675,6 +681,7 @@ ExerelinFactionDirectoryGetPlayer,DialogOptionSelected,$option == exerelinFactio
 ExerelinFactionDirectoryGetPTech,DialogOptionSelected,$option == exerelinFactionDirectoryGetPTech,PrintFactionMarkets ptech,,,
 ExerelinFactionDirectoryGetP9,DialogOptionSelected,$option == exerelinFactionDirectoryGetP9,PrintFactionMarkets pn_colony,,,
 ExerelinFactionDirectoryGetRadicalORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetRadicalORI,PrintFactionMarkets rori,,,
+ExerelinFactionDirectoryGetScion,DialogOptionSelected,$option == exerelinFactionDirectoryGetScion,PrintFactionMarkets scion,,,
 ExerelinFactionDirectoryGetSCY,DialogOptionSelected,$option == exerelinFactionDirectoryGetSCY,PrintFactionMarkets SCY,,,
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,PrintFactionMarkets shadow_industry,,,
 ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerelinFactionDirectoryGetSindrianDiktat,PrintFactionMarkets sindrian_diktat,,,
