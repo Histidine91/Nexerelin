@@ -39,7 +39,7 @@ public class PrintMiningInfo extends BaseCommandPlugin {
 		float miningStrength = MiningHelper.getFleetMiningStrength(playerFleet);
 		String miningStrengthStr = String.format("%.1f", miningStrength);
 		float danger = MiningHelper.getDanger(target);
-		String dangerStr = String.format("%.1f", danger);
+		String dangerStr = String.format("%.2f", danger);
 		Map<String, Float> resources = MiningHelper.getResources(target);
 		EconomyAPI economy = Global.getSector().getEconomy();
 		String planetType = target.getName();

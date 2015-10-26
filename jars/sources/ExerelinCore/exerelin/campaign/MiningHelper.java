@@ -42,7 +42,8 @@ public class MiningHelper {
 	protected static float baseAccidentChance = 1;
 	protected static float baseAccidentCRLoss = 0.1f;
 	//protected static float baseAccidentSupplyLoss = 12.5f;
-	protected static float baseAccidentHullDamage = 500;
+	protected static float baseAccidentHullDamage = 400;
+	protected static float planetDangerMult = 1.25f;	// for non-moon planets
 	protected static float xpPerMiningStrength = 10;
 	protected static final Map<String, Float> miningWeapons = new HashMap<>();
 	protected static final Map<String, Float> miningShips = new HashMap<>();
@@ -130,22 +131,28 @@ public class MiningHelper {
 			PlanetAPI planet = (PlanetAPI)entity;
 			if (planet == null) return false;
 			if (planet.isStar()) return false;
-			if (planet.isMoon()) return true;
-			if (planet.isGasGiant()) return true;
+			return true;
+			//if (planet.isMoon()) return true;
+			//if (planet.isGasGiant()) return true;
 		}
 		return false;
 	}
 	
 	public static float getDanger(SectorEntityToken entity)
 	{
+		float val = danger.get("default");
+		boolean isPlanet = false;
 		String type = "default";
 		if (entity instanceof PlanetAPI)
 		{
-			type = ((PlanetAPI)entity).getTypeId();
+			PlanetAPI planet = (PlanetAPI)entity;
+			type = planet.getTypeId();
+			if (!planet.isMoon()) isPlanet = true;
 		}
-		if (danger.containsKey(type)) return danger.get(type);
+		if (danger.containsKey(type)) val = danger.get(type);
+		if (isPlanet) val *= planetDangerMult;
 		//else if (((PlanetAPI)entity).isGasGiant()) return danger.get("gas_giant");
-		return danger.get("default");
+		return val;
 	}
 	
 	public static Map<String, Float> getResources(SectorEntityToken entity)

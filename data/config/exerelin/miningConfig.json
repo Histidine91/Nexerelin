@@ -8,16 +8,18 @@
 	"miningWeapons":{
 		"miningblaster":10,
 		"mininglaser":1.5,
-		"tiandong_heavy_mininglaser":5,
+		"tiandong_heavy_mininglaser":8,
 	},
 	"miningShips":{
-		"shepherd":10,
+		"mining_pod":0.5,
+		"shepherd":9,
 		"SCY_telchine":35,
 		"brdy_gonodactylus":28,
 		"mi_rastrum":6,
 		"junk_pirates_the_reaper":180,
 		"tiandong_chengdu":6,
 		"tiandong_dingjun":6,
+		"tiandong_armoredminingdrone":0.7,
 		"maqiubiqiu":4,
 	},
 	"resources":{
@@ -92,7 +94,7 @@
 			"volatiles":0.4,
 		},
 	},
-	"danger":{
+	"danger":{	# planets (as opposed to moons) have a 25% increased danger as well
 		"default":0.2,
 		"lava":1,
 		"jungle":0.2,
@@ -104,7 +106,7 @@
 		"rocky_unstable":0.6,
 		"toxic":1,
 		"radiated":0.8,
-		"gas_giant":0.3,
-		"ice_giant":0.3,
+		"gas_giant":0.24,
+		"ice_giant":0.24,
 	}
 }

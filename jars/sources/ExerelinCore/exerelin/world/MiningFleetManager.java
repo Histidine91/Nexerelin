@@ -114,7 +114,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 				if (planetToken instanceof PlanetAPI)
 				{
 					PlanetAPI planet = (PlanetAPI)planetToken;
-					if (!planet.isMoon()) continue;
+					//if (!planet.isMoon()) continue;
 				}
 				if (planetToken.getMarket() != null) continue;
 				OrbitAPI orbit = planetToken.getOrbit();
