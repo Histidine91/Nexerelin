@@ -96,7 +96,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"exerelin/backgrounds/bluewhite_background1.jpg", "exerelin/backgrounds/orange_background1.jpg",
 		"exerelin/backgrounds/dark_background1.jpg", "exerelin/backgrounds/dark_background2.jpg",
 		"exerelin/backgrounds/green_background1.jpg", //"exerelin/backgrounds/green_background2.jpg",
-		"exerelin/backgrounds/purple_background1.jpg", "exerelin/backgrounds/purple_background2.jpg",
+		"exerelin/backgrounds/purple_background1.jpg", //"exerelin/backgrounds/purple_background2.jpg",
 		"exerelin/backgrounds/white_background1.jpg", "exerelin/backgrounds/white_background2.jpg",
 		"backgrounds/2-2.jpg", "backgrounds/2-4.jpg", "backgrounds/3-1.jpg", "backgrounds/4-1.jpg", "backgrounds/4-2.jpg", "backgrounds/5-1.jpg", "backgrounds/5-2.jpg",
 		"backgrounds/6-1.jpg", "backgrounds/7-1.jpg", "backgrounds/7-3.jpg", "backgrounds/8-1.jpg", "backgrounds/8-2.jpg", "backgrounds/9-1.jpg", "backgrounds/9-3.jpg",
