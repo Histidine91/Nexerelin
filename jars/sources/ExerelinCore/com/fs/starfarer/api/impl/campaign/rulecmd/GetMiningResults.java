@@ -113,13 +113,16 @@ public class GetMiningResults extends BaseCommandPlugin {
 			while (iterCRLoss.hasNext())
 			{
 				FleetMemberAPI ship = iterCRLoss.next();
+				String name;
+				if (ship.isFighterWing()) name = ship.getVariant().getFullDesignationWithHullName();
+				else name = ship.getShipName();
 				int crLost = (int)((float)results.accidents.crLost.get(ship)*100);
 				String crLostStr = crLost + "%";
 				String displayStr = StringHelper.getString(STRING_CATEGORY, "shipLostCR");
-				displayStr = StringHelper.substituteToken(displayStr, "$ship", ship.getShipName());
+				displayStr = StringHelper.substituteToken(displayStr, "$ship", name);
 				displayStr = StringHelper.substituteToken(displayStr, "$crLost", crLostStr);
 				text.addParagraph("  " + displayStr);
-				text.highlightInLastPara(red, ship.getShipName(), crLostStr);
+				text.highlightInLastPara(red, name, crLostStr);
 			}
 			
 			int crewLost = (int)results.accidents.crewLost.getTotalCrew();

@@ -36,10 +36,10 @@ import org.lazywizard.lazylib.MathUtils;
 public class MiningHelper {
 	
 	protected static final String CONFIG_FILE = "data/config/exerelin/miningConfig.json";
-	protected static float miningProductionMult = 4f;
+	protected static float miningProductionMult = 2f;
 	protected static float cacheSizeMult = 1;
 	protected static float baseCacheChance = 0.1f;
-	protected static float baseAccidentChance = 1;
+	protected static float baseAccidentChance = 0.5f;
 	protected static float baseAccidentCRLoss = 0.1f;
 	//protected static float baseAccidentSupplyLoss = 12.5f;
 	protected static float baseAccidentHullDamage = 400;
@@ -322,11 +322,8 @@ public class MiningHelper {
 		WeightedRandomPicker<FleetMemberAPI> picker = new WeightedRandomPicker<>();
 		for (FleetMemberAPI ship : ships)
 		{
-			if (!ship.isFighterWing()) 
-			{
-				float shipStrength = getShipMiningStrength(ship);
-				if (shipStrength > 0) picker.add(ship, shipStrength);
-			}
+			float shipStrength = getShipMiningStrength(ship);
+			if (shipStrength > 0) picker.add(ship, shipStrength);
 		}
 		
 		while (accidentChance > 0)
@@ -335,12 +332,11 @@ public class MiningHelper {
 			if (Math.random() < danger*baseAccidentChance)
 			{
 				if (accident == null) accident = new MiningAccident();
-				
+				FleetMemberAPI fm = picker.pick();
+				if (fm == null || fm.getStatus() == null) continue;	// null reference protection
 				// ship takes damage
-				if (Math.random() < 0.25f)
+				if (!fm.isFighterWing() && Math.random() < 0.25f)
 				{
-					// TODO maybe only apply to ships particpating in mining?
-					FleetMemberAPI fm = picker.pick();
 					float hull = fm.getStatus().getHullFraction();
 					float hullDamageFactor = 0f;
 					float damage = baseAccidentHullDamage * MathUtils.getRandomNumberInRange(0.5f, 1.5f);
@@ -374,7 +370,6 @@ public class MiningHelper {
 				// CR loss
 				else if (Math.random() < 0.4f)
 				{
-					FleetMemberAPI fm = picker.pick();
 					//float crLost = baseAccidentSupplyLoss * ExerelinUtilsShip.getCRPerSupplyUnit(fm, true);
 					//crLost *= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 					float crLost = baseAccidentCRLoss * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
