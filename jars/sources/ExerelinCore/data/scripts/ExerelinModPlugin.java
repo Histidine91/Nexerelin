@@ -93,9 +93,9 @@ public class ExerelinModPlugin extends BaseModPlugin
     }
     
     @Override
-    public void onGameLoad() {
+    public void onGameLoad(boolean newGame) {
         Global.getLogger(this.getClass()).info("Game load; " + SectorManager.isSectorManagerSaved());
-        isNewGame = false;
+        isNewGame = newGame;
         
         ExerelinConfig.loadSettings();
         SectorManager.create();

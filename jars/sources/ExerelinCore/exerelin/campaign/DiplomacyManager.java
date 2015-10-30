@@ -3,6 +3,7 @@ package exerelin.campaign;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
@@ -502,9 +503,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     }
     
     @Override
-    public void reportBattleOccurred(CampaignFleetAPI winner, CampaignFleetAPI loser)
+    public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
         //log.info("Battle occured between " + winner.getName() + " and " + loser.getName());
+        CampaignFleetAPI loser = battle.getOtherSideFor(winner).get(0);    // should probably work
         FactionAPI winFaction = winner.getFaction();
         FactionAPI loseFaction = loser.getFaction();
         

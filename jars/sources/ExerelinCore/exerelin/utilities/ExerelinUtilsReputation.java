@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAd
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import static com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.addAdjustmentMessage;
 import static com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.addNoChangeMessage;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -17,12 +18,12 @@ import java.util.List;
 
 public class ExerelinUtilsReputation
 {
-	public static ReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction, float delta)
+	public static ReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction, PersonAPI person, float delta)
 	{
-		return adjustPlayerReputation(faction, delta, null, null);
+		return adjustPlayerReputation(faction, person, delta, null, null);
 	}
 	
-	public static ReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction, float delta, CommMessageAPI message, TextPanelAPI textPanel)
+	public static ReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction, PersonAPI person, float delta, CommMessageAPI message, TextPanelAPI textPanel)
 	{
 		String factionId = faction.getId();
 		FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
@@ -34,9 +35,9 @@ public class ExerelinUtilsReputation
 		
 		//if (delta != 0) {
 		if (Math.abs(delta) >= 0.01f) {
-			addAdjustmentMessage(delta, faction, message, textPanel);
+			addAdjustmentMessage(delta, faction, person, message, textPanel);
 		} else {
-			addNoChangeMessage(1.0f, faction, message, textPanel);
+			addNoChangeMessage(1.0f, faction, person, message, textPanel);
 		}
 		
 		if (delta != 0) {

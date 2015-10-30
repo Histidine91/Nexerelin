@@ -85,7 +85,7 @@ public class WarmongerEvent extends BaseEventPlugin {
 									Map.Entry<String, Float> tmp = iter.next();
 									String factionId = tmp.getKey();
 									float loss = tmp.getValue();
-									ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), -loss);
+									ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, -loss);
                                 }
 								ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
 			}

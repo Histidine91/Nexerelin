@@ -70,7 +70,9 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 			public void beforeDelivery(CommMessageAPI message) {
                                 for (String factionId : factionsToNotify)
                                 {
-                                        ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), repPenalty);
+										if (factionId.equals(market.getFactionId()))
+											ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), market.getPrimaryEntity().getActivePerson(), repPenalty);
+										else ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, repPenalty);
                                 }
 			}
 		});

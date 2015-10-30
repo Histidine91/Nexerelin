@@ -1182,7 +1182,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		StarSystemAPI system = sector.createStarSystem("Corvus");
 		system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
 		
-		PlanetAPI star = system.initStar("corvus", "star_yellow", 500f);
+		PlanetAPI star = system.initStar("corvus", "star_yellow", 500f, 650f);	// FIXME make sure coronaSize is correct
 
 		PlanetAPI corvusI = system.addPlanet("asharu", star, "Asharu", "desert", 55, 150, 3000, 100);
 		corvusI.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "asharu"));
@@ -1665,7 +1665,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			Integer[] pos = (Integer[])starPositions.get(index);
 			int x = pos[0];
 			int y = pos[1];
-			return system.initStar(systemId, type, size, x, y);
+			return system.initStar(systemId, type, size, x, y, size * 1.25f);	// FIXME make sure coronaSize is correct
 		}
 		else 
 		{

@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -41,13 +42,10 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 	}
 	
 	@Override
-	public void reportBattleOccurred(CampaignFleetAPI winner, CampaignFleetAPI loser) {
-		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-		CampaignFleetAPI fleet = null;
-		
-		if (winner == playerFleet) fleet = winner;
-		else if (loser == playerFleet) fleet = loser;
-		else return;
+	public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
+	{
+		if (!battle.isPlayerInvolved()) return;
+		CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
 		
 		float value = 0f;
 		String stage = "report";

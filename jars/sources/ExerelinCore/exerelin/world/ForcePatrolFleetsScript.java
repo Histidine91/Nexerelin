@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.fleets.MercAndPirateFleetManager;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
@@ -24,8 +23,8 @@ public class ForcePatrolFleetsScript extends BaseCampaignEventListener implement
 {
 	public static Logger log = Global.getLogger(ForcePatrolFleetsScript.class);
 	
-	private IntervalUtil timer = new IntervalUtil(0.5f, 1.5f);
-	private Set<String> marketsWithAssignedPatrolScripts = new HashSet<String>();
+	private final IntervalUtil timer = new IntervalUtil(0.5f, 1.5f);
+	private final Set<String> marketsWithAssignedPatrolScripts = new HashSet<String>();
 	private boolean firstFrame = true;
 	
 	public ForcePatrolFleetsScript()
@@ -74,15 +73,6 @@ public class ForcePatrolFleetsScript extends BaseCampaignEventListener implement
 				PatrolFleetManager script = new PatrolFleetManager(market);
 				entity.addScript(script);
 				log.info("Added patrol fleet spawning script to market [" + market.getName() + "]");
-			}
-
-			
-			if (factionConfig.spawnPiratesAndMercs)
-			{
-				//log.info("Faction " + market.getFactionId() + " can spawn pirates/mercs");
-				MercAndPirateFleetManager pirateScript = new MercAndPirateFleetManager(market);
-				entity.addScript(pirateScript);
-				log.info("Added pirate fleet spawning script to market [" + market.getName() + "]");
 			}
 		}
 	}
