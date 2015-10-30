@@ -670,6 +670,17 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return allianceManager.alliancesByFactionId.get(factionId);
     }
     
+    public static boolean areFactionsAllied(String factionId1, String factionId2)
+    {
+        if (allianceManager == null) return false;
+        Alliance alliance1 = getFactionAlliance(factionId1);
+        if (alliance1 == null) return false;
+        Alliance alliance2 = getFactionAlliance(factionId2);
+        if (alliance2 == null) return false;
+        
+        return alliance1 == alliance2;
+    }
+    
     public static AllianceManager create()
     {
         Map<String, Object> data = Global.getSector().getPersistentData();
