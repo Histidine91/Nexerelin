@@ -8,6 +8,9 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import static com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.addAdjustmentMessage;
 import static com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.addNoChangeMessage;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -27,6 +30,15 @@ public class ExerelinUtilsReputation
 	{
 		String factionId = faction.getId();
 		FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
+		
+		ReputationAdjustmentResult result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, delta, message, true), factionId);
+		if (person != null) 
+			result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, delta, message, true), person);
+		
+		return result;
+		
+		// 0ld 0.65.2 implementation
+		/*
 		float before = player.getRelationship(factionId);
 		
 		player.adjustRelationship(factionId, delta);
@@ -43,6 +55,7 @@ public class ExerelinUtilsReputation
 		if (delta != 0) {
 			Global.getSector().reportPlayerReputationChange(factionId, delta);
 		}
+		*/
 		
 		// moved to DiplomacyManager listener
 		/*
@@ -55,7 +68,7 @@ public class ExerelinUtilsReputation
 		
 		SectorManager.checkForVictory();
 		*/
-		return new ReputationAdjustmentResult(delta);
+		//return new ReputationAdjustmentResult(delta);
 	}
 	
 	public static void syncFactionRelationshipToPlayer(String factionIdToSync, String otherFactionId)
