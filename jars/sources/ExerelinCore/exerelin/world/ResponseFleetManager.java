@@ -8,6 +8,8 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.utilities.ExerelinConfig;
@@ -76,7 +78,9 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         }
         
         float qf = origin.getShipQualityFactor();
-        qf = Math.max(qf, 0.7f);
+        //qf = Math.max(qf, 0.7f);
+        
+        String factionId = origin.getFactionId();
         
         String name = StringHelper.getString("exerelin_fleets", "responseFleetName");
         ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(origin.getFactionId());
@@ -86,10 +90,23 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         }
         if (maxFP < 18) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixSmall") + " " + name;
         else if (maxFP > 42) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
-        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
         
-		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "exerelinResponseFleet");
-		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SOURCE_MARKET, origin);
+        //CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
+        FleetParams fleetParams = new FleetParams(null, origin, factionId, null, "exerelinResponseFleet", 
+                maxFP*0.8f, // combat
+                maxFP*0.1f, // freighters
+                0,        // tankers
+                0,        // personnel transports
+                0,        // liners
+                0,        // civilian
+                maxFP*0.1f,    // utility
+                0.15f, -1, 1.25f, origin.getSize() - 1);    // quality bonus, quality override, officer num mult, officer level bonus
+        
+        CampaignFleetAPI fleet = FleetFactoryV2.createFleet(fleetParams);
+        fleet.setName(name);
+        
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "exerelinResponseFleet");
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SOURCE_MARKET, origin);
         
         SectorEntityToken entity = origin.getPrimaryEntity();
         entity.getContainingLocation().addEntity(fleet);

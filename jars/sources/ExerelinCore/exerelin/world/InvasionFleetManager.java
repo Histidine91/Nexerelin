@@ -141,15 +141,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         int tankerFP = (int)(fp * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000);
         fp -= tankerFP;
         
-        FleetParams fleetParams = new FleetParams(params.originMarket.getLocationInHyperspace(), params.originMarket, factionId, factionId, params.fleetType, 
-                fp*0.6f, // combat
-                fp*0.25f, // freighters
+        FleetParams fleetParams = new FleetParams(null, params.originMarket, factionId, null, params.fleetType, 
+                fp*0.7f, // combat
+                fp*0.2f, // freighters
                 tankerFP,        // tankers
                 params.numMarines/100*2,        // personnel transports
                 0,        // liners
                 0,        // civilian
-                fp*0.15f,    // utility
-                0.15f, -1, 1.25f, 0);    // quality bonus, quality override, officer num mult, officer level bonus
+                fp*0.1f,    // utility
+                0.15f, -1, 1.25f, params.originMarket.getSize() - 1);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = FleetFactoryV2.createFleet(fleetParams);
         /*
@@ -161,7 +161,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         }
         */
         fleet.getCargo().addMarines(params.numMarines);
-        
+        fleet.setName(params.name);
+		
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, params.fleetType);
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SOURCE_MARKET, params.originMarket);
         
