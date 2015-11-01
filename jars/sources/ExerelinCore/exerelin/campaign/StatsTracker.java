@@ -112,7 +112,7 @@ public class StatsTracker extends BaseCampaignEventListener{
     @Override
     public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
-        CampaignFleetAPI loser = battle.getOtherSideFor(winner).get(0);    // should probably work
+        CampaignFleetAPI loser = battle.getPrimary(battle.getOtherSideFor(winner));
         FactionAPI winFaction = winner.getFaction();
         FactionAPI loseFaction = loser.getFaction();
         String winFactionId = winFaction.getId();

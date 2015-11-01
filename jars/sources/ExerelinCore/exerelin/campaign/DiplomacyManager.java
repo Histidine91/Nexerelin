@@ -505,8 +505,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     @Override
     public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
-        //log.info("Battle occured between " + winner.getName() + " and " + loser.getName());
-        CampaignFleetAPI loser = battle.getOtherSideFor(winner).get(0);    // should probably work
+        CampaignFleetAPI loser = battle.getPrimary(battle.getOtherSideFor(winner));
         FactionAPI winFaction = winner.getFaction();
         FactionAPI loseFaction = loser.getFaction();
         
@@ -941,7 +940,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 FactionAPI faction = sector.getFaction(factionId);
                 if (!faction.isNeutralFaction() && !factionId.equals("famous_bounty"))
                 {
-                    famousBounty.setRelationship(factionId, 0);
+                    famousBounty.setRelationship(factionId, 0.5f);
                 }
             }
             famousBounty.setRelationship(Factions.PLAYER, -1f);
