@@ -234,14 +234,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static void createWarmongerEvent(String targetFactionId, SectorEntityToken location)
     {
-        if (!ExerelinConfig.warmongerPenalty) return;
+        if (ExerelinConfig.warmongerPenalty == 0) return;
         
         FactionAPI targetFaction = Global.getSector().getFaction(targetFactionId);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-		if (targetFaction.isHostileTo(Factions.PLAYER)) return;
-		
+        if (targetFaction.isHostileTo(Factions.PLAYER)) return;
+        
         int numFactions = 0;
-        float totalRepLoss = 0;
+        float totalRepLoss = 0;	// note: does not include the loss with player-aligned faction
         float myFactionLoss = 0;
         Map<String, Float> repLoss = new HashMap<>();
         List<String> factions = SectorManager.getLiveFactionIdsCopy();
@@ -250,7 +250,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (factionId.equals(targetFactionId)) continue;
             //if (factionId.equals("player_npc")) continue;
             if (targetFaction.isHostileTo(factionId)) continue;
-            
+            if (factionId.equals("player_npc") && ExerelinConfig.warmongerPenalty <= 1) 
+				continue;
+			
             float loss = 0;
             RepLevel level = targetFaction.getRelationshipLevel(factionId);
             if (level == RepLevel.COOPERATIVE)
@@ -272,10 +274,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             
             if (factionId.equals(playerAlignedFactionId))
             {
-                myFactionLoss = loss;
-                if (!factionId.equals("player_npc")) myFactionLoss = (2*loss) + 0.05f;
-                repLoss.put(factionId, myFactionLoss);
-                continue;
+				myFactionLoss = loss;
+				if (!factionId.equals("player_npc")) myFactionLoss = (2*loss) + 0.05f;
+				repLoss.put(factionId, myFactionLoss);
+				continue;
             }
             if (loss <= 0) continue;
             
@@ -540,7 +542,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (newOwnerConfig.freeMarket)
             {
                 if (!market.hasCondition("free_market")) market.addCondition("free_market");
-                market.getTariff().modifyMult("isFreeMarket", 0.5f);
+                market.getTariff().modifyMult("isFreeMarket", ExerelinConfig.freeMarketTariffMult);
             }
             else 
             {

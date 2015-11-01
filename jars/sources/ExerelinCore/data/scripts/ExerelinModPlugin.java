@@ -56,6 +56,17 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addTransientScript(new ReinitScreenScript());
     }
     
+    protected void refreshTariffs()
+    {
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        {
+            if (!SectorManager.getCorvusMode())
+                market.getTariff().modifyFlat("default_tariff", ExerelinConfig.baseTariff);
+            if (market.hasCondition("free_market")) 
+                market.getTariff().modifyMult("isFreeMarket", ExerelinConfig.freeMarketTariffMult);
+        }
+    }
+    
     @Override
     public void beforeGameSave()
     {
@@ -120,6 +131,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         reverseCompatibility();
+        refreshTariffs();
         
         Global.getSector().addTransientScript(new DirectoryScreenScript());
     }
@@ -144,13 +156,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             SectorManager.reinitLiveFactions();
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
-            
-            // fix Corvus mode tariffs
-            for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-            {
-                if (market.hasCondition("free_market")) 
-                    market.getTariff().modifyMult("isFreeMarket", 0.5f);
-            }
         }
     }
 }

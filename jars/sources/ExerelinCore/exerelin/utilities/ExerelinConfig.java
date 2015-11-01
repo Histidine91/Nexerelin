@@ -64,9 +64,7 @@ public class ExerelinConfig
     // Prism Freeport
     public static int prismMaxWeaponsPerFaction = 3;
     public static float prismNumShipsPerFaction = 0.5f;
-    @Deprecated
-    public static boolean prismSellBossShips = false;
-    public static int prismNumBossShips = 2;
+    public static int prismNumBossShips = 3;
     public static boolean prismRenewBossShips = false;
     public static boolean prismUseIBBProgressForBossShips = true;
     public static float prismTariff = 2f;
@@ -80,14 +78,16 @@ public class ExerelinConfig
     // Misc
     public static boolean corvusMode = false;
     
-    public static boolean warmongerPenalty = true;
+    public static float baseTariff = 0.2f;
+    public static float freeMarketTariffMult = 0.5f;
+    public static int warmongerPenalty = 0;
     public static float factionRespawnInterval = 30f;
     public static boolean countPiratesForVictory = true;
     public static boolean ownFactionCustomsInspections = false;
-	public static boolean enableAvesta = true;
-	public static boolean enableShanghai = true;
+    public static boolean enableAvesta = true;
+    public static boolean enableShanghai = true;
     public static int directoryDialogKey = 32;  // D
-	
+    
 
     public static void loadSettings()
     {
@@ -142,12 +142,14 @@ public class ExerelinConfig
             warWearinessCeasefireReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
             warWearinessPeaceTreatyReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
             
-            warmongerPenalty = settings.optBoolean("warmongerPenalty", warmongerPenalty);
+            baseTariff = (float)settings.optDouble("baseTariff", baseTariff);
+            freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);
+            warmongerPenalty = settings.optInt("warmongerPenalty", warmongerPenalty);
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
-			enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
-			enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
+            enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
+            enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
             
             corvusMode = settings.optBoolean("corvusMode", corvusMode);
