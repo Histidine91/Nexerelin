@@ -1847,7 +1847,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			addListToPicker(uninhabitables1To4, picker);
 			for (int i=habitableCount; i < 2; i++)
 			{
-			picker.pickAndRemove().habitable = true;
+				picker.pickAndRemove().habitable = true;
 			}	
 		}
 		
@@ -2241,7 +2241,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		int hydroponicsCount = ExerelinUtilsMarket.countMarketConditions(market, "exerelin_hydroponics");
 		int aquacultureCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.AQUACULTURE);
 		food += hydroponicsCount * Exerelin_Hydroponics.HYDROPONICS_FOOD_POP_MULT * pop;
-		food += aquacultureCount * ConditionData.AQUACULTURE_FOOD_MULT;
+		food += aquacultureCount * ConditionData.AQUACULTURE_FOOD_MULT * pop;
 		
 		food *= market.getCommodityData(Commodities.FOOD).getSupply().computeMultMod();
 		
