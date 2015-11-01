@@ -11,8 +11,12 @@ import com.fs.starfarer.api.campaign.OrbitAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.MiningHelper;
@@ -78,7 +82,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		
 		FactionAPI faction = origin.getFaction();
 		int marketSize = origin.getSize();
-		int maxFP = (int)(Math.pow(marketSize, 1.5f) * 5);
+		int maxFP = (int)(Math.pow(marketSize, 1.5f));
 		
 		float qf = origin.getShipQualityFactor();
 		//qf = Math.max(qf, 0.7f);
@@ -140,37 +144,39 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		}
 		
 		String name = StringHelper.getString("exerelin_fleets", "miningFleetName");
-		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(origin.getFactionId());
+		String factionId = origin.getFactionId();
+		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
 		if (factionConfig != null)
 		{
 			name = factionConfig.asteroidMiningFleetName;
 		}
-		if (maxFP < 50) name = StringHelper.getString("exerelin_fleets", "miningFleetPrefixSmall") + " " + name;
-		else if (maxFP > 100) name = StringHelper.getString("exerelin_fleets", "miningFleetPrefixLarge") + " " + name;
+		if (maxFP < 10) name = StringHelper.getString("exerelin_fleets", "miningFleetPrefixSmall") + " " + name;
+		else if (maxFP > 20) name = StringHelper.getString("exerelin_fleets", "miningFleetPrefixLarge") + " " + name;
 		
 		//log.info("Trying to create mining fleet of size " + maxFP + ", target " + target.getName());
-		CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP/3);
+		FleetParams params = new FleetParams(origin.getLocationInHyperspace(), origin, factionId, factionId, "exerelinMiningFleet", 
+				maxFP/4, // combat
+				maxFP/3, // freighters
+				0,		// tankers
+				0,		// personnel transports
+				0,		// liners
+				0,		// civilian
+				maxFP/6,	// utility
+				0, -1, 0, 0);	// quality bonus, quality override, officer num mult, officer level bonus
 		
-		float minerFP = maxFP - fleet.getFleetPoints();
+		//CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP/3);
+		CampaignFleetAPI fleet = FleetFactoryV2.createFleet(params);
+		fleet.setName(name);
+		
+		float minerFP = maxFP - fleet.getFleetPoints();	// about 25% of maxFP left
 		while (minerFP > 0)
 		{
-			if (minerFP > 30)
-			{
-				fleet.getFaction().pickShipAndAddToFleet(ShipRoles.FREIGHTER_MEDIUM, qf, fleet);
-				ExerelinUtilsFleet.addMiningShipToFleet(fleet);
-				ExerelinUtilsFleet.addMiningShipToFleet(fleet);
-			}
-			else
-			{
-				fleet.getFaction().pickShipAndAddToFleet(ShipRoles.FREIGHTER_SMALL, qf, fleet);
-				ExerelinUtilsFleet.addMiningShipToFleet(fleet);
-			}
-			minerFP = maxFP - fleet.getFleetPoints();
+			FleetMemberAPI miner = ExerelinUtilsFleet.addMiningShipToFleet(fleet);
+			minerFP -= miner.getFleetPointCost();	// this should be right?
 		}
-			 
-		fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinMiningFleet");
-		fleet.getMemoryWithoutUpdate().set("$maxFP", maxFP);
-		fleet.getMemoryWithoutUpdate().set("$originMarket", origin);
+		
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "exerelinMiningFleet");
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SOURCE_MARKET, origin);
 		
 		float miningStrength = MiningHelper.getFleetMiningStrength(fleet);
 		

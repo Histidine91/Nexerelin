@@ -10,14 +10,14 @@ import com.fs.starfarer.api.util.Misc.Token;
 
 public class FleetRequestChangeFP extends FleetRequestActionBase {
 
-        @Override
-	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
-		if (dialog == null) return false;
+    @Override
+    public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
+        if (dialog == null) return false;
                 
                 MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
                 int fp = (int)memory.getFloat("$fleetRequestFP");                
-                fp += 60;
-                if (fp > 240) fp = 60;
+                fp += 15;
+                if (fp > 60) fp = 15;
                 
                 memory.set("$fleetRequestFP", fp, 0);
                 return true;

@@ -14,7 +14,7 @@
     "playerBaseSalary": 5000, # Double
     "playerSalaryIncrementPerLevel": 1000, # Double
     "playerInsuranceMult": 0.5,
-    "fleetBonusFpPerPlayerLevel": 1.0,
+    "fleetBonusFpPerPlayerLevel": 0.25,
     
     "prisonerRepatriateRepValue": 0.05,
     "prisonerBaseRansomValue": 4000,
@@ -28,7 +28,7 @@
     
     "allowPirateInvasions": false,
     "fleetRequestCostPerMarine": 125,  # used for player-requested fleets
-    "fleetRequestCostPerFP": 500,  # used for player-requested fleets
+    "fleetRequestCostPerFP": 2000,  # used for player-requested fleets
     "invasionGracePeriod": 0,  # factions won't accumulate invasion points for this long at start
     "pointsRequiredForInvasionFleet": 4000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily

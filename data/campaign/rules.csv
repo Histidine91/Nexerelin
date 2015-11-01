@@ -877,7 +877,7 @@ $faction.id != ""neutral""
 !IsFactionAlive $player.factionId
 !IsFactionAlive player_npc","SetTooltip exerelinFleetRequestMenu ""Your faction has no base to launch a fleet from.""
 SetEnabled exerelinFleetRequestMenu false",,,
-ExerelinFleetRequestOptionListMain,DialogOptionSelected,$option == exerelinFleetRequestMenu,"$fleetRequestFP = 60
+ExerelinFleetRequestOptionListMain,DialogOptionSelected,$option == exerelinFleetRequestMenu,"$fleetRequestFP = 15
 $fleetRequestMarines=0
 ShowVisual ""graphics/illustrations/hound_hangar.jpg""
 FireAll ExerelinFleetRequestOption",,,
