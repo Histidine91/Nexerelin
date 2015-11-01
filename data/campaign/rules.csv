@@ -233,6 +233,7 @@ ExerelinNGCFactionsFreeStart,ExerelinNGCListFactionsVanilla,,,,exerelinNGCFreeSt
 ExerelinNGCListVanillaFactionsBack,ExerelinNGCListFactionsVanilla,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCListExipirated,ExerelinNGCListFactions1,NGCDoesFactionExist exipirated,,,exerelinNGCJoinExipirated:Ahriman Association,
+ExerelinNGCListApprolight,ExerelinNGCListFactions1,NGCDoesFactionExist approlight,,,exerelinNGCJoinApprolight:Approlight,
 ExerelinNGCListASPSyndicate,ExerelinNGCListFactions1,NGCDoesFactionExist syndicate_asp,,,exerelinNGCJoinASPSyndicate:ASP Syndicate,
 ExerelinNGCListBlackrock,ExerelinNGCListFactions1,NGCDoesFactionExist blackrock_driveyards,,,exerelinNGCJoinBlackrock:Blackrock Drive Yards,
 ExerelinNGCListCitadel,ExerelinNGCListFactions1,NGCDoesFactionExist citadeldefenders,,,exerelinNGCJoinCitadel:Citadel,
@@ -326,6 +327,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinPirate,NewGameOptionSelected,$option == exerelinNGCJoinPirate,"NGCSetPlayerFaction ""pirates""
 NGCAddShipAndComplement ""cerberus_Standard""
 AddText ""Added Cerberus-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinApprolight,NewGameOptionSelected,$option == exerelinNGCJoinApprolight,"NGCSetPlayerFaction ""approlight""
+NGCAddShipAndComplement ""AL_mumber_C""
+AddText ""Added Mumber-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinASPSyndicate,NewGameOptionSelected,$option == exerelinNGCJoinASPSyndicate,"NGCSetPlayerFaction ""syndicate_asp""
 NGCAddShipAndComplement ""syndicate_asp_diamondback_Standard""
@@ -606,6 +611,7 @@ ExerelinFactionDirectoryList3,DialogOptionSelected,$option == exerelinFactionDir
 ExerelinFactionDirectoryList4,DialogOptionSelected,$option == exerelinFactionDirectoryList4,FireAll ExerelinFactionDirectoryList4,,,
 ,,,,,,
 ExerelinFactionDirectoryListExipirated,ExerelinFactionDirectoryList1,IsFactionAlive exipirated,,,exerelinFactionDirectoryGetExipirated:Ahriman Association,
+ExerelinFactionDirectoryListApprolight,ExerelinFactionDirectoryList1,IsFactionAlive approlight,,,exerelinFactionDirectoryGetApprolight:Approlight,
 ExerelinFactionDirectoryListASPSyindicate,ExerelinFactionDirectoryList1,IsFactionAlive syndicate_asp,,,exerelinFactionDirectoryGetASPSyndicate:ASP Syndicate,
 ExerelinFactionDirectoryListBlackrock,ExerelinFactionDirectoryList1,IsFactionAlive blackrock_driveyards,,,exerelinFactionDirectoryGetBlackrock:Blackrock,
 ExerelinFactionDirectoryListCitadel,ExerelinFactionDirectoryList1,IsFactionAlive citadeldefenders,,,exerelinFactionDirectoryGetCitadel:Citadel,
@@ -652,6 +658,7 @@ ExerelinFactionDirectoryListValkyrians,ExerelinFactionDirectoryList4,IsFactionAl
 ExerelinFactionDirectoryList4Back,ExerelinFactionDirectoryList4,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
 # this feels like it could be a billion times more efficient,,,,,,
+ExerelinFactionDirectoryGetApprolight,DialogOptionSelected,$option == exerelinFactionDirectoryGetApprolight,PrintFactionMarkets approlight,,,
 ExerelinFactionDirectoryGetASPSyndicate,DialogOptionSelected,$option == exerelinFactionDirectoryGetASPSyndicate,PrintFactionMarkets syndicate_asp,,,
 ExerelinFactionDirectoryGetBlackrock,DialogOptionSelected,$option == exerelinFactionDirectoryGetBlackrock,PrintFactionMarkets blackrock_driveyards,,,
 ExerelinFactionDirectoryGetCitadel,DialogOptionSelected,$option == exerelinFactionDirectoryGetCitadel,PrintFactionMarkets citadeldefenders,,,

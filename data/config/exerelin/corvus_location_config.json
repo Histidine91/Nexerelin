@@ -10,6 +10,7 @@
 		"Acheron":"SCY_prismFreeport",
 		"Aesir":"breidablik",
 		"Anar":"euripedes",
+		"ApproLight":"ApproLight01",
 		"Antioch":"tem_ascalon",
 		"Atalie":"atalieB2a",
 		"Baka":"crystanos2",
@@ -57,9 +58,13 @@
 		},
 		"pirates":{
 			"system":"Askonia",
-			"entity":"umbra",
+			"entity":"umbra"
 		},
 		
+		"approlight":{
+			"system":"ApproLight",
+			"entity":"ApproLight01"
+		},
 		"blackrock_driveyards":{
 			"system":"Gneiss",
 			"entity":"lodestone"
