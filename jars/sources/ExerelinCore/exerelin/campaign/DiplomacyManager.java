@@ -940,7 +940,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 FactionAPI faction = sector.getFaction(factionId);
                 if (!faction.isNeutralFaction() && !factionId.equals("famous_bounty"))
                 {
-                    famousBounty.setRelationship(factionId, 0.5f);
+                    famousBounty.setRelationship(factionId, 0f);
                 }
             }
             famousBounty.setRelationship(Factions.PLAYER, -1f);
