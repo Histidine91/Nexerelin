@@ -1782,10 +1782,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		int numPlanetsStar1 = 0;
 		int numPlanetsStar2 = 0;
 		
+		List<EntityData> entities = new ArrayList<>();
+		
 		EntityData starData = new EntityData(system);
 		EntityData starData2 = null;
 		starData.entity = star;
 		starData.type = EntityType.STAR;
+		entities.add(starData);
 		
 		boolean isBinary = (Math.random() < ExerelinConfig.binarySystemChance) && (!star.getTypeId().equals("star_dark"));
 		if (isBinary)
@@ -1794,9 +1797,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			starData2 = new EntityData(system);
 			starData2.entity = star2;
 			starData2.type = EntityType.STAR;
+			entities.add(starData2);
 		}
-
-		List<EntityData> entities = new ArrayList<>();
 		
 		// now let's start seeding planets
 		// note that we don't create the PlanetAPI right away, but set up EntityDatas first
@@ -1856,6 +1858,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// okay, now we can actually create the planets
 		for(EntityData planetData : entities)
 		{
+			if (planetData.type == EntityType.STAR) continue;
+			
 			String planetType = "";
 			boolean isGasGiant = false;
 			
@@ -1942,6 +1946,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				int maxMoons = ExerelinSetupData.getInstance().maxMoonsPerPlanet;
 				if (isGasGiant) maxMoons +=1;
 				int numMoons = MathUtils.getRandomNumberInRange(0, 1) + MathUtils.getRandomNumberInRange(0, maxMoons - 1);
+				distance = newPlanet.getRadius() + MathUtils.getRandomNumberInRange(0, 600);
 				for(int j = 0; j < numMoons; j++)
 				{
 					String ext = "";
@@ -1962,13 +1967,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					}
 					else
 						moonData.planetType = (String) ExerelinUtils.getRandomArrayElement(moonTypesUninhabitable);
+					
 					moonData.primary = planetData;
 					moonData.habitable = moonInhabitable;
 					moonData.type = EntityType.MOON;		
 					
 					// moon orbital mechanics
 					angle = MathUtils.getRandomNumberInRange(1, 360);
-					distance = MathUtils.getRandomNumberInRange(650, 1300);
+					distance += MathUtils.getRandomNumberInRange(200, 450);
 					float moonRadius = MathUtils.getRandomNumberInRange(50, 100);
 					orbitDays = getOrbitalPeriod(newPlanet.getRadius(), distance + newPlanet.getRadius(), 2);
 					PlanetAPI newMoon = system.addPlanet(name + " " + ext, newPlanet, name + " " + ext, moonData.planetType, angle, moonRadius, distance, orbitDays);
@@ -2034,7 +2040,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 			if (planetData.primary == starData2) 
 			{
-				if (systemIndex == 0) weight *= 0.00001f;
+				if (systemIndex == 0) weight *= 0;
 				else weight *= 0.67f;
 			}
 			capitalPicker.add(planetData, weight);
@@ -2050,8 +2056,18 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		// Build asteroid belts
 		// If the belt orbits a star, add it to a list so that we can seed belter stations later
-		List<PlanetAPI> planets = system.getPlanets();
-		List<Float> starBelts = new ArrayList<>();
+		WeightedRandomPicker<EntityData> entitiesForAsteroids = new WeightedRandomPicker<>();
+		for (EntityData data: entities)
+		{
+			float weight = 1;
+			if (data.type == EntityType.MOON) weight = 0.5f;
+			else if (data.type == EntityType.STAR) weight = 2.5f;
+			else if (data.planetType.equals("gas_giant") || data.planetType.equals("ice_giant")) weight = 2f;
+			entitiesForAsteroids.add(data, weight);
+		}
+		
+		List<Float> starBelts1 = new ArrayList<>();
+		List<Float> starBelts2 = new ArrayList<>();
 		int numAsteroidBelts;
 		if(ExerelinSetupData.getInstance().numSystems != 1)
 			numAsteroidBelts = MathUtils.getRandomNumberInRange(ExerelinConfig.minimumAsteroidBelts, ExerelinSetupData.getInstance().maxAsteroidBelts);
@@ -2060,7 +2076,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		for(int j = 0; j < numAsteroidBelts; j = j + 1)
 		{
-			PlanetAPI planet = (PlanetAPI) ExerelinUtils.getRandomListElement(planets);
+			EntityData entity = entitiesForAsteroids.pickAndRemove();
+			if (entity == null) break;
+			PlanetAPI planet = (PlanetAPI)(entity.entity);
 
 			float orbitRadius;
 			int numAsteroids;
@@ -2085,13 +2103,16 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				orbitRadius = MathUtils.getRandomNumberInRange(400, 550);
 				numAsteroids = 15;
 			}
+			numAsteroids = (int)(numAsteroids * MathUtils.getRandomNumberInRange(0.75f, 1.25f));
 
 			float width = MathUtils.getRandomNumberInRange(10, 50);
 			float baseOrbitDays = getOrbitalPeriod(planet.getRadius(), orbitRadius, planet.isStar() ? 1 : 2);
 			float minOrbitDays = baseOrbitDays * 0.75f;
 			float maxOrbitDays = baseOrbitDays * 1.25f;
 			system.addAsteroidBelt(planet, numAsteroids, orbitRadius, width, minOrbitDays, maxOrbitDays);
-			if (planet.isStar()) starBelts.add(orbitRadius);
+			if (planet == star) starBelts1.add(orbitRadius);
+			else if (planet == star2) starBelts2.add(orbitRadius);
+			log.info("Added asteroid belt around " + planet.getName());
 		}
 
 		// Always put an asteroid belt around the sun
@@ -2101,8 +2122,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float minOrbitDays = baseOrbitDays * 0.75f;
 			float maxOrbitDays = baseOrbitDays * 1.25f;
 			
-			system.addAsteroidBelt(star, 25, distance, MathUtils.getRandomNumberInRange(10, 50), minOrbitDays, maxOrbitDays);
-			starBelts.add(distance);
+			system.addAsteroidBelt(star, 25, distance, MathUtils.getRandomNumberInRange(40, 60), minOrbitDays, maxOrbitDays);
+			starBelts1.add(distance);
 
 			// Another one if medium system size
 			if(ExerelinSetupData.getInstance().maxSystemSize > 16000)
@@ -2111,8 +2132,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				baseOrbitDays = getOrbitalPeriod(star.getRadius(), distance, 1);
 				minOrbitDays = baseOrbitDays * 0.75f;
 				maxOrbitDays = baseOrbitDays * 1.25f;
-				system.addAsteroidBelt(star, 50, distance, MathUtils.getRandomNumberInRange(50, 100), minOrbitDays, maxOrbitDays);
-				starBelts.add(distance);
+				system.addAsteroidBelt(star, 50, distance, MathUtils.getRandomNumberInRange(75, 125), minOrbitDays, maxOrbitDays);
+				starBelts1.add(distance);
 			}
 			// And another one if a large system
 			if(ExerelinSetupData.getInstance().maxSystemSize > 32000)
@@ -2122,7 +2143,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				minOrbitDays = baseOrbitDays * 0.75f;
 				maxOrbitDays = baseOrbitDays * 1.25f;
 				system.addAsteroidBelt(star, 75, distance, MathUtils.getRandomNumberInRange(100, 150),  minOrbitDays, maxOrbitDays);
-				starBelts.add(distance);
+				starBelts1.add(distance);
 			}
 		} while (false);
 		
@@ -2151,7 +2172,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		for (EntityData entityData : entities)
 		{
 			float weight = 1f;
-			if (entityData.type == EntityType.STAR) weight = 3f;
+			if (entityData.type == EntityType.STAR) weight = 3.5f;
 			else if (entityData.habitable == false) weight = 2f;
 			picker.add(entityData, weight);
 		}
@@ -2162,13 +2183,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			if (picker.isEmpty()) picker.add(starData);
 			EntityData primaryData = picker.pickAndRemove();
-			boolean isStar = primaryData.type == EntityType.STAR;
 
 			EntityData stationData = new EntityData(system);
 			stationData.primary = primaryData;
 			stationData.type = EntityType.STATION;
 			stationData.archetype = pickMarketArchetype(true);
-			if (isStar) stationData.orbitDistance = (Float) ExerelinUtils.getRandomListElement(starBelts);
+			if (primaryData.entity == star) stationData.orbitDistance = (Float) ExerelinUtils.getRandomListElement(starBelts1);
+			else if (primaryData.entity == star2) stationData.orbitDistance = (Float) ExerelinUtils.getRandomListElement(starBelts2);
 			
 			// name our station
 			boolean nameOK = false;
