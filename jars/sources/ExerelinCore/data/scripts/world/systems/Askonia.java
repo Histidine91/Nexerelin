@@ -27,7 +27,7 @@ public class Askonia {
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI star = system.initStar("askonia", // unique id for this star 
 										 "star_red", // id in planets.json
-										 1000f); 		// radius (in pixels at default zoom)
+										 1000f, 1000*1.25f); 		// radius (in pixels at default zoom)
 		
 		system.setLightColor(new Color(255, 210, 200)); // light color in entire system, affects all entities
 		

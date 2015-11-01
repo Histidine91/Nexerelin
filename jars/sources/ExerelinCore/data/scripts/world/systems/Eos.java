@@ -22,7 +22,7 @@ public class Eos {
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI star = system.initStar("eos",
 										 "star_white", // id in planets.json
-										 750f); 		// radius (in pixels at default zoom)
+										 750f, 750*1.25f); 		// radius (in pixels at default zoom)
 		
 		system.setLightColor(new Color(255, 255, 255)); // light color in entire system, affects all entities
 		

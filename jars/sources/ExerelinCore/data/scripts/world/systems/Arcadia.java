@@ -26,7 +26,7 @@ public class Arcadia {
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI star = system.initStar("arcadia", // unique id for star
 										 "star_white", // id in planets.json
-										 120f);		// radius (in pixels at default zoom)
+										 120f, 120*1.25f);		// radius (in pixels at default zoom)
 		
 		system.setLightColor(new Color(200, 200, 200)); // light color in entire system, affects all entities
 		star.setCustomDescriptionId("star_white_dwarf");
