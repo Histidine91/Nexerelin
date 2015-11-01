@@ -631,7 +631,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float weight = 100 - (entity.bonusMarketPoints/(size-1));
 			if (market.hasCondition("exerelin_hydroponics")) 
 			{
-				if (foodSupply > foodDemand*1.1)
+				if (foodSupply > foodDemand)
 				{
 					int hydroponicsCount = ExerelinUtilsMarket.countMarketConditions(market, "exerelin_hydroponics");
 					market.removeCondition("exerelin_hydroponics");	// removes all
