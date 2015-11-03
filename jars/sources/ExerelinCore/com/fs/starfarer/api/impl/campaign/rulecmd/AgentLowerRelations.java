@@ -59,14 +59,14 @@ public class AgentLowerRelations extends AgentActionBase {
 			float weight = 0.001f;
 			RepLevel rep = playerAlignedFaction.getRelationshipLevel(factionId);
 			if (TARGET_WEIGHTINGS.containsKey(rep))
-			weight = TARGET_WEIGHTINGS.get(rep);
+				weight = TARGET_WEIGHTINGS.get(rep);
 			if (ExerelinUtilsFaction.isPirateFaction(factionId))
-			weight *= 0.25f;
+				weight *= 0.25f;
 			if (AllianceManager.getFactionAlliance(factionId) == targetAlliance)
-			weight *= 4f;
+				weight *= 4f;
 			
 			float dominance = DiplomacyManager.getDominanceFactor(factionId);
-			weight = weight * (1 + dominance*2);
+				weight = weight * (1 + dominance*2);
 			
 			targetPicker.add(factionId, weight);
 		}

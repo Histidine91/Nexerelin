@@ -132,7 +132,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             float weight = 1f;
             if (actionType == CovertActionType.RAISE_RELATIONS)
             {
-        if (repLevel == RepLevel.FAVORABLE || repLevel == RepLevel.WELCOMING) weight = 1f;
+                if (repLevel == RepLevel.FAVORABLE || repLevel == RepLevel.WELCOMING) weight = 1f;
                 else if (repLevel == RepLevel.NEUTRAL) weight = 1.5f;
                 else if (repLevel == RepLevel.SUSPICIOUS) weight = 2f;
                 else if (repLevel == RepLevel.INHOSPITABLE) weight = 3f;
@@ -142,7 +142,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             }
             else if (actionType == CovertActionType.LOWER_RELATIONS)
             {
-        if (repLevel == RepLevel.FAVORABLE) weight = 0.25f;
+                if (repLevel == RepLevel.FAVORABLE) weight = 0.25f;
                 else if (repLevel == RepLevel.NEUTRAL) weight = 1f;
                 else if (repLevel == RepLevel.SUSPICIOUS) weight = 1.5f;
                 else if (repLevel == RepLevel.INHOSPITABLE) weight = 2f;
