@@ -192,7 +192,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         for (MarketAPI market: ourMarkets) ourSize += market.getSize();
         
         if (ourSize == 0) return 0;
-        if (SectorManager.getHardMode() && factionId.equals("playerFactionId"))
+        
+        boolean isPlayer = factionId.equals(playerAlignedFactionId) || (alliance != null && alliance == AllianceManager.getFactionAlliance(playerAlignedFactionId));
+        if (SectorManager.getHardMode() && isPlayer)
             ourSize *= HARD_MODE_DOMINANCE_MOD;
         
         return (float)ourSize / globalSize;
@@ -304,8 +306,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(faction1.getId());
         
         log.info("Factions are: " + faction1.getDisplayName() + ", " + faction2.getDisplayName());
-        float dominance = diplomacyManager.getDominanceFactor(faction1.getId()) + diplomacyManager.getDominanceFactor(faction2.getId());
-        dominance = dominance/2;
+        //float dominance = getDominanceFactor(faction1.getId()) + getDominanceFactor(faction2.getId());
+        //dominance = dominance/2;
+        float dominance = Math.max( getDominanceFactor(faction1.getId()), getDominanceFactor(faction2.getId()) );
         log.info("Dominance factor: " + dominance);
         for (DiplomacyEventDef eventDef: eventDefs)
         {
@@ -340,7 +343,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 if (isNegative) chance = chance + (DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD * strength);
                 else chance = chance + (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
             }
-                
+            if (chance < 0) chance = 0;
             eventPicker.add(eventDef, chance);
         }
         DiplomacyEventDef event = eventPicker.pick();
