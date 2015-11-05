@@ -166,6 +166,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             if (ExerelinUtilsFaction.isPirateFaction(faction.getId()))
                 weight *= 0.25f;    // reduces factions constantly targeting pirates for covert action
             
+            if (weight <= 0) continue;
             targetFactionPicker.add(faction, weight);
             factionCount++;
         }

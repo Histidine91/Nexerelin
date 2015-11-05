@@ -343,7 +343,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 if (isNegative) chance = chance + (DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD * strength);
                 else chance = chance + (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
             }
-            if (chance < 0) chance = 0;
+            if (chance <= 0) continue;
             eventPicker.add(eventDef, chance);
         }
         DiplomacyEventDef event = eventPicker.pick();
