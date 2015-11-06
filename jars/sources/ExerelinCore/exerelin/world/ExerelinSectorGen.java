@@ -2189,7 +2189,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			stationData.type = EntityType.STATION;
 			stationData.archetype = pickMarketArchetype(true);
 			if (primaryData.entity == star) stationData.orbitDistance = (Float) ExerelinUtils.getRandomListElement(starBelts1);
-			else if (primaryData.entity == star2) stationData.orbitDistance = (Float) ExerelinUtils.getRandomListElement(starBelts2);
+			else if (primaryData.entity == star2 && !starBelts2.isEmpty()) stationData.orbitDistance = (Float) ExerelinUtils.getRandomListElement(starBelts2);
 			
 			// name our station
 			boolean nameOK = false;
