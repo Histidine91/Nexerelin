@@ -2022,14 +2022,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		// Always put an asteroid belt around the sun
 		do {
-			float distance = MathUtils.getRandomNumberInRange(1500, 8000);
+			float distance = MathUtils.getRandomNumberInRange(1000, 8000) + star.getRadius();
 			float baseOrbitDays = getOrbitalPeriod(star.getRadius(), distance, 1);
 			float minOrbitDays = baseOrbitDays * 0.75f;
 			float maxOrbitDays = baseOrbitDays * 1.25f;
 			
 			system.addAsteroidBelt(star, 25, distance, MathUtils.getRandomNumberInRange(40, 60), minOrbitDays, maxOrbitDays);
 			starBelts1.add(distance);
-
+			
 			// Another one if medium system size
 			if(ExerelinSetupData.getInstance().maxSystemSize > 16000)
 			{
@@ -2094,7 +2094,22 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			stationData.type = EntityType.STATION;
 			stationData.archetype = pickMarketArchetype(true);
 			if (primaryData.entity == star) stationData.orbitDistance = (Float) ExerelinUtils.getRandomListElement(starBelts1);
-			else if (primaryData.entity == star2 && !starBelts2.isEmpty()) stationData.orbitDistance = (Float) ExerelinUtils.getRandomListElement(starBelts2);
+			else if (primaryData.entity == star2) 
+			{
+				// make a belt for binary companion if we don't have one already
+				if (starBelts2.isEmpty())
+				{
+					float distance = MathUtils.getRandomNumberInRange(1000, 8000) + star2.getRadius();
+					float baseOrbitDays = getOrbitalPeriod(star2.getRadius(), distance, 1);
+					float minOrbitDays = baseOrbitDays * 0.75f;
+					float maxOrbitDays = baseOrbitDays * 1.25f;
+
+					system.addAsteroidBelt(star2, 25, distance, MathUtils.getRandomNumberInRange(30, 50), minOrbitDays, maxOrbitDays);
+					starBelts2.add(distance);
+				}
+				
+				stationData.orbitDistance = (Float) ExerelinUtils.getRandomListElement(starBelts2);
+			}
 			
 			// name our station
 			boolean nameOK = false;
@@ -2134,7 +2149,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
 				"comm_relay", // type of object, defined in custom_entities.json
 				"neutral"); // faction
-		relay.setCircularOrbit(star, (float)Math.random() * 360, star.getRadius() + 1200, getOrbitalPeriod(star.getRadius(), 1500, 1));
+		float distance = star.getRadius() + MathUtils.getRandomNumberInRange(1200, 1800);
+		relay.setCircularOrbit(star, (float)Math.random() * 360, distance, getOrbitalPeriod(star.getRadius(), distance, 1));
 		systemToRelay.put(system.getId(), system.getId() + "_relay");
 		planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
 	}
