@@ -1143,6 +1143,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, getOrbitalPeriod(radius, orbitDistance, getDensity(toOrbit)));
 		
 		shanghaiEntity.setMarket(market);
+		market.getConnectedEntities().add(shanghaiEntity);
 		if (!market.hasCondition(Conditions.ORBITAL_STATION) && !market.hasCondition(Conditions.SPACEPORT))
 		{
 			market.addCondition(Conditions.ORBITAL_STATION);
