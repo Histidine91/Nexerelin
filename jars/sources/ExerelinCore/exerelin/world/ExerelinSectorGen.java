@@ -1232,102 +1232,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		cathedralLabel.setFixedLocation(-20000, 2000);
 		coreLabel.setFixedLocation(17000, -6000);
 	}
-	
-	// teleport player to homeworld at start
-	// FIXME: doesn't get into the save at start
-	protected void applyTeleportScript(final String factionId, boolean corvusMode)
-	{
-		log.info("Adding teleport script");
-		SectorAPI sector = Global.getSector();
 		
-		if (corvusMode)
-		{
-			// moves player fleet to a suitable location; e.g. Avesta for Association
-			EveryFrameScript teleportScript = new EveryFrameScript() {
-				private boolean done = false;
-				SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(factionId);
-				String homeEntity = null;
-				SectorEntityToken entity = null;
-	
-				public boolean runWhilePaused() {
-					return false;
-				}
-				public boolean isDone() {
-					return done;
-				}
-				public void advance(float amount) 
-				{
-					if (Global.getSector().isInNewGameAdvance()) return;
-					if (ExerelinUtilsFaction.isCorvusCompatible(factionId, false) && spawnPoint != null)
-					{
-						homeEntity = spawnPoint.entityName;
-						if (homeEntity != null)
-							entity = Global.getSector().getEntityById(homeEntity);
-					}
-					if (entity != null)
-					{
-						Vector2f loc = entity.getLocation();
-						Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
-						MarketAPI homeMarket = entity.getMarket();
-						if (homeMarket != null)
-						{
-							// unlock storage
-							SubmarketAPI storage = homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE);
-							if (storage != null)
-							{
-								StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
-								if (plugin != null)
-									plugin.setPlayerPaidToUnlock(true);
-							}
-						}
-					}
-					// check that all factions support Corvus mode; warn player if not
-					int numIncompatibles = 0;
-					for (FactionAPI faction : Global.getSector().getAllFactions())
-					{
-						if (!ExerelinUtilsFaction.isCorvusCompatible(faction.getId(), true))
-						{
-							log.warn("Faction " + faction.getDisplayName() + " does not support Corvus mode!");
-							numIncompatibles++;
-						}
-					}
-					if (numIncompatibles > 0)
-					{
-						Color color = Misc.getHighlightColor();
-						Color color2 = Color.RED;
-						CampaignUIAPI ui = Global.getSector().getCampaignUI();
-						ui.addMessage("You are using " + numIncompatibles + " mod faction(s) that do not support Corvus mode!", color, numIncompatibles+"", color2);
-						ui.addMessage("See starsector.log for details", color);
-					}
-					
-					done = true;
-				}
-			};
-			sector.addTransientScript(teleportScript);
-		}
-		else if (!ExerelinSetupData.getInstance().freeStart)
-		{
-			EveryFrameScript teleportScript = new EveryFrameScript() {
-				private boolean done = false;
-				public boolean runWhilePaused() {
-					return false;
-				}
-				public boolean isDone() {
-					return done;
-				}
-				public void advance(float amount) {
-					if (Global.getSector().isInNewGameAdvance()) return;
-					
-					SectorEntityToken entity = homeworld.entity;
-					Vector2f loc = entity.getLocation();
-					Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
-					done = true;
-				}
-			};
-			sector.addTransientScript(teleportScript);
-		}
-	}
-	
 	@Override
 	public void generate(SectorAPI sector)
 	{
@@ -1471,6 +1376,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		SectorManager.setPlanetToRelayMap(planetToRelay);
 		SectorManager.setCorvusMode(corvusMode);
 		SectorManager.setHardMode(setupData.hardMode);
+		SectorManager.setHomeworld(homeworld.entity);
 		
 		// some cleanup
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
@@ -1480,8 +1386,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				market.removeSubmarket(Submarkets.GENERIC_MILITARY); // auto added by military base; remove it
 			}
 		}
-		
-		applyTeleportScript(selectedFactionId, corvusMode);
 		
 		//sector.setRespawnLocation(homeworld.starSystem);
 		//sector.getRespawnCoordinates().set(homeworld.entity.getLocation().x, homeworld.entity.getLocation().y);

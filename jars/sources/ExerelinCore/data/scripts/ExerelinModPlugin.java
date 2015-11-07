@@ -3,17 +3,15 @@ package data.scripts;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DirectoryScreenScript;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.PlayerStartHandler;
 import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
@@ -26,7 +24,7 @@ import org.lazywizard.omnifac.OmniFacSettings;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
-    // call order: onNewGame -> onEnabled -> onGameLoad
+    // call order: onNewGame -> onNewGameAfterEconomyLoad -> onEnabled -> onNewGameAfterTimePass -> onGameLoad
     protected static boolean isNewGame = false;
     
     protected void applyToExistingSave()
@@ -146,6 +144,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onNewGameAfterTimePass() {
         Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);
+        PlayerStartHandler.execute();
     }
 
     @Override

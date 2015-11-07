@@ -64,6 +64,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     private boolean victoryHasOccured = false;
     private boolean respawnFactions = false;
     private boolean onlyRespawnStartingFactions = false;
+    protected SectorEntityToken homeworld;
     
     protected boolean corvusMode = false;
     protected boolean hardMode = false;
@@ -668,6 +669,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return;
         sectorManager.planetToRelayMap = map;
+    }
+    
+    public static void setHomeworld(SectorEntityToken entity)
+    {
+        if (sectorManager == null) return;
+        sectorManager.homeworld = entity;
+    }
+    
+    public static SectorEntityToken getHomeworld()
+    {
+        if (sectorManager == null) return null;
+        return sectorManager.homeworld;
     }
     
     private static void expelPlayerFromFaction()
