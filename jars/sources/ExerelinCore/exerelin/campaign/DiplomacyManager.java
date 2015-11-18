@@ -405,14 +405,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         {
             for (String member : alliance.members) 
             {
-                float weariness = warWeariness.get(member);
+                float weariness = getWarWeariness(member);
                 weariness = Math.max(weariness - amount, 0);
                 warWeariness.put(member, weariness);
             }
         }
         else
         {
-            float weariness = warWeariness.get(factionId);
+            float weariness = getWarWeariness(factionId);
             weariness = Math.max(weariness - amount, 0);
             warWeariness.put(factionId, weariness);
         }
@@ -434,8 +434,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (faction.isNeutralFaction()) continue;
             if (faction.getId().equals("player_npc") && !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
 
-            Float weariness = warWeariness.get(factionId);
-            if (weariness == null) weariness = 0f;
+            float weariness = getWarWeariness(factionId);
             List<String> enemies = getFactionsAtWarWithFaction(faction, false, false);
             int warCount = enemies.size();
             if (warCount > 0)
@@ -464,10 +463,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             log.info("Faction " + factionWithMostWars.getDisplayName() + " wants to sue for peace");
             WeightedRandomPicker<String> picker = new WeightedRandomPicker();
             for (String enemy : enemiesOfFaction)
-                picker.add(enemy, warWeariness.get(enemy));
+                picker.add(enemy, getWarWeariness(enemy));
             String toPeace = picker.pick();
             
-            float sumWeariness = warWeariness.get(factionWithMostWars.getId()) + warWeariness.get(toPeace);
+            float sumWeariness = getWarWeariness(factionWithMostWars.getId()) + getWarWeariness(toPeace);
             log.info("Sum with " + sector.getFaction(toPeace).getDisplayName() + ": " + sumWeariness);
             if (Math.random() > sumWeariness/ExerelinConfig.warWearinessDivisor)
                 return;
@@ -501,7 +500,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (!warWeariness.containsKey(loseFactionId)) return;
         float value = (market.getSize()^3) * 5;
         
-        warWeariness.put(loseFactionId, warWeariness.get(loseFactionId) + value);
+        warWeariness.put(loseFactionId, getWarWeariness(loseFactionId) + value);
     }
     
     @Override
@@ -555,8 +554,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         winnerLosses *= WAR_WEARINESS_FLEET_WIN_MULT;
         
-        warWeariness.put(winFactionId, warWeariness.get(winFactionId) + winnerLosses);
-        warWeariness.put(loseFactionId, warWeariness.get(loseFactionId) + loserLosses);
+        warWeariness.put(winFactionId, getWarWeariness(winFactionId) + winnerLosses);
+        warWeariness.put(loseFactionId, getWarWeariness(loseFactionId) + loserLosses);
     }
             
     @Override
@@ -685,7 +684,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             log.info("No diplomacy manager found");
             return 0.0f;
         }
-        if (!diplomacyManager.warWeariness.containsKey(factionId)) return 0.0f;
+        if (!diplomacyManager.warWeariness.containsKey(factionId))
+        {
+            diplomacyManager.warWeariness.put(factionId, 0f);
+            return 0.0f;
+        }
         return diplomacyManager.warWeariness.get(factionId);
     }
     
