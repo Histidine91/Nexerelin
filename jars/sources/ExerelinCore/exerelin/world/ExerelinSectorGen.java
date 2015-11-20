@@ -2175,12 +2175,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			food += ConditionData.WORLD_JUNGLE_FARMING_MULT * pop;
 		else if (market.hasCondition(Conditions.ICE))
 			food += ConditionData.WORLD_ICE_FARMING_MULT * pop;
+		else if (market.hasCondition("barren_marginal"))
+			food += ConditionData.WORLD_BARREN_MARGINAL_FARMING_MULT * pop;
+		else if (market.hasCondition("twilight"))
+			food += ConditionData.WORLD_TWILIGHT_FARMING_MULT * pop;
+		else if (market.hasCondition("tundra"))
+			food += ConditionData.WORLD_TUNDRA_FARMING_MULT * pop;
 		
 		// market conditions
 		int hydroponicsCount = ExerelinUtilsMarket.countMarketConditions(market, "exerelin_hydroponics");
+		int hydroponicsVanillaCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.HYDROPONICS_COMPLEX);
 		int aquacultureCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.AQUACULTURE);
 		food += hydroponicsCount * Exerelin_Hydroponics.HYDROPONICS_FOOD_POP_MULT * pop;
 		food += aquacultureCount * ConditionData.AQUACULTURE_FOOD_MULT * pop;
+		food += hydroponicsVanillaCount * ConditionData.HYDROPONICS_COMPLEX_FOOD;
 		
 		food *= market.getCommodityData(Commodities.FOOD).getSupply().computeMultMod();
 		
