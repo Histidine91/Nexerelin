@@ -1,8 +1,8 @@
 package exerelin.campaign.events;
 
-import com.fs.starfarer.api.impl.campaign.events.InvestigationEventSmuggling;
+import com.fs.starfarer.api.impl.campaign.events.InvestigationEventSmugglingV2;
 
-public class ExerelinInvestigationEventSmuggling extends InvestigationEventSmuggling {
+public class ExerelinInvestigationEventSmuggling extends InvestigationEventSmugglingV2 {
     
     protected String factionId = "neutral";
     

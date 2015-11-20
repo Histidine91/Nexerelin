@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.characters.CharacterCreationPlugin.CharacterCreationData;
+import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.world.ExerelinCorvusLocations;
 import data.scripts.world.ExerelinCorvusLocations.SpawnPointEntry;
