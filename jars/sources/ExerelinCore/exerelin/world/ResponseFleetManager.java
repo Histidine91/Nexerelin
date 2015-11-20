@@ -8,6 +8,9 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -24,11 +27,11 @@ import org.apache.log4j.Logger;
 public class ResponseFleetManager extends BaseCampaignEventListener implements EveryFrameScript
 {
     public static final String MANAGER_MAP_KEY = "exerelin_responseFleetManager";
-    private static final float RESERVE_INCREMENT_PER_DAY = 0.32f;
+    private static final float RESERVE_INCREMENT_PER_DAY = 0.08f;
     private static final float RESERVE_MARKET_STABILITY_DIVISOR = 5f;
     private static final float INITIAL_RESERVE_SIZE_MULT = 0.75f;
     private static final float MIN_FP_TO_SPAWN = 20f;
-    protected static final float REVENGE_FLEET_BASE_SIZE = 300;
+    protected static final float REVENGE_FLEET_BASE_SIZE = 75;
     protected static final float REVENGE_GROWTH_MULT = 0.25f;
     
     protected Map<String, Float> revengeStrength = new HashMap<>();
@@ -75,7 +78,9 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         }
         
         float qf = origin.getShipQualityFactor();
-        qf = Math.max(qf, 0.7f);
+        //qf = Math.max(qf, 0.7f);
+        
+        String factionId = origin.getFactionId();
         
         String name = StringHelper.getString("exerelin_fleets", "responseFleetName");
         ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(origin.getFactionId());
@@ -83,13 +88,25 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         {
             name = factionConfig.responseFleetName;
         }
-        if (maxFP < 70) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixSmall") + " " + name;
-        else if (maxFP > 210) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
-        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
-             
-        fleet.getMemoryWithoutUpdate().set("$fleetType", "exerelinResponseFleet");
-        fleet.getMemoryWithoutUpdate().set("$maxFP", maxFP);
-        fleet.getMemoryWithoutUpdate().set("$originMarket", origin);
+        if (maxFP < 18) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixSmall") + " " + name;
+        else if (maxFP > 42) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
+        
+        //CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
+        FleetParams fleetParams = new FleetParams(null, origin, factionId, null, "exerelinResponseFleet", 
+                maxFP*0.8f, // combat
+                maxFP*0.1f, // freighters
+                0,        // tankers
+                0,        // personnel transports
+                0,        // liners
+                0,        // civilian
+                maxFP*0.1f,    // utility
+                0.15f, -1, 1.25f, origin.getSize() - 1);    // quality bonus, quality override, officer num mult, officer level bonus
+        
+        CampaignFleetAPI fleet = FleetFactoryV2.createFleet(fleetParams);
+        fleet.setName(name);
+        
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "exerelinResponseFleet");
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SOURCE_MARKET, origin);
         
         SectorEntityToken entity = origin.getPrimaryEntity();
         entity.getContainingLocation().addEntity(fleet);
@@ -110,7 +127,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
     
     public static float getMaxReserveSize(MarketAPI market, boolean raw)
     {
-        float baseSize = market.getSize() * 20 + 30;
+        float baseSize = market.getSize() * 5 + 8;
         float size = baseSize;
         if (raw) return size;
         

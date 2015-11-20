@@ -18,6 +18,7 @@ public class ExerelinFactionConfig
    
     public Boolean isPirateNeutral = false;
     public Boolean spawnPatrols = true;    // only used for factions set to not spawn patrols in .faction file
+	@Deprecated
     public Boolean spawnPiratesAndMercs = true;    // ditto
     
     // 0 = not hostile

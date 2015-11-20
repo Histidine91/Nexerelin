@@ -26,7 +26,7 @@ public class Magec {
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI star = system.initStar("magec", // unique id for this star
 										 "star_blue", // id in planets.json
-										 700f);		// radius (in pixels at default zoom)
+										 700f, 700*1.25f);		// radius (in pixels at default zoom)
 		
 		system.setLightColor(new Color(200, 240, 255)); // light color in entire system, affects all entities
 		

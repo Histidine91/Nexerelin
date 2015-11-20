@@ -12,9 +12,12 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -25,6 +28,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -54,6 +58,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     // Templars/pirates get this multiplier bonus to their invasion point growth the more enemies they have
     public static final float ONE_AGAINST_ALL_INVASION_POINT_MOD = 0.215f;
     public static final float HARD_MODE_INVASION_TARGETING_CHANCE = 1.5f;
+    
+    public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.05f;
+    
     public static final int MAX_FLEETS = 50;
     
     public static Logger log = Global.getLogger(InvasionFleetManager.class);
@@ -105,6 +112,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         float responseFleetSize = ResponseFleetManager.getMaxReserveSize(targetMarket, true);
         float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + 8 * (2 + originMarket.getSize()));
         maxFPbase = maxFPbase * (float)(0.5 + originMarket.getStabilityValue()/10);
+        maxFPbase /= 4;
         //maxFPbase *= 0.95;
         
         float maxFP = maxFPbase;
@@ -127,17 +135,36 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     
     public static InvasionFleetData spawnFleet(FleetSpawnParams params)
     {
-        FactionAPI faction = params.faction;
-        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(faction.getId(), params.name, params.qf, params.fp);
+        String factionId = params.faction.getId();
+        int fp = params.fp;
+        float distance = ExerelinUtilsMarket.getHyperspaceDistance(params.originMarket, params.targetMarket);
+        int tankerFP = (int)(fp * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000);
+        fp -= tankerFP;
+        
+        FleetParams fleetParams = new FleetParams(null, params.originMarket, factionId, null, params.fleetType, 
+                fp*0.7f, // combat
+                fp*0.2f, // freighters
+                tankerFP,        // tankers
+                params.numMarines/100*2,        // personnel transports
+                0,        // liners
+                0,        // civilian
+                fp*0.1f,    // utility
+                0.15f, -1, 1.25f, params.originMarket.getSize() - 1);    // quality bonus, quality override, officer num mult, officer level bonus
+        
+        CampaignFleetAPI fleet = FleetFactoryV2.createFleet(fleetParams);
+        /*
+        CampaignFleetAPI fleet = FleetFactory.createGenericFleet(factionId, params.name, params.qf, params.fp);
+        
         for (int i=0; i<params.numMarines; i=i+100)
         {
-            faction.pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, 1, fleet);
+           faction.pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, 1, fleet);
         }
+        */
         fleet.getCargo().addMarines(params.numMarines);
-        
-        fleet.getMemoryWithoutUpdate().set("$fleetType", params.fleetType);
-        fleet.getMemoryWithoutUpdate().set("$maxFP", params.fp);
-        fleet.getMemoryWithoutUpdate().set("$originMarket", params.originMarket);
+        fleet.setName(params.name);
+		
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, params.fleetType);
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SOURCE_MARKET, params.originMarket);
         
         InvasionFleetData data = new InvasionFleetData(fleet);
         data.startingFleetPoints = fleet.getFleetPoints();
@@ -206,8 +233,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 {
                     name = factionConfig.invasionFleetName;
                 }   
-                if (fp <= 70) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixSmall") + " " + name;
-                else if (fp >= 210) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixLarge") + " " + name;
+                if (fp <= 18) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixSmall") + " " + name;
+                else if (fp >= 52) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixLarge") + " " + name;
                 break;
             case "exerelinInvasionSupportFleet":
                 name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetName");
@@ -215,8 +242,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 {
                     name = factionConfig.invasionSupportFleetName;
                 }   
-                if (fp <= 60) name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetPrefixSmall") + " " + name;
-                else if (fp >= 180) name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetPrefixLarge") + " " + name;
+                if (fp <= 15) name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetPrefixSmall") + " " + name;
+                else if (fp >= 45) name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetPrefixLarge") + " " + name;
                 break;
             case "exerelinDefenceFleet":
                 name = StringHelper.getString("exerelin_fleets", "defenceFleetName");
@@ -224,8 +251,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 {
                     name = factionConfig.defenceFleetName;
                 }   
-                if (fp <= 70) name = StringHelper.getString("exerelin_fleets", "defenceFleetPrefixSmall") + " " + name;
-                else if (fp >= 210) name = StringHelper.getString("exerelin_fleets", "defenceFleetPrefixLarge") + " " + name;
+                if (fp <= 18) name = StringHelper.getString("exerelin_fleets", "defenceFleetPrefixSmall") + " " + name;
+                else if (fp >= 52) name = StringHelper.getString("exerelin_fleets", "defenceFleetPrefixLarge") + " " + name;
                 break;
         }
         
@@ -239,7 +266,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + 8 * (2 + originMarket.getSize()));
         float maxFP = maxFPbase + Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
         maxFP *= MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f);
-        maxFP *= 1.25;
+        maxFP *= 0.35;
         
         String name = getFleetName("exerelinRespawnFleet", faction.getId(), maxFP);
         
@@ -670,6 +697,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         public String name = "Fleet";
         public String fleetType = "genericFleet";
         public int fp = 0;
+        @Deprecated
         public float qf = 0.5f;
         public FactionAPI faction;
         public MarketAPI originMarket;

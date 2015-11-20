@@ -2,6 +2,7 @@ package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -109,8 +110,9 @@ public class StatsTracker extends BaseCampaignEventListener{
     }
     
     @Override
-    public void reportBattleOccurred(CampaignFleetAPI winner, CampaignFleetAPI loser)
+    public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
+        CampaignFleetAPI loser = battle.getPrimary(battle.getOtherSideFor(winner));
         FactionAPI winFaction = winner.getFaction();
         FactionAPI loseFaction = loser.getFaction();
         String winFactionId = winFaction.getId();

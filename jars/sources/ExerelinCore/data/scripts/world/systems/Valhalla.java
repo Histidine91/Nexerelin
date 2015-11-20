@@ -23,7 +23,7 @@ public class Valhalla {
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI star = system.initStar("valhalla",
 										 "star_orange", // id in planets.json
-										 400f); 		// radius (in pixels at default zoom)
+										 400f,400*1.25f); 		// radius (in pixels at default zoom)
 		
 		system.setLightColor(new Color(255, 230, 220)); // light color in entire system, affects all entities
 		

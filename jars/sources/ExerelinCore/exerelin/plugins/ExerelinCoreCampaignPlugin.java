@@ -33,12 +33,6 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		
 	@Override
 	public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
-		String factionId = interactionTarget.getFaction().getId();
-		if (interactionTarget instanceof CampaignFleetAPI) 
-		{
-			if (factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals("player_npc"))
-				return new PluginPick<InteractionDialogPlugin>(new ExerelinFleetInteractionDialogPlugin(), PickPriority.MOD_SPECIFIC);
-		}
 		if (MiningHelper.canMine(interactionTarget)) {
 			return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
 		}
@@ -49,8 +43,8 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 	
 
 	@Override
-	public PluginPick<BattleAutoresolverPlugin> pickBattleAutoresolverPlugin(SectorEntityToken one, SectorEntityToken two) {
-		if (!ExerelinUtils.isSSPInstalled()) return super.pickBattleAutoresolverPlugin(one, two);
+	public PluginPick<BattleAutoresolverPlugin> pickBattleAutoresolverPlugin(BattleAPI battle) {
+		if (!ExerelinUtils.isSSPInstalled()) return super.pickBattleAutoresolverPlugin(battle);
 		return null;
 	}
 	

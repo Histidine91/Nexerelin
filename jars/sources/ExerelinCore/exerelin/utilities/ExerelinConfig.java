@@ -26,7 +26,7 @@ public class ExerelinConfig
     public static float playerSalaryIncrementPerLevel = 1000f;
     public static float playerInsuranceMult = 0.5f;
     
-    public static float fleetBonusFpPerPlayerLevel = 1f;
+    public static float fleetBonusFpPerPlayerLevel = 0.25f;
     
     // Prisoners
     public static float prisonerRepatriateRepValue = 0.05f;
@@ -49,7 +49,7 @@ public class ExerelinConfig
     // Invasion stuff
     public static boolean allowPirateInvasions = false;
     public static float fleetRequestCostPerMarine = 125f;
-    public static float fleetRequestCostPerFP = 500f;
+    public static float fleetRequestCostPerFP = 2000f;
     public static float invasionGracePeriod = 0;
     public static float pointsRequiredForInvasionFleet = 4000f;
     public static float baseInvasionPointsPerFaction = 45f;

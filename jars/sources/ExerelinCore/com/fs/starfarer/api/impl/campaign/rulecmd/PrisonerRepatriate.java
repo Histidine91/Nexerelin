@@ -28,7 +28,7 @@ public class PrisonerRepatriate extends AgentActionBase {
                 
                 FactionAPI faction = target.getFaction();
                 TextPanelAPI text = dialog.getTextPanel();
-                ExerelinUtilsReputation.adjustPlayerReputation(faction, ExerelinConfig.prisonerRepatriateRepValue, null, text);
+                ExerelinUtilsReputation.adjustPlayerReputation(faction, target.getActivePerson(), ExerelinConfig.prisonerRepatriateRepValue, null, text);
                 StatsTracker.getStatsTracker().notifyPrisonersRepatriated(1);
                 return true;
         }
