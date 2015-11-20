@@ -1,0 +1,27 @@
+{
+    "uniqueModClassName":"", # String
+    "playableFaction":false, # Boolean
+    "corvusCompatible":true,
+    "hostileToAll":2,
+    
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
+
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Heretics", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
+    "factionsNeutral":[], # todo
+
+    "alignments":{
+        "corporate":-1,
+        "technocratic":-1,
+        "diplomatic":-1,
+        "militarist":1,
+        "ideological":1,
+    },
+}
