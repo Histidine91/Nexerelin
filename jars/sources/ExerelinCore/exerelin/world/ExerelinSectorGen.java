@@ -29,6 +29,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
+import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.econ.Exerelin_Hydroponics;
@@ -39,7 +40,6 @@ import data.scripts.world.systems.SSP_Corvus;
 import data.scripts.world.systems.SSP_Eos;
 import data.scripts.world.systems.SSP_Magec;
 import data.scripts.world.systems.SSP_Valhalla;
-import data.scripts.world.systems.Valhalla;
 import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
@@ -1546,7 +1546,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float distance = (BINARY_STAR_DISTANCE + star.getRadius()*5 + size*5) * MathUtils.getRandomNumberInRange(0.9f, 1.2f) ;
 			float orbitDays = getOrbitalPeriod(star, distance + star.getRadius());
 			
-			return system.addPlanet(systemId, star, name, type, angle, size, distance, orbitDays);
+			PlanetAPI planet = system.addPlanet(systemId, star, name, type, angle, size, distance, orbitDays);
+			addMagneticField(planet);
+			
+			return planet;
 		}
 	}
 	
@@ -1885,6 +1888,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					system.addRingBand(newPlanet, "misc", "rings1", 256f, 1, Color.white, 256f, (int)(radius*2.5), 90f);
 				}
 			}
+			// add magnetic field
+			if (isGasGiant)
+			{
+				addMagneticField(newPlanet);
+			}
 		}
 		
 		// add the moons back to our main entity list
@@ -2113,6 +2121,35 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		relay.setCircularOrbit(star, (float)Math.random() * 360, distance, getOrbitalPeriod(star, distance));
 		systemToRelay.put(system.getId(), system.getId() + "_relay");
 		planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
+	}
+	
+	public void addMagneticField(SectorEntityToken entity)
+	{
+		LocationAPI loc = entity.getContainingLocation();
+		float radius = entity.getRadius();
+		float effectRadius = 200;
+		if (entity instanceof PlanetAPI)
+		{
+			PlanetAPI planet = (PlanetAPI)entity;
+			if (planet.isStar()) effectRadius = 800f;
+		}
+		SectorEntityToken field = loc.addTerrain(Terrain.MAGNETIC_FIELD,
+			new MagneticFieldTerrainPlugin.MagneticFieldParams(radius + effectRadius, // terrain effect band width 
+					(radius + effectRadius)/2f, // terrain effect middle radius
+					entity, // entity that it's around
+					radius + effectRadius/4, // visual band start
+					radius + effectRadius/4 + effectRadius, // visual band end
+					new Color(50, 20, 100, 40), // base color
+					1f, // probability to spawn aurora sequence, checked once/day when no aurora in progress
+					new Color(50, 20, 110, 130),
+					new Color(150, 30, 120, 150), 
+					new Color(200, 50, 130, 190),
+					new Color(250, 70, 150, 240),
+					new Color(200, 80, 130, 255),
+					new Color(75, 0, 160), 
+					new Color(127, 0, 255)
+					));
+			field.setCircularOrbit(entity, 0, 0, 100);
 	}
 	
 	public static float getMarketBaseFoodSupply(MarketAPI market)
