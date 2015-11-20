@@ -17,21 +17,22 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
+import com.fs.starfarer.api.impl.campaign.fleets.BountyPirateFleetManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
+import com.fs.starfarer.api.impl.campaign.fleets.LuddicPathFleetManager;
+import com.fs.starfarer.api.impl.campaign.fleets.MercFleetManager;
+import com.fs.starfarer.api.impl.campaign.fleets.PirateFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.econ.Exerelin_Hydroponics;
 import data.scripts.campaign.econ.Exerelin_RecyclingPlant;
-import data.scripts.world.corvus.Corvus;
-import data.scripts.world.systems.Arcadia;
-import data.scripts.world.systems.Askonia;
-import data.scripts.world.systems.Eos;
-import data.scripts.world.systems.Magec;
 import data.scripts.world.systems.SSP_Arcadia;
 import data.scripts.world.systems.SSP_Askonia;
 import data.scripts.world.systems.SSP_Corvus;
@@ -1147,6 +1148,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		shanghaiEntity.setCustomDescriptionId("tiandong_shanghai");
 	}
 	
+	// TODO: update when new SS+ comes out
+	@Deprecated
 	protected void generateSSPSector(SectorAPI sector)
 	{
 		new SSP_Askonia().generate(sector);
@@ -1163,62 +1166,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		SectorEntityToken cathedralLabel = hyper.addCustomEntity("cathedral_label_id", null, "cathedral_label", null);
 		SectorEntityToken coreLabel = hyper.addCustomEntity("core_label_id", null, "core_label", null);
 
-		zinLabel.setFixedLocation(-14500, -8000);
-		abyssLabel.setFixedLocation(-12000, -19000);
-		telmunLabel.setFixedLocation(-16000, 8000);
-		cathedralLabel.setFixedLocation(-20000, 2000);
-		coreLabel.setFixedLocation(17000, -6000);
-	}
-	
-	protected void generateVanillaSector(SectorAPI sector)
-	{
-		StarSystemAPI system = sector.createStarSystem("Corvus");
-		system.setBackgroundTextureFilename("graphics/backgrounds/background4.jpg");
-		
-		PlanetAPI star = system.initStar("corvus", "star_yellow", 500f, 650f);	// FIXME make sure coronaSize is correct
-
-		PlanetAPI corvusI = system.addPlanet("asharu", star, "Asharu", "desert", 55, 150, 3000, 100);
-		corvusI.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "asharu"));
-		corvusI.getSpec().setGlowColor(new Color(255,255,255,255));
-		corvusI.getSpec().setUseReverseLightForGlow(true);
-		corvusI.applySpecChanges();
-		corvusI.setCustomDescriptionId("planet_asharu");
-		
-		PlanetAPI corvusII = system.addPlanet("jangala", star, "Jangala", "jungle", 235, 200, 4500, 200);		
-		corvusII.setCustomDescriptionId("planet_jangala");
-		corvusII.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "volturn"));
-		corvusII.getSpec().setGlowColor(new Color(255,255,255,255));
-		corvusII.getSpec().setUseReverseLightForGlow(true);
-		corvusII.applySpecChanges();
-
-		system.addAsteroidBelt(star, 100, 5500, 1000, 150, 300);
-		
-		SectorEntityToken corvusIII = system.addPlanet("barad", star, "Barad", "gas_giant", 200, 300, 7500, 400);
-		SectorEntityToken corvusIIIA = system.addPlanet("corvus_IIIa", corvusIII, "Barad A", "cryovolcanic", 235, 120, 800, 20);
-		corvusIIIA.setCustomDescriptionId("planet_barad_a");
-		system.addAsteroidBelt(corvusIII, 50, 1000, 200, 10, 45);
-		SectorEntityToken corvusIIIB = system.addPlanet("corvus_IIIb", corvusIII, "Barad B", "barren", 235, 100, 1300, 60);
-			corvusIIIB.setInteractionImage("illustrations", "vacuum_colony");
-		
-		SectorEntityToken corvusIV = system.addPlanet("corvus_IV", star, "Somnus", "barren-bombarded", 0, 100, 10000, 700);
-		SectorEntityToken corvusV = system.addPlanet("corvus_V", star, "Mors", "frozen", 330, 175, 12000, 500);
-		
-		//corvusV.setFaction("tritachyon");
-		
-		new Askonia().generate(sector);
-		new Eos().generate(sector);
-		new Valhalla().generate(sector);
-		new Arcadia().generate(sector);
-		new Magec().generate(sector);
-		new Corvus().generate(sector);
-		
-		LocationAPI hyper = Global.getSector().getHyperspace();
-		SectorEntityToken zinLabel = hyper.addCustomEntity("zin_label_id", null, "zin_label", null);
-		SectorEntityToken abyssLabel = hyper.addCustomEntity("opabyss_label_id", null, "opabyss_label", null);
-		SectorEntityToken telmunLabel = hyper.addCustomEntity("telmun_label_id", null, "telmun_label", null);
-		SectorEntityToken cathedralLabel = hyper.addCustomEntity("cathedral_label_id", null, "cathedral_label", null);
-		SectorEntityToken coreLabel = hyper.addCustomEntity("core_label_id", null, "core_label", null);
-		
 		zinLabel.setFixedLocation(-14500, -8000);
 		abyssLabel.setFixedLocation(-12000, -19000);
 		telmunLabel.setFixedLocation(-16000, 8000);
@@ -1318,6 +1265,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			log.info("Building systems");
 			for(int i = 0; i < numSystems; i ++)
 				buildSystem(sector, i);
+			
 			log.info("Populating sector");
 			populateSector();
 		}
@@ -1327,8 +1275,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			{
 				generateSSPSector(sector);
 			}
-			else generateVanillaSector(sector);
+			else VanillaSystemsGenerator.generate();
 		}
+		
+		// use vanilla hyperspace map
+		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG("data/campaign/terrain/hyperspace_map.png",
+		//SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG("data/campaign/terrain/hyperspace_map_filled.png",
+			  0, 0, // center of nebula
+			  Global.getSector().getHyperspace(), // location to add to
+			  "terrain", "deep_hyperspace", // "nebula_blue", // texture to use, uses xxx_map for map
+			  4, 4, Terrain.HYPERSPACE); // number of cells in texture
+		
 		//for (int i=0; i<OmniFacSettings.) // TODO: use Omnifactory's numberOfFactories setting when it's supported
 		addOmnifactory();
 		addPrismMarket();
@@ -1343,8 +1300,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (!ExerelinUtils.isSSPInstalled())
 		{
 			sector.addScript(new CoreEventProbabilityManager());
+			
 		}
 		sector.addScript(new EconomyFleetManager());
+		sector.addScript(new MercFleetManager());
+		sector.addScript(new LuddicPathFleetManager());
+		sector.addScript(new PirateFleetManager());
+		sector.addScript(new BountyPirateFleetManager());
 		
 		if (!corvusMode) sector.addScript(new ForcePatrolFleetsScript());
 		//sector.addScript(new EconomyLogger());
@@ -1568,7 +1530,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			Integer[] pos = (Integer[])starPositions.get(index);
 			int x = pos[0];
 			int y = pos[1];
-			return system.initStar(systemId, type, size, x, y, size * 1.25f);	// FIXME make sure coronaSize is correct
+			return system.initStar(systemId, type, size, x, y, 500f);
 		}
 		else 
 		{

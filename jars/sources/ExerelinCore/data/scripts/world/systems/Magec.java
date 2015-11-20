@@ -14,6 +14,9 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain.RingParams;
+import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin.MagneticFieldParams;
 
 public class Magec {
 
@@ -26,8 +29,8 @@ public class Magec {
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI star = system.initStar("magec", // unique id for this star
 										 "star_blue", // id in planets.json
-										 700f, 700*1.25f);		// radius (in pixels at default zoom)
-		
+										 700f,		// radius (in pixels at default zoom)
+										 500); // corona radius, from star edge
 		system.setLightColor(new Color(200, 240, 255)); // light color in entire system, affects all entities
 		
 
@@ -47,8 +50,31 @@ public class Magec {
 		magec1.getSpec().setAtmosphereColor(new Color(120,130,100,150));
 		magec1.getSpec().setCloudColor(new Color(195,230,255,200));
 		magec1.getSpec().setIconColor(new Color(120,130,100,255));
+		magec1.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "aurorae"));
+		magec1.getSpec().setGlowColor(new Color(235,38,8,145));
+		magec1.getSpec().setUseReverseLightForGlow(true);
+		magec1.getSpec().setAtmosphereThickness(0.5f);
 		magec1.applySpecChanges();
 		magec1.setCustomDescriptionId("planet_chaxiraxi");
+		
+		SectorEntityToken magec1_field = system.addTerrain(Terrain.MAGNETIC_FIELD,
+						new MagneticFieldParams(200f, // terrain effect band width 
+						380, // terrain effect middle radius
+						magec1, // entity that it's around
+						280f, // visual band start
+						480f, // visual band end
+						new Color(50, 30, 100, 30), // base color
+						1f, // probability to spawn aurora sequence, checked once/day when no aurora in progress
+						new Color(50, 20, 110, 130),
+						new Color(150, 30, 120, 150), 
+						new Color(200, 50, 130, 190),
+						new Color(250, 70, 150, 240),
+						new Color(200, 80, 130, 255),
+						new Color(75, 0, 160), 
+						new Color(127, 0, 255)
+						));
+			magec1_field.setCircularOrbit(magec1, 0, 0, 100);
+				
 		
 		PlanetAPI magec2 = system.addPlanet("maxios", star, "Maxios", "barren", 230, 100, 2650, 100);
 		magec2.setCustomDescriptionId("planet_maxios");
@@ -60,15 +86,27 @@ public class Magec {
 		
 		// And herrrrre's Achaman
 		PlanetAPI magec3 = system.addPlanet("achaman", star, "Achaman", "star_white", 45, 120, 8000, 1000);
+		system.addCorona(magec3, 150, 3f, 0.05f, 1f); // it's a very docile star.
 		magec3.setCustomDescriptionId("star_white_dwarf");
 		
 		SectorEntityToken relay = system.addCustomEntity("achaman_relay", // unique id
 				 "Achaman Relay", // name - if null, defaultName from custom_entities.json will be used
 				 "comm_relay", // type of object, defined in custom_entities.json
 				 "tritachyon"); // faction
+		
 		relay.setCircularOrbit(system.getEntityById("achaman"), 90, 1000, 45);
 		
 		PlanetAPI magec3a = system.addPlanet("tibicena", magec3, "Tibicena", "rocky_metallic", 200, 80, 800, 45);
+		
+			SectorEntityToken achaman_station = system.addCustomEntity("achaman_enterprise_station", 
+																		"Achaman Enterprise Station",
+																		"station_side04",
+																		"tritachyon");
+			
+			achaman_station.setCircularOrbitPointingDown(system.getEntityById("tibicena"), 90, 200, 25);		
+			achaman_station.setCustomDescriptionId("station_achaman_enterprise");
+			initStationCargo(achaman_station);
+			achaman_station.setInteractionImage("illustrations", "hound_hangar");
 		
 		/* Where are these from? Oh-- a huge csv file. Um. Will let Alex figure that one out.
 		m1.setCustomDescriptionId("planet_magec_i");
@@ -94,14 +132,13 @@ public class Magec {
 		 * 6/7. Range of days to complete one orbit. Value picked randomly for each asteroid. 
 		 */
 		// TODO replace these with a better dust cloud system
-		system.addAsteroidBelt(star, 100, 3300, 256, 150, 250);
-		system.addAsteroidBelt(star, 100, 3700, 256, 150, 250);
+		system.addAsteroidBelt(star, 100, 3300, 256, 150, 250, Terrain.ASTEROID_BELT, null);
+		system.addAsteroidBelt(star, 100, 3700, 256, 150, 250, Terrain.ASTEROID_BELT, null);
 		
-		system.addAsteroidBelt(star, 100, 4150, 128, 200, 300);
-		system.addAsteroidBelt(star, 100, 4450, 188, 200, 300);
-		system.addAsteroidBelt(star, 100, 4675, 256, 200, 300);
-		
-		
+		system.addAsteroidBelt(star, 100, 4150, 128, 200, 300, Terrain.ASTEROID_BELT, null);
+		system.addAsteroidBelt(star, 100, 4450, 188, 200, 300, Terrain.ASTEROID_BELT, null);
+		system.addAsteroidBelt(star, 100, 4675, 256, 200, 300, Terrain.ASTEROID_BELT, null);
+			
 		/*
 		 * addRingBand() parameters:
 		 * 1. What it orbits
@@ -120,9 +157,19 @@ public class Magec {
 		system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, 3600, 130f);
 		system.addRingBand(star, "misc", "rings1", 256f, 3, Color.white, 256f, 3800, 80f);
 		
+		// add one ring that covers all of the above
+		SectorEntityToken ring = system.addTerrain(Terrain.RING, new RingParams(600 + 256, 3500, null, "Guayota's Disk"));
+		ring.setCircularOrbit(star, 0, 0, 100);
+		
+		
 		system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, 4000, 80f);
 		system.addRingBand(star, "misc", "rings1", 256f, 3, Color.white, 256f, 4100, 120f);
 		system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, 4200, 160f);
+		
+		// add one ring that covers all of the above
+		ring = system.addTerrain(Terrain.RING, new RingParams(200 + 256, 4100, null, "Guayota's Disk"));
+		ring.setCircularOrbit(star, 0, 0, 100);
+		
 		
 //		system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 1700, 50f);
 //		system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 1700, 70f);
@@ -133,14 +180,32 @@ public class Magec {
 		system.addRingBand(star, "misc", "rings1", 256f, 3, Color.white, 256f, 4400, 180f);
 		system.addRingBand(star, "misc", "rings1", 256f, 3, Color.white, 256f, 4500, 220f);
 		
+		// add one ring that covers all of the above
+		ring = system.addTerrain(Terrain.RING, new RingParams(200 + 256, 4400, null, "Guayota's Disk"));
+		ring.setCircularOrbit(star, 0, 0, 100);
+		
+		
 		system.addRingBand(star, "misc", "rings1", 256f, 0, Color.white, 256f, 4500, 100f);
 		system.addRingBand(star, "misc", "rings1", 256f, 0, Color.white, 256f, 4600, 140f);
 		system.addRingBand(star, "misc", "rings1", 256f, 0, Color.white, 256f, 4700, 160f);
 		system.addRingBand(star, "misc", "rings1", 256f, 1, Color.white, 256f, 4800, 180f);
 		
+		// add one ring that covers all of the above
+		ring = system.addTerrain(Terrain.RING, new RingParams(300 + 256, 4650, null, "Guayota's Disk"));
+		ring.setCircularOrbit(star, 0, 0, 100);
+		
+		
 		SectorEntityToken civilianStation = system.addOrbitalStation("new_maxios", star, 0, 3900, 80, "New Maxios", "independent");
 		initCivilianStationCargo(civilianStation);
 		civilianStation.setCustomDescriptionId("station_new_maxios");
+		
+		// Guayota Relay - L5 (behind)
+		SectorEntityToken guayota_relay = system.addCustomEntity("guayota_relay", // unique id
+				 "Guayota Relay", // name - if null, defaultName from custom_entities.json will be used
+				 "comm_relay", // type of object, defined in custom_entities.json
+				 "independent"); // faction
+		guayota_relay.setCircularOrbit( star, 0 + 24, 3900, 80);
+		
 		
 		// rumoured to have the finest cocktail lounge in the entire Sector
 		SectorEntityToken tritachStation = system.addOrbitalStation("port_tse", star, 120, 4750, 175, "Port Tse Franchise Station #3", "tritachyon");
@@ -161,11 +226,7 @@ public class Magec {
 		system.addEntity(jumpPoint);
 		
 		
-		SectorEntityToken station = system.addCustomEntity("achaman_enterprise_station", "Achaman Enterprise Station", "station_side04", "tritachyon");
-		station.setCircularOrbitPointingDown(system.getEntityById("tibicena"), 90, 200, 25);		
-		station.setCustomDescriptionId("station_achaman_enterprise");
-		initStationCargo(station);
-			tritachStation.setInteractionImage("illustrations", "hound_hangar");
+		
 		
 		// example of using custom visuals below
 //		a1.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", "hull_breach", 800, 800));

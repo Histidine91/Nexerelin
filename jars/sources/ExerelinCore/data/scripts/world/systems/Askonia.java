@@ -14,6 +14,8 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin.AsteroidFieldParams;
 
 public class Askonia {
 
@@ -27,7 +29,11 @@ public class Askonia {
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI star = system.initStar("askonia", // unique id for this star 
 										 "star_red", // id in planets.json
-										 1000f, 1000*1.25f); 		// radius (in pixels at default zoom)
+										 1000f,		// radius (in pixels at default zoom)
+										 1500, // corona radius, from star edge
+										 5f, // solar wind burn level
+										 0.5f, // flare probability
+										 2f); // cr loss mult
 		
 		system.setLightColor(new Color(255, 210, 200)); // light color in entire system, affects all entities
 		
@@ -43,53 +49,132 @@ public class Askonia {
 		 * 8. Days it takes to complete an orbit. 1 day = 10 seconds.
 		 */
 		PlanetAPI a1 = system.addPlanet("sindria", star, "Sindria", "rocky_metallic", 0, 150, 2900, 100);
-		
-		a1.getSpec().setTexture(Global.getSettings().getSpriteName("planets", "sindria"));
 		a1.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "sindria"));
 		a1.getSpec().setGlowColor(new Color(255,255,255,255));
 		a1.getSpec().setUseReverseLightForGlow(true);
 		a1.applySpecChanges();
 		a1.setCustomDescriptionId("planet_sindria");
+		a1.setInteractionImage("illustrations", "urban01");
 		
-		SectorEntityToken relay = system.addCustomEntity("sindria_relay", // unique id
-				 "Sindria Relay", // name - if null, defaultName from custom_entities.json will be used
-				 "comm_relay", // type of object, defined in custom_entities.json
-				 "sindrian_diktat"); // faction
-		// synced orbit w/ Sindria
-		relay.setCircularOrbit( system.getEntityById("askonia"), 150, 3200, 100);
+			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("askonia_jump_point_alpha", "Sindria Jump Point");
+			OrbitAPI orbit = Global.getFactory().createCircularOrbit(a1, 0, 500, 30);
+			jumpPoint.setOrbit(orbit);
+			jumpPoint.setRelatedPlanet(a1);
+			jumpPoint.setStandardWormholeToHyperspaceVisual();
+			jumpPoint.setCircularOrbit( system.getEntityById("askonia"), 60, 3000, 100);
+			system.addEntity(jumpPoint);
+			
+			SectorEntityToken sindria_relay = system.addCustomEntity("sindria_relay", // unique id
+					 "Sindria Relay", // name - if null, defaultName from custom_entities.json will be used
+					 "comm_relay", // type of object, defined in custom_entities.json
+					 "sindrian_diktat"); // faction
+			sindria_relay.setCircularOrbitPointingDown( system.getEntityById("askonia"), -60, 3000, 100);
 		
-		PlanetAPI a2 = system.addPlanet("salus", star, "Salus", "gas_giant", 230, 350, 7000, 250);
+		// And now, the outer system.
+			system.addRingBand(star, "misc", "rings1", 256f, 3, Color.white, 256f, 3570, 220f, null, null);
+			system.addRingBand(star, "misc", "rings2", 256f, 2, Color.white, 256f, 3660, 226f, null, null);
+		system.addAsteroidBelt(star, 150, 3600, 170, 200, 250, Terrain.ASTEROID_BELT, "Stone River");
 		
-		PlanetAPI a2a = system.addPlanet("cruor", a2, "Cruor", "rocky_unstable", 45, 80, 700, 25);
-			a2a.setInteractionImage("illustrations", "desert_moons_ruins");
-		PlanetAPI a2b = system.addPlanet("volturn", a2, "Volturn", "water", 110, 120, 1400, 45);
-	
-		PlanetAPI a3 = system.addPlanet("umbra", star, "Umbra", "rocky_ice", 280, 150, 12000, 650);
-		
-		
+	// Salus system
+		PlanetAPI a2 = system.addPlanet("salus", star, "Salus", "gas_giant", 230, 350, 7500, 250);
 		a2.setCustomDescriptionId("planet_salus");
-		a2.getSpec().setPlanetColor(new Color(255,215,190,255));
+		a2.getSpec().setPlanetColor(new Color(255,225,170,255));
 		a2.getSpec().setAtmosphereColor(new Color(160,110,45,140));
 		a2.getSpec().setCloudColor(new Color(255,164,96,200));
 		a2.getSpec().setTilt(15);
 		a2.applySpecChanges();
 		
-		a2a.setCustomDescriptionId("planet_cruor");
-		a2a.setInteractionImage("illustrations", "desert_moons_ruins");
+			PlanetAPI a2a = system.addPlanet("cruor", a2, "Cruor", "rocky_unstable", 45, 80, 700, 25);
+			a2a.setInteractionImage("illustrations", "desert_moons_ruins");
+			a2a.setCustomDescriptionId("planet_cruor");
+			
+			system.addAsteroidBelt(a2, 50, 1100, 128, 40, 80, Terrain.ASTEROID_BELT, "Opis Ring");
+			system.addRingBand(a2, "misc", "rings1", 256f, 2, Color.white, 256f, 1100, 40f);
+			system.addRingBand(a2, "misc", "rings1", 256f, 2, Color.white, 256f, 1100, 60f);
+			system.addRingBand(a2, "misc", "rings1", 256f, 2, Color.white, 256f, 1100, 80f);
+			
+			SectorEntityToken opis_debris_cloud = system.addTerrain(Terrain.ASTEROID_FIELD,
+				new AsteroidFieldParams(
+					200f, // min radius
+					400f, // max radius
+					20, // min asteroid count
+					30, // max asteroid count
+					4f, // min asteroid radius 
+					12f, // max asteroid radius
+					"Opis Debris Cloud")); // null for default name
+			opis_debris_cloud.setCircularOrbitPointingDown(system.getEntityById("salus"), 45, 1100, 70);	
+			
+			PlanetAPI a2b = system.addPlanet("volturn", a2, "Volturn", "water", 110, 120, 1400, 45);
+			a2b.setCustomDescriptionId("planet_volturn");
+			a2b.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "volturn"));
+			a2b.getSpec().setGlowColor(new Color(255,255,255,255));
+			a2b.getSpec().setUseReverseLightForGlow(true);
+			a2b.applySpecChanges();
+			a2b.setInteractionImage("illustrations", "space_bar");
+			
+			system.addRingBand(a2, "misc", "rings1", 256f, 3, Color.white, 256f, 1800, 70f);
+			system.addRingBand(a2, "misc", "rings1", 256f, 3, Color.white, 256f, 1800, 90f);
+			system.addRingBand(a2, "misc", "rings1", 256f, 3, Color.white, 256f, 1800, 110f, Terrain.RING, "Dust Ring");
+			
+			system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 2150, 50f);
+			system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 2150, 70f);
+			system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 2150, 80f);
+			system.addRingBand(a2, "misc", "rings1", 256f, 1, Color.white, 256f, 2100, 90f, Terrain.RING, "Cloud Ring");
 		
-		a2b.setCustomDescriptionId("planet_volturn");
-		a2b.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "volturn"));
-		a2b.getSpec().setGlowColor(new Color(255,255,255,255));
-		a2b.getSpec().setUseReverseLightForGlow(true);
-		a2b.applySpecChanges();
-		a2b.setInteractionImage("illustrations", "space_bar");
+		// Nortia - Independent (Charterist) base - caught in Salus' L4
+			PlanetAPI a3 = system.addPlanet("nortia", star, "Nortia", "barren-bombarded", 230 + 60, 80, 7500, 250);
+			a3.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "asharu"));
+			a3.getSpec().setGlowColor(new Color(255,255,255,255));
+			a3.getSpec().setUseReverseLightForGlow(true);
+			a3.applySpecChanges();
+			a3.setInteractionImage("illustrations", "hound_hangar");
+			a3.setCustomDescriptionId("planet_nortia");
+			
+			// Salus trojans
+			SectorEntityToken salusL4 = system.addTerrain(Terrain.ASTEROID_FIELD,
+					new AsteroidFieldParams(
+						400f, // min radius
+						600f, // max radius
+						20, // min asteroid count
+						30, // max asteroid count
+						4f, // min asteroid radius 
+						16f, // max asteroid radius
+						"Salus L4 Asteroids")); // null for default name
+			
+			SectorEntityToken salusL5 = system.addTerrain(Terrain.ASTEROID_FIELD,
+					new AsteroidFieldParams(
+						400f, // min radius
+						600f, // max radius
+						20, // min asteroid count
+						30, // max asteroid count
+						4f, // min asteroid radius 
+						16f, // max asteroid radius
+						"Salus L5 Asteroids")); // null for default name
+			
+			salusL4.setCircularOrbit(star, 230 + 60, 7500, 250);
+			salusL5.setCircularOrbit(star, 230 - 60, 7500, 250);
+			
+			// Askonia Outer Jump (in Salus L5)
+			JumpPointAPI jumpPoint2 = Global.getFactory().createJumpPoint("salus_jump", "Salus L5 Jump");
+			jumpPoint2.setCircularOrbit(star, 230 - 60, 7500, 250);
+			jumpPoint2.setStandardWormholeToHyperspaceVisual();
+			system.addEntity(jumpPoint2);
+			
+			// Askonia Gate
+			SectorEntityToken askonia_gate = system.addCustomEntity("askonia_gate", // unique id
+					 "Askonia Gate", // name - if null, defaultName from custom_entities.json will be used
+					 "inactive_gate", // type of object, defined in custom_entities.json
+					 null); // faction
+			askonia_gate.setCircularOrbit(star, 230-180, 7000, 230);
 		
-		a3.setCustomDescriptionId("planet_umbra");
-		a3.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "asharu"));
-		a3.getSpec().setGlowColor(new Color(255,255,255,255));
-		a3.getSpec().setUseReverseLightForGlow(true);
-		a3.applySpecChanges();
-		a3.setInteractionImage("illustrations", "pirate_station");
+		// Umbra - the resistance (or pirates)
+		PlanetAPI a4 = system.addPlanet("umbra", star, "Umbra", "rocky_ice", 280, 150, 10000, 600);
+		a4.setCustomDescriptionId("planet_umbra");
+		a4.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "asharu"));
+		a4.getSpec().setGlowColor(new Color(255,255,255,255));
+		a4.getSpec().setUseReverseLightForGlow(true);
+		a4.applySpecChanges();
+		a4.setInteractionImage("illustrations", "pirate_station");
 		
 //		system.addOrbitalJunk(a1,
 //				 "orbital_junk", // from custom_entities.json 
@@ -102,61 +187,9 @@ public class Askonia {
 //				 60f, // min spin (degress/day)
 //				 360f); // max spin (degrees/day)
 		
-		/*
-		 * addAsteroidBelt() parameters:
-		 * 1. What the belt orbits
-		 * 2. Number of asteroids
-		 * 3. Orbit radius
-		 * 4. Belt width
-		 * 6/7. Range of days to complete one orbit. Value picked randomly for each asteroid. 
-		 */
-		system.addAsteroidBelt(a2, 50, 1100, 128, 40, 80);
-		
-		
-		/*
-		 * addRingBand() parameters:
-		 * 1. What it orbits
-		 * 2. Category under "graphics" in settings.json
-		 * 3. Key in category
-		 * 4. Width of band within the texture
-		 * 5. Index of band
-		 * 6. Color to apply to band
-		 * 7. Width of band (in the game)
-		 * 8. Orbit radius (of the middle of the band)
-		 * 9. Orbital period, in days
-		 */
-		system.addRingBand(a2, "misc", "rings1", 256f, 2, Color.white, 256f, 1100, 40f);
-		system.addRingBand(a2, "misc", "rings1", 256f, 2, Color.white, 256f, 1100, 60f);
-		system.addRingBand(a2, "misc", "rings1", 256f, 2, Color.white, 256f, 1100, 80f);
-		
-//		system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 1700, 50f);
-//		system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 1700, 70f);
-//		system.addRingBand(a2, "misc", "rings1", 256f, 1, Color.white, 256f, 1700, 90f);
-//		system.addRingBand(a2, "misc", "rings1", 256f, 1, Color.white, 256f, 1700, 110f);
-		
-		system.addRingBand(a2, "misc", "rings1", 256f, 3, Color.white, 256f, 1800, 70f);
-		system.addRingBand(a2, "misc", "rings1", 256f, 3, Color.white, 256f, 1800, 90f);
-		system.addRingBand(a2, "misc", "rings1", 256f, 3, Color.white, 256f, 1800, 110f);
-		
-		system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 2150, 50f);
-		system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 2150, 70f);
-		system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 2150, 80f);
-		system.addRingBand(a2, "misc", "rings1", 256f, 1, Color.white, 256f, 2100, 90f);
-		
-		
-		
-		JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("askonia_jump_point_alpha", "Sindria Jump Point");
-		OrbitAPI orbit = Global.getFactory().createCircularOrbit(a1, 0, 500, 30);
-		jumpPoint.setOrbit(orbit);
-		jumpPoint.setRelatedPlanet(a1);
-		jumpPoint.setStandardWormholeToHyperspaceVisual();
-		system.addEntity(jumpPoint);
-		
-		//SectorEntityToken station = system.addOrbitalStation("diktat_cnc", a1, 45, 300, 50, "Command & Control", "sindrian_diktat");
-		//initStationCargo(station);
-		
 		SectorEntityToken station = system.addCustomEntity("diktat_cnc", "Command & Control", "station_side02", "sindrian_diktat");
 		station.setCircularOrbitPointingDown(system.getEntityById("sindria"), 45, 300, 50);		
+		station.setInteractionImage("illustrations", "orbital");
 //		station.setCustomDescriptionId("station_ragnar");
 		
 		// example of using custom visuals below
@@ -182,7 +215,6 @@ public class Askonia {
 		system.addScript(new IndependentTraderSpawnPoint(sector, hyper, 1, 10, hyper.createToken(-6000, 2000), station));
 		*/
 	}
-	
 	
 	private void initStationCargo(SectorEntityToken station) {
 		CargoAPI cargo = station.getCargo();

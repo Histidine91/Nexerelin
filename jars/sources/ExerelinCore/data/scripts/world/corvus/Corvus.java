@@ -1,24 +1,23 @@
 package data.scripts.world.corvus;
 
-import java.util.List;
+import java.awt.Color;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.OrbitAPI;
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType;
-import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
+import com.fs.starfarer.api.impl.campaign.terrain.BaseTiledTerrain;
+import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin.AsteroidFieldParams;
+import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin.MagneticFieldParams;
 
 @SuppressWarnings("unchecked")
 public class Corvus { // implements SectorGeneratorPlugin {
@@ -26,70 +25,150 @@ public class Corvus { // implements SectorGeneratorPlugin {
 	public void generate(SectorAPI sector) {
 		final StarSystemAPI system = sector.getStarSystem("Corvus");
 
-//		SectorEntityToken hegemonyStation = system.addOrbitalStation("corvus_hegemony_station", 
-//									system.getEntityById("jangala"),
-//									//"stations", "station_jangala", 75f,
-//									45, 300, 50, "Jangala Station", "hegemony");
-//		hegemonyStation.setCustomDescriptionId("station_jangala");
-		SectorEntityToken hegemonyStation = system.addCustomEntity("corvus_hegemony_station",
-						"Jangala Station", "station_jangala_type", "hegemony");
-		//stationAsCustomEntity.setCircularOrbit(system.getEntityById("jangala"), 45, 300, 50);
-		hegemonyStation.setCircularOrbitPointingDown(system.getEntityById("jangala"), 45 + 180, 300, 50);		
-		hegemonyStation.setCustomDescriptionId("station_jangala");
-		//initOrbitalStationCargo(sector, hegemonyStation);
+		PlanetAPI star = system.initStar("corvus", "star_yellow", 475f,
+				500, // extent of corona outside star
+				10f, // solar wind burn level
+				1f, // flare probability
+				3f); // CR loss multiplier, good values are in the range of 1-5
+//		star.getSpec().setPlanetColor(new Color(255, 100, 100));
+//		star.getSpec().setAtmosphereColor(new Color(255, 100, 100));
+//		star.getSpec().setIconColor(new Color(255, 100, 100));
+//		star.getSpec().setCloudColor(new Color(255, 100, 100));
+//		star.applySpecChanges();
+//		
+//		system.setLightColor(new Color(0, 255, 0));
 		
-//		SectorEntityToken tritachyonStation = system.addOrbitalStation("corvus_tritachyon_station", system.getEntityById("corvus_V"), 45, 300, 50, "Tri-Tachyon Corporate HQ", "tritachyon");
-//		SectorEntityToken pirateStation = system.addOrbitalStation("corvus_pirate_station", system.getEntityById("corvus_IIIa"), 45, 300, 50, "Hidden Pirate Base", "pirates");
-//		pirateStation.setCustomDescriptionId("pirate_base_generic");
-//		initTriTachyonHQCargo(sector, tritachyonStation);
+//		PlanetAPI corvusXa = system.addPlanet("test1", star, "Anomaly Alpha", "lava_minor", 240, 120, 2500, 120);
+//		PlanetAPI corvusXb = system.addPlanet("test2", star, "Anomaly Beta", "lava", 250, 120, 2100, 120);
+		
+	// Asharu
+		PlanetAPI corvusI = system.addPlanet("asharu", star, "Asharu", "desert", 55, 150, 2800, 100);
+		corvusI.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "asharu"));
+		corvusI.getSpec().setGlowColor(new Color(255,255,255,255));
+		corvusI.getSpec().setUseReverseLightForGlow(true);
+		corvusI.applySpecChanges();
+		corvusI.setCustomDescriptionId("planet_asharu");
+		
+		// Asharu stellar shade - out of orbit, settled in one of Asharu's lagrangian points 
+		SectorEntityToken asharu_shade = system.addCustomEntity("asharu_shade", "Asharu Stellar Shade", "stellar_shade", "neutral");
+		asharu_shade.setCircularOrbitPointingDown(system.getEntityById("corvus"), 55 + 60, 2800, 100);		
+		asharu_shade.setCustomDescriptionId("stellar_shade");
+		
+	// Jangala 
+		PlanetAPI corvusII = system.addPlanet("jangala", star, "Jangala", "jungle", 245, 200, 4500, 200);		
+		corvusII.setCustomDescriptionId("planet_jangala");
+		corvusII.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "volturn"));
+		corvusII.getSpec().setGlowColor(new Color(255,255,255,255));
+		corvusII.getSpec().setUseReverseLightForGlow(true);
+		corvusII.applySpecChanges();
+		
+			// Jangala Station 
+			SectorEntityToken hegemonyStation = system.addCustomEntity("corvus_hegemony_station",
+					"Jangala Station", "station_jangala_type", "hegemony");
+			
+			hegemonyStation.setCircularOrbitPointingDown(system.getEntityById("jangala"), 45 + 180, 300, 50);		
+			hegemonyStation.setCustomDescriptionId("station_jangala");
+			
+			// Jangala Relay - L5 (behind)
+			SectorEntityToken relay = system.addCustomEntity("corvus_relay", // unique id
+					 "Jangala Relay", // name - if null, defaultName from custom_entities.json will be used
+					 "comm_relay", // type of object, defined in custom_entities.json
+					 "hegemony"); // faction
+			relay.setCircularOrbitPointingDown(system.getEntityById("corvus"), 245-60, 4500, 200);
+		
+			// Jangala Jumppoint - L4 (ahead)
+			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("jangala_jump", "Jangala Jumppoint");
+			jumpPoint.setCircularOrbit(system.getEntityById("corvus"), 245+60, 4500, 200);
+			jumpPoint.setRelatedPlanet(corvusII);
+			
+			jumpPoint.setStandardWormholeToHyperspaceVisual();
+			system.addEntity(jumpPoint);
+		
+		// Corvus Gate
+		SectorEntityToken gate = system.addCustomEntity("jangala_gate", // unique id
+				 "Corvus Gate", // name - if null, defaultName from custom_entities.json will be used
+				 "inactive_gate", // type of object, defined in custom_entities.json
+				 null); // faction
+		gate.setCircularOrbit(system.getEntityById("corvus"), 0, 6000, 350);
 
-//		tritachyonStation.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", "cargo_loading", 640, 400));
-		SectorEntityToken pirateStation = system.addCustomEntity("corvus_pirate_station",
-				"Hidden Pirate Base", "station_pirate_type", "pirates");
-		pirateStation.setCircularOrbitPointingDown(system.getEntityById("corvus_IIIa"), 45, 300, 50);		
-		pirateStation.setCustomDescriptionId("pirate_base_barad");
-		pirateStation.setInteractionImage("illustrations", "pirate_station");
-		//initPirateBaseCargo(sector, pirateStation);
+	// Not-yet-named Asteroids // Let's try "Nemo"
+		system.addAsteroidBelt(star, 90, 5650, 500, 150, 300, Terrain.ASTEROID_BELT,  "Nemo's Belt");
+		system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, 5600, 305f, null, null);
+		system.addRingBand(star, "misc", "rings2", 256f, 2, Color.white, 256f, 5720, 295f, null, null);
 		
-//		SectorEntityToken tritachyonStation = system.addOrbitalStation("corvus_tritachyon_station", system.getEntityById("corvus_V"), 45, 300, 50, "Tri-Tachyon Corporate HQ", "tritachyon");
-//		initOrbitalStationCargo(sector, hegemonyStation);
-//		initTriTachyonHQCargo(sector, tritachyonStation);
-//		initPirateBaseCargo(sector, pirateStation);
-//		tritachyonStation.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", "cargo_loading", 640, 400));
+	// Barad system
+		SectorEntityToken corvusIII = system.addPlanet("barad", star, "Barad", "gas_giant", 200, 300, 7800, 400);
 		
+		// Barad magnetic field
+		SectorEntityToken barad_field = system.addTerrain(Terrain.MAGNETIC_FIELD,
+				new MagneticFieldParams(corvusIII.getRadius() + 200f, // terrain effect band width 
+						(corvusIII.getRadius() + 200f) / 2f, // terrain effect middle radius
+						corvusIII, // entity that it's around
+						corvusIII.getRadius() + 50f, // visual band start
+						corvusIII.getRadius() + 50f + 250f, // visual band end
+						new Color(50, 20, 100, 40), // base color
+						0.5f, // probability to spawn aurora sequence, checked once/day when no aurora in progress
+						new Color(140, 100, 235),
+						new Color(180, 110, 210),
+						new Color(150, 140, 190),
+						new Color(140, 190, 210),
+						new Color(90, 200, 170), 
+						new Color(65, 230, 160),
+						new Color(20, 220, 70)
+				));
+		barad_field.setCircularOrbit(corvusIII, 0, 0, 100);
 		
-//		SectorEntityToken testStation = system.addOrbitalStation("corvus_test_station",
-//																 system.getEntityById("jangala"),
-//																 "stations", // key in graphics section of settings.json
-//																 "test_station", // key in "stations"
-//																 75, // radius, sprite will be sized to 2 * radius by 2 * radius
-//																 -45, 400, 80, "Testing Facility", "hegemony");
+			SectorEntityToken corvusIIIA = system.addPlanet("corvus_IIIa", corvusIII, "Barad A", "cryovolcanic", 135, 100, 790, 20);
+			corvusIIIA.setCustomDescriptionId("planet_barad_a");
+			
+			// Pirate Station
+			SectorEntityToken pirateStation = system.addCustomEntity("corvus_pirate_station",
+					"Hidden Pirate Base", "station_pirate_type", "pirates");
+			pirateStation.setCircularOrbitPointingDown(system.getEntityById("corvus_IIIa"), 45, 300, 50);		
+			pirateStation.setCustomDescriptionId("pirate_base_barad");
+			pirateStation.setInteractionImage("illustrations", "pirate_station");
+			
+			//system.addAsteroidBelt(corvusIII, 50, 1000, 200, 10, 45, Terrain.ASTEROID_BELT, null);
+			system.addRingBand(corvusIII, "misc", "rings1", 256f, 0, Color.white, 256f, 1050, 45, Terrain.RING, null);
+			
+			SectorEntityToken corvusIIIB = system.addPlanet("corvus_IIIb", corvusIII, "Barad B", "barren", 235, 100, 1300, 60);
+			corvusIIIB.setInteractionImage("illustrations", "vacuum_colony");
+				
+			// Barad trojans
+			SectorEntityToken baradL4 = system.addTerrain(Terrain.ASTEROID_FIELD,
+					new AsteroidFieldParams(
+						500f, // min radius
+						700f, // max radius
+						20, // min asteroid count
+						30, // max asteroid count
+						4f, // min asteroid radius 
+						16f, // max asteroid radius
+						"Barad L4 Asteroids")); // null for default name
+			
+			SectorEntityToken baradL5 = system.addTerrain(Terrain.ASTEROID_FIELD,
+					new AsteroidFieldParams(
+						500f, // min radius
+						700f, // max radius
+						20, // min asteroid count
+						30, // max asteroid count
+						4f, // min asteroid radius 
+						16f, // max asteroid radius
+						"Barad L5 Asteroids")); // null for default name
+			
+			baradL4.setCircularOrbit(star, 260f, 7800, 400);
+			baradL5.setCircularOrbit(star, 140f, 7800, 400);
+				
+	// Outer system
+		PlanetAPI corvusIV = system.addPlanet("corvus_IV", star, "Somnus", "barren-bombarded", 0, 160, 10000, 600);
+		corvusIV.getSpec().setPlanetColor(new Color(225,255,245,255));
+		corvusIV.applySpecChanges();
 		
-		SectorEntityToken relay = system.addCustomEntity("corvus_relay", // unique id
-														 "Jangala Relay", // name - if null, defaultName from custom_entities.json will be used
-														 "comm_relay", // type of object, defined in custom_entities.json
-														 "hegemony"); // faction
-		relay.setCircularOrbit(system.getEntityById("jangala"), 90, 650, 80);
-		
-//		SectorEntityToken stationAsCustomEntity = system.addCustomEntity("corvus_rig_station", "Side Station", "test_station", -1, "independent");
-//		//stationAsCustomEntity.setCircularOrbit(system.getEntityById("jangala"), 0, 700, 40);
-//		stationAsCustomEntity.setCircularOrbitPointingDown(system.getEntityById("jangala"), 0, 700, 40);
-//		stationAsCustomEntity.getCargo().addWeapons("amblaster", 5);
-		
+		PlanetAPI corvusV = system.addPlanet("corvus_V", star, "Mors", "frozen", 300, 135, 11800, 450);	
+		corvusV.getSpec().setPlanetColor(new Color(225,255,245,255));
+		corvusV.applySpecChanges();
 		
 		LocationAPI hyper = Global.getSector().getHyperspace();
-		
-		SectorEntityToken c2 = system.getEntityByName("Jangala");
-		JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("jangala_gate", "Jangala Gate");
-		OrbitAPI orbit = Global.getFactory().createCircularOrbit(c2, 0, 500, 30);
-		jumpPoint.setOrbit(orbit);
-		jumpPoint.setRelatedPlanet(c2);
-		
-		jumpPoint.setStandardWormholeToHyperspaceVisual();
-		system.addEntity(jumpPoint);
-		
 		system.autogenerateHyperspaceJumpPoints(true, true);
-		
 		
 		SectorEntityToken neutralStation = system.addOrbitalStation("corvus_abandoned_station", system.getEntityById("asharu"), 45, 300, 50, "Abandoned Terraforming Platform", "neutral");
 		neutralStation.getMemory().set("$abandonedStation", true);
@@ -107,312 +186,71 @@ public class Corvus { // implements SectorGeneratorPlugin {
 		((StoragePlugin)market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin()).setPlayerPaidToUnlock(true);
 		neutralStation.setMarket(market);
 		neutralStation.setCustomDescriptionId("asharu_platform");
-		neutralStation.setInteractionImage("illustrations", "abandoned_station");
+		neutralStation.setInteractionImage("illustrations", "abandoned_station2");
 		
 		neutralStation.getMarket().getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().addMothballedShip(FleetMemberType.SHIP, "hermes_d_Hull", null);
 		
-//		market.getLocation().set(system.getLocation());
-//		Global.getSector().getEconomy().addMarket(market);
 		
-		/*
-		PirateSpawnPoint pirateSpawn = new PirateSpawnPoint(sector, system, 1f, 50, system.getEntityById("corvus_IIIa"));
-		system.addScript(pirateSpawn);
-		for (int i = 0; i < 10; i++) {
-			CampaignFleetAPI fleet = pirateSpawn.spawnFleet();
-			float xOff = (float) Math.random() * 8000f - 4000f;
-			float yOff = (float) Math.random() * 16000f - 8000f;
-			fleet.setLocation(fleet.getLocation().x + xOff, fleet.getLocation().y + yOff);
-		}
-		for (int i = 0; i < 5; i++) {
-			CampaignFleetAPI fleet = pirateSpawn.spawn("raiders1");
-			float xOff = (float) Math.random() * 8000f - 4000f;
-			float yOff = (float) Math.random() * 8000f - 4000f;
-			fleet.setLocation(fleet.getLocation().x + xOff, fleet.getLocation().y + yOff);
-		}
-		for (int i = 0; i < 5; i++) {
-			CampaignFleetAPI fleet = pirateSpawn.spawn("raiders2");
-			float xOff = (float) Math.random() * 8000f - 4000f;
-			float yOff = (float) Math.random() * 16000f - 8000f;
-			fleet.setLocation(fleet.getLocation().x + xOff, fleet.getLocation().y + yOff);
-		}
-		*/
+		SectorEntityToken nebula = system.addTerrain(Terrain.NEBULA, new BaseTiledTerrain.TileParams(
+				"   xx " +
+				"  xx x" +
+				" xxxx " +
+				"xxxxxx" +
+				"  xx  " +
+				"    x ",
+				6, 6, // size of the nebula grid, should match above string
+				"terrain", "nebula", 4, 4));
+		nebula.getLocation().set(corvusII.getLocation().x + 1000f, corvusII.getLocation().y);
+		nebula.setCircularOrbit(star, 140f, 11000, 500);
 		
 		
-		/*
-		HegemonyPatrolSpawnPoint patrolSpawn = new HegemonyPatrolSpawnPoint(sector, system, 10, 5, hegemonyStation);
-		system.addScript(patrolSpawn);
-		for (int i = 0; i < 5; i++)
-			patrolSpawn.spawnFleet();
-
-		SectorEntityToken token = system.createToken(0, 15000);
-		HegemonySDFSpawnPoint sdfSpawn = new HegemonySDFSpawnPoint(sector, system, 30, 1, token, hegemonyStation);
-		system.addScript(sdfSpawn);
-		spawnSDF(sector, system, hegemonyStation);
-
-		TriTachyonSpawnPoint triSpawn = new TriTachyonSpawnPoint(sector, system, 5, 10, system.getEntityByName("Corvus V"), hegemonyStation);
-		system.addScript(triSpawn);
-		for (int i = 0; i < 2; i++)
-			triSpawn.spawnFleet();
-
-		IndependentSpawnPoint independentSpawn = new IndependentSpawnPoint(sector, system, 10, 15, hegemonyStation);
-		system.addScript(independentSpawn);
-		for (int i = 0; i < 2; i++)
-			independentSpawn.spawnFleet();
-
+		/*SectorEntityToken hyperChunk = hyper.addTerrain(Terrain.NEBULA, new BaseTiledTerrain.TileParams(
+				"x         " +
+				"xx        " +
+				"xxx       " +
+				"xxxx      " +
+				"xxxxx     " +
+				"xxxxxx    " +
+				"xxxxxxx   " +
+				"xxxxxxxx  " +
+				"xxxxxxxxx " +
+				"xxxxxxxxxx",
+				10, 10, // size of the nebula grid, should match above string
+				"terrain", "nebula_dark", 4, 4));
+		hyperChunk.getLocation().set(system.getLocation().x + 3000f,
+									 system.getLocation().y); */
 		
-		system.addScript(new HegemonyConvoySpawnPoint(sector, hyper, 13, 1, hyper.createToken(-4000, 4000), hegemonyStation));
-		system.addScript(new PiratePlunderFleetSpawnPoint(sector, hyper, 17, 1, hyper.createToken(-4000, 0), pirateStation));
-//		system.addScript(new TriTachyonSupplyFleetSpawnPoint(sector, hyper, 23, 1, hyper.createToken(-6000, 2000), tritachyonStation));
-
-		system.addScript(new TriTachyonSupplyFleetSpawnPoint(sector, hyper, 23, 1, hyper.createToken(-6000, 2000), tritachyonStation));
+		/*SectorEntityToken nebula2 = Misc.addNebulaFromPNG("data/campaign/terrain/nebula_test.png",
+														  0, 0, // center of nebula
+														  system, // location to add to
+														  "terrain", "nebula", // texture to use, uses xxx_map for map
+														  4, 4); // number of cells in texture
 		 */
+		//nebula2.setCircularOrbit(star, 0, 2000, 200f);
+		
+		/*
+		SectorEntityToken asteroidField = system.addTerrain(Terrain.ASTEROID_FIELD,
+						new AsteroidFieldParams(
+								500f, // min radius
+								700f, // max radius
+								20, // min asteroid count
+								30, // max asteroid count
+								4f, // min asteroid radius 
+								16f, // max asteroid radius
+								"<name goes here>")); // null for default name
+		asteroidField.setCircularOrbit(star, 180f, 4000, 500);
+		
+		*/
 	}
-
-	private void spawnSDF(SectorAPI sector, StarSystemAPI system, SectorEntityToken location) {
-		CampaignFleetAPI fleet = sector.createFleet("hegemony", "systemDefense");
-		system.spawnFleet(location, -500, 200, fleet);
-
-		fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, location, 1000000);
-		fleet.setPreferredResupplyLocation(location);
-		//		
-		// fleet = sector.createFleet("tritachyon", "securityDetachment");
-		// system.spawnFleet(location, -200, 200, fleet);
-		// fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, location,
-		// 1000000);
-
-	}
-
-	private void initOrbitalStationCargo(SectorAPI sector, SectorEntityToken station) {
-		CargoAPI cargo = station.getCargo();
-
-		List weaponIds = sector.getAllWeaponIds();
-		// for (int i = 0; i < 10; i++) {
-		// String weaponId = (String) weaponIds.get((int) (weaponIds.size() *
-		// Math.random()));
-		// int quantity = (int)(Math.random() * 7 + 3);
-		// cargo.addWeapons(weaponId, quantity);
-		// }
-
-		// focused on weapons that are hard to get from looting
-		// and present an upgrade path for the initial ships
-		// cargo.addWeapons("heavymg", 5);
-		
-		//strike
-		cargo.addWeapons("bomb", 25);
-		cargo.addWeapons("reaper", 12);
-		
-		//Support
-		cargo.addWeapons("lightac", 25);
-		cargo.addWeapons("lightmg", 40);
-		cargo.addWeapons("annihilator", 10);
-		cargo.addWeapons("taclaser", 10);
-
-		cargo.addWeapons("harpoon_single", 12); //medium
-
-		//assault
-		cargo.addWeapons("lightmortar", 40);
-		cargo.addWeapons("miningblaster", 1); //medium
-		
-		//PD
-		cargo.addWeapons("swarmer", 5);
-		cargo.addWeapons("mininglaser", 25);
-		cargo.addWeapons("pdlaser", 25);
-		
-		cargo.addWeapons("flak", 5); //medium
-		cargo.addWeapons("shredder", 5); //medium
-		cargo.addWeapons("annihilatorpod", 1); //medium
-		cargo.addWeapons("pilum", 2); //medium
-		cargo.addWeapons("mark9", 2); //large
-		
-		
-//		cargo.addCrew(CrewXPLevel.ELITE, 25);
-		// cargo.addCrew(CrewXPLevel.VETERAN, 200);
-		cargo.addCrew(CrewXPLevel.REGULAR, 30);
-		cargo.addCrew(CrewXPLevel.GREEN, 500);
-		cargo.addMarines(100);
-		cargo.addSupplies(630);
-		cargo.addFuel(500);
-		
-		
-		cargo.addItems(CargoItemType.RESOURCES, "food", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "organics", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "volatiles", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "ore", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "rare_ore", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "metals", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "rare_metals", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "heavy_machinery", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "domestic_goods", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "organs", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "drugs", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "hand_weapons", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "luxury_goods", 1000);
-		cargo.addItems(CargoItemType.RESOURCES, "lobster", 1000);
 
 	
-		cargo.addMothballedShip(FleetMemberType.SHIP, "vigilance_Hull", null);
-		
-		cargo.addMothballedShip(FleetMemberType.SHIP, "hound_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "lasher_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "brawler_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "dram_Hull", null);
-		
-		cargo.addMothballedShip(FleetMemberType.SHIP, "enforcer_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "condor_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "hammerhead_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "sunder_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "valkyrie_Hull", null);
-		
-		cargo.addMothballedShip(FleetMemberType.SHIP, "falcon_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "eagle_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "dominator_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "venture_Hull", null);
-		
-		cargo.addMothballedShip(FleetMemberType.SHIP, "atlas_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "onslaught_Hull", null);
-		
-		
-		cargo.addMothballedShip(FleetMemberType.SHIP, "mule_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "mule_Hull", null);
-		
-		cargo.addMothballedShip(FleetMemberType.SHIP, "hermes_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "hermes_Hull", null);
-		
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "talon_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "talon_wing", null);
-		
-		
-
-	}
-
-	private void initTriTachyonHQCargo(SectorAPI sector, SectorEntityToken station) {
-		CargoAPI cargo = station.getCargo();
-
-		List weaponIds = sector.getAllWeaponIds();
-		cargo.addCrew(CrewXPLevel.ELITE, 10);
-		cargo.addCrew(CrewXPLevel.VETERAN, 10);
-		cargo.addCrew(CrewXPLevel.REGULAR, 50);
-		// cargo.addCrew(CrewXPLevel.GREEN, 1500);
-		cargo.addMarines(75);
-		cargo.addSupplies(145);
-		cargo.addFuel(100);
-		
-		//strike
-		cargo.addWeapons("amblaster", 5);
-		cargo.addWeapons("atropos_single", 5);
-		
-		//support
-		cargo.addWeapons("taclaser", 15);
-		cargo.addWeapons("railgun", 5);
-		cargo.addWeapons("harpoon", 5);
-		
-		cargo.addWeapons("pulselaser", 6);
-		cargo.addWeapons("gravitonbeam", 10);
-		cargo.addWeapons("heavyburst", 6);
-		cargo.addWeapons("heavyblaster", 3);
-		cargo.addWeapons("phasebeam", 3);
-		cargo.addWeapons("harpoonpod", 5);
-		cargo.addWeapons("sabotpod", 5);
-		
-		//PD
-		cargo.addWeapons("vulcan", 6);
-		cargo.addWeapons("lrpdlaser", 6);
-		cargo.addWeapons("pdburst", 6);
-		cargo.addWeapons("swarmer", 6);
-		
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "wasp_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "wasp_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "wasp_wing", null);
-		
-		cargo.addMothballedShip(FleetMemberType.SHIP, "hyperion_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "hyperion_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "medusa_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "medusa_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "apogee_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "tempest_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "tempest_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "tempest_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "buffalo_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "buffalo_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "omen_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "omen_Hull", null);
-		
-		cargo.addMothballedShip(FleetMemberType.SHIP, "doom_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "doom_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "afflictor_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "afflictor_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "shade_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "shade_Hull", null);
-		
-		cargo.addMothballedShip(FleetMemberType.SHIP, "odyssey_Hull", null);
-	}
-
-	private void initPirateBaseCargo(SectorAPI sector, SectorEntityToken station) {
-		CargoAPI cargo = station.getCargo();
-
-		List weaponIds = sector.getAllWeaponIds();
-		// cargo.addCrew(CrewXPLevel.ELITE, 25);
-		cargo.addCrew(CrewXPLevel.VETERAN, 20);
-		cargo.addCrew(CrewXPLevel.REGULAR, 50);
-		cargo.addCrew(CrewXPLevel.GREEN, 100);
-		cargo.addMarines(50);
-		cargo.addSupplies(100);
-		cargo.addFuel(10);
-		
-		//strike
-		cargo.addWeapons("bomb", 15);
-		cargo.addWeapons("typhoon", 5);
-		
-		//PD
-		cargo.addWeapons("clusterbomb", 10);
-		cargo.addWeapons("flak", 10);
-		cargo.addWeapons("irpulse", 10);
-		cargo.addWeapons("swarmer", 10);
-
-		//support
-		cargo.addWeapons("fragbomb", 10);
-		cargo.addWeapons("heatseeker", 5);
-		cargo.addWeapons("harpoon", 5);
-		
-		cargo.addWeapons("sabot", 5);
-		cargo.addWeapons("annihilator", 5);
-		cargo.addWeapons("lightdualmg", 10);
-		cargo.addWeapons("lightdualac", 10);
-		cargo.addWeapons("lightneedler", 10);
-		cargo.addWeapons("heavymg", 10);
-		cargo.addWeapons("heavymauler", 5);
-		cargo.addWeapons("salamanderpod", 5);
-		
-		cargo.addWeapons("hveldriver", 5);
-
-		//assault
-		cargo.addWeapons("lightag", 10);
-		cargo.addWeapons("chaingun", 5);
-		
-		cargo.addMothballedShip(FleetMemberType.SHIP, "wolf_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "broadsword_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "broadsword_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "piranha_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "piranha_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "talon_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "talon_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "thunder_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "thunder_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "gladius_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "warthog_wing", null);
-		cargo.addMothballedShip(FleetMemberType.FIGHTER_WING, "warthog_wing", null);
-		
-		cargo.addMothballedShip(FleetMemberType.SHIP, "buffalo2_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "buffalo2_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "condor_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "tarsus_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "tarsus_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "gemini_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "cerberus_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "cerberus_Hull", null);
-
-		cargo.addMothballedShip(FleetMemberType.SHIP, "venture_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "dominator_Hull", null);
-		cargo.addMothballedShip(FleetMemberType.SHIP, "conquest_Hull", null);
-	}
 }
+
+
+
+
+
+
+
+
+
