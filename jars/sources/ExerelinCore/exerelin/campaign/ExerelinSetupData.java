@@ -3,12 +3,11 @@ package exerelin.campaign;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
-import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 import org.apache.log4j.Logger;
 
 /* This class functions as a data structure for Exerelin setup
@@ -21,7 +20,7 @@ public final class ExerelinSetupData
 	private static ExerelinSetupData instance = null;
 
 	// Player setup defaults
-	private String[] availableFactions = null;
+	private List<String> availableFactions = null;
 
 	// Sector Generation Defaults
 	public int numSystems = 6;
@@ -66,17 +65,20 @@ public final class ExerelinSetupData
 		instance = new ExerelinSetupData();
 	}
 
-	public String[] getPossibleFactions()
+	public List<String> getAvailableFactions()
 	{
-		ArrayList possibleFactionsList = new ArrayList();
+		if (availableFactions != null) return availableFactions;
+		List<String> factionsList = new ArrayList<>();
 	
 		// Add built in factions
 		ExerelinConfig.loadSettings();
-		Collections.addAll(possibleFactionsList, this.getBuiltInFactionsList());
+		factionsList.addAll(this.getBuiltInFactionsList());
 	
 		// Add modded factions
-		Collections.addAll(possibleFactionsList, this.getModdedFactionsList());
-		return (String[])possibleFactionsList.toArray(new String[possibleFactionsList.size()]);
+		factionsList.addAll(this.getModdedFactionsList());
+		
+		availableFactions = factionsList;
+		return factionsList;
 	}
 
 	public void resetAvailableFactions()
@@ -84,72 +86,43 @@ public final class ExerelinSetupData
 		availableFactions = null;
 	}
 
-	public String[] getAvailableFactions()
+	public List<String> getModdedFactionsList()
 	{
-		SectorAPI sector = Global.getSector();
-		if (availableFactions == null)
-		{
-			String[] locPossibleFaction = this.getPossibleFactions();
-			ArrayList confirmedFactions = new ArrayList(locPossibleFaction.length);
-			
-			for(int i = 0; i < locPossibleFaction.length; i = i + 1)
+		//log.info("Getting modded factions");
+		List<String> possibleModdedFactions = new ArrayList<String>();
+
+		for (ExerelinFactionConfig config : ExerelinConfig.exerelinFactionConfigs) {
+			if (!config.playableFaction) continue;
+			if (config.uniqueModClassName.equalsIgnoreCase("")) continue;	// FIXME replace with isBuiltIn boolean
+			if (isFactionInstalled(config.factionId))
 			{
-				FactionAPI fac = sector.getFaction(locPossibleFaction[i]);
-				if(fac != null)
-					confirmedFactions.add(fac.getId());
-				else
-					log.warn("EXERELIN ERROR: Couldn't determine faction for:" + locPossibleFaction[i]);
-			}
-			availableFactions = (String[])confirmedFactions.toArray( new String[confirmedFactions.size()] );
-		}
-		return availableFactions;
-	}
-
-	public String[] getModdedFactionsList()
-	{
-	log.info("Getting modded factions");
-	ArrayList possibleModdedFactionList = new ArrayList();
-
-	for(int i = 0; i < ExerelinConfig.exerelinFactionConfigs.size(); i++)
-	{
-		ExerelinFactionConfig exerelinFactionConfig = (ExerelinFactionConfig)ExerelinConfig.exerelinFactionConfigs.get(i);
-		if(exerelinFactionConfig.playableFaction
-			&& isFactionInstalled(exerelinFactionConfig.factionId, exerelinFactionConfig.uniqueModClassName))
-		{
-			possibleModdedFactionList.add(exerelinFactionConfig.factionId);
-		}
-	}
-		return (String[])possibleModdedFactionList.toArray(new String[possibleModdedFactionList.size()]);
-	}
-
-	public String[] getBuiltInFactionsList()
-	{
-		ArrayList possibleBuiltInFactionList = new ArrayList();
-
-		for(int i = 0; i < ExerelinConfig.exerelinFactionConfigs.size(); i++)
-		{
-			ExerelinFactionConfig exerelinFactionConfig = (ExerelinFactionConfig)ExerelinConfig.exerelinFactionConfigs.get(i);
-			if(exerelinFactionConfig.playableFaction && exerelinFactionConfig.uniqueModClassName.equalsIgnoreCase(""))
-			{
-				possibleBuiltInFactionList.add(exerelinFactionConfig.factionId);
+				possibleModdedFactions.add(config.factionId);
 			}
 		}
-
-		return (String[])possibleBuiltInFactionList.toArray(new String[possibleBuiltInFactionList.size()]);
+		return possibleModdedFactions;
 	}
 
-	public boolean isFactionInstalled(String factionId, String factionSpecficClassName)
+	public List<String> getBuiltInFactionsList()
 	{
-		try
-		{
-			Global.getSettings().getScriptClassLoader().loadClass(factionSpecficClassName);
-			//log.info("Loaded " + factionId);
-			return true;
+		List<String> possibleBuiltInFactions = new ArrayList<String>();
+
+		for (ExerelinFactionConfig config : ExerelinConfig.exerelinFactionConfigs) {
+			if (!config.playableFaction) continue;
+			if (!config.uniqueModClassName.equalsIgnoreCase("")) continue;
+			possibleBuiltInFactions.add(config.factionId);
 		}
-		catch (ClassNotFoundException ex)
+
+		return possibleBuiltInFactions;
+	}
+
+	public boolean isFactionInstalled(String factionId)
+	{
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		if (faction == null)
 		{
-			//log.info("Skipped " + factionId);
+			log.warn("Couldn't find faction " + factionId);
 			return false;
 		}
+		return true;
 	}
 }

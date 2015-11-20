@@ -9,8 +9,6 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class NGCSetNumFactions extends BaseCommandPlugin {
@@ -26,7 +24,7 @@ public class NGCSetNumFactions extends BaseCommandPlugin {
 		}
 		else
 		{
-			List<String> availableFactions = new ArrayList<>( Arrays.asList(setupData.getAvailableFactions()) );
+			List<String> availableFactions = setupData.getAvailableFactions();
 			availableFactions.remove("player_npc");
 			setupData.numStartFactions = (int)(num * availableFactions.size() + 0.5f);
 		}

@@ -6,17 +6,13 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.SectorManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ExerelinUtilsFaction {
-
-    
-
+	
     public static boolean doesFactionOwnSystem(String factionId, StarSystemAPI system)
     {
         for(MarketAPI market : Misc.getMarketsInLocation(system))
