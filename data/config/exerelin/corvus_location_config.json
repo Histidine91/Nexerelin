@@ -3,7 +3,7 @@
 		"Corvus":"jangala",
 		"Magec":"tibicena",
 		"Askonia":"sindria",
-		"Eos":"tartessus",
+		"Eos Exodus":"tartessus",
 		"Valhalla":"ragnar_complex",
 		"Arcadia":"arcadia_station",
 		"Hybrasil":"ogma",
@@ -57,7 +57,7 @@
 			"entity":"sindria"
 		},
 		"luddic_church":{
-			"system":"Eos",
+			"system":"Eos Exodus",
 			"entity":"tartessus"
 		},
 		"pirates":{
