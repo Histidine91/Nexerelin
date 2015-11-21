@@ -538,7 +538,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(newOwnerId);
-        if (newOwnerConfig != null)
+        if (!sectorManager.corvusMode && newOwnerConfig != null)
         {
             if (newOwnerConfig.freeMarket)
             {
