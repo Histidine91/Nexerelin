@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.impl.campaign.events.InvestigationEventGoodRepWithOther;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.PlayerFactionStore;
 
 // don't investigate if in same alliance, etc.
 public class ExerelinInvestigationEventGoodRepWithOther extends InvestigationEventGoodRepWithOther {
@@ -16,10 +17,14 @@ public class ExerelinInvestigationEventGoodRepWithOther extends InvestigationEve
 		FactionAPI otherFaction = targetLocal.getOther();
 		String thisFactionId = thisFaction.getId();
 		String otherFactionId = otherFaction.getId();
+		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		
 		boolean shouldProceed = true;
 		
-		
+		if (otherFaction.getId().equals(playerAlignedFactionId))
+			shouldProceed = false;
+		else if (thisFaction.getId().equals(playerAlignedFactionId))
+			shouldProceed = false;
 		if (AllianceManager.areFactionsAllied(thisFactionId, otherFactionId))
 			shouldProceed = false;
 		else
