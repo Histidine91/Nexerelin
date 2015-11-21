@@ -46,6 +46,7 @@ public class ExerelinFactionConfig
     public int negativeDiplomacyExtra = 0;
     public String[] factionsLiked = new String[]{};
     public String[] factionsDisliked = new String[]{};
+    public String[] factionsNeutral = new String[]{};
     public Map<Alignment, Float> alignments = new HashMap<>();
     
     public boolean freeMarket = false;
@@ -54,7 +55,7 @@ public class ExerelinFactionConfig
     public float invasionStrengthBonusDefend = 0;
     public float invasionFleetSizeMod = 0;
     public float responseFleetSizeMod = 0;
-	public float invasionPointMult = 1;
+    public float invasionPointMult = 1;
     
     public boolean dropPrisoners = true;
     
@@ -100,6 +101,8 @@ public class ExerelinFactionConfig
             negativeDiplomacyExtra = settings.optInt("negativeDiplomacyExtra");
             factionsLiked = JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
             factionsDisliked = JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
+            if (settings.has("factionsNeutral"))
+                factionsNeutral = JSONArrayToStringArray(settings.getJSONArray("factionsNeutral"));
             
             freeMarket = settings.optBoolean("freeMarket", freeMarket);
             
@@ -107,7 +110,7 @@ public class ExerelinFactionConfig
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);
             invasionFleetSizeMod = (float)settings.optDouble("invasionFleetSizeMod", 0);
             responseFleetSizeMod = (float)settings.optDouble("responseFleetSizeMod", 0);
-			invasionPointMult = (float)settings.optDouble("invasionPointMult", 1);
+            invasionPointMult = (float)settings.optDouble("invasionPointMult", 1);
             
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
             

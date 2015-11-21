@@ -15,7 +15,7 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
-    "factionsNeutral":[], # todo
+    "factionsNeutral":["luddic_church"],
 
     "alignments":{
         "corporate":-1,

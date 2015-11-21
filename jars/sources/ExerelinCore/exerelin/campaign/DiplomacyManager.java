@@ -903,29 +903,31 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     
                     handleHostileToAllFaction(factionId, factionIds);
                     
-                    if (factionConfig.factionsLiked.length > 0)
-                    {
-                        for (String likedFactionId : factionConfig.factionsLiked) {
-                            FactionAPI dislikedFaction = sector.getFaction(likedFactionId);
-                            if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
-                            {
-                                //log.info(faction.getDisplayName() + " likes " + dislikedFaction.getDisplayName());
-                                faction.setRelationship(likedFactionId, STARTING_RELATIONSHIP_WELCOMING);
-                            }
+                    for (String likedFactionId : factionConfig.factionsLiked) {
+                        FactionAPI likedFaction = sector.getFaction(likedFactionId);
+                        if (likedFaction != null && !likedFaction.isNeutralFaction())
+                        {
+                            //log.info(faction.getDisplayName() + " likes " + dislikedFaction.getDisplayName());
+                            faction.setRelationship(likedFactionId, STARTING_RELATIONSHIP_WELCOMING);
                         }
-                    }  
+                    }
                     
-                    if (factionConfig.factionsDisliked.length > 0)
-                    {
-                        for (String dislikedFactionId : factionConfig.factionsDisliked) {
-                            FactionAPI dislikedFaction = sector.getFaction(dislikedFactionId);
-                            if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
-                            {
-                                //log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
-                                setRelationshipAtBest(factionId, dislikedFactionId, STARTING_RELATIONSHIP_HOSTILE);
-                            }
+                    for (String dislikedFactionId : factionConfig.factionsDisliked) {
+                        FactionAPI dislikedFaction = sector.getFaction(dislikedFactionId);
+                        if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
+                        {
+                            //log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
+                            setRelationshipAtBest(factionId, dislikedFactionId, STARTING_RELATIONSHIP_HOSTILE);
                         }
-                    }  
+                    }
+                    
+                    for (String likedFactionId : factionConfig.factionsNeutral) {
+                        FactionAPI indifferentFaction = sector.getFaction(likedFactionId);
+                        if (indifferentFaction != null && !indifferentFaction.isNeutralFaction())
+                        {
+                            faction.setRelationship(likedFactionId, 0);
+                        }
+                    }
                 }
             }
         }
