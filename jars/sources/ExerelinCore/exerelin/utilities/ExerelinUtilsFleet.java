@@ -6,17 +6,13 @@ import java.util.List;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import data.scripts.campaign.SSP_FleetFactory;
 import data.scripts.campaign.SSP_LevelUpper;
-import data.scripts.variants.SSP_FleetRandomizer;
 import static data.scripts.variants.SSP_FleetRandomizer.getArchetypeFromRole;
 import data.scripts.variants.SSP_VariantRandomizer;
 import data.scripts.world.SSP_FleetInjector;

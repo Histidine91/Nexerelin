@@ -40,51 +40,9 @@ public class InvasionFleetAI implements EveryFrameScript
         giveInitialAssignment();
     }
     
-    // TODO fix + test
+    
     protected void broadcastHostile()
     {
-        /*
-        broadcastScript = new EveryFrameScript() {
-            private float timeElapsed = 0;
-            private final IntervalUtil tracker = new IntervalUtil(0.05f, 0.15f);
-            private final CampaignFleetAPI ourFleet = data.fleet;
-            private boolean done = false;
-            public boolean runWhilePaused() {
-                return false;
-            }
-            public boolean isDone() {
-                return done;
-            }
-            public void advance(float amount) {
-                CampaignClockAPI clock = Global.getSector().getClock();
-
-                float days = clock.convertToDays(amount);
-                timeElapsed = timeElapsed + days;
-
-                if (tracker.intervalElapsed() && !done) {
-                    if (timeElapsed > INVADE_ORBIT_TIME+ 1f)
-                    {
-                        done = true;
-                        return;
-                    }
-                    BroadcastPlayerAction.broadcast(ActionType.HOSTILE, 750, "$exerelinRespondingToInvasion", data.fleet, data.target);
-                    List<CampaignFleetAPI> fleets = ourFleet.getContainingLocation().getFleets();
-                    for (CampaignFleetAPI fleet : fleets) {
-                        if (fleet == ourFleet) continue;
-                        if (fleet.getAI() instanceof CampaignFleetAIAPI 
-                            && fleet.getFaction().isHostileTo(ourFleet.getFaction())) {
-                            float dist = Misc.getDistance(ourFleet.getLocation(), fleet.getLocation());
-                            if (dist <= INVADE_RESPONSE_DISTANCE) {
-                                CampaignFleetAIAPI ai = (CampaignFleetAIAPI) fleet.getAI();
-                                ai.addAssignmentAtStart(FleetAssignment.INTERCEPT, ourFleet, 3f, "intercepting " + ourFleet.getName(), null);
-                            }
-                        }
-                    }
-                }
-            }
-        };
-        data.fleet.addScript(broadcastScript);
-        */
         if (orderedReturn) return;
         
         List<CampaignFleetAPI> fleets = fleet.getContainingLocation().getFleets();
