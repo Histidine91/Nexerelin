@@ -93,6 +93,22 @@
 			"rare_ore":0.1,
 			"volatiles":0.4,
 		},
+		"twilight":{
+			"ore":1,
+			"rare_ore":1,
+			"organics":0.1,
+		},
+		"tundra":{
+			"ore":0.7,
+			"rare_ore":0.07,
+			"volatiles":0.3,
+			"organics":0.2,
+		},
+		"barren_marginal":{
+			"ore":0.9,
+			"rare_ore":0.9,
+			"organics":0.2,
+		},
 	},
 	"danger":{	# planets (as opposed to moons) have a 25% increased danger as well
 		"default":0.2,
@@ -108,5 +124,7 @@
 		"radiated":0.8,
 		"gas_giant":0.24,
 		"ice_giant":0.24,
+		"twilight":0.3,
+		"tundra":0.3,
 	}
 }
