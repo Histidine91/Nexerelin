@@ -14,6 +14,8 @@
 	"description":"No description yet.",
 	"names":{
 		"modern":1,
+		"world":1,
+		"future":1,
 	},
 	"illegalCommodities":[
 	],
@@ -49,6 +51,9 @@
 			"graphics/portraits/portrait24.png",
 		],
 	},
+	"custom":{
+		"allowsTransponderOffTrade":true,
+	},
 	"shipRoles":{
 		"interceptor":{
 			"talon_wing":10,
@@ -71,7 +76,6 @@
 		"fastAttack":{
 			"hound_d_Standard":10,
 			"wolf_d_Attack":10,	
-		
 			"lasher_Standard":10,
 			"hound_Standard":10,
 			"tempest_Attack":10,
@@ -83,7 +87,6 @@
 		"escortSmall":{
 			"lasher_d_CS":10,
 			"wolf_d_Attack":10,
-		
 			"lasher_CS":10,
 			"omen_PD":10,
 			"monitor_Escort":2,
@@ -92,12 +95,12 @@
 			"fallback":{"combatSmall":1},
 		},
 		"escortMedium":{
-			"enforcer_d_Strike":10,
+			"enforcer_d_Strike":8,
 			"hammerhead_d_CS":10,
 			"sunder_d_Assault":10,
 			"buffalo2_FS":10,
-		
-			"enforcer_Assault":10,
+			"enforcer_Escort":8,
+			"enforcer_Assault":8,
 			"medusa_PD":10,
 			"fallback":{"combatMedium":1},
 		},
@@ -105,7 +108,6 @@
 		"combatSmall":{
 			"lasher_d_CS":10,
 			"wolf_d_Attack":10,
-			
 			"wolf_CS":10,
 			"lasher_CS":10,
 			"lasher_Assault":10,
@@ -121,7 +123,6 @@
 			"hammerhead_d_CS":10,
 			"sunder_d_Assault":10,
 			"buffalo2_FS":10,
-			
 			"enforcer_Assault":10,
 			"enforcer_CS":10,
 			"enforcer_Balanced":10,
@@ -139,16 +140,20 @@
 			"falcon_d_CS":20,
 			"eagle_d_Assault":10,
 			"dominator_d_Assault":10,
-		
 			"falcon_Attack":10,
 			"falcon_CS":10,
 			"eagle_Assault":10,
 			"eagle_Balanced":10,
 			"apogee_Balanced":10,
-			"dominator_Assault":10,
-			"dominator_Support":10,
-			"dominator_Outdated":10,
-			"aurora_Balanced":10,
+			"gryphon_Standard":5,
+			"dominator_Assault":7,
+			"dominator_Support":7,
+			"dominator_Outdated":7,
+			"dominator_AntiCV":7,
+			"aurora_Assault":4,
+			"aurora_Balanced":3,
+			"aurora_Escort":4,
+			"aurora_Strike":3,
 			"doom_Strike":10,
 			"fallback":{"combatMedium":2},
 		},
@@ -156,8 +161,10 @@
 			"onslaught_Standard":10,
 			"onslaught_Outdated":10,
 			"onslaught_Elite":10,
-			"conquest_Elite":10,
-			"paragon_Elite":10,
+			"conquest_Elite":5,
+			"conquest_Standard":5,
+			"paragon_Elite":5,
+			"paragon_Raider":5,
 			"odyssey_Balanced":10,
 			"fallback":{"combatLarge":2},
 		},
@@ -167,7 +174,6 @@
 		"combatFreighterSmall":{
 			"hound_d_Standard":10,
 			"cerberus_d_Standard":10,
-		
 			"hound_Standard":10,
 			"shepherd_Frontier":10,
 			"cerberus_Standard":10,
@@ -186,18 +192,22 @@
 		"civilianRandom":{
 			"mercury_d_Standard":10,
 			"hermes_d_Standard":10,
-			
+			"kite_Standard":10,
 			"mercury_Standard":10,
 			"hermes_Standard":10,
+			"starliner_Standard":10,
+			"nebula_Standard":10,
+			"mudskipper_Standard":10,
 			"fallback":{"freighterSmall":1},
 		},
 	
 	
 		# carriers
 		"carrierSmall":{
-			"condor_FS":10,
+			"condor_FS":6,
+			"condor_Support":4,
 			"gemini_Standard":10,
-			"fallback":{"carrierMedium":1},
+			"fallback":{"carrierMedium":0.5},
 		},
 		"carrierMedium":{
 			"heron_Standard":10,
@@ -211,9 +221,8 @@
 		# freighters and such
 		"freighterSmall":{
 			"hermes_d_Standard":10,
-			
 			"hermes_Standard":10,
-			"fallback":{"freighterMedium":1},
+			"fallback":{"freighterMedium":0.5},
 		},
 		"freighterMedium":{
 			"tarsus_d_Standard":10,
@@ -230,7 +239,7 @@
 		
 		"tankerSmall":{
 			"dram_Light":10,
-			"fallback":{"tankerMedium":1},
+			"fallback":{"tankerMedium":0.5},
 		},
 		"tankerMedium":{
 			"phaeton_Standard":10,
@@ -243,14 +252,18 @@
 		
 		"personnelSmall":{
 			"mercury_d_Standard":10,
+			"mudskipper_Standard":10,
+			"kite_Stock":1,
 			"mercury_Standard":10,
-			"fallback":{"personnelMedium":1},
+			"fallback":{"personnelMedium":0.5},
 		},
 		"personnelMedium":{
 			"valkyrie_Elite":10,
+			"nebula_Standard":1,
 			"fallback":{"personnelSmall":2},
 		},
 		"personnelLarge":{
+			"starliner_Standard":10,
 			"fallback":{"personnelMedium":2},
 		},
 		
@@ -273,19 +286,40 @@
 			
 		},
 		"captain":{
-			"cowardly":1,
-			"cautious":1,
-			"steady":1,
-			"aggressive":1,
-			"suicidal":1,
-			"fearless":1,
+			"timid":3,
+			"cautious":5,
+			"steady":5,
+			"aggressive":5,
 		},
 	},
-	"dialogue":{
-		"greetingFriendly":"Good to see you, chief. Is there anything we can do for you?",
-		"greetingNeutral":"Just another day at the office.",
-		"greetingHostileAggressive":"You have betrayed us. Prepare to die.",
-		"greetingHostileTimid":"Fine, fine, we're sorry for defying you! Just don't kill us!",
-	}
-	
+	"doctrine":{
+		# ship distribution
+		"interceptors":4,
+		"fighters":6,
+		"bombers":2,
+		"small":8,
+		"fast":4,
+		"medium":12,
+		"large":4,
+		"capital":2,
+		
+		# as fraction of combat ships of same size
+		"escortSmallFraction":1,
+		"escortMediumFraction":1,
+		
+		"combatFreighterProbability":0.1,
+		
+		"minPointsForCombatCapital":10,
+		"minPointsForLargeCarrier":30,
+		
+		"smallCarrierProbability":0.25,
+		"mediumCarrierProbability":0.25,
+		"largeCarrierProbability":0.25,
+		
+		# officers
+		"officersPerPoint":0.35,
+		"officerLevelPerPoint":0.3,
+		"officerLevelBase":5,
+		"officerLevelVariance":0.25,
+	},
 }

@@ -972,18 +972,18 @@ ExerelinPostOpenMarketPrismHostile,MarketPostOpen,"$hasMarket
 $market.id == prismFreeport_market score:100
 RepIsAtBest $faction.id INHOSPITABLE","$menuState = main 0
 $tradeMode = OPEN 0
-FireAll PopulateOptions","While $theFactionLong are generally $relAdjective towards you, the Prism Freeport itself takes no sides. The port authority grants you docking clearance after only a slight delay.",,
+FireAll PopulateOptions","While $theFactionLong $factionIsOrAre generally $relAdjective towards you, the Prism Freeport itself takes no sides. The port authority grants you docking clearance after only a slight delay.",,
 ,,,,,,
 # vanilla overrides,,,,,,
-marketPostOpenInhospitable,MarketPostOpen,"$hasMarket
+#marketPostOpenInhospitable,MarketPostOpen,"$hasMarket
 RepIsAtBest $faction.id INHOSPITABLE
 !IsPirateFaction $faction.id","FireBest PickSneakType
-FireAll PopulateOptions","$TheFactionLong are $relAdjective towards you, and the port authority refuses your request for docking clearance.",,
-marketPostOpenInhospitablePirates,MarketPostOpen,"$hasMarket
+FireAll PopulateOptions","$TheFactionLong $factionIsOrAre $relAdjective towards you, and the port authority refuses your request for docking clearance.",,
+#marketPostOpenInhospitablePirates,MarketPostOpen,"$hasMarket
 RepIsAtBest $faction.id VENGEFUL
 IsPirateFaction $faction.id","FireBest PickSneakType
 FireAll PopulateOptions","You're rather well known among $theFactionLong, and not for the right reasons, as far as they're concerned.",,
-marketPostOpenPiratesHostile,MarketPostOpen,"$hasMarket
+#marketPostOpenPiratesHostile,MarketPostOpen,"$hasMarket
 IsPirateFaction $faction.id
 RepIsAtBest $faction.id INHOSPITABLE
 RepIsAtWorst $faction.id HOSTILE","$menuState = main 0
@@ -1055,7 +1055,7 @@ RepIsAtBest $faction.id FAVORABLE
 RepIsAtWorst $faction.id NEUTRAL","$marketLeaveTooltip = ""$TheFaction does not trust you enough."" 0
 $menuState = main 0
 $tradeMode = NONE 0
-FireAll PopulateOptions","While $theFaction are $relAdjective towards you, they do not trust you enough to grant you docking access at $market. You are issued a stern order to leave the system.",,
+FireAll PopulateOptions","While $theFaction $factionIsOrAre $relAdjective towards you, they do not trust you enough to grant you docking access at $market. You are issued a stern order to leave the system.",,
 ,,,,,,
 # Tiandong overrides,,,,,,
 ExerelinFlavorTextMarketTiandongShanghai,TradePanelFlavorText,"$global.tradePanelMode == MARKET
