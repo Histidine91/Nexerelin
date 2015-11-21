@@ -6,6 +6,10 @@
 		"Eos":"tartessus",
 		"Valhalla":"ragnar_complex",
 		"Arcadia":"arcadia_station",
+		"Hybrasil":"ogma",
+		"Aztlan":"chicomoztoc",
+		"Samarra":"sphinx",
+		"Yma":"qaras",
 		
 		"Acheron":"SCY_prismFreeport",
 		"Aesir":"breidablik",
@@ -45,8 +49,8 @@
 			"entity":"jangala"
 		},
 		"tritachyon":{
-			"system":"Magec",
-			"entity":"tibicena"
+			"system":"Hybrasil",
+			"entity":"ogma"
 		},
 		"sindrian_diktat":{
 			"system":"Askonia",
