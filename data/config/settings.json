@@ -5,5 +5,7 @@
 		#"coreLifecyclePlugin":"exerelin.plugins.ExerelinLifecyclePlugin",
 		
 		#"Exerelin_StatsTrackerPlugin":"exerelin.campaign.StatsTracker"
-	}
+	},
+	
+	"economyExceptionOnMissingMarketEntity":false,
 }
