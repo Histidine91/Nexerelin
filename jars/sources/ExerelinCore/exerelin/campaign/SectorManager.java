@@ -169,6 +169,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (fleetResult.getDisabled().isEmpty() && fleetResult.getDestroyed().isEmpty()) return;
         CampaignFleetAPI fleet = fleetResult.getFleet();
         if (fleet.getMemoryWithoutUpdate().getBoolean("$exerelinFleetAggressAgainstPlayer")) return;
+        if (!fleet.knowsWhoPlayerIs()) return;
         
         createWarmongerEvent(faction.getId(), fleet);
     }
