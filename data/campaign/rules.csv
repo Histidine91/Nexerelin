@@ -35,7 +35,7 @@ ExerelinNewGameOptionsEnter,ExerelinNGCStep1,,"NGCGetExerelinDefaults
 FireAll ExerelinNGCOptions",Configure the Exerelin cluster?,,"make sure this runs once per new game, so that Exerelin sector generation data is set up properly"
 ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptionsBack,FireAll ExerelinNGCOptions,,,
 ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,,,"exerelinNGCOptionsDone:Proceed
-6:exerelinNGCOtherOptions:Other options",
+7:exerelinNGCOtherOptions:Other options",
 ExerelinNewGameSectorConfig,ExerelinNGCOptions,!$corvusMode,,,"
 exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
 exerelinNGCSetMaxPlanets:Set max planets per system ($maxPlanets)
@@ -580,16 +580,16 @@ ExerelinInvasionInterference_start,BeginFleetEncounter,"$exerelinRespondingToInv
 $global.exerelinInvasionInProgress score:20","AbortWait $global.exerelinInvasionWait
 MakeOtherFleetHostile true
 MakeOtherFleetAggressive true
-unset $ignorePlayerCommRequests
+unset $entity.ignorePlayerCommRequests
 unset $player.invasionTarget
 BroadcastCancelPlayerAction 1500 $exerelinRespondingToInvasion",The appearance of a $faction $otherShipOrFleet disrupts your invasion preparations.,,
 ExerelinInvasionInterference_cancelledAndRan,BeginFleetEncounter,"$exerelinRespondingToInvasion score:100
 $faction.hostileToPlayer","MakeOtherFleetHostile true
 MakeOtherFleetAggressive true
-unset $ignorePlayerCommRequests
+unset $entity.ignorePlayerCommRequests
 unset $player.invasionTarget
 BroadcastCancelPlayerAction 1500 $exerelinRespondingToInvasion","The $faction $otherShipOrFleet catches up with you, weapons hot.",,
-ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion score:100,$ignorePlayerCommRequests = true 1,"""You'll pay for trying to invade our territory!"" The comm link is cut before you can begin to respond.",continueCutComm:Continue,
+ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion score:100,$entity.ignorePlayerCommRequests = true 0,"""You'll pay for trying to invade our territory!"" The comm link is cut before you can begin to respond.",continueCutComm:Continue,
 # END INVASION OPTIONS,,,,,,
 ,,,,,,
 #START MARKET DIRECTORY OPTIONS,,,,,,
@@ -949,14 +949,14 @@ $faction.friendlyToPlayer","$menuState = fleetConvMain 0
 FireAll PopulateOptions","""Good to see you, chief. Is there anything we can do for you?""",,
 greetingPlayerNPCHostileWeaker,OpenCommLink,"$faction.id == player_npc
 $faction.hostileToPlayer
-$relativeStrength < 0",$ignorePlayerCommRequests = true 1,"""Fine, fine, we're sorry for defying you! Just don't kill us!""",,
+$relativeStrength < 0",$entity.ignorePlayerCommRequests = true 0,"""Fine, fine, we're sorry for defying you! Just don't kill us!""",,
 greetingPlayerNPCHostileWeakerDefiant,OpenCommLink,"$faction.id == player_npc
 $faction.hostileToPlayer
 $relativeStrength < 0
-$weakerThanPlayerButHolding",$ignorePlayerCommRequests = true 1,"The $personRank looks grim but defiant. ""We won't back down from you, tyrant,"" $heOrShe says.",,
+$weakerThanPlayerButHolding",$entity.ignorePlayerCommRequests = true 0,"The $personRank looks grim but defiant. ""We won't back down from you, tyrant,"" $heOrShe says.",,
 greetingPlayerNPCHostileStronger,OpenCommLink,"$faction.id == player_npc
 $faction.hostileToPlayer
-$relativeStrength >= 0",$ignorePlayerCommRequests = true 1,"""You have betrayed us. Prepare to die.""",,
+$relativeStrength >= 0",$entity.ignorePlayerCommRequests = true 0,"""You have betrayed us. Prepare to die.""",,
 greetingPlayerNPCNeutral,OpenCommLink,"$faction.id == player_npc
 $faction.neutralToPlayer","$menuState = fleetConvMain 0
 FireAll PopulateOptions","""Just another day at the office.""",,
@@ -1011,15 +1011,44 @@ commRelayAddOptionLeave,PopulateOptions,"$tag:comm_relay
 !$hasMarket
 $menuState == main","SetShortcut crLeave ""ESCAPE""",,100:crLeave:Leave,
 ,,,,,,
-dialogHegRelayInterference_openWarnedBefore,OpenCommLink,"$respondingToCommRelayInterference score:100
-$timesSawPlayerInterferingWithRelay > 1","$ignorePlayerCommRequests = true 1
-$exerelinFleetAggressAgainstPlayer = true 1","""I've already told you not to mess with $faction hardware. Maybe this'll reinforce the message."" The comm link is cut before you can begin to respond.",,
-dialogHegRelayInterference_cut_1,DialogOptionSelected,"$respondingToCommRelayInterference score:100
+dialogHegRelayInterference_openWarnedBefore,OpenCommLink,"$entity.respondingToCommRelayInterference score:100
+$entity.timesSawPlayerInterferingWithRelay > 1","$entity.ignorePlayerCommRequests = true 1
+$entity.exerelinFleetAggressAgainstPlayer = true 1","""I've already told you not to mess with $faction hardware. Maybe this'll reinforce the message.""
+
+The comm link is cut before you can begin to respond.",continueCutComm:Continue,
+dialogHegRelayInterference_cut_1,DialogOptionSelected,"$entity.respondingToCommRelayInterference score:100
 !$playerAcknowledgedRelayInterferenceWarning
-$option == cutCommLink","$ignorePlayerCommRequests = true 1
-$exerelinFleetAggressAgainstPlayer = true 1
-unset $respondingToCommRelayInterference
+$option == cutCommLink","$entity.ignorePlayerCommRequests = true 1
+$entity.exerelinFleetAggressAgainstPlayer = true 1
+unset $entity.respondingToCommRelayInterference
+unset $entity.core_fleetBusy
+MakeOtherFleetHostile sniffer true
+ShowDefaultVisual
 EndConversation","You cut the comm link without acknowledging $PersonRank $personName's words. As $hisOrHer $otherShipOrFleet maintains an aggressive posture, that may not have been the best means of obtaining a peaceful resolution.",,
+,,,,,,
+tOffCargoScanHostile,DialogOptionSelected,"$option == tOff_scan_continue
+$entity.isHostile","ShowDefaultVisual
+EndConversation
+$exerelinFleetAggressAgainstPlayer = true 1","However, instead of proceeding with the scan, the $faction $fleetName shuts down comms and powers up combat systems.",,
+tOffPatrolOpenCommNotFirstTime,OpenCommLink,"$entity.transponderOffConv score:100
+$entity.sawPlayerWithTOffCount == 2.0 score:10
+$entity.relativeStrength >= 0","AddText""\""I told you last time to keep your transponder on.\""""
+AdjustRep $faction.id TRANSPONDER_OFF
+AdjustRepActivePerson TRANSPONDER_OFF
+AddText ""The comm link is cut before you have a chance to respond.""
+$entity.ignorePlayerCommRequests = true 0
+$entity.exerelinFleetAggressAgainstPlayer = true 1
+unset $entity.transponderOffConv",,0:tOff_notFirstTimeCont:Continue,
+tOffRefuse,DialogOptionSelected,$option == tOff_refuse,"$entity.ignorePlayerCommRequests = true 0
+$exerelinFleetAggressAgainstPlayer = true 1
+unset $entity.transponderOffConv
+AdjustRep $faction.id TRANSPONDER_OFF_REFUSE
+AdjustRepActivePerson TRANSPONDER_OFF_REFUSE
+MakeHostileWhileTOff tOff true 7
+ShowDefaultVisual
+EndConversation",,,
+,,,,,,
+,,,,,,
 ,,,,,,
 customsInspectionDisagree,DialogOptionSelected,"$doingCustomsInspection score:100
 $option == ciDisagree","AdjustRep $faction.id CUSTOMS_REFUSED_TOLL
