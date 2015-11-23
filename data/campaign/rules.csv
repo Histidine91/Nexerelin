@@ -84,6 +84,8 @@ exerelinNGCMaxPlanets4:Four
 exerelinNGCMaxPlanets5:Five
 exerelinNGCMaxPlanets6:Six
 exerelinNGCMaxPlanets8:Eight
+exerelinNGCMaxPlanets10:Ten
+exerelinNGCMaxPlanets12:Twelve
 exerelinNGCOptionsBack:Back",
 ExerelinNGCMaxPlanets2,NewGameOptionSelected,$option==exerelinNGCMaxPlanets2,"NGCSetMaxPlanets 2
 AddText ""Set maximum planets per system to 2"" textFriendColor
@@ -103,14 +105,21 @@ FireAll ExerelinNGCOptions",,,
 ExerelinNGCMaxPlanets8,NewGameOptionSelected,$option==exerelinNGCMaxPlanets8,"NGCSetMaxPlanets 8
 AddText ""Set maximum planets per system to 8"" textFriendColor
 FireAll ExerelinNGCOptions",,,
+ExerelinNGCMaxPlanets10,NewGameOptionSelected,$option==exerelinNGCMaxPlanets10,"NGCSetMaxPlanets 10
+AddText ""Set maximum planets per system to 10"" textFriendColor
+FireAll ExerelinNGCOptions",,,
+ExerelinNGCMaxPlanets12,NewGameOptionSelected,$option==exerelinNGCMaxPlanets12,"NGCSetMaxPlanets 12
+AddText ""Set maximum planets per system to 12"" textFriendColor
+FireAll ExerelinNGCOptions",,,
 ,,,,,,
-ExerelinNGCMaxStationsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxStations,,,"exerelinNGCMaxStations1:One
+ExerelinNGCMaxStationsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxStations,,,"exerelinNGCMaxStations0:Zero
+exerelinNGCMaxStations1:One
 exerelinNGCMaxStations2:Two
 exerelinNGCMaxStations3:Three
 exerelinNGCMaxStations4:Four
 exerelinNGCMaxStations5:Five
 exerelinNGCMaxStations6:Six
-exerelinNGCOptionsBack:Back",there should be an option for zero stations but it fails atm
+exerelinNGCOptionsBack:Back",
 ExerelinNGCMaxStations0,NewGameOptionSelected,$option==exerelinNGCMaxStations0,"NGCSetMaxStations 0
 AddText ""Set maximum stations per system to 0"" textFriendColor
 FireAll ExerelinNGCOptions",,,
