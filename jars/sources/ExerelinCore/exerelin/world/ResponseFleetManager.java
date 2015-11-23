@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -104,9 +103,8 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         
         CampaignFleetAPI fleet = FleetFactoryV2.createFleet(fleetParams);
         fleet.setName(name);
-        
-        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "exerelinResponseFleet");
-        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SOURCE_MARKET, origin);
+        fleet.setAIMode(true);
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);
         
         SectorEntityToken entity = origin.getPrimaryEntity();
         entity.getContainingLocation().addEntity(fleet);

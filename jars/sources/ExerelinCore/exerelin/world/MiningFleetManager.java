@@ -12,7 +12,6 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -167,16 +166,16 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		//CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP/3);
 		CampaignFleetAPI fleet = FleetFactoryV2.createFleet(params);
 		fleet.setName(name);
+		fleet.setAIMode(true);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_TRADE_FLEET, true);
 		
-		float minerFP = maxFP - fleet.getFleetPoints();	// about 25% of maxFP left
+		int minerFP = (int)(maxFP * 0.25f + 0.5f);
 		while (minerFP > 0)
 		{
 			FleetMemberAPI miner = ExerelinUtilsFleet.addMiningShipToFleet(fleet);
-			minerFP -= miner.getFleetPointCost();	// this should be right?
+			minerFP -= FleetFactoryV2.getPointsForVariant(miner.getVariant().getHullVariantId());
+			//log.info("Adding miner to fleet: " + miner.getHullId());
 		}
-		
-		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "exerelinMiningFleet");
-		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SOURCE_MARKET, origin);
 		
 		float miningStrength = MiningHelper.getFleetMiningStrength(fleet);
 		
