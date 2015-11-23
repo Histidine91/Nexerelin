@@ -1038,7 +1038,7 @@ EndConversation","You cut the comm link without acknowledging $PersonRank $perso
 tOffCargoScanHostile,DialogOptionSelected,"$option == tOff_scan_continue
 $entity.isHostile","ShowDefaultVisual
 EndConversation
-$exerelinFleetAggressAgainstPlayer = true 1","However, instead of proceeding with the scan, the $faction $fleetName shuts down comms and powers up combat systems.",,
+$entity.exerelinFleetAggressAgainstPlayer = true 1","However, instead of proceeding with the scan, the $faction $fleetName shuts down comms and powers up combat systems.",,
 tOffPatrolOpenCommNotFirstTime,OpenCommLink,"$entity.transponderOffConv score:100
 $entity.sawPlayerWithTOffCount == 2.0 score:10
 $entity.relativeStrength >= 0","AddText""\""I told you last time to keep your transponder on.\""""
@@ -1049,7 +1049,7 @@ $entity.ignorePlayerCommRequests = true 0
 $entity.exerelinFleetAggressAgainstPlayer = true 1
 unset $entity.transponderOffConv",,0:tOff_notFirstTimeCont:Continue,
 tOffRefuse,DialogOptionSelected,$option == tOff_refuse,"$entity.ignorePlayerCommRequests = true 0
-$exerelinFleetAggressAgainstPlayer = true 1
+$entity.exerelinFleetAggressAgainstPlayer = true 1
 unset $entity.transponderOffConv
 AdjustRep $faction.id TRANSPONDER_OFF_REFUSE
 AdjustRepActivePerson TRANSPONDER_OFF_REFUSE
