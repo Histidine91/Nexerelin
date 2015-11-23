@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -88,6 +89,8 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                 text.setFontSmallInsignia();
                 text.addParagraph("-----------------------------------------------------------------------------");
                 
+                boolean anyBase = false;
+                
                 if (isExiInCorvus)
                 {
                     String entry = StringHelper.getString("exerelin_markets", "marketDirectoryEntryNoLocation");
@@ -114,9 +117,18 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                     entry = StringHelper.substituteToken(entry, "$market", marketName);
                     entry = StringHelper.substituteToken(entry, "$location", locName);
                     entry = StringHelper.substituteToken(entry, "$size", size+"");
+                    if (market.hasCondition(Conditions.MILITARY_BASE))
+                    {
+                        anyBase = true;
+                        entry += " (" + StringHelper.getString("base") + ")";
+                    }
                     text.addParagraph(entry);
                     //text.highlightInLastPara(hl, marketName);
                     text.highlightInLastPara(sizeColor, "" + size);
+                }
+                if (anyBase)
+                {
+                    //text.addParagraph("*" + StringHelper.getString("exerelin_markets", "hasBaseTip"));
                 }
                 text.addParagraph("-----------------------------------------------------------------------------");
                 text.setFontInsignia();

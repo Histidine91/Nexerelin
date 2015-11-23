@@ -3,6 +3,7 @@
 		"alliance":"alliance",
 		"alliances":"alliances",
 		"alliance(s)":"alliance(s)",
+		"base":"base",
 		"close":"close",
 		"conquest":"conquest",
 		"credits":"credits",
@@ -115,7 +116,8 @@
 	},
 	"exerelin_markets":{		
 		"marketDirectoryEntry":"$market, $location (size $size)",
-		"marketDirectoryEntryNoLocation":"$market (size $size)"
+		"marketDirectoryEntryNoLocation":"$market (size $size)",
+		"hasBaseTip":"has military base"
 	},
 	"exerelin_mining":{
 		"crewLost":"crew lost",
