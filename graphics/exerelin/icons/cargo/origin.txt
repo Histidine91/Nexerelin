@@ -1,0 +1,3 @@
+Modified from vanilla:
+graphics/icons/cargo/materials.png
+graphics/icons/cargo/refined_metal.png
