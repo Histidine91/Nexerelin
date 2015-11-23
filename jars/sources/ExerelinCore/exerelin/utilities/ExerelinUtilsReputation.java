@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import static com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.addAdjustmentMessage;
@@ -31,9 +32,15 @@ public class ExerelinUtilsReputation
 		String factionId = faction.getId();
 		FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
 		
-		ReputationAdjustmentResult result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, delta, message, true), factionId);
+		CustomRepImpact impact = new CustomRepImpact();
+		impact.delta = delta;
+		ReputationAdjustmentResult result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, impact, message, true), factionId);
 		if (person != null) 
-			result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, delta, message, true), person);
+		{
+			CustomRepImpact impact2 = new CustomRepImpact();
+			impact2.delta = delta * 1.5f;
+			result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, 2, message, true), person);
+		}
 		
 		return result;
 		
