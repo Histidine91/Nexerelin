@@ -1,11 +1,11 @@
 {
 	"planetsForArchetypes":{
 		"agriculture":{
-			"terran":1,
+			"terran":0.7,
 			"water":0.7,
 			"jungle":0.85,
 			"arid":1,
-			"terran-eccentric":0.7,
+			"terran-eccentric":0.5,
 		},
 		"ore":{
 			"terran":0.5,
@@ -18,7 +18,7 @@
 			"barren":1,
 			"barren-bombarded":1,
 			"tundra":0.7,
-			"terran-eccentric":0.7,
+			"terran-eccentric":0.5,
 			"barren-desert":0.8,
 			"cryovolcanic":0.7,
 		},
@@ -34,7 +34,7 @@
 			"rocky_ice":0.7,
 			"rocky_metallic":0.7,
 			"tundra":1,
-			"terran-eccentric":1,
+			"terran-eccentric":0.7,
 			"barren-desert":0.8,
 			"cryovolcanic":0.7,
 		},
@@ -46,7 +46,7 @@
 			"rocky_metallic":0.7,
 			"water":0.6,
 			"tundra":1,
-			"terran-eccentric":0.5,
+			"terran-eccentric":0.3,
 			"barren-desert":0.8,
 			"cryovolcanic":1.5,
 		},
@@ -62,7 +62,7 @@
 			"rocky_ice":0.7,
 			"rocky_metallic":1,
 			"tundra":0.8,
-			"terran-eccentric":0.7,
+			"terran-eccentric":0.5,
 			"barren-desert":0.9,
 			"cryovolcanic":0.5,
 		},
@@ -78,7 +78,7 @@
 			"rocky_ice":0.7,
 			"rocky_metallic":1,
 			"tundra":0.8,
-			"terran-eccentric":0.7,
+			"terran-eccentric":0.5,
 			"barren-desert":0.9,
 			"cryovolcanic":0.5,
 		},
@@ -94,7 +94,7 @@
 			"rocky_ice":1,
 			"rocky_metallic":1,
 			"tundra":1,
-			"terran-eccentric":1,
+			"terran-eccentric":0.7,
 			"barren-desert":1,
 			"cryovolcanic":0.5,
 		},
@@ -104,23 +104,25 @@
 		# primary resources
 		{
 			"name":"ore_complex",
-			"cost":100,
+			"cost":150,
 			"archetypes":{"default":0.5,"ore":4,"manufacturing":1.5,"heavy_industry":1,"mixed":1.25},
 		},
 		{
 			"name":"volatiles_complex",
-			"cost":100,
-			"archetypes":{"volatiles":3,"manufacturing":1,"heavy_industry":0.5,"mixed":1},
+			"cost":500,
+			"archetypes":{"volatiles":2.5,"mixed":0.5},
+			"allowDuplicates":false,
 		},
-		{
-			"name":"volatiles_depot",
-			"cost":150,
-			"archetypes":{"volatiles":2,"manufacturing":1.25,"heavy_industry":1,"mixed":0.5},
-		},
+		#{
+		#	"name":"volatiles_depot",
+		#	"cost":150,
+		#	"archetypes":{"volatiles":2,"manufacturing":1.25,"heavy_industry":1,"mixed":0.5},
+		#},
 		{
 			"name":"organics_complex",
-			"cost":100,
-			"archetypes":{"default":0.5,"organics":3,"agriculture":1,"manufacturing":1.25,"heavy_industry":0.75,"mixed":1.5},
+			"cost":500,
+			"archetypes":{"organics":2.5,"mixed":0.5},
+			"allowDuplicates":false,
 		},
 		{
 			"name":"exerelin_hydroponics",
@@ -148,31 +150,37 @@
 		# industry
 		{
 			"name":"cottage_industry",
-			"cost":200,
-			"archetypes":{"default":1.25,"agriculture":2,"manufacturing":0.75,"heavy_industry":0},
-			"minSize":2,
-			#"maxSize":5,
-			"allowDuplicates":false,
+			"cost":150,
+			"archetypes":{"default":1.5,"agriculture":2,"manufacturing":1,"heavy_industry":0},
+			"minSize":3,
+			"maxSize":6,
+			#"allowDuplicates":false,
 			"allowStations":false,
 		},
 		{
 			"name":"ore_refining_complex",
-			"cost":125,
-			"archetypes":{"ore":2.5,"manufacturing":5,"heavy_industry":4,"mixed":2},
+			"cost":250,
+			"archetypes":{"ore":3,"manufacturing":4,"heavy_industry":3,"mixed":1.5},
 			"minSize":3,
 		},
 		{
 			"name":"light_industrial_complex",
-			"cost":350,
-			"archetypes":{"default":0.25,"manufacturing":1.75,"heavy_industry":1,"mixed":0.5},
-			"minSize":3,
-			#"maxSize":5,	# prevents market flooding
-			"allowDuplicates":false,
+			"cost":200,
+			"archetypes":{"default":1,"manufacturing":3,"heavy_industry":2,"mixed":1.5},
+			"minSize":4,
+			#"maxSize":6,
+			#"allowDuplicates":false,
 		},
 		{
 			"name":"exerelin_recycling_plant",
-			"cost":150,
+			"cost":200,
 			"archetypes":{"default":1},
+			"minSize":3,
+		},
+		{
+			"name":"exerelin_supply_workshop",
+			"cost":200,
+			"archetypes":{"default":1,"manufacturing":3,"heavy_industry":2,"mixed":1.5},
 			"minSize":3,
 		},
 		{
@@ -192,22 +200,22 @@
 		},
 		{
 			"name":"autofac_heavy_industry",
-			"cost":350,
+			"cost":300,
 			"archetypes":{"default":0.5,"agriculture":0,"manufacturing":2,"heavy_industry":3.75,"mixed":1},
 			"minSize":4,
 		},
 		{
 			"name":"antimatter_fuel_production",
-			"cost":350,
-			"archetypes":{"manufacturing":1.5,"heavy_industry":3.25,"mixed":0.5},
+			"cost":300,
+			"archetypes":{"manufacturing":1.25,"heavy_industry":3.25,"mixed":0.75},
 			"minSize":4,
 		},
 		{
 			"name":"shipbreaking_center",
-			"cost":450,
+			"cost":400,
 			"archetypes":{"manufacturing":1,"heavy_industry":4},
 			"minSize":5,
-			"allowDuplicates":false
+			#"allowDuplicates":false
 		},
 		
 		# misc
@@ -217,7 +225,7 @@
 			"archetypes":{"default":0.5,"agriculture":1,"manufacturing":0,"heavy_industry":0},
 			"allowedPlanets":["terran","jungle","arid","desert"],
 			"minSize":4,
-			#"maxSize":5,
+			"maxSize":5,
 			"allowDuplicates":false,
 			"conflictsWith":["urbanized_polity"],
 		},
@@ -245,7 +253,7 @@
 			"name":"outpost",
 			"special":true,
 			"archetypes":{"default":1},
-			"maxSize":3,
+			"maxSize":4,
 			"allowDuplicates":false
 		},
 		{
@@ -263,13 +271,13 @@
 			"minSize":3,
 			"allowDuplicates":false
 		},
-		{
-			"name":"dissident",
-			"special":true,
-			"archetypes":{"default":1},
-			"minSize":3,
-			"allowDuplicates":false
-		},
+		#{
+		#	"name":"dissident",
+		#	"special":true,
+		#	"archetypes":{"default":1},
+		#	"minSize":3,
+		#	"allowDuplicates":false
+		#},
 		{
 			"name":"stealth_minefields",
 			"special":true,
@@ -283,14 +291,14 @@
 			"special":true,
 			"archetypes":{"default":1},
 			"minSize":3,
-			"allowDuplicates":false
+			#"allowDuplicates":false
 		},
 		{
 			"name":"organized_crime",
 			"special":true,
 			"archetypes":{"default":1,"agriculture":0.5},
 			"minSize":4,
-			"allowDuplicates":false
+			#"allowDuplicates":false
 		},
 		{
 			"name":"large_refugee_population",

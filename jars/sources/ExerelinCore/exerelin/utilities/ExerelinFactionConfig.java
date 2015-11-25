@@ -58,6 +58,8 @@ public class ExerelinFactionConfig
     public float invasionPointMult = 1;
     
     public boolean dropPrisoners = true;
+    public boolean noHomeworld = false;
+    public boolean showIntelEvenIfDead = false;
     
     public List<String> miningVariantsOrWings = new ArrayList<String>() {};
 
@@ -113,6 +115,8 @@ public class ExerelinFactionConfig
             invasionPointMult = (float)settings.optDouble("invasionPointMult", 1);
             
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
+            noHomeworld = settings.optBoolean("noHomeworld", noHomeworld);
+            showIntelEvenIfDead = settings.optBoolean("showIntelEvenIfDead", showIntelEvenIfDead);
             
             if (settings.has("miningVariantsOrWings"))
                 miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));

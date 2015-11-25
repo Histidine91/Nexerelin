@@ -1,7 +1,8 @@
 {
     "uniqueModClassName":"data.scripts.ExigencyModPlugin", # String
-    "playableFaction":"true", # Boolean
-    "isPirateNeutral":"true", # Boolean
+    "playableFaction":true, # Boolean
+    "isPirateNeutral":true, # Boolean
+    "noHomeworld":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double

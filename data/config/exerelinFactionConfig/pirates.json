@@ -2,6 +2,8 @@
     "uniqueModClassName":"", # String
     "playableFaction":"true", # Boolean
     "corvusCompatible":true,
+    "noHomeworld":true,
+    "showIntelEvenIfDead":true,
     
     "spawnPatrols":"true",
     "spawnPiratesAndMercs":"false",

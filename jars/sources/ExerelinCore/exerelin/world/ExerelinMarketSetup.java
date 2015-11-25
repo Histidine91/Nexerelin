@@ -30,9 +30,10 @@ import org.lazywizard.lazylib.MathUtils;
  * Available points by market size:
  *	Size 2: 100
  *	Size 3: 200
- *	Size 4: 400
- *	Size 5: 700
- *	Size 6: 1100
+ *	Size 4: 300
+ *	Size 5: 450
+ *	Size 6: 650
+ *	Size 7: 900
  * Also have chance for bonus points based on market size
  * Special conditions allowed:
  *	Size 2: random(0, 1)
@@ -153,13 +154,16 @@ public class ExerelinMarketSetup
 		return picker.pick();
 	}
 	
-	MarketConditionDef pickMarketCondition(MarketAPI market, List<MarketConditionDef> possibleConds, EntityData entityData, int budget)
+	MarketConditionDef pickMarketCondition(MarketAPI market, List<MarketConditionDef> possibleConds, EntityData entityData, int budget, boolean isFirst)
 	{
 		WeightedRandomPicker<MarketConditionDef> picker = new WeightedRandomPicker<>();
 		int numConds = 0;
 		int size = market.getSize();
 		String planetType = entityData.planetType;
 		boolean isStation = entityData.type == EntityType.STATION;
+		
+		if (isFirst) budget += 100;	// make sure small economies can get at least one market condition
+		
 		for (MarketConditionDef possibleCond : possibleConds) 
 		{
 			if (possibleCond.cost > budget) continue;
@@ -199,13 +203,13 @@ public class ExerelinMarketSetup
 		
 		int size = market.getSize();
 		int points = 100;
+		if (size == 3) points = 200;
+		else if (size == 4) points = 300;
+		else if (size == 5) points = 450;
+		else if (size == 6) points = 650;
+		else if (size >= 7) points = 900;
 		
 		int bonusPoints = 0;
-		if (size == 3) points = 200;
-		else if (size == 4) points = 350;
-		else if (size == 5) points = 600;
-		else if (size == 6) points = 1000;
-		else if (size >= 7) points = 1500;
 		for (int i=0; i<size-1; i++)
 		{
 			if (Math.random() > 0.4) bonusPoints += 50;
@@ -214,13 +218,15 @@ public class ExerelinMarketSetup
 		points += bonusPoints;
 		
 		int startingPoints = points;
+		boolean first = false;
 		while (points > 0)
 		{
-			MarketConditionDef cond = pickMarketCondition(market, conditions, entityData, points);
+			MarketConditionDef cond = pickMarketCondition(market, conditions, entityData, points, first);
 			if (cond == null) break;
 			log.info("\tAdding condition: " + cond.name);
 			market.addCondition(cond.name);
 			points -= cond.cost;
+			first = true;
 		}
 		entityData.marketPoints = startingPoints - points;
 		
@@ -230,7 +236,7 @@ public class ExerelinMarketSetup
 		else if (size <= 7) numSpecial = 1 + MathUtils.getRandomNumberInRange(0, 1);
 		for (int i=0; i<numSpecial; i++)
 		{
-			MarketConditionDef cond = pickMarketCondition(market, specialConditions, entityData, 0);
+			MarketConditionDef cond = pickMarketCondition(market, specialConditions, entityData, 0, false);
 			if (cond == null) break;
 			log.info("\tAdding condition: " + cond.name);
 			market.addCondition(cond.name);

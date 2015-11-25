@@ -398,7 +398,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
         
         String defeatedId = defeated.getId();
-        DiplomacyManager.resetFactionRelationships(defeatedId);
+        //DiplomacyManager.resetFactionRelationships(defeatedId);
         ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
         checkForVictory();
     }
