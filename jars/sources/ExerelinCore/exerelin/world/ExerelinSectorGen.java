@@ -100,7 +100,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	};
 	protected static final String[] nebulaeArray = new String[]
 	{
-		"data/campaign/terrain/eos_nebula.png", "data/campaign/terrain/valhalla_nebula.png", "data/campaign/terrain/hybrasil_nebula.png"
+		"data/campaign/terrain/eos_nebula.png", "data/campaign/terrain/valhalla_nebula.png", "data/campaign/terrain/hybrasil_nebula.png",
+		"data/campaign/terrain/Nexerelin/gemstone_nebula.png"
 	};
 	protected static final String[] nebulaeColorArray = new String[] {"blue", "amber", "dark"};
 	
@@ -129,8 +130,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	// extremely sensitive to small changes, avoid touching these for now
 	// TODO externalise?
-	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 3f;	// needs to be ridiculously high to be affordable
-	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 2f;	// yes, lower than min
+	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.6f;
+	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 1.2f;	// lower than min so it can swap autofacs for shipbreakers if needed
 	
 	protected ExerelinMarketSetup marketSetup = new ExerelinMarketSetup();
 	
@@ -158,6 +159,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected double foodSupply = 0;
 	protected double fuelDemand = 0;
 	protected double fuelSupply = 0;
+	protected double gunsDemand = 0;
+	protected double gunsSupply = 0;
 	
 	protected float numOmnifacs = 0;
 	
@@ -328,6 +331,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		metalSupply = 0;
 		suppliesDemand = 0;
 		suppliesSupply = 0;
+		foodDemand = 0;
+		foodSupply = 0;
+		fuelDemand = 0;
+		fuelSupply = 0;
+		gunsDemand = 0;
+		gunsSupply = 0;
 	}
 	
 	protected void addListToPicker(List list, WeightedRandomPicker picker)
@@ -1028,7 +1037,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		if (toOrbit == null)
 		{
-			if (ExerelinConfig.corvusMode) toOrbit = Global.getSector().getEntityById("corvus_IV");
+			if (ExerelinSetupData.getInstance().corvusMode) toOrbit = Global.getSector().getEntityById("corvus_IV");
 			else toOrbit = homeworld.entity;
 		}
 		
@@ -1411,13 +1420,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			SectorManager.reinitLiveFactions();
 			DiplomacyManager.initFactionRelationships(false);
+			SectorManager.setHomeworld(homeworld.entity);
 		}
 		
 		SectorManager.setSystemToRelayMap(systemToRelay);
 		SectorManager.setPlanetToRelayMap(planetToRelay);
 		SectorManager.setCorvusMode(corvusMode);
 		SectorManager.setHardMode(setupData.hardMode);
-		SectorManager.setHomeworld(homeworld.entity);
 		
 		// some cleanup
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();

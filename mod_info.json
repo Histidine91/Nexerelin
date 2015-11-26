@@ -10,8 +10,6 @@
     "modPlugin":"data.scripts.ExerelinModPlugin",
     "replace":
     [
-    # comment out to use Corvus mode, uncomment to turn it off (MANDATORY)
-    # NOTE: you need to edit exerelin_config.json as well
-        "data/campaign/econ/economy.json",
+        #"data/campaign/econ/economy.json",
     ],
 }

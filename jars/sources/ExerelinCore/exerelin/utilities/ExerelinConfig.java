@@ -76,8 +76,6 @@ public class ExerelinConfig
     public static float warWearinessPeaceTreatyReduction = 4500f;
     
     // Misc
-    public static boolean corvusMode = false;
-    
     public static float baseTariff = 0.2f;
     public static float freeMarketTariffMult = 0.5f;
     public static int warmongerPenalty = 0;
@@ -151,8 +149,6 @@ public class ExerelinConfig
             enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
             enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
-            
-            corvusMode = settings.optBoolean("corvusMode", corvusMode);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             supportedModFactions = JSONArrayToStringArray(settings.getJSONArray("supportedModFactions"));

@@ -30,8 +30,9 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$onlyRespawnStartingFactions", setupData.onlyRespawnStartingFactions, 0);
 		map.set("$numStartFactions", "all");
 		
-		map.set("$corvusMode", ExerelinConfig.corvusMode);
-		map.set("$haveSSP", ExerelinUtils.isSSPInstalled());
+		map.set("$corvusMode", setupData.corvusMode, 0);
+		map.set("$hardMode", setupData.hardMode, 0);
+		map.set("$haveSSP", ExerelinUtils.isSSPInstalled(), 0);
 		return true;
 	}
 }

@@ -1,10 +1,4 @@
 {
-    # Corvus mode: use manually created starmap (vanilla + mods) instead of Nexerelin's randomly generated one
-    # Not supported by most mods at present
-    # IMPORTANT: you need to modify mod_info.json as well or it'll break (planets with no markets, or an outright crash)
-    # Only affects new games
-    "corvusMode": false,
-
     "directoryDialogKey": 32,   # integer, default 32 (D)
     
     "minimumPlanets": 3, # Integer

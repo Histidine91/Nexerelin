@@ -36,6 +36,8 @@ FireAll ExerelinNGCOptions",Configure the Exerelin cluster?,,"make sure this run
 ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptionsBack,FireAll ExerelinNGCOptions,,,
 ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,,,"exerelinNGCOptionsDone:Proceed
 7:exerelinNGCOtherOptions:Other options",
+ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCEnableCorvusMode:Enable Corvus Mode,
+ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCDisableCorvusMode:Disable Corvus Mode,
 ExerelinNewGameSectorConfig,ExerelinNGCOptions,!$corvusMode,,,"
 exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
 exerelinNGCSetMaxPlanets:Set max planets per system ($maxPlanets)
@@ -167,6 +169,8 @@ FireAll ExerelinNGCOptions",,,
 ,,,,,,
 ,,,,,,
 ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,$option==exerelinNGCOtherOptions,FireAll ExerelinNGCOtherOptions,,,
+,,,,,,
+,,,,,,
 ExerelinNGCListOptionEnableOmnifactory,ExerelinNGCOtherOptions,!$omniFacPresent,,,exerelinNGCEnableOmnifactory:Enable Omnifactory,
 ExerelinNGCListOptionDisableOmnifactory,ExerelinNGCOtherOptions,$omniFacPresent,,,exerelinNGCDisableOmnifactory:Disable Omnifactory,
 ExerelinNGCListOptionSetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"$omniFacPresent
@@ -187,6 +191,10 @@ ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"SetToolt
 ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"SetTooltip exerelinNGCDisableHardMode ""Hard mode: halved salary and insurance payments; other factions are more aggressive towards yours; enables SS+ bounty hunters""",,exerelinNGCDisableHardMode:Disable Starfarer Mode,
 ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,,,10:exerelinNGCOptionsBack:Back,
 ,,,,,,
+ExerelinNGCEnableCorvusMode,NewGameOptionSelected,$option==exerelinNGCEnableCorvusMode,"NGCSetCorvusMode true
+FireAll ExerelinNGCOptions",,,
+ExerelinNGCDisableCorvusMode,NewGameOptionSelected,$option==exerelinNGCDisableCorvusMode,"NGCSetCorvusMode false
+FireAll ExerelinNGCOptions",,,
 ExerelinNGCEnableOmnifactory,NewGameOptionSelected,$option==exerelinNGCEnableOmnifactory,"NGCSetOmnifacEnabled true
 FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisableOmnifactory,NewGameOptionSelected,$option==exerelinNGCDisableOmnifactory,"NGCSetOmnifacEnabled false

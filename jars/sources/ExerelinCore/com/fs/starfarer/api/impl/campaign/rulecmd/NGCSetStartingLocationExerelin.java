@@ -21,7 +21,8 @@ public class NGCSetStartingLocationExerelin extends BaseCommandPlugin {
     @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
         CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
-        if (ExerelinConfig.corvusMode)
+        MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
+        if (memory.getBoolean("$corvusMode"))
         {
             String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
             
