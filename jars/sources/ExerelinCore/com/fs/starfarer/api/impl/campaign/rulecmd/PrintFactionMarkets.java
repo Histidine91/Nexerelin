@@ -116,12 +116,15 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                     String entry = StringHelper.getString("exerelin_markets", "marketDirectoryEntry");
                     entry = StringHelper.substituteToken(entry, "$market", marketName);
                     entry = StringHelper.substituteToken(entry, "$location", locName);
-                    entry = StringHelper.substituteToken(entry, "$size", size+"");
+                    
+                    String sizeStr = size + "";
                     if (market.hasCondition(Conditions.MILITARY_BASE))
                     {
                         anyBase = true;
-                        entry += " (" + StringHelper.getString("base") + ")";
+                        sizeStr += ", " + StringHelper.getString("base");
                     }
+                    entry = StringHelper.substituteToken(entry, "$size", sizeStr);
+                    
                     text.addParagraph(entry);
                     //text.highlightInLastPara(hl, marketName);
                     text.highlightInLastPara(sizeColor, "" + size);
