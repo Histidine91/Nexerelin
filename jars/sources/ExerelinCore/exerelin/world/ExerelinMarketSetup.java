@@ -140,11 +140,11 @@ public class ExerelinMarketSetup
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
 		Iterator<Map.Entry<String, Float>> iter = types.entrySet().iterator();
 		while (iter.hasNext())
-		{			
-            Map.Entry<String, Float> tmp = iter.next();
-            String type = tmp.getKey();
+		{
+			Map.Entry<String, Float> tmp = iter.next();
+			String type = tmp.getKey();
 			//log.info("\tPossible planet: " +  type);
-			if (isMoon && type.equals("arid") || type.equals("terran"))
+			if (isMoon && type.equals("arid") || type.equals("terran") || type.equals("terran-eccentric"))
 				continue;
 			
 			float weight = tmp.getValue();
