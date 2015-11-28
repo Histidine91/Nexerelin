@@ -241,6 +241,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         FactionAPI targetFaction = Global.getSector().getFaction(targetFactionId);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         if (targetFaction.isHostileTo(Factions.PLAYER)) return;
+        if (targetFactionId.equals(playerAlignedFactionId) || targetFactionId.equals("player_npc")) return;
         
         int numFactions = 0;
         float totalRepLoss = 0;	// note: does not include the loss with player-aligned faction
@@ -728,7 +729,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 sectorManager.liveFactionIds.add(factionId);
                 sectorManager.factionIdsAtStart.add(factionId);
                 sectorManager.historicFactionIds.add(factionId);
-            }   
+            }
+            else
+            {
+                setShowFactionInIntelTab(factionId, false);
+            }
         }
     }
     
