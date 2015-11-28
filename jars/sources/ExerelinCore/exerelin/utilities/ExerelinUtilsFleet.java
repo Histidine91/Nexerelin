@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import data.scripts.campaign.SSP_FleetFactory;
 import data.scripts.campaign.SSP_LevelUpper;
@@ -19,6 +20,8 @@ import data.scripts.world.SSP_FleetInjector;
 import data.scripts.world.SSP_FleetInjector.CommanderType;
 import data.scripts.world.SSP_FleetInjector.CrewType;
 import data.scripts.world.SSP_FleetInjector.FleetStyle;
+import static data.scripts.world.SSP_FleetInjector.getArchetypeWeights;
+import static data.scripts.world.SSP_FleetInjector.randomizeVariants;
 import org.apache.log4j.Logger;
 
 
@@ -76,86 +79,63 @@ public class ExerelinUtilsFleet
      * @param type 
      */
     public static void injectFleet(CampaignFleetAPI fleet, MarketAPI market, Float stability, Float qualityFactor, String type) {      
-        String faction = fleet.getFaction().getId();
+        String factionId = fleet.getFaction().getId();
         MemoryAPI memory = fleet.getMemoryWithoutUpdate();
         int maxFP = memory.contains("$maxFP") ? ((Integer)memory.get("$maxFP")).intValue() : fleet.getFleetPoints();
-        
-        SSP_FleetInjector injector = SSP_FleetInjector.getInjector();
-        if (injector == null) 
-        {
-            log.error("Missing SS+ injector");
-            return;
-        }
-        
+                
         log.info("Fleet " + fleet.getName() + ": stability " + stability + "; qf " + qualityFactor);
-        float qualityFactorOriginal = qualityFactor;
-        qualityFactor = Math.max(qualityFactor, 0.7f);
-
+        //float qualityFactorOriginal = qualityFactor;
+        //qualityFactor = Math.max(qualityFactor, 0.7f);
+        
+        SSP_VariantRandomizer.Archetype theme = null;    //pickTheme(factionId);
+        //setThemeName(fleet, theme);
+        
         switch (type)
         {
             case "exerelinInvasionFleet":
             case "exerelinRespawnFleet":
-                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.ELITE, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F), true);
-                
-                if (faction.equals("luddic_church") && maxFP >= 120)
-                    SSP_FleetFactory.createPurificationFleet(fleet, faction, qualityFactor, maxFP);
-                else if (faction.equals("exigency"))
-                    SSP_FleetFactory.createExigencyFleet(fleet, faction, qualityFactor, maxFP);
-                else if (faction.equals("interstellarimperium"))
-                    SSP_FleetFactory.createSiegeFleet(fleet, faction, qualityFactor, maxFP);
-                else if (faction.equals("templars"))
-                    SSP_FleetFactory.createTemplarFleet(fleet, faction, qualityFactor, maxFP);
+                /*
+                if (factionId.equals("luddic_church") && maxFP >= 120)
+                    SSP_FleetFactory.createPurificationFleet(fleet, factionId, qualityFactor, maxFP);
+                else if (factionId.equals("exigency"))
+                    SSP_FleetFactory.createExigencyFleet(fleet, factionId, qualityFactor, maxFP);
+                else if (factionId.equals("interstellarimperium"))
+                    SSP_FleetFactory.createSiegeFleet(fleet, factionId, qualityFactor, maxFP);
+                else if (factionId.equals("templars"))
+                    SSP_FleetFactory.createTemplarFleet(fleet, factionId, qualityFactor, maxFP);
                 else
-                    SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
+                    SSP_FleetFactory.createGenericFleet(fleet, factionId, qualityFactor, maxFP);
+                */
                 
-                int numMarines = fleet.getCargo().getMarines();
-                log.info("Invasion fleet " + fleet.getNameWithFaction() + " has " + numMarines + " marines");
-                for (int i=0; i<numMarines; i=i+100)
-                {
-                    fleet.getFaction().pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, qualityFactor, fleet);
-                    //SSP_FleetRandomizer.addRandomVariantToFleet(fleet, faction, ShipRoles.PERSONNEL_MEDIUM, qualityFactor);
-                }
-                fleet.updateCounts();
-                
-                injector.levelFleet(fleet, CrewType.ELITE, FleetStyle.ELITE, faction);
+                SSP_FleetInjector.levelFleet(fleet, CrewType.MILITARY, factionId);
+                randomizeVariants(fleet, factionId, qualityFactor, theme, getArchetypeWeights(FleetStyle.ELITE, factionId), CommanderType.ELITE);
                 break;
             case "exerelinInvasionSupportFleet":
             case "exerelinDefenceFleet":
-                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.WAR, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F), true);
-                SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
-                injector.levelFleet(fleet, CrewType.MILITARY, FleetStyle.MILITARY, faction);
+                SSP_FleetInjector.levelFleet(fleet, CrewType.MILITARY, factionId);
+                randomizeVariants(fleet, factionId, qualityFactor, theme, getArchetypeWeights(FleetStyle.MILITARY, factionId), CommanderType.MILITARY);
                 break;
             case "exerelinResponseFleet":
-                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.WAR, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F), true);
-                
-                if (faction.equals("luddic_church") && maxFP >= 120)
-                    SSP_FleetFactory.createPurificationFleet(fleet, faction, qualityFactor, maxFP);
-                else if (faction.equals("exigency"))
-                    SSP_FleetFactory.createExigencyFleet(fleet, faction, qualityFactor, maxFP);
-                else if (faction.equals("templars"))
-                    SSP_FleetFactory.createTemplarFleet(fleet, faction, qualityFactor, maxFP);
+                /*
+                if (factionId.equals("luddic_church") && maxFP >= 120)
+                    SSP_FleetFactory.createPurificationFleet(fleet, factionId, qualityFactor, maxFP);
+                else if (factionId.equals("exigency"))
+                    SSP_FleetFactory.createExigencyFleet(fleet, factionId, qualityFactor, maxFP);
+                else if (factionId.equals("templars"))
+                    SSP_FleetFactory.createTemplarFleet(fleet, factionId, qualityFactor, maxFP);
                 else
-                    SSP_FleetFactory.createGenericFleet(fleet, faction, qualityFactor, maxFP);
+                    SSP_FleetFactory.createGenericFleet(fleet, factionId, qualityFactor, maxFP);
+                */
                 
-                injector.levelFleet(fleet, CrewType.MILITARY, FleetStyle.MILITARY, faction);
+                SSP_FleetInjector.levelFleet(fleet, CrewType.MILITARY, factionId);
+                randomizeVariants(fleet, factionId, qualityFactor, theme, getArchetypeWeights(FleetStyle.MILITARY, factionId), CommanderType.MILITARY);
                 break;  
             case "exerelinMiningFleet":
-                injector.levelCommander(fleet.getCommander(), fleet, CommanderType.TRADER, faction, (maxFP + 100.0F) / ((float)Math.random() * 3.0F + 6.0F), true);
-                SSP_FleetFactory.createTradeFleet(fleet, faction, stability, qualityFactorOriginal, maxFP/15, 1, 0, 0);
-                
-                maxFP *= 1.4;
-                float minerFP = maxFP - fleet.getFleetPoints();
-                while (minerFP > 0)
-                {
-                    FleetMemberAPI miner = ExerelinUtilsFleet.addMiningShipToFleet(fleet);
-                    //miner.setVariant(SSP_VariantRandomizer.createVariant(miner, faction, fleet.getCommanderStats(), getArchetypeFromRole(null, qualityFactor, null),
-                    //                                              qualityFactor, SSP_LevelUpper.getAICommanderOPBonus(fleet.getCommander())), false, true);
-                    minerFP -= miner.getFleetPointCost();
-                }
-                fleet.updateCounts();
-                injector.levelFleet(fleet, CrewType.CIVILIAN, FleetStyle.CIVILIAN, faction);
+                SSP_FleetInjector.levelFleet(fleet, CrewType.CIVILIAN, factionId);
+                randomizeVariants(fleet, factionId, qualityFactor, theme, getArchetypeWeights(FleetStyle.CIVILIAN, factionId), CommanderType.CIVILIAN);
                 break;
         }
+        SSP_FleetFactory.finishFleetNonIntrusive(fleet);
     }
     
     public static FleetMemberAPI addMiningShipToFleet(CampaignFleetAPI fleet)
