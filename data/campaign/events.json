@@ -59,8 +59,7 @@
 		"script":"exerelin.campaign.events.FactionChangedEvent",
 		"image":"graphics/icons/intel/reputation.png"
 	},
-	"exerelin_alliance_changed":
-	{
+	"exerelin_alliance_changed":{
 		"script":"exerelin.campaign.events.AllianceChangedEvent",
 		"image":"graphics/icons/intel/star.png"
 	},
@@ -75,14 +74,17 @@
 	"investigation_smuggling":{
 		"script":"exerelin.campaign.events.ExerelinInvestigationEventSmuggling",
 	},
-	"investigation_comm_sniffer":{
-		"script":"exerelin.campaign.events.ExerelinInvestigationEventCommSniffer",
-	},
-	"customs_inspection":{
-		"script":"exerelin.campaign.events.ExerelinCustomsInspectionEvent",
+	#"investigation_comm_sniffer":{
+	#	"script":"exerelin.campaign.events.ExerelinInvestigationEventCommSniffer",
+	#},
+	#"customs_inspection":{
+	#	"script":"exerelin.campaign.events.ExerelinCustomsInspectionEvent",
+	#},
+	"investigation_goodrep":{
+		"script":"exerelin.campaign.events.ExerelinInvestigationEventGoodRepWithOther",
 	},
 	"rep_tracker":{
 		"script":"exerelin.campaign.events.ExerelinRepTrackerEvent",
-		"image":"graphics/icons/intel/reputation.png",
 	},
+	
 }
