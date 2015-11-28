@@ -1,11 +1,13 @@
 package exerelin.campaign.events;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.impl.campaign.events.InvestigationEventGoodRepWithOther;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinUtils;
 
 // don't investigate if in same alliance, etc.
 public class ExerelinInvestigationEventGoodRepWithOther extends InvestigationEventGoodRepWithOther {
@@ -27,6 +29,10 @@ public class ExerelinInvestigationEventGoodRepWithOther extends InvestigationEve
 			shouldProceed = false;
 		if (AllianceManager.areFactionsAllied(thisFactionId, otherFactionId))
 			shouldProceed = false;
+		if (AllianceManager.areFactionsAllied(thisFactionId, playerAlignedFactionId))
+			shouldProceed = false;
+		//if (AllianceManager.areFactionsAllied(playerAlignedFactionId, otherFactionId))
+		//	shouldProceed = false;
 		else
 		{
 			// I call this the "hypocrite check"
@@ -38,10 +44,9 @@ public class ExerelinInvestigationEventGoodRepWithOther extends InvestigationEve
 			RepLevel factionRel = thisFaction.getRelationshipLevel(otherFaction);
 			RepLevel playerRep = otherFaction.getRelationshipLevel(Factions.PLAYER);
 			
-			if (factionRel == RepLevel.FRIENDLY) shouldProceed = false;	// could still do if player is COOPERATIVE but that gets the full penalty so meh
-			// comment out because then there's no warning before you hit COOPERATIVE and get the full penalty
-			//else if (factionRel == RepLevel.WELCOMING && playerRep.isAtBest(RepLevel.FRIENDLY)) shouldProceed = false;
-			else if (factionRel.isAtWorst(RepLevel.FAVORABLE) && playerRep.isAtBest(RepLevel.WELCOMING)) shouldProceed = false;
+			if (factionRel.isAtWorst(RepLevel.NEUTRAL)) shouldProceed = false;
+			else if (factionRel.isAtWorst(RepLevel.SUSPICIOUS) && playerRep.isAtBest(RepLevel.FRIENDLY)) shouldProceed = false;
+			else if (factionRel.isAtWorst(RepLevel.INHOSPITABLE) && playerRep.isAtBest(RepLevel.WELCOMING)) shouldProceed = false;
 		}
 		
 		if (!shouldProceed)
@@ -49,6 +54,19 @@ public class ExerelinInvestigationEventGoodRepWithOther extends InvestigationEve
 			endEvent();
 			return;
 		}
+		/*
+		if (ExerelinUtils.isSSPInstalled())
+		{
+			Global.getSector().getEventManager().startEvent(null, "exerelin_investigation_goodrep_ssp", eventTarget);
+		}
+		else
+		{
+			Global.getSector().getEventManager().startEvent(null, "exerelin_investigation_goodrep", eventTarget);
+		}
+		*/
+		
+		//endEvent();
+		//return;
 		
 		super.startEvent();
 	}
