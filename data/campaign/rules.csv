@@ -1006,6 +1006,18 @@ greetingPlayerNPCNeutral,OpenCommLink,"$faction.id == player_npc
 $faction.neutralToPlayer","$menuState = fleetConvMain 0
 FireAll PopulateOptions","""Just another day at the office.""",,
 ,,,,,,
+# not needed at present,,,,,,
+#tOffPatrolOpenCommTOnPlayerNPC,OpenCommLink,"$entity.transponderOffConv score:100
+$player.transponderOn
+$faction.id == player_npc score:100","AddText ""\Don't screw around with your transponder in our space, damnit! Uh. Chief.\""""
+$sawPlayerWithTOffCount = 0",,,
+#tOffCargoScanPlayerNPC,DialogOptionSelected,"$option == tOff_scan_continue
+$faction.id == player_npc score:100
+!$faction.hostileToPlayer",$sawPlayerWithTOffCount = 0,"Moments later, $PersonRank $personName reappears, looking vaguely flustered and embarassed.
+
+""Sorry, chief. Didn't recognize you with your transponder off. You can go, now.""",0:tOff_cleanCont1:Continue,
+,,,,,,
+,,,,,,
 # bla,,,,,,
 ExerelinFlavorTextMarketOmnifactory,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $market.id == omnifactory_market","AddText ""The Omnifactory's main loading bay is a dark, brooding chamber gaping cavernously around stacks of replicated items - clearly, the maintaining AI lacks the cleanliness sensibility of the average human. A loading bots shuffles about with large crates in hand as nano-fabricators hum in the distance."" textGrayColor",,,
