@@ -61,8 +61,8 @@ public class FollowMeAbility extends BaseDurationAbility {
 			}
 		}
 		List<CampaignFleetAPI> fleets = entity.getContainingLocation().getFleets();
-        for (CampaignFleetAPI fleet : fleets) {
-            if (fleet == entity) continue;
+		for (CampaignFleetAPI fleet : fleets) {
+			if (fleet == entity) continue;
 			String myFactionId = entity.getFaction().getId();
 			if (myFactionId.equals(Factions.PLAYER))
 			{
@@ -70,27 +70,27 @@ public class FollowMeAbility extends BaseDurationAbility {
 			}
 			String fleetFactionId = fleet.getFaction().getId();
 			if (myFactionId.equals(fleetFactionId) || myFactionId.equals("player_npc") || AllianceManager.areFactionsAllied(myFactionId, myFactionId))
-            {
-                float dist = Misc.getDistance(fleet.getLocation(), entity.getLocation());
-                //log.info("Distance of fleet " + otherFleet.getName() + ": " + dist);
-                if (dist <= FOLLOW_FETCH_RANGE) 
+			{
+				float dist = Misc.getDistance(fleet.getLocation(), entity.getLocation());
+				//log.info("Distance of fleet " + otherFleet.getName() + ": " + dist);
+				if (dist <= FOLLOW_FETCH_RANGE) 
 				{
-                    if (!fleet.knowsWhoPlayerIs()) continue;
+					if (!fleet.knowsWhoPlayerIs()) continue;
 					MemoryAPI mem = fleet.getMemoryWithoutUpdate();
 					String type = (String)mem.get(MemFlags.MEMORY_KEY_FLEET_TYPE);
 					if (!FOLLOW_VALID_FLEET_TYPES.contains(type)) continue;
 					if (mem.contains(MemFlags.FLEET_BUSY)) continue;
 					if (fleet.getBattle() != null) continue;
 					if (true)
-                    {
+					{
 						CampaignFleetAIAPI ai = (CampaignFleetAIAPI) fleet.getAI();
-                        ai.addAssignmentAtStart(FleetAssignment.ORBIT_AGGRESSIVE, entity, FOLLOW_DURATION, null);
+						ai.addAssignmentAtStart(FleetAssignment.ORBIT_AGGRESSIVE, entity, FOLLOW_DURATION, null);
 						fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, FOLLOW_DURATION);
 						Global.getSector().addPing(fleet, Pings.COMMS);
-                    }
-                }
-            }
-        }
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -107,37 +107,36 @@ public class FollowMeAbility extends BaseDurationAbility {
 	
 	@Override
 	public float getActivationDays() {
-		return 0.1f;
+		return 0f;
 	}
 
 	@Override
 	public float getCooldownDays() {
-		return 0.2f;
+		return 0.1f;
 	}
 
 	@Override
 	public float getDeactivationDays() {
-		return 0.1f;
+		return 0f;
 	}
 
 	@Override
 	public float getDurationDays() {
-		return 0.1f;
+		return 0f;
 	}
 	
 	@Override
 	public void createTooltip(TooltipMakerAPI tooltip, boolean expanded) {
-		Color gray = Misc.getGrayColor();
-		Color highlight = Misc.getHighlightColor();
 		
 		LabelAPI title = tooltip.addTitle(StringHelper.getString(STRING_CATEGORY, "followMeTitle"));
 //		title.highlightLast(status);
 //		title.setHighlightColor(gray);
 
 		float pad = 10f;
+		String highlight = (int)FOLLOW_DURATION + "";
 		String tooltip1 = StringHelper.getString(STRING_CATEGORY, "followMeTooltip1");
-		tooltip1 = StringHelper.substituteToken(tooltip1, "$numDays", FOLLOW_DURATION + "");
-		tooltip.addPara(tooltip1, pad);
+		tooltip1 = StringHelper.substituteToken(tooltip1, "$numDays", highlight);
+		tooltip.addPara(tooltip1, pad, Misc.getHighlightColor(), highlight);
 		tooltip.addPara(StringHelper.getString(STRING_CATEGORY, "followMeTooltip2"), pad);
 	}
 
