@@ -29,6 +29,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
+import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
@@ -50,10 +51,12 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.fleets.ExerelinLionsGuardFleetManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsCargo;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.world.ExerelinMarketSetup.MarketArchetype;
 import java.util.Collections;
@@ -67,6 +70,7 @@ import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.campaign.orbits.EllipticalOrbit;
 import org.lazywizard.omnifac.OmniFac;
 import org.lazywizard.omnifac.OmniFacSettings;
+import org.lwjgl.util.vector.Vector2f;
 
 @SuppressWarnings("unchecked")
 
@@ -124,9 +128,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
 	protected static final float BINARY_STAR_DISTANCE = 11000;
 	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
-	protected static final float NEBULA_CHANCE = 0.3f;
+	protected static final float NEBULA_CHANCE = 0.35f;
 	protected static final float MAGNETIC_FIELD_CHANCE = 0.5f;
-	protected static final float STELLAR_RING_CHANCE = 0.4f;	// TODO
+	protected static final float STELLAR_RING_CHANCE = 0.3f;
 	
 	// extremely sensitive to small changes, avoid touching these for now
 	// TODO externalise?
@@ -607,6 +611,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 				suppliesSupply -= ConditionData.AUTOFAC_HEAVY_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
 				metalDemand -= ConditionData.AUTOFAC_HEAVY_METALS;
+				gunsSupply -= ConditionData.AUTOFAC_HEAVY_HAND_WEAPONS * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HAND_WEAPONS);
 				//if (metalDemand < 20000) metalDemand = 20000;
 				weight *= 25;
 				log.info("Removed balancing heavy autofac from " + market.getName());
@@ -637,7 +642,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					weight *= 1f;
 					break;
 				default:
-					weight = 0;
+					weight *= 0.1f;
 			}
 			if (weight == 0) continue;
 			marketPicker.add(market, weight);
@@ -650,10 +655,21 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			MarketAPI market = marketPicker.pickAndRemove();
 			if (metalSupply > metalDemand + ConditionData.AUTOFAC_HEAVY_METALS * 0.75f)
 			{
-				market.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
-				suppliesSupply += ConditionData.AUTOFAC_HEAVY_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
-				metalDemand += ConditionData.AUTOFAC_HEAVY_METALS;
-				log.info("Added balancing heavy autofac to " + market.getName());
+				if (gunsDemand >= gunsSupply * 1.1f)
+				{
+					market.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
+					suppliesSupply += ConditionData.AUTOFAC_HEAVY_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
+					metalDemand += ConditionData.AUTOFAC_HEAVY_METALS;
+					gunsSupply += ConditionData.AUTOFAC_HEAVY_HAND_WEAPONS * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HAND_WEAPONS);
+					log.info("Added balancing heavy autofac to " + market.getName());
+				}
+				else
+				{
+					market.addCondition("exerelin_supply_workshop");
+					suppliesSupply += Exerelin_SupplyWorkshop.WORKSHOP_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
+					metalDemand += Exerelin_SupplyWorkshop.WORKSHOP_METALS;
+					log.info("Added balancing supply workshop to " + market.getName());
+				}
 			}
 			else if (market.getSize() >= 5)	// not enough metal to support an autofac; add a shipbreaking center instead
 			{
@@ -751,7 +767,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float weight = 100 - (entity.bonusMarketPoints/(size-1));
 			if (market.hasCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION) && entity.market != homeworld.market) 
 			{
-				if (fuelSupply > fuelDemand * 1.3f)
+				if (fuelSupply > fuelDemand * 1.4f)
 				{
 					int fuelProdCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.ANTIMATTER_FUEL_PRODUCTION);
 					market.removeCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION);	// removes all
@@ -781,7 +797,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			marketPicker.add(market, weight);
 		}
 		
-		while (fuelDemand*1.1 > fuelSupply)
+		while (fuelDemand*1.2 > fuelSupply)
 		{
 			if (marketPicker.isEmpty())	break;	// fuck it, we give up
 			
@@ -842,6 +858,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (marketSize < 7) marketSize = 7;
 			newMarket.addCondition(Conditions.HEADQUARTERS);
 			//newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);	// dependent on number of factions; bad idea
+			newMarket.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
 			newMarket.addCondition("exerelin_recycling_plant");
 			//newMarket.addCondition("exerelin_recycling_plant");
 			newMarket.addCondition("exerelin_supply_workshop");
@@ -861,6 +878,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			newMarket.addCondition("exerelin_supply_workshop");
 			newMarket.addCondition("exerelin_hydroponics");
 		}
+		else
+		{
+			if (ExerelinUtilsFaction.isPirateFaction(factionId))
+			{
+				if (marketSize > 5) marketSize = 5;	// hax
+			}
+		}
+		
 		if (data.forceMarketSize != -1) marketSize = data.forceMarketSize;
 		newMarket.setSize(marketSize);
 		newMarket.addCondition("population_" + marketSize);
@@ -893,7 +918,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					break;	
 				case "terran-eccentric":
 					newMarket.addCondition("twilight");
-					// TODO add mirrors
+					// add mirror/shade
+					LocationAPI system = entity.getContainingLocation();
+					SectorEntityToken mirror = system.addCustomEntity(entity.getId() + "_mirror", "Stellar Mirror", "stellar_mirror", factionId);
+					mirror.setCircularOrbitPointingDown(entity, data.startAngle, entity.getRadius() + 150, data.orbitPeriod);
+					mirror.setCustomDescriptionId("stellar_mirror");
+					SectorEntityToken shade = system.addCustomEntity(entity.getId() + "_shade", "Stellar Shade", "stellar_shade", factionId);
+					shade.setCircularOrbitPointingDown(entity, data.startAngle + 180, entity.getRadius() + 150, data.orbitPeriod);		
+					shade.setCustomDescriptionId("stellar_shade");
 					break;	
 				default:
 					newMarket.addCondition(planetType);
@@ -954,6 +986,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		Global.getSector().getEconomy().addMarket(newMarket);
 		entity.setFaction(factionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
 		
+		if (data.isHQ && factionId.equals(Factions.DIKTAT))
+		{
+			ExerelinLionsGuardFleetManager script = new ExerelinLionsGuardFleetManager(newMarket);
+			entity.addScript(script);
+		}
+		
 		// count some demand/supply values for market balancing
 		int population = ExerelinUtilsMarket.getPopulation(marketSize);
 		
@@ -986,7 +1024,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		float sSupply = autofacCount * ConditionData.AUTOFAC_HEAVY_SUPPLIES; 
 		sSupply += shipbreakingCount * ConditionData.SHIPBREAKING_SUPPLIES;
 		sSupply += recyclingCount * Exerelin_RecyclingPlant.RECYCLING_SUPPLIES;
-		sSupply += recyclingCount * Exerelin_SupplyWorkshop.WORKSHOP_SUPPLIES;
+		sSupply += workshopCount * Exerelin_SupplyWorkshop.WORKSHOP_SUPPLIES;
 		sSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.SUPPLIES);
 		suppliesSupply += sSupply;
 		
@@ -1004,6 +1042,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		foodSupply += getMarketBaseFoodSupply(newMarket);
 		foodDemand += ConditionData.POPULATION_FOOD_MULT * ExerelinUtilsMarket.getPopulation(marketSize);
+		
+		gunsSupply += autofacCount * ConditionData.AUTOFAC_HEAVY_HAND_WEAPONS * ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.SUPPLIES);;
+		gunsDemand += ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.HAND_WEAPONS);
 		
 		//log.info("Cumulative domestic goods supply/demand thus far: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
 		
@@ -1101,7 +1142,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			LocationAPI hyperspace = Global.getSector().getHyperspace();
 			prismEntity = hyperspace.addCustomEntity("prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
-			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(0, 0), getRandomAngle(), 150, 60, 30, 30);
+			float xpos = 2000;
+			if (!ExerelinSetupData.getInstance().corvusMode) xpos = -2000;
+			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(xpos, 0), getRandomAngle(), 150, 60, 30, 30);
 		}
 		
 		/*
@@ -1336,14 +1379,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		resetVars();
 		
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
-		boolean corvusMode = ExerelinConfig.corvusMode;
+		boolean corvusMode = setupData.corvusMode;
 		
 		if (!corvusMode)
-		{			
+		{
+			int numSystems = setupData.numSystems;
+			int numSystemsEmpty = setupData.numSystemsEmpty;
+			
 			// stars will be distributed in a concentric pattern
+			/*
 			float angle = 0;
 			float distance = 0;
-			int numSystems = setupData.numSystems;
 			for(int i = 0; i < numSystems; i ++)
 			{
 				angle += MathUtils.getRandomNumberInRange((float)Math.PI/4, (float)Math.PI);
@@ -1354,12 +1400,27 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				starPositions.add(new Integer[] {x, y});
 			}
 			Collections.shuffle(starPositions);
-
-
+			*/
+			
+			WeightedRandomPicker<Vector2f> picker = new WeightedRandomPicker<>();
+			addListToPicker(StarLocations.SPOT, picker);
+			for(int i = 0; i < numSystems + numSystemsEmpty; i ++)
+			{
+				Vector2f pos = picker.pickAndRemove();
+				// offset a bit
+				int x = (int)pos.x + MathUtils.getRandomNumberInRange(-150, 150) + MathUtils.getRandomNumberInRange(-150, 150);
+				int y = (int)pos.y + MathUtils.getRandomNumberInRange(-150, 150) + MathUtils.getRandomNumberInRange(-150, 150);
+				
+				// map is rotated 180°in non-Corvus mode so adjust accordingly				
+				starPositions.add(new Integer[] {x, y});
+			}
+			
 			// build systems
 			log.info("Building systems");
 			for(int i = 0; i < numSystems; i ++)
-				buildSystem(sector, i);
+				buildSystem(sector, i, true);
+			for(int i = numSystems; i < numSystems + numSystemsEmpty; i++)
+				buildSystem(sector, i, false);
 			
 			log.info("Populating sector");
 			populateSector();
@@ -1374,7 +1435,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		
 		// use vanilla hyperspace map
-		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG("data/campaign/terrain/hyperspace_map.png",
+		String hyperMap = "data/campaign/terrain/hyperspace_map.png";
+		if (!corvusMode)
+		{
+			//hyperMap = "data/campaign/terrain/Nexerelin/hyperspace_map_rot.png";
+		}
+		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG(hyperMap,
 		//SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG("data/campaign/terrain/hyperspace_map_filled.png",
 			  0, 0, // center of nebula
 			  Global.getSector().getHyperspace(), // location to add to
@@ -1442,7 +1508,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		log.info("Finished sector generation");
 	}
-		
+	
+	// =========================================================================
+	// Utility functions
+	
 	public float getOrbitalPeriod(float primaryRadius, float orbitRadius, float density)
 	{
 		primaryRadius *= 0.01;
@@ -1528,6 +1597,102 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 	}
 	
+	/**
+	 * Makes one entity orbit at another entity's Lagrangian points.
+	 * @param orbiter The entity whose orbit is being set
+	 * @param m1 Larger mass (e.g. the star)
+	 * @param m2 Smaller mass (e.g. the planet)
+	 * @param point 1 - 5 = L1 to L5, other values randomize between L4 and L5
+	 * @param m2Angle The starting angle of {@code m2} in its orbit
+	 * @param m2OrbitRadius The orbit radius of {@code m2} in its orbit around {@code m1} 
+	 * @param myOrbitRadius The orbit radius of {@code orbiter} in its orbit around {@code m2} (only applies to L1 and L2)
+	 * @param orbitPeriod The time {@code m2} takes to orbit {@code m1} 
+	 * @param isEllipse Is this orbit elliptic?
+	 * @param ellipseAngle Angle of the ellipse orbit
+	 * @param ellipseMult Used to calculate the ellipse's semi-major and semi-minor axes
+	 */
+	protected void setLagrangeOrbit(SectorEntityToken orbiter, SectorEntityToken m1, SectorEntityToken m2, int point, 
+			float m2Angle, float m2OrbitRadius, float myOrbitRadius, float orbitPeriod, boolean isEllipse, float ellipseAngle, float ellipseMult)
+	{
+		if (point <= 0 || point > 5)
+		{
+			if (Math.random() < 0.5) point = 4;
+			else point = 5;
+		}
+		//log.info("Setting Lagrange orbit for " + orbiter.getName() + " at point " + point);
+		switch (point) {
+			case 1:
+			case 2:
+				float angle = m2Angle;
+				if (point == 1) angle += 180;
+				if (!isEllipse) orbiter.setCircularOrbit(m2, angle, myOrbitRadius, orbitPeriod);
+				else setOrbit(orbiter, m2, myOrbitRadius, angle, isEllipse, ellipseAngle, ellipseMult, orbitPeriod);
+				break;
+			case 3:
+				if (!isEllipse) orbiter.setCircularOrbit(m1, m2Angle + 180, m2OrbitRadius, orbitPeriod);
+				else setOrbit(orbiter, m1, m2OrbitRadius, m2Angle + 180, isEllipse, ellipseAngle, ellipseMult, orbitPeriod);
+				break;
+			case 4:
+			case 5:
+				float offset = -60;
+				if (point == 5) offset = 60;
+
+				if (!isEllipse) orbiter.setCircularOrbit(m1, m2Angle + offset, m2OrbitRadius, orbitPeriod);
+				else setOrbit(orbiter, m1, m2OrbitRadius, m2Angle + offset, isEllipse, ellipseAngle, ellipseMult, orbitPeriod);
+				break;
+		}
+	}
+	
+	/**
+	 *	Given a list of EntityDatas representing planets, and min/max orbit radius, 
+	 *  find an orbit that avoids overlapping with that of any planet
+	 */
+	protected float getRandomOrbitRadiusBetweenPlanets(List<EntityData> planets, float minDist, float maxDist)
+	{		
+		float orbitRadius = 0;
+		List<EntityData> validPlanets = new ArrayList<>();
+		for (EntityData data : planets)
+		{
+			if (data.orbitRadius < minDist) continue;
+			if (data.orbitRadius > maxDist) continue;
+			validPlanets.add(data);
+		}
+		if (validPlanets.isEmpty())
+			return (MathUtils.getRandomNumberInRange(minDist, maxDist) + MathUtils.getRandomNumberInRange(minDist, maxDist))/2;
+		
+		int index = 0;
+		if (validPlanets.size() > 1) index = MathUtils.getRandomNumberInRange(0, validPlanets.size() - 1);
+		float min = minDist;
+		float max = maxDist;
+		EntityData planet = validPlanets.get(index);
+		if (index == 0)
+		{
+			if (validPlanets.size() > 1)
+			{
+				EntityData nextPlanet = validPlanets.get(1);
+				max = nextPlanet.orbitRadius - nextPlanet.entity.getRadius();
+			}
+			min = Math.max(minDist, planet.primary.entity.getRadius());
+		}
+		else if (index == validPlanets.size() - 1)
+		{
+			min = planet.orbitRadius + planet.entity.getRadius();
+		}
+		else
+		{
+			EntityData prevPlanet = validPlanets.get(index - 1);
+			min = prevPlanet.orbitRadius + prevPlanet.entity.getRadius();
+			max = planet.orbitRadius - planet.entity.getRadius();
+		}
+		orbitRadius = MathUtils.getRandomNumberInRange(min, max) + MathUtils.getRandomNumberInRange(min, max);
+		orbitRadius /= 2;
+		
+		return orbitRadius;
+	}
+	
+	// end utility functions
+	// =========================================================================
+	
 	protected SectorEntityToken makeStation(EntityData data, String factionId)
 	{
 		float angle = getRandomAngle();
@@ -1544,7 +1709,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		float orbitDays = getOrbitalPeriod(planet, orbitRadius + planet.getRadius());
 		data.orbitPeriod = orbitDays;
 
-		String name = planet.getName() + " " + data.name;
+		String name = data.name;
 		String id = name.replace(' ','_');
 		String[] images = stationImages.get("default");
 		if (stationImages.containsKey(factionId))
@@ -1677,7 +1842,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 	public PlanetAPI createStarToken(int index, String systemId, StarSystemAPI system, String type, float size, boolean isSecondStar)
 	{
-		float fieldMult = 1;	// corona or mag-field
+		float fieldMult = 1;	// corona
 		if (type.equals("star_red")) fieldMult = 2;
 		if (!isSecondStar) 
 		{
@@ -1788,7 +1953,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return habitableChance;
 	}
 		
-	protected void buildSystem(SectorAPI sector, int systemIndex)
+	protected void buildSystem(SectorAPI sector, int systemIndex, boolean inhabited)
 	{
 		// First we make a star system with random name
 		int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNamesList.size() - 1);
@@ -1807,7 +1972,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		List<EntityData> entities = new ArrayList<>();
 		
-		EntityData starData = new EntityData(system);
+		EntityData starData = new EntityData(star.getName(), system);
 		EntityData starData2 = null;
 		starData.entity = star;
 		starData.type = EntityType.STAR;
@@ -1817,7 +1982,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (isBinary)
 		{
 			star2 = makeStar(systemIndex, system, true);
-			starData2 = new EntityData(system);
+			starData2 = new EntityData(star.getName(), system);
 			starData2.entity = star2;
 			starData2.type = EntityType.STAR;
 			entities.add(starData2);
@@ -1845,31 +2010,33 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (isBinary) numBasePlanets *= BINARY_SYSTEM_PLANET_MULT;
 		
 		boolean gasPlanetCreated = false;
+		
 		int habitableCount = 0;
 		List<EntityData> uninhabitables1To4 = new ArrayList<>();
-		
+
 		for(int i = 0; i < numBasePlanets; i = i + 1)
 		{
 			float habitableChance = getHabitableChance(i, false);
-			
-			boolean habitable = Math.random() <= habitableChance;
-			EntityData entityData = new EntityData(system, i+1);
+
+			boolean habitable = false;
+			if (inhabited) habitable = Math.random() <= habitableChance;
+			EntityData entityData = new EntityData("", system, i+1);
 			entityData.habitable = habitable;
 			entityData.primary = starData;
-			
+
 			if (habitable)
 			{
 				habitableCount++;
 			}
-			else if (i <= 3)
+			else if (inhabited && i <= 3)
 			{
 				uninhabitables1To4.add(entityData);
 			}
 			entities.add(entityData);
 		}
-		
+
 		// make sure there are at least two habitable planets
-		if (habitableCount < 2)
+		if (inhabited && habitableCount < 2)
 		{
 			WeightedRandomPicker<EntityData> picker = new WeightedRandomPicker<>();
 			addListToPicker(uninhabitables1To4, picker);
@@ -1896,6 +2063,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			possiblePlanetNamesList.remove(planetNameIndex);
 			log.info("Creating planet " + name);
 			id = name.replace(' ','_');
+			planetData.name = name;
 			
 			// binary star handling
 			PlanetAPI toOrbit = star;
@@ -1986,10 +2154,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 						ext = "II";
 					if(j == 2)
 						ext = "III";
+					String moonName = name + " " + ext;
+					String moonId = name + "_" + ext;
 					
+					EntityData moonData = new EntityData(moonName, system);
+					boolean moonInhabitable = false;
+					if (inhabited) 
+						moonInhabitable = Math.random() < getHabitableChance(planetData.planetNum, true);
 					
-					EntityData moonData = new EntityData(system);
-					boolean moonInhabitable = Math.random() < getHabitableChance(planetData.planetNum, true);
 					if (moonInhabitable)
 					{
 						moonData.archetype = pickMarketArchetype(false);
@@ -2008,9 +2180,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					float moonRadius = MathUtils.getRandomNumberInRange(50, 100);
 					orbitDays = getOrbitalPeriod(newPlanet, distance + newPlanet.getRadius());
 					
-					PlanetAPI newMoon = system.addPlanet(name + " " + ext, newPlanet, name + " " + ext, moonData.planetType, angle, moonRadius, distance, orbitDays);
+					PlanetAPI newMoon = system.addPlanet(moonId, newPlanet, moonName, moonData.planetType, angle, moonRadius, distance, orbitDays);
 					moonData.startAngle = angle;	// setOrbit(newMoon, newPlanet, distance, false, 0, orbitDays);
-					log.info("Creating moon " + name + " " + ext);
+					log.info("Creating moon " + moonName);
 					moonData.entity = newMoon;
 					moonData.orbitRadius = distance;
 					moonData.orbitPeriod = orbitDays;
@@ -2061,6 +2233,31 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			{
 				addMagneticField(newPlanet);
 			}
+			
+			// add Lagrange asteroids
+			if (isGasGiant)
+			{
+				SectorEntityToken l4asteroids = system.addTerrain(Terrain.ASTEROID_FIELD,
+					new AsteroidFieldTerrainPlugin.AsteroidFieldParams(
+						400f, // min radius
+						600f, // max radius
+						20, // min asteroid count
+						30, // max asteroid count
+						4f, // min asteroid radius 
+						16f, // max asteroid radius
+						name + " L4 Asteroids")); // null for default name
+				SectorEntityToken l5asteroids = system.addTerrain(Terrain.ASTEROID_FIELD,
+					new AsteroidFieldTerrainPlugin.AsteroidFieldParams(
+						400f, // min radius
+						600f, // max radius
+						20, // min asteroid count
+						30, // max asteroid count
+						4f, // min asteroid radius 
+						16f, // max asteroid radius
+						name + " L5 Asteroids")); // null for default name
+				setLagrangeOrbit(l4asteroids, toOrbit, newPlanet, 4, planetData.startAngle, planetData.orbitRadius, 0, planetData.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
+				setLagrangeOrbit(l5asteroids, toOrbit, newPlanet, 5, planetData.startAngle, planetData.orbitRadius, 0, planetData.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
+			}
 		}
 		
 		// add the moons back to our main entity list
@@ -2073,7 +2270,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		WeightedRandomPicker<EntityData> capitalPicker = new WeightedRandomPicker<>();
 		for (EntityData planetData : entities)
 		{
-			if (!planetData.habitable || planetData.type != EntityType.PLANET) continue;
+			if (inhabited && !planetData.habitable) continue;
 			float weight = 1f;
 			if (planetData.planetNum == 2 || planetData.planetNum == 3)
 			{
@@ -2136,8 +2333,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 			else if (planet.isStar())
 			{
-				orbitRadius = MathUtils.getRandomNumberInRange(1000, 8000) + planet.getRadius();
-				numAsteroids = 100;
+				orbitRadius = getRandomOrbitRadiusBetweenPlanets(entities, 1000 + star.getRadius(), 10000 + star.getRadius());
+				numAsteroids = 125;
 			}
 			else
 			{
@@ -2159,7 +2356,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		// Always put an asteroid belt around the sun
 		do {
-			float distance = MathUtils.getRandomNumberInRange(3000, 10000) + star.getRadius();
+			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 10000 + star.getRadius());
 			float baseOrbitDays = getOrbitalPeriod(star, distance);
 			float minOrbitDays = baseOrbitDays * 0.75f;
 			float maxOrbitDays = baseOrbitDays * 1.25f;
@@ -2171,7 +2368,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// Another one if medium system size
 			if(ExerelinSetupData.getInstance().maxSystemSize > 16000)
 			{
-				distance = MathUtils.getRandomNumberInRange(12000, 25000);
+				distance = getRandomOrbitRadiusBetweenPlanets(entities, 12000, 25000);
 				baseOrbitDays = getOrbitalPeriod(star, distance);
 				minOrbitDays = baseOrbitDays * 0.75f;
 				maxOrbitDays = baseOrbitDays * 1.25f;
@@ -2182,7 +2379,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// And another one if a large system
 			if(ExerelinSetupData.getInstance().maxSystemSize > 32000)
 			{
-				distance = MathUtils.getRandomNumberInRange(18000, 35000);
+				distance = getRandomOrbitRadiusBetweenPlanets(entities, 18000, 35000);
 				baseOrbitDays = getOrbitalPeriod(star, distance);
 				minOrbitDays = baseOrbitDays * 0.75f;
 				maxOrbitDays = baseOrbitDays * 1.25f;
@@ -2200,73 +2397,76 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// Build stations
 		// Note: to enable special faction stations, we don't actually generate the stations until much later,
 		// when we're dealing out planets to factions
-		int numStations;
-		int maxStations = ExerelinSetupData.getInstance().maxStations;
-		if(ExerelinSetupData.getInstance().numSystems != 1)
+		if (inhabited)
 		{
-			int minStations = ExerelinConfig.minimumStations;
-			if (minStations > maxStations) minStations = maxStations;
-			numStations = MathUtils.getRandomNumberInRange(minStations, Math.min(maxStations, numBasePlanets*2));
-		}
-		else
-			numStations = maxStations;
-		
-		// create random picker for our station locations
-		WeightedRandomPicker<EntityData> picker = new WeightedRandomPicker<>();
-		//addListToPicker(entities, picker);
-		for (EntityData entityData : entities)
-		{
-			float weight = 1f;
-			if (entityData.type == EntityType.STAR) weight = 3.5f;
-			else if (entityData.habitable == false) weight = 2f;
-			picker.add(entityData, weight);
-		}
-		
-		int k = 0;
-		List alreadyUsedStationNames = new ArrayList();
-		while(k < numStations)
-		{
-			if (picker.isEmpty()) picker.add(starData);
-			EntityData primaryData = picker.pickAndRemove();
-
-			EntityData stationData = new EntityData(system);
-			stationData.primary = primaryData;
-			stationData.type = EntityType.STATION;
-			stationData.archetype = pickMarketArchetype(true);
-			if (primaryData.entity == star) stationData.orbitRadius = (Float) ExerelinUtils.getRandomListElement(starBelts1);
-			else if (primaryData.entity == star2) 
+			int numStations;
+			int maxStations = ExerelinSetupData.getInstance().maxStations;
+			if(ExerelinSetupData.getInstance().numSystems != 1)
 			{
-				// make a belt for binary companion if we don't have one already
-				if (starBelts2.isEmpty())
+				int minStations = ExerelinConfig.minimumStations;
+				if (minStations > maxStations) minStations = maxStations;
+				numStations = MathUtils.getRandomNumberInRange(minStations, Math.min(maxStations, numBasePlanets*2));
+			}
+			else
+				numStations = maxStations;
+
+			// create random picker for our station locations
+			WeightedRandomPicker<EntityData> picker = new WeightedRandomPicker<>();
+			//addListToPicker(entities, picker);
+			for (EntityData entityData : entities)
+			{
+				float weight = 1f;
+				if (entityData.type == EntityType.STAR) weight = 3.5f;
+				else if (entityData.habitable == false) weight = 2f;
+				picker.add(entityData, weight);
+			}
+
+			int k = 0;
+			List alreadyUsedStationNames = new ArrayList();
+			while(k < numStations)
+			{
+				if (picker.isEmpty()) picker.add(starData);
+				EntityData primaryData = picker.pickAndRemove();
+
+				EntityData stationData = new EntityData("", system);
+				stationData.primary = primaryData;
+				stationData.type = EntityType.STATION;
+				stationData.archetype = pickMarketArchetype(true);
+				if (primaryData.entity == star) stationData.orbitRadius = (Float) ExerelinUtils.getRandomListElement(starBelts1);
+				else if (primaryData.entity == star2) 
 				{
-					float distance = MathUtils.getRandomNumberInRange(1000, 8000) + star2.getRadius();
-					float baseOrbitDays = getOrbitalPeriod(star2, distance);
-					float minOrbitDays = baseOrbitDays * 0.75f;
-					float maxOrbitDays = baseOrbitDays * 1.25f;
+					// make a belt for binary companion if we don't have one already
+					if (starBelts2.isEmpty())
+					{
+						float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 10000 + star.getRadius());
+						float baseOrbitDays = getOrbitalPeriod(star2, distance);
+						float minOrbitDays = baseOrbitDays * 0.75f;
+						float maxOrbitDays = baseOrbitDays * 1.25f;
 
-					system.addAsteroidBelt(star2, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
-					system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, distance, 90f);
-					starBelts2.add(distance);
+						system.addAsteroidBelt(star2, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
+						system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, distance, 90f);
+						starBelts2.add(distance);
+					}
+
+					stationData.orbitRadius = (Float) ExerelinUtils.getRandomListElement(starBelts2);
 				}
-				
-				stationData.orbitRadius = (Float) ExerelinUtils.getRandomListElement(starBelts2);
-			}
-			
-			// name our station
-			boolean nameOK = false;
-			String name = "";
-			while(!nameOK)
-			{
-				name = (String) ExerelinUtils.getRandomListElement(possibleStationNamesList);
-				if (!alreadyUsedStationNames.contains(name))
-					nameOK = true;
-			}
-			alreadyUsedStationNames.add(name);
-			stationData.name = name;			
-			stations.add(stationData);
-			log.info("Prepping station " + name);
 
-			k = k + 1;
+				// name our station
+				boolean nameOK = false;
+				String name = "";
+				while(!nameOK)
+				{
+					name = primaryData.name + " " + (String) ExerelinUtils.getRandomListElement(possibleStationNamesList);
+					if (!alreadyUsedStationNames.contains(name))
+						nameOK = true;
+				}
+				alreadyUsedStationNames.add(name);
+				stationData.name = name;			
+				stations.add(stationData);
+				log.info("Prepping station " + name);
+
+				k = k + 1;
+			}
 		}
 
 		// Build hyperspace exits
@@ -2279,7 +2479,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float radius = capitalToken.getRadius();
 			float orbitRadius = radius + 250f;
 			float orbitDays = getOrbitalPeriod(capitalToken, orbitRadius);
-			capitalJumpPoint.setCircularOrbit(capitalToken, capital.startAngle - 60, orbitRadius, orbitDays);
+			capitalJumpPoint.setCircularOrbit(capitalToken, getRandomAngle(), orbitRadius, orbitDays);
 			capitalJumpPoint.setRelatedPlanet(capitalToken);
 			system.addEntity(capitalJumpPoint);
 			capitalJumpPoint.setStandardWormholeToHyperspaceVisual();
@@ -2288,14 +2488,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			// capital L4/L5 jump point
 			SectorEntityToken capitalToken = capital.entity;
 			JumpPointAPI capitalJumpPoint = Global.getFactory().createJumpPoint(capitalToken.getId() + "_jump", capitalToken.getName() + " Bridge");
-			float orbitRadius = capital.orbitRadius;
-			float orbitDays = capital.orbitPeriod;
-			float offset = 60;
-			if (Math.random() < 0.5) 
-				offset *= -1;
-			
-			capitalJumpPoint.setCircularOrbit(capital.primary.entity, capital.startAngle + offset, orbitRadius, orbitDays);
-			setOrbit(capitalJumpPoint, capital.primary.entity, orbitRadius, capital.startAngle + offset, !isBinary, ellipseAngle, ellipseMult, orbitDays);
+			setLagrangeOrbit(capitalJumpPoint, capital.primary.entity, capitalToken, -1, capital.startAngle, capital.orbitRadius, 0, capital.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
 			system.addEntity(capitalJumpPoint);
 			capitalJumpPoint.setStandardWormholeToHyperspaceVisual();
 			
@@ -2327,9 +2520,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				if (capital.primary == starData2)
 					secondJumpFocus = star;
 				JumpPointAPI jumpPoint2 = Global.getFactory().createJumpPoint(secondJumpFocus.getId() + "_jump", secondJumpFocus.getName() + " Jumppoint");
-				orbitRadius = MathUtils.getRandomNumberInRange(2500, 3500) + secondJumpFocus.getRadius();
-				orbitDays = getOrbitalPeriod(secondJumpFocus, orbitRadius);
-				setOrbit(jumpPoint2, secondJumpFocus, orbitRadius, !isBinary, ellipseAngle, orbitDays);
+				float orbitRadius = getRandomOrbitRadiusBetweenPlanets(entities, 2500 + secondJumpFocus.getRadius(), 5000 + secondJumpFocus.getRadius());
+				float orbitPeriod = getOrbitalPeriod(secondJumpFocus, orbitRadius);
+				setOrbit(jumpPoint2, secondJumpFocus, orbitRadius, !isBinary, ellipseAngle, orbitPeriod);
 				system.addEntity(jumpPoint2);
 				jumpPoint2.setStandardWormholeToHyperspaceVisual();
 			}
@@ -2341,7 +2534,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
 				"comm_relay", // type of object, defined in custom_entities.json
 				"neutral"); // faction
-		float distance = star.getRadius() + MathUtils.getRandomNumberInRange(1200, 1800);
+		float distance = getRandomOrbitRadiusBetweenPlanets(entities, 1200 + star.getRadius(), 3000 + star.getRadius());
 		//relay.setCircularOrbitWithSpin(star, getRandomAngle(), distance, getOrbitalPeriod(star, distance), 30, 30);
 		setOrbit(relay, star, distance, !isBinary, ellipseAngle, getOrbitalPeriod(star, distance));
 		systemToRelay.put(system.getId(), system.getId() + "_relay");
@@ -2356,6 +2549,21 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					  system, // location to add to
 					  "terrain", "nebula_" + (String)ExerelinUtils.getRandomArrayElement(nebulaeColorArray), // texture to use, uses xxx_map for map
 					  4, 4); // number of cells in texture
+		}
+		
+		// add stellar ring
+		if (Math.random() < STELLAR_RING_CHANCE)
+		{
+			distance = getRandomOrbitRadiusBetweenPlanets(entities, 2500 + star.getRadius(), 6000 + star.getRadius());
+			// ring (adapted from Magec.java)
+			system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, distance - 300, 80f);
+			system.addRingBand(star, "misc", "rings1", 256f, 3, Color.white, 256f, distance - 100, 100f);
+			system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, distance + 100, 130f);
+			system.addRingBand(star, "misc", "rings1", 256f, 3, Color.white, 256f, distance + 300, 80f);
+
+			// add one ring that covers all of the above
+			SectorEntityToken ring = system.addTerrain(Terrain.RING, new BaseRingTerrain.RingParams(600 + 256, distance, null));
+			ring.setCircularOrbit(star, 0, 0, 100);
 		}
 		
 		// add dead gate
@@ -2508,12 +2716,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		int marketPoints = 0;
 		int bonusMarketPoints = 0;
 		
-		public EntityData(StarSystemAPI starSystem) 
+		public EntityData(String name, StarSystemAPI starSystem) 
 		{
+			this.name = name;
 			this.starSystem = starSystem;
 		}	  
-		public EntityData(StarSystemAPI starSystem, int planetNum) 
+		public EntityData(String name, StarSystemAPI starSystem, int planetNum) 
 		{
+			this.name = name;
 			this.starSystem = starSystem;
 			this.planetNum = planetNum;
 			this.planetNumByStar = planetNum;

@@ -8,7 +8,7 @@ public class Exerelin_RecyclingPlant extends BaseMarketConditionPlugin {
 	
 	public static final float RECYCLING_CREW = 200f;
 	public static final float RECYCLING_VOLATILES = 1500f;
-	public static final float RECYCLING_ORGANICS = 1000f;
+	public static final float RECYCLING_ORGANICS = 800f;
 	public static final float RECYCLING_METALS = 800f;
 	public static final float RECYCLING_RARE_METALS = 40f * 2;
 	public static final float RECYCLING_SUPPLIES = 500f;

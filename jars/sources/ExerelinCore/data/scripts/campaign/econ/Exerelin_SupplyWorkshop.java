@@ -12,7 +12,7 @@ public class Exerelin_SupplyWorkshop extends BaseMarketConditionPlugin {
 	public static final float WORKSHOP_METALS = 2000f;
 	public static final float WORKSHOP_RARE_METALS = 100f;
 	public static final float WORKSHOP_HEAVY_MACHINERY_DEMAND = 25f;
-	public static final float WORKSHOP_HEAVY_MACHINERY = 500f;
+	public static final float WORKSHOP_HEAVY_MACHINERY = 600f;
 	public static final float WORKSHOP_SUPPLIES = 4000f;
 	
 	@Override
@@ -27,8 +27,10 @@ public class Exerelin_SupplyWorkshop extends BaseMarketConditionPlugin {
 		market.getDemand(Commodities.METALS).getDemand().modifyFlat(id, WORKSHOP_METALS);
 		market.getDemand(Commodities.RARE_METALS).getDemand().modifyFlat(id, WORKSHOP_RARE_METALS);
 		
-		market.getCommodityData(Commodities.SUPPLIES).getSupply().modifyFlat(id, WORKSHOP_SUPPLIES * crewDemandMet);
-		market.getCommodityData(Commodities.HEAVY_MACHINERY).getSupply().modifyFlat(id, WORKSHOP_HEAVY_MACHINERY * crewDemandMet);
+		float productionMult = getProductionMult(market, Commodities.ORGANICS, Commodities.VOLATILES, Commodities.METALS, Commodities.RARE_METALS) * crewDemandMet;
+		
+		market.getCommodityData(Commodities.SUPPLIES).getSupply().modifyFlat(id, WORKSHOP_SUPPLIES * productionMult);
+		market.getCommodityData(Commodities.HEAVY_MACHINERY).getSupply().modifyFlat(id, WORKSHOP_HEAVY_MACHINERY * productionMult);
 	}
 	
 	@Override

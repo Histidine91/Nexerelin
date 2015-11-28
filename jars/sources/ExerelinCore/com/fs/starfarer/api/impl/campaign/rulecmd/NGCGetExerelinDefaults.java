@@ -20,6 +20,7 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		MemoryAPI map = memoryMap.get(MemKeys.LOCAL);
 		map.set("$numSystems", setupData.numSystems, 0);
+		map.set("$numSystemsEmpty", setupData.numSystemsEmpty, 0);
 		map.set("$maxPlanets", setupData.maxPlanets, 0);
 		map.set("$maxStations", setupData.maxStations, 0);
 		map.set("$randomStartRelationships", setupData.randomStartRelationships, 0);

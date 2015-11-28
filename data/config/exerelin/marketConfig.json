@@ -104,12 +104,12 @@
 		# primary resources
 		{
 			"name":"ore_complex",
-			"cost":150,
+			"cost":200,
 			"archetypes":{"default":0.5,"ore":4,"manufacturing":1.5,"heavy_industry":1,"mixed":1.25},
 		},
 		{
 			"name":"volatiles_complex",
-			"cost":500,
+			"cost":400,
 			"archetypes":{"volatiles":2.5,"mixed":0.5},
 			"allowDuplicates":false,
 		},
@@ -120,7 +120,7 @@
 		#},
 		{
 			"name":"organics_complex",
-			"cost":500,
+			"cost":400,
 			"archetypes":{"organics":2.5,"mixed":0.5},
 			"allowDuplicates":false,
 		},
@@ -131,8 +131,8 @@
 		},
 		{
 			"name":"aquaculture",
-			"cost":350,
-			"archetypes":{"default":1, "agriculture":2, "mixed":1.5},
+			"cost":300,
+			"archetypes":{"default":1, "agriculture":2, "mixed":1.5, "heavy_industry":0.5},
 			"allowedPlanets":["terran","jungle","water"],
 			"allowStations":false,
 			"allowDuplicates":false,
@@ -141,7 +141,7 @@
 		{
 			"name":"volturnian_lobster_pens",
 			"cost":200,
-			"archetypes":{"default":0.5, "agriculture":1.5, "mixed":1, "heavy_industry":0},
+			"archetypes":{"default":0.5, "agriculture":2, "mixed":1, "heavy_industry":0},
 			"allowedPlanets":["terran","jungle","water"],
 			"allowStations":false,
 			"minSize":3,
@@ -150,7 +150,7 @@
 		# industry
 		{
 			"name":"cottage_industry",
-			"cost":150,
+			"cost":100,
 			"archetypes":{"default":1.5,"agriculture":2,"manufacturing":1,"heavy_industry":0},
 			"minSize":3,
 			"maxSize":6,
@@ -159,14 +159,14 @@
 		},
 		{
 			"name":"ore_refining_complex",
-			"cost":250,
-			"archetypes":{"ore":3,"manufacturing":4,"heavy_industry":3,"mixed":1.5},
+			"cost":200,
+			"archetypes":{"ore":3,"manufacturing":4,"heavy_industry":2,"mixed":1.5},
 			"minSize":3,
 		},
 		{
 			"name":"light_industrial_complex",
-			"cost":200,
-			"archetypes":{"default":1,"manufacturing":3,"heavy_industry":2,"mixed":1.5},
+			"cost":150,
+			"archetypes":{"manufacturing":3,"heavy_industry":1,"mixed":1.5},
 			"minSize":4,
 			#"maxSize":6,
 			#"allowDuplicates":false,
@@ -201,19 +201,19 @@
 		{
 			"name":"autofac_heavy_industry",
 			"cost":300,
-			"archetypes":{"default":0.5,"agriculture":0,"manufacturing":2,"heavy_industry":3.75,"mixed":1},
+			"archetypes":{"manufacturing":1.5,"heavy_industry":3.75,"mixed":1},
 			"minSize":4,
 		},
 		{
 			"name":"antimatter_fuel_production",
 			"cost":300,
-			"archetypes":{"manufacturing":1.25,"heavy_industry":3.25,"mixed":0.75},
+			"archetypes":{"manufacturing":0.75,"heavy_industry":3.25,"mixed":0.75},
 			"minSize":4,
 		},
 		{
 			"name":"shipbreaking_center",
-			"cost":400,
-			"archetypes":{"manufacturing":1,"heavy_industry":4},
+			"cost":350,
+			"archetypes":{"manufacturing":0.5,"heavy_industry":4},
 			"minSize":5,
 			#"allowDuplicates":false
 		},

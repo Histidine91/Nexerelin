@@ -24,12 +24,13 @@ public final class ExerelinSetupData
 
 	// Sector Generation Defaults
 	public int numSystems = 6;
+	public int numSystemsEmpty = 2;
 	public int maxMoonsPerPlanet = 2;
 
 	public int maxPlanets = 5;
 	public int maxStations = 3;
 	public int maxAsteroidBelts = 3;
-	public int maxSystemSize = 14000;
+	public int maxSystemSize = 15000;
 	public int maxSectorSize = 12000;
 
 	// Game defaults

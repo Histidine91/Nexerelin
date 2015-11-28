@@ -38,8 +38,8 @@ ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,,,"exerelinNGCOptionsDone:Pro
 7:exerelinNGCOtherOptions:Other options",
 ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCEnableCorvusMode:Enable Corvus Mode,
 ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCDisableCorvusMode:Disable Corvus Mode,
-ExerelinNewGameSectorConfig,ExerelinNGCOptions,!$corvusMode,,,"
-exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
+ExerelinNewGameSectorConfig,ExerelinNGCOptions,!$corvusMode,,,"exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
+exerelinNGCSetNumSystemsEmpty:Set number of empty star systems ($numSystemsEmpty)
 exerelinNGCSetMaxPlanets:Set max planets per system ($maxPlanets)
 exerelinNGCSetMaxStations:Set max stations per system ($maxStations)
 exerelinNGCSetNumFactions:Set number of factions at start ($numStartFactions)",
@@ -78,6 +78,36 @@ AddText ""Set number of star systems to 12"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ExerelinNGCNumSystems16,NewGameOptionSelected,$option==exerelinNGCNumSystems16,"NGCSetNumSystems 16
 AddText ""Set number of star systems to 16"" textFriendColor
+FireAll ExerelinNGCOptions",,,
+,,,,,,
+ExerelinNGCNumStarSystemsEmptyMenu,NewGameOptionSelected,$option==exerelinNGCSetNumSystemsEmpty,,,"exerelinNGCNumSystemsEmpty0:Zero
+exerelinNGCNumSystemsEmpty1:One
+exerelinNGCNumSystemsEmpty2:Two
+exerelinNGCNumSystemsEmpty3:Three
+exerelinNGCNumSystemsEmpty4:Four
+exerelinNGCNumSystemsEmpty6:Six
+exerelinNGCNumSystemsEmpty8:Eight
+exerelinNGCOptionsBack:Back",
+ExerelinNGCNumSystemsEmpty0,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty0,"NGCSetNumSystemsEmpty 0
+AddText ""Set number of empty star systems to 0"" textFriendColor
+FireAll ExerelinNGCOptions",,,
+ExerelinNGCNumSystemsEmpty1,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty1,"NGCSetNumSystemsEmpty 1
+AddText ""Set number of empty star systems to 1"" textFriendColor
+FireAll ExerelinNGCOptions",,,
+ExerelinNGCNumSystemsEmpty2,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty2,"NGCSetNumSystemsEmpty 2
+AddText ""Set number of empty star systems to 2"" textFriendColor
+FireAll ExerelinNGCOptions",,,
+ExerelinNGCNumSystemsEmpty3,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty3,"NGCSetNumSystemsEmpty 3
+AddText ""Set number of empty star systems to 3"" textFriendColor
+FireAll ExerelinNGCOptions",,,
+ExerelinNGCNumSystemsEmpty4,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty4,"NGCSetNumSystemsEmpty 4
+AddText ""Set number of empty star systems to 4"" textFriendColor
+FireAll ExerelinNGCOptions",,,
+ExerelinNGCNumSystemsEmpty6,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty6,"NGCSetNumSystemsEmpty 6
+AddText ""Set number of empty star systems to 6"" textFriendColor
+FireAll ExerelinNGCOptions",,,
+ExerelinNGCNumSystemsEmpty8,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty8,"NGCSetNumSystemsEmpty 8
+AddText ""Set number of empty star systems to 8"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
 ExerelinNGCMaxPlanetsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxPlanets,,,"exerelinNGCMaxPlanets2:Two
@@ -167,9 +197,7 @@ AddText ""All available factions will spawn at start"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
 ,,,,,,
-,,,,,,
 ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,$option==exerelinNGCOtherOptions,FireAll ExerelinNGCOtherOptions,,,
-,,,,,,
 ,,,,,,
 ExerelinNGCListOptionEnableOmnifactory,ExerelinNGCOtherOptions,!$omniFacPresent,,,exerelinNGCEnableOmnifactory:Enable Omnifactory,
 ExerelinNGCListOptionDisableOmnifactory,ExerelinNGCOtherOptions,$omniFacPresent,,,exerelinNGCDisableOmnifactory:Disable Omnifactory,

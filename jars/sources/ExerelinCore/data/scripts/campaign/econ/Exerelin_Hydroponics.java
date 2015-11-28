@@ -10,7 +10,7 @@ public class Exerelin_Hydroponics extends BaseMarketConditionPlugin {
 	public static final float HYDROPONICS_FOOD = 3000f;
 	public static final float HYDROPONICS_HEAVY_MACHINERY = 20f;
 	
-	public static final float HYDROPONICS_CAPACITY_MULT = 0.25f;	// 1.0 means feeds 100% of typical population demand
+	public static final float HYDROPONICS_CAPACITY_MULT = 0.3f;	// 1.0 means feeds 100% of typical population demand
 	public static final float HYDROPONICS_CREW_POP_MULT = 0.001f * HYDROPONICS_CAPACITY_MULT;
 	public static final float HYDROPONICS_FOOD_POP_MULT = 0.1f * HYDROPONICS_CAPACITY_MULT;
 	public static final float HYDROPONICS_HEAVY_MACHINERY_POP_MULT = 0.002f * HYDROPONICS_CAPACITY_MULT;
