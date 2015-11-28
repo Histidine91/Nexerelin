@@ -10,11 +10,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import data.scripts.campaign.SSP_FleetFactory;
-import data.scripts.campaign.SSP_LevelUpper;
-import static data.scripts.variants.SSP_FleetRandomizer.getArchetypeFromRole;
 import data.scripts.variants.SSP_VariantRandomizer;
 import data.scripts.world.SSP_FleetInjector;
 import data.scripts.world.SSP_FleetInjector.CommanderType;
@@ -80,15 +76,13 @@ public class ExerelinUtilsFleet
      */
     public static void injectFleet(CampaignFleetAPI fleet, MarketAPI market, Float stability, Float qualityFactor, String type) {      
         String factionId = fleet.getFaction().getId();
-        MemoryAPI memory = fleet.getMemoryWithoutUpdate();
-        int maxFP = memory.contains("$maxFP") ? ((Integer)memory.get("$maxFP")).intValue() : fleet.getFleetPoints();
                 
         log.info("Fleet " + fleet.getName() + ": stability " + stability + "; qf " + qualityFactor);
         //float qualityFactorOriginal = qualityFactor;
         //qualityFactor = Math.max(qualityFactor, 0.7f);
         
-        SSP_VariantRandomizer.Archetype theme = null;    //pickTheme(factionId);
-        //setThemeName(fleet, theme);
+        SSP_VariantRandomizer.Archetype theme = SSP_FleetInjector.pickTheme(factionId);
+        SSP_FleetInjector.setThemeName(fleet, theme);
         
         switch (type)
         {
