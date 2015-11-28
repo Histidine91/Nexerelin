@@ -215,8 +215,8 @@ ExerelinNGCListOptionEnableRespawnAllFactions,ExerelinNGCOtherOptions,"$respawnF
 $onlyRespawnStartingFactions",,,exerelinNGCEnableRespawnAllFactions:Enable respawning of factions not present at start,
 ExerelinNGCListOptionDisableRespawnAllFactions,ExerelinNGCOtherOptions,"$respawnFactions
 !$onlyRespawnStartingFactions",,,exerelinNGCDisableRespawnAllFactions:Disable respawning of factions not present at start,
-ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"SetTooltip exerelinNGCEnableHardMode ""Hard mode: halved salary and insurance payments; other factions are more aggressive towards yours; enables SS+ bounty hunters""",,exerelinNGCEnableHardMode:Enable Starfarer Mode,
-ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"SetTooltip exerelinNGCDisableHardMode ""Hard mode: halved salary and insurance payments; other factions are more aggressive towards yours; enables SS+ bounty hunters""",,exerelinNGCDisableHardMode:Disable Starfarer Mode,
+ExerelinNGCListOptionEnableHardMode,ExerelinNGCOtherOptions,!$hardMode,"SetTooltip exerelinNGCEnableHardMode ""Hard mode: halved salary and insurance payments; other factions are more aggressive towards yours""",,exerelinNGCEnableHardMode:Enable Starfarer Mode,
+ExerelinNGCListOptionDisableHardMode,ExerelinNGCOtherOptions,$hardMode,"SetTooltip exerelinNGCDisableHardMode ""Hard mode: halved salary and insurance payments; other factions are more aggressive towards yours""",,exerelinNGCDisableHardMode:Disable Starfarer Mode,
 ExerelinNGCOtherOptionsBack,ExerelinNGCOtherOptions,,,,10:exerelinNGCOptionsBack:Back,
 ,,,,,,
 ExerelinNGCEnableCorvusMode,NewGameOptionSelected,$option==exerelinNGCEnableCorvusMode,"NGCSetCorvusMode true
