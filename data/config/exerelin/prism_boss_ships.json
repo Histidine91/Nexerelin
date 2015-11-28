@@ -2,19 +2,23 @@
     "ssp":[
         {
             "id":"ssp_boss_afflictor",  # hull ID
-            "ibbNum":20                 # must complete this famous bounty to unlock this ship (can be disabled in config)
+            "ibbNum":22                 # must complete this famous bounty to unlock this ship (can be disabled in config)
         },
         {
             "id":"ssp_boss_atlas",
-            "ibbNum":14
+            "ibbNum":15
         },
         {
             "id":"ssp_boss_aurora",
-            "ibbNum":16
+            "ibbNum":17
+        },
+        {
+            "id":"ssp_boss_beholder",
+            "ibbNum":8
         },
         {
             "id":"ssp_boss_brawler",
-            "ibbNum":12
+            "ibbNum":13
         },
         {
             "id":"ssp_boss_cerberus",
@@ -22,31 +26,31 @@
         },
         {
             "id":"ssp_boss_conquest",
-            "ibbNum":13
+            "ibbNum":14
         },
         {
             "id":"ssp_boss_dominator",
-            "ibbNum":12
+            "ibbNum":13
         },
         {
             "id":"ssp_boss_doom",
-            "ibbNum":20
+            "ibbNum":22
         },
         {
             "id":"ssp_boss_eagle",
-            "ibbNum":11
+            "ibbNum":12
         },
         {
             "id":"ssp_boss_euryale",
-            "ibbNum":20
+            "ibbNum":22
         },
         {
             "id":"ssp_boss_falcon",
-            "ibbNum":10
+            "ibbNum":11
         },
         {
             "id":"ssp_boss_hammerhead",
-            "ibbNum":9
+            "ibbNum":10
         },
         {
             "id":"ssp_boss_heron",
@@ -58,7 +62,7 @@
         },
         {
             "id":"ssp_boss_hyperion",
-            "ibbNum":22
+            "ibbNum":23
         },
         {
             "id":"ssp_boss_lasher_b",
@@ -70,7 +74,7 @@
         },
         {
             "id":"ssp_boss_medusa",
-            "ibbNum":10
+            "ibbNum":11
         },
         {
             "id":"ssp_boss_mule",
@@ -78,23 +82,23 @@
         },
         {
             "id":"ssp_boss_odyssey",
-            "ibbNum":16
+            "ibbNum":17
         },
         {
             "id":"ssp_boss_onslaught",
-            "ibbNum":18
+            "ibbNum":19
         },
         {
             "id":"ssp_boss_paragon",
-            "ibbNum":22
+            "ibbNum":23
         },
         {
             "id":"ssp_boss_phaeton",
-            "ibbNum":14
+            "ibbNum":15
         },
         {
             "id":"ssp_boss_shade",
-            "ibbNum":20
+            "ibbNum":22
         },
         {
             "id":"ssp_boss_stheno",
@@ -102,7 +106,7 @@
         },
         {
             "id":"ssp_boss_sunder",
-            "ibbNum":9
+            "ibbNum":10
         },
         {
             "id":"ssp_boss_tarsus",
@@ -119,37 +123,41 @@
         },
         {
             "id":"junk_pirates_boss_dugong",
-            "ibbNum":8
+            "ibbNum":9
         },
     ],
     "shadow_industry":[
         {
             "id":"ms_boss_mimir",
-            "ibbNum":19
+            "ibbNum":20
         },
         {
             "id":"ms_boss_charybdis",
-            "ibbNum":15
+            "ibbNum":16
         },
         {
             "id":"msp_boss_potniaBis",
-            "ibbNum":19
+            "ibbNum":20
         },
     ],
     "interstellarimperium":[
         {
             "id":"ii_boss_praetorian",
-            "ibbNum":17
+            "ibbNum":18
         },
         {
             "id":"ii_boss_olympus",
-            "ibbNum":17
+            "ibbNum":18
         },
     ],
     "templars":[
         {
             "id":"tem_boss_paladin",
             "ibbNum":21
+        },
+        {
+            "id":"tem_boss_archbishop",
+            "ibbNum":23
         },
     ],
     # not actually a boss ship but it fits
