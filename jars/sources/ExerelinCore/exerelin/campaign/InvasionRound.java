@@ -41,7 +41,7 @@ public class InvasionRound {
 	public static final float ATTACKER_BASE_STRENGTH = 0.6f; 
 	public static final float ATTACKER_RANDOM_BONUS = 0.2f;
 	public static final float ATTACKER_FLEET_MULT = 0.5f;
-	public static final float DEFENDER_BASE_STRENGTH = 0.4f;
+	public static final float DEFENDER_BASE_STRENGTH = 0.2f;
 	public static final float DEFENDER_STABILITY_MOD = 0.5f;
 	public static final float DEFENDER_MILITARY_BASE_MOD = 0.25f;
 	public static final float DEFENDER_REGIONAL_CAPITAL_MOD = 0.25f;
@@ -158,7 +158,7 @@ public class InvasionRound {
 	public static float GetDefenderStrength(MarketAPI market, float bonusMult, boolean isRaid)
 	{
 		float marketSize = market.getSize();
-		float baseDefenderStrength = DEFENDER_BASE_STRENGTH * (float)(Math.pow(marketSize, 3));
+		float baseDefenderStrength = DEFENDER_BASE_STRENGTH * (float)(Math.pow(marketSize+1, 3));
 		baseDefenderStrength = baseDefenderStrength * (market.getStabilityValue() + 1 - DEFENDER_STABILITY_MOD) * DEFENDER_STABILITY_MOD;
 		float defenderStrength = baseDefenderStrength;
 		float defenderBonus = 0;
@@ -348,8 +348,7 @@ public class InvasionRound {
 			if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
 			//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide
 			if (seenFactions.contains(otherMarket.getFactionId())) continue;
-
-			CampaignEventTarget tempTarget = new CampaignEventTarget(otherMarket);
+			
 			RepLevel level = attackerFaction.getRelationshipLevel(otherMarket.getFaction());
 			seenFactions.add(otherMarket.getFactionId());
 			if (level.isAtWorst(RepLevel.HOSTILE)) {
@@ -380,9 +379,9 @@ public class InvasionRound {
 			// Spire biology is different
 			if (!defenderFactionId.equals("spire") &&  !defenderFactionId.equals("darkspire"))
 			{
-			float deathsInflicted = GetDefenderStrength(market, 0.5f, isRaid);
-			float numAvgKids = MathUtils.getRandomNumberInRange(0f, 1.5f) + MathUtils.getRandomNumberInRange(0f, 1.5f);
-			StatsTracker.getStatsTracker().modifyOrphansMade((int)(deathsInflicted * numAvgKids));
+				float deathsInflicted = GetDefenderStrength(market, 0.5f, isRaid);
+				float numAvgKids = MathUtils.getRandomNumberInRange(0f, 1.5f) + MathUtils.getRandomNumberInRange(0f, 1.5f);
+				StatsTracker.getStatsTracker().modifyOrphansMade((int)(deathsInflicted * numAvgKids));
 			}
 		}
 		

@@ -555,14 +555,13 @@ $market.id != prismFreeport_market",,,1:exerelinInvasion:Invade the planet/stati
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
 PredictInvasionResults
 FireAll ExerelinInvadeListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
-ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,,,"
-2:exerelinInvasionHelp:Consult a help file
+ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,,,"2:exerelinInvasionHelp:Consult a help file
 4:exerelinInvasionCancel:Cancel",
 ExerelinInvadeListOptionInvade,ExerelinInvadeListOptions,HasMarines,SetEnabled exerelinInvasionProceed true,,1:exerelinInvasionProceed:Proceed,
 ExerelinInvadeListOptionInvadeNoMarines,ExerelinInvadeListOptions,!HasMarines,"SetTooltip exerelinInvasionProceed ""You have no marines!""
 SetEnabled exerelinInvasionProceed false",,1:exerelinInvasionProceed:Proceed,
 ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,FireAll ExerelinInvadeListOptions,"Base attacker strength = (marine strength + fleet DP/2) * 0.7
-Base defender strength = (market size^3) * (stability + 0.25) * 0.75
+Base defender strength = 0.2* (market size+1)^3 * (stability + 0.5) * 0.5
 Each Military Base and Regional Capital adds 25% to defender strength, Headquarters adds 40%.
 Attacker strength varies by up to 1/7th in either direction.
 
