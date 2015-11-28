@@ -3,6 +3,7 @@ package exerelin.campaign;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
@@ -276,18 +277,28 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         return event.getAlertLevel();
     }
     
-    public static CovertActionResult covertActionRoll(double sChance, double sDetectChance, double fDetectChance)
+    public static CovertActionResult covertActionRoll(double sChance, double sDetectChance, double fDetectChance, boolean playerInvolved)
     {
-        return covertActionRoll(sChance, sDetectChance, fDetectChance, false, null);
+        return covertActionRoll(sChance, sDetectChance, fDetectChance, false, null, playerInvolved);
     }
     
-    public static CovertActionResult covertActionRoll(double sChance, double sDetectChance, double fDetectChance, boolean useAlertLevel, MarketAPI market)
+    public static CovertActionResult covertActionRoll(double sChance, double sDetectChance, double fDetectChance, boolean useAlertLevel, MarketAPI market, boolean playerInvolved)
     {
         CovertActionResult result = null;
         
         if (useAlertLevel)
         {
             sChance = sChance * (1 - getAlertLevel(market));
+        }
+        
+        if (playerInvolved)
+        {
+            CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+            if (!playerFleet.isTransponderOn())
+            {
+                sDetectChance *= 0.5f;
+                fDetectChance *= 0.75f;
+            }
         }
             
         if (Math.random() < sChance)
@@ -316,7 +327,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static CovertActionResult agentRaiseRelations(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Agent trying to raise relations");
-        CovertActionResult result = covertActionRoll((double)config.get("agentRaiseRelationsSuccessChance"), 0, (double)config.get("agentRaiseRelationsDetectionChanceFail"));
+        CovertActionResult result = covertActionRoll((double)config.get("agentRaiseRelationsSuccessChance"), 0, (double)config.get("agentRaiseRelationsDetectionChanceFail"), playerInvolved);
         if (result.isSucessful())
         {
             float effectMin = (float)(double)config.get("agentRaiseRelationsEffectMin");
@@ -363,7 +374,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     public static CovertActionResult agentLowerRelations(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, FactionAPI thirdFaction, boolean playerInvolved)
     {
         log.info("Agent trying to lower relations");
-        CovertActionResult result = covertActionRoll((double)config.get("agentLowerRelationsSuccessChance"), 0, (double)config.get("agentLowerRelationsDetectionChanceFail"));
+        CovertActionResult result = covertActionRoll((double)config.get("agentLowerRelationsSuccessChance"), 0, (double)config.get("agentLowerRelationsDetectionChanceFail"), playerInvolved);
         if (result.isSucessful())
         {
             float effectMin = (float)(double)config.get("agentLowerRelationsEffectMin");
@@ -416,7 +427,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     {
         log.info("Agent trying to destablize market");
         CovertActionResult result = covertActionRoll((double)config.get("agentDestabilizeSuccessChance"), (double)config.get("agentDestabilizeDetectionChance"),
-                (double)config.get("agentDestabilizeDetectionChanceFail"), true, market);
+                (double)config.get("agentDestabilizeDetectionChanceFail"), true, market, playerInvolved);
         
         if (result.isSucessful())
         {
@@ -479,7 +490,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     {
         log.info("Saboteur attacking reserve fleet");
         CovertActionResult result = covertActionRoll((double)config.get("sabotageReserveSuccessChance"), (double)config.get("sabotageReserveDetectionChance"),
-                (double)config.get("sabotageReserveDetectionChanceFail"), true, market);
+                (double)config.get("sabotageReserveDetectionChanceFail"), true, market, playerInvolved);
         if (result.isSucessful())
         {
             SectorAPI sector = Global.getSector();
@@ -537,7 +548,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     {
         log.info("Saboteur destroying food");
         CovertActionResult result = covertActionRoll((double)config.get("sabotageDestroyFoodSuccessChance"), (double)config.get("sabotageDestroyFoodDetectionChance"),
-                (double)config.get("sabotageDestroyFoodDetectionChanceFail"), true, market);
+                (double)config.get("sabotageDestroyFoodDetectionChanceFail"), true, market, playerInvolved);
         if (result.isSucessful())
         {
             float effectMin = (float)(double)config.get("sabotageDestroyFoodEffectMin");
