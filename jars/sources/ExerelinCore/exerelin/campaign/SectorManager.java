@@ -384,6 +384,19 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         InvasionFleetManager.spawnRespawnFleet(respawnFaction, sourceMarket, targetMarket);
     }
     
+    public static void setShowFactionInIntelTab(String factionId, boolean show)
+    {
+        if (factionId.equals("player_npc"))
+            return;    // do nothing
+        
+        ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+        if (conf != null && !conf.showIntelEvenIfDead)
+        {
+            FactionAPI faction = Global.getSector().getFaction(factionId);
+            faction.setShowInIntelTab(show);
+        }
+    }
+    
     public static void factionEliminated(FactionAPI victor, FactionAPI defeated, MarketAPI market)
     {
         if (defeated.getId().equals("independent"))
@@ -398,27 +411,33 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         //params.put("playerVictory", victor == playerFaction && getLiveFactionIdsCopy().size() == 1);
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
         
-        String defeatedId = defeated.getId();
+        //String defeatedId = defeated.getId();
         //DiplomacyManager.resetFactionRelationships(defeatedId);
+        
+        setShowFactionInIntelTab(defeated.getId(), false);
+        
         ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
         checkForVictory();
     }
     
     public static void factionRespawned(FactionAPI faction, MarketAPI market)
     {
+        String factionId = faction.getId();
         Map<String, Object> params = new HashMap<>();
         boolean existedBefore = false;
         if (sectorManager != null)
         {
-            existedBefore = sectorManager.historicFactionIds.contains(faction.getId());
+            existedBefore = sectorManager.historicFactionIds.contains(factionId);
         }
         params.put("existedBefore", existedBefore);
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_respawned", params);
         SectorManager.addLiveFactionId(faction.getId());
         if (sectorManager != null && !existedBefore)
         {
-            sectorManager.historicFactionIds.add(faction.getId());
+            sectorManager.historicFactionIds.add(factionId);
         }
+        
+        setShowFactionInIntelTab(factionId, true);
     }
     
     public static void checkForVictory()

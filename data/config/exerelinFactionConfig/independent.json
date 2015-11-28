@@ -1,7 +1,8 @@
 {
     "uniqueModClassName":"", # String
-    "playableFaction":"false", # Boolean
+    "playableFaction":false, # Boolean
     "corvusCompatible":true,
+    "showIntelEvenIfDead":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
