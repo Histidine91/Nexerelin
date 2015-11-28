@@ -28,7 +28,7 @@ import java.util.List;
 public class FollowMeAbility extends BaseDurationAbility {
 
 	protected static final String STRING_CATEGORY = "exerelin_abilities";
-	public static final float FOLLOW_DURATION = 15;
+	public static final float FOLLOW_DURATION = 10;
 	public static final float FOLLOW_FETCH_RANGE = 600;
 	public static final List<String> FOLLOW_VALID_FLEET_TYPES = new ArrayList<>();
 	
@@ -80,7 +80,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 					String type = (String)mem.get(MemFlags.MEMORY_KEY_FLEET_TYPE);
 					if (!FOLLOW_VALID_FLEET_TYPES.contains(type)) continue;
 					if (mem.contains(MemFlags.FLEET_BUSY)) continue;
-					
+					if (fleet.getBattle() != null) continue;
 					if (true)
                     {
 						CampaignFleetAIAPI ai = (CampaignFleetAIAPI) fleet.getAI();
@@ -135,8 +135,10 @@ public class FollowMeAbility extends BaseDurationAbility {
 //		title.setHighlightColor(gray);
 
 		float pad = 10f;
-		tooltip.addPara(StringHelper.getString(STRING_CATEGORY, "followMeTooltip1"), pad);
-		//tooltip.addPara(StringHelper.getString(STRING_CATEGORY, "followMeTooltip2"), pad);
+		String tooltip1 = StringHelper.getString(STRING_CATEGORY, "followMeTooltip1");
+		tooltip1 = StringHelper.substituteToken(tooltip1, "$numDays", FOLLOW_DURATION + "");
+		tooltip.addPara(tooltip1, pad);
+		tooltip.addPara(StringHelper.getString(STRING_CATEGORY, "followMeTooltip2"), pad);
 	}
 
 	public boolean hasTooltip() {

@@ -23,7 +23,7 @@
 	"exerelin_abilities":{
 		"followMeTitle":"Follow Me!",
 		"followMeFloatText":"Follow me!",
-		"followMeTooltip1":"Nearby fleets belonging to your faction or an alliance member will follow you around for 15 days.",
+		"followMeTooltip1":"Nearby non-busy fleets belonging to your faction or an alliance member will follow you around for $numDays days.",
 		"followMeTooltip2":"Only works on patrol, strike and defence fleets, and the fleet must have seen you with your transponder on.",
 	},
 	
