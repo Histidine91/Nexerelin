@@ -8,4 +8,10 @@
 	},
 	
 	"economyExceptionOnMissingMarketEntity":false,
+	
+	"graphics":{
+		"abilities":{
+			"exerelin_follow_me":"graphics/icons/abilities/something.png",
+		},
+	}
 }
