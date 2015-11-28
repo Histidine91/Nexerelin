@@ -93,7 +93,7 @@
 			"rare_ore":0.1,
 			"volatiles":0.4,
 		},
-		"twilight":{
+		"terran-eccentric":{
 			"ore":1,
 			"rare_ore":1,
 			"organics":0.1,
@@ -104,7 +104,7 @@
 			"volatiles":0.3,
 			"organics":0.2,
 		},
-		"barren_marginal":{
+		"barren-desert":{
 			"ore":0.9,
 			"rare_ore":0.9,
 			"organics":0.2,
@@ -124,7 +124,7 @@
 		"radiated":0.8,
 		"gas_giant":0.24,
 		"ice_giant":0.24,
-		"twilight":0.3,
+		"terran-eccentric":0.3,
 		"tundra":0.3,
 	}
 }
