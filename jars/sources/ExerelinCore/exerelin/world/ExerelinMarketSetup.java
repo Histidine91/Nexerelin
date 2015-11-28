@@ -39,6 +39,7 @@ import org.lazywizard.lazylib.MathUtils;
  *	Size 2: random(0, 1)
  *	Size 3-4: random(0,1) + random(0,1)
  *	Size 5-6: 1 + random(0,1)
+ *	Size 7: 1 + random(0,1) + random(0,1)
  * 
  * Once it's done assigning markets, it does a second pass
  * Add/remove market conditions to balance supply and demand of domestic goods, metal and supplies
@@ -84,6 +85,10 @@ public class ExerelinMarketSetup
 				JSONObject condJson = conditionsJson.getJSONObject(i);
 				String name = condJson.getString("name");
 				
+				String requiredMod = condJson.optString("requiredMod", null);
+				if (requiredMod != null && Global.getSector().getFaction(requiredMod) == null)
+					continue;
+				
 				MarketConditionDef cond = new MarketConditionDef(name);
 				cond.cost = condJson.optInt("cost", 0);
 				cond.special = condJson.optBoolean("special", false);
@@ -91,6 +96,7 @@ public class ExerelinMarketSetup
 				cond.maxSize = condJson.optInt("maxSize", 99);
 				cond.allowStations = condJson.optBoolean("allowStations", true);
 				cond.allowDuplicates = condJson.optBoolean("allowDuplicates", true);
+				cond.requiredMod = requiredMod;
 				
 				if (condJson.has("allowedPlanets"))
 				{
@@ -233,7 +239,9 @@ public class ExerelinMarketSetup
 		int numSpecial = 0;
 		if (size == 2 && Math.random() > 0.5) numSpecial = 1;
 		else if (size <= 4) numSpecial = MathUtils.getRandomNumberInRange(0, 1) + MathUtils.getRandomNumberInRange(0, 1);
-		else if (size <= 7) numSpecial = 1 + MathUtils.getRandomNumberInRange(0, 1);
+		else if (size <= 6) numSpecial = 1 + MathUtils.getRandomNumberInRange(0, 1);
+		else if (size <= 8) numSpecial = 1 + MathUtils.getRandomNumberInRange(0, 1) + MathUtils.getRandomNumberInRange(0, 1);
+		
 		for (int i=0; i<numSpecial; i++)
 		{
 			MarketConditionDef cond = pickMarketCondition(market, specialConditions, entityData, 0, false);
@@ -255,6 +263,7 @@ public class ExerelinMarketSetup
 		boolean allowDuplicates = true;
 		boolean allowStations = true;
 		boolean special = false;
+		String requiredMod;
 		final List<String> allowedPlanets = new ArrayList<>();
 		final List<String> disallowedPlanets  = new ArrayList<>();
 		final List<String> conflictsWith  = new ArrayList<>();

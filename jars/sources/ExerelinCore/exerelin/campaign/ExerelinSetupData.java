@@ -30,7 +30,7 @@ public final class ExerelinSetupData
 	public int maxPlanets = 5;
 	public int maxStations = 3;
 	public int maxAsteroidBelts = 3;
-	public int maxSystemSize = 15000;
+	public int baseSystemSize = 12800;
 	public int maxSectorSize = 12000;
 
 	// Game defaults

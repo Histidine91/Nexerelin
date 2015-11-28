@@ -27,6 +27,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.missions.MarketProcurementMissionCreator;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin;
@@ -37,12 +38,6 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.econ.Exerelin_Hydroponics;
 import data.scripts.campaign.econ.Exerelin_RecyclingPlant;
 import data.scripts.campaign.econ.Exerelin_SupplyWorkshop;
-import data.scripts.world.systems.SSP_Arcadia;
-import data.scripts.world.systems.SSP_Askonia;
-import data.scripts.world.systems.SSP_Corvus;
-import data.scripts.world.systems.SSP_Eos;
-import data.scripts.world.systems.SSP_Magec;
-import data.scripts.world.systems.SSP_Valhalla;
 import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
@@ -126,16 +121,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final Map<String, String[]> stationImages = new HashMap<>();
 	
 	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
-	protected static final float BINARY_STAR_DISTANCE = 11000;
+	protected static final float BINARY_STAR_DISTANCE = 13000;
 	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
 	protected static final float NEBULA_CHANCE = 0.35f;
 	protected static final float MAGNETIC_FIELD_CHANCE = 0.5f;
 	protected static final float STELLAR_RING_CHANCE = 0.3f;
+	protected static final float STAR_RANDOM_OFFSET = 100;
 	
 	// extremely sensitive to small changes, avoid touching these for now
 	// TODO externalise?
-	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.6f;
-	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 1.2f;	// lower than min so it can swap autofacs for shipbreakers if needed
+	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.3f;
+	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 1.1f;	// lower than min so it can swap autofacs for shipbreakers if needed
 	
 	protected ExerelinMarketSetup marketSetup = new ExerelinMarketSetup();
 	
@@ -153,6 +149,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected Map<MarketArchetype, Integer> numMarketsByArchetype = new HashMap<>();
 	protected WeightedRandomPicker<MarketArchetype> marketArchetypeQueue = new WeightedRandomPicker<>();
 	protected int marketArchetypeQueueNum = 0;
+	protected Map<String, Float> commodityDemand = new HashMap<>();	// TODO
+	protected Map<String, Float> commoditySupply = new HashMap<>();	// TODO
+	
+	// TODO: remove (use the maps above)
 	protected double domesticGoodsDemand = 0;
 	protected double domesticGoodsSupply = 0;
 	protected double suppliesDemand = 0;
@@ -367,23 +367,23 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		marketArchetypeQueueNum++;
 		
 		// always have at least one of each in the queue (usually)
-		marketArchetypeQueue.add(MarketArchetype.AGRICULTURE);
+		if (marketArchetypeQueueNum % 4 != 1)	// skip every fourth agriculture market
+			marketArchetypeQueue.add(MarketArchetype.AGRICULTURE);
 		//if (marketArchetypeQueueNum % 5 == 1)	// add an extra agriculture market every fifth round
 		//	marketArchetypeQueue.add(MarketArchetype.AGRICULTURE);
 		
-		marketArchetypeQueue.add(MarketArchetype.ORE);
-		if (marketArchetypeQueueNum % 5 == 0)	// add an extra ore market every fifth round
+		if (marketArchetypeQueueNum % 4 != 3)	// skip every fourth ore market
 			marketArchetypeQueue.add(MarketArchetype.ORE);
 		
-		if (marketArchetypeQueueNum % 4 != 2)	// skip every fourth organics market
+		if (marketArchetypeQueueNum % 3 != 2)	// skip every third organics market
 			marketArchetypeQueue.add(MarketArchetype.ORGANICS);
 		
-		if (marketArchetypeQueueNum % 4 != 3)	// skip every fourth volatiles market
+		if (marketArchetypeQueueNum % 3 != 1)	// skip every third volatiles market
 			marketArchetypeQueue.add(MarketArchetype.VOLATILES);
 		
 		marketArchetypeQueue.add(MarketArchetype.MANUFACTURING);
 		
-		if (marketArchetypeQueueNum % 5 != 4)	// skip every fifth heavy industry market
+		if (marketArchetypeQueueNum % 4 != 2)	// skip every fourth heavy industry market
 			marketArchetypeQueue.add(MarketArchetype.HEAVY_INDUSTRY);
 		
 		//marketArchetypeQueue.add(MarketArchetype.MIXED);
@@ -566,6 +566,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	{	
 		log.info("Pre-balance supplies supply/demand: " + (int)suppliesSupply + " / " + (int)suppliesDemand);
 		log.info("Pre-balance metal supply/demand: " + (int)metalSupply + " / " + (int)metalDemand);
+		log.info("Pre-balance weapons supply/demand: " + (int)gunsSupply + " / " + (int)gunsDemand);
 		
 		WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker<>();
 		for (EntityData entity:candidateEntities)
@@ -578,20 +579,33 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			//log.info("Testing entity for supply/metal balance: " + entity.entity.getName() + " | " + homeworld.entity.getName() + " | " + (entity == homeworld));
 			
-			boolean canRemoveAutofac = market.hasCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY) && entity.market != homeworld.market;
+			boolean canRemoveAutofac = market.hasCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
 			boolean canRemoveShipbreaking = market.hasCondition(Conditions.SHIPBREAKING_CENTER);
 			boolean excessSupplies = (suppliesSupply / suppliesDemand) > SUPPLIES_SUPPLY_DEMAND_RATIO_MAX;
 			int toRemove = 0;
+			
+			/*
+			if (metalSupply > metalDemand * 1.4)
+			{	
+				//log.info("\tToo much metal to remove autofac");
+				canRemoveAutofac = false;
+			}
+			else if (metalDemand > metalSupply * 1.15)
+			{
+				//log.info("\tToo little metal to remove shipbreaker");
+				canRemoveShipbreaking = false;
+			}
+			*/
 			
 			if ((canRemoveAutofac || canRemoveShipbreaking) && excessSupplies)
 			{
 				// only have one to remove
 				if (canRemoveAutofac && !canRemoveShipbreaking) toRemove = 1;
 				else if (!canRemoveAutofac && canRemoveShipbreaking) toRemove = 2;
-				// not enough metal
+				// metal shortfall
 				else if (metalDemand > metalSupply + ConditionData.AUTOFAC_HEAVY_METALS * 1.25)
 					toRemove = 1;
-				// too much metal
+				// metal surplus
 				else if (metalSupply > metalDemand + ConditionData.SHIPBREAKING_METALS * 1.25)
 					toRemove = 2;
 				else
@@ -600,7 +614,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					else toRemove = 2;
 				}
 			}
-			
 			
 			if (toRemove == 1)
 			{
@@ -681,6 +694,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		log.info("Final supplies supply/demand: " + (int)suppliesSupply + " / " + (int)suppliesDemand);
 		log.info("Final metal supply/demand: " + (int)metalSupply + " / " + (int)metalDemand);
+		log.info("Final weapons supply/demand: " + (int)gunsSupply + " / " + (int)gunsDemand);
 	}
 	
 	protected void balanceFood(List<EntityData> candidateEntities)
@@ -775,7 +789,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 						market.addCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION);	// add back all but one
 					fuelSupply -= ConditionData.FUEL_PRODUCTION_FUEL * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.FUEL);
 					weight *= 25;
-					log.info("Removed balancing Antimatter Fuel Production from " + market.getName() + " (size " + size + ")");
+					log.info("Removed balancing Antimatter Fuel Production from " + market.getName());
 				}
 			}
 			
@@ -860,12 +874,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			//newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);	// dependent on number of factions; bad idea
 			newMarket.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
 			newMarket.addCondition("exerelin_recycling_plant");
-			//newMarket.addCondition("exerelin_recycling_plant");
+			newMarket.addCondition("exerelin_recycling_plant");
 			newMarket.addCondition("exerelin_supply_workshop");
 			newMarket.addCondition("exerelin_hydroponics");
 			if (data == homeworld) 
 			{
-				newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
+				//newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
+				newMarket.addCondition("exerelin_supply_workshop");
 				//newMarket.addCondition(Conditions.SHIPBREAKING_CENTER);
 				newMarket.addCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION);
 			}
@@ -876,7 +891,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			newMarket.addCondition(Conditions.REGIONAL_CAPITAL);
 			//newMarket.addCondition("exerelin_recycling_plant");
 			newMarket.addCondition("exerelin_supply_workshop");
-			newMarket.addCondition("exerelin_hydroponics");
+			//newMarket.addCondition("exerelin_hydroponics");
 		}
 		else
 		{
@@ -891,12 +906,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		newMarket.addCondition("population_" + marketSize);
 		
 		int minSizeForMilitaryBase = 6;
+		if (ExerelinUtilsFaction.isPirateFaction(factionId))
+			minSizeForMilitaryBase = 5;
 		if (isMoon) minSizeForMilitaryBase = 5;
 		else if (isStation) minSizeForMilitaryBase = 5;
 		
 		if (marketSize >= minSizeForMilitaryBase)
 		{
-			newMarket.addCondition("military_base");
+			newMarket.addCondition(Conditions.MILITARY_BASE);
 		}
 		
 		// planet type conditions
@@ -933,7 +950,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 				
 		if(marketSize < 4 && !isStation){
-			newMarket.addCondition("frontier");
+			newMarket.addCondition(Conditions.FRONTIER);
 		}
 		
 		// add random market conditions
@@ -950,12 +967,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		newMarket.getTariff().modifyFlat("default_tariff", ExerelinConfig.baseTariff);
 		if (config.freeMarket)
 		{
-			newMarket.addCondition("free_market");
+			newMarket.addCondition(Conditions.FREE_PORT);
 			newMarket.getTariff().modifyMult("isFreeMarket", ExerelinConfig.freeMarketTariffMult);
 		}
 		
-		if (factionId.equals("luddic_church")) {
-			newMarket.addCondition("luddic_majority");
+		if (factionId.equals(Factions.LUDDIC_CHURCH)) {
+			newMarket.addCondition(Conditions.LUDDIC_MAJORITY);
 			//newMarket.addCondition("cottage_industry");
 		}
 		else if (factionId.equals("spire")) {
@@ -993,13 +1010,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		
 		// count some demand/supply values for market balancing
-		int population = ExerelinUtilsMarket.getPopulation(marketSize);
+		//int population = ExerelinUtilsMarket.getPopulation(marketSize);
 		
-		domesticGoodsDemand += ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.DOMESTIC_GOODS);
 		//domesticGoodsSupply += ExerelinUtilsMarket.getCommoditySupply(newMarket, Commodities.DOMESTIC_GOODS);
-		//metalDemand += ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.METALS);
 		//metalSupply += ExerelinUtilsMarket.getCommoditySupply(newMarket, Commodities.METALS);
-		suppliesDemand += ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.SUPPLIES);
 		//suppliesSupply += ExerelinUtilsMarket.getCommoditySupply(newMarket, Commodities.SUPPLIES);
 
 		int autofacCount = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.AUTOFAC_HEAVY_INDUSTRY);
@@ -1011,15 +1025,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		dgSupply += ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.COTTAGE_INDUSTRY) * ConditionData.COTTAGE_INDUSTRY_DOMESTIC_GOODS_MULT;
 		dgSupply *= ExerelinUtilsMarket.getPopulation(marketSize) * ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.DOMESTIC_GOODS);
 		domesticGoodsSupply += dgSupply;
+		domesticGoodsDemand += ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.DOMESTIC_GOODS);
 		
 		float mSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_METAL_PER_ORE * ConditionData.ORE_REFINING_ORE;
 		mSupply += shipbreakingCount * ConditionData.SHIPBREAKING_METALS;
 		mSupply += recyclingCount * Exerelin_RecyclingPlant.RECYCLING_METALS * Exerelin_RecyclingPlant.HAX_MULT_07_METALS;
-		mSupply += recyclingCount * Exerelin_SupplyWorkshop.WORKSHOP_METALS;
 		mSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.METALS);
 		metalSupply += mSupply;
-		float mDemand = autofacCount * ConditionData.AUTOFAC_HEAVY_METALS;
-		metalDemand += mDemand;
+		//float mDemand = autofacCount * ConditionData.AUTOFAC_HEAVY_METALS;
+		//mDemand += workshopCount * Exerelin_SupplyWorkshop.WORKSHOP_METALS;
+		//metalDemand += mDemand;
+		metalDemand += ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.METALS);
 		
 		float sSupply = autofacCount * ConditionData.AUTOFAC_HEAVY_SUPPLIES; 
 		sSupply += shipbreakingCount * ConditionData.SHIPBREAKING_SUPPLIES;
@@ -1027,6 +1043,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sSupply += workshopCount * Exerelin_SupplyWorkshop.WORKSHOP_SUPPLIES;
 		sSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.SUPPLIES);
 		suppliesSupply += sSupply;
+		suppliesDemand += ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.SUPPLIES);
 		
 		/*
 		float sDemand = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.SPACEPORT) * ConditionData.SPACEPORT_SUPPLIES * 0.6f;
@@ -1043,7 +1060,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		foodSupply += getMarketBaseFoodSupply(newMarket);
 		foodDemand += ConditionData.POPULATION_FOOD_MULT * ExerelinUtilsMarket.getPopulation(marketSize);
 		
-		gunsSupply += autofacCount * ConditionData.AUTOFAC_HEAVY_HAND_WEAPONS * ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.SUPPLIES);;
+		float gSupply = autofacCount * ConditionData.AUTOFAC_HEAVY_HAND_WEAPONS;
+		gSupply += workshopCount * Exerelin_SupplyWorkshop.WORKSHOP_HAND_WEAPONS;
+		gSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.HAND_WEAPONS);
+		gunsSupply += gSupply;
 		gunsDemand += ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.HAND_WEAPONS);
 		
 		//log.info("Cumulative domestic goods supply/demand thus far: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
@@ -1317,31 +1337,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		shanghaiEntity.setCustomDescriptionId("tiandong_shanghai");
 	}
 	
-	// TODO: update when new SS+ comes out
-	@Deprecated
-	protected void generateSSPSector(SectorAPI sector)
-	{
-		new SSP_Askonia().generate(sector);
-		new SSP_Eos().generate(sector);
-		new SSP_Valhalla().generate(sector);
-		new SSP_Arcadia().generate(sector);
-		new SSP_Magec().generate(sector);
-		new SSP_Corvus().generate(sector);
-
-		LocationAPI hyper = Global.getSector().getHyperspace();
-		SectorEntityToken zinLabel = hyper.addCustomEntity("zin_label_id", null, "zin_label", null);
-		SectorEntityToken abyssLabel = hyper.addCustomEntity("opabyss_label_id", null, "opabyss_label", null);
-		SectorEntityToken telmunLabel = hyper.addCustomEntity("telmun_label_id", null, "telmun_label", null);
-		SectorEntityToken cathedralLabel = hyper.addCustomEntity("cathedral_label_id", null, "cathedral_label", null);
-		SectorEntityToken coreLabel = hyper.addCustomEntity("core_label_id", null, "core_label", null);
-
-		zinLabel.setFixedLocation(-14500, -8000);
-		abyssLabel.setFixedLocation(-12000, -19000);
-		telmunLabel.setFixedLocation(-16000, 8000);
-		cathedralLabel.setFixedLocation(-20000, 2000);
-		coreLabel.setFixedLocation(17000, -6000);
-	}
-		
 	@Override
 	public void generate(SectorAPI sector)
 	{
@@ -1404,15 +1399,18 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			WeightedRandomPicker<Vector2f> picker = new WeightedRandomPicker<>();
 			addListToPicker(StarLocations.SPOT, picker);
+			
 			for(int i = 0; i < numSystems + numSystemsEmpty; i ++)
 			{
 				Vector2f pos = picker.pickAndRemove();
+				int x = (int)pos.x;
+				int y = (int)pos.y;
 				// offset a bit
-				int x = (int)pos.x + MathUtils.getRandomNumberInRange(-150, 150) + MathUtils.getRandomNumberInRange(-150, 150);
-				int y = (int)pos.y + MathUtils.getRandomNumberInRange(-150, 150) + MathUtils.getRandomNumberInRange(-150, 150);
+				x += MathUtils.getRandomNumberInRange(-STAR_RANDOM_OFFSET, STAR_RANDOM_OFFSET) + MathUtils.getRandomNumberInRange(-STAR_RANDOM_OFFSET, STAR_RANDOM_OFFSET);
+				y += MathUtils.getRandomNumberInRange(-STAR_RANDOM_OFFSET, STAR_RANDOM_OFFSET) + MathUtils.getRandomNumberInRange(-STAR_RANDOM_OFFSET, STAR_RANDOM_OFFSET);
 				
 				// map is rotated 180°in non-Corvus mode so adjust accordingly				
-				starPositions.add(new Integer[] {x, y});
+				starPositions.add(new Integer[] {-x, -y});
 			}
 			
 			// build systems
@@ -1427,21 +1425,16 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 		{
-			if (ExerelinUtils.isSSPInstalled())
-			{
-				generateSSPSector(sector);
-			}
-			else VanillaSystemsGenerator.generate();
+			VanillaSystemsGenerator.generate();
 		}
 		
 		// use vanilla hyperspace map
 		String hyperMap = "data/campaign/terrain/hyperspace_map.png";
 		if (!corvusMode)
 		{
-			//hyperMap = "data/campaign/terrain/Nexerelin/hyperspace_map_rot.png";
+			hyperMap = "data/campaign/terrain/Nexerelin/hyperspace_map_rot.png";
 		}
 		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG(hyperMap,
-		//SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG("data/campaign/terrain/hyperspace_map_filled.png",
 			  0, 0, // center of nebula
 			  Global.getSector().getHyperspace(), // location to add to
 			  "terrain", "deep_hyperspace", // "nebula_blue", // texture to use, uses xxx_map for map
@@ -1461,13 +1454,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (!ExerelinUtils.isSSPInstalled())
 		{
 			sector.addScript(new CoreEventProbabilityManager());
-			
 		}
 		sector.addScript(new EconomyFleetManager());
 		sector.addScript(new MercFleetManager());
 		sector.addScript(new LuddicPathFleetManager());
 		sector.addScript(new PirateFleetManager());
 		sector.addScript(new BountyPirateFleetManager());
+		sector.addScript(new MarketProcurementMissionCreator());
 		
 		if (!corvusMode) sector.addScript(new ForcePatrolFleetsScript());
 		//sector.addScript(new EconomyLogger());
@@ -1862,7 +1855,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			PlanetAPI star = system.getStar();
 			
 			float angle = MathUtils.getRandomNumberInRange(1, 360);
-			float distance = (BINARY_STAR_DISTANCE + star.getRadius()*5 + size*5) * MathUtils.getRandomNumberInRange(0.9f, 1.2f) ;
+			float distance = (BINARY_STAR_DISTANCE + star.getRadius()*5 + size*5) * MathUtils.getRandomNumberInRange(0.95f, 1.1f) ;
 			float orbitDays = getOrbitalPeriod(star, distance + star.getRadius());
 			
 			PlanetAPI planet = system.addPlanet(systemId, star, name, type, angle, size, distance, orbitDays);
@@ -1875,6 +1868,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	protected PlanetAPI makeStar(int systemIndex, StarSystemAPI system, boolean isSecondStar)
 	{
+		log.info("Creating star for system " + system.getBaseName());
 		PlanetAPI star;
 		int starType = MathUtils.getRandomNumberInRange(0, 10);
 		String systemId = system.getId();
@@ -1982,7 +1976,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (isBinary)
 		{
 			star2 = makeStar(systemIndex, system, true);
-			starData2 = new EntityData(star.getName(), system);
+			starData2 = new EntityData(star2.getName(), system);
 			starData2.entity = star2;
 			starData2.type = EntityType.STAR;
 			entities.add(starData2);
@@ -2005,7 +1999,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		else
 			numBasePlanets = maxPlanets;
 		
-		int distanceStepping = (ExerelinSetupData.getInstance().maxSystemSize + numBasePlanets * 600)/MathUtils.getRandomNumberInRange(numBasePlanets, maxPlanets);
+		int distanceStepping = (ExerelinSetupData.getInstance().baseSystemSize + numBasePlanets * 600)/MathUtils.getRandomNumberInRange(numBasePlanets+1, maxPlanets+1);
 		
 		if (isBinary) numBasePlanets *= BINARY_SYSTEM_PLANET_MULT;
 		
@@ -2022,7 +2016,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (inhabited) habitable = Math.random() <= habitableChance;
 			EntityData entityData = new EntityData("", system, i+1);
 			entityData.habitable = habitable;
-			entityData.primary = starData;
+			//entityData.primary = starData;
 
 			if (habitable)
 			{
@@ -2268,20 +2262,25 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		// set sector capital
 		WeightedRandomPicker<EntityData> capitalPicker = new WeightedRandomPicker<>();
-		for (EntityData planetData : entities)
+		for (EntityData entityData : entities)
 		{
-			if (inhabited && !planetData.habitable) continue;
+			if (inhabited && !entityData.habitable) continue;
 			float weight = 1f;
+			if (entityData.type == EntityType.STAR) continue;
+			else if (entityData.type == EntityType.MOON) weight *= 0.001f;
+			
+			EntityData planetData = entityData;
+			if (entityData.type == EntityType.MOON) planetData = entityData.primary;
 			if (planetData.planetNum == 2 || planetData.planetNum == 3)
 			{
-				weight = 4f;
+				weight *= 16f;
 			}
 			if (planetData.primary == starData2) 
 			{
 				if (systemIndex == 0) weight *= 0;
 				else weight *= 0.67f;
 			}
-			capitalPicker.add(planetData, weight);
+			capitalPicker.add(entityData, weight);
 		}
 		capital = capitalPicker.pick();
 		capital.isCapital = true;
@@ -2366,7 +2365,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			starBelts1.add(distance);
 			
 			// Another one if medium system size
-			if(ExerelinSetupData.getInstance().maxSystemSize > 16000)
+			if(ExerelinSetupData.getInstance().baseSystemSize > 16000)
 			{
 				distance = getRandomOrbitRadiusBetweenPlanets(entities, 12000, 25000);
 				baseOrbitDays = getOrbitalPeriod(star, distance);
@@ -2377,7 +2376,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				starBelts1.add(distance);
 			}
 			// And another one if a large system
-			if(ExerelinSetupData.getInstance().maxSystemSize > 32000)
+			if(ExerelinSetupData.getInstance().baseSystemSize > 32000)
 			{
 				distance = getRandomOrbitRadiusBetweenPlanets(entities, 18000, 35000);
 				baseOrbitDays = getOrbitalPeriod(star, distance);
@@ -2486,9 +2485,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			*/
 			
 			// capital L4/L5 jump point
-			SectorEntityToken capitalToken = capital.entity;
-			JumpPointAPI capitalJumpPoint = Global.getFactory().createJumpPoint(capitalToken.getId() + "_jump", capitalToken.getName() + " Bridge");
-			setLagrangeOrbit(capitalJumpPoint, capital.primary.entity, capitalToken, -1, capital.startAngle, capital.orbitRadius, 0, capital.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
+			EntityData jumpLink = capital;
+			if (jumpLink.type == EntityType.MOON) jumpLink = jumpLink.primary;	// L4/L5 of the planet instead of the moon
+			JumpPointAPI capitalJumpPoint = Global.getFactory().createJumpPoint(jumpLink.entity.getId() + "_jump", jumpLink.name + " Bridge");
+			log.info("Creating jump point at " + jumpLink.name + ", has primary? " + (jumpLink.primary != null));
+			setLagrangeOrbit(capitalJumpPoint, jumpLink.primary.entity, jumpLink.entity, -1, jumpLink.startAngle, jumpLink.orbitRadius, 0, jumpLink.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
 			system.addEntity(capitalJumpPoint);
 			capitalJumpPoint.setStandardWormholeToHyperspaceVisual();
 			

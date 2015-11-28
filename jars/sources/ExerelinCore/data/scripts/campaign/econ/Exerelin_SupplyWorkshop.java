@@ -6,14 +6,28 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
 public class Exerelin_SupplyWorkshop extends BaseMarketConditionPlugin {
 	
+	// for comparison
+	/*
+	public static final float AUTOFAC_HEAVY_METALS = 20000;
+	public static final float AUTOFAC_HEAVY_RARE_METALS = 1000;
+	public static final float AUTOFAC_HEAVY_VOLATILES = 1000;
+	public static final float AUTOFAC_HEAVY_ORGANICS = 10000;
+	public static final float AUTOFAC_HEAVY_CREW = 1000;
+	public static final float AUTOFAC_HEAVY_MACHINERY_DEMAND = 50;
+	public static final float AUTOFAC_HEAVY_MACHINERY = 5000;
+	public static final float AUTOFAC_HEAVY_SUPPLIES = 12000;
+	public static final float AUTOFAC_HEAVY_HAND_WEAPONS = 40000;
+	*/
+	
 	public static final float WORKSHOP_CREW = 400f;
 	public static final float WORKSHOP_VOLATILES = 1000f;
 	public static final float WORKSHOP_ORGANICS = 5000f;
-	public static final float WORKSHOP_METALS = 2000f;
-	public static final float WORKSHOP_RARE_METALS = 100f;
+	public static final float WORKSHOP_METALS = 5000f;
+	public static final float WORKSHOP_RARE_METALS = 200f;
 	public static final float WORKSHOP_HEAVY_MACHINERY_DEMAND = 25f;
-	public static final float WORKSHOP_HEAVY_MACHINERY = 600f;
-	public static final float WORKSHOP_SUPPLIES = 4000f;
+	public static final float WORKSHOP_HEAVY_MACHINERY = 1500f;
+	public static final float WORKSHOP_SUPPLIES = 3000f;
+	public static final float WORKSHOP_HAND_WEAPONS = 3000f;	// mostly here just so the system doesn't fail if there are no autofacs
 	
 	@Override
 	public void apply(String id) {
@@ -31,6 +45,7 @@ public class Exerelin_SupplyWorkshop extends BaseMarketConditionPlugin {
 		
 		market.getCommodityData(Commodities.SUPPLIES).getSupply().modifyFlat(id, WORKSHOP_SUPPLIES * productionMult);
 		market.getCommodityData(Commodities.HEAVY_MACHINERY).getSupply().modifyFlat(id, WORKSHOP_HEAVY_MACHINERY * productionMult);
+		market.getCommodityData(Commodities.HAND_WEAPONS).getSupply().modifyFlat(id, WORKSHOP_HAND_WEAPONS * productionMult);
 	}
 	
 	@Override
@@ -44,5 +59,6 @@ public class Exerelin_SupplyWorkshop extends BaseMarketConditionPlugin {
 		market.getDemand(Commodities.RARE_METALS).getDemand().unmodify(id);
 		market.getCommodityData(Commodities.SUPPLIES).getSupply().unmodify(id);
 		market.getCommodityData(Commodities.HEAVY_MACHINERY).getSupply().unmodify(id);
+		market.getCommodityData(Commodities.HAND_WEAPONS).getSupply().unmodify(id);
 	}
 }
