@@ -13,7 +13,7 @@
 		
 		"Acheron":"SCY_prismFreeport",
 		"Aesir":"breidablik",
-		"Anar":"euripedes",
+		"Anar":"euripides",
 		"ApproLight":"ApproLight01",
 		"Antioch":"tem_ascalon",
 		"Atalie":"atalieB2a",
@@ -174,7 +174,7 @@
 		},
 		"shadow_industry":{
 			"system":"Anar",
-			"entity":"euripedes"
+			"entity":"euripides"
 		},
 		"tiandong":{
 			"system":"Shaanxi",
