@@ -892,12 +892,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 
                 else    // start hostile with hated factions, friendly with liked ones (from config)
                 {
-                    // faction not currently alive; don't bother setting relationships
-                    if (!SectorManager.isFactionAlive(factionId))
-                    {
-                        continue;
-                    }
-                    
                     ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
                     if (factionConfig == null) continue;
                     
@@ -921,11 +915,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                         }
                     }
                     
-                    for (String likedFactionId : factionConfig.factionsNeutral) {
-                        FactionAPI indifferentFaction = sector.getFaction(likedFactionId);
+                    for (String indifferentFactionId : factionConfig.factionsNeutral) {
+                        FactionAPI indifferentFaction = sector.getFaction(indifferentFactionId);
                         if (indifferentFaction != null && !indifferentFaction.isNeutralFaction())
                         {
-                            faction.setRelationship(likedFactionId, 0);
+                            faction.setRelationship(indifferentFactionId, 0);
                         }
                     }
                 }
