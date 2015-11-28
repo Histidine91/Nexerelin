@@ -23,6 +23,12 @@ public class ExerelinUtilsMarket {
 		return market.getCommodityData(commodity).getSupply().computeMultMod();
 	}
 	
+	public static float getCommodityDemandFractionMet(MarketAPI market, String commodity, boolean clamp)
+	{
+		if (clamp) return market.getCommodityData(commodity).getDemand().getClampedAverageFractionMet();
+		else return market.getCommodityData(commodity).getDemand().getAverageFractionMet();
+	}
+	
 	public static int countMarketConditions(MarketAPI market, String marketCondition)
 	{
 		int count = 0;
