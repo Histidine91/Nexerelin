@@ -85,8 +85,8 @@ public class ExerelinMarketSetup
 				JSONObject condJson = conditionsJson.getJSONObject(i);
 				String name = condJson.getString("name");
 				
-				String requiredMod = condJson.optString("requiredMod", null);
-				if (requiredMod != null && Global.getSector().getFaction(requiredMod) == null)
+				String requiredFaction = condJson.optString("requiredFaction","");
+				if (!requiredFaction.isEmpty() && Global.getSector().getFaction(requiredFaction) == null)
 					continue;
 				
 				MarketConditionDef cond = new MarketConditionDef(name);
@@ -96,7 +96,7 @@ public class ExerelinMarketSetup
 				cond.maxSize = condJson.optInt("maxSize", 99);
 				cond.allowStations = condJson.optBoolean("allowStations", true);
 				cond.allowDuplicates = condJson.optBoolean("allowDuplicates", true);
-				cond.requiredMod = requiredMod;
+				cond.requiredFaction = requiredFaction;
 				
 				if (condJson.has("allowedPlanets"))
 				{
@@ -263,7 +263,7 @@ public class ExerelinMarketSetup
 		boolean allowDuplicates = true;
 		boolean allowStations = true;
 		boolean special = false;
-		String requiredMod;
+		String requiredFaction;
 		final List<String> allowedPlanets = new ArrayList<>();
 		final List<String> disallowedPlanets  = new ArrayList<>();
 		final List<String> conflictsWith  = new ArrayList<>();

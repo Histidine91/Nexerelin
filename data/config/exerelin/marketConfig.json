@@ -309,7 +309,7 @@
 		},
 		{
 			"name":"ms_medCenter",
-			"requirefaction":"shadow_industry",
+			"requiredFaction":"shadow_industry",
 			#"special":true,
 			"cost":200,
 			"archetypes":{"default":1},

@@ -133,7 +133,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.3f;
 	protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 1.1f;	// lower than min so it can swap autofacs for shipbreakers if needed
 	
-	protected ExerelinMarketSetup marketSetup = new ExerelinMarketSetup();
+	protected ExerelinMarketSetup marketSetup;
 	
 	protected List<String> factionIds = new ArrayList<>();
 	protected List<Integer[]> starPositions = new ArrayList<>();	
@@ -341,6 +341,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		fuelSupply = 0;
 		gunsDemand = 0;
 		gunsSupply = 0;
+		marketSetup = new ExerelinMarketSetup();
 	}
 	
 	protected void addListToPicker(List list, WeightedRandomPicker picker)
@@ -889,7 +890,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			if (marketSize < 6) marketSize = 6;
 			newMarket.addCondition(Conditions.REGIONAL_CAPITAL);
-			//newMarket.addCondition("exerelin_recycling_plant");
+			newMarket.addCondition("exerelin_recycling_plant");
 			newMarket.addCondition("exerelin_supply_workshop");
 			//newMarket.addCondition("exerelin_hydroponics");
 		}
