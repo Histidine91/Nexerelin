@@ -150,7 +150,7 @@
             "ibbNum":19
         },
         {
-            "id":"ii_boss_dominus_cus",
+            "id":"ii_boss_dominus",
             "ibbNum":24
         },
     ],
@@ -166,10 +166,10 @@
     ],
     "tiandong":[
         {
-            "id":"tiandong_boss_wuzhang_Standard",
+            "id":"tiandong_boss_wuzhang",
             "ibbNum":11
         },
-    ]
+    ],
     # not actually a boss ship but it fits
     "neutrinocorp":[
         {
