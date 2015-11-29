@@ -53,7 +53,7 @@
     "ownFactionCustomsInspections": false,  # will your faction perform customs inspections on you? (always off for player_npc)
     "warmongerPenalty": 1,   # take reputation hit from starting a war? 0 = never, 1 = not for player_npc, 2 = always
     
-    "countPiratesForVictory": true,
+    "countPiratesForVictory": false,
     
     "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (non-Corvus mode only)
     "enableShanghai": true,   # adds Shanghai for Tiandong Heavy Industries, attached to homeworld (non-Corvus mode only)

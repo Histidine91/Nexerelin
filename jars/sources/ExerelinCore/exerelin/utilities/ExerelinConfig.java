@@ -80,7 +80,7 @@ public class ExerelinConfig
     public static float freeMarketTariffMult = 0.5f;
     public static int warmongerPenalty = 0;
     public static float factionRespawnInterval = 30f;
-    public static boolean countPiratesForVictory = true;
+    public static boolean countPiratesForVictory = false;
     public static boolean ownFactionCustomsInspections = false;
     public static boolean enableAvesta = true;
     public static boolean enableShanghai = true;
