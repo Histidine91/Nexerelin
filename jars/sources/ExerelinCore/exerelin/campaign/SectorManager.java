@@ -17,6 +17,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -536,6 +537,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 entity.setFaction(newOwnerId);
         }
         market.setFactionId(newOwnerId);
+        
+        if (!newOwner.isHostileTo(Factions.PLAYER))
+        {
+            market.getMemoryWithoutUpdate().unset("$playerHostileTimeout");    // don't lock player out of freshly captured market
+        }
         
         // Templar stuff
         if (newOwnerId.equals("templars") && !oldOwnerId.equals("templars"))
