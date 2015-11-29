@@ -29,7 +29,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
     private static final float RESERVE_INCREMENT_PER_DAY = 0.08f;
     private static final float RESERVE_MARKET_STABILITY_DIVISOR = 5f;
     private static final float INITIAL_RESERVE_SIZE_MULT = 0.75f;
-    private static final float MIN_FP_TO_SPAWN = 20f;
+    private static final float MIN_FP_TO_SPAWN = 5f;
     protected static final float REVENGE_FLEET_BASE_SIZE = 75;
     protected static final float REVENGE_GROWTH_MULT = 0.25f;
     
@@ -70,9 +70,9 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             return;
         }
         int enemyFP = ((CampaignFleetAPI)target).getFleetPoints();
-        if (enemyFP > maxFP * 2)
+        if (enemyFP > maxFP * 8)
         {
-            log.info(target.getName() + " is more than twice our size: " + enemyFP);
+            log.info(target.getName() + " is too big to handle: " + enemyFP);
             return;
         }
         
@@ -92,8 +92,8 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         
         //CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
         FleetParams fleetParams = new FleetParams(null, origin, factionId, null, "exerelinResponseFleet", 
-                maxFP*0.8f, // combat
-                maxFP*0.1f, // freighters
+                maxFP*0.9f, // combat
+                0,	//maxFP*0.1f, // freighters
                 0,        // tankers
                 0,        // personnel transports
                 0,        // liners
