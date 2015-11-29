@@ -140,8 +140,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         fp -= tankerFP;
         
         FleetParams fleetParams = new FleetParams(null, params.originMarket, factionId, null, params.fleetType, 
-                fp*0.7f, // combat
-                fp*0.2f, // freighters
+                fp*0.8f, // combat
+                fp*0.1f, // freighters
                 tankerFP,        // tankers
                 params.numMarines/100*2,        // personnel transports
                 0,        // liners
