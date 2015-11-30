@@ -3,11 +3,15 @@ package exerelin.campaign;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
+import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.BattleAPI.BattleSide;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin;
+import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.FleetMemberData;
+import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.Status;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
@@ -18,6 +22,7 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -131,12 +136,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         int numSurvivors = 0;
         int fp = 0;
         int crew = 0;
-        List<FleetMemberAPI> fleetCurrent = loser.getFleetData().getMembersListCopy();
-        for (FleetMemberAPI member : loser.getFleetData().getSnapshot()) {
-            if (!fleetCurrent.contains(member)) {
-                fp += member.getFleetPointCost();
-                crew += member.getNeededCrew();
-            }
+        List<FleetMemberData> casualties = plugin.getLoserData().getOwnCasualties();
+        for (FleetMemberData member : casualties) {
+            Status status = member.getStatus();
+            if (status == Status.DESTROYED || status == Status.NORMAL) continue;
+            fp += member.getMember().getFleetPointCost();
+            crew += member.getMember().getNeededCrew();
+            //log.info("Enemy lost: " + member.getMember().getVariant().getFullDesignationWithHullName());
         }
         
         for (int i=0; i<fp; i = i + 10)
