@@ -23,14 +23,14 @@
     "allowPirateInvasions": false,
     "fleetRequestCostPerMarine": 125,  # used for player-requested fleets
     "fleetRequestCostPerFP": 2000,  # used for player-requested fleets
-    "invasionGracePeriod": 0,  # factions won't accumulate invasion points for this long at start
+    "invasionGracePeriod": 15,  # factions won't accumulate invasion points for this long at start
     "pointsRequiredForInvasionFleet": 4000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily
-    "baseInvasionPointsPerFaction": 45,
+    "baseInvasionPointsPerFaction": 40,
     "invasionPointsPerPlayerLevel": 1,
-    "invasionPointEconomyMult": 1.0, # each market contributes invasion points: stability * size * this number
+    "invasionPointEconomyMult": 0.75, # each market contributes invasion points: stability * size * this number
     
-    "allianceGracePeriod": 30,  # no alliances can form for this long at start
+    "allianceGracePeriod": 60,  # no alliances can form for this long at start
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
     "ignoreAlignmentForAlliances": false,
     
