@@ -18,7 +18,7 @@
     "prisonerSlaveRepValue": -0.02,
     "prisonerLootChancePer10Fp": 0.07,
     
-    "crewLootMult": 0.02,   # loot about this many green crew per enemy FP destroyed
+    "crewLootMult": 0.02,   # loot about this many green crew per enemy crew in killed ships
     
     "allowPirateInvasions": false,
     "fleetRequestCostPerMarine": 125,  # used for player-requested fleets
