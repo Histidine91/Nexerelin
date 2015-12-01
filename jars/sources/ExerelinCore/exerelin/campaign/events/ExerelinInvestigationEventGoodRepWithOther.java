@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.impl.campaign.events.InvestigationEventGoodRepWithOther;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import data.scripts.campaign.events.SSP_InvestigationEventGoodRepWithOther;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinUtils;
@@ -14,9 +15,34 @@ public class ExerelinInvestigationEventGoodRepWithOther extends InvestigationEve
 	
 	@Override
 	public void startEvent() {
-		InvestigationGoodRepData targetLocal = (InvestigationGoodRepData) eventTarget.getCustom();
-		FactionAPI thisFaction = targetLocal.getFaction();
-		FactionAPI otherFaction = targetLocal.getOther();
+		FactionAPI thisFaction = null;
+		FactionAPI otherFaction = null;
+		boolean failure = false;
+		
+		try{
+			if (ExerelinUtils.isSSPInstalled())
+			{
+				SSP_InvestigationEventGoodRepWithOther.InvestigationGoodRepData targetLocal = (SSP_InvestigationEventGoodRepWithOther.InvestigationGoodRepData) eventTarget.getCustom();
+				thisFaction = targetLocal.getFaction();
+				otherFaction = targetLocal.getOther();
+			}
+			else{
+				InvestigationEventGoodRepWithOther.InvestigationGoodRepData targetLocal = (InvestigationEventGoodRepWithOther.InvestigationGoodRepData) eventTarget.getCustom();
+				thisFaction = targetLocal.getFaction();
+				otherFaction = targetLocal.getOther();
+			}
+		}
+		catch (ClassCastException ccex)
+		{
+			log.info(ccex);
+			failure = true;
+		}
+		if (failure)	// fuck it, we're out of here
+		{
+			endEvent();
+			return;
+		}
+		
 		String thisFactionId = thisFaction.getId();
 		String otherFactionId = otherFaction.getId();
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
