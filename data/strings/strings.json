@@ -24,7 +24,7 @@
 		"followMeTitle":"Follow Me!",
 		"followMeFloatText":"Follow me!",
 		"followMeTooltip1":"Nearby non-busy fleets belonging to your faction or an alliance member will follow you around for $numDays days.",
-		"followMeTooltip2":"Only works on patrol, strike and defence fleets, and the fleet must have seen you with your transponder on.",
+		"followMeTooltip2":"Only works on patrol, strike and defense fleets, and the fleet must have seen you with your transponder on.",
 	},
 	
 	"exerelin_alliances":{
@@ -43,7 +43,16 @@
 		"resultSuccess":"Your $agentType has $resultVerb their mission.",
 		"resultSuccessDetected":"Your $agentType has $resultVerb their mission, but was detected in the process.",
 		"resultFailure":"Your $agentType has $resultVerb in their mission.",
-		"resultFailureDetected":"Your $agentType has $resultVerb in their mission and was caught!"
+		"resultFailureDetected":"Your $agentType has $resultVerb in their mission and was caught!",
+		
+		"destabilizeText1":"poisoned the water supply",
+		"destabilizeText2":"fired into a crowd at a public venue",
+		"destabilizeText3":"assassinated a local government official",
+		"destabilizeText4":"crashed the stock exchange",
+		"destabilizeText5":"bombed a habitation module",
+		"destabilizeText6":"released nerve gas into a recreational area",
+		"destabilizeText7":"torched a storage depot",
+		"destabilizeText8":"poisoned patients at a clinic",
 	},
 	"exerelin_credits":{
 		"contribution_zaphide":"The original Exerelin",
@@ -76,7 +85,7 @@
 		"responseFleetPrefixSmall":"Small",
 		"responseFleetPrefixLarge":"Prime",
 		
-		"defenceFleetName":"Defence Fleet",
+		"defenceFleetName":"Defense Fleet",
 		"defenceFleetPrefixSmall":"Small",
 		"defenceFleetPrefixLarge":"Large",
 		

@@ -19,17 +19,18 @@ import exerelin.utilities.StringHelper;
 public class AgentDestabilizeMarketEvent extends CovertOpsEventBase {
 
 	public static Logger log = Global.getLogger(AgentDestabilizeMarketEvent.class);
-	protected static final String[] ACTION_LINES = new String[]{
-		"poisoned the water supply",
-		"fired into a crowd at a public venue",
-		"assassinated a local government official",
-		"crashed the stock exchange",
-		"bombed a habitation module",
-		"released nerve gas into a recreational area",
-		"torched a storage depot",
-		"poisoned patients at a clinic",
-	};
-	 
+	protected static final String[] ACTION_LINES;
+	
+	static {
+		List<String> lines = new ArrayList<>();
+		int numLines = 8;	// must not exceed what is inside strings.json
+		for (int i=0; i<numLines; i++)
+		{
+			lines.add(StringHelper.getString("exerelin_agents", "destabilizeText" + (i + 1)));
+		}
+		ACTION_LINES = lines.toArray(new String[numLines]);
+	}
+	
 	protected int stabilityPenalty;
 	
 	@Override
