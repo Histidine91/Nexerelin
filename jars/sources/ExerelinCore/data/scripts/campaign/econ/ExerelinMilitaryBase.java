@@ -6,8 +6,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 
 public class ExerelinMilitaryBase extends MilitaryBase {
-	public static float EXTRA_MARINES_MULT = 1.25f;	// hax
-	public static float FUEL_NON_CONSUMING_FRACTION = 0.25f;	// more hax
+	public static final float EXTRA_MARINES_MULT = 1.25f;	// hax
+	public static final float FUEL_NON_CONSUMING_FRACTION = 0.25f;	// more hax
 	
 	public void apply(String id) {
 		super.apply(id);

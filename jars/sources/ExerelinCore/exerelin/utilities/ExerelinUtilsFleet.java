@@ -77,7 +77,7 @@ public class ExerelinUtilsFleet
     public static void injectFleet(CampaignFleetAPI fleet, MarketAPI market, Float stability, Float qualityFactor, String type) {      
         String factionId = fleet.getFaction().getId();
                 
-        log.info("Fleet " + fleet.getName() + ": stability " + stability + "; qf " + qualityFactor);
+        //log.info("Fleet " + fleet.getName() + ": stability " + stability + "; qf " + qualityFactor);
         //float qualityFactorOriginal = qualityFactor;
         //qualityFactor = Math.max(qualityFactor, 0.7f);
         
