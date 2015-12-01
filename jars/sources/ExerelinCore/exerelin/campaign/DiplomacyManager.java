@@ -792,48 +792,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             randomize = diplomacyManager.randomFactionRelationships;
         }
         
-        
-        
         if (SectorManager.getCorvusMode() && !randomize)
         {
             // load vanilla relationships
-            FactionAPI hegemony = sector.getFaction(Factions.HEGEMONY);
-            FactionAPI tritachyon = sector.getFaction(Factions.TRITACHYON);
-            FactionAPI pirates = sector.getFaction(Factions.PIRATES);
-            FactionAPI independent = sector.getFaction(Factions.INDEPENDENT);
-            FactionAPI kol = sector.getFaction(Factions.KOL);
-            FactionAPI church = sector.getFaction(Factions.LUDDIC_CHURCH);
-            FactionAPI path = sector.getFaction(Factions.LUDDIC_PATH);
-            FactionAPI playerFac = sector.getFaction(Factions.PLAYER);
-            FactionAPI diktat = sector.getFaction(Factions.DIKTAT);
-
-            playerFac.setRelationship(hegemony.getId(), 0);
-            playerFac.setRelationship(tritachyon.getId(), 0);
-            playerFac.setRelationship(pirates.getId(), -0.65f);
-            playerFac.setRelationship(independent.getId(), 0);
-            playerFac.setRelationship(kol.getId(), 0);
-            playerFac.setRelationship(church.getId(), 0);
-            playerFac.setRelationship(path.getId(), 0);
-
-            hegemony.setRelationship(tritachyon.getId(), RepLevel.HOSTILE);
-            hegemony.setRelationship(pirates.getId(), RepLevel.HOSTILE);
-            hegemony.setRelationship(path.getId(), RepLevel.HOSTILE);
-
-            tritachyon.setRelationship(pirates.getId(), RepLevel.HOSTILE);
-            tritachyon.setRelationship(kol.getId(), RepLevel.HOSTILE);
-            tritachyon.setRelationship(church.getId(), RepLevel.HOSTILE);
-            tritachyon.setRelationship(path.getId(), RepLevel.VENGEFUL);
-
-            pirates.setRelationship(kol.getId(), RepLevel.HOSTILE);
-            pirates.setRelationship(church.getId(), RepLevel.HOSTILE);
-            pirates.setRelationship(path.getId(), RepLevel.HOSTILE);
-            pirates.setRelationship(independent.getId(), RepLevel.HOSTILE);
-            pirates.setRelationship(diktat.getId(), RepLevel.HOSTILE);
-            pirates.setRelationship("player_npc", -0.65f);
-
-            church.setRelationship(kol.getId(), RepLevel.COOPERATIVE);
-            church.setRelationship(path.getId(), RepLevel.SUSPICIOUS);
-            path.setRelationship(kol.getId(), RepLevel.FAVORABLE);
+            VanillaSystemsGenerator.initFactionRelationships(sector);
         }
         else
         {
@@ -954,17 +916,16 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             //famousBounty.setRelationship("player_npc", -1f);
         }
         
-        
         player.setRelationship("player_npc", 1f);
          // set player relations based on selected faction
         PlayerFactionStore.saveIndependentPlayerRelations();
-        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId, true);
         
         if (selectedFactionId.equals("player_npc"))
         {
-
+            ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
         }
         else {
+            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId, true);
             player.setRelationship(selectedFactionId, STARTING_RELATIONSHIP_FRIENDLY);
             //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");	// already done in syncPlayerRelationshipsToFaction
         }
