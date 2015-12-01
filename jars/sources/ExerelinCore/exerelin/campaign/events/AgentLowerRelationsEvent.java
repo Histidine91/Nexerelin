@@ -10,6 +10,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.ExerelinReputationAdjustmentResult;
 
 
 public class AgentLowerRelationsEvent extends CovertOpsEventBase {
@@ -17,6 +18,7 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 	public static Logger log = Global.getLogger(AgentLowerRelationsEvent.class);
 	
 		protected float repEffect2;
+		protected ExerelinReputationAdjustmentResult repResult2;
 		protected FactionAPI thirdFaction;
 		
 	@Override
@@ -31,7 +33,10 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 		super.setParam(param);
 		thirdFaction = (FactionAPI)params.get("thirdFaction");
 		if (params.containsKey("repEffect2"))
+		{
 			repEffect2 = (Float)params.get("repEffect2");
+			repResult2 = (ExerelinReputationAdjustmentResult)params.get("repResult2");
+		}
 	}
 	
 	@Override
@@ -86,5 +91,15 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 			colorNew2 = agentFaction.getRelColor(thirdFaction.getId());
 		}
 		return new Color[] {colorRepEffect, colorNew, colorRepEffect2, colorNew2};
+	}
+	
+	@Override
+	public String getCurrentMessageIcon() {
+		int significance = 0;
+		if (!result.isSucessful() || result.isDetected()) significance = 1;
+		if (repResult.isHostile != repResult.wasHostile) significance = 2;
+		if (repResult2 != null)
+			if (repResult2.isHostile != repResult2.wasHostile) significance = 2;
+		return EVENT_ICONS[significance];
 	}
 }

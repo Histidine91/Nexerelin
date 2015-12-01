@@ -15,33 +15,35 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.CovertOpsManager.CovertActionResult;
+import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.PlayerFactionStore;
 
 
 public class CovertOpsEventBase extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(CovertOpsEventBase.class);
+	public static final String[] EVENT_ICONS = new String[]{
+		"graphics/exerelin/icons/intel/spy4.png",
+		"graphics/exerelin/icons/intel/spy4_amber.png",
+		"graphics/exerelin/icons/intel/spy4_red.png"
+	};	
 	protected static final int DAYS_TO_KEEP = 45;
 	
-	protected FactionAPI agentFaction;
-	protected String stage;
-	protected boolean playerInvolved;
-	protected float repEffect;	// between agent faction and target faction
-	protected float age;
+	protected FactionAPI agentFaction = null;
+	protected CovertActionResult result = CovertActionResult.SUCCESS;
+	protected boolean playerInvolved = false;
+	protected float repEffect = 0;	// between agent faction and target faction
+	protected float age = 0;
 	protected Map<String, Object> params;
+	protected ExerelinReputationAdjustmentResult repResult;
 		
-	protected boolean done;
+	protected boolean done = false;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
-		stage = "";
-		playerInvolved = false;
-		repEffect = 0;
-		agentFaction = null;
-		
-		done = false;
-		age = 0;
 	}
 	
 	@Override
@@ -50,8 +52,9 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 		agentFaction = (FactionAPI)params.get("agentFaction");
 		if (params.containsKey("repEffect"))
 			repEffect = (Float)params.get("repEffect");
-		stage = (String)params.get("stage");
+		result = (CovertActionResult)params.get("result");
 		playerInvolved = (Boolean)params.get("playerInvolved");
+		repResult = (ExerelinReputationAdjustmentResult)params.get("repResult");
 	}
 		
 	@Override
@@ -73,10 +76,10 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	public void startEvent()
 	{
 		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
-		String reportStage = stage;
+		String reportStage = result.name().toLowerCase();
 		if (playerInvolved) reportStage += "_player";
 		Global.getSector().reportEventStage(this, reportStage, market.getPrimaryEntity(), priority);
-		log.info("Covert warfare event: " + stage);
+		log.info("Covert warfare event: " + reportStage);
 	}
 
 	@Override
@@ -153,5 +156,14 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	@Override
 	public boolean showAllMessagesIfOngoing() {
 		return false;
+	}
+	
+	@Override
+	public String getCurrentMessageIcon() {
+		int significance = 0;
+		if (!result.isSucessful() || result.isDetected()) significance = 1;
+		if (repResult.isHostile && !repResult.wasHostile) significance = 2;
+		log.info("wololo, Icon: " + EVENT_ICONS[significance]);
+		return EVENT_ICONS[significance];
 	}
 }

@@ -21,6 +21,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.world.VanillaSystemsGenerator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -210,7 +211,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     // started working on this but decided I don't need it no more
     /*
-    public static ReputationAdjustmentResult testAdjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
+    public static ExerelinReputationAdjustmentResult testAdjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
             RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit)
     {
         SectorAPI sector = Global.getSector();
@@ -224,12 +225,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     }
     */
     
-    public static ReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
+    public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
             RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit)
     {   
         SectorAPI sector = Global.getSector();
         
         float before = faction1.getRelationship(faction2.getId());
+        boolean wasHostile = faction1.isHostileTo(faction2);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         FactionAPI playerAlignedFaction = sector.getFaction(playerAlignedFactionId);
         FactionAPI playerFaction = sector.getPlayerFleet().getFaction();
@@ -251,6 +253,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         float after = faction1.getRelationship(faction2Id);
         delta = after - before;
         //log.info("Relationship delta: " + delta);
+        boolean isHostile = faction1.isHostileTo(faction2);
 
         if(faction1 == playerAlignedFaction)
         {
@@ -267,10 +270,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
         
         SectorManager.checkForVictory();
-        return new ReputationAdjustmentResult(delta);
+        return new ExerelinReputationAdjustmentResult(delta, wasHostile, isHostile);
     }
     
-    public static ReputationAdjustmentResult adjustRelations(DiplomacyEventDef event, FactionAPI faction1, FactionAPI faction2, float delta)
+    public static ExerelinReputationAdjustmentResult adjustRelations(DiplomacyEventDef event, FactionAPI faction1, FactionAPI faction2, float delta)
     {
         return adjustRelations(faction1, faction2, delta, event.repEnsureAtBest, event.repEnsureAtWorst, event.repLimit);
     }
@@ -285,13 +288,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (delta > 0 && delta < 0.01f) delta = 0.01f;
         delta = Math.round(delta * 100f) / 100f;
        
-        delta = DiplomacyManager.adjustRelations(event, faction1, faction2, delta).delta;
+        ExerelinReputationAdjustmentResult result = DiplomacyManager.adjustRelations(event, faction1, faction2, delta);
+        delta = result.delta;
         
         if (Math.abs(delta) >= 0.01f) {
             log.info("Transmitting event: " + event.name);
             HashMap<String, Object> params = new HashMap<>();
             String eventType = "exerelin_diplomacy";
             params.put("event", event);
+            params.put("result", result);
             params.put("delta", delta);
             params.put("otherFaction", faction2);
             sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);

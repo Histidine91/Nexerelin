@@ -77,7 +77,9 @@ public class WarmongerEvent extends BaseEventPlugin {
 		// but problem is, the token replacement method needs to know the relationship change NOW
 		//DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
 		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
-		Global.getSector().reportEventStage(this, "report", Global.getSector().getPlayerFleet(), priority, new BaseOnMessageDeliveryScript() {
+		String stage = "report";
+		if (myFactionLoss <= 0) stage = "report_noOwnFaction";
+		Global.getSector().reportEventStage(this, stage, Global.getSector().getPlayerFleet(), priority, new BaseOnMessageDeliveryScript() {
 			public void beforeDelivery(CommMessageAPI message) {
 								Iterator<Map.Entry<String, Float>> iter = repLoss.entrySet().iterator();
 								while (iter.hasNext())
@@ -130,10 +132,13 @@ public class WarmongerEvent extends BaseEventPlugin {
 		FactionAPI playerAlignedFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
 		
 		Map<String, String> map = super.getTokenReplacements();
-		map.put("$playerFaction", playerAlignedFaction.getDisplayName());
-		map.put("$thePlayerFaction", playerAlignedFaction.getDisplayNameWithArticle());
-		map.put("$repPenaltyMyFactionAbs", "" + (int)Math.ceil(myFactionLoss*100f));
-		map.put("$newRelationStr", getNewRelationStr());
+		if (myFactionLoss > 0)
+		{
+			map.put("$playerFaction", playerAlignedFaction.getDisplayName());
+			map.put("$thePlayerFaction", playerAlignedFaction.getDisplayNameWithArticle());
+			map.put("$repPenaltyMyFactionAbs", "" + (int)Math.ceil(myFactionLoss*100f));
+			map.put("$newRelationStr", getNewRelationStr());
+		}
 		map.put("$numFactions", "" + numFactions);
 		map.put("$repPenaltyAvgAbs", "" + (int)Math.ceil(avgRepLoss*100f));
 		
@@ -143,9 +148,12 @@ public class WarmongerEvent extends BaseEventPlugin {
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
-		addTokensToList(result, "$repPenaltyMyFactionAbs");
-		addTokensToList(result, "$newRelationStr");
-		addTokensToList(result, "$numFactions");
+		if (myFactionLoss > 0)
+		{
+			addTokensToList(result, "$repPenaltyMyFactionAbs");
+			addTokensToList(result, "$newRelationStr");
+			addTokensToList(result, "$numFactions");
+		}
 		addTokensToList(result, "$repPenaltyAvgAbs");
 		
 		return result.toArray(new String[0]);

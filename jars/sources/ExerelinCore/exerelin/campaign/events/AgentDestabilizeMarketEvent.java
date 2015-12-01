@@ -57,13 +57,13 @@ public class AgentDestabilizeMarketEvent extends CovertOpsEventBase {
 	
 	@Override
 	public String[] getHighlights(String stageId) {
-		List<String> result = new ArrayList<>();
+		List<String> highlights = new ArrayList<>();
 		if (stabilityPenalty != 0)
-			addTokensToList(result, "$stabilityPenalty");
-		addTokensToList(result, "$repEffectAbs");
-		addTokensToList(result, "$newRelationStr");
+			addTokensToList(highlights, "$stabilityPenalty");
+		addTokensToList(highlights, "$repEffectAbs");
+		addTokensToList(highlights, "$newRelationStr");
 		
-		return result.toArray(new String[0]);
+		return highlights.toArray(new String[0]);
 	}
 	
 	@Override

@@ -16,21 +16,23 @@ import static com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.addAdjustm
 import static com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.addNoChangeMessage;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import java.util.List;
 
 public class ExerelinUtilsReputation
 {
-	public static ReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction, PersonAPI person, float delta)
+	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction, PersonAPI person, float delta)
 	{
 		return adjustPlayerReputation(faction, person, delta, null, null);
 	}
 	
-	public static ReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction, PersonAPI person, float delta, CommMessageAPI message, TextPanelAPI textPanel)
+	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction, PersonAPI person, float delta, CommMessageAPI message, TextPanelAPI textPanel)
 	{
 		String factionId = faction.getId();
 		FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
+		boolean wasHostile = player.isHostileTo(faction);
 		
 		CustomRepImpact impact = new CustomRepImpact();
 		impact.delta = delta;
@@ -42,7 +44,9 @@ public class ExerelinUtilsReputation
 			result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, 2, message, true), person);
 		}
 		
-		return result;
+		boolean isHostile = player.isHostileTo(faction);
+		ExerelinReputationAdjustmentResult result2 = new ExerelinReputationAdjustmentResult(result.delta, wasHostile, isHostile);
+		return result2;
 		
 		// 0ld 0.65.2 implementation
 		/*
@@ -75,7 +79,7 @@ public class ExerelinUtilsReputation
 		
 		SectorManager.checkForVictory();
 		*/
-		//return new ReputationAdjustmentResult(delta);
+		//return new ExerelinReputationAdjustmentResult(delta);
 	}
 	
 	public static void syncFactionRelationshipToPlayer(String factionIdToSync, String otherFactionId)

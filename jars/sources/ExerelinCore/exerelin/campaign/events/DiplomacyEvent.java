@@ -19,6 +19,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
+import exerelin.campaign.ExerelinReputationAdjustmentResult;
 
 
 public class DiplomacyEvent extends BaseEventPlugin {
@@ -28,18 +29,17 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	
 	protected FactionAPI otherFaction;
 	protected DiplomacyEventDef event;
+	protected ExerelinReputationAdjustmentResult result;
 	protected float delta;
-	protected float age;
+	protected float age = 0;
 	protected Map<String, Object> params;
 		
-	protected boolean done;
+	protected boolean done = false;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
-		done = false;
-		age = 0;
 	}
 	
 	@Override
@@ -48,6 +48,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		otherFaction = (FactionAPI)params.get("otherFaction");
 		delta = (Float)params.get("delta");
 		event = (DiplomacyEventDef)params.get("event");
+		result = (ExerelinReputationAdjustmentResult)params.get("result");
 	}
 		
 	@Override
@@ -98,12 +99,15 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	public String getCurrentImage() {
 		return newOwner.getLogo();
 	}
+	*/
 
 	@Override
 	public String getCurrentMessageIcon() {
-		return newOwner.getLogo();
+		if (result.isHostile && !result.wasHostile) return "graphics/exerelin/icons/intel/war.png";
+		else if (!result.isHostile && result.wasHostile) return "graphics/exerelin/icons/intel/peace.png";
+		return null;
 	}
-	*/
+	
 		
 	@Override
 	public CampaignEventPlugin.CampaignEventCategory getEventCategory() {
@@ -135,10 +139,10 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	
 	@Override
 	public String[] getHighlights(String stageId) {
-		List<String> result = new ArrayList<>();
-		addTokensToList(result, "$deltaAbs");
-		addTokensToList(result, "$newRelationStr");
-		return result.toArray(new String[0]);
+		List<String> highlights = new ArrayList<>();
+		addTokensToList(highlights, "$deltaAbs");
+		addTokensToList(highlights, "$newRelationStr");
+		return highlights.toArray(new String[0]);
 	}
 	
 	@Override
