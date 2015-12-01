@@ -396,6 +396,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (factionId.equals("player_npc"))
             return;    // do nothing
         
+        if (!show && ExerelinUtilsFaction.isExiInCorvus(factionId)) // don't hide Exi in Corvus mode
+            return;
+        
         ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
         if (conf != null && !conf.showIntelEvenIfDead)
         {
