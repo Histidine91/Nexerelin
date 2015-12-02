@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
@@ -67,7 +66,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     protected static List<DiplomacyEventDef> eventDefs;
     
     public static final float STARTING_RELATIONSHIP_HOSTILE = -0.6f;
-    public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.4f;
+    public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.35f;
     public static final float STARTING_RELATIONSHIP_WELCOMING = 0.4f;
     public static final float STARTING_RELATIONSHIP_FRIENDLY = 0.6f;
     public static final float WAR_WEARINESS_INTERVAL = 10f;
@@ -716,43 +715,30 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     {
         ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
         if (factionConfig == null) return;
+        if (factionConfig.hostileToAll <= 0) return;
+        
         SectorAPI sector = Global.getSector();
         String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
         
-        switch (factionConfig.hostileToAll) {
-            case 3:
-                for (String otherFactionId : factionIds)
-                {
-                    FactionAPI otherFaction = sector.getFaction(otherFactionId);
-                    if (!otherFaction.isNeutralFaction() && !otherFactionId.equals(factionId))
-                    {
-                        setRelationshipAtBest(factionId, otherFactionId, -1f);
-                    }
-                }
-                break;
-            case 2:
-                for (String otherFactionId : factionIds)
-                {
-                    FactionAPI otherFaction = sector.getFaction(otherFactionId);
-                    if (!otherFaction.isNeutralFaction() && !otherFactionId.equals(factionId))
-                    {
-                        setRelationshipAtBest(factionId, otherFactionId, STARTING_RELATIONSHIP_HOSTILE);
-                    }
-                }
-                break;
-            case 1:
-                for (String otherFactionId : factionIds)
-                {
-                    FactionAPI otherFaction = sector.getFaction(otherFactionId);
-                    if (otherFactionId.equals("player_npc") && otherFactionId.equals(selectedFactionId))
-                    {
-                        otherFaction.setRelationship(factionId, STARTING_RELATIONSHIP_INHOSPITABLE);
-                    }
-                    else if (!otherFaction.isNeutralFaction() && !otherFactionId.equals("factionId"))
-                    {
-                        setRelationshipAtBest(factionId, otherFactionId, STARTING_RELATIONSHIP_HOSTILE);
-                    }
-                }
+        float relationship = STARTING_RELATIONSHIP_HOSTILE;
+        if (factionConfig.hostileToAll == 3) relationship = -1f;
+        boolean isPirateNeutral = factionConfig.isPirateNeutral;
+        
+        for (String otherFactionId : factionIds)
+        {
+            if (isPirateNeutral && ExerelinUtilsFaction.isPirateFaction(otherFactionId))
+                continue;
+            boolean isPlayer = otherFactionId.equals("player_npc") || otherFactionId.equals(Factions.PLAYER);
+            
+            FactionAPI otherFaction = sector.getFaction(otherFactionId);
+            if (factionConfig.hostileToAll == 1 && isPlayer)
+            {
+                otherFaction.setRelationship(factionId, STARTING_RELATIONSHIP_INHOSPITABLE);
+            }
+            else if (!otherFaction.isNeutralFaction() && !otherFactionId.equals("factionId"))
+            {
+                setRelationshipAtBest(factionId, otherFactionId, relationship);
+            }
         }
     }
     
@@ -774,17 +760,20 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         for (FactionAPI faction : sector.getAllFactions())
         {
-            if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
+            if (faction.isNeutralFaction()) continue;
             factionIds.add(faction.getId());
         }
+        // I don't think we need this any more
+        /*
         for (String factionId : factionIds)
         {
-            if (!SectorManager.isFactionAlive(factionId) && !factionId.equals("player_npc"))
+            if (!SectorManager.isFactionAlive(factionId) && !factionId.equals("player_npc") && !factionId.equals(Factions.PLAYER))
             {
                 if (!ExerelinUtilsFaction.isExiInCorvus(factionId)) alreadyRandomizedIds.add(factionId);
                 handleHostileToAllFaction(factionId, factionIds);
             }
         }
+        */
 
         boolean randomize = false;
         if (diplomacyManager != null)
@@ -820,6 +809,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
                 if ((factionConfig == null || !factionConfig.isPirateNeutral) && !faction.isNeutralFaction() && !ExerelinUtilsFaction.isPirateFaction(factionId))
                 {
+                    //log.info("Making pirates hostile to " + factionId);
                     for (String pirateFactionId : pirateFactions) {
                         FactionAPI pirateFaction = sector.getFaction(pirateFactionId);
                         if (pirateFaction != null)
