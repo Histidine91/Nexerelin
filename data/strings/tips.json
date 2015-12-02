@@ -5,5 +5,7 @@
 	"[Nexerelin] Attacking another faction's fleets or invading their markets in peacetime will anger their friends and your own faction, unless you can do it anonymously.",
 	"[Nexerelin] Markets hold reserve fleets that can be quickly deployed in response to invasions.",
 	"[Nexerelin] Sneaking into a market with your transponder off will make your covert actions less likely to be detected.",
+	"[Nexerelin] Covert actions (except raise/lower relations) will temporarily raise the target market's security level, deterring further agent use.",
+	"[Nexerelin] If you don't have enough marines to take a market, consider using an agent to lower its stability.",
     ],
 }
