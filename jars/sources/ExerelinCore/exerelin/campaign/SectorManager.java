@@ -26,6 +26,7 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -61,12 +62,20 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     private static SectorManager sectorManager;
 
     private static final String MANAGER_MAP_KEY = "exerelin_sectorManager";
+    protected static final List<String> POSTS_TO_CHANGE_ON_CAPTURE = Arrays.asList(new String[]{
+        Ranks.POST_BASE_COMMANDER,
+        Ranks.POST_OUTPOST_COMMANDER,
+        Ranks.POST_STATION_COMMANDER,
+        Ranks.POST_PORTMASTER,
+        Ranks.POST_SUPPLY_OFFICER,
+    });
     
     private List<String> factionIdsAtStart = new ArrayList<>();
     private List<String> liveFactionIds = new ArrayList<>();
     private Set<String> historicFactionIds = new HashSet<>();
     private Map<String, String> systemToRelayMap;
     private Map<String, String> planetToRelayMap;
+    
     private boolean victoryHasOccured = false;
     private boolean respawnFactions = false;
     private boolean onlyRespawnStartingFactions = false;
@@ -163,6 +172,30 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         StatsTracker.getStatsTracker().modifyOrphansMadeByCrewCount(-numSurvivors, loserFactionId);
     }
     
+    /*
+    @Override
+    public void reportBattleFinished(CampaignFleetAPI primaryWinner, BattleAPI battle) {
+        if (!battle.isPlayerInvolved()) return;
+        CampaignFleetAPI fleet = battle.getPrimary(battle.getNonPlayerSide());
+        FactionAPI faction = fleet.getFaction();
+        
+        // relationship is _before_ the reputation penalty caused by the combat
+        if (faction.isHostileTo("player")) return;
+        if (fleet.getMemoryWithoutUpdate().getBoolean("$exerelinFleetAggressAgainstPlayer")) return;
+        if (!fleet.knowsWhoPlayerIs()) return;
+        
+        log.info("Checking for warmonger event");
+        boolean losses = false;
+        List<FleetMemberAPI> currentMembers = fleet.getFleetData().getMembersListCopy();
+        for (FleetMemberAPI member : fleet.getFleetData().getSnapshot()) {
+            if (!currentMembers.contains(member)) {
+                losses = true;
+                break;
+            }
+        }
+        if (losses) createWarmongerEvent(faction.getId(), fleet);
+    }
+    */
     
     @Override
     public void reportPlayerEngagement(EngagementResultAPI result) {
@@ -180,7 +213,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         createWarmongerEvent(faction.getId(), fleet);
     }
-    
     
     @Override
     public boolean isDone()
@@ -543,7 +575,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         List<SectorEntityToken> linkedEntities = market.getConnectedEntities();
         for (SectorEntityToken entity : linkedEntities)
         {
-                entity.setFaction(newOwnerId);
+            entity.setFaction(newOwnerId);
+        }
+        List<PersonAPI> people = market.getPeopleCopy();
+        for (PersonAPI person : people)
+        {
+            // TODO should probably switch them out completely instead of making them defect
+            if (POSTS_TO_CHANGE_ON_CAPTURE.contains(person.getPostId()))
+                person.setFaction(newOwnerId);
         }
         market.setFactionId(newOwnerId);
         
