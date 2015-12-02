@@ -11,13 +11,16 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction.ShipSaleInfo;
+import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
+import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import java.util.ArrayList;
@@ -34,7 +37,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public static final String CONFIG_FILE = "data/config/exerelin/prism_boss_ships.json";
     
     protected static final int MIN_NUMBER_OF_SHIPS = 5;
-    protected static final int MAX_TRIES_WEAPONS = 5;
     
     public static Logger log = Global.getLogger(PrismMarket.class);
 
@@ -142,33 +144,17 @@ public class PrismMarket extends BaseSubmarketPlugin {
 
         pruneWeapons(1f);
         
-        // add 10 weapons at a time
-        // then prune cheapo ones
-        // repeat until have at least prismMaxWeaponsPerFaction*numFactions OR 20 weapons, whichever is higher
-        int tries = 0;
-        float numFactions = Global.getSector().getAllFactions().size();
+        float numFactions = ExerelinSetupData.getInstance().getAvailableFactions().size();
         float maxWeaponsPerFaction = ExerelinConfig.prismMaxWeaponsPerFaction;
-        for ( float i=0f; i < Math.max (20, maxWeaponsPerFaction*numFactions); i = (float) cargo.getStacksCopy().size()) 
+        for ( float i=0; i < Math.max (20, maxWeaponsPerFaction*numFactions); i++) 
         {
-            addRandomWeapons(10, 3);
-            for (CargoStackAPI s : cargo.getStacksCopy()) {
-                //remove all low tier weapons
-                if (s.isWeaponStack() && (s.getWeaponSpecIfWeapon().getTier()<2 
-                        || s.getWeaponSpecIfWeapon().getWeaponId().startsWith("tem_")))
-                {
-                    float qty = s.getSize();
-                    cargo.removeItems(s.getType(), s.getData(), qty );
-                    cargo.removeEmptyStacks();
-                }
-            }
-            tries++;
-            if (tries > MAX_TRIES_WEAPONS) break;
+            addRandomPrismWeapons(1, 2, 4);
         }
         addShips();
         cargo.sort();
     }
 
-    private void addShips() {
+    protected void addShips() {
         
         CargoAPI cargo = getCargo();
         FleetDataAPI data = cargo.getMothballedShips();
@@ -199,9 +185,10 @@ public class PrismMarket extends BaseSubmarketPlugin {
         rolePicker.add(ShipRoles.BOMBER, 20f);
 
         WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker<>();
-        for (FactionAPI faction: Global.getSector().getAllFactions()) {
-            if (!faction.getId().equals("templars") && !faction.getId().equals("pirates")){
-                factionPicker.add(faction);
+        SectorAPI sector = Global.getSector();
+        for (String factionId: ExerelinSetupData.getInstance().getAvailableFactions()) {
+            if (!factionId.equals("templars") && !factionId.equals("pirates")){
+                factionPicker.add(sector.getFaction(factionId));
             }
         }
         
@@ -259,6 +246,46 @@ public class PrismMarket extends BaseSubmarketPlugin {
             FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
             member.getRepairTracker().setMothballed(true);
             getCargo().getMothballedShips().addFleetMember(member);
+        }
+    }
+    
+    protected void addRandomPrismWeapons(int max, int minTier, int maxTier) {
+        CargoAPI cargo = getCargo();
+        List<String> weaponIds = Global.getSector().getAllWeaponIds();
+        
+        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+        
+        for (String id : weaponIds) {
+            if (id.startsWith("tem_")) continue;
+            WeaponSpecAPI spec = Global.getSettings().getWeaponSpec(id);
+            int tier = spec.getTier();
+            if (tier >= minTier && tier <= maxTier) {
+                //float weaponQuality = 0.33f * (float) spec.getTier();
+                //float qualityDiff = Math.abs(qualityFactor - weaponQuality);
+                float qualityDiff = 0f;
+                float f = Math.max(0, 1f - qualityDiff);
+                float weight = Math.max(0.05f, f * f);
+                picker.add(spec.getWeaponId(), weight);
+            }
+        }
+        if (!picker.isEmpty()) {
+            for (int i = 0; i < max; i++) {
+                String weaponId = picker.pick();
+                int quantity = 2;
+                WeaponSpecAPI spec = Global.getSettings().getWeaponSpec(weaponId);
+                switch (spec.getSize()) {
+                    case LARGE:
+                        quantity = 1;
+                        break;
+                    case MEDIUM:
+                        quantity = 2;
+                        break;
+                    case SMALL:
+                        quantity = 3;
+                        break;
+                }
+                cargo.addWeapons(weaponId, quantity);
+            }    
         }
     }
 
