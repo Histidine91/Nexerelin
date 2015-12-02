@@ -1,5 +1,6 @@
 package exerelin.utilities;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
@@ -80,6 +81,8 @@ public class ExerelinUtilsMarket {
 	public static void removeOneMarketCondition(MarketAPI market, String conditionId)
 	{
 		int count = countMarketConditions(market, conditionId);
+		if (count == 0)
+			Global.getLogger(ExerelinUtilsMarket.class).warn("Tried to remove nonexistent market condition " + conditionId + " from " + market.getId());
 		market.removeCondition(conditionId);	// removes all
 		for (int i=0; i<count - 1; i++)
 			market.addCondition(conditionId);	// add back all but one
@@ -154,8 +157,7 @@ public class ExerelinUtilsMarket {
 		return food;
 	}
 	
-	/*
-	public static float getMarketBaseFuelDemand(MarketAPI market)
+	public static float getMarketBaseFuelDemand(MarketAPI market, float base)
 	{
 		float pop = ExerelinUtilsMarket.getPopulation(market.getSize());
 		float fuel = 0;
@@ -164,12 +166,13 @@ public class ExerelinUtilsMarket {
 		int militaryBaseCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.MILITARY_BASE);
 		int outpostCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.OUTPOST);
 		
-		fuel += spaceportCount * 0.75f * Math.min(ConditionData.ORBITAL_STATION_FUEL_BASE + pop * ConditionData.ORBITAL_STATION_FUEL_MULT, ConditionData.ORBITAL_STATION_FUEL_MAX);
-		fuel += militaryBaseCount * 0.8f * ConditionData.MILITARY_BASE_FUEL;
+		fuel += spaceportCount * 0.6f * Math.min(ConditionData.ORBITAL_STATION_FUEL_BASE + pop * ConditionData.ORBITAL_STATION_FUEL_MULT, ConditionData.ORBITAL_STATION_FUEL_MAX);
+		fuel += militaryBaseCount * 0.6f * ConditionData.MILITARY_BASE_FUEL;
 		fuel += outpostCount * 0.8f * ConditionData.OUTPOST_FUEL;
 		fuel *= market.getCommodityData(Commodities.FUEL).getDemand().getDemand().computeMultMod();
 		
+		fuel += base;	// even if no fuel is actually consumed
+		
 		return fuel;
 	}
-	*/
 }

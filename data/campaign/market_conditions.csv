@@ -16,3 +16,4 @@ Agent Destabilization,exerelin_agent_destabilize_condition,data.scripts.campaign
 Military Base,military_base,data.scripts.campaign.econ.ExerelinMilitaryBase,"Requires supplies, fuel, hand weapons, and machinery. There's some turnover in personnel, resulting in a trickle of trained crew and marines available for hire.
 
 Increases the quality and number of officers in $market's fleets.",graphics/icons/markets/military_base.png,30
+Shipbreaking Center,shipbreaking_center,data.scripts.campaign.econ.ExerelinShipbreakingCenter,"A major center of shipbreaking in this region of the Sector, hulks are consigned to scrapping here by the navies of major factions and many other clients from among the Sector core worlds.",graphics/icons/markets/shipbreaking.png,30

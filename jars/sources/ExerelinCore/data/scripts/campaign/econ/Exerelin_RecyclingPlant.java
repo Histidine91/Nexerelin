@@ -12,11 +12,11 @@ public class Exerelin_RecyclingPlant extends BaseMarketConditionPlugin {
 	public static final float RECYCLING_METALS = 800f;
 	public static final float RECYCLING_RARE_METALS = 40f * 2;
 	public static final float RECYCLING_SUPPLIES = 500f;
-	public static final float RECYCLING_HEAVY_MACHINERY = 240f;
-	public static final float RECYCLING_HEAVY_MACHINERY_DEMAND = 30f;
+	public static final float RECYCLING_HEAVY_MACHINERY = 200f;
+	public static final float RECYCLING_HEAVY_MACHINERY_DEMAND = 20f;
 	
 	public static final float HAX_MULT_07_OV = 25f;
-	public static final float HAX_MULT_07_METALS = 4f;
+	public static final float HAX_MULT_07_METALS = 3f;
 	
 	@Override
 	public void apply(String id) {

@@ -104,8 +104,8 @@
 		# primary resources
 		{
 			"name":"ore_complex",
-			"cost":200,
-			"archetypes":{"ore":4,"manufacturing":1.25,"heavy_industry":0.75,"mixed":1},
+			"cost":250,
+			"archetypes":{"ore":4,"manufacturing":1,"heavy_industry":0.5,"mixed":1.25},
 		},
 		{
 			"name":"volatiles_complex",
@@ -127,7 +127,7 @@
 		{
 			"name":"exerelin_hydroponics",
 			"cost":250,
-			"archetypes":{"default":1.25, "agriculture":2.5, "mixed":2},
+			"archetypes":{"default":0.75, "agriculture":2, "mixed":1.25},
 		},
 		{
 			"name":"aquaculture",
@@ -159,8 +159,8 @@
 		},
 		{
 			"name":"ore_refining_complex",
-			"cost":200,
-			"archetypes":{"ore":2.5,"manufacturing":3.5,"heavy_industry":1.75,"mixed":1.25},
+			"cost":250,
+			"archetypes":{"ore":2.5,"manufacturing":3.5,"heavy_industry":1.5,"mixed":1},
 			"minSize":4,
 		},
 		{
@@ -180,7 +180,7 @@
 		{
 			"name":"exerelin_supply_workshop",
 			"cost":200,
-			"archetypes":{"default":1,"manufacturing":3,"heavy_industry":2,"mixed":1.5},
+			"archetypes":{"default":1,"manufacturing":3,"heavy_industry":1.5,"mixed":1.25},
 			"minSize":4,
 		},
 		{
@@ -201,21 +201,21 @@
 		{
 			"name":"autofac_heavy_industry",
 			"cost":350,
-			"archetypes":{"manufacturing":0.75,"heavy_industry":3,"mixed":0.75},
+			"archetypes":{"manufacturing":1,"heavy_industry":4.5,"mixed":0.75},
 			"minSize":5,	# because poor worlds fail to generate enough demand for the inputs
 		},
 		{
 			"name":"antimatter_fuel_production",
 			"cost":300,
-			"archetypes":{"manufacturing":0.75,"heavy_industry":3,"mixed":0.75},
+			"archetypes":{"manufacturing":0.75,"heavy_industry":4.5,"mixed":0.75},
 			"minSize":5,	# ditto
 		},
 		{
 			"name":"shipbreaking_center",
 			"cost":400,
-			"archetypes":{"manufacturing":0.5,"heavy_industry":3},
+			"archetypes":{"manufacturing":0.5,"heavy_industry":4.5},
 			"minSize":5,
-			#"allowDuplicates":false
+			"allowDuplicates":false
 		},
 		
 		# misc
@@ -296,7 +296,7 @@
 		{
 			"name":"organized_crime",
 			"special":true,
-			"archetypes":{"default":2,"agriculture":1},
+			"archetypes":{"default":1.5,"agriculture":1},
 			"minSize":3,
 			#"allowDuplicates":false
 		},
@@ -311,7 +311,7 @@
 			"name":"ms_medCenter",
 			"requiredFaction":"shadow_industry",
 			#"special":true,
-			"cost":200,
+			"cost":100,
 			"archetypes":{"default":1},
 			"minSize":3,
 			"allowDuplicates":false
