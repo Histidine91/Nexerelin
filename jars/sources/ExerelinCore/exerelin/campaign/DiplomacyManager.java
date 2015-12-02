@@ -852,7 +852,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                             else
                                 faction.setRelationship(otherFactionId, 0);
                         }
-                        faction.setRelationship(otherFactionId, MathUtils.getRandomNumberInRange(-1f, 0.55f));
+                        faction.setRelationship(otherFactionId, MathUtils.getRandomNumberInRange(-0.85f, 0.6f));
                     }
                     handleHostileToAllFaction(factionId, factionIds);
                 }
