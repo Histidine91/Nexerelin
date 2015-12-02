@@ -296,6 +296,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		habitablePlanets.clear();
 		//habitableMoons.clear();
 		stations.clear();
+		standaloneStations.clear();
+		homeworld = null;
+		systemToRelay.clear();
+		planetToRelay.clear();
 		ExerelinSetupData.getInstance().resetAvailableFactions();
 		factionIds = getStartingFactions();
 		numOmnifacs = 0;
@@ -368,7 +372,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		entity.setInteractionImage(illustration[0], illustration[1]);
 	}
 		
-	protected void addOmnifactory(int index)
+	protected void addOmnifactory(SectorAPI sector, int index)
 	{
 		if (!ExerelinSetupData.getInstance().omnifactoryPresent) return;
 
@@ -379,7 +383,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		if (random)
 		{
-			List<StarSystemAPI> systems = new ArrayList(Global.getSector().getStarSystems());
+			List<StarSystemAPI> systems = new ArrayList(sector.getStarSystems());
 			Collections.shuffle(systems);
 			for (StarSystemAPI system : systems)
 			{
@@ -394,7 +398,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		if (toOrbit == null)
 		{
-			if (ExerelinSetupData.getInstance().corvusMode) toOrbit = Global.getSector().getEntityById("corvus_IV");
+			if (ExerelinSetupData.getInstance().corvusMode) toOrbit = sector.getEntityById("corvus_IV");
 			else toOrbit = homeworld.entity;
 		}
 		
@@ -425,14 +429,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.setFactionId(Factions.NEUTRAL);
 		market.addCondition(Conditions.ABANDONED_STATION);
 		omnifac.setMarket(market);
-		Global.getSector().getEconomy().addMarket(market);
+		sector.getEconomy().addMarket(market);
 		
 		omnifac.setFaction(Factions.NEUTRAL);
 		
 		OmniFac.initOmnifactory(omnifac);
 	}
 	
-	protected void addPrismMarket()
+	protected void addPrismMarket(SectorAPI sector)
 	{
 		if (!ExerelinSetupData.getInstance().prismMarketPresent) return;
 		
@@ -456,7 +460,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 		{
-			LocationAPI hyperspace = Global.getSector().getHyperspace();
+			LocationAPI hyperspace = sector.getHyperspace();
 			prismEntity = hyperspace.addCustomEntity("prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
 			float xpos = 2000;
 			if (!ExerelinSetupData.getInstance().corvusMode) xpos = -2000;
@@ -499,14 +503,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.setPrimaryEntity(prismEntity);
 		prismEntity.setMarket(market);
 		prismEntity.setFaction("independent");
-		Global.getSector().getEconomy().addMarket(market);
+		sector.getEconomy().addMarket(market);
 		
 		//pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
 		//prismEntity.setInteractionImage("illustrations", "space_bar");
 		prismEntity.setCustomDescriptionId("exerelin_prismFreeport");
 	}
 	
-	protected void addAvestaStation(StarSystemAPI system)
+	protected void addAvestaStation(SectorAPI sector, StarSystemAPI system)
 	{
 		SectorEntityToken avestaEntity;
 		
@@ -520,7 +524,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 		{
-			LocationAPI hyperspace = Global.getSector().getHyperspace();
+			LocationAPI hyperspace = sector.getHyperspace();
 			SectorEntityToken toOrbit = system.getHyperspaceAnchor();
 			avestaEntity = hyperspace.addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
 			//avestaEntity.setCircularOrbitWithSpin(toOrbit, getRandomAngle(), 5000, 60, 30, 30);
@@ -562,7 +566,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.setPrimaryEntity(avestaEntity);
 		avestaEntity.setMarket(market);
 		avestaEntity.setFaction("exipirated");
-		Global.getSector().getEconomy().addMarket(market);
+		sector.getEconomy().addMarket(market);
 	}
 	
 	/*
@@ -605,7 +609,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.setPrimaryEntity(shanghaiEntity);
 		shanghaiEntity.setMarket(market);
 		shanghaiEntity.setFaction("tiandong");
-		Global.getSector().getEconomy().addMarket(market);
+		sector.getEconomy().addMarket(market);
 		toOrbit.addTag("shanghai");
 		shanghaiEntity.addTag("shanghai");
 		shanghaiEntity.setCustomDescriptionId("tiandong_shanghai");
@@ -717,7 +721,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				buildSystem(sector, i, false);
 			
 			log.info("Populating sector");
-			populateSector();
+			populateSector(sector);
 		}
 		else
 		{
@@ -732,13 +736,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG(hyperMap,
 			  0, 0, // center of nebula
-			  Global.getSector().getHyperspace(), // location to add to
+			  sector.getHyperspace(), // location to add to
 			  "terrain", "deep_hyperspace", // "nebula_blue", // texture to use, uses xxx_map for map
 			  4, 4, Terrain.HYPERSPACE); // number of cells in texture
 		
 		for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
-			addOmnifactory(i);
-		addPrismMarket();
+			addOmnifactory(sector, i);
+		addPrismMarket(sector);
 		
 		final String selectedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
 		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
@@ -783,16 +787,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		SectorManager.setCorvusMode(corvusMode);
 		SectorManager.setHardMode(setupData.hardMode);
 		
-		// some cleanup
-		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
-		for (MarketAPI market : markets) {
-			if (market.getFactionId().equals("templars"))
-			{
-				market.removeSubmarket(Submarkets.GENERIC_MILITARY); // auto added by military base; remove it
-			}
-		}
-		
 		// Remove any data stored in ExerelinSetupData
+		//resetVars();
 		ExerelinSetupData.resetInstance();
 		
 		log.info("Finished sector generation");
@@ -1034,9 +1030,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return newStation;
 	}
 	
-	public void populateSector()
+	public void populateSector(SectorAPI sector)
 	{
-		SectorAPI sector = Global.getSector();
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>();
 		List<String> factions = new ArrayList<>(factionIds);
 		factions.remove("player_npc");  // player NPC faction only gets homeworld (if applicable)
@@ -1058,7 +1053,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			plugin.setPlayerPaidToUnlock(true);
 			
 			if (alignedFactionId.equals("exipirated") && ExerelinConfig.enableAvesta)
-				addAvestaStation(homeworld.starSystem);
+				addAvestaStation(sector, homeworld.starSystem);
 			if (alignedFactionId.equals("tiandong") && ExerelinConfig.enableShanghai)
 				addShanghai(homeMarket);
 		}
@@ -1083,7 +1078,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					habitable.isHQ = true;
 				
 				if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
-					addAvestaStation(habitable.starSystem);
+					addAvestaStation(sector, habitable.starSystem);
 			}
 			marketSetup.addMarketToEntity(habitable.entity, habitable, factionId);
 			if (!hqsSpawned) // separate from the above if block because the market needs to exist first
