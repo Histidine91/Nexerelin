@@ -253,7 +253,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		List<String> availableFactions = setupData.getAvailableFactions();
 		int wantedFactionNum = setupData.numStartFactions;
-		if (wantedFactionNum <= 0) return availableFactions;
+		if (wantedFactionNum <= 0) {
+			availableFactions.add(Factions.INDEPENDENT);
+			return availableFactions;
+		}
 		
 		int numFactions = 0;
 		Set<String> factions = new HashSet<>();
@@ -268,6 +271,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		factions.add(Factions.PIRATES);
 		availableFactions.remove(Factions.PIRATES);
+		factions.add(Factions.INDEPENDENT);
+		availableFactions.remove(Factions.INDEPENDENT);
 		
 		availableFactions.remove("player_npc");
 		

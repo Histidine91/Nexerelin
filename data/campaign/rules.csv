@@ -38,7 +38,7 @@ ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,,,"exerelinNGCOptionsDone:Pro
 7:exerelinNGCOtherOptions:Other options",
 ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCEnableCorvusMode:Enable Corvus Mode,
 ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCDisableCorvusMode:Disable Corvus Mode,
-ExerelinNewGameSectorConfig,ExerelinNGCOptions,!$corvusMode,,,"exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
+ExerelinNewGameSectorConfig,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present""",,"exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
 exerelinNGCSetNumSystemsEmpty:Set number of empty star systems ($numSystemsEmpty)
 exerelinNGCSetMaxPlanets:Set max planets per system ($maxPlanets)
 exerelinNGCSetMaxStations:Set max stations per system ($maxStations)
@@ -174,10 +174,10 @@ ExerelinNGCMaxStations6,NewGameOptionSelected,$option==exerelinNGCMaxStations6,"
 AddText ""Set maximum stations per system to 6"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
-ExerelinNGCNumFactionsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumFactions,,,"exerelinNGCNumFactions3:Three + pirates
-exerelinNGCNumFactions5:Five + pirates
-exerelinNGCNumFactions50%:50% of available factions (+ pirates)
-exerelinNGCNumFactions75%:75% of available factions (+ pirates)
+ExerelinNGCNumFactionsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumFactions,,,"exerelinNGCNumFactions3:Three
+exerelinNGCNumFactions5:Five
+exerelinNGCNumFactions50%:50% of available factions
+exerelinNGCNumFactions75%:75% of available factions
 exerelinNGCNumFactionsAll:All available factions
 exerelinNGCOptionsBack:Back",
 ExerelinNGCNumFactions3,NewGameOptionSelected,$option==exerelinNGCNumFactions3,"NGCSetNumFactions 3 true
