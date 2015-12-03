@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
@@ -20,6 +21,7 @@ import exerelin.utilities.*;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.MiningFleetManager;
 import exerelin.world.ResponseFleetManager;
+import java.util.HashMap;
 import org.lazywizard.omnifac.OmniFacSettings;
 
 public class ExerelinModPlugin extends BaseModPlugin
@@ -43,6 +45,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(am);
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
+        SectorManager.setSystemToRelayMap(new HashMap<String,String>());
+        SectorManager.setPlanetToRelayMap(new HashMap<String,String>());
         
         StatsTracker.create();
         
@@ -50,6 +54,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         SectorManager.setCorvusMode(true);
         SectorManager.reinitLiveFactions();
         PlayerFactionStore.setPlayerFactionId("player_npc");
+        sector.getFaction(Factions.PLAYER).setRelationship("player_npc", 1);
+		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
         
         sector.addTransientScript(new ReinitScreenScript());
     }

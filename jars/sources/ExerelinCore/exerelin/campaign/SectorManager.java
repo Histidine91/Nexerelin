@@ -73,8 +73,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     private List<String> factionIdsAtStart = new ArrayList<>();
     private List<String> liveFactionIds = new ArrayList<>();
     private Set<String> historicFactionIds = new HashSet<>();
-    private Map<String, String> systemToRelayMap;
-    private Map<String, String> planetToRelayMap;
+    private Map<String, String> systemToRelayMap = new HashMap<>();
+    private Map<String, String> planetToRelayMap = new HashMap<>();
     
     private boolean victoryHasOccured = false;
     private boolean respawnFactions = false;
@@ -684,6 +684,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 StarSystemAPI loc = market.getStarSystem();
                 if (loc != null)
                 {
+                    // safety
+                    if (sectorManager.systemToRelayMap == null)
+                    {
+                        setSystemToRelayMap(new HashMap<String, String>());
+                    }
                     String relayId = sectorManager.systemToRelayMap.get(loc.getId());
                     if (relayId != null)
                     {
