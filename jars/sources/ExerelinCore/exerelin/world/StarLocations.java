@@ -80,8 +80,8 @@ public class StarLocations {
         temp.add(new Vector2f(20500,8500));
 		
 		//double max = Math.pow(10000, 2);
-		int maxX = 10000;
-		int maxY = 8000;
+		int maxX = 15000;
+		int maxY = 12000;
 		for (Vector2f pos : temp)
 		{
 			if (Math.abs(pos.x) <= maxX && Math.abs(pos.y) <= maxY)
