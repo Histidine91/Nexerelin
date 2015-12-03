@@ -134,7 +134,7 @@ public class ExerelinUtilsFleet
     
     public static FleetMemberAPI addMiningShipToFleet(CampaignFleetAPI fleet)
     {
-        String variantId = "mining_pod_wing";
+        String variantId = "mining_drone_wing";
         ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId());
         if (config != null && config.miningVariantsOrWings != null && !config.miningVariantsOrWings.isEmpty()) 
             variantId = (String) ExerelinUtils.getRandomListElement(config.miningVariantsOrWings);
