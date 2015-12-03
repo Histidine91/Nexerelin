@@ -1,11 +1,11 @@
 {
 	id:"player_npc",
 	"color":[216,255,216,255],
-	"displayName":"player",
-	"displayNameWithArticle":"the player faction",
-	"displayNameLong":"the player's organization",
-	"displayNameLongWithArticle":"the player's organization",
-	"entityNamePrefix":"player",
+	"displayName":"followers",
+	"displayNameWithArticle":"the followers",
+	"displayNameLong":"player's followers",
+	"displayNameLongWithArticle":"the player's followers",
+	"entityNamePrefix":"followers",
 	"logo":"graphics/factions/player_flag2.png",
 	"shipNamePrefix":"ISS",
 	"shipNameSources":{
