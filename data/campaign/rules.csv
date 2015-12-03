@@ -301,6 +301,7 @@ ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCFactio
 ,,,,,,
 ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
 ExerelinNGCListNGO,ExerelinNGCListFactions3,NGCDoesFactionExist new_galactic_order,,,exerelinNGCJoinNGO:New Galactic Order,
+ExerelinNGCListNihil,ExerelinNGCListFactions3,NGCDoesFactionExist nil,,,exerelinNGCJoinNihil:Nihilic Empire,
 ExerelinNGCListOculus,ExerelinNGCListFactions3,NGCDoesFactionExist oculus,,,exerelinNGCJoinOculus:Oculian Berserks,
 ExerelinNGCListORI,ExerelinNGCListFactions3,NGCDoesFactionExist ori,,,exerelinNGCJoinORI:ORI,
 ExerelinNGCListPACK,ExerelinNGCListFactions3,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
@@ -452,6 +453,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinNGO,NewGameOptionSelected,$option == exerelinNGCJoinNGO,"NGCSetPlayerFaction ""new_galactic_order""
 NGCAddShipAndComplement ""ngo_frigate_standard""
 AddText ""Added Freyr-class frigate"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinNihil,NewGameOptionSelected,$option == exerelinNGCJoinNihil,"NGCSetPlayerFaction ""nil""
+NGCAddShipAndComplement ""nihil_null_cultist""
+AddText ""Added Null-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 exerelinNGCJoinOculus,NewGameOptionSelected,$option == exerelinNGCJoinOculus,"NGCSetPlayerFaction ""oculus""
 NGCAddShipAndComplement ""ob_tigris_standard""
@@ -690,6 +695,7 @@ ExerelinFactionDirectoryList2Back,ExerelinFactionDirectoryList2,,,,exerelinFacti
 ,,,,,,
 ExerelinFactionDirectoryListNeutrinoCorp,ExerelinFactionDirectoryList3,IsFactionAlive neutrinocorp,,,exerelinFactionDirectoryGetNeutrinoCorp:Neutrino Corp,
 ExerelinFactionDirectoryListNGO,ExerelinFactionDirectoryList3,IsFactionAlive new_galactic_order,,,exerelinFactionDirectoryGetNGO:New Galactic Order,
+ExerelinFactionDirectoryListNihil,ExerelinFactionDirectoryList3,IsFactionAlive nil,,,exerelinFactionDirectoryGetNihil:Nihilic Empire,
 ExerelinFactionDirectoryListOculus,ExerelinFactionDirectoryList3,IsFactionAlive oculus,,,exerelinFactionDirectoryGetOculus:Oculian Berserks,
 ExerelinFactionDirectoryListORI,ExerelinFactionDirectoryList3,IsFactionAlive ori,,,exerelinFactionDirectoryGetORI:ORI,
 ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList3,IsFactionAlive pack,,,exerelinFactionDirectoryGetPACK:P.A.C.K.,
@@ -733,6 +739,7 @@ ExerelinFactionDirectoryGetMayorate,DialogOptionSelected,$option == exerelinFact
 ExerelinFactionDirectoryGetMetelson,DialogOptionSelected,$option == exerelinFactionDirectoryGetMetelson,PrintFactionMarkets metelson,,,
 ExerelinFactionDirectoryGetNeutrinoCorp,DialogOptionSelected,$option == exerelinFactionDirectoryGetNeutrinoCorp,PrintFactionMarkets neutrinocorp,,,
 ExerelinFactionDirectoryGetNGO,DialogOptionSelected,$option == exerelinFactionDirectoryGetNGO,PrintFactionMarkets new_galactic_order,,,
+ExerelinFactionDirectoryGetNihil,DialogOptionSelected,$option == exerelinFactionDirectoryGetNihil,PrintFactionMarkets nil,,,
 ExerelinFactionDirectoryGetOculus,DialogOptionSelected,$option == exerelinFactionDirectoryGetOculus,PrintFactionMarkets oculus,,,
 ExerelinFactionDirectoryGetORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetORI,PrintFactionMarkets ori,,,
 ExerelinFactionDirectoryGetPACK,DialogOptionSelected,$option == exerelinFactionDirectoryGetPACK,PrintFactionMarkets pack,,,

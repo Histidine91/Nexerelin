@@ -1,0 +1,18 @@
+{
+    "uniqueModClassName":"data.scripts.world.NilModPlugin", # String
+    "playableFaction":true, # Boolean
+    #"hostileToAll":2,
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Splinter Group", # String
+
+    "positiveDiplomacyExtra":0, # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
+
+    "alignments":{},
+}

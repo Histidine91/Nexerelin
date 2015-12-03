@@ -30,6 +30,7 @@
 		"Gigas":"stillness",
 		"Gneiss":"lodestone",
 		"Nemvis":"mytoselle",
+		"Nihil":"nihilum",
 		"Polaris":"newhiigara",
 		"Radikius":"radiIII",
 		"Rama":"moriaplanet",
@@ -127,6 +128,10 @@
 		"new_galactic_order":{
 			"system":"Aesir",
 			"entity":"breidablik"
+		},
+		"nil":{
+			"system":"Nihil",
+			"entity":"nihilum"
 		},
 		"pack":{
 			"system":"Canis",
