@@ -1,0 +1,29 @@
+{
+    "uniqueModClassName":"data.scripts.world.LTModPlugin", # String
+    "playableFaction":"true", # Boolean
+    "corvusCompatible":true,
+    "noHomeworld":true,
+    "showIntelEvenIfDead":true,
+    
+    "spawnPatrols":"true",
+    "spawnPiratesAndMercs":"false",
+
+    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    "baseFleetCostMultiplier":1.0, # Double
+
+    "customRebelFaction":"", # String
+    "customRebelFleetId":"", # String
+    "rebelFleetSuffix":"Traitors", # String
+
+   "asteroidMiningFleetName":"Miner", # String
+    "gasMiningFleetName":"Collecter",   "positiveDiplomacyExtra":0 , # Integer
+    "negativeDiplomacyExtra":0, # Integer
+    "factionsLiked":[], # String array
+    "factionsDisliked":[], # String array
+    
+    "alignments":{
+        "ideological":0.5,
+    },
+    
+    "freeMarket":true,
+}

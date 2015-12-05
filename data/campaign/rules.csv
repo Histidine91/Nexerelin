@@ -295,6 +295,7 @@ ExerelinNGCListInfected,ExerelinNGCListFactions2,NGCDoesFactionExist infected,,,
 ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions2,NGCDoesFactionExist interstellarimperium,,,exerelinNGCJoinInterstellarImperium:Interstellar Imperium,
 ExerelinNGCListJunkPirates,ExerelinNGCListFactions2,NGCDoesFactionExist junk_pirates,,,exerelinNGCJoinJunkPirates:Junk Pirates,
 ExerelinNGCListTemplars,ExerelinNGCListFactions2,NGCDoesFactionExist templars,,,exerelinNGCJoinTemplars:Knights Templar,
+ExerelinNGCListLooters,ExerelinNGCListFactions2,NGCDoesFactionExist Lte,,,exerelinNGCJoinLooters:Looters,
 ExerelinNGCListMayorate,ExerelinNGCListFactions2,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
 ExerelinNGCListMetelson,ExerelinNGCListFactions2,NGCDoesFactionExist metelson,,,exerelinNGCJoinMetelson:Metelson Industries,
 ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCFactionsBack:Back,
@@ -437,6 +438,10 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinTemplars,NewGameOptionSelected,$option == exerelinNGCJoinTemplars,"NGCSetPlayerFaction ""templars""
 NGCAddShipAndComplement ""tem_martyr_sal""
 AddText ""Added Martyr-class corvette"" textFriendColor
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinLooters,NewGameOptionSelected,$option == exerelinNGCJoinLooters,"NGCSetPlayerFaction ""Lte""
+NGCAddShipAndComplement ""Lt_Tan_Destroyer""
+AddText ""Added Tan-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinMayorate,NewGameOptionSelected,$option == exerelinNGCJoinMayorate,"NGCSetPlayerFaction ""mayorate""
 NGCAddShipAndComplement ""ilk_lilith_assault""
@@ -688,6 +693,7 @@ ExerelinFactionDirectoryListInterstellarImperium,ExerelinFactionDirectoryList2,I
 ExerelinFactionDirectoryListInfected,ExerelinFactionDirectoryList2,IsFactionAlive infected,,,exerelinFactionDirectoryGetInfected:Infected,
 ExerelinFactionDirectoryListJunkPirates,ExerelinFactionDirectoryList2,IsFactionAlive junk_pirates,,,exerelinFactionDirectoryGetJunkPirates:Junk Pirates,
 ExerelinFactionDirectoryListTemplars,ExerelinFactionDirectoryList2,IsFactionAlive templars,,,exerelinFactionDirectoryGetTemplars:Knights Templar,
+ExerelinFactionDirectoryListLooters,ExerelinFactionDirectoryList4,IsFactionAlive Lte,,,exerelinFactionDirectoryGetLooters:Looters,
 ExerelinFactionDirectoryListLuddicChurch,ExerelinFactionDirectoryList2,IsFactionAlive luddic_church,,,exerelinFactionDirectoryGetLuddicChurch:Luddic Church,
 ExerelinFactionDirectoryListMayorate,ExerelinFactionDirectoryList2,IsFactionAlive mayorate,,,exerelinFactionDirectoryGetMayorate:Mayorate,
 ExerelinFactionDirectoryListMetelson,ExerelinFactionDirectoryList2,IsFactionAlive metelson,,,exerelinFactionDirectoryGetMetelson:Metelson Industries,
@@ -734,6 +740,7 @@ ExerelinFactionDirectoryGetICI,DialogOptionSelected,$option == exerelinFactionDi
 ExerelinFactionDirectoryGetInterstellarImperium,DialogOptionSelected,$option == exerelinFactionDirectoryGetInterstellarImperium,PrintFactionMarkets interstellarimperium,,,
 ExerelinFactionDirectoryGetInfected,DialogOptionSelected,$option == exerelinFactionDirectoryGetInfected,PrintFactionMarkets infected,,,
 ExerelinFactionDirectoryGetJunkPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetJunkPirates,PrintFactionMarkets junk_pirates,,,
+ExerelinFactionDirectoryGetLooters,DialogOptionSelected,$option == exerelinFactionDirectoryGetLooters,PrintFactionMarkets Lte,,,
 ExerelinFactionDirectoryGetLuddicChurch,DialogOptionSelected,$option == exerelinFactionDirectoryGetLuddicChurch,PrintFactionMarkets luddic_church,,,
 ExerelinFactionDirectoryGetMayorate,DialogOptionSelected,$option == exerelinFactionDirectoryGetMayorate,PrintFactionMarkets mayorate,,,
 ExerelinFactionDirectoryGetMetelson,DialogOptionSelected,$option == exerelinFactionDirectoryGetMetelson,PrintFactionMarkets metelson,,,

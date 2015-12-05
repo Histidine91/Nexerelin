@@ -62,7 +62,7 @@
     # note: factions will still not appear if set to unplayable in config
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "luddic_church", "luddic_path", "pirates", "player_npc", "independent", "neutral"], # String array
     "supportedModFactions":["approlight", "blackrock_driveyards", "bushi", "citadeldefenders", "crystanite", "diableavionics", "exigency", "exipirated", "Fleaden",
-                            "firestorm_federation", "hiigaran_descendants", "infected", "interstellarimperium", "junk_pirates", "mayorate", "metelson",
+                            "firestorm_federation", "hiigaran_descendants", "infected", "interstellarimperium", "junk_pirates", "Lte", "mayorate", "metelson",
                             "neutrinocorp", "new_galactic_order", "nil", "oculus", "ori", "pn_colony", "PTech", "rori", "pack", "patnavy", "pbc", "scion",
                             "SCY", "shadow_industry", "spire", "darkspire", "sun_ice", "sun_ici", "syndicate_asp", "templars", "tiandong","valkyrian"], # String array
 }

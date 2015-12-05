@@ -38,6 +38,7 @@
 		"Rock":"rangus",
 		"Rasht":"ilkhanna",
 		"Shaanxi":"tiandong_shanghai",
+		"Shil":"shell",
 		"Tartarus":"SCY_hephaistosStation",
 		"Thracia":"ii_planet_byzantium",
 		"Tolp":"tolpIV",
@@ -115,6 +116,10 @@
 		"junk_pirates":{
 			"system":"Breh'Inni",
 			"entity":"glory"
+		},
+		"Lte":{
+			"system":"Shil",
+			"entity":"shell"
 		},
 		"mayorate":{
 			"system":"Rasht",
