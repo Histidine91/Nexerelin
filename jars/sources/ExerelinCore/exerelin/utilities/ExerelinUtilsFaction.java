@@ -2,16 +2,11 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.MissionBoardAPI;
-import com.fs.starfarer.api.campaign.MissionBoardAPI.MissionAvailabilityAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventManagerAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.ids.Events;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMission;
@@ -19,7 +14,6 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.events.ExerelinFactionCommissionMissionEvent;
-import exerelin.campaign.events.MarketAttackedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
