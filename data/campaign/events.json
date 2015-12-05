@@ -80,11 +80,14 @@
 	#"customs_inspection":{
 	#	"script":"exerelin.campaign.events.ExerelinCustomsInspectionEvent",
 	#},
-	"investigation_goodrep":{
-		"script":"exerelin.campaign.events.ExerelinInvestigationEventGoodRepWithOther",
-	},
+	#"investigation_goodrep":{
+	#	"script":"exerelin.campaign.events.ExerelinInvestigationEventGoodRepWithOther",
+	#},
 	"rep_tracker":{
 		"script":"exerelin.campaign.events.ExerelinRepTrackerEvent",
+	},
+	"faction_commission":{
+		"script":"exerelin.campaign.events.ExerelinFactionCommissionMissionEvent",
 	},
 	
 }

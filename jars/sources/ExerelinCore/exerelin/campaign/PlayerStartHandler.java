@@ -12,20 +12,20 @@ import com.fs.starfarer.api.util.Misc;
 import data.scripts.world.ExerelinCorvusLocations;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.awt.Color;
+import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
 
 public class PlayerStartHandler {
 	
 	public static void execute()
 	{
+		SectorEntityToken entity = null;
 		String factionId = PlayerFactionStore.getPlayerFactionId();
 		if (SectorManager.getCorvusMode())
 		{
 			// moves player fleet to a suitable location; e.g. Avesta for Association
 			ExerelinCorvusLocations.SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(factionId);
 			String homeEntity = null;
-			SectorEntityToken entity = null;
-
 			if (Global.getSector().isInNewGameAdvance()) return;
 			if (ExerelinUtilsFaction.isCorvusCompatible(factionId, false) && spawnPoint != null)
 			{
@@ -72,9 +72,15 @@ public class PlayerStartHandler {
 		}
 		else if (!ExerelinSetupData.getInstance().freeStart)
 		{
-			SectorEntityToken entity = SectorManager.getHomeworld();
+			entity = SectorManager.getHomeworld();
 			Vector2f loc = entity.getLocation();
 			Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
+		}
+		
+		if (!ExerelinSetupData.getInstance().freeStart)
+		{
+			if (entity != null && !entity.getFaction().isNeutralFaction())
+				ExerelinUtilsFaction.grantCommission(entity);
 		}
 	}
 }

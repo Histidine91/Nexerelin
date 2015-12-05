@@ -27,6 +27,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMissionCreator;
 import com.fs.starfarer.api.impl.campaign.missions.MarketProcurementMissionCreator;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
@@ -763,6 +764,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(new PirateFleetManager());
 		sector.addScript(new BountyPirateFleetManager());
 		sector.addScript(new MarketProcurementMissionCreator());
+		sector.addScript(new FactionCommissionMissionCreator());	// not really needed; game auto-adds it on load
 		
 		if (!corvusMode) sector.addScript(new ForcePatrolFleetsScript());
 		//sector.addScript(new EconomyLogger());

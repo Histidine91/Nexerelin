@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.events.FactionChangedEvent;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
 
@@ -52,6 +53,8 @@ public class JoinFaction extends BaseCommandPlugin {
 			eventSuper = sector.getEventManager().startEvent(null, "exerelin_faction_changed", null);
 		FactionChangedEvent event = (FactionChangedEvent)eventSuper;
 		event.reportEvent(oldFaction, newFaction, isDefection ? "switch" : "join", dialog.getInteractionTarget());
+		
+		ExerelinUtilsFaction.grantCommission(dialog.getInteractionTarget());
 		
 		str = StringHelper.substituteToken(str, "$theOldFaction", oldFaction.getDisplayNameWithArticle());
 		str = StringHelper.substituteToken(str, "$theNewFaction", newFaction.getDisplayNameWithArticle());

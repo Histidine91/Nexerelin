@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.events.FactionChangedEvent;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
 
@@ -40,12 +41,13 @@ public class LeaveFaction extends BaseCommandPlugin {
 		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
 		memory.set("$faction", newFaction, 0);
 		memory.set("$factionId", newFactionId, 0);
-                
+		
 		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
 		if (eventSuper == null) 
 			eventSuper = sector.getEventManager().startEvent(null, "exerelin_faction_changed", null);
 		FactionChangedEvent event = (FactionChangedEvent)eventSuper;
 		event.reportEvent(oldFaction, newFaction, "leave", dialog.getInteractionTarget());
+		//ExerelinUtilsFaction.revokeCommission(oldFactionId);
 		
 		str = StringHelper.substituteToken(str, "$theOldFaction", oldFaction.getDisplayNameWithArticle());
 		text.addParagraph(str);
