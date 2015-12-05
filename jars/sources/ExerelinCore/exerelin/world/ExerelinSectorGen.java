@@ -112,7 +112,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final String[] moonTypesUninhabitable = new String[] 
 		{"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "irradiated", "barren-bombarded", "desert", "water", "jungle", "barren-desert"};
 	
-	protected static final Map<String, String[]> stationImages = new HashMap<>();
+	protected static final List<String> stationImages = new ArrayList<>(Arrays.asList(
+			new String[] {"station_side00", "station_side02", "station_side04", "station_jangala_type"}));
 	
 	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
 	protected static final float BINARY_STAR_DISTANCE = 13000;
@@ -156,21 +157,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 	}
 	*/
-	 
-	static 
-	{		
-		// station images (FIXME: move to faction config)
-		stationImages.put("default", new String[] {"station_side00", "station_side02", "station_side04", "station_jangala_type"});
-		stationImages.put("shadow_industry", new String[] {"station_shi_prana","station_shi_med"} );
-		stationImages.put("SCY", new String[] {"SCY_overwatchStation_type","SCY_refinery_type", "SCY_processing_type", "SCY_conditioning_type"} );
-		stationImages.put("hiigaran_descendants", new String[] {"new_hiigara_type","hiigara_security_type"} );
-		stationImages.put("citadeldefenders", new String[] {"station_citadel_type"} );
-		stationImages.put("neutrinocorp", new String[] {"neutrino_station_powerplant", "neutrino_station_largeprocessing", "neutrino_station_experimental"} );
-		stationImages.put("diableavionics", new String[] {"diableavionics_station_eclipse"} );
-		stationImages.put("exipirated", new String[] {"exipirated_avesta_station"} );
-		stationImages.put("tiandong", new String[] {"tiandong_outpost"} );
-		stationImages.put("pbc", new String[] {"pbc_pegasus_base", "pbc_research_facility"} );
-	}
 	
 	protected void loadBackgrounds()
 	{
@@ -405,8 +391,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		LocationAPI system = toOrbit.getContainingLocation();
 		log.info("Placing Omnifactory around " + toOrbit.getName() + ", in the " + system.getName());
-		String[] images = stationImages.get("default");
-		String image = (String) ExerelinUtils.getRandomArrayElement(images);
+		String image = (String) ExerelinUtils.getRandomListElement(stationImages);
 		String entityName = "omnifactory" + index;
 		SectorEntityToken omnifac = system.addCustomEntity(entityName, "Omnifactory", image, "neutral");
 		float radius = toOrbit.getRadius();
@@ -1000,11 +985,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		String name = data.name;
 		String id = name.replace(' ','_');
-		String[] images = stationImages.get("default");
-		if (stationImages.containsKey(factionId))
-			images = stationImages.get(factionId);
+		List<String> images = stationImages;
+		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		if (factionConf != null && !factionConf.customStations.isEmpty())
+			images = factionConf.customStations;
 		
-		String image = (String) ExerelinUtils.getRandomArrayElement(images);
+		String image = (String) ExerelinUtils.getRandomListElement(images);
 		
 		SectorEntityToken newStation = data.starSystem.addCustomEntity(id, name, image, factionId);
 		newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);

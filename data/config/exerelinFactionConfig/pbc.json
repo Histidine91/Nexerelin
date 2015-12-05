@@ -21,4 +21,6 @@
         "diplomatic":-0.5,
         "ideological":-0.25,
     },
+    
+    "customStations":["pbc_pegasus_base", "pbc_research_facility"],
 }

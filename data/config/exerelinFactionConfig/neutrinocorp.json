@@ -18,4 +18,6 @@
         "corporate":1,
         "technocratic":1,
     },
+    
+    "customStations":["neutrino_station_powerplant", "neutrino_station_largeprocessing", "neutrino_station_experimental"],
 }

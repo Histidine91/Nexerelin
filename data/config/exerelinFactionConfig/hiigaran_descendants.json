@@ -13,4 +13,6 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+    
+    "customStations":["new_hiigara_type","hiigara_security_type"],
 }

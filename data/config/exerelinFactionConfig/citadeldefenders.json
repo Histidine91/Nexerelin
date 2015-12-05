@@ -21,4 +21,6 @@
         "corporate":1,
         "militarist":0.5,
     },
+    
+    "customStations":["station_citadel_type"],
 }

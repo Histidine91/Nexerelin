@@ -20,4 +20,6 @@
         "technocratic":0.5,
         "diplomatic":1,
     },
+    
+    "customStations":["station_shi_prana","station_shi_med"],
 }

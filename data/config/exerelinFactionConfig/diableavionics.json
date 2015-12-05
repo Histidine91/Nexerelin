@@ -22,5 +22,6 @@
         "diplomatic":-1,
     },
     
-    "miningVariantsOrWings":["diableavionics_laminar_miner"]
+    "miningVariantsOrWings":["diableavionics_laminar_miner"],
+    "customStations":["diableavionics_station_eclipse","diableavionics_station_shadow","diableavionics_station_ressource"],
 }

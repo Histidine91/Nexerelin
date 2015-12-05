@@ -20,5 +20,6 @@
 		"militarist":0.5,
 	},
 	
-	"miningVariantsOrWings":["SCY_telchine_miner"],  
+	"miningVariantsOrWings":["SCY_telchine_miner"],
+	"customStations":["SCY_overwatchStation_type","SCY_refinery_type", "SCY_processing_type", "SCY_conditioning_type"],
 }

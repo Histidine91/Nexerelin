@@ -61,6 +61,8 @@ public class ExerelinFactionConfig
     public boolean noHomeworld = false;
     public boolean showIntelEvenIfDead = false;
     
+    public List<String> customStations = new ArrayList<>();
+    
     public List<String> miningVariantsOrWings = new ArrayList<String>() {};
 
     public ExerelinFactionConfig(String factionId)
@@ -120,6 +122,9 @@ public class ExerelinFactionConfig
             
             if (settings.has("miningVariantsOrWings"))
                 miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
+            
+            if (settings.has("customStations"))
+                customStations = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("customStations")));
             
             if (settings.has("alignments"))
             {
