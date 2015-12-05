@@ -268,10 +268,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             {                                                // who wouldn't want to change relations just because our employee is working with an involved faction
                 if (commissionFactionId.equals(faction1Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction1Id))
                 {
+                    playerFaction.ensureAtWorst(faction2Id, RepLevel.INHOSPITABLE);
                     playerFaction.adjustRelationship(faction2Id, delta, RepLevel.SUSPICIOUS);
                 }
                 if (commissionFactionId.equals(faction2Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction2Id))
                 {
+                    playerFaction.ensureAtWorst(faction1Id, RepLevel.INHOSPITABLE);
                     playerFaction.adjustRelationship(faction1Id, delta, RepLevel.SUSPICIOUS);
                 }
             }
