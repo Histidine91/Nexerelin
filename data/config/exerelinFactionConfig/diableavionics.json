@@ -1,8 +1,7 @@
 {
     "uniqueModClassName":"data.scripts.world.diableavionicsGen", # String
-    "playableFaction":"true", # Boolean
-
-    "stationInteriorIllustrationKeys":["cargo_loading"], # String array
+    "playableFaction":true, # Boolean
+    "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.1, # Double
@@ -20,6 +19,7 @@
         "corporate":1,
         "technocratic":0.5,
         "militarist":1,
+        "diplomatic":-1,
     },
     
     "miningVariantsOrWings":["diableavionics_laminar_miner"]

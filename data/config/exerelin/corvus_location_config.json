@@ -31,6 +31,7 @@
 		"Gneiss":"lodestone",
 		"Nemvis":"mytoselle",
 		"Nihil":"nihilum",
+		"Outer Terminus":"diableavionics_prison",
 		"Polaris":"newhiigara",
 		"Radikius":"radiIII",
 		"Rama":"moriaplanet",
@@ -83,8 +84,10 @@
 			"entity":"crystanos2"
 		},
 		"diableavionics":{
-			"system":"hyperspace",
-			"entity":"diableavionics_eclipse"
+			#"system":"hyperspace",
+			#"entity":"diableavionics_eclipse"
+			"system":"Outer Terminus",
+			"entity":"diableavionics_prison"
 		},
 		"exigency":{
 			"system":"Tasserus"
