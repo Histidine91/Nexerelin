@@ -40,7 +40,7 @@ public class FactionChangedEvent extends BaseEventPlugin {
 	{
 		this.oldFaction = oldFaction;
 		this.newFaction = newFaction;
-		Global.getSector().reportEventStage(this, stage, entity, MessagePriority.ENSURE_DELIVERY);
+		Global.getSector().reportEventStage(this, stage, entity, MessagePriority.DELIVER_IMMEDIATELY);
 	}
 	
 	@Override
