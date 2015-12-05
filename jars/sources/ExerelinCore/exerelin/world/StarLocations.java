@@ -1,5 +1,6 @@
 package exerelin.world;
 
+import com.fs.starfarer.api.Global;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
@@ -7,6 +8,7 @@ import org.lwjgl.util.vector.Vector2f;
 // TODO externalise
 public class StarLocations {
 	public static final List<Vector2f> SPOT = new ArrayList<>();
+	public static final List<Vector2f> SPOT_EXTENDED = new ArrayList<>();
 	static
     {
 		List<Vector2f> temp = new ArrayList<>();
@@ -80,12 +82,19 @@ public class StarLocations {
         temp.add(new Vector2f(20500,8500));
 		
 		//double max = Math.pow(10000, 2);
-		int maxX = 15000;
-		int maxY = 12000;
+		int maxX = 10000;
+		int maxY = 8000;
+		int maxXLarge = 15000;
+		int maxYLarge = 12000;
 		for (Vector2f pos : temp)
 		{
 			if (Math.abs(pos.x) <= maxX && Math.abs(pos.y) <= maxY)
 				SPOT.add(pos);
+			else if (Math.abs(pos.x) <= maxXLarge && Math.abs(pos.y) <= maxYLarge)
+				SPOT_EXTENDED.add(pos);
 		}
+		
+		Global.getLogger(StarLocations.class).info("Base star location set has " + SPOT.size() + " spots");
+		Global.getLogger(StarLocations.class).info("Extended star location set has " + SPOT_EXTENDED.size() + " spots");
     }
 }

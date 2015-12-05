@@ -699,6 +699,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			WeightedRandomPicker<Vector2f> picker = new WeightedRandomPicker<>();
 			addListToPicker(StarLocations.SPOT, picker);
+			if (StarLocations.SPOT.size() < numSystems + numSystemsEmpty)
+				addListToPicker(StarLocations.SPOT_EXTENDED, picker);
 			
 			for(int i = 0; i < numSystems + numSystemsEmpty; i ++)
 			{
