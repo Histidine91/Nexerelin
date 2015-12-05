@@ -89,5 +89,7 @@
 	"faction_commission":{
 		"script":"exerelin.campaign.events.ExerelinFactionCommissionMissionEvent",
 	},
-	
+	"faction_hostility":{
+		"probabilityMult":0,
+	},
 }
