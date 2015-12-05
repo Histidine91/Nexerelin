@@ -271,13 +271,13 @@
 			"minSize":3,
 			"allowDuplicates":false
 		},
-		#{
-		#	"name":"dissident",
-		#	"special":true,
-		#	"archetypes":{"default":1},
-		#	"minSize":3,
-		#	"allowDuplicates":false
-		#},
+		{
+			"name":"dissident",
+			"special":true,
+			"archetypes":{"default":1},
+			"minSize":3,
+			"allowDuplicates":false
+		},
 		{
 			"name":"stealth_minefields",
 			"special":true,
