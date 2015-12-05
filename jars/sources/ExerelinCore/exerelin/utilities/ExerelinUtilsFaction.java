@@ -103,6 +103,8 @@ public class ExerelinUtilsFaction {
         FactionAPI faction = entity.getFaction();
         if (!faction.getCustomBoolean(Factions.CUSTOM_OFFERS_COMMISSIONS))
             return;
+        if (faction.getId().equals(Misc.getCommissionFaction()))
+            return;    // already have commission
         
         revokeCommission();
         FactionCommissionMission mission = new FactionCommissionMission(faction.getId());
