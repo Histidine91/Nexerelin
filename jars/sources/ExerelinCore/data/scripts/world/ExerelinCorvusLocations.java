@@ -3,53 +3,42 @@ package data.scripts.world;
 import com.fs.starfarer.api.Global;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 // should probably be a singleton instead of static but meh
 public class ExerelinCorvusLocations {
     
-    protected static final String CONFIG_FILE = "data/config/exerelin/corvus_location_config.json";
+    protected static final String SYSTEM_CAPITAL_CONFIG = "data/config/exerelin/corvus_capitals.csv";
+    protected static final String SPAWN_POINT_CONFIG = "data/config/exerelin/corvus_spawnpoints.csv";
     
     protected static final Map<String, SpawnPointEntry> SPAWN_POINTS = new HashMap<>();
     protected static final Map<String, String> SYSTEM_CAPITALS = new HashMap<>();
     
     static {
         try {
-            JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
-            JSONObject spawnPoints = config.getJSONObject("spawnPoints");
-            JSONObject systemCapitals = config.getJSONObject("systemCapitals");
-            Iterator<?> keys = spawnPoints.keys();
-
-            while( keys.hasNext() ) {
-                String factionId = (String)keys.next();
-                JSONObject spawnPointJson = spawnPoints.getJSONObject(factionId);
-                
-                SpawnPointEntry spawnPoint = new SpawnPointEntry();
-                String system = spawnPointJson.optString("system");
-                String entity = spawnPointJson.optString("entity");
-                
-                if (!system.isEmpty()) spawnPoint.systemName = system;
-                if (!entity.isEmpty()) spawnPoint.entityName = entity;
-                SPAWN_POINTS.put(factionId, spawnPoint);
-                
-                /*
-                if (!system.isEmpty() && !system.equalsIgnoreCase("hyperspace") && !entity.isEmpty() && isCapital )
-                {
-                    SYSTEM_CAPITALS.put(system, entity);
-                }
-                */
-            }
-            
-            keys = systemCapitals.keys();
-            while (keys.hasNext())
+            JSONArray systemCapitalsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("system", SYSTEM_CAPITAL_CONFIG, "nexerelin");
+            for(int x = 0; x < systemCapitalsCsv.length(); x++)
             {
-                String systemName = (String)keys.next();
-                SYSTEM_CAPITALS.put(systemName, systemCapitals.getString(systemName));
+                JSONObject row = systemCapitalsCsv.getJSONObject(x);
+                String systemName = row.getString("system");
+                String entityId = row.getString("entityID");
+                SYSTEM_CAPITALS.put(systemName, entityId);
             }
             
+            JSONArray spawnPointsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("faction", SPAWN_POINT_CONFIG, "nexerelin");
+            for(int x = 0; x < spawnPointsCsv.length(); x++)
+            {
+                JSONObject row = spawnPointsCsv.getJSONObject(x);
+                SpawnPointEntry spawnPoint = new SpawnPointEntry();
+                String systemName = row.getString("system");
+                String entityId = row.getString("entityID");
+                if (!systemName.isEmpty()) spawnPoint.systemName = systemName;
+                if (!entityId.isEmpty()) spawnPoint.entityId = entityId;
+                SPAWN_POINTS.put(row.getString("faction"), spawnPoint);
+            }            
         } catch (IOException | JSONException ex) {
             Global.getLogger(ExerelinCorvusLocations.class).error(ex);
         }
@@ -69,6 +58,6 @@ public class ExerelinCorvusLocations {
     
     public static class SpawnPointEntry {
         public String systemName = "hyperspace";
-        public String entityName;
+        public String entityId;
     }
 }

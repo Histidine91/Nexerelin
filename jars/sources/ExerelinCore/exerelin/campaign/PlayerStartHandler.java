@@ -29,7 +29,7 @@ public class PlayerStartHandler {
 			if (Global.getSector().isInNewGameAdvance()) return;
 			if (ExerelinUtilsFaction.isCorvusCompatible(factionId, false) && spawnPoint != null)
 			{
-				homeEntity = spawnPoint.entityName;
+				homeEntity = spawnPoint.entityId;
 				if (homeEntity != null)
 					entity = Global.getSector().getEntityById(homeEntity);
 			}

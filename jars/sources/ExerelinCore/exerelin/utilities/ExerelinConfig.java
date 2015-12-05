@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 import static exerelin.utilities.ExerelinUtils.JSONArrayToStringArray;
+import org.json.JSONArray;
 
 public class ExerelinConfig
 {
+    public static final String CONFIG_PATH = "data/config/exerelin/exerelin_config.json";
+    public static final String MOD_FACTION_LIST_PATH = "data/config/exerelinFactionConfig/mod_factions.csv";
+    
     public static List<ExerelinFactionConfig> exerelinFactionConfigs;
 
     // Threading support for improving/smoothing performance
@@ -93,7 +97,7 @@ public class ExerelinConfig
         {
             System.out.println("Loading exerelinSettings");
 
-            JSONObject settings = Global.getSettings().loadJSON("data/config/exerelin/exerelin_config.json");
+            JSONObject settings = Global.getSettings().loadJSON(CONFIG_PATH);
 
             minimumPlanets = settings.optInt("minimumPlanets");
             minimumStations = settings.optInt("minimumStations");
@@ -151,7 +155,16 @@ public class ExerelinConfig
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
-            supportedModFactions = JSONArrayToStringArray(settings.getJSONArray("supportedModFactions"));
+            
+            List<String> modFactions = new ArrayList<>();
+            JSONArray modFactionsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("faction", MOD_FACTION_LIST_PATH, "nexerelin");
+            for(int x = 0; x < modFactionsCsv.length(); x++)
+            {
+                JSONObject row = modFactionsCsv.getJSONObject(x);
+                String factionName = row.getString("faction");
+                modFactions.add(factionName);
+            }
+            supportedModFactions = modFactions.toArray(new String[]{});
         }
         catch(Exception e)
         {
