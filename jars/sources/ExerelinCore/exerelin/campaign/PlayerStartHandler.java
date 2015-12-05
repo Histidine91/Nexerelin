@@ -70,14 +70,14 @@ public class PlayerStartHandler {
 			}
 			
 		}
-		else if (!ExerelinSetupData.getInstance().freeStart)
+		else if (!SectorManager.getFreeStart())
 		{
 			entity = SectorManager.getHomeworld();
 			Vector2f loc = entity.getLocation();
 			Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
 		}
 		
-		if (!ExerelinSetupData.getInstance().freeStart)
+		if (!SectorManager.getFreeStart())
 		{
 			if (entity != null && !entity.getFaction().isNeutralFaction())
 				ExerelinUtilsFaction.grantCommission(entity);

@@ -775,6 +775,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		SectorManager.setPlanetToRelayMap(planetToRelay);
 		SectorManager.setCorvusMode(corvusMode);
 		SectorManager.setHardMode(setupData.hardMode);
+		SectorManager.setFreeStart(setupData.freeStart);
 		
 		// Remove any data stored in ExerelinSetupData
 		//resetVars();

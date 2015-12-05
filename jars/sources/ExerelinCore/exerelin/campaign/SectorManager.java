@@ -83,6 +83,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     protected boolean corvusMode = false;
     protected boolean hardMode = false;
+    protected boolean freeStart = false;
     
     private int numSlavesRecentlySold = 0;
     private MarketAPI marketLastSoldSlaves = null;
@@ -761,6 +762,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return null;
         return sectorManager.homeworld;
+    }
+    
+    public static void setFreeStart(boolean freeStart)
+    {
+        if (sectorManager == null) return;
+        sectorManager.freeStart = freeStart;
+    }
+    
+    public static boolean getFreeStart()
+    {
+        if (sectorManager == null) return false;
+        return sectorManager.freeStart;
     }
     
     private static void expelPlayerFromFaction()
