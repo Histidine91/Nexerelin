@@ -13,13 +13,14 @@ public class ExerelinFactionConfig
     public String factionId;
 
     public String uniqueModClassName = "";
-    public Boolean playableFaction = true;
+    public boolean playableFaction = true;
     public boolean corvusCompatible = false;
    
-    public Boolean isPirateNeutral = false;
-    public Boolean spawnPatrols = true;    // only used for factions set to not spawn patrols in .faction file
-	@Deprecated
-    public Boolean spawnPiratesAndMercs = true;    // ditto
+    public boolean pirateFaction = false;
+    public boolean isPirateNeutral = false;
+    public boolean spawnPatrols = true;    // only used for factions set to not spawn patrols in .faction file
+    @Deprecated
+    public boolean spawnPiratesAndMercs = true;    // ditto
     
     // 0 = not hostile
     // 1 = inhospitable to player, hostile to everyone else
@@ -81,6 +82,7 @@ public class ExerelinFactionConfig
             playableFaction = settings.optBoolean("playableFaction", true);
             corvusCompatible = settings.optBoolean("corvusCompatible", false);
             
+            pirateFaction = settings.optBoolean("pirateFaction", false);
             isPirateNeutral = settings.optBoolean("isPirateNeutral", false);
             spawnPatrols = settings.optBoolean("spawnPatrols", true);
             spawnPiratesAndMercs = settings.optBoolean("spawnPiratesAndMercs", true);

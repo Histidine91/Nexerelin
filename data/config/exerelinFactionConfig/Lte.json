@@ -1,9 +1,10 @@
 {
     "uniqueModClassName":"data.scripts.world.LTModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true,
     "corvusCompatible":true,
+    "pirateFaction":true,
     "noHomeworld":true,
-    "showIntelEvenIfDead":true,
+    #"showIntelEvenIfDead":true,
     
     "spawnPatrols":"true",
     "spawnPiratesAndMercs":"false",

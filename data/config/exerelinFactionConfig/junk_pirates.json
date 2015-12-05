@@ -1,7 +1,7 @@
 {
     "uniqueModClassName":"data.scripts.JunkPiratesModPlugin", # String
-    "playableFaction":true, # Boolean
-    "isPirateNeutral":true, # Boolean
+    "playableFaction":true,
+    "pirateFaction":true,
     "noHomeworld":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0

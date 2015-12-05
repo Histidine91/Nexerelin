@@ -1,6 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.world.ORIModPlugin", # String
-    "isPirateNeutral":"true", # Boolean
+    "pirateFaction":true,
     "noHomeworld":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0

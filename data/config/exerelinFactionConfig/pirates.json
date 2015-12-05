@@ -1,6 +1,7 @@
 {
     "uniqueModClassName":"", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true,
+    "pirateFaction":true,
     "corvusCompatible":true,
     "noHomeworld":true,
     "showIntelEvenIfDead":true,

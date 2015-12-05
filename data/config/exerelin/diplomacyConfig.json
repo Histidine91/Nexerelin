@@ -1,5 +1,4 @@
 {
-	"pirateFactions": [ "pirates", "exipirated", "junk_pirates", "rori", "lte" ],
 	"warWearinessPerInterval":20,	#20
 	"eventFrequency":10,	#10
 	"events":[
