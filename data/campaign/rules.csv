@@ -443,8 +443,8 @@ NGCAddShipAndComplement ""ilk_lilith_assault""
 AddText ""Added Lilith-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinMetelson,NewGameOptionSelected,$option == exerelinNGCJoinMetelson,"NGCSetPlayerFaction ""metelson""
-NGCAddShipAndComplement ""mi_soldat_support""
-AddText ""Added Soldat-class gunship"" textFriendColor
+NGCAddShipAndComplement ""mi_farin_standard""
+AddText ""Added Farin-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinNeutrinoCorp,NewGameOptionSelected,$option == exerelinNGCJoinNeutrinoCorp,"NGCSetPlayerFaction ""neutrinocorp""
 NGCAddShipAndComplement ""neutrino_singularity_standard""
