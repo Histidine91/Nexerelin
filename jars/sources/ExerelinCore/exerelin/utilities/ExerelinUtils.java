@@ -344,10 +344,8 @@ public class ExerelinUtils
         {
             return jsonArray.toString().substring(1, jsonArray.toString().length() - 1).replaceAll("\"","").split(",");
         }
-        catch(Exception e)
-        {
-            return new String[]{};
-        }
+        catch(Exception e) { }
+        return new String[]{};
     }
     
     public static ArrayList<String> JSONArrayToArrayList(JSONArray jsonArray)
@@ -361,10 +359,8 @@ public class ExerelinUtils
             }
             return ret;
         }
-        catch(Exception e)
-        {
-            return new ArrayList<>();
-        }
+        catch(Exception e) { }
+        return new ArrayList<>();
     }
     
     public static Map jsonToMap(JSONObject json) throws JSONException {
