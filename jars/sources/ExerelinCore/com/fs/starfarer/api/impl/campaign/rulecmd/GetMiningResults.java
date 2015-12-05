@@ -62,7 +62,7 @@ public class GetMiningResults extends BaseCommandPlugin {
 			
 			//String amountStr = String.format("%.0f", amount);
 			String resName = economy.getCommoditySpec(res).getName();
-			text.addParagraph("  " + resName + ": " + amount);
+			text.addParagraph("  " + resName + ": " + Misc.getWithDGS(amount));
 			text.highlightInLastPara(hl, resName);
 		}
 		
@@ -78,7 +78,7 @@ public class GetMiningResults extends BaseCommandPlugin {
 				String displayStr = cache.name;
 				if (cache.def.type != CacheType.FRIGATE)
 				{
-					displayStr += (" x " + cache.numItems);
+					displayStr += (" x " +  Misc.getWithDGS(cache.numItems));
 				}
 				text.addParagraph("  " + displayStr);
 				text.highlightInLastPara(hl, cache.name);

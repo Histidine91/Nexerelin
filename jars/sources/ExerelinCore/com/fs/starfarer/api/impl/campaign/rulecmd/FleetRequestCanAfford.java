@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 
 public class FleetRequestCanAfford extends FleetRequestActionBase {
@@ -28,9 +29,9 @@ public class FleetRequestCanAfford extends FleetRequestActionBase {
 		float moneyHave = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
 		
 		
-		memory.set("$creditsRequiredForFleet", (int)moneyRequired, 0);
+		memory.set("$creditsRequiredForFleet", Misc.getWithDGS(moneyRequired), 0);
 		memory = memoryMap.get(MemKeys.PLAYER);
-		memory.set("$creditsHave", (int)moneyHave, 0);
+		memory.set("$creditsHave", Misc.getWithDGS(moneyHave), 0);
 		
 		return moneyHave >= moneyRequired;
 	}

@@ -117,7 +117,7 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		map.put("$Employer", Misc.ucFirst(factionName));
 		map.put("$theEmployer", theFactionName);
 		map.put("$TheEmployer", Misc.ucFirst(theFactionName));
-		map.put("$paid", "" + (int) paidAmount + Strings.C);
+		map.put("$paid", Misc.getWithDGS((int)paidAmount) + Strings.C);
 		return map;
 	}
 	
