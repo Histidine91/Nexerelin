@@ -803,7 +803,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     {
                         if (otherFactionId.equals(factionId)) continue;
                         FactionAPI otherFaction = sector.getFaction(otherFactionId);
-                        if (!otherFaction.isNeutralFaction()) continue;
+                        if (otherFaction.isNeutralFaction()) continue;
                         
                         ExerelinFactionConfig otherConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
                         if (otherConfig != null && (otherConfig.isPirateNeutral || otherConfig.pirateFaction)) continue;
