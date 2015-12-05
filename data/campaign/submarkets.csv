@@ -1,3 +1,6 @@
 id,name,faction,desc,script,icon,order
 omnifac_market,Omnifactory,player,The Omnifactory is able to replicate ships and weapons.,org.lazywizard.omnifac.OmniFac,graphics/factions/neutral.png,0
 exerelin_prismMarket,High-End Seller,independent,"Pulls rare, advanced warships and weapons from across the Sector for those who are willing to pay a premium and don't ask too many questions.",exerelin.campaign.submarkets.PrismMarket,,200
+,,,,,,
+# vanilla override,,,,,,
+generic_military,,,,exerelin.campaign.submarkets.ExerelinMilitarySubmarketPlugin,,100
