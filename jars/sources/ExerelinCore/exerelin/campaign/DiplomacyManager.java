@@ -258,12 +258,31 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             playerFaction.setRelationship(faction1Id, after);
             faction1.setRelationship("player_npc", after);
         }
+        
+        // if now at peace, raise relationships for commission holder
+        ExerelinReputationAdjustmentResult repResult = new ExerelinReputationAdjustmentResult(delta, wasHostile, isHostile);
+        if (repResult.wasHostile && !repResult.isHostile)
+        {
+            String commissionFactionId = Misc.getCommissionFaction();
+            if (playerAlignedFactionId.equals("player_npc"))    // i.e. not with a "real faction"
+            {                                                // who wouldn't want to change relations just because our employee is working with an involved faction
+                if (commissionFactionId.equals(faction1Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction1Id))
+                {
+                    playerFaction.adjustRelationship(faction2Id, delta, RepLevel.SUSPICIOUS);
+                }
+                if (commissionFactionId.equals(faction2Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction2Id))
+                {
+                    playerFaction.adjustRelationship(faction1Id, delta, RepLevel.SUSPICIOUS);
+                }
+            }
+        }
+        
         AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
         AllianceManager.syncAllianceRelationshipsToFactionRelationship(faction1Id, faction2Id);
         ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
         
         SectorManager.checkForVictory();
-        return new ExerelinReputationAdjustmentResult(delta, wasHostile, isHostile);
+        return repResult;
     }
     
     public static ExerelinReputationAdjustmentResult adjustRelations(DiplomacyEventDef event, FactionAPI faction1, FactionAPI faction2, float delta)
