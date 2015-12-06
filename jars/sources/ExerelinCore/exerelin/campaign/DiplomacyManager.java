@@ -264,17 +264,17 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (repResult.wasHostile && !repResult.isHostile)
         {
             String commissionFactionId = Misc.getCommissionFaction();
-            if (playerAlignedFactionId.equals("player_npc"))    // i.e. not with a "real faction"
+            if (commissionFactionId != null && playerAlignedFactionId.equals("player_npc"))    // i.e. not with a "real faction"
             {                                                // who wouldn't want to change relations just because our employee is working with an involved faction
                 if (commissionFactionId.equals(faction1Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction1Id))
                 {
-                    playerFaction.ensureAtWorst(faction2Id, RepLevel.INHOSPITABLE);
-                    playerFaction.adjustRelationship(faction2Id, delta, RepLevel.SUSPICIOUS);
+                    playerAlignedFaction.ensureAtWorst(faction2Id, RepLevel.INHOSPITABLE);
+                    playerAlignedFaction.adjustRelationship(faction2Id, delta);
                 }
                 if (commissionFactionId.equals(faction2Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction2Id))
                 {
-                    playerFaction.ensureAtWorst(faction1Id, RepLevel.INHOSPITABLE);
-                    playerFaction.adjustRelationship(faction1Id, delta, RepLevel.SUSPICIOUS);
+                    playerAlignedFaction.ensureAtWorst(faction1Id, RepLevel.INHOSPITABLE);
+                    playerAlignedFaction.adjustRelationship(faction1Id, delta);
                 }
             }
         }
@@ -739,6 +739,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         for (String otherFactionId : factionIds)
         {
+            if (otherFactionId.equals(factionId)) continue;
             if (isPirateNeutral && ExerelinUtilsFaction.isPirateFaction(otherFactionId))
                 continue;
             boolean isPlayer = otherFactionId.equals("player_npc") || otherFactionId.equals(Factions.PLAYER);
@@ -826,7 +827,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                         FactionAPI otherFaction = sector.getFaction(otherFactionId);
                         if (otherFaction.isNeutralFaction()) continue;
                         
-                        ExerelinFactionConfig otherConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+                        ExerelinFactionConfig otherConfig = ExerelinConfig.getExerelinFactionConfig(otherFactionId);
                         if (otherConfig != null && (otherConfig.isPirateNeutral || otherConfig.pirateFaction)) continue;
                         
                         otherFaction.setRelationship(factionId, STARTING_RELATIONSHIP_HOSTILE);
