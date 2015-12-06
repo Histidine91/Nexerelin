@@ -146,6 +146,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         int numSurvivors = 0;
         int fp = 0;
         int crew = 0;
+        int prisoners = 0;
+        float contrib = plugin.computePlayerContribFraction();
         List<FleetMemberData> casualties = plugin.getLoserData().getOwnCasualties();
         for (FleetMemberData member : casualties) {
             Status status = member.getStatus();
@@ -159,12 +161,16 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             if (Math.random() < ExerelinConfig.prisonerLootChancePer10Fp)
             {
-                loot.addCommodity("prisoner", 1);
-                numSurvivors++;
+                prisoners++;
             }
         }
+        prisoners = (int)(prisoners * contrib + 0.5f);
+        loot.addCommodity("prisoner", prisoners);
+        numSurvivors += prisoners;
+        
         crew = (int)(crew*ExerelinConfig.crewLootMult*MathUtils.getRandomNumberInRange(0.5f, 1.5f));
         crew = crew + MathUtils.getRandomNumberInRange(-3, 3);
+        crew = (int)(crew * contrib);
         if (crew > 0) {
             loot.addCrew(CargoAPI.CrewXPLevel.GREEN, crew);
             numSurvivors += crew;
