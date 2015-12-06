@@ -1173,7 +1173,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 2)
 		{
-			star = createStarToken(systemIndex, systemId, system, "star_blue", 400f, isSecondStar);
+			star = createStarToken(systemIndex, systemId, system, "star_blue", 800f, isSecondStar);
 			system.setLightColor(new Color(135,206,250));
 		}
 		else if(starType == 3)
@@ -1183,7 +1183,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 4)
 		{
-			star = createStarToken(systemIndex, systemId, system, "star_orange", 900f, isSecondStar);
+			star = createStarToken(systemIndex, systemId, system, "star_orange", 400f, isSecondStar);
 			system.setLightColor(new Color(255,220,0));
 		}
 		else if(starType == 5)
@@ -1193,7 +1193,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else if(starType == 6)
 		{
-			star = createStarToken(systemIndex, systemId, system, "star_bluewhite", 400f, isSecondStar);
+			star = createStarToken(systemIndex, systemId, system, "star_bluewhite", 600f, isSecondStar);
 			system.setLightColor(new Color(135,206,250));
 		}
 		else if(starType == 7)
