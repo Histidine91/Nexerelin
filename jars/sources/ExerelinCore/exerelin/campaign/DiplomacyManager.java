@@ -69,7 +69,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.35f;
     public static final float STARTING_RELATIONSHIP_WELCOMING = 0.4f;
     public static final float STARTING_RELATIONSHIP_FRIENDLY = 0.6f;
-    public static final float WAR_WEARINESS_INTERVAL = 10f;
+    public static final float WAR_WEARINESS_INTERVAL = 3f;
     public static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
     public static final float PEACE_TREATY_CHANCE = 0.3f;
     
@@ -586,7 +586,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     {
         float days = Global.getSector().getClock().convertToDays(amount);
     
-        daysElapsed += amount;
+        daysElapsed += days;
         if (daysElapsed >= WAR_WEARINESS_INTERVAL)
         {
             daysElapsed -= WAR_WEARINESS_INTERVAL;
