@@ -3,7 +3,7 @@ omnifac_market,Omnifactory,player,The Omnifactory is able to replicate ships and
 exerelin_prismMarket,High-End Seller,independent,"Pulls rare, advanced warships and weapons from across the Sector for those who are willing to pay a premium and don't ask too many questions.",exerelin.campaign.submarkets.PrismMarket,,200
 ,,,,,,
 # vanilla override,,,,,,
-generic_military,,,"Trade with $theFaction military base.
+#generic_military,,,"Trade with $theFaction military base.
 
 Weapons and other military hardware can be bought and sold here even if they're illegal on the open market. A commission and better standing with $theFaction results in higher-grade hardware being available.
 
