@@ -62,7 +62,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	{
 		FactionAPI faction = market.getFaction();
 		return market.hasCondition(Conditions.ORE_COMPLEX) || market.hasCondition(Conditions.ORE_REFINING_COMPLEX) 
-				|| faction.getId().equals("spire") || faction.getId().equals("darkspire");
+				|| market.hasCondition("aiw_inorganic_populace");
 	}
 	
 	protected boolean hasGasFacilities(MarketAPI market)
@@ -80,6 +80,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		if (loc == Global.getSector().getHyperspace()) return;
 		
 		FactionAPI faction = origin.getFaction();
+		if (faction.getId().equals("templars")) return;
 		int marketSize = origin.getSize();
 		int maxFP = (int)(Math.pow(marketSize, 1.5f));
 		
