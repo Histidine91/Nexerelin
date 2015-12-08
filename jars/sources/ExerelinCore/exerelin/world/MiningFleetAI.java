@@ -56,7 +56,7 @@ public class MiningFleetAI implements EveryFrameScript
         }
         
         interval += days;
-        if (interval > UPDATE_INTERVAL) interval -= UPDATE_INTERVAL;
+        if (interval >= UPDATE_INTERVAL) interval -= UPDATE_INTERVAL;
         else return;
         
         FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();

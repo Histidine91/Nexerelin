@@ -220,10 +220,10 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
     {
         float days = Global.getSector().getClock().convertToDays(amount);
         lastReserveUpdateAge += days;
-        if (lastReserveUpdateAge > 0.5f)
+        if (lastReserveUpdateAge >= 1)
         {
-            lastReserveUpdateAge -= 0.5f;
-            updateReserves(0.5f);
+            lastReserveUpdateAge -= 1;
+            updateReserves(1);
         }
         
         this.tracker.advance(days);

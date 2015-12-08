@@ -49,7 +49,7 @@ public class RespawnFleetAI extends InvasionFleetAI
         }
         
         interval += days;
-        if (interval > 0.25f) interval -= 0.25f;
+        if (interval >= 0.25f) interval -= 0.25f;
         else return;
         
         FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();

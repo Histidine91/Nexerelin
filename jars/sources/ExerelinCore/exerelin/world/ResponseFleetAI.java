@@ -25,6 +25,8 @@ public class ResponseFleetAI implements EveryFrameScript
         this.data = data;
         giveInitialAssignment();
     }
+    
+    float interval = 0;
   
     @Override
     public void advance(float amount)
@@ -36,6 +38,11 @@ public class ResponseFleetAI implements EveryFrameScript
             giveStandDownOrders();
             return;
         }
+        
+        interval += days;
+        if (interval >= 0.25f) interval -= 0.25f;
+        else return;
+        
         FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
         float fp = this.fleet.getFleetPoints();
         boolean tooWeak = true;
