@@ -1,11 +1,12 @@
 {
     "uniqueModClassName":"data.scripts.TEMModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true, # Boolean
     "corvusCompatible":true,
     "hostileToAll":1,
     
-    "isPirateNeutral":"false", # Boolean
-    "spawnPiratesAndMercs":"false",
+    "isPirateNeutral":false, # Boolean
+    #"spawnPatrols":false,
+    #"spawnPiratesAndMercs":false,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
@@ -34,8 +35,8 @@
     
     "invasionStrengthBonusAttack":0.1,
     "invasionStrengthBonusDefend":0.2,
-    "invasionFleetSizeMod":0.1,
-    "responseFleetSizeMod":0.2,
+    "invasionFleetSizeMod":-0.3,
+    "responseFleetSizeMod":-0.25,
     "invasionPointMult":0.5,
     
     "dropPrisoners":false,

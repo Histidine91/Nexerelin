@@ -1,6 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.AIWarModPlugin", # String
-    "playableFaction":"false", # Boolean
+    "playableFaction":false, # Boolean
     "corvusCompatible":true,
     "hostileToAll":3,
 
@@ -20,6 +20,9 @@
         "diplomatic":-1,
         "militarist":1,
     },
+    
+    "invasionFleetSizeMod":-0.2,
+    "responseFleetSizeMod":-0.2,
     
     "dropPrisoners":false,
 }
