@@ -545,7 +545,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             if (enemies.isEmpty()) continue;
             
             
-            if (faction.getId().equals("templars") || isPirateFaction) // TODO don't hardcode faction
+            if (ExerelinUtilsFaction.isFactionHostileToAll(factionId))
             {
                 float numWars = enemies.size();
                 numWars = (float)Math.sqrt(numWars);
