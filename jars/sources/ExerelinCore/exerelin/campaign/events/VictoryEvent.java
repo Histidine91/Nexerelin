@@ -69,7 +69,7 @@ public class VictoryEvent extends BaseEventPlugin {
 	
 	@Override
 	public String getCurrentMessageIcon() {
-		return Global.getSector().getFaction(victorFactionId).getLogo();
+		return Global.getSector().getFaction(victorFactionId).getCrest();
 	}
 		
 	@Override

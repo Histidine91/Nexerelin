@@ -82,7 +82,7 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 
 	@Override
 	public String getCurrentMessageIcon() {
-		return defeatedFaction.getLogo();
+		return defeatedFaction.getCrest();
 	}
 		
 	@Override
@@ -105,7 +105,7 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 		map.put("$theVictorFaction", theVictor);
 		map.put("$VictorFaction", Misc.ucFirst(victor));
 		map.put("$TheVictorFaction", Misc.ucFirst(theVictor));
-                map.put("$clusterName", SectorManager.getFirstStarName());
+		map.put("$clusterName", SectorManager.getFirstStarName());
 		return map;
 	}
 	

@@ -82,7 +82,7 @@ public class FactionRespawnedEvent extends BaseEventPlugin {
 
 	@Override
 	public String getCurrentMessageIcon() {
-		return faction.getLogo();
+		return faction.getCrest();
 	}
 		
 	@Override

@@ -108,7 +108,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 
 	@Override
 	public String getCurrentMessageIcon() {
-		return newOwner.getLogo();
+		return newOwner.getCrest();
 	}
 		
 	@Override
