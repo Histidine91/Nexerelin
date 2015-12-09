@@ -821,8 +821,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         for (String factionId:temp)
         {
+			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+			
             if (ExerelinUtilsFaction.getFactionMarkets(factionId).size() > 0)
             {
+				if (config != null && !config.playableFaction)
+					continue;
                 sectorManager.liveFactionIds.add(factionId);
                 sectorManager.factionIdsAtStart.add(factionId);
                 sectorManager.historicFactionIds.add(factionId);
