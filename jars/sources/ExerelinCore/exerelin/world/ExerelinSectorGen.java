@@ -1033,6 +1033,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (!ExerelinSetupData.getInstance().freeStart)
 		{
 			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+			homeworld.isHQ = true;
 			MarketAPI homeMarket = marketSetup.addMarketToEntity(homeworld.entity, homeworld, alignedFactionId);
 			SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
 			relay.setFaction(alignedFactionId);
@@ -1574,7 +1575,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (systemIndex == 0)
 		{
 			homeworld = capital;
-			homeworld.isHQ = true;
+			//homeworld.isHQ = true;	// only do this when we assign the homeworld to player's faction
 			//homeworld.archetype = MarketArchetype.MIXED;
 		}
 
@@ -1942,6 +1943,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		float orbitPeriod = 0;
 		float startAngle = 0;
 		int marketPoints = 0;
+		int marketPointsSpent = 0;
 		int bonusMarketPoints = 0;
 		
 		public EntityData(String name, StarSystemAPI starSystem) 
