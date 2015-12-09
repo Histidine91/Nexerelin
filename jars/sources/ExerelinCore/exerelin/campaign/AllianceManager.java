@@ -672,6 +672,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     
     public static boolean areFactionsAllied(String factionId1, String factionId2)
     {
+        if (factionId1.equals(factionId2)) return true;
         if (allianceManager == null) return false;
         Alliance alliance1 = getFactionAlliance(factionId1);
         if (alliance1 == null) return false;
