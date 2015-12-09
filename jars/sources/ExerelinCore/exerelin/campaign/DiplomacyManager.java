@@ -848,9 +848,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     {
                         if (alreadyRandomizedIds.contains(otherFactionId)) continue;
                         if (otherFactionId.equals(factionId)) continue;
+                        
+                        if (ExerelinUtilsFaction.isPirateFaction(factionId) && (otherFactionId.equals(selectedFactionId) || otherFactionId.equals(Factions.PLAYER)))
+                        {
+                            faction.setRelationship(otherFactionId, STARTING_RELATIONSHIP_HOSTILE);
+                            continue;
+                        }
 
                         FactionAPI otherFaction = sector.getFaction(otherFactionId);
-                        if (otherFaction.isNeutralFaction() ||otherFaction.isPlayerFaction()) continue;
+                        if (otherFaction.isNeutralFaction() || otherFaction.isPlayerFaction()) continue;
 
                         if (Math.random() < 0.5) // 50% chance to do nothing (lower clutter)
                         {
@@ -859,7 +865,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                             else
                                 faction.setRelationship(otherFactionId, 0);
                         }
-                        faction.setRelationship(otherFactionId, MathUtils.getRandomNumberInRange(-0.85f, 0.6f));
+                        else
+                            faction.setRelationship(otherFactionId, MathUtils.getRandomNumberInRange(-0.85f, 0.6f));
                     }
                     handleHostileToAllFaction(factionId, factionIds);
                 }
