@@ -77,7 +77,7 @@ public class PlayerStartHandler {
 			Global.getSector().getPlayerFleet().setLocation(loc.x, loc.y);
 		}
 		
-		if (!SectorManager.getFreeStart())
+		if (!factionId.equals("player_npc"))
 		{
 			if (entity != null && !entity.getFaction().isNeutralFaction())
 				ExerelinUtilsFaction.grantCommission(entity);
