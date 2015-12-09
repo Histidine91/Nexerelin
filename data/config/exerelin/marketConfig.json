@@ -276,6 +276,7 @@
 			"special":true,
 			"archetypes":{"default":1},
 			"minSize":3,
+			"maxSize":5,
 			"allowDuplicates":false
 		},
 		{
