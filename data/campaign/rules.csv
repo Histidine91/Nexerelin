@@ -286,7 +286,6 @@ ExerelinNGCListCrystanite,ExerelinNGCListFactions1,NGCDoesFactionExist crystanit
 ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
 ExerelinNGCListExigency,ExerelinNGCListFactions1,NGCDoesFactionExist exigency,,,exerelinNGCJoinExigency:Exigency Corp,
 ExerelinNGCListFirestormFederation,ExerelinNGCListFactions1,NGCDoesFactionExist firestorm_federation,,,exerelinNGCJoinFirestormFederation:Firestorm Federation,
-ExerelinNGCListFleaden,ExerelinNGCListFactions1,NGCDoesFactionExist Fleaden,,,exerelinNGCJoinFleaden:Fleaden,
 ExerelinNGCListModFactions1Back,ExerelinNGCListFactions1,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCListHiigaranDescendants,ExerelinNGCListFactions2,NGCDoesFactionExist hiigaran_descendants,,,exerelinNGCJoinHiigaranDescendants:Hiigaran Descendants,
@@ -394,10 +393,6 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinCrystanite,NewGameOptionSelected,$option == exerelinNGCJoinCrystanite,"NGCSetPlayerFaction ""crystanite""
 NGCAddShipAndComplement ""crys_pin_standard""
 AddText ""Added Pin-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
-ExerelinNGCJoinFleaden,NewGameOptionSelected,$option == exerelinNGCJoinFleaden,"NGCSetPlayerFaction ""Fleaden""
-NGCAddShipAndComplement ""weisha_biaozun""
-AddText ""Added Weisha-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinDiableAvionics,NewGameOptionSelected,$option == exerelinNGCJoinDiableAvionics,"NGCSetPlayerFaction ""diableavionics""
 NGCAddShipAndComplement ""diableavionics_vapor_standard""
@@ -683,7 +678,6 @@ ExerelinFactionDirectoryListCrystanite,ExerelinFactionDirectoryList1,IsFactionAl
 ExerelinFactionDirectoryListDiableAvionics,ExerelinFactionDirectoryList1,IsFactionAlive diableavionics,,,exerelinFactionDirectoryGetDiableAvionics:Diable Avionics,
 ExerelinFactionDirectoryListExigency,ExerelinFactionDirectoryList1,IsFactionAlive exigency,,,exerelinFactionDirectoryGetExigency:Exigency Corp,
 ExerelinFactionDirectoryListFirestormFederation,ExerelinFactionDirectoryList1,IsFactionAlive firestorm_federation,,,exerelinFactionDirectoryGetFirestormFederation:Firestorm Federation,
-ExerelinFactionDirectoryListFleaden,ExerelinFactionDirectoryList1,IsFactionAlive Fleaden,,,exerelinFactionDirectoryGetFleaden:Fleaden,
 ExerelinFactionDirectoryList1Back,ExerelinFactionDirectoryList1,,,,exerelinFactionDirectoryMain:Back,
 ,,,,,,
 ExerelinFactionDirectoryListHegemony,ExerelinFactionDirectoryList2,IsFactionAlive hegemony,,,exerelinFactionDirectoryGetHegemony:Hegemony,
@@ -733,7 +727,6 @@ ExerelinFactionDirectoryGetDiableAvionics,DialogOptionSelected,$option == exerel
 ExerelinFactionDirectoryGetExigency,DialogOptionSelected,$option == exerelinFactionDirectoryGetExigency,PrintFactionMarkets exigency,,,
 ExerelinFactionDirectoryGetExipirated,DialogOptionSelected,$option == exerelinFactionDirectoryGetExipirated,PrintFactionMarkets exipirated,,,
 ExerelinFactionDirectoryGetFirestormFederation,DialogOptionSelected,$option == exerelinFactionDirectoryGetFirestormFederation,PrintFactionMarkets firestorm_federation,,,
-ExerelinFactionDirectoryGetFleaden,DialogOptionSelected,$option == exerelinFactionDirectoryGetFleaden,PrintFactionMarkets Fleaden,,,
 ExerelinFactionDirectoryGetHegemony,DialogOptionSelected,$option == exerelinFactionDirectoryGetHegemony,PrintFactionMarkets hegemony,,,
 ExerelinFactionDirectoryGetHiigaranDescendants,DialogOptionSelected,$option == exerelinFactionDirectoryGetHiigaranDescendants,PrintFactionMarkets hiigaran_descendants,,,
 ExerelinFactionDirectoryGetICI,DialogOptionSelected,$option == exerelinFactionDirectoryGetICI,PrintFactionMarkets sun_ici,,,

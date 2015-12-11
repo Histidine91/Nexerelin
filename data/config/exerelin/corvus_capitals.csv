@@ -1,6 +1,6 @@
 system,entityID
 #human name,#machine name
-
+,
 Corvus,jangala
 Magec,tibicena
 Askonia,sindria
@@ -11,7 +11,7 @@ Hybrasil,ogma
 Aztlan,chicomoztoc
 Samarra,sphinx
 Yma,qaras
-
+,
 Acheron,SCY_prismFreeport
 Aesir,breidablik
 Anar,euripides
@@ -25,7 +25,6 @@ Citadel,citadelprime
 Corona Australis,neut_experimental
 Corsica,ii_aleria
 Enigma,enigma_i
-Fleaden,fleaden01
 Gemstone,aiw_diamond
 Genesis,point_of_genesis
 Gigas,stillness

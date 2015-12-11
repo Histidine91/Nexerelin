@@ -1,12 +1,12 @@
 faction,system,entityID
 #machine name,#human name,#machine name
-
+,,
 hegemony,Corvus,jangala
 tritachyon,Hybrasil,ogma
 sindrian_diktat,Askonia,sindria
 luddic_church,Eos Exodus,tartessus
 pirates,Askonia,umbra
-
+,,
 approlight,ApproLight,ApproLight01
 blackrock_driveyards,Gneiss,lodestone
 citadeldefenders,Citadel,citadelprime
@@ -14,7 +14,6 @@ crystanite,Baka,crystanos2
 diableavionics,Outer Terminus,diableavionics_prison
 exigency,Tasserus,
 exipirated,hyperspace,exipirated_avesta
-Fleaden,Fleaden,fleaden01
 hiigaran_descendants,Polaris,newhiigara
 infected,Radikius,radiIII
 interstellarimperium,Thracia,ii_babylon
@@ -40,5 +39,5 @@ shadow_industry,Anar,euripides
 tiandong,Shaanxi,tiandong_shanghai
 templars,Antioch,tem_ascalon
 valkyrian,Enigma,enigma_i
-
+,,
 player_npc,Corvus,jangala
