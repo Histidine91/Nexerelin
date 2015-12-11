@@ -1819,15 +1819,18 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 
 		// Build comm relay
-		SectorEntityToken relay = system.addCustomEntity(system.getId() + "_relay", // unique id
-				system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
-				"comm_relay", // type of object, defined in custom_entities.json
-				"neutral"); // faction
-		float distance = getRandomOrbitRadiusBetweenPlanets(entities, 1200 + star.getRadius(), 3000 + star.getRadius());
-		//relay.setCircularOrbitWithSpin(star, getRandomAngle(), distance, getOrbitalPeriod(star, distance), 30, 30);
-		setOrbit(relay, star, distance, !isBinary, ellipseAngle, getOrbitalPeriod(star, distance));
-		systemToRelay.put(system.getId(), system.getId() + "_relay");
-		planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
+		if (inhabited)
+		{
+			SectorEntityToken relay = system.addCustomEntity(system.getId() + "_relay", // unique id
+					system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
+					"comm_relay", // type of object, defined in custom_entities.json
+					"neutral"); // faction
+			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 1200 + star.getRadius(), 3000 + star.getRadius());
+			//relay.setCircularOrbitWithSpin(star, getRandomAngle(), distance, getOrbitalPeriod(star, distance), 30, 30);
+			setOrbit(relay, star, distance, !isBinary, ellipseAngle, getOrbitalPeriod(star, distance));
+			systemToRelay.put(system.getId(), system.getId() + "_relay");
+			planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
+		}
 		
 		// add nebula
 		if (Math.random() < NEBULA_CHANCE)
@@ -1843,7 +1846,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// add stellar ring
 		if (Math.random() < STELLAR_RING_CHANCE)
 		{
-			distance = getRandomOrbitRadiusBetweenPlanets(entities, 2500 + star.getRadius(), 6000 + star.getRadius());
+			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 2500 + star.getRadius(), 6000 + star.getRadius());
 			// ring (adapted from Magec.java)
 			system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, distance - 300, 80f);
 			system.addRingBand(star, "misc", "rings1", 256f, 3, Color.white, 256f, distance - 100, 100f);
