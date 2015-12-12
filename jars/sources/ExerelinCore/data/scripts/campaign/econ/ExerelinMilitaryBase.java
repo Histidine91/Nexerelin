@@ -6,7 +6,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 
 public class ExerelinMilitaryBase extends MilitaryBase {
-	public static final float EXTRA_MARINES_MULT = 1.4f;	// hax
+	public static final float EXTRA_MARINES_MULT = 1.25f;	// hax
 	
 	public void apply(String id) {
 		super.apply(id);
@@ -23,7 +23,6 @@ public class ExerelinMilitaryBase extends MilitaryBase {
 		super.unapply(id);
 		market.getCommodityData("agent").getSupply().unmodify(id);
 		market.getCommodityData("saboteur").getSupply().unmodify(id);
-		market.getDemand(Commodities.FUEL).getNonConsumingDemand().unmodify(id);
 	}
 
 }
