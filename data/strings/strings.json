@@ -133,7 +133,9 @@
 	"exerelin_markets":{		
 		"marketDirectoryEntry":"$market, $location (size $size)",
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
-		"hasBaseTip":"has military base"
+		"hasBaseTip":"has military base",
+		
+		"prismNoSale":"No sales/returns"
 	},
 	"exerelin_mining":{
 		"crewLost":"crew lost",

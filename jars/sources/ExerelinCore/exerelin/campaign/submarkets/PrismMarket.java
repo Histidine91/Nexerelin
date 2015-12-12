@@ -23,6 +23,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ import org.json.JSONObject;
 public class PrismMarket extends BaseSubmarketPlugin {
     
     public static final String CONFIG_FILE = "data/config/exerelin/prism_boss_ships.json";
+    public static final String ILLEGAL_TRANSFER_MESSAGE = StringHelper.getString("exerelin_markets", "prismNoSale");
     
     protected static final int MIN_NUMBER_OF_SHIPS = 5;
     
@@ -296,7 +298,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
         return false;
     }
 
-
     @Override
     public boolean isIllegalOnSubmarket(String commodityId, TransferAction action) {
         if (action == TransferAction.PLAYER_SELL) return true;
@@ -327,13 +328,13 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     @Override
     public String getIllegalTransferText(FleetMemberAPI member, TransferAction action) {
-        return "No sales/returns";
+        return ILLEGAL_TRANSFER_MESSAGE;
     }
     
     @Override
     public String getIllegalTransferText(CargoStackAPI stack, TransferAction action)
     {
-        return "No sales/returns";
+        return ILLEGAL_TRANSFER_MESSAGE;
     }
 
     @Override
