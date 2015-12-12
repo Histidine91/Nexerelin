@@ -110,7 +110,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         float responseFleetSize = ResponseFleetManager.getMaxReserveSize(targetMarket, true);
         float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + 8 * (2 + originMarket.getSize()));
         maxFPbase = maxFPbase * (float)(0.5 + originMarket.getStabilityValue()/10);
-        maxFPbase /= 4;
+        maxFPbase *= 0.3f;
         //maxFPbase *= 0.95;
         
         float maxFP = maxFPbase;
