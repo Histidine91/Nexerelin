@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.BattleAPI;
-import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
@@ -105,10 +104,6 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		CampaignClockAPI previous = (CampaignClockAPI) Global.getSector().getPersistentData().get("salariesClock");
-		if (previous != null) {
-			map.put("$date", previous.getMonthString() + ", c." + previous.getCycle());
-		}
 		FactionAPI faction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
 		String factionName = faction.getEntityNamePrefix();
 		String theFactionName = faction.getDisplayNameLongWithArticle();
