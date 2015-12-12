@@ -53,11 +53,11 @@ public final class ExerelinSetupData
 
 	public static ExerelinSetupData getInstance()
 	{
-	if(instance == null)
-	{
-		instance = new ExerelinSetupData();
-		ExerelinConfig.loadSettings();
-	}
+		if(instance == null)
+		{
+			instance = new ExerelinSetupData();
+			ExerelinConfig.loadSettings();
+		}
 
 		return instance;
 	}
