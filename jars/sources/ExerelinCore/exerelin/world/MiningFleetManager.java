@@ -156,12 +156,12 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		//log.info("Trying to create mining fleet of size " + maxFP + ", target " + target.getName());
 		FleetParams params = new FleetParams(null, origin, factionId, null, "exerelinMiningFleet", 
 				maxFP/4, // combat
-				maxFP*0.4f, // freighters
+				maxFP*0.45f, // freighters
 				0,		// tankers
 				0,		// personnel transports
 				0,		// liners
 				0,		// civilian
-				maxFP*0.1f,	// utility
+				maxFP*0.05f,	// utility
 				-0.25f, -1, 0.5f, -5);	// quality bonus, quality override, officer num mult, officer level bonus
 		
 		//CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP/3);
