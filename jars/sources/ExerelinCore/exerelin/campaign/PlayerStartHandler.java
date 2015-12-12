@@ -19,15 +19,16 @@ public class PlayerStartHandler {
 	
 	public static void execute()
 	{
+		if (Global.getSector().isInNewGameAdvance()) return;
+		
 		SectorEntityToken entity = null;
 		String factionId = PlayerFactionStore.getPlayerFactionId();
 		if (SectorManager.getCorvusMode())
 		{
 			// moves player fleet to a suitable location; e.g. Avesta for Association
-			ExerelinCorvusLocations.SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(factionId);
 			String homeEntity = null;
-			if (Global.getSector().isInNewGameAdvance()) return;
-			if (ExerelinUtilsFaction.isCorvusCompatible(factionId, false) && spawnPoint != null)
+			ExerelinCorvusLocations.SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(factionId);
+			if (spawnPoint != null)
 			{
 				homeEntity = spawnPoint.entityId;
 				if (homeEntity != null)
