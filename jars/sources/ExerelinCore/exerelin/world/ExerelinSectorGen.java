@@ -779,7 +779,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		// Remove any data stored in ExerelinSetupData
 		//resetVars();
-		ExerelinSetupData.resetInstance();
+		//ExerelinSetupData.resetInstance();
 		
 		log.info("Finished sector generation");
 	}

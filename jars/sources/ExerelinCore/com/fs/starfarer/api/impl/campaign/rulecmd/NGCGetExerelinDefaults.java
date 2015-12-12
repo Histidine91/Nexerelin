@@ -16,7 +16,8 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 	 
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
-		ExerelinSetupData.resetInstance();
+		//ExerelinSetupData.resetInstance();
+		ExerelinSetupData.getInstance().resetAvailableFactions();
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		MemoryAPI map = memoryMap.get(MemKeys.LOCAL);
 		map.set("$numSystems", setupData.numSystems, 0);

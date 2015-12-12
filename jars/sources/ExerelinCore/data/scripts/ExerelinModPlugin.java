@@ -81,7 +81,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onNewGame() {
         Global.getLogger(this.getClass()).info("New game");
         isNewGame = true;
-        ExerelinSetupData.resetInstance();
+        //ExerelinSetupData.resetInstance();
         ExerelinConfig.loadSettings();
         //ExerelinCheck.checkModCompatability();
     }
