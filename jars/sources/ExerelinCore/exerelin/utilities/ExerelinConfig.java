@@ -35,7 +35,7 @@ public class ExerelinConfig
     // Prisoners
     public static float prisonerRepatriateRepValue = 0.05f;
     public static float prisonerBaseRansomValue = 2000f;
-    public static float prisonerRansomValueIncrementPerLevel = 200f;
+    public static float prisonerRansomValueIncrementPerLevel = 100f;
     public static float prisonerBaseSlaveValue = 4000f;
     public static float prisonerSlaveValueIncrementPerLevel = 400f;
     public static float prisonerSlaveRepValue = -0.02f;
@@ -74,10 +74,11 @@ public class ExerelinConfig
     public static float prismTariff = 2f;
     
     // War weariness
-    public static float warWearinessDivisor = 10000f;
-    public static float minWarWearinessForPeace = 4000f;
-    public static float warWearinessCeasefireReduction = 3000f;
-    public static float warWearinessPeaceTreatyReduction = 4500f;
+    public static float warWearinessDivisor = 20000f;
+    public static float warWearinessDivisorModPerLevel = 200f;
+    public static float minWarWearinessForPeace = 8000f;
+    public static float warWearinessCeasefireReduction = 5000f;
+    public static float warWearinessPeaceTreatyReduction = 8000f;
     
     // Misc
     public static float baseTariff = 0.2f;
@@ -140,6 +141,7 @@ public class ExerelinConfig
             prismTariff = (float)settings.optDouble("prismTariff", prismTariff);
             
             warWearinessDivisor = (float)settings.optDouble("warWearinessDivisor", warWearinessDivisor);
+            warWearinessDivisorModPerLevel = (float)settings.optDouble("warWearinessDivisorModPerLevel", warWearinessDivisorModPerLevel);
             minWarWearinessForPeace = (float)settings.optDouble("minWarWearinessForPeace", minWarWearinessForPeace);
             warWearinessCeasefireReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
             warWearinessPeaceTreatyReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);

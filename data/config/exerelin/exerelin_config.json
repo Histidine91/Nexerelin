@@ -44,10 +44,11 @@
     "prismUseIBBProgressForBossShips": true,    # must progress through the IBB (famous bounty) sidequest in SS+ to unlock new boss ships for sale
     "prismTariff": 2.0,  # float, 1.0 = 100% tariff
     
-    "warWearinessDivisor": 10000,   # float; higher means factions take longer on average to sign a ceasefire
-    "minWarWearinessForPeace": 4000,    # float
-    "warWearinessCeasefireReduction": 2500, # float; note the reduction is applied to both parties
-    "warWearinessPeaceTreatyReduction": 4000,
+    "warWearinessDivisor": 20000,   # float; higher means factions take longer on average to sign a ceasefire
+    "warWearinessDivisorModPerLevel": 100,
+    "minWarWearinessForPeace": 8000,    # float
+    "warWearinessCeasefireReduction": 5000, # float; note the reduction is applied to both parties
+    "warWearinessPeaceTreatyReduction": 8000,
     
     "factionRespawnInterval": 30,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
     "ownFactionCustomsInspections": false,  # will your faction perform customs inspections on you? (always off for player_npc)

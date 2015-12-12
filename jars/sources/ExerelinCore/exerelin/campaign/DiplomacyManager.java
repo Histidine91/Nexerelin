@@ -79,7 +79,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float HARD_MODE_DOMINANCE_MOD = 1.5f;
     
     protected Map<String, Float> warWeariness;
-    protected static float warWearinessPerInterval = 10f;
+    protected static float warWearinessPerInterval = 50f;
     protected static DiplomacyEventDef peaceTreatyEvent;
     protected static DiplomacyEventDef ceasefireEvent;
     
@@ -491,7 +491,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             
             float sumWeariness = getWarWeariness(factionWithMostWars.getId()) + getWarWeariness(toPeace);
             log.info("Sum with " + sector.getFaction(toPeace).getDisplayName() + ": " + sumWeariness);
-            if (Math.random() > sumWeariness/ExerelinConfig.warWearinessDivisor)
+            float divisor = ExerelinConfig.warWearinessDivisorModPerLevel + ExerelinConfig.warWearinessDivisorModPerLevel * sector.getPlayerPerson().getStats().getLevel();
+            if (Math.random() > sumWeariness / divisor)
                 return;
             log.info("Negotiating treaty");
             boolean peaceTreaty = false;    // if false, only ceasefire
