@@ -132,9 +132,9 @@ public class VictoryScreenScript implements EveryFrameScript
             
             printKeyValueLine(getString("statsLevel"), Global.getSector().getPlayerPerson().getStats().getLevel()+"");
             //printKeyValueLine(getString("statsDaysElapsed"), Global.getSector().getClock().convertToDays(time)+"");
-            printKeyValueLine(getString("statsFpKilled"), (int)tracker.getFpKilled()+"");
-            printKeyValueLine(getString("statsFpLost"), (int)tracker.getFpLost()+"");
-            printKeyValueLine(getString("statsOrphansMade"), tracker.getOrphansMade()+"");
+            printKeyValueLine(getString("statsFpKilled"), Misc.getWithDGS((int)tracker.getFpKilled()));
+            printKeyValueLine(getString("statsFpLost"), Misc.getWithDGS((int)tracker.getFpLost()));
+            printKeyValueLine(getString("statsOrphansMade"),  Misc.getWithDGS(tracker.getOrphansMade()));
             printKeyValueLine(getString("statsMarketsCaptured"), tracker.getMarketsCaptured()+"");
             printKeyValueLine(getString("statsAgentsUsed"), tracker.getAgentsUsed()+"");
             printKeyValueLine(getString("statsSaboteursUsed"), tracker.getSaboteursUsed()+"");
