@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
+import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -60,16 +61,18 @@ public class FollowMeAbility extends BaseDurationAbility {
 				Global.getSector().addPing(entity, Pings.COMMS);
 			}
 		}
+		String myFactionId = entity.getFaction().getId();
+		if (myFactionId.equals(Factions.PLAYER))
+		{
+			myFactionId = PlayerFactionStore.getPlayerFactionId();
+		}
+		
 		List<CampaignFleetAPI> fleets = entity.getContainingLocation().getFleets();
 		for (CampaignFleetAPI fleet : fleets) {
 			if (fleet == entity) continue;
-			String myFactionId = entity.getFaction().getId();
-			if (myFactionId.equals(Factions.PLAYER))
-			{
-				myFactionId = PlayerFactionStore.getPlayerFactionId();
-			}
+			
 			String fleetFactionId = fleet.getFaction().getId();
-			if (myFactionId.equals(fleetFactionId) || myFactionId.equals("player_npc") || AllianceManager.areFactionsAllied(myFactionId, myFactionId))
+			if (myFactionId.equals(fleetFactionId) || fleetFactionId.equals("player_npc") || AllianceManager.areFactionsAllied(myFactionId, fleetFactionId))
 			{
 				float dist = Misc.getDistance(fleet.getLocation(), entity.getLocation());
 				//log.info("Distance of fleet " + otherFleet.getName() + ": " + dist);
@@ -84,8 +87,11 @@ public class FollowMeAbility extends BaseDurationAbility {
 					if (true)
 					{
 						CampaignFleetAIAPI ai = (CampaignFleetAIAPI) fleet.getAI();
+						FleetAssignmentDataAPI currentAssignment = ai.getCurrentAssignment();
+						if (currentAssignment.getAssignment() == FleetAssignment.ORBIT_AGGRESSIVE && currentAssignment.getTarget() == entity)
+							ai.removeFirstAssignment();
 						ai.addAssignmentAtStart(FleetAssignment.ORBIT_AGGRESSIVE, entity, FOLLOW_DURATION, null);
-						fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, FOLLOW_DURATION);
+						//fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, FOLLOW_DURATION);
 						Global.getSector().addPing(fleet, Pings.COMMS);
 					}
 				}
