@@ -11,6 +11,8 @@ public class StarLocations {
 	public static final List<Vector2f> SPOT_EXTENDED = new ArrayList<>();
 	static
 	{
+		Vector2f annoying = new Vector2f(-9000,5000);	// separated from the other non-extended spots by a thick sea of deep hyper
+		
 		List<Vector2f> temp = new ArrayList<>();
 		temp.add(new Vector2f(1000,4000));		// askonia
 		temp.add(new Vector2f(8000,-1000));		// corvus
@@ -78,7 +80,7 @@ public class StarLocations {
 		temp.add(new Vector2f(-5000,-11500));
 		temp.add(new Vector2f(-6000,12000));
 		temp.add(new Vector2f(-8000,-17000));
-		temp.add(new Vector2f(-9000,5000));
+		temp.add(annoying);	// new Vector2f(-9000,5000)
 		temp.add(new Vector2f(-10000,23000));
 		temp.add(new Vector2f(-10000,14000));
 		temp.add(new Vector2f(-10000,10000));
@@ -107,7 +109,7 @@ public class StarLocations {
 		int maxYLarge = 12000;
 		for (Vector2f pos : temp)
 		{
-			if (Math.abs(pos.x) <= maxX && Math.abs(pos.y) <= maxY)
+			if (Math.abs(pos.x) <= maxX && Math.abs(pos.y) <= maxY && pos != annoying)
 				SPOT.add(pos);
 			else if (Math.abs(pos.x) <= maxXLarge && Math.abs(pos.y) <= maxYLarge)
 				SPOT_EXTENDED.add(pos);
