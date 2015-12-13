@@ -226,6 +226,7 @@
 			"allowedPlanets":["terran","jungle","arid","desert"],
 			"minSize":4,
 			"maxSize":5,
+			"allowStations":false,
 			"allowDuplicates":false,
 			"conflictsWith":["urbanized_polity"],
 		},
@@ -235,6 +236,7 @@
 			"archetypes":{"default":0.75, "agriculture":1.5},
 			"allowedPlanets":["jungle"],
 			"minSize":3,
+			"allowStations":false,
 			"allowDuplicates":false,
 			#"conflictsWith":["urbanized_polity", "rural_polity"],
 		},
@@ -244,6 +246,7 @@
 			"archetypes":{"default":1,"agriculture":0,"manufacturing":2,"heavy_industry":3},
 			"allowedPlanets":["terran","jungle","arid","desert"],
 			"minSize":4,
+			"allowStations":false,
 			"allowDuplicates":false,
 			"conflictsWith":["rural_polity"]
 		},

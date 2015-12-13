@@ -49,6 +49,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.world.ExerelinMarketSetup.MarketArchetype;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -1110,15 +1111,46 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// balance supply/demand by adding/removing relevant market conditions
 		List<EntityData> haveMarkets = new ArrayList<>(habitablePlanets);
 		haveMarkets.addAll(standaloneStations);
+		Collections.sort(haveMarkets, new Comparator<EntityData>() {	// biggest markets first
+			@Override
+			public int compare(EntityData data1, EntityData data2)
+			{
+				int size1 = data1.market.getSize();
+				int size2 = data2.market.getSize();
+				if (size1 == size2) return 0;
+				else if (size1 > size2) return 1;
+				else return -1;
+			}
+		});
+		log.info("INITIAL SUPPLY/DEMAND");
+		marketSetup.reportSupplyDemand();
 		
-		marketSetup.balanceDomesticGoods(haveMarkets);
-		marketSetup.balanceSuppliesAndMetal(haveMarkets);
 		marketSetup.balanceFood(haveMarkets);
+		marketSetup.balanceFood(haveMarkets);	// done twice to be able to handle large deviations
+		marketSetup.balanceDomesticGoods(haveMarkets);
 		marketSetup.balanceFuel(haveMarkets);
+		marketSetup.balanceRareMetal(haveMarkets);
+		
+		marketSetup.balanceMachinery(haveMarkets, true);
+		marketSetup.balanceSupplies(haveMarkets);
 		marketSetup.balanceOrganics(haveMarkets);
 		marketSetup.balanceVolatiles(haveMarkets);
 		marketSetup.balanceMetal(haveMarkets);
+		
+		// second pass
+		marketSetup.balanceMachinery(haveMarkets, false);
+		marketSetup.balanceSupplies(haveMarkets);
+		marketSetup.balanceOrganics(haveMarkets);
+		marketSetup.balanceVolatiles(haveMarkets);
+		marketSetup.balanceMetal(haveMarkets);
+		
 		marketSetup.balanceOre(haveMarkets);
+		
+		log.info("FINAL SUPPLY/DEMAND");
+		marketSetup.reportSupplyDemand();
+		
+		for (EntityData entity : haveMarkets)
+			marketSetup.addStartingMarketCommodities(entity.market);
 	}
 
 	public PlanetAPI createStarToken(int index, String systemId, StarSystemAPI system, String type, float size, boolean isSecondStar)

@@ -1,9 +1,9 @@
 name,id,script,desc,icon,order
-Recycling Plant,exerelin_recycling_plant,data.scripts.campaign.econ.Exerelin_RecyclingPlant,"This ubiquitous facility turns the usual wastes of a station or city into organics, volatiles, [rare] metals, machinery and supplies. Requires crew to operate.",graphics/exerelin/icons/markets/exerelin_recycling_plant.png,30
+Recycling Plant,exerelin_recycling_plant,data.scripts.campaign.econ.Exerelin_RecyclingPlant,"This ubiquitous facility turns the usual wastes of a station or city into organics, volatiles, [rare] metals and supplies. Requires crew to operate.",graphics/exerelin/icons/markets/exerelin_recycling_plant.png,30
 Cloning Vats,exerelin_cloning_vats,data.scripts.campaign.econ.Exerelin_CloningVats,"An efficient (if unethical) way of producing large amounts of crew quickly from organics, volatiles and food. Failed clones can be recycled for organs.",graphics/exerelin/icons/markets/exerelin_cloning_vats.png,30
 Hydroponics Lab,exerelin_hydroponics,data.scripts.campaign.econ.Exerelin_Hydroponics,Facility for growing crops without soil in a controlled environment. An effective if costly way of producing food on planets that cannot normally support plant life. Requires crew and some heavy machinery.,graphics/icons/markets/hydroponics.png,29
 Templar Control,exerelin_templar_control,data.scripts.campaign.econ.Exerelin_TemplarControl,The Templars exert all-pervasive control over every aspect of the markets they hold. Increases stability and removes stability penalty from smuggling. Creates some demand for marines to enforce order.,graphics/templars/icons/intel/tem_crusade_event.png,31
-Supply Workshop,exerelin_supply_workshop,data.scripts.campaign.econ.Exerelin_SupplyWorkshop,"A medium-scale fabrication unit for producing useful supplies, machinery and some hand weapons from raw organics, volatiles and metals. Requires crew.",graphics/exerelin/icons/markets/exerelin_supplyworkshop.png,32
+Supply Workshop,exerelin_supply_workshop,data.scripts.campaign.econ.Exerelin_SupplyWorkshop,"A medium-scale fabrication unit for producing useful supplies from raw organics, volatiles and metals. Requires crew.",graphics/exerelin/icons/markets/exerelin_supplyworkshop.png,32
 ,,,,,
 Market Attacked,exerelin_market_attacked_condition,data.scripts.campaign.econ.MarketAttackedCondition,"$market has recently been attacked by a hostile force, causing widespread damage to infrastructure and panic amongst the populace.
 
@@ -17,3 +17,4 @@ Military Base,military_base,data.scripts.campaign.econ.ExerelinMilitaryBase,"Req
 
 Increases the quality and number of officers in $market's fleets.",graphics/icons/markets/military_base.png,30
 Shipbreaking Center,shipbreaking_center,data.scripts.campaign.econ.ExerelinShipbreakingCenter,"A major center of shipbreaking in this region of the Sector, hulks are consigned to scrapping here by the navies of major factions and many other clients from among the Sector core worlds.",graphics/icons/markets/shipbreaking.png,30
+Ore Refining Complex,ore_refining_complex,data.scripts.campaign.econ.ExerelinOreRefiningComplex,"Smelting plants here convert ores and rare ores into metals and rare metals, respectively.",graphics/icons/markets/ore_refining_complex.png,30

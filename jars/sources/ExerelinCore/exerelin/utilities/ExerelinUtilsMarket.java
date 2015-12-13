@@ -9,6 +9,8 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.campaign.econ.Exerelin_Hydroponics;
+import data.scripts.campaign.econ.Exerelin_RecyclingPlant;
+import data.scripts.campaign.econ.Exerelin_SupplyWorkshop;
 import java.util.List;
 
 public class ExerelinUtilsMarket {
@@ -49,6 +51,11 @@ public class ExerelinUtilsMarket {
 	public static float getCommoditySupplyMult(MarketAPI market, String commodity)
 	{
 		return market.getCommodityData(commodity).getSupply().computeMultMod();
+	}
+	
+	public static float getCommodityDemandMult(MarketAPI market, String commodity)
+	{
+		return market.getCommodityData(commodity).getDemand().getDemand().computeMultMod();
 	}
 	
 	public static float getCommodityDemandFractionMet(MarketAPI market, String commodity, boolean clamp)
@@ -174,5 +181,90 @@ public class ExerelinUtilsMarket {
 		fuel += base;	// even if no fuel is actually consumed
 		
 		return fuel;
+	}
+	
+	public static float getMarketBaseMachineryDemand(MarketAPI market, float base)
+	{
+		float pop = ExerelinUtilsMarket.getPopulation(market.getSize());
+		float machinery = 0;
+		
+		for (MarketConditionAPI conditionAPI : market.getConditions())
+		{
+			String cond = conditionAPI.getId();
+			switch (cond)
+			{
+				case Conditions.ARID:
+					machinery += ConditionData.WORLD_ARID_MACHINERY_MULT * pop;
+					break;
+				case Conditions.DESERT:
+					machinery += ConditionData.WORLD_DESERT_MACHINERY_MULT * pop;
+					break;
+				case Conditions.ICE:
+					machinery += ConditionData.WORLD_ICE_MACHINERY_MULT * pop;
+					break;
+				case Conditions.JUNGLE:
+					machinery += ConditionData.WORLD_JUNGLE_MACHINERY_MULT * pop;
+					break;
+				case Conditions.TERRAN:
+					machinery += ConditionData.WORLD_TERRAN_MACHINERY_MULT * pop;
+					break;
+				case Conditions.WATER:
+					machinery += ConditionData.WORLD_WATER_MACHINERY_MULT * pop;
+					break;
+				case "barren_marginal":
+					machinery += ConditionData.WORLD_BARREN_MARGINAL_MACHINERY_MULT * pop;
+					break;
+				case "twilight":
+					machinery += ConditionData.WORLD_TWILIGHT_MACHINERY_MULT * pop;
+					break;
+				case "tundra":
+					machinery += ConditionData.WORLD_TUNDRA_MACHINERY_MULT * pop;
+					break;
+					
+				case Conditions.ANTIMATTER_FUEL_PRODUCTION:
+					machinery += ConditionData.FUEL_PRODUCTION_MACHINERY;
+					break;
+				case Conditions.AQUACULTURE:
+					machinery += ConditionData.AQUACULTURE_MACHINERY_MULT * pop;
+					break;
+				case Conditions.AUTOFAC_HEAVY_INDUSTRY:
+					machinery += ConditionData.AUTOFAC_HEAVY_MACHINERY_DEMAND;
+					break;
+				case Conditions.HYDROPONICS_COMPLEX:
+					machinery += ConditionData.HYDROPONICS_COMPLEX_MACHINERY;
+					break;
+				case Conditions.LIGHT_INDUSTRIAL_COMPLEX:
+					machinery += ConditionData.LIGHT_INDUSTRY_MACHINERY_MULT * pop;
+					break;
+				case Conditions.MILITARY_BASE:
+					machinery += ConditionData.MILITARY_BASE_MACHINERY;
+					break;
+				case Conditions.ORE_COMPLEX:
+					machinery += ConditionData.ORE_MINING_MACHINERY;
+					break;
+				case Conditions.ORE_REFINING_COMPLEX:
+					machinery += ConditionData.ORE_REFINING_MACHINERY;
+					break;
+				case Conditions.ORGANICS_COMPLEX:
+					machinery += ConditionData.ORGANICS_MINING_MACHINERY;
+					break;
+				case Conditions.VOLATILES_COMPLEX:
+					machinery += ConditionData.VOLATILES_MINING_MACHINERY;
+					break;
+				case "exerelin_recycling_plant":
+					machinery += Exerelin_RecyclingPlant.RECYCLING_HEAVY_MACHINERY_DEMAND;
+					break;
+				case "exerelin_hydroponics":
+					machinery += Exerelin_Hydroponics.HYDROPONICS_HEAVY_MACHINERY_POP_MULT * pop;
+					break;
+				case "exerelin_supply_workshop":
+					machinery += Exerelin_SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY_DEMAND;
+					break;
+			}
+		}
+		
+		machinery += base;	// even if no machinery is actually consumed
+		
+		return machinery;
 	}
 }

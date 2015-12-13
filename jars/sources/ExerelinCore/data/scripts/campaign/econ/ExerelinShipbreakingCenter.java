@@ -5,8 +5,8 @@ import com.fs.starfarer.api.impl.campaign.econ.ShipbreakingCenter;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
 public class ExerelinShipbreakingCenter extends ShipbreakingCenter {
-	public static final float EXTRA_MACHINERY_MULT = 3;
-	public static final float EXTRA_METALS_MULT = 2.5f;
+	public static final float EXTRA_MACHINERY_MULT = 2.5f;
+	public static final float EXTRA_METALS_MULT = 2f;
 	
 	public void apply(String id) {
 		super.apply(id);
