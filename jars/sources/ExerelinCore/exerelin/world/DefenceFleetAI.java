@@ -121,7 +121,7 @@ public class DefenceFleetAI implements EveryFrameScript
         this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionPatrol"));
     }
   
-    private void giveStandDownOrders()
+    protected void giveStandDownOrders()
     {
         if (!this.orderedReturn)
         {
@@ -131,7 +131,7 @@ public class DefenceFleetAI implements EveryFrameScript
             
             SectorEntityToken destination = data.source;
             
-            this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName(), null));
+            this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName(), null));
             this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("standingDown", null, "missionPatrol"));
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }

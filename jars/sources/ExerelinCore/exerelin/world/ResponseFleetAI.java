@@ -62,7 +62,7 @@ public class ResponseFleetAI implements EveryFrameScript
             if (system != null)
             {
                 if (system != this.fleet.getContainingLocation()) {
-                    this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, "travelling to the " + system.getBaseName() + " star system");
+                    this.fleet.addAssignment(FleetAssignment.DELIVER_SUPPLIES, market.getPrimaryEntity(), 1000.0F, "travelling to the " + system.getBaseName() + " star system");
                 }
                 this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 1000.0F, "defending " + market.getName());
             }
@@ -106,7 +106,7 @@ public class ResponseFleetAI implements EveryFrameScript
         this.fleet.addAssignment(FleetAssignment.INTERCEPT, this.data.target, 3f, "intercepting " + targetName);
     }
   
-    private void giveStandDownOrders()
+    protected void giveStandDownOrders()
     {
         if (!this.orderedReturn)
         {
@@ -115,7 +115,7 @@ public class ResponseFleetAI implements EveryFrameScript
             this.fleet.clearAssignments();
             
             SectorEntityToken destination = data.source;          
-            this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, destination, 1000.0F, "returning to " + destination.getName());
+            this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, "returning to " + destination.getName());
             //this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), "standing down");
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }
