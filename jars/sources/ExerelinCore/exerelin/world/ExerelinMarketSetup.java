@@ -1103,8 +1103,8 @@ public class ExerelinMarketSetup
 				organicsSupply += baseFarming * ConditionData.FARMING_ORGANICS_FRACTION * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.ORGANICS);;
 				log.info("Added balancing Orbital Burns to " + market.getName() + " (size " + size + ")");
 			}
-			else if (getConditionWeightForArchetype(Conditions.RURAL_POLITY, entity.archetype, 0) > Math.random() && !market.hasCondition(Conditions.RURAL_POLITY)
-					&& !market.hasCondition(Conditions.URBANIZED_POLITY) && shortfall > baseFarming && size >= 4)
+			else if (entity.type != EntityType.STATION && getConditionWeightForArchetype(Conditions.RURAL_POLITY, entity.archetype, 0) > Math.random() 
+					&& !market.hasCondition(Conditions.RURAL_POLITY) && !market.hasCondition(Conditions.URBANIZED_POLITY) && shortfall > baseFarming && size >= 4)
 			{
 				addMarketCondition(market, entity, Conditions.RURAL_POLITY);
 				foodSupply += baseFarming;
