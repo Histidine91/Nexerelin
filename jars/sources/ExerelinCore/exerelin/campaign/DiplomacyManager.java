@@ -272,11 +272,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 {
                     playerAlignedFaction.ensureAtWorst(faction2Id, RepLevel.INHOSPITABLE);
                     playerAlignedFaction.adjustRelationship(faction2Id, delta);
+                    playerFaction.ensureAtWorst(faction2Id, RepLevel.INHOSPITABLE);
+                    playerFaction.adjustRelationship(faction2Id, delta);
                 }
                 if (commissionFactionId.equals(faction2Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction2Id))
                 {
                     playerAlignedFaction.ensureAtWorst(faction1Id, RepLevel.INHOSPITABLE);
                     playerAlignedFaction.adjustRelationship(faction1Id, delta);
+                    playerFaction.ensureAtWorst(faction1Id, RepLevel.INHOSPITABLE);
+                    playerFaction.adjustRelationship(faction1Id, delta);
                 }
             }
         }
