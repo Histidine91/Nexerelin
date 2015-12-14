@@ -1304,7 +1304,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		
 		float ellipseAngle = getRandomAngle();
-		float ellipseMult = MathUtils.getRandomNumberInRange(1.05f, 1.2f);
+		float ellipseMult = 1;	//MathUtils.getRandomNumberInRange(1.05f, 1.2f);
 		
 		// now let's start seeding planets
 		// note that we don't create the PlanetAPI right away, but set up EntityDatas first
