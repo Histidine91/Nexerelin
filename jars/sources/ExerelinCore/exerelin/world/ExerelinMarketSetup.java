@@ -1417,7 +1417,7 @@ public class ExerelinMarketSetup
 				continue;
 			float supply = commoditySupply.get(commodity);
 			float demand = commodityDemand.get(commodity);
-			log.info("\t" + commodity.toUpperCase() + " supply / demand: " + supply + " / " + demand);
+			log.info("\t" + commodity.toUpperCase() + " supply / demand: " + (int)supply + " / " + (int)demand);
 		}
 	}
 	
