@@ -996,6 +996,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		SectorEntityToken newStation = data.starSystem.addCustomEntity(id, name, image, factionId);
 		newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
+		data.entity = newStation;
 		
 		MarketAPI existingMarket = planet.getMarket();
 		if (existingMarket != null)
@@ -1012,7 +1013,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 		{	
-			MarketAPI market = marketSetup.addMarketToEntity(newStation, data, factionId);
+			data.market = marketSetup.addMarketToEntity(data, factionId);
 			standaloneStations.add(data);
 		}
 		pickEntityInteractionImage(newStation, newStation.getMarket(), planet.getTypeId(), EntityType.STATION);
@@ -1035,7 +1036,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
 			homeworld.isHQ = true;
-			MarketAPI homeMarket = marketSetup.addMarketToEntity(homeworld.entity, homeworld, alignedFactionId);
+			MarketAPI homeMarket = marketSetup.addMarketToEntity(homeworld, alignedFactionId);
 			SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
 			relay.setFaction(alignedFactionId);
 			pickEntityInteractionImage(homeworld.entity, homeworld.entity.getMarket(), homeworld.planetType, homeworld.type);
@@ -1073,7 +1074,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
 					addAvestaStation(sector, habitable.starSystem);
 			}
-			marketSetup.addMarketToEntity(habitable.entity, habitable, factionId);
+			habitable.market = marketSetup.addMarketToEntity(habitable, factionId);
 			if (!hqsSpawned) // separate from the above if block because the market needs to exist first
 			{
 				if (factionId.equals("tiandong") && ExerelinConfig.enableShanghai)
@@ -1136,6 +1137,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		marketSetup.balanceOrganics(haveMarkets);
 		marketSetup.balanceVolatiles(haveMarkets);
 		marketSetup.balanceMetal(haveMarkets);
+		marketSetup.balanceOre(haveMarkets);
 		
 		// second pass
 		marketSetup.balanceMachinery(haveMarkets, false);
@@ -1143,7 +1145,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		marketSetup.balanceOrganics(haveMarkets);
 		marketSetup.balanceVolatiles(haveMarkets);
 		marketSetup.balanceMetal(haveMarkets);
-		
 		marketSetup.balanceOre(haveMarkets);
 		
 		log.info("FINAL SUPPLY/DEMAND");

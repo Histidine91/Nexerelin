@@ -413,8 +413,14 @@ public class ExerelinMarketSetup
 	
 	// =========================================================================
 	// main market adding method
-	protected MarketAPI addMarketToEntity(SectorEntityToken entity, EntityData data, String factionId)
+	protected MarketAPI addMarketToEntity(EntityData data, String factionId)
 	{
+		if (data.type == EntityType.STAR)
+		{
+			log.error("Tried to add a market to star " + data.entity.getId());
+			return null;
+		}
+		SectorEntityToken entity = data.entity;
 		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
 		EntityType entityType = data.type;
