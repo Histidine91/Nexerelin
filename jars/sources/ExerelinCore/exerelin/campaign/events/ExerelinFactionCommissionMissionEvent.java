@@ -20,6 +20,8 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.missions.SSP_FactionCommissionMissionEvent;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 
 public class ExerelinFactionCommissionMissionEvent extends FactionCommissionMissionEvent {
 	
@@ -87,10 +89,14 @@ public class ExerelinFactionCommissionMissionEvent extends FactionCommissionMiss
 			FactionAPI player = Global.getSector().getPlayerFaction();
 			for (FactionAPI fac : Global.getSector().getAllFactions()) {
 				otherFaction = fac;
+				if (otherFaction.getCustomBoolean(CUSTOM_COMMISSION_IGNORE_NOT_BEING_HOSTILE)) {
+					continue;
+				}
+				if (!otherFaction.isShowInIntelTab()) continue;
+				ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(otherFaction.getId());
+				if (factionConfig != null && !factionConfig.playableFaction) continue;
+					
 				if (this.faction.isHostileTo(otherFaction) && !player.isHostileTo(otherFaction)) {
-					if (otherFaction.getCustomBoolean(CUSTOM_COMMISSION_IGNORE_NOT_BEING_HOSTILE)) {
-						continue;
-					}
 					log.info("Rep drop for not being hostile to " + otherFaction.getDisplayName());
 					Global.getSector().reportEventStage(this, "rep_drop_non_hostile", findMessageSender(), MessagePriority.ENSURE_DELIVERY,
 														new BaseOnMessageDeliveryScript() {
@@ -104,9 +110,6 @@ public class ExerelinFactionCommissionMissionEvent extends FactionCommissionMiss
 					continue;
 				}
 				if (!this.faction.isHostileTo(otherFaction) && player.isHostileTo(otherFaction)) {
-					if (otherFaction.getCustomBoolean(CUSTOM_COMMISSION_IGNORE_BEING_HOSTILE)) {
-						continue;
-					}
 					log.info("Rep drop for being hostile to " + otherFaction.getDisplayName());
 					Global.getSector().reportEventStage(this, "rep_drop_hostile", findMessageSender(), MessagePriority.ENSURE_DELIVERY,
 														new BaseOnMessageDeliveryScript() {
