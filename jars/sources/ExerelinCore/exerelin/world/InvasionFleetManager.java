@@ -137,7 +137,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         int fp = params.fp;
         float distance = ExerelinUtilsMarket.getHyperspaceDistance(params.originMarket, params.targetMarket);
         int tankerFP = (int)(fp * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000);
-        fp -= tankerFP;
+        //fp -= tankerFP;
         
         FleetParams fleetParams = new FleetParams(null, params.originMarket, factionId, null, params.fleetType, 
                 fp*0.8f, // combat
