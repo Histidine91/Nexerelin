@@ -14,7 +14,6 @@ import org.json.JSONObject;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.BountyPirateFleetManager;
@@ -41,6 +40,7 @@ import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.ExerelinCoreScript;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
@@ -737,7 +737,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
 		
 		log.info("Adding scripts and plugins");
-		sector.addScript(new CoreScript());
+		sector.addScript(new ExerelinCoreScript());
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		
 		if (!ExerelinUtils.isSSPInstalled())
@@ -752,7 +752,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(new MarketProcurementMissionCreator());
 		sector.addScript(new FactionCommissionMissionCreator());	// not really needed; game auto-adds it on load
 		
-		if (!corvusMode) sector.addScript(new ForcePatrolFleetsScript());
 		//sector.addScript(new EconomyLogger());
 		
 		sector.addScript(SectorManager.create());

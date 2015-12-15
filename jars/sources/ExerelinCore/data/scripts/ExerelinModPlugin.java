@@ -5,11 +5,14 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.CoreScript;
+import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DirectoryScreenScript;
+import exerelin.campaign.ExerelinCoreScript;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.PlayerStartHandler;
@@ -48,6 +51,14 @@ public class ExerelinModPlugin extends BaseModPlugin
         SectorManager.setSystemToRelayMap(new HashMap<String,String>());
         SectorManager.setPlanetToRelayMap(new HashMap<String,String>());
         
+		// replace patrol handling with our own
+		for (MarketAPI market : sector.getEconomy().getMarketsCopy())
+		{
+			market.getPrimaryEntity().removeScriptsOfClass(PatrolFleetManager.class);
+		}
+		sector.removeScriptsOfClass(CoreScript.class);
+		sector.addScript(new ExerelinCoreScript());
+		
         StatsTracker.create();
         
         sector.registerPlugin(new ExerelinCoreCampaignPlugin());

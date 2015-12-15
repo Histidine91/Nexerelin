@@ -13,7 +13,7 @@
 
     "customRebelFaction":"", # String
     "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Splinter Group", # String
+    "rebelFleetSuffix":"Heretics", # String
 
     "asteroidMiningFleetName":"Miner", # String
     "gasMiningFleetName":"Collecter", # String
@@ -38,6 +38,8 @@
     "invasionFleetSizeMod":-0.3,
     "responseFleetSizeMod":-0.25,
     "invasionPointMult":0.5,
+    
+    "patrolSizeMult":0.65,
     
     "dropPrisoners":false,
 }

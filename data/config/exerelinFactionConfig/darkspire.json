@@ -24,5 +24,7 @@
     "invasionFleetSizeMod":-0.2,
     "responseFleetSizeMod":-0.2,
     
+    "patrolSizeMult":0.8,
+    
     "dropPrisoners":false,
 }
