@@ -380,12 +380,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
         WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
         WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
+        String factionId = faction.getId();
         boolean allowPirates = ExerelinConfig.allowPirateInvasions;
         
         // pick a source market
         for (MarketAPI market : markets) {
             if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
-            if  ( market.getFactionId().equals(faction.getId()) && !market.hasCondition("decivilized") && 
+            if (market.getFactionId().equals(Factions.INDEPENDENT)) continue;
+            if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
+            if  ( market.getFactionId().equals(factionId) && !market.hasCondition("decivilized") && 
                 ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) || (market.hasCondition("military_base"))
                     || (market.hasCondition("regional_capital")) || (market.hasCondition("headquarters"))
                 ) && market.getSize() >= 3 )
