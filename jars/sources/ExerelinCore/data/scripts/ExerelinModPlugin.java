@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.thoughtworks.xstream.XStream;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
@@ -21,6 +22,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.plugins.ExerelinCoreCampaignPlugin;
 import exerelin.utilities.*;
+import exerelin.world.ExerelinPatrolFleetManager;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.MiningFleetManager;
 import exerelin.world.ResponseFleetManager;
@@ -174,4 +176,18 @@ public class ExerelinModPlugin extends BaseModPlugin
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
     }
+	
+	@Override
+	public void configureXStream(XStream x) {
+		x.alias("AllianceManager", AllianceManager.class);
+		x.alias("CovertOpsManager", CovertOpsManager.class);
+		x.alias("DiplomacyManager", DiplomacyManager.class);
+		x.alias("ExerelinCoreScript", ExerelinCoreScript.class);
+		x.alias("PlayerFactionStore", PlayerFactionStore.class);
+		x.alias("SectorManager", SectorManager.class);
+		x.alias("InvasionFleetManager", InvasionFleetManager.class);
+		x.alias("ResponseFleetManager", ResponseFleetManager.class);
+		x.alias("MiningFleetManager", MiningFleetManager.class);
+		x.alias("ExerelinPatrolFleetManager", ExerelinPatrolFleetManager.class);
+	}
 }
