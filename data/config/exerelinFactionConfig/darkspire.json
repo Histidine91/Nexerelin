@@ -21,10 +21,10 @@
         "militarist":1,
     },
     
-    "invasionFleetSizeMod":-0.2,
-    "responseFleetSizeMod":-0.2,
+    "invasionFleetSizeMod":-0.15,
+    "responseFleetSizeMod":-0.15,
     
-    "patrolSizeMult":0.8,
+    "patrolSizeMult":0.85,
     
     "dropPrisoners":false,
 }
