@@ -97,7 +97,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"data/campaign/terrain/eos_nebula.png", "data/campaign/terrain/valhalla_nebula.png", "data/campaign/terrain/hybrasil_nebula.png",
 		"data/campaign/terrain/Nexerelin/gemstone_nebula.png"
 	};
-	protected static final String[] nebulaeColorArray = new String[] {"blue", "amber", "dark"};
+	protected static final String[] nebulaeColorArray = new String[] {"blue", "amber"};
 	
 	protected static ArrayList<String> starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
 
