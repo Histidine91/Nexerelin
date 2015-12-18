@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.lazywizard.lazylib.MathUtils;
@@ -36,6 +37,8 @@ import org.lazywizard.lazylib.MathUtils;
 public class MiningHelper {
 	
 	protected static final String CONFIG_FILE = "data/config/exerelin/miningConfig.json";
+	protected static final String MINING_SHIP_DEFS = "data/config/exerelin/mining_ships.csv";
+	protected static final String MINING_WEAPON_DEFS = "data/config/exerelin/mining_weapons.csv";
 	protected static float miningProductionMult = 2f;
 	protected static float cacheSizeMult = 1;
 	protected static float baseCacheChance = 0.1f;
@@ -63,7 +66,7 @@ public class MiningHelper {
 			baseAccidentChance = (float)config.optDouble("baseAccidentChance", baseAccidentChance);
 			xpPerMiningStrength = (float)config.optDouble("xpPerMiningStrength", xpPerMiningStrength);
 
-			
+			/*
 			JSONObject weaponsJson = config.getJSONObject("miningWeapons");
 			Iterator<?> keys = weaponsJson.keys();
 			while( keys.hasNext() ) {
@@ -77,9 +80,28 @@ public class MiningHelper {
 				String key = (String)keys.next();
 				miningShips.put(key, (float)shipsJson.getDouble(key));
 			}
+			*/
+			
+			JSONArray miningShipsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", MINING_SHIP_DEFS, "nexerelin");
+			for(int x = 0; x < miningShipsCsv.length(); x++)
+            {
+                JSONObject row = miningShipsCsv.getJSONObject(x);
+                String shipId = row.getString("id");
+                float strength = (float)row.getDouble("strength");
+                miningShips.put(shipId, strength);
+            }
+			
+			JSONArray miningWeaponsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", MINING_WEAPON_DEFS, "nexerelin");
+			for(int x = 0; x < miningWeaponsCsv.length(); x++)
+            {
+                JSONObject row = miningWeaponsCsv.getJSONObject(x);
+                String weaponId = row.getString("id");
+                float strength = (float)row.getDouble("strength");
+                miningWeapons.put(weaponId, strength);
+            }
 			
 			JSONObject resourcesJson = config.getJSONObject("resources");
-			keys = resourcesJson.keys();
+			Iterator <?> keys = resourcesJson.keys();
 			while( keys.hasNext() ) {
 				String planetType = (String)keys.next();
 				Map<String, Float> resMap = new HashMap<>();
