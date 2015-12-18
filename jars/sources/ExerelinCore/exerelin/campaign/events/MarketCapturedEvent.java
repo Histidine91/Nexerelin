@@ -22,17 +22,17 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(MarketCapturedEvent.class);
 	
-	private static final int DAYS_TO_KEEP = 60;
+	protected static final int DAYS_TO_KEEP = 60;
 	
-	private FactionAPI newOwner;
-	private FactionAPI oldOwner;
-	private List<String> factionsToNotify;
-	private float repChangeStrength;
-	private boolean playerInvolved;
-	private Map<String, Object> params;
+	protected FactionAPI newOwner;
+	protected FactionAPI oldOwner;
+	protected List<String> factionsToNotify;
+	protected float repChangeStrength;
+	protected boolean playerInvolved;
+	protected Map<String, Object> params;
 	
-	private boolean done;
-	private float age;
+	protected boolean done;
+	protected float age;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {

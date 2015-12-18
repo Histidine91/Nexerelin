@@ -17,13 +17,13 @@ import exerelin.campaign.SectorManager;
 public class VictoryEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(VictoryEvent.class);
-	private boolean diplomaticVictory;
-	private String victorFactionId;
-	private Map<String, Object> params;
-	private boolean playerVictory;
-		
+	protected boolean diplomaticVictory;
+	protected String victorFactionId;
+	protected Map<String, Object> params;
+	protected boolean playerVictory;
+	
 	public boolean done;
-		
+	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
@@ -87,7 +87,7 @@ public class VictoryEvent extends BaseEventPlugin {
 		map.put("$VictorFaction", Misc.ucFirst(victorFactionStr));
 		map.put("$theVictorFaction", theVictorFactionStr);
 		map.put("$TheVictorFaction", Misc.ucFirst(theVictorFactionStr));
-                map.put("$clusterName", SectorManager.getFirstStarName());
+		map.put("$clusterName", SectorManager.getFirstStarName());
 		return map;
 	}
 

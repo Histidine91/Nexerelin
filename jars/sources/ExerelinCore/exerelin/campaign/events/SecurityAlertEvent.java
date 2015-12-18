@@ -7,7 +7,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 public class SecurityAlertEvent extends BaseEventPlugin {
 
 	public static final float DAYS_PER_STAGE = 15f;
-        public static final float ALERT_LEVEL_DECREMENT = 0.25f;
+	public static final float ALERT_LEVEL_DECREMENT = 0.25f;
 	protected float elapsedDays = 0f;
 	protected float alertLevel = 0;
 	//protected String conditionToken = null;
@@ -48,11 +48,11 @@ public class SecurityAlertEvent extends BaseEventPlugin {
 	
 	private boolean ended = false;
 	private void endEvent() {
-                /*
+		/*
 		if (market != null && conditionToken != null) {
 			//market.removeSpecificCondition(conditionToken);
 		}
-                */
+		*/
 		ended = true;
 	}
 

@@ -17,9 +17,9 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 
 	public static Logger log = Global.getLogger(AgentLowerRelationsEvent.class);
 	
-		protected float repEffect2;
-		protected ExerelinReputationAdjustmentResult repResult2;
-		protected FactionAPI thirdFaction;
+	protected float repEffect2;
+	protected ExerelinReputationAdjustmentResult repResult2;
+	protected FactionAPI thirdFaction;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {

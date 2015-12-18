@@ -62,11 +62,11 @@ public class FactionRespawnedEvent extends BaseEventPlugin {
 		if (existedBefore) stage = "respawned";
 		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
 	}
-        
-        @Override
+	
+	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-                map.put("$clusterName", SectorManager.getFirstStarName());
+		map.put("$clusterName", SectorManager.getFirstStarName());
 		return map;
 	}
 	

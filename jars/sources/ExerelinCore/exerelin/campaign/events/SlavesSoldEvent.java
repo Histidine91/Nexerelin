@@ -22,10 +22,10 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 	protected static final int DAYS_TO_KEEP = 60;
 	
 	protected float repPenalty;
-        protected List<String> factionsToNotify;
+	protected List<String> factionsToNotify;
 	protected Map<String, Object> params;
-        
-	protected float age;	
+	
+	protected float age;
 	protected boolean done;
 		
 	@Override
@@ -33,15 +33,15 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
 		done = false;
-                repPenalty = 0;
-                factionsToNotify = new ArrayList<>();
+		repPenalty = 0;
+		factionsToNotify = new ArrayList<>();
 		age = 0;
 	}
 	
 	@Override
 	public void setParam(Object param) {
 		params = (HashMap)param;
-                factionsToNotify = (List<String>)params.get("factionsToNotify");
+		factionsToNotify = (List<String>)params.get("factionsToNotify");
 		repPenalty = (Float)params.get("repPenalty");
 	}
 		
@@ -68,12 +68,12 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 		MessagePriority priority = MessagePriority.ENSURE_DELIVERY;
 		Global.getSector().reportEventStage(this, "report", market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
 			public void beforeDelivery(CommMessageAPI message) {
-                                for (String factionId : factionsToNotify)
-                                {
+								for (String factionId : factionsToNotify)
+								{
 										if (factionId.equals(market.getFactionId()))
 											ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), market.getPrimaryEntity().getActivePerson(), repPenalty);
 										else ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, repPenalty);
-                                }
+								}
 			}
 		});
 	}
@@ -105,7 +105,7 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
 		map.put("$repPenaltyAbs", "" + (int)Math.ceil(Math.abs(repPenalty*100f)));
-                map.put("$location", market.getPrimaryEntity().getContainingLocation().getName());
+		map.put("$location", market.getPrimaryEntity().getContainingLocation().getName());
 		return map;
 	}
 	

@@ -15,21 +15,21 @@ public class SaboteurSabotageReserveEvent extends CovertOpsEventBase {
 
 	public static Logger log = Global.getLogger(SaboteurSabotageReserveEvent.class);
 	
-        protected float reserveDamage;
+	protected float reserveDamage;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-                reserveDamage = 0;
+		reserveDamage = 0;
 	}
 	
 	@Override
 	public void setParam(Object param) {
-                super.setParam(param);
-                if (params.containsKey("reserveDamage"))
-                    reserveDamage = (Float)params.get("reserveDamage");
+		super.setParam(param);
+		if (params.containsKey("reserveDamage"))
+			reserveDamage = (Float)params.get("reserveDamage");
 	}
-	        	
+				
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
@@ -40,12 +40,12 @@ public class SaboteurSabotageReserveEvent extends CovertOpsEventBase {
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
-                if (reserveDamage > 0)
-                {
-                    //log.info("Reserve damage: " + reserveDamage);
-                    addTokensToList(result, "$reserveDamage");
-                }
-                addTokensToList(result, "$repEffectAbs");
+		if (reserveDamage > 0)
+		{
+			//log.info("Reserve damage: " + reserveDamage);
+			addTokensToList(result, "$reserveDamage");
+		}
+		addTokensToList(result, "$repEffectAbs");
 		addTokensToList(result, "$newRelationStr");
 		return result.toArray(new String[0]);
 	}

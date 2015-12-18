@@ -33,7 +33,7 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 	
 	public static Logger log = Global.getLogger(FactionInsuranceEvent.class);
 	
-	private float paidAmount = 0f;
+	protected float paidAmount = 0f;
 	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
