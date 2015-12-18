@@ -1000,7 +1000,7 @@ public class ExerelinMarketSetup
 			entityPicker.add(entity, weight);
 		}
 		
-		while (suppliesDemand > suppliesSupply)
+		while (suppliesDemand > suppliesSupply * 1.05f)
 		{
 			if (entityPicker.isEmpty())	break;
 			
