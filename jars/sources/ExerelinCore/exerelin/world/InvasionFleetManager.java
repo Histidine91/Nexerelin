@@ -23,6 +23,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -470,7 +471,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             Map<String, Object> params = new HashMap<>();
             params.put("target", targetMarket);
             params.put("dp", data.startingFleetPoints);
-            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
+            InvasionFleetEvent event = (InvasionFleetEvent)Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
+            data.event = event;
+            event.reportStart();
         }
         spawnSupportFleet(faction, originMarket, targetMarket, false, false);
         spawnSupportFleet(faction, originMarket, targetMarket, false, false);    
@@ -686,6 +689,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         public int marineCount = 0;
         public boolean noWait = false;
         public boolean noWander = false;
+        public InvasionFleetEvent event;
     
         public InvasionFleetData(CampaignFleetAPI fleet)
         {

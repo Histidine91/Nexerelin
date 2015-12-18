@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -22,12 +23,11 @@ import java.util.List;
 public class InvasionFleetEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(InvasionFleetEvent.class);
-	private static final int DAYS_TO_KEEP = 30;
-	private Map<String, Object> params;
-	private MarketAPI target;
-        private int dp;
+	protected Map<String, Object> params;
+	protected MarketAPI target;
+	protected int dp;
 	public boolean done;
-	private float age;
+	protected float age;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
@@ -35,7 +35,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 		params = new HashMap<>();
 		done = false;
 		target = null;
-                dp = 0;
+		dp = 0;
 		age = 0;
 	}
 	
@@ -43,36 +43,45 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	public void setParam(Object param) {
 		params = (HashMap)param;
 		target = (MarketAPI)params.get("target");
-                dp = (int)(float)params.get("dp");
+		dp = (int)(float)params.get("dp");
 	}
 		
 	@Override
 	public void startEvent()
 	{
+		
+	}
+	
+	public void reportStart()
+	{
 		MessagePriority priority = MessagePriority.SECTOR;
-		String stage = "report";
+		String stage = "start";
 		if (faction.getId().equals(PlayerFactionStore.getPlayerFactionId()))
-			stage = "report_player";
+			stage = "start_player";
 		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
+	}
+	
+	public void endEvent(FleetReturnReason reason, SectorEntityToken reportSource)
+	{
+		if (done) return;
+		done = true;
+		String stage = reason.toString().toLowerCase();
+		if (faction.getId().equals(PlayerFactionStore.getPlayerFactionId()))
+			stage += "_player";
+		
+		log.info("Ending invasion event: " + stage);
+		Global.getSector().reportEventStage(this, stage, reportSource, MessagePriority.SECTOR);
 	}
 
 	@Override
 	public void advance(float amount)
 	{
-		if (done)
-			return;
-		
-		age = age + Global.getSector().getClock().convertToDays(amount);
-		if (age > DAYS_TO_KEEP)
-		{
-			done = true;
-			return;
-		}
+
 	}
 	
 	@Override
 	public String getEventName() {
-		return (faction.getDisplayName() + " invasion fleet launched");
+		return (faction.getDisplayName() + " invasion fleet event");
 	}
 	
 	@Override
@@ -93,8 +102,8 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 		String locName = loc.getName();
 		if (loc instanceof StarSystemAPI)
 			locName = "the " + ((StarSystemAPI)loc).getName();
-                int dpEstimate = Math.round(dp/10f) * 10;
-                
+		int dpEstimate = Math.round(dp/10f) * 10;
+		 
 		String targetFactionStr = targetFaction.getEntityNamePrefix();
 		String theTargetFactionStr = targetFaction.getDisplayNameWithArticle();
 		map.put("$sender", faction.getEntityNamePrefix());
@@ -104,20 +113,20 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 		map.put("$TargetFaction", Misc.ucFirst(targetFactionStr));
 		map.put("$theTargetFaction", theTargetFactionStr);
 		map.put("$TheTargetFaction", Misc.ucFirst(theTargetFactionStr));
-                map.put("$dp", "" + dpEstimate);
+		map.put("$dp", "" + dpEstimate);
 		return map;
 	}
-        
-        @Override
-        public String[] getHighlights(String stageId) {
+		
+		@Override
+		public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
-                addTokensToList(result, "$dp");
+				addTokensToList(result, "$dp");
 		return result.toArray(new String[0]);
 	}
 	
 	@Override
 	public boolean isDone() {
-		return false;
+		return done;
 	}
 
 	@Override
@@ -128,5 +137,9 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	@Override
 	public boolean showAllMessagesIfOngoing() {
 		return false;
+	}
+	
+	public static enum FleetReturnReason {
+		MISSION_COMPLETE, ALREADY_CAPTURED, NO_LONGER_HOSTILE, MARINE_LOSSES, SHIP_LOSSES, OTHER
 	}
 }

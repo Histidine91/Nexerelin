@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
@@ -19,10 +20,13 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import exerelin.world.InvasionFleetManager;
+import exerelin.world.InvasionFleetManager.InvasionFleetData;
 import java.awt.Color;
+import java.util.HashMap;
 
 public class FleetRequestFire extends FleetRequestActionBase {
 
@@ -69,7 +73,8 @@ public class FleetRequestFire extends FleetRequestActionBase {
 		fleetParams.numMarines = marines;
 		fleetParams.noWander = true;
 		fleetParams.noWait = true;
-		InvasionFleetManager.spawnFleet(fleetParams);
+		
+		InvasionFleetData data = InvasionFleetManager.spawnFleet(fleetParams);
 		
 		TextPanelAPI text = dialog.getTextPanel();
 		Color hl = Misc.getHighlightColor();
@@ -98,6 +103,13 @@ public class FleetRequestFire extends FleetRequestActionBase {
 			SectorManager.createWarmongerEvent(targetMarket.getFactionId(), target);
 			RepActionEnvelope envelope = new RepActionEnvelope(RepActions.COMBAT_NORMAL, null, dialog.getTextPanel());
 			Global.getSector().adjustPlayerReputation(envelope, targetMarket.getFactionId());
+			
+			Map<String, Object> eventParams = new HashMap<>();
+            eventParams.put("target", targetMarket);
+            eventParams.put("dp", data.startingFleetPoints);
+            InvasionFleetEvent event = (InvasionFleetEvent)Global.getSector().getEventManager().startEvent(new CampaignEventTarget(sourceMarket), "exerelin_invasion_fleet", eventParams);
+			data.event = event;
+			event.reportStart();
 		}
 		return true;
 	}

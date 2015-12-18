@@ -10,10 +10,12 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
+import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.utilities.StringHelper;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -89,15 +91,26 @@ public class InvasionFleetAI implements EveryFrameScript
         {
             float fp = this.fleet.getFleetPoints();
             if (fp < this.data.startingFleetPoints / 2.0F) {
+                if (data.event != null) data.event.endEvent(InvasionFleetEvent.FleetReturnReason.SHIP_LOSSES, data.target);
                 giveStandDownOrders();
             }
             int marines = this.fleet.getCargo().getMarines();
             if (marines < data.marineCount * 0.4f) {
                 // we lost over 60% of our marines, no more invading
+                if (data.event != null) data.event.endEvent(InvasionFleetEvent.FleetReturnReason.MARINE_LOSSES, data.target);
                 giveStandDownOrders();
             }
             if(!data.target.getFaction().isHostileTo(fleet.getFaction()))
+            {
+                if (data.event != null)
+                {
+                    if (data.target.getFaction() == fleet.getFaction())
+                        data.event.endEvent(InvasionFleetEvent.FleetReturnReason.ALREADY_CAPTURED, data.target);
+                    else
+                        data.event.endEvent(InvasionFleetEvent.FleetReturnReason.NO_LONGER_HOSTILE, data.target);
+                }
                 giveStandDownOrders();  // market is no longer hostile; abort invasion
+            }
             
             if (orderedReturn)
                 return;
@@ -196,6 +209,7 @@ public class InvasionFleetAI implements EveryFrameScript
         {
             //log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " standing down");
             this.orderedReturn = true;
+            if (data.event != null) data.event.endEvent(InvasionFleetEvent.FleetReturnReason.OTHER, data.source);
             this.fleet.clearAssignments();
             
             SectorEntityToken destination = data.source;
