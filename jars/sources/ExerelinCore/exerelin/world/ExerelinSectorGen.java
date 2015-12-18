@@ -1001,6 +1001,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		String name = data.name;
 		String id = name.replace(' ','_');
+		id = id.toLowerCase();
 		List<String> images = stationImages;
 		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
 		if (factionConf != null && !factionConf.customStations.isEmpty())
@@ -1177,7 +1178,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			Integer[] pos = (Integer[])starPositions.get(index);
 			int x = pos[0];
 			int y = pos[1];
-			return system.initStar(systemId, type, size, x, y, 500 * fieldMult);
+			return system.initStar(systemId + "_star", type, size, x, y, 500 * fieldMult);
 		}
 		else 
 		{
@@ -1193,7 +1194,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float distance = (BINARY_STAR_DISTANCE + star.getRadius()*5 + size*5) * MathUtils.getRandomNumberInRange(0.95f, 1.1f) ;
 			float orbitDays = getOrbitalPeriod(star, distance + star.getRadius());
 			
-			PlanetAPI planet = system.addPlanet(systemId, star, name, type, angle, size, distance, orbitDays);
+			PlanetAPI planet = system.addPlanet(systemId + "_star_b", star, name, type, angle, size, distance, orbitDays);
 			setOrbit(planet, star, distance, true, getRandomAngle(), orbitDays);
 			system.addCorona(planet, 300, 2f, 0.1f, 1f);
 			
@@ -1392,6 +1393,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			possiblePlanetNamesList.remove(planetNameIndex);
 			log.info("Creating planet " + name);
 			id = name.replace(' ','_');
+			id = id.toLowerCase();
 			planetData.name = name;
 			
 			// binary star handling
@@ -1485,6 +1487,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 						ext = "III";
 					String moonName = name + " " + ext;
 					String moonId = name + "_" + ext;
+					moonId = moonId.toLowerCase();
 					
 					EntityData moonData = new EntityData(moonName, system);
 					boolean moonInhabitable = false;
