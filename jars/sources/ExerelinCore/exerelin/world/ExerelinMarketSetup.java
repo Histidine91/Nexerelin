@@ -196,6 +196,26 @@ public class ExerelinMarketSetup
 		return getConditionWeightForArchetype(conditionsByID.get(condID), archetype, defaultWeight);
 	}
 	
+	protected boolean isConditionAllowedForPlanet(MarketConditionDef cond, String planetType)
+	{
+		if (!cond.allowedPlanets.isEmpty())
+		{
+			if (!cond.allowedPlanets.contains(planetType))
+				return false;
+		}
+		if (cond.disallowedPlanets.isEmpty())
+		{
+			if (cond.disallowedPlanets.contains(planetType))
+				return false;
+		}
+		return true;
+	}
+	
+	protected boolean isConditionAllowedForPlanet(String condID, String planetType)
+	{
+		return isConditionAllowedForPlanet(conditionsByID.get(condID), planetType);
+	}
+	
 	protected MarketConditionDef pickMarketCondition(MarketAPI market, List<MarketConditionDef> possibleConds, EntityData entityData, int budget, boolean isFirst)
 	{
 		WeightedRandomPicker<MarketConditionDef> picker = new WeightedRandomPicker<>();
@@ -212,16 +232,7 @@ public class ExerelinMarketSetup
 			if (possibleCond.minSize > size || possibleCond.maxSize < size) continue;
 			if (!possibleCond.allowStations && isStation) continue;
 			if (!possibleCond.allowDuplicates && market.hasCondition(possibleCond.name)) continue;
-			if (!possibleCond.allowedPlanets.isEmpty())
-			{
-				if (!possibleCond.allowedPlanets.contains(planetType))
-					continue;
-			}
-			if (!possibleCond.disallowedPlanets.isEmpty())
-			{
-				if (possibleCond.disallowedPlanets.contains(planetType))
-					continue;
-			}
+			if (!isConditionAllowedForPlanet(possibleCond, planetType)) continue;
 			for (String conflict : possibleCond.conflictsWith)
 			{
 				if (market.hasCondition(conflict)) continue;
@@ -1054,6 +1065,16 @@ public class ExerelinMarketSetup
 					weight *= 25;
 					log.info("Removed balancing Orbital Burns from " + market.getName() + " (size " + size + ")");
 				}
+				if (market.hasCondition(Conditions.AQUACULTURE) && surplus > ConditionData.AQUACULTURE_FOOD_MULT * pop)
+				{
+					removeMarketCondition(market, entity, Conditions.AQUACULTURE);
+					foodSupply -= ConditionData.AQUACULTURE_FOOD_MULT * pop;
+					machineryDemand -= ConditionData.AQUACULTURE_MACHINERY_MULT * pop;
+					organicsSupply -= baseFarming * ConditionData.FARMING_ORGANICS_FRACTION * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.ORGANICS);
+					
+					weight *= 25;
+					log.info("Removed balancing aquaculture from " + market.getName() + " (size " + size + ")");
+				}
 				else if (market.hasCondition(Conditions.RURAL_POLITY) && Math.random() > 0.5 && surplus > baseFarming)
 				{
 					removeMarketCondition(market, entity, Conditions.RURAL_POLITY);
@@ -1101,14 +1122,24 @@ public class ExerelinMarketSetup
 			int pop = ExerelinUtilsMarket.getPopulation(size);
 			float baseFarming = ExerelinUtilsMarket.getFarmingFoodSupply(market, false);
 			
-			if (entity.planetType.equals("jungle") && entity.type != EntityType.STATION && !market.hasCondition(Conditions.ORBITAL_BURNS)
+			if (isConditionAllowedForPlanet(Conditions.ORBITAL_BURNS, entity.planetType) && entity.type != EntityType.STATION && !market.hasCondition(Conditions.ORBITAL_BURNS)
 					&& shortfall > baseFarming)
 			{
 				addMarketCondition(market, entity, Conditions.ORBITAL_BURNS);
 				foodSupply += baseFarming;
-				organicsSupply += baseFarming * ConditionData.FARMING_ORGANICS_FRACTION * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.ORGANICS);;
+				organicsSupply += baseFarming * ConditionData.FARMING_ORGANICS_FRACTION * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.ORGANICS);
 				log.info("Added balancing Orbital Burns to " + market.getName() + " (size " + size + ")");
 			}
+			else if (isConditionAllowedForPlanet(Conditions.AQUACULTURE, entity.planetType) && entity.type != EntityType.STATION
+					&& shortfall > baseFarming)
+			{
+				addMarketCondition(market, entity, Conditions.AQUACULTURE);
+				foodSupply += ConditionData.AQUACULTURE_FOOD_MULT * pop;
+				machineryDemand += ConditionData.AQUACULTURE_MACHINERY_MULT * pop;
+				organicsSupply += baseFarming * ConditionData.FARMING_ORGANICS_FRACTION * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.ORGANICS);
+				log.info("Added balancing Orbital Burns to " + market.getName() + " (size " + size + ")");
+			}
+			/*
 			else if (entity.type != EntityType.STATION && getConditionWeightForArchetype(Conditions.RURAL_POLITY, entity.archetype, 0) > Math.random() 
 					&& !market.hasCondition(Conditions.RURAL_POLITY) && !market.hasCondition(Conditions.URBANIZED_POLITY) && shortfall > baseFarming && size >= 4)
 			{
@@ -1117,7 +1148,7 @@ public class ExerelinMarketSetup
 				organicsSupply += baseFarming * ConditionData.FARMING_ORGANICS_FRACTION * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.ORGANICS);
 				domesticGoodsDemand -= ConditionData.POPULATION_DOMESTIC_MULT * pop * 0.5;
 				log.info("Added balancing Rural Polity to " + market.getName() + " (size " + size + ")");
-			}
+			}*/
 			else
 			{
 				addMarketCondition(market, entity, "exerelin_hydroponics");
