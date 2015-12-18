@@ -189,7 +189,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker<>();
         SectorAPI sector = Global.getSector();
         for (String factionId: ExerelinSetupData.getInstance().getAvailableFactions()) {
-            if (!factionId.equals("templars") && !factionId.equals("pirates")){
+            if (!factionId.equals("templars") && !factionId.equals("pirates") && !factionId.equals("sector") && !factionId.equals("everything")){
                 factionPicker.add(sector.getFaction(factionId));
             }
         }
@@ -232,6 +232,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                     && !member.getHullId().toLowerCase().endsWith("_d")
                     && !member.getHullId().toLowerCase().contains("_d_")
                     && !member.getHullSpec().getHullName().toLowerCase().endsWith("(d)")
+                    && !member.getHullId().toLowerCase().startsWith("tem_")
                     && member.getFleetPointCost()>=FP)
                 {
                     member.getRepairTracker().setMothballed(true);
