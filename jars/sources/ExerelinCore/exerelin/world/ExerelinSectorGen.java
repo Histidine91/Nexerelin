@@ -790,7 +790,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	public float getOrbitalPeriod(float primaryRadius, float orbitRadius, float density)
 	{
 		primaryRadius *= 0.01;
-		orbitRadius *= 0.01;
+		orbitRadius *= 1/62.5;	// realistic would be 1/50 but the planets orbit rather too slowly then
 		
 		float mass = (float)Math.floor(4f / 3f * Math.PI * Math.pow(primaryRadius, 3));
 		mass *= density;
@@ -965,23 +965,38 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return orbitRadius;
 	}
 	
+	public void addAsteroidBelt(LocationAPI system, SectorEntityToken planet, int numAsteroids, float orbitRadius, float width, float minOrbitDays, float maxOrbitDays)
+	{
+		// since we can't easily store belts' orbital periods at present, make sure asteroids all orbit in the same direction
+		if (minOrbitDays < 0) minOrbitDays *= -1;
+		if (maxOrbitDays < 0) maxOrbitDays *= -1;
+		
+		system.addAsteroidBelt(planet, numAsteroids, orbitRadius, width, minOrbitDays, maxOrbitDays);
+		system.addRingBand(planet, "misc", "rings1", 256f, 2, Color.white, 256f, orbitRadius + width/4, (minOrbitDays + maxOrbitDays)/2);
+		system.addRingBand(planet, "misc", "rings1", 256f, 2, Color.white, 256f, orbitRadius - width/4, (minOrbitDays + maxOrbitDays)/2);
+	}
+	
 	// end utility functions
 	// =========================================================================
 	
 	protected SectorEntityToken makeStation(EntityData data, String factionId)
 	{
 		float angle = getRandomAngle();
-		int orbitRadius = 300;
+		int orbitRadius = 200;
 		PlanetAPI planet = (PlanetAPI)data.primary.entity;
 		if (data.primary.type == EntityType.MOON)
-			orbitRadius = 200;
+			orbitRadius = 150;
 		else if (planet.isGasGiant())
 			orbitRadius = 500;
 		else if (planet.isStar())
 			orbitRadius = (int)data.orbitRadius;
+		orbitRadius += planet.getRadius();
+		
 		data.orbitRadius = orbitRadius;
 
-		float orbitDays = getOrbitalPeriod(planet, orbitRadius + planet.getRadius());
+		float orbitDays = getOrbitalPeriod(planet, orbitRadius);
+		if (planet.isStar() && orbitDays < 0)
+			orbitDays *= -1;	// prevents weirdness of station orbiting in reverse direction to belt
 		data.orbitPeriod = orbitDays;
 
 		String name = data.name;
@@ -1666,8 +1681,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float baseOrbitDays = getOrbitalPeriod(planet, orbitRadius);
 			float minOrbitDays = baseOrbitDays * 0.75f;
 			float maxOrbitDays = baseOrbitDays * 1.25f;
-			system.addAsteroidBelt(planet, numAsteroids, orbitRadius, width, minOrbitDays, maxOrbitDays);
-			system.addRingBand(planet, "misc", "rings1", 256f, 2, Color.white, 256f, orbitRadius, 90f);
+			addAsteroidBelt(system, planet, numAsteroids, orbitRadius, width, minOrbitDays, maxOrbitDays);
 			if (planet == star) starBelts1.add(orbitRadius);
 			else if (planet == star2) starBelts2.add(orbitRadius);
 			log.info("Added asteroid belt around " + planet.getName());
@@ -1680,8 +1694,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float minOrbitDays = baseOrbitDays * 0.75f;
 			float maxOrbitDays = baseOrbitDays * 1.25f;
 			
-			system.addAsteroidBelt(star, 50, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
-			system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, distance, 90f);
+			addAsteroidBelt(system, star, 50, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
 			starBelts1.add(distance);
 			
 			// Another one if medium system size
@@ -1691,8 +1704,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				baseOrbitDays = getOrbitalPeriod(star, distance);
 				minOrbitDays = baseOrbitDays * 0.75f;
 				maxOrbitDays = baseOrbitDays * 1.25f;
-				system.addAsteroidBelt(star, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
-				system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, distance, 90f);
+				addAsteroidBelt(system, star, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
 				starBelts1.add(distance);
 			}
 			// And another one if a large system
@@ -1702,8 +1714,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				baseOrbitDays = getOrbitalPeriod(star, distance);
 				minOrbitDays = baseOrbitDays * 0.75f;
 				maxOrbitDays = baseOrbitDays * 1.25f;
-				system.addAsteroidBelt(star, 100, distance, MathUtils.getRandomNumberInRange(160, 200),  minOrbitDays, maxOrbitDays);
-				system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, distance, 90f);
+				addAsteroidBelt(system, star, 100, distance, MathUtils.getRandomNumberInRange(160, 200),  minOrbitDays, maxOrbitDays);
 				starBelts1.add(distance);
 			}
 		} while (false);
@@ -1762,8 +1773,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 						float minOrbitDays = baseOrbitDays * 0.75f;
 						float maxOrbitDays = baseOrbitDays * 1.25f;
 
-						system.addAsteroidBelt(star2, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
-						system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, distance, 90f);
+						addAsteroidBelt(system, star2, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
 						starBelts2.add(distance);
 					}
 
