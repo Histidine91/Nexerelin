@@ -28,13 +28,14 @@ public class SpawnRespawnFleet implements BaseCommand {
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         FactionAPI playerAlignedFaction = sector.getFaction(playerAlignedFactionId);
         CampaignFleetAPI playerFleet = sector.getPlayerFleet();
-        List<MarketAPI> markets = Misc.getMarketsInLocation(playerFleet.getContainingLocation());
+        List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
         
-        Vector2f playerPos = playerFleet.getLocation();
+        Vector2f playerPos = playerFleet.getLocationInHyperspace();
         MarketAPI closestTargetMarket = null;
         float closestTargetDist = 9999999;
         
         for (MarketAPI market : markets) {
+            if (market.getFaction() == playerAlignedFaction) continue;
             float distance = Misc.getDistance(playerPos, market.getPrimaryEntity().getLocation());
             if (distance < closestTargetDist)
             {
@@ -51,7 +52,7 @@ public class SpawnRespawnFleet implements BaseCommand {
         
         InvasionFleetManager.InvasionFleetData data = InvasionFleetManager.spawnRespawnFleet(playerAlignedFaction, closestTargetMarket, closestTargetMarket);
         Console.showMessage("Spawning " + data.fleet.getName() + ", sending to " + closestTargetMarket.getName());
-        data.fleet.setLocation(playerPos.x, playerPos.y);
+        data.fleet.setLocation(playerFleet.getLocation().x, playerFleet.getLocation().y);
         return CommandResult.SUCCESS;
     }
 }

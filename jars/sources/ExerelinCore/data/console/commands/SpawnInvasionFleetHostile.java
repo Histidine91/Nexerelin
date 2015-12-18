@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.InvasionFleetManager;
 import java.util.List;
 import org.lazywizard.console.BaseCommand;
@@ -28,44 +29,49 @@ public class SpawnInvasionFleetHostile implements BaseCommand {
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         FactionAPI playerAlignedFaction = sector.getFaction(playerAlignedFactionId);
         CampaignFleetAPI playerFleet = sector.getPlayerFleet();
-        List<MarketAPI> markets = Misc.getMarketsInLocation(playerFleet.getContainingLocation());
+        List<MarketAPI> targets = ExerelinUtilsFaction.getFactionMarkets(playerAlignedFactionId);
+        List<MarketAPI> sources = Global.getSector().getEconomy().getMarketsCopy();
         
-        Vector2f playerPos = playerFleet.getLocation();
+        Vector2f playerPos = playerFleet.getLocationInHyperspace();
         MarketAPI closestTargetMarket = null;
         float closestTargetDist = 9999999;
         MarketAPI closestOriginMarket = null;
         float closestOriginDist = 9999999;
         
-        for (MarketAPI market : markets) {
-            float distance = Misc.getDistance(playerPos, market.getPrimaryEntity().getLocation());
-            if (!market.getFactionId().equals(playerAlignedFactionId))
+        for (MarketAPI market : targets) {
+            float distance = Misc.getDistance(playerPos, market.getPrimaryEntity().getLocationInHyperspace());            
+            if (distance < closestTargetDist)
             {
-                if (distance < closestOriginDist)
-                {
-                    closestOriginDist = distance;
-                    closestOriginMarket = market;
-                }
+                closestTargetDist = distance;
+                closestTargetMarket = market;
             }
-            else
+        }
+        
+        for (MarketAPI market : sources) {
+            if (market.getFaction() == playerAlignedFaction) continue;
+            float distance = Misc.getDistance(playerPos, market.getPrimaryEntity().getLocationInHyperspace());
+            if (distance < closestOriginDist)
             {
-                if (distance < closestTargetDist)
-                {
-                    closestTargetDist = distance;
-                    closestTargetMarket = market;
-                }
+                closestOriginDist = distance;
+                closestOriginMarket = market;
             }
         }
         
         if (closestTargetMarket == null || closestOriginMarket == null)
         {
             Console.showMessage("Unable to find origin and/or target");
-                return CommandResult.ERROR;
+            return CommandResult.ERROR;
         }
         
         InvasionFleetManager.InvasionFleetData data = InvasionFleetManager.spawnInvasionFleet(closestOriginMarket.getFaction(), closestOriginMarket, closestTargetMarket, 1.1f, true);
+        if (closestOriginMarket.getContainingLocation() != playerFleet.getContainingLocation())
+        {
+            closestOriginMarket.getContainingLocation().removeEntity(data.fleet);
+            playerFleet.getContainingLocation().addEntity(data.fleet);
+        }
         Console.showMessage("Spawning " + data.fleet.getName() + " from " + closestOriginMarket.getName());
         Console.showMessage("Oscar Mike to " + closestTargetMarket.getName());
-        data.fleet.setLocation(playerPos.x, playerPos.y);
+        data.fleet.setLocation(playerFleet.getLocation().x, playerFleet.getLocation().y);
         return CommandResult.SUCCESS;
     }
 }
