@@ -148,7 +148,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 0,        // liners
                 0,        // civilian
                 fp*0.1f,    // utility
-                0.15f, -1, 1.25f, params.originMarket.getSize() - 1);    // quality bonus, quality override, officer num mult, officer level bonus
+                0.15f, -1, 1.25f, params.originMarket.getSize() - 2);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = FleetFactoryV2.createFleet(fleetParams);
         /*
@@ -232,8 +232,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 {
                     name = factionConfig.invasionFleetName;
                 }   
-                if (fp <= 18) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixSmall") + " " + name;
-                else if (fp >= 52) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixLarge") + " " + name;
+                if (fp <= 16) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixSmall") + " " + name;
+                else if (fp >= 48) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixLarge") + " " + name;
                 break;
             case "exerelinInvasionSupportFleet":
                 name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetName");
@@ -250,8 +250,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 {
                     name = factionConfig.defenceFleetName;
                 }   
-                if (fp <= 18) name = StringHelper.getString("exerelin_fleets", "defenceFleetPrefixSmall") + " " + name;
-                else if (fp >= 52) name = StringHelper.getString("exerelin_fleets", "defenceFleetPrefixLarge") + " " + name;
+                if (fp <= 15) name = StringHelper.getString("exerelin_fleets", "defenceFleetPrefixSmall") + " " + name;
+                else if (fp >= 45) name = StringHelper.getString("exerelin_fleets", "defenceFleetPrefixLarge") + " " + name;
                 break;
         }
         
