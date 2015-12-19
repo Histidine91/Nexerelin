@@ -65,7 +65,7 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		List<FleetMemberAPI> fleetCurrent = fleet.getFleetData().getMembersListCopy();
 		for (FleetMemberAPI member : fleet.getFleetData().getSnapshot()) {
 			if (!fleetCurrent.contains(member)) {
-				value += member.getBaseSellValue();
+				value += member.getBaseBuyValue();
 			}
 		}
 		if (value <= 0) return;
