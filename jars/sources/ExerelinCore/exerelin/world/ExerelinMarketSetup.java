@@ -651,7 +651,7 @@ public class ExerelinMarketSetup
 		sSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.SUPPLIES);
 		modifyCommoditySupply(Commodities.SUPPLIES, sSupply);
 		float sDemand = ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.SUPPLIES);
-		sDemand += 0.00085 * pop;	// fudge factor to account for crew and marines using supplies
+		sDemand += 0.001 * pop;	// fudge factor to account for crew and marines using supplies
 		modifyCommodityDemand(Commodities.SUPPLIES, sDemand * 1.2f);	// hax
 		
 		// fuel
