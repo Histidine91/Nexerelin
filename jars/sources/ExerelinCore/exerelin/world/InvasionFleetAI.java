@@ -91,7 +91,7 @@ public class InvasionFleetAI implements EveryFrameScript
         {
             float fp = this.fleet.getFleetPoints();
             if (fp < this.data.startingFleetPoints / 2.0F) {
-                if (data.event != null) data.event.endEvent(InvasionFleetEvent.FleetReturnReason.SHIP_LOSSES, data.target);
+                if (data.event != null) data.event.endEvent(InvasionFleetEvent.FleetReturnReason.SHIP_LOSSES, data.fleet);
                 giveStandDownOrders();
             }
             int marines = this.fleet.getCargo().getMarines();
