@@ -232,8 +232,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 {
                     name = factionConfig.invasionFleetName;
                 }   
-                if (fp <= 16) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixSmall") + " " + name;
-                else if (fp >= 48) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixLarge") + " " + name;
+                if (fp <= 18) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixSmall") + " " + name;
+                else if (fp >= 54) name = StringHelper.getString("exerelin_fleets", "invasionFleetPrefixLarge") + " " + name;
                 break;
             case "exerelinInvasionSupportFleet":
                 name = StringHelper.getString("exerelin_fleets", "invasionSupportFleetName");

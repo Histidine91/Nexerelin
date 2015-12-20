@@ -88,8 +88,8 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         {
             name = factionConfig.responseFleetName;
         }
-        if (maxFP <= 16) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixSmall") + " " + name;
-        else if (maxFP >= 48) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
+        if (maxFP <= 18) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixSmall") + " " + name;
+        else if (maxFP >= 54) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
         
         //CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
         FleetParams fleetParams = new FleetParams(null, origin, factionId, null, "exerelinResponseFleet", 
