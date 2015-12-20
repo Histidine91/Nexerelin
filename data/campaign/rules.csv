@@ -38,7 +38,8 @@ ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,,,"exerelinNGCOptionsDone:Pro
 7:exerelinNGCOtherOptions:Other options",
 ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCEnableCorvusMode:Enable Corvus Mode,
 ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCDisableCorvusMode:Disable Corvus Mode,
-ExerelinNewGameSectorConfig,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present""",,"exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
+ExerelinNewGameSectorConfig,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present""",,"
+exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
 exerelinNGCSetNumSystemsEmpty:Set number of empty star systems ($numSystemsEmpty)
 exerelinNGCSetMaxPlanets:Set max planets per system ($maxPlanets)
 exerelinNGCSetMaxStations:Set max stations per system ($maxStations)
@@ -570,7 +571,8 @@ $market.id != prismFreeport",,,1:exerelinInvasion:Invade the planet/station,
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
 PredictInvasionResults
 FireAll ExerelinInvadeListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
-ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,,,"2:exerelinInvasionHelp:Consult a help file
+ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,,,"
+2:exerelinInvasionHelp:Consult a help file
 4:exerelinInvasionCancel:Cancel",
 ExerelinInvadeListOptionInvade,ExerelinInvadeListOptions,HasMarines 1,SetEnabled exerelinInvasionProceed true,,1:exerelinInvasionProceed:Proceed,
 ExerelinInvadeListOptionInvadeNoMarines,ExerelinInvadeListOptions,!HasMarines 1,"SetTooltip exerelinInvasionProceed ""You have no marines!""
@@ -949,18 +951,18 @@ ExerelinFleetRequestOptionListMain,DialogOptionSelected,$option == exerelinFleet
 $fleetRequestMarines=0
 ShowVisual ""graphics/illustrations/hound_hangar.jpg""
 FireAll ExerelinFleetRequestOption",,,
-ExerelinFleetRequestOptionListFire,ExerelinFleetRequestOption,FleetRequestCanAfford,"SetTooltip exerelinFleetRequestFire ""Deploying this fleet to $market will require $creditsRequiredForFleet credits. $player.creditsHave credits are available.""
+ExerelinFleetRequestOptionListFire,ExerelinFleetRequestOption,FleetRequestCanAfford,"SetTooltip exerelinFleetRequestFire ""Deploying this fleet to $market will require $fleetRequestCost credits. $player.creditsHave credits are available.""
 SetEnabled exerelinFleetRequestFire true
 SetTooltipHighlightColors exerelinFleetRequestFire buttonShortcut buttonShortcut
-SetTooltipHighlights exerelinFleetRequestFire $creditsRequiredForFleet $player.creditsHave",,exerelinFleetRequestFire:Request a fleet,
+SetTooltipHighlights exerelinFleetRequestFire $fleetRequestCost $player.creditsHave",,exerelinFleetRequestFire:Request a fleet,
 ExerelinFleetRequestOptionListFireNoMarkets,ExerelinFleetRequestOption,"FleetRequestCanAfford
 !IsFactionAlive $player.factionId score:100","SetTooltip exerelinFleetRequestFire ""Your faction has no base to launch the fleet from.""
 SetEnabled exerelinFleetRequestFire false",,exerelinFleetRequestFire:Request a fleet,
 ExerelinFleetRequestOptionListFireNotEnoughCredits,ExerelinFleetRequestOption,"!FleetRequestCanAfford score:100
-IsFactionAlive $player.factionId","SetTooltip exerelinFleetRequestFire ""Deploying this fleet to $market will require $creditsRequiredForFleet credits. Only $player.creditsHave credits are available.""
+IsFactionAlive $player.factionId","SetTooltip exerelinFleetRequestFire ""Deploying this fleet to $market will require $fleetRequestCost credits. Only $player.creditsHave credits are available.""
 SetEnabled exerelinFleetRequestFire false
 SetTooltipHighlightColors exerelinFleetRequestFire buttonShortcut buttonShortcut
-SetTooltipHighlights exerelinFleetRequestFire $creditsRequiredForFleet $player.creditsHave",,exerelinFleetRequestFire:Request a fleet,
+SetTooltipHighlights exerelinFleetRequestFire $fleetRequestCost $player.creditsHave",,exerelinFleetRequestFire:Request a fleet,
 ExerelinFleetRequestOptionListChangeFP,ExerelinFleetRequestOption,,,,exerelinFleetRequestChangeFP:Fleet points - $fleetRequestFP,
 ExerelinFleetRequestOptionListChangeMarineCount,ExerelinFleetRequestOption,FleetRequestCanInvade,"SetEnabled exerelinFleetRequestChangeMarineCount true
 SetTooltip exerelinFleetRequestChangeMarineCount ""Carrying marines will make this fleet an invasion fleet. Dispatching one will be considered a hostile act.""",,exerelinFleetRequestChangeMarineCount:Marines to deploy - $fleetRequestMarines,

@@ -28,8 +28,7 @@ public class FleetRequestCanAfford extends FleetRequestActionBase {
 		float moneyRequired = getMoneyRequiredForFleet(fp, marines);
 		float moneyHave = Global.getSector().getPlayerFleet().getCargo().getCredits().get();
 		
-		
-		memory.set("$creditsRequiredForFleet", Misc.getWithDGS(moneyRequired), 0);
+		memory.set("$fleetRequestCost", Misc.getWithDGS(moneyRequired), 0);
 		memory = memoryMap.get(MemKeys.PLAYER);
 		memory.set("$creditsHave", Misc.getWithDGS(moneyHave), 0);
 		
