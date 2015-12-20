@@ -72,8 +72,9 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         int enemyFP = ((CampaignFleetAPI)target).getFleetPoints();
         if (enemyFP > maxFP * 8)
         {
-            log.info(target.getName() + " is too big to handle: " + enemyFP);
-            return;
+            // disable: no reason not to at least try, especially now that multi-fleet battles are a thing
+            //log.info(target.getName() + " is too big to handle: " + enemyFP);
+            //return;
         }
         
         float qf = origin.getShipQualityFactor();
@@ -99,7 +100,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
                 0,        // liners
                 0,        // civilian
                 maxFP*0.1f,    // utility
-                0.15f, -1, 1.25f, origin.getSize() - 1);    // quality bonus, quality override, officer num mult, officer level bonus
+                0.15f, -1, 1.25f, origin.getSize() - 2);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = FleetFactoryV2.createFleet(fleetParams);
         fleet.setName(name);
