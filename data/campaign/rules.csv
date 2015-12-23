@@ -989,10 +989,17 @@ marketLeave:Leave",
 ExerelinMiningPreview,DialogOptionSelected,$option == exerelinMiningPreview,"PrintMiningInfo
 FireAll ExerelinMiningOption",,,
 ExerelinMiningMineOption,ExerelinMiningOption,$global.miningStrength > 0,SetEnabled exerelinMiningStart true,,"exerelinMiningStart:Start mining
+exerelinMiningFleetInfo:List mining ships
+exerelinMiningListTools:What ships and weapons can mine?
 marketLeave:Leave",
 ExerelinMiningMineOptionNoMiners,ExerelinMiningOption,$global.miningStrength <= 0,"SetTooltip exerelinMiningStart""You have no ships capable of mining.""
 SetEnabled exerelinMiningStart false",,"exerelinMiningStart:Start mining
+exerelinMiningListTools:What ships and weapons can mine?
 marketLeave:Leave",
+ExerelinMiningFleetInfo,DialogOptionSelected,$option == exerelinMiningFleetInfo,"PrintMiningFleetInfo
+FireAll ExerelinMiningOption",,,
+ExerelinMiningListTools,DialogOptionSelected,$option == exerelinMiningListTools,"PrintMiningToolsList
+FireAll ExerelinMiningOption",,,
 ExerelinMiningStart,DialogOptionSelected,"$canMine
 $option == exerelinMiningStart","Wait $global.miningWait 1.0 $global.miningFinished $global.miningInterrupted $global.miningInProgress ""Mining...""
 MakePlayerImmediatelyAttackable",,,

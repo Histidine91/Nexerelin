@@ -189,7 +189,17 @@ public class MiningHelper {
 		return resources.get("default");
 	}
 	
-	public static float getShipMiningStrength(FleetMemberAPI member)
+	public static Map<String, Float> getMiningShipsCopy()
+	{
+		return new HashMap<>(miningShips);
+	}
+	
+	public static Map<String, Float> getMiningWeaponsCopy()
+	{
+		return new HashMap<>(miningWeapons);
+	}
+	
+	public static float getShipMiningStrength(FleetMemberAPI member, boolean useCRMod)
 	{
 		if (member.isMothballed()) return 0;
 		
@@ -198,8 +208,12 @@ public class MiningHelper {
 		if (member.isFighterWing())
 			count = member.getNumFightersInWing();
 		
-		float cr = member.getRepairTracker().getCR();
-		float crModifier = cr / 0.6f;
+		float crModifier = 1;
+		if (useCRMod)
+		{
+			float cr = member.getRepairTracker().getCR();
+			crModifier = cr / 0.6f;
+		}
 
 		String hullId = member.getHullId();
 		if (miningShips.containsKey(hullId))
@@ -220,9 +234,8 @@ public class MiningHelper {
 		float strength = 0;
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
 		{
-			strength += getShipMiningStrength(member);
+			strength += getShipMiningStrength(member, true);
 		}
-		
 		return strength;
 	}
 	
@@ -344,7 +357,7 @@ public class MiningHelper {
 		WeightedRandomPicker<FleetMemberAPI> picker = new WeightedRandomPicker<>();
 		for (FleetMemberAPI ship : ships)
 		{
-			float shipStrength = getShipMiningStrength(ship);
+			float shipStrength = getShipMiningStrength(ship, true);
 			if (shipStrength > 0) picker.add(ship, shipStrength);
 		}
 		
