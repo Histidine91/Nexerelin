@@ -525,7 +525,7 @@ ExerelinNGCNormalStart,NewGameOptionSelected,$option == exerelinNGCNormalStart,"
 NGCAddAptitudePoints 2
 NGCAddSkillPoints 6
 AddText ""Added 2 aptitude points"" textFriendColor
-AddText ""Added 6 skill points"" textFriendColor
+AddText ""Added 4 skill points"" textFriendColor
 AddText ""Added 10000 credits"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart,NewGameOptionSelected,$option == exerelinNGCEasyStart,"NGCAddCredits 50000
 NGCAddAptitudePoints 2
@@ -541,7 +541,7 @@ NGCAddAptitudePoints 2
 NGCAddSkillPoints 6
 NGCAddXP 214500
 AddText ""Added 2 aptitude points"" textFriendColor
-AddText ""Added 6 skill points"" textFriendColor
+AddText ""Added 4 skill points"" textFriendColor
 AddText ""Added 250000 credits"" textFriendColor
 AddText ""Added 214500 XP"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart2SSP,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
@@ -550,7 +550,7 @@ NGCAddAptitudePoints 2
 NGCAddSkillPoints 6
 NGCAddXP 250500
 AddText ""Added 2 aptitude points"" textFriendColor
-AddText ""Added 6 skill points"" textFriendColor
+AddText ""Added 4 skill points"" textFriendColor
 AddText ""Added 250000 credits"" textFriendColor
 AddText ""Added 250500 XP"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCDoneOption,NewGameOptionSelected,$option == exerelinNGCDone,"NGCSetStartingLocationExerelin
