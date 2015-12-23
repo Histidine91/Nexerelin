@@ -29,6 +29,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -41,6 +42,7 @@ import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.world.InvasionFleetManager;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -574,8 +576,63 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
+    // forcibly refreshes the market before capture so we can loot their faction-specific goodies once we capture it
+    // the fancy bits (currently commented out) are adapted from LazyWizard's Console Commands
+    public static void forceMarketUpdate(MarketAPI market)
+    {
+        if (market.getFactionId().equals("templars"))    // doesn't work on Templars, sorry
+            return;
+        
+        /*
+        boolean canUpdate = true;
+        final Field sinceLastCargoUpdate, minCargoUpdateInterval;
+        try
+        {
+            sinceLastCargoUpdate = BaseSubmarketPlugin.class.getDeclaredField("sinceLastCargoUpdate");
+            sinceLastCargoUpdate.setAccessible(true);
+            minCargoUpdateInterval = BaseSubmarketPlugin.class.getDeclaredField("minCargoUpdateInterval");
+            minCargoUpdateInterval.setAccessible(true);
+        }
+        catch (Exception ex)    // bah
+        {
+            log.error(ex);
+            return;
+        }
+        if (!canUpdate) return;
+        */
+        
+        for (SubmarketAPI submarket : market.getSubmarketsCopy())
+        {
+            // Ignore storage tabs
+            if (Submarkets.SUBMARKET_STORAGE.equals(submarket.getSpec().getId()))
+                continue;
+
+            if (submarket.getPlugin() instanceof BaseSubmarketPlugin)
+            {
+                final BaseSubmarketPlugin plugin = (BaseSubmarketPlugin) submarket.getPlugin();
+                /*
+                try
+                {
+                    float lastUpdate = sinceLastCargoUpdate.getFloat(plugin);
+                    float minUpdateInterval = minCargoUpdateInterval.getFloat(plugin);
+                    if (lastUpdate > minUpdateInterval)
+                    sinceLastCargoUpdate.setFloat(plugin, minUpdateInterval + 1);
+                }
+                catch (Exception ex)    // meh
+                {
+                    continue;
+                }
+                */
+                
+                plugin.updateCargoPrePlayerInteraction();
+            }
+        }
+    }
+    
     public static void captureMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, List<String> factionsToNotify, float repChangeStrength)
     {
+        forceMarketUpdate(market);
+        
         // transfer market and associated entities
         String newOwnerId = newOwner.getId();
         String oldOwnerId = oldOwner.getId();
