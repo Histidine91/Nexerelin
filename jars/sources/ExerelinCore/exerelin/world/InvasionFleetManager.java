@@ -543,6 +543,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             FactionAPI faction = sector.getFaction(factionId);
             if (faction.isNeutralFaction()) continue;
             if (faction.isPlayerFaction()) continue;
+            if (factionId.equals(Factions.INDEPENDENT)) continue;
             boolean isPirateFaction = ExerelinUtilsFaction.isPirateFaction(factionId);
             if (!allowPirates && isPirateFaction) continue;
             

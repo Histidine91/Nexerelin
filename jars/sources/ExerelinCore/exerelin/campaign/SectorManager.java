@@ -389,6 +389,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         for(String factionId : factionIds)
         {
             if (factionId.equals("player_npc")) continue;
+            if (factionId.equals(Factions.INDEPENDENT)) continue;
+            ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+            if (config != null && !config.playableFaction) continue;
             if (!liveFactionIds.contains(factionId)) factionPicker.add(Global.getSector().getFaction(factionId));
         }
         
