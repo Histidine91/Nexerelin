@@ -19,7 +19,7 @@
 		"Tyrian", "Savarra", "Torm", "Gyges", "Camanis", "Ixmucane",
 		"Aurora", "Solaria", "Baleyworld",
 		"Darwin", "Mendel", "Crick", "Franklin", "Watson", "Pauling", "Semmelweiss",
-		"Rutherford", "Maxwell", "Bohr", "Pauli", "Curie", "Meitner", "Heisenberg", "Sagan", "Feynman", "Newton", "Leibniz",
+		"Rutherford", "Maxwell", "Bohr", "Pauli", "Curie", "Meitner", "Heisenberg", "Schrodinger", "Fermi", "Sagan", "Feynman", "Newton", "Leibniz",
 		"Linen", "Flax", "Cotton", "Silk",
 		"Milfeulle", "Ranpha", "Mint", "Forte", "Vanilla", "Chitose", "Almo", "Coco", "Kuromie", "Creta",
 		"Ava", "Asaga", "Chigara", "Icari", "Claude", "Sola", "Kryska", "Cosette", "Sophita", "Grey", "Arcadius", "Cullen", "Fontana",
@@ -27,7 +27,10 @@
 		"Cid", "Aerith", "Tifa", "Barret", "Yuffie", "Cait Sith", "Valentine", "Squall", "Rinoa", "Zell", "Irvine", "Laguna", "Kiros", "Ward", "Zidane", "Vivi", "Dagger", "Steiner", "Freya", "Eiko", "Amarant", "Setzer", "Locke", "Celes", "Cyan", "Sabin", "Strago", "Shadow", "Gau", "Mog", "Relm", "Figaro", "Edea", "Esuna",
 		"Thessia", "Palaeven", "Sur'Kesh", "Dekuuna", "Heshtok", "Irune", "Kahje", "Khar'shan", "Tuchanka", "Rakhana", "Rannoch", "Suen",
 		"Iserlohn", "Fezzan", "Heinessen", "Yang", "Julian", "Reinhard", "Kircheis", "Oberstein", "Reuenthal", "Mittermeyer", "El Facil",
-		"Anzha", "Zatar", "Feran", "Pazua", "Sechaveh", "Torzha", "Yiril", "Harkur", "Viton"
+		"Anzha", "Zatar", "Feran", "Pazua", "Sechaveh", "Torzha", "Yiril", "Harkur", "Viton",
+		"Schlock", "Tagon", "Anderyasn", "Foxworthy", "Diego-Garcia", "Forbius", "Bunnigus", "Xinchub", "Ceeta", "Murtaugh",
+		"Skye", "Morgan", "Zakharov", "Santiago", "Godwindson", "Lal",
+		"Bastion", "Sadira", "Faulkner", "Zeira", "Alden", "Dionne", "Radcot", "Logan", "Reyna", "Devlin", "Barlow", "Cecilia", "Milea", "Puck", "Galvas", "Franco", "Halak", "Melior"
 	],
 	"stations":[
 		"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest", "Station",
