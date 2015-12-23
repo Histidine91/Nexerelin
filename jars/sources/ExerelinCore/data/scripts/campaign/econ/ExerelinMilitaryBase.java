@@ -15,7 +15,7 @@ public class ExerelinMilitaryBase extends MilitaryBase {
 			market.removeSubmarket(Submarkets.GENERIC_MILITARY);
 		}
 		market.getCommodityData(Commodities.MARINES).getSupply().modifyFlat(id, ConditionData.MILITARY_BASE_MARINES_SUPPLY * EXTRA_MARINES_MULT);
-		market.getCommodityData("agent").getSupply().modifyFlat(id, 2);
+		market.getCommodityData("agent").getSupply().modifyFlat(id, 1);
 		market.getCommodityData("saboteur").getSupply().modifyFlat(id, 1);
 	}
 
