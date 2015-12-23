@@ -98,7 +98,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	
 	@Override
 	public String getEventName() {
-		return (Misc.ucFirst(newOwner.getDisplayName()) + " captures " + market.getName());
+		return (Misc.ucFirst(newOwner.getDisplayName()) + " capture " + market.getName());
 	}
 	
 	@Override
@@ -119,8 +119,8 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		String newOwnerStr = newOwner.getEntityNamePrefix();
-		String oldOwnerStr = oldOwner.getEntityNamePrefix();
+		String newOwnerStr = newOwner.getDisplayName();
+		String oldOwnerStr = oldOwner.getDisplayName();
 		String theNewOwnerStr = newOwner.getDisplayNameWithArticle();
 		String theOldOwnerStr = oldOwner.getDisplayNameWithArticle();
 		map.put("$newOwner", newOwnerStr);

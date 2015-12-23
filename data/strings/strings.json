@@ -162,13 +162,13 @@
 		"randomizeRelationships":"Randomize faction relationships",
 	},
 	"exerelin_victoryScreen":{
-		"victory_conquest":"Congratulations! $TheFaction has crushed all opposition and now reigns supreme over the $clusterName cluster!",
-		"victory_diplomatic":"Congratulations! $TheFaction and its allies control the $clusterName cluster!",
-		"victory_conquest_ally":"Congratulations! Your ally $theFaction has crushed all opposition and now reigns supreme over the $clusterName cluster!",
-		"victory_diplomatic_ally":"Congratulations! You have joined $theFaction and its other allies in controlling the $clusterName cluster!",
+		"victory_conquest":"Congratulations! $TheFaction have crushed all opposition and now reigns supreme over the $clusterName cluster!",
+		"victory_diplomatic":"Congratulations! $TheFaction and their allies control the $clusterName cluster!",
+		"victory_conquest_ally":"Congratulations! Your ally $theFaction have crushed all opposition and now reigns supreme over the $clusterName cluster!",
+		"victory_diplomatic_ally":"Congratulations! You have joined $theFaction and their other allies in controlling the $clusterName cluster!",
 		
-		"defeat_conquest":"Alas, $theFaction has conquered the $clusterName cluster. All your efforts have come to naught.",
-		"defeat_diplomatic":"$TheFaction and its allies now dominate the $clusterName cluster. Unfortunately, you are not one of them...",
+		"defeat_conquest":"Alas, $theFaction have conquered the $clusterName cluster. All your efforts have come to naught.",
+		"defeat_diplomatic":"$TheFaction and their allies now dominate the $clusterName cluster. Unfortunately, you are not one of them...",
 		
 		"whatNow":"What now?",
 		"youHaveWon":"You have won a $victoryType victory!",

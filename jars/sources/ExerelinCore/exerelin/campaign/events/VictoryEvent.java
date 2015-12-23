@@ -81,13 +81,14 @@ public class VictoryEvent extends BaseEventPlugin {
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
 		FactionAPI victorFaction = Global.getSector().getFaction(victorFactionId);
-		String victorFactionStr = victorFaction.getEntityNamePrefix();
-		String theVictorFactionStr = victorFaction.getDisplayNameWithArticle();
+		String victorFactionStr = victorFaction.getDisplayName();
+		String theVictorFactionStr = victorFaction.getDisplayNameLongWithArticle();
 		map.put("$victorFaction", victorFactionStr);
 		map.put("$VictorFaction", Misc.ucFirst(victorFactionStr));
 		map.put("$theVictorFaction", theVictorFactionStr);
 		map.put("$TheVictorFaction", Misc.ucFirst(theVictorFactionStr));
 		map.put("$clusterName", SectorManager.getFirstStarName());
+		map.put("$isOrAre", victorFaction.getDisplayNameIsOrAre());
 		return map;
 	}
 

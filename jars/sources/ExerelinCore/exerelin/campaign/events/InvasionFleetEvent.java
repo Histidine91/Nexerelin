@@ -66,7 +66,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 		if (done) return;
 		done = true;
 		String stage = reason.toString().toLowerCase();
-		if (faction.getId().equals(PlayerFactionStore.getPlayerFactionId()))
+		if (faction.getId().equals(PlayerFactionStore.getPlayerFactionId()) || faction.getId().equals("player_npc"))
 			stage += "_player";
 		
 		log.info("Ending invasion event: " + stage);
