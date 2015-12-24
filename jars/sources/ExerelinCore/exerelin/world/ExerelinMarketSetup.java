@@ -25,10 +25,10 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.StringHelper;
 import exerelin.world.ExerelinSectorGen.EntityData;
 import exerelin.world.ExerelinSectorGen.EntityType;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -106,7 +106,7 @@ public class ExerelinMarketSetup
 			Iterator<?> keys = planetsJson.keys();
 			while (keys.hasNext()) {
 				String archetypeStr = (String)keys.next();
-				MarketArchetype archetype = MarketArchetype.valueOf(archetypeStr.toUpperCase());
+				MarketArchetype archetype = MarketArchetype.valueOf(StringHelper.flattenToAscii(archetypeStr).toUpperCase());
 				
 				Map<String, Float> planetChances = new HashMap<>();
 				JSONObject planetChancesJson = planetsJson.getJSONObject(archetypeStr);

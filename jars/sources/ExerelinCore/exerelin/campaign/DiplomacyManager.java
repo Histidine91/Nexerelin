@@ -21,6 +21,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.StringHelper;
 import exerelin.world.VanillaSystemsGenerator;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -127,19 +128,19 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             
             String repLimit = eventDefJson.optString("repLimit");
             if (!repLimit.isEmpty())
-                eventDef.repLimit = RepLevel.valueOf(repLimit.toUpperCase());
+                eventDef.repLimit = RepLevel.valueOf(StringHelper.flattenToAscii(repLimit).toUpperCase());
             String minRepLevelToOccur = eventDefJson.optString("minRepLevelToOccur");
             if (!minRepLevelToOccur.isEmpty())
-                eventDef.minRepLevelToOccur = RepLevel.valueOf(minRepLevelToOccur.toUpperCase());
+                eventDef.minRepLevelToOccur = RepLevel.valueOf(StringHelper.flattenToAscii(minRepLevelToOccur).toUpperCase());
             String maxRepLevelToOccur = eventDefJson.optString("maxRepLevelToOccur");
             if (!maxRepLevelToOccur.isEmpty())
-                eventDef.maxRepLevelToOccur = RepLevel.valueOf(maxRepLevelToOccur.toUpperCase());
+                eventDef.maxRepLevelToOccur = RepLevel.valueOf(StringHelper.flattenToAscii(maxRepLevelToOccur).toUpperCase());
             String repEnsureAtWorst = eventDefJson.optString("repEnsureAtWorst");
             if (!repEnsureAtWorst.isEmpty())
-                eventDef.repEnsureAtWorst = RepLevel.valueOf(repEnsureAtWorst.toUpperCase());
+                eventDef.repEnsureAtWorst = RepLevel.valueOf(StringHelper.flattenToAscii(repEnsureAtWorst).toUpperCase());
             String repEnsureAtBest = eventDefJson.optString("repEnsureAtBest");
             if (!repEnsureAtBest.isEmpty())
-                eventDef.repEnsureAtBest = RepLevel.valueOf(repEnsureAtBest.toUpperCase()); 
+                eventDef.repEnsureAtBest = RepLevel.valueOf(StringHelper.flattenToAscii(repEnsureAtBest).toUpperCase()); 
             
             eventDefs.add(eventDef);
             
