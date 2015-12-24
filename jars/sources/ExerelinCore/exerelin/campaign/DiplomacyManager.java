@@ -284,6 +284,23 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 }
             }
         }
+        else if (!repResult.wasHostile && repResult.isHostile)
+        {
+            String commissionFactionId = Misc.getCommissionFaction();
+            if (commissionFactionId != null && playerAlignedFactionId.equals("player_npc"))    // i.e. not with a "real faction"
+            {                                                // who wouldn't want to change relations just because our employee is working with an involved faction
+                if (commissionFactionId.equals(faction1Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction1Id))
+                {
+                    playerAlignedFaction.ensureAtBest(faction2Id, RepLevel.HOSTILE);
+                    playerFaction.ensureAtBest(faction2Id, RepLevel.HOSTILE);
+                }
+                if (commissionFactionId.equals(faction2Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction2Id))
+                {
+                    playerAlignedFaction.ensureAtBest(faction1Id, RepLevel.HOSTILE);
+                    playerFaction.ensureAtBest(faction1Id, RepLevel.HOSTILE);
+                }
+            }
+        }
         
         AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
         AllianceManager.syncAllianceRelationshipsToFactionRelationship(faction1Id, faction2Id);
