@@ -24,18 +24,19 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PrismMarket extends BaseSubmarketPlugin {
     
-    public static final String CONFIG_FILE = "data/config/exerelin/prism_boss_ships.json";
+    public static final String CONFIG_FILE = "data/config/exerelin/prism_boss_ships.csv";
     public static final String ILLEGAL_TRANSFER_MESSAGE = StringHelper.getString("exerelin_markets", "prismNoSale");
     
     protected static final int MIN_NUMBER_OF_SHIPS = 5;
@@ -61,10 +62,14 @@ public class PrismMarket extends BaseSubmarketPlugin {
     {
         //if (sspBossShips == null)
         //    sspBossShips = new ArrayList<>();
+		List<BossShipEntry> validShips = new ArrayList<>();
         List<String> ret = new ArrayList<>();
         WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
         
         int ibbProgress = 999;
+		Set<Integer> stageCompletion = (Set<Integer>) Global.getSector().getPersistentData().get("ssp_famousBountyStageCompletion");
+		if (stageCompletion == null) stageCompletion = new HashSet<>();
+		
         if (ExerelinConfig.prismUseIBBProgressForBossShips)
         {
             if (!Global.getSector().getPersistentData().containsKey("ssp_famousBountyStage")) {
@@ -77,53 +82,53 @@ public class PrismMarket extends BaseSubmarketPlugin {
         }
         if (ibbProgress == -1) ibbProgress = 999;
         log.info("Current IBB progress: " + ibbProgress);
-        int maxIBBNum = 0;
-        
+        int highestIBBNum = 0;
+		
         try {
-            JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
-            Iterator<?> keys = config.keys();
-            while( keys.hasNext() ) {
-                String factionId = (String)keys.next();
-                if (canLoadShips(factionId))
-                {
-                    JSONArray ships = config.getJSONArray(factionId);
+            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", CONFIG_FILE, "nexerelin");
+            for(int i = 0; i < config.length(); i++)
+            {
+				JSONObject row = config.getJSONObject(i);
+                String hullId = row.getString("id");
+				String factionId = row.getString("faction");
+                if (!canLoadShips(factionId)) continue;
+                int ibbNum = row.getInt("ibbNum");
+				validShips.add(new BossShipEntry(hullId, ibbNum));
+				
+				if (ibbNum > highestIBBNum)
+					highestIBBNum = ibbNum;
+			}
+			
+			// ensure proper emphasis on last ships once IBB sidequest is complete
+			if (ibbProgress == 999)
+				ibbProgress = highestIBBNum;
                     
-                    // ensure proper emphasis on last ships once IBB sidequest is complete
-                    if (ibbProgress == 999)
-                    {
-                        for(int i=0; i<ships.length(); i++)
-                        {
-                            JSONObject ship = ships.getJSONObject(i);
-                            int ibbNum = ship.optInt("ibbNum", 0);
-                            if (ibbNum > maxIBBNum)
-                                maxIBBNum = ibbNum;
-                        }
-                        ibbProgress = maxIBBNum;    
-                    }
-                    
-                    for(int i=0; i<ships.length(); i++)
-                    {
-                        JSONObject ship = ships.getJSONObject(i);
-                        String id = ship.getString("id");
-                        int ibbNum = ship.optInt("ibbNum", 0);
-                        //log.info("Ship " + id + " has IBB number " + ibbNum);
-                        if (ibbProgress < ibbNum) continue;
-                        if (!ExerelinConfig.prismRenewBossShips && alreadyBoughtShips.contains(id))
-                            continue;
-                        
-                        // favour ships from the last bounties we killed
-                        int weight = 3;
-                        if (ExerelinConfig.prismUseIBBProgressForBossShips && ibbNum > 0)
-                        {
-                            int diff = ibbProgress - ibbNum;
-                            if (diff > 3) diff = 3;
-                            weight = weight + 4*(3 - diff);
-                        }
-                        picker.add(id, weight);
-                    }
-                }
-            }
-        } catch (Exception ex) {
+			for(BossShipEntry entry : validShips)
+			{
+				// currently the completion stage is actually set when the bounty is created, not when it's completed
+				if (entry.ibbNum > 0 && ExerelinConfig.prismUseIBBProgressForBossShips && !stageCompletion.contains(entry.ibbNum - 1))
+				{
+					log.info("IBB not completed for " + entry.id + " (" + entry.ibbNum + ")");
+					continue;
+				}
+				
+				//if (entry.ibbNum < ibbProgress) continue;
+				
+				//log.info("Ship " + id + " has IBB number " + ibbNum);
+				if (!ExerelinConfig.prismRenewBossShips && alreadyBoughtShips.contains(entry.id))
+					continue;
+
+				// favour ships from bounties close to the last one we did
+				int weight = 3;
+				if (ExerelinConfig.prismUseIBBProgressForBossShips && entry.ibbNum > 0)
+				{
+					int diff = Math.abs(ibbProgress - entry.ibbNum);
+					if (diff > 3) diff = 3;
+					weight = weight + 4*(3 - diff);
+				}
+				picker.add(entry.id, weight);
+			}
+        } catch (IOException | JSONException ex) {
             log.error(ex);
         }
         
@@ -348,4 +353,15 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public boolean isBlackMarket() {
             return false;
     }
+
+	public static class BossShipEntry {
+		public String id;
+		public int ibbNum;
+		
+		public BossShipEntry(String id, int ibbNum)
+		{
+			this.id = id;
+			this.ibbNum = ibbNum;
+		}
+	}
 }
