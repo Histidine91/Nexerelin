@@ -651,7 +651,7 @@ public class ExerelinMarketSetup
 		sSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.SUPPLIES);
 		modifyCommoditySupply(Commodities.SUPPLIES, sSupply);
 		float sDemand = ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.SUPPLIES);
-		sDemand += 0.001 * pop;	// fudge factor to account for crew and marines using supplies
+		sDemand += 0.0013 * pop;	// fudge factor to account for crew and marines using supplies
 		modifyCommodityDemand(Commodities.SUPPLIES, sDemand * 1.2f);	// hax
 		
 		// fuel
@@ -681,7 +681,7 @@ public class ExerelinMarketSetup
 		hmSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.HEAVY_MACHINERY);
 		modifyCommoditySupply(Commodities.HEAVY_MACHINERY, hmSupply);
 		//modifyCommodityDemand(Commodities.HEAVY_MACHINERY, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.HEAVY_MACHINERY) * 0.75f);	// hax
-		modifyCommodityDemand(Commodities.HEAVY_MACHINERY, ExerelinUtilsMarket.getMarketBaseMachineryDemand(newMarket, 0));
+		modifyCommodityDemand(Commodities.HEAVY_MACHINERY, ExerelinUtilsMarket.getMarketBaseMachineryDemand(newMarket, 10 * marketSize));
 		
 		// organics
 		float oSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORGANICS_COMPLEX) * ConditionData.ORGANICS_MINING_ORGANICS;
@@ -1000,7 +1000,7 @@ public class ExerelinMarketSetup
 			entityPicker.add(entity, weight);
 		}
 		
-		while (suppliesDemand > suppliesSupply * 1.05f)
+		while (suppliesDemand > suppliesSupply * 0.9f)
 		{
 			if (entityPicker.isEmpty())	break;
 			
