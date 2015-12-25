@@ -523,22 +523,22 @@ exerelinNGCEasyStart:Fast start (50000 credits, level 6)
 exerelinNGCEasyStart2:Extra fast start (250000 credits, level 16)",
 ExerelinNGCNormalStart,NewGameOptionSelected,$option == exerelinNGCNormalStart,"NGCAddCredits 10000
 NGCAddAptitudePoints 2
-NGCAddSkillPoints 6
+NGCAddSkillPoints 4
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
 AddText ""Added 10000 credits"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart,NewGameOptionSelected,$option == exerelinNGCEasyStart,"NGCAddCredits 50000
 NGCAddAptitudePoints 2
-NGCAddSkillPoints 6
+NGCAddSkillPoints 4
 NGCAddXP 31500
 AddText ""Added 2 aptitude points"" textFriendColor
-AddText ""Added 6 skill points"" textFriendColor
+AddText ""Added 4 skill points"" textFriendColor
 AddText ""Added 50000 credits"" textFriendColor
 AddText ""Added 31500 XP"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart2,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
 !$haveSSP","NGCAddCredits 250000
 NGCAddAptitudePoints 2
-NGCAddSkillPoints 6
+NGCAddSkillPoints 4
 NGCAddXP 214500
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
@@ -547,7 +547,7 @@ AddText ""Added 214500 XP"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart2SSP,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
 $haveSSP","NGCAddCredits 250000
 NGCAddAptitudePoints 2
-NGCAddSkillPoints 6
+NGCAddSkillPoints 4
 NGCAddXP 250500
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
