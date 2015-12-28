@@ -5,6 +5,7 @@
 	"displayNameWithArticle":"the followers",
 	"displayNameLong":"player's followers",
 	"displayNameLongWithArticle":"the player's followers",
+	"displayNameIsOrAre":"are",
 	"entityNamePrefix":"followers",
 	"logo":"graphics/factions/player_flag2.png",
 	"crest":"graphics/factions/crest_player_flag2.png",
