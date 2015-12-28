@@ -99,47 +99,48 @@ public class ExerelinFactionCommissionMissionEvent extends FactionCommissionMiss
 				if (this.faction.isHostileTo(otherFaction) && !player.isHostileTo(otherFaction)) {
 					log.info("Rep drop for not being hostile to " + otherFaction.getDisplayName());
 					Global.getSector().reportEventStage(this, "rep_drop_non_hostile", findMessageSender(), MessagePriority.ENSURE_DELIVERY,
-														new BaseOnMessageDeliveryScript() {
-															@Override
-															public void beforeDelivery(CommMessageAPI message) {
-																Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(
-																				CoreReputationPlugin.RepActions.COMMISSION_PENALTY_NON_HOSTILE_TO_ENEMY, null, message, true),
-																										  ExerelinFactionCommissionMissionEvent.this.faction.getId());
-															}
-														});
+							new BaseOnMessageDeliveryScript() {
+								@Override
+								public void beforeDelivery(CommMessageAPI message) {
+									Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(
+													CoreReputationPlugin.RepActions.COMMISSION_PENALTY_NON_HOSTILE_TO_ENEMY, null, message, true),
+																			  ExerelinFactionCommissionMissionEvent.this.faction.getId());
+								}
+							});
 					continue;
 				}
 				if (!this.faction.isHostileTo(otherFaction) && player.isHostileTo(otherFaction)) {
 					log.info("Rep drop for being hostile to " + otherFaction.getDisplayName());
 					Global.getSector().reportEventStage(this, "rep_drop_hostile", findMessageSender(), MessagePriority.ENSURE_DELIVERY,
-														new BaseOnMessageDeliveryScript() {
-															private final FactionAPI nonHostileFaction = ExerelinFactionCommissionMissionEvent.this.otherFaction;
+						new BaseOnMessageDeliveryScript() {
+							private final FactionAPI nonHostileFaction = ExerelinFactionCommissionMissionEvent.this.otherFaction;
 
-															@Override
-															public void beforeDelivery(CommMessageAPI message) {
-																Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(
-																				CoreReputationPlugin.RepActions.COMMISSION_PENALTY_HOSTILE_TO_NON_ENEMY, null, message, true),
-																										  ExerelinFactionCommissionMissionEvent.this.faction.getId());
+							@Override
+							public void beforeDelivery(CommMessageAPI message) {
+								Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(
+												CoreReputationPlugin.RepActions.COMMISSION_PENALTY_HOSTILE_TO_NON_ENEMY, null, message, true),
+																		  ExerelinFactionCommissionMissionEvent.this.faction.getId());
+								/*
+								CampaignEventManagerAPI eventManager = Global.getSector().getEventManager();
+								FactionHostilityEvent.FactionHostilityPairKey key = new FactionHostilityEvent.FactionHostilityPairKey(
+																ExerelinFactionCommissionMissionEvent.this.faction,
+																nonHostileFaction);
+								EventProbabilityAPI ep = eventManager.getProbability(Events.FACTION_HOSTILITY, key);
 
-																CampaignEventManagerAPI eventManager = Global.getSector().getEventManager();
-																FactionHostilityEvent.FactionHostilityPairKey key = new FactionHostilityEvent.FactionHostilityPairKey(
-																								ExerelinFactionCommissionMissionEvent.this.faction,
-																								nonHostileFaction);
-																EventProbabilityAPI ep = eventManager.getProbability(Events.FACTION_HOSTILITY, key);
-
-																FactionAPI player = Global.getSector().getPlayerFaction();
-																float rel = player.getRelationship(nonHostileFaction.getId());
-																float increase = Math.abs(rel) * 0.25f;
-																if (increase > 0) {
-																	ep.increaseProbability(increase);
-																	log.info(String.format(
-																					"Monthly - increasing faction hostility probability %s -> %s, by %s, is now %s",
-																					ExerelinFactionCommissionMissionEvent.this.faction.getDisplayName(),
-																					nonHostileFaction.getDisplayName(), "" + increase,
-																					"" + ep.getProbability()));
-																}
-															}
-														});
+								FactionAPI player = Global.getSector().getPlayerFaction();
+								float rel = player.getRelationship(nonHostileFaction.getId());
+								float increase = Math.abs(rel) * 0.25f;
+								if (increase > 0) {
+									ep.increaseProbability(increase);
+									log.info(String.format(
+													"Monthly - increasing faction hostility probability %s -> %s, by %s, is now %s",
+													ExerelinFactionCommissionMissionEvent.this.faction.getDisplayName(),
+													nonHostileFaction.getDisplayName(), "" + increase,
+													"" + ep.getProbability()));
+								}
+								*/
+							}
+						});
 				}
 			}
 		}
