@@ -233,7 +233,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		nebulaMaps.add("eos_nebula.png");
 		nebulaMaps.add("valhalla_nebula.png");
 		nebulaMaps.add("hybrasil_nebula.png");
-		nebulaMaps.add("Nexerelin/gemstone_nebula.png");
+		nebulaMaps.add("nexerelin/gemstone_nebula.png");
 		
 		if (ExerelinUtilsFaction.doesFactionExist("blackrock_driveyards"))
 		{
@@ -745,7 +745,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		String hyperMap = "data/campaign/terrain/hyperspace_map.png";
 		if (!corvusMode)
 		{
-			hyperMap = "data/campaign/terrain/Nexerelin/hyperspace_map_rot.png";
+			hyperMap = "data/campaign/terrain/nexerelin/hyperspace_map_rot.png";
 		}
 		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG(hyperMap,
 			  0, 0, // center of nebula
