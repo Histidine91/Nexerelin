@@ -651,7 +651,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
 			possibleStationNamesList = new ArrayList(Arrays.asList(possibleStationNames));
 		} catch (JSONException | IOException ex) {
-			Global.getLogger(ExerelinSectorGen.class).log(Level.ERROR, ex);
+			log.error(ex);
 		}
 		
 		log.info("Loading backgrounds");
@@ -945,19 +945,25 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (validPlanets.size() > 1)
 			{
 				EntityData nextPlanet = validPlanets.get(1);
-				max = nextPlanet.orbitRadius - nextPlanet.entity.getRadius();
+				max = nextPlanet.orbitRadius - nextPlanet.entity.getRadius()*2;
 			}
-			min = Math.max(minDist, planet.primary.entity.getRadius());
+			min = Math.max(minDist, planet.primary.entity.getRadius()*2);
 		}
 		else if (index == validPlanets.size() - 1)
 		{
-			min = planet.orbitRadius + planet.entity.getRadius();
+			min = planet.orbitRadius + planet.entity.getRadius()*2;
 		}
 		else
 		{
 			EntityData prevPlanet = validPlanets.get(index - 1);
-			min = prevPlanet.orbitRadius + prevPlanet.entity.getRadius();
-			max = planet.orbitRadius - planet.entity.getRadius();
+			min = prevPlanet.orbitRadius + prevPlanet.entity.getRadius()*2;
+			max = planet.orbitRadius - planet.entity.getRadius()*2;
+		}
+		if (min > max)
+		{
+			float tempMin = min;
+			min = max;
+			max = tempMin;
 		}
 		orbitRadius = MathUtils.getRandomNumberInRange(min, max) + MathUtils.getRandomNumberInRange(min, max);
 		orbitRadius /= 2;
@@ -1871,8 +1877,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					"comm_relay", // type of object, defined in custom_entities.json
 					"neutral"); // faction
 			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 1200 + star.getRadius(), 3000 + star.getRadius());
-			//relay.setCircularOrbitWithSpin(star, getRandomAngle(), distance, getOrbitalPeriod(star, distance), 30, 30);
-			setOrbit(relay, star, distance, !isBinary, ellipseAngle, getOrbitalPeriod(star, distance));
+			relay.setCircularOrbitPointingDown(star, getRandomAngle(), distance, getOrbitalPeriod(star, distance));
+			//setOrbit(relay, star, distance, !isBinary, ellipseAngle, getOrbitalPeriod(star, distance));
 			systemToRelay.put(system.getId(), system.getId() + "_relay");
 			planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
 		}
