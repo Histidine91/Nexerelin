@@ -14,14 +14,17 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.events.FactionHostilityEvent;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Events;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMissionEvent;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.missions.SSP_FactionCommissionMissionEvent;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtilsFaction;
 
 public class ExerelinFactionCommissionMissionEvent extends FactionCommissionMissionEvent {
 	
@@ -151,8 +154,20 @@ public class ExerelinFactionCommissionMissionEvent extends FactionCommissionMiss
 			Global.getSector().reportEventStage(this, "annul", findMessageSender(),
 												MessagePriority.ENSURE_DELIVERY,
 												new BaseOnMessageDeliveryScript() {
+													final FactionAPI commissionIssuer = faction;
+													
+													// return us to inhospitable with our former commission issuer's enemies if we lose our commission
 													@Override
 													public void beforeDelivery(CommMessageAPI message) {
+														if (PlayerFactionStore.getPlayerFactionId().equals("player_npc")) return;
+														for (FactionAPI faction : Global.getSector().getAllFactions())
+														{
+															String factionId = faction.getId();
+															if (!faction.isHostileTo(commissionIssuer)) continue;
+															if (ExerelinUtilsFaction.isFactionHostileToAll(factionId)) continue;
+															if (!faction.isShowInIntelTab()) continue;
+															faction.ensureAtWorst(Factions.PLAYER, RepLevel.INHOSPITABLE);
+														}
 													}
 												});
 		}
