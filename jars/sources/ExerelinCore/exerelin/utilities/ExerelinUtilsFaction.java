@@ -34,6 +34,11 @@ public class ExerelinUtilsFaction {
 
         return true;
     }
+	
+	public static boolean doesFactionExist(String factionId)
+	{
+		return Global.getSector().getFaction(factionId) != null;
+	}
     
     public static List<MarketAPI> getFactionMarkets(String factionId)
     {

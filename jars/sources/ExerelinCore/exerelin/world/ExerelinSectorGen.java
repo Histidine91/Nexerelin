@@ -47,6 +47,7 @@ import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.ExerelinMarketSetup.MarketArchetype;
 import java.util.Collections;
 import java.util.Comparator;
@@ -92,12 +93,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"backgrounds/6-1.jpg", "backgrounds/7-1.jpg", "backgrounds/7-3.jpg", "backgrounds/8-1.jpg", "backgrounds/8-2.jpg", "backgrounds/9-1.jpg", "backgrounds/9-3.jpg",
 		"backgrounds/9-4.jpg", "backgrounds/9-5.jpg",
 	};
-	protected static final String[] nebulaeArray = new String[]
-	{
-		"data/campaign/terrain/eos_nebula.png", "data/campaign/terrain/valhalla_nebula.png", "data/campaign/terrain/hybrasil_nebula.png",
-		"data/campaign/terrain/Nexerelin/gemstone_nebula.png"
-	};
-	protected static final String[] nebulaeColorArray = new String[] {"blue", "amber"};
+	protected static final List<String> nebulaMaps = new ArrayList<>();
+	protected static final String[] nebulaColors = new String[] {"blue", "amber"};
 	
 	protected static ArrayList<String> starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
 
@@ -162,45 +159,44 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected void loadBackgrounds()
 	{
 		starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
-		List<String> factions = ExerelinSetupData.getInstance().getAvailableFactions();
-		if (factions.contains("blackrock_driveyards"))
+		if (ExerelinUtilsFaction.doesFactionExist("blackrock_driveyards"))
 		{
 			starBackgrounds.add("BR/backgrounds/obsidianBG (2).jpg");
 		}
-		if (factions.contains("exigency"))
+		if (ExerelinUtilsFaction.doesFactionExist("exigency"))
 		{
 		}
-		if (factions.contains("hiigaran_descendants"))
+		if (ExerelinUtilsFaction.doesFactionExist("hiigaran_descendants"))
 		{
 			starBackgrounds.add("HD/backgrounds/hii_background.jpg");
 		}
-		if (factions.contains("interstellarimperium"))
+		if (ExerelinUtilsFaction.doesFactionExist("interstellarimperium"))
 		{
 			starBackgrounds.add("imperium/backgrounds/ii_corsica.jpg");
 			starBackgrounds.add("imperium/backgrounds/ii_thracia.png");
 		}
-		if (factions.contains("mayorate"))
+		if (ExerelinUtilsFaction.doesFactionExist("mayorate"))
 		{
 			starBackgrounds.add("ilk/backgrounds/ilk_background2.jpg");
 		}
-		if (factions.contains("neutrinocorp"))
+		if (ExerelinUtilsFaction.doesFactionExist("neutrinocorp"))
 		{
 			//starBackgrounds.add("neut/backgrounds/CoronaAustralis.jpg");
 		}
-		if (factions.contains("pn_colony"))
+		if (ExerelinUtilsFaction.doesFactionExist("pn_colony"))
 		{
 			starBackgrounds.add("backgrounds/tolpbg.jpg");
 		}
-		if (factions.contains("SCY"))
+		if (ExerelinUtilsFaction.doesFactionExist("SCY"))
 		{
 			starBackgrounds.add("SCY/backgrounds/SCY_acheron.jpg");
 			starBackgrounds.add("SCY/backgrounds/SCY_tartarus.jpg");
 		}
-		if (factions.contains("shadow_industry"))
+		if (ExerelinUtilsFaction.doesFactionExist("shadow_industry"))
 		{
 			starBackgrounds.add("backgrounds/anarbg.jpg");
 		}
-		if (factions.contains("spire"))
+		if (ExerelinUtilsFaction.doesFactionExist("spire"))
 		{
 			starBackgrounds.add("AIWar/backgrounds/gemstone_alt.jpg");
 		}
@@ -212,14 +208,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			starBackgrounds.add("ssp/backgrounds/ssp_corporateindirection.jpg");
 			starBackgrounds.add("ssp/backgrounds/ssp_overreachingexpansion.jpg");
 		}
-		if (factions.contains("templars"))
+		if (ExerelinUtilsFaction.doesFactionExist("templars"))
 		{
 			starBackgrounds.add("templars/backgrounds/tem_atallcosts_background.jpg");
 			starBackgrounds.add("templars/backgrounds/tem_excommunication_background.jpg");
 			starBackgrounds.add("templars/backgrounds/tem_massacre_background.jpg");
 			starBackgrounds.add("templars/backgrounds/tem_smite_background.jpg");
 		}
-		if (factions.contains("valkyrian"))
+		if (ExerelinUtilsFaction.doesFactionExist("valkyrian"))
 		{
 			starBackgrounds.add("backgrounds/valk_extra_background.jpg");
 		}
@@ -228,6 +224,34 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		for (int i = 0; i < starBackgrounds.size(); i++)
 		{
 			starBackgrounds.set(i, "graphics/" + starBackgrounds.get(i));
+		}
+	}
+	
+	protected void loadNebulaMaps()
+	{
+		nebulaMaps.clear();
+		nebulaMaps.add("eos_nebula.png");
+		nebulaMaps.add("valhalla_nebula.png");
+		nebulaMaps.add("hybrasil_nebula.png");
+		nebulaMaps.add("Nexerelin/gemstone_nebula.png");
+		
+		if (ExerelinUtilsFaction.doesFactionExist("blackrock_driveyards"))
+		{
+			nebulaMaps.add("gneiss_nebula.png");
+		}
+		if (ExerelinUtilsFaction.doesFactionExist("interstellarimperium"))
+		{
+			nebulaMaps.add("ii_thracia_nebula.png");
+		}
+		if (ExerelinUtilsFaction.doesFactionExist("templars"))
+		{
+			nebulaMaps.add("tem_antioch_nebula_1.png");
+			nebulaMaps.add("tem_antioch_nebula_2.png");
+			nebulaMaps.add("tem_antioch_nebula_3.png");
+		}
+		for (int i = 0; i < nebulaMaps.size(); i++)
+		{
+			nebulaMaps.set(i, "data/campaign/terrain/" + nebulaMaps.get(i));
 		}
 	}
 
@@ -698,7 +722,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				x += MathUtils.getRandomNumberInRange(-STAR_RANDOM_OFFSET, STAR_RANDOM_OFFSET) + MathUtils.getRandomNumberInRange(-STAR_RANDOM_OFFSET, STAR_RANDOM_OFFSET);
 				y += MathUtils.getRandomNumberInRange(-STAR_RANDOM_OFFSET, STAR_RANDOM_OFFSET) + MathUtils.getRandomNumberInRange(-STAR_RANDOM_OFFSET, STAR_RANDOM_OFFSET);
 				
-				// map is rotated 180°in non-Corvus mode so adjust accordingly				
+				// map is rotated 180°in non-Corvus mode so adjust accordingly
 				starPositions.add(new Integer[] {-x, -y});
 			}
 			
@@ -1886,11 +1910,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// add nebula
 		if (Math.random() < NEBULA_CHANCE)
 		{
-			SectorEntityToken nebula = Misc.addNebulaFromPNG(
-					  (String)ExerelinUtils.getRandomArrayElement(nebulaeArray),	// nebula texture
+			SectorEntityToken nebula = Misc.addNebulaFromPNG((String)ExerelinUtils.getRandomListElement(nebulaMaps),	// nebula texture
 					  0, 0, // center of nebula
 					  system, // location to add to
-					  "terrain", "nebula_" + (String)ExerelinUtils.getRandomArrayElement(nebulaeColorArray), // texture to use, uses xxx_map for map
+					  "terrain", "nebula_" + (String)ExerelinUtils.getRandomArrayElement(nebulaColors), // texture to use, uses xxx_map for map
 					  4, 4); // number of cells in texture
 		}
 		
