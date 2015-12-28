@@ -2,8 +2,8 @@ package data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
@@ -14,7 +14,6 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DirectoryScreenScript;
 import exerelin.campaign.ExerelinCoreScript;
-import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.PlayerStartHandler;
 import exerelin.campaign.ReinitScreenScript;
@@ -53,14 +52,14 @@ public class ExerelinModPlugin extends BaseModPlugin
         SectorManager.setSystemToRelayMap(new HashMap<String,String>());
         SectorManager.setPlanetToRelayMap(new HashMap<String,String>());
         
-		// replace patrol handling with our own
-		for (MarketAPI market : sector.getEconomy().getMarketsCopy())
-		{
-			market.getPrimaryEntity().removeScriptsOfClass(PatrolFleetManager.class);
-		}
-		sector.removeScriptsOfClass(CoreScript.class);
-		sector.addScript(new ExerelinCoreScript());
-		
+        // replace patrol handling with our own
+        for (MarketAPI market : sector.getEconomy().getMarketsCopy())
+        {
+            market.getPrimaryEntity().removeScriptsOfClass(PatrolFleetManager.class);
+        }
+        sector.removeScriptsOfClass(CoreScript.class);
+        sector.addScript(new ExerelinCoreScript());
+        
         StatsTracker.create();
         
         sector.registerPlugin(new ExerelinCoreCampaignPlugin());
@@ -68,7 +67,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         SectorManager.reinitLiveFactions();
         PlayerFactionStore.setPlayerFactionId("player_npc");
         sector.getFaction(Factions.PLAYER).setRelationship("player_npc", 1);
-		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+        ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
         
         sector.addTransientScript(new ReinitScreenScript());
     }
@@ -101,13 +100,14 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        // fix famous bounties fighting people they shouldn't
-        for (FactionAPI faction : Global.getSector().getAllFactions()) 
+        // update Thracia star background path for new II version
+        for (StarSystemAPI system : Global.getSector().getStarSystems())
         {
-            if (!faction.isPlayerFaction() && !faction.getId().equals("famous_bounty"))
-            faction.setRelationship("famous_bounty", 0);
+            if (system.getBackgroundTextureFilename().equals("graphics/imperium/backgrounds/ii_thracia.jpg"))
+            {
+                system.setBackgroundTextureFilename("graphics/imperium/backgrounds/ii_thracia.png");
+            }
         }
-        
     }
     
     @Override
@@ -176,18 +176,18 @@ public class ExerelinModPlugin extends BaseModPlugin
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
     }
-	
-	@Override
-	public void configureXStream(XStream x) {
-		x.alias("AllianceManager", AllianceManager.class);
-		x.alias("CovertOpsManager", CovertOpsManager.class);
-		x.alias("DiplomacyManager", DiplomacyManager.class);
-		x.alias("ExerelinCoreScript", ExerelinCoreScript.class);
-		x.alias("PlayerFactionStore", PlayerFactionStore.class);
-		x.alias("SectorManager", SectorManager.class);
-		x.alias("InvasionFleetManager", InvasionFleetManager.class);
-		x.alias("ResponseFleetManager", ResponseFleetManager.class);
-		x.alias("MiningFleetManager", MiningFleetManager.class);
-		x.alias("ExerelinPatrolFleetManager", ExerelinPatrolFleetManager.class);
-	}
+    
+    @Override
+    public void configureXStream(XStream x) {
+        x.alias("AllianceManager", AllianceManager.class);
+        x.alias("CovertOpsManager", CovertOpsManager.class);
+        x.alias("DiplomacyManager", DiplomacyManager.class);
+        x.alias("ExerelinCoreScript", ExerelinCoreScript.class);
+        x.alias("PlayerFactionStore", PlayerFactionStore.class);
+        x.alias("SectorManager", SectorManager.class);
+        x.alias("InvasionFleetManager", InvasionFleetManager.class);
+        x.alias("ResponseFleetManager", ResponseFleetManager.class);
+        x.alias("MiningFleetManager", MiningFleetManager.class);
+        x.alias("ExerelinPatrolFleetManager", ExerelinPatrolFleetManager.class);
+    }
 }

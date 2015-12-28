@@ -177,7 +177,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (factions.contains("interstellarimperium"))
 		{
 			starBackgrounds.add("imperium/backgrounds/ii_corsica.jpg");
-			starBackgrounds.add("imperium/backgrounds/ii_thracia.jpg");
+			starBackgrounds.add("imperium/backgrounds/ii_thracia.png");
 		}
 		if (factions.contains("mayorate"))
 		{
