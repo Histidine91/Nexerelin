@@ -35,6 +35,7 @@ import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.world.ExerelinCorvusLocations;
 import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
@@ -233,7 +234,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		nebulaMaps.add("eos_nebula.png");
 		nebulaMaps.add("valhalla_nebula.png");
 		nebulaMaps.add("hybrasil_nebula.png");
-		nebulaMaps.add("nexerelin/gemstone_nebula.png");
+		nebulaMaps.add("Nexerelin/gemstone_nebula.png");
 		
 		if (ExerelinUtilsFaction.doesFactionExist("blackrock_driveyards"))
 		{
@@ -408,6 +409,40 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				}
 			}
 		}
+		
+		if (toOrbit == null)
+		{
+			// Corvus mode: try to place Omnifactory in starting system
+			if (ExerelinSetupData.getInstance().corvusMode) {
+				do {
+					ExerelinCorvusLocations.SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(PlayerFactionStore.getPlayerFactionIdNGC());
+					if (spawnPoint == null) break;
+					// orbit homeworld proper; too much risk of double stations or other such silliness?
+					String entityId = spawnPoint.entityId;
+					if (entityId != null) {
+						SectorEntityToken entity = Global.getSector().getEntityById(entityId);
+						if (entity != null && entity instanceof PlanetAPI)
+						{
+							toOrbit = entity;
+							break;
+						}
+					}
+					
+					// place at random location in same system
+					StarSystemAPI system = Global.getSector().getStarSystem(spawnPoint.systemName);
+					if (system == null) break;
+					
+					CollectionFilter planetFilter = new OmnifacFilter(system); 
+					List planets = CollectionUtils.filter(system.getPlanets(), planetFilter);
+					if (!planets.isEmpty())
+					{
+						Collections.shuffle(planets);
+						toOrbit = (SectorEntityToken)planets.get(0);
+					}
+				} while (false);
+			}
+		}
+		
 		if (toOrbit == null)
 		{
 			if (ExerelinSetupData.getInstance().corvusMode) toOrbit = sector.getEntityById("corvus_IV");
@@ -443,6 +478,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.getEconomy().addMarket(market);
 		
 		omnifac.setFaction(Factions.NEUTRAL);
+		omnifac.addTag("omnifactory");
 		
 		OmniFac.initOmnifactory(omnifac);
 	}
@@ -745,7 +781,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		String hyperMap = "data/campaign/terrain/hyperspace_map.png";
 		if (!corvusMode)
 		{
-			hyperMap = "data/campaign/terrain/nexerelin/hyperspace_map_rot.png";
+			hyperMap = "data/campaign/terrain/Nexerelin/hyperspace_map_rot.png";
 		}
 		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG(hyperMap,
 			  0, 0, // center of nebula
@@ -1079,7 +1115,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// before we do anything else give the "homeworld" to our faction
 		if (!ExerelinSetupData.getInstance().freeStart)
 		{
-			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+			String alignedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
 			homeworld.isHQ = true;
 			MarketAPI homeMarket = marketSetup.addMarketToEntity(homeworld, alignedFactionId);
 			SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
@@ -1978,15 +2014,16 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		final Set<SectorEntityToken> blocked;
 		private OmnifacFilter(StarSystemAPI system)
 		{
+			String alignedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
 			blocked = new HashSet<>();
 			for (SectorEntityToken planet : system.getPlanets() )
 			{
-			String factionId = planet.getFaction().getId();
-			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-			if (!factionId.equals("neutral") && !factionId.equals(alignedFactionId))
-				blocked.add(planet);
-			//else
-				//log.info("Authorizing planet " + planet.getName() + " (faction " + factionId + ")");
+				String factionId = planet.getFaction().getId();
+
+				if (!factionId.equals("neutral") && !factionId.equals(alignedFactionId))
+					blocked.add(planet);
+				//else
+					//log.info("Authorizing planet " + planet.getName() + " (faction " + factionId + ")");
 			}
 		}
 

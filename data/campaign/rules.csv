@@ -1045,7 +1045,7 @@ $faction.id == player_npc score:100
 ,,,,,,
 # bla,,,,,,
 ExerelinFlavorTextMarketOmnifactory,TradePanelFlavorText,"$global.tradePanelMode == MARKET
-$market.id == omnifactory","AddText ""The Omnifactory's main loading bay is a dark, brooding chamber gaping cavernously around stacks of replicated items - clearly, the maintaining AI lacks the cleanliness sensibility of the average human. A loading bots shuffles about with large crates in hand as nano-fabricators hum in the distance."" textGrayColor",,,
+$tag:omnifactory","AddText ""The Omnifactory's main loading bay is a dark, brooding chamber gaping cavernously around stacks of replicated items - clearly, the maintaining AI lacks the cleanliness sensibility of the average human. A loading bots shuffles about with large crates in hand as nano-fabricators hum in the distance."" textGrayColor",,,
 ExerelinFlavorTextMarketPrismFreeport,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $market.id == prismFreeport","AddText ""Bright, slick, overusing chrome and opal ornaments, the concourse is quite the unusual sight for a station lost in hyperspace. Wherever the eye looks, every detail spells luxury. On the sides, behind extravagant transparent promenades, the source of all this wealth is offered to the observation of all potential buyers: the menacing and yet reassuring silhouettes of ships from all origins, all pristine looking and advantageously lit. A bit further it's the weapons that are exposed in the same fashion. Holo displays and simulators are available everywhere to help clients to find the perfect tool to fit their needs."" textGrayColor",,,
 ExerelinMarketOptionIntel,DialogOptionSelected,$option == exerelinMarketIntel,OpenCoreTab INTEL $tradeMode,,,
@@ -1155,7 +1155,8 @@ FireAll PopulateOptions",,,
 ExerelinMarketPostOpenTemplarsHostile,MarketPostOpen,"!$doesFakeVariableExist score:999
 $hasMarket
 $faction.id == templars score:1000
-RepIsAtBest $faction.id SUSPICIOUS","$marketLeaveTooltip = ""$TheFaction do not trade with outsiders."" 0
+RepIsAtBest $faction.id SUSPICIOUS
+$market.id != tem_ascalon","$marketLeaveTooltip = ""$TheFaction do not trade with outsiders."" 0
 $menuState = main 0
 $tradeMode = NONE 0
 FireAll PopulateOptions","The only communication you can get from the port is: ""Begone from this holy land, heathen. Thy cleansing shall yet come.""",,

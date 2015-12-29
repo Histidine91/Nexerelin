@@ -61,9 +61,9 @@ import org.lazywizard.lazylib.MathUtils;
  */
 public class SectorManager extends BaseCampaignEventListener implements EveryFrameScript {
     public static Logger log = Global.getLogger(SectorManager.class);
-    private static SectorManager sectorManager;
+    protected static SectorManager sectorManager;
 
-    private static final String MANAGER_MAP_KEY = "exerelin_sectorManager";
+    protected static final String MANAGER_MAP_KEY = "exerelin_sectorManager";
     protected static final List<String> POSTS_TO_CHANGE_ON_CAPTURE = Arrays.asList(new String[]{
         Ranks.POST_BASE_COMMANDER,
         Ranks.POST_OUTPOST_COMMANDER,
@@ -72,28 +72,36 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Ranks.POST_SUPPLY_OFFICER,
     });
     
-    private List<String> factionIdsAtStart = new ArrayList<>();
-    private List<String> liveFactionIds = new ArrayList<>();
-    private Set<String> historicFactionIds = new HashSet<>();
-    private Map<String, String> systemToRelayMap = new HashMap<>();
-    private Map<String, String> planetToRelayMap = new HashMap<>();
+    protected static final Set<String> NO_BLACK_MARKET = new HashSet(Arrays.asList(new String[]{
+        "SCY_overwatchStation",
+        "SCY_hephaistosStation",
+    }));
+    protected static final Set<String> FORCE_MILITARY_MARKET = new HashSet(Arrays.asList(new String[]{
+        "SCY_hephaistosStation",
+    }));
     
-    private boolean victoryHasOccured = false;
-    private boolean respawnFactions = false;
-    private boolean onlyRespawnStartingFactions = false;
+    protected List<String> factionIdsAtStart = new ArrayList<>();
+    protected List<String> liveFactionIds = new ArrayList<>();
+    protected Set<String> historicFactionIds = new HashSet<>();
+    protected Map<String, String> systemToRelayMap = new HashMap<>();
+    protected Map<String, String> planetToRelayMap = new HashMap<>();
+    
+    protected boolean victoryHasOccured = false;
+    protected boolean respawnFactions = false;
+    protected boolean onlyRespawnStartingFactions = false;
     protected SectorEntityToken homeworld;
     
     protected boolean corvusMode = false;
     protected boolean hardMode = false;
     protected boolean freeStart = false;
     
-    private int numSlavesRecentlySold = 0;
-    private MarketAPI marketLastSoldSlaves = null;
+    protected int numSlavesRecentlySold = 0;
+    protected MarketAPI marketLastSoldSlaves = null;
     
-    private float respawnInterval = 60f;
-    private final IntervalUtil respawnIntervalUtil;
+    protected float respawnInterval = 60f;
+    protected final IntervalUtil respawnIntervalUtil;
     
-    private boolean wantExpelPlayerFromFaction = false;
+    protected boolean wantExpelPlayerFromFaction = false;
 
     public SectorManager()
     {
@@ -653,9 +661,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         market.setFactionId(newOwnerId);
         
+        // don't lock player out of freshly captured market
         if (!newOwner.isHostileTo(Factions.PLAYER))
         {
-            market.getMemoryWithoutUpdate().unset("$playerHostileTimeout");    // don't lock player out of freshly captured market
+            market.getMemoryWithoutUpdate().unset("$playerHostileTimeout");
         }
         
         // Templar stuff
@@ -671,8 +680,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         else if (!newOwnerId.equals("templars") && oldOwnerId.equals("templars"))
         {
             market.addSubmarket(Submarkets.SUBMARKET_OPEN);
-            market.addSubmarket(Submarkets.SUBMARKET_BLACK);
-            if (market.hasCondition("military_base") || market.hasCondition("tem_avalon")) 
+            if (!NO_BLACK_MARKET.contains(market.getId()))
+                market.addSubmarket(Submarkets.SUBMARKET_BLACK);
+            if (market.hasCondition("military_base") || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId())) 
                 market.addSubmarket(Submarkets.GENERIC_MILITARY);
             
             market.removeSubmarket("tem_templarmarket");
@@ -842,7 +852,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return sectorManager.freeStart;
     }
     
-    private static void expelPlayerFromFaction()
+    protected static void expelPlayerFromFaction()
     {
         String oldFactionId = PlayerFactionStore.getPlayerFactionId();
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
