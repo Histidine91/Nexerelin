@@ -138,7 +138,7 @@ public class ExerelinUtilsReputation
 	public static void syncPlayerRelationshipsToFaction(String factionId, boolean noUpdateAlliance)
 	{
 		SectorAPI sector = Global.getSector();	
-		FactionAPI playerFaction = sector.getFaction("player");
+		FactionAPI playerFaction = sector.getPlayerFaction();
 		FactionAPI faction = sector.getFaction(factionId);
 		List<FactionAPI> factions = sector.getAllFactions();
 		

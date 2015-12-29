@@ -106,7 +106,7 @@ public class ExerelinMarketSetup
 			Iterator<?> keys = planetsJson.keys();
 			while (keys.hasNext()) {
 				String archetypeStr = (String)keys.next();
-				MarketArchetype archetype = MarketArchetype.valueOf(StringHelper.flattenToAscii(archetypeStr).toUpperCase());
+				MarketArchetype archetype = MarketArchetype.valueOf(StringHelper.flattenToAscii(archetypeStr.toUpperCase()));
 				
 				Map<String, Float> planetChances = new HashMap<>();
 				JSONObject planetChancesJson = planetsJson.getJSONObject(archetypeStr);
