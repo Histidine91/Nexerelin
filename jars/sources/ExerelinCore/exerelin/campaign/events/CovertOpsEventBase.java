@@ -162,6 +162,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	public String getCurrentMessageIcon() {
 		int significance = 0;
 		if (!result.isSucessful() || result.isDetected()) significance = 1;
+		if (repResult.wasHostile && !repResult.isHostile) significance = 1;
 		if (repResult.isHostile && !repResult.wasHostile) significance = 2;
 		//log.info("wololo, Icon: " + EVENT_ICONS[significance]);
 		return EVENT_ICONS[significance];
