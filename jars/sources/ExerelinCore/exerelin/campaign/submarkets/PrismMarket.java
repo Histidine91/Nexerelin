@@ -237,7 +237,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                     && !member.getHullId().toLowerCase().endsWith("_d")
                     && !member.getHullId().toLowerCase().contains("_d_")
                     && !member.getHullSpec().getHullName().toLowerCase().endsWith("(d)")
-                    && !member.getHullId().toLowerCase().startsWith("tem_")
+                    //&& !member.getHullId().toLowerCase().startsWith("tem_")
                     && member.getFleetPointCost()>=FP)
                 {
                     member.getRepairTracker().setMothballed(true);
@@ -264,7 +264,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
         
         for (String id : weaponIds) {
-            if (id.startsWith("tem_")) continue;
+            //if (id.startsWith("tem_")) continue;
             WeaponSpecAPI spec = Global.getSettings().getWeaponSpec(id);
             int tier = spec.getTier();
             if (tier >= minTier && tier <= maxTier) {
