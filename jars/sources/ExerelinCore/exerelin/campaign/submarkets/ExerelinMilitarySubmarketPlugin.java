@@ -5,6 +5,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 
+@Deprecated	// for now
 public class ExerelinMilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 	@Override
 	protected boolean hasCommission() {

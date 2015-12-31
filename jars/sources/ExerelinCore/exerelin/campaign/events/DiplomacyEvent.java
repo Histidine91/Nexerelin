@@ -18,6 +18,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 
@@ -71,7 +72,8 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		// we can set the reputation change only on message delivery
 		// but problem is, the token replacement method needs to know the relationship change NOW
 		//DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
-		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
+		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;	//MessagePriority.ENSURE_DELIVERY;
+		
 		/*
 		Global.getSector().reportEventStage(this, event.stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
 			final DiplomacyEventDef thisEvent = event;
@@ -81,7 +83,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 			final FactionAPI otherFac = otherFaction;
 
 			public void beforeDelivery(CommMessageAPI message) {
-			//DiplomacyManager.adjustRelations(thisEvent, thisMarket, fac, otherFac, thisDelta);
+				//DiplomacyManager.adjustRelations(thisEvent, fac, otherFac, thisDelta);
 			}
 		});
 		*/
@@ -114,10 +116,10 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		return CampaignEventPlugin.CampaignEventCategory.DO_NOT_SHOW_IN_MESSAGE_FILTER;
 	}
 	
-	protected String getNewRelationStr()
+	protected String getNewRelationStr(float delta)
 	{
 		RepLevel level = faction.getRelationshipLevel(otherFaction.getId());
-		int repInt = (int) Math.ceil((faction.getRelationship(otherFaction.getId())) * 100f);
+		int repInt = (int) Math.ceil((faction.getRelationship(otherFaction.getId()) + delta) * 100f);
 		
 		String standing = "" + repInt + "/100" + " (" + level.getDisplayName().toLowerCase() + ")";
 		return standing;
@@ -133,7 +135,8 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		map.put("$OtherFaction", Misc.ucFirst(otherFactionStr));
 		map.put("$TheOtherFaction", Misc.ucFirst(theOtherFactionStr));
 		map.put("$deltaAbs", "" + (int)Math.ceil(Math.abs(delta*100f)));
-		map.put("$newRelationStr", getNewRelationStr());
+		//map.put("$newRelationStr", getNewRelationStr(delta));
+		map.put("$newRelationStr", getNewRelationStr(0));
 		return map;
 	}
 	

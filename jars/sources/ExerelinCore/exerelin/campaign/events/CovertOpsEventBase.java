@@ -75,7 +75,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	@Override
 	public void startEvent()
 	{
-		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
+		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;	//MessagePriority.ENSURE_DELIVERY;
 		String reportStage = result.name().toLowerCase();
 		if (playerInvolved) reportStage += "_player";
 		Global.getSector().reportEventStage(this, reportStage, market.getPrimaryEntity(), priority);

@@ -56,7 +56,7 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 	@Override
 	public void startEvent()
 	{
-		MessagePriority priority = MessagePriority.SECTOR;
+		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;	//MessagePriority.ENSURE_DELIVERY;
 		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
 	}
 	

@@ -19,7 +19,7 @@ public class ExerelinUtilsMarket {
 	 * Gets demand for a particular commodity on a given market. Should be safe to use in most instances.
 	 * @param market
 	 * @param commodity
-	 * @param consumingOnly
+	 * @param consumingOnly if true, subtract non-consuming demand from total demand
 	 * @return
 	 */
 	public static float getCommodityDemand(MarketAPI market, String commodity, boolean consumingOnly)
