@@ -310,8 +310,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             //if (factionId.equals("player_npc")) continue;
             if (targetFaction.isHostileTo(factionId)) continue;
             if (factionId.equals("player_npc") && ExerelinConfig.warmongerPenalty <= 1) 
-				continue;
-			
+                continue;
+            
             float loss = 0;
             RepLevel level = targetFaction.getRelationshipLevel(factionId);
             if (level == RepLevel.COOPERATIVE)
@@ -333,10 +333,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             
             if (factionId.equals(playerAlignedFactionId))
             {
-				myFactionLoss = loss;
-				if (!factionId.equals("player_npc")) myFactionLoss = (2*loss) + 0.05f;
-				repLoss.put(factionId, myFactionLoss);
-				continue;
+                myFactionLoss = loss;
+                if (!factionId.equals("player_npc")) myFactionLoss = (2*loss) + 0.05f;
+                repLoss.put(factionId, myFactionLoss);
+                continue;
             }
             if (loss <= 0) continue;
             
@@ -363,15 +363,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Set<String> seenFactions = new HashSet<>();
 
         for (final MarketAPI market : markets) {
+            FactionAPI faction = market.getFaction();
             String factionId = market.getFactionId();
             if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId)) continue;
+            if (faction.isNeutralFaction()) continue;
+            if (faction.isPlayerFaction()) continue;
             if (factionId.equals("player_npc")) continue;
             if (seenFactions.contains(factionId)) continue;
 
             seenFactions.add(factionId);
             factionsToNotify.add(factionId);
         }
-		if (factionsToNotify.isEmpty()) return;
+        if (factionsToNotify.isEmpty()) return;
         //log.info("Selling " + numSlavesRecentlySold + " slaves; rep penalty for each is " + ExerelinConfig.prisonerSlaveRepValue);
         float repPenalty = ExerelinConfig.prisonerSlaveRepValue * numSlavesRecentlySold;
         
@@ -407,7 +410,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (respawnFaction == null) return;
         
         boolean allowPirates = ExerelinConfig.allowPirateInvasions;
-        List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+        List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
         for (MarketAPI market : markets) 
         {
             FactionAPI marketFaction = market.getFaction();
@@ -430,6 +433,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             FactionAPI marketFaction = market.getFaction();
             float weight = 100;
+            if (market == targetMarket) continue;
             if (marketFaction.isHostileTo(respawnFaction)) weight = 0.0001f;
             sourcePicker.add(market, weight);
         }
@@ -891,12 +895,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         for (String factionId:temp)
         {
-			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-			
+            ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+            
             if (ExerelinUtilsFaction.getFactionMarkets(factionId).size() > 0)
             {
-				if (config != null && !config.playableFaction)
-					continue;
+                if (config != null && !config.playableFaction)
+                    continue;
                 sectorManager.liveFactionIds.add(factionId);
                 sectorManager.factionIdsAtStart.add(factionId);
                 sectorManager.historicFactionIds.add(factionId);
