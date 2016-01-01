@@ -23,46 +23,6 @@ import org.apache.log4j.Logger;
 
 public class ExerelinUtilsFleet
 {
-    public enum ExerelinFleetSize
-    {
-        EXTRA_LARGE,
-        LARGE,
-        MEDIUM,
-        SMALL
-    }
-
-    public enum ExerelinFleetType
-    {
-        ASTEROID_MINING,
-        GAS_MINING,
-        LOGISTICS,
-        BOARDING,
-        WAR
-    }
-
-    public enum ExerelinVariantType
-    {
-        MINING,
-        FREIGHTER,
-        TANKER,
-        TROOP_TRANSPORT,
-        SUPER_FREIGHTER,
-        CARRIER
-    }
-
-    public enum ExerelinWarFleetType
-    {
-        RANDOM,
-        CARRIER,
-        LARGE_SHIPS,
-        FRIGATE,
-        MEDIUM_SHIPS
-    }
-    
-    private static int SMALL_FLEET_SUPPLIES_DAY = 10;
-    private static int MEDIUM_FLEET_SUPPLIES_DAY = 25;
-    private static int LARGE_FLEET_SUPPLIES_DAY = 60;
-    private static int EXTRA_LARGE_FLEET_SUPPLIES_DAY = 90;
     
     public static Logger log = Global.getLogger(ExerelinUtilsFleet.class);
    
