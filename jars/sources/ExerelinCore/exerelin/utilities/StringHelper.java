@@ -87,6 +87,11 @@ public class StringHelper {
         if (missionType != null) str = substituteToken(str, "$missionType", getString(FLEET_ASSIGNMENT_CATEGORY, missionType));
         return str;
     }
+	
+	public static String getFleetAssignmentString(String id, String target)
+	{
+		return getFleetAssignmentString(id, target, null);
+	}
 
     // http://stackoverflow.com/a/15191508
     // see https://bitbucket.org/Histidine/exerelin/issues/1/marketarchtype-java-somehow-confuses-the for why this is used

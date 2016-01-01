@@ -103,6 +103,7 @@
 		"endingMission":"ending mission at $target",
 		"travellingTo":"travelling to $target",
 		"travellingToStarSystem":"travelling to the $target star system",
+		"scramblingFrom":"scrambling from $target",
 		
 		"attacking":"attacking $target",
 		"attackingStarSystem":"attacking the $target star system",

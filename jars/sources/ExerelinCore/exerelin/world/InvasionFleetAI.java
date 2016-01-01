@@ -61,7 +61,7 @@ public class InvasionFleetAI implements EveryFrameScript
                     if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD)
                     {
                         ai.addAssignmentAtStart(FleetAssignment.INTERCEPT, fleet, 2f, 
-                                StringHelper.getFleetAssignmentString("intercepting", fleet.getName(), null), null);
+                                StringHelper.getFleetAssignmentString("intercepting", fleet.getName()), null);
                         //log.info("Responding to invasion: " + otherFleet.getName() + ", " + fleet.getName());
                     }
                 }
@@ -152,18 +152,18 @@ public class InvasionFleetAI implements EveryFrameScript
                 LocationAPI hyper = Global.getSector().getHyperspace();
                 Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
                 SectorEntityToken token = hyper.createToken(dest.x, dest.y);
-                //this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName, null));
-                //this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName, null));
-                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName, null));
-                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName, null));
+                //this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
+                //this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
+                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
+                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
             }
             else {
-                //this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName, null));
-                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName, null));
+                //this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
+                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
             }
-            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), INVADE_ORBIT_TIME, StringHelper.getFleetAssignmentString("beginningInvasion", marketName, null));
+            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), INVADE_ORBIT_TIME, StringHelper.getFleetAssignmentString("beginningInvasion", marketName));
             // once it reaches the "hold" part, that's our cue to actually run the invasion code
-            this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 2.0F, StringHelper.getFleetAssignmentString("invading", marketName, null));
+            this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 2.0F, StringHelper.getFleetAssignmentString("invading", marketName));
 
         }
     }
@@ -223,8 +223,8 @@ public class InvasionFleetAI implements EveryFrameScript
                     destination = data.target;
             }
             
-            this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName(), null));
-            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName(), null));
+            this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
+            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName()));
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }
     }

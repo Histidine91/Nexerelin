@@ -17,6 +17,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -111,6 +112,7 @@ public class RespawnFleetAI extends InvasionFleetAI
             MarketAPI market = data.targetMarket;
             StarSystemAPI system = market.getStarSystem();
             String locName = market.getPrimaryEntity().getContainingLocation().getName();
+			String marketName = market.getName();
             
             if (system != null)
             {
@@ -120,15 +122,16 @@ public class RespawnFleetAI extends InvasionFleetAI
                 LocationAPI hyper = Global.getSector().getHyperspace();
                 Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
                 SectorEntityToken token = hyper.createToken(dest.x, dest.y);
-                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, "travelling to " + locName);
-                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, "travelling to " + market.getName());
+                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
+                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
             }
             else {
-                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, "travelling to " + market.getName());
+                //this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
+                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
             }
-            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), INVADE_ORBIT_TIME, "beginning invasion of " + market.getName());
+            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), INVADE_ORBIT_TIME, StringHelper.getFleetAssignmentString("beginningInvasion", marketName));
             // once it reaches the "hold" part, that's our cue to actually run the invasion code
-            this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 2.0F, "invading " + market.getName());
+            this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 2.0F, StringHelper.getFleetAssignmentString("invading", marketName));
         }
     }
     

@@ -119,16 +119,16 @@ public class MiningFleetAI implements EveryFrameScript
                 LocationAPI hyper = Global.getSector().getHyperspace();
                 Vector2f dest = Misc.getPointAtRadius(loc.getLocation(), 1500.0F);
                 SectorEntityToken token = hyper.createToken(dest.x, dest.y);
-                this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName, null));
-                this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", target.getName(), null));
+                this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
+                this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", target.getName()));
             }
             else {
-                this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", target.getName(), null));
+                this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", target.getName()));
             }
 			if (target instanceof AsteroidAPI)
-				this.fleet.addAssignment(FleetAssignment.INTERCEPT, target, 30, StringHelper.getFleetAssignmentString("mining", target.getName(), null));
+				this.fleet.addAssignment(FleetAssignment.INTERCEPT, target, 30, StringHelper.getFleetAssignmentString("mining", target.getName()));
 			else
-				this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, target, 30, StringHelper.getFleetAssignmentString("mining", target.getName(), null));
+				this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, target, 30, StringHelper.getFleetAssignmentString("mining", target.getName()));
 
         }
     }
@@ -176,8 +176,8 @@ public class MiningFleetAI implements EveryFrameScript
             this.fleet.clearAssignments();
             
             SectorEntityToken destination = data.source;
-            this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName(), null));			
-            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("miningUnload", null, null));
+            this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));			
+            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("miningUnload", null));
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }
     }

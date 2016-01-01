@@ -78,24 +78,24 @@ public class InvasionSupportFleetAI implements EveryFrameScript
                 String systemBaseName = system.getBaseName();
                 
                 if (system != this.fleet.getContainingLocation()) {
-                  this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingToStarSystem", systemBaseName, null));
+                  this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingToStarSystem", systemBaseName));
                 }
                 if (this.data.noWander) {
-                    this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("attacking", entityName, null));
-                    this.fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("attacking", entityName, null));
+                    this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("attacking", entityName));
+                    this.fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("attacking", entityName));
                 } else if (Math.random() > 0.8D) {
                   this.fleet.addAssignment(FleetAssignment.RAID_SYSTEM, system.getHyperspaceAnchor(), 40.0F, 
-                          StringHelper.getFleetAssignmentString("attackingAroundStarSystem", systemBaseName, null));
+                          StringHelper.getFleetAssignmentString("attackingAroundStarSystem", systemBaseName));
                 } else if (Math.random() > 0.5D) {
-                  this.fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("attacking", entityName, null));
+                  this.fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("attacking", entityName));
                 } else {
-                  this.fleet.addAssignment(FleetAssignment.RAID_SYSTEM, system.getStar(), 40.0F,  StringHelper.getFleetAssignmentString("attackingStarSystem", systemBaseName, null));
+                  this.fleet.addAssignment(FleetAssignment.RAID_SYSTEM, system.getStar(), 40.0F,  StringHelper.getFleetAssignmentString("attackingStarSystem", systemBaseName));
                 }
             }
             else
             {
-                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("attacking", entityName, null));
-                this.fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("attacking", entityName, null));
+                this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("attacking", entityName));
+                this.fleet.addAssignment(FleetAssignment.ATTACK_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("attacking", entityName));
             }
 
         }
@@ -158,7 +158,7 @@ public class InvasionSupportFleetAI implements EveryFrameScript
                     if (distToSource > distToTarget)
                         destination = data.target;
                 }
-                this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName(), null));
+                this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
                 this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("standingDown", null, "missionStrike"));
             }
             //other stand down reasons
@@ -172,16 +172,16 @@ public class InvasionSupportFleetAI implements EveryFrameScript
                 if (system != null && system != this.fleet.getContainingLocation()) {
                     Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
                     SectorEntityToken token = loc.createToken(dest.x, dest.y);
-                    this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingToStarSystem", system.getBaseName(), null));
+                    this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingToStarSystem", system.getBaseName()));
                 }
                 destination = data.target;
-                this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, destination, 40.0F, StringHelper.getFleetAssignmentString("defending", data.target.getName(), null));
-                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName(), null));
+                this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, destination, 40.0F, StringHelper.getFleetAssignmentString("defending", data.target.getName()));
+                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName()));
             }
             else
             {
-                this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName(), null));
-                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName(), null));
+                this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
+                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName()));
             }
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
             log.info("Strike fleet standing down; critical damage? " + criticalDamage);

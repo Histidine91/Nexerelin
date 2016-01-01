@@ -65,22 +65,22 @@ public class DefenceFleetAI implements EveryFrameScript
                 String systemBaseName = system.getBaseName();
                 
                 if (system != this.fleet.getContainingLocation()) {
-                  this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingToStarSystem", systemBaseName, null));
+                  this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingToStarSystem", systemBaseName));
                 }
                 if (this.data.noWander) {
-                    this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("defending", entityName, null));
+                    this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("defending", entityName));
                 } else if (Math.random() > 0.8D) {
                   this.fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, system.getHyperspaceAnchor(), 40.0F, 
-                          StringHelper.getFleetAssignmentString("patrollingAroundStarSystem", systemBaseName, null));
+                          StringHelper.getFleetAssignmentString("patrollingAroundStarSystem", systemBaseName));
                 } else if (Math.random() > 0.5D) {
-                  this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("defending", entityName, null));
+                  this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("defending", entityName));
                 } else {
-                  this.fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, system.getStar(), 40.0F, StringHelper.getFleetAssignmentString("attackingStarSystem", systemBaseName, null));
+                  this.fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, system.getStar(), 40.0F, StringHelper.getFleetAssignmentString("attackingStarSystem", systemBaseName));
                 }
             }
             else
             {
-                this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("defending", entityName, null));
+                this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 40.0F, StringHelper.getFleetAssignmentString("defending", entityName));
             }
 
         }
@@ -131,7 +131,7 @@ public class DefenceFleetAI implements EveryFrameScript
             
             SectorEntityToken destination = data.source;
             
-            this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName(), null));
+            this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
             this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("standingDown", null, "missionPatrol"));
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }

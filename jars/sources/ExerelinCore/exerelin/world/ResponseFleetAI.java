@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
 public class ResponseFleetAI implements EveryFrameScript
@@ -102,8 +103,8 @@ public class ResponseFleetAI implements EveryFrameScript
         String targetName = this.data.target.getName();
         if (this.data.target == Global.getSector().getPlayerFleet())
             targetName = "your fleet";
-        this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, 0.1f, "scrambling from " + this.data.sourceMarket.getName());
-        this.fleet.addAssignment(FleetAssignment.INTERCEPT, this.data.target, 3f, "intercepting " + targetName);
+        this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, 0.1f, StringHelper.getFleetAssignmentString("scramblingFrom", this.data.sourceMarket.getName()));
+        this.fleet.addAssignment(FleetAssignment.INTERCEPT, this.data.target, 3f, StringHelper.getFleetAssignmentString("intercepting", targetName));
     }
   
     protected void giveStandDownOrders()
@@ -115,8 +116,8 @@ public class ResponseFleetAI implements EveryFrameScript
             this.fleet.clearAssignments();
             
             SectorEntityToken destination = data.source;          
-            this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, "returning to " + destination.getName());
-            //this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), "standing down");
+            this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
+            //this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("standingDown", null, "missionPatrol"));
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }
     }
