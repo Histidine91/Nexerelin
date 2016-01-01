@@ -2,6 +2,7 @@ package exerelin.world;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.LocationAPI;
@@ -27,6 +28,7 @@ public class InvasionFleetAI implements EveryFrameScript
     
     public static final float INVADE_ORBIT_TIME = 2.5f;
     public static final float INVADE_RESPONSE_DISTANCE = 1500f;
+    public static final float RESERVE_CONVERSION_EFFICIENCY = 0.8f;
     
     protected final InvasionFleetManager.InvasionFleetData data;
     protected float daysTotal = 0.0F;
@@ -212,6 +214,7 @@ public class InvasionFleetAI implements EveryFrameScript
             if (data.event != null) data.event.endEvent(InvasionFleetEvent.FleetReturnReason.OTHER, data.source);
             this.fleet.clearAssignments();
             
+            Script despawnScript = null;
             SectorEntityToken destination = data.source;
             if (data.target.getFaction() == data.fleet.getFaction())
             {
@@ -220,11 +223,21 @@ public class InvasionFleetAI implements EveryFrameScript
                 float distToSource = Misc.getDistance(data.fleet.getLocationInHyperspace(), data.source.getLocationInHyperspace());
                 float distToTarget = Misc.getDistance(data.fleet.getLocationInHyperspace(), data.target.getLocationInHyperspace());
                 if (distToSource > distToTarget)
+                {
                     destination = data.target;
+                    despawnScript = new Script() {
+                        @Override
+                        public void run() {
+                            float points = fleet.getFleetPoints() * RESERVE_CONVERSION_EFFICIENCY;
+                            log.info("Invasion fleet despawning at target " + data.target.getName() + "; can restore " + points + " points");
+                            ResponseFleetManager.modifyReserveSize(data.targetMarket, points);
+                        }
+                    };
+                }
             }
             
             this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
-            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName()));
+            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName()), despawnScript);
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }
     }

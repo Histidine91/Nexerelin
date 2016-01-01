@@ -2,6 +2,7 @@ package exerelin.world;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.Script;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -13,12 +14,13 @@ import org.apache.log4j.Logger;
 
 public class ResponseFleetAI implements EveryFrameScript
 {
+    public static final float RESERVE_RESTORE_EFFICIENCY = 0.75f;
     public static Logger log = Global.getLogger(ResponseFleetAI.class);
     
-    private final ResponseFleetManager.ResponseFleetData data;
-    private float daysTotal = 0.0F;
-    private final CampaignFleetAPI fleet;
-    private boolean orderedReturn = false;
+    protected final ResponseFleetManager.ResponseFleetData data;
+    protected float daysTotal = 0.0F;
+    protected final CampaignFleetAPI fleet;
+    protected boolean orderedReturn = false;
   
     public ResponseFleetAI(CampaignFleetAPI fleet, ResponseFleetManager.ResponseFleetData data)
     {
@@ -98,7 +100,7 @@ public class ResponseFleetAI implements EveryFrameScript
         return daysToOrbit;
     }
   
-    private void giveInitialAssignment()
+    protected void giveInitialAssignment()
     {
         String targetName = this.data.target.getName();
         if (this.data.target == Global.getSector().getPlayerFleet())
@@ -115,9 +117,18 @@ public class ResponseFleetAI implements EveryFrameScript
             this.orderedReturn = true;
             this.fleet.clearAssignments();
             
+            Script despawnScript = new Script() {
+                @Override
+                public void run() {
+                    float points = fleet.getFleetPoints() * RESERVE_RESTORE_EFFICIENCY;
+                    log.info("Response fleet despawning at base " + data.source.getName() + "; can restore " + points + " points");
+                    ResponseFleetManager.modifyReserveSize(data.sourceMarket, points);
+                }
+            };
+            
             SectorEntityToken destination = data.source;          
             this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
-            //this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("standingDown", null, "missionPatrol"));
+            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("standingDown", null, "missionPatrol"), despawnScript);
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }
     }
