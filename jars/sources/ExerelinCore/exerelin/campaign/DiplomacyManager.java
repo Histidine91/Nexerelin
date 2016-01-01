@@ -93,7 +93,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     static {
         String[] factions = {"templars", "independent"};
-        disallowedFactions = Arrays.asList(factions);
+        disallowedFactions = new ArrayList<>(Arrays.asList(factions));
+        if (!ExerelinConfig.followersDiplomacy) disallowedFactions.add("player_npc");
         eventDefs = new ArrayList<>();
         
         try {
@@ -221,6 +222,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     }
     */
     
+    // TODO: refactor/test if all that duplicate handling for player vs. aligned faction is really needed
     public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
             RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit)
     {   
@@ -251,6 +253,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         //log.info("Relationship delta: " + delta);
         boolean isHostile = faction1.isHostileTo(faction2);
 
+        // TODO: this could go entirely?
         if(faction1 == playerAlignedFaction)
         {
             playerFaction.setRelationship(faction2Id, after);
@@ -262,7 +265,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             faction1.setRelationship("player_npc", after);
         }
         
-        // if now at peace, raise relationships for commission holder
+        // if now at peace/war, set relationships for commission holder
+        // TODO figure out if the playerFaction bit is really needed
         ExerelinReputationAdjustmentResult repResult = new ExerelinReputationAdjustmentResult(delta, wasHostile, isHostile);
         if (repResult.wasHostile && !repResult.isHostile)
         {
@@ -293,7 +297,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             {                                                // who wouldn't want to change relations just because our employee is working with an involved faction
                 if (commissionFactionId.equals(faction1Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction1Id))
                 {
-                    playerAlignedFaction.ensureAtBest(faction2Id, RepLevel.HOSTILE);
+                    playerAlignedFaction.ensureAtBest(faction2Id, RepLevel.HOSTILE);    // is this needed?
                     playerFaction.ensureAtBest(faction2Id, RepLevel.HOSTILE);
                 }
                 if (commissionFactionId.equals(faction2Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction2Id))
@@ -306,7 +310,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
         AllianceManager.syncAllianceRelationshipsToFactionRelationship(faction1Id, faction2Id);
-        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
+        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);    // note: also syncs player_npc to player
         
         SectorManager.checkForVictory();
         return repResult;

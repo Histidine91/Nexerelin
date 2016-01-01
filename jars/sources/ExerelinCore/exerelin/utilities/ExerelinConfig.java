@@ -42,10 +42,6 @@ public class ExerelinConfig
     public static float prisonerLootChancePer10Fp = 0.05f;
     
     public static float crewLootMult = 0.02f;
-    
-    // Special Ships
-    public static String[] validBoardingFlagships = new String[]{};
-    public static String[] validTroopTransportShips = new String[]{};
 
     public static String[] builtInFactions = new String[]{};
     public static String[] supportedModFactions = new String[]{};
@@ -87,6 +83,8 @@ public class ExerelinConfig
     public static float factionRespawnInterval = 30f;
     public static boolean countPiratesForVictory = false;
     public static boolean ownFactionCustomsInspections = false;
+	public static boolean followersAgents = false;
+	public static boolean followersDiplomacy = false;
     public static boolean enableAvesta = true;
     public static boolean enableShanghai = true;
     public static int directoryDialogKey = 32;  // D
@@ -152,6 +150,8 @@ public class ExerelinConfig
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
+			followersAgents = settings.optBoolean("followersAgents", followersAgents);
+			followersDiplomacy = settings.optBoolean("followersDiplomacy", followersDiplomacy);
             enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
             enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);

@@ -16,6 +16,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
 import exerelin.campaign.events.SecurityAlertEvent;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.ResponseFleetManager;
@@ -113,6 +114,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
             if (disallowedFactions.contains(faction.getId())) continue;
             if (ExerelinUtilsFaction.isPirateFaction(faction.getId())) continue;  // pirates don't do covert warfare
+            if (!ExerelinConfig.followersAgents && faction.getId().equals("player_npc")) continue;
             agentFactionPicker.add(faction);
             factionCount++;
         }
