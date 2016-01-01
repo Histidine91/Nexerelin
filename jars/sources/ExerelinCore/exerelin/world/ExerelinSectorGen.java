@@ -1682,8 +1682,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 			if (planetData.primary == starData2) 
 			{
-				if (systemIndex == 0) weight *= 0;
-				else weight *= 0.67f;
+				//if (systemIndex == 0) weight *= 0;
+				//else weight *= 0.67f;
+				weight *= 0.67;
 			}
 			capitalPicker.add(entityData, weight);
 		}
