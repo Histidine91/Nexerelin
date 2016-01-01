@@ -7,7 +7,6 @@ import java.util.List;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import data.scripts.campaign.SSP_FleetFactory;
@@ -147,5 +146,21 @@ public class ExerelinUtilsFleet
         // Re-add members to fleet from sorted list
         for (FleetMemberAPI member : initialFleetMembers)
             fleet.getFleetData().addFleetMember(member);
+    }
+    
+    public static float getDaysToOrbit(CampaignFleetAPI fleet)
+    {
+        float daysToOrbit = 0.0F;
+        if (fleet.getFleetPoints() <= 50.0F) {
+            daysToOrbit = 2.0F;
+        } else if (fleet.getFleetPoints() <= 100.0F) {
+            daysToOrbit = 4.0F;
+        } else if (fleet.getFleetPoints() <= 150.0F) {
+            daysToOrbit = 6.0F;
+        } else {
+            daysToOrbit = 8.0F;
+        }
+        daysToOrbit *= (0.5F + (float)Math.random() * 0.5F);
+        return daysToOrbit;
     }
 }

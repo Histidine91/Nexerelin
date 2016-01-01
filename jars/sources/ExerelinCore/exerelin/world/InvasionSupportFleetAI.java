@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
@@ -113,26 +114,10 @@ public class InvasionSupportFleetAI implements EveryFrameScript
         return false;
     }
   
-    private float getDaysToOrbit()
-    {
-        float daysToOrbit = 0.0F;
-        if (this.fleet.getFleetPoints() <= 50.0F) {
-            daysToOrbit += 2.0F;
-        } else if (this.fleet.getFleetPoints() <= 100.0F) {
-            daysToOrbit += 4.0F;
-        } else if (this.fleet.getFleetPoints() <= 150.0F) {
-            daysToOrbit += 6.0F;
-        } else {
-            daysToOrbit += 8.0F;
-        }
-        daysToOrbit *= (0.5F + (float)Math.random() * 0.5F);
-        return daysToOrbit;
-    }
-  
-    private void giveInitialAssignment()
+    protected void giveInitialAssignment()
     {
         if (data.noWait) return;
-        float daysToOrbit = getDaysToOrbit();
+        float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet);
         this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionStrike"));
     }
   
@@ -143,6 +128,7 @@ public class InvasionSupportFleetAI implements EveryFrameScript
             //log.info("Invasion support fleet " + this.fleet.getNameWithFaction() + " standing down");
             this.orderedReturn = true;
             this.fleet.clearAssignments();
+			float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet);
             
             SectorEntityToken destination = data.source;
             
@@ -159,7 +145,7 @@ public class InvasionSupportFleetAI implements EveryFrameScript
                         destination = data.target;
                 }
                 this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
-                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("standingDown", null, "missionStrike"));
+                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, daysToOrbit, StringHelper.getFleetAssignmentString("standingDown", null, "missionStrike"));
             }
             //other stand down reasons
             else if (data.target.getFaction() == data.fleet.getFaction())
@@ -176,12 +162,12 @@ public class InvasionSupportFleetAI implements EveryFrameScript
                 }
                 destination = data.target;
                 this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, destination, 40.0F, StringHelper.getFleetAssignmentString("defending", data.target.getName()));
-                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName()));
+                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, daysToOrbit, StringHelper.getFleetAssignmentString("endingMission", destination.getName()));
             }
             else
             {
                 this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
-                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("endingMission", destination.getName()));
+                this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, daysToOrbit, StringHelper.getFleetAssignmentString("endingMission", destination.getName()));
             }
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
             log.info("Strike fleet standing down; critical damage? " + criticalDamage);

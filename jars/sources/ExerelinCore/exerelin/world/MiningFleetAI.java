@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.MiningHelper;
 import exerelin.utilities.ExerelinUtilsCargo;
+import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import exerelin.world.MiningFleetManager.MiningFleetData;
 import java.util.List;
@@ -144,27 +145,11 @@ public class MiningFleetAI implements EveryFrameScript
     {
         return false;
     }
-    
-    protected float getDaysToOrbit()
-    {
-        float daysToOrbit = 0.0F;
-        if (this.fleet.getFleetPoints() <= 50.0F) {
-            daysToOrbit += 2.0F;
-        } else if (this.fleet.getFleetPoints() <= 100.0F) {
-            daysToOrbit += 4.0F;
-        } else if (this.fleet.getFleetPoints() <= 150.0F) {
-            daysToOrbit += 6.0F;
-        } else {
-            daysToOrbit += 8.0F;
-        }
-        daysToOrbit *= (0.5F + (float)Math.random() * 0.5F);
-        return daysToOrbit;
-    }
   
     protected void giveInitialAssignment()
     {
         if (data.noWait) return;
-        float daysToOrbit = getDaysToOrbit();
+        float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet);
         this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionMining"));
     }
   
@@ -177,7 +162,7 @@ public class MiningFleetAI implements EveryFrameScript
             
             SectorEntityToken destination = data.source;
             this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));			
-            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, getDaysToOrbit(), StringHelper.getFleetAssignmentString("miningUnload", null));
+            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), StringHelper.getFleetAssignmentString("miningUnload", null));
             this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
         }
     }
