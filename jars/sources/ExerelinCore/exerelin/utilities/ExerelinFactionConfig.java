@@ -2,9 +2,11 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import exerelin.campaign.AllianceManager.Alignment;
+import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.*;
+import org.json.JSONException;
 
 public class ExerelinFactionConfig
 {
@@ -66,11 +68,13 @@ public class ExerelinFactionConfig
     public List<String> customStations = new ArrayList<>();
     
     public List<String> miningVariantsOrWings = new ArrayList<String>() {};
+    
+    public Map<StartFleetType, List<String>> startShips = new HashMap<>();
 
     public ExerelinFactionConfig(String factionId)
     {
         this.factionId = factionId;
-        this.loadFactionConfig();
+        loadFactionConfig();
     }
 
     public void loadFactionConfig()
@@ -145,8 +149,9 @@ public class ExerelinFactionConfig
                     alignments.put(alignment, 0f);
                 }
             }
+			loadStartShips(settings);
         }
-        catch(Exception e)
+        catch(JSONException | IOException e)
         {
             Global.getLogger(ExerelinFactionConfig.class).error(e);
         }
@@ -155,6 +160,43 @@ public class ExerelinFactionConfig
         {
             miningVariantsOrWings = Arrays.asList(DEFAULT_MINERS);
         }
+    }
+    
+    public void getStartShipTypeIfAvailable(JSONObject settings, String key, StartFleetType type) throws JSONException
+    {
+        if (settings.has(key))
+            startShips.put(type, ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray(key)));
+    }
+    
+    public void loadStartShips(JSONObject settings) throws JSONException
+    {
+        getStartShipTypeIfAvailable(settings, "startShipsSolo", StartFleetType.SOLO);
+        getStartShipTypeIfAvailable(settings, "startShipsCombatSmall", StartFleetType.COMBAT_SMALL);
+        getStartShipTypeIfAvailable(settings, "startShipsCombatSmallSSP", StartFleetType.COMBAT_SMALL_SSP);
+        getStartShipTypeIfAvailable(settings, "startShipsTradeSmall", StartFleetType.TRADE_SMALL);
+        getStartShipTypeIfAvailable(settings, "startShipsTradeSmallSSP", StartFleetType.TRADE_SMALL_SSP);
+        getStartShipTypeIfAvailable(settings, "startShipsCombatLarge", StartFleetType.COMBAT_LARGE);
+        getStartShipTypeIfAvailable(settings, "startShipsCombatLargeSSP", StartFleetType.COMBAT_LARGE_SSP);
+        getStartShipTypeIfAvailable(settings, "startShipsTradeLarge", StartFleetType.TRADE_LARGE);
+        getStartShipTypeIfAvailable(settings, "startShipsTradeLargeSSP", StartFleetType.TRADE_LARGE_SSP);
+    }
+    
+    public List<String> getStartShipsForType(String typeStr)
+    {
+        StartFleetType type = StartFleetType.valueOf(typeStr.toUpperCase());
+        if (ExerelinUtils.isSSPInstalled())
+        {
+            StartFleetType typeSSP = StartFleetType.valueOf((typeStr + "_SSP").toUpperCase());
+            if (startShips.containsKey(typeSSP))
+                return startShips.get(typeSSP);
+        }
+        if (startShips.containsKey(type))
+            return startShips.get(type);
+        
+        if (startShips.containsKey(StartFleetType.SOLO))
+            return startShips.get(StartFleetType.SOLO);
+        
+        return Arrays.asList(new String[]{"wolf_Starting"});
     }
 
     private String[] JSONArrayToStringArray(JSONArray jsonArray)
@@ -174,5 +216,13 @@ public class ExerelinFactionConfig
             Global.getLogger(ExerelinFactionConfig.class).error(e);
             return new String[]{};
         }
+    }
+    
+    public static enum StartFleetType {
+        SOLO, SOLO_SSP,
+        COMBAT_SMALL, COMBAT_SMALL_SSP,
+        TRADE_SMALL, TRADE_SMALL_SSP,
+        COMBAT_LARGE, COMBAT_LARGE_SSP,
+        TRADE_LARGE, TRADE_LARGE_SSP
     }
 }

@@ -5,4 +5,11 @@
 
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+    
+    "startShipsSolo":["monitor_Indie"],
+    "startShipsSoloSSP":["ssp_alastor_sta"],
+    "startShipsCombatSmall":["hammerhead_Balanced", "vigilance_Starting", "kite_Standard"],
+    "startShipsTradeSmall":["mule_Starting", "cerberus_Standard", "mercury_Standard"],
+    "startShipsCombatLarge":["eagle_Balanced", "sunder_Assault", "brawler_Elite"],
+    "startShipsTradeLarge":["venture_Balanced", "buffalo_Standard", "shepherd_Frontier"],
 }

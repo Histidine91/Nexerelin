@@ -21,4 +21,12 @@
 	"diplomatic":-0.5,
         "ideological":0.5,
     },
+    
+    "startShipsSolo":["lasher_Starting"],
+    "startShipsCombatSmall":["enforcer_Balanced", "lasher_CS", "wolf_hegemony_CS"],
+    "startShipsCombatSmallSSP":["enforcer_Balanced", "brawler_hegemony_ass", "ssp_tiger_rai"],
+    "startShipsTradeSmall":["mule_Starting", "hound_hegemony_Standard", "kite_Interceptor"],
+    "startShipsCombatLarge":["dominator_Assault", "enforcer_Escort", "kite_Interceptor"],
+    "startShipsCombatLargeSSP":["ssp_punisher_eli", "ssp_vanguard_sta", "wolf_hegemony_CS"],
+    "startShipsTradeLarge":["venture_Balanced", "buffalo_hegemony_Standard", "shepherd_Frontier"],
 }

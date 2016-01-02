@@ -6,6 +6,8 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.Misc;
@@ -69,7 +71,6 @@ public class PlayerStartHandler {
 				ui.addMessage("You are using " + numIncompatibles + " mod faction(s) that do not support Corvus mode!", color, numIncompatibles+"", color2);
 				ui.addMessage("See starsector.log for details", color);
 			}
-			
 		}
 		else if (!SectorManager.getFreeStart())
 		{
@@ -82,6 +83,16 @@ public class PlayerStartHandler {
 		{
 			if (entity != null && !entity.getFaction().isNeutralFaction())
 				ExerelinUtilsFaction.grantCommission(entity);
+		}
+		
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		int numOfficers = ExerelinSetupData.getInstance().numStartingOfficers;
+		int level = numOfficers * 2 + 1;
+		for (int i=0; i< numOfficers; i++)
+		{
+			PersonAPI officer = OfficerManagerEvent.createOfficer(faction, level);
+			Global.getSector().getPlayerFleet().getFleetData().addOfficer(officer);
+			level -= 2;
 		}
 	}
 }

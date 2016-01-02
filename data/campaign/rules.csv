@@ -333,197 +333,193 @@ NGCAddSkillPoints 200
 NGCAddAptitudePoints 10
 NGCSetStartingLocationExerelin
 NGCDone",,,
-ExerelinNGCOwnFaction,NewGameOptionSelected,"$option == exerelinNGCOwnFaction
-!$haveSSP","NGCSetPlayerFaction ""player_npc""
-NGCAddShipAndComplement ""monitor_Indie""
-AddText ""Added Monitor-class frigate"" textFriendColor
+ExerelinNGCOwnFaction,NewGameOptionSelected,"$option == exerelinNGCOwnFaction","NGCSetPlayerFaction ""player_npc""
 FireBest ExerelinNGCStep3",,,
-ExerelinNGCFreeStart,NewGameOptionSelected,"$option == exerelinNGCFreeStart
-!$haveSSP","NGCSetPlayerFaction ""player_npc""
-NGCAddShipAndComplement ""monitor_Indie""
+ExerelinNGCFreeStart,NewGameOptionSelected,"$option == exerelinNGCFreeStart","NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart true
-AddText ""Added Monitor-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
-ExerelinNGCOwnFactionSSP,NewGameOptionSelected,"$option == exerelinNGCOwnFaction
-$haveSSP","NGCSetPlayerFaction ""player_npc""
-NGCAddShipAndComplement ""ssp_alastor_sta""
-AddText ""Added Alastor-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
-ExerelinNGCFreeStartSSP,NewGameOptionSelected,"$option == exerelinNGCFreeStart
-$haveSSP","NGCSetPlayerFaction ""player_npc""
-NGCAddShipAndComplement ""ssp_alastor_sta""
-NGCSetFreeStart true
-AddText ""Added Alastor-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == exerelinNGCJoinHegemony,"NGCSetPlayerFaction ""hegemony""
-NGCAddShipAndComplement ""lasher_Starting""
-AddText ""Added Lasher-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == exerelinNGCJoinSindrianDiktat,"NGCSetPlayerFaction ""sindrian_diktat""
 NGCAddShipAndComplement ""brawler_Elite""
 AddText ""Added Brawler-class gunship"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == exerelinNGCJoinTriTachyon,"NGCSetPlayerFaction ""tritachyon""
-NGCAddShipAndComplement ""wolf_Starting""
-AddText ""Added Wolf-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinLuddicChurch,NewGameOptionSelected,$option == exerelinNGCJoinLuddicChurch,"NGCSetPlayerFaction ""luddic_church""
 NGCAddShipAndComplement ""vigilance_Starting""
 AddText ""Added Vigilance-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinPirate,NewGameOptionSelected,$option == exerelinNGCJoinPirate,"NGCSetPlayerFaction ""pirates""
 NGCAddShipAndComplement ""cerberus_Standard""
 AddText ""Added Cerberus-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinApprolight,NewGameOptionSelected,$option == exerelinNGCJoinApprolight,"NGCSetPlayerFaction ""approlight""
 NGCAddShipAndComplement ""AL_mumber_C""
 AddText ""Added Mumber-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinASPSyndicate,NewGameOptionSelected,$option == exerelinNGCJoinASPSyndicate,"NGCSetPlayerFaction ""syndicate_asp""
 NGCAddShipAndComplement ""syndicate_asp_diamondback_Standard""
 AddText ""Added Diamondback-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == exerelinNGCJoinBlackrock,"NGCSetPlayerFaction ""blackrock_driveyards""
-NGCAddShipAndComplement ""brdy_mantis_attack""
-AddText ""Added Mantis-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinCitadel,NewGameOptionSelected,$option == exerelinNGCJoinCitadel,"NGCSetPlayerFaction ""citadeldefenders""
 NGCAddShipAndComplement ""Fox_Frigate_standard""
 AddText ""Added Aural-class skirmisher"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinCrystanite,NewGameOptionSelected,$option == exerelinNGCJoinCrystanite,"NGCSetPlayerFaction ""crystanite""
 NGCAddShipAndComplement ""crys_pin_standard""
 AddText ""Added Pin-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinDiableAvionics,NewGameOptionSelected,$option == exerelinNGCJoinDiableAvionics,"NGCSetPlayerFaction ""diableavionics""
 NGCAddShipAndComplement ""diableavionics_vapor_standard""
 AddText ""Added Vapor-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinExigency,NewGameOptionSelected,$option == exerelinNGCJoinExigency,"NGCSetPlayerFaction ""exigency""
 NGCAddShipAndComplement ""exigency_destroyer_Disruptor""
 AddText ""Added Zephos-class destroyer"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinExipirated,NewGameOptionSelected,$option == exerelinNGCJoinExipirated,"NGCSetPlayerFaction ""exipirated""
 NGCAddShipAndComplement ""exipirated_azryel_Standard""
 AddText ""Added Azryel-class destroyer"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinFirestormFederation,NewGameOptionSelected,$option == exerelinNGCJoinFirestormFederation,"NGCSetPlayerFaction ""firestorm_federation""
 NGCAddShipAndComplement ""EM_Frigate_variant""
 AddText ""Added Torch-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinHiigaranDescendants,NewGameOptionSelected,$option == exerelinNGCJoinHiigaranDescendants,"NGCSetPlayerFaction ""hiigaran_descendants""
 NGCAddShipAndComplement ""hii_jet_Standard""
 AddText ""Added Jet-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinICI,NewGameOptionSelected,$option == exerelinNGCJoinICI,"NGCSetPlayerFaction ""sun_ici""
 NGCAddShipAndComplement ""sun_ice_specter_Standard""
 AddText ""Added Specter-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinInfected,NewGameOptionSelected,$option == exerelinNGCJoinInfected,"NGCSetPlayerFaction ""infected""
 NGCAddShipAndComplement ""flx_necroraider_support""
 AddText ""Added Necro Raider-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinInterstellarImperium,NewGameOptionSelected,$option == exerelinNGCJoinInterstellarImperium,"NGCSetPlayerFaction ""interstellarimperium""
 NGCAddShipAndComplement ""ii_decurion_sta""
 AddText ""Added Decurion-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinJunkPirates,NewGameOptionSelected,$option == exerelinNGCJoinJunkPirates,"NGCSetPlayerFaction ""junk_pirates""
 NGCAddShipAndComplement ""junk_pirates_clam_Standard""
 AddText ""Added Clam-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinTemplars,NewGameOptionSelected,$option == exerelinNGCJoinTemplars,"NGCSetPlayerFaction ""templars""
 NGCAddShipAndComplement ""tem_martyr_sal""
 AddText ""Added Martyr-class corvette"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinLooters,NewGameOptionSelected,$option == exerelinNGCJoinLooters,"NGCSetPlayerFaction ""Lte""
 NGCAddShipAndComplement ""Lt_Tan_Destroyer""
 AddText ""Added Tan-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinMayorate,NewGameOptionSelected,$option == exerelinNGCJoinMayorate,"NGCSetPlayerFaction ""mayorate""
 NGCAddShipAndComplement ""ilk_lilith_assault""
 AddText ""Added Lilith-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinMetelson,NewGameOptionSelected,$option == exerelinNGCJoinMetelson,"NGCSetPlayerFaction ""metelson""
 NGCAddShipAndComplement ""mi_farin_standard""
 AddText ""Added Farin-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinNeutrinoCorp,NewGameOptionSelected,$option == exerelinNGCJoinNeutrinoCorp,"NGCSetPlayerFaction ""neutrinocorp""
 NGCAddShipAndComplement ""neutrino_singularity_standard""
 AddText ""Added Singularity-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinNGO,NewGameOptionSelected,$option == exerelinNGCJoinNGO,"NGCSetPlayerFaction ""new_galactic_order""
 NGCAddShipAndComplement ""ngo_frigate_standard""
 AddText ""Added Freyr-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinNihil,NewGameOptionSelected,$option == exerelinNGCJoinNihil,"NGCSetPlayerFaction ""nil""
 NGCAddShipAndComplement ""nihil_null_cultist""
 AddText ""Added Null-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 exerelinNGCJoinOculus,NewGameOptionSelected,$option == exerelinNGCJoinOculus,"NGCSetPlayerFaction ""oculus""
 NGCAddShipAndComplement ""ob_tigris_standard""
 AddText ""Enjoy your Tigris-class destroyer :p"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinORI,NewGameOptionSelected,$option == exerelinNGCJoinORI,"NGCSetPlayerFaction ""ori""
 NGCAddShipAndComplement ""ori_bastion_variant""
 AddText ""Added Bastion-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinPACK,NewGameOptionSelected,$option == exerelinNGCJoinPACK,"NGCSetPlayerFaction ""pack""
 NGCAddShipAndComplement ""pack_wirefox_Standard""
 AddText ""Added Wirefox-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinPatria,NewGameOptionSelected,$option == exerelinNGCJoinPatria,"NGCSetPlayerFaction ""patnavy""
 NGCAddShipAndComplement ""pat_kortenaer_patrian""
 AddText ""Added Kortenaer-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinPTech,NewGameOptionSelected,$option == exerelinNGCJoinPTech,"NGCSetPlayerFaction ""PTech""
 NGCAddShipAndComplement ""pt_pieta_standard""
 AddText ""Added Pieta-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinP9,NewGameOptionSelected,$option == exerelinNGCJoinP9,"NGCSetPlayerFaction ""pn_colony""
 NGCAddShipAndComplement ""cs_pn_sike""
 AddText ""Added Sike-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinRadicalORI,NewGameOptionSelected,$option == exerelinNGCJoinRadicalORI,"NGCSetPlayerFaction ""rori""
 NGCAddShipAndComplement ""ori_bastion_variant""
 AddText ""Added Bastion-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinScion,NewGameOptionSelected,$option == exerelinNGCJoinScion,"NGCSetPlayerFaction ""scion""
 NGCAddShipAndComplement ""scion_bishop_standard""
 AddText ""Added Bishop-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinSCY,NewGameOptionSelected,$option == exerelinNGCJoinSCY,"NGCSetPlayerFaction ""SCY""
 NGCAddShipAndComplement ""SCY_talos_recon""
 AddText ""Added Talos-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinShadowyards,NewGameOptionSelected,$option == exerelinNGCJoinShadowyards,"NGCSetPlayerFaction ""shadow_industry""
 NGCAddShipAndComplement ""ms_enlil_Balanced""
 AddText ""Added Enlil-class gunship"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinSpire,NewGameOptionSelected,$option == exerelinNGCJoinSpire,"NGCSetPlayerFaction ""spire""
 NGCAddShipAndComplement ""spire_corvette_Standoff""
 AddText ""Added Feldspar-class corvette"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinTiandong,NewGameOptionSelected,$option == exerelinNGCJoinTiandong,"NGCSetPlayerFaction ""tiandong""
 NGCAddShipAndComplement ""tiandong_nanzhong_Standard""
 AddText ""Added Nanzhong-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinPbc,NewGameOptionSelected,$option == exerelinNGCJoinPbc,"NGCSetPlayerFaction ""pbc""
 NGCAddShipAndComplement ""pbc_orion_ff_assault""
 AddText ""Added Orion-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinValkyrians,NewGameOptionSelected,$option == exerelinNGCJoinValkyrians,"NGCSetPlayerFaction ""valkyrian""
 NGCAddShipAndComplement ""valk_inquisitor_A""
 AddText ""Added Inquisitor-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ,,,,,,
-ExerelinNGCFinalize,ExerelinNGCStep3,,"AddText ""Added $crewAdded crew"" textFriendColor
+ExerelinNGCPickStartingShips,ExerelinNGCStep3,,NGCSetStartingFleetTooltips,Your starting fleet?,"exerelinNGCFleetSolo:Solo frigate
+exerelinNGCFleetCombatSmall:Light combat patrol
+exerelinNGCFleetTradeSmall:Small trade convoy
+exerelinNGCFleetCombatLarge:Upsized military unit
+exerelinNGCFleetTradeLarge:Larger mercantile train
+exerelinNGCFactionsBack:Go back",
+ExerelinNGCStartShipsSolo,NewGameOptionSelected,$option == exerelinNGCFleetSolo,"NGCAddStartingShipsByFleetType SOLO
+FireBest ExerelinNGCStep4",,,
+ExerelinNGCStartShipsCombatSmall,NewGameOptionSelected,$option == exerelinNGCFleetCombatSmall,"NGCAddStartingShipsByFleetType COMBAT_SMALL
+FireBest ExerelinNGCStep4",,,
+ExerelinNGCStartShipsTradeSmall,NewGameOptionSelected,$option == exerelinNGCFleetTradeSmall,"NGCAddStartingShipsByFleetType TRADE_SMALL
+FireBest ExerelinNGCStep4",,,
+ExerelinNGCStartShipsCombatLarge,NewGameOptionSelected,$option == exerelinNGCFleetCombatLarge,"NGCAddStartingShipsByFleetType COMBAT_LARGE
+FireBest ExerelinNGCStep4",,,
+ExerelinNGCStartShipsTradeLarge,NewGameOptionSelected,$option == exerelinNGCFleetTradeLarge,"NGCAddStartingShipsByFleetType TRADE_LARGE
+FireBest ExerelinNGCStep4",,,
+,,,,,,
+ExerelinNGCFinalize,ExerelinNGCStep4,,"AddText ""Added $crewAdded crew"" textFriendColor
 AddText ""Added $suppliesAdded supplies"" textFriendColor
-AddText ""Added $suppliesAdded fuel"" textFriendColor",,"exerelinNGCNormalStart:Normal start (10000 credits, level 1)
-exerelinNGCEasyStart:Fast start (50000 credits, level 6)
-exerelinNGCEasyStart2:Extra fast start (250000 credits, level 16)",
+AddText ""Added $suppliesAdded fuel"" textFriendColor
+AddText ""Starting experience and credits?""",,"exerelinNGCNormalStart:Ensign (10000 credits, level 1)
+exerelinNGCEasyStart:Lieutenant (50000 credits, level 6, one officer)
+exerelinNGCEasyStart2:Commander (250000 credits, level 16, two officers)",
 ExerelinNGCNormalStart,NewGameOptionSelected,$option == exerelinNGCNormalStart,"NGCAddCredits 10000
 NGCAddAptitudePoints 2
 NGCAddSkillPoints 4
+NGCSetNumStartingOfficers 0
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
 AddText ""Added 10000 credits"" textFriendColor",,1:exerelinNGCDone:Continue,
@@ -531,8 +527,10 @@ ExerelinNGCEasyStart,NewGameOptionSelected,$option == exerelinNGCEasyStart,"NGCA
 NGCAddAptitudePoints 2
 NGCAddSkillPoints 4
 NGCAddXP 31500
+NGCSetNumStartingOfficers 1
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
+AddText ""Added 1 officer"" textFriendColor
 AddText ""Added 50000 credits"" textFriendColor
 AddText ""Added 31500 XP"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart2,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
@@ -540,19 +538,23 @@ ExerelinNGCEasyStart2,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
 NGCAddAptitudePoints 2
 NGCAddSkillPoints 4
 NGCAddXP 214500
+NGCSetNumStartingOfficers 2
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
 AddText ""Added 250000 credits"" textFriendColor
-AddText ""Added 214500 XP"" textFriendColor",,1:exerelinNGCDone:Continue,
+AddText ""Added 214500 XP"" textFriendColor
+AddText ""Added 2 officers"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart2SSP,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
 $haveSSP","NGCAddCredits 250000
 NGCAddAptitudePoints 2
 NGCAddSkillPoints 4
 NGCAddXP 250500
+NGCSetNumStartingOfficers 2
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
 AddText ""Added 250000 credits"" textFriendColor
-AddText ""Added 250500 XP"" textFriendColor",,1:exerelinNGCDone:Continue,
+AddText ""Added 250500 XP"" textFriendColor
+AddText ""Added 2 officers"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCDoneOption,NewGameOptionSelected,$option == exerelinNGCDone,"NGCSetStartingLocationExerelin
 NGCDone",,,
 # END NGC OPTIONS,,,,,,

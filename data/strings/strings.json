@@ -156,6 +156,11 @@
 		"shipDestroyed":"$ship destroyed",
 		"shipLostCR":"$ship lost $crLost CR"
 	},
+	"exerelin_ngc":{
+		"added":"added",
+		"shipString":"$shipClass-class $designation",
+		"fighterWingString":"$shipClass $designation wing",
+	},
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",
 		
