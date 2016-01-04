@@ -513,16 +513,16 @@ FireBest ExerelinNGCStep4",,,
 ExerelinNGCFinalize,ExerelinNGCStep4,,"AddText ""Added $crewAdded crew"" textFriendColor
 AddText ""Added $suppliesAdded supplies"" textFriendColor
 AddText ""Added $suppliesAdded fuel"" textFriendColor
-AddText ""Starting experience and credits?""",,"exerelinNGCNormalStart:Ensign (10000 credits, level 1)
-exerelinNGCEasyStart:Lieutenant (50000 credits, level 6, one officer)
-exerelinNGCEasyStart2:Commander (250000 credits, level 16, two officers)",
+AddText ""Starting experience and credits?""",,"exerelinNGCNormalStart:Ensign (10,000 credits, level 1)
+exerelinNGCEasyStart:Lieutenant (50,000 credits, level 6, one officer)
+exerelinNGCEasyStart2:Commander (250,000 credits, level 16, two officers)",
 ExerelinNGCNormalStart,NewGameOptionSelected,$option == exerelinNGCNormalStart,"NGCAddCredits 10000
 NGCAddAptitudePoints 2
 NGCAddSkillPoints 4
 NGCSetNumStartingOfficers 0
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
-AddText ""Added 10000 credits"" textFriendColor",,1:exerelinNGCDone:Continue,
+AddText ""Added 10,000 credits"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart,NewGameOptionSelected,$option == exerelinNGCEasyStart,"NGCAddCredits 50000
 NGCAddAptitudePoints 2
 NGCAddSkillPoints 4
@@ -531,7 +531,7 @@ NGCSetNumStartingOfficers 1
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
 AddText ""Added 1 officer"" textFriendColor
-AddText ""Added 50000 credits"" textFriendColor
+AddText ""Added 50,000 credits"" textFriendColor
 AddText ""Added 31500 XP"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart2,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
 !$haveSSP","NGCAddCredits 250000
@@ -541,8 +541,8 @@ NGCAddXP 214500
 NGCSetNumStartingOfficers 2
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
-AddText ""Added 250000 credits"" textFriendColor
-AddText ""Added 214500 XP"" textFriendColor
+AddText ""Added 250,000 credits"" textFriendColor
+AddText ""Added 214,500 XP"" textFriendColor
 AddText ""Added 2 officers"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart2SSP,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
 $haveSSP","NGCAddCredits 250000
@@ -552,8 +552,8 @@ NGCAddXP 250500
 NGCSetNumStartingOfficers 2
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
-AddText ""Added 250000 credits"" textFriendColor
-AddText ""Added 250500 XP"" textFriendColor
+AddText ""Added 250,000 credits"" textFriendColor
+AddText ""Added 250,500 XP"" textFriendColor
 AddText ""Added 2 officers"" textFriendColor",,1:exerelinNGCDone:Continue,
 ExerelinNGCDoneOption,NewGameOptionSelected,$option == exerelinNGCDone,"NGCSetStartingLocationExerelin
 NGCDone",,,
