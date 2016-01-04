@@ -29,7 +29,7 @@
     "startShipsTradeSmallSSP":["ssp_camel_ass", "wolf_CS", "ssp_nautilus_sta"],
     "startShipsCombatLarge":["apogee_Balanced", "medusa_Attack", "omen_PD"],
     "startShipsCombatLargeSSP":["apogee_Balanced", "ssp_beholder_ass", "afflictor_Strike"],
-    "startShipsTradeLarge":["starliner_Standard", "buffalo_tritachyon_Standard", "shepherd_Frontier"],
+    "startShipsTradeLarge":["starliner_Standard", "buffalo_tritachyon_Standard", "mercury_Standard"],
     "startShipsTradeLargeSSP":["ssp_circe_fis", "buffalo_tritachyon_Standard", "ssp_tick_sup"],
     
 }

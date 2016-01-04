@@ -11,5 +11,5 @@
     "startShipsCombatSmall":["hammerhead_Balanced", "vigilance_Starting", "kite_Standard"],
     "startShipsTradeSmall":["mule_Starting", "cerberus_Standard", "mercury_Standard"],
     "startShipsCombatLarge":["eagle_Balanced", "sunder_Assault", "brawler_Elite"],
-    "startShipsTradeLarge":["venture_Balanced", "buffalo_Standard", "shepherd_Frontier"],
+    "startShipsTradeLarge":["venture_Balanced", "tarsus_Standard", "shepherd_Frontier"],
 }
