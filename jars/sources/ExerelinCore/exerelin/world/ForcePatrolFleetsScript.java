@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 /**
  * Spawns patrols for factions that normally don't have them (as set in .faction file)
  */
+@Deprecated
 public class ForcePatrolFleetsScript extends BaseCampaignEventListener implements EveryFrameScript
 {
 	public static Logger log = Global.getLogger(ForcePatrolFleetsScript.class);

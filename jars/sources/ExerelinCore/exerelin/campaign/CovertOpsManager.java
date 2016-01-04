@@ -67,7 +67,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         try {
             loadSettings();
         } catch (IOException | JSONException | NullPointerException ex) {
-            Global.getLogger(DiplomacyManager.class).log(Level.ERROR, ex);
+            log.error(ex);
         }
     }
     
