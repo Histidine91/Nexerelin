@@ -175,6 +175,10 @@ public class ExerelinModPlugin extends BaseModPlugin
             SectorManager.reinitLiveFactions();
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
+		
+		SectorAPI sector = Global.getSector();
+		for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
+			PlayerStartHandler.addOmnifactory(sector, i);
     }
     
     @Override
