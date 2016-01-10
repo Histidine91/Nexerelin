@@ -397,9 +397,7 @@ NGCAddShipAndComplement ""sun_ice_specter_Standard""
 AddText ""Added Specter-class frigate"" textFriendColor
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinInfected,NewGameOptionSelected,$option == exerelinNGCJoinInfected,"NGCSetPlayerFaction ""infected""
-NGCAddShipAndComplement ""flx_necroraider_support""
-AddText ""Added Necro Raider-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinInterstellarImperium,NewGameOptionSelected,$option == exerelinNGCJoinInterstellarImperium,"NGCSetPlayerFaction ""interstellarimperium""
 NGCAddShipAndComplement ""ii_decurion_sta""
 AddText ""Added Decurion-class frigate"" textFriendColor
@@ -413,9 +411,7 @@ NGCAddShipAndComplement ""tem_martyr_sal""
 AddText ""Added Martyr-class corvette"" textFriendColor
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinLooters,NewGameOptionSelected,$option == exerelinNGCJoinLooters,"NGCSetPlayerFaction ""Lte""
-NGCAddShipAndComplement ""Lt_Tan_Destroyer""
-AddText ""Added Tan-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinMayorate,NewGameOptionSelected,$option == exerelinNGCJoinMayorate,"NGCSetPlayerFaction ""mayorate""
 NGCAddShipAndComplement ""ilk_lilith_assault""
 AddText ""Added Lilith-class frigate"" textFriendColor

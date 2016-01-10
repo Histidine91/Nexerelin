@@ -16,4 +16,10 @@
     "factionsDisliked":[], # String array
     
     "alignments":{},
+    
+    "startShipsSolo":["flx_necroraider_support"],
+    "startShipsCombatSmall":["flx_necroraider_assault", "flx_necrogunner_assault", "flx_necroghoul_assault"],
+    "startShipsTradeSmall":["flx_necroraider_assault" , "flx_necrohauler_standard", "flx_necrotarantula_standard"],
+    "startShipsCombatLarge":["flx_necroraider_assault" , "flx_necroghoul_assault", "flx_necroreaper_assault"],
+    "startShipsTradeLarge":["flx_necrotarantula_assault", "flx_necrotarantula_assault", "flx_necroraider_assault", "flx_necroant_hauler", "flx_necroant_hauler"],
 }
