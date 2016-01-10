@@ -12,12 +12,12 @@
 			#"organics":0.1,
 		},
 		"gas_giant":{
-			"volatiles":1.75,
-			"organics":0.25,
+			"volatiles":1,
+			"organics":0.2,
 		},
 		"ice_giant":{
-			"volatiles":1.75,
-			"organics":0.25,
+			"volatiles":1,
+			"organics":0.2,
 		},
 		"desert":{
 			"ore":1,
