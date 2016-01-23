@@ -250,6 +250,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		this.activeFleets.removeAll(remove);
 	
 		updateMiningFleetPoints(POINT_INCREMENT_PERIOD);
+		MiningHelper.renewResources(POINT_INCREMENT_PERIOD);
 		timer -= POINT_INCREMENT_PERIOD;
 	}
 	

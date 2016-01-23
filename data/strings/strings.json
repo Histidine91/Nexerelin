@@ -141,6 +141,7 @@
 	"exerelin_mining":{
 		"crewLost":"crew lost",
 		"danger":"hazard rating",
+		"exhaustion":"resource exhaustion",
 		"miningAccident":"mining accident",
 		"miningReport":"mining report",
 		"miningStrength":"mining strength",

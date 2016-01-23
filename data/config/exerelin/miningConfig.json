@@ -4,110 +4,166 @@
 	"baseCacheChance":0.1,
 	"baseAccidentChance":0.5,
 	"xpPerMiningStrength":50,
+	"baseAccidentCRLoss":0.1,
+	"baseAccidentHullDamage":400.0,
+	"exhaustionPer100MiningStrength":0.04,
+	"renewRatePerDay":0.002,
+	"planetDangerMult":1.25,
+	"planetExhaustionMult":0.75,
+	"planetRenewMult":1.25,
 	
-	"resources":{
+	"planetTypes":{
 		"default":{
-			"ore":1,
-			"rare_ore":0.1,
-			#"organics":0.1,
+			"resources":{
+				"ore":1,
+				"rare_ore":0.1
+			},
+			"danger":0.2,
+			"exhaustionRate":1,
+			"renewRate":1
+		},
+		"asteroid":{
+			"resources":{
+				"ore":0.5,
+				"rare_ore":0.05
+			},
+			"danger":0.2,
+			"exhaustionRate":0,
+			"renewRate":0
 		},
 		"gas_giant":{
-			"volatiles":1,
-			"organics":0.2,
+			"resources":{
+				"volatiles":1,
+				"organics":0.2
+			},
+			"danger":0.3,
+			"exhaustionRate":0,
+			"renewRate":0
 		},
 		"ice_giant":{
-			"volatiles":1,
-			"organics":0.2,
+			"resources":{
+				"volatiles":1,
+				"organics":0.2
+			},
+			"danger":0.3,
+			"exhaustionRate":0,
+			"renewRate":0
 		},
 		"desert":{
-			"ore":1,
-			"rare_ore":0.1,
-			"organics":0.5
+			"resources":{
+				"ore":1,
+				"rare_ore":0.1,
+				"organics":0.5
+			},
+			"danger":0.25
 		},
-		"frozen":{	# let it go
-			"ore":0.7,
-			"rare_ore":0.07,
-			"volatiles":0.5,
+		"frozen":{
+			"resources":{
+				"ore":0.7,
+				"rare_ore":0.07,
+				"volatiles":0.4
+			},
+			"danger":0.4
 		},
 		"cryovolcanic":{
-			"ore":0.7,
-			"rare_ore":0.07,
-			"volatiles":0.65
+			"resources":{
+				"ore":0.7,
+				"rare_ore":0.07,
+				"volatiles":0.5
+			},
+			"danger":0.5,
+			"renewRate":1.25
 		},
 		"rocky_ice":{
-			"ore":0.8,
-			"rare_ore":0.08,
-			"volatiles":0.25
+			"resources":{
+				"ore":0.8,
+				"rare_ore":0.08,
+				"volatiles":0.2
+			},
+			"danger":0.4
 		},
 		"rocky_metallic":{
-			"ore":1.3,
-			"rare_ore":0.13,
-			#"organics":0.1,
+			"resources":{
+				"ore":1.3,
+				"rare_ore":0.13
+			},
+			"exhaustionRate":0.8
 		},
 		"rocky_unstable":{
-			"ore":1.4,
-			"rare_ore":0.14,
-			#"organics":0.1,
+			"resources":{
+				"ore":1.4,
+				"rare_ore":0.14
+			},
+			"danger":0.6,
+			"renewRate":1.25
 		},
 		"lava":{
-			"ore":2,
-			"rare_ore":0.2
+			"resources":{
+				"ore":2,
+				"rare_ore":0.2
+			},
+			"danger":1,
+			"exhaustionRate":0.6,
+			"renewRate":2
 		},
 		"jungle":{
-			"ore":0.6,
-			"rare_ore":0.06,
-			"organics":1,
-			"food":0.3
+			"resources":{
+				"ore":0.6,
+				"rare_ore":0.06,
+				"organics":1,
+				"food":0.3
+			},
+			"danger":0.25
 		},
 		"water":{
-			"ore":0.6,
-			"rare_ore":0.06,
-			"organics":1,
-			"food":0.3
+			"resources":{
+				"ore":0.6,
+				"rare_ore":0.06,
+				"organics":1,
+				"food":0.3
+			},
+			"danger":0.25
 		},
 		"toxic":{
-			"ore":1,
-			"rare_ore":0.1,
-			"organics":0.3,
-			"volatiles":0.5
+			"resources":{
+				"ore":1,
+				"rare_ore":0.1,
+				"organics":0.3,
+				"volatiles":0.5
+			},
+			"danger":0.8
 		},
-		"radiated":{
-			"ore":1,
-			"rare_ore":0.1,
-			"volatiles":0.4,
+		"irradiated":{
+			"resources":{
+				"ore":1,
+				"rare_ore":0.1,
+				"volatiles":0.4
+			},
+			"danger":0.7
 		},
 		"terran-eccentric":{
-			"ore":1,
-			"rare_ore":1,
-			"organics":0.1,
+			"resources":{
+				"ore":1,
+				"rare_ore":1,
+				"organics":0.15
+			}
 		},
 		"tundra":{
-			"ore":0.7,
-			"rare_ore":0.07,
-			"volatiles":0.3,
-			"organics":0.2,
+			"resources":{
+				"ore":0.7,
+				"rare_ore":0.07,
+				"volatiles":0.3,
+				"organics":0.2
+			},
+			"danger":0.25
 		},
 		"barren-desert":{
-			"ore":0.9,
-			"rare_ore":0.9,
-			"organics":0.2,
-		},
-	},
-	"danger":{	# planets (as opposed to moons) have a 25% increased danger as well
-		"default":0.2,
-		"lava":1,
-		"jungle":0.2,
-		"desert":0.2,
-		"water":0.2,
-		"frozen":0.4,
-		"rocky_ice":0.4,
-		"cryovolcanic":0.5,
-		"rocky_unstable":0.6,
-		"toxic":1,
-		"radiated":0.8,
-		"gas_giant":0.24,
-		"ice_giant":0.24,
-		"terran-eccentric":0.3,
-		"tundra":0.3,
+			"resources":{
+				"ore":1,
+				"rare_ore":0.1,
+				"organics":0.1
+			},
+			"danger":0.3
+		}
 	}
 }
