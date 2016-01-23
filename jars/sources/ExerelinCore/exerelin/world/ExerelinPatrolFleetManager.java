@@ -55,7 +55,9 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		}
 		
 		float interval = Global.getSettings().getFloat("averagePatrolSpawnInterval");
-		tracker.setInterval(interval * 0.75f, interval * 1.25f);
+		if (tracker == null) 
+			tracker = new IntervalUtil(interval * 0.75f, interval * 1.25f);
+		else tracker.setInterval(interval * 0.75f, interval * 1.25f);
 		
 		return this;
 	}
