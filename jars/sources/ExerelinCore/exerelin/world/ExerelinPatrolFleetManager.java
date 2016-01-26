@@ -84,13 +84,20 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		float sizeMult = 1;
 		
 		if (market.getFaction().getCustom().optBoolean(Factions.CUSTOM_NO_PATROLS)) 
-			{
-				ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-				if (factionConfig == null || !factionConfig.spawnPatrols) return;
-				
-				sizeMult = factionConfig.patrolSizeMult;
-				if (sizeMult <= 0) return;
-			}
+		{
+			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+			if (factionConfig == null || !factionConfig.spawnPatrols) return;
+
+			sizeMult = factionConfig.patrolSizeMult;
+			if (sizeMult <= 0) return;
+		}
+		
+		// player currently invading this market; don't spawn patrols from it
+		if (market.getId().equals(Global.getSector().getCharacterData().getMemoryWithoutUpdate().getString("$invasionTarget")))
+		{
+			//Global.getSector().getCampaignUI().addMessage(Global.getSector().getCharacterData().getMemoryWithoutUpdate().getString("$invasionTarget"));
+			return;
+		}
 		
 		
 		List<PatrolFleetData> remove = new ArrayList<PatrolFleetData>();
