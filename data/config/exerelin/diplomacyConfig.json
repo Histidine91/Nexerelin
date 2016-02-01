@@ -237,7 +237,7 @@
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.1,
 			"maxRepChange":0.15,
-			"allowedFactions2":["luddic_church"],
+			"allowedFactions2":["luddic_church","kadur_theocracy","insurgency"],
 			"allowPirates":true,
 			"chance":1.5,
 		},
@@ -246,7 +246,7 @@
 			"stage":"persecution_minority",
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
-			"allowedFactions2":["luddic_church"],
+			"allowedFactions2":["luddic_church","kadur_theocracy","insurgency"],
 			"allowPirates":true,
 			"chance":1.5,
 		},
@@ -255,7 +255,7 @@
 			"stage":"persecution_majority",
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
-			"allowedFactions1":["luddic_church"],
+			"allowedFactions1":["luddic_church","kadur_theocracy","insurgency"],
 			"chance":1.5,
 		},
 		{
@@ -264,7 +264,7 @@
 			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
 			"repLimit":"inhospitable",
-			"allowedFactions2":["luddic_church"],
+			"allowedFactions2":["luddic_church","kadur_theocracy","insurgency"],
 			"chance":1.5,
 		},
 		{
@@ -273,7 +273,7 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
-			"allowedFactions1":["hegemony","sindrian_diktat","mayorate","interstellarimperium","new_galactic_order"],
+			"allowedFactions1":["hegemony","sindrian_diktat","mayorate","interstellarimperium","new_galactic_order","kadur_theocracy"],
 			"allowedFactions2":["luddic_church","shadow_industry","pack","spire"],
 			"chance":1.5,
 		},
@@ -284,7 +284,7 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
-			"allowedFactions1":["hegemony","luddic_church","pack","interstellarimperium","new_galactic_order"],
+			"allowedFactions1":["hegemony","luddic_church","pack","interstellarimperium","new_galactic_order","kadur_theocracy","insurgency"],
 			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","exigency","metelson","ptech"],
 			"chance":1.5,
 		},
@@ -299,7 +299,7 @@
 			"allowPirates":true,
 			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc",
 				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","SCY","valkyrian","pn_colony","spire","metelson","ptech","oculus"],
-			"chance":1.5,
+			"chance":1.2,
 		}
 	]
 }
