@@ -80,8 +80,8 @@ public class ExerelinMarketSetup
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 0.5f;	// lower than min so it can swap autofacs for shipbreakers if needed
 	
 	protected static final int[] PLANET_SIZE_ROTATION = new int[] {4, 5, 6, 5};
-	protected static final int[] MOON_SIZE_ROTATION = new int[] {3, 4, 5};
-	protected static final int[] STATION_SIZE_ROTATION = new int[] {3, 4, 5};
+	protected static final int[] MOON_SIZE_ROTATION = new int[] {3, 4, 5, 4};
+	protected static final int[] STATION_SIZE_ROTATION = new int[] {3, 4, 5, 4, 3};
 	
 	protected Map<String, Float> commodityDemand = new HashMap<>();
 	protected Map<String, Float> commoditySupply = new HashMap<>();
