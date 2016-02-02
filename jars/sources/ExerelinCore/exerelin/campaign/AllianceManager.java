@@ -134,6 +134,9 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return alliance2;
         }
         
+        // NPE safety (shouldn't happen but meh)
+        if (type == null) type = (Alignment) ExerelinUtils.getRandomArrayElement(Alignment.values());
+        
         // generate alliance name
         String name = "";
         boolean validName;
@@ -359,8 +362,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 float value = 0;
                 if (config!= null && config.alignments != null)
                 {
+                    log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.name);
                     //log.info("Alliance alignment: " + alliance.alignment.toString());
-                    value = config.alignments.get(alliance.alignment);
+                    Alignment align = alliance.alignment;
+                    if (align == null) align = (Alignment) ExerelinUtils.getRandomArrayElement(Alignment.values());	// NPE safety
+                    value = config.alignments.get(align);
                 }
                 if (value < MIN_ALIGNMENT_TO_JOIN_ALLIANCE  && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
                 
