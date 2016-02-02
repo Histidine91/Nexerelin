@@ -11,12 +11,12 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import data.scripts.campaign.SSP_FleetFactory;
 import data.scripts.variants.SSP_VariantRandomizer;
-import data.scripts.world.SSP_FleetInjector;
-import data.scripts.world.SSP_FleetInjector.CommanderType;
-import data.scripts.world.SSP_FleetInjector.CrewType;
-import data.scripts.world.SSP_FleetInjector.FleetStyle;
-import static data.scripts.world.SSP_FleetInjector.getArchetypeWeights;
-import static data.scripts.world.SSP_FleetInjector.randomizeVariants;
+import data.scripts.campaign.fleets.SSP_FleetInjector;
+import data.scripts.campaign.fleets.SSP_FleetInjector.CommanderType;
+import data.scripts.campaign.fleets.SSP_FleetInjector.CrewType;
+import data.scripts.campaign.fleets.SSP_FleetInjector.FleetStyle;
+import static data.scripts.campaign.fleets.SSP_FleetInjector.getArchetypeWeights;
+import static data.scripts.campaign.fleets.SSP_FleetInjector.randomizeVariants;
 import org.apache.log4j.Logger;
 
 
