@@ -6,6 +6,7 @@ import java.util.Map;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinUtils;
@@ -34,6 +35,12 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$corvusMode", setupData.corvusMode, 0);
 		map.set("$hardMode", setupData.hardMode, 0);
 		map.set("$haveSSP", ExerelinUtils.isSSPInstalled(), 0);
+		
+		map.set("$easyMode", setupData.easyMode, 0);
+		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
+		if (setupData.easyMode)  data.setDifficulty("easy");
+		else data.setDifficulty("normal");
+		
 		return true;
 	}
 }

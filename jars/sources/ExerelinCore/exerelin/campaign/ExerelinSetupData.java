@@ -40,6 +40,7 @@ public final class ExerelinSetupData
 	public int respawnDelay = 60;
 	public int numStartFactions = -1;
 	public boolean randomStartRelationships = false;
+	public boolean easyMode = false;
 	public boolean hardMode = false;
 	public boolean omnifactoryPresent = false;
 	public boolean randomOmnifactoryLocation = false;
