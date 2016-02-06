@@ -5,6 +5,7 @@ import exerelin.campaign.AllianceManager.Alignment;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.*;
+import org.json.JSONException;
 
 public class ExerelinFactionConfig
 {
@@ -67,6 +68,8 @@ public class ExerelinFactionConfig
     public List<String> customStations = new ArrayList<>();
     
     public List<String> miningVariantsOrWings = new ArrayList<>();
+	
+	public Map<StartFleetType, List<String>> startShips = new HashMap<>();
     
     static {
         for (Alignment alignment : Alignment.values())
