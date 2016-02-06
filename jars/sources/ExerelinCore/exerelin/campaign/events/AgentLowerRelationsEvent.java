@@ -42,12 +42,7 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		String thirdFactionStr = thirdFaction.getEntityNamePrefix();
-		String theThirdFactionStr = thirdFaction.getDisplayNameWithArticle();
-		map.put("$thirdFaction", thirdFactionStr);
-		map.put("$theThirdFaction", theThirdFactionStr);
-		map.put("$ThirdFaction", Misc.ucFirst(thirdFactionStr));
-		map.put("$TheThirdFaction", Misc.ucFirst(theThirdFactionStr));
+		addFactionNameTokens(map, "third", thirdFaction);
 		
 		// need to distinguish between agentFaction-thirdFaction and faction-thirdFaction relations
 		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repEffect*100f)));

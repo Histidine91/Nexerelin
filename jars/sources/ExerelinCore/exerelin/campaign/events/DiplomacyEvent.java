@@ -128,15 +128,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		String otherFactionStr = otherFaction.getEntityNamePrefix();
-		String theOtherFactionStr = otherFaction.getDisplayNameWithArticle();
-		map.put("$otherFaction", otherFactionStr);
-		map.put("$theOtherFaction", theOtherFactionStr);
-		map.put("$OtherFaction", Misc.ucFirst(otherFactionStr));
-		map.put("$TheOtherFaction", Misc.ucFirst(theOtherFactionStr));
-		map.put("$deltaAbs", "" + (int)Math.ceil(Math.abs(delta*100f)));
-		//map.put("$newRelationStr", getNewRelationStr(delta));
-		map.put("$newRelationStr", getNewRelationStr(0));
+		addFactionNameTokens(map, "other", otherFaction);
 		return map;
 	}
 	
