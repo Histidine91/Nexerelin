@@ -1,21 +1,23 @@
 {
-    "uniqueModClassName":"data.scripts.world.BushiModPlugin", # String
+    "uniqueModClassName":"data.scripts.world.KadurGen", # String
     "playableFaction":true, # Boolean
-
+    "corvusCompatible":false,
+    
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.1, # Double
+    "baseFleetCostMultiplier":1.0, # Double
 
     "customRebelFaction":"", # String
     "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Rogue AI", # String
+    "rebelFleetSuffix":"Traitors", # String
 
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
-    "factionsDisliked":["spire"], # String array
-    
+    "factionsDisliked":["kadur_theocracy"], # String array
+
     "alignments":{
+        "corporate":-0.5,
         "militarist":1,
-        "technocratic":1,
+        "ideological":1,
     },
 }
