@@ -82,6 +82,7 @@ public class ExerelinConfig
     public static float freeMarketTariffMult = 0.5f;
     public static int warmongerPenalty = 0;
     public static float factionRespawnInterval = 30f;
+	public static int maxFactionRespawns = 1;
     public static boolean countPiratesForVictory = false;
     public static boolean ownFactionCustomsInspections = false;
     public static boolean followersAgents = false;
@@ -149,6 +150,7 @@ public class ExerelinConfig
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);
             warmongerPenalty = settings.optInt("warmongerPenalty", warmongerPenalty);
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
+			maxFactionRespawns = settings.optInt("maxFactionRespawns", maxFactionRespawns);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
             followersAgents = settings.optBoolean("followersAgents", followersAgents);
