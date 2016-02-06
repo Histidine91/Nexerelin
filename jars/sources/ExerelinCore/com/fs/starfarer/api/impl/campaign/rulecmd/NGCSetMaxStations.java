@@ -15,16 +15,10 @@ public class NGCSetMaxStations extends BaseCommandPlugin {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
-                int num = (int)params.get(0).getFloat(memoryMap);
-                setupData.maxStations = num;
-                MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-                memory.set("$maxStations", num, 0);
-                return true;
+		int num = (int)params.get(0).getFloat(memoryMap);
+		setupData.maxStations = num;
+		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
+		memory.set("$maxStations", num, 0);
+		return true;
 	}
 }
-
-
-
-
-
-

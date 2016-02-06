@@ -14,7 +14,7 @@ import java.util.Map;
 
 
 public class NGCSetStartingLocationExerelin extends BaseCommandPlugin {
-            
+    
     @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
         CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");

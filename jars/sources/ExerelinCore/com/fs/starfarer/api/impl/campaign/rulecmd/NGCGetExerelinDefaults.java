@@ -44,9 +44,3 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		return true;
 	}
 }
-
-
-
-
-
-

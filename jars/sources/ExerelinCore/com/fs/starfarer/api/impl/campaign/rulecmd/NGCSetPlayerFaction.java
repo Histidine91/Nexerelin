@@ -18,9 +18,3 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 		return true;
 	}
 }
-
-
-
-
-
-

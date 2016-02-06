@@ -25,9 +25,3 @@ public class NGCSetEasyMode extends BaseCommandPlugin {
 		return true;
 	}
 }
-
-
-
-
-
-

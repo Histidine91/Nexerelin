@@ -15,16 +15,10 @@ public class NGCSetNumSystemsEmpty extends BaseCommandPlugin {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
-                int num = (int)params.get(0).getFloat(memoryMap);
-                setupData.numSystemsEmpty = num;
-                MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-                memory.set("$numSystemsEmpty", num, 0);
-                return true;
+		int num = (int)params.get(0).getFloat(memoryMap);
+		setupData.numSystemsEmpty = num;
+		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
+		memory.set("$numSystemsEmpty", num, 0);
+		return true;
 	}
 }
-
-
-
-
-
-

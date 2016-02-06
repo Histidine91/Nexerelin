@@ -20,9 +20,3 @@ public class NGCSetFreeStart extends BaseCommandPlugin {
 		return true;
 	}
 }
-
-
-
-
-
-

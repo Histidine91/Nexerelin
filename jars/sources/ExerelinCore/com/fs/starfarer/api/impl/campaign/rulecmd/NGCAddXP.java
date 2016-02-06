@@ -24,9 +24,3 @@ public class NGCAddXP extends BaseCommandPlugin {
 		return true;
 	}
 }
-
-
-
-
-
-
