@@ -21,4 +21,12 @@
         "militarist":0.5,
         "ideological":1,
     },
+    
+    "startShipsSolo":["vigilance_Standard"],
+    "startShipsCombatSmall":["enforcer_Balanced", "lasher_Starting", "brawler_Starting"],
+    "startShipsCombatSmallSSP":["ssp_vanguard_sta", "lasher_Starting", "brawler_Starting"],
+    "startShipsTradeSmall":["tarsus_Standard", "cerberus_Standard", "lasher_CS"],
+    "startShipsCombatLarge":["dominator_Support", "enforcer_Outdated", "kite_Interceptor"],
+    "startShipsCombatLargeSSP":["ssp_kestrel_bal", "ssp_albatross_art", "kite_Standard"],
+    "startShipsTradeLarge":["venture_Balanced", "buffalo_luddic_church_Standard", "hound_luddic_church_Standard"],
 }

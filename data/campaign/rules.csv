@@ -355,19 +355,13 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == exerelinNGCJoinHegemony,"NGCSetPlayerFaction ""hegemony""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == exerelinNGCJoinSindrianDiktat,"NGCSetPlayerFaction ""sindrian_diktat""
-NGCAddShipAndComplement ""brawler_Elite""
-AddText ""Added Brawler-class gunship"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == exerelinNGCJoinTriTachyon,"NGCSetPlayerFaction ""tritachyon""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinLuddicChurch,NewGameOptionSelected,$option == exerelinNGCJoinLuddicChurch,"NGCSetPlayerFaction ""luddic_church""
-NGCAddShipAndComplement ""vigilance_Starting""
-AddText ""Added Vigilance-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinPirate,NewGameOptionSelected,$option == exerelinNGCJoinPirate,"NGCSetPlayerFaction ""pirates""
-NGCAddShipAndComplement ""cerberus_Standard""
-AddText ""Added Cerberus-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinApprolight,NewGameOptionSelected,$option == exerelinNGCJoinApprolight,"NGCSetPlayerFaction ""approlight""
 NGCAddShipAndComplement ""AL_mumber_C""
 AddText ""Added Mumber-class frigate"" textFriendColor
@@ -503,9 +497,7 @@ NGCAddShipAndComplement ""ms_enlil_Balanced""
 AddText ""Added Enlil-class gunship"" textFriendColor
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinSpire,NewGameOptionSelected,$option == exerelinNGCJoinSpire,"NGCSetPlayerFaction ""spire""
-NGCAddShipAndComplement ""spire_corvette_Standoff""
-AddText ""Added Feldspar-class corvette"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinTiandong,NewGameOptionSelected,$option == exerelinNGCJoinTiandong,"NGCSetPlayerFaction ""tiandong""
 NGCAddShipAndComplement ""tiandong_nanzhong_Standard""
 AddText ""Added Nanzhong-class frigate"" textFriendColor

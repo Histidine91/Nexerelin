@@ -19,4 +19,12 @@
         "militarist":1,
         "diplomatic":-1,
     },
+    
+    "startShipsSolo":["brawler_Elite"],
+    "startShipsCombatSmall":["hammerhead_Balanced", "vigilance_Standard", "monitor_Escort"],
+    "startShipsCombatSmallSSP":["ssp_archon_bul", "brawler_Assault", "ssp_phalanx_ass"],
+    "startShipsTradeSmall":["tarsus_Standard", "vigilance_Starting", "mercury_PD"],
+    "startShipsCombatLarge":["eagle_Balanced", "hammerhead_Elite", "vigilance_FS"],
+    "startShipsCombatLargeSSP":["ssp_kestrel_bal", "sunder_s_sto", "ssp_phalanx_sta"],
+    "startShipsTradeLarge":["venture_Balanced", "gemini_Standard", "broadsword_wing"],
 }
