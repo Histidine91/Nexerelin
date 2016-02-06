@@ -42,6 +42,7 @@ import exerelin.campaign.ExerelinCoreScript;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -704,7 +705,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(new PirateFleetManager());
 		sector.addScript(new BountyPirateFleetManager());
 		sector.addScript(new MarketProcurementMissionCreator());
-		sector.addScript(new FactionCommissionMissionCreator());	// not really needed; game auto-adds it on load
+		sector.addScript(new FactionCommissionMissionCreator());
+		sector.addScript(new ConquestMissionCreator());
 		
 		//sector.addScript(new EconomyLogger());
 		
