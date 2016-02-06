@@ -9,6 +9,7 @@ import java.util.*;
 public class ExerelinFactionConfig
 {
     public static final String[] DEFAULT_MINERS = {"mining_drone_wing", "shepherd_Frontier"};
+    public static final Map<Alignment, Float> DEFAULT_ALIGNMENTS = new HashMap<>();
     
     public String factionId;
 
@@ -48,7 +49,7 @@ public class ExerelinFactionConfig
     public String[] factionsLiked = new String[]{};
     public String[] factionsDisliked = new String[]{};
     public String[] factionsNeutral = new String[]{};
-    public Map<Alignment, Float> alignments = new HashMap<>();
+    public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
     
     public boolean freeMarket = false;
 
@@ -65,7 +66,14 @@ public class ExerelinFactionConfig
     
     public List<String> customStations = new ArrayList<>();
     
-    public List<String> miningVariantsOrWings = new ArrayList<String>() {};
+    public List<String> miningVariantsOrWings = new ArrayList<>();
+    
+    static {
+        for (Alignment alignment : Alignment.values())
+        {
+            DEFAULT_ALIGNMENTS.put(alignment, 0f);
+        }
+    }
 
     public ExerelinFactionConfig(String factionId)
     {
@@ -133,16 +141,18 @@ public class ExerelinFactionConfig
             if (settings.has("alignments"))
             {
                 JSONObject alignmentsJson = settings.getJSONObject("alignments");
-                for (Alignment alignment : Alignment.values())
-                {
-                    alignments.put(alignment, (float)alignmentsJson.optDouble(alignment.toString().toLowerCase(), 0));
-                }
-            }
-            else
-            {
-                for (Alignment alignment : Alignment.values())
-                {
-                    alignments.put(alignment, 0f);
+                Iterator<?> keys = alignmentsJson.keys();
+                while( keys.hasNext() ) {
+                    String key = (String)keys.next();
+                    float value = (float)alignmentsJson.optDouble(key, 0);
+                    String alignmentName = StringHelper.flattenToAscii(key.toUpperCase());
+                    try {
+                        Alignment alignment = Alignment.valueOf(alignmentName);
+                        alignments.put(alignment, value);
+                    } catch (IllegalArgumentException ex) {
+                        // do nothing
+                        Global.getLogger(this.getClass()).warn("Invalid alignment entry for faction " + this.factionId + ": " + key);
+                    }
                 }
             }
         }

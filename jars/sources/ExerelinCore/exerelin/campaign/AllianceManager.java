@@ -365,8 +365,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                     log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.name);
                     //log.info("Alliance alignment: " + alliance.alignment.toString());
                     Alignment align = alliance.alignment;
-                    if (align == null) align = (Alignment) ExerelinUtils.getRandomArrayElement(Alignment.values());	// NPE safety
-                    value = config.alignments.get(align);
+                    if (config.alignments.containsKey(align))
+                        value = config.alignments.get(align);
                 }
                 if (value < MIN_ALIGNMENT_TO_JOIN_ALLIANCE  && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
                 
