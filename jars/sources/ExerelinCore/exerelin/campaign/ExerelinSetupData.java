@@ -117,7 +117,7 @@ public final class ExerelinSetupData
 		return possibleBuiltInFactions;
 	}
 
-	public boolean isFactionInstalled(String factionId)
+	public static boolean isFactionInstalled(String factionId)
 	{
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		if (faction == null)

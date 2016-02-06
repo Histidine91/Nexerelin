@@ -157,7 +157,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onApplicationLoad() throws Exception
     {
         OmniFacSettings.reloadSettings();
-        ExerelinConfig.loadSettings();
+        //ExerelinConfig.loadSettings();
     }
     
     @Override
