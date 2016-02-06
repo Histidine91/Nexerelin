@@ -44,7 +44,7 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		readResolve();
 	}
 	
-	// same as vanilla
+	// same as vanilla  except also resets interval length
 	@Override
 	protected Object readResolve() {
 		if (patrolBattlesLost == null) {
@@ -53,6 +53,12 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 			float max = patrolStrengthCheckInterval + Math.min(patrolStrengthCheckInterval * 0.5f, 2f);
 			patrolBattlesLost = new RollingAverageTracker(min, max, Misc.getEconomyRollingAverageFactor());
 		}
+		
+		float interval = Global.getSettings().getFloat("averagePatrolSpawnInterval");
+		if (tracker == null) 
+			tracker = new IntervalUtil(interval * 0.75f, interval * 1.25f);
+		else tracker.setInterval(interval * 0.75f, interval * 1.25f);
+		
 		return this;
 	}
 	
@@ -67,7 +73,9 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		float losses = patrolBattlesLost.getAverage();
 		
 		//tracker.advance(days);
-		tracker.advance(days * Math.max(1f, losses));
+		//log.info("Average patrol losses for market [" + market.getName() + "]: " + losses);
+		float lossMod = (float)Math.min(losses/2, 4);
+		tracker.advance(days * Math.max(1f, lossMod));
 		if (!tracker.intervalElapsed()) return;
 		
 		if (market.hasCondition(Conditions.DECIVILIZED)) return;
@@ -76,13 +84,20 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		float sizeMult = 1;
 		
 		if (market.getFaction().getCustom().optBoolean(Factions.CUSTOM_NO_PATROLS)) 
-			{
-				ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-				if (factionConfig == null || !factionConfig.spawnPatrols) return;
-				
-				sizeMult = factionConfig.patrolSizeMult;
-				if (sizeMult <= 0) return;
-			}
+		{
+			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+			if (factionConfig == null || !factionConfig.spawnPatrols) return;
+
+			sizeMult = factionConfig.patrolSizeMult;
+			if (sizeMult <= 0) return;
+		}
+		
+		// player currently invading this market; don't spawn patrols from it
+		if (market.getId().equals(Global.getSector().getCharacterData().getMemoryWithoutUpdate().getString("$invasionTarget")))
+		{
+			//Global.getSector().getCampaignUI().addMessage(Global.getSector().getCharacterData().getMemoryWithoutUpdate().getString("$invasionTarget"));
+			return;
+		}
 		
 		
 		List<PatrolFleetData> remove = new ArrayList<PatrolFleetData>();

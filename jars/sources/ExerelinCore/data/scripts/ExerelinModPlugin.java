@@ -19,6 +19,7 @@ import exerelin.campaign.PlayerStartHandler;
 import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.plugins.ExerelinCoreCampaignPlugin;
 import exerelin.utilities.*;
 import exerelin.world.ExerelinPatrolFleetManager;
@@ -108,6 +109,9 @@ public class ExerelinModPlugin extends BaseModPlugin
                 system.setBackgroundTextureFilename("graphics/imperium/backgrounds/ii_thracia.png");
             }
         }
+		if (!Global.getSector().hasScript(ConquestMissionCreator.class)) {
+			Global.getSector().addScript(new ConquestMissionCreator());
+		}
     }
     
     @Override
@@ -157,7 +161,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onApplicationLoad() throws Exception
     {
         OmniFacSettings.reloadSettings();
-        ExerelinConfig.loadSettings();
+        //ExerelinConfig.loadSettings();
     }
     
     @Override
@@ -175,6 +179,10 @@ public class ExerelinModPlugin extends BaseModPlugin
             SectorManager.reinitLiveFactions();
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
+		
+		SectorAPI sector = Global.getSector();
+		for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
+			PlayerStartHandler.addOmnifactory(sector, i);
     }
     
     @Override

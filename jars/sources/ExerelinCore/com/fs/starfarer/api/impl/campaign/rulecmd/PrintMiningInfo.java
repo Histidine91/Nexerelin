@@ -40,7 +40,9 @@ public class PrintMiningInfo extends BaseCommandPlugin {
 		String miningStrengthStr = String.format("%.1f", miningStrength);
 		float danger = MiningHelper.getDanger(target);
 		String dangerStr = String.format("%.2f", danger);
-		Map<String, Float> resources = MiningHelper.getResources(target);
+		float exhaustion = MiningHelper.getExhaustion(target);
+		String exhaustionStr = String.format("%.1f", exhaustion * 100) + "%";
+		Map<String, Float> resources = MiningHelper.getResources(target, true);
 		EconomyAPI economy = Global.getSector().getEconomy();
 		String planetType = target.getName();
 		if (target instanceof PlanetAPI)
@@ -55,6 +57,8 @@ public class PrintMiningInfo extends BaseCommandPlugin {
 		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "danger")) + ": " + dangerStr);
 		if (danger > 0.5) text.highlightInLastPara(red, dangerStr);
 		else text.highlightInLastPara(hl, dangerStr);
+		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "exhaustion")) + ": " + exhaustionStr);
+		text.highlightInLastPara(hl, exhaustionStr);
 		
 		text.setFontVictor();
 		text.setFontSmallInsignia();

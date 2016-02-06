@@ -24,9 +24,3 @@ public class NGCDoesFactionExist extends BaseCommandPlugin {
 		return factions.contains(factionId);
 	}
 }
-
-
-
-
-
-

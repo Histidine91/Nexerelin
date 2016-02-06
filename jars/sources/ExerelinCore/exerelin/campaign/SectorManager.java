@@ -83,6 +83,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected List<String> factionIdsAtStart = new ArrayList<>();
     protected List<String> liveFactionIds = new ArrayList<>();
     protected Set<String> historicFactionIds = new HashSet<>();
+    protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
     protected Map<String, String> systemToRelayMap = new HashMap<>();
     protected Map<String, String> planetToRelayMap = new HashMap<>();
     
@@ -387,6 +388,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public void handleFactionRespawn()
     {
+        if (factionRespawnCounts == null)
+        {
+            factionRespawnCounts = new HashMap<>();
+        }
+        
         SectorAPI sector = Global.getSector();
         WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();
         WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
@@ -403,11 +409,27 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (factionId.equals(Factions.INDEPENDENT)) continue;
             ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
             if (config != null && !config.playableFaction) continue;
+            
+            // check if this faction has used up all its respawn chances
+            int maxRespawns = ExerelinConfig.maxFactionRespawns;
+            if (maxRespawns >= 0)
+            {
+                // note: zero maxRespawns means new factions can still enter, but factions that got knocked out can't return
+                int count = -1;
+                if (factionRespawnCounts.containsKey(factionId))
+                    count = factionRespawnCounts.get(factionId);
+                else if (factionIdsAtStart.contains(factionId))
+                    count++;
+                if (count >= maxRespawns)
+                    continue;
+            }
+            
             if (!liveFactionIds.contains(factionId)) factionPicker.add(Global.getSector().getFaction(factionId));
         }
         
         FactionAPI respawnFaction = factionPicker.pick();
         if (respawnFaction == null) return;
+        String respawnFactionId = respawnFaction.getId();
         
         boolean allowPirates = ExerelinConfig.allowPirateInvasions;
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
@@ -504,6 +526,17 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         setShowFactionInIntelTab(factionId, true);
+        
+        // increment "times respawned" count
+        if (sectorManager != null)
+        {
+            int count = 0;
+            if (sectorManager.factionRespawnCounts.containsKey(factionId))
+                count = sectorManager.factionRespawnCounts.get(factionId) + 1;
+            else if (sectorManager.factionIdsAtStart.contains(factionId))
+                count++;
+            sectorManager.factionRespawnCounts.put(factionId, count);
+        }
     }
     
     public static void checkForVictory()

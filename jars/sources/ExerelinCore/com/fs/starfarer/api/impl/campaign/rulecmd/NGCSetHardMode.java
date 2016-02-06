@@ -21,9 +21,3 @@ public class NGCSetHardMode extends BaseCommandPlugin {
 		return true;
 	}
 }
-
-
-
-
-
-

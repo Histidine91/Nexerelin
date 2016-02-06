@@ -14,16 +14,10 @@ public class NGCSetRandomStartRelationships extends BaseCommandPlugin {
 	 
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
-                boolean setting = params.get(0).getBoolean(memoryMap);
+		boolean setting = params.get(0).getBoolean(memoryMap);
 		ExerelinSetupData.getInstance().randomStartRelationships = setting;
-                MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-                memory.set("$randomStartRelationships", setting, 0);
-                return true;
+		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
+		memory.set("$randomStartRelationships", setting, 0);
+		return true;
 	}
 }
-
-
-
-
-
-

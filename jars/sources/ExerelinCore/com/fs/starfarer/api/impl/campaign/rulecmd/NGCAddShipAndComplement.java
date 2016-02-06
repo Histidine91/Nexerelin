@@ -16,7 +16,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 
 public class NGCAddShipAndComplement extends BaseCommandPlugin {
 	
-        @Override
+	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
 		
@@ -28,27 +28,21 @@ public class NGCAddShipAndComplement extends BaseCommandPlugin {
 			type = FleetMemberType.FIGHTER_WING; 
 		}
 		data.addStartingFleetMember(vid, type);
-                
-                FleetMemberAPI temp = Global.getFactory().createFleetMember(type, vid);
-                int crew = (int)Math.min(temp.getNeededCrew() * 1.5f, temp.getMaxCrew());
-                int supplies = (int)temp.getCargoCapacity()/2;
-                int fuel = (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
-                            
-                data.getStartingCargo().addItems(CargoItemType.RESOURCES, "regular_crew", crew);
-                data.getStartingCargo().addItems(CargoItemType.RESOURCES, "supplies", supplies);
-                data.getStartingCargo().addItems(CargoItemType.RESOURCES, "fuel", fuel);
-                
-                MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-                memory.set("$crewAdded", crew, 0);
-                memory.set("$suppliesAdded", supplies, 0);
+		
+		FleetMemberAPI temp = Global.getFactory().createFleetMember(type, vid);
+		int crew = (int)Math.min(temp.getNeededCrew() * 1.5f, temp.getMaxCrew());
+		int supplies = (int)temp.getCargoCapacity()/2;
+		int fuel = (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
+					
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "regular_crew", crew);
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "supplies", supplies);
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "fuel", fuel);
+		
+		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
+		memory.set("$crewAdded", crew, 0);
+		memory.set("$suppliesAdded", supplies, 0);
 		memory.set("$fuelAdded", fuel, 0);
                 
 		return true;
 	}
 }
-
-
-
-
-
-

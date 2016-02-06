@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
 import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,14 +27,12 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMissionCreator;
 import com.fs.starfarer.api.impl.campaign.missions.MarketProcurementMissionCreator;
-import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.world.ExerelinCorvusLocations;
 import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
@@ -45,6 +42,7 @@ import exerelin.campaign.ExerelinCoreScript;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -56,12 +54,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.lazywizard.lazylib.CollectionUtils;
-import org.lazywizard.lazylib.CollectionUtils.CollectionFilter;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.campaign.orbits.EllipticalOrbit;
-import org.lazywizard.omnifac.OmniFac;
-import org.lazywizard.omnifac.OmniFacSettings;
 import org.lwjgl.util.vector.Vector2f;
 
 @SuppressWarnings("unchecked")
@@ -83,7 +77,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
 	protected static final String[] starBackgroundsArray = new String[]
 	{
-		"backgrounds/background1.jpg", "backgrounds/background2.jpg", "backgrounds/background3.jpg", "backgrounds/background4.jpg", "backgrounds/background5.jpg",
+		"backgrounds/background1.jpg", "backgrounds/background2.jpg", "backgrounds/background3.jpg", "backgrounds/background4.jpg", "backgrounds/background5.jpg", "backgrounds/background6.jpg",
 		"exerelin/backgrounds/blue_background1.jpg", "exerelin/backgrounds/blue_background2.jpg",
 		"exerelin/backgrounds/bluewhite_background1.jpg", "exerelin/backgrounds/orange_background1.jpg",
 		"exerelin/backgrounds/dark_background1.jpg", "exerelin/backgrounds/dark_background2.jpg",
@@ -111,7 +105,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final String[] moonTypesUninhabitable = new String[] 
 		{"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "irradiated", "barren-bombarded", "desert", "water", "jungle", "barren-desert"};
 	
-	protected static final List<String> stationImages = new ArrayList<>(Arrays.asList(
+	public static final List<String> stationImages = new ArrayList<>(Arrays.asList(
 			new String[] {"station_side00", "station_side02", "station_side04", "station_jangala_type"}));
 	
 	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
@@ -383,104 +377,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 
 		String[] illustration = allowedImages.pick();
 		entity.setInteractionImage(illustration[0], illustration[1]);
-	}
-		
-	protected void addOmnifactory(SectorAPI sector, int index)
-	{
-		if (!ExerelinSetupData.getInstance().omnifactoryPresent) return;
-
-		SectorEntityToken toOrbit = null;
-		//log.info("Randomized omnifac location: " + ExerelinSetupData.getInstance().randomOmnifactoryLocation);
-		boolean random = ExerelinSetupData.getInstance().randomOmnifactoryLocation;
-		if (numOmnifacs > 0) random = true;
-		
-		if (random)
-		{
-			List<StarSystemAPI> systems = new ArrayList(sector.getStarSystems());
-			Collections.shuffle(systems);
-			for (StarSystemAPI system : systems)
-			{
-				CollectionFilter planetFilter = new OmnifacFilter(system); 
-				List planets = CollectionUtils.filter(system.getPlanets(), planetFilter);
-				if (!planets.isEmpty())
-				{
-					Collections.shuffle(planets);
-					toOrbit = (SectorEntityToken)planets.get(0);
-				}
-			}
-		}
-		
-		if (toOrbit == null)
-		{
-			// Corvus mode: try to place Omnifactory in starting system
-			if (ExerelinSetupData.getInstance().corvusMode) {
-				do {
-					ExerelinCorvusLocations.SpawnPointEntry spawnPoint = ExerelinCorvusLocations.getFactionSpawnPoint(PlayerFactionStore.getPlayerFactionIdNGC());
-					if (spawnPoint == null) break;
-					// orbit homeworld proper; too much risk of double stations or other such silliness?
-					String entityId = spawnPoint.entityId;
-					if (entityId != null) {
-						SectorEntityToken entity = Global.getSector().getEntityById(entityId);
-						if (entity != null && entity instanceof PlanetAPI)
-						{
-							toOrbit = entity;
-							break;
-						}
-					}
-					
-					// place at random location in same system
-					StarSystemAPI system = Global.getSector().getStarSystem(spawnPoint.systemName);
-					if (system == null) break;
-					
-					CollectionFilter planetFilter = new OmnifacFilter(system); 
-					List planets = CollectionUtils.filter(system.getPlanets(), planetFilter);
-					if (!planets.isEmpty())
-					{
-						Collections.shuffle(planets);
-						toOrbit = (SectorEntityToken)planets.get(0);
-					}
-				} while (false);
-			}
-		}
-		
-		if (toOrbit == null)
-		{
-			if (ExerelinSetupData.getInstance().corvusMode) toOrbit = sector.getEntityById("corvus_IV");
-			else toOrbit = homeworld.entity;
-		}
-		
-		LocationAPI system = toOrbit.getContainingLocation();
-		log.info("Placing Omnifactory around " + toOrbit.getName() + ", in the " + system.getName());
-		String image = (String) ExerelinUtils.getRandomListElement(stationImages);
-		String entityName = "omnifactory" + index;
-		SectorEntityToken omnifac = system.addCustomEntity(entityName, "Omnifactory", image, "neutral");
-		float radius = toOrbit.getRadius();
-		float orbitDistance = radius + 150;
-		if (toOrbit instanceof PlanetAPI)
-		{
-			PlanetAPI planet = (PlanetAPI)toOrbit;
-			if (planet.isStar()) 
-			{
-				orbitDistance = radius + MathUtils.getRandomNumberInRange(3000, 12000);
-			}
-		}
-		omnifac.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, getOrbitalPeriod(toOrbit, orbitDistance));
-		omnifac.setInteractionImage("illustrations", "abandoned_station");
-		omnifac.setCustomDescriptionId("omnifactory");
-
-		MarketAPI market = Global.getFactory().createMarket(entityName /*+_market"*/, "Omnifactory", 0);
-		SharedData.getData().getMarketsWithoutPatrolSpawn().add(entityName);
-		SharedData.getData().getMarketsWithoutTradeFleetSpawn().add(entityName);
-		market.setPrimaryEntity(omnifac);
-		market.setFactionId(Factions.NEUTRAL);
-		market.addCondition(Conditions.ABANDONED_STATION);
-		omnifac.setMarket(market);
-		sector.getEconomy().addMarket(market);
-		
-		omnifac.setFaction(Factions.NEUTRAL);
-		omnifac.addTag("omnifactory");
-		
-		OmniFac.initOmnifactory(omnifac);
 	}
 	
 	protected void addPrismMarket(SectorAPI sector)
@@ -790,8 +686,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			  "terrain", "deep_hyperspace", // "nebula_blue", // texture to use, uses xxx_map for map
 			  4, 4, Terrain.HYPERSPACE); // number of cells in texture
 		
-		for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
-			addOmnifactory(sector, i);
 		addPrismMarket(sector);
 		
 		final String selectedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
@@ -811,7 +705,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(new PirateFleetManager());
 		sector.addScript(new BountyPirateFleetManager());
 		sector.addScript(new MarketProcurementMissionCreator());
-		sector.addScript(new FactionCommissionMissionCreator());	// not really needed; game auto-adds it on load
+		sector.addScript(new FactionCommissionMissionCreator());
+		sector.addScript(new ConquestMissionCreator());
 		
 		//sector.addScript(new EconomyLogger());
 		
@@ -848,7 +743,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	// =========================================================================
 	// Utility functions
 	
-	public float getOrbitalPeriod(float primaryRadius, float orbitRadius, float density)
+	public static float getOrbitalPeriod(float primaryRadius, float orbitRadius, float density)
 	{
 		primaryRadius *= 0.01;
 		orbitRadius *= 1/62.5;	// realistic would be 1/50 but the planets orbit rather too slowly then
@@ -863,12 +758,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return period;
 	}
 	
-	public float getOrbitalPeriod(SectorEntityToken primary, float orbitRadius)
+	public static float getOrbitalPeriod(SectorEntityToken primary, float orbitRadius)
 	{
 		return getOrbitalPeriod(primary.getRadius(), orbitRadius, getDensity(primary));
 	}
 	
-	public float getDensity(SectorEntityToken primary)
+	public static float getDensity(SectorEntityToken primary)
 	{
 		if (primary instanceof PlanetAPI)
 		{
@@ -880,7 +775,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return 2;
 	}
 	
-	public float getRandomAngle()
+	public static float getRandomAngle()
 	{
 		return MathUtils.getRandomNumberInRange(0f, 360f);
 	}
@@ -2009,31 +1904,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					new Color(127, 0, 255)
 					));
 			field.setCircularOrbit(entity, 0, 0, 100);
-	}
-	
-	public static class OmnifacFilter implements CollectionUtils.CollectionFilter<SectorEntityToken>
-	{
-		final Set<SectorEntityToken> blocked;
-		private OmnifacFilter(StarSystemAPI system)
-		{
-			String alignedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
-			blocked = new HashSet<>();
-			for (SectorEntityToken planet : system.getPlanets() )
-			{
-				String factionId = planet.getFaction().getId();
-
-				if (!factionId.equals("neutral") && !factionId.equals(alignedFactionId))
-					blocked.add(planet);
-				//else
-					//log.info("Authorizing planet " + planet.getName() + " (faction " + factionId + ")");
-			}
-		}
-
-		@Override
-		public boolean accept(SectorEntityToken token)
-		{
-			return !blocked.contains(token);
-		}
 	}
 	
 	protected enum EntityType {

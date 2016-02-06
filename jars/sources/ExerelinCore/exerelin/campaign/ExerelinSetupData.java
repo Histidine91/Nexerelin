@@ -40,6 +40,7 @@ public final class ExerelinSetupData
 	public int respawnDelay = 60;
 	public int numStartFactions = -1;
 	public boolean randomStartRelationships = false;
+	public boolean easyMode = false;
 	public boolean hardMode = false;
 	public boolean omnifactoryPresent = false;
 	public boolean randomOmnifactoryLocation = false;
@@ -118,12 +119,12 @@ public final class ExerelinSetupData
 		return possibleBuiltInFactions;
 	}
 
-	public boolean isFactionInstalled(String factionId)
+	public static boolean isFactionInstalled(String factionId)
 	{
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		if (faction == null)
 		{
-			log.warn("Couldn't find faction " + factionId);
+			log.info("Couldn't find faction " + factionId);
 			return false;
 		}
 		return true;

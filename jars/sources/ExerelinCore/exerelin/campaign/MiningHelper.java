@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
+import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.combat.WeaponAPI.AIHints;
@@ -39,6 +40,9 @@ public class MiningHelper {
 	protected static final String CONFIG_FILE = "data/config/exerelin/miningConfig.json";
 	protected static final String MINING_SHIP_DEFS = "data/config/exerelin/mining_ships.csv";
 	protected static final String MINING_WEAPON_DEFS = "data/config/exerelin/mining_weapons.csv";
+	protected static final String EXHAUSTION_DATA_KEY = "exerelinMiningExhaustion";	// exhaustion list is a <SectorEntityToken, Float> map
+	public static final float MAX_EXHAUSTION = 0.8f; 
+	
 	protected static float miningProductionMult = 2f;
 	protected static float cacheSizeMult = 1;
 	protected static float baseCacheChance = 0.1f;
@@ -46,12 +50,16 @@ public class MiningHelper {
 	protected static float baseAccidentCRLoss = 0.1f;
 	//protected static float baseAccidentSupplyLoss = 12.5f;
 	protected static float baseAccidentHullDamage = 400;
+	protected static float exhaustionPer100MiningStrength = 0.04f;
+	protected static float renewRatePerDay = 0.002f;
 	protected static float planetDangerMult = 1.25f;	// for non-moon planets
+	protected static float planetExhaustionMult = 0.75f;
+	protected static float planetRenewMult = 1.25f;
 	protected static float xpPerMiningStrength = 10;
+	
 	protected static final Map<String, Float> miningWeapons = new HashMap<>();
 	protected static final Map<String, Float> miningShips = new HashMap<>();
-	protected static final Map<String, Map<String,Float>> resources = new HashMap<>();
-	protected static final Map<String, Float> danger = new HashMap<>();
+	protected static final Map<String, MineableDef> mineableDefs = new HashMap<>();
 	protected static final List<CacheDef> cacheDefs = new ArrayList<>();
 	//protected static final
 	
@@ -65,6 +73,14 @@ public class MiningHelper {
 			baseCacheChance = (float)config.optDouble("baseCacheChance", baseCacheChance);
 			baseAccidentChance = (float)config.optDouble("baseAccidentChance", baseAccidentChance);
 			xpPerMiningStrength = (float)config.optDouble("xpPerMiningStrength", xpPerMiningStrength);
+			
+			baseAccidentCRLoss = (float)config.optDouble("baseAccidentCRLoss", baseAccidentCRLoss);
+			baseAccidentHullDamage = (float)config.optDouble("baseAccidentHullDamage", baseAccidentHullDamage);
+			exhaustionPer100MiningStrength = (float)config.optDouble("exhaustionPer100MiningStrength", exhaustionPer100MiningStrength);
+			renewRatePerDay = (float)config.optDouble("renewRatePerDay", renewRatePerDay);
+			planetDangerMult = (float)config.optDouble("planetDangerMult", planetDangerMult);
+			planetExhaustionMult = (float)config.optDouble("planetExhaustionMult", planetExhaustionMult);
+			planetRenewMult = (float)config.optDouble("planetRenewMult", planetRenewMult);
 
 			/*
 			JSONObject weaponsJson = config.getJSONObject("miningWeapons");
@@ -100,26 +116,17 @@ public class MiningHelper {
                 miningWeapons.put(weaponId, strength);
             }
 			
-			JSONObject resourcesJson = config.getJSONObject("resources");
-			Iterator <?> keys = resourcesJson.keys();
+			JSONObject typesJson = config.getJSONObject("planetTypes");
+			mineableDefs.put("default", new MineableDef("placeholder"));
+			loadMineableDef("default", typesJson.getJSONObject("default"));
+			
+			
+			Iterator <?> keys = typesJson.keys();
 			while( keys.hasNext() ) {
 				String planetType = (String)keys.next();
-				Map<String, Float> resMap = new HashMap<>();
-				JSONObject resDef = resourcesJson.getJSONObject(planetType);
-				Iterator<?> resKeys = resDef.keys();
-				while (resKeys.hasNext())
-				{
-					String res = (String)resKeys.next();
-					resMap.put(res, (float)resDef.getDouble(res));
-				}
-				resources.put(planetType, resMap);
-			}
-			
-			JSONObject dangerJson = config.getJSONObject("danger");
-			keys = dangerJson.keys();
-			while( keys.hasNext() ) {
-				String key = (String)keys.next();
-				danger.put(key, (float)dangerJson.getDouble(key));
+				if (planetType.equals("default")) continue;
+				JSONObject defJson = typesJson.getJSONObject(planetType);
+				loadMineableDef(planetType, defJson);
 			}
 			
 			//generatorSystems = config.getJSONArray("systems");
@@ -128,6 +135,24 @@ public class MiningHelper {
 		}
 		
 		initCacheDefs();
+	}
+	
+	public static void loadMineableDef(String planetType, JSONObject defJson) throws JSONException
+	{
+		MineableDef def = new MineableDef(planetType);
+				
+		JSONObject resourcesJson = defJson.getJSONObject("resources");
+		Iterator<?> resourceKeys = resourcesJson.keys();
+		while (resourceKeys.hasNext())
+		{
+			String res = (String)resourceKeys.next();
+			def.resources.put(res, (float)resourcesJson.getDouble(res));
+		}
+		def.danger = (float)defJson.optDouble("danger", mineableDefs.get("default").danger);
+		def.exhaustionRate = (float)defJson.optDouble("exhaustionRate", mineableDefs.get("default").exhaustionRate);
+		def.renewRate = (float)defJson.optDouble("renewRate", mineableDefs.get("default").renewRate);
+
+		mineableDefs.put(planetType, def);
 	}
 	
 	public static void initCacheDefs()
@@ -144,6 +169,30 @@ public class MiningHelper {
 		cacheDefs.add(new CacheDef("drugs", CacheType.COMMODITY, "drugs", 1.25f, 0.5f));
 	}
 	
+	
+	public static Map<SectorEntityToken, Float> getExhaustionMap() {
+		Map<String, Object> data = Global.getSector().getPersistentData();
+		Map<SectorEntityToken, Float> exhaustionMap;
+		if (data.containsKey(EXHAUSTION_DATA_KEY))
+			exhaustionMap = (Map<SectorEntityToken, Float>)data.get(EXHAUSTION_DATA_KEY);
+		else {
+			exhaustionMap = new HashMap<>();
+			data.put(EXHAUSTION_DATA_KEY, exhaustionMap);
+		}
+		return exhaustionMap;
+	}
+	
+	public static String getPlanetType(SectorEntityToken entity)
+	{
+		if (entity instanceof AsteroidAPI) return "asteroid";
+		if (entity instanceof PlanetAPI)
+		{
+			PlanetAPI planet = (PlanetAPI)entity;
+			return planet.getTypeId();
+		}
+		return "default";
+	}
+	
 	public static boolean canMine(SectorEntityToken entity)
 	{
 		if (entity instanceof AsteroidAPI) return true;
@@ -151,7 +200,6 @@ public class MiningHelper {
 		if (entity instanceof PlanetAPI)
 		{
 			PlanetAPI planet = (PlanetAPI)entity;
-			if (planet == null) return false;
 			if (planet.isStar()) return false;
 			return true;
 			//if (planet.isMoon()) return true;
@@ -160,33 +208,60 @@ public class MiningHelper {
 		return false;
 	}
 	
+	public static MineableDef getMineableDefForEntity(SectorEntityToken entity)
+	{
+		String type = getPlanetType(entity);
+		if (mineableDefs.containsKey(type)) return mineableDefs.get(type);
+		return mineableDefs.get("default");
+	}
+	
 	public static float getDanger(SectorEntityToken entity)
 	{
-		float val = danger.get("default");
+		MineableDef def = getMineableDefForEntity(entity);
 		boolean isPlanet = false;
-		String type = "default";
 		if (entity instanceof PlanetAPI)
 		{
 			PlanetAPI planet = (PlanetAPI)entity;
-			type = planet.getTypeId();
 			if (!planet.isMoon()) isPlanet = true;
 		}
-		if (danger.containsKey(type)) val = danger.get(type);
+		
+		float val = def.danger;
 		if (isPlanet) val *= planetDangerMult;
 		//else if (((PlanetAPI)entity).isGasGiant()) return danger.get("gas_giant");
 		return val;
 	}
 	
-	public static Map<String, Float> getResources(SectorEntityToken entity)
+	public static Map<String, Float> getResources(SectorEntityToken entity, boolean useExhaustion)
 	{
-		String type = "default";
-		if (entity instanceof PlanetAPI)
+		MineableDef def = getMineableDefForEntity(entity);
+		Map<String, Float> resCopy = new HashMap<>(def.resources);
+		float mult = 1;
+		
+		if (useExhaustion)
 		{
-			type = ((PlanetAPI)entity).getTypeId();
+			Map<SectorEntityToken, Float> exhaustionMap = getExhaustionMap();
+			if (exhaustionMap.containsKey(entity))
+				mult *= (1 - exhaustionMap.get(entity));
+			
+			if (mult < 0) mult = 0;
+			
+			Iterator<Map.Entry<String, Float>> iter = resCopy.entrySet().iterator();
+            while (iter.hasNext())
+            {
+				Map.Entry<String, Float> tmp = iter.next();
+				resCopy.put(tmp.getKey(), tmp.getValue() * mult);
+			}
 		}
-		if (resources.containsKey(type)) return resources.get(type);
-		//else if (((PlanetAPI)entity).isGasGiant()) return resources.get("gas_giant");
-		return resources.get("default");
+		
+		return resCopy;
+	}
+	
+	public static float getExhaustion(SectorEntityToken entity)
+	{
+		Map<SectorEntityToken, Float> exhaustionMap = getExhaustionMap();
+		if (exhaustionMap.containsKey(entity))
+			return exhaustionMap.get(entity);
+		return 0;
 	}
 	
 	public static Map<String, Float> getMiningShipsCopy()
@@ -487,10 +562,36 @@ public class MiningHelper {
 		return caches;
 	}
 	
+	public static float applyResourceExhaustion(SectorEntityToken entity, float miningStrength)
+	{
+		Map<SectorEntityToken, Float> exhaustionMap = getExhaustionMap();
+		String type = "default";
+		float currExhaustion = 0;
+		if (exhaustionMap.containsKey(entity))
+			currExhaustion = exhaustionMap.get(entity);
+		
+		float delta = miningStrength * exhaustionPer100MiningStrength/100;
+		if (entity instanceof PlanetAPI)
+		{
+			PlanetAPI planet = (PlanetAPI)entity;
+			type = planet.getTypeId();
+			if (!planet.isMoon())
+				delta *= planetExhaustionMult;
+		}
+		if (delta <= 0) return 0;
+		
+		float exhaustion = currExhaustion + delta;
+		if (exhaustion > MAX_EXHAUSTION) exhaustion = MAX_EXHAUSTION;
+		
+		exhaustionMap.put(entity, exhaustion);
+		
+		return (exhaustion - currExhaustion);
+	}
+	
 	public static MiningResult getMiningResults(CampaignFleetAPI fleet, SectorEntityToken entity, float mult, boolean isPlayer)
 	{
 		float strength = getFleetMiningStrength(fleet);
-		Map<String, Float> planetResources = getResources(entity);
+		Map<String, Float> planetResources = getResources(entity, isPlayer);
 		Map<String, Float> output = new HashMap<>();
 		
 		Iterator<String> iter = planetResources.keySet().iterator();
@@ -520,9 +621,38 @@ public class MiningHelper {
 			fleet.getCargo().gainCrewXP(xp);
 			fleet.getCommander().getStats().addXP((long) xp);
 			fleet.getCommander().getStats().levelUpIfNeeded();
+			
+			applyResourceExhaustion(entity, strength);
 		}
 		
 		return result;
+	}
+	
+	public static void renewResources(float days)
+	{
+		Map<SectorEntityToken, Float> exhaustionMap = getExhaustionMap();
+		List<SectorEntityToken> toRemove = new ArrayList<>();
+		Iterator<Map.Entry<SectorEntityToken, Float>> iter = exhaustionMap.entrySet().iterator();
+		while (iter.hasNext())
+		{
+			Map.Entry<SectorEntityToken, Float> tmp = iter.next();
+			SectorEntityToken entity = tmp.getKey();
+			MineableDef def = getMineableDefForEntity(entity);
+			float currentExhaustion = tmp.getValue();
+			float regen = def.renewRate * days * renewRatePerDay;
+			if (entity instanceof PlanetAPI)
+			{
+				PlanetAPI planet = (PlanetAPI)entity;
+				if (!planet.isMoon()) regen *= planetRenewMult;
+			}
+			float exhaustion = currentExhaustion - regen;
+			if (exhaustion <= 0)
+				toRemove.add(entity);
+			else exhaustionMap.put(entity, exhaustion);
+			log.info("Regenerating resources for " + entity.getName() + ": " + exhaustion);
+		}
+		for (SectorEntityToken token : toRemove)
+			exhaustionMap.remove(token);
 	}
 	
 	public static class MiningResult {
@@ -566,6 +696,18 @@ public class MiningHelper {
 		public Map<FleetMemberAPI, Float> damage = new HashMap<>();
 		public List<FleetMemberAPI> shipsDestroyed = new ArrayList<>();
 		public Map<FleetMemberAPI, Float> crLost = new HashMap<>();
+	}
+	
+	public static class MineableDef {
+		protected String name;
+		protected Map<String, Float> resources = new HashMap<>();
+		protected float danger = 0;
+		protected float exhaustionRate = 0;
+		protected float renewRate = 0;
+		
+		public MineableDef(String name) {
+			this.name = name;
+		}
 	}
 	
 	public enum CacheType {

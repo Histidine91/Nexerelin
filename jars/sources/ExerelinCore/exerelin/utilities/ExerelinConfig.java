@@ -1,6 +1,7 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import exerelin.campaign.ExerelinSetupData;
 import org.json.JSONObject;
 import java.util.List;
 import java.util.ArrayList;
@@ -81,10 +82,11 @@ public class ExerelinConfig
     public static float freeMarketTariffMult = 0.5f;
     public static int warmongerPenalty = 0;
     public static float factionRespawnInterval = 30f;
+	public static int maxFactionRespawns = 1;
     public static boolean countPiratesForVictory = false;
     public static boolean ownFactionCustomsInspections = false;
-	public static boolean followersAgents = false;
-	public static boolean followersDiplomacy = false;
+    public static boolean followersAgents = false;
+    public static boolean followersDiplomacy = false;
     public static boolean enableAvesta = true;
     public static boolean enableShanghai = true;
     public static int directoryDialogKey = 32;  // D
@@ -148,10 +150,11 @@ public class ExerelinConfig
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);
             warmongerPenalty = settings.optInt("warmongerPenalty", warmongerPenalty);
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
+			maxFactionRespawns = settings.optInt("maxFactionRespawns", maxFactionRespawns);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
-			followersAgents = settings.optBoolean("followersAgents", followersAgents);
-			followersDiplomacy = settings.optBoolean("followersDiplomacy", followersDiplomacy);
+            followersAgents = settings.optBoolean("followersAgents", followersAgents);
+            followersDiplomacy = settings.optBoolean("followersDiplomacy", followersDiplomacy);
             enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
             enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
@@ -182,7 +185,10 @@ public class ExerelinConfig
             ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(factionId));
 
         for(String factionId : supportedModFactions)
-            ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(factionId));
+        {
+            if (ExerelinSetupData.isFactionInstalled(factionId))
+                ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(factionId));
+        }
     }
 
     public static ExerelinFactionConfig getExerelinFactionConfig(String factionId)

@@ -21,9 +21,3 @@ public class NGCSetPrismMarketEnabled extends BaseCommandPlugin {
 		return true;
 	}
 }
-
-
-
-
-
-

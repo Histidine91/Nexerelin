@@ -25,6 +25,8 @@
         "militarist":1,
         "ideological":0.5,
     },
+    
+    "miningVariantsOrWings":["ngo_mining_frigate_medium", "ngo_mining_frigate_standard"]
 
     #"invasionStrengthBonusAttack":0.1,
     #"invasionStrengthBonusDefend":0.125,

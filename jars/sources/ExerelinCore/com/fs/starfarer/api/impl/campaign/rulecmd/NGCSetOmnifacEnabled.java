@@ -21,9 +21,3 @@ public class NGCSetOmnifacEnabled extends BaseCommandPlugin {
 		return true;
 	}
 }
-
-
-
-
-
-

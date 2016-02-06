@@ -40,9 +40,3 @@ public class NGCSetNumFactions extends BaseCommandPlugin {
 		return true;
 	}
 }
-
-
-
-
-
-

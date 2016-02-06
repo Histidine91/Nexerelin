@@ -51,6 +51,8 @@
     "warWearinessPeaceTreatyReduction": 8000,
     
     "factionRespawnInterval": 30,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
+    "maxFactionRespawns": 1,    # factions can respawn this many times (not counting initial entry into sector); <0 = unlimted
+    
     "ownFactionCustomsInspections": false,  # will your faction perform customs inspections on you? (always off for followers)
     "warmongerPenalty": 1,   # take reputation hit from starting a war? 0 = never, 1 = not for followers, 2 = always
     

@@ -116,13 +116,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		String agentFactionStr = agentFaction.getEntityNamePrefix();
-		String theAgentFactionStr = agentFaction.getDisplayNameWithArticle();
-		
-		map.put("$agentFaction", agentFactionStr);
-		map.put("$theAgentFaction", theAgentFactionStr);
-		map.put("$AgentFaction", Misc.ucFirst(agentFactionStr));
-		map.put("$TheAgentFaction", Misc.ucFirst(theAgentFactionStr));
+		addFactionNameTokens(map, "agent", agentFaction);
 		
 		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repEffect*100f)));
 		map.put("$newRelationStr", getNewRelationStr(agentFaction, faction));		return map;

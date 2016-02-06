@@ -20,9 +20,3 @@ public class NGCSetOmnifacRandomLocation extends BaseCommandPlugin {
 		return true;
 	}
 }
-
-
-
-
-
-

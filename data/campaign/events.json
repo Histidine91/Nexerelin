@@ -67,6 +67,11 @@
 		"script":"exerelin.campaign.events.WarmongerEvent"
 	},
 	
+	# missions
+	"exerelin_conquest_mission":{
+		"script":"exerelin.campaign.missions.ConquestMissionEvent",
+	},
+	
 	# vanilla overrides
 	"investigation":{
 		"script":"exerelin.campaign.events.ExerelinInvestigationEvent",
