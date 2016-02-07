@@ -1,6 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.TiandongModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true, # Boolean
     "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
@@ -23,4 +23,10 @@
     "miningVariantsOrWings":["shepherd_Frontier", "tiandong_armoredminingdrone_wing", "tiandong_chengdu_Standard", "tiandong_chengdu_Assault", "tiandong_qianzi_Standard"],
     
     "customStations":["tiandong_outpost"],
+    
+    "startShipsSolo":["tiandong_nanzhong_Standard"],
+    "startShipsCombatSmall":["tiandong_hujing_Closesupport", "tiandong_wujun_Standard", "tiandong_luo_yang_Escort"],
+    "startShipsTradeSmall":["tiandong_guan_du_Standard", "tiandong_nanzhong_Balanced", "tiandong_lao_hu_Standard"],
+    "startShipsCombatLarge":["tiandong_shouren_Closesupport", "tiandong_hanzhong_Standard", "tiandong_wujun_Assault"],
+    "startShipsTradeLarge":["tiandong_dingjun_Assault", "tiandong_guan_du_Closesupport", "tiandong_lao_hu_Closesupport"],
 }

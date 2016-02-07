@@ -1,7 +1,7 @@
 {
     "uniqueModClassName":"data.scripts.MayorateModPlugin", # String
-    "playableFaction":"true", # Boolean
-    "isPirateNeutral":"true", # Boolean
+    "playableFaction":true, # Boolean
+    "isPirateNeutral":true, # Boolean
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
@@ -21,4 +21,10 @@
         "diplomatic":-0.5,
         "ideological":1,
     },
+    
+    "startShipsSolo":["ilk_lilith_assault"],
+    "startShipsCombatSmall":["ilk_cimeterre_CS", "ilk_tiamat_assault", "ilk_lilith_kazi_tournament"],
+    "startShipsTradeSmall":["ilk_safir_standard", "ilk_safir_converted_support", "ilk_lilith_CS"],
+    "startShipsCombatLarge":["ilk_jamaran_patrol", "ilk_cimeterre_strike", "ilk_hk_wing"],
+    #"startShipsTradeLarge":[],
 }

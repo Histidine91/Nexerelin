@@ -20,4 +20,11 @@
     },
     
     "customStations":["neutrino_station_powerplant", "neutrino_station_largeprocessing", "neutrino_station_experimental"],
+    
+    "startShipsSolo":["junk_pirates_clam_CS"],
+    "startShipsCombatSmall":["neutrino_hacksaw_standard", "neutrino_singularity_updated", "neutrino_relativity_support"],
+    "startShipsTradeSmall":["neutrino_piledriverC_standard", "neutrino_singularity_updated", "neutrino_polarity_standard"],
+    "startShipsCombatLarge":["neutrino_grinder_assault", "neutrino_hacksaw_standard", "neutrino_singularity_updated", "neutrino_relativity_support"],
+    "startShipsTradeLarge":["neutrino_grinder_assault", "neutrino_piledriverC_standard", "neutrino_polarity_standard", "neutrino_drohne_wing"],
+    
 }

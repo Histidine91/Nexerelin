@@ -1,22 +1,22 @@
 {
-    "uniqueModClassName":"data.scripts.world.diableavionicsGen", # String
-    "playableFaction":true, # Boolean
+    "uniqueModClassName":"data.scripts.world.diableavionicsGen",
+    "playableFaction":true,
     "corvusCompatible":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.1, # Double
+    "crewExpereinceLevelIncreaseChance":0.0,
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Dissidents", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Dissidents",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "factionsLiked":["SCY"],
+    "factionsDisliked":["hegemony","sindrian_diktat","luddic_path","interstellarimperium"],
     
     "alignments":{
-        "corporate":1,
+        "corporate":0.5,
         "technocratic":0.5,
         "militarist":1,
         "diplomatic":-1,
@@ -25,9 +25,9 @@
     "miningVariantsOrWings":["diableavionics_laminar_miner"],
     "customStations":["diableavionics_station_eclipse","diableavionics_station_shadow","diableavionics_station_ressource"],
     
-    "startShipsSolo":["diableavionics_vapor_standard"],
-    "startShipsCombatSmall":["diableavionics_hayle_multirole", "diableavionics_vapor_attack", "diableavionics_draft_standard"],
+    "startShipsSolo":["diableavionics_draft_support"],
+    "startShipsCombatSmall":["diableavionics_calm_mixed", "diableavionics_vapor_attack", "diableavionics_draft_standard"],
     "startShipsTradeSmall":["diableavionics_stratus_standard", "diableavionics_draft_support", "diableavionics_laminar_miner"],
-    "startShipsCombatLarge":["diableavionics_haze_standard", "diableavionics_calm_assault", "diableavionics_strife_wing"],
-    "startShipsTradeLarge":["diableavionics_gust_sentinel", "diableavionics_stratus_standard", "diableavionics_frost_wing"],
+    "startShipsCombatLarge":["diableavionics_gust_assault", "diableavionics_derecho_kite", "diableavionics_strife_wing"],
+    "startShipsTradeLarge":["diableavionics_hayle_multirole", "diableavionics_stratus_standard", "diableavionics_stratus_standard"],
 }
