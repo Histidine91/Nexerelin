@@ -1,9 +1,7 @@
 {
     "uniqueModClassName":"data.scripts.IIModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true, # Boolean
     "corvusCompatible":true,
-    
-    "isPirateNeutral":"false", # Boolean
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
@@ -26,9 +24,15 @@
     "factionsDisliked":["hegemony"], # String array
 
     "alignments":{
-	"corporate":0,
-	"technocratic":-0.5,
-	"diplomatic":0,
+        "corporate":0,
+        "technocratic":-0.5,
+        "diplomatic":0,
         "militarist":1,
     },
+    
+    "startShipsSolo":["ii_decurion_sta"],
+    "startShipsCombatSmall":["ii_praetorian_sta", "ii_wolf_i_cs", "ii_invictus_sta"],
+    "startShipsTradeSmall":["ii_lynx_s_sta", "ii_decurion_str", "ii_basileus_f_sta"],
+    "startShipsCombatLarge":["ii_malleus_art", "ii_interrex_bal", "ii_basileus_sup"],
+    "startShipsTradeLarge":["ii_sebastos_f_art", "ii_lynx_sta", "ii_invictus_sup"],
 }

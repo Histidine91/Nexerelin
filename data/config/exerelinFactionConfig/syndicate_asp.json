@@ -1,6 +1,7 @@
 {
     "uniqueModClassName":"data.scripts.JunkPiratesModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true, # Boolean
+    "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
@@ -19,4 +20,10 @@
     },
     
     "freeMarket":true,
+    
+    "miningVariantsOrWings":["syndicate_asp_venom_wing"],
+    
+    "startShipsSolo":["syndicate_asp_diamondback_Standard"],
+    "startShipsTradeSmall":["syndicate_asp_copperhead_Standard", "syndicate_asp_diamondback_Standard", "syndicate_asp_venom_wing"],
+    "startShipsTradeLarge":["syndicate_asp_gigantophis_Support", "syndicate_asp_copperhead_Standard", "syndicate_asp_constrictor_wing", "syndicate_asp_bite_wing"],
 }

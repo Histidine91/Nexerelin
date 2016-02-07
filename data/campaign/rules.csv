@@ -367,9 +367,7 @@ NGCAddShipAndComplement ""AL_mumber_C""
 AddText ""Added Mumber-class frigate"" textFriendColor
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinASPSyndicate,NewGameOptionSelected,$option == exerelinNGCJoinASPSyndicate,"NGCSetPlayerFaction ""syndicate_asp""
-NGCAddShipAndComplement ""syndicate_asp_diamondback_Standard""
-AddText ""Added Diamondback-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == exerelinNGCJoinBlackrock,"NGCSetPlayerFaction ""blackrock_driveyards""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinBushi,NewGameOptionSelected,$option == exerelinNGCJoinBushi,"NGCSetPlayerFaction ""bushi""
@@ -377,17 +375,13 @@ NGCAddShipAndComplement ""bushi_yari_Standard""
 AddText ""Added Yari-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinCitadel,NewGameOptionSelected,$option == exerelinNGCJoinCitadel,"NGCSetPlayerFaction ""citadeldefenders""
-NGCAddShipAndComplement ""Fox_Frigate_standard""
-AddText ""Added Aural-class skirmisher"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinCrystanite,NewGameOptionSelected,$option == exerelinNGCJoinCrystanite,"NGCSetPlayerFaction ""crystanite""
 NGCAddShipAndComplement ""crys_pin_standard""
 AddText ""Added Pin-class frigate"" textFriendColor
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinDiableAvionics,NewGameOptionSelected,$option == exerelinNGCJoinDiableAvionics,"NGCSetPlayerFaction ""diableavionics""
-NGCAddShipAndComplement ""diableavionics_vapor_standard""
-AddText ""Added Vapor-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinExigency,NewGameOptionSelected,$option == exerelinNGCJoinExigency,"NGCSetPlayerFaction ""exigency""
 NGCAddShipAndComplement ""exigency_destroyer_Disruptor""
 AddText ""Added Zephos-class destroyer"" textFriendColor
@@ -411,21 +405,15 @@ FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinInfected,NewGameOptionSelected,$option == exerelinNGCJoinInfected,"NGCSetPlayerFaction ""infected""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinInterstellarImperium,NewGameOptionSelected,$option == exerelinNGCJoinInterstellarImperium,"NGCSetPlayerFaction ""interstellarimperium""
-NGCAddShipAndComplement ""ii_decurion_sta""
-AddText ""Added Decurion-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinJunkPirates,NewGameOptionSelected,$option == exerelinNGCJoinJunkPirates,"NGCSetPlayerFaction ""junk_pirates""
-NGCAddShipAndComplement ""junk_pirates_clam_Standard""
-AddText ""Added Clam-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinKadur,NewGameOptionSelected,$option == exerelinNGCJoinKadur,"NGCSetPlayerFaction ""kadur_theocracy""
 NGCAddShipAndComplement ""khs_buzzard_Strike""
 AddText ""Added Buzzard-class frigate"" textFriendColor
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinTemplars,NewGameOptionSelected,$option == exerelinNGCJoinTemplars,"NGCSetPlayerFaction ""templars""
-NGCAddShipAndComplement ""tem_martyr_sal""
-AddText ""Added Martyr-class corvette"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinLooters,NewGameOptionSelected,$option == exerelinNGCJoinLooters,"NGCSetPlayerFaction ""Lte""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinMayorate,NewGameOptionSelected,$option == exerelinNGCJoinMayorate,"NGCSetPlayerFaction ""mayorate""
@@ -461,9 +449,7 @@ NGCAddShipAndComplement ""ori_bastion_variant""
 AddText ""Added Bastion-class frigate"" textFriendColor
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinPACK,NewGameOptionSelected,$option == exerelinNGCJoinPACK,"NGCSetPlayerFaction ""pack""
-NGCAddShipAndComplement ""pack_wirefox_Standard""
-AddText ""Added Wirefox-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinPatria,NewGameOptionSelected,$option == exerelinNGCJoinPatria,"NGCSetPlayerFaction ""patnavy""
 NGCAddShipAndComplement ""pat_kortenaer_patrian""
 AddText ""Added Kortenaer-class frigate"" textFriendColor

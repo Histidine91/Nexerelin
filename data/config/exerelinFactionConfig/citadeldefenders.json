@@ -23,4 +23,10 @@
     },
     
     "customStations":["station_citadel_type"],
+    
+    "startShipsSolo":["Fox_Frigate_standard"],  # Aural
+    "startShipsCombatSmall":["Fox_MDestroyer_standard", "fox_dfrigate_standard", "Fox_Corvette_standard"], # Tacit, Rondure, Particle
+    "startShipsTradeSmall":["Fox_LDestroyer_standard", "Fox_Drone_standard", "Fox_Hauler_standard"],  # Comet, Porter, Stable
+    "startShipsCombatLarge":["Fox_Cruiser_standard", "Fox_Minelayer_standard", "fox_dfrigate_closesupport"], # Nova, Modem, Rondure
+    #"startShipsTradeLarge":["Fox_Carrier_standard", "Fox_Hauler_standard", "fox_heak_wing"],   # Inland, Stable, Heak
 }
