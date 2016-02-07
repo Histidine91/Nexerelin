@@ -160,7 +160,7 @@
 	"exerelin_ngc":{
 		"added":"added",
 		"shipString":"$shipClass-class $designation",
-		"fighterWingString":"$shipClass $designation wing",
+		"fighterWingString":"$shipClass wing",
 	},
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",
@@ -202,12 +202,3 @@
 		"directoryOptions":"Directory options",
 	},
 }
-
-
-
-
-
-
-
-
-

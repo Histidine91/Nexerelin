@@ -68,8 +68,8 @@ public class ExerelinFactionConfig
     public List<String> customStations = new ArrayList<>();
     
     public List<String> miningVariantsOrWings = new ArrayList<>();
-	
-	public Map<StartFleetType, List<String>> startShips = new HashMap<>();
+    
+    public Map<StartFleetType, List<String>> startShips = new HashMap<>();
     
     static {
         for (Alignment alignment : Alignment.values())
@@ -190,7 +190,7 @@ public class ExerelinFactionConfig
         getStartShipTypeIfAvailable(settings, "startShipsTradeLargeSSP", StartFleetType.TRADE_LARGE_SSP);
     }
     
-    public List<String> getStartShipsForType(String typeStr)
+    public List<String> getStartShipsForType(String typeStr, boolean allowFallback)
     {
         StartFleetType type = StartFleetType.valueOf(typeStr.toUpperCase());
         if (ExerelinUtils.isSSPInstalled())
@@ -201,6 +201,8 @@ public class ExerelinFactionConfig
         }
         if (startShips.containsKey(type))
             return startShips.get(type);
+        
+        if (!allowFallback) return null;
         
         if (startShips.containsKey(StartFleetType.SOLO))
             return startShips.get(StartFleetType.SOLO);

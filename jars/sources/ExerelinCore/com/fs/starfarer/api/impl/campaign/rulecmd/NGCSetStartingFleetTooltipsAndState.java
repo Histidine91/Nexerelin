@@ -20,12 +20,12 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 
-public class NGCSetStartingFleetTooltips extends BaseCommandPlugin {
+public class NGCSetStartingFleetTooltipsAndState extends BaseCommandPlugin {
 	
 	protected static String[] FLEET_TYPES = {"SOLO", "COMBAT_SMALL", "TRADE_SMALL", "COMBAT_LARGE", "TRADE_LARGE"};
 	protected static String[] DIALOG_ENTRIES = {"Solo", "CombatSmall", "TradeSmall", "CombatLarge", "TradeLarge"};
 	
-    @Override
+	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
 		
@@ -35,7 +35,12 @@ public class NGCSetStartingFleetTooltips extends BaseCommandPlugin {
 		for (int i=0; i<FLEET_TYPES.length; i++)
 		{
 			String fleetTypeStr = FLEET_TYPES[i];
-			List<String> startingVariants = factionConf.getStartShipsForType(fleetTypeStr);
+			String option = "exerelinNGCFleet" + DIALOG_ENTRIES[i];
+			List<String> startingVariants = factionConf.getStartShipsForType(fleetTypeStr, false);
+			if (startingVariants == null) {
+				dialog.getOptionPanel().setEnabled(option, false);
+				continue;
+			}
 			List<String> highlights = new ArrayList<>();
 			List<Color> colors = new ArrayList<>();
 			
@@ -65,18 +70,12 @@ public class NGCSetStartingFleetTooltips extends BaseCommandPlugin {
 				highlights.add(className);
 				colors.add(Misc.getHighlightColor());
 			}
-			String option = "exerelinNGCFleet" + DIALOG_ENTRIES[i];
+			dialog.getOptionPanel().setEnabled(option, true);
 			dialog.getOptionPanel().setTooltip(option, tooltip);
 			dialog.getOptionPanel().setTooltipHighlights(option, highlights.toArray(new String[0]));
 			dialog.getOptionPanel().setTooltipHighlightColors(option, colors.toArray(new Color[0]));
 		}
-                
+		
 		return true;
 	}
 }
-
-
-
-
-
-

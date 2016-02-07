@@ -511,7 +511,7 @@ NGCAddShipAndComplement ""valk_inquisitor_A""
 AddText ""Added Inquisitor-class frigate"" textFriendColor
 FireBest ExerelinNGCStep4",,,
 ,,,,,,
-ExerelinNGCPickStartingShips,ExerelinNGCStep3,,NGCSetStartingFleetTooltips,Your starting fleet?,"exerelinNGCFleetSolo:Solo frigate
+ExerelinNGCPickStartingShips,ExerelinNGCStep3,,NGCSetStartingFleetTooltipsAndState,Your starting fleet?,"exerelinNGCFleetSolo:Solo frigate
 exerelinNGCFleetCombatSmall:Light combat patrol
 exerelinNGCFleetTradeSmall:Small trade convoy
 exerelinNGCFleetCombatLarge:Upsized military unit

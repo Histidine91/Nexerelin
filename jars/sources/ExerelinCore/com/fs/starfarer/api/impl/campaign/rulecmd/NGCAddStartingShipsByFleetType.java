@@ -21,14 +21,14 @@ import exerelin.utilities.StringHelper;
 
 public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 	
-    @Override
+	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
 		
 		String fleetTypeStr = params.get(0).getString(memoryMap);
 		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
 		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(PlayerFactionStore.getPlayerFactionIdNGC());
-		List<String> startingVariants = factionConf.getStartShipsForType(fleetTypeStr);
+		List<String> startingVariants = factionConf.getStartShipsForType(fleetTypeStr, true);
 		
 		int crew = 0;
 		int supplies = 0;
@@ -63,12 +63,12 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 			
 			dialog.getTextPanel().addParagraph(printed, Misc.getPositiveHighlightColor());
 		}
-                
-        MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-        memory.set("$crewAdded", crew, 0);
-        memory.set("$suppliesAdded", supplies, 0);
+		
+		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
+		memory.set("$crewAdded", crew, 0);
+		memory.set("$suppliesAdded", supplies, 0);
 		memory.set("$fuelAdded", fuel, 0);
-                
+		
 		return true;
 	}
 }
