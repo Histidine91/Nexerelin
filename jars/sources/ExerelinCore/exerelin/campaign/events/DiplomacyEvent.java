@@ -129,6 +129,9 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
 		addFactionNameTokens(map, "other", otherFaction);
+		map.put("$deltaAbs", "" + (int)Math.ceil(Math.abs(delta*100f)));
+		//map.put("$newRelationStr", getNewRelationStr(delta));
+		map.put("$newRelationStr", getNewRelationStr(0));
 		return map;
 	}
 	
