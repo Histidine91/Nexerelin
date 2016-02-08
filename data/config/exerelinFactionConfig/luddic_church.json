@@ -8,7 +8,7 @@
 
     "customRebelFaction":"", # String
     "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Traitors", # String
+    "rebelFleetSuffix":"Heretics", # String
 
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
