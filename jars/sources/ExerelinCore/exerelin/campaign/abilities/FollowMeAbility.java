@@ -20,7 +20,9 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -32,7 +34,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 	public static final float FOLLOW_DURATION = 10;
 	public static final float FOLLOW_DURATION_PASSIVE = 1f;
 	public static final float FOLLOW_FETCH_RANGE = 600;
-	public static final List<String> FOLLOW_VALID_FLEET_TYPES = new ArrayList<>();
+	public static final Set<String> FOLLOW_VALID_FLEET_TYPES = new HashSet<>();
 	
 	static {
 		FOLLOW_VALID_FLEET_TYPES.add(FleetTypes.PATROL_SMALL);
@@ -59,7 +61,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 			
 			VisibilityLevel visibility = entity.getVisibilityLevelToPlayerFleet();
 			if (visibility != VisibilityLevel.NONE) {
-				Global.getSector().addPing(entity, Pings.COMMS);
+				Global.getSector().addPing(entity, "follow_me_send");
 			}
 		}
 		String myFactionId = entity.getFaction().getId();
@@ -93,19 +95,19 @@ public class FollowMeAbility extends BaseDurationAbility {
 						FleetAssignmentDataAPI currentAssignment = ai.getCurrentAssignment();
 						if (currentAssignment != null && currentAssignment.getTarget() == entity)
 						{
-							ai.removeFirstAssignmentIfItIs(FleetAssignment.ORBIT_PASSIVE);
+							ai.removeFirstAssignmentIfItIs(FleetAssignment.ORBIT_AGGRESSIVE);
 						}
 						currentAssignment = ai.getCurrentAssignment();
 						if (currentAssignment != null && currentAssignment.getTarget() == entity)
 						{
-							ai.removeFirstAssignmentIfItIs(FleetAssignment.ORBIT_AGGRESSIVE);
+							ai.removeFirstAssignmentIfItIs(FleetAssignment.ORBIT_PASSIVE);
 						}
 						
 						ai.addAssignmentAtStart(FleetAssignment.ORBIT_AGGRESSIVE, entity, FOLLOW_DURATION - FOLLOW_DURATION_PASSIVE, null);
 						ai.addAssignmentAtStart(FleetAssignment.ORBIT_PASSIVE, entity, FOLLOW_DURATION_PASSIVE, null);
 						
 						//fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, FOLLOW_DURATION);
-						Global.getSector().addPing(fleet, Pings.COMMS);
+						Global.getSector().addPing(fleet, "follow_me_receive");
 					}
 				}
 			}

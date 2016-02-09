@@ -1,0 +1,27 @@
+{	
+	"follow_me_send":{
+		"sounds":["default_campaign_ping", "", "default_campaign_ping"],
+		#"color":"textNeutralColor",
+		"useFactionColor":true,
+		"width":15,
+		"range":500,
+		"duration":1,
+		"invert":false,
+		
+		"num":3,
+		"delay":0.25,
+	},
+	
+	"follow_me_receive":{
+		#"sounds":[],
+		#"color":"textNeutralColor",
+		"useFactionColor":true,
+		"width":12,
+		"range":150,
+		"duration":1,
+		"invert":false,
+		
+		"num":2,
+		"delay":0.25,
+	},
+}
