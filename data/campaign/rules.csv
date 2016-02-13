@@ -336,6 +336,7 @@ ExerelinNGCListValkyrians,ExerelinNGCListFactions4,NGCDoesFactionExist valkyrian
 ExerelinNGCListModFactions4Back,ExerelinNGCListFactions4,,,,20:exerelinNGCFactionsBack:Back,
 ,,,,,,
 ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""player_npc""
+NGCSetFreeStart false
 NGCAddShip ""tempest_Starting""
 NGCAddCargo RESOURCES elite_crew 20
 NGCAddCargo RESOURCES supplies 20
@@ -348,6 +349,7 @@ NGCAddAptitudePoints 10
 NGCSetStartingLocationExerelin
 NGCDone",,,
 ExerelinNGCOwnFaction,NewGameOptionSelected,"$option == exerelinNGCOwnFaction","NGCSetPlayerFaction ""player_npc""
+NGCSetFreeStart false
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCFreeStart,NewGameOptionSelected,"$option == exerelinNGCFreeStart","NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart true
