@@ -50,7 +50,7 @@ public class CreateAlliance implements BaseCommand {
         if (faction1.equals(Factions.PLAYER) || faction2.equals(Factions.PLAYER))
         {
             Console.showMessage("Error: player faction not supported for alliances!");
-            Console.showMessage("(player_npc works but we don't recommend it)");
+            Console.showMessage("(player_npc works as long as the faction is alive)");
             return CommandResult.ERROR;
         }
 

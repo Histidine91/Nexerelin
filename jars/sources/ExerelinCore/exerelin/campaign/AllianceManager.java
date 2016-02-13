@@ -51,7 +51,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final float JOIN_CHANCE_MULT_PER_MEMBER = 0.8f;
     protected static final float FORM_CHANCE_MULT = 0.6f;   // multiplies relationship to get chance to form alliance
     protected static final float JOIN_CHANCE_FAIL_PER_NEW_ENEMY = 0.4f;
-    protected static final List<String> INVALID_FACTIONS = Arrays.asList(new String[] {"player_npc", "templars", "independent"});
+    protected static final List<String> INVALID_FACTIONS = Arrays.asList(new String[] {"templars", "independent"});
     
     protected static Map<Alignment, List<String>> allianceNamesByAlignment = new HashMap<>();
     protected static Map<Alignment, List<String>> alliancePrefixesByAlignment = new HashMap<>();

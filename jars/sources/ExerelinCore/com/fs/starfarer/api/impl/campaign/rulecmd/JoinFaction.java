@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -42,6 +43,13 @@ public class JoinFaction extends BaseCommandPlugin {
 			str = StringHelper.getString("exerelin_factions", "joinedFaction");
 			isDefection = false;
 		}
+		
+		// make sure player_npc has no conflicting alliance loyalties
+		if (AllianceManager.getFactionAlliance("player_npc") != null && !AllianceManager.areFactionsAllied("player_npc", newFactionId))
+		{
+			AllianceManager.leaveAlliance("player_npc", false);
+		}
+		
 		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId, false);
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
