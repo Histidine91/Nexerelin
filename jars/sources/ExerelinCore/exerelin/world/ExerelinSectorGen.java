@@ -884,12 +884,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		List<EntityData> validPlanets = new ArrayList<>();
 		for (EntityData data : planets)
 		{
+			//log.info("Random orbit radius finder trying entity " + data.name);
+			if (data.type != EntityType.PLANET) continue;
 			if (data.orbitRadius < minDist) continue;
 			if (data.orbitRadius > maxDist) continue;
 			validPlanets.add(data);
 		}
 		if (validPlanets.isEmpty())
+		{
+			log.info("Couldn't find valid planets for random orbit radius finder, just getting a random one");
 			return (MathUtils.getRandomNumberInRange(minDist, maxDist) + MathUtils.getRandomNumberInRange(minDist, maxDist))/2;
+		}
 		
 		int index = 0;
 		if (validPlanets.size() > 1) index = MathUtils.getRandomNumberInRange(0, validPlanets.size() - 1);
