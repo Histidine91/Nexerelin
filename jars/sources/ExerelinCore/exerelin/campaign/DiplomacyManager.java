@@ -270,7 +270,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         ExerelinReputationAdjustmentResult repResult = new ExerelinReputationAdjustmentResult(delta, wasHostile, isHostile);
         if (repResult.wasHostile && !repResult.isHostile)
         {
-            String commissionFactionId = Misc.getCommissionFaction();
+            String commissionFactionId = Misc.getCommissionFaction().getId();
             if (commissionFactionId != null && playerAlignedFactionId.equals("player_npc"))    // i.e. not with a "real faction"
             {                                                // who wouldn't want to change relations just because our employee is working with an involved faction
                 if (commissionFactionId.equals(faction1Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction1Id))
@@ -292,7 +292,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         else if (!repResult.wasHostile && repResult.isHostile)
         {
-            String commissionFactionId = Misc.getCommissionFaction();
+            String commissionFactionId = Misc.getCommissionFaction().getId();
             if (commissionFactionId != null && playerAlignedFactionId.equals("player_npc"))    // i.e. not with a "real faction"
             {                                                // who wouldn't want to change relations just because our employee is working with an involved faction
                 if (commissionFactionId.equals(faction1Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction1Id))

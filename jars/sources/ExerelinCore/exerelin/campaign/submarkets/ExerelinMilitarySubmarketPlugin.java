@@ -9,7 +9,7 @@ import exerelin.campaign.PlayerFactionStore;
 public class ExerelinMilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 	@Override
 	protected boolean hasCommission() {
-		String commissionFaction = Misc.getCommissionFaction();
+		String commissionFaction = Misc.getCommissionFaction().getId();
 		if (commissionFaction != null && AllianceManager.areFactionsAllied(commissionFaction, submarket.getFaction().getId())) {
 			return true;
 		}
