@@ -559,7 +559,7 @@ NGCDone",,,
 ExerelinMarketAddOptionSpecial,PopulateOptions,$menuState == main,"SetShortcut exerelinMarketSpecial ""S"" true",,6:exerelinMarketSpecial:Special functions,
 ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,FireAll ExerelinMarketSpecial,,,
 ExerelinMarketLeaveOption,ExerelinMarketSpecial,,,,10:exerelinMarketSpecialBack:Back,
-ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,"ShowDefaultVisual
+ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,"ExerelinShowDefaultVisual
 $menuState = main 0
 FireAll PopulateOptions",,,
 ,,,,,,
@@ -594,14 +594,14 @@ $player.invasionTarget = $id 1.01
 CreateWarmongerEvent $faction.id
 AdjustRep $faction.id COMBAT_NORMAL",,,
 ExerelinInvasionCancel,DialogOptionSelected,"$option == exerelinInvasionCancel
-$hasMarket","ShowDefaultVisual
+$hasMarket","ExerelinShowDefaultVisual
 FireAll ExerelinMarketSpecial",You decide not to attack $entityName.,,
 ExerelinInvasionLeave,DialogOptionSelected,"$option == exerelinInvasionLeave
 $hasMarket",DismissDialog,You decide not to continue the invasion.,,
 ExerelinInvasionDone,DialogOptionSelected,"$option == exerelinInvasionLeave
 $hasMarket",DismissDialog,,,
 ExerelinInvasionOpen,OpenInteractionDialog,"$hasMarket
-$id == $player.invasionTarget","ShowDefaultVisual
+$id == $player.invasionTarget","ExerelinShowDefaultVisual
 FireBest ExerelinInitInvadeDialog",,,
 ExerelinInvasionRoundComplete,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionRoundComplete score:100","ExecuteInvasionRound
@@ -619,7 +619,7 @@ ExerelinInvasionResultsIncompleteNoMoreMarines,ExerelinInvasionResults,"!$exerel
 unset $player.invasionTarget","You have not yet captured $entityName.
 
 Your marine complement has been wiped out; you cannot continue the offensive.",exerelinInvasionLeave:Leave,
-ExerelinInvasionResultsCancelled,ExerelinInvasionResults,$exerelinInvasionCancelled score:100,"ShowDefaultVisual
+ExerelinInvasionResultsCancelled,ExerelinInvasionResults,$exerelinInvasionCancelled score:100,"ExerelinShowDefaultVisual
 unset $player.invasionTarget
 FireAll PopulateOptions",This isn't a valid invasion target! Perhaps we already captured it?,,
 ExerelinInvasionInterupted,ExerelinInitInvadeDialog,"$hasMarket
@@ -816,10 +816,10 @@ FireBest ExerelinAgentPostDeploy",,,
 ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasItem agent,"GetNumSpecialPeople
 FireAll ExerelinAgentOption",,,
 ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasItem agent score:10,"$menuState = main 0
-ShowDefaultVisual
+ExerelinShowDefaultVisual
 FireAll PopulateOptions",You have no more agents to deploy.,,
 ExerelinAgentAfterDeployAlertLevelMaxed,ExerelinAgentPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = main 0
-ShowDefaultVisual
+ExerelinShowDefaultVisual
 FireAll PopulateOptions",Security is too tight for further agent insertions.,,
 #END AGENT OPTIONS,,,,,,
 ,,,,,,
@@ -862,10 +862,10 @@ FireBest ExerelinSaboteurPostDeploy",,,
 ExerelinSaboteurAfterDeploy,ExerelinSaboteurPostDeploy,HasItem saboteur,"GetNumSpecialPeople
 FireAll ExerelinSaboteurOption",,,
 ExerelinSaboteurAfterDeployNoMoreSaboteurs,ExerelinSaboteurPostDeploy,!HasItem saboteur score:10,"$menuState = main 0
-ShowDefaultVisual
+ExerelinShowDefaultVisual
 FireAll PopulateOptions",You have no more saboteurs to deploy.,,
 ExerelinSaboteurAfterDeployAlertLevelMaxed,ExerelinSaboteurPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = main 0
-ShowDefaultVisual
+ExerelinShowDefaultVisual
 FireAll PopulateOptions",Security is too tight for further saboteur insertions.,,
 #END SABOTEUR OPTIONS,,,,,,
 ,,,,,,
@@ -912,7 +912,7 @@ FireAll ExerelinPrisonerPostTrade",You have sold the prisoner into slavery for $
 ExerelinPrisonerAfterTrade,ExerelinPrisonerPostTrade,HasItem prisoner,"GetNumSpecialPeople
 FireAll ExerelinPrisonerOption",,,
 ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem prisoner,"$menuState = main 0
-ShowDefaultVisual
+ExerelinShowDefaultVisual
 FireAll PopulateOptions",You have no more prisoners.,,
 #END PRISONER OPTIONS,,,,,,
 ,,,,,,
@@ -985,11 +985,11 @@ FireAll ExerelinFleetRequestOption",,,
 #END FLEET REQUEST OPTIONS,,,,,,
 ,,,,,,
 #START MINING OPTIONS,,,,,,
-ExerelinMiningOpen,OpenInteractionDialog,$canMine,"ShowDefaultVisual
+ExerelinMiningOpen,OpenInteractionDialog,$canMine,"ExerelinShowDefaultVisual
 PrintDescription 3",Your $shipOrFleet approaches $entityName.,"exerelinMiningPreview:Mine planet
 marketLeave:Leave",
 ExerelinMiningOpenAsteroid,OpenInteractionDialog,"$canMine
-$isAsteroid","ShowDefaultVisual
+$isAsteroid","ExerelinShowDefaultVisual
 PrintDescription 3",Your $shipOrFleet approaches the asteroid.,"exerelinMiningPreview:Mine asteroid
 marketLeave:Leave",
 ExerelinMiningPreview,DialogOptionSelected,$option == exerelinMiningPreview,"PrintMiningInfo
@@ -1012,7 +1012,7 @@ MakePlayerImmediatelyAttackable",,,
 ExerelinMiningInterrupted,BeginFleetEncounter,$global.miningInProgress,AbortWait $global.miningWait,Contact with the other fleet suspends mining operations.,,
 ExerelinMiningComplete,OpenInteractionDialog,"$canMine
 $global.miningFinished score:3","GetMiningResults 1
-ShowDefaultVisual",Your $shipOrFleet has completed mining on $entityName.,"exerelinMiningPreview:Mine again
+ExerelinShowDefaultVisual",Your $shipOrFleet has completed mining on $entityName.,"exerelinMiningPreview:Mine again
 marketLeave:Leave",
 ,,,,,,
 #ExerelinMiningBack,DialogOptionSelected,$option == exerelinMiningBack,"$menuState = main 0
@@ -1079,7 +1079,7 @@ $tradeMode = OPEN 0
 FireAll PopulateOptions","While $theFactionLong are generally $relAdjective towards you, that's not all that different from how they see other rival captains. The port authority, such as it is, grants you docking clearance after only a slight delay.",,
 ,,,,,,
 commRelayOpen,OpenInteractionDialog,"$tag:comm_relay
-!$hasMarket","ShowDefaultVisual
+!$hasMarket","ExerelinShowDefaultVisual
 FireBest InitCommRelayDialog",,,
 commRelayAddOptionInstallSniffer,PopulateOptions,"$tag:comm_relay
 !$hasMarket
