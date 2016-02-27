@@ -11,7 +11,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Events;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMission;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.events.ExerelinFactionCommissionMissionEvent;
 
@@ -109,7 +108,7 @@ public class ExerelinUtilsFaction {
         FactionAPI faction = entity.getFaction();
         if (!faction.getCustomBoolean(Factions.CUSTOM_OFFERS_COMMISSIONS))
             return;
-        if (faction.getId().equals(Misc.getCommissionFaction()))
+        if (faction.getId().equals(getCommissionFactionId()))
             return;    // already have commission
         
         revokeCommission();
@@ -128,4 +127,11 @@ public class ExerelinUtilsFaction {
         event.endEvent();
         //sector.reportEventStage(event, "annul", event.findMessageSender(), MessagePriority.ENSURE_DELIVERY);    // TODO comment out after debugging
     }
+	
+	public static String getCommissionFactionId()
+	{
+		FactionAPI commissionFaction = Misc.getCommissionFaction();
+		if (commissionFaction == null) return null;
+		return commissionFaction.getId();
+	}
 }

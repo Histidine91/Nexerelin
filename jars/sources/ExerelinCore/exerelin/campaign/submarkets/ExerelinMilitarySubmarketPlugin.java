@@ -1,15 +1,15 @@
 package exerelin.campaign.submarkets;
 
 import com.fs.starfarer.api.impl.campaign.submarkets.MilitarySubmarketPlugin;
-import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinUtilsFaction;
 
 @Deprecated	// for now
 public class ExerelinMilitarySubmarketPlugin extends MilitarySubmarketPlugin {
 	@Override
 	protected boolean hasCommission() {
-		String commissionFaction = Misc.getCommissionFaction().getId();
+		String commissionFaction = ExerelinUtilsFaction.getCommissionFactionId();
 		if (commissionFaction != null && AllianceManager.areFactionsAllied(commissionFaction, submarket.getFaction().getId())) {
 			return true;
 		}
