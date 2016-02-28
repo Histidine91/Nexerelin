@@ -375,7 +375,7 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinBushi,NewGameOptionSelected,$option == exerelinNGCJoinBushi,"NGCSetPlayerFaction ""bushi""
 NGCAddShipAndComplement ""bushi_yari_Standard""
 AddText ""Added Yari-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinCitadel,NewGameOptionSelected,$option == exerelinNGCJoinCitadel,"NGCSetPlayerFaction ""citadeldefenders""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinCrystanite,NewGameOptionSelected,$option == exerelinNGCJoinCrystanite,"NGCSetPlayerFaction ""crystanite""
@@ -413,7 +413,7 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinKadur,NewGameOptionSelected,$option == exerelinNGCJoinKadur,"NGCSetPlayerFaction ""kadur_theocracy""
 NGCAddShipAndComplement ""khs_buzzard_Strike""
 AddText ""Added Buzzard-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinTemplars,NewGameOptionSelected,$option == exerelinNGCJoinTemplars,"NGCSetPlayerFaction ""templars""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinLooters,NewGameOptionSelected,$option == exerelinNGCJoinLooters,"NGCSetPlayerFaction ""Lte""
@@ -437,7 +437,7 @@ FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinNoir,NewGameOptionSelected,$option == exerelinNGCJoinNoir,"NGCSetPlayerFaction ""noir""
 NGCAddShipAndComplement ""Noir_Fantome_Fantoma""
 AddText ""Added Fantome-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 exerelinNGCJoinOculus,NewGameOptionSelected,$option == exerelinNGCJoinOculus,"NGCSetPlayerFaction ""oculus""
 NGCAddShipAndComplement ""ob_tigris_standard""
 AddText ""Enjoy your Tigris-class destroyer :p"" textFriendColor
@@ -463,7 +463,7 @@ FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinQamar,NewGameOptionSelected,$option == exerelinNGCJoinQamar,"NGCSetPlayerFaction ""insurgency""
 NGCAddShipAndComplement ""khs_buzzard_Strike""
 AddText ""Added Buzzard-class frigate"" textFriendColor
-FireBest ExerelinNGCStep3",,,
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinRadicalORI,NewGameOptionSelected,$option == exerelinNGCJoinRadicalORI,"NGCSetPlayerFaction ""rori""
 NGCAddShipAndComplement ""ori_bastion_variant""
 AddText ""Added Bastion-class frigate"" textFriendColor
