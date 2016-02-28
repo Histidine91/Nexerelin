@@ -60,7 +60,7 @@ public class ExerelinShowDefaultVisual extends BaseCommandPlugin {
 				MemoryAPI mem = memoryMap.get(MemKeys.MARKET);
 				for (String tag : CUSTOM_MARKET_TAGS) {
 					if (mem.contains(tag) && CUSTOM_MARKET_TAG_IMAGES.containsKey(tag))
-						dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual(CUSTOM_MARKET_TAG_IMAGES.get(tag), 640, 400));
+						dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("illustrations", CUSTOM_MARKET_TAG_IMAGES.get(tag), 640, 400));
 				}
 			}
 		}
