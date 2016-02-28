@@ -46,10 +46,6 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 			crew += (int)Math.min(temp.getNeededCrew() * 1.2f, temp.getMaxCrew());
 			supplies += (int)temp.getCargoCapacity()/2;
 			fuel += (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
-
-			data.getStartingCargo().addItems(CargoItemType.RESOURCES, "regular_crew", crew);
-			data.getStartingCargo().addItems(CargoItemType.RESOURCES, "supplies", supplies);
-			data.getStartingCargo().addItems(CargoItemType.RESOURCES, "fuel", fuel);
 			
 			String className = temp.getHullSpec().getHullName();
 			String designation = temp.getVariant().getDesignation().toLowerCase();
@@ -63,6 +59,9 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 			
 			dialog.getTextPanel().addParagraph(printed, Misc.getPositiveHighlightColor());
 		}
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "regular_crew", crew);
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "supplies", supplies);
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "fuel", fuel);
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
 		memory.set("$crewAdded", crew, 0);
