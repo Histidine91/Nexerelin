@@ -19,6 +19,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.Iterator;
 
@@ -96,7 +97,7 @@ public class WarmongerEvent extends BaseEventPlugin {
 
 	@Override
 	public String getEventName() {
-		return ("Warmonger reputation penalty");
+		return StringHelper.getString("exerelin_events", "warmonger");
 	}
 	
 	/*

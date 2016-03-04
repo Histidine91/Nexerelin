@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,7 +99,10 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	
 	@Override
 	public String getEventName() {
-		return (Misc.ucFirst(newOwner.getDisplayName()) + " capture " + market.getName());
+		String name = StringHelper.getString("exerelin_events", "marketCaptured");
+		name = StringHelper.substituteToken(name, "$market", market.getName());
+		name = StringHelper.substituteToken(name, "$faction", faction.getDisplayName());
+		return name;
 	}
 	
 	@Override

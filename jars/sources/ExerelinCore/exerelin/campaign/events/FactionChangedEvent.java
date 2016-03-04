@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.utilities.StringHelper;
 
 
 public class FactionChangedEvent extends BaseEventPlugin {
@@ -28,7 +29,7 @@ public class FactionChangedEvent extends BaseEventPlugin {
 		
 	@Override
 	public String getEventName() {
-		return ("Faction changed");
+		return StringHelper.getString("exerelin_events", "factionChanged");
 	}
 	
 	@Override

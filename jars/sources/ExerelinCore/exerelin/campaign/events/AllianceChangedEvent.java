@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager.Alliance;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,7 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 		
 	@Override
 	public String getEventName() {
-		return ("Alliance changed: " + alliance.name);
+		return StringHelper.getStringAndSubstituteToken("exerelin_events", "allianceChanged", "$alliance", alliance.name);
 	}
 	
 	@Override

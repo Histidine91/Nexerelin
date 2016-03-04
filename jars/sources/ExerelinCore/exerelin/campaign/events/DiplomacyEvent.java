@@ -21,6 +21,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.utilities.StringHelper;
 
 
 public class DiplomacyEvent extends BaseEventPlugin {
@@ -93,7 +94,10 @@ public class DiplomacyEvent extends BaseEventPlugin {
 
 	@Override
 	public String getEventName() {
-		return (faction.getEntityNamePrefix() + " - " + otherFaction.getEntityNamePrefix() + " diplomatic event");
+		String name = StringHelper.getString("exerelin_events", "diplomacy");
+		name = StringHelper.substituteToken(name, "$faction", faction.getDisplayName());
+		name = StringHelper.substituteToken(name, "$otherFaction", otherFaction.getDisplayName());
+		return Misc.ucFirst(name);
 	}
 	
 	/*

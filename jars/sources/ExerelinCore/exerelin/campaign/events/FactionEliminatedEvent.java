@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
+import exerelin.utilities.StringHelper;
 
 
 public class FactionEliminatedEvent extends BaseEventPlugin {
@@ -72,7 +73,8 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 
 	@Override
 	public String getEventName() {
-		return (Misc.ucFirst(defeatedFaction.getDisplayName()) + " driven from Exerelin");
+		return Misc.ucFirst(StringHelper.getStringAndSubstituteToken("exerelin_events", "factionEliminated", 
+				"$faction", defeatedFaction.getDisplayName()));
 	}
 	
 	@Override

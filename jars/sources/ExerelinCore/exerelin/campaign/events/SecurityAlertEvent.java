@@ -3,6 +3,7 @@ package exerelin.campaign.events;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import exerelin.utilities.StringHelper;
 
 public class SecurityAlertEvent extends BaseEventPlugin {
 
@@ -94,7 +95,8 @@ public class SecurityAlertEvent extends BaseEventPlugin {
 	
 	@Override
 	public String getEventName() {
-		return "Security alert on " + market.getName();
+		return StringHelper.getStringAndSubstituteToken("exerelin_events", "securityAlert", 
+				"$market", market.getName());
 	}
 	
 	@Override

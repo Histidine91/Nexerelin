@@ -18,6 +18,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +90,7 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 
 	@Override
 	public String getEventName() {
-		return ("Faction salary report");
+		return StringHelper.getString("exerelin_events", "factionSalary");
 	}
 	
 	@Override

@@ -3,6 +3,8 @@ package exerelin.campaign.events;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import com.fs.starfarer.api.util.Misc;
+import exerelin.utilities.StringHelper;
 
 /**
  * This is really just RecentUnrestEvent with a different condition 
@@ -96,7 +98,8 @@ public class MarketAttackedEvent extends BaseEventPlugin {
 	
 	@Override
 	public String getEventName() {
-		return "Recent attack on " + market.getName();
+		return StringHelper.getStringAndSubstituteToken("exerelin_events", "marketAttacked", 
+				"$market", market.getName());
 	}
 	
 	@Override

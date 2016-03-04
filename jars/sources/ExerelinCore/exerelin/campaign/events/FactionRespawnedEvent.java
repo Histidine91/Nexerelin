@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
+import exerelin.utilities.StringHelper;
 
 
 public class FactionRespawnedEvent extends BaseEventPlugin {
@@ -72,7 +73,8 @@ public class FactionRespawnedEvent extends BaseEventPlugin {
 	
 	@Override
 	public String getEventName() {
-		return (Misc.ucFirst(faction.getDisplayName()) + " arrives in Exerelin");
+		return StringHelper.getStringAndSubstituteToken("exerelin_events", "factionRespawned", 
+				"$faction", Misc.ucFirst(faction.getDisplayName()));
 	}
 	
 	@Override

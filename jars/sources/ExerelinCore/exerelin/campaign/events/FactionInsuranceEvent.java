@@ -23,6 +23,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,7 +94,7 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 	
 	@Override
 	public String getEventName() {
-		return ("Ship loss insurance");
+		return StringHelper.getString("exerelin_events", "insurance");
 	}
 	
 	@Override

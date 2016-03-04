@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager;
+import exerelin.utilities.StringHelper;
 
 
 public class VictoryEvent extends BaseEventPlugin {
@@ -59,7 +60,8 @@ public class VictoryEvent extends BaseEventPlugin {
 	@Override
 	public String getEventName() {
 		FactionAPI victorFaction = Global.getSector().getFaction(victorFactionId);
-		return (Misc.ucFirst(victorFaction.getDisplayName()) + " victory");
+		return Misc.ucFirst(StringHelper.getStringAndSubstituteToken("exerelin_events", "victory", 
+				"$faction", victorFaction.getDisplayName()));
 	}
 	
 	@Override

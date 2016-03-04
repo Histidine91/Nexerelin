@@ -16,6 +16,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +82,8 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	
 	@Override
 	public String getEventName() {
-		return (faction.getDisplayName() + " invasion fleet event");
+		return StringHelper.getStringAndSubstituteToken("exerelin_events", "invasionFleet", 
+				"$faction", Misc.ucFirst(faction.getDisplayName()));
 	}
 	
 	@Override

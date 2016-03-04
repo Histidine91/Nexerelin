@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import exerelin.utilities.StringHelper;
 import java.util.HashMap;
 
 /**
@@ -107,7 +108,7 @@ public class AgentDestabilizeMarketEventForCondition extends BaseEventPlugin {
 		
 	@Override
 	public String getEventName() {
-		return "Agent terror attacks on " + market.getName();
+		return StringHelper.getStringAndSubstituteToken("exerelin_events", "agentDestabilizeMarket", "$market", market.getName());
 	}
 	
 	@Override

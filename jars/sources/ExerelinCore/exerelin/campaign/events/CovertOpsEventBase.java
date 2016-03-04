@@ -18,6 +18,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.StringHelper;
 
 
 public class CovertOpsEventBase extends BaseEventPlugin {
@@ -84,7 +85,10 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 
 	@Override
 	public String getEventName() {
-		return (Misc.ucFirst(agentFaction.getEntityNamePrefix()) + " covert action against " + faction.getEntityNamePrefix());
+		String name = StringHelper.getString("exerelin_events", "covertOps");
+		name = StringHelper.substituteToken(name, "$agentFaction", agentFaction.getDisplayName());
+		name = StringHelper.substituteToken(name, "$targetFaction", faction.getDisplayName());
+		return Misc.ucFirst(name);
 	}
 	
 	/*

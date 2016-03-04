@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.StringHelper;
 
 
 public class SlavesSoldEvent extends BaseEventPlugin {
@@ -80,7 +81,8 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 
 	@Override
 	public String getEventName() {
-		return ("Slave trade on " + market.getName());
+		return StringHelper.getStringAndSubstituteToken("exerelin_events", "slaveTrade", 
+				"$market", market.getName());
 	}
 	
 	/*
