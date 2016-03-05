@@ -180,6 +180,7 @@ public class ExerelinFactionConfig
     public void loadStartShips(JSONObject settings) throws JSONException
     {
         getStartShipTypeIfAvailable(settings, "startShipsSolo", StartFleetType.SOLO);
+        getStartShipTypeIfAvailable(settings, "startShipsSoloSSP", StartFleetType.SOLO_SSP);
         getStartShipTypeIfAvailable(settings, "startShipsCombatSmall", StartFleetType.COMBAT_SMALL);
         getStartShipTypeIfAvailable(settings, "startShipsCombatSmallSSP", StartFleetType.COMBAT_SMALL_SSP);
         getStartShipTypeIfAvailable(settings, "startShipsTradeSmall", StartFleetType.TRADE_SMALL);
