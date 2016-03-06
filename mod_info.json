@@ -2,9 +2,9 @@
     "id":"nexerelin", # internal id
     "name":"Nexerelin", # displayed to the player
     "author":"Zaphide, Histidine",
-    "version":"0.7.4",
+    "version":"0.7.4b",
     "description":"Choose your banner and fight for supremacy of sector (n)Exerelin!",
-    "gameVersion":"0.7.1a",
+    "gameVersion":"0.7.2a",
     "totalConversion":"false",
     "jars":["jars/ExerelinCore.jar", "jars/lw_Omnifactory.jar"],
     "modPlugin":"data.scripts.ExerelinModPlugin",
