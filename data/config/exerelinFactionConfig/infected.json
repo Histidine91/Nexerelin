@@ -17,9 +17,9 @@
     
     "alignments":{},
     
-    "startShipsSolo":["flx_necroraider_support"],
-    "startShipsCombatSmall":["flx_necroraider_assault", "flx_necrogunner_assault", "flx_necroghoul_assault"],
-    "startShipsTradeSmall":["flx_necroraider_assault" , "flx_necrohauler_standard", "flx_necrotarantula_standard"],
-    "startShipsCombatLarge":["flx_necroraider_assault" , "flx_necroghoul_assault", "flx_necroreaper_assault"],
-    "startShipsTradeLarge":["flx_necrotarantula_assault", "flx_necrotarantula_assault", "flx_necroraider_assault", "flx_necroant_hauler", "flx_necroant_hauler"],
+    "startShipsSolo":["flx_raider_support"],
+    "startShipsCombatSmall":["flx_raider_assault", "flx_gunner_assault", "flx_ghoul_assault"],
+    "startShipsTradeSmall":["flx_raider_assault" , "flx_hauler_standard", "flx_tarantula_standard"],
+    "startShipsCombatLarge":["flx_raider_assault" , "flx_ghoul_assault", "flx_reaper_assault"],
+    "startShipsTradeLarge":["flx_tarantula_assault", "flx_tarantula_assault", "flx_raider_assault", "flx_ant_hauler", "flx_ant_hauler"],
 }
