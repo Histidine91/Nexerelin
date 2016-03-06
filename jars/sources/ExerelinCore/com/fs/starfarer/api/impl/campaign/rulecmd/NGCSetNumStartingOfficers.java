@@ -19,9 +19,3 @@ public class NGCSetNumStartingOfficers extends BaseCommandPlugin {
 		return true;
 	}
 }
-
-
-
-
-
-

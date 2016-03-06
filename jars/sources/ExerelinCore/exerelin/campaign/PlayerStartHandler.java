@@ -1,6 +1,7 @@
 package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
@@ -10,6 +11,8 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
@@ -30,7 +33,6 @@ import java.util.Set;
 import org.lazywizard.lazylib.CollectionUtils;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.omnifac.OmniFac;
-import org.lazywizard.omnifac.OmniFacSettings;
 import org.lwjgl.util.vector.Vector2f;
 
 public class PlayerStartHandler {
@@ -42,6 +44,8 @@ public class PlayerStartHandler {
 		
 		SectorEntityToken entity = null;
 		String factionId = PlayerFactionStore.getPlayerFactionId();
+		FactionAPI myFaction = sector.getFaction(factionId);
+		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
 		if (SectorManager.getCorvusMode())
 		{
 			// moves player fleet to a suitable location; e.g. Avesta for Association
@@ -56,7 +60,7 @@ public class PlayerStartHandler {
 			if (entity != null)
 			{
 				Vector2f loc = entity.getLocation();
-				sector.getPlayerFleet().setLocation(loc.x, loc.y);
+				playerFleet.setLocation(loc.x, loc.y);
 				MarketAPI homeMarket = entity.getMarket();
 				if (homeMarket != null)
 				{
@@ -94,13 +98,22 @@ public class PlayerStartHandler {
 		{
 			entity = SectorManager.getHomeworld();
 			Vector2f loc = entity.getLocation();
-			sector.getPlayerFleet().setLocation(loc.x, loc.y);
+			playerFleet.setLocation(loc.x, loc.y);
 		}
 		
 		if (!factionId.equals("player_npc"))
 		{
 			if (entity != null && !entity.getFaction().isNeutralFaction())
 				ExerelinUtilsFaction.grantCommission(entity);
+		}
+		
+		int numOfficers = ExerelinSetupData.getInstance().numStartingOfficers;
+		
+		for (int i=0; i<numOfficers; i++)
+		{
+			int level = (numOfficers - i)*2 - 1;
+			PersonAPI officer = OfficerManagerEvent.createOfficer(myFaction, level, true);
+			playerFleet.getFleetData().addOfficer(officer);
 		}
 	}
 	
