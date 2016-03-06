@@ -116,6 +116,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final float STELLAR_RING_CHANCE = 0.3f;
 	protected static final float STAR_RANDOM_OFFSET = 100;
 	
+	// this proportion of TT markets with no military bases will have Cabal submarkets (SS+)
+	protected static final float CABAL_MARKET_MULT = 0.25f;	
+	
 	protected ExerelinMarketSetup marketSetup;
 	
 	protected List<String> factionIds = new ArrayList<>();
@@ -689,6 +692,43 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		addPrismMarket(sector);
 		
+		// add Cabal submarkets
+		if (ExerelinUtils.isSSPInstalled())
+		{
+			List<MarketAPI> cabalCandidates = new ArrayList<>();
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+			{
+				if (!market.getFactionId().equals(Factions.TRITACHYON)) continue;
+				if (market.hasCondition(Conditions.MILITARY_BASE)) continue;
+				
+				//log.info("Cabal candidate added: " + market.getName() + " (size " + market.getSize() + ")");
+				cabalCandidates.add(market);
+			}
+			
+			Comparator<MarketAPI> marketSizeComparator = new Comparator<MarketAPI>() {
+
+				public int compare(MarketAPI m1, MarketAPI m2) {
+				   int size1 = m1.getSize();
+					int size2 = m2.getSize();
+
+					if (size1 > size2) return -1;
+					else if (size2 > size1) return 1;
+					else return 0;
+				}};
+			
+			Collections.sort(cabalCandidates, marketSizeComparator);
+			
+			try {
+				for (int i=0; i<cabalCandidates.size()*CABAL_MARKET_MULT; i++)
+				{
+					MarketAPI market = cabalCandidates.get(i);
+					market.addSubmarket("ssp_cabalmarket");
+					log.info("Added Cabal submarket to " + market.getName() + " (size " + market.getSize() + ")");
+				}
+			} catch (RuntimeException rex) {
+				// old SS+ version, do nothing
+			}
+		}
 		final String selectedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
 		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
 		

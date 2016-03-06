@@ -745,12 +745,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         for (SubmarketAPI submarket : submarkets)
         {
-            if (submarket.getFaction() != oldOwner) continue;
-            String submarketName = submarket.getNameOneLine().toLowerCase();
-            if(!submarketName.contains("storage") && !submarketName.contains("black market"))
-            {
-                submarket.setFaction(newOwner);
-            }
+            //if (submarket.getFaction() != oldOwner) continue;
+            if (submarket.getPlugin().isFreeTransfer()) continue;
+            if (!submarket.getPlugin().isParticipatesInEconomy()) continue;
+            //if (submarket.getPlugin().isBlackMarket()) continue;	// this doesn't behave as expected for pirate markets (it checks if submarket faction is hostile to market faction)
+            String submarketId = submarket.getSpecId();
+            if (submarketId.equals("black_market")) continue;
+            if (submarketId.equals("ssp_cabalmarket")) continue;
+            
+            submarket.setFaction(newOwner);
         }
         market.reapplyConditions();
         Map<String, Object> params = new HashMap<>();
