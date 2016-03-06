@@ -4,8 +4,8 @@
 	"agentRaiseRelationsSuccessChance":0.7,
 	"agentRaiseRelationsDetectionChance":0,	# it logically won't work if you get found out
 	"agentRaiseRelationsDetectionChanceFail":0.25,
-	"agentRaiseRelationsEffectMin":0.1,
-	"agentRaiseRelationsEffectMax":0.15,
+	"agentRaiseRelationsEffectMin":0.09,
+	"agentRaiseRelationsEffectMax":0.14,
 	"agentRaiseRelationsRepLossOnDetectionMin":0.1,
 	"agentRaiseRelationsRepLossOnDetectionMax":0.15,
 	
