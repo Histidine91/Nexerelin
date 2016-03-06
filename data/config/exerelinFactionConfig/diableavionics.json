@@ -29,5 +29,5 @@
     "startShipsCombatSmall":["diableavionics_calm_mixed", "diableavionics_vapor_attack", "diableavionics_draft_standard"],
     "startShipsTradeSmall":["diableavionics_stratus_standard", "diableavionics_draft_support", "diableavionics_laminar_miner"],
     "startShipsCombatLarge":["diableavionics_gust_assault", "diableavionics_derecho_kite", "diableavionics_strife_wing"],
-    "startShipsTradeLarge":["diableavionics_hayle_multirole", "diableavionics_stratus_standard", "diableavionics_stratus_standard"],
+    "startShipsTradeLarge":["diableavionics_rime_breach", "diableavionics_vapor_attack", "diableavionics_draft_standard"],
 }
