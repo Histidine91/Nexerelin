@@ -49,6 +49,15 @@
 			"exhaustionRate":0,
 			"renewRate":0
 		},
+		"ii_cydonia":{	# ice giant
+			"resources":{
+				"volatiles":1,
+				"organics":0.2
+			},
+			"danger":0.3,
+			"exhaustionRate":0,
+			"renewRate":0
+		},
 		"desert":{
 			"resources":{
 				"ore":1,
@@ -105,6 +114,15 @@
 			"danger":1,
 			"exhaustionRate":0.6,
 			"renewRate":2
+		},
+		"lava_minor":{
+			"resources":{
+				"ore":1.6,
+				"rare_ore":0.16
+			},
+			"danger":0.8,
+			"exhaustionRate":0.7,
+			"renewRate":1.6
 		},
 		"jungle":{
 			"resources":{
@@ -164,6 +182,22 @@
 				"organics":0.1
 			},
 			"danger":0.3
-		}
+		},
+		"ii_cobalt":{
+			"resources":{
+				"ore":1.4,
+				"rare_ore":0.14
+			},
+			"exhaustionRate":0.8,
+			"danger":0.6,
+		},
+		"ii_irradiated-bombarded":{
+			"resources":{
+				"ore":1,
+				"rare_ore":0.1,
+				"volatiles":0.4
+			},
+			"danger":0.7
+		},
 	}
 }
