@@ -580,6 +580,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.addSubmarket("tiandong_retrofit");
 		toOrbit.addTag("shanghai");
 		shanghaiEntity.addTag("shanghai");
+		shanghaiEntity.addTag("shanghaiStation");
 		shanghaiEntity.setInteractionImage("illustrations", "urban01");
 		shanghaiEntity.setCustomDescriptionId("tiandong_shanghai");
 	}

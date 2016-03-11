@@ -1177,7 +1177,7 @@ FireAll PopulateOptions","While $theFaction $factionIsOrAre $relAdjective toward
 ,,,,,,
 # Tiandong overrides,,,,,,
 ExerelinMarketOpenShanghai,OpenInteractionDialog,"$hasMarket
-$tag:shanghai","ShowVisual ""graphics/illustrations/vacuum_colony.jpg""
+$tag:shanghaiStation","ShowVisual ""graphics/illustrations/vacuum_colony.jpg""
 PrintDescription 3
 FireBest MarketPostOpen",,,
 ExerelinFlavorTextMarketTiandongShanghai,TradePanelFlavorText,"$global.tradePanelMode == MARKET
