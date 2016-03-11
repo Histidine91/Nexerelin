@@ -1,18 +1,18 @@
 {
-    "uniqueModClassName":"data.scripts.BRModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "uniqueModClassName":"data.scripts.BRModPlugin",
+    "playableFaction":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "crewExpereinceLevelIncreaseChance":0.0,
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Splinter Group", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Splinter Group",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":["mayorate"], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "factionsLiked":[],
+    "factionsDisliked":["mayorate"],
     
     "alignments":{
         "corporate":0.5,
@@ -26,6 +26,6 @@
     "startShipsSolo":["brdy_mantis_attack"],
     "startShipsCombatSmall":["brdy_scorpion_standard", "scarab_closesupport", "brdy_locust_cs"],
     "startShipsTradeSmall":["brdy_megaceras_standard", "brdy_silverfish_b_standard", "brdy_robberfly_cs"],
-    "startShipsCombatLarge":["brdy_revenant_modernized", "gonodactylus_CS", "brdy_mantis_shatterer"],   # maybe a Stenos instead?
+    "startShipsCombatLarge":["brdy_stenos_exploration", "gonodactylus_CS", "brdy_mantis_shatterer"],	# Knight was not entirely well received
     "startShipsTradeLarge":["brdy_eschaton_armed", "brdy_silverfish_standard"],
 }
