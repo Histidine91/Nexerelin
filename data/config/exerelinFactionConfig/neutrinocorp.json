@@ -1,18 +1,19 @@
 {
-    "uniqueModClassName":"data.scripts.NCModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "uniqueModClassName":"data.scripts.NCModPlugin",
+    "playableFaction":true,
+    "corvusCompatible":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.1, # Double
+    "crewExpereinceLevelIncreaseChance":0.0,
+    "baseFleetCostMultiplier":1.1,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Dissidents", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Dissidents",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array   #tritachyon has too many people picking on it already
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "factionsLiked":[],
+    "factionsDisliked":[],	#tritachyon has too many people picking on it already
 
     "alignments":{
         "corporate":1,
@@ -26,5 +27,4 @@
     "startShipsTradeSmall":["neutrino_piledriverC_standard", "neutrino_singularity_updated", "neutrino_polarity_standard"],
     "startShipsCombatLarge":["neutrino_grinder_assault", "neutrino_hacksaw_standard", "neutrino_singularity_updated", "neutrino_relativity_support"],
     "startShipsTradeLarge":["neutrino_grinder_assault", "neutrino_piledriverC_standard", "neutrino_polarity_standard", "neutrino_drohne_wing"],
-    
 }
