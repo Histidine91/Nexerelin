@@ -566,7 +566,8 @@ FireAll PopulateOptions",,,
 # START INVASION OPTIONS,,,,,,
 ExerelinMarketInvadeOption,ExerelinMarketSpecial,"IsValidInvasionTarget
 $market.id != prismFreeport",,,1:exerelinInvasion:Invade the planet/station,
-ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
+ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"$menuState = invasion 0
+ShowVisual ""graphics/illustrations/quartermaster.jpg""
 PredictInvasionResults
 FireAll ExerelinInvadeListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
 ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,,,"
@@ -607,19 +608,23 @@ ExerelinInvasionRoundComplete,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionRoundComplete score:100","ExecuteInvasionRound
 FireBest ExerelinInvasionResults
 ",INVASION OUTCOME:,,
-ExerelinInvasionResultsComplete,ExerelinInvasionResults,$exerelinInvasionSuccessful,"ShowVisual ""graphics/illustrations/quartermaster.jpg""
+ExerelinInvasionResultsComplete,ExerelinInvasionResults,$exerelinInvasionSuccessful,"$menuState = invasion 0
+ShowVisual ""graphics/illustrations/quartermaster.jpg""
 unset $player.invasionTarget
 FireAll PopulateOptions",You've successfully captured $entityName!,,
 ExerelinInvasionResultsIncomplete,ExerelinInvasionResults,"!$exerelinInvasionSuccessful
-HasMarines 1","ShowVisual ""graphics/illustrations/hull_breach.jpg""
+HasMarines 1","$menuState = invasion 0
+ShowVisual ""graphics/illustrations/hull_breach.jpg""
 unset $player.invasionTarget",You have not yet captured $entityName.,"exerelinInvasion:Attack again
 exerelinInvasionLeave:Leave",
 ExerelinInvasionResultsIncompleteNoMoreMarines,ExerelinInvasionResults,"!$exerelinInvasionSuccessful
-!HasMarines 1","ShowVisual ""graphics/illustrations/hull_breach.jpg""
+!HasMarines 1","$menuState = invasion 0
+ShowVisual ""graphics/illustrations/hull_breach.jpg""
 unset $player.invasionTarget","You have not yet captured $entityName.
 
 Your marine complement has been wiped out; you cannot continue the offensive.",exerelinInvasionLeave:Leave,
-ExerelinInvasionResultsCancelled,ExerelinInvasionResults,$exerelinInvasionCancelled score:100,"ExerelinShowDefaultVisual
+ExerelinInvasionResultsCancelled,ExerelinInvasionResults,$exerelinInvasionCancelled score:100,"$menuState = invasion 0
+ExerelinShowDefaultVisual
 unset $player.invasionTarget
 FireAll PopulateOptions",This isn't a valid invasion target! Perhaps we already captured it?,,
 ExerelinInvasionInterupted,ExerelinInitInvadeDialog,"$hasMarket
@@ -794,7 +799,8 @@ $faction.id != ""player_npc""
 HasItem agent
 $market.alertLevel >= 1","SetTooltip exerelinUseAgent ""Security forces are at maximum alertness; infiltration is not possible.""
 SetEnabled exerelinUseAgent false",,,
-ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"GetNumSpecialPeople
+ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"$menuState = agent 0
+GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 FireAll ExerelinAgentOption",,,
 ExerelinAgentOptionNumAgents,ExerelinAgentOption,,SetTextHighlights $numAgents,You have $numAgents agent(s) to deploy.,,
@@ -848,7 +854,8 @@ $faction.id != ""player_npc""
 HasItem agent
 $market.alertLevel >= 1","SetTooltip exerelinUseAgent ""Security forces are at maximum alertness; infiltration is not possible.""
 SetEnabled exerelinUseSaboteur false",,,
-ExerelinSaboteurOptionListMain,DialogOptionSelected,$option == exerelinUseSaboteur,"GetNumSpecialPeople
+ExerelinSaboteurOptionListMain,DialogOptionSelected,$option == exerelinUseSaboteur,"$menuState = saboteur 0
+GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/cargo_loading.jpg""
 FireAll ExerelinSaboteurOption",,,
 ExerelinSaboteurOptionNumSaboteurs,ExerelinSaboteurOption,,SetTextHighlights $numSaboteurs,You have $numSaboteurs saboteur(s) to deploy.,,
@@ -877,7 +884,8 @@ ExerelinMarketPrisonerOptionNoPrisoners,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""
 !HasItem prisoner","SetTooltip exerelinUsePrisoner ""You have no prisoners!""
 SetEnabled exerelinUsePrisoner false",,4:exerelinUsePrisoner:Prisoner actions,
-ExerelinPrisonerOptionListMain,DialogOptionSelected,$option == exerelinUsePrisoner,"GetNumSpecialPeople
+ExerelinPrisonerOptionListMain,DialogOptionSelected,$option == exerelinUsePrisoner,"$menuState = prisoner 0
+GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
 FireAll ExerelinPrisonerOption",,,
 ExerelinPrisonerOptionNumPrisoners,ExerelinPrisonerOption,,SetTextHighlights $numPrisoners,You have $numPrisoners prisoner(s).,,
@@ -955,6 +963,7 @@ $faction.id != ""neutral""
 SetEnabled exerelinFleetRequestMenu false",,,
 ExerelinFleetRequestOptionListMain,DialogOptionSelected,$option == exerelinFleetRequestMenu,"$fleetRequestFP = 15
 $fleetRequestMarines=0
+$menuState = fleetRequest 0
 ShowVisual ""graphics/illustrations/hound_hangar.jpg""
 FireAll ExerelinFleetRequestOption",,,
 ExerelinFleetRequestOptionListFire,ExerelinFleetRequestOption,FleetRequestCanAfford,"SetTooltip exerelinFleetRequestFire ""Deploying this fleet to $market will require $fleetRequestCost credits. $player.creditsHave credits are available.""
