@@ -1338,7 +1338,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if(ExerelinSetupData.getInstance().numSystems != 1)
 		{
 			int minPlanets = ExerelinConfig.minimumPlanets;
-			if (minPlanets > maxPlanets) minPlanets = maxPlanets;
+			if (minPlanets > maxPlanets) maxPlanets = minPlanets;
 			numBasePlanets = MathUtils.getRandomNumberInRange(minPlanets, maxPlanets);
 		}
 		else
@@ -1747,7 +1747,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if(ExerelinSetupData.getInstance().numSystems != 1)
 			{
 				int minStations = ExerelinConfig.minimumStations;
-				if (minStations > maxStations) minStations = maxStations;
+				if (minStations > maxStations) maxStations = minStations;
 				numStations = MathUtils.getRandomNumberInRange(minStations, Math.min(maxStations, numBasePlanets*2));
 			}
 			else
