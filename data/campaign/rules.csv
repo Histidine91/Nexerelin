@@ -1185,10 +1185,8 @@ $tradeMode = NONE 0
 FireAll PopulateOptions","While $theFaction $factionIsOrAre $relAdjective towards you, they do not trust you enough to grant you docking access at $market. You are issued a stern order to leave the system.",,
 ,,,,,,
 # Tiandong overrides,,,,,,
-ExerelinMarketOpenShanghai,OpenInteractionDialog,"$hasMarket
-$tag:shanghaiStation","ShowVisual ""graphics/illustrations/vacuum_colony.jpg""
-PrintDescription 3
-FireBest MarketPostOpen",,,
+ExerelinTiandongSetExteriorImageShanghai,PopulateOptions,"$hasMarket
+$tag:shanghaiStation","ShowVisual ""graphics/illustrations/vacuum_colony.jpg""",,,
 ExerelinFlavorTextMarketTiandongShanghai,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $faction.id == tiandong
 $tag:shanghai","AddText ""Posh olive-green pillows and scented candles greet you as you enter the grand lobby, a vast entry area for the myriad travellers who journey to Shanghai. A hundred-meter-tall holographic map of the station hovers overhead, illuminating the area in warm light. Ahead, a wide hallway leads to the primary trade center."" textGrayColor
