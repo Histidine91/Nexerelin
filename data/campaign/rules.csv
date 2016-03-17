@@ -557,7 +557,8 @@ NGCDone",,,
 ,,,,,,
 ,,,,,,
 ExerelinMarketAddOptionSpecial,PopulateOptions,$menuState == main,"SetShortcut exerelinMarketSpecial ""S"" true",,6:exerelinMarketSpecial:Special functions,
-ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,FireAll ExerelinMarketSpecial,,,
+ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,"$menuState = exerelinSpecial
+FireAll ExerelinMarketSpecial",,,
 ExerelinMarketLeaveOption,ExerelinMarketSpecial,,,,10:exerelinMarketSpecialBack:Back,
 ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,"ExerelinShowDefaultVisual
 $menuState = main 0
@@ -570,8 +571,7 @@ ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"$menuSta
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 PredictInvasionResults
 FireAll ExerelinInvadeListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
-ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,,,"
-2:exerelinInvasionHelp:Consult a help file
+ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,,,"2:exerelinInvasionHelp:Consult a help file
 4:exerelinInvasionCancel:Cancel",
 ExerelinInvadeListOptionInvade,ExerelinInvadeListOptions,HasMarines 1,SetEnabled exerelinInvasionProceed true,,1:exerelinInvasionProceed:Proceed,
 ExerelinInvadeListOptionInvadeNoMarines,ExerelinInvadeListOptions,!HasMarines 1,"SetTooltip exerelinInvasionProceed ""You have no marines!""
@@ -595,8 +595,7 @@ $player.invasionTarget = $id 1.01
 CreateWarmongerEvent $faction.id
 AdjustRep $faction.id COMBAT_NORMAL",,,
 ExerelinInvasionCancel,DialogOptionSelected,"$option == exerelinInvasionCancel
-$hasMarket","ExerelinShowDefaultVisual
-FireAll ExerelinMarketSpecial",You decide not to attack $entityName.,,
+$hasMarket",FireAll ExerelinMarketSpecial,,,
 ExerelinInvasionLeave,DialogOptionSelected,"$option == exerelinInvasionLeave
 $hasMarket",DismissDialog,You decide not to continue the invasion.,,
 ExerelinInvasionDone,DialogOptionSelected,"$option == exerelinInvasionLeave
