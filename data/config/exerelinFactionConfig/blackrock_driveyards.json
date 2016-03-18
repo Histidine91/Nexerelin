@@ -22,6 +22,7 @@
     },
     
     "miningVariantsOrWings":["gonodactylus_assault", "gonodactylus_cc", "gonodactylus_CS", "gonodactylus_elite"],
+    "customStations":["br_station"],
     
     "startShipsSolo":["brdy_mantis_attack"],
     "startShipsCombatSmall":["brdy_scorpion_standard", "scarab_closesupport", "brdy_locust_cs"],
