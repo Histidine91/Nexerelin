@@ -122,8 +122,8 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		duration *= DURATION_MULT;
 		bonusDuration *= DURATION_MULT;
 		
-		float reward = (float)Math.pow(2, target.getSize());
-		reward *= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+		float reward = (float)Math.pow(3, target.getSize());
+		reward *= MathUtils.getRandomNumberInRange(0.75f, 1.25f) * ExerelinConfig.conquestMissionRewardMult;
 		float bonusReward = reward * MathUtils.getRandomNumberInRange(0.5f, 1f);
 		reward = (int)reward * REWARD_MULT;
 		bonusReward = (int)bonusReward * REWARD_MULT;

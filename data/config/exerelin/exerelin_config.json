@@ -29,6 +29,7 @@
     "baseInvasionPointsPerFaction": 40,
     "invasionPointsPerPlayerLevel": 1,
     "invasionPointEconomyMult": 0.75, # each market contributes invasion points: stability * size * this number
+    "conquestMissionRewardMult": 1,
     
     "allianceGracePeriod": 60,  # no alliances can form for this long at start
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
