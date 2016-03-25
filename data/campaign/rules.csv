@@ -348,10 +348,12 @@ NGCAddSkillPoints 200
 NGCAddAptitudePoints 10
 NGCSetStartingLocationExerelin
 NGCDone",,,
-ExerelinNGCOwnFaction,NewGameOptionSelected,"$option == exerelinNGCOwnFaction","NGCSetPlayerFaction ""player_npc""
+ExerelinNGCOwnFaction,NewGameOptionSelected,"$option == exerelinNGCOwnFaction
+","NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart false
 FireBest ExerelinNGCStep3",,,
-ExerelinNGCFreeStart,NewGameOptionSelected,"$option == exerelinNGCFreeStart","NGCSetPlayerFaction ""player_npc""
+ExerelinNGCFreeStart,NewGameOptionSelected,"$option == exerelinNGCFreeStart
+","NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart true
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == exerelinNGCJoinHegemony,"NGCSetPlayerFaction ""hegemony""
@@ -583,7 +585,7 @@ ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"$menuSta
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 PredictInvasionResults
 FireAll ExerelinInvadeListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
-ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,,,"2:exerelinInvasionHelp:Consult a help file
+ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,,,"2:exerelinInvasionHelp:Consult a help file
 4:exerelinInvasionCancel:Cancel",
 ExerelinInvadeListOptionInvade,ExerelinInvadeListOptions,HasMarines 1,SetEnabled exerelinInvasionProceed true,,1:exerelinInvasionProceed:Proceed,
 ExerelinInvadeListOptionInvadeNoMarines,ExerelinInvadeListOptions,!HasMarines 1,"SetTooltip exerelinInvasionProceed ""You have no marines!""
@@ -609,16 +611,14 @@ AdjustRep $faction.id COMBAT_NORMAL",,,
 ExerelinInvasionCancel,DialogOptionSelected,"$option == exerelinInvasionCancel
 $hasMarket",FireAll ExerelinMarketSpecial,,,
 ExerelinInvasionLeave,DialogOptionSelected,"$option == exerelinInvasionLeave
-$hasMarket",DismissDialog,You decide not to continue the invasion.,,
-ExerelinInvasionDone,DialogOptionSelected,"$option == exerelinInvasionLeave
 $hasMarket",DismissDialog,,,
+,,,,,,
 ExerelinInvasionOpen,OpenInteractionDialog,"$hasMarket
 $id == $player.invasionTarget","ExerelinShowDefaultVisual
 FireBest ExerelinInitInvadeDialog",,,
 ExerelinInvasionRoundComplete,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionRoundComplete score:100","ExecuteInvasionRound
-FireBest ExerelinInvasionResults
-",INVASION OUTCOME:,,
+FireBest ExerelinInvasionResults",INVASION OUTCOME:,,
 ExerelinInvasionResultsComplete,ExerelinInvasionResults,$exerelinInvasionSuccessful,"$menuState = invasion 0
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 unset $player.invasionTarget
@@ -626,12 +626,14 @@ FireAll PopulateOptions",You've successfully captured $entityName!,,
 ExerelinInvasionResultsIncomplete,ExerelinInvasionResults,"!$exerelinInvasionSuccessful
 HasMarines 1","$menuState = invasion 0
 ShowVisual ""graphics/illustrations/hull_breach.jpg""
-unset $player.invasionTarget",You have not yet captured $entityName.,"exerelinInvasion:Attack again
+unset $player.invasionTarget
+$tradeMode = NONE 0",You have not yet captured $entityName.,"exerelinInvasion:Attack again
 exerelinInvasionLeave:Leave",
 ExerelinInvasionResultsIncompleteNoMoreMarines,ExerelinInvasionResults,"!$exerelinInvasionSuccessful
 !HasMarines 1","$menuState = invasion 0
 ShowVisual ""graphics/illustrations/hull_breach.jpg""
-unset $player.invasionTarget","You have not yet captured $entityName.
+unset $player.invasionTarget
+$tradeMode = NONE 0","You have not yet captured $entityName.
 
 Your marine complement has been wiped out; you cannot continue the offensive.",exerelinInvasionLeave:Leave,
 ExerelinInvasionResultsCancelled,ExerelinInvasionResults,$exerelinInvasionCancelled score:100,"$menuState = invasion 0
