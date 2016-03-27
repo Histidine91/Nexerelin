@@ -112,6 +112,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     
     public static Alliance createAlliance(String member1, String member2, Alignment type)
     {
+        return createAlliance(member1, member2, type, null);
+    }
+    
+    public static Alliance createAlliance(String member1, String member2, Alignment type, String name)
+    {
         if (allianceManager == null) return null;
         
         // first check if one or both parties are already in an alliance
@@ -137,15 +142,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         // NPE safety (shouldn't happen but meh)
         if (type == null) type = (Alignment) ExerelinUtils.getRandomArrayElement(Alignment.values());
         
-        // generate alliance name
-        String name = "";
-        boolean validName;
-        int tries = 0;
+        // name stuff + population count
+        float pop1 = 0, pop2 = 0;
         List<String> namePrefixes = new ArrayList<>(allianceNameCommonPrefixes);
         namePrefixes.addAll(alliancePrefixesByAlignment.get(type));
-        
         List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(member1);
-        float pop1 = 0;
         for (MarketAPI market : markets)
         {
             pop1 += market.getSize();
@@ -154,8 +155,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             //if (!namePrefixes.contains(systemName))
                namePrefixes.add(systemName);
         }
+        
         markets = ExerelinUtilsFaction.getFactionMarkets(member2);
-        float pop2 = 0;
         for (MarketAPI market : markets)
         {
             pop2 += market.getSize();
@@ -165,15 +166,23 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                namePrefixes.add(systemName);
         }
         
-        do {
-            tries++;
-            name = (String) ExerelinUtils.getRandomListElement(namePrefixes);
-            List<String> alignmentNames = allianceNamesByAlignment.get(type);
-            name = name + " " + (String) ExerelinUtils.getRandomListElement(alignmentNames);
-            
-            validName = !allianceManager.alliancesByName.containsKey(name);
+        // generate alliance name
+        if (name == null || name.isEmpty())
+        {
+            boolean validName;
+            int tries = 0;
+            namePrefixes.addAll(alliancePrefixesByAlignment.get(type));
+
+            do {
+                tries++;
+                name = (String) ExerelinUtils.getRandomListElement(namePrefixes);
+                List<String> alignmentNames = allianceNamesByAlignment.get(type);
+                name = name + " " + (String) ExerelinUtils.getRandomListElement(alignmentNames);
+
+                validName = !allianceManager.alliancesByName.containsKey(name);
+            }
+            while (validName == false && tries < 25);
         }
-        while (validName == false && tries < 25);
         
         SectorAPI sector = Global.getSector();
         sector.getFaction(member1).ensureAtWorst(member2, RepLevel.FRIENDLY);
@@ -686,6 +695,19 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (alliance2 == null) return false;
         
         return alliance1 == alliance2;
+    }
+    
+    public static void renameAlliance(Alliance alliance, String newName)
+    {
+        if (allianceManager == null) return;
+        if (alliance == null || newName == null) throw new IllegalArgumentException("Alliance or new name is null");
+        String oldName = alliance.name;
+        if (allianceManager.alliancesByName.containsKey(oldName))
+        {
+            allianceManager.alliancesByName.remove(oldName);
+            allianceManager.alliancesByName.put(newName, alliance);
+        }
+        alliance.name = newName;
     }
     
     public static AllianceManager create()
