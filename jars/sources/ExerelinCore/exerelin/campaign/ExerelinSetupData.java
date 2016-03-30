@@ -71,7 +71,7 @@ public final class ExerelinSetupData
 
 	public List<String> getAvailableFactions()
 	{
-		if (availableFactions != null) return availableFactions;
+		if (availableFactions != null) return new ArrayList<>(availableFactions);
 		List<String> factionsList = new ArrayList<>();
 	
 		// Add built in factions
@@ -82,7 +82,7 @@ public final class ExerelinSetupData
 		factionsList.addAll(this.getModdedFactionsList());
 		
 		availableFactions = factionsList;
-		return factionsList;
+		return new ArrayList<>(factionsList);
 	}
 
 	public void resetAvailableFactions()
