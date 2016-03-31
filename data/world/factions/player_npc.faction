@@ -125,7 +125,8 @@
 			"brawler_Assault":10,
 			"afflictor_Strike":10,
 			"shade_Assault":10,
-			
+			"hermes_FS":1,
+			"centurion_Assault":4,
 			"fallback":{"escortSmall":1},
 		},
 		"combatMedium":{
@@ -155,7 +156,8 @@
 			"eagle_Assault":10,
 			"eagle_Balanced":10,
 			"apogee_Balanced":10,
-			"gryphon_Standard":5,
+			"gryphon_Standard":3,
+			"gryphon_FS":2,
 			"dominator_Assault":7,
 			"dominator_Support":7,
 			"dominator_Outdated":7,
@@ -186,7 +188,10 @@
 			"cerberus_d_Standard":10,
 			"hound_Standard":10,
 			"shepherd_Frontier":10,
-			"cerberus_Standard":10,
+			"cerberus_Standard":4,
+			"cerberus_Hardened":4,
+			"cerberus_Shielded":4,
+			"wayfarer_Standard":10,
 			"fallback":{"freighterSmall":1},
 		},
 		"combatFreighterMedium":{
@@ -203,8 +208,10 @@
 			"mercury_d_Standard":10,
 			"hermes_d_Standard":10,
 			"kite_Standard":10,
-			"mercury_Standard":10,
-			"hermes_Standard":10,
+			"mercury_Standard":8,
+			"mercury_FS":3,
+			"hermes_Standard":8,
+			"hermes_FS":4,
 			"starliner_Standard":10,
 			"nebula_Standard":10,
 			"mudskipper_Standard":10,
@@ -231,7 +238,8 @@
 		# freighters and such
 		"freighterSmall":{
 			"hermes_d_Standard":10,
-			"hermes_Standard":10,
+			"hermes_Standard":8,
+			"hermes_FS":4,
 			"fallback":{"freighterMedium":0.5},
 		},
 		"freighterMedium":{
@@ -264,7 +272,8 @@
 			"mercury_d_Standard":10,
 			"mudskipper_Standard":10,
 			"kite_Stock":1,
-			"mercury_Standard":10,
+			"mercury_Standard":8,
+			"mercury_FS":3,
 			"fallback":{"personnelMedium":0.5},
 		},
 		"personnelMedium":{
