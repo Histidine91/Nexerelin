@@ -264,7 +264,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
         
         for (String id : weaponIds) {
-            //if (id.startsWith("tem_")) continue;
+            if (id.startsWith("tem_")) continue;
             WeaponSpecAPI spec = Global.getSettings().getWeaponSpec(id);
             int tier = spec.getTier();
             if (tier >= minTier && tier <= maxTier) {
