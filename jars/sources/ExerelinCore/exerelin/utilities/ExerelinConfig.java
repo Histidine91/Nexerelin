@@ -11,7 +11,7 @@ import org.json.JSONArray;
 
 public class ExerelinConfig
 {
-    public static final String CONFIG_PATH = "data/config/exerelin/exerelin_config.json";
+    public static final String CONFIG_PATH = "exerelin_config.json";
     public static final String MOD_FACTION_LIST_PATH = "data/config/exerelinFactionConfig/mod_factions.csv";
     
     public static List<ExerelinFactionConfig> exerelinFactionConfigs;
