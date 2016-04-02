@@ -78,16 +78,19 @@ public class ExerelinConfig
     public static float warWearinessCeasefireReduction = 5000f;
     public static float warWearinessPeaceTreatyReduction = 8000f;
     
+    // Followers faction
+    public static boolean followersAgents = false;
+    public static boolean followersDiplomacy = true;
+    public static boolean followersAlliances = true;
+    
     // Misc
     public static float baseTariff = 0.2f;
     public static float freeMarketTariffMult = 0.5f;
     public static int warmongerPenalty = 0;
     public static float factionRespawnInterval = 30f;
-	public static int maxFactionRespawns = 1;
+    public static int maxFactionRespawns = 1;
     public static boolean countPiratesForVictory = false;
     public static boolean ownFactionCustomsInspections = false;
-    public static boolean followersAgents = false;
-    public static boolean followersDiplomacy = false;
     public static boolean enableAvesta = true;
     public static boolean enableShanghai = true;
     public static int directoryDialogKey = 32;  // D
@@ -128,7 +131,7 @@ public class ExerelinConfig
             baseInvasionPointsPerFaction = (float)settings.optDouble("baseInvasionPointsPerFaction", baseInvasionPointsPerFaction);
             invasionPointsPerPlayerLevel = (float)settings.optDouble("invasionPointsPerPlayerLevel ", invasionPointsPerPlayerLevel );
             invasionPointEconomyMult = (float)settings.optDouble("invasionPointEconomyMult", invasionPointEconomyMult);
-			conquestMissionRewardMult = (float)settings.optDouble("conquestMissionRewardMult", conquestMissionRewardMult);
+            conquestMissionRewardMult = (float)settings.optDouble("conquestMissionRewardMult", conquestMissionRewardMult);
             
             allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
@@ -148,15 +151,17 @@ public class ExerelinConfig
             warWearinessCeasefireReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
             warWearinessPeaceTreatyReduction = (float)settings.optDouble("warWearinessCeasefireReduction", warWearinessCeasefireReduction);
             
+            followersAgents = settings.optBoolean("followersAgents", followersAgents);
+            followersDiplomacy = settings.optBoolean("followersDiplomacy", followersDiplomacy);
+            followersAlliances = settings.optBoolean("followersAlliances", followersAlliances);
+            
             baseTariff = (float)settings.optDouble("baseTariff", baseTariff);
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);
             warmongerPenalty = settings.optInt("warmongerPenalty", warmongerPenalty);
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
-			maxFactionRespawns = settings.optInt("maxFactionRespawns", maxFactionRespawns);
+            maxFactionRespawns = settings.optInt("maxFactionRespawns", maxFactionRespawns);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
-            followersAgents = settings.optBoolean("followersAgents", followersAgents);
-            followersDiplomacy = settings.optBoolean("followersDiplomacy", followersDiplomacy);
             enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
             enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
