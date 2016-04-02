@@ -20,6 +20,7 @@ import data.scripts.world.systems.Penelope;
 import data.scripts.world.systems.Samarra;
 import data.scripts.world.systems.Valhalla;
 import data.scripts.world.systems.Yma;
+import exerelin.utilities.ExerelinUtils;
 
 public class VanillaSystemsGenerator {
 	public static void generate()
@@ -64,6 +65,11 @@ public class VanillaSystemsGenerator {
 	}
 	
 	public static void initFactionRelationships(SectorAPI sector) {
+		
+		if (ExerelinUtils.isSSPInstalled()) {
+			data.scripts.world.SectorGen.initFactionRelationships(sector);
+			return;
+		}
 		
 		FactionAPI hegemony = sector.getFaction(Factions.HEGEMONY);
 		FactionAPI tritachyon = sector.getFaction(Factions.TRITACHYON);
