@@ -344,7 +344,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			allowedImages.add(new String[]{"illustrations", "urban02"} );
 			allowedImages.add(new String[]{"illustrations", "urban03"} );
 			
-			if (factionIds.contains("citadeldefenders"))
+			if (ExerelinUtilsFaction.doesFactionExist("citadeldefenders"))
 			{
 				allowedImages.add(new String[]{"illustrationz", "streets"} );
 				if (!isStation) allowedImages.add(new String[]{"illustrationz", "twin_cities"} );
@@ -384,8 +384,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	protected void addPrismMarket(SectorAPI sector)
 	{
-		if (!ExerelinSetupData.getInstance().prismMarketPresent) return;
-		
 		SectorEntityToken prismEntity;
 		
 		if (ExerelinSetupData.getInstance().numSystems == 1)
@@ -691,7 +689,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			  "terrain", "deep_hyperspace", // "nebula_blue", // texture to use, uses xxx_map for map
 			  4, 4, Terrain.HYPERSPACE); // number of cells in texture
 		
-		addPrismMarket(sector);
+		if (ExerelinSetupData.getInstance().prismMarketPresent) {
+			if (!corvusMode || !ExerelinUtilsFaction.doesFactionExist("SCY"))
+				addPrismMarket(sector);
+		}
 		
 		// add Cabal submarkets
 		if (ExerelinUtils.isSSPInstalled())

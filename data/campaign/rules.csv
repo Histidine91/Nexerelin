@@ -208,6 +208,13 @@ ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"$om
 $randomOmnifactoryLocation",,,exerelinNGCUnsetOmnifactoryRandomLocation:Disable random location for Omnifactory,
 ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCOtherOptions,!$prismMarketPresent,"SetTooltip exerelinNGCEnablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCEnablePrismMarket:Enable Prism Freeport,
 ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCOtherOptions,$prismMarketPresent,"SetTooltip exerelinNGCDisablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
+ExerelinNGCEnablePrismMarketOption,ExerelinNGCOtherOptions,!$corvusMode,"SetEnabled exerelinNGCEnablePrismMarket true
+SetEnabled exerelinNGCDisablePrismMarket true",,,
+ExerelinNGCDisablePrismMarketOption,ExerelinNGCOtherOptions,"$corvusMode
+NGCDoesFactionExist SCY","SetTooltip exerelinNGCEnablePrismMarket ""SCY will create its own Prism Freeport in Acheron""
+SetTooltip exerelinNGCDisablePrismMarket ""SCY will create its own Prism Freeport in Acheron""
+SetEnabled exerelinNGCEnablePrismMarket false
+SetEnabled exerelinNGCDisablePrismMarket false",,,
 ExerelinNGCListOptionEnableRandomStartRelationships,ExerelinNGCOtherOptions,!$randomStartRelationships,,,exerelinNGCEnableRandomStartRelationships:Enable random faction relationships at start,
 ExerelinNGCListOptionDisableRandomStartRelationships,ExerelinNGCOtherOptions,$randomStartRelationships,,,exerelinNGCDisableRandomStartRelationships:Disable random faction relationships at start,
 ExerelinNGCListOptionEnableRespawnFactions,ExerelinNGCOtherOptions,!$respawnFactions,,,exerelinNGCEnableRespawnFactions:Enable faction respawning,
