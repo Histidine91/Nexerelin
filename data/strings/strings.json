@@ -154,7 +154,8 @@
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
 		"hasBaseTip":"has military base",
 		
-		"prismNoSale":"No sales/returns"
+		"prismNoSale":"No sales/returns",
+		"prismRelTooLow":"Requires: $faction - $minRelationship"
 	},
 	"exerelin_mining":{
 		"crewLost":"crew lost",

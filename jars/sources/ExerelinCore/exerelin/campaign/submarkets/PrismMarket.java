@@ -1,28 +1,27 @@
-/*
- * modified from SCY_prismMarket from Tartiflette's Scy
- * licensed as CC-BY-NC-SA 4.0
- */
 package exerelin.campaign.submarkets;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
+import com.fs.starfarer.api.campaign.CoreUIAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction.ShipSaleInfo;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
-import com.fs.starfarer.api.loading.WeaponSpecAPI;
+import com.fs.starfarer.api.util.Highlights;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,110 +34,25 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PrismMarket extends BaseSubmarketPlugin {
-    
-    public static final String CONFIG_FILE = "data/config/exerelin/prism_boss_ships.csv";
+
+    //public static final int NUMBER_OF_SHIPS = 16;
+    //public static final int MAX_WEAPONS = 27;
+    public static final RepLevel MIN_STANDING = RepLevel.NEUTRAL;
+    public static final String IBB_FILE = "data/config/prism/prism_boss_ships.csv";
+    public static final String SHIPS_BLACKLIST = "data/config/prism/prism_ships_blacklist.csv";
+    public static final String WEAPONS_BLACKLIST = "data/config/prism/prism_weapons_blacklist.csv";
     public static final String ILLEGAL_TRANSFER_MESSAGE = StringHelper.getString("exerelin_markets", "prismNoSale");
     
-    protected static final int MIN_NUMBER_OF_SHIPS = 5;
-    
     public static Logger log = Global.getLogger(PrismMarket.class);
-
+    
+    protected static Set<String> restrictedWeapons;
+    protected static Set<String> restrictedShips;
+    
     public Set<String> alreadyBoughtShips = new HashSet<>();
-        
+    
     @Override
     public void init(SubmarketAPI submarket) {
         super.init(submarket);
-        
-        //loadBossShips();
-    }
-    
-    public boolean canLoadShips(String factionId)
-    {
-        if (factionId.equals("ssp")) return ExerelinUtils.isSSPInstalled();
-        return Global.getSector().getFaction(factionId) != null;
-    }
-    
-    public List<String> getBossShips()
-    {
-        //if (sspBossShips == null)
-        //    sspBossShips = new ArrayList<>();
-		List<BossShipEntry> validShips = new ArrayList<>();
-        List<String> ret = new ArrayList<>();
-        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
-        
-        int ibbProgress = 999;
-		Set<Integer> stageCompletion = (Set<Integer>) Global.getSector().getPersistentData().get("ssp_famousBountyStageCompletion");
-		if (stageCompletion == null) stageCompletion = new HashSet<>();
-		
-        if (ExerelinConfig.prismUseIBBProgressForBossShips)
-        {
-            if (!Global.getSector().getPersistentData().containsKey("ssp_famousBountyStage")) {
-                ibbProgress = 0;
-            }
-            else
-            {
-                ibbProgress = (int) Global.getSector().getPersistentData().get("ssp_famousBountyStage");
-            }
-        }
-        if (ibbProgress == -1) ibbProgress = 999;
-        log.info("Current IBB progress: " + ibbProgress);
-        int highestIBBNum = 0;
-		
-        try {
-            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", CONFIG_FILE, "nexerelin");
-            for(int i = 0; i < config.length(); i++)
-            {
-				JSONObject row = config.getJSONObject(i);
-                String hullId = row.getString("id");
-				String factionId = row.getString("faction");
-                if (!canLoadShips(factionId)) continue;
-                int ibbNum = row.getInt("ibbNum");
-				validShips.add(new BossShipEntry(hullId, ibbNum));
-				
-				if (ibbNum > highestIBBNum)
-					highestIBBNum = ibbNum;
-			}
-			
-			// ensure proper emphasis on last ships once IBB sidequest is complete
-			if (ibbProgress == 999)
-				ibbProgress = highestIBBNum;
-                    
-			for(BossShipEntry entry : validShips)
-			{
-				// currently the completion stage is actually set when the bounty is created, not when it's completed
-				if (entry.ibbNum > 0 && ExerelinConfig.prismUseIBBProgressForBossShips && !stageCompletion.contains(entry.ibbNum - 1))
-				{
-					log.info("IBB not completed for " + entry.id + " (" + entry.ibbNum + ")");
-					continue;
-				}
-				
-				//if (entry.ibbNum < ibbProgress) continue;
-				
-				//log.info("Ship " + id + " has IBB number " + ibbNum);
-				if (!ExerelinConfig.prismRenewBossShips && alreadyBoughtShips.contains(entry.id))
-					continue;
-
-				// favour ships from bounties close to the last one we did
-				int weight = 3;
-				if (ExerelinConfig.prismUseIBBProgressForBossShips && entry.ibbNum > 0)
-				{
-					int diff = Math.abs(ibbProgress - entry.ibbNum);
-					if (diff > 3) diff = 3;
-					weight = weight + 4*(3 - diff);
-				}
-				picker.add(entry.id, weight);
-			}
-        } catch (IOException | JSONException ex) {
-            log.error(ex);
-        }
-        
-        for (int i=0; i<ExerelinConfig.prismNumBossShips; i++)
-        {
-            if (picker.isEmpty()) break;
-            ret.add(picker.pickAndRemove());
-        }
-        
-        return ret;
     }
 
     @Override
@@ -147,16 +61,43 @@ public class PrismMarket extends BaseSubmarketPlugin {
         if (!okToUpdateCargo()) return;
         sinceLastCargoUpdate = 0f;
         
+        //Setup blacklists
+        try {
+            setupLists();
+        } catch (JSONException | IOException ex) {
+            log.error(ex);
+        }
+        
         CargoAPI cargo = getCargo();
 
-        pruneWeapons(1f);
-        
-        float numFactions = ExerelinSetupData.getInstance().getAvailableFactions().size();
-        float maxWeaponsPerFaction = ExerelinConfig.prismMaxWeaponsPerFaction;
-        for ( float i=0; i < Math.max (20, maxWeaponsPerFaction*numFactions); i++) 
-        {
-            addRandomPrismWeapons(1, 2, 4);
+        //pruneWeapons(1f);
+        for (CargoStackAPI s : cargo.getStacksCopy()) {
+            if(Math.random()>0.5f){
+                float qty = s.getSize();
+                cargo.removeItems(s.getType(), s.getData(), qty );
+                cargo.removeEmptyStacks();
+            }
         }
+        
+        //add weapons
+        float variation=(float)Math.random()*0.5f+0.75f;
+        for ( float i=0f; i < ExerelinConfig.prismMaxWeapons*variation; i = (float) cargo.getStacksCopy().size()) {
+            addRandomWeapons(10, 3);
+            for (CargoStackAPI s : cargo.getStacksCopy()) {
+                //remove all low tier weapons
+                if (s.isWeaponStack() 
+                        && (s.getWeaponSpecIfWeapon().getTier()<2 
+                            || s.getWeaponSpecIfWeapon().getWeaponId().startsWith("tem_") //templars are forbiden anyway
+                            || restrictedWeapons.contains(s.getWeaponSpecIfWeapon().getWeaponId()) //blacklist check
+                        )
+                    ){
+                    float qty = s.getSize();
+                    cargo.removeItems(s.getType(), s.getData(), qty );
+                    cargo.removeEmptyStacks();
+                }
+            }
+        }
+        
         addShips();
         cargo.sort();
     }
@@ -165,20 +106,21 @@ public class PrismMarket extends BaseSubmarketPlugin {
         
         CargoAPI cargo = getCargo();
         FleetDataAPI data = cargo.getMothballedShips();
-        for (FleetMemberAPI member : data.getMembersListCopy()) {                
-            data.removeFleetMember(member);                
+        //remove half the stock
+        for (FleetMemberAPI member : data.getMembersListCopy()) {
+            if(Math.random()>0.5f) data.removeFleetMember(member);                
         }
 
         WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
         rolePicker.add(ShipRoles.CIV_RANDOM, 1f);
         rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1f);
-        rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 2f);
+        rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 1f);
         rolePicker.add(ShipRoles.FREIGHTER_LARGE, 5f);
         rolePicker.add(ShipRoles.TANKER_SMALL, 1f);
         rolePicker.add(ShipRoles.TANKER_MEDIUM, 1f);
-        rolePicker.add(ShipRoles.TANKER_LARGE, 2f);
+        rolePicker.add(ShipRoles.TANKER_LARGE, 1f);
         rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1f);
-        rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2f);
+        rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1f);
         rolePicker.add(ShipRoles.COMBAT_FREIGHTER_LARGE, 5f);
         rolePicker.add(ShipRoles.COMBAT_SMALL, 25f);
         rolePicker.add(ShipRoles.COMBAT_MEDIUM, 30f);
@@ -199,7 +141,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
             }
         }
         
-        for (int i=0; i<MIN_NUMBER_OF_SHIPS + (Global.getSector().getAllFactions().size()*ExerelinConfig.prismNumShipsPerFaction); i++){
+        //renew the stock
+        float variation=(float)Math.random()*0.5f+0.75f;
+        for (int i=0; i<ExerelinConfig.prismNumShips*variation; i=cargo.getMothballedShips().getNumMembers()){
             //pick the role and faction
             FactionAPI faction = factionPicker.pick();
             String role = rolePicker.pick();            
@@ -207,7 +151,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
             List<ShipRolePick> picks = faction.pickShip(role, 1, rolePicker.getRandom());
             for (ShipRolePick pick : picks) {
                 FleetMemberType type = FleetMemberType.SHIP;
-                String variantId = pick.variantId;                
+                String variantId = pick.variantId; 
+                                
                 //set the ID
                 if (pick.isFighterWing()) {
                     type = FleetMemberType.FIGHTER_WING;
@@ -237,8 +182,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
                     && !member.getHullId().toLowerCase().endsWith("_d")
                     && !member.getHullId().toLowerCase().contains("_d_")
                     && !member.getHullSpec().getHullName().toLowerCase().endsWith("(d)")
-                    //&& !member.getHullId().toLowerCase().startsWith("tem_")
-                    && member.getFleetPointCost()>=FP)
+                    && member.getFleetPointCost()>=FP //quality check
+                    && !restrictedShips.contains(member.getHullId())) //blacklist check
                 {
                     member.getRepairTracker().setMothballed(true);
                     getCargo().getMothballedShips().addFleetMember(member);
@@ -247,6 +192,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 }
             }
         }
+        //add some IBBs
         List<String> bossShips = getBossShips();
         for (String variantId : bossShips)
         {
@@ -257,47 +203,120 @@ public class PrismMarket extends BaseSubmarketPlugin {
         }
     }
     
-    protected void addRandomPrismWeapons(int max, int minTier, int maxTier) {
-        CargoAPI cargo = getCargo();
-        List<String> weaponIds = Global.getSector().getAllWeaponIds();
+    
+    //IBB sales setup
+    public List<String> getBossShips() {
         
+        List<BossShipEntry> validShips = new ArrayList<>();
+        List<String> ret = new ArrayList<>();
         WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
         
-        for (String id : weaponIds) {
-            if (id.startsWith("tem_")) continue;
-            WeaponSpecAPI spec = Global.getSettings().getWeaponSpec(id);
-            int tier = spec.getTier();
-            if (tier >= minTier && tier <= maxTier) {
-                //float weaponQuality = 0.33f * (float) spec.getTier();
-                //float qualityDiff = Math.abs(qualityFactor - weaponQuality);
-                float qualityDiff = 0f;
-                float f = Math.max(0, 1f - qualityDiff);
-                float weight = Math.max(0.05f, f * f);
-                picker.add(spec.getWeaponId(), weight);
-            }
+        int ibbProgress = 999;
+        Set<Integer> stageCompletion = (Set<Integer>) Global.getSector().getPersistentData().get("ssp_famousBountyStageCompletion");
+        if (stageCompletion == null) stageCompletion = new HashSet<>();
+                
+        //Check for SS+ IBBs
+        if (!Global.getSector().getPersistentData().containsKey("ssp_famousBountyStage")) {
+            ibbProgress = 0;
+        } else {
+            ibbProgress = (int) Global.getSector().getPersistentData().get("ssp_famousBountyStage");
         }
-        if (!picker.isEmpty()) {
-            for (int i = 0; i < max; i++) {
-                String weaponId = picker.pick();
-                int quantity = 2;
-                WeaponSpecAPI spec = Global.getSettings().getWeaponSpec(weaponId);
-                switch (spec.getSize()) {
-                    case LARGE:
-                        quantity = 1;
-                        break;
-                    case MEDIUM:
-                        quantity = 2;
-                        break;
-                    case SMALL:
-                        quantity = 3;
-                        break;
+        
+        if (ibbProgress == -1) ibbProgress = 999;
+        log.info("Current IBB progress: " + ibbProgress);
+        int highestIBBNum = 0;
+        
+        try {
+            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", IBB_FILE, "nexerelin");
+            for(int i = 0; i < config.length(); i++) {
+            
+                JSONObject row = config.getJSONObject(i);
+                String hullId = row.getString("id");
+                String factionId = row.getString("faction");
+                
+                if (!canLoadShips(factionId)) continue;
+                
+                int ibbNum = row.getInt("ibbNum");
+                validShips.add(new BossShipEntry(hullId, ibbNum));    
+                
+                if (ibbNum > highestIBBNum) 
+                    highestIBBNum = ibbNum;
+            }
+                
+            // ensure proper emphasis on last ships once IBB sidequest is complete
+            if (ibbProgress == 999)
+                ibbProgress = highestIBBNum;
+
+            for(BossShipEntry entry : validShips) {
+                // currently the completion stage is actually set when the bounty is created, not when it's completed
+                if (entry.ibbNum > 0 && !stageCompletion.contains(entry.ibbNum - 1)){
+                    log.info("IBB not completed for " + entry.id + " (" + entry.ibbNum + ")");
+                    continue;
                 }
-                cargo.addWeapons(weaponId, quantity);
-            }    
+                //ignore already bought IBB
+                if ( alreadyBoughtShips.contains(entry.id))
+                    continue;
+
+                // favour ships from bounties close to the last one we did
+                int weight = 3;
+                if (entry.ibbNum > 0){
+                    int diff = Math.abs(ibbProgress - entry.ibbNum);
+                    if (diff > 3) diff = 3;
+                    weight = weight + 4*(3 - diff);
+                }
+                picker.add(entry.id, weight);
+            }
+        } catch (IOException | JSONException ex) {
+            log.error(ex);
+        }
+        //How many IBB available
+        for (int i=0; i<ExerelinConfig.prismNumBossShips; i++) {
+            if (picker.isEmpty()) break;
+            ret.add(picker.pickAndRemove());
+        }        
+        return ret;
+    }
+    
+    //SS+ present
+    public boolean canLoadShips(String factionId) {
+        if (factionId.equals("ssp")){
+            try {
+                Global.getSettings().getScriptClassLoader().loadClass("data.scripts.SSPModPlugin");
+                return true;
+            }
+            catch (ClassNotFoundException ex) {
+                return false;
+            }            
+        }
+        return Global.getSector().getFaction(factionId) != null;
+    }
+    
+    
+    //BLACKLISTS
+    protected void setupLists() throws JSONException, IOException {
+
+        // Restricted goods
+        JSONArray csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
+                WEAPONS_BLACKLIST, "nexerelin");
+        restrictedWeapons = new HashSet<>();
+        for (int x = 0; x < csv.length(); x++)
+        {
+            JSONObject row = csv.getJSONObject(x);
+            restrictedWeapons.add(row.getString("id"));
+        }
+
+        // Restricted ships
+        csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
+                SHIPS_BLACKLIST, "nexerelin");
+        restrictedShips = new HashSet<>();
+        for (int x = 0; x < csv.length(); x++)
+        {
+            JSONObject row = csv.getJSONObject(x);
+            restrictedShips.add(row.getString("id"));
         }
     }
-
-
+    
+    
     @Override
     public boolean isIllegalOnSubmarket(CargoStackAPI stack, TransferAction action) {
         if (action == TransferAction.PLAYER_SELL) return true;
@@ -314,6 +333,33 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public boolean isIllegalOnSubmarket(FleetMemberAPI member, TransferAction action) {
         if (action == TransferAction.PLAYER_SELL) return true;
         return false;
+    }
+	
+	@Override
+    public float getTariff() {
+        RepLevel level = submarket.getFaction().getRelationshipLevel(Global.getSector().getFaction(Factions.PLAYER));
+		float mult = 1f;
+        switch (level)
+        {
+            case NEUTRAL:
+                mult = 1f;
+				break;
+            case FAVORABLE:
+                mult = 0.9f;
+				break;
+            case WELCOMING:
+                mult = 0.75f;
+				break;
+            case FRIENDLY:
+                mult = 0.65f;
+				break;
+            case COOPERATIVE:
+                mult = 0.5f;
+				break;
+            default:
+                mult = 1f;
+        }
+		return mult * ExerelinConfig.prismTariff;
     }
     
     @Override
@@ -342,26 +388,50 @@ public class PrismMarket extends BaseSubmarketPlugin {
     {
         return ILLEGAL_TRANSFER_MESSAGE;
     }
-
+    
     @Override
-    public float getTariff() {
-            return ExerelinConfig.prismTariff;
+    public String getTooltipAppendix(CoreUIAPI ui)
+    {
+        if (!isEnabled(ui))
+        {
+			String msg = StringHelper.getString("exerelin_markets", "prismRelTooLow");
+			msg = StringHelper.substituteToken(msg, "$faction", submarket.getFaction().getDisplayName());
+			msg = StringHelper.substituteToken(msg, "$minRelationship", MIN_STANDING.getDisplayName().toLowerCase());
+            return msg;
+        }
+        return null;
     }
-
+	
+	@Override
+	public Highlights getTooltipAppendixHighlights(CoreUIAPI ui) {
+		String appendix = getTooltipAppendix(ui);
+		if (appendix == null) return null;
+		
+		Highlights h = new Highlights();
+		h.setText(appendix);
+		h.setColors(Misc.getNegativeHighlightColor());
+		return h;
+	}
+    
+    @Override
+    public boolean isEnabled(CoreUIAPI ui)
+    {
+        RepLevel level = submarket.getFaction().getRelationshipLevel(Global.getSector().getFaction(Factions.PLAYER));
+        return level.isAtWorst(MIN_STANDING);
+    }
 
     @Override
     public boolean isBlackMarket() {
             return false;
     }
-
-	public static class BossShipEntry {
-		public String id;
-		public int ibbNum;
-		
-		public BossShipEntry(String id, int ibbNum)
-		{
-			this.id = id;
-			this.ibbNum = ibbNum;
-		}
-	}
+	
+	//List IBBs and their progress
+    public static class BossShipEntry {
+        public String id;
+        public int ibbNum;
+        public BossShipEntry(String id, int ibbNum) {
+                this.id = id;
+                this.ibbNum = ibbNum;
+        }
+    }
 }

@@ -64,8 +64,8 @@ public class ExerelinConfig
     public static boolean ignoreAlignmentForAlliances = false;
     
     // Prism Freeport
-    public static int prismMaxWeaponsPerFaction = 3;
-    public static float prismNumShipsPerFaction = 0.5f;
+    public static int prismMaxWeapons = 27;
+    public static int prismNumShips = 16;
     public static int prismNumBossShips = 3;
     public static boolean prismRenewBossShips = false;
     public static boolean prismUseIBBProgressForBossShips = true;
@@ -137,8 +137,8 @@ public class ExerelinConfig
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
             ignoreAlignmentForAlliances = settings.optBoolean("ignoreAlignmentForAlliances", ignoreAlignmentForAlliances);
             
-            prismMaxWeaponsPerFaction = settings.optInt("prismMaxWeaponsPerFaction", prismMaxWeaponsPerFaction);
-            prismNumShipsPerFaction = (float)settings.optDouble("prismNumShipsPerFaction", prismNumShipsPerFaction);
+            prismMaxWeapons = settings.optInt("prismMaxWeapons", prismMaxWeapons);
+            prismNumShips = settings.optInt("prismNumShips", prismNumShips);
             //prismSellBossShips = settings.optBoolean("prismSellBossShips", prismSellBossShips);
             prismNumBossShips = settings.optInt("prismNumBossShips", prismNumBossShips);
             prismRenewBossShips = settings.optBoolean("prismRenewBossShips", prismRenewBossShips);
