@@ -388,6 +388,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         for (MarketAPI market : markets) {
             if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
             if (market.getFactionId().equals(Factions.INDEPENDENT)) continue;
+            if (market.getFactionId().equals("sun_ice")) continue;
             if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
             if  ( market.getFactionId().equals(factionId) && !market.hasCondition("decivilized") && 
                 ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) || (market.hasCondition("military_base"))
@@ -433,6 +434,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             {
                 if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
                 if (marketFaction.getId().equals(Factions.INDEPENDENT)) continue;
+                if (market.getFactionId().equals("sun_ice")) continue;
                 if (marketFaction.isNeutralFaction()) continue;
                 if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
                     continue;
