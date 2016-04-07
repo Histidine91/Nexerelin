@@ -25,10 +25,13 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.shared.PlayerTradeDataForSubmarket;
+import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -719,7 +722,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             market.addSubmarket(Submarkets.SUBMARKET_OPEN);
             if (!NO_BLACK_MARKET.contains(market.getId()))
                 market.addSubmarket(Submarkets.SUBMARKET_BLACK);
-            if (market.hasCondition("military_base") || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId())) 
+            if (market.hasCondition(Conditions.MILITARY_BASE) || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId())) 
                 market.addSubmarket(Submarkets.GENERIC_MILITARY);
             
             market.removeSubmarket("tem_templarmarket");
@@ -731,12 +734,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             if (newOwnerConfig.freeMarket)
             {
-                if (!market.hasCondition("free_market")) market.addCondition("free_market");
+                if (!market.hasCondition(Conditions.FREE_PORT)) market.addCondition(Conditions.FREE_PORT);
                 market.getTariff().modifyMult("isFreeMarket", ExerelinConfig.freeMarketTariffMult);
             }
             else 
             {
-                market.removeCondition("free_market");
+                market.removeCondition(Conditions.FREE_PORT);
                 market.getTariff().unmodify("isFreeMarket");
             }
         }
@@ -750,11 +753,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (!submarket.getPlugin().isParticipatesInEconomy()) continue;
             //if (submarket.getPlugin().isBlackMarket()) continue;	// this doesn't behave as expected for pirate markets (it checks if submarket faction is hostile to market faction)
             String submarketId = submarket.getSpecId();
-            if (submarketId.equals("black_market")) continue;
+            
+			// reset smuggling suspicion
+			if (submarketId.equals(Submarkets.SUBMARKET_BLACK)) {  
+			  PlayerTradeDataForSubmarket tradeData = SharedData.getData().getPlayerActivityTracker().getPlayerTradeData(submarket);  
+			  tradeData.setTotalPlayerTradeValue(0);
+			  continue;
+			}  
             if (submarketId.equals("ssp_cabalmarket")) continue;
             
             submarket.setFaction(newOwner);
         }
+		
         market.reapplyConditions();
         Map<String, Object> params = new HashMap<>();
         params.put("newOwner", newOwner);
