@@ -312,6 +312,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (otherFactionId.equals(factionId)) continue;
                 if (ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
                 if (INVALID_FACTIONS.contains(otherFactionId)) continue;
+                if (otherFactionId.equals("player_npc") && !ExerelinConfig.followersAlliances) continue;
                 if (faction.isAtBest(otherFactionId, RepLevel.WELCOMING)) continue;
                 
                 // better relationships are more likely to form alliances
@@ -321,7 +322,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 float bestAlignmentValue = 0;
                 List<Alignment> bestAlignments = new ArrayList<>();
                 ExerelinFactionConfig config1 = ExerelinConfig.getExerelinFactionConfig(factionId);
-                ExerelinFactionConfig config2 = ExerelinConfig.getExerelinFactionConfig(otherFactionId);   
+                ExerelinFactionConfig config2 = ExerelinConfig.getExerelinFactionConfig(otherFactionId);
                 for (Alignment alignment : Alignment.values())
                 {
                     float alignment1 = 0;
