@@ -1165,7 +1165,25 @@ MakeHostileWhileTOff tOff true 7
 ShowDefaultVisual
 EndConversation",,,
 ,,,,,,
-,,,,,,
+cargoScanInitialFollowers,BeginFleetEncounter,"!$cargoScan_didAlready
+$pursuePlayer_smugglingScan score:50
+$faction.id == player_npc score:20","$cargoScan_didAlready = true 0
+unset $ignorePlayerCommRequests
+$cargoScanConv = true 0
+$entity.smugglingScanComplete = true 1
+unset $entity.pursuePlayer_smugglingScan
+AddText ""The $faction $otherShipOrFleet looks like it wants to scan you, but doesn't."" $faction.baseColor",,,
+cargoScanFirstCommsFollowers,OpenCommLink,"$entity.cargoScanConv score:100
+$faction.id == player_npc score:50","AddText ""\""We've received complaints of smuggling activity around these parts. Now I know there's no way you'd have anything to do with it, but discretion would be helpful. Appearances have to be maintained, you know.\""""",,0:cargoScan_cleanCont:Continue,
+cargoScanRefuse,DialogOptionSelected,$option == cargoScan_refuse,"$entity.ignorePlayerCommRequests = true 0
+unset $entity.cargoScanConv
+unset $entity.pursuePlayer_smugglingScan
+$entity.smugglingScanComplete = true 1
+$entity.exerelinFleetAggressAgainstPlayer = true 1
+AdjustRep $faction.id CARGO_SCAN_REFUSE
+AdjustRepActivePerson CARGO_SCAN_REFUSE
+ShowDefaultVisual
+EndConversation",,,
 ,,,,,,
 customsInspectionDisagree,DialogOptionSelected,"$doingCustomsInspection score:100
 $option == ciDisagree","AdjustRep $faction.id CUSTOMS_REFUSED_TOLL
