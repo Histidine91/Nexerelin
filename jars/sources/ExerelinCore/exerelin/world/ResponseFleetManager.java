@@ -13,6 +13,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -102,7 +103,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
                 maxFP*0.1f,    // utility
                 0.15f, -1, 1.25f, origin.getSize()/2);    // quality bonus, quality override, officer num mult, officer level bonus
         
-        CampaignFleetAPI fleet = FleetFactoryV2.createFleet(fleetParams);
+        CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(origin.getFaction(), fleetParams);
         fleet.setName(name);
         fleet.setAIMode(true);
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);

@@ -27,6 +27,7 @@ import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.util.HashMap;
@@ -150,7 +151,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 fp*0.1f,    // utility
                 0.15f, -1, 1.25f, params.originMarket.getSize()/2);    // quality bonus, quality override, officer num mult, officer level bonus
         
-        CampaignFleetAPI fleet = FleetFactoryV2.createFleet(fleetParams);
+        CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(params.faction, fleetParams);
         /*
         CampaignFleetAPI fleet = FleetFactory.createGenericFleet(factionId, params.name, params.qf, params.fp);
         

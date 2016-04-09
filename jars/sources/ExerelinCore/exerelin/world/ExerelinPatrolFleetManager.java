@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory.PatrolType;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
@@ -15,14 +14,13 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
-import com.fs.starfarer.api.loading.FleetCompositionDoctrineAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.RollingAverageTracker;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -177,51 +175,7 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 			
 			//combat += Math.min(30f, losses * 3f);
 			
-			CampaignFleetAPI fleet = null;
-			
-			// SS+ doctrine hax
-			if (ExerelinUtils.isSSPInstalled()) {
-				FleetCompositionDoctrineAPI doctrine = market.getFaction().getCompositionDoctrine();
-				float preInterceptors = doctrine.getInterceptors();
-				float preFighters = doctrine.getFighters();
-				float preBombers = doctrine.getBombers();
-				float preSmall = doctrine.getSmall();
-				float preFast = doctrine.getFast();
-				float preMedium = doctrine.getMedium();
-				float preLarge = doctrine.getLarge();
-				float preCapital = doctrine.getCapital();
-				float preSmallCarrierProbability = doctrine.getSmallCarrierProbability();
-				float preMediumCarrierProbability = doctrine.getMediumCarrierProbability();
-				float preLargeCarrierProbability = doctrine.getLargeCarrierProbability();
-
-				float total = combat + tanker + freighter;
-				if (total > 25 && total <= 50) {
-					doctrine.setInterceptors(preInterceptors * 0.5f);
-					doctrine.setFighters(preFighters * 0.5f);
-					doctrine.setBombers(preBombers * 0.5f);
-					doctrine.setSmall(preSmall * 0.5f);
-					doctrine.setFast(preFast * 0.5f);
-					doctrine.setMedium(preMedium);
-					doctrine.setLarge(preLarge * 1.25f);
-					doctrine.setCapital(preCapital * 1.5f);
-					doctrine.setSmallCarrierProbability(preSmallCarrierProbability * 0.8f);
-					doctrine.setMediumCarrierProbability(preMediumCarrierProbability * 0.9f);
-					doctrine.setLargeCarrierProbability(preLargeCarrierProbability);
-				} else if (total > 50) {
-					doctrine.setInterceptors(preInterceptors * 0.25f);
-					doctrine.setFighters(preFighters * 0.25f);
-					doctrine.setBombers(preBombers * 0.25f);
-					doctrine.setSmall(preSmall * 0.25f);
-					doctrine.setFast(preFast * 0.25f);
-					doctrine.setMedium(preMedium * 0.75f);
-					doctrine.setLarge(preLarge);
-					doctrine.setCapital(preCapital * 1.25f);
-					doctrine.setSmallCarrierProbability(preSmallCarrierProbability * 0.5f);
-					doctrine.setMediumCarrierProbability(preMediumCarrierProbability * 0.65f);
-					doctrine.setLargeCarrierProbability(preLargeCarrierProbability * 0.8f);
-				}
-
-				fleet = FleetFactoryV2.createFleet(new FleetParams(
+			FleetParams params = new FleetParams(
 						null,
 						market, 
 						market.getFactionId(),
@@ -238,42 +192,8 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 						-1f, // qualityOverride
 						1f + Math.min(1f, losses / 12.5f),	//1f + Math.min(1f, losses / 10f), // officer num mult
 						0 + (int) (losses * 0.75f)	// 0 + (int) losses // officer level bonus
-						));
-
-				doctrine.setInterceptors(preInterceptors);
-				doctrine.setFighters(preFighters);
-				doctrine.setBombers(preBombers);
-				doctrine.setSmall(preSmall);
-				doctrine.setFast(preFast);
-				doctrine.setMedium(preMedium);
-				doctrine.setLarge(preLarge);
-				doctrine.setCapital(preCapital);
-				doctrine.setSmallCarrierProbability(preSmallCarrierProbability);
-				doctrine.setMediumCarrierProbability(preMediumCarrierProbability);
-				doctrine.setLargeCarrierProbability(preLargeCarrierProbability);
-			}
-			
-			else {
-				fleet = FleetFactoryV2.createFleet(new FleetParams(
-					null,
-					market, 
-					market.getFactionId(),
-					null, // fleet's faction, if different from above, which is also used for source market picking
-					fleetType,
-					combat, // combatPts
-					freighter, // freighterPts 
-					tanker, // tankerPts
-					0f, // transportPts
-					0f, // linerPts
-					0f, // civilianPts 
-					0f, // utilityPts
-					0f, // qualityBonus
-					-1f, // qualityOverride
-					1f + Math.min(1f, losses / 12.5f),	//1f + Math.min(1f, losses / 10f), // officer num mult
-					0 + (int) (losses * 0.75f)	// 0 + (int) losses // officer level bonus
-					));
-			}
-			
+						);
+			CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(market.getFaction(), params);
 			if (fleet == null) return;
 			
 			SectorEntityToken entity = market.getPrimaryEntity();
