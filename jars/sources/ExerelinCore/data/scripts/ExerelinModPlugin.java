@@ -33,6 +33,8 @@ import org.lazywizard.omnifac.OmniFacSettings;
 public class ExerelinModPlugin extends BaseModPlugin
 {
     // call order: onNewGame -> onNewGameAfterEconomyLoad -> onEnabled -> onNewGameAfterTimePass -> onGameLoad
+    public static final boolean HAVE_SSP = Global.getSettings().getModManager().isModEnabled("dr_ssp");
+    
     protected static boolean isNewGame = false;
     
     protected void applyToExistingSave()

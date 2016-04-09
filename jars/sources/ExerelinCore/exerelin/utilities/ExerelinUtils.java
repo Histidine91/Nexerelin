@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.util.Misc;
+import data.scripts.ExerelinModPlugin;
 import exerelin.campaign.PlayerFactionStore;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
@@ -327,15 +328,7 @@ public class ExerelinUtils
 	
     public static boolean isSSPInstalled()
     {
-        try
-        {
-            Global.getSettings().getScriptClassLoader().loadClass("data.scripts.SSPModPlugin");
-            return true;
-        }
-        catch (ClassNotFoundException ex)
-        {
-            return false;
-        }
+        return ExerelinModPlugin.HAVE_SSP;
     }
     
     public static String[] JSONArrayToStringArray(JSONArray jsonArray)
