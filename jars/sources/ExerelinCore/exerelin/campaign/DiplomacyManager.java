@@ -559,7 +559,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     @Override
     public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
+		if (winner == null) return;
         CampaignFleetAPI loser = battle.getPrimary(battle.getOtherSideFor(winner));
+		if (loser == null) return;
+		
         FactionAPI winFaction = winner.getFaction();
         FactionAPI loseFaction = loser.getFaction();
         
