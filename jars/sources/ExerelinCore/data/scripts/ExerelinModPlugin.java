@@ -9,6 +9,7 @@ import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.thoughtworks.xstream.XStream;
+import data.scripts.campaign.SSP_CoreScript;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
@@ -41,6 +42,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         SectorAPI sector = Global.getSector();
         InvasionFleetManager im = InvasionFleetManager.create();
         AllianceManager am = AllianceManager.create();
+        sector.removeScriptsOfClass(CoreScript.class);
+        sector.removeScriptsOfClass(SSP_CoreScript.class);
+        sector.addScript(new ExerelinCoreScript());
         sector.addScript(SectorManager.create());
         sector.addScript(DiplomacyManager.create());
         sector.addScript(im);
