@@ -22,6 +22,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -106,9 +107,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
         
         CargoAPI cargo = getCargo();
         FleetDataAPI data = cargo.getMothballedShips();
-        //remove half the stock
+        Set<String> allBossShips = getAllBossShips();
+        
+        //remove half the stock (and all boss ships)
         for (FleetMemberAPI member : data.getMembersListCopy()) {
-            if(Math.random()>0.5f) data.removeFleetMember(member);                
+            if (allBossShips.contains(member.getHullId())) data.removeFleetMember(member);
+            else if (Math.random()>0.5f) data.removeFleetMember(member);                
         }
 
         WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
@@ -209,6 +213,24 @@ public class PrismMarket extends BaseSubmarketPlugin {
         }
     }
     
+    public Set<String> getAllBossShips() {
+        Set<String> bossShips = new HashSet<>();
+        try {
+            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", IBB_FILE, "nexerelin");
+            for(int i = 0; i < config.length(); i++) {
+            
+                JSONObject row = config.getJSONObject(i);
+                String hullId = row.getString("id");
+                String factionId = row.getString("faction");
+                
+                if (!canLoadShips(factionId)) continue;
+                bossShips.add(hullId);    
+            }
+        } catch (IOException | JSONException ex) {
+            log.error(ex);
+        }
+        return bossShips;
+    }
     
     //IBB sales setup
     public List<String> getBossShips() {
@@ -255,12 +277,14 @@ public class PrismMarket extends BaseSubmarketPlugin {
 
             for(BossShipEntry entry : validShips) {
                 // currently the completion stage is actually set when the bounty is created, not when it's completed
-                if (entry.ibbNum > 0 && !stageCompletion.contains(entry.ibbNum - 1)){
-                    log.info("IBB not completed for " + entry.id + " (" + entry.ibbNum + ")");
-                    continue;
+                if (ExerelinConfig.prismUseIBBProgressForBossShips) {
+                    if (entry.ibbNum > 0 && !stageCompletion.contains(entry.ibbNum - 1)){
+                        log.info("IBB not completed for " + entry.id + " (" + entry.ibbNum + ")");
+                        continue;
+                    }
                 }
                 //ignore already bought IBB
-                if ( alreadyBoughtShips.contains(entry.id))
+                if (alreadyBoughtShips.contains(entry.id))
                     continue;
 
                 // favour ships from bounties close to the last one we did
@@ -279,20 +303,14 @@ public class PrismMarket extends BaseSubmarketPlugin {
         for (int i=0; i<ExerelinConfig.prismNumBossShips; i++) {
             if (picker.isEmpty()) break;
             ret.add(picker.pickAndRemove());
-        }        
+        }
         return ret;
     }
     
     //SS+ present
     public boolean canLoadShips(String factionId) {
         if (factionId.equals("ssp")){
-            try {
-                Global.getSettings().getScriptClassLoader().loadClass("data.scripts.SSPModPlugin");
-                return true;
-            }
-            catch (ClassNotFoundException ex) {
-                return false;
-            }            
+            return ExerelinUtils.isSSPInstalled();
         }
         return Global.getSector().getFaction(factionId) != null;
     }
