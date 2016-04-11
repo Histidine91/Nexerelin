@@ -23,10 +23,10 @@
     },
     
     "startShipsSolo":["vigilance_Standard"],
-    "startShipsCombatSmall":["enforcer_Balanced", "lasher_Starting", "brawler_Starting"],
-    "startShipsCombatSmallSSP":["ssp_vanguard_sta", "lasher_Starting", "brawler_Starting"],
+    "startShipsCombatSmall":["enforcer_Balanced", "lasher_Starting", "centurion_Assault"],
+    "startShipsCombatSmallSSP":["ssp_vanguard_sta", "lasher_Starting", "centurion_Assault"],
     "startShipsTradeSmall":["tarsus_Standard", "cerberus_Standard", "lasher_CS"],
     "startShipsCombatLarge":["dominator_Support", "enforcer_Outdated", "kite_Interceptor"],
-    "startShipsCombatLargeSSP":["ssp_kestrel_bal", "ssp_albatross_art", "kite_Standard"],
+    "startShipsCombatLargeSSP":["ssp_vulture_sta", "ssp_albatross_art", "kite_Standard"],
     "startShipsTradeLarge":["venture_Balanced", "buffalo_luddic_church_Standard", "hound_luddic_church_Standard"],
 }

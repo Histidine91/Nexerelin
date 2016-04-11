@@ -33,7 +33,7 @@
     "startShipsTradeSmall":["mule_d_pirates_Standard", "brawler_Assault", "shepherd_Frontier"],
     "startShipsTradeSmallSSP":["mule_d_pirates_Standard", "ssp_venom_sta", "hermes_FS"],
     "startShipsCombatLarge":["falcon_CS", "enforcer_Balanced", "lasher_Standard"],
-    "startShipsCombatLargeSSP":["ssp_barbarian_balp", "ssp_bull_rai", "ssp_scythe_sta"],
+    "startShipsCombatLargeSSP":["ssp_barbarian_balp", "ssp_shark_rai", "ssp_scythe_sta"],
     "startShipsTradeLarge":["venture_Balanced", "buffalo_pirates_Standard", "cerberus_Standard"],
     "startShipsTradeLargeSSP":["ssp_stalker_sta", "buffalo_pirates_Standard", "ssp_venom_fas"],
 }
