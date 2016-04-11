@@ -444,9 +444,7 @@ NGCAddShipAndComplement ""nihil_null_cultist""
 AddText ""Added Null-class frigate"" textFriendColor
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinNoir,NewGameOptionSelected,$option == exerelinNGCJoinNoir,"NGCSetPlayerFaction ""noir""
-NGCAddShipAndComplement ""Noir_Fantome_Fantoma""
-AddText ""Added Fantome-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 exerelinNGCJoinOculus,NewGameOptionSelected,$option == exerelinNGCJoinOculus,"NGCSetPlayerFaction ""oculus""
 NGCAddShipAndComplement ""ob_tigris_standard""
 AddText ""Enjoy your Tigris-class destroyer :p"" textFriendColor
