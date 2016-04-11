@@ -20,14 +20,14 @@ public class Exerelin_SupplyWorkshop extends BaseMarketConditionPlugin {
 	*/
 	
 	public static final float WORKSHOP_CREW = 200f;
-	public static final float WORKSHOP_VOLATILES = 400f;
+	public static final float WORKSHOP_VOLATILES = 320f;
 	public static final float WORKSHOP_ORGANICS = 2500f;
 	public static final float WORKSHOP_METALS = 1500f;
 	public static final float WORKSHOP_RARE_METALS = 75f;
 	public static final float WORKSHOP_HEAVY_MACHINERY_DEMAND = 20f;
 	public static final float WORKSHOP_HEAVY_MACHINERY = 0f;
 	public static final float WORKSHOP_SUPPLIES = 2500f;
-	public static final float WORKSHOP_HAND_WEAPONS = 2500f;	// mostly here just so the system doesn't fail if there aren't enough autofacs
+	public static final float WORKSHOP_HAND_WEAPONS = 2000f;	// mostly here just so the system doesn't fail if there aren't enough autofacs
 	
 	@Override
 	public void apply(String id) {
