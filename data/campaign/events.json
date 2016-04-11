@@ -11,7 +11,8 @@
 		"script":"exerelin.campaign.events.DiplomacyEvent"
 	},
 	"exerelin_invasion_fleet":{
-		"script":"exerelin.campaign.events.InvasionFleetEvent"
+		"script":"exerelin.campaign.events.InvasionFleetEvent",
+		"image":"graphics/icons/intel/missions.png"
 	},
 	"exerelin_agent_raise_relations":{
 		"script":"exerelin.campaign.events.CovertOpsEventBase"

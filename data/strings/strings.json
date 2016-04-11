@@ -74,7 +74,7 @@
 		"factionRespawned":"$faction arrives in Exerelin",
 		"factionSalary":"Faction salary payment",
 		"insurance":"Ship loss insurance",
-		"invasionFleet":"$faction invasion fleet event",
+		"invasionFleet":"$faction invasion fleet update",
 		"marketAttacked":"Recent attack on $market",
 		"marketCaptured":"$market captured by $faction",
 		"securityAlert":"Security alert on $market",
