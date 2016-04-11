@@ -12,11 +12,13 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
 import exerelin.campaign.events.SecurityAlertEvent;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.ResponseFleetManager;
@@ -61,7 +63,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     private final IntervalUtil intervalUtil;
     
     static {
-        String[] factions = {"templars", "independent"};
+        String[] factions = {Factions.NEUTRAL, Factions.PLAYER, Factions.INDEPENDENT};    //{"templars", "independent"};
         disallowedFactions = Arrays.asList(factions);
         
         try {
@@ -111,10 +113,13 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         int factionCount = 0;
         for (FactionAPI faction: factions)
         {
-            if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
-            if (disallowedFactions.contains(faction.getId())) continue;
-            if (ExerelinUtilsFaction.isPirateFaction(faction.getId())) continue;  // pirates don't do covert warfare
-            if (!ExerelinConfig.followersAgents && faction.getId().equals("player_npc")) continue;
+            String factionId = faction.getId();
+            if (disallowedFactions.contains(factionId)) continue;
+            if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;  // pirates don't do covert warfare
+            if (!ExerelinConfig.followersAgents && factionId.equals("player_npc")) continue;
+            ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
+            if (factionConf != null && !factionConf.allowAgentActions) continue;
+            
             agentFactionPicker.add(faction);
             factionCount++;
         }
@@ -126,7 +131,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         factionCount = 0;
         for (FactionAPI faction: factions)
         {
-            if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
+            String factionId = faction.getId();
+            ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
+            if (factionConf != null && !factionConf.allowAgentActions) continue;
             if (disallowedFactions.contains(faction.getId())) continue;
             if (faction == agentFaction) continue;
             
@@ -166,7 +173,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 
                 weight = weight * (1 + dominance);
             }
-            if (ExerelinUtilsFaction.isPirateFaction(faction.getId()))
+            if (ExerelinUtilsFaction.isPirateFaction(factionId))
                 weight *= 0.25f;    // reduces factions constantly targeting pirates for covert action
             
             if (weight <= 0) continue;

@@ -27,6 +27,9 @@
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
     
+    "allowAgentActions":false,
+    "allowPrisonerActions":false,
+    
     "alignments":{
         "militarist":1,
         "diplomatic":-1,

@@ -65,6 +65,9 @@ public class ExerelinFactionConfig
     public boolean noHomeworld = false;
     public boolean showIntelEvenIfDead = false;
     
+    public boolean allowAgentActions = true;
+    public boolean allowPrisonerActions = true;
+    
     public List<String> customStations = new ArrayList<>();
     
     public List<String> miningVariantsOrWings = new ArrayList<>();
@@ -134,6 +137,9 @@ public class ExerelinFactionConfig
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
             noHomeworld = settings.optBoolean("noHomeworld", noHomeworld);
             showIntelEvenIfDead = settings.optBoolean("showIntelEvenIfDead", showIntelEvenIfDead);
+            
+            allowAgentActions = settings.optBoolean("allowAgentActions", allowAgentActions);
+            allowPrisonerActions = settings.optBoolean("allowPrisonerActions", allowPrisonerActions);
             
             if (settings.has("miningVariantsOrWings"))
                 miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));

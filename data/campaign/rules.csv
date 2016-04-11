@@ -803,6 +803,12 @@ $faction.id != ""neutral""
 $faction.id != ""player_npc""
 !HasItem agent score:10","SetTooltip exerelinUseAgent ""You have no agents!""
 SetEnabled exerelinUseAgent false",,,
+ExerelinMarketAgentOptionNotAllowed,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+$faction.id != ""player_npc""
+!FactionAllowAgentActions $faction.id score:20","SetTooltip exerelinUseAgent""$TheFaction cannot be infiltrated.""
+SetEnabled exerelinUseAgent false",,,
 #ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
@@ -858,6 +864,12 @@ $faction.id != ""neutral""
 $faction.id != ""player_npc""
 !HasItem saboteur","SetTooltip exerelinUseSaboteur ""You have no saboteurs!""
 SetEnabled exerelinUseSaboteur false",,,
+ExerelinMarketSaboteurOptionNotAllowed,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+$faction.id != ""player_npc""
+!FactionAllowAgentActions $faction.id score:20","SetTooltip exerelinUseSaboteur ""$TheFaction cannot be infiltrated.""
+SetEnabled exerelinUseSaboteur false",,,
 #ExerelinMarketSaboteurOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
 $faction.id != $player.factionId
 $faction.id != ""neutral""
@@ -896,12 +908,15 @@ FireAll PopulateOptions",Security is too tight for further saboteur insertions.,
 ,,,,,,
 #START PRISONER OPTIONS,,,,,,
 ExerelinMarketPrisonerOption,ExerelinMarketSpecial,"$hasMarket
-$faction.id != ""neutral""
-HasItem prisoner",SetEnabled exerelinUsePrisoner true,,4:exerelinUsePrisoner:Prisoner actions,
+$faction.id != ""neutral""",SetEnabled exerelinUsePrisoner true,,4:exerelinUsePrisoner:Prisoner actions,
 ExerelinMarketPrisonerOptionNoPrisoners,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""
-!HasItem prisoner","SetTooltip exerelinUsePrisoner ""You have no prisoners!""
-SetEnabled exerelinUsePrisoner false",,4:exerelinUsePrisoner:Prisoner actions,
+!HasItem prisoner score:10","SetTooltip exerelinUsePrisoner ""You have no prisoners!""
+SetEnabled exerelinUsePrisoner false",,,
+ExerelinMarketPrisonerOptionNotAllowed,ExerelinMarketSpecial,"$hasMarket
+$faction.id != ""neutral""
+!FactionAllowPrisonerActions  $faction.id score:20","SetTooltip exerelinUsePrisoner ""$TheFaction have no use for prisoners.""
+SetEnabled exerelinUsePrisoner false",,,
 ExerelinPrisonerOptionListMain,DialogOptionSelected,$option == exerelinUsePrisoner,"$menuState = prisoner 0
 GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
