@@ -209,16 +209,20 @@ public class PrismMarket extends BaseSubmarketPlugin {
         List<String> bossShips = getBossShips();
         for (String variantId : bossShips)
         {
-            FleetMemberAPI member;
-            if (variantId.endsWith("_wing")) {
-                member = Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, variantId);
+            try { 
+                FleetMemberAPI member;
+                if (variantId.endsWith("_wing")) {
+                    member = Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, variantId);
+                }
+                else { 
+                    variantId += "_Hull";
+                    member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+                }
+                member.getRepairTracker().setMothballed(true);
+                getCargo().getMothballedShips().addFleetMember(member);
+            } catch (RuntimeException rex) {
+                // ship doesn't exist; meh
             }
-            else { 
-                variantId += "_Hull";
-                member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
-            }
-            member.getRepairTracker().setMothballed(true);
-            getCargo().getMothballedShips().addFleetMember(member);
         }
     }
     
