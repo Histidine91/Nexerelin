@@ -4,6 +4,7 @@ import com.fs.starfarer.api.impl.campaign.econ.OreRefiningComplex;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
 // fixes the unapply bug in the vanilla one
+@Deprecated
 public class ExerelinOreRefiningComplex extends OreRefiningComplex {
 	
 	@Override

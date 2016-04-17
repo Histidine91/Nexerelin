@@ -19,4 +19,3 @@ Military Base,military_base,data.scripts.campaign.econ.ExerelinMilitaryBase,"Req
 
 Increases the quality and number of officers in $market's fleets.",graphics/icons/markets/military_base.png,30
 Shipbreaking Center,shipbreaking_center,data.scripts.campaign.econ.ExerelinShipbreakingCenter,"A major center of shipbreaking in this region of the Sector, hulks are consigned to scrapping here by the navies of major factions and many other clients from among the Sector core worlds.",graphics/icons/markets/shipbreaking.png,30
-Ore Refining Complex,ore_refining_complex,data.scripts.campaign.econ.ExerelinOreRefiningComplex,"Smelting plants here convert ores and rare ores into metals and rare metals, respectively.",graphics/icons/markets/ore_refining_complex.png,30
