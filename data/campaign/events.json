@@ -67,6 +67,10 @@
 	"exerelin_warmonger":{
 		"script":"exerelin.campaign.events.WarmongerEvent"
 	},
+	"exerelin_superweapon":{
+		"script":"exerelin.campaign.events.SuperweaponEvent",
+		"image":"graphics/icons/markets/meteor_strike.png"
+	},
 	
 	# missions
 	"exerelin_conquest_mission":{

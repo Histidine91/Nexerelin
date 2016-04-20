@@ -108,7 +108,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 		return CampaignEventPlugin.CampaignEventCategory.DO_NOT_SHOW_IN_MESSAGE_FILTER;
 	}
 	
-	protected String getNewRelationStr(FactionAPI faction1, FactionAPI faction2)
+	protected static String getNewRelationStr(FactionAPI faction1, FactionAPI faction2)
 	{
 		RepLevel level = faction1.getRelationshipLevel(faction2.getId());
 		int repInt = (int) Math.ceil((faction1.getRelationship(faction2.getId())) * 100f);
@@ -123,7 +123,8 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 		addFactionNameTokens(map, "agent", agentFaction);
 		
 		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repEffect*100f)));
-		map.put("$newRelationStr", getNewRelationStr(agentFaction, faction));		return map;
+		map.put("$newRelationStr", getNewRelationStr(agentFaction, faction));
+		return map;
 	}
 	
 	@Override

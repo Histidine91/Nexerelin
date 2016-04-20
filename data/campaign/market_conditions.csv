@@ -13,6 +13,9 @@ Market Attacked,exerelin_market_attacked_condition,data.scripts.campaign.econ.Ma
 Agent Destabilization,exerelin_agent_destabilize_condition,data.scripts.campaign.econ.AgentDestabilizeMarketCondition,"Foreign agents have recently conducted terror attacks on $market.
 
 - Stability reduced by $stabilityPenalty",graphics/icons/markets/plundered.png,1000
+Superweapon Attack,exerelin_superweapon_condition,exerelin.campaign.econ.SuperweaponCondition," $market has recently been hit by a planet buster superweapon, causing widespread devastation.
+
+- Stability reduced by $stabilityPenalty",graphics/icons/markets/meteor_strike.png,1000
 ,,,,,
 #vanilla override,,,,,
 Military Base,military_base,data.scripts.campaign.econ.ExerelinMilitaryBase,"Requires supplies, fuel, hand weapons, and machinery. There's some turnover in personnel, resulting in a trickle of trained crew and marines available for hire.

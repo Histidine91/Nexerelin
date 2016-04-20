@@ -79,6 +79,7 @@
 		"marketCaptured":"$market captured by $faction",
 		"securityAlert":"Security alert on $market",
 		"slaveTrade":"Slave trade on $market",
+		"superweapon":"Superweapon used on $market!",
 		"victory":"$faction victory",
 		"warmonger":"Warmonger reputation penalty"
 	},	
@@ -188,6 +189,14 @@
 		"allowRespawnNonOriginal":"Allow respawn for factions not currently present",
 		"hardMode":"Starfarer Mode",
 		"randomizeRelationships":"Randomize faction relationships",
+	},
+	"exerelin_superweapon":{
+		"crText":"Superweapon used",
+		"stabilityText":"Planetbreaker",
+		
+		"successText":"The missile scores a direct hit! $market has taken severe damage.",
+		"stabilityPenaltyReport":"Stability penalty: $stability",
+		"commodityDestructionReport":"Average $percent% of commodity stockpiles destroyed",
 	},
 	"exerelin_victoryScreen":{
 		"victory_conquest":"Congratulations! $TheFaction have crushed all opposition and now reigns supreme over the $clusterName cluster!",

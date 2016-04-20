@@ -13,5 +13,8 @@
 		"abilities":{
 			"exerelin_follow_me":"graphics/icons/abilities/something.png",
 		},
+		"illustrations":{
+			"facility_explosion":"graphics/illustrations/facility_explosion.jpg",
+		}
 	}
 }

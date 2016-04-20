@@ -2,16 +2,21 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.campaign.econ.Exerelin_Hydroponics;
 import data.scripts.campaign.econ.Exerelin_RecyclingPlant;
 import data.scripts.campaign.econ.Exerelin_SupplyWorkshop;
 import java.util.List;
+import org.lazywizard.lazylib.MathUtils;
 
 public class ExerelinUtilsMarket {
 	
@@ -103,6 +108,83 @@ public class ExerelinUtilsMarket {
 			return 0;
 		
 		return Misc.getDistance(primary1.getLocationInHyperspace(), primary2.getLocationInHyperspace());
+	}
+	
+	// the fancy bits (currently commented out) are adapted from LazyWizard's Console Commands
+	public static void forceMarketUpdate(MarketAPI market)
+	{
+		if (market.getFactionId().equals("templars"))	// doesn't work on Templars, sorry
+			return;
+		
+		/*
+		boolean canUpdate = true;
+		final Field sinceLastCargoUpdate, minCargoUpdateInterval;
+		try
+		{
+			sinceLastCargoUpdate = BaseSubmarketPlugin.class.getDeclaredField("sinceLastCargoUpdate");
+			sinceLastCargoUpdate.setAccessible(true);
+			minCargoUpdateInterval = BaseSubmarketPlugin.class.getDeclaredField("minCargoUpdateInterval");
+			minCargoUpdateInterval.setAccessible(true);
+		}
+		catch (Exception ex)	// bah
+		{
+			log.error(ex);
+			return;
+		}
+		if (!canUpdate) return;
+		*/
+		
+		for (SubmarketAPI submarket : market.getSubmarketsCopy())
+		{
+			// Ignore storage tabs
+			if (Submarkets.SUBMARKET_STORAGE.equals(submarket.getSpec().getId()))
+				continue;
+			
+			if (submarket.getPlugin() instanceof BaseSubmarketPlugin)
+			{
+				final BaseSubmarketPlugin plugin = (BaseSubmarketPlugin) submarket.getPlugin();
+				/*
+				try
+				{
+					float lastUpdate = sinceLastCargoUpdate.getFloat(plugin);
+					float minUpdateInterval = minCargoUpdateInterval.getFloat(plugin);
+					if (lastUpdate > minUpdateInterval)
+					sinceLastCargoUpdate.setFloat(plugin, minUpdateInterval + 1);
+				}
+				catch (Exception ex)	// meh
+				{
+					continue;
+				}
+				*/
+				
+				plugin.updateCargoPrePlayerInteraction();
+			}
+		}
+	}
+	
+	public static void destroyCommodityStocks(MarketAPI market, CommodityOnMarketAPI commodity, float mult, float variance)
+	{
+		float avg = commodity.getAverageStockpile();
+		float current = commodity.getStockpile();
+		if (variance != 0)
+			mult = mult * MathUtils.getRandomNumberInRange(1 - variance, 1 + variance);
+		commodity.removeFromAverageStockpile(avg * mult);
+		commodity.removeFromStockpile(current * mult);
+		Global.getLogger(ExerelinUtilsMarket.class).info("Destroyed " + avg * mult + " of " + commodity.getId() 
+				+ " on " + market.getName() + " (mult " + mult + ")");
+	}
+	
+	public static void destroyCommodityStocks(MarketAPI market, String commodityId, float mult, float variance)
+	{
+		CommodityOnMarketAPI commodity = market.getCommodityData(commodityId);
+		destroyCommodityStocks(market, commodity, mult, variance);
+	}
+	
+	public static void destroyAllCommodityStocks(MarketAPI market, float mult, float variance) {
+		for (CommodityOnMarketAPI commodity: market.getAllCommodities()) 
+		{
+			destroyCommodityStocks(market, commodity, mult, variance);
+		}
 	}
 	
 	// do we really want any of these?

@@ -46,6 +46,14 @@ exerelin_warmonger,report,,,player_intel_always,Unprovoked attack on $faction,"Y
 Average reputation penalty with $numFactions other faction(s): $repPenaltyAvgAbs",,graphics/exerelin/icons/intel/war.png,,,
 exerelin_warmonger,report_noOwnFaction,,,player_intel_always,Unprovoked attack on $faction,Your unprovoked attack on $theFaction has angered some of the other factions.,Average reputation penalty with $numFactions other faction(s): $repPenaltyAvgAbs,,graphics/exerelin/icons/intel/war.png,,,
 ,,,,,,,,,,,,
+exerelin_superweapon,weaponUsed,,,news,Superweapon used by $attackerFaction on $market!,"$AttackerFaction forces have used a planet buster superweapon on $market, causing shocking levels of destruction. This represents a serious escalation of their conflict with $TheFaction.","Stability reduced by $stabilityPenalty.
+Relations between $attackerFaction and $faction reduced by $relDeltaAbs, currently at $newRelationStr.",,graphics/icons/markets/meteor_strike.png,,,
+exerelin_superweapon,weaponUsed_player,,,news,Superweapon used by $attackerFaction on $market!,"$AttackerFaction forces commanded by $playerName have used a planet buster superweapon on $market, causing massive levels of destruction. This shocking action may well lead to a diplomatic crisis.","Stability reduced by $stabilityPenalty.
+Relations between $attackerFaction and $faction reduced by $relDeltaAbs, currently at $newRelationStr.
+Average reputation penalty with $numFactions other faction(s): $repPenaltyAvgAbs",,graphics/icons/markets/meteor_strike.png,,,
+,,,,,,,,,,,,
+,,,,,,,,,,,,
+,,,,,,,,,,,,
 # missions,,,,,,,,,,,,
 exerelin_conquest_mission,posting,,,posting,Conquer $target (or have one of your faction's invasion fleets do it) within $daysLeft for a $rewardCredits payment.,$target is a $targetFaction market (size $targetSize) in $targetLocation.,,,,no_system_prefix,,
 exerelin_conquest_mission,posting_bonus,,,posting,Conquer $target (or have one of your faction's invasion fleets do it) within $daysLeft for a $rewardCredits payment. $bonusCredits bonus for completion within $bonusDays.,$target is a $targetFaction market (size $targetSize) in $targetLocation.,,,,no_system_prefix,,
