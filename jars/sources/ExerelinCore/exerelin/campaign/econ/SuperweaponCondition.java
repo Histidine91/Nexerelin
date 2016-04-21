@@ -10,7 +10,7 @@ public class SuperweaponCondition extends BaseMarketConditionPlugin {
 	
 	@Override
 	public void apply(String id) {
-		market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), StringHelper.getString("exerelin_superweapons", "stabilityText"));
+		market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), StringHelper.getString("exerelin_superweapon", "stabilityText"));
 	}
 		
 	@Override

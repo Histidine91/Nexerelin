@@ -28,7 +28,7 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 	public static final float STOCKPILE_DESTRUCTION_BASE_MULT = 0.80f;
 	public static final float STOCKPILE_DESTRUCTION_SIZE_DIV_MULT = 0.5f;
 	public static final float STOCKPILE_DESTRUCTION_VARIANCE = 0.25f;
-	public static final int STABILITY_BASE_MOD = -11;
+	public static final int STABILITY_BASE_PENALTY = 11;
 	
 	public static Logger log = Global.getLogger(Exerelin_UseSuperweapon.class);
 	
@@ -94,7 +94,7 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 		float destructionMult = STOCKPILE_DESTRUCTION_BASE_MULT / (STOCKPILE_DESTRUCTION_SIZE_DIV_MULT * size);
 		ExerelinUtilsMarket.destroyAllCommodityStocks(market, destructionMult, STOCKPILE_DESTRUCTION_VARIANCE);
 		
-		int stabilityPenalty = STABILITY_BASE_MOD + size;
+		int stabilityPenalty = STABILITY_BASE_PENALTY - size;
 		
 		SectorAPI sector = Global.getSector();
 		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_superweapon");
@@ -106,6 +106,8 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 		
 		ResponseFleetManager.modifyReserveSize(market, -999);
 		
+		ExerelinUtilsMarket.refreshMarket(market, true);
+		
 		Global.getSoundPlayer().playUISound("ii_titan_explode_close", 1, 1);
 		
 		// lock out of market
@@ -116,7 +118,7 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 		}
 		if (expire > 180) expire = 180;
 		if (expire > 0) {
-			//memMarket.set(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET, true, expire);
+			memMarket.set(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET, true, expire);
 		}
 		
 		// print results

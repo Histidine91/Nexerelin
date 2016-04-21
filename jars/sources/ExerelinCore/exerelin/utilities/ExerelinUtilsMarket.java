@@ -15,6 +15,7 @@ import com.fs.starfarer.api.util.Misc;
 import data.scripts.campaign.econ.Exerelin_Hydroponics;
 import data.scripts.campaign.econ.Exerelin_RecyclingPlant;
 import data.scripts.campaign.econ.Exerelin_SupplyWorkshop;
+import java.lang.reflect.Field;
 import java.util.List;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -110,29 +111,34 @@ public class ExerelinUtilsMarket {
 		return Misc.getDistance(primary1.getLocationInHyperspace(), primary2.getLocationInHyperspace());
 	}
 	
-	// the fancy bits (currently commented out) are adapted from LazyWizard's Console Commands
-	public static void forceMarketUpdate(MarketAPI market)
+	// the fancy bits are adapted from LazyWizard's Console Commands
+	public static void refreshMarket(MarketAPI market, boolean force)
 	{
 		if (market.getFactionId().equals("templars"))	// doesn't work on Templars, sorry
 			return;
 		
-		/*
 		boolean canUpdate = true;
 		final Field sinceLastCargoUpdate, minCargoUpdateInterval;
-		try
-		{
-			sinceLastCargoUpdate = BaseSubmarketPlugin.class.getDeclaredField("sinceLastCargoUpdate");
-			sinceLastCargoUpdate.setAccessible(true);
-			minCargoUpdateInterval = BaseSubmarketPlugin.class.getDeclaredField("minCargoUpdateInterval");
-			minCargoUpdateInterval.setAccessible(true);
+		if (force) {
+			try
+			{
+				sinceLastCargoUpdate = BaseSubmarketPlugin.class.getDeclaredField("sinceLastCargoUpdate");
+				sinceLastCargoUpdate.setAccessible(true);
+				minCargoUpdateInterval = BaseSubmarketPlugin.class.getDeclaredField("minCargoUpdateInterval");
+				minCargoUpdateInterval.setAccessible(true);
+			}
+			catch (Exception ex)	// bah
+			{
+				Global.getLogger(ExerelinUtilsMarket.class).error(ex);
+				return;
+			}
 		}
-		catch (Exception ex)	// bah
-		{
-			log.error(ex);
-			return;
+		else {
+			sinceLastCargoUpdate = null;
+			minCargoUpdateInterval = null;
 		}
 		if (!canUpdate) return;
-		*/
+		
 		
 		for (SubmarketAPI submarket : market.getSubmarketsCopy())
 		{
@@ -143,19 +149,22 @@ public class ExerelinUtilsMarket {
 			if (submarket.getPlugin() instanceof BaseSubmarketPlugin)
 			{
 				final BaseSubmarketPlugin plugin = (BaseSubmarketPlugin) submarket.getPlugin();
-				/*
-				try
-				{
-					float lastUpdate = sinceLastCargoUpdate.getFloat(plugin);
-					float minUpdateInterval = minCargoUpdateInterval.getFloat(plugin);
-					if (lastUpdate > minUpdateInterval)
-					sinceLastCargoUpdate.setFloat(plugin, minUpdateInterval + 1);
+				
+				if (force)
+				{ 
+					try
+					{
+						float lastUpdate = sinceLastCargoUpdate.getFloat(plugin);
+						float minUpdateInterval = minCargoUpdateInterval.getFloat(plugin);
+						if (lastUpdate > minUpdateInterval)
+						sinceLastCargoUpdate.setFloat(plugin, minUpdateInterval + 1);
+					}
+					catch (Exception ex)	// meh
+					{
+						Global.getLogger(ExerelinUtilsMarket.class).error(ex);
+						continue;
+					}
 				}
-				catch (Exception ex)	// meh
-				{
-					continue;
-				}
-				*/
 				
 				plugin.updateCargoPrePlayerInteraction();
 			}
@@ -170,8 +179,8 @@ public class ExerelinUtilsMarket {
 			mult = mult * MathUtils.getRandomNumberInRange(1 - variance, 1 + variance);
 		commodity.removeFromAverageStockpile(avg * mult);
 		commodity.removeFromStockpile(current * mult);
-		Global.getLogger(ExerelinUtilsMarket.class).info("Destroyed " + avg * mult + " of " + commodity.getId() 
-				+ " on " + market.getName() + " (mult " + mult + ")");
+		Global.getLogger(ExerelinUtilsMarket.class).info("Destroyed " + String.format("%.1f", avg * mult) + " of " + commodity.getId() 
+				+ " on " + market.getName() + " (mult " + String.format("%.2f", mult) + ")");
 	}
 	
 	public static void destroyCommodityStocks(MarketAPI market, String commodityId, float mult, float variance)

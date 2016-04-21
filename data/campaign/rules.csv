@@ -1084,7 +1084,7 @@ ExerelinSuperweaponProceed,DialogOptionSelected,"$option == exerelinSuperweaponP
 $hasMarket ","Wait $global.exerelinSuperweaponWait 0.5 $global.exerelinSuperweaponComplete $global.exerelinSuperweaponInterrupted $global.exerelinSuperweaponInProgress ""Deploying superweapon!""
 BroadcastPlayerWaitAction $global.exerelinSuperweaponWait HOSTILE 750 $exerelinRespondingToSuperweapon
 MakePlayerImmediatelyAttackable
-$TriggerResponseFleet = false 0
+TriggerResponseFleet
 $player.superweaponTarget = $id 1.01
 CreateWarmongerEvent $faction.id
 AdjustRep $faction.id COMBAT_NORMAL",,,

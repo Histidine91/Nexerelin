@@ -192,7 +192,7 @@
 	},
 	"exerelin_superweapon":{
 		"crText":"Superweapon used",
-		"stabilityText":"Planetbreaker",
+		"stabilityText":"Planet buster",
 		
 		"successText":"The missile scores a direct hit! $market has taken severe damage.",
 		"stabilityPenaltyReport":"Stability penalty: $stability",
