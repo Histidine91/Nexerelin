@@ -26,7 +26,7 @@ import java.util.Map;
 public class SuperweaponEvent extends BaseEventPlugin {
 
 	public static final float DAYS_PER_STAGE = 20f;
-	public static final float REPUTATION_PENALTY_BASE = -0.02f;
+	public static final float REPUTATION_PENALTY_BASE = 0.02f;
 	
 	protected float elapsedDays = 0f;
 	protected int stabilityPenalty = 0;
@@ -185,7 +185,7 @@ public class SuperweaponEvent extends BaseEventPlugin {
 		repPenalty = market.getSize() * REPUTATION_PENALTY_BASE * 2;
 		RepLevel worst = RepLevel.HOSTILE;
 		if (market.getSize() >= 5) worst = RepLevel.VENGEFUL;
-		repPenalty = DiplomacyManager.adjustRelations(targetFaction, attackerFaction, repPenalty, worst, null, null).delta;
+		repPenalty = DiplomacyManager.adjustRelations(targetFaction, attackerFaction, -repPenalty, worst, null, null).delta;
 		
 		lastAttackerFaction = attackerFaction;
 		
