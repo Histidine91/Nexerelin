@@ -1,6 +1,8 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import data.scripts.ExerelinModPlugin;
 import exerelin.campaign.AllianceManager.Alignment;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -197,10 +199,17 @@ public class ExerelinFactionConfig
         getStartShipTypeIfAvailable(settings, "startShipsTradeLargeSSP", StartFleetType.TRADE_LARGE_SSP);
     }
     
+    // FIXME: implement dynamic system?
     public List<String> getStartShipsForType(String typeStr, boolean allowFallback)
     {
         StartFleetType type = StartFleetType.valueOf(typeStr.toUpperCase());
-        if (ExerelinUtils.isSSPInstalled())
+        boolean useSSPShips = ExerelinUtils.isSSPInstalled();
+        if (factionId.equals(Factions.PIRATES))
+            useSSPShips = useSSPShips || ExerelinModPlugin.HAVE_UNDERWORLD;
+        else
+            useSSPShips = useSSPShips || ExerelinModPlugin.HAVE_SWP;
+        
+        if (useSSPShips)
         {
             StartFleetType typeSSP = StartFleetType.valueOf((typeStr + "_SSP").toUpperCase());
             if (startShips.containsKey(typeSSP))
