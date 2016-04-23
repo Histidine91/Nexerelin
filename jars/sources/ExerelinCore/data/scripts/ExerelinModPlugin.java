@@ -34,6 +34,9 @@ public class ExerelinModPlugin extends BaseModPlugin
 {
     // call order: onNewGame -> onNewGameAfterEconomyLoad -> onEnabled -> onNewGameAfterTimePass -> onGameLoad
     public static final boolean HAVE_SSP = Global.getSettings().getModManager().isModEnabled("dr_ssp");
+	public static final boolean HAVE_SWP = Global.getSettings().getModManager().isModEnabled("swp");
+	public static final boolean HAVE_DYNASECTOR = Global.getSettings().getModManager().isModEnabled("dynasector");
+	public static final boolean HAVE_UNDERWORLD = Global.getSettings().getModManager().isModEnabled("underworld");
     
     protected static boolean isNewGame = false;
     
@@ -149,12 +152,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_insurance", null);
-        }
-        if (SectorManager.getHardMode() && ExerelinUtils.isSSPInstalled())
-        {
-            //if (!Global.getSector().getEventManager().isOngoing(null, "player_bounty")) {
-            //    Global.getSector().getEventManager().startEvent(null, "player_bounty", null);
-            //}
         }
         
         reverseCompatibility();

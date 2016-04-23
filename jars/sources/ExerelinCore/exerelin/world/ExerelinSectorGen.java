@@ -33,6 +33,7 @@ import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.ExerelinModPlugin;
 import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
@@ -198,7 +199,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			starBackgrounds.add("AIWar/backgrounds/gemstone_alt.jpg");
 		}
-		if (ExerelinUtils.isSSPInstalled())
+		if (ExerelinUtils.isSSPInstalled() || ExerelinModPlugin.HAVE_SWP)
 		{
 			starBackgrounds.add("ssp/backgrounds/ssp_arcade.png");
 			starBackgrounds.add("ssp/backgrounds/ssp_atopthemountain.jpg");
@@ -695,7 +696,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		
 		// add Cabal submarkets
-		if (ExerelinUtils.isSSPInstalled())
+		if (ExerelinUtils.isSSPInstalled() || ExerelinModPlugin.HAVE_UNDERWORLD)
 		{
 			List<MarketAPI> cabalCandidates = new ArrayList<>();
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())

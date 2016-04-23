@@ -13,6 +13,7 @@ import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.loading.FleetCompositionDoctrineAPI;
+import data.scripts.ExerelinModPlugin;
 import data.scripts.campaign.SSP_FleetFactory;
 import data.scripts.variants.SSP_VariantRandomizer;
 import data.scripts.campaign.fleets.SSP_FleetInjector;
@@ -21,6 +22,8 @@ import data.scripts.campaign.fleets.SSP_FleetInjector.CrewType;
 import data.scripts.campaign.fleets.SSP_FleetInjector.FleetStyle;
 import static data.scripts.campaign.fleets.SSP_FleetInjector.getArchetypeWeights;
 import static data.scripts.campaign.fleets.SSP_FleetInjector.randomizeVariants;
+import exerelin.campaign.fleets.DSEnhancedCreateFleetProxy;
+import exerelin.campaign.fleets.SWPEnhancedCreateFleetProxy;
 import org.apache.log4j.Logger;
 
 
@@ -85,73 +88,82 @@ public class ExerelinUtilsFleet
         fleet.getFleetData().addFleetMember(miner);
         return miner;
     }
-	
-	/**
-	 * Makes a fleet where larger fleets prefer big ships over small ones (taken from SS+)
-	 * @param faction
-	 * @param params
-	 * @return 
-	 */
-	public static CampaignFleetAPI createFleetWithSSPDoctrineHax(FactionAPI faction, FleetParams params) {
-		if (!ExerelinUtils.isSSPInstalled()) {
-			return FleetFactoryV2.createFleet(params);
-		}
+    
+    /**
+     * Makes a fleet where larger fleets prefer big ships over small ones (taken from SS+)
+     * @param faction
+     * @param params
+     * @return 
+     */
+    public static CampaignFleetAPI createFleetWithSSPDoctrineHax(FactionAPI faction, FleetParams params) {
+        int total = (int)(params.combatPts + params.tankerPts + params.freighterPts);
+        
+        if (ExerelinModPlugin.HAVE_SWP) {
+            return SWPEnhancedCreateFleetProxy.enhancedCreateFleet(faction, params, total);
+        }
+        
+        if (ExerelinModPlugin.HAVE_DYNASECTOR) {
+            return DSEnhancedCreateFleetProxy.enhancedCreateFleet(faction, params, total);
+        }
+        
+        if (ExerelinUtils.isSSPInstalled() ) {
+            FleetCompositionDoctrineAPI doctrine = faction.getCompositionDoctrine();
+            float preInterceptors = doctrine.getInterceptors();
+            float preFighters = doctrine.getFighters();
+            float preBombers = doctrine.getBombers();
+            float preSmall = doctrine.getSmall();
+            float preFast = doctrine.getFast();
+            float preMedium = doctrine.getMedium();
+            float preLarge = doctrine.getLarge();
+            float preCapital = doctrine.getCapital();
+            float preSmallCarrierProbability = doctrine.getSmallCarrierProbability();
+            float preMediumCarrierProbability = doctrine.getMediumCarrierProbability();
+            float preLargeCarrierProbability = doctrine.getLargeCarrierProbability();
 
-		FleetCompositionDoctrineAPI doctrine = faction.getCompositionDoctrine();
-		float preInterceptors = doctrine.getInterceptors();
-		float preFighters = doctrine.getFighters();
-		float preBombers = doctrine.getBombers();
-		float preSmall = doctrine.getSmall();
-		float preFast = doctrine.getFast();
-		float preMedium = doctrine.getMedium();
-		float preLarge = doctrine.getLarge();
-		float preCapital = doctrine.getCapital();
-		float preSmallCarrierProbability = doctrine.getSmallCarrierProbability();
-		float preMediumCarrierProbability = doctrine.getMediumCarrierProbability();
-		float preLargeCarrierProbability = doctrine.getLargeCarrierProbability();
+            if (total > 25 && total <= 50) {
+                doctrine.setInterceptors(preInterceptors * 0.5f);
+                doctrine.setFighters(preFighters * 0.5f);
+                doctrine.setBombers(preBombers * 0.5f);
+                doctrine.setSmall(preSmall * 0.5f);
+                doctrine.setFast(preFast * 0.5f);
+                doctrine.setMedium(preMedium);
+                doctrine.setLarge(preLarge * 1.25f);
+                doctrine.setCapital(preCapital * 1.5f);
+                doctrine.setSmallCarrierProbability(preSmallCarrierProbability * 0.8f);
+                doctrine.setMediumCarrierProbability(preMediumCarrierProbability * 0.9f);
+                doctrine.setLargeCarrierProbability(preLargeCarrierProbability);
+            } else if (total > 50) {
+                doctrine.setInterceptors(preInterceptors * 0.25f);
+                doctrine.setFighters(preFighters * 0.25f);
+                doctrine.setBombers(preBombers * 0.25f);
+                doctrine.setSmall(preSmall * 0.25f);
+                doctrine.setFast(preFast * 0.25f);
+                doctrine.setMedium(preMedium * 0.75f);
+                doctrine.setLarge(preLarge);
+                doctrine.setCapital(preCapital * 1.25f);
+                doctrine.setSmallCarrierProbability(preSmallCarrierProbability * 0.5f);
+                doctrine.setMediumCarrierProbability(preMediumCarrierProbability * 0.65f);
+                doctrine.setLargeCarrierProbability(preLargeCarrierProbability * 0.8f);
+            }
+            CampaignFleetAPI fleet = FleetFactoryV2.createFleet(params);
 
-		float total = params.combatPts + params.tankerPts + params.freighterPts;
-		if (total > 25 && total <= 50) {
-			doctrine.setInterceptors(preInterceptors * 0.5f);
-			doctrine.setFighters(preFighters * 0.5f);
-			doctrine.setBombers(preBombers * 0.5f);
-			doctrine.setSmall(preSmall * 0.5f);
-			doctrine.setFast(preFast * 0.5f);
-			doctrine.setMedium(preMedium);
-			doctrine.setLarge(preLarge * 1.25f);
-			doctrine.setCapital(preCapital * 1.5f);
-			doctrine.setSmallCarrierProbability(preSmallCarrierProbability * 0.8f);
-			doctrine.setMediumCarrierProbability(preMediumCarrierProbability * 0.9f);
-			doctrine.setLargeCarrierProbability(preLargeCarrierProbability);
-		} else if (total > 50) {
-			doctrine.setInterceptors(preInterceptors * 0.25f);
-			doctrine.setFighters(preFighters * 0.25f);
-			doctrine.setBombers(preBombers * 0.25f);
-			doctrine.setSmall(preSmall * 0.25f);
-			doctrine.setFast(preFast * 0.25f);
-			doctrine.setMedium(preMedium * 0.75f);
-			doctrine.setLarge(preLarge);
-			doctrine.setCapital(preCapital * 1.25f);
-			doctrine.setSmallCarrierProbability(preSmallCarrierProbability * 0.5f);
-			doctrine.setMediumCarrierProbability(preMediumCarrierProbability * 0.65f);
-			doctrine.setLargeCarrierProbability(preLargeCarrierProbability * 0.8f);
-		}
-		CampaignFleetAPI fleet = FleetFactoryV2.createFleet(params);
+            doctrine.setInterceptors(preInterceptors);
+            doctrine.setFighters(preFighters);
+            doctrine.setBombers(preBombers);
+            doctrine.setSmall(preSmall);
+            doctrine.setFast(preFast);
+            doctrine.setMedium(preMedium);
+            doctrine.setLarge(preLarge);
+            doctrine.setCapital(preCapital);
+            doctrine.setSmallCarrierProbability(preSmallCarrierProbability);
+            doctrine.setMediumCarrierProbability(preMediumCarrierProbability);
+            doctrine.setLargeCarrierProbability(preLargeCarrierProbability);
 
-		doctrine.setInterceptors(preInterceptors);
-		doctrine.setFighters(preFighters);
-		doctrine.setBombers(preBombers);
-		doctrine.setSmall(preSmall);
-		doctrine.setFast(preFast);
-		doctrine.setMedium(preMedium);
-		doctrine.setLarge(preLarge);
-		doctrine.setCapital(preCapital);
-		doctrine.setSmallCarrierProbability(preSmallCarrierProbability);
-		doctrine.setMediumCarrierProbability(preMediumCarrierProbability);
-		doctrine.setLargeCarrierProbability(preLargeCarrierProbability);
-		
-		return fleet;
-	}
+            return fleet;
+        }
+
+        return FleetFactoryV2.createFleet(params);
+    }
 
     public static void sortByFleetCost(CampaignFleetAPI fleet)
     {

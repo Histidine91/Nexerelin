@@ -20,6 +20,7 @@ import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.ExerelinModPlugin;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -40,6 +41,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     //public static final int MAX_WEAPONS = 27;
     public static final RepLevel MIN_STANDING = RepLevel.NEUTRAL;
     public static final String IBB_FILE = "data/config/prism/prism_boss_ships.csv";
+    public static final String IBB_FILE_LEGACY = "data/config/prism/prism_boss_ships_legacy.csv";
     public static final String SHIPS_BLACKLIST = "data/config/prism/prism_ships_blacklist.csv";
     public static final String WEAPONS_BLACKLIST = "data/config/prism/prism_weapons_blacklist.csv";
     public static final String ILLEGAL_TRANSFER_MESSAGE = StringHelper.getString("exerelin_markets", "prismNoSale");
@@ -50,6 +52,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
     protected static Set<String> restrictedShips;
     
     public Set<String> alreadyBoughtShips = new HashSet<>();
+    
+    public static String getIBBFile() {
+        if (ExerelinModPlugin.HAVE_SWP)
+            return IBB_FILE;    // assume we want the newer one
+        return IBB_FILE_LEGACY;
+    }
     
     @Override
     public void init(SubmarketAPI submarket) {
@@ -229,7 +237,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public Set<String> getAllBossShips() {
         Set<String> bossShips = new HashSet<>();
         try {
-            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", IBB_FILE, "nexerelin");
+            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", getIBBFile(), "nexerelin");
             for(int i = 0; i < config.length(); i++) {
             
                 JSONObject row = config.getJSONObject(i);
@@ -268,7 +276,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         int highestIBBNum = 0;
         
         try {
-            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", IBB_FILE, "nexerelin");
+            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", getIBBFile(), "nexerelin");
             for(int i = 0; i < config.length(); i++) {
             
                 JSONObject row = config.getJSONObject(i);
@@ -323,7 +331,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     //SS+ present
     public boolean canLoadShips(String factionId) {
         if (factionId.equals("ssp")){
-            return ExerelinUtils.isSSPInstalled();
+            return ExerelinUtils.isSSPInstalled() || ExerelinModPlugin.HAVE_SWP;
         }
         return Global.getSector().getFaction(factionId) != null;
     }
