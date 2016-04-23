@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import data.scripts.campaign.SWP_FleetFactory;
 
-public class SWPEnhancedCreateFleetProxy {
+public class SWPFleetUtilsProxy {
 	
 	public static CampaignFleetAPI enhancedCreateFleet(FactionAPI faction, FleetParams params, int total) {
 		final FleetParams params2 = params;
