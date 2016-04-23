@@ -25,6 +25,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import exerelin.campaign.events.MarketAttackedEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.ArrayList;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -53,6 +54,9 @@ public class InvasionRound {
 	public static final float MARINE_LOSS_RANDOM_MOD = 0.1f;
 	public static final float MARINE_LOSS_RAID_MULT = 0.5f;
 	public static final int BASE_DESTABILIZATION = 3;
+	public static final float COMMODITY_DESTRUCTION_MULT_SUCCESS = 0.2f;
+	public static final float COMMODITY_DESTRUCTION_MULT_FAILURE = 0.1f;
+	public static final float COMMODITY_DESTRUCTION_VARIANCE = 0.2f;
 	
 	/**
 	* PESSIMISTIC and OPTIMISTIC are used for prediction;
@@ -302,8 +306,6 @@ public class InvasionRound {
 		
 		boolean captured = false;
 		boolean success = result.getSuccess();
-		
-		// TODO destroy commodity stockpiles as well
 
 		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_market_attacked");
 		if (eventSuper == null) 
@@ -314,7 +316,7 @@ public class InvasionRound {
 		if ((isRaid && success) || (!isRaid && !success))
 		{
 			if (currentPenalty < BASE_DESTABILIZATION)
-			event.increaseStabilityPenalty(1);
+				event.increaseStabilityPenalty(1);
 		}
 		else if (!isRaid && success)
 		{
@@ -322,10 +324,17 @@ public class InvasionRound {
 			{
 				event.increaseStabilityPenalty(BASE_DESTABILIZATION);
 				if (event.getStabilityPenalty() > BASE_DESTABILIZATION + 1)
-				event.setStabilityPenalty(BASE_DESTABILIZATION + 1);
+					event.setStabilityPenalty(BASE_DESTABILIZATION + 1);
 			}
 			else event.increaseStabilityPenalty(1);
 		}
+		
+		if (success) {
+			ExerelinUtilsMarket.destroyAllCommodityStocks(market, COMMODITY_DESTRUCTION_MULT_SUCCESS, COMMODITY_DESTRUCTION_VARIANCE);
+		} else {
+			ExerelinUtilsMarket.destroyAllCommodityStocks(market, COMMODITY_DESTRUCTION_MULT_FAILURE, COMMODITY_DESTRUCTION_VARIANCE);
+		}
+		ExerelinUtilsMarket.refreshMarket(market, true);
 		
 		CargoAPI attackerCargo = attacker.getCargo();
 		attackerCargo.removeMarines(result.getMarinesLost());
