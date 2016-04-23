@@ -63,7 +63,7 @@ public class AgentDestabilizeMarketEventForCondition extends BaseEventPlugin {
 	}
 	
 	protected boolean ended = false;
-	protected void endEvent() {
+	public void endEvent() {
 		if (market != null && conditionToken != null) {
 			market.removeSpecificCondition(conditionToken);
 		}

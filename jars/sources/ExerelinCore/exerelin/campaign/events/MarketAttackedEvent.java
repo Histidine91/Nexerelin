@@ -52,8 +52,8 @@ public class MarketAttackedEvent extends BaseEventPlugin {
 		}
 	}
 	
-	private boolean ended = false;
-	private void endEvent() {
+	protected boolean ended = false;
+	public void endEvent() {
 		if (market != null && conditionToken != null) {
 			market.removeSpecificCondition(conditionToken);
 		}
