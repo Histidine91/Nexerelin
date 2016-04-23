@@ -87,44 +87,6 @@ public class ExerelinUtils
         return false;
     }
 
-	// FIXME
-	@Deprecated//
-	public static SectorEntityToken getRandomOffMapPoint(LocationAPI location)
-	{
-		int edge = ExerelinUtils.getRandomInRange(0, 3);
-		int x = 0;
-		int y = 0;
-		int maxSize = 16000;	//0; //SectorManager.getCurrentSectorManager().getMaxSystemSize();
-        //if(SectorManager.getCurrentSectorManager() == null) //TODO - Fix when rework is complete or 'frame advance running before onGameLoad' bug is fixed
-        //    maxSize = 16000;
-        //else
-        //    maxSize = SectorManager.getCurrentSectorManager().getMaxSystemSize();
-
-		int negativeMaxSize = -1 * maxSize;
-
-		if(edge == 0)
-			x = maxSize;
-		else if(edge == 1)
-			x = negativeMaxSize;
-		else if(edge == 2)
-			y = maxSize;
-		else if(edge == 3)
-			y = negativeMaxSize;
-
-		if(x == 0)
-			x = ExerelinUtils.getRandomInRange(negativeMaxSize, maxSize);
-
-		if(y == 0)
-			y = ExerelinUtils.getRandomInRange(negativeMaxSize, maxSize);
-
-		return location.createToken(x, y);
-	}
-
-	public static String getStationOwnerFactionId(SectorEntityToken stationToken)
-	{
-        return stationToken.getFaction().getId();
-	}
-
     public static MarketAPI getClosestMarket(String factionId)
     {
         List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
@@ -145,58 +107,8 @@ public class ExerelinUtils
         }
         return closestMarket;
     }
-    
-	public static void decreaseCargo(CargoAPI cargo, String type, int quantity)
-	{
-		if(type.equalsIgnoreCase("crewRegular"))
-		{
-			cargo.removeCrew(CargoAPI.CrewXPLevel.REGULAR,  quantity);
-			if(cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR) < 0)
-				cargo.addCrew(CargoAPI.CrewXPLevel.REGULAR, cargo.getCrew(CargoAPI.CrewXPLevel.REGULAR)*-1);
-		}
-		else if(type.equalsIgnoreCase("fuel"))
-		{
-			cargo.removeFuel(quantity) ;
-			if(cargo.getFuel() < 0)
-				cargo.addFuel(cargo.getFuel() * -1) ;
-		}
-		else if(type.equalsIgnoreCase("supplies"))
-		{
-			cargo.removeSupplies(quantity) ;
-			if(cargo.getSupplies() < 0)
-				cargo.addSupplies(cargo.getSupplies() * -1) ;
-		}
-		else if(type.equalsIgnoreCase("marines"))
-		{
-			cargo.removeMarines(quantity) ;
-			if(cargo.getMarines() < 0)
-				cargo.addMarines(cargo.getMarines() * -1) ;
-		}
-		else
-		{
-			System.out.println("EXERELIN ERROR: Invalid cargo type to remove: " + type);
-		}
-	}
 	
-	// FIXME: Returns a factions crew xp level
 	@Deprecated
-    public static CargoAPI.CrewXPLevel getCrewXPLevelForFaction(String factionId)
-    {
-        if(factionId.equalsIgnoreCase(PlayerFactionStore.getPlayerFactionId()))
-        {
-            float crewUpgradeChance = 0;	//ExerelinUtilsPlayer.getPlayerFactionFleetCrewExperienceBonus() + (float)ExerelinConfig.getExerelinFactionConfig(factionId).crewExpereinceLevelIncreaseChance;
-            if(MathUtils.getRandomNumberInRange(0, 99) <= -1 + crewUpgradeChance*100)
-                return CargoAPI.CrewXPLevel.VETERAN;
-        }
-        else if(ExerelinConfig.getExerelinFactionConfig(factionId).crewExpereinceLevelIncreaseChance > 0)
-        {
-            if(MathUtils.getRandomNumberInRange(0, 99) <= -1 + ExerelinConfig.getExerelinFactionConfig(factionId).crewExpereinceLevelIncreaseChance*100)
-                return CargoAPI.CrewXPLevel.VETERAN;
-        }
-
-        return CargoAPI.CrewXPLevel.REGULAR;
-    }
-
     public static void mergeFleets(CampaignFleetAPI mainFleet, CampaignFleetAPI fleetToMerge)
     {
         List members = fleetToMerge.getFleetData().getMembersListCopy();
@@ -225,6 +137,7 @@ public class ExerelinUtils
         return MathUtils.getDistanceSquared(system.getLocation(), otherSystem.getLocation());
     }
 
+    @Deprecated
     public static StarSystemAPI getClosestSystemForFaction(StarSystemAPI system, String factionId, float minRelationship, float maxRelationship)
     {
         float bestDistance = 99999999999f;
@@ -251,6 +164,7 @@ public class ExerelinUtils
         return bestSystem;
     }
 
+    @Deprecated
     public static StarSystemAPI getClosestSystemWithFaction(StarSystemAPI system, String factionId)
     {
         float bestDistance = 99999999999f;
@@ -277,6 +191,7 @@ public class ExerelinUtils
         return bestSystem;
     }
 
+    @Deprecated
     public static SectorEntityToken getClosestEntityToSystemEntrance(StarSystemAPI system, String factionId, float minRelationship, float maxRelationship)
     {
         if(system.getHyperspaceAnchor() == null)
@@ -316,6 +231,7 @@ public class ExerelinUtils
         return ((StarSystemAPI)Global.getSector().getPlayerFleet().getContainingLocation()).getName().equalsIgnoreCase(starSystemAPI.getName());
     }
 
+    @Deprecated
     public static boolean isFactionPresentInSystem(String factionId, StarSystemAPI starSystemAPI)
     {
         for(int i = 0; i < starSystemAPI.getOrbitalStations().size(); i++)
@@ -325,7 +241,7 @@ public class ExerelinUtils
         }
         return false;
     }
-	
+    
     public static boolean isSSPInstalled()
     {
         return ExerelinModPlugin.HAVE_SSP;
@@ -400,6 +316,4 @@ public class ExerelinUtils
         }
         return list;
     }
-    
-    
 }
