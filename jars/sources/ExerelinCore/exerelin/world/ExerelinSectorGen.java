@@ -118,7 +118,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final float STAR_RANDOM_OFFSET = 100;
 	
 	// this proportion of TT markets with no military bases will have Cabal submarkets (SS+)
-	protected static final float CABAL_MARKET_MULT = 0.25f;	
+	protected static final float CABAL_MARKET_MULT = 0.4f;	
+	// this is the chance a market with a military base will still be a candidate for Cabal markets
+	protected static final float CABAL_MILITARY_MARKET_CHANCE = 0.5f;
 	
 	protected ExerelinMarketSetup marketSetup;
 	
@@ -422,11 +424,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		*/
 
 		MarketAPI market = Global.getFactory().createMarket("prismFreeport" /*+ "_market"*/, "Prism Freeport", 5);
-		market.setFactionId("independent");
+		market.setFactionId(Factions.INDEPENDENT);
 		market.addCondition(Conditions.POPULATION_5);
 		market.addCondition(Conditions.SPACEPORT);
 		market.addCondition("exerelin_recycling_plant");
 		//market.addCondition("exerelin_recycling_plant");
+		market.addCondition("exerelin_supply_workshop");
 		market.addCondition("exerelin_hydroponics");
 		market.addCondition("exerelin_hydroponics");
 		market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
@@ -447,7 +450,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.addSubmarket("exerelin_prismMarket");
 		market.setPrimaryEntity(prismEntity);
 		prismEntity.setMarket(market);
-		prismEntity.setFaction("independent");
+		prismEntity.setFaction(Factions.INDEPENDENT);
 		sector.getEconomy().addMarket(market);
 		
 		//pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
@@ -542,7 +545,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.addCondition(Conditions.SHIPBREAKING_CENTER);
 		
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
-		market.addSubmarket(Submarkets.GENERIC_MILITARY);
+		market.addSubmarket(Submarkets.GENERIC_cabal);
 		market.addSubmarket("tiandong_retrofit");
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
@@ -702,7 +705,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 			{
 				if (!market.getFactionId().equals(Factions.TRITACHYON)) continue;
-				if (market.hasCondition(Conditions.MILITARY_BASE)) continue;
+				if (market.hasCondition(Conditions.MILITARY_BASE) && Math.random() > CABAL_MILITARY_MARKET_CHANCE) 
+					continue;
 				
 				//log.info("Cabal candidate added: " + market.getName() + " (size " + market.getSize() + ")");
 				cabalCandidates.add(market);
@@ -725,7 +729,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				for (int i=0; i<cabalCandidates.size()*CABAL_MARKET_MULT; i++)
 				{
 					MarketAPI market = cabalCandidates.get(i);
-					market.addSubmarket("ssp_cabalmarket");
+					if (ExerelinModPlugin.HAVE_UNDERWORLD)
+						market.addSubmarket("uw_cabalmarket");
+					else
+						market.addSubmarket("ssp_cabalmarket");
 					log.info("Added Cabal submarket to " + market.getName() + " (size " + market.getSize() + ")");
 				}
 			} catch (RuntimeException rex) {
