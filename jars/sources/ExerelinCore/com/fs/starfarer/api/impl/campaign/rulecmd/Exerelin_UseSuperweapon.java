@@ -28,7 +28,9 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 	public static final float STOCKPILE_DESTRUCTION_BASE_MULT = 0.80f;
 	public static final float STOCKPILE_DESTRUCTION_SIZE_DIV_MULT = 0.5f;
 	public static final float STOCKPILE_DESTRUCTION_VARIANCE = 0.25f;
-	public static final int STABILITY_BASE_PENALTY = 6;
+	public static final int STABILITY_BASE_PENALTY = 7;
+	public static final float STABILITY_SIZE_DIVISOR = 3f;
+	public static final int STABILITY_MAX_SIZE_REDUCTION = 3;
 	
 	public static Logger log = Global.getLogger(Exerelin_UseSuperweapon.class);
 	
@@ -94,7 +96,10 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 		float destructionMult = STOCKPILE_DESTRUCTION_BASE_MULT / (STOCKPILE_DESTRUCTION_SIZE_DIV_MULT * size);
 		ExerelinUtilsMarket.destroyAllCommodityStocks(market, destructionMult, STOCKPILE_DESTRUCTION_VARIANCE);
 		
-		int stabilityPenalty = STABILITY_BASE_PENALTY - (int)(size/2f);
+		int reduction = (int)(size / STABILITY_SIZE_DIVISOR);
+		if (reduction > STABILITY_MAX_SIZE_REDUCTION)
+			reduction = STABILITY_MAX_SIZE_REDUCTION;
+		int stabilityPenalty = STABILITY_BASE_PENALTY - reduction;
 		
 		SectorAPI sector = Global.getSector();
 		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_superweapon");
