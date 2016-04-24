@@ -242,6 +242,7 @@ public class ExerelinUtils
         return false;
     }
     
+    // FIXME: distinguish between legacy and new SSP
     public static boolean isSSPInstalled()
     {
         return ExerelinModPlugin.HAVE_SSP;

@@ -20,7 +20,9 @@ public class ExerelinCoreScript extends CoreScript {
 	@Override
 	public void assignPatrolSpawningScripts() {
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-			if (SharedData.getData().getMarketsWithoutPatrolSpawn().contains(market.getId())) continue;
+			String id = market.getId();
+			
+			if (SharedData.getData().getMarketsWithoutPatrolSpawn().contains(id)) continue;
 			
 			//if (market.getFactionId().equals(Factions.PIRATES)) continue;
 			
@@ -28,10 +30,7 @@ public class ExerelinCoreScript extends CoreScript {
 			{
 				ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 				if (factionConfig == null || !factionConfig.spawnPatrols) continue;
-			}
-			
-			String id = market.getId();
-			
+			}	
 			
 			if (marketsWithAssignedPatrolScripts.contains(id)) continue;
 			marketsWithAssignedPatrolScripts.add(id);
