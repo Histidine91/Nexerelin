@@ -6,6 +6,8 @@ import com.fs.starfarer.api.campaign.CampaignMissionPlugin;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.MissionBoardAPI;
 import com.fs.starfarer.api.campaign.MissionBoardAPI.MissionAvailabilityAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -29,6 +32,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 	public static final float DURATION_MULT = 15;
 	protected MissionBoardAPI board;
 	protected IntervalUtil tracker = new IntervalUtil(5, 7);
+	protected IntervalUtil trackerShort = new IntervalUtil(0.45f, 0.55f);
 	
 	public static Logger log = Global.getLogger(ConquestMissionCreator.class);
 	
@@ -130,8 +134,14 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		
 		ConquestMission mission = new ConquestMission(target, faction, duration, bonusDuration, reward, bonusReward);
 		log.info("Creating conquest mission: " + factionId + "," + target.getName());
-		for (MarketAPI market : ExerelinUtilsFaction.getFactionMarkets(factionId))
+		
+		//for (MarketAPI market : ExerelinUtilsFaction.getFactionMarkets(factionId))
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) 
 		{
+			if (!market.getFaction().isHostileTo(target.getFactionId()))
+				continue;
+			if (market.getFaction().isAtBest(faction, RepLevel.INHOSPITABLE))
+				continue;
 			if (market.hasCondition(Conditions.MILITARY_BASE) || market.hasCondition(Conditions.REGIONAL_CAPITAL) || market.hasCondition(Conditions.HEADQUARTERS))
 				board.makeAvailableAt(mission, market);
 		}
@@ -141,15 +151,49 @@ public class ConquestMissionCreator implements EveryFrameScript {
 	public void advance(float amount) {
 		float days = Global.getSector().getClock().convertToDays(amount);
 		tracker.advance(days);
-		if (!tracker.intervalElapsed())
-			return;
+		if (tracker.intervalElapsed()) {
+			List<String> factionsAtWar = getFactionsAtWar();
+			int maxConcurrent = factionsAtWar.size() * NUM_MISSIONS_PER_WAR;
+			int num = board.getNumMissions(ConquestMission.class);
+			if (num < maxConcurrent) {
+				createMission(factionsAtWar);
+			}
+		}
 		
-		List<String> factionsAtWar = getFactionsAtWar();
-		int maxConcurrent = factionsAtWar.size() * NUM_MISSIONS_PER_WAR;
-		int num = board.getNumMissions(ConquestMission.class);
-		if (num < maxConcurrent) {
-			createMission(factionsAtWar);
+		// reverse compatibility
+		if (trackerShort == null)
+			trackerShort = new IntervalUtil(0.45f,0.55f);
+		
+		trackerShort.advance(days);
+		if (trackerShort.intervalElapsed()) {
+			List<ConquestMission> toRemove = new ArrayList<>();
+			
+			List<MissionAvailabilityAPI> missions = board.getMissionsCopy();
+			for (MissionAvailabilityAPI mission : missions) {
+				if (mission.getMission() instanceof ConquestMission) {
+					ConquestMission cm = (ConquestMission)(mission.getMission());
+					FactionAPI targetFaction = cm.getTarget().getFaction();
+					if (!targetFaction.isHostileTo(cm.issuer))
+						toRemove.add(cm);
+					else {
+						Set<SectorEntityToken> tokens = mission.getAvailableAt();
+						List<SectorEntityToken> toDelist = new ArrayList<>();
+						for (SectorEntityToken token: tokens) {
+							if (!token.getFaction().isHostileTo(targetFaction) 
+									|| token.getFaction().isAtBest(cm.issuer, RepLevel.INHOSPITABLE))
+								toDelist.add(token);
+						}
+						
+						for (SectorEntityToken token : toDelist) {
+							board.makeUnavailableAt(cm, token);
+						}
+					}
+				}
+			}
+			
+			for (ConquestMission cm : toRemove) {
+				board.removeMission(cm, true);
+			}
 		}
 	}
-	
 }
