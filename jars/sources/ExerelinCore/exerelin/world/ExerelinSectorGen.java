@@ -110,6 +110,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			new String[] {"station_side00", "station_side02", "station_side04", "station_jangala_type"}));
 	
 	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
+	protected static final float LAGRANGE_ASTEROID_CHANCE = 0.5f;
 	protected static final float BINARY_STAR_DISTANCE = 13000;
 	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
 	protected static final float NEBULA_CHANCE = 0.35f;
@@ -1593,7 +1594,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 			
 			// add Lagrange asteroids
-			if (isGasGiant)
+			if (isGasGiant && Math.random() < LAGRANGE_ASTEROID_CHANCE)
 			{
 				SectorEntityToken l4asteroids = system.addTerrain(Terrain.ASTEROID_FIELD,
 					new AsteroidFieldTerrainPlugin.AsteroidFieldParams(
@@ -1716,8 +1717,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			else if (planet == star2) starBelts2.add(orbitRadius);
 			log.info("Added asteroid belt around " + planet.getName());
 		}
+		
 
 		// Always put an asteroid belt around the sun
+		/*
 		do {
 			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 10000 + star.getRadius());
 			float baseOrbitDays = getOrbitalPeriod(star, distance);
@@ -1748,6 +1751,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				starBelts1.add(distance);
 			}
 		} while (false);
+		*/
 		
 		for (EntityData entity : entities)
 		{
