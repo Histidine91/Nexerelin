@@ -66,7 +66,7 @@ public class VanillaSystemsGenerator {
 	
 	public static void initFactionRelationships(SectorAPI sector) {
 		
-		if (ExerelinUtils.isSSPInstalled()) {
+		if (ExerelinUtils.isSSPInstalled(true)) {
 			data.scripts.world.SectorGen.initFactionRelationships(sector);
 			return;
 		}

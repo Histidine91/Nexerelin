@@ -242,11 +242,16 @@ public class ExerelinUtils
         return false;
     }
     
-    // FIXME: distinguish between legacy and new SSP
-    public static boolean isSSPInstalled()
+    public static boolean isSSPInstalled(boolean legacyOnly)
     {
+		if (legacyOnly) return ExerelinModPlugin.HAVE_SSP_LEGACY;
         return ExerelinModPlugin.HAVE_SSP;
     }
+	
+	public static boolean isSSPInstalled()
+	{
+		return isSSPInstalled(false);
+	}
     
     public static String[] JSONArrayToStringArray(JSONArray jsonArray)
     {

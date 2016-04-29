@@ -201,13 +201,21 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			starBackgrounds.add("AIWar/backgrounds/gemstone_alt.jpg");
 		}
-		if (ExerelinUtils.isSSPInstalled() || ExerelinModPlugin.HAVE_SWP)
+		if (ExerelinUtils.isSSPInstalled(true))
 		{
 			starBackgrounds.add("ssp/backgrounds/ssp_arcade.png");
 			starBackgrounds.add("ssp/backgrounds/ssp_atopthemountain.jpg");
 			starBackgrounds.add("ssp/backgrounds/ssp_conflictofinterest.jpg");
 			starBackgrounds.add("ssp/backgrounds/ssp_corporateindirection.jpg");
 			starBackgrounds.add("ssp/backgrounds/ssp_overreachingexpansion.jpg");
+		}
+		if (ExerelinModPlugin.HAVE_SWP)
+		{
+			starBackgrounds.add("swp/backgrounds/swp_arcade.png");
+			starBackgrounds.add("swp/backgrounds/swp_atopthemountain.jpg");
+			starBackgrounds.add("swp/backgrounds/swp_conflictofinterest.jpg");
+			starBackgrounds.add("swp/backgrounds/swp_corporateindirection.jpg");
+			starBackgrounds.add("swp/backgrounds/swp_overreachingexpansion.jpg");
 		}
 		if (ExerelinUtilsFaction.doesFactionExist("templars"))
 		{
@@ -699,7 +707,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		
 		// add Cabal submarkets
-		if (ExerelinUtils.isSSPInstalled() || ExerelinModPlugin.HAVE_UNDERWORLD)
+		if (ExerelinUtils.isSSPInstalled(true) || ExerelinModPlugin.HAVE_UNDERWORLD)
 		{
 			List<MarketAPI> cabalCandidates = new ArrayList<>();
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
@@ -746,7 +754,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(new ExerelinCoreScript());
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		
-		if (!ExerelinUtils.isSSPInstalled())
+		if (!ExerelinUtils.isSSPInstalled(false))
 		{
 			sector.addScript(new CoreEventProbabilityManager());
 		}

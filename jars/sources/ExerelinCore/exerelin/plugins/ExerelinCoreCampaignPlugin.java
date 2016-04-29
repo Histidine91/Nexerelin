@@ -12,7 +12,6 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinUtils;
 import exerelin.campaign.MiningHelper;
 import exerelin.world.ResponseFleetManager;
 
@@ -37,27 +36,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 			return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
 		}
 		
-		if (!ExerelinUtils.isSSPInstalled()) return super.pickInteractionDialogPlugin(interactionTarget);
-		return null;
-	}
-	
-
-	@Override
-	public PluginPick<BattleAutoresolverPlugin> pickBattleAutoresolverPlugin(BattleAPI battle) {
-		if (!ExerelinUtils.isSSPInstalled()) return super.pickBattleAutoresolverPlugin(battle);
-		return null;
-	}
-	
-	@Override
-	public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(Object param, SectorEntityToken interactionTarget) {
-		if (!ExerelinUtils.isSSPInstalled()) return super.pickInteractionDialogPlugin(param, interactionTarget);
-		return null;
-	}
-
-	@Override
-	public PluginPick<ReputationActionResponsePlugin> pickReputationActionResponsePlugin(Object action, String factionId) {
-		if (!ExerelinUtils.isSSPInstalled()) return super.pickReputationActionResponsePlugin(action, factionId);
-		return null;
+		return super.pickInteractionDialogPlugin(interactionTarget);
 	}
 
 	@Override

@@ -203,7 +203,7 @@ public class ExerelinFactionConfig
     public List<String> getStartShipsForType(String typeStr, boolean allowFallback)
     {
         StartFleetType type = StartFleetType.valueOf(typeStr.toUpperCase());
-        boolean useSSPShips = ExerelinUtils.isSSPInstalled();
+        boolean useSSPShips = ExerelinUtils.isSSPInstalled(true);
         if (factionId.equals(Factions.PIRATES))
             useSSPShips = useSSPShips || ExerelinModPlugin.HAVE_UNDERWORLD;
         else
