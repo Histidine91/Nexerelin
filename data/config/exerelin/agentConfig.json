@@ -31,7 +31,7 @@
 	"sabotageReserveEffectMax":10.0,
 	"sabotageReserveRepLossOnDetectionMin":0.15,
 	"sabotageReserveRepLossOnDetectionMax":0.2,
-	"sabotageReserveSecurityLevelRise":0.25,
+	"sabotageReserveSecurityLevelRise":0.4,
 	
 	"sabotageDestroyFoodSuccessChance":0.65,
 	"sabotageDestroyFoodDetectionChance":0.2,
