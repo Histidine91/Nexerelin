@@ -34,7 +34,7 @@ public class ExerelinUtilsFleet
     public static void injectFleet(CampaignFleetAPI fleet, MarketAPI market, Float stability, Float qualityFactor, String type) {      
         if (ExerelinModPlugin.HAVE_DYNASECTOR)
             DSFleetUtilsProxy.injectFleet(fleet, market, stability, qualityFactor, type);
-        else if (ExerelinUtils.isSSPInstalled(false)) {
+        else if (ExerelinUtils.isSSPInstalled(true)) {
             SSPFleetUtilsProxy.injectFleet(fleet, market, stability, qualityFactor, type);
         }
     }
@@ -69,7 +69,7 @@ public class ExerelinUtilsFleet
             return DSFleetUtilsProxy.enhancedCreateFleet(faction, params, total);
         }
         
-        if (ExerelinUtils.isSSPInstalled(false) ) {
+        if (ExerelinUtils.isSSPInstalled(true) ) {
             return SSPFleetUtilsProxy.enhancedCreateFleet(faction, params, total);
         }
 
