@@ -101,6 +101,6 @@ public class SSPFleetUtilsProxy {
                 randomizeVariants(fleet, factionId, qualityFactor, null, getArchetypeWeights(SSP_FleetInjector.FleetStyle.STANDARD, factionId), SSP_FleetInjector.CommanderType.STANDARD);
                 SSP_FleetInjector.levelFleet(fleet, SSP_FleetInjector.CrewType.STANDARD, factionId, SSP_FleetInjector.CommanderType.STANDARD);
         }
-        SSP_FleetFactory.finishFleetNonIntrusive(fleet, factionId);
+        //SSP_FleetFactory.finishFleetNonIntrusive(fleet, factionId);
 	}
 }
