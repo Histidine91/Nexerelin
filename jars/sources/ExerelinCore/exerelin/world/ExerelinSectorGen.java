@@ -116,6 +116,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected static final float NEBULA_CHANCE = 0.35f;
 	protected static final float MAGNETIC_FIELD_CHANCE = 0.5f;
 	protected static final float STELLAR_RING_CHANCE = 0.3f;
+	protected static final float STELLAR_BELT_CHANCE = 0.4f;
 	protected static final float STAR_RANDOM_OFFSET = 100;
 	
 	// this proportion of TT markets with no military bases will have Cabal submarkets (SS+)
@@ -1720,17 +1721,19 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 
 		// Always put an asteroid belt around the sun
-		/*
 		do {
-			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 10000 + star.getRadius());
-			float baseOrbitDays = getOrbitalPeriod(star, distance);
-			float minOrbitDays = baseOrbitDays * 0.75f;
-			float maxOrbitDays = baseOrbitDays * 1.25f;
-			
-			addAsteroidBelt(system, star, 50, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
-			starBelts1.add(distance);
+			if (Math.random() < STELLAR_BELT_CHANCE) {
+				float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 10000 + star.getRadius());
+				float baseOrbitDays = getOrbitalPeriod(star, distance);
+				float minOrbitDays = baseOrbitDays * 0.75f;
+				float maxOrbitDays = baseOrbitDays * 1.25f;
+
+				addAsteroidBelt(system, star, 50, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
+				starBelts1.add(distance);
+			}
 			
 			// Another one if medium system size
+			/*
 			if(ExerelinSetupData.getInstance().baseSystemSize > 16000)
 			{
 				distance = getRandomOrbitRadiusBetweenPlanets(entities, 12000, 25000);
@@ -1750,8 +1753,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				addAsteroidBelt(system, star, 100, distance, MathUtils.getRandomNumberInRange(160, 200),  minOrbitDays, maxOrbitDays);
 				starBelts1.add(distance);
 			}
+			*/
 		} while (false);
-		*/
 		
 		for (EntityData entity : entities)
 		{
@@ -1789,17 +1792,42 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			List alreadyUsedStationNames = new ArrayList();
 			while(k < numStations)
 			{
-				if (picker.isEmpty()) picker.add(starData);
+				if (picker.isEmpty()) break;	//picker.add(starData);
 				EntityData primaryData = picker.pickAndRemove();
-
+				if (primaryData.entity == star && starBelts1.isEmpty()) {
+					continue;
+				}
+				if (primaryData.entity == star2 && starBelts2.isEmpty()) {
+					continue;
+				}
+				
 				EntityData stationData = new EntityData("", system);
 				stationData.primary = primaryData;
 				stationData.type = EntityType.STATION;
 				stationData.archetype = marketSetup.pickMarketArchetype(true);
-				if (primaryData.entity == star) stationData.orbitRadius = (Float) ExerelinUtils.getRandomListElement(starBelts1);
+				
+				if (primaryData.entity == star) {
+					
+					// make a belt for star if we don't have one already
+					/*
+					if (starBelts1.isEmpty())
+					{
+						float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 10000 + star.getRadius());
+						float baseOrbitDays = getOrbitalPeriod(star2, distance);
+						float minOrbitDays = baseOrbitDays * 0.75f;
+						float maxOrbitDays = baseOrbitDays * 1.25f;
+
+						addAsteroidBelt(system, star2, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
+						starBelts1.add(distance);
+					}
+					*/
+					
+					stationData.orbitRadius = (Float) ExerelinUtils.getRandomListElement(starBelts1);
+				}
 				else if (primaryData.entity == star2) 
 				{
 					// make a belt for binary companion if we don't have one already
+					/*
 					if (starBelts2.isEmpty())
 					{
 						float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 10000 + star.getRadius());
@@ -1810,6 +1838,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 						addAsteroidBelt(system, star2, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
 						starBelts2.add(distance);
 					}
+					*/
 
 					stationData.orbitRadius = (Float) ExerelinUtils.getRandomListElement(starBelts2);
 				}
