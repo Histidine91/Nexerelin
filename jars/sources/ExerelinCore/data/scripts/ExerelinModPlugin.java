@@ -123,17 +123,30 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        // update Thracia star background path for new II version
-        for (StarSystemAPI system : Global.getSector().getStarSystems())
+        // fix SSP vs. SWP star system backgrounds
+        if (HAVE_SWP && !HAVE_SSP)
         {
-            if (system.getBackgroundTextureFilename().equals("graphics/imperium/backgrounds/ii_thracia.jpg"))
+            for (StarSystemAPI system : Global.getSector().getStarSystems())
             {
-                system.setBackgroundTextureFilename("graphics/imperium/backgrounds/ii_thracia.png");
+                switch (system.getBackgroundTextureFilename()) {
+                    case "graphics/ssp/backgrounds/ssp_arcade.png":
+                        system.setBackgroundTextureFilename("graphics/swp/backgrounds/swp_arcade.png");
+                        break;
+                    case "graphics/ssp/backgrounds/ssp_atopthemountain.jpg":
+                        system.setBackgroundTextureFilename("graphics/swp/backgrounds/swp_atopthemountain.jpg");
+                        break;
+                    case "graphics/ssp/backgrounds/ssp_conflictofinterest.jpg":
+                        system.setBackgroundTextureFilename("graphics/swp/backgrounds/swp_conflictofinterest.jpg");
+                        break;
+                    case "graphics/ssp/backgrounds/ssp_corporateindirection.jpg":
+                        system.setBackgroundTextureFilename("graphics/swp/backgrounds/swp_corporateindirection.jpg");
+                        break;
+                    case "graphics/ssp/backgrounds/ssp_overreachingexpansion.jpg":
+                        system.setBackgroundTextureFilename("graphics/swp/backgrounds/swp_overreachingexpansion.jpg");
+                        break;
+                }
             }
         }
-		if (!Global.getSector().hasScript(ConquestMissionCreator.class)) {
-			Global.getSector().addScript(new ConquestMissionCreator());
-		}
     }
     
     @Override
