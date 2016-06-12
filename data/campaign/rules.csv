@@ -10,11 +10,11 @@ ExerelinNGCIntroPrevPage,NewGameOptionSelected,$option==exerelinNGCIntroPrevPage
 FireBest ExerelinNGCIntroPage",,,
 #introPage needs to be a float,,,,,,
 ExerelinNGCIntro1,ExerelinNGCIntroPage,"$introPage == 1.0
-$isInIntro",,"Welcome to the Exerelin mod for Starsector!
+$isInIntro",,"Welcome to the Nexerelin mod for Starsector!
 
-Exerelin is essentially a 4X game set in a corner of the Starsector universe. Factions within the sector will wage war, create alliances and compete to control a greater share of the sector.
+Nexerelin is essentially a 4X game set in a corner of the Starsector universe. Factions within the sector will wage war, create alliances and compete to control a greater share of the sector.
 
-Exerelin is compatible with a large number of community made faction mods, which you can add for a more varied gameplay experience.","exerelinNGCIntroNextPage:Next
+Nexerelin is compatible with a large number of community made faction mods, which you can add for a more varied gameplay experience.","exerelinNGCIntroNextPage:Next
 exerelinNGCIntroEnd:Skip",
 ExerelinNGCIntro2,ExerelinNGCIntroPage,"$introPage == 2.0
 $isInIntro",,"Your actions will gain/lose you influence with the factions in the Sector. The higher your influence with a faction, the greater access to their support and technology you will have.
