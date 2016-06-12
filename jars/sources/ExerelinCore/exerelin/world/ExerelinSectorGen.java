@@ -47,6 +47,7 @@ import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.ExerelinMarketSetup.MarketArchetype;
 import java.util.Collections;
@@ -56,7 +57,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.lazywizard.lazylib.MathUtils;
-import org.lazywizard.lazylib.campaign.orbits.EllipticalOrbit;
 import org.lwjgl.util.vector.Vector2f;
 
 @SuppressWarnings("unchecked")
@@ -109,20 +109,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	public static final List<String> stationImages = new ArrayList<>(Arrays.asList(
 			new String[] {"station_side00", "station_side02", "station_side04", "station_jangala_type"}));
 	
-	protected static final float REVERSE_ORBIT_CHANCE = 0.2f;
-	protected static final float LAGRANGE_ASTEROID_CHANCE = 0.5f;
-	protected static final float BINARY_STAR_DISTANCE = 13000;
-	protected static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
-	protected static final float NEBULA_CHANCE = 0.35f;
-	protected static final float MAGNETIC_FIELD_CHANCE = 0.5f;
-	protected static final float STELLAR_RING_CHANCE = 0.3f;
-	protected static final float STELLAR_BELT_CHANCE = 0.4f;
-	protected static final float STAR_RANDOM_OFFSET = 100;
+	public static final float REVERSE_ORBIT_CHANCE = 0.2f;
+	public static final float LAGRANGE_ASTEROID_CHANCE = 0.5f;
+	public static final float BINARY_STAR_DISTANCE = 13000;
+	public static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
+	public static final float NEBULA_CHANCE = 0.35f;
+	public static final float MAGNETIC_FIELD_CHANCE = 0.5f;
+	public static final float STELLAR_RING_CHANCE = 0.3f;
+	public static final float STELLAR_BELT_CHANCE = 0.4f;
+	public static final float STAR_RANDOM_OFFSET = 100;
 	
 	// this proportion of TT markets with no military bases will have Cabal submarkets (SS+)
-	protected static final float CABAL_MARKET_MULT = 0.4f;	
+	public static final float CABAL_MARKET_MULT = 0.4f;	
 	// this is the chance a market with a military base will still be a candidate for Cabal markets
-	protected static final float CABAL_MILITARY_MARKET_CHANCE = 0.5f;
+	public static final float CABAL_MILITARY_MARKET_CHANCE = 0.5f;
 	
 	protected ExerelinMarketSetup marketSetup;
 	
@@ -413,7 +413,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				}
 			}
 			prismEntity = toOrbit.getContainingLocation().addCustomEntity("prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
-			prismEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, getOrbitalPeriod(toOrbit, orbitDistance));
+			prismEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
 		else
 		{
@@ -421,7 +421,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			prismEntity = hyperspace.addCustomEntity("prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
 			float xpos = 2000;
 			if (!ExerelinSetupData.getInstance().corvusMode) xpos = -2000;
-			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(xpos, 0), getRandomAngle(), 150, 60, 30, 30);
+			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(xpos, 0), ExerelinUtilsAstro.getRandomAngle(), 150, 60, 30, 30);
 		}
 		
 		/*
@@ -478,17 +478,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float radius = toOrbit.getRadius();
 			float orbitDistance = radius + MathUtils.getRandomNumberInRange(2000, 2500);
 			avestaEntity = toOrbit.getContainingLocation().addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
-			avestaEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, getOrbitalPeriod(toOrbit, orbitDistance));
+			avestaEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
 		else
 		{
 			LocationAPI hyperspace = sector.getHyperspace();
 			SectorEntityToken toOrbit = system.getHyperspaceAnchor();
 			avestaEntity = hyperspace.addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
-			//avestaEntity.setCircularOrbitWithSpin(toOrbit, getRandomAngle(), 5000, 60, 30, 30);
+			//avestaEntity.setCircularOrbitWithSpin(toOrbit, ExerelinUtilsAstro.getRandomAngle(), 5000, 60, 30, 30);
 			float orbitDist = 4500;
-			float period = getOrbitalPeriod(500, orbitDist, 2);
-			setOrbit(avestaEntity, toOrbit, 4500, true, getRandomAngle(), period);
+			float period = ExerelinUtilsAstro.getOrbitalPeriod(500, orbitDist, 2);
+			ExerelinUtilsAstro.setOrbit(avestaEntity, toOrbit, 4500, true, ExerelinUtilsAstro.getRandomAngle(), period);
 		}
 		
 		/*
@@ -533,7 +533,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		float radius = toOrbit.getRadius();
 		float orbitRadius = radius + 150;
 		SectorEntityToken shanghaiEntity = toOrbit.getContainingLocation().addCustomEntity("tiandong_shanghai", "Shanghai", "tiandong_shanghai", "tiandong");
-		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitRadius, getOrbitalPeriod(toOrbit, orbitRadius));
+		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitRadius, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitRadius));
 		
 		//EntityData data = new EntityData(null);
 		//data.name = "Shanghai";
@@ -580,7 +580,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		float radius = toOrbit.getRadius();
 		float orbitDistance = radius + 150;
 		SectorEntityToken shanghaiEntity = toOrbit.getContainingLocation().addCustomEntity("tiandong_shanghai", "Shanghai", "tiandong_shanghai", "tiandong");
-		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, getOrbitalPeriod(toOrbit, orbitDistance));
+		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		
 		shanghaiEntity.setMarket(market);
 		market.getConnectedEntities().add(shanghaiEntity);
@@ -804,149 +804,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	// =========================================================================
 	// Utility functions
 	
-	public static float getOrbitalPeriod(float primaryRadius, float orbitRadius, float density)
-	{
-		primaryRadius *= 0.01;
-		orbitRadius *= 1/62.5;	// realistic would be 1/50 but the planets orbit rather too slowly then
-		
-		float mass = (float)Math.floor(4f / 3f * Math.PI * Math.pow(primaryRadius, 3));
-		mass *= density;
-		float radiusCubed = (float)Math.pow(orbitRadius, 3);
-		float period = (float)(2 * Math.PI * Math.sqrt(radiusCubed/mass) * 2);
-		
-		if (Math.random() < REVERSE_ORBIT_CHANCE) period *=-1;
-		
-		return period;
-	}
 	
-	public static float getOrbitalPeriod(SectorEntityToken primary, float orbitRadius)
-	{
-		return getOrbitalPeriod(primary.getRadius(), orbitRadius, getDensity(primary));
-	}
-	
-	public static float getDensity(SectorEntityToken primary)
-	{
-		if (primary instanceof PlanetAPI)
-		{
-			PlanetAPI planet = (PlanetAPI)primary;
-			if (planet.getTypeId().equals("star_dark")) return 8;
-			else if (planet.isStar()) return 0.5f;
-			else if (planet.isGasGiant()) return 0.5f;
-		}
-		return 2;
-	}
-	
-	public static float getRandomAngle()
-	{
-		return MathUtils.getRandomNumberInRange(0f, 360f);
-	}
-	
-	/**
-	 * @param entity Token whose orbit is to be set.
-	 * @param primary Token to orbit around.
-	 * @param orbitRadius
-	 * @param isEllipse
-	 * @param ellipseAngle
-	 * @param orbitPeriod
-	 * @return The starting angle on the orbit
-	 */
-	protected float setOrbit(SectorEntityToken entity, SectorEntityToken primary, float orbitRadius, 
-			boolean isEllipse, float ellipseAngle, float orbitPeriod)
-	{
-		return setOrbit(entity, primary, orbitRadius, getRandomAngle(), 
-				isEllipse, ellipseAngle, MathUtils.getRandomNumberInRange(1f, 1.2f), orbitPeriod);
-	}
-	
-	/**
-	 * @param entity Token whose orbit is to be set.
-	 * @param primary Token to orbit around.
-	 * @param orbitRadius
-	 * @param angle The angle (in degrees) that the orbit will begin at.
-     *                     0 degrees = right - this is not relative to
-     *                     {@code ellipseAngle}.
-	 * @param isEllipse
-	 * @param ellipseAngle
-	 * @param ellipseMult Multiplies radius to get semi-major axis,
-	 *						divides radius to get semi-minor axis.
-	 * @param orbitPeriod
-	 * @return The starting angle on the orbit
-	 */
-	protected float setOrbit(SectorEntityToken entity, SectorEntityToken primary, float orbitRadius, float angle, 
-			boolean isEllipse, float ellipseAngle, float ellipseMult, float orbitPeriod)
-	{
-		if (isEllipse)
-		{
-			float semiMajor = (int)(orbitRadius * ellipseMult);
-			float semiMinor = (int)(orbitRadius / ellipseMult);
-			EllipticalOrbit ellipseOrbit = new EllipticalOrbit(primary, angle, semiMinor, semiMajor, ellipseAngle, orbitPeriod);
-			entity.setOrbit(ellipseOrbit);
-			return angle;
-		}
-		else
-		{
-			entity.setCircularOrbit(primary, angle, orbitRadius, orbitPeriod);
-			return angle;
-		}
-	}
-	
-	/**
-	 * Makes one entity orbit at another entity's Lagrangian points.
-	 * @param orbiter The entity whose orbit is being set
-	 * @param m1 Larger mass (e.g. the star)
-	 * @param m2 Smaller mass (e.g. the planet)
-	 * @param point 1 - 5 = L1 to L5, other values randomize between L4 and L5
-	 * @param m2Angle The starting angle of {@code m2} in its orbit
-	 * @param m2OrbitRadius The orbit radius of {@code m2} in its orbit around {@code m1} 
-	 * @param myOrbitRadius The orbit radius of {@code orbiter} in its orbit around {@code m2} (only applies to L1 and L2)
-	 * @param orbitPeriod The time {@code m2} takes to orbit {@code m1} 
-	 * @param isEllipse Is this orbit elliptic?
-	 * @param ellipseAngle Angle of the ellipse orbit
-	 * @param ellipseMult Used to calculate the ellipse's semi-major and semi-minor axes
-	 */
-	protected void setLagrangeOrbit(SectorEntityToken orbiter, SectorEntityToken m1, SectorEntityToken m2, int point, 
-			float m2Angle, float m2OrbitRadius, float myOrbitRadius, float orbitPeriod, boolean isEllipse, float ellipseAngle, float ellipseMult)
-	{
-		if (point <= 0 || point > 5)
-		{
-			if (Math.random() < 0.5) point = 4;
-			else point = 5;
-		}
-		//log.info("Setting Lagrange orbit for " + orbiter.getName() + " at point " + point);
-		switch (point) {
-			case 1:
-			case 2:
-				float angle = m2Angle;
-				if (point == 1) angle += 180;
-				if (!isEllipse) orbiter.setCircularOrbit(m2, angle, myOrbitRadius, orbitPeriod);
-				else setOrbit(orbiter, m2, myOrbitRadius, angle, isEllipse, ellipseAngle, ellipseMult, orbitPeriod);
-				break;
-			case 3:
-				if (!isEllipse) orbiter.setCircularOrbit(m1, m2Angle + 180, m2OrbitRadius, orbitPeriod);
-				else setOrbit(orbiter, m1, m2OrbitRadius, m2Angle + 180, isEllipse, ellipseAngle, ellipseMult, orbitPeriod);
-				break;
-			case 4:
-			case 5:
-				float offset = -60;
-				if (point == 5) offset = 60;
-
-				if (!isEllipse) orbiter.setCircularOrbit(m1, m2Angle + offset, m2OrbitRadius, orbitPeriod);
-				else setOrbit(orbiter, m1, m2OrbitRadius, m2Angle + offset, isEllipse, ellipseAngle, ellipseMult, orbitPeriod);
-				break;
-		}
-	}
 	
 	/**
 	 *	Given a list of EntityDatas representing planets, and min/max orbit radius, 
 	 *  find an orbit that avoids overlapping with that of any planet
 	 */
-	protected float getRandomOrbitRadiusBetweenPlanets(List<EntityData> planets, float minDist, float maxDist)
+	public static float getRandomOrbitRadiusBetweenPlanets(List<ExerelinSectorGen.EntityData> planets, float minDist, float maxDist)
 	{		
 		float orbitRadius = 0;
-		List<EntityData> validPlanets = new ArrayList<>();
-		for (EntityData data : planets)
+		List<ExerelinSectorGen.EntityData> validPlanets = new ArrayList<>();
+		for (ExerelinSectorGen.EntityData data : planets)
 		{
 			//log.info("Random orbit radius finder trying entity " + data.name);
-			if (data.type != EntityType.PLANET) continue;
+			if (data.type != ExerelinSectorGen.EntityType.PLANET) continue;
 			if (data.orbitRadius < minDist) continue;
 			if (data.orbitRadius > maxDist) continue;
 			validPlanets.add(data);
@@ -961,12 +832,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (validPlanets.size() > 1) index = MathUtils.getRandomNumberInRange(0, validPlanets.size() - 1);
 		float min = minDist;
 		float max = maxDist;
-		EntityData planet = validPlanets.get(index);
+		ExerelinSectorGen.EntityData planet = validPlanets.get(index);
 		if (index == 0)
 		{
 			if (validPlanets.size() > 1)
 			{
-				EntityData nextPlanet = validPlanets.get(1);
+				ExerelinSectorGen.EntityData nextPlanet = validPlanets.get(1);
 				max = nextPlanet.orbitRadius - nextPlanet.entity.getRadius()*2;
 			}
 			min = Math.max(minDist, planet.primary.entity.getRadius()*2);
@@ -977,7 +848,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 		{
-			EntityData prevPlanet = validPlanets.get(index - 1);
+			ExerelinSectorGen.EntityData prevPlanet = validPlanets.get(index - 1);
 			min = prevPlanet.orbitRadius + prevPlanet.entity.getRadius()*2;
 			max = planet.orbitRadius - planet.entity.getRadius()*2;
 		}
@@ -993,23 +864,12 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return orbitRadius;
 	}
 	
-	public void addAsteroidBelt(LocationAPI system, SectorEntityToken planet, int numAsteroids, float orbitRadius, float width, float minOrbitDays, float maxOrbitDays)
-	{
-		// since we can't easily store belts' orbital periods at present, make sure asteroids all orbit in the same direction
-		if (minOrbitDays < 0) minOrbitDays *= -1;
-		if (maxOrbitDays < 0) maxOrbitDays *= -1;
-		
-		system.addAsteroidBelt(planet, numAsteroids, orbitRadius, width, minOrbitDays, maxOrbitDays);
-		system.addRingBand(planet, "misc", "rings1", 256f, 2, Color.white, 256f, orbitRadius + width/4, (minOrbitDays + maxOrbitDays)/2);
-		system.addRingBand(planet, "misc", "rings1", 256f, 2, Color.white, 256f, orbitRadius - width/4, (minOrbitDays + maxOrbitDays)/2);
-	}
-	
 	// end utility functions
 	// =========================================================================
 	
 	protected SectorEntityToken makeStation(EntityData data, String factionId)
 	{
-		float angle = getRandomAngle();
+		float angle = ExerelinUtilsAstro.getRandomAngle();
 		int orbitRadius = 200;
 		PlanetAPI planet = (PlanetAPI)data.primary.entity;
 		if (data.primary.type == EntityType.MOON)
@@ -1022,7 +882,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		data.orbitRadius = orbitRadius;
 
-		float orbitDays = getOrbitalPeriod(planet, orbitRadius);
+		float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(planet, orbitRadius);
 		if (planet.isStar() && orbitDays < 0)
 			orbitDays *= -1;	// prevents weirdness of station orbiting in reverse direction to belt
 		data.orbitPeriod = orbitDays;
@@ -1220,10 +1080,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			float angle = MathUtils.getRandomNumberInRange(1, 360);
 			float distance = (BINARY_STAR_DISTANCE + star.getRadius()*5 + size*5) * MathUtils.getRandomNumberInRange(0.95f, 1.1f) ;
-			float orbitDays = getOrbitalPeriod(star, distance + star.getRadius());
+			float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star, distance + star.getRadius());
 			
 			PlanetAPI planet = system.addPlanet(systemId + "_star_b", star, name, type, angle, size, distance, orbitDays);
-			setOrbit(planet, star, distance, true, getRandomAngle(), orbitDays);
+			ExerelinUtilsAstro.setOrbit(planet, star, distance, true, ExerelinUtilsAstro.getRandomAngle(), orbitDays);
 			system.addCorona(planet, 300, 2f, 0.1f, 1f);
 			
 			return planet;
@@ -1346,7 +1206,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			entities.add(starData2);
 		}
 		
-		float ellipseAngle = getRandomAngle();
+		float ellipseAngle = ExerelinUtilsAstro.getRandomAngle();
 		float ellipseMult = 1;	//MathUtils.getRandomNumberInRange(1.05f, 1.2f);
 		
 		// now let's start seeding planets
@@ -1463,7 +1323,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float angle = MathUtils.getRandomNumberInRange(1, 360);
 			float distance = 3000 + toOrbit.getRadius() + (distanceStepping * (planetData.planetNumByStar - 1) * MathUtils.getRandomNumberInRange(0.75f, 1.25f));
 			distance = (int)distance;
-			float orbitDays = getOrbitalPeriod(toOrbit, distance);
+			float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, distance);
 			planetData.orbitRadius = distance;
 			planetData.orbitPeriod = orbitDays;
 			
@@ -1488,7 +1348,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			// create the planet token
 			SectorEntityToken newPlanet = system.addPlanet(id, toOrbit, name, planetType, angle, radius, distance, orbitDays);
-			planetData.startAngle = setOrbit(newPlanet, toOrbit, distance, getRandomAngle(), !isBinary, ellipseAngle, ellipseMult, orbitDays);
+			planetData.startAngle = ExerelinUtilsAstro.setOrbit(newPlanet, toOrbit, distance, ExerelinUtilsAstro.getRandomAngle(), !isBinary, ellipseAngle, ellipseMult, orbitDays);
 			planetData.entity = newPlanet;
 			planetData.planetType = planetType;
 			
@@ -1502,7 +1362,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				if (isGasGiant) maxMoons +=1;
 				int numMoons = MathUtils.getRandomNumberInRange(0, 1) + MathUtils.getRandomNumberInRange(0, maxMoons - 1);
 				distance = newPlanet.getRadius() + MathUtils.getRandomNumberInRange(0, 600);
-				float ellipseAngleMoon = getRandomAngle();
+				float ellipseAngleMoon = ExerelinUtilsAstro.getRandomAngle();
 				
 				for(int j = 0; j < numMoons; j++)
 				{
@@ -1538,10 +1398,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					angle = MathUtils.getRandomNumberInRange(1, 360);
 					distance += MathUtils.getRandomNumberInRange(200, 450);
 					float moonRadius = MathUtils.getRandomNumberInRange(50, 100);
-					orbitDays = getOrbitalPeriod(newPlanet, distance + newPlanet.getRadius());
+					orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(newPlanet, distance + newPlanet.getRadius());
 					
 					PlanetAPI newMoon = system.addPlanet(moonId, newPlanet, moonName, moonData.planetType, angle, moonRadius, distance, orbitDays);
-					moonData.startAngle = angle;	// setOrbit(newMoon, newPlanet, distance, false, 0, orbitDays);
+					moonData.startAngle = angle;	// ExerelinUtilsAstro.setOrbit(newMoon, newPlanet, distance, false, 0, orbitDays);
 					log.info("Creating moon " + moonName);
 					moonData.entity = newMoon;
 					moonData.orbitRadius = distance;
@@ -1561,31 +1421,31 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				float radiusMult = MathUtils.getRandomNumberInRange(2, 3.5f);
 				int ringRadius = (int)(radius*radiusMult);
 
-				if(ringType == 0)
+				if (ringType == 0)
 				{
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, ringRadius, 40f, Terrain.RING, null);
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius, 60f, Terrain.RING, null);
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, ringRadius, 80f, Terrain.RING, null);
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius*1.25f, 80f, Terrain.RING, null);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, ringRadius, 1, true);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius, .9f, true);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, ringRadius, 1, true);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius*1.25f, .9f, true);
 				}
 				else if (ringType == 1)
 				{
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, ringRadius, 70f, Terrain.RING, null);
-					//system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, (int)(radius*2.5), 90f, Terrain.RING, null);
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius*1.25f, 110f, Terrain.RING, null);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 2, Color.white, 256f, ringRadius, 1, true);
+					//ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, (int)(radius*2.5), true);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius*1.25f, .9f, true);
 				}
 				else if (ringType == 2)
 				{
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius*1.25f, 70f, Terrain.RING, null);
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius*1.25f, 90f, Terrain.RING, null);
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius*1.25f, 110f, Terrain.RING, null);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius*1.25f, 1, true);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius*1.25f, 1, true);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 3, Color.white, 256f, ringRadius*1.25f, 1, true);
 				}
 				else if (ringType == 3)
 				{
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, (int)(radius*radiusMult), 50f, Terrain.RING, null);
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, (int)(radius*radiusMult), 70f, Terrain.RING, null);
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, (int)(radius*radiusMult), 80f, Terrain.RING, null);
-					system.addRingBand(newPlanet, "misc", "rings1", 256f, 1, Color.white, 256f, (int)(radius*radiusMult*1.25), 90f, Terrain.RING, null);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, (int)(radius*radiusMult), 1, true);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, (int)(radius*radiusMult), 1, true);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, (int)(radius*radiusMult), 1, true);
+					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 1, Color.white, 256f, (int)(radius*radiusMult*1.25), 1.1f, true);
 				}
 			}
 			// add magnetic field
@@ -1615,8 +1475,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 						4f, // min asteroid radius 
 						16f, // max asteroid radius
 						name + " L5 Asteroids")); // null for default name
-				setLagrangeOrbit(l4asteroids, toOrbit, newPlanet, 4, planetData.startAngle, planetData.orbitRadius, 0, planetData.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
-				setLagrangeOrbit(l5asteroids, toOrbit, newPlanet, 5, planetData.startAngle, planetData.orbitRadius, 0, planetData.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
+				ExerelinUtilsAstro.setLagrangeOrbit(l4asteroids, toOrbit, newPlanet, 4, planetData.startAngle, planetData.orbitRadius, 0, 
+						planetData.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
+				ExerelinUtilsAstro.setLagrangeOrbit(l5asteroids, toOrbit, newPlanet, 5, planetData.startAngle, planetData.orbitRadius, 0, 
+						planetData.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
 			}
 		}
 		
@@ -1710,10 +1572,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			numAsteroids = (int)(numAsteroids * MathUtils.getRandomNumberInRange(0.75f, 1.25f));
 
 			float width = MathUtils.getRandomNumberInRange(160, 200);
-			float baseOrbitDays = getOrbitalPeriod(planet, orbitRadius);
+			float baseOrbitDays = ExerelinUtilsAstro.getOrbitalPeriod(planet, orbitRadius);
 			float minOrbitDays = baseOrbitDays * 0.75f;
 			float maxOrbitDays = baseOrbitDays * 1.25f;
-			addAsteroidBelt(system, planet, numAsteroids, orbitRadius, width, minOrbitDays, maxOrbitDays);
+			ExerelinUtilsAstro.addAsteroidBelt(system, planet, numAsteroids, orbitRadius, width, minOrbitDays, maxOrbitDays);
 			if (planet == star) starBelts1.add(orbitRadius);
 			else if (planet == star2) starBelts2.add(orbitRadius);
 			log.info("Added asteroid belt around " + planet.getName());
@@ -1724,11 +1586,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		do {
 			if (Math.random() < STELLAR_BELT_CHANCE) {
 				float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 10000 + star.getRadius());
-				float baseOrbitDays = getOrbitalPeriod(star, distance);
+				float baseOrbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star, distance);
 				float minOrbitDays = baseOrbitDays * 0.75f;
 				float maxOrbitDays = baseOrbitDays * 1.25f;
 
-				addAsteroidBelt(system, star, 50, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
+				ExerelinUtilsAstro.addAsteroidBelt(system, star, 50, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
 				starBelts1.add(distance);
 			}
 			
@@ -1737,20 +1599,20 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if(ExerelinSetupData.getInstance().baseSystemSize > 16000)
 			{
 				distance = getRandomOrbitRadiusBetweenPlanets(entities, 12000, 25000);
-				baseOrbitDays = getOrbitalPeriod(star, distance);
+				baseOrbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star, distance);
 				minOrbitDays = baseOrbitDays * 0.75f;
 				maxOrbitDays = baseOrbitDays * 1.25f;
-				addAsteroidBelt(system, star, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
+				ExerelinUtilsAstro.addAsteroidBelt(system, star, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
 				starBelts1.add(distance);
 			}
 			// And another one if a large system
 			if(ExerelinSetupData.getInstance().baseSystemSize > 32000)
 			{
 				distance = getRandomOrbitRadiusBetweenPlanets(entities, 18000, 35000);
-				baseOrbitDays = getOrbitalPeriod(star, distance);
+				baseOrbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star, distance);
 				minOrbitDays = baseOrbitDays * 0.75f;
 				maxOrbitDays = baseOrbitDays * 1.25f;
-				addAsteroidBelt(system, star, 100, distance, MathUtils.getRandomNumberInRange(160, 200),  minOrbitDays, maxOrbitDays);
+				ExerelinUtilsAstro.addAsteroidBelt(system, star, 100, distance, MathUtils.getRandomNumberInRange(160, 200),  minOrbitDays, maxOrbitDays);
 				starBelts1.add(distance);
 			}
 			*/
@@ -1813,11 +1675,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					if (starBelts1.isEmpty())
 					{
 						float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 10000 + star.getRadius());
-						float baseOrbitDays = getOrbitalPeriod(star2, distance);
+						float baseOrbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star2, distance);
 						float minOrbitDays = baseOrbitDays * 0.75f;
 						float maxOrbitDays = baseOrbitDays * 1.25f;
 
-						addAsteroidBelt(system, star2, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
+						ExerelinUtilsAstro.addAsteroidBelt(system, star2, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
 						starBelts1.add(distance);
 					}
 					*/
@@ -1831,11 +1693,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					if (starBelts2.isEmpty())
 					{
 						float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 10000 + star.getRadius());
-						float baseOrbitDays = getOrbitalPeriod(star2, distance);
+						float baseOrbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star2, distance);
 						float minOrbitDays = baseOrbitDays * 0.75f;
 						float maxOrbitDays = baseOrbitDays * 1.25f;
 
-						addAsteroidBelt(system, star2, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
+						ExerelinUtilsAstro.addAsteroidBelt(system, star2, 75, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
 						starBelts2.add(distance);
 					}
 					*/
@@ -1870,8 +1732,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			JumpPointAPI capitalJumpPoint = Global.getFactory().createJumpPoint(capitalToken.getId() + "_jump", capitalToken.getName() + " Jumppoint");
 			float radius = capitalToken.getRadius();
 			float orbitRadius = radius + 250f;
-			float orbitDays = getOrbitalPeriod(capitalToken, orbitRadius);
-			capitalJumpPoint.setCircularOrbit(capitalToken, getRandomAngle(), orbitRadius, orbitDays);
+			float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(capitalToken, orbitRadius);
+			capitalJumpPoint.setCircularOrbit(capitalToken, ExerelinUtilsAstro.getRandomAngle(), orbitRadius, orbitDays);
 			capitalJumpPoint.setRelatedPlanet(capitalToken);
 			system.addEntity(capitalJumpPoint);
 			capitalJumpPoint.setStandardWormholeToHyperspaceVisual();
@@ -1882,7 +1744,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (jumpLink.type == EntityType.MOON) jumpLink = jumpLink.primary;	// L4/L5 of the planet instead of the moon
 			JumpPointAPI capitalJumpPoint = Global.getFactory().createJumpPoint(jumpLink.entity.getId() + "_jump", jumpLink.name + " Bridge");
 			log.info("Creating jump point at " + jumpLink.name + ", has primary? " + (jumpLink.primary != null));
-			setLagrangeOrbit(capitalJumpPoint, jumpLink.primary.entity, jumpLink.entity, -1, jumpLink.startAngle, jumpLink.orbitRadius, 0, jumpLink.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
+			ExerelinUtilsAstro.setLagrangeOrbit(capitalJumpPoint, jumpLink.primary.entity, jumpLink.entity, -1, jumpLink.startAngle, jumpLink.orbitRadius, 0, jumpLink.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
 			system.addEntity(capitalJumpPoint);
 			capitalJumpPoint.setStandardWormholeToHyperspaceVisual();
 			
@@ -1890,8 +1752,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			/*
 			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint(star.getId() + "_jump", star.getName() + " Jumppoint");
 			orbitRadius = MathUtils.getRandomNumberInRange(2500, 3500) + star.getRadius();
-			orbitDays = getOrbitalPeriod(star, orbitRadius);
-			setOrbit(jumpPoint, star, orbitRadius, !isBinary, ellipseAngle, orbitDays);
+			orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star, orbitRadius);
+			ExerelinUtilsAstro.setOrbit(jumpPoint, star, orbitRadius, !isBinary, ellipseAngle, orbitDays);
 			system.addEntity(jumpPoint);
 			jumpPoint.setStandardWormholeToHyperspaceVisual();
 			
@@ -1900,8 +1762,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			{
 				JumpPointAPI jumpPoint2 = Global.getFactory().createJumpPoint(star2.getId() + "_jump", star2.getName() + " Jumppoint");
 				orbitRadius = MathUtils.getRandomNumberInRange(2000, 3000) + star.getRadius();
-				orbitDays = getOrbitalPeriod(star, orbitRadius);
-				setOrbit(jumpPoint2, star2, orbitRadius, !isBinary, ellipseAngle, orbitDays);
+				orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star, orbitRadius);
+				ExerelinUtilsAstro.setOrbit(jumpPoint2, star2, orbitRadius, !isBinary, ellipseAngle, orbitDays);
 				system.addEntity(jumpPoint2);
 				jumpPoint2.setStandardWormholeToHyperspaceVisual();
 			}
@@ -1915,8 +1777,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					secondJumpFocus = star;
 				JumpPointAPI jumpPoint2 = Global.getFactory().createJumpPoint(secondJumpFocus.getId() + "_jump", secondJumpFocus.getName() + " Jumppoint");
 				float orbitRadius = getRandomOrbitRadiusBetweenPlanets(entities, 2500 + secondJumpFocus.getRadius(), 5000 + secondJumpFocus.getRadius());
-				float orbitPeriod = getOrbitalPeriod(secondJumpFocus, orbitRadius);
-				setOrbit(jumpPoint2, secondJumpFocus, orbitRadius, !isBinary, ellipseAngle, orbitPeriod);
+				float orbitPeriod = ExerelinUtilsAstro.getOrbitalPeriod(secondJumpFocus, orbitRadius);
+				ExerelinUtilsAstro.setOrbit(jumpPoint2, secondJumpFocus, orbitRadius, !isBinary, ellipseAngle, orbitPeriod);
 				system.addEntity(jumpPoint2);
 				jumpPoint2.setStandardWormholeToHyperspaceVisual();
 			}
@@ -1931,8 +1793,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					"comm_relay", // type of object, defined in custom_entities.json
 					"neutral"); // faction
 			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 1200 + star.getRadius(), 3000 + star.getRadius());
-			relay.setCircularOrbitPointingDown(star, getRandomAngle(), distance, getOrbitalPeriod(star, distance));
-			//setOrbit(relay, star, distance, !isBinary, ellipseAngle, getOrbitalPeriod(star, distance));
+			relay.setCircularOrbitPointingDown(star, ExerelinUtilsAstro.getRandomAngle(), distance, ExerelinUtilsAstro.getOrbitalPeriod(star, distance));
+			//ExerelinUtilsAstro.setOrbit(relay, star, distance, !isBinary, ellipseAngle, ExerelinUtilsAstro.getOrbitalPeriod(star, distance));
 			systemToRelay.put(system.getId(), system.getId() + "_relay");
 			planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
 		}
@@ -1951,15 +1813,24 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (Math.random() < STELLAR_RING_CHANCE)
 		{
 			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 2500 + star.getRadius(), 6000 + star.getRadius());
-			// ring (adapted from Magec.java)
-			system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, distance - 300, 80f);
-			system.addRingBand(star, "misc", "rings1", 256f, 3, Color.white, 256f, distance - 100, 100f);
-			system.addRingBand(star, "misc", "rings1", 256f, 2, Color.white, 256f, distance + 100, 130f);
-			system.addRingBand(star, "misc", "rings1", 256f, 3, Color.white, 256f, distance + 300, 80f);
+			float totalWidth = 240;
+			if (Math.random() < 0.6) {	// dust ring
+				// ring (adapted from Magec.java)
+				ExerelinUtilsAstro.addRingBand(system, star, "misc", "rings1", 256f, 2, Color.white, 256f, distance - 120, 1);
+				ExerelinUtilsAstro.addRingBand(system, star, "misc", "rings1", 256f, 3, Color.white, 256f, distance - 40, .9f);
+				ExerelinUtilsAstro.addRingBand(system, star, "misc", "rings1", 256f, 2, Color.white, 256f, distance + 40, 1);
+				ExerelinUtilsAstro.addRingBand(system, star, "misc", "rings1", 256f, 3, Color.white, 256f, distance + 120, .9f);
+			}
+			else {	// ice ring
+				ExerelinUtilsAstro.addRingBand(system, star, "misc", "rings1", 256f, 0, Color.white, 256f, distance - 120, 1);
+				ExerelinUtilsAstro.addRingBand(system, star, "misc", "rings1", 256f, 0, Color.white, 256f, distance - 40, 1);
+				ExerelinUtilsAstro.addRingBand(system, star, "misc", "rings1", 256f, 0, Color.white, 256f, distance + 40, 1);
+				ExerelinUtilsAstro.addRingBand(system, star, "misc", "rings1", 256f, 1, Color.white, 256f, distance + 120, 1.1f);
+			}
 
 			// add one ring that covers all of the above
-			SectorEntityToken ring = system.addTerrain(Terrain.RING, new BaseRingTerrain.RingParams(600 + 256, distance, null));
-			ring.setCircularOrbit(star, 0, 0, 100);
+			SectorEntityToken ring = system.addTerrain(Terrain.RING, new BaseRingTerrain.RingParams(totalWidth + 160, distance, null));
+			ring.setCircularOrbit(star, 0, 0, ExerelinUtilsAstro.getOrbitalPeriod(star, distance));
 		}
 		
 		// add dead gate
@@ -1970,7 +1841,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					 "inactive_gate", // type of object, defined in custom_entities.json
 					 null); // faction
 			float gateDist = MathUtils.getRandomNumberInRange(4000, 7000) + star.getRadius();
-			setOrbit(gate, star, gateDist, !isBinary, ellipseAngle, getOrbitalPeriod(star, gateDist));
+			ExerelinUtilsAstro.setOrbit(gate, star, gateDist, !isBinary, ellipseAngle, ExerelinUtilsAstro.getOrbitalPeriod(star, gateDist));
 		}
 	}
 	
@@ -2003,11 +1874,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			field.setCircularOrbit(entity, 0, 0, 100);
 	}
 	
-	protected enum EntityType {
+	public enum EntityType {
 		STAR, PLANET, MOON, STATION
 	}
 	
-	protected static class EntityData {
+	public static class EntityData {
 		String name;
 		SectorEntityToken entity;
 		String planetType = "";

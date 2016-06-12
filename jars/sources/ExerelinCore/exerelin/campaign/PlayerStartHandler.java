@@ -21,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.world.ExerelinCorvusLocations;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.ExerelinSectorGen;
 import static exerelin.world.ExerelinSectorGen.log;
@@ -197,7 +198,7 @@ public class PlayerStartHandler {
 				orbitDistance = radius + MathUtils.getRandomNumberInRange(3000, 12000);
 			}
 		}
-		omnifac.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, ExerelinSectorGen.getOrbitalPeriod(toOrbit, orbitDistance));
+		omnifac.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		omnifac.setInteractionImage("illustrations", "abandoned_station");
 		omnifac.setCustomDescriptionId("omnifactory");
 
