@@ -27,9 +27,8 @@
 				"ore":0.5,
 				"rare_ore":0.05
 			},
-			"danger":0.2,
+			"danger":0.15,
 			"exhaustionRate":0,
-			"renewRate":0
 		},
 		"gas_giant":{
 			"resources":{
@@ -199,5 +198,29 @@
 			},
 			"danger":0.7
 		},
+		"SCY_burntPlanet":{
+			"resources":{
+				"ore":2.5,
+				"rare_ore":0.3
+			},
+			"danger":1.25,
+			"exhaustionRate":0,
+		},
+		"SCY_acid":{
+			"resources":{
+				"ore":1,
+				"rare_ore":0.1,
+				"organics":0.3,
+				"volatiles":0.5
+			},
+			"danger":0.8
+		},
+		"SCY_redRock":{
+			"resources":{
+				"ore":1,
+				"rare_ore":0.1,
+				"organics":0.3,
+			},
+		}
 	}
 }

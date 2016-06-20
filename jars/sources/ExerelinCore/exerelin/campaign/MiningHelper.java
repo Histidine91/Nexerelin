@@ -571,6 +571,7 @@ public class MiningHelper {
 			currExhaustion = exhaustionMap.get(entity);
 		
 		float delta = miningStrength * exhaustionPer100MiningStrength/100;
+		delta *= getMineableDefForEntity(entity).exhaustionRate;
 		if (entity instanceof PlanetAPI)
 		{
 			PlanetAPI planet = (PlanetAPI)entity;
