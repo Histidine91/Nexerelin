@@ -27,7 +27,8 @@
     
     "freeMarket":true,
     
-    "startShipsSolo":["cerberus_Standard"],
+    "startShipsSolo":["cerberus_Retrofitted"],
+    #"startShipsSoloSSP":["ssp_scythe_bal"],
     "startShipsCombatSmall":["enforcer_CS", "buffalo2_FS", "hound_Standard"],
     "startShipsCombatSmallSSP":["ssp_boar_sta", "ssp_tiger_rai", "ssp_sidecar_punp"],   # lol Sidecar
     "startShipsTradeSmall":["mule_d_pirates_Standard", "brawler_Assault", "shepherd_Frontier"],

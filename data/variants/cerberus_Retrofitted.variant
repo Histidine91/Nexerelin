@@ -1,0 +1,29 @@
+{
+    "displayName": "Retrofitted",
+    "fluxCapacitors": 3,
+    "fluxVents": 6,
+    "hullId": "cerberus",
+    "hullMods": ["frontshield"],
+    "quality": 0.6,
+    "variantId": "cerberus_Retrofitted",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS 004": "hveldriver"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {"WS 003": "lightag"}
+        },
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "WS 001": "vulcan",
+                "WS 002": "vulcan"
+            }
+        }
+    ]
+}
