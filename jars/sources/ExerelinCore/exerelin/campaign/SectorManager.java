@@ -769,7 +769,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     {
                         List<SectorEntityToken> relays = loc.getEntitiesWithTag(Tags.COMM_RELAY);
                         //log.info("#entities: " + relays.size());
-                        if (!relays.isEmpty()) relays.get(0).setFaction(newOwnerId);
+                        if (!relays.isEmpty() && relays.get(0).getMarket() == null) relays.get(0).setFaction(newOwnerId);
                     }
                 }
             }
