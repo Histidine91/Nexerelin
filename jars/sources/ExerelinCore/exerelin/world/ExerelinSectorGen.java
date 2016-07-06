@@ -871,7 +871,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			orbitRadius = 500;
 		else if (planet.isStar())
 			orbitRadius = (int)data.orbitRadius;
-		orbitRadius += planet.getRadius();
+		if (!planet.isStar())	// don't do for belter stations, else they spawn outside the belt
+			orbitRadius += planet.getRadius();
 		
 		data.orbitRadius = orbitRadius;
 
@@ -1555,7 +1556,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			else if (planet.isStar())
 			{
 				orbitRadius = getRandomOrbitRadiusBetweenPlanets(entities, 1000 + star.getRadius(), 10000 + star.getRadius());
-				numAsteroids = 125;
+				numAsteroids = (int)(orbitRadius/25);
 			}
 			else
 			{
@@ -1583,7 +1584,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				float minOrbitDays = baseOrbitDays * 0.75f;
 				float maxOrbitDays = baseOrbitDays * 1.25f;
 
-				ExerelinUtilsAstro.addAsteroidBelt(system, star, 50, distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
+				ExerelinUtilsAstro.addAsteroidBelt(system, star, (int)(distance/25), distance, MathUtils.getRandomNumberInRange(160, 200), minOrbitDays, maxOrbitDays);
 				starBelts1.add(distance);
 			}
 			
