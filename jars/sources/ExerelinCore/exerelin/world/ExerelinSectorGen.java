@@ -836,19 +836,19 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (validPlanets.size() > 1)
 			{
 				ExerelinSectorGen.EntityData nextPlanet = validPlanets.get(1);
-				max = nextPlanet.orbitRadius - nextPlanet.entity.getRadius()*2;
+				max = nextPlanet.orbitRadius - nextPlanet.clearRadius;
 			}
-			min = Math.max(minDist, planet.primary.entity.getRadius()*2);
+			min = Math.max(minDist, planet.primary.clearRadius);
 		}
 		else if (index == validPlanets.size() - 1)
 		{
-			min = planet.orbitRadius + planet.entity.getRadius()*2;
+			min = planet.orbitRadius + planet.clearRadius;
 		}
 		else
 		{
 			ExerelinSectorGen.EntityData prevPlanet = validPlanets.get(index - 1);
-			min = prevPlanet.orbitRadius + prevPlanet.entity.getRadius()*2;
-			max = planet.orbitRadius - planet.entity.getRadius()*2;
+			min = prevPlanet.orbitRadius + prevPlanet.clearRadius;
+			max = planet.orbitRadius - planet.clearRadius;
 		}
 		if (min > max)
 		{
@@ -1193,6 +1193,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		EntityData starData2 = null;
 		starData.entity = star;
 		starData.type = EntityType.STAR;
+		starData.clearRadius = star.getRadius() * 4;
 		entities.add(starData);
 		
 		boolean isBinary = (Math.random() < ExerelinConfig.binarySystemChance) && (!star.getTypeId().equals("star_dark"));
@@ -1202,6 +1203,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			starData2 = new EntityData(star2.getName(), system);
 			starData2.entity = star2;
 			starData2.type = EntityType.STAR;
+			starData2.clearRadius = star2.getRadius() * 4;
 			entities.add(starData2);
 		}
 		
@@ -1221,8 +1223,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 			numBasePlanets = maxPlanets;
-		
-		int distanceStepping = (ExerelinSetupData.getInstance().baseSystemSize + numBasePlanets * 600)/MathUtils.getRandomNumberInRange(numBasePlanets+1, maxPlanets+1);
 		
 		if (isBinary) numBasePlanets *= BINARY_SYSTEM_PLANET_MULT;
 		
@@ -1266,6 +1266,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		List<EntityData> moons = new ArrayList<>();
 				
 		// okay, now we can actually create the planets
+		final int distanceStepping = (ExerelinSetupData.getInstance().baseSystemSize + numBasePlanets * 600)/MathUtils.getRandomNumberInRange(numBasePlanets+1, maxPlanets+1);
+		float lastDistance = 0;
+		float clearRadius = 0;	// try to make sure next planet's orbit is at least this far away from the previous one
 		for(EntityData planetData : entities)
 		{
 			if (planetData.type == EntityType.STAR) continue;
@@ -1321,7 +1324,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			float radius;
 			float angle = MathUtils.getRandomNumberInRange(1, 360);
 			float distance = 3000 + toOrbit.getRadius() + (distanceStepping * (planetData.planetNumByStar - 1) * MathUtils.getRandomNumberInRange(0.75f, 1.25f));
+			if (distance < lastDistance + clearRadius)
+				distance = lastDistance + clearRadius;
 			distance = (int)distance;
+			lastDistance = distance;
 			float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, distance);
 			planetData.orbitRadius = distance;
 			planetData.orbitPeriod = orbitDays;
@@ -1350,6 +1356,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			planetData.startAngle = ExerelinUtilsAstro.setOrbit(newPlanet, toOrbit, distance, ExerelinUtilsAstro.getRandomAngle(), !isBinary, ellipseAngle, ellipseMult, orbitDays);
 			planetData.entity = newPlanet;
 			planetData.planetType = planetType;
+			clearRadius = radius * 4;
 			
 			// Now we make moons
 			float moonChance = 0.35f;
@@ -1409,6 +1416,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					// concurrency exception - don't add it direct; add to another list and merge
 					//entities.add(moonData);
 					moons.add(moonData);
+					clearRadius = Math.max(clearRadius, distance * 1.5f);
 				}
 			}
 			
@@ -1446,6 +1454,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 0, Color.white, 256f, (int)(radius*radiusMult), 1, true);
 					ExerelinUtilsAstro.addRingBand(system, newPlanet, "misc", "rings1", 256f, 1, Color.white, 256f, (int)(radius*radiusMult*1.25), 1.1f, true);
 				}
+				clearRadius = Math.max(clearRadius, ringRadius * 1.5f);
 			}
 			// add magnetic field
 			if (isGasGiant && Math.random() < MAGNETIC_FIELD_CHANCE)
@@ -1479,6 +1488,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				ExerelinUtilsAstro.setLagrangeOrbit(l5asteroids, toOrbit, newPlanet, 5, planetData.startAngle, planetData.orbitRadius, 0, 
 						planetData.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
 			}
+			
+			planetData.clearRadius = clearRadius;
 		}
 		
 		// add the moons back to our main entity list
@@ -1525,7 +1536,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		for (EntityData data: entities)
 		{
 			float weight = 1;
-			if (data.type == EntityType.MOON) weight = 0.5f;
+			if (data.type == EntityType.MOON) continue;	//weight = 0.5f;
 			else if (data.type == EntityType.STAR) weight = 2.5f;
 			else if (data.planetType.equals("gas_giant") || data.planetType.equals("ice_giant")) weight = 2f;
 			entitiesForAsteroids.add(data, weight);
@@ -1560,7 +1571,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			}
 			else if (planet.isStar())
 			{
-				orbitRadius = getRandomOrbitRadiusBetweenPlanets(entities, 1000 + star.getRadius(), 10000 + star.getRadius());
+				orbitRadius = getRandomOrbitRadiusBetweenPlanets(entities, 1000 + star.getRadius(), 14000 + star.getRadius());
 				numAsteroids = (int)(orbitRadius/25);
 			}
 			else
@@ -1584,7 +1595,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// Always put an asteroid belt around the sun
 		do {
 			if (Math.random() < STELLAR_BELT_CHANCE) {
-				float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 10000 + star.getRadius());
+				float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 14000 + star.getRadius());
 				float baseOrbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star, distance);
 				float minOrbitDays = baseOrbitDays * 0.75f;
 				float maxOrbitDays = baseOrbitDays * 1.25f;
@@ -1811,7 +1822,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		// add stellar ring
 		if (Math.random() < STELLAR_RING_CHANCE)
 		{
-			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 2500 + star.getRadius(), 6000 + star.getRadius());
+			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 2500 + star.getRadius(), 8000 + star.getRadius());
 			float totalWidth = 240;
 			if (Math.random() < 0.6) {	// dust ring
 				// ring (adapted from Magec.java)
@@ -1895,6 +1906,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		float orbitRadius = 0;
 		float orbitPeriod = 0;
 		float startAngle = 0;
+		float clearRadius = 0;	// don't put other orbits this close to ours
 		int marketPoints = 0;
 		int marketPointsSpent = 0;
 		int bonusMarketPoints = 0;
