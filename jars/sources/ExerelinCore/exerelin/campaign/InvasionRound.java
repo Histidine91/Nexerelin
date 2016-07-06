@@ -162,6 +162,8 @@ public class InvasionRound {
 	public static float GetDefenderStrength(MarketAPI market, float bonusMult, boolean isRaid)
 	{
 		float marketSize = market.getSize();
+		if (market.getId().equals("exipirated_avesta")) marketSize++;
+		
 		float baseDefenderStrength = DEFENDER_BASE_STRENGTH * (float)(Math.pow(marketSize+1, 3));
 		baseDefenderStrength = baseDefenderStrength * (market.getStabilityValue() + 1 - DEFENDER_STABILITY_MOD) * DEFENDER_STABILITY_MOD;
 		float defenderStrength = baseDefenderStrength;
@@ -223,6 +225,7 @@ public class InvasionRound {
 			randomBonus = ATTACKER_RANDOM_BONUS;
 		
 		float marketSize = market.getSize();
+		if (market.getId().equals("exipirated_avesta")) marketSize++;
 		
 		float attackerMarineMult = attacker.getCommanderStats().getMarineEffectivnessMult().getModifiedValue();
 		float attackerAssets = (marineCount * attackerMarineMult) + (attacker.getFleetPoints() * ATTACKER_FLEET_MULT);

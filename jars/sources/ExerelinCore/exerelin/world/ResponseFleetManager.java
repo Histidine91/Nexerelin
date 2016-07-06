@@ -92,6 +92,8 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         if (maxFP <= 18) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixSmall") + " " + name;
         else if (maxFP >= 54) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
         
+		int marketSize = origin.getSize();
+		if (origin.getId().equals("exipirated_avesta")) marketSize++;
         //CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
         FleetParams fleetParams = new FleetParams(null, origin, factionId, null, "exerelinResponseFleet", 
                 maxFP*0.9f, // combat
@@ -101,7 +103,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
                 0,        // liners
                 0,        // civilian
                 maxFP*0.1f,    // utility
-                0.15f, -1, 1.25f, origin.getSize()/2);    // quality bonus, quality override, officer num mult, officer level bonus
+                0.15f, -1, 1.25f, marketSize/2);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(origin.getFaction(), fleetParams);
         fleet.setName(name);
@@ -127,7 +129,10 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
     
     public static float getMaxReserveSize(MarketAPI market, boolean raw)
     {
-        float baseSize = market.getSize() * 5 + 8;
+		int marketSize = market.getSize();
+		if (market.getId().equals("exipirated_avesta")) marketSize++;
+		
+        float baseSize = marketSize * 5 + 8;
         float size = baseSize;
         if (raw) return size;
         
@@ -160,7 +165,10 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             if (!reserves.containsKey(market.getId()))
                 reserves.put(market.getId(), getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
             
-            float baseIncrement = market.getSize() * (0.5f + (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR));
+			int marketSize = market.getSize();
+			if (market.getId().equals("exipirated_avesta")) marketSize++;
+			
+            float baseIncrement = marketSize * (0.5f + (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR));
             float increment = baseIncrement;
             //if (market.hasCondition("regional_capital")) increment += baseIncrement * 0.1f;
             if (market.hasCondition("headquarters")) increment += baseIncrement * 0.25f;
