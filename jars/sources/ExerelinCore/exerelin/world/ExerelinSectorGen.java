@@ -117,6 +117,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	public static final float MAGNETIC_FIELD_CHANCE = 0.5f;
 	public static final float STELLAR_RING_CHANCE = 0.3f;
 	public static final float STELLAR_BELT_CHANCE = 0.4f;
+	public static final float UNINHABITED_RELAY_CHANCE = 0.25f;
 	public static final float STAR_RANDOM_OFFSET = 100;
 	
 	// this proportion of TT markets with no military bases will have Cabal submarkets (SS+)
@@ -1797,7 +1798,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 
 		// Build comm relay
-		if (inhabited)
+		if (inhabited || Math.random() < UNINHABITED_RELAY_CHANCE)
 		{
 			SectorEntityToken relay = system.addCustomEntity(system.getId() + "_relay", // unique id
 					system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
