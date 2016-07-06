@@ -301,7 +301,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		availableFactions.remove(ExerelinConstants.PLAYER_NPC_ID);
 		
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
-		addListToPicker(availableFactions, picker);
+		picker.addAll(availableFactions);
 		
 		while (numFactions < wantedFactionNum)
 		{
@@ -328,14 +328,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		factionIds = getStartingFactions();
 		numOmnifacs = 0;
 		marketSetup = new ExerelinMarketSetup(this);
-	}
-	
-	protected void addListToPicker(List list, WeightedRandomPicker picker)
-	{
-		for (Object object : list)
-		{
-			picker.add(object);
-		}
 	}
 			
 	protected void pickEntityInteractionImage(SectorEntityToken entity, MarketAPI market, String planetType, EntityType entityType)
@@ -659,9 +651,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			*/
 			
 			WeightedRandomPicker<Vector2f> picker = new WeightedRandomPicker<>();
-			addListToPicker(StarLocations.SPOT, picker);
+			picker.addAll(StarLocations.SPOT);
 			if (StarLocations.SPOT.size() < numSystems + numSystemsEmpty)
-				addListToPicker(StarLocations.SPOT_EXTENDED, picker);
+				picker.addAll(StarLocations.SPOT_EXTENDED);
 			
 			for(int i = 0; i < numSystems + numSystemsEmpty; i ++)
 			{
@@ -932,7 +924,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>();
 		List<String> factions = new ArrayList<>(factionIds);
 		factions.remove(ExerelinConstants.PLAYER_NPC_ID);  // player NPC faction only gets homeworld (if applicable)
-		addListToPicker(factions, factionPicker);
+		factionPicker.addAll(factions);
 		boolean hqsSpawned = false;
 		
 		// before we do anything else give the "homeworld" to our faction
@@ -964,7 +956,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			if (factionPicker.isEmpty()) 
 			{
-				addListToPicker(factions, factionPicker);
+				factionPicker.addAll(factions);
 				hqsSpawned = true;
 			}
 			String factionId = factionPicker.pickAndRemove();
@@ -1002,7 +994,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			{
 				if (factionPicker.isEmpty()) 
 				{
-					addListToPicker(factions, factionPicker);
+					factionPicker.addAll(factions);
 				}
 				factionId = factionPicker.pickAndRemove();
 			}
@@ -1258,7 +1250,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (inhabited && habitableCount < 2)
 		{
 			WeightedRandomPicker<EntityData> picker = new WeightedRandomPicker<>();
-			addListToPicker(uninhabitables1To4, picker);
+			picker.addAll(uninhabitables1To4);
 			for (int i=habitableCount; i < 2; i++)
 			{
 				picker.pickAndRemove().habitable = true;
