@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.events.InvasionFleetEvent;
@@ -42,10 +43,10 @@ public class FleetRequestFire extends FleetRequestActionBase {
 		FactionAPI fleetFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
 		
 		MarketAPI sourceMarket = getSourceMarketForInvasion(fleetFaction, targetMarket);
-		if (targetMarket.getFactionId().equals("player_npc"))
+		if (targetMarket.getFactionId().equals(ExerelinConstants.PLAYER_NPC_ID))
 		{
 			sourceMarket = targetMarket;
-			fleetFaction = sector.getFaction("player_npc");
+			fleetFaction = sector.getFaction(ExerelinConstants.PLAYER_NPC_ID);
 		}
 		else if (targetMarket.getFaction() == fleetFaction) 
 			sourceMarket = targetMarket;

@@ -1,6 +1,7 @@
 package exerelin.campaign.events;
 
 import com.fs.starfarer.api.impl.campaign.events.InvestigationEvent;
+import exerelin.ExerelinConstants;
 
 @Deprecated
 public class ExerelinInvestigationEvent extends InvestigationEvent {
@@ -12,7 +13,7 @@ public class ExerelinInvestigationEvent extends InvestigationEvent {
         //String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
         if (market != null) {
             String marketFactionId = market.getFactionId();
-            if (marketFactionId.equals("player_npc"))
+            if (marketFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
             {
                 log.info("Investigation by own faction; aborting");
                 endEvent();

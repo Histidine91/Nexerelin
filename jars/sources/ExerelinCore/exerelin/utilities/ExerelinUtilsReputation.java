@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import static com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.addAdjustmentMessage;
 import static com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.addNoChangeMessage;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
@@ -79,7 +80,7 @@ public class ExerelinUtilsReputation
 		// moved to DiplomacyManager listener
 		/*
 		syncFactionRelationshipToPlayer(PlayerFactionStore.getPlayerFactionId(), factionId);
-		syncFactionRelationshipToPlayer("player_npc", factionId);
+		syncFactionRelationshipToPlayer(ExerelinConstants.PLAYER_NPC_ID, factionId);
 		AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", factionId);
 		
 		if (player.isAtBest(PlayerFactionStore.getPlayerFactionId(), RepLevel.INHOSPITABLE))
@@ -92,7 +93,7 @@ public class ExerelinUtilsReputation
 	
 	public static void syncFactionRelationshipToPlayer(String factionIdToSync, String otherFactionId)
 	{
-		if (otherFactionId.equals("player_npc")) return;
+		if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
 		if (otherFactionId.equals("merc_hostile")) return;
 		if (otherFactionId.equals("famous_bounty")) return;
 		
@@ -129,9 +130,9 @@ public class ExerelinUtilsReputation
 	{
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		syncFactionRelationshipsToPlayer(playerAlignedFactionId);
-		if (!playerAlignedFactionId.equals("player_npc"))
+		if (!playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
 		{
-			syncFactionRelationshipsToPlayer("player_npc");
+			syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 		}
 	}
 	
@@ -147,7 +148,7 @@ public class ExerelinUtilsReputation
 			if (otherFaction != playerFaction && otherFaction != faction)
 			{
 				String otherFactionId = otherFaction.getId();
-				if (otherFactionId.equals("player_npc")) continue;
+				if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
 				float relationship = faction.getRelationship(otherFactionId);
 				playerFaction.setRelationship(otherFactionId, relationship);
 				if (!noUpdateAlliance)
@@ -156,7 +157,7 @@ public class ExerelinUtilsReputation
 		}
 		Global.getSector().getFaction(Factions.PLAYER).setRelationship("merc_hostile", -1);
 		Global.getSector().getFaction(Factions.PLAYER).setRelationship("famous_bounty", -1);
-		syncFactionRelationshipsToPlayer("player_npc");
+		syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 		//SectorManager.checkForVictory(); // already done in syncFactionRelationshipsToPlayer
 	}
 	

@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 
 public class FleetRequestCanInvade extends FleetRequestActionBase {
@@ -21,6 +22,6 @@ public class FleetRequestCanInvade extends FleetRequestActionBase {
                 if (targetMarket == null) return false;
                 
                 String factionId = targetMarket.getFactionId();        
-                return !(factionId.equals("player_npc") || factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals("independent"));
+                return !(factionId.equals(ExerelinConstants.PLAYER_NPC_ID) || factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals("independent"));
         }
 }

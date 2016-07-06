@@ -1,6 +1,7 @@
 package exerelin.campaign.events;
 
 import com.fs.starfarer.api.impl.campaign.events.InvestigationEventCommSniffer;
+import exerelin.ExerelinConstants;
 
 public class ExerelinInvestigationEventCommSniffer extends InvestigationEventCommSniffer {
     
@@ -11,7 +12,7 @@ public class ExerelinInvestigationEventCommSniffer extends InvestigationEventCom
         //String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
         if (market != null) {
             String marketFactionId = market.getFactionId();
-            if (marketFactionId.equals("player_npc"))
+            if (marketFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
             {
                 log.info("Investigation by own faction; aborting");
                 endEvent();

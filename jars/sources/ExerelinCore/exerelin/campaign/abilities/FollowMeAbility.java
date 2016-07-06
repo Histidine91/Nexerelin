@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Pings;
 import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.StringHelper;
@@ -75,7 +76,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 			if (fleet == entity) continue;
 			
 			String fleetFactionId = fleet.getFaction().getId();
-			if (myFactionId.equals(fleetFactionId) || fleetFactionId.equals("player_npc") || AllianceManager.areFactionsAllied(myFactionId, fleetFactionId))
+			if (myFactionId.equals(fleetFactionId) || fleetFactionId.equals(ExerelinConstants.PLAYER_NPC_ID) || AllianceManager.areFactionsAllied(myFactionId, fleetFactionId))
 			{
 				float dist = Misc.getDistance(fleet.getLocation(), entity.getLocation());
 				//log.info("Distance of fleet " + otherFleet.getName() + ": " + dist);

@@ -54,7 +54,7 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 				return;
 
 			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-			//if (alignedFactionId.equals("player_npc")) return;  // no self-salary
+			//if (alignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;  // no self-salary
 			
 			// Exi is not technically alive in Corvus mode, but still treated as present due to Tasserus
 			if (ExerelinUtilsFaction.isExiInCorvus(alignedFactionId))

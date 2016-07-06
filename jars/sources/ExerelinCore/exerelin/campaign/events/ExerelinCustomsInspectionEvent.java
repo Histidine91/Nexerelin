@@ -2,6 +2,7 @@ package exerelin.campaign.events;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.events.CustomsInspectionEvent;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 
@@ -17,7 +18,7 @@ public class ExerelinCustomsInspectionEvent extends CustomsInspectionEvent {
             String factionId = faction.getId();
             log.info("Customs inspection event starting: faction " + factionId);
             
-            boolean blockOwnFaction = factionId.equals("player_npc");
+            boolean blockOwnFaction = factionId.equals(ExerelinConstants.PLAYER_NPC_ID);
             if (!ExerelinConfig.ownFactionCustomsInspections)
             {
                 blockOwnFaction = blockOwnFaction || factionId.equals(PlayerFactionStore.getPlayerFactionId());

@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 		if (done) return;
 		done = true;
 		String stage = reason.toString().toLowerCase();
-		if (faction.getId().equals(PlayerFactionStore.getPlayerFactionId()) || faction.getId().equals("player_npc"))
+		if (faction.getId().equals(PlayerFactionStore.getPlayerFactionId()) || faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID))
 			stage += "_player";
 		
 		log.info("Ending invasion event: " + stage);

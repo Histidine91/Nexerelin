@@ -22,6 +22,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.events.MarketAttackedEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -162,7 +163,7 @@ public class InvasionRound {
 	public static float GetDefenderStrength(MarketAPI market, float bonusMult, boolean isRaid)
 	{
 		float marketSize = market.getSize();
-		if (market.getId().equals("exipirated_avesta")) marketSize++;
+		if (market.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize++;
 		
 		float baseDefenderStrength = DEFENDER_BASE_STRENGTH * (float)(Math.pow(marketSize+1, 3));
 		baseDefenderStrength = baseDefenderStrength * (market.getStabilityValue() + 1 - DEFENDER_STABILITY_MOD) * DEFENDER_STABILITY_MOD;
@@ -225,7 +226,7 @@ public class InvasionRound {
 			randomBonus = ATTACKER_RANDOM_BONUS;
 		
 		float marketSize = market.getSize();
-		if (market.getId().equals("exipirated_avesta")) marketSize++;
+		if (market.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize++;
 		
 		float attackerMarineMult = attacker.getCommanderStats().getMarineEffectivnessMult().getModifiedValue();
 		float attackerAssets = (marineCount * attackerMarineMult) + (attacker.getFleetPoints() * ATTACKER_FLEET_MULT);

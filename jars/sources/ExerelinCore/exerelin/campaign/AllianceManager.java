@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -240,7 +241,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             String otherFactionId = otherFaction.getId();
             if (otherFaction == faction) continue;
             if (getFactionAlliance(otherFactionId) == alliance) continue;
-            if (otherFactionId.equals(Factions.PLAYER) || otherFactionId.equals("player_npc"))
+            if (otherFactionId.equals(Factions.PLAYER) || otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
             {
                 String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
                 if (getFactionAlliance(playerAlignedFactionId) == alliance) continue;
@@ -303,7 +304,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             if (alliancesByFactionId.containsKey(factionId)) continue;
             if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
             if (INVALID_FACTIONS.contains(factionId)) continue;
-            if (factionId.equals("player_npc") && !ExerelinConfig.followersAlliances) continue;
+            if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID) && !ExerelinConfig.followersAlliances) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             for (String otherFactionId : liveFactionIds)
@@ -312,7 +313,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (otherFactionId.equals(factionId)) continue;
                 if (ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
                 if (INVALID_FACTIONS.contains(otherFactionId)) continue;
-                if (otherFactionId.equals("player_npc") && !ExerelinConfig.followersAlliances) continue;
+                if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID) && !ExerelinConfig.followersAlliances) continue;
                 if (faction.isAtBest(otherFactionId, RepLevel.WELCOMING)) continue;
                 
                 // better relationships are more likely to form alliances
@@ -363,7 +364,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         {
             if (alliancesByFactionId.containsKey(factionId)) continue;
             if (INVALID_FACTIONS.contains(factionId)) continue;
-            if (factionId.equals("player_npc") && !ExerelinConfig.followersAlliances) continue;
+            if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID) && !ExerelinConfig.followersAlliances) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             WeightedRandomPicker<Alliance> picker = new WeightedRandomPicker<>(); 
@@ -539,8 +540,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static float setRelationshipAndUpdateDelta(FactionAPI faction, String otherFactionId, float newRel, float highestDelta)
     {
         String factionId = faction.getId();
-        if (factionId.equals("player") && otherFactionId.equals("player_npc")) return highestDelta;
-        if (factionId.equals("player_npc") && otherFactionId.equals("player")) return highestDelta;
+        if (factionId.equals("player") && otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return highestDelta;
+        if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID) && otherFactionId.equals("player")) return highestDelta;
         float oldRel = faction.getRelationship(otherFactionId);
         if (oldRel == newRel) return highestDelta;
         //log.info("Setting relationship of " + faction.getId() + " and " + otherFactionId + ": " + newRel);
@@ -570,13 +571,13 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return null; 
         }
         
-        if (factionId1.equals(Factions.PLAYER) || factionId1.equals("player_npc"))
+        if (factionId1.equals(Factions.PLAYER) || factionId1.equals(ExerelinConstants.PLAYER_NPC_ID))
         {
             String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
             if (allianceManager.alliancesByFactionId.get(playerAlignedFactionId) == alliance2)
                 return null;    // don't sync with alliance peers
         }
-        if (factionId2.equals(Factions.PLAYER) || factionId2.equals("player_npc"))
+        if (factionId2.equals(Factions.PLAYER) || factionId2.equals(ExerelinConstants.PLAYER_NPC_ID))
         {
             String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
             if (allianceManager.alliancesByFactionId.get(playerAlignedFactionId) == alliance1)

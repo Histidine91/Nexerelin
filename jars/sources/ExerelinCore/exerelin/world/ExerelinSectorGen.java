@@ -40,6 +40,7 @@ import data.scripts.world.exipirated.ExipiratedAvestaFleetManager;
 import data.scripts.world.exipirated.ExipiratedAvestaMovement;
 import data.scripts.world.exipirated.ExipiratedCollectorFleetManager;
 import data.scripts.world.exipirated.ExipiratedPatrolFleetManager;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
@@ -296,7 +297,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		factions.add(Factions.INDEPENDENT);
 		availableFactions.remove(Factions.INDEPENDENT);
 		
-		availableFactions.remove("player_npc");
+		availableFactions.remove(ExerelinConstants.PLAYER_NPC_ID);
 		
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
 		addListToPicker(availableFactions, picker);
@@ -476,13 +477,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			SectorEntityToken toOrbit = system.getStar();
 			float radius = toOrbit.getRadius();
 			float orbitDistance = radius + MathUtils.getRandomNumberInRange(2000, 2500);
-			avesta = toOrbit.getContainingLocation().addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
+			avesta = toOrbit.getContainingLocation().addCustomEntity(ExerelinConstants.AVESTA_ID, "Avesta Station", "exipirated_avesta_station", "exipirated");
 			avesta.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
 		else
 		{
 			LocationAPI hyperspace = sector.getHyperspace();
-			avesta = hyperspace.addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
+			avesta = hyperspace.addCustomEntity(ExerelinConstants.AVESTA_ID, "Avesta Station", "exipirated_avesta_station", "exipirated");
 			
 			// The hyperspace station has a custom movement system
 			ExipiratedAvestaMovement avestaMovementScript = new ExipiratedAvestaMovement(avesta, 60f, 3f);
@@ -929,7 +930,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	{
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>();
 		List<String> factions = new ArrayList<>(factionIds);
-		factions.remove("player_npc");  // player NPC faction only gets homeworld (if applicable)
+		factions.remove(ExerelinConstants.PLAYER_NPC_ID);  // player NPC faction only gets homeworld (if applicable)
 		addListToPicker(factions, factionPicker);
 		boolean hqsSpawned = false;
 		

@@ -3,6 +3,7 @@ package exerelin.campaign;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinUtilsReputation;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,7 @@ public class PlayerFactionStore {
     private static final String PLAYER_FACTION_ID_KEY = "exerelin_playerFactionId";
     private static final String PLAYER_RELATIONS_KEY = "exerelin_independentPlayerRelations";
     
-    private static String factionId = "player_npc";
+    private static String factionId = ExerelinConstants.PLAYER_NPC_ID;
     
     //private static Map<String, Float> independentPlayerRelations = new HashSet<>();
     

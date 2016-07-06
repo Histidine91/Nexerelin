@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.ExerelinConstants;
 import exerelin.utilities.StringHelper;
 
 
@@ -51,7 +52,7 @@ public class FactionChangedEvent extends BaseEventPlugin {
 		String theOldFactionStr = oldFaction.getDisplayNameWithArticle();
 		String newFactionStr = newFaction.getEntityNamePrefix();
 		String theNewFactionStr = newFaction.getDisplayNameWithArticle();
-		String sender = newFaction.getId().equals("player_npc") ? oldFaction.getEntityNamePrefix() : newFaction.getEntityNamePrefix();
+		String sender = newFaction.getId().equals(ExerelinConstants.PLAYER_NPC_ID) ? oldFaction.getEntityNamePrefix() : newFaction.getEntityNamePrefix();
 		map.put("$sender", sender);
 		map.put("$oldFaction", oldFactionStr);
 		map.put("$theOldFaction", theOldFactionStr);
@@ -67,7 +68,7 @@ public class FactionChangedEvent extends BaseEventPlugin {
 	/*
 	@Override
 	public String getCurrentImage() {
-		if (newFaction.getId().equals("player_npc")) return oldFaction.getLogo();
+		if (newFaction.getId().equals(ExerelinConstants.PLAYER_NPC_ID)) return oldFaction.getLogo();
 		return newFaction.getLogo();
 	}
 	*/

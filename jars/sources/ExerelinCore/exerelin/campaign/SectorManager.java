@@ -32,6 +32,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.ExerelinCorvusLocations;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -295,7 +296,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         FactionAPI targetFaction = Global.getSector().getFaction(targetFactionId);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         if (targetFaction.isHostileTo(Factions.PLAYER)) return;
-        if (targetFactionId.equals(playerAlignedFactionId) || targetFactionId.equals("player_npc")) return;
+        if (targetFactionId.equals(playerAlignedFactionId) || targetFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
         
         int numFactions = 0;
         float totalRepLoss = 0;	// note: does not include the loss with player-aligned faction
@@ -305,9 +306,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         for (String factionId : factions)
         {
             if (factionId.equals(targetFactionId)) continue;
-            //if (factionId.equals("player_npc")) continue;
+            //if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
             if (targetFaction.isHostileTo(factionId)) continue;
-            if (factionId.equals("player_npc") && ExerelinConfig.warmongerPenalty <= 1) 
+            if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID) && ExerelinConfig.warmongerPenalty <= 1) 
                 continue;
             
             float loss = 0;
@@ -332,7 +333,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (factionId.equals(playerAlignedFactionId))
             {
                 myFactionLoss = loss;
-                if (!factionId.equals("player_npc")) myFactionLoss = (2*loss) + 0.05f;
+                if (!factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) myFactionLoss = (2*loss) + 0.05f;
                 repLoss.put(factionId, myFactionLoss);
                 continue;
             }
@@ -366,7 +367,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId)) continue;
             if (faction.isNeutralFaction()) continue;
             if (faction.isPlayerFaction()) continue;
-            if (factionId.equals("player_npc")) continue;
+            if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
             if (seenFactions.contains(factionId)) continue;
 
             seenFactions.add(factionId);
@@ -402,7 +403,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         for(String factionId : factionIds)
         {
-            if (factionId.equals("player_npc")) continue;
+            if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
             if (factionId.equals(Factions.INDEPENDENT)) continue;
             ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
             if (config != null && !config.playableFaction) continue;
@@ -468,7 +469,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static void setShowFactionInIntelTab(String factionId, boolean show)
     {
-        if (factionId.equals("player_npc"))
+        if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
             return;    // do nothing
         
         if (!show && ExerelinUtilsFaction.isExiInCorvus(factionId)) // don't hide Exi in Corvus mode
@@ -849,15 +850,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         String oldFactionId = PlayerFactionStore.getPlayerFactionId();
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-        if (playerAlignedFactionId.equals("player_npc")) return;
+        if (playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
 
         SectorAPI sector = Global.getSector();
-        FactionAPI newFaction = sector.getFaction("player_npc");
+        FactionAPI newFaction = sector.getFaction(ExerelinConstants.PLAYER_NPC_ID);
         FactionAPI oldFaction = sector.getFaction(oldFactionId);
 
         PlayerFactionStore.loadIndependentPlayerRelations(true);
-        PlayerFactionStore.setPlayerFactionId("player_npc");
-        ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
+        PlayerFactionStore.setPlayerFactionId(ExerelinConstants.PLAYER_NPC_ID);
+        ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 
         CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
         if (eventSuper == null) 

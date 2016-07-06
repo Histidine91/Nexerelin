@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.events.FactionChangedEvent;
@@ -37,7 +38,7 @@ public class JoinFaction extends BaseCommandPlugin {
 		String str = StringHelper.getString("exerelin_factions", "switchedFactions");
 		
 		PlayerFactionStore.setPlayerFactionId(newFactionId);
-		if (oldFactionId.equals("player_npc"))
+		if (oldFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
 		{
 			PlayerFactionStore.saveIndependentPlayerRelations();
 			str = StringHelper.getString("exerelin_factions", "joinedFaction");
@@ -45,9 +46,9 @@ public class JoinFaction extends BaseCommandPlugin {
 		}
 		
 		// make sure player_npc has no conflicting alliance loyalties
-		if (AllianceManager.getFactionAlliance("player_npc") != null && !AllianceManager.areFactionsAllied("player_npc", newFactionId))
+		if (AllianceManager.getFactionAlliance(ExerelinConstants.PLAYER_NPC_ID) != null && !AllianceManager.areFactionsAllied(ExerelinConstants.PLAYER_NPC_ID, newFactionId))
 		{
-			AllianceManager.leaveAlliance("player_npc", false);
+			AllianceManager.leaveAlliance(ExerelinConstants.PLAYER_NPC_ID, false);
 		}
 		
 		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId, false);

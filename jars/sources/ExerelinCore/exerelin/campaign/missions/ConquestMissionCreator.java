@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
@@ -98,7 +99,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		//log.info("Picking faction for conquest mission");
 		for (String factionId : factions)
 		{
-			if (factionId.equals("player_npc")) continue;
+			if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
 			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, ExerelinConfig.allowPirateInvasions, true);
 			enemiesByFaction.put(factionId, enemies);
 			factionPicker.add(factionId, enemies.size());
@@ -110,7 +111,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		List<String> enemies = enemiesByFaction.get(factionId);
 		for (String enemyId: enemies)
 		{
-			if (enemyId.equals("player_npc")) continue;
+			if (enemyId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
 			List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(enemyId);
 			for (MarketAPI market : markets) {
 				if (!doesFactionTargetPairAlreadyExist(factionId, market))

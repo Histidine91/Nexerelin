@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 import java.util.List;
 import org.lwjgl.util.vector.Vector2f;
@@ -26,7 +27,7 @@ public abstract class FleetRequestActionBase extends BaseCommandPlugin {
             Vector2f targetMarketLoc = targetMarket.getLocationInHyperspace();
             
             for (MarketAPI market : markets) {
-                if ( market.getFaction() == invader || market.getFactionId().equals("player_npc"))
+                if ( market.getFaction() == invader || market.getFactionId().equals(ExerelinConstants.PLAYER_NPC_ID))
                 {
                     float dist = Misc.getDistance(market.getLocationInHyperspace(), targetMarketLoc);
                     if (dist < 5000.0F) {

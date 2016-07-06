@@ -11,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
+import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
@@ -93,7 +94,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         else if (maxFP >= 54) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
         
 		int marketSize = origin.getSize();
-		if (origin.getId().equals("exipirated_avesta")) marketSize++;
+		if (origin.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize++;
         //CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
         FleetParams fleetParams = new FleetParams(null, origin, factionId, null, "exerelinResponseFleet", 
                 maxFP*0.9f, // combat
@@ -130,7 +131,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
     public static float getMaxReserveSize(MarketAPI market, boolean raw)
     {
 		int marketSize = market.getSize();
-		if (market.getId().equals("exipirated_avesta")) marketSize++;
+		if (market.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize++;
 		
         float baseSize = marketSize * 5 + 8;
         float size = baseSize;
@@ -166,7 +167,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
                 reserves.put(market.getId(), getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
             
 			int marketSize = market.getSize();
-			if (market.getId().equals("exipirated_avesta")) marketSize++;
+			if (market.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize++;
 			
             float baseIncrement = marketSize * (0.5f + (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR));
             float increment = baseIncrement;

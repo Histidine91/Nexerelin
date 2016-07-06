@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager.VictoryType;
 import exerelin.utilities.StringHelper;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 public class VictoryScreenScript implements EveryFrameScript
 {
     private boolean isDone = false;
-    private String faction = "player_npc";
+    private String faction = ExerelinConstants.PLAYER_NPC_ID;
     private VictoryType victoryType = VictoryType.CONQUEST;
 
     public VictoryScreenScript(String faction, VictoryType victoryType)

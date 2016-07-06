@@ -10,6 +10,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.thoughtworks.xstream.XStream;
 import data.scripts.campaign.SSP_CoreScript;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
@@ -88,8 +89,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.registerPlugin(new ExerelinCoreCampaignPlugin());
         SectorManager.setCorvusMode(true);
         SectorManager.reinitLiveFactions();
-        PlayerFactionStore.setPlayerFactionId("player_npc");
-        sector.getFaction(Factions.PLAYER).setRelationship("player_npc", 1);
+        PlayerFactionStore.setPlayerFactionId(ExerelinConstants.PLAYER_NPC_ID);
+        sector.getFaction(Factions.PLAYER).setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1);
         ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
         
         sector.addTransientScript(new ReinitScreenScript());

@@ -51,7 +51,7 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		String stage = "report";
 		
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-		//if (alignedFactionId.equals("player_npc")) return;  // no self-insurance
+		//if (alignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;  // no self-insurance
 		
 		// Exi is not technically alive in Corvus mode, but still treated as present due to Tasserus
 		if (ExerelinUtilsFaction.isExiInCorvus(alignedFactionId))

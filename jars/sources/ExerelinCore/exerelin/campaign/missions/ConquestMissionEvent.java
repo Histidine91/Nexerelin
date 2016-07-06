@@ -17,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 	public void advance(float amount) {
 		String targetFactionId = mission.getTarget().getFactionId();
 		
-		if (targetFactionId.equals("player_npc") || targetFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
+		if (targetFactionId.equals(ExerelinConstants.PLAYER_NPC_ID) || targetFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
 		{
 			String stageId = "success";
 			if (mission.hasBonus(elapsedDays))

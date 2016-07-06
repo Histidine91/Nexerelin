@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
@@ -144,9 +145,9 @@ public class SuperweaponEvent extends BaseEventPlugin {
 			for (String factionId : factions)
 			{
 				if (factionId.equals(targetFactionId)) continue;
-				//if (factionId.equals("player_npc")) continue;
+				//if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
 				if (targetFaction.isHostileTo(factionId)) continue;
-				if (factionId.equals("player_npc") || factionId.equals(playerAlignedFactionId))
+				if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID) || factionId.equals(playerAlignedFactionId))
 					continue;
 
 				float loss = REPUTATION_PENALTY_BASE;

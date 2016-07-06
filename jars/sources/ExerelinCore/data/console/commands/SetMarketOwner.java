@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import java.util.List;
 import org.lazywizard.console.BaseCommand;
@@ -52,7 +53,7 @@ public class SetMarketOwner implements BaseCommand {
         
         FactionAPI defenderFaction = market.getFaction();
         String defenderFactionId = defenderFaction.getId();
-        String attackerFactionId = "player_npc";
+        String attackerFactionId = ExerelinConstants.PLAYER_NPC_ID;
         
         if (tmp.length < 2)
         {

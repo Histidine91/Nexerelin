@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
 import exerelin.campaign.events.SecurityAlertEvent;
 import exerelin.utilities.ExerelinConfig;
@@ -116,7 +117,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             String factionId = faction.getId();
             if (disallowedFactions.contains(factionId)) continue;
             if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;  // pirates don't do covert warfare
-            if (!ExerelinConfig.followersAgents && factionId.equals("player_npc")) continue;
+            if (!ExerelinConfig.followersAgents && factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
             ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
             if (factionConf != null && !factionConf.allowAgentActions) continue;
             
