@@ -24,9 +24,11 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMissionCreator;
 import com.fs.starfarer.api.impl.campaign.missions.MarketProcurementMissionCreator;
+import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain;
@@ -34,6 +36,10 @@ import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.ExerelinModPlugin;
+import data.scripts.world.exipirated.ExipiratedAvestaFleetManager;
+import data.scripts.world.exipirated.ExipiratedAvestaMovement;
+import data.scripts.world.exipirated.ExipiratedCollectorFleetManager;
+import data.scripts.world.exipirated.ExipiratedPatrolFleetManager;
 import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
@@ -463,37 +469,30 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	protected void addAvestaStation(SectorAPI sector, StarSystemAPI system)
 	{
-		SectorEntityToken avestaEntity;
+		SectorEntityToken avesta;
 		
 		if (ExerelinSetupData.getInstance().numSystems == 1)
 		{
 			SectorEntityToken toOrbit = system.getStar();
 			float radius = toOrbit.getRadius();
 			float orbitDistance = radius + MathUtils.getRandomNumberInRange(2000, 2500);
-			avestaEntity = toOrbit.getContainingLocation().addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
-			avestaEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
+			avesta = toOrbit.getContainingLocation().addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
+			avesta.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
 		else
 		{
 			LocationAPI hyperspace = sector.getHyperspace();
-			SectorEntityToken toOrbit = system.getHyperspaceAnchor();
-			avestaEntity = hyperspace.addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
-			//avestaEntity.setCircularOrbitWithSpin(toOrbit, ExerelinUtilsAstro.getRandomAngle(), 5000, 60, 30, 30);
-			float orbitDist = 4500;
-			float period = ExerelinUtilsAstro.getOrbitalPeriod(500, orbitDist, 2);
-			ExerelinUtilsAstro.setOrbit(avestaEntity, toOrbit, 4500, true, ExerelinUtilsAstro.getRandomAngle(), period);
+			avesta = hyperspace.addCustomEntity("exipirated_avesta", "Avesta Station", "exipirated_avesta_station", "exipirated");
+			
+			// The hyperspace station has a custom movement system
+			ExipiratedAvestaMovement avestaMovementScript = new ExipiratedAvestaMovement(avesta, 60f, 3f);
+			Global.getSector().getPersistentData().put("exipirated_movementScript", avestaMovementScript);
+			avesta.addScript(avestaMovementScript);
 		}
-		
-		/*
-		EntityData data = new EntityData(null);
-		data.name = "Prism Freeport";
-		data.type = EntityType.STATION;
-		data.forceMarketSize = 4;
-		
-		MarketAPI market = addMarketToEntity(avestaEntity, data, "independent");
-		*/
+		avesta.setInteractionImage("illustrations", "pirate_station");
 
-		MarketAPI market = Global.getFactory().createMarket("exipirated_avesta" /*+ "_market"*/, "Avesta Station", 5);
+		// make sure it appends "market" for Avesta's custom interaction image handling
+		MarketAPI market = Global.getFactory().createMarket("exipirated_avesta" + "_market", "Avesta Station", 5);
 		market.setFactionId("exipirated");
 		market.addCondition(Conditions.POPULATION_5);
 		market.addCondition(Conditions.ORBITAL_STATION);
@@ -514,10 +513,16 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		market.getTariff().modifyFlat("default_tariff", 0.2f);
 		market.getTariff().modifyMult("isFreeMarket", 0.5f);
-		market.setPrimaryEntity(avestaEntity);
-		avestaEntity.setMarket(market);
-		avestaEntity.setFaction("exipirated");
+		market.setPrimaryEntity(avesta);
+		avesta.setMarket(market);
+		avesta.setFaction("exipirated");
 		sector.getEconomy().addMarket(market);
+		
+		SharedData.getData().getMarketsWithoutPatrolSpawn().add(market.getId());
+		avesta.addScript(new ExipiratedAvestaFleetManager(market));
+		avesta.addScript(new ExipiratedPatrolFleetManager(market));
+		avesta.addScript(new ExipiratedCollectorFleetManager(market));
+		avesta.addTag(Tags.COMM_RELAY);
 	}
 	
 	/*

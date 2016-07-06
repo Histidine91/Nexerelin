@@ -1,22 +1,25 @@
 {
-    "uniqueModClassName":"data.scripts.ExigencyModPlugin", # String
-    "playableFaction":"true", # Boolean
-    "isPirateNeutral":"false", # Boolean
+    "uniqueModClassName":"data.scripts.ExigencyModPlugin",
+    "playableFaction":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "crewExpereinceLevelIncreaseChance":0.0,
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Splinter Group", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Splinter Group",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":["exipirated"], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "factionsLiked":[],
+    "factionsDisliked":["exipirated"],
 
     "alignments":{
         "corporate":1,
-        "technocratic":1,
+        "technocratic":1
     },
+    
+    "startShipsSolo":["exigency_yria_Assault"],
+    "startShipsCombatSmall":["exigency_destroyer_Disruptor", "exigency_yria_Fleetpointdefense", "exigency_compactfrigate_Brawler"],
+    "startShipsCombatLarge":["exigency_cruiser_Assault", "exigency_lightcarrier_Standard", "exigency_azata_wing", "exigency_kaivor_cs_wing"], # Lol fighters
 }

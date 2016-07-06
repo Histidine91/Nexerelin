@@ -394,13 +394,9 @@ FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinDiableAvionics,NewGameOptionSelected,$option == exerelinNGCJoinDiableAvionics,"NGCSetPlayerFaction ""diableavionics""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinExigency,NewGameOptionSelected,$option == exerelinNGCJoinExigency,"NGCSetPlayerFaction ""exigency""
-NGCAddShipAndComplement ""exigency_destroyer_Disruptor""
-AddText ""Added Zephos-class destroyer"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinExipirated,NewGameOptionSelected,$option == exerelinNGCJoinExipirated,"NGCSetPlayerFaction ""exipirated""
-NGCAddShipAndComplement ""exipirated_azryel_Standard""
-AddText ""Added Azryel-class destroyer"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinFirestormFederation,NewGameOptionSelected,$option == exerelinNGCJoinFirestormFederation,"NGCSetPlayerFaction ""firestorm_federation""
 NGCAddShipAndComplement ""EM_Frigate_variant""
 AddText ""Added Torch-class frigate"" textFriendColor

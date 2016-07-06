@@ -1,24 +1,29 @@
 {
-    "uniqueModClassName":"data.scripts.ExigencyModPlugin", # String
+    "uniqueModClassName":"data.scripts.ExigencyModPlugin",
     "playableFaction":true,
     "pirateFaction":true,
     "noHomeworld":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "crewExpereinceLevelIncreaseChance":0.0,
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Splinter Group", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Splinter Group",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":["exigency"], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "factionsLiked":[],
+    "factionsDisliked":["exigency"],
     
     "alignments":{
         "technocratic":0.5,
     },
     
     "freeMarket":true,
+    
+    "startShipsSolo":["exipirated_rauwel_Standard"],
+    "startShipsCombatSmall":["exipirated_azryel_Standard", "exigency_yria_Firesupport", "hound_d_pirates_Standard"],
+    "startShipsTradeSmall":["mule_d_pirates_Standard", "exigency_yria_Disruptor", "shepherd_Frontier"],
+    "startShipsCombatLarge":["exigency_cruiser_Standard", "exipirated_azryel_Support", "exigency_compactfrigate_Recon"],
 }
