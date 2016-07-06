@@ -65,17 +65,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 {
 	// NOTE: system names and planet names are overriden by planetNames.json
 	protected static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
-	protected static String[] possibleSystemNames = {"Exerelin", "Askar", "Garil", "Yaerol", "Plagris", "Marot", "Caxort", "Laret", "Narbil", "Karit",
-		"Raestal", "Bemortis", "Xanador", "Tralor", "Exoral", "Oldat", "Pirata", "Zamaror", "Servator", "Bavartis", "Valore", "Charbor", "Dresnen",
-		"Firort", "Haidu", "Jira", "Wesmon", "Uxor"};
-	protected static String[] possiblePlanetNames = new String[] {"Baresh", "Zaril", "Vardu", "Drewler", "Trilar", "Polres", "Laret", "Erilatir",
-		"Nambor", "Zat", "Raqueler", "Garret", "Carashil", "Qwerty", "Azerty", "Tyrian", "Savarra", "Torm", "Gyges", "Camanis", "Ixmucane", "Yar", "Tyrel",
-		"Tywin", "Arya", "Sword", "Centuri", "Heaven", "Hell", "Sanctuary", "Hyperion", "Zaphod", "Vagar", "Green", "Blond", "Gabrielle", "Masset",
-		"Effecer", "Gunsa", "Patiota", "Rayma", "Origea", "Litsoa", "Bimo", "Plasert", "Pizzart", "Shaper", "Coruscent", "Hoth", "Gibraltar", "Aurora",
-		"Darwin", "Mendel", "Crick", "Franklin", "Watson", "Pauling",
-		"Rutherford", "Maxwell", "Bohr", "Pauli", "Curie", "Meitner", "Heisenberg", "Feynman"};
-	protected static String[] possibleStationNames = new String[] {"Base", "Orbital", "Trading Post", "HQ", "Post", "Dock", "Mantle", "Ledge", "Customs", "Nest",
-		"Port", "Quey", "Terminal", "Exchange", "View", "Wall", "Habitat", "Shipyard", "Backwater"};
+	// don't specify names here to make sure it crashes instead of failing silently if planetNames.json is broken
+	protected static String[] possibleSystemNames = {};
+	protected static String[] possiblePlanetNames = new String[] {};
+	protected static String[] possibleStationNames = new String[] {};
 	protected static final String[] starBackgroundsArray = new String[]
 	{
 		"backgrounds/background1.jpg", "backgrounds/background2.jpg", "backgrounds/background3.jpg", "backgrounds/background4.jpg", "backgrounds/background5.jpg", "backgrounds/background6.jpg",
