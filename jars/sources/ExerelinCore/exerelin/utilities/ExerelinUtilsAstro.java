@@ -12,6 +12,14 @@ import org.lazywizard.lazylib.campaign.orbits.EllipticalOrbit;
 
 public class ExerelinUtilsAstro {
 	
+	/**
+	 * Gets the orbital period for an object around a stellar object of the specified radius and density,
+	 * at the given <code>orbitRadius</code>.
+	 * @param primaryRadius Radius of the stellar object to orbit.
+	 * @param orbitRadius The orbit radius (assumes a circular orbit).
+	 * @param density Density of the primary.
+	 * @return Orbit period in days
+	 */
 	public static float getOrbitalPeriod(float primaryRadius, float orbitRadius, float density)
 	{
 		primaryRadius *= 0.01;
@@ -27,11 +35,24 @@ public class ExerelinUtilsAstro {
 		return period;
 	}
 	
+	/**
+	 * Gets the orbital period for an object around the specified <code>primary</code> at the given <code>orbitRadius</code>.
+	 * Density is automatically calculated with <code>getDensity(primary)</code>.
+	 * @param primary The stellar object to orbit.
+	 * @param orbitRadius The orbit radius (assumes a circular orbit).
+	 * @return Orbit period in days
+	 */
 	public static float getOrbitalPeriod(SectorEntityToken primary, float orbitRadius)
 	{
 		return getOrbitalPeriod(primary.getRadius(), orbitRadius, getDensity(primary));
 	}
 	
+	/**
+	 * Gets a "density" value for a stellar object to estimate its mass. 
+	 * Returns 0.5 for stars and gas giants, 8 for Nexerelin's dark star, and 2 for everything else.
+	 * @param primary The orbit focus of the object whose orbit we want to set.
+	 * @return Estimated primary density.
+	 */
 	public static float getDensity(SectorEntityToken primary)
 	{
 		if (primary instanceof PlanetAPI)
@@ -44,6 +65,10 @@ public class ExerelinUtilsAstro {
 		return 2;
 	}
 	
+	/**
+	 * Returns a random float between 0.0 and 360.0
+	 * @return random angle
+	 */
 	public static float getRandomAngle()
 	{
 		return MathUtils.getRandomNumberInRange(0f, 360f);
@@ -114,6 +139,7 @@ public class ExerelinUtilsAstro {
 	public static void setLagrangeOrbit(SectorEntityToken orbiter, SectorEntityToken m1, SectorEntityToken m2, int point, 
 			float m2Angle, float m2OrbitRadius, float myOrbitRadius, float orbitPeriod, boolean isEllipse, float ellipseAngle, float ellipseMult)
 	{
+		// maybe we should just throw an exception
 		if (point <= 0 || point > 5)
 		{
 			if (Math.random() < 0.5) point = 4;
@@ -143,6 +169,16 @@ public class ExerelinUtilsAstro {
 		}
 	}
 	
+	/**
+	 * Adds an asteroid belt and the background ring bands
+	 * @param system
+	 * @param planet
+	 * @param numAsteroids
+	 * @param orbitRadius
+	 * @param width
+	 * @param minOrbitDays
+	 * @param maxOrbitDays
+	 */
 	public static void addAsteroidBelt(LocationAPI system, SectorEntityToken planet, int numAsteroids, float orbitRadius, float width, float minOrbitDays, float maxOrbitDays)
 	{
 		// since we can't easily store belts' orbital periods at present, make sure asteroids all orbit in the same direction
