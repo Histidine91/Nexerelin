@@ -36,6 +36,7 @@ import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.ExerelinModPlugin;
+import data.scripts.campaign.ExigencyCommRelayAdder;
 import data.scripts.world.exipirated.ExipiratedAvestaFleetManager;
 import data.scripts.world.exipirated.ExipiratedAvestaMovement;
 import data.scripts.world.exipirated.ExipiratedCollectorFleetManager;
@@ -516,7 +517,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		avesta.addScript(new ExipiratedAvestaFleetManager(market));
 		avesta.addScript(new ExipiratedPatrolFleetManager(market));
 		avesta.addScript(new ExipiratedCollectorFleetManager(market));
-		avesta.addTag(Tags.COMM_RELAY);
+		avesta.addScript(new ExigencyCommRelayAdder());
 	}
 	
 	/*
