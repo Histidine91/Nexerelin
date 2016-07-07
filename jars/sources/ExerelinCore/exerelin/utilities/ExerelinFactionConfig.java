@@ -54,6 +54,7 @@ public class ExerelinFactionConfig
     public String[] factionsNeutral = new String[]{};
     public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
     
+	public float spawnMarketShare = 1;
     public boolean freeMarket = false;
 
     public float invasionStrengthBonusAttack = 0;
@@ -128,6 +129,7 @@ public class ExerelinFactionConfig
                 factionsNeutral = JSONArrayToStringArray(settings.getJSONArray("factionsNeutral"));
             
             freeMarket = settings.optBoolean("freeMarket", freeMarket);
+			spawnMarketShare = (float)settings.optDouble("spawnMarketShare", spawnMarketShare);
             
             invasionStrengthBonusAttack = (float)settings.optDouble("invasionStrengthBonusAttack", 0);
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);

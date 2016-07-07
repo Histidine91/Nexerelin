@@ -910,7 +910,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		else
 		{	
 			data.market = marketSetup.addMarketToEntity(data, factionId);
-			standaloneStations.add(data);
+			//standaloneStations.add(data);
 		}
 		pickEntityInteractionImage(newStation, newStation.getMarket(), planet.getTypeId(), EntityType.STATION);
 		newStation.setCustomDescriptionId("orbital_station_default");
@@ -921,22 +921,39 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	public void populateSector(SectorAPI sector)
 	{
+		// initial setup
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>();
 		List<String> factions = new ArrayList<>(factionIds);
 		factions.remove(ExerelinConstants.PLAYER_NPC_ID);  // player NPC faction only gets homeworld (if applicable)
 		factionPicker.addAll(factions);
-		boolean hqsSpawned = false;
+		
+		Map<String, Integer> factionPlanetCount = new HashMap<>();
+		Map<String, Integer> factionStationCount = new HashMap<>();
+		List<EntityData> habitablePlanetsCopy = new ArrayList<>(habitablePlanets);
+		List<EntityData> stationsCopy = new ArrayList<>(stations);
+		List<String> pirateFactions = new ArrayList<>();
+		
+		for (String factionId : factions) {
+			factionPlanetCount.put(factionId, 0);
+			factionStationCount.put(factionId, 0);
+			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+			if (config == null) continue;
+			if (config.pirateFaction)
+				pirateFactions.add(factionId);
+		}
+
+		List<StarSystemAPI> systemsWithPirates = new ArrayList<>();
 		
 		// before we do anything else give the "homeworld" to our faction
+		String alignedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
 		if (!ExerelinSetupData.getInstance().freeStart)
 		{
-			String alignedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
 			homeworld.isHQ = true;
 			MarketAPI homeMarket = marketSetup.addMarketToEntity(homeworld, alignedFactionId);
 			SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
 			relay.setFaction(alignedFactionId);
 			pickEntityInteractionImage(homeworld.entity, homeworld.entity.getMarket(), homeworld.planetType, homeworld.type);
-			habitablePlanets.remove(homeworld);
+			habitablePlanetsCopy.remove(homeworld);
 			factionPicker.remove(alignedFactionId);
 			
 			StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
@@ -946,64 +963,196 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				addAvestaStation(sector, homeworld.starSystem);
 			if (alignedFactionId.equals("tiandong") && ExerelinConfig.enableShanghai)
 				addShanghai(homeMarket);
+			
+			if (pirateFactions.contains(alignedFactionId))
+				systemsWithPirates.add(homeworld.starSystem);
+			factionPlanetCount.put(alignedFactionId, 1);
 		}
 		
-		Collections.shuffle(habitablePlanets);
-		Collections.shuffle(stations);
+		Collections.shuffle(habitablePlanetsCopy);
+		Collections.shuffle(stationsCopy);
+		List<EntityData> unassignedEntities = new ArrayList<>(habitablePlanetsCopy);	// needs to be a List instead of a Set for shuffling
+		for (EntityData station : stationsCopy) {
+			if (!station.primary.habitable)
+				unassignedEntities.add(station);
+		}
 		
-		// add factions and markets to planets
-		for (EntityData habitable : habitablePlanets)
+		Set<EntityData> toRemove = new HashSet<>();
+		
+		// assign homeworlds
+		for (String factionId : factions)
 		{
-			if (factionPicker.isEmpty()) 
-			{
-				factionPicker.addAll(factions);
-				hqsSpawned = true;
-			}
-			String factionId = factionPicker.pickAndRemove();
+			if (factionId.equals(alignedFactionId)) continue;
+			EntityData habitable = habitablePlanetsCopy.get(1);
+			habitablePlanetsCopy.remove(1);
 			
-			if (!hqsSpawned) 
-			{
-				ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-				if (!(config != null && config.noHomeworld == true))
-					habitable.isHQ = true;
-				
-				if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
-					addAvestaStation(sector, habitable.starSystem);
-			}
+			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+			if (!(config != null && config.noHomeworld == true))
+				habitable.isHQ = true;
+
+			if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
+				addAvestaStation(sector, habitable.starSystem);
+			
 			habitable.market = marketSetup.addMarketToEntity(habitable, factionId);
-			if (!hqsSpawned) // separate from the above if block because the market needs to exist first
-			{
-				if (factionId.equals("tiandong") && ExerelinConfig.enableShanghai)
-					addShanghai(habitable.market);
-			}
+			if (factionId.equals("tiandong") && ExerelinConfig.enableShanghai)
+				addShanghai(habitable.market);
 			
-			// assign relay
 			if (habitable.isCapital)
 			{
 				SectorEntityToken relay = sector.getEntityById(systemToRelay.get(habitable.starSystem.getId()));
 				relay.setFaction(factionId);
 			}
+			
 			pickEntityInteractionImage(habitable.entity, habitable.entity.getMarket(), habitable.planetType, habitable.type);
+			
+			if (pirateFactions.contains(factionId))
+				systemsWithPirates.add(habitable.starSystem);
+			factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
+			
+			unassignedEntities.remove(habitable);
 		}
 		
-		// we didn't actually create the stations before, so do so now
-		for (EntityData station : stations)
+		// ensure pirate presence in every star system
+		
+		if (!pirateFactions.isEmpty())
 		{
-			String factionId = "neutral";
-			if (station.primary.entity.getMarket() == null)
+			WeightedRandomPicker<String> piratePicker = new WeightedRandomPicker<>();
+
+			Collections.shuffle(unassignedEntities);
+			for (EntityData entity : unassignedEntities)
 			{
-				if (factionPicker.isEmpty()) 
-				{
-					factionPicker.addAll(factions);
+				if (systemsWithPirates.size() == ExerelinSetupData.getInstance().numSystems)	// all systems already have pirates
+					break;
+
+				if (systemsWithPirates.contains(entity.starSystem))
+					continue;
+				
+				if (Math.random() > ExerelinConfig.forcePiratesInSystemChance) {
+					systemsWithPirates.add(entity.starSystem);
+					continue;
 				}
-				factionId = factionPicker.pickAndRemove();
+
+				if (piratePicker.isEmpty())
+					piratePicker.addAll(pirateFactions);
+
+				String factionId = piratePicker.pickAndRemove();
+				
+				if (entity.type == EntityType.PLANET || entity.type == EntityType.MOON)
+				{
+					marketSetup.addMarketToEntity(entity, factionId);
+					habitablePlanetsCopy.remove(entity);
+					factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
+				}
+				else
+				{
+					makeStation(entity, factionId);
+					stationsCopy.remove(entity);
+					factionStationCount.put(factionId, factionStationCount.get(factionId) + 1);
+				}
+				toRemove.add(entity);
+				systemsWithPirates.add(entity.starSystem);
+			}
+			unassignedEntities.removeAll(toRemove);
+		}
+		
+		// assign remaining planets
+		Map<String, Float> factionShare = new HashMap<>();
+		float totalShare = 0;
+		for (String factionId : factions) {
+			float share = 1;
+			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+			if (config != null)
+				share = config.spawnMarketShare;
+			totalShare += share;
+			factionShare.put(factionId, share);
+		}
+		
+		int remainingPlanets = habitablePlanetsCopy.size();
+		for (String factionId : factions) {
+			int numPlanets = (int)(remainingPlanets * (factionShare.get(factionId)/totalShare) + 0.5);
+			for (int i=factionPlanetCount.get(factionId);i<numPlanets;i++)
+			{
+				EntityData habitable = habitablePlanetsCopy.get(0);
+				habitablePlanetsCopy.remove(0);
+				unassignedEntities.remove(habitable);
+				marketSetup.addMarketToEntity(habitable, factionId);
+				factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
+				
+				if (habitable.isCapital)
+				{
+					SectorEntityToken relay = sector.getEntityById(systemToRelay.get(habitable.starSystem.getId()));
+					relay.setFaction(factionId);
+				}
+				pickEntityInteractionImage(habitable.entity, habitable.entity.getMarket(), habitable.planetType, habitable.type);
+				
+				if (habitablePlanetsCopy.isEmpty()) break;
+			}
+			if (habitablePlanetsCopy.isEmpty()) break;
+		}
+		
+		// dole out any unassigned planets
+		for (EntityData planet : habitablePlanetsCopy)
+		{
+			if (planet.market != null)
+			{
+				log.error("Unassigned entity " + planet.name + " already has market!");
+				continue;
+			}
+			
+			if (factionPicker.isEmpty())
+				factionPicker.addAll(factions);
+			String factionId = factionPicker.pickAndRemove();
+			
+			marketSetup.addMarketToEntity(planet, factionId);
+			unassignedEntities.remove(planet);
+		}
+		
+		// now for stations
+		for (EntityData station : stationsCopy)
+		{
+			if (station.primary.habitable)
+			{
+				makeStation(station, station.primary.entity.getFaction().getId());
 			}
 			else
 			{
-				factionId = station.primary.entity.getFaction().getId();
+				standaloneStations.add(station);
 			}
+		}
+		List<EntityData> standaloneStationsCopy = new ArrayList<>(standaloneStations);
+		
+		int remainingStations = standaloneStationsCopy.size();
+		for (String factionId : factions) {
+			int numStations = (int)(remainingStations * (factionShare.get(factionId)/totalShare) + 0.5);
+			for (int i=factionStationCount.get(factionId);i<numStations;i++)
+			{
+				EntityData station = standaloneStationsCopy.get(0);
+				standaloneStationsCopy.remove(0);
+				unassignedEntities.remove(station);
+				makeStation(station, factionId);
+				factionStationCount.put(factionId, factionStationCount.get(factionId) + 1);
+				
+				if (standaloneStationsCopy.isEmpty()) break;
+			}
+			if (standaloneStationsCopy.isEmpty()) break;
+		}
+		
+		// dole out any unassigned stations
+		for (EntityData station : standaloneStationsCopy)
+		{
+			if (station.market != null)
+			{
+				log.error("Unassigned entity " + station.name + " already has market!");
+				continue;
+			}
+			
+			if (factionPicker.isEmpty())
+				factionPicker.addAll(factions);
+			String factionId = factionPicker.pickAndRemove();
 			makeStation(station, factionId);
 		}
+		
+		// end distribution of markets and stations
 		
 		// balance supply/demand by adding/removing relevant market conditions
 		List<EntityData> haveMarkets = new ArrayList<>(habitablePlanets);
@@ -1012,6 +1161,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			@Override
 			public int compare(EntityData data1, EntityData data2)
 			{
+				//log.warn ("lol, " + data1.name + ", " + data2.name);
 				int size1 = data1.market.getSize();
 				int size2 = data2.market.getSize();
 				if (size1 == size2) return 0;
@@ -1260,7 +1410,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		List<EntityData> moons = new ArrayList<>();
 				
 		// okay, now we can actually create the planets
-		final int distanceStepping = (ExerelinSetupData.getInstance().baseSystemSize + numBasePlanets * 600)/MathUtils.getRandomNumberInRange(numBasePlanets+1, maxPlanets+1);
+		int divMin = numBasePlanets + 1;
+		int divMax = maxPlanets + 1;
+		if (divMin > divMax) divMin = divMax - 1;
+		final int distanceStepping = (ExerelinSetupData.getInstance().baseSystemSize + numBasePlanets * 600)/MathUtils.getRandomNumberInRange(divMin, divMax);
 		float lastDistance = 0;
 		float clearRadius = 0;	// try to make sure next planet's orbit is at least this far away from the previous one
 		for(EntityData planetData : entities)
@@ -1951,16 +2104,26 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					
 		Next go through all habitables and assign them to factions
 			First off we go to the first star (Exerelin) and give our faction the HQ planet we picked earlier
-			Next line up factions (exclude our own faction for this round), pick one at random and remove from list
-			Give this faction a habitable planet; add market to it
-			If this is the faction's first habitable, make it their headquarters
-			If this is a system capital or headquarters, set minimum size accordingly
-			Once list is empty, refill with all factions (including ours) again and repeat process
-		Repeat until all habitables have been populated
+			Now assign homeworlds for each faction
+			Make list of all remaining unassigned planets + stations, shuffle
+			For all planets + stations in the above list:
+				If containing system is in list of already-checked systems, skip
+				Add containing system to list of already-checked systems
+				Assign this market to a rotated pirate faction
+				Increment # of markets owned by that pirate faction
+
+			For all remaining planets:
+				Shuffle
+				Each faction has a "share" (default 1)
+				Number of planets each faction gets = round(faction share / total shares) * number of habitable planets
+					This includes the free planets pirates got earlier
+					For number of planets faction gets:
+						Give planet to faction; remove planet from list
+				After each faction has gotten their share, assign any remaining planets to random factions
 	
-		Do that again except for independent stations
-	
-		Lastly we go through all associated stations
-		Associate them with the market of the planet/moon they orbit
+			Repeat the above for stations not attached to a market
+				Stations attached to an existing market are also generated, but not given their own market
+		
+		Finally juggle market conditions to try and balance commodity supply–demand
 	*/
 }
