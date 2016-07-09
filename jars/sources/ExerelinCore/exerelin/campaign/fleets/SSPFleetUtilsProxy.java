@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.loading.FleetCompositionDoctrineAPI;
-import data.scripts.campaign.SSP_FleetFactory;
 import data.scripts.campaign.fleets.SSP_FleetInjector;
 import static data.scripts.campaign.fleets.SSP_FleetInjector.getArchetypeWeights;
 import static data.scripts.campaign.fleets.SSP_FleetInjector.randomizeVariants;

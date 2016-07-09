@@ -21,7 +21,6 @@ import exerelin.campaign.PlayerStartHandler;
 import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
-import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.plugins.ExerelinCoreCampaignPlugin;
 import exerelin.utilities.*;
 import exerelin.world.DefenceFleetAI;
@@ -40,24 +39,24 @@ public class ExerelinModPlugin extends BaseModPlugin
 {
     // call order: onNewGame -> onNewGameAfterEconomyLoad -> onEnabled -> onNewGameAfterTimePass -> onGameLoad
     public static final boolean HAVE_SSP;
-	public static final boolean HAVE_SSP_LEGACY;
-	public static final boolean HAVE_SWP = Global.getSettings().getModManager().isModEnabled("swp");
-	public static final boolean HAVE_DYNASECTOR = Global.getSettings().getModManager().isModEnabled("dynasector");
-	public static final boolean HAVE_UNDERWORLD = Global.getSettings().getModManager().isModEnabled("underworld");
+    public static final boolean HAVE_SSP_LEGACY;
+    public static final boolean HAVE_SWP = Global.getSettings().getModManager().isModEnabled("swp");
+    public static final boolean HAVE_DYNASECTOR = Global.getSettings().getModManager().isModEnabled("dynasector");
+    public static final boolean HAVE_UNDERWORLD = Global.getSettings().getModManager().isModEnabled("underworld");
     
     protected static boolean isNewGame = false;
-	
-	static {
-		boolean sspLoaded = Global.getSettings().getModManager().isModEnabled("dr_ssp");
-		if (!sspLoaded) {
-			HAVE_SSP = false;
-			HAVE_SSP_LEGACY = false;
-		}
-		else {
-			HAVE_SSP = true;
-			HAVE_SSP_LEGACY = Global.getSettings().getModManager().getModSpec("dr_ssp").getVersion().equals("3.4.0");	// FIXME not optimal (but meh)
-		}
-	}
+    
+    static {
+        boolean sspLoaded = Global.getSettings().getModManager().isModEnabled("dr_ssp");
+        if (!sspLoaded) {
+            HAVE_SSP = false;
+            HAVE_SSP_LEGACY = false;
+        }
+        else {
+            HAVE_SSP = true;
+            HAVE_SSP_LEGACY = Global.getSettings().getModManager().getModSpec("dr_ssp").getVersion().equals("3.4.0");    // FIXME not optimal (but meh)
+        }
+    }
     
     protected void applyToExistingSave()
     {
@@ -185,7 +184,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_insurance", null);
         }
-		if (ExerelinUtilsFaction.isExiInCorvus() && !Global.getSector().getEventManager().isOngoing(null, "exerelin_exigency_respawn")) {
+        if (ExerelinUtilsFaction.isExiInCorvus() && !Global.getSector().getEventManager().isOngoing(null, "exerelin_exigency_respawn")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_exigency_respawn", null);
         }
         
@@ -217,10 +216,10 @@ public class ExerelinModPlugin extends BaseModPlugin
             SectorManager.reinitLiveFactions();
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
-		
-		SectorAPI sector = Global.getSector();
-		for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
-			PlayerStartHandler.addOmnifactory(sector, i);
+        
+        SectorAPI sector = Global.getSector();
+        for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
+            PlayerStartHandler.addOmnifactory(sector, i);
     }
     
     @Override

@@ -1,7 +1,5 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;

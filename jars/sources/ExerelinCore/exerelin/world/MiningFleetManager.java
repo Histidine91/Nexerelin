@@ -16,7 +16,6 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.MiningHelper;
 import exerelin.utilities.ExerelinConfig;

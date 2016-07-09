@@ -1,8 +1,5 @@
 package exerelin.utilities;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;

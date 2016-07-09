@@ -17,7 +17,6 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.world.ExerelinSectorGen;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

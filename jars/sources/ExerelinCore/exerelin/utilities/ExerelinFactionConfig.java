@@ -1,15 +1,9 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.ShipRolePick;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.ExerelinModPlugin;
@@ -19,7 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.*;
 import org.json.JSONException;
-import org.lazywizard.lazylib.MathUtils;
 
 public class ExerelinFactionConfig
 {

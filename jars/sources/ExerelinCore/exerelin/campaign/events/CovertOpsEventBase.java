@@ -17,7 +17,6 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.StringHelper;
 
 

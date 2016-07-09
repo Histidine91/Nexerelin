@@ -12,7 +12,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager;
-import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.StatsTracker;
 

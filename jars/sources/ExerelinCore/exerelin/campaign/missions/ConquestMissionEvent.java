@@ -2,7 +2,6 @@ package exerelin.campaign.missions;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -21,7 +20,6 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

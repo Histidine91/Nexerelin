@@ -22,7 +22,6 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.events.InvasionFleetEvent;
-import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.InvasionFleetManager.InvasionFleetData;

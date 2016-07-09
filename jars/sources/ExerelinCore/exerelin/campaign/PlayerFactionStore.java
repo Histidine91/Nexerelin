@@ -4,7 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import exerelin.ExerelinConstants;
-import exerelin.utilities.ExerelinUtilsReputation;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;

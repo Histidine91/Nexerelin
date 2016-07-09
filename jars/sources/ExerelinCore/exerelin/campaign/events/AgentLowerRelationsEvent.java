@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 
 

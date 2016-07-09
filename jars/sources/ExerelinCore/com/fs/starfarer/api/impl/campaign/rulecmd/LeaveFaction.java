@@ -15,7 +15,6 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.events.FactionChangedEvent;
-import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
 
