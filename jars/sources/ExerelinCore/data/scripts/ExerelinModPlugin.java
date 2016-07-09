@@ -180,6 +180,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_faction_insurance", null);
         }
+		if (ExerelinUtilsFaction.isExiInCorvus() && !Global.getSector().getEventManager().isOngoing(null, "exerelin_exigency_respawn")) {
+            Global.getSector().getEventManager().startEvent(null, "exerelin_exigency_respawn", null);
+        }
         
         reverseCompatibility();
         refreshTariffs();

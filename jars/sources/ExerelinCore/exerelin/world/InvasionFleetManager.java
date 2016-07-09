@@ -149,7 +149,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 0,        // liners
                 0,        // civilian
                 fp*0.1f,    // utility
-                0.15f, -1, 1.25f, params.originMarket.getSize()/2);    // quality bonus, quality override, officer num mult, officer level bonus
+                0, params.qualityOverride, 1.25f, params.originMarket.getSize()/2);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(params.faction, fleetParams);
         /*
@@ -259,7 +259,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         return name;
     }
     
-    public static InvasionFleetData spawnRespawnFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket)
+    public static InvasionFleetData spawnRespawnFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, boolean useOriginLocation)
     {
         float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket, 1f, false);
         float responseFleetSize = ResponseFleetManager.getMaxReserveSize(targetMarket, false);
@@ -271,7 +271,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         String name = getFleetName("exerelinRespawnFleet", faction.getId(), maxFP);
         
         LocationAPI spawnLoc = Global.getSector().getHyperspace();
-        if (Global.getSector().getStarSystems().size() == 1)    // one-star start; target will be inaccessible from hyper
+        if (useOriginLocation)
+            spawnLoc = originMarket.getContainingLocation();
+        else if (Global.getSector().getStarSystems().size() == 1)    // one-star start; target will be inaccessible from hyper
         {
             SectorEntityToken entity = originMarket.getPrimaryEntity();
             spawnLoc = entity.getContainingLocation();
@@ -282,7 +284,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         params.fleetType = "exerelinRespawnFleet";
         params.faction = faction;
         params.fp = (int)maxFP;
-        params.qf = 1;
+        params.qualityOverride = 1;
         params.originMarket = originMarket;
         params.targetMarket = targetMarket;
         params.spawnLoc = spawnLoc;
@@ -292,9 +294,16 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         params.numMarines = (int)(defenderStrength * DEFENDER_STRENGTH_MARINE_MULT);
         
         InvasionFleetData fleetData = spawnFleet(params);
-        float distance = RESPAWN_FLEET_SPAWN_DISTANCE;
-        float angle = MathUtils.getRandomNumberInRange(0, 359);
-        fleetData.fleet.setLocation((float)Math.cos(angle) * distance, (float)Math.sin(angle) * distance);
+        if (useOriginLocation)
+        {
+            Vector2f originLoc = originMarket.getPrimaryEntity().getLocation();
+            fleetData.fleet.setLocation(originLoc.x, originLoc.y);
+        }
+        else {
+            float distance = RESPAWN_FLEET_SPAWN_DISTANCE;
+            float angle = MathUtils.getRandomNumberInRange(0, 359);
+            fleetData.fleet.setLocation((float)Math.cos(angle) * distance, (float)Math.sin(angle) * distance);
+        }
         log.info("\tSpawned respawn fleet " + fleetData.fleet.getNameWithFaction() + " of size " + maxFP);
         return fleetData;
     }
@@ -303,7 +312,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     {
         int maxFP = (int)(calculateMaxFpForFleet(originMarket, targetMarket) * 0.66f);
         float qf = originMarket.getShipQualityFactor();
-        qf = Math.max(qf, 0.7f);
+        qf = Math.max(qf+0.1f, 0.4f);
         
         String name = getFleetName("exerelinDefenseFleet", faction.getId(), maxFP);
         
@@ -312,7 +321,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         params.fleetType = "exerelinDefenseFleet";
         params.faction = faction;
         params.fp = (int)maxFP;
-        params.qf = qf;
+        params.qualityOverride = qf;
         params.originMarket = originMarket;
         params.targetMarket = targetMarket;
         params.noWander = noWander;
@@ -328,7 +337,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     {
         int maxFP = (int)(calculateMaxFpForFleet(originMarket, targetMarket) * 0.66f);
         float qf = originMarket.getShipQualityFactor();
-        qf = Math.max(qf, 0.7f);
+        qf = Math.max(qf+0.1f, 0.4f);
         
         String name = getFleetName("exerelinInvasionSupportFleet", faction.getId(), maxFP);
 
@@ -337,7 +346,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         params.fleetType = "exerelinInvasionSupportFleet";
         params.faction = faction;
         params.fp = (int)maxFP;
-        params.qf = qf;
+        params.qualityOverride = qf;
         params.originMarket = originMarket;
         params.targetMarket = targetMarket;
         params.noWander = true;
@@ -355,7 +364,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         
         int maxFP = (int)calculateMaxFpForFleet(originMarket, targetMarket);
         float qf = originMarket.getShipQualityFactor();
-        qf = Math.max(qf, 0.7f);
+        qf = Math.max(qf+0.2f, 0.6f);
         
         String name = getFleetName("exerelinInvasionFleet", faction.getId(), maxFP);
                 
@@ -364,7 +373,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         params.fleetType = "exerelinInvasionFleet";
         params.faction = faction;
         params.fp = (int)maxFP;
-        params.qf = qf;
+        params.qualityOverride = qf;
         params.originMarket = originMarket;
         params.targetMarket = targetMarket;
         params.noWait = noWait;
@@ -706,8 +715,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         public String name = "Fleet";
         public String fleetType = "genericFleet";
         public int fp = 0;
-        @Deprecated
-        public float qf = 0.5f;
+        public float qualityOverride = -1;
         public FactionAPI faction;
         public MarketAPI originMarket;
         public MarketAPI targetMarket;

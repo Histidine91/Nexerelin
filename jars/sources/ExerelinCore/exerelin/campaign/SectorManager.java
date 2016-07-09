@@ -40,6 +40,7 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.world.InvasionFleetManager;
+import exerelin.world.InvasionFleetManager.InvasionFleetData;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -384,6 +385,55 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(marketLastSoldSlaves), "exerelin_slaves_sold", params);
     }
     
+    public static InvasionFleetData spawnRespawnFleet(FactionAPI respawnFaction, MarketAPI sourceMarket, boolean useOriginLoc)
+    {
+        SectorAPI sector = Global.getSector();
+        String respawnFactionId = respawnFaction.getId();
+        
+        WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
+        WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
+        boolean allowPirates = ExerelinConfig.allowPirateInvasions;
+        List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
+        for (MarketAPI market : markets) 
+        {
+            FactionAPI marketFaction = market.getFaction();
+            if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
+                continue;
+            if (marketFaction.isNeutralFaction() || marketFaction.isPlayerFaction()) continue; 
+            if (marketFaction.getId().equals("independent")) continue;
+            int size = market.getSize();
+            if (size < 4) continue;
+            
+            if (market.hasCondition("headquarters")) size *= 0.1f;
+            targetPicker.add(market, size);
+        }
+        MarketAPI targetMarket = (MarketAPI)targetPicker.pick();
+        if (targetMarket == null) {
+            return null;
+        }
+        
+        if (sourceMarket == null)
+        {
+            for (MarketAPI market : markets) 
+            {
+                FactionAPI marketFaction = market.getFaction();
+                float weight = 100;
+                if (market == targetMarket) continue;
+                if (marketFaction.isHostileTo(respawnFaction)) weight = 0.0001f;
+                sourcePicker.add(market, weight);
+            }
+
+            sourceMarket = (MarketAPI)sourcePicker.pick();
+        }
+        
+        if (sourceMarket == null) {
+            return null;
+        }
+        
+        //log.info("Respawn fleet created for " + respawnFaction.getDisplayName());
+        return InvasionFleetManager.spawnRespawnFleet(respawnFaction, sourceMarket, targetMarket, useOriginLoc);
+    }
+    
     public void handleFactionRespawn()
     {
         if (factionRespawnCounts == null)
@@ -391,10 +441,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             factionRespawnCounts = new HashMap<>();
         }
         
-        SectorAPI sector = Global.getSector();
         WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();
-        WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
-        WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
+        
         List<String> factionIds = factionIdsAtStart;
         if (!onlyRespawnStartingFactions)
         {
@@ -427,44 +475,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         FactionAPI respawnFaction = factionPicker.pick();
         if (respawnFaction == null) return;
-        String respawnFactionId = respawnFaction.getId();
         
-        boolean allowPirates = ExerelinConfig.allowPirateInvasions;
-        List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
-        for (MarketAPI market : markets) 
-        {
-            FactionAPI marketFaction = market.getFaction();
-            if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
-                continue;
-            if (marketFaction.isNeutralFaction() || marketFaction.isPlayerFaction()) continue; 
-            if (marketFaction.getId().equals("independent")) continue;
-            int size = market.getSize();
-            if (size < 4) continue;
-            
-            if (market.hasCondition("headquarters")) size *= 0.1f;
-            targetPicker.add(market, size);
-        }
-        MarketAPI targetMarket = (MarketAPI)targetPicker.pick();
-        if (targetMarket == null) {
-            return;
-        }
-        
-        for (MarketAPI market : markets) 
-        {
-            FactionAPI marketFaction = market.getFaction();
-            float weight = 100;
-            if (market == targetMarket) continue;
-            if (marketFaction.isHostileTo(respawnFaction)) weight = 0.0001f;
-            sourcePicker.add(market, weight);
-        }
-        
-        MarketAPI sourceMarket = (MarketAPI)sourcePicker.pick();
-        if (sourceMarket == null) {
-            return;
-        }
-        
-        //log.info("Respawn fleet created for " + respawnFaction.getDisplayName());
-        InvasionFleetManager.spawnRespawnFleet(respawnFaction, sourceMarket, targetMarket);
+        spawnRespawnFleet(respawnFaction, null, false);
     }
     
     public static void setShowFactionInIntelTab(String factionId, boolean show)

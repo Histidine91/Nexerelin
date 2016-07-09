@@ -68,7 +68,6 @@ public class FleetRequestFire extends FleetRequestActionBase {
 		fleetParams.fleetType = fleetType;
 		fleetParams.faction = fleetFaction;
 		fleetParams.fp = fp;
-		fleetParams.qf = sourceMarket.getShipQualityFactor();
 		fleetParams.originMarket = sourceMarket;
 		fleetParams.targetMarket = targetMarket;
 		fleetParams.numMarines = marines;

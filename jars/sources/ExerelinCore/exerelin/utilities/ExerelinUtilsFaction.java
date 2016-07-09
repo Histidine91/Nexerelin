@@ -84,6 +84,11 @@ public class ExerelinUtilsFaction {
         return config.hostileToAll > 0;
     }
     
+    /**
+     * Is this faction ExigencyCorp and are we in Corvus mode?
+     * @param factionId
+     * @return
+     */
     public static boolean isExiInCorvus(String factionId)
     {
         if (factionId.equals("exigency") && SectorManager.getCorvusMode()) 
@@ -94,6 +99,15 @@ public class ExerelinUtilsFaction {
             return tasserus != null;
         }
         return false;
+    }
+    
+    /**
+     * Is ExigencyCorp present in the Sector and are we in Corvus mode?
+     * @return
+     */
+    public static boolean isExiInCorvus()
+    {
+        return isExiInCorvus("exigency");
     }
     
     public static boolean isCorvusCompatible(String factionId, boolean noConfigFallback)

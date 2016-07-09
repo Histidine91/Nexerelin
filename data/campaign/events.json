@@ -71,6 +71,9 @@
 		"script":"exerelin.campaign.events.SuperweaponEvent",
 		"image":"graphics/icons/markets/meteor_strike.png"
 	},
+	"exerelin_exigency_respawn":{
+		"script":"exerelin.campaign.events.ExigencyRespawnFleetEvent"
+	},
 	
 	# missions
 	"exerelin_conquest_mission":{
