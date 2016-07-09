@@ -73,9 +73,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	// NOTE: system names and planet names are overriden by planetNames.json
 	protected static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
 	// don't specify names here to make sure it crashes instead of failing silently if planetNames.json is broken
-	protected static String[] possibleSystemNames = {};
-	protected static String[] possiblePlanetNames = new String[] {};
-	protected static String[] possibleStationNames = new String[] {};
 	protected static final String[] starBackgroundsArray = new String[]
 	{
 		"backgrounds/background1.jpg", "backgrounds/background2.jpg", "backgrounds/background3.jpg", "backgrounds/background4.jpg", "backgrounds/background5.jpg", "backgrounds/background6.jpg",
@@ -94,9 +91,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	
 	protected static ArrayList<String> starBackgrounds = new ArrayList<>(Arrays.asList(starBackgroundsArray));
 
-	protected List<String> possibleSystemNamesList = new ArrayList(Arrays.asList(possibleSystemNames));
-	protected List<String> possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
-	protected List<String> possibleStationNamesList = new ArrayList(Arrays.asList(possibleStationNames));
+	protected List<String> possibleSystemNames = new ArrayList<>();
+	protected List<String> possiblePlanetNames = new ArrayList<>();
+	protected List<String> possibleStationNames = new ArrayList<>();
 	
 	//protected static final String[] planetTypes = new String[] {"desert", "jungle", "frozen", "terran", "arid", "water", "rocky_metallic", "rocky_ice", "barren", "barren-bombarded"};
 	protected static final String[] planetTypesUninhabitable = new String[] 
@@ -598,23 +595,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			JSONObject planetConfig = Global.getSettings().loadJSON(PLANET_NAMES_FILE);
 			
 			JSONArray systemNames = planetConfig.getJSONArray("stars");
-			possibleSystemNames = new String[systemNames.length()];
-			for (int i = 0; i < systemNames.length(); i++)
-				possibleSystemNames[i] = systemNames.getString(i);
+			possibleSystemNames = ExerelinUtils.JSONArrayToArrayList(systemNames);
 			
 			JSONArray planetNames = planetConfig.getJSONArray("planets");
-			possiblePlanetNames = new String[planetNames.length()];
-			for (int i = 0; i < planetNames.length(); i++)
-				possiblePlanetNames[i] = planetNames.getString(i);
+			possiblePlanetNames = ExerelinUtils.JSONArrayToArrayList(planetNames);
 			
 			JSONArray stationNames = planetConfig.getJSONArray("stations");
-			possibleStationNames = new String[stationNames.length()];
-			for (int i = 0; i < stationNames.length(); i++)
-				possibleStationNames[i] = stationNames.getString(i);
-				
-			possibleSystemNamesList = new ArrayList(Arrays.asList(possibleSystemNames));
-			possiblePlanetNamesList = new ArrayList(Arrays.asList(possiblePlanetNames));
-			possibleStationNamesList = new ArrayList(Arrays.asList(possibleStationNames));
+			possibleStationNames = ExerelinUtils.JSONArrayToArrayList(stationNames);
 		} catch (JSONException | IOException ex) {
 			log.error(ex);
 		}
@@ -1215,7 +1202,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			size = Math.min(size * 0.75f, system.getStar().getRadius()*0.8f);
 			
-			//int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNamesList.size() - 1);
+			//int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNames.size() - 1);
 			String name = system.getBaseName() + " B";	//possibleSystemNamesList.get(systemNameIndex);
 			//possibleSystemNamesList.remove(systemNameIndex);
 			
@@ -1317,10 +1304,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected void buildSystem(SectorAPI sector, int systemIndex, boolean inhabited)
 	{
 		// First we make a star system with random name
-		int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNamesList.size() - 1);
+		int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNames.size() - 1);
 		if (systemIndex == 0) systemNameIndex = 0;	// there is always a starSystem named Exerelin
-		StarSystemAPI system = sector.createStarSystem(possibleSystemNamesList.get(systemNameIndex));
-		possibleSystemNamesList.remove(systemNameIndex);
+		StarSystemAPI system = sector.createStarSystem(possibleSystemNames.get(systemNameIndex));
+		possibleSystemNames.remove(systemNameIndex);
 		String systemName = system.getName();
 		String systemId = system.getId();
 		EntityData capital = null;
@@ -1425,9 +1412,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			String name = "";
 			String id = "";
-			int planetNameIndex = MathUtils.getRandomNumberInRange(0, possiblePlanetNamesList.size() - 1);
-			name = possiblePlanetNamesList.get(planetNameIndex);
-			possiblePlanetNamesList.remove(planetNameIndex);
+			int planetNameIndex = MathUtils.getRandomNumberInRange(0, possiblePlanetNames.size() - 1);
+			name = possiblePlanetNames.get(planetNameIndex);
+			possiblePlanetNames.remove(planetNameIndex);
 			log.info("Creating planet " + name);
 			id = name.replace(' ','_');
 			id = id.toLowerCase();
@@ -1867,7 +1854,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				String name = "";
 				while(!nameOK)
 				{
-					name = primaryData.name + " " + (String) ExerelinUtils.getRandomListElement(possibleStationNamesList);
+					name = primaryData.name + " " + (String) ExerelinUtils.getRandomListElement(possibleStationNames);
 					if (!alreadyUsedStationNames.contains(name))
 						nameOK = true;
 				}
