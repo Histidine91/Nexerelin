@@ -49,7 +49,7 @@ public class ExerelinUtilsAstro {
 	
 	/**
 	 * Gets a "density" value for a stellar object to estimate its mass. 
-	 * Returns 0.5 for stars and gas giants, 8 for Nexerelin's dark star, and 2 for everything else.
+	 * Returns 0.5 for stars and gas giants, 8 for Nexerelin's dark star, 5 for the Exigency black hole, and 2 for everything else.
 	 * @param primary The orbit focus of the object whose orbit we want to set.
 	 * @return Estimated primary density.
 	 */
@@ -59,6 +59,7 @@ public class ExerelinUtilsAstro {
 		{
 			PlanetAPI planet = (PlanetAPI)primary;
 			if (planet.getTypeId().equals("star_dark")) return 8;
+			else if (planet.getTypeId().equals("exigency_black_hole")) return 5;
 			else if (planet.isStar()) return 0.5f;
 			else if (planet.isGasGiant()) return 0.5f;
 		}

@@ -102,6 +102,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	//protected static final String[] moonTypes = new String[] {"frozen", "barren", "barren-bombarded", "rocky_ice", "rocky_metallic", "desert", "water", "jungle"};
 	protected static final String[] moonTypesUninhabitable = new String[] 
 		{"frozen", "barren", "lava", "toxic", "cryovolcanic", "rocky_metallic", "rocky_unstable", "rocky_ice", "irradiated", "barren-bombarded", "desert", "water", "jungle", "barren-desert"};
+	protected static final List<StarDef> starDefs = new ArrayList<>();
+	protected static final WeightedRandomPicker<StarDef> starPicker = new WeightedRandomPicker<>();
 	
 	public static final List<String> stationImages = new ArrayList<>(Arrays.asList(
 			new String[] {"station_side00", "station_side02", "station_side04", "station_jangala_type"}));
@@ -110,12 +112,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	public static final float LAGRANGE_ASTEROID_CHANCE = 0.5f;
 	public static final float BINARY_STAR_DISTANCE = 13000;
 	public static final float BINARY_SYSTEM_PLANET_MULT = 1.25f;
+	public static final float MIN_RADIUS_FOR_BINARY = 400f;
 	public static final float NEBULA_CHANCE = 0.35f;
 	public static final float MAGNETIC_FIELD_CHANCE = 0.5f;
 	public static final float STELLAR_RING_CHANCE = 0.3f;
 	public static final float STELLAR_BELT_CHANCE = 0.4f;
 	public static final float UNINHABITED_RELAY_CHANCE = 0.25f;
 	public static final float STAR_RANDOM_OFFSET = 100;
+	public static final float STAR_SIZE_VARIATION = 0.2f;
 	
 	// this proportion of TT markets with no military bases will have Cabal submarkets (SS+)
 	public static final float CABAL_MARKET_MULT = 0.4f;	
@@ -156,6 +160,41 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 	}
 	*/
+	
+	protected void loadStars(){
+		starDefs.clear();
+		starDefs.add(new StarDef("Yellow Star", "star_yellow", 500, 1));
+		starDefs.add(new StarDef("Orange Star", "star_orange", 400, new Color(255, 235, 205), 1));
+		starDefs.add(new StarDef("Yellow-White Star", "star_yellowwhite", 600, new Color(255,255,224), 1));
+		starDefs.add(new StarDef("White Dwarf", "star_white", 200, new Color(168, 168, 168), 1));
+		starDefs.add(new StarDef("White Star (large)", "star_white", 700, 1));
+		starDefs.add(new StarDef("Red Giant", "star_red", 900, new Color(255, 210, 200), 1));
+		starDefs.add(new StarDef("Blue Star", "star_blue", 800, new Color(200, 240, 255), 1));
+		starDefs.add(new StarDef("Blue-White Star", "star_bluewhite", 650, new Color(210,236,255), 1));
+		
+		if (!ExerelinConfig.realisticStars) {
+			starDefs.add(new StarDef("Purple Star", "star_purple", 700, new Color(250, 192, 244), 1));
+			starDefs.add(new StarDef("Dark Star", "star_dark", 100, new Color(155, 155, 155), 1));
+			starDefs.add(new StarDef("Green Star", "star_green", 500, new Color(225, 255, 230), 1));
+			starDefs.add(new StarDef("Green-White Star", "star_greenwhite", 600, new Color(240, 255, 245), 1));
+		}
+		
+		if (ExerelinUtilsFaction.doesFactionExist("tiandong")) {
+			starDefs.add(new StarDef("Red Dwarf", "tiandong_shaanxi", 250, new Color(200, 125, 125), 2));
+		}
+		else if (ExerelinUtilsFaction.doesFactionExist("mayorate")) {
+			starDefs.add(new StarDef("Red Dwarf", "star_red_dwarf", 250, new Color(200, 125, 125), 2));
+		}
+		
+		if (ExerelinUtilsFaction.doesFactionExist("exigency")) {
+			//starDefs.add(new StarDef("Black Hole", "exigency_black_hole", 320, 0.5f));
+		}
+		
+		starPicker.clear();
+		for (StarDef def : starDefs) {
+			starPicker.add(def, def.chance);
+		}
+	}
 	
 	protected void loadBackgrounds()
 	{
@@ -606,7 +645,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			log.error(ex);
 		}
 		
-		log.info("Loading backgrounds");
+		log.info("Loading stars and backgrounds");
+		loadStars();
 		loadBackgrounds();
 		loadNebulaMaps();
 		
@@ -1187,20 +1227,44 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			marketSetup.addStartingMarketCommodities(entity.market);
 	}
 
-	public PlanetAPI createStarToken(int index, String systemId, StarSystemAPI system, String type, float size, boolean isSecondStar)
+	public PlanetAPI createStarToken(int index, String systemId, StarSystemAPI system, StarDef def, boolean isSecondStar)
 	{
-		float fieldMult = 1;	// corona
-		if (type.equals("star_red")) fieldMult = 2;
+		float coronaMult = 1;
+		float radius = def.radius;
+		String type = def.type;
+		if (def.name.equalsIgnoreCase("Red Giant")) coronaMult = 2;
+		else if (type.equals("exigency_black_hole")) coronaMult = 0;
+		else if (def.name.contains("Dwarf")) coronaMult = 0.5f;
+		
+		radius *= MathUtils.getRandomNumberInRange(1 - STAR_SIZE_VARIATION, 1 + STAR_SIZE_VARIATION);
+		
 		if (!isSecondStar) 
 		{
 			Integer[] pos = (Integer[])starPositions.get(index);
 			int x = pos[0];
 			int y = pos[1];
-			return system.initStar(systemId + "_star", type, size, x, y, 500 * fieldMult);
+			PlanetAPI star = system.initStar(systemId + "_star", type, radius, x, y, 500 * coronaMult);
+			if (type.equals("exigency_black_hole"))
+			{
+				star.setCustomDescriptionId("exigency_black_hole");
+				for (CampaignTerrainAPI terrain : system.getTerrainCopy())
+				{
+					if (terrain.getType().contentEquals("corona"))
+					{
+						system.removeEntity(terrain);
+						break;
+					}
+				}
+			}
+			else if (type.equals("star_red_dwarf"))	// Mayorate red dwarf
+				star.setCustomDescriptionId("star_red_dwarf");
+			else if (def.name.equalsIgnoreCase("White Dwarf"))
+				star.setCustomDescriptionId("star_white_dwarf");
+			return star;
 		}
 		else 
 		{
-			size = Math.min(size * 0.75f, system.getStar().getRadius()*0.8f);
+			radius = Math.min(radius * 0.75f, system.getStar().getRadius()*0.8f);
 			
 			//int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNames.size() - 1);
 			String name = system.getBaseName() + " B";	//possibleSystemNamesList.get(systemNameIndex);
@@ -1209,12 +1273,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			PlanetAPI star = system.getStar();
 			
 			float angle = MathUtils.getRandomNumberInRange(1, 360);
-			float distance = (BINARY_STAR_DISTANCE + star.getRadius()*5 + size*5) * MathUtils.getRandomNumberInRange(0.95f, 1.1f) ;
+			float distance = (BINARY_STAR_DISTANCE + star.getRadius()*5 + radius*5) * MathUtils.getRandomNumberInRange(0.95f, 1.1f) ;
 			float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star, distance + star.getRadius());
 			
-			PlanetAPI planet = system.addPlanet(systemId + "_star_b", star, name, type, angle, size, distance, orbitDays);
+			PlanetAPI planet = system.addPlanet(systemId + "_star_b", star, name, type, angle, radius, distance, orbitDays);
 			ExerelinUtilsAstro.setOrbit(planet, star, distance, true, ExerelinUtilsAstro.getRandomAngle(), orbitDays);
-			system.addCorona(planet, 300, 2f, 0.1f, 1f);
+			if (coronaMult != 0)
+				system.addCorona(planet, 300 * coronaMult, 2f, 0.1f, 1f);
 			
 			return planet;
 		}
@@ -1224,65 +1289,13 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	{
 		log.info("Creating star for system " + system.getBaseName());
 		PlanetAPI star;
-		int starType = MathUtils.getRandomNumberInRange(0, 10);
 		String systemId = system.getId();
 		
-		// TODO refactor to remove endless nested ifs
-		if (starType == 0)
-		{
-			star = createStarToken(systemIndex, systemId, system, "star_yellow", 500f, isSecondStar);
-			//system.setLightColor(new Color(255, 180, 180));
-		}
-		else if(starType == 1)
-		{
-			star = createStarToken(systemIndex, systemId, system, "star_red", 900f, isSecondStar);
-			system.setLightColor(new Color(255, 210, 200));
-		}
-		else if(starType == 2)
-		{
-			star = createStarToken(systemIndex, systemId, system, "star_blue", 800f, isSecondStar);
-			system.setLightColor(new Color(200, 240, 255));
-		}
-		else if(starType == 3)
-		{
-			star = createStarToken(systemIndex, systemId, system, "star_white", 300f, isSecondStar);
-			//system.setLightColor(new Color(185,185,240));
-		}
-		else if(starType == 4)
-		{
-			star = createStarToken(systemIndex, systemId, system, "star_orange", 400f, isSecondStar);
-			system.setLightColor(new Color(255, 235, 205));
-		}
-		else if(starType == 5)
-		{
-			star = createStarToken(systemIndex, systemId, system, "star_yellowwhite", 400f, isSecondStar);
-			system.setLightColor(new Color(255,255,224));
-		}
-		else if(starType == 6)
-		{
-			star = createStarToken(systemIndex, systemId, system, "star_bluewhite", 600f, isSecondStar);
-			system.setLightColor(new Color(180,226,250));
-		}
-		else if(starType == 7)
-		{
-			star = createStarToken(systemIndex, systemId, system, "star_purple", 700f, isSecondStar);
-			system.setLightColor(new Color(230,168,224));
-		}
-		else if(starType == 8)
-		{
-			star = createStarToken(systemIndex, systemId, system, "star_dark", 100f, isSecondStar);
-			system.setLightColor(new Color(150,150,150));
-		}
-		else if(starType == 9)
-		{
-			star = createStarToken(systemIndex, systemId, system, "star_green", 600f, isSecondStar);
-			system.setLightColor(new Color(240,255,240));
-		}
-		else
-		{
-			star = createStarToken(systemIndex, systemId, system, "star_greenwhite", 500f, isSecondStar);
-			system.setLightColor(new Color(240,255,240));
-		}
+		StarDef def = starPicker.pick();
+		star = createStarToken(systemIndex, systemId, system, def, isSecondStar);
+		if (def.lightColor != null)
+			system.setLightColor(def.lightColor);
+		
 		if (!isSecondStar)
 			system.setBackgroundTextureFilename( (String) ExerelinUtils.getRandomListElement(starBackgrounds) );
 		return star;
@@ -1327,7 +1340,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		starData.clearRadius = star.getRadius() * 4;
 		entities.add(starData);
 		
-		boolean isBinary = (Math.random() < ExerelinConfig.binarySystemChance) && (!star.getTypeId().equals("star_dark"));
+		boolean isBinary = (Math.random() < ExerelinConfig.binarySystemChance) && (star.getRadius() >= MIN_RADIUS_FOR_BINARY);
 		if (isBinary)
 		{
 			star2 = makeStar(systemIndex, system, true);
@@ -2057,6 +2070,31 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			this.planetNum = planetNum;
 			this.planetNumByStar = planetNum;
 		}	  
+	}
+	
+	public static class StarDef {
+		String name = "";
+		String type = "";
+		float radius = 500;
+		Color lightColor = null;
+		float chance = 1;
+		
+		public StarDef(String name, String type, float radius, float chance)
+		{
+			this.name = name;
+			this.type = type;
+			this.radius = radius;
+			this.chance = chance;
+		}
+		
+		public StarDef(String name, String type, float radius, Color lightColor, float chance)
+		{
+			this.name = name;
+			this.type = type;
+			this.radius = radius;
+			this.lightColor = lightColor;
+			this.chance = chance;
+		}
 	}
 	
 	// System generation algorithm
