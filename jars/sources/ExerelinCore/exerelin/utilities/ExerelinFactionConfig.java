@@ -1,13 +1,25 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.ShipRolePick;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
+import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.ExerelinModPlugin;
 import exerelin.campaign.AllianceManager.Alignment;
+import exerelin.campaign.ExerelinSetupData;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.*;
 import org.json.JSONException;
+import org.lazywizard.lazylib.MathUtils;
 
 public class ExerelinFactionConfig
 {
@@ -129,7 +141,7 @@ public class ExerelinFactionConfig
                 factionsNeutral = JSONArrayToStringArray(settings.getJSONArray("factionsNeutral"));
             
             freeMarket = settings.optBoolean("freeMarket", freeMarket);
-			spawnMarketShare = (float)settings.optDouble("spawnMarketShare", spawnMarketShare);
+            spawnMarketShare = (float)settings.optDouble("spawnMarketShare", spawnMarketShare);
             
             invasionStrengthBonusAttack = (float)settings.optDouble("invasionStrengthBonusAttack", 0);
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);
@@ -201,22 +213,236 @@ public class ExerelinFactionConfig
         getStartShipTypeIfAvailable(settings, "startShipsTradeLargeSSP", StartFleetType.TRADE_LARGE_SSP);
     }
     
-    // FIXME: implement dynamic system?
+    /**
+     * Helper method to pick ships and add to the provided <code>List</code> using a <code>WeightedRandomPicker</code>.
+     * @param picker The ship role picker to use
+     * @param list The list to modify
+     * @param clear If true, clear the picker after use
+     */
+    protected void pickShipsAndAddToList(WeightedRandomPicker<String> picker, List<String> list, boolean clear)
+    {
+        FactionAPI faction = Global.getSector().getFaction(factionId);
+        List<ShipRolePick> picks = faction.pickShip(picker.pick(), 1, picker.getRandom());
+        for (ShipRolePick pick : picks)
+            list.add(pick.variantId);
+        if (clear) picker.clear();
+    }
+    
+    // lol
+    protected List<String> getRandomStartShipsForTypeTemplars(StartFleetType type)
+    {
+        List<String> ships = new ArrayList<>();
+        
+        WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
+        
+        if (type == StartFleetType.COMBAT_LARGE || type == StartFleetType.COMBAT_LARGE_SSP)
+        {
+            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 1);	// Crusader
+			rolePicker.add(ShipRoles.ESCORT_MEDIUM, 1);	// Crusader
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+			rolePicker.add(ShipRoles.ESCORT_SMALL, 2);	// Jesuit
+			rolePicker.add(ShipRoles.COMBAT_SMALL, 1);	// Martyr or Jesuit
+            rolePicker.add(ShipRoles.FAST_ATTACK, 1);	// Martyr, sometimes Jesuit
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+			rolePicker.add(ShipRoles.FAST_ATTACK, 2);	// Martyr, sometimes Jesuit
+			rolePicker.add(ShipRoles.FIGHTER, 1);	// Teuton (no Smiter)
+            
+            pickShipsAndAddToList(rolePicker, ships, true);
+        }
+        else if (type == StartFleetType.COMBAT_SMALL || type == StartFleetType.COMBAT_SMALL_SSP)
+        {
+            //rolePicker.add(ShipRoles.COMBAT_SMALL, 2);	// Martyr or Jesuit
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 2);	// Jesuit
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 1);	// Martyr or Jesuit
+            rolePicker.add(ShipRoles.FAST_ATTACK, 1);	// Martyr, sometimes Jesuit
+			rolePicker.add(ShipRoles.FIGHTER, 1);	// Teuton (no Smiter)
+            pickShipsAndAddToList(rolePicker, ships, true);
+        }
+        else if (type == StartFleetType.SOLO || type == StartFleetType.SOLO_SSP)
+        {
+            rolePicker.add(ShipRoles.FAST_ATTACK, 1);	// Martyr, sometimes Jesuit
+            pickShipsAndAddToList(rolePicker, ships, true);
+        }
+        return ships;
+        
+    }
+    /**
+     * Returns random starting ships
+     * @param type
+     * @return
+     */
+    protected List<String> getRandomStartShipsForType(StartFleetType type)
+    {
+        if (factionId.equals("templars")) 
+            return getRandomStartShipsForTypeTemplars(type);
+        
+        List<String> ships = new ArrayList<>();
+        
+        WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
+        
+        if (type == StartFleetType.COMBAT_LARGE || type == StartFleetType.COMBAT_LARGE_SSP)
+        {
+            rolePicker.add(ShipRoles.COMBAT_LARGE, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 2);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
+            rolePicker.add(ShipRoles.ESCORT_MEDIUM, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
+            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+            
+            pickShipsAndAddToList(rolePicker, ships, true);
+        }
+        else if (type == StartFleetType.TRADE_LARGE || type == StartFleetType.TRADE_LARGE_SSP)
+        {
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_LARGE, 1);
+            rolePicker.add(ShipRoles.FREIGHTER_LARGE, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 1);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2);
+            rolePicker.add(ShipRoles.ESCORT_MEDIUM, 2);
+            rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 3);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
+            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+            rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+        }
+        else if (type == StartFleetType.COMBAT_SMALL || type == StartFleetType.COMBAT_SMALL_SSP)
+        {
+            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 2);
+            rolePicker.add(ShipRoles.ESCORT_MEDIUM, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 3);
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 2);
+            rolePicker.add(ShipRoles.FAST_ATTACK, 2);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 2);
+            rolePicker.add(ShipRoles.FAST_ATTACK, 2);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+        }
+        else if (type == StartFleetType.TRADE_SMALL || type == StartFleetType.TRADE_SMALL_SSP)
+        {
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2);
+            rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 3);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
+            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 2);
+            rolePicker.add(ShipRoles.FREIGHTER_SMALL, 2);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
+            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+            rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+        }
+        else if (type == StartFleetType.SOLO || type == StartFleetType.SOLO_SSP)
+        {
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
+            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+        }
+        return ships;
+        
+        // random fleet method: gives too many crappy little ships
+        /*
+        float combatFP = 4;
+        float tradeFP = 0;
+        String factoryType = FleetTypes.PATROL_SMALL;    // probably not needed but meh
+        switch (type) {
+            case COMBAT_SMALL:
+            case COMBAT_SMALL_SSP:
+                break;
+            case COMBAT_LARGE:
+            case COMBAT_LARGE_SSP:
+                combatFP = 6;
+                tradeFP = 2;
+                factoryType = FleetTypes.PATROL_LARGE;
+                break;
+            case TRADE_SMALL:
+            case TRADE_SMALL_SSP:
+                combatFP = 1;
+                tradeFP = 3;
+                factoryType = FleetTypes.TRADE_SMALL;
+                break;
+            case TRADE_LARGE:
+            case TRADE_LARGE_SSP:
+                combatFP = 2;
+                tradeFP = 6;
+                factoryType = FleetTypes.TRADE;
+        }
+
+        MarketAPI market = Global.getFactory().createMarket("fake_market", "fake market", 6);
+        FleetParams fleetParams = new FleetParams(null, market, factionId, null, factoryType, 
+                combatFP, // combat
+                tradeFP, // freighters
+                0,        // tankers
+                0,        // personnel transports
+                0,        // liners
+                0,        // civilian
+                0,    // utility
+                0, (float)MathUtils.getRandomNumberInRange(0.4f, 0.7f), 0, 0);    // quality bonus, quality override, officer num mult, officer level bonus
+        CampaignFleetAPI fleet = FleetFactoryV2.createFleet(fleetParams);
+        for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
+        {
+            if (member.isFighterWing())
+                ships.add(member.getSpecId());
+            else
+                ships.add(member.getVariant().getHullVariantId());
+        }
+        
+        return ships;
+        */
+    }
+    
+    /**
+     * Gets a list of ships to give to the player at start, based on the chosen starting fleet type.
+     * Can use the predefined ships in the faction config, or random ones based on ship roles.
+     * @param typeStr
+     * @param allowFallback If true, return the specified solo start ship if the chosen type is not available,
+     * or a Wolf if that isn't available either
+     * @return A list of variant IDs
+     */
     public List<String> getStartShipsForType(String typeStr, boolean allowFallback)
     {
         StartFleetType type = StartFleetType.valueOf(typeStr.toUpperCase());
+        StartFleetType typeSSP = StartFleetType.valueOf((typeStr + "_SSP").toUpperCase());
+        
         boolean useSSPShips = ExerelinUtils.isSSPInstalled(true);
         if (factionId.equals(Factions.PIRATES))
             useSSPShips = useSSPShips || ExerelinModPlugin.HAVE_UNDERWORLD;
         else
             useSSPShips = useSSPShips || ExerelinModPlugin.HAVE_SWP;
         
+        if (ExerelinSetupData.getInstance().randomStartShips && (startShips.containsKey(type) || startShips.containsKey(typeSSP)) )
+            return getRandomStartShipsForType(type);
+        
         if (useSSPShips)
         {
-            StartFleetType typeSSP = StartFleetType.valueOf((typeStr + "_SSP").toUpperCase());
             if (startShips.containsKey(typeSSP))
                 return startShips.get(typeSSP);
         }
+        
         if (startShips.containsKey(type))
             return startShips.get(type);
         

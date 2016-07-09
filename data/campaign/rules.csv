@@ -223,6 +223,8 @@ ExerelinNGCListOptionEnableRespawnAllFactions,ExerelinNGCOtherOptions,"$respawnF
 $onlyRespawnStartingFactions",,,exerelinNGCEnableRespawnAllFactions:Enable respawning of factions not present at start,
 ExerelinNGCListOptionDisableRespawnAllFactions,ExerelinNGCOtherOptions,"$respawnFactions
 !$onlyRespawnStartingFactions",,,exerelinNGCDisableRespawnAllFactions:Disable respawning of factions not present at start,
+ExerelinNGCListOptionEnableRandomStartShips,ExerelinNGCOtherOptions,!$randomStartShips,"SetTooltip exerelinNGCEnableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction. Select the faction again to re-roll.""",,exerelinNGCEnableRandomStartShips:Enable random starting ships,
+ExerelinNGCListOptionDisableRandomStartShips,ExerelinNGCOtherOptions,$randomStartShips,"SetTooltip exerelinNGCDisableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction. Select the faction again to re-roll.""",,exerelinNGCDisableRandomStartShips:Disable random starting ships,
 ExerelinNGCListOptionEnableEasyMode,ExerelinNGCOtherOptions,!$easyMode,"SetTooltip exerelinNGCEnableEasyMode ""- Reduces damage taken by 50%\n- Increases damage dealt by 50%\n- Increases sensor range by 500 units\n- Increases salvage by 50%\n- Reduces level of enemy officers by 50%""
 SetTooltipHighlightColors exerelinNGCEnableEasyMode hColor hColor hColor hColor hColor
 SetTooltipHighlights exerelinNGCEnableEasyMode ""50%"" ""50%"" ""500"" ""50%"" ""50%""",,exerelinNGCEnableEasyMode:Enable vanilla's Easy Mode,
@@ -261,6 +263,10 @@ ExerelinNGCEnableRespawnAllFactions,NewGameOptionSelected,$option==exerelinNGCEn
 FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisableRespawnAllFactions,NewGameOptionSelected,$option==exerelinNGCDisableRespawnAllFactions,"NGCSetRespawnAllFactions false
 FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCEnableRandomStartShips,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartShips,"NGCSetRandomStartShips true
+FireAll ExerelinNGCOtherOptions",,,
+ExerelinNGCDisableRandomStartShips,NewGameOptionSelected,$option==exerelinNGCDisableRandomStartShips,"NGCSetRandomStartShips false
+FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCEnableEasyMode,NewGameOptionSelected,$option==exerelinNGCEnableEasyMode,"NGCSetEasyMode true
 FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisableEasyMode,NewGameOptionSelected,$option==exerelinNGCDisableEasyMode,"NGCSetEasyMode false
@@ -270,19 +276,30 @@ FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisableHardMode,NewGameOptionSelected,$option==exerelinNGCDisableHardMode,"NGCSetHardMode false
 FireAll ExerelinNGCOtherOptions",,,
 ,,,,,,
-ExerelinNGCJoin,ExerelinNGCStep2,,FireAll ExerelinNGCListFactions,Which faction would you like to join?,,
+ExerelinNGCJoin,ExerelinNGCStep2,,FireAll ExerelinNGCListFactionSets,Which faction would you like to join?,,
 ExerelinNGCFactionsBackToMain,NewGameOptionSelected,$option==exerelinNGCFactionsBack,FireAll ExerelinNGCListFactions,,,
-ExerelinNGCFactionsMain,ExerelinNGCListFactions,,,,"exerelinNGCViewVanillaFactions:Vanilla factions
+ExerelinNGCFactionsMain,ExerelinNGCListFactionSets,,,,"exerelinNGCViewVanillaFactions:Vanilla factions
 99:exerelinNGCOptionsBack:Back",maybe we should just do it straight alphabetical instead of segregating vanilla factions into their own category
-ExerelinNGCViewVanillaFactions,NewGameOptionSelected,$option == exerelinNGCViewVanillaFactions,FireAll ExerelinNGCListFactionsVanilla,,,
-ExerelinNGCModFactions1,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions1:Mod factions (A-F),Should check if factions are actually there
-ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModFactions1,FireAll ExerelinNGCListFactions1,,,
-ExerelinNGCModFactions2,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions2:Mod factions (H-M),ditto
-ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModFactions2,FireAll ExerelinNGCListFactions2,,,
-ExerelinNGCModFactions3,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions3:Mod factions (N-P),
-ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,FireAll ExerelinNGCListFactions3,,,
-ExerelinNGCModFactions4,ExerelinNGCListFactions,,,,exerelinNGCViewModFactions4:Mod factions (Q-Z),
-ExerelinNGCViewModFactions4,NewGameOptionSelected,$option == exerelinNGCViewModFactions4,FireAll ExerelinNGCListFactions4,,,
+ExerelinNGCViewVanillaFactions,NewGameOptionSelected,$option == exerelinNGCViewVanillaFactions,"$lastFactionsList = ""vanilla""
+FireAll ExerelinNGCListFactions",,,
+ExerelinNGCModFactions1,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions1:Mod factions (A-F),Should check if factions are actually there
+ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModFactions1,"$lastFactionsList = ""mods1""
+FireAll ExerelinNGCListFactions",,,
+ExerelinNGCModFactions2,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions2:Mod factions (H-M),ditto
+ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModFactions2,"$lastFactionsList = ""mods2""
+FireAll ExerelinNGCListFactions",,,
+ExerelinNGCModFactions3,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions3:Mod factions (N-P),
+ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,"$lastFactionsList = ""mods3""
+FireAll ExerelinNGCListFactions",,,
+ExerelinNGCModFactions4,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions4:Mod factions (Q-Z),
+ExerelinNGCViewModFactions4,NewGameOptionSelected,$option == exerelinNGCViewModFactions4,"$lastFactionsList = ""mods4""
+FireAll ExerelinNGCListFactions",,,
+,,,,,,
+ExerelinNGCListFactionsVanilla,ExerelinNGCListFactions,"$lastFactionsList == ""vanilla""",FireAll ExerelinNGCListFactionsVanilla,,,
+ExerelinNGCListFactionsMods1,ExerelinNGCListFactions,"$lastFactionsList == ""mods1""",FireAll ExerelinNGCListFactions1,,,
+ExerelinNGCListFactionsMods2,ExerelinNGCListFactions,"$lastFactionsList == ""mods2""",FireAll ExerelinNGCListFactions2,,,
+ExerelinNGCListFactionsMods3,ExerelinNGCListFactions,"$lastFactionsList == ""mods3""",FireAll ExerelinNGCListFactions3,,,
+ExerelinNGCListFactionsMods4,ExerelinNGCListFactions,"$lastFactionsList == ""mods4""",FireAll ExerelinNGCListFactions4,,,
 ,,,,,,
 ExerelinNGCFactionsQuickStart,ExerelinNGCListFactions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
 ,,,,,,
@@ -293,7 +310,7 @@ ExerelinNGCListSindrianDiktat,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist
 ExerelinNGCListPirates,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist pirates,,,exerelinNGCJoinPirate:Pirates (hard),
 ExerelinNGCFactionsOwnFaction,ExerelinNGCListFactionsVanilla,,,,exerelinNGCOwnFaction:Own faction,
 ExerelinNGCFactionsFreeStart,ExerelinNGCListFactionsVanilla,,"SetTooltip exerelinNGCFreeStart ""Own faction, but with no starting planet; you're on your own""",,exerelinNGCFreeStart:Free start (hard),
-ExerelinNGCListVanillaFactionsBack,ExerelinNGCListFactionsVanilla,,,,20:exerelinNGCFactionsBack:Back,
+ExerelinNGCListVanillaFactionsBack,ExerelinNGCListFactionsVanilla,,,,20:exerelinNGCOptionsDone:Back,
 ,,,,,,
 ExerelinNGCListExipirated,ExerelinNGCListFactions1,NGCDoesFactionExist exipirated,,,exerelinNGCJoinExipirated:Ahriman Association,
 ExerelinNGCListApprolight,ExerelinNGCListFactions1,NGCDoesFactionExist approlight,,,exerelinNGCJoinApprolight:Approlight,
@@ -305,7 +322,7 @@ ExerelinNGCListCrystanite,ExerelinNGCListFactions1,NGCDoesFactionExist crystanit
 ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
 ExerelinNGCListExigency,ExerelinNGCListFactions1,NGCDoesFactionExist exigency,,,exerelinNGCJoinExigency:Exigency Corp,
 ExerelinNGCListFirestormFederation,ExerelinNGCListFactions1,NGCDoesFactionExist firestorm_federation,,,exerelinNGCJoinFirestormFederation:Firestorm Federation,
-ExerelinNGCListModFactions1Back,ExerelinNGCListFactions1,,,,20:exerelinNGCFactionsBack:Back,
+ExerelinNGCListModFactions1Back,ExerelinNGCListFactions1,,,,20:exerelinNGCOptionsDone:Back,
 ,,,,,,
 ExerelinNGCListHiigaranDescendants,ExerelinNGCListFactions2,NGCDoesFactionExist hiigaran_descendants,,,exerelinNGCJoinHiigaranDescendants:Hiigaran Descendants,
 ExerelinNGCListICI,ExerelinNGCListFactions2,NGCDoesFactionExist sun_ici,,,exerelinNGCJoinICI:Idoneus Garrison,
@@ -317,7 +334,7 @@ ExerelinNGCListTemplars,ExerelinNGCListFactions2,NGCDoesFactionExist templars,,,
 ExerelinNGCListLooters,ExerelinNGCListFactions2,NGCDoesFactionExist Lte,,,exerelinNGCJoinLooters:Looters (hard),
 ExerelinNGCListMayorate,ExerelinNGCListFactions2,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
 ExerelinNGCListMetelson,ExerelinNGCListFactions2,NGCDoesFactionExist metelson,,,exerelinNGCJoinMetelson:Metelson Industries,
-ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCFactionsBack:Back,
+ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,,,20:exerelinNGCOptionsDone:Back,
 ,,,,,,
 ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
 ExerelinNGCListNGO,ExerelinNGCListFactions3,NGCDoesFactionExist new_galactic_order,,,exerelinNGCJoinNGO:New Galactic Order,
@@ -330,7 +347,7 @@ ExerelinNGCListPatria,ExerelinNGCListFactions3,NGCDoesFactionExist patnavy,,,exe
 ExerelinNGCListPbc,ExerelinNGCListFactions3,NGCDoesFactionExist pbc,,,exerelinNGCJoinPbc:Pegasus Belt Council,
 ExerelinNGCListPTech,ExerelinNGCListFactions3,NGCDoesFactionExist PTech,,,exerelinNGCJoinPTech:Protonian Technologies,
 ExerelinNGCListP9,ExerelinNGCListFactions3,NGCDoesFactionExist pn_colony,,,exerelinNGCJoinP9:P9 Colony Group,
-ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCFactionsBack:Back,
+ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,,,20:exerelinNGCOptionsDone:Back,
 ,,,,,,
 ExerelinNGCListQamar,ExerelinNGCListFactions4,NGCDoesFactionExist insurgency,,,exerelinNGCJoinQamar:Qamar Insurgency,
 ExerelinNGCListRadicalORI,ExerelinNGCListFactions4,NGCDoesFactionExist rori,,,exerelinNGCJoinRadicalORI:Radical ORI,
@@ -340,7 +357,7 @@ ExerelinNGCListShadowyards,ExerelinNGCListFactions4,NGCDoesFactionExist shadow_i
 ExerelinNGCListSpire,ExerelinNGCListFactions4,NGCDoesFactionExist spire,,,exerelinNGCJoinSpire:Spire,
 ExerelinNGCListTiandong,ExerelinNGCListFactions4,NGCDoesFactionExist tiandong,,,exerelinNGCJoinTiandong:Tiandong Heavy Industries,
 ExerelinNGCListValkyrians,ExerelinNGCListFactions4,NGCDoesFactionExist valkyrian,,,exerelinNGCJoinValkyrians:Valkyrians,
-ExerelinNGCListModFactions4Back,ExerelinNGCListFactions4,,,,20:exerelinNGCFactionsBack:Back,
+ExerelinNGCListModFactions4Back,ExerelinNGCListFactions4,,,,20:exerelinNGCOptionsDone:Back,
 ,,,,,,
 ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart false
@@ -497,7 +514,7 @@ exerelinNGCFleetCombatSmall:Light combat patrol
 exerelinNGCFleetTradeSmall:Small trade convoy
 exerelinNGCFleetCombatLarge:Upsized military unit
 exerelinNGCFleetTradeLarge:Larger mercantile train
-exerelinNGCFactionsBack:Go back",
+exerelinNGCFleetBack:Go back",
 ExerelinNGCStartShipsSolo,NewGameOptionSelected,$option == exerelinNGCFleetSolo,"NGCAddStartingShipsByFleetType SOLO
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCStartShipsCombatSmall,NewGameOptionSelected,$option == exerelinNGCFleetCombatSmall,"NGCAddStartingShipsByFleetType COMBAT_SMALL
@@ -508,6 +525,7 @@ ExerelinNGCStartShipsCombatLarge,NewGameOptionSelected,$option == exerelinNGCFle
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCStartShipsTradeLarge,NewGameOptionSelected,$option == exerelinNGCFleetTradeLarge,"NGCAddStartingShipsByFleetType TRADE_LARGE
 FireBest ExerelinNGCStep4",,,
+ExerelinNGCStartShipsBack,NewGameOptionSelected,$option == exerelinNGCFleetBack,FireAll ExerelinNGCListFactions,,,
 ,,,,,,
 ExerelinNGCFinalize,ExerelinNGCStep4,,"AddText ""Added $crewAdded crew"" textFriendColor
 AddText ""Added $suppliesAdded supplies"" textFriendColor

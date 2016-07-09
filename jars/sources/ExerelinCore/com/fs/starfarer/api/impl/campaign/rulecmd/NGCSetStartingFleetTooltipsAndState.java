@@ -74,6 +74,8 @@ public class NGCSetStartingFleetTooltipsAndState extends BaseCommandPlugin {
 			dialog.getOptionPanel().setTooltip(option, tooltip);
 			dialog.getOptionPanel().setTooltipHighlights(option, highlights.toArray(new String[0]));
 			dialog.getOptionPanel().setTooltipHighlightColors(option, colors.toArray(new Color[0]));
+			
+			memoryMap.get(MemKeys.LOCAL).set("$startShips_" + fleetTypeStr, startingVariants);
 		}
 		
 		return true;

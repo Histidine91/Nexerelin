@@ -28,7 +28,9 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		String fleetTypeStr = params.get(0).getString(memoryMap);
 		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
 		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(PlayerFactionStore.getPlayerFactionIdNGC());
-		List<String> startingVariants = factionConf.getStartShipsForType(fleetTypeStr, true);
+		List<String> startingVariants = (List<String>)memoryMap.get(MemKeys.LOCAL).get("$startShips_" + fleetTypeStr);
+		if (startingVariants == null || startingVariants.isEmpty())
+			startingVariants = factionConf.getStartShipsForType(fleetTypeStr, true);
 		
 		int crew = 0;
 		int supplies = 0;
