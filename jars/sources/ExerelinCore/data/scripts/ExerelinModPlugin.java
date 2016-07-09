@@ -24,9 +24,14 @@ import exerelin.campaign.StatsTracker;
 import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.plugins.ExerelinCoreCampaignPlugin;
 import exerelin.utilities.*;
+import exerelin.world.DefenceFleetAI;
 import exerelin.world.ExerelinPatrolFleetManager;
+import exerelin.world.InvasionFleetAI;
 import exerelin.world.InvasionFleetManager;
+import exerelin.world.MiningFleetAI;
 import exerelin.world.MiningFleetManager;
+import exerelin.world.RespawnFleetAI;
+import exerelin.world.ResponseFleetAI;
 import exerelin.world.ResponseFleetManager;
 import java.util.HashMap;
 import org.lazywizard.omnifac.OmniFacSettings;
@@ -226,9 +231,16 @@ public class ExerelinModPlugin extends BaseModPlugin
         x.alias("ExerelinCoreScript", ExerelinCoreScript.class);
         x.alias("PlayerFactionStore", PlayerFactionStore.class);
         x.alias("SectorManager", SectorManager.class);
+        
         x.alias("InvasionFleetManager", InvasionFleetManager.class);
         x.alias("ResponseFleetManager", ResponseFleetManager.class);
         x.alias("MiningFleetManager", MiningFleetManager.class);
         x.alias("ExerelinPatrolFleetManager", ExerelinPatrolFleetManager.class);
+        
+        x.alias("DefenceFleetAI", DefenceFleetAI.class);
+        x.alias("InvasionFleetAI", InvasionFleetAI.class);
+        x.alias("MiningFleetAI", MiningFleetAI.class);
+        x.alias("RespawnFleetAI", RespawnFleetAI.class);
+        x.alias("ResponseFleetAI", ResponseFleetAI.class);
     }
 }
