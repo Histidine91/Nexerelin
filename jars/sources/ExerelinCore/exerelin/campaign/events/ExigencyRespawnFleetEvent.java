@@ -40,7 +40,7 @@ public class ExigencyRespawnFleetEvent extends BaseEventPlugin {
 		super.init(type, eventTarget);
 		interval = new IntervalUtil(ExerelinConfig.factionRespawnInterval * 1.6f, ExerelinConfig.factionRespawnInterval * 2.4f);
 		//interval = new IntervalUtil(3, 3);
-		fakeMarket = Global.getFactory().createMarket("tasserus_fake_market", "Tasserus", 5);
+		fakeMarket = Global.getFactory().createMarket("tasserus_fake_market", "Tasserus", 6);
 		fakeMarket.setFactionId("exigency");
 		fakeMarket.setPrimaryEntity(Global.getSector().getEntityById("exigency_anomaly"));
 	}
