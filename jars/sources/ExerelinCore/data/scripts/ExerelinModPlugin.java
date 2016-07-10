@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -128,28 +129,13 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        // fix SSP vs. SWP star system backgrounds
-        if (HAVE_SWP && !HAVE_SSP)
+        // fix captured Cabal submarkets
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
-            for (StarSystemAPI system : Global.getSector().getStarSystems())
+            for (SubmarketAPI submarket : market.getSubmarketsCopy())
             {
-                switch (system.getBackgroundTextureFilename()) {
-                    case "graphics/ssp/backgrounds/ssp_arcade.png":
-                        system.setBackgroundTextureFilename("graphics/swp/backgrounds/swp_arcade.png");
-                        break;
-                    case "graphics/ssp/backgrounds/ssp_atopthemountain.jpg":
-                        system.setBackgroundTextureFilename("graphics/swp/backgrounds/swp_atopthemountain.jpg");
-                        break;
-                    case "graphics/ssp/backgrounds/ssp_conflictofinterest.jpg":
-                        system.setBackgroundTextureFilename("graphics/swp/backgrounds/swp_conflictofinterest.jpg");
-                        break;
-                    case "graphics/ssp/backgrounds/ssp_corporateindirection.jpg":
-                        system.setBackgroundTextureFilename("graphics/swp/backgrounds/swp_corporateindirection.jpg");
-                        break;
-                    case "graphics/ssp/backgrounds/ssp_overreachingexpansion.jpg":
-                        system.setBackgroundTextureFilename("graphics/swp/backgrounds/swp_overreachingexpansion.jpg");
-                        break;
-                }
+                if (submarket.getSpec().getId().equals("uw_cabalmarket"))
+                    submarket.setFaction(Global.getSector().getFaction("cabal"));
             }
         }
     }

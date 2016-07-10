@@ -273,7 +273,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static boolean getCorvusMode()
     {
-        if (sectorManager == null) create();	// try to make sure we have an answer for whoever calls this
+        if (sectorManager == null) create();    // try to make sure we have an answer for whoever calls this
         if (sectorManager == null) return false;
         return sectorManager.corvusMode;
     }
@@ -300,7 +300,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (targetFactionId.equals(playerAlignedFactionId) || targetFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
         
         int numFactions = 0;
-        float totalRepLoss = 0;	// note: does not include the loss with player-aligned faction
+        float totalRepLoss = 0;    // note: does not include the loss with player-aligned faction
         float myFactionLoss = 0;
         Map<String, Float> repLoss = new HashMap<>();
         List<String> factions = SectorManager.getLiveFactionIdsCopy();
@@ -710,17 +710,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             //if (submarket.getPlugin().isBlackMarket()) continue;	// this doesn't behave as expected for pirate markets (it checks if submarket faction is hostile to market faction)
             String submarketId = submarket.getSpecId();
             
-			// reset smuggling suspicion
-			if (submarketId.equals(Submarkets.SUBMARKET_BLACK)) {  
-			  PlayerTradeDataForSubmarket tradeData = SharedData.getData().getPlayerActivityTracker().getPlayerTradeData(submarket);  
-			  tradeData.setTotalPlayerTradeValue(0);
-			  continue;
-			}  
+            // reset smuggling suspicion
+            if (submarketId.equals(Submarkets.SUBMARKET_BLACK)) {  
+              PlayerTradeDataForSubmarket tradeData = SharedData.getData().getPlayerActivityTracker().getPlayerTradeData(submarket);  
+              tradeData.setTotalPlayerTradeValue(0);
+              continue;
+            }  
             if (submarketId.equals("ssp_cabalmarket")) continue;
+            if (submarketId.equals("uw_cabalmarket")) continue;
             
             submarket.setFaction(newOwner);
         }
-		
+        
         market.reapplyConditions();
         Map<String, Object> params = new HashMap<>();
         params.put("newOwner", newOwner);
