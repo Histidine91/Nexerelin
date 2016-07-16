@@ -107,6 +107,8 @@ public class PlayerStartHandler {
 		{
 			if (entity != null && !entity.getFaction().isNeutralFaction())
 				ExerelinUtilsFaction.grantCommission(entity);
+			else if (ExerelinUtilsFaction.isExiInCorvus(factionId))
+				ExerelinUtilsFaction.grantCommission(Global.getSector().getStarSystem("Tasserus").getEntityById("exigency_anomaly"));
 		}
 		
 		int numOfficers = ExerelinSetupData.getInstance().numStartingOfficers;
