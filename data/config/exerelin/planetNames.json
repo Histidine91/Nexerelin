@@ -9,6 +9,7 @@
 		"Vermillion", "Lycus", "Amritsar", "Rantemario", "Astarte",	# Legend of the Galactic Heroes
 		"Azea", "Braxi", "Lugast", "Aldous",	# In Conquest Born
 		"Granminster", "Stormrook",	# Skyborn
+		"Daihon'ei", "Kumano", "Mutsu",	# War of the Human Tanks
 	],
 	
 	"planets":[
@@ -29,6 +30,7 @@
 		"Skye", "Morgan", "Zakharov", "Santiago", "Godwinson", "Lal",	# Alpha Centauri
 		"Bastion", "Sadira", "Faulkner", "Zeira", "Alden", "Dionne", "Radcot", "Logan", "Reyna", "Devlin", "Barlow", "Cecilia", "Milea", "Puck", "Galvas", "Franco", "Halak", "Melior",	# Vanguard Bandits
 		"Claret", "Sullivan", "Corwin", "Chaska", "Alda", "Dhacian",	# Skyborn
+		"Shoutaro", "Choko", "Liselotte", "Alter", "Megumin", "Yatarou", "Hana", "Sasagusa", "Kurara", "Katsura", "Endo", "Ricarda", "Heshiko", "Rara", "Miou", "Elle", "Hotaru", "Mihari", "Whiteberry", "Masamune", "Touka", "Koharu", "Pokari", "Gekkou", "Seiran", "Albatross", "Halberstadt", # War of the Human Tanks
 	],
 	
 	"stations":[
