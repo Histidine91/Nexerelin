@@ -106,6 +106,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
                 0.15f, -1, 1.25f, marketSize/2);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(origin.getFaction(), fleetParams);
+        if (fleet == null) return;
         fleet.setName(name);
         fleet.setAIMode(true);
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);

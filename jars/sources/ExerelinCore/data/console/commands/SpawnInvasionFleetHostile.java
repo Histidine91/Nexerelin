@@ -64,6 +64,10 @@ public class SpawnInvasionFleetHostile implements BaseCommand {
         }
         
         InvasionFleetManager.InvasionFleetData data = InvasionFleetManager.spawnInvasionFleet(closestOriginMarket.getFaction(), closestOriginMarket, closestTargetMarket, 1.1f, true);
+        if (data == null) {
+            Console.showMessage("Unable to spawn fleet");
+            return CommandResult.ERROR;
+        }
         if (closestOriginMarket.getContainingLocation() != playerFleet.getContainingLocation())
         {
             closestOriginMarket.getContainingLocation().removeEntity(data.fleet);

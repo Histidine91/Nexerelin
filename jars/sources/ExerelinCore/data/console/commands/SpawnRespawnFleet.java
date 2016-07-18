@@ -51,6 +51,10 @@ public class SpawnRespawnFleet implements BaseCommand {
         }
         
         InvasionFleetManager.InvasionFleetData data = InvasionFleetManager.spawnRespawnFleet(playerAlignedFaction, closestTargetMarket, closestTargetMarket, false);
+        if (data == null) {
+            Console.showMessage("Unable to spawn fleet");
+            return CommandResult.ERROR;
+        }
         Console.showMessage("Spawning " + data.fleet.getName() + ", sending to " + closestTargetMarket.getName());
         data.fleet.setLocation(playerFleet.getLocation().x, playerFleet.getLocation().y);
         return CommandResult.SUCCESS;

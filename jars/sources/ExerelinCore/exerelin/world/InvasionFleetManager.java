@@ -150,6 +150,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 0, params.qualityOverride, 1.25f, params.originMarket.getSize()/2);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(params.faction, fleetParams);
+        if (fleet == null) return null;
         /*
         CampaignFleetAPI fleet = FleetFactory.createGenericFleet(factionId, params.name, params.qf, params.fp);
         
@@ -292,6 +293,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         params.numMarines = (int)(defenderStrength * DEFENDER_STRENGTH_MARINE_MULT);
         
         InvasionFleetData fleetData = spawnFleet(params);
+        if (fleetData == null) return null;
         if (useOriginLocation)
         {
             Vector2f originLoc = originMarket.getPrimaryEntity().getLocation();
