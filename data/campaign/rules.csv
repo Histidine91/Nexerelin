@@ -936,17 +936,23 @@ ShowVisual ""graphics/illustrations/pirate_station.jpg""
 FireAll ExerelinPrisonerOption",,,
 ExerelinPrisonerOptionNumPrisoners,ExerelinPrisonerOption,,SetTextHighlights $numPrisoners,You have $numPrisoners prisoner(s).,,
 ExerelinPrisonerOptionListRepatriate,ExerelinPrisonerOption,,"SetTooltip exerelinPrisonerRepatriate ""Release a prisoner for a reputation boost with $theFaction.""",,exerelinPrisonerRepatriate:Repatriate prisoner,
-ExerelinPrisonerOptionListRansom,ExerelinPrisonerOption,"RepIsAtWorst $faction.id INHOSPITABLE
-!IsPirateFaction $faction.id","GetPrisonerValue
+ExerelinPrisonerOptionListRansomBase,ExerelinPrisonerOption,,,,exerelinPrisonerRansom:Collect ransom,
+ExerelinPrisonerOptionListRansom,ExerelinPrisonerOption,!IsPirateFaction $faction.id,"GetPrisonerValue
 SetTooltip exerelinPrisonerRansom ""Return a prisoner in exchange for a ransom of $ransomValue credits.""
 SetTooltipHighlightColors exerelinPrisonerRansom buttonShortcut 
 SetTooltipHighlights exerelinPrisonerRansom $ransomValue
-SetEnabled exerelinPrisonerRansom true",,exerelinPrisonerRansom:Collect ransom,
+SetEnabled exerelinPrisonerRansom true",,,
 ExerelinPrisonerOptionListRansomHostile,ExerelinPrisonerOption,"RepIsAtBest $faction.id HOSTILE
-!IsPirateFaction $faction.id","SetTooltip exerelinPrisonerRansom ""$TheFaction is $relAdjective to you and refuses to consider any ransom payment.""
-SetEnabled exerelinPrisonerRansom false",,exerelinPrisonerRansom:Collect ransom,
+!IsPirateFaction $faction.id
+!$faction.c:allowsTransponderOffTrade
+!$market.mc:free_market","SetTooltip exerelinPrisonerRansom ""$TheFactionLong are $relAdjective to you and refuse  to consider any ransom payment.""
+SetEnabled exerelinPrisonerRansom false",,,
+ExerelinPrisonerOptionListRansomHostileCanDisableTransponder,ExerelinPrisonerOption,"RepIsAtBest $faction.id HOSTILE
+!IsPirateFaction $faction.id
+$player.transponderOn","SetTooltip exerelinPrisonerRansom ""$TheFactionLong are $relAdjective to you and refuse to consider any ransom payment. Coming in with your transponder off might allow an under-the-table deal.""
+SetEnabled exerelinPrisonerRansom false",,,
 ExerelinPrisonerOptionListRansomPirates,ExerelinPrisonerOption,IsPirateFaction $faction.id,"SetTooltip exerelinPrisonerRansom ""Pirates do not pay ransom.""
-SetEnabled exerelinPrisonerRansom false",,exerelinPrisonerRansom:Collect ransom,
+SetEnabled exerelinPrisonerRansom false",,,
 ExerelinPrisonerOptionListSellSlave,ExerelinPrisonerOption,$tradeMode != NONE,"GetPrisonerValue
 SetTooltip exerelinPrisonerSellSlave ""Sell a prisoner as a slave for $slaveValue credits. This will anger lawful factions.""
 SetTooltipHighlightColors exerelinPrisonerSellSlave buttonShortcut 
