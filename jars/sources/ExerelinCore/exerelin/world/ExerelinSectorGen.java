@@ -452,6 +452,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(xpos, 0), ExerelinUtilsAstro.getRandomAngle(), 150, 60, 30, 30);
 		}
 		
+		prismEntity.addTag(ExerelinConstants.TAG_UNINVADABLE);
+		
 		/*
 		EntityData data = new EntityData(null);
 		data.name = "Prism Freeport";
