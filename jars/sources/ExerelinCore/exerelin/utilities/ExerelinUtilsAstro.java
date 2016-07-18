@@ -103,10 +103,12 @@ public class ExerelinUtilsAstro {
 	 * @param ellipseMult Multiplies radius to get semi-major axis,
 	 *						divides radius to get semi-minor axis.
 	 * @param orbitPeriod
+	 * @param type 1 == pointing down, 2 == spin, anything else = normal (only works for non-elliptical orbits)
+	 * @param spinTime
 	 * @return The starting angle on the orbit
 	 */
 	public static float setOrbit(SectorEntityToken entity, SectorEntityToken primary, float orbitRadius, float angle, 
-			boolean isEllipse, float ellipseAngle, float ellipseMult, float orbitPeriod)
+			boolean isEllipse, float ellipseAngle, float ellipseMult, float orbitPeriod, int type, float spinTime)
 	{
 		if (isEllipse)
 		{
@@ -118,9 +120,20 @@ public class ExerelinUtilsAstro {
 		}
 		else
 		{
-			entity.setCircularOrbit(primary, angle, orbitRadius, orbitPeriod);
+			if (type == 1)
+				entity.setCircularOrbitPointingDown(primary, angle, orbitRadius, orbitPeriod);
+			else if (type == 2)
+				entity.setCircularOrbitWithSpin(primary, angle, orbitRadius, orbitPeriod, spinTime, spinTime);
+			else
+				entity.setCircularOrbit(primary, angle, orbitRadius, orbitPeriod);
 			return angle;
 		}
+	}
+	
+	public static float setOrbit(SectorEntityToken entity, SectorEntityToken primary, float orbitRadius, float angle, 
+			boolean isEllipse, float ellipseAngle, float ellipseMult, float orbitPeriod)
+	{
+		return setOrbit(entity, primary, orbitRadius, angle, isEllipse, ellipseAngle, ellipseMult, orbitPeriod, 0, 0);
 	}
 	
 	/**
@@ -136,9 +149,12 @@ public class ExerelinUtilsAstro {
 	 * @param isEllipse Is this orbit elliptic?
 	 * @param ellipseAngle Angle of the ellipse orbit
 	 * @param ellipseMult Used to calculate the ellipse's semi-major and semi-minor axes
+	 * @param type 1 == pointing down, 2 == spin, anything else = normal (only works for non-elliptical orbits)
+	 * @param spinTime
 	 */
 	public static void setLagrangeOrbit(SectorEntityToken orbiter, SectorEntityToken m1, SectorEntityToken m2, int point, 
-			float m2Angle, float m2OrbitRadius, float myOrbitRadius, float orbitPeriod, boolean isEllipse, float ellipseAngle, float ellipseMult)
+			float m2Angle, float m2OrbitRadius, float myOrbitRadius, float orbitPeriod, boolean isEllipse, 
+			float ellipseAngle, float ellipseMult, int type, float spinTime)
 	{
 		// maybe we should just throw an exception
 		if (point <= 0 || point > 5)
@@ -169,6 +185,14 @@ public class ExerelinUtilsAstro {
 				break;
 		}
 	}
+	public static void setLagrangeOrbit(SectorEntityToken orbiter, SectorEntityToken m1, SectorEntityToken m2, int point, 
+			float m2Angle, float m2OrbitRadius, float myOrbitRadius, float orbitPeriod, boolean isEllipse, 
+			float ellipseAngle, float ellipseMult)
+	{
+		setLagrangeOrbit(orbiter, m1, m2, point, m2Angle, m2OrbitRadius, myOrbitRadius, 
+				orbitPeriod, isEllipse, ellipseAngle, ellipseMult, 0, 0);
+	}
+	
 	
 	/**
 	 * Adds an asteroid belt and the background ring bands
