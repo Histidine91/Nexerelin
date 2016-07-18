@@ -172,13 +172,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		starDefs.add(new StarDef("Blue Star", "star_blue", 800, new Color(200, 240, 255), 1));
 		starDefs.add(new StarDef("Blue-White Star", "star_bluewhite", 650, new Color(210,236,255), 1));
 		
-		if (!ExerelinConfig.realisticStars) {
-			starDefs.add(new StarDef("Purple Star", "star_purple", 700, new Color(250, 192, 244), 1));
-			starDefs.add(new StarDef("Dark Star", "star_dark", 100, new Color(155, 155, 155), 1));
-			starDefs.add(new StarDef("Green Star", "star_green", 500, new Color(225, 255, 230), 1));
-			starDefs.add(new StarDef("Green-White Star", "star_greenwhite", 600, new Color(240, 255, 245), 1));
-		}
-		
 		if (ExerelinUtilsFaction.doesFactionExist("tiandong")) {
 			starDefs.add(new StarDef("Red Dwarf", "tiandong_shaanxi", 250, new Color(200, 125, 125), 2));
 		}
@@ -186,8 +179,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			starDefs.add(new StarDef("Red Dwarf", "star_red_dwarf", 250, new Color(200, 125, 125), 2));
 		}
 		
-		if (ExerelinUtilsFaction.doesFactionExist("exigency")) {
-			//starDefs.add(new StarDef("Black Hole", "exigency_black_hole", 320, 0.5f));
+		if (!ExerelinConfig.realisticStars) {
+			starDefs.add(new StarDef("Purple Star", "star_purple", 700, new Color(250, 192, 244), 1));
+			starDefs.add(new StarDef("Dark Star", "star_dark", 100, new Color(155, 155, 155), 1));
+			starDefs.add(new StarDef("Green Star", "star_green", 500, new Color(225, 255, 230), 1));
+			starDefs.add(new StarDef("Green-White Star", "star_greenwhite", 600, new Color(240, 255, 245), 1));
+			if (ExerelinUtilsFaction.doesFactionExist("exigency")) {
+				starDefs.add(new StarDef("Black Hole", "exigency_black_hole", 320, 0.5f));
+			}
 		}
 		
 		starPicker.clear();
@@ -1237,16 +1236,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		else if (def.name.contains("Dwarf")) coronaMult = 0.5f;
 		
 		radius *= MathUtils.getRandomNumberInRange(1 - STAR_SIZE_VARIATION, 1 + STAR_SIZE_VARIATION);
+		PlanetAPI created = null;
 		
 		if (!isSecondStar) 
 		{
-			Integer[] pos = (Integer[])starPositions.get(index);
+			Integer[] pos = starPositions.get(index);
 			int x = pos[0];
 			int y = pos[1];
-			PlanetAPI star = system.initStar(systemId + "_star", type, radius, x, y, 500 * coronaMult);
+			created = system.initStar(systemId + "_star", type, radius, x, y, 500 * coronaMult);
 			if (type.equals("exigency_black_hole"))
 			{
-				star.setCustomDescriptionId("exigency_black_hole");
+				created.setCustomDescriptionId("exigency_black_hole");
 				for (CampaignTerrainAPI terrain : system.getTerrainCopy())
 				{
 					if (terrain.getType().contentEquals("corona"))
@@ -1257,10 +1257,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				}
 			}
 			else if (type.equals("star_red_dwarf"))	// Mayorate red dwarf
-				star.setCustomDescriptionId("star_red_dwarf");
+				created.setCustomDescriptionId("star_red_dwarf");
 			else if (def.name.equalsIgnoreCase("White Dwarf"))
-				star.setCustomDescriptionId("star_white_dwarf");
-			return star;
+				created.setCustomDescriptionId("star_white_dwarf");
 		}
 		else 
 		{
@@ -1270,19 +1269,54 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			String name = system.getBaseName() + " B";	//possibleSystemNamesList.get(systemNameIndex);
 			//possibleSystemNamesList.remove(systemNameIndex);
 			
-			PlanetAPI star = system.getStar();
+			created = system.getStar();
 			
 			float angle = MathUtils.getRandomNumberInRange(1, 360);
-			float distance = (BINARY_STAR_DISTANCE + star.getRadius()*5 + radius*5) * MathUtils.getRandomNumberInRange(0.95f, 1.1f) ;
-			float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star, distance + star.getRadius());
+			float distance = (BINARY_STAR_DISTANCE + created.getRadius()*5 + radius*5) * MathUtils.getRandomNumberInRange(0.95f, 1.1f) ;
+			float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(created, distance + created.getRadius());
 			
-			PlanetAPI planet = system.addPlanet(systemId + "_star_b", star, name, type, angle, radius, distance, orbitDays);
-			ExerelinUtilsAstro.setOrbit(planet, star, distance, true, ExerelinUtilsAstro.getRandomAngle(), orbitDays);
+			created = system.addPlanet(systemId + "_star_b", created, name, type, angle, radius, distance, orbitDays);
+			ExerelinUtilsAstro.setOrbit(created, created, distance, true, ExerelinUtilsAstro.getRandomAngle(), orbitDays);
 			if (coronaMult != 0)
-				system.addCorona(planet, 300 * coronaMult, 2f, 0.1f, 1f);
-			
-			return planet;
+				system.addCorona(created, 300 * coronaMult, 2f, 0.1f, 1f);
 		}
+		if (type.equals("exigency_black_hole"))
+		{
+			created.setCustomDescriptionId("exigency_black_hole");
+			system.addTerrain(Terrain.MAGNETIC_FIELD,
+				new MagneticFieldTerrainPlugin.MagneticFieldParams(920f, // terrain effect band width
+				radius*1.5f, // terrain effect middle radius
+				created, // entity that it's around
+				0f, // visual band start
+				radius*3, // visual band end
+				new Color(0, 0, 0, 0), // base color
+				0f, // probability to spawn aurora sequence, checked once/day when no aurora in progress
+				new Color(0, 0, 0, 0),
+				new Color(0, 0, 0, 0)));
+			created.setInteractionImage("illustrations", "tasserus_illustration");
+			system.addRingBand(created, "misc", "accretion", 256f, 1, new Color(255, 155, 130, 255), 256, 250, -34f);
+			system.addRingBand(created, "misc", "accretion", 256f, 0, new Color(255, 115, 110, 255), 256, 330, -15f);
+			system.addRingBand(created, "misc", "accretion", 256f, 2, Color.white, 256, 400, -10f);
+			system.addRingBand(created, "misc", "accretion", 256f, 2, new Color(255, 115, 110, 255), 256, 410, -24f);
+			system.addRingBand(created, "misc", "accretion", 256f, 2, new Color(215, 25, 10, 255), 256, 440, -22f);
+			system.addRingBand(created, "misc", "accretion", 256f, 0, new Color(75, 15, 15, 125), 256, 480, -35f);
+			system.addRingBand(created, "misc", "accretion", 256f, 3, new Color(255, 105, 105, 155), 256, 525, -40f);
+			system.addRingBand(created, "misc", "accretion", 256f, 0, new Color(155, 15, 15, 255), 256, 565, -50f);
+			system.addRingBand(created, "misc", "accretion", 256f, 0, new Color(175, 95, 35, 255), 256, 615, -50f);
+			system.addRingBand(created, "misc", "accretion", 256f, 0, new Color(125, 45, 15, 255), 256, 665, -50f);
+			system.addRingBand(created, "misc", "accretion", 256f, 0, new Color(175, 75, 15, 255), 256, 695, -50f);
+			system.addRingBand(created, "misc", "accretion", 256f, 3, new Color(75, 55, 45, 215), 256, 710, -60f);
+			system.addRingBand(created, "misc", "accretion", 256f, 0, new Color(65, 39, 35, 125), 256, 730, -70f);
+			system.addRingBand(created, "misc", "accretion", 256f, 1, new Color(75, 45, 35, 255), 256f, 750, -86f);
+			system.addRingBand(created, "misc", "accretion", 256f, 2, new Color(85, 64, 45, 215), 256, 771, -90f);
+			system.addRingBand(created, "misc", "accretion", 256f, 0, new Color(75, 55, 35, 175), 256, 791, -100f);
+			system.addRingBand(created, "misc", "accretion", 256f, 1, new Color(55, 35, 15, 165), 256f, 825, -110f);
+			system.addRingBand(created, "misc", "accretion", 256f, 1, new Color(185, 175, 131, 135), 256f, 855, -115f);
+			system.addRingBand(created, "misc", "accretion", 256f, 3, new Color(135, 125, 91, 115), 256f, 895, -125f);
+			system.addRingBand(created, "misc", "accretion", 256f, 2, new Color(45, 25, 5, 75), 256f, 920, -130f);
+		}
+		
+		return created;
 	}
 	
 	protected PlanetAPI makeStar(int systemIndex, StarSystemAPI system, boolean isSecondStar)
@@ -1867,7 +1901,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 				String name = "";
 				while(!nameOK)
 				{
-					name = primaryData.name + " " + (String) ExerelinUtils.getRandomListElement(possibleStationNames);
+					name = primaryData.name + " " + ExerelinUtils.getRandomListElement(possibleStationNames);
 					if (!alreadyUsedStationNames.contains(name))
 						nameOK = true;
 				}
@@ -1881,6 +1915,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 
 		// Build hyperspace exits
+		int jumpPointLNum = Math.random() < 0.5 ? 4 : 5;
 		if (true || ExerelinSetupData.getInstance().numSystems > 1)
 		{
 			// capital jump point
@@ -1901,7 +1936,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			if (jumpLink.type == EntityType.MOON) jumpLink = jumpLink.primary;	// L4/L5 of the planet instead of the moon
 			JumpPointAPI capitalJumpPoint = Global.getFactory().createJumpPoint(jumpLink.entity.getId() + "_jump", jumpLink.name + " Bridge");
 			log.info("Creating jump point at " + jumpLink.name + ", has primary? " + (jumpLink.primary != null));
-			ExerelinUtilsAstro.setLagrangeOrbit(capitalJumpPoint, jumpLink.primary.entity, jumpLink.entity, -1, jumpLink.startAngle, jumpLink.orbitRadius, 0, jumpLink.orbitPeriod, !isBinary, ellipseAngle, ellipseMult);
+			ExerelinUtilsAstro.setLagrangeOrbit(capitalJumpPoint, jumpLink.primary.entity, jumpLink.entity, 
+					jumpPointLNum, jumpLink.startAngle, jumpLink.orbitRadius, 0, jumpLink.orbitPeriod, 
+					!isBinary, ellipseAngle, ellipseMult);
 			system.addEntity(capitalJumpPoint);
 			capitalJumpPoint.setStandardWormholeToHyperspaceVisual();
 			
@@ -1950,7 +1987,17 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					"comm_relay", // type of object, defined in custom_entities.json
 					"neutral"); // faction
 			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 1200 + star.getRadius(), 3000 + star.getRadius());
-			relay.setCircularOrbitPointingDown(star, ExerelinUtilsAstro.getRandomAngle(), distance, ExerelinUtilsAstro.getOrbitalPeriod(star, distance));
+			
+			if (Math.random() < 0.5)	// random orbit around star
+				relay.setCircularOrbitPointingDown(star, ExerelinUtilsAstro.getRandomAngle(), distance, ExerelinUtilsAstro.getOrbitalPeriod(star, distance));
+			else	// lagrange orbit with capital
+			{
+				EntityData relayOrbitTarget = capital;
+				if (relayOrbitTarget.type == EntityType.MOON) relayOrbitTarget = relayOrbitTarget.primary;	// L4/L5 of the planet instead of the moon
+				ExerelinUtilsAstro.setLagrangeOrbit(relay, relayOrbitTarget.primary.entity, relayOrbitTarget.entity, 
+					9 - jumpPointLNum, relayOrbitTarget.startAngle, relayOrbitTarget.orbitRadius, 0, relayOrbitTarget.orbitPeriod, 
+					!isBinary, ellipseAngle, ellipseMult, 1, 0);
+			}
 			//ExerelinUtilsAstro.setOrbit(relay, star, distance, !isBinary, ellipseAngle, ExerelinUtilsAstro.getOrbitalPeriod(star, distance));
 			systemToRelay.put(system.getId(), system.getId() + "_relay");
 			planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
@@ -1962,7 +2009,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			SectorEntityToken nebula = Misc.addNebulaFromPNG((String)ExerelinUtils.getRandomListElement(nebulaMaps),	// nebula texture
 					  0, 0, // center of nebula
 					  system, // location to add to
-					  "terrain", "nebula_" + (String)ExerelinUtils.getRandomArrayElement(nebulaColors), // texture to use, uses xxx_map for map
+					  "terrain", "nebula_" + ExerelinUtils.getRandomArrayElement(nebulaColors), // texture to use, uses xxx_map for map
 					  4, 4); // number of cells in texture
 		}
 		
