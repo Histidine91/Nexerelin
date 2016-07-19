@@ -38,6 +38,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.InvasionFleetManager.InvasionFleetData;
@@ -392,18 +393,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
         WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
-        boolean allowPirates = ExerelinConfig.allowPirateInvasions;
+        
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
         for (MarketAPI market : markets) 
         {
-            FactionAPI marketFaction = market.getFaction();
-            if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
+            if (ExerelinUtilsMarket.isValidInvasionTarget(market, 4))
                 continue;
-            if (marketFaction.isNeutralFaction() || marketFaction.isPlayerFaction()) continue; 
-            if (marketFaction.getId().equals("independent")) continue;
-            int size = market.getSize();
-            if (size < 4) continue;
             
+            int size = market.getSize();
             if (market.hasCondition("headquarters")) size *= 0.1f;
             targetPicker.add(market, size);
         }

@@ -1,6 +1,7 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -9,12 +10,14 @@ import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.campaign.econ.Exerelin_Hydroponics;
 import data.scripts.campaign.econ.Exerelin_RecyclingPlant;
 import data.scripts.campaign.econ.Exerelin_SupplyWorkshop;
+import exerelin.ExerelinConstants;
 import java.lang.reflect.Field;
 import java.util.List;
 import org.lazywizard.lazylib.MathUtils;
@@ -357,5 +360,30 @@ public class ExerelinUtilsMarket {
 		machinery += base;	// even if no machinery is actually consumed
 		
 		return machinery;
+	}
+	
+	/**
+	 * Can factions (not player) launch invasion fleets at <code>market</code>?
+	 * @param market
+	 * @param minSize Can only invade market if it is at least this big
+	 * @return
+	 */
+	public static boolean isValidInvasionTarget(MarketAPI market, int minSize)
+	{
+		if (market.hasCondition(Conditions.ABANDONED_STATION)) return false;
+		if (market.getSize() < minSize) return false;
+		
+		FactionAPI marketFaction = market.getFaction();
+		
+		if (marketFaction.getId().equals(Factions.INDEPENDENT)) return false;
+		if (market.getFactionId().equals("sun_ice")) return false;
+		if (marketFaction.isNeutralFaction()) return false;
+		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
+		if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
+			return false;
+		if (market.getPrimaryEntity().hasTag(ExerelinConstants.TAG_UNINVADABLE))
+			return false;
+		
+		return true;
 	}
 }
