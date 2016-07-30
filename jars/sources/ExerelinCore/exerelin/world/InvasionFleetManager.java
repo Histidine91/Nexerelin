@@ -442,7 +442,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             FactionAPI marketFaction = market.getFaction();
             if  ( marketFaction.isHostileTo(faction)) 
             {
-                if (ExerelinUtilsMarket.isValidInvasionTarget(market, 0)) continue;
+                if (!ExerelinUtilsMarket.isValidInvasionTarget(market, 0)) continue;
                 /*
                 float defenderStrength = InvasionRound.GetDefenderStrength(market);
                 float estimateMarinesRequired = defenderStrength * 1.2f;

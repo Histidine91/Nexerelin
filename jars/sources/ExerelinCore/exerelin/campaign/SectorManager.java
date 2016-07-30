@@ -397,7 +397,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
         for (MarketAPI market : markets) 
         {
-            if (ExerelinUtilsMarket.isValidInvasionTarget(market, 4))
+            if (!ExerelinUtilsMarket.isValidInvasionTarget(market, 4))
                 continue;
             
             int size = market.getSize();
