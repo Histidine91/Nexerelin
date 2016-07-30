@@ -68,6 +68,7 @@
     
     "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (non-Corvus mode only)
     "enableShanghai": true,   # adds Shanghai for Tiandong Heavy Industries, attached to homeworld (non-Corvus mode only)
+    "enableUnos": true, # adds Unos for ApproLight, attached to homeworld (non-Corvus mode only)
 
     # CASE SENSITIVE!!!
     # note: factions will still not appear if set to unplayable in config

@@ -13,7 +13,7 @@
     "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
-    "factionsDisliked":["immortallight"], # String array
+    "factionsDisliked":["approlight"], # String array
     
     "alignments":{
 

@@ -85,6 +85,11 @@ public class ExerelinConfig
     public static boolean followersDiplomacy = true;
     public static boolean followersAlliances = true;
     
+    // Faction special stuff
+    public static boolean enableAvesta = true;    // Association
+    public static boolean enableShanghai = true;    // Tiandong
+    public static boolean enableUnos = true;    // ApproLight
+    
     // Misc
     public static float baseTariff = 0.2f;
     public static float freeMarketTariffMult = 0.5f;
@@ -93,8 +98,6 @@ public class ExerelinConfig
     public static int maxFactionRespawns = 1;
     public static boolean countPiratesForVictory = false;
     public static boolean ownFactionCustomsInspections = false;
-    public static boolean enableAvesta = true;
-    public static boolean enableShanghai = true;
     public static int directoryDialogKey = 32;  // D
     
 
@@ -159,6 +162,10 @@ public class ExerelinConfig
             followersDiplomacy = settings.optBoolean("followersDiplomacy", followersDiplomacy);
             followersAlliances = settings.optBoolean("followersAlliances", followersAlliances);
             
+            enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
+            enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
+            enableUnos = settings.optBoolean("enableUnos", enableUnos);
+            
             baseTariff = (float)settings.optDouble("baseTariff", baseTariff);
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);
             warmongerPenalty = settings.optInt("warmongerPenalty", warmongerPenalty);
@@ -166,8 +173,6 @@ public class ExerelinConfig
             maxFactionRespawns = settings.optInt("maxFactionRespawns", maxFactionRespawns);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
-            enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
-            enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));

@@ -682,6 +682,29 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (market.hasCondition("exerelin_templar_control")) market.removeCondition("exerelin_templar_control");
         }
         
+        // ApproLight
+        if (newOwnerId.equals("approlight") && !oldOwnerId.equals("approlight"))
+        {
+            
+            if (market.hasCondition(Conditions.MILITARY_BASE) || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId())
+                && market.hasCondition(Conditions.HEADQUARTERS))
+            {
+                market.removeSubmarket(Submarkets.GENERIC_MILITARY);
+                market.addSubmarket("AL_militaryMarket");
+                market.addSubmarket("AL_plugofbarrack");
+            }
+        }
+        else if (!newOwnerId.equals("approlight") && oldOwnerId.equals("approlight"))
+        {
+            if (market.hasCondition(Conditions.MILITARY_BASE) || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId()))
+            {
+                if (!newOwnerId.equals("templars"))
+                    market.addSubmarket(Submarkets.GENERIC_MILITARY);
+            }
+            market.removeSubmarket("AL_militaryMarket");
+            market.removeSubmarket("AL_plugofbarrack");
+        }
+        
         ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(newOwnerId);
         if (!sectorManager.corvusMode && newOwnerConfig != null)
         {

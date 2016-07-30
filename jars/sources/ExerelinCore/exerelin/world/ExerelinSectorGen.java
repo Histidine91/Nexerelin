@@ -32,9 +32,11 @@ import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.BaseRingTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
+import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin.MagneticFieldParams;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.ExerelinModPlugin;
+import data.scripts.campaign.AL_ChaosCrackFleetManager;
 import data.scripts.campaign.ExigencyCommRelayAdder;
 import data.scripts.world.exipirated.ExipiratedAvestaFleetManager;
 import data.scripts.world.exipirated.ExipiratedAvestaMovement;
@@ -56,6 +58,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.StringHelper;
 import exerelin.world.ExerelinMarketSetup.MarketArchetype;
 import java.util.Collections;
 import java.util.Comparator;
@@ -575,7 +578,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.setFactionId("tiandong");
 		market.addCondition(Conditions.POPULATION_5);
 		market.addCondition(Conditions.ORBITAL_STATION);
-		market.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
 		for (int i=0;i<6; i++)
 			market.addCondition(Conditions.ORE_COMPLEX);
 		market.addCondition(Conditions.ORE_REFINING_COMPLEX);
@@ -624,6 +626,71 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		shanghaiEntity.addTag("shanghaiStation");
 		shanghaiEntity.setInteractionImage("illustrations", "urban01");
 		shanghaiEntity.setCustomDescriptionId("tiandong_shanghai");
+	}
+	
+	protected void addChaosCrack(StarSystemAPI system)
+	{
+		SectorEntityToken chaosCrack = system.addCustomEntity("chaosCrack", StringHelper.getString("Agustin", "chaosCrack"), "Chaos_Crack_type", "approlight");
+		chaosCrack.getLocation().set(-10000f, 12000f);
+		chaosCrack.addScript(new AL_ChaosCrackFleetManager(chaosCrack));
+		SectorEntityToken prime_field1 = system.addTerrain(Terrain.MAGNETIC_FIELD,
+		  new MagneticFieldParams(chaosCrack.getRadius() + 1000f, // terrain effect band width 
+			chaosCrack.getRadius() + 1600f, // terrain effect middle radius
+			chaosCrack, // entity that it's around
+			chaosCrack.getRadius() + 1400f, // visual band start
+			chaosCrack.getRadius() + 2400f, // visual band end
+			new Color(50, 20, 100, 130), // base color
+			1f, // probability to spawn aurora sequence, checked once/day when no aurora in progress
+			new Color(140, 100, 235),
+			new Color(225, 255, 90),
+			new Color(150, 140, 190),
+			new Color(140, 190, 210),
+			new Color(90, 200, 170), 
+			new Color(65, 230, 160),
+			new Color(20, 220, 70)
+		  ));
+		prime_field1.setCircularOrbit(chaosCrack, 0, 0, 100);
+		SectorEntityToken prime_field2 = system.addTerrain(Terrain.MAGNETIC_FIELD,
+		  new MagneticFieldParams(chaosCrack.getRadius() + 1400f, // terrain effect band width 
+			chaosCrack.getRadius() + 1800f, // terrain effect middle radius
+			chaosCrack, // entity that it's around
+			chaosCrack.getRadius() + 3000f, // visual band start
+			chaosCrack.getRadius() + 4400f, // visual band end
+			new Color(50, 20, 100, 180), // base color
+			1f, // probability to spawn aurora sequence, checked once/day when no aurora in progress
+			new Color(140, 100, 235),
+			new Color(225, 255, 90),
+			new Color(150, 140, 190),
+			new Color(140, 190, 210),
+			new Color(90, 200, 170), 
+			new Color(65, 230, 160),
+			new Color(20, 220, 70)
+		  ));
+		prime_field2.setCircularOrbit(chaosCrack, 0, 0, 100);
+		system.addAsteroidBelt(chaosCrack, 50, 800, 200, 120, 180, Terrain.ASTEROID_BELT,null);
+		system.addAsteroidBelt(chaosCrack, 300, 3600, 1200, -150, -130, Terrain.ASTEROID_BELT,null);
+		system.addAsteroidBelt(chaosCrack, 800, 5500, 2400, -120, -300, Terrain.ASTEROID_BELT,null);
+		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 3, Color.white, 256f, 800, 360f);
+		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 3, Color.white, 256f, 1200, 360f);
+		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 2, Color.white, 1024f, 3000, 360f);
+		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 3, Color.white, 512f, 2000, 360f);
+		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 2, Color.white, 512f, 4000, 360f);
+		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 2, Color.white, 512f, 6000, 360f);
+        SectorEntityToken primeNebula = Misc.addNebulaFromPNG("data/campaign/terrain/agustin_prime_nebula.png",
+          chaosCrack.getLocation().x, chaosCrack.getLocation().y,
+                system,
+                "terrain", "AL_primenebula",
+                4, 4, "AL_primenebula");
+        primeNebula.addTag("radar_nebula");
+	}
+	
+	protected void addUnos(MarketAPI market)
+	{
+		SectorEntityToken toOrbit = market.getPrimaryEntity();
+		SectorEntityToken hegemonyforALStation = toOrbit.getContainingLocation().addCustomEntity("unosStation",
+			"Unos Station", "station_unos_type", "approlight");
+		  hegemonyforALStation.setCircularOrbitPointingDown(toOrbit, 45 + 180, 400, 50);  
+		  hegemonyforALStation.setCustomDescriptionId("station_approlight01");
 	}
 	
 	@Override
@@ -947,6 +1014,23 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		return newStation;
 	}
 	
+	protected void handleHQSpecials(SectorAPI sector, String factionId, EntityData data)
+	{
+		if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
+			addAvestaStation(sector, data.starSystem);
+		if (factionId.equals("tiandong") && ExerelinConfig.enableShanghai)
+			addShanghai(data.market);
+		if (factionId.equals("approlight"))
+		{
+			if (ExerelinConfig.enableUnos)
+				addUnos(data.market);
+			addChaosCrack(data.starSystem);	// TODO: give it its own option?
+			data.market.removeSubmarket(Submarkets.GENERIC_MILITARY);
+			data.market.addSubmarket("AL_militaryMarket");
+			data.market.addSubmarket("AL_plugofbarrack");
+		}
+	}
+	
 	public void populateSector(SectorAPI sector)
 	{
 		// initial setup
@@ -987,10 +1071,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
 			plugin.setPlayerPaidToUnlock(true);
 			
-			if (alignedFactionId.equals("exipirated") && ExerelinConfig.enableAvesta)
-				addAvestaStation(sector, homeworld.starSystem);
-			if (alignedFactionId.equals("tiandong") && ExerelinConfig.enableShanghai)
-				addShanghai(homeMarket);
+			handleHQSpecials(sector, alignedFactionId, homeworld);
 			
 			if (pirateFactions.contains(alignedFactionId))
 				systemsWithPirates.add(homeworld.starSystem);
@@ -1007,7 +1088,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		Set<EntityData> toRemove = new HashSet<>();
 		
-		// assign homeworlds
+		// assign HQ worlds
 		for (String factionId : factions)
 		{
 			if (factionId.equals(alignedFactionId)) continue;
@@ -1017,13 +1098,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 			if (!(config != null && config.noHomeworld == true))
 				habitable.isHQ = true;
-
-			if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
-				addAvestaStation(sector, habitable.starSystem);
 			
-			habitable.market = marketSetup.addMarketToEntity(habitable, factionId);
-			if (factionId.equals("tiandong") && ExerelinConfig.enableShanghai)
-				addShanghai(habitable.market);
+			marketSetup.addMarketToEntity(habitable, factionId);
+			handleHQSpecials(sector, factionId, habitable);
 			
 			if (habitable.isCapital)
 			{
