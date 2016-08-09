@@ -792,7 +792,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static void initFactionRelationships(boolean midgameReset)
     {
         SectorAPI sector = Global.getSector();
-        FactionAPI player = sector.getFaction("player");
+        FactionAPI player = sector.getFaction(Factions.PLAYER);
         String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
         FactionAPI selectedFaction = sector.getFaction(selectedFactionId);
         log.info("Selected faction is " + selectedFaction + " | " + selectedFactionId);

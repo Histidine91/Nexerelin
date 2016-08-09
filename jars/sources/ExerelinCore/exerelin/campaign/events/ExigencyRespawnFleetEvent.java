@@ -63,7 +63,7 @@ public class ExigencyRespawnFleetEvent extends BaseEventPlugin {
 
 	@Override
 	public String getEventName() {
-		return StringHelper.getString("exerelin_events", "factionSalary");
+		return StringHelper.getString("exerelin_events", "exigencyRespawn");
 	}
 	
 	@Override
