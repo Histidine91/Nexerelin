@@ -54,7 +54,7 @@ public class ExigencyRespawnFleetEvent extends BaseEventPlugin {
 		{
 			InvasionFleetData fleetData = SectorManager.spawnRespawnFleet(fakeMarket.getFaction(), fakeMarket, true);
 			if (fleetData == null) return;
-			Tasserus.getAnomalyPlugin().createBigPulse(Math.min(1f, fleetData.fleet.getFleetSizeCount() / 10f));
+			Tasserus.getAnomalyPlugin().createBigPulse(Math.min(1f, fleetData.fleet.getFleetSizeCount() / 10f), false);
 			giveInitialAssignment(fleetData);
 			
 			interval.setInterval(ExerelinConfig.factionRespawnInterval * 1.6f, ExerelinConfig.factionRespawnInterval * 2.4f);

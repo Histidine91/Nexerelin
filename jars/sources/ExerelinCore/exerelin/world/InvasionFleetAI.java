@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
+import data.scripts.world.exigency.Tasserus;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.utilities.ExerelinUtilsFleet;
@@ -198,8 +199,8 @@ public class InvasionFleetAI implements EveryFrameScript
             if (data.event != null) data.event.endEvent(InvasionFleetEvent.FleetReturnReason.OTHER, data.source);
             this.fleet.clearAssignments();
             
-            Script despawnScript = null;
-            SectorEntityToken destination = data.source;
+            Script despawnScript = null, despawnScriptFinal = null;
+            boolean despawningAtTarget = false;
             if (data.target.getFaction() == data.fleet.getFaction())
             {
                 // our faction controls the original target, perhaps we captured it?
@@ -208,7 +209,7 @@ public class InvasionFleetAI implements EveryFrameScript
                 float distToTarget = Misc.getDistance(data.fleet.getLocationInHyperspace(), data.target.getLocationInHyperspace());
                 if (distToSource > distToTarget)
                 {
-                    destination = data.target;
+                    despawningAtTarget = true;
                     despawnScript = new Script() {
                         @Override
                         public void run() {
@@ -219,10 +220,18 @@ public class InvasionFleetAI implements EveryFrameScript
                     };
                 }
             }
+            final SectorEntityToken destination = despawningAtTarget ? data.target : data.source;
+            despawnScriptFinal = new Script() {
+                @Override
+                public void run() {
+                    if (destination.getId().equals("exigency_anomaly"))
+                        Tasserus.getAnomalyPlugin().createBigPulse(Math.min(1f, fleet.getFleetSizeCount() / 10f), true);
+                }
+            };
             
             this.fleet.addAssignment(FleetAssignment.DELIVER_CREW, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));
             this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), StringHelper.getFleetAssignmentString("endingMission", destination.getName()), despawnScript);
-            this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
+            this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F, despawnScriptFinal);
         }
     }
 }
