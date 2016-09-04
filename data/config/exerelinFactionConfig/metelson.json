@@ -19,5 +19,11 @@
         "corporate":0.5,
     },
     
-    "miningVariantsOrWings":["mi_pala_mining", "mining_drone_wing"]
+    "startShipsSolo":["mi_farin_standard"],
+    "startShipsCombatSmall":["mi_rastrum_standard", "mi_mite_standard", "mi_wolf_metelson"],
+    "startShipsTradeSmall":["mi_varingur_standard", "mi_mite_standard", "mi_pala_standard"],
+    "startShipsCombatLarge":["mi_mantarn_standard", "mi_securi_brawler", "mi_glima_attack"],
+    "startShipsTradeLarge":["mi_grancursor_support", "buffalo_hegemony_Standard", "mi_vigilance_escort"],
+    
+    "miningVariantsOrWings":["mi_pala_mining", "mining_drone_wing", "obex_wing", "grudiver_wing"]
 }
