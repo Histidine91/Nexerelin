@@ -66,9 +66,10 @@ public class ResponseFleetAI implements EveryFrameScript
             if (system != null)
             {
                 if (system != this.fleet.getContainingLocation()) {
-                    this.fleet.addAssignment(FleetAssignment.DELIVER_SUPPLIES, market.getPrimaryEntity(), 1000.0F, "travelling to the " + system.getBaseName() + " star system");
+                    this.fleet.addAssignment(FleetAssignment.DELIVER_SUPPLIES, market.getPrimaryEntity(), 1000.0F, 
+							StringHelper.getFleetAssignmentString("travellingToStarSystem", system.getBaseName()));
                 }
-                this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 1000.0F, "defending " + market.getName());
+                this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("defending", market.getName()));
             }
         }
     }
@@ -89,7 +90,7 @@ public class ResponseFleetAI implements EveryFrameScript
     {
         String targetName = this.data.target.getName();
         if (this.data.target == Global.getSector().getPlayerFleet())
-            targetName = "your fleet";
+            targetName = StringHelper.getString("yourFleet");
         this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, 0.1f, StringHelper.getFleetAssignmentString("scramblingFrom", this.data.sourceMarket.getName()));
         this.fleet.addAssignment(FleetAssignment.INTERCEPT, this.data.target, 3f, StringHelper.getFleetAssignmentString("intercepting", targetName));
     }

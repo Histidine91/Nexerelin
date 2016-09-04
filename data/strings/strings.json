@@ -15,22 +15,23 @@
 		"size":"size",
 		"stability":"stability",
 		"stats":"stats",
+		"yourFleet":"your fleet",
 		
 		"true":"true",
-		"false":"false",
+		"false":"false"
 	},
 	
 	"exerelin_abilities":{
 		"followMeTitle":"Follow Me!",
 		"followMeFloatText":"Follow me!",
 		"followMeTooltip1":"Nearby non-busy fleets belonging to your faction or an alliance member will follow you around for $numDays days.",
-		"followMeTooltip2":"Only works on patrol, strike and defense fleets, and the fleet must have seen you with your transponder on.",
+		"followMeTooltip2":"Only works on patrol, strike and defense fleets, and the fleet must have seen you with your transponder on."
 	},
 	
 	"exerelin_alliances":{
 		"allianceListOption":"Alliance list",
 	
-		"numAlliances":"There are $numAlliances alliance(s) in the cluster",
+		"numAlliances":"There are $numAlliances alliance(s) in the cluster"
 	},
 	"exerelin_agents":{
 		"alertLevel":"alert level",
@@ -52,7 +53,7 @@
 		"destabilizeText5":"bombed a habitation module",
 		"destabilizeText6":"released nerve gas into a recreational area",
 		"destabilizeText7":"torched a storage depot",
-		"destabilizeText8":"poisoned patients at a clinic",
+		"destabilizeText8":"poisoned patients at a clinic"
 	},
 	"exerelin_credits":{
 		"contribution_zaphide":"The original Exerelin",
@@ -62,7 +63,7 @@
 		"contribution_psiyon":"Backgrounds",
 		"contribution_tartiflette":"Prism Freeport",
 		"contribution_ssModCommunity":"Various tips, pointers and feedback",
-		"contribution_fractalSoftworks":"The Fractal Softworks team that made Starsector",
+		"contribution_fractalSoftworks":"The Fractal Softworks team that made Starsector"
 	},
 	"exerelin_events":{
 		"agentDestabilizeMarket":"Agent terror attacks on $market",
@@ -140,7 +141,7 @@
 		"missionStrike":"strike mission",
 		"missionInvasion":"invasion",
 		"missionMining":"mining expedition",
-		"missionPatrol":"patrol",
+		"missionPatrol":"patrol"
 	},
 	"exerelin_invasion":{
 		"attackerStrength":"attacker strength",
@@ -180,7 +181,7 @@
 	"exerelin_ngc":{
 		"added":"added",
 		"shipString":"$shipClass-class $designation",
-		"fighterWingString":"$shipClass wing",
+		"fighterWingString":"$shipClass wing"
 	},
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",
@@ -188,7 +189,7 @@
 		"allowRespawn":"Allow faction respawn",
 		"allowRespawnNonOriginal":"Allow respawn for factions not currently present",
 		"hardMode":"Starfarer Mode",
-		"randomizeRelationships":"Randomize faction relationships",
+		"randomizeRelationships":"Randomize faction relationships"
 	},
 	"exerelin_superweapon":{
 		"crText":"Superweapon used",
@@ -196,7 +197,7 @@
 		
 		"successText":"The missile scores a direct hit! $market has taken severe damage.",
 		"stabilityPenaltyReport":"Stability penalty: $stability",
-		"commodityDestructionReport":"Average $percent% of commodity stockpiles destroyed",
+		"commodityDestructionReport":"Average $percent% of commodity stockpiles destroyed"
 	},
 	"exerelin_victoryScreen":{
 		"victory_conquest":"Congratulations! $TheFaction have crushed all opposition and now reigns supreme over the $clusterName cluster!",
@@ -222,7 +223,7 @@
 		"statsPrisonersRepatriated":"Prisoners repatriated",
 		"statsPrisonersRansomed":"Prisoners ransomed",
 		"statsSlavesSold":"Slaves sold",
-		"statsOrphansMade":"Orphans made",
+		"statsOrphansMade":"Orphans made"
 	},
 	
 	"exerelin_misc":{
