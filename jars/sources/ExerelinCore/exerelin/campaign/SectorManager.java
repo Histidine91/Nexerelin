@@ -882,14 +882,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected static void expelPlayerFromFaction()
     {
         String oldFactionId = PlayerFactionStore.getPlayerFactionId();
-        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-        if (playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
+        if (oldFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
 
         SectorAPI sector = Global.getSector();
         FactionAPI newFaction = sector.getFaction(ExerelinConstants.PLAYER_NPC_ID);
         FactionAPI oldFaction = sector.getFaction(oldFactionId);
 
-        PlayerFactionStore.loadIndependentPlayerRelations(true);
+		if (!ExerelinUtilsFaction.isPirateFaction(oldFactionId))
+			PlayerFactionStore.loadIndependentPlayerRelations(true);
         PlayerFactionStore.setPlayerFactionId(ExerelinConstants.PLAYER_NPC_ID);
         ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 

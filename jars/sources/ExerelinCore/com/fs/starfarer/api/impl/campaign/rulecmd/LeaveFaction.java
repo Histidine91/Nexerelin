@@ -15,6 +15,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.events.FactionChangedEvent;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
 
@@ -34,7 +35,8 @@ public class LeaveFaction extends BaseCommandPlugin {
 		TextPanelAPI text = dialog.getTextPanel();
 		String str = StringHelper.getString("exerelin_factions", "leftFaction");
 		
-		PlayerFactionStore.loadIndependentPlayerRelations(true);
+		if (!ExerelinUtilsFaction.isPirateFaction(oldFactionId))
+			PlayerFactionStore.loadIndependentPlayerRelations(true);
 		PlayerFactionStore.setPlayerFactionId(newFactionId);
 		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 		

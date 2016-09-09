@@ -964,9 +964,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         
         player.setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1f);
-         // set player relations based on selected faction
+        // if we leave our faction later, we'll be neutral to most but hostile to pirates and such
         PlayerFactionStore.saveIndependentPlayerRelations();
         
+		// set player relations based on selected faction
         if (selectedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
         {
             ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
