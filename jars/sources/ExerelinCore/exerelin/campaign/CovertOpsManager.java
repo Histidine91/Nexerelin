@@ -56,7 +56,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
 	protected static final ExerelinReputationAdjustmentResult NO_EFFECT = new ExerelinReputationAdjustmentResult(0);
     private static Map<String, Object> config;
     
-    private static final List<String> disallowedFactions;
+    public static final List<String> DISALLOWED_FACTIONS;
     
     private static float baseInterval = 45f;
     private float interval = baseInterval;
@@ -64,7 +64,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     static {
         String[] factions = {Factions.NEUTRAL, Factions.PLAYER, Factions.INDEPENDENT};    //{"templars", "independent"};
-        disallowedFactions = Arrays.asList(factions);
+        DISALLOWED_FACTIONS = Arrays.asList(factions);
         
         try {
             loadSettings();
@@ -114,7 +114,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         for (FactionAPI faction: factions)
         {
             String factionId = faction.getId();
-            if (disallowedFactions.contains(factionId)) continue;
+            if (DISALLOWED_FACTIONS.contains(factionId)) continue;
             if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;  // pirates don't do covert warfare
             if (!ExerelinConfig.followersAgents && factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
             ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
@@ -134,7 +134,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             String factionId = faction.getId();
             ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
             if (factionConf != null && !factionConf.allowAgentActions) continue;
-            if (disallowedFactions.contains(faction.getId())) continue;
+            if (DISALLOWED_FACTIONS.contains(faction.getId())) continue;
             if (faction == agentFaction) continue;
             
             RepLevel repLevel = faction.getRelationshipLevel(agentFaction);

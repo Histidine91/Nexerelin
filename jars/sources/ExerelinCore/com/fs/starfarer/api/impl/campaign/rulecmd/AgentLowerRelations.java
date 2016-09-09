@@ -20,6 +20,8 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.HashMap;
 
@@ -56,6 +58,10 @@ public class AgentLowerRelations extends AgentActionBase {
 		for (String factionId : factions)
 		{
 			if (factionId.equals(targetFactionId) || factionId.equals(playerAlignedFactionId)) continue;
+			if (CovertOpsManager.DISALLOWED_FACTIONS.contains(factionId)) continue;
+			ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
+            if (factionConf != null && !factionConf.allowAgentActions) continue;
+			
 			float weight = 0.001f;
 			RepLevel rep = playerAlignedFaction.getRelationshipLevel(factionId);
 			if (TARGET_WEIGHTINGS.containsKey(rep))
