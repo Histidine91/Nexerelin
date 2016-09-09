@@ -79,6 +79,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected static final Set<String> FORCE_MILITARY_MARKET = new HashSet(Arrays.asList(new String[]{
         "SCY_hephaistosStation",
     }));
+	protected static final Set<String> ALWAYS_CAPTURE_SUBMARKET = new HashSet(Arrays.asList(new String[]{
+        "tiandong_retrofit",
+    }));
     
     protected List<String> factionIdsAtStart = new ArrayList<>();
     protected List<String> liveFactionIds = new ArrayList<>();
@@ -725,10 +728,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         for (SubmarketAPI submarket : submarkets)
         {
             //if (submarket.getFaction() != oldOwner) continue;
-            if (submarket.getPlugin().isFreeTransfer()) continue;
-            if (!submarket.getPlugin().isParticipatesInEconomy()) continue;
-            //if (submarket.getPlugin().isBlackMarket()) continue;	// this doesn't behave as expected for pirate markets (it checks if submarket faction is hostile to market faction)
-            String submarketId = submarket.getSpecId();
+			String submarketId = submarket.getSpecId();
+			if (!ALWAYS_CAPTURE_SUBMARKET.contains(submarketId))
+			{
+				if (submarket.getPlugin().isFreeTransfer()) continue;
+				if (!submarket.getPlugin().isParticipatesInEconomy()) continue;
+			}
+			// this doesn't behave as expected for pirate markets (it checks if submarket faction is hostile to market faction)
+            //if (submarket.getPlugin().isBlackMarket()) continue;	
             
             // reset smuggling suspicion
             if (submarketId.equals(Submarkets.SUBMARKET_BLACK)) {  
