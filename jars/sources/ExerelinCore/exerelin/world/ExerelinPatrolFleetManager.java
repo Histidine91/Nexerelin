@@ -62,7 +62,9 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		return this;
 	}
 	
-	// same as vanilla except sizing checks faction config
+	// sizing checks faction config, and doesn't spawn during invasions
+	// also reduces effect of losses on patrol frequency
+	// otherwise same as vanilla
 	@Override
 	public void advance(float amount) {
 		//if (true) return;
