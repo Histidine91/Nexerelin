@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.fleets.LionsGuardFleetManager;
+import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import exerelin.utilities.ExerelinConfig;
@@ -45,6 +46,9 @@ public class ExerelinCoreScript extends CoreScript {
 			
 			ExerelinPatrolFleetManager script = new ExerelinPatrolFleetManager(market);
 			SectorEntityToken entity = market.getPrimaryEntity();
+			// remove any existing patrol scripts just to be safe
+			entity.removeScriptsOfClass(PatrolFleetManager.class);
+			entity.removeScriptsOfClass(ExerelinPatrolFleetManager.class);
 			entity.addScript(script);
 			log.info("Added patrol fleet spawning script to market [" + market.getName() + "]");
 			
