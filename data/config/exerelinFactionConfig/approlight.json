@@ -16,7 +16,8 @@
     "factionsDisliked":["immortallight"], # String array
     
     "alignments":{
-
+        "corporate":0.5,
+        "technocratic":1,
     },
     
     "startShipsSolo":["AL_mumber_C"],
