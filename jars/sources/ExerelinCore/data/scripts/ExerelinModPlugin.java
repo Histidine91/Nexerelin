@@ -86,8 +86,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             market.getPrimaryEntity().removeScriptsOfClass(PatrolFleetManager.class);
         }
-        sector.removeScriptsOfClass(CoreScript.class);
-        sector.addScript(new ExerelinCoreScript());
         
         StatsTracker.create();
         
