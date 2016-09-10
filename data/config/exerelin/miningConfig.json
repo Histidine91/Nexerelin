@@ -24,8 +24,8 @@
 		},
 		"asteroid":{
 			"resources":{
-				"ore":0.5,
-				"rare_ore":0.05
+				"ore":0.6,
+				"rare_ore":0.06
 			},
 			"danger":0.15,
 			"exhaustionRate":0,
