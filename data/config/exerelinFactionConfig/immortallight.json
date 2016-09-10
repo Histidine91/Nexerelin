@@ -1,6 +1,6 @@
 {
     "uniqueModClassName":"data.scripts.ApproLightModPlugin", # String
-    "playableFaction":true,
+    "playableFaction":false,
     "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
