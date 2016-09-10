@@ -13,10 +13,12 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.world.ExerelinPatrolFleetManager;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.log4j.Logger;
 
 // same as vanilla one except uses our own patrol fleet manager + some special handling
 public class ExerelinCoreScript extends CoreScript {
 	protected Set<String> marketsWithAssignedPatrolScripts = new HashSet<String>();
+	public static Logger log = Global.getLogger(ExerelinCoreScript.class);
 	
 	@Override
 	public void assignPatrolSpawningScripts() {
