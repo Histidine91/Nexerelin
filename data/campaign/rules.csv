@@ -393,9 +393,7 @@ FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinPirate,NewGameOptionSelected,$option == exerelinNGCJoinPirate,"NGCSetPlayerFaction ""pirates""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinApprolight,NewGameOptionSelected,$option == exerelinNGCJoinApprolight,"NGCSetPlayerFaction ""approlight""
-NGCAddShipAndComplement ""AL_mumber_C""
-AddText ""Added Mumber-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinASPSyndicate,NewGameOptionSelected,$option == exerelinNGCJoinASPSyndicate,"NGCSetPlayerFaction ""syndicate_asp""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == exerelinNGCJoinBlackrock,"NGCSetPlayerFaction ""blackrock_driveyards""
