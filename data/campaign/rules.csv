@@ -602,7 +602,8 @@ $menuState = main 0
 FireAll PopulateOptions",,,
 ,,,,,,
 # START INVASION OPTIONS,,,,,,
-ExerelinMarketInvadeOption,ExerelinMarketSpecial,"IsValidInvasionTarget",SetShortcut exerelinInvasion I,,1:exerelinInvasion:Invade the planet/station,
+ExerelinMarketInvadeOption,ExerelinMarketSpecial,"IsValidInvasionTarget
+",SetShortcut exerelinInvasion I,,1:exerelinInvasion:Invade the planet/station,
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"$menuState = invasion 0
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 PredictInvasionResults
@@ -625,9 +626,8 @@ Markets accumulate a reserve force over time that can be quickly deployed in res
 ,,,,,,
 ExerelinInvasionProceed,DialogOptionSelected,"$option == exerelinInvasionProceed
 $hasMarket ","Wait $global.exerelinInvasionWait 1 $global.exerelinInvasionRoundComplete $global.exerelinInvasionInterrupted $global.exerelinInvasionInProgress ""Invading...""
-BroadcastPlayerWaitAction $global.exerelinInvasionWait HOSTILE 750 $exerelinRespondingToInvasion
+Exerelin_NotifyInvasion $global.exerelinInvasionWait 750
 MakePlayerImmediatelyAttackable
-TriggerResponseFleet
 $player.invasionTarget = $id 1.01
 CreateWarmongerEvent $faction.id
 AdjustRep $faction.id COMBAT_NORMAL",,,
@@ -940,7 +940,8 @@ FireAll PopulateOptions",Security is too tight for further saboteur insertions.,
 ,,,,,,
 #START PRISONER OPTIONS,,,,,,
 ExerelinMarketPrisonerOption,ExerelinMarketSpecial,"$hasMarket
-$faction.id != ""neutral""","SetEnabled exerelinUsePrisoner true
+$faction.id != ""neutral""
+","SetEnabled exerelinUsePrisoner true
 SetShortcut exerelinUsePrisoner P",,4:exerelinUsePrisoner:Prisoner actions,
 ExerelinMarketPrisonerOptionNoPrisoners,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""

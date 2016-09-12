@@ -126,6 +126,11 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         fleet.addScript(ai);
         log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
         reserves.put(origin.getId(), 0f);
+		
+		if (target == Global.getSector().getPlayerFleet())
+		{
+			data.fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true, 5);
+		}
     }
     
     public static float getMaxReserveSize(MarketAPI market, boolean raw)

@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.world.ResponseFleetManager;
 
+@Deprecated
 public class TriggerResponseFleet extends BaseCommandPlugin {
 
     @Override
@@ -28,11 +29,13 @@ public class TriggerResponseFleet extends BaseCommandPlugin {
             public boolean runWhilePaused() {
                 return false;
             }
-                        @Override
+            
+			@Override
             public boolean isDone() {
                 return done;
             }
-                        @Override
+            
+			@Override
             public void advance(float amount) {
                 float days = Global.getSector().getClock().convertToDays(amount);
                 timeElapsed += days;
