@@ -2,6 +2,7 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
@@ -92,6 +93,7 @@ public class ExerelinUtilsReputation
 		if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
 		if (otherFactionId.equals("merc_hostile")) return;
 		if (otherFactionId.equals("famous_bounty")) return;
+		if (otherFactionId.equals("shippackfaction")) return;
 		
 		SectorAPI sector = Global.getSector();	
 		FactionAPI playerFaction = sector.getFaction("player");
@@ -153,6 +155,8 @@ public class ExerelinUtilsReputation
 		}
 		Global.getSector().getFaction(Factions.PLAYER).setRelationship("merc_hostile", -1);
 		Global.getSector().getFaction(Factions.PLAYER).setRelationship("famous_bounty", -1);
+		Global.getSector().getFaction(Factions.PLAYER).setRelationship("shippackfaction", RepLevel.FRIENDLY);
+		
 		syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 		//SectorManager.checkForVictory(); // already done in syncFactionRelationshipsToPlayer
 	}

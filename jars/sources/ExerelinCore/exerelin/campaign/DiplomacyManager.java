@@ -962,6 +962,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             famousBounty.setRelationship(Factions.PLAYER, -1f);
             //famousBounty.setRelationship(ExerelinConstants.PLAYER_NPC_ID, -1f);
         }
+		player.setRelationship("shippackfaction", RepLevel.FRIENDLY);
         
         player.setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1f);
         // if we leave our faction later, we'll be neutral to most but hostile to pirates and such
