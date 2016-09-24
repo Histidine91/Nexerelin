@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
@@ -34,19 +35,19 @@ public abstract class FleetRequestActionBase extends BaseCommandPlugin {
                         dist = 5000.0F;
                     }
                     float weight = 20000.0F / dist;
-                    if (market.hasCondition("military_base")) {
+                    if (market.hasCondition(Conditions.MILITARY_BASE)) {
                         weight *= 2.0F;
                     }
-                    if (market.hasCondition("orbital_station")) {
+                    if (market.hasCondition(Conditions.ORBITAL_STATION)) {
                         weight *= 1.25F;
                     }
-                    if (market.hasCondition("spaceport")) {
+                    if (market.hasCondition(Conditions.SPACEPORT)) {
                         weight *= 1.5F;
                     }
-                    if (market.hasCondition("headquarters")) {
+                    if (market.hasCondition(Conditions.HEADQUARTERS)) {
                         weight *= 1.5F;
                     }
-                    if (market.hasCondition("regional_capital")) {
+                    if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) {
                         weight *= 1.25F;
                     }
                     weight *= market.getSize() * market.getStabilityValue();

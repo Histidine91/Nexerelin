@@ -22,6 +22,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.MarketAttackedEvent;
 import exerelin.utilities.ExerelinConfig;
@@ -163,22 +164,22 @@ public class InvasionRound {
 	public static float GetDefenderStrength(MarketAPI market, float bonusMult, boolean isRaid)
 	{
 		float marketSize = market.getSize();
-		if (market.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize++;
+		if (market.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize += 2;
 		
 		float baseDefenderStrength = DEFENDER_BASE_STRENGTH * (float)(Math.pow(marketSize+1, 3));
 		baseDefenderStrength = baseDefenderStrength * (market.getStabilityValue() + 1 - DEFENDER_STABILITY_MOD) * DEFENDER_STABILITY_MOD;
 		float defenderStrength = baseDefenderStrength;
 		float defenderBonus = 0;
 		
-		if(market.hasCondition("military_base"))
+		if(market.hasCondition(Conditions.MILITARY_BASE))
 		{
 			defenderBonus += baseDefenderStrength * DEFENDER_MILITARY_BASE_MOD;
 		}
-		if(market.hasCondition("regional_capital"))
+		if(market.hasCondition(Conditions.REGIONAL_CAPITAL))
 		{
 			defenderBonus += baseDefenderStrength * DEFENDER_REGIONAL_CAPITAL_MOD;
 		}
-		if(market.hasCondition("headquarters"))
+		if(market.hasCondition(Conditions.HEADQUARTERS))
 		{
 			defenderBonus += baseDefenderStrength * DEFENDER_HEADQUARTERS_MOD;
 		}

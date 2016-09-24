@@ -87,19 +87,19 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         // old formula
         /*
         float marketScalar = originMarket.getSize() * originMarket.getStabilityValue();
-        if (originMarket.hasCondition("military_base") || originMarket.hasCondition("exerelin_military_base")) {
+        if (originMarket.hasCondition(Conditions.MILITARY_BASE) || originMarket.hasCondition("exerelin_military_base")) {
             marketScalar += 20.0F;
         }
-        if (originMarket.hasCondition("orbital_station")) {
+        if (originMarket.hasCondition(Conditions.ORBITAL_STATION)) {
             marketScalar += 10.0F;
         }
-        if (originMarket.hasCondition("spaceport")) {
+        if (originMarket.hasCondition(Conditions.SPACEPORT)) {
             marketScalar += 15.0F;
         }
-        if (originMarket.hasCondition("headquarters")) {
+        if (originMarket.hasCondition(Conditions.HEADQUARTERS)) {
             marketScalar += 15.0F;
         }
-        if (originMarket.hasCondition("regional_capital")) {
+        if (originMarket.hasCondition(Conditions.REGIONAL_CAPITAL)) {
             marketScalar += 10.0F;
         }
         int maxFP = (int)MathUtils.getRandomNumberInRange(marketScalar * 0.75F, MathUtils.getRandomNumberInRange(marketScalar * 1.5F, marketScalar * 2.5F));
@@ -114,11 +114,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         //maxFPbase *= 0.95;
         
         float maxFP = maxFPbase;
-        if (originMarket.hasCondition("military_base")) maxFP += maxFPbase * 0.15;
-        if (originMarket.hasCondition("orbital_station")) maxFP += maxFPbase * 0.05;
-        if (originMarket.hasCondition("spaceport")) maxFP += maxFPbase * 0.05;
-        if (originMarket.hasCondition("regional_capital")) maxFP += maxFPbase * 0.05;
-        if (originMarket.hasCondition("headquarters")) maxFP += maxFPbase * 0.1;
+        if (originMarket.hasCondition(Conditions.MILITARY_BASE)) maxFP += maxFPbase * 0.15;
+        if (originMarket.hasCondition(Conditions.ORBITAL_STATION)) maxFP += maxFPbase * 0.05;
+        if (originMarket.hasCondition(Conditions.SPACEPORT)) maxFP += maxFPbase * 0.05;
+        if (originMarket.hasCondition(Conditions.REGIONAL_CAPITAL)) maxFP += maxFPbase * 0.05;
+        if (originMarket.hasCondition(Conditions.HEADQUARTERS)) maxFP += maxFPbase * 0.1;
         
         ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(originMarket.getFactionId());
         if (factionConfig != null)
@@ -400,28 +400,28 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             if (market.getFactionId().equals(Factions.INDEPENDENT)) continue;
             if (market.getFactionId().equals("sun_ice")) continue;
             if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
-            if  ( market.getFactionId().equals(factionId) && !market.hasCondition("decivilized") && 
-                ( (market.hasCondition("spaceport")) || (market.hasCondition("orbital_station")) || (market.hasCondition("military_base"))
-                    || (market.hasCondition("regional_capital")) || (market.hasCondition("headquarters"))
+            if  ( market.getFactionId().equals(factionId) && !market.hasCondition(Conditions.DECIVILIZED) && 
+                ( (market.hasCondition(Conditions.SPACEPORT)) || (market.hasCondition(Conditions.ORBITAL_STATION)) || (market.hasCondition(Conditions.MILITARY_BASE))
+                    || (market.hasCondition(Conditions.REGIONAL_CAPITAL)) || (market.hasCondition(Conditions.HEADQUARTERS))
                 ) && market.getSize() >= 3 )
             {
                 //marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
                 //if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
                 //        continue;
                 float weight = 1;   //marineStockpile;
-                if (market.hasCondition("military_base")) {
+                if (market.hasCondition(Conditions.MILITARY_BASE)) {
                     weight *= 1.4F;
                 }
-                if (market.hasCondition("orbital_station")) {
+                if (market.hasCondition(Conditions.ORBITAL_STATION)) {
                     weight *= 1.15F;
                 }
-                if (market.hasCondition("spaceport")) {
+                if (market.hasCondition(Conditions.SPACEPORT)) {
                     weight *= 1.35F;
                 }
-                if (market.hasCondition("headquarters")) {
+                if (market.hasCondition(Conditions.HEADQUARTERS)) {
                     weight *= 1.3F;
                 }
-                if (market.hasCondition("regional_capital")) {
+                if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) {
                     weight *= 1.1F;
                 }
                 weight *= 0.5f + (0.5f * market.getSize() * market.getStabilityValue());
