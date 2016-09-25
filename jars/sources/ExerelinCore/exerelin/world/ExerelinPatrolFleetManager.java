@@ -83,16 +83,14 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		if (market.hasCondition(Conditions.DECIVILIZED)) return;
 		
 		String factionId = market.getFactionId();
-		float sizeMult = 1;
+		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		
 		if (market.getFaction().getCustom().optBoolean(Factions.CUSTOM_NO_PATROLS)) 
 		{
-			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 			if (factionConfig == null || !factionConfig.spawnPatrols) return;
-
-			sizeMult = factionConfig.patrolSizeMult;
-			if (sizeMult <= 0) return;
 		}
+		float sizeMult = factionConfig.patrolSizeMult;
+		if (sizeMult <= 0) return;
 		
 		// player currently invading this market; don't spawn patrols from it
 		if (market.getId().equals(Global.getSector().getCharacterData().getMemoryWithoutUpdate().getString("$invasionTarget")))
