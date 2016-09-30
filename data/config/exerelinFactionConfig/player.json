@@ -1,0 +1,5 @@
+{
+    "uniqueModClassName":"", # String
+    "playableFaction":false, # Boolean
+    "corvusCompatible":true,
+}
