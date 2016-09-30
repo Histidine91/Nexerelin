@@ -397,9 +397,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         // pick a source market
         for (MarketAPI market : markets) {
             if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
-            if (market.getFactionId().equals(Factions.INDEPENDENT)) continue;
-            if (market.getFactionId().equals("sun_ice")) continue;
             if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
+			if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
             if  ( market.getFactionId().equals(factionId) && !market.hasCondition(Conditions.DECIVILIZED) && 
                 ( (market.hasCondition(Conditions.SPACEPORT)) || (market.hasCondition(Conditions.ORBITAL_STATION)) || (market.hasCondition(Conditions.MILITARY_BASE))
                     || (market.hasCondition(Conditions.REGIONAL_CAPITAL)) || (market.hasCondition(Conditions.HEADQUARTERS))
@@ -550,14 +549,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             FactionAPI faction = sector.getFaction(factionId);
             if (faction.isNeutralFaction()) continue;
             if (faction.isPlayerFaction()) continue;
-            if (factionId.equals(Factions.INDEPENDENT)) continue;
+            ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+            if (config != null && !config.playableFaction) continue;
             boolean isPirateFaction = ExerelinUtilsFaction.isPirateFaction(factionId);
             if (!allowPirates && isPirateFaction) continue;
             
             float mult = 0f;
             List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, ExerelinConfig.allowPirateInvasions, true);
             if (enemies.isEmpty()) continue;
-            
             
             if (ExerelinUtilsFaction.isFactionHostileToAll(factionId))
             {
@@ -594,10 +593,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             float increment = pointsPerFaction.get(factionId) + ExerelinConfig.baseInvasionPointsPerFaction;
             increment += ExerelinConfig.invasionPointsPerPlayerLevel * playerLevel;
             increment *= mult * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
-			
-			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-			if (config != null) increment *= config.invasionPointMult; 
-			
+            
+            if (config != null) increment *= config.invasionPointMult; 
+            
             counter += increment;
             
             float pointsRequired = ExerelinConfig.pointsRequiredForInvasionFleet;

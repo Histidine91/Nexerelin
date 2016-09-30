@@ -1,6 +1,7 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
@@ -375,8 +376,12 @@ public class ExerelinUtilsMarket {
 		
 		FactionAPI marketFaction = market.getFaction();
 		
-		if (marketFaction.getId().equals(Factions.INDEPENDENT)) return false;
-		if (market.getFactionId().equals("sun_ice")) return false;
+		//if (marketFaction.getId().equals(Factions.INDEPENDENT)) return false;
+		//if (market.getFactionId().equals("sun_ice")) return false;
+		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(marketFaction.getId());
+		if (config != null && !config.playableFaction)
+			return false;
+		if (market.getPrimaryEntity() instanceof CampaignFleetAPI) return false;
 		if (marketFaction.isNeutralFaction()) return false;
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
 		if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
