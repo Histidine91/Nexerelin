@@ -177,12 +177,16 @@ ExerelinNGCMaxStations6,NewGameOptionSelected,$option==exerelinNGCMaxStations6,"
 AddText ""Set maximum stations per system to 6"" textFriendColor
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
-ExerelinNGCNumFactionsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumFactions,,,"exerelinNGCNumFactions3:Three
+ExerelinNGCNumFactionsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumFactions,,,"exerelinNGCNumFactions2:Two
+exerelinNGCNumFactions3:Three
 exerelinNGCNumFactions5:Five
 exerelinNGCNumFactions50%:50% of available factions
 exerelinNGCNumFactions75%:75% of available factions
 exerelinNGCNumFactionsAll:All available factions
 exerelinNGCOptionsBack:Back",
+ExerelinNGCNumFactions2,NewGameOptionSelected,$option==exerelinNGCNumFactions2,"NGCSetNumFactions 2 true
+AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
+FireAll ExerelinNGCOptions",,,
 ExerelinNGCNumFactions3,NewGameOptionSelected,$option==exerelinNGCNumFactions3,"NGCSetNumFactions 3 true
 AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
 FireAll ExerelinNGCOptions",,,
