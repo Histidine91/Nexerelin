@@ -331,9 +331,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			numFactions++;
 		}
 		
-		factions.add(Factions.PIRATES);
+		if (ExerelinConfig.enablePirates) {
+			factions.add(Factions.PIRATES);
+		}
 		availableFactions.remove(Factions.PIRATES);
-		factions.add(Factions.INDEPENDENT);
+			
+		if (ExerelinConfig.enableIndependents) {
+			factions.add(Factions.INDEPENDENT);
+		}
 		availableFactions.remove(Factions.INDEPENDENT);
 		
 		availableFactions.remove(ExerelinConstants.PLAYER_NPC_ID);
@@ -1048,9 +1053,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		for (String factionId : factions) {
 			factionPlanetCount.put(factionId, 0);
 			factionStationCount.put(factionId, 0);
-			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-			if (config == null) continue;
-			if (config.pirateFaction)
+			if (ExerelinUtilsFaction.isPirateFaction(factionId))
 				pirateFactions.add(factionId);
 		}
 
