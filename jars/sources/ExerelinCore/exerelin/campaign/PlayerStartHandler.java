@@ -25,7 +25,6 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.world.ExerelinSectorGen;
-import static exerelin.world.ExerelinSectorGen.log;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -187,7 +186,7 @@ public class PlayerStartHandler {
 		}
 		
 		LocationAPI system = toOrbit.getContainingLocation();
-		log.info("Placing Omnifactory around " + toOrbit.getName() + ", in the " + system.getName());
+		Global.getLogger(PlayerStartHandler.class).info("Placing Omnifactory around " + toOrbit.getName() + ", in the " + system.getName());
 		String image = (String) ExerelinUtils.getRandomListElement(ExerelinSectorGen.stationImages);
 		String entityName = "omnifactory" + index;
 		SectorEntityToken omnifac = system.addCustomEntity(entityName, "Omnifactory", image, "neutral");
