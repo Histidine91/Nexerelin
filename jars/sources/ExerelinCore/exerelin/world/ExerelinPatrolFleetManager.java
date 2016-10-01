@@ -85,11 +85,12 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		String factionId = market.getFactionId();
 		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		
+		float sizeMult = 1;
 		if (market.getFaction().getCustom().optBoolean(Factions.CUSTOM_NO_PATROLS)) 
 		{
 			if (factionConfig == null || !factionConfig.spawnPatrols) return;
+			sizeMult = factionConfig.patrolSizeMult;
 		}
-		float sizeMult = factionConfig.patrolSizeMult;
 		if (sizeMult <= 0) return;
 		
 		// player currently invading this market; don't spawn patrols from it
