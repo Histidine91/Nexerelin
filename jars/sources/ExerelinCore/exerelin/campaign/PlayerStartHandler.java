@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -117,6 +118,19 @@ public class PlayerStartHandler {
 			int level = (numOfficers - i)*2 - 1;
 			PersonAPI officer = OfficerManagerEvent.createOfficer(myFaction, level, true);
 			playerFleet.getFleetData().addOfficer(officer);
+			
+			// assign officers to ships
+			for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy())
+			{
+				PersonAPI cap = member.getCaptain();
+				if ((cap == null || cap.isDefault()) && !member.isFighterWing())
+				{
+					member.setCaptain(officer);
+					break;
+				}
+				else if (cap == officer)
+					break;
+			}
 		}
 	}
 	
