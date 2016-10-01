@@ -1,6 +1,7 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.ExerelinSetupData;
 import org.json.JSONObject;
 import java.util.List;
@@ -15,6 +16,7 @@ public class ExerelinConfig
     public static final String MOD_FACTION_LIST_PATH = "data/config/exerelinFactionConfig/mod_factions.csv";
     
     public static List<ExerelinFactionConfig> exerelinFactionConfigs;
+	public static ExerelinFactionConfig defaultConfig;
 
     // Threading support for improving/smoothing performance
     @Deprecated
@@ -201,8 +203,13 @@ public class ExerelinConfig
             ExerelinConfig.exerelinFactionConfigs.clear();
         ExerelinConfig.exerelinFactionConfigs = new ArrayList<>();
 
-        for(String factionId : builtInFactions)
-            ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(factionId));
+        for(String factionId : builtInFactions) {
+			ExerelinFactionConfig conf = new ExerelinFactionConfig(factionId);
+			ExerelinConfig.exerelinFactionConfigs.add(conf);
+			if (factionId.equals(Factions.NEUTRAL))
+				defaultConfig = conf;
+		}
+            
 
         for(String factionId : supportedModFactions)
         {
@@ -219,8 +226,8 @@ public class ExerelinConfig
                 return exerelinFactionConfig;
         }
 
-        Global.getLogger(ExerelinConfig.class).warn("Faction config not found: " + factionId);
-        return null;
+        Global.getLogger(ExerelinConfig.class).warn("Faction config " + factionId + "  not found, using default");
+		return defaultConfig;
     }
 
     public static List<String> getAllCustomFactionRebels()
