@@ -339,7 +339,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (ExerelinConfig.enableIndependents) {
 			factions.add(Factions.INDEPENDENT);
 		}
-		availableFactions.remove(Factions.INDEPENDENT);
+		availableFactions.remove(Factions.INDEPENDENT);	// note: normally independents can't appear as they're not a playable faction
 		
 		availableFactions.remove(ExerelinConstants.PLAYER_NPC_ID);
 		
@@ -1095,8 +1095,9 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		for (String factionId : factions)
 		{
 			if (factionId.equals(alignedFactionId)) continue;
-			EntityData habitable = habitablePlanetsCopy.get(1);
-			habitablePlanetsCopy.remove(1);
+			if (habitablePlanetsCopy.size() <= 0) break;
+			EntityData habitable = habitablePlanetsCopy.get(0);
+			habitablePlanetsCopy.remove(0);
 			
 			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 			if (!(config != null && config.noHomeworld == true))
@@ -1180,6 +1181,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			int numPlanets = (int)(remainingPlanets * (factionShare.get(factionId)/totalShare) + 0.5);
 			for (int i=factionPlanetCount.get(factionId);i<numPlanets;i++)
 			{
+				if (habitablePlanetsCopy.isEmpty()) break;
+				
 				EntityData habitable = habitablePlanetsCopy.get(0);
 				habitablePlanetsCopy.remove(0);
 				unassignedEntities.remove(habitable);
@@ -1192,8 +1195,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					relay.setFaction(factionId);
 				}
 				pickEntityInteractionImage(habitable.entity, habitable.entity.getMarket(), habitable.planetType, habitable.type);
-				
-				if (habitablePlanetsCopy.isEmpty()) break;
 			}
 			if (habitablePlanetsCopy.isEmpty()) break;
 		}
