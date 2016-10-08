@@ -88,9 +88,8 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
                 */
                 text.addParagraph("-----------------------------------------------------------------------------");
                 text.setFontInsignia();
-
-                int defenderMarketsLeft = ExerelinUtilsFaction.getFactionMarkets(faction.getId()).size();
-                if (result.getSuccess() && defenderMarketsLeft > 0)
+                
+                if (result.getSuccess())
                 {
                         Global.getSector().adjustPlayerReputation(
                             new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.COMBAT_AGGRESSIVE, 0),
