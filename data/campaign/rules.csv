@@ -325,6 +325,7 @@ ExerelinNGCListBlackrock,ExerelinNGCListFactions1,NGCDoesFactionExist blackrock_
 ExerelinNGCListBushi,ExerelinNGCListFactions1,NGCDoesFactionExist bushi,,,exerelinNGCJoinBushi:Bushi,
 ExerelinNGCListCitadel,ExerelinNGCListFactions1,NGCDoesFactionExist citadeldefenders,,,exerelinNGCJoinCitadel:Citadel,
 ExerelinNGCListCrystanite,ExerelinNGCListFactions1,NGCDoesFactionExist crystanite,,,exerelinNGCJoinCrystanite:Crystanite,
+ExerelinNGCListDME,ExerelinNGCListFactions1,NGCDoesFactionExist dassault_mikoyan,,,exerelinNGCJoinDME:Dassault-Mikoyan,
 ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
 ExerelinNGCListExigency,ExerelinNGCListFactions1,NGCDoesFactionExist exigency,,,exerelinNGCJoinExigency:Exigency Corp,
 ExerelinNGCListFirestormFederation,ExerelinNGCListFactions1,NGCDoesFactionExist firestorm_federation,,,exerelinNGCJoinFirestormFederation:Firestorm Federation,
@@ -412,6 +413,8 @@ ExerelinNGCJoinCrystanite,NewGameOptionSelected,$option == exerelinNGCJoinCrysta
 NGCAddShipAndComplement ""crys_pin_standard""
 AddText ""Added Pin-class frigate"" textFriendColor
 FireBest ExerelinNGCStep4",,,
+ExerelinNGCJoinDME,NewGameOptionSelected,$option == exerelinNGCJoinDME,"NGCSetPlayerFaction ""dassault_mikoyan""
+FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinDiableAvionics,NewGameOptionSelected,$option == exerelinNGCJoinDiableAvionics,"NGCSetPlayerFaction ""diableavionics""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinExigency,NewGameOptionSelected,$option == exerelinNGCJoinExigency,"NGCSetPlayerFaction ""exigency""
@@ -727,6 +730,7 @@ ExerelinFactionDirectoryListBlackrock,ExerelinFactionDirectoryList1,IsFactionAli
 ExerelinFactionDirectoryListBushi,ExerelinFactionDirectoryList1,IsFactionAlive bushi,,,exerelinFactionDirectoryGetBushi:Bushi,
 ExerelinFactionDirectoryListCitadel,ExerelinFactionDirectoryList1,IsFactionAlive citadeldefenders,,,exerelinFactionDirectoryGetCitadel:Citadel,
 ExerelinFactionDirectoryListCrystanite,ExerelinFactionDirectoryList1,IsFactionAlive crystanite,,,exerelinFactionDirectoryGetCrystanite:Crystanite,
+ExerelinFactionDirectoryListDME,ExerelinFactionDirectoryList1,IsFactionAlive dassault_mikoyan,,,exerelinFactionDirectoryGetDME:Dassault-Mikoyan,
 ExerelinFactionDirectoryListDiableAvionics,ExerelinFactionDirectoryList1,IsFactionAlive diableavionics,,,exerelinFactionDirectoryGetDiableAvionics:Diable Avionics,
 ExerelinFactionDirectoryListExigency,ExerelinFactionDirectoryList1,IsFactionAlive exigency,,,exerelinFactionDirectoryGetExigency:Exigency Corp,
 ExerelinFactionDirectoryListFirestormFederation,ExerelinFactionDirectoryList1,IsFactionAlive firestorm_federation,,,exerelinFactionDirectoryGetFirestormFederation:Firestorm Federation,
@@ -779,6 +783,7 @@ ExerelinFactionDirectoryGetBlackrock,DialogOptionSelected,$option == exerelinFac
 ExerelinFactionDirectoryGetBushi,DialogOptionSelected,$option == exerelinFactionDirectoryGetBushi,PrintFactionMarkets bushi,,,
 ExerelinFactionDirectoryGetCitadel,DialogOptionSelected,$option == exerelinFactionDirectoryGetCitadel,PrintFactionMarkets citadeldefenders,,,
 ExerelinFactionDirectoryGetCrystanite,DialogOptionSelected,$option == exerelinFactionDirectoryGetCrystanite,PrintFactionMarkets crystanite,,,
+ExerelinFactionDirectoryGetDME,DialogOptionSelected,$option == exerelinFactionDirectoryGetDME,PrintFactionMarkets dassault_mikoyan,,,
 ExerelinFactionDirectoryGetDiableAvionics,DialogOptionSelected,$option == exerelinFactionDirectoryGetDiableAvionics,PrintFactionMarkets diableavionics,,,
 ExerelinFactionDirectoryGetExigency,DialogOptionSelected,$option == exerelinFactionDirectoryGetExigency,PrintFactionMarkets exigency,,,
 ExerelinFactionDirectoryGetExipirated,DialogOptionSelected,$option == exerelinFactionDirectoryGetExipirated,PrintFactionMarkets exipirated,,,
