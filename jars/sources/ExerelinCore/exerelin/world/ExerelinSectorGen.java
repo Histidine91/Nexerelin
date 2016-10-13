@@ -1355,14 +1355,14 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			String name = system.getBaseName() + " B";	//possibleSystemNamesList.get(systemNameIndex);
 			//possibleSystemNamesList.remove(systemNameIndex);
 			
-			created = system.getStar();
+			PlanetAPI primary = system.getStar();
 			
 			float angle = MathUtils.getRandomNumberInRange(1, 360);
-			float distance = (BINARY_STAR_DISTANCE + created.getRadius()*5 + radius*5) * MathUtils.getRandomNumberInRange(0.95f, 1.1f) ;
-			float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(created, distance + created.getRadius());
+			float distance = (BINARY_STAR_DISTANCE + primary.getRadius()*5 + radius*5) * MathUtils.getRandomNumberInRange(0.95f, 1.1f) ;
+			float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(primary, distance + primary.getRadius());
 			
-			created = system.addPlanet(systemId + "_star_b", created, name, type, angle, radius, distance, orbitDays);
-			ExerelinUtilsAstro.setOrbit(created, created, distance, true, ExerelinUtilsAstro.getRandomAngle(), orbitDays);
+			created = system.addPlanet(systemId + "_star_b", primary, name, type, angle, radius, distance, orbitDays);
+			ExerelinUtilsAstro.setOrbit(created, primary, distance, true, ExerelinUtilsAstro.getRandomAngle(), orbitDays);
 			if (coronaMult != 0)
 				system.addCorona(created, 300 * coronaMult, 2f, 0.1f, 1f);
 		}
