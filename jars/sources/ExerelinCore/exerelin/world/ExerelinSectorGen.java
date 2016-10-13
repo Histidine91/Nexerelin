@@ -316,7 +316,10 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		List<String> availableFactions = setupData.getAvailableFactions();
 		int wantedFactionNum = setupData.numStartFactions;
 		if (wantedFactionNum <= 0) {
-			availableFactions.add(Factions.INDEPENDENT);
+			if (ExerelinConfig.enableIndependents)
+				availableFactions.add(Factions.INDEPENDENT);
+			if (!ExerelinConfig.enablePirates)
+				availableFactions.remove(Factions.PIRATES);
 			return availableFactions;
 		}
 		
