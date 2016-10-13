@@ -27,7 +27,7 @@
 				"ore":0.6,
 				"rare_ore":0.06
 			},
-			"danger":0.15,
+			"danger":0.2,
 			"exhaustionRate":0,
 		},
 		"gas_giant":{
