@@ -2,10 +2,13 @@ package data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.JumpPointAPI;
+import com.fs.starfarer.api.campaign.JumpPointAPI.JumpDestination;
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -26,6 +29,7 @@ import exerelin.plugins.ExerelinCoreCampaignPlugin;
 import exerelin.utilities.*;
 import exerelin.world.DefenceFleetAI;
 import exerelin.world.ExerelinPatrolFleetManager;
+import static exerelin.world.ExerelinSectorGen.BINARY_STAR_DISTANCE;
 import exerelin.world.InvasionFleetAI;
 import exerelin.world.InvasionFleetManager;
 import exerelin.world.MiningFleetAI;
@@ -33,8 +37,12 @@ import exerelin.world.MiningFleetManager;
 import exerelin.world.RespawnFleetAI;
 import exerelin.world.ResponseFleetAI;
 import exerelin.world.ResponseFleetManager;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.omnifac.OmniFacSettings;
+import org.lwjgl.util.vector.Vector2f;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -127,13 +135,46 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        // fix captured Cabal submarkets
-        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        // fix binary star systems
+        SectorAPI sector = Global.getSector();
+        if (!SectorManager.getCorvusMode()) 
         {
-            for (SubmarketAPI submarket : market.getSubmarketsCopy())
+            for (StarSystemAPI system : sector.getStarSystems())
             {
-                if (submarket.getSpec().getId().equals("uw_cabalmarket"))
-                    submarket.setFaction(Global.getSector().getFaction("cabal"));
+                for (PlanetAPI planet : system.getPlanets())
+                {
+                    if (planet.isStar() && system.getStar() != planet)
+                    {
+                        Vector2f loc = planet.getLocation();
+                        float orbitRadius = (float)Math.sqrt(loc.x * loc.x + loc.y * loc.y);
+                        if (orbitRadius < 100000) continue;
+
+                        Global.getLogger(this.getClass()).info("Star " + planet.getName() + " has defective orbit, recomputing");
+                        //Global.getLogger(this.getClass()).info("Star position: " + planet.getName() + ", " + planet.getLocation().x + ", " + planet.getLocation().y);
+                        PlanetAPI primary = system.getStar();
+                        float distance = (BINARY_STAR_DISTANCE + primary.getRadius()*5 + planet.getRadius()*5) * MathUtils.getRandomNumberInRange(0.95f, 1.1f) ;
+                        float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(primary, distance + primary.getRadius());
+                        ExerelinUtilsAstro.setOrbit(planet, primary, distance, true, ExerelinUtilsAstro.getRandomAngle(), orbitDays);
+
+                        // regenerate fringe jump point
+                        List<SectorEntityToken> jumps = system.getEntities(JumpPointAPI.class);
+                        List<SectorEntityToken> toRemove = new ArrayList<>();
+                        for (SectorEntityToken temp : jumps)
+                        {
+                            if (!temp.getName().contains("Fringe")) continue;
+                            JumpPointAPI jump = (JumpPointAPI)temp;
+                            for (JumpDestination dest : jump.getDestinations())
+                            {
+                                SectorEntityToken destEnt = dest.getDestination();
+                                toRemove.add(destEnt);
+                            }
+                            toRemove.add(temp);
+                        }
+                        for (SectorEntityToken token : toRemove) token.getContainingLocation().removeEntity(token);
+                        system.autogenerateHyperspaceJumpPoints(false, true);
+                        break;
+                    }
+                }
             }
         }
     }
