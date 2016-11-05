@@ -1,0 +1,47 @@
+{
+
+"uniqueModClassName":"data.scripts.TUPModPlugin", # String
+
+"playableFaction":true, # Boolean
+
+"corvusCompatible":true,
+
+
+"crewExpereinceLevelIncreaseChance":0.0, # Double 0 - 1.0
+
+"baseFleetCostMultiplier":1.0, # Double
+
+
+"customRebelFaction":"", # String
+
+"customRebelFleetId":"", # String
+
+"rebelFleetSuffix":"Splinter Group", # String
+
+
+"positiveDiplomacyExtra":0, # Integer
+
+"negativeDiplomacyExtra":0, # Integer
+
+"factionsLiked":[], # String array
+
+"factionsDisliked":[], # String array
+
+"alignments":{
+},
+
+"freeMarket":true,
+"miningVariantsOrWings":["daedalus_Basic", "daedalus_Support"],
+
+"customStations":[],
+
+"startShipsSolo":["foxhound_Basic"],
+
+"startShipsCombatSmall":["timberwolf_Assault", "striker_Basic", "ryker_Support"],
+
+"startShipsTradeSmall":["talus_Basic", "wrestler_Basic", "skylarkc_Support"],
+
+"startShipsCombatLarge":["perigee_Assault", "marshall_Assault", "striker_Assault"],
+"startShipsTradeLarge":["damocles_Assault", "buzzard_Support", "redstar_Support"],
+
+}

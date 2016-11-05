@@ -324,6 +324,7 @@ ExerelinNGCListASPSyndicate,ExerelinNGCListFactions1,NGCDoesFactionExist syndica
 ExerelinNGCListBlackrock,ExerelinNGCListFactions1,NGCDoesFactionExist blackrock_driveyards,,,exerelinNGCJoinBlackrock:Blackrock Drive Yards,
 ExerelinNGCListBushi,ExerelinNGCListFactions1,NGCDoesFactionExist bushi,,,exerelinNGCJoinBushi:Bushi,
 ExerelinNGCListCitadel,ExerelinNGCListFactions1,NGCDoesFactionExist citadeldefenders,,,exerelinNGCJoinCitadel:Citadel,
+ExerelinNGCListCorvusScavengers,ExerelinNGCListFactions1,NGCDoesFactionExist corvus_scavengers,,,exerelinNGCJoinCorvusScavengers:Corvus Scavengers,
 ExerelinNGCListCrystanite,ExerelinNGCListFactions1,NGCDoesFactionExist crystanite,,,exerelinNGCJoinCrystanite:Crystanite,
 ExerelinNGCListDME,ExerelinNGCListFactions1,NGCDoesFactionExist dassault_mikoyan,,,exerelinNGCJoinDME:Dassault-Mikoyan,
 ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
@@ -408,6 +409,8 @@ NGCAddShipAndComplement ""bushi_yari_Standard""
 AddText ""Added Yari-class frigate"" textFriendColor
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCJoinCitadel,NewGameOptionSelected,$option == exerelinNGCJoinCitadel,"NGCSetPlayerFaction ""citadeldefenders""
+FireBest ExerelinNGCStep3",,,
+ExerelinNGCJoinCorvusScavengers,NewGameOptionSelected,$option == exerelinNGCJoinCorvusScavengers,"NGCSetPlayerFaction ""corvus_scavengers""
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinCrystanite,NewGameOptionSelected,$option == exerelinNGCJoinCrystanite,"NGCSetPlayerFaction ""crystanite""
 NGCAddShipAndComplement ""crys_pin_standard""
@@ -729,6 +732,7 @@ ExerelinFactionDirectoryListASPSyindicate,ExerelinFactionDirectoryList1,IsFactio
 ExerelinFactionDirectoryListBlackrock,ExerelinFactionDirectoryList1,IsFactionAlive blackrock_driveyards,,,exerelinFactionDirectoryGetBlackrock:Blackrock Drive Yards,
 ExerelinFactionDirectoryListBushi,ExerelinFactionDirectoryList1,IsFactionAlive bushi,,,exerelinFactionDirectoryGetBushi:Bushi,
 ExerelinFactionDirectoryListCitadel,ExerelinFactionDirectoryList1,IsFactionAlive citadeldefenders,,,exerelinFactionDirectoryGetCitadel:Citadel,
+ExerelinFactionDirectoryListCorvusScavengers,ExerelinFactionDirectoryList1,IsFactionAlive corvus_scavengers,,,exerelinFactionDirectoryGetCorvusScavengers:Corvus Scavengers,
 ExerelinFactionDirectoryListCrystanite,ExerelinFactionDirectoryList1,IsFactionAlive crystanite,,,exerelinFactionDirectoryGetCrystanite:Crystanite,
 ExerelinFactionDirectoryListDME,ExerelinFactionDirectoryList1,IsFactionAlive dassault_mikoyan,,,exerelinFactionDirectoryGetDME:Dassault-Mikoyan,
 ExerelinFactionDirectoryListDiableAvionics,ExerelinFactionDirectoryList1,IsFactionAlive diableavionics,,,exerelinFactionDirectoryGetDiableAvionics:Diable Avionics,
@@ -782,6 +786,7 @@ ExerelinFactionDirectoryGetASPSyndicate,DialogOptionSelected,$option == exerelin
 ExerelinFactionDirectoryGetBlackrock,DialogOptionSelected,$option == exerelinFactionDirectoryGetBlackrock,PrintFactionMarkets blackrock_driveyards,,,
 ExerelinFactionDirectoryGetBushi,DialogOptionSelected,$option == exerelinFactionDirectoryGetBushi,PrintFactionMarkets bushi,,,
 ExerelinFactionDirectoryGetCitadel,DialogOptionSelected,$option == exerelinFactionDirectoryGetCitadel,PrintFactionMarkets citadeldefenders,,,
+ExerelinFactionDirectoryGetCorvusScavengers,DialogOptionSelected,$option == exerelinFactionDirectoryGetCorvusScavengers,PrintFactionMarkets corvus_scavengers,,,
 ExerelinFactionDirectoryGetCrystanite,DialogOptionSelected,$option == exerelinFactionDirectoryGetCrystanite,PrintFactionMarkets crystanite,,,
 ExerelinFactionDirectoryGetDME,DialogOptionSelected,$option == exerelinFactionDirectoryGetDME,PrintFactionMarkets dassault_mikoyan,,,
 ExerelinFactionDirectoryGetDiableAvionics,DialogOptionSelected,$option == exerelinFactionDirectoryGetDiableAvionics,PrintFactionMarkets diableavionics,,,
