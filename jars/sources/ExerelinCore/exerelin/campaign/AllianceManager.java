@@ -146,7 +146,20 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         // name stuff + population count
         float pop1 = 0, pop2 = 0;
         List<String> namePrefixes = new ArrayList<>(allianceNameCommonPrefixes);
+        log.info("Getting name prefixes of alliance type " + type);
+        if (!alliancePrefixesByAlignment.containsKey(type))
+        {
+            log.info("Missing name prefixes for alliance type " + type);
+            type = Alignment.MILITARIST;
+        }
         namePrefixes.addAll(alliancePrefixesByAlignment.get(type));
+        
+        if (namePrefixes.isEmpty())
+        {
+            log.info("Missing name prefixes");
+            namePrefixes.add("Common");    // just to make it not crash
+        }
+        
         List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(member1);
         for (MarketAPI market : markets)
         {
