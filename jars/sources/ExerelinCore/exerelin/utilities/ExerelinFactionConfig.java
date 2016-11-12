@@ -270,23 +270,25 @@ public class ExerelinFactionConfig
             return diplomacyNegativeChance.get(factionId);
         return diplomacyNegativeChance.get("default");
     }
-	
-	public static float getDiplomacyPositiveChance(String factionId1, String factionId2)
+    
+    public static float getDiplomacyPositiveChance(String factionId1, String factionId2)
     {
-        float chance1 = ExerelinConfig.getExerelinFactionConfig(factionId1).getDiplomacyPositiveChance(factionId2);
-        float chance2 = ExerelinConfig.getExerelinFactionConfig(factionId2).getDiplomacyPositiveChance(factionId1);
-		if (chance1 == 1) return chance2;
-		else if (chance2 == 1) return chance1;
-        return chance1 + chance2 - 1;
+        float chance1mod = ExerelinConfig.getExerelinFactionConfig(factionId1).getDiplomacyPositiveChance(factionId2) - 1;
+        float chance2mod = ExerelinConfig.getExerelinFactionConfig(factionId2).getDiplomacyPositiveChance(factionId1) - 1;
+        if (Math.abs(chance1mod) > Math.abs(chance2mod))
+            return chance1mod + 1;
+        else
+            return chance2mod + 1;
     }
     
     public static float getDiplomacyNegativeChance(String factionId1, String factionId2)
     {
-        float chance1 = ExerelinConfig.getExerelinFactionConfig(factionId1).getDiplomacyNegativeChance(factionId2);
-        float chance2 = ExerelinConfig.getExerelinFactionConfig(factionId2).getDiplomacyNegativeChance(factionId1);
-        if (chance1 == 1) return chance2;
-        else if (chance2 == 1) return chance1;
-        return chance1 + chance2 - 1;
+        float chance1mod = ExerelinConfig.getExerelinFactionConfig(factionId1).getDiplomacyNegativeChance(factionId2) - 1;
+        float chance2mod = ExerelinConfig.getExerelinFactionConfig(factionId2).getDiplomacyNegativeChance(factionId1) - 1;
+        if (Math.abs(chance1mod) > Math.abs(chance2mod))
+            return chance1mod + 1;
+        else
+            return chance2mod + 1;
     }
     
     public void getStartShipTypeIfAvailable(JSONObject settings, String key, StartFleetType type) throws JSONException
