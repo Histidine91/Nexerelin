@@ -44,6 +44,7 @@ public class ExerelinFactionConfig
     public String customRebelFleetId = "";
     public String rebelFleetSuffix = "Dissenters";
 
+    // Fleet names
     public String asteroidMiningFleetName = "Mining Fleet";
     public String gasMiningFleetName = "Mining Fleet";
     public String logisticsFleetName = "Logistics Convoy";
@@ -52,11 +53,20 @@ public class ExerelinFactionConfig
     public String responseFleetName = "Response Fleet";
     public String defenceFleetName = "Defence Fleet";
     
+    // Diplomacy
     public int positiveDiplomacyExtra = 0;
     public int negativeDiplomacyExtra = 0;
+    @Deprecated
     public String[] factionsLiked = new String[]{};
+    @Deprecated
     public String[] factionsDisliked = new String[]{};
+    @Deprecated
     public String[] factionsNeutral = new String[]{};
+    public Map<String, Float> minRelationships = new HashMap<>();
+    public Map<String, Float> maxRelationships = new HashMap<>();
+    public Map<String, Float> startRelationships = new HashMap<>();
+    public Map<String, Float> diplomacyPositiveChance = new HashMap<>();
+    public Map<String, Float> diplomacyNegativeChance = new HashMap<>();
     public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
     
 	public float spawnMarketShare = 1;
@@ -128,10 +138,6 @@ public class ExerelinFactionConfig
             
             positiveDiplomacyExtra = settings.optInt("positiveDiplomacyExtra");
             negativeDiplomacyExtra = settings.optInt("negativeDiplomacyExtra");
-            factionsLiked = JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
-            factionsDisliked = JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
-            if (settings.has("factionsNeutral"))
-                factionsNeutral = JSONArrayToStringArray(settings.getJSONArray("factionsNeutral"));
             
             freeMarket = settings.optBoolean("freeMarket", freeMarket);
             spawnMarketShare = (float)settings.optDouble("spawnMarketShare", spawnMarketShare);
@@ -156,6 +162,25 @@ public class ExerelinFactionConfig
             if (settings.has("customStations"))
                 customStations = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("customStations")));
             
+            // Diplomacy
+            if (settings.has("factionsLiked"))
+                factionsLiked = JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
+            if (settings.has("factionsDisliked"))
+                factionsDisliked = JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
+            if (settings.has("factionsNeutral"))
+                factionsNeutral = JSONArrayToStringArray(settings.getJSONArray("factionsNeutral"));
+                        
+            fillRelationshipMap(settings, minRelationships, "minRelationships");
+            fillRelationshipMap(settings, maxRelationships, "maxRelationships");
+            fillRelationshipMap(settings, startRelationships, "startRelationships");
+            fillRelationshipMap(settings, diplomacyPositiveChance, "diplomacyPositiveChance");
+            fillRelationshipMap(settings, diplomacyNegativeChance, "diplomacyNegativeChance");
+            
+            if (!diplomacyPositiveChance.containsKey("default"))
+                diplomacyPositiveChance.put("default", 1f);
+            if (!diplomacyNegativeChance.containsKey("default"))
+                diplomacyNegativeChance.put("default", 1f);
+            
             if (settings.has("alignments"))
             {
                 JSONObject alignmentsJson = settings.getJSONObject("alignments");
@@ -173,17 +198,95 @@ public class ExerelinFactionConfig
                     }
                 }
             }
+            
             loadStartShips(settings);
         }
         catch(Exception e)
         {
-            Global.getLogger(ExerelinFactionConfig.class).error(e);
+            Global.getLogger(this.getClass()).error(e);
         }
         
         if (miningVariantsOrWings.isEmpty())
         {
             miningVariantsOrWings = Arrays.asList(DEFAULT_MINERS);
         }
+    }
+    
+    void fillRelationshipMap(JSONObject factionSettings, Map<String, Float> map, String configKey)
+    {
+        try {
+            if (!factionSettings.has(configKey)) return;
+            JSONObject json = factionSettings.getJSONObject(configKey);
+
+            Iterator<?> keys = json.keys();
+            while( keys.hasNext() ) {
+                String key = (String)keys.next();
+                float value = (float)json.getDouble(key);
+                map.put(key, value);
+            }
+        } catch (Exception ex) {
+            Global.getLogger(this.getClass()).error("Failed to load diplomacy map " + configKey, ex);
+        }
+    }
+
+    float getMaxRelationship(String factionId)
+    {
+        if (!maxRelationships.containsKey(factionId))
+            return 1;
+        return maxRelationships.get(factionId);
+    }
+    
+    float getMinRelationship(String factionId)
+    {
+        if (!minRelationships.containsKey(factionId))
+            return -1;
+        return minRelationships.get(factionId);
+    }
+    
+    public static float getMaxRelationship(String factionId1, String factionId2)
+    {
+        float max1 = ExerelinConfig.getExerelinFactionConfig(factionId1).getMaxRelationship(factionId2);
+        float max2 = ExerelinConfig.getExerelinFactionConfig(factionId2).getMaxRelationship(factionId1);
+        return Math.min(max1, max2);
+    }
+    
+    public static float getMinRelationship(String factionId1, String factionId2)
+    {
+        float min1 = ExerelinConfig.getExerelinFactionConfig(factionId1).getMinRelationship(factionId2);
+        float min2 = ExerelinConfig.getExerelinFactionConfig(factionId2).getMinRelationship(factionId1);
+        return Math.max(min1, min2);
+    }
+    
+    float getDiplomacyPositiveChance(String factionId)
+    {
+        if (diplomacyPositiveChance.containsKey(factionId))
+            return diplomacyPositiveChance.get(factionId);
+        return diplomacyPositiveChance.get("default");
+    }
+    
+    float getDiplomacyNegativeChance(String factionId)
+    {
+        if (diplomacyNegativeChance.containsKey(factionId))
+            return diplomacyNegativeChance.get(factionId);
+        return diplomacyNegativeChance.get("default");
+    }
+	
+	public static float getDiplomacyPositiveChance(String factionId1, String factionId2)
+    {
+        float chance1 = ExerelinConfig.getExerelinFactionConfig(factionId1).getDiplomacyPositiveChance(factionId2);
+        float chance2 = ExerelinConfig.getExerelinFactionConfig(factionId2).getDiplomacyPositiveChance(factionId1);
+		if (chance1 == 1) return chance2;
+		else if (chance2 == 1) return chance1;
+        return chance1 + chance2 - 1;
+    }
+    
+    public static float getDiplomacyNegativeChance(String factionId1, String factionId2)
+    {
+        float chance1 = ExerelinConfig.getExerelinFactionConfig(factionId1).getDiplomacyNegativeChance(factionId2);
+        float chance2 = ExerelinConfig.getExerelinFactionConfig(factionId2).getDiplomacyNegativeChance(factionId1);
+        if (chance1 == 1) return chance2;
+        else if (chance2 == 1) return chance1;
+        return chance1 + chance2 - 1;
     }
     
     public void getStartShipTypeIfAvailable(JSONObject settings, String key, StartFleetType type) throws JSONException
@@ -461,7 +564,7 @@ public class ExerelinFactionConfig
         }
         catch(Exception e)
         {
-            Global.getLogger(ExerelinFactionConfig.class).error(e);
+            Global.getLogger(ExerelinFactionConfig.class).warn(e);
             return new String[]{};
         }
     }

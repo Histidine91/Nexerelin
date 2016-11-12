@@ -124,7 +124,7 @@ public final class ExerelinSetupData
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		if (faction == null)
 		{
-			log.info("Couldn't find faction " + factionId);
+			log.debug("Couldn't find faction " + factionId);
 			return false;
 		}
 		return true;

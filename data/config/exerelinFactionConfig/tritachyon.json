@@ -1,19 +1,19 @@
 {
-    "uniqueModClassName":"", # String
-    "playableFaction":"true", # Boolean
+    "uniqueModClassName":"",
+    "playableFaction":true,
     "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Splinter Group", # String
-
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":["hegemony","luddic_church"], # String array
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Splinter Group",
+     
+    "startRelationships":{ "hegemony": -0.6, "luddic_church":-0.6 },
+    "maxRelationships":{ "luddic_church":-0.1 },
+    "diplomacyPositiveChance":{ "luddic_church":0.75 },
+    "diplomacyNegativeChance":{ "luddic_church":1.5 },
     
     "alignments":{
         "corporate":1,

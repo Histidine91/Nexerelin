@@ -1,24 +1,21 @@
 {
     "uniqueModClassName":"", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true,
     "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Traitors", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Traitors",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":["interstellarimperium","tritachyon"], # String array
+    "startRelationships":{ "tritachyon": -0.6 },
     
     "alignments":{
-	"technocratic":-0.5,
+        "technocratic":-0.5,
         "militarist":1,
-	"diplomatic":-0.5,
+        "diplomatic":-0.5,
         "ideological":0.5,
     },
     

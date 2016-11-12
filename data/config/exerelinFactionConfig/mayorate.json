@@ -1,19 +1,17 @@
 {
-    "uniqueModClassName":"data.scripts.MayorateModPlugin", # String
-    "playableFaction":true, # Boolean
-    "isPirateNeutral":true, # Boolean
+    "uniqueModClassName":"data.scripts.MayorateModPlugin",
+    "playableFaction":true,
+    "isPirateNeutral":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Splinter Group", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Splinter Group",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":["tritachyon"], # String array
-    "factionsDisliked":["luddic_church","blackrock_driveyards"], # String array
+    "factionsLiked":["tritachyon"],
+    "factionsDisliked":["luddic_church","blackrock_driveyards"],
 
     "alignments":{
         "technocratic":1,

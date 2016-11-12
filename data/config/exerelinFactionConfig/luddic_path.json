@@ -1,24 +1,20 @@
 {
-    "uniqueModClassName":"", # String
-    "playableFaction":false, # Boolean
+    "uniqueModClassName":"",
+    "playableFaction":false,
     "corvusCompatible":true,
     "hostileToAll":2,
     "isPirateNeutral":true,
     "showIntelEvenIfDead":true,
     
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Heretics", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Heretics",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
-    "factionsNeutral":["luddic_church"],
-
+    "startRelationships":{ "luddic_church":0, "tritachyon":-0.8 },
+    
     "alignments":{
         "corporate":-1,
         "technocratic":-1,

@@ -1,20 +1,20 @@
 {
-    "uniqueModClassName":"", # String
-    "playableFaction":"true", # Boolean
+    "uniqueModClassName":"",
+    "playableFaction":true,
     "corvusCompatible":true,
     
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Heretics", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Heretics",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":["tritachyon"], # String array
-
+    "startRelationships":{ "tritachyon":-0.6 },
+    "maxRelationships":{ "tritachyon":-0.1 },
+    "diplomacyPositiveChance":{ "tritachyon":0.75 },
+    "diplomacyNegativeChance":{ "tritachyon":1.5 },
+    
     "alignments":{
         "corporate":-0.5,
         "technocratic":-1,

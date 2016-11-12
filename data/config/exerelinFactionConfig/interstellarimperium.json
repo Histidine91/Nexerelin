@@ -1,28 +1,28 @@
 {
-    "uniqueModClassName":"data.scripts.IIModPlugin", # String
-    "playableFaction":true, # Boolean
+    "uniqueModClassName":"data.scripts.IIModPlugin",
+    "playableFaction":true,
     "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Malefactors", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Malefactors",
 
-    "asteroidMiningFleetName":"Metallicus", # String
-    "gasMiningFleetName":"Cuniculator", # String
-    "logisticsFleetName":"Prosecutae", # String
-    "invasionFleetName":"Exercitus", # String
+    "asteroidMiningFleetName":"Metallicus",
+    "gasMiningFleetName":"Cuniculator",
+    "logisticsFleetName":"Prosecutae",
+    "invasionFleetName":"Exercitus",
     "responseFleetName":"Praesidium",
-    "invasionSupportFleetName":"Classis", # String
+    "invasionSupportFleetName":"Classis",
     "defenceFleetName":"Custodia",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":["hegemony"], # String array
-
+    "startRelationships":{ "hegemony": -0.8 },
+    "maxRelationships":{ "hegemony":-0.4, },
+    "diplomacyPositiveChance":{ "hegemony":0.75, },
+    "diplomacyNegativeChance":{ "hegemony":1.5, },
+    
     "alignments":{
         "corporate":0,
         "technocratic":-0.5,

@@ -103,6 +103,7 @@ public class ExerelinConfig
     public static boolean countPiratesForVictory = false;
     public static boolean ownFactionCustomsInspections = false;
     public static int directoryDialogKey = 32;  // D
+	public static boolean useRelationshipBounds = true;
     
 
     public static void loadSettings()
@@ -180,6 +181,7 @@ public class ExerelinConfig
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
+			useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             

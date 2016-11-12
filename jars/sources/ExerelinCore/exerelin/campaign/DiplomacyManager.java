@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Level;
@@ -247,8 +248,20 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (ensureAtWorst != null) {
                 faction1.ensureAtWorst(faction2Id, ensureAtWorst);
         }
-       
+        
+        // clamp to configs' min/max relationships
         float after = faction1.getRelationship(faction2Id);
+        if (!diplomacyManager.randomFactionRelationships)
+        {
+            float max = ExerelinFactionConfig.getMaxRelationship(faction1Id, faction2Id);
+            float min = ExerelinFactionConfig.getMinRelationship(faction1Id, faction2Id);
+            if (delta > 0 && max < after)
+                faction1.setRelationship(faction2Id, max);
+            if (delta < 0 && min > after)
+                faction1.setRelationship(faction2Id, min);
+
+            after = faction1.getRelationship(faction2Id);
+        }
         delta = after - before;
         //log.info("Relationship delta: " + delta);
         boolean isHostile = faction1.isHostileTo(faction2);
@@ -389,14 +402,28 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             boolean isNegative = (eventDef.maxRepChange + eventDef.minRepChange)/2 < 0;
             
             float chance = eventDef.chance;
-            if (dominance > DOMINANCE_MIN)
-            {
-                float strength = (dominance - DOMINANCE_MIN)/(1 - DOMINANCE_MIN);
-                if (isNegative) chance = chance + (DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD * strength);
-                else chance = chance + (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
-            }
-            if (chance <= 0) continue;
-            eventPicker.add(eventDef, chance);
+			if (!diplomacyManager.randomFactionRelationships) {
+				if (isNegative) {
+					float mult = ExerelinFactionConfig.getDiplomacyNegativeChance(factionId1, factionId2);
+					if (mult != 1) log.info("Applying negative event mult: " + mult);
+					chance *= mult;
+				}
+				else
+				{
+					float mult = ExerelinFactionConfig.getDiplomacyPositiveChance(factionId1, factionId2);
+					if (mult != 1) log.info("Applying positive event mult: " + mult);
+					chance *= mult;
+				}
+
+				if (dominance > DOMINANCE_MIN)
+				{
+					float strength = (dominance - DOMINANCE_MIN)/(1 - DOMINANCE_MIN);
+					if (isNegative) chance = chance + (DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD * strength);
+					else chance = chance + (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
+				}
+				if (chance <= 0) continue;
+				eventPicker.add(eventDef, chance);
+			}
         }
         DiplomacyEventDef event = eventPicker.pick();
         if (event == null)
@@ -513,9 +540,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (factionWithMostWars != null)
         {
             log.info("Faction " + factionWithMostWars.getDisplayName() + " wants to sue for peace");
-            WeightedRandomPicker<String> picker = new WeightedRandomPicker();
-            for (String enemy : enemiesOfFaction)
+            String factionId = factionWithMostWars.getId();
+            ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+            
+            WeightedRandomPicker<String> picker = new WeightedRandomPicker();            
+            for (String enemy : enemiesOfFaction) {
+                // don't allow ceasefires with perma-hostile factions
+                if (ExerelinConfig.useRelationshipBounds && ExerelinFactionConfig.getMaxRelationship(factionId, enemy) < -0.5) continue;
                 picker.add(enemy, getWarWeariness(enemy));
+            }
             String toPeace = picker.pick();
             
             float sumWeariness = getWarWeariness(factionWithMostWars.getId()) + getWarWeariness(toPeace);
@@ -911,6 +944,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     
                     handleHostileToAllFaction(factionId, factionIds);
                     
+                    // legacy method
                     for (String likedFactionId : factionConfig.factionsLiked) {
                         FactionAPI likedFaction = sector.getFaction(likedFactionId);
                         if (likedFaction != null && !likedFaction.isNeutralFaction())
@@ -919,7 +953,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                             faction.setRelationship(likedFactionId, STARTING_RELATIONSHIP_WELCOMING);
                         }
                     }
-                    
                     for (String dislikedFactionId : factionConfig.factionsDisliked) {
                         FactionAPI dislikedFaction = sector.getFaction(dislikedFactionId);
                         if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
@@ -928,13 +961,21 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                             setRelationshipAtBest(factionId, dislikedFactionId, STARTING_RELATIONSHIP_HOSTILE);
                         }
                     }
-                    
                     for (String indifferentFactionId : factionConfig.factionsNeutral) {
                         FactionAPI indifferentFaction = sector.getFaction(indifferentFactionId);
                         if (indifferentFaction != null && !indifferentFaction.isNeutralFaction())
                         {
                             faction.setRelationship(indifferentFactionId, 0);
                         }
+                    }
+                    
+                    // new specific number method
+                    Iterator<Map.Entry<String, Float>> iter = factionConfig.startRelationships.entrySet().iterator();
+                    while( iter.hasNext() ) {
+                        Map.Entry<String, Float> tmp = iter.next();
+                        String key = tmp.getKey();
+                        float value = tmp.getValue();
+                        faction.setRelationship(key, value);
                     }
                 }
             }
