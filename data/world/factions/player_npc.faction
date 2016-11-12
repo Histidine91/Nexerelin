@@ -7,8 +7,8 @@
 	"displayNameLongWithArticle":"the player's followers",
 	"displayNameIsOrAre":"are",
 	"entityNamePrefix":"followers",
-	"logo":"graphics/factions/player_flag2.png",
-	"crest":"graphics/factions/crest_player_flag2.png",
+	"logo":"graphics/exerelin/factions/Arm_Flag.png",
+	"crest":"graphics/exerelin/factions/Arm_Crest.png",
 	"shipNamePrefix":"ISS",
 	"shipNameSources":{
 		"ALL":1,
