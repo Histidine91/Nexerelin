@@ -405,13 +405,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 			if (!diplomacyManager.randomFactionRelationships) {
 				if (isNegative) {
 					float mult = ExerelinFactionConfig.getDiplomacyNegativeChance(factionId1, factionId2);
-					if (mult != 1) log.info("Applying negative event mult: " + mult);
+                    //if (mult != 1) log.info("Applying negative event mult: " + mult);
 					chance *= mult;
 				}
 				else
 				{
 					float mult = ExerelinFactionConfig.getDiplomacyPositiveChance(factionId1, factionId2);
-					if (mult != 1) log.info("Applying positive event mult: " + mult);
+                    //if (mult != 1) log.info("Applying positive event mult: " + mult);
 					chance *= mult;
 				}
 
@@ -514,7 +514,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID) && !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
 
             float weariness = getWarWeariness(factionId);
-            List<String> enemies = getFactionsAtWarWithFaction(faction, false, false);
+            List<String> enemies = getFactionsAtWarWithFaction(faction, false, false, true);
             int warCount = enemies.size();
             if (warCount > 0)
             {
@@ -545,8 +545,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             
             WeightedRandomPicker<String> picker = new WeightedRandomPicker();            
             for (String enemy : enemiesOfFaction) {
-                // don't allow ceasefires with perma-hostile factions
-                if (ExerelinConfig.useRelationshipBounds && ExerelinFactionConfig.getMaxRelationship(factionId, enemy) < -0.5) continue;
                 picker.add(enemy, getWarWeariness(enemy));
             }
             String toPeace = picker.pick();
@@ -715,31 +713,34 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return diplomacyManager;
     }
     
-    public static List<String> getFactionsAtWarWithFaction(String factionId, boolean includePirates, boolean includeTemplars)
+    public static List<String> getFactionsAtWarWithFaction(String factionId, boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
     {
-        return getFactionsAtWarWithFaction(Global.getSector().getFaction(factionId), includePirates, includeTemplars);
+        return getFactionsAtWarWithFaction(Global.getSector().getFaction(factionId), includePirates, includeTemplars, mustAllowCeasefire);
     }
     
-    public static List<String> getFactionsAtWarWithFaction(FactionAPI faction, boolean includePirates, boolean includeTemplars)
+    public static List<String> getFactionsAtWarWithFaction(FactionAPI faction, boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
     {
         SectorAPI sector = Global.getSector();
+        String factionId = faction.getId();
         List<String> enemies = new ArrayList<>();
         List<String> factions = SectorManager.getLiveFactionIdsCopy();
 
         for(String otherFactionId : factions)
         {
-            if (faction.isAtBest(otherFactionId, RepLevel.HOSTILE) && (includePirates || !ExerelinUtilsFaction.isPirateFaction(otherFactionId))
-                    && (otherFactionId.equals("templars") && includeTemplars || !disallowedFactions.contains(otherFactionId) ))
-            {
-                enemies.add(otherFactionId);
-            }
+            if (!faction.isAtBest(otherFactionId, RepLevel.HOSTILE)) continue;
+            if (disallowedFactions.contains(otherFactionId)) continue;
+            if (!includePirates && ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
+            if (!includeTemplars && otherFactionId.equals("templars")) continue;
+            if (mustAllowCeasefire && ExerelinFactionConfig.canCeasefire(factionId, otherFactionId))    // only count non-pirate non-Templar factions with which we can ceasefire as enemies
+                continue;
+            enemies.add(otherFactionId);
         }
         return enemies;
     }
     
     public static boolean isFactionAtWar(String factionId, boolean excludeNeutralAndRebels)
     {
-        if(getFactionsAtWarWithFaction(factionId, !excludeNeutralAndRebels, true).size() > 0)
+        if(getFactionsAtWarWithFaction(factionId, !excludeNeutralAndRebels, true, false).size() > 0)
             return true;
         else
             return false;

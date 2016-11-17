@@ -291,6 +291,13 @@ public class ExerelinFactionConfig
             return chance2mod + 1;
     }
     
+    public static boolean canCeasefire(String factionId1, String factionId2)
+    {
+        if (ExerelinConfig.useRelationshipBounds && getMaxRelationship(factionId1, factionId2) < -0.5) return false;
+        if (getDiplomacyPositiveChance(factionId1, factionId2) <= 0) return false;
+        return true;
+    }
+    
     public void getStartShipTypeIfAvailable(JSONObject settings, String key, StartFleetType type) throws JSONException
     {
         if (settings.has(key))

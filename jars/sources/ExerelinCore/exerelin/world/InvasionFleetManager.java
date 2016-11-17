@@ -555,7 +555,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             if (!allowPirates && isPirateFaction) continue;
             
             float mult = 0f;
-            List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, ExerelinConfig.allowPirateInvasions, true);
+            List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, ExerelinConfig.allowPirateInvasions, true, false);
             if (enemies.isEmpty()) continue;
             
             if (ExerelinUtilsFaction.isFactionHostileToAll(factionId))
@@ -570,7 +570,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 {
                     if (ExerelinUtilsFaction.isFactionHostileToAll(enemyId))
                     {
-                        float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, ExerelinConfig.allowPirateInvasions, true).size();
+                        float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, ExerelinConfig.allowPirateInvasions, true, false).size();
                         enemyWars = (float)Math.sqrt(enemyWars);
                         if (enemyWars > 0 )
                             mult += 1/((enemyWars*ALL_AGAINST_ONE_INVASION_POINT_MOD) + (1));

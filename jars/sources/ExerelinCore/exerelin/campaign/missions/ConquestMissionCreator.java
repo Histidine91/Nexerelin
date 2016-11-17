@@ -69,7 +69,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		{
 			if (!ExerelinConfig.allowPirateInvasions && ExerelinUtilsFaction.isPirateFaction(factionId))
 				continue;
-			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, ExerelinConfig.allowPirateInvasions, true);
+			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, ExerelinConfig.allowPirateInvasions, true, false);
 			if (!enemies.isEmpty()) atWar.add(factionId);
 		}
 		return atWar;
@@ -99,7 +99,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		for (String factionId : factions)
 		{
 			if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
-			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, ExerelinConfig.allowPirateInvasions, true);
+			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, ExerelinConfig.allowPirateInvasions, true, false);
 			enemiesByFaction.put(factionId, enemies);
 			factionPicker.add(factionId, enemies.size());
 		}

@@ -421,8 +421,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                     }
                     
                     // don't go joining alliances if it just drags us into multiple wars
-                    List<String> theirEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, false);
-                    List<String> ourEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, false);
+                    List<String> theirEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, false, false);
+                    List<String> ourEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, false, false);
                     int numNewEnemies = 0;
                     for (String enemy: theirEnemies)
                     {

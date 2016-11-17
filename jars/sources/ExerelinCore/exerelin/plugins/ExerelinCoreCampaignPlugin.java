@@ -77,7 +77,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 	public void updateFactionFacts(FactionAPI faction, MemoryAPI memory) {
 		super.updateFactionFacts(faction, memory);
 		memory.set("$warWeariness", DiplomacyManager.getWarWeariness(faction.getId()), 0);
-		memory.set("$numWars", DiplomacyManager.getFactionsAtWarWithFaction(faction, false, false).size(), 0);
+		memory.set("$numWars", DiplomacyManager.getFactionsAtWarWithFaction(faction, false, false, false).size(), 0);
 
 		AllianceManager.Alliance associatedAlliance = AllianceManager.getFactionAlliance(faction.getId());
 		memory.set("$isInAlliance", (associatedAlliance != null), 0);
