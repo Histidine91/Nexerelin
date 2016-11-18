@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
@@ -32,6 +33,19 @@ public class ExerelinUtilsReputation
 		FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
 		boolean wasHostile = player.isHostileTo(faction);
 		ReputationAdjustmentResult result;
+		
+		// clamp to configs' min/max relationships
+		if (!DiplomacyManager.getRandomFactionRelationships())
+		{
+			String myFactionId = PlayerFactionStore.getPlayerFactionId();
+			float max = ExerelinFactionConfig.getMaxRelationship(myFactionId, factionId);
+			float min = ExerelinFactionConfig.getMinRelationship(myFactionId, factionId);
+			float curr = faction.getRelationship(Factions.PLAYER);
+			if (delta > 0 && curr + delta > max)
+				delta = max - curr;
+			if (delta < 0 && curr + delta < min)
+				delta = min - curr;
+		}
 		
 		CustomRepImpact impact = new CustomRepImpact();
 		impact.delta = delta;

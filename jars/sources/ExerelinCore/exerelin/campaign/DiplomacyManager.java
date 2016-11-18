@@ -731,7 +731,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (disallowedFactions.contains(otherFactionId)) continue;
             if (!includePirates && ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
             if (!includeTemplars && otherFactionId.equals("templars")) continue;
-            if (mustAllowCeasefire && ExerelinFactionConfig.canCeasefire(factionId, otherFactionId))    // only count non-pirate non-Templar factions with which we can ceasefire as enemies
+            if (mustAllowCeasefire && !ExerelinFactionConfig.canCeasefire(factionId, otherFactionId))    // only count non-pirate non-Templar factions with which we can ceasefire as enemies
                 continue;
             enemies.add(otherFactionId);
         }
@@ -1046,5 +1046,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     {
         if (diplomacyManager == null) return;
         diplomacyManager.randomFactionRelationships = random;
+    }
+    
+    public static boolean getRandomFactionRelationships()
+    {
+        return diplomacyManager.randomFactionRelationships;
     }
 }
