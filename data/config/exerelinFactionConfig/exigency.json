@@ -1,6 +1,7 @@
 {
     "uniqueModClassName":"data.scripts.ExigencyModPlugin",
     "playableFaction":true,
+    "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0,
     "baseFleetCostMultiplier":1.0,
@@ -8,11 +9,11 @@
     "customRebelFaction":"",
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Splinter Group",
-
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
-    "factionsLiked":[],
-    "factionsDisliked":["exipirated"],
+    
+    "startRelationships":{ "exipirated": -0.8 },
+    "maxRelationships":{ "exipirated":-0.76 },
+    "diplomacyPositiveChance":{ "exipirated":0 },
+    "diplomacyNegativeChance":{ "exipirated":0 },
 
     "alignments":{
         "corporate":1,

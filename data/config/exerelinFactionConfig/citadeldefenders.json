@@ -1,21 +1,18 @@
 {
-    "uniqueModClassName":"data.scripts.CITModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "uniqueModClassName":"data.scripts.CITModPlugin",
+    "playableFaction":true,
     "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Splinter Group", # String
-
-    "logisticsFleetName":"Supply Convoy", # String
-
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Splinter Group",
+    
+    "startRelationships":{ "tiandong": -0.6 },
+    "diplomacyPositiveChance":{ "tiandong":0.75 },
+    "diplomacyNegativeChance":{ "tiandong":1.5 },
 
     "alignments":{
         "corporate":1,

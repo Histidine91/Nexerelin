@@ -3,6 +3,7 @@
     "playableFaction":true,
     "pirateFaction":true,
     "noHomeworld":true,
+    "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0,
     "baseFleetCostMultiplier":1.0,
@@ -11,13 +12,13 @@
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Splinter Group",
 
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
-    "factionsLiked":[],
-    "factionsDisliked":["exigency"],
+    "startRelationships":{ "exigency": -0.8 },
+    "maxRelationships":{ "exigency":-0.76 },
+    "diplomacyPositiveChance":{ "exigency":0 },
+    "diplomacyNegativeChance":{ "exigency":0 },
     
     "alignments":{
-        "technocratic":0.5,
+        "technocratic":0.5
     },
     
     "freeMarket":true,
