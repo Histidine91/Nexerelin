@@ -569,7 +569,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         List<String> liveFactions = getLiveFactionIdsCopy();
         for (String factionId : getLiveFactionIdsCopy())
         {
-            if (ExerelinUtilsFaction.isPirateFaction(factionId) && !ExerelinConfig.countPiratesForVictory)
+            // don't count pirate factions unless config says so or we belong to it
+            if (ExerelinUtilsFaction.isPirateFaction(factionId) && !ExerelinConfig.countPiratesForVictory && !factionId.equals(playerAlignedFactionId))
             {
                 liveFactions.remove(factionId);
             }
