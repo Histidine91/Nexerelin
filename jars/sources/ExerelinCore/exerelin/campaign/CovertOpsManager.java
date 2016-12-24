@@ -22,6 +22,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.world.ResponseFleetManager;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -464,12 +465,15 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 float repMax = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMax");
                 float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
                 ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
-				params.put("repResult", repResult);
+                params.put("repResult", repResult);
                 params.put("repEffect", repResult.delta);
                 params.put("stage", result);
             }
             
             Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market", params);
+            
+            // refresh market prices to account for stability effects on demand (see http://fractalsoftworks.com/forum/index.php?topic=11516.0 for why)
+            Global.getSector().getEconomy().advance(0);
         }
         else
         {
