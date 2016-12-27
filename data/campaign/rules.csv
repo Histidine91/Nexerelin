@@ -590,7 +590,7 @@ ExerelinNGCEasyStart2SSP,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
 $haveSSP","NGCAddCredits 250000
 NGCAddAptitudePoints 2
 NGCAddSkillPoints 4
-NGCAddXP 250500
+NGCAddXP 286000
 NGCSetNumStartingOfficers 2
 AddText ""Added 2 aptitude points"" textFriendColor
 AddText ""Added 4 skill points"" textFriendColor
