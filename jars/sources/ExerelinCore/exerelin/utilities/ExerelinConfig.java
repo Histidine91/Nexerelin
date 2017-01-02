@@ -46,7 +46,7 @@ public class ExerelinConfig
     public static float prisonerBaseSlaveValue = 4000f;
     public static float prisonerSlaveValueIncrementPerLevel = 400f;
     public static float prisonerSlaveRepValue = -0.02f;
-    public static float prisonerLootChancePer10Fp = 0.05f;
+    public static float prisonerLootChancePer10Fp = 0.04f;
     
     public static float crewLootMult = 0.02f;
 
@@ -232,6 +232,7 @@ public class ExerelinConfig
 		return defaultConfig;
     }
 
+	@Deprecated
     public static List<String> getAllCustomFactionRebels()
     {
         List<String> customRebels = new ArrayList<String>();

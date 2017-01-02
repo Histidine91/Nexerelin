@@ -19,7 +19,7 @@
     "prisonerBaseSlaveValue": 8000,
     "prisonerSlaveValueIncrementPerLevel": 400,
     "prisonerSlaveRepValue": -0.02,
-    "prisonerLootChancePer10Fp": 0.07,
+    "prisonerLootChancePer10Fp": 0.04,
     
     "crewLootMult": 0.02,   # loot about this many green crew per enemy crew in killed ships
     
