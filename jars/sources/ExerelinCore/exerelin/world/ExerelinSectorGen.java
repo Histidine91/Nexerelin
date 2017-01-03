@@ -313,7 +313,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	protected List<String> getStartingFactions()
 	{
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
-		List<String> availableFactions = setupData.getAvailableFactions();
+		List<String> availableFactions = setupData.getPlayableFactions();
 		int wantedFactionNum = setupData.numStartFactions;
 		if (wantedFactionNum <= 0) {
 			if (ExerelinConfig.enableIndependents)

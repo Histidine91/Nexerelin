@@ -1,8 +1,8 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import exerelin.campaign.ExerelinSetupData;
 import org.json.JSONObject;
 import java.util.List;
 import java.util.ArrayList;
@@ -206,16 +206,17 @@ public class ExerelinConfig
         ExerelinConfig.exerelinFactionConfigs = new ArrayList<>();
 
         for(String factionId : builtInFactions) {
-			ExerelinFactionConfig conf = new ExerelinFactionConfig(factionId);
-			ExerelinConfig.exerelinFactionConfigs.add(conf);
-			if (factionId.equals(Factions.NEUTRAL))
-				defaultConfig = conf;
-		}
-            
+            ExerelinFactionConfig conf = new ExerelinFactionConfig(factionId);
+            conf.isBuiltIn = true;
+            ExerelinConfig.exerelinFactionConfigs.add(conf);
+            if (factionId.equals(Factions.NEUTRAL))
+                defaultConfig = conf;
+        }
+        
 
         for(String factionId : supportedModFactions)
         {
-            if (ExerelinSetupData.isFactionInstalled(factionId))
+            if (ExerelinUtilsFaction.doesFactionExist(factionId))
                 ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(factionId));
         }
     }
@@ -229,10 +230,10 @@ public class ExerelinConfig
         }
 
         Global.getLogger(ExerelinConfig.class).warn("Faction config " + factionId + "  not found, using default");
-		return defaultConfig;
+        return defaultConfig;
     }
 
-	@Deprecated
+    @Deprecated
     public static List<String> getAllCustomFactionRebels()
     {
         List<String> customRebels = new ArrayList<String>();
@@ -244,5 +245,34 @@ public class ExerelinConfig
         }
 
         return  customRebels;
+    }
+    
+    public static List<String> getModdedFactionsList(boolean onlyPlayable)
+    {
+        //log.info("Getting modded factions");
+        List<String> possibleModdedFactions = new ArrayList<String>();
+
+        for (ExerelinFactionConfig config : exerelinFactionConfigs) {
+            if (onlyPlayable && !config.playableFaction) continue;
+            if (config.isBuiltIn) continue;
+            if (ExerelinUtilsFaction.doesFactionExist(config.factionId))
+            {
+                possibleModdedFactions.add(config.factionId);
+            }
+        }
+        return possibleModdedFactions;
+    }
+
+    public static List<String> getBuiltInFactionsList(boolean onlyPlayable)
+    {
+        List<String> possibleBuiltInFactions = new ArrayList<String>();
+
+        for (ExerelinFactionConfig config : ExerelinConfig.exerelinFactionConfigs) {
+            if (onlyPlayable && !config.playableFaction) continue;
+            if (!config.isBuiltIn) continue;
+            possibleBuiltInFactions.add(config.factionId);
+        }
+
+        return possibleBuiltInFactions;
     }
 }

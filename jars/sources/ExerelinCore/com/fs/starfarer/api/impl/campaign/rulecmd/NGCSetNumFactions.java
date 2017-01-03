@@ -25,7 +25,7 @@ public class NGCSetNumFactions extends BaseCommandPlugin {
 		}
 		else
 		{
-			List<String> availableFactions = setupData.getAvailableFactions();
+			List<String> availableFactions = setupData.getPlayableFactions();
 			availableFactions.remove(ExerelinConstants.PLAYER_NPC_ID);
 			setupData.numStartFactions = (int)(num * availableFactions.size() + 0.5f);
 		}

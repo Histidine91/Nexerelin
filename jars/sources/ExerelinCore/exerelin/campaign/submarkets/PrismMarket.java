@@ -147,7 +147,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
 
         WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker<>();
         SectorAPI sector = Global.getSector();
-        for (String factionId: ExerelinSetupData.getInstance().getAvailableFactions()) {
+        for (String factionId: ExerelinSetupData.getInstance().getAllFactions()) {
 			FactionAPI faction = sector.getFaction(factionId);
             if (!faction.isShowInIntelTab()) continue;
 			//if (faction.isNeutralFaction()) continue;

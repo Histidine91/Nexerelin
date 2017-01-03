@@ -461,7 +461,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         List<String> factionIds = factionIdsAtStart;
         if (!onlyRespawnStartingFactions)
         {
-            factionIds = ExerelinSetupData.getInstance().getAvailableFactions();
+            factionIds = ExerelinSetupData.getInstance().getPlayableFactions();
         }
         
         for(String factionId : factionIds)
@@ -934,24 +934,23 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static void reinitLiveFactions()
     {
         if (sectorManager == null) return;
-        List<String> temp = ExerelinSetupData.getInstance().getAvailableFactions();
+        List<String> temp = ExerelinSetupData.getInstance().getAllFactions();
         sectorManager.liveFactionIds = new ArrayList<>();
         sectorManager.factionIdsAtStart = new ArrayList<>();
         sectorManager.historicFactionIds = new HashSet<>();
         
         for (String factionId:temp)
         {
-            ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-            
             if (ExerelinUtilsFaction.getFactionMarkets(factionId).size() > 0)
             {
+                ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
                 if (config != null && !config.playableFaction)
                     continue;
                 sectorManager.liveFactionIds.add(factionId);
                 sectorManager.factionIdsAtStart.add(factionId);
                 sectorManager.historicFactionIds.add(factionId);
             }
-            else
+            else	// no need for showIntelEvenIfDead check, that's done in setShowFactionInIntelTab()
             {
                 setShowFactionInIntelTab(factionId, false);
             }

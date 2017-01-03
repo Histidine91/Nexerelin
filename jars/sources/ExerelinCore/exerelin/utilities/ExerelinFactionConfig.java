@@ -24,6 +24,7 @@ public class ExerelinFactionConfig
     public String uniqueModClassName = "";
     public boolean playableFaction = true;
     public boolean corvusCompatible = false;
+    public boolean isBuiltIn = false;
    
     public boolean pirateFaction = false;
     public boolean isPirateNeutral = false;
