@@ -807,15 +807,21 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		if (ExerelinUtils.isSSPInstalled(true) || ExerelinModPlugin.HAVE_UNDERWORLD)
 		{
 			List<MarketAPI> cabalCandidates = new ArrayList<>();
+			List<MarketAPI> cabalCandidatesBackup = new ArrayList<>();
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 			{
 				if (!market.getFactionId().equals(Factions.TRITACHYON)) continue;
 				if (market.hasCondition(Conditions.MILITARY_BASE) && Math.random() > CABAL_MILITARY_MARKET_CHANCE) 
+				{
+					cabalCandidatesBackup.add(market);
 					continue;
+				}
 				
 				//log.info("Cabal candidate added: " + market.getName() + " (size " + market.getSize() + ")");
 				cabalCandidates.add(market);
 			}
+			if (cabalCandidates.isEmpty())
+				cabalCandidates = cabalCandidatesBackup;
 			
 			Comparator<MarketAPI> marketSizeComparator = new Comparator<MarketAPI>() {
 
