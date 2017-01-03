@@ -119,7 +119,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 	public static final float NEBULA_CHANCE = 0.35f;
 	public static final float MAGNETIC_FIELD_CHANCE = 0.5f;
 	public static final float STELLAR_RING_CHANCE = 0.3f;
-	public static final float STELLAR_BELT_CHANCE = 0.7f;
+	public static final float STELLAR_BELT_CHANCE = 0.5f;	// for systems with nebulae; will always spawn asteroids if nebula is absent
 	public static final float UNINHABITED_RELAY_CHANCE = 0.25f;
 	public static final float STAR_RANDOM_OFFSET = 100;
 	public static final float STAR_SIZE_VARIATION = 0.2f;
@@ -1858,10 +1858,22 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			log.info("Added asteroid belt around " + planet.getName());
 		}
 		
+		// add nebula
+		boolean hasNebula = false;
+		if (Math.random() < NEBULA_CHANCE)
+		{
+			SectorEntityToken nebula = Misc.addNebulaFromPNG((String)ExerelinUtils.getRandomListElement(nebulaMaps),	// nebula texture
+					  0, 0, // center of nebula
+					  system, // location to add to
+					  "terrain", "nebula_" + ExerelinUtils.getRandomArrayElement(nebulaColors), // texture to use, uses xxx_map for map
+					  4, 4); // number of cells in texture
+			hasNebula = true;
+		}
 
-		// Always put an asteroid belt around the sun
+		// Usually put an extra asteroid belt around the sun
 		do {
-			if (Math.random() < STELLAR_BELT_CHANCE) {
+			// system will always have asteroid belt if it doesn't have nebula, it just looks wrong otherwise
+			if (Math.random() < STELLAR_BELT_CHANCE || !hasNebula) {
 				float distance = getRandomOrbitRadiusBetweenPlanets(entities, 3000 + star.getRadius(), 14000 + star.getRadius());
 				float baseOrbitDays = ExerelinUtilsAstro.getOrbitalPeriod(star, distance);
 				float minOrbitDays = baseOrbitDays * 0.75f;
@@ -2087,16 +2099,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			//ExerelinUtilsAstro.setOrbit(relay, star, distance, !isBinary, ellipseAngle, ExerelinUtilsAstro.getOrbitalPeriod(star, distance));
 			systemToRelay.put(system.getId(), system.getId() + "_relay");
 			planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
-		}
-		
-		// add nebula
-		if (Math.random() < NEBULA_CHANCE)
-		{
-			SectorEntityToken nebula = Misc.addNebulaFromPNG((String)ExerelinUtils.getRandomListElement(nebulaMaps),	// nebula texture
-					  0, 0, // center of nebula
-					  system, // location to add to
-					  "terrain", "nebula_" + ExerelinUtils.getRandomArrayElement(nebulaColors), // texture to use, uses xxx_map for map
-					  4, 4); // number of cells in texture
 		}
 		
 		// add stellar ring
