@@ -844,6 +844,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 						market.addSubmarket("uw_cabalmarket");
 					else
 						market.addSubmarket("ssp_cabalmarket");
+					market.addCondition("cabal_influence");
 					log.info("Added Cabal submarket to " + market.getName() + " (size " + market.getSize() + ")");
 				}
 			} catch (RuntimeException rex) {

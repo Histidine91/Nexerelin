@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.util.Collections;
@@ -123,6 +124,8 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                         anyBase = true;
                         sizeStr += ", " + StringHelper.getString("base");
                     }
+                    if (market.hasCondition("cabal_influence") && market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_VISITED_BEFORE))
+                        sizeStr += ", " + StringHelper.getString("cabal");
                     entry = StringHelper.substituteToken(entry, "$size", sizeStr);
                     
                     text.addParagraph(entry);

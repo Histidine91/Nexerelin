@@ -251,6 +251,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     }
     
     @Override
+    public void reportPlayerOpenedMarket(MarketAPI market) {
+        market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_VISITED_BEFORE, true);
+    }
+    
+    @Override
     public boolean isDone()
     {
         return false;
