@@ -11,7 +11,6 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import data.scripts.ExerelinModPlugin;
 import exerelin.campaign.fleets.DSFleetUtilsProxy;
-import exerelin.campaign.fleets.SSPFleetUtilsProxy;
 import exerelin.campaign.fleets.SWPFleetUtilsProxy;
 import org.apache.log4j.Logger;
 
@@ -31,9 +30,6 @@ public class ExerelinUtilsFleet
     public static void injectFleet(CampaignFleetAPI fleet, MarketAPI market, Float stability, Float qualityFactor, String type) {      
         if (ExerelinModPlugin.HAVE_DYNASECTOR)
             DSFleetUtilsProxy.injectFleet(fleet, market, stability, qualityFactor, type);
-        else if (ExerelinUtils.isSSPInstalled(true)) {
-            SSPFleetUtilsProxy.injectFleet(fleet, market, stability, qualityFactor, type);
-        }
     }
     
     public static FleetMemberAPI addMiningShipToFleet(CampaignFleetAPI fleet)
@@ -64,10 +60,6 @@ public class ExerelinUtilsFleet
         
         if (ExerelinModPlugin.HAVE_DYNASECTOR) {
             return DSFleetUtilsProxy.enhancedCreateFleet(faction, params, total);
-        }
-        
-        if (ExerelinUtils.isSSPInstalled(true) ) {
-            return SSPFleetUtilsProxy.enhancedCreateFleet(faction, params, total);
         }
 
         return FleetFactoryV2.createFleet(params);
