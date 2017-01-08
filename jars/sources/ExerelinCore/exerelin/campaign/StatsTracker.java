@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import java.util.List;
 import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
@@ -112,55 +113,44 @@ public class StatsTracker extends BaseCampaignEventListener{
     @Override
     public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
-        CampaignFleetAPI loser = battle.getPrimary(battle.getOtherSideFor(winner));
-        FactionAPI winFaction = winner.getFaction();
-        FactionAPI loseFaction = loser.getFaction();
-        String winFactionId = winFaction.getId();
-        String loseFactionId = loseFaction.getId();
+        if (!battle.isPlayerInvolved()) return;
         
-        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-        FactionAPI playerAlignedFaction = Global.getSector().getFaction(playerAlignedFactionId);
-        CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+        List<CampaignFleetAPI> killedFleets = battle.getNonPlayerSide();
+        //List<CampaignFleetAPI> lossesFleets = battle.getPlayerSide();
+		CampaignFleetAPI lossesFleet = Global.getSector().getPlayerFleet();
         
-        CampaignFleetAPI killFleet;
-        CampaignFleetAPI lossFleet;
-        
-        //Global.getLogger(StatsTracker.class).info("Tracker tracking battle");
-        int crewKilled = 0;
-        
-        if (winner == playerFleet)
-        {
-            killFleet = loser;
-            lossFleet = winner;
-        }
-        else if (loser == playerFleet)
-        {
-            killFleet = winner;
-            lossFleet = loser;
-        }
-        else return;
-        
-        String killedFaction = killFleet.getFaction().getId();
-        if (killedFaction.equals("spire") || killedFaction.equals("darkspire")) return; // Spire biology is different
+        Global.getLogger(StatsTracker.class).info("Tracker tracking battle");
 
-        List<FleetMemberAPI> killCurrent = killFleet.getFleetData().getMembersListCopy();
-        for (FleetMemberAPI member : killFleet.getFleetData().getSnapshot()) {
-            if (!killCurrent.contains(member)) {
-                fpKilled += member.getFleetPointCost();
-                shipsKilled++;
-                crewKilled += member.getMinCrew();
+        float involvedFraction = battle.getPlayerInvolvementFraction();
+
+        float recentFpKilled = 0;
+        int recentShipsKilled = 0;
+        
+        for (CampaignFleetAPI killedFleet : killedFleets)
+        {
+            List<FleetMemberAPI> killCurrent = killedFleet.getFleetData().getMembersListCopy();
+            for (FleetMemberAPI member : killedFleet.getFleetData().getSnapshot()) {
+                if (!killCurrent.contains(member)) {
+                    recentFpKilled += member.getFleetPointCost();
+                    recentShipsKilled++;
+
+                    // orphans
+                    String factionId = member.getCaptain().getFaction().getId();
+                    if (factionId.equals("spire") || factionId.equals("darkspire")) continue; // Spire biology is different
+                    modifyOrphansMadeByCrewCount((int)(member.getMinCrew()*involvedFraction), factionId);
+                }
             }
         }
+        fpKilled += recentFpKilled * involvedFraction;
+        shipsKilled += recentShipsKilled * involvedFraction;
         
-        List<FleetMemberAPI> lossCurrent = lossFleet.getFleetData().getMembersListCopy();
-        for (FleetMemberAPI member : lossFleet.getFleetData().getSnapshot()) {
-            if (!lossCurrent.contains(member)) {
-                fpLost += member.getFleetPointCost();
-                shipsLost++;
-            }
-        }
-        
-        modifyOrphansMadeByCrewCount(crewKilled, killedFaction);
+		List<FleetMemberAPI> lossCurrent = lossesFleet.getFleetData().getMembersListCopy();
+		for (FleetMemberAPI member : lossesFleet.getFleetData().getSnapshot()) {
+			if (!lossCurrent.contains(member)) {
+				fpLost += member.getFleetPointCost();
+				shipsLost++;
+			}
+		}
     }
     
     public static StatsTracker getStatsTracker()
