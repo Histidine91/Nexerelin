@@ -80,7 +80,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected static final Set<String> FORCE_MILITARY_MARKET = new HashSet(Arrays.asList(new String[]{
         "SCY_hephaistosStation",
     }));
-	protected static final Set<String> ALWAYS_CAPTURE_SUBMARKET = new HashSet(Arrays.asList(new String[]{
+    protected static final Set<String> ALWAYS_CAPTURE_SUBMARKET = new HashSet(Arrays.asList(new String[]{
         "tiandong_retrofit",
     }));
     
@@ -243,8 +243,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (fleetResult.getDisabled().isEmpty() && fleetResult.getDestroyed().isEmpty()) return;
         CampaignFleetAPI fleet = fleetResult.getFleet();
         if (fleet.getMemoryWithoutUpdate().getBoolean("$exerelinFleetAggressAgainstPlayer")) return;
-		if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_LOW_REP_IMPACT)) return;
-		if (!result.getBattle().isPlayerPrimary()) return;
+        if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_LOW_REP_IMPACT)) return;
+        if (!result.getBattle().isPlayerPrimary()) return;
         if (!fleet.knowsWhoPlayerIs()) return;
         
         createWarmongerEvent(faction.getId(), fleet);
@@ -744,13 +744,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         for (SubmarketAPI submarket : submarkets)
         {
             //if (submarket.getFaction() != oldOwner) continue;
-			String submarketId = submarket.getSpecId();
-			if (!ALWAYS_CAPTURE_SUBMARKET.contains(submarketId))
-			{
-				if (submarket.getPlugin().isFreeTransfer()) continue;
-				if (!submarket.getPlugin().isParticipatesInEconomy()) continue;
-			}
-			// this doesn't behave as expected for pirate markets (it checks if submarket faction is hostile to market faction)
+            String submarketId = submarket.getSpecId();
+            if (!ALWAYS_CAPTURE_SUBMARKET.contains(submarketId))
+            {
+                if (submarket.getPlugin().isFreeTransfer()) continue;
+                if (!submarket.getPlugin().isParticipatesInEconomy()) continue;
+            }
+            // this doesn't behave as expected for pirate markets (it checks if submarket faction is hostile to market faction)
             //if (submarket.getPlugin().isBlackMarket()) continue;	
             
             // reset smuggling suspicion
@@ -911,8 +911,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         FactionAPI newFaction = sector.getFaction(ExerelinConstants.PLAYER_NPC_ID);
         FactionAPI oldFaction = sector.getFaction(oldFactionId);
 
-		if (!ExerelinUtilsFaction.isPirateFaction(oldFactionId))
-			PlayerFactionStore.loadIndependentPlayerRelations(true);
+        if (!ExerelinUtilsFaction.isPirateFaction(oldFactionId))
+            PlayerFactionStore.loadIndependentPlayerRelations(true);
         PlayerFactionStore.setPlayerFactionId(ExerelinConstants.PLAYER_NPC_ID);
         ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 
