@@ -58,7 +58,8 @@ public class VictoryScreenScript implements EveryFrameScript
         if (!isDone)
         {
             ui.showInteractionDialog(new VictoryDialog(faction, victoryType), Global.getSector().getPlayerFleet());
-            Map<String, Object> params = new HashMap<>();
+            
+			Map<String, Object> params = new HashMap<>();
             
             String victoryTypeStr = victoryType.toString().toLowerCase();
             boolean playerVictory = !victoryTypeStr.startsWith("defeat_");
@@ -66,6 +67,7 @@ public class VictoryScreenScript implements EveryFrameScript
             params.put("victorFactionId", faction);
             params.put("diplomaticVictory", victoryTypeStr.contains("diplomatic"));
             params.put("playerVictory", playerVictory);
+			params.put("retired", victoryType == VictoryType.RETIRED);
             Global.getSector().getEventManager().startEvent(
                     new CampaignEventTarget(Global.getSector().getPlayerFleet()), "exerelin_victory", params);
             
@@ -160,7 +162,7 @@ public class VictoryScreenScript implements EveryFrameScript
             String message = "";
             String victoryTypeStr = victoryType.toString().toLowerCase();
             
-            if (victoryTypeStr.startsWith("defeat_"))
+            if (victoryTypeStr.startsWith("defeat_") || victoryType == VictoryType.RETIRED)
                 message = getString(victoryTypeStr);
             else
                 message = getString("victory_" + victoryTypeStr);
@@ -169,7 +171,11 @@ public class VictoryScreenScript implements EveryFrameScript
             text.addParagraph(message);
             text.highlightInLastPara(Misc.getHighlightColor(), TheFactionName, theFactionName);
             
-            if (victoryType != VictoryType.DEFEAT_CONQUEST && victoryType != VictoryType.DEFEAT_DIPLOMATIC)
+			if (victoryType == VictoryType.RETIRED)
+			{
+				dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual("graphics/illustrations/fly_away.jpg", 640, 400));
+			}
+			else if (victoryType != VictoryType.DEFEAT_CONQUEST && victoryType != VictoryType.DEFEAT_DIPLOMATIC)
             {
                 victoryTypeStr = victoryTypeStr.replaceAll("_", " ");
                 text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_victoryScreen", "youHaveWon", "$victoryType", victoryTypeStr));

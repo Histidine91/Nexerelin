@@ -15,6 +15,7 @@
 		},
 		"illustrations":{
 			"facility_explosion":"graphics/illustrations/facility_explosion.jpg",
+			"fly_away":"graphics/illustrations/fly_away.jpg",
 		}
 	}
 }

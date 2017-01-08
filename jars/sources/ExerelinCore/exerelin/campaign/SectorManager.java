@@ -654,6 +654,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             Global.getSector().addScript(new VictoryScreenScript(victorFactionId, victoryType));
         }
     }
+	
+	public static void retire() 
+	{
+		Global.getSector().addScript(new VictoryScreenScript(Factions.PLAYER, VictoryType.RETIRED));
+		if (sectorManager != null)
+			sectorManager.victoryHasOccured = true;
+	}
     
     public static void captureMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, List<String> factionsToNotify, float repChangeStrength)
     {
@@ -992,6 +999,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         DIPLOMATIC,
         DIPLOMATIC_ALLY,
         DEFEAT_CONQUEST,  //not a victory type but who's counting?
-        DEFEAT_DIPLOMATIC
+        DEFEAT_DIPLOMATIC,
+		RETIRED
     }
 }

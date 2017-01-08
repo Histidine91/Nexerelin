@@ -41,6 +41,7 @@ exerelin_victory,conquest,,,player_intel_always,$VictorFaction $isOrAre victorio
 exerelin_victory,conquest_player,,,player_intel_always,$VictorFaction $isOrAre victorious,$TheVictorFaction have crushed all possible competition. Their rule over the $clusterName cluster is now undisputed.,You have won the game!,,,important,,
 exerelin_victory,diplomatic,,,player_intel_always,$VictorFaction $isOrAre victorious,"$TheVictorFaction and their allies are the only remaining powers in the $clusterName cluster. Peace has come to this corner of the Sector, at least for now.",,,,important,,
 exerelin_victory,diplomatic_player,,,player_intel_always,$VictorFaction $isOrAre victorious,"$TheVictorFaction and their allies are the only remaining powers in the $clusterName cluster. Peace has come to this corner of the Sector, at least for now.",You have won the game!,,,important,,
+exerelin_victory,retired,,,player_intel_always,Player retired,You have chosen to retire from the game. The conflicts of the Sector will have to unfold without you.,,,,important,,
 ,,,,,,,,,,,,
 exerelin_warmonger,report,,,player_intel_always,Unprovoked attack on $faction,"Your unprovoked attack on $theFaction has angered some of the other factions, and caused great consternation for $thePlayerFaction.","Reputation with $playerFaction reduced by $repPenaltyMyFactionAbs, currently at $newRelationStr.
 Average reputation penalty with $numFactions other faction(s): $repPenaltyAvgAbs",,graphics/exerelin/icons/intel/war.png,,,

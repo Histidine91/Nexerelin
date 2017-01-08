@@ -10,6 +10,7 @@ CreateAlliance,data.console.commands.CreateAlliance,"campaign,exerelin",createal
 LeaveAlliance,data.console.commands.LeaveAlliance,"campaign,exerelin",leavealliance <faction>,"Makes the specified faction leave its alliance, if it has one."
 ResetRelationships,data.console.commands.ResetRelationships,"campaign,exerelin",resetrelationships,Resets faction relationships as if launching a new game. Doesn't work for mod factions in Corvus mode.
 PrintProductionInfo,data.console.commands.PrintProductionInfo,"campaign,exerelin",printproductioninfo <entity> <commodity>,Print some economy debugging info for the selected market and commodity.
+RetireCharacter,data.console.commands.RetireCharacter,"campaign,exerelin",retirecharacter,Retires your character and ends the game.
 #,,,,
 # Omnifactory,,,,
 OmnifacStatus,org.lazywizard.omnifac.commands.OmnifacStatus,"omnifac,campaign",omnifacstatus [detailed],"Shows the location of all active Omnifactories, including their known blueprints if ""detailed"" is entered as an argument."

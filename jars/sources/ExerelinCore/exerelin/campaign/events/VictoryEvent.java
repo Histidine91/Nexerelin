@@ -22,6 +22,7 @@ public class VictoryEvent extends BaseEventPlugin {
 	protected String victorFactionId;
 	protected Map<String, Object> params;
 	protected boolean playerVictory;
+	protected boolean retired;
 	
 	public boolean done;
 	
@@ -32,6 +33,7 @@ public class VictoryEvent extends BaseEventPlugin {
 		done = false;
 		diplomaticVictory = false;
 		playerVictory = false;
+		retired = false;
 	}
 	
 	@Override
@@ -40,6 +42,7 @@ public class VictoryEvent extends BaseEventPlugin {
 		diplomaticVictory = (boolean)params.get("diplomaticVictory");
 		victorFactionId = (String)params.get("victorFactionId");
 		playerVictory = (boolean)params.get("playerVictory");
+		retired = (boolean)params.get("retired");
 	}
 		
 	@Override
@@ -47,14 +50,23 @@ public class VictoryEvent extends BaseEventPlugin {
 	{
 		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
 		String stage = "conquest";
-		if (diplomaticVictory) stage = "diplomatic";
-		if (playerVictory) stage += "_player";
-		Global.getSector().reportEventStage(this, stage, Global.getSector().getPlayerFleet(), priority);
-		log.info("VICTORY EVENT: " + stage);
-		if (playerVictory) 
-			Global.getSector().getCampaignUI().addMessage("You have won the game!", Global.getSettings().getColor("textFriendColor"));
+		if (retired)
+		{
+			stage = "retired";
+			Global.getSector().reportEventStage(this, stage, Global.getSector().getPlayerFleet(), priority);
+		}
 		else
-			Global.getSector().getCampaignUI().addMessage("You have lost the game...", Global.getSettings().getColor("textEnemyColor"));
+		{
+			if (diplomaticVictory) stage = "diplomatic";
+			if (playerVictory) stage += "_player";
+			Global.getSector().reportEventStage(this, stage, Global.getSector().getPlayerFleet(), priority);
+
+			if (playerVictory) 
+				Global.getSector().getCampaignUI().addMessage("You have won the game!", Global.getSettings().getColor("textFriendColor"));
+			else
+				Global.getSector().getCampaignUI().addMessage("You have lost the game...", Global.getSettings().getColor("textEnemyColor"));
+		}
+		log.info("VICTORY EVENT: " + stage);
 	}
 
 	@Override

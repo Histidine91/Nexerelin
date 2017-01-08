@@ -58,8 +58,8 @@
 	},
 	"exerelin_credits":{
 		"contribution_zaphide":"The original Exerelin",
-		"contribution_histidine":"Update for Starsector 0.65",
-		"contribution_darkRevenant":"Much coding help; SS+ compatibility",
+		"contribution_histidine":"Update for Starsector 0.65 and later",
+		"contribution_darkRevenant":"Much coding help; compatibility with SS+ and descendant mods",
 		"contribution_lazyWizard":"Omnifactory, Console Commands, Version Checker",
 		"contribution_psiyon":"Backgrounds",
 		"contribution_tartiflette":"Prism Freeport",
@@ -201,13 +201,16 @@
 		"commodityDestructionReport":"Average $percent% of commodity stockpiles destroyed"
 	},
 	"exerelin_victoryScreen":{
-		"victory_conquest":"Congratulations! $TheFaction have crushed all opposition and now reigns supreme over the $clusterName cluster!",
-		"victory_diplomatic":"Congratulations! $TheFaction and their allies control the $clusterName cluster!",
-		"victory_conquest_ally":"Congratulations! Your ally $theFaction have crushed all opposition and now reigns supreme over the $clusterName cluster!",
-		"victory_diplomatic_ally":"Congratulations! You have joined $theFaction and their other allies in controlling the $clusterName cluster!",
+		#"victory_conquest":"Congratulations! $TheFaction have crushed all opposition and now reigns supreme over the $clusterName cluster!",
+		"victory_conquest":"Congratulations! $TheFaction have crushed all opposition and now reigns supreme over the Sector!",
+		"victory_diplomatic":"Congratulations! $TheFaction and their allies control the Sector!",
+		"victory_conquest_ally":"Congratulations! Your ally $theFaction have crushed all opposition and now reigns supreme over the Sector!",
+		"victory_diplomatic_ally":"Congratulations! You have joined $theFaction and their other allies in controlling the Sector!",
 		
-		"defeat_conquest":"Alas, $theFaction have conquered the $clusterName cluster. All your efforts have come to naught.",
-		"defeat_diplomatic":"$TheFaction and their allies now dominate the $clusterName cluster. Unfortunately, you are not one of them...",
+		"defeat_conquest":"Alas, $theFaction have conquered the Sector. All your efforts have come to naught.",
+		"defeat_diplomatic":"$TheFaction and their allies now dominate the Sector. Unfortunately, you are not one of them...",
+		
+		"retired":"You have chosen to retire prematurely. Yet the struggles of the Sector continue, on and on...",
 		
 		"whatNow":"What now?",
 		"youHaveWon":"You have won a $victoryType victory!",
