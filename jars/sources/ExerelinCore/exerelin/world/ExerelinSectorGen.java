@@ -528,7 +528,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			
 			// The hyperspace station has a custom movement system
 			ExipiratedAvestaMovement avestaMovementScript = new ExipiratedAvestaMovement(avesta, 60f, 3f);
-			Global.getSector().getPersistentData().put("exipirated_movementScript", avestaMovementScript);
+			sector.getPersistentData().put("exipirated_movementScript", avestaMovementScript);
 			avesta.addScript(avestaMovementScript);
 		}
 		avesta.setInteractionImage("illustrations", "pirate_station");
@@ -808,7 +808,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		{
 			List<MarketAPI> cabalCandidates = new ArrayList<>();
 			List<MarketAPI> cabalCandidatesBackup = new ArrayList<>();
-			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+			for (MarketAPI market : sector.getEconomy().getMarketsCopy())
 			{
 				if (!market.getFactionId().equals(Factions.TRITACHYON)) continue;
 				if (market.hasCondition(Conditions.MILITARY_BASE) && Math.random() > CABAL_MILITARY_MARKET_CHANCE) 
