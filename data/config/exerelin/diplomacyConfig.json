@@ -285,7 +285,7 @@
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"allowedFactions1":["hegemony","luddic_church","pack","interstellarimperium","new_galactic_order","kadur_theocracy","insurgency"],
-			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","exigency","metelson","ptech"],
+			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","exigency","metelson","ptech","dassault_mikoyan"],
 			"chance":1.5,
 		},
 		{
@@ -297,7 +297,7 @@
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"allowPirates":true,
-			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc",
+			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc","dassault_mikoyan",
 				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","SCY","valkyrian","pn_colony","spire","metelson","ptech","oculus"],
 			"chance":1.2,
 		}
