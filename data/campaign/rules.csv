@@ -37,19 +37,36 @@ ExerelinNewGameOptionsEnter,ExerelinNGCStep1,,"NGCGetExerelinDefaults
 FireAll ExerelinNGCOptions",Configure the Exerelin cluster?,,"make sure this runs once per new game, so that Exerelin sector generation data is set up properly"
 ExerelinNewGameOptionsBackToMain,NewGameOptionSelected,$option==exerelinNGCOptionsBack,FireAll ExerelinNGCOptions,,,
 ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOptionsDone RETURN,,"exerelinNGCOptionsDone:Proceed
-7:exerelinNGCOtherOptions:Other options",
+7:exerelinNGCSectorOptions:Sector generation
+8:exerelinNGCFactionOptions:Faction settings
+9:exerelinNGCOtherOptions:Other options",
 ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCEnableCorvusMode:Enable Corvus Mode,
 ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCDisableCorvusMode:Disable Corvus Mode,
-ExerelinNewGameSectorConfig,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present""",,"
-exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
+ExerelinNewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present""
+SetEnabled exerelinNGCSetNumSystems true
+SetEnabled exerelinNGCSetNumSystemsEmpty true
+SetEnabled exerelinNGCSetMaxPlanets true
+SetEnabled exerelinNGCSetMaxStations true
+SetShortcut exerelinNGCOptionsBack ESCAPE",,"exerelinNGCSetNumSystems:Set number of star systems ($numSystems)
 exerelinNGCSetNumSystemsEmpty:Set number of empty star systems ($numSystemsEmpty)
 exerelinNGCSetMaxPlanets:Set max planets per system ($maxPlanets)
 exerelinNGCSetMaxStations:Set max stations per system ($maxStations)
-exerelinNGCSetNumFactions:Set number of factions at start ($numStartFactions)",
+9:exerelinNGCOptionsBack:Back",
+ExerelinNewGameSectorConfigCorvus,ExerelinNGCSectorOptions,$corvusMode,"SetEnabled exerelinNGCSetNumSystems false
+SetEnabled exerelinNGCSetNumSystemsEmpty false
+SetEnabled exerelinNGCSetMaxPlanets false
+SetEnabled exerelinNGCSetMaxStations false",,,
+ExerelinNewGameFactionConfig,ExerelinNGCFactionOptions,,"SetEnabled exerelinNGCSetNumFactions true
+SetShortcut exerelinNGCOptionsBack ESCAPE",,"exerelinNGCSetNumFactions:Set number of factions at start ($numStartFactions)
+9:exerelinNGCOptionsBack:Back",
+ExerelinNewGameFactionConfigCorvus,ExerelinNGCFactionOptions,$corvusMode,SetEnabled exerelinNGCSetNumFactions false,,,
+,,,,,,
+,,,,,,
 ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
+,,,,,,
 ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone,FireBest ExerelinNGCStep2,,,
 ,,,,,,
-ExerelinNGCNumStarSystemsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumSystems,,,"exerelinNGCNumSystems1:One
+ExerelinNGCNumStarSystemsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumSystems,SetShortcut exerelinNGCSectorOptions ESCAPE,,"exerelinNGCNumSystems1:One
 exerelinNGCNumSystems2:Two
 exerelinNGCNumSystems4:Four
 exerelinNGCNumSystems6:Six
@@ -57,63 +74,63 @@ exerelinNGCNumSystems8:Eight
 exerelinNGCNumSystems10:Ten
 exerelinNGCNumSystems12:Twelve
 exerelinNGCNumSystems16:Sixteen
-exerelinNGCOptionsBack:Back",
+exerelinNGCSectorOptions:Back",
 ExerelinNGCNumSystems1,NewGameOptionSelected,$option==exerelinNGCNumSystems1,"NGCSetNumSystems 1
 AddText ""Set number of star systems to 1"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystems2,NewGameOptionSelected,$option==exerelinNGCNumSystems2,"NGCSetNumSystems 2
 AddText ""Set number of star systems to 2"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystems4,NewGameOptionSelected,$option==exerelinNGCNumSystems4,"NGCSetNumSystems 4
 AddText ""Set number of star systems to 4"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystems6,NewGameOptionSelected,$option==exerelinNGCNumSystems6,"NGCSetNumSystems 6
 AddText ""Set number of star systems to 6"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystems8,NewGameOptionSelected,$option==exerelinNGCNumSystems8,"NGCSetNumSystems 8
 AddText ""Set number of star systems to 8"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystems10,NewGameOptionSelected,$option==exerelinNGCNumSystems10,"NGCSetNumSystems 10
 AddText ""Set number of star systems to 10"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystems12,NewGameOptionSelected,$option==exerelinNGCNumSystems12,"NGCSetNumSystems 12
 AddText ""Set number of star systems to 12"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystems16,NewGameOptionSelected,$option==exerelinNGCNumSystems16,"NGCSetNumSystems 16
 AddText ""Set number of star systems to 16"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ,,,,,,
-ExerelinNGCNumStarSystemsEmptyMenu,NewGameOptionSelected,$option==exerelinNGCSetNumSystemsEmpty,,,"exerelinNGCNumSystemsEmpty0:Zero
+ExerelinNGCNumStarSystemsEmptyMenu,NewGameOptionSelected,$option==exerelinNGCSetNumSystemsEmpty,SetShortcut exerelinNGCSectorOptions ESCAPE,,"exerelinNGCNumSystemsEmpty0:Zero
 exerelinNGCNumSystemsEmpty1:One
 exerelinNGCNumSystemsEmpty2:Two
 exerelinNGCNumSystemsEmpty3:Three
 exerelinNGCNumSystemsEmpty4:Four
 exerelinNGCNumSystemsEmpty6:Six
 exerelinNGCNumSystemsEmpty8:Eight
-exerelinNGCOptionsBack:Back",
+exerelinNGCSectorOptions:Back",
 ExerelinNGCNumSystemsEmpty0,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty0,"NGCSetNumSystemsEmpty 0
 AddText ""Set number of empty star systems to 0"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystemsEmpty1,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty1,"NGCSetNumSystemsEmpty 1
 AddText ""Set number of empty star systems to 1"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystemsEmpty2,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty2,"NGCSetNumSystemsEmpty 2
 AddText ""Set number of empty star systems to 2"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystemsEmpty3,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty3,"NGCSetNumSystemsEmpty 3
 AddText ""Set number of empty star systems to 3"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystemsEmpty4,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty4,"NGCSetNumSystemsEmpty 4
 AddText ""Set number of empty star systems to 4"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystemsEmpty6,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty6,"NGCSetNumSystemsEmpty 6
 AddText ""Set number of empty star systems to 6"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCNumSystemsEmpty8,NewGameOptionSelected,$option==exerelinNGCNumSystemsEmpty8,"NGCSetNumSystemsEmpty 8
 AddText ""Set number of empty star systems to 8"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ,,,,,,
-ExerelinNGCMaxPlanetsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxPlanets,,,"exerelinNGCMaxPlanets2:Two
+ExerelinNGCMaxPlanetsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxPlanets,SetShortcut exerelinNGCSectorOptions ESCAPE,,"exerelinNGCMaxPlanets2:Two
 exerelinNGCMaxPlanets3:Three
 exerelinNGCMaxPlanets4:Four
 exerelinNGCMaxPlanets5:Five
@@ -121,113 +138,115 @@ exerelinNGCMaxPlanets6:Six
 exerelinNGCMaxPlanets8:Eight
 exerelinNGCMaxPlanets10:Ten
 exerelinNGCMaxPlanets12:Twelve
-exerelinNGCOptionsBack:Back",
+exerelinNGCSectorOptions:Back",
 ExerelinNGCMaxPlanets2,NewGameOptionSelected,$option==exerelinNGCMaxPlanets2,"NGCSetMaxPlanets 2
 AddText ""Set maximum planets per system to 2"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxPlanets3,NewGameOptionSelected,$option==exerelinNGCMaxPlanets3,"NGCSetMaxPlanets 3
 AddText ""Set maximum planets per system to 3"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxPlanets4,NewGameOptionSelected,$option==exerelinNGCMaxPlanets4,"NGCSetMaxPlanets 4
 AddText ""Set maximum planets per system to 4"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxPlanets5,NewGameOptionSelected,$option==exerelinNGCMaxPlanets5,"NGCSetMaxPlanets 5
 AddText ""Set maximum planets per system to 5"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxPlanets6,NewGameOptionSelected,$option==exerelinNGCMaxPlanets6,"NGCSetMaxPlanets 6
 AddText ""Set maximum planets per system to 6"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxPlanets8,NewGameOptionSelected,$option==exerelinNGCMaxPlanets8,"NGCSetMaxPlanets 8
 AddText ""Set maximum planets per system to 8"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxPlanets10,NewGameOptionSelected,$option==exerelinNGCMaxPlanets10,"NGCSetMaxPlanets 10
 AddText ""Set maximum planets per system to 10"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxPlanets12,NewGameOptionSelected,$option==exerelinNGCMaxPlanets12,"NGCSetMaxPlanets 12
 AddText ""Set maximum planets per system to 12"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ,,,,,,
-ExerelinNGCMaxStationsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxStations,,,"exerelinNGCMaxStations0:Zero
+ExerelinNGCMaxStationsMenu,NewGameOptionSelected,$option==exerelinNGCSetMaxStations,SetShortcut exerelinNGCSectorOptions ESCAPE,,"exerelinNGCMaxStations0:Zero
 exerelinNGCMaxStations1:One
 exerelinNGCMaxStations2:Two
 exerelinNGCMaxStations3:Three
 exerelinNGCMaxStations4:Four
 exerelinNGCMaxStations5:Five
 exerelinNGCMaxStations6:Six
-exerelinNGCOptionsBack:Back",
+exerelinNGCSectorOptions:Back",
 ExerelinNGCMaxStations0,NewGameOptionSelected,$option==exerelinNGCMaxStations0,"NGCSetMaxStations 0
 AddText ""Set maximum stations per system to 0"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxStations1,NewGameOptionSelected,$option==exerelinNGCMaxStations1,"NGCSetMaxStations 1
 AddText ""Set maximum stations per system to 1"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxStations2,NewGameOptionSelected,$option==exerelinNGCMaxStations2,"NGCSetMaxStations 2
 AddText ""Set maximum stations per system to 2"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxStations3,NewGameOptionSelected,$option==exerelinNGCMaxStations3,"NGCSetMaxStations 3
 AddText ""Set maximum stations per system to 3"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxStations4,NewGameOptionSelected,$option==exerelinNGCMaxStations4,"NGCSetMaxStations 4
 AddText ""Set maximum stations per system to 4"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxStations5,NewGameOptionSelected,$option==exerelinNGCMaxStations5,"NGCSetMaxStations 5
 AddText ""Set maximum stations per system to 5"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCMaxStations6,NewGameOptionSelected,$option==exerelinNGCMaxStations6,"NGCSetMaxStations 6
 AddText ""Set maximum stations per system to 6"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ,,,,,,
-ExerelinNGCNumFactionsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumFactions,,,"exerelinNGCNumFactions2:Two
+ExerelinNGCNumFactionsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumFactions,SetShortcut exerelinNGCFactionOptions ESCAPE,,"exerelinNGCNumFactions2:Two
 exerelinNGCNumFactions3:Three
 exerelinNGCNumFactions5:Five
 exerelinNGCNumFactions50%:50% of available factions
 exerelinNGCNumFactions75%:75% of available factions
 exerelinNGCNumFactionsAll:All available factions
-exerelinNGCOptionsBack:Back",
+exerelinNGCFactionOptions:Back",
 ExerelinNGCNumFactions2,NewGameOptionSelected,$option==exerelinNGCNumFactions2,"NGCSetNumFactions 2 true
 AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCNumFactions3,NewGameOptionSelected,$option==exerelinNGCNumFactions3,"NGCSetNumFactions 3 true
 AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCNumFactions5,NewGameOptionSelected,$option==exerelinNGCNumFactions5,"NGCSetNumFactions 5 true
 AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCNumFactions50%,NewGameOptionSelected,$option==exerelinNGCNumFactions50%,"NGCSetNumFactions 0.5 false
 AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCNumFactions75%,NewGameOptionSelected,$option==exerelinNGCNumFactions75%,"NGCSetNumFactions 0.75 false
 AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCNumFactionsAll,NewGameOptionSelected,$option==exerelinNGCNumFactionsAll,"NGCSetNumFactions -1 true
 AddText ""All available factions will spawn at start"" textFriendColor
-FireAll ExerelinNGCOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ,,,,,,
-,,,,,,
+ExerelinNGCSectorOptionsMenu,NewGameOptionSelected,$option==exerelinNGCSectorOptions,FireAll ExerelinNGCSectorOptions,,,
+ExerelinNGCFactionOptionsMenu,NewGameOptionSelected,$option==exerelinNGCFactionOptions,FireAll ExerelinNGCFactionOptions,,,
 ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,$option==exerelinNGCOtherOptions,FireAll ExerelinNGCOtherOptions,,,
 ,,,,,,
-ExerelinNGCListOptionEnableOmnifactory,ExerelinNGCOtherOptions,!$omniFacPresent,"SetTooltip exerelinNGCEnableOmnifactory ""A special facility that can reproduce (almost) any ship or weapon infinitely once given a sample. Items are sold at a 100% markup.""",,exerelinNGCEnableOmnifactory:Enable Omnifactory,
-ExerelinNGCListOptionDisableOmnifactory,ExerelinNGCOtherOptions,$omniFacPresent,"SetTooltip exerelinNGCDisableOmnifactory ""A special facility that can reproduce (almost) any ship or weapon infinitely once given a sample. Items are sold at a 100% markup.""",,exerelinNGCDisableOmnifactory:Disable Omnifactory,
-ExerelinNGCListOptionSetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"$omniFacPresent
+ExerelinNGCListOptionEnableOmnifactory,ExerelinNGCSectorOptions,!$omniFacPresent,"SetTooltip exerelinNGCEnableOmnifactory ""A special facility that can reproduce (almost) any ship or weapon infinitely once given a sample. Items are sold at a 100% markup.""",,exerelinNGCEnableOmnifactory:Enable Omnifactory,
+ExerelinNGCListOptionDisableOmnifactory,ExerelinNGCSectorOptions,$omniFacPresent,"SetTooltip exerelinNGCDisableOmnifactory ""A special facility that can reproduce (almost) any ship or weapon infinitely once given a sample. Items are sold at a 100% markup.""",,exerelinNGCDisableOmnifactory:Disable Omnifactory,
+ExerelinNGCListOptionSetRandomOmnifactoryLocation,ExerelinNGCSectorOptions,"$omniFacPresent
 !$randomOmnifactoryLocation",,,exerelinNGCSetOmnifactoryRandomLocation:Enable random location for Omnifactory,
-ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCOtherOptions,"$omniFacPresent
+ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCSectorOptions,"$omniFacPresent
 $randomOmnifactoryLocation",,,exerelinNGCUnsetOmnifactoryRandomLocation:Disable random location for Omnifactory,
-ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCOtherOptions,!$prismMarketPresent,"SetTooltip exerelinNGCEnablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCEnablePrismMarket:Enable Prism Freeport,
-ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCOtherOptions,$prismMarketPresent,"SetTooltip exerelinNGCDisablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
-ExerelinNGCEnablePrismMarketOption,ExerelinNGCOtherOptions,!$corvusMode,"SetEnabled exerelinNGCEnablePrismMarket true
+ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCSectorOptions,!$prismMarketPresent,"SetTooltip exerelinNGCEnablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCEnablePrismMarket:Enable Prism Freeport,
+ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCSectorOptions,$prismMarketPresent,"SetTooltip exerelinNGCDisablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
+ExerelinNGCEnablePrismMarketOption,ExerelinNGCSectorOptions,!$corvusMode,"SetEnabled exerelinNGCEnablePrismMarket true
 SetEnabled exerelinNGCDisablePrismMarket true",,,
-ExerelinNGCDisablePrismMarketOption,ExerelinNGCOtherOptions,"$corvusMode
+ExerelinNGCDisablePrismMarketOption,ExerelinNGCSectorOptions,"$corvusMode
 NGCDoesFactionExist SCY","SetTooltip exerelinNGCEnablePrismMarket ""SCY will create its own Prism Freeport in Acheron""
 SetTooltip exerelinNGCDisablePrismMarket ""SCY will create its own Prism Freeport in Acheron""
 SetEnabled exerelinNGCEnablePrismMarket false
 SetEnabled exerelinNGCDisablePrismMarket false",,,
-ExerelinNGCListOptionEnableRandomStartRelationships,ExerelinNGCOtherOptions,!$randomStartRelationships,,,exerelinNGCEnableRandomStartRelationships:Enable random faction relationships at start,
-ExerelinNGCListOptionDisableRandomStartRelationships,ExerelinNGCOtherOptions,$randomStartRelationships,,,exerelinNGCDisableRandomStartRelationships:Disable random faction relationships at start,
-ExerelinNGCListOptionEnableRespawnFactions,ExerelinNGCOtherOptions,!$respawnFactions,,,exerelinNGCEnableRespawnFactions:Enable faction respawning,
-ExerelinNGCListOptionDisableRespawnFactions,ExerelinNGCOtherOptions,$respawnFactions,,,exerelinNGCDisableRespawnFactions:Disable faction respawning,
-ExerelinNGCListOptionEnableRespawnAllFactions,ExerelinNGCOtherOptions,"$respawnFactions
+,,,,,,
+ExerelinNGCListOptionEnableRandomStartRelationships,ExerelinNGCFactionOptions,!$randomStartRelationships,,,exerelinNGCEnableRandomStartRelationships:Enable random faction relationships at start,
+ExerelinNGCListOptionDisableRandomStartRelationships,ExerelinNGCFactionOptions,$randomStartRelationships,,,exerelinNGCDisableRandomStartRelationships:Disable random faction relationships at start,
+ExerelinNGCListOptionEnableRespawnFactions,ExerelinNGCFactionOptions,!$respawnFactions,,,exerelinNGCEnableRespawnFactions:Enable faction respawning,
+ExerelinNGCListOptionDisableRespawnFactions,ExerelinNGCFactionOptions,$respawnFactions,,,exerelinNGCDisableRespawnFactions:Disable faction respawning,
+ExerelinNGCListOptionEnableRespawnAllFactions,ExerelinNGCFactionOptions,"$respawnFactions
 $onlyRespawnStartingFactions",,,exerelinNGCEnableRespawnAllFactions:Enable respawning of factions not present at start,
-ExerelinNGCListOptionDisableRespawnAllFactions,ExerelinNGCOtherOptions,"$respawnFactions
+ExerelinNGCListOptionDisableRespawnAllFactions,ExerelinNGCFactionOptions,"$respawnFactions
 !$onlyRespawnStartingFactions",,,exerelinNGCDisableRespawnAllFactions:Disable respawning of factions not present at start,
 ExerelinNGCListOptionEnableRandomStartShips,ExerelinNGCOtherOptions,!$randomStartShips,"SetTooltip exerelinNGCEnableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction. Select the faction again to re-roll.""",,exerelinNGCEnableRandomStartShips:Enable random starting ships,
 ExerelinNGCListOptionDisableRandomStartShips,ExerelinNGCOtherOptions,$randomStartShips,"SetTooltip exerelinNGCDisableRandomStartShips ""Randomize starting ships based on the selected fleet type and the ships available to the faction. Select the faction again to re-roll.""",,exerelinNGCDisableRandomStartShips:Disable random starting ships,
@@ -246,29 +265,29 @@ FireAll ExerelinNGCOptions",,,
 ExerelinNGCDisableCorvusMode,NewGameOptionSelected,$option==exerelinNGCDisableCorvusMode,"NGCSetCorvusMode false
 FireAll ExerelinNGCOptions",,,
 ExerelinNGCEnableOmnifactory,NewGameOptionSelected,$option==exerelinNGCEnableOmnifactory,"NGCSetOmnifacEnabled true
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCDisableOmnifactory,NewGameOptionSelected,$option==exerelinNGCDisableOmnifactory,"NGCSetOmnifacEnabled false
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCEnablePrismMarket,NewGameOptionSelected,$option==exerelinNGCEnablePrismMarket,"NGCSetPrismMarketEnabled true
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCDisablePrismMarket,NewGameOptionSelected,$option==exerelinNGCDisablePrismMarket,"NGCSetPrismMarketEnabled false
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCSetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCSetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation true
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCUnsetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCUnsetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation false
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCEnableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartRelationships,"NGCSetRandomStartRelationships true
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCDisableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCDisableRandomStartRelationships,"NGCSetRandomStartRelationships false
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCEnableRespawnFactions,NewGameOptionSelected,$option==exerelinNGCEnableRespawnFactions,"NGCSetRespawnFactions true
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCDisableRespawnFactions,NewGameOptionSelected,$option==exerelinNGCDisableRespawnFactions,"NGCSetRespawnFactions false
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCEnableRespawnAllFactions,NewGameOptionSelected,$option==exerelinNGCEnableRespawnAllFactions,"NGCSetRespawnAllFactions true
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCDisableRespawnAllFactions,NewGameOptionSelected,$option==exerelinNGCDisableRespawnAllFactions,"NGCSetRespawnAllFactions false
-FireAll ExerelinNGCOtherOptions",,,
+FireAll ExerelinNGCFactionOptions",,,
 ExerelinNGCEnableRandomStartShips,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartShips,"NGCSetRandomStartShips true
 FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisableRandomStartShips,NewGameOptionSelected,$option==exerelinNGCDisableRandomStartShips,"NGCSetRandomStartShips false
