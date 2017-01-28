@@ -168,7 +168,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             Status status = member.getStatus();
             if (status == Status.DESTROYED || status == Status.NORMAL) continue;
             fp += member.getMember().getFleetPointCost();
-            crew += member.getMember().getNeededCrew();
+            crew += member.getMember().getMinCrew();
             //log.info("Enemy lost: " + member.getMember().getVariant().getFullDesignationWithHullName());
             
             // officers as prisoners
