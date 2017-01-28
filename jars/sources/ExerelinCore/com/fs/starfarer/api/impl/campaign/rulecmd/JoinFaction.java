@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
@@ -67,7 +68,7 @@ public class JoinFaction extends BaseCommandPlugin {
 		
 		str = StringHelper.substituteToken(str, "$theOldFaction", oldFaction.getDisplayNameWithArticle());
 		str = StringHelper.substituteToken(str, "$theNewFaction", newFaction.getDisplayNameWithArticle());
-		text.addParagraph(str);
+		text.addParagraph(str, Misc.getPositiveHighlightColor());
 		return true;
 	}
 }

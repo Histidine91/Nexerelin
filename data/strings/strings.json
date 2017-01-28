@@ -88,10 +88,10 @@
 	"exerelin_factions":{
 		"factionDirectoryOption":"Faction directory",
 		
-		"joinedFaction":"You have joined $theNewFaction.",
-		"leftFaction":"You have left $theOldFaction.",
+		"joinedFaction":"Joined $theNewFaction",
+		"leftFaction":"Left $theOldFaction",
 		"numMarkets":"$TheFaction have $numMarkets market(s)",
-		"switchedFactions":"You have left $theOldFaction for $theNewFaction."
+		"switchedFactions":"Left $theOldFaction for $theNewFaction"
 	},
 	"exerelin_fleets":{
 		"invasionFleetName":"Invasion Fleet",

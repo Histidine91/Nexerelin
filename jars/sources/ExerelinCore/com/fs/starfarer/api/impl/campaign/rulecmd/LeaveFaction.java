@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
@@ -52,7 +53,7 @@ public class LeaveFaction extends BaseCommandPlugin {
 		//ExerelinUtilsFaction.revokeCommission(oldFactionId);
 		
 		str = StringHelper.substituteToken(str, "$theOldFaction", oldFaction.getDisplayNameWithArticle());
-		text.addParagraph(str);
+		text.addParagraph(str, Misc.getPositiveHighlightColor());
 		return true;
 	}
 }

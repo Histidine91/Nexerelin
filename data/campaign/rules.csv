@@ -1033,37 +1033,6 @@ ExerelinShowDefaultVisual
 FireAll PopulateOptions",You have no more prisoners.,,
 #END PRISONER OPTIONS,,,,,,
 ,,,,,,
-#START FACTION CHANGE OPTIONS,,,,,,
-ExerelinMarketJoinFactionOption,ExerelinMarketSpecial,"$hasMarket
-$faction.id != ""neutral""
-$faction.id != ""independent""
-$faction.id != ""player_npc""
-$faction.id != $player.factionId
-RepIsAtWorst $faction.id FRIENDLY",SetEnabled exerelinJoinFaction true,,exerelinJoinFaction:Join faction,
-ExerelinMarketJoinFactionOptionUntrusted,ExerelinMarketSpecial,"$hasMarket
-$faction.id != ""neutral""
-$faction.id != ""independent""
-$faction.id != ""player_npc""
-$faction.id != $player.factionId
-!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinJoinFaction ""$TheFaction do not trust you enough yet.""
-SetEnabled exerelinJoinFaction false",,exerelinJoinFaction:Join faction,
-ExerelinMarketLeaveFactionOption,ExerelinMarketSpecial,"$hasMarket
-$faction.id != ""neutral""
-$faction.id != ""player_npc""
-$faction.id == $player.factionId",,,exerelinLeaveFaction:Leave faction,
-,,,,,,
-ExerelinJoinFaction,DialogOptionSelected,$option == exerelinJoinFaction,"SetShortcut exerelinJoinFactionConfirm RETURN
-SetShortcut exerelinMarketSpecial ESCAPE",Are you sure you want to join $theFaction?,"exerelinJoinFactionConfirm:Yes
-exerelinMarketSpecial:No",
-ExerelinJoinFactionConfirm,DialogOptionSelected,$option == exerelinJoinFactionConfirm,"JoinFaction $faction.id
-FireAll ExerelinMarketSpecial",,,
-ExerelinLeaveFaction,DialogOptionSelected,$option == exerelinLeaveFaction,"SetShortcut exerelinJoinFactionConfirm RETURN
-SetShortcut exerelinMarketSpecial ESCAPE",Are you sure you want to leave $theFaction?,"exerelinLeaveFactionConfirm:Yes
-exerelinMarketSpecial:No",
-ExerelinLeaveFactionConfirm,DialogOptionSelected,$option == exerelinLeaveFactionConfirm,"LeaveFaction
-FireAll ExerelinMarketSpecial",,,
-#END FACTION CHANGE OPTIONS,,,,,,
-,,,,,,
 #START FLEET REQUEST OPTIONS,,,,,,
 ExerelinMarketFleetRequestOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""","SetEnabled exerelinFleetRequestMenu true
@@ -1226,6 +1195,108 @@ unset $entity.ignorePlayerCommRequests
 unset $player.superweaponTarget
 BroadcastCancelPlayerAction 1500 $exerelinRespondingToSuperweapon","The $faction $otherShipOrFleet catches up with you, weapons hot.",,
 ExerelinDialogSuperweaponInterference_open,OpenCommLink,$entity.exerelinRespondingToSuperweapon score:100,$entity.ignorePlayerCommRequests = true 0,"$PersonRank $personName glares hatefully at you. ""We won't let you use your abominable weapons on our people!""",continueCutComm:Continue,
+#END SUPERWEAPON OPTIONS,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+## Base commander stuff ##,,,,,,
+ExerelinConvStationCommanderGreeting,PickGreeting,"$postId == stationCommander
+!$mpm_isPlayerContact","ShowPersonVisual
+FireAll ExerelinBaseCommanderOptions","After a short wait, your connection request is accepted.
+
+""This is $rank $name, $post. State your business.""",,
+ExerelinConvBaseCommanderGreeting,PickGreeting,"$postId == baseCommander
+!$mpm_isPlayerContact","ShowPersonVisual
+FireAll ExerelinBaseCommanderOptions","After a short wait, your connection request is accepted.
+
+""This is $rank $name, $post. State your business.""",,
+ExerelinConvPortmasterGreetingTemplars,PickGreeting,"$postId != mercenary
+$postId != supplyOfficer
+$faction.id == ""templars""
+!$mpm_isPlayerContact","ShowPersonVisual
+FireAll ExerelinBaseCommanderOptions","After a short wait, your connection request is accepted.
+
+""This is $rank $name, $post of $entityName. Speak quickly or be purged.""",,
+ExerelinConvOfficialGreetingPirates,PickGreeting,"$postId != mercenary
+$postId != supplyOfficer
+IsPirateFaction $faction.id
+!$mpm_isPlayerContact","ShowPersonVisual
+FireAll ExerelinBaseCommanderOptions","After a short wait, your connection request is accepted.
+
+""Yeah, what is it?""",,
+,,,,,,
+,,,,,,
+ExerelinBaseCommanderMenuRepeat,DialogOptionSelected,$option == exerelinBaseCommanderMenuRepeat,FireAll ExerelinBaseCommanderOptions,"""Anything else?""",,
+ExerelinBaseCommanderLeave,ExerelinBaseCommanderOptions,,,,9:cutCommLink:Cut the comm link,
+,,,,,,
+#START FACTION CHANGE OPTIONS,,,,,,
+ExerelinJoinFactionOption,ExerelinBaseCommanderOptions,"$faction.id != ""neutral""
+$faction.id != ""independent""
+$faction.id != ""player_npc""
+$faction.id != $player.factionId
+RepIsAtWorst $faction.id FRIENDLY","SetEnabled exerelinJoinFaction true
+Exerelin_GetSalary",,exerelinJoinFaction:Join faction,
+ExerelinJoinFactionOptionUntrusted,ExerelinBaseCommanderOptions,"$faction.id != ""neutral""
+$faction.id != ""independent""
+$faction.id != ""player_npc""
+$faction.id != $player.factionId
+!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinJoinFaction ""$TheFaction do not trust you enough yet.""
+SetEnabled exerelinJoinFaction false",,exerelinJoinFaction:Join faction,
+ExerelinLeaveFactionOption,ExerelinBaseCommanderOptions,"$faction.id != ""neutral""
+$faction.id != ""player_npc""
+$faction.id == $player.factionId",SetEnabled exerelinLeaveFaction true,,exerelinLeaveFaction:Leave faction,
+ExerelinLeaveFactionOptionTemplars,ExerelinBaseCommanderOptions,"$faction.id == ""templars""","SetTooltip exerelinLeaveFaction ""Knights Templar only leave the cause in death.""
+SetEnabled exerelinLeaveFaction false",,,
+,,,,,,
+ExerelinJoinFaction,DialogOptionSelected,$option == exerelinJoinFaction,"SetShortcut exerelinJoinFactionConfirm RETURN
+SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE
+Exerelin_GetSalary
+SetTextHighlights $salary","""Good, good. We can offer you a place, with benefits including a monthly salary of $salary per month. Just fill out this form here...""","exerelinJoinFactionConfirm:Confirm
+exerelinBaseCommanderMenuRepeat:Cancel",
+ExerelinJoinFactionConfirm,DialogOptionSelected,$option == exerelinJoinFactionConfirm,"JoinFaction $faction.id
+FireAll ExerelinBaseCommanderOptions","""Alright, you're registered. Welcome to the team.""",,
+ExerelinJoinFactionPirate,DialogOptionSelected,"$option == exerelinJoinFaction
+IsPirateFaction $faction.id","SetShortcut exerelinJoinFactionConfirm RETURN
+SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE
+Exerelin_GetSalary
+SetTextHighlights $salary","""Wanna be a freebooter, eh? Your cut of the community loot will be $salary per month. Here's some paperwork to fill out for the boss.""","exerelinJoinFactionConfirm:Confirm
+exerelinBaseCommanderMenuRepeat:Cancel",
+ExerelinJoinFactionConfirmPirate,DialogOptionSelected,"$option == exerelinJoinFactionConfirm
+IsPirateFaction $faction.id","JoinFaction $faction.id
+FireAll ExerelinBaseCommanderOptions","""Excellent! I'll let the boys know about you.""",,
+ExerelinJoinFactionTemplars,DialogOptionSelected,"$option == exerelinJoinFaction
+$faction.id == ""templars""","SetShortcut exerelinJoinFactionConfirm RETURN
+SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE
+SetTextHighlights $salary","""So you wish to join our noble cause? You will receive a monthly stipend of $salary, among other benefits. Are you prepared to give your oath?""","exerelinJoinFactionConfirm:Confirm
+exerelinBaseCommanderMenuRepeat:Cancel",
+ExerelinJoinFactionConfirmTemplars,DialogOptionSelected,"$option == exerelinJoinFactionConfirm
+$faction.id == ""templars""","JoinFaction $faction.id
+FireAll ExerelinBaseCommanderOptions","""You are now one of us, $playerName. May our holy light purge the heathens!""",,
+,,,,,,
+ExerelinLeaveFaction,DialogOptionSelected,$option == exerelinLeaveFaction,"SetShortcut exerelinLeaveFactionConfirm RETURN
+SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE","""I'm sorry to hear that. If you're sure you want to leave, fill out this form.""","exerelinLeaveFactionConfirm:Confirm
+exerelinBaseCommanderMenuRepeat:Cancel",
+ExerelinLeaveFactionConfirm,DialogOptionSelected,$option == exerelinLeaveFactionConfirm,"LeaveFaction
+FireAll ExerelinBaseCommanderOptions","""Alright, you're free to go. Good luck out there.""",,
+ExerelinLeaveFactionPirate,DialogOptionSelected,"$option == exerelinLeaveFaction
+IsPirateFaction $faction.id","SetShortcut exerelinLeaveFactionConfirm RETURN
+SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE","""What, you're not seriously going legit, are you? Fine, fill out this here form.""","exerelinLeaveFactionConfirm:Confirm
+exerelinBaseCommanderMenuRepeat:Cancel",
+ExerelinLeaveFactionConfirmPirate,DialogOptionSelected,"$option == exerelinLeaveFactionConfirm
+IsPirateFaction $faction.id","LeaveFaction
+FireAll ExerelinBaseCommanderOptions","""Alright. If you ever come to your senses, you know where to find us.""",,
+#END FACTION CHANGE OPTIONS,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
 ,,,,,,
 # not needed at present,,,,,,
 #tOffPatrolOpenCommTOnPlayerNPC,OpenCommLink,"$entity.transponderOffConv score:100
