@@ -74,7 +74,7 @@
     "enableShanghai": true,   # adds Shanghai for Tiandong Heavy Industries, attached to homeworld (non-Corvus mode only)
     "enableUnos": true, # adds Unos for ApproLight, attached to homeworld (non-Corvus mode only)
 
-    # CASE SENSITIVE!!!
-    # note: factions will still not appear if set to unplayable in config
+    # DO NOT TOUCH!
+    # to make factions not appear, set them to unplayable in config
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "luddic_church", "luddic_path", "pirates", "player", "player_npc", "independent", "neutral"],
 }
