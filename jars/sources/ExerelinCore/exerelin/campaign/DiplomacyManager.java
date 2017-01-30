@@ -76,9 +76,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float PEACE_TREATY_CHANCE = 0.3f;
     
     public static final float DOMINANCE_MIN = 0.25f;
-    public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.5f;
-    public static final float DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD = 2f;
-    public static final float HARD_MODE_DOMINANCE_MOD = 0.4f;
+    public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.67f;
+    public static final float DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD = 3f;
+    public static final float HARD_MODE_DOMINANCE_MOD = 0.5f;
     
     protected Map<String, Float> warWeariness;
     protected static float warWearinessPerInterval = 50f;
@@ -195,7 +195,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         float dominance = (float)ourSize / globalSize;
         if (SectorManager.getHardMode() && isPlayer)
-            dominance += HARD_MODE_DOMINANCE_MOD;
+            dominance += (1 - dominance) * HARD_MODE_DOMINANCE_MOD;
         
         return dominance;
     }
