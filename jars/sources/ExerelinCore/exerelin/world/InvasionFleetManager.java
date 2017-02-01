@@ -13,7 +13,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -28,10 +27,13 @@ import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
@@ -56,8 +58,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     // Templars/pirates get this multiplier bonus to their invasion point growth the more enemies they have
     public static final float ONE_AGAINST_ALL_INVASION_POINT_MOD = 0.215f;
     public static final float HARD_MODE_INVASION_TARGETING_CHANCE = 1.5f;
+	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
     
     public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.05f;
+	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
     
     public static final int MAX_FLEETS = 50;
     
@@ -69,6 +73,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     private final IntervalUtil tracker;
     
     protected float daysElapsed = 0;
+	protected float templarInvasionPoints = 0;
+	protected float templarCounterInvasionPoints = 0;
     
     private static InvasionFleetManager invasionFleetManager;
   
@@ -385,7 +391,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         return fleetData;
     }
     
-    public void generateInvasionFleet(FactionAPI faction, boolean strikeOnly)
+    public void generateInvasionFleet(FactionAPI faction, FactionAPI targetFaction, boolean strikeOnly)
     {
         SectorAPI sector = Global.getSector();
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
@@ -439,6 +445,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         for (MarketAPI market : markets) 
         {
             FactionAPI marketFaction = market.getFaction();
+			if (EXCEPTION_LIST.contains(marketFaction.getId()) && targetFaction != marketFaction) continue;
+			if (targetFaction != null && targetFaction != marketFaction)
+				continue;
+			
             if  ( marketFaction.isHostileTo(faction)) 
             {
                 if (!ExerelinUtilsMarket.isValidInvasionTarget(market, 0)) continue;
@@ -485,7 +495,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         spawnSupportFleet(faction, originMarket, targetMarket, false, false);    
     }
     
-    public void processInvasionPoints()
+    protected void processInvasionPoints()
     {
         SectorAPI sector = Global.getSector();
         //WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();
@@ -533,6 +543,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         for (MarketAPI market : markets)
         {
             String factionId = market.getFactionId();
+			if (EXCEPTION_LIST.contains(factionId)) continue;
             if (!pointsPerFaction.containsKey(factionId))
                 pointsPerFaction.put(factionId, 0f);
             
@@ -546,6 +557,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
         for (String factionId: liveFactionIds)
         {
+			if (EXCEPTION_LIST.contains(factionId)) continue;
             FactionAPI faction = sector.getFaction(factionId);
             if (faction.isNeutralFaction()) continue;
             if (faction.isPlayerFaction()) continue;
@@ -555,7 +567,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             if (!allowPirates && isPirateFaction) continue;
             
             float mult = 0f;
-            List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, ExerelinConfig.allowPirateInvasions, true, false);
+            List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, ExerelinConfig.allowPirateInvasions, false, false);
             if (enemies.isEmpty()) continue;
             
             if (ExerelinUtilsFaction.isFactionHostileToAll(factionId))
@@ -568,6 +580,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             {
                 for (String enemyId : enemies)
                 {
+					if (EXCEPTION_LIST.contains(factionId)) continue;
                     if (ExerelinUtilsFaction.isFactionHostileToAll(enemyId))
                     {
                         float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, ExerelinConfig.allowPirateInvasions, true, false).size();
@@ -603,17 +616,53 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             {
                 spawnCounter.put(factionId, counter);
                 if (counter > pointsRequired/2 && oldCounter < pointsRequired/2)
-                    generateInvasionFleet(faction, true);   // send a couple of strike fleets to troll others
+                    generateInvasionFleet(faction, null, true);   // send a couple of strike fleets to troll others
             }
             else
             {
                 // okay, we can invade
-                counter -=  pointsRequired;
+                counter -= pointsRequired;
                 spawnCounter.put(factionId, counter);
-                generateInvasionFleet(faction, false);
+                generateInvasionFleet(faction, null, false);
             }
         }
     }
+	
+	protected void processTemplarInvasionPoints()
+	{
+		List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
+		if (!liveFactionIds.contains("templars")) return;
+		
+		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction("templars", ExerelinConfig.allowPirateInvasions, false, false);
+		if (enemies.isEmpty()) return;
+		float templarDominance = DiplomacyManager.getDominanceFactor("templars");
+		float perLevelPoints = Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.invasionPointsPerPlayerLevel;
+		
+		templarInvasionPoints += (100 + perLevelPoints) 
+			* ExerelinConfig.getExerelinFactionConfig("templars").invasionPointMult * TEMPLAR_INVASION_POINT_MULT;
+		templarCounterInvasionPoints += (100 + 200 * templarDominance + perLevelPoints) * TEMPLAR_INVASION_POINT_MULT;
+		log.info("lalala templar points " + templarInvasionPoints + " / " + templarCounterInvasionPoints);
+		
+		float req = ExerelinConfig.pointsRequiredForInvasionFleet;
+		if (templarInvasionPoints >= req)
+		{
+			generateInvasionFleet(Global.getSector().getFaction("templars"), null, false);
+			templarInvasionPoints -= req;
+			//Global.getSector().getCampaignUI().addMessage("Launching Templar invasion fleet");
+		}
+		if (templarCounterInvasionPoints >= req)
+		{
+			WeightedRandomPicker<String> picker = new WeightedRandomPicker();
+			for (String factionId : enemies)
+			{
+				picker.add(factionId, ExerelinUtilsFaction.getFactionPopulation(factionId));
+			}
+			FactionAPI faction = Global.getSector().getFaction(picker.pick());
+			generateInvasionFleet(faction, Global.getSector().getFaction("templars"), false);
+			//Global.getSector().getCampaignUI().addMessage("Launching counter-Templar invasion fleet");
+			templarCounterInvasionPoints -= req;
+		}
+	}
   
     @Override
     public void advance(float amount)
@@ -645,6 +694,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         {
             processInvasionPoints();
         }
+		processTemplarInvasionPoints();
     }
     
     public static InvasionFleetManager create()

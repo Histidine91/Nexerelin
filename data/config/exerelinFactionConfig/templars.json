@@ -38,8 +38,8 @@
     
     "invasionStrengthBonusAttack":0.1,
     "invasionStrengthBonusDefend":0.25,
-    "invasionFleetSizeMod":-0.25,
-    "responseFleetSizeMod":-0.15,
+    "invasionFleetSizeMod":-0.1,
+    "responseFleetSizeMod":-0.1,
     "invasionPointMult":0.5,
     
     "patrolSizeMult":0.7,
