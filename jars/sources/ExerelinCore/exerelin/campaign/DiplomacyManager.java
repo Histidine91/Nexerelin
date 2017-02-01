@@ -182,8 +182,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         //ourMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
         if (factionId.equals(playerAlignedFactionId) && !playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
         {
-            List<MarketAPI> playerNpcMarkets = ExerelinUtilsFaction.getFactionMarkets(ExerelinConstants.PLAYER_NPC_ID);
-            ourMarkets.addAll(playerNpcMarkets);
+            // player_npc faction can be in the same alliance so don't count it two times
+            if (!(alliance != null && AllianceManager.getFactionAlliance(ExerelinConstants.PLAYER_NPC_ID) == alliance)) 
+            {
+                List<MarketAPI> playerNpcMarkets = ExerelinUtilsFaction.getFactionMarkets(ExerelinConstants.PLAYER_NPC_ID);
+                ourMarkets.addAll(playerNpcMarkets);
+            }
         }
         
         int ourSize = 0;

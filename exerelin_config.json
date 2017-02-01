@@ -62,7 +62,6 @@
     
     "followersAgents": false,   # does followers faction use agents on its own? (default false)
     "followersDiplomacy": true, # does followers faction participate in diplomacy on its own? (also affects ceasefires!) (default true)
-    "followersAlliances": true, # does followers faction auto-join or form alliances? (default true)
     
     "countPiratesForVictory": false,
     "useRelationshipBounds": true,  # if false, disregard min/max faction relationships in faction config

@@ -87,7 +87,6 @@ public class ExerelinConfig
     // Followers faction
     public static boolean followersAgents = false;
     public static boolean followersDiplomacy = true;
-    public static boolean followersAlliances = true;
     
     // Faction special stuff
     public static boolean enableAvesta = true;    // Association
@@ -167,7 +166,6 @@ public class ExerelinConfig
             
             followersAgents = settings.optBoolean("followersAgents", followersAgents);
             followersDiplomacy = settings.optBoolean("followersDiplomacy", followersDiplomacy);
-            followersAlliances = settings.optBoolean("followersAlliances", followersAlliances);
             
             enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
             enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);

@@ -12,6 +12,7 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.campaign.MiningHelper;
 import exerelin.world.ResponseFleetManager;
 
@@ -58,6 +59,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		FactionAPI associatedFaction = Global.getSector().getFaction(associatedFactionId);
 		memory.set("$faction", associatedFaction, 0);
 		memory.set("$factionId", associatedFactionId, 0);
+		memory.set("$theFaction", associatedFaction.getDisplayNameWithArticle(), 0);
 
 		AllianceManager.Alliance associatedAlliance = AllianceManager.getFactionAlliance(associatedFactionId);
 		memory.set("$isInAlliance", (associatedAlliance != null), 0);
@@ -76,6 +78,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 	@Override
 	public void updateFactionFacts(FactionAPI faction, MemoryAPI memory) {
 		super.updateFactionFacts(faction, memory);
+		memory.set("$theFaction", faction.getDisplayNameWithArticle(), 0);
 		memory.set("$warWeariness", DiplomacyManager.getWarWeariness(faction.getId()), 0);
 		memory.set("$numWars", DiplomacyManager.getFactionsAtWarWithFaction(faction, false, false, false).size(), 0);
 

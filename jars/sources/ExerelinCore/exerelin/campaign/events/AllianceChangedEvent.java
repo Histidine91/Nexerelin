@@ -37,7 +37,10 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 		
 	@Override
 	public String getEventName() {
-		return StringHelper.getStringAndSubstituteToken("exerelin_events", "allianceChanged", "$alliance", alliance.name);
+		String str = "allianceChanged";
+		if (stage.equals("formed")) str = "allianceFormed";
+		else if (stage.equals("dissolved")) str = "allianceDissolved";
+		return StringHelper.getStringAndSubstituteToken("exerelin_events", str, "$alliance", alliance.name);
 	}
 	
 	@Override

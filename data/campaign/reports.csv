@@ -34,7 +34,7 @@ exerelin_faction_changed,expelled,,,secure_comm,Expelled from $oldFaction,"Due t
 ,,,,,,,,,,,,
 exerelin_alliance_changed,formed,,,news,New alliance: $alliance,"$TheFaction1 and $theFaction2 have established a formal alliance, known as the $alliance. Their enemies should beware.",The new alliance has $numMarkets markets with a total size of $marketSizeSum.,,,important,,
 exerelin_alliance_changed,join,,,news,$Faction1 joins $alliance,"$TheFaction1 have joined the $alliance, adding to its growing strength.","The alliance now has $numMembers members, holding $numMarkets markets with a total size of $marketSizeSum.",,,important,,
-exerelin_alliance_changed,leave,,,news,$Faction1 leaves $alliance,"Due to their disagreements with one or more of the other factions, $theFaction1 have left the $alliance.","The alliance now has $numMembers members, holding $numMarkets markets with a total size of $marketSizeSum.",,,important,,
+exerelin_alliance_changed,leave,,,news,$Faction1 leaves $alliance,$TheFaction1 have decided to leave the $alliance.,"The alliance now has $numMembers members, holding $numMarkets markets with a total size of $marketSizeSum.",,,important,,
 exerelin_alliance_changed,dissolved,,,news,$alliance dissolves,The members of the $alliance have broken up and gone their separate ways.,,,,important,,
 ,,,,,,,,,,,,
 exerelin_victory,conquest,,,player_intel_always,$VictorFaction $isOrAre victorious,$TheVictorFaction have crushed all possible competition. Their rule over the Sector is now undisputed.,,,,important,,

@@ -624,6 +624,7 @@ NGCDone",,,
 ,,,,,,
 ExerelinMarketAddOptionSpecial,PopulateOptions,$menuState == main,"SetShortcut exerelinMarketSpecial ""S"" true",,6:exerelinMarketSpecial:Special functions,
 ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,"$menuState = exerelinSpecial
+FireAll ExerelinMarketSpecialInitialize
 FireAll ExerelinMarketSpecial",,,
 ExerelinMarketLeaveOption,ExerelinMarketSpecial,,SetShortcut exerelinMarketSpecialBack ESCAPE,,10:exerelinMarketSpecialBack:Back,
 ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,"ExerelinShowDefaultVisual
@@ -1202,50 +1203,69 @@ ExerelinDialogSuperweaponInterference_open,OpenCommLink,$entity.exerelinRespondi
 ## Base commander stuff ##,,,,,,
 ExerelinConvStationCommanderGreeting,PickGreeting,"$postId == stationCommander
 !$mpm_isPlayerContact","ShowPersonVisual
-FireAll ExerelinBaseCommanderOptions","After a short wait, your connection request is accepted.
+FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
 ""This is $rank $name, $post. State your business.""",,
 ExerelinConvBaseCommanderGreeting,PickGreeting,"$postId == baseCommander
 !$mpm_isPlayerContact","ShowPersonVisual
-FireAll ExerelinBaseCommanderOptions","After a short wait, your connection request is accepted.
+FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
 ""This is $rank $name, $post. State your business.""",,
 ExerelinConvPortmasterGreetingTemplars,PickGreeting,"$postId != mercenary
 $postId != supplyOfficer
 $faction.id == ""templars""
 !$mpm_isPlayerContact","ShowPersonVisual
-FireAll ExerelinBaseCommanderOptions","After a short wait, your connection request is accepted.
+FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
 ""This is $rank $name, $post of $entityName. Speak quickly or be purged.""",,
 ExerelinConvOfficialGreetingPirates,PickGreeting,"$postId != mercenary
 $postId != supplyOfficer
 IsPirateFaction $faction.id
 !$mpm_isPlayerContact","ShowPersonVisual
-FireAll ExerelinBaseCommanderOptions","After a short wait, your connection request is accepted.
+FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
 ""Yeah, what is it?""",,
 ,,,,,,
+#ExerelinBaseCommanderInitializeAddDialogs,ExerelinBaseCommanderOptionsInitialize,,<do something>,,,
 ,,,,,,
-ExerelinBaseCommanderMenuRepeat,DialogOptionSelected,$option == exerelinBaseCommanderMenuRepeat,FireAll ExerelinBaseCommanderOptions,"""Anything else?""",,
+ExerelinBaseCommanderMenuRepeat,DialogOptionSelected,$option == exerelinBaseCommanderMenuRepeat,,"""Anything else?""",,
 ExerelinBaseCommanderLeave,ExerelinBaseCommanderOptions,,,,9:cutCommLink:Cut the comm link,
 ,,,,,,
 #START FACTION CHANGE OPTIONS,,,,,,
-ExerelinJoinFactionOption,ExerelinBaseCommanderOptions,"$faction.id != ""neutral""
+ExerelinaseCommanderOptionsSetVariables,ExerelinBaseCommanderOptionsInitialize,,"$thePlayerFaction = $player.theFaction 0
+unset $showJoinFactionOptions
+unset $showLeaveFactionOptions
+unset $showPlayerFactionDiplomacyOptions
+Exerelin_GetSalary",,,
+ExerelinJoinFactionCheckConditions,ExerelinBaseCommanderOptionsInitialize,"$faction.id != ""neutral""
 $faction.id != ""independent""
 $faction.id != ""player_npc""
-$faction.id != $player.factionId
-RepIsAtWorst $faction.id FRIENDLY","SetEnabled exerelinJoinFaction true
-Exerelin_GetSalary",,exerelinJoinFaction:Join faction,
-ExerelinJoinFactionOptionUntrusted,ExerelinBaseCommanderOptions,"$faction.id != ""neutral""
+$faction.id != $player.factionId",$showJoinFactionOptions = true 0,,,
+ExerelinLeaveFactionCheckConditions,ExerelinBaseCommanderOptionsInitialize,"$faction.id != ""neutral""
 $faction.id != ""independent""
 $faction.id != ""player_npc""
-$faction.id != $player.factionId
-!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinJoinFaction ""$TheFaction do not trust you enough yet.""
+$faction.id == $player.factionId",$showLeaveFactionOptions = true 0,,,
+,,,,,,
+ExerelinJoinFactionOption,ExerelinBaseCommanderOptions,"$showJoinFactionOptions
+RepIsAtWorst $faction.id FRIENDLY
+$player.factionId == ""player_npc""",SetEnabled exerelinJoinFaction true,,exerelinJoinFaction:Join faction,
+ExerelinJoinFactionOptionUntrusted,ExerelinBaseCommanderOptions,"$showJoinFactionOptions
+!RepIsAtWorst $faction.id FRIENDLY
+$player.factionId == ""player_npc""","SetTooltip exerelinJoinFaction ""$TheFaction do not trust you enough yet.""
 SetEnabled exerelinJoinFaction false",,exerelinJoinFaction:Join faction,
-ExerelinLeaveFactionOption,ExerelinBaseCommanderOptions,"$faction.id != ""neutral""
-$faction.id != ""player_npc""
+ExerelinJoinFactionSwitchOption,ExerelinBaseCommanderOptions,"$showJoinFactionOptions
+RepIsAtWorst $faction.id FRIENDLY
+$player.factionId != ""player_npc""","SetTooltip exerelinJoinFaction ""To join $theFaction you will leave $player.theFaction.""
+SetEnabled exerelinJoinFaction true",,exerelinJoinFaction:Join faction,
+ExerelinJoinFactionSwitchOptionUntrusted,ExerelinBaseCommanderOptions,"$showJoinFactionOptions
+!RepIsAtWorst $faction.id FRIENDLY
+$player.factionId != ""player_npc""","SetTooltip exerelinJoinFaction ""$TheFaction do not trust you enough yet.\nTo join $theFaction you will leave $player.theFaction.""
+SetEnabled exerelinJoinFaction false",,exerelinJoinFaction:Join faction,
+,,,,,,
+ExerelinLeaveFactionOption,ExerelinBaseCommanderOptions,"$showLeaveFactionOptions
 $faction.id == $player.factionId",SetEnabled exerelinLeaveFaction true,,exerelinLeaveFaction:Leave faction,
-ExerelinLeaveFactionOptionTemplars,ExerelinBaseCommanderOptions,"$faction.id == ""templars""","SetTooltip exerelinLeaveFaction ""Knights Templar only leave the cause in death.""
+ExerelinLeaveFactionOptionTemplars,ExerelinBaseCommanderOptions,"$showLeaveFactionOptions
+$faction.id == ""templars""","SetTooltip exerelinLeaveFaction ""Knights Templar only leave the cause in death.""
 SetEnabled exerelinLeaveFaction false",,,
 ,,,,,,
 ExerelinJoinFaction,DialogOptionSelected,$option == exerelinJoinFaction,"SetShortcut exerelinJoinFactionConfirm RETURN
@@ -1254,7 +1274,7 @@ Exerelin_GetSalary
 SetTextHighlights $salary","""Good, good. We can offer you a place, with benefits including a monthly salary of $salary per month. Just fill out this form here...""","exerelinJoinFactionConfirm:Confirm
 exerelinBaseCommanderMenuRepeat:Cancel",
 ExerelinJoinFactionConfirm,DialogOptionSelected,$option == exerelinJoinFactionConfirm,"JoinFaction $faction.id
-FireAll ExerelinBaseCommanderOptions","""Alright, you're registered. Welcome to the team.""",,
+FireAll ExerelinBaseCommanderOptionsInitialize","""Alright, you're registered. Welcome to the team.""",,
 ExerelinJoinFactionPirate,DialogOptionSelected,"$option == exerelinJoinFaction
 IsPirateFaction $faction.id","SetShortcut exerelinJoinFactionConfirm RETURN
 SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE
@@ -1263,7 +1283,7 @@ SetTextHighlights $salary","""Wanna be a freebooter, eh? Your cut of the communi
 exerelinBaseCommanderMenuRepeat:Cancel",
 ExerelinJoinFactionConfirmPirate,DialogOptionSelected,"$option == exerelinJoinFactionConfirm
 IsPirateFaction $faction.id","JoinFaction $faction.id
-FireAll ExerelinBaseCommanderOptions","""Excellent! I'll let the boys know about you.""",,
+FireAll ExerelinBaseCommanderOptionsInitialize","""Excellent! I'll let the boys know about you.""",,
 ExerelinJoinFactionTemplars,DialogOptionSelected,"$option == exerelinJoinFaction
 $faction.id == ""templars""","SetShortcut exerelinJoinFactionConfirm RETURN
 SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE
@@ -1271,32 +1291,111 @@ SetTextHighlights $salary","""So you wish to join our noble cause? You will rece
 exerelinBaseCommanderMenuRepeat:Cancel",
 ExerelinJoinFactionConfirmTemplars,DialogOptionSelected,"$option == exerelinJoinFactionConfirm
 $faction.id == ""templars""","JoinFaction $faction.id
-FireAll ExerelinBaseCommanderOptions","""You are now one of us, $playerName. May our holy light purge the heathens!""",,
+FireAll ExerelinBaseCommanderOptionsInitialize","""You are now one of us, $playerName. May our holy light purge the heathens!""",,
 ,,,,,,
 ExerelinLeaveFaction,DialogOptionSelected,$option == exerelinLeaveFaction,"SetShortcut exerelinLeaveFactionConfirm RETURN
 SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE","""I'm sorry to hear that. If you're sure you want to leave, fill out this form.""","exerelinLeaveFactionConfirm:Confirm
 exerelinBaseCommanderMenuRepeat:Cancel",
-ExerelinLeaveFactionConfirm,DialogOptionSelected,$option == exerelinLeaveFactionConfirm,"LeaveFaction
-FireAll ExerelinBaseCommanderOptions","""Alright, you're free to go. Good luck out there.""",,
+ExerelinLeaveFactionConfirm,DialogOptionSelected,$option == exerelinLeaveFactionConfirm,"LeaveFaction true
+FireAll ExerelinBaseCommanderOptionsInitialize","""Alright, you're free to go. Good luck out there.""",,
 ExerelinLeaveFactionPirate,DialogOptionSelected,"$option == exerelinLeaveFaction
 IsPirateFaction $faction.id","SetShortcut exerelinLeaveFactionConfirm RETURN
 SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE","""What, you're not seriously going legit, are you? Fine, fill out this here form.""","exerelinLeaveFactionConfirm:Confirm
 exerelinBaseCommanderMenuRepeat:Cancel",
 ExerelinLeaveFactionConfirmPirate,DialogOptionSelected,"$option == exerelinLeaveFactionConfirm
-IsPirateFaction $faction.id","LeaveFaction
-FireAll ExerelinBaseCommanderOptions","""Alright. If you ever come to your senses, you know where to find us.""",,
+IsPirateFaction $faction.id","LeaveFaction true
+FireAll ExerelinBaseCommanderOptionsInitialize","""Alright. If you ever come to your senses, you know where to find us.""",,
 #END FACTION CHANGE OPTIONS,,,,,,
 ,,,,,,
 ,,,,,,
+#START PLAYER FACTION ALLIANCE OPTIONS,,,,,,
+ExerelinPlayerFactionDiplomacyCheckConditions,ExerelinMarketSpecialInitialize,"$faction.id != ""neutral""
+$faction.id != ""independent""
+$faction.id != ""player_npc""
+$player.factionId == ""player_npc""","$showPlayerFactionDiplomacyOptions = true 0
+$_factionAllianceId = $faction.allianceId 0
+$_playerAllianceId = $player.allianceId 0",,,
+#ExerelinPlayerFactionDiplomacyCheckConditions2,ExerelinMarketSpecialInitialize,"!$market.mc:regional_capital
+!$market.mc:headquarters
+!$market.mc:military_base
+!$market.mc:tem_avalon",$showPlayerFactionDiplomacyOptions = false 0,,,
+,,,,,,
+ExerelinJoinAllianceOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+!$player.isInAlliance
+$faction.isInAlliance",SetEnabled exerelinJoinAlliance true,,exerelinJoinAlliance:Join alliance $_factionAllianceId,
+ExerelinJoinAllianceOptionUntrusted,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinJoinAlliance ""The $_factionAllianceId do not trust you enough yet.""
+SetEnabled exerelinJoinAlliance false",,,
+ExerelinJoinAllianceSwitchOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+$player.isInAlliance
+$faction.isInAlliance
+$faction.allianceId != $player.allianceId","SetTooltip exerelinJoinFactionSwitch ""To join alliance $_factionAllianceId your faction will leave $_playerAllianceId.""
+SetEnabled exerelinJoinAllianceSwitch true",,exerelinJoinAllianceSwitch:Join (switch to) alliance $_factionAllianceId,
+ExerelinJoinAllianceSwitchOptionUntrusted,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+$player.isInAlliance
+$faction.isInAlliance
+$faction.allianceId != $player.allianceId
+!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinJoinAllianceSwitch ""The $_factionAllianceId do not trust you enough yet.\nTo join alliance $_factionAllianceId your faction would leave $_playerAllianceId.""
+SetEnabled exerelinJoinAllianceSwitch false",,,
+,,,,,,
+ExerelinInviteToAllianceOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+$player.isInAlliance
+$faction.allianceId != $player.allianceId",SetEnabled exerelinInviteToAlliance true,,exerelinInviteToAlliance:Invite $theFaction to join alliance $_playerAllianceId,
+ExerelinInviteToAllianceOptionUntrusted,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+!$faction.isInAlliance
+!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinInviteToAlliance ""$TheFaction do not trust you enough yet.""
+SetEnabled exerelinInviteToAlliance false",,,
+ExerelinInviteToAllianceOptionAlreadyInAlliance,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+$faction.isInAlliance
+$faction.allianceId != $player.allianceId","SetTooltip exerelinInviteToAlliance ""$TheFaction is already in an alliance.""
+SetEnabled exerelinInviteToAlliance false",,,
+ExerelinInviteToAllianceOptionIncompatible,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+!$faction.isInAlliance
+!IsAllianceAlignmentCompatible $faction.id","SetTooltip exerelinInviteToAlliance ""$TheFaction cannot endorse the goals of the $_playerAllianceId.""
+SetEnabled exerelinInviteToAlliance false",,,
+,,,,,,
+ExerelinFormAllianceOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+!$player.isInAlliance
+!$faction.isInAlliance",SetEnabled exerelinFormAlliance true,,exerelinFormAlliance:Invite $theFaction to form a new alliance,
+ExerelinFormAllianceOptionUntrusted,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+!$player.isInAlliance
+!$faction.isInAlliance
+!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinFormAlliance ""$TheFaction do not trust you enough yet.""
+SetEnabled exerelinFormAlliance false",,,
+ExerelinFormAllianceOptionAlreadyInAlliance,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
+!$player.isInAlliance
+$faction.isInAlliance","SetTooltip exerelinFormAlliance ""$TheFaction is already in an alliance.""
+SetEnabled exerelinFormAlliance false",,,
+ExerelinLeaveAllianceOption,ExerelinMarketSpecial,"$hasMarket
+$player.factionId == ""player_npc""
+$player.isInAlliance
+$faction.isInAlliance
+$faction.allianceId == $player.allianceId",,,exerelinLeaveAlliance:Leave alliance $_factionAllianceId,
+,,,,,,
+ExerelinJoinAlliance,DialogOptionSelected,$option == exerelinJoinAlliance,,Are you sure you want your faction to join alliance $_factionAllianceId?,"exerelinJoinAllianceConfirm:Yes
+exerelinMarketSpecial:No",
+ExerelinJoinAllianceSwitch,DialogOptionSelected,$option == exerelinJoinAllianceSwitch,,Are you sure you want your faction to leave $_playerAllianceId and join $_factionAllianceId?,"exerelinJoinAllianceConfirm:Yes
+exerelinMarketSpecial:No",
+ExerelinJoinAllianceConfirm,DialogOptionSelected,$option == exerelinJoinAllianceConfirm,"JoinAlliance $faction.allianceId
+FireAll ExerelinMarketSpecialInitialize",,,
+ExerelinInviteToAlliance,DialogOptionSelected,$option == exerelinInviteToAlliance,,Are you sure you want to invite $theFaction to join alliance $_playerAllianceId?,"exerelinInviteToAllianceConfirm:Yes
+exerelinMarketSpecial:No",
+ExerelinInviteToAllianceConfirm,DialogOptionSelected,$option == exerelinInviteToAllianceConfirm,"InviteToAlliance $faction.id
+FireAll ExerelinMarketSpecialInitialize",,,
+ExerelinFormAlliance,DialogOptionSelected,$option == exerelinFormAlliance,,Are you sure you want to form a new alliance with $theFaction?,"exerelinFormAllianceConfirm:Yes
+exerelinMarketSpecial:No",
+ExerelinFormAllianceConfirm,DialogOptionSelected,$option == exerelinFormAllianceConfirm,"FormAlliance $faction.id
+FireAll ExerelinMarketSpecialInitialize",,,
+ExerelinLeaveAlliance,DialogOptionSelected,$option == exerelinLeaveAlliance,,Are you sure you want your faction to leave alliance $_playerAllianceId?,"exerelinLeaveAllianceConfirm:Yes
+exerelinMarketSpecial:No",
+ExerelinLeaveAllianceConfirm,DialogOptionSelected,$option == exerelinLeaveAllianceConfirm,"LeaveAlliance
+FireAll ExerelinMarketSpecialInitialize",,,
+#END PLAYER FACTION ALLIANCE OPTIONS,,,,,,
 ,,,,,,
 ,,,,,,
-,,,,,,
-,,,,,,
-,,,,,,
-,,,,,,
-,,,,,,
-,,,,,,
-,,,,,,
+#Must be after all other rules with that trigger,,,,,,
+ExerelinBaseCommanderOptionsInitializationFinished,ExerelinBaseCommanderOptionsInitialize,,FireAll ExerelinBaseCommanderOptions,,,
+ExerelinMarketSpecialInitializationFinished,ExerelinMarketSpecialInitialize,,FireAll ExerelinMarketSpecial,,,
 ,,,,,,
 # not needed at present,,,,,,
 #tOffPatrolOpenCommTOnPlayerNPC,OpenCommLink,"$entity.transponderOffConv score:100

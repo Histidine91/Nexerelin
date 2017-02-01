@@ -32,7 +32,13 @@
 	"exerelin_alliances":{
 		"allianceListOption":"Alliance list",
 	
-		"numAlliances":"There are $numAlliances alliance(s) in the cluster"
+		"numAlliances":"There are $numAlliances alliance(s) in the Sector",
+		"joinedAlliance":"Joined alliance $NewAlliance",
+		"switchedAlliances":"Left $OldAlliance and joined $NewAlliance",
+		"leftAlliance":"Left alliance $OldAlliance",
+		"allianceDissolved":"Alliance $OldAlliance has been dissolved",
+		"invitedToAlliance":"$TheFaction has joined $NewAlliance",
+		"formedAlliance":"Formed $NewAlliance with $theFaction"
 	},
 	"exerelin_agents":{
 		"alertLevel":"alert level",
@@ -69,6 +75,8 @@
 	"exerelin_events":{
 		"agentDestabilizeMarket":"Agent terror attacks on $market",
 		"allianceChanged":"Alliance changed: $alliance",
+		"allianceFormed":"Alliance formed: $alliance",
+		"allianceDissolved":"Alliance dissolved: $alliance",
 		"covertOps":"$agentFaction covert action against $targetFaction",
 		"diplomacy":"$faction – $otherFaction diplomatic event",
 		"factionChanged":"Faction changed",

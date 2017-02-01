@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -45,7 +46,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final String MANAGER_MAP_KEY = "exerelin_allianceManager";
     protected static final String ALLIANCE_NAMES_FILE = "data/config/exerelin/allianceNames.json";
     protected static final float MIN_ALIGNMENT_FOR_NEW_ALLIANCE = 1f;
-    protected static final float MIN_ALIGNMENT_TO_JOIN_ALLIANCE = 0f;
+    public static final float MIN_ALIGNMENT_TO_JOIN_ALLIANCE = 0f;
     protected static final float MIN_RELATIONSHIP_TO_JOIN = RepLevel.FRIENDLY.getMin();
     protected static final float MIN_RELATIONSHIP_TO_STAY = RepLevel.WELCOMING.getMin();
     protected static final float JOIN_CHANCE_MULT = 0.7f;   // multiplies relationship to get chance to join alliance
@@ -64,6 +65,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     
     protected float daysElapsed = 0;
     protected final IntervalUtil tracker;
+    
+    protected static SectorEntityToken playerInteractionTarget = null;
     
     static {
         loadAllianceNames();
@@ -95,6 +98,60 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 Global.getLogger(AllianceManager.class).log(Level.ERROR, ex);
         }
     }
+	
+	public static Alignment getBestAlignment(String factionId, String otherFactionId)
+	{
+		float bestAlignmentValue = 0;
+		List<Alignment> bestAlignments = new ArrayList<>();
+		ExerelinFactionConfig config1 = ExerelinConfig.getExerelinFactionConfig(factionId);
+		ExerelinFactionConfig config2 = ExerelinConfig.getExerelinFactionConfig(otherFactionId);   
+		for (Alignment alignment : Alignment.values())
+		{
+			float alignment1 = 0;
+			float alignment2 = 0;
+			if (config1 != null)
+			{
+				alignment1 = config1.alignments.get(alignment);
+			}
+			if (config2 != null)
+			{
+				alignment2 = config2.alignments.get(alignment);
+			}
+			float sum = alignment1 + alignment2;
+			if (sum < MIN_ALIGNMENT_FOR_NEW_ALLIANCE && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
+			if (sum > bestAlignmentValue)
+			{
+				bestAlignments.clear();
+				bestAlignmentValue = sum;
+				bestAlignments.add(alignment);
+			}
+			else if (sum == bestAlignmentValue)
+			{
+				bestAlignments.add(alignment);
+			}
+		}
+		if (!bestAlignments.isEmpty())
+		{
+			return (Alignment)ExerelinUtils.getRandomListElement(bestAlignments);
+		}
+		return null;
+	}
+	
+	public static float getAlignmentCompatibilityWithAlliance(String factionId, Alliance alliance)
+	{
+		if (alliance == null) return 0;
+		float value = 0;
+        ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+		if (config!= null && config.alignments != null)
+		{
+			log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.name);
+			//log.info("Alliance alignment: " + alliance.alignment.toString());
+			Alignment align = alliance.alignment;
+			if (config.alignments.containsKey(align))
+				value = config.alignments.get(align);
+		}
+		return value;
+	}
     
     public void createAllianceEvent(String faction1, String faction2, Alliance alliance, String stage)
     {
@@ -106,9 +163,18 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         params.put("alliance", alliance);
         params.put("stage", stage);
         
-        List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(faction1);
-        MarketAPI market = (MarketAPI) ExerelinUtils.getRandomListElement(markets);
-        sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
+        CampaignEventTarget eventTarget;
+        if (playerInteractionTarget != null) {
+            eventTarget = new CampaignEventTarget(playerInteractionTarget);
+        } else {
+            List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(faction1);
+            if (markets.isEmpty()) markets = alliance.getAllianceMarkets();
+            MarketAPI market = (MarketAPI) ExerelinUtils.getRandomListElement(markets);
+            
+            eventTarget = new CampaignEventTarget(market);
+        }
+        
+        sector.getEventManager().startEvent(eventTarget, eventType, params);
     }
     
     public static Alliance createAlliance(String member1, String member2, Alignment type)
@@ -140,7 +206,6 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return alliance2;
         }
         
-        // NPE safety (shouldn't happen but meh)
         if (type == null) type = (Alignment) ExerelinUtils.getRandomArrayElement(Alignment.values());
         
         // name stuff + population count
@@ -224,6 +289,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (member1.equals(playerAlignedFactionId) || member2.equals(playerAlignedFactionId))
         {
             ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(playerAlignedFactionId, true);
+            if (!playerAlignedFactionId.equals("player_npc"))
+                ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
         }
         
         allianceManager.createAllianceEvent(member1, member2, alliance, "formed");
@@ -317,7 +384,6 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             if (alliancesByFactionId.containsKey(factionId)) continue;
             if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
             if (INVALID_FACTIONS.contains(factionId)) continue;
-            if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID) && !ExerelinConfig.followersAlliances) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
             for (String otherFactionId : liveFactionIds)
@@ -326,47 +392,16 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 if (otherFactionId.equals(factionId)) continue;
                 if (ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
                 if (INVALID_FACTIONS.contains(otherFactionId)) continue;
-                if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID) && !ExerelinConfig.followersAlliances) continue;
                 if (faction.isAtBest(otherFactionId, RepLevel.WELCOMING)) continue;
                 
                 // better relationships are more likely to form alliances
                 float rel = faction.getRelationship(otherFactionId);
                 if (Math.random() > rel * FORM_CHANCE_MULT ) continue;
                 
-                float bestAlignmentValue = 0;
-                List<Alignment> bestAlignments = new ArrayList<>();
-                ExerelinFactionConfig config1 = ExerelinConfig.getExerelinFactionConfig(factionId);
-                ExerelinFactionConfig config2 = ExerelinConfig.getExerelinFactionConfig(otherFactionId);
-                for (Alignment alignment : Alignment.values())
+				Alignment bestAlignment = getBestAlignment(factionId, otherFactionId);
+				if (bestAlignment != null)
                 {
-                    float alignment1 = 0;
-                    float alignment2 = 0;
-                    if (config1 != null)
-                    {
-                        alignment1 = config1.alignments.get(alignment);
-                    }
-                    if (config2 != null)
-                    {
-                        alignment2 = config2.alignments.get(alignment);
-                    }
-                    float sum = alignment1 + alignment2;
-                    if (sum < MIN_ALIGNMENT_FOR_NEW_ALLIANCE && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
-                    if (sum > bestAlignmentValue)
-                    {
-                        bestAlignments.clear();
-                        bestAlignmentValue = sum;
-                        bestAlignments.add(alignment);
-                    }
-                    else if (sum == bestAlignmentValue)
-                    {
-                        bestAlignments.add(alignment);
-                    }
-                }
-                if (!bestAlignments.isEmpty())
-                {
-                    // okay, make alliance
-                    Alignment allianceAlignment = (Alignment) ExerelinUtils.getRandomListElement(bestAlignments);
-                    createAlliance(factionId, otherFactionId, allianceAlignment);
+                    createAlliance(factionId, otherFactionId, bestAlignment);
                     return; // only one alliance at a time
                 }
             }
@@ -377,23 +412,13 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         {
             if (alliancesByFactionId.containsKey(factionId)) continue;
             if (INVALID_FACTIONS.contains(factionId)) continue;
-            if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID) && !ExerelinConfig.followersAlliances) continue;
             FactionAPI faction = sector.getFaction(factionId);
             
-            WeightedRandomPicker<Alliance> picker = new WeightedRandomPicker<>(); 
-            ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+            WeightedRandomPicker<Alliance> picker = new WeightedRandomPicker<>();
             
             for (Alliance alliance : alliances)
             {
-                float value = 0;
-                if (config!= null && config.alignments != null)
-                {
-                    log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.name);
-                    //log.info("Alliance alignment: " + alliance.alignment.toString());
-                    Alignment align = alliance.alignment;
-                    if (config.alignments.containsKey(align))
-                        value = config.alignments.get(align);
-                }
+                float value = getAlignmentCompatibilityWithAlliance(factionId, alliance);
                 if (value < MIN_ALIGNMENT_TO_JOIN_ALLIANCE  && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
                 
                 float relationship = 0;
@@ -553,8 +578,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static float setRelationshipAndUpdateDelta(FactionAPI faction, String otherFactionId, float newRel, float highestDelta)
     {
         String factionId = faction.getId();
-        if (factionId.equals("player") && otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return highestDelta;
-        if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID) && otherFactionId.equals("player")) return highestDelta;
+        if (factionId.equals("player") && otherFactionId.equals("player_npc")) return highestDelta;
+        if (factionId.equals("player_npc") && otherFactionId.equals("player")) return highestDelta;
         float oldRel = faction.getRelationship(otherFactionId);
         if (oldRel == newRel) return highestDelta;
         //log.info("Setting relationship of " + faction.getId() + " and " + otherFactionId + ": " + newRel);
@@ -674,6 +699,18 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
         SectorManager.checkForVictory();
         return null;
+    }
+    
+    public static void setPlayerInteractionTarget(SectorEntityToken interactionTarget) {
+        // used to set entity where the events will be generated
+        // set as static value because it is used too deep in the call hierarchy to pass it as argument of every function
+        AllianceManager.playerInteractionTarget = interactionTarget;
+    }
+    
+    public static void joinAllianceStatic(String factionId, Alliance alliance)
+    {
+        if (allianceManager == null) return;
+        allianceManager.joinAlliance(factionId, alliance);
     }
     
     public static void leaveAlliance(String factionId, boolean noEvent)
