@@ -641,7 +641,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		templarInvasionPoints += (100 + perLevelPoints) 
 			* ExerelinConfig.getExerelinFactionConfig("templars").invasionPointMult * TEMPLAR_INVASION_POINT_MULT;
 		templarCounterInvasionPoints += (100 + 200 * templarDominance + perLevelPoints) * TEMPLAR_INVASION_POINT_MULT;
-		log.info("lalala templar points " + templarInvasionPoints + " / " + templarCounterInvasionPoints);
 		
 		float req = ExerelinConfig.pointsRequiredForInvasionFleet;
 		if (templarInvasionPoints >= req)
