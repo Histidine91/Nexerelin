@@ -198,6 +198,17 @@
 			"chance":1.5
 		},
 		{
+			"name":"Tournament Cheating",
+			"stage":"tourney_cheating",
+			"minRepLevelToOccur":"inhospitable",
+			"maxRepLevelToOccur":"favorable",
+			"repEnsureAtBest":"suspicious",
+			"minRepChange":-0.2,
+			"maxRepChange":-0.15,
+			"repLimit":"hostile",
+			"chance":0.5
+		},
+		{
 			"name":"Shots Fired",
 			"stage":"shots_fired",
 			"minRepLevelToOccur":"inhospitable",
@@ -209,6 +220,8 @@
 			"allowPirates":true,
 			"chance":2.5	# help tip things over into outright violence
 		},
+		
+		# special
 		{
 			"name":"Ceasefire",
 			"stage":"ceasefire",
@@ -300,6 +313,19 @@
 			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc","dassault_mikoyan",
 				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","SCY","valkyrian","pn_colony","spire","metelson","ptech","oculus"],
 			"chance":1.2,
-		}
+		},
+		{
+			"name":"Contract Cheating",
+			"stage":"contract_cheating",
+			"maxRepLevelToOccur":"welcoming",
+			"minRepChange":-0.15,
+			"maxRepChange":-0.1,
+			"repLimit":"inhospitable",
+			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc","dassault_mikoyan",
+				"ori","rori","tiandong","ptech","tiandong"],
+			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc","dassault_mikoyan",
+				"ori","rori","tiandong","ptech","tiandong"],
+			"chance":1.2
+		},
 	]
 }
