@@ -365,6 +365,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     public static void createDiplomacyEvent(FactionAPI faction1, FactionAPI faction2)
     {
+        createDiplomacyEvent(faction1, faction2, null);
+    }
+    
+    public static void createDiplomacyEvent(FactionAPI faction1, FactionAPI faction2, String eventId)
+    {
         if (diplomacyManager == null) return;
         
         String factionId1 = faction1.getId();
@@ -379,8 +384,16 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         //dominance = dominance/2;
         float dominance = Math.max( getDominanceFactor(factionId1), getDominanceFactor(factionId2) );
         log.info("Dominance factor: " + dominance);
+        
+        DiplomacyEventDef event = null;
         for (DiplomacyEventDef eventDef: eventDefs)
         {
+            if (eventDef.stage.equals(eventId))
+            {
+                event = eventDef;
+                break;
+            }
+            
             if ((ExerelinUtilsFaction.isPirateFaction(factionId1) || ExerelinUtilsFaction.isPirateFaction(factionId2)) && !eventDef.allowPirates)
             {
                 //log.info("Pirates on non-pirate event, invalid");
@@ -429,7 +442,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 				eventPicker.add(eventDef, chance);
 			}
         }
-        DiplomacyEventDef event = eventPicker.pick();
+        if (event == null) event = eventPicker.pick();
+        
         if (event == null)
         {
             log.info("No event available");
@@ -478,7 +492,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         FactionAPI faction1 = factionPicker.pickAndRemove();
         FactionAPI faction2 = factionPicker.pickAndRemove();
-        createDiplomacyEvent(faction1, faction2);
+        createDiplomacyEvent(faction1, faction2, null);
     }
     
     private void reduceWarWeariness(String factionId, float amount)

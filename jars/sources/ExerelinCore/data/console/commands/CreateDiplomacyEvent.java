@@ -44,8 +44,10 @@ public class CreateDiplomacyEvent implements BaseCommand {
             Console.showMessage("Error: no such faction '" + faction2 + "'!");
             return CommandResult.ERROR;
         }
-
-        DiplomacyManager.createDiplomacyEvent(fac1, fac2);
+		
+		String eventId = null;
+		if (tmp.length >= 3) eventId = tmp[2];
+        DiplomacyManager.createDiplomacyEvent(fac1, fac2, eventId);
         Console.showMessage("Creating diplomacy event between "
                 + CommandUtils.getFactionName(fac1) + " and "
                 + CommandUtils.getFactionName(fac2));

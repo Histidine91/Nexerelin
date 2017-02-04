@@ -3,13 +3,12 @@ SpawnInvasionFleet,data.console.commands.SpawnInvasionFleet,"campaign,exerelin",
 SpawnInvasionFleetHostile,data.console.commands.SpawnInvasionFleetHostile,"campaign,exerelin",spawninvasionfleethostile,"Spawns an invasion fleet from the closest not-player-aligned market to go to the closest player-aligned market, and teleports fleet to player location."
 SpawnRespawnFleet,data.console.commands.SpawnRespawnFleet,"campaign,exerelin",spawnrespawnfleet,"Spawns a respawn fleet to go to the closest market, and teleports fleet to player location."
 SetMarketOwner,data.console.commands.SetMarketOwner,"campaign,exerelin",setmarketowner <entity> [owner],"Causes the market associated with <entity> to be captured by [owner], or a random live faction if not specified."
-ClearAgentDestabilization,data.console.commands.ClearAgentDestabilization,"campaign,exerelin",clearagentdestabilization,Removes all agent destabilization events across the sector.
 SyncRelationships,data.console.commands.SyncRelationships,"campaign,exerelin",syncrelationships,Syncs faction relationships to match player's. Use after using Save Transfer or SetRelationship.
-CreateDiplomacyEvent,data.console.commands.CreateDiplomacyEvent,"campaign,exerelin",creatediplomacyevent <faction1> <faction2>,Creates a new diplomacy event between the two factions.
+CreateDiplomacyEvent,data.console.commands.CreateDiplomacyEvent,"campaign,exerelin",creatediplomacyevent <faction1> <faction2> [stage],Creates a new diplomacy event between the two factions. Specify 'stage' as an identifier for a specific event type.
 CreateAlliance,data.console.commands.CreateAlliance,"campaign,exerelin",createalliance <faction1> <faction2> [alignment],"Creates an alliance between the two factions, with the specified alignment (random if not specified). If one faction is already in an alliance, add the other faction to its alliance instead. Does nothing if both factions are already in an alliance."
 LeaveAlliance,data.console.commands.LeaveAlliance,"campaign,exerelin",leavealliance <faction>,"Makes the specified faction leave its alliance, if it has one."
 ResetRelationships,data.console.commands.ResetRelationships,"campaign,exerelin",resetrelationships,Resets faction relationships as if launching a new game. Doesn't work for mod factions in Corvus mode.
-PrintProductionInfo,data.console.commands.PrintProductionInfo,"campaign,exerelin",printproductioninfo <entity> <commodity>,Print some economy debugging info for the selected market and commodity.
+#PrintProductionInfo,data.console.commands.PrintProductionInfo,"campaign,exerelin",printproductioninfo <entity> <commodity>,Print some economy debugging info for the selected market and commodity.
 RetireCharacter,data.console.commands.RetireCharacter,"campaign,exerelin",retirecharacter,Retires your character and ends the game.
 #,,,,
 # Omnifactory,,,,
@@ -18,3 +17,6 @@ OmnifacStatus,org.lazywizard.omnifac.commands.OmnifacStatus,"omnifac,campaign",o
 #PingDistance,data.console.commands.PingDistance,"campaign,exerelin",pingdistance,Prints distance to closest market.
 #ResetClosestMarket,data.console.commands.ResetClosestMarket,"campaign,exerelin",resetclosestmarket,Debug command
 #GetTime,data.console.commands.GetTime,"campaign,exerelin",gettime,Prints some clock info
+#,,,,
+# Override default command,,,,
+SetRelation,data.console.commands.SetRelationship,"core,campaign",setrelation all|<faction> [optionalTowardsFaction] <amount>,"Sets the relationship between two factions to the given number. If no second faction is entered, relationship with the player is affected. Arguments range from -100 to 100."
