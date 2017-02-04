@@ -257,7 +257,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
         WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
         
         int ibbProgress = 999;
-        Set<Integer> stageCompletion = (Set<Integer>) Global.getSector().getPersistentData().get("ssp_famousBountyStageCompletion");
+        Set<Integer> stageCompletion = (Set<Integer>) Global.getSector().getPersistentData().get("ssp_famousBountyStageTrueCompletion");
+        if (stageCompletion == null) stageCompletion = (Set<Integer>) Global.getSector().getPersistentData().get("ssp_famousBountyStageCompletion");
         if (stageCompletion == null) stageCompletion = new HashSet<>();
                 
         //Check for SS+ IBBs
