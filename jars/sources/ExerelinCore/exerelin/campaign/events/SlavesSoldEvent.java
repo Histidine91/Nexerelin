@@ -8,11 +8,16 @@ import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import exerelin.ExerelinConstants;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinFactionConfig.Morality;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
 
@@ -22,28 +27,27 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 	public static Logger log = Global.getLogger(SlavesSoldEvent.class);
 	protected static final int DAYS_TO_KEEP = 60;
 	
-	protected float repPenalty;
-	protected List<String> factionsToNotify;
-	protected Map<String, Object> params;
+	protected float avgRepChange = 0;
+	protected List<String> factionsToNotify = new ArrayList<>();
+	protected Map<String, Object> params = new HashMap<>();
+	protected Map<String, Float> repPenalties = new HashMap<>();
+	protected int numSlaves = 0;
 	
-	protected float age;
-	protected boolean done;
+	protected float age = 0;
+	protected boolean done = false;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		params = new HashMap<>();
-		done = false;
-		repPenalty = 0;
-		factionsToNotify = new ArrayList<>();
-		age = 0;
 	}
 	
 	@Override
 	public void setParam(Object param) {
 		params = (HashMap)param;
 		factionsToNotify = (List<String>)params.get("factionsToNotify");
-		repPenalty = (Float)params.get("repPenalty");
+		repPenalties = (HashMap<String, Float>)params.get("repPenalties");
+		numSlaves = (Integer)params.get("numSlaves");
+		avgRepChange = (Float)params.get("avgRepChange");
 	}
 		
 	@Override
@@ -63,18 +67,19 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 	
 	@Override
 	public void startEvent() {
-		// we can set the reputation change only on message delivery
-		// but problem is, the token replacement method needs to know the relationship change NOW
-		//DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
 		MessagePriority priority = MessagePriority.ENSURE_DELIVERY;
 		Global.getSector().reportEventStage(this, "report", market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
 			public void beforeDelivery(CommMessageAPI message) {
-								for (String factionId : factionsToNotify)
-								{
-										if (factionId.equals(market.getFactionId()))
-											ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), market.getPrimaryEntity().getActivePerson(), repPenalty);
-										else ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, repPenalty);
-								}
+					for (String factionId : factionsToNotify)
+					{
+						float penalty = repPenalties.get(factionId);
+						if (factionId.equals(market.getFactionId()))
+						{
+							ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), 
+									market.getPrimaryEntity().getActivePerson(), penalty);
+						}
+						else ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, penalty);
+					}
 			}
 		});
 	}
@@ -106,14 +111,16 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		map.put("$repPenaltyAbs", "" + (int)Math.ceil(Math.abs(repPenalty*100f)));
 		map.put("$location", market.getPrimaryEntity().getContainingLocation().getName());
+		map.put("$numFactions", "" + factionsToNotify.size());
+		map.put("$repPenaltyAbs", "" + (int)Math.ceil(Math.abs(avgRepChange*100f)));
 		return map;
 	}
 	
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
+		addTokensToList(result, "$numFactions");
 		addTokensToList(result, "$repPenaltyAbs");
 		return result.toArray(new String[0]);
 	}
@@ -131,5 +138,20 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 	@Override
 	public boolean showAllMessagesIfOngoing() {
 		return false;
+	}
+	
+	public static float getSlaveRepPenalty(String factionId, int slaveCount)
+	{
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		if (faction.isNeutralFaction() || faction.isPlayerFaction() || (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)))
+			return 0;
+		
+		float penalty = 0;
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		if (conf.morality == Morality.NEUTRAL) penalty = ExerelinConfig.prisonerSlaveRepValue;
+		else if (conf.morality == Morality.GOOD) penalty = ExerelinConfig.prisonerSlaveRepValue * 2;
+		else return 0;
+		
+		return penalty * slaveCount;
 	}
 }

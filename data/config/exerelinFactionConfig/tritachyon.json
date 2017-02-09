@@ -14,6 +14,7 @@
     "maxRelationships":{ "luddic_church":-0.1 },
     "diplomacyPositiveChance":{ "luddic_church":0.75 },
     "diplomacyNegativeChance":{ "luddic_church":1.5 },
+    "morality":"amoral",
     
     "alignments":{
         "corporate":1,

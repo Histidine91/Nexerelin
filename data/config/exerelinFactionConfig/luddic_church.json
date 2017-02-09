@@ -14,6 +14,7 @@
     "maxRelationships":{ "tritachyon":-0.1 },
     "diplomacyPositiveChance":{ "tritachyon":0.75 },
     "diplomacyNegativeChance":{ "tritachyon":1.5 },
+    "morality":"good",
     
     "alignments":{
         "corporate":-0.5,

@@ -20,6 +20,7 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":["interstellarimperium","independent"], # String array
     "factionsDisliked":["pack","hegemony","pirates","luddic_church"], # String array
+    "morality":"evil",
     
     "alignments":{
         "militarist":1,

@@ -2,6 +2,8 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
@@ -69,8 +71,9 @@ public class ExerelinFactionConfig
     public Map<String, Float> diplomacyPositiveChance = new HashMap<>();
     public Map<String, Float> diplomacyNegativeChance = new HashMap<>();
     public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
+    public Morality morality = Morality.NEUTRAL;
     
-	public float spawnMarketShare = 1;
+    public float spawnMarketShare = 1;
     public boolean freeMarket = false;
 
     public float invasionStrengthBonusAttack = 0;
@@ -182,6 +185,26 @@ public class ExerelinFactionConfig
             if (!diplomacyNegativeChance.containsKey("default"))
                 diplomacyNegativeChance.put("default", 1f);
             
+            // morality
+            if (settings.has("morality"))
+            {
+                try {
+                    String moralityName = StringHelper.flattenToAscii(settings.getString("morality").toUpperCase());
+                    morality = Morality.valueOf(moralityName);
+                } catch (IllegalArgumentException ex) {
+                    // do nothing
+                    Global.getLogger(this.getClass()).warn("Invalid morality entry for faction " + this.factionId + ": " 
+                            + settings.getString("morality"));
+                }
+            }
+            else
+            {
+                if (pirateFaction) morality = Morality.EVIL;
+                else if (isPirateNeutral) morality = Morality.AMORAL;
+            }
+            Global.getLogger(this.getClass()).info("Faction " + factionId + " has morality " + morality.toString());
+            
+            // alignments
             if (settings.has("alignments"))
             {
                 JSONObject alignmentsJson = settings.getJSONObject("alignments");
@@ -586,4 +609,6 @@ public class ExerelinFactionConfig
         COMBAT_LARGE, COMBAT_LARGE_SSP,
         TRADE_LARGE, TRADE_LARGE_SSP
     }
+    
+    public static enum Morality {GOOD, NEUTRAL, AMORAL, EVIL}
 }

@@ -15,6 +15,7 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+    "morality":"evil",
     
     "allowAgentActions":false,
     "allowPrisonerActions":false,

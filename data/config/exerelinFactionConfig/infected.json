@@ -1,6 +1,7 @@
 {
     "uniqueModClassName":"data.scripts.infectedModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true, # Boolean
+    "corvusCompatible":true,
     "hostileToAll":2,
 
     "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
@@ -14,6 +15,7 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+    "morality":"amoral",
     
     "alignments":{},
     

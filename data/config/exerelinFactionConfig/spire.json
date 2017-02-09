@@ -14,6 +14,7 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":[], # String array
+    "morality":"good",
 
     "alignments":{
         "diplomatic":0.5,

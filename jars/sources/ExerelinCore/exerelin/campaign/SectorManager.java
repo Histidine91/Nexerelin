@@ -35,6 +35,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.ExerelinCorvusLocations;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.FactionChangedEvent;
+import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -381,31 +382,38 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public void handleSlaveTradeRep()
     {
+        if (ExerelinConfig.prisonerSlaveRepValue > 0) return;
+        
         LocationAPI loc = marketLastSoldSlaves.getPrimaryEntity().getContainingLocation();
         List<MarketAPI> markets = Misc.getMarketsInLocation(loc);
         List<String> factionsToNotify = new ArrayList<>();  
         Set<String> seenFactions = new HashSet<>();
+        Map<String, Float> repPenalties = new HashMap<>();
+        float sumRepDelta = 0;
 
         for (final MarketAPI market : markets) {
             FactionAPI faction = market.getFaction();
             String factionId = market.getFactionId();
-            if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId)) continue;
-            if (faction.isNeutralFaction()) continue;
-            if (faction.isPlayerFaction()) continue;
-            if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
             if (seenFactions.contains(factionId)) continue;
-
+            
             seenFactions.add(factionId);
+            
+            float delta = SlavesSoldEvent.getSlaveRepPenalty(factionId, numSlavesRecentlySold);
+            if (delta >= 0) continue;
+            
             factionsToNotify.add(factionId);
+            repPenalties.put(factionId, delta);
+            sumRepDelta += delta;
         }
         if (factionsToNotify.isEmpty()) return;
         //log.info("Selling " + numSlavesRecentlySold + " slaves; rep penalty for each is " + ExerelinConfig.prisonerSlaveRepValue);
-        float repPenalty = ExerelinConfig.prisonerSlaveRepValue * numSlavesRecentlySold;
         
         Map<String, Object> params = new HashMap<>();
 
         params.put("factionsToNotify", factionsToNotify);
-        params.put("repPenalty", repPenalty);
+        params.put("numSlaves", numSlavesRecentlySold);
+        params.put("repPenalties", repPenalties);
+        params.put("avgRepChange", sumRepDelta/factionsToNotify.size());
         Global.getSector().getEventManager().startEvent(new CampaignEventTarget(marketLastSoldSlaves), "exerelin_slaves_sold", params);
     }
     

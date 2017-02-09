@@ -20,6 +20,7 @@
     "negativeDiplomacyExtra":0,
     "factionsLiked":["tritachyon"],
     "factionsDisliked":[],
+    "morality":"evil",
     
     "alignments":{
         "corporate":0.5,

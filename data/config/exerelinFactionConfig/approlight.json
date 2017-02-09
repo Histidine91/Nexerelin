@@ -14,6 +14,7 @@
     "negativeDiplomacyExtra":0, # Integer
     "factionsLiked":[], # String array
     "factionsDisliked":["immortallight"], # String array
+    "morality":"amoral",
     
     "alignments":{
         "corporate":0.5,
