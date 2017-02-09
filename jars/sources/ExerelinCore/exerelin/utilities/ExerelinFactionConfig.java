@@ -545,6 +545,27 @@ public class ExerelinFactionConfig
     }
     
     /**
+     * Checks if the provided list of starting ships is valid 
+     * (must have at least one non-fighter wing with nonzero cargo capacity)
+     * @param ships A List of variant/wing IDs
+     * @return True if the ship set is valid, false otherwise
+     */
+    protected boolean isStartingShipSetValid(List<String> ships)
+    {
+        for (String variantId : ships)
+        {
+            FleetMemberType type = FleetMemberType.SHIP;
+            if (variantId.endsWith("_wing")) {
+                type = FleetMemberType.FIGHTER_WING; 
+            }
+            FleetMemberAPI temp = Global.getFactory().createFleetMember(type, variantId);
+            if (!temp.isFighterWing() && temp.getCargoCapacity() > 0 && temp.getFuelCapacity() > 0)
+                return true;
+        }
+        return false;
+    }
+    
+    /**
      * Gets a list of ships to give to the player at start, based on the chosen starting fleet type.
      * Can use the predefined ships in the faction config, or random ones based on ship roles.
      * @param typeStr
@@ -564,7 +585,18 @@ public class ExerelinFactionConfig
             useSSPShips = useSSPShips || ExerelinModPlugin.HAVE_SWP;
         
         if (ExerelinSetupData.getInstance().randomStartShips && (startShips.containsKey(type) || startShips.containsKey(typeSSP)) )
-            return getRandomStartShipsForType(type);
+        {
+            int tries = 0;
+            boolean valid = false;
+            List<String> result = null;
+            while (!valid && tries < 10)
+            {
+                result = getRandomStartShipsForType(type);
+                valid = isStartingShipSetValid(result);
+                tries++;
+            }
+            if (valid) return result;
+        }
         
         if (useSSPShips)
         {
