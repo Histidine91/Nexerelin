@@ -14,6 +14,7 @@
     "maxRelationships":{ "exipirated":-0.76 },
     "diplomacyPositiveChance":{ "exipirated":0 },
     "diplomacyNegativeChance":{ "exipirated":0 },
+    "morality":"amoral",
 
     "alignments":{
         "corporate":1,
