@@ -1228,7 +1228,7 @@ FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connec
 ,,,,,,
 #ExerelinBaseCommanderInitializeAddDialogs,ExerelinBaseCommanderOptionsInitialize,,<do something>,,,
 ,,,,,,
-ExerelinBaseCommanderMenuRepeat,DialogOptionSelected,$option == exerelinBaseCommanderMenuRepeat,,"""Anything else?""",,
+ExerelinBaseCommanderMenuRepeat,DialogOptionSelected,$option == exerelinBaseCommanderMenuRepeat,FireAll ExerelinBaseCommanderOptionsInitialize,"""Anything else?""",,
 ExerelinBaseCommanderLeave,ExerelinBaseCommanderOptions,,,,9:cutCommLink:Cut the comm link,
 ,,,,,,
 #START FACTION CHANGE OPTIONS,,,,,,
