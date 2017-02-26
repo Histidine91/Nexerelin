@@ -165,6 +165,9 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		
 		//CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP/3);
 		CampaignFleetAPI fleet = FleetFactoryV2.createFleet(params);
+		if (fleet == null)
+			return;
+		
 		fleet.setName(name);
 		fleet.setAIMode(true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_TRADE_FLEET, true);
