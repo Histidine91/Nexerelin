@@ -17,8 +17,10 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.utilities.ExerelinConfig;
@@ -457,10 +459,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         for (MarketAPI market : markets) 
         {
             FactionAPI marketFaction = market.getFaction();
-			if (EXCEPTION_LIST.contains(marketFaction.getId()) && targetFaction != marketFaction) continue;
-			if (targetFaction != null && targetFaction != marketFaction)
-				continue;
-			
+            String marketFactionId = marketFaction.getId();
+            
+            if (EXCEPTION_LIST.contains(marketFactionId) && targetFaction != marketFaction) continue;
+            if (targetFaction != null && targetFaction != marketFaction)
+                continue;
+            
             if  ( marketFaction.isHostileTo(faction)) 
             {
                 if (!ExerelinUtilsMarket.isValidInvasionTarget(market, 0)) continue;
@@ -476,11 +480,15 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 }
                 float weight = 20000.0F / dist;
                 //weight *= market.getSize() * market.getStabilityValue();    // try to go after high value targets
-                if (ExerelinUtilsFaction.isFactionHostileToAll(marketFaction.getId()))
+                if (ExerelinUtilsFaction.isFactionHostileToAll(marketFactionId))
                     weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
                 
-                if (SectorManager.getHardMode() && marketFaction.isPlayerFaction())
-                    weight *= HARD_MODE_INVASION_TARGETING_CHANCE;
+                if (SectorManager.getHardMode())
+                {
+                    if (marketFactionId.equals(PlayerFactionStore.getPlayerFactionId()) 
+                            || marketFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+                        weight *= HARD_MODE_INVASION_TARGETING_CHANCE;
+                }
 
                 targetPicker.add(market, weight);
             }
