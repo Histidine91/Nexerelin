@@ -528,8 +528,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (defeated.getId().equals("independent"))
             return;
-		if (!defeated.getId().equals(ExerelinConstants.PLAYER_NPC_ID))
-			AllianceManager.leaveAlliance(defeated.getId(), true);
+        if (!defeated.getId().equals(ExerelinConstants.PLAYER_NPC_ID))
+            AllianceManager.leaveAlliance(defeated.getId(), true);
         removeLiveFactionId(defeated.getId());
         Map<String, Object> params = new HashMap<>();
         params.put("defeatedFaction", defeated);
@@ -664,13 +664,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             Global.getSector().addScript(new VictoryScreenScript(victorFactionId, victoryType));
         }
     }
-	
-	public static void retire() 
-	{
-		Global.getSector().addScript(new VictoryScreenScript(Factions.PLAYER, VictoryType.RETIRED));
-		if (sectorManager != null)
-			sectorManager.victoryHasOccured = true;
-	}
+    
+    public static void retire() 
+    {
+        Global.getSector().addScript(new VictoryScreenScript(Factions.PLAYER, VictoryType.RETIRED));
+        if (sectorManager != null)
+            sectorManager.victoryHasOccured = true;
+    }
     
     public static void captureMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, List<String> factionsToNotify, float repChangeStrength)
     {
@@ -773,7 +773,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 if (!submarket.getPlugin().isParticipatesInEconomy()) continue;
             }
             // this doesn't behave as expected for pirate markets (it checks if submarket faction is hostile to market faction)
-            //if (submarket.getPlugin().isBlackMarket()) continue;	
+            //if (submarket.getPlugin().isBlackMarket()) continue;    
             
             // reset smuggling suspicion
             if (submarketId.equals(Submarkets.SUBMARKET_BLACK)) {  

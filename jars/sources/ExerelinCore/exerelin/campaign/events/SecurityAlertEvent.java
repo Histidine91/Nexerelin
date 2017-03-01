@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import exerelin.utilities.StringHelper;
 
+@Deprecated
 public class SecurityAlertEvent extends BaseEventPlugin {
 
 	public static final float DAYS_PER_STAGE = 15f;

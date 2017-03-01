@@ -16,7 +16,7 @@ public class ExerelinConfig
     public static final String MOD_FACTION_LIST_PATH = "data/config/exerelinFactionConfig/mod_factions.csv";
     
     public static List<ExerelinFactionConfig> exerelinFactionConfigs;
-	public static ExerelinFactionConfig defaultConfig;
+    public static ExerelinFactionConfig defaultConfig;
 
     // Threading support for improving/smoothing performance
     @Deprecated
@@ -29,8 +29,8 @@ public class ExerelinConfig
     public static float binarySystemChance = 0.2f;
     public static float forcePiratesInSystemChance = 0.7f;
     public static boolean realisticStars = false;
-	public static boolean enableIndependents = true;
-	public static boolean enablePirates = true;
+    public static boolean enableIndependents = true;
+    public static boolean enablePirates = true;
 
     // Player settings
     public static float playerBaseSalary = 5000f;
@@ -62,7 +62,7 @@ public class ExerelinConfig
     public static float baseInvasionPointsPerFaction = 45f;
     public static float invasionPointsPerPlayerLevel = 1f;
     public static float invasionPointEconomyMult = 1f;
-	public static float conquestMissionRewardMult = 1f;
+    public static float conquestMissionRewardMult = 1f;
     
     // Alliances
     public static float allianceGracePeriod = 30;
@@ -107,7 +107,7 @@ public class ExerelinConfig
     public static boolean countPiratesForVictory = false;
     public static boolean ownFactionCustomsInspections = false;
     public static int directoryDialogKey = 32;  // D
-	public static boolean useRelationshipBounds = true;
+    public static boolean useRelationshipBounds = true;
     
 
     public static void loadSettings()
@@ -124,8 +124,8 @@ public class ExerelinConfig
             binarySystemChance = (float)settings.optDouble("binarySystemChance", binarySystemChance);
             forcePiratesInSystemChance = (float)settings.optDouble("piratesNotInSystemChance", forcePiratesInSystemChance);
             realisticStars = settings.optBoolean("realisticStars", realisticStars);
-			enableIndependents = settings.optBoolean("enableIndependents", enableIndependents);
-			enablePirates = settings.optBoolean("enablePirates", enablePirates);
+            enableIndependents = settings.optBoolean("enableIndependents", enableIndependents);
+            enablePirates = settings.optBoolean("enablePirates", enablePirates);
 
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary",  playerBaseSalary);
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel", playerSalaryIncrementPerLevel);
@@ -188,7 +188,7 @@ public class ExerelinConfig
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
             ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
-			useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
+            useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             

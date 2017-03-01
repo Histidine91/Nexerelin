@@ -118,7 +118,7 @@ public class StatsTracker extends BaseCampaignEventListener{
         
         List<CampaignFleetAPI> killedFleets = battle.getNonPlayerSide();
         //List<CampaignFleetAPI> lossesFleets = battle.getPlayerSide();
-		CampaignFleetAPI lossesFleet = Global.getSector().getPlayerFleet();
+        CampaignFleetAPI lossesFleet = Global.getSector().getPlayerFleet();
         
         Global.getLogger(StatsTracker.class).info("Tracker tracking battle");
 
@@ -145,13 +145,13 @@ public class StatsTracker extends BaseCampaignEventListener{
         fpKilled += recentFpKilled * involvedFraction;
         shipsKilled += recentShipsKilled * involvedFraction;
         
-		List<FleetMemberAPI> lossCurrent = lossesFleet.getFleetData().getMembersListCopy();
-		for (FleetMemberAPI member : lossesFleet.getFleetData().getSnapshot()) {
-			if (!lossCurrent.contains(member)) {
-				fpLost += member.getFleetPointCost();
-				shipsLost++;
-			}
-		}
+        List<FleetMemberAPI> lossCurrent = lossesFleet.getFleetData().getMembersListCopy();
+        for (FleetMemberAPI member : lossesFleet.getFleetData().getSnapshot()) {
+            if (!lossCurrent.contains(member)) {
+                fpLost += member.getFleetPointCost();
+                shipsLost++;
+            }
+        }
         
         // revengeance fleet handling
         RevengeanceFleetEvent event = RevengeanceFleetEvent.getOngoingEvent();

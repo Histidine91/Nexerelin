@@ -60,10 +60,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     // Templars/pirates get this multiplier bonus to their invasion point growth the more enemies they have
     public static final float ONE_AGAINST_ALL_INVASION_POINT_MOD = 0.215f;
     public static final float HARD_MODE_INVASION_TARGETING_CHANCE = 1.5f;
-	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
+    public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
     
     public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.05f;
-	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));	// Templars have their own handling
+    public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));    // Templars have their own handling
     
     public static final int MAX_FLEETS = 50;
     
@@ -75,8 +75,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     private final IntervalUtil tracker;
     
     protected float daysElapsed = 0;
-	protected float templarInvasionPoints = 0;
-	protected float templarCounterInvasionPoints = 0;
+    protected float templarInvasionPoints = 0;
+    protected float templarCounterInvasionPoints = 0;
     
     private static InvasionFleetManager invasionFleetManager;
   
@@ -418,7 +418,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         for (MarketAPI market : markets) {
             if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
             if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
-			if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
+            if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
             if  ( market.getFactionId().equals(factionId) && !market.hasCondition(Conditions.DECIVILIZED) && 
                 ( (market.hasCondition(Conditions.SPACEPORT)) || (market.hasCondition(Conditions.ORBITAL_STATION)) || (market.hasCondition(Conditions.MILITARY_BASE))
                     || (market.hasCondition(Conditions.REGIONAL_CAPITAL)) || (market.hasCondition(Conditions.HEADQUARTERS))
@@ -563,7 +563,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         for (MarketAPI market : markets)
         {
             String factionId = market.getFactionId();
-			if (EXCEPTION_LIST.contains(factionId)) continue;
+            if (EXCEPTION_LIST.contains(factionId)) continue;
             if (!pointsPerFaction.containsKey(factionId))
                 pointsPerFaction.put(factionId, 0f);
             
@@ -577,7 +577,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
         for (String factionId: liveFactionIds)
         {
-			if (EXCEPTION_LIST.contains(factionId)) continue;
+            if (EXCEPTION_LIST.contains(factionId)) continue;
             FactionAPI faction = sector.getFaction(factionId);
             if (faction.isNeutralFaction()) continue;
             if (faction.isPlayerFaction()) continue;
@@ -600,7 +600,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             {
                 for (String enemyId : enemies)
                 {
-					if (EXCEPTION_LIST.contains(factionId)) continue;
+                    if (EXCEPTION_LIST.contains(factionId)) continue;
                     if (ExerelinUtilsFaction.isFactionHostileToAll(enemyId))
                     {
                         float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, ExerelinConfig.allowPirateInvasions, true, false).size();
@@ -647,41 +647,41 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             }
         }
     }
-	
-	protected void processTemplarInvasionPoints()
-	{
-		List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
-		if (!liveFactionIds.contains("templars")) return;
-		
-		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction("templars", ExerelinConfig.allowPirateInvasions, false, false);
-		if (enemies.isEmpty()) return;
-		float templarDominance = DiplomacyManager.getDominanceFactor("templars");
-		float perLevelPoints = Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.invasionPointsPerPlayerLevel;
-		
-		templarInvasionPoints += (100 + perLevelPoints) 
-			* ExerelinConfig.getExerelinFactionConfig("templars").invasionPointMult * TEMPLAR_INVASION_POINT_MULT;
-		templarCounterInvasionPoints += (100 + 200 * templarDominance + perLevelPoints) * TEMPLAR_INVASION_POINT_MULT;
-		
-		float req = ExerelinConfig.pointsRequiredForInvasionFleet;
-		if (templarInvasionPoints >= req)
-		{
-			generateInvasionFleet(Global.getSector().getFaction("templars"), null, false);
-			templarInvasionPoints -= req;
-			//Global.getSector().getCampaignUI().addMessage("Launching Templar invasion fleet");
-		}
-		if (templarCounterInvasionPoints >= req)
-		{
-			WeightedRandomPicker<String> picker = new WeightedRandomPicker();
-			for (String factionId : enemies)
-			{
-				picker.add(factionId, ExerelinUtilsFaction.getFactionPopulation(factionId));
-			}
-			FactionAPI faction = Global.getSector().getFaction(picker.pick());
-			generateInvasionFleet(faction, Global.getSector().getFaction("templars"), false);
-			//Global.getSector().getCampaignUI().addMessage("Launching counter-Templar invasion fleet");
-			templarCounterInvasionPoints -= req;
-		}
-	}
+    
+    protected void processTemplarInvasionPoints()
+    {
+        List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
+        if (!liveFactionIds.contains("templars")) return;
+        
+        List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction("templars", ExerelinConfig.allowPirateInvasions, false, false);
+        if (enemies.isEmpty()) return;
+        float templarDominance = DiplomacyManager.getDominanceFactor("templars");
+        float perLevelPoints = Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.invasionPointsPerPlayerLevel;
+        
+        templarInvasionPoints += (100 + perLevelPoints) 
+            * ExerelinConfig.getExerelinFactionConfig("templars").invasionPointMult * TEMPLAR_INVASION_POINT_MULT;
+        templarCounterInvasionPoints += (100 + 200 * templarDominance + perLevelPoints) * TEMPLAR_INVASION_POINT_MULT;
+        
+        float req = ExerelinConfig.pointsRequiredForInvasionFleet;
+        if (templarInvasionPoints >= req)
+        {
+            generateInvasionFleet(Global.getSector().getFaction("templars"), null, false);
+            templarInvasionPoints -= req;
+            //Global.getSector().getCampaignUI().addMessage("Launching Templar invasion fleet");
+        }
+        if (templarCounterInvasionPoints >= req)
+        {
+            WeightedRandomPicker<String> picker = new WeightedRandomPicker();
+            for (String factionId : enemies)
+            {
+                picker.add(factionId, ExerelinUtilsFaction.getFactionPopulation(factionId));
+            }
+            FactionAPI faction = Global.getSector().getFaction(picker.pick());
+            generateInvasionFleet(faction, Global.getSector().getFaction("templars"), false);
+            //Global.getSector().getCampaignUI().addMessage("Launching counter-Templar invasion fleet");
+            templarCounterInvasionPoints -= req;
+        }
+    }
   
     @Override
     public void advance(float amount)
@@ -713,7 +713,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         {
             processInvasionPoints();
         }
-		processTemplarInvasionPoints();
+        processTemplarInvasionPoints();
     }
     
     public static InvasionFleetManager create()

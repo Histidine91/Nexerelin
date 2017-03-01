@@ -202,7 +202,7 @@ public class ExerelinFactionConfig
                 if (pirateFaction) morality = Morality.EVIL;
                 else if (isPirateNeutral) morality = Morality.AMORAL;
             }
-            Global.getLogger(this.getClass()).info("Faction " + factionId + " has morality " + morality.toString());
+            //Global.getLogger(this.getClass()).info("Faction " + factionId + " has morality " + morality.toString());
             
             // alignments
             if (settings.has("alignments"))
