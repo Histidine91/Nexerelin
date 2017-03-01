@@ -35,6 +35,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.world.ExerelinCorvusLocations;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.FactionChangedEvent;
+import exerelin.campaign.events.RevengeanceFleetEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -852,6 +853,17 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 }
             }
         }
+        
+        // revengeance fleet
+        if (newOwnerId.equals(PlayerFactionStore.getPlayerFactionId()) || newOwnerId.equals(ExerelinConstants.PLAYER_NPC_ID))
+        {
+            RevengeanceFleetEvent event = RevengeanceFleetEvent.getOngoingEvent();
+            if (event!= null) 
+            {
+                float sizeSq = market.getSize() * market.getSize();
+                event.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult);
+            }
+        }
     }
     
     public static void notifySlavesSold(MarketAPI market, int count)
@@ -971,7 +983,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 sectorManager.factionIdsAtStart.add(factionId);
                 sectorManager.historicFactionIds.add(factionId);
             }
-            else	// no need for showIntelEvenIfDead check, that's done in setShowFactionInIntelTab()
+            else    // no need for showIntelEvenIfDead check, that's done in setShowFactionInIntelTab()
             {
                 setShowFactionInIntelTab(factionId, false);
             }
@@ -1009,6 +1021,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         DIPLOMATIC_ALLY,
         DEFEAT_CONQUEST,  //not a victory type but who's counting?
         DEFEAT_DIPLOMATIC,
-		RETIRED
+        RETIRED
     }
 }

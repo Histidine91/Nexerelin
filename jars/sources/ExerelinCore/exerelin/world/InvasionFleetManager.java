@@ -364,11 +364,18 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         return fleetData;
     }
     
-    public static InvasionFleetData spawnInvasionFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, float marineMult, boolean noWait)
+    public static InvasionFleetData spawnInvasionFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket,
+            float marineMult, boolean noWait)
+    {
+        return spawnInvasionFleet(faction, originMarket, targetMarket, marineMult, 1, noWait);
+    }
+    
+    public static InvasionFleetData spawnInvasionFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, 
+            float marineMult, float fpMult, boolean noWait)
     {
         float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket, 0.5f, false);
         
-        int maxFP = (int)calculateMaxFpForFleet(originMarket, targetMarket);
+        int maxFP = (int)(calculateMaxFpForFleet(originMarket, targetMarket) * fpMult);
         float qf = originMarket.getShipQualityFactor();
         qf = Math.max(qf+0.2f, 0.6f);
         
@@ -392,6 +399,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     }
     
     public void generateInvasionFleet(FactionAPI faction, FactionAPI targetFaction, boolean strikeOnly)
+    {
+        generateInvasionFleet(faction, targetFaction, strikeOnly, 1);
+    }
+    
+    public void generateInvasionFleet(FactionAPI faction, FactionAPI targetFaction, boolean strikeOnly, float sizeMult)
     {
         SectorAPI sector = Global.getSector();
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();

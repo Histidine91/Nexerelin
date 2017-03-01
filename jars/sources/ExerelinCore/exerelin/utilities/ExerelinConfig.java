@@ -93,6 +93,11 @@ public class ExerelinConfig
     public static boolean enableShanghai = true;    // Tiandong
     public static boolean enableUnos = true;    // ApproLight
     
+    // Revengeance fleets
+    public static int enableRevengeFleets = 1;
+    public static float revengePointsPerEnemyFP = 0.1f;
+    public static float revengePointsForMarketCaptureMult = 4f;
+    
     // Misc
     public static float baseTariff = 0.2f;
     public static float freeMarketTariffMult = 0.5f;
@@ -170,6 +175,10 @@ public class ExerelinConfig
             enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
             enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             enableUnos = settings.optBoolean("enableUnos", enableUnos);
+            
+            enableRevengeFleets = settings.optInt("enableRevengeFleets", enableRevengeFleets);
+            revengePointsPerEnemyFP = (float)settings.optDouble("revengeFleetPointsPerEnemyFP", revengePointsPerEnemyFP);
+            revengePointsForMarketCaptureMult = (float)settings.optDouble("revengeFleetPointsForMarketCaptureMult", revengePointsForMarketCaptureMult);
             
             baseTariff = (float)settings.optDouble("baseTariff", baseTariff);
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);

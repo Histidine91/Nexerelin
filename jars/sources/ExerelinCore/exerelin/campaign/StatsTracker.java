@@ -4,10 +4,11 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import exerelin.campaign.events.RevengeanceFleetEvent;
+import exerelin.utilities.ExerelinConfig;
 import java.util.List;
 import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
@@ -151,6 +152,14 @@ public class StatsTracker extends BaseCampaignEventListener{
 				shipsLost++;
 			}
 		}
+        
+        // revengeance fleet handling
+        RevengeanceFleetEvent event = RevengeanceFleetEvent.getOngoingEvent();
+        if (event!= null) 
+        {
+            float mult = 1;
+            event.addPoints(fpKilled * ExerelinConfig.revengePointsPerEnemyFP);
+        }
     }
     
     public static StatsTracker getStatsTracker()

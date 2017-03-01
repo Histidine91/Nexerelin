@@ -25,6 +25,7 @@ import exerelin.campaign.PlayerStartHandler;
 import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.events.RevengeanceFleetEvent;
 import exerelin.plugins.ExerelinCoreCampaignPlugin;
 import exerelin.utilities.*;
 import exerelin.world.DefenceFleetAI;
@@ -211,6 +212,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         if (ExerelinUtilsFaction.isExiInCorvus() && !Global.getSector().getEventManager().isOngoing(null, "exerelin_exigency_respawn")) {
             Global.getSector().getEventManager().startEvent(null, "exerelin_exigency_respawn", null);
+        }
+        if (RevengeanceFleetEvent.getOngoingEvent() == null) {
+            Global.getSector().getEventManager().startEvent(null, "exerelin_revengeance_fleet", null);
         }
         
         reverseCompatibility();

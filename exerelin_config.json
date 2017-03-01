@@ -69,6 +69,10 @@
     "enableIndependents": true, # spawn independents in non-Corvus mode
     "enablePirates": true, # spawn pirates in non-Corvus mode
     
+    "enableRevengeFleets" = 1,  # 0 = disabled, 1 = only on hard mode, 2 = always (point generation halved on not-hard)
+    "revengePointsPerEnemyFP" = 0.1,
+    "revengePointsForMarketCaptureMult" = 4,
+    
     "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (non-Corvus mode only)
     "enableShanghai": true,   # adds Shanghai for Tiandong Heavy Industries, attached to homeworld (non-Corvus mode only)
     "enableUnos": true, # adds Unos for ApproLight, attached to homeworld (non-Corvus mode only)

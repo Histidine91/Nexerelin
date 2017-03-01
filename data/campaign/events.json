@@ -74,6 +74,9 @@
 	"exerelin_exigency_respawn":{
 		"script":"exerelin.campaign.events.ExigencyRespawnFleetEvent"
 	},
+	"exerelin_revengeance_fleet":{
+		"script":"exerelin.campaign.events.RevengeanceFleetEvent"
+	},
 	
 	# missions
 	"exerelin_conquest_mission":{
