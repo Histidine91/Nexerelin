@@ -76,7 +76,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         InvasionFleetManager im = InvasionFleetManager.create();
         AllianceManager am = AllianceManager.create();
         sector.removeScriptsOfClass(CoreScript.class);
-        sector.removeScriptsOfClass(SSP_CoreScript.class);
+        if (HAVE_SSP)
+            sector.removeScriptsOfClass(SSP_CoreScript.class);
         sector.addScript(new ExerelinCoreScript());
         sector.addScript(SectorManager.create());
         sector.addScript(DiplomacyManager.create());
