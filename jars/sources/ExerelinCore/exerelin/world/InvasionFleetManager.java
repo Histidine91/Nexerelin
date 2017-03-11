@@ -61,6 +61,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
     public static final float ONE_AGAINST_ALL_INVASION_POINT_MOD = 0.215f;
     public static final float HARD_MODE_INVASION_TARGETING_CHANCE = 1.5f;
     public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
+	public static final float TEMPLAR_COUNTER_INVASION_FLEET_MULT = 1.25f;
     
     public static final float TANKER_FP_PER_FLEET_FP_PER_10K_DIST = 0.05f;
     public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[]{"templars"}));    // Templars have their own handling
@@ -677,7 +678,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 picker.add(factionId, ExerelinUtilsFaction.getFactionPopulation(factionId));
             }
             FactionAPI faction = Global.getSector().getFaction(picker.pick());
-            generateInvasionFleet(faction, Global.getSector().getFaction("templars"), false);
+            generateInvasionFleet(faction, Global.getSector().getFaction("templars"), false, TEMPLAR_COUNTER_INVASION_FLEET_MULT);
             //Global.getSector().getCampaignUI().addMessage("Launching counter-Templar invasion fleet");
             templarCounterInvasionPoints -= req;
         }
