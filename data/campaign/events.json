@@ -99,6 +99,9 @@
 	#"investigation_goodrep":{
 	#	"script":"exerelin.campaign.events.ExerelinInvestigationEventGoodRepWithOther",
 	#},
+	"market_procurement":{
+		"script":"exerelin.campaign.missions.ExerelinMarketProcurementMissionEvent",
+	},
 	"rep_tracker":{
 		"script":"exerelin.campaign.events.ExerelinRepTrackerEvent",
 	},
