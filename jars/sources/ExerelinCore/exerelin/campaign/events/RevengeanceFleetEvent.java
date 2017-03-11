@@ -1,12 +1,14 @@
 package exerelin.campaign.events;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -15,8 +17,10 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.StringHelper;
 import exerelin.world.InvasionFleetManager;
 import static exerelin.world.InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT;
 import static exerelin.world.InvasionFleetManager.EXCEPTION_LIST;
@@ -40,37 +44,21 @@ public class RevengeanceFleetEvent extends BaseEventPlugin {
 
 	public void addPoints(float addedPoints)
 	{
+		if (!isRevengeanceEnabled()) return;
+		
 		if (!SectorManager.getHardMode())
 			addedPoints *= 0.5f;
 		points += addedPoints;
-		/*
 		String debugStr = "Adding revengeance points: " + addedPoints;
 		log.info(debugStr);
-		if (Global.getSettings().isDevMode())
-		{
-			Global.getSector().getCampaignUI().addMessage(debugStr);
-		}
-		*/
+		//if (Global.getSettings().isDevMode())
+		//{
+		//	Global.getSector().getCampaignUI().addMessage(debugStr);
+		//}
 		if (points >= POINTS_TO_SPAWN)
 		{
 			boolean success = generateRevengeanceFleet();
 			if (success) points -= POINTS_TO_SPAWN;
-		}
-	}
-	
-	@Override
-	public void advance(float amount) 
-	{
-		float days = Global.getSector().getClock().convertToDays(amount);
-		interval.advance(days);
-		if (interval.intervalElapsed())
-		{
-			int requiredSetting = 2;
-			if (SectorManager.getHardMode()) requiredSetting = 1;
-			if (requiredSetting > ExerelinConfig.enableRevengeFleets) {
-				endEvent();
-				return;
-			}
 		}
 	}
 
@@ -96,13 +84,12 @@ public class RevengeanceFleetEvent extends BaseEventPlugin {
 
 	@Override
 	public String getEventName() {
-		return "Revengeance fleet";	// TODO
+		return StringHelper.getString("exerelin_fleets", "revengeanceFleetEvent");
 	}
 	
 	@Override
 	public void init(String eventType, CampaignEventTarget eventTarget) {
 		super.init(eventType, eventTarget, false);
-
 	}
 
 	@Override
@@ -115,8 +102,52 @@ public class RevengeanceFleetEvent extends BaseEventPlugin {
 		ended = true;
 	}
 	
+	// because for some reason ReportBattleFinished isn't being called, have StatsTracker call this instead
+	public void reportBattle(CampaignFleetAPI winner, BattleAPI battle)
+	{
+		if (!battle.isPlayerInvolved()) return;
+		
+		List<CampaignFleetAPI> killedFleets = battle.getNonPlayerSide();
+
+		float involvedFraction = battle.getPlayerInvolvementFraction();
+
+		float recentFpKilled = 0;
+		
+		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(playerAlignedFactionId, 
+				ExerelinConfig.allowPirateInvasions, true, false);
+		
+		for (CampaignFleetAPI killedFleet : killedFleets)
+		{
+			String factionId = killedFleet.getFaction().getId();
+			if (!enemies.contains(factionId)) continue;
+			
+			List<FleetMemberAPI> killCurrent = killedFleet.getFleetData().getMembersListCopy();
+			for (FleetMemberAPI member : killedFleet.getFleetData().getSnapshot()) {
+				if (!killCurrent.contains(member)) {
+					recentFpKilled += member.getFleetPointCost();
+				}
+			}
+		}
+		
+		recentFpKilled *= involvedFraction;
+		float points = recentFpKilled * ExerelinConfig.revengePointsPerEnemyFP;
+		if (true)	//(points > 0)
+			addPoints(points);
+	}
 	
-	public boolean generateRevengeanceFleet()
+	public static boolean isRevengeanceEnabled()
+	{
+		int requiredSetting = 2;
+		if (SectorManager.getHardMode()) requiredSetting = 1;
+		log.info("Required revengeance setting: " + requiredSetting);
+		if (requiredSetting <= ExerelinConfig.enableRevengeFleets) {
+			return true;
+		}
+		return false;
+	}
+	
+	protected boolean generateRevengeanceFleet()
 	{
 		SectorAPI sector = Global.getSector();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
@@ -207,10 +238,10 @@ public class RevengeanceFleetEvent extends BaseEventPlugin {
 			float weight = 20000.0F / dist;
 			// prefer high value targets
 			if (market.hasCondition(Conditions.MILITARY_BASE)) {
-				weight *= 1.2F;
+				weight *= 1.25F;
 			}
 			if (market.hasCondition(Conditions.HEADQUARTERS)) {
-				weight *= 1.4F;
+				weight *= 1.5F;
 			}
 			if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) {
 				weight *= 1.2F;

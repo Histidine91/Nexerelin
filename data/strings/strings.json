@@ -123,7 +123,9 @@
 		"miningFleetPrefixLarge":"Large",
 		
 		"fleetSpawnMessage":"A fleet is being launched at $market, in $location. It will be underway shortly.",
-		"fleetSpawnMessageLocal":"A fleet is being launched and will begin defending $market shortly."
+		"fleetSpawnMessageLocal":"A fleet is being launched and will begin defending $market shortly.",
+		
+		"revengeanceFleetEvent":"Revenge Fleet"
 	},
 	"exerelin_fleetAssignments":{
 		"preparingFor":"preparing for $missionType at $target",

@@ -114,6 +114,11 @@ public class StatsTracker extends BaseCampaignEventListener{
     @Override
     public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
+		if (RevengeanceFleetEvent.getOngoingEvent() != null)
+		{
+			RevengeanceFleetEvent.getOngoingEvent().reportBattle(winner, battle);
+		}
+		
         if (!battle.isPlayerInvolved()) return;
         
         List<CampaignFleetAPI> killedFleets = battle.getNonPlayerSide();
@@ -151,14 +156,6 @@ public class StatsTracker extends BaseCampaignEventListener{
                 fpLost += member.getFleetPointCost();
                 shipsLost++;
             }
-        }
-        
-        // revengeance fleet handling
-        RevengeanceFleetEvent event = RevengeanceFleetEvent.getOngoingEvent();
-        if (event!= null) 
-        {
-            float mult = 1;
-            event.addPoints(fpKilled * ExerelinConfig.revengePointsPerEnemyFP);
         }
     }
     
