@@ -369,7 +369,7 @@ ExerelinNGCListNGO,ExerelinNGCListFactions3,NGCDoesFactionExist new_galactic_ord
 ExerelinNGCListNihil,ExerelinNGCListFactions3,NGCDoesFactionExist nil,,,exerelinNGCJoinNihil:Nihilic Empire,
 ExerelinNGCListNoir,ExerelinNGCListFactions3,NGCDoesFactionExist noir,,,exerelinNGCJoinNoir:Noir,
 ExerelinNGCListOculus,ExerelinNGCListFactions3,NGCDoesFactionExist oculus,,,exerelinNGCJoinOculus:Oculian Berserks,
-#ExerelinNGCListORA,ExerelinNGCListFactions3,NGCDoesFactionExist ORA,,,exerelinNGCJoinORA:Outer Rim Alliance,
+ExerelinNGCListORA,ExerelinNGCListFactions3,NGCDoesFactionExist ORA,,,exerelinNGCJoinORA:Outer Rim Alliance,
 ExerelinNGCListORI,ExerelinNGCListFactions3,NGCDoesFactionExist ori,,,exerelinNGCJoinORI:ORI,
 ExerelinNGCListPACK,ExerelinNGCListFactions3,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
 ExerelinNGCListPatria,ExerelinNGCListFactions3,NGCDoesFactionExist patnavy,,,exerelinNGCJoinPatria:Patrian Navy,
@@ -495,7 +495,7 @@ ExerelinNGCJoinOculus,NewGameOptionSelected,$option == exerelinNGCJoinOculus,"NG
 NGCAddShipAndComplement ""ob_tigris_standard""
 AddText ""Enjoy your Tigris-class destroyer :p"" textFriendColor
 FireBest ExerelinNGCStep4",,,
-#ExerelinNGCJoinORA,NewGameOptionSelected,$option == exerelinNGCJoinORA,"$playerFaction = ORA
+ExerelinNGCJoinORA,NewGameOptionSelected,$option == exerelinNGCJoinORA,"$playerFaction = ORA
 FireBest ExerelinNGCJoinFaction",,,
 ExerelinNGCJoinORI,NewGameOptionSelected,$option == exerelinNGCJoinORI,"NGCSetPlayerFaction ""ori""
 NGCAddShipAndComplement ""ori_bastion_variant""
@@ -788,7 +788,7 @@ ExerelinFactionDirectoryListNGO,ExerelinFactionDirectoryList3,$liveFactions:new_
 ExerelinFactionDirectoryListNihil,ExerelinFactionDirectoryList3,$liveFactions:nil,,,exerelinFactionDirectoryGetNihil:Nihilic Empire,
 ExerelinFactionDirectoryListNoir,ExerelinFactionDirectoryList3,$liveFactions:noir,,,exerelinFactionDirectoryGetNoir:Noir,
 ExerelinFactionDirectoryListOculus,ExerelinFactionDirectoryList3,$liveFactions:oculus,,,exerelinFactionDirectoryGetOculus:Oculian Berserks,
-#ExerelinFactionDirectoryListORA,ExerelinFactionDirectoryList3,$liveFactions:ORA,,,exerelinFactionDirectoryGetORA:ORA,
+ExerelinFactionDirectoryListORA,ExerelinFactionDirectoryList3,$liveFactions:ORA,,,exerelinFactionDirectoryGetORA:ORA,
 ExerelinFactionDirectoryListORI,ExerelinFactionDirectoryList3,$liveFactions:ori,,,exerelinFactionDirectoryGetORI:ORI,
 ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList3,$liveFactions:pack,,,exerelinFactionDirectoryGetPACK:P.A.C.K.,
 ExerelinFactionDirectoryListPatria,ExerelinFactionDirectoryList3,$liveFactions:patnavy,,,exerelinFactionDirectoryGetPatria:Patrian Navy,
@@ -871,7 +871,7 @@ ExerelinFactionDirectoryGetNoir,DialogOptionSelected,$option == exerelinFactionD
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetOculus,DialogOptionSelected,$option == exerelinFactionDirectoryGetOculus,"$_directoryFaction = oculus 0
 FireBest ExerelinFactionDirectorySubmit",,,
-#ExerelinFactionDirectoryGetORA,DialogOptionSelected,$option == exerelinFactionDirectoryGetORA,"$_directoryFaction = ORA 0
+ExerelinFactionDirectoryGetORA,DialogOptionSelected,$option == exerelinFactionDirectoryGetORA,"$_directoryFaction = ORA 0
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetORI,DialogOptionSelected,$option == exerelinFactionDirectoryGetORI,"$_directoryFaction = ori 0
 FireBest ExerelinFactionDirectorySubmit",,,
