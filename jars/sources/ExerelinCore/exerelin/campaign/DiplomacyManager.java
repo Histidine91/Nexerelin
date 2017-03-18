@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager.Alliance;
@@ -23,6 +24,7 @@ import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
 import exerelin.world.VanillaSystemsGenerator;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -215,6 +217,30 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return baseInterval * (float)Math.pow(0.95, numFactions);
     }
     
+    protected static void printPlayerHostileStateMessage(FactionAPI faction, boolean isHostile)
+    {
+        String msg;
+        Color highlightColor = Misc.getPositiveHighlightColor();
+        
+        String factionOrAllianceName = faction.getDisplayName();
+        Alliance alliance = AllianceManager.getFactionAlliance(faction.getId());
+        if (alliance != null)
+        {
+            factionOrAllianceName = alliance.getAllianceNameAndMembers();
+        }
+        if (isHostile)
+        {
+            msg = StringHelper.getStringAndSubstituteToken("exerelin_diplomacy", "player_war_msg", "$factionOrAlliance", factionOrAllianceName);
+            highlightColor = Misc.getNegativeHighlightColor();
+        }
+        else
+        {
+            msg = StringHelper.getStringAndSubstituteToken("exerelin_diplomacy", "player_peace_msg", "$factionOrAlliance", factionOrAllianceName);
+        }
+        
+        Global.getSector().getCampaignUI().addMessage(msg, highlightColor);
+    }
+    
     // started working on this but decided I don't need it no more
     /*
     public static ExerelinReputationAdjustmentResult testAdjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
@@ -256,6 +282,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (ensureAtWorst != null) {
                 faction1.ensureAtWorst(faction2Id, ensureAtWorst);
         }
+        boolean playerWasHostile1 = faction1.isHostileTo(Factions.PLAYER);
+        boolean playerWasHostile2 = faction2.isHostileTo(Factions.PLAYER);
         
         // clamp to configs' min/max relationships
         float after = faction1.getRelationship(faction2Id);
@@ -332,6 +360,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
         AllianceManager.syncAllianceRelationshipsToFactionRelationship(faction1Id, faction2Id);
         ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);    // note: also syncs player_npc to player
+        
+        boolean playerIsHostile1 = faction1.isHostileTo(Factions.PLAYER);
+        boolean playerIsHostile2 = faction2.isHostileTo(Factions.PLAYER);
+        if (playerIsHostile1 != playerWasHostile1)
+            printPlayerHostileStateMessage(faction1, playerIsHostile1);
+        if (playerIsHostile2 != playerWasHostile2)
+            printPlayerHostileStateMessage(faction2, playerIsHostile2);
         
         SectorManager.checkForVictory();
         return repResult;
