@@ -54,7 +54,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         public float maxRepChange;
         public List<String> allowedFactions1;
         public List<String> allowedFactions2;
-        public boolean allowPirates;
+        public boolean allowPiratesToPirates;
+        public boolean allowPiratesToNonPirates;
+        public boolean allowNonPiratesToPirates;
         public float chance;
     }
     public static Logger log = Global.getLogger(DiplomacyManager.class);
@@ -121,7 +123,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             
             eventDef.minRepChange = (float)eventDefJson.getDouble("minRepChange");
             eventDef.maxRepChange = (float)eventDefJson.getDouble("maxRepChange");
-            eventDef.allowPirates = eventDefJson.optBoolean("allowPirates", false);
+            eventDef.allowPiratesToPirates = eventDefJson.optBoolean("allowPiratesToPirates", false);
+            eventDef.allowPiratesToNonPirates = eventDefJson.optBoolean("allowPiratesToNonPirates", false);
+            eventDef.allowNonPiratesToPirates = eventDefJson.optBoolean("allowNonPiratesToPirates", false);
             eventDef.chance = (float)eventDefJson.optDouble("chance", 1f);
             if (eventDefJson.has("allowedFactions1"))
                 eventDef.allowedFactions1 = ExerelinUtils.JSONArrayToArrayList(eventDefJson.getJSONArray("allowedFactions1"));
@@ -394,10 +398,17 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 break;
             }
             
-            if ((ExerelinUtilsFaction.isPirateFaction(factionId1) || ExerelinUtilsFaction.isPirateFaction(factionId2)) && !eventDef.allowPirates)
-            {
-                //log.info("Pirates on non-pirate event, invalid");
+            boolean pirate1 = ExerelinUtilsFaction.isPirateFaction(factionId1);
+            boolean pirate2 = ExerelinUtilsFaction.isPirateFaction(factionId2);
+            
+            if (pirate1 && pirate2 && !eventDef.allowPiratesToPirates)
                 continue;
+            if (pirate1 != pirate2)
+            {
+                if (pirate1 && !eventDef.allowPiratesToNonPirates)
+                    continue;
+                if (pirate2 && !eventDef.allowNonPiratesToPirates)
+                    continue;
             }
             
             //float rel = faction1.getRelationship(factionId2);
@@ -719,7 +730,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (diplomacyManager != null)
         {
             try {
-                diplomacyManager.loadSettings();
+                loadSettings();
             } catch (IOException | JSONException ex) {
                 Global.getLogger(DiplomacyManager.class).log(Level.ERROR, ex);
             }

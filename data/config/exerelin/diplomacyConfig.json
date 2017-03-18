@@ -8,7 +8,7 @@
 			"minRepLevelToOccur":"inhospitable",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
-			"allowPirates":true
+			"allowNonPiratesToPirates":true
 		},
 		{
 			"name":"Philanthropy",
@@ -16,14 +16,17 @@
 			"minRepLevelToOccur":"inhospitable",
 			"minRepChange":0.1,
 			"maxRepChange":0.15,
-			"allowPirates":true
+			"allowPiratesToPirates":true,
+			"allowPiratesToNonPirates":true,
+			"allowNonPiratesToPirates":true
 		},
 		{
 			"name":"Cultural Boom",
 			"stage":"culture_boom",
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.1,
-			"maxRepChange":0.15
+			"maxRepChange":0.15,
+			"allowNonPiratesToPirates":true
 		},
 		{
 			"name":"Cooperation Deal",
@@ -31,7 +34,7 @@
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
-			"allowPirates":true
+			"allowPiratesToPirates":true
 		},
 		{
 			"name":"Major Cooperation Deal",
@@ -39,7 +42,7 @@
 			"minRepLevelToOccur":"favorable",
 			"minRepChange":0.25,
 			"maxRepChange":0.3,
-			"allowPirates":true
+			"allowPiratesToPirates":true
 		},
 		{
 			"name":"Celebrity Wedding",
@@ -55,7 +58,9 @@
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
-			"allowPirates":true
+			"allowPiratesToPirates":true,
+			"allowPiratesToNonPirates":true,
+			"allowNonPiratesToPirates":true
 		},
 		{
 			"name":"Criminal Extradited",
@@ -63,6 +68,7 @@
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
+			"allowPiratesToPirates":true
 		},
 		{
 			"name":"Prisoner Exchange",
@@ -71,14 +77,17 @@
 			"repEnsureAtWorst":"hostile",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
-			"repLimit":"inhospitable"
+			"repLimit":"inhospitable",
+			"allowPiratesToPirates":true,
+			"allowPiratesToNonPirates":true,
+			"allowNonPiratesToPirates":true
 		},
 		{
 			"name":"Antiwar Protests",
 			"stage":"antiwar_protest",
 			"maxRepLevelToOccur":"hostile",
 			"minRepChange":0.1,
-			"maxRepChange":0.15,
+			"maxRepChange":0.15
 		},
 		{
 			"name":"Star-crossed Lovers",	# love conquers all
@@ -87,7 +96,7 @@
 			"repEnsureAtWorst":"hostile",
 			"minRepChange":0.15,
 			"maxRepChange":0.25,
-			"allowPirates":true,
+			"allowPiratesToPirates":true,
 			"chance":0.2
 		},		
 		{
@@ -96,7 +105,8 @@
 			"minRepLevelToOccur":"inhospitable",
 			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
-			"repLimit":"inhospitable"
+			"repLimit":"inhospitable",
+			"allowPiratesToPirates":true
 		},
 		{
 			"name":"Failed Deal",
@@ -105,7 +115,7 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"repLimit":"inhospitable",
-			"allowPirates":true
+			"allowPiratesToPirates":true
 		},
 		{
 			"name":"Celebrity Wedding Jilted",
@@ -124,7 +134,7 @@
 			"minRepChange":-0.25,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",	# probably an overreaction but meh
-			"allowPirates":true
+			"allowPiratesToPirates":true
 		},
 		{
 			"name":"Xenophobia",
@@ -142,6 +152,7 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
+			"allowPiratesToPirates":true,
 			"chance":1.2
 		},
 		{
@@ -152,7 +163,9 @@
 			"minRepChange":-0.25,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
-			"allowPirates":true,
+			"allowPiratesToPirates":true,
+			"allowPiratesToNonPirates":true,
+			"allowNonPiratesToPirates":true,
 			"chance":1.2
 		},
 		{
@@ -163,7 +176,7 @@
 			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
 			"repLimit":"hostile",
-			"allowPirates":true,
+			"allowPiratesToPirates":true,
 			"chance":1.25
 		},
 		{
@@ -174,7 +187,7 @@
 			"minRepChange":-0.25,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
-			"allowPirates":true,
+			"allowPiratesToPirates":true,
 			"chance":1.5
 		},
 		{
@@ -195,6 +208,7 @@
 			"minRepChange":-0.25,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
+			"allowPiratesToPirates":true,
 			"chance":1.5
 		},
 		{
@@ -217,11 +231,13 @@
 			"minRepChange":-0.3,
 			"maxRepChange":-0.2,
 			"repLimit":"hostile",
-			"allowPirates":true,
+			"allowPiratesToPirates":true,
+			"allowPiratesToNonPirates":true,
+			"allowNonPiratesToPirates":true,
 			"chance":2.5	# help tip things over into outright violence
 		},
 		
-		# special
+		
 		{
 			"name":"Ceasefire",
 			"stage":"ceasefire",
@@ -251,8 +267,8 @@
 			"minRepChange":0.1,
 			"maxRepChange":0.15,
 			"allowedFactions2":["luddic_church","kadur_theocracy","insurgency"],
-			"allowPirates":true,
-			"chance":1.5,
+			"allowNonPiratesToPirates":true,
+			"chance":1.5
 		},
 		{
 			"name":"Religious Minority Persecuted",
@@ -260,8 +276,8 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"allowedFactions2":["luddic_church","kadur_theocracy","insurgency"],
-			"allowPirates":true,
-			"chance":1.5,
+			"allowPiratesToNonPirates":true,
+			"chance":1.5
 		},
 		{
 			"name":"Religious Majority Persecutes",
@@ -269,7 +285,7 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"allowedFactions1":["luddic_church","kadur_theocracy","insurgency"],
-			"chance":1.5,
+			"chance":1.5
 		},
 		{
 			"name":"Priest Scandal",
@@ -278,7 +294,7 @@
 			"maxRepChange":-0.1,
 			"repLimit":"inhospitable",
 			"allowedFactions2":["luddic_church","kadur_theocracy","insurgency"],
-			"chance":1.5,
+			"chance":1.5
 		},
 		{
 			"name":"Condemn Treatment of Dissidents",
@@ -288,7 +304,7 @@
 			"repLimit":"hostile",
 			"allowedFactions1":["hegemony","sindrian_diktat","mayorate","interstellarimperium","new_galactic_order","kadur_theocracy"],
 			"allowedFactions2":["luddic_church","shadow_industry","pack","spire","ORA"],
-			"chance":1.5,
+			"chance":1.5
 		},
 		{
 			"name":"Anti-Corporation Movement",
@@ -299,7 +315,7 @@
 			"repLimit":"hostile",
 			"allowedFactions1":["hegemony","luddic_church","pack","interstellarimperium","new_galactic_order","kadur_theocracy","insurgency"],
 			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","exigency","metelson","ptech","dassault_mikoyan"],
-			"chance":1.5,
+			"chance":1.5
 		},
 		{
 			"name":"Technology Stolen",
@@ -309,10 +325,9 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
-			"allowPirates":true,
 			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc","dassault_mikoyan","ORA",
 				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","SCY","valkyrian","pn_colony","spire","metelson","ptech","oculus"],
-			"chance":1.2,
+			"chance":1.2
 		},
 		{
 			"name":"Contract Cheating",
