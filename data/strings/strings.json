@@ -35,6 +35,9 @@
 	
 	"exerelin_alliances":{
 		"allianceListOption":"Alliance list",
+		
+		"joinsWarAgainst":"$factionOrAlliance1 joins war against $factionOrAlliance2!",
+		"makesPeaceWith":"$factionOrAlliance1 makes peace with $factionOrAlliance2",
 	
 		"numAlliances":"There are $numAlliances alliance(s) in the Sector",
 		"joinedAlliance":"Joined alliance $NewAlliance",

@@ -206,6 +206,9 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return alliance2;
         }
         
+        FactionAPI memberFaction1 = Global.getSector().getFaction(member1);
+        FactionAPI memberFaction2 = Global.getSector().getFaction(member2);
+        
         if (type == null) type = (Alignment) ExerelinUtils.getRandomArrayElement(Alignment.values());
         
         // name stuff + population count
@@ -271,8 +274,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         allianceManager.alliancesByFactionId.put(member2, alliance);
         allianceManager.alliancesByName.put(name, alliance);
         allianceManager.alliances.add(alliance);
-               
+        
         //average out faction relationships
+        boolean playerWasHostile1 = memberFaction1.isHostileTo(Factions.PLAYER);
+        boolean playerWasHostile2 = memberFaction2.isHostileTo(Factions.PLAYER);
+        
         for (FactionAPI faction : Global.getSector().getAllFactions())
         {
             if (faction.getId().equals(member1)) continue;
@@ -292,6 +298,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             if (!playerAlignedFactionId.equals("player_npc"))
                 ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
         }
+        
+        boolean playerIsHostile1 = memberFaction1.isHostileTo(Factions.PLAYER);
+        boolean playerIsHostile2 = memberFaction2.isHostileTo(Factions.PLAYER);
+        if (playerIsHostile1 != playerWasHostile1 || playerIsHostile2 != playerWasHostile2)
+            DiplomacyManager.printPlayerHostileStateMessage(memberFaction1, playerIsHostile1);
         
         allianceManager.createAllianceEvent(member1, member2, alliance, "formed");
         SectorManager.checkForVictory();
@@ -315,6 +326,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return;
         }
         
+        boolean playerIsHostile = faction.isHostileTo(Factions.PLAYER);
+        
         List<FactionAPI> factions = sector.getAllFactions();
         for (FactionAPI otherFaction: factions)
         {
@@ -331,6 +344,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         alliance.members.add(factionId);
         alliancesByFactionId.put(factionId, alliance);
+        
+        boolean playerWasHostile = faction.isHostileTo(Factions.PLAYER);
+        if (playerIsHostile != playerWasHostile)
+            DiplomacyManager.printPlayerHostileStateMessage(faction, playerIsHostile);
         
         createAllianceEvent(factionId, null, alliance, "join");
         SectorManager.checkForVictory();
@@ -685,17 +702,34 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             }
             //else if (faction2.getId().equals("player")) party2 = Misc.ucFirst(playerAlignedFaction.getEntityNamePrefix());
             
-            String action = " joins war against ";
-            if (peaceState == 1) action = " makes peace with ";
+            String messageStr = StringHelper.getString("exerelin_alliances", "joinsWarAgainst");
+            if (peaceState == 1) messageStr = StringHelper.getString("exerelin_alliances", "makesPeaceWith");
             
-            String messageStr = "";
-            if (alliance1 == null) messageStr = party2 + action + party1;
-            else messageStr = party1 + action + party2;
-            if (peaceState == -1) messageStr += "!";
+            if (alliance1 == null) 
+            {
+                messageStr = StringHelper.substituteToken(messageStr, "$factionOrAlliance1", party2);
+                messageStr = StringHelper.substituteToken(messageStr, "$factionOrAlliance2", party1);
+            }
+            else 
+            {
+                messageStr = StringHelper.substituteToken(messageStr, "$factionOrAlliance1", party1);
+                messageStr = StringHelper.substituteToken(messageStr, "$factionOrAlliance2", party2);
+            }
             
-            AllianceSyncMessage message = new AllianceSyncMessage(messageStr, party1, party2);
+            // notification message if player's relationships are affected
+            Color highlightColor = Misc.getHighlightColor();
+            String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+            Alliance playerAlliance = getFactionAlliance(playerAlignedFactionId);
+            if (playerAlliance != null && (playerAlliance == alliance1 || playerAlliance == alliance2)
+                || faction1.getId().equals(playerAlignedFactionId) || faction2.getId().equals(playerAlignedFactionId))
+            {
+                if (peaceState == 1) highlightColor = Misc.getPositiveHighlightColor();
+                else highlightColor = Misc.getNegativeHighlightColor();
+            }
+            
+            //AllianceSyncMessage message = new AllianceSyncMessage(messageStr, party1, party2);
             CampaignUIAPI ui = sector.getCampaignUI();
-            ui.addMessage(messageStr, Color.WHITE, highlight1, highlight2, Misc.getHighlightColor(), Misc.getHighlightColor());
+            ui.addMessage(messageStr, Color.WHITE, highlight1, highlight2, highlightColor, highlightColor);
         }
         SectorManager.checkForVictory();
         return null;
