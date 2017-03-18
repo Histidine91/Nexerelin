@@ -1485,6 +1485,8 @@ RepIsAtBest $faction.id INHOSPITABLE","$menuState = main 0
 $tradeMode = OPEN 0
 FireAll PopulateOptions","While $theFactionLong $factionIsOrAre generally $relAdjective towards you, the Prism Freeport itself takes no sides. The port authority grants you docking clearance after only a slight delay.",,
 ,,,,,,
+#ExerelinPrintFleetFactionRel,BeginFleetEncounter,,Exerelin_PrintFleetFactionRelationship,,,
+,,,,,,
 # vanilla overrides,,,,,,
 #marketPostOpenInhospitable,MarketPostOpen,"$hasMarket
 RepIsAtBest $faction.id INHOSPITABLE

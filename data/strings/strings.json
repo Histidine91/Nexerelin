@@ -19,7 +19,11 @@
 		"yourFleet":"your fleet",
 		
 		"true":"true",
-		"false":"false"
+		"false":"false",
+		
+		"friendly":"friendly",
+		"neutral":"neutral",
+		"hostile":"hostile",
 	},
 	
 	"exerelin_abilities":{
@@ -125,7 +129,9 @@
 		"fleetSpawnMessage":"A fleet is being launched at $market, in $location. It will be underway shortly.",
 		"fleetSpawnMessageLocal":"A fleet is being launched and will begin defending $market shortly.",
 		
-		"revengeanceFleetEvent":"Revenge Fleet"
+		"revengeanceFleetEvent":"Revenge Fleet",
+		
+		"fleetRelationship":"$faction $isOrAre $relationship."
 	},
 	"exerelin_fleetAssignments":{
 		"preparingFor":"preparing for $missionType at $target",
