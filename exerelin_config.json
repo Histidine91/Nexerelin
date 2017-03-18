@@ -43,9 +43,9 @@
     
     "prismMaxWeapons": 27,
     "prismNumShips": 16,
-    "prismNumBossShips": 3,    # int; boss ships being the modified versions of normal ships that appear in Starsector+'s arcade mode (requires the relevant mods be active)
+    "prismNumBossShips": 3,    # int; boss ships being the IBB super ships seen in Ship/Weapon Pack
     "prismRenewBossShips": false,   # if false, once a boss ship is bought it won't appear in the market again
-    "prismUseIBBProgressForBossShips": true,    # must progress through the IBB (famous bounty) sidequest in SS+ to unlock new boss ships for sale
+    "prismUseIBBProgressForBossShips": true,    # must progress through the IBB (famous bounty) sidequest in SWP to unlock new boss ships for sale
     "prismTariff": 2.0,  # float, 1.0 = 100% tariff
     
     "warWearinessDivisor": 20000,   # float; higher means factions take longer on average to sign a ceasefire
@@ -55,9 +55,8 @@
     "warWearinessPeaceTreatyReduction": 8000,
     
     "factionRespawnInterval": 30,   # will spawn an invasion fleet for a randomly selected not-alive faction this often
-    "maxFactionRespawns": 1,    # factions can respawn this many times (not counting initial entry into sector); <0 = unlimted
+    "maxFactionRespawns": 1,    # factions can respawn this many times (not counting initial entry into sector); <0 = unlimited
     
-    "ownFactionCustomsInspections": false,  # will your faction perform customs inspections on you? (always off for followers)
     "warmongerPenalty": 1,   # take reputation hit from starting a war? 0 = never, 1 = not for followers, 2 = always
     
     "followersAgents": false,   # does followers faction use agents on its own? (default false)
@@ -78,6 +77,6 @@
     "enableUnos": true, # adds Unos for ApproLight, attached to homeworld (non-Corvus mode only)
 
     # DO NOT TOUCH!
-    # to make factions not appear, set them to unplayable in config
+    # to make factions not appear, set them to unplayable in their faction config
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "luddic_church", "luddic_path", "pirates", "player", "player_npc", "independent", "neutral"],
 }

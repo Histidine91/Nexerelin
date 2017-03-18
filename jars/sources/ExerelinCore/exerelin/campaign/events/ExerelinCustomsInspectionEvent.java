@@ -7,6 +7,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 
 // stupid private variables in parent class
+@Deprecated
 public class ExerelinCustomsInspectionEvent extends CustomsInspectionEvent {
             
     @Override
@@ -34,13 +35,4 @@ public class ExerelinCustomsInspectionEvent extends CustomsInspectionEvent {
         super.startEvent();
     }
 }
-
-
-
-
-
-
-
-
-
 

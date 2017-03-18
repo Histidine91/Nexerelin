@@ -105,6 +105,7 @@ public class ExerelinConfig
     public static float factionRespawnInterval = 30f;
     public static int maxFactionRespawns = 1;
     public static boolean countPiratesForVictory = false;
+    @Deprecated
     public static boolean ownFactionCustomsInspections = false;
     public static int directoryDialogKey = 32;  // D
     public static boolean useRelationshipBounds = true;
@@ -186,7 +187,6 @@ public class ExerelinConfig
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             maxFactionRespawns = settings.optInt("maxFactionRespawns", maxFactionRespawns);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
-            ownFactionCustomsInspections = settings.optBoolean("ownFactionCustomsInspections", ownFactionCustomsInspections);
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             
