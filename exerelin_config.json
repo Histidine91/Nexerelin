@@ -69,7 +69,7 @@
     "enableIndependents": true, # spawn independents in non-Corvus mode
     "enablePirates": true, # spawn pirates in non-Corvus mode
     
-    "enableRevengeFleets" = 1,  # 0 = disabled, 1 = only on hard mode, 2 = always (point generation halved on not-hard)
+    "enableRevengeFleets" = 2,  # 0 = disabled, 1 = only on hard mode, 2 = always (point generation halved on not-hard)
     "revengePointsPerEnemyFP" = 0.1,
     "revengePointsForMarketCaptureMult" = 4,
     
