@@ -54,6 +54,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final float FORM_CHANCE_MULT = 0.6f;   // multiplies relationship to get chance to form alliance
     protected static final float JOIN_CHANCE_FAIL_PER_NEW_ENEMY = 0.4f;
     protected static final List<String> INVALID_FACTIONS = Arrays.asList(new String[] {"templars", "independent"});
+    protected static final float HOSTILE_THRESHOLD = -RepLevel.HOSTILE.getMin();
     
     protected static Map<Alignment, List<String>> allianceNamesByAlignment = new HashMap<>();
     protected static Map<Alignment, List<String>> alliancePrefixesByAlignment = new HashMap<>();
@@ -592,18 +593,79 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
     }
     
-    protected static float setRelationshipAndUpdateDelta(FactionAPI faction, String otherFactionId, float newRel, float highestDelta)
+	/**
+	 * Detect if a relationship change will change the war/peace state between two factions
+	 * @param factionId1
+	 * @param factionId2
+	 * @param newRel
+	 * @return 0 if no change, 1 if going from war to peace, -1 if going from peace to war
+	 */
+	protected static int getPeaceStateChange(String factionId1, String factionId2, float newRel)
+    {
+        FactionAPI faction = Global.getSector().getFaction(factionId1);
+        float oldRel = faction.getRelationship(factionId2);
+        if (newRel > HOSTILE_THRESHOLD && oldRel <= HOSTILE_THRESHOLD) return 1;
+        else if (oldRel > HOSTILE_THRESHOLD && newRel <= HOSTILE_THRESHOLD) return -1;
+        return 0;
+    }
+    
+	/**
+	 * Detect if a relationship change between two factions will change the war/peace state between their alliance(s)
+	 * @param factionId1
+	 * @param factionId2
+	 * @param newRel
+	 * @return 0 if no change, 1 if going from war to peace, -1 if going from peace to war 
+	 */
+	protected static int getAlliancePeaceStateChange(String factionId1, String factionId2, float newRel)
+    {
+        Alliance alliance1 = allianceManager.alliancesByFactionId.get(factionId1);
+        Alliance alliance2 = allianceManager.alliancesByFactionId.get(factionId2);
+        int change = 0;
+        
+        if (alliance1 != null)
+        {
+            for (String memberId : alliance1.members)
+            {
+                if (alliance2 != null)
+                {
+                    for (String otherFactionId : alliance2.members)
+                    {
+                        change = getPeaceStateChange(memberId, otherFactionId, newRel);
+                        if (change != 0) return change;
+                    }
+                }
+                else {
+                    change = getPeaceStateChange(factionId1, factionId2, newRel);
+                    if (change != 0) return change;
+                }
+            }
+        }
+        else if (alliance2 != null)
+        {
+            for (String memberId : alliance2.members)
+            {
+                change = getPeaceStateChange(factionId1, memberId, newRel);
+                if (change != 0) return change;
+            }
+        }
+        return 0;
+    }
+    
+	/**
+	 * faction.setRelationship() with some checks
+	 * @param faction
+	 * @param otherFactionId
+	 * @param newRel
+	 */
+	protected static void setRelationship(FactionAPI faction, String otherFactionId, float newRel)
     {
         String factionId = faction.getId();
-        if (factionId.equals("player") && otherFactionId.equals("player_npc")) return highestDelta;
-        if (factionId.equals("player_npc") && otherFactionId.equals("player")) return highestDelta;
-        float oldRel = faction.getRelationship(otherFactionId);
-        if (oldRel == newRel) return highestDelta;
+        if (factionId.equals("player") && otherFactionId.equals("player_npc")) return;
+        if (factionId.equals("player_npc") && otherFactionId.equals("player")) return;
+        //float oldRel = faction.getRelationship(otherFactionId);
+        //if (oldRel == newRel) return;
         //log.info("Setting relationship of " + faction.getId() + " and " + otherFactionId + ": " + newRel);
         faction.setRelationship(otherFactionId, newRel);
-        float delta = newRel - oldRel;
-        if (Math.abs(delta) > Math.abs(highestDelta)) highestDelta = delta;
-        return highestDelta;
     }
     
     public static AllianceSyncMessage syncAllianceRelationshipsToFactionRelationship(String factionId1, String factionId2)
@@ -643,8 +705,13 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         FactionAPI faction1 = sector.getFaction(factionId1);
         FactionAPI faction2 = sector.getFaction(factionId2);
         float relationship = faction1.getRelationship(factionId2);
-        float highestDelta = 0;
         
+        // 1 = was at war, now at peace
+        // -1 = was at peace, now at war
+        // 0 = no change
+        int peaceState = getAlliancePeaceStateChange(factionId1, factionId2, relationship);
+        
+        // sync relationships of alliance members with the other faction/alliance
         if (alliance1 != null)
         {
             for (String memberId : alliance1.members)
@@ -654,10 +721,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 {
                     for (String otherFactionId : alliance2.members)
                     {
-                        highestDelta = setRelationshipAndUpdateDelta(member, otherFactionId, relationship, highestDelta);
+                        setRelationship(member, otherFactionId, relationship);
                     }
                 }
-                else highestDelta = setRelationshipAndUpdateDelta(member, factionId2, relationship, highestDelta);
+                else setRelationship(member, factionId2, relationship);
             }
         }
         else if (alliance2 != null)
@@ -665,24 +732,22 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             for (String memberId : alliance2.members)
             {
                 FactionAPI member = sector.getFaction(memberId);
-                highestDelta = setRelationshipAndUpdateDelta(member, factionId1, relationship, highestDelta);
+                setRelationship(member, factionId1, relationship);
             }
         }
         //ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
         
-        // 1 = was at war, now at peace
-        // -1 = was at peace, now at war
-        // 0 = no change
-        int peaceState = 0;
-        float hostileBoundary = -RepLevel.HOSTILE.getMin();
-        if (relationship < hostileBoundary && relationship - highestDelta >= hostileBoundary) peaceState = -1;  // now hostile, was not hostile
-        else if (relationship >= hostileBoundary && relationship - highestDelta < hostileBoundary) peaceState = 1; // now not hostile, was hostile
-        //log.info("Peace state: " + peaceState + " (delta " + highestDelta + ")");
-        
+        // message on peace state change
         if (peaceState != 0)
         {
-            if (faction1.getId().equals("player")) return null;
-            else if (faction2.getId().equals("player")) return null;
+            if (faction1.getId().equals(Factions.PLAYER)) return null;
+            else if (faction2.getId().equals(Factions.PLAYER)) return null;
+            
+            if (faction1.getId().equals(ExerelinConstants.PLAYER_NPC_ID) || faction2.getId().equals(ExerelinConstants.PLAYER_NPC_ID))
+            {
+                if (PlayerFactionStore.getPlayerFactionId().equals(ExerelinConstants.PLAYER_NPC_ID) == false)
+                    return null;
+            }
             
             String party1 = Misc.ucFirst(faction1.getEntityNamePrefix());
             String highlight1 = party1;
