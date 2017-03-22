@@ -120,7 +120,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             JSONObject eventDefJson = eventsJson.getJSONObject(i);
             DiplomacyEventDef eventDef = new DiplomacyEventDef();
             eventDef.name = eventDefJson.getString("name");
-            log.info("Adding diplomacy event " + eventDef.name);
+            //log.info("Adding diplomacy event " + eventDef.name);
             eventDef.stage = eventDefJson.getString("stage");
             
             eventDef.minRepChange = (float)eventDefJson.getDouble("minRepChange");
@@ -861,9 +861,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (factionConfig == null) return;
         if (factionConfig.hostileToAll <= 0) return;
         
-        SectorAPI sector = Global.getSector();
-        String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
-        
         float relationship = STARTING_RELATIONSHIP_HOSTILE;
         if (factionConfig.hostileToAll == 3) relationship = -1f;
         boolean isPirateNeutral = factionConfig.isPirateNeutral;
@@ -875,12 +872,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 continue;
             boolean isPlayer = otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID) || otherFactionId.equals(Factions.PLAYER);
             
-            FactionAPI otherFaction = sector.getFaction(otherFactionId);
+            FactionAPI otherFaction = Global.getSector().getFaction(otherFactionId);
             if (factionConfig.hostileToAll == 1 && isPlayer)
             {
                 otherFaction.setRelationship(factionId, STARTING_RELATIONSHIP_INHOSPITABLE);
             }
-            else if (!otherFaction.isNeutralFaction() && !otherFactionId.equals("factionId"))
+            else if (!otherFaction.isNeutralFaction())
             {
                 setRelationshipAtBest(factionId, otherFactionId, relationship);
             }
@@ -895,7 +892,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         FactionAPI selectedFaction = sector.getFaction(selectedFactionId);
         log.info("Selected faction is " + selectedFaction + " | " + selectedFactionId);
 
-        //List<String> factionIds = ectorManager.getLiveFactionIdsCopy();
+        //List<String> factionIds = SectorManager.getLiveFactionIdsCopy();
         //factionIds.add("independent");
         //factionIds.add(ExerelinConstants.PLAYER_NPC_ID);
         
@@ -908,17 +905,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (faction.isNeutralFaction()) continue;
             factionIds.add(faction.getId());
         }
-        // I don't think we need this any more
-        /*
-        for (String factionId : factionIds)
-        {
-            if (!SectorManager.isFactionAlive(factionId) && !factionId.equals(ExerelinConstants.PLAYER_NPC_ID) && !factionId.equals(Factions.PLAYER))
-            {
-                if (!ExerelinUtilsFaction.isExiInCorvus(factionId)) alreadyRandomizedIds.add(factionId);
-                handleHostileToAllFaction(factionId, factionIds);
-            }
-        }
-        */
 
         boolean randomize = false;
         if (diplomacyManager != null)
