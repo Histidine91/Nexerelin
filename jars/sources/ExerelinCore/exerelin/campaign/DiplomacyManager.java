@@ -1054,13 +1054,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             famousBounty.setRelationship(Factions.PLAYER, -1f);
             //famousBounty.setRelationship(ExerelinConstants.PLAYER_NPC_ID, -1f);
         }
-		player.setRelationship("shippackfaction", RepLevel.FRIENDLY);
+        player.setRelationship("shippackfaction", RepLevel.FRIENDLY);
         
         player.setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1f);
         // if we leave our faction later, we'll be neutral to most but hostile to pirates and such
         PlayerFactionStore.saveIndependentPlayerRelations();
         
-		// set player relations based on selected faction
+        // set player relations based on selected faction
         if (selectedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
         {
             ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
@@ -1071,6 +1071,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);	// already done in syncPlayerRelationshipsToFaction
         }
         
+        // Exigency hax: make sure mysterious contact doesn't appear in war/peace messages on alliance formation
+        for (String factionId : factionIds)
+        {
+            FactionAPI faction = sector.getFaction(factionId);
+            faction.setRelationship("mysterious_contact", 0);
+        }
     }
     
     public static void resetFactionRelationships(String factionId)
