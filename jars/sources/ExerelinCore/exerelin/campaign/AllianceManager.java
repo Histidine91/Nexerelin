@@ -99,60 +99,66 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 Global.getLogger(AllianceManager.class).log(Level.ERROR, ex);
         }
     }
-	
-	public static Alignment getBestAlignment(String factionId, String otherFactionId)
-	{
-		float bestAlignmentValue = 0;
-		List<Alignment> bestAlignments = new ArrayList<>();
-		ExerelinFactionConfig config1 = ExerelinConfig.getExerelinFactionConfig(factionId);
-		ExerelinFactionConfig config2 = ExerelinConfig.getExerelinFactionConfig(otherFactionId);   
-		for (Alignment alignment : Alignment.values())
-		{
-			float alignment1 = 0;
-			float alignment2 = 0;
-			if (config1 != null)
-			{
-				alignment1 = config1.alignments.get(alignment);
-			}
-			if (config2 != null)
-			{
-				alignment2 = config2.alignments.get(alignment);
-			}
-			float sum = alignment1 + alignment2;
-			if (sum < MIN_ALIGNMENT_FOR_NEW_ALLIANCE && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
-			if (sum > bestAlignmentValue)
-			{
-				bestAlignments.clear();
-				bestAlignmentValue = sum;
-				bestAlignments.add(alignment);
-			}
-			else if (sum == bestAlignmentValue)
-			{
-				bestAlignments.add(alignment);
-			}
-		}
-		if (!bestAlignments.isEmpty())
-		{
-			return (Alignment)ExerelinUtils.getRandomListElement(bestAlignments);
-		}
-		return null;
-	}
-	
-	public static float getAlignmentCompatibilityWithAlliance(String factionId, Alliance alliance)
-	{
-		if (alliance == null) return 0;
-		float value = 0;
+    
+    /**
+     * Returns the alignment with the largest affinity sum between two factions (with random tiebreaker)
+     * @param factionId
+     * @param otherFactionId
+     * @return
+     */
+    public static Alignment getBestAlignment(String factionId, String otherFactionId)
+    {
+        float bestAlignmentValue = 0;
+        List<Alignment> bestAlignments = new ArrayList<>();
+        ExerelinFactionConfig config1 = ExerelinConfig.getExerelinFactionConfig(factionId);
+        ExerelinFactionConfig config2 = ExerelinConfig.getExerelinFactionConfig(otherFactionId);   
+        for (Alignment alignment : Alignment.values())
+        {
+            float alignment1 = 0;
+            float alignment2 = 0;
+            if (config1 != null)
+            {
+                alignment1 = config1.alignments.get(alignment);
+            }
+            if (config2 != null)
+            {
+                alignment2 = config2.alignments.get(alignment);
+            }
+            float sum = alignment1 + alignment2;
+            if (sum < MIN_ALIGNMENT_FOR_NEW_ALLIANCE && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
+            if (sum > bestAlignmentValue)
+            {
+                bestAlignments.clear();
+                bestAlignmentValue = sum;
+                bestAlignments.add(alignment);
+            }
+            else if (sum == bestAlignmentValue)
+            {
+                bestAlignments.add(alignment);
+            }
+        }
+        if (!bestAlignments.isEmpty())
+        {
+            return (Alignment)ExerelinUtils.getRandomListElement(bestAlignments);
+        }
+        return null;
+    }
+    
+    public static float getAlignmentCompatibilityWithAlliance(String factionId, Alliance alliance)
+    {
+        if (alliance == null) return 0;
+        float value = 0;
         ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-		if (config!= null && config.alignments != null)
-		{
-			log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.name);
-			//log.info("Alliance alignment: " + alliance.alignment.toString());
-			Alignment align = alliance.alignment;
-			if (config.alignments.containsKey(align))
-				value = config.alignments.get(align);
-		}
-		return value;
-	}
+        if (config!= null && config.alignments != null)
+        {
+            log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.name);
+            //log.info("Alliance alignment: " + alliance.alignment.toString());
+            Alignment align = alliance.alignment;
+            if (config.alignments.containsKey(align))
+                value = config.alignments.get(align);
+        }
+        return value;
+    }
     
     public void createAllianceEvent(String faction1, String faction2, Alliance alliance, String stage)
     {
@@ -389,7 +395,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         SectorManager.checkForVictory();
     }  
     
-    // check factions for eligibility to join/form an alliance
+
+    /**
+     * Check all factions for eligibility to join/form an alliance
+     */
     public void tryMakeAlliance()
     {
         SectorAPI sector = Global.getSector();
@@ -416,8 +425,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 float rel = faction.getRelationship(otherFactionId);
                 if (Math.random() > rel * FORM_CHANCE_MULT ) continue;
                 
-				Alignment bestAlignment = getBestAlignment(factionId, otherFactionId);
-				if (bestAlignment != null)
+                Alignment bestAlignment = getBestAlignment(factionId, otherFactionId);
+                if (bestAlignment != null)
                 {
                     createAlliance(factionId, otherFactionId, bestAlignment);
                     return; // only one alliance at a time
@@ -526,6 +535,13 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return false;
     }
     
+    /**
+     * Returns the average relationship between a faction and the members of an alliance
+     * This is only interesting if the faction is a member of that alliance, otherwise all members will have the same relationship with it
+     * @param factionId
+     * @param alliance
+     * @return
+     */
     public static float getAverageRelationshipWithAlliance(String factionId, Alliance alliance)
     {
         float sumRelationships = 0;
@@ -541,6 +557,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return sumRelationships/numFactions;
     }
        
+    /**
+     * Check if faction should leave an alliance due to disliking its allies
+     * @param factionId
+     * @param otherFactionId
+     */
     public static void remainInAllianceCheck(String factionId, String otherFactionId)
     {
         if (allianceManager == null) return;
@@ -549,7 +570,6 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (alliance1 == null || alliance2 == null || alliance1 != alliance2) return;
     
         FactionAPI faction = Global.getSector().getFaction(factionId);
-        FactionAPI otherFaction = Global.getSector().getFaction(otherFactionId);
         if (faction.isHostileTo(otherFactionId))
         {
             // no fighting here, both of you get out of our clubhouse!
@@ -593,14 +613,14 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
     }
     
-	/**
-	 * Detect if a relationship change will change the war/peace state between two factions
-	 * @param factionId1
-	 * @param factionId2
-	 * @param newRel
-	 * @return 0 if no change, 1 if going from war to peace, -1 if going from peace to war
-	 */
-	protected static int getPeaceStateChange(String factionId1, String factionId2, float newRel)
+    /**
+     * Detect if a relationship change will change the war/peace state between two factions
+     * @param factionId1
+     * @param factionId2
+     * @param newRel
+     * @return 0 if no change, 1 if going from war to peace, -1 if going from peace to war
+     */
+    protected static int getPeaceStateChange(String factionId1, String factionId2, float newRel)
     {
         FactionAPI faction = Global.getSector().getFaction(factionId1);
         float oldRel = faction.getRelationship(factionId2);
@@ -609,14 +629,14 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return 0;
     }
     
-	/**
-	 * Detect if a relationship change between two factions will change the war/peace state between their alliance(s)
-	 * @param factionId1
-	 * @param factionId2
-	 * @param newRel
-	 * @return 0 if no change, 1 if going from war to peace, -1 if going from peace to war 
-	 */
-	protected static int getAlliancePeaceStateChange(String factionId1, String factionId2, float newRel)
+    /**
+     * Detect if a relationship change between two factions will change the war/peace state between their alliance(s)
+     * @param factionId1
+     * @param factionId2
+     * @param newRel
+     * @return 0 if no change, 1 if going from war to peace, -1 if going from peace to war 
+     */
+    protected static int getAlliancePeaceStateChange(String factionId1, String factionId2, float newRel)
     {
         Alliance alliance1 = allianceManager.alliancesByFactionId.get(factionId1);
         Alliance alliance2 = allianceManager.alliancesByFactionId.get(factionId2);
@@ -651,13 +671,13 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return 0;
     }
     
-	/**
-	 * faction.setRelationship() with some checks
-	 * @param faction
-	 * @param otherFactionId
-	 * @param newRel
-	 */
-	protected static void setRelationship(FactionAPI faction, String otherFactionId, float newRel)
+    /**
+     * faction.setRelationship() with some checks
+     * @param faction
+     * @param otherFactionId
+     * @param newRel
+     */
+    protected static void setRelationship(FactionAPI faction, String otherFactionId, float newRel)
     {
         String factionId = faction.getId();
         if (factionId.equals("player") && otherFactionId.equals("player_npc")) return;
@@ -668,6 +688,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         faction.setRelationship(otherFactionId, newRel);
     }
     
+    /**
+     * Make each member of an alliance have the same relationship with an outside faction (and their allies, if any)
+     * @param factionId1
+     * @param factionId2
+     * @return Unused at present (always returns null)
+     */
     public static AllianceSyncMessage syncAllianceRelationshipsToFactionRelationship(String factionId1, String factionId2)
     {
         if (allianceManager == null) return null;
@@ -957,6 +983,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return size;
         }
         
+        /**
+         * Returns a string of format "[Alliance name] ([member1], [member2], ...)"
+         * @return
+         */
         public String getAllianceNameAndMembers()
         {
             String factions = "";
