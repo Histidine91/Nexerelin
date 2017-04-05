@@ -1334,7 +1334,7 @@ SetEnabled exerelinLeaveFaction false",,,
 ExerelinJoinFaction,DialogOptionSelected,$option == exerelinJoinFaction,"SetShortcut exerelinJoinFactionConfirm RETURN
 SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE
 Exerelin_GetSalary
-SetTextHighlights $salary","""Good, good. We can offer you a place, with benefits including a monthly salary of $salary per month. Just fill out this form here...""","exerelinJoinFactionConfirm:Confirm
+SetTextHighlights $salary ""insurance""","""Good, good. We can offer you a place, with benefits including a monthly salary of $salary credits and insurance payments on ship loss. Just fill out this form here...""","exerelinJoinFactionConfirm:Confirm
 exerelinBaseCommanderMenuRepeat:Cancel",
 ExerelinJoinFactionConfirm,DialogOptionSelected,$option == exerelinJoinFactionConfirm,"JoinFaction $faction.id
 FireAll ExerelinBaseCommanderOptionsInitialize","""Alright, you're registered. Welcome to the team.""",,
@@ -1342,7 +1342,7 @@ ExerelinJoinFactionPirate,DialogOptionSelected,"$option == exerelinJoinFaction
 IsPirateFaction $faction.id","SetShortcut exerelinJoinFactionConfirm RETURN
 SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE
 Exerelin_GetSalary
-SetTextHighlights $salary","""Wanna be a freebooter, eh? Your cut of the community loot will be $salary per month. Here's some paperwork to fill out for the boss.""","exerelinJoinFactionConfirm:Confirm
+SetTextHighlights $salary ""insurance""","""Wanna be a freebooter, eh? Your cut of the community loot will be $salary credits per month, along with ship loss insurance. Here's some paperwork to fill out for the boss.""","exerelinJoinFactionConfirm:Confirm
 exerelinBaseCommanderMenuRepeat:Cancel",
 ExerelinJoinFactionConfirmPirate,DialogOptionSelected,"$option == exerelinJoinFactionConfirm
 IsPirateFaction $faction.id","JoinFaction $faction.id
@@ -1350,7 +1350,7 @@ FireAll ExerelinBaseCommanderOptionsInitialize","""Excellent! I'll let the boys 
 ExerelinJoinFactionTemplars,DialogOptionSelected,"$option == exerelinJoinFaction
 $faction.id == ""templars""","SetShortcut exerelinJoinFactionConfirm RETURN
 SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE
-SetTextHighlights $salary","""So you wish to join our noble cause? You will receive a monthly stipend of $salary, among other benefits. Are you prepared to give your oath?""","exerelinJoinFactionConfirm:Confirm
+SetTextHighlights $salary ""insurance""","""So you wish to join our noble cause? You will receive a monthly stipend of $salary, among other benefits including ship loss insurance. Are you prepared to give your oath?""","exerelinJoinFactionConfirm:Confirm
 exerelinBaseCommanderMenuRepeat:Cancel",
 ExerelinJoinFactionConfirmTemplars,DialogOptionSelected,"$option == exerelinJoinFactionConfirm
 $faction.id == ""templars""","JoinFaction $faction.id
