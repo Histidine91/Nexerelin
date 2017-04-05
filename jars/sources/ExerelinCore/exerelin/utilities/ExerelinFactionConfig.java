@@ -285,14 +285,18 @@ public class ExerelinFactionConfig
     {
         if (diplomacyPositiveChance.containsKey(factionId))
             return diplomacyPositiveChance.get(factionId);
-        return diplomacyPositiveChance.get("default");
+        if (diplomacyPositiveChance.containsKey("default"))
+            return diplomacyPositiveChance.get("default");
+        return 1;
     }
     
     float getDiplomacyNegativeChance(String factionId)
     {
         if (diplomacyNegativeChance.containsKey(factionId))
             return diplomacyNegativeChance.get(factionId);
-        return diplomacyNegativeChance.get("default");
+        if (diplomacyNegativeChance.containsKey("default"))
+            return diplomacyNegativeChance.get("default");
+        return 1;
     }
     
     public static float getDiplomacyPositiveChance(String factionId1, String factionId2)
