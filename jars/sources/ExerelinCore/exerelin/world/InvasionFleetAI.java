@@ -92,6 +92,18 @@ public class InvasionFleetAI implements EveryFrameScript
         FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
         if (assignment != null)
         {
+			if(!data.target.getFaction().isHostileTo(fleet.getFaction()))
+            {
+                if (data.event != null)
+                {
+                    if (data.target.getFaction() == fleet.getFaction())
+                        data.event.endEvent(InvasionFleetEvent.FleetReturnReason.ALREADY_CAPTURED, data.target);
+                    else
+                        data.event.endEvent(InvasionFleetEvent.FleetReturnReason.NO_LONGER_HOSTILE, data.target);
+                }
+                giveStandDownOrders();  // market is no longer hostile; abort invasion
+            }
+			
             float fp = this.fleet.getFleetPoints();
             if (fp < this.data.startingFleetPoints / 2.0F) {
                 if (data.event != null) data.event.endEvent(InvasionFleetEvent.FleetReturnReason.SHIP_LOSSES, data.fleet);
@@ -102,17 +114,6 @@ public class InvasionFleetAI implements EveryFrameScript
                 // we lost over 60% of our marines, no more invading
                 if (data.event != null) data.event.endEvent(InvasionFleetEvent.FleetReturnReason.MARINE_LOSSES, data.target);
                 giveStandDownOrders();
-            }
-            if(!data.target.getFaction().isHostileTo(fleet.getFaction()))
-            {
-                if (data.event != null)
-                {
-                    if (data.target.getFaction() == fleet.getFaction())
-                        data.event.endEvent(InvasionFleetEvent.FleetReturnReason.ALREADY_CAPTURED, data.target);
-                    else
-                        data.event.endEvent(InvasionFleetEvent.FleetReturnReason.NO_LONGER_HOSTILE, data.target);
-                }
-                giveStandDownOrders();  // market is no longer hostile; abort invasion
             }
             
             if (orderedReturn)
