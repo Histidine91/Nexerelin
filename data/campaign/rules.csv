@@ -1433,7 +1433,8 @@ ExerelinLeaveAllianceOption,ExerelinMarketSpecial,"$hasMarket
 $player.factionId == ""player_npc""
 $player.isInAlliance
 $faction.isInAlliance
-$faction.allianceId == $player.allianceId",,,exerelinLeaveAlliance:Leave alliance $_factionAllianceId,
+$faction.allianceId == $player.allianceId","$_factionAllianceId = $faction.allianceId 0
+$_playerAllianceId = $player.allianceId 0",,exerelinLeaveAlliance:Leave alliance $_factionAllianceId,
 ,,,,,,
 ExerelinJoinAlliance,DialogOptionSelected,$option == exerelinJoinAlliance,,Are you sure you want your faction to join alliance $_factionAllianceId?,"exerelinJoinAllianceConfirm:Yes
 exerelinMarketSpecial:No",
