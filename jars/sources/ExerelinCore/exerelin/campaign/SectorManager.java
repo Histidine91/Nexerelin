@@ -178,7 +178,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (captain != null && !captain.isDefault())
             {
                 float survivalChance = 1f - (0.5f * member.getMember().getStats().getCrewLossMult().modified);
-                float captureChance = 0.3f + (0.3f * captain.getStats().getLevel() / 20);    // FIXME magic number
+                float captureChance = 0.15f + (0.1f * captain.getStats().getLevel() / 20);    // FIXME magic number
                 if (Math.random() < survivalChance * captureChance)
                     prisoners++;
             }
