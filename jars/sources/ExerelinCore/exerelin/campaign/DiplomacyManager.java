@@ -303,6 +303,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         boolean isHostile = faction1.isHostileTo(faction2);
 
         // TODO: this could go entirely?
+        /*
         if(faction1 == playerAlignedFaction)
         {
             playerFaction.setRelationship(faction2Id, after);
@@ -313,6 +314,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             playerFaction.setRelationship(faction1Id, after);
             faction1.setRelationship(ExerelinConstants.PLAYER_NPC_ID, after);
         }
+        */
         
         // if now at peace/war, set relationships for commission holder
         // TODO figure out if the playerFaction bit is really needed
