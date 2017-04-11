@@ -148,12 +148,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
         WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker<>();
         SectorAPI sector = Global.getSector();
         for (String factionId: ExerelinSetupData.getInstance().getAllFactions()) {
-			FactionAPI faction = sector.getFaction(factionId);
+            FactionAPI faction = sector.getFaction(factionId);
             if (!faction.isShowInIntelTab()) continue;
-			//if (faction.isNeutralFaction()) continue;
-			//if (faction.isPlayerFaction()) continue;
+            //if (faction.isNeutralFaction()) continue;
+            //if (faction.isPlayerFaction()) continue;
             if (!factionId.contains("templars") && !factionId.contains("pirates")) 
-			{
+            {
                 factionPicker.add(sector.getFaction(factionId));
             }
         }
@@ -302,7 +302,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                     }
                 }
                 //ignore already bought IBB
-                if (alreadyBoughtShips.contains(entry.id))
+                if (!ExerelinConfig.prismRenewBossShips && alreadyBoughtShips.contains(entry.id))
                     continue;
 
                 // favour ships from bounties close to the last one we did
@@ -376,32 +376,32 @@ public class PrismMarket extends BaseSubmarketPlugin {
         if (action == TransferAction.PLAYER_SELL) return true;
         return false;
     }
-	
-	@Override
+    
+    @Override
     public float getTariff() {
         RepLevel level = submarket.getFaction().getRelationshipLevel(Global.getSector().getFaction(Factions.PLAYER));
-		float mult = 1f;
+        float mult = 1f;
         switch (level)
         {
             case NEUTRAL:
                 mult = 1f;
-				break;
+                break;
             case FAVORABLE:
                 mult = 0.9f;
-				break;
+                break;
             case WELCOMING:
                 mult = 0.75f;
-				break;
+                break;
             case FRIENDLY:
                 mult = 0.65f;
-				break;
+                break;
             case COOPERATIVE:
                 mult = 0.5f;
-				break;
+                break;
             default:
                 mult = 1f;
         }
-		return mult * ExerelinConfig.prismTariff;
+        return mult * ExerelinConfig.prismTariff;
     }
     
     @Override
@@ -409,13 +409,21 @@ public class PrismMarket extends BaseSubmarketPlugin {
         List<ShipSaleInfo> shipsBought = transaction.getShipsBought();
         for (ShipSaleInfo saleInfo : shipsBought)
         {
-            String hullId = saleInfo.getMember().getHullId();
+            String id = null;
+            if (saleInfo.getMember().isFighterWing())
+            {
+                id = saleInfo.getMember().getHullId() + "_wing";
+            }
+            else 
+            {
+                id = saleInfo.getMember().getHullId();
+            }
             if (alreadyBoughtShips == null)
                 alreadyBoughtShips = new HashSet<>();
-            if (!alreadyBoughtShips.contains(hullId))
+            if (!alreadyBoughtShips.contains(id))
             {
                 //log.info("Purchased boss ship " + hullId + "; will no longer appear");
-                alreadyBoughtShips.add(hullId);
+                alreadyBoughtShips.add(id);
             }
         }
     }
@@ -436,24 +444,24 @@ public class PrismMarket extends BaseSubmarketPlugin {
     {
         if (!isEnabled(ui))
         {
-			String msg = StringHelper.getString("exerelin_markets", "prismRelTooLow");
-			msg = StringHelper.substituteToken(msg, "$faction", submarket.getFaction().getDisplayName());
-			msg = StringHelper.substituteToken(msg, "$minRelationship", MIN_STANDING.getDisplayName().toLowerCase());
+            String msg = StringHelper.getString("exerelin_markets", "prismRelTooLow");
+            msg = StringHelper.substituteToken(msg, "$faction", submarket.getFaction().getDisplayName());
+            msg = StringHelper.substituteToken(msg, "$minRelationship", MIN_STANDING.getDisplayName().toLowerCase());
             return msg;
         }
         return null;
     }
-	
-	@Override
-	public Highlights getTooltipAppendixHighlights(CoreUIAPI ui) {
-		String appendix = getTooltipAppendix(ui);
-		if (appendix == null) return null;
-		
-		Highlights h = new Highlights();
-		h.setText(appendix);
-		h.setColors(Misc.getNegativeHighlightColor());
-		return h;
-	}
+    
+    @Override
+    public Highlights getTooltipAppendixHighlights(CoreUIAPI ui) {
+        String appendix = getTooltipAppendix(ui);
+        if (appendix == null) return null;
+        
+        Highlights h = new Highlights();
+        h.setText(appendix);
+        h.setColors(Misc.getNegativeHighlightColor());
+        return h;
+    }
     
     @Override
     public boolean isEnabled(CoreUIAPI ui)
@@ -466,8 +474,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public boolean isBlackMarket() {
             return false;
     }
-	
-	//List IBBs and their progress
+    
+    //List IBBs and their progress
     public static class BossShipEntry {
         public String id;
         public int ibbNum;
