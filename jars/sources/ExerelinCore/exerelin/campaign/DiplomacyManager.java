@@ -257,6 +257,28 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     }
     */
     
+    public static boolean clampRelations(String faction1Id, String faction2Id, float delta)
+    {
+        if (diplomacyManager.randomFactionRelationships)
+            return false;
+        
+        FactionAPI faction1 = Global.getSector().getFaction(faction1Id);
+        float curr = faction1.getRelationship(faction2Id);
+        float max = ExerelinFactionConfig.getMaxRelationship(faction1Id, faction2Id);
+        float min = ExerelinFactionConfig.getMinRelationship(faction1Id, faction2Id);
+        if (delta >= 0 && max < curr)
+        {
+            faction1.setRelationship(faction2Id, max);
+            return true;
+        }
+        if (delta <= 0 && min > curr)
+        {
+            faction1.setRelationship(faction2Id, min);
+            return true;
+        }
+        return false;
+    }
+    
     // TODO: refactor/test if all that duplicate handling for player vs. aligned faction is really needed
     public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
             RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit)
@@ -285,19 +307,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         boolean playerWasHostile1 = faction1.isHostileTo(Factions.PLAYER);
         boolean playerWasHostile2 = faction2.isHostileTo(Factions.PLAYER);
         
-        // clamp to configs' min/max relationships
+        clampRelations(faction1Id, faction2Id, delta);
         float after = faction1.getRelationship(faction2Id);
-        if (!diplomacyManager.randomFactionRelationships)
-        {
-            float max = ExerelinFactionConfig.getMaxRelationship(faction1Id, faction2Id);
-            float min = ExerelinFactionConfig.getMinRelationship(faction1Id, faction2Id);
-            if (delta > 0 && max < after)
-                faction1.setRelationship(faction2Id, max);
-            if (delta < 0 && min > after)
-                faction1.setRelationship(faction2Id, min);
-
-            after = faction1.getRelationship(faction2Id);
-        }
         delta = after - before;
         //log.info("Relationship delta: " + delta);
         boolean isHostile = faction1.isHostileTo(faction2);
