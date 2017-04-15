@@ -245,6 +245,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (fleetResult.getDisabled().isEmpty() && fleetResult.getDestroyed().isEmpty()) return;
         CampaignFleetAPI fleet = fleetResult.getFleet();
         if (fleet.getMemoryWithoutUpdate().getBoolean("$exerelinFleetAggressAgainstPlayer")) return;
+		// can't, it's e.g. used by customs inspectors even before you agree to the scan
+		//if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE)) return;
+		if (fleet.getMemoryWithoutUpdate().getBoolean("$Cabal_extortionAskedFor")) return;
         if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_LOW_REP_IMPACT)) return;
         if (!result.getBattle().isPlayerPrimary()) return;
         if (!fleet.knowsWhoPlayerIs()) return;
