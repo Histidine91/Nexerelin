@@ -65,7 +65,7 @@ public class LeaveFaction extends BaseCommandPlugin {
 			AllianceManager.joinAllianceStatic(newFactionId, newAlliance);
 			AllianceManager.setPlayerInteractionTarget(null);
 			
-			ExerelinUtilsReputation.syncPlayerRelationshipsToFaction("player_npc", true); //?
+			//ExerelinUtilsReputation.syncPlayerRelationshipsToFaction("player_npc"); //?
 			
 			str = StringHelper.getString("exerelin_alliances", "joinedAlliance");
 			str = StringHelper.substituteToken(str, "$NewAlliance", newAlliance.name);

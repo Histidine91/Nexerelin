@@ -51,7 +51,7 @@ public class ExerelinUtilsFaction {
         return ret;
     }
     
-    public static int getFactionPopulation(String factionId)
+    public static int getFactionMarketSizeSum(String factionId)
     {
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
         int pop = 0;

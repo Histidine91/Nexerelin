@@ -279,9 +279,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return false;
     }
     
-    // TODO: refactor/test if all that duplicate handling for player vs. aligned faction is really needed
     public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
             RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit)
+    {
+        return adjustRelations(faction1, faction2, delta, ensureAtBest, ensureAtWorst, limit, false);
+    }
+    
+    // TODO: refactor/test if all that duplicate handling for player vs. aligned faction is really needed
+    public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
+            RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit, boolean isAllianceAction)
     {   
         SectorAPI sector = Global.getSector();
         
@@ -312,20 +318,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         delta = after - before;
         //log.info("Relationship delta: " + delta);
         boolean isHostile = faction1.isHostileTo(faction2);
-
-        // TODO: this could go entirely?
-        /*
-        if(faction1 == playerAlignedFaction)
-        {
-            playerFaction.setRelationship(faction2Id, after);
-            faction2.setRelationship(ExerelinConstants.PLAYER_NPC_ID, after);
-        }
-        else if(faction2 == playerAlignedFaction)
-        {
-            playerFaction.setRelationship(faction1Id, after);
-            faction1.setRelationship(ExerelinConstants.PLAYER_NPC_ID, after);
-        }
-        */
         
         // if now at peace/war, set relationships for commission holder
         // TODO figure out if the playerFaction bit is really needed
@@ -346,11 +338,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 if (commissionFactionId.equals(faction2Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction2Id))
                 {
                     playerAlignedFaction.ensureAtWorst(faction1Id, RepLevel.INHOSPITABLE);
-                    //playerAlignedFaction.adjustRelationship(faction1Id, delta);
                     playerFaction.ensureAtWorst(faction1Id, RepLevel.INHOSPITABLE);
-                    //playerFaction.adjustRelationship(faction1Id, delta);
                 }
             }
+            if (!isAllianceAction) AllianceVoter.allianceVote(faction1Id, faction2Id, false);
         }
         else if (!repResult.wasHostile && repResult.isHostile)
         {
@@ -368,11 +359,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     playerFaction.ensureAtBest(faction1Id, RepLevel.HOSTILE);
                 }
             }
+            if (!isAllianceAction) AllianceVoter.allianceVote(faction1Id, faction2Id, true);
         }
         
-        AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
-        AllianceManager.syncAllianceRelationshipsToFactionRelationship(faction1Id, faction2Id);
-        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);    // note: also syncs player_npc to player
+        if (!isAllianceAction)
+            AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
+        
+        if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
+            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();    // note: also syncs player_npc to player
         
         boolean playerIsHostile1 = faction1.isHostileTo(Factions.PLAYER);
         boolean playerIsHostile2 = faction2.isHostileTo(Factions.PLAYER);
@@ -744,14 +738,23 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     }
     
     @Override
-    public void reportPlayerReputationChange(String faction, float delta) {
+    public void reportPlayerReputationChange(String factionId, float delta) {
         FactionAPI player = Global.getSector().getFaction("player");
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         
-        AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", faction);
-        ExerelinUtilsReputation.syncFactionRelationshipToPlayer(playerAlignedFactionId, faction);
+        // clamp
+        ExerelinUtilsReputation.syncFactionRelationshipToPlayer(playerAlignedFactionId, factionId);
+        ExerelinUtilsReputation.syncPlayerRelationshipToFaction(playerAlignedFactionId, factionId);
         if (!playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
-            ExerelinUtilsReputation.syncFactionRelationshipToPlayer(ExerelinConstants.PLAYER_NPC_ID, faction);
+            ExerelinUtilsReputation.syncFactionRelationshipToPlayer(ExerelinConstants.PLAYER_NPC_ID, factionId);
+        
+        float currentRel = player.getRelationship(factionId);
+        boolean isHostile = player.isHostileTo(factionId);
+        
+        // if we changed peace/war state, decide if alliances should get involved
+        if (isHostile && currentRel - delta > AllianceManager.HOSTILE_THRESHOLD 
+                || !isHostile && currentRel - delta < AllianceManager.HOSTILE_THRESHOLD)
+            AllianceVoter.allianceVote(playerAlignedFactionId, factionId, isHostile);
         
         if (player.isAtBest(PlayerFactionStore.getPlayerFactionId(), RepLevel.INHOSPITABLE))
             SectorManager.scheduleExpelPlayerFromFaction();
@@ -1079,7 +1082,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
         }
         else {
-            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId, true);
+            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId);
             player.setRelationship(selectedFactionId, STARTING_RELATIONSHIP_FRIENDLY);
             //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);	// already done in syncPlayerRelationshipsToFaction
         }

@@ -39,7 +39,7 @@ public class FormAlliance extends BaseCommandPlugin {
 		Alliance alliance = AllianceManager.createAlliance(playerFactionId, factionId, AllianceManager.getBestAlignment(factionId, playerFactionId));
 		AllianceManager.setPlayerInteractionTarget(null);
 		
-		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction("player_npc", true);
+		//ExerelinUtilsReputation.syncPlayerRelationshipsToFaction("player_npc");
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
 		memory.set("$isInAlliance", true, 0);
