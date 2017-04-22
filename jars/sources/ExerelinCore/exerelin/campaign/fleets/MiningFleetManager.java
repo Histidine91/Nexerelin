@@ -227,7 +227,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 			if (newValue > POINTS_TO_SPAWN)
 			{
 				newValue -= POINTS_TO_SPAWN;
-				spawnMiningFleet(market);
+				//spawnMiningFleet(market);
 			}
 			
 			spawnCounter.put(market.getId(), newValue);
