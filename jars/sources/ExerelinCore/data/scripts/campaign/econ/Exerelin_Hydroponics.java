@@ -22,8 +22,8 @@ public class Exerelin_Hydroponics extends BaseMarketConditionPlugin {
 
 		// constant
 		/*
-		market.getDemand(Commodities.REGULAR_CREW).getDemand().modifyFlat(id, HYDROPONICS_CREW);
-		market.getDemand(Commodities.REGULAR_CREW).getNonConsumingDemand().modifyFlat(id, HYDROPONICS_CREW * ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION );
+		market.getDemand(Commodities.CREW).getDemand().modifyFlat(id, HYDROPONICS_CREW);
+		market.getDemand(Commodities.CREW).getNonConsumingDemand().modifyFlat(id, HYDROPONICS_CREW * ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION );
 		float crewDemandMet = getCrewDemandMet(market);
 		market.getDemand(Commodities.HEAVY_MACHINERY).getDemand().modifyFlat(id, HYDROPONICS_HEAVY_MACHINERY);
 		
@@ -33,8 +33,8 @@ public class Exerelin_Hydroponics extends BaseMarketConditionPlugin {
 		// population-based
 		float pop = getPopulation(market);
 		float crewDemand = HYDROPONICS_CREW_POP_MULT * pop;
-		market.getDemand(Commodities.REGULAR_CREW).getDemand().modifyFlat(id, crewDemand);
-		market.getDemand(Commodities.REGULAR_CREW).getNonConsumingDemand().modifyFlat(id, crewDemand * ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION );
+		market.getDemand(Commodities.CREW).getDemand().modifyFlat(id, crewDemand);
+		market.getDemand(Commodities.CREW).getNonConsumingDemand().modifyFlat(id, crewDemand * ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION );
 		float crewDemandMet = getCrewDemandMet(market);
 		market.getDemand(Commodities.HEAVY_MACHINERY).getDemand().modifyFlat(id, HYDROPONICS_HEAVY_MACHINERY_POP_MULT * pop);
 		
@@ -43,8 +43,8 @@ public class Exerelin_Hydroponics extends BaseMarketConditionPlugin {
 	
 	@Override
 	public void unapply(String id) {
-		market.getDemand(Commodities.REGULAR_CREW).getDemand().unmodify(id);
-		market.getDemand(Commodities.REGULAR_CREW).getNonConsumingDemand().unmodify(id);
+		market.getDemand(Commodities.CREW).getDemand().unmodify(id);
+		market.getDemand(Commodities.CREW).getNonConsumingDemand().unmodify(id);
 		market.getDemand(Commodities.HEAVY_MACHINERY).getDemand().unmodify(id);
 		market.getCommodityData(Commodities.FOOD).getSupply().unmodify(id);
 	}

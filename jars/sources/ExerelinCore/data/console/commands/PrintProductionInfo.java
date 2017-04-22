@@ -62,7 +62,7 @@ public class PrintProductionInfo implements BaseCommand {
 				float volatilesMet = ExerelinUtilsMarket.getCommodityDemandFractionMet(market, Commodities.VOLATILES, true);
 				float rareMetalsMet = ExerelinUtilsMarket.getCommodityDemandFractionMet(market, Commodities.RARE_METALS, true);
 				float machineryMet = ExerelinUtilsMarket.getCommodityDemandFractionMet(market, Commodities.HEAVY_MACHINERY, true);
-				float crewMet = ExerelinUtilsMarket.getCommodityDemandFractionMet(market, Commodities.REGULAR_CREW, true);
+				float crewMet = ExerelinUtilsMarket.getCommodityDemandFractionMet(market, Commodities.CREW, true);
 				
 				float fuelSupply = ExerelinUtilsMarket.getCommoditySupply(market, Commodities.FUEL);
 				float utilization = fuelSupply / ConditionData.FUEL_PRODUCTION_FUEL;

@@ -9,6 +9,8 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin.MagneticFieldParams;
 
 public class Duzahk {
@@ -74,7 +76,7 @@ public class Duzahk {
 			field.setCircularOrbit(duzahk_star, 0, 0, 150);
 		
 		// Asteroid belt!
-		system.addRingBand(duzahk_star, "misc", "rings1", 256f, 2, Color.white, 256f, 2420, 34f, null, null);
+		system.addRingBand(duzahk_star, "misc", "rings_asteroids0", 256f, 0, Color.white, 256f, 2420, 34f, null, null);
 		system.addAsteroidBelt(duzahk_star, 50, 2400, 100, 30, 40, Terrain.ASTEROID_BELT, "The Daevas");
 		
 		//system.addRingBand(duzahk_star, "misc", "rings3", 256, 2, new Color(255,245,235,255), 256, 2500, 90f);
@@ -95,14 +97,21 @@ public class Duzahk {
 				 "Druj Relay", // name - if null, defaultName from custom_entities.json will be used
 				 "comm_relay", // type of object, defined in custom_entities.json
 				 "pirates"); // faction
-		druj_relay.setCircularOrbit( duzahk_star, 130 - 60, 4200, 135);
-		
+		druj_relay.setCircularOrbitPointingDown( duzahk_star, 130 - 60, 4200, 135);
+
 		//JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("penelope_jump_point_alpha", "Penelope's Star Inner System Jump");
 		//OrbitAPI orbit = Global.getFactory().createCircularOrbit(penelope_star, 0, 800, 45);
 		//jumpPoint.setOrbit(orbit);
 		//jumpPoint.setRelatedPlanet(penelope_star);
 		//jumpPoint.setStandardWormholeToHyperspaceVisual();
 		//system.addEntity(jumpPoint);
+		
+		float radiusAfter = StarSystemGenerator.addOrbitingEntities(system, duzahk_star, StarAge.AVERAGE,
+				1, 3, // min/max entities to add
+				7000, // radius to start adding at 
+				2, // name offset - next planet will be <system name> <roman numeral of this parameter + 1>
+				false);
+				//true); // whether to use custom or system-name based names
 
 		system.autogenerateHyperspaceJumpPoints(true, true);
 	}

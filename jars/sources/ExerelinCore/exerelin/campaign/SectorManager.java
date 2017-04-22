@@ -201,7 +201,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         crew = crew + MathUtils.getRandomNumberInRange(-3, 3);
         crew = (int)(crew * contrib);
         if (crew > 0) {
-            loot.addCrew(CargoAPI.CrewXPLevel.GREEN, crew);
+            loot.addCrew(crew);
             numSurvivors += crew;
         }
         

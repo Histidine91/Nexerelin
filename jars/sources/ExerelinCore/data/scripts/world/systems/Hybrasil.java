@@ -10,7 +10,9 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.terrain.BaseTiledTerrain;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin.MagneticFieldParams;
 import com.fs.starfarer.api.util.Misc;
@@ -28,7 +30,7 @@ public class Hybrasil {
 				  0, 0, // center of nebula
 				  system, // location to add to
 				  "terrain", "nebula_blue", // "nebula_blue", // texture to use, uses xxx_map for map
-				  4, 4); // number of cells in texture
+				  4, 4, StarAge.YOUNG); // number of cells in texture
 		
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI hybrasil_star = system.initStar("hybrasil", // unique id for this star 
@@ -40,9 +42,10 @@ public class Hybrasil {
 		PlanetAPI hybrasil1 = system.addPlanet("culann", hybrasil_star, "Culann", "barren", 10, 110, 2150, 110);
 		hybrasil1.getSpec().setTexture(Global.getSettings().getSpriteName("planets", "castiron"));
 		hybrasil1.getSpec().setPlanetColor(new Color(220,235,245,255));
+		hybrasil1.setCustomDescriptionId("planet_culann");
 		hybrasil1.applySpecChanges();
 		
-		SectorEntityToken culannStation = system.addCustomEntity("culann_starforge", "Culann Starforge", "station_side05", "tritachyon");
+		SectorEntityToken culannStation = system.addCustomEntity("culann_starforge", "Culann Starforge", "station_side07", "tritachyon");
 		culannStation.setCircularOrbitPointingDown(system.getEntityById("culann"), 0, 250, 30);		
 		culannStation.setInteractionImage("illustrations", "orbital");
 		culannStation.setCustomDescriptionId("station_culann");
@@ -59,8 +62,8 @@ public class Hybrasil {
 		hybrasil2.applySpecChanges();
 		
 		// & the moons of Elada
-			system.addRingBand(hybrasil2, "misc", "rings1", 256f, 2, Color.white, 256f, 875, 33f, Terrain.RING, null);
-			system.addRingBand(hybrasil2, "misc", "rings1", 256f, 3, Color.white, 256f, 1050, 33f, Terrain.RING, null);
+			system.addRingBand(hybrasil2, "misc", "rings_dust0", 256f, 3, Color.white, 256f, 875, 33f, Terrain.RING, null);
+			system.addRingBand(hybrasil2, "misc", "rings_dust0", 256f, 4, Color.white, 256f, 1050, 33f, Terrain.RING, null);
 			
 			PlanetAPI hybrasil2a = system.addPlanet("eochu_bres", hybrasil2, "Eochu Bres", "tundra", 30, 140, 1550, 40);
 			hybrasil2a.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "volturn"));
@@ -84,12 +87,12 @@ public class Hybrasil {
 				eochu_bres_mirror3.setCustomDescriptionId("stellar_mirror");
 				
 			PlanetAPI hybrasil2b = system.addPlanet("ogma", hybrasil2, "Ogma", "rocky_metallic", 40, 100, 2050, 56);
-			hybrasil2b.setCustomDescriptionId("planet_ogma");
+			//hybrasil2b.setCustomDescriptionId("planet_ogma");
 			
-			SectorEntityToken hybrasil_station = system.addCustomEntity("hybrasil_station", "Hybrasil Astropolis", "station_side03", "tritachyon");
-			hybrasil_station.setCircularOrbitPointingDown(system.getEntityById("ogma"), 90, 220, 25);		
-			hybrasil_station.setCustomDescriptionId("station_ogma");
-			hybrasil_station.setInteractionImage("illustrations", "orbital");
+			//SectorEntityToken hybrasil_station = system.addCustomEntity("hybrasil_station", "Hybrasil Astropolis", "station_side03", "tritachyon");
+			//hybrasil_station.setCircularOrbitPointingDown(system.getEntityById("ogma"), 90, 220, 25);		
+			//hybrasil_station.setCustomDescriptionId("station_ogma");
+			//hybrasil_station.setInteractionImage("illustrations", "orbital");
 			
 			// Elada Relay, L5 (behind)
 			SectorEntityToken relay = system.addCustomEntity("elada_relay", // unique id
@@ -105,10 +108,20 @@ public class Hybrasil {
 		hybrasil3.getSpec().setPlanetColor(new Color(185,240,255,255));
 		hybrasil3.applySpecChanges();
 		hybrasil3.setCustomDescriptionId("planet_crom_cruach");
-		hybrasil3.setInteractionImage("illustrations", "mine");
+//		hybrasil3.setInteractionImage("illustrations", "mine");
+		
+		Misc.initConditionMarket(hybrasil3);
+		hybrasil3.getMarket().addCondition(Conditions.DECIVILIZED);
+		hybrasil3.getMarket().addCondition(Conditions.RUINS_SCATTERED);
+		hybrasil3.getMarket().getFirstCondition(Conditions.RUINS_SCATTERED).setSurveyed(true);
+		hybrasil3.getMarket().addCondition(Conditions.ORE_MODERATE);
+		hybrasil3.getMarket().addCondition(Conditions.RARE_ORE_MODERATE);
+		hybrasil3.getMarket().addCondition(Conditions.HOT);
+		hybrasil3.getMarket().addCondition(Conditions.THIN_ATMOSPHERE);
+		
 		
 		// jump point Crom Leim!
-		JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("hybrasil_inner_jump", "Hybrasil Inner System Jump");
+		JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("hybrasil_inner_jump", "Hybrasil Inner System Jump-point");
 		OrbitAPI orbit = Global.getFactory().createCircularOrbit(hybrasil3, 0, 1500, 65);
 		jumpPoint.setOrbit(orbit);
 		jumpPoint.setRelatedPlanet(hybrasil3);
@@ -116,7 +129,7 @@ public class Hybrasil {
 		system.addEntity(jumpPoint);
 		
 	// Balar System
-		PlanetAPI hybrasil4 = system.addPlanet("balar", hybrasil_star, "Balar", "ice_giant", 60, 340, 11500, 1000);
+		PlanetAPI hybrasil4 = system.addPlanet("balar", hybrasil_star, "Balar", "ice_giant", 60, 340, 11500, 820);
 		hybrasil4.getSpec().setPlanetColor(new Color(255,245,215,255));
 		hybrasil4.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "aurorae"));
 		hybrasil4.getSpec().setGlowColor(new Color(0,255,205,64));
@@ -124,7 +137,7 @@ public class Hybrasil {
 		hybrasil4.applySpecChanges();
 		hybrasil4.setCustomDescriptionId("planet_balar");
 		
-		system.addRingBand(hybrasil4, "misc", "rings1", 256f, 1, Color.white, 256f, 650, 21f, Terrain.RING, null);
+		system.addRingBand(hybrasil4, "misc", "rings_ice0", 256f, 2, Color.white, 256f, 650, 21f, Terrain.RING, null);
 		
 		SectorEntityToken hybrasil4_field = system.addTerrain(Terrain.MAGNETIC_FIELD,
 		new MagneticFieldParams(hybrasil4.getRadius() + 150f, // terrain effect band width 
@@ -175,8 +188,8 @@ public class Hybrasil {
 					"  xxxxxxx " +
 					"    xxx   ",
 					10, 10, // size of the nebula grid, should match above string
-					"terrain", "nebula_blue", 4, 4));
-			balar_L4_nebula.setCircularOrbit(hybrasil_star, 60 + 60, 11500, 1000);
+					"terrain", "nebula_blue", 4, 4, null));
+			balar_L4_nebula.setCircularOrbit(hybrasil_star, 60 + 60, 11500, 820);
 			
 			SectorEntityToken balar_L5_nebula = system.addTerrain(Terrain.NEBULA, new BaseTiledTerrain.TileParams(
 					"          " +
@@ -190,17 +203,16 @@ public class Hybrasil {
 					"  xxxxxxx " +
 					"    xxx   ",
 					10, 10, // size of the nebula grid, should match above string
-					"terrain", "nebula_blue", 4, 4));
-			balar_L5_nebula.setCircularOrbit(hybrasil_star, 60 - 60, 11500, 1000);
+					"terrain", "nebula_blue", 4, 4, null));
+			balar_L5_nebula.setCircularOrbit(hybrasil_star, 60 - 60, 11500, 820);
 		
 	// And way out in the back, Donn
 		
-		PlanetAPI hybrasil5 = system.addPlanet("donn", hybrasil_star, "Donn", "barren", 90, 140, 15050, 2000);
+		PlanetAPI hybrasil5 = system.addPlanet("donn", hybrasil_star, "Donn", "barren", 180, 140, 13050, 800);
 		hybrasil5.setCustomDescriptionId("planet_donn");
 		hybrasil5.setInteractionImage("illustrations", "pirate_station");
 		
 		// generates hyperspace destinations for in-system jump points
 		system.autogenerateHyperspaceJumpPoints(true, true);
-		
 	}
 }

@@ -521,7 +521,7 @@ public class ExerelinMarketSetup
 				case "barren":
 				case "rocky_metallic":
 				case "barren-bombarded":
-					newMarket.addCondition(Conditions.UNINHABITABLE);
+					newMarket.addCondition(Conditions.NO_ATMOSPHERE);
 					break;
 				case "barren-desert":
 					newMarket.addCondition("barren_marginal");
@@ -612,14 +612,14 @@ public class ExerelinMarketSetup
 		int fuelProdCount = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ANTIMATTER_FUEL_PRODUCTION);
 		int recyclingCount = ExerelinUtilsMarket.countMarketConditions(newMarket, "exerelin_recycling_plant");
 		int workshopCount = ExerelinUtilsMarket.countMarketConditions(newMarket, "exerelin_supply_workshop");
-		int pop = ExerelinUtilsMarket.getPopulation(marketSize);
+		float pop = ExerelinUtilsMarket.getPopulation(marketSize);
 		
 		// domestic goods
-		float dgSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.LIGHT_INDUSTRIAL_COMPLEX) * ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS_MULT;
-		dgSupply += ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.COTTAGE_INDUSTRY) * ConditionData.COTTAGE_INDUSTRY_DOMESTIC_GOODS_MULT;
+		float dgSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.LIGHT_INDUSTRIAL_COMPLEX) * ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS;
+		dgSupply += ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.COTTAGE_INDUSTRY) * ConditionData.COTTAGE_INDUSTRY_DOMESTIC_GOODS;
 		dgSupply *= pop * ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.DOMESTIC_GOODS);
 		modifyCommoditySupply(Commodities.DOMESTIC_GOODS, dgSupply);
-		modifyCommodityDemand(Commodities.DOMESTIC_GOODS, pop * ConditionData.POPULATION_DOMESTIC_MULT * ExerelinUtilsMarket.getCommodityDemandMult(newMarket, Commodities.DOMESTIC_GOODS));
+		modifyCommodityDemand(Commodities.DOMESTIC_GOODS, pop * ConditionData.POPULATION_DOMESTIC_GOODS * ExerelinUtilsMarket.getCommodityDemandMult(newMarket, Commodities.DOMESTIC_GOODS));
 		
 		// metal
 		float mSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_METAL_PER_ORE * ConditionData.ORE_REFINING_ORE;
@@ -664,7 +664,7 @@ public class ExerelinMarketSetup
 		
 		// food
 		modifyCommoditySupply(Commodities.FOOD, ExerelinUtilsMarket.getMarketBaseFoodSupply(newMarket, true));
-		modifyCommodityDemand(Commodities.FOOD, ConditionData.POPULATION_FOOD_MULT * ExerelinUtilsMarket.getPopulation(marketSize));
+		modifyCommodityDemand(Commodities.FOOD, ConditionData.POPULATION_FOOD * ExerelinUtilsMarket.getPopulation(marketSize));
 		
 		// guns (hand weapons)
 		float gSupply = autofacCount * ConditionData.AUTOFAC_HEAVY_HAND_WEAPONS;
@@ -703,7 +703,7 @@ public class ExerelinMarketSetup
 				* ConditionData.ORE_MINING_ORE * ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.ORE));
 		float orDemand = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_ORE;
 		if (newMarket.hasCondition("aiw_inorganic_populace"))
-			orDemand += (pop * ConditionData.POPULATION_FOOD_MULT) * 0.95f * 0.02f;
+			orDemand += (pop * ConditionData.POPULATION_FOOD) * 0.95f * 0.02f;
 		modifyCommodityDemand(Commodities.ORE, orDemand);
 		//modifyCommodityDemand(Commodities.ORE, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.ORE));
 		
@@ -735,7 +735,7 @@ public class ExerelinMarketSetup
 			MarketAPI market = entity.market;
 			if (market == null) continue;
 			int size = market.getSize();
-			int pop = ExerelinUtilsMarket.getPopulation(size);
+			float pop = ExerelinUtilsMarket.getPopulation(size);
 			float weight = Math.max(entity.marketPoints - entity.marketPointsSpent, 100);
 			if (market.hasCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX)) 
 			{
@@ -743,11 +743,11 @@ public class ExerelinMarketSetup
 				if (domesticGoodsSupply > domesticGoodsDemand * 1.2)
 				{
 					removeMarketCondition(market, entity, Conditions.LIGHT_INDUSTRIAL_COMPLEX);
-					domesticGoodsSupply -= ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS_MULT * pop
+					domesticGoodsSupply -= ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS * pop
 							* ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.DOMESTIC_GOODS);
-					organicsDemand -= ConditionData.LIGHT_INDUSTRY_ORGANICS_MULT * pop;
-					volatilesDemand -= ConditionData.LIGHT_INDUSTRY_VOLATILES_MULT * pop;
-					machineryDemand -= ConditionData.LIGHT_INDUSTRY_MACHINERY_MULT * pop;
+					organicsDemand -= ConditionData.LIGHT_INDUSTRY_ORGANICS * pop;
+					volatilesDemand -= ConditionData.LIGHT_INDUSTRY_VOLATILES * pop;
+					machineryDemand -= ConditionData.LIGHT_INDUSTRY_MACHINERY * pop;
 					weight *= 25;
 					log.info("Removed balancing Light Industrial Complex from " + market.getName() + " (size " + size + ")");
 				}
@@ -780,14 +780,14 @@ public class ExerelinMarketSetup
 			if (size > maxSize) continue;
 			if (size < maxSize - 2) continue;
 			
-			int pop = ExerelinUtilsMarket.getPopulation(size);
+			float pop = ExerelinUtilsMarket.getPopulation(size);
 			
 			addMarketCondition(market, entity, Conditions.LIGHT_INDUSTRIAL_COMPLEX);
-			domesticGoodsSupply += ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS_MULT * pop
+			domesticGoodsSupply += ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS * pop
 					* ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.DOMESTIC_GOODS);
-			organicsDemand += ConditionData.LIGHT_INDUSTRY_ORGANICS_MULT * pop;
-			volatilesDemand += ConditionData.LIGHT_INDUSTRY_VOLATILES_MULT * pop;
-			machineryDemand += ConditionData.LIGHT_INDUSTRY_MACHINERY_MULT * pop;
+			organicsDemand += ConditionData.LIGHT_INDUSTRY_ORGANICS * pop;
+			volatilesDemand += ConditionData.LIGHT_INDUSTRY_VOLATILES * pop;
+			machineryDemand += ConditionData.LIGHT_INDUSTRY_MACHINERY * pop;
 			log.info("Added balancing Light Industrial Complex to " + market.getName() + " (size " + size + ")");
 		}
 		log.info("Final domestic goods supply/demand: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
@@ -1049,7 +1049,7 @@ public class ExerelinMarketSetup
 			MarketAPI market = entity.market;
 			if (market == null) continue;
 			int size = market.getSize();
-			int pop = ExerelinUtilsMarket.getPopulation(size);
+			float pop = ExerelinUtilsMarket.getPopulation(size);
 			float weight = Math.max(entity.marketPoints - entity.marketPointsSpent, 100);
 			double surplus = foodSupply - foodDemand;
 			float baseFarming = ExerelinUtilsMarket.getFarmingFoodSupply(market, false);
@@ -1080,7 +1080,7 @@ public class ExerelinMarketSetup
 					removeMarketCondition(market, entity, Conditions.RURAL_POLITY);
 					foodSupply -= baseFarming;
 					organicsSupply -= baseFarming * ConditionData.FARMING_ORGANICS_FRACTION * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.ORGANICS);;
-					domesticGoodsDemand += ConditionData.POPULATION_DOMESTIC_MULT * pop * 0.5;
+					domesticGoodsDemand += ConditionData.POPULATION_DOMESTIC_GOODS * pop * 0.5;
 					
 					weight *= 25;
 					log.info("Removed balancing Rural Polity from " + market.getName() + " (size " + size + ")");
@@ -1119,7 +1119,7 @@ public class ExerelinMarketSetup
 			
 			int size = market.getSize();
 			if (size > maxSize) continue;
-			int pop = ExerelinUtilsMarket.getPopulation(size);
+			float pop = ExerelinUtilsMarket.getPopulation(size);
 			float baseFarming = ExerelinUtilsMarket.getFarmingFoodSupply(market, false);
 			
 			if (isConditionAllowedForPlanet(Conditions.ORBITAL_BURNS, entity.planetType) && entity.type != EntityType.STATION && !market.hasCondition(Conditions.ORBITAL_BURNS)
@@ -1460,9 +1460,7 @@ public class ExerelinMarketSetup
 	
 	protected void addStartingMarketCommodities(MarketAPI market)
 	{
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.GREEN_CREW, 0.45f, 0.55f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.REGULAR_CREW, 0.45f, 0.55f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.VETERAN_CREW, 0.1f, 0.2f);
+		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.CREW, 0.45f, 0.55f);
 		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.MARINES, 0.8f, 1.0f);
 		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.SUPPLIES, 0.85f, 0.95f);
 		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.FUEL, 0.85f, 0.95f);

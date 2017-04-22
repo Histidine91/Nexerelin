@@ -380,7 +380,7 @@ public class ExerelinFactionConfig
             pickShipsAndAddToList(rolePicker, ships, true);
             
 			rolePicker.add(ShipRoles.FAST_ATTACK, 2);	// Martyr, sometimes Jesuit
-			rolePicker.add(ShipRoles.FIGHTER, 1);	// Teuton (no Smiter)
+			//rolePicker.add(ShipRoles.FIGHTER, 1);	// Teuton (no Smiter)
             
             pickShipsAndAddToList(rolePicker, ships, true);
         }
@@ -392,7 +392,7 @@ public class ExerelinFactionConfig
             
             rolePicker.add(ShipRoles.COMBAT_SMALL, 1);	// Martyr or Jesuit
             rolePicker.add(ShipRoles.FAST_ATTACK, 1);	// Martyr, sometimes Jesuit
-			rolePicker.add(ShipRoles.FIGHTER, 1);	// Teuton (no Smiter)
+			//rolePicker.add(ShipRoles.FIGHTER, 1);	// Teuton (no Smiter)
             pickShipsAndAddToList(rolePicker, ships, true);
         }
         else if (type == StartFleetType.SOLO || type == StartFleetType.SOLO_SSP)

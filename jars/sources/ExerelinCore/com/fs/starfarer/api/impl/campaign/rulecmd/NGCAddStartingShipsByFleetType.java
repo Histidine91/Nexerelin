@@ -61,7 +61,7 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 			
 			dialog.getTextPanel().addParagraph(printed, Misc.getPositiveHighlightColor());
 		}
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "regular_crew", crew);
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "crew", crew);
 		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "supplies", supplies);
 		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "fuel", fuel);
 		

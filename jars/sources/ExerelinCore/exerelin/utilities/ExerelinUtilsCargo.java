@@ -13,7 +13,6 @@ public class ExerelinUtilsCargo
         CommodityOnMarketAPI commodity = market.getCommodityData(commodityID);
         
         commodity.addToStockpile(amountToAdd);
-        commodity.addToAverageStockpile(amountToAdd);
         
         if (market.getFactionId().equals("templars"))
         {

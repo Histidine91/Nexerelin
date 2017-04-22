@@ -27,6 +27,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMissionCreator;
 import com.fs.starfarer.api.impl.campaign.missions.MarketProcurementMissionCreator;
+import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin;
@@ -688,7 +689,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
           chaosCrack.getLocation().x, chaosCrack.getLocation().y,
                 system,
                 "terrain", "AL_primenebula",
-                4, 4, "AL_primenebula");
+                4, 4, "AL_primenebula", StarAge.ANY);
         primeNebula.addTag("radar_nebula");
 	}
 	
@@ -783,7 +784,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 		{
-			VanillaSystemsGenerator.generate();
+			
 		}
 		
 		// use vanilla hyperspace map
@@ -796,7 +797,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 			  0, 0, // center of nebula
 			  sector.getHyperspace(), // location to add to
 			  "terrain", "deep_hyperspace", // "nebula_blue", // texture to use, uses xxx_map for map
-			  4, 4, Terrain.HYPERSPACE); // number of cells in texture
+			  4, 4, Terrain.HYPERSPACE, StarAge.ANY); // number of cells in texture
 		
 		if (ExerelinSetupData.getInstance().prismMarketPresent) {
 			if (!corvusMode || !ExerelinUtilsFaction.doesFactionExist("SCY"))
@@ -1873,7 +1874,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 					  0, 0, // center of nebula
 					  system, // location to add to
 					  "terrain", "nebula_" + ExerelinUtils.getRandomArrayElement(nebulaColors), // texture to use, uses xxx_map for map
-					  4, 4); // number of cells in texture
+					  4, 4, Terrain.NEBULA, StarAge.ANY); // number of cells in texture
 			hasNebula = true;
 		}
 

@@ -16,8 +16,8 @@ public class SSP_LightFuelProduction extends BaseMarketConditionPlugin {
 
     @Override
     public void apply(String id) {
-        market.getDemand(Commodities.REGULAR_CREW).getDemand().modifyFlat(id, FUEL_PRODUCTION_CREW);
-        market.getDemand(Commodities.REGULAR_CREW).getNonConsumingDemand().modifyFlat(id, FUEL_PRODUCTION_CREW
+        market.getDemand(Commodities.CREW).getDemand().modifyFlat(id, FUEL_PRODUCTION_CREW);
+        market.getDemand(Commodities.CREW).getNonConsumingDemand().modifyFlat(id, FUEL_PRODUCTION_CREW
                                                                                                   * ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION);
         float crewDemandMet = getCrewDemandMet(market);
 
@@ -38,8 +38,8 @@ public class SSP_LightFuelProduction extends BaseMarketConditionPlugin {
         market.getDemand(Commodities.RARE_METALS).getDemand().unmodify(id);
         market.getDemand(Commodities.HEAVY_MACHINERY).getDemand().unmodify(id);
 
-        market.getDemand(Commodities.REGULAR_CREW).getDemand().unmodify(id);
-        market.getDemand(Commodities.REGULAR_CREW).getNonConsumingDemand().unmodify(id);
+        market.getDemand(Commodities.CREW).getDemand().unmodify(id);
+        market.getDemand(Commodities.CREW).getNonConsumingDemand().unmodify(id);
 
         market.getCommodityData(Commodities.FUEL).getSupply().unmodify(id);
     }

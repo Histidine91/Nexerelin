@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin.AsteroidFieldParams;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin.MagneticFieldParams;
@@ -24,13 +25,14 @@ public class Penelope {
 		
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI penelope_star = system.initStar("penelope", // unique id for this star 
-										    "star_red",  // id in planets.json
-										    800f, 		  // radius (in pixels at default zoom)
+											StarTypes.RED_GIANT,  // id in planets.json
+										    1100f, 		  // radius (in pixels at default zoom)
 										    500); // corona radius, from star edge
 		system.setLightColor(new Color(255, 200, 210)); // light color in entire system, affects all entities
 		
 		// hot asteroid belt
 		system.addAsteroidBelt(penelope_star, 50, 2200, 100, 30, 40, Terrain.ASTEROID_BELT, null);
+		system.addRingBand(penelope_star, "misc", "rings_asteroids0", 256f, 3, Color.white, 256f, 13750, 345f, Terrain.ASTEROID_BELT, null);
 		
 		// Thrinakia: lava-fied by tidal forces from primary.
 		PlanetAPI penelope1 = system.addPlanet("penelope1", penelope_star, "Thrinakia", "lava_minor", 30, 110, 2850, 90);
@@ -52,7 +54,7 @@ public class Penelope {
 			penelope3a.applySpecChanges();
 			
 			// Penelope's Jumppoint - L4 (ahead)
-			JumpPointAPI p_jumpPoint = Global.getFactory().createJumpPoint("penelope_jump", "Penelope's Inner Jumppoint");
+			JumpPointAPI p_jumpPoint = Global.getFactory().createJumpPoint("penelope_jump", "Penelope's Inner Jump-point");
 			p_jumpPoint.setCircularOrbit(system.getEntityById("penelope"), 80+60, 6800, 225);
 			p_jumpPoint.setRelatedPlanet(penelope3);
 			
@@ -131,20 +133,20 @@ public class Penelope {
 			telepylus_station.setCustomDescriptionId("station_telepylus");
 			telepylus_station.setInteractionImage("illustrations", "abandoned_station3");
 		
-			system.addRingBand(penelope5, "misc", "rings2", 256f, 1, new Color(200,200,200,255), 256f, 600, 30f, Terrain.RING, null); 
+			system.addRingBand(penelope5, "misc", "rings_special0", 256f, 1, new Color(200,200,200,255), 256f, 600, 30f, Terrain.RING, null); 
 		
 		// Outer system jump-point
 			// Telepylus Jumppoint - L5 (behind)
-			JumpPointAPI p_jumpPoint2 = Global.getFactory().createJumpPoint("penelope_jump", "Penelope's Outer Jumppoint");
+			JumpPointAPI p_jumpPoint2 = Global.getFactory().createJumpPoint("penelope_jump", "Penelope's Outer Jump-point");
 			p_jumpPoint2.setCircularOrbit(system.getEntityById("penelope"), 250-60, 12050, 650);
-			p_jumpPoint2.setRelatedPlanet(penelope5);
+			//p_jumpPoint2.setRelatedPlanet(penelope5);
 			
 			p_jumpPoint2.setStandardWormholeToHyperspaceVisual();
 			system.addEntity(p_jumpPoint2);
 			
 			
 		// Asteroid belt.
-		system.addRingBand(penelope_star, "misc", "rings1", 256f, 0, Color.white, 256f, 13750, 345f, Terrain.RING, null);
+		system.addRingBand(penelope_star, "misc", "rings_asteroids0", 256f, 0, Color.white, 256f, 13750, 345f, Terrain.RING, null);
 		system.addAsteroidBelt(penelope_star, 100, 13750, 200, 330, 360, Terrain.ASTEROID_BELT, "The Cyclopeans");
 
 		// Ismara : mass driven volatiles, looted

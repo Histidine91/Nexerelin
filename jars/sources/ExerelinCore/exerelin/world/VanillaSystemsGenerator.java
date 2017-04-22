@@ -9,22 +9,36 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import data.scripts.world.corvus.Corvus;
+import data.scripts.world.systems.AlGebbar;
 import data.scripts.world.systems.Arcadia;
 import data.scripts.world.systems.Askonia;
 import data.scripts.world.systems.Aztlan;
+import data.scripts.world.systems.Canaan;
 import data.scripts.world.systems.Duzahk;
 import data.scripts.world.systems.Eos;
+import data.scripts.world.systems.Galatia;
 import data.scripts.world.systems.Hybrasil;
+import data.scripts.world.systems.Isirah;
+import data.scripts.world.systems.KumariKandam;
 import data.scripts.world.systems.Magec;
+import data.scripts.world.systems.Mayasura;
+import data.scripts.world.systems.Naraka;
 import data.scripts.world.systems.Penelope;
 import data.scripts.world.systems.Samarra;
+import data.scripts.world.systems.Thule;
+import data.scripts.world.systems.TiaTaxet;
+import data.scripts.world.systems.Tyle;
 import data.scripts.world.systems.Valhalla;
+import data.scripts.world.systems.Westernesse;
 import data.scripts.world.systems.Yma;
+import data.scripts.world.systems.Zagan;
 
 public class VanillaSystemsGenerator {
 	public static void generate()
 	{
 		SectorAPI sector = Global.getSector();
+		
+		//ClassLoader cl = Global.getSettings().getScriptClassLoader();
 		
 		StarSystemAPI system = sector.createStarSystem("Corvus");
 		//system.getLocation().set(16000 - 8000, 9000 - 10000);
@@ -36,6 +50,7 @@ public class VanillaSystemsGenerator {
 		
 		initFactionRelationships(sector);
 		
+		new Galatia().generate(sector);
 		new Askonia().generate(sector);
 		new Eos().generate(sector);
 		new Valhalla().generate(sector);
@@ -48,23 +63,44 @@ public class VanillaSystemsGenerator {
 		new Yma().generate(sector);
 		new Hybrasil().generate(sector);
 		new Duzahk().generate(sector);
+		new TiaTaxet().generate(sector);
+		new Canaan().generate(sector);
+		new AlGebbar().generate(sector);
+		new Isirah().generate(sector);
+		new KumariKandam().generate(sector);
+		new Naraka().generate(sector);
+		new Thule().generate(sector);
+		new Mayasura().generate(sector);
+		new Zagan().generate(sector);
+		new Westernesse().generate(sector);
+		new Tyle().generate(sector);
 		
 		LocationAPI hyper = Global.getSector().getHyperspace();
+		SectorEntityToken atlanticLabel = hyper.addCustomEntity("atlantic_label_id", null, "atlantic_label", null);
+		SectorEntityToken perseanLabel = hyper.addCustomEntity("persean_label_id", null, "persean_label", null);
+		SectorEntityToken luddicLabel = hyper.addCustomEntity("luddic_label_id", null, "luddic_label", null);
 		SectorEntityToken zinLabel = hyper.addCustomEntity("zin_label_id", null, "zin_label", null);
 		SectorEntityToken abyssLabel = hyper.addCustomEntity("opabyss_label_id", null, "opabyss_label", null);
 		SectorEntityToken telmunLabel = hyper.addCustomEntity("telmun_label_id", null, "telmun_label", null);
 		SectorEntityToken cathedralLabel = hyper.addCustomEntity("cathedral_label_id", null, "cathedral_label", null);
 		SectorEntityToken coreLabel = hyper.addCustomEntity("core_label_id", null, "core_label", null);
 		
-		zinLabel.setFixedLocation(-14500, -8000);
-		abyssLabel.setFixedLocation(-12000, -19000);
-		telmunLabel.setFixedLocation(-16000, 8000);
-		cathedralLabel.setFixedLocation(-20000, 2000);
-		coreLabel.setFixedLocation(17000, -6000);
+		atlanticLabel.setFixedLocation(500, -2000);
+		perseanLabel.setFixedLocation(-10000, 1000);
+		luddicLabel.setFixedLocation(-14000, -9500);
+		zinLabel.setFixedLocation(-22000, -17000); 
+		telmunLabel.setFixedLocation(-16000, 0);
+		cathedralLabel.setFixedLocation(-12700, -12000);
+		coreLabel.setFixedLocation(0, -6000);
+		
+		abyssLabel.setFixedLocation(-65000, -47000);		
 	}
 	
 	public static void initFactionRelationships(SectorAPI sector) 
-	{
+	{	
+		// forget why this is necessary - workaround for some JANINO issue, I think
+		//Class c = HeavyArmor.class;
+		
 		FactionAPI hegemony = sector.getFaction(Factions.HEGEMONY);
 		FactionAPI tritachyon = sector.getFaction(Factions.TRITACHYON);
 		FactionAPI pirates = sector.getFaction(Factions.PIRATES);
@@ -74,9 +110,13 @@ public class VanillaSystemsGenerator {
 		FactionAPI path = sector.getFaction(Factions.LUDDIC_PATH);
 		FactionAPI player = sector.getFaction(Factions.PLAYER);
 		FactionAPI diktat = sector.getFaction(Factions.DIKTAT);
+		FactionAPI persean = sector.getFaction(Factions.PERSEAN);
+		FactionAPI remnant = sector.getFaction(Factions.REMNANTS);
+		FactionAPI derelict = sector.getFaction(Factions.DERELICT);
 		
 		player.setRelationship(hegemony.getId(), 0);
 		player.setRelationship(tritachyon.getId(), 0);
+		player.setRelationship(persean.getId(), 0);
 		//player.setRelationship(pirates.getId(), RepLevel.HOSTILE);
 		player.setRelationship(pirates.getId(), -0.65f);
 		
@@ -84,8 +124,10 @@ public class VanillaSystemsGenerator {
 		player.setRelationship(kol.getId(), 0);
 		player.setRelationship(church.getId(), 0);
 		player.setRelationship(path.getId(), RepLevel.HOSTILE);
+		
 
 		hegemony.setRelationship(tritachyon.getId(), RepLevel.HOSTILE);
+		hegemony.setRelationship(persean.getId(), RepLevel.HOSTILE);
 		hegemony.setRelationship(pirates.getId(), RepLevel.HOSTILE);
 		
 		tritachyon.setRelationship(pirates.getId(), RepLevel.HOSTILE);
@@ -93,12 +135,14 @@ public class VanillaSystemsGenerator {
 		tritachyon.setRelationship(kol.getId(), RepLevel.HOSTILE);
 		tritachyon.setRelationship(church.getId(), RepLevel.HOSTILE);
 		tritachyon.setRelationship(path.getId(), RepLevel.HOSTILE);
+		tritachyon.setRelationship(persean.getId(), RepLevel.SUSPICIOUS);
 		
 		pirates.setRelationship(kol.getId(), RepLevel.HOSTILE);
 		pirates.setRelationship(church.getId(), RepLevel.HOSTILE);
 		pirates.setRelationship(path.getId(), 0);
 		pirates.setRelationship(independent.getId(), RepLevel.HOSTILE);
 		pirates.setRelationship(diktat.getId(), RepLevel.HOSTILE);
+		pirates.setRelationship(persean.getId(), RepLevel.HOSTILE);
 		
 		church.setRelationship(kol.getId(), RepLevel.COOPERATIVE);
 		path.setRelationship(kol.getId(), RepLevel.FAVORABLE);
@@ -106,6 +150,23 @@ public class VanillaSystemsGenerator {
 		path.setRelationship(independent.getId(), RepLevel.HOSTILE);
 		path.setRelationship(hegemony.getId(), RepLevel.HOSTILE);
 		path.setRelationship(diktat.getId(), RepLevel.HOSTILE);
+		path.setRelationship(persean.getId(), RepLevel.HOSTILE);
+		
+		persean.setRelationship(hegemony.getId(), RepLevel.HOSTILE);
+		persean.setRelationship(tritachyon.getId(), RepLevel.SUSPICIOUS);
+		persean.setRelationship(pirates.getId(), RepLevel.HOSTILE);
+		persean.setRelationship(path.getId(), RepLevel.HOSTILE);
+		persean.setRelationship(diktat.getId(), RepLevel.COOPERATIVE);
+		
+		player.setRelationship(remnant.getId(), RepLevel.HOSTILE);
+		independent.setRelationship(remnant.getId(), RepLevel.HOSTILE);
+		pirates.setRelationship(remnant.getId(), RepLevel.HOSTILE);
+		hegemony.setRelationship(remnant.getId(), RepLevel.HOSTILE);
+		kol.setRelationship(remnant.getId(), RepLevel.HOSTILE);
+		church.setRelationship(remnant.getId(), RepLevel.HOSTILE);
+		path.setRelationship(remnant.getId(), RepLevel.HOSTILE);
+		diktat.setRelationship(remnant.getId(), RepLevel.HOSTILE);
+		persean.setRelationship(remnant.getId(), RepLevel.HOSTILE);
 		
 //		independent.setRelationship(hegemony.getId(), 0);
 //		independent.setRelationship(tritachyon.getId(), 0);

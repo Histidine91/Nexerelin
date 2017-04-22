@@ -34,7 +34,7 @@ public class NGCAddShipAndComplement extends BaseCommandPlugin {
 		int supplies = (int)temp.getCargoCapacity()/2;
 		int fuel = (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
 					
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "regular_crew", crew);
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "crew", crew);
 		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "supplies", supplies);
 		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "fuel", fuel);
 		

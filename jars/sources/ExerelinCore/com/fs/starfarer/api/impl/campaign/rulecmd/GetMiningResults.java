@@ -125,7 +125,7 @@ public class GetMiningResults extends BaseCommandPlugin {
 				text.highlightInLastPara(red, name, crLostStr);
 			}
 			
-			int crewLost = (int)results.accidents.crewLost.getTotalCrew();
+			int crewLost = (int)results.accidents.crewLost;
 			if (crewLost > 0)
 			{
 				String displayStr = Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "crewLost"));

@@ -141,9 +141,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
         rolePicker.add(ShipRoles.CARRIER_SMALL, 5f);
         rolePicker.add(ShipRoles.CARRIER_MEDIUM, 5f);
         rolePicker.add(ShipRoles.CARRIER_LARGE, 5f);
-        rolePicker.add(ShipRoles.INTERCEPTOR, 20f);
-        rolePicker.add(ShipRoles.FIGHTER, 20f);
-        rolePicker.add(ShipRoles.BOMBER, 20f);
 
         WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker<>();
         SectorAPI sector = Global.getSector();

@@ -31,8 +31,8 @@ public class Exerelin_SupplyWorkshop extends BaseMarketConditionPlugin {
 	
 	@Override
 	public void apply(String id) {
-		market.getDemand(Commodities.REGULAR_CREW).getDemand().modifyFlat(id, WORKSHOP_CREW);
-		market.getDemand(Commodities.REGULAR_CREW).getNonConsumingDemand().modifyFlat(id, WORKSHOP_CREW * ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION );
+		market.getDemand(Commodities.CREW).getDemand().modifyFlat(id, WORKSHOP_CREW);
+		market.getDemand(Commodities.CREW).getNonConsumingDemand().modifyFlat(id, WORKSHOP_CREW * ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION );
 		float crewDemandMet = getCrewDemandMet(market);
 		
 		market.getDemand(Commodities.HEAVY_MACHINERY).getDemand().modifyFlat(id, WORKSHOP_HEAVY_MACHINERY_DEMAND);
@@ -50,8 +50,8 @@ public class Exerelin_SupplyWorkshop extends BaseMarketConditionPlugin {
 	
 	@Override
 	public void unapply(String id) {
-		market.getDemand(Commodities.REGULAR_CREW).getDemand().unmodify(id);
-		market.getDemand(Commodities.REGULAR_CREW).getNonConsumingDemand().unmodify(id);
+		market.getDemand(Commodities.CREW).getDemand().unmodify(id);
+		market.getDemand(Commodities.CREW).getNonConsumingDemand().unmodify(id);
 		market.getDemand(Commodities.HEAVY_MACHINERY).getDemand().unmodify(id);
 		market.getDemand(Commodities.VOLATILES).getDemand().unmodify(id);
 		market.getDemand(Commodities.ORGANICS).getDemand().unmodify(id);

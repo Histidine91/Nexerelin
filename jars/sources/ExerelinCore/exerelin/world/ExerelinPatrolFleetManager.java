@@ -51,7 +51,7 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 			float patrolStrengthCheckInterval = Global.getSettings().getFloat("economyIntervalnGameDays");
 			float min = patrolStrengthCheckInterval - Math.min(patrolStrengthCheckInterval * 0.5f, 2f);
 			float max = patrolStrengthCheckInterval + Math.min(patrolStrengthCheckInterval * 0.5f, 2f);
-			patrolBattlesLost = new RollingAverageTracker(min, max, Misc.getEconomyRollingAverageFactor());
+			patrolBattlesLost = new RollingAverageTracker(min, max, Misc.getEconomyInterval());
 		}
 		
 		float interval = Global.getSettings().getFloat("averagePatrolSpawnInterval");

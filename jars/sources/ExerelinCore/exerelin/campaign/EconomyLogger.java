@@ -54,11 +54,10 @@ public class EconomyLogger extends BaseCampaignEventListener implements EveryFra
 			String name = market.getName();
 			int size = market.getSize();
 			CommodityOnMarketAPI commodity = market.getCommodityData("regular_crew");
-			float stockpile = commodity.getAverageStockpile();
-			float stockpileAfterDemand = commodity.getAverageStockpileAfterDemand();
+			float stockpile = commodity.getStockpile();
 			float supply = commodity.getSupply().getModifiedValue();
 			float demand = commodity.getDemand().getDemandValue();
-			log.info("\t" + name + " (" + size + ") : " + supply + ", " + demand + ", " + stockpile + ", " + stockpileAfterDemand);
+			log.info("\t" + name + " (" + size + ") : " + supply + ", " + demand + ", " + stockpile);
 		}
 	}
 	

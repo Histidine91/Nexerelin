@@ -22,7 +22,6 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.world.ResponseFleetManager;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -577,10 +576,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             
             CommodityOnMarketAPI food = market.getCommodityData(Commodities.FOOD);
             float before = food.getStockpile();
-            food.removeFromAverageStockpile(foodDestroyed);
             food.removeFromStockpile(foodDestroyed);
             float after = food.getStockpile();
-            log.info("Remaining food: " + food.getStockpile() + ", " + food.getAverageStockpile());
+            log.info("Remaining food: " + food.getStockpile());
             
             Map<String, Object> params = makeEventParams(agentFaction, result, NO_EFFECT, playerInvolved);
             params.put("foodDestroyed", before - after);

@@ -4,7 +4,6 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.AsteroidAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
@@ -16,6 +15,7 @@ import com.fs.starfarer.api.fleet.CrewCompositionAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -317,21 +317,14 @@ public class MiningHelper {
 		WeightedRandomPicker<FleetMemberAPI> shipPicker = new WeightedRandomPicker<>();
 		
 		WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
-		if (isFighter)
-		{
-			rolePicker.add(ShipRoles.INTERCEPTOR, 1f);
-			rolePicker.add(ShipRoles.FIGHTER, 1f);
-			rolePicker.add(ShipRoles.BOMBER, 1f);
-		}
-		else
-		{
-			rolePicker.add(ShipRoles.CIV_RANDOM, 1f);
-			rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1f);
-			rolePicker.add(ShipRoles.TANKER_SMALL, 1f);
-			rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1f);
-			rolePicker.add(ShipRoles.COMBAT_SMALL, 5f);
-			rolePicker.add(ShipRoles.CARRIER_SMALL, 2f);
-		}
+
+		rolePicker.add(ShipRoles.CIV_RANDOM, 1f);
+		rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1f);
+		rolePicker.add(ShipRoles.TANKER_SMALL, 1f);
+		rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1f);
+		rolePicker.add(ShipRoles.COMBAT_SMALL, 5f);
+		rolePicker.add(ShipRoles.CARRIER_SMALL, 2f);
+			
 		String role = rolePicker.pick();
 		
 		List<FactionAPI> factions = Global.getSector().getAllFactions();
@@ -375,47 +368,6 @@ public class MiningHelper {
 			return (0.75f + (float) Math.random() * 0.25f) * member.getStats().getCrewLossMult().getModifiedValue(); 
 		}
 		return hullDamage * hullDamage * (0.5f + (float) Math.random() * 0.5f) * member.getStats().getCrewLossMult().getModifiedValue();
-	}
-	
-	protected static CrewCompositionAPI applyCrewLosses(CampaignFleetAPI fleet, CrewCompositionAPI losses)
-	{
-		CargoAPI cargo = fleet.getCargo();
-		cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, CargoAPI.CrewXPLevel.GREEN.getId(), losses.getGreen());
-		cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, CargoAPI.CrewXPLevel.REGULAR.getId(), losses.getRegular());
-		cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, CargoAPI.CrewXPLevel.VETERAN.getId(), losses.getVeteran());
-		cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, CargoAPI.CrewXPLevel.ELITE.getId(), losses.getElite());
-		
-		return losses;
-	}
-	
-	protected static CrewCompositionAPI applyCrewLossesBottomUp(CampaignFleetAPI fleet, int dead)
-	{
-		int levelIndex = 0;
-		
-		CrewCompositionAPI currentCrew = Global.getFactory().createCrewComposition();
-		CrewCompositionAPI crewToLose = Global.getFactory().createCrewComposition();
-		List<FleetMemberAPI> ships = fleet.getFleetData().getCombatReadyMembersListCopy();
-		for (FleetMemberAPI ship : ships)
-		{
-			currentCrew.addAll(ship.getCrewComposition());
-		}
-		while (dead > 0 && levelIndex < CrewXPLevel.values().length)
-		{
-			CrewXPLevel level = CrewXPLevel.values()[levelIndex];
-			int currentCrewForLevel = (int)currentCrew.getCrew(level);
-			if (currentCrewForLevel >= dead)
-			{
-				crewToLose.addCrew(level, dead);
-				dead = 0;
-			}
-			else
-			{
-				crewToLose.addCrew(level, currentCrewForLevel);
-				dead -= currentCrewForLevel;
-			}
-			levelIndex++;
-		}
-		return applyCrewLosses(fleet, crewToLose);
 	}
 	
 	// TODO
@@ -468,12 +420,10 @@ public class MiningHelper {
 					}
 					
 					// kill crew as applicable
-					CrewCompositionAPI temp = Global.getFactory().createCrewComposition();
-					temp.addAll(fm.getCrewComposition());
+					float dead = fm.getCrewComposition().getCrew();
 					float lossFraction = computeCrewLossFraction(fm, fm.getStatus().getHullFraction(), hullDamageFactor);
-					temp.multiplyBy(lossFraction);
-					accident.crewLost.addAll(temp);
-					applyCrewLosses(fleet, temp);
+					dead *= lossFraction;
+					accident.crewLost += dead;
 				}
 				// CR loss
 				else if (Math.random() < 0.4f)
@@ -494,8 +444,9 @@ public class MiningHelper {
 				{
 					int dead = MathUtils.getRandomNumberInRange(1, 5);
 					dead = Math.min(dead, fleet.getCargo().getTotalCrew());
-					CrewCompositionAPI temp = applyCrewLossesBottomUp(fleet, dead);
-					accident.crewLost.addAll(temp);
+					CargoAPI cargo = fleet.getCargo();
+					cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, Commodities.CREW, dead);
+					accident.crewLost += dead;
 				}
 			}
 		}
@@ -691,7 +642,7 @@ public class MiningHelper {
 	}
 	
 	public static class MiningAccident {
-		public CrewCompositionAPI crewLost = Global.getFactory().createCrewComposition();
+		public int crewLost = 0;
 		public Map<FleetMemberAPI, Float> damage = new HashMap<>();
 		public List<FleetMemberAPI> shipsDestroyed = new ArrayList<>();
 		public Map<FleetMemberAPI, Float> crLost = new HashMap<>();

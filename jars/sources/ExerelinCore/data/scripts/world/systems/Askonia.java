@@ -1,10 +1,8 @@
 package data.scripts.world.systems;
 
 import java.awt.Color;
-import java.util.List;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.OrbitAPI;
@@ -12,9 +10,10 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.CargoAPI.CrewXPLevel;
-import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin.AsteroidFieldParams;
 
 public class Askonia {
@@ -28,7 +27,7 @@ public class Askonia {
 		
 		// create the star and generate the hyperspace anchor for this system
 		PlanetAPI star = system.initStar("askonia", // unique id for this star 
-										 "star_red", // id in planets.json
+										 StarTypes.RED_GIANT, // id in planets.json
 										 1000f,		// radius (in pixels at default zoom)
 										 1500, // corona radius, from star edge
 										 5f, // solar wind burn level
@@ -56,7 +55,7 @@ public class Askonia {
 		a1.setCustomDescriptionId("planet_sindria");
 		a1.setInteractionImage("illustrations", "urban01");
 		
-			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("askonia_jump_point_alpha", "Sindria Jump Point");
+			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("askonia_jump_point_alpha", "Sindria Jump-point");
 			OrbitAPI orbit = Global.getFactory().createCircularOrbit(a1, 0, 500, 30);
 			jumpPoint.setOrbit(orbit);
 			jumpPoint.setRelatedPlanet(a1);
@@ -71,8 +70,8 @@ public class Askonia {
 			sindria_relay.setCircularOrbitPointingDown( system.getEntityById("askonia"), -60, 3000, 100);
 		
 		// And now, the outer system.
-			system.addRingBand(star, "misc", "rings1", 256f, 3, Color.white, 256f, 3570, 220f, null, null);
-			system.addRingBand(star, "misc", "rings2", 256f, 2, Color.white, 256f, 3660, 226f, null, null);
+			system.addRingBand(star, "misc", "rings_dust0", 256f, 0, Color.white, 256f, 3570, 220f, null, null);
+			system.addRingBand(star, "misc", "rings_asteroids0", 256f, 0, Color.white, 256f, 3660, 226f, null, null);
 		system.addAsteroidBelt(star, 150, 3600, 170, 200, 250, Terrain.ASTEROID_BELT, "Stone River");
 		
 	// Salus system
@@ -89,9 +88,9 @@ public class Askonia {
 			a2a.setCustomDescriptionId("planet_cruor");
 			
 			system.addAsteroidBelt(a2, 50, 1100, 128, 40, 80, Terrain.ASTEROID_BELT, "Opis Ring");
-			system.addRingBand(a2, "misc", "rings1", 256f, 2, Color.white, 256f, 1100, 40f);
-			system.addRingBand(a2, "misc", "rings1", 256f, 2, Color.white, 256f, 1100, 60f);
-			system.addRingBand(a2, "misc", "rings1", 256f, 2, Color.white, 256f, 1100, 80f);
+			system.addRingBand(a2, "misc", "rings_asteroids0", 256f, 0, Color.white, 256f, 1100, 40f);
+			system.addRingBand(a2, "misc", "rings_dust0", 256f, 0, Color.white, 256f, 1120, 50f);
+			//system.addRingBand(a2, "misc", "rings_dust0", 256f, 0, Color.white, 256f, 1100, 80f);
 			
 			SectorEntityToken opis_debris_cloud = system.addTerrain(Terrain.ASTEROID_FIELD,
 				new AsteroidFieldParams(
@@ -112,14 +111,14 @@ public class Askonia {
 			a2b.applySpecChanges();
 			a2b.setInteractionImage("illustrations", "space_bar");
 			
-			system.addRingBand(a2, "misc", "rings1", 256f, 3, Color.white, 256f, 1800, 70f);
-			system.addRingBand(a2, "misc", "rings1", 256f, 3, Color.white, 256f, 1800, 90f);
-			system.addRingBand(a2, "misc", "rings1", 256f, 3, Color.white, 256f, 1800, 110f, Terrain.RING, "Dust Ring");
+			system.addRingBand(a2, "misc", "rings_dust0", 256f, 1, Color.white, 256f, 1800, 70f);
+			system.addRingBand(a2, "misc", "rings_dust0", 256f, 1, Color.white, 256f, 1800, 90f);
+			system.addRingBand(a2, "misc", "rings_dust0", 256f, 1, Color.white, 256f, 1800, 110f, Terrain.RING, "Dust Ring");
 			
-			system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 2150, 50f);
-			system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 2150, 70f);
-			system.addRingBand(a2, "misc", "rings1", 256f, 0, Color.white, 256f, 2150, 80f);
-			system.addRingBand(a2, "misc", "rings1", 256f, 1, Color.white, 256f, 2100, 90f, Terrain.RING, "Cloud Ring");
+			system.addRingBand(a2, "misc", "rings_ice0", 256f, 0, Color.white, 256f, 2150, 50f);
+			system.addRingBand(a2, "misc", "rings_ice0", 256f, 0, Color.white, 256f, 2150, 70f);
+			system.addRingBand(a2, "misc", "rings_ice0", 256f, 0, Color.white, 256f, 2150, 80f);
+			system.addRingBand(a2, "misc", "rings_ice0", 256f, 1, Color.white, 256f, 2150, 90f, Terrain.RING, "Cloud Ring");
 		
 		// Nortia - Independent (Charterist) base - caught in Salus' L4
 			PlanetAPI a3 = system.addPlanet("nortia", star, "Nortia", "barren-bombarded", 230 + 60, 80, 7500, 250);
@@ -155,7 +154,7 @@ public class Askonia {
 			salusL5.setCircularOrbit(star, 230 - 60, 7500, 250);
 			
 			// Askonia Outer Jump (in Salus L5)
-			JumpPointAPI jumpPoint2 = Global.getFactory().createJumpPoint("salus_jump", "Salus L5 Jump");
+			JumpPointAPI jumpPoint2 = Global.getFactory().createJumpPoint("salus_jump", "Salus L5 Jump-point");
 			jumpPoint2.setCircularOrbit(star, 230 - 60, 7500, 250);
 			jumpPoint2.setStandardWormholeToHyperspaceVisual();
 			system.addEntity(jumpPoint2);
@@ -197,61 +196,18 @@ public class Askonia {
 //		jumpPoint.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", "space_wreckage", 1200, 1200));
 //		station.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", "cargo_loading", 1200, 1200));
 		
+		
+		float radiusAfter = StarSystemGenerator.addOrbitingEntities(system, star, StarAge.OLD,
+				1, 2, // min/max entities to add
+				11750, // radius to start adding at 
+				4, // name offset - next planet will be <system name> <roman numeral of this parameter + 1>
+				false);
+				//true); // whether to use custom or system-name based names
+		
 		// generates hyperspace destinations for in-system jump points
 		system.autogenerateHyperspaceJumpPoints(true, true);
-		
-		
-		/*
-		DiktatPatrolSpawnPoint patrolSpawn = new DiktatPatrolSpawnPoint(sector, system, 5, 3, a1);
-		system.addScript(patrolSpawn);
-		for (int i = 0; i < 5; i++)
-			patrolSpawn.spawnFleet();
+	}
+	
 
-		DiktatGarrisonSpawnPoint garrisonSpawn = new DiktatGarrisonSpawnPoint(sector, system, 30, 1, a1, a1);
-		system.addScript(garrisonSpawn);
-		garrisonSpawn.spawnFleet();
-		
-		
-		system.addScript(new IndependentTraderSpawnPoint(sector, hyper, 1, 10, hyper.createToken(-6000, 2000), station));
-		*/
-	}
-	
-	private void initStationCargo(SectorEntityToken station) {
-		CargoAPI cargo = station.getCargo();
-		addRandomWeapons(cargo, 5);
-		
-		cargo.addCrew(CrewXPLevel.VETERAN, 20);
-		cargo.addCrew(CrewXPLevel.REGULAR, 500);
-		cargo.addMarines(200);
-		cargo.addSupplies(1000);
-		cargo.addFuel(500);
-		
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "conquest_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "heron_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "heron_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "shepherd_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "shepherd_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "crig_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "crig_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "crig_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "ox_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "ox_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "ox_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "ox_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "ox_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "monitor_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.SHIP, "monitor_Hull"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, "gladius_wing"));
-		cargo.getMothballedShips().addFleetMember(Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, "gladius_wing"));
-	}
-	
-	private void addRandomWeapons(CargoAPI cargo, int count) {
-		List weaponIds = Global.getSector().getAllWeaponIds();
-		for (int i = 0; i < count; i++) {
-			String weaponId = (String) weaponIds.get((int) (weaponIds.size() * Math.random()));
-			int quantity = (int)(Math.random() * 4f + 2f);
-			cargo.addWeapons(weaponId, quantity);
-		}
-	}
 	
 }

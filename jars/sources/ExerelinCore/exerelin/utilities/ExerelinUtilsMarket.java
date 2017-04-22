@@ -70,8 +70,8 @@ public class ExerelinUtilsMarket {
 	
 	public static float getCommodityDemandFractionMet(MarketAPI market, String commodity, boolean clamp)
 	{
-		if (clamp) return market.getCommodityData(commodity).getDemand().getClampedAverageFractionMet();
-		else return market.getCommodityData(commodity).getDemand().getAverageFractionMet();
+		if (clamp) return market.getCommodityData(commodity).getDemand().getClampedFractionMet();
+		else return market.getCommodityData(commodity).getDemand().getFractionMet();
 	}
 	
 	public static int countMarketConditions(MarketAPI market, String marketCondition)
@@ -85,14 +85,19 @@ public class ExerelinUtilsMarket {
 		return count;
 	}
 	
-	public static int getPopulation(MarketAPI market)
+	public static float getPopulation(MarketAPI market)
 	{
 		return getPopulation(market.getSize());
 	}
 	
-	public static int getPopulation(int size)
+	public static float getPopulation(int size)
 	{
-		return (int)(Math.pow(10, size));
+		//return (int)(Math.pow(10, size));
+		if (size <= 1) return 0.125f;
+		if (size == 2) return 0.25f;
+		if (size == 3) return 0.5f;
+		
+		return (float) Math.pow(2, size - 4);
 	}
 	
 	public static void removeOneMarketCondition(MarketAPI market, String conditionId)
@@ -177,13 +182,11 @@ public class ExerelinUtilsMarket {
 	
 	public static void destroyCommodityStocks(MarketAPI market, CommodityOnMarketAPI commodity, float mult, float variance)
 	{
-		float avg = commodity.getAverageStockpile();
 		float current = commodity.getStockpile();
 		if (variance != 0)
 			mult = mult * MathUtils.getRandomNumberInRange(1 - variance, 1 + variance);
-		commodity.removeFromAverageStockpile(avg * mult);
 		commodity.removeFromStockpile(current * mult);
-		Global.getLogger(ExerelinUtilsMarket.class).info("Destroyed " + String.format("%.1f", avg * mult) + " of " + commodity.getId() 
+		Global.getLogger(ExerelinUtilsMarket.class).info("Destroyed " + String.format("%.1f", current * mult) + " of " + commodity.getId() 
 				+ " on " + market.getName() + " (mult " + String.format("%.2f", mult) + ")");
 	}
 	
@@ -325,11 +328,8 @@ public class ExerelinUtilsMarket {
 				case Conditions.AUTOFAC_HEAVY_INDUSTRY:
 					machinery += ConditionData.AUTOFAC_HEAVY_MACHINERY_DEMAND;
 					break;
-				case Conditions.HYDROPONICS_COMPLEX:
-					machinery += ConditionData.HYDROPONICS_COMPLEX_MACHINERY;
-					break;
 				case Conditions.LIGHT_INDUSTRIAL_COMPLEX:
-					machinery += ConditionData.LIGHT_INDUSTRY_MACHINERY_MULT * pop;
+					machinery += ConditionData.LIGHT_INDUSTRY_MACHINERY;
 					break;
 				case Conditions.MILITARY_BASE:
 					machinery += ConditionData.MILITARY_BASE_MACHINERY;
