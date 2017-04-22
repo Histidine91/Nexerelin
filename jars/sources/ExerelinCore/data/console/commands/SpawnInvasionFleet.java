@@ -8,7 +8,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.world.InvasionFleetManager;
+import exerelin.campaign.fleets.InvasionFleetManager;
 import java.util.List;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommonStrings;

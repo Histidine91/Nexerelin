@@ -23,8 +23,8 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.utilities.StringHelper;
-import exerelin.world.InvasionFleetManager;
-import exerelin.world.InvasionFleetManager.InvasionFleetData;
+import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
 import java.awt.Color;
 import java.util.HashMap;
 

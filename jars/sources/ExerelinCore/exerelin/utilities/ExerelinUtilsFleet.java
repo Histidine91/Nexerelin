@@ -10,8 +10,8 @@ import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import data.scripts.ExerelinModPlugin;
-import exerelin.campaign.fleets.DSFleetUtilsProxy;
-import exerelin.campaign.fleets.SWPFleetUtilsProxy;
+import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
+import exerelin.campaign.fleets.utils.SWPFleetUtilsProxy;
 import org.apache.log4j.Logger;
 
 

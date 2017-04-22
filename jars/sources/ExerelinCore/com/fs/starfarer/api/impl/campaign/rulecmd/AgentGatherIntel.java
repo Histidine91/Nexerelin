@@ -13,7 +13,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.utilities.StringHelper;
-import exerelin.world.ResponseFleetManager;
+import exerelin.campaign.fleets.ResponseFleetManager;
 import java.awt.Color;
 
 public class AgentGatherIntel extends AgentActionBase {

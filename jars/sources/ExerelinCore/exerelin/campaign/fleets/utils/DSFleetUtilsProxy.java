@@ -1,4 +1,4 @@
-package exerelin.campaign.fleets;
+package exerelin.campaign.fleets.utils;
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;

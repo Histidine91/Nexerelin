@@ -15,7 +15,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
-import exerelin.world.InvasionFleetManager.InvasionFleetData;
+import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
 
 
 public class ExigencyRespawnFleetEvent extends BaseEventPlugin {

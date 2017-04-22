@@ -14,7 +14,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.campaign.MiningHelper;
-import exerelin.world.ResponseFleetManager;
+import exerelin.campaign.fleets.ResponseFleetManager;
 
 @SuppressWarnings("unchecked")
 public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {

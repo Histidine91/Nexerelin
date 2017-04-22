@@ -1,4 +1,4 @@
-package exerelin.world;
+package exerelin.campaign.fleets;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
@@ -16,7 +16,7 @@ import exerelin.campaign.MiningHelper;
 import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
-import exerelin.world.MiningFleetManager.MiningFleetData;
+import exerelin.campaign.fleets.MiningFleetManager.MiningFleetData;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;

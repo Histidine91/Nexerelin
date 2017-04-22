@@ -17,7 +17,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.events.SuperweaponEvent;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
-import exerelin.world.ResponseFleetManager;
+import exerelin.campaign.fleets.ResponseFleetManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -22,7 +22,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.world.ResponseFleetManager;
+import exerelin.campaign.fleets.ResponseFleetManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;

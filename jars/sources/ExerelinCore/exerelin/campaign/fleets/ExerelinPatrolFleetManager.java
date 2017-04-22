@@ -1,4 +1,4 @@
-package exerelin.world;
+package exerelin.campaign.fleets;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;

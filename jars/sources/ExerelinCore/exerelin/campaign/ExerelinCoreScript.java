@@ -10,7 +10,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.world.ExerelinPatrolFleetManager;
+import exerelin.campaign.fleets.ExerelinPatrolFleetManager;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.log4j.Logger;
