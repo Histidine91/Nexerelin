@@ -1,10 +1,10 @@
-package data.scripts.campaign.econ;
+package exerelin.campaign.econ;
 
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
-public class Exerelin_RecyclingPlant extends BaseMarketConditionPlugin {
+public class RecyclingPlant extends BaseMarketConditionPlugin {
 	
 	public static final float RECYCLING_CREW = 200f;
 	public static final float RECYCLING_VOLATILES = 1500f;

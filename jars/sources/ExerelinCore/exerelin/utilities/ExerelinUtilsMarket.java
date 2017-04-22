@@ -15,9 +15,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.Misc;
-import data.scripts.campaign.econ.Exerelin_Hydroponics;
-import data.scripts.campaign.econ.Exerelin_RecyclingPlant;
-import data.scripts.campaign.econ.Exerelin_SupplyWorkshop;
+import exerelin.campaign.econ.HydroponicsLab;
+import exerelin.campaign.econ.RecyclingPlant;
+import exerelin.campaign.econ.SupplyWorkshop;
 import exerelin.ExerelinConstants;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -252,7 +252,7 @@ public class ExerelinUtilsMarket {
 		int hydroponicsCount = ExerelinUtilsMarket.countMarketConditions(market, "exerelin_hydroponics");
 		int hydroponicsVanillaCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.HYDROPONICS_COMPLEX);
 		int aquacultureCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.AQUACULTURE);
-		food += hydroponicsCount * Exerelin_Hydroponics.HYDROPONICS_FOOD_POP_MULT * pop;
+		food += hydroponicsCount * HydroponicsLab.HYDROPONICS_FOOD_POP_MULT * pop;
 		food += aquacultureCount * ConditionData.AQUACULTURE_FOOD_MULT * pop;
 		food += hydroponicsVanillaCount * ConditionData.HYDROPONICS_COMPLEX_FOOD;
 		
@@ -347,13 +347,13 @@ public class ExerelinUtilsMarket {
 					machinery += ConditionData.VOLATILES_MINING_MACHINERY;
 					break;
 				case "exerelin_recycling_plant":
-					machinery += Exerelin_RecyclingPlant.RECYCLING_HEAVY_MACHINERY_DEMAND;
+					machinery += RecyclingPlant.RECYCLING_HEAVY_MACHINERY_DEMAND;
 					break;
 				case "exerelin_hydroponics":
-					machinery += Exerelin_Hydroponics.HYDROPONICS_HEAVY_MACHINERY_POP_MULT * pop;
+					machinery += HydroponicsLab.HYDROPONICS_HEAVY_MACHINERY_POP_MULT * pop;
 					break;
 				case "exerelin_supply_workshop":
-					machinery += Exerelin_SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY_DEMAND;
+					machinery += SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY_DEMAND;
 					break;
 			}
 		}

@@ -1,10 +1,10 @@
-package data.scripts.campaign.econ;
+package exerelin.campaign.econ;
 
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
-public class Exerelin_SupplyWorkshop extends BaseMarketConditionPlugin {
+public class SupplyWorkshop extends BaseMarketConditionPlugin {
 	
 	// for comparison
 	/*

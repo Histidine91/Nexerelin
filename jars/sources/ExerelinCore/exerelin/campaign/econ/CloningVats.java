@@ -1,11 +1,11 @@
-package data.scripts.campaign.econ;
+package exerelin.campaign.econ;
 
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
 @Deprecated
-public class Exerelin_CloningVats extends BaseMarketConditionPlugin {
+public class CloningVats extends BaseMarketConditionPlugin {
     
 	public static final float CLONINGVATS_CREW = 200f;	// green
 	public static final float CLONINGVATS_CREW_DEMAND = 20f;

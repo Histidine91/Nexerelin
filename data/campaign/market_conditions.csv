@@ -1,16 +1,16 @@
 name,id,script,desc,icon,order
-Recycling Plant,exerelin_recycling_plant,data.scripts.campaign.econ.Exerelin_RecyclingPlant,"This ubiquitous facility turns the usual wastes of a station or city into organics, volatiles, [rare] metals and supplies. Requires crew to operate.",graphics/exerelin/icons/markets/exerelin_recycling_plant.png,30
-Cloning Vats,exerelin_cloning_vats,data.scripts.campaign.econ.Exerelin_CloningVats,"An efficient (if unethical) way of producing large amounts of crew quickly from organics, volatiles and food. Failed clones can be recycled for organs.",graphics/exerelin/icons/markets/exerelin_cloning_vats.png,30
-Hydroponics Lab,exerelin_hydroponics,data.scripts.campaign.econ.Exerelin_Hydroponics,Facility for growing crops without soil in a controlled environment. An effective if costly way of producing food on planets that cannot normally support plant life. Requires crew and some heavy machinery.,graphics/icons/markets/hydroponics.png,29
-Templar Control,exerelin_templar_control,data.scripts.campaign.econ.Exerelin_TemplarControl,The Templars exert all-pervasive control over every aspect of the markets they hold. Increases stability and removes stability penalty from smuggling. Creates some demand for marines to enforce order.,graphics/templars/icons/intel/tem_crusade_event.png,31
-Supply Workshop,exerelin_supply_workshop,data.scripts.campaign.econ.Exerelin_SupplyWorkshop,"A medium-scale fabrication unit for producing useful supplies from raw organics, volatiles and metals. Requires crew.",graphics/exerelin/icons/markets/exerelin_supplyworkshop.png,32
+Recycling Plant,exerelin_recycling_plant,exerelin.campaign.econ.RecyclingPlant,"This ubiquitous facility turns the usual wastes of a station or city into organics, volatiles, [rare] metals and supplies. Requires crew to operate.",graphics/exerelin/icons/markets/exerelin_recycling_plant.png,30
+Cloning Vats,exerelin_cloning_vats,exerelin.campaign.econ.CloningVats,"An efficient (if unethical) way of producing large amounts of crew quickly from organics, volatiles and food. Failed clones can be recycled for organs.",graphics/exerelin/icons/markets/exerelin_cloning_vats.png,30
+Hydroponics Lab,exerelin_hydroponics,exerelin.campaign.econ.HydroponicsLab,Facility for growing crops without soil in a controlled environment. An effective if costly way of producing food on planets that cannot normally support plant life. Requires crew and some heavy machinery.,graphics/icons/markets/hydroponics.png,29
+Templar Control,exerelin_templar_control,exerelin.campaign.econ.TemplarControl,The Templars exert all-pervasive control over every aspect of the markets they hold. Increases stability and removes stability penalty from smuggling. Creates some demand for marines to enforce order.,graphics/templars/icons/intel/tem_crusade_event.png,31
+Supply Workshop,exerelin_supply_workshop,exerelin.campaign.econ.SupplyWorkshop,"A medium-scale fabrication unit for producing useful supplies from raw organics, volatiles and metals. Requires crew.",graphics/exerelin/icons/markets/exerelin_supplyworkshop.png,32
 ,,,,,
-Volturnian Lobster Pens (Small),exerelin_volturnian_lobster_pens,data.scripts.campaign.econ.Exerelin_VolturnianLobster,A mix of several Old Earth species and a little imagination produced this creature which grows wild in the crushing depths of Volturn's sea-floor. The flavor is said to be exceptional.,graphics/icons/markets/lobster_pens.png,30
+Volturnian Lobster Pens (Small),exerelin_volturnian_lobster_pens,exerelin.campaign.econ.VolturnianLobsterSmall,A mix of several Old Earth species and a little imagination produced this creature which grows wild in the crushing depths of Volturn's sea-floor. The flavor is said to be exceptional.,graphics/icons/markets/lobster_pens.png,30
 ,,,,,
-Market Attacked,exerelin_market_attacked_condition,data.scripts.campaign.econ.MarketAttackedCondition,"$market has recently been attacked by a hostile force, causing widespread damage to infrastructure and panic amongst the populace.
+Market Attacked,exerelin_market_attacked_condition,exerelin.campaign.econ.MarketAttackedCondition,"$market has recently been attacked by a hostile force, causing widespread damage to infrastructure and panic amongst the populace.
 
 - Stability reduced by $stabilityPenalty",graphics/icons/markets/mercenaries.png,1000
-Agent Destabilization,exerelin_agent_destabilize_condition,data.scripts.campaign.econ.AgentDestabilizeMarketCondition,"Foreign agents have recently conducted terror attacks on $market.
+Agent Destabilization,exerelin_agent_destabilize_condition,exerelin.campaign.econ.AgentDestabilizeMarketCondition,"Foreign agents have recently conducted terror attacks on $market.
 
 - Stability reduced by $stabilityPenalty",graphics/icons/markets/plundered.png,1000
 Superweapon Attack,exerelin_superweapon_condition,exerelin.campaign.econ.SuperweaponCondition," $market has recently been hit by a planet buster superweapon, causing widespread devastation.
@@ -18,7 +18,6 @@ Superweapon Attack,exerelin_superweapon_condition,exerelin.campaign.econ.Superwe
 - Stability reduced by $stabilityPenalty",graphics/icons/markets/meteor_strike.png,1000
 ,,,,,
 #vanilla override,,,,,
-Military Base,military_base,data.scripts.campaign.econ.ExerelinMilitaryBase,"Requires supplies, fuel, hand weapons, and machinery. There's some turnover in personnel, resulting in a trickle of trained crew and marines available for hire.
+Military Base,military_base,exerelin.campaign.econ.ExerelinMilitaryBase,"Requires supplies, fuel, hand weapons, and machinery. There's some turnover in personnel, resulting in a trickle of trained crew and marines available for hire.
 
 Increases the quality and number of officers in $market's fleets.",graphics/icons/markets/military_base.png,30
-Shipbreaking Center,shipbreaking_center,data.scripts.campaign.econ.ExerelinShipbreakingCenter,"A major center of shipbreaking in this region of the Sector, hulks are consigned to scrapping here by the navies of major factions and many other clients from among the Sector core worlds.",graphics/icons/markets/shipbreaking.png,30

@@ -1,10 +1,10 @@
-package data.scripts.campaign.econ;
+package exerelin.campaign.econ;
 
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
-public class Exerelin_Hydroponics extends BaseMarketConditionPlugin {
+public class HydroponicsLab extends BaseMarketConditionPlugin {
 	
 	public static final float HYDROPONICS_CREW = 100f;
 	public static final float HYDROPONICS_FOOD = 3000f;

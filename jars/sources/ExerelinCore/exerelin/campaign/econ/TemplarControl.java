@@ -1,10 +1,10 @@
-package data.scripts.campaign.econ;
+package exerelin.campaign.econ;
 
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
-public class Exerelin_TemplarControl extends BaseMarketConditionPlugin {
+public class TemplarControl extends BaseMarketConditionPlugin {
 	
 	@Override
 	public void apply(String id) {

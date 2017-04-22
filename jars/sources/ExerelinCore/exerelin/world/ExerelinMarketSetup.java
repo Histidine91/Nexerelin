@@ -14,10 +14,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.campaign.econ.ExerelinShipbreakingCenter;
-import data.scripts.campaign.econ.Exerelin_Hydroponics;
-import data.scripts.campaign.econ.Exerelin_RecyclingPlant;
-import data.scripts.campaign.econ.Exerelin_SupplyWorkshop;
+import exerelin.campaign.econ.HydroponicsLab;
+import exerelin.campaign.econ.RecyclingPlant;
+import exerelin.campaign.econ.SupplyWorkshop;
 import exerelin.campaign.fleets.ExerelinLionsGuardFleetManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -623,31 +622,31 @@ public class ExerelinMarketSetup
 		
 		// metal
 		float mSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_METAL_PER_ORE * ConditionData.ORE_REFINING_ORE;
-		mSupply += shipbreakingCount * ConditionData.SHIPBREAKING_METALS * ExerelinShipbreakingCenter.EXTRA_METALS_MULT;
-		mSupply += recyclingCount * Exerelin_RecyclingPlant.RECYCLING_METALS * Exerelin_RecyclingPlant.HAX_MULT_07_METALS;
+		mSupply += shipbreakingCount * ConditionData.SHIPBREAKING_METALS;
+		mSupply += recyclingCount * RecyclingPlant.RECYCLING_METALS * RecyclingPlant.HAX_MULT_07_METALS;
 		mSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.METALS);
 		modifyCommoditySupply(Commodities.METALS, mSupply);
 		float mDemand = autofacCount * ConditionData.AUTOFAC_HEAVY_METALS;
-		mDemand += workshopCount * Exerelin_SupplyWorkshop.WORKSHOP_METALS;
+		mDemand += workshopCount * SupplyWorkshop.WORKSHOP_METALS;
 		modifyCommodityDemand(Commodities.METALS, mDemand);
 		//modifyCommodityDemand(Commodities.METALS, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.METALS) * 0.5f);	// hax
 		
 		// rare metal
 		float rmSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_METAL_PER_ORE * ConditionData.ORE_REFINING_RARE_ORE;
-		rmSupply += shipbreakingCount * ConditionData.SHIPBREAKING_RARE_METALS * ExerelinShipbreakingCenter.EXTRA_METALS_MULT;
-		rmSupply += recyclingCount * Exerelin_RecyclingPlant.RECYCLING_RARE_METALS * Exerelin_RecyclingPlant.HAX_MULT_07_METALS;
+		rmSupply += shipbreakingCount * ConditionData.SHIPBREAKING_RARE_METALS;
+		rmSupply += recyclingCount * RecyclingPlant.RECYCLING_RARE_METALS * RecyclingPlant.HAX_MULT_07_METALS;
 		rmSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.RARE_METALS);
 		ExerelinMarketSetup.this.modifyCommoditySupply(Commodities.RARE_METALS, rmSupply);
 		float rmDemand = autofacCount * ConditionData.AUTOFAC_HEAVY_RARE_METALS;
-		rmDemand += workshopCount * Exerelin_SupplyWorkshop.WORKSHOP_RARE_METALS;
+		rmDemand += workshopCount * SupplyWorkshop.WORKSHOP_RARE_METALS;
 		rmDemand += fuelProdCount * ConditionData.FUEL_PRODUCTION_RARE_METALS;
 		modifyCommodityDemand(Commodities.RARE_METALS, rmDemand);
 		
 		// supplies
 		float sSupply = autofacCount * ConditionData.AUTOFAC_HEAVY_SUPPLIES; 
 		sSupply += shipbreakingCount * ConditionData.SHIPBREAKING_SUPPLIES;
-		sSupply += recyclingCount * Exerelin_RecyclingPlant.RECYCLING_SUPPLIES;
-		sSupply += workshopCount * Exerelin_SupplyWorkshop.WORKSHOP_SUPPLIES;
+		sSupply += recyclingCount * RecyclingPlant.RECYCLING_SUPPLIES;
+		sSupply += workshopCount * SupplyWorkshop.WORKSHOP_SUPPLIES;
 		sSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.SUPPLIES);
 		modifyCommoditySupply(Commodities.SUPPLIES, sSupply);
 		float sDemand = ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.SUPPLIES);
@@ -668,16 +667,16 @@ public class ExerelinMarketSetup
 		
 		// guns (hand weapons)
 		float gSupply = autofacCount * ConditionData.AUTOFAC_HEAVY_HAND_WEAPONS;
-		gSupply += workshopCount * Exerelin_SupplyWorkshop.WORKSHOP_HAND_WEAPONS;
+		gSupply += workshopCount * SupplyWorkshop.WORKSHOP_HAND_WEAPONS;
 		gSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.HAND_WEAPONS);
 		modifyCommoditySupply(Commodities.HAND_WEAPONS, gSupply);
 		modifyCommodityDemand(Commodities.HAND_WEAPONS, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.HAND_WEAPONS));
 		
 		// machinery
 		float hmSupply = autofacCount * ConditionData.AUTOFAC_HEAVY_MACHINERY;
-		hmSupply += shipbreakingCount * ConditionData.SHIPBREAKING_MACHINERY * ExerelinShipbreakingCenter.EXTRA_MACHINERY_MULT;
-		hmSupply += workshopCount * Exerelin_SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY;
-		hmSupply += recyclingCount * Exerelin_RecyclingPlant.RECYCLING_HEAVY_MACHINERY;
+		hmSupply += shipbreakingCount * ConditionData.SHIPBREAKING_MACHINERY;
+		hmSupply += workshopCount * SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY;
+		hmSupply += recyclingCount * RecyclingPlant.RECYCLING_HEAVY_MACHINERY;
 		hmSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.HEAVY_MACHINERY);
 		modifyCommoditySupply(Commodities.HEAVY_MACHINERY, hmSupply);
 		//modifyCommodityDemand(Commodities.HEAVY_MACHINERY, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.HEAVY_MACHINERY) * 0.75f);	// hax
@@ -686,14 +685,14 @@ public class ExerelinMarketSetup
 		// organics
 		float oSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORGANICS_COMPLEX) * ConditionData.ORGANICS_MINING_ORGANICS;
 		oSupply += ExerelinUtilsMarket.getFarmingFoodSupply(newMarket, true) * ConditionData.FARMING_ORGANICS_FRACTION;
-		oSupply += recyclingCount * Exerelin_RecyclingPlant.RECYCLING_ORGANICS * Exerelin_RecyclingPlant.HAX_MULT_07_OV;
+		oSupply += recyclingCount * RecyclingPlant.RECYCLING_ORGANICS * RecyclingPlant.HAX_MULT_07_OV;
 		oSupply += ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.ORGANICS);
 		modifyCommoditySupply(Commodities.ORGANICS, oSupply);
 		modifyCommodityDemand(Commodities.ORGANICS, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.ORGANICS) * 0.95f);	// hax
 		
 		// volatiles
 		float vSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.VOLATILES_COMPLEX) * ConditionData.VOLATILES_MINING_VOLATILES;
-		vSupply += recyclingCount * Exerelin_RecyclingPlant.RECYCLING_VOLATILES * Exerelin_RecyclingPlant.HAX_MULT_07_OV;
+		vSupply += recyclingCount * RecyclingPlant.RECYCLING_VOLATILES * RecyclingPlant.HAX_MULT_07_OV;
 		ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.VOLATILES);
 		modifyCommoditySupply(Commodities.VOLATILES, vSupply);
 		modifyCommodityDemand(Commodities.VOLATILES, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.VOLATILES) * 1.05f);	// hax
@@ -822,11 +821,11 @@ public class ExerelinMarketSetup
 				{
 					removeMarketCondition(market, entity, Conditions.SHIPBREAKING_CENTER);
 					suppliesSupply -= ConditionData.SHIPBREAKING_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
-					metalSupply -= ConditionData.SHIPBREAKING_METALS * ExerelinShipbreakingCenter.EXTRA_METALS_MULT
+					metalSupply -= ConditionData.SHIPBREAKING_METALS
 							* ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.METALS);
-					rareMetalSupply -= ConditionData.SHIPBREAKING_RARE_METALS * ExerelinShipbreakingCenter.EXTRA_METALS_MULT
+					rareMetalSupply -= ConditionData.SHIPBREAKING_RARE_METALS
 							* ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.RARE_METALS);
-					machinerySupply -= ConditionData.SHIPBREAKING_MACHINERY * ExerelinShipbreakingCenter.EXTRA_MACHINERY_MULT
+					machinerySupply -= ConditionData.SHIPBREAKING_MACHINERY
 							* ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HEAVY_MACHINERY);
 
 					log.info("Removed balancing shipbreaking center from " + market.getName());
@@ -851,11 +850,11 @@ public class ExerelinMarketSetup
 			MarketAPI market = entity.market;
 			addMarketCondition(market, entity, Conditions.SHIPBREAKING_CENTER);
 			suppliesSupply += ConditionData.SHIPBREAKING_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
-			metalSupply += ConditionData.SHIPBREAKING_METALS * ExerelinShipbreakingCenter.EXTRA_METALS_MULT
+			metalSupply += ConditionData.SHIPBREAKING_METALS
 					* ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.METALS);
-			rareMetalSupply += ConditionData.SHIPBREAKING_RARE_METALS * ExerelinShipbreakingCenter.EXTRA_METALS_MULT
+			rareMetalSupply += ConditionData.SHIPBREAKING_RARE_METALS
 						* ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.RARE_METALS);
-			machinerySupply += ConditionData.SHIPBREAKING_MACHINERY * ExerelinShipbreakingCenter.EXTRA_MACHINERY_MULT
+			machinerySupply += ConditionData.SHIPBREAKING_MACHINERY
 						* ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HEAVY_MACHINERY);
 			log.info("Added balancing shipbreaking center to " + market.getName());
 		}
@@ -978,14 +977,14 @@ public class ExerelinMarketSetup
 				if (suppliesSupply > suppliesDemand * 1.25)
 				{
 					removeMarketCondition(market, entity, "exerelin_supply_workshop");
-					suppliesSupply -= Exerelin_SupplyWorkshop.WORKSHOP_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
-					machinerySupply -= Exerelin_SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HEAVY_MACHINERY);
-					machineryDemand -= Exerelin_SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY_DEMAND;
-					metalDemand -= Exerelin_SupplyWorkshop.WORKSHOP_METALS;
-					rareMetalDemand -= Exerelin_SupplyWorkshop.WORKSHOP_RARE_METALS;
-					gunsSupply -= Exerelin_SupplyWorkshop.WORKSHOP_HAND_WEAPONS * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HAND_WEAPONS);
-					organicsDemand -= Exerelin_SupplyWorkshop.WORKSHOP_ORGANICS;
-					volatilesDemand -= Exerelin_SupplyWorkshop.WORKSHOP_VOLATILES;
+					suppliesSupply -= SupplyWorkshop.WORKSHOP_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
+					machinerySupply -= SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HEAVY_MACHINERY);
+					machineryDemand -= SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY_DEMAND;
+					metalDemand -= SupplyWorkshop.WORKSHOP_METALS;
+					rareMetalDemand -= SupplyWorkshop.WORKSHOP_RARE_METALS;
+					gunsSupply -= SupplyWorkshop.WORKSHOP_HAND_WEAPONS * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HAND_WEAPONS);
+					organicsDemand -= SupplyWorkshop.WORKSHOP_ORGANICS;
+					volatilesDemand -= SupplyWorkshop.WORKSHOP_VOLATILES;
 					log.info("Removed balancing supply workshop from " + market.getName());
 					weight *= 100;
 				}
@@ -1007,14 +1006,14 @@ public class ExerelinMarketSetup
 			EntityData entity = entityPicker.pickAndRemove();
 			MarketAPI market = entity.market;
 			addMarketCondition(market, entity, "exerelin_supply_workshop");
-			suppliesSupply += Exerelin_SupplyWorkshop.WORKSHOP_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
-			machinerySupply += Exerelin_SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HEAVY_MACHINERY);
-			machineryDemand += Exerelin_SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY_DEMAND;
-			metalDemand += Exerelin_SupplyWorkshop.WORKSHOP_METALS;
-			rareMetalDemand += Exerelin_SupplyWorkshop.WORKSHOP_RARE_METALS;
-			gunsSupply += Exerelin_SupplyWorkshop.WORKSHOP_HAND_WEAPONS * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HAND_WEAPONS);
-			organicsDemand += Exerelin_SupplyWorkshop.WORKSHOP_ORGANICS;
-			volatilesDemand += Exerelin_SupplyWorkshop.WORKSHOP_VOLATILES;
+			suppliesSupply += SupplyWorkshop.WORKSHOP_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
+			machinerySupply += SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HEAVY_MACHINERY);
+			machineryDemand += SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY_DEMAND;
+			metalDemand += SupplyWorkshop.WORKSHOP_METALS;
+			rareMetalDemand += SupplyWorkshop.WORKSHOP_RARE_METALS;
+			gunsSupply += SupplyWorkshop.WORKSHOP_HAND_WEAPONS * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HAND_WEAPONS);
+			organicsDemand += SupplyWorkshop.WORKSHOP_ORGANICS;
+			volatilesDemand += SupplyWorkshop.WORKSHOP_VOLATILES;
 			log.info("Added balancing supply workshop to " + market.getName());
 		}
 		log.info("Final supplies supply/demand: " + (int)suppliesSupply + " / " + (int)suppliesDemand);
@@ -1088,9 +1087,9 @@ public class ExerelinMarketSetup
 				else if (market.hasCondition("exerelin_hydroponics"))
 				{
 					removeMarketCondition(market, entity, "exerelin_hydroponics");
-					foodSupply -= Exerelin_Hydroponics.HYDROPONICS_FOOD_POP_MULT * pop
+					foodSupply -= HydroponicsLab.HYDROPONICS_FOOD_POP_MULT * pop
 							* ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.FOOD);
-					machineryDemand -= Exerelin_Hydroponics.HYDROPONICS_HEAVY_MACHINERY_POP_MULT * pop;
+					machineryDemand -= HydroponicsLab.HYDROPONICS_HEAVY_MACHINERY_POP_MULT * pop;
 					weight *= 25;
 					log.info("Removed balancing Hydroponics Lab from " + market.getName() + " (size " + size + ")");
 				}
@@ -1152,9 +1151,9 @@ public class ExerelinMarketSetup
 			else
 			{
 				addMarketCondition(market, entity, "exerelin_hydroponics");
-				foodSupply += Exerelin_Hydroponics.HYDROPONICS_FOOD_POP_MULT * ExerelinUtilsMarket.getPopulation(size) 
+				foodSupply += HydroponicsLab.HYDROPONICS_FOOD_POP_MULT * ExerelinUtilsMarket.getPopulation(size) 
 						* ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.FOOD);
-				machineryDemand += Exerelin_Hydroponics.HYDROPONICS_HEAVY_MACHINERY_POP_MULT * pop;
+				machineryDemand += HydroponicsLab.HYDROPONICS_HEAVY_MACHINERY_POP_MULT * pop;
 				log.info("Added balancing Hydroponics Lab to " + market.getName() + " (size " + size + ")");
 			}
 		}
