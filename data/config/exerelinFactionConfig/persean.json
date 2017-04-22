@@ -1,23 +1,23 @@
 {
-    "playableFaction":false,
+    "playableFaction":true,
     "corvusCompatible":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "crewExpereinceLevelIncreaseChance":0.0,
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Dissenters", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Secessionists",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
-    "morality":"evil",
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "factionsLiked":[],
+    "factionsDisliked":[],
+    "morality":"good",
 
     "alignments":{
-        "militarist":1,
-        "diplomatic":-1,
+        "diplomatic":1,
+        "ideological":0.5
     },
     
     "startShipsSolo":["brawler_Elite"],

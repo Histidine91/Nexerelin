@@ -332,7 +332,7 @@ ExerelinNGCFactionsQuickStart,ExerelinNGCListFactions,$global.isDevMode,,,100:ex
 ExerelinNGCListHegemony,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist hegemony,,,exerelinNGCJoinHegemony:Hegemony,
 ExerelinNGCListTriTachyon,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist tritachyon,,,exerelinNGCJoinTriTachyon:Tri-Tachyon,
 ExerelinNGCListLuddicChurch,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist luddic_church,,,exerelinNGCJoinLuddicChurch:Luddic Church,
-ExerelinNGCListSindrianDiktat,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist sindrian_diktat,,,exerelinNGCJoinSindrianDiktat:Sindrian Diktat,
+ExerelinNGCListPerseanLeague,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist persean,,,exerelinNGCJoinPerseanLeague:Persean League,
 ExerelinNGCListPirates,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist pirates,,,exerelinNGCJoinPirate:Pirates (hard),
 ExerelinNGCFactionsOwnFaction,ExerelinNGCListFactionsVanilla,,,,exerelinNGCOwnFaction:Own faction,
 ExerelinNGCFactionsFreeStart,ExerelinNGCListFactionsVanilla,,"SetTooltip exerelinNGCFreeStart ""Own faction, but with no starting planet; you're on your own""",,exerelinNGCFreeStart:Free start (hard),
@@ -415,7 +415,7 @@ NGCSetFreeStart true
 FireBest ExerelinNGCStep3",,,
 ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == exerelinNGCJoinHegemony,"$playerFaction = hegemony
 FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == exerelinNGCJoinSindrianDiktat,"$playerFaction = sindrian_diktat
+ExerelinNGCJoinPerseanLeague,NewGameOptionSelected,$option == exerelinNGCJoinPerseanLeague,"$playerFaction = persean
 FireBest ExerelinNGCJoinFaction",,,
 ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == exerelinNGCJoinTriTachyon,"$playerFaction = tritachyon
 FireBest ExerelinNGCJoinFaction",,,
@@ -803,7 +803,7 @@ ExerelinFactionDirectoryListRadicalORI,ExerelinFactionDirectoryList4,$liveFactio
 ExerelinFactionDirectoryListScion,ExerelinFactionDirectoryList4,$liveFactions:scion,,,exerelinFactionDirectoryGetScion:Scion Collective,
 ExerelinFactionDirectoryListSCY,ExerelinFactionDirectoryList4,$liveFactions:SCY,,,exerelinFactionDirectoryGetSCY:SCY,
 ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList4,$liveFactions:shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
-ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList4,$liveFactions:sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
+ExerelinFactionDirectoryListPerseanLeague,ExerelinFactionDirectoryList4,$liveFactions:persean,,,exerelinFactionDirectoryGetPerseanLeague:Persean League,
 ExerelinFactionDirectoryListSpire,ExerelinFactionDirectoryList4,$liveFactions:spire,,,exerelinFactionDirectoryGetSpire:Spire,
 ExerelinFactionDirectoryListTiandong,ExerelinFactionDirectoryList4,$liveFactions:tiandong,,,exerelinFactionDirectoryGetTiandong:Tiandong,
 ExerelinFactionDirectoryListTriTachyon,ExerelinFactionDirectoryList4,$liveFactions:tritachyon,,,exerelinFactionDirectoryGetTriTachyon:Tri-Tachyon,
@@ -897,7 +897,7 @@ ExerelinFactionDirectoryGetSCY,DialogOptionSelected,$option == exerelinFactionDi
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,"$_directoryFaction = shadow_industry 0
 FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerelinFactionDirectoryGetSindrianDiktat,"$_directoryFaction = sindrian_diktat 0
+ExerelinFactionDirectoryGetPerseanLeague,DialogOptionSelected,$option == exerelinFactionDirectoryGetPerseanLeague,"$_directoryFaction = persean 0
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetSpire,DialogOptionSelected,$option == exerelinFactionDirectoryGetSpire,"$_directoryFaction = spire 0
 FireBest ExerelinFactionDirectorySubmit",,,
