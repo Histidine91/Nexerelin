@@ -1,9 +1,10 @@
-package com.fs.starfarer.api.impl.campaign.rulecmd;
+package com.fs.starfarer.api.impl.campaign.rulecmd.newgame;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
+import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.world.ExerelinCorvusLocations;
 import data.scripts.world.ExerelinCorvusLocations.SpawnPointEntry;
