@@ -34,7 +34,7 @@ public final class ExerelinSetupData
 	public int maxSectorSize = 12000;
 
 	// Game defaults
-	public boolean corvusMode = false;
+	public boolean corvusMode = true;
 	public boolean respawnFactions = false;
 	public boolean onlyRespawnStartingFactions = false;
 	public int respawnDelay = 60;

@@ -40,8 +40,8 @@ ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOption
 7:exerelinNGCSectorOptions:Sector generation
 8:exerelinNGCFactionOptions:Faction settings
 9:exerelinNGCOtherOptions:Other options",
-ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCEnableCorvusMode:Enable Corvus Mode,
-ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCDisableCorvusMode:Disable Corvus Mode,
+#ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCEnableCorvusMode:Enable Corvus Mode,
+#ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCDisableCorvusMode:Disable Corvus Mode,
 ExerelinNewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present""
 SetEnabled exerelinNGCSetNumSystems true
 SetEnabled exerelinNGCSetNumSystemsEmpty true
@@ -264,17 +264,17 @@ ExerelinNGCEnableCorvusMode,NewGameOptionSelected,$option==exerelinNGCEnableCorv
 FireAll ExerelinNGCOptions",,,
 ExerelinNGCDisableCorvusMode,NewGameOptionSelected,$option==exerelinNGCDisableCorvusMode,"NGCSetCorvusMode false
 FireAll ExerelinNGCOptions",,,
-ExerelinNGCEnableOmnifactory,NewGameOptionSelected,$option==exerelinNGCEnableOmnifactory,"NGCSetOmnifacEnabled true
+#ExerelinNGCEnableOmnifactory,NewGameOptionSelected,$option==exerelinNGCEnableOmnifactory,"NGCSetOmnifacEnabled true
 FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCDisableOmnifactory,NewGameOptionSelected,$option==exerelinNGCDisableOmnifactory,"NGCSetOmnifacEnabled false
+#ExerelinNGCDisableOmnifactory,NewGameOptionSelected,$option==exerelinNGCDisableOmnifactory,"NGCSetOmnifacEnabled false
 FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCEnablePrismMarket,NewGameOptionSelected,$option==exerelinNGCEnablePrismMarket,"NGCSetPrismMarketEnabled true
 FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCDisablePrismMarket,NewGameOptionSelected,$option==exerelinNGCDisablePrismMarket,"NGCSetPrismMarketEnabled false
 FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCSetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCSetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation true
+#ExerelinNGCSetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCSetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation true
 FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCUnsetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCUnsetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation false
+#ExerelinNGCUnsetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCUnsetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation false
 FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCEnableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartRelationships,"NGCSetRandomStartRelationships true
 FireAll ExerelinNGCFactionOptions",,,
