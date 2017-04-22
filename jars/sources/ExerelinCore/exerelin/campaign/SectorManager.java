@@ -32,7 +32,7 @@ import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.world.ExerelinCorvusLocations;
+import exerelin.world.ExerelinCorvusLocations;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.campaign.events.RevengeanceFleetEvent;

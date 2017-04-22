@@ -20,7 +20,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.Misc;
-import data.scripts.world.ExerelinCorvusLocations;
+import exerelin.world.ExerelinCorvusLocations;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
