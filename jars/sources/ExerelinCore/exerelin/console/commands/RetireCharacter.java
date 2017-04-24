@@ -1,4 +1,4 @@
-package data.console.commands;
+package exerelin.console.commands;
 
 import exerelin.campaign.SectorManager;
 import org.lazywizard.console.BaseCommand;

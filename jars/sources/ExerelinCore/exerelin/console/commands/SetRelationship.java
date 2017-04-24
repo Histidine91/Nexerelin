@@ -1,4 +1,4 @@
-package data.console.commands;
+package exerelin.console.commands;
 
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.utilities.ExerelinUtilsReputation;

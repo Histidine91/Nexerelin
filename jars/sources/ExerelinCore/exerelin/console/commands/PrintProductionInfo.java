@@ -1,4 +1,4 @@
-package data.console.commands;
+package exerelin.console.commands;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorAPI;

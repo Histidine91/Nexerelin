@@ -1,4 +1,4 @@
-package data.console.commands;
+package exerelin.console.commands;
 
 import exerelin.campaign.DiplomacyManager;
 import org.lazywizard.console.BaseCommand;
