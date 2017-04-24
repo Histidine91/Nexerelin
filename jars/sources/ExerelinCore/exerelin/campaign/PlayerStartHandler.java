@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Set;
 import org.lazywizard.lazylib.CollectionUtils;
 import org.lazywizard.lazylib.MathUtils;
-import org.lazywizard.omnifac.OmniFac;
 import org.lwjgl.util.vector.Vector2f;
 
 public class PlayerStartHandler {
@@ -230,7 +229,7 @@ public class PlayerStartHandler {
 		omnifac.setFaction(Factions.NEUTRAL);
 		omnifac.addTag("omnifactory");
 		
-		OmniFac.initOmnifactory(omnifac);
+		//OmniFac.initOmnifactory(omnifac);
 	}
 	
 	public static class OmnifacFilter implements CollectionUtils.CollectionFilter<SectorEntityToken>

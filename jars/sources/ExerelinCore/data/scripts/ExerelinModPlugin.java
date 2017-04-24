@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.lazywizard.lazylib.MathUtils;
-import org.lazywizard.omnifac.OmniFacSettings;
 import org.lwjgl.util.vector.Vector2f;
 
 public class ExerelinModPlugin extends BaseModPlugin
@@ -230,7 +229,6 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onApplicationLoad() throws Exception
     {
-        OmniFacSettings.reloadSettings();
         //ExerelinConfig.loadSettings();
     }
     
@@ -251,28 +249,32 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         SectorAPI sector = Global.getSector();
-        for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
-            PlayerStartHandler.addOmnifactory(sector, i);
+        //for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
+        //    PlayerStartHandler.addOmnifactory(sector, i);
     }
     
     @Override
     public void configureXStream(XStream x) {
-        x.alias("AllianceManager", AllianceManager.class);
-        x.alias("CovertOpsManager", CovertOpsManager.class);
-        x.alias("DiplomacyManager", DiplomacyManager.class);
+        x.alias("AllianceMngr", AllianceManager.class);
+        x.alias("CovertOpsMngr", CovertOpsManager.class);
+        x.alias("DiplomacyMngr", DiplomacyManager.class);
         x.alias("ExerelinCoreScript", ExerelinCoreScript.class);
         x.alias("PlayerFactionStore", PlayerFactionStore.class);
-        x.alias("SectorManager", SectorManager.class);
+        x.alias("SectorMngr", SectorManager.class);
         
-        x.alias("InvasionFleetManager", InvasionFleetManager.class);
-        x.alias("ResponseFleetManager", ResponseFleetManager.class);
-        x.alias("MiningFleetManager", MiningFleetManager.class);
-        x.alias("ExerelinPatrolFleetManager", ExerelinPatrolFleetManager.class);
+        x.alias("InvasionFleetMngr", InvasionFleetManager.class);
+        x.alias("ResponseFleetMngr", ResponseFleetManager.class);
+        x.alias("MiningFleetMngr", MiningFleetManager.class);
+        x.alias("ExerelinPatrolFleetMngr", ExerelinPatrolFleetManager.class);
         
         x.alias("DefenceFleetAI", DefenceFleetAI.class);
         x.alias("InvasionFleetAI", InvasionFleetAI.class);
         x.alias("MiningFleetAI", MiningFleetAI.class);
         x.alias("RespawnFleetAI", RespawnFleetAI.class);
         x.alias("ResponseFleetAI", ResponseFleetAI.class);
+        
+        x.alias("AgentDestabilizeMarketEvent", AgentDestabilizeMarketEvent.class);
+        x.alias("AgentDestabilizeMarketEventForCondition", AgentDestabilizeMarketEventForCondition.class);
+        x.alias("AgentLowerRelationsEvent", AgentLowerRelationsEvent.class);
     }
 }

@@ -224,11 +224,11 @@ ExerelinNGCSectorOptionsMenu,NewGameOptionSelected,$option==exerelinNGCSectorOpt
 ExerelinNGCFactionOptionsMenu,NewGameOptionSelected,$option==exerelinNGCFactionOptions,FireAll ExerelinNGCFactionOptions,,,
 ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,$option==exerelinNGCOtherOptions,FireAll ExerelinNGCOtherOptions,,,
 ,,,,,,
-ExerelinNGCListOptionEnableOmnifactory,ExerelinNGCSectorOptions,!$omniFacPresent,"SetTooltip exerelinNGCEnableOmnifactory ""A special facility that can reproduce (almost) any ship or weapon infinitely once given a sample. Items are sold at a 100% markup.""",,exerelinNGCEnableOmnifactory:Enable Omnifactory,
-ExerelinNGCListOptionDisableOmnifactory,ExerelinNGCSectorOptions,$omniFacPresent,"SetTooltip exerelinNGCDisableOmnifactory ""A special facility that can reproduce (almost) any ship or weapon infinitely once given a sample. Items are sold at a 100% markup.""",,exerelinNGCDisableOmnifactory:Disable Omnifactory,
-ExerelinNGCListOptionSetRandomOmnifactoryLocation,ExerelinNGCSectorOptions,"$omniFacPresent
+#ExerelinNGCListOptionEnableOmnifactory,ExerelinNGCSectorOptions,!$omniFacPresent,"SetTooltip exerelinNGCEnableOmnifactory ""A special facility that can reproduce (almost) any ship or weapon infinitely once given a sample. Items are sold at a 100% markup.""",,exerelinNGCEnableOmnifactory:Enable Omnifactory,
+#ExerelinNGCListOptionDisableOmnifactory,ExerelinNGCSectorOptions,$omniFacPresent,"SetTooltip exerelinNGCDisableOmnifactory ""A special facility that can reproduce (almost) any ship or weapon infinitely once given a sample. Items are sold at a 100% markup.""",,exerelinNGCDisableOmnifactory:Disable Omnifactory,
+#ExerelinNGCListOptionSetRandomOmnifactoryLocation,ExerelinNGCSectorOptions,"$omniFacPresent
 !$randomOmnifactoryLocation",,,exerelinNGCSetOmnifactoryRandomLocation:Enable random location for Omnifactory,
-ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCSectorOptions,"$omniFacPresent
+#ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCSectorOptions,"$omniFacPresent
 $randomOmnifactoryLocation",,,exerelinNGCUnsetOmnifactoryRandomLocation:Disable random location for Omnifactory,
 ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCSectorOptions,!$prismMarketPresent,"SetTooltip exerelinNGCEnablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCEnablePrismMarket:Enable Prism Freeport,
 ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCSectorOptions,$prismMarketPresent,"SetTooltip exerelinNGCDisablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
@@ -399,11 +399,9 @@ NGCAddShip ""tempest_Starting""
 NGCAddCargo RESOURCES elite_crew 20
 NGCAddCargo RESOURCES supplies 20
 NGCAddCargo RESOURCES fuel 20
+NGCAddCargo RESOURCES heavy_machinery 10
 NGCAddCredits 1000000
-NGCSetAptitude technology 10
-NGCSetAptitude combat 10
-NGCAddSkillPoints 200
-NGCAddAptitudePoints 10
+NGCAddCharacterPoints 100
 NGCSetStartingLocationExerelin
 NGCDone",,,
 ExerelinNGCOwnFaction,NewGameOptionSelected,$option == exerelinNGCOwnFaction,"NGCSetPlayerFaction ""player_npc""
@@ -570,58 +568,38 @@ AddText ""Starting experience and credits?""",,"exerelinNGCNormalStart:Ensign (1
 exerelinNGCEasyStart:Lieutenant (50,000 credits, level 6, one officer)
 exerelinNGCEasyStart2:Commander (250,000 credits, level 16, two officers)",
 ExerelinNGCNormalStart,NewGameOptionSelected,$option == exerelinNGCNormalStart,"NGCAddCredits 10000
-NGCAddAptitudePoints 2
-NGCAddSkillPoints 4
+NGCAddCharacterPoints 3
 NGCSetNumStartingOfficers 0
-AddText ""Added 2 aptitude points"" textFriendColor
-AddText ""Added 4 skill points"" textFriendColor
-AddText ""Added 10,000 credits"" textFriendColor
 SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart,NewGameOptionSelected,"$option == exerelinNGCEasyStart
 !$haveSSP","NGCAddCredits 50000
-NGCAddAptitudePoints 2
-NGCAddSkillPoints 4
+NGCAddCharacterPoints 3
 NGCAddXP 31500
 NGCSetNumStartingOfficers 1
-AddText ""Added 2 aptitude points"" textFriendColor
-AddText ""Added 4 skill points"" textFriendColor
-AddText ""Added 50,000 credits"" textFriendColor
 AddText ""Added 31,500 XP"" textFriendColor
 AddText ""Added 1 officer"" textFriendColor
 SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStartSSP,NewGameOptionSelected,"$option == exerelinNGCEasyStart
 $haveSSP","NGCAddCredits 50000
-NGCAddAptitudePoints 2
-NGCAddSkillPoints 4
+NGCAddCharacterPoints 3
 NGCAddXP 42000
 NGCSetNumStartingOfficers 1
-AddText ""Added 2 aptitude points"" textFriendColor
-AddText ""Added 4 skill points"" textFriendColor
-AddText ""Added 50,000 credits"" textFriendColor
 AddText ""Added 42,000 XP"" textFriendColor
 AddText ""Added 1 officer"" textFriendColor
 SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart2,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
 !$haveSSP","NGCAddCredits 250000
-NGCAddAptitudePoints 2
-NGCAddSkillPoints 4
+NGCAddCharacterPoints 3
 NGCAddXP 214500
 NGCSetNumStartingOfficers 2
-AddText ""Added 2 aptitude points"" textFriendColor
-AddText ""Added 4 skill points"" textFriendColor
-AddText ""Added 250,000 credits"" textFriendColor
 AddText ""Added 214,500 XP"" textFriendColor
 AddText ""Added 2 officers"" textFriendColor
 SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Continue,
 ExerelinNGCEasyStart2SSP,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
 $haveSSP","NGCAddCredits 250000
-NGCAddAptitudePoints 2
-NGCAddSkillPoints 4
+NGCAddCharacterPoints 3
 NGCAddXP 286000
 NGCSetNumStartingOfficers 2
-AddText ""Added 2 aptitude points"" textFriendColor
-AddText ""Added 4 skill points"" textFriendColor
-AddText ""Added 250,000 credits"" textFriendColor
 AddText ""Added 250,500 XP"" textFriendColor
 AddText ""Added 2 officers"" textFriendColor
 SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Continue,

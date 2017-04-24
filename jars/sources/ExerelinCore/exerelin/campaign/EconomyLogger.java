@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.EconomyAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
 public class EconomyLogger extends BaseCampaignEventListener implements EveryFrameScript {
 
@@ -53,7 +54,7 @@ public class EconomyLogger extends BaseCampaignEventListener implements EveryFra
 			MarketAPI market = (MarketAPI)(markets.get(i));
 			String name = market.getName();
 			int size = market.getSize();
-			CommodityOnMarketAPI commodity = market.getCommodityData("regular_crew");
+			CommodityOnMarketAPI commodity = market.getCommodityData(Commodities.CREW);
 			float stockpile = commodity.getStockpile();
 			float supply = commodity.getSupply().getModifiedValue();
 			float demand = commodity.getDemand().getDemandValue();

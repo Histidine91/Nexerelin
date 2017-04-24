@@ -22,7 +22,7 @@ public class ExerelinFactionConfig
     public static final Map<Alignment, Float> DEFAULT_ALIGNMENTS = new HashMap<>();
     
     public String factionId;
-
+	@Deprecated
     public String uniqueModClassName = "";
     public boolean playableFaction = true;
     public boolean corvusCompatible = false;
@@ -115,14 +115,12 @@ public class ExerelinFactionConfig
         {
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelinFactionConfig/" + factionId + ".json");
 
-            uniqueModClassName = settings.getString("uniqueModClassName");
             playableFaction = settings.optBoolean("playableFaction", true);
             corvusCompatible = settings.optBoolean("corvusCompatible", false);
             
             pirateFaction = settings.optBoolean("pirateFaction", false);
             isPirateNeutral = settings.optBoolean("isPirateNeutral", false);
             spawnPatrols = settings.optBoolean("spawnPatrols", true);
-            spawnPiratesAndMercs = settings.optBoolean("spawnPiratesAndMercs", true);
             hostileToAll = settings.optInt("hostileToAll", hostileToAll);
 
             crewExpereinceLevelIncreaseChance = settings.optDouble("crewExpereinceLevelIncreaseChance", 0);
