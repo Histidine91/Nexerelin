@@ -12,7 +12,7 @@ ResetRelationships,data.console.commands.ResetRelationships,"campaign,exerelin",
 RetireCharacter,data.console.commands.RetireCharacter,"campaign,exerelin",retirecharacter,Retires your character and ends the game.
 #,,,,
 # Omnifactory,,,,
-OmnifacStatus,org.lazywizard.omnifac.commands.OmnifacStatus,"omnifac,campaign",omnifacstatus [detailed],"Shows the location of all active Omnifactories, including their known blueprints if ""detailed"" is entered as an argument."
+#OmnifacStatus,org.lazywizard.omnifac.commands.OmnifacStatus,"omnifac,campaign",omnifacstatus [detailed],"Shows the location of all active Omnifactories, including their known blueprints if ""detailed"" is entered as an argument."
 #,,,,
 #PingDistance,data.console.commands.PingDistance,"campaign,exerelin",pingdistance,Prints distance to closest market.
 #ResetClosestMarket,data.console.commands.ResetClosestMarket,"campaign,exerelin",resetclosestmarket,Debug command
