@@ -34,10 +34,8 @@ import data.scripts.world.systems.Yma;
 import data.scripts.world.systems.Zagan;
 
 public class VanillaSystemsGenerator {
-	public static void generate()
-	{
-		SectorAPI sector = Global.getSector();
-		
+	public static void generate(SectorAPI sector)
+	{		
 		//ClassLoader cl = Global.getSettings().getScriptClassLoader();
 		
 		StarSystemAPI system = sector.createStarSystem("Corvus");

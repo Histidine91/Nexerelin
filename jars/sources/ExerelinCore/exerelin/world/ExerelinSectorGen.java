@@ -787,7 +787,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		}
 		else
 		{
-			
+			VanillaSystemsGenerator.generate(sector);
 		}
 		
 		// use vanilla hyperspace map
