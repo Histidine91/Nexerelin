@@ -41,7 +41,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
     //public static final int MAX_WEAPONS = 27;
     public static final RepLevel MIN_STANDING = RepLevel.NEUTRAL;
     public static final String IBB_FILE = "data/config/prism/prism_boss_ships.csv";
-    public static final String IBB_FILE_LEGACY = "data/config/prism/prism_boss_ships_legacy.csv";
     public static final String SHIPS_BLACKLIST = "data/config/prism/prism_ships_blacklist.csv";
     public static final String WEAPONS_BLACKLIST = "data/config/prism/prism_weapons_blacklist.csv";
     public static final String ILLEGAL_TRANSFER_MESSAGE = StringHelper.getString("exerelin_markets", "prismNoSale");
@@ -54,9 +53,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public Set<String> alreadyBoughtShips = new HashSet<>();
     
     public static String getIBBFile() {
-        if (ExerelinModPlugin.HAVE_SWP)
-            return IBB_FILE;    // assume we want the newer one
-        return IBB_FILE_LEGACY;
+        return IBB_FILE;
     }
     
     @Override
