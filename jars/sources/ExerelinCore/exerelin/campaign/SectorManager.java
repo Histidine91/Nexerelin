@@ -749,6 +749,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             market.removeSubmarket("AL_plugofbarrack");
         }
         
+		// tariffs
+		
+		// no, this risks screwing market-specific tariffs
+		//market.getTariff().modifyFlat("generator", Global.getSector().getFaction(newOwnerId).getTariffFraction());	
+		
         ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(newOwnerId);
         if (!sectorManager.corvusMode && newOwnerConfig != null)
         {

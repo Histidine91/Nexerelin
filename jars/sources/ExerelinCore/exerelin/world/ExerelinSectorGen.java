@@ -487,7 +487,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.addCondition("exerelin_supply_workshop");
 		market.addCondition("exerelin_hydroponics");
 		market.addCondition("exerelin_hydroponics");
-		market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
 		market.addCondition(Conditions.TRADE_CENTER);
 		market.addCondition(Conditions.STEALTH_MINEFIELDS);
 		market.addCondition(Conditions.CRYOSANCTUM);
@@ -500,7 +499,8 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		marketSetup.addStartingMarketCommodities(market);
 		
-		market.getTariff().modifyFlat("default_tariff", 0.2f);
+		market.getTariff().modifyFlat("generator", sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
+		market.getTariff().modifyMult("nexerelinMult", ExerelinConfig.baseTariffMult);
 		market.getTariff().modifyMult("isFreeMarket", 0.5f);
 		market.addSubmarket("exerelin_prismMarket");
 		market.setPrimaryEntity(prismEntity);
@@ -557,7 +557,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		marketSetup.addStartingMarketCommodities(market);
 		
-		market.getTariff().modifyFlat("default_tariff", 0.2f);
+		market.getTariff().modifyFlat("generator", 0.2f);
 		market.getTariff().modifyMult("isFreeMarket", 0.5f);
 		market.setPrimaryEntity(avesta);
 		avesta.setMarket(market);
@@ -606,7 +606,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		addStartingMarketCommodities(market);
 		
-		market.getTariff().modifyFlat("default_tariff", 0.2f);
+		market.getTariff().modifyFlat("generator", 0.2f);
 		market.setPrimaryEntity(shanghaiEntity);
 		shanghaiEntity.setMarket(market);
 		shanghaiEntity.setFaction("tiandong");

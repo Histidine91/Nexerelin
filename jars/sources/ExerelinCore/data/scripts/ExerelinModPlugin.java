@@ -115,8 +115,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     {
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
-            if (!SectorManager.getCorvusMode())
-                market.getTariff().modifyFlat("default_tariff", ExerelinConfig.baseTariff);
+            market.getTariff().modifyMult("nexerelinMult", ExerelinConfig.baseTariffMult);
             if (market.hasCondition("free_market")) 
                 market.getTariff().modifyMult("isFreeMarket", ExerelinConfig.freeMarketTariffMult);
         }

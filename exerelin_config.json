@@ -38,8 +38,8 @@
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
     "ignoreAlignmentForAlliances": false,
     
-    "baseTariff": 0.2,  # 1.0 = 100% tariff. Does not affect Corvus mode
-    "freeMarketTariffMult": 0.5,    # 0.5 = halved tariffs. Affects Corvus mode
+    "baseTariffMult": 2/3,  # 1.0 = base tariff (usually 30%)
+    "freeMarketTariffMult": 0.5,    # 0.5 = halved tariffs
     
     "prismMaxWeapons": 27,
     "prismNumShips": 16,

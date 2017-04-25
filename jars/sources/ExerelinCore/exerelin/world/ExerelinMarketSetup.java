@@ -556,7 +556,8 @@ public class ExerelinMarketSetup
 		// add per-faction market conditions
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 		
-		newMarket.getTariff().modifyFlat("default_tariff", ExerelinConfig.baseTariff);
+		newMarket.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
+		newMarket.getTariff().modifyMult("nexerelinMult", ExerelinConfig.baseTariffMult);
 		if (config.freeMarket)
 		{
 			newMarket.addCondition(Conditions.FREE_PORT);
