@@ -482,11 +482,11 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.setFactionId(Factions.INDEPENDENT);
 		market.addCondition(Conditions.POPULATION_5);
 		market.addCondition(Conditions.SPACEPORT);
-		market.addCondition("exerelin_recycling_plant");
 		//market.addCondition("exerelin_recycling_plant");
-		market.addCondition("exerelin_supply_workshop");
-		market.addCondition("exerelin_hydroponics");
-		market.addCondition("exerelin_hydroponics");
+		//market.addCondition("exerelin_recycling_plant");
+		//market.addCondition("exerelin_supply_workshop");
+		//market.addCondition("exerelin_hydroponics");
+		market.addCondition(Conditions.HYDROPONICS_COMPLEX);
 		market.addCondition(Conditions.TRADE_CENTER);
 		market.addCondition(Conditions.STEALTH_MINEFIELDS);
 		market.addCondition(Conditions.CRYOSANCTUM);
