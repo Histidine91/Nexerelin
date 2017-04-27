@@ -205,7 +205,10 @@
 	"exerelin_ngc":{
 		"added":"added",
 		"shipString":"$shipClass-class $designation",
-		"fighterWingString":"$shipClass wing"
+		"fighterWingString":"$shipClass wing",
+		"gainedXP":"gained $xp XP",
+		"recruitedOfficer":"recruited $numOfficers officer",
+		"recruitedOfficers":"recruited $numOfficers officers",
 	},
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",

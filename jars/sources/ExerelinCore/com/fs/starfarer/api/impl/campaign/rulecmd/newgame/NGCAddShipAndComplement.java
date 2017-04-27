@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 
@@ -30,6 +31,7 @@ public class NGCAddShipAndComplement extends BaseCommandPlugin {
 		}
 		data.addStartingFleetMember(vid, type);
 		
+		
 		FleetMemberAPI temp = Global.getFactory().createFleetMember(type, vid);
 		int crew = (int)Math.min(temp.getNeededCrew() * 1.5f, temp.getMaxCrew());
 		int supplies = (int)temp.getCargoCapacity()/2;
@@ -43,6 +45,11 @@ public class NGCAddShipAndComplement extends BaseCommandPlugin {
 		memory.set("$crewAdded", crew, 0);
 		memory.set("$suppliesAdded", supplies, 0);
 		memory.set("$fuelAdded", fuel, 0);
+		
+		AddRemoveCommodity.addFleetMemberGainText(Global.getSettings().getVariant(vid), dialog.getTextPanel());
+		AddRemoveCommodity.addCommodityGainText("crew", crew, dialog.getTextPanel());
+		AddRemoveCommodity.addCommodityGainText("supplies", supplies, dialog.getTextPanel());
+		AddRemoveCommodity.addCommodityGainText("fuel", fuel, dialog.getTextPanel());
                 
 		return true;
 	}

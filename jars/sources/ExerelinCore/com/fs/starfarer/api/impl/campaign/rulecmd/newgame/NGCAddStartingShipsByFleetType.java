@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
@@ -50,6 +51,7 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 			supplies += (int)temp.getCargoCapacity()/2;
 			fuel += (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
 			
+			/*
 			String className = temp.getHullSpec().getHullName();
 			String designation = temp.getVariant().getDesignation().toLowerCase();
 			String printed = Misc.ucFirst(StringHelper.getString("exerelin_ngc", "added"));
@@ -61,6 +63,8 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 			printed = StringHelper.substituteToken(printed, "$designation", designation);
 			
 			dialog.getTextPanel().addParagraph(printed, Misc.getPositiveHighlightColor());
+			*/
+			AddRemoveCommodity.addFleetMemberGainText(Global.getSettings().getVariant(variantId), dialog.getTextPanel());
 		}
 		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "crew", crew);
 		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "supplies", supplies);
@@ -70,6 +74,10 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		memory.set("$crewAdded", crew, 0);
 		memory.set("$suppliesAdded", supplies, 0);
 		memory.set("$fuelAdded", fuel, 0);
+		
+		AddRemoveCommodity.addCommodityGainText("crew", crew, dialog.getTextPanel());
+		AddRemoveCommodity.addCommodityGainText("supplies", supplies, dialog.getTextPanel());
+		AddRemoveCommodity.addCommodityGainText("fuel", fuel, dialog.getTextPanel());
 		
 		return true;
 	}
