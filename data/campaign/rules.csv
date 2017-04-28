@@ -1109,27 +1109,22 @@ ExerelinDialogSuperweaponInterference_open,OpenCommLink,$entity.exerelinRespondi
 ,,,,,,
 ,,,,,,
 ## Base commander stuff ##,,,,,,
-ExerelinConvStationCommanderGreeting,PickGreeting,"$postId == stationCommander
+ExerelinConvOfficialGreeting,PickGreeting,"Exerelin_IsBaseOfficial
 !$mpm_isPlayerContact","ShowPersonVisual
+FireAll PopulateOptions
 FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
-""This is $rank $name, $post. State your business.""",,
-ExerelinConvBaseCommanderGreeting,PickGreeting,"$postId == baseCommander
-!$mpm_isPlayerContact","ShowPersonVisual
-FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
-
-""This is $rank $name, $post. State your business.""",,
-ExerelinConvPortmasterGreetingTemplars,PickGreeting,"$postId != mercenary
-$postId != supplyOfficer
+""This is $rank $local.name, $post. State your business.""",,
+ExerelinConvOfficialGreetingTemplars,PickGreeting,"Exerelin_IsBaseOfficial
 $faction.id == ""templars""
 !$mpm_isPlayerContact","ShowPersonVisual
 FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
-""This is $rank $name, $post of $entityName. Speak quickly or be purged.""",,
-ExerelinConvOfficialGreetingPirates,PickGreeting,"$postId != mercenary
-$postId != supplyOfficer
+""This is $rank $local.name, $post of $entityName. Speak quickly or be purged.""",,
+ExerelinConvOfficialGreetingPirates,PickGreeting,"Exerelin_IsBaseOfficial
 IsPirateFaction $faction.id
 !$mpm_isPlayerContact","ShowPersonVisual
+FireAll PopulateOptions
 FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
 ""Yeah, what is it?""",,
@@ -1137,7 +1132,6 @@ FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connec
 #ExerelinBaseCommanderInitializeAddDialogs,ExerelinBaseCommanderOptionsInitialize,,<do something>,,,
 ,,,,,,
 ExerelinBaseCommanderMenuRepeat,DialogOptionSelected,$option == exerelinBaseCommanderMenuRepeat,FireAll ExerelinBaseCommanderOptionsInitialize,"""Anything else?""",,
-ExerelinBaseCommanderLeave,ExerelinBaseCommanderOptions,,,,9:cutCommLink:Cut the comm link,
 ,,,,,,
 #START FACTION CHANGE OPTIONS,,,,,,
 ExerelinaseCommanderOptionsSetVariables,ExerelinBaseCommanderOptionsInitialize,,"$thePlayerFaction = $player.theFaction 0
@@ -1154,25 +1148,26 @@ $faction.id != ""independent""
 $faction.id != ""player_npc""
 $faction.id == $player.factionId",$showLeaveFactionOptions = true 0,,,
 ,,,,,,
-ExerelinJoinFactionOption,ExerelinBaseCommanderOptions,"$showJoinFactionOptions
+,,,,,,
+ExerelinJoinFactionOption,PopulateOptions,"$showJoinFactionOptions
 RepIsAtWorst $faction.id FRIENDLY
 $player.factionId == ""player_npc""",SetEnabled exerelinJoinFaction true,,exerelinJoinFaction:Join faction,
-ExerelinJoinFactionOptionUntrusted,ExerelinBaseCommanderOptions,"$showJoinFactionOptions
+ExerelinJoinFactionOptionUntrusted,PopulateOptions,"$showJoinFactionOptions
 !RepIsAtWorst $faction.id FRIENDLY
 $player.factionId == ""player_npc""","SetTooltip exerelinJoinFaction ""$TheFaction do not trust you enough yet.""
 SetEnabled exerelinJoinFaction false",,exerelinJoinFaction:Join faction,
-ExerelinJoinFactionSwitchOption,ExerelinBaseCommanderOptions,"$showJoinFactionOptions
+ExerelinJoinFactionSwitchOption,PopulateOptions,"$showJoinFactionOptions
 RepIsAtWorst $faction.id FRIENDLY
 $player.factionId != ""player_npc""","SetTooltip exerelinJoinFaction ""To join $theFaction you will leave $player.theFaction.""
 SetEnabled exerelinJoinFaction true",,exerelinJoinFaction:Join faction,
-ExerelinJoinFactionSwitchOptionUntrusted,ExerelinBaseCommanderOptions,"$showJoinFactionOptions
+ExerelinJoinFactionSwitchOptionUntrusted,PopulateOptions,"$showJoinFactionOptions
 !RepIsAtWorst $faction.id FRIENDLY
 $player.factionId != ""player_npc""","SetTooltip exerelinJoinFaction ""$TheFaction do not trust you enough yet.\nTo join $theFaction you will leave $player.theFaction.""
 SetEnabled exerelinJoinFaction false",,exerelinJoinFaction:Join faction,
 ,,,,,,
-ExerelinLeaveFactionOption,ExerelinBaseCommanderOptions,"$showLeaveFactionOptions
+ExerelinLeaveFactionOption,PopulateOptions,"$showLeaveFactionOptions
 $faction.id == $player.factionId",SetEnabled exerelinLeaveFaction true,,exerelinLeaveFaction:Leave faction,
-ExerelinLeaveFactionOptionTemplars,ExerelinBaseCommanderOptions,"$showLeaveFactionOptions
+ExerelinLeaveFactionOptionTemplars,PopulateOptions,"$showLeaveFactionOptions
 $faction.id == ""templars""","SetTooltip exerelinLeaveFaction ""Knights Templar only leave the cause in death.""
 SetEnabled exerelinLeaveFaction false",,,
 ,,,,,,
@@ -1303,7 +1298,7 @@ FireAll ExerelinMarketSpecialInitialize",,,
 ,,,,,,
 ,,,,,,
 #Must be after all other rules with that trigger,,,,,,
-ExerelinBaseCommanderOptionsInitializationFinished,ExerelinBaseCommanderOptionsInitialize,,FireAll ExerelinBaseCommanderOptions,,,
+ExerelinBaseCommanderOptionsInitializationFinished,ExerelinBaseCommanderOptionsInitialize,,FireAll PopulateOptions,,,
 ExerelinMarketSpecialInitializationFinished,ExerelinMarketSpecialInitialize,,FireAll ExerelinMarketSpecial,,,
 ,,,,,,
 # not needed at present,,,,,,
