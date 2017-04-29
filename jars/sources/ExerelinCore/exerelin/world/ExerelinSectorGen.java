@@ -39,7 +39,7 @@ import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin.MagneticFieldParams;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.ExerelinModPlugin;
+import exerelin.plugins.ExerelinModPlugin;
 import data.scripts.campaign.AL_ChaosCrackFleetManager;
 import data.scripts.campaign.ExigencyCommRelayAdder;
 import data.scripts.world.exipirated.ExipiratedAvestaFleetManager;

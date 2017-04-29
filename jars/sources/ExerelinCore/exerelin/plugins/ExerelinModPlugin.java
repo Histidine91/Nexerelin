@@ -1,4 +1,4 @@
-package data.scripts;
+package exerelin.plugins;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
@@ -29,7 +29,6 @@ import exerelin.campaign.events.AgentDestabilizeMarketEvent;
 import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
 import exerelin.campaign.events.AgentLowerRelationsEvent;
 import exerelin.campaign.events.RevengeanceFleetEvent;
-import exerelin.plugins.ExerelinCoreCampaignPlugin;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.DefenceFleetAI;
 import exerelin.campaign.fleets.ExerelinPatrolFleetManager;
@@ -138,48 +137,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        // fix binary star systems
-        SectorAPI sector = Global.getSector();
-        if (!SectorManager.getCorvusMode()) 
-        {
-            for (StarSystemAPI system : sector.getStarSystems())
-            {
-                for (PlanetAPI planet : system.getPlanets())
-                {
-                    if (planet.isStar() && system.getStar() != planet)
-                    {
-                        Vector2f loc = planet.getLocation();
-                        float orbitRadius = (float)Math.sqrt(loc.x * loc.x + loc.y * loc.y);
-                        if (orbitRadius < 100000) continue;
-
-                        Global.getLogger(this.getClass()).info("Star " + planet.getName() + " has defective orbit, recomputing");
-                        //Global.getLogger(this.getClass()).info("Star position: " + planet.getName() + ", " + planet.getLocation().x + ", " + planet.getLocation().y);
-                        PlanetAPI primary = system.getStar();
-                        float distance = (BINARY_STAR_DISTANCE + primary.getRadius()*5 + planet.getRadius()*5) * MathUtils.getRandomNumberInRange(0.95f, 1.1f) ;
-                        float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(primary, distance + primary.getRadius());
-                        ExerelinUtilsAstro.setOrbit(planet, primary, distance, true, ExerelinUtilsAstro.getRandomAngle(), orbitDays);
-
-                        // regenerate fringe jump point
-                        List<SectorEntityToken> jumps = system.getEntities(JumpPointAPI.class);
-                        List<SectorEntityToken> toRemove = new ArrayList<>();
-                        for (SectorEntityToken temp : jumps)
-                        {
-                            if (!temp.getName().contains("Fringe")) continue;
-                            JumpPointAPI jump = (JumpPointAPI)temp;
-                            for (JumpDestination dest : jump.getDestinations())
-                            {
-                                SectorEntityToken destEnt = dest.getDestination();
-                                toRemove.add(destEnt);
-                            }
-                            toRemove.add(temp);
-                        }
-                        for (SectorEntityToken token : toRemove) token.getContainingLocation().removeEntity(token);
-                        system.autogenerateHyperspaceJumpPoints(false, true);
-                        break;
-                    }
-                }
-            }
-        }
+		
     }
     
     @Override

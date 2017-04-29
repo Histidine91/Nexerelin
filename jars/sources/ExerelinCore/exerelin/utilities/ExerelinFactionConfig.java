@@ -8,7 +8,7 @@ import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.ExerelinModPlugin;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.AllianceManager.Alignment;
 import exerelin.campaign.ExerelinSetupData;
 import org.json.JSONArray;
