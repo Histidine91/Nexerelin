@@ -49,6 +49,7 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		super.init(type, eventTarget);
 	}
 	
+	// log all friendly ships that die, so we can compare how many D mods they have now to how many they have when they get recovered
 	@Override
 	public void reportPlayerEngagement(EngagementResultAPI result) {
 		EngagementResultForFleetAPI er = result.didPlayerWin() ? result.getWinnerResult() : result.getLoserResult();
@@ -59,7 +60,7 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		for (FleetMemberAPI member : disabledOrDestroyed)
 		{
 			if (disabledOrDestroyedMembers.containsKey(member))
-				continue;	// adding again will register the new D-mod count after damage from the recent battle, which we don't want
+				continue;	// though this shouldn't happen anyway
 			if (member.isAlly())
 				continue;
 			if (member.isFighterWing())
@@ -99,9 +100,11 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		
 		List<FleetMemberAPI> fleetCurrent = fleet.getFleetData().getMembersListCopy();
 		for (FleetMemberAPI member : fleet.getFleetData().getSnapshot()) {
+			// dead, not recovered
 			if (!fleetCurrent.contains(member)) {
 				value += member.getBaseBuyValue();
 			}
+			// dead, recovered; compare "before" to "after" in D mod count
 			else if (disabledOrDestroyedMembers.containsKey(member))
 			{
 				int dmodsOld = disabledOrDestroyedMembers.get(member);
