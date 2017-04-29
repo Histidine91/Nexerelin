@@ -2,12 +2,7 @@ package exerelin.plugins;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.JumpPointAPI;
-import com.fs.starfarer.api.campaign.JumpPointAPI.JumpDestination;
-import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
@@ -28,11 +23,25 @@ import exerelin.campaign.StatsTracker;
 import exerelin.campaign.events.AgentDestabilizeMarketEvent;
 import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
 import exerelin.campaign.events.AgentLowerRelationsEvent;
+import exerelin.campaign.events.AllianceChangedEvent;
+import exerelin.campaign.events.CovertOpsEventBase;
+import exerelin.campaign.events.DiplomacyEvent;
+import exerelin.campaign.events.ExerelinFactionCommissionMissionEvent;
+import exerelin.campaign.events.ExigencyRespawnFleetEvent;
+import exerelin.campaign.events.FactionChangedEvent;
+import exerelin.campaign.events.FactionEliminatedEvent;
+import exerelin.campaign.events.FactionRespawnedEvent;
+import exerelin.campaign.events.InvasionFleetEvent;
+import exerelin.campaign.events.MarketAttackedEvent;
+import exerelin.campaign.events.MarketCapturedEvent;
 import exerelin.campaign.events.RevengeanceFleetEvent;
+import exerelin.campaign.events.SaboteurDestroyFoodEvent;
+import exerelin.campaign.events.SaboteurSabotageReserveEvent;
+import exerelin.campaign.events.SuperweaponEvent;
+import exerelin.campaign.events.WarmongerEvent;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.DefenceFleetAI;
 import exerelin.campaign.fleets.ExerelinPatrolFleetManager;
-import static exerelin.world.ExerelinSectorGen.BINARY_STAR_DISTANCE;
 import exerelin.campaign.fleets.InvasionFleetAI;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetAI;
@@ -40,11 +49,8 @@ import exerelin.campaign.fleets.MiningFleetManager;
 import exerelin.campaign.fleets.RespawnFleetAI;
 import exerelin.campaign.fleets.ResponseFleetAI;
 import exerelin.campaign.fleets.ResponseFleetManager;
-import java.util.ArrayList;
+import exerelin.campaign.missions.ConquestMissionCreator;
 import java.util.HashMap;
-import java.util.List;
-import org.lazywizard.lazylib.MathUtils;
-import org.lwjgl.util.vector.Vector2f;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -87,6 +93,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(MiningFleetManager.create());
         sector.addScript(CovertOpsManager.create());
         sector.addScript(am);
+        // debugging
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
         SectorManager.setSystemToRelayMap(new HashMap<String,String>());
@@ -123,7 +130,6 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void beforeGameSave()
     {
-        //SectorManager.getCurrentSectorManager().getCommandQueue().executeAllCommands();
     }
 
     @Override
@@ -133,11 +139,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         //ExerelinSetupData.resetInstance();
         ExerelinConfig.loadSettings();
         //ExerelinCheck.checkModCompatability();
+        addScriptsIfNeeded();
     }
     
     protected void reverseCompatibility()
     {
-		
+    
     }
     
     @Override
@@ -150,10 +157,19 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
     }
     
+    protected void addScriptsIfNeeded() {
+        SectorAPI sector = Global.getSector();
+        if (!sector.hasScript(ConquestMissionCreator.class)) {
+            sector.addScript(new ConquestMissionCreator());
+        }
+    }
+    
     @Override
     public void onGameLoad(boolean newGame) {
         Global.getLogger(this.getClass()).info("Game load; " + SectorManager.isSectorManagerSaved());
         isNewGame = newGame;
+        
+        addScriptsIfNeeded();
         
         ExerelinConfig.loadSettings();
         SectorManager.create();
@@ -212,6 +228,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void configureXStream(XStream x) {
+        /*
         x.alias("AllianceMngr", AllianceManager.class);
         x.alias("CovertOpsMngr", CovertOpsManager.class);
         x.alias("DiplomacyMngr", DiplomacyManager.class);
@@ -219,19 +236,42 @@ public class ExerelinModPlugin extends BaseModPlugin
         x.alias("PlayerFactionStore", PlayerFactionStore.class);
         x.alias("SectorMngr", SectorManager.class);
         
-        x.alias("InvasionFleetMngr", InvasionFleetManager.class);
-        x.alias("ResponseFleetMngr", ResponseFleetManager.class);
-        x.alias("MiningFleetMngr", MiningFleetManager.class);
-        x.alias("ExerelinPatrolFleetMngr", ExerelinPatrolFleetManager.class);
+        x.alias("InvasionFltMngr", InvasionFleetManager.class);
+        x.alias("ResponseFltMngr", ResponseFleetManager.class);
+        x.alias("MiningFltMngr", MiningFleetManager.class);
+        x.alias("ExePatrolFltMngr", ExerelinPatrolFleetManager.class);
+        */
+                
+        x.alias("DefenceFltAI", DefenceFleetAI.class);
+        x.alias("InvasionFltAI", InvasionFleetAI.class);
+        x.alias("MiningFltAI", MiningFleetAI.class);
+        x.alias("RespawnFltAI", RespawnFleetAI.class);
+        x.alias("ResponseFltAI", ResponseFleetAI.class);
+        x.alias("ExePatrolFltMngr", ExerelinPatrolFleetManager.class);
         
-        x.alias("DefenceFleetAI", DefenceFleetAI.class);
-        x.alias("InvasionFleetAI", InvasionFleetAI.class);
-        x.alias("MiningFleetAI", MiningFleetAI.class);
-        x.alias("RespawnFleetAI", RespawnFleetAI.class);
-        x.alias("ResponseFleetAI", ResponseFleetAI.class);
-        
-        x.alias("AgentDestabilizeMarketEvent", AgentDestabilizeMarketEvent.class);
-        x.alias("AgentDestabilizeMarketEventForCondition", AgentDestabilizeMarketEventForCondition.class);
-        x.alias("AgentLowerRelationsEvent", AgentLowerRelationsEvent.class);
+        x.alias("AgntDestabilizeMrktEvnt", AgentDestabilizeMarketEvent.class);
+        x.alias("AgntDestabilizeMrktEvntForCondition", AgentDestabilizeMarketEventForCondition.class);
+        x.alias("AgntLowerRelationsEvnt", AgentLowerRelationsEvent.class);
+        x.alias("AllyChangedEvnt", AllianceChangedEvent.class);
+        x.alias("CovertOpsEvnt", CovertOpsEventBase.class);
+        x.alias("DiploEvnt", DiplomacyEvent.class);
+        x.alias("ExeCommissionMissionEvnt", ExerelinFactionCommissionMissionEvent.class);
+        //x.alias("ExeRepTrckrEvnt", ExerelinRepTrackerEvent.class);
+        x.alias("ExiRespawnFltEvnt", ExigencyRespawnFleetEvent.class);
+        x.alias("FactionChangeEvnt", FactionChangedEvent.class);
+        x.alias("FactionElimEvnt", FactionEliminatedEvent.class);
+        //x.alias("FactionInsurEvnt", FactionInsuranceEvent.class);
+        x.alias("FactionRespawnEvnt", FactionRespawnedEvent.class);
+        //x.alias("FactionSalaryEvnt", FactionSalaryEvent.class);
+        x.alias("InvasionFltEvnt", InvasionFleetEvent.class);
+        x.alias("MrktAttackedEvnt", MarketAttackedEvent.class);
+        x.alias("MrktCapturedEvnt", MarketCapturedEvent.class);
+        //x.alias("RevengeanceFltEvnt", RevengeanceFleetEvent.class);
+        x.alias("SbtrDestroyFoodEvnt", SaboteurDestroyFoodEvent.class);
+        x.alias("SbtrSabotageReserveEvnt", SaboteurSabotageReserveEvent.class);
+        //x.alias("SlavesSoldEvnt", SlavesSoldEvent.class);    // TODO merge into reptracker
+        x.alias("SuperweaponEvnt", SuperweaponEvent.class);
+        //x.alias("VictoryEvnt", VictoryEvent.class);
+        x.alias("WarmongerEvnt", WarmongerEvent.class);
     }
 }

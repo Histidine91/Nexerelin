@@ -871,9 +871,6 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		sector.addScript(new LuddicPathFleetManager());
 		sector.addScript(new PirateFleetManager());
 		sector.addScript(new BountyPirateFleetManager());
-		sector.addScript(new MarketProcurementMissionCreator());
-		sector.addScript(new FactionCommissionMissionCreator());
-		sector.addScript(new ConquestMissionCreator());
 		
 		//sector.addScript(new EconomyLogger());
 		
