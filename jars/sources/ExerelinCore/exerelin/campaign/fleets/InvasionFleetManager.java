@@ -156,7 +156,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 0,        // liners
                 0,        // civilian
                 fp*0.1f,    // utility
-                0, params.qualityOverride, 1.25f, params.originMarket.getSize()/2);    // quality bonus, quality override, officer num mult, officer level bonus
+                0, params.qualityOverride, 1.25f, 1);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(params.faction, fleetParams);
         if (fleet == null) return null;

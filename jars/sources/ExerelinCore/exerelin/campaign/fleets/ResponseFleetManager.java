@@ -104,7 +104,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
                 0,        // liners
                 0,        // civilian
                 maxFP*0.1f,    // utility
-                0.15f, -1, 1.25f, marketSize/2);    // quality bonus, quality override, officer num mult, officer level bonus
+                0.15f, -1, 1.25f, 1);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(origin.getFaction(), fleetParams);
         if (fleet == null) return;
