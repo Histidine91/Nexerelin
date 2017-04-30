@@ -985,48 +985,6 @@ ExerelinFleetRequestFire,DialogOptionSelected,$option == exerelinFleetRequestFir
 FireAll ExerelinFleetRequestOption",,,
 #END FLEET REQUEST OPTIONS,,,,,,
 ,,,,,,
-#START MINING OPTIONS,,,,,,
-ExerelinMiningOpen,OpenInteractionDialog,$canMine,"ExerelinShowDefaultVisual
-PrintDescription 3
-SetShortcut exerelinMiningPreview RETURN
-SetShortcut marketLeave ESCAPE",Your $shipOrFleet approaches $entityName.,"exerelinMiningPreview:Mine planet
-marketLeave:Leave",
-ExerelinMiningOpenAsteroid,OpenInteractionDialog,"$canMine
-$isAsteroid","ExerelinShowDefaultVisual
-PrintDescription 3
-SetShortcut exerelinMiningPreview RETURN
-SetShortcut marketLeave ESCAPE",Your $shipOrFleet approaches the asteroid.,"exerelinMiningPreview:Mine asteroid
-marketLeave:Leave",
-ExerelinMiningPreview,DialogOptionSelected,$option == exerelinMiningPreview,"PrintMiningInfo
-FireAll ExerelinMiningOption",,,
-ExerelinMiningMineOption,ExerelinMiningOption,$global.miningStrength > 0,"SetEnabled exerelinMiningStart true
-SetShortcut exerelinMiningStart RETURN
-SetShortcut marketLeave ESCAPE",,"exerelinMiningStart:Start mining
-exerelinMiningFleetInfo:List mining ships
-exerelinMiningListTools:What ships and weapons can mine?
-marketLeave:Leave",
-ExerelinMiningMineOptionNoMiners,ExerelinMiningOption,$global.miningStrength <= 0,"SetTooltip exerelinMiningStart""You have no ships capable of mining.""
-SetEnabled exerelinMiningStart false
-SetShortcut marketLeave ESCAPE",,"exerelinMiningStart:Start mining
-exerelinMiningListTools:What ships and weapons can mine?
-marketLeave:Leave",
-ExerelinMiningFleetInfo,DialogOptionSelected,$option == exerelinMiningFleetInfo,"PrintMiningFleetInfo
-FireAll ExerelinMiningOption",,,
-ExerelinMiningListTools,DialogOptionSelected,$option == exerelinMiningListTools,"PrintMiningToolsList
-FireAll ExerelinMiningOption",,,
-ExerelinMiningStart,DialogOptionSelected,"$canMine
-$option == exerelinMiningStart","Wait $global.miningWait 1.0 $global.miningFinished $global.miningInterrupted $global.miningInProgress ""Mining...""
-MakePlayerImmediatelyAttackable",,,
-ExerelinMiningInterrupted,BeginFleetEncounter,$global.miningInProgress,AbortWait $global.miningWait,Contact with the other fleet suspends mining operations.,,
-ExerelinMiningComplete,OpenInteractionDialog,"$canMine
-$global.miningFinished score:3","GetMiningResults 1
-ExerelinShowDefaultVisual",Your $shipOrFleet has completed mining on $entityName.,"exerelinMiningPreview:Mine again
-marketLeave:Leave",
-,,,,,,
-#ExerelinMiningBack,DialogOptionSelected,$option == exerelinMiningBack,"$menuState = main 0
-FireAll PopulateOptions",,,
-#END MINING OPTIONS,,,,,,
-,,,,,,
 #START SUPERWEAPON OPTIONS,,,,,,
 ExerelinMarketSuperweaponOption,ExerelinMarketSpecial,"IsValidInvasionTarget
 $market.id != prismFreeport
