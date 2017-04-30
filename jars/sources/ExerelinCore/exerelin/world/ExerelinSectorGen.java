@@ -860,6 +860,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		log.info("Adding scripts and plugins");
 		sector.addScript(new ExerelinCoreScript());
+		sector.registerPlugin(new CoreCampaignPlugin());
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		
 		if (!ExerelinUtils.isSSPInstalled(false))

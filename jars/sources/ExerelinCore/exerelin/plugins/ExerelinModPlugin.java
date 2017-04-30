@@ -83,7 +83,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         StatsTracker.create();
         
-        sector.registerPlugin(new ExerelinCoreCampaignPlugin());
         SectorManager.setCorvusMode(true);
         SectorManager.reinitLiveFactions();
         PlayerFactionStore.setPlayerFactionId(ExerelinConstants.PLAYER_NPC_ID);
@@ -156,23 +155,26 @@ public class ExerelinModPlugin extends BaseModPlugin
         CovertOpsManager.create();
         AllianceManager.create();
         
-        if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_salary")) {
-            Global.getSector().getEventManager().startEvent(null, "exerelin_faction_salary", null);
+        SectorAPI sector = Global.getSector();
+        
+        if (!sector.getEventManager().isOngoing(null, "exerelin_faction_salary")) {
+            sector.getEventManager().startEvent(null, "exerelin_faction_salary", null);
         }
-        if (!Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
-            Global.getSector().getEventManager().startEvent(null, "exerelin_faction_insurance", null);
+        if (!sector.getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
+            sector.getEventManager().startEvent(null, "exerelin_faction_insurance", null);
         }
-        if (ExerelinUtilsFaction.isExiInCorvus() && !Global.getSector().getEventManager().isOngoing(null, "exerelin_exigency_respawn")) {
-            Global.getSector().getEventManager().startEvent(null, "exerelin_exigency_respawn", null);
+        if (ExerelinUtilsFaction.isExiInCorvus() && !sector.getEventManager().isOngoing(null, "exerelin_exigency_respawn")) {
+            sector.getEventManager().startEvent(null, "exerelin_exigency_respawn", null);
         }
         if (RevengeanceFleetEvent.getOngoingEvent() == null) {
-            Global.getSector().getEventManager().startEvent(null, "exerelin_revengeance_fleet", null);
+            sector.getEventManager().startEvent(null, "exerelin_revengeance_fleet", null);
         }
         
         reverseCompatibility();
         refreshTariffs();
         
-        Global.getSector().addTransientScript(new DirectoryScreenScript());
+        sector.registerPlugin(new ExerelinCoreCampaignPlugin());
+        sector.addTransientScript(new DirectoryScreenScript());
     }
     
     @Override
@@ -197,7 +199,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
         
-        SectorAPI sector = Global.getSector();
+        //SectorAPI sector = Global.getSector();
         //for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
         //    PlayerStartHandler.addOmnifactory(sector, i);
     }
