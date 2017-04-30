@@ -199,6 +199,7 @@ public class ExerelinUtilsMarket {
 	public static void destroyAllCommodityStocks(MarketAPI market, float mult, float variance) {
 		for (CommodityOnMarketAPI commodity: market.getAllCommodities()) 
 		{
+			if (commodity.isNonEcon()) continue;
 			destroyCommodityStocks(market, commodity, mult, variance);
 		}
 	}
