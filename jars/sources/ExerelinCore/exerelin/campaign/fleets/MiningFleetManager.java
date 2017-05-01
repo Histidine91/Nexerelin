@@ -2,6 +2,7 @@ package exerelin.campaign.fleets;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.AsteroidAPI;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -14,10 +15,12 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.MiningHelper;
+import exerelin.campaign.MiningHelperLegacy;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -28,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
+import org.histidine.industry.scripts.MiningHelper;
+import org.histidine.industry.scripts.MiningHelper.MiningReport;
 
 /**
  * Handles invasion fleets (the ones that capture stations)
@@ -71,6 +76,48 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 				|| market.hasCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
 	}
 	
+	protected boolean isOreMineable(SectorEntityToken entity)
+	{
+		if (entity instanceof AsteroidAPI) return true;
+		if (!(entity instanceof PlanetAPI)) return false;
+		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
+		{
+			float exhaustion = MiningHelper.getExhaustion(entity);
+			if (exhaustion > 0.7f) return false;
+			
+			MiningReport report = MiningHelper.getMiningReport(null, entity, 1 - exhaustion);
+			if (report.totalOutput.containsKey(Commodities.ORE))
+				return report.totalOutput.get(Commodities.ORE) > 0.5;
+			if (report.totalOutput.containsKey(Commodities.RARE_ORE))
+				return report.totalOutput.get(Commodities.RARE_ORE) > 0.05;
+			return false;
+		}
+		else
+		{
+			PlanetAPI planet = (PlanetAPI)entity;
+			return !planet.isGasGiant() && !planet.isStar();
+		}
+	}
+	
+	protected boolean isGasMineable(SectorEntityToken entity)
+	{
+		if (!(entity instanceof PlanetAPI)) return false;
+		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
+		{
+			float exhaustion = MiningHelper.getExhaustion(entity);
+			if (exhaustion > 0.7f) return false;
+			
+			MiningReport report = MiningHelper.getMiningReport(null, entity, 1 - exhaustion);
+			if (report.totalOutput.containsKey(Commodities.VOLATILES))
+				return report.totalOutput.get(Commodities.VOLATILES) > 0.4;
+			return false;
+		}
+		else
+		{
+			return ((PlanetAPI)entity).isGasGiant();
+		}
+	}
+	
 	public void spawnMiningFleet(MarketAPI origin)
 	{
 		log.info("Trying mining fleet for market " + origin.getName());
@@ -107,19 +154,20 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		
 		for (SectorEntityToken planetToken : planets)
 		{
+			if (planetToken.getMarket() != null && !planetToken.getMarket().isPlanetConditionMarketOnly())
+				continue;
+			
 			if (isGasMiningFleet)
 			{
-				if ( ((PlanetAPI)planetToken).isGasGiant() )
+				if (isGasMineable(planetToken))
 					targetPicker.add(planetToken);
 			}
 			else
 			{
-				if (planetToken instanceof PlanetAPI)
-				{
-					PlanetAPI planet = (PlanetAPI)planetToken;
-					//if (!planet.isMoon()) continue;
-				}
-				if (planetToken.getMarket() != null) continue;
+				if (!isOreMineable(planetToken))
+					continue;
+				
+				// don't try to mine moons of hostile factions
 				OrbitAPI orbit = planetToken.getOrbit();
 				if (orbit != null && orbit.getFocus() != null)
 				{
@@ -180,7 +228,20 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 			//log.info("Adding miner to fleet: " + miner.getHullId());
 		}
 		
-		float miningStrength = MiningHelper.getFleetMiningStrength(fleet);
+		float miningStrength = 0;
+		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
+		{
+			miningStrength = MiningHelper.getFleetMiningStrength(fleet);
+			// take machinery with us
+			float machineryRequired = MiningHelper.getRequiredMachinery(miningStrength);
+			float machineryToTake = Math.min(machineryRequired * 1.25f, origin.getCommodityData(Commodities.HEAVY_MACHINERY).getStockpile());
+			fleet.getCargo().addCommodity(Commodities.HEAVY_MACHINERY, machineryToTake);
+			origin.getCommodityData(Commodities.HEAVY_MACHINERY).removeFromStockpile(machineryToTake);
+		}
+		else
+		{
+			miningStrength = MiningHelperLegacy.getFleetMiningStrength(fleet);
+		}
 		
 		SectorEntityToken entity = origin.getPrimaryEntity();
 		entity.getContainingLocation().addEntity(fleet);
@@ -252,7 +313,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		this.activeFleets.removeAll(remove);
 	
 		updateMiningFleetPoints(POINT_INCREMENT_PERIOD);
-		MiningHelper.renewResources(POINT_INCREMENT_PERIOD);
+		MiningHelperLegacy.renewResources(POINT_INCREMENT_PERIOD);
 		timer -= POINT_INCREMENT_PERIOD;
 	}
 	

@@ -40,7 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.lazywizard.lazylib.MathUtils;
 
-public class MiningHelper {
+public class MiningHelperLegacy {
 	
 	protected static final String CONFIG_FILE = "data/config/exerelin/miningConfig.json";
 	protected static final String MINING_SHIP_DEFS = "data/config/exerelin/mining_ships.csv";
@@ -94,7 +94,7 @@ public class MiningHelper {
 	protected static final List<CacheDef> cacheDefs = new ArrayList<>();
 	//protected static final
 	
-	public static final Logger log = Global.getLogger(MiningHelper.class);
+	public static final Logger log = Global.getLogger(MiningHelperLegacy.class);
 	
 	static {
 		try {

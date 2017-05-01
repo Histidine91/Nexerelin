@@ -36,6 +36,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public static final boolean HAVE_SWP = Global.getSettings().getModManager().isModEnabled("swp");
     public static final boolean HAVE_DYNASECTOR = Global.getSettings().getModManager().isModEnabled("dynasector");
     public static final boolean HAVE_UNDERWORLD = Global.getSettings().getModManager().isModEnabled("underworld");
+    public static final boolean HAVE_STELLAR_INDUSTRIALIST = Global.getSettings().getModManager().isModEnabled("stellar_industrialist");
     
     protected static boolean isNewGame = false;
     

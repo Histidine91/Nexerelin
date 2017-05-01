@@ -12,13 +12,15 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.MiningHelper;
+import exerelin.campaign.MiningHelperLegacy;
 import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import exerelin.campaign.fleets.MiningFleetManager.MiningFleetData;
+import exerelin.plugins.ExerelinModPlugin;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.histidine.industry.scripts.MiningHelper;
 import org.lwjgl.util.vector.Vector2f;
 
 public class MiningFleetAI implements EveryFrameScript
@@ -102,10 +104,20 @@ public class MiningFleetAI implements EveryFrameScript
 				if (miningDailyProgress > 1)
 				{
 					miningDailyProgress -= 1;
-					if (MiningHelper.getFleetMiningStrength(fleet) < data.miningStrength * 0.5f)
-						giveStandDownOrders();
+					if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
+					{
+						if (MiningHelper.getFleetMiningStrength(fleet) < data.miningStrength * 0.5f)
+							giveStandDownOrders();
+						else
+							MiningHelper.getMiningResults(fleet, data.target, 1f, false);
+					}
 					else
-						MiningHelper.getMiningResults(fleet, data.target, 1f, false);
+					{
+						if (MiningHelperLegacy.getFleetMiningStrength(fleet) < data.miningStrength * 0.5f)
+							giveStandDownOrders();
+						else
+							MiningHelperLegacy.getMiningResults(fleet, data.target, 1f, false);
+					}
 					//log.info("Fleet " + fleet.getName() + " has cargo " + cargo.getSpaceUsed() + " of " + cargo.getMaxCapacity());
 				}
             }

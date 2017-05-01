@@ -10,8 +10,9 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.MiningHelper;
+import exerelin.campaign.MiningHelperLegacy;
 import exerelin.campaign.fleets.ResponseFleetManager;
+import org.histidine.industry.scripts.MiningHelper;
 
 @SuppressWarnings("unchecked")
 public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
@@ -31,7 +32,12 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 	@Override
 	public void updateEntityFacts(SectorEntityToken entity, MemoryAPI memory) {
 		super.updateEntityFacts(entity, memory);
-		boolean canMine = MiningHelper.canMine(entity);
+		
+		boolean canMine;
+		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
+			canMine = MiningHelper.canMine(entity);
+		else
+			canMine = MiningHelperLegacy.canMine(entity);
 		memory.set("$canMine", canMine, 0);
 		
 		if (entity instanceof AsteroidAPI)
