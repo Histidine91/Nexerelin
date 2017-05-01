@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.BountyPirateFleetManager;
@@ -860,7 +861,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		log.info("Adding scripts and plugins");
 		sector.addScript(new ExerelinCoreScript());
-		sector.registerPlugin(new CoreCampaignPlugin());
+		sector.registerPlugin(new CoreCampaignPluginImpl());
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		
 		if (!ExerelinUtils.isSSPInstalled(false))
