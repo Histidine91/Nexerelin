@@ -1,11 +1,10 @@
 id,strength
-mining_drone,0.5
-shepherd,9
-shepherd_d,7.5
-crig,8
-SCY_telchine,35
-brdy_gonodactylus,28
+mining_drone,1
+#drone_borer,0
+crig,4
+SCY_telchine,32
+brdy_gonodactylus,25
 mi_rastrum,6
-junk_pirates_the_reaper,180
+junk_pirates_the_reaper,160
 maqiubiqiu,4
 diableavionics_laminar,5

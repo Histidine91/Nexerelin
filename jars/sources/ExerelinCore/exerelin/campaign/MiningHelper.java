@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.AIHints;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
 import com.fs.starfarer.api.fleet.CrewCompositionAPI;
@@ -16,17 +17,23 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +47,32 @@ public class MiningHelper {
 	protected static final String MINING_WEAPON_DEFS = "data/config/exerelin/mining_weapons.csv";
 	protected static final String EXHAUSTION_DATA_KEY = "exerelinMiningExhaustion";	// exhaustion list is a <SectorEntityToken, Float> map
 	public static final float MAX_EXHAUSTION = 0.8f; 
+	
+	public static final List<String> ROLES_FOR_FIGHTERS = Arrays.asList(
+		new String[]{
+			ShipRoles.COMBAT_SMALL, 
+			ShipRoles.FREIGHTER_SMALL, 
+			ShipRoles.COMBAT_FREIGHTER_SMALL, 
+			ShipRoles.CARRIER_SMALL,
+			ShipRoles.COMBAT_MEDIUM,
+			ShipRoles.ESCORT_MEDIUM,
+			ShipRoles.FREIGHTER_MEDIUM, 
+			ShipRoles.COMBAT_FREIGHTER_MEDIUM, 
+			ShipRoles.CARRIER_MEDIUM,
+			ShipRoles.CARRIER_LARGE,
+			ShipRoles.FREIGHTER_LARGE,
+			ShipRoles.COMBAT_FREIGHTER_LARGE,
+			ShipRoles.CARRIER_LARGE,
+			ShipRoles.COMBAT_CAPITAL,
+		}
+	);
+	public static final Set<String> CACHE_DISALLOWED_FACTIONS = new HashSet(Arrays.asList(
+		new String[]{
+			"templars",
+			Factions.DERELICT,
+			Factions.REMNANTS
+		}
+	));
 	
 	protected static float miningProductionMult = 2f;
 	protected static float cacheSizeMult = 1;
@@ -194,7 +227,7 @@ public class MiningHelper {
 	public static boolean canMine(SectorEntityToken entity)
 	{
 		if (entity instanceof AsteroidAPI) return true;
-		if (entity.getMarket() != null) return false;
+		if (entity.getMarket() != null && !entity.getMarket().isPlanetConditionMarketOnly()) return false;
 		if (entity instanceof PlanetAPI)
 		{
 			PlanetAPI planet = (PlanetAPI)entity;
@@ -272,14 +305,33 @@ public class MiningHelper {
 		return new HashMap<>(miningWeapons);
 	}
 	
+	public static float getWingMiningStrength(String wing)
+	{
+		FighterWingSpecAPI wingSpec = Global.getSettings().getFighterWingSpec(wing);
+		float strength = 0;
+		ShipVariantAPI variant = wingSpec.getVariant();
+		
+		String hullId = variant.getHullSpec().getHullId();
+		if (miningShips.containsKey(hullId))
+			strength += miningShips.get(hullId);
+		
+		Collection<String> weaponSlots = variant.getFittedWeaponSlots();
+		for (String slot : weaponSlots)
+		{
+			String weaponId = variant.getWeaponSpec(slot).getWeaponId();
+			if (miningWeapons.containsKey(weaponId))
+				strength+= miningWeapons.get(weaponId);
+		}
+		
+		float count = wingSpec.getNumFighters();
+		return strength * count;
+	}
+	
 	public static float getShipMiningStrength(FleetMemberAPI member, boolean useCRMod)
 	{
 		if (member.isMothballed()) return 0;
 		
 		float strength = 0;
-		int count = 1;
-		if (member.isFighterWing())
-			count = member.getNumFightersInWing();
 		
 		float crModifier = 1;
 		if (useCRMod)
@@ -290,16 +342,21 @@ public class MiningHelper {
 
 		String hullId = member.getHullId();
 		if (miningShips.containsKey(hullId))
-			strength += miningShips.get(hullId) * count * crModifier;
+			strength += miningShips.get(hullId);
 
 		Collection<String> weaponSlots = member.getVariant().getFittedWeaponSlots();
 		for (String slot : weaponSlots)
 		{
 			String weaponId = member.getVariant().getWeaponSpec(slot).getWeaponId();
 			if (miningWeapons.containsKey(weaponId))
-				strength+= miningWeapons.get(weaponId) * count * crModifier;
+				strength+= miningWeapons.get(weaponId);
 		}
-		return strength;
+		for (String wing: member.getVariant().getFittedWings())
+		{
+			strength += getWingMiningStrength(wing);
+		}
+		
+		return strength * crModifier;
 	}
 	
 	public static float getFleetMiningStrength(CampaignFleetAPI fleet)
@@ -312,7 +369,7 @@ public class MiningHelper {
 		return strength;
 	}
 	
-	public static FleetMemberAPI getRandomSmallShipOrWing(boolean isFighter)
+	public static FleetMemberAPI getRandomSmallShip()
 	{
 		WeightedRandomPicker<FleetMemberAPI> shipPicker = new WeightedRandomPicker<>();
 		
@@ -323,26 +380,50 @@ public class MiningHelper {
 		rolePicker.add(ShipRoles.TANKER_SMALL, 1f);
 		rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1f);
 		rolePicker.add(ShipRoles.COMBAT_SMALL, 5f);
-		rolePicker.add(ShipRoles.CARRIER_SMALL, 2f);
 			
 		String role = rolePicker.pick();
 		
 		List<FactionAPI> factions = Global.getSector().getAllFactions();
 		for (FactionAPI faction : factions)
 		{
-			if (faction.getId().equals("templars")) continue;
+			if (CACHE_DISALLOWED_FACTIONS.contains(faction.getId())) continue;
 			
 			List<ShipRolePick> picks = faction.pickShip(role, 1, rolePicker.getRandom());
-			for (ShipRolePick pick : picks) {
-				FleetMemberType type = FleetMemberType.SHIP;
-				if (isFighter) type = FleetMemberType.FIGHTER_WING;
-				
-				FleetMemberAPI member = Global.getFactory().createFleetMember(type, pick.variantId);
+			for (ShipRolePick pick : picks) 
+			{
+				FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, pick.variantId);
 				float cost = member.getBaseBuyValue();
 				shipPicker.add(member, 10000/cost);
 			}
 		}
 		return shipPicker.pick();
+	}
+	
+	public static FighterWingSpecAPI getRandomFighter()
+	{
+		List<FactionAPI> factions = Global.getSector().getAllFactions();
+		WeightedRandomPicker<FighterWingSpecAPI> picker = new WeightedRandomPicker();
+		for (FactionAPI faction : factions)
+		{
+			if (CACHE_DISALLOWED_FACTIONS.contains(faction.getId())) continue;
+			
+			for (String role : ROLES_FOR_FIGHTERS) 
+			{
+				List<ShipRolePick> picks = faction.pickShip(role, 1);
+				for (ShipRolePick pick : picks) {
+					FleetMemberType type = FleetMemberType.SHIP;
+					if (pick.isFighterWing()) continue;
+
+					FleetMemberAPI member = Global.getFactory().createFleetMember(type, pick.variantId);
+					for (String wingId : member.getVariant().getFittedWings()) {
+						FighterWingSpecAPI spec = Global.getSettings().getFighterWingSpec(wingId);
+						if (spec.getTags().contains(Tags.WING_NO_SELL)) continue;
+						picker.add(spec, 6 - spec.getTier());
+					}
+				}
+			}
+		}
+		return picker.pick();
 	}
 	
 	public static WeaponSpecAPI getRandomWeapon()
@@ -470,15 +551,19 @@ public class MiningHelper {
 			int num = 1;
 			String name = "";
 			CacheDef def = cachePicker.pickAndRemove();
-			if (def.type == CacheType.FRIGATE || def.type == CacheType.FIGHTER_WING)
+			if (def.type == CacheType.FRIGATE)
 			{
-				boolean isFighter = def.type == CacheType.FIGHTER_WING;
-				FleetMemberAPI member = getRandomSmallShipOrWing(isFighter);
+				FleetMemberAPI member = getRandomSmallShip();
 				member.getRepairTracker().setMothballed(true);
 				fleet.getFleetData().addFleetMember(member);
 				fleet.updateCounts();
-				if (isFighter) name = member.getVariant().getFullDesignationWithHullName();
-				else name = member.getHullSpec().getHullName();
+				name = member.getVariant().getFullDesignationWithHullName();
+			}
+			else if (def.type == CacheType.FIGHTER_WING)
+			{
+				FighterWingSpecAPI spec = getRandomFighter();
+				fleet.getCargo().addFighters(spec.getId(), 1);
+				name = StringHelper.getStringAndSubstituteToken("SI_mining", "LPC", "$fighterName", spec.getVariant().getFullDesignationWithHullName());
 			}
 			else if (def.type == CacheType.WEAPON)
 			{

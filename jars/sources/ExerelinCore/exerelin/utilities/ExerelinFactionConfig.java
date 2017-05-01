@@ -18,7 +18,7 @@ import org.json.JSONException;
 
 public class ExerelinFactionConfig
 {
-    public static final String[] DEFAULT_MINERS = {"mining_drone_wing", "shepherd_Frontier"};
+    public static final String[] DEFAULT_MINERS = {"venture_Outdated", "shepherd_Frontier"};
     public static final Map<Alignment, Float> DEFAULT_ALIGNMENTS = new HashMap<>();
     
     public String factionId;
