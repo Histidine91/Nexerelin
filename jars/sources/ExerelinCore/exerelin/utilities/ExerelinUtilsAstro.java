@@ -22,6 +22,7 @@ public class ExerelinUtilsAstro {
 	 */
 	public static float getOrbitalPeriod(float primaryRadius, float orbitRadius, float density)
 	{
+		if (density == 0) return 99999999;
 		primaryRadius *= 0.01;
 		orbitRadius *= 1/62.5;	// realistic would be 1/50 but the planets orbit rather too slowly then
 		
@@ -49,7 +50,7 @@ public class ExerelinUtilsAstro {
 	
 	/**
 	 * Gets a "density" value for a stellar object to estimate its mass. 
-	 * Returns 0.5 for stars and gas giants, 8 for Nexerelin's dark star, 5 for the Exigency black hole, and 2 for everything else.
+	 * Returns 0.5 for stars and gas giants, 8 for neutron star and Nexerelin's dark star, 16 for black holes, and 0 for nebula centers. Returns 2 for everything else.
 	 * @param primary The orbit focus of the object whose orbit we want to set.
 	 * @return Estimated primary density.
 	 */
@@ -58,8 +59,9 @@ public class ExerelinUtilsAstro {
 		if (primary instanceof PlanetAPI)
 		{
 			PlanetAPI planet = (PlanetAPI)primary;
-			if (planet.getTypeId().equals("star_dark")) return 8;
-			else if (planet.getTypeId().equals("exigency_black_hole")) return 5;
+			if (planet.getSpec().isNebulaCenter()) return 0;
+			if (planet.getSpec().isBlackHole()) return 16;
+			if (planet.getTypeId().equals("star_dark") || planet.getSpec().isPulsar()) return 8;
 			else if (planet.isStar()) return 0.5f;
 			else if (planet.isGasGiant()) return 0.5f;
 		}
