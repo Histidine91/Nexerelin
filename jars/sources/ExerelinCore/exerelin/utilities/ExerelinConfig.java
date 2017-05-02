@@ -181,7 +181,7 @@ public class ExerelinConfig
             revengePointsPerEnemyFP = (float)settings.optDouble("revengeFleetPointsPerEnemyFP", revengePointsPerEnemyFP);
             revengePointsForMarketCaptureMult = (float)settings.optDouble("revengeFleetPointsForMarketCaptureMult", revengePointsForMarketCaptureMult);
             
-            baseTariffMult = (float)settings.optDouble("baseTariff", baseTariffMult);
+            baseTariffMult = (float)settings.optDouble("baseTariffMult", baseTariffMult);
             freeMarketTariffMult = (float)settings.optDouble("freeMarketTariffMult", freeMarketTariffMult);
             warmongerPenalty = settings.optInt("warmongerPenalty", warmongerPenalty);
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);

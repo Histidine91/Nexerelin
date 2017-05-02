@@ -100,6 +100,8 @@ public class ExerelinModPlugin extends BaseModPlugin
             market.getTariff().modifyMult("nexerelinMult", ExerelinConfig.baseTariffMult);
             if (market.hasCondition("free_market")) 
                 market.getTariff().modifyMult("isFreeMarket", ExerelinConfig.freeMarketTariffMult);
+			market.getTariff().modifyMult("nexerelinFactionMult", 
+					ExerelinConfig.getExerelinFactionConfig(market.getFactionId()).tariffMult);
         }
     }
     

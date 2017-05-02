@@ -768,6 +768,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 market.getTariff().unmodify("isFreeMarket");
             }
         }
+		if (newOwnerConfig != null)
+			market.getTariff().modifyMult("nexerelinFactionMult", newOwnerConfig.tariffMult);
         
         List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
         

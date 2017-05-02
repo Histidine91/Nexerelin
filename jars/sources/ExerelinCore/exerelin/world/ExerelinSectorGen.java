@@ -502,6 +502,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		
 		market.getTariff().modifyFlat("generator", sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
 		market.getTariff().modifyMult("nexerelinMult", ExerelinConfig.baseTariffMult);
+		market.getTariff().modifyMult("nexerelinFactionMult", ExerelinConfig.getExerelinFactionConfig(Factions.INDEPENDENT).tariffMult);
 		market.getTariff().modifyMult("isFreeMarket", 0.5f);
 		market.addSubmarket("exerelin_prismMarket");
 		market.setPrimaryEntity(prismEntity);

@@ -75,6 +75,7 @@ public class ExerelinFactionConfig
     
     public float spawnMarketShare = 1;
     public boolean freeMarket = false;
+	public float tariffMult = 1;
 
     public float invasionStrengthBonusAttack = 0;
     public float invasionStrengthBonusDefend = 0;
@@ -143,6 +144,7 @@ public class ExerelinFactionConfig
             
             freeMarket = settings.optBoolean("freeMarket", freeMarket);
             spawnMarketShare = (float)settings.optDouble("spawnMarketShare", spawnMarketShare);
+			tariffMult = (float)settings.optDouble("tariffMult", tariffMult);
             
             invasionStrengthBonusAttack = (float)settings.optDouble("invasionStrengthBonusAttack", 0);
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);
