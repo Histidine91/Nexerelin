@@ -1,16 +1,14 @@
 {
-    "uniqueModClassName":"", # String
     "playableFaction":true,
     "corvusCompatible":true,
-
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    
     "baseFleetCostMultiplier":1.0,
 
     "customRebelFaction":"",
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Traitors",
 
-    "startRelationships":{ "tritachyon": -0.6 },
+    "startRelationships":{ "tritachyon": -0.3, "persean":-0.6 },
     
     "alignments":{
         "technocratic":-0.5,

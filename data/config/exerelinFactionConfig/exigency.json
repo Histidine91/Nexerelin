@@ -23,5 +23,5 @@
     
     "startShipsSolo":["exigency_yria_Assault"],
     "startShipsCombatSmall":["exigency_destroyer_Disruptor", "exigency_yria_Fleetpointdefense", "exigency_compactfrigate_Brawler"],
-    "startShipsCombatLarge":["exigency_cruiser_Assault", "exigency_lightcarrier_Standard", "exigency_azata_wing", "exigency_kaivor_cs_wing"], # Lol fighters
+    "startShipsCombatLarge":["exigency_cruiser_Assault", "exigency_lightcarrier_Standard"],
 }

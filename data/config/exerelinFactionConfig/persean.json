@@ -1,18 +1,15 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
-
-    "crewExpereinceLevelIncreaseChance":0.0,
+    
     "baseFleetCostMultiplier":1.0,
 
     "customRebelFaction":"",
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Secessionists",
-
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
-    "factionsLiked":[],
-    "factionsDisliked":[],
+    
+    "startRelationships":{ "hegemony": -0.6 },
+    
     "morality":"good",
 
     "alignments":{
@@ -26,5 +23,5 @@
     "startShipsTradeSmall":["tarsus_Standard", "vigilance_Starting", "mercury_PD"],
     "startShipsCombatLarge":["eagle_Balanced", "hammerhead_Elite", "vigilance_FS"],
     "startShipsCombatLargeSSP":["ssp_vulture_sta", "sunder_s_sto", "monitor_Escort"],
-    "startShipsTradeLarge":["venture_Balanced", "gemini_Standard", "broadsword_wing"],
+    "startShipsTradeLarge":["venture_Balanced", "gemini_Standard"],
 }

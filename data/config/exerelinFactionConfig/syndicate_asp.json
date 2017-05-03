@@ -21,9 +21,9 @@
     
     "freeMarket":true,
     
-    "miningVariantsOrWings":["syndicate_asp_venom_wing"],
+    #"miningVariantsOrWings":["syndicate_asp_venom_wing"],
     
     "startShipsSolo":["syndicate_asp_diamondback_Standard"],
-    "startShipsTradeSmall":["syndicate_asp_copperhead_Standard", "syndicate_asp_diamondback_Standard", "syndicate_asp_venom_wing"],
-    "startShipsTradeLarge":["syndicate_asp_gigantophis_Support", "syndicate_asp_copperhead_Standard", "syndicate_asp_constrictor_wing", "syndicate_asp_bite_wing"],
+    "startShipsTradeSmall":["syndicate_asp_copperhead_Standard", "syndicate_asp_diamondback_Standard"],
+    "startShipsTradeLarge":["syndicate_asp_gigantophis_Support", "syndicate_asp_copperhead_Standard"],
 }

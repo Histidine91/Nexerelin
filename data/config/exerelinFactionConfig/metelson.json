@@ -25,5 +25,5 @@
     "startShipsCombatLarge":["mi_mantarn_standard", "mi_securi_brawler", "mi_glima_attack"],
     "startShipsTradeLarge":["mi_grancursor_support", "buffalo_hegemony_Standard", "mi_vigilance_escort"],
     
-    "miningVariantsOrWings":["mi_pala_mining", "mining_drone_wing", "obex_wing", "grudiver_wing"]
+    "miningVariantsOrWings":["mi_pala_mining"]
 }

@@ -26,5 +26,5 @@
     "startShipsTradeSmall":["tarsus_Standard", "vigilance_Starting", "mercury_PD"],
     "startShipsCombatLarge":["eagle_Balanced", "hammerhead_Elite", "vigilance_FS"],
     "startShipsCombatLargeSSP":["ssp_vulture_sta", "sunder_s_sto", "monitor_Escort"],
-    "startShipsTradeLarge":["venture_Balanced", "gemini_Standard", "broadsword_wing"],
+    "startShipsTradeLarge":["venture_Balanced", "gemini_Standard"],
 }

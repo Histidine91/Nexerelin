@@ -22,8 +22,6 @@ public class ExerelinFactionConfig
     public static final Map<Alignment, Float> DEFAULT_ALIGNMENTS = new HashMap<>();
     
     public String factionId;
-	@Deprecated
-    public String uniqueModClassName = "";
     public boolean playableFaction = true;
     public boolean corvusCompatible = false;
     public boolean isBuiltIn = false;
@@ -39,10 +37,10 @@ public class ExerelinFactionConfig
     // 2 = hostile to everyone
     // 3 = vengeful to everyone
     public int hostileToAll = 0;    
+	
+    public double baseFleetCostMultiplier = 1.0;	// currently unused
 
-    public double crewExpereinceLevelIncreaseChance = 0.0;
-    public double baseFleetCostMultiplier = 1.0;
-
+	// currently unused
     public String customRebelFaction = "";
     public String customRebelFleetId = "";
     public String rebelFleetSuffix = "Dissenters";
@@ -73,20 +71,20 @@ public class ExerelinFactionConfig
     public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
     public Morality morality = Morality.NEUTRAL;
     
-    public float spawnMarketShare = 1;
+    public float spawnMarketShare = 1;	// what proportion of procgen markets this faction gets
     public boolean freeMarket = false;
 	public float tariffMult = 1;
 
-    public float invasionStrengthBonusAttack = 0;
+    public float invasionStrengthBonusAttack = 0;	// marines
     public float invasionStrengthBonusDefend = 0;
-    public float invasionFleetSizeMod = 0;
+    public float invasionFleetSizeMod = 0;	// ships
     public float responseFleetSizeMod = 0;
-    public float invasionPointMult = 1;
+    public float invasionPointMult = 1;	// point accumulation for launching invasions
     public float patrolSizeMult = 1;
     
     public boolean dropPrisoners = true;
-    public boolean noHomeworld = false;
-    public boolean showIntelEvenIfDead = false;
+    public boolean noHomeworld = false;	// don't give this faction a HQ in procgen
+    public boolean showIntelEvenIfDead = false;	// intel tab
     
     public boolean allowAgentActions = true;
     public boolean allowPrisonerActions = true;
@@ -123,8 +121,7 @@ public class ExerelinFactionConfig
             isPirateNeutral = settings.optBoolean("isPirateNeutral", false);
             spawnPatrols = settings.optBoolean("spawnPatrols", true);
             hostileToAll = settings.optInt("hostileToAll", hostileToAll);
-
-            crewExpereinceLevelIncreaseChance = settings.optDouble("crewExpereinceLevelIncreaseChance", 0);
+			
             baseFleetCostMultiplier = settings.optDouble("baseFleetCostMultiplier", 1);
 
             customRebelFaction = settings.optString("customRebelFaction", customRebelFaction);

@@ -1,16 +1,14 @@
 {
-    "uniqueModClassName":"",
     "playableFaction":true,
     "corvusCompatible":true,
-
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    
     "baseFleetCostMultiplier":1.0,
 
     "customRebelFaction":"",
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Splinter Group",
      
-    "startRelationships":{ "hegemony": -0.6, "luddic_church":-0.6 },
+    "startRelationships":{ "hegemony": -0.3, "luddic_church":-0.6 },
     "maxRelationships":{ "luddic_church":-0.1 },
     "diplomacyPositiveChance":{ "luddic_church":0.75 },
     "diplomacyNegativeChance":{ "luddic_church":1.5 },

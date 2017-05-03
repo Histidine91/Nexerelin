@@ -19,13 +19,14 @@ import java.util.List;
 
 public class ExerelinUtilsFaction {
     
+	@Deprecated
     public static boolean doesFactionOwnSystem(String factionId, StarSystemAPI system)
     {
         for(MarketAPI market : Misc.getMarketsInLocation(system))
         {
             if(!market.getFaction().getId().equalsIgnoreCase(factionId)
-                    && !market.getFaction().getId().equalsIgnoreCase("neutral")
-                    && !market.getFaction().getId().equalsIgnoreCase("independent"))
+                    && !market.getFaction().getId().equalsIgnoreCase(Factions.NEUTRAL)
+                    && !market.getFaction().getId().equalsIgnoreCase(Factions.INDEPENDENT))
             {
                 return false;
             }
@@ -51,7 +52,12 @@ public class ExerelinUtilsFaction {
         return ret;
     }
     
-    public static int getFactionPopulation(String factionId)
+	/**
+	 * Returns the sum of sizes of the faction's markets
+	 * @param factionId
+	 * @return
+	 */
+	public static int getFactionPopulation(String factionId)
     {
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
         int pop = 0;
