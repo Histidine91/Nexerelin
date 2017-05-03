@@ -17,16 +17,20 @@ public class GetLiveFactions extends BaseCommandPlugin {
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
-		Set<String> liveFactions = new HashSet<String>(SectorManager.getLiveFactionIdsCopy());
+		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
+		addLiveFactionsToMemory(memory);
+		
+		return true;
+	}
+	
+	public static void addLiveFactionsToMemory(MemoryAPI memory)
+	{
+		Set<String> liveFactions = new HashSet<>(SectorManager.getLiveFactionIdsCopy());
 		if (ExerelinUtilsFaction.isExiInCorvus("exigency"))
 			liveFactions.add("exigency");
-		
-		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
 		for (String factionId: liveFactions)
 		{
 			memory.set("$liveFactions:" + factionId, true, 0);
 		}
-		
-		return true;
 	}
 }

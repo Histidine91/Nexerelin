@@ -626,8 +626,8 @@ ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion
 ,,,,,,
 #START MARKET DIRECTORY OPTIONS,,,,,,
 ExerelinMarketFactionDirectoryOption,ExerelinMarketSpecial,,SetShortcut exerelinFactionDirectoryMain D,,7:exerelinFactionDirectoryMain:Faction directory,
-ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirectoryMain,"FireAll ExerelinFactionDirectory
-GetLiveFactions",Which faction do you want to look up?,,
+ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirectoryMain,"GetLiveFactions
+FireAll ExerelinFactionDirectory",Which faction do you want to look up?,,
 ExerelinFactionDirectoryOptions,ExerelinFactionDirectory,,"SetShortcut exerelinFactionDirectoryList1 A
 SetShortcut exerelinFactionDirectoryList2 E
 SetShortcut exerelinFactionDirectoryList3 N

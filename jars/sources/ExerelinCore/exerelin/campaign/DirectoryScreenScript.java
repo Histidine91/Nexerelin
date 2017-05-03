@@ -15,9 +15,13 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
+import com.fs.starfarer.api.impl.campaign.rulecmd.GetLiveFactions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
+import java.util.HashSet;
+import java.util.Set;
 import org.lwjgl.input.Keyboard;
 
 // adapted from UpdateNotificationScript in LazyWizard's Version Checker
@@ -141,6 +145,7 @@ public class DirectoryScreenScript implements EveryFrameScript
 
 				MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
 				mem.set("$specialDialog", true, 0);
+				GetLiveFactions.addLiveFactionsToMemory(mem);
 
 				optionsDialogDelegate.fireAll("ExerelinFactionDirectory");
 			}
