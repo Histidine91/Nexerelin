@@ -508,6 +508,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		market.setPrimaryEntity(prismEntity);
 		prismEntity.setMarket(market);
 		prismEntity.setFaction(Factions.INDEPENDENT);
+		market.setSurveyLevel(MarketAPI.SurveyLevel.FULL);	// not doing this makes market condition tooltips fail to appear
 		sector.getEconomy().addMarket(market);
 		
 		//pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
