@@ -26,7 +26,8 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	protected static final int DAYS_TO_KEEP = 30;
 	
 	protected FactionAPI otherFaction;
-	protected DiplomacyEventDef event;
+	protected DiplomacyEventDef event;	// FIXME: legacy, remove
+	protected String eventStage;
 	protected ExerelinReputationAdjustmentResult result;
 	protected float delta;
 	protected float age = 0;
@@ -45,7 +46,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		params = (HashMap)param;
 		otherFaction = (FactionAPI)params.get("otherFaction");
 		delta = (Float)params.get("delta");
-		event = (DiplomacyEventDef)params.get("event");
+		eventStage = (String)params.get("eventStage");
 		result = (ExerelinReputationAdjustmentResult)params.get("result");
 	}
 		
@@ -84,8 +85,8 @@ public class DiplomacyEvent extends BaseEventPlugin {
 			}
 		});
 		*/
-		Global.getSector().reportEventStage(this, event.stage, market.getPrimaryEntity(), priority);
-		log.info("Diplomacy event: " + event.stage);
+		Global.getSector().reportEventStage(this, eventStage, market.getPrimaryEntity(), priority);
+		log.info("Diplomacy event: " + eventStage);
 	}
 
 	@Override

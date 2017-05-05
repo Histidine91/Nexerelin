@@ -70,6 +70,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     protected static final List<String> disallowedFactions;
         
     protected static List<DiplomacyEventDef> eventDefs;
+    protected static Map<String, DiplomacyEventDef> eventDefsByStage;
     
     public static final float STARTING_RELATIONSHIP_HOSTILE = -0.6f;
     public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.35f;
@@ -101,6 +102,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         disallowedFactions = new ArrayList<>(Arrays.asList(factions));
         if (!ExerelinConfig.followersDiplomacy) disallowedFactions.add(ExerelinConstants.PLAYER_NPC_ID);
         eventDefs = new ArrayList<>();
+        eventDefsByStage = new HashMap<>();
         
         try {
             loadSettings();
@@ -151,12 +153,19 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 eventDef.repEnsureAtBest = RepLevel.valueOf(StringHelper.flattenToAscii(repEnsureAtBest.toUpperCase())); 
             
             eventDefs.add(eventDef);
+            eventDefsByStage.put(eventDef.stage, eventDef);
             
             if(eventDef.name.equals("Peace Treaty"))
                 peaceTreatyEvent = eventDef;
             else if (eventDef.name.equals("Ceasefire"))
                 ceasefireEvent = eventDef;
         }
+    }
+    
+    public static DiplomacyEventDef getEventByStage(String stage)
+    {
+        if (!eventDefsByStage.containsKey(stage)) return null;
+        return eventDefsByStage.get(stage);
     }
 
     public DiplomacyManager()
@@ -407,7 +416,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             log.info("Transmitting event: " + event.name);
             HashMap<String, Object> params = new HashMap<>();
             String eventType = "exerelin_diplomacy";
-            params.put("event", event);
+            params.put("eventStage", event.stage);
             params.put("result", result);
             params.put("delta", delta);
             params.put("otherFaction", faction2);
@@ -1034,8 +1043,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     }
                     
                     // new specific number method
-                    Iterator<Map.Entry<String, Float>> iter = factionConfig.startRelationships.entrySet().iterator();
-                    while( iter.hasNext() ) {
                         Map.Entry<String, Float> tmp = iter.next();
                         String key = tmp.getKey();
                         float value = tmp.getValue();
