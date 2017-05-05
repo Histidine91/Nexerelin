@@ -34,10 +34,6 @@ import org.apache.log4j.Logger;
 import org.histidine.industry.scripts.MiningHelper;
 import org.histidine.industry.scripts.MiningHelper.MiningReport;
 
-/**
- * Handles invasion fleets (the ones that capture stations)
- * Originally derived from Dark.Revenant's II_WarFleetManager
- */
 public class MiningFleetManager extends BaseCampaignEventListener implements EveryFrameScript
 {
 	public static final String MANAGER_MAP_KEY = "exerelin_miningFleetManager";
@@ -304,6 +300,8 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		if (timer < POINT_INCREMENT_PERIOD) {
 			return;
 		}
+		timer -= POINT_INCREMENT_PERIOD;
+		
 		List<MiningFleetData> remove = new LinkedList();
 		for (MiningFleetData data : this.activeFleets) {
 			if ((data.fleet.getContainingLocation() == null) || (!data.fleet.getContainingLocation().getFleets().contains(data.fleet)) || (!data.fleet.isAlive())) {
@@ -313,8 +311,10 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		this.activeFleets.removeAll(remove);
 	
 		updateMiningFleetPoints(POINT_INCREMENT_PERIOD);
-		MiningHelperLegacy.renewResources(POINT_INCREMENT_PERIOD);
-		timer -= POINT_INCREMENT_PERIOD;
+		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
+			MiningHelper.renewResources(POINT_INCREMENT_PERIOD);
+		else
+			MiningHelperLegacy.renewResources(POINT_INCREMENT_PERIOD);
 	}
 	
 	public static MiningFleetManager create()
