@@ -555,15 +555,13 @@ public class ExerelinMarketSetup
 				
 		// add per-faction market conditions
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-		
-		newMarket.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
-		newMarket.getTariff().modifyMult("nexerelinMult", ExerelinConfig.baseTariffMult);
-		newMarket.getTariff().modifyMult("nexerelinFactionMult", config.tariffMult);
 		if (config.freeMarket)
 		{
 			newMarket.addCondition(Conditions.FREE_PORT);
-			newMarket.getTariff().modifyMult("isFreeMarket", ExerelinConfig.freeMarketTariffMult);
 		}
+		
+		newMarket.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
+		ExerelinUtilsMarket.setTariffs(newMarket);
 		
 		if (factionId.equals(Factions.LUDDIC_CHURCH)) {
 			newMarket.addCondition(Conditions.LUDDIC_MAJORITY);

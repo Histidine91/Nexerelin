@@ -204,6 +204,22 @@ public class ExerelinUtilsMarket {
 		}
 	}
 	
+	public static void setTariffs(MarketAPI market)
+	{
+		String factionId = market.getFactionId();
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		market.getTariff().modifyMult("nexerelinMult", ExerelinConfig.baseTariffMult);
+		market.getTariff().modifyMult("nexerelinFactionMult", conf.tariffMult);
+		if (market.hasCondition(Conditions.FREE_PORT))
+		{
+			market.getTariff().modifyMult("isFreeMarket", ExerelinConfig.freeMarketTariffMult);
+		}
+		else
+		{
+			market.getTariff().unmodify("isFreeMarket");
+		}
+	}
+	
 	// do we really want any of these?
 	public static float getFarmingFoodSupply(MarketAPI market, boolean applyMultMod)
 	{

@@ -63,6 +63,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import exerelin.world.ExerelinMarketSetup.MarketArchetype;
 import java.util.Collections;
@@ -501,9 +502,7 @@ public class ExerelinSectorGen implements SectorGeneratorPlugin
 		marketSetup.addStartingMarketCommodities(market);
 		
 		market.getTariff().modifyFlat("generator", sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
-		market.getTariff().modifyMult("nexerelinMult", ExerelinConfig.baseTariffMult);
-		market.getTariff().modifyMult("nexerelinFactionMult", ExerelinConfig.getExerelinFactionConfig(Factions.INDEPENDENT).tariffMult);
-		market.getTariff().modifyMult("isFreeMarket", 0.5f);
+		ExerelinUtilsMarket.setTariffs(market);
 		market.addSubmarket("exerelin_prismMarket");
 		market.setPrimaryEntity(prismEntity);
 		prismEntity.setMarket(market);

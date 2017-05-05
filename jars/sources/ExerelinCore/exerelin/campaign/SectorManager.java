@@ -760,16 +760,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (newOwnerConfig.freeMarket)
             {
                 if (!market.hasCondition(Conditions.FREE_PORT)) market.addCondition(Conditions.FREE_PORT);
-                market.getTariff().modifyMult("isFreeMarket", ExerelinConfig.freeMarketTariffMult);
             }
             else 
             {
                 market.removeCondition(Conditions.FREE_PORT);
-                market.getTariff().unmodify("isFreeMarket");
             }
         }
-		if (newOwnerConfig != null)
-			market.getTariff().modifyMult("nexerelinFactionMult", newOwnerConfig.tariffMult);
+		ExerelinUtilsMarket.setTariffs(market);
         
         List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
         
