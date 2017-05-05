@@ -82,15 +82,13 @@ public class WarmongerEvent extends BaseEventPlugin {
 		if (myFactionLoss <= 0) stage = "report_noOwnFaction";
 		Global.getSector().reportEventStage(this, stage, Global.getSector().getPlayerFleet(), priority, new BaseOnMessageDeliveryScript() {
 			public void beforeDelivery(CommMessageAPI message) {
-								Iterator<Map.Entry<String, Float>> iter = repLoss.entrySet().iterator();
-								while (iter.hasNext())
-                                {
-									Map.Entry<String, Float> tmp = iter.next();
-									String factionId = tmp.getKey();
-									float loss = tmp.getValue();
-									ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, -loss);
-                                }
-								ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+				for (Map.Entry<String, Float> tmp : repLoss.entrySet())
+				{
+					String factionId = tmp.getKey();
+					float loss = tmp.getValue();
+					ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, -loss);
+				}
+				ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
 			}
 		});
 	}

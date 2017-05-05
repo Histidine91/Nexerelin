@@ -1043,10 +1043,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     }
                     
                     // new specific number method
-                        Map.Entry<String, Float> tmp = iter.next();
-                        String key = tmp.getKey();
-                        float value = tmp.getValue();
-                        faction.setRelationship(key, value);
+                    for (Map.Entry<String, Float> entry : factionConfig.startRelationships.entrySet())
+                    {
+                        faction.setRelationship(entry.getKey(), entry.getValue());
                     }
                 }
             }

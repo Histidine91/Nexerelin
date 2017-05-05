@@ -36,10 +36,8 @@ public class StringHelper {
     
     public static String substituteTokens(String toModify, Map<String, String> replacements)
     {
-        Iterator<Map.Entry<String, String>> iter = replacements.entrySet().iterator();
-        while (iter.hasNext())
+        for (Map.Entry<String, String> tmp : replacements.entrySet())
         {
-            Map.Entry<String, String> tmp = iter.next();
             toModify = substituteToken(toModify, tmp.getKey(), tmp.getValue());
         }
         return toModify;
