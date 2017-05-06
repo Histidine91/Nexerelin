@@ -128,6 +128,19 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		
 		float reward = (float)Math.pow(3, target.getSize());
 		reward *= MathUtils.getRandomNumberInRange(0.75f, 1.25f) * ExerelinConfig.conquestMissionRewardMult;
+		if (target.hasCondition(Conditions.MILITARY_BASE))
+			reward *= 1.25f;
+		if (target.hasCondition(Conditions.SPACEPORT))
+			reward *= 1.1f;
+		if (target.hasCondition(Conditions.ORBITAL_STATION))
+			reward *= 1.1f;
+		if (target.hasCondition(Conditions.REGIONAL_CAPITAL))
+			reward *= 1.1f;
+		if (target.hasCondition(Conditions.HEADQUARTERS))
+			reward *= 1.2f;
+		if (target.getFactionId().equals("templars"))
+			reward *= 2f;
+		
 		float bonusReward = reward * MathUtils.getRandomNumberInRange(0.5f, 1f);
 		reward = (int)reward * REWARD_MULT;
 		bonusReward = (int)bonusReward * REWARD_MULT;
