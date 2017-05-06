@@ -471,8 +471,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             
             Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market", params);
             
-            // refresh market prices to account for stability effects on demand (see http://fractalsoftworks.com/forum/index.php?topic=11516.0 for why)
-            Global.getSector().getEconomy().advance(0);
+            market.updatePrices();
         }
         else
         {
@@ -572,7 +571,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
             if (!playerInvolved) effect *= NPC_EFFECT_MULT;
             
-            float foodDestroyed = (float)Math.pow(market.getSize(), 3) * effect;
+            float foodDestroyed = (float)Math.pow(market.getSize(), 2) * effect;
             
             CommodityOnMarketAPI food = market.getCommodityData(Commodities.FOOD);
             float before = food.getStockpile();
