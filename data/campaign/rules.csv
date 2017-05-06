@@ -676,10 +676,11 @@ ExerelinFactionDirectoryList3Back,ExerelinFactionDirectoryList3,,SetShortcut exe
 ,,,,,,
 ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList4,$liveFactions:pack,,,exerelinFactionDirectoryGetPACK:P.A.C.K.,
 ExerelinFactionDirectoryListPbc,ExerelinFactionDirectoryList4,$liveFactions:pbc,,,exerelinFactionDirectoryGetPbc:PBC,
+ExerelinFactionDirectoryListPerseanLeague,ExerelinFactionDirectoryList4,$liveFactions:persean,,,exerelinFactionDirectoryGetPerseanLeague:Persean League,
 ExerelinFactionDirectoryListPirates,ExerelinFactionDirectoryList4,$liveFactions:pirates,,,exerelinFactionDirectoryGetPirates:Pirates,
 ExerelinFactionDirectoryListSCY,ExerelinFactionDirectoryList4,$liveFactions:SCY,,,exerelinFactionDirectoryGetSCY:SCY,
 ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList4,$liveFactions:shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
-ExerelinFactionDirectoryListPerseanLeague,ExerelinFactionDirectoryList4,$liveFactions:persean,,,exerelinFactionDirectoryGetPerseanLeague:Persean League,
+ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList4,$liveFactions:sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
 ExerelinFactionDirectoryListSpire,ExerelinFactionDirectoryList4,$liveFactions:spire,,,exerelinFactionDirectoryGetSpire:Spire,
 ExerelinFactionDirectoryListTiandong,ExerelinFactionDirectoryList4,$liveFactions:tiandong,,,exerelinFactionDirectoryGetTiandong:Tiandong,
 ExerelinFactionDirectoryListTriTachyon,ExerelinFactionDirectoryList4,$liveFactions:tritachyon,,,exerelinFactionDirectoryGetTriTachyon:Tri-Tachyon,
@@ -736,6 +737,8 @@ ExerelinFactionDirectoryGetORA,DialogOptionSelected,$option == exerelinFactionDi
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetPACK,DialogOptionSelected,$option == exerelinFactionDirectoryGetPACK,"$_directoryFaction = pack 0
 FireBest ExerelinFactionDirectorySubmit",,,
+ExerelinFactionDirectoryGetPerseanLeague,DialogOptionSelected,$option == exerelinFactionDirectoryGetPerseanLeague,"$_directoryFaction = persean 0
+FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetPirates,"$_directoryFaction = pirates 0
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetPlayer,DialogOptionSelected,$option == exerelinFactionDirectoryGetPlayer,"$_directoryFaction = player_npc 0
@@ -744,7 +747,7 @@ ExerelinFactionDirectoryGetSCY,DialogOptionSelected,$option == exerelinFactionDi
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,"$_directoryFaction = shadow_industry 0
 FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetPerseanLeague,DialogOptionSelected,$option == exerelinFactionDirectoryGetPerseanLeague,"$_directoryFaction = persean 0
+ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerelinFactionDirectoryGetSindrianDiktat,"$_directoryFaction = sindrian_diktat 0
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetSpire,DialogOptionSelected,$option == exerelinFactionDirectoryGetSpire,"$_directoryFaction = spire 0
 FireBest ExerelinFactionDirectorySubmit",,,
