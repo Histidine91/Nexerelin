@@ -482,36 +482,22 @@ FireBest ExerelinNGCStep4",,,
 ExerelinNGCStartShipsBack,NewGameOptionSelected,$option == exerelinNGCFleetBack,FireAll ExerelinNGCListFactions,,,
 ,,,,,,
 ExerelinNGCFinalize,ExerelinNGCStep4,,"AddText ""Starting experience and credits?""
-SetShortcut exerelinNGCStartBack ESCAPE",,"exerelinNGCNormalStart:Ensign (10,000 credits, level 1)
-exerelinNGCEasyStart:Lieutenant (50,000 credits, level 6, one officer)
+SetShortcut exerelinNGCStartBack ESCAPE",,"exerelinNGCNormalStart:Ensign (20,000 credits, level 1)
+exerelinNGCEasyStart:Lieutenant (75,000 credits, level 6, one officer)
 exerelinNGCEasyStart2:Commander (250,000 credits, level 16, two officers)
 exerelinNGCStartBack:Go back",
-ExerelinNGCNormalStart,NewGameOptionSelected,$option == exerelinNGCNormalStart,"NGCAddCredits 10000
+ExerelinNGCNormalStart,NewGameOptionSelected,$option == exerelinNGCNormalStart,"NGCAddCredits 20000
 NGCAddCharacterPoints 3
 NGCSetNumStartingOfficers 0
 SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Done,
-ExerelinNGCEasyStart,NewGameOptionSelected,"$option == exerelinNGCEasyStart
-!$haveSSP","NGCAddCredits 50000
+ExerelinNGCEasyStart,NewGameOptionSelected,$option == exerelinNGCEasyStart,"NGCAddCredits 75000
 NGCAddCharacterPoints 3
 NGCAddXP 31500
 NGCSetNumStartingOfficers 1
 SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Done,
-ExerelinNGCEasyStartSSP,NewGameOptionSelected,"$option == exerelinNGCEasyStart
-$haveSSP","NGCAddCredits 50000
-NGCAddCharacterPoints 3
-NGCAddXP 42000
-NGCSetNumStartingOfficers 1
-SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Done,
-ExerelinNGCEasyStart2,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
-!$haveSSP","NGCAddCredits 250000
+ExerelinNGCEasyStart2,NewGameOptionSelected,$option == exerelinNGCEasyStart2,"NGCAddCredits 250000
 NGCAddCharacterPoints 3
 NGCAddXP 214500
-NGCSetNumStartingOfficers 2
-SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Done,
-ExerelinNGCEasyStart2SSP,NewGameOptionSelected,"$option == exerelinNGCEasyStart2
-$haveSSP","NGCAddCredits 250000
-NGCAddCharacterPoints 3
-NGCAddXP 286000
 NGCSetNumStartingOfficers 2
 SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Done,
 ExerelinNGCStartBack,NewGameOptionSelected,$option == exerelinNGCStartBack,"NGCClearStartingGear

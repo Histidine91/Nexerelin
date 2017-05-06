@@ -28,5 +28,5 @@
     "startShipsCombatSmall":["ms_clade_Standard", "ms_inanna_Standard", "ms_seski_CS"],
     "startShipsTradeSmall":["ms_solidarity_Standard", "ms_belet-seri_CS", "ms_ashnan_Standard"],
     "startShipsCombatLarge":["ms_tartarus_Standard", "ms_morningstar_Standard", "ms_enlil_Balanced"],
-    "startShipsTradeLarge":["ms_elysium_Standard", "ms_solidarity_Fast", "ms_seskiCiv_BR"],
+    "startShipsTradeLarge":["ms_elysium_Standard", "ms_solidarity_Fast", "ms_seski_BR"],
 }
