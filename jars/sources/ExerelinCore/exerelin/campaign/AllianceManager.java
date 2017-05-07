@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -62,7 +63,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static List<String> allianceNameCommonPrefixes;
     
     protected final Set<Alliance> alliances = new HashSet<>();
-    protected       Map<String, Alliance> alliancesByName = new HashMap<>();
+    protected final Map<String, Alliance> alliancesByName = new HashMap<>();
+	protected final Map<String, Alliance> alliancesById = new HashMap<>();	// UUID key
     protected final Map<String, Alliance> alliancesByFactionId = new HashMap<>();
     
     protected float daysElapsed = 0;
@@ -152,23 +154,23 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
         if (config!= null && config.alignments != null)
         {
-            log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.name);
+            log.info("Checking alliance join validity for faction " + factionId + ", alliance " + alliance.getName());
             //log.info("Alliance alignment: " + alliance.alignment.toString());
-            Alignment align = alliance.alignment;
+            Alignment align = alliance.getAlignment();
             if (config.alignments.containsKey(align))
                 value = config.alignments.get(align);
         }
         return value;
     }
     
-    public void createAllianceEvent(String faction1, String faction2, Alliance alliance, String stage)
+    public AllianceChangedEvent createAllianceEvent(String faction1, String faction2, Alliance alliance, String stage)
     {
         HashMap<String, Object> params = new HashMap<>();
         SectorAPI sector = Global.getSector();
         String eventType = "exerelin_alliance_changed";
-        params.put("faction1", sector.getFaction(faction1));
-        if (faction2 != null) params.put("faction2", sector.getFaction(faction2));
-        params.put("alliance", alliance);
+        params.put("faction1Id", faction1);
+        if (faction2 != null) params.put("faction2Id", faction2);
+        params.put("allianceId", alliance.uuId);
         params.put("stage", stage);
         
         CampaignEventTarget eventTarget;
@@ -182,7 +184,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             eventTarget = new CampaignEventTarget(market);
         }
         
-        sector.getEventManager().startEvent(eventTarget, eventType, params);
+        AllianceChangedEvent event = (AllianceChangedEvent)sector.getEventManager().startEvent(eventTarget, eventType, params);
+	    return event;
     }
     
     public static Alliance createAlliance(String member1, String member2, Alignment type)
@@ -281,6 +284,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         allianceManager.alliancesByFactionId.put(member1, alliance);
         allianceManager.alliancesByFactionId.put(member2, alliance);
         allianceManager.alliancesByName.put(name, alliance);
+		allianceManager.alliancesById.put(alliance.uuId, alliance);
         allianceManager.alliances.add(alliance);
         
         //average out faction relationships
@@ -324,7 +328,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         SectorAPI sector = Global.getSector();
         FactionAPI faction = sector.getFaction(factionId);
         FactionAPI firstMember = null;
-        for (String memberId : alliance.members)
+        for (String memberId : alliance.getMembersCopy())
         {
             firstMember = sector.getFaction(memberId);
             break;
@@ -354,28 +358,28 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
         */
         
-        alliance.members.add(factionId);
+        alliance.addMember(factionId);
         alliancesByFactionId.put(factionId, alliance);
         
         boolean playerWasHostile = faction.isHostileTo(Factions.PLAYER);
         if (playerIsHostile != playerWasHostile)
             DiplomacyManager.printPlayerHostileStateMessage(faction, playerIsHostile);
         
-        createAllianceEvent(factionId, null, alliance, "join");
+        alliance.reportEvent(factionId, null, alliance, "join");
         SectorManager.checkForVictory();
     }
        
     public void leaveAlliance(String factionId, Alliance alliance, boolean noEvent)
     {
-        alliance.members.remove(factionId);
+        alliance.removeMember(factionId);
         alliancesByFactionId.remove(factionId);
-        if (alliance.members.size() <= 1) 
+        if (alliance.getMembersCopy().size() <= 1) 
         {
             dissolveAlliance(alliance);
             return;
         }
         
-        if (!noEvent) createAllianceEvent(factionId, null, alliance, "leave");
+        if (!noEvent) alliance.reportEvent(factionId, null, alliance, "leave");
         SectorManager.checkForVictory();
     }
     
@@ -389,14 +393,15 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (!alliances.contains(alliance)) return;
         
         String randomMember = null;
-        for (String member : alliance.members)
+        for (String member : alliance.getMembersCopy())
         {
             alliancesByFactionId.remove(member);
             randomMember = member;
         }
-        alliancesByName.remove(alliance.name);
+        alliancesByName.remove(alliance.getName());
+		alliancesById.remove(alliance.uuId);
         alliances.remove(alliance);
-        if (randomMember != null) createAllianceEvent(randomMember, null, alliance, "dissolved");
+        if (randomMember != null) alliance.reportEvent(randomMember, null, alliance, "dissolved");
         SectorManager.checkForVictory();
     }  
     
@@ -453,45 +458,25 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 float value = getAlignmentCompatibilityWithAlliance(factionId, alliance);
                 if (value < MIN_ALIGNMENT_TO_JOIN_ALLIANCE  && !ExerelinConfig.ignoreAlignmentForAlliances) continue;
                 
-                float relationship = 0;
-                boolean abort = false;
+				if (Math.random() > Math.pow(JOIN_CHANCE_MULT_PER_MEMBER, alliance.getMembersCopy().size() ))
+				{
+					continue;
+				}
                 
-                // DOES NOT ACTUALLY LOOP - just used to get a member at random
-                for (String memberId : alliance.members)
+				float relationship = alliance.getAverageRelationshipWithFaction(factionId);
+				if (relationship < MIN_RELATIONSHIP_TO_JOIN || Math.random() > relationship * JOIN_CHANCE_MULT)
+				{
+					continue;
+				}
+				
+				boolean abort = false;
+                for (String memberId : alliance.getMembersCopy())
                 {
                     if (faction.isHostileTo(memberId))
                     {
                         abort = true;
                         break;
                     }
-                    relationship = faction.getRelationship(memberId);
-                    if (relationship < MIN_RELATIONSHIP_TO_JOIN || Math.random() > relationship * JOIN_CHANCE_MULT)
-                    {
-                        abort = true;
-                        break;
-                    }
-                    
-                    if (Math.random() > Math.pow(JOIN_CHANCE_MULT_PER_MEMBER, alliance.members.size() ))
-                    {
-                        abort = true;
-                        break;
-                    }
-                    
-                    // don't go joining alliances if it just drags us into multiple wars
-                    /*
-                    List<String> theirEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, false, false);
-                    List<String> ourEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, false, false);
-                    int numNewEnemies = 0;
-                    for (String enemy: theirEnemies)
-                    {
-                        if (!ourEnemies.contains(enemy)) numNewEnemies++;
-                    }
-                    //log.info("Joining alliance " + alliance.name + " would add enemies: " + numNewEnemies);
-                    if (Math.random() < numNewEnemies * JOIN_CHANCE_FAIL_PER_NEW_ENEMY)
-                        abort = true;
-                    */
-                    
-                    break;
                 }
                 if (abort) continue;
                 
@@ -541,29 +526,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         return false;
     }
-    
-    /**
-     * Returns the average relationship between a faction and the members of an alliance
-     * This is only interesting if the faction is a member of that alliance, otherwise all members will have the same relationship with it
-     * @param factionId
-     * @param alliance
-     * @return
-     */
-    public static float getAverageRelationshipWithAlliance(String factionId, Alliance alliance)
-    {
-        float sumRelationships = 0;
-        int numFactions = 0;
-        FactionAPI faction = Global.getSector().getFaction(factionId);
-        for (String memberId : alliance.members)
-        {
-            if (memberId.equals(factionId)) continue;
-            sumRelationships += faction.getRelationship(memberId);
-            numFactions++;
-        }
-        if (numFactions == 0) return 1;
-        return sumRelationships/numFactions;
-    }
-       
+           
     /**
      * Check if faction should leave an alliance due to disliking its allies
      * @param factionId
@@ -580,7 +543,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (faction.isHostileTo(otherFactionId))
         {
             // no fighting here, both of you get out of our clubhouse!
-            if (alliance1.members.size() <= 3) allianceManager.dissolveAlliance(alliance1);
+            if (alliance1.getMembersCopy().size() <= 3) allianceManager.dissolveAlliance(alliance1);
             else
             {
                 allianceManager.leaveAlliance(factionId, alliance1);
@@ -592,8 +555,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             boolean leave1 = false;
             boolean leave2 = false;
             int numLeavers = 0;
-            float averageRel1 = getAverageRelationshipWithAlliance(factionId, alliance1);
-            float averageRel2 = getAverageRelationshipWithAlliance(otherFactionId, alliance1);
+            float averageRel1 = alliance1.getAverageRelationshipWithFaction(factionId);
+            float averageRel2 = alliance1.getAverageRelationshipWithFaction(otherFactionId);
             
             if (averageRel1 < MIN_RELATIONSHIP_TO_STAY)
             {
@@ -608,7 +571,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             // both want to leave
             if (numLeavers == 2)
             {
-                if (alliance1.members.size() <= 3) allianceManager.dissolveAlliance(alliance1);
+                if (alliance1.getMembersCopy().size() <= 3) allianceManager.dissolveAlliance(alliance1);
                 else
                 {
                     allianceManager.leaveAlliance(factionId, alliance1);
@@ -655,12 +618,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         if (alliance1 != null)
         {
-            for (String memberId : alliance1.members)
+            for (String memberId : alliance1.getMembersCopy())
             {
                 FactionAPI member = sector.getFaction(memberId);
                 if (alliance2 != null)
                 {
-                    for (String otherMemberId : alliance2.members)
+                    for (String otherMemberId : alliance2.getMembersCopy())
                     {
                         // already in correct state, do nothing
                         FactionAPI otherMember = sector.getFaction(otherMemberId);
@@ -688,7 +651,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
         else if (alliance2 != null)
         {
-            for (String memberId : alliance2.members)
+            for (String memberId : alliance2.getMembersCopy())
             {
                 FactionAPI member = sector.getFaction(memberId);
                 // already in correct state, do nothing
@@ -710,7 +673,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (alliance1 != null) 
         {
             party1 = alliance1.getAllianceNameAndMembers();
-            highlight1 = alliance1.name;
+            highlight1 = alliance1.getName();
         }
         //else if (faction1.getId().equals("player")) party1 = Misc.ucFirst(playerAlignedFaction.getEntityNamePrefix());
 
@@ -719,7 +682,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (alliance2 != null) 
         {
             party2 = alliance2.getAllianceNameAndMembers();
-            highlight2 = alliance2.name;
+            highlight2 = alliance2.getName();
         }
         //else if (faction2.getId().equals("player")) party2 = Misc.ucFirst(playerAlignedFaction.getEntityNamePrefix());
 
@@ -762,6 +725,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         // set as static value because it is used too deep in the call hierarchy to pass it as argument of every function
         AllianceManager.playerInteractionTarget = interactionTarget;
     }
+	
+	public static SectorEntityToken getPlayerInteractionTarget()
+	{
+		return AllianceManager.playerInteractionTarget;
+	}
     
     public static void joinAllianceStatic(String factionId, Alliance alliance)
     {
@@ -788,6 +756,12 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (allianceManager == null) return null;
         return allianceManager.alliancesByName.get(allianceName);
     }
+	
+	public static Alliance getAllianceByUUID(String id)
+	{
+		if (allianceManager == null) return null;
+        return allianceManager.alliancesById.get(id);
+	}
     
     public static Alliance getFactionAlliance(String factionId)
     {
@@ -811,30 +785,34 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     {
         if (allianceManager == null) return;
         if (alliance == null || newName == null) throw new IllegalArgumentException("Alliance or new name is null");
-        String oldName = alliance.name;
+        String oldName = alliance.getName();
         if (allianceManager.alliancesByName.containsKey(oldName))
         {
             allianceManager.alliancesByName.remove(oldName);
             allianceManager.alliancesByName.put(newName, alliance);
         }
-        alliance.name = newName;
+        alliance.setName(newName);
+    }
+    
+    public static void setMemoryKeys(MemoryAPI memory, Alliance alliance)
+    {
+        memory.set("$isInAlliance", true, 0);
+        memory.set("$allianceId", alliance.uuId, 0);
+        memory.set("$allianceName", alliance.getName(), 0);
+    }
+    
+    public static void unsetMemoryKeys(MemoryAPI memory)
+    {
+        memory.set("$isInAlliance", false, 0);
+        memory.unset("$allianceId");
+        memory.unset("$allianceName");
     }
     
     public static AllianceManager create()
     {
         Map<String, Object> data = Global.getSector().getPersistentData();
         allianceManager = (AllianceManager)data.get(MANAGER_MAP_KEY);
-        if (allianceManager != null) {
-            
-            // reverse compatibility
-            if (allianceManager.alliancesByName == null) {
-                allianceManager.alliancesByName = new HashMap<>();
-                
-                for (Alliance alliance : allianceManager.alliances) {
-                    allianceManager.alliancesByName.put(alliance.name, alliance);
-                }
-            }
-            
+        if (allianceManager != null) {            
             return allianceManager;
         }
         
@@ -856,7 +834,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         text.addParagraph("-----------------------------------------------------------------------------");
         for (Alliance alliance : alliances)
         {
-            String allianceName = alliance.name;
+            String allianceName = alliance.getName();
             String allianceString = alliance.getAllianceNameAndMembers();
 
             text.addParagraph(allianceString);
@@ -871,8 +849,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         @Override
         public int compare(Alliance alliance1, Alliance alliance2) {
 
-            int size1 = alliance1.members.size();
-            int size2 = alliance2.members.size();
+            int size1 = alliance1.getMembersCopy().size();
+            int size2 = alliance2.getMembersCopy().size();
 
             if (size1 > size2) return -1;
             else if (size2 > size1) return 1;

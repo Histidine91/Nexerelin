@@ -8,8 +8,8 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.AllianceManager;
-import exerelin.campaign.AllianceManager.Alliance;
 import exerelin.campaign.AllianceManager.AllianceComparator;
+import exerelin.campaign.alliances.Alliance;
 import java.util.Collections;
 
 public class PrintAlliances extends BaseCommandPlugin {

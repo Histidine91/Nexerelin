@@ -12,8 +12,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.AllianceManager.Alliance;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.StringHelper;
 
 
@@ -41,26 +40,24 @@ public class LeaveAlliance extends BaseCommandPlugin {
 		//PlayerFactionStore.loadIndependentPlayerRelations(false); //true?
 		//ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
 		
-		oldAllianceDissolved = (oldAlliance.members.size() <= 1);
+		oldAllianceDissolved = (oldAlliance.getMembersCopy().size() <= 1);
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
-		memory.set("$isInAlliance", false, 0);
-		memory.unset("$allianceId");
+		AllianceManager.unsetMemoryKeys(memory);
 		
 		if (oldAllianceDissolved) {
 			memory = memoryMap.get(MemKeys.FACTION);
-			memory.set("$isInAlliance", false, 0);
-			memory.unset("$allianceId");			
+			AllianceManager.unsetMemoryKeys(memory);			
 		}
 
 		// events are already reported by AllianceManager
 		
-		str = StringHelper.substituteToken(str, "$OldAlliance", oldAlliance.name);
+		str = StringHelper.substituteToken(str, "$OldAlliance", oldAlliance.getName());
 		text.addParagraph(str, Misc.getHighlightColor());
 		
 		if (oldAllianceDissolved) {
 			str = StringHelper.getString("exerelin_alliances", "allianceDissolved");
-			str = StringHelper.substituteToken(str, "$OldAlliance", oldAlliance.name);
+			str = StringHelper.substituteToken(str, "$OldAlliance", oldAlliance.getName());
 			text.addParagraph(str, Misc.getHighlightColor());
 		}
 		

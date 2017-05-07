@@ -56,9 +56,13 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		memory.set("$theFaction", associatedFaction.getDisplayNameWithArticle(), 0);
 
 		Alliance associatedAlliance = AllianceManager.getFactionAlliance(associatedFactionId);
-		memory.set("$isInAlliance", (associatedAlliance != null), 0);
+		
 		if (associatedAlliance != null) {
-			memory.set("$allianceId", associatedAlliance.name, 0);
+			AllianceManager.setMemoryKeys(memory, associatedAlliance);
+		}
+		else
+		{
+			memory.set("$isInAlliance", false, 0);
 		}
 	}
 	
@@ -75,9 +79,12 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		memory.set("$numWars", DiplomacyManager.getFactionsAtWarWithFaction(faction, false, false, false).size(), 0);
 
 		Alliance associatedAlliance = AllianceManager.getFactionAlliance(faction.getId());
-		memory.set("$isInAlliance", (associatedAlliance != null), 0);
 		if (associatedAlliance != null) {
-			memory.set("$allianceId", associatedAlliance.name, 0);
+			AllianceManager.setMemoryKeys(memory, associatedAlliance);
+		}
+		else
+		{
+			memory.set("$isInAlliance", false, 0);
 		}
 	}
 }

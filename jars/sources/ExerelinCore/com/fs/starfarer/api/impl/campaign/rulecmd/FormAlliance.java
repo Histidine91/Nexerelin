@@ -12,9 +12,8 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 
 import exerelin.campaign.AllianceManager;
-import exerelin.campaign.AllianceManager.Alliance;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.StringHelper;
 
 
@@ -42,15 +41,13 @@ public class FormAlliance extends BaseCommandPlugin {
 		//ExerelinUtilsReputation.syncPlayerRelationshipsToFaction("player_npc");
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
-		memory.set("$isInAlliance", true, 0);
-		memory.set("$allianceId", alliance.name, 0);
+		AllianceManager.setMemoryKeys(memory, alliance);
 		memory = memoryMap.get(MemKeys.FACTION);
-		memory.set("$isInAlliance", true, 0);
-		memory.set("$allianceId", alliance.name, 0);
+		AllianceManager.setMemoryKeys(memory, alliance);
 		
 		// events are already reported by AllianceManager
 		String str = StringHelper.getString("exerelin_alliances", "formedAlliance");
-		str = StringHelper.substituteToken(str, "$NewAlliance", alliance.name);
+		str = StringHelper.substituteToken(str, "$NewAlliance", alliance.getName());
 		str = StringHelper.substituteToken(str, "$theFaction", Global.getSector().getFaction(factionId).getDisplayNameLongWithArticle());
 		text.addParagraph(str, Misc.getHighlightColor());
 		

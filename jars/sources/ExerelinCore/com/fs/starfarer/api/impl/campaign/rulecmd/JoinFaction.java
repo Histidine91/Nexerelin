@@ -14,8 +14,8 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.AllianceManager;
-import exerelin.campaign.AllianceManager.Alliance;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
@@ -51,16 +51,16 @@ public class JoinFaction extends BaseCommandPlugin {
 				AllianceManager.leaveAlliance(oldFactionId, false);
 				AllianceManager.setPlayerInteractionTarget(null);
 				
-				oldAllianceDissolved = (oldAlliance.members.size() <= 1);
+				oldAllianceDissolved = (oldAlliance.getMembersCopy().size() <= 1);
 				newAllianceDissolved = (oldAllianceDissolved && newAlliance == oldAlliance);
 				
 				str = StringHelper.getString("exerelin_alliances", "leftAlliance");
-				str = StringHelper.substituteToken(str, "$OldAlliance", oldAlliance.name);
+				str = StringHelper.substituteToken(str, "$OldAlliance", oldAlliance.getName());
 				text.addParagraph(str, Misc.getPositiveHighlightColor());
 				
 				if (oldAllianceDissolved) {
 					str = StringHelper.getString("exerelin_alliances", "allianceDissolved");
-					str = StringHelper.substituteToken(str, "$OldAlliance", oldAlliance.name);
+					str = StringHelper.substituteToken(str, "$OldAlliance", oldAlliance.getName());
 					text.addParagraph(str, Misc.getPositiveHighlightColor());
 				}
 			} else {
@@ -82,17 +82,14 @@ public class JoinFaction extends BaseCommandPlugin {
 		memory.set("$theFaction", newFaction.getDisplayNameWithArticle(), 0);
 		
 		if (newAlliance != null && !newAllianceDissolved) {
-			memory.set("$isInAlliance", true, 0);
-			memory.set("$allianceId", newAlliance.name, 0);
+			AllianceManager.setMemoryKeys(memory, newAlliance);
 		} else {
-			memory.set("$isInAlliance", false, 0);
-			memory.unset("$allianceId");
+			AllianceManager.unsetMemoryKeys(memory);
 		}
 		
 		if (newAllianceDissolved) {
 			memory = memoryMap.get(MemKeys.FACTION);
-			memory.set("$isInAlliance", false, 0);
-			memory.unset("$allianceId");			
+			AllianceManager.unsetMemoryKeys(memory);
 		}
 		
 		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");

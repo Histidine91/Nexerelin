@@ -563,7 +563,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         Alliance alliance = AllianceManager.getFactionAlliance(factionId);
         if (alliance != null)
         {
-            for (String member : alliance.members) 
+            for (String member : alliance.getMembersCopy()) 
             {
                 float weariness = getWarWeariness(member);
                 weariness = Math.max(weariness - amount, 0);

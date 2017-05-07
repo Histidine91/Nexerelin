@@ -14,8 +14,8 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.AllianceManager;
-import exerelin.campaign.AllianceManager.Alliance;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
@@ -68,7 +68,7 @@ public class LeaveFaction extends BaseCommandPlugin {
 			//ExerelinUtilsReputation.syncPlayerRelationshipsToFaction("player_npc"); //?
 			
 			str = StringHelper.getString("exerelin_alliances", "joinedAlliance");
-			str = StringHelper.substituteToken(str, "$NewAlliance", newAlliance.name);
+			str = StringHelper.substituteToken(str, "$NewAlliance", newAlliance.getName());
 			text.addParagraph(str, Misc.getPositiveHighlightColor());			
 		}
 		
@@ -78,11 +78,9 @@ public class LeaveFaction extends BaseCommandPlugin {
 		memory.set("$theFaction", newFaction.getDisplayNameWithArticle(), 0);
 		
 		if (newAlliance != null) {
-			memory.set("$isInAlliance", true, 0);
-			memory.set("$allianceId", newAlliance.name, 0);
+			AllianceManager.setMemoryKeys(memory, newAlliance);
 		} else {
-			memory.set("$isInAlliance", false, 0);
-			memory.unset("$allianceId");
+			AllianceManager.unsetMemoryKeys(memory);
 		}
 		
 		return true;

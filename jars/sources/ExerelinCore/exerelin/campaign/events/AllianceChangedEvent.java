@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
@@ -20,11 +21,11 @@ import java.util.List;
 public class AllianceChangedEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(AllianceChangedEvent.class);
-	protected static final int DAYS_TO_KEEP = 90;
+	public static final MessagePriority MESSAGE_PRIORITY = MessagePriority.ENSURE_DELIVERY;
 	
-	protected FactionAPI faction1;
-	protected FactionAPI faction2;
-	protected Alliance alliance;
+	protected String faction1Id;
+	protected String faction2Id;
+	protected String allianceId;
 	protected float age = 0;
 	protected String stage = "formed";
 	protected Map<String, Object> params;
@@ -40,7 +41,8 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 		String str = "allianceChanged";
 		if (stage.equals("formed")) str = "allianceFormed";
 		else if (stage.equals("dissolved")) str = "allianceDissolved";
-		return StringHelper.getStringAndSubstituteToken("exerelin_events", str, "$alliance", alliance.name);
+		String allianceName = AllianceManager.getAllianceByUUID(allianceId).getName();
+		return StringHelper.getStringAndSubstituteToken("exerelin_events", str, "$alliance", allianceName);
 	}
 	
 	@Override
@@ -51,35 +53,42 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 	@Override
 	public void setParam(Object param) {
 		params = (HashMap)param;
-		faction1 = (FactionAPI)params.get("faction1");
-		faction2 = (FactionAPI)params.get("faction2");
-		alliance = (Alliance)params.get("alliance");
+		faction1Id = (String)params.get("faction1Id");
+		faction2Id = (String)params.get("faction2Id");
+		allianceId = (String)params.get("allianceId");
 		stage = (String)params.get("stage");
 	}
 	
 	@Override
 	public void startEvent()
 	{
-		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;	//MessagePriority.ENSURE_DELIVERY;
-		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority);
+		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), MESSAGE_PRIORITY);
+	}
+	
+	public void reportEvent()
+	{
+		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), MESSAGE_PRIORITY);
 	}
 	
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		String faction1Str = faction1.getEntityNamePrefix();
-		String theFaction1Str = faction1.getDisplayNameWithArticle();
+		FactionAPI faction1 = Global.getSector().getFaction(faction1Id);
+		FactionAPI faction2 = Global.getSector().getFaction(faction2Id);
+		Alliance alliance = AllianceManager.getAllianceByUUID(allianceId);
 		
 		int numMarkets = alliance.getNumAllianceMarkets();
 		int marketSizeSum = alliance.getAllianceMarketSizeSum();
 		
-		map.put("$alliance", alliance.name);
-		map.put("$numMembers", alliance.members.size() + "");
+		map.put("$alliance", alliance.getName());
+		map.put("$numMembers", alliance.getMembersCopy().size() + "");
 		map.put("$numMarkets", numMarkets + "");
 		map.put("$marketSizeSum", marketSizeSum + "");
 		
 		if (faction1 != null)
 		{
+			String faction1Str = faction1.getEntityNamePrefix();
+			String theFaction1Str = faction1.getDisplayNameWithArticle();
 			map.put("$faction1", faction1Str);
 			map.put("$theFaction1", theFaction1Str);
 			map.put("$Faction1", Misc.ucFirst(faction1Str));

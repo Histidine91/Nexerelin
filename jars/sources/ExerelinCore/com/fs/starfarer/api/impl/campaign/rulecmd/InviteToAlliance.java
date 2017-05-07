@@ -12,9 +12,8 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 
 import exerelin.campaign.AllianceManager;
-import exerelin.campaign.AllianceManager.Alliance;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.StringHelper;
 
 
@@ -44,13 +43,12 @@ public class InviteToAlliance extends BaseCommandPlugin {
 		//ExerelinUtilsReputation.syncPlayerRelationshipsToFaction("player_npc"); //?
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.FACTION);
-		memory.set("$isInAlliance", true, 0);
-		memory.set("$allianceId", alliance.name, 0);
+		AllianceManager.setMemoryKeys(memory, alliance);
 		
 		// events are already reported by AllianceManager
 		String str = StringHelper.getString("exerelin_alliances", "invitedToAlliance");
 		str = StringHelper.substituteToken(str, "$TheFaction", Misc.ucFirst(Global.getSector().getFaction(factionId).getDisplayNameLongWithArticle()));
-		str = StringHelper.substituteToken(str, "$NewAlliance", alliance.name);
+		str = StringHelper.substituteToken(str, "$NewAlliance", alliance.getName());
 		text.addParagraph(str, Misc.getHighlightColor());
 		
 		return true;
