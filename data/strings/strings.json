@@ -99,6 +99,7 @@
 		"allianceChanged":"Alliance changed: $alliance",
 		"allianceFormed":"Alliance formed: $alliance",
 		"allianceDissolved":"Alliance dissolved: $alliance",
+		"allianceVote":"Alliance vote",
 		"covertOps":"$agentFaction covert action against $targetFaction",
 		"diplomacy":"$faction – $otherFaction diplomatic event",
 		"factionChanged":"Faction changed",

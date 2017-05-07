@@ -42,16 +42,13 @@ public class AllianceVoteEvent extends BaseEventPlugin {
 		
 	@Override
 	public String getEventName() {
-		String str = "allianceChanged";
-		if (stage.equals("formed")) str = "allianceFormed";
-		else if (stage.equals("dissolved")) str = "allianceDissolved";
 		String allianceName = AllianceManager.getAllianceByUUID(allianceId).getName();
-		return StringHelper.getStringAndSubstituteToken("exerelin_events", str, "$alliance", allianceName);
+		return StringHelper.getStringAndSubstituteToken("exerelin_events", "allianceVote", "$alliance", allianceName);
 	}
 	
 	@Override
 	public CampaignEventPlugin.CampaignEventCategory getEventCategory() {
-		return CampaignEventPlugin.CampaignEventCategory.EVENT;
+		return CampaignEventPlugin.CampaignEventCategory.DO_NOT_SHOW_IN_MESSAGE_FILTER;
 	}
 	
 	@Override
