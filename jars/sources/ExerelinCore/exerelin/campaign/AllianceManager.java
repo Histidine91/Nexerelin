@@ -64,7 +64,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     
     protected final Set<Alliance> alliances = new HashSet<>();
     protected final Map<String, Alliance> alliancesByName = new HashMap<>();
-	protected final Map<String, Alliance> alliancesById = new HashMap<>();	// UUID key
+	// UUID keys; never removed from
+	protected final Map<String, Alliance> alliancesById = new HashMap<>();	
     protected final Map<String, Alliance> alliancesByFactionId = new HashMap<>();
     
     protected float daysElapsed = 0;
@@ -163,7 +164,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return value;
     }
     
-    public AllianceChangedEvent createAllianceEvent(String faction1, String faction2, Alliance alliance, String stage)
+    public AllianceChangedEvent createAllianceEvent(String faction1, String faction2, Alliance alliance)
     {
         HashMap<String, Object> params = new HashMap<>();
         SectorAPI sector = Global.getSector();
@@ -171,7 +172,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         params.put("faction1Id", faction1);
         if (faction2 != null) params.put("faction2Id", faction2);
         params.put("allianceId", alliance.uuId);
-        params.put("stage", stage);
+        params.put("stage", "formed");
         
         CampaignEventTarget eventTarget;
         if (playerInteractionTarget != null) {
@@ -288,10 +289,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         allianceManager.alliances.add(alliance);
         
         //average out faction relationships
-        boolean playerWasHostile1 = memberFaction1.isHostileTo(Factions.PLAYER);
+        /*
+		boolean playerWasHostile1 = memberFaction1.isHostileTo(Factions.PLAYER);
         boolean playerWasHostile2 = memberFaction2.isHostileTo(Factions.PLAYER);
         
-        /*
         for (FactionAPI faction : Global.getSector().getAllFactions())
         {
             if (faction.getId().equals(member1)) continue;
@@ -316,7 +317,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (playerIsHostile1 != playerWasHostile1 || playerIsHostile2 != playerWasHostile2)
             DiplomacyManager.printPlayerHostileStateMessage(memberFaction1, playerIsHostile1);
         */
-        AllianceChangedEvent event = allianceManager.createAllianceEvent(member1, member2, alliance, "formed");
+        AllianceChangedEvent event = allianceManager.createAllianceEvent(member1, member2, alliance);
         alliance.setEvent(event);
         SectorManager.checkForVictory();
         return alliance;
@@ -399,8 +400,9 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             randomMember = member;
         }
         alliancesByName.remove(alliance.getName());
-		alliancesById.remove(alliance.uuId);
+		//alliancesById.remove(alliance.uuId);	// events will still want to read this
         alliances.remove(alliance);
+		alliance.clearMembers();
         if (randomMember != null) alliance.reportEvent(randomMember, null, alliance, "dissolved");
         SectorManager.checkForVictory();
     }  

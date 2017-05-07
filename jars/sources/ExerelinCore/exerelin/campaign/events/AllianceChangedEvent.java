@@ -55,19 +55,20 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 		params = (HashMap)param;
 		faction1Id = (String)params.get("faction1Id");
 		faction2Id = (String)params.get("faction2Id");
-		allianceId = (String)params.get("allianceId");
+		if (params.containsKey("allianceId"))
+			allianceId = (String)params.get("allianceId");
 		stage = (String)params.get("stage");
 	}
 	
 	@Override
 	public void startEvent()
 	{
-		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), MESSAGE_PRIORITY);
+		Global.getSector().reportEventStage(this, stage, eventTarget.getEntity(), MESSAGE_PRIORITY);
 	}
 	
 	public void reportEvent()
 	{
-		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), MESSAGE_PRIORITY);
+		Global.getSector().reportEventStage(this, stage, eventTarget.getEntity(), MESSAGE_PRIORITY);
 	}
 	
 	@Override

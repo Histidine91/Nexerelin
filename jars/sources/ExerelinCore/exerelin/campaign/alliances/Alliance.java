@@ -24,7 +24,7 @@ public class Alliance
 	protected Set<String> members;
 	protected Alignment alignment;
 	protected AllianceChangedEvent event;
-	public final String uuId = UUID.randomUUID().toString();
+	public final String uuId;
 
 	public Alliance(String name, Alignment alignment, String member1, String member2)
 	{
@@ -33,6 +33,8 @@ public class Alliance
 		members = new HashSet<>();
 		members.add(member1);
 		members.add(member2);
+		
+		uuId = UUID.randomUUID().toString();
 	}
 
 	public void setEvent(AllianceChangedEvent event) {
@@ -42,10 +44,8 @@ public class Alliance
 	public void reportEvent(String faction1, String faction2, Alliance alliance, String stage)
 	{
 		HashMap<String, Object> params = new HashMap<>();
-		SectorAPI sector = Global.getSector();
-		params.put("faction1", sector.getFaction(faction1));
-		if (faction2 != null) params.put("faction2", sector.getFaction(faction2));
-		params.put("alliance", alliance);
+		params.put("faction1Id", faction1);
+		if (faction2 != null) params.put("faction2Id", faction2);
 		params.put("stage", stage);
 
 		CampaignEventTarget eventTarget;
@@ -59,6 +59,7 @@ public class Alliance
 			eventTarget = new CampaignEventTarget(market);
 		}
 		event.setParam(params);
+		event.setTarget(eventTarget);
 		event.reportEvent();
 	}
 
@@ -84,6 +85,10 @@ public class Alliance
 	
 	public void removeMember(String factionId) {
 		members.remove(factionId);
+	}
+	
+	public void clearMembers() {
+		members.clear();
 	}
 	
 	public List<MarketAPI> getAllianceMarkets()
