@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.LionsGuardFleetManager;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import exerelin.campaign.fleets.ExerelinLionsGuardFleetManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.campaign.fleets.ExerelinPatrolFleetManager;
@@ -38,16 +39,17 @@ public class ExerelinCoreScript extends CoreScript {
 			if (marketsWithAssignedPatrolScripts.contains(id)) continue;
 			marketsWithAssignedPatrolScripts.add(id);
 			
+			SectorEntityToken entity = market.getPrimaryEntity();
+			
 			if (id.equals("sindria")) {
-				LionsGuardFleetManager script = new LionsGuardFleetManager(market);
-				SectorEntityToken entity = market.getPrimaryEntity();
+				entity.removeScriptsOfClass(LionsGuardFleetManager.class);
+				LionsGuardFleetManager script = new ExerelinLionsGuardFleetManager(market);
 				entity.addScript(script);
 			}
 			else if (id.equals("tem_ascalon"))
 				continue;
 			
 			ExerelinPatrolFleetManager script = new ExerelinPatrolFleetManager(market);
-			SectorEntityToken entity = market.getPrimaryEntity();
 			// remove any existing patrol scripts just to be safe
 			entity.removeScriptsOfClass(PatrolFleetManager.class);
 			entity.removeScriptsOfClass(ExerelinPatrolFleetManager.class);
