@@ -16,6 +16,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.events.AllianceChangedEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -52,7 +55,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final float FORM_CHANCE_MULT = 0.6f;   // multiplies relationship to get chance to form alliance
     protected static final float JOIN_CHANCE_FAIL_PER_NEW_ENEMY = 0.4f;
     protected static final List<String> INVALID_FACTIONS = Arrays.asList(new String[] {"templars", "independent"});
-    protected static final float HOSTILE_THRESHOLD = -RepLevel.HOSTILE.getMin();
+    public static final float HOSTILE_THRESHOLD = -RepLevel.HOSTILE.getMin();
     
     protected static Map<Alignment, List<String>> allianceNamesByAlignment = new HashMap<>();
     protected static Map<Alignment, List<String>> alliancePrefixesByAlignment = new HashMap<>();
@@ -309,8 +312,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (playerIsHostile1 != playerWasHostile1 || playerIsHostile2 != playerWasHostile2)
             DiplomacyManager.printPlayerHostileStateMessage(memberFaction1, playerIsHostile1);
         */
-        
-        allianceManager.createAllianceEvent(member1, member2, alliance, "formed");
+        AllianceChangedEvent event = allianceManager.createAllianceEvent(member1, member2, alliance, "formed");
+        alliance.setEvent(event);
         SectorManager.checkForVictory();
         return alliance;
     }
@@ -842,8 +845,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     
     public static void printAllianceList(TextPanelAPI text)
     {
-        List<AllianceManager.Alliance> alliances = AllianceManager.getAllianceList();
-        Collections.sort(alliances, new AllianceManager.AllianceComparator());
+        List<Alliance> alliances = AllianceManager.getAllianceList();
+        Collections.sort(alliances, new AllianceComparator());
 
         Color hl = Misc.getHighlightColor();
 
@@ -851,7 +854,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         text.highlightInLastPara(hl, "" + alliances.size());
         text.setFontSmallInsignia();
         text.addParagraph("-----------------------------------------------------------------------------");
-        for (AllianceManager.Alliance alliance : alliances)
+        for (Alliance alliance : alliances)
         {
             String allianceName = alliance.name;
             String allianceString = alliance.getAllianceNameAndMembers();
@@ -862,99 +865,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         text.addParagraph("-----------------------------------------------------------------------------");
         text.setFontInsignia();
     }
-    
-    public static class Alliance {
-        public String name;
-        public Set<String> members;
-        public Alignment alignment;
         
-        public Alliance(String name, Alignment alignment, String member1, String member2)
-        {
-            this.name = name;
-            this.alignment = alignment;
-            members = new HashSet<>();
-            members.add(member1);
-            members.add(member2);
-        }
-        
-        public List<MarketAPI> getAllianceMarkets()
-        {
-            List<MarketAPI> markets = new ArrayList<>();
-            for (String memberId : members)
-            {
-                List<MarketAPI> factionMarkets = ExerelinUtilsFaction.getFactionMarkets(memberId);
-                markets.addAll(factionMarkets);
-            }
-            return markets;
-        }
-        
-        public int getNumAllianceMarkets()
-        {
-            int numMarkets = 0;
-            for (String memberId : members)
-            {
-                numMarkets += ExerelinUtilsFaction.getFactionMarkets(memberId).size();
-            }
-            return numMarkets;
-        }
-    
-        public int getAllianceMarketSizeSum()
-        {
-            int size = 0;
-            for (String memberId : members)
-            {
-                for (MarketAPI market : ExerelinUtilsFaction.getFactionMarkets(memberId))
-                {
-                    size += market.getSize();
-                }
-            }
-            return size;
-        }
-        
-        /**
-         * Returns a string of format "[Alliance name] ([member1], [member2], ...)"
-         * @return
-         */
-        public String getAllianceNameAndMembers()
-        {
-            String factions = "";
-            int num = 0;
-            for (String memberId : members)
-            {
-                FactionAPI faction = Global.getSector().getFaction(memberId);
-                factions += Misc.ucFirst(faction.getEntityNamePrefix());
-                num++;
-                if (num < members.size()) factions += ", ";
-            }
-            return name + " (" + factions + ")";
-        }
-    }
-    
-    public static class AllianceSyncMessage {
-        public String message;
-        public String party1;
-        public String party2;
-        
-        public AllianceSyncMessage(String message, String party1, String party2)
-        {
-            this.message = message;
-            this.party1 = party1;
-            this.party2 = party2;
-        }
-    }
-    
-    public enum Alignment {
-        CORPORATE,
-        TECHNOCRATIC,
-        MILITARIST,
-        DIPLOMATIC,
-        IDEOLOGICAL
-    }
-    
-    public static class AllianceComparator implements Comparator<AllianceManager.Alliance>
+    public static class AllianceComparator implements Comparator<Alliance>
     {
         @Override
-        public int compare(AllianceManager.Alliance alliance1, AllianceManager.Alliance alliance2) {
+        public int compare(Alliance alliance1, Alliance alliance2) {
 
             int size1 = alliance1.members.size();
             int size2 = alliance2.members.size();

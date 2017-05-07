@@ -3,7 +3,7 @@ package exerelin.console.commands;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.campaign.AllianceManager;
-import exerelin.campaign.AllianceManager.Alignment;
+import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.utilities.ExerelinUtils;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommandUtils;

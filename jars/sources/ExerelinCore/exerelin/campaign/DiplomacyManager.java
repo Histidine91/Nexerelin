@@ -1,5 +1,6 @@
 package exerelin.campaign;
 
+import exerelin.campaign.alliances.AllianceVoter;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
@@ -16,7 +17,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
-import exerelin.campaign.AllianceManager.Alliance;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;

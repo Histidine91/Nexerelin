@@ -11,6 +11,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.MiningHelperLegacy;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import org.histidine.industry.scripts.MiningHelper;
 
@@ -54,7 +55,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		memory.set("$factionId", associatedFactionId, 0);
 		memory.set("$theFaction", associatedFaction.getDisplayNameWithArticle(), 0);
 
-		AllianceManager.Alliance associatedAlliance = AllianceManager.getFactionAlliance(associatedFactionId);
+		Alliance associatedAlliance = AllianceManager.getFactionAlliance(associatedFactionId);
 		memory.set("$isInAlliance", (associatedAlliance != null), 0);
 		if (associatedAlliance != null) {
 			memory.set("$allianceId", associatedAlliance.name, 0);
@@ -73,7 +74,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		memory.set("$warWeariness", DiplomacyManager.getWarWeariness(faction.getId()), 0);
 		memory.set("$numWars", DiplomacyManager.getFactionsAtWarWithFaction(faction, false, false, false).size(), 0);
 
-		AllianceManager.Alliance associatedAlliance = AllianceManager.getFactionAlliance(faction.getId());
+		Alliance associatedAlliance = AllianceManager.getFactionAlliance(faction.getId());
 		memory.set("$isInAlliance", (associatedAlliance != null), 0);
 		if (associatedAlliance != null) {
 			memory.set("$allianceId", associatedAlliance.name, 0);

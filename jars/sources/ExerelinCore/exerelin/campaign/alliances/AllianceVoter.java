@@ -1,8 +1,9 @@
-package exerelin.campaign;
+package exerelin.campaign.alliances;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import exerelin.campaign.AllianceManager.Alliance;
+import exerelin.campaign.AllianceManager;
+import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -172,8 +173,8 @@ public class AllianceVoter {
 		int factionCount = 0;
 		float otherAllianceRelationshipSum = 0;
 		
-		float hawkishness = usConf.alignments.get(AllianceManager.Alignment.MILITARIST);
-		float diplomaticness = usConf.alignments.get(AllianceManager.Alignment.DIPLOMATIC);
+		float hawkishness = usConf.alignments.get(Alignment.MILITARIST);
+		float diplomaticness = usConf.alignments.get(Alignment.DIPLOMATIC);
 		
 		for (String otherMember: otherAllianceMembers)
 		{

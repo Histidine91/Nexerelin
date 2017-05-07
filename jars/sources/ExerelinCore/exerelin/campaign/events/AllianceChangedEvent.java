@@ -10,7 +10,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.AllianceManager.Alliance;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -108,19 +108,8 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 		return result.toArray(new String[0]);
 	}
 	
-	@Override
-	public void advance(float amount)
-	{
-		if (done)
-		{
-			return;
-		}
-		age = age + Global.getSector().getClock().convertToDays(amount);
-		if (age > DAYS_TO_KEEP)
-		{
-			done = true;
-			return;
-		}
+	public void setDone(boolean done) {
+		this.done = done;
 	}
 	
 	@Override
