@@ -111,9 +111,18 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		return null;
 	}
 	
+	@Override
+	public String getEventIcon() {
+		if (result.isHostile && !result.wasHostile) return "graphics/exerelin/icons/intel/war.png";
+		else if (!result.isHostile && result.wasHostile) return "graphics/exerelin/icons/intel/peace.png";
+		return null;
+	}
+	
 		
 	@Override
 	public CampaignEventPlugin.CampaignEventCategory getEventCategory() {
+		if (result.isHostile != result.wasHostile)
+			return CampaignEventPlugin.CampaignEventCategory.EVENT;
 		return CampaignEventPlugin.CampaignEventCategory.DO_NOT_SHOW_IN_MESSAGE_FILTER;
 	}
 	
