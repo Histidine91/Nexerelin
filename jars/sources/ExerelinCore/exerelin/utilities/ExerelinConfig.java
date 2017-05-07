@@ -28,7 +28,6 @@ public class ExerelinConfig
     public static int minimumAsteroidBelts = 0;
     public static float binarySystemChance = 0.2f;
     public static float forcePiratesInSystemChance = 0.7f;
-    public static boolean realisticStars = false;
     public static boolean enableIndependents = true;
     public static boolean enablePirates = true;
 
@@ -124,7 +123,6 @@ public class ExerelinConfig
             minimumAsteroidBelts = settings.optInt("minimumAsteroidBelts");
             binarySystemChance = (float)settings.optDouble("binarySystemChance", binarySystemChance);
             forcePiratesInSystemChance = (float)settings.optDouble("piratesNotInSystemChance", forcePiratesInSystemChance);
-            realisticStars = settings.optBoolean("realisticStars", realisticStars);
             enableIndependents = settings.optBoolean("enableIndependents", enableIndependents);
             enablePirates = settings.optBoolean("enablePirates", enablePirates);
 

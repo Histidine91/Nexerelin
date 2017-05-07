@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
-import exerelin.world.ExerelinSectorGen;
+import exerelin.world.ExerelinProcGen;
 import java.awt.Color;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.campaign.orbits.EllipticalOrbit;
@@ -31,7 +31,7 @@ public class ExerelinUtilsAstro {
 		float radiusCubed = (float)Math.pow(orbitRadius, 3);
 		float period = (float)(2 * Math.PI * Math.sqrt(radiusCubed/mass) * 2);
 		
-		if (Math.random() < ExerelinSectorGen.REVERSE_ORBIT_CHANCE) period *=-1;
+		if (Math.random() < ExerelinProcGen.REVERSE_ORBIT_CHANCE) period *=-1;
 		
 		return period;
 	}

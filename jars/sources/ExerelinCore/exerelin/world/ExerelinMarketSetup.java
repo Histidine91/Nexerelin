@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
@@ -21,12 +22,11 @@ import exerelin.campaign.fleets.ExerelinLionsGuardFleetManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
-import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
-import exerelin.world.ExerelinSectorGen.EntityData;
-import exerelin.world.ExerelinSectorGen.EntityType;
+import exerelin.world.ExerelinProcGen.EntityData;
+import exerelin.world.ExerelinProcGen.EntityType;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -93,11 +93,11 @@ public class ExerelinMarketSetup
 	protected int numPlanets = 0;
 	protected int numMoons = 0;
 	
-	protected final ExerelinSectorGen sectorGen;
+	protected final ExerelinProcGen procGen;
 	
-	public ExerelinMarketSetup(ExerelinSectorGen gen)
+	public ExerelinMarketSetup(ExerelinProcGen gen)
 	{
-		sectorGen = gen;
+		procGen = gen;
 		
 		try {
 			JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
@@ -478,7 +478,7 @@ public class ExerelinMarketSetup
 			newMarket.addCondition("exerelin_recycling_plant");
 			newMarket.addCondition("exerelin_supply_workshop");
 			newMarket.addCondition("exerelin_hydroponics");
-			if (data == sectorGen.homeworld) 
+			if (false)	//(data == sectorGen.homeworld) 
 			{
 				//newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
 				newMarket.addCondition("exerelin_supply_workshop");
@@ -1183,7 +1183,7 @@ public class ExerelinMarketSetup
 			if (market == null) continue;
 			int size = market.getSize();
 			float weight = Math.max(entity.marketPoints - entity.marketPointsSpent, 100);
-			if (market.hasCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION) && entity.market != sectorGen.homeworld.market) 
+			if (market.hasCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION) && entity.market != procGen.homeworld.market) 
 			{
 				float fuelAmount = ConditionData.FUEL_PRODUCTION_FUEL * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.FUEL);
 				if (fuelSupply > fuelDemand + fuelAmount * 1.1f)
@@ -1457,26 +1457,14 @@ public class ExerelinMarketSetup
 		}
 	}
 	
-	protected void addStartingMarketCommodities(MarketAPI market)
+	public static void addStartingMarketCommodities(MarketAPI market)
 	{
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.CREW, 0.45f, 0.55f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.MARINES, 0.8f, 1.0f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.SUPPLIES, 0.85f, 0.95f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.FUEL, 0.85f, 0.95f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.FOOD, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.DOMESTIC_GOODS, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.LUXURY_GOODS, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.HEAVY_MACHINERY, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.METALS, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.RARE_METALS, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.ORE, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.RARE_ORE, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.ORGANICS, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.VOLATILES, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.HAND_WEAPONS, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.DRUGS, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.ORGANS, 0.8f, 0.9f);
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.LOBSTER, 0.8f, 0.9f);
+		for (CommodityOnMarketAPI commodity : market.getAllCommodities())
+		{
+			float demand = commodity.getDemand().getDemand().modified;
+			float unmet = 1.2f - commodity.getDemand().getFractionMet();
+			commodity.addToStockpile(demand * unmet);
+		}
 	}
 	
 	// =========================================================================

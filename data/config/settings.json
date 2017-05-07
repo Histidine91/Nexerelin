@@ -1,10 +1,7 @@
 {
 	"plugins":{
-		#"newGameDialogPlugin":"exerelin.plugins.ExerelinNewGameDialogPlugin",
-		"newGameCreationEntryPoint":"exerelin.world.ExerelinSectorGen",
-		#"coreLifecyclePlugin":"exerelin.plugins.ExerelinLifecyclePlugin",
-		
-		#"Exerelin_StatsTrackerPlugin":"exerelin.campaign.StatsTracker"
+		"newGameCreationEntryPoint":"exerelin.world.ExerelinNewGameSetup",
+		#"newGameSectorProcGen":"com.fs.starfarer.api.impl.campaign.procgen.SectorProcGen",
 	},
 	
 	"economyExceptionOnMissingMarketEntity":false,
