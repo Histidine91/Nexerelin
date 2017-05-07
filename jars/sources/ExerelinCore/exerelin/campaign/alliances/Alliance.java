@@ -36,7 +36,11 @@ public class Alliance
 		
 		uuId = UUID.randomUUID().toString();
 	}
-
+	
+	public AllianceChangedEvent getEvent() {
+		return event;
+	}
+	
 	public void setEvent(AllianceChangedEvent event) {
 		this.event = event;
 	}

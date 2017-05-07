@@ -404,9 +404,9 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         alliances.remove(alliance);
 		alliance.clearMembers();
         if (randomMember != null) alliance.reportEvent(randomMember, null, alliance, "dissolved");
+		alliance.getEvent().setDone(true);
         SectorManager.checkForVictory();
-    }  
-    
+    }
 
     /**
      * Check all factions for eligibility to join/form an alliance
@@ -588,11 +588,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     public static void doAlliancePeaceStateChange(String faction1Id, String faction2Id, boolean isWar)
     {
         doAlliancePeaceStateChange(faction1Id, faction2Id, 
-                getFactionAlliance(faction1Id), getFactionAlliance(faction2Id), isWar);
+                getFactionAlliance(faction1Id), getFactionAlliance(faction2Id), isWar, new HashSet<String>());
     }
 
     public static void doAlliancePeaceStateChange(String faction1Id, String faction2Id, 
-            Alliance alliance1, Alliance alliance2, boolean isWar)
+            Alliance alliance1, Alliance alliance2, boolean isWar, Set<String> defyingFactions)
     {
         if (alliance1 == null && alliance2 == null)
             return;
@@ -627,8 +627,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
                 {
                     for (String otherMemberId : alliance2.getMembersCopy())
                     {
-                        // already in correct state, do nothing
-                        FactionAPI otherMember = sector.getFaction(otherMemberId);
+						// already in correct state, do nothing
                         if (isWar && member.isHostileTo(otherMemberId) || !isWar && !member.isHostileTo(otherMemberId))
                         {
                             continue;
@@ -655,7 +654,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         {
             for (String memberId : alliance2.getMembersCopy())
             {
-                FactionAPI member = sector.getFaction(memberId);
+				FactionAPI member = sector.getFaction(memberId);
                 // already in correct state, do nothing
                 if (isWar && member.isHostileTo(faction1Id) || !isWar && !member.isHostileTo(faction1Id))
                 {
