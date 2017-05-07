@@ -73,7 +73,7 @@ public class JoinFaction extends BaseCommandPlugin {
 			str = StringHelper.getString("exerelin_factions", "switchedFactions");
 			isDefection = true;
 		}
-		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId, false);
+		//ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId);
 		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);

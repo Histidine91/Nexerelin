@@ -675,7 +675,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             WeightedRandomPicker<String> picker = new WeightedRandomPicker();
             for (String factionId : enemies)
             {
-                picker.add(factionId, ExerelinUtilsFaction.getFactionPopulation(factionId));
+                picker.add(factionId, ExerelinUtilsFaction.getFactionMarketSizeSum(factionId));
             }
             FactionAPI faction = Global.getSector().getFaction(picker.pick());
             generateInvasionFleet(faction, Global.getSector().getFaction("templars"), false, TEMPLAR_COUNTER_INVASION_FLEET_MULT);

@@ -547,7 +547,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         setShowFactionInIntelTab(defeated.getId(), false);
         
-        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
+        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
         checkForVictory();
     }
     
@@ -646,7 +646,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             {
                 for (String factionId : eligibleWinners)
                 {
-                    int pop = ExerelinUtilsFaction.getFactionPopulation(factionId);
+                    int pop = ExerelinUtilsFaction.getFactionMarketSizeSum(factionId);
                     if (pop > largestPopulation)
                     {
                         winner = factionId;

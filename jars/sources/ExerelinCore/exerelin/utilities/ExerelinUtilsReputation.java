@@ -22,6 +22,18 @@ import java.util.List;
 
 public class ExerelinUtilsReputation
 {
+	public static float getClampedRelationshipDelta(String faction1Id, String faction2Id, float delta)
+	{
+		float max = ExerelinFactionConfig.getMaxRelationship(faction1Id, faction2Id);
+		float min = ExerelinFactionConfig.getMinRelationship(faction1Id, faction2Id);
+		float curr = Global.getSector().getFaction(faction1Id).getRelationship(faction2Id);
+		if (delta > 0 && curr + delta > max)
+			delta = max - curr;
+		if (delta < 0 && curr + delta < min)
+			delta = min - curr;
+		return delta;
+	}
+	
 	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction, PersonAPI person, float delta)
 	{
 		return adjustPlayerReputation(faction, person, delta, null, null);
@@ -38,13 +50,7 @@ public class ExerelinUtilsReputation
 		if (!DiplomacyManager.getRandomFactionRelationships())
 		{
 			String myFactionId = PlayerFactionStore.getPlayerFactionId();
-			float max = ExerelinFactionConfig.getMaxRelationship(myFactionId, factionId);
-			float min = ExerelinFactionConfig.getMinRelationship(myFactionId, factionId);
-			float curr = faction.getRelationship(Factions.PLAYER);
-			if (delta > 0 && curr + delta > max)
-				delta = max - curr;
-			if (delta < 0 && curr + delta < min)
-				delta = min - curr;
+			delta = getClampedRelationshipDelta(myFactionId, faction.getId(), delta);
 		}
 		
 		CustomRepImpact impact = new CustomRepImpact();
@@ -67,39 +73,6 @@ public class ExerelinUtilsReputation
 		boolean isHostile = player.isHostileTo(faction);
 		ExerelinReputationAdjustmentResult result2 = new ExerelinReputationAdjustmentResult(result.delta, wasHostile, isHostile);
 		return result2;
-		
-		// 0ld 0.65.2 implementation
-		/*
-		float before = player.getRelationship(factionId);
-		
-		player.adjustRelationship(factionId, delta);
-		float after = player.getRelationship(factionId);
-		delta = after - before;
-		
-		//if (delta != 0) {
-		if (Math.abs(delta) >= 0.01f) {
-			addAdjustmentMessage(delta, faction, person, message, textPanel);
-		} else {
-			addNoChangeMessage(1.0f, faction, person, message, textPanel);
-		}
-		
-		if (delta != 0) {
-			Global.getSector().reportPlayerReputationChange(factionId, delta);
-		}
-		*/
-		
-		// moved to DiplomacyManager listener
-		/*
-		syncFactionRelationshipToPlayer(PlayerFactionStore.getPlayerFactionId(), factionId);
-		syncFactionRelationshipToPlayer(ExerelinConstants.PLAYER_NPC_ID, factionId);
-		AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", factionId);
-		
-		if (player.isAtBest(PlayerFactionStore.getPlayerFactionId(), RepLevel.INHOSPITABLE))
-			SectorManager.scheduleExpelPlayerFromFaction();
-		
-		SectorManager.checkForVictory();
-		*/
-		//return new ExerelinReputationAdjustmentResult(delta);
 	}
 	
 	public static void syncFactionRelationshipToPlayer(String factionIdToSync, String otherFactionId)
@@ -115,8 +88,8 @@ public class ExerelinUtilsReputation
 		
 		float relationship = playerFaction.getRelationship(otherFactionId);
 		factionToSync.setRelationship(otherFactionId, relationship);
+		DiplomacyManager.clampRelations(factionIdToSync, otherFactionId, 0);
 		AllianceManager.remainInAllianceCheck(factionIdToSync, otherFactionId);
-		AllianceManager.syncAllianceRelationshipsToFactionRelationship(factionIdToSync, otherFactionId);
 	}
 	
 	// re-set our faction's relations to match our own
@@ -148,36 +121,38 @@ public class ExerelinUtilsReputation
 		}
 	}
 	
-	public static void syncPlayerRelationshipsToFaction(String factionId, boolean noUpdateAlliance)
+	public static void syncPlayerRelationshipToFaction(String factionId, String otherFactionId)
+	{
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
+		float relationship = faction.getRelationship(otherFactionId);
+		Global.getSector().getPlayerFaction().setRelationship(otherFactionId, relationship);
+	}
+	
+	public static void syncPlayerRelationshipsToFaction(String factionId)
 	{
 		SectorAPI sector = Global.getSector();	
 		FactionAPI playerFaction = sector.getPlayerFaction();
 		FactionAPI faction = sector.getFaction(factionId);
-		List<FactionAPI> factions = sector.getAllFactions();
 		
-		for (FactionAPI otherFaction: factions)
+		for (FactionAPI otherFaction: sector.getAllFactions())
 		{
 			if (otherFaction != playerFaction && otherFaction != faction)
 			{
-				String otherFactionId = otherFaction.getId();
-				if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
-				float relationship = faction.getRelationship(otherFactionId);
-				playerFaction.setRelationship(otherFactionId, relationship);
-				if (!noUpdateAlliance)
-					AllianceManager.syncAllianceRelationshipsToFactionRelationship("player", otherFactionId);
+				syncPlayerRelationshipToFaction(factionId, otherFaction.getId());
 			}
 		}
-		Global.getSector().getFaction(Factions.PLAYER).setRelationship("merc_hostile", -1);
-		Global.getSector().getFaction(Factions.PLAYER).setRelationship("famous_bounty", -1);
-		Global.getSector().getFaction(Factions.PLAYER).setRelationship("shippackfaction", RepLevel.FRIENDLY);
+		playerFaction.setRelationship("merc_hostile", -1);
+		playerFaction.setRelationship("famous_bounty", -1);
+		playerFaction.setRelationship("shippackfaction", RepLevel.FRIENDLY);
 		
 		syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 		//SectorManager.checkForVictory(); // already done in syncFactionRelationshipsToPlayer
 	}
 	
-	public static void syncPlayerRelationshipsToFaction(boolean noUpdateAlliance)
+	public static void syncPlayerRelationshipsToFaction()
 	{
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-		syncPlayerRelationshipsToFaction(playerAlignedFactionId, noUpdateAlliance);
+		syncPlayerRelationshipsToFaction(playerAlignedFactionId);
 	}
 }

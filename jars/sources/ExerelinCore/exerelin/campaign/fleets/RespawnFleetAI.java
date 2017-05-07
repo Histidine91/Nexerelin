@@ -86,6 +86,7 @@ public class RespawnFleetAI extends InvasionFleetAI
                 if (!fleetFaction.isHostileTo(targetFaction) && !forceHostile)
                 {
                     DiplomacyManager.adjustRelations(fleetFaction, targetFaction, 0, RepLevel.HOSTILE, null, null);
+                    AllianceManager.doAlliancePeaceStateChange(fleetFaction.getId(), targetFaction.getId(), true);
                     forceHostile = true;
                 }
                 
@@ -112,7 +113,7 @@ public class RespawnFleetAI extends InvasionFleetAI
             MarketAPI market = data.targetMarket;
             StarSystemAPI system = market.getStarSystem();
             String locName = market.getPrimaryEntity().getContainingLocation().getName();
-			String marketName = market.getName();
+            String marketName = market.getName();
             
             if (system != null)
             {
@@ -154,8 +155,8 @@ public class RespawnFleetAI extends InvasionFleetAI
                 if (reset)
                 {
                     faction.setRelationship(targetFactionId, 0);
-                    AllianceManager.syncAllianceRelationshipsToFactionRelationship(factionId, data.targetMarket.getFactionId());
-                    ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(true);
+                    AllianceManager.doAlliancePeaceStateChange(faction.getId(), targetFactionId, false);
+                    ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
                 }
             }
         }

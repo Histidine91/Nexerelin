@@ -41,7 +41,7 @@ public class InviteToAlliance extends BaseCommandPlugin {
 		AllianceManager.joinAllianceStatic(factionId, alliance);
 		AllianceManager.setPlayerInteractionTarget(null);
 		
-		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction("player_npc", true); //?
+		//ExerelinUtilsReputation.syncPlayerRelationshipsToFaction("player_npc"); //?
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.FACTION);
 		memory.set("$isInAlliance", true, 0);

@@ -55,7 +55,7 @@ public class JoinAlliance extends BaseCommandPlugin {
 		
 		AllianceManager.setPlayerInteractionTarget(null);
 		
-		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction("player_npc", true); //?
+		//ExerelinUtilsReputation.syncPlayerRelationshipsToFaction("player_npc"); //?
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
 		memory.set("$isInAlliance", true, 0);
