@@ -47,7 +47,7 @@ public class ExerelinUtilsReputation
 		ReputationAdjustmentResult result;
 		
 		// clamp to configs' min/max relationships
-		if (!DiplomacyManager.getRandomFactionRelationships())
+		if (!DiplomacyManager.isRandomFactionRelationships())
 		{
 			String myFactionId = PlayerFactionStore.getPlayerFactionId();
 			delta = getClampedRelationshipDelta(myFactionId, faction.getId(), delta);

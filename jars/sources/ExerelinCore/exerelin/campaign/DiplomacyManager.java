@@ -30,9 +30,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -85,6 +85,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.67f;
     public static final float DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD = 3f;
     public static final float HARD_MODE_DOMINANCE_MOD = 0.5f;
+    
+    public static final List<String> DO_NOT_RANDOMIZE = Arrays.asList(new String[]{
+        Factions.INDEPENDENT, Factions.DERELICT, Factions.REMNANTS, "famous_bounty", "merc_hostile", "shippackfaction"
+    });
     
     protected Map<String, Float> warWeariness;
     protected static float warWearinessPerInterval = 50f;
@@ -924,7 +928,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         List<String> factionIds = new ArrayList<>();
         List<String> alreadyRandomizedIds = new ArrayList<>();
-        alreadyRandomizedIds.add("independent");
+        alreadyRandomizedIds.addAll(DO_NOT_RANDOMIZE);
         
         for (FactionAPI faction : sector.getAllFactions())
         {
@@ -945,6 +949,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
         else
         {
+            // use sector generation seed, unless resetting game at start
+            Random random = new Random();
+            if (!midgameReset) 
+            {
+                String seedStr = Global.getSector().getSeedString().replaceAll("[^0-9]", "");
+                random.setSeed(Long.parseLong(seedStr));
+            }
+            else random.setSeed(Misc.genRandomSeed());
+            
             // first make everyone neutral to each other (for midgame reset)
             if (midgameReset)
             {
@@ -992,16 +1005,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                         if (alreadyRandomizedIds.contains(otherFactionId)) continue;
                         if (otherFactionId.equals(factionId)) continue;
                         
-                        if (ExerelinUtilsFaction.isPirateFaction(factionId) && (otherFactionId.equals(selectedFactionId) || otherFactionId.equals(Factions.PLAYER)))
-                        {
-                            faction.setRelationship(otherFactionId, STARTING_RELATIONSHIP_HOSTILE);
-                            continue;
-                        }
-
                         FactionAPI otherFaction = sector.getFaction(otherFactionId);
                         if (otherFaction.isNeutralFaction() || otherFaction.isPlayerFaction()) continue;
 
-                        if (Math.random() < 0.5) // 50% chance to do nothing (lower clutter)
+                        if (random.nextFloat() < 0.5) // 50% chance to do nothing (lower clutter)
                         {
                             if (ExerelinUtilsFaction.isPirateFaction(factionId) || ExerelinUtilsFaction.isPirateFaction(otherFactionId))
                                 faction.setRelationship(otherFactionId, STARTING_RELATIONSHIP_HOSTILE);
@@ -1009,7 +1016,17 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                                 faction.setRelationship(otherFactionId, 0);
                         }
                         else
-                            faction.setRelationship(otherFactionId, MathUtils.getRandomNumberInRange(-0.85f, 0.6f));
+                        {
+                            float min = -0.85f, max = 0.6f;
+                            float randomRel = random.nextFloat() * (max - min) + min;
+                            faction.setRelationship(otherFactionId, randomRel);
+                        }
+                        
+                        // do this after the random stuff to ensure constant RNG output sequence
+                        if (ExerelinUtilsFaction.isPirateFaction(factionId) && (otherFactionId.equals(selectedFactionId) || otherFactionId.equals(Factions.PLAYER)))
+                        {
+                            faction.setRelationship(otherFactionId, STARTING_RELATIONSHIP_HOSTILE);
+                        }
                     }
                     handleHostileToAllFaction(factionId, factionIds);
                 }
@@ -1127,7 +1144,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         diplomacyManager.randomFactionRelationships = random;
     }
     
-    public static boolean getRandomFactionRelationships()
+    public static boolean isRandomFactionRelationships()
     {
         return diplomacyManager.randomFactionRelationships;
     }
