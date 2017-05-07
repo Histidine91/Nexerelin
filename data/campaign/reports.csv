@@ -156,3 +156,13 @@ exerelin_saboteur_destroy_food,failure,,,player_intel,$AgentFaction fails to des
 exerelin_saboteur_destroy_food,failure_player,,,player_intel_always,$AgentFaction fails to destroy food on $market,"Your saboteur has failed in their attempt to destroy food stockpiles on $market. Fortunately, $theFaction has not traced the crime back to $agentFaction.",Action had no effect.,,,,,
 exerelin_saboteur_destroy_food,failure_detected,,,player_intel_always,$AgentFaction attempt to destroy food on $market thwarted,$TheFaction has arrested an $agentFaction saboteur attempting to destroy food stockpiles on $market. Public condemnations of the crime are widespread.,"Relations between $faction and $agentFaction reduced by $repEffectAbs, currently at $newRelationStr.",,,,,
 exerelin_saboteur_destroy_food,failure_detected_player,,,player_intel_always,$AgentFaction attempt to destroy food on $market thwarted,"Your saboteur has been caught attempting to destroy food stockpiles on $market. $TheFaction is outraged at your ""inhumane"" action.","Relations between $faction and $agentFaction reduced by $repEffectAbs, currently at $newRelationStr.",,,,,
+,,,,,,,,,,,,
+#alliances,,,,,,,,,,,,
+exerelin_alliance_vote,yes_peace,,,news,$alliance votes for peace with $otherParty,The alliance $alliance has voted to make peace with $theOtherParty.$defyText,"Voting results:
+$voteBreakdown",,graphics/exerelin/icons/intel/peace.png,,,
+exerelin_alliance_vote,yes_war,,,news,$alliance votes for war with $otherParty,The alliance $alliance has voted to declare war on $theOtherParty.$defyText,"Voting results:
+$voteBreakdown",,graphics/exerelin/icons/intel/war.png,,,
+exerelin_alliance_vote,no_peace,,,news,$alliance votes against peace with $otherParty,The alliance $alliance has voted against making peace with $theOtherParty.$defyText,"Voting results:
+$voteBreakdown",,graphics/icons/intel/star.png,,,
+exerelin_alliance_vote,no_war,,,news,$alliance votes against war with $otherParty,The alliance $alliance has voted against declaring war on $theOtherParty.$defyText,"Voting results:
+$voteBreakdown",,graphics/icons/intel/star.png,,,

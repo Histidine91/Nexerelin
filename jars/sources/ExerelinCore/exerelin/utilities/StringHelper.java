@@ -4,8 +4,11 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.util.Misc;
 import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class StringHelper {
@@ -101,4 +104,42 @@ public class StringHelper {
         }
         return sb.toString();
     }
+	
+	public static List<String> factionIdListToFactionNameList(List<String> factionIds, boolean ucFirst)
+	{
+		List<String> result = new ArrayList<>();
+		for (String factionId : factionIds)
+		{
+			FactionAPI faction = Global.getSector().getFaction(factionId);
+			String name = faction.getDisplayName();
+			if (ucFirst)
+				name = Misc.ucFirst(name);
+			result.add(name);
+		}
+		return result;
+	}
+	
+	public static String writeStringCollection(Collection<String> strings)
+	{
+		return writeStringCollection(strings, false, false);
+	}
+	
+	public static String writeStringCollection(Collection<String> strings, boolean includeAnd, boolean oxfordComma)
+	{
+		String str = "";
+		int num = 0;
+		for (String entry : strings)
+		{
+			str += entry;
+			num++;
+			if (num < strings.size()) 
+			{
+				if (oxfordComma || !includeAnd || num <= strings.size() - 1)
+					str += ", ";
+				if (includeAnd)
+					str += StringHelper.getString("and") + " ";
+			}
+		}
+		return str;
+	}
 }

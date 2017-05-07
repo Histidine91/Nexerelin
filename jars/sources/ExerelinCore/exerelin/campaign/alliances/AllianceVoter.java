@@ -2,12 +2,15 @@ package exerelin.campaign.alliances;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
@@ -19,6 +22,7 @@ public class AllianceVoter {
 	
 	public static final float BASE_POINTS = 75;
 	public static final float POINTS_NEEDED = 100;
+	public static final float MAX_POINTS_TO_DEFY = 50;
 	public static final float ABSTAIN_THRESHOLD = 25;
 	public static final float STRENGTH_POINT_MULT = 0.5f;
 	public static final float HAWKISHNESS_POINTS = 50;
@@ -49,20 +53,50 @@ public class AllianceVoter {
 		if (ally1 != null) vote1 = allianceVote(ally1, faction1Id, faction2Id, isWar);		
 		if (ally2 != null) vote2 = allianceVote(ally2, faction2Id, faction1Id, isWar);
 		
+		Set<String> defyingFactions = new HashSet<>();
+		if (vote1 != null) defyingFactions.addAll(vote1.defied);
+		if (vote2 != null) defyingFactions.addAll(vote2.defied);
+		
 		// handle vote results
 		if (vote1 != null && vote1.success)
 		{
 			if (vote2 != null && vote2.success)
-				AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, ally1, ally2, isWar);
+				AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, ally1, ally2, isWar, defyingFactions);
 			else
-				AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, ally1, null, isWar);
+				AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, ally1, null, isWar, defyingFactions);
 		}
 		else if (vote2 != null && vote2.success)
 		{
-			AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, null, ally2, isWar);
+			AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, null, ally2, isWar, defyingFactions);
 		}
-		// TODO: make event
-		// TODO: in future iterations, some factions may disregard the voted decision
+		// TODO: alliance hates on defiers
+		
+		// report event
+		if (ally1 != null)
+		{
+			Map<String, Object> params = getEventParams(ally1, vote1, faction2Id, ally2, isWar);
+			ally1.getVoteEvent().reportEvent(params);
+		}
+		if (ally2 != null)
+		{
+			Map<String, Object> params = getEventParams(ally2, vote2, faction1Id, ally1, isWar);
+			ally2.getVoteEvent().reportEvent(params);
+		}
+	}
+	
+	protected static Map<String, Object> getEventParams(Alliance alliance, VoteResult result, 
+			String otherFactionId, Alliance otherAlliance, boolean isWar)
+	{
+		Map<String, Object> params = new HashMap<>();
+		params.put("allianceId", alliance.uuId);
+		params.put("result", result);
+		params.put("isWar", isWar);
+		if (otherAlliance != null)
+			params.put("otherParty", otherAlliance.uuId);
+		else
+			params.put("otherParty", otherFactionId);
+		params.put("otherPartyIsAlliance", otherAlliance != null);
+		return params;
 	}
 	
 	/**
@@ -82,6 +116,7 @@ public class AllianceVoter {
 		Set<String> yesVotes = new HashSet<>();
 		Set<String> noVotes = new HashSet<>();
 		Set<String> abstentions = new HashSet<>();
+		Set<String> defied = new HashSet<>();
 		
 		if (otherAlliance != null)
 		{
@@ -107,13 +142,22 @@ public class AllianceVoter {
 		{
 			Vote vote = factionVote(isWar, alliance, allianceMember, factionId, otherFactionId, 
 					factionsToConsider, strengthRatio);
-			if (vote == Vote.YES)
-			{
+			if (vote == Vote.YES) {
 				yesVotes.add(allianceMember);
 			}
-			else if (vote == Vote.NO)
-			{
+			else if (vote == Vote.NO) {
 				noVotes.add(allianceMember);
+			}
+			else {
+				abstentions.add(allianceMember);
+			}
+		}
+		
+		for (String voter : noVotes)
+		{
+			if (decideToDefyVote(isWar, alliance, voter, factionId, otherFactionId))
+			{
+				defied.add(voter);
 			}
 		}
 		
@@ -122,11 +166,12 @@ public class AllianceVoter {
 		{
 			log.info("Final vote: " + success + " (" + yesVotes.size() + " to " + noVotes.size() + ")");
 		}
-		return new VoteResult(success, yesVotes, noVotes, abstentions, new HashSet<String>());
+		
+		return new VoteResult(success, yesVotes, noVotes, abstentions, defied);
 	}
 	
 	/**
-	 * Vote for whether our alliance should join
+	 * Makes the faction vote for whether the alliance should join a war or make peace with another faction/alliance
 	 * @param isWar
 	 * @param alliance
 	 * @param factionId The voting faction
@@ -233,21 +278,63 @@ public class AllianceVoter {
 		return vote;
 	}
 	
+	/**
+	 * If the vote result was not to our liking, should we ignore it and do our own thing?
+	 * @param isWar
+	 * @param alliance
+	 * @param factionId The faction considering defying the vote
+	 * @param friendId The alliance member whose action triggered the vote
+	 * @param otherFactionId The other faction with whom the alliance member interacted with
+	 * @return
+	 */
+	protected static boolean decideToDefyVote(boolean isWar, Alliance alliance, String factionId,
+			String friendId, String otherFactionId)
+	{
+		FactionAPI us = Global.getSector().getFaction(factionId);
+		ExerelinFactionConfig usConf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		
+		// if we like/hate them forever, defy a vote that would require us to break this
+		if (isWar)
+		{
+			if (ExerelinFactionConfig.getMinRelationship(factionId, otherFactionId) > AllianceManager.HOSTILE_THRESHOLD)
+				return true;
+		}
+		else
+		{
+			if (ExerelinFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
+				return true;
+		}
+		if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+			return false;
+		
+		float hawkishness = usConf.alignments.get(Alignment.MILITARIST);
+		float diplomaticness = usConf.alignments.get(Alignment.DIPLOMATIC);
+		float friendRelationship = us.getRelationship(friendId);
+		
+		float totalPoints = BASE_POINTS + friendRelationship*100;
+		float hawkPoints = hawkishness * HAWKISHNESS_POINTS;
+		if (!isWar) hawkPoints *= -1;
+		totalPoints += hawkPoints;
+		if (!isWar) totalPoints += diplomaticness * HAWKISHNESS_POINTS;
+		
+		return totalPoints <= MAX_POINTS_TO_DEFY;
+	}
+	
 	public static class VoteResult {
 		public final boolean success;
 		public final Set<String> yesVotes;
 		public final Set<String> noVotes;
 		public final Set<String> abstentions;
-		public final Set<String> defiedResults;
+		public final Set<String> defied;	// factions that refuse to obey the vote results
 		
 		public VoteResult(boolean success, Set<String> yesVotes, Set<String> noVotes, 
-				Set<String> abstentions, Set<String> defiedResults)
+				Set<String> abstentions, Set<String> defied)
 		{
 			this.success = success;
 			this.yesVotes = yesVotes;
 			this.noVotes = noVotes;
 			this.abstentions = abstentions;
-			this.defiedResults = defiedResults;
+			this.defied = defied;
 		}
 	}
 	

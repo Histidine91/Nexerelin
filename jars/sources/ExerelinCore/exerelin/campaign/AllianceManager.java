@@ -164,31 +164,6 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return value;
     }
     
-    public AllianceChangedEvent createAllianceEvent(String faction1, String faction2, Alliance alliance)
-    {
-        HashMap<String, Object> params = new HashMap<>();
-        SectorAPI sector = Global.getSector();
-        String eventType = "exerelin_alliance_changed";
-        params.put("faction1Id", faction1);
-        if (faction2 != null) params.put("faction2Id", faction2);
-        params.put("allianceId", alliance.uuId);
-        params.put("stage", "formed");
-        
-        CampaignEventTarget eventTarget;
-        if (playerInteractionTarget != null) {
-            eventTarget = new CampaignEventTarget(playerInteractionTarget);
-        } else {
-            List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(faction1);
-            if (markets.isEmpty()) markets = alliance.getAllianceMarkets();
-            MarketAPI market = (MarketAPI) ExerelinUtils.getRandomListElement(markets);
-            
-            eventTarget = new CampaignEventTarget(market);
-        }
-        
-        AllianceChangedEvent event = (AllianceChangedEvent)sector.getEventManager().startEvent(eventTarget, eventType, params);
-	    return event;
-    }
-    
     public static Alliance createAlliance(String member1, String member2, Alignment type)
     {
         return createAlliance(member1, member2, type, null);
@@ -287,7 +262,8 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         allianceManager.alliancesByName.put(name, alliance);
 		allianceManager.alliancesById.put(alliance.uuId, alliance);
         allianceManager.alliances.add(alliance);
-        
+        alliance.createEvents(member1, member2);
+		
         //average out faction relationships
         /*
 		boolean playerWasHostile1 = memberFaction1.isHostileTo(Factions.PLAYER);
@@ -317,8 +293,6 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (playerIsHostile1 != playerWasHostile1 || playerIsHostile2 != playerWasHostile2)
             DiplomacyManager.printPlayerHostileStateMessage(memberFaction1, playerIsHostile1);
         */
-        AllianceChangedEvent event = allianceManager.createAllianceEvent(member1, member2, alliance);
-        alliance.setEvent(event);
         SectorManager.checkForVictory();
         return alliance;
     }
@@ -622,16 +596,22 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         {
             for (String memberId : alliance1.getMembersCopy())
             {
+                if (defyingFactions.contains(memberId)) continue;
+                
                 FactionAPI member = sector.getFaction(memberId);
                 if (alliance2 != null)
                 {
                     for (String otherMemberId : alliance2.getMembersCopy())
                     {
-						// already in correct state, do nothing
+                        if (defyingFactions.contains(otherMemberId)) continue;
+                        
+                        FactionAPI otherMember = sector.getFaction(otherMemberId);
+                        // already in correct state, do nothing
                         if (isWar && member.isHostileTo(otherMemberId) || !isWar && !member.isHostileTo(otherMemberId))
                         {
                             continue;
                         }
+                
                         DiplomacyManager.adjustRelations(member, otherMember, delta, 
                                 ensureAtBest, ensureAtWorst, limit, true);
                         anyChanges = true;
@@ -654,12 +634,15 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         {
             for (String memberId : alliance2.getMembersCopy())
             {
-				FactionAPI member = sector.getFaction(memberId);
+                if (defyingFactions.contains(memberId)) continue;
+                
+                FactionAPI member = sector.getFaction(memberId);
                 // already in correct state, do nothing
                 if (isWar && member.isHostileTo(faction1Id) || !isWar && !member.isHostileTo(faction1Id))
                 {
                     continue;
                 }
+                
                 DiplomacyManager.adjustRelations(member, faction1, delta, 
                             ensureAtBest, ensureAtWorst, limit, true);
                 anyChanges = true;
