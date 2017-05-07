@@ -30,8 +30,8 @@ public class JoinAlliance extends BaseCommandPlugin {
 		//SectorAPI sector = Global.getSector();
 		//FactionAPI playerFaction = sector.getFaction(playerFactionId);
 		Alliance oldAlliance = AllianceManager.getFactionAlliance(playerFactionId);
-		String newAllianceName = params.get(0).getString(memoryMap);
-		Alliance newAlliance = AllianceManager.getAllianceByName(newAllianceName);
+		String newAllianceId = params.get(0).getString(memoryMap);
+		Alliance newAlliance = AllianceManager.getAllianceByUUID(newAllianceId);
 		boolean oldAllianceDissolved = false;
 		
 		TextPanelAPI text = dialog.getTextPanel();
