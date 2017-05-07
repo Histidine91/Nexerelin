@@ -3,11 +3,15 @@ package exerelin.world;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import data.scripts.world.corvus.Corvus;
 import data.scripts.world.systems.AlGebbar;
 import data.scripts.world.systems.Arcadia;
@@ -73,6 +77,9 @@ public class VanillaSystemsGenerator {
 		new Westernesse().generate(sector);
 		new Tyle().generate(sector);
 		
+		//TutorialMissionEvent.endGalatiaPortionOfMission();
+		exerelinEndGalatiaPortionOfMission();
+		
 		LocationAPI hyper = Global.getSector().getHyperspace();
 		SectorEntityToken atlanticLabel = hyper.addCustomEntity("atlantic_label_id", null, "atlantic_label", null);
 		SectorEntityToken perseanLabel = hyper.addCustomEntity("persean_label_id", null, "persean_label", null);
@@ -92,6 +99,34 @@ public class VanillaSystemsGenerator {
 		coreLabel.setFixedLocation(0, -6000);
 		
 		abyssLabel.setFixedLocation(-65000, -47000);		
+	}
+	
+	public static void exerelinEndGalatiaPortionOfMission()
+	{
+		StarSystemAPI system = Global.getSector().getStarSystem("galatia");
+		PlanetAPI ancyra = (PlanetAPI) system.getEntityById("ancyra");
+		PlanetAPI pontus = (PlanetAPI) system.getEntityById("pontus");
+		PlanetAPI tetra = (PlanetAPI) system.getEntityById("tetra");
+		SectorEntityToken derinkuyu = system.getEntityById("derinkuyu_station");
+		SectorEntityToken probe = system.getEntityById("galatia_probe");
+		SectorEntityToken inner = system.getEntityById("galatia_jump_point_alpha");
+		SectorEntityToken fringe = system.getEntityById("galatia_jump_point_fringe");
+		SectorEntityToken relay = system.getEntityById("ancyra_relay");
+		
+		relay.getMemoryWithoutUpdate().unset(MemFlags.COMM_RELAY_NON_FUNCTIONAL);
+		
+		Global.getSector().getEconomy().addMarket(ancyra.getMarket());
+		Global.getSector().getEconomy().addMarket(derinkuyu.getMarket());
+				
+		derinkuyu.setFaction(Factions.INDEPENDENT);
+		derinkuyu.getMarket().setFactionId(Factions.INDEPENDENT);
+		derinkuyu.getMarket().getSubmarket(Submarkets.SUBMARKET_OPEN).setFaction(derinkuyu.getFaction());
+		
+		inner.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.UNSTABLE_KEY);
+		inner.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.CAN_STABILIZE);
+		
+		fringe.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.UNSTABLE_KEY);
+		fringe.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.CAN_STABILIZE);
 	}
 	
 	public static void initFactionRelationships(SectorAPI sector) 
