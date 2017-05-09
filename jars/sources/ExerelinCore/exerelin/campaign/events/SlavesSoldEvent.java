@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
@@ -32,9 +33,6 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 	protected Map<String, Object> params = new HashMap<>();
 	protected Map<String, Float> repPenalties = new HashMap<>();
 	protected int numSlaves = 0;
-	
-	protected float age = 0;
-	protected boolean done = false;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
@@ -49,26 +47,17 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 		numSlaves = (Integer)params.get("numSlaves");
 		avgRepChange = (Float)params.get("avgRepChange");
 	}
-		
-	@Override
-	public void advance(float amount)
-	{
-		if (done)
-		{
-			return;
-		}
-		age = age + Global.getSector().getClock().convertToDays(amount);
-		if (age > DAYS_TO_KEEP)
-		{
-			done = true;
-			return;
-		}
-	}
 	
 	@Override
 	public void startEvent() {
+		
+	}
+	
+	public void reportSlaveTrade(MarketAPI loc, Map<String, Object> params) {
+		market = loc;
+		setParam(params);
 		MessagePriority priority = MessagePriority.ENSURE_DELIVERY;
-		Global.getSector().reportEventStage(this, "report", market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
+		Global.getSector().reportEventStage(this, "report", loc.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
 			public void beforeDelivery(CommMessageAPI message) {
 					for (String factionId : factionsToNotify)
 					{
@@ -111,6 +100,7 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
+		map.put("$market", market.getName());
 		map.put("$location", market.getPrimaryEntity().getContainingLocation().getName());
 		map.put("$numFactions", "" + factionsToNotify.size());
 		map.put("$repPenaltyAbs", "" + (int)Math.ceil(Math.abs(avgRepChange*100f)));
@@ -127,7 +117,7 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 	
 	@Override
 	public boolean isDone() {
-		return done;
+		return false;
 	}
 
 	@Override

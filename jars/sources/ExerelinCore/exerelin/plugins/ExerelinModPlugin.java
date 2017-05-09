@@ -168,7 +168,10 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (RevengeanceFleetEvent.getOngoingEvent() == null) {
             sector.getEventManager().startEvent(null, "exerelin_revengeance_fleet", null);
         }
-        
+		if (!sector.getEventManager().isOngoing(null, "exerelin_slaves_sold")) {
+			sector.getEventManager().startEvent(null, "exerelin_slaves_sold", null);
+		}
+		
         reverseCompatibility();
         refreshTariffs();
         

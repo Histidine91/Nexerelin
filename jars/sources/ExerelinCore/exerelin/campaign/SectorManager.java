@@ -418,7 +418,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("numSlaves", numSlavesRecentlySold);
         params.put("repPenalties", repPenalties);
         params.put("avgRepChange", sumRepDelta/factionsToNotify.size());
-        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(marketLastSoldSlaves), "exerelin_slaves_sold", params);
+		SlavesSoldEvent event = (SlavesSoldEvent)Global.getSector().getEventManager().getOngoingEvent(null, "exerelin_slaves_sold");
+		event.reportSlaveTrade(marketLastSoldSlaves, params);
     }
     
     public static InvasionFleetData spawnRespawnFleet(FactionAPI respawnFaction, MarketAPI sourceMarket, boolean useOriginLoc)
