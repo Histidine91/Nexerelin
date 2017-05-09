@@ -2,6 +2,7 @@ package exerelin.plugins;
 
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.events.AgentDestabilizeMarketEvent;
 import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
 import exerelin.campaign.events.AgentLowerRelationsEvent;
@@ -9,15 +10,21 @@ import exerelin.campaign.events.AllianceChangedEvent;
 import exerelin.campaign.events.CovertOpsEventBase;
 import exerelin.campaign.events.DiplomacyEvent;
 import exerelin.campaign.events.ExerelinFactionCommissionMissionEvent;
+import exerelin.campaign.events.ExerelinRepTrackerEvent;
 import exerelin.campaign.events.ExigencyRespawnFleetEvent;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.campaign.events.FactionEliminatedEvent;
+import exerelin.campaign.events.FactionInsuranceEvent;
 import exerelin.campaign.events.FactionRespawnedEvent;
+import exerelin.campaign.events.FactionSalaryEvent;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.campaign.events.MarketAttackedEvent;
 import exerelin.campaign.events.MarketCapturedEvent;
+import exerelin.campaign.events.RevengeanceFleetEvent;
 import exerelin.campaign.events.SaboteurDestroyFoodEvent;
 import exerelin.campaign.events.SaboteurSabotageReserveEvent;
+import exerelin.campaign.events.SecurityAlertEvent;
+import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.events.SuperweaponEvent;
 import exerelin.campaign.events.WarmongerEvent;
 import exerelin.campaign.fleets.DefenceFleetAI;
@@ -65,20 +72,21 @@ public class XStreamConfig {
         x.alias("CovertOpsEvnt", CovertOpsEventBase.class);
         x.alias("DiploEvnt", DiplomacyEvent.class);
         x.alias("ExeCommissionMissionEvnt", ExerelinFactionCommissionMissionEvent.class);
-        //x.alias("ExeRepTrckrEvnt", ExerelinRepTrackerEvent.class);
+        x.alias("ExeRepTrckrEvnt", ExerelinRepTrackerEvent.class);
         x.alias("ExiRespawnFltEvnt", ExigencyRespawnFleetEvent.class);
         x.alias("FactionChangeEvnt", FactionChangedEvent.class);
         x.alias("FactionElimEvnt", FactionEliminatedEvent.class);
-        //x.alias("FactionInsurEvnt", FactionInsuranceEvent.class);
+        x.alias("FactionInsurEvnt", FactionInsuranceEvent.class);
         x.alias("FactionRespawnEvnt", FactionRespawnedEvent.class);
-        //x.alias("FactionSalaryEvnt", FactionSalaryEvent.class);
+        x.alias("FactionSalaryEvnt", FactionSalaryEvent.class);
         x.alias("InvasionFltEvnt", InvasionFleetEvent.class);
         x.alias("MrktAttackedEvnt", MarketAttackedEvent.class);
         x.alias("MrktCapturedEvnt", MarketCapturedEvent.class);
-        //x.alias("RevengeanceFltEvnt", RevengeanceFleetEvent.class);
+        x.alias("RevengeanceFltEvnt", RevengeanceFleetEvent.class);
         x.alias("SbtrDestroyFoodEvnt", SaboteurDestroyFoodEvent.class);
         x.alias("SbtrSabotageReserveEvnt", SaboteurSabotageReserveEvent.class);
-        //x.alias("SlavesSoldEvnt", SlavesSoldEvent.class);    // TODO merge into reptracker
+		x.alias("SecurityAlertEvnt", SecurityAlertEvent.class);
+        x.alias("SlavesSoldEvnt", SlavesSoldEvent.class);
         x.alias("SuperweaponEvnt", SuperweaponEvent.class);
         //x.alias("VictoryEvnt", VictoryEvent.class);
         x.alias("WarmongerEvnt", WarmongerEvent.class);
@@ -91,6 +99,7 @@ public class XStreamConfig {
 		x.alias("ResponseFltData", ResponseFleetManager.ResponseFleetData.class);
 		
 		x.alias("ExeRepAdjustmentResult", ExerelinReputationAdjustmentResult.class);
+		x.alias("ExeAlliance", Alliance.class);
 		
 		// enums
 		x.alias("CovertActionResult", CovertOpsManager.CovertActionResult.class);
