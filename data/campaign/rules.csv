@@ -616,10 +616,10 @@ ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirector
 FireAll ExerelinFactionDirectory",Which faction do you want to look up?,,
 ExerelinFactionDirectoryOptions,ExerelinFactionDirectory,,"SetShortcut exerelinFactionDirectoryList1 A
 SetShortcut exerelinFactionDirectoryList2 E
-SetShortcut exerelinFactionDirectoryList3 N
+SetShortcut exerelinFactionDirectoryList3 L
 SetShortcut exerelinFactionDirectoryList4 P",,"exerelinFactionDirectoryList1:A-D
-exerelinFactionDirectoryList2:E-L
-exerelinFactionDirectoryList3:N-O
+exerelinFactionDirectoryList2:E-K
+exerelinFactionDirectoryList3:L-O
 exerelinFactionDirectoryList4:P-Z",
 ExerelinFactionDirectoryListBack,ExerelinFactionDirectory,!$specialDialog,SetShortcut exerelinMarketSpecial ESCAPE,,10:exerelinMarketSpecial:Back,
 ExerelinFactionDirectoryListBackSpecialDialog,ExerelinFactionDirectory,$specialDialog,SetShortcut continueCutComm ESCAPE,,10:continueCutComm:Back,
