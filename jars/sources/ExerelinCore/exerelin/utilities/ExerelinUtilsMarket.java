@@ -212,11 +212,11 @@ public class ExerelinUtilsMarket {
 		market.getTariff().modifyMult("nexerelinFactionMult", conf.tariffMult);
 		if (market.hasCondition(Conditions.FREE_PORT))
 		{
-			market.getTariff().modifyMult("isFreeMarket", ExerelinConfig.freeMarketTariffMult);
+			market.getTariff().modifyMult("nexerelin_freeMarket", ExerelinConfig.freeMarketTariffMult);
 		}
 		else
 		{
-			market.getTariff().unmodify("isFreeMarket");
+			market.getTariff().unmodify("nexerelin_freeMarket");
 		}
 	}
 	

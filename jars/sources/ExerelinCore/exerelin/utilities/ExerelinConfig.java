@@ -98,7 +98,7 @@ public class ExerelinConfig
     public static float revengePointsForMarketCaptureMult = 4f;
     
     // Misc
-    public static float baseTariffMult = 2f/3f;
+    public static float baseTariffMult = 1;
     public static float freeMarketTariffMult = 0.5f;
     public static int warmongerPenalty = 0;
     public static float factionRespawnInterval = 30f;
