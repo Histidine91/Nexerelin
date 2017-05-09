@@ -149,13 +149,13 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         //fp -= tankerFP;
         
         FleetParams fleetParams = new FleetParams(null, params.originMarket, factionId, null, params.fleetType, 
-                fp*0.8f, // combat
+                fp*0.85f, // combat
                 fp*0.1f, // freighters
                 tankerFP,        // tankers
                 params.numMarines/100*2,        // personnel transports
                 0,        // liners
                 0,        // civilian
-                fp*0.1f,    // utility
+                fp*0.05f,    // utility
                 0, params.qualityOverride, 1.25f, 1);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(params.faction, fleetParams);

@@ -97,13 +97,13 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		if (origin.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize += 2;
         //CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
         FleetParams fleetParams = new FleetParams(null, origin, factionId, null, "exerelinResponseFleet", 
-                maxFP*0.9f, // combat
+                maxFP, // combat
                 0,	//maxFP*0.1f, // freighters
                 0,        // tankers
                 0,        // personnel transports
                 0,        // liners
                 0,        // civilian
-                maxFP*0.1f,    // utility
+                0,	//maxFP*0.1f,    // utility
                 0.15f, -1, 1.25f, 1);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(origin.getFaction(), fleetParams);
