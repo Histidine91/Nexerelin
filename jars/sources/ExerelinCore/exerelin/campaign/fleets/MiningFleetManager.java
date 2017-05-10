@@ -39,7 +39,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	public static final String MANAGER_MAP_KEY = "exerelin_miningFleetManager";
 		
 	public static Logger log = Global.getLogger(MiningFleetManager.class);
-	protected static final float POINT_INCREMENT_PER_DAY = 3f;
+	protected static final float POINT_INCREMENT_PER_DAY = 2f;
 	protected static final float MARKET_STABILITY_DIVISOR = 5f;
 	protected static final float POINTS_TO_SPAWN = 100f;
 	protected static final float POINT_INCREMENT_PERIOD = 1;
@@ -284,7 +284,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 			if (newValue > POINTS_TO_SPAWN)
 			{
 				newValue -= POINTS_TO_SPAWN;
-				//spawnMiningFleet(market);
+				spawnMiningFleet(market);
 			}
 			
 			spawnCounter.put(market.getId(), newValue);
