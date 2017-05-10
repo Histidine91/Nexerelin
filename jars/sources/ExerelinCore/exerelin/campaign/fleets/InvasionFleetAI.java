@@ -138,7 +138,11 @@ public class InvasionFleetAI implements EveryFrameScript
                 if(!data.target.getFaction().isHostileTo(fleet.getFaction()))
                     giveStandDownOrders();
                 else
-                    InvasionRound.AttackMarket(fleet, data.target, false);
+				{
+                    InvasionRound.InvasionRoundResult result = InvasionRound.AttackMarket(fleet, data.target, false);
+					if (result.getSuccess())
+						data.event.endEvent(InvasionFleetEvent.FleetReturnReason.MISSION_COMPLETE, data.target);
+				}
             }
         }
         else
