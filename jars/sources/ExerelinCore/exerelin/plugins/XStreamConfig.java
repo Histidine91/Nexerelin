@@ -7,6 +7,7 @@ import exerelin.campaign.events.AgentDestabilizeMarketEvent;
 import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
 import exerelin.campaign.events.AgentLowerRelationsEvent;
 import exerelin.campaign.events.AllianceChangedEvent;
+import exerelin.campaign.events.AllianceVoteEvent;
 import exerelin.campaign.events.CovertOpsEventBase;
 import exerelin.campaign.events.DiplomacyEvent;
 import exerelin.campaign.events.ExerelinFactionCommissionMissionEvent;
@@ -69,6 +70,7 @@ public class XStreamConfig {
         x.alias("AgntDestabilizeMrktEvntForCondition", AgentDestabilizeMarketEventForCondition.class);
         x.alias("AgntLowerRelationsEvnt", AgentLowerRelationsEvent.class);
         x.alias("AllyChangedEvnt", AllianceChangedEvent.class);
+		x.alias("AllyVoteEvnt", AllianceVoteEvent.class);
         x.alias("CovertOpsEvnt", CovertOpsEventBase.class);
         x.alias("DiploEvnt", DiplomacyEvent.class);
         x.alias("ExeCommissionMissionEvnt", ExerelinFactionCommissionMissionEvent.class);
@@ -103,5 +105,6 @@ public class XStreamConfig {
 		
 		// enums
 		x.alias("CovertActionResult", CovertOpsManager.CovertActionResult.class);
+		x.alias("InvasionFltReturnReason", InvasionFleetEvent.FleetReturnReason.class);
 	}
 }
