@@ -21,6 +21,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +83,6 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		
 		if (market.hasCondition(Conditions.DECIVILIZED)) return;
 		
-		String factionId = market.getFactionId();
 		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		
 		float sizeMult = 1;
@@ -93,12 +93,9 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		}
 		if (sizeMult <= 0) return;
 		
-		// player currently invading this market; don't spawn patrols from it
-		if (market.getId().equals(Global.getSector().getCharacterData().getMemoryWithoutUpdate().getString("$invasionTarget")))
-		{
-			//Global.getSector().getCampaignUI().addMessage(Global.getSector().getCharacterData().getMemoryWithoutUpdate().getString("$invasionTarget"));
-			return;
-		}
+		// don't spawn patrols from a market being invaded
+		// because having random patrol spawns interrupting your invasion is super annoying
+		if (ExerelinUtilsMarket.isMarketBeingInvaded(market)) return;
 		
 		
 		List<PatrolFleetData> remove = new ArrayList<PatrolFleetData>();

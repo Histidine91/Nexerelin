@@ -220,6 +220,12 @@ public class ExerelinUtilsMarket {
 		}
 	}
 	
+	public static boolean isMarketBeingInvaded(MarketAPI market)
+	{
+		return market.getMemoryWithoutUpdate().getBoolean("$beingInvaded")	// NPC fleet
+				|| market.getId().equals(Global.getSector().getCharacterData().getMemoryWithoutUpdate().getString("$invasionTarget"));	// player
+	}
+	
 	// do we really want any of these?
 	public static float getFarmingFoodSupply(MarketAPI market, boolean applyMultMod)
 	{

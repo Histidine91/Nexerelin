@@ -128,6 +128,7 @@ public class InvasionFleetAI implements EveryFrameScript
                     ResponseFleetManager.requestResponseFleet(data.targetMarket, data.fleet);
                     broadcastHostile();
                     //responseFleetRequested = true;
+					data.targetMarket.getMemoryWithoutUpdate().set("$beingInvaded", true, 1.5f);
                 }
             }
             // invade
@@ -141,7 +142,10 @@ public class InvasionFleetAI implements EveryFrameScript
 				{
                     InvasionRound.InvasionRoundResult result = InvasionRound.AttackMarket(fleet, data.target, false);
 					if (result.getSuccess())
+					{
 						data.event.endEvent(InvasionFleetEvent.FleetReturnReason.MISSION_COMPLETE, data.target);
+						data.targetMarket.getMemoryWithoutUpdate().unset("$beingInvaded");
+					}
 				}
             }
         }

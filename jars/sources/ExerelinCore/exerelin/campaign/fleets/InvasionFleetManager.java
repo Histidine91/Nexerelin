@@ -401,12 +401,20 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         return fleetData;
     }
     
-    public void generateInvasionFleet(FactionAPI faction, FactionAPI targetFaction, boolean strikeOnly)
+    public boolean generateInvasionFleet(FactionAPI faction, FactionAPI targetFaction, boolean strikeOnly)
     {
-        generateInvasionFleet(faction, targetFaction, strikeOnly, 1);
+        return generateInvasionFleet(faction, targetFaction, strikeOnly, 1);
     }
     
-    public void generateInvasionFleet(FactionAPI faction, FactionAPI targetFaction, boolean strikeOnly, float sizeMult)
+	/**
+	 * Try to create an invasion fleet and its accompanying strike fleets (or just the strike fleets)
+	 * @param faction The faction launching an invasion
+	 * @param targetFaction
+	 * @param strikeOnly
+	 * @param sizeMult
+	 * @return True if fleet was successfully created, false otherwise
+	 */
+	public boolean generateInvasionFleet(FactionAPI faction, FactionAPI targetFaction, boolean strikeOnly, float sizeMult)
     {
         SectorAPI sector = Global.getSector();
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
@@ -420,6 +428,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
             if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
             if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
+			// because incoming invasion fleet being ganked by fresh spawns from the market is just annoying
+			if (ExerelinUtilsMarket.isMarketBeingInvaded(market)) continue;
+			
             if  ( market.getFactionId().equals(factionId) && !market.hasCondition(Conditions.DECIVILIZED) && 
                 ( (market.hasCondition(Conditions.SPACEPORT)) || (market.hasCondition(Conditions.ORBITAL_STATION)) || (market.hasCondition(Conditions.MILITARY_BASE))
                     || (market.hasCondition(Conditions.REGIONAL_CAPITAL)) || (market.hasCondition(Conditions.HEADQUARTERS))
@@ -450,7 +461,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         }
         MarketAPI originMarket = sourcePicker.pick();
         if (originMarket == null) {
-            return;
+            return false;
         }
         //log.info("\tStaging from " + originMarket.getName());
         //marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
@@ -496,7 +507,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         }
         MarketAPI targetMarket = targetPicker.pick();
         if (targetMarket == null) {
-            return;
+            return false;
         }
         //log.info("\tTarget: " + targetMarket.getName());
 
@@ -513,7 +524,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             event.reportStart();
         }
         spawnSupportFleet(faction, originMarket, targetMarket, false, false);
-        spawnSupportFleet(faction, originMarket, targetMarket, false, false);    
+        spawnSupportFleet(faction, originMarket, targetMarket, false, false);
+		
+		return true;
     }
     
     protected void processInvasionPoints()
@@ -642,9 +655,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             else
             {
                 // okay, we can invade
-                counter -= pointsRequired;
-                spawnCounter.put(factionId, counter);
-                generateInvasionFleet(faction, null, false);
+				boolean success = generateInvasionFleet(faction, null, false);
+				if (success)
+				{
+					counter -= pointsRequired;
+					spawnCounter.put(factionId, counter);
+				}
             }
         }
     }
@@ -666,8 +682,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         float req = ExerelinConfig.pointsRequiredForInvasionFleet;
         if (templarInvasionPoints >= req)
         {
-            generateInvasionFleet(Global.getSector().getFaction("templars"), null, false);
-            templarInvasionPoints -= req;
+            boolean success = generateInvasionFleet(Global.getSector().getFaction("templars"), null, false);
+            if (success) templarInvasionPoints -= req;
             //Global.getSector().getCampaignUI().addMessage("Launching Templar invasion fleet");
         }
         if (templarCounterInvasionPoints >= req)
@@ -678,9 +694,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 picker.add(factionId, ExerelinUtilsFaction.getFactionMarketSizeSum(factionId));
             }
             FactionAPI faction = Global.getSector().getFaction(picker.pick());
-            generateInvasionFleet(faction, Global.getSector().getFaction("templars"), false, TEMPLAR_COUNTER_INVASION_FLEET_MULT);
+            boolean success = generateInvasionFleet(faction, Global.getSector().getFaction("templars"), false, TEMPLAR_COUNTER_INVASION_FLEET_MULT);
             //Global.getSector().getCampaignUI().addMessage("Launching counter-Templar invasion fleet");
-            templarCounterInvasionPoints -= req;
+            if (success) templarCounterInvasionPoints -= req;
         }
     }
   
