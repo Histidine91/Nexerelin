@@ -334,6 +334,7 @@ ExerelinNGCListTriTachyon,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist tri
 ExerelinNGCListLuddicChurch,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist luddic_church,,,exerelinNGCJoinLuddicChurch:Luddic Church,
 ExerelinNGCListPerseanLeague,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist persean,,,exerelinNGCJoinPerseanLeague:Persean League,
 ExerelinNGCListPirates,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist pirates,,,exerelinNGCJoinPirate:Pirates (hard),
+ExerelinNGCListSindrianDiktat,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist sindrian_diktat,,,exerelinNGCJoinSindrianDiktat:Sindrian Diktat,
 ExerelinNGCFactionsOwnFaction,ExerelinNGCListFactionsVanilla,,,,exerelinNGCOwnFaction:Own faction,
 ExerelinNGCFactionsFreeStart,ExerelinNGCListFactionsVanilla,,"SetTooltip exerelinNGCFreeStart ""Own faction, but with no starting planet; you're on your own""",,exerelinNGCFreeStart:Free start (hard),
 ExerelinNGCListVanillaFactionsBack,ExerelinNGCListFactionsVanilla,,SetShortcut exerelinNGCOptionsDone ESCAPE,,20:exerelinNGCOptionsDone:Back,
@@ -452,6 +453,8 @@ FireBest ExerelinNGCJoinFaction",,,
 ExerelinNGCJoinSCY,NewGameOptionSelected,$option == exerelinNGCJoinSCY,"$playerFaction = SCY
 FireBest ExerelinNGCJoinFaction",,,
 ExerelinNGCJoinShadowyards,NewGameOptionSelected,$option == exerelinNGCJoinShadowyards,"$playerFaction = shadow_industry
+FireBest ExerelinNGCJoinFaction",,,
+ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == exerelinNGCJoinSindrianDiktat,"$playerFaction = sindrian_diktat
 FireBest ExerelinNGCJoinFaction",,,
 ExerelinNGCJoinSpire,NewGameOptionSelected,$option == exerelinNGCJoinSpire,"$playerFaction = spire
 FireBest ExerelinNGCJoinFaction",,,
