@@ -64,7 +64,7 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 	@Override
 	public void startEvent()
 	{
-		MessagePriority priority = MessagePriority.SECTOR;
+		MessagePriority priority = MessagePriority.ENSURE_DELIVERY;
 		String stage = "normal";
 		if (playerDefeated) stage = "player_defeat";
 		else if (playerVictory) stage = "player_victory";
@@ -99,6 +99,7 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 		String theDefeated = defeatedFaction.getDisplayNameWithArticle();
 		String victor = victorFaction.getDisplayName();
 		String theVictor = victorFaction.getDisplayNameWithArticle();
+		map.put("$defeatedIsOrAre", defeatedFaction.getDisplayNameIsOrAre());
 		map.put("$defeatedFaction", defeated);
 		map.put("$theDefeatedFaction", theDefeated);
 		map.put("$DefeatedFaction", Misc.ucFirst(defeated));

@@ -79,7 +79,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	{
 		String stage = "report";
 		//MessagePriority priority = MessagePriority.SECTOR;
-		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
+		MessagePriority priority = MessagePriority.ENSURE_DELIVERY;
 		if (playerInvolved) 
 		{
 			stage = "report_player";
