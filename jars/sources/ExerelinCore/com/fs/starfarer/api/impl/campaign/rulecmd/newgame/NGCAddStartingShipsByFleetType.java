@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
@@ -36,6 +37,7 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		
 		int crew = 0;
 		int supplies = 0;
+		int machinery = 0;
 		int fuel = 0;
 		
 		for (String variantId : startingVariants)
@@ -49,35 +51,20 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 			FleetMemberAPI temp = Global.getFactory().createFleetMember(type, variantId);
 			crew += (int)Math.min(temp.getNeededCrew() * 1.2f, temp.getMaxCrew());
 			supplies += (int)temp.getCargoCapacity()/2;
+			machinery += (int)temp.getCargoCapacity()/8;
 			fuel += (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
 			
-			/*
-			String className = temp.getHullSpec().getHullName();
-			String designation = temp.getVariant().getDesignation().toLowerCase();
-			String printed = Misc.ucFirst(StringHelper.getString("exerelin_ngc", "added"));
-			if (type == FleetMemberType.FIGHTER_WING)
-				printed += " " + StringHelper.getString("exerelin_ngc", "fighterWingString");
-			else
-				printed += " " + StringHelper.getString("exerelin_ngc", "shipString");
-			printed = StringHelper.substituteToken(printed, "$shipClass", className);
-			printed = StringHelper.substituteToken(printed, "$designation", designation);
-			
-			dialog.getTextPanel().addParagraph(printed, Misc.getPositiveHighlightColor());
-			*/
 			AddRemoveCommodity.addFleetMemberGainText(Global.getSettings().getVariant(variantId), dialog.getTextPanel());
 		}
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "crew", crew);
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "supplies", supplies);
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, "fuel", fuel);
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.CREW, crew);
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.SUPPLIES, supplies);
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.HEAVY_MACHINERY, machinery);
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.FUEL, fuel);
 		
-		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-		memory.set("$crewAdded", crew, 0);
-		memory.set("$suppliesAdded", supplies, 0);
-		memory.set("$fuelAdded", fuel, 0);
-		
-		AddRemoveCommodity.addCommodityGainText("crew", crew, dialog.getTextPanel());
-		AddRemoveCommodity.addCommodityGainText("supplies", supplies, dialog.getTextPanel());
-		AddRemoveCommodity.addCommodityGainText("fuel", fuel, dialog.getTextPanel());
+		AddRemoveCommodity.addCommodityGainText(Commodities.CREW, crew, dialog.getTextPanel());
+		AddRemoveCommodity.addCommodityGainText(Commodities.SUPPLIES, supplies, dialog.getTextPanel());
+		AddRemoveCommodity.addCommodityGainText(Commodities.HEAVY_MACHINERY, machinery, dialog.getTextPanel());
+		AddRemoveCommodity.addCommodityGainText(Commodities.FUEL, fuel, dialog.getTextPanel());
 		
 		return true;
 	}
