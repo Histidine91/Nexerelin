@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 
 
@@ -48,11 +49,12 @@ public class FactionChangedEvent extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		String oldFactionStr = oldFaction.getEntityNamePrefix();
+		String oldFactionStr = ExerelinUtilsFaction.getFactionShortName(oldFaction);
 		String theOldFactionStr = oldFaction.getDisplayNameWithArticle();
-		String newFactionStr = newFaction.getEntityNamePrefix();
+		String newFactionStr = ExerelinUtilsFaction.getFactionShortName(newFaction);
 		String theNewFactionStr = newFaction.getDisplayNameWithArticle();
-		String sender = newFaction.getId().equals(ExerelinConstants.PLAYER_NPC_ID) ? oldFaction.getEntityNamePrefix() : newFaction.getEntityNamePrefix();
+		String sender = newFaction.getId().equals(ExerelinConstants.PLAYER_NPC_ID) ? 
+				ExerelinUtilsFaction.getFactionShortName(oldFaction): ExerelinUtilsFaction.getFactionShortName(newFaction);
 		map.put("$sender", sender);
 		map.put("$oldFaction", oldFactionStr);
 		map.put("$theOldFaction", theOldFactionStr);

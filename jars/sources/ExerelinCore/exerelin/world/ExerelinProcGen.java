@@ -956,6 +956,8 @@ public class ExerelinProcGen {
 		
 		SectorManager.setSystemToRelayMap(systemToRelay);
 		SectorManager.setPlanetToRelayMap(planetToRelay);
+		
+		resetVars();
 	}
 	
 	public static class EntityData {

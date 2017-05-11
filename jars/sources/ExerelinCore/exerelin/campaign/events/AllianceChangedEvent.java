@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,7 +89,7 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 		
 		if (faction1 != null)
 		{
-			String faction1Str = faction1.getEntityNamePrefix();
+			String faction1Str = ExerelinUtilsFaction.getFactionShortName(faction1);
 			String theFaction1Str = faction1.getDisplayNameWithArticle();
 			map.put("$faction1", faction1Str);
 			map.put("$theFaction1", theFaction1Str);
@@ -97,7 +98,7 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 		}
 		if (faction2 != null)
 		{
-			String faction2Str = faction2.getEntityNamePrefix();
+			String faction2Str = ExerelinUtilsFaction.getFactionShortName(faction2);
 			String theFaction2Str = faction2.getDisplayNameWithArticle();
 			map.put("$faction2", faction2Str);
 			map.put("$theFaction2", theFaction2Str);

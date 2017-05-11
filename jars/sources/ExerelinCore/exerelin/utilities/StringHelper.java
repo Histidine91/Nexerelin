@@ -7,7 +7,6 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -71,7 +70,7 @@ public class StringHelper {
     public static String substituteFactionTokens(String str, FactionAPI faction)
     {
         Map<String, String> replacements = new HashMap<>();
-        String name = faction.getEntityNamePrefix();
+        String name = ExerelinUtilsFaction.getFactionShortName(faction);
         String theName = faction.getDisplayNameWithArticle();
         replacements.put("$faction", name);
         replacements.put("$Faction", Misc.ucFirst(name));

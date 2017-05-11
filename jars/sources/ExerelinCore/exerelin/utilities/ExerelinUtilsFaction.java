@@ -63,6 +63,19 @@ public class ExerelinUtilsFaction {
         }
         return pop;
     }
+	
+	public static String getFactionShortName(String factionId)
+	{
+		return getFactionShortName(Global.getSector().getFaction(factionId));
+	}
+	
+	public static String getFactionShortName(FactionAPI faction)
+	{
+		String name = faction.getEntityNamePrefix();
+		if (name == null || name.isEmpty())
+			name = faction.getDisplayName();
+		return name;
+	}
     
     public static boolean isPirateFaction(String factionId)
     {

@@ -158,7 +158,7 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
 		FactionAPI faction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
-		String factionName = faction.getEntityNamePrefix();
+		String factionName = ExerelinUtilsFaction.getFactionShortName(faction);
 		String theFactionName = faction.getDisplayNameLongWithArticle();
 		map.put("$sender", factionName);
 		map.put("$employer", factionName);

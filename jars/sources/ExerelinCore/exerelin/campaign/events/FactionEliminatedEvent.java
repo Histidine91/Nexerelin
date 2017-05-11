@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 
 
@@ -94,7 +95,7 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		String defeated = defeatedFaction.getEntityNamePrefix();
+		String defeated = ExerelinUtilsFaction.getFactionShortName(defeatedFaction);
 		String theDefeated = defeatedFaction.getDisplayNameWithArticle();
 		String victor = victorFaction.getDisplayName();
 		String theVictor = victorFaction.getDisplayNameWithArticle();

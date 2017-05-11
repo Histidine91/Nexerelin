@@ -14,6 +14,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.AllianceVoter.VoteResult;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,7 +100,7 @@ public class AllianceVoteEvent extends BaseEventPlugin {
 		else
 		{
 			FactionAPI faction = Global.getSector().getFaction(otherParty);
-			String factionStr = faction.getEntityNamePrefix();
+			String factionStr = ExerelinUtilsFaction.getFactionShortName(faction);
 			String theFactionStr = faction.getDisplayNameWithArticle();
 			StringHelper.substituteToken(str, "$otherParty", factionStr);
 			StringHelper.substituteToken(str, "$theOtherParty", theFactionStr);
@@ -147,7 +148,7 @@ public class AllianceVoteEvent extends BaseEventPlugin {
 		else
 		{
 			FactionAPI faction = Global.getSector().getFaction(otherParty);
-			String factionStr = faction.getEntityNamePrefix();
+			String factionStr = ExerelinUtilsFaction.getFactionShortName(faction);
 			String theFactionStr = faction.getDisplayNameWithArticle();
 			map.put("$otherParty", factionStr);
 			map.put("$theOtherParty", theFactionStr);

@@ -652,7 +652,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         if (!anyChanges) return;    // done here
         
         // report results
-        String party1 = Misc.ucFirst(faction1.getEntityNamePrefix());
+        String party1 = Misc.ucFirst(ExerelinUtilsFaction.getFactionShortName(faction1));
         String highlight1 = party1;
         if (alliance1 != null) 
         {
@@ -661,7 +661,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
         //else if (faction1.getId().equals("player")) party1 = Misc.ucFirst(playerAlignedFaction.getEntityNamePrefix());
 
-        String party2 = Misc.ucFirst(faction2.getEntityNamePrefix());
+        String party2 = Misc.ucFirst(ExerelinUtilsFaction.getFactionShortName(faction2));
         String highlight2 = party2;
         if (alliance2 != null) 
         {

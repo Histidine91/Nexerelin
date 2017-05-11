@@ -17,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,9 +108,9 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 			locName = "the " + ((StarSystemAPI)loc).getName();
 		int dpEstimate = Math.round(dp/10f) * 10;
 		 
-		String targetFactionStr = targetFaction.getEntityNamePrefix();
+		String targetFactionStr = ExerelinUtilsFaction.getFactionShortName(targetFaction);
 		String theTargetFactionStr = targetFaction.getDisplayNameWithArticle();
-		map.put("$sender", faction.getEntityNamePrefix());
+		map.put("$sender", ExerelinUtilsFaction.getFactionShortName(faction));
 		map.put("$target", target.getName());
 		map.put("$targetLocation", locName);
 		map.put("$targetFaction", targetFactionStr);

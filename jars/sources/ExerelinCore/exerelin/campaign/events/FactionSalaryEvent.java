@@ -106,7 +106,7 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 			map.put("$date", previous.getMonthString() + ", c." + previous.getCycle());
 		}
 		FactionAPI faction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
-		String factionName = faction.getEntityNamePrefix();
+		String factionName = ExerelinUtilsFaction.getFactionShortName(faction);
 		String theFactionName = faction.getDisplayNameLongWithArticle();
 		map.put("$sender", factionName);
 		map.put("$employer", factionName);
