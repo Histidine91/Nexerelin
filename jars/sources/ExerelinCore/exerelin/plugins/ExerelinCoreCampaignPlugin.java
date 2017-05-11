@@ -1,6 +1,7 @@
 package exerelin.plugins;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.PluginPick;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
@@ -11,8 +12,10 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.MiningHelperLegacy;
+import exerelin.campaign.SSP_FleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.ResponseFleetManager;
+import exerelin.combat.SSP_BattleCreationPluginImpl;
 import org.histidine.industry.scripts.MiningHelper;
 
 @SuppressWarnings("unchecked")
@@ -87,4 +90,20 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 			memory.set("$isInAlliance", false, 0);
 		}
 	}
+	
+	@Override
+    public PluginPick<BattleCreationPlugin> pickBattleCreationPlugin(SectorEntityToken opponent) {
+        if (opponent instanceof CampaignFleetAPI) {
+            return new PluginPick<BattleCreationPlugin>(new SSP_BattleCreationPluginImpl(), PickPriority.MOD_GENERAL);
+        }
+        return null;
+    }
+
+    @Override
+    public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
+        if (interactionTarget instanceof CampaignFleetAPI) {
+            return new PluginPick<InteractionDialogPlugin>(new SSP_FleetInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
+        }
+        return null;
+    }
 }
