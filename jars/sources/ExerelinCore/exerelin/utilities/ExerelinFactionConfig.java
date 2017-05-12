@@ -121,7 +121,7 @@ public class ExerelinFactionConfig
             isPirateNeutral = settings.optBoolean("isPirateNeutral", false);
             spawnPatrols = settings.optBoolean("spawnPatrols", true);
             hostileToAll = settings.optInt("hostileToAll", hostileToAll);
-			
+            
             baseFleetCostMultiplier = settings.optDouble("baseFleetCostMultiplier", 1);
 
             customRebelFaction = settings.optString("customRebelFaction", customRebelFaction);
@@ -141,7 +141,7 @@ public class ExerelinFactionConfig
             
             freeMarket = settings.optBoolean("freeMarket", freeMarket);
             spawnMarketShare = (float)settings.optDouble("spawnMarketShare", spawnMarketShare);
-			tariffMult = (float)settings.optDouble("tariffMult", tariffMult);
+            tariffMult = (float)settings.optDouble("tariffMult", tariffMult);
             
             invasionStrengthBonusAttack = (float)settings.optDouble("invasionStrengthBonusAttack", 0);
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);

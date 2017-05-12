@@ -1,7 +1,6 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import org.json.JSONObject;
 import java.util.List;
@@ -17,10 +16,6 @@ public class ExerelinConfig
     
     public static List<ExerelinFactionConfig> exerelinFactionConfigs;
     public static ExerelinFactionConfig defaultConfig;
-
-    // Threading support for improving/smoothing performance
-    @Deprecated
-    public static boolean enableThreading = true;
    
     // System Generation settings
     public static int minimumPlanets = 2;
@@ -250,7 +245,7 @@ public class ExerelinConfig
     @Deprecated
     public static List<String> getAllCustomFactionRebels()
     {
-        List<String> customRebels = new ArrayList<String>();
+        List<String> customRebels = new ArrayList<>();
 
         for(ExerelinFactionConfig exerelinFactionConfig : exerelinFactionConfigs)
         {
@@ -264,7 +259,7 @@ public class ExerelinConfig
     public static List<String> getModdedFactionsList(boolean onlyPlayable)
     {
         //log.info("Getting modded factions");
-        List<String> possibleModdedFactions = new ArrayList<String>();
+        List<String> possibleModdedFactions = new ArrayList<>();
 
         for (ExerelinFactionConfig config : exerelinFactionConfigs) {
             if (onlyPlayable && !config.playableFaction) continue;
@@ -279,7 +274,7 @@ public class ExerelinConfig
 
     public static List<String> getBuiltInFactionsList(boolean onlyPlayable)
     {
-        List<String> possibleBuiltInFactions = new ArrayList<String>();
+        List<String> possibleBuiltInFactions = new ArrayList<>();
 
         for (ExerelinFactionConfig config : ExerelinConfig.exerelinFactionConfigs) {
             if (onlyPlayable && !config.playableFaction) continue;

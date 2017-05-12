@@ -179,10 +179,10 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (RevengeanceFleetEvent.getOngoingEvent() == null) {
             sector.getEventManager().startEvent(null, "exerelin_revengeance_fleet", null);
         }
-		if (!sector.getEventManager().isOngoing(null, "exerelin_slaves_sold")) {
-			sector.getEventManager().startEvent(null, "exerelin_slaves_sold", null);
-		}
-		
+        if (!sector.getEventManager().isOngoing(null, "exerelin_slaves_sold")) {
+            sector.getEventManager().startEvent(null, "exerelin_slaves_sold", null);
+        }
+        
         reverseCompatibility();
         refreshTariffs();
         
@@ -207,16 +207,16 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onNewGameAfterEconomyLoad() {
         Global.getLogger(this.getClass()).info("New game after economy load; " + isNewGame);
         
-		SectorManager.reinitLiveFactions();
+        SectorManager.reinitLiveFactions();
         if (SectorManager.getCorvusMode() && DiplomacyManager.isRandomFactionRelationships())
         {
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
         
-		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-		{
-			market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
-		}
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        {
+            market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
+        }
         //SectorAPI sector = Global.getSector();
         //for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
         //    PlayerStartHandler.addOmnifactory(sector, i);
