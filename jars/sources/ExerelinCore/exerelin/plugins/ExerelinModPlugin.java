@@ -27,6 +27,7 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManager;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.missions.ConquestMissionCreator;
+import exerelin.world.SSP_AsteroidTracker;
 import java.util.HashMap;
 
 public class ExerelinModPlugin extends BaseModPlugin
@@ -187,6 +188,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         sector.registerPlugin(new ExerelinCoreCampaignPlugin());
         sector.addTransientScript(new DirectoryScreenScript());
+		sector.addTransientScript(new SSP_AsteroidTracker());
     }
     
     @Override
@@ -205,9 +207,9 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onNewGameAfterEconomyLoad() {
         Global.getLogger(this.getClass()).info("New game after economy load; " + isNewGame);
         
+		SectorManager.reinitLiveFactions();
         if (SectorManager.getCorvusMode() && DiplomacyManager.isRandomFactionRelationships())
         {
-            SectorManager.reinitLiveFactions();
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
         

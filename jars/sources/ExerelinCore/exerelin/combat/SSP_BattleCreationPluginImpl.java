@@ -24,7 +24,7 @@ import com.fs.starfarer.api.input.InputEventAPI;
 import com.fs.starfarer.api.mission.FleetSide;
 import com.fs.starfarer.api.mission.MissionDefinitionAPI;
 import com.fs.starfarer.api.util.Misc;
-import data.scripts.world.SSP_AsteroidTracker;
+import exerelin.world.SSP_AsteroidTracker;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
