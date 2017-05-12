@@ -31,6 +31,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	protected int dp;
 	public boolean done;
 	protected float age;
+	protected FactionAPI factionPermanent;	// doesn't change if the origin market gets captured in the meantime
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
@@ -40,6 +41,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 		target = null;
 		dp = 0;
 		age = 0;
+		factionPermanent = eventTarget.getFaction();
 	}
 	
 	@Override
@@ -101,13 +103,17 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
+		
+		addFactionNameTokens(map, "", factionPermanent);
+		addFactionNameTokens(map, "the", factionPermanent);
+		
 		FactionAPI targetFaction = target.getFaction();
 		LocationAPI loc = target.getContainingLocation();
 		String locName = loc.getName();
 		if (loc instanceof StarSystemAPI)
 			locName = "the " + ((StarSystemAPI)loc).getName();
 		int dpEstimate = Math.round(dp/10f) * 10;
-		 
+		
 		String targetFactionStr = ExerelinUtilsFaction.getFactionShortName(targetFaction);
 		String theTargetFactionStr = targetFaction.getDisplayNameWithArticle();
 		map.put("$sender", ExerelinUtilsFaction.getFactionShortName(faction));
@@ -121,10 +127,10 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 		return map;
 	}
 		
-		@Override
-		public String[] getHighlights(String stageId) {
+	@Override
+	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
-				addTokensToList(result, "$dp");
+		addTokensToList(result, "$dp");
 		return result.toArray(new String[0]);
 	}
 	
