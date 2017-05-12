@@ -128,8 +128,8 @@ public class InvasionFleetAI implements EveryFrameScript
                     ResponseFleetManager.requestResponseFleet(data.targetMarket, data.fleet);
                     broadcastHostile();
                     //responseFleetRequested = true;
-					data.targetMarket.getMemoryWithoutUpdate().set("$beingInvaded", true, 1.5f);
                 }
+				data.targetMarket.getMemoryWithoutUpdate().set("$beingInvaded", true, INVADE_ORBIT_TIME);
             }
             // invade
             else if(assignment.getAssignment() == FleetAssignment.HOLD && data.target.getContainingLocation() == data.fleet.getContainingLocation()

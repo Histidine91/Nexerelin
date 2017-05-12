@@ -15,6 +15,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
@@ -96,6 +97,7 @@ public class RespawnFleetAI extends InvasionFleetAI
                     broadcastHostile();
                     //responseFleetRequested = true;
                 }
+				data.targetMarket.getMemoryWithoutUpdate().set("$beingInvaded", true, INVADE_ORBIT_TIME);
             }
             // invade
             else if(assignment.getAssignment() == FleetAssignment.HOLD && data.target.getContainingLocation() == data.fleet.getContainingLocation()
@@ -105,7 +107,14 @@ public class RespawnFleetAI extends InvasionFleetAI
                 if(!data.target.getFaction().isHostileTo(fleet.getFaction()))
                     giveStandDownOrders();
                 else
-                    InvasionRound.AttackMarket(fleet, data.target, false);
+                {
+                    InvasionRound.InvasionRoundResult result = InvasionRound.AttackMarket(fleet, data.target, false);
+					if (result.getSuccess())
+					{
+						data.event.endEvent(InvasionFleetEvent.FleetReturnReason.MISSION_COMPLETE, data.target);
+						data.targetMarket.getMemoryWithoutUpdate().unset("$beingInvaded");
+					}
+				}
             }
         }
         else
