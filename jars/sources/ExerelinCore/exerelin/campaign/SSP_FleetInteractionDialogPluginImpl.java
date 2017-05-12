@@ -1,7 +1,9 @@
 package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.EngagementOutcome;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.FleetMemberData;
 import com.fs.starfarer.api.characters.FullName.Gender;
@@ -9,10 +11,14 @@ import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialogPluginImpl {
 
@@ -26,6 +32,7 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
 
     public SSP_FleetInteractionDialogPluginImpl(FIDConfig params) {
         super(params);
+        //this.config = params;
         context = new SSP_FleetEncounterContext();
     }
 
@@ -314,5 +321,56 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
         }
 
         super.winningPath();
+    }
+    
+    // hax to circumvent private variable
+    protected boolean hasOngoingBattle(BattleAPI battle)
+    {
+        boolean ongoingBattle = false;
+        if (battle == null) {
+            if (otherFleet.getBattle() == null || otherFleet.getBattle().isDone()) {
+                ongoingBattle = false;
+            } else {
+                ongoingBattle = true;
+                
+            }
+        }
+        if (ongoingBattle && battle.getPlayerSide() != null && battle.getPlayerSide().size() <= 1) {
+        //if (ongoingBattle && b.getPlayerSide() != null && b.isPlayerPrimary()) {
+            ongoingBattle = false;
+        }
+        return ongoingBattle;
+    }
+    
+    // Makes nearby non-trade fleets patrols, so the superclass function can pull them in
+    @Override
+    protected void pullInNearbyFleets() {
+        BattleAPI b = context.getBattle();
+        boolean ongoingBattle = hasOngoingBattle(b);    // hax because the vanilla variable is private
+        if (!ongoingBattle) {
+            b.join(Global.getSector().getPlayerFleet());
+        }
+        
+        CampaignFleetAPI actualPlayer = Global.getSector().getPlayerFleet();
+        CampaignFleetAPI actualOther = (CampaignFleetAPI) (dialog.getInteractionTarget());
+        
+        for (CampaignFleetAPI fleet : actualPlayer.getContainingLocation().getFleets()) {
+            if (b == fleet.getBattle()) continue;
+            if (fleet.getBattle() != null) continue;
+            
+            float dist = Misc.getDistance(actualOther.getLocation(), fleet.getLocation());
+            dist -= actualOther.getRadius();
+            dist -= fleet.getRadius();
+            if (dist > Misc.getBattleJoinRange()) continue;
+            //if (fleet.getFaction().getRelToPlayer().isAtBest(RepLevel.INHOSPITABLE)) continue;
+            //if (!fleet.getFaction().isHostileTo(actualOther.getFaction())) continue;
+            if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_TRADE_FLEET)) continue;
+            if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_PATROL_FLEET)) continue;
+            if (fleet.isStationMode()) continue;
+            
+            // set to patrol (enable joining battle)
+            fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true, 0);
+        }
+        super.pullInNearbyFleets();
     }
 }
