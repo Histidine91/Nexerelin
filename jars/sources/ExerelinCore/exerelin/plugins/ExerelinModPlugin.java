@@ -2,13 +2,14 @@ package exerelin.plugins;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
+import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.thoughtworks.xstream.XStream;
-import data.scripts.campaign.SSP_CoreScript;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
@@ -60,8 +61,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         InvasionFleetManager im = InvasionFleetManager.create();
         AllianceManager am = AllianceManager.create();
         sector.removeScriptsOfClass(CoreScript.class);
-        if (HAVE_SSP)
-            sector.removeScriptsOfClass(SSP_CoreScript.class);
         sector.addScript(new ExerelinCoreScript());
         sector.addScript(SectorManager.create());
         sector.addScript(DiplomacyManager.create());
@@ -89,6 +88,17 @@ public class ExerelinModPlugin extends BaseModPlugin
         PlayerFactionStore.setPlayerFactionId(ExerelinConstants.PLAYER_NPC_ID);
         sector.getFaction(Factions.PLAYER).setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1);
         ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+        
+        Global.getSector().getCharacterData().addAbility("exerelin_follow_me");
+        AbilitySlotsAPI slots = Global.getSector().getUIData().getAbilitySlotsAPI();
+        for (AbilitySlotAPI slot: slots.getCurrSlotsCopy())
+        {
+            if (slot.getAbilityId() == null || slot.getAbilityId().isEmpty())
+            {
+                slot.setAbilityId("exerelin_follow_me");
+                break;
+            }
+        }
         
         sector.addTransientScript(new ReinitScreenScript());
     }

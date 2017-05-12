@@ -26,7 +26,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 
 	protected static final String STRING_CATEGORY = "exerelin_abilities";
 	public static final float FOLLOW_DURATION = 10;
-	public static final float FOLLOW_DURATION_PASSIVE = 1f;
+	public static final float FOLLOW_DURATION_PASSIVE = 10;
 	public static final float FOLLOW_FETCH_RANGE = 600;
 	public static final Set<String> FOLLOW_VALID_FLEET_TYPES = new HashSet<>();
 	
@@ -41,11 +41,6 @@ public class FollowMeAbility extends BaseDurationAbility {
 	@Override
 	protected String getActivationText() {
 		return StringHelper.getString(STRING_CATEGORY, "followMeTitle");
-	}
-	
-	@Override
-	public String getSpriteName() {
-		return Global.getSettings().getSpriteName("abilities", "exerelin_follow_me");
 	}
 	
 	@Override
@@ -87,17 +82,19 @@ public class FollowMeAbility extends BaseDurationAbility {
 						
 						// clear current follow assignments
 						FleetAssignmentDataAPI currentAssignment = ai.getCurrentAssignment();
+						/*
 						if (currentAssignment != null && currentAssignment.getTarget() == entity)
 						{
 							ai.removeFirstAssignmentIfItIs(FleetAssignment.ORBIT_AGGRESSIVE);
 						}
+						*/
 						currentAssignment = ai.getCurrentAssignment();
 						if (currentAssignment != null && currentAssignment.getTarget() == entity)
 						{
 							ai.removeFirstAssignmentIfItIs(FleetAssignment.ORBIT_PASSIVE);
 						}
 						
-						ai.addAssignmentAtStart(FleetAssignment.ORBIT_AGGRESSIVE, entity, FOLLOW_DURATION - FOLLOW_DURATION_PASSIVE, null);
+						//ai.addAssignmentAtStart(FleetAssignment.ORBIT_AGGRESSIVE, entity, FOLLOW_DURATION - FOLLOW_DURATION_PASSIVE, null);
 						ai.addAssignmentAtStart(FleetAssignment.ORBIT_PASSIVE, entity, FOLLOW_DURATION_PASSIVE, null);
 						
 						//fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, FOLLOW_DURATION);
@@ -155,6 +152,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 		tooltip.addPara(StringHelper.getString(STRING_CATEGORY, "followMeTooltip2"), pad);
 	}
 
+	@Override
 	public boolean hasTooltip() {
 		return true;
 	}
