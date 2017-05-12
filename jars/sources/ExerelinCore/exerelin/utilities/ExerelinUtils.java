@@ -85,6 +85,10 @@ public class ExerelinUtils
 
         return false;
     }
+	
+	public static float lerp(float x, float y, float alpha) {
+        return (1f - alpha) * x + alpha * y;
+    }
 
     public static MarketAPI getClosestMarket(String factionId)
     {

@@ -98,6 +98,8 @@ public class ExerelinConfig
     public static float revengePointsForMarketCaptureMult = 4f;
     
     // Misc
+	public static int directoryDialogKey = 32;  // D
+	
     public static float baseTariffMult = 1;
     public static float freeMarketTariffMult = 0.5f;
     public static int warmongerPenalty = 0;
@@ -106,8 +108,9 @@ public class ExerelinConfig
     public static boolean countPiratesForVictory = false;
     @Deprecated
     public static boolean ownFactionCustomsInspections = false;
-    public static int directoryDialogKey = 32;  // D
     public static boolean useRelationshipBounds = true;
+	public static boolean officerDeaths = true;
+	public static boolean officerDaredevilBonus = true;
     
 
     public static void loadSettings()
@@ -117,6 +120,8 @@ public class ExerelinConfig
             System.out.println("Loading exerelinSettings");
 
             JSONObject settings = Global.getSettings().loadJSON(CONFIG_PATH);
+            
+            directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
 
             minimumPlanets = settings.optInt("minimumPlanets");
             minimumStations = settings.optInt("minimumStations");
@@ -185,10 +190,14 @@ public class ExerelinConfig
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             maxFactionRespawns = settings.optInt("maxFactionRespawns", maxFactionRespawns);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
-            directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
+            
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             
+            officerDeaths = settings.optBoolean("officerDeaths", officerDeaths);
+            officerDaredevilBonus = settings.optBoolean("officerDaredevilBonus", officerDaredevilBonus);
+            
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
+            
             
             List<String> modFactions = new ArrayList<>();
             JSONArray modFactionsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("faction", MOD_FACTION_LIST_PATH, "nexerelin");

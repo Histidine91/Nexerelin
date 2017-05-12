@@ -9,8 +9,8 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
-import data.scripts.SSPModPlugin;
-import data.scripts.util.SSP_Util;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -80,7 +80,7 @@ public class SSP_FleetEncounterContext extends FleetEncounterContext {
     }
 
     protected void calculateAndApplyOfficerLosses(EngagementResultForFleetAPI result, boolean playerInvolved) {
-        if (!SSPModPlugin.Module_OfficerDeath) {
+        if (!ExerelinConfig.officerDeaths) {
             return;
         }
         if (!playerInvolved) {
@@ -114,10 +114,10 @@ public class SSP_FleetEncounterContext extends FleetEncounterContext {
             float escapeChance;
             float recoverableChance;
             if (result.getDestroyed().contains(member)) {
-                escapeChance = SSP_Util.lerp(0.5f, 1f, 1f - member.getStats().getCrewLossMult().getModifiedValue());
+                escapeChance = ExerelinUtils.lerp(0.5f, 1f, 1f - member.getStats().getCrewLossMult().getModifiedValue());
                 recoverableChance = 0f;
             } else {
-                escapeChance = SSP_Util.lerp(0.5f, 1f, 1f - member.getStats().getCrewLossMult().getModifiedValue());
+                escapeChance = ExerelinUtils.lerp(0.5f, 1f, 1f - member.getStats().getCrewLossMult().getModifiedValue());
                 recoverableChance = 0.75f;
             }
 
@@ -206,7 +206,7 @@ public class SSP_FleetEncounterContext extends FleetEncounterContext {
             if (data.getFleet().getCommanderStats() != null) {
                 bonus *= data.getFleet().getCommanderStats().getDynamic().getValue("officerXPMult");
             }
-            if (SSPModPlugin.Param_OfficerDaredevilBonus) {
+            if (ExerelinConfig.officerDaredevilBonus) {
                 FleetMemberAPI member = oed.sourceFleet.getFleetData().getMemberWithCaptain(person);
                 if (member != null && member.isFrigate()) {
                     bonus = 2f;
