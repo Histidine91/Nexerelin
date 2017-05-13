@@ -1,4 +1,11 @@
 {
+	# SS+ configs
+	# "maxEconFleets":75,
+	"maxPirateFleets":40,
+	"maxMercFleets":20,
+
+	"factionCommissionBounty":500,
+	
 	"plugins":{
 		"newGameCreationEntryPoint":"exerelin.world.ExerelinNewGameSetup",
 		#"newGameSectorProcGen":"com.fs.starfarer.api.impl.campaign.procgen.SectorProcGen",
