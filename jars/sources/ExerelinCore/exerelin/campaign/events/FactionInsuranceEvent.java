@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
@@ -35,14 +36,16 @@ import java.util.Set;
 
 public class FactionInsuranceEvent extends BaseEventPlugin {
 
-	protected static final float HARD_MODE_MULT = 0.5f;
+	public static final float HARD_MODE_MULT = 0.5f;
 	public static final float DMOD_BASE_COST = Global.getSettings().getFloat("baseRestoreCostMult");
 	public static final float DMOD_COST_PER_MOD = Global.getSettings().getFloat("baseRestoreCostMultPerDMod");
+	public static final float LIFE_INSURANCE_PER_LEVEL = 2000f;
 	
 	public static Logger log = Global.getLogger(FactionInsuranceEvent.class);
 	
 	protected float paidAmount = 0f;
 	protected Map<FleetMemberAPI, Integer> disabledOrDestroyedMembers = new HashMap<>();	// value is number of D mods
+	protected List<OfficerDataAPI> deadOfficers = new ArrayList<>();
 	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
@@ -119,6 +122,11 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 				value += member.getBaseBuyValue() * costMult;
 			}
 		}
+		for (OfficerDataAPI deadOfficer : deadOfficers)
+		{
+			value += deadOfficer.getPerson().getStats().getLevel() * LIFE_INSURANCE_PER_LEVEL;
+		}
+		
 		if (value <= 0) return;
 		
 		if (alignedFaction.isAtBest("player", RepLevel.SUSPICIOUS))
@@ -142,6 +150,7 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		}
 		
 		disabledOrDestroyedMembers.clear();
+		deadOfficers.clear();
 	}
 	
 	@Override
@@ -206,5 +215,10 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		}
 		//log.info("Fleet member " + member.getShipName() + " has " + dmods + " D-mods");
 		return dmods;
+	}
+	
+	public void addDeadOfficers(List<OfficerDataAPI> officers)
+	{
+		deadOfficers.addAll(officers);
 	}
 }

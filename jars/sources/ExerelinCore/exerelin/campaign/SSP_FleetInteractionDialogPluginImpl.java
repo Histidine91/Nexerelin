@@ -12,6 +12,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.events.FactionInsuranceEvent;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -235,6 +236,14 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
                 addText(text);
                 textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
                 textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
+				
+				if (Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance"))
+				{
+					FactionInsuranceEvent event = (FactionInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
+							null, "exerelin_faction_insurance");
+					event.addDeadOfficers(lostOfficers);
+					event.addDeadOfficers(recoverableOfficers);
+				}
             }
         }
 
@@ -314,6 +323,13 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
                 textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
                 textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
             }
+			
+			if (Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance"))
+			{
+				FactionInsuranceEvent event = (FactionInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
+						null, "exerelin_faction_insurance");
+				event.addDeadOfficers(lostOfficers);
+			}
         }
 
         super.winningPath();
@@ -337,7 +353,7 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
             if (dist > Misc.getBattleJoinRange()) continue;
             //if (fleet.getFaction().getRelToPlayer().isAtBest(RepLevel.INHOSPITABLE)) continue;
             //if (!fleet.getFaction().isHostileTo(actualOther.getFaction())) continue;
-			if (fleet.isPlayerFleet()) continue;
+            if (fleet.isPlayerFleet()) continue;
             if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_TRADE_FLEET)) continue;
             if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_PATROL_FLEET)) continue;
             if (fleet.isStationMode()) continue;
