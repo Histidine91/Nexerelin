@@ -2,9 +2,16 @@ package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.BattleAPI.BattleSide;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.EngagementOutcome;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.FleetMemberData;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
+import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
+import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.FullName.Gender;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
@@ -21,6 +28,7 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
 
     protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
     protected boolean recoveredOfficers = false;
+	protected FIDConfig config;	// vanilla one is private
 
     public SSP_FleetInteractionDialogPluginImpl() {
         super();
@@ -29,7 +37,7 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
 
     public SSP_FleetInteractionDialogPluginImpl(FIDConfig params) {
         super(params);
-        //this.config = params;
+        this.config = params;
         context = new SSP_FleetEncounterContext();
     }
 
@@ -335,32 +343,135 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
         super.winningPath();
     }
     
-    // Makes nearby non-trade fleets patrols, so the superclass function can pull them in
-    @Override
-    protected void pullInNearbyFleets() {
-        BattleAPI b = context.getBattle();
-        
-        CampaignFleetAPI actualPlayer = Global.getSector().getPlayerFleet();
-        CampaignFleetAPI actualOther = (CampaignFleetAPI) (dialog.getInteractionTarget());
-        
-        for (CampaignFleetAPI fleet : actualPlayer.getContainingLocation().getFleets()) {
-            if (b == fleet.getBattle()) continue;
-            if (fleet.getBattle() != null) continue;
-            
-            float dist = Misc.getDistance(actualOther.getLocation(), fleet.getLocation());
-            dist -= actualOther.getRadius();
-            dist -= fleet.getRadius();
-            if (dist > Misc.getBattleJoinRange()) continue;
-            //if (fleet.getFaction().getRelToPlayer().isAtBest(RepLevel.INHOSPITABLE)) continue;
-            //if (!fleet.getFaction().isHostileTo(actualOther.getFaction())) continue;
-            if (fleet.isPlayerFleet()) continue;
-            if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_TRADE_FLEET)) continue;
-            if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_PATROL_FLEET)) continue;
-            if (fleet.isStationMode()) continue;
-            
-            // set to patrol (enable joining battle)
-            fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true, 0);
-        }
-        super.pullInNearbyFleets();
-    }
+	@Override
+	public void init(InteractionDialogAPI dialog) {		
+		if (this.config == null) {
+			MemoryAPI memory = dialog.getInteractionTarget().getMemoryWithoutUpdate();
+//			if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE)) {
+//				this.config = (FIDConfig) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE);
+//			} else 
+			if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)) {
+				this.config = ((FIDConfigGen) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)).createConfig();
+			} else {
+				this.config = new FIDConfig();
+			}
+		}
+		super.init(dialog);
+	}
+	
+	protected boolean getOngoingBattle()
+	{
+		if (context.getBattle() == null) {
+			if (otherFleet.getBattle() == null || otherFleet.getBattle().isDone()) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	// same as vanilla, except stations don't get pulled + anything pursuing a participating fleet gets pulled
+	protected boolean shouldPullInFleet(BattleAPI battle, CampaignFleetAPI fleet, float dist)
+	{
+		Global.getLogger(this.getClass()).info("Testing fleet " + fleet.getName());
+		float baseSensorRange = playerFleet.getBaseSensorRangeToDetect(fleet.getSensorProfile());
+		boolean visible = fleet.isVisibleToPlayerFleet();
+		VisibilityLevel level = fleet.getVisibilityLevelToPlayerFleet();
+//			if (dist < Misc.getBattleJoinRange() && 
+//					(dist < baseSensorRange || (visible && level != VisibilityLevel.SENSOR_CONTACT))) {
+//				System.out.println("2380dfwef");
+//			}
+		if (dist > Misc.getBattleJoinRange())
+			return false;
+		if (dist > baseSensorRange && !(visible && level != VisibilityLevel.SENSOR_CONTACT))
+			return false;
+		if (fleet.getAI() != null && fleet.getAI().wantsToJoin(battle, true))
+			return true;
+		if (fleet.isStationMode())
+			return false;	// screw Alex's logic on this
+		
+		if (fleet.getAI() != null)
+		{
+			FleetAssignmentDataAPI assignment = fleet.getAI().getCurrentAssignment();
+			SectorEntityToken target = assignment.getTarget();
+			if (target != null && target instanceof CampaignFleetAPI)
+			{
+				List<CampaignFleetAPI> fleets = battle.getBothSides();
+				for (CampaignFleetAPI inBattle : fleets)
+				{
+					if (inBattle == target)
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	// vanilla with modified pulling in of nearby fleets
+	@Override
+	protected void pullInNearbyFleets() {
+		BattleAPI b = context.getBattle();
+		
+		BattleSide playerSide = b.pickSide(Global.getSector().getPlayerFleet());
+		
+		boolean hostile = otherFleet.getAI() != null && otherFleet.getAI().isHostileTo(playerFleet);
+		boolean ongoingBattle = getOngoingBattle();
+		if (ongoingBattle) hostile = true;
+		
+		//canDecline = otherFleet.getAI() != null && other
+		
+//		boolean someJoined = false;
+		CampaignFleetAPI actualPlayer = Global.getSector().getPlayerFleet();
+		CampaignFleetAPI actualOther = (CampaignFleetAPI) (dialog.getInteractionTarget());
+		
+		//textPanel.addParagraph("Projecting nearby fleet movements:");
+		//textPanel.addParagraph("You encounter a ");
+		pulledIn.clear();
+		
+		for (CampaignFleetAPI fleet : actualPlayer.getContainingLocation().getFleets()) {
+			if (b == fleet.getBattle()) continue;
+			if (fleet.getBattle() != null) continue;
+			
+			float dist = Misc.getDistance(actualOther.getLocation(), fleet.getLocation());
+			dist -= actualOther.getRadius();
+			dist -= fleet.getRadius();
+//			if (dist < Misc.getBattleJoinRange()) {
+//				System.out.println("Checking: " + fleet.getNameWithFaction());
+//			}
+			
+			if (shouldPullInFleet(b, fleet, dist)) {
+				
+				BattleSide joiningSide = b.pickSide(fleet, true);
+				if (!config.pullInAllies && joiningSide == playerSide) continue;
+				if (!config.pullInEnemies && joiningSide != playerSide) continue;
+				
+				b.join(fleet);
+				pulledIn.add(fleet);
+				//if (b.isPlayerSide(b.getSideFor(fleet))) {
+				if (b.getSide(playerSide) == b.getSideFor(fleet)) {
+					textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": supporting your forces.");//, FRIEND_COLOR);
+				} else {
+					if (hostile) {
+						textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": joining the enemy.");//, ENEMY_COLOR);
+					} else {
+						textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": supporting the opposing side.");
+					}
+				}
+				textPanel.highlightFirstInLastPara(fleet.getNameWithFactionKeepCase() + ":", fleet.getFaction().getBaseUIColor());
+//				someJoined = true;
+			}
+		}
+//		if (!someJoined) {
+//			addText("No nearby fleets will join the battle.");
+//		}
+		if (!ongoingBattle) {
+			b.genCombined();
+			b.takeSnapshots();
+			playerFleet = b.getPlayerCombined();
+			otherFleet = b.getNonPlayerCombined();
+			showFleetInfo();
+		}
+		
+	}
 }
