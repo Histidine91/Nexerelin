@@ -27,10 +27,14 @@ import java.util.List;
 
 public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 
+	public static final float DAILY_POINT_MULT = 0.1f;
+	public static final float MARKET_STABILITY_DIVISOR = 5;
+	
 	protected MarketAPI market;
 	protected List<PatrolFleetData> activePatrols = new ArrayList<PatrolFleetData>();
 	protected IntervalUtil tracker;
 	protected int maxPatrols;
+	protected float patrolPoints = 20;
 
 	protected RollingAverageTracker patrolBattlesLost;
 	
@@ -63,8 +67,51 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		return this;
 	}
 	
+	public float getMaxPoints(boolean raw)
+	{
+		float baseSize = market.getSize() * 5 + 8;
+		float size = baseSize;
+		if (raw) return size;
+
+		if (market.hasCondition(Conditions.MILITARY_BASE)) size += baseSize * 0.2;
+		if (market.hasCondition(Conditions.ORBITAL_STATION)) size += baseSize * 0.1;
+		if (market.hasCondition(Conditions.SPACEPORT)) size += baseSize * 0.1;
+		if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) size += baseSize * 0.1;
+		if (market.hasCondition(Conditions.HEADQUARTERS)) size += baseSize * 0.2;
+		
+		return size;
+	}
+	
+	
+	public void addPatrolPoints(float points)
+	{
+		patrolPoints = Math.min(points + patrolPoints, getMaxPoints(false));
+	}
+	
+	protected void addDailyPoints(float days)
+	{
+		float marketSize = market.getSize();
+		float baseIncrement = marketSize * (0.5f + (market.getStabilityValue()/MARKET_STABILITY_DIVISOR));
+		float increment = baseIncrement;
+		//if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) increment += baseIncrement * 0.1f;
+		if (market.hasCondition(Conditions.HEADQUARTERS)) increment += baseIncrement * 0.2f;
+		if (market.hasCondition(Conditions.MILITARY_BASE)) increment += baseIncrement * 0.2f;
+		if (market.hasCondition(Conditions.SPACEPORT) || market.hasCondition(Conditions.ORBITAL_STATION)) 
+			increment += baseIncrement * 0.1f;
+
+		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
+		if (factionConfig != null)
+		{
+			increment *= factionConfig.patrolSizeMult;
+		}
+
+		increment = increment * DAILY_POINT_MULT * days;
+		addPatrolPoints(increment);
+	}
+	
 	// sizing checks faction config, and doesn't spawn during invasions
-	// also reduces effect of losses on patrol frequency
+	// point-based limiter on patrol spawns
+	// reduces effect of losses on patrol frequency/size, and reduces losses counter when spawning a patrol
 	// otherwise same as vanilla
 	@Override
 	public void advance(float amount) {
@@ -72,6 +119,7 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		float days = Global.getSector().getClock().convertToDays(amount);
 		
 		patrolBattlesLost.advance(days);
+		addDailyPoints(days);
 		
 		float losses = patrolBattlesLost.getAverage();
 		
@@ -108,6 +156,7 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		}
 		activePatrols.removeAll(remove);
 		
+		if (patrolPoints < 4) return;
 		//maxPatrols = Math.max(1, market.getSize() - 3) + (int) (market.getStabilityValue() * 0.5f);
 		//float losses = patrolBattlesLost.getAverage();
 		
@@ -132,11 +181,11 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 			picker.add(PatrolType.FAST, 
 					Math.max(1, maxPatrols - getCount(PatrolType.COMBAT, PatrolType.HEAVY)));
 			picker.add(PatrolType.COMBAT, 
-					Math.max(1, maxPatrols - getCount(PatrolType.FAST, PatrolType.HEAVY) + market.getSize()) + losses * 0.5f);
+					Math.max(1, maxPatrols - getCount(PatrolType.FAST, PatrolType.HEAVY) + market.getSize()) + lossMod * 0.5f);
 			
-			if (market.getSize() >= 5) {
+			if (market.getSize() >= 5 && patrolPoints >= 12) {
 				picker.add(PatrolType.HEAVY, 
-						Math.max(1, maxPatrols - getCount(PatrolType.FAST, PatrolType.COMBAT) + market.getSize() - 5) + losses);
+						Math.max(1, maxPatrols - getCount(PatrolType.FAST, PatrolType.COMBAT) + market.getSize() - 5) + lossMod);
 			}
 			
 			
@@ -147,29 +196,34 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 			float freighter = 0f;
 			String fleetType = FleetTypes.PATROL_SMALL;
 			switch (type) {
-			case FAST:
-				fleetType = FleetTypes.PATROL_SMALL;
-				combat = Math.round(3f + (float) Math.random() * 2f);
-				combat += Math.min(5f, losses * 2f);
-				break;
-			case COMBAT:
-				fleetType = FleetTypes.PATROL_MEDIUM;
-				combat = Math.round(6f + (float) Math.random() * 3f);
-				combat += Math.min(15f, losses * 4f);
-				
-				tanker = Math.round((float) Math.random());
-				break;
-			case HEAVY:
-				fleetType = FleetTypes.PATROL_LARGE;
-				combat = Math.round(10f + (float) Math.random() * 5f);
-				combat += Math.min(25f, losses * 6f);
-				
-				tanker = 2f;
-				freighter = 2f;
-				break;
+				case FAST:
+					fleetType = FleetTypes.PATROL_SMALL;
+					combat = Math.round(3f + (float) Math.random() * 2f);
+					combat += Math.min(5f, lossMod * 2f);
+					break;
+				case COMBAT:
+					fleetType = FleetTypes.PATROL_MEDIUM;
+					combat = Math.round(6f + (float) Math.random() * 3f);
+					combat += Math.min(15f, lossMod * 4f);
+
+					tanker = Math.round((float) Math.random());
+					break;
+				case HEAVY:
+					fleetType = FleetTypes.PATROL_LARGE;
+					combat = Math.round(10f + (float) Math.random() * 5f);
+					combat += Math.min(25f, lossMod * 6f);
+
+					tanker = 2f;
+					freighter = 2f;
+					break;
 			}
 			combat *= 1f + (market.getStabilityValue() / 20f);
-			combat *= sizeMult;			
+			combat *= sizeMult;
+			if (combat > patrolPoints)
+			{
+				log.info("Desired patrol size exceeding patrol points: " + combat + " / " + patrolPoints);
+			}
+			combat = Math.min(combat, patrolPoints);
 			
 			//combat += Math.min(30f, losses * 3f);
 			
@@ -188,8 +242,8 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 						0f, // utilityPts
 						0f, // qualityBonus
 						-1f, // qualityOverride
-						1f + Math.min(1f, losses / 12.5f),	//1f + Math.min(1f, losses / 10f), // officer num mult
-						0 + (int) (losses * 0.75f)	// 0 + (int) losses // officer level bonus
+						1f + Math.min(1f, lossMod / 12.5f),	//1f + Math.min(1f, losses / 10f), // officer num mult
+						0 + (int) (lossMod * 0.75f)	// 0 + (int) losses // officer level bonus
 						);
 			CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(market.getFaction(), params);
 			if (fleet == null) return;
@@ -228,6 +282,10 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 				fleet.getCommander().setRankId(Ranks.SPACE_CAPTAIN);
 				break;
 			}
+			
+			patrolPoints -= combat;
+			//float reduction = Math.min(losses, 1);
+			//patrolBattlesLost.add(-reduction);
 			
 			log.info("Spawned patrol fleet [" + fleet.getNameWithFaction() + "] from market " + market.getName());
 		} else {
