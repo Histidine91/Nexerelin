@@ -335,16 +335,16 @@ public class SSP_BattleCreationPluginImpl implements BattleCreationPlugin {
 
         int numObjectives = 0;
         if (withObjectives) {
-            if (fpOne + fpTwo > maxFP + 440) {
-                numObjectives = 6 + (int) (Math.random() * 2.0);
-            } else if (fpOne + fpTwo > maxFP + 300) {
-                numObjectives = 5 + (int) (Math.random() * 2.0);
-            } else if (fpOne + fpTwo > maxFP + 180) {
+            if (fpOne + fpTwo > maxFP + 480) {
+                numObjectives = 5 + (int) (Math.random() * 3.0);
+            } else if (fpOne + fpTwo > maxFP + 320) {
                 numObjectives = 4 + (int) (Math.random() * 2.0);
-            } else if (fpOne + fpTwo > maxFP + 80) {
+            } else if (fpOne + fpTwo > maxFP + 180) {
                 numObjectives = 3 + (int) (Math.random() * 2.0);
-            } else {
+            } else if (fpOne + fpTwo > maxFP + 80) {
                 numObjectives = 2 + (int) (Math.random() * 2.0);
+            } else {
+                numObjectives = 1 + (int) (Math.random() * 2.0);
             }
         }
 
