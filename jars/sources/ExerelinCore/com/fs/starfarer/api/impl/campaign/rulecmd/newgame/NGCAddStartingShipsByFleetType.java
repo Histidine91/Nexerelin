@@ -42,19 +42,24 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 		
 		for (String variantId : startingVariants)
 		{
-			FleetMemberType type = FleetMemberType.SHIP;
-			if (variantId.endsWith("_wing")) {
-				type = FleetMemberType.FIGHTER_WING; 
-			}
-			data.addStartingFleetMember(variantId, type);
+			try {
+				FleetMemberType type = FleetMemberType.SHIP;
+				if (variantId.endsWith("_wing")) {
+					type = FleetMemberType.FIGHTER_WING; 
+				}
+				data.addStartingFleetMember(variantId, type);
 
-			FleetMemberAPI temp = Global.getFactory().createFleetMember(type, variantId);
-			crew += (int)Math.min(temp.getNeededCrew() * 1.2f, temp.getMaxCrew());
-			supplies += (int)temp.getCargoCapacity()/2;
-			machinery += (int)temp.getCargoCapacity()/8;
-			fuel += (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
-			
-			AddRemoveCommodity.addFleetMemberGainText(Global.getSettings().getVariant(variantId), dialog.getTextPanel());
+				FleetMemberAPI temp = Global.getFactory().createFleetMember(type, variantId);
+				crew += (int)Math.min(temp.getNeededCrew() * 1.2f, temp.getMaxCrew());
+				supplies += (int)temp.getCargoCapacity()/2;
+				machinery += (int)temp.getCargoCapacity()/8;
+				fuel += (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
+
+				AddRemoveCommodity.addFleetMemberGainText(Global.getSettings().getVariant(variantId), dialog.getTextPanel());
+			} catch (RuntimeException rex) {	// probably variant not found
+				Global.getLogger(this.getClass()).error(rex.getMessage());
+				dialog.getTextPanel().addParagraph(rex.getMessage());
+			}	
 		}
 		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.CREW, crew);
 		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.SUPPLIES, supplies);

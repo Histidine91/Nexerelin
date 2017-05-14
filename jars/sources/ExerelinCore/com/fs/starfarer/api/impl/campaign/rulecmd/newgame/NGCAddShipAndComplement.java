@@ -26,29 +26,33 @@ public class NGCAddShipAndComplement extends BaseCommandPlugin {
 		String vid = params.get(0).getString(memoryMap);
 		CharacterCreationData data = (CharacterCreationData) memoryMap.get(MemKeys.LOCAL).get("$characterData");
 
-		FleetMemberType type = FleetMemberType.SHIP;
-		if (vid.endsWith("_wing")) {
-			type = FleetMemberType.FIGHTER_WING; 
-		}
-		data.addStartingFleetMember(vid, type);
-		
-		
-		FleetMemberAPI temp = Global.getFactory().createFleetMember(type, vid);
-		int crew = (int)Math.min(temp.getNeededCrew() * 1.5f, temp.getMaxCrew());
-		int supplies = (int)temp.getCargoCapacity()/2;
-		int machinery = (int)temp.getCargoCapacity()/8;
-		int fuel = (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
-					
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.CREW, crew);
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.SUPPLIES, supplies);
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.HEAVY_MACHINERY, machinery);
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.FUEL, fuel);
-		
-		AddRemoveCommodity.addFleetMemberGainText(Global.getSettings().getVariant(vid), dialog.getTextPanel());
-		AddRemoveCommodity.addCommodityGainText(Commodities.CREW, crew, dialog.getTextPanel());
-		AddRemoveCommodity.addCommodityGainText(Commodities.SUPPLIES, supplies, dialog.getTextPanel());
-		AddRemoveCommodity.addCommodityGainText(Commodities.HEAVY_MACHINERY, machinery, dialog.getTextPanel());
-		AddRemoveCommodity.addCommodityGainText(Commodities.FUEL, fuel, dialog.getTextPanel());
+		try {
+			FleetMemberType type = FleetMemberType.SHIP;
+			if (vid.endsWith("_wing")) {
+				type = FleetMemberType.FIGHTER_WING; 
+			}
+			data.addStartingFleetMember(vid, type);
+
+			FleetMemberAPI temp = Global.getFactory().createFleetMember(type, vid);
+			int crew = (int)Math.min(temp.getNeededCrew() * 1.5f, temp.getMaxCrew());
+			int supplies = (int)temp.getCargoCapacity()/2;
+			int machinery = (int)temp.getCargoCapacity()/8;
+			int fuel = (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
+
+			data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.CREW, crew);
+			data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.SUPPLIES, supplies);
+			data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.HEAVY_MACHINERY, machinery);
+			data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.FUEL, fuel);
+
+			AddRemoveCommodity.addFleetMemberGainText(Global.getSettings().getVariant(vid), dialog.getTextPanel());
+			AddRemoveCommodity.addCommodityGainText(Commodities.CREW, crew, dialog.getTextPanel());
+			AddRemoveCommodity.addCommodityGainText(Commodities.SUPPLIES, supplies, dialog.getTextPanel());
+			AddRemoveCommodity.addCommodityGainText(Commodities.HEAVY_MACHINERY, machinery, dialog.getTextPanel());
+			AddRemoveCommodity.addCommodityGainText(Commodities.FUEL, fuel, dialog.getTextPanel());
+		} catch (RuntimeException rex) {	// probably variant not found
+			Global.getLogger(this.getClass()).error(rex.getMessage());
+			dialog.getTextPanel().addParagraph(rex.getMessage());
+		}	
                 
 		return true;
 	}
