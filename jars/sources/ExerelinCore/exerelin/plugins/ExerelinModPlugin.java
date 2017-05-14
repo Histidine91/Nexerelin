@@ -208,7 +208,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         Global.getLogger(this.getClass()).info("New game after economy load; " + isNewGame);
         
         SectorManager.reinitLiveFactions();
-        if (SectorManager.getCorvusMode() && DiplomacyManager.isRandomFactionRelationships())
+        if (SectorManager.getCorvusMode())
         {
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
