@@ -55,6 +55,7 @@ public class SSP_FleetEncounterContext extends FleetEncounterContext {
             if (officer.canLevelUp()) {
                 officer.getSkillPicks();
             }
+			playerUnconfirmedOfficers.remove(officer);
         }
         playerRecoverableOfficerLosses.clear();
     }
