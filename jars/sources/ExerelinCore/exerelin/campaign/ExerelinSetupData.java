@@ -18,34 +18,26 @@ public final class ExerelinSetupData
 	public static Logger log = Global.getLogger(ExerelinSetupData.class);
 	private static ExerelinSetupData instance = null;
 
-	// Player setup defaults
-	private List<String> factions = null;
-	private List<String> playableFactions = null;
-
 	// Sector Generation Defaults
-	public int numSystems = 6;
-	public int numSystemsEmpty = 2;
-	public int maxMoonsPerPlanet = 2;
-
-	public int maxPlanets = 5;
-	public int maxStations = 3;
-	public int maxAsteroidBelts = 3;
-	public int baseSystemSize = 12800;
-	public int maxSectorSize = 12000;
+	public int numSystems = 12;
+	public int numPlanets = 24;
+	public int numStations = 12;
+	public int maxPlanetsPerSystem = 4;
+	public int maxMarketsPerSystem = 6;	// includes stations
 
 	// Game defaults
 	public boolean corvusMode = true;
 	public boolean respawnFactions = false;
 	public boolean onlyRespawnStartingFactions = false;
-	public int respawnDelay = 60;
 	public int numStartFactions = -1;
 	public boolean randomStartRelationships = false;
 	public boolean easyMode = false;
 	public boolean hardMode = false;
-	public boolean omnifactoryPresent = false;
-	public boolean randomOmnifactoryLocation = false;
+	@Deprecated public boolean omnifactoryPresent = false;
+	@Deprecated public boolean randomOmnifactoryLocation = false;
 	public boolean prismMarketPresent = false;
 	public boolean freeStart = false;
+	public boolean useMarketFactionWeights = true;
 	public int numStartingOfficers = 0;
 	public boolean randomStartShips = false;
 
@@ -72,16 +64,12 @@ public final class ExerelinSetupData
 	
 	public List<String> getPlayableFactions()
 	{
-		if (playableFactions != null) return new ArrayList<>(playableFactions);	
-		playableFactions = getFactions(true);
-		return new ArrayList<>(playableFactions);
+		return new ArrayList<>(getFactions(true));
 	}
 	
 	public List<String> getAllFactions()
 	{
-		if (factions != null) return new ArrayList<>(factions);	
-		factions = getFactions(false);
-		return new ArrayList<>(factions);
+		return new ArrayList<>(getFactions(false));
 	}
 	
 	protected List<String> getFactions(boolean playableOnly)
@@ -90,11 +78,5 @@ public final class ExerelinSetupData
 		factionsList.addAll(ExerelinConfig.getBuiltInFactionsList(playableOnly));
 		factionsList.addAll(ExerelinConfig.getModdedFactionsList(playableOnly));
 		return new ArrayList<>(factionsList);
-	}
-
-	public void resetAvailableFactions()
-	{
-		factions = null;
-		playableFactions = null;
 	}
 }

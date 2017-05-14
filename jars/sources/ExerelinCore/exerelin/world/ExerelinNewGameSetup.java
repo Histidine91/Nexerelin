@@ -106,7 +106,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		market.setBaseSmugglingStabilityValue(0);
 		
-		ExerelinMarketSetup.addStartingMarketCommodities(market);
+		ExerelinMarketBuilder.addStartingMarketCommodities(market);
 		
 		market.getTariff().modifyFlat("generator", sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
 		ExerelinUtilsMarket.setTariffs(market);
