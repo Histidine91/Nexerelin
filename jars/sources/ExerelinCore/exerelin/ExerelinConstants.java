@@ -7,6 +7,7 @@ package exerelin;
 public class ExerelinConstants {
 	public static final String PLAYER_NPC_ID = "player_npc";
 	public static final String AVESTA_ID = "exipirated_avesta";
-	public static final String TAG_UNINVADABLE = "uninvadable";
+	@Deprecated public static final String TAG_UNINVADABLE = "nex_uninvadable";
+	public static final String MEMORY_KEY_UNINVADABLE = "$nex_uninvadable";
 	public static final String MEMORY_KEY_VISITED_BEFORE = "$visitedBefore";
 }

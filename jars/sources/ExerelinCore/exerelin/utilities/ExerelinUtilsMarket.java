@@ -20,10 +20,14 @@ import exerelin.campaign.econ.RecyclingPlant;
 import exerelin.campaign.econ.SupplyWorkshop;
 import exerelin.ExerelinConstants;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import org.lazywizard.lazylib.MathUtils;
 
 public class ExerelinUtilsMarket {
+	
+	// use the memory key instead of this wherever possible
+	public static final List<String> NO_INVADE_MARKETS = Arrays.asList(new String[]{"SCY_prismFreeport", "prismFreeport", "prismFreeport_market"});
 	
 	/**
 	 * Gets demand for a particular commodity on a given market. Should be safe to use in most instances.
@@ -386,13 +390,19 @@ public class ExerelinUtilsMarket {
 		return machinery;
 	}
 	
+	public static boolean isValidInvasionTarget(MarketAPI market, int minSize)
+	{
+		return isValidInvasionTarget(market, minSize, false);
+	}
+	
 	/**
-	 * Can factions (not player) launch invasion fleets at <code>market</code>?
+	 * Can factions launch invasion fleets at <code>market</code>?
 	 * @param market
 	 * @param minSize Can only invade market if it is at least this big
+	 * @param player
 	 * @return
 	 */
-	public static boolean isValidInvasionTarget(MarketAPI market, int minSize)
+	public static boolean isValidInvasionTarget(MarketAPI market, int minSize, boolean player)
 	{
 		if (market.hasCondition(Conditions.ABANDONED_STATION)) return false;
 		if (market.getSize() < minSize) return false;
@@ -401,15 +411,21 @@ public class ExerelinUtilsMarket {
 		
 		//if (marketFaction.getId().equals(Factions.INDEPENDENT)) return false;
 		//if (market.getFactionId().equals("sun_ice")) return false;
-		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(marketFaction.getId());
-		if (config != null && !config.playableFaction)
-			return false;
+		if (player)
+		{
+			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(marketFaction.getId());
+			if (config != null && !config.playableFaction)
+				return false;
+		}
 		if (market.getPrimaryEntity() instanceof CampaignFleetAPI) return false;
 		if (marketFaction.isNeutralFaction()) return false;
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
 		if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
 			return false;
 		if (market.getPrimaryEntity().hasTag(ExerelinConstants.TAG_UNINVADABLE))
+			return false;
+		//Global.getSector().getCampaignUI().addMessage(market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_UNINVADABLE) + "");
+		if (market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_UNINVADABLE))
 			return false;
 		
 		return true;

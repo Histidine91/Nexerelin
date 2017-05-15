@@ -11,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Events;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMission;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.events.ExerelinFactionCommissionMissionEvent;
 
@@ -42,10 +43,18 @@ public class ExerelinUtilsFaction {
     
     public static List<MarketAPI> getFactionMarkets(String factionId)
     {
+        return getFactionMarkets(factionId, false);
+    }
+    
+    public static List<MarketAPI> getFactionMarkets(String factionId, boolean onlyInvadable)
+    {
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
         List<MarketAPI> ret = new ArrayList<>();
         for (MarketAPI market : allMarkets)
         {
+            if (onlyInvadable && market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_UNINVADABLE))
+            //if (onlyInvadable && market.getPrimaryEntity().getTags().contains(ExerelinConstants.TAG_UNINVADABLE))
+                continue;
             if (market.getFactionId().equals(factionId))
                 ret.add(market);
         }

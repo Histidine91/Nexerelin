@@ -111,7 +111,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		for (String enemyId: enemies)
 		{
 			if (enemyId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
-			List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(enemyId);
+			List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(enemyId, true);
 			for (MarketAPI market : markets) {
 				if (!doesFactionTargetPairAlreadyExist(factionId, market))
 					targetPicker.add(market);

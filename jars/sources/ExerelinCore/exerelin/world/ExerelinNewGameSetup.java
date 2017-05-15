@@ -105,6 +105,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		market.setBaseSmugglingStabilityValue(0);
+		market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_UNINVADABLE, true);
 		
 		ExerelinMarketSetup.addStartingMarketCommodities(market);
 		

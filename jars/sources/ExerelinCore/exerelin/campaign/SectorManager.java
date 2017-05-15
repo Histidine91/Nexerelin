@@ -807,14 +807,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
         if (playerInvolved) StatsTracker.getStatsTracker().notifyMarketCaptured(market);
         
-        int marketsRemaining = ExerelinUtilsFaction.getFactionMarkets(oldOwner.getId()).size();
+        int marketsRemaining = ExerelinUtilsFaction.getFactionMarkets(oldOwner.getId(), true).size();
         log.info("Faction " + oldOwner.getDisplayName() + " has " + marketsRemaining + " markets left");
         if (marketsRemaining == 0)
         {
             factionEliminated(newOwner, oldOwner, market);
         }
         
-        marketsRemaining = ExerelinUtilsFaction.getFactionMarkets(newOwner.getId()).size();
+        marketsRemaining = ExerelinUtilsFaction.getFactionMarkets(newOwner.getId(), true).size();
         if (marketsRemaining == 1)
         {
             factionRespawned(newOwner, market);
@@ -982,7 +982,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         for (String factionId:temp)
         {
-            if (ExerelinUtilsFaction.getFactionMarkets(factionId).size() > 0)
+            if (ExerelinUtilsFaction.getFactionMarkets(factionId, true).size() > 0)
             {
                 ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
                 if (config != null && !config.playableFaction)
