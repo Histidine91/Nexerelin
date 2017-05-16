@@ -22,6 +22,10 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.util.Misc;
+import data.scripts.campaign.fleets.DS_BountyPirateFleetManager;
+import data.scripts.campaign.fleets.DS_LuddicPathFleetManager;
+import data.scripts.campaign.fleets.DS_MercFleetManager;
+import data.scripts.campaign.fleets.DS_PirateFleetManager;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
@@ -164,16 +168,22 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		sector.addScript(new PatrolFleetManagerReplacer());
 		sector.registerPlugin(new CoreCampaignPluginImpl());
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
-		
-		if (!ExerelinUtils.isSSPInstalled(false))
-		{
-			sector.addScript(new CoreEventProbabilityManager());
-		}
+		sector.addScript(new CoreEventProbabilityManager());
 		sector.addScript(new EconomyFleetManager());
-		sector.addScript(new MercFleetManager());
-		sector.addScript(new LuddicPathFleetManager());
-		sector.addScript(new PirateFleetManager());
-		sector.addScript(new BountyPirateFleetManager());
+		if (ExerelinModPlugin.HAVE_DYNASECTOR)
+		{
+			sector.addScript(new DS_MercFleetManager());
+			sector.addScript(new DS_LuddicPathFleetManager());
+			sector.addScript(new DS_PirateFleetManager());
+			sector.addScript(new DS_BountyPirateFleetManager());
+		}
+		else
+		{
+			sector.addScript(new MercFleetManager());
+			sector.addScript(new LuddicPathFleetManager());
+			sector.addScript(new PirateFleetManager());
+			sector.addScript(new BountyPirateFleetManager());
+		}			
 		
 		//sector.addScript(new EconomyLogger());
 		
