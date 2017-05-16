@@ -9,7 +9,6 @@ import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.FleetMemberData
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
-import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.FullName.Gender;
@@ -24,21 +23,28 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialogPluginImpl {
+/*
+Changes from vanilla:
+- Officer death mechanic
+- Modified pull in of fleets for ally battles
+- Fleet encounter context contains DS's fix for custom variant salvaging
+*/
+
+public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogPluginImpl {
 
     protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
     protected boolean recoveredOfficers = false;
 	protected FIDConfig config;	// vanilla one is private
 
-    public SSP_FleetInteractionDialogPluginImpl() {
+    public NexFleetInteractionDialogPluginImpl() {
         super();
-        context = new SSP_FleetEncounterContext();
+        context = new NexFleetEncounterContext();
     }
 
-    public SSP_FleetInteractionDialogPluginImpl(FIDConfig params) {
+    public NexFleetInteractionDialogPluginImpl(FIDConfig params) {
         super(params);
         this.config = params;
-        context = new SSP_FleetEncounterContext();
+        context = new NexFleetEncounterContext();
     }
 
     @Override
@@ -48,9 +54,9 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
         boolean totalDefeat = !playerFleet.isValidPlayerFleet();
         boolean mutualDestruction = context.getLastEngagementOutcome() == EngagementOutcome.MUTUAL_DESTRUCTION;
 
-        List<OfficerDataAPI> officersEscaped = ((SSP_FleetEncounterContext) context).getPlayerOfficersEscaped();
-        List<OfficerDataAPI> officersMIA = ((SSP_FleetEncounterContext) context).getPlayerOfficersMIA();
-        List<OfficerDataAPI> officersKIA = ((SSP_FleetEncounterContext) context).getPlayerOfficersKIA();
+        List<OfficerDataAPI> officersEscaped = ((NexFleetEncounterContext) context).getPlayerOfficersEscaped();
+        List<OfficerDataAPI> officersMIA = ((NexFleetEncounterContext) context).getPlayerOfficersMIA();
+        List<OfficerDataAPI> officersKIA = ((NexFleetEncounterContext) context).getPlayerOfficersKIA();
         if (!officersEscaped.isEmpty() && !totalDefeat && !mutualDestruction) {
             List<String> escaped = new ArrayList<>(officersEscaped.size());
             for (OfficerDataAPI officer : officersEscaped) {
@@ -202,10 +208,10 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
             recoveredOfficers = true;
 
             List<OfficerDataAPI> recoverableOfficers =
-                                 ((SSP_FleetEncounterContext) context).getPlayerRecoverableOfficers();
-            List<OfficerDataAPI> lostOfficers = ((SSP_FleetEncounterContext) context).getPlayerLostOfficers();
+                                 ((NexFleetEncounterContext) context).getPlayerRecoverableOfficers();
+            List<OfficerDataAPI> lostOfficers = ((NexFleetEncounterContext) context).getPlayerLostOfficers();
             List<OfficerDataAPI> unconfirmedOfficers =
-                                 ((SSP_FleetEncounterContext) context).getPlayerUnconfirmedOfficers();
+                                 ((NexFleetEncounterContext) context).getPlayerUnconfirmedOfficers();
             if (!lostOfficers.isEmpty() || !recoverableOfficers.isEmpty()) {
                 String s1;
                 if (lostOfficers.size() + recoverableOfficers.size() == 1) {
@@ -276,8 +282,8 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
             recoveredOfficers = true;
 
             List<OfficerDataAPI> recoverableOfficers =
-                                 ((SSP_FleetEncounterContext) context).getPlayerRecoverableOfficers();
-            List<OfficerDataAPI> lostOfficers = ((SSP_FleetEncounterContext) context).getPlayerLostOfficers();
+                                 ((NexFleetEncounterContext) context).getPlayerRecoverableOfficers();
+            List<OfficerDataAPI> lostOfficers = ((NexFleetEncounterContext) context).getPlayerLostOfficers();
             if (!recoverableOfficers.isEmpty()) {
                 String s1;
                 if (recoverableOfficers.size() == 1) {
@@ -303,7 +309,7 @@ public class SSP_FleetInteractionDialogPluginImpl extends FleetInteractionDialog
                 textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
                 textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
 
-                ((SSP_FleetEncounterContext) context).recoverPlayerOfficers();
+                ((NexFleetEncounterContext) context).recoverPlayerOfficers();
             }
 
             if (!lostOfficers.isEmpty()) {

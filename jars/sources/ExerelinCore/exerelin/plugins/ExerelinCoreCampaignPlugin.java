@@ -12,7 +12,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.MiningHelperLegacy;
-import exerelin.campaign.SSP_FleetInteractionDialogPluginImpl;
+import exerelin.campaign.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.combat.SSP_BattleCreationPluginImpl;
@@ -102,7 +102,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
     @Override
     public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
         if (interactionTarget instanceof CampaignFleetAPI) {
-            return new PluginPick<InteractionDialogPlugin>(new SSP_FleetInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
+            return new PluginPick<InteractionDialogPlugin>(new NexFleetInteractionDialogPluginImpl(), PickPriority.MOD_SET);
         }
         return null;
     }
