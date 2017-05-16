@@ -19,7 +19,7 @@ public class NGCSetNumStations extends BaseCommandPlugin {
 		int num = (int)params.get(0).getFloat(memoryMap);
 		setupData.numStations = num;
 		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-		memory.set("$maxStations", num, 0);
+		memory.set("$numStations", num, 0);
 		return true;
 	}
 }

@@ -1,9 +1,7 @@
 package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
 import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinFactionConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +35,7 @@ public final class ExerelinSetupData
 	@Deprecated public boolean randomOmnifactoryLocation = false;
 	public boolean prismMarketPresent = false;
 	public boolean freeStart = false;
-	public boolean useMarketFactionWeights = true;
+	public boolean useMarketFactionWeights = true;	// FIXME: use me!
 	public int numStartingOfficers = 0;
 	public boolean randomStartShips = false;
 

@@ -26,6 +26,7 @@ import exerelin.campaign.fleets.MiningFleetManager;
 import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.missions.ConquestMissionCreator;
+import exerelin.world.ExerelinProcGen;
 import exerelin.world.SSP_AsteroidTracker;
 import java.util.HashMap;
 
@@ -196,11 +197,14 @@ public class ExerelinModPlugin extends BaseModPlugin
     }
     
     @Override
-    public void onNewGameAfterTimePass() {
-        Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);
-        PlayerStartHandler.execute();
+    public void onNewGameAfterProcGen() {
+        Global.getLogger(this.getClass()).info("New game after proc gen; " + isNewGame);
+        if (!SectorManager.getCorvusMode())
+        {
+            new ExerelinProcGen().generate();
+        }
     }
-
+    
     @Override
     public void onNewGameAfterEconomyLoad() {
         Global.getLogger(this.getClass()).info("New game after economy load; " + isNewGame);
@@ -218,6 +222,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         //SectorAPI sector = Global.getSector();
         //for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
         //    PlayerStartHandler.addOmnifactory(sector, i);
+    }
+	
+    @Override
+    public void onNewGameAfterTimePass() {
+        Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);
+        PlayerStartHandler.execute();
     }
     
     @Override

@@ -13,7 +13,9 @@ import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
@@ -76,9 +78,11 @@ public class ExerelinProcGen {
 	
 	protected List<String> factionIds = new ArrayList<>();
 	protected List<StarSystemAPI> systems = new ArrayList<>();
-	protected List<StarSystemAPI> populatedSystems = new ArrayList<>();
+	protected List<StarSystemAPI> maybePopulatedSystems = new ArrayList<>();
+	protected Set<StarSystemAPI> populatedSystems = new HashSet<>();
 	protected Map<StarSystemAPI, Float> positiveDesirabilityBySystem = new HashMap<>();
-	protected Map<StarSystemAPI, Set<ProcGenEntity>> marketsBySystem = new HashMap<>();
+	protected Map<StarSystemAPI, List<ProcGenEntity>> marketsBySystem = new HashMap<>();
+	protected Map<StarSystemAPI, ProcGenEntity> capitalsBySystem = new HashMap<>();
 	protected List<ProcGenEntity> planets = new ArrayList<>();
 	protected List<ProcGenEntity> habitablePlanets = new ArrayList<>();
 	protected List<ProcGenEntity> desirablePlanets = new ArrayList<>();
@@ -113,19 +117,12 @@ public class ExerelinProcGen {
 		} catch (JSONException | IOException ex) {
 			log.error(ex);
 		}
-		
-		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
-		boolean corvusMode = setupData.corvusMode;
-		
-		if (!corvusMode)
-		{
-			
-		}
 	}
 	
 	protected void resetVars()
 	{
 		marketSetup = new ExerelinMarketBuilder(this);
+		setupData = ExerelinSetupData.getInstance();
 		factionIds = getStartingFactions();
 	}
 	
@@ -377,16 +374,14 @@ public class ExerelinProcGen {
 		data.market = planet.getMarket();
 		data.desirability = getDesirability(planet);
 		data.planetType = planet.getTypeId();
+		data.primary = planet.getOrbitFocus();
+		data.starSystem = (StarSystemAPI)planet.getContainingLocation();
 		
 		return data;
 	}
 	
 	protected void createEntityDataForSystem(StarSystemAPI system)
 	{
-		if (!marketsBySystem.containsKey(system))
-		{
-			marketsBySystem.put(system, new HashSet<ProcGenEntity>());
-		}
 		for (PlanetAPI planet : system.getPlanets())
 		{
 			if (planet.isStar()) continue;
@@ -421,6 +416,7 @@ public class ExerelinProcGen {
 				continue;
 			
 			populatedPlanets.add(candidate);
+			populatedSystems.add(candidate.starSystem);
 			marketsBySystem.get(candidate.starSystem).add(candidate);
 		}
 	}
@@ -448,7 +444,7 @@ public class ExerelinProcGen {
 	protected ProcGenEntity pickHomeworld()
 	{
 		List<ProcGenEntity> candidates = new ArrayList<>(populatedPlanets);
-		candidates.sort(new Comparator<ProcGenEntity>() {
+		Collections.sort(candidates, new Comparator<ProcGenEntity>() {
 				public int compare(ProcGenEntity e1, ProcGenEntity e2) {
 					float desirability1 = e1.desirability;
 					float desirability2 = e2.desirability;
@@ -470,31 +466,108 @@ public class ExerelinProcGen {
 	
 	protected void spawnCommRelays()
 	{
-		
+		for (StarSystemAPI system : populatedSystems)
+		{
+			SectorEntityToken relay = null;
+			ProcGenEntity capital = capitalsBySystem.get(system);
+			if (capital == null) continue;
+			
+			// see if there are existing relays we can co-opt
+			for (SectorEntityToken relayCandidate : system.getEntitiesWithTag(Tags.COMM_RELAY))
+			{
+				// only one relay per system
+				if (relay != null)
+					system.removeEntity(relayCandidate);
+				else
+				{
+					relay = relayCandidate;
+					relay.setFaction(capital.market.getFactionId());
+					relay.getMemoryWithoutUpdate().unset(MemFlags.COMM_RELAY_NON_FUNCTIONAL);
+				}
+			}
+			
+			// else make our own relay
+			if (relay == null)
+			{
+				relay = system.addCustomEntity(system.getId() + "_relay", // unique id
+					system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
+					"comm_relay", // type of object, defined in custom_entities.json
+					"neutral"); // faction
+
+				SectorEntityToken toOrbit = capital.entity;
+				int lp = 4;
+				if (random.nextBoolean()) lp = 5;
+				SectorEntityToken orbitTargetPrimary = toOrbit.getOrbitFocus();	// what relayOrbitTarget orbits
+				float orbitRadius = ExerelinUtilsAstro.getCurrentOrbitRadius(toOrbit, orbitTargetPrimary);
+				float startAngle = ExerelinUtilsAstro.getCurrentOrbitAngle(toOrbit, orbitTargetPrimary);
+				PlanetAPI relayOrbitTargetPlanet = (PlanetAPI)toOrbit;
+				
+				if (relayOrbitTargetPlanet.isMoon())
+					toOrbit = orbitTargetPrimary;	// L4/L5 of the planet instead of the moon
+				
+				ExerelinUtilsAstro.setLagrangeOrbit(relay, toOrbit.getOrbitFocus(), toOrbit, 
+					lp, startAngle, orbitRadius, 0, toOrbit.getOrbit().getOrbitalPeriod(), 
+					false, 0, 1, 1, 0);
+			}
+			
+			systemToRelay.put(system.getId(), relay.getId());
+			planetToRelay.put(capital.entity.getId(), relay.getId());
+		}
 	}
 	
-	
+	protected void setCapitals()
+	{
+		for (StarSystemAPI system : populatedSystems)
+		{
+			ProcGenEntity capital = null;
+			
+			List<ProcGenEntity> markets = marketsBySystem.get(system);
+			if (markets.size() == 1)
+			{
+				capital = markets.get(0);
+			}
+			else
+			{
+				for (ProcGenEntity market : markets)
+				{
+					if (capital == null)
+						capital = market;
+					else
+					{
+						if (market.isHQ && !capital.isHQ || market.market.getSize() > capital.market.getSize())
+							capital = market;
+					}
+				}
+			}
+			
+			if (capital == null) continue;
+			capitalsBySystem.put(system, capital);
+		}
+	}
 	
 	//==========================================================================
 	
 	protected void init()
 	{
-		resetVars();
 		String seedStr = Global.getSector().getSeedString().replaceAll("[^0-9]", "");
 		random = new Random(Long.parseLong(seedStr));
+		resetVars();
 	}
 	
 	public void generate()
 	{
+		log.info("Running procedural generation");
 		init();
 		
 		// process star systems
 		systems = getCoreSystems(CORE_WIDTH, CORE_HEIGHT);
 		for (StarSystemAPI system : systems)
 		{
+			positiveDesirabilityBySystem.put(system, 0f);
+			marketsBySystem.put(system, new ArrayList<ProcGenEntity>());
 			createEntityDataForSystem(system);
 		}
-		systems.sort(new Comparator<StarSystemAPI>() {
+		Collections.sort(systems, new Comparator<StarSystemAPI>() {
 				public int compare(StarSystemAPI sys1, StarSystemAPI sys2) {
 					float desirability1 = positiveDesirabilityBySystem.get(sys1);
 					float desirability2 = positiveDesirabilityBySystem.get(sys2);
@@ -506,14 +579,20 @@ public class ExerelinProcGen {
 		
 		for (int i=0; i<ExerelinSetupData.getInstance().numSystems; i++)
 		{
-			populatedSystems.add(systems.get(i));
+			maybePopulatedSystems.add(systems.get(i));
 		}
 		
+		log.info("Picking populated planets");
 		pickPopulatedPlanets();
 		// TODO: stations
 		
+		log.info("Populating sector");
 		populateSector(Global.getSector());
+		setCapitals();
+		spawnCommRelays();
 		
+		log.info("Finishing");
+		finish();
 	}
 	
 	protected void buildSystem(SectorAPI sector, int systemIndex, boolean inhabited)
@@ -592,32 +671,6 @@ public class ExerelinProcGen {
 			}
 		}
 		*/
-		
-		// Build comm relay
-		/*
-		if (inhabited || Math.random() < UNINHABITED_RELAY_CHANCE)
-		{
-			SectorEntityToken relay = system.addCustomEntity(system.getId() + "_relay", // unique id
-					system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
-					"comm_relay", // type of object, defined in custom_entities.json
-					"neutral"); // faction
-			float distance = getRandomOrbitRadiusBetweenPlanets(entities, 1200 + star.getRadius(), 3000 + star.getRadius());
-			
-			if (Math.random() < 0.5)	// random orbit around star
-				relay.setCircularOrbitPointingDown(star, ExerelinUtilsAstro.getRandomAngle(), distance, ExerelinUtilsAstro.getOrbitalPeriod(star, distance));
-			else	// lagrange orbit with capital
-			{
-				EntityData relayOrbitTarget = capital;
-				if (relayOrbitTarget.type == EntityType.MOON) relayOrbitTarget = relayOrbitTarget.primary;	// L4/L5 of the planet instead of the moon
-				ExerelinUtilsAstro.setLagrangeOrbit(relay, relayOrbitTarget.primary.entity, relayOrbitTarget.entity, 
-					9 - jumpPointLNum, relayOrbitTarget.startAngle, relayOrbitTarget.orbitRadius, 0, relayOrbitTarget.orbitPeriod, 
-					!isBinary, ellipseAngle, ellipseMult, 1, 0);
-			}
-			//ExerelinUtilsAstro.setOrbit(relay, star, distance, !isBinary, ellipseAngle, ExerelinUtilsAstro.getOrbitalPeriod(star, distance));
-			systemToRelay.put(system.getId(), system.getId() + "_relay");
-			planetToRelay.put(capital.entity.getId(), system.getId() + "_relay");
-		}
-		*/
 	}
 	
 	// =========================================================================
@@ -625,10 +678,10 @@ public class ExerelinProcGen {
 	
 	protected SectorEntityToken makeStation(ProcGenEntity data, String factionId)
 	{
-		float angle = ExerelinUtilsAstro.getRandomAngle();
+		float angle = ExerelinUtilsAstro.getRandomAngle(random);
 		int orbitRadius = 200;
-		PlanetAPI planet = (PlanetAPI)data.primary.entity;
-		if (data.primary.type == EntityType.MOON)
+		PlanetAPI planet = (PlanetAPI)data.primary;
+		if (planet.isMoon())
 			orbitRadius = 150;
 		else if (planet.isGasGiant())
 			orbitRadius = 500;
@@ -658,11 +711,6 @@ public class ExerelinProcGen {
 		MarketAPI existingMarket = planet.getMarket();
 		if (existingMarket != null)
 		{
-			if (!existingMarket.hasCondition(Conditions.SPACEPORT))
-			{
-				existingMarket.addCondition("orbital_station");
-				marketSetup.modifyCommodityDemand(Commodities.SUPPLIES, ConditionData.ORBITAL_STATION_SUPPLIES * 0.6f);
-			}
 			//existingMarket.addCondition("exerelin_recycling_plant");
 			newStation.setMarket(existingMarket);
 			existingMarket.getConnectedEntities().add(newStation);
@@ -688,9 +736,9 @@ public class ExerelinProcGen {
 		{
 			SectorEntityToken toOrbit = system.getStar();
 			float radius = toOrbit.getRadius();
-			float orbitDistance = radius + MathUtils.getRandomNumberInRange(2000, 2500);
+			float orbitDistance = radius + 2000 + random.nextFloat() * 500;
 			avesta = toOrbit.getContainingLocation().addCustomEntity(ExerelinConstants.AVESTA_ID, "Avesta Station", "exipirated_avesta_station", "exipirated");
-			avesta.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
+			avesta.setCircularOrbitPointingDown(toOrbit, ExerelinUtilsAstro.getRandomAngle(random), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
 		else
 		{
@@ -744,7 +792,7 @@ public class ExerelinProcGen {
 		float radius = toOrbit.getRadius();
 		float orbitDistance = radius + 150;
 		SectorEntityToken shanghaiEntity = toOrbit.getContainingLocation().addCustomEntity("tiandong_shanghai", "Shanghai", "tiandong_shanghai", "tiandong");
-		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
+		shanghaiEntity.setCircularOrbitPointingDown(toOrbit, ExerelinUtilsAstro.getRandomAngle(random), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		
 		shanghaiEntity.setMarket(market);
 		market.getConnectedEntities().add(shanghaiEntity);
@@ -846,7 +894,7 @@ public class ExerelinProcGen {
 	public void populateSector(SectorAPI sector)
 	{
 		// initial setup
-		marketSetup.pickMarketArchetypes(planets);
+		marketSetup.pickMarketArchetypes(populatedPlanets);
 		
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>();
 		factionPicker.setRandom(random);
@@ -896,7 +944,7 @@ public class ExerelinProcGen {
 		Collections.shuffle(stationsCopy, random);
 		List<ProcGenEntity> unassignedEntities = new ArrayList<>(populatedPlanetsCopy);	// needs to be a List instead of a Set for shuffling
 		for (ProcGenEntity station : stationsCopy) {
-			if (!station.primary.inhabited)
+			if (!station.primary.getMarket().isPlanetConditionMarketOnly())
 				unassignedEntities.add(station);
 		}
 		
@@ -942,7 +990,7 @@ public class ExerelinProcGen {
 			Collections.shuffle(unassignedEntities);
 			for (ProcGenEntity entity : unassignedEntities)
 			{
-				if (systemsWithPirates.size() == ExerelinSetupData.getInstance().numSystems)	// all systems already have pirates
+				if (systemsWithPirates.size() == populatedSystems.size())	// all systems already have pirates
 					break;
 
 				if (systemsWithPirates.contains(entity.starSystem))
@@ -1124,8 +1172,6 @@ public class ExerelinProcGen {
 	
 	protected void finish()
 	{
-		SectorManager.reinitLiveFactions();
-		DiplomacyManager.initFactionRelationships(false);
 		SectorManager.setHomeworld(homeworld.entity);
 		
 		SectorManager.setSystemToRelayMap(systemToRelay);
@@ -1144,7 +1190,7 @@ public class ExerelinProcGen {
 		boolean isHQ = false;
 		EntityType type = EntityType.PLANET;
 		StarSystemAPI starSystem;
-		ProcGenEntity primary;
+		SectorEntityToken primary;
 		CampaignTerrainAPI terrain;	// for stations
 		MarketAPI market;
 		ExerelinMarketBuilder.Archetype archetype = ExerelinMarketBuilder.Archetype.MISC;

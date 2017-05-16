@@ -19,7 +19,7 @@ public class NGCSetNumPlanets extends BaseCommandPlugin {
 		int num = (int)params.get(0).getFloat(memoryMap);
 		setupData.numPlanets = num;
 		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-		memory.set("$maxPlanets", num, 0);
+		memory.set("$numPlanets", num, 0);
 		return true;
 	}
 }

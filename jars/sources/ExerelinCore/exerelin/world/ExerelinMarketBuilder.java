@@ -38,7 +38,6 @@ import java.util.Random;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.lazywizard.lazylib.MathUtils;
 
 /**
  * There are several possible market archetypes: Agriculture, Ore, Organics, Volatiles, Manufacturing, Heavy Industry
@@ -78,7 +77,8 @@ public class ExerelinMarketBuilder
 	public static final float CABAL_MARKET_MULT = 0.4f;	
 	// this is the chance a market with a military base will still be a candidate for Cabal markets
 	public static final float CABAL_MILITARY_MARKET_CHANCE = 0.5f;
-	public static final float LUDDIC_MAJORITY_CHANCE = 0.2f;
+	public static final float LUDDIC_MAJORITY_CHANCE = 0.1f;	// how many markets have Luddic majority even if they aren't Luddic at start
+	public static final float LUDDIC_MINORITY_CHANCE = 0.15f;	// how many markets that start under Church control are non-Luddic
 	
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.3f;
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 0.5f;	// lower than min so it can swap autofacs for shipbreakers if needed
@@ -96,7 +96,6 @@ public class ExerelinMarketBuilder
 	protected Map<String, Float> commoditySupply = new HashMap<>();
 	
 	protected Map<Archetype, List<ProcGenEntity>> marketsByArchetype = new HashMap<>();
-	protected WeightedRandomPicker<Archetype> marketArchetypeQueue = new WeightedRandomPicker<>();
 	protected Map<ProcGenEntity, Map<Archetype, Float>> marketScoresForArchetypes = new HashMap<>();
 	protected int marketArchetypeQueueNum = 0;
 	
@@ -117,9 +116,9 @@ public class ExerelinMarketBuilder
 		PLANET_ARCHETYPE_QUOTAS.put(Archetype.HEAVY_INDUSTRY, 0.1f);
 	}
 	
-	public ExerelinMarketBuilder(ExerelinProcGen gen)
+	public ExerelinMarketBuilder(ExerelinProcGen procGen)
 	{
-		procGen = gen;
+		this.procGen = procGen;
 		random = procGen.getRandom();
 		
 		try {
@@ -268,6 +267,7 @@ public class ExerelinMarketBuilder
 	protected MarketConditionDef pickMarketCondition(MarketAPI market, List<MarketConditionDef> possibleConds, ProcGenEntity entityData, int budget, boolean isFirst)
 	{
 		WeightedRandomPicker<MarketConditionDef> picker = new WeightedRandomPicker<>();
+		picker.setRandom(random);
 		int numConds = 0;
 		int size = market.getSize();
 		String planetType = entityData.planetType;
@@ -336,7 +336,7 @@ public class ExerelinMarketBuilder
 		int bonusPoints = 0;
 		for (int i=0; i<size-1; i++)
 		{
-			if (Math.random() > 0.4) bonusPoints += 50;
+			if (random.nextFloat() > 0.4) bonusPoints += 50;
 		}
 				
 		entityData.bonusMarketPoints = bonusPoints;
@@ -352,10 +352,10 @@ public class ExerelinMarketBuilder
 		}
 		
 		int numSpecial = 0;
-		if (size == 2 && Math.random() > 0.5) numSpecial = 1;
-		else if (size <= 4) numSpecial = MathUtils.getRandomNumberInRange(0, 1) + MathUtils.getRandomNumberInRange(0, 1);
-		else if (size <= 6) numSpecial = 1 + MathUtils.getRandomNumberInRange(0, 1);
-		else if (size <= 8) numSpecial = 1 + MathUtils.getRandomNumberInRange(0, 1) + MathUtils.getRandomNumberInRange(0, 1);
+		if (size == 2 && random.nextFloat() > 0.5) numSpecial = 1;
+		else if (size <= 4) numSpecial = ExerelinUtils.randomNextIntInclusive(random, 1) + ExerelinUtils.randomNextIntInclusive(random, 1);
+		else if (size <= 6) numSpecial = 1 + ExerelinUtils.randomNextIntInclusive(random, 1);
+		else if (size <= 8) numSpecial = 1 + ExerelinUtils.randomNextIntInclusive(random, 1) + ExerelinUtils.randomNextIntInclusive(random, 1);
 		
 		for (int i=0; i<numSpecial; i++)
 		{
@@ -438,7 +438,7 @@ public class ExerelinMarketBuilder
 		}
 		
 		List<ProcGenEntity> ret = new ArrayList<>(markets);
-		ret.sort(new Comparator<ProcGenEntity>() {	// biggest markets first
+		Collections.sort(ret, new Comparator<ProcGenEntity>() {	// biggest markets first
 			@Override
 			public int compare(ProcGenEntity data1, ProcGenEntity data2)
 			{
@@ -462,6 +462,7 @@ public class ExerelinMarketBuilder
 	 */
 	public List<ProcGenEntity> assignArchetypesToTopMarkets(List<ProcGenEntity> markets, Archetype archetype, int num)
 	{
+		log.info("Assigning archetypes for archetype " + archetype.name() + ", available: " + markets.size());
 		List<ProcGenEntity> sorted = getOrderedListOfMarketsForArchetype(markets, archetype);
 		List<ProcGenEntity> results = new ArrayList<>();
 		for (int i=0; i<num; i++)
@@ -473,7 +474,7 @@ public class ExerelinMarketBuilder
 		
 		marketsByArchetype.put(archetype, results);
 		
-		markets.removeAll(sorted);
+		markets.removeAll(results);
 		
 		return results;
 	}
@@ -641,7 +642,7 @@ public class ExerelinMarketBuilder
 			newMarket.addCondition(Conditions.MILITARY_BASE);
 		}
 		
-		// planet type conditions
+		// planet type stuff
 		if (planetType != null && !planetType.isEmpty())
 		{
 			//log.info("Attempting to add planet type condition: " + planetType);
@@ -681,7 +682,8 @@ public class ExerelinMarketBuilder
 		newMarket.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
 		ExerelinUtilsMarket.setTariffs(newMarket);
 		
-		if (factionId.equals(Factions.LUDDIC_CHURCH) || random.nextFloat() < LUDDIC_MAJORITY_CHANCE) {
+		if (factionId.equals(Factions.LUDDIC_CHURCH) && random.nextFloat() < LUDDIC_MINORITY_CHANCE
+				|| random.nextFloat() < LUDDIC_MAJORITY_CHANCE) {
 			newMarket.addCondition(Conditions.LUDDIC_MAJORITY);
 			//newMarket.addCondition("cottage_industry");
 		}
@@ -847,6 +849,7 @@ public class ExerelinMarketBuilder
 		log.info("Pre-balance domestic goods supply/demand: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
 		
 		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		entityPicker.setRandom(random);
 		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
@@ -925,6 +928,8 @@ public class ExerelinMarketBuilder
 		
 		log.info("Pre-balance rare metal supply/demand: " + (int)rareMetalSupply + " / " + (int)rareMetalDemand);
 		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		entityPicker.setRandom(random);
+		
 		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
@@ -1002,6 +1007,8 @@ public class ExerelinMarketBuilder
 		
 		log.info("Pre-balance machinery supply/demand: " + (int)machinerySupply + " / " + (int)machineryDemand);
 		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		entityPicker.setRandom(random);
+		
 		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
@@ -1082,6 +1089,8 @@ public class ExerelinMarketBuilder
 		
 		log.info("Pre-balance supplies supply/demand: " + (int)suppliesSupply + " / " + (int)suppliesDemand);
 		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		entityPicker.setRandom(random);
+		
 		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
@@ -1161,6 +1170,8 @@ public class ExerelinMarketBuilder
 		log.info("Pre-balance food supply/demand: " + (int)foodSupply + " / " + (int)foodDemand);
 		
 		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		entityPicker.setRandom(random);
+		
 		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
@@ -1192,7 +1203,7 @@ public class ExerelinMarketBuilder
 					weight *= 25;
 					log.info("Removed balancing aquaculture from " + market.getName() + " (size " + size + ")");
 				}
-				else if (market.hasCondition(Conditions.RURAL_POLITY) && Math.random() > 0.5 && surplus > baseFarming)
+				else if (market.hasCondition(Conditions.RURAL_POLITY) && random.nextFloat() > 0.5 && surplus > baseFarming)
 				{
 					removeMarketCondition(market, entity, Conditions.RURAL_POLITY);
 					foodSupply -= baseFarming;
@@ -1257,7 +1268,7 @@ public class ExerelinMarketBuilder
 				log.info("Added balancing Orbital Burns to " + market.getName() + " (size " + size + ")");
 			}
 			/*
-			else if (entity.type != EntityType.STATION && getConditionWeightForArchetype(Conditions.RURAL_POLITY, entity.archetype, 0) > Math.random() 
+			else if (entity.type != EntityType.STATION && getConditionWeightForArchetype(Conditions.RURAL_POLITY, entity.archetype, 0) > random.nextFloat() 
 					&& !market.hasCondition(Conditions.RURAL_POLITY) && !market.hasCondition(Conditions.URBANIZED_POLITY) && shortfall > baseFarming && size >= 4)
 			{
 				addMarketCondition(market, entity, Conditions.RURAL_POLITY);
@@ -1295,6 +1306,8 @@ public class ExerelinMarketBuilder
 		log.info("Pre-balance fuel supply/demand: " + (int)fuelSupply + " / " + (int)fuelDemand);
 		
 		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		entityPicker.setRandom(random);
+		
 		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
@@ -1360,6 +1373,8 @@ public class ExerelinMarketBuilder
 		log.info("Pre-balance organics supply/demand: " + (int)organicsSupply + " / " + (int)organicsDemand);
 		
 		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		entityPicker.setRandom(random);
+		
 		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
@@ -1411,6 +1426,8 @@ public class ExerelinMarketBuilder
 		log.info("Pre-balance volatiles supply/demand: " + (int)volatilesSupply + " / " + (int)volatilesDemand);
 		
 		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		entityPicker.setRandom(random);
+		
 		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
@@ -1463,6 +1480,8 @@ public class ExerelinMarketBuilder
 		log.info("Pre-balance metal supply/demand: " + (int)metalSupply + " / " + (int)metalDemand);
 		
 		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		entityPicker.setRandom(random);
+		
 		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
@@ -1519,6 +1538,8 @@ public class ExerelinMarketBuilder
 		log.info("Pre-balance ore supply/demand: " + (int)oreSupply + " / " + (int)oreDemand);
 		
 		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		entityPicker.setRandom(random);
+		
 		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;

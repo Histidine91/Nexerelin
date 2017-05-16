@@ -5,7 +5,9 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.util.Misc;
 import java.awt.Color;
+import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.campaign.orbits.EllipticalOrbit;
 
@@ -72,6 +74,15 @@ public class ExerelinUtilsAstro {
 	public static float getRandomAngle()
 	{
 		return MathUtils.getRandomNumberInRange(0f, 360f);
+	}
+	
+	/**
+	 * Returns a random float between 0.0 and 360.0
+	 * @return random angle
+	 */
+	public static float getRandomAngle(Random rand)
+	{
+		return rand.nextFloat() * 360f;
 	}
 	
 	/**
@@ -167,20 +178,17 @@ public class ExerelinUtilsAstro {
 			case 2:
 				float angle = m2Angle;
 				if (point == 1) angle += 180;
-				if (!isEllipse) orbiter.setCircularOrbit(m2, angle, myOrbitRadius, orbitPeriod);
-				else setOrbit(orbiter, m2, myOrbitRadius, angle, isEllipse, ellipseAngle, ellipseMult, orbitPeriod);
+				setOrbit(orbiter, m2, myOrbitRadius, angle, isEllipse, ellipseAngle, ellipseMult, orbitPeriod, type, spinTime);
 				break;
 			case 3:
-				if (!isEllipse) orbiter.setCircularOrbit(m1, m2Angle + 180, m2OrbitRadius, orbitPeriod);
-				else setOrbit(orbiter, m1, m2OrbitRadius, m2Angle + 180, isEllipse, ellipseAngle, ellipseMult, orbitPeriod);
+				setOrbit(orbiter, m1, m2OrbitRadius, m2Angle + 180, isEllipse, ellipseAngle, ellipseMult, orbitPeriod, type, spinTime);
 				break;
 			case 4:
 			case 5:
 				float offset = -60;
 				if (point == 5) offset = 60;
 
-				if (!isEllipse) orbiter.setCircularOrbit(m1, m2Angle + offset, m2OrbitRadius, orbitPeriod);
-				else setOrbit(orbiter, m1, m2OrbitRadius, m2Angle + offset, isEllipse, ellipseAngle, ellipseMult, orbitPeriod);
+				setOrbit(orbiter, m1, m2OrbitRadius, m2Angle + offset, isEllipse, ellipseAngle, ellipseMult, orbitPeriod, type, spinTime);
 				break;
 		}
 	}
@@ -192,6 +200,15 @@ public class ExerelinUtilsAstro {
 				orbitPeriod, isEllipse, ellipseAngle, ellipseMult, 0, 0);
 	}
 	
+	public static float getCurrentOrbitAngle(SectorEntityToken primary, SectorEntityToken orbiter)
+	{
+		return Misc.getAngleInDegrees(primary.getLocation(), orbiter.getLocation());
+	}
+	
+	public static float getCurrentOrbitRadius(SectorEntityToken primary, SectorEntityToken orbiter)
+	{
+		return Misc.getDistance(primary.getLocation(), orbiter.getLocation());
+	}
 	
 	/**
 	 * Adds an asteroid belt and the background ring bands

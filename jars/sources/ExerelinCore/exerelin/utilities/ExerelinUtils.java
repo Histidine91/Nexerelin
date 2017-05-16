@@ -28,6 +28,17 @@ public class ExerelinUtils
 	{
 		return min + (int)(Math.random() * ((max - min) + 1)); // hate java
 	}
+	
+	/**
+	 * Like Random.nextInt() except easier to read
+	 * @param rand
+	 * @param max
+	 * @return
+	 */
+	public static int randomNextIntInclusive(Random rand, int max)
+	{
+		return rand.nextInt(max + 1);
+	}
 
 	// rounds up or down with closer integer having a proportionally higher chance
 	public static int getRandomNearestInteger(float number)
