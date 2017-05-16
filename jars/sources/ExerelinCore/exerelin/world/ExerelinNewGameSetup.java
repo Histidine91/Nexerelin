@@ -112,7 +112,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.setBaseSmugglingStabilityValue(0);
 		market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_UNINVADABLE, true);
 		
-		ExerelinMarketSetup.addStartingMarketCommodities(market);
+		ExerelinMarketBuilder.addStartingMarketCommodities(market);
 		
 		market.getTariff().modifyFlat("generator", sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
 		ExerelinUtilsMarket.setTariffs(market);

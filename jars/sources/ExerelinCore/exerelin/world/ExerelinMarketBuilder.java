@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -19,18 +20,21 @@ import exerelin.campaign.econ.HydroponicsLab;
 import exerelin.campaign.econ.RecyclingPlant;
 import exerelin.campaign.econ.SupplyWorkshop;
 import exerelin.campaign.fleets.ExerelinLionsGuardFleetManager;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
-import exerelin.world.ExerelinProcGen.EntityData;
+import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.ExerelinProcGen.EntityType;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,11 +42,9 @@ import org.lazywizard.lazylib.MathUtils;
 
 /**
  * There are several possible market archetypes: Agriculture, Ore, Organics, Volatiles, Manufacturing, Heavy Industry
- * Pick a market archetype for each market on planet creation
- * Archetypes are picked in a sequential rotation (so the number of markets with each archetype will be largely even)
- * Each archetype gets a certain selection of planet types to randomly pick from
+ * Pick an archetype for each planet based on its surveyable market conditions
  * Each market gets a number of points to spend on market condition based on market size
- * Each market condition has a cost and a number of weightings based on the market
+ * Each market condition has a cost and a number of weightings based on the market archetype and other properties
  * For each market, randomly pick a valid condition and spend points on it; repeat till out of points
  * Available points by market size:
  *	Size 2: 200
@@ -63,30 +65,39 @@ import org.lazywizard.lazylib.MathUtils;
 */
 
 @SuppressWarnings("unchecked")
-public class ExerelinMarketSetup
+public class ExerelinMarketBuilder
 {
-	public static Logger log = Global.getLogger(ExerelinMarketSetup.class);
+	public static Logger log = Global.getLogger(ExerelinMarketBuilder.class);
 	//private List possibleMarketConditions;
 	
-	protected static final String CONFIG_FILE = "data/config/exerelin/marketConfig.json";
-	
-	protected final Map<MarketArchetype, Map<String, Float>> planetsForArchetypes = new HashMap<>();
-	protected final List<MarketConditionDef> conditions = new ArrayList<>();
-	protected final Map<String, MarketConditionDef> conditionsByID = new HashMap<>();
-	protected final List<MarketConditionDef> specialConditions = new ArrayList<>();
+	public static final String CONFIG_FILE = "data/config/exerelin/marketConfig.json";
+	public static final String SURVEY_CONDITION_FILE = "data/config/exerelin/survey_condition_archetypes.csv";
+	public static final Map<Archetype, Float> PLANET_ARCHETYPE_QUOTAS = new HashMap<>(Archetype.values().length);
+	//public static final Map<MarketArchetype, Float> STATION_ARCHETYPE_QUOTAS = new HashMap<>(MarketArchetype.values().length);
+	// this proportion of TT markets with no military bases will have Cabal submarkets (Underworld)
+	public static final float CABAL_MARKET_MULT = 0.4f;	
+	// this is the chance a market with a military base will still be a candidate for Cabal markets
+	public static final float CABAL_MILITARY_MARKET_CHANCE = 0.5f;
+	public static final float LUDDIC_MAJORITY_CHANCE = 0.2f;
 	
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.3f;
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 0.5f;	// lower than min so it can swap autofacs for shipbreakers if needed
 	
-	protected static final int[] PLANET_SIZE_ROTATION = new int[] {4, 5, 6, 5};
+	protected static final int[] PLANET_SIZE_ROTATION = new int[] {4, 5, 6, 5, 4};
 	protected static final int[] MOON_SIZE_ROTATION = new int[] {3, 4, 5, 4};
 	protected static final int[] STATION_SIZE_ROTATION = new int[] {3, 4, 5, 4, 3};
+	
+	protected final Map<String, Map<Archetype, Float>> conditionArchetypes = new HashMap<>();
+	protected final List<MarketConditionDef> conditions = new ArrayList<>();
+	protected final Map<String, MarketConditionDef> conditionsByID = new HashMap<>();
+	protected final List<MarketConditionDef> specialConditions = new ArrayList<>();
 	
 	protected Map<String, Float> commodityDemand = new HashMap<>();
 	protected Map<String, Float> commoditySupply = new HashMap<>();
 	
-	protected Map<MarketArchetype, Integer> numMarketsByArchetype = new HashMap<>();
-	protected WeightedRandomPicker<MarketArchetype> marketArchetypeQueue = new WeightedRandomPicker<>();
+	protected Map<Archetype, List<ProcGenEntity>> marketsByArchetype = new HashMap<>();
+	protected WeightedRandomPicker<Archetype> marketArchetypeQueue = new WeightedRandomPicker<>();
+	protected Map<ProcGenEntity, Map<Archetype, Float>> marketScoresForArchetypes = new HashMap<>();
 	protected int marketArchetypeQueueNum = 0;
 	
 	protected int numStations = 0;
@@ -94,30 +105,35 @@ public class ExerelinMarketSetup
 	protected int numMoons = 0;
 	
 	protected final ExerelinProcGen procGen;
+	protected final Random random;
 	
-	public ExerelinMarketSetup(ExerelinProcGen gen)
+	static {
+		// (probably) must sum to 1
+		PLANET_ARCHETYPE_QUOTAS.put(Archetype.AGRICULTURE, 0.2f);
+		PLANET_ARCHETYPE_QUOTAS.put(Archetype.ORE, 0.2f);
+		PLANET_ARCHETYPE_QUOTAS.put(Archetype.ORGANICS, 0.15f);
+		PLANET_ARCHETYPE_QUOTAS.put(Archetype.VOLATILES, 0.15f);
+		PLANET_ARCHETYPE_QUOTAS.put(Archetype.MANUFACTURING, 0.2f);
+		PLANET_ARCHETYPE_QUOTAS.put(Archetype.HEAVY_INDUSTRY, 0.1f);
+	}
+	
+	public ExerelinMarketBuilder(ExerelinProcGen gen)
 	{
 		procGen = gen;
+		random = procGen.getRandom();
 		
 		try {
+			JSONArray conditionArchetypesCsv = Global.getSettings().getMergedSpreadsheetDataForMod(
+					"condition", SURVEY_CONDITION_FILE, "nexerelin");
+			for(int x = 0; x < conditionArchetypesCsv.length(); x++)
+            {
+                JSONObject row = conditionArchetypesCsv.getJSONObject(x);
+                String cond = row.getString("condition");
+				Map<Archetype, Float> entry = loadSurveyConditionEntry(row);
+				conditionArchetypes.put(cond, entry);
+            }
+			
 			JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
-			JSONObject planetsJson = config.getJSONObject("planetsForArchetypes");
-			Iterator<?> keys = planetsJson.keys();
-			while (keys.hasNext()) {
-				String archetypeStr = (String)keys.next();
-				MarketArchetype archetype = MarketArchetype.valueOf(StringHelper.flattenToAscii(archetypeStr.toUpperCase()));
-				
-				Map<String, Float> planetChances = new HashMap<>();
-				JSONObject planetChancesJson = planetsJson.getJSONObject(archetypeStr);
-				Iterator<?> keys2 = planetChancesJson.keys();
-				while (keys2.hasNext())
-				{
-					String planetType = (String)keys2.next();
-					float chance = (float)planetChancesJson.getDouble(planetType);
-					planetChances.put(planetType, chance);
-				}
-				planetsForArchetypes.put(archetype, planetChances);
-			}
 			
 			JSONArray conditionsJson = config.getJSONArray("conditions");
 			for(int i=0; i<conditionsJson.length(); i++)
@@ -150,12 +166,16 @@ public class ExerelinMarketSetup
 				{
 					cond.conflictsWith.addAll(ExerelinUtils.JSONArrayToArrayList(condJson.getJSONArray("conflictsWith")));
 				}
+				if (condJson.has("requires"))
+				{
+					cond.requires.addAll(ExerelinUtils.JSONArrayToArrayList(condJson.getJSONArray("requires")));
+				}
 				
 				if (condJson.has("archetypes"))
 				{
 					JSONObject archetypesJson = condJson.getJSONObject("archetypes");
 					float defaultWeight = (float)archetypesJson.optDouble("default", 0);
-					for (MarketArchetype possibleArchetype : MarketArchetype.values())
+					for (Archetype possibleArchetype : Archetype.values())
 					{
 						float weight = (float)archetypesJson.optDouble(possibleArchetype.name().toLowerCase(), defaultWeight);
 						cond.archetypes.put(possibleArchetype, weight);
@@ -163,7 +183,7 @@ public class ExerelinMarketSetup
 				}
 				else
 				{
-					for (MarketArchetype possibleArchetype : MarketArchetype.values())
+					for (Archetype possibleArchetype : Archetype.values())
 					{
 						cond.archetypes.put(possibleArchetype, 1f);
 					}
@@ -174,7 +194,6 @@ public class ExerelinMarketSetup
 					conditions.add(cond);
 					conditionsByID.put(name, cond);
 				}
-				
 			}
 			
 		} catch (IOException | JSONException ex) {
@@ -182,14 +201,45 @@ public class ExerelinMarketSetup
 		}
 	}
 	
-	protected float getConditionWeightForArchetype(MarketConditionDef cond, MarketArchetype archetype, float defaultWeight)
+	/**
+	 * Returns a map of the weighings a market condition has for each archetype, as specified in the CSV data
+	 * @param csvRow Row from the loaded CSV
+	 * @return
+	 */
+	protected Map<Archetype, Float> loadSurveyConditionEntry(JSONObject csvRow)
+	{
+		Map<Archetype, Float> ret = new HashMap<>();
+		for (Archetype archetype : nonMiscArchetypes)
+		{
+			String archetypeName = StringHelper.flattenToAscii(archetype.name().toLowerCase());
+			float val = (float)csvRow.optDouble(archetypeName, 0);
+			ret.put(archetype, val);
+		}
+		return ret;
+	}
+	
+	/**
+	 * Gets the weight the specified market condition has for the specified archetype
+	 * @param cond
+	 * @param archetype
+	 * @param defaultWeight
+	 * @return
+	 */
+	protected float getConditionWeightForArchetype(MarketConditionDef cond, Archetype archetype, float defaultWeight)
 	{
 		float weight = cond.archetypes.get(archetype);
 		if (weight <= 0) weight = defaultWeight;
 		return weight;
 	}
 	
-	protected float getConditionWeightForArchetype(String condID, MarketArchetype archetype, float defaultWeight)
+	/**
+	 * Gets the weight the specified market condition has for the specified archetype
+	 * @param condID
+	 * @param archetype
+	 * @param defaultWeight
+	 * @return
+	 */
+	protected float getConditionWeightForArchetype(String condID, Archetype archetype, float defaultWeight)
 	{
 		if (!conditionsByID.containsKey(condID)) return defaultWeight;
 		return getConditionWeightForArchetype(conditionsByID.get(condID), archetype, defaultWeight);
@@ -215,7 +265,7 @@ public class ExerelinMarketSetup
 		return isConditionAllowedForPlanet(conditionsByID.get(condID), planetType);
 	}
 	
-	protected MarketConditionDef pickMarketCondition(MarketAPI market, List<MarketConditionDef> possibleConds, EntityData entityData, int budget, boolean isFirst)
+	protected MarketConditionDef pickMarketCondition(MarketAPI market, List<MarketConditionDef> possibleConds, ProcGenEntity entityData, int budget, boolean isFirst)
 	{
 		WeightedRandomPicker<MarketConditionDef> picker = new WeightedRandomPicker<>();
 		int numConds = 0;
@@ -249,29 +299,29 @@ public class ExerelinMarketSetup
 		return picker.pick();
 	}
 	
-	public void addMarketCondition(MarketAPI market, EntityData entityData, MarketConditionDef cond)
+	public void addMarketCondition(MarketAPI market, ProcGenEntity entityData, MarketConditionDef cond)
 	{
 		market.addCondition(cond.name);
 		entityData.marketPointsSpent += cond.cost;
 	}
 	
-	public void addMarketCondition(MarketAPI market, EntityData entityData, String cond)
+	public void addMarketCondition(MarketAPI market, ProcGenEntity entityData, String cond)
 	{
 		addMarketCondition(market, entityData, conditionsByID.get(cond));
 	}
 	
-	public void removeMarketCondition(MarketAPI market, EntityData entityData, MarketConditionDef cond)
+	public void removeMarketCondition(MarketAPI market, ProcGenEntity entityData, MarketConditionDef cond)
 	{
 		ExerelinUtilsMarket.removeOneMarketCondition(market, cond.name);
 		entityData.marketPointsSpent -= cond.cost;
 	}
 	
-	public void removeMarketCondition(MarketAPI market, EntityData entityData, String cond)
+	public void removeMarketCondition(MarketAPI market, ProcGenEntity entityData, String cond)
 	{
 		removeMarketCondition(market, entityData, conditionsByID.get(cond));
 	}
 	
-	public void initMarketPointsAndAddRandomConditions(MarketAPI market, EntityData entityData)
+	public void initMarketPointsAndAddRandomConditions(MarketAPI market, ProcGenEntity entityData)
 	{
 		log.info("Processing market conditions for " + market.getPrimaryEntity().getName() + " (" + market.getFaction().getDisplayName() + ")");
 		
@@ -319,117 +369,200 @@ public class ExerelinMarketSetup
 	// =========================================================================
 	// archetype handling
 	
-	protected String pickPlanetTypeFromArchetype(MarketArchetype archetype, boolean isMoon)
+	/**
+	 * Returns the highest score for any archetype other than wantedArchetype
+	 * @param market
+	 * @param wantedArchetype
+	 * @param scores
+	 * @return
+	 */
+	protected float getMarketBestScoreForOtherArchetype(ProcGenEntity market, Archetype wantedArchetype, Map<Archetype, Float> scores)
 	{
-		Map<String, Float> types = planetsForArchetypes.get(archetype);
-		log.info("Getting planet for archetype " + archetype.name());
-		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
-		Iterator<Map.Entry<String, Float>> iter = types.entrySet().iterator();
-		while (iter.hasNext())
+		float bestScore = 0;
+		for (Archetype archetype : nonMiscArchetypes)
 		{
-			Map.Entry<String, Float> tmp = iter.next();
-			String type = tmp.getKey();
-			//log.info("\tPossible planet: " +  type);
-			if (isMoon && type.equals("arid") || type.equals("terran") || type.equals("terran-eccentric"))
-				continue;
+			if (archetype == wantedArchetype) continue;
+			float score = scores.get(archetype);
+			if (score > bestScore)
+				bestScore = score;
+		}
+		return bestScore;
+	}
+	
+	/**
+	 * Returns a map of markets to maps of their scores for each archetype
+	 * @param markets
+	 * @return 
+	 */
+	protected Map<ProcGenEntity, Map<Archetype, Float>> getMarketArchetypeScores(List<ProcGenEntity> markets)
+	{
+		Map<ProcGenEntity, Map<Archetype, Float>> scores = new HashMap<>();
+		for (ProcGenEntity market : markets)
+		{
+			Map<Archetype, Float> marketScores = new HashMap<>();
+			for (Archetype archetype : Archetype.values())
+			{
+				marketScores.put(archetype, 0f);
+			}
 			
-			float weight = tmp.getValue();
-			picker.add(type, weight);
+			for (MarketConditionAPI cond : market.market.getConditions())
+			{
+				if (!conditionArchetypes.containsKey(cond.getId()))
+					continue;
+				Map<Archetype, Float> condScores = conditionArchetypes.get(cond.getId());
+				for (Archetype archetype : nonMiscArchetypes)
+				{
+					marketScores.put(archetype, marketScores.get(archetype) + condScores.get(archetype));
+				}
+			}
+			scores.put(market, marketScores);
 		}
-		if (picker.isEmpty()) return "desert";
-		return picker.pick();
+		return scores;
 	}
 	
-	protected int getNumMarketsOfArchetype(MarketArchetype type)
+	/**
+	 * Returns a sorted list of markets based on their weight for the specified archetype.
+	 * Weight = Score for archetype - highest score for another archetype
+	 * @param markets
+	 * @param archetype
+	 * @return
+	 */
+	protected List<ProcGenEntity> getOrderedListOfMarketsForArchetype(List<ProcGenEntity> markets, Archetype archetype)
 	{
-		if (!numMarketsByArchetype.containsKey(type))
+		final Map<ProcGenEntity, Float> weightsForArchetype = new HashMap<>();
+		for (ProcGenEntity market : markets)
 		{
-			numMarketsByArchetype.put(type, 0);
-			return 0;
+			float weight = marketScoresForArchetypes.get(market).get(archetype);
+			weight -= getMarketBestScoreForOtherArchetype(market, archetype, marketScoresForArchetypes.get(market));
+			weightsForArchetype.put(market, weight);
 		}
-		return numMarketsByArchetype.get(type);
+		
+		List<ProcGenEntity> ret = new ArrayList<>(markets);
+		ret.sort(new Comparator<ProcGenEntity>() {	// biggest markets first
+			@Override
+			public int compare(ProcGenEntity data1, ProcGenEntity data2)
+			{
+				float weight1 = weightsForArchetype.get(data1);
+				float weight2 = weightsForArchetype.get(data2);
+				if (weight1 == weight2) return 0;
+				else if (weight1 > weight2) return 1;
+				else return -1;
+			}
+		});
+		
+		return ret;
 	}
 	
-	// Tetris type archetype rotation
-	protected void queueMarketArchetypes()
+	/**
+	 * Assigns archetype to a specified number the highest-scoring markets available for that archetype
+	 * @param markets List of all candidate markets. Successful candidates will be removed from this list
+	 * @param archetype
+	 * @param num Number of markets to pick
+	 * @return A list of the top markets for the archetype
+	 */
+	public List<ProcGenEntity> assignArchetypesToTopMarkets(List<ProcGenEntity> markets, Archetype archetype, int num)
 	{
-		marketArchetypeQueueNum++;
-		
-		// always have at least one of each in the queue (usually)
-		if (marketArchetypeQueueNum % 5 != 4)	// skip every fifth agriculture market
-			marketArchetypeQueue.add(MarketArchetype.AGRICULTURE);
-		//if (marketArchetypeQueueNum % 5 == 1)	// add an extra agriculture market every fifth round
-		//	marketArchetypeQueue.add(MarketArchetype.AGRICULTURE);
-		
-		if (marketArchetypeQueueNum % 4 != 3)	// skip every fourth ore market
-			marketArchetypeQueue.add(MarketArchetype.ORE);
-		
-		if (marketArchetypeQueueNum % 3 != 2)	// skip every third organics market
-			marketArchetypeQueue.add(MarketArchetype.ORGANICS);
-		
-		if (marketArchetypeQueueNum % 3 != 1)	// skip every third volatiles market
-			marketArchetypeQueue.add(MarketArchetype.VOLATILES);
-		
-		marketArchetypeQueue.add(MarketArchetype.MANUFACTURING);
-		
-		if (marketArchetypeQueueNum % 4 != 2)	// skip every fourth heavy industry market
-			marketArchetypeQueue.add(MarketArchetype.HEAVY_INDUSTRY);
-		
-		//marketArchetypeQueue.add(MarketArchetype.MIXED);
-		
-		// add up to three more distinct archetypes based on how many of each already exist
-		/*
-		int numAgriculture = getNumMarketsOfArchetype(MarketArchetype.AGRICULTURE) + 1;
-		int numOre = getNumMarketsOfArchetype(MarketArchetype.ORE) + 1;
-		int numOrganics = getNumMarketsOfArchetype(MarketArchetype.ORGANICS) + 1;
-		int numVolatiles = getNumMarketsOfArchetype(MarketArchetype.VOLATILES) + 1;
-		int numManufacturing = getNumMarketsOfArchetype(MarketArchetype.MANUFACTURING) + 1;
-		int numHeavyIndustry = getNumMarketsOfArchetype(MarketArchetype.HEAVY_INDUSTRY) + 1;
-		
-		WeightedRandomPicker<MarketArchetype> picker = new WeightedRandomPicker<>();
-		picker.add(MarketArchetype.AGRICULTURE, 10/numAgriculture);
-		picker.add(MarketArchetype.ORE, 10/numOre);
-		picker.add(MarketArchetype.ORGANICS, 8/numOrganics);
-		picker.add(MarketArchetype.VOLATILES, 6/numVolatiles);
-		picker.add(MarketArchetype.MANUFACTURING, 10/numManufacturing);
-		picker.add(MarketArchetype.HEAVY_INDUSTRY, 8/numHeavyIndustry);
-		
-		for (int i=0; i<MathUtils.getRandomNumberInRange(2, 3); i++)
+		List<ProcGenEntity> sorted = getOrderedListOfMarketsForArchetype(markets, archetype);
+		List<ProcGenEntity> results = new ArrayList<>();
+		for (int i=0; i<num; i++)
 		{
-			marketArchetypeQueue.add(picker.pickAndRemove());
+			ProcGenEntity market = sorted.get(i);
+			market.archetype = archetype;
+			results.add(market);
 		}
-		*/
+		
+		marketsByArchetype.put(archetype, results);
+		
+		markets.removeAll(sorted);
+		
+		return results;
 	}
 	
-	protected MarketArchetype pickMarketArchetype(boolean isStation)
+	public void pickMarketArchetypes(List<ProcGenEntity> markets)
 	{
-		int tries = 0;
-		while (true)
-		{
-			tries++;
-			if (marketArchetypeQueue.isEmpty())
-				queueMarketArchetypes();
-			MarketArchetype type = marketArchetypeQueue.pickAndRemove();
-			if (tries < 5 && isStation && type == MarketArchetype.AGRICULTURE)
-				continue;
-			return type;
-		}
+		List<ProcGenEntity> marketsCopy = new ArrayList<>(markets);
+		int numMarkets = markets.size();
+		int numAgri = (int)(numMarkets * PLANET_ARCHETYPE_QUOTAS.get(Archetype.AGRICULTURE));
+		int numOre = (int)(numMarkets * PLANET_ARCHETYPE_QUOTAS.get(Archetype.ORE));
+		int numVol = (int)(numMarkets * PLANET_ARCHETYPE_QUOTAS.get(Archetype.VOLATILES));
+		int numOrg = (int)(numMarkets * PLANET_ARCHETYPE_QUOTAS.get(Archetype.ORGANICS));
+		int numManf = (int)(numMarkets * PLANET_ARCHETYPE_QUOTAS.get(Archetype.MANUFACTURING));
+		int numHI = (int)(numMarkets * PLANET_ARCHETYPE_QUOTAS.get(Archetype.HEAVY_INDUSTRY));
+		
+		marketScoresForArchetypes = getMarketArchetypeScores(markets);
+		
+		List<ProcGenEntity> agriMarkets = assignArchetypesToTopMarkets(marketsCopy, Archetype.AGRICULTURE, numAgri);
+		List<ProcGenEntity> oreMarkets = assignArchetypesToTopMarkets(marketsCopy, Archetype.ORE, numOre);
+		List<ProcGenEntity> volMarkets = assignArchetypesToTopMarkets(marketsCopy, Archetype.VOLATILES, numVol);	
+		List<ProcGenEntity> orgMarkets = assignArchetypesToTopMarkets(marketsCopy, Archetype.ORGANICS, numOrg);
+		List<ProcGenEntity> manfMarkets = assignArchetypesToTopMarkets(marketsCopy, Archetype.MANUFACTURING, numManf);
+		List<ProcGenEntity> hiMarkets = assignArchetypesToTopMarkets(marketsCopy, Archetype.HEAVY_INDUSTRY, numHI);
+		
+		// assign any remaining markets to misc type
+		List<ProcGenEntity> miscMarkets = assignArchetypesToTopMarkets(marketsCopy, Archetype.MISC, marketsCopy.size());
 	}
+	
+	// =========================================================================
+	// other stuff
 	
 	protected int getSizeFromRotation(int[] array, int num)
 	{
 		return array[num % array.length];
 	}
 	
+	protected void addCabalSubmarkets()
+	{
+		// add Cabal submarkets
+		if (ExerelinModPlugin.HAVE_UNDERWORLD)
+		{
+			List<MarketAPI> cabalCandidates = new ArrayList<>();
+			List<MarketAPI> cabalCandidatesBackup = new ArrayList<>();
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+			{
+				if (!market.getFactionId().equals(Factions.TRITACHYON)) continue;
+				if (market.hasCondition(Conditions.MILITARY_BASE) && random.nextFloat() > CABAL_MILITARY_MARKET_CHANCE) 
+				{
+					cabalCandidatesBackup.add(market);
+					continue;
+				}
+				
+				//log.info("Cabal candidate added: " + market.getName() + " (size " + market.getSize() + ")");
+				cabalCandidates.add(market);
+			}
+			if (cabalCandidates.isEmpty())
+				cabalCandidates = cabalCandidatesBackup;
+			
+			Comparator<MarketAPI> marketSizeComparator = new Comparator<MarketAPI>() {
+
+				public int compare(MarketAPI m1, MarketAPI m2) {
+				   int size1 = m1.getSize();
+					int size2 = m2.getSize();
+
+					if (size1 > size2) return -1;
+					else if (size2 > size1) return 1;
+					else return 0;
+				}};
+			
+			Collections.sort(cabalCandidates, marketSizeComparator);
+			
+			try {
+				for (int i=0; i<cabalCandidates.size()*CABAL_MARKET_MULT; i++)
+				{
+					MarketAPI market = cabalCandidates.get(i);
+					market.addSubmarket("uw_cabalmarket");
+					market.addCondition("cabal_influence");
+					log.info("Added Cabal submarket to " + market.getName() + " (size " + market.getSize() + ")");
+				}
+			} catch (RuntimeException rex) {
+				// old SS+ version, do nothing
+			}
+		}
+	}
+	
 	// =========================================================================
 	// main market adding method
-	protected MarketAPI addMarketToEntity(EntityData data, String factionId)
+	protected MarketAPI addMarket(ProcGenEntity data, String factionId)
 	{
-		if (data.type == EntityType.STAR)
-		{
-			log.error("Tried to add a market to star " + data.entity.getId());
-			return null;
-		}
 		SectorEntityToken entity = data.entity;
 		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
@@ -512,32 +645,17 @@ public class ExerelinMarketSetup
 		if (planetType != null && !planetType.isEmpty())
 		{
 			//log.info("Attempting to add planet type condition: " + planetType);
-			switch (planetType) {
-				case "frozen":
-				case "rocky_ice":
-					newMarket.addCondition(Conditions.ICE);
-					break;
-				case "barren":
-				case "rocky_metallic":
-				case "barren-bombarded":
-					newMarket.addCondition(Conditions.NO_ATMOSPHERE);
-					break;
-				case "barren-desert":
-					newMarket.addCondition("barren_marginal");
-					break;	
-				case "terran-eccentric":
-					newMarket.addCondition("twilight");
-					// add mirror/shade
-					LocationAPI system = entity.getContainingLocation();
-					SectorEntityToken mirror = system.addCustomEntity(entity.getId() + "_mirror", "Stellar Mirror", "stellar_mirror", factionId);
-					mirror.setCircularOrbitPointingDown(entity, data.startAngle, entity.getRadius() + 150, data.orbitPeriod);
-					mirror.setCustomDescriptionId("stellar_mirror");
-					SectorEntityToken shade = system.addCustomEntity(entity.getId() + "_shade", "Stellar Shade", "stellar_shade", factionId);
-					shade.setCircularOrbitPointingDown(entity, data.startAngle + 180, entity.getRadius() + 150, data.orbitPeriod);		
-					shade.setCustomDescriptionId("stellar_shade");
-					break;	
-				default:
-					newMarket.addCondition(planetType);
+			if (planetType.equals("terran-eccentric"))
+			{
+				// add mirror/shade
+				// FIXME: fix angle
+				LocationAPI system = entity.getContainingLocation();
+				SectorEntityToken mirror = system.addCustomEntity(entity.getId() + "_mirror", "Stellar Mirror", "stellar_mirror", factionId);
+				mirror.setCircularOrbitPointingDown(entity, 0, entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());
+				mirror.setCustomDescriptionId("stellar_mirror");
+				SectorEntityToken shade = system.addCustomEntity(entity.getId() + "_shade", "Stellar Shade", "stellar_shade", factionId);
+				shade.setCircularOrbitPointingDown(entity, 0 + 180, entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());		
+				shade.setCustomDescriptionId("stellar_shade");
 			}
 		}
 				
@@ -563,7 +681,7 @@ public class ExerelinMarketSetup
 		newMarket.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
 		ExerelinUtilsMarket.setTariffs(newMarket);
 		
-		if (factionId.equals(Factions.LUDDIC_CHURCH)) {
+		if (factionId.equals(Factions.LUDDIC_CHURCH) || random.nextFloat() < LUDDIC_MAJORITY_CHANCE) {
 			newMarket.addCondition(Conditions.LUDDIC_MAJORITY);
 			//newMarket.addCondition("cottage_industry");
 		}
@@ -636,7 +754,7 @@ public class ExerelinMarketSetup
 		rmSupply += shipbreakingCount * ConditionData.SHIPBREAKING_RARE_METALS;
 		rmSupply += recyclingCount * RecyclingPlant.RECYCLING_RARE_METALS * RecyclingPlant.HAX_MULT_07_METALS;
 		rmSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.RARE_METALS);
-		ExerelinMarketSetup.this.modifyCommoditySupply(Commodities.RARE_METALS, rmSupply);
+		ExerelinMarketBuilder.this.modifyCommoditySupply(Commodities.RARE_METALS, rmSupply);
 		float rmDemand = autofacCount * ConditionData.AUTOFAC_HEAVY_RARE_METALS;
 		rmDemand += workshopCount * SupplyWorkshop.WORKSHOP_RARE_METALS;
 		rmDemand += fuelProdCount * ConditionData.FUEL_PRODUCTION_RARE_METALS;
@@ -713,7 +831,7 @@ public class ExerelinMarketSetup
 	// =========================================================================	
 	// Economy balancer functions
 	
-	protected void balanceDomesticGoods(List<EntityData> candidateEntities)
+	protected void balanceDomesticGoods(List<ProcGenEntity> candidateEntities)
 	{
 		float domesticGoodsSupply = getCommoditySupply(Commodities.DOMESTIC_GOODS);
 		float domesticGoodsDemand = getCommodityDemand(Commodities.DOMESTIC_GOODS);
@@ -728,8 +846,8 @@ public class ExerelinMarketSetup
 		
 		log.info("Pre-balance domestic goods supply/demand: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
 		
-		WeightedRandomPicker<EntityData> entityPicker = new WeightedRandomPicker<>();
-		for (EntityData entity:candidateEntities)
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
 			if (market == null) continue;
@@ -773,7 +891,7 @@ public class ExerelinMarketSetup
 			//else if (shortfall < HALFPOW7)
 			//	maxSize = 7;
 			
-			EntityData entity = entityPicker.pickAndRemove();
+			ProcGenEntity entity = entityPicker.pickAndRemove();
 			MarketAPI market = entity.market;
 			int size = market.getSize();
 			if (size > maxSize) continue;
@@ -797,7 +915,7 @@ public class ExerelinMarketSetup
 		setCommodityDemand(Commodities.HEAVY_MACHINERY, machineryDemand);
 	}
 	
-	protected void balanceRareMetal(List<EntityData> candidateEntities)
+	protected void balanceRareMetal(List<ProcGenEntity> candidateEntities)
 	{
 		float suppliesSupply = getCommoditySupply(Commodities.SUPPLIES);
 		float rareMetalSupply = getCommoditySupply(Commodities.RARE_METALS);
@@ -806,8 +924,8 @@ public class ExerelinMarketSetup
 		float machinerySupply = getCommoditySupply(Commodities.HEAVY_MACHINERY);
 		
 		log.info("Pre-balance rare metal supply/demand: " + (int)rareMetalSupply + " / " + (int)rareMetalDemand);
-		WeightedRandomPicker<EntityData> entityPicker = new WeightedRandomPicker<>();
-		for (EntityData entity:candidateEntities)
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
 			if (market == null) continue;
@@ -846,7 +964,7 @@ public class ExerelinMarketSetup
 		{
 			if (entityPicker.isEmpty())	break;
 			
-			EntityData entity = entityPicker.pickAndRemove();
+			ProcGenEntity entity = entityPicker.pickAndRemove();
 			MarketAPI market = entity.market;
 			addMarketCondition(market, entity, Conditions.SHIPBREAKING_CENTER);
 			suppliesSupply += ConditionData.SHIPBREAKING_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
@@ -866,7 +984,7 @@ public class ExerelinMarketSetup
 		setCommoditySupply(Commodities.HEAVY_MACHINERY, machinerySupply);
 	}
 	
-	protected void balanceMachinery(List<EntityData> candidateEntities, boolean firstPass)
+	protected void balanceMachinery(List<ProcGenEntity> candidateEntities, boolean firstPass)
 	{
 		float suppliesSupply = getCommoditySupply(Commodities.SUPPLIES);
 		float rareMetalDemand = getCommodityDemand(Commodities.RARE_METALS);
@@ -883,8 +1001,8 @@ public class ExerelinMarketSetup
 		}
 		
 		log.info("Pre-balance machinery supply/demand: " + (int)machinerySupply + " / " + (int)machineryDemand);
-		WeightedRandomPicker<EntityData> entityPicker = new WeightedRandomPicker<>();
-		for (EntityData entity:candidateEntities)
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
 			if (market == null) continue;
@@ -923,7 +1041,7 @@ public class ExerelinMarketSetup
 		{
 			if (entityPicker.isEmpty())	break;
 			
-			EntityData entity = entityPicker.pickAndRemove();
+			ProcGenEntity entity = entityPicker.pickAndRemove();
 			MarketAPI market = entity.market;
 			addMarketCondition(market, entity, Conditions.AUTOFAC_HEAVY_INDUSTRY);
 			suppliesSupply += ConditionData.AUTOFAC_HEAVY_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
@@ -949,7 +1067,7 @@ public class ExerelinMarketSetup
 		setCommodityDemand(Commodities.VOLATILES, volatilesDemand);
 	}
 	
-	protected void balanceSupplies(List<EntityData> candidateEntities)
+	protected void balanceSupplies(List<ProcGenEntity> candidateEntities)
 	{
 		float suppliesSupply = getCommoditySupply(Commodities.SUPPLIES);
 		float suppliesDemand = getCommodityDemand(Commodities.SUPPLIES);
@@ -963,8 +1081,8 @@ public class ExerelinMarketSetup
 		float organicsDemand = getCommodityDemand(Commodities.ORGANICS);
 		
 		log.info("Pre-balance supplies supply/demand: " + (int)suppliesSupply + " / " + (int)suppliesDemand);
-		WeightedRandomPicker<EntityData> entityPicker = new WeightedRandomPicker<>();
-		for (EntityData entity:candidateEntities)
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
 			if (market == null) continue;
@@ -1003,7 +1121,7 @@ public class ExerelinMarketSetup
 		{
 			if (entityPicker.isEmpty())	break;
 			
-			EntityData entity = entityPicker.pickAndRemove();
+			ProcGenEntity entity = entityPicker.pickAndRemove();
 			MarketAPI market = entity.market;
 			addMarketCondition(market, entity, "exerelin_supply_workshop");
 			suppliesSupply += SupplyWorkshop.WORKSHOP_SUPPLIES * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
@@ -1028,7 +1146,7 @@ public class ExerelinMarketSetup
 		setCommodityDemand(Commodities.VOLATILES, volatilesDemand);
 	}
 
-	protected void balanceFood(List<EntityData> candidateEntities)
+	protected void balanceFood(List<ProcGenEntity> candidateEntities)
 	{
 		final int HALFPOW5 = (int)Math.pow(10, 5)/2;
 		final int HALFPOW4 = (int)Math.pow(10, 4)/2;
@@ -1042,8 +1160,8 @@ public class ExerelinMarketSetup
 		
 		log.info("Pre-balance food supply/demand: " + (int)foodSupply + " / " + (int)foodDemand);
 		
-		WeightedRandomPicker<EntityData> entityPicker = new WeightedRandomPicker<>();
-		for (EntityData entity:candidateEntities)
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
 			if (market == null) continue;
@@ -1113,7 +1231,7 @@ public class ExerelinMarketSetup
 				maxSize = 6;
 			//log.info("Shortfall: " + shortfall + ", max size: " + maxSize);
 			
-			EntityData entity = entityPicker.pickAndRemove();
+			ProcGenEntity entity = entityPicker.pickAndRemove();
 			MarketAPI market = entity.market;
 			
 			int size = market.getSize();
@@ -1165,7 +1283,7 @@ public class ExerelinMarketSetup
 		setCommodityDemand(Commodities.DOMESTIC_GOODS, domesticGoodsDemand);
 	}
 	
-	protected void balanceFuel(List<EntityData> candidateEntities)
+	protected void balanceFuel(List<ProcGenEntity> candidateEntities)
 	{
 		float fuelSupply = getCommoditySupply(Commodities.FUEL);
 		float fuelDemand = getCommodityDemand(Commodities.FUEL);
@@ -1176,8 +1294,8 @@ public class ExerelinMarketSetup
 		
 		log.info("Pre-balance fuel supply/demand: " + (int)fuelSupply + " / " + (int)fuelDemand);
 		
-		WeightedRandomPicker<EntityData> entityPicker = new WeightedRandomPicker<>();
-		for (EntityData entity:candidateEntities)
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
 			if (market == null) continue;
@@ -1213,7 +1331,7 @@ public class ExerelinMarketSetup
 		{
 			if (entityPicker.isEmpty())	break;	// fuck it, we give up
 			
-			EntityData entity = entityPicker.pickAndRemove();
+			ProcGenEntity entity = entityPicker.pickAndRemove();
 			MarketAPI market = entity.market;
 			
 			addMarketCondition(market, entity, Conditions.ANTIMATTER_FUEL_PRODUCTION);
@@ -1233,7 +1351,7 @@ public class ExerelinMarketSetup
 		setCommodityDemand(Commodities.HEAVY_MACHINERY, machineryDemand);
 	}
 	
-	protected void balanceOrganics(List<EntityData> candidateEntities)
+	protected void balanceOrganics(List<ProcGenEntity> candidateEntities)
 	{
 		float organicsSupply = getCommoditySupply(Commodities.ORGANICS);
 		float organicsDemand = getCommodityDemand(Commodities.ORGANICS);
@@ -1241,8 +1359,8 @@ public class ExerelinMarketSetup
 		
 		log.info("Pre-balance organics supply/demand: " + (int)organicsSupply + " / " + (int)organicsDemand);
 		
-		WeightedRandomPicker<EntityData> entityPicker = new WeightedRandomPicker<>();
-		for (EntityData entity:candidateEntities)
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
 			if (market == null) continue;
@@ -1270,7 +1388,7 @@ public class ExerelinMarketSetup
 		{
 			if (entityPicker.isEmpty())	break;	// fuck it, we give up
 			
-			EntityData entity = entityPicker.pickAndRemove();
+			ProcGenEntity entity = entityPicker.pickAndRemove();
 			MarketAPI market = entity.market;
 			
 			addMarketCondition(market, entity, Conditions.ORGANICS_COMPLEX);
@@ -1284,7 +1402,7 @@ public class ExerelinMarketSetup
 		setCommodityDemand(Commodities.HEAVY_MACHINERY, machineryDemand);
 	}
 	
-	protected void balanceVolatiles(List<EntityData> candidateEntities)
+	protected void balanceVolatiles(List<ProcGenEntity> candidateEntities)
 	{
 		float volatilesSupply = getCommoditySupply(Commodities.VOLATILES);
 		float volatilesDemand = getCommodityDemand(Commodities.VOLATILES);
@@ -1292,8 +1410,8 @@ public class ExerelinMarketSetup
 		
 		log.info("Pre-balance volatiles supply/demand: " + (int)volatilesSupply + " / " + (int)volatilesDemand);
 		
-		WeightedRandomPicker<EntityData> entityPicker = new WeightedRandomPicker<>();
-		for (EntityData entity:candidateEntities)
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
 			if (market == null) continue;
@@ -1321,7 +1439,7 @@ public class ExerelinMarketSetup
 		{
 			if (entityPicker.isEmpty())	break;	// fuck it, we give up
 			
-			EntityData entity = entityPicker.pickAndRemove();
+			ProcGenEntity entity = entityPicker.pickAndRemove();
 			MarketAPI market = entity.market;
 			
 			addMarketCondition(market, entity, Conditions.VOLATILES_COMPLEX);
@@ -1335,7 +1453,7 @@ public class ExerelinMarketSetup
 		setCommodityDemand(Commodities.HEAVY_MACHINERY, machineryDemand);
 	}
 	
-	protected void balanceMetal(List<EntityData> candidateEntities)
+	protected void balanceMetal(List<ProcGenEntity> candidateEntities)
 	{
 		float metalSupply = getCommoditySupply(Commodities.METALS);
 		float metalDemand = getCommodityDemand(Commodities.METALS);
@@ -1344,8 +1462,8 @@ public class ExerelinMarketSetup
 		
 		log.info("Pre-balance metal supply/demand: " + (int)metalSupply + " / " + (int)metalDemand);
 		
-		WeightedRandomPicker<EntityData> entityPicker = new WeightedRandomPicker<>();
-		for (EntityData entity:candidateEntities)
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
 			if (market == null) continue;
@@ -1375,7 +1493,7 @@ public class ExerelinMarketSetup
 		{
 			if (entityPicker.isEmpty())	break;	// fuck it, we give up
 			
-			EntityData entity = entityPicker.pickAndRemove();
+			ProcGenEntity entity = entityPicker.pickAndRemove();
 			MarketAPI market = entity.market;
 			
 			addMarketCondition(market, entity, Conditions.ORE_REFINING_COMPLEX);
@@ -1392,7 +1510,7 @@ public class ExerelinMarketSetup
 		setCommodityDemand(Commodities.HEAVY_MACHINERY, machineryDemand);
 	}
 	
-	protected void balanceOre(List<EntityData> candidateEntities)
+	protected void balanceOre(List<ProcGenEntity> candidateEntities)
 	{
 		float oreSupply = getCommoditySupply(Commodities.ORE);
 		float oreDemand = getCommodityDemand(Commodities.ORE);
@@ -1400,8 +1518,8 @@ public class ExerelinMarketSetup
 		
 		log.info("Pre-balance ore supply/demand: " + (int)oreSupply + " / " + (int)oreDemand);
 		
-		WeightedRandomPicker<EntityData> entityPicker = new WeightedRandomPicker<>();
-		for (EntityData entity:candidateEntities)
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
+		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
 			if (market == null) continue;
@@ -1429,7 +1547,7 @@ public class ExerelinMarketSetup
 		{
 			if (entityPicker.isEmpty())	break;	// fuck it, we give up
 			
-			EntityData entity = entityPicker.pickAndRemove();
+			ProcGenEntity entity = entityPicker.pickAndRemove();
 			MarketAPI market = entity.market;
 			
 			addMarketCondition(market, entity, Conditions.ORE_COMPLEX);
@@ -1510,7 +1628,7 @@ public class ExerelinMarketSetup
 	{
 		final String name;
 		int cost = 0;
-		Map<MarketArchetype, Float> archetypes = new HashMap<>();
+		Map<Archetype, Float> archetypes = new HashMap<>();
 		float chance = 0;
 		int minSize = 0;
 		int maxSize = 99;
@@ -1520,6 +1638,7 @@ public class ExerelinMarketSetup
 		String requiredFaction;
 		final List<String> allowedPlanets = new ArrayList<>();
 		final List<String> disallowedPlanets  = new ArrayList<>();
+		final List<String> requires = new ArrayList<>();
 		final List<String> conflictsWith  = new ArrayList<>();
 
 		public MarketConditionDef(String name)
@@ -1528,8 +1647,11 @@ public class ExerelinMarketSetup
 		}
 	}
 	
-	public static enum MarketArchetype
+	public static Archetype[] nonMiscArchetypes = new Archetype[]{ Archetype.AGRICULTURE, Archetype.ORE, Archetype.VOLATILES, 
+			Archetype.ORGANICS, Archetype.MANUFACTURING, Archetype.HEAVY_INDUSTRY };
+	
+	public static enum Archetype
 	{
-		AGRICULTURE, ORE, VOLATILES, ORGANICS, MANUFACTURING, HEAVY_INDUSTRY, MIXED
+		AGRICULTURE, ORE, VOLATILES, ORGANICS, MANUFACTURING, HEAVY_INDUSTRY, MISC
 	}
 }
