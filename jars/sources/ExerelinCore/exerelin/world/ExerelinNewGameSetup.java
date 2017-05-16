@@ -9,6 +9,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
+import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
 import com.fs.starfarer.api.impl.campaign.fleets.BountyPirateFleetManager;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
@@ -27,10 +28,10 @@ import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.ExerelinCoreScript;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -159,7 +160,8 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
 		
 		log.info("Adding scripts and plugins");
-		sector.addScript(new ExerelinCoreScript());
+		sector.addScript(new CoreScript());
+		sector.addScript(new PatrolFleetManagerReplacer());
 		sector.registerPlugin(new CoreCampaignPluginImpl());
 		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
 		
