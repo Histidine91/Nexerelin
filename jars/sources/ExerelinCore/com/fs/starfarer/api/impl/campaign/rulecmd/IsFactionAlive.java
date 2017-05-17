@@ -6,7 +6,8 @@ import java.util.Map;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.campaign.SectorManager;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 
 
@@ -20,7 +21,10 @@ public class IsFactionAlive extends BaseCommandPlugin {
 		{
 			return true;	// so directory can be opened
 		}
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		return (conf.playableFaction && ExerelinUtilsFaction.getFactionMarkets(factionId).size() > 0);
 		
-		return SectorManager.isFactionAlive(factionId);
+		// don't use this, since a faction can be dead while still having markets if some of them are tagged as non-invadable
+		//return SectorManager.isFactionAlive(factionId);
 	}
 }
