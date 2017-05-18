@@ -21,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.CustomConstellationParams;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.campaign.fleets.DS_BountyPirateFleetManager;
 import data.scripts.campaign.fleets.DS_LuddicPathFleetManager;
@@ -36,19 +37,17 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
-import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 
 @SuppressWarnings("unchecked")
-
 public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 {
-	
 	//protected float numOmnifacs = 0;
-	
+	public static final Vector2f SECTOR_CENTER = new Vector2f(0, -6000);
 	public static Logger log = Global.getLogger(ExerelinNewGameSetup.class);
 	
 	protected void addPrismMarket(SectorAPI sector)
@@ -138,22 +137,31 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		boolean corvusMode = setupData.corvusMode;
 		
-		if (corvusMode)
-		{
-			VanillaSystemsGenerator.generate(sector);
-		}
-		
 		// use vanilla hyperspace map
 		String hyperMap = "data/campaign/terrain/hyperspace_map.png";
-		if (!corvusMode)
-		{
-			hyperMap = "data/campaign/terrain/nexerelin/hyperspace_map_rot.png";
-		}
 		SectorEntityToken deep_hyperspace = Misc.addNebulaFromPNG(hyperMap,
 			  0, 0, // center of nebula
 			  sector.getHyperspace(), // location to add to
 			  "terrain", "deep_hyperspace", // "nebula_blue", // texture to use, uses xxx_map for map
 			  4, 4, Terrain.HYPERSPACE, StarAge.ANY); // number of cells in texture
+		
+		if (corvusMode)
+		{
+			VanillaSystemsGenerator.generate(sector);
+		}
+		else
+		{
+			// make core system
+			CustomConstellationParams params = new CustomConstellationParams(StarAge.ANY);
+			int num = ExerelinSetupData.getInstance().numSystems;
+			params.minStars = 12;	//num;
+			params.maxStars = 18;	//num + (int)Math.max(num * 1.2f, 2);
+			params.location = SECTOR_CENTER;
+			new ExerelinCoreSystemGenerator(params).generate();
+			
+			SectorEntityToken coreLabel = Global.getSector().getHyperspace().addCustomEntity("core_label_id", null, "core_label", null);
+			coreLabel.setFixedLocation(SECTOR_CENTER.getX(), SECTOR_CENTER.getY());
+		}
 		
 		if (setupData.prismMarketPresent) {
 			if (!corvusMode || !ExerelinUtilsFaction.doesFactionExist("SCY"))
@@ -200,8 +208,8 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		if (corvusMode) 
 		{
 			SectorManager.reinitLiveFactions();
-			DiplomacyManager.initFactionRelationships(false);
 		}
+		DiplomacyManager.initFactionRelationships(false);
 		
 		SectorManager.setCorvusMode(corvusMode);
 		SectorManager.setHardMode(setupData.hardMode);
@@ -213,77 +221,4 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		log.info("Finished sector generation");
 	}
-	
-	
-	protected float getHabitableChance(int planetNum, boolean isMoon)
-	{
-		float habitableChance = 0.3f;
-		if (planetNum == 0) habitableChance = 0.4f;
-		else if (planetNum == 1 || planetNum == 3) habitableChance = 0.7f;
-		else if (planetNum == 2) habitableChance = 0.9f;
-			
-		//if (isMoon) habitableChance *= 0.7f;
-		if (isMoon) habitableChance = 0.35f;
-		
-		return habitableChance;
-	}
-		
-	
-	
-	
-	
-	// System generation algorithm
-	/*
-		For each system:
-			First create a star using one of the ten possible options picked at random
-			If binary system, add another star as a "planet"
-	
-			Create planets according to the following rules:
-				first planet: 40% habitable chance
-				second planet: 70% habitable chance
-				third planet: 90% habitable chance
-				fourth planet: 70% habitable chance, 30% gas giant chance if fail habitability check
-				fifth and higher planet: 30% habitable chance, 45% gas giant chance
-				last planet will always be gas giant if one hasn't been added yet 
-				moon: 40% habitable chance
-				if not at least two habitable entities, randomly pick planets 1-4 and force them to be habitable
-				designate one habitable planet from these four as system capital
-					If this is the first star (Exerelin), mark it as HQ instead (we'll come back to it later)
-				Binary systems have 25% more planets; planets will randomly orbit either star
-			Don't actually generate PlanetAPIs until all EntityDatas have been created
-			If habitable planet/moon, add to list of habitables
-
-			Add random asteroid belts
-	
-			Next seed stations randomly around planets/moons or in asteroid belts
-				If station orbiting uninhabitable, add to list of "independent" stations
-				If station orbiting habitable, add to list of "associated" stations
-
-			Now add relay around star, add jump point to system capital, add automatic jump points
-			Associate relay with capital and system
-					
-		Next go through all habitables and assign them to factions
-			First off we go to the first star (Exerelin) and give our faction the HQ planet we picked earlier
-			Now assign homeworlds for each faction
-			Make list of all remaining unassigned planets + stations, shuffle
-			For all planets + stations in the above list:
-				If containing system is in list of already-checked systems, skip
-				Add containing system to list of already-checked systems
-				Assign this market to a rotated pirate faction
-				Increment # of markets owned by that pirate faction
-
-			For all remaining planets:
-				Shuffle
-				Each faction has a "share" (default 1)
-				Number of planets each faction gets = round(faction share / total shares) * number of habitable planets
-					This includes the free planets pirates got earlier
-					For number of planets faction gets:
-						Give planet to faction; remove planet from list
-				After each faction has gotten their share, assign any remaining planets to random factions
-	
-			Repeat the above for stations not attached to a market
-				Stations attached to an existing market are also generated, but not given their own market
-		
-		Finally juggle market conditions to try and balance commodity supply–demand
-	*/
 }

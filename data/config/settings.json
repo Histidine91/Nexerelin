@@ -8,7 +8,7 @@
 	
 	"plugins":{
 		"newGameCreationEntryPoint":"exerelin.world.ExerelinNewGameSetup",
-		#"newGameSectorProcGen":"com.fs.starfarer.api.impl.campaign.procgen.SectorProcGen",
+		#"newGameSectorProcGen":"exerelin.world.ExerelinSectorProcGen",
 	},
 	
 	"economyExceptionOnMissingMarketEntity":false,

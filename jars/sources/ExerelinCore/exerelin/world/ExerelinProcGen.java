@@ -64,14 +64,17 @@ public class ExerelinProcGen {
 	
 	public static final float CORE_WIDTH = 15000;
 	public static final float CORE_HEIGHT = 12000;
+	public static final Set<String> ALLOWED_STATION_TERRAIN = new HashSet<>(Arrays.asList(new String[] {
+		Terrain.ASTEROID_BELT, Terrain.ASTEROID_FIELD, Terrain.RING
+	}));
 	
 	// NOTE: system names and planet names are overriden by planetNames.json
 	protected static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
 	// don't specify names here to make sure it crashes instead of failing silently if planetNames.json is broken
 
-	protected List<String> possibleSystemNames = new ArrayList<>();
-	protected List<String> possiblePlanetNames = new ArrayList<>();
-	protected List<String> possibleStationNames = new ArrayList<>();
+	protected static List<String> possibleSystemNames = new ArrayList<>();
+	protected static List<String> possiblePlanetNames = new ArrayList<>();
+	protected static List<String> possibleStationNames = new ArrayList<>();
 	
 	public static final List<String> stationImages = new ArrayList<>(Arrays.asList(
 			new String[] {"station_side00", "station_side02", "station_side04", "station_jangala_type"}));
@@ -88,6 +91,8 @@ public class ExerelinProcGen {
 	protected List<ProcGenEntity> desirablePlanets = new ArrayList<>();
 	protected List<ProcGenEntity> populatedPlanets = new ArrayList<>();
 	protected List<ProcGenEntity> stations = new ArrayList<>();
+	protected Map<SectorEntityToken, ProcGenEntity> procGenEntitiesByToken = new HashMap<>();
+	protected List<String> alreadyUsedStationNames = new ArrayList<>();
 	
 	protected Map<PlanetAPI, Float> planetDesirabilityCache = new HashMap<>();
 	
@@ -101,7 +106,12 @@ public class ExerelinProcGen {
 	
 	protected Random random;
 	
-	protected void loadData()
+	
+	static {
+		loadData();
+	}
+	
+	protected static void loadData()
 	{
 		try {
 			JSONObject planetConfig = Global.getSettings().loadJSON(PLANET_NAMES_FILE);
@@ -118,14 +128,7 @@ public class ExerelinProcGen {
 			log.error(ex);
 		}
 	}
-	
-	protected void resetVars()
-	{
-		marketSetup = new ExerelinMarketBuilder(this);
-		setupData = ExerelinSetupData.getInstance();
-		factionIds = getStartingFactions();
-	}
-	
+		
 	protected List<String> getStartingFactions()
 	{
 		List<String> availableFactions = setupData.getPlayableFactions();
@@ -161,8 +164,7 @@ public class ExerelinProcGen {
 		
 		availableFactions.remove(ExerelinConstants.PLAYER_NPC_ID);
 		
-		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
-		picker.setRandom(random);
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
 		picker.addAll(availableFactions);
 		
 		while (numFactions < wantedFactionNum)
@@ -186,8 +188,7 @@ public class ExerelinProcGen {
 	
 	protected void pickEntityInteractionImage(SectorEntityToken entity, MarketAPI market, String planetType, EntityType entityType)
 	{
-		WeightedRandomPicker<String[]> allowedImages = new WeightedRandomPicker<>();
-		allowedImages.setRandom(random);
+		WeightedRandomPicker<String[]> allowedImages = new WeightedRandomPicker<>(random);
 		allowedImages.add(new String[]{"illustrations", "cargo_loading"} );
 		allowedImages.add(new String[]{"illustrations", "hound_hangar"} );
 		allowedImages.add(new String[]{"illustrations", "space_bar"} );
@@ -286,8 +287,8 @@ public class ExerelinProcGen {
 		for (StarSystemAPI system : Global.getSector().getStarSystems())
 		{
 			Vector2f loc = system.getLocation();
-			if (Math.abs(loc.x) > width) continue;
-			if (Math.abs(loc.y) > height) continue;
+			if (Math.abs(loc.x - ExerelinNewGameSetup.SECTOR_CENTER.x) > width) continue;
+			if (Math.abs(loc.y - ExerelinNewGameSetup.SECTOR_CENTER.y) > height) continue;
 			list.add(system);
 		}
 		
@@ -335,12 +336,14 @@ public class ExerelinProcGen {
 			case Conditions.FARMLAND_BOUNTIFUL:
 				return 0.6f;
 		}
-		float hazard = cond.getGenSpec().getHazard();
-		if (hazard >= 0.5f)
-			return -1;
-		else if (hazard >= 0.25f)
-			return -0.25f;
-		
+		if (cond.getGenSpec() != null)
+		{
+			float hazard = cond.getGenSpec().getHazard();
+			if (hazard >= 0.5f)
+				return -1;
+			else if (hazard >= 0.25f)
+				return -0.25f;
+		}
 		return 0;
 	}
 	
@@ -367,9 +370,15 @@ public class ExerelinProcGen {
 		return desirability;
 	}
 	
+	/**
+	 * Creates a ProcGenEntity for the specified planet
+	 * @param planet
+	 * @return
+	 */
 	protected ProcGenEntity createEntityDataForPlanet(PlanetAPI planet)
 	{
 		ProcGenEntity data = new ProcGenEntity(planet);
+		data.name = planet.getName();
 		data.type = planet.isMoon() ? EntityType.MOON : EntityType.PLANET;
 		data.market = planet.getMarket();
 		data.desirability = getDesirability(planet);
@@ -377,9 +386,14 @@ public class ExerelinProcGen {
 		data.primary = planet.getOrbitFocus();
 		data.starSystem = (StarSystemAPI)planet.getContainingLocation();
 		
+		procGenEntitiesByToken.put(planet, data);
 		return data;
 	}
 	
+	/**
+	 * Creates ProcGenEntities for planets in the star system
+	 * @param system
+	 */
 	protected void createEntityDataForSystem(StarSystemAPI system)
 	{
 		for (PlanetAPI planet : system.getPlanets())
@@ -403,16 +417,25 @@ public class ExerelinProcGen {
 	
 	/**
 	 * Fills the populatedPlanets list with planets
-	 * Will skip a planet if it already has too many populated planets
-	 * @param picker Random picker with candidate planets
+	 * Will skip a star system if it already has too many populated planets
+	 * @param picker Random picker
+	 * @param planets List of candidate planets for populated
 	 */
-	protected void pickPopulatedPlanets(WeightedRandomPicker<ProcGenEntity> picker)
+	protected void pickPopulatedPlanets(WeightedRandomPicker<ProcGenEntity> picker, List<ProcGenEntity> planets)
 	{
+		for (ProcGenEntity planet: planets)
+		{
+			float weight = 1;
+			if (populatedSystems.contains(planet.starSystem))
+				weight = 99;	// strongly prefer already inhabited systems
+			picker.add(planet, weight);
+		}
+		
 		while (populatedPlanets.size() < setupData.numPlanets && !picker.isEmpty())
 		{
 			ProcGenEntity candidate = picker.pickAndRemove();
 			int numMarketsInSystem = marketsBySystem.get(candidate.starSystem).size();
-			if (numMarketsInSystem > setupData.maxPlanetsPerSystem)
+			if (numMarketsInSystem >= setupData.maxPlanetsPerSystem)
 				continue;
 			
 			populatedPlanets.add(candidate);
@@ -427,20 +450,120 @@ public class ExerelinProcGen {
 	 */
 	protected void pickPopulatedPlanets()
 	{
-		WeightedRandomPicker<ProcGenEntity> picker = new WeightedRandomPicker<>();
-		picker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> picker = new WeightedRandomPicker<>(random);
 		List<ProcGenEntity> desirableNotHabitable = new ArrayList<>(desirablePlanets);
 		desirableNotHabitable.removeAll(habitablePlanets);
+		List<ProcGenEntity> notDesirable = new ArrayList<>();
+		for (ProcGenEntity entity : planets)
+		{
+			PlanetAPI planet = (PlanetAPI)entity.entity;
+			if (!planet.isGasGiant() && !desirablePlanets.contains(entity))
+				notDesirable.add(entity);
+		}
 		
-		picker.addAll(habitablePlanets);
-		pickPopulatedPlanets(picker);
-		
-		picker.addAll(desirableNotHabitable);
-		pickPopulatedPlanets(picker);
-		
-		// if we still don't have enough planets by this stage, give up
+		//pickPopulatedPlanets(picker, habitablePlanets);
+		//pickPopulatedPlanets(picker, desirableNotHabitable);
+		pickPopulatedPlanets(picker, desirablePlanets);
+		pickPopulatedPlanets(picker, notDesirable);
 	}
 	
+	protected boolean getStationNameAlreadyUsed(String newName)
+	{
+		for (String name : alreadyUsedStationNames)
+		{
+			if (name.equals(newName)) return true;
+		}
+		return false;
+	}
+	
+	public String getStationName(SectorEntityToken target)
+	{
+		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
+		picker.addAll(possibleStationNames);
+		String name = target.getName();
+		if (target instanceof CampaignTerrainAPI)
+		{
+			//CampaignTerrainAPI terrain = (CampaignTerrainAPI) target;
+			name = target.getContainingLocation().getName();
+		}
+		String ret;
+		do
+		{
+			ret = name + " " + picker.pickAndRemove();
+			log.info("Station name: " + ret + ", " + picker.getItems().size());
+		} while (getStationNameAlreadyUsed(ret) && !picker.isEmpty());
+		return ret;
+	}
+	
+	/**
+	 * Creates a ProcGenEntity at the specified in-system location
+	 * @param target The entity to orbit if terrain is null; can also be the terrain
+	 * @param terrain The terrain the station is in, if any
+	 * @return
+	 */
+	protected ProcGenEntity createEntityDataForStation(SectorEntityToken target)
+	{
+		ProcGenEntity data = new ProcGenEntity(null);
+		data.type = EntityType.STATION;
+		data.primary = target;
+		if (target.getContainingLocation() instanceof StarSystemAPI)
+			data.starSystem = (StarSystemAPI)target.getContainingLocation();
+		if (target instanceof CampaignTerrainAPI)
+		{
+			data.terrain = (CampaignTerrainAPI)target;
+			data.primary = target.getOrbitFocus();
+		}
+		data.name = getStationName(data.primary);
+		data.archetype = marketSetup.pickArchetypeForStation(data);
+		alreadyUsedStationNames.add(data.name);
+		
+		return data;
+	}
+	
+	/**
+	 * Finds suitable locations for free stations and creates ProcGenEntities for them, so they may be created later
+	 * Don't create them right now, as we haven't picked factions for them yet
+	 */
+	protected void prepFreeStations()
+	{
+		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>(random);
+		for (StarSystemAPI system : populatedSystems)
+		{
+			for (PlanetAPI planet : system.getPlanets())
+			{
+				if (planet.isGasGiant() || planet.isStar()) continue;
+				if (procGenEntitiesByToken.containsKey(planet))
+				{
+					ProcGenEntity entity = procGenEntitiesByToken.get(planet);
+					if (populatedPlanets.contains(entity)) continue;
+				}
+				
+				picker.add(planet);
+			}
+			for (CampaignTerrainAPI terrain : system.getTerrainCopy())
+			{
+				if (ALLOWED_STATION_TERRAIN.contains(terrain.getId()))
+					picker.add(terrain);
+			}
+		}
+		
+		int count = 0;
+		while (count < setupData.numStations && !picker.isEmpty())
+		{
+			SectorEntityToken target = picker.pickAndRemove();
+			StarSystemAPI loc = (StarSystemAPI)target.getContainingLocation();
+			if (marketsBySystem.get(loc).size() >= setupData.maxMarketsPerSystem)
+				continue;
+			
+			ProcGenEntity station = createEntityDataForStation(target);
+			stations.add(station);
+		}
+	}
+	
+	/**
+	 * Picks the "homeworld" (player faction's HQ) from the most desirable planets
+	 * @return
+	 */
 	protected ProcGenEntity pickHomeworld()
 	{
 		List<ProcGenEntity> candidates = new ArrayList<>(populatedPlanets);
@@ -454,7 +577,7 @@ public class ExerelinProcGen {
 					else return 0;
 				}});
 		
-		WeightedRandomPicker<ProcGenEntity> picker = new WeightedRandomPicker<>();
+		WeightedRandomPicker<ProcGenEntity> picker = new WeightedRandomPicker<>(random);
 		for (int i=0; i<candidates.size(); i++)
 		{
 			if (i == 5) break;
@@ -464,6 +587,9 @@ public class ExerelinProcGen {
 		return homeworld;
 	}
 	
+	/**
+	 * Spawns comm relays in each star system, or converts existing ones made by procgen
+	 */
 	protected void spawnCommRelays()
 	{
 		for (StarSystemAPI system : populatedSystems)
@@ -492,7 +618,7 @@ public class ExerelinProcGen {
 				relay = system.addCustomEntity(system.getId() + "_relay", // unique id
 					system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
 					"comm_relay", // type of object, defined in custom_entities.json
-					"neutral"); // faction
+					capital.entity.getFaction().getId()); // faction
 
 				SectorEntityToken toOrbit = capital.entity;
 				int lp = 4;
@@ -515,6 +641,10 @@ public class ExerelinProcGen {
 		}
 	}
 	
+	/**
+	 * Sets capitals for each star system
+	 * When the capital is captured, the relay changes owner
+	 */
 	protected void setCapitals()
 	{
 		for (StarSystemAPI system : populatedSystems)
@@ -549,9 +679,10 @@ public class ExerelinProcGen {
 	
 	protected void init()
 	{
-		String seedStr = Global.getSector().getSeedString().replaceAll("[^0-9]", "");
-		random = new Random(Long.parseLong(seedStr));
-		resetVars();
+		random = new Random(ExerelinUtils.getStartingSeed());
+		marketSetup = new ExerelinMarketBuilder(this);
+		setupData = ExerelinSetupData.getInstance();
+		factionIds = getStartingFactions();
 	}
 	
 	public void generate()
@@ -572,9 +703,19 @@ public class ExerelinProcGen {
 					float desirability1 = positiveDesirabilityBySystem.get(sys1);
 					float desirability2 = positiveDesirabilityBySystem.get(sys2);
 
-					if (desirability1 > desirability2) return -1;
-					else if (desirability2 > desirability1) return 1;
+					//if (desirability1 > desirability2) return -1;
+					//else if (desirability2 > desirability1) return 1;
+					//else return 0;
+					
+					if (desirability1 > 0 && desirability2 <= 0) return -1;
+					else if (desirability2 > 0 && desirability1 <= 0) return 1;
+					
+					float dist1 = Misc.getDistance(sys1.getLocation(), ExerelinNewGameSetup.SECTOR_CENTER);
+					float dist2 = Misc.getDistance(sys2.getLocation(), ExerelinNewGameSetup.SECTOR_CENTER);
+					if (dist1 > dist2) return -1;
+					else if (dist2 > dist1) return 1;
 					else return 0;
+					
 				}});
 		
 		for (int i=0; i<ExerelinSetupData.getInstance().numSystems; i++)
@@ -584,117 +725,41 @@ public class ExerelinProcGen {
 		
 		log.info("Picking populated planets");
 		pickPopulatedPlanets();
-		// TODO: stations
+		log.info("Preparing stations");
+		prepFreeStations();
 		
 		log.info("Populating sector");
 		populateSector(Global.getSector());
 		setCapitals();
 		spawnCommRelays();
+		marketSetup.addCabalSubmarkets();
 		
 		log.info("Finishing");
 		finish();
 	}
-	
-	protected void buildSystem(SectorAPI sector, int systemIndex, boolean inhabited)
-	{
-		// First we make a star system with random name
-		int systemNameIndex = MathUtils.getRandomNumberInRange(0, possibleSystemNames.size() - 1);
-		if (systemIndex == 0) systemNameIndex = 0;	// there is always a starSystem named Exerelin
-		StarSystemAPI system = sector.createStarSystem(possibleSystemNames.get(systemNameIndex));
-		possibleSystemNames.remove(systemNameIndex);
-		String systemName = system.getName();
-		String systemId = system.getId();
-		ProcGenEntity capital = null;
 		
-		// Build stations
-		// Note: to enable special faction stations, we don't actually generate the stations until much later,
-		// when we're dealing out planets to factions
-		
-		/*
-		if (inhabited)
-		{
-			int numStations;
-			int maxStations = ExerelinSetupData.getInstance().maxStations;
-			if(ExerelinSetupData.getInstance().numSystems != 1)
-			{
-				int minStations = ExerelinConfig.minimumStations;
-				if (minStations > maxStations) maxStations = minStations;
-				numStations = MathUtils.getRandomNumberInRange(minStations, Math.min(maxStations, numBasePlanets*2));
-			}
-			else
-				numStations = maxStations;
-
-			// create random picker for our station locations
-			WeightedRandomPicker<EntityData> picker = new WeightedRandomPicker<>();
-			//addListToPicker(entities, picker);
-			for (EntityData entityData : entities)
-			{
-				float weight = 1f;
-				if (entityData.type == EntityType.STAR) weight = 3.5f;
-				else if (entityData.habitable == false) weight = 2f;
-				picker.add(entityData, weight);
-			}
-
-			int k = 0;
-			List alreadyUsedStationNames = new ArrayList();
-			while(k < numStations)
-			{
-				if (picker.isEmpty()) break;	//picker.add(starData);
-				EntityData primaryData = picker.pickAndRemove();
-				if (primaryData.entity == star && starBelts1.isEmpty()) {
-					continue;
-				}
-				if (primaryData.entity == star2 && starBelts2.isEmpty()) {
-					continue;
-				}
-				
-				EntityData stationData = new EntityData("", system);
-				stationData.primary = primaryData;
-				stationData.type = EntityType.STATION;
-				stationData.archetype = marketSetup.pickMarketArchetype(true);
-				
-				// name our station
-				boolean nameOK = false;
-				String name = "";
-				while(!nameOK)
-				{
-					name = primaryData.name + " " + ExerelinUtils.getRandomListElement(possibleStationNames);
-					if (!alreadyUsedStationNames.contains(name))
-						nameOK = true;
-				}
-				alreadyUsedStationNames.add(name);
-				stationData.name = name;			
-				stations.add(stationData);
-				log.info("Prepping station " + name);
-
-				k = k + 1;
-			}
-		}
-		*/
-	}
-	
 	// =========================================================================
 	// Utility functions
 	
-	protected SectorEntityToken makeStation(ProcGenEntity data, String factionId)
+	protected SectorEntityToken createStation(ProcGenEntity station, String factionId, boolean freeStation)
 	{
 		float angle = ExerelinUtilsAstro.getRandomAngle(random);
 		int orbitRadius = 200;
-		PlanetAPI planet = (PlanetAPI)data.primary;
+		PlanetAPI planet = (PlanetAPI)station.primary;
 		if (planet.isMoon())
 			orbitRadius = 150;
 		else if (planet.isGasGiant())
 			orbitRadius = 500;
 		else if (planet.isStar())
-			orbitRadius = (int)data.terrain.getOrbit().computeCurrentLocation().length();
+			orbitRadius = (int)station.terrain.getOrbit().computeCurrentLocation().length();
 		if (!planet.isStar())	// don't do for belter stations, else they spawn outside the belt
 			orbitRadius += planet.getRadius();
 
 		float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(planet, orbitRadius);
 		if (planet.isStar())
-			orbitDays = data.terrain.getOrbit().getOrbitalPeriod();
+			orbitDays = station.terrain.getOrbit().getOrbitalPeriod();
 
-		String name = data.name;
+		String name = station.name;
 		String id = name.replace(' ','_');
 		id = id.toLowerCase();
 		List<String> images = stationImages;
@@ -704,27 +769,29 @@ public class ExerelinProcGen {
 		
 		String image = (String) ExerelinUtils.getRandomListElement(images);
 		
-		SectorEntityToken newStation = data.starSystem.addCustomEntity(id, name, image, factionId);
+		SectorEntityToken newStation = station.starSystem.addCustomEntity(id, name, image, factionId);
 		newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
-		data.entity = newStation;
+		station.entity = newStation;
 		
-		MarketAPI existingMarket = planet.getMarket();
-		if (existingMarket != null)
+		if (!freeStation)
 		{
+			MarketAPI existingMarket = planet.getMarket();
 			//existingMarket.addCondition("exerelin_recycling_plant");
 			newStation.setMarket(existingMarket);
 			existingMarket.getConnectedEntities().add(newStation);
-			data.market = existingMarket;
+			station.market = existingMarket;
 		}
 		else
-		{	
-			data.market = marketSetup.addMarket(data, factionId);
+		{
+			log.info("Adding free station " + station.name + " for " + factionId);
+			station.market = marketSetup.addMarket(station, factionId);
 			//standaloneStations.add(data);
 		}
 		pickEntityInteractionImage(newStation, newStation.getMarket(), planet.getTypeId(), EntityType.STATION);
 		newStation.setCustomDescriptionId("orbital_station_default");
 		
-		data.entity = newStation;		
+		station.entity = newStation;
+		procGenEntitiesByToken.put(newStation, station);
 		return newStation;
 	}
 	
@@ -764,7 +831,7 @@ public class ExerelinProcGen {
 		market.addCondition(Conditions.OUTPOST);
 		market.addCondition(Conditions.TRADE_CENTER);
 		market.addCondition(Conditions.FREE_PORT);
-		market.addCondition("exerelin_recycling_plant");
+		//market.addCondition("exerelin_recycling_plant");
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		market.addSubmarket("exipirated_avesta_market");
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
@@ -896,8 +963,7 @@ public class ExerelinProcGen {
 		// initial setup
 		marketSetup.pickMarketArchetypes(populatedPlanets);
 		
-		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>();
-		factionPicker.setRandom(random);
+		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>(random);
 		List<String> factions = new ArrayList<>(factionIds);
 		factions.remove(ExerelinConstants.PLAYER_NPC_ID);  // player NPC faction only gets homeworld (if applicable)
 		factionPicker.addAll(factions);
@@ -944,8 +1010,7 @@ public class ExerelinProcGen {
 		Collections.shuffle(stationsCopy, random);
 		List<ProcGenEntity> unassignedEntities = new ArrayList<>(populatedPlanetsCopy);	// needs to be a List instead of a Set for shuffling
 		for (ProcGenEntity station : stationsCopy) {
-			if (!station.primary.getMarket().isPlanetConditionMarketOnly())
-				unassignedEntities.add(station);
+			unassignedEntities.add(station);
 		}
 		
 		Set<ProcGenEntity> toRemove = new HashSet<>();
@@ -984,8 +1049,7 @@ public class ExerelinProcGen {
 		
 		if (!pirateFactions.isEmpty())
 		{
-			WeightedRandomPicker<String> piratePicker = new WeightedRandomPicker<>();
-			piratePicker.setRandom(random);
+			WeightedRandomPicker<String> piratePicker = new WeightedRandomPicker<>(random);
 
 			Collections.shuffle(unassignedEntities);
 			for (ProcGenEntity entity : unassignedEntities)
@@ -1014,7 +1078,7 @@ public class ExerelinProcGen {
 				}
 				else
 				{
-					makeStation(entity, factionId);
+					createStation(entity, factionId, true);
 					stationsCopy.remove(entity);
 					factionStationCount.put(factionId, factionStationCount.get(factionId) + 1);
 				}
@@ -1062,7 +1126,7 @@ public class ExerelinProcGen {
 		// dole out any unassigned planets
 		for (ProcGenEntity planet : populatedPlanetsCopy)
 		{
-			if (planet.market != null)
+			if (planet.market != null && !planet.market.isPlanetConditionMarketOnly())
 			{
 				log.error("Unassigned entity " + planet.name + " already has market!");
 				continue;
@@ -1076,39 +1140,25 @@ public class ExerelinProcGen {
 			unassignedEntities.remove(planet);
 		}
 		
-		// now for stations
-		for (ProcGenEntity station : stationsCopy)
-		{
-			/*
-			if (station.primary.habitable)
-			{
-				makeStation(station, station.primary.entity.getFaction().getId());
-			}
-			else
-			{
-				standaloneStations.add(station);
-			}*/
-		}
-		List<ProcGenEntity> standaloneStationsCopy = null;//new ArrayList<>(standaloneStations);
-		
-		int remainingStations = standaloneStationsCopy.size();
+		// assign stations		
+		int remainingStations = stationsCopy.size();
 		for (String factionId : factions) {
 			int numStations = (int)(remainingStations * (factionShare.get(factionId)/totalShare) + 0.5);
 			for (int i=factionStationCount.get(factionId);i<numStations;i++)
 			{
-				ProcGenEntity station = standaloneStationsCopy.get(0);
-				standaloneStationsCopy.remove(0);
+				ProcGenEntity station = stationsCopy.get(0);
+				stationsCopy.remove(0);
 				unassignedEntities.remove(station);
-				makeStation(station, factionId);
+				createStation(station, factionId, true);
 				factionStationCount.put(factionId, factionStationCount.get(factionId) + 1);
 				
-				if (standaloneStationsCopy.isEmpty()) break;
+				if (stationsCopy.isEmpty()) break;
 			}
-			if (standaloneStationsCopy.isEmpty()) break;
+			if (stationsCopy.isEmpty()) break;
 		}
 		
 		// dole out any unassigned stations
-		for (ProcGenEntity station : standaloneStationsCopy)
+		for (ProcGenEntity station : stationsCopy)
 		{
 			if (station.market != null)
 			{
@@ -1119,13 +1169,18 @@ public class ExerelinProcGen {
 			if (factionPicker.isEmpty())
 				factionPicker.addAll(factions);
 			String factionId = factionPicker.pickAndRemove();
-			makeStation(station, factionId);
+			createStation(station, factionId, true);
 		}
 		
 		// end distribution of markets and stations
+	}
+	
+	protected void balanceMarkets()
+	{
+		log.info("INITIAL SUPPLY/DEMAND");
+		marketSetup.reportSupplyDemand();
 		
-		// balance supply/demand by adding/removing relevant market conditions
-		List<ProcGenEntity> haveMarkets = new ArrayList<>(habitablePlanets);
+		List<ProcGenEntity> haveMarkets = new ArrayList<>(populatedPlanets);
 		//haveMarkets.addAll(standaloneStations);
 		Collections.sort(haveMarkets, new Comparator<ProcGenEntity>() {	// biggest markets first
 			@Override
@@ -1139,8 +1194,7 @@ public class ExerelinProcGen {
 				else return -1;
 			}
 		});
-		log.info("INITIAL SUPPLY/DEMAND");
-		marketSetup.reportSupplyDemand();
+		// TODO add stations;
 		
 		marketSetup.balanceFood(haveMarkets);
 		marketSetup.balanceFood(haveMarkets);	// done twice to be able to handle large deviations
@@ -1167,7 +1221,7 @@ public class ExerelinProcGen {
 		marketSetup.reportSupplyDemand();
 		
 		for (ProcGenEntity entity : haveMarkets)
-			marketSetup.addStartingMarketCommodities(entity.market);
+			ExerelinMarketBuilder.addStartingMarketCommodities(entity.market);
 	}
 	
 	protected void finish()
@@ -1177,7 +1231,7 @@ public class ExerelinProcGen {
 		SectorManager.setSystemToRelayMap(systemToRelay);
 		SectorManager.setPlanetToRelayMap(planetToRelay);
 		
-		resetVars();
+		SectorManager.reinitLiveFactions();
 	}
 	
 	public static class ProcGenEntity {

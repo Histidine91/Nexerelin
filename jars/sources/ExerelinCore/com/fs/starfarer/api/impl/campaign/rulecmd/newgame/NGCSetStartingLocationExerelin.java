@@ -34,9 +34,9 @@ public class NGCSetStartingLocationExerelin extends BaseCommandPlugin {
         else
         {
             String homeStar = SectorManager.getFirstStarName();
-
-            data.setStartingLocationName(homeStar);
-            data.getStartingCoordinates().set(1200, -1200);
+            //data.setStartingLocationName(homeStar);
+            //data.setStartingLocationName("hyperspace");
+			data.getStartingCoordinates().set(1200, -1200);
         }
         
         return true;

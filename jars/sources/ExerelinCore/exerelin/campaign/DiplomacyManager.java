@@ -953,8 +953,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             Random random = new Random();
             if (!midgameReset) 
             {
-                String seedStr = Global.getSector().getSeedString().replaceAll("[^0-9]", "");
-                random.setSeed(Long.parseLong(seedStr));
+                random.setSeed(ExerelinUtils.getStartingSeed());
             }
             else random.setSeed(Misc.genRandomSeed());
             

@@ -74,12 +74,12 @@
 			#"maxSize":6,
 			#"allowDuplicates":false,
 		},
-		{
-			"name":"exerelin_recycling_plant",
-			"cost":200,
-			"archetypes":{"default":1},
-			"minSize":3,
-		},
+		#{
+		#	"name":"exerelin_recycling_plant",
+		#	"cost":200,
+		#	"archetypes":{"default":1},
+		#	"minSize":3,
+		#},
 		#{
 		#	"name":"exerelin_supply_workshop",
 		#	"cost":200,
@@ -107,6 +107,7 @@
 			"archetypes":{"default":1,"agriculture":0,"manufacturing":2,"heavy_industry":3},
 			"minSize":4,
 			"allowDuplicates":false,
+			"allowStations":false,
 			"conflictsWith":["spaceport"],
 		},
 		{
@@ -203,7 +204,7 @@
 		{
 			"name":"military_base",
 			"special":true,
-			"archetypes":{"default":1.5},
+			"archetypes":{"default":1},
 			"minSize":3,
 			"allowDuplicates":false	# duplicates cause too much market stability
 		},

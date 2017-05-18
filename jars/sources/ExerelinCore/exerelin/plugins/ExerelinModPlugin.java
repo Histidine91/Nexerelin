@@ -198,11 +198,8 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onNewGameAfterProcGen() {
-        Global.getLogger(this.getClass()).info("New game after proc gen; " + isNewGame);
-        if (!SectorManager.getCorvusMode())
-        {
-            new ExerelinProcGen().generate();
-        }
+        //Global.getLogger(this.getClass()).info("New game after proc gen; " + isNewGame);
+		new ExerelinProcGen().generate();
     }
     
     @Override

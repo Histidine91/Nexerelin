@@ -98,6 +98,9 @@ public class PlayerStartHandler {
 		else if (!SectorManager.getFreeStart())
 		{
 			entity = SectorManager.getHomeworld();
+			playerFleet.getContainingLocation().removeEntity(playerFleet);
+			entity.getContainingLocation().addEntity(playerFleet);
+			Global.getSector().setCurrentLocation(entity.getContainingLocation());
 			Vector2f loc = entity.getLocation();
 			playerFleet.setLocation(loc.x, loc.y);
 		}

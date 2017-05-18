@@ -29,6 +29,12 @@ public class ExerelinUtils
 		return min + (int)(Math.random() * ((max - min) + 1)); // hate java
 	}
 	
+	public static long getStartingSeed()
+	{
+		String seedStr = Global.getSector().getSeedString().replaceAll("[^0-9]", "");
+		return Long.parseLong(seedStr);
+	}
+	
 	/**
 	 * Like Random.nextInt() except easier to read
 	 * @param rand

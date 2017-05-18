@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -15,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.econ.HydroponicsLab;
 import exerelin.campaign.econ.RecyclingPlant;
@@ -24,6 +26,7 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -266,8 +269,7 @@ public class ExerelinMarketBuilder
 	
 	protected MarketConditionDef pickMarketCondition(MarketAPI market, List<MarketConditionDef> possibleConds, ProcGenEntity entityData, int budget, boolean isFirst)
 	{
-		WeightedRandomPicker<MarketConditionDef> picker = new WeightedRandomPicker<>();
-		picker.setRandom(random);
+		WeightedRandomPicker<MarketConditionDef> picker = new WeightedRandomPicker<>(random);
 		int numConds = 0;
 		int size = market.getSize();
 		String planetType = entityData.planetType;
@@ -303,6 +305,13 @@ public class ExerelinMarketBuilder
 	{
 		market.addCondition(cond.name);
 		entityData.marketPointsSpent += cond.cost;
+		
+		if (cond.name.equals(Conditions.ORBITAL_STATION))
+		{
+			ProcGenEntity station = procGen.createEntityDataForStation(entityData.entity);
+			station.market = market;
+			procGen.createStation(station, market.getFactionId(), false);
+		}
 	}
 	
 	public void addMarketCondition(MarketAPI market, ProcGenEntity entityData, String cond)
@@ -503,6 +512,28 @@ public class ExerelinMarketBuilder
 		List<ProcGenEntity> miscMarkets = assignArchetypesToTopMarkets(marketsCopy, Archetype.MISC, marketsCopy.size());
 	}
 	
+	public Archetype pickArchetypeForStation(ProcGenEntity station)
+	{
+		WeightedRandomPicker<Archetype> picker = new WeightedRandomPicker<>(random);
+		picker.add(Archetype.MISC, 2);
+		if (station.terrain != null)
+		{
+			if (station.terrain.getType().equals(Terrain.ASTEROID_BELT) || station.terrain.getType().equals(Terrain.ASTEROID_FIELD))
+				picker.add(Archetype.ORE, 5);
+			else if (station.terrain.getType().equals(Terrain.RING))
+				picker.add(Archetype.VOLATILES, 4);
+		}
+		
+		if (station.primary instanceof PlanetAPI)
+		{
+			PlanetAPI planet = (PlanetAPI) station.primary;
+			if (planet.isGasGiant())
+				picker.add(Archetype.VOLATILES, 4);
+		}
+		
+		return picker.pick();
+	}
+	
 	// =========================================================================
 	// other stuff
 	
@@ -564,6 +595,9 @@ public class ExerelinMarketBuilder
 	// main market adding method
 	protected MarketAPI addMarket(ProcGenEntity data, String factionId)
 	{
+		log.info("Creating market for " + data.name + " (" + data.type + ")");
+		
+		
 		SectorEntityToken entity = data.entity;
 		// don't make the markets too big; they'll screw up the economy big time
 		int marketSize = 1;
@@ -596,40 +630,49 @@ public class ExerelinMarketBuilder
 		
 		if (data.forceMarketSize != -1) marketSize = data.forceMarketSize;
 		
-		MarketAPI newMarket = Global.getFactory().createMarket(entity.getId() /*+ "_market"*/, entity.getName(), marketSize);
-		newMarket.setPrimaryEntity(entity);
-		entity.setMarket(newMarket);
-		
-		newMarket.setFactionId(factionId);
-		newMarket.setBaseSmugglingStabilityValue(0);
+		MarketAPI market = entity.getMarket();
+		if (market == null) {
+			log.info("No market, creating one");
+			market = Global.getFactory().createMarket(entity.getId(), entity.getName(), marketSize);
+			entity.setMarket(market);
+			market.setPrimaryEntity(entity);
+		}
+		else 
+		{
+			log.info("Has market, converting");
+			Global.getFactory().convertToRegularMarket(market);
+			market.setSize(marketSize);
+		}
+		market.setFactionId(factionId);
+		market.setPlanetConditionMarketOnly(false);
+		// needed?
+		//market.setBaseSmugglingStabilityValue(0);
 		
 		if (data.isHQ)
 		{
-			newMarket.addCondition(Conditions.HEADQUARTERS);
+			market.addCondition(Conditions.HEADQUARTERS);
 			//newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);	// dependent on number of factions; bad idea
-			newMarket.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
-			newMarket.addCondition("exerelin_recycling_plant");
-			newMarket.addCondition("exerelin_recycling_plant");
-			newMarket.addCondition("exerelin_supply_workshop");
-			newMarket.addCondition("exerelin_hydroponics");
+			//market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
+			//market.addCondition("exerelin_recycling_plant");
+			//market.addCondition("exerelin_recycling_plant");
+			//market.addCondition("exerelin_supply_workshop");
+			//market.addCondition("exerelin_hydroponics");
 			if (false)	//(data == sectorGen.homeworld) 
 			{
 				//newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
-				newMarket.addCondition("exerelin_supply_workshop");
+				market.addCondition("exerelin_supply_workshop");
 				//newMarket.addCondition(Conditions.SHIPBREAKING_CENTER);
-				newMarket.addCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION);
+				market.addCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION);
 			}
 		}
 		else if (data.isCapital)
 		{
-			newMarket.addCondition(Conditions.REGIONAL_CAPITAL);
-			newMarket.addCondition("exerelin_recycling_plant");
-			newMarket.addCondition("exerelin_supply_workshop");
+			//market.addCondition(Conditions.REGIONAL_CAPITAL);
+			//market.addCondition("exerelin_recycling_plant");
+			//market.addCondition("exerelin_supply_workshop");
 			//newMarket.addCondition("exerelin_hydroponics");
 		}
-		
-		//newMarket.setSize(marketSize);
-		newMarket.addCondition("population_" + marketSize);
+		market.addCondition("population_" + marketSize);
 		
 		int minSizeForMilitaryBase = 6;
 		if (ExerelinUtilsFaction.isPirateFaction(factionId))
@@ -639,7 +682,7 @@ public class ExerelinMarketBuilder
 		
 		if (marketSize >= minSizeForMilitaryBase)
 		{
-			newMarket.addCondition(Conditions.MILITARY_BASE);
+			market.addCondition(Conditions.MILITARY_BASE);
 		}
 		
 		// planet type stuff
@@ -649,23 +692,24 @@ public class ExerelinMarketBuilder
 			if (planetType.equals("terran-eccentric"))
 			{
 				// add mirror/shade
-				// FIXME: fix angle
 				LocationAPI system = entity.getContainingLocation();
 				SectorEntityToken mirror = system.addCustomEntity(entity.getId() + "_mirror", "Stellar Mirror", "stellar_mirror", factionId);
-				mirror.setCircularOrbitPointingDown(entity, 0, entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());
+				mirror.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity), 
+						entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());
 				mirror.setCustomDescriptionId("stellar_mirror");
 				SectorEntityToken shade = system.addCustomEntity(entity.getId() + "_shade", "Stellar Shade", "stellar_shade", factionId);
-				shade.setCircularOrbitPointingDown(entity, 0 + 180, entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());		
+				shade.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity) + 180, 
+						entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());		
 				shade.setCustomDescriptionId("stellar_shade");
 			}
 		}
 				
-		if(marketSize <= 4 && !isStation){
-			newMarket.addCondition(Conditions.FRONTIER);
+		if (marketSize <= 4 && !isStation){
+			market.addCondition(Conditions.FRONTIER);
 		}
 		
 		// add random market conditions
-		initMarketPointsAndAddRandomConditions(newMarket, data);
+		initMarketPointsAndAddRandomConditions(market, data);
 
 		if (isStation && marketSize >= 3)
 		{
@@ -676,19 +720,19 @@ public class ExerelinMarketBuilder
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 		if (config.freeMarket)
 		{
-			newMarket.addCondition(Conditions.FREE_PORT);
+			market.addCondition(Conditions.FREE_PORT);
 		}
 		
-		newMarket.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
-		ExerelinUtilsMarket.setTariffs(newMarket);
+		market.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
+		ExerelinUtilsMarket.setTariffs(market);
 		
 		if (factionId.equals(Factions.LUDDIC_CHURCH) && random.nextFloat() < LUDDIC_MINORITY_CHANCE
 				|| random.nextFloat() < LUDDIC_MAJORITY_CHANCE) {
-			newMarket.addCondition(Conditions.LUDDIC_MAJORITY);
+			market.addCondition(Conditions.LUDDIC_MAJORITY);
 			//newMarket.addCondition("cottage_industry");
 		}
 		else if (factionId.equals("spire")) {
-			newMarket.addCondition("aiw_inorganic_populace");
+			market.addCondition("aiw_inorganic_populace");
 		}
 		else if (factionId.equals("crystanite")) {
 			//newMarket.addCondition("crys_population");
@@ -696,29 +740,29 @@ public class ExerelinMarketBuilder
 		
 		if (factionId.equals("templars"))
 		{
-			newMarket.addSubmarket("tem_templarmarket");
-			newMarket.addCondition("exerelin_templar_control");
+			market.addSubmarket("tem_templarmarket");
+			market.addCondition("exerelin_templar_control");
 		}
 		else
 		{
-			newMarket.addSubmarket(Submarkets.SUBMARKET_OPEN);
-			newMarket.addSubmarket(Submarkets.SUBMARKET_BLACK);
+			market.addSubmarket(Submarkets.SUBMARKET_OPEN);
+			market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		}
-		newMarket.addSubmarket(Submarkets.SUBMARKET_STORAGE);
+		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		
-		//if (marketSize >= 4)
-		//	ExerelinUtilsCargo.addCommodityStockpile(newMarket, "agent", marketSize);
-		
-		Global.getSector().getEconomy().addMarket(newMarket);
+		// maybe already handled by convertToRegularMarket above?
+		Global.getSector().getEconomy().addMarket(market);
 		entity.setFaction(factionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
 		
 		if (data.isHQ && factionId.equals(Factions.DIKTAT))
 		{
-			ExerelinLionsGuardFleetManager script = new ExerelinLionsGuardFleetManager(newMarket);
+			ExerelinLionsGuardFleetManager script = new ExerelinLionsGuardFleetManager(market);
 			entity.addScript(script);
 		}
 		
-		newMarket.reapplyConditions();	// this breaks demand getter?
+		//market.setSurveyLevel(MarketAPI.SurveyLevel.FULL);	// probably not needed
+		market.reapplyConditions();	// this breaks demand getter?
+		addStartingMarketCommodities(market);
 		
 		// count some demand/supply values for market balancing
 		
@@ -726,25 +770,25 @@ public class ExerelinMarketBuilder
 		//metalSupply += ExerelinUtilsMarket.getCommoditySupply(newMarket, Commodities.METALS);
 		//suppliesSupply += ExerelinUtilsMarket.getCommoditySupply(newMarket, Commodities.SUPPLIES);
 
-		int autofacCount = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.AUTOFAC_HEAVY_INDUSTRY);
-		int shipbreakingCount = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.SHIPBREAKING_CENTER);
-		int fuelProdCount = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ANTIMATTER_FUEL_PRODUCTION);
-		int recyclingCount = ExerelinUtilsMarket.countMarketConditions(newMarket, "exerelin_recycling_plant");
-		int workshopCount = ExerelinUtilsMarket.countMarketConditions(newMarket, "exerelin_supply_workshop");
+		int autofacCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.AUTOFAC_HEAVY_INDUSTRY);
+		int shipbreakingCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.SHIPBREAKING_CENTER);
+		int fuelProdCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.ANTIMATTER_FUEL_PRODUCTION);
+		int recyclingCount = ExerelinUtilsMarket.countMarketConditions(market, "exerelin_recycling_plant");
+		int workshopCount = ExerelinUtilsMarket.countMarketConditions(market, "exerelin_supply_workshop");
 		float pop = ExerelinUtilsMarket.getPopulation(marketSize);
 		
 		// domestic goods
-		float dgSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.LIGHT_INDUSTRIAL_COMPLEX) * ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS;
-		dgSupply += ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.COTTAGE_INDUSTRY) * ConditionData.COTTAGE_INDUSTRY_DOMESTIC_GOODS;
-		dgSupply *= pop * ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.DOMESTIC_GOODS);
+		float dgSupply = ExerelinUtilsMarket.countMarketConditions(market, Conditions.LIGHT_INDUSTRIAL_COMPLEX) * ConditionData.LIGHT_INDUSTRY_DOMESTIC_GOODS;
+		dgSupply += ExerelinUtilsMarket.countMarketConditions(market, Conditions.COTTAGE_INDUSTRY) * ConditionData.COTTAGE_INDUSTRY_DOMESTIC_GOODS;
+		dgSupply *= pop * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.DOMESTIC_GOODS);
 		modifyCommoditySupply(Commodities.DOMESTIC_GOODS, dgSupply);
-		modifyCommodityDemand(Commodities.DOMESTIC_GOODS, pop * ConditionData.POPULATION_DOMESTIC_GOODS * ExerelinUtilsMarket.getCommodityDemandMult(newMarket, Commodities.DOMESTIC_GOODS));
+		modifyCommodityDemand(Commodities.DOMESTIC_GOODS, pop * ConditionData.POPULATION_DOMESTIC_GOODS * ExerelinUtilsMarket.getCommodityDemandMult(market, Commodities.DOMESTIC_GOODS));
 		
 		// metal
-		float mSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_METAL_PER_ORE * ConditionData.ORE_REFINING_ORE;
+		float mSupply = ExerelinUtilsMarket.countMarketConditions(market, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_METAL_PER_ORE * ConditionData.ORE_REFINING_ORE;
 		mSupply += shipbreakingCount * ConditionData.SHIPBREAKING_METALS;
 		mSupply += recyclingCount * RecyclingPlant.RECYCLING_METALS * RecyclingPlant.HAX_MULT_07_METALS;
-		mSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.METALS);
+		mSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.METALS);
 		modifyCommoditySupply(Commodities.METALS, mSupply);
 		float mDemand = autofacCount * ConditionData.AUTOFAC_HEAVY_METALS;
 		mDemand += workshopCount * SupplyWorkshop.WORKSHOP_METALS;
@@ -752,10 +796,10 @@ public class ExerelinMarketBuilder
 		//modifyCommodityDemand(Commodities.METALS, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.METALS) * 0.5f);	// hax
 		
 		// rare metal
-		float rmSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_METAL_PER_ORE * ConditionData.ORE_REFINING_RARE_ORE;
+		float rmSupply = ExerelinUtilsMarket.countMarketConditions(market, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_METAL_PER_ORE * ConditionData.ORE_REFINING_RARE_ORE;
 		rmSupply += shipbreakingCount * ConditionData.SHIPBREAKING_RARE_METALS;
 		rmSupply += recyclingCount * RecyclingPlant.RECYCLING_RARE_METALS * RecyclingPlant.HAX_MULT_07_METALS;
-		rmSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.RARE_METALS);
+		rmSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.RARE_METALS);
 		ExerelinMarketBuilder.this.modifyCommoditySupply(Commodities.RARE_METALS, rmSupply);
 		float rmDemand = autofacCount * ConditionData.AUTOFAC_HEAVY_RARE_METALS;
 		rmDemand += workshopCount * SupplyWorkshop.WORKSHOP_RARE_METALS;
@@ -767,67 +811,67 @@ public class ExerelinMarketBuilder
 		sSupply += shipbreakingCount * ConditionData.SHIPBREAKING_SUPPLIES;
 		sSupply += recyclingCount * RecyclingPlant.RECYCLING_SUPPLIES;
 		sSupply += workshopCount * SupplyWorkshop.WORKSHOP_SUPPLIES;
-		sSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.SUPPLIES);
+		sSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.SUPPLIES);
 		modifyCommoditySupply(Commodities.SUPPLIES, sSupply);
-		float sDemand = ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.SUPPLIES);
+		float sDemand = ExerelinUtilsMarket.getCommodityDemand(market, Commodities.SUPPLIES);
 		sDemand += 0.0013 * pop;	// fudge factor to account for crew and marines using supplies
 		modifyCommodityDemand(Commodities.SUPPLIES, sDemand * 1.2f);	// hax
 		
 		// fuel
 		float fSupply = fuelProdCount * ConditionData.FUEL_PRODUCTION_FUEL;
-		fSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.FUEL);
+		fSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.FUEL);
 		modifyCommoditySupply(Commodities.FUEL, fSupply);
 		
-		modifyCommodityDemand(Commodities.FUEL, ExerelinUtilsMarket.getMarketBaseFuelDemand(newMarket, 20*marketSize));
+		modifyCommodityDemand(Commodities.FUEL, ExerelinUtilsMarket.getMarketBaseFuelDemand(market, 20*marketSize));
 		//modifyCommodityDemand(Commodities.FUEL, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.FUEL) * 0.7f);
 		
 		// food
-		modifyCommoditySupply(Commodities.FOOD, ExerelinUtilsMarket.getMarketBaseFoodSupply(newMarket, true));
+		modifyCommoditySupply(Commodities.FOOD, ExerelinUtilsMarket.getMarketBaseFoodSupply(market, true));
 		modifyCommodityDemand(Commodities.FOOD, ConditionData.POPULATION_FOOD * ExerelinUtilsMarket.getPopulation(marketSize));
 		
 		// guns (hand weapons)
 		float gSupply = autofacCount * ConditionData.AUTOFAC_HEAVY_HAND_WEAPONS;
 		gSupply += workshopCount * SupplyWorkshop.WORKSHOP_HAND_WEAPONS;
-		gSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.HAND_WEAPONS);
+		gSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HAND_WEAPONS);
 		modifyCommoditySupply(Commodities.HAND_WEAPONS, gSupply);
-		modifyCommodityDemand(Commodities.HAND_WEAPONS, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.HAND_WEAPONS));
+		modifyCommodityDemand(Commodities.HAND_WEAPONS, ExerelinUtilsMarket.getCommodityDemand(market, Commodities.HAND_WEAPONS));
 		
 		// machinery
 		float hmSupply = autofacCount * ConditionData.AUTOFAC_HEAVY_MACHINERY;
 		hmSupply += shipbreakingCount * ConditionData.SHIPBREAKING_MACHINERY;
 		hmSupply += workshopCount * SupplyWorkshop.WORKSHOP_HEAVY_MACHINERY;
 		hmSupply += recyclingCount * RecyclingPlant.RECYCLING_HEAVY_MACHINERY;
-		hmSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.HEAVY_MACHINERY);
+		hmSupply *= ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.HEAVY_MACHINERY);
 		modifyCommoditySupply(Commodities.HEAVY_MACHINERY, hmSupply);
 		//modifyCommodityDemand(Commodities.HEAVY_MACHINERY, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.HEAVY_MACHINERY) * 0.75f);	// hax
-		modifyCommodityDemand(Commodities.HEAVY_MACHINERY, ExerelinUtilsMarket.getMarketBaseMachineryDemand(newMarket, 10 * marketSize));
+		modifyCommodityDemand(Commodities.HEAVY_MACHINERY, ExerelinUtilsMarket.getMarketBaseMachineryDemand(market, 10 * marketSize));
 		
 		// organics
-		float oSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORGANICS_COMPLEX) * ConditionData.ORGANICS_MINING_ORGANICS;
-		oSupply += ExerelinUtilsMarket.getFarmingFoodSupply(newMarket, true) * ConditionData.FARMING_ORGANICS_FRACTION;
+		float oSupply = ExerelinUtilsMarket.countMarketConditions(market, Conditions.ORGANICS_COMPLEX) * ConditionData.ORGANICS_MINING_ORGANICS;
+		oSupply += ExerelinUtilsMarket.getFarmingFoodSupply(market, true) * ConditionData.FARMING_ORGANICS_FRACTION;
 		oSupply += recyclingCount * RecyclingPlant.RECYCLING_ORGANICS * RecyclingPlant.HAX_MULT_07_OV;
-		oSupply += ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.ORGANICS);
+		oSupply += ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.ORGANICS);
 		modifyCommoditySupply(Commodities.ORGANICS, oSupply);
-		modifyCommodityDemand(Commodities.ORGANICS, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.ORGANICS) * 0.95f);	// hax
+		modifyCommodityDemand(Commodities.ORGANICS, ExerelinUtilsMarket.getCommodityDemand(market, Commodities.ORGANICS) * 0.95f);	// hax
 		
 		// volatiles
-		float vSupply = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.VOLATILES_COMPLEX) * ConditionData.VOLATILES_MINING_VOLATILES;
+		float vSupply = ExerelinUtilsMarket.countMarketConditions(market, Conditions.VOLATILES_COMPLEX) * ConditionData.VOLATILES_MINING_VOLATILES;
 		vSupply += recyclingCount * RecyclingPlant.RECYCLING_VOLATILES * RecyclingPlant.HAX_MULT_07_OV;
-		ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.VOLATILES);
+		ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.VOLATILES);
 		modifyCommoditySupply(Commodities.VOLATILES, vSupply);
-		modifyCommodityDemand(Commodities.VOLATILES, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.VOLATILES) * 1.05f);	// hax
+		modifyCommodityDemand(Commodities.VOLATILES, ExerelinUtilsMarket.getCommodityDemand(market, Commodities.VOLATILES) * 1.05f);	// hax
 		
 		// ore
-		modifyCommoditySupply(Commodities.ORE, ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORE_COMPLEX) 
-				* ConditionData.ORE_MINING_ORE * ExerelinUtilsMarket.getCommoditySupplyMult(newMarket, Commodities.ORE));
-		float orDemand = ExerelinUtilsMarket.countMarketConditions(newMarket, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_ORE;
-		if (newMarket.hasCondition("aiw_inorganic_populace"))
+		modifyCommoditySupply(Commodities.ORE, ExerelinUtilsMarket.countMarketConditions(market, Conditions.ORE_COMPLEX) 
+				* ConditionData.ORE_MINING_ORE * ExerelinUtilsMarket.getCommoditySupplyMult(market, Commodities.ORE));
+		float orDemand = ExerelinUtilsMarket.countMarketConditions(market, Conditions.ORE_REFINING_COMPLEX) * ConditionData.ORE_REFINING_ORE;
+		if (market.hasCondition("aiw_inorganic_populace"))
 			orDemand += (pop * ConditionData.POPULATION_FOOD) * 0.95f * 0.02f;
 		modifyCommodityDemand(Commodities.ORE, orDemand);
 		//modifyCommodityDemand(Commodities.ORE, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.ORE));
 		
-		data.market = newMarket;
-		return newMarket;
+		data.market = market;
+		return market;
 	}
 	
 	// =========================================================================	
@@ -848,8 +892,7 @@ public class ExerelinMarketBuilder
 		
 		log.info("Pre-balance domestic goods supply/demand: " + (int)domesticGoodsSupply + " / " + (int)domesticGoodsDemand);
 		
-		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
-		entityPicker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>(random);
 		for (ProcGenEntity entity:candidateEntities)
 		{
 			MarketAPI market = entity.market;
@@ -927,8 +970,7 @@ public class ExerelinMarketBuilder
 		float machinerySupply = getCommoditySupply(Commodities.HEAVY_MACHINERY);
 		
 		log.info("Pre-balance rare metal supply/demand: " + (int)rareMetalSupply + " / " + (int)rareMetalDemand);
-		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
-		entityPicker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>(random);
 		
 		for (ProcGenEntity entity:candidateEntities)
 		{
@@ -1006,8 +1048,7 @@ public class ExerelinMarketBuilder
 		}
 		
 		log.info("Pre-balance machinery supply/demand: " + (int)machinerySupply + " / " + (int)machineryDemand);
-		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
-		entityPicker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>(random);
 		
 		for (ProcGenEntity entity:candidateEntities)
 		{
@@ -1088,8 +1129,7 @@ public class ExerelinMarketBuilder
 		float organicsDemand = getCommodityDemand(Commodities.ORGANICS);
 		
 		log.info("Pre-balance supplies supply/demand: " + (int)suppliesSupply + " / " + (int)suppliesDemand);
-		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
-		entityPicker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>(random);
 		
 		for (ProcGenEntity entity:candidateEntities)
 		{
@@ -1169,8 +1209,7 @@ public class ExerelinMarketBuilder
 		
 		log.info("Pre-balance food supply/demand: " + (int)foodSupply + " / " + (int)foodDemand);
 		
-		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
-		entityPicker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>(random);
 		
 		for (ProcGenEntity entity:candidateEntities)
 		{
@@ -1305,8 +1344,7 @@ public class ExerelinMarketBuilder
 		
 		log.info("Pre-balance fuel supply/demand: " + (int)fuelSupply + " / " + (int)fuelDemand);
 		
-		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
-		entityPicker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>(random);
 		
 		for (ProcGenEntity entity:candidateEntities)
 		{
@@ -1372,8 +1410,7 @@ public class ExerelinMarketBuilder
 		
 		log.info("Pre-balance organics supply/demand: " + (int)organicsSupply + " / " + (int)organicsDemand);
 		
-		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
-		entityPicker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>(random);
 		
 		for (ProcGenEntity entity:candidateEntities)
 		{
@@ -1425,8 +1462,7 @@ public class ExerelinMarketBuilder
 		
 		log.info("Pre-balance volatiles supply/demand: " + (int)volatilesSupply + " / " + (int)volatilesDemand);
 		
-		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
-		entityPicker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>(random);
 		
 		for (ProcGenEntity entity:candidateEntities)
 		{
@@ -1479,8 +1515,7 @@ public class ExerelinMarketBuilder
 		
 		log.info("Pre-balance metal supply/demand: " + (int)metalSupply + " / " + (int)metalDemand);
 		
-		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
-		entityPicker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>(random);
 		
 		for (ProcGenEntity entity:candidateEntities)
 		{
@@ -1537,8 +1572,7 @@ public class ExerelinMarketBuilder
 		
 		log.info("Pre-balance ore supply/demand: " + (int)oreSupply + " / " + (int)oreDemand);
 		
-		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>();
-		entityPicker.setRandom(random);
+		WeightedRandomPicker<ProcGenEntity> entityPicker = new WeightedRandomPicker<>(random);
 		
 		for (ProcGenEntity entity:candidateEntities)
 		{
