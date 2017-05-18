@@ -22,9 +22,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-
-
-
 public class PrintFactionMarkets extends BaseCommandPlugin {
     
         public class MarketComparator implements Comparator<MarketAPI>
@@ -124,7 +121,8 @@ public class PrintFactionMarkets extends BaseCommandPlugin {
                         anyBase = true;
                         sizeStr += ", " + StringHelper.getString("base");
                     }
-                    if (market.hasCondition("cabal_influence") && market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_VISITED_BEFORE))
+                    if (market.hasCondition("cabal_influence") 
+                            && (market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_VISITED_BEFORE) || Global.getSettings().isDevMode()))
                         sizeStr += ", " + StringHelper.getString("cabal");
                     entry = StringHelper.substituteToken(entry, "$size", sizeStr);
                     
