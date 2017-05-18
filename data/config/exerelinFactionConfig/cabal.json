@@ -18,8 +18,7 @@
 
     "positiveDiplomacyExtra":0,
     "negativeDiplomacyExtra":0,
-    "factionsLiked":["tritachyon"],
-    "factionsDisliked":[],
+    "startRelationships":{ "tritachyon":0.1, "templars":-0.1 }, # in Corvus they're also only suspicious with League and Exi but meh
     "morality":"evil",
     
     "alignments":{

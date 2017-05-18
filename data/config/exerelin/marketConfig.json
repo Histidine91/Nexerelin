@@ -95,7 +95,7 @@
 		},
 		{
 			"name":"spaceport",
-			"cost":300,
+			"cost":250,
 			"archetypes":{"default":1,"agriculture":0,"manufacturing":2,"heavy_industry":3},
 			"minSize":4,
 			"allowDuplicates":false,
@@ -103,7 +103,7 @@
 		},
 		{
 			"name":"orbital_station",
-			"cost":300,
+			"cost":250,
 			"archetypes":{"default":1,"agriculture":0,"manufacturing":2,"heavy_industry":3},
 			"minSize":4,
 			"allowDuplicates":false,
