@@ -1634,6 +1634,8 @@ public class ExerelinMarketBuilder
 	{
 		for (CommodityOnMarketAPI commodity : market.getAllCommodities())
 		{
+			if (commodity.isNonEcon()) continue;
+			if (commodity.getCommodity().hasTag("noseed")) continue;
 			float demand = commodity.getDemand().getDemand().modified;
 			float unmet = 1.2f - commodity.getDemand().getFractionMet();
 			commodity.addToStockpile(demand * unmet);

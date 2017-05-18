@@ -1,7 +1,7 @@
 name,id,demand class,base price,price variability,utility,decay,origin,tags,stack size,cargo space,icon,sound id,sound id drop,order
 High Value Prisoner,prisoner,crew,5000,,5,0.25,,nonecon,1000,0,graphics/icons/cargo/crew3.png,ui_cargo_crew,ui_cargo_crew_drop,19
-Agent,agent,marines,2000,,3,0.8,,military,1000,0,graphics/icons/cargo/crew2.png,ui_cargo_crew,ui_cargo_crew_drop,20
-Saboteur,saboteur,marines,2000,,3,0.8,,military,1000,0,graphics/icons/cargo/crew9.png,ui_cargo_crew,ui_cargo_crew_drop,21
+Agent,agent,marines,2000,,3,0.8,,"military,noseed",1000,0,graphics/icons/cargo/crew2.png,ui_cargo_crew,ui_cargo_crew_drop,20
+Saboteur,saboteur,marines,2000,,3,0.8,,"military,noseed",1000,0,graphics/icons/cargo/crew9.png,ui_cargo_crew,ui_cargo_crew_drop,21
 ,,,,,,,,,,,,,,
 #Plastics,plastics,metal,,,1,0.1,,"refining_out, heavy_industry_in",1000,1,graphics/exerelin/icons/cargo/plastics.png,ui_cargo_metals,ui_cargo_metals_drop,22
 #Composites,composites,rare_metals,,,1,0.1,,"refining_out, heavy_industry_in",1000,1,graphics/exerelin/icons/cargo/composites.png,ui_cargo_raremetals,ui_cargo_raremetals_drop,23
