@@ -1232,6 +1232,7 @@ public class ExerelinProcGen {
 		SectorManager.setPlanetToRelayMap(planetToRelay);
 		
 		SectorManager.reinitLiveFactions();
+		DiplomacyManager.initFactionRelationships(false);
 	}
 	
 	public static class ProcGenEntity {
