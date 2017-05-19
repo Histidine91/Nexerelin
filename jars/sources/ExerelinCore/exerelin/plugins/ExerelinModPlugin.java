@@ -33,26 +33,12 @@ import java.util.HashMap;
 public class ExerelinModPlugin extends BaseModPlugin
 {
     // call order: onNewGame -> onNewGameAfterEconomyLoad -> onEnabled -> onNewGameAfterTimePass -> onGameLoad
-    public static final boolean HAVE_SSP;
-    public static final boolean HAVE_SSP_LEGACY;
     public static final boolean HAVE_SWP = Global.getSettings().getModManager().isModEnabled("swp");
     public static final boolean HAVE_DYNASECTOR = Global.getSettings().getModManager().isModEnabled("dynasector");
     public static final boolean HAVE_UNDERWORLD = Global.getSettings().getModManager().isModEnabled("underworld");
     public static final boolean HAVE_STELLAR_INDUSTRIALIST = Global.getSettings().getModManager().isModEnabled("stellar_industrialist");
     
     protected static boolean isNewGame = false;
-    
-    static {
-        boolean sspLoaded = Global.getSettings().getModManager().isModEnabled("dr_ssp");
-        if (!sspLoaded) {
-            HAVE_SSP = false;
-            HAVE_SSP_LEGACY = false;
-        }
-        else {
-            HAVE_SSP = true;
-            HAVE_SSP_LEGACY = Global.getSettings().getModManager().getModSpec("dr_ssp").getVersion().equals("3.4.0");    // FIXME not optimal (but meh)
-        }
-    }
     
     protected void applyToExistingSave()
     {

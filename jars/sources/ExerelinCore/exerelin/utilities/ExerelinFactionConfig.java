@@ -579,11 +579,11 @@ public class ExerelinFactionConfig
         StartFleetType type = StartFleetType.valueOf(typeStr.toUpperCase());
         StartFleetType typeSSP = StartFleetType.valueOf((typeStr + "_SSP").toUpperCase());
         
-        boolean useSSPShips = ExerelinUtils.isSSPInstalled(true);
+        boolean useSSPShips = false;
         if (factionId.equals(Factions.PIRATES))
-            useSSPShips = useSSPShips || ExerelinModPlugin.HAVE_UNDERWORLD;
+            useSSPShips = ExerelinModPlugin.HAVE_UNDERWORLD;
         else
-            useSSPShips = useSSPShips || ExerelinModPlugin.HAVE_SWP;
+            useSSPShips = ExerelinModPlugin.HAVE_SWP;
         
         if (ExerelinSetupData.getInstance().randomStartShips && (startShips.containsKey(type) || startShips.containsKey(typeSSP)) )
         {

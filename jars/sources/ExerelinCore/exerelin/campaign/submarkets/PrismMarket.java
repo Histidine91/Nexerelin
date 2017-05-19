@@ -322,7 +322,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     //SS+ present
     public boolean canLoadShips(String factionId) {
         if (factionId.equals("ssp")){
-            return ExerelinUtils.isSSPInstalled(true) || ExerelinModPlugin.HAVE_SWP;
+            return ExerelinModPlugin.HAVE_SWP;
         }
         return Global.getSector().getFaction(factionId) != null;
     }
