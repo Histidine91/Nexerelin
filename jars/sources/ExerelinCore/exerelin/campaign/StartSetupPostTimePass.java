@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.CampaignUIAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -20,6 +21,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.world.ExerelinCorvusLocations;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinUtils;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import org.lazywizard.lazylib.CollectionUtils;
 import org.lazywizard.lazylib.MathUtils;
@@ -95,9 +98,22 @@ public class StartSetupPostTimePass {
 			}
 			
 		}
-		else if (!SectorManager.getFreeStart())
+		else 
 		{
-			entity = SectorManager.getHomeworld();
+			if (!SectorManager.getFreeStart())
+				entity = SectorManager.getHomeworld();
+			else
+			{
+				WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
+				picker.setRandom(new Random(ExerelinUtils.getStartingSeed()));
+				for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+				{
+					if (market.getFaction().isAtBest(Factions.PLAYER, RepLevel.INHOSPITABLE))
+						continue;
+					picker.add(market.getPrimaryEntity());
+				}
+				entity = picker.pick();
+			}
 			playerFleet.getContainingLocation().removeEntity(playerFleet);
 			entity.getContainingLocation().addEntity(playerFleet);
 			Global.getSector().setCurrentLocation(entity.getContainingLocation());
