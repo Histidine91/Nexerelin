@@ -61,7 +61,8 @@ SetShortcut exerelinNGCOptionsBack ESCAPE",,"exerelinNGCSetNumFactions:Set numbe
 ExerelinNewGameFactionConfigCorvus,ExerelinNGCFactionOptions,$corvusMode,SetEnabled exerelinNGCSetNumFactions false,,,
 ,,,,,,
 ,,,,,,
-ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
+ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,"99:exerelinNGCDevStart:>> (dev) quick start
+100:exerelinNGCDevStartFast:>> (dev) quick start no time pass",
 ,,,,,,
 ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone,FireBest ExerelinNGCStep2,,,
 ,,,,,,
@@ -295,7 +296,8 @@ ExerelinNGCListFactionsMods2,ExerelinNGCListFactions,"$lastFactionsList == ""mod
 ExerelinNGCListFactionsMods3,ExerelinNGCListFactions,"$lastFactionsList == ""mods3""",FireAll ExerelinNGCListFactions3,,,
 ExerelinNGCListFactionsMods4,ExerelinNGCListFactions,"$lastFactionsList == ""mods4""",FireAll ExerelinNGCListFactions4,,,
 ,,,,,,
-ExerelinNGCFactionsQuickStart,ExerelinNGCListFactions,$global.isDevMode,,,100:exerelinNGCDevStart:>> (dev) quick start,
+ExerelinNGCFactionsQuickStart,ExerelinNGCListFactionSets,$global.isDevMode,,,"99:exerelinNGCDevStart:>> (dev) quick start
+100:exerelinNGCDevStartFast:>> (dev) quick start no time pass",
 ,,,,,,
 # NOTE: Omit the NGCDoesFactionExist check if using this in a faction mod (since you know it'll always be present),,,,,,
 ExerelinNGCListHegemony,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist hegemony,,,exerelinNGCJoinHegemony:Hegemony,
@@ -304,7 +306,9 @@ ExerelinNGCListLuddicChurch,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist l
 ExerelinNGCListPerseanLeague,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist persean,,,exerelinNGCJoinPerseanLeague:Persean League,
 ExerelinNGCListPirates,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist pirates,,,exerelinNGCJoinPirate:Pirates (hard),
 ExerelinNGCListSindrianDiktat,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist sindrian_diktat,,,exerelinNGCJoinSindrianDiktat:Sindrian Diktat,
-ExerelinNGCFactionsOwnFaction,ExerelinNGCListFactionsVanilla,,,,exerelinNGCOwnFaction:Own faction,
+ExerelinNGCFactionsOwnFaction,ExerelinNGCListFactionsVanilla,,SetEnabled exerelinNGCOwnFaction true,,exerelinNGCOwnFaction:Own faction,
+ExerelinNGCFactionsOwnFactionDisabled,ExerelinNGCListFactionsVanilla,$corvusMode,"SetTooltip exerelinNGCOwnFaction ""No planet to spawn from in Corvus mode, use free start instead""
+SetEnabled exerelinNGCOwnFaction false",,,
 ExerelinNGCFactionsFreeStart,ExerelinNGCListFactionsVanilla,,"SetTooltip exerelinNGCFreeStart ""Own faction, but with no starting planet; you're on your own""",,exerelinNGCFreeStart:Free start (hard),
 ExerelinNGCListVanillaFactionsBack,ExerelinNGCListFactionsVanilla,,SetShortcut exerelinNGCOptionsDone ESCAPE,,20:exerelinNGCOptionsDone:Back,
 ,,,,,,
@@ -349,11 +353,16 @@ FireBest ExerelinNGCStep3",,,
 ,,,,,,
 ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart false
-NGCAddShip ""tempest_Starting""
-NGCAddCargo RESOURCES elite_crew 20
-NGCAddCargo RESOURCES supplies 20
-NGCAddCargo RESOURCES fuel 20
-NGCAddCargo RESOURCES heavy_machinery 10
+NGCSetWithTimePass false
+NGCAddShipAndComplement ""tempest_Starting""
+NGCAddCredits 1000000
+NGCAddCharacterPoints 100
+NGCSetStartingLocationExerelin
+NGCDone",,,
+ExerelinNGCDevStartFast,NewGameOptionSelected,$option == exerelinNGCDevStartFast,"NGCSetPlayerFaction ""player_npc""
+NGCSetFreeStart false
+NGCSetWithTimePass false
+NGCAddShipAndComplement ""tempest_Starting""
 NGCAddCredits 1000000
 NGCAddCharacterPoints 100
 NGCSetStartingLocationExerelin
