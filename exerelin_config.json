@@ -80,5 +80,6 @@
 
     # DO NOT TOUCH!
     # to make factions not appear, set them to unplayable in their faction config
-    "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "persean", "luddic_church", "luddic_path", "pirates", "derelict", "remnant", "player", "player_npc", "independent", "neutral"],
+    "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "lions_guard", "persean", "luddic_church", "luddic_path", "knights_of_ludd", "pirates",
+		       "derelict", "remnant", "player", "player_npc", "independent", "scavengers", "neutral"],
 }

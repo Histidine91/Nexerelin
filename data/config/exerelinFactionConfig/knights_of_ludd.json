@@ -1,0 +1,15 @@
+{
+    "playableFaction":false,
+    "corvusCompatible":true,
+    "rebelFleetSuffix":"Heretics",
+
+    "startRelationships":{ "luddic_church":0.6 },
+    "morality":"good",
+    
+    "alignments":{
+        "corporate":-1,
+        "technocratic":-1,
+        "militarist":1,
+        "ideological":1,
+    },
+}

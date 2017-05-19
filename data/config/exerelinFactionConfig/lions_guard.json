@@ -1,0 +1,10 @@
+{
+    "playableFaction":false,
+    "corvusCompatible":true,
+    "rebelFleetSuffix":"Rogues",
+    "startRelationships":{ "sindrian_diktat":1 },
+    
+    "responseFleetName":"Guardian Fleet",
+    
+    "morality":"amoral",
+}
