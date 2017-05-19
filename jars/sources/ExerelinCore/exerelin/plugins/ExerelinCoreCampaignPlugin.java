@@ -102,7 +102,7 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
     @Override
     public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
         if (interactionTarget instanceof CampaignFleetAPI) {
-            return new PluginPick<InteractionDialogPlugin>(new NexFleetInteractionDialogPluginImpl(), PickPriority.MOD_SET);
+            return new PluginPick<InteractionDialogPlugin>(new NexFleetInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
         }
         return null;
     }
