@@ -36,7 +36,7 @@ import org.lazywizard.lazylib.CollectionUtils;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-public class PlayerStartHandler {
+public class StartSetupPostTimePass {
 	
 	public static void execute()
 	{
@@ -81,7 +81,7 @@ public class PlayerStartHandler {
 			{
 				if (!ExerelinUtilsFaction.isCorvusCompatible(faction.getId(), true))
 				{
-					Global.getLogger(PlayerStartHandler.class).warn("Faction " + faction.getDisplayName() + " does not support Corvus mode!");
+					Global.getLogger(StartSetupPostTimePass.class).warn("Faction " + faction.getDisplayName() + " does not support Corvus mode!");
 					numIncompatibles++;
 				}
 			}
@@ -202,7 +202,7 @@ public class PlayerStartHandler {
 		}
 		
 		LocationAPI system = toOrbit.getContainingLocation();
-		Global.getLogger(PlayerStartHandler.class).info("Placing Omnifactory around " + toOrbit.getName() + ", in the " + system.getName());
+		Global.getLogger(StartSetupPostTimePass.class).info("Placing Omnifactory around " + toOrbit.getName() + ", in the " + system.getName());
 		String image = (String) ExerelinUtils.getRandomListElement(ExerelinProcGen.stationImages);
 		String entityName = "omnifactory" + index;
 		SectorEntityToken omnifac = system.addCustomEntity(entityName, "Omnifactory", image, "neutral");

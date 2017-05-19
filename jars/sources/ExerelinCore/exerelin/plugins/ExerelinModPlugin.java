@@ -15,7 +15,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DirectoryScreenScript;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.PlayerStartHandler;
+import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
@@ -210,7 +210,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     @Override
     public void onNewGameAfterTimePass() {
         Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);
-        PlayerStartHandler.execute();
+        StartSetupPostTimePass.execute();
     }
     
     @Override
