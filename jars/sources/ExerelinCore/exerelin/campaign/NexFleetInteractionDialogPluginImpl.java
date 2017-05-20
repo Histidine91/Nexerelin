@@ -11,7 +11,6 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.characters.FullName.Gender;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -19,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.events.FactionInsuranceEvent;
+import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +32,16 @@ Changes from vanilla:
 
 public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogPluginImpl {
 
+    protected static final String STRING_HELPER_CAT = "exerelin_officers";
     protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
     protected boolean recoveredOfficers = false;
-	protected FIDConfig config;	// vanilla one is private
+    protected FIDConfig config;	// vanilla one is private
 
+    protected String getTextString(String id)
+    {
+        return StringHelper.getString(STRING_HELPER_CAT, id);
+    }
+    
     public NexFleetInteractionDialogPluginImpl() {
         super();
         context = new NexFleetEncounterContext();
@@ -65,20 +71,19 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 
             String s1, s2;
             if (escaped.size() == 1) {
-                s1 = "officer";
-                if (officersEscaped.get(0).getPerson().getGender() == Gender.MALE) {
-                    s2 = "his ship";
-                } else if (officersEscaped.get(0).getPerson().getGender() == Gender.FEMALE) {
-                    s2 = "her ship";
-                } else {
-                    s2 = "its ship";
-                }
+                s1 = getTextString("officer");
+                s2 = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "hisOrHerShip", "$pronoun", StringHelper.getHisOrHer(officersEscaped.get(0).getPerson()));
             } else {
-                s1 = "officers";
-                s2 = "their ships";
+                s1 = getTextString("officers");
+                s2 = getTextString("theirShips");
             }
-            addText("Your " + s1 + " " + Misc.getAndJoined(escaped.toArray(new String[escaped.size()])) +
-                    " escaped the destruction of " + s2 + ".");
+            //"Your $officers $officerNames escaped the destruction of $theirShips"
+            String str = getTextString("battle_escaped") + ".";
+            str = StringHelper.substituteToken(str, "$officers", s1, true);
+            str = StringHelper.substituteToken(str, "$officerNames", Misc.getAndJoined(escaped.toArray(new String[escaped.size()])));
+            str = StringHelper.substituteToken(str, "$theirShips", s2);
+            
+            addText(str);
         }
         if ((!officersMIA.isEmpty() || !officersKIA.isEmpty()) && !totalDefeat && !mutualDestruction) {
             int lost = officersMIA.size() + officersKIA.size();
@@ -87,25 +92,28 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
             String s1;
             if (officersKIA.isEmpty()) {
                 if (lost == 1) {
-                    s1 = "Your officer";
+                    s1 = getTextString("officer");
                 } else {
-                    s1 = "Your officers";
+                    s1 = getTextString("officers");
                 }
-                text = s1 + " did not report in after the battle:";
+                //"Your $officers did not report in after the battle",
+                text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "battle_noReportIn", "$officers", s1, true) + ":";
             } else {
                 if (lost == 1) {
-                    s1 = "Your officer was";
+                    //"Your $officer was listed among the casualties";
+                    s1 = getTextString("officer");
+                    text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "battle_casualties", "$officer", s1, true) + ":";
                 } else {
-                    s1 = "Your officers were";
+                    s1 = getTextString("officers");
+                    text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "battle_casualties_plural", "$officers", s1, true) + ":";
                 }
-                text = s1 + " listed among the casualties:";
             }
 
             List<String> highlights = new ArrayList<>((officersMIA.size() + officersKIA.size()) * 2);
             List<Color> highlightColors = new ArrayList<>((officersMIA.size() + officersKIA.size()) * 2);
             for (OfficerDataAPI officer : officersMIA) {
                 s1 = officer.getPerson().getName().getFullName();
-                String s2 = "missing in action";
+                String s2 = getTextString("missingInAction");
                 text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
                 highlights.add(s1);
                 highlights.add(s2);
@@ -115,7 +123,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 
             for (OfficerDataAPI officer : officersKIA) {
                 s1 = officer.getPerson().getName().getFullName();
-                String s2 = "killed in action";
+                String s2 = getTextString("killedInAction");
                 text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
                 highlights.add(s1);
                 highlights.add(s2);
@@ -215,11 +223,12 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
             if (!lostOfficers.isEmpty() || !recoverableOfficers.isEmpty()) {
                 String s1;
                 if (lostOfficers.size() + recoverableOfficers.size() == 1) {
-                    s1 = "your officer didn't make it";
+                    s1 = getTextString("officer");
                 } else {
-                    s1 = "your officers didn't make it";
+                    s1 = getTextString("officers");
                 }
-                String text = "The post-action report confirms that " + s1 + ":";
+                //"The post-action report confirms that your $officers didn't make it"
+                String text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "confirmDeath", "$officers", s1) + ":";
 
                 List<String> highlights = new ArrayList<>((lostOfficers.size() + recoverableOfficers.size()) * 2);
                 List<Color> highlightColors = new ArrayList<>((lostOfficers.size() + recoverableOfficers.size()) * 2);
@@ -227,9 +236,9 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
                     s1 = officer.getPerson().getName().getFullName();
                     String s2;
                     if (unconfirmedOfficers.contains(officer)) {
-                        s2 = "MIA, presumed dead";
+                        s2 = getTextString("miaPresumedDead");
                     } else {
-                        s2 = "killed in action";
+                        s2 = getTextString("killedInAction");
                     }
                     text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
                     highlights.add(s1);
@@ -239,7 +248,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
                 }
                 for (OfficerDataAPI officer : recoverableOfficers) {
                     s1 = officer.getPerson().getName().getFullName();
-                    String s2 = "MIA, presumed dead";
+                    String s2 = getTextString("miaPresumedDead");
                     text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
                     highlights.add(s1);
                     highlights.add(s2);
@@ -286,12 +295,15 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
             List<OfficerDataAPI> lostOfficers = ((NexFleetEncounterContext) context).getPlayerLostOfficers();
             if (!recoverableOfficers.isEmpty()) {
                 String s1;
+                String text;
                 if (recoverableOfficers.size() == 1) {
-                    s1 = "Your officer was";
+                    // "Your $officers were saved from the wreckage"
+                    s1 = getTextString("officer");
+                    text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "savedFromWreckage", "$officer", s1) + ":";
                 } else {
-                    s1 = "Your officers were";
+                    s1 = getTextString("officers");
+                    text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "savedFromWreckagePlural", "$officers", s1) + ":";
                 }
-                String text = s1 + " saved from the wreckage:";
 
                 List<String> highlights = new ArrayList<>(recoverableOfficers.size() * 2);
                 List<Color> highlightColors = new ArrayList<>(recoverableOfficers.size() * 2);
@@ -315,17 +327,18 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
             if (!lostOfficers.isEmpty()) {
                 String s1;
                 if (lostOfficers.size() == 1) {
-                    s1 = "your officer didn't make it";
+                    s1 = getTextString("officer");
                 } else {
-                    s1 = "your officers didn't make it";
+                    s1 = getTextString("officers");
                 }
-                String text = "The post-action report confirms that " + s1 + ":";
+                //"The post-action report confirms that your $officers didn't make it"
+                String text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "confirmDeath", "$officers", s1) + ":";
 
                 List<String> highlights = new ArrayList<>(lostOfficers.size() * 2);
                 List<Color> highlightColors = new ArrayList<>(lostOfficers.size() * 2);
                 for (OfficerDataAPI officer : lostOfficers) {
                     s1 = officer.getPerson().getName().getFullName();
-                    String s2 = "killed in action";
+                    String s2 = getTextString("killedInAction");
                     text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
                     highlights.add(s1);
                     highlights.add(s2);
@@ -337,13 +350,13 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
                 textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
                 textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
             }
-			
-			if (Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance"))
-			{
-				FactionInsuranceEvent event = (FactionInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
-						null, "exerelin_faction_insurance");
-				event.addDeadOfficers(lostOfficers);
-			}
+            
+            if (Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance"))
+            {
+                FactionInsuranceEvent event = (FactionInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
+                        null, "exerelin_faction_insurance");
+                event.addDeadOfficers(lostOfficers);
+            }
         }
 
         super.winningPath();
@@ -380,7 +393,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	// same as vanilla, except stations don't get pulled + anything pursuing a participating fleet gets pulled
 	protected boolean shouldPullInFleet(BattleAPI battle, CampaignFleetAPI fleet, float dist)
 	{
-		Global.getLogger(this.getClass()).info("Testing fleet " + fleet.getName());
+		Global.getLogger(this.getClass()).info("Testing fleet for pull-in: " + fleet.getName());
 		float baseSensorRange = playerFleet.getBaseSensorRangeToDetect(fleet.getSensorProfile());
 		boolean visible = fleet.isVisibleToPlayerFleet();
 		VisibilityLevel level = fleet.getVisibilityLevelToPlayerFleet();
@@ -455,15 +468,18 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				b.join(fleet);
 				pulledIn.add(fleet);
 				//if (b.isPlayerSide(b.getSideFor(fleet))) {
+				String fleetName = Misc.ucFirst(fleet.getNameWithFactionKeepCase());
+				String action;
 				if (b.getSide(playerSide) == b.getSideFor(fleet)) {
-					textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": supporting your forces.");//, FRIEND_COLOR);
+					action = StringHelper.getString("exerelin_fleets", "supportingYourForces");
 				} else {
 					if (hostile) {
-						textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": joining the enemy.");//, ENEMY_COLOR);
+						action = StringHelper.getString("exerelin_fleets", "joiningTheEnemy");
 					} else {
-						textPanel.addParagraph(Misc.ucFirst(fleet.getNameWithFactionKeepCase()) + ": supporting the opposing side.");
+						action = StringHelper.getString("exerelin_fleets", "supportingOpposingSide");
 					}
 				}
+				textPanel.addParagraph(fleetName + ": " + action + ".");//, FRIEND_COLOR);
 				textPanel.highlightFirstInLastPara(fleet.getNameWithFactionKeepCase() + ":", fleet.getFaction().getBaseUIColor());
 //				someJoined = true;
 			}

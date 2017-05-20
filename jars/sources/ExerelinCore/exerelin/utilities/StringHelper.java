@@ -2,6 +2,7 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.util.Misc;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -31,7 +32,14 @@ public class StringHelper {
         return getString("general", id);
     }
     
-    public static String substituteToken(String toModify, String token, String replace)
+    public static String substituteToken(String toModify, String token, String replace, boolean ucFormToo)
+    {
+		String str = toModify.replaceAll("\\"+token, replace);
+		if (ucFormToo) str = toModify.replaceAll("\\"+Misc.ucFirst(token), Misc.ucFirst(replace));
+		return str;
+    }
+	
+	public static String substituteToken(String toModify, String token, String replace)
     {
         return toModify.replaceAll("\\"+token, replace);
     }
@@ -44,16 +52,26 @@ public class StringHelper {
         }
         return toModify;
     }
-        
-    public static String getStringAndSubstituteToken(String category, String id, String token, String replace)
+    
+	public static String getStringAndSubstituteToken(String category, String id, String token, String replace)
+    {
+        return getStringAndSubstituteToken(category, id, token, replace, false);
+    }
+	
+    public static String getStringAndSubstituteToken(String category, String id, String token, String replace, boolean ucFormToo)
     {
         String str = getString(category, id);
-        return substituteToken(str, token, replace);
+		return substituteToken(str, token, replace, ucFormToo);
     }
     
     public static String getStringAndSubstituteToken(String id, String token, String replace)
     {
-        return getStringAndSubstituteToken("general", id, token, replace);
+        return getStringAndSubstituteToken("general", id, token, replace, false);
+    }
+	
+	public static String getStringAndSubstituteToken(String id, String token, String replace, boolean ucFormToo)
+    {
+        return getStringAndSubstituteToken("general", id, token, replace, ucFormToo);
     }
     
     public static String getStringAndSubstituteTokens(String category, String id, Map<String, String> replacements)
@@ -91,6 +109,18 @@ public class StringHelper {
 	public static String getFleetAssignmentString(String id, String target)
 	{
 		return getFleetAssignmentString(id, target, null);
+	}
+	
+	public static String getHisOrHer(PersonAPI person)
+	{
+		switch(person.getGender()) {
+			case MALE:
+				return getString("his");
+			case FEMALE:
+				return getString("her");
+			default:
+				return getString("their");
+		}
 	}
 
     // http://stackoverflow.com/a/15191508

@@ -462,4 +462,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
             }
         }
     }
+    
+    //==========================================================================
+    // END DYNASECTOR SALVAGE HANDLING
 }

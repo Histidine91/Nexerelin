@@ -29,7 +29,11 @@
 		
 		"yes":"yes",
 		"no":"no",
-		"abstain":"abstain"
+		"abstain":"abstain",
+		
+		"his":"his",
+		"her":"her",
+		"their":"their"
 	},
 	
 	"exerelin_abilities":{
@@ -150,7 +154,11 @@
 		
 		"revengeanceFleetEvent":"Revenge Fleet",
 		
-		"fleetRelationship":"$faction $isOrAre $relationship."
+		"fleetRelationship":"$faction $isOrAre $relationship.",
+		
+		"supportingYourForces":"supporting your forces",
+		"joiningTheEnemy":"joining the enemy",
+		"supportingOpposingSide":"supporting the opposing side"
 	},
 	"exerelin_fleetAssignments":{
 		"preparingFor":"preparing for $missionType at $target",
@@ -220,8 +228,28 @@
 		"fighterWingString":"$shipClass wing",
 		"gainedXP":"gained $xp XP",
 		"recruitedOfficer":"recruited $numOfficers officer",
-		"recruitedOfficers":"recruited $numOfficers officers",
+		"recruitedOfficers":"recruited $numOfficers officers"
 	},
+	"exerelin_officers":{
+		"officer":"officer",
+		"officers":"officers",
+		
+		"battle_escaped":"Your $officers $officerNames escaped the destruction of $theirShips",
+		"battle_noReportIn":"Your $officers did not report in after the battle",
+		"battle_casualties":"Your $officer was listed among the casualties";
+		"battle_casualties_plural":"Your $officers were listed among the casualties";
+		"confirmDeath":"The post-action report confirms that your $officers didn't make it",
+		"savedFromWreckage":"Your $officer was saved from the wreckage",
+		"savedFromWreckagePlural":"Your $officers were saved from the wreckage",
+		
+		"hisOrHerShip":"$pronoun ship",
+		"theirShips":"their ships",
+		
+		"missingInAction":"missing in action",
+		"miaPresumedDead":"MIA, presumed dead",
+		"killedInAction":"killed in action",
+		"rescued":"rescued"
+	},	
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",
 		
