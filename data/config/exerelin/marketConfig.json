@@ -3,12 +3,12 @@
 		# primary resources
 		{
 			"name":"ore_complex",
-			"cost":250,
+			"cost":150,
 			"archetypes":{"ore":4,"manufacturing":1,"heavy_industry":0.5},
 		},
 		{
 			"name":"volatiles_complex",
-			"cost":250,
+			"cost":200,
 			"archetypes":{"volatiles":2.5,"manufacturing":0.5},
 		},
 		#{
@@ -18,12 +18,12 @@
 		#},
 		{
 			"name":"organics_complex",
-			"cost":250,
+			"cost":200,
 			"archetypes":{"organics":2.5,"mixed":1},
 		},
 		{
 			"name":"exerelin_hydroponics",
-			"cost":250,
+			"cost":200,
 			"archetypes":{"default":0.75, "agriculture":2, "misc":1.5},
 		},
 		{
@@ -54,7 +54,7 @@
 		# industry
 		{
 			"name":"cottage_industry",
-			"cost":100,
+			"cost":150,
 			"archetypes":{"default":1,"agriculture":2,"manufacturing":1,"heavy_industry":0},
 			"minSize":3,
 			#"allowDuplicates":false,
@@ -62,13 +62,13 @@
 		},
 		{
 			"name":"ore_refining_complex",
-			"cost":250,
+			"cost":200,
 			"archetypes":{"ore":2.5,"manufacturing":3.5,"heavy_industry":1.5,"misc":1.5},
 			"minSize":4,
 		},
 		{
 			"name":"light_industrial_complex",
-			"cost":150,
+			"cost":200,
 			"archetypes":{"manufacturing":3,"heavy_industry":1,"mixed":1.5},
 			"minSize":4,
 			#"maxSize":6,
@@ -144,7 +144,7 @@
 		},
 		{
 			"name":"orbital_burns",
-			"cost":350,
+			"cost":200,
 			"archetypes":{"default":0.75, "agriculture":1.5},
 			"allowedPlanets":["jungle"],
 			"minSize":3,

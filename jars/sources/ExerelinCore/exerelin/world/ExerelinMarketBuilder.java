@@ -673,6 +673,7 @@ public class ExerelinMarketBuilder
 			//newMarket.addCondition("exerelin_hydroponics");
 		}
 		market.addCondition("population_" + marketSize);
+		market.removeCondition(Conditions.DECIVILIZED);
 		
 		int minSizeForMilitaryBase = 6;
 		if (ExerelinUtilsFaction.isPirateFaction(factionId))
