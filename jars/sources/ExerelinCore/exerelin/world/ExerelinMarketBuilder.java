@@ -1639,6 +1639,9 @@ public class ExerelinMarketBuilder
 			float demand = commodity.getDemand().getDemand().modified;
 			float unmet = 1.2f - commodity.getDemand().getFractionMet();
 			commodity.addToStockpile(demand * unmet);
+			
+			float supply = commodity.getSupply().modified;
+			commodity.addToStockpile(supply);
 		}
 	}
 	
