@@ -46,7 +46,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 	@Override
 	protected void activateImpl() {
 		if (entity.isInCurrentLocation()) {
-			entity.addFloatingText(StringHelper.getString(STRING_CATEGORY, "followMeFloatText"), entity.getFaction().getBaseUIColor(), 0.5f);
+			entity.addFloatingText(StringHelper.getString(STRING_CATEGORY, "followMeFloatText"), entity.getFaction().getBaseUIColor(), 1f);
 			
 			VisibilityLevel visibility = entity.getVisibilityLevelToPlayerFleet();
 			if (visibility != VisibilityLevel.NONE) {
@@ -105,10 +105,11 @@ public class FollowMeAbility extends BaseDurationAbility {
 		}
 	}
 
+	
 	@Override
-	protected void applyEffect(float f) {
+	protected void applyEffect(float amount, float level) {
 	}
-
+	
 	@Override
 	protected void deactivateImpl() {
 	}
