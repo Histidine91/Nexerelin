@@ -137,8 +137,8 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		if (market.getFaction().getCustom().optBoolean(Factions.CUSTOM_NO_PATROLS)) 
 		{
 			if (factionConfig == null || !factionConfig.spawnPatrols) return;
-			sizeMult = factionConfig.patrolSizeMult;
 		}
+		sizeMult = factionConfig.patrolSizeMult;
 		if (sizeMult <= 0) return;
 		
 		// don't spawn patrols from a market being invaded
