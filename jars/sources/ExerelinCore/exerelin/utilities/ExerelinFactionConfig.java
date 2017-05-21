@@ -46,13 +46,13 @@ public class ExerelinFactionConfig
     public String rebelFleetSuffix = "Dissenters";
 
     // Fleet names
-    public String asteroidMiningFleetName = "Mining Fleet";
-    public String gasMiningFleetName = "Mining Fleet";
-    public String logisticsFleetName = "Logistics Convoy";
-    public String invasionFleetName = "Invasion Fleet";
-    public String invasionSupportFleetName = "Strike Fleet";
-    public String responseFleetName = "Response Fleet";
-    public String defenceFleetName = "Defence Fleet";
+    public String asteroidMiningFleetName = StringHelper.getString("exerelin_fleets", "miningFleetName");
+    public String gasMiningFleetName = StringHelper.getString("exerelin_fleets", "miningFleetName");
+    public String logisticsFleetName = "Logistics Convoy";	//StringHelper.getString("exerelin_fleets", "logisticsFleetName")
+    public String invasionFleetName = StringHelper.getString("exerelin_fleets", "invasionFleetName");
+    public String invasionSupportFleetName = StringHelper.getString("exerelin_fleets", "invasionSupportFleetName");
+    public String responseFleetName = StringHelper.getString("exerelin_fleets", "responseFleetName");
+    public String defenceFleetName = StringHelper.getString("exerelin_fleets", "defenceFleetName");
     
     // Diplomacy
     public int positiveDiplomacyExtra = 0;
