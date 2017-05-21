@@ -20,7 +20,7 @@ import java.util.List;
 
 public class ExerelinUtilsFaction {
     
-	@Deprecated
+    @Deprecated
     public static boolean doesFactionOwnSystem(String factionId, StarSystemAPI system)
     {
         for(MarketAPI market : Misc.getMarketsInLocation(system))
@@ -35,15 +35,26 @@ public class ExerelinUtilsFaction {
 
         return true;
     }
-	
-	public static boolean doesFactionExist(String factionId)
-	{
-		return Global.getSector().getFaction(factionId) != null;
-	}
+    
+    public static boolean doesFactionExist(String factionId)
+    {
+        return Global.getSector().getFaction(factionId) != null;
+    }
     
     public static List<MarketAPI> getFactionMarkets(String factionId)
     {
         return getFactionMarkets(factionId, false);
+    }
+    
+    public static boolean hasAnyMarkets(String factionId)
+    {
+        List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
+        for (MarketAPI market : allMarkets)
+        {
+            if (market.getFactionId().equals(factionId))
+                return true;
+        }
+        return false;
     }
     
     public static List<MarketAPI> getFactionMarkets(String factionId, boolean onlyInvadable)
@@ -72,19 +83,19 @@ public class ExerelinUtilsFaction {
         }
         return pop;
     }
-	
-	public static String getFactionShortName(String factionId)
-	{
-		return getFactionShortName(Global.getSector().getFaction(factionId));
-	}
-	
-	public static String getFactionShortName(FactionAPI faction)
-	{
-		String name = faction.getEntityNamePrefix();
-		if (name == null || name.isEmpty())
-			name = faction.getDisplayName();
-		return name;
-	}
+    
+    public static String getFactionShortName(String factionId)
+    {
+        return getFactionShortName(Global.getSector().getFaction(factionId));
+    }
+    
+    public static String getFactionShortName(FactionAPI faction)
+    {
+        String name = faction.getEntityNamePrefix();
+        if (name == null || name.isEmpty())
+            name = faction.getDisplayName();
+        return name;
+    }
     
     public static boolean isPirateFaction(String factionId)
     {
@@ -164,11 +175,11 @@ public class ExerelinUtilsFaction {
         event.endEvent();
         //sector.reportEventStage(event, "annul", event.findMessageSender(), MessagePriority.ENSURE_DELIVERY);    // TODO comment out after debugging
     }
-	
-	public static String getCommissionFactionId()
-	{
-		FactionAPI commissionFaction = Misc.getCommissionFaction();
-		if (commissionFaction == null) return null;
-		return commissionFaction.getId();
-	}
+    
+    public static String getCommissionFactionId()
+    {
+        FactionAPI commissionFaction = Misc.getCommissionFaction();
+        if (commissionFaction == null) return null;
+        return commissionFaction.getId();
+    }
 }
