@@ -62,7 +62,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         }
     }
   
-    public void generateResponseFleet(MarketAPI origin, SectorEntityToken target)
+    public void spawnResponseFleet(MarketAPI origin, SectorEntityToken target)
     {
         float reserveSize = reserves.get(origin.getId());
         int maxFP = (int)reserveSize;
@@ -83,31 +83,43 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         //qf = Math.max(qf, 0.7f);
         
         String factionId = origin.getFactionId();
+        String fleetFactionId = factionId;
+        ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+        ExerelinFactionConfig fleetFactionConfig = null;
         
-        String name = StringHelper.getString("exerelin_fleets", "responseFleetName");
-        ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(origin.getFactionId());
-        if (factionConfig != null)
+        if (factionConfig.factionIdForHqResponse != null)
         {
-            name = factionConfig.responseFleetName;
+            fleetFactionId = factionConfig.factionIdForHqResponse;
+            fleetFactionConfig = ExerelinConfig.getExerelinFactionConfig(fleetFactionId);
         }
+        
+        String name = "";
+        
+        if (fleetFactionConfig != null)
+            name = fleetFactionConfig.responseFleetName;
+        else
+            name = factionConfig.responseFleetName;
+        
         if (maxFP <= 18) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixSmall") + " " + name;
         else if (maxFP >= 54) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
         
-		int marketSize = origin.getSize();
-		if (origin.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize += 2;
+        //int marketSize = origin.getSize();
+        //if (origin.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize += 2;
         //CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
-        FleetParams fleetParams = new FleetParams(null, origin, factionId, null, "exerelinResponseFleet", 
+        FleetParams fleetParams = new FleetParams(null, origin, fleetFactionId, null, "exerelinResponseFleet", 
                 maxFP, // combat
-                0,	//maxFP*0.1f, // freighters
+                0,    //maxFP*0.1f, // freighters
                 0,        // tankers
                 0,        // personnel transports
                 0,        // liners
                 0,        // civilian
-                0,	//maxFP*0.1f,    // utility
+                0,    //maxFP*0.1f,    // utility
                 0.15f, -1, 1.25f, 1);    // quality bonus, quality override, officer num mult, officer level bonus
         
-        CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(origin.getFaction(), fleetParams);
+        CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(Global.getSector().getFaction(fleetFactionId), fleetParams);
         if (fleet == null) return;
+        
+        fleet.setFaction(factionId, true);
         fleet.setName(name);
         fleet.setAIMode(true);
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);
@@ -129,18 +141,18 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         fleet.addScript(ai);
         log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
         reserves.put(origin.getId(), 0f);
-		
-		if (target == Global.getSector().getPlayerFleet())
-		{
-			data.fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true, 5);
-		}
+        
+        if (target == Global.getSector().getPlayerFleet())
+        {
+            data.fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true, 5);
+        }
     }
     
     public static float getMaxReserveSize(MarketAPI market, boolean raw)
     {
-		int marketSize = market.getSize();
-		if (market.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize += 2;
-		
+        int marketSize = market.getSize();
+        if (market.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize += 2;
+        
         float baseSize = marketSize * 5 + 8;
         float size = baseSize;
         if (raw) return size;
@@ -174,9 +186,9 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             if (!reserves.containsKey(market.getId()))
                 reserves.put(market.getId(), getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
             
-			int marketSize = market.getSize();
-			if (market.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize++;
-			
+            int marketSize = market.getSize();
+            if (market.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize++;
+            
             float baseIncrement = marketSize * (0.5f + (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR));
             float increment = baseIncrement;
             //if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) increment += baseIncrement * 0.1f;
@@ -198,7 +210,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
     public static void requestResponseFleet(MarketAPI market, SectorEntityToken attacker)
     {
         if (responseFleetManager == null) return;
-        responseFleetManager.generateResponseFleet(market, attacker);
+        responseFleetManager.spawnResponseFleet(market, attacker);
     }
     
     public static float modifyReserveSize(MarketAPI market, float delta)

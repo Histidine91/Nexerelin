@@ -81,6 +81,7 @@ public class ExerelinFactionConfig
     public float responseFleetSizeMod = 0;
     public float invasionPointMult = 1;	// point accumulation for launching invasions
     public float patrolSizeMult = 1;
+    public String factionIdForHqResponse = null;
     
     public boolean dropPrisoners = true;
     public boolean noHomeworld = false;	// don't give this faction a HQ in procgen
@@ -149,6 +150,7 @@ public class ExerelinFactionConfig
             responseFleetSizeMod = (float)settings.optDouble("responseFleetSizeMod", 0);
             invasionPointMult = (float)settings.optDouble("invasionPointMult", 1);
             patrolSizeMult = (float)settings.optDouble("patrolSizeMult", 1);
+            factionIdForHqResponse = settings.optString("factionIdForHqResponse", factionIdForHqResponse);
             
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
             noHomeworld = settings.optBoolean("noHomeworld", noHomeworld);
