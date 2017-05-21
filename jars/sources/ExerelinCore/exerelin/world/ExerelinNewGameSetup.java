@@ -37,9 +37,11 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
+import java.util.Random;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -49,6 +51,8 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 	//protected float numOmnifacs = 0;
 	public static final Vector2f SECTOR_CENTER = new Vector2f(0, -6000);
 	public static Logger log = Global.getLogger(ExerelinNewGameSetup.class);
+	
+	protected Random rand = null;
 	
 	protected void addPrismMarket(SectorAPI sector)
 	{
@@ -65,11 +69,11 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 				PlanetAPI planet = (PlanetAPI)toOrbit;
 				if (planet.isStar()) 
 				{
-					orbitDistance = radius + MathUtils.getRandomNumberInRange(2000, 2500);
+					orbitDistance = radius + 2000 + rand.nextFloat() * 500;
 				}
 			}
 			prismEntity = toOrbit.getContainingLocation().addCustomEntity("prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
-			prismEntity.setCircularOrbitPointingDown(toOrbit, MathUtils.getRandomNumberInRange(1, 360), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
+			prismEntity.setCircularOrbitPointingDown(toOrbit, ExerelinUtilsAstro.getRandomAngle(rand), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
 		else
 		{
@@ -77,7 +81,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			prismEntity = hyperspace.addCustomEntity("prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
 			float xpos = 2000;
 			if (!ExerelinSetupData.getInstance().corvusMode) xpos = -2000;
-			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(xpos, 0), ExerelinUtilsAstro.getRandomAngle(), 150, 60, 30, 30);
+			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(xpos, 0), ExerelinUtilsAstro.getRandomAngle(rand), 150, 60, 30, 30);
 		}
 		
 		prismEntity.addTag(ExerelinConstants.TAG_UNINVADABLE);
@@ -133,6 +137,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 	public void generate(SectorAPI sector)
 	{
 		log.info("Starting sector generation...");
+		rand = new Random(ExerelinUtils.getStartingSeed());
 		
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		boolean corvusMode = setupData.corvusMode;

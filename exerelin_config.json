@@ -3,9 +3,8 @@
     
     "minimumPlanets": 3, # Integer
     #"minimumStations": 3, # Integer
-    #"minimumAsteroidBelts": 0, # Integer
-    #"binarySystemChance": 0.2,  # float; about 10% less than listed because dark stars can't form the primary of binary systems
     "forcePiratesInSystemChance": 0.3,  # this proportion of systems will always be seeded with at least one pirate market
+    "useFactionMarketSpawnWeights": false,  # this lets some factions have more markets at start than others, as set in faction config
     
     "playerBaseSalary": 5000, # Double
     "playerSalaryIncrementPerLevel": 1000, # Double

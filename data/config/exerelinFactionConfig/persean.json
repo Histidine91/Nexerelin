@@ -8,6 +8,8 @@
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Secessionists",
     
+    "marketSpawnWeight":1.6,
+    
     "startRelationships":{ "hegemony": -0.6 },
     
     "morality":"good",

@@ -1,5 +1,6 @@
 package exerelin.utilities;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -78,6 +79,7 @@ public class ExerelinUtilsAstro {
 	
 	/**
 	 * Returns a random float between 0.0 and 360.0
+	 * @param rand
 	 * @return random angle
 	 */
 	public static float getRandomAngle(Random rand)
@@ -94,10 +96,10 @@ public class ExerelinUtilsAstro {
 	 * @param orbitPeriod
 	 * @return The starting angle on the orbit
 	 */
-	public static float setOrbit(SectorEntityToken entity, SectorEntityToken primary, float orbitRadius, 
+	public static void setOrbit(SectorEntityToken entity, SectorEntityToken primary, float orbitRadius, 
 			boolean isEllipse, float ellipseAngle, float orbitPeriod)
 	{
-		return setOrbit(entity, primary, orbitRadius, getRandomAngle(), 
+		setOrbit(entity, primary, orbitRadius, getRandomAngle(), 
 				isEllipse, ellipseAngle, MathUtils.getRandomNumberInRange(1f, 1.2f), orbitPeriod);
 	}
 	
@@ -115,18 +117,17 @@ public class ExerelinUtilsAstro {
 	 * @param orbitPeriod
 	 * @param type 1 == pointing down, 2 == spin, anything else = normal (only works for non-elliptical orbits)
 	 * @param spinTime
-	 * @return The starting angle on the orbit
 	 */
-	public static float setOrbit(SectorEntityToken entity, SectorEntityToken primary, float orbitRadius, float angle, 
+	public static void setOrbit(SectorEntityToken entity, SectorEntityToken primary, float orbitRadius, float angle, 
 			boolean isEllipse, float ellipseAngle, float ellipseMult, float orbitPeriod, int type, float spinTime)
 	{
+		angle = MathUtils.clampAngle(angle);
 		if (isEllipse)
 		{
 			float semiMajor = (int)(orbitRadius * ellipseMult);
 			float semiMinor = (int)(orbitRadius / ellipseMult);
 			EllipticalOrbit ellipseOrbit = new EllipticalOrbit(primary, angle, semiMinor, semiMajor, ellipseAngle, orbitPeriod);
 			entity.setOrbit(ellipseOrbit);
-			return angle;
 		}
 		else
 		{
@@ -136,14 +137,13 @@ public class ExerelinUtilsAstro {
 				entity.setCircularOrbitWithSpin(primary, angle, orbitRadius, orbitPeriod, spinTime, spinTime);
 			else
 				entity.setCircularOrbit(primary, angle, orbitRadius, orbitPeriod);
-			return angle;
 		}
 	}
 	
-	public static float setOrbit(SectorEntityToken entity, SectorEntityToken primary, float orbitRadius, float angle, 
+	public static void setOrbit(SectorEntityToken entity, SectorEntityToken primary, float orbitRadius, float angle, 
 			boolean isEllipse, float ellipseAngle, float ellipseMult, float orbitPeriod)
 	{
-		return setOrbit(entity, primary, orbitRadius, angle, isEllipse, ellipseAngle, ellipseMult, orbitPeriod, 0, 0);
+		setOrbit(entity, primary, orbitRadius, angle, isEllipse, ellipseAngle, ellipseMult, orbitPeriod, 0, 0);
 	}
 	
 	/**
@@ -166,13 +166,11 @@ public class ExerelinUtilsAstro {
 			float m2Angle, float m2OrbitRadius, float myOrbitRadius, float orbitPeriod, boolean isEllipse, 
 			float ellipseAngle, float ellipseMult, int type, float spinTime)
 	{
-		// maybe we should just throw an exception
 		if (point <= 0 || point > 5)
 		{
-			if (Math.random() < 0.5) point = 4;
-			else point = 5;
+			throw new IllegalArgumentException("Point must be in range 1-5");
 		}
-		//log.info("Setting Lagrange orbit for " + orbiter.getName() + " at point " + point);
+		
 		switch (point) {
 			case 1:
 			case 2:
@@ -202,7 +200,7 @@ public class ExerelinUtilsAstro {
 	
 	public static float getCurrentOrbitAngle(SectorEntityToken primary, SectorEntityToken orbiter)
 	{
-		return Misc.getAngleInDegrees(primary.getLocation(), orbiter.getLocation());
+		return Misc.getAngleInDegrees(orbiter.getLocation(), primary.getLocation());
 	}
 	
 	public static float getCurrentOrbitRadius(SectorEntityToken primary, SectorEntityToken orbiter)

@@ -61,8 +61,8 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 			context.multipliers.add(COL_TRINARY);
 		}
 		
-		
-		GenResult result = addOrbitingEntities(context, numOrbits, false, true, false, true);
+		// GenContext context, int numOrbits, boolean addingMoons, boolean addMoons, boolean parentIsMoon, boolean nothingOk
+		GenResult result = addOrbitingEntities(context, numOrbits, false, true, false, false);
 		result.context = context;
 		return result;
 	}

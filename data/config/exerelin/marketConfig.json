@@ -54,7 +54,7 @@
 		# industry
 		{
 			"name":"cottage_industry",
-			"cost":150,
+			"cost":200,
 			"archetypes":{"default":1,"agriculture":2,"manufacturing":1,"heavy_industry":0},
 			"minSize":3,
 			#"allowDuplicates":false,
@@ -68,7 +68,7 @@
 		},
 		{
 			"name":"light_industrial_complex",
-			"cost":200,
+			"cost":300,
 			"archetypes":{"manufacturing":3,"heavy_industry":1,"mixed":1.5},
 			"minSize":4,
 			#"maxSize":6,

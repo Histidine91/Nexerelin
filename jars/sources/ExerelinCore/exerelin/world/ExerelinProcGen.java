@@ -490,7 +490,6 @@ public class ExerelinProcGen {
 		do
 		{
 			ret = name + " " + picker.pickAndRemove();
-			log.info("Station name: " + ret + ", " + picker.getItems().size());
 		} while (getStationNameAlreadyUsed(ret) && !picker.isEmpty());
 		return ret;
 	}
@@ -615,25 +614,28 @@ public class ExerelinProcGen {
 			// else make our own relay
 			if (relay == null)
 			{
+				log.info("Creating comm relay for system " + system.getName());
 				relay = system.addCustomEntity(system.getId() + "_relay", // unique id
 					system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
 					"comm_relay", // type of object, defined in custom_entities.json
 					capital.entity.getFaction().getId()); // faction
 
-				SectorEntityToken toOrbit = capital.entity;
 				int lp = 4;
 				if (random.nextBoolean()) lp = 5;
-				SectorEntityToken orbitTargetPrimary = toOrbit.getOrbitFocus();	// what relayOrbitTarget orbits
-				float orbitRadius = ExerelinUtilsAstro.getCurrentOrbitRadius(toOrbit, orbitTargetPrimary);
-				float startAngle = ExerelinUtilsAstro.getCurrentOrbitAngle(toOrbit, orbitTargetPrimary);
-				PlanetAPI relayOrbitTargetPlanet = (PlanetAPI)toOrbit;
 				
-				if (relayOrbitTargetPlanet.isMoon())
-					toOrbit = orbitTargetPrimary;	// L4/L5 of the planet instead of the moon
+				PlanetAPI planet = (PlanetAPI)capital.entity;
+				if (planet.isMoon()) planet = (PlanetAPI)planet.getOrbitFocus();
 				
-				ExerelinUtilsAstro.setLagrangeOrbit(relay, toOrbit.getOrbitFocus(), toOrbit, 
-					lp, startAngle, orbitRadius, 0, toOrbit.getOrbit().getOrbitalPeriod(), 
-					false, 0, 1, 1, 0);
+				SectorEntityToken systemPrimary = planet.getOrbitFocus();
+				if (systemPrimary != null)	// if null, maybe it's a nebula?
+				{
+					float orbitRadius = ExerelinUtilsAstro.getCurrentOrbitRadius(planet, systemPrimary);
+					float startAngle = ExerelinUtilsAstro.getCurrentOrbitAngle(planet, systemPrimary);
+					
+					ExerelinUtilsAstro.setLagrangeOrbit(relay, systemPrimary, planet, 
+						lp, startAngle, orbitRadius, 0, planet.getOrbit().getOrbitalPeriod(), 
+						false, 0, 1, 1, 0);
+				}
 			}
 			
 			systemToRelay.put(system.getId(), relay.getId());
@@ -672,6 +674,26 @@ public class ExerelinProcGen {
 			
 			if (capital == null) continue;
 			capitalsBySystem.put(system, capital);
+		}
+	}
+	
+	protected void cleanupDerelicts()
+	{
+		for (StarSystemAPI system : populatedSystems)
+		{
+			log.info("Cleaning up system " + system.getName());
+			List<SectorEntityToken> toRemove = new ArrayList<>();
+			for (SectorEntityToken token : system.getAllEntities())
+			{
+				//if (token.hasTag(Tags.GATE) || token.hasTag(Tags.DEBRIS_FIELD)) continue;
+				if (token.getFaction().getId().equals(Factions.DERELICT) || token.getFaction().getId().equals(Factions.REMNANTS))
+					toRemove.add(token);
+			}
+			for (SectorEntityToken token : toRemove)
+			{
+				log.info("\tRemoving token " + token.getName() + "(faction " + token.getFaction().getDisplayName() + ")");
+				system.removeEntity(token);
+			}
 		}
 	}
 	
@@ -734,6 +756,9 @@ public class ExerelinProcGen {
 		spawnCommRelays();
 		marketSetup.addCabalSubmarkets();
 		
+		log.info("Cleaning up derelicts/Remnants");
+		cleanupDerelicts();
+		
 		log.info("Finishing");
 		finish();
 	}
@@ -767,7 +792,7 @@ public class ExerelinProcGen {
 		if (factionConf != null && !factionConf.customStations.isEmpty())
 			images = factionConf.customStations;
 		
-		String image = (String) ExerelinUtils.getRandomListElement(images);
+		String image = (String) ExerelinUtils.getRandomListElement(images, random);
 		
 		SectorEntityToken newStation = station.starSystem.addCustomEntity(id, name, image, factionId);
 		newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
@@ -986,7 +1011,17 @@ public class ExerelinProcGen {
 		// before we do anything else give the "homeworld" to our faction
 		pickHomeworld();
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
-		if (!ExerelinSetupData.getInstance().freeStart)
+		/*
+		if (ExerelinSetupData.getInstance().freeStart)
+		{
+			// give the homeworld to a random faction while in free start mode, to avoid desyncing the RNG
+			// doesn't seem to actually work...
+			alignedFactionId = factionPicker.pick();
+		}
+		factionPicker.remove(alignedFactionId);
+		*/
+				
+		if (!ExerelinSetupData.getInstance().freeStart)	// (true)
 		{
 			homeworld.isHQ = true;
 			MarketAPI homeMarket = marketSetup.addMarket(homeworld, alignedFactionId);
@@ -994,7 +1029,6 @@ public class ExerelinProcGen {
 			//relay.setFaction(alignedFactionId);
 			pickEntityInteractionImage(homeworld.entity, homeworld.entity.getMarket(), homeworld.planetType, homeworld.type);
 			populatedPlanetsCopy.remove(homeworld);
-			factionPicker.remove(alignedFactionId);
 			
 			StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
 			plugin.setPlayerPaidToUnlock(true);
@@ -1051,7 +1085,7 @@ public class ExerelinProcGen {
 		{
 			WeightedRandomPicker<String> piratePicker = new WeightedRandomPicker<>(random);
 
-			Collections.shuffle(unassignedEntities);
+			Collections.shuffle(unassignedEntities, random);
 			for (ProcGenEntity entity : unassignedEntities)
 			{
 				if (systemsWithPirates.size() == populatedSystems.size())	// all systems already have pirates
@@ -1094,8 +1128,8 @@ public class ExerelinProcGen {
 		for (String factionId : factions) {
 			float share = 1;
 			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-			if (config != null)
-				share = config.spawnMarketShare;
+			if (config != null && ExerelinConfig.useFactionMarketSpawnWeights)
+				share = config.marketSpawnWeight;
 			totalShare += share;
 			factionShare.put(factionId, share);
 		}

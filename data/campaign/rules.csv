@@ -45,6 +45,7 @@ ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetToolti
 ExerelinNewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present""
 SetTooltip exerelinNGCSetNumSystems ""This is a target number of systems. Not all may actually be populated.""
 SetTooltip exerelinNGCSetNumPlanets ""Actual number may be less than this, if there are not enough systems to hold all the planets.""
+SetTooltip exerelinNGCSetNumStations ""Actual number may be less than this, if there are not enough locations for all the stations.""
 SetEnabled exerelinNGCSetNumSystems true
 SetEnabled exerelinNGCSetNumPlanets true
 SetEnabled exerelinNGCSetNumStations true
@@ -134,34 +135,39 @@ ExerelinNGCNumPlanets64,NewGameOptionSelected,$option==exerelinNGCNumPlanets64,"
 AddText ""Set number of planets to 64"" textFriendColor
 FireAll ExerelinNGCSectorOptions",,,
 ,,,,,,
-ExerelinNGCMaxStationsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumStations,SetShortcut exerelinNGCSectorOptions ESCAPE,,"exerelinNGCMaxStations0:Zero
-exerelinNGCMaxStations1:One
-exerelinNGCMaxStations2:Two
-exerelinNGCMaxStations3:Three
-exerelinNGCMaxStations4:Four
-exerelinNGCMaxStations5:Five
-exerelinNGCMaxStations6:Six
+ExerelinNGCNumStationsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumStations,SetShortcut exerelinNGCSectorOptions ESCAPE,,"exerelinNGCNumStations8:8
+exerelinNGCNumStations16:16
+exerelinNGCNumStations24:24
+exerelinNGCNumStations32:32
+exerelinNGCNumStations40:40
+exerelinNGCNumStations48:48
+exerelinNGCNumStations56:56
+exerelinNGCNumStations64:64
 exerelinNGCSectorOptions:Back",
-ExerelinNGCMaxStations0,NewGameOptionSelected,$option==exerelinNGCMaxStations0,"NGCSetNumStations 0
-AddText ""Set maximum stations per system to 0"" textFriendColor
+,,,,,,
+ExerelinNGCNumStations8,NewGameOptionSelected,$option==exerelinNGCNumStations8,"NGCSetNumStations 8
+AddText ""Set number of stations to 8"" textFriendColor
 FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCMaxStations1,NewGameOptionSelected,$option==exerelinNGCMaxStations1,"NGCSetNumStations 1
-AddText ""Set maximum stations per system to 1"" textFriendColor
+ExerelinNGCNumStations16,NewGameOptionSelected,$option==exerelinNGCNumStations16,"NGCSetNumStations 16
+AddText ""Set number of stations to 16"" textFriendColor
 FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCMaxStations2,NewGameOptionSelected,$option==exerelinNGCMaxStations2,"NGCSetNumStations 2
-AddText ""Set maximum stations per system to 2"" textFriendColor
+ExerelinNGCNumStations24,NewGameOptionSelected,$option==exerelinNGCNumStations24,"NGCSetNumStations 24
+AddText ""Set number of stations to 24"" textFriendColor
 FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCMaxStations3,NewGameOptionSelected,$option==exerelinNGCMaxStations3,"NGCSetNumStations 3
-AddText ""Set maximum stations per system to 3"" textFriendColor
+ExerelinNGCNumStations32,NewGameOptionSelected,$option==exerelinNGCNumStations32,"NGCSetNumStations 32
+AddText ""Set number of stations to 32"" textFriendColor
 FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCMaxStations4,NewGameOptionSelected,$option==exerelinNGCMaxStations4,"NGCSetNumStations 4
-AddText ""Set maximum stations per system to 4"" textFriendColor
+ExerelinNGCNumStations40,NewGameOptionSelected,$option==exerelinNGCNumStations40,"NGCSetNumStations 40
+AddText ""Set number of stations to 40"" textFriendColor
 FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCMaxStations5,NewGameOptionSelected,$option==exerelinNGCMaxStations5,"NGCSetNumStations 5
-AddText ""Set maximum stations per system to 5"" textFriendColor
+ExerelinNGCNumStations48,NewGameOptionSelected,$option==exerelinNGCNumStations48,"NGCSetNumStations 48
+AddText ""Set number of stations to 48"" textFriendColor
 FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCMaxStations6,NewGameOptionSelected,$option==exerelinNGCMaxStations6,"NGCSetNumStations 6
-AddText ""Set maximum stations per system to 6"" textFriendColor
+ExerelinNGCNumStations56,NewGameOptionSelected,$option==exerelinNGCNumStations56,"NGCSetNumStations 56
+AddText ""Set number of stations to 56"" textFriendColor
+FireAll ExerelinNGCSectorOptions",,,
+ExerelinNGCNumStations64,NewGameOptionSelected,$option==exerelinNGCNumStations64,"NGCSetNumStations 64
+AddText ""Set number of stations to 64"" textFriendColor
 FireAll ExerelinNGCSectorOptions",,,
 ,,,,,,
 ExerelinNGCNumFactionsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumFactions,SetShortcut exerelinNGCFactionOptions ESCAPE,,"exerelinNGCNumFactions2:Two

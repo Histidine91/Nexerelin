@@ -17,9 +17,9 @@ public final class ExerelinSetupData
 	private static ExerelinSetupData instance = null;
 
 	// Sector Generation Defaults
-	public int numSystems = 12;
-	public int numPlanets = 24;
-	public int numStations = 12;
+	public int numSystems = 16;
+	public int numPlanets = 32;
+	public int numStations = 16;
 	public int maxPlanetsPerSystem = 4;
 	public int maxMarketsPerSystem = 6;	// includes stations
 

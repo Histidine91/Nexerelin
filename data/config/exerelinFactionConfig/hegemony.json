@@ -7,6 +7,8 @@
     "customRebelFaction":"",
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Traitors",
+    
+    "marketSpawnWeight":2,
 
     "startRelationships":{ "tritachyon": -0.3, "persean":-0.6 },
     

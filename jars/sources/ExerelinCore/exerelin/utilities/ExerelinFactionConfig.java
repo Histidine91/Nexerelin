@@ -71,7 +71,7 @@ public class ExerelinFactionConfig
     public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
     public Morality morality = Morality.NEUTRAL;
     
-    public float spawnMarketShare = 1;	// what proportion of procgen markets this faction gets
+    public float marketSpawnWeight = 1;	// what proportion of procgen markets this faction gets
     public boolean freeMarket = false;
 	public float tariffMult = 1;
 
@@ -141,7 +141,7 @@ public class ExerelinFactionConfig
             negativeDiplomacyExtra = settings.optInt("negativeDiplomacyExtra");
             
             freeMarket = settings.optBoolean("freeMarket", freeMarket);
-            spawnMarketShare = (float)settings.optDouble("spawnMarketShare", spawnMarketShare);
+            marketSpawnWeight = (float)settings.optDouble("marketSpawnWeight", marketSpawnWeight);
             tariffMult = (float)settings.optDouble("tariffMult", tariffMult);
             
             invasionStrengthBonusAttack = (float)settings.optDouble("invasionStrengthBonusAttack", 0);

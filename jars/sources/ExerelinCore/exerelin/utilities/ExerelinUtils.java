@@ -66,7 +66,17 @@ public class ExerelinUtils
 		int randomIndex = MathUtils.getRandomNumberInRange(0, list.size() - 1);
 
 		return list.get(randomIndex);
-	}	
+	}
+	
+	public static Object getRandomListElement(List list, Random rand)
+	{
+		if (list.isEmpty())
+			return null;
+
+		int randomIndex = rand.nextInt(list.size());
+
+		return list.get(randomIndex);
+	}
 		
 	public static float lerp(float x, float y, float alpha) {
 		return (1f - alpha) * x + alpha * y;

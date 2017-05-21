@@ -25,6 +25,7 @@ public class ExerelinConfig
     public static float forcePiratesInSystemChance = 0.3f;
     public static boolean enableIndependents = true;
     public static boolean enablePirates = true;
+    public static boolean useFactionMarketSpawnWeights = false;
 
     // Player settings
     public static float playerBaseSalary = 5000f;
@@ -93,8 +94,8 @@ public class ExerelinConfig
     public static float revengePointsForMarketCaptureMult = 4f;
     
     // Misc
-	public static int directoryDialogKey = 32;  // D
-	
+    public static int directoryDialogKey = 32;  // D
+    
     public static float baseTariffMult = 1;
     public static float freeMarketTariffMult = 0.5f;
     public static int warmongerPenalty = 0;
@@ -104,8 +105,8 @@ public class ExerelinConfig
     @Deprecated
     public static boolean ownFactionCustomsInspections = false;
     public static boolean useRelationshipBounds = true;
-	public static boolean officerDeaths = true;
-	public static boolean officerDaredevilBonus = true;
+    public static boolean officerDeaths = true;
+    public static boolean officerDaredevilBonus = true;
     
 
     public static void loadSettings()
@@ -125,6 +126,7 @@ public class ExerelinConfig
             forcePiratesInSystemChance = (float)settings.optDouble("piratesNotInSystemChance", forcePiratesInSystemChance);
             enableIndependents = settings.optBoolean("enableIndependents", enableIndependents);
             enablePirates = settings.optBoolean("enablePirates", enablePirates);
+            useFactionMarketSpawnWeights = settings.optBoolean("useFactionMarketSpawnWeights", useFactionMarketSpawnWeights);
 
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary",  playerBaseSalary);
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel", playerSalaryIncrementPerLevel);
@@ -238,7 +240,7 @@ public class ExerelinConfig
                 return exerelinFactionConfig;
         }
 
-        Global.getLogger(ExerelinConfig.class).warn("Faction config " + factionId + "  not found, using default");
+        Global.getLogger(ExerelinConfig.class).warn("Faction config " + factionId + " not found, using default");
         return defaultConfig;
     }
 

@@ -57,10 +57,9 @@ import org.json.JSONObject;
  *	Size 7: 850
  * Also have chance for bonus points based on market size
  * Special conditions allowed:
- *	Size 2: random(0, 1)
- *	Size 3-4: random(0,1) + random(0,1)
- *	Size 5-6: 1 + random(0,1)
- *	Size 7: 1 + random(0,1) + random(0,1)
+ *	Size 1-4: random(0,1)
+ *	Size 5-6: random(0,1) + random(0,1)
+ *	Size 7: 1 + random(0,1)
  * 
  * Once it's done assigning markets, it does a second pass
  * Add/remove market conditions to balance supply and demand of domestic goods, metal and supplies
@@ -82,6 +81,7 @@ public class ExerelinMarketBuilder
 	public static final float CABAL_MILITARY_MARKET_CHANCE = 0.5f;
 	public static final float LUDDIC_MAJORITY_CHANCE = 0.1f;	// how many markets have Luddic majority even if they aren't Luddic at start
 	public static final float LUDDIC_MINORITY_CHANCE = 0.15f;	// how many markets that start under Church control are non-Luddic
+	public static final float PRE_BALANCE_BUDGET_MULT = 1;	// < 0 to spare some for balancer
 	
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.3f;
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 0.5f;	// lower than min so it can swap autofacs for shipbreakers if needed
@@ -267,6 +267,16 @@ public class ExerelinMarketBuilder
 		return isConditionAllowedForPlanet(conditionsByID.get(condID), planetType);
 	}
 	
+	protected boolean hasConflict(MarketConditionDef possibleCond, MarketAPI market)
+	{
+		for (String conflict : possibleCond.conflictsWith)
+		{
+			if (market.hasCondition(conflict)) 
+				return true;
+		}
+		return false;
+	}
+	
 	protected MarketConditionDef pickMarketCondition(MarketAPI market, List<MarketConditionDef> possibleConds, ProcGenEntity entityData, int budget, boolean isFirst)
 	{
 		WeightedRandomPicker<MarketConditionDef> picker = new WeightedRandomPicker<>(random);
@@ -284,10 +294,8 @@ public class ExerelinMarketBuilder
 			if (!possibleCond.allowStations && isStation) continue;
 			if (!possibleCond.allowDuplicates && market.hasCondition(possibleCond.name)) continue;
 			if (!isConditionAllowedForPlanet(possibleCond, planetType)) continue;
-			for (String conflict : possibleCond.conflictsWith)
-			{
-				if (market.hasCondition(conflict)) continue;
-			}
+			if (hasConflict(possibleCond, market)) continue;
+			
 			float weight = getConditionWeightForArchetype(possibleCond, entityData.archetype, 0);
 			if (weight <= 0) continue;
 			
@@ -352,9 +360,9 @@ public class ExerelinMarketBuilder
 		points += bonusPoints;
 		entityData.marketPoints = points;
 		
-		while (points - entityData.marketPointsSpent > points/2)
+		while (entityData.marketPointsSpent < points * PRE_BALANCE_BUDGET_MULT)
 		{
-			MarketConditionDef cond = pickMarketCondition(market, conditions, entityData, (int)(points*0.7 - entityData.marketPointsSpent), false);
+			MarketConditionDef cond = pickMarketCondition(market, conditions, entityData, (int)(points * PRE_BALANCE_BUDGET_MULT - entityData.marketPointsSpent), false);
 			if (cond == null) break;
 			log.info("\tAdding condition: " + cond.name);
 			addMarketCondition(market, entityData, cond);
@@ -362,9 +370,9 @@ public class ExerelinMarketBuilder
 		
 		int numSpecial = 0;
 		if (size == 2 && random.nextFloat() > 0.5) numSpecial = 1;
-		else if (size <= 4) numSpecial = ExerelinUtils.randomNextIntInclusive(random, 1) + ExerelinUtils.randomNextIntInclusive(random, 1);
-		else if (size <= 6) numSpecial = 1 + ExerelinUtils.randomNextIntInclusive(random, 1);
-		else if (size <= 8) numSpecial = 1 + ExerelinUtils.randomNextIntInclusive(random, 1) + ExerelinUtils.randomNextIntInclusive(random, 1);
+		else if (size <= 4) numSpecial = ExerelinUtils.randomNextIntInclusive(random, 1);
+		else if (size <= 6) numSpecial = ExerelinUtils.randomNextIntInclusive(random, 1) + ExerelinUtils.randomNextIntInclusive(random, 1);
+		else if (size <= 8) numSpecial = 1 + ExerelinUtils.randomNextIntInclusive(random, 1);
 		
 		for (int i=0; i<numSpecial; i++)
 		{
