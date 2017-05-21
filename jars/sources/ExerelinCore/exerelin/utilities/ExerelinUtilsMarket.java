@@ -390,41 +390,43 @@ public class ExerelinUtilsMarket {
 		return machinery;
 	}
 	
-	public static boolean isValidInvasionTarget(MarketAPI market, int minSize)
-	{
-		return isValidInvasionTarget(market, minSize, false);
-	}
-	
 	/**
 	 * Can factions launch invasion fleets at <code>market</code>?
+	 * Player may still be able to invade even if this returns false
 	 * @param market
-	 * @param minSize Can only invade market if it is at least this big
-	 * @param player
+	 * @param minSize Minimum market size to consider for invasions
 	 * @return
 	 */
-	public static boolean isValidInvasionTarget(MarketAPI market, int minSize, boolean player)
+	public static boolean shouldTargetForInvasions(MarketAPI market, int minSize)
 	{
-		if (market.hasCondition(Conditions.ABANDONED_STATION)) return false;
 		if (market.getSize() < minSize) return false;
-		
 		FactionAPI marketFaction = market.getFaction();
 		
-		//if (marketFaction.getId().equals(Factions.INDEPENDENT)) return false;
-		//if (market.getFactionId().equals("sun_ice")) return false;
-		if (player)
-		{
-			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(marketFaction.getId());
-			if (config != null && !config.playableFaction)
-				return false;
-		}
-		if (market.getPrimaryEntity() instanceof CampaignFleetAPI) return false;
-		if (marketFaction.isNeutralFaction()) return false;
+		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(marketFaction.getId());
+		if (config != null && !config.playableFaction)
+			return false;
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
 		if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
 			return false;
+		
+		return shouldTargetForInvasions(market, minSize);
+	}
+	
+	/**
+	 * Can this market be invaded, by player or by NPCs?
+	 * @param market
+	 * @return
+	 */
+	public static boolean canBeInvaded(MarketAPI market)
+	{
+		if (market.hasCondition(Conditions.ABANDONED_STATION)) return false;		
+		if (market.getPrimaryEntity() instanceof CampaignFleetAPI) return false;
+		
+		FactionAPI marketFaction = market.getFaction();
+		if (marketFaction.isNeutralFaction()) return false;
+		
 		if (market.getPrimaryEntity().hasTag(ExerelinConstants.TAG_UNINVADABLE))
 			return false;
-		//Global.getSector().getCampaignUI().addMessage(market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_UNINVADABLE) + "");
 		if (market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_UNINVADABLE))
 			return false;
 		
