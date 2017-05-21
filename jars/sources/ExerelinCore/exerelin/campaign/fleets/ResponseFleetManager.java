@@ -123,6 +123,8 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         data.target = target;
         this.activeFleets.add(data);
         
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
+        
         ResponseFleetAI ai = new ResponseFleetAI(fleet, data);
         fleet.addScript(ai);
         log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
