@@ -210,10 +210,6 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		StatsTracker.create();
 		
 		DiplomacyManager.setRandomFactionRelationships(setupData.randomStartRelationships);
-		if (corvusMode) 
-		{
-			SectorManager.reinitLiveFactions();
-		}
 		DiplomacyManager.initFactionRelationships(false);
 		
 		SectorManager.setCorvusMode(corvusMode);

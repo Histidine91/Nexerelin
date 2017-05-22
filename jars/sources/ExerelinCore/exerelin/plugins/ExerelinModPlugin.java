@@ -32,7 +32,7 @@ import java.util.HashMap;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
-    // call order: onNewGame -> onNewGameAfterEconomyLoad -> onEnabled -> onNewGameAfterTimePass -> onGameLoad
+    // call order: onNewGame -> onNewGameAfterProcGen -> onNewGameAfterEconomyLoad -> onEnabled -> onNewGameAfterTimePass -> onGameLoad
     public static final boolean HAVE_SWP = Global.getSettings().getModManager().isModEnabled("swp");
     public static final boolean HAVE_DYNASECTOR = Global.getSettings().getModManager().isModEnabled("dynasector");
     public static final boolean HAVE_UNDERWORLD = Global.getSettings().getModManager().isModEnabled("underworld");
@@ -54,7 +54,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(MiningFleetManager.create());
         sector.addScript(CovertOpsManager.create());
         sector.addScript(am);
-		sector.addScript(new PatrolFleetManagerReplacer());
+        sector.addScript(new PatrolFleetManagerReplacer());
         // debugging
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
@@ -173,7 +173,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         sector.registerPlugin(new ExerelinCoreCampaignPlugin());
         sector.addTransientScript(new DirectoryScreenScript());
-		sector.addTransientScript(new SSP_AsteroidTracker());
+        sector.addTransientScript(new SSP_AsteroidTracker());
     }
     
     @Override
@@ -184,8 +184,9 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     @Override
     public void onNewGameAfterProcGen() {
-        //Global.getLogger(this.getClass()).info("New game after proc gen; " + isNewGame);
-		new ExerelinProcGen().generate();
+        Global.getLogger(this.getClass()).info("New game after proc gen; " + isNewGame);
+        if (!SectorManager.getCorvusMode())
+            new ExerelinProcGen().generate();
     }
     
     @Override
@@ -206,7 +207,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         //for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
         //    PlayerStartHandler.addOmnifactory(sector, i);
     }
-	
+    
     @Override
     public void onNewGameAfterTimePass() {
         Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);

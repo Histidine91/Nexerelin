@@ -989,9 +989,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         sectorManager.factionIdsAtStart = new ArrayList<>();
         sectorManager.historicFactionIds = new HashSet<>();
         
-        for (String factionId:temp)
+        for (String factionId : temp)
         {
-            if (ExerelinUtilsFaction.getFactionMarkets(factionId, true).size() > 0)
+            if (!ExerelinUtilsFaction.getFactionMarkets(factionId, true).isEmpty())
             {
                 ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
                 if (config != null && !config.playableFaction)
@@ -999,6 +999,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 sectorManager.liveFactionIds.add(factionId);
                 sectorManager.factionIdsAtStart.add(factionId);
                 sectorManager.historicFactionIds.add(factionId);
+				setShowFactionInIntelTab(factionId, true);
             }
             else    // no need for showIntelEvenIfDead check, that's done in setShowFactionInIntelTab()
             {

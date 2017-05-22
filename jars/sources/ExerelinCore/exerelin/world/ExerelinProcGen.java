@@ -734,8 +734,8 @@ public class ExerelinProcGen {
 					
 					float dist1 = Misc.getDistance(sys1.getLocation(), ExerelinNewGameSetup.SECTOR_CENTER);
 					float dist2 = Misc.getDistance(sys2.getLocation(), ExerelinNewGameSetup.SECTOR_CENTER);
-					if (dist1 > dist2) return -1;
-					else if (dist2 > dist1) return 1;
+					if (dist1 < dist2) return -1;
+					else if (dist2 < dist1) return 1;
 					else return 0;
 					
 				}});
