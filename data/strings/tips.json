@@ -6,6 +6,6 @@
 	"[Nexerelin] Sneaking into a market with your transponder off will make your covert actions less likely to be detected.",
 	"[Nexerelin] Covert actions (except raise/lower relations) will temporarily raise the target market's security level, deterring further agent use.",
 	"[Nexerelin] If you don't have enough marines to take a market, consider using an agent to lower its stability.",
-	"[Nexerelin] Markets with the Free Port condition have halved tariffs.",
+	#"[Nexerelin] Markets with the Free Port condition have halved tariffs.",
     ],
 }
