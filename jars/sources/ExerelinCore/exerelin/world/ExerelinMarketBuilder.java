@@ -746,6 +746,10 @@ public class ExerelinMarketBuilder
 		else if (factionId.equals("crystanite")) {
 			//newMarket.addCondition("crys_population");
 		}
+		else if (factionId.equals("interstellarimperium") && !market.hasCondition(Conditions.DISSIDENT)
+				&& !market.hasCondition(Conditions.LARGE_REFUGEE_POPULATION)) {
+			market.addCondition("ii_imperialdoctrine");
+		}
 		
 		if (factionId.equals("templars"))
 		{
