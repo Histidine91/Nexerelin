@@ -22,6 +22,7 @@ import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 /*
 Changes from vanilla:
@@ -32,6 +33,8 @@ Changes from vanilla:
 
 public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogPluginImpl {
 
+	public static Logger log = Global.getLogger(NexFleetInteractionDialogPluginImpl.class);
+	
     protected static final String STRING_HELPER_CAT = "exerelin_officers";
     protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
     protected boolean recoveredOfficers = false;
@@ -387,7 +390,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				return true;
 			}
 		}
-		return false;
+		return true;
 	}
 	
 	// same as vanilla, except stations don't get pulled + anything pursuing a participating fleet gets pulled
@@ -413,6 +416,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		if (fleet.getAI() != null)
 		{
 			FleetAssignmentDataAPI assignment = fleet.getAI().getCurrentAssignment();
+			if (assignment == null) return true;
 			SectorEntityToken target = assignment.getTarget();
 			if (target != null && target instanceof CampaignFleetAPI)
 			{
