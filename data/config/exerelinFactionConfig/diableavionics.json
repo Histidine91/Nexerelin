@@ -26,9 +26,9 @@
     "miningVariantsOrWings":["diableavionics_laminar_miner"],
     "customStations":["diableavionics_station_eclipse","diableavionics_station_shadow","diableavionics_station_ressource"],
     
-    "startShipsSolo":["diableavionics_draft_support"],
+    "startShipsSolo":["diableavionics_vapor_standard"],
     "startShipsCombatSmall":["diableavionics_calm_mixed", "diableavionics_vapor_attack", "diableavionics_draft_standard"],
     "startShipsTradeSmall":["diableavionics_stratus_standard", "diableavionics_draft_support", "diableavionics_laminar_miner"],
-    "startShipsCombatLarge":["diableavionics_gust_assault", "diableavionics_derecho_kite"],
+    "startShipsCombatLarge":["diableavionics_gust_assault", "diableavionics_derecho_kite", "diableavionics_draft_support"],
     "startShipsTradeLarge":["diableavionics_rime_breach", "diableavionics_vapor_attack", "diableavionics_draft_standard"],
 }
