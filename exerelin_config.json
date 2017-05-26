@@ -36,8 +36,8 @@
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
     "ignoreAlignmentForAlliances": false,
     
-    "baseTariffMult": 1,  # 1.0 = base tariff (usually 30%)
-    "freeMarketTariffMult": 1,    # 0.5 = halved tariffs
+    "baseTariffMult": 0.6,  # 1.0 = base tariff (usually 30%)
+    "freeMarketTariffMult": 0.5,    # 0.5 = halved tariffs
     
     "prismMaxWeapons": 27,
     "prismNumShips": 16,
