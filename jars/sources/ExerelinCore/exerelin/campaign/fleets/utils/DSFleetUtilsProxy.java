@@ -48,6 +48,6 @@ public class DSFleetUtilsProxy {
 			default:    // fallback taken from SS+
 				randomizeVariants(fleet, factionId, qualityFactor, null, getArchetypeWeights(DS_Defs.FleetStyle.STANDARD, factionId));
 		}
-		DS_FleetFactory.finishFleetNonIntrusive(fleet, factionId);
+		DS_FleetFactory.finishFleetNonIntrusive(fleet, factionId, false);
 	}
 }
