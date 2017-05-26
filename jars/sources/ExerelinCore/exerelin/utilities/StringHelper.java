@@ -1,6 +1,7 @@
 package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -121,6 +122,20 @@ public class StringHelper {
 			default:
 				return getString("their");
 		}
+	}
+	
+	public static String getShipOrFleet(CampaignFleetAPI fleet)
+	{
+		String fleetOrShip = getString("SI_general", "fleet");
+		if (fleet != null) {
+			if (fleet.getFleetData().getMembersListCopy().size() == 1) {
+				fleetOrShip = getString("SI_general", "ship");
+				if (fleet.getFleetData().getMembersListCopy().get(0).isFighterWing()) {
+					fleetOrShip = getString("SI_general", "fighterWing");
+				}
+			}
+		}
+		return fleetOrShip;
 	}
 
     // http://stackoverflow.com/a/15191508

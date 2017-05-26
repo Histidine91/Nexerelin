@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
+import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
@@ -38,11 +39,12 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 		super.updateEntityFacts(entity, memory);
 		
 		boolean canMine;
-		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
-			canMine = MiningHelper.canMine(entity);
-		else
+		// if we do have SI, let it handle mining instead
+		if (!ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
+		{
 			canMine = MiningHelperLegacy.canMine(entity);
-		memory.set("$canMine", canMine, 0);
+			memory.set("$nex_canMine", canMine, 0);
+		}
 		
 		if (entity instanceof AsteroidAPI)
 		{
@@ -104,6 +106,9 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
         if (interactionTarget instanceof CampaignFleetAPI) {
             return new PluginPick<InteractionDialogPlugin>(new NexFleetInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
         }
+		if (!ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST && interactionTarget instanceof AsteroidAPI) {
+			return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
+		}
         return null;
     }
 }

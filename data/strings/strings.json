@@ -204,7 +204,6 @@
 		"prismRelTooLow":"Requires: $faction - $minRelationship"
 	},
 	"exerelin_mining":{
-		"crewLost":"crew lost",
 		"danger":"hazard rating",
 		"exhaustion":"resource exhaustion",
 		"miningAccident":"mining accident",
@@ -213,14 +212,19 @@
 		"planetType":"type",
 		"resourcesExtracted":"resources extracted",
 		"theAsteroid":"the asteroid",
+		"LPC":"$fighterName LPC",
+		"machineryAvailable":"Machinery usable (available)",
 		
 		"miningToolsListHeader":"The following mining ships and weapons exist in the Sector:",
+		"insufficientMachineryWarning":"Your $shipOrFleet does not have enough heavy machinery to work at full capacity.",
 		
 		"cacheFound":"Hidden cache found!",
 		"accidentsOccured":"Accidents occured!",
 		"shipDamaged":"$ship took $damage damage",
 		"shipDestroyed":"$ship destroyed",
-		"shipLostCR":"$ship lost $crLost CR"
+		"shipLostCR":"$ship lost $crLost CR",
+		"crewLost":"crew lost",
+		"machineryLost":"heavy machinery lost"
 	},
 	"exerelin_ngc":{
 		"added":"added",

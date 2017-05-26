@@ -1045,6 +1045,54 @@ BroadcastCancelPlayerAction 1500 $exerelinRespondingToSuperweapon","The $faction
 ExerelinDialogSuperweaponInterference_open,OpenCommLink,$entity.exerelinRespondingToSuperweapon score:100,$entity.ignorePlayerCommRequests = true 0,"$PersonRank $personName glares hatefully at you. ""We won't let you use your abominable weapons on our people!""",continueCutComm:Continue,
 #END SUPERWEAPON OPTIONS,,,,,,
 ,,,,,,
+#START MINING OPTIONS,,,,,,
+nex_openAsteroid,OpenInteractionDialog,"$isAsteroid
+!Nex_IsModActive ""stellar_industrialist""","$menuState = main 0
+ShowDefaultVisual
+PrintDescription 3
+FireAll PopulateOptions",Your $shipOrFleet approaches the asteroid.,,
+nex_leaveAsteroid,PopulateOptions,"$isAsteroid
+!Nex_IsModActive ""stellar_industrialist""",SetShortcut marketLeave ESCAPE,,100:marketLeave:Leave,
+,,,,,,
+nex_miningOption,PopulateOptions,"$nex_canMine
+!$isAsteroid",SetEnabled nex_miningPreview true,,3:nex_miningPreview:Mine planet,
+nex_miningOptionAsteroid,PopulateOptions,"$nex_canMine
+$isAsteroid",SetEnabled nex_miningPreview true,,3:nex_miningPreview:Mine asteroid,
+nex_miningOptionUnsurveyed,PopulateOptions,"$nex_canMine
+!$isAsteroid
+$market.surveyLevel != FULL","SetTooltip nex_miningPreview ""You need to survey the planet first!""
+SetEnabled nex_miningPreview false",,,
+,,,,,,
+nex_miningPreview,DialogOptionSelected,$option == nex_miningPreview,"$menuState = nex_mining 0
+Nex_PrintMiningInfo planet
+FireAll nex_MiningOption",,,
+nex_miningMineOption,nex_MiningOption,$player.miningStrength > 0,"SetEnabled nex_miningStart true
+SetShortcut nex_miningStart RETURN
+SetShortcut nex_miningBack ESCAPE",,"nex_miningStart:Start mining
+nex_miningFleetInfo:List mining ships
+nex_miningListTools:What ships and weapons can mine?
+nex_miningBack:Back",
+nex_miningMineOptionNoMiners,nex_MiningOption,$player.miningStrength <= 0,"SetTooltip nex_miningStart ""You have no ships capable of mining.""
+SetEnabled nex_miningStart false
+SetShortcut nex_miningBack ESCAPE",,"nex_miningStart:Start mining
+nex_miningListTools:What ships and weapons can mine?
+nex_miningBack:Back",
+nex_miningFleetInfo,DialogOptionSelected,$option == nex_miningFleetInfo,"Nex_PrintMiningInfo fleet
+FireAll nex_miningOption",,,
+nex_miningListTools,DialogOptionSelected,$option == nex_miningListTools,"Nex_PrintMiningInfo tools
+FireAll nex_miningOption",,,
+nex_miningStart,DialogOptionSelected,"$nex_canMine
+$option == nex_miningStart","Wait $global.miningWait 1.0 $global.miningFinished $global.miningInterrupted $global.miningInProgress ""Mining...""
+MakePlayerImmediatelyAttackable",,,
+nex_miningInterrupted,BeginFleetEncounter,$global.miningInProgress,AbortWait $global.miningWait,Contact with the other fleet suspends mining operations.,,
+nex_miningComplete,OpenInteractionDialog,"$nex_canMine
+$global.miningFinished score:3","Nex_GetMiningResults 1
+ShowDefaultVisual",Your $shipOrFleet has completed mining on $entityName.,"nex_miningPreview:Mine again
+nex_miningBack:Back",
+,,,,,,
+nex_miningBack,DialogOptionSelected,$option == nex_miningBack,"$menuState = main 0
+FireAll PopulateOptions",,,
+#END MINING OPTIONS,,,,,,
 ,,,,,,
 ,,,,,,
 ## Base commander stuff ##,,,,,,
@@ -1073,7 +1121,7 @@ FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connec
 ExerelinBaseCommanderMenuRepeat,DialogOptionSelected,$option == exerelinBaseCommanderMenuRepeat,FireAll ExerelinBaseCommanderOptionsInitialize,"""Anything else?""",,
 ,,,,,,
 #START FACTION CHANGE OPTIONS,,,,,,
-ExerelinaseCommanderOptionsSetVariables,ExerelinBaseCommanderOptionsInitialize,,"$thePlayerFaction = $player.theFaction 0
+ExerelinBaseCommanderOptionsSetVariables,ExerelinBaseCommanderOptionsInitialize,,"$thePlayerFaction = $player.theFaction 0
 unset $showJoinFactionOptions
 unset $showLeaveFactionOptions
 unset $showPlayerFactionDiplomacyOptions

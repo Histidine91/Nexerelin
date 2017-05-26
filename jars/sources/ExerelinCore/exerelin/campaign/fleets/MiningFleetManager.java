@@ -90,8 +90,15 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		}
 		else
 		{
-			PlanetAPI planet = (PlanetAPI)entity;
-			return !planet.isGasGiant() && !planet.isStar();
+			float exhaustion = MiningHelperLegacy.getExhaustion(entity);
+			if (exhaustion > 0.7f) return false;
+			
+			MiningHelperLegacy.MiningReport report = MiningHelperLegacy.getMiningReport(null, entity, 1 - exhaustion);
+			if (report.totalOutput.containsKey(Commodities.ORE))
+				return report.totalOutput.get(Commodities.ORE) > 0.5;
+			if (report.totalOutput.containsKey(Commodities.RARE_ORE))
+				return report.totalOutput.get(Commodities.RARE_ORE) > 0.05;
+			return false;
 		}
 	}
 	
@@ -110,7 +117,13 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		}
 		else
 		{
-			return ((PlanetAPI)entity).isGasGiant();
+			float exhaustion = MiningHelperLegacy.getExhaustion(entity);
+			if (exhaustion > 0.7f) return false;
+			
+			MiningHelperLegacy.MiningReport report = MiningHelperLegacy.getMiningReport(null, entity, 1 - exhaustion);
+			if (report.totalOutput.containsKey(Commodities.VOLATILES))
+				return report.totalOutput.get(Commodities.VOLATILES) > 0.4;
+			return false;
 		}
 	}
 	
@@ -237,6 +250,11 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 		else
 		{
 			miningStrength = MiningHelperLegacy.getFleetMiningStrength(fleet);
+			// take machinery with us
+			float machineryRequired = MiningHelperLegacy.getRequiredMachinery(miningStrength);
+			float machineryToTake = Math.min(machineryRequired * 1.25f, origin.getCommodityData(Commodities.HEAVY_MACHINERY).getStockpile());
+			fleet.getCargo().addCommodity(Commodities.HEAVY_MACHINERY, machineryToTake);
+			origin.getCommodityData(Commodities.HEAVY_MACHINERY).removeFromStockpile(machineryToTake);
 		}
 		
 		SectorEntityToken entity = origin.getPrimaryEntity();

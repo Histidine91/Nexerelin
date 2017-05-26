@@ -1,29 +1,37 @@
 package exerelin.campaign;
 
+import org.histidine.industry.scripts.util.StringHelper;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.AsteroidAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
+import com.fs.starfarer.api.campaign.CustomCampaignEntityAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.AIHints;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
-import com.fs.starfarer.api.fleet.CrewCompositionAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
+import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin;
+import com.fs.starfarer.api.impl.campaign.DerelictShipEntityPlugin.DerelictShipData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
+import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,40 +47,46 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 
+// actually now same as the Stellar Industrialist one, except for e.g. file paths
 public class MiningHelperLegacy {
 	
 	protected static final String CONFIG_FILE = "data/config/exerelin/miningConfig.json";
 	protected static final String MINING_SHIP_DEFS = "data/config/exerelin/mining_ships.csv";
 	protected static final String MINING_WEAPON_DEFS = "data/config/exerelin/mining_weapons.csv";
-	protected static final String EXHAUSTION_DATA_KEY = "exerelinMiningExhaustion";	// exhaustion list is a <SectorEntityToken, Float> map
-	public static final float MAX_EXHAUSTION = 0.8f; 
-	
+	protected static final String RESOURCE_DEFS = "data/config/exerelin/mining_resources.csv";
+	protected static final String EXHAUSTION_DATA_KEY = "SI_miningExhaustion";	// exhaustion list is a <SectorEntityToken, Float> map
+	public static final Set<String> OUTPUT_COMMODITIES = new HashSet<>(Arrays.asList(
+			new String[]{Commodities.ORE, Commodities.RARE_ORE, Commodities.VOLATILES, Commodities.ORGANICS}
+	));
 	public static final List<String> ROLES_FOR_FIGHTERS = Arrays.asList(
-		new String[]{
-			ShipRoles.COMBAT_SMALL, 
-			ShipRoles.FREIGHTER_SMALL, 
-			ShipRoles.COMBAT_FREIGHTER_SMALL, 
-			ShipRoles.CARRIER_SMALL,
-			ShipRoles.COMBAT_MEDIUM,
-			ShipRoles.ESCORT_MEDIUM,
-			ShipRoles.FREIGHTER_MEDIUM, 
-			ShipRoles.COMBAT_FREIGHTER_MEDIUM, 
-			ShipRoles.CARRIER_MEDIUM,
-			ShipRoles.CARRIER_LARGE,
-			ShipRoles.FREIGHTER_LARGE,
-			ShipRoles.COMBAT_FREIGHTER_LARGE,
-			ShipRoles.CARRIER_LARGE,
-			ShipRoles.COMBAT_CAPITAL,
+			new String[]{
+				ShipRoles.COMBAT_SMALL, 
+				ShipRoles.FREIGHTER_SMALL, 
+				ShipRoles.COMBAT_FREIGHTER_SMALL, 
+				ShipRoles.CARRIER_SMALL,
+				ShipRoles.COMBAT_MEDIUM,
+				ShipRoles.ESCORT_MEDIUM,
+				ShipRoles.FREIGHTER_MEDIUM, 
+				ShipRoles.COMBAT_FREIGHTER_MEDIUM, 
+				ShipRoles.CARRIER_MEDIUM,
+				ShipRoles.CARRIER_LARGE,
+				ShipRoles.FREIGHTER_LARGE,
+				ShipRoles.COMBAT_FREIGHTER_LARGE,
+				ShipRoles.CARRIER_LARGE,
+				ShipRoles.COMBAT_CAPITAL,
 		}
 	);
 	public static final Set<String> CACHE_DISALLOWED_FACTIONS = new HashSet(Arrays.asList(
-		new String[]{
-			"templars",
-			Factions.DERELICT,
-			Factions.REMNANTS
+			new String[]{
+				"templars",
+				Factions.DERELICT,
+				Factions.REMNANTS
 		}
 	));
+	
+	public static final float MAX_EXHAUSTION = 0.9f; 
 	
 	protected static float miningProductionMult = 2f;
 	protected static float cacheSizeMult = 1;
@@ -87,14 +101,17 @@ public class MiningHelperLegacy {
 	protected static float planetExhaustionMult = 0.75f;
 	protected static float planetRenewMult = 1.25f;
 	protected static float xpPerMiningStrength = 10;
+	protected static float machineryPerMiningStrength = 0.5f;
 	
 	protected static final Map<String, Float> miningWeapons = new HashMap<>();
 	protected static final Map<String, Float> miningShips = new HashMap<>();
-	protected static final Map<String, MineableDef> mineableDefs = new HashMap<>();
+	protected static final Map<String, Map<String, Float>> miningConditions = new HashMap<>();	// maps each market condition to its resource contents
+	
 	protected static final List<CacheDef> cacheDefs = new ArrayList<>();
 	//protected static final
 	
 	public static final Logger log = Global.getLogger(MiningHelperLegacy.class);
+	protected static final WeightedRandomPicker<AccidentType> accidentPicker = new WeightedRandomPicker<>();
 	
 	static {
 		try {
@@ -104,6 +121,7 @@ public class MiningHelperLegacy {
 			baseCacheChance = (float)config.optDouble("baseCacheChance", baseCacheChance);
 			baseAccidentChance = (float)config.optDouble("baseAccidentChance", baseAccidentChance);
 			xpPerMiningStrength = (float)config.optDouble("xpPerMiningStrength", xpPerMiningStrength);
+			machineryPerMiningStrength = (float)config.optDouble("machineryPerMiningStrength", machineryPerMiningStrength);
 			
 			baseAccidentCRLoss = (float)config.optDouble("baseAccidentCRLoss", baseAccidentCRLoss);
 			baseAccidentHullDamage = (float)config.optDouble("baseAccidentHullDamage", baseAccidentHullDamage);
@@ -112,92 +130,89 @@ public class MiningHelperLegacy {
 			planetDangerMult = (float)config.optDouble("planetDangerMult", planetDangerMult);
 			planetExhaustionMult = (float)config.optDouble("planetExhaustionMult", planetExhaustionMult);
 			planetRenewMult = (float)config.optDouble("planetRenewMult", planetRenewMult);
-
-			/*
-			JSONObject weaponsJson = config.getJSONObject("miningWeapons");
-			Iterator<?> keys = weaponsJson.keys();
-			while( keys.hasNext() ) {
-				String key = (String)keys.next();
-				miningWeapons.put(key, (float)weaponsJson.getDouble(key));
+			
+			// use Nex directory files as fallback
+			//loadMiningShips(MINING_SHIP_DEFS_NEX);
+			//loadMiningWeapons(MINING_WEAPON_DEFS_NEX);
+			loadMiningShips(MINING_SHIP_DEFS);
+			loadMiningWeapons(MINING_WEAPON_DEFS);
+			
+			JSONArray resourcesCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", RESOURCE_DEFS, "stellar_industrialist");
+			for(int x = 0; x < resourcesCsv.length(); x++)
+			{
+				JSONObject row = resourcesCsv.getJSONObject(x);
+				String id = row.getString("id");
+				if (id.isEmpty()) continue;
+				
+				Map<String, Float> resources = new HashMap<>();
+				for (String commodityId : OUTPUT_COMMODITIES)
+				{
+					float value = (float)row.optDouble(commodityId, 0);
+					if (value > 0) resources.put(commodityId, value);
+				}
+				miningConditions.put(id, resources);
 			}
-			
-			JSONObject shipsJson = config.getJSONObject("miningShips");
-			keys = shipsJson.keys();
-			while( keys.hasNext() ) {
-				String key = (String)keys.next();
-				miningShips.put(key, (float)shipsJson.getDouble(key));
-			}
-			*/
-			
-			JSONArray miningShipsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", MINING_SHIP_DEFS, "nexerelin");
-			for(int x = 0; x < miningShipsCsv.length(); x++)
-            {
-                JSONObject row = miningShipsCsv.getJSONObject(x);
-                String shipId = row.getString("id");
-                float strength = (float)row.getDouble("strength");
-                miningShips.put(shipId, strength);
-            }
-			
-			JSONArray miningWeaponsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", MINING_WEAPON_DEFS, "nexerelin");
-			for(int x = 0; x < miningWeaponsCsv.length(); x++)
-            {
-                JSONObject row = miningWeaponsCsv.getJSONObject(x);
-                String weaponId = row.getString("id");
-                float strength = (float)row.getDouble("strength");
-                miningWeapons.put(weaponId, strength);
-            }
-			
-			JSONObject typesJson = config.getJSONObject("planetTypes");
-			mineableDefs.put("default", new MineableDef("placeholder"));
-			loadMineableDef("default", typesJson.getJSONObject("default"));
-			
-			
-			Iterator <?> keys = typesJson.keys();
-			while( keys.hasNext() ) {
-				String planetType = (String)keys.next();
-				if (planetType.equals("default")) continue;
-				JSONObject defJson = typesJson.getJSONObject(planetType);
-				loadMineableDef(planetType, defJson);
-			}
-			
-			//generatorSystems = config.getJSONArray("systems");
 		} catch (IOException | JSONException ex) {
 			log.error(ex);
 		}
 		
 		initCacheDefs();
+		accidentPicker.add(AccidentType.HULL_DAMAGE, 1);
+		accidentPicker.add(AccidentType.CR_LOSS, 1.5f);
+		accidentPicker.add(AccidentType.CREW_LOSS, 1.5f);
+		accidentPicker.add(AccidentType.MACHINERY_LOSS, 2.5f);
 	}
 	
-	public static void loadMineableDef(String planetType, JSONObject defJson) throws JSONException
+	public static void loadMiningShips(String path)
 	{
-		MineableDef def = new MineableDef(planetType);
-				
-		JSONObject resourcesJson = defJson.getJSONObject("resources");
-		Iterator<?> resourceKeys = resourcesJson.keys();
-		while (resourceKeys.hasNext())
-		{
-			String res = (String)resourceKeys.next();
-			def.resources.put(res, (float)resourcesJson.getDouble(res));
+		try {
+			JSONArray miningShipsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, "stellar_industrialist");
+			for(int x = 0; x < miningShipsCsv.length(); x++)
+			{
+				JSONObject row = miningShipsCsv.getJSONObject(x);
+				String shipId = row.getString("id");
+				float strength = (float)row.getDouble("strength");
+				miningShips.put(shipId, strength);
+			}
+		} catch (IOException | JSONException ex) {
+			log.error(ex);
+		} catch (RuntimeException rex) {
+			// file not found, do nothing
 		}
-		def.danger = (float)defJson.optDouble("danger", mineableDefs.get("default").danger);
-		def.exhaustionRate = (float)defJson.optDouble("exhaustionRate", mineableDefs.get("default").exhaustionRate);
-		def.renewRate = (float)defJson.optDouble("renewRate", mineableDefs.get("default").renewRate);
-
-		mineableDefs.put(planetType, def);
 	}
 	
+	public static void loadMiningWeapons(String path)
+	{
+		try {
+			JSONArray miningWeaponsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, "stellar_industrialist");
+			for(int x = 0; x < miningWeaponsCsv.length(); x++)
+			{
+				JSONObject row = miningWeaponsCsv.getJSONObject(x);
+				String weaponId = row.getString("id");
+				float strength = (float)row.getDouble("strength");
+				miningWeapons.put(weaponId, strength);
+			}
+		} catch (IOException | JSONException ex) {
+			log.error(ex);
+		} catch (RuntimeException rex) {
+			// file not found, do nothing
+		}
+	}
+		
 	public static void initCacheDefs()
 	{
 		cacheDefs.add(new CacheDef("weapon", CacheType.WEAPON, null, 1, 0.8f));
 		cacheDefs.add(new CacheDef("frigate", CacheType.FRIGATE, null, 1, 0.2f));
 		cacheDefs.add(new CacheDef("fighters", CacheType.FIGHTER_WING, null, 1, 0.3f));
-		cacheDefs.add(new CacheDef("supplies", CacheType.COMMODITY, "supplies", 3, 1f));
-		cacheDefs.add(new CacheDef("fuel", CacheType.COMMODITY, "fuel", 4, 1f));
-		cacheDefs.add(new CacheDef("food", CacheType.COMMODITY, "food", 5, 1f));
-		cacheDefs.add(new CacheDef("hand_weapons", CacheType.COMMODITY, "hand_weapons", 3, 1f));
-		cacheDefs.add(new CacheDef("heavy_machinery", CacheType.COMMODITY, "heavy_machinery", 2, 0.7f));
-		cacheDefs.add(new CacheDef("rare_metals", CacheType.COMMODITY, "rare_metals", 1.5f, 0.7f));
-		cacheDefs.add(new CacheDef("drugs", CacheType.COMMODITY, "drugs", 1.25f, 0.5f));
+		cacheDefs.add(new CacheDef("supplies", CacheType.COMMODITY, Commodities.SUPPLIES, 3, 1f));
+		cacheDefs.add(new CacheDef("fuel", CacheType.COMMODITY, Commodities.FUEL, 4, 1f));
+		cacheDefs.add(new CacheDef("food", CacheType.COMMODITY, Commodities.FOOD, 5, 1f));
+		cacheDefs.add(new CacheDef("hand_weapons", CacheType.COMMODITY, Commodities.HAND_WEAPONS, 3, 1f));
+		cacheDefs.add(new CacheDef("heavy_machinery", CacheType.COMMODITY, Commodities.HEAVY_MACHINERY, 2, 0.7f));
+		cacheDefs.add(new CacheDef("rare_metals", CacheType.COMMODITY, Commodities.RARE_METALS, 1.5f, 0.7f));
+		cacheDefs.add(new CacheDef("drugs", CacheType.COMMODITY, Commodities.DRUGS, 1.25f, 0.5f));
+		cacheDefs.add(new CacheDef("gamma_core", CacheType.COMMODITY, Commodities.GAMMA_CORE, 0, 0.05f));
+		cacheDefs.add(new CacheDef("beta_core", CacheType.COMMODITY, Commodities.BETA_CORE, 0, 0.01f));
 	}
 	
 	
@@ -211,17 +226,6 @@ public class MiningHelperLegacy {
 			data.put(EXHAUSTION_DATA_KEY, exhaustionMap);
 		}
 		return exhaustionMap;
-	}
-	
-	public static String getPlanetType(SectorEntityToken entity)
-	{
-		if (entity instanceof AsteroidAPI) return "asteroid";
-		if (entity instanceof PlanetAPI)
-		{
-			PlanetAPI planet = (PlanetAPI)entity;
-			return planet.getTypeId();
-		}
-		return "default";
 	}
 	
 	public static boolean canMine(SectorEntityToken entity)
@@ -239,60 +243,155 @@ public class MiningHelperLegacy {
 		return false;
 	}
 	
-	public static MineableDef getMineableDefForEntity(SectorEntityToken entity)
+	/**
+	 * Adds the contents of 'added' to 'base'
+	 * @param base
+	 * @param added
+	 */
+	protected static void addToResourcesResult(Map<String, Float> base, Map<String, Float> added)
 	{
-		String type = getPlanetType(entity);
-		if (mineableDefs.containsKey(type)) return mineableDefs.get(type);
-		return mineableDefs.get("default");
+		if (base == null || added == null)
+			return;
+		for (Map.Entry<String, Float> entry : added.entrySet())
+		{
+			String commodityId = entry.getKey();
+			float value = entry.getValue();
+			
+			if (!base.containsKey(commodityId))
+			{
+				base.put(commodityId, value);
+			}
+			else
+			{
+				base.put(commodityId, value + base.get(commodityId));
+			}
+		}
+	}
+	
+	/**
+	 * Returns the resource output from a market condition
+	 * @param conditionId
+	 * @return Map of commodityIDs to amount of resources
+	 */
+	protected static Map<String, Float> getResourcesForCondition(String conditionId)
+	{
+		if (!miningConditions.containsKey(conditionId)) return null;
+		return new HashMap<>(miningConditions.get(conditionId));
+	}
+	
+	protected static Map<String, Float> processCondition(String conditionId, float mult, MiningReport report)
+	{
+		Map<String, Float> resources = getResourcesForCondition(conditionId);
+		if (resources == null) return null;
+
+		if (mult != 1)
+		{
+			Map<String, Float> resourcesAdjusted = new HashMap<>();
+			
+			for (Map.Entry<String, Float> tmp : resources.entrySet())
+			{
+				float thisMult = mult * MathUtils.getRandomNumberInRange(0.85f, 1.15f);
+				resourcesAdjusted.put(tmp.getKey(), tmp.getValue() * thisMult);
+			}
+			resources = resourcesAdjusted;
+		}
+		if (report != null) 
+		{
+			addToResourcesResult(report.totalOutput, resources);
+			report.outputByCondition.put(conditionId, resources);
+		}
+		
+		return resources;
+	}
+	
+	/**
+	 * Fills a mining report with the resource output possible from mining this entity
+	 * Exhaustion is ignored (unless included in mult)
+	 * @param entity The entity being mined
+	 * @param mult Resource output multiplier
+	 * @param report A mining report to fill out
+	 */
+	protected static void getResources(SectorEntityToken entity, float mult, MiningReport report)
+	{
+		if (entity == null) return;
+		boolean isGasGiant = (entity instanceof PlanetAPI && ((PlanetAPI)entity).isGasGiant());
+		
+		MarketAPI market = entity.getMarket();
+		if (market != null)
+		{
+			for (MarketConditionAPI cond : market.getConditions())
+			{
+				if (!cond.isSurveyed() && report.isPlayer) continue;
+				String id = cond.getId();
+				processCondition(id, mult, report);
+			}
+		}
+		if (entity instanceof AsteroidAPI)
+		{
+			processCondition("asteroid", mult, report);
+		}
+		/*
+		if (isGasGiant)
+		{
+			if (totalResources.containsKey(Commodities.VOLATILES))
+				totalResources.put(Commodities.VOLATILES, totalResources.get(Commodities.VOLATILES) * 2);
+		}
+		*/
 	}
 	
 	public static float getDanger(SectorEntityToken entity)
 	{
-		MineableDef def = getMineableDefForEntity(entity);
-		boolean isPlanet = false;
+		if (entity instanceof AsteroidAPI) return 0.2f;
+		float val = entity.getMarket().getHazardValue();
 		if (entity instanceof PlanetAPI)
 		{
-			PlanetAPI planet = (PlanetAPI)entity;
-			if (!planet.isMoon()) isPlanet = true;
+			PlanetAPI planet = (PlanetAPI) entity;
+			if (!planet.isMoon()) val *= planetDangerMult;
 		}
-		
-		float val = def.danger;
-		if (isPlanet) val *= planetDangerMult;
 		//else if (((PlanetAPI)entity).isGasGiant()) return danger.get("gas_giant");
-		return val;
-	}
-	
-	public static Map<String, Float> getResources(SectorEntityToken entity, boolean useExhaustion)
-	{
-		MineableDef def = getMineableDefForEntity(entity);
-		Map<String, Float> resCopy = new HashMap<>(def.resources);
-		float mult = 1;
-		
-		if (useExhaustion)
+		/*
+		if (machinerySufficiency < 1)
 		{
-			Map<SectorEntityToken, Float> exhaustionMap = getExhaustionMap();
-			if (exhaustionMap.containsKey(entity))
-				mult *= (1 - exhaustionMap.get(entity));
-			
-			if (mult < 0) mult = 0;
-			
-			Iterator<Map.Entry<String, Float>> iter = resCopy.entrySet().iterator();
-            while (iter.hasNext())
-            {
-				Map.Entry<String, Float> tmp = iter.next();
-				resCopy.put(tmp.getKey(), tmp.getValue() * mult);
-			}
+			val *= 1 + (2 * (1 - machinerySufficiency));
 		}
+		*/
 		
-		return resCopy;
+		return val;
 	}
 	
 	public static float getExhaustion(SectorEntityToken entity)
 	{
+		if (entity instanceof AsteroidAPI) return 0;
 		Map<SectorEntityToken, Float> exhaustionMap = getExhaustionMap();
 		if (exhaustionMap.containsKey(entity))
 			return exhaustionMap.get(entity);
 		return 0;
+	}
+	
+	public static float getRequiredMachinery(float strength)
+	{
+		return strength * machineryPerMiningStrength;
+	}
+	
+	public static float getMachinerySufficiency(CampaignFleetAPI fleet)
+	{
+		float requiredMachinery = getRequiredMachinery(getFleetMiningStrength(fleet));
+		float availableMachinery = fleet.getCargo().getCommodityQuantity(Commodities.HEAVY_MACHINERY);
+		return Math.min(availableMachinery/requiredMachinery, 1);
+	}
+	
+	public static MiningReport getMiningReport(CampaignFleetAPI fleet, SectorEntityToken entity, float strength)
+	{
+		MiningReport report = new MiningReport();
+		
+		report.danger = getDanger(entity);
+		report.exhaustion = getExhaustion(entity);
+		if (fleet != null && fleet.getFaction().isPlayerFaction())
+			report.isPlayer = true;
+		strength *= (1 - report.exhaustion);
+		getResources(entity, strength, report);
+		
+		return report;
 	}
 	
 	public static Map<String, Float> getMiningShipsCopy()
@@ -390,7 +489,7 @@ public class MiningHelperLegacy {
 			
 			List<ShipRolePick> picks = faction.pickShip(role, 1, rolePicker.getRandom());
 			for (ShipRolePick pick : picks) 
-			{
+			{				
 				FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, pick.variantId);
 				float cost = member.getBaseBuyValue();
 				shipPicker.add(member, 10000/cost);
@@ -475,8 +574,11 @@ public class MiningHelperLegacy {
 				if (accident == null) accident = new MiningAccident();
 				FleetMemberAPI fm = picker.pick();
 				if (fm == null || fm.getStatus() == null) continue;	// null reference protection
+				
+				AccidentType accidentType = accidentPicker.pick();
+				
 				// ship takes damage
-				if (!fm.isFighterWing() && Math.random() < 0.25f)
+				if (accidentType == AccidentType.HULL_DAMAGE)
 				{
 					float hull = fm.getStatus().getHullFraction();
 					float hullDamageFactor = 0f;
@@ -485,6 +587,7 @@ public class MiningHelperLegacy {
 					if (fm.getStatus().getHullFraction() <= 0) 
 					{
 						fm.getStatus().disable();
+						picker.remove(fm);
 						fleet.getFleetData().removeFleetMember(fm);
 						hullDamageFactor = 1f;
 						if (accident.damage.containsKey(fm))
@@ -492,6 +595,27 @@ public class MiningHelperLegacy {
 						if (accident.crLost.containsKey(fm))
 							accident.crLost.remove(fm);
 						accident.shipsDestroyed.add(fm);
+						
+						boolean spawnShip = true;	// cba to calculate fancy chance
+						if (spawnShip) {
+							DerelictShipData params = new DerelictShipData(new PerShipData(fm.getVariant().getHullVariantId(),
+													DerelictShipEntityPlugin.pickBadCondition(null)), false);
+							params.durationDays = DerelictShipEntityPlugin.getBaseDuration(fm.getHullSpec().getHullSize());
+							CustomCampaignEntityAPI entity = (CustomCampaignEntityAPI) BaseThemeGenerator.addSalvageEntity(
+															 fleet.getContainingLocation(),
+															 Entities.WRECK, Factions.NEUTRAL, params);
+							entity.addTag(Tags.EXPIRES);
+
+							float angle = (float) Math.random() * 360f;
+							float speed = 10f + 10f * (float) Math.random();
+							Vector2f vel = Misc.getUnitVectorAtDegreeAngle(angle);
+							vel.scale(speed);
+							entity.getVelocity().set(vel);
+
+							entity.getLocation().x = fleet.getLocation().x + vel.x * 3f;
+							entity.getLocation().y = fleet.getLocation().y + vel.y * 3f;
+						}
+						
 					} else {
 						float newHull = fm.getStatus().getHullFraction();
 						float diff = hull - newHull;
@@ -507,7 +631,7 @@ public class MiningHelperLegacy {
 					accident.crewLost += dead;
 				}
 				// CR loss
-				else if (Math.random() < 0.4f)
+				else if (accidentType == AccidentType.CR_LOSS)
 				{
 					//float crLost = baseAccidentSupplyLoss * ExerelinUtilsShip.getCRPerSupplyUnit(fm, true);
 					//crLost *= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
@@ -517,17 +641,26 @@ public class MiningHelperLegacy {
 					else if (size == HullSize.CRUISER) crLost *= 0.5f;
 					else if (size == HullSize.CAPITAL_SHIP) crLost *= 0.25f;
 					
-					fm.getRepairTracker().applyCREvent(-crLost, StringHelper.getString("exerelin_mining", "miningAccident"));
+					fm.getRepairTracker().applyCREvent(-crLost, StringHelper.getString("SI_mining", "miningAccident"));
 					accident.crLost.put(fm, crLost);
 				}
 				// crew loss
-				else
+				else if (accidentType == AccidentType.CREW_LOSS)
 				{
 					int dead = MathUtils.getRandomNumberInRange(1, 5);
 					dead = Math.min(dead, fleet.getCargo().getTotalCrew());
 					CargoAPI cargo = fleet.getCargo();
 					cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, Commodities.CREW, dead);
 					accident.crewLost += dead;
+				}
+				// machinery loss
+				else if (accidentType == AccidentType.MACHINERY_LOSS)
+				{
+					int lost = MathUtils.getRandomNumberInRange(1, 4) + MathUtils.getRandomNumberInRange(1, 4);
+					lost = Math.min(lost, (int)fleet.getCargo().getCommodityQuantity(Commodities.HEAVY_MACHINERY));
+					CargoAPI cargo = fleet.getCargo();
+					cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, Commodities.HEAVY_MACHINERY, lost);
+					accident.machineryLost += lost;
 				}
 			}
 		}
@@ -588,6 +721,8 @@ public class MiningHelperLegacy {
 			else if (def.type == CacheType.COMMODITY)
 			{
 				num = (int)(Math.sqrt(strength) * def.mult * miningProductionMult * cacheSizeMult);
+				if (def.mult == 0)
+					num = 1;
 				fleet.getCargo().addCommodity(def.commodityId, num);
 				name = Global.getSector().getEconomy().getCommoditySpec(def.commodityId).getName();
 			}
@@ -605,7 +740,7 @@ public class MiningHelperLegacy {
 			currExhaustion = exhaustionMap.get(entity);
 		
 		float delta = miningStrength * exhaustionPer100MiningStrength/100;
-		delta *= getMineableDefForEntity(entity).exhaustionRate;
+		//delta *= getMiningResources(entity).exhaustionRate;
 		if (entity instanceof PlanetAPI)
 		{
 			PlanetAPI planet = (PlanetAPI)entity;
@@ -625,35 +760,30 @@ public class MiningHelperLegacy {
 	
 	public static MiningResult getMiningResults(CampaignFleetAPI fleet, SectorEntityToken entity, float mult, boolean isPlayer)
 	{
-		float strength = getFleetMiningStrength(fleet);
-		Map<String, Float> planetResources = getResources(entity, isPlayer);
-		Map<String, Float> output = new HashMap<>();
-		
-		Iterator<String> iter = planetResources.keySet().iterator();
-		while (iter.hasNext())
-		{
-			String res = iter.next();
-			float amount = planetResources.get(res) * strength * miningProductionMult * mult;
-			amount *= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
-			amount = Math.round(amount);
-			fleet.getCargo().addCommodity(res, amount);
-			output.put(res, amount);
-		}
+		float baseStrength = getFleetMiningStrength(fleet) * mult;
+		float machineryMult = 0.5f + 0.5f * getMachinerySufficiency(fleet);
+		float strength = baseStrength * machineryMult;
+		MiningReport report = getMiningReport(fleet, entity, strength * miningProductionMult);
 		
 		MiningResult result = new MiningResult();
-		result.resources = output;
+		result.report = report;
+		
+		// add resources to cargo
+		for (Map.Entry<String, Float> tmp : report.totalOutput.entrySet())
+		{
+			int amount = (int)(float)(tmp.getValue() + 0.5);
+			fleet.getCargo().addCommodity(tmp.getKey(), amount);
+		}
 		
 		if (isPlayer && Math.random() < baseCacheChance)
 		{
 			result.cachesFound = findCaches(fleet, strength, entity);
 		}
+		result.accidents = handleAccidents(fleet, baseStrength, getDanger(entity));
 		
 		if (isPlayer)
 		{
-			result.accidents = handleAccidents(fleet, strength, getDanger(entity));
-			
 			float xp = strength * xpPerMiningStrength;
-			fleet.getCargo().gainCrewXP(xp);
 			fleet.getCommander().getStats().addXP((long) xp);
 			fleet.getCommander().getStats().levelUpIfNeeded();
 			
@@ -672,9 +802,8 @@ public class MiningHelperLegacy {
 		{
 			Map.Entry<SectorEntityToken, Float> tmp = iter.next();
 			SectorEntityToken entity = tmp.getKey();
-			MineableDef def = getMineableDefForEntity(entity);
 			float currentExhaustion = tmp.getValue();
-			float regen = def.renewRate * days * renewRatePerDay;
+			float regen = days * renewRatePerDay;
 			if (entity instanceof PlanetAPI)
 			{
 				PlanetAPI planet = (PlanetAPI)entity;
@@ -691,7 +820,7 @@ public class MiningHelperLegacy {
 	}
 	
 	public static class MiningResult {
-		public Map<String, Float> resources;
+		public MiningReport report;
 		public MiningAccident accidents;
 		public List<CacheResult> cachesFound = new ArrayList<>();
 	}
@@ -713,6 +842,14 @@ public class MiningHelperLegacy {
 		}
 	}
 	
+	public static class MiningReport {
+		public Map<String, Map<String, Float>> outputByCondition = new HashMap<>();
+		public Map<String, Float> totalOutput = new HashMap<>();
+		public float exhaustion = 0;
+		public float danger = 0;
+		public boolean isPlayer = false;
+	}
+	
 	public static class CacheResult {
 		public CacheDef def;
 		public String name = "";
@@ -728,24 +865,17 @@ public class MiningHelperLegacy {
 	
 	public static class MiningAccident {
 		public int crewLost = 0;
+		public int machineryLost = 0;
 		public Map<FleetMemberAPI, Float> damage = new HashMap<>();
 		public List<FleetMemberAPI> shipsDestroyed = new ArrayList<>();
 		public Map<FleetMemberAPI, Float> crLost = new HashMap<>();
 	}
-	
-	public static class MineableDef {
-		protected String name;
-		protected Map<String, Float> resources = new HashMap<>();
-		protected float danger = 0;
-		protected float exhaustionRate = 0;
-		protected float renewRate = 0;
 		
-		public MineableDef(String name) {
-			this.name = name;
-		}
-	}
-	
 	public enum CacheType {
 		WEAPON, FRIGATE, FIGHTER_WING, COMMODITY
+	}
+	
+	public enum AccidentType {
+		HULL_DAMAGE, CR_LOSS, CREW_LOSS, MACHINERY_LOSS
 	}
 }
