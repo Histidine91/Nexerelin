@@ -381,7 +381,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		super.init(dialog);
 	}
 	
-	protected boolean getOngoingBattle()
+	protected boolean getOngoingBattle(boolean def)
 	{
 		if (context.getBattle() == null) {
 			if (otherFleet.getBattle() == null || otherFleet.getBattle().isDone()) {
@@ -390,7 +390,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				return true;
 			}
 		}
-		return true;
+		return def;
 	}
 	
 	// same as vanilla, except stations don't get pulled + anything pursuing a participating fleet gets pulled
@@ -435,12 +435,15 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	@Override
 	protected void pullInNearbyFleets() {
 		BattleAPI b = context.getBattle();
+		boolean hostile = otherFleet.getAI() != null && otherFleet.getAI().isHostileTo(playerFleet);
+		boolean ongoingBattle = getOngoingBattle(false);
+		if (ongoingBattle) hostile = true;
+		
+		if (!ongoingBattle) {
+			b.join(Global.getSector().getPlayerFleet());
+		}
 		
 		BattleSide playerSide = b.pickSide(Global.getSector().getPlayerFleet());
-		
-		boolean hostile = otherFleet.getAI() != null && otherFleet.getAI().isHostileTo(playerFleet);
-		boolean ongoingBattle = getOngoingBattle();
-		if (ongoingBattle) hostile = true;
 		
 		//canDecline = otherFleet.getAI() != null && other
 		
