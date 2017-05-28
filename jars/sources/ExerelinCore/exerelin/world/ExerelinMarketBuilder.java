@@ -703,11 +703,11 @@ public class ExerelinMarketBuilder
 				// add mirror/shade
 				LocationAPI system = entity.getContainingLocation();
 				SectorEntityToken mirror = system.addCustomEntity(entity.getId() + "_mirror", "Stellar Mirror", "stellar_mirror", factionId);
-				mirror.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity), 
+				mirror.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity) + 180, 
 						entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());
 				mirror.setCustomDescriptionId("stellar_mirror");
 				SectorEntityToken shade = system.addCustomEntity(entity.getId() + "_shade", "Stellar Shade", "stellar_shade", factionId);
-				shade.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity) + 180, 
+				shade.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity), 
 						entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());		
 				shade.setCustomDescriptionId("stellar_shade");
 			}
