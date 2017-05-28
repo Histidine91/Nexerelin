@@ -4,12 +4,13 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType;
 import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.DataForEncounterSide.OfficerEngagementData;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
-import com.fs.starfarer.api.combat.ShipHullSpecAPI;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.DModManager;
@@ -277,7 +278,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 
         int count = 0;
         for (FleetMemberData data : all) {
-            if (data.getMember().getHullSpec().getHints().contains(ShipHullSpecAPI.ShipTypeHints.UNBOARDABLE)) {
+            if (data.getMember().getHullSpec().getHints().contains(ShipTypeHints.UNBOARDABLE)) {
                 continue;
             }
             if (data.getStatus() != Status.DISABLED && data.getStatus() != Status.DESTROYED) {
@@ -437,7 +438,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 
         boolean alreadyStripped = recoverableShipsDS.contains(member);
 
-        for (String id : variant.getFittedWings()) {
+        for (String id : variant.getNonBuiltInWings()) {
             if (!alreadyStripped) {
                 if (random.nextFloat() > mult) {
                     continue;
@@ -451,7 +452,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
             if (spec.hasTag(Tags.WING_NO_DROP)) {
                 continue;
             }
-            loot.addItems(CargoAPI.CargoItemType.FIGHTER_CHIP, id, 1);
+            loot.addItems(CargoItemType.FIGHTER_CHIP, id, 1);
         }
 
         for (String slotId : variant.getModuleSlots()) {
