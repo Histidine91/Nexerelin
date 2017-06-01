@@ -232,7 +232,14 @@
 		"fighterWingString":"$shipClass wing",
 		"gainedXP":"gained $xp XP",
 		"recruitedOfficer":"recruited $numOfficers officer",
-		"recruitedOfficers":"recruited $numOfficers officers"
+		"recruitedOfficers":"recruited $numOfficers officers",
+		
+		"populatedSystemsTitle":"Populated systems",
+		"populatedSystemsTooltip":"This is a target number of systems. Not all may actually be populated.",
+		"populatedPlanetsTitle":"Populated planets",
+		"populatedPlanetsTooltip":"Actual number may be less than this, if there are not enough systems to hold all the planets.",
+		"stationsTitle":"Stations",
+		"stationsTooltip":"Actual number may be less than this, if there are not enough locations for all the stations."
 	},
 	"exerelin_officers":{
 		"officer":"officer",

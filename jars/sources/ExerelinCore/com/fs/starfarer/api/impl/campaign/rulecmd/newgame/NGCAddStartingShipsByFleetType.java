@@ -14,12 +14,10 @@ import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
-import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.StringHelper;
 
 
 public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
@@ -55,7 +53,7 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 				machinery += (int)temp.getCargoCapacity()/8;
 				fuel += (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
 
-				AddRemoveCommodity.addFleetMemberGainText(Global.getSettings().getVariant(variantId), dialog.getTextPanel());
+				AddRemoveCommodity.addFleetMemberGainText(temp.getVariant(), dialog.getTextPanel());
 			} catch (RuntimeException rex) {	// probably variant not found
 				Global.getLogger(this.getClass()).error(rex.getMessage());
 				dialog.getTextPanel().addParagraph(rex.getMessage());

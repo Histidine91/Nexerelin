@@ -44,7 +44,7 @@ public class NGCAddShipAndComplement extends BaseCommandPlugin {
 			data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.HEAVY_MACHINERY, machinery);
 			data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.FUEL, fuel);
 
-			AddRemoveCommodity.addFleetMemberGainText(Global.getSettings().getVariant(vid), dialog.getTextPanel());
+			AddRemoveCommodity.addFleetMemberGainText(temp.getVariant(), dialog.getTextPanel());
 			AddRemoveCommodity.addCommodityGainText(Commodities.CREW, crew, dialog.getTextPanel());
 			AddRemoveCommodity.addCommodityGainText(Commodities.SUPPLIES, supplies, dialog.getTextPanel());
 			AddRemoveCommodity.addCommodityGainText(Commodities.HEAVY_MACHINERY, machinery, dialog.getTextPanel());

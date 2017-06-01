@@ -42,133 +42,21 @@ ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOption
 9:exerelinNGCOtherOptions:Other options",
 ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCEnableCorvusMode:Enable Corvus Mode,
 ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCDisableCorvusMode:Disable Corvus Mode,
-ExerelinNewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present""
-SetTooltip exerelinNGCSetNumSystems ""This is a target number of systems. Not all may actually be populated.""
-SetTooltip exerelinNGCSetNumPlanets ""Actual number may be less than this, if there are not enough systems to hold all the planets.""
-SetTooltip exerelinNGCSetNumStations ""Actual number may be less than this, if there are not enough locations for all the stations.""
-SetEnabled exerelinNGCSetNumSystems true
-SetEnabled exerelinNGCSetNumPlanets true
-SetEnabled exerelinNGCSetNumStations true
-SetShortcut exerelinNGCOptionsBack ESCAPE",,"exerelinNGCSetNumSystems:Set number of inhabited star systems ($numSystems)
-exerelinNGCSetNumPlanets:Set number of inhabited planets in the Sector ($numPlanets)
-exerelinNGCSetNumStations:Set number of free-standing stations in the Sector ($numStations)
-9:exerelinNGCOptionsBack:Back",
-ExerelinNewGameSectorConfigCorvus,ExerelinNGCSectorOptions,$corvusMode,"SetEnabled exerelinNGCSetNumSystems false
-SetEnabled exerelinNGCSetNumPlanets false
-SetEnabled exerelinNGCSetNumStations false",,,
+ExerelinNewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,Nex_NGCProcessSectorGenerationSliders create,,,
+ExerelinNewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present, unless disabled in config""
+SetShortcut exerelinNGCSectorOptionsBack ESCAPE",,9:exerelinNGCSectorOptionsBack:Back,
+ExerelinNewGameSectorConfigBack,NewGameOptionSelected,$option==exerelinNGCSectorOptionsBack,"Nex_NGCProcessSectorGenerationSliders save
+FireAll ExerelinNGCOptions",,,
+,,,,,,
 ExerelinNewGameFactionConfig,ExerelinNGCFactionOptions,,"SetEnabled exerelinNGCSetNumFactions true
 SetShortcut exerelinNGCOptionsBack ESCAPE",,"exerelinNGCSetNumFactions:Set number of factions at start ($numStartFactions)
 9:exerelinNGCOptionsBack:Back",
 ExerelinNewGameFactionConfigCorvus,ExerelinNGCFactionOptions,$corvusMode,SetEnabled exerelinNGCSetNumFactions false,,,
 ,,,,,,
-,,,,,,
 ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,"99:exerelinNGCDevStart:>> (dev) quick start
 100:exerelinNGCDevStartFast:>> (dev) quick start no time pass",
 ,,,,,,
 ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone,FireBest ExerelinNGCStep2,,,
-,,,,,,
-ExerelinNGCNumStarSystemsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumSystems,SetShortcut exerelinNGCSectorOptions ESCAPE,,"exerelinNGCNumSystems4:Four
-exerelinNGCNumSystems6:Six
-exerelinNGCNumSystems8:Eight
-exerelinNGCNumSystems10:Ten
-exerelinNGCNumSystems12:Twelve
-exerelinNGCNumSystems16:Sixteen
-exerelinNGCNumSystems20:Twenty
-exerelinNGCNumSystems24:Twenty-four
-exerelinNGCSectorOptions:Back",
-ExerelinNGCNumSystems4,NewGameOptionSelected,$option==exerelinNGCNumSystems4,"NGCSetNumSystems 4
-AddText ""Set number of star systems to 4"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumSystems6,NewGameOptionSelected,$option==exerelinNGCNumSystems6,"NGCSetNumSystems 6
-AddText ""Set number of star systems to 6"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumSystems8,NewGameOptionSelected,$option==exerelinNGCNumSystems8,"NGCSetNumSystems 8
-AddText ""Set number of star systems to 8"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumSystems10,NewGameOptionSelected,$option==exerelinNGCNumSystems10,"NGCSetNumSystems 10
-AddText ""Set number of star systems to 10"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumSystems12,NewGameOptionSelected,$option==exerelinNGCNumSystems12,"NGCSetNumSystems 12
-AddText ""Set number of star systems to 12"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumSystems16,NewGameOptionSelected,$option==exerelinNGCNumSystems16,"NGCSetNumSystems 16
-AddText ""Set number of star systems to 16"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumSystems20,NewGameOptionSelected,$option==exerelinNGCNumSystems20,"NGCSetNumSystems 20
-AddText ""Set number of star systems to 20"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumSystems24,NewGameOptionSelected,$option==exerelinNGCNumSystems24,"NGCSetNumSystems 24
-AddText ""Set number of star systems to 24"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-,,,,,,
-ExerelinNGCNumPlanetsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumPlanets,SetShortcut exerelinNGCSectorOptions ESCAPE,,"exerelinNGCNumPlanets8:8
-exerelinNGCNumPlanets16:16
-exerelinNGCNumPlanets24:24
-exerelinNGCNumPlanets32:32
-exerelinNGCNumPlanets40:40
-exerelinNGCNumPlanets48:48
-exerelinNGCNumPlanets56:56
-exerelinNGCNumPlanets64:64
-exerelinNGCSectorOptions:Back",
-ExerelinNGCNumPlanets8,NewGameOptionSelected,$option==exerelinNGCNumPlanets8,"NGCSetNumPlanets 8
-AddText ""Set number of planets to 8"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumPlanets16,NewGameOptionSelected,$option==exerelinNGCNumPlanets16,"NGCSetNumPlanets 16
-AddText ""Set number of planets to 16"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumPlanets24,NewGameOptionSelected,$option==exerelinNGCNumPlanets24,"NGCSetNumPlanets 24
-AddText ""Set number of planets to 24"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumPlanets32,NewGameOptionSelected,$option==exerelinNGCNumPlanets32,"NGCSetNumPlanets 32
-AddText ""Set number of planets to 32"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumPlanets40,NewGameOptionSelected,$option==exerelinNGCNumPlanets40,"NGCSetNumPlanets 40
-AddText ""Set number of planets to 40"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumPlanets48,NewGameOptionSelected,$option==exerelinNGCNumPlanets48,"NGCSetNumPlanets 48
-AddText ""Set number of planets to 48"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumPlanets56,NewGameOptionSelected,$option==exerelinNGCNumPlanets56,"NGCSetNumPlanets 56
-AddText ""Set number of planets to 56"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumPlanets64,NewGameOptionSelected,$option==exerelinNGCNumPlanets64,"NGCSetNumPlanets 64
-AddText ""Set number of planets to 64"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-,,,,,,
-ExerelinNGCNumStationsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumStations,SetShortcut exerelinNGCSectorOptions ESCAPE,,"exerelinNGCNumStations8:8
-exerelinNGCNumStations16:16
-exerelinNGCNumStations24:24
-exerelinNGCNumStations32:32
-exerelinNGCNumStations40:40
-exerelinNGCNumStations48:48
-exerelinNGCNumStations56:56
-exerelinNGCNumStations64:64
-exerelinNGCSectorOptions:Back",
-,,,,,,
-ExerelinNGCNumStations8,NewGameOptionSelected,$option==exerelinNGCNumStations8,"NGCSetNumStations 8
-AddText ""Set number of stations to 8"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumStations16,NewGameOptionSelected,$option==exerelinNGCNumStations16,"NGCSetNumStations 16
-AddText ""Set number of stations to 16"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumStations24,NewGameOptionSelected,$option==exerelinNGCNumStations24,"NGCSetNumStations 24
-AddText ""Set number of stations to 24"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumStations32,NewGameOptionSelected,$option==exerelinNGCNumStations32,"NGCSetNumStations 32
-AddText ""Set number of stations to 32"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumStations40,NewGameOptionSelected,$option==exerelinNGCNumStations40,"NGCSetNumStations 40
-AddText ""Set number of stations to 40"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumStations48,NewGameOptionSelected,$option==exerelinNGCNumStations48,"NGCSetNumStations 48
-AddText ""Set number of stations to 48"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumStations56,NewGameOptionSelected,$option==exerelinNGCNumStations56,"NGCSetNumStations 56
-AddText ""Set number of stations to 56"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
-ExerelinNGCNumStations64,NewGameOptionSelected,$option==exerelinNGCNumStations64,"NGCSetNumStations 64
-AddText ""Set number of stations to 64"" textFriendColor
-FireAll ExerelinNGCSectorOptions",,,
 ,,,,,,
 ExerelinNGCNumFactionsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumFactions,SetShortcut exerelinNGCFactionOptions ESCAPE,,"exerelinNGCNumFactions2:Two
 exerelinNGCNumFactions3:Three
