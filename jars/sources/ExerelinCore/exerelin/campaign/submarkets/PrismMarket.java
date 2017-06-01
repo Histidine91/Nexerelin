@@ -23,7 +23,6 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -146,7 +145,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
             if (!faction.isShowInIntelTab()) continue;
             //if (faction.isNeutralFaction()) continue;
             //if (faction.isPlayerFaction()) continue;
-            if (!factionId.contains("templars") && !factionId.contains("pirates")) 
+            if (!factionId.contains("templars") && !factionId.contains(Factions.PIRATES)) 
             {
                 factionPicker.add(sector.getFaction(factionId));
             }
@@ -194,7 +193,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                     && !member.getHullId().toLowerCase().contains("_d_")
                     && !member.getHullSpec().getHullName().toLowerCase().endsWith("(d)")
                     && member.getFleetPointCost()>=FP //quality check
-                    && !restrictedShips.contains(member.getHullId())) //blacklist check
+                    && !restrictedShips.contains(member.getHullSpec().getBaseHullId())) //blacklist check
                 {
                     member.getRepairTracker().setMothballed(true);
                     getCargo().getMothballedShips().addFleetMember(member);
@@ -406,11 +405,11 @@ public class PrismMarket extends BaseSubmarketPlugin {
             String id = null;
             if (saleInfo.getMember().isFighterWing())
             {
-                id = saleInfo.getMember().getHullId() + "_wing";
+                id = saleInfo.getMember().getHullSpec().getBaseHullId() + "_wing";
             }
             else 
             {
-                id = saleInfo.getMember().getHullId();
+                id = saleInfo.getMember().getHullSpec().getBaseHullId();
             }
             if (alreadyBoughtShips == null)
                 alreadyBoughtShips = new HashSet<>();
