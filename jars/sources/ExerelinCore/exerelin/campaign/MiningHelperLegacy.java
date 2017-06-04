@@ -642,7 +642,9 @@ public class MiningHelperLegacy {
 					else if (size == HullSize.CAPITAL_SHIP) crLost *= 0.25f;
 					
 					fm.getRepairTracker().applyCREvent(-crLost, StringHelper.getString("exerelin_mining", "miningAccident"));
-					accident.crLost.put(fm, crLost);
+					if (!accident.crLost.containsKey(fm))
+						accident.crLost.put(fm, 0f);
+					accident.crLost.put(fm, accident.crLost.get(fm) + crLost);
 				}
 				// crew loss
 				else if (accidentType == AccidentType.CREW_LOSS)
