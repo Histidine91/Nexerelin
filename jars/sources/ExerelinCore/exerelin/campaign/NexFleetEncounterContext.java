@@ -32,6 +32,9 @@ import java.util.Random;
 
 public class NexFleetEncounterContext extends FleetEncounterContext {
 
+	public static final float FRIGATE_XP_BONUS = 1.5f;
+	public static final float DESTROYER_XP_BONUS = 1.25f;
+	
 	//==========================================================================
 	// START OFFICER DEATH HANDLING
 	
@@ -193,6 +196,10 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
         }
     }
 
+	//==========================================================================
+	// END OFFICER DEATH HANDLING
+	
+	// officer XP bonus
     @Override
     protected void gainOfficerXP(DataForEncounterSide data, float xp) {
         float max = data.getMaxTimeDeployed();
@@ -228,9 +235,9 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
             if (ExerelinConfig.officerDaredevilBonus) {
                 FleetMemberAPI member = oed.sourceFleet.getFleetData().getMemberWithCaptain(person);
                 if (member != null && member.isFrigate()) {
-                    bonus = 2f;
+                    bonus = FRIGATE_XP_BONUS;
                 } else if (member != null && member.isDestroyer()) {
-                    bonus = 1.5f;
+                    bonus = DESTROYER_XP_BONUS;
                 }
             }
 
@@ -238,8 +245,6 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
         }
     }
 	
-	//==========================================================================
-	// END OFFICER DEATH HANDLING
 	
 	//==========================================================================
 	// START DYNASECTOR SALVAGE HANDLING
