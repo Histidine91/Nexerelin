@@ -37,14 +37,16 @@ import java.util.Set;
 public class FactionInsuranceEvent extends BaseEventPlugin {
 
 	public static final float HARD_MODE_MULT = 0.5f;
+	public static final boolean COMPENSATE_DMODS = false;
 	public static final float DMOD_BASE_COST = Global.getSettings().getFloat("baseRestoreCostMult");
 	public static final float DMOD_COST_PER_MOD = Global.getSettings().getFloat("baseRestoreCostMultPerDMod");
 	public static final float LIFE_INSURANCE_PER_LEVEL = 2000f;
+	public static final float BASE_HULL_VALUE_MULT_FOR_DMODS = 0.4f;
 	
 	public static Logger log = Global.getLogger(FactionInsuranceEvent.class);
 	
 	protected float paidAmount = 0f;
-	protected Map<FleetMemberAPI, Integer> disabledOrDestroyedMembers = new HashMap<>();	// value is number of D mods
+	protected Map<FleetMemberAPI, Float[]> disabledOrDestroyedMembers = new HashMap<>();	// value is base buy value and number of D mods
 	protected List<OfficerDataAPI> deadOfficers = new ArrayList<>();
 	
 	@Override
@@ -69,7 +71,7 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 			if (member.isFighterWing())
 				continue;
 			//log.info("Member " + member.getShipName() + " disabled or destroyed");
-			disabledOrDestroyedMembers.put(member, countDMods(member));
+			disabledOrDestroyedMembers.put(member, new Float[]{member.getBaseBuyValue(), (float)countDMods(member)});
 		}
 	}
 	
@@ -105,27 +107,47 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 		for (FleetMemberAPI member : fleet.getFleetData().getSnapshot()) {
 			// dead, not recovered
 			if (!fleetCurrent.contains(member)) {
-				value += member.getBaseBuyValue();
+				float amount = member.getBaseBuyValue();
+				if (disabledOrDestroyedMembers.containsKey(member))
+				{
+					Float[] entry = disabledOrDestroyedMembers.get(member);
+					amount = entry[0];
+				}				
+				log.info("Insuring lost ship " + member.getShipName() + " for " + amount);
+				value += amount;
 			}
-			// dead, recovered; compare "before" to "after" in D mod count
+			// dead, recovered; compare "before" to "after" in D mod count and base value
 			else if (disabledOrDestroyedMembers.containsKey(member))
 			{
-				int dmodsOld = disabledOrDestroyedMembers.get(member);
+				Float[] entry = disabledOrDestroyedMembers.get(member);
+				float prevValue = entry[0];
+				int dmodsOld = (int)(float)entry[1];
 				int dmods = countDMods(member);
-				if (dmods <= dmodsOld) continue;
 				
-				float costMult = 1;
-				if (dmodsOld == 0)
-					costMult *= DMOD_BASE_COST;
-				costMult *= Math.pow(DMOD_COST_PER_MOD, dmods - dmodsOld);
-				//log.info("Cost mult: " + costMult);
-				value += member.getBaseBuyValue() * costMult;
+				float dmodCompensation = 0;
+				if (dmods > dmodsOld && COMPENSATE_DMODS)
+				{
+					dmodCompensation = member.getHullSpec().getBaseValue() * BASE_HULL_VALUE_MULT_FOR_DMODS;
+					if (dmodsOld == 0)
+						dmodCompensation *= DMOD_BASE_COST;
+					dmodCompensation *= Math.pow(DMOD_COST_PER_MOD, dmods - dmodsOld);
+				}
+				
+				float amount = prevValue - member.getBaseBuyValue() + dmodCompensation;
+				log.info("Insuring recovered ship " + member.getShipName() + " for " + amount);
+				log.info("Compensation for D-mods: " + dmodCompensation);
+				value += amount;
 			}
 		}
 		for (OfficerDataAPI deadOfficer : deadOfficers)
 		{
-			value += deadOfficer.getPerson().getStats().getLevel() * LIFE_INSURANCE_PER_LEVEL;
+			float amount = deadOfficer.getPerson().getStats().getLevel() * LIFE_INSURANCE_PER_LEVEL;
+			log.info("Insuring dead officer " + deadOfficer.getPerson().getName().getFullName() + " for " + amount);
+			value += amount;
 		}
+		
+		disabledOrDestroyedMembers.clear();
+		deadOfficers.clear();
 		
 		if (value <= 0) return;
 		
@@ -148,9 +170,6 @@ public class FactionInsuranceEvent extends BaseEventPlugin {
 				}
 			});
 		}
-		
-		disabledOrDestroyedMembers.clear();
-		deadOfficers.clear();
 	}
 	
 	@Override

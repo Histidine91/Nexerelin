@@ -23,6 +23,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.histidine.foundation.campaign.events.FoundationInsuranceEvent;
 
 /*
 Changes from vanilla:
@@ -33,8 +34,8 @@ Changes from vanilla:
 
 public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogPluginImpl {
 
-	public static Logger log = Global.getLogger(NexFleetInteractionDialogPluginImpl.class);
-	
+    public static Logger log = Global.getLogger(NexFleetInteractionDialogPluginImpl.class);
+    
     protected static final String STRING_HELPER_CAT = "exerelin_officers";
     protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
     protected boolean recoveredOfficers = false;
@@ -262,14 +263,8 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
                 addText(text);
                 textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
                 textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
-				
-				if (Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance"))
-				{
-					FactionInsuranceEvent event = (FactionInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
-							null, "exerelin_faction_insurance");
-					event.addDeadOfficers(lostOfficers);
-					event.addDeadOfficers(recoverableOfficers);
-				}
+                
+                handleLifeInsurance(lostOfficers, recoverableOfficers);
             }
         }
 
@@ -354,19 +349,34 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
                 textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
             }
             
-            if (Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance"))
-            {
-                FactionInsuranceEvent event = (FactionInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
-                        null, "exerelin_faction_insurance");
-                event.addDeadOfficers(lostOfficers);
-            }
+            handleLifeInsurance(lostOfficers, null);
         }
 
         super.winningPath();
     }
     
+    protected void handleLifeInsurance(List<OfficerDataAPI> deadOfficers, List<OfficerDataAPI> miaOfficers)
+    {
+        List<OfficerDataAPI> officers = new ArrayList<>(deadOfficers);
+        if (miaOfficers != null)
+            officers.addAll(miaOfficers);
+        if (Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance"))
+        {
+            FactionInsuranceEvent event = (FactionInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
+                    null, "exerelin_faction_insurance");
+            event.addDeadOfficers(officers);
+        }
+        
+        if (Global.getSector().getEventManager().isOngoing(null, "foundation_insurance"))
+        {
+            FoundationInsuranceEvent event = (FoundationInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
+                    null, "foundation_insurance");
+            event.addDeadOfficers(officers);
+        }
+    }
+    
 	@Override
-	public void init(InteractionDialogAPI dialog) {		
+	public void init(InteractionDialogAPI dialog) {
 		if (this.config == null) {
 			MemoryAPI memory = dialog.getInteractionTarget().getMemoryWithoutUpdate();
 //			if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE)) {
