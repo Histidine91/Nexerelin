@@ -1,6 +1,5 @@
 package exerelin.campaign;
 
-import org.histidine.industry.scripts.util.StringHelper;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.AsteroidAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -32,6 +31,7 @@ import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +56,7 @@ public class MiningHelperLegacy {
 	protected static final String MINING_SHIP_DEFS = "data/config/exerelin/mining_ships.csv";
 	protected static final String MINING_WEAPON_DEFS = "data/config/exerelin/mining_weapons.csv";
 	protected static final String RESOURCE_DEFS = "data/config/exerelin/mining_resources.csv";
-	protected static final String EXHAUSTION_DATA_KEY = "SI_miningExhaustion";	// exhaustion list is a <SectorEntityToken, Float> map
+	protected static final String EXHAUSTION_DATA_KEY = "nex_miningExhaustion";	// exhaustion list is a <SectorEntityToken, Float> map
 	public static final Set<String> OUTPUT_COMMODITIES = new HashSet<>(Arrays.asList(
 			new String[]{Commodities.ORE, Commodities.RARE_ORE, Commodities.VOLATILES, Commodities.ORGANICS}
 	));
@@ -641,7 +641,7 @@ public class MiningHelperLegacy {
 					else if (size == HullSize.CRUISER) crLost *= 0.5f;
 					else if (size == HullSize.CAPITAL_SHIP) crLost *= 0.25f;
 					
-					fm.getRepairTracker().applyCREvent(-crLost, StringHelper.getString("SI_mining", "miningAccident"));
+					fm.getRepairTracker().applyCREvent(-crLost, StringHelper.getString("exerelin_mining", "miningAccident"));
 					accident.crLost.put(fm, crLost);
 				}
 				// crew loss
@@ -696,7 +696,7 @@ public class MiningHelperLegacy {
 			{
 				FighterWingSpecAPI spec = getRandomFighter();
 				fleet.getCargo().addFighters(spec.getId(), 1);
-				name = StringHelper.getStringAndSubstituteToken("SI_mining", "LPC", "$fighterName", spec.getVariant().getFullDesignationWithHullName());
+				name = StringHelper.getStringAndSubstituteToken("exerelin_mining", "LPC", "$fighterName", spec.getVariant().getFullDesignationWithHullName());
 			}
 			else if (def.type == CacheType.WEAPON)
 			{
