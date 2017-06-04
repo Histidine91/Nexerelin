@@ -5,9 +5,11 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.RuinsFleetRouteManager;
 import com.thoughtworks.xstream.XStream;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
@@ -20,6 +22,7 @@ import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.events.RevengeanceFleetEvent;
+import exerelin.campaign.fleets.ExerelinRuinsFleetRouteManager;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManager;
@@ -206,6 +209,16 @@ public class ExerelinModPlugin extends BaseModPlugin
         //SectorAPI sector = Global.getSector();
         //for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
         //    PlayerStartHandler.addOmnifactory(sector, i);
+		
+		// see http://fractalsoftworks.com/forum/index.php?topic=12548.0
+		for (StarSystemAPI system : Global.getSector().getStarSystems())
+		{
+			if (system.isProcgen())
+			{
+				system.removeScriptsOfClass(RuinsFleetRouteManager.class);
+				system.addScript(new ExerelinRuinsFleetRouteManager(system));
+			}
+		}
     }
     
     @Override
