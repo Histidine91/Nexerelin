@@ -94,7 +94,6 @@ public class Magec {
 		PlanetAPI magec3 = system.addPlanet("achaman", star, "Achaman", StarTypes.WHITE_DWARF, 45, 120, 8000, 1000);
 		system.setSecondary(magec3);
 		system.addCorona(magec3, 150, 3f, 0.05f, 1f); // it's a very docile star.
-		magec3.setCustomDescriptionId("star_white_dwarf");
 		
 		SectorEntityToken relay = system.addCustomEntity("achaman_relay", // unique id
 				 "Achaman Relay", // name - if null, defaultName from custom_entities.json will be used

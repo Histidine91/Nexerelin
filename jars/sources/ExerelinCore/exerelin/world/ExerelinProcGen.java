@@ -289,6 +289,8 @@ public class ExerelinProcGen {
 			Vector2f loc = system.getLocation();
 			if (Math.abs(loc.x - ExerelinNewGameSetup.SECTOR_CENTER.x) > width) continue;
 			if (Math.abs(loc.y - ExerelinNewGameSetup.SECTOR_CENTER.y) > height) continue;
+			if (system.hasPulsar()) continue;
+			
 			list.add(system);
 		}
 		
@@ -643,6 +645,21 @@ public class ExerelinProcGen {
 		}
 	}
 	
+	protected void surveyPlanets()
+	{
+		for (StarSystemAPI system : populatedSystems)
+		{
+			for (PlanetAPI planet : system.getPlanets())
+			{
+				if (planet.isStar()) continue;
+				MarketAPI market = planet.getMarket();
+				if (market == null || !market.isPlanetConditionMarketOnly())
+					continue;
+				market.setSurveyLevel(MarketAPI.SurveyLevel.FULL);
+			}
+		}
+	}
+	
 	/**
 	 * Sets capitals for each star system
 	 * When the capital is captured, the relay changes owner
@@ -754,6 +771,7 @@ public class ExerelinProcGen {
 		populateSector(Global.getSector());
 		setCapitals();
 		spawnCommRelays();
+		surveyPlanets();
 		marketSetup.addCabalSubmarkets();
 		
 		log.info("Cleaning up derelicts/Remnants");

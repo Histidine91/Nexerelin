@@ -11,7 +11,6 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import data.scripts.world.corvus.Corvus;
 import data.scripts.world.systems.AlGebbar;
 import data.scripts.world.systems.Arcadia;
@@ -105,10 +104,7 @@ public class VanillaSystemsGenerator {
 	{
 		StarSystemAPI system = Global.getSector().getStarSystem("galatia");
 		PlanetAPI ancyra = (PlanetAPI) system.getEntityById("ancyra");
-		PlanetAPI pontus = (PlanetAPI) system.getEntityById("pontus");
-		PlanetAPI tetra = (PlanetAPI) system.getEntityById("tetra");
 		SectorEntityToken derinkuyu = system.getEntityById("derinkuyu_station");
-		SectorEntityToken probe = system.getEntityById("galatia_probe");
 		SectorEntityToken inner = system.getEntityById("galatia_jump_point_alpha");
 		SectorEntityToken fringe = system.getEntityById("galatia_jump_point_fringe");
 		SectorEntityToken relay = system.getEntityById("ancyra_relay");
@@ -117,10 +113,6 @@ public class VanillaSystemsGenerator {
 		
 		Global.getSector().getEconomy().addMarket(ancyra.getMarket());
 		Global.getSector().getEconomy().addMarket(derinkuyu.getMarket());
-				
-		derinkuyu.setFaction(Factions.INDEPENDENT);
-		derinkuyu.getMarket().setFactionId(Factions.INDEPENDENT);
-		derinkuyu.getMarket().getSubmarket(Submarkets.SUBMARKET_OPEN).setFaction(derinkuyu.getFaction());
 		
 		inner.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.UNSTABLE_KEY);
 		inner.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.CAN_STABILIZE);

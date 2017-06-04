@@ -56,7 +56,7 @@ public class AlGebbar {
 		//ring.setCircularOrbit(algebbar_star, 0, 3500, 100);
 
 		// Gebbar 2: bombarded minor
-		PlanetAPI gebbar4 = system.addPlanet("epithany", algebbar_star, "Epithany", "barren-bombarded", 270, 80, 5000, 225);
+		PlanetAPI gebbar4 = system.addPlanet("epithany", algebbar_star, "Epiphany", "barren-bombarded", 270, 80, 5000, 225);
 			gebbar4.setCustomDescriptionId("planet_epithany");	
 			gebbar4.getSpec().setPlanetColor(new Color(255,240,225,255));
 			//system.addRingBand(gebbar4, "misc", "rings_asteroids0", 256f, 0, Color.white, 256f, 400, 40f);

@@ -49,6 +49,7 @@ public class KumariKandam {
 		kumarikandam_b.applySpecChanges();
 		kumarikandam_b.setCustomDescriptionId("planet_kumari_aru");
 		
+		
 			// Beholder Station
 			SectorEntityToken beholder_station = system.addCustomEntity("beholder_station", "Beholder Station", "station_side05", "luddic_church");
 			beholder_station.setCircularOrbitPointingDown(system.getEntityById("kumari_aru"), 270, 430, 30);		
@@ -177,5 +178,7 @@ public class KumariKandam {
 				false); // whether to use custom or system-name based names
 		
 		system.autogenerateHyperspaceJumpPoints(true, true);
+		
+		//Misc.setFullySurveyed(kumarikandam_b.getMarket(), null, false);
 	}
 }

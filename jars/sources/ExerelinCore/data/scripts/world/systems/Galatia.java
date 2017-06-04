@@ -289,7 +289,10 @@ public class Galatia {
 		// but since the markets in Galatia aren't part of the economy to start,
 		// need to do manually here.
 		system.setEnteredByPlayer(true);
-		Misc.setAllPlanetsKnown(system);
+		//Misc.setAllPlanetsKnown(system);
+		Misc.setAllPlanetsSurveyed(system);
+		
+		
 		
 		// added in NGCAddStandardStartingScript
 		//system.addScript(new CampaignTutorialScript(system));
