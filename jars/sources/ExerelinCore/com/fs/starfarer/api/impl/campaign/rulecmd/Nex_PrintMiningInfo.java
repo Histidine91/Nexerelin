@@ -174,10 +174,8 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		
 		text.addParagraph("-----------------------------------------------------------------------------");
 		
-		Iterator<Map.Entry<String, Float>> iter = MiningHelperLegacy.getMiningShipsCopy().entrySet().iterator();
-		while (iter.hasNext())
+		for (Map.Entry<String, Float> tmp : MiningHelperLegacy.getMiningShipsCopy().entrySet())
 		{
-			Map.Entry<String, Float> tmp = iter.next();
 			String shipId = tmp.getKey();
 			float strength = tmp.getValue();
 			if (strength == 0) continue;
@@ -195,10 +193,8 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		}
 		text.addParagraph("");
 		
-		Iterator<Map.Entry<String, Float>> iter2 = MiningHelperLegacy.getMiningWeaponsCopy().entrySet().iterator();
-		while (iter2.hasNext())
+		for (Map.Entry<String, Float> tmp : MiningHelperLegacy.getMiningWeaponsCopy().entrySet())
 		{
-			Map.Entry<String, Float> tmp = iter2.next();
 			String weaponId = tmp.getKey();
 			float strength = tmp.getValue();
 			if (strength == 0) continue;
@@ -214,6 +210,8 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			text.addParagraph(name + ": " + strengthStr);
 			text.highlightInLastPara(hl, name);
 		}
+		text.addParagraph("");
+		text.addParagraph(StringHelper.getString(STRING_CATEGORY, "miningToolsListAddendum"));
 		
 		text.addParagraph("-----------------------------------------------------------------------------");
 		text.setFontInsignia();
