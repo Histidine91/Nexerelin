@@ -1,5 +1,2 @@
 name,id,type,tags,activationDays,activationCooldown,durationDays,deactivationDays,deactivationCooldown,unlockedAtStart,defaultForAIFleet,musicSuppression,uiOn,uiOff,uiLoop,worldOn,worldOff,worldLoop,icon,plugin,ai,desc,sortOrder
 Follow Me!,exerelin_follow_me,DURATION,,0,,0,0,0,TRUE,,,ui_sensor_burst_on,,,,,,graphics/icons/abilities/something.png,exerelin.campaign.abilities.FollowMeAbility,,Makes nearby eligible fleets follow you for some time.,950
-,,,,,,,,,,,,,,,,,,,,,,
-#vanilla override,,,,,,,,,,,,,,,,,,,,,,
-Sustained Burn,sustained_burn,TOGGLE,"burn+, stealth-, sensors-",0.25,,,0.1,,TRUE,TRUE,,ui_sustained_burn_on,ui_sustained_burn_off,ui_sustained_burn_loop,world_sustained_burn_on,world_sustained_burn_off,,graphics/icons/abilities/travel_drive.png,com.fs.starfarer.api.impl.campaign.abilities.SustainedBurnAbility,exerelin.campaign.abilities.ai.SustainedBurnAbilityAI,Boost burn level at the cost of acceleration and wind-up time.,500

@@ -33,7 +33,11 @@
 		
 		"his":"his",
 		"her":"her",
-		"their":"their"
+		"their":"their",
+		
+		"ship":"ship",
+		"fleet":"fleet",
+		"fighterWing":"fighter wing"
 	},
 	
 	"exerelin_abilities":{

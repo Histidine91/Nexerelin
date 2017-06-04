@@ -2,6 +2,7 @@ package exerelin.campaign.fleets.utils;
 
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import data.scripts.campaign.SWP_FleetFactory;
 
@@ -12,7 +13,7 @@ public class SWPFleetUtilsProxy {
 		return SWP_FleetFactory.enhancedCreateFleet(faction, total, new SWP_FleetFactory.FleetFactoryDelegate() {
 			@Override
 			public CampaignFleetAPI createFleet() {
-				return SWP_FleetFactory.createFleet(params2);
+				return FleetFactoryV2.createFleet(params2);
 			}
 		});
 	}

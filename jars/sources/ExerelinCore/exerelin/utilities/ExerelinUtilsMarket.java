@@ -409,7 +409,7 @@ public class ExerelinUtilsMarket {
 		if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
 			return false;
 		
-		return shouldTargetForInvasions(market, minSize);
+		return true;
 	}
 	
 	/**

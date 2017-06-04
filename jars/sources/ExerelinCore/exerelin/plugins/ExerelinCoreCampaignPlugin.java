@@ -17,7 +17,6 @@ import exerelin.campaign.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.combat.SSP_BattleCreationPluginImpl;
-import org.histidine.industry.scripts.MiningHelper;
 
 @SuppressWarnings("unchecked")
 public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {

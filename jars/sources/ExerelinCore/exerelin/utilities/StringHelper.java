@@ -126,12 +126,12 @@ public class StringHelper {
 	
 	public static String getShipOrFleet(CampaignFleetAPI fleet)
 	{
-		String fleetOrShip = getString("SI_general", "fleet");
+		String fleetOrShip = getString("general", "fleet");
 		if (fleet != null) {
 			if (fleet.getFleetData().getMembersListCopy().size() == 1) {
-				fleetOrShip = getString("SI_general", "ship");
+				fleetOrShip = getString("general", "ship");
 				if (fleet.getFleetData().getMembersListCopy().get(0).isFighterWing()) {
-					fleetOrShip = getString("SI_general", "fighterWing");
+					fleetOrShip = getString("general", "fighterWing");
 				}
 			}
 		}
