@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import exerelin.campaign.events.RevengeanceFleetEvent;
+import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.utilities.ExerelinConfig;
 import java.util.List;
 import java.util.Map;
@@ -114,9 +114,9 @@ public class StatsTracker extends BaseCampaignEventListener{
     @Override
     public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
-		if (RevengeanceFleetEvent.getOngoingEvent() != null)
+		if (RevengeanceManagerEvent.getOngoingEvent() != null)
 		{
-			RevengeanceFleetEvent.getOngoingEvent().reportBattle(winner, battle);
+			RevengeanceManagerEvent.getOngoingEvent().reportBattle(winner, battle);
 		}
 		
         if (!battle.isPlayerInvolved()) return;

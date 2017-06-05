@@ -35,7 +35,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.world.ExerelinCorvusLocations;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.FactionChangedEvent;
-import exerelin.campaign.events.RevengeanceFleetEvent;
+import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -874,7 +874,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // revengeance fleet
         if (newOwnerId.equals(PlayerFactionStore.getPlayerFactionId()) || newOwnerId.equals(ExerelinConstants.PLAYER_NPC_ID))
         {
-            RevengeanceFleetEvent event = RevengeanceFleetEvent.getOngoingEvent();
+            RevengeanceManagerEvent event = RevengeanceManagerEvent.getOngoingEvent();
             if (event!= null) 
             {
                 float sizeSq = market.getSize() * market.getSize();

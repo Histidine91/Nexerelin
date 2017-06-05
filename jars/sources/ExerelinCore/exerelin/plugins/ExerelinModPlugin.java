@@ -21,7 +21,7 @@ import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
-import exerelin.campaign.events.RevengeanceFleetEvent;
+import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.fleets.ExerelinRuinsFleetRouteManager;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -164,8 +164,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (ExerelinUtilsFaction.isExiInCorvus() && !sector.getEventManager().isOngoing(null, "exerelin_exigency_respawn")) {
             sector.getEventManager().startEvent(null, "exerelin_exigency_respawn", null);
         }
-        if (RevengeanceFleetEvent.getOngoingEvent() == null) {
-            sector.getEventManager().startEvent(null, "exerelin_revengeance_fleet", null);
+        if (RevengeanceManagerEvent.getOngoingEvent() == null) {
+            sector.getEventManager().startEvent(null, "exerelin_revengeance_manager", null);
         }
         if (!sector.getEventManager().isOngoing(null, "exerelin_slaves_sold")) {
             sector.getEventManager().startEvent(null, "exerelin_slaves_sold", null);

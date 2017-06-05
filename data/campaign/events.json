@@ -78,8 +78,8 @@
 	"exerelin_exigency_respawn":{
 		"script":"exerelin.campaign.events.ExigencyRespawnFleetEvent"
 	},
-	"exerelin_revengeance_fleet":{
-		"script":"exerelin.campaign.events.RevengeanceFleetEvent"
+	"exerelin_revengeance_manager":{
+		"script":"exerelin.campaign.events.RevengeanceManagerEvent"
 	},
 	
 	# missions

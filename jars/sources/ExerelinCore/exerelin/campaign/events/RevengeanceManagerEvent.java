@@ -31,11 +31,11 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
-public class RevengeanceFleetEvent extends BaseEventPlugin {
+public class RevengeanceManagerEvent extends BaseEventPlugin {
 
 	public static final float POINTS_TO_SPAWN = 100;
 	
-	public static Logger log = Global.getLogger(RevengeanceFleetEvent.class);
+	public static Logger log = Global.getLogger(RevengeanceManagerEvent.class);
 	
 	private boolean ended = false;
 	private final IntervalUtil interval = new IntervalUtil(1f, 1f);
@@ -275,12 +275,12 @@ public class RevengeanceFleetEvent extends BaseEventPlugin {
 		return true;
 	}
 	
-	public static RevengeanceFleetEvent getOngoingEvent()
+	public static RevengeanceManagerEvent getOngoingEvent()
 	{
-		CampaignEventPlugin eventSuper = Global.getSector().getEventManager().getOngoingEvent(null, "exerelin_revengeance_fleet");
+		CampaignEventPlugin eventSuper = Global.getSector().getEventManager().getOngoingEvent(null, "exerelin_revengeance_manager");
 		if (eventSuper != null) 
 		{
-			RevengeanceFleetEvent event = (RevengeanceFleetEvent)eventSuper;
+			RevengeanceManagerEvent event = (RevengeanceManagerEvent)eventSuper;
 			return event;
 		}
 		return null;

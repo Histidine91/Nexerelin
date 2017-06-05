@@ -21,7 +21,7 @@ import exerelin.campaign.events.FactionSalaryEvent;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.campaign.events.MarketAttackedEvent;
 import exerelin.campaign.events.MarketCapturedEvent;
-import exerelin.campaign.events.RevengeanceFleetEvent;
+import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.events.SaboteurDestroyFoodEvent;
 import exerelin.campaign.events.SaboteurSabotageReserveEvent;
 import exerelin.campaign.events.SecurityAlertEvent;
@@ -84,7 +84,7 @@ public class XStreamConfig {
         x.alias("InvasionFltEvnt", InvasionFleetEvent.class);
         x.alias("MrktAttackedEvnt", MarketAttackedEvent.class);
         x.alias("MrktCapturedEvnt", MarketCapturedEvent.class);
-        x.alias("RevengeanceFltEvnt", RevengeanceFleetEvent.class);
+        x.alias("RevengeanceMngrEvnt", RevengeanceManagerEvent.class);
         x.alias("SbtrDestroyFoodEvnt", SaboteurDestroyFoodEvent.class);
         x.alias("SbtrSabotageReserveEvnt", SaboteurSabotageReserveEvent.class);
 		x.alias("SecurityAlertEvnt", SecurityAlertEvent.class);
