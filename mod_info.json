@@ -4,8 +4,8 @@
     "author":"Zaphide, Histidine",
     "version":"0.8",
     "description":"Choose your banner and fight for supremacy of sector (n)Exerelin!",
-    "gameVersion":"0.8a",
-    "totalConversion":"false",
+    "gameVersion":"0.8.1a",
+    "totalConversion":false,
     "jars":["jars/ExerelinCore.jar"],
     "modPlugin":"exerelin.plugins.ExerelinModPlugin",
     "replace":
