@@ -5,11 +5,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.RuinsFleetRouteManager;
 import com.thoughtworks.xstream.XStream;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
@@ -22,6 +20,7 @@ import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.events.RevengeanceManagerEvent;
+import exerelin.campaign.fleets.ExerelinPatrolFleetManager;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManager;
@@ -56,7 +55,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(MiningFleetManager.create());
         sector.addScript(CovertOpsManager.create());
         sector.addScript(am);
-        sector.addScript(new PatrolFleetManagerReplacer());
         // debugging
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
@@ -64,9 +62,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         SectorManager.setPlanetToRelayMap(new HashMap<String,String>());
         
         // replace patrol handling with our own
+		sector.addScript(new PatrolFleetManagerReplacer());
+		// not sure if this is needed since the replacer should already do it, but just to be safe
         for (MarketAPI market : sector.getEconomy().getMarketsCopy())
         {
-            market.getPrimaryEntity().removeScriptsOfClass(PatrolFleetManager.class);
+            PatrolFleetManagerReplacer.removeScriptAndListener(market.getPrimaryEntity(), 
+					PatrolFleetManager.class, ExerelinPatrolFleetManager.class);
         }
         
         StatsTracker.create();
