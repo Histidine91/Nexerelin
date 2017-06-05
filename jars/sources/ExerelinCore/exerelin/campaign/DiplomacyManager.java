@@ -465,6 +465,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     continue;
                 if (pirate2 && !eventDef.allowNonPiratesToPirates)
                     continue;
+                
+                if (!ExerelinConfig.allowPirateInvasions)
+                    continue;
             }
             
             //float rel = faction1.getRelationship(factionId2);
@@ -486,28 +489,28 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             boolean isNegative = (eventDef.maxRepChange + eventDef.minRepChange)/2 < 0;
             
             float chance = eventDef.chance;
-			if (!diplomacyManager.randomFactionRelationships) {
-				if (isNegative) {
-					float mult = ExerelinFactionConfig.getDiplomacyNegativeChance(factionId1, factionId2);
+            if (!diplomacyManager.randomFactionRelationships) {
+                if (isNegative) {
+                    float mult = ExerelinFactionConfig.getDiplomacyNegativeChance(factionId1, factionId2);
                     //if (mult != 1) log.info("Applying negative event mult: " + mult);
-					chance *= mult;
-				}
-				else
-				{
-					float mult = ExerelinFactionConfig.getDiplomacyPositiveChance(factionId1, factionId2);
+                    chance *= mult;
+                }
+                else
+                {
+                    float mult = ExerelinFactionConfig.getDiplomacyPositiveChance(factionId1, factionId2);
                     //if (mult != 1) log.info("Applying positive event mult: " + mult);
-					chance *= mult;
-				}
+                    chance *= mult;
+                }
 
-				if (dominance > DOMINANCE_MIN)
-				{
-					float strength = (dominance - DOMINANCE_MIN)/(1 - DOMINANCE_MIN);
-					if (isNegative) chance = chance + (DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD * strength);
-					else chance = chance + (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
-				}
-				if (chance <= 0) continue;
-				eventPicker.add(eventDef, chance);
-			}
+                if (dominance > DOMINANCE_MIN)
+                {
+                    float strength = (dominance - DOMINANCE_MIN)/(1 - DOMINANCE_MIN);
+                    if (isNegative) chance = chance + (DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD * strength);
+                    else chance = chance + (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
+                }
+                if (chance <= 0) continue;
+                eventPicker.add(eventDef, chance);
+            }
         }
         if (event == null) event = eventPicker.pick();
         
@@ -675,10 +678,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     @Override
     public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
-		if (winner == null) return;
+        if (winner == null) return;
         CampaignFleetAPI loser = battle.getPrimary(battle.getOtherSideFor(winner));
-		if (loser == null) return;
-		
+        if (loser == null) return;
+        
         FactionAPI winFaction = winner.getFaction();
         FactionAPI loseFaction = loser.getFaction();
         
@@ -1107,7 +1110,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         else {
             ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId);
             player.setRelationship(selectedFactionId, STARTING_RELATIONSHIP_FRIENDLY);
-            //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);	// already done in syncPlayerRelationshipsToFaction
+            //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);    // already done in syncPlayerRelationshipsToFaction
         }
         
         // Exigency hax: make sure mysterious contact doesn't appear in war/peace messages on alliance formation

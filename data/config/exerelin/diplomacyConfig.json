@@ -1,4 +1,6 @@
 {
+	# note: pirates will never have a diplomacy event with non-pirates unless pirate invasions are enabled in main config
+	
 	"warWearinessPerInterval":20,	#20
 	"eventFrequency":10,	#10
 	"events":[
