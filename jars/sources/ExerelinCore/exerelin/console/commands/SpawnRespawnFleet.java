@@ -36,6 +36,7 @@ public class SpawnRespawnFleet implements BaseCommand {
         
         for (MarketAPI market : markets) {
             if (market.getFaction() == playerAlignedFaction) continue;
+			if (market.getContainingLocation() != playerFleet.getContainingLocation()) continue;
             float distance = Misc.getDistance(playerPos, market.getPrimaryEntity().getLocation());
             if (distance < closestTargetDist)
             {
@@ -56,6 +57,8 @@ public class SpawnRespawnFleet implements BaseCommand {
             return CommandResult.ERROR;
         }
         Console.showMessage("Spawning " + data.fleet.getName() + ", sending to " + closestTargetMarket.getName());
+		data.fleet.getContainingLocation().removeEntity(data.fleet);
+		playerFleet.getContainingLocation().addEntity(data.fleet);
         data.fleet.setLocation(playerFleet.getLocation().x, playerFleet.getLocation().y);
         return CommandResult.SUCCESS;
     }
