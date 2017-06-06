@@ -749,21 +749,21 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             market.removeSubmarket("AL_militaryMarket");
             market.removeSubmarket("AL_plugofbarrack");
         }
-		
-		// II
-		market.removeCondition("ii_imperialdoctrine");
-		if (newOwnerId.equals("interstellarimperium") 
-				&& market.getMemoryWithoutUpdate().getString("$startingFactionId").equals("interstellarimperium"))
-		{
-			if (!market.hasCondition(Conditions.DISSIDENT)	&& !market.hasCondition(Conditions.LARGE_REFUGEE_POPULATION)) 
-				market.addCondition("ii_imperialdoctrine");
-		}
         
-		// tariffs
-		
-		// no, this risks screwing market-specific tariffs
-		//market.getTariff().modifyFlat("generator", Global.getSector().getFaction(newOwnerId).getTariffFraction());	
-		
+        // II
+        market.removeCondition("ii_imperialdoctrine");
+        if (newOwnerId.equals("interstellarimperium") && market.getMemoryWithoutUpdate().contains("$startingFactionId")
+                && market.getMemoryWithoutUpdate().getString("$startingFactionId").equals("interstellarimperium"))
+        {
+            if (!market.hasCondition(Conditions.DISSIDENT)    && !market.hasCondition(Conditions.LARGE_REFUGEE_POPULATION)) 
+                market.addCondition("ii_imperialdoctrine");
+        }
+        
+        // tariffs
+        
+        // no, this risks screwing market-specific tariffs
+        //market.getTariff().modifyFlat("generator", Global.getSector().getFaction(newOwnerId).getTariffFraction());    
+        
         ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(newOwnerId);
         if (!sectorManager.corvusMode && newOwnerConfig != null)
         {

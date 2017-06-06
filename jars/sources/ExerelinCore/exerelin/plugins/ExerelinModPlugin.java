@@ -69,6 +69,11 @@ public class ExerelinModPlugin extends BaseModPlugin
             PatrolFleetManagerReplacer.removeScriptAndListener(market.getPrimaryEntity(), 
 					PatrolFleetManager.class, ExerelinPatrolFleetManager.class);
         }
+		
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        {
+            market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
+        }
         
         StatsTracker.create();
         
