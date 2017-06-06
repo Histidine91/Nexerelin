@@ -5,8 +5,3 @@ Saboteur,saboteur,marines,2000,,3,0.8,,"military,noseed",1000,0,graphics/icons/c
 ,,,,,,,,,,,,,,
 #Plastics,plastics,metal,,,1,0.1,,"refining_out, heavy_industry_in",1000,1,graphics/exerelin/icons/cargo/plastics.png,ui_cargo_metals,ui_cargo_metals_drop,22
 #Composites,composites,rare_metals,,,1,0.1,,"refining_out, heavy_industry_in",1000,1,graphics/exerelin/icons/cargo/composites.png,ui_cargo_raremetals,ui_cargo_raremetals_drop,23
-,,,,,,,,,,,,,,
-# vanilla overrides - less variability,,,,,,,,,,,,,,
-Supplies,supplies,supplies,100,5,1,0.1,,military,1000,1,graphics/icons/cargo/supplies.png,ui_cargo_supplies,ui_cargo_supplies_drop,0.5
-Fuel,fuel,fuel,50,6,1,0.1,,"heavy_industry_out,
-military",1000,0,graphics/icons/cargo/fuel.png,ui_cargo_fuel,ui_cargo_fuel_drop,0.75
