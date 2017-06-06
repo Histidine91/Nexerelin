@@ -1,11 +1,11 @@
 {
-    "uniqueModClassName":"data.scripts.world.LTModPlugin", # String
+    "uniqueModClassName":"src.lt.data.scripts.world.LTModPlugin",
     "playableFaction":true,
-    "corvusCompatible":true,
     "pirateFaction":true,
+    "corvusCompatible":false,
     "noHomeworld":true,
-    #"showIntelEvenIfDead":true,
-    
+    "showIntelEvenIfDead":false,
+
     "spawnPatrols":"true",
     "spawnPiratesAndMercs":"false",
 
@@ -16,22 +16,18 @@
     "customRebelFleetId":"", # String
     "rebelFleetSuffix":"Traitors", # String
 
-   "asteroidMiningFleetName":"Miner", # String
-    "gasMiningFleetName":"Collecter",   "positiveDiplomacyExtra":0 , # Integer
+    "positiveDiplomacyExtra":0, # Integer
     "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
+    "factionsLiked":["noir","pirates","luddic_path"], # String array
     "factionsDisliked":[], # String array
-    
+
     "alignments":{
-        "ideological":0.5,
+        "ideological":1,
     },
-    
+
     "freeMarket":true,
-    
-    "startShipsSolo":["Lt_Tan_Destroyer"],
-    "startShipsSoloSSP":["Lt_Cos_Cannon"],
-    "startShipsCombatSmall":["Lt_Cos_Ranger", "Lt_Tan_Sniper", "Lt_Tan_Harass"],
-    "startShipsTradeSmall":["Lt_Log_Carrier", "Lt_Log_equipped", "Lt_StolenAuriga"],
-    "startShipsCombatLarge":["Lt_Syracuse_Master", "Lt_Tan_Harass", "Lt_Tan_Harass"],
-    "startShipsTradeLarge":["Lt_Matrice_Capitalship"],
+
+    "startShipsSolo":["Lt_DevL_Death"],
+    "startShipsCombatSmall":["Lt_DevL_Death", "Lt_Boli_Immune", "Lt_VoL_Death"],
+    "startShipsCombatLarge":["Lt_P5-V_Balanced", "Lt_DevL_Balanced", "Lt_P5-V_Immune"],
 }

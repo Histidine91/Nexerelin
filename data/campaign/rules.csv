@@ -229,6 +229,7 @@ ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,SetShortcut exerelinNG
 ,,,,,,
 ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
 ExerelinNGCListNoir,ExerelinNGCListFactions3,NGCDoesFactionExist noir,,,exerelinNGCJoinNoir:Noir,
+ExerelinNGCListNomads,ExerelinNGCListFactions3,NGCDoesFactionExist nomads,,,exerelinNGCJoinNomads:Nomads,
 ExerelinNGCListORA,ExerelinNGCListFactions3,NGCDoesFactionExist ORA,,,exerelinNGCJoinORA:Outer Rim Alliance,
 ExerelinNGCListPACK,ExerelinNGCListFactions3,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
 ExerelinNGCListPbc,ExerelinNGCListFactions3,NGCDoesFactionExist pbc,,,exerelinNGCJoinPbc:Pegasus Belt Council,
@@ -317,6 +318,8 @@ FireBest ExerelinNGCJoinFaction",,,
 ExerelinNGCJoinNeutrinoCorp,NewGameOptionSelected,$option == exerelinNGCJoinNeutrinoCorp,"$playerFaction = neutrinocorp
 FireBest ExerelinNGCJoinFaction",,,
 ExerelinNGCJoinNoir,NewGameOptionSelected,$option == exerelinNGCJoinNoir,"$playerFaction = noir
+FireBest ExerelinNGCJoinFaction",,,
+ExerelinNGCJoinNomads,NewGameOptionSelected,$option == exerelinNGCJoinNomads,"$playerFaction = nomads
 FireBest ExerelinNGCJoinFaction",,,
 ExerelinNGCJoinORA,NewGameOptionSelected,$option == exerelinNGCJoinORA,"$playerFaction = ORA
 FireBest ExerelinNGCJoinFaction",,,
@@ -535,6 +538,7 @@ ExerelinFactionDirectoryListMayorate,ExerelinFactionDirectoryList3,$directoryFac
 ExerelinFactionDirectoryListMetelson,ExerelinFactionDirectoryList3,$directoryFactions:metelson,,,exerelinFactionDirectoryGetMetelson:Metelson Industries,
 ExerelinFactionDirectoryListNeutrinoCorp,ExerelinFactionDirectoryList3,$directoryFactions:neutrinocorp,,,exerelinFactionDirectoryGetNeutrinoCorp:Neutrino Corp,
 ExerelinFactionDirectoryListNoir,ExerelinFactionDirectoryList3,$directoryFactions:noir,,,exerelinFactionDirectoryGetNoir:Noir,
+ExerelinFactionDirectoryListNomads,ExerelinFactionDirectoryList3,$directoryFactions:nomads,,,exerelinFactionDirectoryGetNomads:Nomads,
 ExerelinFactionDirectoryListORA,ExerelinFactionDirectoryList3,$directoryFactions:ORA,,,exerelinFactionDirectoryGetORA:ORA,
 ExerelinFactionDirectoryList3Back,ExerelinFactionDirectoryList3,,SetShortcut exerelinFactionDirectoryMain ESCAPE,,30:exerelinFactionDirectoryMain:Back,
 ,,,,,,
@@ -598,6 +602,8 @@ FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetNeutrinoCorp,DialogOptionSelected,$option == exerelinFactionDirectoryGetNeutrinoCorp,"$_directoryFaction = neutrinocorp 0
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetNoir,DialogOptionSelected,$option == exerelinFactionDirectoryGetNoir,"$_directoryFaction = noir 0
+FireBest ExerelinFactionDirectorySubmit",,,
+ExerelinFactionDirectoryGetNomads,DialogOptionSelected,$option == exerelinFactionDirectoryGetNomads,"$_directoryFaction = nomads 0
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetORA,DialogOptionSelected,$option == exerelinFactionDirectoryGetORA,"$_directoryFaction = ORA 0
 FireBest ExerelinFactionDirectorySubmit",,,
