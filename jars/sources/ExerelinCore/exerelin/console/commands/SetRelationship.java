@@ -21,7 +21,7 @@ public class SetRelationship extends org.lazywizard.console.commands.SetRelation
 			if (factionId1.equals(Factions.PLAYER) || factionId2.equals(Factions.PLAYER))
 				ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
 			else// if (factionId1.equals(alignedFactionId) || factionId2.equals(Factions.PLAYER))
-				ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+				ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
 		}
 		return result;
 	}
