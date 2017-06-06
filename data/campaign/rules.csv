@@ -171,16 +171,16 @@ ExerelinNGCFactionsMain,ExerelinNGCListFactionSets,,SetShortcut exerelinNGCOptio
 99:exerelinNGCOptionsBack:Back",maybe we should just do it straight alphabetical instead of segregating vanilla factions into their own category
 ExerelinNGCViewVanillaFactions,NewGameOptionSelected,$option == exerelinNGCViewVanillaFactions,"$lastFactionsList = ""vanilla""
 FireAll ExerelinNGCListFactions",,,
-ExerelinNGCModFactions1,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions1:Mod factions (A-F),Should check if factions are actually there
+ExerelinNGCModFactions1,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions1:Mod factions (A-D),Should check if factions are actually there
 ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModFactions1,"$lastFactionsList = ""mods1""
 FireAll ExerelinNGCListFactions",,,
-ExerelinNGCModFactions2,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions2:Mod factions (H-M),ditto
+ExerelinNGCModFactions2,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions2:Mod factions (E-L),ditto
 ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModFactions2,"$lastFactionsList = ""mods2""
 FireAll ExerelinNGCListFactions",,,
-ExerelinNGCModFactions3,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions3:Mod factions (N-P),
+ExerelinNGCModFactions3,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions3:Mod factions (M-O),
 ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,"$lastFactionsList = ""mods3""
 FireAll ExerelinNGCListFactions",,,
-ExerelinNGCModFactions4,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions4:Mod factions (Q-Z),
+ExerelinNGCModFactions4,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions4:Mod factions (P-Z),
 ExerelinNGCViewModFactions4,NewGameOptionSelected,$option == exerelinNGCViewModFactions4,"$lastFactionsList = ""mods4""
 FireAll ExerelinNGCListFactions",,,
 ,,,,,,
@@ -214,27 +214,27 @@ ExerelinNGCListCitadel,ExerelinNGCListFactions1,NGCDoesFactionExist citadeldefen
 ExerelinNGCListCorvusScavengers,ExerelinNGCListFactions1,NGCDoesFactionExist corvus_scavengers,,,exerelinNGCJoinCorvusScavengers:Corvus Scavengers,
 ExerelinNGCListDME,ExerelinNGCListFactions1,NGCDoesFactionExist dassault_mikoyan,,,exerelinNGCJoinDME:Dassault-Mikoyan,
 ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
-ExerelinNGCListExigency,ExerelinNGCListFactions1,NGCDoesFactionExist exigency,,,exerelinNGCJoinExigency:Exigency Corp,
 ExerelinNGCListModFactions1Back,ExerelinNGCListFactions1,,SetShortcut exerelinNGCOptionsDone ESCAPE,,20:exerelinNGCOptionsDone:Back,
 ,,,,,,
+ExerelinNGCListExigency,ExerelinNGCListFactions2,NGCDoesFactionExist exigency,,,exerelinNGCJoinExigency:Exigency Corp,
 ExerelinNGCListICI,ExerelinNGCListFactions2,NGCDoesFactionExist sun_ici,,,exerelinNGCJoinICI:Idoneus Garrison,
 ExerelinNGCListInfected,ExerelinNGCListFactions2,NGCDoesFactionExist infected,,,exerelinNGCJoinInfected:Infected,
 ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions2,NGCDoesFactionExist interstellarimperium,,,exerelinNGCJoinInterstellarImperium:Interstellar Imperium,
 ExerelinNGCListJunkPirates,ExerelinNGCListFactions2,NGCDoesFactionExist junk_pirates,,,exerelinNGCJoinJunkPirates:Junk Pirates,
 ExerelinNGCListTemplars,ExerelinNGCListFactions2,NGCDoesFactionExist templars,,,exerelinNGCJoinTemplars:Knights Templar,
 ExerelinNGCListLooters,ExerelinNGCListFactions2,NGCDoesFactionExist Lte,,,exerelinNGCJoinLooters:Looters (hard),
-ExerelinNGCListMayorate,ExerelinNGCListFactions2,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
-ExerelinNGCListMetelson,ExerelinNGCListFactions2,NGCDoesFactionExist metelson,,,exerelinNGCJoinMetelson:Metelson Industries,
 ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,SetShortcut exerelinNGCOptionsDone ESCAPE,,20:exerelinNGCOptionsDone:Back,
 ,,,,,,
+ExerelinNGCListMayorate,ExerelinNGCListFactions3,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
+ExerelinNGCListMetelson,ExerelinNGCListFactions3,NGCDoesFactionExist metelson,,,exerelinNGCJoinMetelson:Metelson Industries,
 ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
 ExerelinNGCListNoir,ExerelinNGCListFactions3,NGCDoesFactionExist noir,,,exerelinNGCJoinNoir:Noir,
 ExerelinNGCListNomads,ExerelinNGCListFactions3,NGCDoesFactionExist nomads,,,exerelinNGCJoinNomads:Nomads,
 ExerelinNGCListORA,ExerelinNGCListFactions3,NGCDoesFactionExist ORA,,,exerelinNGCJoinORA:Outer Rim Alliance,
-ExerelinNGCListPACK,ExerelinNGCListFactions3,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
-ExerelinNGCListPbc,ExerelinNGCListFactions3,NGCDoesFactionExist pbc,,,exerelinNGCJoinPbc:Pegasus Belt Council,
 ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,SetShortcut exerelinNGCOptionsDone ESCAPE,,20:exerelinNGCOptionsDone:Back,
 ,,,,,,
+ExerelinNGCListPACK,ExerelinNGCListFactions4,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
+ExerelinNGCListPbc,ExerelinNGCListFactions4,NGCDoesFactionExist pbc,,,exerelinNGCJoinPbc:Pegasus Belt Council,
 ExerelinNGCListSCY,ExerelinNGCListFactions4,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY Nation,
 ExerelinNGCListShadowyards,ExerelinNGCListFactions4,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
 ExerelinNGCListSpire,ExerelinNGCListFactions4,NGCDoesFactionExist spire,,,exerelinNGCJoinSpire:Spire,
