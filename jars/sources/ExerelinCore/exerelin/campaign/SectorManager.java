@@ -850,6 +850,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 StarSystemAPI loc = market.getStarSystem();
                 if (loc != null)
                 {
+					SectorEntityToken relay = null;
                     // safety
                     if (sectorManager.systemToRelayMap == null)
                     {
@@ -858,15 +859,17 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     String relayId = sectorManager.systemToRelayMap.get(loc.getId());
                     if (relayId != null)
                     {
-                        SectorEntityToken relay = Global.getSector().getEntityById(relayId);
-                        relay.setFaction(newOwnerId);
+                        relay = Global.getSector().getEntityById(relayId);
                     }
                     else 
                     {
                         List<SectorEntityToken> relays = loc.getEntitiesWithTag(Tags.COMM_RELAY);
                         //log.info("#entities: " + relays.size());
-                        if (!relays.isEmpty() && relays.get(0).getMarket() == null) relays.get(0).setFaction(newOwnerId);
+                        if (!relays.isEmpty() && relays.get(0).getMarket() == null) 
+							relay = relays.get(0);
                     }
+					if (relay != null && relay.getFaction().getId().equals(oldOwnerId))
+						relay.setFaction(newOwnerId);
                 }
             }
         }
