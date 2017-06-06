@@ -39,6 +39,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
     protected static final String STRING_HELPER_CAT = "exerelin_officers";
     protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
     protected boolean recoveredOfficers = false;
+    protected boolean ongoingBattleProtected = false;	// vanilla one is private
     protected FIDConfig config;	// vanilla one is private
 
     protected String getTextString(String id)
@@ -375,38 +376,47 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
         }
     }
     
-	@Override
-	public void init(InteractionDialogAPI dialog) {
-		if (this.config == null) {
-			MemoryAPI memory = dialog.getInteractionTarget().getMemoryWithoutUpdate();
-//			if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE)) {
-//				this.config = (FIDConfig) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE);
-//			} else 
-			if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)) {
-				this.config = ((FIDConfigGen) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)).createConfig();
-			} else {
-				this.config = new FIDConfig();
-			}
-		}
-		super.init(dialog);
-	}
+    @Override
+    public void init(InteractionDialogAPI dialog) {
+        if (this.config == null) {
+            MemoryAPI memory = dialog.getInteractionTarget().getMemoryWithoutUpdate();
+//            if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE)) {
+//                this.config = (FIDConfig) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE);
+//            } else 
+            if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)) {
+                this.config = ((FIDConfigGen) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)).createConfig();
+            } else {
+                this.config = new FIDConfig();
+            }
+        }
+        
+        // hax to get ongoing battle
+        CampaignFleetAPI otherFleetLocal = (CampaignFleetAPI) (dialog.getInteractionTarget());
+        if (context.getBattle() == null) {
+            if (otherFleetLocal.getBattle() == null || otherFleetLocal.getBattle().isDone()) {
+                ongoingBattleProtected = false;
+            } else {
+                ongoingBattleProtected = true;
+            }
+        }
+        
+        super.init(dialog);
+    }
 	
-	protected boolean getOngoingBattle(boolean def)
-	{
-		if (context.getBattle() == null) {
-			if (otherFleet.getBattle() == null || otherFleet.getBattle().isDone()) {
-				return false;
-			} else {
-				return true;
-			}
+	@Override
+	protected void updateEngagementChoice(boolean withText) {
+		BattleAPI b = context.getBattle();
+		if (ongoingBattleProtected && b.getPlayerSide() != null && b.getPlayerSide().size() <= 1) {
+		//if (ongoingBattle && b.getPlayerSide() != null && b.isPlayerPrimary()) {
+			ongoingBattleProtected = false;
 		}
-		return def;
+		super.updateEngagementChoice(withText);
 	}
 	
 	// same as vanilla, except stations don't get pulled + anything pursuing a participating fleet gets pulled
 	protected boolean shouldPullInFleet(BattleAPI battle, CampaignFleetAPI fleet, float dist)
 	{
-		Global.getLogger(this.getClass()).info("Testing fleet for pull-in: " + fleet.getName());
+		//Global.getLogger(this.getClass()).info("Testing fleet for pull-in: " + fleet.getName());
 		float baseSensorRange = playerFleet.getBaseSensorRangeToDetect(fleet.getSensorProfile());
 		boolean visible = fleet.isVisibleToPlayerFleet();
 		VisibilityLevel level = fleet.getVisibilityLevelToPlayerFleet();
@@ -446,10 +456,9 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	protected void pullInNearbyFleets() {
 		BattleAPI b = context.getBattle();
 		boolean hostile = otherFleet.getAI() != null && otherFleet.getAI().isHostileTo(playerFleet);
-		boolean ongoingBattle = getOngoingBattle(false);
-		if (ongoingBattle) hostile = true;
+		if (ongoingBattleProtected) hostile = true;
 		
-		if (!ongoingBattle) {
+		if (!ongoingBattleProtected) {
 			b.join(Global.getSector().getPlayerFleet());
 		}
 		
@@ -497,14 +506,14 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 					}
 				}
 				textPanel.addParagraph(fleetName + ": " + action + ".");//, FRIEND_COLOR);
-				textPanel.highlightFirstInLastPara(fleet.getNameWithFactionKeepCase() + ":", fleet.getFaction().getBaseUIColor());
+				textPanel.highlightFirstInLastPara(fleetName + ":", fleet.getFaction().getBaseUIColor());
 //				someJoined = true;
 			}
 		}
 //		if (!someJoined) {
 //			addText("No nearby fleets will join the battle.");
 //		}
-		if (!ongoingBattle) {
+		if (!ongoingBattleProtected) {
 			b.genCombined();
 			b.takeSnapshots();
 			playerFleet = b.getPlayerCombined();
