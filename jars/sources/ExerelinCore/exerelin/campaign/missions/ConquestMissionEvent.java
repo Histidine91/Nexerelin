@@ -46,6 +46,7 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 			stageId = "accept_bonus";
 		}
 		Global.getSector().reportEventStage(this, stageId, mission.getAcceptLocation(), MessagePriority.ENSURE_DELIVERY);
+		Misc.makeImportant(entity, "nex_conquest", mission.getBaseDuration());
 	}
 	
 	protected SectorEntityToken findMessageSender() {
@@ -125,6 +126,7 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 	
 	public void endEvent()
 	{
+		Misc.makeUnimportant(entity, "nex_conquest");
 		// todo?
 		ended = true;
 	}
