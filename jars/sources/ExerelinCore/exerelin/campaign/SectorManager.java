@@ -67,7 +67,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected static SectorManager sectorManager;
 
     protected static final String MANAGER_MAP_KEY = "exerelin_sectorManager";
-    protected static final List<String> POSTS_TO_CHANGE_ON_CAPTURE = Arrays.asList(new String[]{
+    public static final List<String> POSTS_TO_CHANGE_ON_CAPTURE = Arrays.asList(new String[]{
         Ranks.POST_BASE_COMMANDER,
         Ranks.POST_OUTPOST_COMMANDER,
         Ranks.POST_STATION_COMMANDER,
@@ -75,15 +75,19 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Ranks.POST_SUPPLY_OFFICER,
     });
     
-    protected static final Set<String> NO_BLACK_MARKET = new HashSet(Arrays.asList(new String[]{
+    public static final Set<String> NO_BLACK_MARKET = new HashSet(Arrays.asList(new String[]{
         "SCY_overwatchStation",
         "SCY_hephaistosStation",
     }));
-    protected static final Set<String> FORCE_MILITARY_MARKET = new HashSet(Arrays.asList(new String[]{
+    public static final Set<String> FORCE_MILITARY_MARKET = new HashSet(Arrays.asList(new String[]{
         "SCY_hephaistosStation",
     }));
-    protected static final Set<String> ALWAYS_CAPTURE_SUBMARKET = new HashSet(Arrays.asList(new String[]{
+    public static final Set<String> ALWAYS_CAPTURE_SUBMARKET = new HashSet(Arrays.asList(new String[]{
         "tiandong_retrofit",
+    }));
+    
+    public static final Set<String> NO_WARMONGER_FACTIONS = new HashSet(Arrays.asList(new String[]{
+        Factions.DERELICT, Factions.REMNANTS, Factions.NEUTRAL
     }));
     
     protected List<String> factionIdsAtStart = new ArrayList<>();
@@ -245,10 +249,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (fleetResult.getDisabled().isEmpty() && fleetResult.getDestroyed().isEmpty()) return;
         CampaignFleetAPI fleet = fleetResult.getFleet();
         if (fleet.getMemoryWithoutUpdate().getBoolean("$exerelinFleetAggressAgainstPlayer")) return;
-		// can't, it's e.g. used by customs inspectors even before you agree to the scan
-		//if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE)) return;
-		if (fleet.getMemoryWithoutUpdate().getBoolean("$Cabal_extortionAskedFor")) return;
+        // can't, it's e.g. used by customs inspectors even before you agree to the scan
+        //if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE)) return;
+        if (fleet.getMemoryWithoutUpdate().getBoolean("$Cabal_extortionAskedFor")) return;
         if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_LOW_REP_IMPACT)) return;
+        if (NO_WARMONGER_FACTIONS.contains(fleet.getFaction().getId())) return;
         if (!result.getBattle().isPlayerPrimary()) return;
         if (!fleet.knowsWhoPlayerIs()) return;
         
@@ -418,8 +423,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("numSlaves", numSlavesRecentlySold);
         params.put("repPenalties", repPenalties);
         params.put("avgRepChange", sumRepDelta/factionsToNotify.size());
-		SlavesSoldEvent event = (SlavesSoldEvent)Global.getSector().getEventManager().getOngoingEvent(null, "exerelin_slaves_sold");
-		event.reportSlaveTrade(marketLastSoldSlaves, params);
+        SlavesSoldEvent event = (SlavesSoldEvent)Global.getSector().getEventManager().getOngoingEvent(null, "exerelin_slaves_sold");
+        event.reportSlaveTrade(marketLastSoldSlaves, params);
     }
     
     public static InvasionFleetData spawnRespawnFleet(FactionAPI respawnFaction, MarketAPI sourceMarket, boolean useOriginLoc)
@@ -776,7 +781,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 market.removeCondition(Conditions.FREE_PORT);
             }
         }
-		ExerelinUtilsMarket.setTariffs(market);
+        ExerelinUtilsMarket.setTariffs(market);
         
         List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
         
@@ -850,7 +855,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 StarSystemAPI loc = market.getStarSystem();
                 if (loc != null)
                 {
-					SectorEntityToken relay = null;
+                    SectorEntityToken relay = null;
                     // safety
                     if (sectorManager.systemToRelayMap == null)
                     {
@@ -866,10 +871,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                         List<SectorEntityToken> relays = loc.getEntitiesWithTag(Tags.COMM_RELAY);
                         //log.info("#entities: " + relays.size());
                         if (!relays.isEmpty() && relays.get(0).getMarket() == null) 
-							relay = relays.get(0);
+                            relay = relays.get(0);
                     }
-					if (relay != null && relay.getFaction().getId().equals(oldOwnerId))
-						relay.setFaction(newOwnerId);
+                    if (relay != null && relay.getFaction().getId().equals(oldOwnerId))
+                        relay.setFaction(newOwnerId);
                 }
             }
         }
@@ -1002,7 +1007,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 sectorManager.liveFactionIds.add(factionId);
                 sectorManager.factionIdsAtStart.add(factionId);
                 sectorManager.historicFactionIds.add(factionId);
-				setShowFactionInIntelTab(factionId, true);
+                setShowFactionInIntelTab(factionId, true);
             }
             else    // no need for showIntelEvenIfDead check, that's done in setShowFactionInIntelTab()
             {
