@@ -34,374 +34,289 @@ Changes from vanilla:
 
 public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogPluginImpl {
 
-    public static Logger log = Global.getLogger(NexFleetInteractionDialogPluginImpl.class);
-    
-    protected static final String STRING_HELPER_CAT = "exerelin_officers";
-    protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
-    protected boolean recoveredOfficers = false;
-    protected boolean ongoingBattleProtected = false;	// vanilla one is private
-    protected FIDConfig config;	// vanilla one is private
+	public static Logger log = Global.getLogger(NexFleetInteractionDialogPluginImpl.class);
+	
+	protected static final String STRING_HELPER_CAT = "exerelin_officers";
+	protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
+	protected boolean recoveredOfficers = false;
+	protected boolean ongoingBattleProtected = false;	// vanilla one is private
+	protected FIDConfig config;	// vanilla one is private
 
-    protected String getTextString(String id)
-    {
-        return StringHelper.getString(STRING_HELPER_CAT, id);
-    }
-    
-    public NexFleetInteractionDialogPluginImpl() {
-        super();
-        context = new NexFleetEncounterContext();
-    }
+	protected String getTextString(String id)
+	{
+		return StringHelper.getString(STRING_HELPER_CAT, id);
+	}
+	
+	public NexFleetInteractionDialogPluginImpl() {
+		super();
+		context = new NexFleetEncounterContext();
+	}
 
-    public NexFleetInteractionDialogPluginImpl(FIDConfig params) {
-        super(params);
-        this.config = params;
-        context = new NexFleetEncounterContext();
-    }
+	public NexFleetInteractionDialogPluginImpl(FIDConfig params) {
+		super(params);
+		this.config = params;
+		context = new NexFleetEncounterContext();
+	}
 
-    @Override
-    public void backFromEngagement(EngagementResultAPI result) {
-        super.backFromEngagement(result);
+	@Override
+	public void backFromEngagement(EngagementResultAPI result) {
+		super.backFromEngagement(result);
 
-        boolean totalDefeat = !playerFleet.isValidPlayerFleet();
-        boolean mutualDestruction = context.getLastEngagementOutcome() == EngagementOutcome.MUTUAL_DESTRUCTION;
+		boolean totalDefeat = !playerFleet.isValidPlayerFleet();
+		boolean mutualDestruction = context.getLastEngagementOutcome() == EngagementOutcome.MUTUAL_DESTRUCTION;
 
-        List<OfficerDataAPI> officersEscaped = ((NexFleetEncounterContext) context).getPlayerOfficersEscaped();
-        List<OfficerDataAPI> officersMIA = ((NexFleetEncounterContext) context).getPlayerOfficersMIA();
-        List<OfficerDataAPI> officersKIA = ((NexFleetEncounterContext) context).getPlayerOfficersKIA();
-        if (!officersEscaped.isEmpty() && !totalDefeat && !mutualDestruction) {
-            List<String> escaped = new ArrayList<>(officersEscaped.size());
-            for (OfficerDataAPI officer : officersEscaped) {
-                escaped.add(officer.getPerson().getName().getFullName());
-            }
+		List<OfficerDataAPI> officersEscaped = ((NexFleetEncounterContext) context).getPlayerOfficersEscaped();
+		List<OfficerDataAPI> officersMIA = ((NexFleetEncounterContext) context).getPlayerOfficersMIA();
+		List<OfficerDataAPI> officersKIA = ((NexFleetEncounterContext) context).getPlayerOfficersKIA();
+		if (!officersEscaped.isEmpty() && !totalDefeat && !mutualDestruction) {
+			List<String> escaped = new ArrayList<>(officersEscaped.size());
+			for (OfficerDataAPI officer : officersEscaped) {
+				escaped.add(officer.getPerson().getName().getFullName());
+			}
 
-            String s1, s2;
-            if (escaped.size() == 1) {
-                s1 = getTextString("officer");
-                s2 = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "hisOrHerShip", "$pronoun", StringHelper.getHisOrHer(officersEscaped.get(0).getPerson()));
-            } else {
-                s1 = getTextString("officers");
-                s2 = getTextString("theirShips");
-            }
-            //"Your $officers $officerNames escaped the destruction of $theirShips"
-            String str = getTextString("battle_escaped") + ".";
-            str = StringHelper.substituteToken(str, "$officers", s1, true);
-            str = StringHelper.substituteToken(str, "$officerNames", Misc.getAndJoined(escaped.toArray(new String[escaped.size()])));
-            str = StringHelper.substituteToken(str, "$theirShips", s2);
-            
-            addText(str);
-        }
-        if ((!officersMIA.isEmpty() || !officersKIA.isEmpty()) && !totalDefeat && !mutualDestruction) {
-            int lost = officersMIA.size() + officersKIA.size();
+			String s1, s2;
+			if (escaped.size() == 1) {
+				s1 = getTextString("officer");
+				s2 = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "hisOrHerShip", "$pronoun", StringHelper.getHisOrHer(officersEscaped.get(0).getPerson()));
+			} else {
+				s1 = getTextString("officers");
+				s2 = getTextString("theirShips");
+			}
+			//"Your $officers $officerNames escaped the destruction of $theirShips"
+			String str = getTextString("battle_escaped") + ".";
+			str = StringHelper.substituteToken(str, "$officers", s1, true);
+			str = StringHelper.substituteToken(str, "$officerNames", Misc.getAndJoined(escaped.toArray(new String[escaped.size()])));
+			str = StringHelper.substituteToken(str, "$theirShips", s2);
+			
+			addText(str);
+		}
+		if ((!officersMIA.isEmpty() || !officersKIA.isEmpty()) && !totalDefeat && !mutualDestruction) {
+			int lost = officersMIA.size() + officersKIA.size();
 
-            String text;
-            String s1;
-            if (officersKIA.isEmpty()) {
-                if (lost == 1) {
-                    s1 = getTextString("officer");
-                } else {
-                    s1 = getTextString("officers");
-                }
-                //"Your $officers did not report in after the battle",
-                text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "battle_noReportIn", "$officers", s1, true) + ":";
-            } else {
-                if (lost == 1) {
-                    //"Your $officer was listed among the casualties";
-                    s1 = getTextString("officer");
-                    text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "battle_casualties", "$officer", s1, true) + ":";
-                } else {
-                    s1 = getTextString("officers");
-                    text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "battle_casualties_plural", "$officers", s1, true) + ":";
-                }
-            }
+			String text;
+			String s1;
+			if (officersKIA.isEmpty()) {
+				if (lost == 1) {
+					s1 = getTextString("officer");
+				} else {
+					s1 = getTextString("officers");
+				}
+				//"Your $officers did not report in after the battle",
+				text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "battle_noReportIn", "$officers", s1, true) + ":";
+			} else {
+				if (lost == 1) {
+					//"Your $officer was listed among the casualties";
+					s1 = getTextString("officer");
+					text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "battle_casualties", "$officer", s1, true) + ":";
+				} else {
+					s1 = getTextString("officers");
+					text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "battle_casualties_plural", "$officers", s1, true) + ":";
+				}
+			}
 
-            List<String> highlights = new ArrayList<>((officersMIA.size() + officersKIA.size()) * 2);
-            List<Color> highlightColors = new ArrayList<>((officersMIA.size() + officersKIA.size()) * 2);
-            for (OfficerDataAPI officer : officersMIA) {
-                s1 = officer.getPerson().getName().getFullName();
-                String s2 = getTextString("missingInAction");
-                text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
-                highlights.add(s1);
-                highlights.add(s2);
-                highlightColors.add(NEUTRAL_COLOR);
-                highlightColors.add(ENEMY_COLOR);
-            }
+			List<String> highlights = new ArrayList<>((officersMIA.size() + officersKIA.size()) * 2);
+			List<Color> highlightColors = new ArrayList<>((officersMIA.size() + officersKIA.size()) * 2);
+			for (OfficerDataAPI officer : officersMIA) {
+				s1 = officer.getPerson().getName().getFullName();
+				String s2 = getTextString("missingInAction");
+				text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
+				highlights.add(s1);
+				highlights.add(s2);
+				highlightColors.add(NEUTRAL_COLOR);
+				highlightColors.add(ENEMY_COLOR);
+			}
 
-            for (OfficerDataAPI officer : officersKIA) {
-                s1 = officer.getPerson().getName().getFullName();
-                String s2 = getTextString("killedInAction");
-                text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
-                highlights.add(s1);
-                highlights.add(s2);
-                highlightColors.add(NEUTRAL_COLOR);
-                highlightColors.add(ENEMY_COLOR);
-            }
+			for (OfficerDataAPI officer : officersKIA) {
+				s1 = officer.getPerson().getName().getFullName();
+				String s2 = getTextString("killedInAction");
+				text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
+				highlights.add(s1);
+				highlights.add(s2);
+				highlightColors.add(NEUTRAL_COLOR);
+				highlightColors.add(ENEMY_COLOR);
+			}
 
-            addText(text);
-            textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
-            textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
-        }
-    }
+			addText(text);
+			textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
+			textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
+		}
+	}
+	
+	@Override
+	protected void losingPath() {
+		if (!recoveredOfficers) {
+			recoveredOfficers = true;
 
-    @Override
-    protected boolean fleetHoldingVsStrongerEnemy(CampaignFleetAPI fleet, CampaignFleetAPI other) {
-        if (fleet.getFaction().getId().contentEquals("famous_bounty")) {
-            fleet.updateCounts();
-            FleetMemberAPI flagship = (FleetMemberAPI) fleet.getMemoryWithoutUpdate().get("$famousFlagship");
-            if (flagship == fleet.getFlagship()) {
-                if (flagship.getRepairTracker().getCR() < 0.5f) {
-                    return super.fleetHoldingVsStrongerEnemy(fleet, other);
-                }
-                List<FleetMemberData> casualties = context.getDataFor(fleet).getOwnCasualties();
-                for (FleetMemberData casualty : casualties) {
-                    if (casualty.getMember() == flagship) {
-                        return super.fleetHoldingVsStrongerEnemy(fleet, other);
-                    }
-                }
-                return !super.fleetWantsToFight(fleet, other);
-            } else {
-                return super.fleetHoldingVsStrongerEnemy(fleet, other);
-            }
-        } else {
-            return super.fleetHoldingVsStrongerEnemy(fleet, other);
-        }
-    }
+			List<OfficerDataAPI> recoverableOfficers =
+								 ((NexFleetEncounterContext) context).getPlayerRecoverableOfficers();
+			List<OfficerDataAPI> lostOfficers = ((NexFleetEncounterContext) context).getPlayerLostOfficers();
+			List<OfficerDataAPI> unconfirmedOfficers =
+								 ((NexFleetEncounterContext) context).getPlayerUnconfirmedOfficers();
+			if (!lostOfficers.isEmpty() || !recoverableOfficers.isEmpty()) {
+				String s1;
+				if (lostOfficers.size() + recoverableOfficers.size() == 1) {
+					s1 = getTextString("officer");
+				} else {
+					s1 = getTextString("officers");
+				}
+				//"The post-action report confirms that your $officers didn't make it"
+				String text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "confirmDeath", "$officers", s1) + ":";
 
-    @Override
-    protected boolean fleetWantsToDisengage(CampaignFleetAPI fleet, CampaignFleetAPI other) {
-        if (fleet.getFaction().getId().contentEquals("famous_bounty")) {
-            fleet.updateCounts();
-            FleetMemberAPI flagship = (FleetMemberAPI) fleet.getMemoryWithoutUpdate().get("$famousFlagship");
-            if (flagship == fleet.getFlagship()) {
-                if (flagship.getRepairTracker().getCR() < 0.5f) {
-                    if (possibleToEngage(fleet, other)) {
-                        return super.fleetWantsToDisengage(fleet, other);
-                    } else {
-                        return true;
-                    }
-                }
-                List<FleetMemberData> casualties = context.getDataFor(fleet).getOwnCasualties();
-                for (FleetMemberData casualty : casualties) {
-                    if (casualty.getMember() == flagship) {
-                        if (possibleToEngage(fleet, other)) {
-                            return super.fleetWantsToDisengage(fleet, other);
-                        } else {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            } else {
-                if (possibleToEngage(fleet, other)) {
-                    return super.fleetWantsToDisengage(fleet, other);
-                } else {
-                    return true;
-                }
-            }
-        } else {
-            if (possibleToEngage(fleet, other)) {
-                return super.fleetWantsToDisengage(fleet, other);
-            } else {
-                return true;
-            }
-        }
-    }
+				List<String> highlights = new ArrayList<>((lostOfficers.size() + recoverableOfficers.size()) * 2);
+				List<Color> highlightColors = new ArrayList<>((lostOfficers.size() + recoverableOfficers.size()) * 2);
+				for (OfficerDataAPI officer : lostOfficers) {
+					s1 = officer.getPerson().getName().getFullName();
+					String s2;
+					if (unconfirmedOfficers.contains(officer)) {
+						s2 = getTextString("miaPresumedDead");
+					} else {
+						s2 = getTextString("killedInAction");
+					}
+					text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
+					highlights.add(s1);
+					highlights.add(s2);
+					highlightColors.add(NEUTRAL_COLOR);
+					highlightColors.add(ENEMY_COLOR);
+				}
+				for (OfficerDataAPI officer : recoverableOfficers) {
+					s1 = officer.getPerson().getName().getFullName();
+					String s2 = getTextString("miaPresumedDead");
+					text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
+					highlights.add(s1);
+					highlights.add(s2);
+					highlightColors.add(NEUTRAL_COLOR);
+					highlightColors.add(ENEMY_COLOR);
+				}
 
-    @Override
-    protected boolean fleetWantsToFight(CampaignFleetAPI fleet, CampaignFleetAPI other) {
-        if (possibleToEngage(fleet, other)) {
-            return super.fleetWantsToFight(fleet, other);
-        } else {
-            return false;
-        }
-    }
+				addText(text);
+				textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
+				textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
+				
+				handleLifeInsurance(lostOfficers, recoverableOfficers);
+			}
+		}
 
-    @Override
-    protected void losingPath() {
-        if (!recoveredOfficers) {
-            recoveredOfficers = true;
+		super.losingPath();
+	}
 
-            List<OfficerDataAPI> recoverableOfficers =
-                                 ((NexFleetEncounterContext) context).getPlayerRecoverableOfficers();
-            List<OfficerDataAPI> lostOfficers = ((NexFleetEncounterContext) context).getPlayerLostOfficers();
-            List<OfficerDataAPI> unconfirmedOfficers =
-                                 ((NexFleetEncounterContext) context).getPlayerUnconfirmedOfficers();
-            if (!lostOfficers.isEmpty() || !recoverableOfficers.isEmpty()) {
-                String s1;
-                if (lostOfficers.size() + recoverableOfficers.size() == 1) {
-                    s1 = getTextString("officer");
-                } else {
-                    s1 = getTextString("officers");
-                }
-                //"The post-action report confirms that your $officers didn't make it"
-                String text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "confirmDeath", "$officers", s1) + ":";
+	@Override
+	protected void winningPath() {
+		if (!recoveredOfficers) {
+			recoveredOfficers = true;
 
-                List<String> highlights = new ArrayList<>((lostOfficers.size() + recoverableOfficers.size()) * 2);
-                List<Color> highlightColors = new ArrayList<>((lostOfficers.size() + recoverableOfficers.size()) * 2);
-                for (OfficerDataAPI officer : lostOfficers) {
-                    s1 = officer.getPerson().getName().getFullName();
-                    String s2;
-                    if (unconfirmedOfficers.contains(officer)) {
-                        s2 = getTextString("miaPresumedDead");
-                    } else {
-                        s2 = getTextString("killedInAction");
-                    }
-                    text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
-                    highlights.add(s1);
-                    highlights.add(s2);
-                    highlightColors.add(NEUTRAL_COLOR);
-                    highlightColors.add(ENEMY_COLOR);
-                }
-                for (OfficerDataAPI officer : recoverableOfficers) {
-                    s1 = officer.getPerson().getName().getFullName();
-                    String s2 = getTextString("miaPresumedDead");
-                    text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
-                    highlights.add(s1);
-                    highlights.add(s2);
-                    highlightColors.add(NEUTRAL_COLOR);
-                    highlightColors.add(ENEMY_COLOR);
-                }
+			List<OfficerDataAPI> recoverableOfficers =
+								 ((NexFleetEncounterContext) context).getPlayerRecoverableOfficers();
+			List<OfficerDataAPI> lostOfficers = ((NexFleetEncounterContext) context).getPlayerLostOfficers();
+			if (!recoverableOfficers.isEmpty()) {
+				String s1;
+				String text;
+				if (recoverableOfficers.size() == 1) {
+					// "Your $officers were saved from the wreckage"
+					s1 = getTextString("officer");
+					text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "savedFromWreckage", "$officer", s1) + ":";
+				} else {
+					s1 = getTextString("officers");
+					text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "savedFromWreckagePlural", "$officers", s1) + ":";
+				}
 
-                addText(text);
-                textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
-                textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
-                
-                handleLifeInsurance(lostOfficers, recoverableOfficers);
-            }
-        }
+				List<String> highlights = new ArrayList<>(recoverableOfficers.size() * 2);
+				List<Color> highlightColors = new ArrayList<>(recoverableOfficers.size() * 2);
+				for (OfficerDataAPI officer : recoverableOfficers) {
+					s1 = officer.getPerson().getName().getFullName();
+					String s2 = "rescued";
+					text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
+					highlights.add(s1);
+					highlights.add(s2);
+					highlightColors.add(NEUTRAL_COLOR);
+					highlightColors.add(FRIEND_COLOR);
+				}
 
-        super.losingPath();
-    }
+				addText(text);
+				textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
+				textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
 
-    protected boolean possibleToEngage(CampaignFleetAPI fleet, CampaignFleetAPI other) {
-        boolean hasSomethingToFightWith = false;
-        for (FleetMemberAPI member : fleet.getFleetData().getCombatReadyMembersListCopy()) {
-            if (member.isCivilian() || member.isMothballed() || member.getRepairTracker().getBaseCR() <= 0.1f) {
-                continue;
-            }
-            hasSomethingToFightWith = true;
-            break;
-        }
-        return hasSomethingToFightWith;
-    }
+				((NexFleetEncounterContext) context).recoverPlayerOfficers();
+			}
 
-    @Override
-    protected void winningPath() {
-        if (!recoveredOfficers) {
-            recoveredOfficers = true;
+			if (!lostOfficers.isEmpty()) {
+				String s1;
+				if (lostOfficers.size() == 1) {
+					s1 = getTextString("officer");
+				} else {
+					s1 = getTextString("officers");
+				}
+				//"The post-action report confirms that your $officers didn't make it"
+				String text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "confirmDeath", "$officers", s1) + ":";
 
-            List<OfficerDataAPI> recoverableOfficers =
-                                 ((NexFleetEncounterContext) context).getPlayerRecoverableOfficers();
-            List<OfficerDataAPI> lostOfficers = ((NexFleetEncounterContext) context).getPlayerLostOfficers();
-            if (!recoverableOfficers.isEmpty()) {
-                String s1;
-                String text;
-                if (recoverableOfficers.size() == 1) {
-                    // "Your $officers were saved from the wreckage"
-                    s1 = getTextString("officer");
-                    text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "savedFromWreckage", "$officer", s1) + ":";
-                } else {
-                    s1 = getTextString("officers");
-                    text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "savedFromWreckagePlural", "$officers", s1) + ":";
-                }
+				List<String> highlights = new ArrayList<>(lostOfficers.size() * 2);
+				List<Color> highlightColors = new ArrayList<>(lostOfficers.size() * 2);
+				for (OfficerDataAPI officer : lostOfficers) {
+					s1 = officer.getPerson().getName().getFullName();
+					String s2 = getTextString("killedInAction");
+					text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
+					highlights.add(s1);
+					highlights.add(s2);
+					highlightColors.add(NEUTRAL_COLOR);
+					highlightColors.add(ENEMY_COLOR);
+				}
 
-                List<String> highlights = new ArrayList<>(recoverableOfficers.size() * 2);
-                List<Color> highlightColors = new ArrayList<>(recoverableOfficers.size() * 2);
-                for (OfficerDataAPI officer : recoverableOfficers) {
-                    s1 = officer.getPerson().getName().getFullName();
-                    String s2 = "rescued";
-                    text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
-                    highlights.add(s1);
-                    highlights.add(s2);
-                    highlightColors.add(NEUTRAL_COLOR);
-                    highlightColors.add(FRIEND_COLOR);
-                }
+				addText(text);
+				textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
+				textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
+			}
+			
+			handleLifeInsurance(lostOfficers, null);
+		}
 
-                addText(text);
-                textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
-                textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
-
-                ((NexFleetEncounterContext) context).recoverPlayerOfficers();
-            }
-
-            if (!lostOfficers.isEmpty()) {
-                String s1;
-                if (lostOfficers.size() == 1) {
-                    s1 = getTextString("officer");
-                } else {
-                    s1 = getTextString("officers");
-                }
-                //"The post-action report confirms that your $officers didn't make it"
-                String text = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "confirmDeath", "$officers", s1) + ":";
-
-                List<String> highlights = new ArrayList<>(lostOfficers.size() * 2);
-                List<Color> highlightColors = new ArrayList<>(lostOfficers.size() * 2);
-                for (OfficerDataAPI officer : lostOfficers) {
-                    s1 = officer.getPerson().getName().getFullName();
-                    String s2 = getTextString("killedInAction");
-                    text += "\n" + s1 + " (" + officer.getPerson().getStats().getLevel() + ") - " + s2;
-                    highlights.add(s1);
-                    highlights.add(s2);
-                    highlightColors.add(NEUTRAL_COLOR);
-                    highlightColors.add(ENEMY_COLOR);
-                }
-
-                addText(text);
-                textPanel.highlightInLastPara(highlights.toArray(new String[highlights.size()]));
-                textPanel.setHighlightColorsInLastPara(highlightColors.toArray(new Color[highlightColors.size()]));
-            }
-            
-            handleLifeInsurance(lostOfficers, null);
-        }
-
-        super.winningPath();
-    }
-    
-    protected void handleLifeInsurance(List<OfficerDataAPI> deadOfficers, List<OfficerDataAPI> miaOfficers)
-    {
-        List<OfficerDataAPI> officers = new ArrayList<>(deadOfficers);
-        if (miaOfficers != null)
-            officers.addAll(miaOfficers);
-        if (Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance"))
-        {
-            FactionInsuranceEvent event = (FactionInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
-                    null, "exerelin_faction_insurance");
-            event.addDeadOfficers(officers);
-        }
-        
-        if (Global.getSector().getEventManager().isOngoing(null, "foundation_insurance"))
-        {
-            FoundationInsuranceEvent event = (FoundationInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
-                    null, "foundation_insurance");
-            event.addDeadOfficers(officers);
-        }
-    }
-    
-    @Override
-    public void init(InteractionDialogAPI dialog) {
-        if (this.config == null) {
-            MemoryAPI memory = dialog.getInteractionTarget().getMemoryWithoutUpdate();
-//            if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE)) {
-//                this.config = (FIDConfig) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE);
-//            } else 
-            if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)) {
-                this.config = ((FIDConfigGen) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)).createConfig();
-            } else {
-                this.config = new FIDConfig();
-            }
-        }
-        
-        // hax to get ongoing battle
-        CampaignFleetAPI otherFleetLocal = (CampaignFleetAPI) (dialog.getInteractionTarget());
-        if (context.getBattle() == null) {
-            if (otherFleetLocal.getBattle() == null || otherFleetLocal.getBattle().isDone()) {
-                ongoingBattleProtected = false;
-            } else {
-                ongoingBattleProtected = true;
-            }
-        }
-        
-        super.init(dialog);
-    }
+		super.winningPath();
+	}
+	
+	protected void handleLifeInsurance(List<OfficerDataAPI> deadOfficers, List<OfficerDataAPI> miaOfficers)
+	{
+		List<OfficerDataAPI> officers = new ArrayList<>(deadOfficers);
+		if (miaOfficers != null)
+			officers.addAll(miaOfficers);
+		if (Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance"))
+		{
+			FactionInsuranceEvent event = (FactionInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
+					null, "exerelin_faction_insurance");
+			event.addDeadOfficers(officers);
+		}
+		
+		if (Global.getSector().getEventManager().isOngoing(null, "foundation_insurance"))
+		{
+			FoundationInsuranceEvent event = (FoundationInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
+					null, "foundation_insurance");
+			event.addDeadOfficers(officers);
+		}
+	}
+	
+	@Override
+	public void init(InteractionDialogAPI dialog) {
+		if (this.config == null) {
+			MemoryAPI memory = dialog.getInteractionTarget().getMemoryWithoutUpdate();
+//			if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE)) {
+//				this.config = (FIDConfig) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE);
+//			} else 
+			if (memory.contains(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)) {
+				this.config = ((FIDConfigGen) memory.get(MemFlags.FLEET_INTERACTION_DIALOG_CONFIG_OVERRIDE_GEN)).createConfig();
+			} else {
+				this.config = new FIDConfig();
+			}
+		}
+		
+		// hax to get ongoing battle
+		CampaignFleetAPI otherFleetLocal = (CampaignFleetAPI) (dialog.getInteractionTarget());
+		if (context.getBattle() == null) {
+			if (otherFleetLocal.getBattle() == null || otherFleetLocal.getBattle().isDone()) {
+				ongoingBattleProtected = false;
+			} else {
+				ongoingBattleProtected = true;
+			}
+		}
+		
+		super.init(dialog);
+	}
 	
 	@Override
 	protected void updateEngagementChoice(boolean withText) {
