@@ -137,23 +137,28 @@ public class MiningHelperLegacy {
 			loadMiningShips(MINING_SHIP_DEFS);
 			loadMiningWeapons(MINING_WEAPON_DEFS);
 			
-			JSONArray resourcesCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", RESOURCE_DEFS, "stellar_industrialist");
+			JSONArray resourcesCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", RESOURCE_DEFS, "nexerelin");
 			for(int x = 0; x < resourcesCsv.length(); x++)
 			{
-				JSONObject row = resourcesCsv.getJSONObject(x);
-				String id = row.getString("id");
-				if (id.isEmpty()) continue;
-				
-				Map<String, Float> resources = new HashMap<>();
-				for (String commodityId : OUTPUT_COMMODITIES)
-				{
-					float value = (float)row.optDouble(commodityId, 0);
-					if (value > 0) resources.put(commodityId, value);
+				String id = "";
+				try {
+					JSONObject row = resourcesCsv.getJSONObject(x);
+					id = row.getString("id");
+					if (id.isEmpty()) continue;
+
+					Map<String, Float> resources = new HashMap<>();
+					for (String commodityId : OUTPUT_COMMODITIES)
+					{
+						float value = (float)row.optDouble(commodityId, 0);
+						if (value > 0) resources.put(commodityId, value);
+					}
+					miningConditions.put(id, resources);
+				} catch (JSONException ex) {
+					log.error("Error loading market condition entry " + id + ": " + ex);
 				}
-				miningConditions.put(id, resources);
 			}
 		} catch (IOException | JSONException ex) {
-			log.error(ex);
+			log.error("Error loading market condition data: " + ex);
 		}
 		
 		initCacheDefs();
@@ -166,16 +171,22 @@ public class MiningHelperLegacy {
 	public static void loadMiningShips(String path)
 	{
 		try {
-			JSONArray miningShipsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, "stellar_industrialist");
+			JSONArray miningShipsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, "nexerelin");
 			for(int x = 0; x < miningShipsCsv.length(); x++)
 			{
-				JSONObject row = miningShipsCsv.getJSONObject(x);
-				String shipId = row.getString("id");
-				float strength = (float)row.getDouble("strength");
-				miningShips.put(shipId, strength);
+				String shipId = "<unknown>";
+				try {
+					JSONObject row = miningShipsCsv.getJSONObject(x);
+					shipId = row.getString("id");
+					if (shipId.isEmpty()) continue;
+					float strength = (float)row.getDouble("strength");
+					miningShips.put(shipId, strength);
+				} catch (JSONException ex) {
+					log.error("Error loading mining ship " + shipId + ": " + ex);
+				}
 			}
 		} catch (IOException | JSONException ex) {
-			log.error(ex);
+			log.error("Error loading mining ships: " + ex);
 		} catch (RuntimeException rex) {
 			// file not found, do nothing
 		}
@@ -184,16 +195,22 @@ public class MiningHelperLegacy {
 	public static void loadMiningWeapons(String path)
 	{
 		try {
-			JSONArray miningWeaponsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, "stellar_industrialist");
+			JSONArray miningWeaponsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, "nexerelin");
 			for(int x = 0; x < miningWeaponsCsv.length(); x++)
 			{
-				JSONObject row = miningWeaponsCsv.getJSONObject(x);
-				String weaponId = row.getString("id");
-				float strength = (float)row.getDouble("strength");
-				miningWeapons.put(weaponId, strength);
+				String weaponId = "<unknown>";
+				try {
+					JSONObject row = miningWeaponsCsv.getJSONObject(x);
+					weaponId = row.getString("id");
+					if (weaponId.isEmpty()) continue;
+					float strength = (float)row.getDouble("strength");
+					miningWeapons.put(weaponId, strength);
+				} catch (JSONException ex) {
+					log.error("Error loading mining weapon " + weaponId + ": " + ex);
+				}
 			}
 		} catch (IOException | JSONException ex) {
-			log.error(ex);
+			log.error("Error loading mining weapons: " + ex);
 		} catch (RuntimeException rex) {
 			// file not found, do nothing
 		}
