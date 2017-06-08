@@ -25,7 +25,7 @@ import java.util.Set;
 public class AllianceVoteEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(AllianceVoteEvent.class);
-	public static final MessagePriority MESSAGE_PRIORITY = MessagePriority.DELIVER_IMMEDIATELY;
+	public static final MessagePriority MESSAGE_PRIORITY = MessagePriority.ENSURE_DELIVERY;	// workaround http://fractalsoftworks.com/forum/index.php?topic=12589.0
 	
 	protected VoteResult result;
 	protected String allianceId;

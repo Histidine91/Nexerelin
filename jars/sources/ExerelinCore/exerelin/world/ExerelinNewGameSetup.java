@@ -19,6 +19,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.PirateFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.CustomConstellationParams;
@@ -39,10 +40,8 @@ import exerelin.campaign.StatsTracker;
 import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
-import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.Random;
-import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 @SuppressWarnings("unchecked")
@@ -125,6 +124,8 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		prismEntity.setFaction(Factions.INDEPENDENT);
 		market.setSurveyLevel(MarketAPI.SurveyLevel.FULL);	// not doing this makes market condition tooltips fail to appear
 		sector.getEconomy().addMarket(market);
+		
+		prismEntity.removeTag(Tags.STATION);	// workaround http://fractalsoftworks.com/forum/index.php?topic=12548.msg213678#msg213678
 		
 		//pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
 		//prismEntity.setInteractionImage("illustrations", "space_bar");
