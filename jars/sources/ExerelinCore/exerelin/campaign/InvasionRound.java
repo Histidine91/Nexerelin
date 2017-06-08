@@ -49,6 +49,8 @@ public class InvasionRound {
 	public static final float DEFENDER_MILITARY_BASE_MOD = 0.25f;
 	public static final float DEFENDER_REGIONAL_CAPITAL_MOD = 0.25f;
 	public static final float DEFENDER_HEADQUARTERS_MOD = 0.4f;
+	public static final float DEFENDER_URBAN_MOD = 0.2f;
+	public static final float DEFENDER_RURAL_MOD = -0.2f;
 	public static final float DEFENDER_AVALON_MOD = 1.0f;
 	public static final float DEFENDER_RAID_STRENGTH_MULT = 0.75f;
 	public static final float DEFENDER_STRENGTH_XP_MULT = 500f;
@@ -171,19 +173,27 @@ public class InvasionRound {
 		float defenderStrength = baseDefenderStrength;
 		float defenderBonus = 0;
 		
-		if(market.hasCondition(Conditions.MILITARY_BASE))
+		if (market.hasCondition(Conditions.MILITARY_BASE))
 		{
 			defenderBonus += baseDefenderStrength * DEFENDER_MILITARY_BASE_MOD;
 		}
-		if(market.hasCondition(Conditions.REGIONAL_CAPITAL))
+		if (market.hasCondition(Conditions.REGIONAL_CAPITAL))
 		{
 			defenderBonus += baseDefenderStrength * DEFENDER_REGIONAL_CAPITAL_MOD;
 		}
-		if(market.hasCondition(Conditions.HEADQUARTERS))
+		if (market.hasCondition(Conditions.HEADQUARTERS))
 		{
 			defenderBonus += baseDefenderStrength * DEFENDER_HEADQUARTERS_MOD;
 		}
-		if(market.hasCondition("tem_avalon"))
+		if (market.hasCondition(Conditions.URBANIZED_POLITY))
+		{
+			defenderBonus += baseDefenderStrength * DEFENDER_URBAN_MOD;
+		}
+		if (market.hasCondition(Conditions.RURAL_POLITY))
+		{
+			defenderBonus += baseDefenderStrength * DEFENDER_RURAL_MOD;
+		}
+		if (market.hasCondition("tem_avalon"))
 		{
 			defenderBonus += baseDefenderStrength * DEFENDER_AVALON_MOD;
 		}
