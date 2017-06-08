@@ -170,8 +170,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		}
 		
 		if (setupData.prismMarketPresent) {
-			if (!corvusMode || !ExerelinUtilsFaction.doesFactionExist("SCY"))
-				addPrismMarket(sector);
+			addPrismMarket(sector);
 		}
 		
 		final String selectedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
