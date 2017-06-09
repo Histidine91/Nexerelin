@@ -5,10 +5,12 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.thoughtworks.xstream.XStream;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
@@ -125,7 +127,11 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-    
+		SectorEntityToken prism = Global.getSector().getEntityById("prismFreeport");
+		if (prism != null)
+		{
+			prism.removeTag(Tags.STATION);
+		}
     }
     
     @Override
