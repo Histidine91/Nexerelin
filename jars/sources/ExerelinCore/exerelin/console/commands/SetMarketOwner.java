@@ -8,7 +8,9 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommandUtils;
 import org.lazywizard.console.CommonStrings;
@@ -29,13 +31,17 @@ public class SetMarketOwner implements BaseCommand {
             return CommandResult.BAD_SYNTAX;
         }
         
-		SectorAPI sector = Global.getSector();
+        SectorAPI sector = Global.getSector();
         String[] tmp = args.split(" ");
         
         String targetName = tmp[0];
-        List<SectorEntityToken> entitiesToSearch = sector.getEntitiesWithTag("planet");
-        entitiesToSearch.addAll(sector.getEntitiesWithTag("station"));
-		//Console.showMessage(entitiesToSearch.size() + " valid targets for search found");
+        Set<SectorEntityToken> entitiesToSearch = new HashSet<>();	//(sector.getEntitiesWithTag(Tags.PLANET));
+        //entitiesToSearch.addAll(sector.getEntitiesWithTag(Tags.STATION));
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        {
+            entitiesToSearch.add(market.getPrimaryEntity());
+        }
+        //Console.showMessage(entitiesToSearch.size() + " valid targets for search found");
         
         SectorEntityToken target = CommandUtils.findBestTokenMatch(targetName, entitiesToSearch);          
         if (target == null)
