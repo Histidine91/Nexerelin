@@ -1,9 +1,9 @@
 {
     "id":"nexerelin", # internal id
     "name":"Nexerelin", # displayed to the player
-    "author":"Zaphide, Histidine",
-    "version":"0.8b",
-    "description":"Choose your banner and fight for supremacy of sector (n)Exerelin!",
+    "author":"Histidine (original by Zaphide)",
+    "version":"0.8c",
+    "description":"Join a faction and conquer the Sector!",
     "gameVersion":"0.8.1a",
     "totalConversion":false,
     "jars":["jars/ExerelinCore.jar"],
