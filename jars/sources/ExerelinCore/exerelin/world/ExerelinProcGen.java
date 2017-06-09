@@ -17,7 +17,9 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
+import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.CustomConstellationParams;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
@@ -45,6 +47,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -621,6 +624,8 @@ public class ExerelinProcGen {
 					system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
 					"comm_relay", // type of object, defined in custom_entities.json
 					capital.entity.getFaction().getId()); // faction
+				
+				List<SectorEntityToken> jumpPoints = system.getJumpPoints();
 
 				int lp = 4;
 				if (random.nextBoolean()) lp = 5;
@@ -637,6 +642,21 @@ public class ExerelinProcGen {
 					ExerelinUtilsAstro.setLagrangeOrbit(relay, systemPrimary, planet, 
 						lp, startAngle, orbitRadius, 0, planet.getOrbit().getOrbitalPeriod(), 
 						false, 0, 1, 1, 0);
+					
+					// check for overlap with other entities
+					for (SectorEntityToken ent : system.getAllEntities())
+					{
+						if (ent == relay) continue;
+						float distSq = MathUtils.getDistanceSquared(relay, ent);
+						if (distSq < 200 * 200)
+						{
+							lp = 9 - lp;
+							ExerelinUtilsAstro.setLagrangeOrbit(relay, systemPrimary, planet, 
+								lp, startAngle, orbitRadius, 0, planet.getOrbit().getOrbitalPeriod(), 
+								false, 0, 1, 1, 0);
+							break;
+						}
+					}
 				}
 			}
 			
@@ -694,9 +714,9 @@ public class ExerelinProcGen {
 		}
 	}
 	
-	protected void cleanupDerelicts()
+	public static void cleanupDerelicts(Collection<StarSystemAPI> systems)
 	{
-		for (StarSystemAPI system : populatedSystems)
+		for (StarSystemAPI system : systems)
 		{
 			log.info("Cleaning up system " + system.getName());
 			List<SectorEntityToken> toRemove = new ArrayList<>();
@@ -710,6 +730,20 @@ public class ExerelinProcGen {
 			{
 				log.info("\tRemoving token " + token.getName() + "(faction " + token.getFaction().getDisplayName() + ")");
 				system.removeEntity(token);
+			}
+		}
+	}
+	
+	protected void renameSystems()
+	{
+		for (StarSystemAPI system : populatedSystems)
+		{
+			if (!NameAssigner.isNameSpecial(system))
+				NameAssigner.assignSpecialNames(system);
+			for (SectorEntityToken entity : system.getPlanets()) {
+				if (entity.getMarket() != null) {
+					entity.getMarket().setName(entity.getName());
+				}
 			}
 		}
 	}
@@ -764,6 +798,7 @@ public class ExerelinProcGen {
 		
 		log.info("Picking populated planets");
 		pickPopulatedPlanets();
+		renameSystems();
 		log.info("Preparing stations");
 		prepFreeStations();
 		
@@ -775,7 +810,7 @@ public class ExerelinProcGen {
 		marketSetup.addCabalSubmarkets();
 		
 		log.info("Cleaning up derelicts/Remnants");
-		cleanupDerelicts();
+		cleanupDerelicts(populatedSystems);
 		
 		log.info("Finishing");
 		finish();

@@ -49,15 +49,16 @@ import org.json.JSONObject;
  * Each market condition has a cost and a number of weightings based on the market archetype and other properties
  * For each market, randomly pick a valid condition and spend points on it; repeat till out of points
  * Available points by market size:
- *	Size 2: 200
- *	Size 3: 250
- *	Size 4: 350
- *	Size 5: 450
- *	Size 6: 650
- *	Size 7: 850
+ *	Size 2: 150
+ *	Size 3: 200
+ *	Size 4: 200
+ *	Size 5: 250
+ *	Size 6: 300
+ *	Size 7: 350
  * Also have chance for bonus points based on market size
  * Special conditions allowed:
- *	Size 1-4: random(0,1)
+ *	Size 1-2: 0
+ *	Size 3-4: random(0,1)
  *	Size 5-6: random(0,1) + random(0,1)
  *	Size 7: 1 + random(0,1)
  * 
@@ -81,7 +82,7 @@ public class ExerelinMarketBuilder
 	public static final float CABAL_MILITARY_MARKET_CHANCE = 0.5f;
 	public static final float LUDDIC_MAJORITY_CHANCE = 0.1f;	// how many markets have Luddic majority even if they aren't Luddic at start
 	public static final float LUDDIC_MINORITY_CHANCE = 0.15f;	// how many markets that start under Church control are non-Luddic
-	public static final float PRE_BALANCE_BUDGET_MULT = 1;	// < 0 to spare some for balancer
+	public static final float PRE_BALANCE_BUDGET_MULT = 1f;	// < 1 to spare some points for balancer
 	
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.3f;
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 0.5f;	// lower than min so it can swap autofacs for shipbreakers if needed
@@ -111,12 +112,12 @@ public class ExerelinMarketBuilder
 	
 	static {
 		// (probably) must sum to 1
-		PLANET_ARCHETYPE_QUOTAS.put(Archetype.AGRICULTURE, 0.2f);
-		PLANET_ARCHETYPE_QUOTAS.put(Archetype.ORE, 0.2f);
-		PLANET_ARCHETYPE_QUOTAS.put(Archetype.ORGANICS, 0.15f);
-		PLANET_ARCHETYPE_QUOTAS.put(Archetype.VOLATILES, 0.15f);
+		PLANET_ARCHETYPE_QUOTAS.put(Archetype.AGRICULTURE, 0.15f);
+		PLANET_ARCHETYPE_QUOTAS.put(Archetype.ORE, 0.18f);
+		PLANET_ARCHETYPE_QUOTAS.put(Archetype.ORGANICS, 0.18f);
+		PLANET_ARCHETYPE_QUOTAS.put(Archetype.VOLATILES, 0.14f);
 		PLANET_ARCHETYPE_QUOTAS.put(Archetype.MANUFACTURING, 0.2f);
-		PLANET_ARCHETYPE_QUOTAS.put(Archetype.HEAVY_INDUSTRY, 0.1f);
+		PLANET_ARCHETYPE_QUOTAS.put(Archetype.HEAVY_INDUSTRY, 0.15f);
 	}
 	
 	public ExerelinMarketBuilder(ExerelinProcGen procGen)
@@ -343,36 +344,38 @@ public class ExerelinMarketBuilder
 		log.info("Processing market conditions for " + market.getPrimaryEntity().getName() + " (" + market.getFaction().getDisplayName() + ")");
 		
 		int size = market.getSize();
-		int points = 200;
-		if (size == 3) points = 250;
-		else if (size == 4) points = 350;
-		else if (size == 5) points = 450;
-		else if (size == 6) points = 650;
-		else if (size >= 7) points = 850;
+		int points = 150;
+		if (size == 3) points = 200;
+		else if (size == 4) points = 250;
+		else if (size == 5) points = 250;
+		else if (size == 6) points = 300;
+		else if (size >= 7) points = 350;
 		
-		int bonusPoints = 0;
-		for (int i=0; i<size-1; i++)
+		int bonusPoints = 50;
+		for (int i=0; i<size/2; i++)
 		{
 			if (random.nextFloat() > 0.4) bonusPoints += 50;
 		}
-				
+		
 		entityData.bonusMarketPoints = bonusPoints;
 		points += bonusPoints;
 		entityData.marketPoints = points;
 		
 		while (entityData.marketPointsSpent < points * PRE_BALANCE_BUDGET_MULT)
 		{
-			MarketConditionDef cond = pickMarketCondition(market, conditions, entityData, (int)(points * PRE_BALANCE_BUDGET_MULT - entityData.marketPointsSpent), false);
+			MarketConditionDef cond = pickMarketCondition(market, conditions, entityData, 
+					(int)(points * PRE_BALANCE_BUDGET_MULT - entityData.marketPointsSpent), false);
 			if (cond == null) break;
 			log.info("\tAdding condition: " + cond.name);
 			addMarketCondition(market, entityData, cond);
 		}
 		
 		int numSpecial = 0;
-		if (size == 2 && random.nextFloat() > 0.5) numSpecial = 1;
+		if (size == 2) numSpecial = 0;
 		else if (size <= 4) numSpecial = ExerelinUtils.randomNextIntInclusive(random, 1);
 		else if (size <= 6) numSpecial = ExerelinUtils.randomNextIntInclusive(random, 1) + ExerelinUtils.randomNextIntInclusive(random, 1);
 		else if (size <= 8) numSpecial = 1 + ExerelinUtils.randomNextIntInclusive(random, 1);
+		else numSpecial = 2;
 		
 		for (int i=0; i<numSpecial; i++)
 		{
@@ -778,11 +781,8 @@ public class ExerelinMarketBuilder
 		addStartingMarketCommodities(market);
 		
 		// count some demand/supply values for market balancing
-		
-		//domesticGoodsSupply += ExerelinUtilsMarket.getCommoditySupply(newMarket, Commodities.DOMESTIC_GOODS);
-		//metalSupply += ExerelinUtilsMarket.getCommoditySupply(newMarket, Commodities.METALS);
-		//suppliesSupply += ExerelinUtilsMarket.getCommoditySupply(newMarket, Commodities.SUPPLIES);
 
+		/*
 		int autofacCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.AUTOFAC_HEAVY_INDUSTRY);
 		int shipbreakingCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.SHIPBREAKING_CENTER);
 		int fuelProdCount = ExerelinUtilsMarket.countMarketConditions(market, Conditions.ANTIMATTER_FUEL_PRODUCTION);
@@ -882,6 +882,7 @@ public class ExerelinMarketBuilder
 			orDemand += (pop * ConditionData.POPULATION_FOOD) * 0.95f * 0.02f;
 		modifyCommodityDemand(Commodities.ORE, orDemand);
 		//modifyCommodityDemand(Commodities.ORE, ExerelinUtilsMarket.getCommodityDemand(newMarket, Commodities.ORE));
+		*/
 		
 		data.market = market;
 		return market;

@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -30,6 +31,8 @@ import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.SSP_AsteroidTracker;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -206,11 +209,13 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
-        
+		
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
         }
+		
+		
         //SectorAPI sector = Global.getSector();
         //for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
         //    PlayerStartHandler.addOmnifactory(sector, i);
@@ -220,6 +225,20 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onNewGameAfterTimePass() {
         Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);
         StartSetupPostTimePass.execute();
+		
+		// cleanup any remaining Remnant fleets
+		if (!SectorManager.getCorvusMode())
+		{
+			Set<StarSystemAPI> populatedSystems = new HashSet<>();
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+			{
+				if (!market.getContainingLocation().isHyperspace())
+				{
+					populatedSystems.add((StarSystemAPI)market.getContainingLocation());
+				}
+			}
+			ExerelinProcGen.cleanupDerelicts(populatedSystems);
+		}
     }
     
     @Override

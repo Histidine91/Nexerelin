@@ -3,37 +3,36 @@
 		# primary resources
 		{
 			"name":"ore_complex",
-			"cost":150,
+			"cost":100,
 			"archetypes":{"ore":4,"manufacturing":1,"heavy_industry":0.5},
 		},
 		{
 			"name":"volatiles_complex",
-			"cost":200,
+			"cost":100,
 			"archetypes":{"volatiles":2.5,"manufacturing":0.5},
 		},
-		#{
-		#	"name":"volatiles_depot",
-		#	"cost":150,
-		#	"archetypes":{"volatiles":2,"manufacturing":1.25,"heavy_industry":1,"mixed":0.5},
-		#},
+		{
+			"name":"volatiles_depot",
+			"cost":50,
+			"archetypes":{"volatiles":1,"manufacturing":0.75,"heavy_industry":0.5,"misc":1},
+		},
 		{
 			"name":"organics_complex",
-			"cost":200,
-			"archetypes":{"organics":2.5,"mixed":1},
+			"cost":100,
+			"archetypes":{"organics":2.5,"manufacturing":0.5},
 		},
 		{
-			"name":"exerelin_hydroponics",
-			"cost":200,
+			"name":"hydroponics_complex",
+			"cost":100,
 			"archetypes":{"default":0.75, "agriculture":2, "misc":1.5},
 		},
-		{
-			"name":"aquaculture",
-			"cost":300,
-			"archetypes":{"default":1, "agriculture":3, "misc":1.5, "heavy_industry":0},
-			"allowedPlanets":["terran","jungle","water"],
-			"allowStations":false,
-			"minSize":3,
-		},
+		#{
+		#	"name":"aquaculture",
+		#	"cost":200,
+		#	"archetypes":{"default":1, "agriculture":3, "misc":1.5, "heavy_industry":0},
+		#	"allowedPlanets":["terran","jungle","water"],
+		#	"allowStations":false,
+		#},
 		#{
 		#	"name":"volturnian_lobster_pens",
 		#	"cost":300,
@@ -44,7 +43,7 @@
 		#},
 		{
 			"name":"exerelin_volturnian_lobster_pens", # smaller version
-			"cost":200,
+			"cost":100,
 			"archetypes":{"default":1, "agriculture":2, "misc":1.5, "heavy_industry":0},
 			"allowedPlanets":["terran","jungle","water"],
 			"allowStations":false,
@@ -54,7 +53,7 @@
 		# industry
 		{
 			"name":"cottage_industry",
-			"cost":200,
+			"cost":100,
 			"archetypes":{"default":1,"agriculture":2,"manufacturing":1,"heavy_industry":0},
 			"minSize":3,
 			#"allowDuplicates":false,
@@ -62,15 +61,15 @@
 		},
 		{
 			"name":"ore_refining_complex",
-			"cost":200,
+			"cost":100,
 			"archetypes":{"ore":2.5,"manufacturing":3.5,"heavy_industry":1.5,"misc":1.5},
-			"minSize":4,
+			"minSize":3,
 		},
 		{
 			"name":"light_industrial_complex",
-			"cost":300,
+			"cost":150,
 			"archetypes":{"manufacturing":3,"heavy_industry":1,"mixed":1.5},
-			"minSize":4,
+			"minSize":3,
 			#"maxSize":6,
 			#"allowDuplicates":false,
 		},
@@ -88,14 +87,14 @@
 		#},
 		{
 			"name":"trade_center",
-			"cost":200,
+			"cost":100,
 			"archetypes":{"default":0.5},
 			"minSize":4,
 			"allowDuplicates":false
 		},
 		{
 			"name":"spaceport",
-			"cost":250,
+			"cost":100,
 			"archetypes":{"default":1,"agriculture":0,"manufacturing":2,"heavy_industry":3},
 			"minSize":4,
 			"allowDuplicates":false,
@@ -103,7 +102,7 @@
 		},
 		{
 			"name":"orbital_station",
-			"cost":250,
+			"cost":100,
 			"archetypes":{"default":1,"agriculture":0,"manufacturing":2,"heavy_industry":3},
 			"minSize":4,
 			"allowDuplicates":false,
@@ -112,29 +111,28 @@
 		},
 		{
 			"name":"autofac_heavy_industry",
-			"cost":350,
-			"archetypes":{"manufacturing":1,"heavy_industry":4.5},
-			"minSize":5,
+			"cost":150,
+			"archetypes":{"manufacturing":1.5,"heavy_industry":4.5,"misc":1},
+			"minSize":4,
 		},
 		{
 			"name":"antimatter_fuel_production",
-			"cost":300,
-			"archetypes":{"manufacturing":0.75,"heavy_industry":4.5},
-			"minSize":5,
+			"cost":150,
+			"archetypes":{"manufacturing":1,"heavy_industry":4.5,"misc":0.75},
+			"minSize":4,
 		},
 		{
 			"name":"shipbreaking_center",
-			"cost":400,
-			"archetypes":{"manufacturing":0.5,"heavy_industry":4.5},
-			"minSize":5,
-			"allowDuplicates":false
+			"cost":150,
+			"archetypes":{"manufacturing":0.5,"heavy_industry":3},
+			"minSize":4,
 		},
 		
 		# misc
 		{
 			"name":"rural_polity",
 			"special":true,
-			"archetypes":{"default":0.5,"agriculture":1,"manufacturing":0,"heavy_industry":0},
+			"archetypes":{"default":1,"agriculture":2,"manufacturing":0,"heavy_industry":0},
 			"allowedPlanets":["terran","jungle","arid","desert"],
 			"minSize":4,
 			"maxSize":5,
@@ -144,8 +142,8 @@
 		},
 		{
 			"name":"orbital_burns",
-			"cost":200,
-			"archetypes":{"default":0.75, "agriculture":1.5},
+			"cost":150,
+			"archetypes":{"default":1, "agriculture":3},
 			"allowedPlanets":["jungle"],
 			"minSize":3,
 			"allowStations":false,
@@ -162,6 +160,15 @@
 			"allowDuplicates":false,
 			"conflictsWith":["rural_polity"]
 		},
+		{
+			"name":"ms_medCenter",
+			"requiredFaction":"shadow_industry",
+			"special":true,
+			#"cost":50,
+			"archetypes":{"default":1},
+			"minSize":3,
+			"allowDuplicates":false,
+		},
 		
 		#special
 		{
@@ -175,7 +182,7 @@
 			"name":"cryosanctum",
 			"special":true,
 			"archetypes":{"default":1},
-			"disallowedPlanets":["desert","jungle","arid"],
+			"disallowedPlanets":["desert","jungle","arid","lava"],
 			"maxSize":4,
 			"allowDuplicates":false
 		},
@@ -220,15 +227,6 @@
 			"special":true,
 			"archetypes":{"default":1},
 			"minSize":4,
-			"allowDuplicates":false
-		},
-		{
-			"name":"ms_medCenter",
-			"requiredFaction":"shadow_industry",
-			#"special":true,
-			"cost":100,
-			"archetypes":{"default":1},
-			"minSize":3,
 			"allowDuplicates":false
 		},
 	]

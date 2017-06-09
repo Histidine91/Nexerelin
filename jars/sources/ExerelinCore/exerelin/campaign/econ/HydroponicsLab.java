@@ -4,6 +4,7 @@ import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
+@Deprecated
 public class HydroponicsLab extends BaseMarketConditionPlugin {
 	
 	public static final float HYDROPONICS_CREW = 100f;
