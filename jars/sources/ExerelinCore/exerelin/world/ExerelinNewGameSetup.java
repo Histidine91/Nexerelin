@@ -71,13 +71,13 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 					orbitDistance = radius + 2000 + rand.nextFloat() * 500;
 				}
 			}
-			prismEntity = toOrbit.getContainingLocation().addCustomEntity("prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
+			prismEntity = toOrbit.getContainingLocation().addCustomEntity("nex_prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
 			prismEntity.setCircularOrbitPointingDown(toOrbit, ExerelinUtilsAstro.getRandomAngle(rand), orbitDistance, ExerelinUtilsAstro.getOrbitalPeriod(toOrbit, orbitDistance));
 		}
 		else
 		{
 			LocationAPI hyperspace = sector.getHyperspace();
-			prismEntity = hyperspace.addCustomEntity("prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
+			prismEntity = hyperspace.addCustomEntity("nex_prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
 			float xpos = 2000;
 			if (!ExerelinSetupData.getInstance().corvusMode) xpos = -2000;
 			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(xpos, 0), ExerelinUtilsAstro.getRandomAngle(rand), 150, 60, 30, 30);
@@ -94,7 +94,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		MarketAPI market = addMarketToEntity(prismEntity, data, "independent");
 		*/
 
-		MarketAPI market = Global.getFactory().createMarket("prismFreeport" /*+ "_market"*/, "Prism Freeport", 5);
+		MarketAPI market = Global.getFactory().createMarket("nex_prismFreeport" /*+ "_market"*/, "Prism Freeport", 5);
 		market.setFactionId(Factions.INDEPENDENT);
 		market.addCondition(Conditions.POPULATION_5);
 		market.addCondition(Conditions.SPACEPORT);
