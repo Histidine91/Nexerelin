@@ -231,6 +231,12 @@
 		"crewLost":"crew lost",
 		"machineryLost":"heavy machinery lost"
 	},
+	"exerelin_missions":{
+		"missionBoard":"Mission Board",
+		"conquer":"conquer $target",
+		"daysLeft":"$days days left",
+		"over":"over"
+	},
 	"exerelin_ngc":{
 		"added":"added",
 		"shipString":"$shipClass-class $designation",
@@ -252,8 +258,8 @@
 		
 		"battle_escaped":"Your $officers $officerNames escaped the destruction of $theirShips",
 		"battle_noReportIn":"Your $officers did not report in after the battle",
-		"battle_casualties":"Your $officer was listed among the casualties";
-		"battle_casualties_plural":"Your $officers were listed among the casualties";
+		"battle_casualties":"Your $officer was listed among the casualties",
+		"battle_casualties_plural":"Your $officers were listed among the casualties",
 		"confirmDeath":"The post-action report confirms that your $officers didn't make it",
 		"savedFromWreckage":"Your $officer was saved from the wreckage",
 		"savedFromWreckagePlural":"Your $officers were saved from the wreckage",

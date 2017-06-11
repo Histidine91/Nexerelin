@@ -18,6 +18,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.Map;
 
 public class ConquestMissionEvent extends BaseEventPlugin {
 
+	protected static final String STRING_HELPER_CAT = "exerelin_missions";
+	
 	protected ConquestMission mission;
 	protected float elapsedDays = 0;
 	protected String daysLeftStr = "";
@@ -45,13 +48,13 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 		if (mission.hasBonus(elapsedDays)) {
 			stageId = "accept_bonus";
 		}
-		Global.getSector().reportEventStage(this, stageId, mission.getAcceptLocation(), MessagePriority.ENSURE_DELIVERY);
+		Global.getSector().reportEventStage(this, stageId, mission.target.getPrimaryEntity(), MessagePriority.DELIVER_IMMEDIATELY);
 		Misc.makeImportant(entity, "nex_conquest", mission.getBaseDuration());
 	}
 	
 	protected SectorEntityToken findMessageSender() {
-		WeightedRandomPicker<MarketAPI> military = new WeightedRandomPicker<MarketAPI>();
-		WeightedRandomPicker<MarketAPI> nonMilitary = new WeightedRandomPicker<MarketAPI>();
+		WeightedRandomPicker<MarketAPI> military = new WeightedRandomPicker<>();
+		WeightedRandomPicker<MarketAPI> nonMilitary = new WeightedRandomPicker<>();
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 			if (market.getFaction() != faction) continue;
@@ -85,7 +88,7 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 			if (mission.hasBonus(elapsedDays))
 				stageId = "success_bonus";
 			// success
-			Global.getSector().reportEventStage(this, "success", findMessageSender(), MessagePriority.ENSURE_DELIVERY, 
+			Global.getSector().reportEventStage(this, stageId, findMessageSender(), MessagePriority.ENSURE_DELIVERY, 
 					new BaseOnMessageDeliveryScript() {
 						boolean hasBonus = mission.hasBonus(elapsedDays);
 						public void beforeDelivery(CommMessageAPI message) {
@@ -152,7 +155,7 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 		
 		Map<String, String> map = super.getTokenReplacements();
 		
-		map.put("$sender", "Mission Board");	// TODO externalise
+		map.put("$sender", StringHelper.getString(STRING_HELPER_CAT, "missionBoard"));
 		
 		LocationAPI loc = market.getContainingLocation();
 		String locName = Misc.lcFirst(loc.getName());
@@ -232,18 +235,21 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 		return mission.issuer.getCrest();
 	}
 
-	// TODO externalise
+	
 	@Override
 	public String getEventName() {
 		int daysLeft = (int) (mission.getBaseDuration() - elapsedDays);
 		String days = "";
 		if (daysLeft > 0) {
-			days = ", " + daysLeft + " days left";
+			days = ", " + StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "daysLeft", 
+				"$days", daysLeft+"");
 		}
+		String conquer = Misc.ucFirst(StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "conquer", 
+				"$target", mission.getTarget().getName()));
 		if (isDone()) {
-			return "Conquer " + mission.getTarget().getName() + " - over"; 
+			return conquer + " - " + StringHelper.getString(STRING_HELPER_CAT, "over"); 
 		}
-		return "Conquer " + mission.getTarget().getName() + "" + days;
+		return conquer + days;
 	}
 
 	@Override
