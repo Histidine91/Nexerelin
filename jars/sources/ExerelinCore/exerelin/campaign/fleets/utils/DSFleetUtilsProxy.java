@@ -33,20 +33,25 @@ public class DSFleetUtilsProxy {
 		{
 			case "exerelinInvasionFleet":
 			case "exerelinRespawnFleet":
-				randomizeVariants(fleet, factionId, qualityFactor, theme, getArchetypeWeights(DS_Defs.FleetStyle.ELITE, factionId));
+				randomizeVariants(fleet, factionId, null, qualityFactor, 0f, theme, 
+						getArchetypeWeights(DS_Defs.FleetStyle.ELITE, factionId), false);
 				break;
 			case "exerelinInvasionSupportFleet":
 			case "exerelinDefenceFleet":
-				randomizeVariants(fleet, factionId, qualityFactor, theme, getArchetypeWeights(DS_Defs.FleetStyle.MILITARY, factionId));
+				randomizeVariants(fleet, factionId, null, qualityFactor, 0f, theme, 
+						getArchetypeWeights(DS_Defs.FleetStyle.MILITARY, factionId), false);
 				break;
 			case "exerelinResponseFleet":
-				randomizeVariants(fleet, factionId, qualityFactor, theme, getArchetypeWeights(DS_Defs.FleetStyle.MILITARY, factionId));
+				randomizeVariants(fleet, factionId, null, qualityFactor, 0f, theme, 
+						getArchetypeWeights(DS_Defs.FleetStyle.MILITARY, factionId), false);
 				break;  
 			case "exerelinMiningFleet":
-				randomizeVariants(fleet, factionId, qualityFactor, theme, getArchetypeWeights(DS_Defs.FleetStyle.CIVILIAN, factionId));
+				randomizeVariants(fleet, factionId, null, qualityFactor, 0f, theme, 
+						getArchetypeWeights(DS_Defs.FleetStyle.CIVILIAN, factionId), false);
 				break;
 			default:    // fallback taken from SS+
-				randomizeVariants(fleet, factionId, qualityFactor, null, getArchetypeWeights(DS_Defs.FleetStyle.STANDARD, factionId));
+				randomizeVariants(fleet, factionId, null, qualityFactor, 0f, theme, 
+						getArchetypeWeights(DS_Defs.FleetStyle.STANDARD, factionId), false);
 		}
 		DS_FleetFactory.finishFleetNonIntrusive(fleet, factionId, false);
 	}
