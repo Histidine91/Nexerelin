@@ -73,11 +73,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Ranks.POST_STATION_COMMANDER,
         Ranks.POST_PORTMASTER,
         Ranks.POST_SUPPLY_OFFICER,
+		Ranks.POST_ADMINISTRATOR
     });
     
     public static final Set<String> NO_BLACK_MARKET = new HashSet(Arrays.asList(new String[]{
         "SCY_overwatchStation",
         "SCY_hephaistosStation",
+		"uw_arigato"
     }));
     public static final Set<String> FORCE_MILITARY_MARKET = new HashSet(Arrays.asList(new String[]{
         "SCY_hephaistosStation",
