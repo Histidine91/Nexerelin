@@ -845,10 +845,10 @@ SetEnabled exerelinFleetRequestFire false
 SetTooltipHighlightColors exerelinFleetRequestFire buttonShortcut buttonShortcut
 SetTooltipHighlights exerelinFleetRequestFire $fleetRequestCost $player.creditsHave",,exerelinFleetRequestFire:Request a fleet,
 ExerelinFleetRequestOptionListChangeFP,ExerelinFleetRequestOption,,SetShortcut exerelinFleetRequestChangeFP F,,exerelinFleetRequestChangeFP:Fleet points - $fleetRequestFP,
-ExerelinFleetRequestOptionListChangeMarineCount,ExerelinFleetRequestOption,FleetRequestCanInvade,"SetEnabled exerelinFleetRequestChangeMarineCount true
+ExerelinFleetRequestOptionListChangeMarineCount,ExerelinFleetRequestOption,IsValidInvasionTarget,"SetEnabled exerelinFleetRequestChangeMarineCount true
 SetTooltip exerelinFleetRequestChangeMarineCount ""Carrying marines will make this fleet an invasion fleet. Dispatching one will be considered a hostile act.""
 SetShortcut exerelinFleetRequestChangeMarineCount M",,exerelinFleetRequestChangeMarineCount:Marines to deploy - $fleetRequestMarines,
-ExerelinFleetRequestOptionListChangeMarineCountInvalid,ExerelinFleetRequestOption,!FleetRequestCanInvade,"SetTooltip exerelinFleetRequestChangeMarineCount ""This market is not an eligible invasion target.""
+ExerelinFleetRequestOptionListChangeMarineCountInvalid,ExerelinFleetRequestOption,!IsValidInvasionTarget,"SetTooltip exerelinFleetRequestChangeMarineCount ""This market is not an eligible invasion target.""
 SetEnabled exerelinFleetRequestChangeMarineCount false",,exerelinFleetRequestChangeMarineCount:Marines to deploy - $fleetRequestMarines,
 ExerelinFleetRequestOptionListBack,ExerelinFleetRequestOption,,SetShortcut exerelinMarketSpecial ESCAPE,,exerelinMarketSpecial:Back,
 ,,,,,,
@@ -862,12 +862,10 @@ FireAll ExerelinFleetRequestOption",,,
 ,,,,,,
 #START SUPERWEAPON OPTIONS,,,,,,
 ExerelinMarketSuperweaponOption,ExerelinMarketSpecial,"IsValidInvasionTarget
-$market.id != prismFreeport
 NGCDoesFactionExist interstellarimperium
 Exerelin_CanUseSuperweapon","SetEnabled exerelinSuperweapon true
 SetShortcut exerelinSuperweapon X",,1:exerelinSuperweapon:Deploy planetbreaker,
 ExerelinMarketSuperweaponOptionNotAvailable,ExerelinMarketSpecial,"IsValidInvasionTarget
-$market.id != prismFreeport
 NGCDoesFactionExist interstellarimperium
 !Exerelin_CanUseSuperweapon","SetEnabled exerelinSuperweapon false
 SetTooltip exerelinSuperweapon ""You have no ships capable of performing this action.""",,1:exerelinSuperweapon:Deploy planetbreaker,
