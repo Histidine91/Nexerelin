@@ -18,8 +18,10 @@ import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
+import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -49,6 +51,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public static final String ILLEGAL_TRANSFER_MESSAGE = StringHelper.getString("exerelin_markets", "prismNoSale");
     public static final Set<String> DISALLOWED_FACTIONS = new HashSet<>(Arrays.asList(new String[] {
         "templars", Factions.DERELICT, Factions.REMNANTS, Factions.PIRATES
+    }));
+    public static final Set<String> DISALLOWED_PREFIXES = new HashSet<>(Arrays.asList(new String[] {
+        "tem_"
     }));
     
     public static Logger log = Global.getLogger(PrismMarket.class);
@@ -90,7 +95,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 cargo.removeEmptyStacks();
             }
         }
-        addShipsAndWings();
+        addShips();
+        addWings();
         addWeapons();
         cargo.sort();
     }
@@ -105,21 +111,44 @@ public class PrismMarket extends BaseSubmarketPlugin {
         return true;
     }
     
+    public boolean isWingAllowed(FighterWingSpecAPI spec)
+    {
+        if (spec.getTier() < 2) return false;
+        if (spec.getTier() >= 5) return false;
+        if (spec.hasTag(Tags.WING_NO_SELL)) return false;
+        String specId = spec.getId();
+        for (String prefix : DISALLOWED_PREFIXES)
+        {
+            if (specId.startsWith(prefix))
+                return false;
+        }
+        if (restrictedShips.contains(specId)) return false;
+        return true;
+    }
+    
+    public boolean isWeaponAllowed(WeaponSpecAPI spec)
+    {
+        if (spec.getTier() < 2) return false;
+        String specId = spec.getWeaponId();
+        for (String prefix : DISALLOWED_PREFIXES)
+        {
+            if (specId.startsWith(prefix))
+                return false;
+        }
+        if (restrictedWeapons.contains(specId)) return false;
+        return true;
+    }
+    
     protected void addWeapons()
     {
         CargoAPI cargo = getCargo();
         
         float variation=(float)Math.random()*0.5f+0.75f;
-        for ( float i=0f; i < ExerelinConfig.prismMaxWeapons*variation; i = (float) cargo.getStacksCopy().size()) {
+        for ( float i=0f; i < ExerelinConfig.prismMaxWeapons*variation; i = (float) cargo.getWeapons().size()) {
             addRandomWeapons(10, 3);
             for (CargoStackAPI s : cargo.getStacksCopy()) {
                 //remove all low tier weapons
-                if (s.isWeaponStack() 
-                        && (s.getWeaponSpecIfWeapon().getTier()<2 
-                            || s.getWeaponSpecIfWeapon().getWeaponId().startsWith("tem_") //templars are forbiden anyway
-                            || restrictedWeapons.contains(s.getWeaponSpecIfWeapon().getWeaponId()) //blacklist check
-                        )
-                    ){
+                if (s.isWeaponStack() && !isWeaponAllowed(s.getWeaponSpecIfWeapon())){
                     float qty = s.getSize();
                     cargo.removeItems(s.getType(), s.getData(), qty );
                     cargo.removeEmptyStacks();
@@ -127,8 +156,29 @@ public class PrismMarket extends BaseSubmarketPlugin {
             }
         }
     }
+    
+    protected void addWings()
+    {
+        CargoAPI cargo = getCargo();
+        WeightedRandomPicker<String> fighterPicker = new WeightedRandomPicker<>();
+        for (FighterWingSpecAPI spec : Global.getSettings().getAllFighterWingSpecs()) {
+            if (isWingAllowed(spec))
+                fighterPicker.add(spec.getId());
+        }
+        
+        int picks = 0;
+        for (CargoItemQuantity<String> quantity : cargo.getFighters())
+        {
+            picks += quantity.getCount();
+        }
+        while (!fighterPicker.isEmpty() && picks < ExerelinConfig.prismNumWings) {
+            String id = fighterPicker.pick();        
+            cargo.addItems(CargoAPI.CargoItemType.FIGHTER_CHIP, id, 1);
+            picks++;
+        }
+    }
 
-    protected void addShipsAndWings() {
+    protected void addShips() {
         
         CargoAPI cargo = getCargo();
         FleetDataAPI data = cargo.getMothballedShips();
@@ -210,28 +260,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
                     i-=1;
                 }
             }
-        }
-        
-        // add fighters
-        WeightedRandomPicker<String> fighterPicker = new WeightedRandomPicker<>();
-        for (String role : rolePicker.getItems()) {
-            List<FighterWingSpecAPI> wings = getWingsOnRolePick(role, factionPicker);
-            for (FighterWingSpecAPI spec : wings) {
-                if (spec.getTier() < 2) continue;
-                if (spec.getTier() >= 5) continue;
-                fighterPicker.add(spec.getId());
-            }
-        }
-        
-        int picks = 0;
-        for (CargoItemQuantity<String> quantity : cargo.getFighters())
-        {
-            picks += quantity.getCount();
-        }
-        while (!fighterPicker.isEmpty() && picks < ExerelinConfig.prismNumWings) {
-            String id = fighterPicker.pick();        
-            cargo.addItems(CargoAPI.CargoItemType.FIGHTER_CHIP, id, 1);
-            picks++;
         }
         
         //add some IBBs
