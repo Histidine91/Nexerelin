@@ -57,6 +57,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     }));
     
     public static Logger log = Global.getLogger(PrismMarket.class);
+    //protected float minCargoUpdateInterval = 0;    // debugging
     
     protected static Set<String> restrictedWeapons;
     protected static Set<String> restrictedShips;
@@ -137,6 +138,41 @@ public class PrismMarket extends BaseSubmarketPlugin {
         }
         if (restrictedWeapons.contains(specId)) return false;
         return true;
+    }
+    
+    // same as vanilla one except without inflated weights for some weapons like HMG and Light Needler
+    @Override
+    protected void addRandomWeapons(int max, int maxTier) {
+        CargoAPI cargo = getCargo();
+        List<String> weaponIds = Global.getSector().getAllWeaponIds();
+        
+        WeightedRandomPicker<String> picker = new WeightedRandomPicker<String>();
+        if (!Global.getSettings().isDevMode() || true) {
+            picker.setRandom(itemGenRandom);
+        }
+        
+        //float qualityFactor = market.getShipQualityFactor(); 
+        for (String id : weaponIds) {
+            WeaponSpecAPI spec = Global.getSettings().getWeaponSpec(id);
+            if (spec.getTier() <= maxTier) {
+                //float weaponQuality = 0.33f * (float) spec.getTier();
+                //float qualityDiff = Math.abs(qualityFactor - weaponQuality);
+                float qualityDiff = 0f;
+                float f = Math.max(0, 1f - qualityDiff);
+                float weight = Math.max(0.05f, f * f);
+                
+                weight *= spec.getRarity();
+                
+                picker.add(spec.getWeaponId(), weight);
+            }
+        }
+        if (!picker.isEmpty()) {
+            for (int i = 0; i < max; i++) {
+                String weaponId = picker.pick();
+                int quantity = 2;
+                cargo.addWeapons(weaponId, quantity);
+            }    
+        }
     }
     
     protected void addWeapons()
