@@ -2,6 +2,7 @@ package exerelin.campaign.submarkets;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CargoAPI.CargoItemQuantity;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.CoreUIAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -11,12 +12,14 @@ import com.fs.starfarer.api.campaign.PlayerMarketTransaction.ShipSaleInfo;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
+import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -26,6 +29,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,6 +47,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public static final String SHIPS_BLACKLIST = "data/config/prism/prism_ships_blacklist.csv";
     public static final String WEAPONS_BLACKLIST = "data/config/prism/prism_weapons_blacklist.csv";
     public static final String ILLEGAL_TRANSFER_MESSAGE = StringHelper.getString("exerelin_markets", "prismNoSale");
+    public static final Set<String> DISALLOWED_FACTIONS = new HashSet<>(Arrays.asList(new String[] {
+        "templars", Factions.DERELICT, Factions.REMNANTS, Factions.PIRATES
+    }));
     
     public static Logger log = Global.getLogger(PrismMarket.class);
     
@@ -83,8 +90,25 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 cargo.removeEmptyStacks();
             }
         }
+        addShipsAndWings();
+        addWeapons();
+        cargo.sort();
+    }
+    
+    public boolean isShipAllowed(FleetMemberAPI member, float requiredFP)
+    {
+        if (member.getHullSpec().isDHull()) return false;
+        if (member.getFleetPointCost() < requiredFP) return false; //quality check
+        if (restrictedShips.contains(member.getHullSpec().getBaseHullId())) return false;
+        if (member.getHullSpec().getHints().contains(ShipTypeHints.STATION)) return false;
         
-        //add weapons
+        return true;
+    }
+    
+    protected void addWeapons()
+    {
+        CargoAPI cargo = getCargo();
+        
         float variation=(float)Math.random()*0.5f+0.75f;
         for ( float i=0f; i < ExerelinConfig.prismMaxWeapons*variation; i = (float) cargo.getStacksCopy().size()) {
             addRandomWeapons(10, 3);
@@ -102,12 +126,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 }
             }
         }
-        
-        addShips();
-        cargo.sort();
     }
 
-    protected void addShips() {
+    protected void addShipsAndWings() {
         
         CargoAPI cargo = getCargo();
         FleetDataAPI data = cargo.getMothballedShips();
@@ -145,10 +166,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
             if (!faction.isShowInIntelTab()) continue;
             //if (faction.isNeutralFaction()) continue;
             //if (faction.isPlayerFaction()) continue;
-            if (!factionId.contains("templars") && !factionId.contains(Factions.PIRATES)) 
-            {
-                factionPicker.add(sector.getFaction(factionId));
-            }
+            if (DISALLOWED_FACTIONS.contains(factionId)) continue;
+            factionPicker.add(sector.getFaction(factionId));
         }
         
         //renew the stock
@@ -164,14 +183,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 String variantId = pick.variantId; 
                                 
                 //set the ID
-                if (pick.isFighterWing()) {
-                    type = FleetMemberType.FIGHTER_WING;
-                } else {
-                    FleetMemberAPI member = Global.getFactory().createFleetMember(type, pick.variantId);
-                    variantId = member.getHullId() + "_Hull";
-                }                
-                //create the ship
                 FleetMemberAPI member = Global.getFactory().createFleetMember(type, variantId);
+                variantId = member.getHullId() + "_Hull";
+                member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
                
                 // Fleet point cost threshold
                 int FP;
@@ -188,12 +202,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 }
                 
                 //if the variant is not degraded and high end, add it. Else start over
-                if (member.getHullSpec().getBaseHullId() != null
-                    && !member.getHullId().toLowerCase().endsWith("_d")
-                    && !member.getHullId().toLowerCase().contains("_d_")
-                    && !member.getHullSpec().getHullName().toLowerCase().endsWith("(d)")
-                    && member.getFleetPointCost()>=FP //quality check
-                    && !restrictedShips.contains(member.getHullSpec().getBaseHullId())) //blacklist check
+                if (isShipAllowed(member, FP))
                 {
                     member.getRepairTracker().setMothballed(true);
                     getCargo().getMothballedShips().addFleetMember(member);
@@ -202,6 +211,29 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 }
             }
         }
+        
+        // add fighters
+        WeightedRandomPicker<String> fighterPicker = new WeightedRandomPicker<>();
+        for (String role : rolePicker.getItems()) {
+            List<FighterWingSpecAPI> wings = getWingsOnRolePick(role, factionPicker);
+            for (FighterWingSpecAPI spec : wings) {
+                if (spec.getTier() < 2) continue;
+                if (spec.getTier() >= 5) continue;
+                fighterPicker.add(spec.getId());
+            }
+        }
+        
+        int picks = 0;
+        for (CargoItemQuantity<String> quantity : cargo.getFighters())
+        {
+            picks += quantity.getCount();
+        }
+        while (!fighterPicker.isEmpty() && picks < ExerelinConfig.prismNumWings) {
+            String id = fighterPicker.pick();        
+            cargo.addItems(CargoAPI.CargoItemType.FIGHTER_CHIP, id, 1);
+            picks++;
+        }
+        
         //add some IBBs
         List<String> bossShips = getBossShips();
         for (String variantId : bossShips)
@@ -209,20 +241,24 @@ public class PrismMarket extends BaseSubmarketPlugin {
             try { 
                 FleetMemberAPI member;
                 if (variantId.endsWith("_wing")) {
-                    member = Global.getFactory().createFleetMember(FleetMemberType.FIGHTER_WING, variantId);
+                    getCargo().addFighters(variantId, 1);
                 }
                 else { 
                     variantId += "_Hull";
                     member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
+                    member.getRepairTracker().setMothballed(true);
+                    getCargo().getMothballedShips().addFleetMember(member);
                 }
-                member.getRepairTracker().setMothballed(true);
-                getCargo().getMothballedShips().addFleetMember(member);
             } catch (RuntimeException rex) {
                 // ship doesn't exist; meh
             }
         }
     }
     
+    /**
+     * Gets a set of all boss ships in the merged definition .csv
+     * @return
+     */
     public Set<String> getAllBossShips() {
         Set<String> bossShips = new HashSet<>();
         try {
@@ -242,7 +278,11 @@ public class PrismMarket extends BaseSubmarketPlugin {
         return bossShips;
     }
     
-    //IBB sales setup
+
+    /**
+     * Gets a limited number of boss ships to add to the market stocks
+     * @return
+     */
     public List<String> getBossShips() {
         
         List<BossShipEntry> validShips = new ArrayList<>();
@@ -287,10 +327,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 ibbProgress = highestIBBNum;
 
             for(BossShipEntry entry : validShips) {
-                // currently the completion stage is actually set when the bounty is created, not when it's completed
                 if (ExerelinConfig.prismUseIBBProgressForBossShips) {
                     if (entry.ibbNum > 0 && !stageCompletion.contains(entry.ibbNum - 1)){
-                        log.info("IBB not completed for " + entry.id + " (" + entry.ibbNum + ")");
+                        //log.info("IBB not completed for " + entry.id + " (" + entry.ibbNum + ")");
                         continue;
                     }
                 }
@@ -318,22 +357,26 @@ public class PrismMarket extends BaseSubmarketPlugin {
         return ret;
     }
     
-    //SS+ present
-    public boolean canLoadShips(String factionId) {
-        if (factionId.equals("ssp")){
-            return ExerelinModPlugin.HAVE_SWP;
-        }
-        return Global.getSector().getFaction(factionId) != null;
+    /**
+     * Is this boss ship (as specified in CSV) available given our currently loaded mods?
+     * @param factionOrModId
+     * @return
+     */
+    public boolean canLoadShips(String factionOrModId) {
+        if (factionOrModId == null) return true;
+        if (factionOrModId.equals("ssp")) return ExerelinModPlugin.HAVE_SWP;    // legacy
+        return Global.getSector().getFaction(factionOrModId) != null || Global.getSettings().getModManager().isModEnabled(factionOrModId);
     }
-    
     
     //BLACKLISTS
     protected void setupLists() throws JSONException, IOException {
 
         // Restricted goods
+        restrictedWeapons = new HashSet<>();
+        restrictedShips = new HashSet<>();
+        
         JSONArray csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
                 WEAPONS_BLACKLIST, "nexerelin");
-        restrictedWeapons = new HashSet<>();
         for (int x = 0; x < csv.length(); x++)
         {
             JSONObject row = csv.getJSONObject(x);
@@ -343,7 +386,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
         // Restricted ships
         csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
                 SHIPS_BLACKLIST, "nexerelin");
-        restrictedShips = new HashSet<>();
         for (int x = 0; x < csv.length(); x++)
         {
             JSONObject row = csv.getJSONObject(x);
@@ -399,23 +441,26 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     @Override
     public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
+        // record purchased ships
         List<ShipSaleInfo> shipsBought = transaction.getShipsBought();
         for (ShipSaleInfo saleInfo : shipsBought)
         {
-            String id = null;
-            if (saleInfo.getMember().isFighterWing())
-            {
-                id = saleInfo.getMember().getHullSpec().getBaseHullId() + "_wing";
-            }
-            else 
-            {
-                id = saleInfo.getMember().getHullSpec().getBaseHullId();
-            }
-            if (alreadyBoughtShips == null)
-                alreadyBoughtShips = new HashSet<>();
+            String id = saleInfo.getMember().getHullSpec().getBaseHullId();
             if (!alreadyBoughtShips.contains(id))
             {
                 //log.info("Purchased boss ship " + hullId + "; will no longer appear");
+                alreadyBoughtShips.add(id);
+            }
+        }
+        
+        // record purchased fighters
+        CargoAPI otherBought = transaction.getBought();
+        for (CargoItemQuantity<String> quantity : otherBought.getFighters())
+        {
+            String id = quantity.getItem();
+            if (!alreadyBoughtShips.contains(id))
+            {
+                //log.info("Purchased boss wing " + id + "; will no longer appear");
                 alreadyBoughtShips.add(id);
             }
         }

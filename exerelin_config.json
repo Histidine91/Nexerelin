@@ -40,7 +40,8 @@
     "freeMarketTariffMult": 0.5,    # 0.5 = halved tariffs
     
     "prismMaxWeapons": 27,
-    "prismNumShips": 16,
+    "prismNumShips": 14,
+	"prismNumWings": 6,
     "prismNumBossShips": 3,    # int; boss ships being the IBB super ships seen in Ship/Weapon Pack
     "prismRenewBossShips": false,   # if false, once a boss ship is bought it won't appear in the market again
     "prismUseIBBProgressForBossShips": true,    # must progress through the IBB (famous bounty) sidequest in SWP to unlock new boss ships for sale

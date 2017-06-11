@@ -66,7 +66,8 @@ public class ExerelinConfig
     
     // Prism Freeport
     public static int prismMaxWeapons = 27;
-    public static int prismNumShips = 16;
+    public static int prismNumShips = 14;
+    public static int prismNumWings = 6;
     public static int prismNumBossShips = 3;
     public static boolean prismRenewBossShips = false;
     public static boolean prismUseIBBProgressForBossShips = true;
@@ -158,6 +159,7 @@ public class ExerelinConfig
             
             prismMaxWeapons = settings.optInt("prismMaxWeapons", prismMaxWeapons);
             prismNumShips = settings.optInt("prismNumShips", prismNumShips);
+            prismNumWings = settings.optInt("prismNumWings", prismNumWings);
             //prismSellBossShips = settings.optBoolean("prismSellBossShips", prismSellBossShips);
             prismNumBossShips = settings.optInt("prismNumBossShips", prismNumBossShips);
             prismRenewBossShips = settings.optBoolean("prismRenewBossShips", prismRenewBossShips);
