@@ -1279,14 +1279,18 @@ EndConversation",,,
 ,,,,,,
 cargoScanInitialFollowers,BeginFleetEncounter,"!$cargoScan_didAlready
 $pursuePlayer_smugglingScan score:50
-$faction.id == player_npc score:20","$cargoScan_didAlready = true 0
-unset $ignorePlayerCommRequests
+$faction.id == player_npc score:20","unset $ignorePlayerCommRequests
 $cargoScanConv = true 0
+$cargoScan_didAlready = true 0
 $entity.smugglingScanComplete = true 1
 unset $entity.pursuePlayer_smugglingScan
-AddText ""The $faction $otherShipOrFleet looks like it wants to scan you, but doesn't."" $faction.baseColor",,,
+AddText ""The $faction $otherShipOrFleet looks like it wants to scan you, but doesn't."" $faction.baseColor
+AddText ""You're being hailed by the $faction $otherShipOrFleet."" $faction.baseColor
+OpenComms",,,
 cargoScanFirstCommsFollowers,OpenCommLink,"$entity.cargoScanConv score:100
-$faction.id == player_npc score:50","AddText ""\""We've received complaints of smuggling activity around these parts. Now I know there's no way you'd have anything to do with it, but discretion would be helpful. Appearances have to be maintained, you know.\""""",,0:cargoScan_cleanCont:Continue,
+$faction.id == player_npc score:50",,"""We've received complaints of smuggling activity around these parts. Now I know there's no way you'd have anything to do with it, but discretion would be helpful. Appearances have to be maintained, you know.""
+OR
+""Damn it, chief, could you try to be a little more subtle? We're under a lot of pressure to deal with the smuggling around here, and we don't need to attract attention where we'd rather not people start looking.""",0:cargoScan_cleanCont:Continue,
 cargoScanRefuse,DialogOptionSelected,$option == cargoScan_refuse,"$entity.ignorePlayerCommRequests = true 0
 unset $entity.cargoScanConv
 unset $entity.pursuePlayer_smugglingScan
