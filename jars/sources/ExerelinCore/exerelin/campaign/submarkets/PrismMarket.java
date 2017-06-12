@@ -25,6 +25,8 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.campaign.events.SWP_IBBTracker;
+import data.scripts.campaign.missions.SWP_FamousBountyEvent.FamousBountyStage;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
@@ -354,16 +356,11 @@ public class PrismMarket extends BaseSubmarketPlugin {
         WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
         
         int ibbProgress = 999;
-        Set<Integer> stageCompletion = (Set<Integer>) Global.getSector().getPersistentData().get("ssp_famousBountyStageTrueCompletion");
-        if (stageCompletion == null) stageCompletion = (Set<Integer>) Global.getSector().getPersistentData().get("ssp_famousBountyStageCompletion");
-        if (stageCompletion == null) stageCompletion = new HashSet<>();
+        boolean doIBBCheck = ExerelinConfig.prismUseIBBProgressForBossShips && ExerelinModPlugin.HAVE_SWP;
                 
         //Check for SS+ IBBs
-        if (!Global.getSector().getPersistentData().containsKey("ssp_famousBountyStage")) {
-            ibbProgress = 0;
-        } else {
-            ibbProgress = (int) Global.getSector().getPersistentData().get("ssp_famousBountyStage");
-        }
+        if (ExerelinModPlugin.HAVE_SWP)
+            ibbProgress = SWP_IBBTracker.getTracker().getLowestIncompleteStage().ordinal();
         
         if (ibbProgress == -1) ibbProgress = 999;
         log.info("Current IBB progress: " + ibbProgress);
@@ -390,10 +387,11 @@ public class PrismMarket extends BaseSubmarketPlugin {
             if (ibbProgress == 999)
                 ibbProgress = highestIBBNum;
 
-            for(BossShipEntry entry : validShips) {
-                if (ExerelinConfig.prismUseIBBProgressForBossShips) {
-                    if (entry.ibbNum > 0 && !stageCompletion.contains(entry.ibbNum - 1)){
-                        //log.info("IBB not completed for " + entry.id + " (" + entry.ibbNum + ")");
+            for (BossShipEntry entry : validShips) {
+                if (doIBBCheck && entry.ibbNum > 0) {
+                    FamousBountyStage stage = SWP_IBBTracker.getStage(entry.ibbNum);
+                    if (!SWP_IBBTracker.getTracker().isStageComplete(stage)){
+                        log.info("IBB not completed for " + entry.id + " (" + entry.ibbNum + ")");
                         continue;
                     }
                 }
