@@ -671,11 +671,12 @@ public class ExerelinProcGen {
 					toCheck.addAll(system.getPlanets());
 					toCheck.addAll(system.getJumpPoints());
 					
-					for (SectorEntityToken ent : system.getAllEntities())
+					for (SectorEntityToken ent : toCheck)
 					{
 						float distSq = MathUtils.getDistanceSquared(relay, ent);
 						if (distSq < 200 * 200)
 						{
+							//log.info("Relay overlap with an entity detected, changing Lagrange point");
 							lp = 9 - lp;
 							ExerelinUtilsAstro.setLagrangeOrbit(relay, systemPrimary, capEntity, 
 								lp, startAngle, orbitRadius, 0, capEntity.getOrbit().getOrbitalPeriod(), 

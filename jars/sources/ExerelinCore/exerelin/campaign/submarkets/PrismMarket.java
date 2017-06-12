@@ -26,6 +26,7 @@ import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.events.SWP_IBBTracker;
+import data.scripts.campaign.missions.SWP_FamousBountyEvent;
 import data.scripts.campaign.missions.SWP_FamousBountyEvent.FamousBountyStage;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.ExerelinSetupData;
@@ -333,7 +334,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
             
                 JSONObject row = config.getJSONObject(i);
                 String hullId = row.getString("id");
-                String factionId = row.getString("faction");
+                String factionId = row.optString("faction");
                 
                 if (!canLoadShips(factionId)) continue;
                 bossShips.add(hullId);    
@@ -344,7 +345,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
         return bossShips;
     }
     
-
     /**
      * Gets a limited number of boss ships to add to the market stocks
      * @return
@@ -357,13 +357,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
         
         int ibbProgress = 999;
         boolean doIBBCheck = ExerelinConfig.prismUseIBBProgressForBossShips && ExerelinModPlugin.HAVE_SWP;
-                
-        //Check for SS+ IBBs
-        if (ExerelinModPlugin.HAVE_SWP)
-            ibbProgress = SWP_IBBTracker.getTracker().getLowestIncompleteStage().ordinal();
-        
-        if (ibbProgress == -1) ibbProgress = 999;
-        log.info("Current IBB progress: " + ibbProgress);
         int highestIBBNum = 0;
         
         try {
@@ -372,12 +365,13 @@ public class PrismMarket extends BaseSubmarketPlugin {
             
                 JSONObject row = config.getJSONObject(i);
                 String hullId = row.getString("id");
-                String factionId = row.getString("faction");
+                String factionId = row.optString("faction");
                 
                 if (!canLoadShips(factionId)) continue;
                 
                 int ibbNum = row.getInt("ibbNum");
-                validShips.add(new BossShipEntry(hullId, ibbNum));    
+                String stage = row.optString("stage");
+                validShips.add(new BossShipEntry(hullId, ibbNum, stage));    
                 
                 if (ibbNum > highestIBBNum) 
                     highestIBBNum = ibbNum;
@@ -386,15 +380,24 @@ public class PrismMarket extends BaseSubmarketPlugin {
             // ensure proper emphasis on last ships once IBB sidequest is complete
             if (ibbProgress == 999)
                 ibbProgress = highestIBBNum;
-
+            
             for (BossShipEntry entry : validShips) {
-                if (doIBBCheck && entry.ibbNum > 0) {
-                    FamousBountyStage stage = SWP_IBBTracker.getStage(entry.ibbNum);
-                    if (!SWP_IBBTracker.getTracker().isStageComplete(stage)){
-                        log.info("IBB not completed for " + entry.id + " (" + entry.ibbNum + ")");
-                        continue;
+                boolean proceed = true;
+                String stageStr = entry.stage;
+                if (doIBBCheck && stageStr != null && !stageStr.isEmpty()) {
+                    try {
+                        FamousBountyStage stage = SWP_FamousBountyEvent.FamousBountyStage.valueOf(stageStr);
+                        if (!SWP_IBBTracker.getTracker().isStageComplete(stage)){
+                            log.info("IBB not completed for " + entry.id + " (" + stageStr + ")");
+                            proceed = false;
+                        }
+                    } catch (IllegalArgumentException | NullPointerException ex) {
+                        log.error("Failed to check IBB completion for " + entry.id + ": " + ex);
+                        //proceed = false;
                     }
                 }
+                if (!proceed) continue;
+                
                 //ignore already bought IBB
                 if (!ExerelinConfig.prismRenewBossShips && alreadyBoughtShips.contains(entry.id))
                     continue;
@@ -578,10 +581,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
     //List IBBs and their progress
     public static class BossShipEntry {
         public String id;
-        public int ibbNum;
-        public BossShipEntry(String id, int ibbNum) {
-                this.id = id;
-                this.ibbNum = ibbNum;
+        @Deprecated public int ibbNum;
+        public String stage;
+        public BossShipEntry(String id, int ibbNum, String stage) {
+            this.id = id;
+            this.ibbNum = ibbNum;
+            this.stage = stage;
         }
     }
 }
