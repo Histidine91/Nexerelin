@@ -1,6 +1,7 @@
 package exerelin.world;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.AsteroidAPI;
 import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
@@ -665,9 +666,13 @@ public class ExerelinProcGen {
 						false, 0, 1, 1, 0);
 					
 					// check for overlap with other entities
+					
+					List<SectorEntityToken> toCheck = new ArrayList<>();
+					toCheck.addAll(system.getPlanets());
+					toCheck.addAll(system.getJumpPoints());
+					
 					for (SectorEntityToken ent : system.getAllEntities())
 					{
-						if (ent == relay) continue;
 						float distSq = MathUtils.getDistanceSquared(relay, ent);
 						if (distSq < 200 * 200)
 						{
@@ -745,8 +750,10 @@ public class ExerelinProcGen {
 			List<SectorEntityToken> toRemove = new ArrayList<>();
 			for (SectorEntityToken token : system.getAllEntities())
 			{
-				//if (token.hasTag(Tags.GATE) || token.hasTag(Tags.DEBRIS_FIELD)) continue;
+				if (token.hasTag(Tags.GATE) || token.hasTag(Tags.DEBRIS_FIELD)) continue;
 				if (token.getFaction().getId().equals(Factions.DERELICT) || token.getFaction().getId().equals(Factions.REMNANTS))
+					toRemove.add(token);
+				else if (token.hasTag(Tags.SALVAGEABLE))
 					toRemove.add(token);
 			}
 			for (SectorEntityToken token : toRemove)

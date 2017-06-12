@@ -547,7 +547,7 @@ public class MarketBalancer
 			if (market.hasCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY)) 
 			{
 				// hax bounds a bit, to keep it from removing autofacs from everything
-				if (getSupply(comId) > getDemand(comId) * MAX_OVERSUPPLY * 1.25f)	
+				if (getSupply(comId) > getDemand(comId) * MAX_OVERSUPPLY * 1.2f)	
 				{
 					removeMarketCondition(entity, Conditions.AUTOFAC_HEAVY_INDUSTRY);
 					log.info("Removed balancing heavy autofactory from " + market.getName());
@@ -563,8 +563,8 @@ public class MarketBalancer
 			if (weight == 0) continue;
 			entityPicker.add(entity, weight);
 		}
-		// more hax
-		while (getDemand(comId) > getSupply(comId) * MAX_OVERDEMAND * 0.75)
+		
+		while (getDemand(comId) > getSupply(comId) * MAX_OVERDEMAND)
 		{
 			if (entityPicker.isEmpty())	break;
 			
@@ -683,7 +683,7 @@ public class MarketBalancer
 			else if (builder.isConditionAllowed(Conditions.AQUACULTURE, entity))
 			{
 				addMarketCondition(entity, Conditions.AQUACULTURE);
-				log.info("Added balancing Orbital Burns to " + market.getName());
+				log.info("Added balancing Aquaculture to " + market.getName());
 			}
 			else if (builder.isConditionAllowed(Conditions.RURAL_POLITY, entity))
 			{

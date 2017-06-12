@@ -41,7 +41,7 @@
     
     "prismMaxWeapons": 27,
     "prismNumShips": 14,
-	"prismNumWings": 6,
+    "prismNumWings": 6,
     "prismNumBossShips": 3,    # int; boss ships being the IBB super ships seen in Ship/Weapon Pack
     "prismRenewBossShips": false,   # if false, once a boss ship is bought it won't appear in the market again
     "prismUseIBBProgressForBossShips": true,    # must progress through the IBB (famous bounty) sidequest in SWP to unlock new boss ships for sale
@@ -81,5 +81,5 @@
     # DO NOT TOUCH!
     # to make factions not appear, set them to unplayable in their faction config
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "lions_guard", "persean", "luddic_church", "luddic_path", "knights_of_ludd", "pirates",
-		       "derelict", "remnant", "player", "player_npc", "independent", "scavengers", "neutral"],
+           "derelict", "remnant", "player", "player_npc", "independent", "scavengers", "neutral"],
 }

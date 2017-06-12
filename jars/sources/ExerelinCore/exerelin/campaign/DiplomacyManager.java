@@ -300,6 +300,19 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     }
     
     // TODO: refactor/test if all that duplicate handling for player vs. aligned faction is really needed
+
+    /**
+     * Complicated stuff for setting relationships between two factions
+     * Checks relationship bounds, etc.
+     * @param faction1
+     * @param faction2
+     * @param delta
+     * @param ensureAtBest
+     * @param ensureAtWorst
+     * @param limit
+     * @param isAllianceAction Is this change resulting from an alliance action (a war vote etc.)? Don't do looping calls to AllianceManager
+     * @return
+     */
     public static ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, float delta,
             RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit, boolean isAllianceAction)
     {   
@@ -336,6 +349,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         // if now at peace/war, set relationships for commission holder
         // TODO figure out if the playerFaction bit is really needed
         ExerelinReputationAdjustmentResult repResult = new ExerelinReputationAdjustmentResult(delta, wasHostile, isHostile);
+        
         if (repResult.wasHostile && !repResult.isHostile)
         {
             String commissionFactionId = ExerelinUtilsFaction.getCommissionFactionId();
@@ -388,6 +402,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             printPlayerHostileStateMessage(faction1, playerIsHostile1);
         if (playerIsHostile2 != playerWasHostile2)
             printPlayerHostileStateMessage(faction2, playerIsHostile2);
+        
+        // TODO: dispaly specific reputation change in message field if it affects player
+        if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
+        {
+            
+        }
         
         SectorManager.checkForVictory();
         return repResult;
