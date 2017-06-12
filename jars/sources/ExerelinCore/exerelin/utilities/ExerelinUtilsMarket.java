@@ -9,10 +9,12 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.PlayerFactionStore;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -257,6 +259,8 @@ public class ExerelinUtilsMarket {
 		if (market.getPrimaryEntity() instanceof CampaignFleetAPI) return false;
 		
 		FactionAPI marketFaction = market.getFaction();
+		if (marketFaction.getId().equals(PlayerFactionStore.getPlayerFactionId()))
+			return false;
 		if (marketFaction.isNeutralFaction()) return false;
 		
 		if (market.getPrimaryEntity().hasTag(ExerelinConstants.TAG_UNINVADABLE))
