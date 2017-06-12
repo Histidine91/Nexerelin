@@ -2,12 +2,16 @@ package exerelin.campaign.alliances;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsReputation;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,6 +31,8 @@ public class AllianceVoter {
 	public static final float STRENGTH_POINT_MULT = 0.5f;
 	public static final float HAWKISHNESS_POINTS = 50;
 	public static final float RANDOM_POINTS = 50;
+	public static final float DEFIER_REP_LOSS_YES = -0.1f;
+	public static final float DEFIER_REP_LOSS_ABSTAIN = -0.05f;
 	
 	protected static final boolean DEBUG_LOGGING = true;
 	
@@ -69,7 +75,10 @@ public class AllianceVoter {
 		{
 			AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, null, ally2, isWar, defyingFactions);
 		}
-		// TODO: alliance hates on defiers
+		
+		// alliance hates on defiers
+		handleDefyRelations(vote1);
+		handleDefyRelations(vote2);
 		
 		// report event
 		if (ally1 != null)
@@ -82,6 +91,41 @@ public class AllianceVoter {
 			Map<String, Object> params = getEventParams(ally2, vote2, faction1Id, ally1, isWar);
 			ally2.getVoteEvent().reportEvent(params);
 		}
+	}
+	
+	protected static void handleDefyRelations(VoteResult vote)
+	{
+		if (vote == null) return;
+		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
+		if (vote.defied.isEmpty()) return;
+		
+		Set<String> toModify = new HashSet<>(vote.yesVotes);
+		toModify.addAll(vote.abstentions);
+		for (String member : toModify)
+		{
+			FactionAPI faction = Global.getSector().getFaction(member);
+			float penalty = DEFIER_REP_LOSS_YES;
+			if (toModify.contains(member))
+				penalty = DEFIER_REP_LOSS_ABSTAIN;
+			for (String defier : vote.defied)
+			{
+				FactionAPI defierFaction = Global.getSector().getFaction(defier);
+				if (member.equals(playerAlignedFactionId))
+				{
+					ExerelinUtilsReputation.adjustPlayerReputation(defierFaction, null, penalty);
+				}
+				else if (defier.equals(playerAlignedFactionId))
+				{
+					ExerelinUtilsReputation.adjustPlayerReputation(faction, null, penalty);
+				}
+				else
+				{
+					DiplomacyManager.adjustRelations(faction, defierFaction, 
+							penalty, null, null, RepLevel.HOSTILE, true);
+				}
+			}
+		}
+		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
 	}
 	
 	protected static Map<String, Object> getEventParams(Alliance alliance, VoteResult result, 
