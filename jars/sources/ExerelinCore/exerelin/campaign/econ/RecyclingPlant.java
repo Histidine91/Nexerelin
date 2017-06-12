@@ -4,6 +4,7 @@ import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import com.fs.starfarer.api.impl.campaign.econ.ConditionData;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 
+@Deprecated
 public class RecyclingPlant extends BaseMarketConditionPlugin {
 	
 	public static final float RECYCLING_CREW = 200f;

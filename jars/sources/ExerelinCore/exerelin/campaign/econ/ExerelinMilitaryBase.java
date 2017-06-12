@@ -15,13 +15,21 @@ public class ExerelinMilitaryBase extends MilitaryBase {
 		{
 			market.removeSubmarket(Submarkets.GENERIC_MILITARY);
 		}
-		market.getCommodityData(Commodities.MARINES).getSupply().modifyFlat(id, ConditionData.MILITARY_BASE_MARINES_SUPPLY * EXTRA_MARINES_MULT);
+		
+		// increase marine production; produce agents and saboteurs
+		market.getCommodityData(Commodities.MARINES).getSupply().modifyFlat(id, ConditionData.MILITARY_BASE_MARINES_SUPPLY 
+				* EXTRA_MARINES_MULT);
 		market.getCommodityData("agent").getSupply().modifyFlat(id, AGENT_SUPPLY);
 		market.getCommodityData("saboteur").getSupply().modifyFlat(id, AGENT_SUPPLY);
+		
+		// increase marine demand (to prevent production stalling on overstocking)
 		market.getCommodityData(Commodities.MARINES).getDemand().getDemand().modifyFlat(id, 
 				ConditionData.MILITARY_BASE_MARINES_DEMAND * EXTRA_MARINES_MULT);
 		market.getCommodityData(Commodities.MARINES).getDemand().getNonConsumingDemand().modifyFlat(id, 
-				ConditionData.MILITARY_BASE_MARINES_DEMAND * ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION * EXTRA_MARINES_MULT);
+				ConditionData.MILITARY_BASE_MARINES_DEMAND * ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION 
+						* EXTRA_MARINES_MULT);
+		
+		// set agent/saboteur demand
 		market.getCommodityData("agent").getDemand().getDemand().modifyFlat(id, AGENT_SUPPLY * 2);
 		market.getCommodityData("agent").getDemand().getNonConsumingDemand().modifyFlat(id, AGENT_SUPPLY * 2
 				* ConditionData.CREW_MARINES_NON_CONSUMING_FRACTION);

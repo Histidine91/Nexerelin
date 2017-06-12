@@ -1,9 +1,11 @@
 package exerelin.world;
 
 import com.fs.starfarer.api.campaign.PlanetAPI;
+import com.fs.starfarer.api.campaign.PlanetSpecAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.impl.campaign.procgen.Constellation;
 import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
+import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import exerelin.utilities.ExerelinConfig;
 
@@ -30,6 +32,21 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 		}
 		
 		return c;
+	}
+
+	// don't want black holes or pulsars
+	@Override
+	public PlanetSpecAPI pickStar(StarAge age) {
+		PlanetSpecAPI newStar = null;
+		int tries = 0;
+		while (tries < 8)
+		{
+			tries++;
+			newStar = super.pickStar(age);
+			if (!newStar.isBlackHole() && !newStar.isPulsar())
+				break;	// valid star
+		}
+		return newStar;
 	}
 	
 	@Override

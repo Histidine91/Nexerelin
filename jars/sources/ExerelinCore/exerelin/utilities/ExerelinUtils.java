@@ -172,4 +172,36 @@ public class ExerelinUtils
 		}
 		return list;
 	}
+	
+	// invented by DarkRevenant
+	// see DynaSector mod plugin for example
+	public static void removeScriptAndListener(SectorEntityToken entity, Class<?> oldClass, Class<?> newClass)
+	{
+		CampaignEventListener listener = null;
+        for (CampaignEventListener l : Global.getSector().getAllListeners()) {
+            if (oldClass.isInstance(l) && (newClass == null || !newClass.isInstance(l))) {
+                listener = l;
+                break;
+            }
+        }
+        if (listener != null) {
+            Global.getSector().removeListener(listener);
+        }
+		entity.removeScriptsOfClass(oldClass);
+	}
+	
+	public static void removeScriptAndListener(LocationAPI loc, Class<?> oldClass, Class<?> newClass)
+	{
+		CampaignEventListener listener = null;
+        for (CampaignEventListener l : Global.getSector().getAllListeners()) {
+            if (oldClass.isInstance(l) && (newClass == null || !newClass.isInstance(l))) {
+                listener = l;
+                break;
+            }
+        }
+        if (listener != null) {
+            Global.getSector().removeListener(listener);
+        }
+		loc.removeScriptsOfClass(oldClass);
+	}
 }

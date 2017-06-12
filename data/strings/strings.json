@@ -205,7 +205,9 @@
 		"hasBaseTip":"has military base",
 		
 		"prismNoSale":"No sales/returns",
-		"prismRelTooLow":"Requires: $faction - $minRelationship"
+		"prismRelTooLow":"Requires: $faction - $minRelationship",
+		
+		"templarControl":"Templar control"
 	},
 	"exerelin_mining":{
 		"danger":"hazard rating",

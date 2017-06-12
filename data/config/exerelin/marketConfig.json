@@ -4,22 +4,29 @@
 		{
 			"name":"ore_complex",
 			"cost":100,
-			"archetypes":{"ore":4,"manufacturing":1,"heavy_industry":0.5},
+			"archetypes":{"default":1,"ore":4,"agriculture":0.5},
+			"requiresOneOf":["ore_abundant", "ore_rich", "ore_ultrarich"],	# must have one of these conditions to set up an ore complex...
+			"noRequireForArchetype":"ore",	# ...unless market has an ore archetype
 		},
 		{
 			"name":"volatiles_complex",
 			"cost":100,
-			"archetypes":{"volatiles":2.5,"manufacturing":0.5},
+			"archetypes":{"default":1,"volatiles":2.5},
+			"requiresOneOf":["volatiles_abundant", "volatiles_plentiful"],
+			"noRequireForArchetype":"volatiles",
 		},
 		{
 			"name":"volatiles_depot",
-			"cost":50,
-			"archetypes":{"volatiles":1,"manufacturing":0.75,"heavy_industry":0.5,"misc":1},
+			"special":true,
+			#"cost":50,
+			"archetypes":{"volatiles":2,"manufacturing":1,"heavy_industry":0.5,"misc":1},
 		},
 		{
 			"name":"organics_complex",
 			"cost":100,
 			"archetypes":{"organics":2.5,"manufacturing":0.5},
+			"requiresOneOf":["organics_abundant", "organics_plentiful"],
+			"noRequireForArchetype":"organics",
 		},
 		{
 			"name":"hydroponics_complex",
@@ -33,18 +40,10 @@
 		#	"allowedPlanets":["terran","jungle","water"],
 		#	"allowStations":false,
 		#},
-		#{
-		#	"name":"volturnian_lobster_pens",
-		#	"cost":300,
-		#	"archetypes":{"default":0.25, "agriculture":1, "mixed":0.5, "heavy_industry":0},
-		#	"allowedPlanets":["terran","jungle","water"],
-		#	"allowStations":false,
-		#	"minSize":4,
-		#},
 		{
-			"name":"exerelin_volturnian_lobster_pens", # smaller version
+			"name":"volturnian_lobster_pens",
 			"cost":100,
-			"archetypes":{"default":1, "agriculture":2, "misc":1.5, "heavy_industry":0},
+			"archetypes":{"default":0.25, "agriculture":1, "mixed":0.5, "heavy_industry":0},
 			"allowedPlanets":["terran","jungle","water"],
 			"allowStations":false,
 			"minSize":3,
@@ -62,13 +61,13 @@
 		{
 			"name":"ore_refining_complex",
 			"cost":100,
-			"archetypes":{"ore":2.5,"manufacturing":3.5,"heavy_industry":1.5,"misc":1.5},
+			"archetypes":{"ore":1,"manufacturing":3,"heavy_industry":2,"misc":0.5},
 			"minSize":3,
 		},
 		{
 			"name":"light_industrial_complex",
-			"cost":150,
-			"archetypes":{"manufacturing":3,"heavy_industry":1,"mixed":1.5},
+			"cost":100,
+			"archetypes":{"manufacturing":4,"heavy_industry":1,"misc":2},
 			"minSize":3,
 			#"maxSize":6,
 			#"allowDuplicates":false,
@@ -79,12 +78,14 @@
 		#	"archetypes":{"default":1},
 		#	"minSize":3,
 		#},
-		#{
-		#	"name":"exerelin_supply_workshop",
-		#	"cost":200,
-		#	"archetypes":{"default":1,"manufacturing":3,"heavy_industry":1.5,"misc":1.25},
-		#	"minSize":4,
-		#},
+		{
+			"name":"exerelin_supply_workshop",
+			"cost":100,
+			"archetypes":{"manufacturing":1,"heavy_industry":0.25,"misc":0.5},
+			"minSize":3,
+			"maxSize":5,
+			"conflictsWith":["autofac_heavy_industry"],
+		},
 		{
 			"name":"trade_center",
 			"cost":100,
@@ -94,16 +95,16 @@
 		},
 		{
 			"name":"spaceport",
-			"cost":100,
-			"archetypes":{"default":1,"agriculture":0,"manufacturing":2,"heavy_industry":3},
+			"cost":150,
+			"archetypes":{"manufacturing":0.75,"heavy_industry":1,"misc":0.5},
 			"minSize":4,
 			"allowDuplicates":false,
 			"conflictsWith":["orbital_station"],
 		},
 		{
 			"name":"orbital_station",
-			"cost":100,
-			"archetypes":{"default":1,"agriculture":0,"manufacturing":2,"heavy_industry":3},
+			"cost":150,
+			"archetypes":{"default":0.5,"manufacturing":1,"heavy_industry":1.5},
 			"minSize":4,
 			"allowDuplicates":false,
 			"allowStations":false,
@@ -118,7 +119,7 @@
 		{
 			"name":"antimatter_fuel_production",
 			"cost":150,
-			"archetypes":{"manufacturing":1,"heavy_industry":4.5,"misc":0.75},
+			"archetypes":{"manufacturing":1.5,"heavy_industry":5,"misc":1},
 			"minSize":4,
 		},
 		{
@@ -198,6 +199,7 @@
 			"special":true,
 			"archetypes":{"default":1},
 			"minSize":3,
+			"maxSize":6,	# since it's still pop-based
 			"allowDuplicates":false
 		},
 		{
@@ -218,7 +220,7 @@
 		{
 			"name":"organized_crime",
 			"special":true,
-			"archetypes":{"default":1.5,"agriculture":1},
+			"archetypes":{"default":1.25},
 			"minSize":3,
 			#"allowDuplicates":false
 		},

@@ -41,6 +41,7 @@ import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsMarket;
+import java.util.Arrays;
 import java.util.Random;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -157,10 +158,10 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		}
 		else
 		{
-			// make core system
-			CustomConstellationParams params = new CustomConstellationParams(StarAge.ANY);
+			// make core constellation
+			CustomConstellationParams params = new CustomConstellationParams(StarAge.AVERAGE);
 			int num = ExerelinSetupData.getInstance().numSystems;
-			params.minStars = 12;	//num;
+			params.minStars = 14;	//num;
 			params.maxStars = 18;	//num + (int)Math.max(num * 1.2f, 2);
 			params.location = SECTOR_CENTER;
 			new ExerelinCoreSystemGenerator(params).generate();

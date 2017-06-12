@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtils;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.log4j.Logger;
@@ -52,23 +53,6 @@ public class PatrolFleetManagerReplacer extends BaseCampaignEventListener implem
 		}
 	}
 	
-	// invented by DarkRevenant
-	// see DynaSector mod plugin for example
-	public static void removeScriptAndListener(SectorEntityToken entity, Class<?> oldClass, Class<?> newClass)
-	{
-		CampaignEventListener listener = null;
-        for (CampaignEventListener l : Global.getSector().getAllListeners()) {
-            if (oldClass.isInstance(l) && !newClass.isInstance(l)) {
-                listener = l;
-                break;
-            }
-        }
-        if (listener != null) {
-            Global.getSector().removeListener(listener);
-        }
-		entity.removeScriptsOfClass(oldClass);
-	}
-	
 	public void assignPatrolSpawningScripts() {
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
 			String id = market.getId();
@@ -89,7 +73,7 @@ public class PatrolFleetManagerReplacer extends BaseCampaignEventListener implem
 			SectorEntityToken entity = market.getPrimaryEntity();
 			
 			if (id.equals("sindria")) {
-				removeScriptAndListener(entity, LionsGuardFleetManager.class, ExerelinLionsGuardFleetManager.class);
+				ExerelinUtils.removeScriptAndListener(entity, LionsGuardFleetManager.class, ExerelinLionsGuardFleetManager.class);
 				ExerelinLionsGuardFleetManager script = new ExerelinLionsGuardFleetManager(market);
 				entity.addScript(script);
 			}
@@ -98,7 +82,7 @@ public class PatrolFleetManagerReplacer extends BaseCampaignEventListener implem
 			
 			ExerelinPatrolFleetManager script = new ExerelinPatrolFleetManager(market);
 			// remove any existing patrol scripts just to be safe
-			removeScriptAndListener(entity, PatrolFleetManager.class, ExerelinPatrolFleetManager.class);
+			ExerelinUtils.removeScriptAndListener(entity, PatrolFleetManager.class, ExerelinPatrolFleetManager.class);
 			entity.addScript(script);
 			log.info("Added patrol fleet spawning script to market [" + market.getName() + "]");
 			

@@ -40,8 +40,8 @@ ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOption
 7:exerelinNGCSectorOptions:Sector generation
 8:exerelinNGCFactionOptions:Faction settings
 9:exerelinNGCOtherOptions:Other options",
-#ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCEnableCorvusMode:Enable Corvus Mode,
-#ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCDisableCorvusMode:Disable Corvus Mode,
+ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCEnableCorvusMode:Enable Corvus Mode,
+ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCDisableCorvusMode:Disable Corvus Mode,
 ExerelinNewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,Nex_NGCProcessSectorGenerationSliders create,,,
 ExerelinNewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present, unless disabled in config""
 SetShortcut exerelinNGCSectorOptionsBack ESCAPE",,9:exerelinNGCSectorOptionsBack:Back,
@@ -88,12 +88,6 @@ ExerelinNGCSectorOptionsMenu,NewGameOptionSelected,$option==exerelinNGCSectorOpt
 ExerelinNGCFactionOptionsMenu,NewGameOptionSelected,$option==exerelinNGCFactionOptions,FireAll ExerelinNGCFactionOptions,,,
 ExerelinNGCOtherOptionsMenu,NewGameOptionSelected,$option==exerelinNGCOtherOptions,FireAll ExerelinNGCOtherOptions,,,
 ,,,,,,
-#ExerelinNGCListOptionEnableOmnifactory,ExerelinNGCSectorOptions,!$omniFacPresent,"SetTooltip exerelinNGCEnableOmnifactory ""A special facility that can reproduce (almost) any ship or weapon infinitely once given a sample. Items are sold at a 100% markup.""",,exerelinNGCEnableOmnifactory:Enable Omnifactory,
-#ExerelinNGCListOptionDisableOmnifactory,ExerelinNGCSectorOptions,$omniFacPresent,"SetTooltip exerelinNGCDisableOmnifactory ""A special facility that can reproduce (almost) any ship or weapon infinitely once given a sample. Items are sold at a 100% markup.""",,exerelinNGCDisableOmnifactory:Disable Omnifactory,
-#ExerelinNGCListOptionSetRandomOmnifactoryLocation,ExerelinNGCSectorOptions,"$omniFacPresent
-!$randomOmnifactoryLocation",,,exerelinNGCSetOmnifactoryRandomLocation:Enable random location for Omnifactory,
-#ExerelinNGCListOptionUnsetRandomOmnifactoryLocation,ExerelinNGCSectorOptions,"$omniFacPresent
-$randomOmnifactoryLocation",,,exerelinNGCUnsetOmnifactoryRandomLocation:Disable random location for Omnifactory,
 ExerelinNGCListOptionEnablePrismMarket,ExerelinNGCSectorOptions,!$prismMarketPresent,"SetTooltip exerelinNGCEnablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCEnablePrismMarket:Enable Prism Freeport,
 ExerelinNGCListOptionDisablePrismMarket,ExerelinNGCSectorOptions,$prismMarketPresent,"SetTooltip exerelinNGCDisablePrismMarket ""A trade station in hyperspace. Includes a special vendor that sells all kinds of high-end ships for a price.""",,exerelinNGCDisablePrismMarket:Disable Prism Freeport,
 ExerelinNGCEnablePrismMarketOption,ExerelinNGCSectorOptions,!$corvusMode,"SetEnabled exerelinNGCEnablePrismMarket true

@@ -4,7 +4,6 @@ import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import exerelin.campaign.events.SecurityAlertEvent;
 import java.util.Map;
 
-@Deprecated
 public class SecurityAlertCondition extends BaseMarketConditionPlugin {
 	private SecurityAlertEvent event = null;
 	

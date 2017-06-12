@@ -71,7 +71,7 @@ public class ExerelinModPlugin extends BaseModPlugin
 		// not sure if this is needed since the replacer should already do it, but just to be safe
         for (MarketAPI market : sector.getEconomy().getMarketsCopy())
         {
-            PatrolFleetManagerReplacer.removeScriptAndListener(market.getPrimaryEntity(), 
+            ExerelinUtils.removeScriptAndListener(market.getPrimaryEntity(), 
 					PatrolFleetManager.class, ExerelinPatrolFleetManager.class);
         }
 		
@@ -231,20 +231,6 @@ public class ExerelinModPlugin extends BaseModPlugin
     public void onNewGameAfterTimePass() {
         Global.getLogger(this.getClass()).info("New game after time pass; " + isNewGame);
         StartSetupPostTimePass.execute();
-		
-		// cleanup any remaining Remnant fleets
-		if (!SectorManager.getCorvusMode())
-		{
-			Set<StarSystemAPI> populatedSystems = new HashSet<>();
-			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-			{
-				if (!market.getContainingLocation().isHyperspace())
-				{
-					populatedSystems.add((StarSystemAPI)market.getContainingLocation());
-				}
-			}
-			ExerelinProcGen.cleanupDerelicts(populatedSystems);
-		}
     }
     
     @Override
