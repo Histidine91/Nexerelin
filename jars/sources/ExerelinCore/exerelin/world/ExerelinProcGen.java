@@ -1086,7 +1086,7 @@ public class ExerelinProcGen {
 		// first add planet type conditions so archetype picker knows about them
 		for (ProcGenEntity entity : populatedPlanets)
 		{
-			marketSetup.addMarketConditionsForPlanetType(entity);
+			marketSetup.addMarketConditionForPlanetType(entity);
 		}
 		
 		marketSetup.pickMarketArchetypes(populatedPlanets);

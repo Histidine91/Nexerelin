@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import org.json.JSONArray;
@@ -674,58 +675,69 @@ public class ExerelinMarketBuilder
 		}
 	}
 	
-	protected void addMarketConditionsForPlanetType(ProcGenEntity data)
+	protected boolean isPlanetOfType(PlanetAPI planet, String wantedType)
 	{
-		String type = data.planetType;
+		if (planet.getTypeId().startsWith(wantedType)) return true;
+		if (planet.getSpec().getName().toLowerCase(Locale.ROOT).startsWith(wantedType)) 
+			return true;
+		
+		return false;
+	}
+	
+	protected void addMarketConditionForPlanetType(ProcGenEntity data)
+	{
+		if (!(data.entity instanceof PlanetAPI)) return;
+		PlanetAPI planet = (PlanetAPI)data.entity;
 		MarketAPI market = data.market;
-		// planet type conditions
-		if (type != null && !type.isEmpty())
+		
+		//log.info("Attempting to add planet type condition for planet " + planet.getName() + ": " + planet.getTypeId() + ", " + planet.getSpec().getName());
+		if (isPlanetOfType(planet, "frozen") || isPlanetOfType(planet, "rocky_ice"))
 		{
-			//log.info("Attempting to add planet type condition: " + planetType);
-			if (type.startsWith("frozen") || type.startsWith("rocky_ice"))
-			{
-				market.addCondition(Conditions.ICE);
-			}
-			else if (type.startsWith("barren") || type.startsWith("rocky_metallic") || type.startsWith("barren-bombarded"))
-			{
-				
-			}
-			else if (type.startsWith("barren-desert"))
-			{
-				market.addCondition("barren_marginal");
-			}
-			else if (type.startsWith("terran-eccentric"))
-			{
-				market.addCondition("twilight");
-			}
-			else if (type.startsWith("terran"))
-			{
-				market.addCondition(Conditions.TERRAN);
-			}
-			else if (type.startsWith("jungle"))
-			{
-				market.addCondition(Conditions.JUNGLE);
-			}
-			else if (type.startsWith("arid"))
-			{
-				market.addCondition(Conditions.ARID);
-			}
-			else if (type.startsWith("desert"))
-			{
-				market.addCondition(Conditions.DESERT);
-			}
-			else if (type.startsWith("water"))
-			{
-				market.addCondition(Conditions.WATER);
-			}
-			else if (type.startsWith("tundra"))
-			{
-				market.addCondition("tundra");
-			}
-			else if (type.startsWith("cryovolcanic"))
-			{
-				market.addCondition("cryovolcanic");
-			}
+			market.addCondition(Conditions.ICE);
+		}
+		else if (isPlanetOfType(planet, "barren") || isPlanetOfType(planet, "rocky_metallic") || isPlanetOfType(planet, "barren-bombarded"))
+		{
+
+		}
+		else if (isPlanetOfType(planet, "barren-desert"))
+		{
+			market.addCondition("barren_marginal");
+		}
+		else if (isPlanetOfType(planet, "terran-eccentric"))
+		{
+			market.addCondition("twilight");
+		}
+		else if (isPlanetOfType(planet, "terran"))
+		{
+			market.addCondition(Conditions.TERRAN);
+		}
+		else if (isPlanetOfType(planet, "jungle"))
+		{
+			market.addCondition(Conditions.JUNGLE);
+		}
+		else if (isPlanetOfType(planet, "arid") || isPlanetOfType(planet, "US_lifelessArid") || isPlanetOfType(planet, "auric") )
+		{
+			market.addCondition(Conditions.ARID);
+		}
+		else if (isPlanetOfType(planet, "desert") || isPlanetOfType(planet, "US_crimson"))
+		{
+			market.addCondition(Conditions.DESERT);
+		}
+		else if (isPlanetOfType(planet, "water"))
+		{
+			market.addCondition(Conditions.WATER);
+		}
+		else if (isPlanetOfType(planet, "tundra"))
+		{
+			market.addCondition("tundra");
+		}
+		else if (isPlanetOfType(planet, "cryovolcanic"))
+		{
+			market.addCondition("cryovolcanic");
+		}
+		else if (isPlanetOfType(planet, "US_lifeless") || isPlanetOfType(planet, "US_continent"))
+		{
+			market.addCondition("twilight");
 		}
 	}
 	
