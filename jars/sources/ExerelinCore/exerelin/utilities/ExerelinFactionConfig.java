@@ -11,6 +11,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.*;
@@ -37,10 +38,10 @@ public class ExerelinFactionConfig
     // 2 = hostile to everyone
     // 3 = vengeful to everyone
     public int hostileToAll = 0;    
-	
+    
     public double baseFleetCostMultiplier = 1.0;	// currently unused
 
-	// currently unused
+    // currently unused
     public String customRebelFaction = "";
     public String customRebelFleetId = "";
     public String rebelFleetSuffix = "Dissenters";
@@ -73,7 +74,7 @@ public class ExerelinFactionConfig
     
     public float marketSpawnWeight = 1;	// what proportion of procgen markets this faction gets
     public boolean freeMarket = false;
-	public float tariffMult = 1;
+    public float tariffMult = 1;
 
     public float invasionStrengthBonusAttack = 0;	// marines
     public float invasionStrengthBonusDefend = 0;
@@ -221,12 +222,10 @@ public class ExerelinFactionConfig
                     }
                 }
             }
-            
             loadStartShips(settings);
-        }
-        catch(Exception e)
+        } catch(IOException | JSONException ex)
         {
-            Global.getLogger(this.getClass()).error(e);
+            Global.getLogger(this.getClass()).error("Failed to load faction config for " + factionId + ": " + ex);
         }
         
         if (miningVariantsOrWings.isEmpty())
@@ -370,16 +369,16 @@ public class ExerelinFactionConfig
         if (type == StartFleetType.COMBAT_LARGE || type == StartFleetType.COMBAT_LARGE_SSP)
         {
             rolePicker.add(ShipRoles.COMBAT_MEDIUM, 1);	// Crusader
-			rolePicker.add(ShipRoles.ESCORT_MEDIUM, 1);	// Crusader
+            rolePicker.add(ShipRoles.ESCORT_MEDIUM, 1);	// Crusader
             pickShipsAndAddToList(rolePicker, ships, true);
             
-			rolePicker.add(ShipRoles.ESCORT_SMALL, 2);	// Jesuit
-			rolePicker.add(ShipRoles.COMBAT_SMALL, 1);	// Martyr or Jesuit
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 2);	// Jesuit
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 1);	// Martyr or Jesuit
             rolePicker.add(ShipRoles.FAST_ATTACK, 1);	// Martyr, sometimes Jesuit
             pickShipsAndAddToList(rolePicker, ships, true);
             
-			rolePicker.add(ShipRoles.FAST_ATTACK, 2);	// Martyr, sometimes Jesuit
-			//rolePicker.add(ShipRoles.FIGHTER, 1);	// Teuton (no Smiter)
+            rolePicker.add(ShipRoles.FAST_ATTACK, 2);	// Martyr, sometimes Jesuit
+            //rolePicker.add(ShipRoles.FIGHTER, 1);	// Teuton (no Smiter)
             
             pickShipsAndAddToList(rolePicker, ships, true);
         }
@@ -391,7 +390,7 @@ public class ExerelinFactionConfig
             
             rolePicker.add(ShipRoles.COMBAT_SMALL, 1);	// Martyr or Jesuit
             rolePicker.add(ShipRoles.FAST_ATTACK, 1);	// Martyr, sometimes Jesuit
-			//rolePicker.add(ShipRoles.FIGHTER, 1);	// Teuton (no Smiter)
+            //rolePicker.add(ShipRoles.FIGHTER, 1);	// Teuton (no Smiter)
             pickShipsAndAddToList(rolePicker, ships, true);
         }
         else if (type == StartFleetType.SOLO || type == StartFleetType.SOLO_SSP)

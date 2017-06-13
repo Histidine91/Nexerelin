@@ -7,13 +7,17 @@ import java.util.List;
 import java.util.ArrayList;
 
 import static exerelin.utilities.ExerelinUtils.JSONArrayToStringArray;
+import java.io.IOException;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 public class ExerelinConfig
 {
     public static final String CONFIG_PATH = "exerelin_config.json";
     public static final String MOD_FACTION_LIST_PATH = "data/config/exerelinFactionConfig/mod_factions.csv";
     
+    public static Logger log = Global.getLogger(ExerelinConfig.class);
     public static List<ExerelinFactionConfig> exerelinFactionConfigs;
     public static ExerelinFactionConfig defaultConfig;
    
@@ -197,20 +201,11 @@ public class ExerelinConfig
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             
-            
-            List<String> modFactions = new ArrayList<>();
-            JSONArray modFactionsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("faction", MOD_FACTION_LIST_PATH, "nexerelin");
-            for(int x = 0; x < modFactionsCsv.length(); x++)
-            {
-                JSONObject row = modFactionsCsv.getJSONObject(x);
-                String factionName = row.getString("faction");
-                modFactions.add(factionName);
-            }
-            supportedModFactions = modFactions.toArray(new String[]{});
+            loadModFactionList();
         }
         catch(Exception e)
         {
-            Global.getLogger(ExerelinConfig.class).error("Unable to load settings: " + e.getMessage());
+            log.error("Unable to load settings: " + e.getMessage());
         }
 
         // Reset and load faction configuration data
@@ -225,12 +220,28 @@ public class ExerelinConfig
             if (factionId.equals(Factions.NEUTRAL))
                 defaultConfig = conf;
         }
-        
 
         for(String factionId : supportedModFactions)
         {
             if (ExerelinUtilsFaction.doesFactionExist(factionId))
                 ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(factionId));
+        }
+    }
+    
+    protected static void loadModFactionList()
+    {
+        try {
+            List<String> modFactions = new ArrayList<>();
+            JSONArray modFactionsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("faction", MOD_FACTION_LIST_PATH, "nexerelin");
+            for(int x = 0; x < modFactionsCsv.length(); x++)
+            {
+                JSONObject row = modFactionsCsv.getJSONObject(x);
+                String factionName = row.getString("faction");
+                modFactions.add(factionName);
+            }
+            supportedModFactions = modFactions.toArray(new String[]{});
+        } catch (IOException | JSONException ex) {
+            log.error("Failed to load mod faction file: " + ex);
         }
     }
 
