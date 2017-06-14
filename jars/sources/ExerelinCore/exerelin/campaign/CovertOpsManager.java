@@ -134,6 +134,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             String factionId = faction.getId();
             ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
             if (factionConf != null && !factionConf.allowAgentActions) continue;
+            if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;  // pirates aren't targeted for covert warfare
             if (DISALLOWED_FACTIONS.contains(faction.getId())) continue;
             if (faction == agentFaction) continue;
             
