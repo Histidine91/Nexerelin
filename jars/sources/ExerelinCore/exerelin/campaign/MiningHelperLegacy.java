@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.AIHints;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
@@ -31,6 +32,7 @@ import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -499,14 +501,19 @@ public class MiningHelperLegacy {
 		String role = rolePicker.pick();
 		
 		List<FactionAPI> factions = Global.getSector().getAllFactions();
+		Set<String> restrictedShips = PrismMarket.getRestrictedShips();
 		for (FactionAPI faction : factions)
 		{
+			if (!faction.isShowInIntelTab()) continue;
 			if (CACHE_DISALLOWED_FACTIONS.contains(faction.getId())) continue;
 			
 			List<ShipRolePick> picks = faction.pickShip(role, 1, rolePicker.getRandom());
 			for (ShipRolePick pick : picks) 
 			{				
+				if (restrictedShips.contains(pick.variantId)) continue;
 				FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, pick.variantId);
+				if (member.getHullSpec().getHints().contains(ShipHullSpecAPI.ShipTypeHints.STATION)) continue;
+				
 				float cost = member.getBaseBuyValue();
 				shipPicker.add(member, 10000/cost);
 			}
@@ -517,6 +524,7 @@ public class MiningHelperLegacy {
 	public static FighterWingSpecAPI getRandomFighter()
 	{
 		List<FactionAPI> factions = Global.getSector().getAllFactions();
+		Set<String> restrictedShips = PrismMarket.getRestrictedShips();
 		WeightedRandomPicker<FighterWingSpecAPI> picker = new WeightedRandomPicker();
 		for (FactionAPI faction : factions)
 		{
@@ -531,8 +539,10 @@ public class MiningHelperLegacy {
 
 					FleetMemberAPI member = Global.getFactory().createFleetMember(type, pick.variantId);
 					for (String wingId : member.getVariant().getFittedWings()) {
+						if (restrictedShips.contains(wingId)) continue;
 						FighterWingSpecAPI spec = Global.getSettings().getFighterWingSpec(wingId);
 						if (spec.getTags().contains(Tags.WING_NO_SELL)) continue;
+						
 						picker.add(spec, 6 - spec.getTier());
 					}
 				}
@@ -545,9 +555,11 @@ public class MiningHelperLegacy {
 	{
 		WeightedRandomPicker<WeaponSpecAPI> weaponPicker = new WeightedRandomPicker<>();
 		List<String> weaponIds = Global.getSector().getAllWeaponIds();
+		Set<String> restrictedWeapons = PrismMarket.getRestrictedWeapons();
 		for (String weaponId : weaponIds)
 		{
 			if (weaponId.startsWith("tem_")) continue;
+			if (restrictedWeapons.contains(weaponId)) continue;
 			
 			WeaponSpecAPI weapon = Global.getSettings().getWeaponSpec(weaponId);
 			if (weapon.getAIHints().contains(AIHints.SYSTEM)) continue;
