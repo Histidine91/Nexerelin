@@ -4,7 +4,7 @@
 	"baseCacheChance":0.1,
 	"baseAccidentChance":0.4,
 	"xpPerMiningStrength":50,
-	"machineryPerMiningStrength":0.5,
+	"machineryPerMiningStrength":0.4,
 	"baseAccidentCRLoss":0.1,
 	"baseAccidentHullDamage":400.0,
 	"exhaustionPer100MiningStrength":0.04,

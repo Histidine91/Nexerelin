@@ -101,14 +101,13 @@ public class MiningHelperLegacy {
 	protected static float planetExhaustionMult = 0.75f;
 	protected static float planetRenewMult = 1.25f;
 	protected static float xpPerMiningStrength = 10;
-	protected static float machineryPerMiningStrength = 0.5f;
+	protected static float machineryPerMiningStrength = 0.4f;
 	
 	protected static final Map<String, Float> miningWeapons = new HashMap<>();
 	protected static final Map<String, Float> miningShips = new HashMap<>();
 	protected static final Map<String, Map<String, Float>> miningConditions = new HashMap<>();	// maps each market condition to its resource contents
 	
 	protected static final List<CacheDef> cacheDefs = new ArrayList<>();
-	//protected static final
 	
 	public static final Logger log = Global.getLogger(MiningHelperLegacy.class);
 	protected static final WeightedRandomPicker<AccidentType> accidentPicker = new WeightedRandomPicker<>();
@@ -165,7 +164,7 @@ public class MiningHelperLegacy {
 		accidentPicker.add(AccidentType.HULL_DAMAGE, 1);
 		accidentPicker.add(AccidentType.CR_LOSS, 1.5f);
 		accidentPicker.add(AccidentType.CREW_LOSS, 1.5f);
-		accidentPicker.add(AccidentType.MACHINERY_LOSS, 2.5f);
+		accidentPicker.add(AccidentType.MACHINERY_LOSS, 2f);
 	}
 	
 	public static void loadMiningShips(String path)
@@ -572,7 +571,7 @@ public class MiningHelperLegacy {
 	{
 		MiningAccident accident = null;
 		
-		float accidentChance = MathUtils.getRandomNumberInRange(-1, 3) * (float)Math.sqrt(strength);
+		float accidentChance = MathUtils.getRandomNumberInRange(-1, 3) * strength/10;
 		if (accidentChance < 0) return null;
 		
 		List<FleetMemberAPI> ships = fleet.getFleetData().getCombatReadyMembersListCopy();
@@ -654,9 +653,9 @@ public class MiningHelperLegacy {
 					//crLost *= MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 					float crLost = baseAccidentCRLoss * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 					HullSize size = fm.getHullSpec().getHullSize();
-					if (size == HullSize.DESTROYER) crLost *= 0.75f;
-					else if (size == HullSize.CRUISER) crLost *= 0.5f;
-					else if (size == HullSize.CAPITAL_SHIP) crLost *= 0.25f;
+					if (size == HullSize.DESTROYER) crLost *= 0.5f;
+					else if (size == HullSize.CRUISER) crLost *= 0.25f;
+					else if (size == HullSize.CAPITAL_SHIP) crLost *= 0.125f;
 					
 					fm.getRepairTracker().applyCREvent(-crLost, StringHelper.getString("exerelin_mining", "miningAccident"));
 					if (!accident.crLost.containsKey(fm))
@@ -675,7 +674,7 @@ public class MiningHelperLegacy {
 				// machinery loss
 				else if (accidentType == AccidentType.MACHINERY_LOSS)
 				{
-					int lost = MathUtils.getRandomNumberInRange(1, 4) + MathUtils.getRandomNumberInRange(1, 4);
+					int lost = MathUtils.getRandomNumberInRange(1, 3) + MathUtils.getRandomNumberInRange(0, 2);
 					lost = Math.min(lost, (int)fleet.getCargo().getCommodityQuantity(Commodities.HEAVY_MACHINERY));
 					CargoAPI cargo = fleet.getCargo();
 					cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, Commodities.HEAVY_MACHINERY, lost);
@@ -816,10 +815,8 @@ public class MiningHelperLegacy {
 	{
 		Map<SectorEntityToken, Float> exhaustionMap = getExhaustionMap();
 		List<SectorEntityToken> toRemove = new ArrayList<>();
-		Iterator<Map.Entry<SectorEntityToken, Float>> iter = exhaustionMap.entrySet().iterator();
-		while (iter.hasNext())
+		for (Map.Entry<SectorEntityToken, Float> tmp : exhaustionMap.entrySet())
 		{
-			Map.Entry<SectorEntityToken, Float> tmp = iter.next();
 			SectorEntityToken entity = tmp.getKey();
 			float currentExhaustion = tmp.getValue();
 			float regen = days * renewRatePerDay;
