@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Level;
@@ -94,9 +95,9 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             allianceNameCommonPrefixes = ExerelinUtils.JSONArrayToArrayList(namePrefixesCommon);
             for (Alignment alignment : Alignment.values())
             {
-                List<String> names =  ExerelinUtils.JSONArrayToArrayList( namesByAlignment.getJSONArray(alignment.toString().toLowerCase()) );
+                List<String> names =  ExerelinUtils.JSONArrayToArrayList( namesByAlignment.getJSONArray(alignment.toString().toLowerCase(Locale.ROOT)) );
                 allianceNamesByAlignment.put(alignment, names);
-                List<String> prefixes = ExerelinUtils.JSONArrayToArrayList( namePrefixes.getJSONArray(alignment.toString().toLowerCase()) );
+                List<String> prefixes = ExerelinUtils.JSONArrayToArrayList( namePrefixes.getJSONArray(alignment.toString().toLowerCase(Locale.ROOT)) );
                 alliancePrefixesByAlignment.put(alignment, prefixes);
             }
         } catch (JSONException | IOException ex) {
@@ -204,14 +205,13 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         log.info("Getting name prefixes of alliance type " + type);
         if (!alliancePrefixesByAlignment.containsKey(type))
         {
-            log.info("Missing name prefixes for alliance type " + type);
-            type = Alignment.MILITARIST;
+            log.error("Missing name prefixes for alliance type " + type);
         }
-        namePrefixes.addAll(alliancePrefixesByAlignment.get(type));
+        else namePrefixes.addAll(alliancePrefixesByAlignment.get(type));
         
         if (namePrefixes.isEmpty())
         {
-            log.info("Missing name prefixes");
+            log.error("Missing name prefixes");
             namePrefixes.add("Common");    // just to make it not crash
         }
         
