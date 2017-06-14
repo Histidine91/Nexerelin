@@ -1,31 +1,27 @@
 {
-    "uniqueModClassName":"data.scripts.TEMModPlugin", # String
-    "playableFaction":true, # Boolean
+    "playableFaction":true,
     "corvusCompatible":true,
     "hostileToAll":1,
     
-    "isPirateNeutral":false, # Boolean
-    #"spawnPatrols":false,
+    "isPirateNeutral":false,
+    "spawnPatrols":true,
     #"spawnPiratesAndMercs":false,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Heretics",
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Heretics", # String
-
-    "asteroidMiningFleetName":"Miner", # String
-    "gasMiningFleetName":"Collecter", # String
-    "invasionFleetName":"Conquest", # String
+    "asteroidMiningFleetName":"Miner",
+    "gasMiningFleetName":"Collecter",
+    "invasionFleetName":"Conquest",
     "responseFleetName":"Revencher",
-    "invasionSupportFleetName":"Destruire", # String
+    "invasionSupportFleetName":"Destruire",
     "defenceFleetName":"Defens",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "factionsLiked":[],
+    "factionsDisliked":[],
     "morality":"evil",
     
     "allowAgentActions":false,
