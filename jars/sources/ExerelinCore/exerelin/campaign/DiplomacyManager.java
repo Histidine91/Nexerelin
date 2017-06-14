@@ -1063,7 +1063,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     // legacy method
                     for (String likedFactionId : factionConfig.factionsLiked) {
                         FactionAPI likedFaction = sector.getFaction(likedFactionId);
-                        if (likedFaction != null && !likedFaction.isNeutralFaction())
+                        if (likedFaction != null)
                         {
                             //log.info(faction.getDisplayName() + " likes " + dislikedFaction.getDisplayName());
                             faction.setRelationship(likedFactionId, STARTING_RELATIONSHIP_WELCOMING);
@@ -1071,7 +1071,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     }
                     for (String dislikedFactionId : factionConfig.factionsDisliked) {
                         FactionAPI dislikedFaction = sector.getFaction(dislikedFactionId);
-                        if (dislikedFaction != null && !dislikedFaction.isNeutralFaction())
+                        if (dislikedFaction != null)
                         {
                             //log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
                             setRelationshipAtBest(factionId, dislikedFactionId, STARTING_RELATIONSHIP_HOSTILE);
@@ -1079,7 +1079,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     }
                     for (String indifferentFactionId : factionConfig.factionsNeutral) {
                         FactionAPI indifferentFaction = sector.getFaction(indifferentFactionId);
-                        if (indifferentFaction != null && !indifferentFaction.isNeutralFaction())
+                        if (indifferentFaction != null)
                         {
                             faction.setRelationship(indifferentFactionId, 0);
                         }

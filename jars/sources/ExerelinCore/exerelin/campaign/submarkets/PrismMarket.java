@@ -75,6 +75,16 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public void init(SubmarketAPI submarket) {
         super.init(submarket);
     }
+    
+    public static Set getRestrictedShips()
+    {
+        return new HashSet<>(restrictedShips);
+    }
+	
+	public static Set getRestrictedWeapons()
+    {
+        return new HashSet<>(restrictedWeapons);
+    }
 
     @Override
     public void updateCargoPrePlayerInteraction() {

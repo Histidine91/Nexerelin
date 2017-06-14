@@ -40,8 +40,8 @@ ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOption
 7:exerelinNGCSectorOptions:Sector generation
 8:exerelinNGCFactionOptions:Faction settings
 9:exerelinNGCOtherOptions:Other options",
-ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCEnableCorvusMode:Enable Corvus Mode,
-ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Use the vanilla + mod-added sector map instead of randomly generated systems""",,exerelinNGCDisableCorvusMode:Disable Corvus Mode,
+ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems""",,exerelinNGCEnableCorvusMode:Disable random core worlds,
+ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems""",,exerelinNGCDisableCorvusMode:Enable random core worlds,
 ExerelinNewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,Nex_NGCProcessSectorGenerationSliders create,,,
 ExerelinNewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present, unless disabled in config""
 SetShortcut exerelinNGCSectorOptionsBack ESCAPE",,9:exerelinNGCSectorOptionsBack:Back,
@@ -122,17 +122,9 @@ ExerelinNGCEnableCorvusMode,NewGameOptionSelected,$option==exerelinNGCEnableCorv
 FireAll ExerelinNGCOptions",,,
 ExerelinNGCDisableCorvusMode,NewGameOptionSelected,$option==exerelinNGCDisableCorvusMode,"NGCSetCorvusMode false
 FireAll ExerelinNGCOptions",,,
-#ExerelinNGCEnableOmnifactory,NewGameOptionSelected,$option==exerelinNGCEnableOmnifactory,"NGCSetOmnifacEnabled true
-FireAll ExerelinNGCSectorOptions",,,
-#ExerelinNGCDisableOmnifactory,NewGameOptionSelected,$option==exerelinNGCDisableOmnifactory,"NGCSetOmnifacEnabled false
-FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCEnablePrismMarket,NewGameOptionSelected,$option==exerelinNGCEnablePrismMarket,"NGCSetPrismMarketEnabled true
 FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCDisablePrismMarket,NewGameOptionSelected,$option==exerelinNGCDisablePrismMarket,"NGCSetPrismMarketEnabled false
-FireAll ExerelinNGCSectorOptions",,,
-#ExerelinNGCSetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCSetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation true
-FireAll ExerelinNGCSectorOptions",,,
-#ExerelinNGCUnsetRandomOmnifactoryLocation,NewGameOptionSelected,$option==exerelinNGCUnsetOmnifactoryRandomLocation,"NGCSetOmnifacRandomLocation false
 FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCEnableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartRelationships,"NGCSetRandomStartRelationships true
 FireAll ExerelinNGCFactionOptions",,,
@@ -195,7 +187,7 @@ ExerelinNGCListPerseanLeague,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist 
 ExerelinNGCListPirates,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist pirates,,,exerelinNGCJoinPirate:Pirates (hard),
 ExerelinNGCListSindrianDiktat,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist sindrian_diktat,,,exerelinNGCJoinSindrianDiktat:Sindrian Diktat,
 ExerelinNGCFactionsOwnFaction,ExerelinNGCListFactionsVanilla,,SetEnabled exerelinNGCOwnFaction true,,exerelinNGCOwnFaction:Own faction,
-ExerelinNGCFactionsOwnFactionDisabled,ExerelinNGCListFactionsVanilla,$corvusMode,"SetTooltip exerelinNGCOwnFaction ""No planet to spawn from in Corvus mode, use free start instead""
+ExerelinNGCFactionsOwnFactionDisabled,ExerelinNGCListFactionsVanilla,$corvusMode,"SetTooltip exerelinNGCOwnFaction ""No planet to spawn from in non-random sector, use free start instead""
 SetEnabled exerelinNGCOwnFaction false",,,
 ExerelinNGCFactionsFreeStart,ExerelinNGCListFactionsVanilla,,"SetTooltip exerelinNGCFreeStart ""Own faction, but with no starting planet; you're on your own""",,exerelinNGCFreeStart:Free start (hard),
 ExerelinNGCListVanillaFactionsBack,ExerelinNGCListFactionsVanilla,,SetShortcut exerelinNGCOptionsDone ESCAPE,,20:exerelinNGCOptionsDone:Back,
@@ -243,18 +235,16 @@ FireAll ExerelinNGCStep3",,,
 ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart false
 NGCSetWithTimePass false
-NGCAddShipAndComplement ""tempest_Starting""
+NGCAddShipAndComplement ""medusa_Starting""
 NGCAddCredits 1000000
 NGCAddCharacterPoints 100
-NGCSetStartingLocationExerelin
 NGCDone",,,
 ExerelinNGCDevStartFast,NewGameOptionSelected,$option == exerelinNGCDevStartFast,"NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart false
 NGCSetWithTimePass false
-NGCAddShipAndComplement ""tempest_Starting""
+NGCAddShipAndComplement ""medusa_Starting""
 NGCAddCredits 1000000
 NGCAddCharacterPoints 100
-NGCSetStartingLocationExerelin
 NGCDone",,,
 ExerelinNGCOwnFaction,NewGameOptionSelected,$option == exerelinNGCOwnFaction,"NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart false
@@ -376,8 +366,7 @@ NGCSetNumStartingOfficers 2
 SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Done,
 ExerelinNGCStartBack,NewGameOptionSelected,$option == exerelinNGCStartBack,"NGCClearStartingGear
 FireAll ExerelinNGCStep3",,,
-ExerelinNGCDoneOption,NewGameOptionSelected,$option == exerelinNGCDone,"NGCSetStartingLocationExerelin
-NGCDone",,,
+ExerelinNGCDoneOption,NewGameOptionSelected,$option == exerelinNGCDone,NGCDone,,,
 # END NGC OPTIONS,,,,,,
 ,,,,,,
 ,,,,,,

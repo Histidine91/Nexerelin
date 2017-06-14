@@ -1133,9 +1133,6 @@ public class ExerelinProcGen {
 			pickEntityInteractionImage(homeworld.entity, homeworld.entity.getMarket(), homeworld.planetType, homeworld.type);
 			populatedPlanetsCopy.remove(homeworld);
 			
-			StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
-			plugin.setPlayerPaidToUnlock(true);
-			
 			handleHQSpecials(sector, alignedFactionId, homeworld);
 			
 			if (pirateFactions.contains(alignedFactionId))
