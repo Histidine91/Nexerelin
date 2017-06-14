@@ -39,7 +39,6 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	protected static final String STRING_HELPER_CAT = "exerelin_officers";
 	protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
 	protected boolean recoveredOfficers = false;
-	protected boolean ongoingBattleProtected = false;	// vanilla one is private
 	protected FIDConfig config;	// vanilla one is private
 
 	protected String getTextString(String id)
@@ -305,29 +304,9 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 			}
 		}
 		
-		// hax to get ongoing battle
-		CampaignFleetAPI otherFleetLocal = (CampaignFleetAPI) (dialog.getInteractionTarget());
-		if (context.getBattle() == null) {
-			if (otherFleetLocal.getBattle() == null || otherFleetLocal.getBattle().isDone()) {
-				ongoingBattleProtected = false;
-			} else {
-				ongoingBattleProtected = true;
-			}
-		}
-		
 		super.init(dialog);
 	}
-	
-	@Override
-	protected void updateEngagementChoice(boolean withText) {
-		BattleAPI b = context.getBattle();
-		if (ongoingBattleProtected && b.getPlayerSide() != null && b.getPlayerSide().size() <= 1) {
-		//if (ongoingBattle && b.getPlayerSide() != null && b.isPlayerPrimary()) {
-			ongoingBattleProtected = false;
-		}
-		super.updateEngagementChoice(withText);
-	}
-	
+		
 	// same as vanilla, except stations don't get pulled + anything pursuing a participating fleet gets pulled
 	protected boolean shouldPullInFleet(BattleAPI battle, CampaignFleetAPI fleet, float dist)
 	{
@@ -371,9 +350,9 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	protected void pullInNearbyFleets() {
 		BattleAPI b = context.getBattle();
 		boolean hostile = otherFleet.getAI() != null && otherFleet.getAI().isHostileTo(playerFleet);
-		if (ongoingBattleProtected) hostile = true;
+		if (ongoingBattle) hostile = true;
 		
-		if (!ongoingBattleProtected) {
+		if (!ongoingBattle) {
 			b.join(Global.getSector().getPlayerFleet());
 		}
 		
@@ -428,7 +407,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 //		if (!someJoined) {
 //			addText("No nearby fleets will join the battle.");
 //		}
-		if (!ongoingBattleProtected) {
+		if (!ongoingBattle) {
 			b.genCombined();
 			b.takeSnapshots();
 			playerFleet = b.getPlayerCombined();
