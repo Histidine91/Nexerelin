@@ -255,7 +255,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         //if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE)) return;
         if (fleet.getMemoryWithoutUpdate().getBoolean("$Cabal_extortionAskedFor")) return;
         if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_LOW_REP_IMPACT)) return;
-        if (NO_WARMONGER_FACTIONS.contains(fleet.getFaction().getId())) return;
         if (!result.getBattle().isPlayerPrimary()) return;
         if (!fleet.knowsWhoPlayerIs()) return;
         
@@ -329,6 +328,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static void createWarmongerEvent(String targetFactionId, SectorEntityToken location)
     {
         if (ExerelinConfig.warmongerPenalty == 0) return;
+		if (NO_WARMONGER_FACTIONS.contains(targetFactionId)) return;
         
         FactionAPI targetFaction = Global.getSector().getFaction(targetFactionId);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();

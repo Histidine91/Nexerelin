@@ -36,7 +36,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
     protected static final float REVENGE_GROWTH_MULT = 0.25f;
     
     protected Map<String, Float> revengeStrength = new HashMap<>();
-    protected Map<String, Float> reserves;
+    protected Map<String, Float> reserves = new HashMap<>();
     
     public static Logger log = Global.getLogger(ResponseFleetManager.class);
     
@@ -53,18 +53,15 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         //interval = 2;   // debug
         this.tracker = new IntervalUtil(interval * 0.75F, interval * 1.25F);
         
-        if (reserves == null)
-        {
-            reserves = new HashMap<>();
-            List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
-            for(MarketAPI market:markets)
-                reserves.put(market.getId(), getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
-        }
+        reserves = new HashMap<>();
+        List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+        for(MarketAPI market:markets)
+            reserves.put(market.getId(), getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
     }
   
     public void spawnResponseFleet(MarketAPI origin, SectorEntityToken target)
     {
-        float reserveSize = reserves.get(origin.getId());
+        float reserveSize = getReserveSize(origin);
         int maxFP = (int)reserveSize;
         if (maxFP < MIN_FP_TO_SPAWN)
         {
@@ -201,7 +198,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             }
             
             increment = increment * RESERVE_INCREMENT_PER_DAY * days;
-            float newValue = Math.min(reserves.get(market.getId()) + increment, getMaxReserveSize(market, false));
+            float newValue = Math.min(getReserveSize(market) + increment, getMaxReserveSize(market, false));
             
             reserves.put(market.getId(), newValue);
         }
@@ -218,7 +215,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         if (responseFleetManager == null) return 0f;
         String marketId = market.getId();
         if (!responseFleetManager.reserves.containsKey(marketId)) return 0f;
-        float current = responseFleetManager.reserves.get(marketId);
+        float current = getReserveSize(market);
         float newValue = current + delta;
         float max = getMaxReserveSize(market, false);
         if (newValue < 0) newValue = 0;
@@ -233,13 +230,12 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         if (market == null) return -1f;
         String marketId = market.getId();
         Map<String, Float> reserves = responseFleetManager.reserves;
-        // during post-battle loot it sends us a market with ID "fake_market"
-        // so we have this check to prevent NPEs
         if (!reserves.containsKey(marketId))
         {
-            //log.info("Get reserve size - failed to get key " + marketId);
-            //log.info(reserves);
-            return -1f;
+            // probably a fake market, don't save reserves
+            if (!market.isInEconomy()) return -1f;
+            
+            reserves.put(marketId, getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
         }
         return reserves.get(marketId);
     }
@@ -283,24 +279,6 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         for (ResponseFleetData data : this.activeFleets) {
             if (data.fleet == fleet)
             {
-                //log.info("Despawning response fleet " + fleet.getName());
-                // return the ships to reserve if applicable - donut work
-                /*
-                if(reason != CampaignEventListener.FleetDespawnReason.DESTROYED_BY_FLEET
-                        && data.sourceMarket.getFaction().getId().equals(data.fleet.getFaction().getId()))
-                {
-                    float fp = 0;
-                    int numShips = 0;
-                    List<FleetMemberAPI> snapshot = fleet.getFleetData().getSnapshot();
-                    for (FleetMemberAPI member : snapshot) {
-                        fp += member.getFleetPointCost();
-                        numShips++;
-                    }
-                    //reserves.put(marketId, reserves.get(marketId) + fp);
-                    modifyReserveSize(data.sourceMarket, fp);
-                    log.info("Returning points to reserve: " + fp + " (from " + numShips + " ships)");
-                }
-                */
                 this.activeFleets.remove(data);
                 break;
             }

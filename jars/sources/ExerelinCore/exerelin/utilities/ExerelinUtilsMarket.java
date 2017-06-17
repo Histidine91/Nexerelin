@@ -245,7 +245,7 @@ public class ExerelinUtilsMarket {
 		if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
 			return false;
 		
-		return true;
+		return canBeInvaded(market);
 	}
 	
 	/**
@@ -262,6 +262,7 @@ public class ExerelinUtilsMarket {
 		if (marketFaction.getId().equals(PlayerFactionStore.getPlayerFactionId()))
 			return false;
 		if (marketFaction.isNeutralFaction()) return false;
+		if (!market.isInEconomy()) return false;
 		
 		if (market.getPrimaryEntity().hasTag(ExerelinConstants.TAG_UNINVADABLE))
 			return false;
