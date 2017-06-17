@@ -94,6 +94,9 @@
 	#"market_procurement":{
 	#	"script":"exerelin.campaign.missions.ExerelinMarketProcurementMissionEvent",
 	#},
+	"nearby_events":{
+		"script":"exerelin.campaign.events.ExerelinNearbyEventsEvent",
+	},
 	"rep_tracker":{
 		"script":"exerelin.campaign.events.ExerelinRepTrackerEvent",
 	},
