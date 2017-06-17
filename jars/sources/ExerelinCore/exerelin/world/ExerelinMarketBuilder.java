@@ -253,24 +253,25 @@ public class ExerelinMarketBuilder
 		return getConditionWeightForArchetype(conditionsByID.get(condID), archetype, defaultWeight);
 	}
 	
-	protected boolean isConditionAllowedForPlanet(MarketConditionDef cond, String planetType)
+	protected boolean isConditionAllowedForPlanet(MarketConditionDef cond, PlanetAPI planet)
 	{
 		if (!cond.allowedPlanets.isEmpty())
 		{
-			if (!cond.allowedPlanets.contains(planetType))
-				return false;
+			for (String type : cond.allowedPlanets)
+				if (isPlanetOfType(planet, type)) return true;
+			return false;
 		}
 		if (cond.disallowedPlanets.isEmpty())
 		{
-			if (cond.disallowedPlanets.contains(planetType))
-				return false;
+			for (String type : cond.disallowedPlanets)
+				if (isPlanetOfType(planet, type)) return false;
 		}
 		return true;
 	}
 	
-	protected boolean isConditionAllowedForPlanet(String condID, String planetType)
+	protected boolean isConditionAllowedForPlanet(String condID, PlanetAPI planet)
 	{
-		return isConditionAllowedForPlanet(conditionsByID.get(condID), planetType);
+		return isConditionAllowedForPlanet(conditionsByID.get(condID), planet);
 	}
 	
 	protected boolean hasConflict(MarketConditionDef possibleCond, MarketAPI market)
@@ -309,14 +310,14 @@ public class ExerelinMarketBuilder
 	{
 		if (cond == null) return false;
 		MarketAPI market = entityData.market;
-		String planetType = entityData.planetType;
 		boolean isStation = entityData.type == EntityType.STATION;
 		int size = market.getSize();
 		
 		if (cond.minSize > size || cond.maxSize < size) return false;
 		if (!cond.allowStations && isStation) return false;
 		if (!cond.allowDuplicates && market.hasCondition(cond.name)) return false;
-		if (!isConditionAllowedForPlanet(cond, planetType)) return false;
+		if (entityData.entity instanceof PlanetAPI)
+			if (!isConditionAllowedForPlanet(cond, (PlanetAPI)entityData.entity)) return false;
 		if (hasConflict(cond, market)) return false;
 		if (!checkRequisiteConditions(cond, entityData)) return false;		
 		
@@ -692,31 +693,34 @@ public class ExerelinMarketBuilder
 		MarketAPI market = data.market;
 		
 		//log.info("Attempting to add planet type condition for planet " + planet.getName() + ": " + planet.getTypeId() + ", " + planet.getSpec().getName());
-		if (isPlanetOfType(planet, "frozen") || isPlanetOfType(planet, "rocky_ice"))
+		if (isPlanetOfType(planet, "frozen") || isPlanetOfType(planet, "rocky_ice") 
+				|| isPlanetOfType(planet, "US_blue") || isPlanetOfType(planet, "US_ice"))
 		{
 			market.addCondition(Conditions.ICE);
 		}
-		else if (isPlanetOfType(planet, "barren") || isPlanetOfType(planet, "rocky_metallic") || isPlanetOfType(planet, "barren-bombarded"))
+		else if (isPlanetOfType(planet, "barren") || isPlanetOfType(planet, "rocky_metallic") 
+				|| isPlanetOfType(planet, "barren-bombarded"))
 		{
 
 		}
-		else if (isPlanetOfType(planet, "barren-desert"))
+		else if (isPlanetOfType(planet, "barren-desert") || isPlanetOfType(planet, "US_red"))
 		{
 			market.addCondition("barren_marginal");
 		}
-		else if (isPlanetOfType(planet, "terran-eccentric"))
+		else if (isPlanetOfType(planet, "terran-eccentric") || isPlanetOfType(planet, "US_lifeless"))
 		{
 			market.addCondition("twilight");
 		}
-		else if (isPlanetOfType(planet, "terran"))
+		else if (isPlanetOfType(planet, "terran") || isPlanetOfType(planet, "US_continent"))
 		{
 			market.addCondition(Conditions.TERRAN);
 		}
-		else if (isPlanetOfType(planet, "jungle"))
+		else if (isPlanetOfType(planet, "jungle") || isPlanetOfType(planet, "US_alkali"))
 		{
 			market.addCondition(Conditions.JUNGLE);
 		}
-		else if (isPlanetOfType(planet, "arid") || isPlanetOfType(planet, "US_lifelessArid") || isPlanetOfType(planet, "auric") )
+		else if (isPlanetOfType(planet, "arid") || isPlanetOfType(planet, "US_lifelessArid") 
+				|| isPlanetOfType(planet, "auric") )
 		{
 			market.addCondition(Conditions.ARID);
 		}
@@ -735,10 +739,6 @@ public class ExerelinMarketBuilder
 		else if (isPlanetOfType(planet, "cryovolcanic"))
 		{
 			market.addCondition("cryovolcanic");
-		}
-		else if (isPlanetOfType(planet, "US_lifeless") || isPlanetOfType(planet, "US_continent"))
-		{
-			market.addCondition("twilight");
 		}
 	}
 	
