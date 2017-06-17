@@ -248,11 +248,11 @@
 		"recruitedOfficers":"recruited $numOfficers officers",
 		
 		"populatedSystemsTitle":"Populated systems",
-		"populatedSystemsTooltip":"This is a target number of systems. Not all may actually be populated.",
+		"populatedSystemsTooltip":"This is a target number of systems. Actual populated system count may be more or less than this.",
 		"populatedPlanetsTitle":"Populated planets",
-		"populatedPlanetsTooltip":"Actual number may be less than this, if there are not enough systems to hold all the planets.",
+		"populatedPlanetsTooltip":"Will fill new systems if specified number of populated systems is insufficient.",
 		"stationsTitle":"Stations",
-		"stationsTooltip":"Actual number may be less than this, if there are not enough locations for all the stations."
+		"stationsTooltip":"Will fill new systems if specified number of populated systems is insufficient."
 	},
 	"exerelin_officers":{
 		"officer":"officer",
