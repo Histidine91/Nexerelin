@@ -79,6 +79,7 @@ public class ExerelinMarketBuilder
 	public static final float LUDDIC_MAJORITY_CHANCE = 0.05f;	// how many markets have Luddic majority even if they aren't Luddic at start
 	public static final float LUDDIC_MINORITY_CHANCE = 0.15f;	// how many markets that start under Church control are non-Luddic
 	public static final float FORCE_MILITARY_BASE_CHANCE = 0.5f;	// if meets size requirements
+	public static final float FORCE_MILITARY_BASE_CHANCE_PIRATE = 0.5f;
 	public static final float PRE_BALANCE_BUDGET_MULT = 0.9f;	// < 1 to spare some points for balancer
 	
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.3f;
@@ -821,16 +822,20 @@ public class ExerelinMarketBuilder
 		market.addCondition("population_" + marketSize);
 		market.removeCondition(Conditions.DECIVILIZED);
 		
+		boolean isPirate = ExerelinUtilsFaction.isPirateFaction(factionId);
+		
 		int minSizeForMilitaryBase = 6;
 		if (isMoon) minSizeForMilitaryBase = 5;
 		else if (isStation) minSizeForMilitaryBase = 5;
-		if (ExerelinUtilsFaction.isPirateFaction(factionId))
-			minSizeForMilitaryBase -= 1;
+		if (isPirate) minSizeForMilitaryBase -= 1;
 		
-		if (marketSize >= minSizeForMilitaryBase && !market.hasCondition(Conditions.MILITARY_BASE)
-				&& (random.nextFloat() + random.nextFloat())/2 < FORCE_MILITARY_BASE_CHANCE)
+		if (marketSize >= minSizeForMilitaryBase && !market.hasCondition(Conditions.MILITARY_BASE))
 		{
-			market.addCondition(Conditions.MILITARY_BASE);
+			float roll = (random.nextFloat() + random.nextFloat())*0.5f;
+			float req = FORCE_MILITARY_BASE_CHANCE;
+			if (isPirate) req = FORCE_MILITARY_BASE_CHANCE_PIRATE;
+			if (roll > req)
+				market.addCondition(Conditions.MILITARY_BASE);
 		}
 		
 		// planet type stuff
