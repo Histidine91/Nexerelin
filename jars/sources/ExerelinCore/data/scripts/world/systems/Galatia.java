@@ -45,6 +45,7 @@ import com.fs.starfarer.api.util.Misc;
  */
 // in Nexerelin the GalatiaMarketScripts are commented out 
 // (they add commodities to simulate normal economic behaviour during the tutorial)
+// Mission boards too
 public class Galatia {
 
 	public void generate(SectorAPI sector) {
@@ -100,7 +101,7 @@ public class Galatia {
 		ancyraStation.setMarket(market);
 		ancyra.setMarket(market);
 		
-		market.getCommDirectory().addMissionBoard();
+		//market.getCommDirectory().addMissionBoard();
 		
 		//ancyra.addScript(new GalatiaMarketScript(market));
 		
@@ -172,7 +173,7 @@ public class Galatia {
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		
 		derinkuyuStation.setMarket(market);
-		market.getCommDirectory().addMissionBoard();
+		//market.getCommDirectory().addMissionBoard();
 		//derinkuyuStation.addScript(new GalatiaMarketScript(market));
 		
 		// Galatia Gate
