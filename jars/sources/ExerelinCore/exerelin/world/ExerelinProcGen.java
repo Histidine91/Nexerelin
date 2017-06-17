@@ -3,6 +3,7 @@ package exerelin.world;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.AsteroidAPI;
 import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
+import com.fs.starfarer.api.campaign.JumpPointAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
@@ -67,6 +68,7 @@ public class ExerelinProcGen {
 	
 	public static final float CORE_WIDTH = 15000;
 	public static final float CORE_HEIGHT = 12000;
+	public static final float BEACON_SEARCH_RANGE = 900;
 	public static final Set<String> ALLOWED_STATION_TERRAIN = new HashSet<>(Arrays.asList(new String[] {
 		Terrain.ASTEROID_BELT, Terrain.ASTEROID_FIELD, Terrain.RING
 	}));
@@ -75,8 +77,8 @@ public class ExerelinProcGen {
 	protected static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
 	// don't specify names here to make sure it crashes instead of failing silently if planetNames.json is broken
 
-	protected static List<String> possibleSystemNames = new ArrayList<>();
-	protected static List<String> possiblePlanetNames = new ArrayList<>();
+	@Deprecated protected static List<String> possibleSystemNames = new ArrayList<>();
+	@Deprecated protected static List<String> possiblePlanetNames = new ArrayList<>();
 	protected static List<String> possibleStationNames = new ArrayList<>();
 	
 	public static final List<String> stationImages = new ArrayList<>(Arrays.asList(new String[] {
@@ -743,12 +745,14 @@ public class ExerelinProcGen {
 	
 	public static void cleanupDerelicts(Collection<StarSystemAPI> systems)
 	{
+		LocationAPI hyper = Global.getSector().getHyperspace();
+		List<SectorEntityToken> toRemove = new ArrayList<>();
 		for (StarSystemAPI system : systems)
 		{
 			log.info("Cleaning up system " + system.getName());
 			ExerelinUtils.removeScriptAndListener(system, RemnantStationFleetManager.class, null);
 			ExerelinUtils.removeScriptAndListener(system, RemnantSeededFleetManager.class, null);
-			List<SectorEntityToken> toRemove = new ArrayList<>();
+			
 			for (SectorEntityToken token : system.getAllEntities())
 			{
 				if (token.hasTag(Tags.GATE) || token.hasTag(Tags.DEBRIS_FIELD)) continue;
@@ -757,16 +761,31 @@ public class ExerelinProcGen {
 				else if (token.hasTag(Tags.SALVAGEABLE))
 					toRemove.add(token);
 			}
-			for (SectorEntityToken token : toRemove)
+			for (SectorEntityToken beacon : hyper.getEntitiesWithTag(Tags.WARNING_BEACON))
 			{
-				log.info("\tRemoving token " + token.getName() + "(faction " + token.getFaction().getDisplayName() + ")");
-				system.removeEntity(token);
+				boolean beaconFound = false;
+				for (SectorEntityToken token : system.getJumpPoints())
+				{
+					JumpPointAPI jump = (JumpPointAPI)token;
+					if (MathUtils.isWithinRange(beacon, jump.getLocationInHyperspace(), BEACON_SEARCH_RANGE))
+					{
+						toRemove.add(beacon);
+						beaconFound = true;
+					}
+				}
+				if (beaconFound == true) break;
 			}
+			
 			for (String tag : TAGS_TO_REMOVE)
 			{
 				system.removeTag(tag);
 			}
 			system.addTag(Tags.THEME_CORE_POPULATED);
+		}
+		for (SectorEntityToken token : toRemove)
+		{
+			log.info("\tRemoving token " + token.getName() + "(faction " + token.getFaction().getDisplayName() + ")");
+			token.getContainingLocation().removeEntity(token);
 		}
 	}
 	
