@@ -29,7 +29,6 @@ import org.histidine.foundation.campaign.events.FoundationInsuranceEvent;
 Changes from vanilla:
 - Officer death mechanic
 - Modified pull in of fleets for ally battles
-- Fleet encounter context contains DS's fix for custom variant salvaging
 */
 
 public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogPluginImpl {

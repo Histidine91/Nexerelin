@@ -221,7 +221,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 				-0.25f, -1, 0.5f, -5);	// quality bonus, quality override, officer num mult, officer level bonus
 		
 		//CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP/3);
-		CampaignFleetAPI fleet = FleetFactoryV2.createFleet(params);
+		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(faction, params);
 		if (fleet == null)
 			return;
 		

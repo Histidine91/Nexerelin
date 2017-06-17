@@ -158,7 +158,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
                 fp*0.05f,    // utility
                 0, params.qualityOverride, 1.25f, 1);    // quality bonus, quality override, officer num mult, officer level bonus
         
-        CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(params.faction, fleetParams);
+        CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(params.faction, fleetParams);
         if (fleet == null) return null;
         /*
         CampaignFleetAPI fleet = FleetFactory.createGenericFleet(factionId, params.name, params.qf, params.fp);

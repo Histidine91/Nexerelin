@@ -9,6 +9,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
+import data.scripts.util.DS_Defs;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
 import exerelin.campaign.fleets.utils.SWPFleetUtilsProxy;
@@ -34,35 +35,41 @@ public class ExerelinUtilsFleet
     
     public static FleetMemberAPI addMiningShipToFleet(CampaignFleetAPI fleet)
     {
-        String variantId = "mining_drone_wing";
+        String variantId = "shepherd_Frontier";
         ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId());
         if (config != null && config.miningVariantsOrWings != null && !config.miningVariantsOrWings.isEmpty()) 
             variantId = (String) ExerelinUtils.getRandomListElement(config.miningVariantsOrWings);
-        FleetMemberType type = FleetMemberType.SHIP;
-        if (variantId.contains("_wing")) type = FleetMemberType.FIGHTER_WING;
-        FleetMemberAPI miner = Global.getFactory().createFleetMember(type, variantId);
+        FleetMemberAPI miner = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
         fleet.getFleetData().addFleetMember(miner);
         return miner;
     }
     
     /**
      * Makes a fleet where larger fleets prefer big ships over small ones (taken from SS+)
+     * Also includes Templar debris/derelicts chance reducer
      * @param faction
      * @param params
      * @return 
      */
-    public static CampaignFleetAPI createFleetWithSSPDoctrineHax(FactionAPI faction, FleetParams params) {
+    public static CampaignFleetAPI customCreateFleet(FactionAPI faction, FleetParams params) {
         int total = (int)(params.combatPts + params.tankerPts + params.freighterPts);
-        
-        if (ExerelinModPlugin.HAVE_SWP) {
-            return SWPFleetUtilsProxy.enhancedCreateFleet(faction, params, total);
-        }
+        CampaignFleetAPI fleet = null;
         
         if (ExerelinModPlugin.HAVE_DYNASECTOR) {
-            return DSFleetUtilsProxy.enhancedCreateFleet(faction, params, total);
+            fleet = DSFleetUtilsProxy.enhancedCreateFleet(faction, params, total);
         }
-
-        return FleetFactoryV2.createFleet(params);
+        else if (ExerelinModPlugin.HAVE_SWP) {
+            fleet = SWPFleetUtilsProxy.enhancedCreateFleet(faction, params, total);
+        }
+        else fleet = FleetFactoryV2.createFleet(params);
+        
+        if (ExerelinModPlugin.HAVE_DYNASECTOR && faction.getId().equals("templars"))
+        {
+            fleet.getStats().getDynamic().getMod(DS_Defs.STAT_BATTLE_DEBRIS_CHANCE).modifyMult("tem_spawner_nex", 0.5f);
+            fleet.getStats().getDynamic().getMod(DS_Defs.STAT_BATTLE_DERELICTS_CHANCE).modifyMult("tem_spawner_nex", 0.25f);
+            fleet.getStats().getDynamic().getMod(DS_Defs.STAT_FLEET_DERELICTS_CHANCE).modifyMult("tem_spawner_nex", 0f);
+        }
+        return fleet;
     }
     
     public static float getDaysToOrbit(CampaignFleetAPI fleet)

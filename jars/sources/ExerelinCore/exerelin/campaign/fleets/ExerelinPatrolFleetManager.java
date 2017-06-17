@@ -245,7 +245,7 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 						1f + Math.min(1f, lossMod / 12.5f),	//1f + Math.min(1f, losses / 10f), // officer num mult
 						0 + (int) (lossMod * 0.75f)	// 0 + (int) losses // officer level bonus
 						);
-			CampaignFleetAPI fleet = ExerelinUtilsFleet.createFleetWithSSPDoctrineHax(market.getFaction(), params);
+			CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(market.getFaction(), params);
 			if (fleet == null) return;
 			
 			SectorEntityToken entity = market.getPrimaryEntity();
