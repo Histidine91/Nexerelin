@@ -41,6 +41,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 
 // identical to vanilla event except with the no-pirate-markets crash fixed
+@Deprecated
 public class ExerelinMarketProcurementMissionEvent extends BaseEventPlugin {
 	
 	private MarketProcurementMission mission = null;

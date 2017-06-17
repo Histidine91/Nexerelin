@@ -91,21 +91,9 @@
 	"investigation":{
 		"script":"exerelin.campaign.events.ExerelinInvestigationEvent",
 	},
-	"investigation_smuggling":{
-		"script":"exerelin.campaign.events.ExerelinInvestigationEventSmuggling",
-	},
-	#"investigation_comm_sniffer":{
-	#	"script":"exerelin.campaign.events.ExerelinInvestigationEventCommSniffer",
+	#"market_procurement":{
+	#	"script":"exerelin.campaign.missions.ExerelinMarketProcurementMissionEvent",
 	#},
-	#"customs_inspection":{
-	#	"script":"exerelin.campaign.events.ExerelinCustomsInspectionEvent",
-	#},
-	#"investigation_goodrep":{
-	#	"script":"exerelin.campaign.events.ExerelinInvestigationEventGoodRepWithOther",
-	#},
-	"market_procurement":{
-		"script":"exerelin.campaign.missions.ExerelinMarketProcurementMissionEvent",
-	},
 	"rep_tracker":{
 		"script":"exerelin.campaign.events.ExerelinRepTrackerEvent",
 	},
