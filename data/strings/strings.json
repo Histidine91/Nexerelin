@@ -235,6 +235,7 @@
 	},
 	"exerelin_missions":{
 		"missionBoard":"Mission Board",
+		"conquestMission":"Conquest Mission",
 		"conquer":"conquer $target",
 		"daysLeft":"$days days left",
 		"over":"over"

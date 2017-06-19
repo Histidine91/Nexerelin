@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.MissionCompletionRep;
 import com.fs.starfarer.api.impl.campaign.missions.BaseCampaignMission;
+import exerelin.utilities.StringHelper;
 import java.util.UUID;
 
 public class ConquestMission extends BaseCampaignMission {
@@ -103,7 +104,7 @@ public class ConquestMission extends BaseCampaignMission {
 	// TODO externalise
 	@Override
 	public String getName() {
-		return "Conquest Mission - " + target.getName();
+		return StringHelper.getString("exerelin_missions", "conquestMission") + " - " + target.getName();
 	}
 	
 	@Override

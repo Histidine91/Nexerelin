@@ -192,6 +192,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 						Set<SectorEntityToken> tokens = mission.getAvailableAt();
 						List<SectorEntityToken> toDelist = new ArrayList<>();
 						for (SectorEntityToken token: tokens) {
+							if (token == null || token.getFaction() == null) continue;	// safety for weirdo NPE: http://fractalsoftworks.com/forum/index.php?topic=12697.0
 							if (!token.getFaction().isHostileTo(targetFaction) 
 									|| token.getFaction().isAtBest(cm.issuer, RepLevel.INHOSPITABLE))
 								toDelist.add(token);
