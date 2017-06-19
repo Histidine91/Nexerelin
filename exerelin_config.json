@@ -1,13 +1,13 @@
 {
     "directoryDialogKey": 32,   # integer, default 32 (D)
     
-    "minimumPlanets": 3, # Integer
-    #"minimumStations": 3, # Integer
+    "minimumPlanets": 3,
+    #"minimumStations": 3,
     "forcePiratesInSystemChance": 0.3,  # this proportion of systems will always be seeded with at least one pirate market
     "useFactionMarketSpawnWeights": false,  # this lets some factions have more markets at start than others, as set in faction config
     
-    "playerBaseSalary": 5000, # Double
-    "playerSalaryIncrementPerLevel": 1000, # Double
+    "playerBaseSalary": 5000,
+    "playerSalaryIncrementPerLevel": 1000,
     "playerInsuranceMult": 0.5,
     "fleetBonusFpPerPlayerLevel": 0.25,
     
@@ -64,8 +64,8 @@
     "countPiratesForVictory": false,
     "useRelationshipBounds": true,  # if false, disregard min/max faction relationships in faction config
     
-    "enableIndependents": true, # spawn independents in non-Corvus mode
-    "enablePirates": true, # spawn pirates in non-Corvus mode
+    "enableIndependents": true, # spawn independents in random sector mode
+    "enablePirates": true, # spawn pirates in random sector mode
     
     "enableRevengeFleets" = 2,  # 0 = disabled, 1 = only on hard mode, 2 = always (point generation halved on not-hard)
     "revengePointsPerEnemyFP" = 0.1,
