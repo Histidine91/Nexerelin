@@ -11,15 +11,14 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
-import exerelin.campaign.events.AllianceChangedEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -56,7 +55,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     protected static final float JOIN_CHANCE_MULT_PER_MEMBER = 0.8f;
     protected static final float FORM_CHANCE_MULT = 0.6f;   // multiplies relationship to get chance to form alliance
     protected static final float JOIN_CHANCE_FAIL_PER_NEW_ENEMY = 0.4f;
-    protected static final List<String> INVALID_FACTIONS = Arrays.asList(new String[] {"templars", "independent"});
+    protected static final List<String> INVALID_FACTIONS = Arrays.asList(new String[] {"templars", "independent", ExerelinConstants.PLAYER_NPC_ID});
     public static final float HOSTILE_THRESHOLD = -RepLevel.HOSTILE.getMin();
     
     protected static Map<Alignment, List<String>> allianceNamesByAlignment = new HashMap<>();
