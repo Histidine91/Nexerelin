@@ -67,6 +67,14 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     public Set<String> alreadyBoughtShips = new HashSet<>();
     
+    static {
+        try {
+            setupBlacklists();
+        } catch (JSONException | IOException ex) {
+            log.error(ex);
+        }
+    }
+    
     public static String getIBBFile() {
         return IBB_FILE;
     }
@@ -80,8 +88,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
     {
         return new HashSet<>(restrictedShips);
     }
-	
-	public static Set getRestrictedWeapons()
+    
+    public static Set getRestrictedWeapons()
     {
         return new HashSet<>(restrictedWeapons);
     }
@@ -91,13 +99,6 @@ public class PrismMarket extends BaseSubmarketPlugin {
 
         if (!okToUpdateCargo()) return;
         sinceLastCargoUpdate = 0f;
-        
-        //Setup blacklists
-        try {
-            setupLists();
-        } catch (JSONException | IOException ex) {
-            log.error(ex);
-        }
         
         CargoAPI cargo = getCargo();
 
@@ -444,7 +445,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     }
     
     //BLACKLISTS
-    protected void setupLists() throws JSONException, IOException {
+    protected static void setupBlacklists() throws JSONException, IOException {
 
         // Restricted goods
         restrictedWeapons = new HashSet<>();
