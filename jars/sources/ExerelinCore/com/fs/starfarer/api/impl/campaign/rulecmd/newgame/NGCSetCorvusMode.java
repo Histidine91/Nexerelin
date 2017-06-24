@@ -19,6 +19,14 @@ public class NGCSetCorvusMode extends BaseCommandPlugin {
 		ExerelinSetupData.getInstance().corvusMode = setting;
 		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
 		memory.set("$corvusMode", setting, 0);
+		
+		// disable Prism if SCY will create its own
+		if (setting == true && ExerelinSetupData.getInstance().getAllFactions().contains("SCY"))
+		{
+			ExerelinSetupData.getInstance().prismMarketPresent = false;
+			memory.set("$prismMarketPresent", false, 0);
+		}
+		
 		return true;
 	}
 }
