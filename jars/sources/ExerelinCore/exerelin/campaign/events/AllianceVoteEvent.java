@@ -83,29 +83,35 @@ public class AllianceVoteEvent extends BaseEventPlugin {
 		if (result.defied.isEmpty())
 			return "";
 		String stringKey = (result.defied.size() > 1 ? "defy" : "defies") + "Decision";
-		stringKey += isWar ? "war" : "peace";
+		stringKey += isWar ? "War" : "Peace";
 		
 		String str = StringHelper.getString("exerelin_alliances", stringKey);
-		str = StringHelper.substituteToken(str, "$defying", StringHelper.writeStringCollection(result.defied, true, true));
+		
+		List<String> defiers = new ArrayList<>();
+		for (String defier : result.defied)
+		{
+			defiers.add(ExerelinUtilsFaction.getFactionShortName(defier));
+		}
+		str = StringHelper.substituteToken(str, "$defying", StringHelper.writeStringCollection(defiers, true, true));
 		
 		if (otherPartyIsAlliance)
 		{
 			String allianceName = AllianceManager.getAllianceByUUID(otherParty).getName();
 			String theAllianceName = StringHelper.getStringAndSubstituteToken("exerelin_alliances", "theAlliance", "$alliance", allianceName);
-			StringHelper.substituteToken(str, "$otherParty", allianceName);
-			StringHelper.substituteToken(str, "$theOtherParty", theAllianceName);
-			StringHelper.substituteToken(str, "$OtherParty", Misc.ucFirst(allianceName));
-			StringHelper.substituteToken(str, "$TheOtherParty", Misc.ucFirst(theAllianceName));
+			str = StringHelper.substituteToken(str, "$otherParty", allianceName);
+			str = StringHelper.substituteToken(str, "$theOtherParty", theAllianceName);
+			str = StringHelper.substituteToken(str, "$OtherParty", Misc.ucFirst(allianceName));
+			str = StringHelper.substituteToken(str, "$TheOtherParty", Misc.ucFirst(theAllianceName));
 		}
 		else
 		{
 			FactionAPI faction = Global.getSector().getFaction(otherParty);
 			String factionStr = ExerelinUtilsFaction.getFactionShortName(faction);
 			String theFactionStr = faction.getDisplayNameWithArticle();
-			StringHelper.substituteToken(str, "$otherParty", factionStr);
-			StringHelper.substituteToken(str, "$theOtherParty", theFactionStr);
-			StringHelper.substituteToken(str, "$OtherParty", Misc.ucFirst(factionStr));
-			StringHelper.substituteToken(str, "$TheOtherParty", Misc.ucFirst(theFactionStr));
+			str = StringHelper.substituteToken(str, "$otherParty", factionStr);
+			str = StringHelper.substituteToken(str, "$theOtherParty", theFactionStr);
+			str = StringHelper.substituteToken(str, "$OtherParty", Misc.ucFirst(factionStr));
+			str = StringHelper.substituteToken(str, "$TheOtherParty", Misc.ucFirst(theFactionStr));
 		}
 		
 		return str;

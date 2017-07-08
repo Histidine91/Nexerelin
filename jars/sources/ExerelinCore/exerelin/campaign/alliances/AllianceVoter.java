@@ -76,10 +76,6 @@ public class AllianceVoter {
 			AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, null, ally2, isWar, defyingFactions);
 		}
 		
-		// alliance hates on defiers
-		handleDefyRelations(vote1);
-		handleDefyRelations(vote2);
-		
 		// report event
 		if (ally1 != null)
 		{
@@ -91,6 +87,10 @@ public class AllianceVoter {
 			Map<String, Object> params = getEventParams(ally2, vote2, faction1Id, ally1, isWar);
 			ally2.getVoteEvent().reportEvent(params);
 		}
+		
+		// alliance hates on defiers
+		handleDefyRelations(vote1);
+		handleDefyRelations(vote2);
 	}
 	
 	protected static void handleDefyRelations(VoteResult vote)
