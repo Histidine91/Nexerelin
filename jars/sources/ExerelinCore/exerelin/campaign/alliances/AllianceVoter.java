@@ -123,6 +123,7 @@ public class AllianceVoter {
 					DiplomacyManager.adjustRelations(faction, defierFaction, 
 							penalty, null, null, RepLevel.HOSTILE, true);
 				}
+				AllianceManager.remainInAllianceCheck(defier, member);
 			}
 		}
 		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
