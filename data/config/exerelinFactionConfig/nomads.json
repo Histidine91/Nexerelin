@@ -1,22 +1,65 @@
 {
-  "uniqueModClassName":"src.data.scripts.world.NAModPlugin",
-    "playableFaction":true,
-    "corvusCompatible":false,
-
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
-    "rebelFleetSuffix":"Traitors",
-
-    "alignments":{
-        "technocratic":-0.5,
-        "militarist":-0.5,
-        "diplomatic":0.5,
-        "ideological":-0.5,
-    },
-
-    "startShipsSolo":["nom_wurm_assault"],
-    "startShipsCombatSmall":["nom_flycatcher_fang", "nom_yellowjacket_sniper", "nom_wurm_assault"],
-    "startShipsCombatLarge":["nom_komodo_assault", "nom_roadrunner_pursuit", "nom_flycatcher_scarab"],
+  "uniqueModClassName": "data.scripts.TheNomadsModPlugin",
+  "playableFaction": true,
+  "corvusCompatible": true,
+  "baseFleetCostMultiplier": 1.0,
+  "customRebelFaction": "",
+  "customRebelFleetId": "",
+  "rebelFleetSuffix": "Vagabond",
+  "alignments": {
+    "technocratic": 0.0,
+    "militarist": -0.5,
+    "diplomatic": 0.5,
+    "ideological": -0.25
+  },
+  "factionsLiked": [
+    "blackrock_driveyards",
+    "independent",
+    "pirates",
+    "tritachyon"
+  ],
+  "factionsDisliked": [
+    "exigency",
+    "diableavionics",
+    "hegemony",
+    "interstellarimperium",
+    "metelson",
+    "ORA",
+    "sindrian_diktat",
+    "SCY",
+    "templars",
+    "tiandong"
+  ],
+  "startShipsSolo": [
+    "nom_dust_devil_assault"
+  ],
+  "startShipsCombatSmall": [
+    "nom_wurm_royal_vanguard",
+    "nom_dust_devil_assault",
+    "nom_flycatcher_ant"
+  ],
+  "startShipsCombatLarge": [
+    "nom_komodo_mk2_assault",
+    "nom_roadrunner_pursuit",
+    "nom_death_bloom_strike"
+  ],
+  "startShipsTradeSmall": [
+    "nom_wurm_assault",
+    "nom_komodo_assault",
+    "nom_tortoise_freighter"
+  ],
+  "startShipsTradeLarge": [
+    "nom_dust_devil_assault",
+    "nom_flycatcher_toad",
+    "nom_rattlesnake_assault",
+    "nom_cobra_personnel",
+    "nom_tortoise_freighter",
+    "nom_cactus_tanker"
+  ],
+  "miningVariantsOrWings": [
+    "nom_komodo_p_overdriven",
+    "nom_komodo_p_support",
+    "nom_willow_salvage",
+    "nom_leaf_probe"
+  ]
 }
