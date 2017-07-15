@@ -109,7 +109,6 @@ final class UpdateNotificationScript implements EveryFrameScript
         String keyName = Keyboard.getKeyName(VCModPluginCustom.notificationKey);
         ui.addMessage("Press " + keyName + " for detailed update information.",
                 keyName, Color.CYAN);
-		ui.addMessage("Wololo!");
     }
 
     @Override
