@@ -1,0 +1,15 @@
+{
+    # What button to press to summon the update notification window
+    # Key IDs are integers and can be found in the LWJGL documentation here:
+    # http://legacy.lwjgl.org/javadoc/constant-values.html#org.lwjgl.input.Keyboard.KEY_0
+    "summonUpdateNotificationKey":47, # Default: 47 (V)
+
+    # Whether to check if Starsector itself is up to date
+    "checkStarsectorVersion":true, # Default: true
+
+    # The maximum number of separate threads to use when checking for updates
+    "maxUpdateThreads":8,
+
+    # Valid levels: OFF, FATAL, ERROR, WARN, INFO, DEBUG, ALL
+    "logLevel":"INFO"
+}

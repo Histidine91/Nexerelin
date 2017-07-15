@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -30,11 +29,10 @@ import exerelin.campaign.fleets.MiningFleetManager;
 import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.missions.ConquestMissionCreator;
+import exerelin.utilities.versionchecker.VCModPluginCustom;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.SSP_AsteroidTracker;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 public class ExerelinModPlugin extends BaseModPlugin
 {
@@ -43,6 +41,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public static final boolean HAVE_DYNASECTOR = Global.getSettings().getModManager().isModEnabled("dynasector");
     public static final boolean HAVE_UNDERWORLD = Global.getSettings().getModManager().isModEnabled("underworld");
     public static final boolean HAVE_STELLAR_INDUSTRIALIST = Global.getSettings().getModManager().isModEnabled("stellar_industrialist");
+	public static final boolean HAVE_VERSION_CHECKER = Global.getSettings().getModManager().isModEnabled("lw_version_checker");
     
     protected static boolean isNewGame = false;
     
@@ -191,12 +190,17 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.registerPlugin(new ExerelinCoreCampaignPlugin());
         sector.addTransientScript(new DirectoryScreenScript());
         sector.addTransientScript(new SSP_AsteroidTracker());
+		
+		if (!HAVE_VERSION_CHECKER)
+			VCModPluginCustom.onGameLoad(newGame);
     }
     
     @Override
     public void onApplicationLoad() throws Exception
     {
         //ExerelinConfig.loadSettings();
+		if (!HAVE_VERSION_CHECKER)
+			VCModPluginCustom.onApplicationLoad();
     }
     
     @Override
