@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import exerelin.campaign.events.RevengeanceManagerEvent;
+import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.ExerelinConfig;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +124,7 @@ public class StatsTracker extends BaseCampaignEventListener{
         
         List<CampaignFleetAPI> killedFleets = battle.getNonPlayerSide();
         //List<CampaignFleetAPI> lossesFleets = battle.getPlayerSide();
-        CampaignFleetAPI lossesFleet = Global.getSector().getPlayerFleet();
+        CampaignFleetAPI myFleet = Global.getSector().getPlayerFleet();
         
         Global.getLogger(StatsTracker.class).info("Tracker tracking battle");
 
@@ -150,11 +151,18 @@ public class StatsTracker extends BaseCampaignEventListener{
         fpKilled += recentFpKilled * involvedFraction;
         shipsKilled += recentShipsKilled * involvedFraction;
         
-        List<FleetMemberAPI> lossCurrent = lossesFleet.getFleetData().getMembersListCopy();
-        for (FleetMemberAPI member : lossesFleet.getFleetData().getSnapshot()) {
-            if (!lossCurrent.contains(member)) {
+        List<FleetMemberAPI> myCurrent = myFleet.getFleetData().getMembersListCopy();
+		List<FleetMemberAPI> mySnapshot = myFleet.getFleetData().getSnapshot();
+        for (FleetMemberAPI member : mySnapshot) {
+            if (!myCurrent.contains(member)) {
                 fpLost += member.getFleetPointCost();
                 shipsLost++;
+            }
+        }
+		// report captued ships to Prism market
+		for (FleetMemberAPI member : myCurrent) {
+            if (!mySnapshot.contains(member)) {
+				PrismMarket.notifyShipCaptured(member);
             }
         }
     }

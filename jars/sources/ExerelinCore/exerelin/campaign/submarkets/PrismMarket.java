@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction.ShipSaleInfo;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -32,6 +33,7 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,6 +66,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     protected static Set<String> restrictedWeapons;
     protected static Set<String> restrictedShips;
+	
+	protected static Set<SubmarketAPI> cachedSubmarkets = null;
     
     public Set<String> alreadyBoughtShips = new HashSet<>();
     
@@ -468,7 +472,39 @@ public class PrismMarket extends BaseSubmarketPlugin {
             restrictedShips.add(row.getString("id"));
         }
     }
-    
+	
+	/**
+	 * Called when an enemy ship is recovered from battle. 
+	 * So an IBB ship can only be bought or recovered, but not both
+	 * @param member The recovered ship's FleetMemberAPI
+	 */
+	public static void notifyShipCaptured(FleetMemberAPI member)
+	{
+		String hullId = member.getHullSpec().getBaseHullId();
+		if (cachedSubmarkets == null)
+		{
+			cachedSubmarkets = new HashSet<>();
+			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+			{
+				if (market.hasSubmarket("exerelin_prismMarket"))
+				{
+					cachedSubmarkets.add(market.getSubmarket("exerelin_prismMarket"));
+				}
+			}
+		}
+		//Global.getSector().getCampaignUI().addMessage("Adding ship " + hullId + " to Prism already-bought list", Color.GREEN);
+		for (SubmarketAPI sub : cachedSubmarkets)
+		{
+			PrismMarket prism = (PrismMarket)sub.getPlugin();
+			if (!prism.alreadyBoughtShips.contains(hullId))
+			{
+				prism.alreadyBoughtShips.add(hullId);
+			}
+		}
+	}
+	
+	//==========================================================================
+	//==========================================================================
     
     @Override
     public boolean isIllegalOnSubmarket(CargoStackAPI stack, TransferAction action) {
