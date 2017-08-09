@@ -7,6 +7,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
@@ -73,7 +74,12 @@ public class AllianceVoteEvent extends BaseEventPlugin {
 	public void reportEvent(Map<String, Object> params)
 	{
 		setParam(params);
-		SectorEntityToken location = AllianceManager.getAllianceByUUID(allianceId).getRandomAllianceMarketForEvent(true).getPrimaryEntity();
+		Alliance alliance = AllianceManager.getAllianceByUUID(allianceId);
+		if (alliance == null) return;
+		MarketAPI market = alliance.getRandomAllianceMarketForEvent(true);
+		if (market == null) return;
+		SectorEntityToken location = market.getPrimaryEntity();
+		if (location == null) return;
 		Global.getSector().reportEventStage(this, stage, location, MESSAGE_PRIORITY);
 	}
 	
