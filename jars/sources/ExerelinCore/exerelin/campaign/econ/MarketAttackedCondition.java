@@ -16,7 +16,8 @@ public class MarketAttackedCondition extends BaseMarketConditionPlugin {
 		{
 			Global.getLogger(this.getClass()).info("ERROR: Event is null, re-fetching");
 			event = (MarketAttackedEvent)Global.getSector().getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_market_attacked");
-		}	
+		}
+		if (event == null) return;
 		market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), "Market attacked");
 	}
 		

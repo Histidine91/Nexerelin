@@ -15,7 +15,8 @@ public class AgentDestabilizeMarketCondition extends BaseMarketConditionPlugin {
 		{
 			Global.getLogger(this.getClass()).info("ERROR: Event is null, re-fetching");
 			event = (AgentDestabilizeMarketEventForCondition)Global.getSector().getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market_for_condition");
-		}	
+		}
+		if (event == null) return;
         market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), "Agent destabilization");
     }
 

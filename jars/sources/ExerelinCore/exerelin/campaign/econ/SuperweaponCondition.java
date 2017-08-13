@@ -1,5 +1,7 @@
 package exerelin.campaign.econ;
 
+import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import exerelin.campaign.events.SuperweaponEvent;
 import exerelin.utilities.StringHelper;
@@ -10,6 +12,13 @@ public class SuperweaponCondition extends BaseMarketConditionPlugin {
 	
 	@Override
 	public void apply(String id) {
+		// FIXME: diagnose the underlying issue!
+		if (event == null)	// try regetting
+		{
+			Global.getLogger(this.getClass()).info("ERROR: Event is null, re-fetching");
+			event = (SuperweaponEvent)Global.getSector().getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_superweapon");
+		}
+		if (event == null) return;
 		market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), StringHelper.getString("exerelin_superweapon", "stabilityText"));
 	}
 		
