@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package exerelin.campaign;
 
 import java.util.HashSet;
@@ -61,6 +56,9 @@ public class InvasionRound {
 	public static final float COMMODITY_DESTRUCTION_MULT_SUCCESS = 0.2f;
 	public static final float COMMODITY_DESTRUCTION_MULT_FAILURE = 0.1f;
 	public static final float COMMODITY_DESTRUCTION_VARIANCE = 0.2f;
+	public static final float COMMODITY_LOOT_MULT = 0.1f;
+	public static final float COMMODITY_LOOT_VARIANCE = 0.2f;
+	public static final String LOOT_MEMORY_KEY = "$nex_invasionLoot";
 	
 	/**
 	* PESSIMISTIC and OPTIMISTIC are used for prediction;
@@ -73,15 +71,16 @@ public class InvasionRound {
 	}
 	
 	public static class InvasionRoundResult {
-		private boolean success;
-		private boolean isRaid;
-		private CargoAPI enemyCargoDamaged;
-		private int marinesLost;
-		private float attackerStrength;
-		private float defenderStrength;
-		private float timeTaken;
-		private Map<String, Float> attackerBonuses;
-		private Map<String, Float> defenderBonuses;
+		public boolean success;
+		public boolean isRaid = false;
+		public CargoAPI enemyCargoDamaged;
+		public int marinesLost = 0;
+		public float attackerStrength = 0;
+		public float defenderStrength = 0;
+		public float timeTaken = 0;
+		public Map<String, Float> attackerBonuses = new HashMap<>();
+		public Map<String, Float> defenderBonuses = new HashMap<>();
+		public Map<String, Float> loot = new HashMap<>();
 
 		public InvasionRoundResult()
 		{
@@ -91,66 +90,10 @@ public class InvasionRound {
 		public InvasionRoundResult(boolean success)
 		{
 			this.success = success;
-			this.attackerStrength = 0;
-			this.defenderStrength = 0;
-			this.marinesLost = 0;
-			this.attackerBonuses = new HashMap<>();
-			this.defenderBonuses = new HashMap<>();
-		}
-		
-		public boolean getSuccess() {
-			return success;
-		}
-		public void setSuccess(boolean success) {
-			this.success = success;
-		}
-		public boolean getIsRaid() {
-			return isRaid;
-		}
-		public void setIsRaid(boolean isRaid) {
-			this.isRaid = isRaid;
-		}
-		public float getAttackerStrength() {
-			return attackerStrength;
-		}
-		public void setAttackerStrength(float strength) {
-			attackerStrength = strength;
-		}
-		public float getDefenderStrength() {
-			return defenderStrength;
-		}
-		public void setDefenderStrength(float strength) {
-			defenderStrength = strength;
-		}
-		public float getTimeTaken() {
-			return timeTaken;
-		}
-		public void setTimeTaken(float time) {
-			timeTaken = time;
-		}
-		public CargoAPI getDamageDone() {
-			return enemyCargoDamaged;
-		}
-		public void setDamageDone(CargoAPI damage) {
-			this.enemyCargoDamaged = damage;
-		}
-		public int getMarinesLost() {
-			return marinesLost;
-		}
-		public void setMarinesLost(int losses) {
-			this.marinesLost = losses;
-		}
-		public Map<String, Float> getAttackerBonuses()
-		{
-			return new HashMap<>(attackerBonuses);
 		}
 		public void addAttackerBonus(String name, float amount)
 		{
 			attackerBonuses.put(name, amount);
-		}
-		public Map<String, Float> getDefenderBonuses()
-		{
-			return new HashMap<>(defenderBonuses);
 		}
 		public void addDefenderBonus(String name, float amount)
 		{
@@ -211,12 +154,14 @@ public class InvasionRound {
 		return defenderStrength;
 	}
 	
-	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, SectorEntityToken defender, boolean isRaid) 
+	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, 
+			SectorEntityToken defender, boolean isRaid) 
 	{
 		return GetInvasionRoundResult(attacker, defender, isRaid, InvasionSimulationType.REALISTIC);
 	}
 	
-	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, SectorEntityToken defender, boolean isRaid, InvasionSimulationType simType)
+	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, 
+			SectorEntityToken defender, boolean isRaid, InvasionSimulationType simType)
 	{
 		MarketAPI market = defender.getMarket();
 		if (market == null) return new InvasionRoundResult(true);
@@ -284,17 +229,18 @@ public class InvasionRound {
 		if (marinesLost > marineCount) marinesLost = marineCount;
 		if (marinesLost < 0) marinesLost = 0;
 		
-		result.setSuccess(outcome > 0);
-		result.setAttackerStrength(attackerStrength);
-		result.setDefenderStrength(defenderStrength);
-		result.setMarinesLost(marinesLost);
-		result.setTimeTaken(marketSize/2);
+		result.success = outcome > 0;
+		result.attackerStrength = attackerStrength;
+		result.defenderStrength = defenderStrength;
+		result.marinesLost = marinesLost;
+		result.timeTaken = marketSize/2;
 		
 		// todo implement cargo damage
 		return result;
 	}
 	
-	public static InvasionRoundResult AttackMarket(CampaignFleetAPI attacker, SectorEntityToken defender, boolean isRaid)
+	public static InvasionRoundResult AttackMarket(CampaignFleetAPI attacker,
+			SectorEntityToken defender, boolean isRaid)
 	{
 		InvasionRoundResult result = GetInvasionRoundResult(attacker, defender, isRaid);
 		
@@ -320,11 +266,13 @@ public class InvasionRound {
 		}
 		
 		boolean captured = false;
-		boolean success = result.getSuccess();
+		boolean success = result.success;
 
-		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_market_attacked");
+		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(
+				new CampaignEventTarget(market), "exerelin_market_attacked");
 		if (eventSuper == null) 
-			eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_attacked", null);
+			eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), 
+					"exerelin_market_attacked", null);
 		MarketAttackedEvent event = (MarketAttackedEvent)eventSuper;
 		
 		int currentPenalty = event.getStabilityPenalty();
@@ -345,14 +293,21 @@ public class InvasionRound {
 		}
 		
 		if (success) {
-			ExerelinUtilsMarket.destroyAllCommodityStocks(market, COMMODITY_DESTRUCTION_MULT_SUCCESS, COMMODITY_DESTRUCTION_VARIANCE);
+			ExerelinUtilsMarket.destroyAllCommodityStocks(market, 
+					COMMODITY_DESTRUCTION_MULT_SUCCESS, COMMODITY_DESTRUCTION_VARIANCE);
+			float lootMult = COMMODITY_LOOT_MULT;
+			if (isRaid) lootMult *= (result.attackerStrength/result.defenderStrength - 1);
+			result.loot = ExerelinUtilsMarket.getAllCommodityPartialStocks(market,
+					lootMult, COMMODITY_LOOT_VARIANCE, true, true);
 		} else {
-			ExerelinUtilsMarket.destroyAllCommodityStocks(market, COMMODITY_DESTRUCTION_MULT_FAILURE, COMMODITY_DESTRUCTION_VARIANCE);
+			ExerelinUtilsMarket.destroyAllCommodityStocks(market, 
+					COMMODITY_DESTRUCTION_MULT_FAILURE, COMMODITY_DESTRUCTION_VARIANCE);
 		}
+		
 		ExerelinUtilsMarket.refreshMarket(market, true);
 		
 		CargoAPI attackerCargo = attacker.getCargo();
-		attackerCargo.removeMarines(result.getMarinesLost());
+		attackerCargo.removeMarines(result.marinesLost);
 		
 		if (!isRaid && success)
 		{

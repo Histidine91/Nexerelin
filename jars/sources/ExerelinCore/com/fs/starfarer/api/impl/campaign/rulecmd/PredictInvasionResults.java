@@ -47,11 +47,11 @@ public class PredictInvasionResults extends BaseCommandPlugin {
                 InvasionRoundResult worst = InvasionRound.GetInvasionRoundResult(playerFleet, target, isRaid, InvasionSimulationType.PESSIMISTIC);
                 InvasionRoundResult best = InvasionRound.GetInvasionRoundResult(playerFleet, target, isRaid, InvasionSimulationType.OPTIMISTIC);
 
-                float attackerStrengthWorst = worst.getAttackerStrength();
-                float attackerStrengthBest = best.getAttackerStrength();
-                float defenderStrength = best.getDefenderStrength();
-                int marinesLostWorst = worst.getMarinesLost();
-                int marinesLostBest = best.getMarinesLost();
+                float attackerStrengthWorst = worst.attackerStrength;
+                float attackerStrengthBest = best.attackerStrength;
+                float defenderStrength = best.defenderStrength;
+                int marinesLostWorst = worst.marinesLost;
+                int marinesLostBest = best.marinesLost;
 
                 String a1 = String.format("%.1f", attackerStrengthWorst);
                 String a2 = String.format("%.1f", attackerStrengthBest);
@@ -89,7 +89,7 @@ public class PredictInvasionResults extends BaseCommandPlugin {
                 text.addParagraph("-----------------------------------------------------------------------------");
                 text.setFontInsignia();
                 MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-                memory.set("$exerelinInvasionTimeTaken", best.getTimeTaken(), 0);
+                memory.set("$exerelinInvasionTimeTaken", best.timeTaken, 0);
 
                 return true;
         }

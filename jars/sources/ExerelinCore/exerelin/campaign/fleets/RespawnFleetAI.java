@@ -109,7 +109,7 @@ public class RespawnFleetAI extends InvasionFleetAI
                 else
                 {
                     InvasionRound.InvasionRoundResult result = InvasionRound.AttackMarket(fleet, data.target, false);
-					if (result.getSuccess())
+					if (result.success)
 					{
 						// respawn fleets have no event
 						//data.event.endEvent(InvasionFleetEvent.FleetReturnReason.MISSION_COMPLETE, data.target);

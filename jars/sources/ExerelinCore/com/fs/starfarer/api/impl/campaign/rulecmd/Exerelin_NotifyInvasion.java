@@ -95,7 +95,7 @@ public class Exerelin_NotifyInvasion extends BaseCommandPlugin {
                 if (timeElapsed >= RESPONSE_DELAY)
                 {
                     CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-                    ResponseFleetManager.requestResponseFleet(target.getMarket(), playerFleet);
+                    //ResponseFleetManager.requestResponseFleet(target.getMarket(), playerFleet);
                     done = true;
                 }
             }

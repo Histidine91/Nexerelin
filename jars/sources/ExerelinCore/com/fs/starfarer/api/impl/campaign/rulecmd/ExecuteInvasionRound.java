@@ -17,7 +17,6 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
-import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 
 public class ExecuteInvasionRound extends BaseCommandPlugin {
@@ -27,75 +26,58 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
     @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
         if (dialog == null) return false;
-                SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
-                TextPanelAPI text = dialog.getTextPanel();
+		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+		TextPanelAPI text = dialog.getTextPanel();
 
-                /*if (!(target instanceof MarketAPI ))
-                {
-                        text.addParagraph("Damnit, something's broken here!");
-                        return false;
-                }*/
-                MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
-                
-                CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-                FactionAPI faction = target.getFaction();
-                
-                InvasionRoundResult result = InvasionRound.AttackMarket(playerFleet, target, false);
-                if (result == null)
-                {
-                    memory.set("$exerelinInvasionCancelled", true, 0);
-                    return false;
-                }
+		/*if (!(target instanceof MarketAPI ))
+		{
+			text.addParagraph("Damnit, something's broken here!");
+			return false;
+		}*/
+		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
 
-                
-                memory.set("$exerelinInvasionSuccessful", result.getSuccess(), 0);
+		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		FactionAPI faction = target.getFaction();
 
-                int marinesLost = result.getMarinesLost();
-                int marinesRemaining = playerFleet.getCargo().getMarines();
-                String attackerStrength = String.format("%.1f", result.getAttackerStrength());
-                String defenderStrength = String.format("%.1f", result.getDefenderStrength());
+		InvasionRoundResult result = InvasionRound.AttackMarket(playerFleet, target, false);
+		if (result == null)
+		{
+			memory.set("$exerelinInvasionCancelled", true, 0);
+			return false;
+		}
 
-                text.setFontVictor();
-                text.setFontSmallInsignia();
+		memory.set("$exerelinInvasionSuccessful", result.success, 0);
 
-                Color hl = Misc.getHighlightColor();
-                Color red = Misc.getNegativeHighlightColor();
-                text.addParagraph("-----------------------------------------------------------------------------");
-                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "attackerStrength")) + ": " + attackerStrength);
-                text.highlightInLastPara(hl, "" + attackerStrength);
-                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "defenderStrength")) + ": " + defenderStrength);
-                text.highlightInLastPara(red, "" + defenderStrength);
-                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "marinesLost")) + ": " + marinesLost);
-                text.highlightInLastPara(red, "" + marinesLost);
-                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "marinesRemaining")) + ": " + marinesRemaining);
-                text.highlightInLastPara(hl, "" + marinesRemaining);
-                /*
-                if (!illegalFound.isEmpty()) {
-                        text.addParagraph("Contraband found!", red);
-                        String para = "";
-                        List<String> highlights = new ArrayList<String>();
-                        for (CargoStackAPI stack : illegalFound.getStacksCopy()) {
-                                        para += stack.getDisplayName() + " x " + (int)stack.getSize() + "\n";
-                                        highlights.add("" + (int)stack.getSize());
-                        }
-                        para = para.substring(0, para.length() - 1);
-                        text.addParagraph(para);
-                        text.highlightInLastPara(hl, highlights.toArray(new String [0]));
+		int marinesLost = result.marinesLost;
+		int marinesRemaining = playerFleet.getCargo().getMarines();
+		String attackerStrength = String.format("%.1f", result.attackerStrength);
+		String defenderStrength = String.format("%.1f", result.defenderStrength);
 
-                        text.addParagraph("Fine: " + (int) fine);
-                        text.highlightInLastPara(hl, "" + (int) fine);
-                }
-                */
-                text.addParagraph("-----------------------------------------------------------------------------");
-                text.setFontInsignia();
-                
-                if (result.getSuccess())
-                {
-                        Global.getSector().adjustPlayerReputation(
-                            new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.COMBAT_AGGRESSIVE, 0),
-                            faction.getId());
-                }
-                
-                return true;
-        }
+		text.setFontVictor();
+		text.setFontSmallInsignia();
+
+		Color hl = Misc.getHighlightColor();
+		Color red = Misc.getNegativeHighlightColor();
+		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "attackerStrength")) + ": " + attackerStrength);
+		text.highlightInLastPara(hl, "" + attackerStrength);
+		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "defenderStrength")) + ": " + defenderStrength);
+		text.highlightInLastPara(red, "" + defenderStrength);
+		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "marinesLost")) + ": " + marinesLost);
+		text.highlightInLastPara(red, "" + marinesLost);
+		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "marinesRemaining")) + ": " + marinesRemaining);
+		text.highlightInLastPara(hl, "" + marinesRemaining);
+		text.addParagraph("-----------------------------------------------------------------------------");
+		text.setFontInsignia();
+
+		if (result.success)
+		{
+			Global.getSector().adjustPlayerReputation(
+				new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.COMBAT_AGGRESSIVE, 0),
+				faction.getId());
+			memoryMap.get(MemKeys.MARKET).set(InvasionRound.LOOT_MEMORY_KEY, result.loot, 0);
+		}
+
+		return true;
+	}
 }

@@ -17,7 +17,9 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
 
 public class ExerelinUtilsMarket {
@@ -180,13 +182,66 @@ public class ExerelinUtilsMarket {
 		}
 	}
 	
-	public static void destroyCommodityStocks(MarketAPI market, CommodityOnMarketAPI commodity, float mult, float variance)
+	/**
+	 * Gets a float representing a portion of the stockpile for the specified commodity on the market.
+	 * @param market
+	 * @param commodity
+	 * @param mult
+	 * @param variance Output amount is multiplied by a random number from (1 - variance) to (1 + variance)
+	 * @return
+	 */
+	public static float getCommodityPartialStocks(MarketAPI market, CommodityOnMarketAPI commodity, float mult, float variance)
 	{
 		float current = commodity.getStockpile();
 		if (variance != 0)
 			mult = mult * MathUtils.getRandomNumberInRange(1 - variance, 1 + variance);
-		commodity.removeFromStockpile(current * mult);
-		Global.getLogger(ExerelinUtilsMarket.class).info("Destroyed " + String.format("%.1f", current * mult) + " of " + commodity.getId() 
+		if (mult < 0) mult = 0;
+		else if (mult > 1) mult = 1;
+		return current * mult;
+	}
+	
+	/**
+	 * Gets a float representing a portion of the stockpile for the specified commodity on the market.
+	 * @param market
+	 * @param commodityId
+	 * @param mult
+	 * @param variance Output amount is multiplied by a random number from (1 - variance) to (1 + variance)
+	 * @return
+	 */
+	public static float getCommodityPartialStocks(MarketAPI market, String commodityId, float mult, float variance)
+	{
+		CommodityOnMarketAPI commodity = market.getCommodityData(commodityId);
+		return getCommodityPartialStocks(market, commodity, mult, variance);
+	}
+	
+	/**
+	 * Gets a float representing a portion of the stockpile for each commodity on the market, 
+	 * with variance for each commodity.
+	 * @param market
+	 * @param mult
+	 * @param variance Output amount is multiplied by a random number from (1 - variance) to (1 + variance)
+	 * @param ignoreNonEcon Ignore non-econ commodities
+	 * @param ignorePersonnel Ignore crew/marines
+	 * @return
+	 */
+	public static Map<String, Float> getAllCommodityPartialStocks(MarketAPI market, 
+			float mult, float variance, boolean ignoreNonEcon, boolean ignorePersonnel) {
+		Map<String, Float> results = new HashMap<>();
+		for (CommodityOnMarketAPI commodity: market.getAllCommodities()) 
+		{
+			if (ignoreNonEcon && commodity.isNonEcon()) continue;
+			if (ignorePersonnel && commodity.isPersonnel()) continue;
+			float amount = getCommodityPartialStocks(market, commodity, mult, variance);
+			results.put(commodity.getId(), amount);
+		}
+		return results;
+	}
+	
+	public static void destroyCommodityStocks(MarketAPI market, CommodityOnMarketAPI commodity, float mult, float variance)
+	{
+		float amount = getCommodityPartialStocks(market, commodity, mult, variance);
+		commodity.removeFromStockpile(amount);
+		Global.getLogger(ExerelinUtilsMarket.class).info("Destroyed " + String.format("%.1f", amount) + " of " + commodity.getId() 
 				+ " on " + market.getName() + " (mult " + String.format("%.2f", mult) + ")");
 	}
 	
