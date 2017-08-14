@@ -41,7 +41,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     public static final boolean HAVE_DYNASECTOR = Global.getSettings().getModManager().isModEnabled("dynasector");
     public static final boolean HAVE_UNDERWORLD = Global.getSettings().getModManager().isModEnabled("underworld");
     public static final boolean HAVE_STELLAR_INDUSTRIALIST = Global.getSettings().getModManager().isModEnabled("stellar_industrialist");
-	public static final boolean HAVE_VERSION_CHECKER = Global.getSettings().getModManager().isModEnabled("lw_version_checker");
+    public static final boolean HAVE_VERSION_CHECKER = Global.getSettings().getModManager().isModEnabled("lw_version_checker");
     
     protected static boolean isNewGame = false;
     
@@ -66,15 +66,15 @@ public class ExerelinModPlugin extends BaseModPlugin
         SectorManager.setPlanetToRelayMap(new HashMap<String,String>());
         
         // replace patrol handling with our own
-		sector.addScript(new PatrolFleetManagerReplacer());
-		// not sure if this is needed since the replacer should already do it, but just to be safe
+        sector.addScript(new PatrolFleetManagerReplacer());
+        // not sure if this is needed since the replacer should already do it, but just to be safe
         for (MarketAPI market : sector.getEconomy().getMarketsCopy())
         {
             ExerelinUtils.removeScriptAndListener(market.getPrimaryEntity(), 
-					PatrolFleetManager.class, ExerelinPatrolFleetManager.class);
+                    PatrolFleetManager.class, ExerelinPatrolFleetManager.class);
         }
-		
-		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+        
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
         }
@@ -126,11 +126,11 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-		SectorEntityToken prism = Global.getSector().getEntityById("prismFreeport");
-		if (prism != null)
-		{
-			prism.removeTag(Tags.STATION);
-		}
+        SectorEntityToken prism = Global.getSector().getEntityById("prismFreeport");
+        if (prism != null)
+        {
+            prism.removeTag(Tags.STATION);
+        }
     }
     
     @Override
@@ -190,17 +190,22 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.registerPlugin(new ExerelinCoreCampaignPlugin());
         sector.addTransientScript(new DirectoryScreenScript());
         sector.addTransientScript(new SSP_AsteroidTracker());
-		
-		if (!HAVE_VERSION_CHECKER)
-			VCModPluginCustom.onGameLoad(newGame);
+        
+        if (!HAVE_VERSION_CHECKER)
+            VCModPluginCustom.onGameLoad(newGame);
     }
     
     @Override
     public void onApplicationLoad() throws Exception
     {
         //ExerelinConfig.loadSettings();
-		if (!HAVE_VERSION_CHECKER)
-			VCModPluginCustom.onApplicationLoad();
+        if (!HAVE_VERSION_CHECKER)
+            VCModPluginCustom.onApplicationLoad();
+        boolean hasLazyLib = Global.getSettings().getModManager().isModEnabled("lw_lazylib");
+        if (!hasLazyLib) {
+            throw new RuntimeException("Nexerelin requires LazyLib to function!"
+                    + "\nGet it at fractalsoftworks.com/forum/index.php?topic=5444.0");
+        }
     }
     
     @Override
@@ -219,13 +224,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             DiplomacyManager.initFactionRelationships(false);    // the mod factions set their own relationships, so we have to re-randomize if needed afterwards
         }
-		
+        
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
             market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
         }
-		
-		
+        
         //SectorAPI sector = Global.getSector();
         //for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
         //    PlayerStartHandler.addOmnifactory(sector, i);
