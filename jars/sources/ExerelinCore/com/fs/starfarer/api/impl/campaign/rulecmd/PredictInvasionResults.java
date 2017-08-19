@@ -42,10 +42,12 @@ public class PredictInvasionResults extends BaseCommandPlugin {
                 }*/
 
                 CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-                boolean isRaid = false; //params.get(0).getBoolean(memoryMap);
+                boolean isRaid = params.get(0).getBoolean(memoryMap);
 
-                InvasionRoundResult worst = InvasionRound.GetInvasionRoundResult(playerFleet, target, isRaid, InvasionSimulationType.PESSIMISTIC);
-                InvasionRoundResult best = InvasionRound.GetInvasionRoundResult(playerFleet, target, isRaid, InvasionSimulationType.OPTIMISTIC);
+                InvasionRoundResult worst = InvasionRound.GetInvasionRoundResult(playerFleet,
+						target, isRaid, InvasionSimulationType.PESSIMISTIC);
+                InvasionRoundResult best = InvasionRound.GetInvasionRoundResult(playerFleet,
+						target, isRaid, InvasionSimulationType.OPTIMISTIC);
 
                 float attackerStrengthWorst = worst.attackerStrength;
                 float attackerStrengthBest = best.attackerStrength;
@@ -57,16 +59,7 @@ public class PredictInvasionResults extends BaseCommandPlugin {
                 String a2 = String.format("%.1f", attackerStrengthBest);
                 String attackerStrength = a1 + " - " + a2;
                 String defenderStrengthStr = String.format("%.1f", defenderStrength);
-                String marinesLost = marinesLostBest + " - " + marinesLostWorst; 
-
-                float defenderAdvantageOverWorstCase = defenderStrength - attackerStrengthWorst;
-                float attackerStrengthRange = attackerStrengthBest - attackerStrengthWorst;
-                float winChance = 1 - (defenderAdvantageOverWorstCase / attackerStrengthRange);
-                winChance = winChance * 100;
-                if (winChance < 0) winChance = 0;
-                if (winChance > 100) winChance = 100;
-                String winChanceStr = String.format("%.1f", winChance) + "%";
-
+                String marinesLost = marinesLostBest + " - " + marinesLostWorst;                 
 
                 text.setFontVictor();
                 text.setFontSmallInsignia();
@@ -78,11 +71,38 @@ public class PredictInvasionResults extends BaseCommandPlugin {
                 text.highlightInLastPara(hl, "" + attackerStrength);
                 text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "defenderStrength")) + ": " + defenderStrengthStr);
                 text.highlightInLastPara(red, "" + defenderStrengthStr);
-                text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "captureChance")) + ": " + winChanceStr);
-                if (winChance < 50)
-                        text.highlightInLastPara(red, "" + winChanceStr);
-                else
-                        text.highlightInLastPara(hl, "" + winChanceStr);
+				if (isRaid)
+				{
+						float lootLevelLow = Math.min(2, worst.attackerStrength/worst.defenderStrength - 1);
+						float lootLevelHigh = Math.min(2, best.attackerStrength/best.defenderStrength - 1);
+						lootLevelLow = Math.max(lootLevelLow, 0);
+						lootLevelHigh = Math.max(lootLevelHigh, 0);
+						
+						float lootLevelAvg = (lootLevelLow + lootLevelHigh) * 0.5f;
+						String lootLevel = String.format("%.1f", lootLevelLow) + " – " + String.format("%.1f", lootLevelHigh);
+					
+						text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "lootRating")) + ": " + lootLevel );
+						if (lootLevelAvg < 0.7)
+								text.highlightInLastPara(hl, "" + lootLevel);
+						else
+								text.highlightInLastPara(Misc.getPositiveHighlightColor(), "" + lootLevel);
+				}
+				else
+				{
+						float defenderAdvantageOverWorstCase = defenderStrength - attackerStrengthWorst;
+						float attackerStrengthRange = attackerStrengthBest - attackerStrengthWorst;
+						float winChance = 1 - (defenderAdvantageOverWorstCase / attackerStrengthRange);
+						winChance = winChance * 100;
+						if (winChance < 0) winChance = 0;
+						if (winChance > 100) winChance = 100;
+						String winChanceStr = String.format("%.1f", winChance) + "%";
+					
+						text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "captureChance")) + ": " + winChanceStr);
+						if (winChance < 50)
+								text.highlightInLastPara(red, "" + winChanceStr);
+						else
+								text.highlightInLastPara(hl, "" + winChanceStr);
+				}
                 text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "projectedLosses")) + ": " + marinesLost);
                 text.highlightInLastPara(red, "" + marinesLost);
  

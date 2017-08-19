@@ -197,7 +197,8 @@
 		"defenderStrength":"defender strength",
 		"marinesLost":"marines lost",
 		"marinesRemaining":"marines remaining",
-		"projectedLosses":"projected losses"
+		"projectedLosses":"projected losses",
+		"lootRating":"loot rating",
 	},
 	"exerelin_markets":{		
 		"marketDirectoryEntry":"$market, $location (size $size)",

@@ -384,14 +384,15 @@ ExerelinMarketInvadeOption,ExerelinMarketSpecial,"IsValidInvasionTarget
 ",SetShortcut exerelinInvasion I,,1:exerelinInvasion:Invade the planet/station,
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"$menuState = invasion 0
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
-PredictInvasionResults
+PredictInvasionResults false
 FireAll ExerelinInvadeListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
-ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,SetShortcut exerelinInvasionCancel ESCAPE,,"2:exerelinInvasionHelp:Consult a help file
+ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,SetShortcut exerelinInvasionCancel ESCAPE,,"1:exerelinInvasionProceed:Proceed
+2:exerelinInvasionHelp:Consult a help file
 4:exerelinInvasionCancel:Cancel",
 ExerelinInvadeListOptionInvade,ExerelinInvadeListOptions,HasMarines 1,"SetEnabled exerelinInvasionProceed true
-SetShortcut exerelinInvasionProceed RETURN",,1:exerelinInvasionProceed:Proceed,
+SetShortcut exerelinInvasionProceed RETURN",,,
 ExerelinInvadeListOptionInvadeNoMarines,ExerelinInvadeListOptions,!HasMarines 1,"SetTooltip exerelinInvasionProceed ""You have no marines!""
-SetEnabled exerelinInvasionProceed false",,1:exerelinInvasionProceed:Proceed,
+SetEnabled exerelinInvasionProceed false",,,
 ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,FireAll ExerelinInvadeListOptions,"Base attacker strength = (marine strength + fleet DP/2) * 0.7
 Base defender strength = 0.2 * (market size+1)^3 * (stability + 0.5) * 0.5
 Each Military Base and Regional Capital adds 25% to defender strength, Headquarters adds 40%.
@@ -404,15 +405,14 @@ Markets accumulate a reserve force over time that can be quickly deployed in res
 ,,,,,,
 ExerelinInvasionProceed,DialogOptionSelected,"$option == exerelinInvasionProceed
 $hasMarket ","Wait $global.exerelinInvasionWait 1 $global.exerelinInvasionRoundComplete $global.exerelinInvasionInterrupted $global.exerelinInvasionInProgress ""Invading...""
-Exerelin_NotifyInvasion $global.exerelinInvasionWait 750
+Exerelin_NotifyInvasion $global.exerelinInvasionWait 750 false
 MakePlayerImmediatelyAttackable
 $player.invasionTarget = $id 1.01
 CreateWarmongerEvent $faction.id
 AdjustRep $faction.id COMBAT_NORMAL",,,
-ExerelinInvasionCancel,DialogOptionSelected,"$option == exerelinInvasionCancel
-$hasMarket",FireAll ExerelinMarketSpecial,,,
+ExerelinInvasionCancel,DialogOptionSelected,$option == exerelinInvasionCancel,FireAll ExerelinMarketSpecial,,,
 ExerelinInvasionDone,DialogOptionSelected,"$option == exerelinInvasionDone
-$hasMarket",Exerelin_LootMarket,,,
+$hasMarket",Exerelin_LootMarket false,,,
 ExerelinInvasionLeave,DialogOptionSelected,$option == exerelinInvasionLeave,DismissDialog,,,
 ,,,,,,
 ExerelinInvasionOpen,OpenInteractionDialog,"$hasMarket
@@ -473,6 +473,109 @@ unset $player.invasionTarget
 BroadcastCancelPlayerAction 1500 $exerelinRespondingToInvasion","The $faction $otherShipOrFleet catches up with you, weapons hot.",,
 ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion score:100,$entity.ignorePlayerCommRequests = true 0,"""You'll pay for trying to invade our territory!"" The comm link is cut before you can begin to respond.",continueCutComm:Continue,
 # END INVASION OPTIONS,,,,,,
+,,,,,,
+# START RAID OPTIONS,,,,,,
+ExerelinMarketRaidOption,ExerelinMarketSpecial,Nex_CanRaid,SetShortcut exerelinRaid R,,1:exerelinRaid:Raid and pillage the planet/station,
+ExerelinRaidStart,DialogOptionSelected,$option == exerelinRaid,"$menuState = raid 0
+ShowVisual ""graphics/illustrations/pirate_station.jpg""
+PredictInvasionResults true
+FireAll ExerelinRaidListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
+ExerelinRaidListOptionsMain,ExerelinRaidListOptions,,SetShortcut exerelinRaidCancel ESCAPE,,"1:exerelinRaidProceed:Proceed
+2:exerelinRaidHelp:Consult a help file
+4:exerelinInvasionCancel:Cancel",
+ExerelinRaidListOptionRaid,ExerelinRaidListOptions,HasMarines 1,"SetEnabled exerelinRaidProceed true
+SetShortcut exerelinRaidProceed RETURN",,,
+ExerelinRaidListOptionRaidNoMarines,ExerelinRaidListOptions,!HasMarines 1,"SetTooltip exerelinRaidProceed ""You have no marines!""
+SetEnabled exerelinRaidProceed false",,,
+ExerelinRaidListOptionRaidHostilesNearby,ExerelinRaidListOptions,HostileFleetNearbyAndAware,"SetTooltip exerelinRaidProceed ""A nearby hostile fleet is tracking your movements, making, a raid impossible.""
+SetEnabled exerelinRaidProceed false","A nearby hostile fleet is tracking your movements, making a raid impossible.",,
+ExerelinRaidHelp,DialogOptionSelected,$option == exerelinRaidHelp,FireAll ExerelinRaidListOptions,"Base attacker strength = (marine strength + fleet DP/2) * 0.7
+Base defender strength = 0.2 * (market size+1)^3 * (stability + 0.5) * 0.375
+Each Military Base and Regional Capital adds 25% to defender strength, Headquarters adds 40%.
+Attacker strength varies by up to 1/7th in either direction.
+
+Amount of loot is determined by ratio of attacker strength to defender strength (must be >1 to get anything).
+Marine losses depend on both strength values, plus a random factor.
+
+Markets accumulate a reserve force over time that will pursue raiders.",,
+,,,,,,
+#ExerelinRaidProceed,DialogOptionSelected,"$option == exerelinRaidProceed
+$hasMarket ","Wait $global.exerelinRaidWait 0.25 $global.exerelinRaidComplete $global.exerelinRaidInterrupted $global.exerelinRaidInProgress ""Raiding...""
+Exerelin_NotifyInvasion $global.exerelinRaidWait 750 true
+MakePlayerImmediatelyAttackable
+$player.raidTarget = $id 0.27
+CreateWarmongerEvent $faction.id
+AdjustRep $faction.id COMBAT_NORMAL",,,
+ExerelinRaidProceedFast,DialogOptionSelected,"$option == exerelinRaidProceed
+$hasMarket ","CreateWarmongerEvent $faction.id
+AdjustRep $faction.id COMBAT_NORMAL
+ExecuteInvasionRound true
+FireBest ExerelinRaidResults
+Exerelin_NotifyInvasion $global.exerelinRaidWait 750 true",RAID OUTCOME:,,
+ExerelinRaidDone,DialogOptionSelected,"$option == exerelinRaidDone
+$hasMarket",Exerelin_LootMarket true,,,
+ExerelinRaidLeave,DialogOptionSelected,$option == exerelinRaidLeave,DismissDialog,,,
+,,,,,,
+ExerelinRaidOpen,OpenInteractionDialog,"$hasMarket
+$id == $player.raidTarget","ExerelinShowDefaultVisual
+FireBest ExerelinInitRaidDialog",,,
+ExerelinRaidRoundComplete,ExerelinInitRaidDialog,"$hasMarket
+$global.exerelinRaidComplete score:100","ExecuteInvasionRound true
+FireBest ExerelinRaidResults",,,
+ExerelinRaidResultsComplete,ExerelinRaidResults,$exerelinRaidSuccessful,"$menuState = exerelin_raid 0
+ShowVisual ""graphics/illustrations/pirate_station.jpg""
+unset $player.raidTarget
+SetShortcut exerelinRaidDone RETURN",You've successfully raided $entityName!,exerelinRaidDone:Collect your spoils and leave,
+ExerelinRaidResultsIncomplete,ExerelinRaidResults,"!$exerelinRaidSuccessful
+HasMarines 1","$menuState = exerelin_raid 0
+ShowVisual ""graphics/illustrations/hull_breach.jpg""
+unset $player.raidTarget
+$tradeMode = NONE 0
+SetShortcut exerelinRaid RETURN
+SetShortcut exerelinRaidLeave ESCAPE",Your raid attempt on $entityName was beaten back.,"exerelinRaid:Attack again
+exerelinRaidLeave:Leave",
+ExerelinRaidResultsIncompleteNoMoreMarines,ExerelinRaidResults,"!$exerelinRaidSuccessful
+!HasMarines 1","$menuState = exerelin_raid 0
+ShowVisual ""graphics/illustrations/hull_breach.jpg""
+unset $player.raidTarget
+$tradeMode = NONE 0
+SetShortcut exerelinRaidLeave ESCAPE","Your raid attempt on $entityName was beaten back.
+
+Your marine complement has been wiped out; you cannot conduct further raids.",exerelinRaidLeave:Leave,
+#ExerelinRaidResultsCancelled,ExerelinRaidResults,$exerelinRaidCancelled score:100,"$menuState = exerelin_raid 0
+ExerelinShowDefaultVisual
+unset $player.raidTarget
+FireAll PopulateOptions",This isn't a valid raid target!,,
+#ExerelinRaidInterupted,ExerelinInitInvadeDialog,"$hasMarket
+$global.exerelinRaidInterrupted","unset $global.exerelinRaidInterrupted
+unset $player.RaidTarget
+$menuState = main 0
+FireBest MarketPostOpen",Your raid was interrupted.,,
+#ExerelinInitRaidInProgress,ExerelinInitInvadeDialog,"$hasMarket
+$global.exerelinRaidInProgress
+!$global.exerelinRaidInterrupted
+!$global.exerelinRaidComplete",,You're currently invading $entityName.,,
+#ExerelinInitRaidAbort,DialogOptionSelected,$option==exerelinAbort,"AbortWait $global.exerelinRaidWait
+unset $player.raidTarget
+$menuState = main 0
+FireAll PopulateOptions",The raid is cancelled.,,
+#ExerelinRaidInterference_start,BeginFleetEncounter,"$exerelinRespondingToRaid score:100
+$global.exerelinRaidInProgress score:20","AbortWait $global.exerelinRaidWait
+MakeOtherFleetHostile true
+MakeOtherFleetAggressive true
+unset $entity.ignorePlayerCommRequests
+unset $player.raidTarget
+BroadcastCancelPlayerAction 1500 $exerelinRespondingToRaid",The appearance of a $faction $otherShipOrFleet interrupts your raid preparations.,,
+#ExerelinRaidInterference_cancelledAndRan,BeginFleetEncounter,"$exerelinRespondingToRaid score:100
+$faction.hostileToPlayer","MakeOtherFleetHostile true
+MakeOtherFleetAggressive true
+unset $entity.ignorePlayerCommRequests
+unset $player.raidTarget
+BroadcastCancelPlayerAction 1500 $exerelinRespondingToRaid","The $faction $otherShipOrFleet catches up with you, weapons hot.",,
+,,,,,,
+# END RAID OPTIONS,,,,,,
+,,,,,,
+,,,,,,
 ,,,,,,
 #START MARKET DIRECTORY OPTIONS,,,,,,
 ExerelinMarketFactionDirectoryOption,ExerelinMarketSpecial,,SetShortcut exerelinFactionDirectoryMain D,,7:exerelinFactionDirectoryMain:Faction directory,

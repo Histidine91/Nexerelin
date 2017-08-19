@@ -59,7 +59,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             reserves.put(market.getId(), getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
     }
   
-    public void spawnResponseFleet(MarketAPI origin, SectorEntityToken target)
+    public void spawnResponseFleet(MarketAPI origin, SectorEntityToken target, SectorEntityToken spawnEntity)
     {
         float reserveSize = getReserveSize(origin);
         int maxFP = (int)reserveSize;
@@ -121,9 +121,9 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         fleet.setAIMode(true);
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);
         
-        SectorEntityToken entity = origin.getPrimaryEntity();
-        entity.getContainingLocation().addEntity(fleet);
-        fleet.setLocation(entity.getLocation().x, entity.getLocation().y);
+        if (spawnEntity == null) spawnEntity = origin.getPrimaryEntity();
+        spawnEntity.getContainingLocation().addEntity(fleet);
+        fleet.setLocation(spawnEntity.getLocation().x, spawnEntity.getLocation().y);
         
         ResponseFleetData data = new ResponseFleetData(fleet);
         data.startingFleetPoints = fleet.getFleetPoints();
@@ -132,7 +132,9 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         data.target = target;
         this.activeFleets.add(data);
         
-        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true, 5);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true, 5);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF, true, 5);
         
         ResponseFleetAI ai = new ResponseFleetAI(fleet, data);
         fleet.addScript(ai);
@@ -204,10 +206,15 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         }
     }
     
-    public static void requestResponseFleet(MarketAPI market, SectorEntityToken attacker)
+	public static void requestResponseFleet(MarketAPI market, SectorEntityToken attacker)
+    {
+        requestResponseFleet(market, attacker, null);
+    }
+	
+    public static void requestResponseFleet(MarketAPI market, SectorEntityToken attacker, SectorEntityToken spawnEntity)
     {
         if (responseFleetManager == null) return;
-        responseFleetManager.spawnResponseFleet(market, attacker);
+        responseFleetManager.spawnResponseFleet(market, attacker, spawnEntity);
     }
     
     public static float modifyReserveSize(MarketAPI market, float delta)

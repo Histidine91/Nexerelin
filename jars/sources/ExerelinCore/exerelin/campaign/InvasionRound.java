@@ -56,7 +56,7 @@ public class InvasionRound {
 	public static final float COMMODITY_DESTRUCTION_MULT_SUCCESS = 0.2f;
 	public static final float COMMODITY_DESTRUCTION_MULT_FAILURE = 0.1f;
 	public static final float COMMODITY_DESTRUCTION_VARIANCE = 0.2f;
-	public static final float COMMODITY_LOOT_MULT = 0.1f;
+	public static final float COMMODITY_LOOT_MULT = 0.05f;
 	public static final float COMMODITY_LOOT_VARIANCE = 0.2f;
 	public static final String LOOT_MEMORY_KEY = "$nex_invasionLoot";
 	
@@ -101,9 +101,9 @@ public class InvasionRound {
 		}
 	}
 	
-	public static float GetDefenderStrength(MarketAPI market)
+	public static float GetDefenderStrength(MarketAPI market, boolean isRaid)
 	{
-		return GetDefenderStrength(market, 1, false);
+		return GetDefenderStrength(market, 1, isRaid);
 	}
 	
 	public static float GetDefenderStrength(MarketAPI market, float bonusMult, boolean isRaid)
@@ -170,7 +170,7 @@ public class InvasionRound {
 		int marineCount = attackerCargo.getMarines();
 		if (marineCount <= 0) {
 			InvasionRoundResult result = new InvasionRoundResult(false);
-			result.defenderStrength = GetDefenderStrength(market);
+			result.defenderStrength = GetDefenderStrength(market, isRaid);
 			return result;
 		}
 		
@@ -194,7 +194,7 @@ public class InvasionRound {
 			attackerStrength += baseAttackerStrength * factionConfig.invasionStrengthBonusAttack;
 		}
 		
-		float defenderStrength = GetDefenderStrength(market);
+		float defenderStrength = GetDefenderStrength(market, isRaid);
 		
 		InvasionRoundResult result = new InvasionRoundResult();
 		
@@ -296,7 +296,8 @@ public class InvasionRound {
 			ExerelinUtilsMarket.destroyAllCommodityStocks(market, 
 					COMMODITY_DESTRUCTION_MULT_SUCCESS, COMMODITY_DESTRUCTION_VARIANCE);
 			float lootMult = COMMODITY_LOOT_MULT;
-			if (isRaid) lootMult *= (result.attackerStrength/result.defenderStrength - 1);
+			if (isRaid) lootMult *= Math.min(2, result.attackerStrength/result.defenderStrength - 1);
+			
 			result.loot = ExerelinUtilsMarket.getAllCommodityPartialStocks(market,
 					lootMult, COMMODITY_LOOT_VARIANCE, true, true);
 		} else {

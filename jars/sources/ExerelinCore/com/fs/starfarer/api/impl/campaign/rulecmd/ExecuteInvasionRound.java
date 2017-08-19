@@ -26,6 +26,8 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
     @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
         if (dialog == null) return false;
+		
+		boolean isRaid = params.get(0).getBoolean(memoryMap);
 		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
 		TextPanelAPI text = dialog.getTextPanel();
 
@@ -39,14 +41,16 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		FactionAPI faction = target.getFaction();
 
-		InvasionRoundResult result = InvasionRound.AttackMarket(playerFleet, target, false);
+		InvasionRoundResult result = InvasionRound.AttackMarket(playerFleet, target, isRaid);
 		if (result == null)
 		{
-			memory.set("$exerelinInvasionCancelled", true, 0);
+			if (isRaid) memory.set("$exerelinRaidCancelled", true, 0);
+			else memory.set("$exerelinInvasionCancelled", true, 0);
 			return false;
 		}
 
-		memory.set("$exerelinInvasionSuccessful", result.success, 0);
+		if (isRaid) memory.set("$exerelinRaidSuccessful", result.success, 0);
+		else memory.set("$exerelinInvasionSuccessful", result.success, 0);
 
 		int marinesLost = result.marinesLost;
 		int marinesRemaining = playerFleet.getCargo().getMarines();
