@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
@@ -86,5 +87,38 @@ public class ExerelinUtilsFleet
         }
         daysToOrbit *= (0.5F + (float)Math.random() * 0.5F);
         return daysToOrbit;
+    }
+	
+	// taken from SS+
+	public static int calculatePowerLevel(CampaignFleetAPI fleet) {
+        int power = fleet.getFleetPoints();
+        for (FleetMemberAPI member : fleet.getFleetData().getCombatReadyMembersListCopy()) {
+            if (member.isCivilian()) {
+                power += member.getFleetPointCost() / 2;
+            } else {
+                power += member.getFleetPointCost();
+            }
+        }
+        int offLvl = 0;
+        int cdrLvl = 0;
+        boolean commander = false;
+        for (OfficerDataAPI officer : fleet.getFleetData().getOfficersCopy()) {
+            if (officer.getPerson() == fleet.getCommander()) {
+                commander = true;
+                cdrLvl = officer.getPerson().getStats().getLevel();
+            } else {
+                offLvl += officer.getPerson().getStats().getLevel();
+            }
+        }
+        if (!commander) {
+            cdrLvl = fleet.getCommanderStats().getLevel();
+        }
+        power *= Math.sqrt(cdrLvl / 100f + 1f);
+        int flatBonus = cdrLvl + offLvl + 10;
+        if (power < flatBonus * 2) {
+            flatBonus *= power / (float) (flatBonus * 2);
+        }
+        power += flatBonus;
+        return power;
     }
 }

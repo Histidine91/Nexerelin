@@ -20,6 +20,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.MarketAttackedEvent;
+import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -337,6 +338,18 @@ public class InvasionRound {
 					factionsToNotify.add(otherMarket.getFactionId());
 				}
 			}
+		}
+		
+		// revengeance
+		RevengeanceManagerEvent rvng = RevengeanceManagerEvent.getOngoingEvent();
+		if (rvng!= null) 
+		{
+			float sizeSq = market.getSize() * market.getSize();
+			float mult = 0.25f;
+			if (isRaid) mult = 0.2f;
+			rvng.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult * mult);
+			if (playerInvolved) 
+				rvng.addFactionPoints(defenderFactionId, sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult * mult);
 		}
 
 		// add intel event if captured

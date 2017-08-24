@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
@@ -11,13 +12,13 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -25,15 +26,33 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT;
 import static exerelin.campaign.fleets.InvasionFleetManager.EXCEPTION_LIST;
 import static exerelin.campaign.fleets.InvasionFleetManager.spawnInvasionFleet;
+import exerelin.utilities.ExerelinUtils;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
+/**
+ * Handles SS+ vengeance fleets and Nexerelin counter-invasion fleets
+ */
 public class RevengeanceManagerEvent extends BaseEventPlugin {
 
-	public static final float POINTS_TO_SPAWN = 100;
+	public static final boolean DEBUG_MODE = false;
+	
+	// controls frequency of spawning counter-invasion fleets
+	public static final float POINTS_TO_SPAWN = 125;
+	
+	// each entry in the array represents a fleet
+	// first number is vengeance points needed, second is escalation level (0-2)
+	public static final List<Integer[]> FLEET_STAGES = Arrays.asList(
+			new Integer[][] {{50, 0}, {100, 0}, {150, 0}, {200, 1}, {275, 1}, {350, 1}, {450, 2}}
+	);
+	// after all stages are used up, spawn new vengeance fleets per this many points
+	public static final float ADDITIONAL_STAGE_INTERVAL = 75;	
+	// this + ADDITIONAL_STAGE_INTERVAL should not be too far from the points required for last stage
+	public static final float ADDITIONAL_STAGE_OFFSET = 0;
 	
 	public static Logger log = Global.getLogger(RevengeanceManagerEvent.class);
 	
@@ -41,7 +60,24 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 	private final IntervalUtil interval = new IntervalUtil(1f, 1f);
 	
 	float points = 0;
-
+	Map<String, Float> factionPoints = new HashMap<>();
+	Map<String, Integer> factionVengeanceStage = new HashMap<>();
+	
+	static {
+		if (DEBUG_MODE)
+		{
+			for (Integer[] stage : FLEET_STAGES)
+			{
+				stage[0] = (int)(stage[0] * 0.01);
+				stage[1] = 2;
+			}
+		}		
+	}
+	
+	/**
+	 * Add general vengeance points (for retaliatory invasion)
+	 * @param addedPoints
+	 */
 	public void addPoints(float addedPoints)
 	{
 		if (!isRevengeanceEnabled()) return;
@@ -57,9 +93,110 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		//}
 		if (points >= POINTS_TO_SPAWN)
 		{
-			boolean success = generateRevengeanceFleet();
+			boolean success = generateCounterInvasionFleet();
 			if (success) points -= POINTS_TO_SPAWN;
 		}
+	}
+	
+	/**
+	 * Add vengeance points for a specific faction (for hunter-killer fleets)
+	 * @param factionId
+	 * @param points
+	 */
+	public void addFactionPoints(String factionId, float points)
+	{
+		if (!isRevengeanceEnabled()) return;
+		if (!factionPoints.containsKey(factionId))
+		{
+			factionPoints.put(factionId, 0f);
+		}
+		
+		// lower point generation if not vengeful
+		if (!Global.getSector().getFaction(factionId).isHostileTo(Factions.PLAYER))
+			return;
+		else if (Global.getSector().getFaction(factionId).isAtWorst(Factions.PLAYER, RepLevel.HOSTILE))
+			points *= 0.2f;
+		
+		float currPts = factionPoints.get(factionId);
+		float newPts = currPts + points;
+		tryActivateFactionVengeance(factionId, currPts, newPts);
+		factionPoints.put(factionId, currPts + points);
+	}
+	
+	/**
+	 * Having incremented faction vengeance points, see if we should launch a hunter-killer fleet
+	 * @param factionId
+	 * @param currPts
+	 * @param newPts
+	 */
+	public void tryActivateFactionVengeance(String factionId, float currPts, float newPts)
+	{
+		int currStageNum = getCurrentVengeanceStage(factionId);
+		if (currStageNum < FLEET_STAGES.size() - 1)
+		{
+			Integer[] nextStage = FLEET_STAGES.get(currStageNum + 1);
+			float pointsNeeded = nextStage[0];
+			if (newPts > pointsNeeded)
+			{
+				advanceVengeanceStage(factionId);
+			}
+		}
+		else
+		{
+			int newStageNum = (int)((newPts + ADDITIONAL_STAGE_OFFSET)/ADDITIONAL_STAGE_INTERVAL);
+			if (newStageNum > currStageNum)
+			{
+				advanceVengeanceStage(factionId);
+			}
+		}
+	}
+	
+	/**
+	 * Increments the faction vengeance stage and starts a H/K fleet event
+	 * @param factionId
+	 */
+	public void advanceVengeanceStage(String factionId)
+	{
+		if (!factionVengeanceStage.containsKey(factionId))
+		{
+			factionVengeanceStage.put(factionId, 0);
+		}
+		else
+		{
+			int currStage = factionVengeanceStage.get(factionId);
+			factionVengeanceStage.put(factionId, currStage + 1);
+		}
+		
+		MarketAPI source = pickMarketForFactionVengeance(factionId);
+		if (source != null)
+		{
+			String debugStr = "Spawning faction vengeance fleet for " + factionId + " at " + source.getName();
+			log.info(debugStr);
+			if (Global.getSettings().isDevMode())
+			{
+				//Global.getSector().getCampaignUI().addMessage(debugStr);
+			}
+			
+			Global.getSector().getEventManager().startEvent(new CampaignEventTarget(source), "exerelin_faction_vengeance", null);
+		}
+	}
+	
+	public int getCurrentVengeanceStage(String factionId)
+	{
+		if (!factionVengeanceStage.containsKey(factionId))
+		{
+			factionVengeanceStage.put(factionId, -1);
+			return -1;
+		}
+		return factionVengeanceStage.get(factionId);
+	}
+	
+	public int getVengeanceEscalation(String factionId)
+	{
+		int stage = getCurrentVengeanceStage(factionId);
+		if (stage < 0) return 0;
+		else if (stage > FLEET_STAGES.size() - 1) return 2;
+		else return (FLEET_STAGES.get(stage)[1]);
 	}
 
 	@Override
@@ -132,8 +269,11 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		
 		recentFpKilled *= involvedFraction;
 		float points = recentFpKilled * ExerelinConfig.revengePointsPerEnemyFP;
-		if (true)	//(points > 0)
+		if (points > 0)
+		{
 			addPoints(points);
+			addFactionPoints(killedFleets.get(0).getFaction().getId(), points * 2.5f);
+		}
 	}
 	
 	public static boolean isRevengeanceEnabled()
@@ -147,7 +287,10 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		return false;
 	}
 	
-	protected boolean generateRevengeanceFleet()
+	/**
+	 * Make a fleet to conquer one of player faction's markets
+	 */
+	protected boolean generateCounterInvasionFleet()
 	{
 		SectorAPI sector = Global.getSector();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
@@ -163,7 +306,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		
 		for (String enemyId : enemies)
 		{
-			// only allow Templars to send revengeance fleet if we have no other enemies
+			// only allow Templars to send counter-invasion fleet if we have no other enemies
 			if (enemyId.equals("templars") && enemies.size() > 1)
 				continue;
 			attackerPicker.add(enemyId);
@@ -257,7 +400,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		//log.info("\tTarget: " + targetMarket.getName());
 
 		// spawn our revengeance fleet
-		String debugStr = "Spawning revengeance fleet for " + revengeFactionId + "; source " + originMarket.getName() + "; target " + targetMarket.getName();
+		String debugStr = "Spawning counter-invasion fleet for " + revengeFactionId + "; source " + originMarket.getName() + "; target " + targetMarket.getName();
 		log.info(debugStr);
 		if (Global.getSettings().isDevMode())
 		{
@@ -275,6 +418,46 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		return true;
 	}
 	
+	/**
+	 * Select a source market for faction vengeance fleets
+	 * @param factionId
+	 * @return
+	 */
+	protected MarketAPI pickMarketForFactionVengeance(String factionId) 
+	{
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+        WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
+        float total = 0f;
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+            if (faction.getId().contentEquals("cabal")) {
+                if (market.getFaction() != faction && !market.hasCondition("cabal_influence")) {
+                    continue;
+                }
+            } else {
+                if (market.getFaction() != faction) {
+                    continue;
+                }
+            }
+            float weight = market.getSize() * (float) Math.sqrt(ExerelinUtils.lerp(0.25f, 1f, market.getShipQualityFactor()));
+            float mod = 1f;
+            if (market.hasCondition(Conditions.MILITARY_BASE) || market.hasCondition("ii_interstellarbazaar")) {
+                mod += 0.15f;
+            }
+            if (market.hasCondition(Conditions.HEADQUARTERS)) {
+                mod += 0.1f;
+            }
+            if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) {
+                mod += 0.1f;
+            }
+            if (market.hasCondition(Conditions.SPACEPORT) || market.hasCondition(Conditions.ORBITAL_STATION)) {
+                mod += 0.15f;
+            }
+            weight *= mod;
+            picker.add(market, weight);
+        }
+        return picker.pick();
+    }
+	
 	public static RevengeanceManagerEvent getOngoingEvent()
 	{
 		CampaignEventPlugin eventSuper = Global.getSector().getEventManager().getOngoingEvent(null, "exerelin_revengeance_manager");
@@ -285,4 +468,5 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		}
 		return null;
 	}
+	
 }

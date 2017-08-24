@@ -81,6 +81,9 @@
 	"exerelin_revengeance_manager":{
 		"script":"exerelin.campaign.events.RevengeanceManagerEvent"
 	},
+	"exerelin_faction_vengeance":{
+        "script":"exerelin.campaign.events.SSP_FactionVengeanceEvent"
+    },
 	
 	# missions
 	"exerelin_conquest_mission":{
