@@ -71,13 +71,8 @@ public class ExerelinProcGen {
 		Terrain.ASTEROID_BELT, Terrain.ASTEROID_FIELD, Terrain.RING
 	}));
 	
-	// NOTE: system names and planet names are overriden by planetNames.json
 	protected static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
-	// don't specify names here to make sure it crashes instead of failing silently if planetNames.json is broken
-
-	@Deprecated protected static List<String> possibleSystemNames = new ArrayList<>();
-	@Deprecated protected static List<String> possiblePlanetNames = new ArrayList<>();
-	protected static List<String> possibleStationNames = new ArrayList<>();
+	protected static List<String> stationNames = new ArrayList<>();
 	
 	public static final List<String> stationImages = new ArrayList<>(Arrays.asList(new String[] {
 		"station_side00", "station_side02", "station_side04", "station_jangala_type"
@@ -124,14 +119,8 @@ public class ExerelinProcGen {
 		try {
 			JSONObject planetConfig = Global.getSettings().loadJSON(PLANET_NAMES_FILE);
 			
-			JSONArray systemNames = planetConfig.getJSONArray("stars");
-			possibleSystemNames = ExerelinUtils.JSONArrayToArrayList(systemNames);
-			
-			JSONArray planetNames = planetConfig.getJSONArray("planets");
-			possiblePlanetNames = ExerelinUtils.JSONArrayToArrayList(planetNames);
-			
 			JSONArray stationNames = planetConfig.getJSONArray("stations");
-			possibleStationNames = ExerelinUtils.JSONArrayToArrayList(stationNames);
+			ExerelinProcGen.stationNames = ExerelinUtils.JSONArrayToArrayList(stationNames);
 		} catch (JSONException | IOException ex) {
 			log.error(ex);
 		}
@@ -502,7 +491,7 @@ public class ExerelinProcGen {
 	public String getStationName(SectorEntityToken target)
 	{
 		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
-		picker.addAll(possibleStationNames);
+		picker.addAll(stationNames);
 		String name = target.getName();
 		if (target instanceof CampaignTerrainAPI)
 		{
