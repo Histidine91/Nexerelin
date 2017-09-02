@@ -1046,12 +1046,12 @@ public class ExerelinProcGen {
 		system.addAsteroidBelt(chaosCrack, 50, 800, 200, 120, 180, Terrain.ASTEROID_BELT,null);
 		system.addAsteroidBelt(chaosCrack, 300, 3600, 1200, -150, -130, Terrain.ASTEROID_BELT,null);
 		system.addAsteroidBelt(chaosCrack, 800, 5500, 2400, -120, -300, Terrain.ASTEROID_BELT,null);
-		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 3, Color.white, 256f, 800, 360f);
-		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 3, Color.white, 256f, 1200, 360f);
-		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 2, Color.white, 1024f, 3000, 360f);
-		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 3, Color.white, 512f, 2000, 360f);
-		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 2, Color.white, 512f, 4000, 360f);
-		system.addRingBand(chaosCrack, "misc", "rings1", 256f, 2, Color.white, 512f, 6000, 360f);
+		system.addRingBand(chaosCrack, "misc", "rings_dust0", 256f, 3, Color.white, 256f, 800, 360f);
+		system.addRingBand(chaosCrack, "misc", "rings_dust0", 256f, 3, Color.white, 256f, 1200, 360f);
+		system.addRingBand(chaosCrack, "misc", "rings_dust0", 256f, 2, Color.white, 1024f, 3000, 360f);
+		system.addRingBand(chaosCrack, "misc", "rings_dust0", 256f, 3, Color.white, 512f, 2000, 360f);
+		system.addRingBand(chaosCrack, "misc", "rings_dust0", 256f, 2, Color.white, 512f, 4000, 360f);
+		system.addRingBand(chaosCrack, "misc", "rings_dust0", 256f, 2, Color.white, 512f, 6000, 360f);
         SectorEntityToken primeNebula = Misc.addNebulaFromPNG("data/campaign/terrain/agustin_prime_nebula.png",
           chaosCrack.getLocation().x, chaosCrack.getLocation().y,
                 system,
