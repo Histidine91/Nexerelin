@@ -172,6 +172,7 @@
 		"travellingTo":"travelling to $target",
 		"travellingToStarSystem":"travelling to the $target star system",
 		"scramblingFrom":"scrambling from $target",
+		"orbiting":"orbiting $target",
 		
 		"attacking":"attacking $target",
 		"attackingStarSystem":"attacking the $target star system",
@@ -181,6 +182,7 @@
 		"patrollingStarSystem":"patrolling the $target star system",
 		"patrollingAroundStarSystem":"patrolling around the $target star system",
 		"intercepting":"intercepting $target",
+		"hunting":"hunting $target",
 		"beginningInvasion":"beginning invasion of $target",
 		"invading":"invading $target",
 		"mining":"mining $target",

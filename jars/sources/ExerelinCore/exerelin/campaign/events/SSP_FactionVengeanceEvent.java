@@ -150,6 +150,8 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                 trackingMode = false;
             }
         }
+		
+		String targetName = StringHelper.getString("yourFleet");
 
         EncounterOption option = fleet.getAI().pickEncounterOption(null, playerFleet);
         if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD_VS_STRONGER) {
@@ -157,7 +159,8 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                 if (fleet.getContainingLocation().equals(playerFleet.getContainingLocation()) && !trackingMode) {
                     if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.PATROL_SYSTEM) {
                         fleet.clearAssignments();
-                        fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, playerFleet, 1000, "hunting your fleet");
+                        fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, playerFleet, 1000,
+								StringHelper.getFleetAssignmentString("hunting", targetName));
                         fleet.getAbility(Abilities.EMERGENCY_BURN).activate();
                         ((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setPriorityTarget(playerFleet, 1000,
                                                                                                   false);
@@ -168,20 +171,21 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                         if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.INTERCEPT) {
                             fleet.clearAssignments();
                             fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 1000, 
-									StringHelper.getFleetAssignmentString("intercepting", playerFleet.getName()));
+									StringHelper.getFleetAssignmentString("intercepting", targetName));
                         }
                     } else {
                         if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.DELIVER_CREW) {
                             fleet.clearAssignments();
                             fleet.addAssignment(FleetAssignment.DELIVER_CREW, playerFleet, 1000,
-                                                StringHelper.getFleetAssignmentString("intercepting", playerFleet.getName()));
+                                                StringHelper.getFleetAssignmentString("intercepting", targetName));
                         }
                     }
                 }
             } else {
                 if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.DELIVER_CREW) {
                     fleet.clearAssignments();
-                    fleet.addAssignment(FleetAssignment.DELIVER_CREW, playerFleet, 1000, "intercepting your fleet");
+                    fleet.addAssignment(FleetAssignment.DELIVER_CREW, playerFleet, 1000, 
+							StringHelper.getFleetAssignmentString("intercepting", targetName));
                 }
             }
         } else {
@@ -496,7 +500,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
 
             fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), 2f + (float) Math.random() *
                                 2f,
-                                "orbiting " + market.getName());
+                                StringHelper.getFleetAssignmentString("orbiting", market.getName()));
         } else {
             Vector2f loc = Misc.pickHyperLocationNotNearPlayer(market.getLocationInHyperspace(),
                                                                Global.getSettings().getMaxSensorRange() + 500f);
@@ -741,9 +745,10 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
             return VengeanceDef.GENERIC;
         }
 		
-		// TODO
+		// TODO: make it read from faction config
 		static String getName(int escalationLevel)
 		{
+			//if (escalationLevel == 0)
 			return "";
 		}
     }
