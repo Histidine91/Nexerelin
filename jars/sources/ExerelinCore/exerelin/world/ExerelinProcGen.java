@@ -66,6 +66,7 @@ public class ExerelinProcGen {
 	
 	public static final float CORE_WIDTH = 15000;
 	public static final float CORE_HEIGHT = 12000;
+	public static final int CORE_RECURSION_MAX_DEPTH = 6;
 	public static final float BEACON_SEARCH_RANGE = 900;
 	public static final Set<String> ALLOWED_STATION_TERRAIN = new HashSet<>(Arrays.asList(new String[] {
 		Terrain.ASTEROID_BELT, Terrain.ASTEROID_FIELD, Terrain.RING
@@ -276,9 +277,10 @@ public class ExerelinProcGen {
 	 * Widens search if number of systems/planets contained is less than number of systems/planets wanted
 	 * @param width Width of search area
 	 * @param height Height of search area
+	 * @param recursionDepth How many times this method has recursed; if too high, stop expanding search area
 	 * @return
 	 */
-	protected List<StarSystemAPI> getCoreSystems(float width, float height)
+	protected List<StarSystemAPI> getCoreSystems(float width, float height, int recursionDepth)
 	{
 		List<StarSystemAPI> list = new ArrayList<>();
 		for (StarSystemAPI system : Global.getSector().getStarSystems())
@@ -288,13 +290,14 @@ public class ExerelinProcGen {
 			if (Math.abs(loc.y - ExerelinNewGameSetup.SECTOR_CENTER.y) > height) continue;
 			if (system.hasPulsar()) continue;
 			if (system.getStar().getSpec().isBlackHole()) continue;
+			if (system.getBaseName().equals("Styx")) continue;
 			
 			list.add(system);
 		}
 		
 		// not enough systems/planets, expand our search
-		if (!validateCoreSystems(list)) 
-			return getCoreSystems(width * 1.5f, height * 1.5f);
+		if (!validateCoreSystems(list) && recursionDepth < CORE_RECURSION_MAX_DEPTH) 
+			return getCoreSystems(width * 1.5f, height * 1.5f, recursionDepth + 1);
 		
 		return list;
 	}
@@ -424,7 +427,7 @@ public class ExerelinProcGen {
 	 * Fills the populatedPlanets list with planets
 	 * Will skip a star system if it already has too many populated planets
 	 * @param picker Random picker
-	 * @param planets List of candidate planets for populated
+	 * @param planets List of candidate planets to be populated
 	 */
 	protected void pickPopulatedPlanets(WeightedRandomPicker<ProcGenEntity> picker, List<ProcGenEntity> planets)
 	{
@@ -806,7 +809,7 @@ public class ExerelinProcGen {
 		init();
 		
 		// process star systems
-		systems = getCoreSystems(CORE_WIDTH, CORE_HEIGHT);
+		systems = getCoreSystems(CORE_WIDTH, CORE_HEIGHT, 1);
 		for (StarSystemAPI system : systems)
 		{
 			positiveDesirabilityBySystem.put(system, 0f);
