@@ -17,6 +17,7 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.events.FactionChangedEvent;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
 
@@ -40,6 +41,9 @@ public class LeaveFaction extends BaseCommandPlugin {
 		TextPanelAPI text = dialog.getTextPanel();
 		String str = StringHelper.getString("exerelin_factions", "leftFaction");
 		
+		// -5 rep to negate join/leave infinite rep exploit
+		ExerelinUtilsReputation.adjustPlayerReputation(oldFaction, null, -0.05f);
+		
 		if (stayInAlliance && oldAlliance != null) {
 			newAlliance = oldAlliance;
 			
@@ -49,6 +53,9 @@ public class LeaveFaction extends BaseCommandPlugin {
 			PlayerFactionStore.setPlayerFactionId(newFactionId);
 			ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
 		}
+		
+		
+		ExerelinUtilsFaction.revokeCommission();
 		
 		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
 		if (eventSuper == null) 

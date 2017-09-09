@@ -17,6 +17,7 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.events.FactionChangedEvent;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
 
@@ -66,15 +67,14 @@ public class JoinFaction extends BaseCommandPlugin {
 			} else {
 				PlayerFactionStore.saveIndependentPlayerRelations();
 			}
-			
 			str = StringHelper.getString("exerelin_factions", "joinedFaction");
 			isDefection = false;
 		} else {
+			
 			str = StringHelper.getString("exerelin_factions", "switchedFactions");
 			isDefection = true;
 		}
-		//ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId);
-		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
+		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId);
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
 		memory.set("$faction", newFaction, 0);
@@ -91,6 +91,8 @@ public class JoinFaction extends BaseCommandPlugin {
 			memory = memoryMap.get(MemKeys.FACTION);
 			AllianceManager.unsetMemoryKeys(memory);
 		}
+		
+		ExerelinUtilsFaction.grantCommission(dialog.getInteractionTarget());
 		
 		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
 		if (eventSuper == null) 
