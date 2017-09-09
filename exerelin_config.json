@@ -8,7 +8,7 @@
     
     "playerBaseSalary": 5000,
     "playerSalaryIncrementPerLevel": 1000,
-    "playerInsuranceMult": 0.5,
+    "playerInsuranceMult": 0.6,
     "fleetBonusFpPerPlayerLevel": 0.25,
     
     "prisonerRepatriateRepValue": 0.05,
