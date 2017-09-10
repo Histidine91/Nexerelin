@@ -17,7 +17,9 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.MarketAttackedEvent;
 import exerelin.campaign.events.RevengeanceManagerEvent;
@@ -376,6 +378,25 @@ public class InvasionRound {
 				float numAvgKids = MathUtils.getRandomNumberInRange(0f, 1.5f) + MathUtils.getRandomNumberInRange(0f, 1.5f);
 				StatsTracker.getStatsTracker().modifyOrphansMade((int)(deathsInflicted * numAvgKids));
 			}
+		}
+		
+		MemoryAPI mem = market.getMemoryWithoutUpdate();
+		// can't enter market for some time due to "commotion"
+		if (isRaid || !success)
+		{
+			float timeout = isRaid ? 28 : 56;
+			if (success) timeout *= 1.5f;
+			
+			if (mem.contains(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET))
+				timeout += mem.getExpire(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET);
+			timeout = Math.min(timeout, 180);
+
+			mem.set(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET, timeout);
+		}
+		
+		if (isRaid)
+		{
+			mem.set("$nex_recentlyRaided", true, 7);
 		}
 		
 		log.info( String.format("Invasion of [%s] by " + attacker.getNameWithFaction() + (success ? " successful" : " failed"), defender.getName()) );

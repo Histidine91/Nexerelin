@@ -117,14 +117,7 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 		
 		// lock out of market
 		MemoryAPI memMarket= memoryMap.get(MemKeys.MARKET);
-		float expire = 180;
-		if (memMarket.contains(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET)) {
-			expire += memMarket.getExpire(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET); 
-		}
-		if (expire > 180) expire = 180;
-		if (expire > 0) {
-			memMarket.set(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET, true, expire);
-		}
+		memMarket.set(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET, true, 180);
 		
 		// print results
 		TextPanelAPI text = dialog.getTextPanel();

@@ -419,7 +419,7 @@ ExerelinInvasionOpen,OpenInteractionDialog,"$hasMarket
 $id == $player.invasionTarget","ExerelinShowDefaultVisual
 FireBest ExerelinInitInvadeDialog",,,
 ExerelinInvasionRoundComplete,ExerelinInitInvadeDialog,"$hasMarket
-$global.exerelinInvasionRoundComplete score:100","ExecuteInvasionRound
+$global.exerelinInvasionRoundComplete score:100","ExecuteInvasionRound false
 FireBest ExerelinInvasionResults",INVASION OUTCOME:,,
 ExerelinInvasionResultsComplete,ExerelinInvasionResults,$exerelinInvasionSuccessful,"$menuState = invasion 0
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
@@ -475,7 +475,11 @@ ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion
 # END INVASION OPTIONS,,,,,,
 ,,,,,,
 # START RAID OPTIONS,,,,,,
-ExerelinMarketRaidOption,ExerelinMarketSpecial,Nex_CanRaid,SetShortcut exerelinRaid R,,1:exerelinRaid:Raid and pillage the planet/station,
+ExerelinMarketRaidOption,ExerelinMarketSpecial,Nex_CanRaid,"SetShortcut exerelinRaid R
+SetEnabled exerelinRaid true",,1:exerelinRaid:Raid and pillage the planet/station,
+ExerelinMarketRaidOptionCooldown,ExerelinMarketSpecial,"Nex_CanRaid
+$market.nex_recentlyRaided score:100","SetTooltip exerelinRaid ""You've recently raided this market and cannot do so again for $nex_raidCooldownStr days.""
+SetEnabled exerelinRaid false",,,
 ExerelinRaidStart,DialogOptionSelected,$option == exerelinRaid,"$menuState = raid 0
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
 PredictInvasionResults true

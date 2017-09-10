@@ -709,7 +709,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // don't lock player out of freshly captured market
         if (!newOwner.isHostileTo(Factions.PLAYER))
         {
-            market.getMemoryWithoutUpdate().unset("$playerHostileTimeout");
+            market.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET);
         }
         
         // Templar stuff

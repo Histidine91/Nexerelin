@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
+import com.fs.starfarer.api.util.Misc;
 
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
@@ -74,6 +75,12 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 	public void updateMarketFacts(MarketAPI market, MemoryAPI memory) {
 		memory.set("$reserveSize", ResponseFleetManager.getReserveSize(market), 0);
 		memory.set("$alertLevel", CovertOpsManager.getAlertLevel(market), 0);
+		if (memory.contains("$nex_recentlyRaided"))
+		{
+			float expire = memory.getExpire("$nex_recentlyRaided");
+			String days = String.format("%.1f", expire);
+			memory.set("$nex_raidCooldownStr", days, 0);
+		}
 	}
 	
 	@Override
