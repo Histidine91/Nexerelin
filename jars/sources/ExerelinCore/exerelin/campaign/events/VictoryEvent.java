@@ -101,7 +101,7 @@ public class VictoryEvent extends BaseEventPlugin {
 		map.put("$VictorFaction", Misc.ucFirst(victorFactionStr));
 		map.put("$theVictorFaction", theVictorFactionStr);
 		map.put("$TheVictorFaction", Misc.ucFirst(theVictorFactionStr));
-		map.put("$clusterName", SectorManager.getFirstStarName());
+		//map.put("$clusterName", SectorManager.getFirstStarName());
 		map.put("$isOrAre", victorFaction.getDisplayNameIsOrAre());
 		return map;
 	}

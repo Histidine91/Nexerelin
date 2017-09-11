@@ -1018,6 +1018,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
+	@Deprecated
     public static String getFirstStarName()
     {
         if (sectorManager != null && sectorManager.corvusMode == true) return "Corvus";

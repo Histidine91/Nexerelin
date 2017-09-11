@@ -67,7 +67,7 @@ public class FactionRespawnedEvent extends BaseEventPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		map.put("$clusterName", SectorManager.getFirstStarName());
+		//map.put("$clusterName", SectorManager.getFirstStarName());
 		return map;
 	}
 	

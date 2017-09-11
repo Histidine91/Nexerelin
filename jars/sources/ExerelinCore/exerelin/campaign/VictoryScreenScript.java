@@ -158,7 +158,7 @@ public class VictoryScreenScript implements EveryFrameScript
             String factionName = faction.getDisplayName();
             String theFactionName = faction.getDisplayNameWithArticle();
             String TheFactionName =  Misc.ucFirst(theFactionName);
-            String firstStar = SectorManager.getFirstStarName();
+            //String firstStar = SectorManager.getFirstStarName();
             String message = "";
             String victoryTypeStr = victoryType.toString().toLowerCase();
             
@@ -167,7 +167,7 @@ public class VictoryScreenScript implements EveryFrameScript
             else
                 message = getString("victory_" + victoryTypeStr);
             message = StringHelper.substituteFactionTokens(message, faction);
-            message = StringHelper.substituteToken(message, "$clusterName", firstStar);
+            //message = StringHelper.substituteToken(message, "$clusterName", firstStar);
             text.addParagraph(message);
             text.highlightInLastPara(Misc.getHighlightColor(), TheFactionName, theFactionName);
             
