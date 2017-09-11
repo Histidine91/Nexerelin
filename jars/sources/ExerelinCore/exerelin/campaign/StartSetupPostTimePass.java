@@ -109,6 +109,12 @@ public class StartSetupPostTimePass {
 					break;
 			}
 		}
+		
+		// rename ships
+		for (FleetMemberAPI member : playerFleet.getFleetData().getMembersListCopy())
+		{
+			member.setShipName(myFaction.pickRandomShipName());
+		}
 	}
 	
 	/**
