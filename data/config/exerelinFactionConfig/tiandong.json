@@ -19,6 +19,10 @@
         "technocratic":-0.5,
     },
     
+    "vengeanceLevelNames":["Grudge", "Vendetta"],
+    "vengeanceFleetNames":["Enforcers", "Hit-Fleet"],
+    "vengeanceFleetNamesSingle":["Enforcers", "a Hit-Fleet"],
+    
     "miningVariantsOrWings":["shepherd_Frontier", "tiandong_chengdu_Standard", "tiandong_chengdu_Assault", "tiandong_qianzi_Standard"],
     
     "customStations":["tiandong_outpost"],

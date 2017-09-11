@@ -343,15 +343,19 @@ public class InvasionRound {
 		}
 		
 		// revengeance
-		RevengeanceManagerEvent rvng = RevengeanceManagerEvent.getOngoingEvent();
-		if (rvng!= null) 
+		if (attackerFactionId.equals(PlayerFactionStore.getPlayerFactionId()) 
+				|| attackerFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
 		{
-			float sizeSq = market.getSize() * market.getSize();
-			float mult = 0.25f;
-			if (isRaid) mult = 0.2f;
-			rvng.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult * mult);
-			if (playerInvolved) 
-				rvng.addFactionPoints(defenderFactionId, sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult * mult);
+			RevengeanceManagerEvent rvng = RevengeanceManagerEvent.getOngoingEvent();
+			if (rvng!= null) 
+			{
+				float sizeSq = market.getSize() * market.getSize();
+				float mult = 0.25f;
+				if (isRaid) mult = 0.2f;
+				rvng.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult * mult);
+				if (playerInvolved) 
+					rvng.addFactionPoints(defenderFactionId, sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult * mult);
+			}
 		}
 
 		// add intel event if captured

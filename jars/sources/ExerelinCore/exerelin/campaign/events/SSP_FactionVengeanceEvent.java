@@ -18,6 +18,8 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -35,10 +37,10 @@ import org.lwjgl.util.vector.Vector2f;
 public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
 
     public static final Map<String, Float> FACTION_ADJUST = new HashMap<>(4);
-	public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[] {
-		Factions.DERELICT, Factions.REMNANTS, Factions.INDEPENDENT, 
-		Factions.SCAVENGERS, Factions.NEUTRAL, Factions.LUDDIC_PATH
-	}));
+    public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[] {
+        Factions.DERELICT, Factions.REMNANTS, Factions.INDEPENDENT, 
+        Factions.SCAVENGERS, Factions.NEUTRAL, Factions.LUDDIC_PATH
+    }));
 
     public static Logger log = Global.getLogger(SSP_FactionVengeanceEvent.class);
 
@@ -48,8 +50,8 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         FACTION_ADJUST.put("cabal", 1.25f);
         FACTION_ADJUST.put("templars", 1.5f);
     }
-	
-	protected Map<String, Object> params = new HashMap<>();
+    
+    protected Map<String, Object> params = new HashMap<>();
     private float daysLeft;
     private VengeanceDef def;
     private int duration;
@@ -61,27 +63,21 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
     private final IntervalUtil interval2 = new IntervalUtil(1f, 2f);
     private float timeSpentLooking = 0f;
     private boolean trackingMode = false;
-	
-	protected void setEscalationStage()
-	{
-		float escalation = RevengeanceManagerEvent.getOngoingEvent().getVengeanceEscalation(faction.getId());
-		/*
-		if (faction.getRelToPlayer().getRel() <= -0.9)
-			escalation = 2;
-		else if (faction.getRelToPlayer().getRel() <= -0.7)
-			escalation = 1;
-		*/
-		
-		 // FIXME: nicer handling
-        if (escalation < 1f || def.ravingMadFleet == null || def.ravingMadName == null) {
-            escalationLevel = 0;
-        } else if (escalation < 2f || def.starkRavingMadFleet == null || def.starkRavingMadName == null) {
-            escalationLevel = 1;
-        } else {
-            escalationLevel = 2;
-        }
-	}
-	
+    
+    protected void setEscalationStage()
+    {
+        escalationLevel = RevengeanceManagerEvent.getOngoingEvent().getVengeanceEscalation(faction.getId());
+        
+        /*
+        if (faction.getRelToPlayer().getRel() <= -0.9)
+            escalation = 2;
+        else if (faction.getRelToPlayer().getRel() <= -0.7)
+            escalation = 1;
+        */
+        
+        if (escalationLevel > def.maxLevel) escalationLevel = def.maxLevel;
+    }
+    
     @Override
     public void advance(float amount) {
         if (eventTarget != null) {
@@ -150,8 +146,8 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                 trackingMode = false;
             }
         }
-		
-		String targetName = StringHelper.getString("yourFleet");
+        
+        String targetName = StringHelper.getString("yourFleet");
 
         EncounterOption option = fleet.getAI().pickEncounterOption(null, playerFleet);
         if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD_VS_STRONGER) {
@@ -160,7 +156,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                     if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.PATROL_SYSTEM) {
                         fleet.clearAssignments();
                         fleet.addAssignment(FleetAssignment.PATROL_SYSTEM, playerFleet, 1000,
-								StringHelper.getFleetAssignmentString("hunting", targetName));
+                                StringHelper.getFleetAssignmentString("hunting", targetName));
                         fleet.getAbility(Abilities.EMERGENCY_BURN).activate();
                         ((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().setPriorityTarget(playerFleet, 1000,
                                                                                                   false);
@@ -171,13 +167,13 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                         if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.INTERCEPT) {
                             fleet.clearAssignments();
                             fleet.addAssignment(FleetAssignment.INTERCEPT, playerFleet, 1000, 
-									StringHelper.getFleetAssignmentString("intercepting", targetName));
+                                    StringHelper.getFleetAssignmentString("intercepting", targetName));
                         }
                     } else {
                         if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.DELIVER_CREW) {
                             fleet.clearAssignments();
                             fleet.addAssignment(FleetAssignment.DELIVER_CREW, playerFleet, 1000,
-                                                StringHelper.getFleetAssignmentString("intercepting", targetName));
+                                                StringHelper.getFleetAssignmentString("trailing", targetName));
                         }
                     }
                 }
@@ -185,7 +181,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                 if (fleet.getAI().getCurrentAssignmentType() != FleetAssignment.DELIVER_CREW) {
                     fleet.clearAssignments();
                     fleet.addAssignment(FleetAssignment.DELIVER_CREW, playerFleet, 1000, 
-							StringHelper.getFleetAssignmentString("intercepting", targetName));
+                            StringHelper.getFleetAssignmentString("trailing", targetName));
                 }
             }
         } else {
@@ -222,15 +218,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
 
     @Override
     public String getEventName() {
-        switch (escalationLevel) {
-            default:
-            case 0:
-                return Misc.ucFirst(faction.getDisplayName()) + " " + def.madName;
-            case 1:
-                return Misc.ucFirst(faction.getDisplayName()) + " " + def.ravingMadName;
-            case 2:
-                return Misc.ucFirst(faction.getDisplayName()) + " " + def.starkRavingMadName;
-        }
+        return Misc.ucFirst(faction.getDisplayName()) + " " + def.getName(escalationLevel);
     }
 
     @Override
@@ -251,27 +239,14 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
     public Map<String, String> getTokenReplacements() {
         Map<String, String> map = super.getTokenReplacements();
         map.put("$duration", Misc.getAtLeastStringForDays(duration));
-        switch (escalationLevel) {
-            default:
-            case 0:
-                map.put("$fleetType", def.madFleet.toLowerCase());
-                map.put("$aFleetType", def.madFleetSingle.toLowerCase());
-                map.put("$FleetType", Misc.ucFirst(def.madFleet.toLowerCase()));
-                map.put("$AFleetType", Misc.ucFirst(def.madFleetSingle.toLowerCase()));
-                break;
-            case 1:
-                map.put("$fleetType", def.ravingMadFleet.toLowerCase());
-                map.put("$aFleetType", def.ravingMadFleetSingle.toLowerCase());
-                map.put("$FleetType", Misc.ucFirst(def.ravingMadFleet.toLowerCase()));
-                map.put("$AFleetType", Misc.ucFirst(def.ravingMadFleetSingle.toLowerCase()));
-                break;
-            case 2:
-                map.put("$fleetType", def.starkRavingMadFleet.toLowerCase());
-                map.put("$aFleetType", def.starkRavingMadFleetSingle.toLowerCase());
-                map.put("$FleetType", Misc.ucFirst(def.starkRavingMadFleet.toLowerCase()));
-                map.put("$AFleetType", Misc.ucFirst(def.starkRavingMadFleetSingle.toLowerCase()));
-                break;
-        }
+
+        String name = def.getFleetName(escalationLevel).toLowerCase();
+        String nameSingle = def.getFleetNameSingle(escalationLevel).toLowerCase();
+        map.put("$fleetType", name);
+        map.put("$aFleetType", nameSingle);
+        map.put("$FleetType", Misc.ucFirst(name));
+        map.put("$AFleetType", Misc.ucFirst(nameSingle));
+        
         if (faction.getDisplayNameIsOrAre().contentEquals("is")) {
             map.put("$factionHasOrHave", "has");
         } else {
@@ -284,18 +259,18 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
     public void init(String eventType, CampaignEventTarget eventTarget) {
         super.init(eventType, eventTarget, false);
         
-		if (!RevengeanceManagerEvent.isRevengeanceEnabled()) {
+        if (!RevengeanceManagerEvent.isRevengeanceEnabled()) {
             endEvent();
             return;
         }
-		
+        
         def = VengeanceDef.getDef(faction.getId());
         if (def == null) {
             endEvent();
             return;
         }
     }
-	
+    
     @Override
     public boolean isDone() {
         return ended;
@@ -335,8 +310,8 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         }
 
         super.startEvent(true);
-		
-		if (!RevengeanceManagerEvent.isRevengeanceEnabled()) {
+        
+        if (!RevengeanceManagerEvent.isRevengeanceEnabled()) {
             endEvent();
             return;
         }
@@ -359,20 +334,17 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         }
 
         float distance = Misc.getDistanceToPlayerLY(entity);
-        float escalation = RevengeanceManagerEvent.getOngoingEvent().getVengeanceEscalation(faction.getId());
-        if (escalation < 1f || def.ravingMadFleet == null || def.ravingMadName == null) {
-            escalationLevel = 0;
-            duration = Math.max(30,
-                                Math.min(90,
-                                         Math.round((20f + distance) * MathUtils.getRandomNumberInRange(0.5f, 0.75f))));
-        } else if (escalation < 2f || def.starkRavingMadFleet == null || def.starkRavingMadName == null) {
-            escalationLevel = 1;
-            duration = Math.max(60, Math.min(120,
-                                             Math.round((20f + distance) * MathUtils.getRandomNumberInRange(1f, 1.25f))));
-        } else {
-            escalationLevel = 2;
+        setEscalationStage();
+        if (escalationLevel == 0) {
+            duration = Math.max(60,
+                                Math.min(120,
+                                         Math.round((20f + distance) * MathUtils.getRandomNumberInRange(0.75f, 1f))));
+        } else if (escalationLevel == 1) {
             duration = Math.max(90, Math.min(150,
-                                             Math.round((20f + distance) * MathUtils.getRandomNumberInRange(1.5f, 1.75f))));
+                                             Math.round((20f + distance) * MathUtils.getRandomNumberInRange(1.25f, 1.75f))));
+        } else {
+            duration = Math.max(120, Math.min(180,
+                                             Math.round((20f + distance) * MathUtils.getRandomNumberInRange(2f, 2.5f))));
         }
         daysLeft = duration;
 
@@ -438,22 +410,22 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         final int finalFreighter = freighter;
         final int finalTanker = tanker;
         final int finalUtility = utility;
-		FleetParams params = new FleetParams(null, // location
-												market, // market
-												faction.getId(),
-												null, // fleet's faction, if different from above, which is also used for source market picking
-												FleetTypes.PATROL_LARGE,
-												finalCombat, // combatPts
-												finalFreighter, // freighterPts
-												finalTanker, // tankerPts
-												0f, // transportPts
-												0f, // linerPts
-												0f, // civilianPts
-												finalUtility, // utilityPts
-												finalBonus, // qualityBonus
-												-1f, // qualityOverride
-												1f + finalBonus, // officer num mult
-												Math.round(finalBonus * 10f));
+        FleetParams params = new FleetParams(null, // location
+                                                market, // market
+                                                faction.getId(),
+                                                null, // fleet's faction, if different from above, which is also used for source market picking
+                                                FleetTypes.PATROL_LARGE,
+                                                finalCombat, // combatPts
+                                                finalFreighter, // freighterPts
+                                                finalTanker, // tankerPts
+                                                0f, // transportPts
+                                                0f, // linerPts
+                                                0f, // civilianPts
+                                                finalUtility, // utilityPts
+                                                finalBonus, // qualityBonus
+                                                -1f, // qualityOverride
+                                                1f + finalBonus, // officer num mult
+                                                Math.round(finalBonus * 10f));
         fleet = ExerelinUtilsFleet.customCreateFleet(faction, params);
 
         if (fleet == null) {
@@ -463,10 +435,11 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
 
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "vengeanceFleet");
         fleet.getMemoryWithoutUpdate().set("$escalation", (float) escalationLevel);
+        fleet.setName(def.getFleetName(escalationLevel));
         switch (escalationLevel) {
             default:
             case 0:
-                fleet.setName(def.madFleet);
+                
                 if (total > 100) {
                     fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_ADMIRAL);
                     fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
@@ -479,7 +452,6 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                 }
                 break;
             case 1:
-                fleet.setName(def.ravingMadFleet);
                 if (total > 100) {
                     fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_ADMIRAL);
                     fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
@@ -489,7 +461,6 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                 }
                 break;
             case 2:
-                fleet.setName(def.starkRavingMadFleet);
                 fleet.getFlagship().getCaptain().setRankId(Ranks.SPACE_ADMIRAL);
                 fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
                 break;
@@ -528,7 +499,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         switch (escalationLevel) {
             default:
             case 0:
-                if (def.ravingMadName == null) {
+                if (def.maxLevel == 0) {
                     Global.getSector().reportEventStage(this, "mad", market.getPrimaryEntity(),
                                                         MessagePriority.CLUSTER);
                 } else {
@@ -536,7 +507,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                 }
                 break;
             case 1:
-                if (def.starkRavingMadName == null) {
+                if (def.maxLevel == 1) {
                     Global.getSector().reportEventStage(this, "raving_mad", market.getPrimaryEntity(),
                                                         MessagePriority.SECTOR);
                 } else {
@@ -566,106 +537,34 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
 
     public static enum VengeanceDef {
 
-		GENERIC("",
-                 "Grudge", "Hunter Fleet", "a Hunter Fleet",
-                 "Vendetta", "Executors", "Executors",
-                 null, null, null,	//"Revenge", "Kill-Fleet", "a Kill-Fleet",
-                 0.5f),
-		
-        HEGEMONY(Factions.HEGEMONY,
-                 "Grudge", "Hunter Fleet", "a Hunter Fleet",
-                 "Vendetta", "Executors", "Executors",
-                 "Revenge", "Kill-Fleet", "a Kill-Fleet",
-                 0.75f),
-        TRITACHYON(Factions.TRITACHYON,
-                   "Grudge", "Hunter Fleet", "a Hunter Fleet",
-                   "Vendetta", "Executors", "Executors",
-                   null, null, null, 0.5f),
-        DIKTAT(Factions.DIKTAT,
-               "Grudge", "Hunter Fleet", "a Hunter Fleet",
-               "Vendetta", "Executors", "Executors",
-               "Revenge", "Kill-Fleet", "a Kill-Fleet",
-               1f),
-        PERSEAN(Factions.PERSEAN,
-                "Grudge", "Hunter Fleet", "a Hunter Fleet",
-                "Vendetta", "Executors", "Executors",
-                null, null, null, 0.5f),
-        LUDDIC_CHURCH(Factions.LUDDIC_CHURCH,
-                      "Excommunication", "Evangelists", "Evangelists",
-                      "Interdiction", "Inquisition", "an Inquisition",
-                      "Jihad", "Crusade Fleet", "a Crusade Fleet",
-                      0.5f),
-        PIRATES(Factions.PIRATES,
-                "Grudge", "Enforcers", "Enforcers",
-                "Vendetta", "Hit-Fleet", "a Hit-Fleet",
-                "Revenge", "Horde", "a Horde",
-                0.33f),
-        CABAL("cabal",
-              "Grudge", "Executors", "Executors",
-              "Elimination", "Kill-Fleet", "a Kill-Fleet",
-              null, null, null, 0.25f),
-        IMPERIUM("interstellarimperium",
-                 "Grudge", "Hunter Fleet", "a Hunter Fleet",
-                 "Vendetta", "Executors", "Executors",
-                 "Revenge", "Kill-Fleet", "a Kill-Fleet",
-                 0.75f),
-        CITADEL("citadeldefenders",
-                "Grudge", "Enforcers", "Enforcers",
-                null, null, null, null, null, null, 0.5f),
-        BLACKROCK("blackrock_driveyards",
-                  "Grudge", "Hunter Fleet", "a Hunter Fleet",
-                  "Vendetta", "Executors", "Executors",
-                  "Revenge", "Kill-Fleet", "a Kill-Fleet",
-                  0.5f),
-        EXIGENCY("exigency",
-                 "Grudge", "Hunter Fleet", "a Hunter Fleet",
-                 "Vendetta", "Executors", "Executors",
-                 "Revenge", "Kill-Fleet", "a Kill-Fleet",
-                 1f),
-        AHRIMAN("exipirated",
-                "Grudge", "Enforcers", "Enforcers",
-                "Vendetta", "Hit-Fleet", "a Hit-Fleet",
-                "Revenge", "Reavers", "Reavers",
-                0.5f),
-        TEMPLARS("templars",
-                 "Excommunication", "Evangelists", "Evangelists",
-                 "Interdiction", "Inquisition", "an Inquisition",
-                 "Damnation", "Crusade Fleet", "a Crusade Fleet",
-                 0.5f),
-        SHADOWYARDS("shadow_industry",
-                    "Grudge", "Hunter Fleet", "a Hunter Fleet",
-                    "Vendetta", "Executors", "Executors",
-                    null, null, null, 0.5f),
-        MAYORATE("mayorate",
-                 "Grudge", "Enforcers", "Enforcers",
-                 "Vendetta", "Hit-Fleet", "a Hit-Fleet",
-                 "Revenge", "Kill-Fleet", "a Kill-Fleet",
-                 0.75f),
-        JUNK_PIRATES("junk_pirates",
-                     "Grudge", "Enforcers", "Enforcers",
-                     "Vendetta", "Hit-Fleet", "a Hit-Fleet",
-                     null, null, null, 0.5f),
-        PACK("pack",
-             "Grudge", "Hunter Fleet", "a Hunter Fleet",
-             "Vendetta", "Executors", "Executors",
-             null, null, null, 0.5f),
-        ASP_SYNDICATE("syndicate_asp",
-                      "Grudge", "Enforcers", "a Hunter Fleet",
-                      "Vendetta", "Hit-Fleet", "a Hit-Fleet",
-                      "Revenge", "Kill-Fleet", "a Kill-Fleet",
-                      0.75f),
+        GENERIC("", 1, 0.5f),
+        
+        HEGEMONY(Factions.HEGEMONY, 2, 0.75f),
+        TRITACHYON(Factions.TRITACHYON, 1, 0.5f),
+        DIKTAT(Factions.DIKTAT, 2, 1f),
+        PERSEAN(Factions.PERSEAN, 1, 0.5f),
+        LUDDIC_CHURCH(Factions.LUDDIC_CHURCH, 2, 0.5f),
+        LUDDIC_PATH(Factions.LUDDIC_PATH, 2, 1f),
+        PIRATES(Factions.PIRATES, 2, 0.33f),
+        CABAL("cabal", 1, 0.25f),
+        IMPERIUM("interstellarimperium", 2, 0.75f),
+        CITADEL("citadeldefenders", 0, 0.5f),
+        BLACKROCK("blackrock_driveyards", 2, 0.5f),
+        EXIGENCY("exigency", 2, 1f),
+        AHRIMAN("exipirated",2, 0.5f),
+        TEMPLARS("templars", 2, 0.5f),
+        SHADOWYARDS("shadow_industry", 1, 0.5f),
+        MAYORATE("mayorate", 2, 0.75f),
+        JUNK_PIRATES("junk_pirates", 1, 0.5f),
+        PACK("pack", 1, 0.5f),
+        ASP_SYNDICATE("syndicate_asp", 2, 0.75f),
+        // TODO (config in SCY mod)
         SCY("SCY",
             "Grudge", "Seeker Fleet", "a Seeker Fleet",
             null, null, null, null, null, null, 0.5f),
-        TIANDONG("tiandong",
-                 "Grudge", "Enforcers", "Enforcers",
-                 "Vendetta", "Hit-Fleet", "a Hit-Fleet",
-                 null, null, null, 0.5f),
-        DIABLE("diableavionics",
-               "Grudge", "Hunter Fleet", "a Hunter Fleet",
-               "Vendetta", "Executors", "Executors",
-               "Revenge", "Kill-Fleet", "a Kill-Fleet",
-               1f),
+        TIANDONG("tiandong", 1, 0.5f),
+        DIABLE("diableavionics", 1, 1f),
+        // TODO (config in ORA mod)
         ORA("ORA",
             "Grudge", "Enforcers", "Enforcers",
             null, null, null, null, null, null, 0.5f);
@@ -681,7 +580,10 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         final String starkRavingMadFleet;
         final String starkRavingMadFleetSingle;
         final float vengefulness;
-
+        final int maxLevel;
+        
+        // legacy constructor with non-external names
+        @Deprecated
         private VengeanceDef(String faction, String madName, String madFleet, String madFleetSingle,
                              String ravingMadName, String ravingMadFleet,
                              String ravingMadFleetSingle, String starkRavingMadName, String starkRavingMadFleet,
@@ -698,42 +600,46 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
             this.starkRavingMadFleet = starkRavingMadFleet;
             this.starkRavingMadFleetSingle = starkRavingMadFleetSingle;
             this.vengefulness = vengefulness;
+            
+            if (starkRavingMadName != null)
+                maxLevel = 2;
+            else if (ravingMadName != null)
+                maxLevel = 1;
+            else
+                maxLevel = 0;
         }
-		
-		private VengeanceDef(String faction, boolean hasRavingMad, boolean hasStarkRavingMad,
-                             float vengefulness) {
+        
+        private VengeanceDef(String faction, int maxLevel, float vengefulness) {
             this.faction = faction;
             this.madName = "";
             this.madFleet = "";
             this.madFleetSingle = "";
-			if (hasRavingMad)
-			{
-				this.ravingMadName = "";
-				this.ravingMadFleet = "";
-				this.ravingMadFleetSingle = "";
-				if (hasStarkRavingMad)
-				{
-					this.starkRavingMadName = "";
-					this.starkRavingMadFleet = "";
-					this.starkRavingMadFleetSingle = "";
-				}
-				else
-				{
-					this.starkRavingMadName = null;
-					this.starkRavingMadFleet = null;
-					this.starkRavingMadFleetSingle = null;
-				}
-			}
-			else
-			{
-				this.ravingMadName = null;
-				this.ravingMadFleet = null;
-				this.ravingMadFleetSingle = null;
-				this.starkRavingMadName = null;
-				this.starkRavingMadFleet = null;
-				this.starkRavingMadFleetSingle = null;
-			}
+            if (maxLevel >= 1)
+            {
+                this.ravingMadName = "";
+                this.ravingMadFleet = "";
+                this.ravingMadFleetSingle = "";
+            }
+            else
+            {
+                this.ravingMadName = null;
+                this.ravingMadFleet = null;
+                this.ravingMadFleetSingle = null;
+            }
+            if (maxLevel >= 2)
+            {
+                this.starkRavingMadName = "";
+                this.starkRavingMadFleet = "";
+                this.starkRavingMadFleetSingle = "";
+            }
+            else
+            {
+                this.starkRavingMadName = null;
+                this.starkRavingMadFleet = null;
+                this.starkRavingMadFleetSingle = null;
+            }
             this.vengefulness = vengefulness;
+            this.maxLevel = maxLevel;
         }
 
         static VengeanceDef getDef(String faction) {
@@ -744,12 +650,79 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
             }
             return VengeanceDef.GENERIC;
         }
-		
-		// TODO: make it read from faction config
-		static String getName(int escalationLevel)
-		{
-			//if (escalationLevel == 0)
-			return "";
-		}
+        
+        boolean isValidString(String str)
+        {
+            return str != null && !str.isEmpty();
+        }
+        
+        String getName(int escalationLevel)
+        {
+            String name = "";
+            ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction);
+            if (conf.vengeanceLevelNames.size() > escalationLevel)
+            {
+                name = conf.vengeanceLevelNames.get(escalationLevel);
+                if (isValidString(name))
+                    return name;
+            }
+            switch (escalationLevel)
+            {
+                case 0:
+                    if (isValidString(madName)) return madName;
+                case 1:
+                    if (isValidString(ravingMadName)) return ravingMadName;
+                case 2:
+                    if (isValidString(starkRavingMadName)) return starkRavingMadName;
+            }
+            
+            return StringHelper.getString("exerelin_fleets", "vengeanceLevel" + escalationLevel);
+        }
+        
+        String getFleetName(int escalationLevel)
+        {
+            String name = "";
+            ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction);
+            if (conf.vengeanceFleetNames.size() > escalationLevel)
+            {
+                name = conf.vengeanceFleetNames.get(escalationLevel);
+                if (isValidString(name))
+                    return name;
+            }
+            switch (escalationLevel)
+            {
+                case 0:
+                    if (isValidString(madFleet)) return madFleet;
+                case 1:
+                    if (isValidString(ravingMadFleet)) return ravingMadFleet;
+                case 2:
+                    if (isValidString(starkRavingMadFleet)) return starkRavingMadFleet;
+            }
+            
+            return StringHelper.getString("exerelin_fleets", "vengeanceFleet" + escalationLevel);
+        }
+        
+        String getFleetNameSingle(int escalationLevel)
+        {
+            String name = "";
+            ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction);
+            if (conf.vengeanceFleetNamesSingle.size() > escalationLevel)
+            {
+                name = conf.vengeanceFleetNamesSingle.get(escalationLevel);
+                if (isValidString(name))
+                    return name;
+            }
+            switch (escalationLevel)
+            {
+                case 0:
+                    if (isValidString(madFleetSingle)) return madFleetSingle;
+                case 1:
+                    if (isValidString(ravingMadFleetSingle)) return ravingMadFleetSingle;
+                case 2:
+                    if (isValidString(starkRavingMadFleetSingle)) return starkRavingMadFleetSingle;
+            }
+            
+            return StringHelper.getString("exerelin_fleets", "vengeanceFleet" + escalationLevel + "Single");
+        }
     }
 }

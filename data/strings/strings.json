@@ -118,6 +118,7 @@
 		"invasionFleet":"$faction invasion fleet update",
 		"marketAttacked":"Recent attack on $market",
 		"marketCaptured":"$market captured by $faction",
+		"revengeanceFleetEvent":"Revenge Fleet",
 		"securityAlert":"Security alert on $market",
 		"slaveTrade":"Slave trade on $market",
 		"superweapon":"Superweapon used on $market!",
@@ -156,7 +157,17 @@
 		"fleetSpawnMessage":"A fleet is being launched at $market, in $location. It will be underway shortly.",
 		"fleetSpawnMessageLocal":"A fleet is being launched and will begin defending $market shortly.",
 		
-		"revengeanceFleetEvent":"Revenge Fleet",
+		"vengeanceFleet0":"Hunter Fleet",
+		"vengeanceFleet0Single":"a Hunter Fleet",
+		"vengeanceLevel0":"Grudge",
+		
+		"vengeanceFleet1":"Executors",
+		"vengeanceFleet1Single":"Executors",
+		"vengeanceLevel1":"Vendetta",
+		
+		"vengeanceFleet2":"Kill-Fleet",
+		"vengeanceFleet2Single":"a Kill-Fleet",
+		"vengeanceLevel2":"Revenge",
 		
 		"fleetRelationship":"$faction $isOrAre $relationship.",
 		
@@ -182,6 +193,7 @@
 		"patrollingStarSystem":"patrolling the $target star system",
 		"patrollingAroundStarSystem":"patrolling around the $target star system",
 		"intercepting":"intercepting $target",
+		"trailing":"trailing $target",
 		"hunting":"hunting $target",
 		"beginningInvasion":"beginning invasion of $target",
 		"invading":"invading $target",

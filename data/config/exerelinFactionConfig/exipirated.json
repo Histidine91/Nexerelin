@@ -23,6 +23,10 @@
     
     "freeMarket":true,
     
+    "vengeanceLevelNames":["Grudge", "Vendetta", "Revenge"],
+    "vengeanceFleetNames":["Enforcers", "Hit-Fleet", "Reavers"],
+    "vengeanceFleetNamesSingle":["Enforcers", "a Hit-Fleet", "Reavers"],
+    
     "startShipsSolo":["exipirated_rauwel_Standard"],
     "startShipsCombatSmall":["exipirated_azryel_Standard", "exigency_yria_Firesupport", "hound_d_pirates_Standard"],
     "startShipsTradeSmall":["mule_d_pirates_Standard", "exigency_yria_Disruptor", "shepherd_Frontier"],

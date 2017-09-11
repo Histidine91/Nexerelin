@@ -39,7 +39,7 @@ import org.lwjgl.util.vector.Vector2f;
  */
 public class RevengeanceManagerEvent extends BaseEventPlugin {
 
-	public static final boolean DEBUG_MODE = false;
+	public static final boolean DEBUG_MODE = true;
 	
 	// controls frequency of spawning counter-invasion fleets
 	public static final float POINTS_TO_SPAWN = 125;
@@ -116,6 +116,8 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 			return;
 		else if (Global.getSector().getFaction(factionId).isAtWorst(Factions.PLAYER, RepLevel.HOSTILE))
 			points *= 0.2f;
+		
+		points *= SSP_FactionVengeanceEvent.VengeanceDef.getDef(factionId).vengefulness * 2;
 		
 		float currPts = factionPoints.get(factionId);
 		float newPts = currPts + points;
@@ -221,7 +223,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 
 	@Override
 	public String getEventName() {
-		return StringHelper.getString("exerelin_fleets", "revengeanceFleetEvent");
+		return StringHelper.getString("exerelin_events", "revengeanceFleet");
 	}
 	
 	@Override
@@ -289,9 +291,12 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 	
 	/**
 	 * Make a fleet to conquer one of player faction's markets
+	 * @return True if fleet was successfully created, false otherwise
 	 */
 	protected boolean generateCounterInvasionFleet()
 	{
+		log.info("Trying to generate counter-invasion fleet");
+		
 		SectorAPI sector = Global.getSector();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
 		WeightedRandomPicker<String> attackerPicker = new WeightedRandomPicker();
@@ -315,6 +320,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		if (revengeFactionId == null || revengeFactionId.isEmpty())
 			return false;
 		FactionAPI revengeFaction = Global.getSector().getFaction(revengeFactionId);
+		log.info("Picked enemy: " + revengeFaction.getDisplayName());
 		
 		// pick a source market
 		for (MarketAPI market : markets) {
@@ -353,7 +359,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		if (originMarket == null) {
 			return false;
 		}
-		//log.info("\tStaging from " + originMarket.getName());
+		log.info("\tStaging from " + originMarket.getName());
 		//marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
 
 		// now we pick a target
@@ -397,7 +403,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		if (targetMarket == null) {
 			return false;
 		}
-		//log.info("\tTarget: " + targetMarket.getName());
+		log.info("\tTarget: " + targetMarket.getName());
 
 		// spawn our revengeance fleet
 		String debugStr = "Spawning counter-invasion fleet for " + revengeFactionId + "; source " + originMarket.getName() + "; target " + targetMarket.getName();

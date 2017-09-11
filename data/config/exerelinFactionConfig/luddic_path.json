@@ -6,7 +6,6 @@
     "isPirateNeutral":true,
     "showIntelEvenIfDead":true,
     
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0,
 
     "customRebelFaction":"",
@@ -14,6 +13,10 @@
     "rebelFleetSuffix":"Heretics",
 
     "startRelationships":{ "luddic_church":0, "tritachyon":-0.8 },
+    
+    "vengeanceLevelNames":["Excommunication", "Interdiction", "Jihad"],
+    "vengeanceFleetNames":["Evangelists", "Inquisition", "Crusade"],
+    "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],   
     
     "alignments":{
         "corporate":-1,

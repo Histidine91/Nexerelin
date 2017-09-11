@@ -19,6 +19,10 @@
     
     "freeMarket":true,
     
+    "vengeanceLevelNames":["Grudge", "Vendetta"],
+    "vengeanceFleetNames":["Enforcers", "Hit-Fleet"],
+    "vengeanceFleetNamesSingle":["Enforcers", "a Hit-Fleet"],
+    
     "miningVariantsOrWings":["junk_pirates_the_reaper_Standard"],
     
     "startShipsSolo":["junk_pirates_clam_CS"],

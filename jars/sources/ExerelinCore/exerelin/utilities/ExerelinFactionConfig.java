@@ -12,7 +12,6 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.alliances.Alliance.Alignment;
 import java.io.IOException;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.*;
 import org.json.JSONException;
@@ -91,6 +90,10 @@ public class ExerelinFactionConfig
     public boolean allowAgentActions = true;
     public boolean allowPrisonerActions = true;
     
+	public List<String> vengeanceLevelNames = new ArrayList<>();
+	public List<String> vengeanceFleetNames = new ArrayList<>();
+	public List<String> vengeanceFleetNamesSingle = new ArrayList<>();
+	
     public List<String> customStations = new ArrayList<>();
     
     public List<String> miningVariantsOrWings = new ArrayList<>();
@@ -161,18 +164,18 @@ public class ExerelinFactionConfig
             allowPrisonerActions = settings.optBoolean("allowPrisonerActions", allowPrisonerActions);
             
             if (settings.has("miningVariantsOrWings"))
-                miningVariantsOrWings = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
+                miningVariantsOrWings = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
             
             if (settings.has("customStations"))
-                customStations = Arrays.asList(JSONArrayToStringArray(settings.getJSONArray("customStations")));
+                customStations = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("customStations")));
             
             // Diplomacy
             if (settings.has("factionsLiked"))
-                factionsLiked = JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
+                factionsLiked = ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
             if (settings.has("factionsDisliked"))
-                factionsDisliked = JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
+                factionsDisliked = ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
             if (settings.has("factionsNeutral"))
-                factionsNeutral = JSONArrayToStringArray(settings.getJSONArray("factionsNeutral"));
+                factionsNeutral = ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("factionsNeutral"));
                         
             fillRelationshipMap(settings, minRelationships, "minRelationships");
             fillRelationshipMap(settings, maxRelationships, "maxRelationships");
@@ -222,6 +225,8 @@ public class ExerelinFactionConfig
                     }
                 }
             }
+			loadVengeanceNames(settings);
+			
             loadStartShips(settings);
         } catch(IOException | JSONException ex)
         {
@@ -329,8 +334,18 @@ public class ExerelinFactionConfig
         if (settings.has(key))
             startShips.put(type, ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray(key)));
     }
+	
+	protected void loadVengeanceNames(JSONObject settings) throws JSONException
+	{
+		if (settings.has("vengeanceLevelNames"))
+			vengeanceLevelNames = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceLevelNames"));
+		if (settings.has("vengeanceFleetNames"))
+			vengeanceFleetNames = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceFleetNames"));
+		if (settings.has("vengeanceFleetNamesSingle"))
+			vengeanceFleetNamesSingle = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceFleetNamesSingle"));
+	}
     
-    public void loadStartShips(JSONObject settings) throws JSONException
+    protected void loadStartShips(JSONObject settings) throws JSONException
     {
         getStartShipTypeIfAvailable(settings, "startShipsSolo", StartFleetType.SOLO);
         getStartShipTypeIfAvailable(settings, "startShipsSoloSSP", StartFleetType.SOLO_SSP);
@@ -617,24 +632,7 @@ public class ExerelinFactionConfig
         return Arrays.asList(new String[]{"wolf_Starting"});
     }
 
-    private String[] JSONArrayToStringArray(JSONArray jsonArray)
-    {
-        try
-        {
-            //return jsonArray.toString().substring(1, jsonArray.toString().length() - 1).replaceAll("\"","").split(",");
-            String[] ret = new String[jsonArray.length()];
-            for (int i=0; i<jsonArray.length(); i++)
-            {
-                ret[i] = jsonArray.getString(i);
-            }
-            return ret;
-        }
-        catch(Exception e)
-        {
-            Global.getLogger(ExerelinFactionConfig.class).warn(e);
-            return new String[]{};
-        }
-    }
+    
     
     public static enum StartFleetType {
         SOLO, SOLO_SSP,

@@ -23,6 +23,10 @@
     "diplomacyPositiveChance":{ "hegemony":0.75, },
     "diplomacyNegativeChance":{ "hegemony":1.5, },
     
+    "vengeanceLevelNames":["Grudge", "Punishment", "Vengeance"],
+    "vengeanceFleetNames":["Livor", "Vindicta", "Ultio"],
+    "vengeanceFleetNamesSingle":["a Livor fleet", "a Vindicta fleet", "an Ultio fleet"],
+    
     "alignments":{
         "corporate":0,
         "technocratic":-0.5,

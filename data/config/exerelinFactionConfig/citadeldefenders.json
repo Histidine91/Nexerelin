@@ -19,6 +19,10 @@
         "militarist":0.5,
     },
     
+    "vengeanceLevelNames":["Grudge"],
+    "vengeanceFleetNames":["Enforcers"],
+    "vengeanceFleetNamesSingle":["Enforcers"],
+    
     "customStations":["station_citadel_type"],
     
     "startShipsSolo":["Fox_Frigate_standard"],  # Aural

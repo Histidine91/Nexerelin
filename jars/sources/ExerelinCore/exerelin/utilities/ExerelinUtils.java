@@ -104,14 +104,22 @@ public class ExerelinUtils
 	}
 
 	public static String[] JSONArrayToStringArray(JSONArray jsonArray)
-	{
-		try
-		{
-			return jsonArray.toString().substring(1, jsonArray.toString().length() - 1).replaceAll("\"","").split(",");
-		}
-		catch(Exception e) { }
-		return new String[]{};
-	}
+    {
+        try
+        {
+            String[] ret = new String[jsonArray.length()];
+            for (int i=0; i<jsonArray.length(); i++)
+            {
+                ret[i] = jsonArray.getString(i);
+            }
+            return ret;
+        }
+        catch(Exception e)
+        {
+            Global.getLogger(ExerelinFactionConfig.class).warn(e);
+            return new String[]{};
+        }
+    }
 
 	public static ArrayList<String> JSONArrayToArrayList(JSONArray jsonArray)
 	{

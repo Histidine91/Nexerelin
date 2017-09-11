@@ -21,6 +21,10 @@
         "ideological":1,
     },
     
+    "vengeanceLevelNames":["Grudge", "Vendetta", "Revenge"],
+    "vengeanceFleetNames":["Enforcers", "Hit-Fleet", "Kill-Fleet"],
+    "vengeanceFleetNamesSingle":["Enforcers", "a Hit-Fleet", "a Kill-Fleet"],
+    
     "startShipsSolo":["ilk_lilith_assault"],
     "startShipsCombatSmall":["ilk_cimeterre_CS", "ilk_tiamat_assault", "ilk_lilith_kazi_tournament"],
     "startShipsTradeSmall":["ilk_safir_standard", "ilk_safir_converted_support", "ilk_lilith_CS"],

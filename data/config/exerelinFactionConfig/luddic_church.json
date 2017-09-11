@@ -23,6 +23,10 @@
         "ideological":1,
     },
     
+    "vengeanceLevelNames":["Excommunication", "Interdiction", "Jihad"],
+    "vengeanceFleetNames":["Evangelists", "Inquisition", "Crusade"],
+    "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],
+    
     "startShipsSolo":["vigilance_Standard"],
     "startShipsCombatSmall":["enforcer_Balanced", "lasher_Starting", "centurion_Assault"],
     "startShipsCombatSmallSSP":["ssp_vanguard_sta", "lasher_Starting", "centurion_Assault"],

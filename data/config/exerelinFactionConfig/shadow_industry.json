@@ -22,6 +22,10 @@
         "diplomatic":1,
     },
     
+    "vengeanceLevelNames":["Grudge", "Vendetta"],
+    "vengeanceFleetNames":["Hunter Fleet", "Executors"],
+    "vengeanceFleetNamesSingle":["a Hunter Fleet", "Executors"],
+    
     "customStations":["station_shi_prana","station_shi_med"],
     
     "startShipsSolo":["ms_enlil_Balanced"],

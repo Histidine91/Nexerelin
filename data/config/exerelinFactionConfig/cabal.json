@@ -29,4 +29,8 @@
     },
     
     "freeMarket":true,
+    
+    "vengeanceLevelNames":["Grudge", "Elimination"],
+    "vengeanceFleetNames":["Executors", "Kill-Fleet"],
+    "vengeanceFleetNamesSingle":["Executors", "a Kill-Fleet"],
 }

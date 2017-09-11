@@ -23,6 +23,9 @@
     
     "freeMarket":true,
     
+    "vengeanceFleetNames":["Enforcers", "Hit-Fleet", "Horde"],
+    "vengeanceFleetNamesSingle":["Enforcers", "a Hit-Fleet", "a Horde"],
+    
     "startShipsSolo":["cerberus_Retrofitted"],
     #"startShipsSoloSSP":["ssp_scythe_bal"],
     "startShipsCombatSmall":["enforcer_CS", "buffalo2_FS", "hound_Standard"],
