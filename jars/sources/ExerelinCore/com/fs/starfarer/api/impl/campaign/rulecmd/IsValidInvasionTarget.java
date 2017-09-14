@@ -17,6 +17,6 @@ public class IsValidInvasionTarget extends BaseCommandPlugin {
 		if (entity == null) return false;
 		MarketAPI market = entity.getMarket();
 		if (market == null) return false;
-		return ExerelinUtilsMarket.canBeInvaded(market);
+		return ExerelinUtilsMarket.canBeInvaded(market, true);
 	}
 }

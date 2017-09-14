@@ -39,7 +39,7 @@ import org.lwjgl.util.vector.Vector2f;
  */
 public class RevengeanceManagerEvent extends BaseEventPlugin {
 
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
 	
 	// controls frequency of spawning counter-invasion fleets
 	public static final float POINTS_TO_SPAWN = 125;

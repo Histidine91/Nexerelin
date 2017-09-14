@@ -300,22 +300,27 @@ public class ExerelinUtilsMarket {
 		if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
 			return false;
 		
-		return canBeInvaded(market);
+		return canBeInvaded(market, false);
 	}
 	
 	/**
 	 * Can this market be invaded, by player or by NPCs?
 	 * @param market
+	 * @param isPlayer Is the would-be invader the player?
 	 * @return
 	 */
-	public static boolean canBeInvaded(MarketAPI market)
+	public static boolean canBeInvaded(MarketAPI market, boolean isPlayer)
 	{
 		if (market.hasCondition(Conditions.ABANDONED_STATION)) return false;		
 		if (market.getPrimaryEntity() instanceof CampaignFleetAPI) return false;
 		
 		FactionAPI marketFaction = market.getFaction();
-		if (marketFaction.getId().equals(PlayerFactionStore.getPlayerFactionId()))
-			return false;
+		if (isPlayer)
+		{
+			String factionId = marketFaction.getId();
+			if (factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+				return false;
+		}
 		if (marketFaction.isNeutralFaction()) return false;
 		if (!market.isInEconomy()) return false;
 		
