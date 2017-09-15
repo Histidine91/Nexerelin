@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
+import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
@@ -89,6 +90,37 @@ public class ExerelinUtilsFleet
         return daysToOrbit;
     }
 	
+	/**
+	 * Gets the number of fleet generation points represented by the specified fleet, as used in FleetFactoryV2.
+	 * Frigates = 1 point each, destroyers = 2, cruisers = 4, capitals = 8
+	 * @param fleet
+	 * @return
+	 */
+	public static int getFleetGenPoints(CampaignFleetAPI fleet)
+	{
+		int points = 0;
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
+		{		
+			ShipAPI.HullSize size = member.getHullSpec().getHullSize();
+			switch (size) {
+				case CAPITAL_SHIP:
+					points += 8;
+					break;
+				case CRUISER: 
+					points += 4;
+					break;
+				case DESTROYER: 
+					points += 2;
+					break;
+				case FIGHTER:
+				case FRIGATE:
+					points += 1;
+					break;
+			}
+		}
+		return points;
+	}
+	
 	// taken from SS+
 	public static int calculatePowerLevel(CampaignFleetAPI fleet) {
         int power = fleet.getFleetPoints();
@@ -121,4 +153,9 @@ public class ExerelinUtilsFleet
         power += flatBonus;
         return power;
     }
+	
+	public static float getPlayerLevelFPBonus()
+	{
+		return Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
+	}
 }

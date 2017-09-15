@@ -135,7 +135,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
             maxFP += maxFPbase * factionConfig.invasionFleetSizeMod;
         }
         
-        maxFP = maxFP + Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
+        maxFP = maxFP + ExerelinUtilsFleet.getPlayerLevelFPBonus();
         
         return (maxFP * (MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f)));
     }
@@ -272,7 +272,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
         float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket, 1f, false);
         float responseFleetSize = ResponseFleetManager.getMaxReserveSize(targetMarket, false);
         float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + 8 * (2 + originMarket.getSize()));
-        float maxFP = maxFPbase + Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
+        float maxFP = maxFPbase + ExerelinUtilsFleet.getPlayerLevelFPBonus();
         maxFP *= MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f);
         maxFP *= 0.35;
         

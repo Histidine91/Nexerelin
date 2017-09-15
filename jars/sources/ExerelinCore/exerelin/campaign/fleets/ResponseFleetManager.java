@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -31,7 +32,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
     private static final float RESERVE_INCREMENT_PER_DAY = 0.08f;
     private static final float RESERVE_MARKET_STABILITY_DIVISOR = 5f;
     private static final float INITIAL_RESERVE_SIZE_MULT = 0.75f;
-    private static final float MIN_FP_TO_SPAWN = 5f;
+    public static final float MIN_FP_TO_SPAWN = 5f;
     protected static final float REVENGE_FLEET_BASE_SIZE = 75;
     protected static final float REVENGE_GROWTH_MULT = 0.25f;
     
@@ -58,25 +59,10 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         for(MarketAPI market:markets)
             reserves.put(market.getId(), getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
     }
-  
-    public void spawnResponseFleet(MarketAPI origin, SectorEntityToken target, SectorEntityToken spawnEntity)
-    {
-        float reserveSize = getReserveSize(origin);
-        int maxFP = (int)reserveSize;
-        if (maxFP < MIN_FP_TO_SPAWN)
-        {
-            log.info(origin.getName() + " has insufficient FP for response fleet: " + maxFP);
-            return;
-        }
-        int enemyFP = ((CampaignFleetAPI)target).getFleetPoints();
-        if (enemyFP > maxFP * 8)
-        {
-            // disable: no reason not to at least try, especially now that multi-fleet battles are a thing
-            //log.info(target.getName() + " is too big to handle: " + enemyFP);
-            //return;
-        }
-        
-        float qf = origin.getShipQualityFactor();
+	
+	public CampaignFleetAPI getResponseFleet(MarketAPI origin, int points)
+	{
+		//float qf = origin.getShipQualityFactor();
         //qf = Math.max(qf, 0.7f);
         
         String factionId = origin.getFactionId();
@@ -97,14 +83,14 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         else
             name = factionConfig.responseFleetName;
         
-        if (maxFP <= 18) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixSmall") + " " + name;
-        else if (maxFP >= 54) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
+        if (points <= 18) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixSmall") + " " + name;
+        else if (points >= 54) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
         
         //int marketSize = origin.getSize();
         //if (origin.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize += 2;
         //CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
         FleetParams fleetParams = new FleetParams(null, origin, fleetFactionId, null, "exerelinResponseFleet", 
-                maxFP, // combat
+                points, // combat
                 0,    //maxFP*0.1f, // freighters
                 0,        // tankers
                 0,        // personnel transports
@@ -114,37 +100,77 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
                 0.15f, -1, 1.25f, 1);    // quality bonus, quality override, officer num mult, officer level bonus
         
         CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(Global.getSector().getFaction(fleetFactionId), fleetParams);
-        if (fleet == null) return;
+        if (fleet == null) return null;
         
         fleet.setFaction(factionId, true);
         fleet.setName(name);
         fleet.setAIMode(true);
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);
-        
-        if (spawnEntity == null) spawnEntity = origin.getPrimaryEntity();
-        spawnEntity.getContainingLocation().addEntity(fleet);
-        fleet.setLocation(spawnEntity.getLocation().x, spawnEntity.getLocation().y);
-        
-        ResponseFleetData data = new ResponseFleetData(fleet);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true, 5);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true, 5);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF, true, 5);
+		
+		return fleet;
+	}
+	
+	/**
+	 * Adds the response fleet to the list of active fleets and assigns its AI script.
+	 * @param fleet
+	 * @param origin
+	 * @param target The enemy fleet to intercept.
+	 */
+	public void registerResponseFleetAndSetAI(CampaignFleetAPI fleet, MarketAPI origin, SectorEntityToken target)
+	{
+		ResponseFleetData data = new ResponseFleetData(fleet);
         data.startingFleetPoints = fleet.getFleetPoints();
         data.sourceMarket = origin;
         data.source = origin.getPrimaryEntity();
         data.target = target;
         this.activeFleets.add(data);
         
-        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true, 5);
-		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true, 5);
-		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF, true, 5);
-        
         ResponseFleetAI ai = new ResponseFleetAI(fleet, data);
         fleet.addScript(ai);
-        log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
-        reserves.put(origin.getId(), 0f);
+        
         
         if (target == Global.getSector().getPlayerFleet())
         {
             data.fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true, 5);
         }
+	}
+  
+    public void spawnResponseFleet(MarketAPI origin, SectorEntityToken target, SectorEntityToken spawnEntity)
+    {
+        float reserveSize = getReserveSize(origin);
+        int maxFP = (int)reserveSize;
+        if (maxFP < MIN_FP_TO_SPAWN)
+        {
+            log.info(origin.getName() + " has insufficient FP for response fleet: " + maxFP);
+            return;
+        }
+        int enemyFP = ((CampaignFleetAPI)target).getFleetPoints();
+        if (enemyFP > maxFP * 8)
+        {
+            // disable: no reason not to at least try, especially now that multi-fleet battles are a thing
+            //log.info(target.getName() + " is too big to handle: " + enemyFP);
+            //return;
+        }
+        
+        CampaignFleetAPI fleet = getResponseFleet(origin, maxFP);
+		if (fleet == null) return;
+		
+		registerResponseFleetAndSetAI(fleet, origin, target);
+        
+        if (spawnEntity == null) spawnEntity = origin.getPrimaryEntity();
+        spawnEntity.getContainingLocation().addEntity(fleet);
+        fleet.setLocation(spawnEntity.getLocation().x, spawnEntity.getLocation().y);
+		
+		log.info("\tSpawned " + fleet.getNameWithFaction() + " of size " + maxFP);
+		reserves.put(origin.getId(), 0f);
+		
+		// clear any stored interaction dialog response fleets
+		MemoryAPI marketMem = origin.getMemoryWithoutUpdate();
+		marketMem.unset("$nex_invasionResponseFleet");
+		marketMem.unset("$nex_raidResponseFleet");
     }
     
     public static float getMaxReserveSize(MarketAPI market, boolean raw)
@@ -168,7 +194,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
             size += baseSize * factionConfig.responseFleetSizeMod;
         }
         
-        size = size + Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
+        size = size + ExerelinUtilsFleet.getPlayerLevelFPBonus();
         
         return size;
     }
@@ -327,13 +353,21 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         return false;
     }
     
-    public static ResponseFleetManager create()
-    {
-        Map<String, Object> data = Global.getSector().getPersistentData();
+	public static ResponseFleetManager getManager()
+	{
+		Map<String, Object> data = Global.getSector().getPersistentData();
         responseFleetManager = (ResponseFleetManager)data.get(MANAGER_MAP_KEY);
         if (responseFleetManager != null)
             return responseFleetManager;
-        
+		return null;
+	}
+	
+    public static ResponseFleetManager create()
+    {
+        ResponseFleetManager saved = getManager();
+		if (saved != null) return saved;
+		
+        Map<String, Object> data = Global.getSector().getPersistentData();
         responseFleetManager = new ResponseFleetManager();
         data.put(MANAGER_MAP_KEY, responseFleetManager);
         return responseFleetManager;

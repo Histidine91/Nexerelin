@@ -403,8 +403,7 @@ Marine losses depend on both strength values, plus a random factor.
 
 Markets accumulate a reserve force over time that can be quickly deployed in response to invasions.",,
 ,,,,,,
-ExerelinInvasionProceed,DialogOptionSelected,"$option == exerelinInvasionProceed
-$hasMarket ","Wait $global.exerelinInvasionWait 1 $global.exerelinInvasionRoundComplete $global.exerelinInvasionInterrupted $global.exerelinInvasionInProgress ""Invading...""
+ExerelinInvasionProceed,DialogOptionSelected,$option == exerelinInvasionProceed,"Wait $global.exerelinInvasionWait 1 $global.exerelinInvasionRoundComplete $global.exerelinInvasionInterrupted $global.exerelinInvasionInProgress ""Invading...""
 Exerelin_NotifyInvasion $global.exerelinInvasionWait 750 false
 MakePlayerImmediatelyAttackable
 $player.invasionTarget = $id 1.01
@@ -414,6 +413,15 @@ ExerelinInvasionCancel,DialogOptionSelected,$option == exerelinInvasionCancel,Fi
 ExerelinInvasionDone,DialogOptionSelected,"$option == exerelinInvasionDone
 $hasMarket",Exerelin_LootMarket false,,,
 ExerelinInvasionLeave,DialogOptionSelected,$option == exerelinInvasionLeave,DismissDialog,,,
+,,,,,,
+#ExerelinInvasionProceedDefenders,DialogOptionSelected,"$option == exerelinInvasionProceed
+$market.hasDefenders","$global.nex_dialog_invading = true
+Nex_InvasionDefenseInteraction false","As your $shipOrFleet moves in closer, the response fleet scrambles from $market. It's clear they won't let you go further without a fight.",,
+ExerelinInvasionPostDefenders,BeatDefendersContinue,$global.nex_dialog_invading,"$menuState = exerelinSpecial
+FireAll ExerelinMarketSpecialInitialize
+FireAll ExerelinMarketSpecial",Your $shipOrFleet neutralizes the response fleet and is ready for further action.,exerelinMarketSpecial:Continue,
+,,,,,,
+,,,,,,
 ,,,,,,
 ExerelinInvasionOpen,OpenInteractionDialog,"$hasMarket
 $id == $player.invasionTarget","ExerelinShowDefaultVisual
@@ -483,6 +491,7 @@ SetEnabled exerelinRaid false",,,
 ExerelinRaidStart,DialogOptionSelected,$option == exerelinRaid,"$menuState = raid 0
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
 PredictInvasionResults true
+Nex_PrepareResponseFleet true
 FireAll ExerelinRaidListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
 ExerelinRaidListOptionsMain,ExerelinRaidListOptions,,SetShortcut exerelinRaidCancel ESCAPE,,"1:exerelinRaidProceed:Proceed
 2:exerelinRaidHelp:Consult a help file
@@ -501,7 +510,7 @@ Attacker strength varies by up to 1/7th in either direction.
 Amount of loot is determined by ratio of attacker strength to defender strength (must be >1 to get anything).
 Marine losses depend on both strength values, plus a random factor.
 
-Markets accumulate a reserve force over time that will pursue raiders.",,
+It will usually be necessary to defeat a close-in defence fleet before attempting a raid.",,
 ,,,,,,
 #ExerelinRaidProceed,DialogOptionSelected,"$option == exerelinRaidProceed
 $hasMarket ","Wait $global.exerelinRaidWait 0.25 $global.exerelinRaidComplete $global.exerelinRaidInterrupted $global.exerelinRaidInProgress ""Raiding...""
@@ -510,12 +519,17 @@ MakePlayerImmediatelyAttackable
 $player.raidTarget = $id 0.27
 CreateWarmongerEvent $faction.id
 AdjustRep $faction.id COMBAT_NORMAL",,,
-ExerelinRaidProceedFast,DialogOptionSelected,"$option == exerelinRaidProceed
-$hasMarket ","CreateWarmongerEvent $faction.id
+ExerelinRaidProceedFast,DialogOptionSelected,$option == exerelinRaidProceed,"CreateWarmongerEvent $faction.id
 AdjustRep $faction.id COMBAT_NORMAL
 ExecuteInvasionRound true
-FireBest ExerelinRaidResults
-Exerelin_NotifyInvasion $global.exerelinRaidWait 750 true",RAID OUTCOME:,,
+FireBest ExerelinRaidResults",RAID OUTCOME:,,
+ExerelinRaidProceedDefenders,DialogOptionSelected,"$option == exerelinRaidProceed
+$market.hasDefenders","$global.nex_dialog_raiding = true
+Nex_InvasionDefenseInteraction true","As your $shipOrFleet moves in closer, a defence fleet scrambles from $market. It's clear they won't let you go further without a fight.",,
+ExerelinRaidPostDefenders,BeatDefendersContinue,$global.nex_dialog_raiding,"$menuState = raid 0
+ShowVisual ""graphics/illustrations/pirate_station.jpg""
+SetPromptText ""You decide to...""
+FireAll ExerelinRaidListOptions",Your $shipOrFleet neutralizes the defence fleet and is ready to continue with the raid.,,
 ExerelinRaidDone,DialogOptionSelected,"$option == exerelinRaidDone
 $hasMarket",Exerelin_LootMarket true,,,
 ExerelinRaidLeave,DialogOptionSelected,$option == exerelinRaidLeave,DismissDialog,,,
