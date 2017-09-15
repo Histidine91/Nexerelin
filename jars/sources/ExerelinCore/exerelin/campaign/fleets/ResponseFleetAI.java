@@ -12,6 +12,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
 
 public class ResponseFleetAI implements EveryFrameScript
 {
@@ -37,7 +38,7 @@ public class ResponseFleetAI implements EveryFrameScript
     {
         float days = Global.getSector().getClock().convertToDays(amount);
         this.daysTotal += days;
-        if (this.daysTotal > 60.0F)
+        if (this.daysTotal > 30.0F)
         {
             giveStandDownOrders();
             return;
@@ -59,17 +60,22 @@ public class ResponseFleetAI implements EveryFrameScript
         if (fp < this.data.startingFleetPoints / 2.0F && tooWeak) {
             giveStandDownOrders();
         }
-        else
+        
+        if ((assignment == null || !MathUtils.isWithinRange(fleet, data.source, 900)) && fleet.getBattle() == null)
         {
+            fleet.getAI().clearAssignments();
             MarketAPI market = data.sourceMarket;
             StarSystemAPI system = market.getStarSystem();
             if (system != null)
             {
                 if (system != this.fleet.getContainingLocation()) {
                     this.fleet.addAssignment(FleetAssignment.DELIVER_SUPPLIES, market.getPrimaryEntity(), 1000.0F, 
-							StringHelper.getFleetAssignmentString("travellingToStarSystem", system.getBaseName()));
+                            StringHelper.getFleetAssignmentString("travellingToStarSystem", system.getBaseName()));
                 }
-                this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("defending", market.getName()));
+                this.fleet.addAssignment(FleetAssignment.DELIVER_SUPPLIES, market.getPrimaryEntity(), 1000.0F, 
+                        StringHelper.getFleetAssignmentString("travellingTo", market.getName()));
+                this.fleet.addAssignment(FleetAssignment.DEFEND_LOCATION, market.getPrimaryEntity(), 1000.0F, 
+                        StringHelper.getFleetAssignmentString("defending", market.getName()));
             }
         }
     }
@@ -92,7 +98,7 @@ public class ResponseFleetAI implements EveryFrameScript
         if (this.data.target == Global.getSector().getPlayerFleet())
             targetName = StringHelper.getString("yourFleet");
         this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, 0.1f, StringHelper.getFleetAssignmentString("scramblingFrom", this.data.sourceMarket.getName()));
-        this.fleet.addAssignment(FleetAssignment.INTERCEPT, this.data.target, 3f, StringHelper.getFleetAssignmentString("intercepting", targetName));
+        this.fleet.addAssignment(FleetAssignment.INTERCEPT, this.data.target, 1.5f, StringHelper.getFleetAssignmentString("intercepting", targetName));
     }
   
     protected void giveStandDownOrders()
