@@ -50,7 +50,10 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 		
 		if (isRaid)
 		{
-			float fp = playerFleetSize * 1.25f + ExerelinUtilsFleet.getPlayerLevelFPBonus() * 0.5f;
+			float fp = playerFleetSize * 1.25f;
+			float maxFP = (float)Math.pow(market.getSize(), 2) * 1.25f;
+			if (fp > maxFP) fp = maxFP;
+			fp += ExerelinUtilsFleet.getPlayerLevelFPBonus() * 0.5f;
 			
 			FleetParams fleetParams = new FleetParams(null, market, market.getFactionId(), null, "exerelinDefenceFleet", 
                 fp, // combat
