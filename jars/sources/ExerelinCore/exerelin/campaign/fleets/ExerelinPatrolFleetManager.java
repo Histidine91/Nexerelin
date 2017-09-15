@@ -56,7 +56,7 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 			float patrolStrengthCheckInterval = Global.getSettings().getFloat("economyIntervalnGameDays");
 			float min = patrolStrengthCheckInterval - Math.min(patrolStrengthCheckInterval * 0.5f, 2f);
 			float max = patrolStrengthCheckInterval + Math.min(patrolStrengthCheckInterval * 0.5f, 2f);
-			patrolBattlesLost = new RollingAverageTracker(min, max, Misc.getEconomyInterval());
+			patrolBattlesLost = new RollingAverageTracker(min, max, Misc.getGenericRollingAverageFactor());
 		}
 		
 		float interval = Global.getSettings().getFloat("averagePatrolSpawnInterval");
@@ -67,6 +67,11 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		return this;
 	}
 	
+	/**
+	 * Gets the maximum size of the patrol spawn pool.
+	 * @param raw If true, disregard effects of market conditions
+	 * @return
+	 */
 	public float getMaxPoints(boolean raw)
 	{
 		float baseSize = market.getSize() * 5 + 8;
@@ -82,10 +87,14 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		return size;
 	}
 	
-	
+	/**
+	 * Adds the specified number of points to the patrol spawn pool.
+	 * @param points
+	 */
 	public void addPatrolPoints(float points)
 	{
 		patrolPoints = Math.min(points + patrolPoints, getMaxPoints(false));
+		//market.getMemoryWithoutUpdate().set("$nex_patrolSpawnPoints", patrolPoints);
 	}
 	
 	protected void addDailyPoints(float days)

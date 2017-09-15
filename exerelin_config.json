@@ -24,7 +24,7 @@
     "allowPirateInvasions": false,
     "fleetRequestCostPerMarine": 125,  # used for player-requested fleets
     "fleetRequestCostPerFP": 2000,  # used for player-requested fleets
-    "invasionGracePeriod": 15,  # factions won't accumulate invasion points for this long at start
+    "invasionGracePeriod": 15,  # factions won't accumulate invasion points for this many days at start
     "pointsRequiredForInvasionFleet": 4000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily
     "baseInvasionPointsPerFaction": 50,
@@ -76,7 +76,7 @@
     "enableUnos": true, # adds Unos for ApproLight, attached to homeworld (non-Corvus mode only)
     
     "officerDeaths": true,	# officer permadeath
-    "officerDaredevilBonus": true,	# 100% experience bonus for officers in a frigate, 50% in a destroyer
+    "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
 
     # DO NOT TOUCH!
     # to make factions not appear, set them to unplayable in their faction config
