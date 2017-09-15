@@ -81,7 +81,7 @@ public class Exerelin_NotifyInvasion extends BaseCommandPlugin {
 		responseFleetScript = new EveryFrameScript() {
             private boolean done = false;
             private float timeElapsed = 0f;
-            private final float RESPONSE_DELAY = 0.25f;	//isRaid ? 0f : 0.25f;
+            private final float RESPONSE_DELAY = isRaid ? 0.125f : 0.25f;
                         
             @Override
             public boolean runWhilePaused() {
