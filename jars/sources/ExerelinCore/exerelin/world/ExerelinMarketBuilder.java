@@ -31,9 +31,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,6 +83,7 @@ public class ExerelinMarketBuilder
 	public static final float FORCE_MILITARY_BASE_CHANCE = 0.5f;	// if meets size requirements
 	public static final float FORCE_MILITARY_BASE_CHANCE_PIRATE = 0.5f;
 	public static final float PRE_BALANCE_BUDGET_MULT = 0.9f;	// < 1 to spare some points for balancer
+	public static final int MAX_CONDITIONS = 14;
 	
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.3f;
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 0.5f;	// lower than min so it can swap autofacs for shipbreakers if needed
@@ -920,6 +923,30 @@ public class ExerelinMarketBuilder
 		for (MarketConditionAPI cond : market.getConditions())
 		{
 			balancer.onAddMarketCondition(market, cond);
+		}
+		
+		// remove excess market conditions (prevent GUI overflow)
+		int condCount = market.getConditions().size();
+		Set<MarketConditionAPI> toRemove = new HashSet<>();
+		int needRemoval = condCount - MAX_CONDITIONS;
+		if (needRemoval > 0)
+		{
+			List<MarketConditionAPI> conds = new ArrayList<>(market.getConditions());
+			Collections.shuffle(conds, random);
+			for (MarketConditionAPI cond : conds)
+			{
+				if (cond.getGenSpec() != null && cond.getGenSpec().getXpMult() > 1)
+				{
+					toRemove.add(cond);
+					log.info("\tRemoving surplus market condition " + cond.getId());
+					needRemoval--;
+					if (needRemoval <= 0) break;
+				}
+			}
+			for (MarketConditionAPI cond : toRemove)
+			{
+				market.removeSpecificCondition(cond.getIdForPluginModifications());
+			}
 		}
 		
 		return market;
