@@ -493,7 +493,7 @@ ShowVisual ""graphics/illustrations/pirate_station.jpg""
 PredictInvasionResults true
 Nex_PrepareResponseFleet true
 FireAll ExerelinRaidListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
-ExerelinRaidListOptionsMain,ExerelinRaidListOptions,,SetShortcut exerelinRaidCancel ESCAPE,,"1:exerelinRaidProceed:Proceed
+ExerelinRaidListOptionsMain,ExerelinRaidListOptions,,SetShortcut exerelinInvasionCancel ESCAPE,,"1:exerelinRaidProceed:Proceed
 2:exerelinRaidHelp:Consult a help file
 4:exerelinInvasionCancel:Cancel",
 ExerelinRaidListOptionRaid,ExerelinRaidListOptions,HasMarines 1,"SetEnabled exerelinRaidProceed true

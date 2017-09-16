@@ -106,7 +106,7 @@ public class DefenceFleetAI implements EveryFrameScript
         this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionPatrol"));
     }
   
-    protected void giveStandDownOrders()
+    public void giveStandDownOrders()
     {
         if (!this.orderedReturn)
         {
