@@ -37,6 +37,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,10 +67,10 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     protected static Set<String> restrictedWeapons;
     protected static Set<String> restrictedShips;
-	
-	protected static Set<SubmarketAPI> cachedSubmarkets = null;
     
-    public Set<String> alreadyBoughtShips = new HashSet<>();
+    protected static Set<SubmarketAPI> cachedSubmarkets = null;
+    
+    protected Set<String> alreadyBoughtShips = new HashSet<>();
     
     static {
         try {
@@ -437,6 +438,22 @@ public class PrismMarket extends BaseSubmarketPlugin {
         return ret;
     }
     
+    public List<String> getAlreadyBoughtShips()
+    {
+        return new ArrayList<>(alreadyBoughtShips);
+    }
+    
+    public void addAlreadyBoughtShip(String baseHullId)
+    {
+        alreadyBoughtShips.add(baseHullId);
+    }
+    
+    public void setAlreadyBoughtShips(Collection<String> baseHullIds)
+    {
+        alreadyBoughtShips.clear();
+        alreadyBoughtShips.addAll(baseHullIds);
+    }
+    
     /**
      * Is this boss ship (as specified in CSV) available given our currently loaded mods?
      * @param factionOrModId
@@ -472,39 +489,36 @@ public class PrismMarket extends BaseSubmarketPlugin {
             restrictedShips.add(row.getString("id"));
         }
     }
-	
-	/**
-	 * Called when an enemy ship is recovered from battle. 
-	 * So an IBB ship can only be bought or recovered, but not both
-	 * @param member The recovered ship's FleetMemberAPI
-	 */
-	public static void notifyShipCaptured(FleetMemberAPI member)
-	{
-		String hullId = member.getHullSpec().getBaseHullId();
-		if (cachedSubmarkets == null)
-		{
-			cachedSubmarkets = new HashSet<>();
-			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
-			{
-				if (market.hasSubmarket("exerelin_prismMarket"))
-				{
-					cachedSubmarkets.add(market.getSubmarket("exerelin_prismMarket"));
-				}
-			}
-		}
-		//Global.getSector().getCampaignUI().addMessage("Adding ship " + hullId + " to Prism already-bought list", Color.GREEN);
-		for (SubmarketAPI sub : cachedSubmarkets)
-		{
-			PrismMarket prism = (PrismMarket)sub.getPlugin();
-			if (!prism.alreadyBoughtShips.contains(hullId))
-			{
-				prism.alreadyBoughtShips.add(hullId);
-			}
-		}
-	}
-	
-	//==========================================================================
-	//==========================================================================
+    
+    /**
+     * Called when an enemy ship is recovered from battle. 
+     * So an IBB ship can only be bought or recovered, but not both
+     * @param member The recovered ship's FleetMemberAPI
+     */
+    public static void notifyShipCaptured(FleetMemberAPI member)
+    {
+        String hullId = member.getHullSpec().getBaseHullId();
+        if (cachedSubmarkets == null)
+        {
+            cachedSubmarkets = new HashSet<>();
+            for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+            {
+                if (market.hasSubmarket("exerelin_prismMarket"))
+                {
+                    cachedSubmarkets.add(market.getSubmarket("exerelin_prismMarket"));
+                }
+            }
+        }
+        //Global.getSector().getCampaignUI().addMessage("Adding ship " + hullId + " to Prism already-bought list", Color.GREEN);
+        for (SubmarketAPI sub : cachedSubmarkets)
+        {
+            PrismMarket prism = (PrismMarket)sub.getPlugin();
+            prism.addAlreadyBoughtShip(hullId);
+        }
+    }
+    
+    //==========================================================================
+    //==========================================================================
     
     @Override
     public boolean isIllegalOnSubmarket(CargoStackAPI stack, TransferAction action) {
