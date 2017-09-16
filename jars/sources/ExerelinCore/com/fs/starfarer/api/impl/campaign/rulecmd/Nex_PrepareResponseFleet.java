@@ -3,19 +3,16 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
-import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.fleets.ExerelinPatrolFleetManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
 import exerelin.campaign.fleets.ResponseFleetManager;
-import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +39,12 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 			mem.set("$hasDefenders", false, 0);
 			return false;
 		}
+		// backstab sneak attack on non-hostile faction! no opposition
+		if (market.getFaction().isAtWorst(Factions.PLAYER, RepLevel.SUSPICIOUS))
+		{
+			mem.set("$hasDefenders", false, 0);
+			return false;
+		}
 		
 		
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
@@ -56,15 +59,15 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 			fp += ExerelinUtilsFleet.getPlayerLevelFPBonus() * 0.5f;
 			
 			FleetParams fleetParams = new FleetParams(null, market, market.getFactionId(), null, "exerelinDefenceFleet", 
-                fp, // combat
-                0, // freighters
-                0,        // tankers
-                0,        // personnel transports
-                0,        // liners
-                0,        // civilian
-                0,    // utility
-                0, 0, 1, 0);    // quality bonus, quality override, officer num mult, officer level bonus
-        
+				fp,		// combat
+				0,		// freighters
+				0,		// tankers
+				0,		// personnel transports
+				0,		// liners
+				0,		// civilian
+				0,		// utility
+				0, 0, 1, 0);	// quality bonus, quality override, officer num mult, officer level bonus
+		
 			fleet = ExerelinUtilsFleet.customCreateFleet(market.getFaction(), fleetParams);
 			
 			if (fleet == null)
@@ -75,10 +78,10 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 		else
 		{
 			float fp = ResponseFleetManager.getReserveSize(market);
-
+		
 			if (fp < ResponseFleetManager.MIN_FP_TO_SPAWN)
 				return false;
-
+		
 			fleet = ResponseFleetManager.getManager().getResponseFleet(market, (int)fp);
 		}
 		if (fleet == null) return false;

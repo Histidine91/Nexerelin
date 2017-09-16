@@ -47,8 +47,8 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 		defenders.setLocation(entity.getLocation().x, entity.getLocation().y);
 		
 		final FleetInteractionDialogPluginImpl.FIDConfig config = new FleetInteractionDialogPluginImpl.FIDConfig();
-		config.leaveAlwaysAvailable = true;
-		config.showFleetAttitude = false;
+		//config.leaveAlwaysAvailable = true;
+		//config.showFleetAttitude = false;
 		config.showTransponderStatus = false;
 		config.showWarningDialogWhenNotHostile = false;
 		config.alwaysAttackVsAttack = false;
