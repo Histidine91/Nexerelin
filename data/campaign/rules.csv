@@ -385,6 +385,7 @@ ExerelinMarketInvadeOption,ExerelinMarketSpecial,"IsValidInvasionTarget
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"$menuState = invasion 0
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 PredictInvasionResults false
+Nex_PrepareResponseFleet false
 FireAll ExerelinInvadeListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
 ExerelinInvadeListOptionsMain,ExerelinInvadeListOptions,,SetShortcut exerelinInvasionCancel ESCAPE,,"1:exerelinInvasionProceed:Proceed
 2:exerelinInvasionHelp:Consult a help file
@@ -414,12 +415,13 @@ ExerelinInvasionDone,DialogOptionSelected,"$option == exerelinInvasionDone
 $hasMarket",Exerelin_LootMarket false,,,
 ExerelinInvasionLeave,DialogOptionSelected,$option == exerelinInvasionLeave,DismissDialog,,,
 ,,,,,,
-#ExerelinInvasionProceedDefenders,DialogOptionSelected,"$option == exerelinInvasionProceed
+ExerelinInvasionProceedDefenders,DialogOptionSelected,"$option == exerelinInvasionProceed
 $market.hasDefenders","$global.nex_dialog_invading = true
 Nex_InvasionDefenseInteraction false","As your $shipOrFleet moves in closer, the response fleet scrambles from $market. It's clear they won't let you go further without a fight.",,
-ExerelinInvasionPostDefenders,BeatDefendersContinue,$global.nex_dialog_invading,"$menuState = exerelinSpecial
-FireAll ExerelinMarketSpecialInitialize
-FireAll ExerelinMarketSpecial",Your $shipOrFleet neutralizes the response fleet and is ready for further action.,exerelinMarketSpecial:Continue,
+ExerelinInvasionPostDefenders,BeatDefendersContinue,$global.nex_dialog_invading,"$menuState = invasion 0
+ShowVisual ""graphics/illustrations/quartermaster.jpg""
+SetPromptText ""You decide to...""
+FireAll ExerelinInvadeListOptions",Your $shipOrFleet neutralizes the response fleet and is ready to invade $market.,exerelinMarketSpecial:Continue,
 ,,,,,,
 ,,,,,,
 ,,,,,,

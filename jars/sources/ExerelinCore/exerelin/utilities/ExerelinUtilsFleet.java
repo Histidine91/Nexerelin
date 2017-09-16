@@ -100,25 +100,28 @@ public class ExerelinUtilsFleet
 	{
 		int points = 0;
 		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
-		{		
-			ShipAPI.HullSize size = member.getHullSpec().getHullSize();
-			switch (size) {
-				case CAPITAL_SHIP:
-					points += 8;
-					break;
-				case CRUISER: 
-					points += 4;
-					break;
-				case DESTROYER: 
-					points += 2;
-					break;
-				case FIGHTER:
-				case FRIGATE:
-					points += 1;
-					break;
-			}
+		{
+			points += getFleetGenPoints(member);
 		}
 		return points;
+	}
+	
+	public static int getFleetGenPoints(FleetMemberAPI member)
+	{
+		ShipAPI.HullSize size = member.getHullSpec().getHullSize();
+		switch (size) {
+			case CAPITAL_SHIP:
+				return 8;
+			case CRUISER: 
+				return 4;
+			case DESTROYER: 
+				return 2;
+			case FIGHTER:
+			case FRIGATE:
+				return 1;
+			default:
+				return 1;
+		}
 	}
 	
 	// taken from SS+

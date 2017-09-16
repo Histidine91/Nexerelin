@@ -33,8 +33,6 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
     private static final float RESERVE_MARKET_STABILITY_DIVISOR = 5f;
     private static final float INITIAL_RESERVE_SIZE_MULT = 0.75f;
     public static final float MIN_FP_TO_SPAWN = 5f;
-    protected static final float REVENGE_FLEET_BASE_SIZE = 75;
-    protected static final float REVENGE_GROWTH_MULT = 0.25f;
     
     protected Map<String, Float> revengeStrength = new HashMap<>();
     protected Map<String, Float> reserves = new HashMap<>();

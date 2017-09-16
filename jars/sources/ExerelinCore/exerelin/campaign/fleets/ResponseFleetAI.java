@@ -112,7 +112,7 @@ public class ResponseFleetAI implements EveryFrameScript
             Script despawnScript = new Script() {
                 @Override
                 public void run() {
-                    float points = fleet.getFleetPoints() * RESERVE_RESTORE_EFFICIENCY;
+                    float points = ExerelinUtilsFleet.getFleetGenPoints(fleet) * RESERVE_RESTORE_EFFICIENCY;
                     log.info("Response fleet despawning at base " + data.source.getName() + "; can restore " + points + " points");
                     ResponseFleetManager.modifyReserveSize(data.sourceMarket, points);
                 }

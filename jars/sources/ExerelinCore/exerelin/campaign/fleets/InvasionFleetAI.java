@@ -143,7 +143,8 @@ public class InvasionFleetAI implements EveryFrameScript
                     InvasionRound.InvasionRoundResult result = InvasionRound.AttackMarket(fleet, data.target, false);
 					if (result.success)
 					{
-						data.event.endEvent(InvasionFleetEvent.FleetReturnReason.MISSION_COMPLETE, data.target);
+						if (data.event != null)
+							data.event.endEvent(InvasionFleetEvent.FleetReturnReason.MISSION_COMPLETE, data.target);
 						data.targetMarket.getMemoryWithoutUpdate().unset("$beingInvaded");
 					}
 				}
@@ -222,7 +223,7 @@ public class InvasionFleetAI implements EveryFrameScript
                     despawnScript = new Script() {
                         @Override
                         public void run() {
-                            float points = fleet.getFleetPoints() * RESERVE_CONVERSION_EFFICIENCY;
+                            float points = ExerelinUtilsFleet.getFleetGenPoints(fleet) * RESERVE_CONVERSION_EFFICIENCY;
                             log.info("Invasion fleet despawning at target " + data.target.getName() + "; can restore " + points + " points");
                             ResponseFleetManager.modifyReserveSize(data.targetMarket, points);
                         }

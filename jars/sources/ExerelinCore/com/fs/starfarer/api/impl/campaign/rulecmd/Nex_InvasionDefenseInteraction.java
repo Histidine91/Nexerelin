@@ -1,7 +1,6 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
@@ -14,12 +13,12 @@ import com.fs.starfarer.api.combat.BattleCreationContext;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
-import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.FleetAdvanceScript;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.fleets.DefenceFleetAI;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.campaign.fleets.ResponseFleetAI;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.List;
@@ -47,7 +46,7 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 		defenders.setLocation(entity.getLocation().x, entity.getLocation().y);
 		
 		final FleetInteractionDialogPluginImpl.FIDConfig config = new FleetInteractionDialogPluginImpl.FIDConfig();
-		//config.leaveAlwaysAvailable = true;
+		config.leaveAlwaysAvailable = isRaid;
 		//config.showFleetAttitude = false;
 		config.showTransponderStatus = false;
 		config.showWarningDialogWhenNotHostile = false;
@@ -138,9 +137,28 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 					// deduct response fleet points now that fleet has spawned and is permanent (or dead)
 					if (!isRaid && context.isEngagedInHostilities())
 					{
-						float pointsToDeduct = ExerelinUtilsFleet.getFleetGenPoints(defenders);
+						float pointsToDeduct = 0;
+						List<FleetMemberAPI> snapshot = defenders.getFleetData().getSnapshot();
+						for (FleetMemberAPI member : snapshot)
+						{
+							float memberPts = ExerelinUtilsFleet.getFleetGenPoints(member);
+
+							// spawned, or killed
+							if (!context.didPlayerWinEncounter() || !defenders.getMembersWithFightersCopy().contains(member))
+							{
+								//Global.getLogger(this.getClass()).info(member.getShipName() + " is spawned/dead, worth " + memberPts);
+								pointsToDeduct += memberPts;
+							}
+							// survived and did not spawn
+							else
+							{
+								//Global.getLogger(this.getClass()).info(member.getShipName() + " is unspawned, worth " + (1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts);
+								pointsToDeduct += (1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts;
+							}
+						}				
+						
 						Global.getLogger(this.getClass()).info("Removing " + pointsToDeduct + " reserve points from " + market.getName());
-						ResponseFleetManager.modifyReserveSize(market, pointsToDeduct);
+						ResponseFleetManager.modifyReserveSize(market, -pointsToDeduct);
 					}
 					// TODO: figure out what to do with stations
 					
@@ -150,9 +168,9 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 			}
 			@Override
 			public void battleContextCreated(InteractionDialogAPI dialog, BattleCreationContext bcc) {
-				bcc.aiRetreatAllowed = false;
+				//bcc.aiRetreatAllowed = false;
 				//bcc.objectivesAllowed = false;
-				bcc.enemyDeployAll = true;
+				//bcc.enemyDeployAll = true;
 			}
 		};
 		
