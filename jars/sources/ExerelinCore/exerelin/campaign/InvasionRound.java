@@ -296,10 +296,12 @@ public class InvasionRound {
 		}
 		
 		if (success) {
-			ExerelinUtilsMarket.destroyAllCommodityStocks(market, 
-					COMMODITY_DESTRUCTION_MULT_SUCCESS, COMMODITY_DESTRUCTION_VARIANCE);
 			float lootMult = COMMODITY_LOOT_MULT;
 			if (isRaid) lootMult *= Math.min(2, result.attackerStrength/result.defenderStrength - 1);
+			float destroyMult = lootMult / COMMODITY_LOOT_MULT;
+			
+			ExerelinUtilsMarket.destroyAllCommodityStocks(market, 
+					COMMODITY_DESTRUCTION_MULT_SUCCESS * destroyMult, COMMODITY_DESTRUCTION_VARIANCE);
 			
 			result.loot = ExerelinUtilsMarket.getAllCommodityPartialStocks(market,
 					lootMult, COMMODITY_LOOT_VARIANCE, true, true);
