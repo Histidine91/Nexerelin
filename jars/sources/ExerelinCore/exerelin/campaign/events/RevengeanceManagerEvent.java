@@ -106,6 +106,8 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 	public void addFactionPoints(String factionId, float points)
 	{
 		if (!isRevengeanceEnabled()) return;
+		if (factionPoints == null)
+			factionPoints = new HashMap<>();
 		if (!factionPoints.containsKey(factionId))
 		{
 			factionPoints.put(factionId, 0f);
@@ -159,6 +161,9 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 	 */
 	public void advanceVengeanceStage(String factionId)
 	{
+		if (factionVengeanceStage == null)
+			factionVengeanceStage = new HashMap<>();
+		
 		if (!factionVengeanceStage.containsKey(factionId))
 		{
 			factionVengeanceStage.put(factionId, 0);
@@ -185,6 +190,9 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 	
 	public int getCurrentVengeanceStage(String factionId)
 	{
+		if (factionVengeanceStage == null)
+			factionVengeanceStage = new HashMap<>();
+		
 		if (!factionVengeanceStage.containsKey(factionId))
 		{
 			factionVengeanceStage.put(factionId, -1);
