@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.ActionType;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -121,6 +122,7 @@ public class Exerelin_NotifyInvasion extends BaseCommandPlugin {
 		List<CampaignFleetAPI> fleets = target.getContainingLocation().getFleets();
 		for (CampaignFleetAPI fleet : fleets) {
 			if (fleet == exclude) continue;
+			if (!fleet.getFaction().isHostileTo(Factions.PLAYER)) continue;
 			if (fleet.getAI() instanceof CampaignFleetAIAPI) {
 				float dist = Misc.getDistance(target.getLocation(), fleet.getLocation());
 				if (dist <= range) {
