@@ -310,7 +310,7 @@ public class InvasionRound {
 					COMMODITY_DESTRUCTION_MULT_FAILURE, COMMODITY_DESTRUCTION_VARIANCE);
 		}
 		
-		ExerelinUtilsMarket.refreshMarket(market, true);
+		//ExerelinUtilsMarket.refreshMarket(market, true);
 		
 		CargoAPI attackerCargo = attacker.getCargo();
 		attackerCargo.removeMarines(result.marinesLost);

@@ -111,7 +111,7 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 		
 		ResponseFleetManager.modifyReserveSize(market, -999);
 		
-		ExerelinUtilsMarket.refreshMarket(market, true);
+		//ExerelinUtilsMarket.refreshMarket(market, true);
 		
 		Global.getSoundPlayer().playUISound("ii_titan_explode_close", 1, 1);
 		

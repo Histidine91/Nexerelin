@@ -123,6 +123,7 @@ public class ExerelinUtilsMarket {
 	}
 	
 	// the fancy bits are adapted from LazyWizard's Console Commands
+	@Deprecated
 	public static void refreshMarket(MarketAPI market, boolean force)
 	{
 		if (market.getFactionId().equals("templars"))	// doesn't work on Templars, sorry
