@@ -416,7 +416,8 @@ $hasMarket",Exerelin_LootMarket false,,,
 ExerelinInvasionLeave,DialogOptionSelected,$option == exerelinInvasionLeave,DismissDialog,,,
 ,,,,,,
 ExerelinInvasionProceedDefenders,DialogOptionSelected,"$option == exerelinInvasionProceed
-$market.hasDefenders","$global.nex_dialog_invading = true
+$market.hasDefenders","$global.nex_dialog_invading = true 0
+unset $global.nex_dialog_raiding
 Nex_InvasionDefenseInteraction false","As your $shipOrFleet moves in closer, the response fleet scrambles from $market. It's clear they won't let you go further without a fight.",,
 ExerelinInvasionPostDefenders,BeatDefendersContinue,$global.nex_dialog_invading,"$menuState = invasion 0
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
@@ -526,7 +527,8 @@ AdjustRep $faction.id COMBAT_NORMAL
 ExecuteInvasionRound true
 FireBest ExerelinRaidResults",RAID OUTCOME:,,
 ExerelinRaidProceedDefenders,DialogOptionSelected,"$option == exerelinRaidProceed
-$market.hasDefenders","$global.nex_dialog_raiding = true
+$market.hasDefenders","$global.nex_dialog_raiding = true 0
+unset $global.nex_dialog_invading
 Nex_InvasionDefenseInteraction true","As your $shipOrFleet moves in closer, a defence fleet scrambles from $market. It's clear they won't let you go further without a fight.",,
 ExerelinRaidPostDefenders,BeatDefendersContinue,$global.nex_dialog_raiding,"$menuState = raid 0
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
@@ -568,7 +570,7 @@ unset $player.raidTarget
 FireAll PopulateOptions",This isn't a valid raid target!,,
 #ExerelinRaidInterupted,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinRaidInterrupted","unset $global.exerelinRaidInterrupted
-unset $player.RaidTarget
+unset $player.raidTarget
 $menuState = main 0
 FireBest MarketPostOpen",Your raid was interrupted.,,
 #ExerelinInitRaidInProgress,ExerelinInitInvadeDialog,"$hasMarket
