@@ -62,6 +62,7 @@ public class ExerelinConfig
     public static float invasionPointsPerPlayerLevel = 1f;
     public static float invasionPointEconomyMult = 1f;
     public static float conquestMissionRewardMult = 1f;
+	public static float invasionLootMult = 0.05f;
     
     // Alliances
     public static float allianceGracePeriod = 30;
@@ -156,6 +157,7 @@ public class ExerelinConfig
             invasionPointsPerPlayerLevel = (float)settings.optDouble("invasionPointsPerPlayerLevel ", invasionPointsPerPlayerLevel );
             invasionPointEconomyMult = (float)settings.optDouble("invasionPointEconomyMult", invasionPointEconomyMult);
             conquestMissionRewardMult = (float)settings.optDouble("conquestMissionRewardMult", conquestMissionRewardMult);
+            invasionLootMult = (float)settings.optDouble("invasionLootMult", invasionLootMult);
             
             allianceGracePeriod = (float)settings.optDouble("allianceGracePeriod", allianceGracePeriod);
             allianceFormationInterval = (float)settings.optDouble("allianceFormationInterval", allianceFormationInterval);
