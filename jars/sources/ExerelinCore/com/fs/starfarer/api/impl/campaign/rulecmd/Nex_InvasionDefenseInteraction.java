@@ -143,17 +143,17 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 						{
 							float memberPts = ExerelinUtilsFleet.getFleetGenPoints(member);
 
-							// spawned, or killed
+							// fleet spawned, or member killed
 							if (!context.didPlayerWinEncounter() || !defenders.getMembersWithFightersCopy().contains(member))
 							{
 								//Global.getLogger(this.getClass()).info(member.getShipName() + " is spawned/dead, worth " + memberPts);
 								pointsToDeduct += memberPts;
 							}
-							// survived and did not spawn
+							// member survived, fleet did not spawn
 							else
 							{
 								//Global.getLogger(this.getClass()).info(member.getShipName() + " is unspawned, worth " + (1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts);
-								pointsToDeduct += (1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts;
+								pointsToDeduct += memberPts;	//(1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts;
 							}
 						}				
 						
