@@ -45,6 +45,7 @@ public class Exerelin_LootMarket extends BaseCommandPlugin {
 			options.clearOptions();
 			dialog.setPromptText("");
 		} else {
+			dialog.dismiss();
 		}
 		
 		return true;
