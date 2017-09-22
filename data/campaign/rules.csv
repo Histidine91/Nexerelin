@@ -416,10 +416,9 @@ $hasMarket",Exerelin_LootMarket false,,,
 ExerelinInvasionLeave,DialogOptionSelected,$option == exerelinInvasionLeave,DismissDialog,,,
 ,,,,,,
 ExerelinInvasionProceedDefenders,DialogOptionSelected,"$option == exerelinInvasionProceed
-$market.hasDefenders","$global.nex_dialog_invading = true 0
-unset $global.nex_dialog_raiding
-Nex_InvasionDefenseInteraction false","As your $shipOrFleet moves in closer, the response fleet scrambles from $market. It's clear they won't let you go further without a fight.",,
-ExerelinInvasionPostDefenders,BeatDefendersContinue,$global.nex_dialog_invading,"$menuState = invasion 0
+$market.hasDefenders","$global.nex_afterBattleMode = ""invasion"" 0
+Nex_InvasionDefenseInteraction false","As your $shipOrFleet moves in closer, the response fleet scrambles from $market. The only way is through them.",,
+ExerelinInvasionPostDefenders,BeatDefendersContinue,"$global.nex_afterBattleMode == ""invasion""","$menuState = invasion 0
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 SetPromptText ""You decide to...""
 FireAll ExerelinInvadeListOptions",Your $shipOrFleet neutralizes the response fleet and is ready to invade $market.,exerelinMarketSpecial:Continue,
@@ -527,10 +526,9 @@ AdjustRep $faction.id COMBAT_NORMAL
 ExecuteInvasionRound true
 FireBest ExerelinRaidResults",RAID OUTCOME:,,
 ExerelinRaidProceedDefenders,DialogOptionSelected,"$option == exerelinRaidProceed
-$market.hasDefenders","$global.nex_dialog_raiding = true 0
-unset $global.nex_dialog_invading
+$market.hasDefenders","$global.nex_afterBattleMode = ""raid"" 0
 Nex_InvasionDefenseInteraction true","As your $shipOrFleet moves in closer, a defence fleet scrambles from $market. It's clear they won't let you go further without a fight.",,
-ExerelinRaidPostDefenders,BeatDefendersContinue,$global.nex_dialog_raiding,"$menuState = raid 0
+ExerelinRaidPostDefenders,BeatDefendersContinue,"$global.nex_afterBattleMode == ""raid""","$menuState = raid 0
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
 SetPromptText ""You decide to...""
 FireAll ExerelinRaidListOptions",Your $shipOrFleet neutralizes the defence fleet and is ready to continue with the raid.,,
@@ -538,10 +536,10 @@ ExerelinRaidDone,DialogOptionSelected,"$option == exerelinRaidDone
 $hasMarket",Exerelin_LootMarket true,,,
 ExerelinRaidLeave,DialogOptionSelected,$option == exerelinRaidLeave,DismissDialog,,,
 ,,,,,,
-ExerelinRaidOpen,OpenInteractionDialog,"$hasMarket
+#ExerelinRaidOpen,OpenInteractionDialog,"$hasMarket
 $id == $player.raidTarget","ExerelinShowDefaultVisual
 FireBest ExerelinInitRaidDialog",,,
-ExerelinRaidRoundComplete,ExerelinInitRaidDialog,"$hasMarket
+#ExerelinRaidRoundComplete,ExerelinInitRaidDialog,"$hasMarket
 $global.exerelinRaidComplete score:100","ExecuteInvasionRound true
 FireBest ExerelinRaidResults",,,
 ExerelinRaidResultsComplete,ExerelinRaidResults,$exerelinRaidSuccessful,"$menuState = exerelin_raid 0
@@ -980,70 +978,40 @@ NGCDoesFactionExist interstellarimperium
 SetTooltip exerelinSuperweapon ""You have no ships capable of performing this action.""",,1:exerelinSuperweapon:Deploy planetbreaker,
 ExerelinSuperweaponPrompt,DialogOptionSelected,$option == exerelinSuperweapon,"$menuState = superweapon 0
 Exerelin_ShowShipVisual $bestSuperweapon
+Nex_PrepareResponseFleet true
 SetShortcut exerelinSuperweaponProceed RETURN
-SetShortcut exerelinSuperweaponCancel ESCAPE","You can use a superweapon on $market to cause massive devastation, clearing the way for an invasion. This will take about half a day, during which the response fleet will try to stop you.
+SetShortcut exerelinSuperweaponCancel ESCAPE","You can use a superweapon on $market to cause massive devastation, clearing the way for an invasion. Expect the enemy to try to stop you.
 
 Be warned of the political repercussions.","1:exerelinSuperweaponProceed:Continue
 2:exerelinSuperweaponCancel:Cancel",
-ExerelinSuperweaponCancel,DialogOptionSelected,"$option == exerelinSuperweaponCancel
-$hasMarket","ShowDefaultVisual
+ExerelinSuperweaponCancel,DialogOptionSelected,$option == exerelinSuperweaponCancel,"ShowDefaultVisual
 FireAll ExerelinMarketSpecial",,,
 ,,,,,,
 ExerelinSuperweaponProceed,DialogOptionSelected,"$option == exerelinSuperweaponProceed
-$hasMarket ","Wait $global.exerelinSuperweaponWait 0.5 $global.exerelinSuperweaponComplete $global.exerelinSuperweaponInterrupted $global.exerelinSuperweaponInProgress ""Deploying superweapon!""
-BroadcastPlayerWaitAction $global.exerelinSuperweaponWait HOSTILE 750 $exerelinRespondingToSuperweapon
-MakePlayerImmediatelyAttackable
-TriggerResponseFleet
-$player.superweaponTarget = $id 1.01
-CreateWarmongerEvent $faction.id
-AdjustRep $faction.id COMBAT_NORMAL",,,
-ExerelinSuperweaponLeave,DialogOptionSelected,"$option == exerelinSuperweaponLeave
-$hasMarket",DismissDialog,,,
-,,,,,,
-ExerelinSuperweaponOpen,OpenInteractionDialog,"$hasMarket
-$id == $player.superweaponTarget","ExerelinShowDefaultVisual
+!$market.hasDefenders","CreateWarmongerEvent $faction.id
+AdjustRep $faction.id COMBAT_NORMAL
 Exerelin_UseSuperweapon
-$menuState = superweapon 0
-FireBest ExerelinInitSuperweaponDialog",,,
-ExerelinSuperweaponFired,ExerelinInitSuperweaponDialog,"$hasMarket
-$global.exerelinSuperweaponComplete score:100
-$superweaponSuccess","ShowVisual ""graphics/illustrations/facility_explosion.jpg""
-unset $player.superweaponTarget
+FireBest ExerelinSuperweaponDialog",,,
+ExerelinSuperweaponProceedDefenders,DialogOptionSelected,"$option == exerelinSuperweaponProceed
+$market.hasDefenders","$global.nex_afterBattleMode = ""superweapon"" 0
+Nex_InvasionDefenseInteraction true","As your $shipOrFleet moves in closer, a defence fleet scrambles from $market. You'll need to fight your way through them to deploy your superweapon.",,
+ExerelinSuperweaponPostDefenders,BeatDefendersContinue,"$global.nex_afterBattleMode == ""superweapon""","$menuState = superweapon 0
+Exerelin_ShowShipVisual $bestSuperweapon
+SetPromptText ""You decide to...""
+SetShortcut exerelinSuperweaponProceed RETURN
+SetShortcut exerelinSuperweaponCancel ESCAPE",Your $shipOrFleet neutralizes the response fleet and is ready to deploy your superweapon.,"1:exerelinSuperweaponProceed:Continue
+2:exerelinSuperweaponCancel:Cancel",
+ExerelinSuperweaponLeave,DialogOptionSelected,$option == exerelinSuperweaponLeave,DismissDialog,,,
+,,,,,,
+ExerelinSuperweaponFired,ExerelinSuperweaponDialog,$superweaponSuccess,"ShowVisual ""graphics/illustrations/facility_explosion.jpg""
 SetShortcut exerelinSuperweaponLeave ESCAPE",,exerelinSuperweaponLeave:Leave,
-ExerelinSuperweaponFiredAscalon,ExerelinInitSuperweaponDialog,"$hasMarket
-$global.exerelinSuperweaponComplete score:100
-$id == tem_ascalon score:100
-$superweaponSuccess","unset $player.superweaponTarget
+ExerelinSuperweaponFiredAscalon,ExerelinSuperweaponDialog,"$id == tem_ascalon score:100
+$superweaponSuccess","ShowDefaultVisual
 SetShortcut exerelinSuperweaponLeave ESCAPE","The missile hits a shield several hundred meters short of the ground and detonates in a brilliant flash. When it clears, the rocky ground beneath is visibly scorched, but no real damage has been inflicted.
 
 In hindsight, trying to bomb a hardened underground installation protected by Templar technology probably wasn't the best idea.",exerelinSuperweaponLeave:Leave,
-ExerelinSuperweaponFiredNoneAvailable,ExerelinInitSuperweaponDialog,!$superweaponSuccess score:999,"unset $player.superweaponTarget
-FireAll PopulateOptions",You do not have a superweapon available to fire!,,
-ExerelinSuperweaponFiredCancel,ExerelinInitSuperweaponDialog,$exerelinSuperweaponCancelled score:100,"unset $player.superweaponTarget
-FireAll PopulateOptions",This isn't a valid superweapon target!,,
-ExerelinSuperweaponInterupted,ExerelinInitSuperweaponDialog,"$hasMarket
-$global.exerelinSuperweaponInterrupted","unset $global.exerelinSuperweaponInterrupted
-unset $player.superweaponTarget
-$menuState = main 0
-FireBest MarketPostOpen",Your superweapon deployment was interrupted.,,
-ExerelinInitSuperweaponInProgress,ExerelinInitSuperweaponDialog,"$hasMarket
-$global.exerelinSuperweaponInProgress
-!$global.exerelinSuperweaponInterrupted
-!$global.exerelinSuperweaponRoundComplete",,You're currently using a superweapon on $entityName.,,
-ExerelinSuperweaponInterference_start,BeginFleetEncounter,"$exerelinRespondingToSuperweapon score:100
-$global.exerelinSuperweaponInProgress score:20","AbortWait $global.exerelinSuperweaponWait
-MakeOtherFleetHostile true
-MakeOtherFleetAggressive true
-unset $entity.ignorePlayerCommRequests
-unset $player.superweaponTarget
-BroadcastCancelPlayerAction 1500 $exerelinRespondingToSuperweapon",The appearance of a $faction $otherShipOrFleet disrupts your superweapon deployment.,,
-ExerelinSuperweaponInterference_cancelledAndRan,BeginFleetEncounter,"$exerelinRespondingToInvasion score:100
-$faction.hostileToPlayer","MakeOtherFleetHostile true
-MakeOtherFleetAggressive true
-unset $entity.ignorePlayerCommRequests
-unset $player.superweaponTarget
-BroadcastCancelPlayerAction 1500 $exerelinRespondingToSuperweapon","The $faction $otherShipOrFleet catches up with you, weapons hot.",,
-ExerelinDialogSuperweaponInterference_open,OpenCommLink,$entity.exerelinRespondingToSuperweapon score:100,$entity.ignorePlayerCommRequests = true 0,"$PersonRank $personName glares hatefully at you. ""We won't let you use your abominable weapons on our people!""",continueCutComm:Continue,
+ExerelinSuperweaponFiredNoneAvailable,ExerelinSuperweaponDialog,!$superweaponSuccess score:999,FireAll PopulateOptions,Superweapon deployment failed!,,
+,,,,,,
 #END SUPERWEAPON OPTIONS,,,,,,
 ,,,,,,
 #START MINING OPTIONS,,,,,,
