@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.StatsTracker;
 import exerelin.campaign.events.SuperweaponEvent;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
 
 public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 	
@@ -118,6 +120,15 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 		// lock out of market
 		MemoryAPI memMarket= memoryMap.get(MemKeys.MARKET);
 		memMarket.set(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET, true, 180);
+		
+		// orphans
+		String defenderFactionId = market.getFactionId();
+		if (!defenderFactionId.equals("spire") &&  !defenderFactionId.equals("darkspire"))
+		{
+			float deathsInflicted = 12 * (int)Math.pow(5, market.getSize());
+			float survivingKidMult = 0.02f + MathUtils.getRandomNumberInRange(0.02f, 0.04f);
+			StatsTracker.getStatsTracker().modifyOrphansMade((int)(deathsInflicted * survivingKidMult));
+		}
 		
 		// print results
 		TextPanelAPI text = dialog.getTextPanel();

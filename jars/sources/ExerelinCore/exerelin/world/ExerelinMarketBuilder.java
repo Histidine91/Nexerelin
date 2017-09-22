@@ -24,6 +24,7 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.ExerelinProcGen.EntityType;
@@ -431,9 +432,9 @@ public class ExerelinMarketBuilder
 		
 		int numSpecial = 0;
 		if (size == 2) numSpecial = 0;
-		else if (size <= 4) numSpecial = ExerelinUtils.randomNextIntInclusive(random, 1);
-		else if (size <= 6) numSpecial = ExerelinUtils.randomNextIntInclusive(random, 1) + ExerelinUtils.randomNextIntInclusive(random, 1);
-		else if (size <= 8) numSpecial = 1 + ExerelinUtils.randomNextIntInclusive(random, 1);
+		else if (size <= 4) numSpecial = NexUtilsMath.randomNextIntInclusive(random, 1);
+		else if (size <= 6) numSpecial = NexUtilsMath.randomNextIntInclusive(random, 1) + NexUtilsMath.randomNextIntInclusive(random, 1);
+		else if (size <= 8) numSpecial = 1 + NexUtilsMath.randomNextIntInclusive(random, 1);
 		else numSpecial = 2;
 		
 		for (int i=0; i<numSpecial; i++)

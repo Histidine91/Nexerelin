@@ -15,11 +15,11 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +27,7 @@ import java.util.Map;
 public class SuperweaponEvent extends BaseEventPlugin {
 
 	public static final float DAYS_PER_STAGE = 20f;
-	public static final float REPUTATION_PENALTY_BASE = 0.02f;
+	public static final float REPUTATION_PENALTY_BASE = 0.03f;
 	
 	protected float elapsedDays = 0f;
 	protected int stabilityPenalty = 0;
@@ -128,11 +128,17 @@ public class SuperweaponEvent extends BaseEventPlugin {
 	
 	public void reportSuperweaponUse(CampaignFleetAPI attackingFleet) {
 		String stage = "weaponUsed";
-		FactionAPI attackerFaction = attackingFleet.getFaction();
-		FactionAPI targetFaction = market.getFaction();
+		final FactionAPI attackerFaction;
+		final FactionAPI targetFaction = market.getFaction();
 		String targetFactionId = market.getFactionId();
 		final Map<String, Float> repLossThirdParty = new HashMap<>();
 		
+		int marketSizeForRep = market.getSize();
+		if (marketSizeForRep <= 2) marketSizeForRep = 2;
+		if (marketSizeForRep > 8) marketSizeForRep = 8;
+		
+		// if player was the superweapon user, determine reputation loss with other factions
+		// (and set other relevant variables accordingly)
 		if (attackingFleet == Global.getSector().getPlayerFleet()) {
 			stage += "_player";
 			wasPlayer = true;
@@ -149,7 +155,8 @@ public class SuperweaponEvent extends BaseEventPlugin {
 				if (targetFaction.isHostileTo(factionId)) continue;
 				if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID) || factionId.equals(playerAlignedFactionId))
 					continue;
-
+				
+				// non-victim reputation loss is based on their relationship with the victim
 				float loss = REPUTATION_PENALTY_BASE;
 				float repMult = 0;
 				RepLevel level = targetFaction.getRelationshipLevel(factionId);
@@ -162,13 +169,13 @@ public class SuperweaponEvent extends BaseEventPlugin {
 				else if (level == RepLevel.FAVORABLE)
 					repMult = 0.4f;
 				else if (level == RepLevel.NEUTRAL)
-					repMult = 0.2f;
+					repMult = 0.25f;
 				else if (level == RepLevel.SUSPICIOUS)
-					repMult = 0.1f;
+					repMult = 0.15f;
 				else if (level == RepLevel.INHOSPITABLE)
-				    repMult = 0.05f;
+				    repMult = 0.1f;
 
-				loss *= repMult * market.getSize();
+				loss *= repMult * NexUtilsMath.round(Math.pow(1.5, marketSizeForRep));
 				if (loss <= 0) continue;
 
 				numFactions++;
@@ -180,28 +187,35 @@ public class SuperweaponEvent extends BaseEventPlugin {
 			avgRepLoss = totalRepLoss/numFactions;
 		}
 		else {
+			attackerFaction = attackingFleet.getFaction();
 			wasPlayer = false;
 		}
 		
-		repPenalty = market.getSize() * REPUTATION_PENALTY_BASE * 2;
-		RepLevel worst = RepLevel.HOSTILE;
-		if (market.getSize() >= 5) worst = RepLevel.VENGEFUL;
+		// relationship loss with attacking faction (even if player wasn't the user)
+		repPenalty = (float)(NexUtilsMath.round(Math.pow(1.5, marketSizeForRep)) * 2f * REPUTATION_PENALTY_BASE);
+		final RepLevel worst = (market.getSize() >= 5) ? RepLevel.VENGEFUL : RepLevel.HOSTILE;
 		repPenalty = DiplomacyManager.adjustRelations(targetFaction, attackerFaction, -repPenalty, worst, null, null).delta;
 		
 		lastAttackerFaction = attackerFaction;
+		final boolean wasPlayerFinal = wasPlayer;
 		
 		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
 		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
 			public void beforeDelivery(CommMessageAPI message) {
-								Iterator<Map.Entry<String, Float>> iter = repLossThirdParty.entrySet().iterator();
-								while (iter.hasNext())
+								for (Map.Entry<String, Float> tmp : repLossThirdParty.entrySet())
                                 {
-									Map.Entry<String, Float> tmp = iter.next();
 									String factionId = tmp.getKey();
+									FactionAPI faction = Global.getSector().getFaction(factionId);
 									float loss = tmp.getValue();
-									ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, -loss);
+									// use adjustPlayerReputation instead of adjustRelations to print it in console
+									if (wasPlayerFinal)
+										ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, -loss);
+									else
+										DiplomacyManager.adjustRelations(faction, attackerFaction, -loss, null, null, worst);
+									
                                 }
-								ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+								if (wasPlayerFinal)
+									ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
 			}
 		});	
 	}

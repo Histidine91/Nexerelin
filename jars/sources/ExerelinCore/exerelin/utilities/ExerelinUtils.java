@@ -26,27 +26,6 @@ public class ExerelinUtils
 		String seedStr = Global.getSector().getSeedString().replaceAll("[^0-9]", "");
 		return Long.parseLong(seedStr);
 	}
-	
-	/**
-	 * Like Random.nextInt() except easier to read
-	 * @param rand
-	 * @param max
-	 * @return
-	 */
-	public static int randomNextIntInclusive(Random rand, int max)
-	{
-		return rand.nextInt(max + 1);
-	}
-
-	// rounds up or down with closer integer having a proportionally higher chance
-	public static int getRandomNearestInteger(float number)
-	{
-		if (number >= 0) {
-			return (int)(number + Math.random());
-		} else {
-			return (int)(number - Math.random());
-		}
-	}
 
 	public static Object getRandomArrayElement(Object[] array)
 	{
