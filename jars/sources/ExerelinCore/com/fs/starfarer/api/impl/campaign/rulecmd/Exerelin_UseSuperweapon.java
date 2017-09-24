@@ -12,7 +12,9 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.events.SuperweaponEvent;
@@ -125,7 +127,12 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 		String defenderFactionId = market.getFactionId();
 		if (!defenderFactionId.equals("spire") &&  !defenderFactionId.equals("darkspire"))
 		{
-			float deathsInflicted = 12 * (int)Math.pow(5, market.getSize());
+			float deathsInflicted = 6 * (int)Math.pow(5, market.getSize());
+			if (market.hasCondition(Conditions.URBANIZED_POLITY) || market.getPrimaryEntity().hasTag(Tags.STATION))
+				deathsInflicted *= 2;
+			else if (market.hasCondition(Conditions.RURAL_POLITY))
+				deathsInflicted = deathsInflicted*2/3;
+			
 			float survivingKidMult = 0.02f + MathUtils.getRandomNumberInRange(0.02f, 0.04f);
 			StatsTracker.getStatsTracker().modifyOrphansMade((int)(deathsInflicted * survivingKidMult));
 		}
