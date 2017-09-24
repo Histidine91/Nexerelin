@@ -1,9 +1,9 @@
 {
     "displayName": "Retrofitted",
-    "fluxCapacitors": 3,
-    "fluxVents": 6,
+    "fluxCapacitors": 5,
+    "fluxVents": 7,
     "hullId": "cerberus",
-    "hullMods": ["frontshield"],
+    "hullMods": ["frontshield", "targetingunit"],
     "quality": 0.6,
     "variantId": "cerberus_Retrofitted",
     "weaponGroups": [
