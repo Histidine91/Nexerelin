@@ -105,6 +105,13 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
             endEvent();
             return;
         }
+        
+        // fleet took too many losses, quit
+        if (fleet.getMemoryWithoutUpdate().contains("$startingFP") && fleet.getFleetPoints() < 0.4 * fleet.getMemoryWithoutUpdate().getFloat("$startingFP"))
+        {
+            endEvent();
+            return;
+        }
 
         /* Advance faster and faster if they lost you */
         float days = Global.getSector().getClock().convertToDays(amount);
@@ -435,6 +442,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
 
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "vengeanceFleet");
         fleet.getMemoryWithoutUpdate().set("$escalation", (float) escalationLevel);
+        fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
         fleet.setName(def.getFleetName(escalationLevel));
         switch (escalationLevel) {
             default:
