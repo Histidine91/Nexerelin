@@ -257,6 +257,7 @@
 	},
 	"exerelin_ngc":{
 		"added":"added",
+		#"shipString":"$shipClass-class $designation ($variantName)",
 		"shipString":"$shipClass-class $designation",
 		"fighterWingString":"$shipClass wing",
 		"gainedXP":"gained $xp XP",

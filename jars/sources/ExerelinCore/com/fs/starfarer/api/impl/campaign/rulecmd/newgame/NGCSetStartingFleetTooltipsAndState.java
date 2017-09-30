@@ -57,6 +57,7 @@ public class NGCSetStartingFleetTooltipsAndState extends BaseCommandPlugin {
 				FleetMemberAPI temp = Global.getFactory().createFleetMember(type, variantId);
 
 				String className = temp.getHullSpec().getHullName();
+				String variantName = temp.getVariant().getDisplayName().toLowerCase();
 				String designation = temp.getVariant().getDesignation().toLowerCase();
 				String tooltipLine;
 				if (type == FleetMemberType.FIGHTER_WING)
@@ -64,6 +65,7 @@ public class NGCSetStartingFleetTooltipsAndState extends BaseCommandPlugin {
 				else
 					tooltipLine = StringHelper.getString("exerelin_ngc", "shipString");
 				tooltipLine = StringHelper.substituteToken(tooltipLine, "$shipClass", className);
+				tooltipLine = StringHelper.substituteToken(tooltipLine, "$variantName", variantName);
 				tooltipLine = StringHelper.substituteToken(tooltipLine, "$designation", designation);
 				
 				tooltip += tooltipLine;
