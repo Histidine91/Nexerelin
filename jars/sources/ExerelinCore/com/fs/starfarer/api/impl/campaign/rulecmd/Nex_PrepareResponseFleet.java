@@ -11,8 +11,10 @@ import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
+import data.scripts.campaign.fleets.DS_FleetInjector;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.ResponseFleetManager;
+import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +92,13 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF, true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
+		
+		if (ExerelinModPlugin.HAVE_DYNASECTOR)
+		{
+			DS_FleetInjector.prepFleet(fleet);
+			DS_FleetInjector.injectFleet(fleet);
+			fleet.getMemoryWithoutUpdate().set("$dynasectorInjected", true);
+		}
 		
 		mem.set(defenderMemFlag, fleet, 3);
 		mem.set("$hasDefenders", true, 0);
