@@ -61,6 +61,7 @@ public class InvasionRound {
 	public static final float COMMODITY_DESTRUCTION_VARIANCE = 0.2f;
 	public static final float COMMODITY_LOOT_MULT = 0.05f;
 	public static final float COMMODITY_LOOT_VARIANCE = 0.2f;
+	public static final float RAID_LOOT_MULT_FLOOR = 0.25f;
 	public static final String LOOT_MEMORY_KEY = "$nex_invasionLoot";
 	
 	/**
@@ -298,7 +299,7 @@ public class InvasionRound {
 		if (success) {
 			float baseLootMult = ExerelinConfig.invasionLootMult;
 			float lootMult = baseLootMult;
-			if (isRaid) lootMult *= Math.min(1.75f, result.attackerStrength/result.defenderStrength - 1) + 0.25f;
+			if (isRaid) lootMult *= Math.min(1.75f, result.attackerStrength/result.defenderStrength - 1) + RAID_LOOT_MULT_FLOOR;
 			float destroyMult = lootMult / baseLootMult;
 			
 			ExerelinUtilsMarket.destroyAllCommodityStocks(market, 

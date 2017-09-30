@@ -73,16 +73,24 @@ public class PredictInvasionResults extends BaseCommandPlugin {
                 text.highlightInLastPara(red, "" + defenderStrengthStr);
 				if (isRaid)
 				{
-						float lootLevelLow = Math.min(2, worst.attackerStrength/worst.defenderStrength - 1);
-						float lootLevelHigh = Math.min(2, best.attackerStrength/best.defenderStrength - 1);
-						lootLevelLow = Math.max(lootLevelLow, 0);
-						lootLevelHigh = Math.max(lootLevelHigh, 0);
+						float lootLevelLow = Math.min(1.75f, worst.attackerStrength/worst.defenderStrength - 1);
+						float lootLevelHigh = Math.min(1.75f, best.attackerStrength/best.defenderStrength - 1);
+						if (worst.success)
+							lootLevelLow = Math.max(lootLevelLow, InvasionRound.RAID_LOOT_MULT_FLOOR);
+						else
+							lootLevelLow = Math.max(lootLevelLow, 0);
+						if (best.success)
+							lootLevelHigh = Math.max(lootLevelHigh, InvasionRound.RAID_LOOT_MULT_FLOOR);
+						else
+							lootLevelHigh = Math.max(lootLevelHigh, 0);
 						
 						float lootLevelAvg = (lootLevelLow + lootLevelHigh) * 0.5f;
 						String lootLevel = String.format("%.1f", lootLevelLow) + " – " + String.format("%.1f", lootLevelHigh);
 					
 						text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "lootRating")) + ": " + lootLevel );
-						if (lootLevelAvg < 0.7)
+						if (!worst.success)
+								text.highlightInLastPara(Misc.getNegativeHighlightColor(), "" + lootLevel);
+						else if (lootLevelAvg < 0.7)
 								text.highlightInLastPara(hl, "" + lootLevel);
 						else
 								text.highlightInLastPara(Misc.getPositiveHighlightColor(), "" + lootLevel);
