@@ -328,20 +328,27 @@ ExerelinNGCPickStartingShips,ExerelinNGCStep3,,"NGCSetStartingFleetTooltipsAndSt
 SetShortcut exerelinNGCFleetBack ESCAPE",Your starting fleet?,"1:exerelinNGCFleetSolo:Solo frigate
 2:exerelinNGCFleetCombatSmall:Light combat patrol
 3:exerelinNGCFleetTradeSmall:Small trade convoy
-4:exerelinNGCFleetCombatLarge:Upsized military unit
-5:exerelinNGCFleetTradeLarge:Larger mercantile train
-7:exerelinNGCFleetBack:Go back",
-ExerelinNGCPickStartingShipsReroll,ExerelinNGCStep3,$randomStartShips,,,6:exerelinNGCFleetReroll:[Reroll random ships],
+4:exerelinNGCFleetCarrierSmall:Escort carrier unit
+5:exerelinNGCFleetCombatLarge:Upsized military unit
+6:exerelinNGCFleetTradeLarge:Larger mercantile train
+7:exerelinNGCFleetCarrierLarge:Medium carrier force
+9:exerelinNGCFleetBack:Go back",
+ExerelinNGCPickStartingShipsReroll,ExerelinNGCStep3,$randomStartShips,,,8:exerelinNGCFleetReroll:[Reroll random ships],
 ExerelinNGCStartShipsSolo,NewGameOptionSelected,$option == exerelinNGCFleetSolo,"NGCAddStartingShipsByFleetType SOLO
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCStartShipsCombatSmall,NewGameOptionSelected,$option == exerelinNGCFleetCombatSmall,"NGCAddStartingShipsByFleetType COMBAT_SMALL
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCStartShipsTradeSmall,NewGameOptionSelected,$option == exerelinNGCFleetTradeSmall,"NGCAddStartingShipsByFleetType TRADE_SMALL
 FireBest ExerelinNGCStep4",,,
+ExerelinNGCStartShipsCarrierSmall,NewGameOptionSelected,$option == exerelinNGCFleetCarrierSmall,"NGCAddStartingShipsByFleetType CARRIER_SMALL
+FireBest ExerelinNGCStep4",,,
 ExerelinNGCStartShipsCombatLarge,NewGameOptionSelected,$option == exerelinNGCFleetCombatLarge,"NGCAddStartingShipsByFleetType COMBAT_LARGE
 FireBest ExerelinNGCStep4",,,
 ExerelinNGCStartShipsTradeLarge,NewGameOptionSelected,$option == exerelinNGCFleetTradeLarge,"NGCAddStartingShipsByFleetType TRADE_LARGE
 FireBest ExerelinNGCStep4",,,
+ExerelinNGCStartShipsCarrierLarge,NewGameOptionSelected,$option == exerelinNGCFleetCarrierLarge,"NGCAddStartingShipsByFleetType CARRIER_LARGE
+FireBest ExerelinNGCStep4",,,
+,,,,,,
 ExerelinNGCStartShipsReroll,NewGameOptionSelected,$option == exerelinNGCFleetReroll,NGCSetStartingFleetTooltipsAndState,,,
 ExerelinNGCStartShipsBack,NewGameOptionSelected,$option == exerelinNGCFleetBack,FireAll ExerelinNGCListFactions,,,
 ,,,,,,

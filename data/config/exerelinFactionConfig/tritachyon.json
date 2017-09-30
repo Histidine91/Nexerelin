@@ -30,5 +30,5 @@
     "startShipsCombatLargeSSP":["apogee_Balanced", "ssp_beholder_ass", "afflictor_Strike"],
     "startShipsTradeLarge":["starliner_Standard", "buffalo_tritachyon_Standard", "mercury_Standard"],
     "startShipsTradeLargeSSP":["ssp_circe_fis", "buffalo_tritachyon_Standard", "ssp_nautilus_str"],
-    
+    "startShipsCarrierSmallSSP":["ssp_vortex_sta", "tempest_Attack", "ssp_hecate_sup"],
 }

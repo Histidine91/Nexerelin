@@ -48,6 +48,7 @@ public class ExerelinFactionConfig
     // Fleet names
     public String asteroidMiningFleetName = StringHelper.getString("exerelin_fleets", "miningFleetName");
     public String gasMiningFleetName = StringHelper.getString("exerelin_fleets", "miningFleetName");
+    @Deprecated
     public String logisticsFleetName = "Logistics Convoy";	//StringHelper.getString("exerelin_fleets", "logisticsFleetName")
     public String invasionFleetName = StringHelper.getString("exerelin_fleets", "invasionFleetName");
     public String invasionSupportFleetName = StringHelper.getString("exerelin_fleets", "invasionSupportFleetName");
@@ -90,10 +91,10 @@ public class ExerelinFactionConfig
     public boolean allowAgentActions = true;
     public boolean allowPrisonerActions = true;
     
-	public List<String> vengeanceLevelNames = new ArrayList<>();
-	public List<String> vengeanceFleetNames = new ArrayList<>();
-	public List<String> vengeanceFleetNamesSingle = new ArrayList<>();
-	
+    public List<String> vengeanceLevelNames = new ArrayList<>();
+    public List<String> vengeanceFleetNames = new ArrayList<>();
+    public List<String> vengeanceFleetNamesSingle = new ArrayList<>();
+    
     public List<String> customStations = new ArrayList<>();
     
     public List<String> miningVariantsOrWings = new ArrayList<>();
@@ -225,8 +226,8 @@ public class ExerelinFactionConfig
                     }
                 }
             }
-			loadVengeanceNames(settings);
-			
+            loadVengeanceNames(settings);
+            
             loadStartShips(settings);
         } catch(IOException | JSONException ex)
         {
@@ -334,16 +335,16 @@ public class ExerelinFactionConfig
         if (settings.has(key))
             startShips.put(type, ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray(key)));
     }
-	
-	protected void loadVengeanceNames(JSONObject settings) throws JSONException
-	{
-		if (settings.has("vengeanceLevelNames"))
-			vengeanceLevelNames = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceLevelNames"));
-		if (settings.has("vengeanceFleetNames"))
-			vengeanceFleetNames = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceFleetNames"));
-		if (settings.has("vengeanceFleetNamesSingle"))
-			vengeanceFleetNamesSingle = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceFleetNamesSingle"));
-	}
+    
+    protected void loadVengeanceNames(JSONObject settings) throws JSONException
+    {
+        if (settings.has("vengeanceLevelNames"))
+            vengeanceLevelNames = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceLevelNames"));
+        if (settings.has("vengeanceFleetNames"))
+            vengeanceFleetNames = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceFleetNames"));
+        if (settings.has("vengeanceFleetNamesSingle"))
+            vengeanceFleetNamesSingle = ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray("vengeanceFleetNamesSingle"));
+    }
     
     protected void loadStartShips(JSONObject settings) throws JSONException
     {
@@ -357,6 +358,10 @@ public class ExerelinFactionConfig
         getStartShipTypeIfAvailable(settings, "startShipsCombatLargeSSP", StartFleetType.COMBAT_LARGE_SSP);
         getStartShipTypeIfAvailable(settings, "startShipsTradeLarge", StartFleetType.TRADE_LARGE);
         getStartShipTypeIfAvailable(settings, "startShipsTradeLargeSSP", StartFleetType.TRADE_LARGE_SSP);
+        getStartShipTypeIfAvailable(settings, "startShipsCarrierSmall", StartFleetType.CARRIER_SMALL);
+        getStartShipTypeIfAvailable(settings, "startShipsCarrierSmallSSP", StartFleetType.CARRIER_SMALL_SSP);
+        getStartShipTypeIfAvailable(settings, "startShipsCarrierLarge", StartFleetType.CARRIER_LARGE);
+        getStartShipTypeIfAvailable(settings, "startShipsCarrierLargeSSP", StartFleetType.CARRIER_LARGE_SSP);
     }
     
     /**
@@ -413,6 +418,11 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.FAST_ATTACK, 1);	// Martyr, sometimes Jesuit
             pickShipsAndAddToList(rolePicker, ships, true);
         }
+        else if (type == StartFleetType.CARRIER_LARGE || type == StartFleetType.CARRIER_LARGE_SSP)
+        {
+            rolePicker.add(ShipRoles.CARRIER_LARGE, 1);	// Archbishop (lol)
+            pickShipsAndAddToList(rolePicker, ships, true);
+        }
         return ships;
         
     }
@@ -465,6 +475,22 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
+        else if (type == StartFleetType.CARRIER_LARGE || type == StartFleetType.CARRIER_LARGE_SSP)
+        {
+            rolePicker.add(ShipRoles.CARRIER_MEDIUM, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.COMBAT_MEDIUM, 2);
+            rolePicker.add(ShipRoles.ESCORT_MEDIUM, 1);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
+            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+        }
         else if (type == StartFleetType.COMBAT_SMALL || type == StartFleetType.COMBAT_SMALL_SSP)
         {
             rolePicker.add(ShipRoles.COMBAT_MEDIUM, 2);
@@ -501,6 +527,23 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
+        else if (type == StartFleetType.CARRIER_SMALL || type == StartFleetType.CARRIER_SMALL_SSP)
+        {
+            rolePicker.add(ShipRoles.CARRIER_SMALL, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
+            rolePicker.add(ShipRoles.FAST_ATTACK, 1);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+            
+            rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
+            rolePicker.add(ShipRoles.ESCORT_SMALL, 2);
+            rolePicker.add(ShipRoles.FAST_ATTACK, 2);
+            rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
+            pickShipsAndAddToList(rolePicker, ships, true);
+        }
         else if (type == StartFleetType.SOLO || type == StartFleetType.SOLO_SSP)
         {
             rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
@@ -508,6 +551,7 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.FAST_ATTACK, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
+        
         return ships;
         
         // random fleet method: gives too many crappy little ships
@@ -639,7 +683,9 @@ public class ExerelinFactionConfig
         COMBAT_SMALL, COMBAT_SMALL_SSP,
         TRADE_SMALL, TRADE_SMALL_SSP,
         COMBAT_LARGE, COMBAT_LARGE_SSP,
-        TRADE_LARGE, TRADE_LARGE_SSP
+        TRADE_LARGE, TRADE_LARGE_SSP,
+        CARRIER_SMALL, CARRIER_SMALL_SSP,
+        CARRIER_LARGE, CARRIER_LARGE_SSP
     }
     
     public static enum Morality {GOOD, NEUTRAL, AMORAL, EVIL}

@@ -1,19 +1,16 @@
 {
-    "uniqueModClassName":"data.scripts.MetelsonModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true,
     "corvusCompatible":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Traitors", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Traitors",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "startRelationships":{},
     
     "alignments":{
         "corporate":0.5,
@@ -24,6 +21,7 @@
     "startShipsTradeSmall":["mi_varingur_standard", "mi_mite_standard", "mi_pala_standard"],
     "startShipsCombatLarge":["mi_mantarn_standard", "mi_securi_brawler", "mi_glima_attack"],
     "startShipsTradeLarge":["mi_grancursor_support", "buffalo_hegemony_Standard", "mi_vigilance_escort"],
+    "startShipsCarrierLarge":["mi_grancursor_assualt", "mi_varingur_standard", "mi_cavos_assualt"],
     
     "miningVariantsOrWings":["mi_pala_mining"]
 }

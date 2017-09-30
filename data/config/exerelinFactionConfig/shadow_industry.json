@@ -1,19 +1,17 @@
 {
-    "uniqueModClassName":"data.scripts.ShadowyardsModPlugin", # String
-    "playableFaction":true, # Boolean
+    "playableFaction":true,
     "corvusCompatible":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0, # Double
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Splinter Group", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Splinter Group",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "factionsLiked":[],
+    "factionsDisliked":[],
     "morality":"good",
 
     "alignments":{
@@ -33,4 +31,6 @@
     "startShipsTradeSmall":["ms_solidarity_Standard", "ms_belet-seri_CS", "ms_ashnan_Standard"],
     "startShipsCombatLarge":["ms_tartarus_Standard", "ms_morningstar_Standard", "ms_enlil_Balanced"],
     "startShipsTradeLarge":["ms_elysium_Standard", "ms_solidarity_Fast", "ms_seski_BR"],
+    "startShipsCarrierSmall":["ms_sargasso_Balanced", "ms_enlil_AF", "ms_belet-seri_CS"],
+    "startShipsCarrierLarge":["ms_charybdis_Attack", "ms_morningstar_CS", "ms_seski_LA"],
 }

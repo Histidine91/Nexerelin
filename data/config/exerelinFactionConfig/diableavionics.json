@@ -1,9 +1,7 @@
 {
-    "uniqueModClassName":"data.scripts.world.diableavionicsGen",
     "playableFaction":true,
     "corvusCompatible":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0,
     "baseFleetCostMultiplier":1.0,
 
     "customRebelFaction":"",
@@ -13,7 +11,7 @@
     "positiveDiplomacyExtra":0,
     "negativeDiplomacyExtra":0,
     "factionsLiked":["SCY"],
-    "factionsDisliked":["hegemony","sindrian_diktat","luddic_path","interstellarimperium"],
+    "factionsDisliked":["hegemony","sindrian_diktat","interstellarimperium"],
     "morality":"amoral",
     
     "alignments":{
@@ -31,4 +29,6 @@
     "startShipsTradeSmall":["diableavionics_stratus_standard", "diableavionics_draft_support", "diableavionics_laminar_miner"],
     "startShipsCombatLarge":["diableavionics_gust_assault", "diableavionics_derecho_kite", "diableavionics_draft_support"],
     "startShipsTradeLarge":["diableavionics_rime_breach", "diableavionics_vapor_attack", "diableavionics_draft_standard"],
+    "startShipsCarrierSmall":["diableavionics_fractus_standard", "diableavionics_vapor_closequarter", "diableavionics_draft_assault"],
+    "startShipsCarrierLarge":["diableavionics_storm_standard", "diableavionics_hayle_attack", "diableavionics_draft_support"],
 }

@@ -23,8 +23,8 @@ import java.util.ArrayList;
 
 public class NGCSetStartingFleetTooltipsAndState extends BaseCommandPlugin {
 	
-	protected static String[] FLEET_TYPES = {"SOLO", "COMBAT_SMALL", "TRADE_SMALL", "COMBAT_LARGE", "TRADE_LARGE"};
-	protected static String[] DIALOG_ENTRIES = {"Solo", "CombatSmall", "TradeSmall", "CombatLarge", "TradeLarge"};
+	protected static String[] FLEET_TYPES = {"SOLO", "COMBAT_SMALL", "TRADE_SMALL", "CARRIER_SMALL", "COMBAT_LARGE", "TRADE_LARGE", "CARRIER_LARGE"};
+	protected static String[] DIALOG_ENTRIES = {"Solo", "CombatSmall", "TradeSmall", "CarrierSmall", "CombatLarge", "TradeLarge", "CarrierLarge"};
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {

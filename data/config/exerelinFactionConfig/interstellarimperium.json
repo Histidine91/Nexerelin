@@ -1,9 +1,7 @@
 {
-    "uniqueModClassName":"data.scripts.IIModPlugin",
     "playableFaction":true,
     "corvusCompatible":true,
-
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
+    
     "baseFleetCostMultiplier":1.0,
 
     "customRebelFaction":"",
@@ -39,4 +37,5 @@
     "startShipsTradeSmall":["ii_lynx_s_sta", "ii_decurion_str", "ii_basileus_f_sta"],
     "startShipsCombatLarge":["ii_malleus_art", "ii_interrex_bal", "ii_basileus_sup"],
     "startShipsTradeLarge":["ii_sebastos_f_art", "ii_lynx_sta", "ii_invictus_sup"],
+    "startShipsCarrierLarge":["ii_sebastos_sta", "ii_princeps_art", "ii_decurion_sni"],
 }

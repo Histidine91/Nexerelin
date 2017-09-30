@@ -1,10 +1,9 @@
 {
-    "uniqueModClassName":"", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true,
     "corvusCompatible":true,
 
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "factionsLiked":[],
+    "factionsDisliked":[],
     
     "startShipsSolo":["centurion_Starting"],
     "startShipsSoloSSP":["ssp_alastor_sta"],
@@ -12,4 +11,6 @@
     "startShipsTradeSmall":["mule_Starting", "cerberus_Standard", "mercury_Standard"],
     "startShipsCombatLarge":["eagle_Balanced", "sunder_Assault", "brawler_Elite"],
     "startShipsTradeLarge":["venture_Balanced", "tarsus_Standard", "shepherd_Frontier"],
+    "startShipsCarrierSmall":["drover_Strike", "monitor_Escort", "vigilance_AP"],
+    "startShipsCarrierLarge":["heron_Strike", "sunder_Assault", "brawler_Elite"],
 }

@@ -36,4 +36,5 @@
     "startShipsCombatLargeSSP":["ssp_barbarian_balp", "ssp_shark_rai", "ssp_scythe_sta"],
     "startShipsTradeLarge":["venture_Balanced", "buffalo_pirates_Standard", "cerberus_Standard"],
     "startShipsTradeLargeSSP":["ssp_stalker_sta", "buffalo_pirates_Standard", "ssp_venom_fas"],
+    "startShipsCarrierSmall":["condor_Attack", "buffalo2_FS", "lasher_Standard"],
 }
