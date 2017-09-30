@@ -69,7 +69,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
         ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
         ExerelinFactionConfig fleetFactionConfig = null;
         
-        if (factionConfig.factionIdForHqResponse != null)
+        if (factionConfig.factionIdForHqResponse != null && origin.hasCondition(Conditions.HEADQUARTERS))
         {
             fleetFactionId = factionConfig.factionIdForHqResponse;
             fleetFactionConfig = ExerelinConfig.getExerelinFactionConfig(fleetFactionId);
