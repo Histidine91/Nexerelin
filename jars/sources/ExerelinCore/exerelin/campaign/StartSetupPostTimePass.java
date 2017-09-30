@@ -128,7 +128,7 @@ public class StartSetupPostTimePass {
 		entity.getContainingLocation().addEntity(playerFleet);
 		Global.getSector().setCurrentLocation(entity.getContainingLocation());
 		Vector2f loc = entity.getLocation();
-				playerFleet.setLocation(loc.x, loc.y);
+		playerFleet.setLocation(loc.x, loc.y);
 		
 		// unlock storage
 		MarketAPI homeMarket = entity.getMarket();

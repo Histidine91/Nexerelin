@@ -121,6 +121,13 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		
 		points *= SSP_FactionVengeanceEvent.VengeanceDef.getDef(factionId).vengefulness * 2;
 		
+		String debugStr = "Adding faction revengeance points for " + factionId + ": " + points;
+		log.info(debugStr);
+		//if (Global.getSettings().isDevMode())
+		//{
+		//	Global.getSector().getCampaignUI().addMessage(debugStr);
+		//}
+		
 		float currPts = factionPoints.get(factionId);
 		float newPts = currPts + points;
 		tryActivateFactionVengeance(factionId, currPts, newPts);
