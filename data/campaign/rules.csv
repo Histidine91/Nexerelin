@@ -183,6 +183,7 @@ ExerelinNGCFactionsQuickStart,ExerelinNGCListFactionSets,$global.isDevMode,,,"99
 ExerelinNGCListHegemony,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist hegemony,,,exerelinNGCJoinHegemony:Hegemony,
 ExerelinNGCListTriTachyon,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist tritachyon,,,exerelinNGCJoinTriTachyon:Tri-Tachyon,
 ExerelinNGCListLuddicChurch,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist luddic_church,,,exerelinNGCJoinLuddicChurch:Luddic Church,
+#ExerelinNGCListLuddicPath,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist luddic_path,,,exerelinNGCJoinLuddicPath:Luddic Path,
 ExerelinNGCListPerseanLeague,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist persean,,,exerelinNGCJoinPerseanLeague:Persean League,
 ExerelinNGCListPirates,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist pirates,,,exerelinNGCJoinPirate:Pirates (hard),
 ExerelinNGCListSindrianDiktat,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist sindrian_diktat,,,exerelinNGCJoinSindrianDiktat:Sindrian Diktat,
@@ -260,6 +261,8 @@ FireBest ExerelinNGCJoinFaction",,,
 ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == exerelinNGCJoinTriTachyon,"$playerFaction = tritachyon
 FireBest ExerelinNGCJoinFaction",,,
 ExerelinNGCJoinLuddicChurch,NewGameOptionSelected,$option == exerelinNGCJoinLuddicChurch,"$playerFaction = luddic_church
+FireBest ExerelinNGCJoinFaction",,,
+ExerelinNGCJoinLuddicPath,NewGameOptionSelected,$option == exerelinNGCJoinLuddicPath,"$playerFaction = luddic_path
 FireBest ExerelinNGCJoinFaction",,,
 ExerelinNGCJoinPirate,NewGameOptionSelected,$option == exerelinNGCJoinPirate,"$playerFaction = pirates
 FireBest ExerelinNGCJoinFaction",,,
@@ -648,6 +651,7 @@ ExerelinFactionDirectoryList2Back,ExerelinFactionDirectoryList2,,SetShortcut exe
 ,,,,,,
 ExerelinFactionDirectoryListLooters,ExerelinFactionDirectoryList3,$directoryFactions:Lte,,,exerelinFactionDirectoryGetLooters:Looters,
 ExerelinFactionDirectoryListLuddicChurch,ExerelinFactionDirectoryList3,$directoryFactions:luddic_church,,,exerelinFactionDirectoryGetLuddicChurch:Luddic Church,
+ExerelinFactionDirectoryListLuddicPath,ExerelinFactionDirectoryList3,$directoryFactions:luddic_path,,,exerelinFactionDirectoryGetLuddicPath:Luddic Path,
 ExerelinFactionDirectoryListMayorate,ExerelinFactionDirectoryList3,$directoryFactions:mayorate,,,exerelinFactionDirectoryGetMayorate:Mayorate,
 ExerelinFactionDirectoryListMetelson,ExerelinFactionDirectoryList3,$directoryFactions:metelson,,,exerelinFactionDirectoryGetMetelson:Metelson Industries,
 ExerelinFactionDirectoryListNeutrinoCorp,ExerelinFactionDirectoryList3,$directoryFactions:neutrinocorp,,,exerelinFactionDirectoryGetNeutrinoCorp:Neutrino Corp,
@@ -708,6 +712,8 @@ FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetLooters,DialogOptionSelected,$option == exerelinFactionDirectoryGetLooters,"$_directoryFaction = Lte 0
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetLuddicChurch,DialogOptionSelected,$option == exerelinFactionDirectoryGetLuddicChurch,"$_directoryFaction = luddic_church 0
+FireBest ExerelinFactionDirectorySubmit",,,
+ExerelinFactionDirectoryGetLuddicPath,DialogOptionSelected,$option == exerelinFactionDirectoryGetLuddicPath,"$_directoryFaction = luddic_path 0
 FireBest ExerelinFactionDirectorySubmit",,,
 ExerelinFactionDirectoryGetMayorate,DialogOptionSelected,$option == exerelinFactionDirectoryGetMayorate,"$_directoryFaction = mayorate 0
 FireBest ExerelinFactionDirectorySubmit",,,

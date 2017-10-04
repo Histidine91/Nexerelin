@@ -1,9 +1,8 @@
 {
-    "uniqueModClassName":"",
     "playableFaction":false,
     "corvusCompatible":true,
     "hostileToAll":2,
-    "isPirateNeutral":true,
+    #"pirateFaction":true,   # else they'd get whacked first thing in Corvus mode
     "showIntelEvenIfDead":true,
     
     "baseFleetCostMultiplier":1.0,
@@ -11,8 +10,10 @@
     "customRebelFaction":"",
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Heretics",
+    
+    "marketSpawnWeight":0.5,
 
-    "startRelationships":{ "luddic_church":0, "tritachyon":-0.8 },
+    "startRelationships":{ "luddic_church":0, "tritachyon":-0.8, "pirates":-0.12, "cabal":-0.8 },
     
     "vengeanceLevelNames":["Excommunication", "Interdiction", "Jihad"],
     "vengeanceFleetNames":["Evangelists", "Inquisition", "Crusade"],
@@ -25,4 +26,10 @@
         "militarist":1,
         "ideological":1,
     },
+    
+    "startShipsSolo":["lasher_luddic_path_Raider"],
+    "startShipsCombatSmallSSP":["enforcer_luddic_path_rai", "wolf_luddic_path_rai", "kite_luddic_path_Strike"],
+    "startShipsTradeSmallSSP":["buffalo_luddic_path_att", "dram_luddic_path_rai", "cerberus_luddic_path_Attack"],
+    "startShipsCombatLargeSSP":["colossus2_Pather", "enforcer_luddic_path_rai", "lasher_luddic_path_Raider"],
+    "startShipsCarrierSmallSSP":["condor_luddic_path_rai", "nebula_luddic_path_rai", "hound_luddic_path_Attack"],
 }
