@@ -27,7 +27,7 @@
     
     "startShipsSolo":["vigilance_Standard"],
     "startShipsCombatSmall":["enforcer_Balanced", "lasher_luddic_church_Standard", "centurion_Assault"],
-    "startShipsCombatSmallSSP":["ssp_vanguard_sta", "lasher_luddic_church_Standard", "centurion_Assault"],
+    "startShipsCombatSmallSSP":["swp_striker_luddic_church_sup", "lasher_luddic_church_Standard", "centurion_Assault"],
     "startShipsTradeSmall":["tarsus_Standard", "cerberus_Standard", "lasher_CS"],
     "startShipsCombatLarge":["dominator_Support", "enforcer_Outdated", "kite_Interceptor"],
     "startShipsCombatLargeSSP":["ssp_vulture_sta", "ssp_albatross_art", "kite_Standard"],

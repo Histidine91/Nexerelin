@@ -22,7 +22,7 @@
     "freeMarket":true,
     
     "startShipsSolo":["wolf_Starting"],
-    "startShipsCombatSmall":["medusa_Attack", "wolf_CS", "omen_PD"],
+    "startShipsCombatSmall":["medusa_Attack", "wolf_CS", "brawler_tritachyon_Standard"],
     "startShipsCombatSmallSSP":["ssp_sunder_u_ass", "shade_Assault", "ssp_hecate_sta"],
     "startShipsTradeSmall":["mule_Starting", "wolf_CS", "mercury_Standard"],
     "startShipsTradeSmallSSP":["mule_Starting", "wolf_CS", "ssp_nautilus_sta"],
