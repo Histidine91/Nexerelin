@@ -123,6 +123,8 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		float duration = target.getSize();
 		float bonusDuration = MathUtils.getRandomNumberInRange(-1, 3);
+		if (bonusDuration >= duration)
+			bonusDuration = duration - 1;
 		duration *= DURATION_MULT;
 		bonusDuration *= DURATION_MULT;
 		
