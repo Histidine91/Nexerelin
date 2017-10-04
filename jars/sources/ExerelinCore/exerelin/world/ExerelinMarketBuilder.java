@@ -857,6 +857,8 @@ public class ExerelinMarketBuilder
 				shade.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getCurrentOrbitAngle(entity.getOrbitFocus(), entity), 
 						entity.getRadius() + 150, data.entity.getOrbit().getOrbitalPeriod());		
 				shade.setCustomDescriptionId("stellar_shade");
+				
+				((PlanetAPI)entity).getSpec().setRotation(0);	// planet don't spin
 			}
 		}
 				
@@ -871,7 +873,7 @@ public class ExerelinMarketBuilder
 		{
 			//newMarket.addCondition("exerelin_recycling_plant");
 		}
-				
+		
 		// add per-faction market conditions
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 		if (config.freeMarket)
@@ -882,12 +884,18 @@ public class ExerelinMarketBuilder
 		market.getTariff().modifyFlat("generator", Global.getSector().getFaction(factionId).getTariffFraction());
 		ExerelinUtilsMarket.setTariffs(market);
 		
-		if (factionId.equals(Factions.LUDDIC_CHURCH) && random.nextFloat() > LUDDIC_MINORITY_CHANCE
-				|| random.nextFloat() < LUDDIC_MAJORITY_CHANCE) {
-			market.addCondition(Conditions.LUDDIC_MAJORITY);
-			//newMarket.addCondition("cottage_industry");
+		// Luddic Majority
+		if (factionId.equals(Factions.LUDDIC_CHURCH) || factionId.equals(Factions.LUDDIC_PATH)) {
+			if (random.nextFloat() > LUDDIC_MINORITY_CHANCE || data.isHQ)
+				market.addCondition(Conditions.LUDDIC_MAJORITY);
 		}
-		else if (factionId.equals("spire")) {
+		else
+		{
+			if (random.nextFloat() < LUDDIC_MAJORITY_CHANCE && !data.isHQ)
+				market.addCondition(Conditions.LUDDIC_MAJORITY);
+		}
+		
+		if (factionId.equals("spire")) {
 			market.addCondition("aiw_inorganic_populace");
 		}
 		else if (factionId.equals("crystanite")) {
@@ -898,6 +906,7 @@ public class ExerelinMarketBuilder
 			market.addCondition("ii_imperialdoctrine");
 		}
 		
+		// submarkets
 		if (factionId.equals("templars"))
 		{
 			market.addSubmarket("tem_templarmarket");
@@ -913,6 +922,7 @@ public class ExerelinMarketBuilder
 		Global.getSector().getEconomy().addMarket(market);
 		entity.setFaction(factionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
 		
+		// Lion's Guard
 		if (data.isHQ && factionId.equals(Factions.DIKTAT))
 		{
 			ExerelinLionsGuardFleetManager script = new ExerelinLionsGuardFleetManager(market);
