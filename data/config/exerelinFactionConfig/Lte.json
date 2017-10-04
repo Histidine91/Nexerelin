@@ -1,23 +1,21 @@
 {
-    "uniqueModClassName":"src.lt.data.scripts.world.LTModPlugin",
     "playableFaction":true,
     "pirateFaction":true,
-    "corvusCompatible":false,
+    "corvusCompatible":true,
     "noHomeworld":true,
     "showIntelEvenIfDead":false,
 
-    "spawnPatrols":"true",
-    "spawnPiratesAndMercs":"false",
+    "spawnPatrols":true,
+    "spawnPiratesAndMercs":false,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Traitors", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Traitors",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0, 
     "factionsLiked":["noir","pirates","luddic_path"], # String array
     "factionsDisliked":[], # String array
 
