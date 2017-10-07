@@ -26,7 +26,15 @@ public class Exerelin_LootMarket extends BaseCommandPlugin {
 		CargoAPI loot = Global.getFactory().createCargo(true);
 		for (Map.Entry<String, Float> tmp : lootContents.entrySet())
 		{
-			loot.addCommodity(tmp.getKey(), (float)Math.floor(tmp.getValue()));
+			// workaround for loot amount capping out at 1000 per commodity type (except supplies)
+			String commodityId = tmp.getKey();
+			float amount = (float)Math.floor(tmp.getValue());
+			while (amount > 0)
+			{
+				float amountToAdd = Math.min(amount, 1000);
+				loot.addCommodity(commodityId, amountToAdd);
+				amount -= amountToAdd;
+			}
 		}
 		
 		OptionPanelAPI options = dialog.getOptionPanel();
