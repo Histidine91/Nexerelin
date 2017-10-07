@@ -151,181 +151,42 @@ FireAll ExerelinNGCOtherOptions",,,
 ExerelinNGCDisableHardMode,NewGameOptionSelected,$option==exerelinNGCDisableHardMode,"NGCSetHardMode false
 FireAll ExerelinNGCOtherOptions",,,
 ,,,,,,
-ExerelinNGCJoin,ExerelinNGCStep2,,FireAll ExerelinNGCListFactionSets,Which faction would you like to join?,,
-ExerelinNGCFactionsBackToMain,NewGameOptionSelected,$option==exerelinNGCFactionsBack,FireAll ExerelinNGCListFactions,,,
-ExerelinNGCFactionsMain,ExerelinNGCListFactionSets,,SetShortcut exerelinNGCOptionsBack ESCAPE,,"exerelinNGCViewVanillaFactions:Vanilla factions
-99:exerelinNGCOptionsBack:Back",maybe we should just do it straight alphabetical instead of segregating vanilla factions into their own category
-ExerelinNGCViewVanillaFactions,NewGameOptionSelected,$option == exerelinNGCViewVanillaFactions,"$lastFactionsList = ""vanilla""
-FireAll ExerelinNGCListFactions",,,
-ExerelinNGCModFactions1,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions1:Mod factions (A-D),Should check if factions are actually there
-ExerelinNGCViewModFactions1,NewGameOptionSelected,$option == exerelinNGCViewModFactions1,"$lastFactionsList = ""mods1""
-FireAll ExerelinNGCListFactions",,,
-ExerelinNGCModFactions2,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions2:Mod factions (E-L),ditto
-ExerelinNGCViewModFactions2,NewGameOptionSelected,$option == exerelinNGCViewModFactions2,"$lastFactionsList = ""mods2""
-FireAll ExerelinNGCListFactions",,,
-ExerelinNGCModFactions3,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions3:Mod factions (M-O),
-ExerelinNGCViewModFactions3,NewGameOptionSelected,$option == exerelinNGCViewModFactions3,"$lastFactionsList = ""mods3""
-FireAll ExerelinNGCListFactions",,,
-ExerelinNGCModFactions4,ExerelinNGCListFactionSets,,,,exerelinNGCViewModFactions4:Mod factions (P-Z),
-ExerelinNGCViewModFactions4,NewGameOptionSelected,$option == exerelinNGCViewModFactions4,"$lastFactionsList = ""mods4""
-FireAll ExerelinNGCListFactions",,,
+nex_NGCFactionSelection,ExerelinNGCStep2,,Nex_NGCListFactions listGroups,Which faction would you like to join?,,
+nex_NGCFactionsBackToGroups,NewGameOptionSelected,$option==nex_NGCFactionsBack,Nex_NGCListFactions listGroups,,,
 ,,,,,,
-ExerelinNGCListFactionsVanilla,ExerelinNGCListFactions,"$lastFactionsList == ""vanilla""",FireAll ExerelinNGCListFactionsVanilla,,,
-ExerelinNGCListFactionsMods1,ExerelinNGCListFactions,"$lastFactionsList == ""mods1""",FireAll ExerelinNGCListFactions1,,,
-ExerelinNGCListFactionsMods2,ExerelinNGCListFactions,"$lastFactionsList == ""mods2""",FireAll ExerelinNGCListFactions2,,,
-ExerelinNGCListFactionsMods3,ExerelinNGCListFactions,"$lastFactionsList == ""mods3""",FireAll ExerelinNGCListFactions3,,,
-ExerelinNGCListFactionsMods4,ExerelinNGCListFactions,"$lastFactionsList == ""mods4""",FireAll ExerelinNGCListFactions4,,,
+nex_NGCListFactions1,NewGameOptionSelected,$option==nex_NGCListFactions1,Nex_NGCListFactions listFactions 1,,,
+nex_NGCListFactions2,NewGameOptionSelected,$option==nex_NGCListFactions2,Nex_NGCListFactions listFactions 2,,,
+nex_NGCListFactions3,NewGameOptionSelected,$option==nex_NGCListFactions3,Nex_NGCListFactions listFactions 3,,,
+nex_NGCListFactions4,NewGameOptionSelected,$option==nex_NGCListFactions4,Nex_NGCListFactions listFactions 4,,,
+nex_NGCListFactions5,NewGameOptionSelected,$option==nex_NGCListFactions5,Nex_NGCListFactions listFactions 5,,,
+nex_NGCListFactions6,NewGameOptionSelected,$option==nex_NGCListFactions6,Nex_NGCListFactions listFactions 6,,,
+nex_NGCListFactions7,NewGameOptionSelected,$option==nex_NGCListFactions7,Nex_NGCListFactions listFactions 7,,,
 ,,,,,,
-ExerelinNGCFactionsQuickStart,ExerelinNGCListFactionSets,$global.isDevMode,,,"99:exerelinNGCDevStart:>> (dev) quick start
-100:exerelinNGCDevStartFast:>> (dev) quick start no time pass",
-,,,,,,
-# NOTE: Omit the NGCDoesFactionExist check if using this in a faction mod (since you know it'll always be present),,,,,,
-ExerelinNGCListHegemony,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist hegemony,,,exerelinNGCJoinHegemony:Hegemony,
-ExerelinNGCListTriTachyon,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist tritachyon,,,exerelinNGCJoinTriTachyon:Tri-Tachyon,
-ExerelinNGCListLuddicChurch,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist luddic_church,,,exerelinNGCJoinLuddicChurch:Luddic Church,
-#ExerelinNGCListLuddicPath,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist luddic_path,,,exerelinNGCJoinLuddicPath:Luddic Path,
-ExerelinNGCListPerseanLeague,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist persean,,,exerelinNGCJoinPerseanLeague:Persean League,
-ExerelinNGCListPirates,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist pirates,,,exerelinNGCJoinPirate:Pirates (hard),
-ExerelinNGCListSindrianDiktat,ExerelinNGCListFactionsVanilla,NGCDoesFactionExist sindrian_diktat,,,exerelinNGCJoinSindrianDiktat:Sindrian Diktat,
-ExerelinNGCFactionsOwnFaction,ExerelinNGCListFactionsVanilla,,SetEnabled exerelinNGCOwnFaction true,,exerelinNGCOwnFaction:Own faction,
-ExerelinNGCFactionsOwnFactionDisabled,ExerelinNGCListFactionsVanilla,$corvusMode,"SetTooltip exerelinNGCOwnFaction ""No planet to spawn from in non-random sector, use free start instead""
-SetEnabled exerelinNGCOwnFaction false",,,
-ExerelinNGCFactionsFreeStart,ExerelinNGCListFactionsVanilla,,"SetTooltip exerelinNGCFreeStart ""Own faction, but with no starting planet; you're on your own""",,exerelinNGCFreeStart:Free start (hard),
-ExerelinNGCListVanillaFactionsBack,ExerelinNGCListFactionsVanilla,,SetShortcut exerelinNGCOptionsDone ESCAPE,,20:exerelinNGCOptionsDone:Back,
-,,,,,,
-ExerelinNGCListExipirated,ExerelinNGCListFactions1,NGCDoesFactionExist exipirated,,,exerelinNGCJoinExipirated:Ahriman Association,
-ExerelinNGCListApprolight,ExerelinNGCListFactions1,NGCDoesFactionExist approlight,,,exerelinNGCJoinApprolight:Approlight,
-ExerelinNGCListASPSyndicate,ExerelinNGCListFactions1,NGCDoesFactionExist syndicate_asp,,,exerelinNGCJoinASPSyndicate:ASP Syndicate,
-ExerelinNGCListBlackrock,ExerelinNGCListFactions1,NGCDoesFactionExist blackrock_driveyards,,,exerelinNGCJoinBlackrock:Blackrock Drive Yards,
-ExerelinNGCListCitadel,ExerelinNGCListFactions1,NGCDoesFactionExist citadeldefenders,,,exerelinNGCJoinCitadel:Citadel,
-ExerelinNGCListCorvusScavengers,ExerelinNGCListFactions1,NGCDoesFactionExist corvus_scavengers,,,exerelinNGCJoinCorvusScavengers:Corvus Scavengers,
-ExerelinNGCListDME,ExerelinNGCListFactions1,NGCDoesFactionExist dassault_mikoyan,,,exerelinNGCJoinDME:Dassault-Mikoyan,
-ExerelinNGCListDiableAvionics,ExerelinNGCListFactions1,NGCDoesFactionExist diableavionics,,,exerelinNGCJoinDiableAvionics:Diable Avionics,
-ExerelinNGCListModFactions1Back,ExerelinNGCListFactions1,,SetShortcut exerelinNGCOptionsDone ESCAPE,,20:exerelinNGCOptionsDone:Back,
-,,,,,,
-ExerelinNGCListExigency,ExerelinNGCListFactions2,NGCDoesFactionExist exigency,,,exerelinNGCJoinExigency:Exigency Corp,
-ExerelinNGCListICI,ExerelinNGCListFactions2,NGCDoesFactionExist sun_ici,,,exerelinNGCJoinICI:Idoneus Garrison,
-ExerelinNGCListInfected,ExerelinNGCListFactions2,NGCDoesFactionExist infected,,,exerelinNGCJoinInfected:Infected,
-ExerelinNGCListInterstellarImperium,ExerelinNGCListFactions2,NGCDoesFactionExist interstellarimperium,,,exerelinNGCJoinInterstellarImperium:Interstellar Imperium,
-ExerelinNGCListJunkPirates,ExerelinNGCListFactions2,NGCDoesFactionExist junk_pirates,,,exerelinNGCJoinJunkPirates:Junk Pirates,
-ExerelinNGCListTemplars,ExerelinNGCListFactions2,NGCDoesFactionExist templars,,,exerelinNGCJoinTemplars:Knights Templar,
-ExerelinNGCListLooters,ExerelinNGCListFactions2,NGCDoesFactionExist Lte,,,exerelinNGCJoinLooters:Looters (hard),
-ExerelinNGCListModFactions2Back,ExerelinNGCListFactions2,,SetShortcut exerelinNGCOptionsDone ESCAPE,,20:exerelinNGCOptionsDone:Back,
-,,,,,,
-ExerelinNGCListMayorate,ExerelinNGCListFactions3,NGCDoesFactionExist mayorate,,,exerelinNGCJoinMayorate:Mayorate,
-ExerelinNGCListMetelson,ExerelinNGCListFactions3,NGCDoesFactionExist metelson,,,exerelinNGCJoinMetelson:Metelson Industries,
-ExerelinNGCListNeutrinoCorp,ExerelinNGCListFactions3,NGCDoesFactionExist neutrinocorp,,,exerelinNGCJoinNeutrinoCorp:Neutrino Corp,
-ExerelinNGCListNoir,ExerelinNGCListFactions3,NGCDoesFactionExist noir,,,exerelinNGCJoinNoir:Noir,
-ExerelinNGCListNomads,ExerelinNGCListFactions3,NGCDoesFactionExist nomads,,,exerelinNGCJoinNomads:Nomads,
-ExerelinNGCListORA,ExerelinNGCListFactions3,NGCDoesFactionExist ORA,,,exerelinNGCJoinORA:Outer Rim Alliance,
-ExerelinNGCListModFactions3Back,ExerelinNGCListFactions3,,SetShortcut exerelinNGCOptionsDone ESCAPE,,20:exerelinNGCOptionsDone:Back,
-,,,,,,
-ExerelinNGCListPACK,ExerelinNGCListFactions4,NGCDoesFactionExist pack,,,exerelinNGCJoinPACK:P.A.C.K.,
-ExerelinNGCListPbc,ExerelinNGCListFactions4,NGCDoesFactionExist pbc,,,exerelinNGCJoinPbc:Pegasus Belt Council,
-ExerelinNGCListSCY,ExerelinNGCListFactions4,NGCDoesFactionExist SCY,,,exerelinNGCJoinSCY:SCY Nation,
-ExerelinNGCListShadowyards,ExerelinNGCListFactions4,NGCDoesFactionExist shadow_industry,,,exerelinNGCJoinShadowyards:Shadowyards,
-ExerelinNGCListSpire,ExerelinNGCListFactions4,NGCDoesFactionExist spire,,,exerelinNGCJoinSpire:Spire,
-ExerelinNGCListTiandong,ExerelinNGCListFactions4,NGCDoesFactionExist tiandong,,,exerelinNGCJoinTiandong:Tiandong Heavy Industries,
-ExerelinNGCListModFactions4Back,ExerelinNGCListFactions4,,SetShortcut exerelinNGCOptionsDone ESCAPE,,20:exerelinNGCOptionsDone:Back,
-,,,,,,
-#ExerelinNGCJoinFactionGenericExample,NewGameOptionSelected,$option == exerelinNGCFactionGeneric,"$playerFaction = hegemony
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinFactionSubmit,ExerelinNGCJoinFaction,,"NGCSetPlayerFaction $playerFaction
+nex_NGCJoinFaction,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCJoinFaction_""","Nex_NGCSetFactionFromJoinOption
 FireAll ExerelinNGCStep3",,,
 ,,,,,,
-ExerelinNGCDevStart,NewGameOptionSelected,$option == exerelinNGCDevStart,"NGCSetPlayerFaction ""player_npc""
+nex_NGCDevStart,NewGameOptionSelected,$option == nex_NGCDevStart,"NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart false
 NGCSetWithTimePass false
 NGCAddShipAndComplement ""medusa_Starting""
 NGCAddCredits 1000000
 NGCAddCharacterPoints 100
 NGCDone",,,
-ExerelinNGCDevStartFast,NewGameOptionSelected,$option == exerelinNGCDevStartFast,"NGCSetPlayerFaction ""player_npc""
+nex_NGCDevStartFast,NewGameOptionSelected,$option == nex_NGCDevStartFast,"NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart false
 NGCSetWithTimePass false
 NGCAddShipAndComplement ""medusa_Starting""
 NGCAddCredits 1000000
 NGCAddCharacterPoints 100
 NGCDone",,,
-ExerelinNGCOwnFaction,NewGameOptionSelected,$option == exerelinNGCOwnFaction,"NGCSetPlayerFaction ""player_npc""
+nex_NGCOwnFaction,NewGameOptionSelected,$option == nex_NGCJoinOwnFaction,"NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart false
+$factionGroup = 0
 FireAll ExerelinNGCStep3",,,
-ExerelinNGCFreeStart,NewGameOptionSelected,"$option == exerelinNGCFreeStart
-","NGCSetPlayerFaction ""player_npc""
+nex_NGCFreeStart,NewGameOptionSelected,$option == nex_NGCFreeStart,"NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart true
+$factionGroup = 0
 FireAll ExerelinNGCStep3",,,
-ExerelinNGCJoinHegemony,NewGameOptionSelected,$option == exerelinNGCJoinHegemony,"$playerFaction = hegemony
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinPerseanLeague,NewGameOptionSelected,$option == exerelinNGCJoinPerseanLeague,"$playerFaction = persean
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinTriTachyon,NewGameOptionSelected,$option == exerelinNGCJoinTriTachyon,"$playerFaction = tritachyon
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinLuddicChurch,NewGameOptionSelected,$option == exerelinNGCJoinLuddicChurch,"$playerFaction = luddic_church
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinLuddicPath,NewGameOptionSelected,$option == exerelinNGCJoinLuddicPath,"$playerFaction = luddic_path
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinPirate,NewGameOptionSelected,$option == exerelinNGCJoinPirate,"$playerFaction = pirates
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinApprolight,NewGameOptionSelected,$option == exerelinNGCJoinApprolight,"$playerFaction = approlight
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinASPSyndicate,NewGameOptionSelected,$option == exerelinNGCJoinASPSyndicate,"$playerFaction = syndicate_asp
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinBlackrock,NewGameOptionSelected,$option == exerelinNGCJoinBlackrock,"$playerFaction = blackrock_driveyards
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinCitadel,NewGameOptionSelected,$option == exerelinNGCJoinCitadel,"$playerFaction = citadeldefenders
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinCorvusScavengers,NewGameOptionSelected,$option == exerelinNGCJoinCorvusScavengers,"$playerFaction = corvus_scavengers
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinDME,NewGameOptionSelected,$option == exerelinNGCJoinDME,"$playerFaction = dassault_mikoyan
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinDiableAvionics,NewGameOptionSelected,$option == exerelinNGCJoinDiableAvionics,"$playerFaction = diableavionics
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinExigency,NewGameOptionSelected,$option == exerelinNGCJoinExigency,"$playerFaction = exigency
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinExipirated,NewGameOptionSelected,$option == exerelinNGCJoinExipirated,"$playerFaction = exipirated
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinICI,NewGameOptionSelected,$option == exerelinNGCJoinICI,"NGCSetPlayerFaction ""sun_ici""
-NGCAddShipAndComplement ""sun_ice_specter_Standard""
-AddText ""Added Specter-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
-ExerelinNGCJoinInfected,NewGameOptionSelected,$option == exerelinNGCJoinInfected,"$playerFaction = infected
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinInterstellarImperium,NewGameOptionSelected,$option == exerelinNGCJoinInterstellarImperium,"$playerFaction = interstellarimperium
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinJunkPirates,NewGameOptionSelected,$option == exerelinNGCJoinJunkPirates,"$playerFaction = junk_pirates
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinTemplars,NewGameOptionSelected,$option == exerelinNGCJoinTemplars,"$playerFaction = templars
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinLooters,NewGameOptionSelected,$option == exerelinNGCJoinLooters,"$playerFaction = Lte
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinMayorate,NewGameOptionSelected,$option == exerelinNGCJoinMayorate,"$playerFaction = mayorate
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinMetelson,NewGameOptionSelected,$option == exerelinNGCJoinMetelson,"$playerFaction = metelson
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinNeutrinoCorp,NewGameOptionSelected,$option == exerelinNGCJoinNeutrinoCorp,"$playerFaction = neutrinocorp
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinNoir,NewGameOptionSelected,$option == exerelinNGCJoinNoir,"$playerFaction = noir
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinNomads,NewGameOptionSelected,$option == exerelinNGCJoinNomads,"$playerFaction = nomads
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinORA,NewGameOptionSelected,$option == exerelinNGCJoinORA,"$playerFaction = ORA
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinPACK,NewGameOptionSelected,$option == exerelinNGCJoinPACK,"$playerFaction = pack
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinSCY,NewGameOptionSelected,$option == exerelinNGCJoinSCY,"$playerFaction = SCY
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinShadowyards,NewGameOptionSelected,$option == exerelinNGCJoinShadowyards,"$playerFaction = shadow_industry
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinSindrianDiktat,NewGameOptionSelected,$option == exerelinNGCJoinSindrianDiktat,"$playerFaction = sindrian_diktat
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinSpire,NewGameOptionSelected,$option == exerelinNGCJoinSpire,"$playerFaction = spire
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinTiandong,NewGameOptionSelected,$option == exerelinNGCJoinTiandong,"$playerFaction = tiandong
-FireBest ExerelinNGCJoinFaction",,,
-ExerelinNGCJoinPbc,NewGameOptionSelected,$option == exerelinNGCJoinPbc,"NGCSetPlayerFaction ""pbc""
-NGCAddShipAndComplement ""pbc_orion_ff_assault""
-AddText ""Added Orion-class frigate"" textFriendColor
-FireBest ExerelinNGCStep4",,,
 ,,,,,,
 ExerelinNGCPickStartingShips,ExerelinNGCStep3,,"NGCSetStartingFleetTooltipsAndState
 SetShortcut exerelinNGCFleetBack ESCAPE",Your starting fleet?,"1:exerelinNGCFleetSolo:Solo frigate
@@ -353,7 +214,7 @@ ExerelinNGCStartShipsCarrierLarge,NewGameOptionSelected,$option == exerelinNGCFl
 FireBest ExerelinNGCStep4",,,
 ,,,,,,
 ExerelinNGCStartShipsReroll,NewGameOptionSelected,$option == exerelinNGCFleetReroll,NGCSetStartingFleetTooltipsAndState,,,
-ExerelinNGCStartShipsBack,NewGameOptionSelected,$option == exerelinNGCFleetBack,FireAll ExerelinNGCListFactions,,,
+ExerelinNGCStartShipsBack,NewGameOptionSelected,$option == exerelinNGCFleetBack,Nex_NGCListFactions listFactions $factionGroup,,,
 ,,,,,,
 ExerelinNGCFinalize,ExerelinNGCStep4,,"AddText ""Starting experience and credits?""
 SetShortcut exerelinNGCStartBack ESCAPE",,"exerelinNGCNormalStart:Ensign (20,000 credits, level 1)

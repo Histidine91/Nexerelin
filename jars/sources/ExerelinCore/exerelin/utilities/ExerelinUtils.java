@@ -3,6 +3,8 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
+import com.fs.starfarer.api.impl.campaign.rulecmd.DumpMemory;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.plugins.ExerelinModPlugin;
 import org.lazywizard.lazylib.MathUtils;
@@ -80,6 +82,15 @@ public class ExerelinUtils
 			}
 		}
 		return closestMarket;
+	}
+	
+	public static void addDevModeDialogOptions(InteractionDialogAPI dialog)
+	{
+		if (Global.getSettings().isDevMode())
+		{
+			DumpMemory.addOption(dialog);
+			DevMenuOptions.addOptions(dialog);
+		}
 	}
 
 	public static String[] JSONArrayToStringArray(JSONArray jsonArray)
