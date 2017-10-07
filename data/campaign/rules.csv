@@ -469,149 +469,19 @@ BroadcastCancelPlayerAction 1500 $exerelinRespondingToRaid","The $faction $other
 ,,,,,,
 ,,,,,,
 #START MARKET DIRECTORY OPTIONS,,,,,,
-ExerelinMarketFactionDirectoryOption,ExerelinMarketSpecial,,SetShortcut exerelinFactionDirectoryMain D,,7:exerelinFactionDirectoryMain:Faction directory,
-ExerelinFactionDirectory,DialogOptionSelected,$option == exerelinFactionDirectoryMain,"GetLiveFactions
-FireAll ExerelinFactionDirectory",Which faction do you want to look up?,,
-ExerelinFactionDirectoryOptions,ExerelinFactionDirectory,,"SetShortcut exerelinFactionDirectoryList1 A
-SetShortcut exerelinFactionDirectoryList2 E
-SetShortcut exerelinFactionDirectoryList3 L
-SetShortcut exerelinFactionDirectoryList4 P",,"exerelinFactionDirectoryList1:A-D
-exerelinFactionDirectoryList2:E-K
-exerelinFactionDirectoryList3:L-O
-exerelinFactionDirectoryList4:P-Z",
-ExerelinFactionDirectoryListBack,ExerelinFactionDirectory,!$specialDialog,SetShortcut exerelinMarketSpecial ESCAPE,,10:exerelinMarketSpecial:Back,
-ExerelinFactionDirectoryListBackSpecialDialog,ExerelinFactionDirectory,$specialDialog,SetShortcut continueCutComm ESCAPE,,10:continueCutComm:Back,
-ExerelinFactionDirectoryListPlayer,ExerelinFactionDirectory,$directoryFactions:player_npc,,,exerelinFactionDirectoryGetPlayer:Player,
-ExerelinFactionDirectoryOptionAlliance,ExerelinFactionDirectory,!$specialDialog,,,exerelinAllianceReport:List alliances,
-#ExerelinFactionDirectoryOptionIntel,ExerelinFactionDirectory,"$hasMarket
-!$specialDialog",,,exerelinMarketIntel:Open intel screen,
-ExerelinFactionDirectoryList1,DialogOptionSelected,$option == exerelinFactionDirectoryList1,FireAll ExerelinFactionDirectoryList1,,,
-ExerelinFactionDirectoryList2,DialogOptionSelected,$option == exerelinFactionDirectoryList2,FireAll ExerelinFactionDirectoryList2,,,
-ExerelinFactionDirectoryList3,DialogOptionSelected,$option == exerelinFactionDirectoryList3,FireAll ExerelinFactionDirectoryList3,,,
-ExerelinFactionDirectoryList4,DialogOptionSelected,$option == exerelinFactionDirectoryList4,FireAll ExerelinFactionDirectoryList4,,,
+nex_MarketFactionDirectoryOption,ExerelinMarketSpecial,,SetShortcut nex_factionDirectoryMain D,,7:nex_factionDirectoryMain:Faction directory,
+nex_FactionDirectory,DialogOptionSelected,$option == nex_factionDirectoryMain,FireAll ExerelinFactionDirectory,,,
+nex_FactionDirectoryByTrigger,ExerelinFactionDirectory,,Nex_FactionDirectory listGroups,Which faction do you want to look up?,,
 ,,,,,,
-ExerelinFactionDirectoryListExipirated,ExerelinFactionDirectoryList1,$directoryFactions:exipirated,,,exerelinFactionDirectoryGetExipirated:Ahriman Association,
-ExerelinFactionDirectoryListApprolight,ExerelinFactionDirectoryList1,$directoryFactions:approlight,,,exerelinFactionDirectoryGetApprolight:Approlight,
-ExerelinFactionDirectoryListASPSyindicate,ExerelinFactionDirectoryList1,$directoryFactions:syndicate_asp,,,exerelinFactionDirectoryGetASPSyndicate:ASP Syndicate,
-ExerelinFactionDirectoryListBlackrock,ExerelinFactionDirectoryList1,$directoryFactions:blackrock_driveyards,,,exerelinFactionDirectoryGetBlackrock:Blackrock Drive Yards,
-ExerelinFactionDirectoryListCitadel,ExerelinFactionDirectoryList1,$directoryFactions:citadeldefenders,,,exerelinFactionDirectoryGetCitadel:Citadel,
-ExerelinFactionDirectoryListCorvusScavengers,ExerelinFactionDirectoryList1,$directoryFactions:corvus_scavengers,,,exerelinFactionDirectoryGetCorvusScavengers:Corvus Scavengers,
-ExerelinFactionDirectoryListDME,ExerelinFactionDirectoryList1,$directoryFactions:dassault_mikoyan,,,exerelinFactionDirectoryGetDME:Dassault-Mikoyan,
-ExerelinFactionDirectoryListDiableAvionics,ExerelinFactionDirectoryList1,$directoryFactions:diableavionics,,,exerelinFactionDirectoryGetDiableAvionics:Diable Avionics,
-ExerelinFactionDirectoryList1Back,ExerelinFactionDirectoryList1,,SetShortcut exerelinFactionDirectoryMain ESCAPE,,30:exerelinFactionDirectoryMain:Back,
+nex_factionDirectoryList1,DialogOptionSelected,$option == nex_factionDirectoryList1,Nex_FactionDirectory listFactions 1,,,
+nex_factionDirectoryList2,DialogOptionSelected,$option == nex_factionDirectoryList2,Nex_FactionDirectory listFactions 2,,,
+nex_factionDirectoryList3,DialogOptionSelected,$option == nex_factionDirectoryList3,Nex_FactionDirectory listFactions 3,,,
+nex_factionDirectoryList4,DialogOptionSelected,$option == nex_factionDirectoryList4,Nex_FactionDirectory listFactions 4,,,
+nex_factionDirectoryList5,DialogOptionSelected,$option == nex_factionDirectoryList5,Nex_FactionDirectory listFactions 5,,,
+nex_factionDirectoryList6,DialogOptionSelected,$option == nex_factionDirectoryList6,Nex_FactionDirectory listFactions 6,,,
+nex_factionDirectoryList7,DialogOptionSelected,$option == nex_factionDirectoryList7,Nex_FactionDirectory listFactions 7,,,
 ,,,,,,
-ExerelinFactionDirectoryListExigency,ExerelinFactionDirectoryList1,$directoryFactions:exigency,,,exerelinFactionDirectoryGetExigency:Exigency Corp,
-ExerelinFactionDirectoryListHegemony,ExerelinFactionDirectoryList2,$directoryFactions:hegemony,,,exerelinFactionDirectoryGetHegemony:Hegemony,
-ExerelinFactionDirectoryListICI,ExerelinFactionDirectoryList2,$directoryFactions:sun_ici,,,exerelinFactionDirectoryGetICI:Idoneus Garrison,
-ExerelinFactionDirectoryListInterstellarImperium,ExerelinFactionDirectoryList2,$directoryFactions:interstellarimperium,,,exerelinFactionDirectoryGetInterstellarImperium:Interstellar Imperium,
-ExerelinFactionDirectoryListInterstellarIndependent,ExerelinFactionDirectoryList2,$directoryFactions:independent,,,exerelinFactionDirectoryGetIndependent:Independents,
-ExerelinFactionDirectoryListInfected,ExerelinFactionDirectoryList2,$directoryFactions:infected,,,exerelinFactionDirectoryGetInfected:Infected,
-ExerelinFactionDirectoryListJunkPirates,ExerelinFactionDirectoryList2,$directoryFactions:junk_pirates,,,exerelinFactionDirectoryGetJunkPirates:Junk Pirates,
-ExerelinFactionDirectoryListTemplars,ExerelinFactionDirectoryList2,$directoryFactions:templars,,,exerelinFactionDirectoryGetTemplars:Knights Templar,
-ExerelinFactionDirectoryList2Back,ExerelinFactionDirectoryList2,,SetShortcut exerelinFactionDirectoryMain ESCAPE,,30:exerelinFactionDirectoryMain:Back,
-,,,,,,
-ExerelinFactionDirectoryListLooters,ExerelinFactionDirectoryList3,$directoryFactions:Lte,,,exerelinFactionDirectoryGetLooters:Looters,
-ExerelinFactionDirectoryListLuddicChurch,ExerelinFactionDirectoryList3,$directoryFactions:luddic_church,,,exerelinFactionDirectoryGetLuddicChurch:Luddic Church,
-ExerelinFactionDirectoryListLuddicPath,ExerelinFactionDirectoryList3,$directoryFactions:luddic_path,,,exerelinFactionDirectoryGetLuddicPath:Luddic Path,
-ExerelinFactionDirectoryListMayorate,ExerelinFactionDirectoryList3,$directoryFactions:mayorate,,,exerelinFactionDirectoryGetMayorate:Mayorate,
-ExerelinFactionDirectoryListMetelson,ExerelinFactionDirectoryList3,$directoryFactions:metelson,,,exerelinFactionDirectoryGetMetelson:Metelson Industries,
-ExerelinFactionDirectoryListNeutrinoCorp,ExerelinFactionDirectoryList3,$directoryFactions:neutrinocorp,,,exerelinFactionDirectoryGetNeutrinoCorp:Neutrino Corp,
-ExerelinFactionDirectoryListNoir,ExerelinFactionDirectoryList3,$directoryFactions:noir,,,exerelinFactionDirectoryGetNoir:Noir,
-ExerelinFactionDirectoryListNomads,ExerelinFactionDirectoryList3,$directoryFactions:nomads,,,exerelinFactionDirectoryGetNomads:Nomads,
-ExerelinFactionDirectoryListORA,ExerelinFactionDirectoryList3,$directoryFactions:ORA,,,exerelinFactionDirectoryGetORA:ORA,
-ExerelinFactionDirectoryList3Back,ExerelinFactionDirectoryList3,,SetShortcut exerelinFactionDirectoryMain ESCAPE,,30:exerelinFactionDirectoryMain:Back,
-,,,,,,
-ExerelinFactionDirectoryListPACK,ExerelinFactionDirectoryList4,$directoryFactions:pack,,,exerelinFactionDirectoryGetPACK:P.A.C.K.,
-ExerelinFactionDirectoryListPbc,ExerelinFactionDirectoryList4,$directoryFactions:pbc,,,exerelinFactionDirectoryGetPbc:PBC,
-ExerelinFactionDirectoryListPerseanLeague,ExerelinFactionDirectoryList4,$directoryFactions:persean,,,exerelinFactionDirectoryGetPerseanLeague:Persean League,
-ExerelinFactionDirectoryListPirates,ExerelinFactionDirectoryList4,$directoryFactions:pirates,,,exerelinFactionDirectoryGetPirates:Pirates,
-ExerelinFactionDirectoryListSCY,ExerelinFactionDirectoryList4,$directoryFactions:SCY,,,exerelinFactionDirectoryGetSCY:SCY,
-ExerelinFactionDirectoryListShadowyards,ExerelinFactionDirectoryList4,$directoryFactions:shadow_industry,,,exerelinFactionDirectoryGetShadowyards:Shadowyards,
-ExerelinFactionDirectoryListSindrianDiktat,ExerelinFactionDirectoryList4,$directoryFactions:sindrian_diktat,,,exerelinFactionDirectoryGetSindrianDiktat:Sindrian Diktat,
-ExerelinFactionDirectoryListSpire,ExerelinFactionDirectoryList4,$directoryFactions:spire,,,exerelinFactionDirectoryGetSpire:Spire,
-ExerelinFactionDirectoryListTiandong,ExerelinFactionDirectoryList4,$directoryFactions:tiandong,,,exerelinFactionDirectoryGetTiandong:Tiandong,
-ExerelinFactionDirectoryListTriTachyon,ExerelinFactionDirectoryList4,$directoryFactions:tritachyon,,,exerelinFactionDirectoryGetTriTachyon:Tri-Tachyon,
-ExerelinFactionDirectoryList4Back,ExerelinFactionDirectoryList4,,SetShortcut exerelinFactionDirectoryMain ESCAPE,,30:exerelinFactionDirectoryMain:Back,
-,,,,,,
-# this feels like it could be a billion times more efficient,,,,,,
-#ExerelinFactionDirectoryGetFactionGenericExample,DialogOptionSelected,$option == exerelinFactionDirectoryGetHegemony,"$_directoryFaction = hegemony 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetFactionSubmit,ExerelinFactionDirectorySubmit,,PrintFactionMarkets $_directoryFaction,,,
-,,,,,,
-ExerelinFactionDirectoryGetApprolight,DialogOptionSelected,$option == exerelinFactionDirectoryGetApprolight,"$_directoryFaction = approlight 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetASPSyndicate,DialogOptionSelected,$option == exerelinFactionDirectoryGetASPSyndicate,"$_directoryFaction = syndicate_asp 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetBlackrock,DialogOptionSelected,$option == exerelinFactionDirectoryGetBlackrock,"$_directoryFaction = blackrock_driveyards 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetCitadel,DialogOptionSelected,$option == exerelinFactionDirectoryGetCitadel,"$_directoryFaction = citadeldefenders 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetCorvusScavengers,DialogOptionSelected,$option == exerelinFactionDirectoryGetCorvusScavengers,"$_directoryFaction = corvus_scavengers 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetDME,DialogOptionSelected,$option == exerelinFactionDirectoryGetDME,"$_directoryFaction = dassault_mikoyan 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetDiableAvionics,DialogOptionSelected,$option == exerelinFactionDirectoryGetDiableAvionics,"$_directoryFaction = diableavionics 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetExigency,DialogOptionSelected,$option == exerelinFactionDirectoryGetExigency,"$_directoryFaction = exigency 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetExipirated,DialogOptionSelected,$option == exerelinFactionDirectoryGetExipirated,"$_directoryFaction = exipirated 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetFirestormFederation,DialogOptionSelected,$option == exerelinFactionDirectoryGetFirestormFederation,"$_directoryFaction = firestorm_federation 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetHegemony,DialogOptionSelected,$option == exerelinFactionDirectoryGetHegemony,"$_directoryFaction = hegemony 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetICI,DialogOptionSelected,$option == exerelinFactionDirectoryGetICI,"$_directoryFaction = sun_ici 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetIndependent,DialogOptionSelected,$option == exerelinFactionDirectoryGetIndependent,"$_directoryFaction = independent 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetInterstellarImperium,DialogOptionSelected,$option == exerelinFactionDirectoryGetInterstellarImperium,"$_directoryFaction = interstellarimperium 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetInfected,DialogOptionSelected,$option == exerelinFactionDirectoryGetInfected,"$_directoryFaction = infected 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetJunkPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetJunkPirates,"$_directoryFaction = junk_pirates 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetLooters,DialogOptionSelected,$option == exerelinFactionDirectoryGetLooters,"$_directoryFaction = Lte 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetLuddicChurch,DialogOptionSelected,$option == exerelinFactionDirectoryGetLuddicChurch,"$_directoryFaction = luddic_church 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetLuddicPath,DialogOptionSelected,$option == exerelinFactionDirectoryGetLuddicPath,"$_directoryFaction = luddic_path 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetMayorate,DialogOptionSelected,$option == exerelinFactionDirectoryGetMayorate,"$_directoryFaction = mayorate 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetMetelson,DialogOptionSelected,$option == exerelinFactionDirectoryGetMetelson,"$_directoryFaction = metelson 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetNeutrinoCorp,DialogOptionSelected,$option == exerelinFactionDirectoryGetNeutrinoCorp,"$_directoryFaction = neutrinocorp 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetNoir,DialogOptionSelected,$option == exerelinFactionDirectoryGetNoir,"$_directoryFaction = noir 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetNomads,DialogOptionSelected,$option == exerelinFactionDirectoryGetNomads,"$_directoryFaction = nomads 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetORA,DialogOptionSelected,$option == exerelinFactionDirectoryGetORA,"$_directoryFaction = ORA 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetPACK,DialogOptionSelected,$option == exerelinFactionDirectoryGetPACK,"$_directoryFaction = pack 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetPerseanLeague,DialogOptionSelected,$option == exerelinFactionDirectoryGetPerseanLeague,"$_directoryFaction = persean 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetPirates,DialogOptionSelected,$option == exerelinFactionDirectoryGetPirates,"$_directoryFaction = pirates 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetPlayer,DialogOptionSelected,$option == exerelinFactionDirectoryGetPlayer,"$_directoryFaction = player_npc 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetSCY,DialogOptionSelected,$option == exerelinFactionDirectoryGetSCY,"$_directoryFaction = SCY 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetShadowyards,DialogOptionSelected,$option == exerelinFactionDirectoryGetShadowyards,"$_directoryFaction = shadow_industry 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetSindrianDiktat,DialogOptionSelected,$option == exerelinFactionDirectoryGetSindrianDiktat,"$_directoryFaction = sindrian_diktat 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetSpire,DialogOptionSelected,$option == exerelinFactionDirectoryGetSpire,"$_directoryFaction = spire 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetTemplars,DialogOptionSelected,$option == exerelinFactionDirectoryGetTemplars,"$_directoryFaction = templars 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetTiandong,DialogOptionSelected,$option == exerelinFactionDirectoryGetTiandong,"$_directoryFaction = tiandong 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetPbc,DialogOptionSelected,$option == exerelinFactionDirectoryGetPbc,"$_directoryFaction = pbc 0
-FireBest ExerelinFactionDirectorySubmit",,,
-ExerelinFactionDirectoryGetTriTachyon,DialogOptionSelected,$option == exerelinFactionDirectoryGetTriTachyon,"$_directoryFaction = tritachyon 0
-FireBest ExerelinFactionDirectorySubmit",,,
+nex_factionDirectoryPrint,DialogOptionSelected,"Nex_OptionStartsWith ""nex_printFactionMarkets_""",Nex_FactionDirectory print,,,
 #END MARKET DIRECTORY OPTIONS,,,,,,
 ,,,,,,
 #START AGENT OPTIONS,,,,,,

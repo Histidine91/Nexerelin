@@ -145,7 +145,6 @@ public class DirectoryScreenScript implements EveryFrameScript
 
 				MemoryAPI mem = optionsDialogDelegate.getMemoryMap().get(MemKeys.LOCAL);
 				mem.set("$specialDialog", true, 0);
-				GetLiveFactions.addLiveFactionsToMemory(mem);
 
 				optionsDialogDelegate.fireAll("ExerelinFactionDirectory");
 			}
