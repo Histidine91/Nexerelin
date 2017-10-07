@@ -91,6 +91,8 @@ public class ExerelinFactionConfig
     public boolean allowAgentActions = true;
     public boolean allowPrisonerActions = true;
     
+    public boolean directoryUseShortName = false;
+    
     public List<String> vengeanceLevelNames = new ArrayList<>();
     public List<String> vengeanceFleetNames = new ArrayList<>();
     public List<String> vengeanceFleetNamesSingle = new ArrayList<>();
@@ -163,6 +165,8 @@ public class ExerelinFactionConfig
             
             allowAgentActions = settings.optBoolean("allowAgentActions", allowAgentActions);
             allowPrisonerActions = settings.optBoolean("allowPrisonerActions", allowPrisonerActions);
+            
+            directoryUseShortName = settings.optBoolean("directoryUseShortName", directoryUseShortName);
             
             if (settings.has("miningVariantsOrWings"))
                 miningVariantsOrWings = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));

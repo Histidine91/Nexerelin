@@ -67,7 +67,8 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				FactionListGrouping group = groups.get(num - 1);
 				for (FactionAPI faction : group.factions)
 				{
-					opts.addOption(Misc.ucFirst(faction.getDisplayNameLong()), PRINT_FACTION_OPTION_PREFIX + faction.getId());
+					opts.addOption(Nex_FactionDirectoryHelper.getFactionDisplayName(faction), 
+							PRINT_FACTION_OPTION_PREFIX + faction.getId());
 				}
 				
 				opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_factionDirectoryMain");

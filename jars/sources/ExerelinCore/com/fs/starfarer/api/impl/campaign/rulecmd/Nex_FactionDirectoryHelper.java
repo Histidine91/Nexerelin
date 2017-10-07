@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,8 +45,8 @@ public class Nex_FactionDirectoryHelper {
 			@Override
 			public int compare(FactionAPI f1, FactionAPI f2)
 			{
-				String n1 = Misc.ucFirst(f1.getDisplayNameLong());
-				String n2 = Misc.ucFirst(f2.getDisplayNameLong());
+				String n1 = getFactionDisplayName(f1);
+				String n2 = getFactionDisplayName(f2);
 				return n1.compareTo(n2);
 			}
 		});
@@ -113,6 +114,14 @@ public class Nex_FactionDirectoryHelper {
 		return list;
 	}
 	
+	public static String getFactionDisplayName(FactionAPI faction)
+	{
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction.getId());
+		if (conf != null && conf.directoryUseShortName)
+			return Misc.ucFirst(faction.getDisplayName());
+		return Misc.ucFirst(faction.getDisplayNameLong());
+	}
+	
 	/**
 	 * Gets the first three letters of the faction's long name
 	 * @param faction
@@ -120,7 +129,7 @@ public class Nex_FactionDirectoryHelper {
 	 */
 	protected static String getFactionInitial(FactionAPI faction)
 	{
-		String name = Misc.ucFirst(faction.getDisplayNameLong());
+		String name = getFactionDisplayName(faction);
 		int endIndex = 3;
 		if (endIndex > name.length())
 			endIndex = name.length();
@@ -129,8 +138,8 @@ public class Nex_FactionDirectoryHelper {
 	
 	public static class FactionListGrouping
 	{
-		String first = "aaa";	// initial of the first faction
-		String last = "zzz";	// initial of the last faction 
+		String first = "";	// initial of the first faction
+		String last = "";	// initial of the last faction 
 		public List<FactionAPI> factions;
 		//public List<String> factionNames = new ArrayList<>();
 		public String tooltip = "";
@@ -146,7 +155,7 @@ public class Nex_FactionDirectoryHelper {
 			String tooltip = "";
 			for (int i = 0; i< factions.size(); i++)
 			{
-				tooltip = tooltip + "– " + Misc.ucFirst(factions.get(i).getDisplayNameLong());
+				tooltip = tooltip + "– " + getFactionDisplayName(factions.get(i));
 				if (i < factions.size() - 1)
 					tooltip += "\n";
 			}
@@ -155,6 +164,7 @@ public class Nex_FactionDirectoryHelper {
 		
 		public String getGroupingRangeString()
 		{
+			if (last.isEmpty()) return first;
 			return first + " – " + last;
 		}
 		
@@ -173,7 +183,7 @@ public class Nex_FactionDirectoryHelper {
 			List<String> list = new ArrayList<>();
 			for (FactionAPI faction : factions)
 			{
-				list.add(Misc.ucFirst(faction.getDisplayNameLong()));
+				list.add(getFactionDisplayName(faction));
 			}
 			return list;
 		}

@@ -45,7 +45,8 @@ public class Nex_NGCListFactions extends BaseCommandPlugin {
 				FactionListGrouping group = Nex_FactionDirectoryHelper.getNGCFactionGroupings(false, true).get(num - 1);
 				for (FactionAPI faction : group.factions)
 				{
-					opts.addOption(Misc.ucFirst(faction.getDisplayNameLong()), JOIN_FACTION_OPTION_PREFIX + faction.getId());
+					opts.addOption(Nex_FactionDirectoryHelper.getFactionDisplayName(faction), 
+							JOIN_FACTION_OPTION_PREFIX + faction.getId());
 				}
 				opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_NGCFactionsBack");
 				opts.setShortcut("nex_NGCFactionsBack", Keyboard.KEY_ESCAPE, false, false, false, false);
