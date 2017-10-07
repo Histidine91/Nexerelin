@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import org.apache.log4j.Logger;
 
 /**
@@ -37,6 +38,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
     
     protected Map<String, Float> revengeStrength = new HashMap<>();
     protected Map<String, Float> reserves = new HashMap<>();
+    protected Random random = new Random();
     
     public static Logger log = Global.getLogger(ResponseFleetManager.class);
     
@@ -97,6 +99,9 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
                 0,        // civilian
                 0,    //maxFP*0.1f,    // utility
                 0.15f, -1, 1.25f, 1);    // quality bonus, quality override, officer num mult, officer level bonus
+        if (random == null)
+            random = new Random();
+        fleetParams.random = random;
         
         CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(Global.getSector().getFaction(fleetFactionId), fleetParams);
         if (fleet == null) return null;
