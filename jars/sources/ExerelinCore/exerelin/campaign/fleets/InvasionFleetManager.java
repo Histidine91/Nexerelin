@@ -495,13 +495,17 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				if (ExerelinUtilsFaction.isFactionHostileToAll(marketFactionId))
 					weight *= ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD;
 				
+				// revanchism
+				if (ExerelinUtilsMarket.wasOriginalOwner(market, factionId))
+					weight *= 2;
+				
 				if (SectorManager.getHardMode())
 				{
 					if (marketFactionId.equals(PlayerFactionStore.getPlayerFactionId()) 
 							|| marketFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
 						weight *= HARD_MODE_INVASION_TARGETING_CHANCE;
 				}
-
+				
 				targetPicker.add(market, weight);
 			}
 		}

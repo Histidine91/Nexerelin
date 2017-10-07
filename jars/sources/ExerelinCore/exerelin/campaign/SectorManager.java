@@ -328,7 +328,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static void createWarmongerEvent(String targetFactionId, SectorEntityToken location)
     {
         if (ExerelinConfig.warmongerPenalty == 0) return;
-		if (NO_WARMONGER_FACTIONS.contains(targetFactionId)) return;
+        if (NO_WARMONGER_FACTIONS.contains(targetFactionId)) return;
         
         FactionAPI targetFaction = Global.getSector().getFaction(targetFactionId);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -443,9 +443,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (!ExerelinUtilsMarket.shouldTargetForInvasions(market, 4))
                 continue;
             
-            int size = market.getSize();
-            if (market.hasCondition("headquarters")) size *= 0.1f;
-            targetPicker.add(market, size);
+            float weight = market.getSize();
+            boolean wasOriginalOwner = ExerelinUtilsMarket.wasOriginalOwner(market, respawnFactionId);
+            if (wasOriginalOwner)
+                weight *= 10;
+            else
+                if (market.hasCondition(Conditions.HEADQUARTERS)) weight *= 0.1f;
+            targetPicker.add(market, weight);
         }
         MarketAPI targetMarket = (MarketAPI)targetPicker.pick();
         if (targetMarket == null) {

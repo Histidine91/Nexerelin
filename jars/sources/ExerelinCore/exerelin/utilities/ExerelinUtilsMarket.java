@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
@@ -280,6 +281,15 @@ public class ExerelinUtilsMarket {
 	{
 		return market.getMemoryWithoutUpdate().getBoolean("$beingInvaded")	// NPC fleet
 				|| market.getId().equals(Global.getSector().getCharacterData().getMemoryWithoutUpdate().getString("$invasionTarget"));	// player
+	}
+	
+	public static boolean wasOriginalOwner(MarketAPI market, String factionId)
+	{
+		MemoryAPI mem = market.getMemoryWithoutUpdate();
+		if (mem.contains("$startingFactionId"))
+			return mem.getString("$startingFactionId").equals(factionId);
+		
+		return false;
 	}
 	
 	/**
