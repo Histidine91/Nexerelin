@@ -308,7 +308,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 			spawnCounter.put(market.getId(), newValue);
 		}
 	}
-  
+	
 	@Override
 	public void advance(float amount)
 	{
@@ -351,13 +351,13 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	{
 		return miningFleetManager;
 	}
-  
+	
 	@Override
 	public boolean isDone()
 	{
 		return false;
 	}
-  
+	
 	@Override
 	public void reportFleetDespawned(CampaignFleetAPI fleet, CampaignEventListener.FleetDespawnReason reason, Object param)
 	{

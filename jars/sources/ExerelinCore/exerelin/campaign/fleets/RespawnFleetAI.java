@@ -24,91 +24,91 @@ import org.lwjgl.util.vector.Vector2f;
 
 public class RespawnFleetAI extends InvasionFleetAI
 {
-    public static Logger log = Global.getLogger(RespawnFleetAI.class);
-    protected boolean captureSuccessful = false;
-    protected boolean forceHostile = false;
-    
-    public RespawnFleetAI(CampaignFleetAPI fleet, InvasionFleetManager.InvasionFleetData data)
-    {
-        super(fleet, data);
-    }
-        
-    @Override
-    protected void giveInitialAssignment()
-    {
-        // do nothing
-    }
-    
-    @Override
-    public void advance(float amount)
-    {
-        float days = Global.getSector().getClock().convertToDays(amount);
-        this.daysTotal += days;
-        if (this.daysTotal > 150.0F)
-        {
-            giveStandDownOrders();
-            return;
-        }
-        
-        interval += days;
-        if (interval >= 0.25f) interval -= 0.25f;
-        else return;
-        
-        FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
-        if (assignment != null)
-        {
-            if (data.targetMarket.getFaction() == fleet.getFaction())
-            {
-                // we already own this market
-                captureSuccessful = true;
-                giveStandDownOrders();
-            }
-            
-            float fp = this.fleet.getFleetPoints();
-            if (fp < this.data.startingFleetPoints / 2.0F) {
-                giveStandDownOrders();
-            }
-            int marines = this.fleet.getCargo().getMarines();
-            if (marines < data.marineCount * 0.4f) {
-                // we lost over 60% of our marines, no more invading
-                giveStandDownOrders();
-            }
-            
-            if (orderedReturn)
-                return;
-            
-            if(assignment.getAssignment() == FleetAssignment.ORBIT_PASSIVE && data.target.getContainingLocation() == data.fleet.getContainingLocation()
-                    && Misc.getDistance(data.target.getLocation(), data.fleet.getLocation()) < 600f)
-            {
-                fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, INVADE_ORBIT_TIME);
-                FactionAPI fleetFaction = fleet.getFaction();
-                FactionAPI targetFaction = data.targetMarket.getFaction();
-                
-                if (!fleetFaction.isHostileTo(targetFaction) && !forceHostile)
-                {
-                    DiplomacyManager.adjustRelations(fleetFaction, targetFaction, 0, RepLevel.HOSTILE, null, null);
-                    AllianceManager.doAlliancePeaceStateChange(fleetFaction.getId(), targetFaction.getId(), true);
-                    forceHostile = true;
-                }
-                
-                if (!responseFleetRequested)
-                {
-                    ResponseFleetManager.requestResponseFleet(data.targetMarket, data.fleet);
-                    broadcastHostile();
-                    //responseFleetRequested = true;
-                }
+	public static Logger log = Global.getLogger(RespawnFleetAI.class);
+	protected boolean captureSuccessful = false;
+	protected boolean forceHostile = false;
+	
+	public RespawnFleetAI(CampaignFleetAPI fleet, InvasionFleetManager.InvasionFleetData data)
+	{
+		super(fleet, data);
+	}
+		
+	@Override
+	protected void giveInitialAssignment()
+	{
+		// do nothing
+	}
+	
+	@Override
+	public void advance(float amount)
+	{
+		float days = Global.getSector().getClock().convertToDays(amount);
+		this.daysTotal += days;
+		if (this.daysTotal > 150.0F)
+		{
+			giveStandDownOrders();
+			return;
+		}
+		
+		interval += days;
+		if (interval >= 0.25f) interval -= 0.25f;
+		else return;
+		
+		FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
+		if (assignment != null)
+		{
+			if (data.targetMarket.getFaction() == fleet.getFaction())
+			{
+				// we already own this market
+				captureSuccessful = true;
+				giveStandDownOrders();
+			}
+			
+			float fp = this.fleet.getFleetPoints();
+			if (fp < this.data.startingFleetPoints / 2.0F) {
+				giveStandDownOrders();
+			}
+			int marines = this.fleet.getCargo().getMarines();
+			if (marines < data.marineCount * 0.4f) {
+				// we lost over 60% of our marines, no more invading
+				giveStandDownOrders();
+			}
+			
+			if (orderedReturn)
+				return;
+			
+			if(assignment.getAssignment() == FleetAssignment.ORBIT_PASSIVE && data.target.getContainingLocation() == data.fleet.getContainingLocation()
+					&& Misc.getDistance(data.target.getLocation(), data.fleet.getLocation()) < 600f)
+			{
+				fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, INVADE_ORBIT_TIME);
+				FactionAPI fleetFaction = fleet.getFaction();
+				FactionAPI targetFaction = data.targetMarket.getFaction();
+				
+				if (!fleetFaction.isHostileTo(targetFaction) && !forceHostile)
+				{
+					DiplomacyManager.adjustRelations(fleetFaction, targetFaction, 0, RepLevel.HOSTILE, null, null);
+					AllianceManager.doAlliancePeaceStateChange(fleetFaction.getId(), targetFaction.getId(), true);
+					forceHostile = true;
+				}
+				
+				if (!responseFleetRequested)
+				{
+					ResponseFleetManager.requestResponseFleet(data.targetMarket, data.fleet);
+					broadcastHostile();
+					//responseFleetRequested = true;
+				}
 				data.targetMarket.getMemoryWithoutUpdate().set("$beingInvaded", true, INVADE_ORBIT_TIME);
-            }
-            // invade
-            else if(assignment.getAssignment() == FleetAssignment.HOLD && data.target.getContainingLocation() == data.fleet.getContainingLocation()
-                    && Misc.getDistance(data.target.getLocation(), data.fleet.getLocation()) < 600f)
-            {
-                // market is no longer hostile; abort invasion
-                if(!data.target.getFaction().isHostileTo(fleet.getFaction()))
-                    giveStandDownOrders();
-                else
-                {
-                    InvasionRound.InvasionRoundResult result = InvasionRound.AttackMarket(fleet, data.target, false);
+			}
+			// invade
+			else if(assignment.getAssignment() == FleetAssignment.HOLD && data.target.getContainingLocation() == data.fleet.getContainingLocation()
+					&& Misc.getDistance(data.target.getLocation(), data.fleet.getLocation()) < 600f)
+			{
+				// market is no longer hostile; abort invasion
+				if(!data.target.getFaction().isHostileTo(fleet.getFaction()))
+					giveStandDownOrders();
+				else
+				{
+					InvasionRound.InvasionRoundResult result = InvasionRound.AttackMarket(fleet, data.target, false);
 					if (result.success)
 					{
 						// respawn fleets have no event
@@ -116,61 +116,61 @@ public class RespawnFleetAI extends InvasionFleetAI
 						data.targetMarket.getMemoryWithoutUpdate().unset("$beingInvaded");
 					}
 				}
-            }
-        }
-        else
-        {
-            MarketAPI market = data.targetMarket;
-            StarSystemAPI system = market.getStarSystem();
-            String locName = market.getPrimaryEntity().getContainingLocation().getName();
-            String marketName = market.getName();
-            
-            if (system != null)
-            {
-                locName = "the " + system.getName();
-            }
-            if (system != null && system != this.fleet.getContainingLocation()) {
-                LocationAPI hyper = Global.getSector().getHyperspace();
-                Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
-                SectorEntityToken token = hyper.createToken(dest.x, dest.y);
-                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
-                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
-            }
-            else {
-                //this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
-                this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
-            }
-            this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), INVADE_ORBIT_TIME, StringHelper.getFleetAssignmentString("beginningInvasion", marketName));
-            // once it reaches the "hold" part, that's our cue to actually run the invasion code
-            this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 2.0F, StringHelper.getFleetAssignmentString("invading", marketName));
-        }
-    }
-    
-    @Override
-    protected void giveStandDownOrders()
-    {
-        if (!this.orderedReturn)
-        {
-            // if failed capture, reset relationship
-            FactionAPI faction = fleet.getFaction();
-            String targetFactionId = data.targetMarket.getFactionId();
-
-            if (!captureSuccessful && faction.isHostileTo(targetFactionId))
-            {
-                boolean reset = forceHostile;
-                String factionId = faction.getId();
-                if (ExerelinUtilsFaction.isFactionHostileToAll(factionId)) reset = false;
-                else if (ExerelinUtilsFaction.isFactionHostileToAll(targetFactionId)) reset = false;
-                
-                if (reset)
-                {
-                    faction.setRelationship(targetFactionId, 0);
-                    AllianceManager.doAlliancePeaceStateChange(faction.getId(), targetFactionId, false);
-                    ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
-                }
-            }
-        }
-        super.giveStandDownOrders();
-    }
+			}
+		}
+		else
+		{
+			MarketAPI market = data.targetMarket;
+			StarSystemAPI system = market.getStarSystem();
+			String locName = market.getPrimaryEntity().getContainingLocation().getName();
+			String marketName = market.getName();
+			
+			if (system != null)
+			{
+				locName = "the " + system.getName();
+			}
+			if (system != null && system != this.fleet.getContainingLocation()) {
+				LocationAPI hyper = Global.getSector().getHyperspace();
+				Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
+				SectorEntityToken token = hyper.createToken(dest.x, dest.y);
+				this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
+				this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
+			}
+			else {
+				//this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
+				this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
+			}
+			this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, market.getPrimaryEntity(), INVADE_ORBIT_TIME, StringHelper.getFleetAssignmentString("beginningInvasion", marketName));
+			// once it reaches the "hold" part, that's our cue to actually run the invasion code
+			this.fleet.addAssignment(FleetAssignment.HOLD, market.getPrimaryEntity(), 2.0F, StringHelper.getFleetAssignmentString("invading", marketName));
+		}
+	}
+	
+	@Override
+	protected void giveStandDownOrders()
+	{
+		if (!this.orderedReturn)
+		{
+			// if failed capture, reset relationship
+			FactionAPI faction = fleet.getFaction();
+			String targetFactionId = data.targetMarket.getFactionId();
+			
+			if (!captureSuccessful && faction.isHostileTo(targetFactionId))
+			{
+				boolean reset = forceHostile;
+				String factionId = faction.getId();
+				if (ExerelinUtilsFaction.isFactionHostileToAll(factionId)) reset = false;
+				else if (ExerelinUtilsFaction.isFactionHostileToAll(targetFactionId)) reset = false;
+				
+				if (reset)
+				{
+					faction.setRelationship(targetFactionId, 0);
+					AllianceManager.doAlliancePeaceStateChange(faction.getId(), targetFactionId, false);
+					ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
+				}
+			}
+		}
+		super.giveStandDownOrders();
+	}
 }
 

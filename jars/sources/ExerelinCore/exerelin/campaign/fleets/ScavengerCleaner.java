@@ -22,7 +22,7 @@ public class ScavengerCleaner extends BaseCampaignEventListener {
 	public ScavengerCleaner() {
 		super(false);
 	}
-
+	
 	@Override
 	public void reportPlayerOpenedMarket(MarketAPI market) 
 	{
@@ -34,7 +34,7 @@ public class ScavengerCleaner extends BaseCampaignEventListener {
 					continue;
 				boolean isScav = fleet.getMemoryWithoutUpdate().contains(MemFlags.MEMORY_KEY_SCAVENGER) && fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_SCAVENGER);
 				if (!isScav) continue;
-
+				
 				FleetAssignmentDataAPI assign = fleet.getCurrentAssignment();
 				if (assign == null) continue;
 				if (assign.getAssignment() != FleetAssignment.GO_TO_LOCATION 
