@@ -10,7 +10,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Nex_FactionDirectoryHelper {
 
@@ -20,6 +22,8 @@ public class Nex_FactionDirectoryHelper {
 	
 	protected static List<FactionListGrouping> ngcFactions = new ArrayList<>();
 	protected static List<FactionListGrouping> ngcFactionsModOnly = new ArrayList<>();
+	
+	protected static Map<String, String> nameCache = new HashMap<>();
 	
 	/**
 	 * Groups the specified factions into alphabetically sorted lists.
@@ -108,7 +112,7 @@ public class Nex_FactionDirectoryHelper {
 			if (!modOnly) factions.addAll(ExerelinConfig.getBuiltInFactionsList(true));
 			if (excludeFollowers)
 				factions.remove(ExerelinConstants.PLAYER_NPC_ID);
-			list = getFactionGroupings(factions);
+			list.addAll(getFactionGroupings(factions));
 		}
 		
 		return list;
@@ -116,10 +120,18 @@ public class Nex_FactionDirectoryHelper {
 	
 	public static String getFactionDisplayName(FactionAPI faction)
 	{
+		String factionId = faction.getId();
+		if (nameCache.containsKey(factionId))
+			return nameCache.get(factionId);
+		
+		String name;
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction.getId());
 		if (conf != null && conf.directoryUseShortName)
-			return Misc.ucFirst(faction.getDisplayName());
-		return Misc.ucFirst(faction.getDisplayNameLong());
+			name = Misc.ucFirst(faction.getDisplayName());
+		else name = Misc.ucFirst(faction.getDisplayNameLong());
+		
+		nameCache.put(factionId, name);
+		return name;
 	}
 	
 	/**
