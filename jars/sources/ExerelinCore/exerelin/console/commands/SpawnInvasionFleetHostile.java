@@ -23,11 +23,9 @@ public class SpawnInvasionFleetHostile implements BaseCommand {
             Console.showMessage(CommonStrings.ERROR_CAMPAIGN_ONLY);
             return CommandResult.WRONG_CONTEXT;
         }
-
-        // do me!
+        
         SectorAPI sector = Global.getSector();
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-        FactionAPI playerAlignedFaction = sector.getFaction(playerAlignedFactionId);
         CampaignFleetAPI playerFleet = sector.getPlayerFleet();
         List<MarketAPI> targets = ExerelinUtilsFaction.getFactionMarkets(playerAlignedFactionId);
         List<MarketAPI> sources = Global.getSector().getEconomy().getMarketsCopy();
@@ -38,6 +36,7 @@ public class SpawnInvasionFleetHostile implements BaseCommand {
         MarketAPI closestOriginMarket = null;
         float closestOriginDist = 9999999;
         
+        // pick target market
         for (MarketAPI market : targets) {
             float distance = Misc.getDistance(playerPos, market.getPrimaryEntity().getLocationInHyperspace());            
             if (distance < closestTargetDist)
@@ -47,8 +46,9 @@ public class SpawnInvasionFleetHostile implements BaseCommand {
             }
         }
         
+        // pick source market
         for (MarketAPI market : sources) {
-            if (market.getFaction() == playerAlignedFaction) continue;
+            if (!market.getFaction().isHostileTo(playerAlignedFactionId)) continue;
             float distance = Misc.getDistance(playerPos, market.getPrimaryEntity().getLocationInHyperspace());
             if (distance < closestOriginDist)
             {
@@ -63,6 +63,7 @@ public class SpawnInvasionFleetHostile implements BaseCommand {
             return CommandResult.ERROR;
         }
         
+        // spawn fleet
         InvasionFleetManager.InvasionFleetData data = InvasionFleetManager.spawnInvasionFleet(closestOriginMarket.getFaction(), closestOriginMarket, closestTargetMarket, 1.1f, true);
         if (data == null) {
             Console.showMessage("Unable to spawn fleet");

@@ -23,8 +23,7 @@ public class SpawnInvasionFleet implements BaseCommand {
             Console.showMessage(CommonStrings.ERROR_CAMPAIGN_ONLY);
             return CommandResult.WRONG_CONTEXT;
         }
-
-        // do me!
+        
         SectorAPI sector = Global.getSector();
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         FactionAPI playerAlignedFaction = sector.getFaction(playerAlignedFactionId);
@@ -38,6 +37,7 @@ public class SpawnInvasionFleet implements BaseCommand {
         MarketAPI closestOriginMarket = null;
         float closestOriginDist = 9999999;
         
+        // pick target market
         for (MarketAPI market : targets) {
             if (market.getFaction() == playerAlignedFaction) continue;
             float distance = Misc.getDistance(playerPos, market.getPrimaryEntity().getLocationInHyperspace());            
@@ -48,6 +48,7 @@ public class SpawnInvasionFleet implements BaseCommand {
             }
         }
         
+        // pick source market
         for (MarketAPI market : sources) {
             float distance = Misc.getDistance(playerPos, market.getPrimaryEntity().getLocationInHyperspace());
             if (distance < closestOriginDist)
@@ -63,6 +64,7 @@ public class SpawnInvasionFleet implements BaseCommand {
             return CommandResult.ERROR;
         }
         
+        // spawn fleet
         InvasionFleetManager.InvasionFleetData data = InvasionFleetManager.spawnInvasionFleet(playerAlignedFaction, closestOriginMarket, closestTargetMarket, 1.1f, true);
         if (data == null) {
             Console.showMessage("Unable to spawn fleet");
