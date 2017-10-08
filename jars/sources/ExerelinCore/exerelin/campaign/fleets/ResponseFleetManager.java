@@ -16,6 +16,7 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.HashMap;
@@ -99,9 +100,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 				0,		// civilian
 				0,	//maxFP*0.1f,	// utility
 				0.15f, -1, 1.25f, 1);	// quality bonus, quality override, officer num mult, officer level bonus
-		if (random == null)
-			random = new Random();
-		fleetParams.random = random;
+		fleetParams.random = getRandom();
 		
 		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(Global.getSector().getFaction(fleetFactionId), fleetParams);
 		if (fleet == null) return null;
@@ -237,6 +236,16 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 			
 			reserves.put(market.getId(), newValue);
 		}
+	}
+	
+	public Random getRandom() 
+	{
+		// reverse compatibility
+		if (random == null)
+		{
+			random = new Random(ExerelinUtils.getStartingSeed());
+		}
+		return random;
 	}
 	
 	public static void requestResponseFleet(MarketAPI market, SectorEntityToken attacker)

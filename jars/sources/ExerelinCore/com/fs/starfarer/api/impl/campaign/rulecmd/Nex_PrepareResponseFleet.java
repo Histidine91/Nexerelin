@@ -69,6 +69,7 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 				0,		// civilian
 				0,		// utility
 				0, 0, 1, 0);	// quality bonus, quality override, officer num mult, officer level bonus
+			fleetParams.random = ResponseFleetManager.getManager().getRandom();
 		
 			fleet = ExerelinUtilsFleet.customCreateFleet(market.getFaction(), fleetParams);
 			
