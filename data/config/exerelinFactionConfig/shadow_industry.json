@@ -2,7 +2,9 @@
     "playableFaction":true,
     "corvusCompatible":true,
 
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
+    
+    "directoryUseShortName":true,
 
     "customRebelFaction":"",
     "customRebelFleetId":"",

@@ -86,9 +86,14 @@ public class ExerelinUtils
 	
 	public static void addDevModeDialogOptions(InteractionDialogAPI dialog)
 	{
+		addDevModeDialogOptions(dialog, true);
+	}
+	
+	public static void addDevModeDialogOptions(InteractionDialogAPI dialog, boolean dumpMemoryOpt)
+	{
 		if (Global.getSettings().isDevMode())
 		{
-			DumpMemory.addOption(dialog);
+			if (dumpMemoryOpt) DumpMemory.addOption(dialog);
 			DevMenuOptions.addOptions(dialog);
 		}
 	}

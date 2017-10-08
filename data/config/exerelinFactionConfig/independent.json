@@ -1,23 +1,23 @@
 {
-    "uniqueModClassName":"", # String
-    "playableFaction":false, # Boolean
+    "playableFaction":false,
     "corvusCompatible":true,
     "showIntelEvenIfDead":true,
     "noHomeworld":true,
+    
+    "baseFleetCostMultiplier":1.0,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "directoryUseShortName":true,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Rebels", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Rebels",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "factionsLiked":[],
+    "factionsDisliked":[],
     
     "alignments":{
-	"diplomatic":0.5,
+        "diplomatic":0.5,
     },
 }
