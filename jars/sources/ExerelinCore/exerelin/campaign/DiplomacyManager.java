@@ -403,7 +403,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (playerIsHostile2 != playerWasHostile2)
             printPlayerHostileStateMessage(faction2, playerIsHostile2);
         
-        // TODO: dispaly specific reputation change in message field if it affects player
+        // TODO: display specific reputation change in message field if it affects player
         if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
         {
             

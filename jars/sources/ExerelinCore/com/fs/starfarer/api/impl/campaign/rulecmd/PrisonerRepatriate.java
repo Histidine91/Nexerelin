@@ -23,7 +23,6 @@ public class PrisonerRepatriate extends AgentActionBase {
                 if (superResult == false)
                     return false;
                 
-                // FIXME: may want to migrate to ExerelinUtilsReputation
                 SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
                 
                 FactionAPI faction = target.getFaction();

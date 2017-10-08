@@ -101,7 +101,6 @@ public class ConquestMission extends BaseCampaignMission {
 		return new MissionCompletionRep(rep, RepLevel.COOPERATIVE, -0.05f, RepLevel.INHOSPITABLE);
 	}
 	
-	// TODO externalise
 	@Override
 	public String getName() {
 		return StringHelper.getString("exerelin_missions", "conquestMission") + " - " + target.getName();

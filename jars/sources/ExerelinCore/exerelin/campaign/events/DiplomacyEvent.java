@@ -26,7 +26,6 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	protected static final int DAYS_TO_KEEP = 30;
 	
 	protected FactionAPI otherFaction;
-	protected DiplomacyEventDef event;	// FIXME: legacy, remove
 	protected String eventStage;
 	protected ExerelinReputationAdjustmentResult result;
 	protected float delta;

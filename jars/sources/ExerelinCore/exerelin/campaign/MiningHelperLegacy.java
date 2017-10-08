@@ -577,7 +577,6 @@ public class MiningHelperLegacy {
 		return hullDamage * hullDamage * (0.5f + (float) Math.random() * 0.5f) * member.getStats().getCrewLossMult().getModifiedValue();
 	}
 	
-	// TODO
 	public static MiningAccident handleAccidents(CampaignFleetAPI fleet, float strength, float danger)
 	{
 		MiningAccident accident = null;

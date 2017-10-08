@@ -174,7 +174,6 @@ public class ExerelinUtilsFaction {
         //ExerelinFactionCommissionMissionEvent event = (ExerelinFactionCommissionMissionEvent)eventSuper;
         //event.endEvent();
         sector.getEventManager().endEvent(eventSuper);
-        //sector.reportEventStage(event, "annul", event.findMessageSender(), MessagePriority.ENSURE_DELIVERY);    // TODO comment out after debugging
     }
     
     public static String getCommissionFactionId()

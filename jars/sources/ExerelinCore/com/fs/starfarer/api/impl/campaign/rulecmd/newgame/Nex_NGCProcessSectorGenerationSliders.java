@@ -43,7 +43,6 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 	{
 		ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
-		// FIXME externalize strings
 		opts.addSelector(getString("populatedSystemsTitle"), "systemCountSelector", Color.YELLOW, BAR_WIDTH, 48, 4, 32, ValueDisplayMode.VALUE, 
 				getString("populatedSystemsTooltip"));
 		opts.setSelectorValue("systemCountSelector", data.numSystems);

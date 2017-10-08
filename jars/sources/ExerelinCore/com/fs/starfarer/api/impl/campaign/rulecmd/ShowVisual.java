@@ -11,15 +11,14 @@ import com.fs.starfarer.api.util.Misc.Token;
 
 public class ShowVisual extends BaseCommandPlugin {
 
-        @Override
+	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		
 		SectorEntityToken target = dialog.getInteractionTarget();
 		String image = params.get(0).getString(memoryMap);
-                // FIXME
+		// FIXME: don't hardcode size
 		dialog.getVisualPanel().showImageVisual(new InteractionDialogImageVisual(image, 640, 400));
 		
 		return true;
 	}
-
 }

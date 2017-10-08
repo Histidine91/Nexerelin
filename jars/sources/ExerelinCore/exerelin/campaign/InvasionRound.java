@@ -178,7 +178,7 @@ public class InvasionRound {
 			return result;
 		}
 		
-		// combat resolution (TODO: incomplete)
+		// combat resolution
 		float randomBonus = (float)(Math.random()) * ATTACKER_RANDOM_BONUS;
 		if (simType == InvasionSimulationType.PESSIMISTIC)
 			randomBonus = 0;
@@ -239,7 +239,6 @@ public class InvasionRound {
 		result.marinesLost = marinesLost;
 		result.timeTaken = marketSize/2;
 		
-		// todo implement cargo damage
 		return result;
 	}
 	
