@@ -171,8 +171,9 @@ public class ExerelinUtilsFaction {
         CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, Events.FACTION_COMMISSION);
         if (eventSuper == null) return;
         
-        ExerelinFactionCommissionMissionEvent event = (ExerelinFactionCommissionMissionEvent)eventSuper;
-        event.endEvent();
+        //ExerelinFactionCommissionMissionEvent event = (ExerelinFactionCommissionMissionEvent)eventSuper;
+        //event.endEvent();
+        sector.getEventManager().endEvent(eventSuper);
         //sector.reportEventStage(event, "annul", event.findMessageSender(), MessagePriority.ENSURE_DELIVERY);    // TODO comment out after debugging
     }
     
