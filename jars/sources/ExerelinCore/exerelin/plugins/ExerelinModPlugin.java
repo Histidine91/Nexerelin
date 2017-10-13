@@ -88,6 +88,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.getFaction(Factions.PLAYER).setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1);
         ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
         
+        // add Follow Me ability
         Global.getSector().getCharacterData().addAbility("exerelin_follow_me");
         AbilitySlotsAPI slots = Global.getSector().getUIData().getAbilitySlotsAPI();
         for (AbilitySlotAPI slot: slots.getCurrSlotsCopy())
@@ -122,16 +123,12 @@ public class ExerelinModPlugin extends BaseModPlugin
         //ExerelinSetupData.resetInstance();
         ExerelinConfig.loadSettings();
         //ExerelinCheck.checkModCompatability();
-        addScriptsIfNeeded();
+        addScriptsAndEventsIfNeeded();
     }
     
     protected void reverseCompatibility()
     {
-        SectorEntityToken prism = Global.getSector().getEntityById("prismFreeport");
-        if (prism != null)
-        {
-            prism.removeTag(Tags.STATION);
-        }
+    
     }
     
     @Override
@@ -144,30 +141,11 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
     }
     
-    protected void addScriptsIfNeeded() {
+    protected void addScriptsAndEventsIfNeeded() {
         SectorAPI sector = Global.getSector();
         if (!sector.hasScript(ConquestMissionCreator.class)) {
             sector.addScript(new ConquestMissionCreator());
         }
-    }
-    
-    @Override
-    public void onGameLoad(boolean newGame) {
-        Global.getLogger(this.getClass()).info("Game load; " + SectorManager.isSectorManagerSaved());
-        isNewGame = newGame;
-        
-        addScriptsIfNeeded();
-        
-        ExerelinConfig.loadSettings();
-        SectorManager.create();
-        DiplomacyManager.create();
-        InvasionFleetManager.create();
-        ResponseFleetManager.create();
-        MiningFleetManager.create();
-        CovertOpsManager.create();
-        AllianceManager.create();
-        
-        SectorAPI sector = Global.getSector();
         
         if (!sector.getEventManager().isOngoing(null, "exerelin_faction_salary")) {
             sector.getEventManager().startEvent(null, "exerelin_faction_salary", null);
@@ -184,10 +162,28 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!sector.getEventManager().isOngoing(null, "exerelin_slaves_sold")) {
             sector.getEventManager().startEvent(null, "exerelin_slaves_sold", null);
         }
+    }
+    
+    @Override
+    public void onGameLoad(boolean newGame) {
+        Global.getLogger(this.getClass()).info("Game load; " + SectorManager.isSectorManagerSaved());
+        isNewGame = newGame;
+        
+        ExerelinConfig.loadSettings();
+        SectorManager.create();
+        DiplomacyManager.create();
+        InvasionFleetManager.create();
+        ResponseFleetManager.create();
+        MiningFleetManager.create();
+        CovertOpsManager.create();
+        AllianceManager.create();
+        
+        addScriptsAndEventsIfNeeded();
         
         reverseCompatibility();
         refreshTariffs();
         
+        SectorAPI sector = Global.getSector();
         sector.registerPlugin(new ExerelinCoreCampaignPlugin());
         sector.addTransientScript(new DirectoryScreenScript());
         sector.addTransientScript(new SSP_AsteroidTracker());
@@ -232,10 +228,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
         }
-        
-        //SectorAPI sector = Global.getSector();
-        //for (int i=0; i<OmniFacSettings.getNumberOfFactories(); i++) // TODO: use Omnifactory's numberOfFactories setting when it's supported
-        //    PlayerStartHandler.addOmnifactory(sector, i);
     }
     
     @Override
