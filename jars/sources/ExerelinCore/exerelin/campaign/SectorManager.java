@@ -227,14 +227,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (!fleet.knowsWhoPlayerIs()) return;
         
         log.info("Checking for warmonger event");
-        boolean losses = false;
-        List<FleetMemberAPI> currentMembers = fleet.getFleetData().getMembersListCopy();
-        for (FleetMemberAPI member : fleet.getFleetData().getSnapshot()) {
-            if (!currentMembers.contains(member)) {
-                losses = true;
-                break;
-            }
-        }
+        boolean losses = !Misc.getSnapshotMembersLost(fleet).isEmpty()
         if (losses) createWarmongerEvent(faction.getId(), fleet);
     }
     */

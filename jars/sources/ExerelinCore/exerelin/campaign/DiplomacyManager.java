@@ -735,17 +735,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 
         float loserLosses = 0f;
         float winnerLosses = 0f;
-        List<FleetMemberAPI> loserCurrent = loser.getFleetData().getMembersListCopy();
-        for (FleetMemberAPI member : loser.getFleetData().getSnapshot()) {
-            if (!loserCurrent.contains(member)) {
-                loserLosses += member.getFleetPointCost();
-            }
+        for (FleetMemberAPI member : Misc.getSnapshotMembersLost(loser)) {
+            loserLosses += member.getFleetPointCost();
         }
-        List<FleetMemberAPI> winnerCurrent = winner.getFleetData().getMembersListCopy();
-        for (FleetMemberAPI member : winner.getFleetData().getSnapshot()) {
-            if (!winnerCurrent.contains(member)) {
-                winnerLosses += member.getFleetPointCost();
-            }
+        for (FleetMemberAPI member : Misc.getSnapshotMembersLost(winner)) {
+            winnerLosses += member.getFleetPointCost();
         }
         winnerLosses *= WAR_WEARINESS_FLEET_WIN_MULT;
         

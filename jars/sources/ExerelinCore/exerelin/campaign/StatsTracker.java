@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.ExerelinConfig;
@@ -115,11 +116,11 @@ public class StatsTracker extends BaseCampaignEventListener{
     @Override
     public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
-		if (RevengeanceManagerEvent.getOngoingEvent() != null)
-		{
-			RevengeanceManagerEvent.getOngoingEvent().reportBattle(winner, battle);
-		}
-		
+        if (RevengeanceManagerEvent.getOngoingEvent() != null)
+        {
+            RevengeanceManagerEvent.getOngoingEvent().reportBattle(winner, battle);
+        }
+        
         if (!battle.isPlayerInvolved()) return;
         
         List<CampaignFleetAPI> killedFleets = battle.getNonPlayerSide();
@@ -135,34 +136,31 @@ public class StatsTracker extends BaseCampaignEventListener{
         
         for (CampaignFleetAPI killedFleet : killedFleets)
         {
-            List<FleetMemberAPI> killCurrent = killedFleet.getFleetData().getMembersListCopy();
-            for (FleetMemberAPI member : killedFleet.getFleetData().getSnapshot()) {
-                if (!killCurrent.contains(member)) {
-                    recentFpKilled += member.getFleetPointCost();
-                    recentShipsKilled++;
+            for (FleetMemberAPI member : Misc.getSnapshotMembersLost(killedFleet)) {
+                recentFpKilled += member.getFleetPointCost();
+                recentShipsKilled++;
 
-                    // orphans
-                    String factionId = member.getCaptain().getFaction().getId();
-                    if (factionId.equals("spire") || factionId.equals("darkspire")) continue; // Spire biology is different
-                    modifyOrphansMadeByCrewCount((int)(member.getMinCrew()*involvedFraction), factionId);
-                }
+                // orphans
+                String factionId = member.getCaptain().getFaction().getId();
+                if (factionId.equals("spire") || factionId.equals("darkspire")) continue; // Spire biology is different
+                modifyOrphansMadeByCrewCount((int)(member.getMinCrew()*involvedFraction), factionId);
             }
         }
         fpKilled += recentFpKilled * involvedFraction;
         shipsKilled += recentShipsKilled * involvedFraction;
         
         List<FleetMemberAPI> myCurrent = myFleet.getFleetData().getMembersListCopy();
-		List<FleetMemberAPI> mySnapshot = myFleet.getFleetData().getSnapshot();
+        List<FleetMemberAPI> mySnapshot = myFleet.getFleetData().getSnapshot();
         for (FleetMemberAPI member : mySnapshot) {
             if (!myCurrent.contains(member)) {
                 fpLost += member.getFleetPointCost();
                 shipsLost++;
             }
         }
-		// report captued ships to Prism market
-		for (FleetMemberAPI member : myCurrent) {
+        // report captued ships to Prism market
+        for (FleetMemberAPI member : myCurrent) {
             if (!mySnapshot.contains(member)) {
-				PrismMarket.notifyShipCaptured(member);
+                PrismMarket.notifyShipCaptured(member);
             }
         }
     }
