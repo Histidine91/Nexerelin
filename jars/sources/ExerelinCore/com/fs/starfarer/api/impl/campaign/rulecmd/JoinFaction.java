@@ -70,8 +70,9 @@ public class JoinFaction extends BaseCommandPlugin {
 			str = StringHelper.getString("exerelin_factions", "joinedFaction");
 			isDefection = false;
 		} else {
-			
 			str = StringHelper.getString("exerelin_factions", "switchedFactions");
+			// -5 rep to negate join/leave infinite rep exploit
+			ExerelinUtilsReputation.adjustPlayerReputation(oldFaction, null, -0.05f);
 			isDefection = true;
 		}
 		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId);
