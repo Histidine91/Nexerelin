@@ -10,6 +10,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
@@ -21,13 +22,11 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.util.Iterator;
 
 
 public class WarmongerEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(WarmongerEvent.class);
-	protected static final int DAYS_TO_KEEP = 60;
 	
     protected Map<String, Float> repLoss = new HashMap<>();
 	protected float avgRepLoss = 0;
@@ -35,16 +34,11 @@ public class WarmongerEvent extends BaseEventPlugin {
 	protected float myFactionLoss = 0;
 	protected Map<String, Object> params;
 	protected String targetFaction = "independent";
-        
-	protected float age;	
-	protected boolean done;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
-		done = false;
-		age = 0;
 	}
 	
 	@Override
@@ -60,27 +54,32 @@ public class WarmongerEvent extends BaseEventPlugin {
 	@Override
 	public void advance(float amount)
 	{
-		if (done)
-		{
-			return;
-		}
-		age = age + Global.getSector().getClock().convertToDays(amount);
-		if (age > DAYS_TO_KEEP)
-		{
-			done = true;
-			return;
-		}
 	}
 	
 	@Override
 	public void startEvent() {
+		
+	}
+	
+	public static WarmongerEvent getOngoingEvent()
+	{
+		CampaignEventPlugin event = Global.getSector().getEventManager().getOngoingEvent(null, "exerelin_warmonger");
+		if (event != null)
+			return (WarmongerEvent)event;
+		return null;
+	}
+	
+	public void reportEvent(SectorEntityToken target, Object param) {
+		setParam(param);
+		faction = target.getFaction();
+		
 		// we can set the reputation change only on message delivery
 		// but problem is, the token replacement method needs to know the relationship change NOW
 		//DiplomacyManager.adjustRelations(event, market, market.getFaction(), otherFaction, delta);
 		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
 		String stage = "report";
 		if (myFactionLoss <= 0) stage = "report_noOwnFaction";
-		Global.getSector().reportEventStage(this, stage, Global.getSector().getPlayerFleet(), priority, new BaseOnMessageDeliveryScript() {
+		Global.getSector().reportEventStage(this, stage, target, priority, new BaseOnMessageDeliveryScript() {
 			public void beforeDelivery(CommMessageAPI message) {
 				for (Map.Entry<String, Float> tmp : repLoss.entrySet())
 				{
@@ -131,6 +130,25 @@ public class WarmongerEvent extends BaseEventPlugin {
 		FactionAPI playerAlignedFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
 		
 		Map<String, String> map = super.getTokenReplacements();
+		
+		// fix faction
+		String factionName = faction.getEntityNamePrefix();
+		if (factionName == null || factionName.isEmpty()) {
+			factionName = faction.getDisplayName();
+		}
+
+		map.put("$factionIsOrAre", faction.getDisplayNameIsOrAre());
+
+		map.put("$faction", factionName);
+		map.put("$Faction", Misc.ucFirst(factionName));
+		map.put("$theFaction", faction.getDisplayNameWithArticle());
+		map.put("$TheFaction", Misc.ucFirst(faction.getDisplayNameWithArticle()));
+
+		map.put("$factionLong", faction.getDisplayNameLong());
+		map.put("$FactionLong", Misc.ucFirst(faction.getDisplayNameLong()));
+		map.put("$theFactionLong", faction.getDisplayNameLongWithArticle());
+		map.put("$TheFactionLong", Misc.ucFirst(faction.getDisplayNameLongWithArticle()));
+		
 		if (myFactionLoss > 0)
 		{
 			map.put("$playerFaction", playerAlignedFaction.getDisplayName());
@@ -173,7 +191,7 @@ public class WarmongerEvent extends BaseEventPlugin {
 	
 	@Override
 	public boolean isDone() {
-		return done;
+		return false;
 	}
 
 	@Override

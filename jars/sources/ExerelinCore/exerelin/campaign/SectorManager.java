@@ -37,6 +37,7 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
+import exerelin.campaign.events.WarmongerEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -381,7 +382,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("repLoss", repLoss);
         params.put("myFactionLoss", myFactionLoss);
         params.put("targetFaction", targetFactionId);
-        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(location), "exerelin_warmonger", params);
+        
+		WarmongerEvent event = WarmongerEvent.getOngoingEvent();
+		if (event != null) event.reportEvent(location, params);
     }
     
     public void handleSlaveTradeRep()

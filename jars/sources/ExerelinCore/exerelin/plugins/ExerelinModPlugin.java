@@ -5,11 +5,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.thoughtworks.xstream.XStream;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
@@ -141,27 +139,29 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
     }
     
+    protected void addEventIfNeeded(String eventId)
+    {
+        if (!Global.getSector().getEventManager().isOngoing(null, eventId)) {
+            Global.getSector().getEventManager().startEvent(null, eventId, null);
+        }
+    }
+    
     protected void addScriptsAndEventsIfNeeded() {
         SectorAPI sector = Global.getSector();
         if (!sector.hasScript(ConquestMissionCreator.class)) {
             sector.addScript(new ConquestMissionCreator());
         }
         
-        if (!sector.getEventManager().isOngoing(null, "exerelin_faction_salary")) {
-            sector.getEventManager().startEvent(null, "exerelin_faction_salary", null);
-        }
-        if (!sector.getEventManager().isOngoing(null, "exerelin_faction_insurance")) {
-            sector.getEventManager().startEvent(null, "exerelin_faction_insurance", null);
-        }
-        if (ExerelinUtilsFaction.isExiInCorvus() && !sector.getEventManager().isOngoing(null, "exerelin_exigency_respawn")) {
-            sector.getEventManager().startEvent(null, "exerelin_exigency_respawn", null);
+        addEventIfNeeded("exerelin_faction_salary");
+        addEventIfNeeded("exerelin_faction_insurance");
+        if (ExerelinUtilsFaction.isExiInCorvus()) {
+            addEventIfNeeded("exerelin_exigency_respawn");
         }
         if (RevengeanceManagerEvent.getOngoingEvent() == null) {
             sector.getEventManager().startEvent(null, "exerelin_revengeance_manager", null);
         }
-        if (!sector.getEventManager().isOngoing(null, "exerelin_slaves_sold")) {
-            sector.getEventManager().startEvent(null, "exerelin_slaves_sold", null);
-        }
+        addEventIfNeeded("exerelin_slaves_sold");
+        addEventIfNeeded("exerelin_warmonger");
     }
     
     @Override
