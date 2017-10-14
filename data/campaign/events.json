@@ -85,6 +85,12 @@
         "script":"exerelin.campaign.events.SSP_FactionVengeanceEvent"
     },
 	
+	# bounties
+	"exerelin_faction_bounty":{
+		"script":"exerelin.campaign.events.FactionBountyEvent",
+		"maxOngoing":3,
+	},
+	
 	# missions
 	"exerelin_conquest_mission":{
 		"script":"exerelin.campaign.missions.ConquestMissionEvent",
@@ -94,9 +100,6 @@
 	"investigation":{
 		"script":"exerelin.campaign.events.ExerelinInvestigationEvent",
 	},
-	#"market_procurement":{
-	#	"script":"exerelin.campaign.missions.ExerelinMarketProcurementMissionEvent",
-	#},
 	"nearby_events":{
 		"script":"exerelin.campaign.events.ExerelinNearbyEventsEvent",
 	},

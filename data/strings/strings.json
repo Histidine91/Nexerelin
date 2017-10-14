@@ -254,6 +254,7 @@
 		"missionBoard":"Mission Board",
 		"conquestMission":"Conquest Mission",
 		"conquer":"conquer $target",
+		"factionBounty":"$faction – $enemyFaction - $bounty",
 		"daysLeft":"$days days left",
 		"over":"over"
 	},

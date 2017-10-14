@@ -14,6 +14,7 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DirectoryScreenScript;
+import exerelin.campaign.NexEventProbabilityManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.campaign.ReinitScreenScript;
@@ -150,6 +151,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         SectorAPI sector = Global.getSector();
         if (!sector.hasScript(ConquestMissionCreator.class)) {
             sector.addScript(new ConquestMissionCreator());
+        }
+        if (!sector.hasScript(NexEventProbabilityManager.class)) {
+            sector.addScript(new NexEventProbabilityManager());
         }
         
         addEventIfNeeded("exerelin_faction_salary");
