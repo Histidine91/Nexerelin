@@ -29,6 +29,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.shared.PlayerTradeDataForSubmarket;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
+import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -74,13 +75,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Ranks.POST_STATION_COMMANDER,
         Ranks.POST_PORTMASTER,
         Ranks.POST_SUPPLY_OFFICER,
-		Ranks.POST_ADMINISTRATOR
+        Ranks.POST_ADMINISTRATOR
     });
     
     public static final Set<String> NO_BLACK_MARKET = new HashSet(Arrays.asList(new String[]{
         "SCY_overwatchStation",
         "SCY_hephaistosStation",
-		"uw_arigato"
+        "uw_arigato"
     }));
     public static final Set<String> FORCE_MILITARY_MARKET = new HashSet(Arrays.asList(new String[]{
         "SCY_hephaistosStation",
@@ -383,8 +384,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         params.put("myFactionLoss", myFactionLoss);
         params.put("targetFaction", targetFactionId);
         
-		WarmongerEvent event = WarmongerEvent.getOngoingEvent();
-		if (event != null) event.reportEvent(location, params);
+        WarmongerEvent event = WarmongerEvent.getOngoingEvent();
+        if (event != null) event.reportEvent(location, params);
     }
     
     public void handleSlaveTradeRep()
@@ -712,6 +713,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             market.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET);
         }
         
+        // followers: free storage unlock
+        if (newOwnerId.equals(ExerelinConstants.PLAYER_NPC_ID))
+        {
+            SubmarketAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
+            if (storage != null)
+            {
+                StoragePlugin plugin = (StoragePlugin)market.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
+                if (plugin != null)
+                    plugin.setPlayerPaidToUnlock(true);
+            }
+        }
+        
         // Templar stuff
         if (newOwnerId.equals("templars") && !oldOwnerId.equals("templars"))
         {
@@ -1018,7 +1031,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
-	@Deprecated
+    @Deprecated
     public static String getFirstStarName()
     {
         if (sectorManager != null && sectorManager.corvusMode == true) return "Corvus";
