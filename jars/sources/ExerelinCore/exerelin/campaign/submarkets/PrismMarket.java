@@ -416,7 +416,10 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 
                 //ignore already bought IBB
                 if (!ExerelinConfig.prismRenewBossShips && alreadyBoughtShips.contains(entry.id))
+                {
+                    log.info("Ship " + entry.id + " already acquired");
                     continue;
+                }
 
                 // favour ships from bounties close to the last one we did
                 int weight = 3;
@@ -430,7 +433,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
         } catch (IOException | JSONException ex) {
             log.error(ex);
         }
-        //How many IBB available
+        // How many IBB available
+        log.info("IBB ships available: " + picker.getItems().size() + ", " + ExerelinConfig.prismNumBossShips);
         for (int i=0; i<ExerelinConfig.prismNumBossShips; i++) {
             if (picker.isEmpty()) break;
             ret.add(picker.pickAndRemove());
@@ -491,13 +495,53 @@ public class PrismMarket extends BaseSubmarketPlugin {
     }
     
     /**
-     * Called when an enemy ship is recovered from battle. 
+     * Called when an ship is present in the player fleet; e.g. if recovered from battle. 
      * So an IBB ship can only be bought or recovered, but not both
-     * @param member The recovered ship's FleetMemberAPI
+     * @param member
      */
-    public static void notifyShipCaptured(FleetMemberAPI member)
+    public static void notifyShipAcquired(FleetMemberAPI member)
     {
-        String hullId = member.getHullSpec().getBaseHullId();
+        notifyShipAcquired(member.getHullSpec().getBaseHullId());
+    }
+    
+    /**
+     * Called when an ship is present in the player fleet; e.g. if recovered from battle. 
+     * So an IBB ship can only be bought or recovered, but not both
+     * @param hullId
+     */
+    public static void notifyShipAcquired(String hullId)
+    {
+        cacheSubmarketsIfNeeded();
+        for (SubmarketAPI sub : cachedSubmarkets)
+        {
+            //log.info("Adding ship " + hullId + " to Prism already-bought list");
+            PrismMarket prism = (PrismMarket)sub.getPlugin();
+            prism.addAlreadyBoughtShip(hullId);
+        }
+    }
+    
+    /**
+     * Mark all ships in a list as already acquired.
+     * So an IBB ship can only be bought or recovered, but not both
+     * @param ships
+     */
+    public static void recordShipsOwned(List<FleetMemberAPI> ships)
+    {
+        cacheSubmarketsIfNeeded();
+        //Global.getSector().getCampaignUI().addMessage("Adding ship " + hullId + " to Prism already-bought list", Color.GREEN);
+        for (SubmarketAPI sub : cachedSubmarkets)
+        {
+            PrismMarket prism = (PrismMarket)sub.getPlugin();
+            for (FleetMemberAPI ship : ships)
+            {
+                //log.info("Adding ship " + ship.getHullSpec().getBaseHullId() + " to Prism already-bought list");
+                prism.addAlreadyBoughtShip(ship.getHullSpec().getBaseHullId());
+            }
+        }
+    }
+    
+    public static void cacheSubmarketsIfNeeded()
+    {
         if (cachedSubmarkets == null)
         {
             cachedSubmarkets = new HashSet<>();
@@ -509,12 +553,12 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 }
             }
         }
-        //Global.getSector().getCampaignUI().addMessage("Adding ship " + hullId + " to Prism already-bought list", Color.GREEN);
-        for (SubmarketAPI sub : cachedSubmarkets)
-        {
-            PrismMarket prism = (PrismMarket)sub.getPlugin();
-            prism.addAlreadyBoughtShip(hullId);
-        }
+    }
+    
+    // call this on game load
+    public static void clearSubmarketCache()
+    {
+        cachedSubmarkets = null;
     }
     
     //==========================================================================

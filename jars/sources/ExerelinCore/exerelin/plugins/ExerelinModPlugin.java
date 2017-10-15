@@ -30,6 +30,7 @@ import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.fleets.ScavengerCleaner;
 import exerelin.campaign.missions.ConquestMissionCreator;
+import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
 import exerelin.world.ExerelinProcGen;
 import exerelin.world.SSP_AsteroidTracker;
@@ -128,14 +129,14 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-		/*
-		if (!Global.getSector().hasScript(DefenceStationManager.class))
-		{
-			DefenceStationManager man = DefenceStationManager.create();
-			Global.getSector().addScript(man);
-			man.seedFleets();
-		}
-		*/
+        /*
+        if (!Global.getSector().hasScript(DefenceStationManager.class))
+        {
+            DefenceStationManager man = DefenceStationManager.create();
+            Global.getSector().addScript(man);
+            man.seedFleets();
+        }
+        */
     }
     
     @Override
@@ -182,8 +183,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         isNewGame = newGame;
         
         ExerelinConfig.loadSettings();
-		// legacy: assign the static variables referencing the singletons,
-		// so the static methods in those classes can get them
+        // legacy: assign the static variables referencing the singletons,
+        // so the static methods in those classes can get them
         SectorManager.create();
         DiplomacyManager.create();
         InvasionFleetManager.create();
@@ -201,6 +202,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.registerPlugin(new ExerelinCoreCampaignPlugin());
         sector.addTransientScript(new DirectoryScreenScript());
         sector.addTransientScript(new SSP_AsteroidTracker());
+        
+        PrismMarket.clearSubmarketCache();
         
         if (!HAVE_VERSION_CHECKER)
             VCModPluginCustom.onGameLoad(newGame);

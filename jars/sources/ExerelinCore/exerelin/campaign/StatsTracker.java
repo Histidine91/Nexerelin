@@ -4,13 +4,17 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CargoAPI.CargoItemQuantity;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
+import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.submarkets.PrismMarket;
-import exerelin.utilities.ExerelinConfig;
 import java.util.List;
 import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
@@ -157,10 +161,27 @@ public class StatsTracker extends BaseCampaignEventListener{
                 shipsLost++;
             }
         }
-        // report captued ships to Prism market
+        // report captured ships to Prism market
         for (FleetMemberAPI member : myCurrent) {
             if (!mySnapshot.contains(member)) {
-                PrismMarket.notifyShipCaptured(member);
+                PrismMarket.notifyShipAcquired(member);
+            }
+        }
+    }
+    
+    // use this to record IBB ships for already-bought list 
+    // should catch debris field salvage
+    @Override
+    public void reportShownInteractionDialog(InteractionDialogAPI dialog) {
+        InteractionDialogPlugin plugin = dialog.getPlugin();
+        if (plugin instanceof RuleBasedInteractionDialogPluginImpl)
+        {
+            PrismMarket.recordShipsOwned(Global.getSector().getPlayerFleet().getMembersWithFightersCopy());
+            CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+            for (CargoItemQuantity<String> fighterStack : cargo.getFighters())
+            {
+                FighterWingSpecAPI bla = Global.getSettings().getFighterWingSpec(fighterStack.getItem());
+                PrismMarket.notifyShipAcquired(bla.getId());
             }
         }
     }
