@@ -89,7 +89,7 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 		int sizeForOne = 7;
 		int sizeForTwo = 12;
 		
-		if (market.getPrimaryEntity().hasTag(Tags.STATION) && market.getConnectedEntities().size() == 1)
+		if (market.getPrimaryEntity().hasTag(Tags.STATION) && market.getPlanetEntity() == null)
 		{
 			sizeForOne = 5;
 			sizeForTwo = 8;
@@ -365,7 +365,12 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 				if (fleet.getBattle() != null)
 				{
 					String marketId = fleet.getMemoryWithoutUpdate().getString(MemFlags.MEMORY_KEY_SOURCE_MARKET);
-					ResponseFleetManager.requestResponseFleet(Global.getSector().getEconomy().getMarket(marketId), fleet, fleet);
+					SectorEntityToken other = fleet.getBattle().getOtherSideFor(fleet).get(0);
+					if (other != null)
+					{
+						MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
+						ResponseFleetManager.requestResponseFleet(market, other, market.getPrimaryEntity());
+					}
 				}
 			}
 		}
