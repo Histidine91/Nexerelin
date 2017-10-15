@@ -15,7 +15,7 @@ import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.NexFleetInteractionDialogPluginImpl;
+import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.fleets.DefenceFleetAI;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.ResponseFleetManager;

@@ -14,7 +14,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.MiningHelperLegacy;
-import exerelin.campaign.NexFleetInteractionDialogPluginImpl;
+import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.combat.SSP_BattleCreationPluginImpl;
