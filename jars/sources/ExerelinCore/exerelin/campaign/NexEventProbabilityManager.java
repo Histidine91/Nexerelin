@@ -49,6 +49,9 @@ public class NexEventProbabilityManager extends BaseCampaignEventListener implem
 		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
 		if (conf.pirateFaction && !ExerelinConfig.allowPirateInvasions)
 			return false;
+		if (!SectorManager.isFactionAlive(factionId))
+			return false;
+		
 		return true;
 	}
 
