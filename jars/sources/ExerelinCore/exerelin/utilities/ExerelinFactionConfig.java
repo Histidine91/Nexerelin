@@ -19,6 +19,7 @@ import org.json.JSONException;
 public class ExerelinFactionConfig
 {
     public static final String[] DEFAULT_MINERS = {"venture_Outdated", "shepherd_Frontier"};
+    public static final String[] DEFAULT_DEF_STATIONS = {"nex_asgard_Standard"};
     public static final Map<Alignment, Float> DEFAULT_ALIGNMENTS = new HashMap<>();
     
     public String factionId;
@@ -38,7 +39,7 @@ public class ExerelinFactionConfig
     // 3 = vengeful to everyone
     public int hostileToAll = 0;    
     
-    public double baseFleetCostMultiplier = 1.0;	// currently unused
+    public double baseFleetCostMultiplier = 1.0;    // currently unused
 
     // currently unused
     public String customRebelFaction = "";
@@ -54,6 +55,7 @@ public class ExerelinFactionConfig
     public String invasionSupportFleetName = StringHelper.getString("exerelin_fleets", "invasionSupportFleetName");
     public String responseFleetName = StringHelper.getString("exerelin_fleets", "responseFleetName");
     public String defenceFleetName = StringHelper.getString("exerelin_fleets", "defenceFleetName");
+    public String stationName = StringHelper.getString("exerelin_fleets", "stationName");
     
     // Diplomacy
     public int positiveDiplomacyExtra = 0;
@@ -98,6 +100,7 @@ public class ExerelinFactionConfig
     public List<String> vengeanceFleetNamesSingle = new ArrayList<>();
     
     public List<String> customStations = new ArrayList<>();
+    public List<String> defenceStations = new ArrayList<>();
     
     public List<String> miningVariantsOrWings = new ArrayList<>();
     
@@ -143,6 +146,7 @@ public class ExerelinFactionConfig
             invasionSupportFleetName = settings.optString("invasionSupportFleetName", invasionSupportFleetName);
             defenceFleetName = settings.optString("defenceFleetName", defenceFleetName);
             responseFleetName = settings.optString("responseFleetName", responseFleetName);
+            stationName = settings.optString("stationName", stationName);
             
             positiveDiplomacyExtra = settings.optInt("positiveDiplomacyExtra");
             negativeDiplomacyExtra = settings.optInt("negativeDiplomacyExtra");
@@ -170,6 +174,12 @@ public class ExerelinFactionConfig
             
             if (settings.has("miningVariantsOrWings"))
                 miningVariantsOrWings = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
+            
+            if (settings.has("defenceStations"))
+                defenceStations = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("defenceStations")));
+            else
+                defenceStations = Arrays.asList(DEFAULT_DEF_STATIONS);
+            
             
             if (settings.has("customStations"))
                 customStations = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("customStations")));

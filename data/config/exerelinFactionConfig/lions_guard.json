@@ -7,4 +7,6 @@
     "responseFleetName":"Guardian Fleet",
     
     "morality":"amoral",
+    
+    "defenceStations":["nex_asgard_Advanced"],
 }

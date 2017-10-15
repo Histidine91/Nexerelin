@@ -1,0 +1,33 @@
+{
+  "displayName": "Defense",
+  "fluxCapacitors": 12,
+  "fluxVents": 16,
+  "goalVariant": true,
+  "hullId": "nex_defstation_platform",
+  "hullMods": [
+    "eccm",
+    "turretgyros",
+    "missleracks"
+  ],
+  "permaMods": [],
+  "quality": 0.6,
+  "variantId": "nex_defstation_platform_Defense",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "multineedler"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 002": "harpoonpod",
+        "WS 003": "harpoonpod"
+      }
+    }
+  ],
+  "wings": []
+}

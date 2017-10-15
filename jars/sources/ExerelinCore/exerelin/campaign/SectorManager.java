@@ -39,6 +39,7 @@ import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.events.WarmongerEvent;
+import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -848,6 +849,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             factionRespawned(newOwner, market);
         }
+        
+        DefenceStationManager.getManager().resetMaxStations(market);
         
         // flip relay
         if (sectorManager != null)

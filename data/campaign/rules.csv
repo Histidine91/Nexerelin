@@ -743,7 +743,7 @@ ExerelinSuperweaponPostDefenders,BeatDefendersContinue,"$global.nex_afterBattleM
 Exerelin_ShowShipVisual $bestSuperweapon
 SetPromptText ""You decide to...""
 SetShortcut exerelinSuperweaponProceed RETURN
-SetShortcut exerelinSuperweaponCancel ESCAPE",Your $shipOrFleet neutralizes the response fleet and is ready to deploy your superweapon.,"1:exerelinSuperweaponProceed:Continue
+SetShortcut exerelinSuperweaponCancel ESCAPE",Your $shipOrFleet neutralizes the defence fleet and is ready to deploy your superweapon.,"1:exerelinSuperweaponProceed:Continue
 2:exerelinSuperweaponCancel:Cancel",
 ExerelinSuperweaponLeave,DialogOptionSelected,$option == exerelinSuperweaponLeave,DismissDialog,,,
 ,,,,,,
@@ -1261,6 +1261,10 @@ ExerelinFlavorTextMarketFollowers,TradePanelFlavorText,"$global.tradePanelMode =
 $faction.id == ""player_npc""","AddText ""The port concourse is filled with trader starcraft of every size. Speculators crowd offloading ship captains with deals and peddlers call out to crew, holding wares and projecting personal ad-holos. Guards salute you in recognition as you pass by them."" textGrayColor",,,
 ExerelinMarketOptionIntel,DialogOptionSelected,$option == exerelinMarketIntel,OpenCoreTab INTEL $tradeMode,,,
 ExerelinMarketOptionAlliances,DialogOptionSelected,$option == exerelinAllianceReport,PrintAlliances,,,
+,,,,,,
+nex_openDefStation,OpenInteractionDialog,$nex_defstation,"$menuState = main 0
+ShowDefaultVisual
+SetShortcut gateLeave ESCAPE","Your $shipOrFleet approaches the battlestation. A thoroughly impressive piece of firepower, it will engage anyone foolish enough to attempt an invasion under its watch.",gateLeave:Leave,
 ,,,,,,
 # vanilla overrides,,,,,,
 commRelayOpen,OpenInteractionDialog,"$tag:comm_relay

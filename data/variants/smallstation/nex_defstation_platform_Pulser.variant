@@ -1,0 +1,33 @@
+{
+  "displayName": "Pulser",
+  "fluxCapacitors": 20,
+  "fluxVents": 15,
+  "goalVariant": false,
+  "hullId": "nex_defstation_platform",
+  "hullMods": [
+    "magazines",
+    "hardenedshieldemitter",
+    "stabilizedshieldemitter"
+  ],
+  "permaMods": [],
+  "quality": 0.8,
+  "variantId": "nex_defstation_platform_Pulser",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "autopulse"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 002": "ionpulser",
+        "WS 003": "ionpulser"
+      }
+    }
+  ],
+  "wings": []
+}

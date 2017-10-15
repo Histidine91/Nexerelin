@@ -3,6 +3,7 @@ package exerelin.campaign.fleets;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
 
 /**
  * When someone tries to invade our market, spawn a big freaking fleet to eat them
@@ -200,6 +202,9 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 			size += baseSize * factionConfig.responseFleetSizeMod;
 		}
 		
+		if (DefenceStationManager.getManager() != null)
+			size -= DefenceStationManager.getManager().getDefenceFleetPenaltyFromStations(market);
+		
 		size = size + ExerelinUtilsFleet.getPlayerLevelFPBonus();
 		
 		return size;
@@ -333,35 +338,6 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 			}
 		}
 	}
-	
-	/*
-	@Override
-	public void reportBattleOccurred(CampaignFleetAPI winner, CampaignFleetAPI loser)
-	{
-		FactionAPI winFaction = winner.getFaction();
-		FactionAPI loseFaction = loser.getFaction();
-		String winFactionId = winFaction.getId();
-		String loseFactionId = loseFaction.getId();
-		
-		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-		
-		CampaignFleetAPI killFleet;
-		CampaignFleetAPI lossFleet;
-			   
-		if (winner == playerFleet)
-		{
-			killFleet = loser;
-			lossFleet = winner;
-		}
-		else if (loser == playerFleet)
-		{
-			killFleet = winner;
-			lossFleet = loser;
-		}
-		else return;
-	}
-	*/
 	
 	@Override
 	public boolean runWhilePaused()

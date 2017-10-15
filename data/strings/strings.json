@@ -156,6 +156,8 @@
 		"miningFleetPrefixSmall":"Small",
 		"miningFleetPrefixLarge":"Large",
 		
+		"stationName":"Defence Station",
+		
 		"fleetSpawnMessage":"A fleet is being launched at $market, in $location. It will be underway shortly.",
 		"fleetSpawnMessageLocal":"A fleet is being launched and will begin defending $market shortly.",
 		

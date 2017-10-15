@@ -1,0 +1,33 @@
+{
+  "displayName": "Beam",
+  "fluxCapacitors": 10,
+  "fluxVents": 20,
+  "goalVariant": true,
+  "hullId": "nex_defstation_platform",
+  "hullMods": [
+    "hardenedshieldemitter",
+    "advancedoptics",
+    "turretgyros"
+  ],
+  "permaMods": [],
+  "quality": 1,
+  "variantId": "nex_defstation_platform_Beam",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "hil"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 002": "ionbeam",
+        "WS 003": "ionbeam"
+      }
+    }
+  ],
+  "wings": []
+}

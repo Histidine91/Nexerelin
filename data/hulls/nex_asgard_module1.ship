@@ -1,0 +1,125 @@
+{
+  "bounds": [
+    -35,
+    -92.5,
+    7.5,
+    -123.5,
+    30,
+    -82,
+    44,
+    -25.5,
+    61,
+    -23,
+    76.5,
+    20,
+    50,
+    31.5,
+    8,
+    123.5,
+    -34,
+    93.5,
+    -47,
+    25,
+    -64,
+    -0.5,
+    -42,
+    -57
+  ],
+  "builtInMods": [
+    "supercomputer",
+    "reduced_explosion"
+  ],
+  "center": [
+    123,
+    63
+  ],
+  "collisionRadius": 239,
+  "engineSlots": [],
+  "height": 140,
+  "hullId": "nex_asgard_module1",
+  "hullName": "Weapon Platform",
+  "hullSize": "DESTROYER",
+  "shieldCenter": [
+    -112.5,
+    -0
+  ],
+  "shieldRadius": 245,
+  "spriteName": "graphics/exerelin/ships/stations/battlestationmodule1.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 180,
+      "id": "WS 001",
+      "locations": [
+        -0.5,
+        18.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "HYBRID"
+    },
+    {
+      "angle": 0,
+      "arc": 180,
+      "id": "WS 002",
+      "locations": [
+        -0.5,
+        -17.5
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "HYBRID"
+    },
+    {
+      "angle": 0,
+      "arc": 160,
+      "id": "WS 003",
+      "locations": [
+        -3,
+        72.5
+      ],
+      "mount": "TURRET",
+      "size": "LARGE",
+      "type": "HYBRID"
+    },
+    {
+      "angle": -0,
+      "arc": 160,
+      "id": "WS 004",
+      "locations": [
+        -3,
+        -71.5
+      ],
+      "mount": "TURRET",
+      "size": "LARGE",
+      "type": "HYBRID"
+    },
+    {
+      "angle": 0,
+      "arc": 270,
+      "id": "WS 005",
+      "locations": [
+        52.5,
+        -17
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "HYBRID"
+    },
+    {
+      "angle": 0,
+      "arc": 360,
+      "id": "LB 1",
+      "locations": [
+        38.5,
+        3.5
+      ],
+      "mount": "HIDDEN",
+      "size": "LARGE",
+      "type": "LAUNCH_BAY"
+    }
+  ],
+  "width": 246
+}

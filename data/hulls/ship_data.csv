@@ -1,0 +1,6 @@
+name,id,designation,system id,fleet pts,hitpoints,armor rating,max flux,8/6/5/4%,flux dissipation,ordnance points,fighter bays,max speed,acceleration,deceleration,max turn rate,turn acceleration,mass,shield type,defense id,shield arc,shield upkeep,shield efficiency,phase cost,phase upkeep,min crew,max crew,cargo,fuel,fuel/ly,range,max burn,base value,cr %/day,CR to deploy,peak CR sec,CR loss/sec,supplies/rec,supplies/mo,hints,breakProb,minPieces,maxPieces,number
+Castellum,nex_defstation,Defense Station,,35,10000,1500,1000,,100,0,,30,200,200,5,5,5000,NONE,,0,0,0,,,100,500,1000,1000,20,0,0,500000,10,10,,,50,50,"STATION, UNBOARDABLE",0,,,2010
+,nex_defstation_platform,Weapons Platform,,1,7500,1000,6000,,500,100,,0,0,0,10,10,300,FRONT,,45,0.4,0.8,,,30,50,0,0,1,0,,800000,,1,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX",0.5,2,2,2011
+Asgard,nex_asgard,Battlestation,,50,50000,1600,1000,,100,0,,30,200,200,3,3,6000,NONE,,0,0,0,,,200,800,2000,2000,35,0,0,1000000,5,10,,,80,80,"STATION, UNBOARDABLE",0,2,2,3000
+,nex_asgard_module1,Weapon Platform,reservewing,1,8500,1100,15000,,1000,90,1,0,0,0,10,10,800,FRONT,,110,0.4,0.6,,,125,180,0,0,1,0,,0,,1,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX",0.5,,,3001
+,nex_asgard_module2,Missile Platform,forgevats,1,6500,800,5000,,400,60,,0,0,0,10,10,600,NONE,,0,0,0,,,30,50,0,0,1,0,,0,,1,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX",0.5,,,3002

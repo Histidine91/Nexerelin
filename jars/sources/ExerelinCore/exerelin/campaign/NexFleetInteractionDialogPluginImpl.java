@@ -324,7 +324,21 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		if (fleet.getAI() != null && fleet.getAI().wantsToJoin(battle, true))
 			return true;
 		if (fleet.isStationMode())
-			return false;	// screw Alex's logic on this
+		{
+			// only defence stations are allowed to join battles, and then only with a response fleet
+			if (fleet.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
+			{
+				for (CampaignFleetAPI existingFleet : battle.getBothSides())
+				{
+					if (!existingFleet.getMemoryWithoutUpdate().contains(MemFlags.MEMORY_KEY_FLEET_TYPE))
+						continue;
+					if (existingFleet.getMemoryWithoutUpdate().getString(
+							MemFlags.MEMORY_KEY_FLEET_TYPE).equals("exerelinResponseFleet"))
+						return true;
+				}
+			}
+			return false;
+		}
 		
 		if (fleet.getAI() != null)
 		{

@@ -1,0 +1,25 @@
+{
+  "displayName": "Pirate",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "nex_asgard",
+  "hullMods": [],
+  "quality": 0.25,
+  "variantId": "nex_asgard_Pirate",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "nex_asgard_module1_Scavenged",
+        "WS 002": "nex_asgard_module1_Scavenged",
+        "WS 003": "nex_asgard_module1_Retrofitted",
+        "WS 004": "nex_asgard_module1_Retrofitted",
+        "WS 005": "nex_asgard_module2_Retrofitted",
+        "WS 006": "nex_asgard_module2_Retrofitted",
+        "WS 007": "nex_asgard_module2_Retrofitted",
+        "WS 008": "nex_asgard_module2_Retrofitted"
+      }
+    }
+  ]
+}

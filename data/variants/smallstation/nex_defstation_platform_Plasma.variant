@@ -1,0 +1,33 @@
+{
+  "displayName": "Plasma",
+  "fluxCapacitors": 12,
+  "fluxVents": 18,
+  "goalVariant": false,
+  "hullId": "nex_defstation_platform",
+  "hullMods": [
+    "converted_hangar"
+  ],
+  "permaMods": [],
+  "quality": 1,
+  "variantId": "nex_defstation_platform_Plasma",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "plasma"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 002": "heavyburst",
+        "WS 003": "heavyburst"
+      }
+    }
+  ],
+  "wings": [
+    "claw_wing"
+  ]
+}

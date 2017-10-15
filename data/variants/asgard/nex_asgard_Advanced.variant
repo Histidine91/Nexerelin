@@ -1,0 +1,25 @@
+{
+  "displayName": "Advanced",
+  "fluxCapacitors": 0,
+  "fluxVents": 0,
+  "hullId": "nex_asgard",
+  "hullMods": [],
+  "quality": 0.8,
+  "variantId": "nex_asgard_Advanced",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "nex_asgard_module1_Beam",
+        "WS 002": "nex_asgard_module1_Beam",
+        "WS 003": "nex_asgard_module1_Elite",
+        "WS 004": "nex_asgard_module1_Elite",
+        "WS 005": "nex_asgard_module2_Standard",
+        "WS 006": "nex_asgard_module2_Strike",
+        "WS 007": "nex_asgard_module2_Strike",
+        "WS 008": "nex_asgard_module2_Standard"
+      }
+    }
+  ]
+}

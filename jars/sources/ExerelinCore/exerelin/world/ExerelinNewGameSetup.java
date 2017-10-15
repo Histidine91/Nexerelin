@@ -37,6 +37,7 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
@@ -208,6 +209,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		sector.addScript(MiningFleetManager.create());
 		sector.addScript(CovertOpsManager.create());
 		sector.addScript(AllianceManager.create());
+		//sector.addScript(DefenceStationManager.create());
 		StatsTracker.create();
 		
 		DiplomacyManager.setRandomFactionRelationships(setupData.randomStartRelationships);

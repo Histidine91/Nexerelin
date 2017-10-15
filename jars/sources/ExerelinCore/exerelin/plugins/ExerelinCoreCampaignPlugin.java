@@ -110,6 +110,14 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
     @Override
     public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
         if (interactionTarget instanceof CampaignFleetAPI) {
+			
+			if (interactionTarget.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
+			{
+				CampaignFleetAPI fleet = (CampaignFleetAPI)interactionTarget;
+				if (fleet.getBattle() == null)
+					return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
+			}
+			
             return new PluginPick<InteractionDialogPlugin>(new NexFleetInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
         }
 		if (!ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST && interactionTarget instanceof AsteroidAPI) {

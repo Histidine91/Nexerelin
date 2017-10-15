@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.campaign.fleets.DS_FleetInjector;
+import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.plugins.ExerelinModPlugin;
@@ -48,7 +49,28 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 			return false;
 		}
 		
+		CampaignFleetAPI fleet = prepFleet(market, isRaid);
 		
+		// station can substitute for our regular defence fleet if we don't have one
+		// (if the fleet does exist, station will join battle through the normal channels instead)
+		if (fleet == null && !isRaid) {
+			CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(market);
+			if (station != null && station.getBattle() == null)
+				fleet = station;
+		}		
+		if (fleet == null) {
+			mem.set("$hasDefenders", false, 0);
+			return false;
+		}
+		
+		mem.set(defenderMemFlag, fleet, 3);
+		mem.set("$hasDefenders", true, 0);
+		
+		return true;
+	}
+	
+	public static CampaignFleetAPI prepFleet(MarketAPI market, boolean isRaid)
+	{
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		CampaignFleetAPI fleet = null;
 		int playerFleetSize = ExerelinUtilsFleet.getFleetGenPoints(playerFleet);
@@ -74,7 +96,7 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 			fleet = ExerelinUtilsFleet.customCreateFleet(market.getFaction(), fleetParams);
 			
 			if (fleet == null)
-				return false;
+				return null;
 			
 			fleet.setName(InvasionFleetManager.getFleetName("exerelinDefenceFleet", market.getFactionId(), fp));
 		}
@@ -83,11 +105,11 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 			float fp = ResponseFleetManager.getReserveSize(market);
 		
 			if (fp < ResponseFleetManager.MIN_FP_TO_SPAWN)
-				return false;
+				return null;
 		
 			fleet = ResponseFleetManager.getManager().getResponseFleet(market, (int)fp);
 		}
-		if (fleet == null) return false;
+		if (fleet == null) return null;
 		
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF, true);
@@ -101,9 +123,6 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 			fleet.getMemoryWithoutUpdate().set("$dynasectorInjected", true);
 		}
 		
-		mem.set(defenderMemFlag, fleet, 3);
-		mem.set("$hasDefenders", true, 0);
-		
-		return true;
+		return fleet;
 	}
 }

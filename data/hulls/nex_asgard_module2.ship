@@ -1,0 +1,105 @@
+{
+  "bounds": [
+    31.5,
+    -38,
+    9.5,
+    -50.5,
+    -6,
+    -56.5,
+    -30,
+    -24,
+    -30,
+    24,
+    -6,
+    56.5,
+    9.5,
+    50.5,
+    31.5,
+    38
+  ],
+  "builtInMods": [
+    "supercomputer",
+    "reduced_explosion"
+  ],
+  "center": [
+    57,
+    31
+  ],
+  "collisionRadius": 108.5,
+  "engineSlots": [],
+  "height": 62,
+  "hullId": "nex_asgard_module2",
+  "hullName": "Missile Platform",
+  "hullSize": "FRIGATE",
+  "shieldCenter": [
+    -22.5,
+    -0
+  ],
+  "shieldRadius": 89,
+  "spriteName": "graphics/exerelin/ships/stations/battlestationmodule2.png",
+  "style": "MIDLINE",
+  "viewOffset": 0,
+  "weaponSlots": [
+    {
+      "angle": 0,
+      "arc": 160,
+      "id": "WS 001",
+      "locations": [
+        -5,
+        -0
+      ],
+      "mount": "TURRET",
+      "size": "MEDIUM",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": 0,
+      "arc": 5,
+      "id": "WS 002",
+      "locations": [
+        21.5,
+        29.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": -0,
+      "arc": 5,
+      "id": "WS 003",
+      "locations": [
+        21.5,
+        -29.5
+      ],
+      "mount": "HARDPOINT",
+      "size": "MEDIUM",
+      "type": "MISSILE"
+    },
+    {
+      "angle": 30,
+      "arc": 160,
+      "id": "WS 004",
+      "locations": [
+        -16.5,
+        29
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    },
+    {
+      "angle": -30,
+      "arc": 160,
+      "id": "WS 005",
+      "locations": [
+        -16.5,
+        -29
+      ],
+      "mount": "TURRET",
+      "size": "SMALL",
+      "type": "BALLISTIC"
+    }
+  ],
+  "width": 114
+}

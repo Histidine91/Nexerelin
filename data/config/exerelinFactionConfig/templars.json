@@ -50,4 +50,6 @@
     "startShipsSolo":["tem_martyr_sal"],
     "startShipsCombatSmall":["tem_jesuit_est", "tem_martyr_def"],
     "startShipsCombatLarge":["tem_crusader_est", "tem_jesuit_sal"],
+    
+    "defenceStations":["nex_asgard_Advanced"],
 }

@@ -1,0 +1,45 @@
+{
+  "displayName": "Beam",
+  "fluxCapacitors": 0,
+  "fluxVents": 3,
+  "goalVariant": true,
+  "hullId": "nex_asgard_module1",
+  "hullMods": [],
+  "permaMods": [],
+  "quality": 0.8,
+  "variantId": "nex_asgard_module1_Beam",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 004": "tachyonlance"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 003": "hil"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 002": "ionbeam"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "heavyburst",
+        "WS 005": "pdlaser"
+      }
+    }
+  ],
+  "wings": [
+    "xyphos_wing"
+  ]
+}

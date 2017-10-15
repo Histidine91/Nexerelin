@@ -18,7 +18,6 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.fleets.DefenceFleetAI;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import exerelin.campaign.fleets.ResponseFleetAI;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.List;
@@ -42,11 +41,14 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 		if (defenders == null) return false;
 		
 		dialog.setInteractionTarget(defenders);
-		entity.getContainingLocation().addEntity(defenders);
-		defenders.setLocation(entity.getLocation().x, entity.getLocation().y);
+		if (!defenders.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
+		{
+			entity.getContainingLocation().addEntity(defenders);
+			defenders.setLocation(entity.getLocation().x, entity.getLocation().y);
+		}
 		
 		final FleetInteractionDialogPluginImpl.FIDConfig config = new FleetInteractionDialogPluginImpl.FIDConfig();
-		config.leaveAlwaysAvailable = isRaid;
+		config.leaveAlwaysAvailable = true;	//isRaid;
 		//config.showFleetAttitude = false;
 		config.showTransponderStatus = false;
 		config.showWarningDialogWhenNotHostile = false;
@@ -67,6 +69,101 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 		
 		final InteractionDialogPlugin originalPlugin = dialog.getPlugin();
 		config.delegate = new FleetInteractionDialogPluginImpl.BaseFIDDelegate() {
+			
+			public void handleDefenders(InteractionDialogAPI dialog)
+			{
+				boolean isStation = defenders.getMemoryWithoutUpdate().getBoolean("$nex_defstation");
+				
+				if (!isStation && defenders.getContainingLocation() != null)
+					defenders.getContainingLocation().removeEntity(defenders);
+					
+				FleetEncounterContext context = (FleetEncounterContext) plugin.getContext();
+
+				if (context.didPlayerWinEncounter()) {
+
+					SalvageGenFromSeed.SDMParams p = new SalvageGenFromSeed.SDMParams();
+					p.entity = entity;
+					p.factionId = defenders.getFaction().getId();
+
+					SalvageGenFromSeed.SalvageDefenderModificationPlugin plugin = Global.getSector().getGenericPlugins().pickPlugin(
+											SalvageGenFromSeed.SalvageDefenderModificationPlugin.class, p);
+					if (plugin != null) {
+						plugin.reportDefeated(p, entity, defenders);
+					}
+
+					//entity.removeScriptsOfClass(FleetAdvanceScript.class);
+					memory.unset("$hasDefenders");
+					memory.unset(defenderMemFlag);
+					memory.set(defenderDefeatedMemFlag, true, isRaid ? 3f : 1f);
+					FireBest.fire(null, dialog, memoryMap, "BeatDefendersContinue");
+				} else {
+					// we fought a battle (and did not win), spawn the defence fleets into world where the usual stuff can handle them
+					if (context.isEngagedInHostilities())
+					{
+						if (isStation)
+						{
+							// do nothing
+						}
+						else if (isRaid)
+						{
+							entity.getContainingLocation().addEntity(defenders);
+							defenders.setLocation(entity.getLocation().x, entity.getLocation().y);
+
+							InvasionFleetManager.InvasionFleetData data = new InvasionFleetManager.InvasionFleetData(defenders);
+							data.startingFleetPoints = defenders.getFleetPoints();
+							data.sourceMarket = market;
+							data.source = market.getPrimaryEntity();
+							data.targetMarket = market;
+							data.target = market.getPrimaryEntity();
+
+							// don't; we don't actually want to count towards the fleet limit
+							//InvasionFleetManager.getManager().addActiveFleet(data);
+							DefenceFleetAI ai = new DefenceFleetAI(defenders, data);
+							defenders.addScript(ai);
+							ai.giveStandDownOrders();
+							defenders.addAssignmentAtStart(FleetAssignment.STANDING_DOWN, entity, 1f, null);
+						}
+						else
+						{
+							entity.getContainingLocation().addEntity(defenders);
+							defenders.setLocation(entity.getLocation().x, entity.getLocation().y);
+							ResponseFleetManager.getManager().registerResponseFleetAndSetAI(defenders, market, 
+									Global.getSector().getPlayerFleet());
+							defenders.addAssignmentAtStart(FleetAssignment.STANDING_DOWN, entity, 1f, null);
+						}
+						memory.unset("$hasDefenders");
+						memory.unset(defenderMemFlag);
+					}
+					dialog.dismiss();
+				}
+				// deduct response fleet points now that fleet has spawned and is permanent (or dead)
+				if (!isStation && !isRaid && context.isEngagedInHostilities())
+				{
+					float pointsToDeduct = 0;
+					List<FleetMemberAPI> snapshot = defenders.getFleetData().getSnapshot();
+					for (FleetMemberAPI member : snapshot)
+					{
+						float memberPts = ExerelinUtilsFleet.getFleetGenPoints(member);
+
+						// fleet spawned, or member killed
+						if (!context.didPlayerWinEncounter() || !defenders.getMembersWithFightersCopy().contains(member))
+						{
+							//Global.getLogger(this.getClass()).info(member.getShipName() + " is spawned/dead, worth " + memberPts);
+							pointsToDeduct += memberPts;
+						}
+						// member survived, fleet did not spawn
+						else
+						{
+							//Global.getLogger(this.getClass()).info(member.getShipName() + " is unspawned, worth " + (1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts);
+							pointsToDeduct += memberPts;	//(1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts;
+						}
+					}				
+
+					Global.getLogger(this.getClass()).info("Removing " + pointsToDeduct + " reserve points from " + market.getName());
+					ResponseFleetManager.modifyReserveSize(market, -pointsToDeduct);
+				}
+			}
+			
 			@Override
 			public void notifyLeave(InteractionDialogAPI dialog) {
 				
@@ -76,91 +173,7 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 				//Global.getSector().getCampaignUI().clearMessages();
 				
 				if (plugin.getContext() instanceof FleetEncounterContext) {
-					if (defenders.getContainingLocation() != null)
-						defenders.getContainingLocation().removeEntity(defenders);
-					
-					FleetEncounterContext context = (FleetEncounterContext) plugin.getContext();
-					
-					if (context.didPlayerWinEncounter()) {
-						
-						SalvageGenFromSeed.SDMParams p = new SalvageGenFromSeed.SDMParams();
-						p.entity = entity;
-						p.factionId = defenders.getFaction().getId();
-						
-						SalvageGenFromSeed.SalvageDefenderModificationPlugin plugin = Global.getSector().getGenericPlugins().pickPlugin(
-												SalvageGenFromSeed.SalvageDefenderModificationPlugin.class, p);
-						if (plugin != null) {
-							plugin.reportDefeated(p, entity, defenders);
-						}
-						
-						//entity.removeScriptsOfClass(FleetAdvanceScript.class);
-						memory.unset("$hasDefenders");
-						memory.unset(defenderMemFlag);
-						memory.set(defenderDefeatedMemFlag, true, isRaid ? 3f : 1f);
-						FireBest.fire(null, dialog, memoryMap, "BeatDefendersContinue");
-					} else {
-						// we fought a battle (and did not win), spawn the defence fleets into world where the usual stuff can handle them
-						if (context.isEngagedInHostilities())
-						{
-							if (isRaid)
-							{
-								entity.getContainingLocation().addEntity(defenders);
-								defenders.setLocation(entity.getLocation().x, entity.getLocation().y);
-								
-								InvasionFleetManager.InvasionFleetData data = new InvasionFleetManager.InvasionFleetData(defenders);
-								data.startingFleetPoints = defenders.getFleetPoints();
-								data.sourceMarket = market;
-								data.source = market.getPrimaryEntity();
-								data.targetMarket = market;
-								data.target = market.getPrimaryEntity();
-								
-								// don't; we don't actually want to count towards the fleet limit
-								//InvasionFleetManager.getManager().addActiveFleet(data);
-								DefenceFleetAI ai = new DefenceFleetAI(defenders, data);
-								defenders.addScript(ai);
-								ai.giveStandDownOrders();
-								defenders.addAssignmentAtStart(FleetAssignment.STANDING_DOWN, entity, 1f, null);
-							}
-							else
-							{
-								entity.getContainingLocation().addEntity(defenders);
-								defenders.setLocation(entity.getLocation().x, entity.getLocation().y);
-								ResponseFleetManager.getManager().registerResponseFleetAndSetAI(defenders, market, 
-										Global.getSector().getPlayerFleet());
-								defenders.addAssignmentAtStart(FleetAssignment.STANDING_DOWN, entity, 1f, null);
-							}
-							memory.unset("$hasDefenders");
-							memory.unset(defenderMemFlag);
-						}
-						dialog.dismiss();
-					}
-					// deduct response fleet points now that fleet has spawned and is permanent (or dead)
-					if (!isRaid && context.isEngagedInHostilities())
-					{
-						float pointsToDeduct = 0;
-						List<FleetMemberAPI> snapshot = defenders.getFleetData().getSnapshot();
-						for (FleetMemberAPI member : snapshot)
-						{
-							float memberPts = ExerelinUtilsFleet.getFleetGenPoints(member);
-
-							// fleet spawned, or member killed
-							if (!context.didPlayerWinEncounter() || !defenders.getMembersWithFightersCopy().contains(member))
-							{
-								//Global.getLogger(this.getClass()).info(member.getShipName() + " is spawned/dead, worth " + memberPts);
-								pointsToDeduct += memberPts;
-							}
-							// member survived, fleet did not spawn
-							else
-							{
-								//Global.getLogger(this.getClass()).info(member.getShipName() + " is unspawned, worth " + (1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts);
-								pointsToDeduct += memberPts;	//(1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts;
-							}
-						}				
-						
-						Global.getLogger(this.getClass()).info("Removing " + pointsToDeduct + " reserve points from " + market.getName());
-						ResponseFleetManager.modifyReserveSize(market, -pointsToDeduct);
-					}
-					// TODO: figure out what to do with stations
+					handleDefenders(dialog);
 					
 				} else {
 					dialog.dismiss();

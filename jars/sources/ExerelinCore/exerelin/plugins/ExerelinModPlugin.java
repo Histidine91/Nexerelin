@@ -21,6 +21,7 @@ import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.events.RevengeanceManagerEvent;
+import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.campaign.fleets.ExerelinPatrolFleetManager;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -127,7 +128,14 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-    
+		/*
+		if (!Global.getSector().hasScript(DefenceStationManager.class))
+		{
+			DefenceStationManager man = DefenceStationManager.create();
+			Global.getSector().addScript(man);
+			man.seedFleets();
+		}
+		*/
     }
     
     @Override
@@ -174,6 +182,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         isNewGame = newGame;
         
         ExerelinConfig.loadSettings();
+		// legacy: assign the static variables referencing the singletons,
+		// so the static methods in those classes can get them
         SectorManager.create();
         DiplomacyManager.create();
         InvasionFleetManager.create();

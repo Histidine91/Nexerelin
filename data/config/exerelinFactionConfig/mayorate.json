@@ -30,4 +30,6 @@
     "startShipsTradeSmall":["ilk_safir_standard", "ilk_safir_converted_support", "ilk_lilith_CS"],
     "startShipsCombatLarge":["ilk_jamaran_patrol", "ilk_cimeterre_strike"],
     #"startShipsTradeLarge":[],
+    
+    "defenceStations":["nex_asgard_Advanced"],
 }

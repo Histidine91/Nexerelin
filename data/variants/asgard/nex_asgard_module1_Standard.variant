@@ -1,0 +1,47 @@
+{
+  "displayName": "Standard",
+  "fluxCapacitors": 1,
+  "fluxVents": 8,
+  "goalVariant": true,
+  "hullId": "nex_asgard_module1",
+  "hullMods": [
+    "turretgyros"
+  ],
+  "permaMods": [],
+  "quality": 0.5,
+  "variantId": "nex_asgard_module1_Standard",
+  "weaponGroups": [
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 003": "mark9"
+      }
+    },
+    {
+      "autofire": false,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 004": "hephag"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 005": "railgun"
+      }
+    },
+    {
+      "autofire": true,
+      "mode": "LINKED",
+      "weapons": {
+        "WS 001": "dualflak",
+        "WS 002": "dualflak"
+      }
+    }
+  ],
+  "wings": [
+    "broadsword_wing"
+  ]
+}

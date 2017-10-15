@@ -20,3 +20,10 @@ star_greenwhite,PLANET,Green White Star,,,
 ,,,,,
 omnifactory,CUSTOM,"An ancient, highly advanced facility from the Domain era that can produce (almost) any ship or weapon once given a sample for analysis. The Omnifactories are poorly understood, much coveted.",,,
 exerelin_prismFreeport,CUSTOM,"This station houses a unique, top-tier Ships and Weapons market. As long as one doesn't care much about the ""from"" (and has pockets deep enough to afford the huge price markup) it provides a unique selection of high-end items unlikely to be found out of secured military sellers.",,,
+,,,,,
+nex_defstation,SHIP,"The Castellum is a light orbital defense platform of modular design, packing a considerable amount of firepower in a modestly sized package. Fairly low cost and ease of assembly make it ubiquitous throughout the Sector.",,,
+nex_asgard,SHIP,"The Asgard-class is a fully-fledged battlestation. Capable of taking on entire strike fleets and coming out with only minor damage, it boasts a huge arsenal of weaponry, four flight decks, powerful shield generators and targeting supercomputers that allow it to wipe out destroyers and frigates before they can even get a single shot off. Each individual module is fully customisable, with modular weapon slots and facilities for the repair and re-arming of any kind of fighter the Sector has to offer.
+
+This particular model of battlestation was once used by the Domain to protect high-value targets, from gates to the hyperspace entrances to populated systems. Just one Asgard can dissuade a strike or invasion - otherwise, the attacker risks being blown into little pieces by a neverending hail of ordnance.
+
+The best way to defeat an Asgard-class is to focus fire on its modules, as taking them out lessens its overwhelming firepower and can cause damage to adjacent modules. In particular, the larger modules contain the shield generators and flight decks - but they're also the toughest. EMP weaponry and high-yield, durable torpedoes are recommended.",,,
