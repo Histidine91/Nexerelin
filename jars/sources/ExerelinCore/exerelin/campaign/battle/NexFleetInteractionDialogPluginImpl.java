@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.histidine.foundation.campaign.events.FoundationInsuranceEvent;
+import org.lazywizard.lazylib.MathUtils;
 
 /*
 Changes from vanilla:
@@ -307,7 +308,8 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	}
 		
 	// same as vanilla, except stations don't get pulled + anything pursuing a participating fleet gets pulled
-	protected boolean shouldPullInFleet(BattleAPI battle, CampaignFleetAPI fleet, float dist)
+	protected boolean shouldPullInFleet(BattleAPI battle, CampaignFleetAPI fleet, 
+			float dist, CampaignFleetAPI playerFleet, CampaignFleetAPI otherFleet)
 	{
 		//Global.getLogger(this.getClass()).info("Testing fleet for pull-in: " + fleet.getName());
 		float baseSensorRange = playerFleet.getBaseSensorRangeToDetect(fleet.getSensorProfile());
@@ -325,7 +327,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 			return true;
 		if (fleet.isStationMode())
 		{
-			// only defence stations are allowed to join battles, and then only with a response fleet
+			// defence stations are allowed to join battles normally (but only with a response fleet)
 			if (fleet.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
 			{
 				for (CampaignFleetAPI existingFleet : battle.getBothSides())
@@ -337,7 +339,8 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 						return true;
 				}
 			}
-			return false;
+			// only pull in the station if one of us is touching it
+			return MathUtils.isWithinRange(fleet, playerFleet, 0) || MathUtils.isWithinRange(fleet, otherFleet, 0);
 		}
 		
 		if (fleet.getAI() != null)
@@ -392,7 +395,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 //				System.out.println("Checking: " + fleet.getNameWithFaction());
 //			}
 			
-			if (shouldPullInFleet(b, fleet, dist)) {
+			if (shouldPullInFleet(b, fleet, dist, actualPlayer, actualOther)) {
 				
 				BattleSide joiningSide = b.pickSide(fleet, true);
 				if (!config.pullInAllies && joiningSide == playerSide) continue;
