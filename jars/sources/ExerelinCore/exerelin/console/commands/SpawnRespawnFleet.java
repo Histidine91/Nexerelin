@@ -44,7 +44,7 @@ public class SpawnRespawnFleet implements BaseCommand {
         for (String faction : factions)
         {
             if (SectorManager.isFactionAlive(faction)) continue;
-			if (faction.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
+            if (faction.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
             factionPicker.add(faction);
         }
         String factionId = factionPicker.pick();

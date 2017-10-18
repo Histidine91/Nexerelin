@@ -150,6 +150,7 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 		}
 	}
 	
+	@Override
 	public Map<String, String> getTokenReplacements() {
 		updateDaysLeft();
 		
@@ -239,10 +240,11 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 	@Override
 	public String getEventName() {
 		int daysLeft = (int) (mission.getBaseDuration() - elapsedDays);
+		String daysLeftStrLocal = daysLeft < 1 ? "<1" : daysLeft + "";
 		String days = "";
 		if (daysLeft > 0) {
 			days = ", " + StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "daysLeft", 
-				"$days", daysLeft+"");
+				"$days", daysLeftStrLocal);
 		}
 		String conquer = Misc.ucFirst(StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "conquer", 
 				"$target", mission.getTarget().getName()));

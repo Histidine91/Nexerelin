@@ -86,7 +86,7 @@ public class ExerelinUtils
 	
 	public static void addDevModeDialogOptions(InteractionDialogAPI dialog)
 	{
-		addDevModeDialogOptions(dialog, true);
+		addDevModeDialogOptions(dialog, false);
 	}
 	
 	public static void addDevModeDialogOptions(InteractionDialogAPI dialog, boolean dumpMemoryOpt)
