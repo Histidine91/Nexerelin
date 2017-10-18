@@ -91,9 +91,9 @@ public class ExerelinProcGen {
 	protected Map<StarSystemAPI, List<ProcGenEntity>> marketsBySystem = new HashMap<>();
 	protected Map<StarSystemAPI, ProcGenEntity> capitalsBySystem = new HashMap<>();
 	protected List<ProcGenEntity> planets = new ArrayList<>();
-	protected List<ProcGenEntity> habitablePlanets = new ArrayList<>();
-	protected List<ProcGenEntity> desirablePlanets = new ArrayList<>();
-	protected List<ProcGenEntity> populatedPlanets = new ArrayList<>();
+	protected Set<ProcGenEntity> habitablePlanets = new HashSet<>();
+	protected Set<ProcGenEntity> desirablePlanets = new HashSet<>();
+	protected Set<ProcGenEntity> populatedPlanets = new HashSet<>();
 	protected List<ProcGenEntity> stations = new ArrayList<>();
 	protected Map<SectorEntityToken, ProcGenEntity> procGenEntitiesByToken = new HashMap<>();
 	protected List<String> alreadyUsedStationNames = new ArrayList<>();
@@ -423,17 +423,44 @@ public class ExerelinProcGen {
 		}
 	}
 	
+	protected List<ProcGenEntity> getPopulatedMoons(ProcGenEntity planet)
+	{
+		List<ProcGenEntity> results = new ArrayList<>();
+		for (ProcGenEntity maybeMoon : populatedPlanets)
+		{
+			if (maybeMoon.type != EntityType.MOON)
+				continue;
+			if (maybeMoon.primary == planet.entity)
+				results.add(maybeMoon);
+		}
+		return results;
+	}
+	
+	protected void removePopulatedPlanet(ProcGenEntity toRemove)
+	{
+		log.info("Depopulating entity " + toRemove.name);
+		populatedPlanets.remove(toRemove);
+		StarSystemAPI system = toRemove.starSystem;
+		marketsBySystem.get(system).add(toRemove);
+		if (marketsBySystem.get(system).isEmpty())
+			populatedSystems.remove(system);
+	}
+	
 	/**
 	 * Fills the populatedPlanets list with planets
 	 * Will skip a star system if it already has too many populated planets
 	 * @param picker Random picker
 	 * @param planets List of candidate planets to be populated
 	 */
-	protected void pickPopulatedPlanets(WeightedRandomPicker<ProcGenEntity> picker, List<ProcGenEntity> planets)
+	protected void pickPopulatedPlanets(WeightedRandomPicker<ProcGenEntity> picker, Collection<ProcGenEntity> planets)
 	{
 		picker.clear();
 		for (ProcGenEntity planet: planets)
 		{
+			// already picked before?
+			if (populatedPlanets.contains(planet))
+				continue;
+			
 			float weight = Math.max(planet.desirability + 1, 0.2f);
 			if (populatedSystems.contains(planet.starSystem))
 				weight *= 99;	// strongly prefer already inhabited systems
@@ -447,6 +474,37 @@ public class ExerelinProcGen {
 			if (numMarketsInSystem >= setupData.maxPlanetsPerSystem)
 			{
 				continue;
+			}
+			
+			// don't populate a moon if our primary is already populated and nicer
+			// if we're nicer than primary, remove that instead
+			if (candidate.type == EntityType.MOON)
+			{
+				ProcGenEntity primary = procGenEntitiesByToken.get(candidate.primary);
+				if (primary != null)
+				{
+					if (primary.desirability >= candidate.desirability)
+						continue;
+					else
+						removePopulatedPlanet(primary);
+				}
+			}
+			// don't populate a planet if any of our moons are nicer
+			else {
+				List<ProcGenEntity> populatedMoons = getPopulatedMoons(candidate);
+				boolean shouldSkip = false;
+				for (ProcGenEntity moon : populatedMoons)
+				{
+					if (moon.desirability > candidate.desirability)
+					{
+						shouldSkip = true;
+						continue;
+					}
+				}
+				
+				if (shouldSkip) continue;
+				else
+					for (ProcGenEntity moon : populatedMoons) removePopulatedPlanet(moon);
 			}
 			
 			//log.info("Populating planet " + candidate.name + "(desirability " + candidate.desirability + ")");
@@ -510,9 +568,8 @@ public class ExerelinProcGen {
 	}
 	
 	/**
-	 * Creates a ProcGenEntity at the specified in-system location
+	 * Creates a ProcGenEntity for a station at the specified in-system location
 	 * @param target The entity to orbit if terrain is null; can also be the terrain
-	 * @param terrain The terrain the station is in, if any
 	 * @return
 	 */
 	protected ProcGenEntity createEntityDataForStation(SectorEntityToken target)
@@ -545,11 +602,21 @@ public class ExerelinProcGen {
 		{
 			for (PlanetAPI planet : system.getPlanets())
 			{
-				if (planet.isGasGiant() || planet.isStar()) continue;
+				// no stations directly orbiting a star (we'll deal with asteroid belts and such later)
+				if (planet.isStar()) continue;
+				
+				// don't put stations around any inhabited planets
 				if (procGenEntitiesByToken.containsKey(planet))
 				{
 					ProcGenEntity entity = procGenEntitiesByToken.get(planet);
 					if (populatedPlanets.contains(entity)) continue;
+				}
+				// ... nor any moons of inhabited planets
+				SectorEntityToken primary = planet.getOrbitFocus();
+				if (primary != null && procGenEntitiesByToken.containsKey(primary))
+				{
+					ProcGenEntity primary2 = procGenEntitiesByToken.get(primary);
+					if (populatedPlanets.contains(primary2)) continue;
 				}
 				
 				picker.add(planet);

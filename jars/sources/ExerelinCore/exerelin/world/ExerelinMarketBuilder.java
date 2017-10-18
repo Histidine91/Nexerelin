@@ -29,6 +29,7 @@ import exerelin.utilities.StringHelper;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.ExerelinProcGen.EntityType;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -500,7 +501,7 @@ public class ExerelinMarketBuilder
 	 * @param markets
 	 * @return 
 	 */
-	protected Map<ProcGenEntity, Map<Archetype, Float>> getMarketArchetypeScores(List<ProcGenEntity> markets)
+	protected Map<ProcGenEntity, Map<Archetype, Float>> getMarketArchetypeScores(Collection<ProcGenEntity> markets)
 	{
 		Map<ProcGenEntity, Map<Archetype, Float>> scores = new HashMap<>();
 		for (ProcGenEntity market : markets)
@@ -569,7 +570,7 @@ public class ExerelinMarketBuilder
 		return results;
 	}
 	
-	public void pickMarketArchetypes(List<ProcGenEntity> markets)
+	public void pickMarketArchetypes(Collection<ProcGenEntity> markets)
 	{
 		List<ProcGenEntity> marketsCopy = new ArrayList<>(markets);
 		int numMarkets = markets.size();
