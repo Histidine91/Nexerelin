@@ -9,18 +9,18 @@
     "spawnPiratesAndMercs":false,
 
     "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
     "rebelFleetSuffix":"Traitors",
-
     "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0, 
-    "factionsLiked":["noir","pirates","luddic_path"], # String array
-    "factionsDisliked":[], # String array
+    "negativeDiplomacyExtra":0,
+    "factionsLiked":["noir"],
+    "morality":"amoral",
+    "startRelationships":{ "noir":1},
+    "minRelationships":{ "noir":0.5 },
 
     "alignments":{
         "ideological":1,
+        "technocratic":1,
+
     },
 
     "freeMarket":true,

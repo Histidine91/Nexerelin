@@ -540,7 +540,7 @@ public class ExerelinProcGen {
 		pickPopulatedPlanets(picker, notDesirable);
 	}
 	
-	protected boolean getStationNameAlreadyUsed(String newName)
+	protected boolean isStationNameAlreadyUsed(String newName)
 	{
 		for (String name : alreadyUsedStationNames)
 		{
@@ -563,7 +563,7 @@ public class ExerelinProcGen {
 		do
 		{
 			ret = name + " " + picker.pickAndRemove();
-		} while (getStationNameAlreadyUsed(ret) && !picker.isEmpty());
+		} while (isStationNameAlreadyUsed(ret) && !picker.isEmpty());
 		return ret;
 	}
 	
