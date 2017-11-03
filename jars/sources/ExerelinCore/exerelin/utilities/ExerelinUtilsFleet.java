@@ -16,6 +16,7 @@ import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
 import exerelin.campaign.fleets.utils.SWPFleetUtilsProxy;
 import org.apache.log4j.Logger;
+import org.lazywizard.lazylib.MathUtils;
 
 
 public class ExerelinUtilsFleet
@@ -65,11 +66,17 @@ public class ExerelinUtilsFleet
         }
         else fleet = FleetFactoryV2.createFleet(params);
         
-        if (ExerelinModPlugin.HAVE_DYNASECTOR && faction.getId().equals("templars"))
+        if (fleet == null) return null;
+        
+        if (faction.getId().equals("templars"))
         {
-            fleet.getStats().getDynamic().getMod(DS_Defs.STAT_BATTLE_DEBRIS_CHANCE).modifyMult("tem_spawner_nex", 0.5f);
-            fleet.getStats().getDynamic().getMod(DS_Defs.STAT_BATTLE_DERELICTS_CHANCE).modifyMult("tem_spawner_nex", 0.25f);
-            fleet.getStats().getDynamic().getMod(DS_Defs.STAT_FLEET_DERELICTS_CHANCE).modifyMult("tem_spawner_nex", 0f);
+            if (ExerelinModPlugin.HAVE_DYNASECTOR)
+            {
+                fleet.getStats().getDynamic().getMod(DS_Defs.STAT_BATTLE_DEBRIS_CHANCE).modifyMult("tem_spawner_nex", 0.5f);
+                fleet.getStats().getDynamic().getMod(DS_Defs.STAT_BATTLE_DERELICTS_CHANCE).modifyMult("tem_spawner_nex", 0.25f);
+                fleet.getStats().getDynamic().getMod(DS_Defs.STAT_FLEET_DERELICTS_CHANCE).modifyMult("tem_spawner_nex", 0f);
+            }
+            fleet.getCargo().addCommodity("tem_fluxcore", MathUtils.getRandomNumberInRange(total * 2, total * 3));
         }
         return fleet;
     }
@@ -89,43 +96,43 @@ public class ExerelinUtilsFleet
         daysToOrbit *= (0.5F + (float)Math.random() * 0.5F);
         return daysToOrbit;
     }
-	
-	/**
-	 * Gets the number of fleet generation points represented by the specified fleet, as used in FleetFactoryV2.
-	 * Frigates = 1 point each, destroyers = 2, cruisers = 4, capitals = 8
-	 * @param fleet
-	 * @return
-	 */
-	public static int getFleetGenPoints(CampaignFleetAPI fleet)
-	{
-		int points = 0;
-		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
-		{
-			points += getFleetGenPoints(member);
-		}
-		return points;
-	}
-	
-	public static int getFleetGenPoints(FleetMemberAPI member)
-	{
-		ShipAPI.HullSize size = member.getHullSpec().getHullSize();
-		switch (size) {
-			case CAPITAL_SHIP:
-				return 8;
-			case CRUISER: 
-				return 4;
-			case DESTROYER: 
-				return 2;
-			case FIGHTER:
-			case FRIGATE:
-				return 1;
-			default:
-				return 1;
-		}
-	}
-	
-	// taken from SS+
-	public static int calculatePowerLevel(CampaignFleetAPI fleet) {
+    
+    /**
+     * Gets the number of fleet generation points represented by the specified fleet, as used in FleetFactoryV2.
+     * Frigates = 1 point each, destroyers = 2, cruisers = 4, capitals = 8
+     * @param fleet
+     * @return
+     */
+    public static int getFleetGenPoints(CampaignFleetAPI fleet)
+    {
+        int points = 0;
+        for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
+        {
+            points += getFleetGenPoints(member);
+        }
+        return points;
+    }
+    
+    public static int getFleetGenPoints(FleetMemberAPI member)
+    {
+        ShipAPI.HullSize size = member.getHullSpec().getHullSize();
+        switch (size) {
+            case CAPITAL_SHIP:
+                return 8;
+            case CRUISER: 
+                return 4;
+            case DESTROYER: 
+                return 2;
+            case FIGHTER:
+            case FRIGATE:
+                return 1;
+            default:
+                return 1;
+        }
+    }
+    
+    // taken from SS+
+    public static int calculatePowerLevel(CampaignFleetAPI fleet) {
         int power = fleet.getFleetPoints();
         for (FleetMemberAPI member : fleet.getFleetData().getCombatReadyMembersListCopy()) {
             if (member.isCivilian()) {
@@ -156,9 +163,9 @@ public class ExerelinUtilsFleet
         power += flatBonus;
         return power;
     }
-	
-	public static float getPlayerLevelFPBonus()
-	{
-		return Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
-	}
+    
+    public static float getPlayerLevelFPBonus()
+    {
+        return Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
+    }
 }
