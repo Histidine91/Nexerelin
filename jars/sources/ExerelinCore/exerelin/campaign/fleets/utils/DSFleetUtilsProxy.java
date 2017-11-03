@@ -12,6 +12,7 @@ import static data.scripts.campaign.fleets.DS_FleetInjector.randomizeVariants;
 import data.scripts.util.DS_Defs;
 import data.scripts.util.DS_Util;
 import static data.scripts.util.DS_Util.getArchetypeWeights;
+import java.util.List;
 import java.util.Random;
 
 public class DSFleetUtilsProxy {
@@ -39,27 +40,34 @@ public class DSFleetUtilsProxy {
 
 		DS_Defs.Archetype theme = DS_FleetInjector.pickTheme(factionId, r);
 		DS_Util.setThemeName(fleet, theme);
+		List<String> extendedTheme = DS_Util.pickExtendedTheme(factionId, market, r);
+		DS_Util.setExtendedThemeName(fleet, extendedTheme);
 
 		switch (type)
 		{
 			case "exerelinInvasionFleet":
 			case "exerelinRespawnFleet":
-				randomizeVariants(fleet, factionId, null, qualityFactor, 0f, theme, 
+				randomizeVariants(fleet, factionId, extendedTheme, qualityFactor, 0f, theme, 
 						getArchetypeWeights(DS_Defs.FleetStyle.ELITE, factionId), false, r);
 				break;
 			case "exerelinInvasionSupportFleet":
 			case "exerelinDefenceFleet":
-				randomizeVariants(fleet, factionId, null, qualityFactor, 0f, theme, 
+				randomizeVariants(fleet, factionId, extendedTheme, qualityFactor, 0f, theme, 
 						getArchetypeWeights(DS_Defs.FleetStyle.MILITARY, factionId), false, r);
 				break;
 			case "exerelinResponseFleet":
-				randomizeVariants(fleet, factionId, null, qualityFactor, 0f, theme, 
+				randomizeVariants(fleet, factionId, extendedTheme, qualityFactor, 0f, theme, 
 						getArchetypeWeights(DS_Defs.FleetStyle.MILITARY, factionId), false, r);
 				break;  
 			case "exerelinMiningFleet":
-				randomizeVariants(fleet, factionId, null, qualityFactor, 0f, theme, 
-						getArchetypeWeights(DS_Defs.FleetStyle.CIVILIAN, factionId), false, r);
+				randomizeVariants(fleet, factionId, extendedTheme, qualityFactor, 0f, theme, 
+						getArchetypeWeights(DS_Defs.FleetStyle.CIVILIAN, factionId), true, r);
 				break;
+			case "vengeanceFleet":
+				randomizeVariants(fleet, factionId, extendedTheme, qualityFactor, 0f, theme, 
+						getArchetypeWeights(DS_Defs.FleetStyle.ELITE, factionId), false, r);
+				break;
+				
 			default:	// fallback taken from SS+
 				randomizeVariants(fleet, factionId, null, qualityFactor, 0f, theme, 
 						getArchetypeWeights(DS_Defs.FleetStyle.STANDARD, factionId), false, r);
