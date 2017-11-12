@@ -16,6 +16,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.MiningHelperLegacy;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.battle.NexBattleAutoresolvePlugin;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.combat.SSP_BattleCreationPluginImpl;
 
@@ -106,6 +107,11 @@ public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
         }
         return null;
     }
+	
+	@Override
+	public PluginPick<BattleAutoresolverPlugin> pickBattleAutoresolverPlugin(BattleAPI battle) {
+		return new PluginPick<BattleAutoresolverPlugin>(new NexBattleAutoresolvePlugin(battle), PickPriority.MOD_GENERAL);
+	}
 
     @Override
     public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {

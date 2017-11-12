@@ -103,11 +103,16 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 		else
 		{
 			float fp = ResponseFleetManager.getReserveSize(market);
+			//float stationFpMod = DefenceStationManager.getManager().getDefenceFleetPenaltyFromStations(market);
 		
-			if (fp < ResponseFleetManager.MIN_FP_TO_SPAWN)
+			if ((fp) < ResponseFleetManager.MIN_FP_TO_SPAWN)
 				return null;
-		
-			fleet = ResponseFleetManager.getManager().getResponseFleet(market, (int)fp);
+			
+			fleet = ResponseFleetManager.getManager().getResponseFleet(market, (int)(fp));
+			if (fleet != null)
+			{
+				fleet.getMemoryWithoutUpdate().set("$nex_response_fp_cost", fp);
+			}
 		}
 		if (fleet == null) return null;
 		

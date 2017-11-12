@@ -35,4 +35,6 @@
     "startShipsTradeLarge":["ms_elysium_Standard", "ms_solidarity_Fast", "ms_seski_BR"],
     "startShipsCarrierSmall":["ms_sargasso_Balanced", "ms_enlil_AF", "ms_belet-seri_CS"],
     "startShipsCarrierLarge":["ms_charybdis_Attack", "ms_morningstar_CS", "ms_seski_LA"],
+    
+    "defenceStations":["nex_asgard_Advanced"],
 }

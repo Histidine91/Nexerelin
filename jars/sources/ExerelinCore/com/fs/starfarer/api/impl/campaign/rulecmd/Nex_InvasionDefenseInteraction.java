@@ -17,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.fleets.DefenceFleetAI;
+import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.utilities.ExerelinUtilsFleet;
@@ -41,10 +42,21 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 		if (defenders == null) return false;
 		
 		dialog.setInteractionTarget(defenders);
-		if (!defenders.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
+		if (!DefenceStationManager.STATIONS_IN_CAMPAIGN_LAYER || !defenders.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
 		{
-			entity.getContainingLocation().addEntity(defenders);
+			if (defenders.getContainingLocation() == null)
+				entity.getContainingLocation().addEntity(defenders);
 			defenders.setLocation(entity.getLocation().x, entity.getLocation().y);
+		}
+		if (!DefenceStationManager.STATIONS_IN_CAMPAIGN_LAYER)
+		{
+			CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(market);
+			if (station != null && station != defenders)
+			{
+				if (station.getContainingLocation() == null)
+					entity.getContainingLocation().addEntity(station);
+				station.setLocation(entity.getLocation().x, entity.getLocation().y);
+			}
 		}
 		
 		final FleetInteractionDialogPluginImpl.FIDConfig config = new FleetInteractionDialogPluginImpl.FIDConfig();
@@ -76,6 +88,15 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 				
 				if (!isStation && defenders.getContainingLocation() != null)
 					defenders.getContainingLocation().removeEntity(defenders);
+				
+				if (!DefenceStationManager.STATIONS_IN_CAMPAIGN_LAYER)
+				{
+					CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(market);
+					if (station != null)
+					{
+						station.setLocation(100000, 100000);
+					}
+				}
 					
 				FleetEncounterContext context = (FleetEncounterContext) plugin.getContext();
 
@@ -140,24 +161,29 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 				if (!isStation && !isRaid && context.isEngagedInHostilities())
 				{
 					float pointsToDeduct = 0;
-					List<FleetMemberAPI> snapshot = defenders.getFleetData().getSnapshot();
-					for (FleetMemberAPI member : snapshot)
+					if (defenders.getMemoryWithoutUpdate().contains("$nex_response_fp_cost"))
+						pointsToDeduct = defenders.getMemoryWithoutUpdate().getFloat("$nex_response_fp_cost");
+					else
 					{
-						float memberPts = ExerelinUtilsFleet.getFleetGenPoints(member);
+						List<FleetMemberAPI> snapshot = defenders.getFleetData().getSnapshot();
+						for (FleetMemberAPI member : snapshot)
+						{
+							float memberPts = ExerelinUtilsFleet.getFleetGenPoints(member);
 
-						// fleet spawned, or member killed
-						if (!context.didPlayerWinEncounter() || !defenders.getMembersWithFightersCopy().contains(member))
-						{
-							//Global.getLogger(this.getClass()).info(member.getShipName() + " is spawned/dead, worth " + memberPts);
-							pointsToDeduct += memberPts;
+							// fleet spawned, or member killed
+							if (!context.didPlayerWinEncounter() || !defenders.getMembersWithFightersCopy().contains(member))
+							{
+								//Global.getLogger(this.getClass()).info(member.getShipName() + " is spawned/dead, worth " + memberPts);
+								pointsToDeduct += memberPts;
+							}
+							// member survived, fleet did not spawn
+							else
+							{
+								//Global.getLogger(this.getClass()).info(member.getShipName() + " is unspawned, worth " + (1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts);
+								pointsToDeduct += memberPts;	//(1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts;
+							}
 						}
-						// member survived, fleet did not spawn
-						else
-						{
-							//Global.getLogger(this.getClass()).info(member.getShipName() + " is unspawned, worth " + (1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts);
-							pointsToDeduct += memberPts;	//(1 - ResponseFleetAI.RESERVE_RESTORE_EFFICIENCY) * memberPts;
-						}
-					}				
+					}
 
 					Global.getLogger(this.getClass()).info("Removing " + pointsToDeduct + " reserve points from " + market.getName());
 					ResponseFleetManager.modifyReserveSize(market, -pointsToDeduct);

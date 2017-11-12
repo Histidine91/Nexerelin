@@ -84,6 +84,7 @@ public class ResponseFleetAI implements EveryFrameScript
 	
 	protected void tryRequestStation()
 	{
+		if (!DefenceStationManager.STATIONS_IN_CAMPAIGN_LAYER) return;
 		if (fleet.getBattle() == null) return;
 		
 		MarketAPI market = data.source.getMarket();

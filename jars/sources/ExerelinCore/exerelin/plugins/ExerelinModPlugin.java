@@ -129,14 +129,12 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        /*
         if (!Global.getSector().hasScript(DefenceStationManager.class))
         {
             DefenceStationManager man = DefenceStationManager.create();
             Global.getSector().addScript(man);
             man.seedFleets();
         }
-        */
     }
     
     @Override
@@ -245,6 +243,9 @@ public class ExerelinModPlugin extends BaseModPlugin
         {
             market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
         }
+        
+        if (DefenceStationManager.getManager() != null)
+            DefenceStationManager.getManager().seedFleets();
     }
     
     @Override

@@ -851,6 +851,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         DefenceStationManager.getManager().resetMaxStations(market);
+        CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(market);
+        if (station != null) station.setFaction(newOwnerId, true);
         
         // flip relay
         if (sectorManager != null)

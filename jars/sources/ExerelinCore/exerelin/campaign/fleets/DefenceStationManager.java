@@ -3,9 +3,12 @@ package exerelin.campaign.fleets;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
+import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -20,10 +23,12 @@ import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.battle.NexBattleAutoresolvePlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +48,10 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 	protected static final float CONSTRUCTION_MARKET_STABILITY_DIVISOR = 5f;
 	public static final float DEFENCE_FP_PENALTY_PER_STATION = 18;	// make response fleet smaller if we already have stations
 	public static final int MAX_STATIONS_PER_FLEET = 1;
+	// if true, stations will be a semi-permanent fixture of campaign layer
+	// else they'll only appear when they're needed
+	public static final boolean STATIONS_IN_CAMPAIGN_LAYER = true;
+	public static final boolean FLEETS_ATTACK_STATIONS = true;
 	
 	protected Map<String, Integer> maxStations = new HashMap<>();
 	protected Map<String, Float> constructionPoints = new HashMap<>();
@@ -192,6 +201,7 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 	{
 		fleets.put(origin.getId(), fleet);
 		allFleets.add(fleet);
+		setFleetsDoNotAttackStation(fleet);
 	}
 	
 	public void spawnFleetInOrbit(CampaignFleetAPI fleet, MarketAPI origin)
@@ -332,7 +342,8 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 				{
 					curr = createFleet(market);
 					registerFleet(curr, market);
-					spawnFleetInOrbit(curr, market);
+					if (STATIONS_IN_CAMPAIGN_LAYER)
+						spawnFleetInOrbit(curr, market);
 				}
 				addStationToFleet(curr, market);
 			}
@@ -351,30 +362,42 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 	{
 		float days = Global.getSector().getClock().convertToDays(amount);	
 		
+		/*
+		if (!STATIONS_IN_CAMPAIGN_LAYER)
+		{
+			for (CampaignFleetAPI fleet : allFleets)
+			{
+				if (fleet.getBattle() != null)
+					fleet.advance(amount);
+			}
+		}
+		*/
+		
 		trackerShort.advance(days);
 		if (trackerShort.intervalElapsed())
 		{
 			for (CampaignFleetAPI fleet : allFleets)
 			{
-				/*
-				fleet.advance(amount);
-				// not in battle; return to limbo
-				if (fleet.getBattle() == null && fleet.getContainingLocation() != null)
-					fleet.getContainingLocation().removeEntity(fleet);
-				*/
-				if (fleet.getBattle() != null)
+				if (STATIONS_IN_CAMPAIGN_LAYER && fleet.getBattle() != null)
 				{
 					String marketId = fleet.getMemoryWithoutUpdate().getString(MemFlags.MEMORY_KEY_SOURCE_MARKET);
-					SectorEntityToken other = fleet.getBattle().getOtherSideFor(fleet).get(0);
+					CampaignFleetAPI other = fleet.getBattle().getOtherSideFor(fleet).get(0);
 					if (other != null)
 					{
+						EncounterOption eo = other.getAI().pickEncounterOption(null, fleet);
+						if (eo == EncounterOption.DISENGAGE || eo == EncounterOption.HOLD_VS_STRONGER) continue;
+						
 						MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
-						ResponseFleetManager.requestResponseFleet(market, other, market.getPrimaryEntity());
+						// disabled for debugging
+						//ResponseFleetManager.requestResponseFleet(market, other, market.getPrimaryEntity());
 					}
+				}
+				for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
+				{
+					member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
 				}
 			}
 		}
-		
 			
 		tracker.advance(days);
 		if (tracker.intervalElapsed()) {
@@ -395,10 +418,49 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 			
 			CampaignFleetAPI curr = createFleet(market);
 			registerFleet(curr, market);
-			spawnFleetInOrbit(curr, market);
+			if (STATIONS_IN_CAMPAIGN_LAYER)
+				spawnFleetInOrbit(curr, market);
 			
 			for (int i=0; i<maxStations; i++)
 				addStationToFleet(curr, market);
+		}
+	}
+	
+	public boolean isRegisteredDefenceStationFleet(CampaignFleetAPI fleet)
+	{
+		return allFleets.contains(fleet);
+	}
+	
+	/**
+	 * Sets all fleets in the sector to not attack the specified station fleet
+	 * @param station
+	 */
+	public void setFleetsDoNotAttackStation(CampaignFleetAPI station)
+	{
+		if (FLEETS_ATTACK_STATIONS) return;
+		List<CampaignFleetAPI> fleets = new ArrayList<>();
+		for (LocationAPI loc : Global.getSector().getAllLocations())
+		{
+			fleets.addAll(loc.getFleets());
+		}
+		for (CampaignFleetAPI fleet : fleets)
+		{
+			if (fleet.getAI() == null) continue;
+			fleet.getAI().doNotAttack(station, 9999999);
+		}
+	}
+	
+	/**
+	 * Sets this fleet to not attack any registered station fleets
+	 * @param fleet
+	 */
+	public void setFleetDoNotAttackStations(CampaignFleetAPI fleet)
+	{
+		if (FLEETS_ATTACK_STATIONS) return;
+		for (CampaignFleetAPI station : allFleets)
+		{
+			if (fleet.getAI() == null) continue;
+			fleet.getAI().doNotAttack(station, 9999999);
 		}
 	}
 	
@@ -408,15 +470,43 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 		return false;
 	}
 	
+	// fleets don't pick fights with stations
+	@Override
+	public void reportFleetSpawned(CampaignFleetAPI fleet) {
+		setFleetDoNotAttackStations(fleet);
+	}
+	
 	@Override
 	public void reportFleetDespawned(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {
 		if (!allFleets.contains(fleet))
 			return;
-		
-		log.info("Despawning defence station");
+		//if (reason != FleetDespawnReason.DESTROYED_BY_BATTLE && reason != FleetDespawnReason.NO_MEMBERS)
+		//	return;
+			
+		log.info("Despawning defence station " + fleet.getNameWithFaction() + ": "  + reason.toString());
 		allFleets.remove(fleet);
 		String marketId = fleet.getMemoryWithoutUpdate().getString("$sourcemarket");
 		fleets.remove(marketId);
+	}
+	
+	// restore health of station modules after a battle (since they can't be remembered)
+	@Override
+	public void reportBattleFinished(CampaignFleetAPI primaryWinner, BattleAPI battle) {
+		if (!battle.isDone()) return;
+		List<CampaignFleetAPI> bothSides = battle.getSnapshotBothSides();
+		for (CampaignFleetAPI fleet : bothSides)
+		{
+			if (!fleet.isStationMode()) continue;
+			for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
+			{
+				NexBattleAutoresolvePlugin.removeStationFromModuleHullCache(member);
+				for (int i = 0; i < member.getVariant().getModuleSlots().size(); i++)
+				{
+					if (member.getStatus().isDetached(i)) continue;
+					member.getStatus().setHullFraction(i, 1);
+				}
+			}
+		}		
 	}
 	
 	@Override
