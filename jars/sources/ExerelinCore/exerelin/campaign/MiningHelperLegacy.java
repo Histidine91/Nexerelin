@@ -421,12 +421,9 @@ public class MiningHelperLegacy {
 		return new HashMap<>(miningWeapons);
 	}
 	
-	public static float getWingMiningStrength(String wing)
+	public static float getVariantMiningStrength(ShipVariantAPI variant)
 	{
-		FighterWingSpecAPI wingSpec = Global.getSettings().getFighterWingSpec(wing);
 		float strength = 0;
-		ShipVariantAPI variant = wingSpec.getVariant();
-		
 		String hullId = variant.getHullSpec().getHullId();
 		if (miningShips.containsKey(hullId))
 			strength += miningShips.get(hullId);
@@ -438,6 +435,20 @@ public class MiningHelperLegacy {
 			if (miningWeapons.containsKey(weaponId))
 				strength+= miningWeapons.get(weaponId);
 		}
+		for (String wing: variant.getFittedWings())
+		{
+			strength += getWingMiningStrength(wing);
+		}
+		
+		return strength;
+	}
+	
+	public static float getWingMiningStrength(String wing)
+	{
+		FighterWingSpecAPI wingSpec = Global.getSettings().getFighterWingSpec(wing);
+		ShipVariantAPI variant = wingSpec.getVariant();
+		
+		float strength = getVariantMiningStrength(variant);
 		
 		float count = wingSpec.getNumFighters();
 		return strength * count;
@@ -447,29 +458,22 @@ public class MiningHelperLegacy {
 	{
 		if (member.isMothballed()) return 0;
 		
-		float strength = 0;
-		
 		float crModifier = 1;
 		if (useCRMod)
 		{
 			float cr = member.getRepairTracker().getCR();
 			crModifier = cr / 0.6f;
 		}
-
-		String hullId = member.getHullId();
-		if (miningShips.containsKey(hullId))
-			strength += miningShips.get(hullId);
-
-		Collection<String> weaponSlots = member.getVariant().getFittedWeaponSlots();
-		for (String slot : weaponSlots)
+		
+		ShipVariantAPI variant = member.getVariant();
+		float strength = getVariantMiningStrength(variant);
+		for (int i=0; i<variant.getModuleSlots().size(); i++)
 		{
-			String weaponId = member.getVariant().getWeaponSpec(slot).getWeaponId();
-			if (miningWeapons.containsKey(weaponId))
-				strength+= miningWeapons.get(weaponId);
-		}
-		for (String wing: member.getVariant().getFittedWings())
-		{
-			strength += getWingMiningStrength(wing);
+			if (member.getStatus().isDetached(i)) continue;
+			String moduleSlot = member.getVariant().getModuleSlots().get(i);
+			ShipVariantAPI moduleVar = member.getModuleVariant(moduleSlot);
+			if (moduleVar != null)
+				strength += getVariantMiningStrength(moduleVar);
 		}
 		
 		return strength * crModifier;
