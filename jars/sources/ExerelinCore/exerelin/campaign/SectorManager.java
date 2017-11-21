@@ -757,7 +757,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             {
                 market.removeSubmarket(Submarkets.GENERIC_MILITARY);
                 market.addSubmarket("AL_militaryMarket");
-                market.addSubmarket("AL_plugofbarrack");
             }
         }
         else if (!newOwnerId.equals("approlight") && oldOwnerId.equals("approlight"))
@@ -768,7 +767,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                     market.addSubmarket(Submarkets.GENERIC_MILITARY);
             }
             market.removeSubmarket("AL_militaryMarket");
-            market.removeSubmarket("AL_plugofbarrack");
         }
         
         // II

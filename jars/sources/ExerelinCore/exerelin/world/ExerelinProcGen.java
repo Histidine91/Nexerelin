@@ -1152,7 +1152,6 @@ public class ExerelinProcGen {
 			addChaosCrack(data.starSystem);	// TODO: give it its own option?
 			data.market.removeSubmarket(Submarkets.GENERIC_MILITARY);
 			data.market.addSubmarket("AL_militaryMarket");
-			//data.market.addSubmarket("AL_plugofbarrack");
 		}
 	}
 	
