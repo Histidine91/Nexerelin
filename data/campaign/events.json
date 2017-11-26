@@ -7,6 +7,10 @@
 		"script":"exerelin.campaign.events.MarketAttackedEvent",
 		"image":"graphics/icons/markets/mercenaries.png"
 	},
+	"exerelin_market_transfered":{
+		"script":"exerelin.campaign.events.MarketTransferedEvent",
+		"image":"graphics/icons/intel/faction_peace.png"
+	},
 	"exerelin_diplomacy":{
 		"script":"exerelin.campaign.events.DiplomacyEvent"
 	},

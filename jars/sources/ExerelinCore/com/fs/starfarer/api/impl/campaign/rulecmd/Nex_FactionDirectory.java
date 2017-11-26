@@ -19,14 +19,11 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.lwjgl.input.Keyboard;
 
 public class Nex_FactionDirectory extends BaseCommandPlugin {
@@ -62,7 +59,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 				OptionPanelAPI opts = dialog.getOptionPanel();
 				opts.clearOptions();
 				int num = (int)params.get(1).getFloat(memoryMap);
-				memoryMap.get(MemKeys.LOCAL).set("$nex_dirFactionGroup", num);
+				//memoryMap.get(MemKeys.LOCAL).set("$nex_dirFactionGroup", num);
 				List<FactionListGrouping> groups = (List<FactionListGrouping>)(memoryMap.get(MemKeys.LOCAL).get(FACTION_GROUPS_KEY));
 				FactionListGrouping group = groups.get(num - 1);
 				for (FactionAPI faction : group.factions)
@@ -92,7 +89,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	 * Creates dialog options for the faction list subgroups
 	 * @param dialog
 	 */
-	protected void listGroups(InteractionDialogAPI dialog, MemoryAPI memory)
+	public static void listGroups(InteractionDialogAPI dialog, MemoryAPI memory)
 	{
 		boolean special = memory.getBoolean("$specialDialog");
 		
@@ -106,7 +103,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		}
 		else
 		{
-			List<String> factionsForDirectory = getFactionsForDirectory(true);
+			List<String> factionsForDirectory = Nex_FactionDirectoryHelper.getFactionsForDirectory(true);
 			groups = Nex_FactionDirectoryHelper.getFactionGroupings(factionsForDirectory);
 			memory.set(FACTION_GROUPS_KEY, groups, GROUPS_CACHE_TIME);
 		}
@@ -138,30 +135,6 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		ExerelinUtils.addDevModeDialogOptions(dialog, false);
 	}
 	
-	/**
-	 * Gets the factions that should appear in the directory
-	 * @param excludeFollowers
-	 * @return 
-	 */
-	protected List<String> getFactionsForDirectory(boolean excludeFollowers)
-	{
-		Set<String> liveFactions = new HashSet<>(SectorManager.getLiveFactionIdsCopy());
-		List<FactionAPI> allFactions = Global.getSector().getAllFactions();
-		List<String> result = new ArrayList<>();
-		
-		if (ExerelinUtilsFaction.isExiInCorvus("exigency"))
-			liveFactions.add("exigency");
-		for (FactionAPI faction : allFactions)
-		{
-			String factionId = faction.getId();
-			if (liveFactions.contains(factionId) || ExerelinUtilsFaction.hasAnyMarkets(factionId) || ExerelinUtilsFaction.isExiInCorvus(factionId))
-				result.add(factionId);
-		}
-		if (excludeFollowers)
-			result.remove(ExerelinConstants.PLAYER_NPC_ID);
-		
-		return result;
-	}
 	    
 	/**
 	 * Prints a formatted list of the specified faction's markets 

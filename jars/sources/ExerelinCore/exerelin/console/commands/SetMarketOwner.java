@@ -87,7 +87,7 @@ public class SetMarketOwner implements BaseCommand {
         
         FactionAPI attackerFaction = Global.getSector().getFaction(attackerFactionId);
         
-        SectorManager.captureMarket(market, attackerFaction, defenderFaction, false, null, 0);
+        SectorManager.transferMarket(market, attackerFaction, defenderFaction, false, true, null, 0);
         Console.showMessage("Transferred market " + market.getName() + " from " + defenderFaction.getDisplayName() + " to " + attackerFaction.getDisplayName());
         
         return CommandResult.SUCCESS;

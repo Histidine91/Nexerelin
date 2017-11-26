@@ -120,6 +120,7 @@
 		"invasionFleet":"$faction invasion fleet update",
 		"marketAttacked":"Recent attack on $market",
 		"marketCaptured":"$market captured by $faction",
+		"marketTransfered":"$market transfered to $faction",
 		"revengeanceFleetEvent":"Revenge Fleet",
 		"securityAlert":"Security alert on $market",
 		"slaveTrade":"Slave trade on $market",
@@ -222,6 +223,9 @@
 		"marketDirectoryEntry":"$market, $location (size $size)",
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
 		"hasBaseTip":"has military base",
+		
+		"transferMarketWarning":"Are you sure you wish to transfer $market to $theFaction?",
+		"transferMarketRep":"At the current stability, transferring $market will earn $repChange reputation with the recipient faction.",
 		
 		"prismNoSale":"No sales/returns",
 		"prismRelTooLow":"Requires: $faction - $minRelationship",

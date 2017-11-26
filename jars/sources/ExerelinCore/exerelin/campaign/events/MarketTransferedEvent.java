@@ -1,36 +1,40 @@
 package exerelin.campaign.events;
 
 import java.util.Map;
-
 import org.apache.log4j.Logger;
-
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MarketCapturedEvent extends BaseEventPlugin {
+public class MarketTransferedEvent extends BaseEventPlugin {
 
-	public static Logger log = Global.getLogger(MarketCapturedEvent.class);
+	public static Logger log = Global.getLogger(MarketTransferedEvent.class);
 	
 	protected static final int DAYS_TO_KEEP = 60;
 	
 	protected FactionAPI newOwner;
 	protected FactionAPI oldOwner;
-	protected List<String> factionsToNotify;
-	protected float repChangeStrength;
-	protected boolean playerInvolved;
+	protected float repEffect = 0;
 	protected Map<String, Object> params;
 	
 	protected boolean done;
@@ -50,9 +54,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		params = (HashMap)param;
 		newOwner = (FactionAPI)params.get("newOwner");
 		oldOwner = (FactionAPI)params.get("oldOwner");
-		repChangeStrength = (Float)params.get("repChangeStrength");
-		playerInvolved = (Boolean)params.get("playerInvolved");
-		factionsToNotify = (List<String>)params.get("factionsToNotify");
+		repEffect = (Float)params.get("repEffect");
 	}
 		
 	@Override
@@ -79,26 +81,31 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	public void startEvent()
 	{
 		String stage = "report";
-		//MessagePriority priority = MessagePriority.SECTOR;
-		MessagePriority priority = MessagePriority.ENSURE_DELIVERY;
-		if (playerInvolved) 
-		{
-			stage = "report_player";
-			//priority = MessagePriority.ENSURE_DELIVERY;
-		}
+		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
 
 		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
 				public void beforeDelivery(CommMessageAPI message) {
-					if (playerInvolved)
-					for (String factionId : factionsToNotify)
-						ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, repChangeStrength);
+					InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+					TextPanelAPI panel = null;
+					if (dialog != null)
+						panel = dialog.getTextPanel();
+					
+					ExerelinUtilsReputation.adjustPlayerReputation(newOwner, null, repEffect, message, panel);
+					/*
+					CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
+					impact.delta = repEffect;
+					ReputationAdjustmentResult result = Global.getSector().adjustPlayerReputation(
+									new RepActionEnvelope(RepActions.CUSTOM, impact,
+														  message, panel, true), 
+														  newOwner.getId());
+					*/					
 				}
 			});
 	}
 	
 	@Override
 	public String getEventName() {
-		String name = StringHelper.getString("exerelin_events", "marketCaptured");
+		String name = StringHelper.getString("exerelin_events", "marketTransfered");
 		name = StringHelper.substituteToken(name, "$market", market.getName());
 		name = StringHelper.substituteToken(name, "$faction", newOwner.getDisplayName());
 		return name;
@@ -137,6 +144,10 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		
 		map.put("$oldOwnerMarketsNum", "" + ExerelinUtilsFaction.getFactionMarkets(oldOwner.getId()).size());
 		map.put("$newOwnerMarketsNum", "" + ExerelinUtilsFaction.getFactionMarkets(newOwner.getId()).size());
+		
+		//map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repEffect*100f)));
+		//map.put("$newRelationStr", getNewRelationStr(newOwner));
+		
 		return map;
 	}
 	@Override
@@ -144,7 +155,20 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		List<String> result = new ArrayList<>();
 		addTokensToList(result, "$newOwnerMarketsNum");
 		addTokensToList(result, "$oldOwnerMarketsNum");
+		
+		//addTokensToList(result, "$repEffectAbs");
+		//addTokensToList(result, "$newRelationStr");
 		return result.toArray(new String[0]);
+	}
+	
+	@Override
+	public Color[] getHighlightColors(String stageId) {
+		//Color colorRepEffect = repEffect > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+		//Color colorNew = faction.getRelColor(Factions.PLAYER);
+		return new Color[] {
+			Misc.getHighlightColor(), Misc.getHighlightColor(), 
+			//colorRepEffect, colorNew
+		};
 	}
 
 	@Override
@@ -160,5 +184,14 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	@Override
 	public boolean showAllMessagesIfOngoing() {
 		return false;
+	}
+	
+	protected static String getNewRelationStr(FactionAPI faction)
+	{
+		RepLevel level = faction.getRelationshipLevel(Factions.PLAYER);
+		int repInt = (int) Math.ceil((faction.getRelationship(Factions.PLAYER)) * 100f);
+		
+		String standing = "" + repInt + "/100" + " (" + level.getDisplayName().toLowerCase() + ")";
+		return standing;
 	}
 }

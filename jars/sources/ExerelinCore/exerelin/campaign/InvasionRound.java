@@ -364,7 +364,7 @@ public class InvasionRound {
 		// add intel event if captured
 		if (captured)
 		{
-			SectorManager.captureMarket(market, attackerFaction, defenderFaction, playerInvolved, factionsToNotify, repChangeStrength);
+			SectorManager.transferMarket(market, attackerFaction, defenderFaction, playerInvolved, true, factionsToNotify, repChangeStrength);
 			
 			if (playerInvolved)
 			{

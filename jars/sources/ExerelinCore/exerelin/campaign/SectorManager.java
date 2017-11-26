@@ -685,7 +685,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             sectorManager.victoryHasOccured = true;
     }
     
-    public static void captureMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, boolean playerInvolved, List<String> factionsToNotify, float repChangeStrength)
+    public static void transferMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
+			boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
     {
         // forcibly refreshes the market before capture so we can loot their faction-specific goodies once we capture it
         // already did this in InvasionRound
@@ -824,13 +825,24 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         market.reapplyConditions();
-        Map<String, Object> params = new HashMap<>();
-        params.put("newOwner", newOwner);
-        params.put("oldOwner", oldOwner);
-        params.put("playerInvolved", playerInvolved);
-        params.put("factionsToNotify", factionsToNotify);
-        params.put("repChangeStrength", repChangeStrength);
-        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
+		if (isCapture)
+		{
+			Map<String, Object> params = new HashMap<>();
+			params.put("newOwner", newOwner);
+			params.put("oldOwner", oldOwner);
+			params.put("playerInvolved", playerInvolved);
+			params.put("factionsToNotify", factionsToNotify);
+			params.put("repChangeStrength", repChangeStrength);
+			Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
+		}
+		else
+		{
+			Map<String, Object> params = new HashMap<>();
+			params.put("newOwner", newOwner);
+			params.put("oldOwner", oldOwner);
+			params.put("repEffect", repChangeStrength);
+			Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_transfered", params);
+		}
                 
         DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
         if (playerInvolved) StatsTracker.getStatsTracker().notifyMarketCaptured(market);

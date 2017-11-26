@@ -4,15 +4,19 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
+import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtilsFaction;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Nex_FactionDirectoryHelper {
 
@@ -116,6 +120,31 @@ public class Nex_FactionDirectoryHelper {
 		}
 		
 		return list;
+	}
+	
+	/**
+	 * Gets the factions that should appear in the directory
+	 * @param excludeFollowers
+	 * @return 
+	 */
+	public static List<String> getFactionsForDirectory(boolean excludeFollowers)
+	{
+		Set<String> liveFactions = new HashSet<>(SectorManager.getLiveFactionIdsCopy());
+		List<FactionAPI> allFactions = Global.getSector().getAllFactions();
+		List<String> result = new ArrayList<>();
+		
+		if (ExerelinUtilsFaction.isExiInCorvus("exigency"))
+			liveFactions.add("exigency");
+		for (FactionAPI faction : allFactions)
+		{
+			String factionId = faction.getId();
+			if (liveFactions.contains(factionId) || ExerelinUtilsFaction.hasAnyMarkets(factionId) || ExerelinUtilsFaction.isExiInCorvus(factionId))
+				result.add(factionId);
+		}
+		if (excludeFollowers)
+			result.remove(ExerelinConstants.PLAYER_NPC_ID);
+		
+		return result;
 	}
 	
 	public static String getFactionDisplayName(FactionAPI faction)

@@ -55,19 +55,13 @@ public class ExerelinUtilsReputation
 		
 		CustomRepImpact impact = new CustomRepImpact();
 		impact.delta = delta;
-		if (textPanel != null)
-			result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, impact, textPanel), factionId);
-		else
-			result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, impact, message, true), factionId);
+		result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, impact, message, textPanel, true), factionId);
 		
 		if (person != null) 
 		{
 			CustomRepImpact impact2 = new CustomRepImpact();
 			impact2.delta = delta * 1.5f;
-			if (textPanel != null)
-				result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, impact2, textPanel), person);
-			else
-				result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, impact2, message, true), person);
+			result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, impact2, message, textPanel, true), person);
 		}
 		
 		boolean isHostile = player.isHostileTo(faction);

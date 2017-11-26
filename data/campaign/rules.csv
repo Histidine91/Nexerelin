@@ -809,26 +809,26 @@ FireAll PopulateOptions",,,
 ,,,,,,
 ,,,,,,
 ## Base commander stuff ##,,,,,,
-ExerelinConvOfficialGreeting,PickGreeting,"Exerelin_IsBaseOfficial
+ExerelinConvOfficialGreeting,PickGreeting,"Nex_IsBaseOfficial command
 !$mpm_isPlayerContact","ShowPersonVisual
 FireAll PopulateOptions
 FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
 ""This is $rank $local.name, $post. State your business.""",,
-ExerelinConvOfficialGreetingTemplars,PickGreeting,"Exerelin_IsBaseOfficial
+ExerelinConvOfficialGreetingTemplars,PickGreeting,"Nex_IsBaseOfficial command
 $faction.id == ""templars""
 !$mpm_isPlayerContact","ShowPersonVisual
 FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
 ""This is $rank $local.name, $post of $entityName. Speak quickly or be purged.""",,
-ExerelinConvOfficialGreetingPirates,PickGreeting,"Exerelin_IsBaseOfficial
+ExerelinConvOfficialGreetingPirates,PickGreeting,"Nex_IsBaseOfficial command
 IsPirateFaction $faction.id
 !$mpm_isPlayerContact","ShowPersonVisual
 FireAll PopulateOptions
 FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
 ""Yeah, what is it?""",,
-ExerelinConvOfficialGreetingFollowers,PickGreeting,"Exerelin_IsBaseOfficial
+ExerelinConvOfficialGreetingFollowers,PickGreeting,"Nex_IsBaseOfficial command
 $faction.id == ""player_npc""
 !$mpm_isPlayerContact","ShowPersonVisual
 FireAll ExerelinBaseCommanderOptionsInitialize","""Hello, chief. What can we do for you?""",,
@@ -1003,6 +1003,32 @@ exerelinMarketSpecial:No",
 ExerelinLeaveAllianceConfirm,DialogOptionSelected,$option == exerelinLeaveAllianceConfirm,"LeaveAlliance
 FireAll ExerelinMarketSpecialInitialize",,,
 #END PLAYER FACTION ALLIANCE OPTIONS,,,,,,
+,,,,,,
+,,,,,,
+#START MARKET TRANSFER OPTIONS,,,,,,
+nex_marketTransferInit,PopulateOptions,"Nex_IsBaseOfficial admin
+$faction.id == player_npc",,,nex_transferMarketMainWithDialog:Transfer this market to another faction,
+,,,,,,
+nex_marketTransfer,DialogOptionSelected,$option == nex_transferMarketMain,FireAll Nex_MarketTransferMain,,,
+nex_marketTransferWithDialog,DialogOptionSelected,$option == nex_transferMarketMainWithDialog,"Nex_TransferMarket printRepChange
+FireAll Nex_MarketTransferMain","""You truly wish to give away $market? Very well, to whom?""",,
+nex_marketTransferByTrigger,Nex_MarketTransferMain,,Nex_TransferMarket listGroups,,,
+,,,,,,
+nex_marketTransferList1,DialogOptionSelected,$option == nex_transferMarketList1,Nex_TransferMarket listFactions 1,,,
+nex_marketTransferList2,DialogOptionSelected,$option == nex_transferMarketList2,Nex_TransferMarket listFactions 2,,,
+nex_marketTransferList3,DialogOptionSelected,$option == nex_transferMarketList3,Nex_TransferMarket listFactions 3,,,
+nex_marketTransferList4,DialogOptionSelected,$option == nex_transferMarketList4,Nex_TransferMarket listFactions 4,,,
+nex_marketTransferList5,DialogOptionSelected,$option == nex_transferMarketList5,Nex_TransferMarket listFactions 5,,,
+nex_marketTransferList6,DialogOptionSelected,$option == nex_transferMarketList6,Nex_TransferMarket listFactions 6,,,
+nex_marketTransferList7,DialogOptionSelected,$option == nex_transferMarketList7,Nex_TransferMarket listFactions 7,,,
+,,,,,,
+nex_marketTransferExecute,DialogOptionSelected,"Nex_OptionStartsWith ""nex_transferMarket_""","Nex_TransferMarket transfer
+FireAll Nex_MarketPostTransfer",,,
+,,,,,,
+nex_marketTransferPostDialog,Nex_MarketPostTransfer,,,"""As you command. $market is now in possession of $entity._newFaction.
+
+""Goodbye, chief.""",cutCommLink:Cut the comm link,
+#END MARKET TRANSFER OPTIONS,,,,,,
 ,,,,,,
 ,,,,,,
 #Must be after all other rules with that trigger,,,,,,
