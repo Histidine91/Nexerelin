@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.BattleAPI.BattleSide;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.EngagementOutcome;
-import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.FleetMemberData;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
@@ -13,7 +12,6 @@ import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
@@ -39,7 +37,6 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	protected static final String STRING_HELPER_CAT = "exerelin_officers";
 	protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
 	protected boolean recoveredOfficers = false;
-	protected FIDConfig config;	// vanilla one is private
 
 	protected String getTextString(String id)
 	{
@@ -306,8 +303,14 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		
 		super.init(dialog);
 	}
-		
-	// same as vanilla, except stations don't get pulled + anything pursuing a participating fleet gets pulled
+	
+	protected void addMemoryFlagIfNotSet(CampaignFleetAPI fleet, String memFlag)
+	{
+		if (!fleet.getMemoryWithoutUpdate().contains(memFlag))
+			fleet.getMemoryWithoutUpdate().set(memFlag, true, 0);
+	}
+	
+	// same as vanilla, except stations don't (usually) get pulled + anything pursuing a participating fleet gets pulled
 	protected boolean shouldPullInFleet(BattleAPI battle, CampaignFleetAPI fleet, 
 			float dist, CampaignFleetAPI playerFleet, CampaignFleetAPI otherFleet)
 	{
@@ -321,7 +324,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 //			}
 		if (dist > Misc.getBattleJoinRange())
 			return false;
-		if (dist > baseSensorRange && !(visible && level != VisibilityLevel.SENSOR_CONTACT))
+		if ( !(dist < baseSensorRange || (visible && level != SectorEntityToken.VisibilityLevel.SENSOR_CONTACT)) )
 			return false;
 		if (fleet.getAI() != null && fleet.getAI().wantsToJoin(battle, true))
 			return true;
@@ -354,7 +357,21 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				for (CampaignFleetAPI inBattle : fleets)
 				{
 					if (inBattle == target)
+					{
+						// THI merc handling
+						if (fleet.getMemoryWithoutUpdate().contains("$tiandongMercTarget")
+                            && fleet.getMemoryWithoutUpdate().getFleet("$tiandongMercTarget") == inBattle)
+						{
+							if (!inBattle.isFriendlyTo(Global.getSector().getPlayerFleet()))
+							{
+								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_MAKE_HOSTILE);
+								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF);
+								addMemoryFlagIfNotSet(fleet, MemFlags.MEMORY_KEY_LOW_REP_IMPACT);
+							}
+						}
+						
 						return true;
+					}
 				}
 			}
 		}
