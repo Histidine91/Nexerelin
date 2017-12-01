@@ -844,7 +844,7 @@ public class ExerelinMarketBuilder
 		}
 		
 		// planet type stuff
-		if (planetType != null && !planetType.isEmpty())
+		if (!isStation)
 		{
 			if (planetType.equals("terran-eccentric"))
 			{
@@ -960,6 +960,8 @@ public class ExerelinMarketBuilder
 				market.removeSpecificCondition(cond.getIdForPluginModifications());
 			}
 		}
+		
+		procGen.pickEntityInteractionImage(data.entity, market, planetType, data.type);
 		
 		return market;
 	}

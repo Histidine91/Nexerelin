@@ -51,6 +51,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -586,6 +587,10 @@ public class ExerelinProcGen {
 		}
 		data.name = getStationName(data.primary);
 		data.archetype = marketSetup.pickArchetypeForStation(data);
+		if (target instanceof PlanetAPI)
+		{
+			data.planetType = ((PlanetAPI)target).getTypeId();
+		}
 		alreadyUsedStationNames.add(data.name);
 		
 		return data;
@@ -979,6 +984,7 @@ public class ExerelinProcGen {
 			newStation.setMarket(existingMarket);
 			existingMarket.getConnectedEntities().add(newStation);
 			station.market = existingMarket;
+			pickEntityInteractionImage(newStation, newStation.getMarket(), planet.getTypeId(), EntityType.STATION);
 		}
 		else
 		{
@@ -986,7 +992,6 @@ public class ExerelinProcGen {
 			station.market = marketSetup.addMarket(station, factionId);
 			//standaloneStations.add(data);
 		}
-		pickEntityInteractionImage(newStation, newStation.getMarket(), planet.getTypeId(), EntityType.STATION);
 		newStation.setCustomDescriptionId("orbital_station_default");
 		
 		station.entity = newStation;
@@ -1155,6 +1160,111 @@ public class ExerelinProcGen {
 		}
 	}
 	
+	protected int countMarketsInSystemForFaction(LocationAPI loc, String factionId)
+	{
+		int count = 0;
+		for (PlanetAPI planet : loc.getPlanets())
+		{
+			if (planet.getFaction().getId().equals(factionId))
+				count++;
+		}
+		for (SectorEntityToken station : loc.getEntitiesWithTag(Tags.STATION))
+		{
+			if (station.getFaction().getId().equals(factionId))
+				count++;
+		}
+		
+		return count;
+	}
+	
+	protected float getDistScore(ProcGenEntity candidate, List<ProcGenEntity> existingHQs)
+	{
+		float score = 0;
+		SectorEntityToken ent = candidate.entity;
+		if (ent == null) ent = candidate.primary;
+		for (ProcGenEntity hq : existingHQs)
+		{
+			float distSq = MathUtils.getDistanceSquared(ent.getLocationInHyperspace(), hq.entity.getLocationInHyperspace());
+			score += Math.pow(distSq, 0.25f);
+		}
+		return score;
+	}
+	
+	/**
+	 * Picks a planet that is as far from existing HQ planets as possible.
+	 * Uses most-square-roots approach.
+	 * @param candidates Possible planets for a HQ
+	 * @param existingHQs
+	 * @return
+	 */
+	protected ProcGenEntity pickHQ(List<ProcGenEntity> candidates, List<ProcGenEntity> existingHQs)
+	{
+		if (existingHQs.isEmpty())
+			return candidates.get(0);
+		List<ProcGenEntity> sorted = new ArrayList<>(candidates);		
+		final Map<ProcGenEntity, Float> distScores = new HashMap<>();
+		
+		for (ProcGenEntity candidate : candidates)
+		{
+			distScores.put(candidate, getDistScore(candidate, existingHQs));
+		}
+		Collections.sort(sorted, new Comparator<ProcGenEntity>()
+            {
+                @Override
+                public int compare(ProcGenEntity ent1, ProcGenEntity ent2)
+                {
+                    return distScores.get(ent1).compareTo(distScores.get(ent2));
+                }
+            });
+		return sorted.get(sorted.size() - 1);
+	}
+	
+	/**
+	 * Pick a random market-to-be from the available list. 
+	 * Prefers markets close to the faction's HQ, and those in star systems where faction already has a presence.
+	 * Just picks the first market in the list if this is a pirate or independent faction.
+	 * @param factionId
+	 * @param candidates
+	 * @param hq The faction's current HQ planet
+	 * @param alreadyPresent List of star systems where we already have a presence
+	 * @return
+	 */
+	protected ProcGenEntity pickRandomMarketCloseToHQ(String factionId, List<ProcGenEntity> candidates, 
+			ProcGenEntity hq, Collection<LocationAPI> alreadyPresent)
+	{
+		if (ExerelinConfig.getExerelinFactionConfig(factionId).pirateFaction || factionId.equals(Factions.INDEPENDENT))
+			return candidates.get(0);
+		
+		WeightedRandomPicker<ProcGenEntity> picker = new WeightedRandomPicker<>();
+		picker.setRandom(random);
+		
+		Vector2f hqLoc = hq.entity.getContainingLocation().getLocation();
+		for (ProcGenEntity candidate : candidates)
+		{
+			Vector2f loc = candidate.starSystem.getLocation();
+			
+			float weight = 10000 - MathUtils.getDistance(loc, hqLoc);
+			if (weight > 4900) weight = 4900;
+			if (weight < 100) weight = 100;
+			weight = (float)Math.sqrt(weight);
+			
+			if (alreadyPresent.contains(candidate.starSystem))
+			{
+				float existingCount = countMarketsInSystemForFaction(candidate.starSystem, factionId);
+				//log.info("System " + candidate.starSystem.getBaseName() + " already has " + existingCount + " markets for " + factionId);
+				float weightMult = 4 - existingCount;
+				if (weightMult < 0.5) weightMult = 0.5f;
+				weight *= weightMult;
+			}
+			picker.add(candidate, weight);
+		}
+		return picker.pick();
+	}
+	
+	/**
+	 * Assigns markets to factions
+	 * @param sector
+	 */
 	public void populateSector(SectorAPI sector)
 	{
 		// initial setup
@@ -1166,25 +1276,32 @@ public class ExerelinProcGen {
 		
 		marketSetup.pickMarketArchetypes(populatedPlanets);
 		
+		// faction picker
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>(random);
 		List<String> factions = new ArrayList<>(factionIds);
 		factions.remove(ExerelinConstants.PLAYER_NPC_ID);  // player NPC faction only gets homeworld (if applicable)
 		factionPicker.addAll(factions);
 		
+		// various Collections we'll be using
 		Map<String, Integer> factionPlanetCount = new HashMap<>();
 		Map<String, Integer> factionStationCount = new HashMap<>();
-		List<ProcGenEntity> populatedPlanetsCopy = new ArrayList<>(populatedPlanets);
-		List<ProcGenEntity> stationsCopy = new ArrayList<>(stations);
+		List<ProcGenEntity> populatedPlanetsCopy = new LinkedList<>(populatedPlanets);
+		List<ProcGenEntity> stationsCopy = new LinkedList<>(stations);
 		List<String> pirateFactions = new ArrayList<>();
+		
+		List<StarSystemAPI> systemsWithPirates = new ArrayList<>();
+		List<ProcGenEntity> existingHQs = new ArrayList<>();
+		Map<String, ProcGenEntity> existingHQsByFaction = new HashMap<>();
+		Map<String, Set<LocationAPI>> populatedSystemsByFaction = new HashMap<>();
 		
 		for (String factionId : factions) {
 			factionPlanetCount.put(factionId, 0);
 			factionStationCount.put(factionId, 0);
+			populatedSystemsByFaction.put(factionId, new HashSet<LocationAPI>());
+			
 			if (ExerelinUtilsFaction.isPirateFaction(factionId))
 				pirateFactions.add(factionId);
 		}
-
-		List<StarSystemAPI> systemsWithPirates = new ArrayList<>();
 		
 		// before we do anything else give the "homeworld" to our faction
 		pickHomeworld();
@@ -1205,7 +1322,6 @@ public class ExerelinProcGen {
 			MarketAPI homeMarket = marketSetup.addMarket(homeworld, alignedFactionId);
 			//SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
 			//relay.setFaction(alignedFactionId);
-			pickEntityInteractionImage(homeworld.entity, homeworld.entity.getMarket(), homeworld.planetType, homeworld.type);
 			populatedPlanetsCopy.remove(homeworld);
 			
 			handleHQSpecials(sector, alignedFactionId, homeworld);
@@ -1213,6 +1329,9 @@ public class ExerelinProcGen {
 			if (pirateFactions.contains(alignedFactionId))
 				systemsWithPirates.add(homeworld.starSystem);
 			factionPlanetCount.put(alignedFactionId, 1);
+			
+			existingHQs.add(homeworld);
+			existingHQsByFaction.put(alignedFactionId, homeworld);
 		}
 		
 		Collections.shuffle(populatedPlanetsCopy, random);
@@ -1229,29 +1348,29 @@ public class ExerelinProcGen {
 		{
 			if (factionId.equals(alignedFactionId)) continue;
 			if (populatedPlanetsCopy.size() <= 0) break;
-			ProcGenEntity habitable = populatedPlanetsCopy.get(0);
-			populatedPlanetsCopy.remove(0);
+			ProcGenEntity hq = pickHQ(populatedPlanetsCopy, existingHQs);
+			populatedPlanetsCopy.remove(hq);
 			
 			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
 			if (!(config != null && config.noHomeworld == true))
-				habitable.isHQ = true;
+				hq.isHQ = true;
 			
-			marketSetup.addMarket(habitable, factionId);
-			handleHQSpecials(sector, factionId, habitable);
+			marketSetup.addMarket(hq, factionId);
+			handleHQSpecials(sector, factionId, hq);
 			
-			if (habitable.isCapital)
+			if (hq.isCapital)
 			{
-				SectorEntityToken relay = sector.getEntityById(systemToRelay.get(habitable.starSystem.getId()));
+				SectorEntityToken relay = sector.getEntityById(systemToRelay.get(hq.starSystem.getId()));
 				relay.setFaction(factionId);
 			}
 			
-			pickEntityInteractionImage(habitable.entity, habitable.entity.getMarket(), habitable.planetType, habitable.type);
-			
 			if (pirateFactions.contains(factionId))
-				systemsWithPirates.add(habitable.starSystem);
+				systemsWithPirates.add(hq.starSystem);
 			factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
 			
-			unassignedEntities.remove(habitable);
+			unassignedEntities.remove(hq);
+			existingHQs.add(hq);
+			existingHQsByFaction.put(factionId, hq);
 		}
 		
 		// ensure pirate presence in most star systems
@@ -1265,7 +1384,7 @@ public class ExerelinProcGen {
 			{
 				if (systemsWithPirates.size() == populatedSystems.size())	// all systems already have pirates
 					break;
-
+				
 				if (systemsWithPirates.contains(entity.starSystem))
 					continue;
 				
@@ -1293,6 +1412,7 @@ public class ExerelinProcGen {
 				}
 				toRemove.add(entity);
 				systemsWithPirates.add(entity.starSystem);
+				populatedSystemsByFaction.get(factionId).add(entity.starSystem);
 			}
 			unassignedEntities.removeAll(toRemove);
 		}
@@ -1316,8 +1436,9 @@ public class ExerelinProcGen {
 			{
 				if (populatedPlanetsCopy.isEmpty()) break;
 				
-				ProcGenEntity habitable = populatedPlanetsCopy.get(0);
-				populatedPlanetsCopy.remove(0);
+				ProcGenEntity habitable = pickRandomMarketCloseToHQ(factionId, populatedPlanetsCopy, 
+						existingHQsByFaction.get(factionId), populatedSystemsByFaction.get(factionId));
+				populatedPlanetsCopy.remove(habitable);
 				unassignedEntities.remove(habitable);
 				marketSetup.addMarket(habitable, factionId);
 				factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
@@ -1327,7 +1448,7 @@ public class ExerelinProcGen {
 					SectorEntityToken relay = sector.getEntityById(systemToRelay.get(habitable.starSystem.getId()));
 					relay.setFaction(factionId);
 				}
-				pickEntityInteractionImage(habitable.entity, habitable.entity.getMarket(), habitable.planetType, habitable.type);
+				populatedSystemsByFaction.get(factionId).add(habitable.starSystem);
 			}
 			if (populatedPlanetsCopy.isEmpty()) break;
 		}
@@ -1347,6 +1468,7 @@ public class ExerelinProcGen {
 			
 			marketSetup.addMarket(planet, factionId);
 			unassignedEntities.remove(planet);
+			populatedSystemsByFaction.get(factionId).add(planet.starSystem);
 		}
 		
 		// assign stations		
@@ -1355,11 +1477,13 @@ public class ExerelinProcGen {
 			int numStations = (int)(remainingStations * (factionShare.get(factionId)/totalShare) + 0.5);
 			for (int i=factionStationCount.get(factionId);i<numStations;i++)
 			{
-				ProcGenEntity station = stationsCopy.get(0);
-				stationsCopy.remove(0);
+				ProcGenEntity station = pickRandomMarketCloseToHQ(factionId, stationsCopy, 
+						existingHQsByFaction.get(factionId), populatedSystemsByFaction.get(factionId));
+				stationsCopy.remove(station);
 				unassignedEntities.remove(station);
 				createStation(station, factionId, true);
 				factionStationCount.put(factionId, factionStationCount.get(factionId) + 1);
+				populatedSystemsByFaction.get(factionId).add(station.starSystem);
 				
 				if (stationsCopy.isEmpty()) break;
 			}
@@ -1379,6 +1503,7 @@ public class ExerelinProcGen {
 				factionPicker.addAll(factions);
 			String factionId = factionPicker.pickAndRemove();
 			createStation(station, factionId, true);
+			populatedSystemsByFaction.get(factionId).add(station.starSystem);
 		}
 		
 		// end distribution of markets and stations
