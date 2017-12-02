@@ -1279,6 +1279,32 @@ $entity.escalation == 2
 $entity.fleetType == vengeanceFleet score:100",$entity.ignorePlayerCommRequests = true 1,"""We have researched you, $playerName. Your weaknesses are analyzed and your advantages nullified. Prepare for termination.""",cutCommLink:Cut the comm link,
 # END FACTION VENGEANCE DIALOG,,,,,,
 ,,,,,,
+# START LANDMARKS,,,,,,
+nex_museumOpenDialog,OpenInteractionDialog,$tag:nex_museum_ship score:100,"ShowDefaultVisual
+PrintDescription 1
+FireAll Nex_MuseumDialog",Your $shipOrFleet approaches the museum ship.,,
+nex_museumDialogOptionEntry,Nex_MuseumDialog,,"SetShortcut nex_landmarkLeave ""ESCAPE""",,"nex_museumVisit:Visit the museum (1 credit)
+nex_landmarkLeave:Leave",
+nex_museumDialogOptionEntryNoCredits,Nex_MuseumDialog,$player.credits < 1,"SetEnabled nex_museumVisit false 
+SetTooltip nex_museumVisit ""You are too embarrassingly impoverished to afford the entrance fee.""",,,
+nex_museumVisit,DialogOptionSelected,$option == nex_museumVisit,"$entity.nex_visitedBefore = true
+Nex_AddXP 250
+AddCredits -1",The visit proves to be quite educational. You pick up various bits of information that could prove useful in your travels.,nex_landmarkLeave:Leave,
+nex_museumVisitFirstTime,DialogOptionSelected,"$option == nex_museumVisit
+$entity.nex_visitedBefore",AddCredits -1,"Although you've been here before, the visit is nevertheless a relaxing, pleasant experience.",nex_landmarkLeave:Leave,
+,,,,,,
+nex_landmarkLeave,DialogOptionSelected,$option == nex_landmarkLeave,DismissDialog,,,
+,,,,,,
+nex_beaconOpenDialogPlague,OpenInteractionDialog,"$tag:warning_beacon
+$nex_plagueBeacon","ShowDefaultVisual
+SetShortcut beaconLeave ""ESCAPE""","This autonomous warning beacon emits a looping message.
+
+""DANGER: This planet's surface is contaminated with highly hazardous pathological agents. Quarantine is in effect as per Domain protocol MG1.17.""
+
+It is not known whether whatever agent prompted the quarantine is still present on the surface.",beaconLeave:Leave,
+,,,,,,
+# END LANDMARKS,,,,,,
+,,,,,,
 ,,,,,,
 # bla,,,,,,
 ExerelinFlavorTextMarketPrismFreeport,TradePanelFlavorText,"$global.tradePanelMode == MARKET

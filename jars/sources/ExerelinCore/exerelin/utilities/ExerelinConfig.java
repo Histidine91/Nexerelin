@@ -113,7 +113,7 @@ public class ExerelinConfig
     public static boolean useRelationshipBounds = true;
     public static boolean officerDeaths = true;
     public static boolean officerDaredevilBonus = true;
-    
+	public static boolean corvusModeLandmarks = true;  
 
     public static void loadSettings()
     {
@@ -200,6 +200,8 @@ public class ExerelinConfig
             
             officerDeaths = settings.optBoolean("officerDeaths", officerDeaths);
             officerDaredevilBonus = settings.optBoolean("officerDaredevilBonus", officerDaredevilBonus);
+			
+			corvusModeLandmarks = settings.optBoolean("corvusModeLandmarks", corvusModeLandmarks);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             

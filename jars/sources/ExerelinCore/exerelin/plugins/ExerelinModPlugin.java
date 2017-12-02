@@ -33,6 +33,7 @@ import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
 import exerelin.world.ExerelinProcGen;
+import exerelin.world.LandmarkGenerator;
 import exerelin.world.SSP_AsteroidTracker;
 import java.util.HashMap;
 
@@ -256,6 +257,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         if (DefenceStationManager.getManager() != null)
             DefenceStationManager.getManager().seedFleets();
+        
+        new LandmarkGenerator().generate(Global.getSector(), SectorManager.getCorvusMode());
     }
     
     @Override
