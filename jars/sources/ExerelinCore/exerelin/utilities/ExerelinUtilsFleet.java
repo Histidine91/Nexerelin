@@ -4,6 +4,7 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
@@ -15,6 +16,8 @@ import data.scripts.util.DS_Defs;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
 import exerelin.campaign.fleets.utils.SWPFleetUtilsProxy;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
@@ -167,5 +170,15 @@ public class ExerelinUtilsFleet
     public static float getPlayerLevelFPBonus()
     {
         return Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.fleetBonusFpPerPlayerLevel;
+    }
+    
+    public static List<CampaignFleetAPI> getAllFleetsInSector()
+    {
+        List<CampaignFleetAPI> fleets = new ArrayList<>();
+        for (LocationAPI loc : Global.getSector().getAllLocations())
+        {
+            fleets.addAll(loc.getFleets());
+        }
+        return fleets;
     }
 }

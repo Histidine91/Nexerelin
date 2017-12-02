@@ -111,11 +111,6 @@ public class ExerelinModPlugin extends BaseModPlugin
             ExerelinUtilsMarket.setTariffs(market);
         }
     }
-    
-    @Override
-    public void beforeGameSave()
-    {
-    }
 
     @Override
     public void onNewGame() {
@@ -207,6 +202,21 @@ public class ExerelinModPlugin extends BaseModPlugin
             VCModPluginCustom.onGameLoad(newGame);
         
         sector.addTransientListener(new ScavengerCleaner());
+        
+        DefenceStationManager.getManager().setFleetsDoNotAttackStations();
+    }
+    
+    @Override
+    public void beforeGameSave()
+    {
+        Global.getLogger(this.getClass()).info("Before game save");
+        DefenceStationManager.getManager().clearFleetsDoNotAttackStations();
+    }
+    
+    @Override
+    public void afterGameSave() {
+        Global.getLogger(this.getClass()).info("After game save");
+        DefenceStationManager.getManager().setFleetsDoNotAttackStations();
     }
     
     @Override

@@ -28,6 +28,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -51,7 +52,7 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 	// if true, stations will be a semi-permanent fixture of campaign layer
 	// else they'll only appear when they're needed
 	public static final boolean STATIONS_IN_CAMPAIGN_LAYER = true;
-	public static final boolean FLEETS_ATTACK_STATIONS = true;
+	public static final boolean FLEETS_ATTACK_STATIONS = false;
 	
 	protected Map<String, Integer> maxStations = new HashMap<>();
 	protected Map<String, Float> constructionPoints = new HashMap<>();
@@ -438,15 +439,11 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 	public void setFleetsDoNotAttackStation(CampaignFleetAPI station)
 	{
 		if (FLEETS_ATTACK_STATIONS) return;
-		List<CampaignFleetAPI> fleets = new ArrayList<>();
-		for (LocationAPI loc : Global.getSector().getAllLocations())
-		{
-			fleets.addAll(loc.getFleets());
-		}
-		for (CampaignFleetAPI fleet : fleets)
+		List<CampaignFleetAPI> fleetsInSector = ExerelinUtilsFleet.getAllFleetsInSector();
+		for (CampaignFleetAPI fleet : fleetsInSector)
 		{
 			if (fleet.getAI() == null) continue;
-			fleet.getAI().doNotAttack(station, 9999999);
+			fleet.getAI().doNotAttack(station, 99999);
 		}
 	}
 	
@@ -460,7 +457,41 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 		for (CampaignFleetAPI station : allFleets)
 		{
 			if (fleet.getAI() == null) continue;
-			fleet.getAI().doNotAttack(station, 9999999);
+			fleet.getAI().doNotAttack(station, 99999);
+		}
+	}
+	
+	/**
+	 * Makes all fleets not attack registered station fleets
+	 */
+	public void setFleetsDoNotAttackStations()
+	{
+		if (FLEETS_ATTACK_STATIONS) return;
+		List<CampaignFleetAPI> fleetsInSector = ExerelinUtilsFleet.getAllFleetsInSector();
+		for (CampaignFleetAPI fleet : fleetsInSector)
+		{
+			//log.info("ngooh fleet " + fleet.getName());
+			setFleetDoNotAttackStations(fleet);
+		}
+	}
+	
+	/**
+	 * Clears all fleets not attacking registered station fleets.
+	 * (i.e. they can now attack stations)
+	 */
+	public void clearFleetsDoNotAttackStations()
+	{
+		if (FLEETS_ATTACK_STATIONS) return;
+		List<CampaignFleetAPI> fleetsInSector = ExerelinUtilsFleet.getAllFleetsInSector();
+		for (CampaignFleetAPI fleet : fleetsInSector)
+		{
+			//log.info("wololo fleet " + fleet.getName());
+			for (CampaignFleetAPI station : allFleets)
+			{
+				if (fleet.getAI() == null) continue;
+				fleet.getAI().doNotAttack(station, 0);
+				fleet.getAI().advance(1);
+			}
 		}
 	}
 	
