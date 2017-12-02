@@ -283,6 +283,12 @@ public class ExerelinUtilsMarket {
 				|| market.getId().equals(Global.getSector().getCharacterData().getMemoryWithoutUpdate().getString("$invasionTarget"));	// player
 	}
 	
+	/**
+	 * Did this market originally belong to the specified faction?
+	 * @param market
+	 * @param factionId
+	 * @return
+	 */
 	public static boolean wasOriginalOwner(MarketAPI market, String factionId)
 	{
 		MemoryAPI mem = market.getMemoryWithoutUpdate();

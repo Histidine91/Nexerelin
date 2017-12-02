@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinUtilsAstro;
+import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,14 +18,6 @@ public class BeholderStation extends BaseLandmarkDef {
 	
 	public static final String id = "beholder_station";
 	
-	protected boolean isLuddicMarket(MarketAPI market)
-	{
-		String factionId = market.getFactionId();
-		return (factionId.equals(Factions.LUDDIC_CHURCH) 
-				|| factionId.equals(Factions.LUDDIC_PATH)
-				|| factionId.equals(Factions.KOL));
-	}
-	
 	@Override
 	public List<SectorEntityToken> getRandomLocations() {
 		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
@@ -32,7 +25,7 @@ public class BeholderStation extends BaseLandmarkDef {
 		Set<StarSystemAPI> luddicSystems = new HashSet<>();
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 		{
-			if (isLuddicMarket(market))
+			if (ExerelinUtilsFaction.isLuddicFaction(market.getFactionId()))
 				luddicSystems.add(market.getStarSystem());
 		}
 		

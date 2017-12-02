@@ -21,6 +21,7 @@ import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.combat.SSP_BattleCreationPluginImpl;
 
 @SuppressWarnings("unchecked")
+// FIXME: don't extend core campaign plugin; add that separately and make this non-transient
 public class ExerelinCoreCampaignPlugin extends CoreCampaignPluginImpl {
 
 	@Override

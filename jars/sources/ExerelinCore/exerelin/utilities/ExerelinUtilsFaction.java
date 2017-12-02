@@ -73,6 +73,11 @@ public class ExerelinUtilsFaction {
         return ret;
     }
     
+    /**
+     * Returns the sum of the sizes of the faction's markets
+     * @param factionId
+     * @return
+     */
     public static int getFactionMarketSizeSum(String factionId)
     {
         List<MarketAPI> allMarkets = Global.getSector().getEconomy().getMarketsCopy();
@@ -117,6 +122,13 @@ public class ExerelinUtilsFaction {
         ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
         if (config == null) return false;
         return config.hostileToAll > 0;
+    }
+    
+    public static boolean isLuddicFaction(String factionId)
+    {
+        return (factionId.equals(Factions.LUDDIC_CHURCH) 
+                || factionId.equals(Factions.LUDDIC_PATH)
+                || factionId.equals(Factions.KOL));
     }
     
     /**
@@ -175,8 +187,8 @@ public class ExerelinUtilsFaction {
         //ExerelinFactionCommissionMissionEvent event = (ExerelinFactionCommissionMissionEvent)eventSuper;
         //event.endEvent();
         sector.getEventManager().endEvent(eventSuper);
-		Global.getSector().getCharacterData().getMemoryWithoutUpdate().unset(MemFlags.FCM_FACTION);
-		Global.getSector().getCharacterData().getMemoryWithoutUpdate().unset(MemFlags.FCM_EVENT);
+        Global.getSector().getCharacterData().getMemoryWithoutUpdate().unset(MemFlags.FCM_FACTION);
+        Global.getSector().getCharacterData().getMemoryWithoutUpdate().unset(MemFlags.FCM_EVENT);
     }
     
     public static String getCommissionFactionId()
