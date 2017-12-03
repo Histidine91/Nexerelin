@@ -6,7 +6,6 @@ import java.util.Random;
 
 public abstract class LandmarkDef {
 	
-	public static final String id = "";
 	protected Random random;
 	
 	public abstract boolean isApplicableToEntity(SectorEntityToken entity);

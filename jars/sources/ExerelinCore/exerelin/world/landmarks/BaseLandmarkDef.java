@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.utilities.ExerelinUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,11 +14,15 @@ public class BaseLandmarkDef extends LandmarkDef {
 	
 	protected static Logger log = Global.getLogger(BaseLandmarkDef.class);
 	
-	public static final String id = "landmarkBase";
 	protected static final boolean WEIGH_BY_MARKET_SIZE = true;
 	protected static final boolean PROCGEN_SYSTEMS_ONLY = false;
 	
-	protected Random random = new Random(ExerelinUtils.getStartingSeed());
+	protected Random random = null;
+	
+	public BaseLandmarkDef(Random random)
+	{
+		this.random = random;
+	}
 	
 	@Override
 	public boolean isApplicableToEntity(SectorEntityToken entity)
@@ -29,7 +32,7 @@ public class BaseLandmarkDef extends LandmarkDef {
 		
 	@Override
 	public List<SectorEntityToken> getRandomLocations() {
-		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
+		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>(random);
 		for (StarSystemAPI system : Global.getSector().getStarSystems())
 		{
 			if (PROCGEN_SYSTEMS_ONLY && !system.isProcgen())
@@ -88,5 +91,5 @@ public class BaseLandmarkDef extends LandmarkDef {
 	@Override
 	public void setRandom(Random random) {
 		this.random = random;
-	}	
+	}
 }

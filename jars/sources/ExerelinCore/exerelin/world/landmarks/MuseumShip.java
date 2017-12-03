@@ -18,12 +18,15 @@ import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.util.List;
+import java.util.Random;
 
 public class MuseumShip extends BaseLandmarkDef {
-	
-	public static final String id = "museum_ship";
-	
+		
 	protected static final int MAX_TRIES = 5;
+
+	public MuseumShip(Random random) {
+		super(random);
+	}
 	
 	@Override
 	public boolean isApplicableToEntity(SectorEntityToken entity)
@@ -51,8 +54,10 @@ public class MuseumShip extends BaseLandmarkDef {
 		
 		for (int i=0; i<MAX_TRIES; i++)
 		{
-			WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
-
+			WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>(random);
+			
+			// pick a ship
+			// try to make it a capital or maybe a cruiser, if at all possible
 			rolePicker.add(ShipRoles.CARRIER_LARGE, 2f);
 			rolePicker.add(ShipRoles.COMBAT_CAPITAL, 5f);
 			rolePicker.add(ShipRoles.COMBAT_FREIGHTER_LARGE, 2f);
@@ -63,6 +68,7 @@ public class MuseumShip extends BaseLandmarkDef {
 			List<ShipRolePick> picks = faction.pickShip(role, 1, random);
 			if (picks.isEmpty()) continue;
 			
+			// create ship
 			String variantId = picks.get(0).variantId;
 			DerelictShipEntityPlugin.DerelictShipData params = new DerelictShipEntityPlugin.DerelictShipData(
 					new ShipRecoverySpecial.PerShipData(variantId,	ShipCondition.PRISTINE), false);
@@ -70,11 +76,13 @@ public class MuseumShip extends BaseLandmarkDef {
 											 entity.getContainingLocation(),
 											 Entities.WRECK, Factions.NEUTRAL, params);
 			
+			// orbit
 			float orbitRadius = entity.getRadius() + 100;
 			float orbitPeriod = ExerelinUtilsAstro.getOrbitalPeriod(entity, orbitRadius);
 			//ship.setCircularOrbitWithSpin(entity, ExerelinUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod, 20, 30);
 			ship.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod);
 			
+			// tags etc.
 			ship.setFaction(faction.getId());
 			ship.setInteractionImage("illustrations", "terran_orbit");
 			

@@ -12,15 +12,18 @@ import exerelin.utilities.ExerelinUtilsFaction;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class BeholderStation extends BaseLandmarkDef {
-	
-	public static final String id = "beholder_station";
+
+	public BeholderStation(Random random) {
+		super(random);
+	}
 	
 	@Override
 	public List<SectorEntityToken> getRandomLocations() {
-		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>();
+		WeightedRandomPicker<SectorEntityToken> picker = new WeightedRandomPicker<>(random);
 		
 		Set<StarSystemAPI> luddicSystems = new HashSet<>();
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())

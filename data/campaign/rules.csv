@@ -1302,7 +1302,9 @@ SetShortcut beaconLeave ""ESCAPE""","This autonomous warning beacon emits a loop
 ""DANGER: This planet's surface is contaminated with highly hazardous pathological agents. Quarantine is in effect as per Domain protocol MG1.17.""
 
 It is not known whether whatever agent prompted the quarantine is still present on the surface.",beaconLeave:Leave,
-,,,,,,
+nex_beaconOpenDialogMemorial,OpenInteractionDialog,"$tag:warning_beacon
+$nex_memorialBeacon","ShowDefaultVisual
+SetShortcut beaconLeave ""ESCAPE""","This autonomous beacon serves as a memorial marker, in remembrance of a battle between the $faction and $nex_memorialFaction2 forces. Its looping message contains a list of the $faction casualties, with the names of their family members and their places of origin. The $nex_memorialFaction2 dead are not listed.",beaconLeave:Leave,
 # END LANDMARKS,,,,,,
 ,,,,,,
 ,,,,,,
