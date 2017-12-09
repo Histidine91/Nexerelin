@@ -220,8 +220,10 @@
 		"lootRating":"loot rating",
 	},
 	"exerelin_landmarks":{
+		"abandonedStation":"Abandoned Station",
+		"beholderStation":"Beholder Station",
+		"memorialBeacon":"Memorial Beacon",
 		"museumShip":"Museum Ship ($name)",
-		"memorialBeacon":"Memorial Beacon"
 	},
 	
 	"exerelin_markets":{		

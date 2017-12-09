@@ -9,6 +9,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -57,7 +58,7 @@ public class BeholderStation extends BaseLandmarkDef {
 		float orbitRadius = entity.getRadius() + 200;
 		float orbitPeriod = ExerelinUtilsAstro.getOrbitalPeriod(entity, orbitRadius);
 		SectorEntityToken beholder_station = entity.getContainingLocation().addCustomEntity("beholder_station", 
-				"Beholder Station", "station_side05", Factions.LUDDIC_CHURCH);
+				StringHelper.getString("exerelin_landmarks", "beholderStation"), "station_side05", Factions.LUDDIC_CHURCH);
 		beholder_station.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getRandomAngle(random), orbitRadius, orbitPeriod);		
 		beholder_station.setCustomDescriptionId("station_beholder");
 		beholder_station.setInteractionImage("illustrations", "luddic_shrine");

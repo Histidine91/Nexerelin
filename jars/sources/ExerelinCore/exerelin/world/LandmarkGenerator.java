@@ -3,6 +3,7 @@ package exerelin.world;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.world.landmarks.AbandonedStation;
 import exerelin.world.landmarks.BeholderStation;
 import exerelin.world.landmarks.GraveyardWithMemorial;
 import exerelin.world.landmarks.MuseumShip;
@@ -25,6 +26,9 @@ public class LandmarkGenerator {
 		}
 		
 		if (!corvusMode)
+		{
 			new BeholderStation(random).createAll();
+			new AbandonedStation(random).createAll();
+		}
 	}
 }

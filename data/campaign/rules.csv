@@ -1321,6 +1321,8 @@ ShowDefaultVisual
 SetShortcut gateLeave ESCAPE","Your $shipOrFleet approaches the battlestation. A thoroughly impressive piece of firepower, it will engage anyone foolish enough to attempt an invasion under its watch.",gateLeave:Leave,
 ,,,,,,
 # vanilla overrides,,,,,,
+flavorTextAbandonedStationFixed,TradePanelFlavorText,"$global.tradePanelMode == MARKET
+$abandonedStation == true score:5","AddText ""The port concourse is dark and empty but for a few looted hulks. The atmosphere reads out as thin, but there is sufficient power from hardened passive collectors to run basic life support and storage functions."" marketFlavorTextColor",,,
 commRelayOpen,OpenInteractionDialog,"$tag:comm_relay
 !$hasMarket","ExerelinShowDefaultVisual
 FireBest InitCommRelayDialog",,,
