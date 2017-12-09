@@ -77,7 +77,7 @@
     "enableShanghai": true,   # adds Shanghai for Tiandong Heavy Industries, attached to homeworld (random mode only)
     "enableUnos": true, # adds Unos for ApproLight, attached to homeworld (random mode only)
     
-    "corvusModeLandmarks": true,    # adds some decorative landmarks in non-random Sector (will always be present in random Sector)
+    "corvusModeLandmarks": false,    # adds some decorative landmarks in non-random Sector (will always be present in random Sector)
     
     "officerDeaths": true,	# officer permadeath
     "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
