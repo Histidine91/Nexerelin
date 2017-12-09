@@ -130,9 +130,9 @@ public class RespawnFleetAI extends InvasionFleetAI
 				locName = "the " + system.getName();
 			}
 			if (system != null && system != this.fleet.getContainingLocation()) {
-				LocationAPI hyper = Global.getSector().getHyperspace();
-				Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
-				SectorEntityToken token = hyper.createToken(dest.x, dest.y);
+				//LocationAPI hyper = Global.getSector().getHyperspace();
+				//Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
+				SectorEntityToken token = system.getHyperspaceAnchor();	//system.createToken(dest.x, dest.y);
 				this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
 				this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
 			}

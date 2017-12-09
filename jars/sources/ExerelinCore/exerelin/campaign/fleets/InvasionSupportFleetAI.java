@@ -73,9 +73,9 @@ public class InvasionSupportFleetAI implements EveryFrameScript
 			
 			if (system != null)
 			{
-				Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
-				LocationAPI loc = Global.getSector().getHyperspace();
-				SectorEntityToken token = loc.createToken(dest.x, dest.y);
+				//Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
+				//LocationAPI loc = Global.getSector().getHyperspace();
+				SectorEntityToken token = system.getHyperspaceAnchor();	//system.createToken(dest.x, dest.y);
 				String systemBaseName = system.getBaseName();
 				
 				if (system != this.fleet.getContainingLocation()) {
