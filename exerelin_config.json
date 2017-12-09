@@ -6,9 +6,10 @@
     "forcePiratesInSystemChance": 0.3,  # this proportion of systems will always be seeded with at least one pirate market
     "useFactionMarketSpawnWeights": false,  # this lets some factions have more markets at start than others, as set in faction config
     
-    "playerBaseSalary": 5000,
+    "playerBaseSalary": 5000,   # per month
     "playerSalaryIncrementPerLevel": 1000,
     "playerInsuranceMult": 0.6,
+    "followersBaseTax": 100,    # per day, modified by market size and stability
     "fleetBonusFpPerPlayerLevel": 0.25,
     
     "prisonerRepatriateRepValue": 0.05,

@@ -60,6 +60,9 @@
 	"exerelin_faction_insurance":{
 		"script":"exerelin.campaign.events.FactionInsuranceEvent"
 	},
+	"exerelin_followers_tax":{
+		"script":"exerelin.campaign.events.FollowersTaxEvent"
+	},
 	"exerelin_faction_changed":{
 		"script":"exerelin.campaign.events.FactionChangedEvent",
 		"image":"graphics/icons/intel/reputation.png"
@@ -101,9 +104,6 @@
 	},
 	
 	# vanilla overrides
-	"investigation":{
-		"script":"exerelin.campaign.events.ExerelinInvestigationEvent",
-	},
 	"nearby_events":{
 		"script":"exerelin.campaign.events.ExerelinNearbyEventsEvent",
 	},

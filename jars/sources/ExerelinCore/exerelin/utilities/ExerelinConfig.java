@@ -35,6 +35,7 @@ public class ExerelinConfig
     public static float playerBaseSalary = 5000f;
     public static float playerSalaryIncrementPerLevel = 1000f;
     public static float playerInsuranceMult = 0.5f;
+	public static float followersBaseTax = 100f;
     
     public static float fleetBonusFpPerPlayerLevel = 0.25f;
     
@@ -137,6 +138,7 @@ public class ExerelinConfig
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary",  playerBaseSalary);
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel", playerSalaryIncrementPerLevel);
             playerInsuranceMult = (float)settings.optDouble("playerInsuranceMult", playerInsuranceMult);
+			followersBaseTax = (float)settings.optDouble("followersBaseTax", followersBaseTax);
             fleetBonusFpPerPlayerLevel = (float)settings.optDouble("fleetBonusFpPerPlayerLevel", fleetBonusFpPerPlayerLevel);
             
             prisonerRepatriateRepValue = (float)settings.optDouble("prisonerRepatriateRepValue", prisonerRepatriateRepValue);

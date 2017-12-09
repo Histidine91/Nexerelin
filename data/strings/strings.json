@@ -116,6 +116,7 @@
 		"factionEliminated":"$faction driven from Sector",
 		"factionRespawned":"$faction arrives in Sector",
 		"factionSalary":"Faction salary payment",
+		"followersTax":"Tax collection",
 		"insurance":"Ship loss insurance",
 		"invasionFleet":"$faction invasion fleet update",
 		"marketAttacked":"Recent attack on $market",

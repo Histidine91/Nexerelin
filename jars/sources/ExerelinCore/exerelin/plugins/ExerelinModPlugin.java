@@ -160,6 +160,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         addEventIfNeeded("exerelin_faction_salary");
+		addEventIfNeeded("exerelin_followers_tax");
         addEventIfNeeded("exerelin_faction_insurance");
         if (ExerelinUtilsFaction.isExiInCorvus()) {
             addEventIfNeeded("exerelin_exigency_respawn");

@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
@@ -54,7 +55,7 @@ public class FactionSalaryEvent extends BaseEventPlugin {
 				return;
 
 			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-			//if (alignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;  // no self-salary
+			if (alignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;  // no self-salary
 			
 			// Exi is not technically alive in Corvus mode, but still treated as present due to Tasserus
 			if (ExerelinUtilsFaction.isExiInCorvus(alignedFactionId))
