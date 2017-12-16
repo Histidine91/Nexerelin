@@ -58,11 +58,10 @@ public class DestabilizeMarket extends CovertOpsBase {
 		
 		ExerelinReputationAdjustmentResult repResult = adjustRepIfDetected();
 
-		Map<String, Object> params = makeEventParams(repResult);
-		params.put("stabilityPenalty", delta);
-		params.put("stage", result);		
+		Map<String, Object> eventParams = makeEventParams(repResult);
+		eventParams.put("stabilityPenalty", delta);
 		
-		reportEvent(repResult);
+		reportEvent(eventParams);
 	}
 
 	@Override

@@ -56,11 +56,10 @@ public class DestroyFood extends CovertOpsBase {
 		log.info("Remaining food: " + food.getStockpile());
 		
 		ExerelinReputationAdjustmentResult repResult = adjustRepIfDetected();
-		Map<String, Object> params = makeEventParams(repResult);
-		params.put("foodDestroyed", before - after);
-		params.put("stage", result);
+		Map<String, Object> eventParams = makeEventParams(repResult);
+		eventParams.put("foodDestroyed", before - after);
 		
-		reportEvent(repResult);
+		reportEvent(eventParams);
 	}
 
 	@Override

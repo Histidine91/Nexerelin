@@ -134,6 +134,11 @@ public abstract class CovertOpsBase {
 			return;
 		
 		Map<String, Object> params = makeEventParams(repResult);
+		reportEvent(params);
+	}
+	
+	protected void reportEvent(Map<String, Object> params)
+	{
 		Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), getEventId(), params);
 	}
 	
@@ -143,12 +148,12 @@ public abstract class CovertOpsBase {
 	
 	protected Map<String, Object> makeEventParams(ExerelinReputationAdjustmentResult repResult)
     {
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("agentFaction", agentFaction);
-		params.put("result", result);
-        params.put("playerInvolved", playerInvolved);
-        params.put("repEffect", repResult.delta);
-		params.put("repResult", repResult);
-        return params;
+        HashMap<String, Object> eventParams = new HashMap<>();
+        eventParams.put("agentFaction", agentFaction);
+		eventParams.put("result", result);
+        eventParams.put("playerInvolved", playerInvolved);
+        eventParams.put("repEffect", repResult.delta);
+		eventParams.put("repResult", repResult);
+        return eventParams;
     }
 }

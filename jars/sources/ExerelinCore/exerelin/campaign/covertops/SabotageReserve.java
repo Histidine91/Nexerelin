@@ -48,11 +48,10 @@ public class SabotageReserve extends CovertOpsBase {
 		float delta = ResponseFleetManager.modifyReserveSize(market, effect);
 
 		ExerelinReputationAdjustmentResult repResult = adjustRepIfDetected();
-		Map<String, Object> params = makeEventParams(repResult);
-		params.put("stage", result);
-		params.put("reserveDamage", -delta);
+		Map<String, Object> eventParams = makeEventParams(repResult);
+		eventParams.put("reserveDamage", -delta);
 		
-		reportEvent(repResult);
+		reportEvent(eventParams);
 	}
 
 	@Override
