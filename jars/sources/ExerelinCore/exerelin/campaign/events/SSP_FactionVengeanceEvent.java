@@ -13,7 +13,6 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -421,7 +420,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                                                 market, // market
                                                 faction.getId(),
                                                 null, // fleet's faction, if different from above, which is also used for source market picking
-                                                FleetTypes.PATROL_LARGE,
+                                                "vengeanceFleet",
                                                 finalCombat, // combatPts
                                                 finalFreighter, // freighterPts
                                                 finalTanker, // tankerPts
@@ -440,7 +439,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
             return;
         }
 
-        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "vengeanceFleet");
+        //fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "vengeanceFleet");
         fleet.getMemoryWithoutUpdate().set("$escalation", (float) escalationLevel);
         fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
         fleet.setName(def.getFleetName(escalationLevel));

@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.events.FactionInsuranceEvent;
+import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -335,10 +336,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 			{
 				for (CampaignFleetAPI existingFleet : battle.getBothSides())
 				{
-					if (!existingFleet.getMemoryWithoutUpdate().contains(MemFlags.MEMORY_KEY_FLEET_TYPE))
-						continue;
-					if (existingFleet.getMemoryWithoutUpdate().getString(
-							MemFlags.MEMORY_KEY_FLEET_TYPE).equals("exerelinResponseFleet"))
+					if (ExerelinUtilsFleet.getFleetType(fleet).equals("exerelinResponseFleet"))
 						return true;
 				}
 			}

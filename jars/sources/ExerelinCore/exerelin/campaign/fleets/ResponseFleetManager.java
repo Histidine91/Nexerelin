@@ -3,7 +3,6 @@ package exerelin.campaign.fleets;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
-import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import org.apache.log4j.Logger;
-import org.lazywizard.lazylib.MathUtils;
 
 /**
  * When someone tries to invade our market, spawn a big freaking fleet to eat them

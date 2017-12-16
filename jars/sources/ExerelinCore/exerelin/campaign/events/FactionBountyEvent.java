@@ -159,7 +159,7 @@ public class FactionBountyEvent extends BaseEventPlugin {
 		return ended;
 	}
 
-	// same as SystemBountyEvent except no enemyFaction null check
+	// same as SystemBountyEvent except no enemyFaction null check + refactor
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
@@ -169,17 +169,7 @@ public class FactionBountyEvent extends BaseEventPlugin {
 			factionName = faction.getDisplayName();
 		}
 
-		map.put("$factionIsOrAre", faction.getDisplayNameIsOrAre());
-
-		map.put("$faction", factionName);
-		map.put("$Faction", Misc.ucFirst(factionName));
-		map.put("$theFaction", faction.getDisplayNameWithArticle());
-		map.put("$TheFaction", Misc.ucFirst(faction.getDisplayNameWithArticle()));
-
-		map.put("$factionLong", faction.getDisplayNameLong());
-		map.put("$FactionLong", Misc.ucFirst(faction.getDisplayNameLong()));
-		map.put("$theFactionLong", faction.getDisplayNameLongWithArticle());
-		map.put("$TheFactionLong", Misc.ucFirst(faction.getDisplayNameLongWithArticle()));
+		StringHelper.addFactionNameTokensCustom(map, "faction", faction);
 		
 		// this is ok because the token replacement happens right as the message is sent, not when it's received
 		// so the lastBounty is the correct value for the message
@@ -192,7 +182,7 @@ public class FactionBountyEvent extends BaseEventPlugin {
 		
 		map.put("$daysLeft", "" + (int) + Math.max(1, duration - elapsedDays));
 		
-		map.put("$enemyFaction", enemyFaction.getDisplayName());
+		StringHelper.addFactionNameTokensCustom(map, "enemyFaction", enemyFaction);
 		
 		return map;
 	}

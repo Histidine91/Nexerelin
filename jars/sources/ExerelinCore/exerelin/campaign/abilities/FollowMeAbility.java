@@ -17,6 +17,7 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.HashSet;
 import java.util.List;
@@ -72,7 +73,7 @@ public class FollowMeAbility extends BaseDurationAbility {
 				{
 					if (!fleet.knowsWhoPlayerIs()) continue;
 					MemoryAPI mem = fleet.getMemoryWithoutUpdate();
-					String type = (String)mem.get(MemFlags.MEMORY_KEY_FLEET_TYPE);
+					String type = ExerelinUtilsFleet.getFleetType(fleet);
 					if (!FOLLOW_VALID_FLEET_TYPES.contains(type)) continue;
 					if (mem.contains(MemFlags.FLEET_BUSY)) continue;
 					if (fleet.getBattle() != null) continue;
@@ -86,9 +87,9 @@ public class FollowMeAbility extends BaseDurationAbility {
 						if (currentAssignment != null && currentAssignment.getTarget() == entity)
 						{
 							ai.removeFirstAssignmentIfItIs(FleetAssignment.ORBIT_AGGRESSIVE);
+							currentAssignment = ai.getCurrentAssignment();
 						}
 						*/
-						currentAssignment = ai.getCurrentAssignment();
 						if (currentAssignment != null && currentAssignment.getTarget() == entity)
 						{
 							ai.removeFirstAssignmentIfItIs(FleetAssignment.ORBIT_PASSIVE);

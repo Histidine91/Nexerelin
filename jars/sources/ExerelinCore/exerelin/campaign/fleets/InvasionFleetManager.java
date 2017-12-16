@@ -53,11 +53,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
 	public static final float DEFENDER_STRENGTH_MARINE_MULT = 1.15f;
 	public static final float RESPAWN_FLEET_SPAWN_DISTANCE = 18000f;
-	// higher = factions (who aren't otherwise at war) invade Templars/pirates less often
+	// higher = factions (who aren't otherwise at war) invade pirates less often
 	public static final float ALL_AGAINST_ONE_INVASION_POINT_MOD = 0.27f;
-	// higher = factions are less likely to target Templars/pirates (does nothing if Templars/pirates are their only enemies)
+	// higher = factions are less likely to target pirates (does nothing if pirates are their only enemies)
 	public static final float ONE_AGAINST_ALL_INVASION_BE_TARGETED_MOD = 0.35f;
-	// Templars/pirates get this multiplier bonus to their invasion point growth the more enemies they have
+	// pirates get this multiplier bonus to their invasion point growth the more enemies they have
 	public static final float ONE_AGAINST_ALL_INVASION_POINT_MOD = 0.215f;
 	public static final float HARD_MODE_INVASION_TARGETING_CHANCE = 1.5f;
 	public static final float TEMPLAR_INVASION_POINT_MULT = 1.25f;
@@ -91,31 +91,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		this.tracker = new IntervalUtil(1, 1);
 	}
 	
+	/**
+	 * Calculates the max FP for an invasion fleet being sent from one market to another
+	 * @param originMarket
+	 * @param targetMarket
+	 * @return
+	 */
 	public static float calculateMaxFpForFleet(MarketAPI originMarket, MarketAPI targetMarket)
 	{
-		// old formula
-		/*
-		float marketScalar = originMarket.getSize() * originMarket.getStabilityValue();
-		if (originMarket.hasCondition(Conditions.MILITARY_BASE) || originMarket.hasCondition("exerelin_military_base")) {
-			marketScalar += 20.0F;
-		}
-		if (originMarket.hasCondition(Conditions.ORBITAL_STATION)) {
-			marketScalar += 10.0F;
-		}
-		if (originMarket.hasCondition(Conditions.SPACEPORT)) {
-			marketScalar += 15.0F;
-		}
-		if (originMarket.hasCondition(Conditions.HEADQUARTERS)) {
-			marketScalar += 15.0F;
-		}
-		if (originMarket.hasCondition(Conditions.REGIONAL_CAPITAL)) {
-			marketScalar += 10.0F;
-		}
-		int maxFP = (int)MathUtils.getRandomNumberInRange(marketScalar * 0.75F, MathUtils.getRandomNumberInRange(marketScalar * 1.5F, marketScalar * 2.5F));
-		return maxFP;
-		*/
-		 
-		// new; should be in the same general ballpark for an average case
 		float responseFleetSize = ResponseFleetManager.getMaxReserveSize(targetMarket, true);
 		float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + 8 * (2 + originMarket.getSize()));
 		maxFPbase = maxFPbase * (float)(0.5 + originMarket.getStabilityValue()/10);
@@ -160,14 +143,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(params.faction, fleetParams);
 		if (fleet == null) return null;
-		/*
-		CampaignFleetAPI fleet = FleetFactory.createGenericFleet(factionId, params.name, params.qf, params.fp);
 		
-		for (int i=0; i<params.numMarines; i=i+100)
-		{
-			 faction.pickShipAndAddToFleet(ShipRoles.PERSONNEL_MEDIUM, 1, fleet);
-		}
-		*/
 		fleet.getCargo().addMarines(params.numMarines);
 		fleet.setName(params.name);
 		fleet.setAIMode(true);
@@ -540,46 +516,13 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	protected void processInvasionPoints()
 	{
 		SectorAPI sector = Global.getSector();
-		//WeightedRandomPicker<FactionAPI> factionPicker = new WeightedRandomPicker();
-		
-		//List<FactionAPI> factions = sector.getAllFactions();
 		List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
-		float marineStockpile = 0;
+		//float marineStockpile = 0;
 		//log.info("Starting invasion fleet check");
 		
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
 		
 		// pick a faction to invade someone
-		
-		// old random way meh
-		/*
-		for (FactionAPI faction: factions)
-		{
-			if (faction.isNeutralFaction()) continue;
-			if (faction.isPlayerFaction()) continue;
-			if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(faction.getId())) continue;
-			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, ExerelinConfig.allowPirateInvasions, true);
-
-			if (enemies.isEmpty()) continue;
-			int numWars = enemies.size();
-			
-			float weight = 1;
-			if (ExerelinUtilsFaction.isPirateOrTemplarFaction(faction.getId())) // TODO don't hardcode faction
-			{
-				weight = numWars*HOSTILE_TO_ALL_INVASION_POINT_MOD + (1 - HOSTILE_TO_ALL_INVASION_POINT_MOD);
-			}
-			else if (numWars == 1 && enemies.get(0).equals("templars"))
-			{
-				weight = HOSTILE_TO_ALL_INVASION_TARGET_MOD;
-			}
-			factionPicker.add(faction, weight);
-		}
-		FactionAPI invader = factionPicker.pick();
-		if (invader == null) return;
-		//log.info("\t" + invader.getDisplayName() + " picked to launch invasion");
-		*/
-		
-		// new "everyone gets a chance way"
 		if (spawnCounter == null) spawnCounter = new HashMap<>();
 		HashMap<String, Float> pointsPerFaction = new HashMap<>();
 		for (MarketAPI market : markets)

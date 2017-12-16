@@ -187,4 +187,25 @@ public class StringHelper {
 		}
 		return str;
 	}
+	
+	public static void addFactionNameTokensCustom(Map<String, String> tokens, String str, FactionAPI faction) {
+		if (faction != null) {
+			String factionName = faction.getEntityNamePrefix();
+			if (factionName == null || factionName.isEmpty()) {
+				factionName = faction.getDisplayName();
+			}
+			String strUc = Misc.ucFirst(str);
+			tokens.put("$" + str, factionName);
+			tokens.put("$" + strUc, Misc.ucFirst(factionName));
+			tokens.put("$the" + strUc, faction.getDisplayNameWithArticle());
+			tokens.put("$The" + strUc, Misc.ucFirst(faction.getDisplayNameWithArticle()));
+			
+			tokens.put("$" + str + "Long", faction.getDisplayNameLong());
+			tokens.put("$" + strUc + "Long", Misc.ucFirst(faction.getDisplayNameLong()));
+			tokens.put("$the" + strUc + "Long", faction.getDisplayNameLongWithArticle());
+			tokens.put("$The" + strUc + "Long", Misc.ucFirst(faction.getDisplayNameLongWithArticle()));
+			
+			tokens.put("$" + str + "IsOrAre", faction.getDisplayNameIsOrAre());
+		}
+	}
 }
