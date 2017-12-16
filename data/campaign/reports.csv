@@ -82,14 +82,14 @@ exerelin_faction_bounty,end_enemyfaction_dead,,,news,$Faction general bounty aga
 exerelin_faction_bounty,end_peace,,,news,$Faction general bounty against $enemyFaction over: peace,"As $theFaction has made peace with $theEnemyFaction, the bounty has been ended.",No more bounty payments will be made.,,,nomap,,
 ,,,,,,,,,,,,
 # rebellion,,,,,,,,,,,,
-#nex_rebellion,likely,,,player_intel,,,,,,,,
+#nex_rebellion,likely,,,player_intel,Rebellion against $faction on $market likely,,,,graphics/icons/intel/faction_conflict.png,,,
 nex_rebellion,start,,,news,Rebellion against $faction on $market,"Fed up with the abuses of $theFaction government, a widespread rebellion has broken out on $market.","Rebellion backed by $theRebelFaction.
 
 Both government and rebel forces will have high demand for marines, supplies and hand weapons.
 
 Stability on $market will be significantly reduced while the rebellion is ongoing.",,graphics/icons/intel/faction_conflict.png,,,
-nex_rebellion,trade_govt,,,player_intel,Rebellion on $market: supplied government,"You supplied fresh troops and/or materiel to government forces on $market during the recent rebellion. This has earned you a positive reputation with $theFaction, less so with the $rebelFaction rebels.",,,graphics/icons/intel/faction_conflict.png,,,
-nex_rebellion,trade_rebs,,,player_intel,Rebellion on $market: supplied rebels,You supplied fresh troops and/or materiel to the $rebelFaction rebels on $market during the recent rebellion. This act has not gone unnoticed by $faction authorities.,,,graphics/icons/intel/faction_conflict.png,,,
+nex_rebellion,trade_govt,,,player_intel_always,Rebellion on $market: supplied government,"You supplied fresh troops and/or materiel to government forces on $market during the recent rebellion. This has earned you a positive reputation with $theFaction, less so with the $rebelFaction rebels.",,,graphics/icons/intel/faction_conflict.png,,,
+nex_rebellion,trade_rebs,,,player_intel_always,Rebellion on $market: supplied rebels,You supplied fresh troops and/or materiel to the $rebelFaction rebels on $market during the recent rebellion. This act has not gone unnoticed by $faction authorities.,,,graphics/icons/intel/faction_conflict.png,,,
 nex_rebellion,end_govt_win,,,news,Rebellion against $faction on $market: government victory,"The rebellion on $market has ended with a $faction government victory. The rebel leaders have all either fled, been captured or killed.",Lingering unrest on $market.,,graphics/icons/intel/faction_conflict.png,,,
 nex_rebellion,end_rebel_win,,,news,Rebellion against $faction on $market: rebel victory,The rebellion on $market has ended with a rebel victory. The new liberation government has aligned itself with $theRebelFaction.,Prolonged unrest on $market during the transition period.,,graphics/icons/intel/faction_conflict.png,,,
 nex_rebellion,end_peace,,,news,Rebellion against $faction on $market: peace treaty,"With the new peace between $theFaction and $theRebelFaction, the government and rebels on $market have also ended their conflict.",Lingering unrest on $market.,,graphics/icons/intel/faction_conflict.png,,,

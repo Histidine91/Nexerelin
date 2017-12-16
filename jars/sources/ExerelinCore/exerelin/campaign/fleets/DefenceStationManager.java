@@ -548,8 +548,9 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 	
 	public static DefenceStationManager getManager()
 	{
-		if (defenceStationManager != null)
-			return defenceStationManager;
+		// don't use this; the static var gets dissociated from the one in the sector after game save
+		//if (defenceStationManager != null)
+		//	return defenceStationManager;
 		
 		Map<String, Object> data = Global.getSector().getPersistentData();
 		defenceStationManager = (DefenceStationManager)data.get(MANAGER_MAP_KEY);

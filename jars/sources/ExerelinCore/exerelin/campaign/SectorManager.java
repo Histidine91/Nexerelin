@@ -21,6 +21,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -866,7 +867,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // transfer defence stations, if present
         DefenceStationManager.getManager().resetMaxStations(market);
         CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(market);
-        if (station != null) station.setFaction(newOwnerId, true);
+        if (station != null) 
+        {
+            station.setFaction(newOwnerId, true);
+            for (FleetMemberAPI member : station.getFleetData().getMembersListCopy())
+            {
+                member.setShipName(newOwner.pickRandomShipName());
+            }
+        }
         
         // rebellion
         CampaignEventPlugin eventSuper = Global.getSector().getEventManager().getOngoingEvent(
