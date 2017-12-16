@@ -26,8 +26,8 @@ import java.util.Set;
 public class FollowMeAbility extends BaseDurationAbility {
 
 	protected static final String STRING_CATEGORY = "exerelin_abilities";
-	public static final float FOLLOW_DURATION = 10;
-	public static final float FOLLOW_DURATION_PASSIVE = 10;
+	public static final float FOLLOW_DURATION = 15;
+	public static final float FOLLOW_DURATION_PASSIVE = 15;
 	public static final float FOLLOW_FETCH_RANGE = 600;
 	public static final Set<String> FOLLOW_VALID_FLEET_TYPES = new HashSet<>();
 	
