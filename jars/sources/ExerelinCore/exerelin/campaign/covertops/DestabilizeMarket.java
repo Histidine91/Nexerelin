@@ -10,7 +10,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
+import exerelin.campaign.events.covertops.AgentDestabilizeMarketEventForCondition;
 import java.util.Map;
 
 public class DestabilizeMarket extends CovertOpsBase {

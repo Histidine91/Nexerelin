@@ -50,6 +50,7 @@ public class InvasionRound {
 	public static final float DEFENDER_URBAN_MOD = 0.2f;
 	public static final float DEFENDER_RURAL_MOD = -0.2f;
 	public static final float DEFENDER_AVALON_MOD = 1.0f;
+	public static final float DEFENDER_REBELLION_MOD = 0.5f;
 	public static final float DEFENDER_RAID_STRENGTH_MULT = 0.75f;
 	public static final float DEFENDER_STRENGTH_XP_MULT = 500f;
 	public static final float MARINE_LOSS_MULT = 0.4f;
@@ -143,6 +144,11 @@ public class InvasionRound {
 		if (market.hasCondition("tem_avalon"))
 		{
 			defenderBonus += baseDefenderStrength * DEFENDER_AVALON_MOD;
+		}
+		
+		if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
+		{
+			defenderBonus -= baseDefenderStrength * DEFENDER_REBELLION_MOD;
 		}
 		
 		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());

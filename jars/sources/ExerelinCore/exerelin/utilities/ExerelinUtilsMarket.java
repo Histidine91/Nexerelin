@@ -299,6 +299,16 @@ public class ExerelinUtilsMarket {
 	}
 	
 	/**
+	 * Is this market still owned by its original owner?
+	 * @param market
+	 * @return
+	 */
+	public static boolean isWithOriginalOwner(MarketAPI market)
+	{
+		return wasOriginalOwner(market, market.getFactionId());
+	}
+	
+	/**
 	 * Can factions launch invasion fleets at <code>market</code>?
 	 * Player may still be able to invade even if this returns false
 	 * @param market

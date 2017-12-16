@@ -2,7 +2,7 @@
 	"eventFrequency":15,	#15
 
 	"raiseRelationsSuccessChance":0.7,
-	"raiseRelationsDetectionChance":0,	# it logically won't work if you get found out
+	#"raiseRelationsDetectionChance":0,	# it logically won't work if you get found out
 	"raiseRelationsDetectionChanceFail":0.25,
 	"raiseRelationsEffectMin":0.08,
 	"raiseRelationsEffectMax":0.14,
@@ -10,7 +10,7 @@
 	"raiseRelationsRepLossOnDetectionMax":0.15,
 	
 	"lowerRelationsSuccessChance":0.65,
-	"lowerRelationsDetectionChance":0,
+	#"lowerRelationsDetectionChance":0,
 	"lowerRelationsDetectionChanceFail":0.35,
 	"lowerRelationsEffectMin":0.15,
 	"lowerRelationsEffectMax":0.2,
@@ -41,4 +41,11 @@
 	"destroyFoodRepLossOnDetectionMin":0.15,
 	"destroyFoodRepLossOnDetectionMax":0.2,
 	"destroyFoodSecurityLevelRise":0.15,
+	
+	"instigateRebellionSuccessChance": 0.5,
+	"instigateRebellionDetectionChance":0.3,
+	"instigateRebellionDetectionChanceFail":0.6,
+	"instigateRebellionRepLossOnDetectionMin":0.2,
+	"instigateRebellionRepLossOnDetectionMax":0.3,
+	"instigateRebellionSecurityLevelRise":0.4,
 }

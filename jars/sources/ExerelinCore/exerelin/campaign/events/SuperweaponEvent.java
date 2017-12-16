@@ -1,5 +1,6 @@
 package exerelin.campaign.events;
 
+import exerelin.campaign.events.covertops.CovertOpsEventBase;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;

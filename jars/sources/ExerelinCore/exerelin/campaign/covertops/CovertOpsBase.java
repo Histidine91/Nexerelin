@@ -112,10 +112,14 @@ public abstract class CovertOpsBase {
 		return result;
 	}
 	
+	public void setResult(CovertActionResult result)
+	{
+		this.result = result;
+	}
+	
 	protected abstract void onSuccess();
 	
 	protected abstract void onFailure();
-	
 	
 	protected ExerelinReputationAdjustmentResult adjustRelations(FactionAPI faction1, FactionAPI faction2, 
 			float effectMin, float effectMax, RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit,

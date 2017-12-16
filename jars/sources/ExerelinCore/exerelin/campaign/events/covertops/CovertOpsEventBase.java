@@ -1,4 +1,4 @@
-package exerelin.campaign.events;
+package exerelin.campaign.events.covertops;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -107,7 +107,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 		return CampaignEventPlugin.CampaignEventCategory.DO_NOT_SHOW_IN_MESSAGE_FILTER;
 	}
 	
-	protected static String getNewRelationStr(FactionAPI faction1, FactionAPI faction2)
+	public static String getNewRelationStr(FactionAPI faction1, FactionAPI faction2)
 	{
 		RepLevel level = faction1.getRelationshipLevel(faction2.getId());
 		int repInt = (int) Math.ceil((faction1.getRelationship(faction2.getId())) * 100f);
@@ -162,7 +162,8 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 		if (!result.isSucessful() || result.isDetected()) significance = 1;
 		if (repResult.wasHostile && !repResult.isHostile) significance = 1;
 		if (repResult.isHostile && !repResult.wasHostile) significance = 2;
-		//log.info("wololo, Icon: " + EVENT_ICONS[significance]);
+		if (significance == 2)
+			log.info("wololo hostile spy event, " + repResult.wasHostile + ", " + repResult.isHostile);
 		return EVENT_ICONS[significance];
 	}
 }

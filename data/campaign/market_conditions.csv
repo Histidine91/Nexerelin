@@ -10,10 +10,14 @@ Market Attacked,exerelin_market_attacked_condition,exerelin.campaign.econ.Market
 - Stability reduced by $stabilityPenalty",graphics/icons/markets/mercenaries.png,1000
 Agent Destabilization,exerelin_agent_destabilize_condition,exerelin.campaign.econ.AgentDestabilizeMarketCondition,"Foreign agents have recently conducted terror attacks on $market.
 
-- Stability reduced by $stabilityPenalty",graphics/icons/markets/plundered.png,1000
+- Stability reduced by $stabilityPenalty",graphics/icons/markets/plundered.png,1001
+Rebellion,nex_rebellion_condition,exerelin.campaign.econ.RebellionCondition,"A rebellion by $theRebelFaction is ongoing on $market.
+
+- Stability reduced by $stabilityPenalty
+- Increased demand for marines, hand weapons and supplies; sales to $market will strengthen rebels or government depending on channel",graphics/icons/markets/pirate_moot.png,1002
 Superweapon Attack,exerelin_superweapon_condition,exerelin.campaign.econ.SuperweaponCondition," $market has recently been hit by a planet buster superweapon, causing widespread devastation.
 
-- Stability reduced by $stabilityPenalty",graphics/icons/markets/meteor_strike.png,1000
+- Stability reduced by $stabilityPenalty",graphics/icons/markets/meteor_strike.png,1003
 ,,,,,
 #vanilla override,,,,,
 Military Base,military_base,exerelin.campaign.econ.ExerelinMilitaryBase,"Requires supplies, fuel, hand weapons, and machinery. There's some turnover in personnel, resulting in a trickle of trained crew and marines available for hire.

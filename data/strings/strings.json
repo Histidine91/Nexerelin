@@ -122,6 +122,7 @@
 		"marketAttacked":"Recent attack on $market",
 		"marketCaptured":"$market captured by $faction",
 		"marketTransfered":"$market transfered to $faction",
+		"rebellion":"Rebellion on $market",
 		"revengeanceFleetEvent":"Revenge Fleet",
 		"securityAlert":"Security alert on $market",
 		"slaveTrade":"Slave trade on $market",
@@ -242,7 +243,8 @@
 	},
 	"exerelin_marketConditions":{
 		"marketAttacked":"Market attacked",
-		"agentDestabilization":"Agent destabilization"
+		"agentDestabilization":"Agent destabilization",
+		"rebellion":"Rebellion",
 	},
 	
 	"exerelin_mining":{

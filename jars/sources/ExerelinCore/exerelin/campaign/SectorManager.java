@@ -36,6 +36,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.world.ExerelinCorvusLocations;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.FactionChangedEvent;
+import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
 import exerelin.campaign.events.WarmongerEvent;
@@ -686,7 +687,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     }
     
     public static void transferMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
-			boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
+            boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
     {
         // forcibly refreshes the market before capture so we can loot their faction-specific goodies once we capture it
         // already did this in InvasionRound
@@ -824,25 +825,26 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             submarket.setFaction(newOwner);
         }
         
+        // event report
         market.reapplyConditions();
-		if (isCapture)
-		{
-			Map<String, Object> params = new HashMap<>();
-			params.put("newOwner", newOwner);
-			params.put("oldOwner", oldOwner);
-			params.put("playerInvolved", playerInvolved);
-			params.put("factionsToNotify", factionsToNotify);
-			params.put("repChangeStrength", repChangeStrength);
-			Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
-		}
-		else
-		{
-			Map<String, Object> params = new HashMap<>();
-			params.put("newOwner", newOwner);
-			params.put("oldOwner", oldOwner);
-			params.put("repEffect", repChangeStrength);
-			Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_transfered", params);
-		}
+        if (isCapture)
+        {
+            Map<String, Object> params = new HashMap<>();
+            params.put("newOwner", newOwner);
+            params.put("oldOwner", oldOwner);
+            params.put("playerInvolved", playerInvolved);
+            params.put("factionsToNotify", factionsToNotify);
+            params.put("repChangeStrength", repChangeStrength);
+            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
+        }
+        else
+        {
+            Map<String, Object> params = new HashMap<>();
+            params.put("newOwner", newOwner);
+            params.put("oldOwner", oldOwner);
+            params.put("repEffect", repChangeStrength);
+            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_transfered", params);
+        }
                 
         DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
         if (playerInvolved) StatsTracker.getStatsTracker().notifyMarketCaptured(market);
@@ -854,15 +856,26 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             factionEliminated(newOwner, oldOwner, market);
         }
         
+        // faction respawn event if needed
         marketsRemaining = ExerelinUtilsFaction.getFactionMarkets(newOwner.getId(), true).size();
         if (marketsRemaining == 1)
         {
             factionRespawned(newOwner, market);
         }
         
+        // transfer defence stations, if present
         DefenceStationManager.getManager().resetMaxStations(market);
         CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(market);
         if (station != null) station.setFaction(newOwnerId, true);
+        
+        // rebellion
+        CampaignEventPlugin eventSuper = Global.getSector().getEventManager().getOngoingEvent(
+            new CampaignEventTarget(market), "nex_rebellion");
+        if (eventSuper != null)
+        {
+            RebellionEvent event = (RebellionEvent)eventSuper;
+            event.marketCaptured(newOwnerId, oldOwnerId);
+        }
         
         // flip relay
         if (sectorManager != null)

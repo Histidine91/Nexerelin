@@ -182,17 +182,6 @@
 			"chance":1.25
 		},
 		{
-			"name":"Supporting Rebels",
-			"stage":"support_rebels",
-			"repEnsureAtBest":"inhospitable",
-			"maxRepLevelToOccur":"suspicious",
-			"minRepChange":-0.25,
-			"maxRepChange":-0.15,
-			"repLimit":"hostile",
-			"allowPiratesToPirates":true,
-			"chance":1.5
-		},
-		{
 			"name":"Diplomat Crime Ring",
 			"stage":"diplomat_crimes",
 			"minRepLevelToOccur":"suspicious",

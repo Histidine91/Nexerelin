@@ -1,4 +1,4 @@
-package exerelin.campaign.events;
+package exerelin.campaign.events.covertops;
 
 import java.awt.Color;
 import java.util.ArrayList;

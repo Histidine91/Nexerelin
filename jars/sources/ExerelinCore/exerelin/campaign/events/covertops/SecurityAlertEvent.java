@@ -1,4 +1,4 @@
-package exerelin.campaign.events;
+package exerelin.campaign.events.covertops;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;

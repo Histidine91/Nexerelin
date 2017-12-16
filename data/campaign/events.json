@@ -18,27 +18,6 @@
 		"script":"exerelin.campaign.events.InvasionFleetEvent",
 		"image":"graphics/icons/intel/missions.png"
 	},
-	"exerelin_agent_raise_relations":{
-		"script":"exerelin.campaign.events.CovertOpsEventBase"
-	},
-	"exerelin_agent_lower_relations":{
-		"script":"exerelin.campaign.events.AgentLowerRelationsEvent"
-	},
-	"exerelin_agent_destabilize_market":{
-		"script":"exerelin.campaign.events.AgentDestabilizeMarketEvent"
-	},
-	"exerelin_agent_destabilize_market_for_condition":{
-		"script":"exerelin.campaign.events.AgentDestabilizeMarketEventForCondition"
-	},
-	"exerelin_saboteur_sabotage_reserve":{
-		"script":"exerelin.campaign.events.SaboteurSabotageReserveEvent"
-	},
-	"exerelin_saboteur_destroy_food":{
-		"script":"exerelin.campaign.events.SaboteurDestroyFoodEvent"
-	},
-	"exerelin_security_alert":{
-		"script":"exerelin.campaign.events.SecurityAlertEvent"
-	},
 	"exerelin_slaves_sold":{
 		"script":"exerelin.campaign.events.SlavesSoldEvent"
 	},
@@ -91,6 +70,36 @@
 	"exerelin_faction_vengeance":{
         "script":"exerelin.campaign.events.SSP_FactionVengeanceEvent"
     },
+	
+	"nex_rebellion":{
+		"script":"exerelin.campaign.events.RebellionEvent"
+	},
+	
+	# agent stuff
+	"exerelin_agent_raise_relations":{
+		"script":"exerelin.campaign.events.covertops.CovertOpsEventBase"
+	},
+	"exerelin_agent_lower_relations":{
+		"script":"exerelin.campaign.events.covertops.AgentLowerRelationsEvent"
+	},
+	"exerelin_agent_destabilize_market":{
+		"script":"exerelin.campaign.events.covertops.AgentDestabilizeMarketEvent"
+	},
+	"exerelin_agent_destabilize_market_for_condition":{
+		"script":"exerelin.campaign.events.covertops.AgentDestabilizeMarketEventForCondition"
+	},
+	"exerelin_saboteur_sabotage_reserve":{
+		"script":"exerelin.campaign.events.covertops.SaboteurSabotageReserveEvent"
+	},
+	"exerelin_saboteur_destroy_food":{
+		"script":"exerelin.campaign.events.covertops.SaboteurDestroyFoodEvent"
+	},
+	"nex_instigate_rebellion":{
+		"script":"exerelin.campaign.events.covertops.InstigateRebellionEvent"
+	},
+	"exerelin_security_alert":{
+		"script":"exerelin.campaign.events.covertops.SecurityAlertEvent"
+	},
 	
 	# bounties
 	"exerelin_faction_bounty":{

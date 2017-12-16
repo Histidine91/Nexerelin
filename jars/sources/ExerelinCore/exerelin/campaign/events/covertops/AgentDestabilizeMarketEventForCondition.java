@@ -1,4 +1,4 @@
-package exerelin.campaign.events;
+package exerelin.campaign.events.covertops;
 
 import java.util.Map;
 import org.apache.log4j.Logger;

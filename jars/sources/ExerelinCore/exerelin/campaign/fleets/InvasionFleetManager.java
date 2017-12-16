@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -23,6 +24,7 @@ import exerelin.campaign.InvasionRound;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.events.InvasionFleetEvent;
+import exerelin.campaign.events.RebellionEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -406,6 +408,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
 			// because incoming invasion fleet being ganked by fresh spawns from the market is just annoying
 			if (ExerelinUtilsMarket.isMarketBeingInvaded(market)) continue;
+			// markets with ongoing rebellions can't launch invasions
+			if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
+				continue;
 			
 			if	( market.getFactionId().equals(factionId) && !market.hasCondition(Conditions.DECIVILIZED) && 
 				( (market.hasCondition(Conditions.SPACEPORT)) || (market.hasCondition(Conditions.ORBITAL_STATION)) || (market.hasCondition(Conditions.MILITARY_BASE))
@@ -453,7 +458,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (targetFaction != null && targetFaction != marketFaction)
 				continue;
 			
-			if	( marketFaction.isHostileTo(faction)) 
+			if	(marketFaction.isHostileTo(faction)) 
 			{
 				if (!ExerelinUtilsMarket.shouldTargetForInvasions(market, 0)) continue;
 				/*
@@ -462,6 +467,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				if (estimateMarinesRequired > marineStockpile * MAX_MARINE_STOCKPILE_TO_DEPLOY)
 					continue;	 // too strong for us
 				*/
+				
+				// base weight based on distance
 				float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
 				if (dist < 5000.0F) {
 					dist = 5000.0F;
@@ -479,11 +486,22 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				if (market.hasCondition(Conditions.LUDDIC_MAJORITY) && ExerelinUtilsFaction.isLuddicFaction(factionId))
 					weight *= 4;
 				
+				// hard mode
 				if (SectorManager.getHardMode())
 				{
 					if (marketFactionId.equals(PlayerFactionStore.getPlayerFactionId()) 
 							|| marketFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
 						weight *= HARD_MODE_INVASION_TARGETING_CHANCE;
+				}
+				
+				// help ongoing rebellions
+				CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(
+					new CampaignEventTarget(market), "nex_rebellion");
+				if (eventSuper != null)
+				{
+					RebellionEvent event = (RebellionEvent)eventSuper;
+					if (!faction.isHostileTo(event.getRebelFactionId()))
+						weight *= 5;
 				}
 				
 				targetPicker.add(market, weight);
