@@ -75,6 +75,7 @@ public class ExerelinUtilsReputation
 		if (otherFactionId.equals("merc_hostile")) return;
 		if (otherFactionId.equals("famous_bounty")) return;
 		if (otherFactionId.equals("shippackfaction")) return;
+		if (factionIdToSync.equals(otherFactionId)) return;
 		
 		SectorAPI sector = Global.getSector();	
 		FactionAPI playerFaction = sector.getFaction("player");
@@ -119,6 +120,8 @@ public class ExerelinUtilsReputation
 	{
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
+		if (factionId.equals(otherFactionId)) return;
+		
 		float relationship = faction.getRelationship(otherFactionId);
 		Global.getSector().getPlayerFaction().setRelationship(otherFactionId, relationship);
 	}
