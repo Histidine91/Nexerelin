@@ -516,7 +516,7 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 			
 		log.info("Despawning defence station " + fleet.getNameWithFaction() + ": "  + reason.toString());
 		allFleets.remove(fleet);
-		String marketId = fleet.getMemoryWithoutUpdate().getString("$sourcemarket");
+		String marketId = fleet.getMemoryWithoutUpdate().getString(MemFlags.MEMORY_KEY_SOURCE_MARKET);
 		fleets.remove(marketId);
 	}
 	

@@ -1,0 +1,11 @@
+{
+	"baseHullId":"nex_asgard",
+	"skinHullId":"nex_asgard_d",
+	"hullName":"Asgard (D)",
+	"descriptionId":"nex_asgard",
+	"descriptionPrefix":"This battered, bedamned station has taken a beating that its operators have lacked the resources to properly repair. Its effectiveness as a defense platform has been diminished, although it still presents a formidable threat.",
+	"restoreToBaseHull":true,
+	"baseValueMult":.67,
+	#"spriteName":"graphics/ships/cerberus/cerberus_damaged.png",
+	"builtInMods":["comp_structure","faulty_grid"],
+}

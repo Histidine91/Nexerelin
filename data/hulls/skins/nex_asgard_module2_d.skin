@@ -7,5 +7,5 @@
 	"restoreToBaseHull":true,
 	"baseValueMult":.67,
 	#"spriteName":"graphics/ships/cerberus/cerberus_damaged.png",
-	"builtInMods":["comp_hull"],
+	"builtInMods":["comp_hull", "glitched_sensors"],
 }
