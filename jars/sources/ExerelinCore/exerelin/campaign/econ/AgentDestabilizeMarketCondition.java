@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
+import exerelin.utilities.StringHelper;
 import java.util.Map;
 
 public class AgentDestabilizeMarketCondition extends BaseMarketConditionPlugin {
@@ -14,10 +15,12 @@ public class AgentDestabilizeMarketCondition extends BaseMarketConditionPlugin {
 		if (event == null)	// try regetting
 		{
 			Global.getLogger(this.getClass()).info("ERROR: Event is null, re-fetching");
-			event = (AgentDestabilizeMarketEventForCondition)Global.getSector().getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market_for_condition");
+			event = (AgentDestabilizeMarketEventForCondition)Global.getSector().
+					getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market_for_condition");
 		}
 		if (event == null) return;
-        market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), "Agent destabilization");
+        market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), 
+				StringHelper.getString("exerelin_marketConditions", "agentDestabilization"));
     }
 
     @Override

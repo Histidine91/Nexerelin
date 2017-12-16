@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import exerelin.campaign.events.MarketAttackedEvent;
+import exerelin.utilities.StringHelper;
 import java.util.Map;
 
 public class MarketAttackedCondition extends BaseMarketConditionPlugin {
@@ -15,10 +16,12 @@ public class MarketAttackedCondition extends BaseMarketConditionPlugin {
 		if (event == null)	// try regetting
 		{
 			Global.getLogger(this.getClass()).info("ERROR: Event is null, re-fetching");
-			event = (MarketAttackedEvent)Global.getSector().getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_market_attacked");
+			event = (MarketAttackedEvent)Global.getSector().getEventManager().
+					getOngoingEvent(new CampaignEventTarget(market), "exerelin_market_attacked");
 		}
 		if (event == null) return;
-		market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), "Market attacked");
+		market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), 
+				StringHelper.getString("exerelin_marketConditions", "marketAttacked"));
 	}
 		
 	@Override

@@ -240,6 +240,11 @@
 		
 		"templarControl":"Templar control"
 	},
+	"exerelin_marketConditions":{
+		"marketAttacked":"Market attacked",
+		"agentDestabilization":"Agent destabilization"
+	},
+	
 	"exerelin_mining":{
 		"danger":"hazard rating",
 		"exhaustion":"resource exhaustion",
