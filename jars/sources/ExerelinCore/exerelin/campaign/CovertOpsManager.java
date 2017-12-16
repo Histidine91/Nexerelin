@@ -3,7 +3,6 @@ package exerelin.campaign;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
@@ -16,7 +15,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
-import exerelin.campaign.events.AgentDestabilizeMarketEventForCondition;
+import exerelin.campaign.covertops.*;
 import exerelin.campaign.events.SecurityAlertEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -45,6 +44,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         DESTABILIZE_MARKET,
         SABOTAGE_RESERVE,
         DESTROY_FOOD,
+		INSTIGATE_REBELLION,
     }
     
     public static Logger log = Global.getLogger(CovertOpsManager.class);
@@ -52,12 +52,11 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     private static final String MANAGER_MAP_KEY = "exerelin_covertWarfareManager";
     private static final String CONFIG_FILE = "data/config/exerelin/agentConfig.json";
-    protected static final float NPC_EFFECT_MULT = 1.5f;
-	protected static final ExerelinReputationAdjustmentResult NO_EFFECT = new ExerelinReputationAdjustmentResult(0);
-    private static Map<String, Object> config;
-    
-    public static final List<String> DISALLOWED_FACTIONS;
-    
+    public static final float NPC_EFFECT_MULT = 1.5f;
+	public static final List<String> DISALLOWED_FACTIONS;
+	 
+    protected static Map<String, Object> config;
+       
     private static float baseInterval = 45f;
     private float interval = baseInterval;
     private final IntervalUtil intervalUtil;
@@ -80,6 +79,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         //baseInterval = (float)(double)config.get("eventFrequency");   // ClassCastException
         baseInterval = (float)configJson.optDouble("eventFrequency", 15f);
     }
+	
+	public static Map<String, Object> getConfig() {
+		return config;
+	}
 
     public CovertOpsManager()
     {
@@ -107,6 +110,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         actionPicker.add(CovertActionType.DESTABILIZE_MARKET, 1.25f);
         actionPicker.add(CovertActionType.SABOTAGE_RESERVE, 1.25f);
         //actionPicker.add(CovertActionType.DESTROY_FOOD, 1.25f);
+		actionPicker.add(CovertActionType.INSTIGATE_REBELLION, 0.25f);
         
         CovertActionType actionType = actionPicker.pick();
         
@@ -174,6 +178,14 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 
                 weight = weight * (1 + dominance);
             }
+			else if (actionType == CovertActionType.INSTIGATE_REBELLION)
+            {
+                if (repLevel == RepLevel.HOSTILE) weight = 1f;
+                else if (repLevel == RepLevel.VENGEFUL) weight = 2f;
+                else continue;
+                
+                weight = weight * (1 + dominance);
+            }
             if (ExerelinUtilsFaction.isPirateFaction(factionId))
                 weight *= 0.25f;    // reduces factions constantly targeting pirates for covert action
             
@@ -228,6 +240,10 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         else if (actionType == CovertActionType.DESTROY_FOOD)
         {
             saboteurDestroyFood(market, agentFaction, targetFaction, false);
+        }
+		else if (actionType == CovertActionType.INSTIGATE_REBELLION)
+        {
+            instigateRebellion(market, agentFaction, targetFaction, false);
         }
     }
 
@@ -286,342 +302,44 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         SecurityAlertEvent event = (SecurityAlertEvent)eventSuper;
         return event.getAlertLevel();
     }
-    
-    public static CovertActionResult covertActionRoll(double sChance, double sDetectChance, double fDetectChance, boolean playerInvolved)
-    {
-        return covertActionRoll(sChance, sDetectChance, fDetectChance, false, null, playerInvolved);
-    }
-    
-    public static CovertActionResult covertActionRoll(double sChance, double sDetectChance, double fDetectChance, boolean useAlertLevel, MarketAPI market, boolean playerInvolved)
-    {
-        CovertActionResult result = null;
         
-        if (useAlertLevel)
-        {
-            sChance = sChance * (1 - getAlertLevel(market));
-        }
-        
-        if (playerInvolved)
-        {
-            CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
-            if (!playerFleet.isTransponderOn())
-            {
-                sDetectChance *= 0.5f;
-                fDetectChance *= 0.75f;
-            }
-        }
-            
-        if (Math.random() < sChance)
-        {
-            result = CovertActionResult.SUCCESS;
-            if (Math.random() < sDetectChance) result = CovertActionResult.SUCCESS_DETECTED;
-        }
-        else
-        {
-            result = CovertActionResult.FAILURE;
-            if (Math.random() < fDetectChance) result = CovertActionResult.FAILURE_DETECTED;
-        }
-        return result;
-    }
-    
-    public static Map<String, Object> makeEventParams(FactionAPI agentFaction, CovertActionResult result, ExerelinReputationAdjustmentResult repResult, boolean playerInvolved)
-    {
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("agentFaction", agentFaction);
-		params.put("result", result);
-        params.put("playerInvolved", playerInvolved);
-        params.put("repEffect", repResult.delta);
-		params.put("repResult", repResult);
-        return params;
-    }
-    
     public static CovertActionResult agentRaiseRelations(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Agent trying to raise relations");
-        CovertActionResult result = covertActionRoll((double)config.get("agentRaiseRelationsSuccessChance"), 0, (double)config.get("agentRaiseRelationsDetectionChanceFail"), playerInvolved);
-        if (result.isSucessful())
-        {
-            float effectMin = (float)(double)config.get("agentRaiseRelationsEffectMin");
-            float effectMax = (float)(double)config.get("agentRaiseRelationsEffectMax");
-            float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
-            if (!playerInvolved) effect *= NPC_EFFECT_MULT;
-            ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, effect, null, null, null);
-            
-            if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
-            {
-                Map<String, Object> params = makeEventParams(agentFaction, result, repResult, playerInvolved);
-                Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_raise_relations", params);
-            }
-        }
-        else
-        {
-            if (result.isDetected())
-            {
-                // cover blown, piss them off
-                float effectMin = (float)(double)config.get("agentRaiseRelationsRepLossOnDetectionMin");
-                float effectMax = (float)(double)config.get("agentRaiseRelationsRepLossOnDetectionMax");
-                float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
-                if (!playerInvolved) effect *= NPC_EFFECT_MULT;
-                ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, effect, RepLevel.FAVORABLE, null, RepLevel.INHOSPITABLE);
-                
-                if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
-                {
-                    Map<String, Object> params = makeEventParams(agentFaction, result, repResult, playerInvolved);
-                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_raise_relations", params);
-                }
-            }
-            else    // failed but undetected
-            {
-                if (playerInvolved)
-                {
-                    Map<String, Object> params = makeEventParams(agentFaction, result, NO_EFFECT, playerInvolved);
-                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_raise_relations", params);
-                }
-            }
-        }
-        return result;
+        return new RaiseRelations(market, agentFaction, targetFaction, playerInvolved, null).execute();
     }
     
     public static CovertActionResult agentLowerRelations(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, FactionAPI thirdFaction, boolean playerInvolved)
     {
         log.info("Agent trying to lower relations");
-        CovertActionResult result = covertActionRoll((double)config.get("agentLowerRelationsSuccessChance"), 0, (double)config.get("agentLowerRelationsDetectionChanceFail"), playerInvolved);
-        if (result.isSucessful())
-        {
-            float effectMin = (float)(double)config.get("agentLowerRelationsEffectMin");
-            float effectMax = (float)(double)config.get("agentLowerRelationsEffectMax");
-            float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
-            if (!playerInvolved) effect *= NPC_EFFECT_MULT;
-            ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(thirdFaction, targetFaction, effect, null, null, RepLevel.HOSTILE);
-            
-            if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
-            {
-                Map<String, Object> params = makeEventParams(agentFaction, result, repResult, playerInvolved);
-                params.put("thirdFaction", thirdFaction);
-                params.put("repEffect2", effect);
-                Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_lower_relations", params);
-            }
-        }
-        else
-        {
-            if (result.isDetected())
-            {
-                float effectMin = (float)(double)config.get("agentLowerRelationsRepLossOnDetectionMin");
-                float effectMax = (float)(double)config.get("agentLowerRelationsRepLossOnDetectionMax");
-                float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
-                if (!playerInvolved) effect *= NPC_EFFECT_MULT;
-                ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, effect, RepLevel.NEUTRAL, null, RepLevel.HOSTILE);
-                ExerelinReputationAdjustmentResult repResult2 = DiplomacyManager.adjustRelations(agentFaction, thirdFaction, effect, RepLevel.NEUTRAL, null, RepLevel.HOSTILE);
-                
-                if (Math.abs(repResult.delta) >= 0.01f || Math.abs(repResult2.delta) >= 0.01f || playerInvolved)
-                {
-                    Map<String, Object> params = makeEventParams(agentFaction, result, repResult, playerInvolved);
-                    params.put("thirdFaction", thirdFaction);
-					params.put("repResult2", repResult2);
-                    params.put("repEffect2", repResult2.delta);
-                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_lower_relations", params);
-                }
-            }
-            else    // failed but undetected
-            {
-                if (playerInvolved)
-                {
-                    Map<String, Object> params = makeEventParams(agentFaction, result, NO_EFFECT, playerInvolved);
-                    params.put("thirdFaction", thirdFaction);
-                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_lower_relations", params);
-                }
-            }
-        }
-        return result;
+        Map<String, Object> params = new HashMap<>();
+		params.put("thirdFaction", thirdFaction);
+		return new LowerRelations(market, agentFaction, targetFaction, playerInvolved, params).execute();
     }
     
     public static CovertActionResult agentDestabilizeMarket(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Agent trying to destablize market");
-        CovertActionResult result = covertActionRoll((double)config.get("agentDestabilizeSuccessChance"), (double)config.get("agentDestabilizeDetectionChance"),
-                (double)config.get("agentDestabilizeDetectionChanceFail"), true, market, playerInvolved);
-        
-        if (result.isSucessful())
-        {
-            SectorAPI sector = Global.getSector();
-            CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market_for_condition");
-            if (eventSuper == null) 
-                eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market_for_condition", null);
-            AgentDestabilizeMarketEventForCondition event = (AgentDestabilizeMarketEventForCondition)eventSuper;
-
-            int currentPenalty = event.getStabilityPenalty();
-            int delta = 1;
-            if (currentPenalty < 2) delta = 2;
-            if (!playerInvolved) delta = Math.round(delta * NPC_EFFECT_MULT);
-            event.increaseStabilityPenalty(delta);
-            
-            Map<String, Object> params = makeEventParams(agentFaction, result, NO_EFFECT, playerInvolved);
-            params.put("stabilityPenalty", delta);
-            
-            // detected after successful attack?
-            if (result.isDetected())
-            {
-                float repMin = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMin");
-                float repMax = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMax");
-                float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
-                params.put("repResult", repResult);
-                params.put("repEffect", repResult.delta);
-                params.put("stage", result);
-            }
-            
-            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market", params);
-            
-            market.updatePrices();
-        }
-        else
-        {
-            if (result.isDetected())
-            {
-                float repMin = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMin");
-                float repMax = (float)(double)config.get("agentDestabilizeRepLossOnDetectionMax");
-                float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, RepLevel.HOSTILE);
-                if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
-                {
-                    Map<String, Object> params = makeEventParams(agentFaction, result, repResult, playerInvolved);
-                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market", params);
-                }
-            }
-            else    // failed but undetected
-            {
-                if (playerInvolved)
-                {
-                    Map<String, Object> params = makeEventParams(agentFaction, result, NO_EFFECT, playerInvolved);
-                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market", params);
-                }
-            }
-        }
-        modifyAlertLevel(market, (float)(double)config.get("agentDestabilizeSecurityLevelRise"));
-        return result;
+        return new DestabilizeMarket(market, agentFaction, targetFaction, playerInvolved, null).execute();
     }
     
     public static CovertActionResult saboteurSabotageReserve(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Saboteur attacking reserve fleet");
-        CovertActionResult result = covertActionRoll((double)config.get("sabotageReserveSuccessChance"), (double)config.get("sabotageReserveDetectionChance"),
-                (double)config.get("sabotageReserveDetectionChanceFail"), true, market, playerInvolved);
-        if (result.isSucessful())
-        {
-            SectorAPI sector = Global.getSector();
-            float effectMin = (float)(double)config.get("sabotageReserveEffectMin");
-            float effectMax = (float)(double)config.get("sabotageReserveEffectMax");
-            float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
-            if (!playerInvolved) effect *= NPC_EFFECT_MULT;
-            
-            float delta = ResponseFleetManager.modifyReserveSize(market, effect);
-            
-            Map<String, Object> params = makeEventParams(agentFaction, result, NO_EFFECT, playerInvolved);
-            params.put("reserveDamage", -delta);
-            
-            // detected after successful attack?
-            if (Math.random() <= (double)config.get("sabotageReserveDetectionChance") )
-            {
-                float repMin = (float)(double)config.get("sabotageReserveRepLossOnDetectionMin");
-                float repMax = (float)(double)config.get("sabotageReserveRepLossOnDetectionMax");
-                float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
-				params.put("repResult", repResult);
-                params.put("repEffect", repResult.delta);
-                params.put("stage", result);
-            }
-            
-            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_sabotage_reserve", params);
-        }
-        else
-        {
-            if (result.isDetected())
-            {
-                float repMin = (float)(double)config.get("sabotageReserveRepLossOnDetectionMin");
-                float repMax = (float)(double)config.get("sabotageReserveRepLossOnDetectionMax");
-                float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, RepLevel.HOSTILE);
-                if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
-                {
-                    Map<String, Object> params = makeEventParams(agentFaction, result, repResult, playerInvolved);
-                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_sabotage_reserve", params);
-                }
-            }
-            else    // failed but undetected
-            {
-                if (playerInvolved)
-                {
-                    Map<String, Object> params = makeEventParams(agentFaction, result, NO_EFFECT, playerInvolved);
-                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_sabotage_reserve", params);
-                }
-            }
-        }
-        modifyAlertLevel(market, (float)(double)config.get("sabotageReserveSecurityLevelRise"));
-        return result;
+        return new SabotageReserve(market, agentFaction, targetFaction, playerInvolved, null).execute();
     }    
     
     public static CovertActionResult saboteurDestroyFood(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
     {
         log.info("Saboteur destroying food");
-        CovertActionResult result = covertActionRoll((double)config.get("sabotageDestroyFoodSuccessChance"), (double)config.get("sabotageDestroyFoodDetectionChance"),
-                (double)config.get("sabotageDestroyFoodDetectionChanceFail"), true, market, playerInvolved);
-        if (result.isSucessful())
-        {
-            float effectMin = (float)(double)config.get("sabotageDestroyFoodEffectMin");
-            float effectMax = (float)(double)config.get("sabotageDestroyFoodEffectMax");
-            float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
-            if (!playerInvolved) effect *= NPC_EFFECT_MULT;
-            
-            float foodDestroyed = (float)Math.pow(market.getSize(), 2) * effect;
-            
-            CommodityOnMarketAPI food = market.getCommodityData(Commodities.FOOD);
-            float before = food.getStockpile();
-            food.removeFromStockpile(foodDestroyed);
-            float after = food.getStockpile();
-            log.info("Remaining food: " + food.getStockpile());
-            
-            Map<String, Object> params = makeEventParams(agentFaction, result, NO_EFFECT, playerInvolved);
-            params.put("foodDestroyed", before - after);
-            
-            // detected after successful attack?
-            if (result.isDetected())
-            {
-                float repMin = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMin");
-                float repMax = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMax");
-                float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, null);
-				params.put("repResult", repResult);
-                params.put("repEffect", repResult.delta);
-                params.put("stage", result);
-            }
-            
-            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_destroy_food", params);
-        }
-        else
-        {
-            if (result.isDetected())
-            {
-                float repMin = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMin");
-                float repMax = (float)(double)config.get("sabotageDestroyFoodRepLossOnDetectionMax");
-                float rep = -MathUtils.getRandomNumberInRange(repMin, repMax);
-                ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(agentFaction, targetFaction, rep, RepLevel.INHOSPITABLE, null, RepLevel.HOSTILE);
-                if (Math.abs(repResult.delta) >= 0.01f || playerInvolved)
-                {
-                    Map<String, Object> params = makeEventParams(agentFaction, result, repResult, playerInvolved);
-                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_destroy_food", params);
-                }
-            }
-            else    // failed but undetected
-            {
-                if (playerInvolved)
-                {
-                    Map<String, Object> params = makeEventParams(agentFaction, result, NO_EFFECT, playerInvolved);
-                    Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_saboteur_destroy_food", params);
-                }
-            }
-        }
-        modifyAlertLevel(market, (float)(double)config.get("sabotageDestroyFoodSecurityLevelRise"));
-        return result;
+        return new DestroyFood(market, agentFaction, targetFaction, playerInvolved, null).execute();
+    }
+	
+	public static CovertActionResult instigateRebellion(MarketAPI market, FactionAPI agentFaction, FactionAPI targetFaction, boolean playerInvolved)
+    {
+        log.info("Instigating rebellion");
+		return null;
+        //return new InstigateRebellion(market, agentFaction, targetFaction, playerInvolved, null).execute();
     }
     
     // TODO
