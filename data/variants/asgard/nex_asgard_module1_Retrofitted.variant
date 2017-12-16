@@ -3,13 +3,9 @@
   "fluxCapacitors": 2,
   "fluxVents": 6,
   "goalVariant": false,
-  "hullId": "nex_asgard_module1",
+  "hullId": "nex_asgard_module1_d",
   "hullMods": [
     "blast_doors"
-  ],
-  "permaMods": [
-    "comp_structure",
-    "glitched_sensors"
   ],
   "quality": 0.25,
   "variantId": "nex_asgard_module1_Retrofitted",

@@ -3,14 +3,10 @@
   "fluxCapacitors": 3,
   "fluxVents": 5,
   "goalVariant": false,
-  "hullId": "nex_asgard_module1",
+  "hullId": "nex_asgard_module1_d",
   "hullMods": [
     "heavyarmor",
     "autorepair"
-  ],
-  "permaMods": [
-    "comp_armor",
-    "faulty_grid"
   ],
   "quality": 0.25,
   "variantId": "nex_asgard_module1_Scavenged",

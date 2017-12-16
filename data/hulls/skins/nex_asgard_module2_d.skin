@@ -1,0 +1,11 @@
+{
+	"baseHullId":"nex_asgard_module2",
+	"skinHullId":"nex_asgard_module2_d",
+	"hullName":"Missile Platform (D)",
+	"descriptionId":"nex_asgard_module2",
+	"descriptionPrefix":"This battered, bedamned station module has taken damage that was never quite repaired properly. Several key systems are no longer functional.",
+	"restoreToBaseHull":true,
+	"baseValueMult":.67,
+	#"spriteName":"graphics/ships/cerberus/cerberus_damaged.png",
+	"builtInMods":["comp_hull"],
+}
