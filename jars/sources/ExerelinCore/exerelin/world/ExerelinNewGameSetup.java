@@ -182,7 +182,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		sector.addScript(new CoreScript());
 		sector.addScript(new PatrolFleetManagerReplacer());
 		sector.registerPlugin(new CoreCampaignPluginImpl());
-		sector.registerPlugin(new ExerelinCoreCampaignPlugin());
+		sector.registerPlugin(new ExerelinCampaignPlugin());
 		sector.addScript(new CoreEventProbabilityManager());
 		sector.addScript(new EconomyFleetManager());
 		if (ExerelinModPlugin.HAVE_DYNASECTOR)

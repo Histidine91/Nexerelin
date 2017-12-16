@@ -125,12 +125,7 @@ public class ExerelinModPlugin extends BaseModPlugin
     
     protected void reverseCompatibility()
     {
-        if (!Global.getSector().hasScript(DefenceStationManager.class))
-        {
-            DefenceStationManager man = DefenceStationManager.create();
-            Global.getSector().addScript(man);
-            man.seedFleets();
-        }
+    
     }
     
     @Override
@@ -160,7 +155,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         }
         
         addEventIfNeeded("exerelin_faction_salary");
-		addEventIfNeeded("exerelin_followers_tax");
+        addEventIfNeeded("exerelin_followers_tax");
         addEventIfNeeded("exerelin_faction_insurance");
         if (ExerelinUtilsFaction.isExiInCorvus()) {
             addEventIfNeeded("exerelin_exigency_respawn");
@@ -194,7 +189,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         refreshTariffs();
         
         SectorAPI sector = Global.getSector();
-        sector.registerPlugin(new ExerelinCoreCampaignPlugin());
+        sector.registerPlugin(new ExerelinCampaignPlugin());
         sector.addTransientScript(new DirectoryScreenScript());
         sector.addTransientScript(new SSP_AsteroidTracker());
         
