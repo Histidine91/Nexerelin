@@ -948,16 +948,16 @@ public class ExerelinProcGen {
 	protected SectorEntityToken createStation(ProcGenEntity station, String factionId, boolean freeStation)
 	{
 		float angle = ExerelinUtilsAstro.getRandomAngle(random);
-		int orbitRadius = 200;
+		int orbitRadius = (int)station.primary.getRadius();
 		PlanetAPI planet = (PlanetAPI)station.primary;
 		if (planet.isMoon())
-			orbitRadius = 150;
+			orbitRadius += 50;
 		else if (planet.isGasGiant())
-			orbitRadius = 500;
+			orbitRadius += 150;
 		else if (planet.isStar())
 			orbitRadius = (int)station.terrain.getOrbit().computeCurrentLocation().length();
-		if (!planet.isStar())	// don't do for belter stations, else they spawn outside the belt
-			orbitRadius += planet.getRadius();
+		else
+			orbitRadius += 100;
 
 		float orbitDays = ExerelinUtilsAstro.getOrbitalPeriod(planet, orbitRadius);
 		if (planet.isStar())
