@@ -16,14 +16,7 @@ public class BaseLandmarkDef extends LandmarkDef {
 	
 	protected static final boolean WEIGH_BY_MARKET_SIZE = true;
 	protected static final boolean PROCGEN_SYSTEMS_ONLY = false;
-	
-	protected Random random = null;
-	
-	public BaseLandmarkDef(Random random)
-	{
-		this.random = random;
-	}
-	
+		
 	@Override
 	public boolean isApplicableToEntity(SectorEntityToken entity)
 	{

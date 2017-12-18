@@ -10,7 +10,6 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.LocationType;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator.StarSystemData;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RuinsThemeGenerator;
-import com.fs.starfarer.api.impl.campaign.terrain.DebrisFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
@@ -23,18 +22,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class GraveyardWithMemorial extends BaseLandmarkDef {
 	
-	public static final String id = "graveyard";
 	public static final Color BEACON_COLOR = new Color(128, 128, 128, 128);
 	
 	protected static final int MAX_TRIES = 5;
-
-	public GraveyardWithMemorial(Random random) {
-		super(random);
-	}
 	
 	@Override
 	public boolean isApplicableToEntity(SectorEntityToken entity)

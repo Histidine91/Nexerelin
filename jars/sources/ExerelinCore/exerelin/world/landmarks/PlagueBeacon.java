@@ -12,7 +12,6 @@ import exerelin.utilities.ExerelinUtilsAstro;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 public class PlagueBeacon extends BaseLandmarkDef {
@@ -25,10 +24,6 @@ public class PlagueBeacon extends BaseLandmarkDef {
 		Conditions.DECIVILIZED, Conditions.RUINS_SCATTERED, Conditions.RUINS_EXTENSIVE, 
 		Conditions.RUINS_WIDESPREAD, Conditions.RUINS_VAST
 	}));
-
-	public PlagueBeacon(Random random) {
-		super(random);
-	}
 	
 	@Override
 	public boolean isApplicableToEntity(SectorEntityToken entity)

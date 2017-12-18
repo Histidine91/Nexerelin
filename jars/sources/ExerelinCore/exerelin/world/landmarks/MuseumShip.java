@@ -18,15 +18,10 @@ import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.util.List;
-import java.util.Random;
 
 public class MuseumShip extends BaseLandmarkDef {
 		
 	protected static final int MAX_TRIES = 5;
-
-	public MuseumShip(Random random) {
-		super(random);
-	}
 	
 	@Override
 	public boolean isApplicableToEntity(SectorEntityToken entity)

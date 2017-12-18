@@ -1,0 +1,6 @@
+id,class,randomOnly
+museum_ship,exerelin.world.landmarks.MuseumShip,
+plague_beacon,exerelin.world.landmarks.PlagueBeacon,
+graveyard_with_memorial,exerelin.world.landmarks.GraveyardWithMemorial,
+abandoned_station,exerelin.world.landmarks.AbandonedStation,TRUE
+beholder_station,exerelin.world.landmarks.BeholderStation,TRUE

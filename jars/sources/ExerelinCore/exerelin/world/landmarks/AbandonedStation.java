@@ -6,16 +6,11 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.StringHelper;
-import java.util.Random;
 
 public class AbandonedStation extends BaseLandmarkDef {
 	
 	public static final boolean WEIGH_BY_MARKET_SIZE = false;
 	public static int count = 0;	// just to make sure it has a unique ID
-
-	public AbandonedStation(Random random) {
-		super(random);
-	}
 	
 	@Override
 	public int getCount() {
