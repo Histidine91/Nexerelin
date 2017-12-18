@@ -1,6 +1,6 @@
 {
 	"baseHullId":"nex_asgard_module1",
-	"skinHullId":"nex_asgard_module1_d",
+	"skinHullId":"nex_asgard_module1_p_default_D",
 	"hullName":"Weapon Platform (D)",
 	"descriptionId":"nex_asgard_module1",
 	"descriptionPrefix":"This battered, bedamned station module has taken damage that was never quite repaired properly. Several key systems are no longer functional.",

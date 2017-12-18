@@ -3,7 +3,7 @@
   "fluxCapacitors": 6,
   "fluxVents": 2,
   "goalVariant": true,
-  "hullId": "nex_asgard_module2_d",
+  "hullId": "nex_asgard_module2_p_default_D",
   "hullMods": [
     "heavyarmor",
     "missleracks"
