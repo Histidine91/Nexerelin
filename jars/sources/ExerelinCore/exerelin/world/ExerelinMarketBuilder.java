@@ -16,6 +16,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.fleets.ExerelinLionsGuardFleetManager;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
@@ -131,7 +132,7 @@ public class ExerelinMarketBuilder
 		
 		try {
 			JSONArray conditionArchetypesCsv = Global.getSettings().getMergedSpreadsheetDataForMod(
-					"condition", SURVEY_CONDITION_FILE, "nexerelin");
+					"condition", SURVEY_CONDITION_FILE, ExerelinConstants.MOD_ID);
 			for(int x = 0; x < conditionArchetypesCsv.length(); x++)
             {
                 JSONObject row = conditionArchetypesCsv.getJSONObject(x);

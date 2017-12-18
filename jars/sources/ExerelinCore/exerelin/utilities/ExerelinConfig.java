@@ -2,6 +2,7 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import exerelin.ExerelinConstants;
 import org.json.JSONObject;
 import java.util.List;
 import java.util.ArrayList;
@@ -238,7 +239,7 @@ public class ExerelinConfig
     {
         try {
             List<String> modFactions = new ArrayList<>();
-            JSONArray modFactionsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("faction", MOD_FACTION_LIST_PATH, "nexerelin");
+            JSONArray modFactionsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("faction", MOD_FACTION_LIST_PATH, ExerelinConstants.MOD_ID);
             for(int x = 0; x < modFactionsCsv.length(); x++)
             {
                 JSONObject row = modFactionsCsv.getJSONObject(x);

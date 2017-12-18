@@ -32,6 +32,7 @@ import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.StringHelper;
 import java.io.IOException;
@@ -137,7 +138,7 @@ public class MiningHelperLegacy {
 			loadMiningShips(MINING_SHIP_DEFS);
 			loadMiningWeapons(MINING_WEAPON_DEFS);
 			
-			JSONArray resourcesCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", RESOURCE_DEFS, "nexerelin");
+			JSONArray resourcesCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", RESOURCE_DEFS, ExerelinConstants.MOD_ID);
 			for(int x = 0; x < resourcesCsv.length(); x++)
 			{
 				String id = "";
@@ -171,7 +172,7 @@ public class MiningHelperLegacy {
 	public static void loadMiningShips(String path)
 	{
 		try {
-			JSONArray miningShipsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, "nexerelin");
+			JSONArray miningShipsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, ExerelinConstants.MOD_ID);
 			for(int x = 0; x < miningShipsCsv.length(); x++)
 			{
 				String shipId = "<unknown>";
@@ -195,7 +196,7 @@ public class MiningHelperLegacy {
 	public static void loadMiningWeapons(String path)
 	{
 		try {
-			JSONArray miningWeaponsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, "nexerelin");
+			JSONArray miningWeaponsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("id", path, ExerelinConstants.MOD_ID);
 			for(int x = 0; x < miningWeaponsCsv.length(); x++)
 			{
 				String weaponId = "<unknown>";

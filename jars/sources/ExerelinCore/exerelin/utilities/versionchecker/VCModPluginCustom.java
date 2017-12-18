@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.ModSpecAPI;
+import exerelin.ExerelinConstants;
 import org.apache.log4j.Level;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +38,7 @@ public final class VCModPluginCustom
 
         final List<VersionFile> versionFiles = new ArrayList<>();
         final JSONArray csv = Global.getSettings().getMergedSpreadsheetDataForMod(
-                "version file", CSV_PATH, "nexerelin");
+                "version file", CSV_PATH, ExerelinConstants.MOD_ID);
 
         final int numMods = csv.length(),
                 csvPathLength = CSV_PATH.length() + 1;

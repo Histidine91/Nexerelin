@@ -2,6 +2,7 @@ package exerelin.world;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.world.landmarks.AbandonedStation;
@@ -33,7 +34,7 @@ public class LandmarkGenerator {
 	public static void loadLandmarks() throws IOException, JSONException
 	{
 		final JSONArray landmarkDefsJson = Global.getSettings().getMergedSpreadsheetDataForMod(
-				"id", LANDMARK_DEFS_PATH, "nexerelin");
+				"id", LANDMARK_DEFS_PATH, ExerelinConstants.MOD_ID);
 		final ClassLoader loader = Global.getSettings().getScriptClassLoader();
 		for (int x = 0; x < landmarkDefsJson.length(); x++)
 		{

@@ -1,6 +1,7 @@
 package exerelin.world;
 
 import com.fs.starfarer.api.Global;
+import exerelin.ExerelinConstants;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class ExerelinCorvusLocations {
     
     static {
         try {
-            JSONArray systemCapitalsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("system", SYSTEM_CAPITAL_CONFIG, "nexerelin");
+            JSONArray systemCapitalsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("system", SYSTEM_CAPITAL_CONFIG, ExerelinConstants.MOD_ID);
             for(int x = 0; x < systemCapitalsCsv.length(); x++)
             {
                 JSONObject row = systemCapitalsCsv.getJSONObject(x);
@@ -28,7 +29,7 @@ public class ExerelinCorvusLocations {
                 SYSTEM_CAPITALS.put(systemName, entityId);
             }
             
-            JSONArray spawnPointsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("faction", SPAWN_POINT_CONFIG, "nexerelin");
+            JSONArray spawnPointsCsv = Global.getSettings().getMergedSpreadsheetDataForMod("faction", SPAWN_POINT_CONFIG, ExerelinConstants.MOD_ID);
             for(int x = 0; x < spawnPointsCsv.length(); x++)
             {
                 JSONObject row = spawnPointsCsv.getJSONObject(x);

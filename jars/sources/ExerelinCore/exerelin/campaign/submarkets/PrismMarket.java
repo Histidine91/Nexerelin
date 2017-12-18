@@ -29,6 +29,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import data.scripts.campaign.events.SWP_IBBTracker;
 import data.scripts.campaign.missions.SWP_FamousBountyEvent;
 import data.scripts.campaign.missions.SWP_FamousBountyEvent.FamousBountyStage;
+import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
@@ -345,7 +346,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public Set<String> getAllBossShips() {
         Set<String> bossShips = new HashSet<>();
         try {
-            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", getIBBFile(), "nexerelin");
+            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", getIBBFile(), ExerelinConstants.MOD_ID);
             for(int i = 0; i < config.length(); i++) {
             
                 JSONObject row = config.getJSONObject(i);
@@ -376,7 +377,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         int highestIBBNum = 0;
         
         try {
-            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", getIBBFile(), "nexerelin");
+            JSONArray config = Global.getSettings().getMergedSpreadsheetDataForMod("id", getIBBFile(), ExerelinConstants.MOD_ID);
             for(int i = 0; i < config.length(); i++) {
             
                 JSONObject row = config.getJSONObject(i);
@@ -477,7 +478,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         restrictedShips = new HashSet<>();
         
         JSONArray csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
-                WEAPONS_BLACKLIST, "nexerelin");
+                WEAPONS_BLACKLIST, ExerelinConstants.MOD_ID);
         for (int x = 0; x < csv.length(); x++)
         {
             JSONObject row = csv.getJSONObject(x);
@@ -486,7 +487,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
 
         // Restricted ships
         csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
-                SHIPS_BLACKLIST, "nexerelin");
+                SHIPS_BLACKLIST, ExerelinConstants.MOD_ID);
         for (int x = 0; x < csv.length(); x++)
         {
             JSONObject row = csv.getJSONObject(x);
