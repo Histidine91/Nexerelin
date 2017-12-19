@@ -29,7 +29,7 @@ public class DestroyFood extends CovertOpsBase {
 	
 	protected ExerelinReputationAdjustmentResult adjustRepIfDetected()
 	{
-		if (!result.isDetected())
+		if (result.isDetected())
 		{
 			float effectMin = getConfigFloat("destroyFoodRepLossOnDetectionMin");
 			float effectMax = getConfigFloat("destroyFoodRepLossOnDetectionMax");

@@ -27,7 +27,7 @@ public class SabotageReserve extends CovertOpsBase {
 	
 	protected ExerelinReputationAdjustmentResult adjustRepIfDetected()
 	{
-		if (!result.isDetected())
+		if (result.isDetected())
 		{
 			float effectMin = getConfigFloat("sabotageReserveRepLossOnDetectionMin");
 			float effectMax = getConfigFloat("sabotageReserveRepLossOnDetectionMax");

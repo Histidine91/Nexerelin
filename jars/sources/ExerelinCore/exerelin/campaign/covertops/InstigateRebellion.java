@@ -31,7 +31,7 @@ public class InstigateRebellion extends CovertOpsBase {
 	
 	protected ExerelinReputationAdjustmentResult adjustRepIfDetected()
 	{
-		if (!result.isDetected())
+		if (result.isDetected())
 		{
 			float effectMin = getConfigFloat("instigateRebellionRepLossOnDetectionMin");
 			float effectMax = getConfigFloat("instigateRebellionRepLossOnDetectionMax");

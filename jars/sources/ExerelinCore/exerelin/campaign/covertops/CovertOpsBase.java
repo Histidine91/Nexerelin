@@ -125,10 +125,17 @@ public abstract class CovertOpsBase {
 			float effectMin, float effectMax, RepLevel ensureAtBest, RepLevel ensureAtWorst, RepLevel limit,
 			boolean useNPCMult)
 	{
-		float effect = -MathUtils.getRandomNumberInRange(effectMin, effectMax);
+		if (effectMin > effectMax)
+		{
+			float temp = effectMax;
+			effectMax = effectMin;
+			effectMin = temp;
+		}
+		
+		float effect = MathUtils.getRandomNumberInRange(effectMin, effectMax);
 		if (!playerInvolved && useNPCMult) effect *= NPC_EFFECT_MULT;
 		ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(
-				agentFaction, targetFaction, effect, ensureAtBest, ensureAtWorst, limit);
+				faction1, faction2, effect, ensureAtBest, ensureAtWorst, limit);
 		return repResult;
 	}
 	

@@ -36,7 +36,7 @@ public class RaiseRelations extends CovertOpsBase {
 			float effectMin = getConfigFloat("raiseRelationsRepLossOnDetectionMin");
 			float effectMax = getConfigFloat("raiseRelationsRepLossOnDetectionMax");
 			repResult = adjustRelations(
-					agentFaction, targetFaction, effectMin, effectMax, RepLevel.FAVORABLE, null, RepLevel.INHOSPITABLE, true);
+					agentFaction, targetFaction, -effectMax, -effectMin, RepLevel.FAVORABLE, null, RepLevel.INHOSPITABLE, true);
 		}
 		reportEvent(repResult);
 	}
