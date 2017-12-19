@@ -1,5 +1,6 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
+import com.fs.starfarer.api.Global;
 import java.util.List;
 import java.util.Map;
 
@@ -7,11 +8,13 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.StatsTracker;
+import exerelin.campaign.events.RebellionEvent;
 import exerelin.utilities.StringHelper;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import java.awt.Color;
@@ -29,8 +32,8 @@ public class AgentGatherIntel extends AgentActionBase {
 		int b = 96;
 		if (reverse)
 		{
-		r = 255 - r;
-		g = 255 - g;
+			r = 255 - r;
+			g = 255 - g;
 		}
 		return new Color(r, g, b);
 	}
@@ -45,6 +48,8 @@ public class AgentGatherIntel extends AgentActionBase {
 		
 		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
 		MarketAPI market = target.getMarket();
+		Color highlightColor = Misc.getHighlightColor();
+		Color negativeColor = Misc.getNegativeHighlightColor();
 		
 		TextPanelAPI text = dialog.getTextPanel();
 		text.addParagraph(market.getName() + " intel report");
@@ -61,7 +66,24 @@ public class AgentGatherIntel extends AgentActionBase {
 		
 		float reserveSize = ResponseFleetManager.getReserveSize(market);
 		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "reserveSize")) + ": " + reserveSize);
-		text.highlightInLastPara(Misc.getHighlightColor(), "" + reserveSize);
+		text.highlightInLastPara(highlightColor, "" + reserveSize);
+		
+		if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
+		{
+			RebellionEvent rebellion = (RebellionEvent)Global.getSector().getEventManager().getOngoingEvent(
+					new CampaignEventTarget(market), "nex_rebellion");
+			float govtStrength = rebellion.getGovtStrength();
+			float rebelStrength = rebellion.getRebelStrength();
+			
+			text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "rebellionStatus")));
+			text.addParagraph("  " + Misc.ucFirst(StringHelper.getString("exerelin_agents", "govtStrength")) + ": " + govtStrength);
+			text.highlightInLastPara(govtStrength > market.getSize() * 5 ? 
+					highlightColor : negativeColor, "" + govtStrength);
+			text.addParagraph("  " + Misc.ucFirst(StringHelper.getString("exerelin_agents", "rebelStrength")) + ": " + rebelStrength);
+			text.highlightInLastPara(rebelStrength > market.getSize() * 5 ? 
+					highlightColor : negativeColor, "" + rebelStrength);
+		}
+		
 				
 		text.addParagraph("-----------------------------------------------------------------------------");
 		text.setFontInsignia();

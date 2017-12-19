@@ -17,6 +17,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.covertops.*;
 import exerelin.campaign.events.RebellionEvent;
+import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -215,8 +216,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 // rebellion special handling
                 if (actionType == CovertActionType.INSTIGATE_REBELLION)
                 {
-                    if (!RebellionEvent.canRebel(market))
-                        continue;
+					if (RebellionEventCreator.getRebellionPointsStatic(market) < 75)
+						continue;
+					
                     if (ExerelinUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
                         weight *= 4;
                 }
@@ -261,9 +263,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     @Override
     public void advance(float amount)
     {
-        float days = Global.getSector().getClock().convertToDays(amount);
-    
-        this.intervalUtil.advance(days);
+        ExerelinUtils.advanceIntervalDays(intervalUtil, amount);
         if (!this.intervalUtil.intervalElapsed()) {
             return;
         }

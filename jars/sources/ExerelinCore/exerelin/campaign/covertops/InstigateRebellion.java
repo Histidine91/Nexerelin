@@ -1,18 +1,14 @@
 package exerelin.campaign.covertops;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import java.util.HashMap;
+import exerelin.campaign.events.RebellionEvent;
+import exerelin.campaign.events.RebellionEventCreator;
 import java.util.Map;
-import org.lazywizard.lazylib.MathUtils;
 
 public class InstigateRebellion extends CovertOpsBase {
 
@@ -42,20 +38,12 @@ public class InstigateRebellion extends CovertOpsBase {
 
 	@Override
 	public void onSuccess() {
-		SectorAPI sector = Global.getSector();
-		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "nex_rebellion");
-		if (eventSuper != null)
-			return;
-		
-		float prepTime = market.getSize() * 2 * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
-		Map<String, Object> eventParams = new HashMap<>();
-		eventParams.put("rebelFactionId", agentFaction.getId());
-		eventParams.put("delay", prepTime);
-		sector.getEventManager().startEvent(new CampaignEventTarget(market), "nex_rebellion", eventParams);
+		RebellionEvent event = RebellionEventCreator.createRebellion(market, agentFaction.getId(), false);
+		if (event == null) return;
 		
 		ExerelinReputationAdjustmentResult repResult = adjustRepIfDetected();
-		eventParams = makeEventParams(repResult);
-		eventParams.put("timeFrame", Misc.getAtLeastStringForDays((int)prepTime));
+		Map<String, Object> eventParams = makeEventParams(repResult);
+		eventParams.put("timeFrame", Misc.getAtLeastStringForDays((int)event.getDelay()));
 		reportEvent(eventParams);
 	}
 

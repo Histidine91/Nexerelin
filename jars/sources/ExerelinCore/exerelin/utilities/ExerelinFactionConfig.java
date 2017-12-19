@@ -55,6 +55,7 @@ public class ExerelinFactionConfig
     public String invasionSupportFleetName = StringHelper.getString("exerelin_fleets", "invasionSupportFleetName");
     public String responseFleetName = StringHelper.getString("exerelin_fleets", "responseFleetName");
     public String defenceFleetName = StringHelper.getString("exerelin_fleets", "defenceFleetName");
+	public String suppressionFleetName = StringHelper.getString("exerelin_fleets", "suppressionFleetName");
     public String stationName = StringHelper.getString("exerelin_fleets", "stationName");
     
     // Diplomacy

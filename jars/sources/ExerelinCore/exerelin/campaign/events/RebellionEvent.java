@@ -4,9 +4,11 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -15,6 +17,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.events.RecentUnrestEvent;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Events;
@@ -22,10 +25,17 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.covertops.InstigateRebellion;
+import exerelin.campaign.fleets.InvasionFleetManager;
+import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
+import exerelin.campaign.fleets.SuppressionFleetAI;
+import exerelin.utilities.ExerelinUtilsCargo;
+import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.ExerelinUtilsReputation;
@@ -36,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 
 /* TODO:
 	Random rebellion event
@@ -53,7 +64,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	public static final float WEAPONS_DEMAND = 200f;
 	public static final float SUPPLIES_DEMAND = 100f;
 	public static final float STRENGTH_CHANGE_MULT = 0.5f;
-	public static final float SUPPRESSION_FLEET_INTERVAL = 45f;
+	public static final float SUPPRESSION_FLEET_INTERVAL = 60f;
 	
 	protected static Logger log = Global.getLogger(RebellionEvent.class);
 	
@@ -62,7 +73,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	protected int stage = 0;
 	protected boolean ended = false;
 	protected float age = 0;
-	protected float suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.3f, 0.5f);
+	protected float suppressionFleetCountdown = 3;	//SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.25f, 0.4f);
 	
 	protected String govtFactionId = null;	// for token substition, if market is liberated
 	protected String rebelFactionId = null;
@@ -71,7 +82,12 @@ public class RebellionEvent extends BaseEventPlugin {
 	protected float govtTradePoints = 0;
 	protected float rebelTradePoints = 0;
 	
+	protected SuppressionFleetData suppressionFleet = null;
+	protected MarketAPI suppressionFleetSource = null;
+	protected boolean suppressionFleetWarning = false;
+	
 	protected float intensity = 0;
+	protected float delay = 0;
 	protected int stabilityPenalty = 1;
 	protected RebellionResult result = null;
 	
@@ -95,7 +111,8 @@ public class RebellionEvent extends BaseEventPlugin {
 	public void setParam(Object param) {
 		params = (HashMap)param;
 		rebelFactionId = (String)params.get("rebelFactionId");
-		age = -(Float)params.get("delay");
+		delay = (Float)params.get("delay");
+		age = -delay;
 	}
 	
 	@Override
@@ -135,6 +152,23 @@ public class RebellionEvent extends BaseEventPlugin {
 	{
 		float numerator = rebel ? rebelStrength : govtStrength;
 		return numerator/(govtStrength + rebelStrength);
+	}
+	
+	public float getGovtStrength() {
+		return govtStrength;
+	}
+	
+	public float getRebelStrength() {
+		return rebelStrength;
+	}
+	
+	public float getDelay()
+	{
+		return delay;
+	}
+	
+	public MessagePriority getPriority() {
+		return priority;
 	}
 	
 	protected float updateConflictIntensity()
@@ -409,6 +443,123 @@ public class RebellionEvent extends BaseEventPlugin {
 			Global.getSector().reportEventStage(this, reportStage, market.getPrimaryEntity(), priority);
 	}
 	
+	public void suppressionFleetArrived(SuppressionFleetData data)
+	{
+		suppressionFleet = null;
+		suppressionFleetSource = null;
+		Global.getSector().reportEventStage(this, "suppression_fleet_arrived", market.getPrimaryEntity(), priority);
+		int marines = data.fleet.getCargo().getMarines();
+		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.MARINES, marines);
+		govtStrength += marines * VALUE_MARINES;
+		rebelStrength *= 0.8f;	// morale loss
+	}
+	
+	public void suppressionFleetDefeated(SuppressionFleetData data)
+	{
+		suppressionFleet = null;
+		suppressionFleetSource = null;
+		Global.getSector().reportEventStage(this, "suppression_fleet_defeated", market.getPrimaryEntity(), priority);
+		// morale boost
+		rebelStrength *= 1.2f;
+		govtStrength *= 0.75f;
+	}
+	
+	protected SuppressionFleetData getSuppressionFleet(MarketAPI sourceMarket)
+	{
+		int fp = (int)(getSizeMod() * 2f);
+		
+		String name = getFleetName("nex_suppressionFleet", govtFactionId, fp);
+		
+		int numMarines = (int)((rebelStrength * 2 - govtStrength)/VALUE_MARINES);
+		
+		String factionId = govtFactionId;
+		float distance = ExerelinUtilsMarket.getHyperspaceDistance(sourceMarket, market);
+		int tankerFP = (int)(fp * InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000);
+		//fp -= tankerFP;
+		
+		FleetParams fleetParams = new FleetParams(null, sourceMarket, factionId, null, 
+				"nex_suppressionFleet", 
+				fp*0.85f, // combat
+				fp*0.1f, // freighters
+				tankerFP,		// tankers
+				numMarines/100*2,		// personnel transports
+				0,		// liners
+				0,		// civilian
+				fp*0.05f,	// utility
+				0, -1, 1, 0);	// quality bonus, quality override, officer num mult, officer level bonus
+		
+		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(faction, fleetParams);
+		if (fleet == null) return null;
+		
+		fleet.getCargo().addMarines(numMarines);
+		fleet.setName(name);
+		fleet.setAIMode(true);
+		
+		SuppressionFleetData data = new SuppressionFleetData(fleet);
+		data.startingFleetPoints = fleet.getFleetPoints();
+		data.sourceMarket = sourceMarket;
+		data.source = sourceMarket.getPrimaryEntity();
+		data.targetMarket = market;
+		data.target = market.getPrimaryEntity();
+		data.marineCount = numMarines;
+		data.event = this;
+		
+		sourceMarket.getContainingLocation().addEntity(fleet);
+		SectorEntityToken entity = sourceMarket.getPrimaryEntity();
+		fleet.setLocation(entity.getLocation().x, entity.getLocation().y);
+		
+		// add AI script
+		fleet.addScript(new SuppressionFleetAI(fleet, data));
+		
+		log.info("\tSpawned suppression fleet " + data.fleet.getNameWithFaction() + " of size " + fp);
+		return data;
+	}
+	
+	protected MarketAPI pickSuppressionFleetSource()
+	{
+		// pick source market
+		Vector2f targetLoc = market.getLocationInHyperspace();
+		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
+		for (MarketAPI maybeSource : ExerelinUtilsFaction.getFactionMarkets(govtFactionId))
+		{
+			if (maybeSource == this.market)
+				continue;
+			
+			float dist = Misc.getDistance(maybeSource.getLocationInHyperspace(), targetLoc);
+			if (dist < 5000.0f) {
+				dist = 5000.0f;
+			}
+			float weight = 20000.0f / dist;
+			weight *= maybeSource.getSize();
+				
+			if (maybeSource.hasCondition(Conditions.MILITARY_BASE))
+				weight *= 2;
+			if (maybeSource.hasCondition(Conditions.HEADQUARTERS))
+				weight *= 3;
+			if (maybeSource.hasCondition(Conditions.REGIONAL_CAPITAL))
+				weight *= 2;
+			picker.add(maybeSource, weight);
+		}
+		MarketAPI source = picker.pick();
+		return source;
+	}
+	
+	/**
+	 * Spawns a fleet full of marines from another market to help crush the rebellion
+	 * @param source
+	 */
+	protected void spawnSuppressionFleet()
+	{
+		SuppressionFleetData data = getSuppressionFleet(suppressionFleetSource);
+		suppressionFleet = data;
+		Global.getSector().reportEventStage(this, "suppression_fleet_launched", suppressionFleetSource.getPrimaryEntity(), priority);
+		govtStrength *= 1.2f;	// morale boost
+		suppressionFleetWarning = false;
+	}
+	
+	// =========================================================================
+	// =========================================================================
+	
 	@Override
 	public void advance(float amount) 
 	{
@@ -425,10 +576,23 @@ public class RebellionEvent extends BaseEventPlugin {
 				return;
 			}
 			
-			suppressionFleetCountdown -= days;
-			if (suppressionFleetCountdown < 0)
+			if (govtStrength < rebelStrength * 1.25f && suppressionFleet == null)
 			{
-				suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+				suppressionFleetCountdown -= days;
+				if (!suppressionFleetWarning && suppressionFleetCountdown < 12)
+				{
+					suppressionFleetSource = pickSuppressionFleetSource();
+					Global.getSector().reportEventStage(this, "suppression_fleet_warning", market.getPrimaryEntity(), priority);
+					suppressionFleetWarning = true;
+				}
+				if (suppressionFleetCountdown < 0)
+				{
+					// don't spawn suppression fleet if the source market was lost in the meantime
+					if (suppressionFleetSource.getFactionId().equals(govtFactionId))
+						spawnSuppressionFleet();
+					suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+					
+				}
 			}
 		}
 		else
@@ -493,7 +657,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	@Override
 	public void reportFleetSpawned(CampaignFleetAPI fleet) 
 	{
-		if (!started) return;
+		if (age < 0) return;
 		if (ended) return;
 		if (fleet.getFaction() != market.getFaction())
 			return;
@@ -510,6 +674,15 @@ public class RebellionEvent extends BaseEventPlugin {
 		{
 			if (shouldTransferPatrol())
 				fleet.setFaction(rebelFactionId, true);
+		}
+	}
+	
+	@Override
+	public void reportFleetDespawned(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {
+		if (fleet == suppressionFleet.fleet)
+		{
+			suppressionFleet = null;
+			suppressionFleetSource = null;
 		}
 	}
 	
@@ -565,6 +738,17 @@ public class RebellionEvent extends BaseEventPlugin {
 		{
 			addFactionNameTokens(map, "new", market.getFaction());
 		}
+		if (suppressionFleetSource != null)
+		{
+			map.put("$sourceMarket", suppressionFleetSource.getName());
+			LocationAPI containingLoc = suppressionFleetSource.getContainingLocation();
+			String locName = containingLoc.getName();
+			if (containingLoc instanceof StarSystemAPI)
+			{
+				locName = ((StarSystemAPI)containingLoc).getBaseName();
+			}
+			map.put("$sourceSystem", locName);
+		}
 		
 		return map;
 	}
@@ -611,7 +795,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	protected void debugMessage(String message)
 	{
 		log.info(message);
-		Global.getSector().getCampaignUI().addMessage(message);
+		//Global.getSector().getCampaignUI().addMessage(message);
 	}
 	
 	public static void startDebugEvent()
@@ -626,17 +810,13 @@ public class RebellionEvent extends BaseEventPlugin {
 		}
 	}
 	
-	public static boolean canRebel(MarketAPI market)
-	{
-		int stability = (int)market.getStabilityValue();
-		int size = market.getSize();
+	public static class SuppressionFleetData extends InvasionFleetManager.InvasionFleetData {
+		public RebellionEvent event;
 		
-		if (market.hasCondition(Conditions.DISSIDENT))
-			stability -= 1;
-		if (!ExerelinUtilsMarket.isWithOriginalOwner(market))
-			stability -= 1;
+		public SuppressionFleetData(CampaignFleetAPI fleet) {
+			super(fleet);
+		}
 		
-		return stability < size;
 	}
 	
 	protected enum RebellionResult {

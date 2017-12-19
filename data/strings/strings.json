@@ -71,6 +71,10 @@
 	"exerelin_agents":{
 		"alertLevel":"alert level",
 		"reserveSize":"response fleet size",
+		"rebellionStatus":"rebellion status",
+		"govtStrength":"government strength",
+		"rebelStrength":"rebel strength",
+		
 		"agent":"agent",
 		"saboteur":"saboteur",
 		"verbSuccess":"completed",
@@ -159,6 +163,10 @@
 		"miningFleetPrefixSmall":"Small",
 		"miningFleetPrefixLarge":"Large",
 		
+		"suppressionFleetName":"Suppression Fleet",
+		"suppressionFleetPrefixSmall":"Small",
+		"suppressionFleetPrefixLarge":"Large",
+		
 		"stationName":"Defence Station",
 		
 		"fleetSpawnMessage":"A fleet is being launched at $market, in $location. It will be underway shortly.",
@@ -206,11 +214,13 @@
 		"invading":"invading $target",
 		"mining":"mining $target",
 		"miningUnload":"unloading cargo and disbanding",
+		"suppressingRebellion":"suppressing rebellion at $target",
 		
 		"missionStrike":"strike mission",
 		"missionInvasion":"invasion",
 		"missionMining":"mining expedition",
-		"missionPatrol":"patrol"
+		"missionPatrol":"patrol",
+		"missionSuppression":"rebel suppression"
 	},
 	"exerelin_invasion":{
 		"attackerStrength":"attacker strength",

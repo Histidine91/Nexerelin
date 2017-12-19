@@ -74,6 +74,9 @@
 	"nex_rebellion":{
 		"script":"exerelin.campaign.events.RebellionEvent"
 	},
+	"nex_rebellion_creator":{
+		"script":"exerelin.campaign.events.RebellionEventCreator"
+	},
 	
 	# agent stuff
 	"exerelin_agent_raise_relations":{
