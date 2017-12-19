@@ -20,7 +20,7 @@
     "prisonerSlaveRepValue": -0.02,
     "prisonerLootChancePer10Fp": 0.025,
     
-    "crewLootMult": 0.02,   # loot about this many green crew per enemy crew in killed ships
+    "crewLootMult": 0.02,   # loot about this many crew per enemy crew in killed ships
     
     "allowPirateInvasions": false,
     "fleetRequestCostPerMarine": 125,  # used for player-requested fleets
@@ -45,9 +45,9 @@
     "prismNumShips": 14,
     "prismNumWings": 6,
     "prismNumBossShips": 3,    # int; boss ships being the IBB super ships seen in Ship/Weapon Pack
-    "prismRenewBossShips": false,   # if false, once a boss ship is bought it won't appear in the market again
+    "prismRenewBossShips": false,   # if false, once a boss ship is bought or captured it won't appear in the market again
     "prismUseIBBProgressForBossShips": true,    # must progress through the IBB (famous bounty) sidequest in SWP to unlock new boss ships for sale
-    "prismTariff": 2.0,  # float, 1.0 = 100% tariff
+    "prismTariff": 2.0,  # float, 1.0 = 100% tariff; modified by relationship with independents
     
     "warWearinessDivisor": 20000,   # float; higher means factions take longer on average to sign a ceasefire
     "warWearinessDivisorModPerLevel": 100,

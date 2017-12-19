@@ -17,6 +17,7 @@ import exerelin.campaign.events.FactionBountyEvent;
 import exerelin.campaign.events.FactionBountyEvent.FactionBountyPairKey;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtils;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -145,8 +146,7 @@ public class NexEventProbabilityManager extends BaseCampaignEventListener implem
 
 	@Override
 	public void advance(float amount) {
-		float days = Global.getSector().getClock().convertToDays(amount);
-		factionBountyInterval.advance(days);
+		ExerelinUtils.advanceIntervalDays(factionBountyInterval, amount);
 		if (factionBountyInterval.intervalElapsed())
 			advanceFactionBountyTracker();
 	}

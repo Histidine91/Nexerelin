@@ -16,6 +16,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
+import exerelin.utilities.ExerelinUtils;
 
 
 public class ExigencyRespawnFleetEvent extends BaseEventPlugin {
@@ -48,8 +49,7 @@ public class ExigencyRespawnFleetEvent extends BaseEventPlugin {
 	@Override
 	public void advance(float amount) {
 		if (SectorManager.isFactionAlive("exigency")) return;
-		float days = Global.getSector().getClock().convertToDays(amount);
-		interval.advance(days);
+		ExerelinUtils.advanceIntervalDays(interval, amount);
 		if (interval.intervalElapsed())
 		{
 			InvasionFleetData fleetData = SectorManager.spawnRespawnFleet(fakeMarket.getFaction(), fakeMarket, true);

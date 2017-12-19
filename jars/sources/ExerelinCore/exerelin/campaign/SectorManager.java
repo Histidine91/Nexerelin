@@ -150,8 +150,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         if (respawnFactions){
-            float days = Global.getSector().getClock().convertToDays(amount);
-            respawnIntervalUtil.advance(days);
+            ExerelinUtils.advanceIntervalDays(respawnIntervalUtil, amount);
             if (respawnIntervalUtil.intervalElapsed()) {
                 handleFactionRespawn();
                 

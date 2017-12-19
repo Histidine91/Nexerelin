@@ -28,7 +28,6 @@ public class ExerelinFactionCommissionMissionEvent extends FactionCommissionMiss
 		if (isDone()) return;
 		
 		//System.out.println("Registered: " + Global.getSector().getAllListeners().contains(this));
-		float days = Global.getSector().getClock().convertToDays(amount);
 		RepLevel level = faction.getRelToPlayer().getLevel();
 		if (!level.isAtWorst(RepLevel.NEUTRAL)) {
 			endEvent();

@@ -188,17 +188,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		{
 			ai = new InvasionSupportFleetAI(fleet, data);
 		}
-		fleet.addScript(ai);
-		/*
-		try {
-			Class<?> aiClass = Class.forName(params.aiClass);
-			Constructor<?> aiConstructor = aiClass.getConstructor(fleet.getClass(), data.getClass());
-			fleet.addScript((EveryFrameScript)aiConstructor.newInstance(fleet, data));
-		} catch (Exception ex)
-		{
-			log.error(ex);
-		}
-		*/
+		if (ai != null) fleet.addScript(ai);
 		
 		if (invasionFleetManager != null)
 			invasionFleetManager.addActiveFleet(data);

@@ -112,30 +112,10 @@ public class ExerelinModPlugin extends BaseModPlugin
             ExerelinUtilsMarket.setTariffs(market);
         }
     }
-
-    @Override
-    public void onNewGame() {
-        Global.getLogger(this.getClass()).info("New game");
-        isNewGame = true;
-        //ExerelinSetupData.resetInstance();
-        ExerelinConfig.loadSettings();
-        //ExerelinCheck.checkModCompatability();
-        addScriptsAndEventsIfNeeded();
-    }
     
     protected void reverseCompatibility()
     {
     
-    }
-    
-    @Override
-    public void onEnabled(boolean wasEnabledBefore) {
-        Global.getLogger(this.getClass()).info("On enabled; " + wasEnabledBefore);
-        if (!isNewGame && !wasEnabledBefore)
-        {
-            Global.getLogger(this.getClass()).info(!isNewGame + ", " + !wasEnabledBefore);
-            applyToExistingSave();
-        }
     }
     
     protected void addEventIfNeeded(String eventId)
@@ -226,6 +206,26 @@ public class ExerelinModPlugin extends BaseModPlugin
         if (!hasLazyLib) {
             throw new RuntimeException("Nexerelin requires LazyLib to function!"
                     + "\nGet it at fractalsoftworks.com/forum/index.php?topic=5444.0");
+        }
+    }
+    
+    @Override
+    public void onNewGame() {
+        Global.getLogger(this.getClass()).info("New game");
+        isNewGame = true;
+        //ExerelinSetupData.resetInstance();
+        ExerelinConfig.loadSettings();
+        //ExerelinCheck.checkModCompatability();
+        addScriptsAndEventsIfNeeded();
+    }
+    
+    @Override
+    public void onEnabled(boolean wasEnabledBefore) {
+        Global.getLogger(this.getClass()).info("On enabled; " + wasEnabledBefore);
+        if (!isNewGame && !wasEnabledBefore)
+        {
+            Global.getLogger(this.getClass()).info(!isNewGame + ", " + !wasEnabledBefore);
+            applyToExistingSave();
         }
     }
     

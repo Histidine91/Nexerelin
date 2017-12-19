@@ -16,6 +16,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.Misc.VarAndMemory;
 import exerelin.campaign.fleets.ResponseFleetManager;
+import exerelin.utilities.ExerelinUtils;
 import java.util.List;
 import java.util.Map;
 
@@ -55,10 +56,7 @@ public class Exerelin_NotifyInvasion extends BaseCommandPlugin {
 				return done;
 			}
 			public void advance(float amount) {
-				CampaignClockAPI clock = Global.getSector().getClock();
-				
-				float days = clock.convertToDays(amount);
-				tracker.advance(days);
+				ExerelinUtils.advanceIntervalDays(tracker, amount);
 				
 				if (tracker.intervalElapsed() && !done) {
 					if (waitHandle.memory.contains(waitHandle.name)) {

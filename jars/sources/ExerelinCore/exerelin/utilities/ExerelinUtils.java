@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.DumpMemory;
+import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.plugins.ExerelinModPlugin;
 import org.lazywizard.lazylib.MathUtils;
@@ -27,6 +28,12 @@ public class ExerelinUtils
 	{
 		String seedStr = Global.getSector().getSeedString().replaceAll("[^0-9]", "");
 		return Long.parseLong(seedStr);
+	}
+	
+	public static void advanceIntervalDays (IntervalUtil interval, float time)
+	{
+		float days = Global.getSector().getClock().convertToDays(time);
+		interval.advance(days);
 	}
 
 	public static Object getRandomArrayElement(Object[] array)

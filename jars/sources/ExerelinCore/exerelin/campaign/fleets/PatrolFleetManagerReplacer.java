@@ -45,9 +45,7 @@ public class PatrolFleetManagerReplacer extends BaseCampaignEventListener implem
 				firstFrame = false;
 		}
 
-		float days = sector.getClock().convertToDays(amount);
-
-		timer.advance(days);
+		ExerelinUtils.advanceIntervalDays(timer, amount);
 		if (timer.intervalElapsed()) {
 				assignPatrolSpawningScripts();
 		}
