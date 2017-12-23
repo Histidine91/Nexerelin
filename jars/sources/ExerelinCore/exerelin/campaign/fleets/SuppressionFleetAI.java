@@ -53,9 +53,13 @@ public class SuppressionFleetAI implements EveryFrameScript
 		if (interval > 0.25f) interval -= 0.25f;
 		else return;
 		
+		if (orderedReturn)
+			return;
+		
 		if (data.event != null && data.event.isDone())
 		{
 			giveStandDownOrders();  // rebellion over; go home
+			return;
 		}
 
 		float fp = this.fleet.getFleetPoints();
@@ -63,10 +67,8 @@ public class SuppressionFleetAI implements EveryFrameScript
 			if (data.event != null)
 				data.event.suppressionFleetDefeated(data);
 			giveStandDownOrders();
-		}
-
-		if (orderedReturn)
 			return;
+		}
 		
 		FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
 		if (assignment != null)
@@ -129,11 +131,11 @@ public class SuppressionFleetAI implements EveryFrameScript
   
 	protected void giveStandDownOrders()
 	{
-		if (!this.orderedReturn)
+		if (!orderedReturn)
 		{
 			//log.info("Invasion fleet " + this.fleet.getNameWithFaction() + " standing down");
-			this.orderedReturn = true;
-			this.fleet.clearAssignments();
+			orderedReturn = true;
+			fleet.clearAssignments();
 			
 			boolean despawningAtTarget = false;
 			if (data.target.getFaction() == data.fleet.getFaction())

@@ -153,7 +153,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	{
 		float stability = market.getStabilityValue();
 		float sizeMult = getSizeMod(market);
-		govtStrength = (5 + stability * 1.25f) * sizeMult;
+		govtStrength = (6 + stability * 1.25f) * sizeMult;
 		rebelStrength = (3 + (10 - stability)) * sizeMult;
 	}
 	
@@ -209,10 +209,8 @@ public class RebellionEvent extends BaseEventPlugin {
 		float strG = (float)Math.sqrt(govtStrength);
 		float strR = (float)Math.sqrt(rebelStrength);
 		
-		strG *= 0.75f + 0.5f * Math.random() * (0.5f + 0.5f * stability / 5);
+		strG *= 1f + 0.5f * Math.random() * (0.5f + 0.5f * stability / 5);
 		strR *= 0.75f + 0.5f * Math.random();
-		if (stability == 0) strG *= 0.5f;
-		else if (stability == 1) strG *= 0.8f;
 		if (market.getFactionId().equals("templars")) strG *= 2;
 		
 		debugMessage("  Government engagement strength: " + strG);
@@ -464,23 +462,30 @@ public class RebellionEvent extends BaseEventPlugin {
 	
 	public void suppressionFleetArrived(SuppressionFleetData data)
 	{
-		suppressionFleet = null;
-		suppressionFleetSource = null;
-		Global.getSector().reportEventStage(this, "suppression_fleet_arrived", market.getPrimaryEntity(), priority);
-		int marines = data.fleet.getCargo().getMarines();
-		ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.MARINES, marines);
-		govtStrength += marines * VALUE_MARINES;
-		rebelStrength *= 0.8f;	// morale loss
+		if (suppressionFleet == data)
+		{
+			Global.getSector().reportEventStage(this, "suppression_fleet_arrived", market.getPrimaryEntity(), priority);
+			suppressionFleet = null;
+			suppressionFleetSource = null;
+			int marines = data.fleet.getCargo().getMarines();
+			//ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.MARINES, marines);
+			data.fleet.getCargo().removeMarines(marines);
+			govtStrength += marines * VALUE_MARINES;
+			rebelStrength *= 0.8f;	// morale loss
+		}
 	}
 	
 	public void suppressionFleetDefeated(SuppressionFleetData data)
 	{
-		suppressionFleet = null;
-		suppressionFleetSource = null;
-		Global.getSector().reportEventStage(this, "suppression_fleet_defeated", market.getPrimaryEntity(), priority);
-		// morale boost
-		rebelStrength *= 1.2f;
-		govtStrength *= 0.75f;
+		if (suppressionFleet == data)
+		{
+			Global.getSector().reportEventStage(this, "suppression_fleet_defeated", market.getPrimaryEntity(), priority);
+			suppressionFleet = null;
+			suppressionFleetSource = null;
+			// morale boost
+			rebelStrength *= 1.2f;
+			govtStrength *= 0.75f;
+		}
 	}
 	
 	protected SuppressionFleetData getSuppressionFleet(MarketAPI sourceMarket)
@@ -790,7 +795,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> highlights = new ArrayList<>();
-		if (stageId.equals("start"))
+		if (stageId.equals("start") || stageId.equals("before_start"))
 			addTokensToList(highlights, "$theRebelFaction");
 			
 		return highlights.toArray(new String[0]);

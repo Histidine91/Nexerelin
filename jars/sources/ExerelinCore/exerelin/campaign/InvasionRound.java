@@ -332,22 +332,24 @@ public class InvasionRound {
 		// but it's null when it gets to the event for some reason
 		List<String> factionsToNotify = new ArrayList<>();  
 		Set<String> seenFactions = new HashSet<>();
-		float repChangeStrength = market.getSize()*5;
-		if (success) repChangeStrength *= 2.0f;
-		if (isRaid) repChangeStrength *= 0.5f;
-		repChangeStrength *= 0.01f;
-		
-		for (final MarketAPI otherMarket : markets) {
-			if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
-			//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide
-			if (seenFactions.contains(otherMarket.getFactionId())) continue;
-			
-			RepLevel level = attackerFaction.getRelationshipLevel(otherMarket.getFaction());
-			seenFactions.add(otherMarket.getFactionId());
-			if (level.isAtWorst(RepLevel.HOSTILE)) {
-				if (playerInvolved)
-				{
-					factionsToNotify.add(otherMarket.getFactionId());
+		float repChangeStrength = 0;
+		if (success && !isRaid)
+		{
+			repChangeStrength = market.getSize()*2;
+			repChangeStrength *= 0.01f;
+
+			for (final MarketAPI otherMarket : markets) {
+				if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
+				//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide
+				if (seenFactions.contains(otherMarket.getFactionId())) continue;
+
+				RepLevel level = attackerFaction.getRelationshipLevel(otherMarket.getFaction());
+				seenFactions.add(otherMarket.getFactionId());
+				if (level.isAtWorst(RepLevel.HOSTILE)) {
+					if (playerInvolved)
+					{
+						factionsToNotify.add(otherMarket.getFactionId());
+					}
 				}
 			}
 		}
