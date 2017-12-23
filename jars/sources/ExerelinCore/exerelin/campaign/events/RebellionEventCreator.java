@@ -16,6 +16,7 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -27,7 +28,7 @@ import org.lazywizard.lazylib.MathUtils;
 // Periodically starts rebellions on suitably restive planets
 public class RebellionEventCreator extends BaseEventPlugin {
 	
-	public static final float REBELLION_POINT_MULT = 0.25f;
+	public static final float REBELLION_POINT_MULT = 0.2f;
 	public static final float HARD_MODE_MULT = 1.25f;
 	public static final float HARD_MODE_STABILITY_MODIFIER = -1;
 	
@@ -41,6 +42,8 @@ public class RebellionEventCreator extends BaseEventPlugin {
 			return null;
 		
 		float prepTime = market.getSize() * 2 * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
+		if (RebellionEvent.DEBUG_MODE) prepTime = 1;
+		
 		Map<String, Object> eventParams = new HashMap<>();
 		eventParams.put("rebelFactionId", factionId);
 		eventParams.put("delay", prepTime);
@@ -63,13 +66,18 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
 			return null;
 		FactionAPI faction = market.getFaction();
+		boolean allowPirates = ExerelinConfig.allowPirateInvasions;		
 		
 		WeightedRandomPicker<String> enemyPicker = new WeightedRandomPicker<>();
-		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(market.getFaction(), true, false, false);
-		if (faction.isHostileTo(Factions.INDEPENDENT))
-			addToListIfNotPresent(enemies, Factions.INDEPENDENT);
-		if (faction.isHostileTo(Factions.LUDDIC_PATH))
-			addToListIfNotPresent(enemies, Factions.LUDDIC_PATH);
+		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(market.getFaction(), allowPirates, false, false);
+		
+		if (!allowPirates)
+		{
+			//if (faction.isHostileTo(Factions.INDEPENDENT))
+			//	addToListIfNotPresent(enemies, Factions.INDEPENDENT);
+			if (faction.isHostileTo(Factions.LUDDIC_PATH))
+				addToListIfNotPresent(enemies, Factions.LUDDIC_PATH);
+		}
 		
 		for (String candidate : enemies)
 		{
@@ -142,17 +150,27 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		float currPoints = getRebellionPoints(market);
 		
 		currPoints += points;
+		/*
 		if (currPoints <= 0)
 		{
 			rebellionPoints.remove(marketId);
 			return;
 		}
+		*/
 		if (currPoints >= 100)
 		{
 			createRebellion(market, true);
 			currPoints = 0;
 		}
 		rebellionPoints.put(marketId, currPoints);
+	}
+	
+	public static void incrementRebellionPointsStatic(MarketAPI market, float points)
+	{
+		CampaignEventPlugin event = Global.getSector().getEventManager().getOngoingEvent(
+					null, "nex_rebellion_creator");
+		if (event == null) return;
+		((RebellionEventCreator)event).incrementRebellionPoints(market, points);
 	}
 	
 	protected void processMarket(MarketAPI market, float days)
@@ -164,7 +182,13 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		if (market.hasCondition(Conditions.DECIVILIZED))
 			return;
 		
-		if (ExerelinUtilsFaction.isPirateFaction(market.getFactionId()) && ExerelinUtilsMarket.isWithOriginalOwner(market))
+		if (ExerelinUtilsFaction.isPirateFaction(market.getFactionId()))
+			return;
+		
+		if (market.getFactionId().equals(Factions.INDEPENDENT))
+			return;
+		
+		if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
 			return;
 		
 		float points = getRebellionIncrement(market) * days;

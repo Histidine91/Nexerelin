@@ -55,16 +55,20 @@ import org.lwjgl.util.vector.Vector2f;
 public class RebellionEvent extends BaseEventPlugin {
 	
 	public static final float MAX_DAYS = 180;
-	public static final float VALUE_WEAPONS = 0.03f;
-	public static final float VALUE_SUPPLIES = 0.02f;
-	public static final float VALUE_MARINES = 0.2f;
+	public static final float VALUE_WEAPONS = 0.05f;
+	public static final float VALUE_SUPPLIES = 0.03f;
+	public static final float VALUE_MARINES = 0.25f;
 	//public static final float VALUE_PER_CREDIT = 0.01f * 0.01f;
 	public static final float REBEL_TRADE_MULT = 2f;
 	public static final float MARINE_DEMAND = 50f;
 	public static final float WEAPONS_DEMAND = 200f;
 	public static final float SUPPLIES_DEMAND = 100f;
-	public static final float STRENGTH_CHANGE_MULT = 0.5f;
+	public static final float STRENGTH_CHANGE_MULT = 0.25f;
 	public static final float SUPPRESSION_FLEET_INTERVAL = 60f;
+	public static final int MAX_STABILITY_PENALTY = 4;
+	public static final int MAX_STABILITY_PENALTY_INCREMENT = 3;
+	
+	public static final boolean DEBUG_MODE = false;
 	
 	protected static Logger log = Global.getLogger(RebellionEvent.class);
 	
@@ -73,7 +77,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	protected int stage = 0;
 	protected boolean ended = false;
 	protected float age = 0;
-	protected float suppressionFleetCountdown = 3;	//SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.25f, 0.4f);
+	protected float suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.25f, 0.4f);
 	
 	protected String govtFactionId = null;	// for token substition, if market is liberated
 	protected String rebelFactionId = null;
@@ -93,7 +97,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	
 	protected String conditionToken = null;
 	
-	protected MessagePriority priority = MessagePriority.SECTOR;
+	protected MessagePriority priority = MessagePriority.ENSURE_DELIVERY;
 	
 	protected IntervalUtil interval = new IntervalUtil(1, 1);
 	
@@ -103,8 +107,12 @@ public class RebellionEvent extends BaseEventPlugin {
 		params = new HashMap<>();
 		
 		int size = market.getSize();
-		if (size <= 3) priority = MessagePriority.CLUSTER;
-		else if (size <= 5) priority = MessagePriority.SYSTEM;
+		if (size <= 4) priority = MessagePriority.SECTOR;
+		
+		if (DEBUG_MODE)
+		{
+			suppressionFleetCountdown = 2;
+		}
 	}
 	
 	@Override
@@ -126,16 +134,17 @@ public class RebellionEvent extends BaseEventPlugin {
 		setInitialStrengths();
 	}
 	
-	protected float getSizeMod(int size)
+	public static float getSizeMod(int size)
 	{
 		return (float)Math.pow(2, size - 2);
 	}
 	
 	/**
 	 * Gets an exponent-of-two value based on the market size.
+	 * @param market
 	 * @return
 	 */
-	protected float getSizeMod()
+	public static float getSizeMod(MarketAPI market)
 	{
 		return getSizeMod(market.getSize());
 	}
@@ -143,7 +152,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	protected void setInitialStrengths()
 	{
 		float stability = market.getStabilityValue();
-		float sizeMult = getSizeMod();
+		float sizeMult = getSizeMod(market);
 		govtStrength = (5 + stability * 1.25f) * sizeMult;
 		rebelStrength = (3 + (10 - stability)) * sizeMult;
 	}
@@ -173,8 +182,8 @@ public class RebellionEvent extends BaseEventPlugin {
 	
 	protected float updateConflictIntensity()
 	{
-		float currIntensity = govtStrength + rebelStrength - 0.75f * (govtStrength - rebelStrength);
-		currIntensity /= getSizeMod();
+		float currIntensity = (govtStrength + rebelStrength) * 0.5f - (govtStrength - rebelStrength) * 0.5f;
+		currIntensity /= getSizeMod(market);
 		
 		// counteracts intensity bleeding as belligerents' strength wears down
 		float age = (int)(this.age/3);
@@ -202,7 +211,7 @@ public class RebellionEvent extends BaseEventPlugin {
 		
 		strG *= 0.75f + 0.5f * Math.random() * (0.5f + 0.5f * stability / 5);
 		strR *= 0.75f + 0.5f * Math.random();
-		if (stability == 0) strG *= 0.4f;
+		if (stability == 0) strG *= 0.5f;
 		else if (stability == 1) strG *= 0.8f;
 		if (market.getFactionId().equals("templars")) strG *= 2;
 		
@@ -229,7 +238,7 @@ public class RebellionEvent extends BaseEventPlugin {
 		mult *= market.getDemand(Commodities.SUPPLIES).getFractionMet();
 		mult += 0.25f;
 		
-		govtStrength += (1.5f + stability/10) * mult;
+		govtStrength += (2f + stability/10) * mult;
 		rebelStrength += (1 + (10 - stability)/10) * mult;
 		
 		debugMessage("  Updated force strengths: " + govtStrength + ", " + rebelStrength);
@@ -302,6 +311,7 @@ public class RebellionEvent extends BaseEventPlugin {
 		
 		stabilityPenalty = (int)(intensity/6 + 0.5f);
 		if (stabilityPenalty < 1) stabilityPenalty = 1;
+		else if (stabilityPenalty > MAX_STABILITY_PENALTY) stabilityPenalty = MAX_STABILITY_PENALTY;
 		market.reapplyCondition(conditionToken);
 	}
 	
@@ -315,6 +325,8 @@ public class RebellionEvent extends BaseEventPlugin {
 	{
 		if (result == RebellionResult.OTHER) return;
 		
+		if (amount > MAX_STABILITY_PENALTY_INCREMENT) amount = MAX_STABILITY_PENALTY_INCREMENT;
+		
 		SectorAPI sector = Global.getSector();
 		if (result == RebellionResult.REBEL_VICTORY || result == RebellionResult.MUTUAL_ANNIHILATION)
 		{
@@ -324,7 +336,9 @@ public class RebellionEvent extends BaseEventPlugin {
 				eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), 
 						"exerelin_market_attacked", null);
 			MarketAttackedEvent event = (MarketAttackedEvent)eventSuper;
-			event.setStabilityPenalty(event.getStabilityPenalty() + amount);
+			int newPenalty = Math.min(event.getStabilityPenalty() + amount, MAX_STABILITY_PENALTY);
+			if (newPenalty > event.getStabilityPenalty())
+				event.setStabilityPenalty(newPenalty);
 		}
 		else
 		{
@@ -334,7 +348,9 @@ public class RebellionEvent extends BaseEventPlugin {
 				eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), 
 						Events.RECENT_UNREST, null);
 			RecentUnrestEvent event = (RecentUnrestEvent)eventSuper;
-			event.setStabilityPenalty(event.getStabilityPenalty() + amount);
+			int newPenalty = Math.min(event.getStabilityPenalty() + amount, MAX_STABILITY_PENALTY);
+			if (newPenalty > event.getStabilityPenalty())
+				event.setStabilityPenalty(newPenalty);
 		}
 	}
 	
@@ -351,7 +367,7 @@ public class RebellionEvent extends BaseEventPlugin {
 		
 		if (rebelTradePoints > 0)
 		{
-			final float rep = rebelTradePoints/getSizeMod() * 0.01f;
+			final float rep = rebelTradePoints/getSizeMod(market) * 0.01f;
 			debugMessage("  Rebel trade rep: " + rep);
 			Global.getSector().reportEventStage(this, "trade_rebs", market.getPrimaryEntity(), 
 					MessagePriority.ENSURE_DELIVERY, new BaseOnMessageDeliveryScript() {
@@ -363,7 +379,7 @@ public class RebellionEvent extends BaseEventPlugin {
 		}
 		if (govtTradePoints > 0)
 		{
-			final float rep = govtTradePoints/getSizeMod() * 0.01f;
+			final float rep = govtTradePoints/getSizeMod(market) * 0.01f;
 			debugMessage("  Government trade rep: " + rep);
 			Global.getSector().reportEventStage(this, "trade_govt", market.getPrimaryEntity(), 
 					MessagePriority.ENSURE_DELIVERY, new BaseOnMessageDeliveryScript() {
@@ -414,7 +430,10 @@ public class RebellionEvent extends BaseEventPlugin {
 		else if (result == RebellionResult.MUTUAL_ANNIHILATION)
 			SectorManager.transferMarket(market, Global.getSector().getFaction(Factions.PIRATES), market.getFaction(), 
 					false, true, null, 0);
-						
+		
+		if (result != RebellionResult.OTHER)
+			RebellionEventCreator.incrementRebellionPointsStatic(market, -100);
+		
 		// report event
 		String reportStage = null;
 		switch (result) {
@@ -466,13 +485,17 @@ public class RebellionEvent extends BaseEventPlugin {
 	
 	protected SuppressionFleetData getSuppressionFleet(MarketAPI sourceMarket)
 	{
-		int fp = (int)(getSizeMod() * 2f);
+		String factionId = sourceMarket.getFactionId();
+		float fp = (int)(getSizeMod(market) * 1.5f);
+		if (market.hasCondition(Conditions.HEADQUARTERS))
+			fp *= 1.25f;
+		else if (market.hasCondition(Conditions.REGIONAL_CAPITAL))
+			fp *= 1.1f;
 		
-		String name = getFleetName("nex_suppressionFleet", govtFactionId, fp);
+		String name = getFleetName("nex_suppressionFleet", factionId, fp);
 		
-		int numMarines = (int)((rebelStrength * 2 - govtStrength)/VALUE_MARINES);
+		int numMarines = (int)((rebelStrength * 2 - govtStrength));
 		
-		String factionId = govtFactionId;
 		float distance = ExerelinUtilsMarket.getHyperspaceDistance(sourceMarket, market);
 		int tankerFP = (int)(fp * InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000);
 		//fp -= tankerFP;
@@ -520,7 +543,12 @@ public class RebellionEvent extends BaseEventPlugin {
 		// pick source market
 		Vector2f targetLoc = market.getLocationInHyperspace();
 		WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
-		for (MarketAPI maybeSource : ExerelinUtilsFaction.getFactionMarkets(govtFactionId))
+		List<MarketAPI> markets;
+		if (AllianceManager.getFactionAlliance(govtFactionId) != null)
+			markets = AllianceManager.getFactionAlliance(govtFactionId).getAllianceMarkets();
+		else
+			markets = ExerelinUtilsFaction.getFactionMarkets(govtFactionId);
+		for (MarketAPI maybeSource : markets)
 		{
 			if (maybeSource == this.market)
 				continue;
@@ -531,6 +559,9 @@ public class RebellionEvent extends BaseEventPlugin {
 			}
 			float weight = 20000.0f / dist;
 			weight *= maybeSource.getSize();
+			
+			if (!govtFactionId.equals(maybeSource.getFactionId()))
+				weight /= 2;
 				
 			if (maybeSource.hasCondition(Conditions.MILITARY_BASE))
 				weight *= 2;
@@ -546,7 +577,6 @@ public class RebellionEvent extends BaseEventPlugin {
 	
 	/**
 	 * Spawns a fleet full of marines from another market to help crush the rebellion
-	 * @param source
 	 */
 	protected void spawnSuppressionFleet()
 	{
@@ -582,14 +612,17 @@ public class RebellionEvent extends BaseEventPlugin {
 				if (!suppressionFleetWarning && suppressionFleetCountdown < 12)
 				{
 					suppressionFleetSource = pickSuppressionFleetSource();
-					Global.getSector().reportEventStage(this, "suppression_fleet_warning", market.getPrimaryEntity(), priority);
+					Global.getSector().reportEventStage(this, "suppression_fleet_warning", 
+							suppressionFleetSource.getPrimaryEntity(), priority);
 					suppressionFleetWarning = true;
 				}
 				if (suppressionFleetCountdown < 0)
 				{
 					// don't spawn suppression fleet if the source market was lost in the meantime
-					if (suppressionFleetSource.getFactionId().equals(govtFactionId))
+					if (AllianceManager.areFactionsAllied(suppressionFleetSource.getFactionId(), govtFactionId))
 						spawnSuppressionFleet();
+					else
+						suppressionFleetSource = null;
 					suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
 					
 				}
@@ -679,7 +712,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	
 	@Override
 	public void reportFleetDespawned(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {
-		if (fleet == suppressionFleet.fleet)
+		if (suppressionFleet != null && fleet == suppressionFleet.fleet)
 		{
 			suppressionFleet = null;
 			suppressionFleetSource = null;
@@ -740,14 +773,15 @@ public class RebellionEvent extends BaseEventPlugin {
 		}
 		if (suppressionFleetSource != null)
 		{
-			map.put("$sourceMarket", suppressionFleetSource.getName());
+			addFactionNameTokens(map, "suppress", suppressionFleetSource.getFaction());
+			map.put("$suppressMarket", suppressionFleetSource.getName());
 			LocationAPI containingLoc = suppressionFleetSource.getContainingLocation();
 			String locName = containingLoc.getName();
 			if (containingLoc instanceof StarSystemAPI)
 			{
 				locName = ((StarSystemAPI)containingLoc).getBaseName();
 			}
-			map.put("$sourceSystem", locName);
+			map.put("$suppressSystem", locName);
 		}
 		
 		return map;
@@ -800,11 +834,11 @@ public class RebellionEvent extends BaseEventPlugin {
 	
 	public static void startDebugEvent()
 	{
-		SectorEntityToken jangala = Global.getSector().getEntityById("jangala");
-		if (jangala != null)
+		SectorEntityToken target = Global.getSector().getEntityById("tartessus");
+		if (target != null)
 		{
-			InstigateRebellion rebel = new InstigateRebellion(jangala.getMarket(), 
-					Global.getSector().getFaction(Factions.PERSEAN), jangala.getFaction(), false, null);
+			InstigateRebellion rebel = new InstigateRebellion(target.getMarket(), 
+					Global.getSector().getFaction(Factions.TRITACHYON), target.getFaction(), false, null);
 			rebel.setResult(CovertOpsManager.CovertActionResult.SUCCESS_DETECTED);
 			rebel.onSuccess();
 		}

@@ -53,23 +53,25 @@ public class SuppressionFleetAI implements EveryFrameScript
 		if (interval > 0.25f) interval -= 0.25f;
 		else return;
 		
+		if (data.event != null && data.event.isDone())
+		{
+			giveStandDownOrders();  // rebellion over; go home
+		}
+
+		float fp = this.fleet.getFleetPoints();
+		if (fp < this.data.startingFleetPoints / 3.0F) {
+			if (data.event != null)
+				data.event.suppressionFleetDefeated(data);
+			giveStandDownOrders();
+		}
+
+		if (orderedReturn)
+			return;
+		
 		FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
 		if (assignment != null)
 		{
-			if (data.event != null && data.event.isDone())
-			{
-				giveStandDownOrders();  // rebellion over; go home
-			}
 			
-			float fp = this.fleet.getFleetPoints();
-			if (fp < this.data.startingFleetPoints / 3.0F) {
-				if (data.event != null)
-					data.event.suppressionFleetDefeated(data);
-				giveStandDownOrders();
-			}
-			
-			if (orderedReturn)
-				return;
 		}
 		else
 		{
