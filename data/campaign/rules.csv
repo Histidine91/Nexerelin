@@ -1192,6 +1192,45 @@ $entity.escalation == 2
 $entity.fleetType == vengeanceFleet score:100",$entity.ignorePlayerCommRequests = true 1,"""Burn in Hell, demon! The followers of Ludd shall strike you down!""
 OR
 ""Your Faustian schemes end here.""",cutCommLink:Cut the comm link,
+greetingVengeanceMadStrongerLuddicPath,OpenCommLink,"$faction.id == luddic_path
+$entity.relativeStrength >= 0
+$entity.escalation == 0
+$entity.fleetType == vengeanceFleet score:100",$entity.ignorePlayerCommRequests = true 1,"""$TheFactionLong has not forgotten your sins, $playerName. Prepare to be destroyed!""
+OR
+""Prepare for death, blasphemer!""",cutCommLink:Cut the comm link,
+greetingVengeanceMadWeakerDefiantLuddicPath,OpenCommLink,"$faction.id == luddic_path
+$entity.relativeStrength < 0
+$entity.weakerThanPlayerButHolding
+$entity.escalation == 0
+$entity.fleetType == vengeanceFleet score:100",$entity.ignorePlayerCommRequests = true 1,"""$TheFactionLong has not forgotten your sins, $playerName. Prepare to be destroyed!""
+OR
+""Prepare for death, blasphemer!""",cutCommLink:Cut the comm link,
+greetingVengeanceRavingMadStrongerLuddicPath,OpenCommLink,"$faction.id == luddic_path
+$entity.relativeStrength >= 0
+$entity.escalation == 1
+$entity.fleetType == vengeanceFleet score:100",$entity.ignorePlayerCommRequests = true 1,"""You are past redemption! Begone, in the name of the Path!.""
+OR
+""Be banished to the pit you came from, spawn of Mammon!""",cutCommLink:Cut the comm link,
+greetingVengeanceRavingMadWeakerDefiantLuddicPath,OpenCommLink,"$faction.id == luddic_path
+$entity.relativeStrength < 0
+$entity.weakerThanPlayerButHolding
+$entity.escalation == 1
+$entity.fleetType == vengeanceFleet score:100",$entity.ignorePlayerCommRequests = true 1,"""You are past redemption! Begone, in the name of the Path!.""
+OR
+""Be banished to the pit you came from, spawn of Mammon!""",cutCommLink:Cut the comm link,
+greetingVengeanceStarkRavingMadStrongerLuddicPath,OpenCommLink,"$faction.id == luddic_path
+$entity.relativeStrength >= 0
+$entity.escalation == 2
+$entity.fleetType == vengeanceFleet score:100",$entity.ignorePlayerCommRequests = true 1,"""Burn in Hell, demon! The followers of Ludd shall strike you down!""
+OR
+""In the name of the one true Path, we shall annihilate you! Thy name shall be purged from the very stars!""",cutCommLink:Cut the comm link,
+greetingVengeanceStarkRavingMadWeakerDefiantLuddicPath,OpenCommLink,"$faction.id == luddic_path
+$entity.relativeStrength < 0
+$entity.weakerThanPlayerButHolding
+$entity.escalation == 2
+$entity.fleetType == vengeanceFleet score:100",$entity.ignorePlayerCommRequests = true 1,"""Burn in Hell, demon! The followers of Ludd shall strike you down!""
+OR
+""In the name of the one true Path, we shall annihilate you! Thy name shall be purged from the very stars!""",cutCommLink:Cut the comm link,
 greetingVengeanceMadStrongerAhriman,OpenCommLink,"$faction.id == exipirated
 $entity.relativeStrength >= 0
 $entity.escalation == 0

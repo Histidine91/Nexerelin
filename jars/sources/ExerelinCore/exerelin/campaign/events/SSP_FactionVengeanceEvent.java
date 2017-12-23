@@ -359,13 +359,14 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         if (mod == null) {
             mod = 1f;
         }
+		int capBonus = (int)(ExerelinUtilsFleet.getPlayerLevelFPBonus() + 0.5f);
         int combat, freighter, tanker, utility;
         float bonus;
         switch (escalationLevel) {
             default:
             case 0:
                 combat = Math.round(Math.max(6f, player * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod));
-                combat = Math.min(30, combat);
+                combat = Math.min(30 + capBonus, combat);
                 freighter = Math.round(combat / 10f);
                 tanker = Math.round(combat / 15f);
                 utility = Math.round(combat / 20f);
@@ -378,7 +379,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                     combat =
                     Math.round((14f / mod) + (player - 16f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod);
                 }
-                combat = Math.min(45, combat);
+                combat = Math.min(45 + capBonus, combat);
                 freighter = Math.round(combat / 10f);
                 tanker = Math.round(combat / 15f);
                 utility = Math.round(combat / 20f);
@@ -394,7 +395,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                     combat =
                     Math.round((48f / mod) + (player - 48f) * MathUtils.getRandomNumberInRange(0.5f, 0.75f) / mod);
                 }
-                combat = Math.min(60, combat);
+                combat = Math.min(60 + capBonus, combat);
                 freighter = Math.round(combat / 10f);
                 tanker = Math.round(combat / 15f);
                 utility = Math.round(combat / 20f);
