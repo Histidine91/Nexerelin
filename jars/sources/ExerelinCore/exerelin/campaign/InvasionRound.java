@@ -335,6 +335,7 @@ public class InvasionRound {
 		float repChangeStrength = market.getSize()*5;
 		if (success) repChangeStrength *= 2.0f;
 		if (isRaid) repChangeStrength *= 0.5f;
+		repChangeStrength *= 0.01f;
 		
 		for (final MarketAPI otherMarket : markets) {
 			if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
