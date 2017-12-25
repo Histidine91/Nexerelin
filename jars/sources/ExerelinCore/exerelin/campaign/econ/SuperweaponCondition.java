@@ -10,16 +10,23 @@ import java.util.Map;
 public class SuperweaponCondition extends BaseMarketConditionPlugin {
 	protected SuperweaponEvent event = null;
 	
-	@Override
-	public void apply(String id) {
-		// FIXME: diagnose the underlying issue!
+	// FIXME: diagnose the underlying issue!
+	protected boolean refetchEventIfNeeded()
+	{
 		if (event == null)	// try regetting
 		{
-			Global.getLogger(this.getClass()).info("ERROR: Event is null, re-fetching");
-			event = (SuperweaponEvent)Global.getSector().getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_superweapon");
+			Global.getLogger(this.getClass()).warn("Event is null, re-fetching");
+			event = (SuperweaponEvent)Global.getSector().getEventManager().getOngoingEvent(
+					new CampaignEventTarget(market), "exerelin_superweapon");
 		}
-		if (event == null) return;
-		market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), StringHelper.getString("exerelin_superweapon", "stabilityText"));
+		return event != null;
+	}
+	
+	@Override
+	public void apply(String id) {
+		if (refetchEventIfNeeded())
+			market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), 
+					StringHelper.getString("exerelin_superweapon", "stabilityText"));
 	}
 		
 	@Override
@@ -30,9 +37,12 @@ public class SuperweaponCondition extends BaseMarketConditionPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> tokens = super.getTokenReplacements();
-
-		int penalty = event.getStabilityPenalty();
-		tokens.put("$stabilityPenalty", "" + penalty);
+		
+		if (refetchEventIfNeeded())
+		{
+			int penalty = event.getStabilityPenalty();
+			tokens.put("$stabilityPenalty", "" + penalty);
+		}
 
 		return tokens;
 	}

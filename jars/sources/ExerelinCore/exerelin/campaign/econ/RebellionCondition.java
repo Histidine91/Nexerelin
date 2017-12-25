@@ -8,19 +8,25 @@ import exerelin.utilities.StringHelper;
 import java.util.Map;
 
 public class RebellionCondition extends BaseMarketConditionPlugin {
-	private RebellionEvent event = null;
+	protected RebellionEvent event = null;
+	
+	// FIXME: diagnose the underlying issue!
+	protected boolean refetchEventIfNeeded()
+	{
+		if (event == null)	// try regetting
+		{
+			Global.getLogger(this.getClass()).warn("Event is null, re-fetching");
+			event = (RebellionEvent)Global.getSector().getEventManager().getOngoingEvent(
+					new CampaignEventTarget(market), "nex_rebellion");
+		}
+		return event != null;
+	}
 	
 	@Override
 	public void apply(String id) {
-		// FIXME: diagnose the underlying issue!
-		if (event == null)	// try regetting
-		{
-			Global.getLogger(this.getClass()).info("ERROR: Event is null, re-fetching");
-			event = (RebellionEvent)Global.getSector().getEventManager().getOngoingEvent(new CampaignEventTarget(market), "nex_rebellion");
-		}
-		if (event == null) return;
-		market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), 
-				StringHelper.getString("exerelin_marketConditions", "rebellion"));
+		if (refetchEventIfNeeded())
+			market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), 
+					StringHelper.getString("exerelin_marketConditions", "rebellion"));
 	}
 		
 	@Override
@@ -31,10 +37,15 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> tokens = super.getTokenReplacements();
-
-		int penalty = event.getStabilityPenalty();
-		tokens.put("$stabilityPenalty", "" + penalty);
-		RebellionEvent.addFactionNameTokens(tokens, "rebel", Global.getSector().getFaction(event.getRebelFactionId()));
+		
+		if (refetchEventIfNeeded())
+		{
+			int penalty = event.getStabilityPenalty();
+			tokens.put("$stabilityPenalty", "" + penalty);
+			RebellionEvent.addFactionNameTokens(tokens, "rebel", 
+					Global.getSector().getFaction(event.getRebelFactionId()));
+		}
+		
 
 		return tokens;
 	}

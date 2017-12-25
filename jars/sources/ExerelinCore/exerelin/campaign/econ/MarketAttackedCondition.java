@@ -8,19 +8,24 @@ import exerelin.utilities.StringHelper;
 import java.util.Map;
 
 public class MarketAttackedCondition extends BaseMarketConditionPlugin {
-	private MarketAttackedEvent event = null;
+	protected MarketAttackedEvent event = null;
 	
-	@Override
-	public void apply(String id) {
-		// FIXME: diagnose the underlying issue!
+	// FIXME: diagnose the underlying issue!
+	protected boolean refetchEventIfNeeded()
+	{
 		if (event == null)	// try regetting
 		{
-			Global.getLogger(this.getClass()).info("ERROR: Event is null, re-fetching");
+			Global.getLogger(this.getClass()).warn("Event is null, re-fetching");
 			event = (MarketAttackedEvent)Global.getSector().getEventManager().
 					getOngoingEvent(new CampaignEventTarget(market), "exerelin_market_attacked");
 		}
-		if (event == null) return;
-		market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), 
+		return event != null;
+	}
+	
+	@Override
+	public void apply(String id) {
+		if (refetchEventIfNeeded())
+			market.getStability().modifyFlat(id, -1 * event.getStabilityPenalty(), 
 				StringHelper.getString("exerelin_marketConditions", "marketAttacked"));
 	}
 		
@@ -32,9 +37,12 @@ public class MarketAttackedCondition extends BaseMarketConditionPlugin {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> tokens = super.getTokenReplacements();
-
-		int penalty = event.getStabilityPenalty();
-		tokens.put("$stabilityPenalty", "" + penalty);
+		
+		if (refetchEventIfNeeded())
+		{
+			int penalty = event.getStabilityPenalty();
+			tokens.put("$stabilityPenalty", "" + penalty);
+		}
 
 		return tokens;
 	}
