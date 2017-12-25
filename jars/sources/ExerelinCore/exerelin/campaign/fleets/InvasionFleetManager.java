@@ -52,7 +52,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	public static final int MIN_MARINE_STOCKPILE_FOR_INVASION = 200;
 	public static final float MAX_MARINE_STOCKPILE_TO_DEPLOY = 0.5f;
-	public static final float DEFENDER_STRENGTH_FP_MULT = 0.3f;
+	public static final float DEFENDER_STRENGTH_FP_MULT = 0.8f;
 	public static final float DEFENDER_STRENGTH_MARINE_MULT = 1.15f;
 	public static final float RESPAWN_FLEET_SPAWN_DISTANCE = 18000f;
 	// higher = factions (who aren't otherwise at war) invade pirates less often
@@ -102,10 +102,11 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static float calculateMaxFpForFleet(MarketAPI originMarket, MarketAPI targetMarket)
 	{
 		float responseFleetSize = ResponseFleetManager.getMaxReserveSize(targetMarket, true);
-		float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + 8 * (2 + originMarket.getSize()));
+		float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + (originMarket.getSize() + 2));
+		if (DefenceStationManager.getManager() != null)
+			maxFPbase += DefenceStationManager.getManager().getDefenceFleetPenaltyFromStations(targetMarket) * 1.25f;
 		maxFPbase = maxFPbase * (float)(0.5 + originMarket.getStabilityValue()/10);
-		maxFPbase *= 0.3f;
-		//maxFPbase *= 0.95;
+		maxFPbase *= 0.7f;
 		
 		float maxFP = maxFPbase;
 		if (originMarket.hasCondition(Conditions.MILITARY_BASE)) maxFP += maxFPbase * 0.15;
@@ -237,10 +238,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	{
 		float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket, 1f, false);
 		float responseFleetSize = ResponseFleetManager.getMaxReserveSize(targetMarket, false);
-		float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + 8 * (2 + originMarket.getSize()));
+		float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + (originMarket.getSize() + 2));
+		if (DefenceStationManager.getManager() != null)
+			maxFPbase += DefenceStationManager.getManager().getDefenceFleetPenaltyFromStations(targetMarket) * 1.25f;
+		maxFPbase = maxFPbase * (float)(0.5 + originMarket.getStabilityValue()/10);
+		maxFPbase *= 0.8f;
+		
 		float maxFP = maxFPbase + ExerelinUtilsFleet.getPlayerLevelFPBonus();
 		maxFP *= MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f);
-		maxFP *= 0.35;
 		
 		String name = getFleetName("exerelinRespawnFleet", faction.getId(), maxFP);
 		
