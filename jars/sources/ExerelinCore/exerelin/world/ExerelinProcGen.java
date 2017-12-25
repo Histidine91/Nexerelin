@@ -68,7 +68,6 @@ public class ExerelinProcGen {
 	public static final float CORE_WIDTH = 15000;
 	public static final float CORE_HEIGHT = 12000;
 	public static final int CORE_RECURSION_MAX_DEPTH = 6;
-	public static final float BEACON_SEARCH_RANGE = 900;
 	public static final Set<String> ALLOWED_STATION_TERRAIN = new HashSet<>(Arrays.asList(new String[] {
 		Terrain.ASTEROID_BELT, Terrain.ASTEROID_FIELD, Terrain.RING
 	}));
@@ -823,20 +822,6 @@ public class ExerelinProcGen {
 				else if (token.hasTag(Tags.SALVAGEABLE))
 					toRemove.add(token);
 			}
-			for (SectorEntityToken beacon : hyper.getEntitiesWithTag(Tags.WARNING_BEACON))
-			{
-				boolean beaconFound = false;
-				for (SectorEntityToken token : system.getJumpPoints())
-				{
-					JumpPointAPI jump = (JumpPointAPI)token;
-					if (MathUtils.isWithinRange(beacon, jump.getLocationInHyperspace(), BEACON_SEARCH_RANGE))
-					{
-						toRemove.add(beacon);
-						beaconFound = true;
-					}
-				}
-				if (beaconFound == true) break;
-			}
 			
 			for (String tag : TAGS_TO_REMOVE)
 			{
@@ -844,6 +829,13 @@ public class ExerelinProcGen {
 			}
 			system.addTag(Tags.THEME_CORE_POPULATED);
 		}
+		for (SectorEntityToken beacon : hyper.getEntitiesWithTag(Tags.WARNING_BEACON))
+		{
+			StarSystemAPI nearest = Misc.getNearestStarSystem(beacon);
+			if (systems.contains(nearest))
+				toRemove.add(beacon);
+		}
+		
 		for (SectorEntityToken token : toRemove)
 		{
 			log.info("\tRemoving token " + token.getName() + "(faction " + token.getFaction().getDisplayName() + ")");
