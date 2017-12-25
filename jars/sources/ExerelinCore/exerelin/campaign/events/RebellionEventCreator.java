@@ -71,7 +71,7 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		WeightedRandomPicker<String> enemyPicker = new WeightedRandomPicker<>();
 		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(market.getFaction(), allowPirates, false, false);
 		
-		if (!allowPirates)
+		if (allowPirates)
 		{
 			//if (faction.isHostileTo(Factions.INDEPENDENT))
 			//	addToListIfNotPresent(enemies, Factions.INDEPENDENT);
@@ -88,8 +88,13 @@ public class RebellionEventCreator extends BaseEventPlugin {
 				weight += 1;
 			if (candidate.equals(Factions.INDEPENDENT))
 				weight += 3;
-			if (candidate.equals(Factions.LUDDIC_PATH) && market.hasCondition(Conditions.LUDDIC_MAJORITY))
-				weight += 5;
+			if (market.hasCondition(Conditions.LUDDIC_MAJORITY))
+			{
+				if (candidate.equals(Factions.LUDDIC_PATH))
+					weight += 5;
+				else if (candidate.equals(Factions.LUDDIC_CHURCH))
+					weight += 3;
+			}
 			
 			enemyPicker.add(candidate, weight);
 		}
@@ -120,10 +125,12 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		if (hardModePenalty)
 			stability -= HARD_MODE_STABILITY_MODIFIER;
 		
-		int requiredThreshold = Math.min(size - 1, 5);
+		int requiredThreshold = Math.min(size - 1, 4);
 		
 		float points = (requiredThreshold - stability) * REBELLION_POINT_MULT;
-		if (hardModePenalty && points > 0) points += HARD_MODE_MULT;
+		if (points > 2) points = 2;
+		else if (points < -2) points = -2;
+		if (hardModePenalty && points > 0) points *= HARD_MODE_MULT;
 		return points;		
 	}
 	
