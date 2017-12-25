@@ -103,7 +103,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     protected boolean randomFactionRelationships = false;
     
     static {
-        String[] factions = {"templars", "independent"};
+        String[] factions = {"templars", Factions.INDEPENDENT, Factions.LUDDIC_PATH};
         disallowedFactions = new ArrayList<>(Arrays.asList(factions));
         if (!ExerelinConfig.followersDiplomacy) disallowedFactions.add(ExerelinConstants.PLAYER_NPC_ID);
         eventDefs = new ArrayList<>();
@@ -359,9 +359,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 {
                     // for some reason ensureAtWorst sets it to -25 instead of -49, so don't add the delta on top of that
                     playerAlignedFaction.ensureAtWorst(faction2Id, RepLevel.INHOSPITABLE);
-                    //playerAlignedFaction.adjustRelationship(faction2Id, delta);
                     playerFaction.ensureAtWorst(faction2Id, RepLevel.INHOSPITABLE);
-                    //playerFaction.adjustRelationship(faction2Id, delta);
                 }
                 if (commissionFactionId.equals(faction2Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction2Id))
                 {
