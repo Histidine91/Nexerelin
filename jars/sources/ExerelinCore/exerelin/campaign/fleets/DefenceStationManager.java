@@ -106,8 +106,8 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 		}
 		else if (market.hasCondition(Conditions.ORBITAL_STATION))
 		{
-			sizeForOne = 0;
-			sizeForTwo = 8;
+			sizeForOne = 4;
+			sizeForTwo = 7;
 		}
 		if (market.hasCondition(Conditions.MILITARY_BASE))
 		{
