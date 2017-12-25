@@ -55,7 +55,7 @@ public class Nex_IsBaseOfficial extends BaseCommandPlugin {
 			case "command":
 				return COMMAND_POSTS.contains(post);
 			case "admin":
-				return COMMAND_POSTS.contains(post);
+				return ADMIN_POSTS.contains(post);
 			case "trade":
 			case "trader":
 				return TRADER_POSTS.contains(post);
