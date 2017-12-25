@@ -822,21 +822,40 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return diplomacyManager;
     }
     
-    public static List<String> getFactionsAtWarWithFaction(String factionId, boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
+    public static List<String> getFactionsAtWarWithFaction(String factionId, 
+			boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
     {
-        return getFactionsAtWarWithFaction(Global.getSector().getFaction(factionId), includePirates, includeTemplars, mustAllowCeasefire);
+        return getFactionsOfAtBestRepWithFaction(Global.getSector().getFaction(factionId), 
+				RepLevel.HOSTILE, includePirates, includeTemplars, mustAllowCeasefire);
     }
     
-    public static List<String> getFactionsAtWarWithFaction(FactionAPI faction, boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
+    public static List<String> getFactionsAtWarWithFaction(FactionAPI faction, 
+			boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
     {
-        SectorAPI sector = Global.getSector();
+        return getFactionsOfAtBestRepWithFaction(faction, RepLevel.HOSTILE, includePirates, 
+				includeTemplars, mustAllowCeasefire);
+    }
+	
+	/**
+	 * Gets all factions whose reputation is at best {@code rep} with the specified faction.
+	 * @param faction
+	 * @param rep
+	 * @param includePirates
+	 * @param includeTemplars
+	 * @param mustAllowCeasefire If true, will exclude any factions whose relationship bounds prevent peace with {@code faction},
+	 * or which can never have a positive diplomacy event with {@code faction}.
+	 * @return
+	 */
+	public static List<String> getFactionsOfAtBestRepWithFaction(FactionAPI faction, RepLevel rep,
+			boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
+    {
         String factionId = faction.getId();
         List<String> enemies = new ArrayList<>();
         List<String> factions = SectorManager.getLiveFactionIdsCopy();
 
         for(String otherFactionId : factions)
         {
-            if (!faction.isAtBest(otherFactionId, RepLevel.HOSTILE)) continue;
+            if (!faction.isAtBest(otherFactionId, rep)) continue;
             if (disallowedFactions.contains(otherFactionId)) continue;
             if (!includePirates && ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
             if (!includeTemplars && otherFactionId.equals("templars")) continue;

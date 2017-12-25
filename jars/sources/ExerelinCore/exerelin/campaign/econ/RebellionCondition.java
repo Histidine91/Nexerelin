@@ -57,9 +57,9 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 	}
 	
 	@Override
-		public String[] getHighlights() {
+	public String[] getHighlights() {
 		return new String[] {
-			Global.getSector().getFaction(event.getRebelFactionId()).getDisplayNameWithArticle(),
+			//Global.getSector().getFaction(event.getRebelFactionId()).getDisplayNameWithArticle(),
 			"" + event.getStabilityPenalty()
 		};
 	}

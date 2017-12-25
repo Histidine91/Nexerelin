@@ -6,24 +6,20 @@ import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.covertops.*;
-import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.utilities.ExerelinUtilsMarket;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +30,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.lazywizard.lazylib.MathUtils;
 
 /**
  * Creates diplomacy events at regular intervals; handles war weariness
@@ -183,8 +178,9 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             }
             else if (actionType == CovertActionType.INSTIGATE_REBELLION)
             {
-                if (repLevel == RepLevel.HOSTILE) weight = 1f;
-                else if (repLevel == RepLevel.VENGEFUL) weight = 2f;
+                if (repLevel == RepLevel.INHOSPITABLE) weight = 1;
+                else if (repLevel == RepLevel.HOSTILE) weight = 3;
+                else if (repLevel == RepLevel.VENGEFUL) weight = 5;
                 else continue;
                 
                 weight = weight * (1 + dominance);

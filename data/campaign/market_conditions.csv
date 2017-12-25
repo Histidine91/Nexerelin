@@ -11,7 +11,7 @@ Market Attacked,exerelin_market_attacked_condition,exerelin.campaign.econ.Market
 Agent Destabilization,exerelin_agent_destabilize_condition,exerelin.campaign.econ.AgentDestabilizeMarketCondition,"Foreign agents have recently conducted terror attacks on $market.
 
 - Stability reduced by $stabilityPenalty",graphics/icons/markets/plundered.png,1001
-Rebellion,nex_rebellion_condition,exerelin.campaign.econ.RebellionCondition,"A rebellion by $theRebelFaction is ongoing on $market.
+Rebellion,nex_rebellion_condition,exerelin.campaign.econ.RebellionCondition,"A rebellion is ongoing on $market.
 
 - Stability reduced by $stabilityPenalty
 - Increased demand for marines, hand weapons and supplies; sales to $market will strengthen rebels or government depending on channel",graphics/icons/markets/pirate_moot.png,1002

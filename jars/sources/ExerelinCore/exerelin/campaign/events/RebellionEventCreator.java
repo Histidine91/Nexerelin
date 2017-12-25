@@ -69,7 +69,8 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;		
 		
 		WeightedRandomPicker<String> enemyPicker = new WeightedRandomPicker<>();
-		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(market.getFaction(), allowPirates, false, false);
+		List<String> enemies = DiplomacyManager.getFactionsOfAtBestRepWithFaction(market.getFaction(), 
+				RepLevel.INHOSPITABLE, allowPirates, false, false);
 		
 		if (allowPirates)
 		{
@@ -126,10 +127,12 @@ public class RebellionEventCreator extends BaseEventPlugin {
 			stability -= HARD_MODE_STABILITY_MODIFIER;
 		
 		int requiredThreshold = Math.min(size - 1, 4);
+		if (requiredThreshold < 0) requiredThreshold = 0;
 		
-		float points = (requiredThreshold - stability) * REBELLION_POINT_MULT;
+		float points = (requiredThreshold - stability);
 		if (points > 2) points = 2;
 		else if (points < -2) points = -2;
+		points *= REBELLION_POINT_MULT;
 		if (hardModePenalty && points > 0) points *= HARD_MODE_MULT;
 		return points;		
 	}

@@ -71,7 +71,7 @@
 	"exerelin_agents":{
 		"alertLevel":"alert level",
 		"reserveSize":"response fleet size",
-		"rebellionStatus":"rebellion status",
+		"rebellionStatus":"rebellion by $faction",
 		"govtStrength":"government strength",
 		"rebelStrength":"rebel strength",
 		

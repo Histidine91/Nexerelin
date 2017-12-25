@@ -1,6 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import java.util.List;
 import java.util.Map;
 
@@ -42,9 +43,13 @@ public class AgentGatherIntel extends AgentActionBase {
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
 		
-		boolean superResult = useSpecialPerson("agent", 1);
-		if (superResult == false)
-			return false;
+		// useAgent arg
+		if (params.get(0).getBoolean(memoryMap) == true)
+		{
+			boolean superResult = useSpecialPerson("agent", 1);
+			if (superResult == false)
+				return false;
+		}
 		
 		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
 		MarketAPI market = target.getMarket();
@@ -58,15 +63,15 @@ public class AgentGatherIntel extends AgentActionBase {
 		
 		float stability = market.getStabilityValue();
 		text.addParagraph(Misc.ucFirst(StringHelper.getString("stability")) + ": " + stability);
-		text.highlightInLastPara(getColorFromScale(stability, 10, false), "" + stability);
+		text.highlightFirstInLastPara("" + stability, getColorFromScale(stability, 10, false));
 		
 		int alertLevel = Math.round(CovertOpsManager.getAlertLevel(market) * 100);
 		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "alertLevel")) + ": " + alertLevel + "%");
-		text.highlightInLastPara(getColorFromScale(alertLevel, 100, true), "" + alertLevel);
+		text.highlightFirstInLastPara("" + alertLevel, getColorFromScale(alertLevel, 100, true));
 		
 		float reserveSize = ResponseFleetManager.getReserveSize(market);
 		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "reserveSize")) + ": " + reserveSize);
-		text.highlightInLastPara(highlightColor, "" + reserveSize);
+		text.highlightFirstInLastPara("" + reserveSize, highlightColor);
 		
 		if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
 		{
@@ -74,14 +79,20 @@ public class AgentGatherIntel extends AgentActionBase {
 					new CampaignEventTarget(market), "nex_rebellion");
 			float govtStrength = rebellion.getGovtStrength();
 			float rebelStrength = rebellion.getRebelStrength();
+			FactionAPI rebelFaction = rebellion.getRebelFaction();
 			
-			text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "rebellionStatus")));
+			String header = Misc.ucFirst(StringHelper.getString("exerelin_agents", "rebellionStatus") + ":");
+			String rebelName = rebelFaction.getDisplayName();
+			header = StringHelper.substituteToken(header, "$faction", rebelName);
+			text.addParagraph(header);
+			text.highlightFirstInLastPara(rebelName, rebelFaction.getBaseUIColor());
+			
 			text.addParagraph("  " + Misc.ucFirst(StringHelper.getString("exerelin_agents", "govtStrength")) + ": " + govtStrength);
-			text.highlightInLastPara(govtStrength > market.getSize() * 5 ? 
-					highlightColor : negativeColor, "" + govtStrength);
+			text.highlightFirstInLastPara( "" + govtStrength, govtStrength > market.getSize() * 5 ? 
+					highlightColor : negativeColor);
 			text.addParagraph("  " + Misc.ucFirst(StringHelper.getString("exerelin_agents", "rebelStrength")) + ": " + rebelStrength);
-			text.highlightInLastPara(rebelStrength > market.getSize() * 5 ? 
-					highlightColor : negativeColor, "" + rebelStrength);
+			text.highlightFirstInLastPara("" + rebelStrength, rebelStrength > market.getSize() * 5 ? 
+					highlightColor : negativeColor);
 		}
 		
 				

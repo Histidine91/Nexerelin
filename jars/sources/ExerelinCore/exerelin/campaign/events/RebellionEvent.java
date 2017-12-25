@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -298,6 +299,9 @@ public class RebellionEvent extends BaseEventPlugin {
 		return rebelFactionId;
 	}
 	
+	public FactionAPI getRebelFaction() {
+		return Global.getSector().getFaction(rebelFactionId);
+	}
 	
 	public int getStabilityPenalty() {
 		return stabilityPenalty;
@@ -399,7 +403,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	{
 		if (ended) return;
 		FactionAPI newOwner = Global.getSector().getFaction(newOwnerId);
-		if (!newOwner.isHostileTo(rebelFactionId))
+		if (newOwner.isAtWorst(rebelFactionId, RepLevel.SUSPICIOUS))
 		{
 			if (stage > 0) endEvent(RebellionResult.LIBERATED);
 			else endEvent(RebellionResult.OTHER);
@@ -652,7 +656,7 @@ public class RebellionEvent extends BaseEventPlugin {
 		debugMessage("Updating rebellion on " + market.getName() +": day " + (int)age);
 		
 		// check if factions involved are still at war
-		if (!market.getFaction().isHostileTo(rebelFactionId))
+		if (market.getFaction().isAtWorst(rebelFactionId, RepLevel.SUSPICIOUS))
 		{
 			endEvent(RebellionResult.PEACE);
 			return;
@@ -706,6 +710,9 @@ public class RebellionEvent extends BaseEventPlugin {
 		String marketId = mem.getString(MemFlags.MEMORY_KEY_SOURCE_MARKET);
 		MarketAPI sourceMarket = Global.getSector().getEconomy().getMarket(marketId);
 		if (sourceMarket != market) return;
+		
+		if (!sourceMarket.getFaction().isHostileTo(rebelFactionId))
+			return;
 		
 		String fleetType = ExerelinUtilsFleet.getFleetType(fleet);
 		if (fleetType.equals(FleetTypes.PATROL_SMALL) || fleetType.equals(FleetTypes.PATROL_MEDIUM) || fleetType.equals(FleetTypes.PATROL_LARGE))
