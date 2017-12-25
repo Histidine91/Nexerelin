@@ -354,6 +354,20 @@ public class InvasionRound {
 			}
 		}
 		
+		// add intel event if captured
+		if (captured)
+		{
+			SectorManager.transferMarket(market, attackerFaction, defenderFaction, playerInvolved, true, factionsToNotify, repChangeStrength);
+			
+			if (playerInvolved)
+			{
+				float xp = result.defenderStrength * DEFENDER_STRENGTH_XP_MULT;
+				playerFleet.getCargo().gainCrewXP(xp);
+				playerFleet.getCommander().getStats().addXP((long) xp);
+				playerFleet.getCommander().getStats().levelUpIfNeeded();
+			}
+		}
+		
 		// revengeance
 		if (attackerFactionId.equals(PlayerFactionStore.getPlayerFactionId()) 
 				|| attackerFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
@@ -367,20 +381,6 @@ public class InvasionRound {
 				rvng.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult * mult);
 				if (playerInvolved) 
 					rvng.addFactionPoints(defenderFactionId, sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult * mult);
-			}
-		}
-
-		// add intel event if captured
-		if (captured)
-		{
-			SectorManager.transferMarket(market, attackerFaction, defenderFaction, playerInvolved, true, factionsToNotify, repChangeStrength);
-			
-			if (playerInvolved)
-			{
-				float xp = result.defenderStrength * DEFENDER_STRENGTH_XP_MULT;
-				playerFleet.getCargo().gainCrewXP(xp);
-				playerFleet.getCommander().getStats().addXP((long) xp);
-				playerFleet.getCommander().getStats().levelUpIfNeeded();
 			}
 		}
 		
