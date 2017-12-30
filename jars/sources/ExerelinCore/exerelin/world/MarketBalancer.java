@@ -468,7 +468,7 @@ public class MarketBalancer
 			}
 			if (market.hasCondition(Conditions.COTTAGE_INDUSTRY)) weight *= 0.25f;
 			
-			weight *= builder.getConditionWeightForArchetype(Conditions.LIGHT_INDUSTRIAL_COMPLEX, entity.archetype, 0.1f);
+			weight *= ExerelinMarketBuilder.getConditionWeightForArchetype(Conditions.LIGHT_INDUSTRIAL_COMPLEX, entity.archetype, 0.1f);
 			
 			entityPicker.add(entity, weight);
 		}
@@ -509,7 +509,7 @@ public class MarketBalancer
 				}
 			}
 			
-			weight *= builder.getConditionWeightForArchetype(Conditions.SHIPBREAKING_CENTER, entity.archetype, 0.1f);
+			weight *= ExerelinMarketBuilder.getConditionWeightForArchetype(Conditions.SHIPBREAKING_CENTER, entity.archetype, 0.1f);
 			
 			if (ExerelinUtilsFaction.isFactionHostileToAll(market.getFactionId()))
 				weight *= 0.01f;
@@ -555,7 +555,7 @@ public class MarketBalancer
 				}
 			}
 			
-			weight *= builder.getConditionWeightForArchetype(Conditions.AUTOFAC_HEAVY_INDUSTRY, entity.archetype, 0.1f);
+			weight *= ExerelinMarketBuilder.getConditionWeightForArchetype(Conditions.AUTOFAC_HEAVY_INDUSTRY, entity.archetype, 0.1f);
 			
 			if (ExerelinUtilsFaction.isFactionHostileToAll(market.getFactionId()))
 				weight *= 0.01f;
@@ -601,7 +601,7 @@ public class MarketBalancer
 				}
 			}
 			
-			weight *= builder.getConditionWeightForArchetype("exerelin_supply_workshop", entity.archetype, 0.25f);
+			weight *= ExerelinMarketBuilder.getConditionWeightForArchetype("exerelin_supply_workshop", entity.archetype, 0.25f);
 			
 			if (ExerelinUtilsFaction.isFactionHostileToAll(market.getFactionId()))
 				weight *= 0.01f;
@@ -663,7 +663,7 @@ public class MarketBalancer
 					log.info("Removed balancing aquaculture from " + market.getName());
 				}
 			}
-			weight *= builder.getConditionWeightForArchetype(Conditions.HYDROPONICS_COMPLEX, entity.archetype, 0.1f);
+			weight *= ExerelinMarketBuilder.getConditionWeightForArchetype(Conditions.HYDROPONICS_COMPLEX, entity.archetype, 0.1f);
 			
 			entityPicker.add(entity, weight);
 		}
@@ -725,7 +725,7 @@ public class MarketBalancer
 			
 			if (size < 4) continue;
 			
-			weight *= builder.getConditionWeightForArchetype(Conditions.ANTIMATTER_FUEL_PRODUCTION, entity.archetype, 0.1f);
+			weight *= ExerelinMarketBuilder.getConditionWeightForArchetype(Conditions.ANTIMATTER_FUEL_PRODUCTION, entity.archetype, 0.1f);
 			
 			if (ExerelinUtilsFaction.isFactionHostileToAll(market.getFactionId()))
 				weight *= 0.01f;
@@ -768,7 +768,7 @@ public class MarketBalancer
 				}
 			}
 			
-			weight *= builder.getConditionWeightForArchetype(Conditions.ORGANICS_COMPLEX, entity.archetype, 0.1f);
+			weight *= ExerelinMarketBuilder.getConditionWeightForArchetype(Conditions.ORGANICS_COMPLEX, entity.archetype, 0.1f);
 			weight /= size;
 			
 			entityPicker.add(entity, weight);
@@ -809,7 +809,7 @@ public class MarketBalancer
 				}
 			}
 			
-			weight *= builder.getConditionWeightForArchetype(Conditions.VOLATILES_COMPLEX, entity.archetype, 0.1f);
+			weight *= ExerelinMarketBuilder.getConditionWeightForArchetype(Conditions.VOLATILES_COMPLEX, entity.archetype, 0.1f);
 			weight /= size;
 			
 			entityPicker.add(entity, weight);
@@ -850,7 +850,7 @@ public class MarketBalancer
 				}
 			}
 			
-			weight *= builder.getConditionWeightForArchetype(Conditions.ORE_REFINING_COMPLEX, entity.archetype, 0.1f);
+			weight *= ExerelinMarketBuilder.getConditionWeightForArchetype(Conditions.ORE_REFINING_COMPLEX, entity.archetype, 0.1f);
 			//weight /= size;
 			
 			entityPicker.add(entity, weight);
@@ -893,7 +893,7 @@ public class MarketBalancer
 				}
 			}
 			
-			weight *= builder.getConditionWeightForArchetype(Conditions.ORE_COMPLEX, entity.archetype, 0.1f);
+			weight *= ExerelinMarketBuilder.getConditionWeightForArchetype(Conditions.ORE_COMPLEX, entity.archetype, 0.1f);
 			weight /= size;
 			
 			entityPicker.add(entity, weight);

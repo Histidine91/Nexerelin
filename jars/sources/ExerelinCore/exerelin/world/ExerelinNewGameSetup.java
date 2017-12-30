@@ -42,7 +42,6 @@ import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsMarket;
-import java.util.Arrays;
 import java.util.Random;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -100,10 +99,11 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.setFactionId(Factions.INDEPENDENT);
 		market.addCondition(Conditions.POPULATION_5);
 		market.addCondition(Conditions.SPACEPORT);
-		//market.addCondition("exerelin_recycling_plant");
-		//market.addCondition("exerelin_recycling_plant");
+		//market.addCondition("nex_recycling_plant");
+		//market.addCondition("nex_recycling_plant");
 		//market.addCondition("exerelin_supply_workshop");
 		//market.addCondition("exerelin_hydroponics");
+		market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
 		market.addCondition(Conditions.HYDROPONICS_COMPLEX);
 		market.addCondition(Conditions.TRADE_CENTER);
 		market.addCondition(Conditions.STEALTH_MINEFIELDS);

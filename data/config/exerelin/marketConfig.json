@@ -19,6 +19,7 @@
 			"name":"volatiles_depot",
 			"special":true,
 			#"cost":50,
+			"productive":false,
 			"archetypes":{"volatiles":2,"manufacturing":1,"heavy_industry":0.5,"misc":1},
 		},
 		{
@@ -91,7 +92,8 @@
 			"cost":100,
 			"archetypes":{"default":0.5},
 			"minSize":4,
-			"allowDuplicates":false
+			"allowDuplicates":false,
+			"productive":false
 		},
 		{
 			"name":"spaceport",
@@ -100,6 +102,7 @@
 			"minSize":4,
 			"allowDuplicates":false,
 			"conflictsWith":["orbital_station"],
+			"productive":false
 		},
 		{
 			"name":"orbital_station",
@@ -109,6 +112,7 @@
 			"allowDuplicates":false,
 			"allowStations":false,
 			"conflictsWith":["spaceport"],
+			"productive":false
 		},
 		{
 			"name":"autofac_heavy_industry",
@@ -139,6 +143,7 @@
 			"maxSize":5,
 			"allowStations":false,
 			"allowDuplicates":false,
+			"productive":false,
 			"conflictsWith":["urbanized_polity"],
 		},
 		{
@@ -159,6 +164,7 @@
 			"minSize":4,
 			"allowStations":false,
 			"allowDuplicates":false,
+			"productive":false,
 			"conflictsWith":["rural_polity"]
 		},
 		{
@@ -177,6 +183,7 @@
 			"special":true,
 			"archetypes":{"default":2},
 			"maxSize":4,
+			"productive":false,
 			"allowDuplicates":false
 		},
 		{
@@ -185,6 +192,7 @@
 			"archetypes":{"default":1},
 			"disallowedPlanets":["desert","jungle","arid","lava"],
 			"maxSize":4,
+			"productive":false,
 			"allowDuplicates":false
 		},
 		{
@@ -192,6 +200,7 @@
 			"special":true,
 			"archetypes":{"default":1.5},
 			"minSize":3,
+			"productive":false,
 			"allowDuplicates":false
 		},
 		{
@@ -200,6 +209,7 @@
 			"archetypes":{"default":1},
 			"minSize":3,
 			"maxSize":6,	# since it's still pop-based
+			"productive":false,
 			"allowDuplicates":false
 		},
 		{
@@ -208,6 +218,7 @@
 			"archetypes":{"default":1},
 			"minSize":3,
 			"maxSize":5,
+			"productive":false,
 			"allowDuplicates":false
 		},
 		{
@@ -215,6 +226,7 @@
 			"special":true,
 			"archetypes":{"default":1},
 			"minSize":3,
+			"productive":false,
 			"allowDuplicates":false	# duplicates cause too much market stability
 		},
 		{
@@ -222,6 +234,7 @@
 			"special":true,
 			"archetypes":{"default":1.25},
 			"minSize":3,
+			"productive":false
 			#"allowDuplicates":false
 		},
 		{
@@ -229,6 +242,7 @@
 			"special":true,
 			"archetypes":{"default":1},
 			"minSize":4,
+			"productive":false,
 			"allowDuplicates":false
 		},
 	]

@@ -95,10 +95,13 @@ public class ExerelinMarketBuilder
 	protected static final int[] MOON_SIZE_ROTATION = new int[] {3, 4, 5, 4};
 	protected static final int[] STATION_SIZE_ROTATION = new int[] {3, 4, 5, 4, 3};
 	
-	protected final Map<String, Map<Archetype, Float>> conditionArchetypes = new HashMap<>();
-	protected final List<MarketConditionDef> conditions = new ArrayList<>();
-	protected final Map<String, MarketConditionDef> conditionsByID = new HashMap<>();
-	protected final List<MarketConditionDef> specialConditions = new ArrayList<>();
+	public static final Archetype[] NON_MISC_ARCHETYPES = new Archetype[]{ Archetype.AGRICULTURE, Archetype.ORE, Archetype.VOLATILES, 
+			Archetype.ORGANICS, Archetype.MANUFACTURING, Archetype.HEAVY_INDUSTRY };
+	
+	protected static final Map<String, Map<Archetype, Float>> conditionArchetypes = new HashMap<>();
+	protected static final List<MarketConditionDef> conditions = new ArrayList<>();
+	protected static final Map<String, MarketConditionDef> conditionsByID = new HashMap<>();
+	protected static final List<MarketConditionDef> specialConditions = new ArrayList<>();
 	
 	protected Map<String, Float> commodityDemand = new HashMap<>();
 	protected Map<String, Float> commoditySupply = new HashMap<>();
@@ -123,13 +126,12 @@ public class ExerelinMarketBuilder
 		PLANET_ARCHETYPE_QUOTAS.put(Archetype.VOLATILES, 0.14f);
 		PLANET_ARCHETYPE_QUOTAS.put(Archetype.MANUFACTURING, 0.2f);
 		PLANET_ARCHETYPE_QUOTAS.put(Archetype.HEAVY_INDUSTRY, 0.15f);
+		
+		loadConditions();
 	}
 	
-	public ExerelinMarketBuilder(ExerelinProcGen procGen)
+	protected static void loadConditions()
 	{
-		this.procGen = procGen;
-		random = procGen.getRandom();
-		
 		try {
 			JSONArray conditionArchetypesCsv = Global.getSettings().getMergedSpreadsheetDataForMod(
 					"condition", SURVEY_CONDITION_FILE, ExerelinConstants.MOD_ID);
@@ -160,6 +162,7 @@ public class ExerelinMarketBuilder
 				cond.maxSize = condJson.optInt("maxSize", 99);
 				cond.allowStations = condJson.optBoolean("allowStations", true);
 				cond.allowDuplicates = condJson.optBoolean("allowDuplicates", true);
+				cond.productive = condJson.optBoolean("productive", true);
 				cond.requiredFaction = requiredFaction;		
 				
 				if (condJson.has("allowedPlanets"))
@@ -212,7 +215,13 @@ public class ExerelinMarketBuilder
 		} catch (IOException | JSONException ex) {	// fail-deadly to make sure errors don't go unnoticed
 			log.error(ex);
 			throw new IllegalStateException("Error loading market condition file for proc gen: " + ex);
-		}
+		}	
+	}
+	
+	public ExerelinMarketBuilder(ExerelinProcGen procGen)
+	{
+		this.procGen = procGen;
+		random = procGen.getRandom();
 	}
 	
 	/**
@@ -220,10 +229,10 @@ public class ExerelinMarketBuilder
 	 * @param csvRow Row from the loaded CSV
 	 * @return
 	 */
-	protected Map<Archetype, Float> loadSurveyConditionEntry(JSONObject csvRow)
+	protected static Map<Archetype, Float> loadSurveyConditionEntry(JSONObject csvRow)
 	{
 		Map<Archetype, Float> ret = new HashMap<>();
-		for (Archetype archetype : nonMiscArchetypes)
+		for (Archetype archetype : NON_MISC_ARCHETYPES)
 		{
 			String archetypeName = StringHelper.flattenToAscii(archetype.name().toLowerCase());
 			float val = (float)csvRow.optDouble(archetypeName, 0);
@@ -239,7 +248,7 @@ public class ExerelinMarketBuilder
 	 * @param defaultWeight
 	 * @return
 	 */
-	protected float getConditionWeightForArchetype(MarketConditionDef cond, Archetype archetype, float defaultWeight)
+	protected static float getConditionWeightForArchetype(MarketConditionDef cond, Archetype archetype, float defaultWeight)
 	{
 		float weight = cond.archetypes.get(archetype);
 		if (weight <= 0) weight = defaultWeight;
@@ -253,7 +262,7 @@ public class ExerelinMarketBuilder
 	 * @param defaultWeight
 	 * @return
 	 */
-	protected float getConditionWeightForArchetype(String condID, Archetype archetype, float defaultWeight)
+	protected static float getConditionWeightForArchetype(String condID, Archetype archetype, float defaultWeight)
 	{
 		if (!conditionsByID.containsKey(condID)) return defaultWeight;
 		return getConditionWeightForArchetype(conditionsByID.get(condID), archetype, defaultWeight);
@@ -461,7 +470,7 @@ public class ExerelinMarketBuilder
 	protected float getMarketBestScoreForOtherArchetype(ProcGenEntity market, Archetype wantedArchetype, Map<Archetype, Float> scores)
 	{
 		float bestScore = 0;
-		for (Archetype archetype : nonMiscArchetypes)
+		for (Archetype archetype : NON_MISC_ARCHETYPES)
 		{
 			if (archetype == wantedArchetype) continue;
 			float score = scores.get(archetype);
@@ -486,7 +495,7 @@ public class ExerelinMarketBuilder
 				continue;
 			
 			Map<Archetype, Float> condScores = conditionArchetypes.get(cond.getId());
-			for (Archetype archetype : nonMiscArchetypes)
+			for (Archetype archetype : NON_MISC_ARCHETYPES)
 			{
 				float score = condScores.get(archetype);
 				//if (score > 0)
@@ -808,7 +817,7 @@ public class ExerelinMarketBuilder
 			market.addCondition(Conditions.MILITARY_BASE);
 			//newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);	// dependent on number of factions; bad idea
 			//market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
-			//market.addCondition("exerelin_recycling_plant");
+			//market.addCondition("nex_recycling_plant");
 			market.addCondition("exerelin_supply_workshop");
 			//market.addCondition("exerelin_hydroponics");
 			if (data == procGen.getHomeworld()) 
@@ -821,7 +830,7 @@ public class ExerelinMarketBuilder
 		else if (data.isCapital)
 		{
 			//market.addCondition(Conditions.REGIONAL_CAPITAL);
-			//market.addCondition("exerelin_recycling_plant");
+			//market.addCondition("nex_recycling_plant");
 			//market.addCondition("exerelin_supply_workshop");
 			//newMarket.addCondition("exerelin_hydroponics");
 		}
@@ -873,7 +882,7 @@ public class ExerelinMarketBuilder
 
 		if (isStation && marketSize >= 3)
 		{
-			//newMarket.addCondition("exerelin_recycling_plant");
+			//newMarket.addCondition("nex_recycling_plant");
 		}
 		
 		// add per-faction market conditions
@@ -986,6 +995,21 @@ public class ExerelinMarketBuilder
 		}
 	}
 	
+	public static boolean hasProductiveCondition(MarketAPI market)
+	{
+		for (MarketConditionAPI cond : market.getConditions())
+		{
+			String id = cond.getId();
+			if (id.equals("nex_recycling_plany")) return true;
+			if (conditionsByID.containsKey(id))
+			{
+				MarketConditionDef def = conditionsByID.get(id);
+				if (def.productive) return true;
+			}
+		}
+		return false;
+	}
+	
 	// =========================================================================
 	// static classes
 	public static class MarketConditionDef
@@ -999,6 +1023,7 @@ public class ExerelinMarketBuilder
 		boolean allowDuplicates = true;
 		boolean allowStations = true;
 		boolean special = false;
+		boolean productive = true;
 		String requiredFaction;
 		final List<String> allowedPlanets = new ArrayList<>();
 		final List<String> disallowedPlanets = new ArrayList<>();
@@ -1011,9 +1036,6 @@ public class ExerelinMarketBuilder
 			this.name = name;
 		}
 	}
-	
-	public static Archetype[] nonMiscArchetypes = new Archetype[]{ Archetype.AGRICULTURE, Archetype.ORE, Archetype.VOLATILES, 
-			Archetype.ORGANICS, Archetype.MANUFACTURING, Archetype.HEAVY_INDUSTRY };
 	
 	public static enum Archetype
 	{

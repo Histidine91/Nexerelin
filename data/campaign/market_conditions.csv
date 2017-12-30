@@ -1,5 +1,5 @@
 name,id,script,desc,icon,order
-#Recycling Plant,exerelin_recycling_plant,exerelin.campaign.econ.RecyclingPlant,"This ubiquitous facility turns the usual wastes of a station or city into organics, volatiles, [rare] metals and supplies.",graphics/exerelin/icons/markets/exerelin_recycling_plant.png,30
+Recycling Plant,nex_recycling_plant,exerelin.campaign.econ.RecyclingPlant,"A facility to convert various waste streams into usable organics, volatiles, metals and rare metals.",graphics/exerelin/icons/markets/exerelin_recycling_plant.png,30
 Templar Control,exerelin_templar_control,exerelin.campaign.econ.TemplarControl,The Templars exert all-pervasive control over every aspect of the markets they hold. Increases stability and removes stability penalty from smuggling. Creates some demand for marines to enforce order.,graphics/templars/icons/intel/tem_crusade_event.png,31
 Supply Workshop,exerelin_supply_workshop,exerelin.campaign.econ.SupplyWorkshop,"A medium-scale fabrication unit for producing useful supplies from raw organics, volatiles and metals.",graphics/exerelin/icons/markets/exerelin_supplyworkshop.png,32
 ,,,,,

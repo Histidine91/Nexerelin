@@ -972,7 +972,7 @@ public class ExerelinProcGen {
 		if (!freeStation)
 		{
 			MarketAPI existingMarket = planet.getMarket();
-			//existingMarket.addCondition("exerelin_recycling_plant");
+			//existingMarket.addCondition("nex_recycling_plant");
 			newStation.setMarket(existingMarket);
 			existingMarket.getConnectedEntities().add(newStation);
 			station.market = existingMarket;
@@ -1027,7 +1027,7 @@ public class ExerelinProcGen {
 		market.addCondition(Conditions.OUTPOST);
 		market.addCondition(Conditions.TRADE_CENTER);
 		market.addCondition(Conditions.FREE_PORT);
-		//market.addCondition("exerelin_recycling_plant");
+		//market.addCondition("nex_recycling_plant");
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		market.addSubmarket("exipirated_avesta_market");
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
@@ -1554,6 +1554,17 @@ public class ExerelinProcGen {
 				
 		log.info("FINAL SUPPLY/DEMAND");
 		marketSetup.balancer.reportSupplyDemand();
+		
+		
+		// give any market without something useful a recycling station
+		for (ProcGenEntity ent : haveMarkets)
+		{
+			if (!ExerelinMarketBuilder.hasProductiveCondition(ent.market))
+			{
+				log.info("Adding recycling plant to market " + ent.market.getName());
+				ent.market.addCondition("nex_recycling_plant");
+			}
+		}		
 		
 		for (ProcGenEntity entity : haveMarkets)
 			ExerelinMarketBuilder.addStartingMarketCommodities(entity.market);
