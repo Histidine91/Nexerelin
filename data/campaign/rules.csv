@@ -847,13 +847,10 @@ unset $showJoinFactionOptions
 unset $showLeaveFactionOptions
 unset $showPlayerFactionDiplomacyOptions
 Exerelin_GetSalary",,,
-ExerelinJoinFactionCheckConditions,ExerelinBaseCommanderOptionsInitialize,"$faction.id != ""neutral""
-$faction.id != ""independent""
+nex_JoinFactionCheckConditions,ExerelinBaseCommanderOptionsInitialize,"IsPlayableFaction $faction.id
 $faction.id != ""player_npc""
 $faction.id != $player.factionId",$showJoinFactionOptions = true 0,,,
-ExerelinLeaveFactionCheckConditions,ExerelinBaseCommanderOptionsInitialize,"$faction.id != ""neutral""
-$faction.id != ""independent""
-$faction.id != ""player_npc""
+nex_LeaveFactionCheckConditions,ExerelinBaseCommanderOptionsInitialize,"$faction.id != ""player_npc""
 $faction.id == $player.factionId",$showLeaveFactionOptions = true 0,,,
 ,,,,,,
 ,,,,,,
