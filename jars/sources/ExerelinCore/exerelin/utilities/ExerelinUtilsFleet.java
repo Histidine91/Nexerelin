@@ -186,7 +186,7 @@ public class ExerelinUtilsFleet
 	public static String getFleetType(CampaignFleetAPI fleet)
 	{
 		if (!fleet.getMemoryWithoutUpdate().contains(MemFlags.MEMORY_KEY_FLEET_TYPE))
-			return null;
+			return "";
 		return fleet.getMemoryWithoutUpdate().getString(MemFlags.MEMORY_KEY_FLEET_TYPE);
 	}
 }

@@ -27,6 +27,7 @@ import static exerelin.campaign.fleets.InvasionFleetManager.DEFENDER_STRENGTH_MA
 import static exerelin.campaign.fleets.InvasionFleetManager.EXCEPTION_LIST;
 import static exerelin.campaign.fleets.InvasionFleetManager.spawnInvasionFleet;
 import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.ExerelinUtilsFleet;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -275,6 +276,8 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		{
 			String factionId = killedFleet.getFaction().getId();
 			if (!enemies.contains(factionId)) continue;
+			if (ExerelinUtilsFleet.getFleetType(killedFleet).equals("vengeanceFleet"))
+				continue;
 			
 			List<FleetMemberAPI> killCurrent = killedFleet.getFleetData().getMembersListCopy();
 			for (FleetMemberAPI member : killedFleet.getFleetData().getSnapshot()) {
