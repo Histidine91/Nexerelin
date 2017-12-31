@@ -29,6 +29,7 @@
     "supercomputer",
     "reduced_explosion"
   ],
+  "builtInWings": [],
   "center": [
     123,
     63
@@ -114,6 +115,8 @@
       "id": "LB 1",
       "locations": [
         38.5,
+        3.5,
+        48,
         3.5
       ],
       "mount": "HIDDEN",
