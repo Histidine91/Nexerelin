@@ -1,7 +1,7 @@
 event_type,event_stage,p,target_rel,channels,subject,summary,assessment,image,icon,tags,sound_id,implementation notes
-exerelin_market_captured,report,,,news,$market captured by $newOwner,"$NewOwner forces have taken control of $market, previously held by $theOldOwner.","$TheNewOwner now have $newOwnerMarketsNum planets/station(s).
+exerelin_market_captured,report,,,news,$market captured by $newOwner,"$NewOwner forces have taken control of $market (size $marketSize), previously held by $theOldOwner.","$TheNewOwner now have $newOwnerMarketsNum planets/station(s).
 $TheOldOwner have $oldOwnerMarketsNum planets/station(s) left.",,,important,,
-exerelin_market_captured,report_player,,,news,$market captured by $newOwner,"$NewOwner forces led by $playerName have taken control of $market, previously held by $theOldOwner.","$TheNewOwner now have $newOwnerMarketsNum planets/station(s).
+exerelin_market_captured,report_player,,,news,$market captured by $newOwner,"$NewOwner forces led by $playerName have taken control of $market (size $marketSize), previously held by $theOldOwner.","$TheNewOwner now have $newOwnerMarketsNum planets/station(s).
 $TheOldOwner have $oldOwnerMarketsNum planets/station(s) left.",,,important,,
 exerelin_market_transfered,report,,,news,$market transferred from $oldOwner to $newOwner,$TheOldOwner have voluntarily ceded $market to $theNewOwner.,"$TheNewOwner now have $newOwnerMarketsNum planets/station(s).
 $TheOldOwner have $oldOwnerMarketsNum planets/station(s) left.",,,,,

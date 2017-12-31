@@ -137,11 +137,14 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		
 		map.put("$oldOwnerMarketsNum", "" + ExerelinUtilsFaction.getFactionMarkets(oldOwner.getId()).size());
 		map.put("$newOwnerMarketsNum", "" + ExerelinUtilsFaction.getFactionMarkets(newOwner.getId()).size());
+		
+		map.put("$marketSize", market.getSize() + "");
 		return map;
 	}
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
+		//addTokensToList(result, "$marketSize");
 		addTokensToList(result, "$newOwnerMarketsNum");
 		addTokensToList(result, "$oldOwnerMarketsNum");
 		return result.toArray(new String[0]);
