@@ -12,10 +12,12 @@ import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.events.FactionInsuranceEvent;
+import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -305,6 +307,23 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		super.init(dialog);
 	}
 	
+	// stations won't disengage
+	@Override
+	protected boolean fleetWantsToDisengage(CampaignFleetAPI fleet, CampaignFleetAPI other) {
+		if (config.alwaysAttackVsAttack) return false;
+		
+		if (DefenceStationManager.hasStation(context.getBattle().getSideFor(fleet)))
+			return false;
+		return super.fleetWantsToDisengage(fleet, other);
+	}
+	
+	@Override
+	protected boolean fleetCanDisengage(CampaignFleetAPI fleet) {
+		if (DefenceStationManager.hasStation(context.getBattle().getSideFor(fleet)))
+			return false;
+		return super.fleetCanDisengage(fleet);
+	}
+	
 	protected void addMemoryFlagIfNotSet(CampaignFleetAPI fleet, String memFlag)
 	{
 		if (!fleet.getMemoryWithoutUpdate().contains(memFlag))
@@ -398,7 +417,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		//textPanel.addParagraph("Projecting nearby fleet movements:");
 		//textPanel.addParagraph("You encounter a ");
 		pulledIn.clear();
-		
+				
 		for (CampaignFleetAPI fleet : actualPlayer.getContainingLocation().getFleets()) {
 			if (b == fleet.getBattle()) continue;
 			if (fleet.getBattle() != null) continue;

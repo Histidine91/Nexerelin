@@ -97,7 +97,7 @@ public class ResponseFleetAI implements EveryFrameScript
 		{
 			return;
 		}
-		if (!MathUtils.isWithinRange(data.fleet, data.source, 125))
+		if (!MathUtils.isWithinRange(data.fleet, data.source, 300))
 		{
 			return;
 		}

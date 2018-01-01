@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.BattleAPI.BattleSide;
 import com.fs.starfarer.api.campaign.BattleAutoresolverPlugin;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CombatDamageData;
@@ -212,7 +213,8 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 			setReport(false);
 		}
 	}
-	
+		
+	// same as vanilla except stations won't disengage
 	@Override
 	public void resolve() {
 		// figure out battle type (escape vs engagement)
@@ -226,6 +228,22 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		context.setBattle(battle);
 		EncounterOption optionOne = one.getAI().pickEncounterOption(context, two);
 		EncounterOption optionTwo = two.getAI().pickEncounterOption(context, one);
+		boolean stationForceMode = false;
+		
+		if (DefenceStationManager.hasStation(battle, BattleSide.ONE) && optionOne == EncounterOption.DISENGAGE)
+		{
+			DefenceStationManager.debugMessage("Fleet one " + one.getNameWithFaction() + " in " 
+					+ one.getContainingLocation().getName() + " has station, blocking disengage");
+			optionOne = EncounterOption.HOLD_VS_STRONGER;
+			stationForceMode = true;
+		}
+		if (DefenceStationManager.hasStation(battle, BattleSide.TWO) && optionTwo == EncounterOption.DISENGAGE)
+		{
+			DefenceStationManager.debugMessage("Fleet two " + two.getNameWithFaction() + " in " 
+					+ two.getContainingLocation().getName() + " has station, blocking disengage");
+			optionTwo = EncounterOption.HOLD_VS_STRONGER;
+			stationForceMode = true;
+		}
 		
 		if (optionOne == EncounterOption.DISENGAGE && optionTwo == EncounterOption.DISENGAGE) {
 			report("Both fleets want to disengage");
@@ -263,7 +281,15 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 			}
 		}
 		
-		resolveEngagement(context, oneEscaping, twoEscaping);
+		int limit = stationForceMode ? 50 : 1;
+		for (int i=0; i<limit; i++)
+		{
+			resolveEngagement(context, oneEscaping, twoEscaping);
+			if (one.getFleetData().getCombatReadyMembersListCopy().isEmpty())
+				break;
+			if (two.getFleetData().getCombatReadyMembersListCopy().isEmpty())
+				break;
+		}
 		
 		report("");
 		report("Finished autoresolving engagement");
@@ -544,6 +570,7 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 	
 	protected void clampStationCR(FleetMemberAPI station)
 	{
+		//report("Clamping CR for station " + station.getShipName());
 		station.getRepairTracker().setCR(station.getRepairTracker().getMaxCR());
 	}
 	
@@ -879,10 +906,10 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		return normalizedShieldStr;
 	}
 	
-	protected float getStrength(FleetMemberAPI member)
+	protected float getStrength(FleetMemberAPI member, float hullFraction)
 	{
 		float strength = member.getMemberStrength();
-		strength *= 0.5f + 0.5f * member.getStatus().getHullFraction();
+		strength *= 0.5f + 0.5f * hullFraction;
 		strength *= 0.85f + 0.3f * (float) Math.random();
 		
 		return strength;
@@ -909,7 +936,7 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		if (hasVastBulk)
 		{
 			if (DefenceStationManager.getManager() != null 
-					&& DefenceStationManager.getManager().isRegisteredDefenceStationFleet(member.getFleetData().getFleet()))
+					&& DefenceStationManager.getManager().isRegisteredDefenceStation(member))
 				clampStationCR(member);
 		}
 		
@@ -924,7 +951,7 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 			captain = member.getCaptain();
 		}		
 		
-		float strength = getStrength(member);
+		float strength = getStrength(member, member.getStatus().getHullFraction());
 		//report("Member " + member.getShipName() + " has strength " + getStrength(member));
 				
 		float normalizedHullStr = 0;
@@ -957,7 +984,7 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 				normalizedHullStr += moduleStats.getHullBonus().computeEffective(moduleSpec.getHitpoints()) + 
 										  moduleStats.getArmorBonus().computeEffective(moduleSpec.getArmorRating()) * 10f;
 			}
-			strength += getStrength(tempMember);
+			strength += getStrength(tempMember, getModuleHullFraction(member, i));
 			//report("\tModule " + member.getVariant().getDisplayName() + " has strength " + getStrength(member));
 			
 			if (captain != null)

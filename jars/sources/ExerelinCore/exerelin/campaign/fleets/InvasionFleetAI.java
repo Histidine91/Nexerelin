@@ -72,6 +72,36 @@ public class InvasionFleetAI implements EveryFrameScript
 		}
 	}
 	
+	protected boolean attackStationIfPresent()
+	{
+		if (fleet.getBattle() != null) return true;
+		
+		CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(data.targetMarket);
+		if (station != null)
+		{			
+			if (fleet.getCurrentAssignment() != null && fleet.getCurrentAssignment().getTarget() == station)
+				return true;
+			
+			// clear "do not attack" memory
+			//fleet.getAI().doNotAttack(station, 0);
+			//fleet.getAI().advance(1);
+			
+			//fleet.addAssignmentAtStart(FleetAssignment.INTERCEPT, station, 5, null);
+			
+			if (fleet.getBattle() != null) fleet.getBattle().join(station);
+			else if (station.getBattle() != null) station.getBattle().join(fleet);
+			else {
+				Global.getFactory().createBattle(fleet, station);
+			}
+			CampaignFleetAPI responseFleet = ResponseFleetManager.requestResponseFleet(data.targetMarket, fleet, data.target);
+			if (responseFleet != null)
+				fleet.getBattle().join(responseFleet);
+				
+			return true;
+		}
+		return false;
+	}
+	
 	float interval = 0;
 	
 	@Override
@@ -119,9 +149,12 @@ public class InvasionFleetAI implements EveryFrameScript
 			if (orderedReturn)
 				return;
 			
-			if(assignment.getAssignment() == FleetAssignment.ORBIT_PASSIVE && data.target.getContainingLocation() == data.fleet.getContainingLocation()
+			if (assignment.getAssignment() == FleetAssignment.ORBIT_PASSIVE && data.target.getContainingLocation() == data.fleet.getContainingLocation()
 					&& Misc.getDistance(data.target.getLocation(), data.fleet.getLocation()) < 600f)
 			{
+				if (attackStationIfPresent())
+					return;
+				
 				fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, INVADE_ORBIT_TIME);
 				if (!responseFleetRequested)
 				{
@@ -132,7 +165,7 @@ public class InvasionFleetAI implements EveryFrameScript
 				data.targetMarket.getMemoryWithoutUpdate().set("$beingInvaded", true, INVADE_ORBIT_TIME);
 			}
 			// invade
-			else if(assignment.getAssignment() == FleetAssignment.HOLD && data.target.getContainingLocation() == data.fleet.getContainingLocation()
+			else if (assignment.getAssignment() == FleetAssignment.HOLD && data.target.getContainingLocation() == data.fleet.getContainingLocation()
 					&& Misc.getDistance(data.target.getLocation(), data.fleet.getLocation()) < 600f)
 			{
 				// market is no longer hostile; abort invasion
@@ -140,6 +173,9 @@ public class InvasionFleetAI implements EveryFrameScript
 					giveStandDownOrders();
 				else
 				{
+					if (attackStationIfPresent())
+						return;
+					
 					InvasionRound.InvasionRoundResult result = InvasionRound.AttackMarket(fleet, data.target, false);
 					if (result == null) giveStandDownOrders();	// something borked
 					else if (result.success)

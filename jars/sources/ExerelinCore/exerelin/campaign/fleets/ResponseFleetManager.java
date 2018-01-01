@@ -144,14 +144,14 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		}
 	}
 	
-	public void spawnResponseFleet(MarketAPI origin, SectorEntityToken target, SectorEntityToken spawnEntity)
+	public CampaignFleetAPI spawnResponseFleet(MarketAPI origin, SectorEntityToken target, SectorEntityToken spawnEntity)
 	{
 		float reserveSize = getReserveSize(origin);
 		int maxFP = (int)reserveSize;
 		if (maxFP < MIN_FP_TO_SPAWN)
 		{
 			log.info(origin.getName() + " has insufficient FP for response fleet: " + maxFP);
-			return;
+			return null;
 		}
 		int enemyFP = ((CampaignFleetAPI)target).getFleetPoints();
 		if (enemyFP > maxFP * 8)
@@ -162,7 +162,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		}
 		
 		CampaignFleetAPI fleet = getResponseFleet(origin, maxFP);
-		if (fleet == null) return;
+		if (fleet == null) return null;
 		
 		registerResponseFleetAndSetAI(fleet, origin, target);
 		
@@ -177,6 +177,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		MemoryAPI marketMem = origin.getMemoryWithoutUpdate();
 		marketMem.unset("$nex_invasionResponseFleet");
 		marketMem.unset("$nex_raidResponseFleet");
+		return fleet;
 	}
 	
 	public static float getMaxReserveSize(MarketAPI market, boolean raw)
@@ -256,10 +257,10 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		requestResponseFleet(market, attacker, null);
 	}
 	
-	public static void requestResponseFleet(MarketAPI market, SectorEntityToken attacker, SectorEntityToken spawnEntity)
+	public static CampaignFleetAPI requestResponseFleet(MarketAPI market, SectorEntityToken attacker, SectorEntityToken spawnEntity)
 	{
-		if (responseFleetManager == null) return;
-		responseFleetManager.spawnResponseFleet(market, attacker, spawnEntity);
+		if (responseFleetManager == null) return null;
+		return responseFleetManager.spawnResponseFleet(market, attacker, spawnEntity);
 	}
 	
 	public static float modifyReserveSize(MarketAPI market, float delta)
