@@ -10,7 +10,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -88,12 +87,15 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		}
 
 		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
-				public void beforeDelivery(CommMessageAPI message) {
-					if (playerInvolved)
-					for (String factionId : factionsToNotify)
-						ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, repChangeStrength);
+			public void beforeDelivery(CommMessageAPI message) {
+				if (!playerInvolved) return;
+				for (String factionId : factionsToNotify)
+				{
+					float amount = repChangeStrength;
+					if (factionId.equals("templars")) amount *= 0.5f;
+					ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, amount);
 				}
-			});
+			}});
 	}
 	
 	@Override
