@@ -35,7 +35,6 @@ import exerelin.campaign.covertops.InstigateRebellion;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.getFleetName;
 import exerelin.campaign.fleets.SuppressionFleetAI;
-import exerelin.utilities.ExerelinUtilsCargo;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -98,17 +97,12 @@ public class RebellionEvent extends BaseEventPlugin {
 	
 	protected String conditionToken = null;
 	
-	protected MessagePriority priority = MessagePriority.ENSURE_DELIVERY;
-	
 	protected IntervalUtil interval = new IntervalUtil(1, 1);
 	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
 		params = new HashMap<>();
-		
-		int size = market.getSize();
-		if (size <= 4) priority = MessagePriority.SECTOR;
 		
 		if (DEBUG_MODE)
 		{
@@ -139,6 +133,32 @@ public class RebellionEvent extends BaseEventPlugin {
 	{
 		return (float)Math.pow(2, size - 2);
 	}
+	
+	protected MessagePriority getMsgPriority(String stage)
+	{
+		int size = market.getSize();
+		if (stage.startsWith("suppression_fleet"))
+		{
+			if (size <= 4) return MessagePriority.CLUSTER;
+			else return MessagePriority.SECTOR;
+		}
+		else
+		{
+			if (size <= 4) return MessagePriority.SECTOR;
+			else return MessagePriority.ENSURE_DELIVERY;
+		}
+	}
+	
+	public void reportStage(String stage)
+	{
+		reportStage(stage, market.getPrimaryEntity());
+	}
+	
+	public void reportStage(String stage, SectorEntityToken entity)
+	{
+		Global.getSector().reportEventStage(this, stage, entity, getMsgPriority(stage));
+	}
+	
 	
 	/**
 	 * Gets an exponent-of-two value based on the market size.
@@ -175,10 +195,6 @@ public class RebellionEvent extends BaseEventPlugin {
 	public float getDelay()
 	{
 		return delay;
-	}
-	
-	public MessagePriority getPriority() {
-		return priority;
 	}
 	
 	protected float updateConflictIntensity()
@@ -461,14 +477,14 @@ public class RebellionEvent extends BaseEventPlugin {
 				break;
 		}
 		if (reportStage != null)
-			Global.getSector().reportEventStage(this, reportStage, market.getPrimaryEntity(), priority);
+			reportStage(reportStage);
 	}
 	
 	public void suppressionFleetArrived(SuppressionFleetData data)
 	{
 		if (suppressionFleet == data)
 		{
-			Global.getSector().reportEventStage(this, "suppression_fleet_arrived", market.getPrimaryEntity(), priority);
+			reportStage("suppression_fleet_arrived");
 			suppressionFleet = null;
 			suppressionFleetSource = null;
 			int marines = data.fleet.getCargo().getMarines();
@@ -483,7 +499,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	{
 		if (suppressionFleet == data)
 		{
-			Global.getSector().reportEventStage(this, "suppression_fleet_defeated", market.getPrimaryEntity(), priority);
+			reportStage("suppression_fleet_defeated");
 			suppressionFleet = null;
 			suppressionFleetSource = null;
 			// morale boost
@@ -591,7 +607,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	{
 		SuppressionFleetData data = getSuppressionFleet(suppressionFleetSource);
 		suppressionFleet = data;
-		Global.getSector().reportEventStage(this, "suppression_fleet_launched", suppressionFleetSource.getPrimaryEntity(), priority);
+		reportStage("suppression_fleet_launched", suppressionFleetSource.getPrimaryEntity());
 		govtStrength *= 1.2f;	// morale boost
 		suppressionFleetWarning = false;
 	}
@@ -621,8 +637,7 @@ public class RebellionEvent extends BaseEventPlugin {
 				if (!suppressionFleetWarning && suppressionFleetCountdown < 12)
 				{
 					suppressionFleetSource = pickSuppressionFleetSource();
-					Global.getSector().reportEventStage(this, "suppression_fleet_warning", 
-							suppressionFleetSource.getPrimaryEntity(), priority);
+					reportStage("suppression_fleet_warning", suppressionFleetSource.getPrimaryEntity());
 					suppressionFleetWarning = true;
 				}
 				if (suppressionFleetCountdown < 0)
@@ -646,14 +661,14 @@ public class RebellionEvent extends BaseEventPlugin {
 				conditionToken = market.addCondition("nex_rebellion_condition", true, this);
 				market.reapplyCondition(conditionToken);
 
-				Global.getSector().reportEventStage(this, "start", market.getPrimaryEntity(), priority);
+				reportStage("start");
 			}
 		}
 		
 		interval.advance(days);
 		if (!interval.intervalElapsed()) return;
 		
-		debugMessage("Updating rebellion on " + market.getName() +": day " + (int)age);
+		debugMessage("Updating rebellion on " + market.getName() + ": day " + (int)age);
 		
 		// check if factions involved are still at war
 		if (market.getFaction().isAtWorst(rebelFactionId, RepLevel.SUSPICIOUS))

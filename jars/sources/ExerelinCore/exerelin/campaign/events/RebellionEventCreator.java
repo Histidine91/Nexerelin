@@ -50,7 +50,7 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		RebellionEvent event = (RebellionEvent)sector.getEventManager().startEvent(new CampaignEventTarget(market), "nex_rebellion", eventParams);
 		
 		if (report)
-			sector.reportEventStage(event, "before_start", market.getPrimaryEntity(), event.getPriority());
+			event.reportStage("before_start");
 		
 		return event;
 	}
