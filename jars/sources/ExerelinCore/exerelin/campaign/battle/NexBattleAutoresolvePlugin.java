@@ -35,7 +35,8 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 	
 	public static Logger log = Global.getLogger(NexBattleAutoresolvePlugin.class);
 	public static final boolean DEBUG_MODE = true;
-	public static final float STATION_STRENGTH_MULT = 1.2f;
+	public static final float STATION_STRENGTH_MULT = 0.4f;
+	public static final float MODULE_STRENGTH_MULT = 1f;
 	
 	protected static Map<FleetMemberAPI, Map<Integer, Float>> moduleHealths = new HashMap<>();
 	
@@ -630,8 +631,10 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		WeightedRandomPicker<Integer> picker = new WeightedRandomPicker<>();
 		for (int i = 0; i < member.getVariant().getModuleSlots().size(); i++)
 		{
+			// preferentially damage already-damaged modules
+			float weight = 1.5f - getModuleHullFraction(member, i);
 			if (member.getStatus().isDetached(i)) continue;
-			picker.add(i);
+			picker.add(i, weight);
 		}
 		if (picker.isEmpty()) 
 		{
@@ -906,11 +909,12 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		return normalizedShieldStr;
 	}
 	
-	protected float getStrength(FleetMemberAPI member, float hullFraction)
+	protected float getStrength(FleetMemberAPI member, float hullFraction, float mult)
 	{
 		float strength = member.getMemberStrength();
 		strength *= 0.5f + 0.5f * hullFraction;
 		strength *= 0.85f + 0.3f * (float) Math.random();
+		strength *= mult;
 		
 		return strength;
 	}
@@ -951,7 +955,7 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 			captain = member.getCaptain();
 		}		
 		
-		float strength = getStrength(member, member.getStatus().getHullFraction());
+		float strength = getStrength(member, member.getStatus().getHullFraction(), hasVastBulk ? STATION_STRENGTH_MULT : 1);
 		//report("Member " + member.getShipName() + " has strength " + getStrength(member));
 				
 		float normalizedHullStr = 0;
@@ -984,7 +988,7 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 				normalizedHullStr += moduleStats.getHullBonus().computeEffective(moduleSpec.getHitpoints()) + 
 										  moduleStats.getArmorBonus().computeEffective(moduleSpec.getArmorRating()) * 10f;
 			}
-			strength += getStrength(tempMember, getModuleHullFraction(member, i));
+			strength += getStrength(tempMember, getModuleHullFraction(member, i), MODULE_STRENGTH_MULT);
 			//report("\tModule " + member.getVariant().getDisplayName() + " has strength " + getStrength(member));
 			
 			if (captain != null)
@@ -998,7 +1002,6 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		data.shieldRatio = normalizedShieldStr / (normalizedShieldStr + normalizedHullStr);
 		
 		strength *= captainMult;
-		if (hasVastBulk) strength *= STATION_STRENGTH_MULT;
 		
 		data.strength = Math.max(strength, 0.25f);
 		//report("Member " + member.getShipName() + " has strength " + strength);

@@ -23,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.MarketAttackedEvent;
 import exerelin.campaign.events.RevengeanceManagerEvent;
+import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -335,8 +336,7 @@ public class InvasionRound {
 		float repChangeStrength = 0;
 		if (success && !isRaid)
 		{
-			repChangeStrength = market.getSize()*2;
-			repChangeStrength *= 0.01f;
+			repChangeStrength = market.getSize() * 0.01f;
 
 			for (final MarketAPI otherMarket : markets) {
 				if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
@@ -365,6 +365,15 @@ public class InvasionRound {
 				playerFleet.getCargo().gainCrewXP(xp);
 				playerFleet.getCommander().getStats().addXP((long) xp);
 				playerFleet.getCommander().getStats().levelUpIfNeeded();
+			}
+			
+			if (DefenceStationManager.getManager().getFleet(market) != null)
+			{
+				DefenceStationManager.debugMessage("Market " + market.getName() + " captured while having station");
+			}
+			else if (DefenceStationManager.getManager().getMaxStations(market) > 0)
+			{
+				DefenceStationManager.debugMessage("Station-having market " + market.getName() + " successfully captured");
 			}
 		}
 		
