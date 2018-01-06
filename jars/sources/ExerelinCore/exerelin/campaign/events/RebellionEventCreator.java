@@ -202,6 +202,12 @@ public class RebellionEventCreator extends BaseEventPlugin {
 			return;
 		
 		float points = getRebellionIncrement(market) * days;
+		if (points > 0)
+		{
+			int div = Global.getSector().getEventManager().getNumOngoing("nex_rebellion") + 1;
+			points /= div;
+		}
+		
 		incrementRebellionPoints(market, points);
 	}
 	
