@@ -88,6 +88,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	/**
 	 * Creates dialog options for the faction list subgroups
 	 * @param dialog
+	 * @param memory
 	 */
 	public static void listGroups(InteractionDialogAPI dialog, MemoryAPI memory)
 	{
@@ -215,7 +216,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 
 			text.addParagraph(entry);
 			//text.highlightInLastPara(hl, marketName);
-			text.highlightInLastPara(sizeColor, "" + size);
+			text.highlightLastInLastPara("" + size, sizeColor);
 		}
 		if (anyBase)
 		{

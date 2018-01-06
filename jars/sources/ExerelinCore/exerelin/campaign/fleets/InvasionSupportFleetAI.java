@@ -54,7 +54,7 @@ public class InvasionSupportFleetAI implements EveryFrameScript
 		{
 			float fp = this.fleet.getFleetPoints();
 			if (fp < this.data.startingFleetPoints / 2.0F) {
-				criticalDamage = true;
+				criticalDamage = true;	// too much damage, return to base
 				//orderedReturn = false;
 				giveStandDownOrders();
 			}
@@ -152,7 +152,6 @@ public class InvasionSupportFleetAI implements EveryFrameScript
 			{
 				// our faction controls the original target, presumably we captured it
 				// go ahead and patrol around it
-				destination = data.target;
 				LocationAPI loc = data.target.getContainingLocation();
 				StarSystemAPI system = data.targetMarket.getStarSystem();
 				if (system != null && system != this.fleet.getContainingLocation()) {

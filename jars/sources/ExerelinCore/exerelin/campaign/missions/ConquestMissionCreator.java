@@ -174,11 +174,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 				createMission(factionsAtWar);
 			}
 		}
-		
-		// reverse compatibility
-		if (trackerShort == null)
-			trackerShort = new IntervalUtil(0.45f,0.55f);
-		
+				
 		trackerShort.advance(days);
 		if (trackerShort.intervalElapsed()) {
 			List<ConquestMission> toRemove = new ArrayList<>();

@@ -77,6 +77,7 @@ public class MiningFleetAI implements EveryFrameScript
 			
 			if (orderedReturn)
 			{
+				// unload cargo if appropriate
 				if(!unloaded && assignment.getAssignment() == FleetAssignment.ORBIT_PASSIVE && data.source.getContainingLocation() == data.fleet.getContainingLocation()
 						&& Misc.getDistance(data.source.getLocation(), data.fleet.getLocation()) < 600f)
 				{
@@ -95,6 +96,7 @@ public class MiningFleetAI implements EveryFrameScript
 				return;
 			}
 			
+			// mine
 			if(assignment.getAssignment() == FleetAssignment.ORBIT_PASSIVE || assignment.getAssignment() == FleetAssignment.INTERCEPT
 					&& data.target.getContainingLocation() == data.fleet.getContainingLocation()
 					&& Misc.getDistance(data.target.getLocation(), data.fleet.getLocation()) < 600f)

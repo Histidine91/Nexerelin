@@ -165,12 +165,27 @@ public class InvasionRound {
 		return defenderStrength;
 	}
 	
+	/**
+	 * Gets the result of a "real" invasion round
+	 * @param attacker
+	 * @param defender
+	 * @param isRaid
+	 * @return
+	 */
 	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, 
 			SectorEntityToken defender, boolean isRaid) 
 	{
 		return GetInvasionRoundResult(attacker, defender, isRaid, InvasionSimulationType.REALISTIC);
 	}
 	
+	/**
+	 * Gets the result of an invasion round (test or for real)
+	 * @param attacker
+	 * @param defender
+	 * @param isRaid
+	 * @param simType
+	 * @return
+	 */
 	public static InvasionRoundResult GetInvasionRoundResult(CampaignFleetAPI attacker, 
 			SectorEntityToken defender, boolean isRaid, InvasionSimulationType simType)
 	{

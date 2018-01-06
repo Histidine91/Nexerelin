@@ -50,7 +50,6 @@ import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.ExerelinUtilsReputation;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -59,9 +58,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.lazywizard.lazylib.MathUtils;
 
 /**
@@ -633,7 +629,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             sectorManager.victoryHasOccured = true;
         }
         else {
-            // diplomatic victory         
+            // diplomatic victory
             List<String> eligibleWinners = new ArrayList<>();
             for(String factionId : liveFactions)
             {
@@ -686,7 +682,17 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             sectorManager.victoryHasOccured = true;
     }
     
-    public static void transferMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
+	/**
+	 * Called when a market is transfered to another faction
+	 * @param market
+	 * @param newOwner
+	 * @param oldOwner
+	 * @param playerInvolved Captured by player?
+	 * @param isCapture False means transfered peacefully (i.e. player_npc transfer market function)
+	 * @param factionsToNotify Factions to cause reputation gain with on capture
+	 * @param repChangeStrength
+	 */
+	public static void transferMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
             boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
     {
         // forcibly refreshes the market before capture so we can loot their faction-specific goodies once we capture it
@@ -1066,22 +1072,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
     }
     
-    @Deprecated
-    public static String getFirstStarName()
-    {
-        if (sectorManager != null && sectorManager.corvusMode == true) return "Corvus";
-        
-        String firstStar = "Exerelin";
-        try {
-                JSONObject planetConfig = Global.getSettings().loadJSON("data/config/exerelin/planetNames.json");
-                JSONArray systemNames = planetConfig.getJSONArray("stars");
-                firstStar = systemNames.getString(0);
-        } catch (JSONException | IOException ex) {
-                log.error(ex);
-        }
-        
-        return firstStar;
-    }
     
     public static void setAllowRespawnFactions(boolean respawn, boolean allowNew)
     {

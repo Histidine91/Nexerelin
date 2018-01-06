@@ -62,6 +62,13 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 			reserves.put(market.getId(), getMaxReserveSize(market, false)*INITIAL_RESERVE_SIZE_MULT);
 	}
 	
+	/**
+	 * Generates a response fleet from the specified market.
+	 * Does not decrement reserve, add to list of active fleets, or set AI script on its own.
+	 * @param origin
+	 * @param points Fleet generation size.
+	 * @return
+	 */
 	public CampaignFleetAPI getResponseFleet(MarketAPI origin, int points)
 	{
 		//float qf = origin.getShipQualityFactor();
@@ -137,13 +144,19 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		ResponseFleetAI ai = new ResponseFleetAI(fleet, data);
 		fleet.addScript(ai);
 		
-		
 		if (target == Global.getSector().getPlayerFleet())
 		{
 			data.fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true, 5);
 		}
 	}
 	
+	/**
+	 * Spawns a response fleet from the specified entity.
+	 * @param origin Origin market
+	 * @param target The fleet the response fleet should pursue when spawned
+	 * @param spawnEntity Entity to spawn response fleet from
+	 * @return
+	 */
 	public CampaignFleetAPI spawnResponseFleet(MarketAPI origin, SectorEntityToken target, SectorEntityToken spawnEntity)
 	{
 		float reserveSize = getReserveSize(origin);
@@ -244,11 +257,6 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 	
 	public Random getRandom() 
 	{
-		// reverse compatibility
-		if (random == null)
-		{
-			random = new Random(ExerelinUtils.getStartingSeed());
-		}
 		return random;
 	}
 	
@@ -257,6 +265,13 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		requestResponseFleet(market, attacker, null);
 	}
 	
+	/**
+	 * Spawns a response fleet from the specified entity. Static wrapper for {@code spawnResponseFleet}
+	 * @param market Origin market
+	 * @param attacker The fleet the response fleet should pursue when spawned
+	 * @param spawnEntity Entity to spawn response fleet from
+	 * @return
+	 */
 	public static CampaignFleetAPI requestResponseFleet(MarketAPI market, SectorEntityToken attacker, SectorEntityToken spawnEntity)
 	{
 		if (responseFleetManager == null) return null;
