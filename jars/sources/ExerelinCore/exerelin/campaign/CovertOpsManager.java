@@ -16,6 +16,7 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.covertops.*;
 import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
+import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -212,11 +213,16 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 // rebellion special handling
                 if (actionType == CovertActionType.INSTIGATE_REBELLION)
                 {
-					if (RebellionEventCreator.getRebellionPointsStatic(market) < 50)
-						continue;
-					
+                    if (RebellionEventCreator.getRebellionPointsStatic(market) < 50)
+                        continue;
+                    
                     if (ExerelinUtilsMarket.wasOriginalOwner(market, agentFaction.getId()))
                         weight *= 4;
+                }
+                else if (actionType == CovertActionType.SABOTAGE_RESERVE)
+                {
+                    if (ResponseFleetManager.getReserveSize(market) < 5)
+                        continue;
                 }
                 marketPicker.add(market, weight);
             }
