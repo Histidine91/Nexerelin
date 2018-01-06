@@ -2,6 +2,7 @@ package exerelin.campaign.missions;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -52,12 +53,12 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 		Misc.makeImportant(entity, "nex_conquest", mission.getBaseDuration());
 	}
 	
-	protected SectorEntityToken findMessageSender() {
+	protected SectorEntityToken findMessageSender(FactionAPI senderFaction) {
 		WeightedRandomPicker<MarketAPI> military = new WeightedRandomPicker<>();
 		WeightedRandomPicker<MarketAPI> nonMilitary = new WeightedRandomPicker<>();
 		
 		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
-			if (market.getFaction() != faction) continue;
+			if (market.getFaction() != senderFaction) continue;
 			if (market.getPrimaryEntity() == null) continue;
 			
 			float dist = Misc.getDistanceToPlayerLY(market.getPrimaryEntity());
@@ -88,7 +89,7 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 			if (mission.hasBonus(elapsedDays))
 				stageId = "success_bonus";
 			// success
-			Global.getSector().reportEventStage(this, stageId, findMessageSender(), MessagePriority.ENSURE_DELIVERY, 
+			Global.getSector().reportEventStage(this, stageId, findMessageSender(mission.issuer), MessagePriority.ENSURE_DELIVERY, 
 					new BaseOnMessageDeliveryScript() {
 						boolean hasBonus = mission.hasBonus(elapsedDays);
 						public void beforeDelivery(CommMessageAPI message) {
@@ -209,9 +210,11 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 			addTokensToList(result, "$bonusCredits");
 		} else if ("accept".equals(stageId)) {
 			result.add("" + daysLeft);
+			addTokensToList(result, "$issuerFaction");
 			addTokensToList(result, "$rewardCredits");
 		} else if ("accept_bonus".equals(stageId)) {
 			result.add("" + daysLeft);
+			addTokensToList(result, "$issuerFaction");
 			addTokensToList(result, "$rewardCredits");
 			addTokensToList(result, "$bonusCredits");
 			result.add("" + bonusDaysLeft);
@@ -233,7 +236,7 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 	
 	@Override
 	public String getEventIcon() {
-		return mission.issuer.getCrest();
+		return mission.target.getFaction().getCrest();
 	}
 
 	
@@ -256,7 +259,7 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 
 	@Override
 	public String getCurrentImage() {
-		return mission.issuer.getLogo();
+		return mission.target.getFaction().getLogo();
 	}
 	
 	@Override

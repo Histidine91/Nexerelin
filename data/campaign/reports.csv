@@ -106,14 +106,15 @@ nex_rebellion,end_timeout,,,news,Rebellion against $faction $onOrAt $market wear
 # missions,,,,,,,,,,,,
 exerelin_conquest_mission,posting,,,posting,Conquer $target (or have one of your faction's invasion fleets do it) within $daysLeft for a $rewardCredits payment.,$target is a $targetFaction market (size $targetSize) in $targetLocation.,,,,no_system_prefix,,
 exerelin_conquest_mission,posting_bonus,,,posting,Conquer $target (or have one of your faction's invasion fleets do it) within $daysLeft for a $rewardCredits payment. $bonusCredits bonus for completion within $bonusDays.,$target is a $targetFaction market (size $targetSize) in $targetLocation.,,,,no_system_prefix,,
-exerelin_conquest_mission,accept,,,secure_comm,Mission accepted: conquer $target,The player or a $playerFaction invasion fleet must capture $target in $targetLocation within $daysLeft.,"$rewardCredits reward.
-",,,"no_system_prefix,important",,
-exerelin_conquest_mission,accept_bonus,,,secure_comm,Mission accepted: conquer $target,The player or a $playerFaction invasion fleet must capture $target in $targetLocation within $daysLeft.,"$rewardCredits reward.
+exerelin_conquest_mission,accept,,,secure_comm,Mission accepted: conquer $target,The player or a $playerFaction invasion fleet must capture $target in $targetLocation within $daysLeft.,"Issued by $issuerFaction.
+$rewardCredits reward.",,,"no_system_prefix,important",,
+exerelin_conquest_mission,accept_bonus,,,secure_comm,Mission accepted: conquer $target,The player or a $playerFaction invasion fleet must capture $target in $targetLocation within $daysLeft.,"Issued by $issuerFaction.
+$rewardCredits reward.
 $bonusCredits bonus if delivered within $bonusDays.",,,"no_system_prefix,important",,
-exerelin_conquest_mission,success,,,player_intel_always,Mission completed: conquer $target,Mission completed successfully.,$actualReward gained.,,,"no_system_prefix,important",,
-exerelin_conquest_mission,success_bonus,,,player_intel_always,Mission completed: conquer $target,Mission completed successfully.,"$actualReward gained, including $bonusCredits bonus.",,,"no_system_prefix,important",,
+exerelin_conquest_mission,success,,,player_intel_always,Mission completed: conquer $target,Mission completed successfully. $IssuerFaction command transmits its congratulations and the reward.,$actualReward gained.,,,"no_system_prefix,important",,
+exerelin_conquest_mission,success_bonus,,,player_intel_always,Mission completed: conquer $target,Mission completed successfully. $IssuerFaction command transmits its congratulations and the reward.,"$actualReward gained, including $bonusCredits bonus.",,,"no_system_prefix,important",,
 exerelin_conquest_mission,failure,,,player_intel_always,Mission failed: failed to conquer $target in time,Mission failed - deadline not met.,,,,"no_system_prefix,important",,
-exerelin_conquest_mission,cancelled,,,player_intel_always,Mission cancelled: conquer $target,$target in $targetLocation is no longer controlled by a hostile faction ($targetFaction). $issuerFaction command has terminated the mission without penalty.,,,,"no_system_prefix,important",,
+exerelin_conquest_mission,cancelled,,,player_intel_always,Mission cancelled: conquer $target,$target in $targetLocation is no longer controlled by a hostile faction ($targetFaction). $IssuerFaction command is terminating the mission without penalty.,,,,"no_system_prefix,important",,
 ,,,,,,,,,,,,
 # diplomacy events,,,,,,,,,,,,
 exerelin_diplomacy,official_aid,,,news,Aid package by $otherFaction for $faction,$OtherFaction authorities have sent a charitable aid package to $faction citizens $onOrAt $market. Local officials have expressed their gratitude.,"Relations between $faction and $otherFaction improved by $deltaAbs, currently at $newRelationStr.",,,,,
