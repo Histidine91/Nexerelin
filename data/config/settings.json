@@ -20,6 +20,13 @@
 		"illustrations":{
 			"facility_explosion":"graphics/illustrations/facility_explosion.jpg",
 			"fly_away":"graphics/illustrations/fly_away.jpg",
-		}
+		},
+		
+		# not actually referenced by config table, just here to make the game load the images
+		"eventIcons":{
+			"spyEvent0":"graphics/exerelin/icons/intel/spy4.png",
+			"spyEvent1":"graphics/exerelin/icons/intel/spy4_amber.png",
+			"spyEvent2":"graphics/exerelin/icons/intel/spy4_red.png"
+		},
 	}
 }

@@ -162,8 +162,6 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 		if (!result.isSucessful() || result.isDetected()) significance = 1;
 		if (repResult.wasHostile && !repResult.isHostile) significance = 1;
 		if (repResult.isHostile && !repResult.wasHostile) significance = 2;
-		if (significance == 2)
-			log.info("wololo hostile spy event, " + repResult.wasHostile + ", " + repResult.isHostile);
 		return EVENT_ICONS[significance];
 	}
 }
