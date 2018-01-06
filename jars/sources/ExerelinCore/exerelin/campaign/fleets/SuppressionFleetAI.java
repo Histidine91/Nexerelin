@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.world.exigency.Tasserus;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.campaign.events.RebellionEvent.SuppressionFleetData;
 import exerelin.utilities.ExerelinUtilsFleet;
@@ -66,6 +67,13 @@ public class SuppressionFleetAI implements EveryFrameScript
 		if (fp < this.data.startingFleetPoints / 3.0F) {
 			if (data.event != null)
 				data.event.suppressionFleetDefeated(data);
+			giveStandDownOrders();
+			return;
+		}
+		
+		// target market got captured under us, or we're otherwise no longer allied to it
+		if (!AllianceManager.areFactionsAllied(fleet.getFaction().getId(), data.targetMarket.getFactionId()))
+		{
 			giveStandDownOrders();
 			return;
 		}
