@@ -112,6 +112,11 @@ public abstract class CovertOpsBase {
 		return result;
 	}
 	
+	public CovertActionResult getResult()
+	{
+		return result;
+	}
+	
 	public void setResult(CovertActionResult result)
 	{
 		this.result = result;

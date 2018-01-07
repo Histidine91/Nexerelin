@@ -25,7 +25,7 @@ public class PlayerFactionStore {
         data.put(PLAYER_FACTION_ID_KEY, factionId);
         log.info("Stored player faction ID as " + factionId);
     }
-   /**
+    /**
     * only use for new game character creation
      * @param newFactionId
     */
@@ -49,6 +49,11 @@ public class PlayerFactionStore {
             return (String)storedId;
         }
         return factionId;
+    }
+    
+    public static FactionAPI getPlayerFaction()
+    {
+        return Global.getSector().getFaction(getPlayerFactionId());
     }
     
     public static void saveIndependentPlayerRelation(String factionId)

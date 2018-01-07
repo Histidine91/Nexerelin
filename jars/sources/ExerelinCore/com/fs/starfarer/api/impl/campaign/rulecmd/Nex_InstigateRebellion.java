@@ -13,7 +13,11 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.campaign.CovertOpsManager.CovertActionResult;
+import exerelin.campaign.PlayerFactionStore;
+import exerelin.campaign.covertops.InstigateRebellion;
 import exerelin.campaign.events.RebellionEvent;
+import exerelin.campaign.events.RebellionEventCreator;
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;
@@ -33,22 +37,41 @@ public class Nex_InstigateRebellion extends AgentActionBase {
 		if (entity == null) return false;
 		
 		String arg = params.get(0).getString(memoryMap);
+		MarketAPI market = entity.getMarket();
 		
 		switch (arg)
 		{
 			case "init":
 				boolean haveEnoughCommodities = printCargo(entity.getMarket(), memoryMap.get(MemKeys.MARKET), dialog.getTextPanel());
+				float rebellionPoints = RebellionEventCreator.getRebellionPointsStatic(market);
 				if (!haveEnoughCommodities)
 				{
 					// disable rules command
 				}
+				/*
+				else if (rebellionPoints < 25)
+				{
+					
+				}
+				*/
+				
 				
 				break;
 			case "proceed":
+				instigateRebellion(market);
 				break;
 		}
 		
 		return false;
+	}
+	
+	protected void instigateRebellion(MarketAPI market)
+	{
+		FactionAPI myFaction = PlayerFactionStore.getPlayerFaction();
+		InstigateRebellion rebellion = new InstigateRebellion(market, myFaction, market.getFaction(), true, null);
+		result = CovertActionResult.SUCCESS_DETECTED;
+		rebellion.setResult(result);
+		rebellion.onSuccess();
 	}
 	
 	protected float getNeededCommodityAmount(MarketAPI market, String commodityId)
@@ -73,52 +96,52 @@ public class Nex_InstigateRebellion extends AgentActionBase {
 	}
 	
 	protected ResourceCostPanelAPI makeCostPanel(TextPanelAPI text, Color color, Color color2) {
-        ResourceCostPanelAPI cost = text.addCostPanel("Resources needed (available)", 67, color, color2);
-        cost.setNumberOnlyMode(true);
-        cost.setWithBorder(false);
-        cost.setAlignment(Alignment.LMID);
-        return cost;
-    }
+		ResourceCostPanelAPI cost = text.addCostPanel("Resources needed (available)", 67, color, color2);
+		cost.setNumberOnlyMode(true);
+		cost.setWithBorder(false);
+		cost.setAlignment(Alignment.LMID);
+		return cost;
+	}
 	
 	protected void addCargoEntry(ResourceCostPanelAPI cost, String commodityId, int available, int needed) {
-        Color curr = Global.getSector().getPlayerFaction().getColor();
-        cost.addCost(commodityId, "" + needed + " (" + available + ")", curr);
-    }
+		Color curr = Global.getSector().getPlayerFaction().getColor();
+		cost.addCost(commodityId, "" + needed + " (" + available + ")", curr);
+	}
 	
 	@SuppressWarnings("unchecked")
-    protected boolean printCargo(MarketAPI market, MemoryAPI mem, TextPanelAPI text) {
-        text.setFontVictor();
-        text.setFontSmallInsignia();
-        FactionAPI playerFaction = Global.getSector().getPlayerFaction();
-        Color color = playerFaction.getColor();
-        Color color2 = playerFaction.getDarkUIColor();
+	protected boolean printCargo(MarketAPI market, MemoryAPI mem, TextPanelAPI text) {
+		text.setFontVictor();
+		text.setFontSmallInsignia();
+		FactionAPI playerFaction = Global.getSector().getPlayerFaction();
+		Color color = playerFaction.getColor();
+		Color color2 = playerFaction.getDarkUIColor();
 		CargoAPI playerCargo = Global.getSector().getPlayerFleet().getCargo();
 		
 		boolean haveEnough = true;
+		
+		text.addParagraph("-----------------------------------------------------------------------------");
+		//text.addParagraph("Cargo scanner: Cargo to drop (available)", color);
 
-        text.addParagraph("-----------------------------------------------------------------------------");
-        //text.addParagraph("Cargo scanner: Cargo to drop (available)", color);
+		ResourceCostPanelAPI cost = makeCostPanel(text, color, color2);
+		int numEntries = 0;
 
-        ResourceCostPanelAPI cost = makeCostPanel(text, color, color2);
-        int numEntries = 0;
-
-        for (String commodityId : commodities) {
-            if (numEntries >= 3) {
-                cost = makeCostPanel(text, color, color2);
-                numEntries = 0;
-            }
-            numEntries++;
+		for (String commodityId : commodities) {
+			if (numEntries >= 3) {
+				cost = makeCostPanel(text, color, color2);
+				numEntries = 0;
+			}
+			numEntries++;
 			float neededAmount = getNeededCommodityAmount(market, commodityId);
 			float haveAmount = playerCargo.getCommodityQuantity(commodityId);
 			if (neededAmount > haveAmount)
 				haveEnough = false;
 			
-            addCargoEntry(cost, commodityId, (int)neededAmount, (int)haveAmount / 2);
-            cost.update();
-        }
-        text.addParagraph("-----------------------------------------------------------------------------");
-        text.setFontInsignia();
+			addCargoEntry(cost, commodityId, (int)neededAmount, (int)haveAmount / 2);
+			cost.update();
+		}
+		text.addParagraph("-----------------------------------------------------------------------------");
+		text.setFontInsignia();
 		
 		return haveEnough;
-    }
+	}
 }
