@@ -15,6 +15,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -104,6 +105,11 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 		map.put("$location", market.getPrimaryEntity().getContainingLocation().getName());
 		map.put("$numFactions", "" + factionsToNotify.size());
 		map.put("$repPenaltyAbs", "" + (int)Math.ceil(Math.abs(avgRepChange*100f)));
+		if (market.getPrimaryEntity().hasTag(Tags.STATION)) {
+			map.put("$onOrAt", StringHelper.getString("at"));
+		} else {
+			map.put("$onOrAt", StringHelper.getString("on"));
+		}
 		return map;
 	}
 	
