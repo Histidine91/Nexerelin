@@ -48,14 +48,14 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 	public static final String MANAGER_MAP_KEY = "exerelin_defenceStationManager";
 	public static final float STATION_POINTS_PER_DAY = 0.3f;
 	protected static final float CONSTRUCTION_MARKET_STABILITY_DIVISOR = 5f;
-	public static final float DEFENCE_FP_PENALTY_PER_STATION = 20;	// make response fleet smaller if we already have stations
+	public static final float DEFENCE_FP_PENALTY_PER_STATION = 16;	// make response fleet smaller if we already have stations
 	public static final int MAX_STATIONS_PER_FLEET = 1;
 	// if true, stations will be a semi-permanent fixture of campaign layer
 	// else they'll only appear when they're needed
 	public static final boolean STATIONS_IN_CAMPAIGN_LAYER = true;
 	public static final boolean FLEETS_ATTACK_STATIONS = false;
 	
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
 	
 	protected Map<String, Integer> maxStations = new HashMap<>();
 	protected Map<String, Float> constructionPoints = new HashMap<>();

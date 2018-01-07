@@ -24,9 +24,6 @@ public class ExerelinConfig
    
     // System Generation settings
     public static int minimumPlanets = 3;
-    @Deprecated public static int minimumStations = 0;
-    @Deprecated public static int minimumAsteroidBelts = 0;
-    @Deprecated public static float binarySystemChance = 0.2f;
     public static float forcePiratesInSystemChance = 0.3f;
     public static boolean enableIndependents = true;
     public static boolean enablePirates = true;
@@ -128,9 +125,6 @@ public class ExerelinConfig
             directoryDialogKey = settings.optInt("directoryDialogKey", directoryDialogKey);
 
             minimumPlanets = settings.optInt("minimumPlanets");
-            minimumStations = settings.optInt("minimumStations");
-            minimumAsteroidBelts = settings.optInt("minimumAsteroidBelts");
-            binarySystemChance = (float)settings.optDouble("binarySystemChance", binarySystemChance);
             forcePiratesInSystemChance = (float)settings.optDouble("piratesNotInSystemChance", forcePiratesInSystemChance);
             enableIndependents = settings.optBoolean("enableIndependents", enableIndependents);
             enablePirates = settings.optBoolean("enablePirates", enablePirates);

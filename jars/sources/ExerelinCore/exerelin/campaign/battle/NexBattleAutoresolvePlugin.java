@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
 public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 	
 	public static Logger log = Global.getLogger(NexBattleAutoresolvePlugin.class);
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
 	public static final float STATION_STRENGTH_MULT = 0.4f;
 	public static final float MODULE_STRENGTH_MULT = 1f;
 	

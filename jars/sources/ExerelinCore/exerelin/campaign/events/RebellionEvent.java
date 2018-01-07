@@ -491,7 +491,7 @@ public class RebellionEvent extends BaseEventPlugin {
 			//ExerelinUtilsCargo.addCommodityStockpile(market, Commodities.MARINES, marines);
 			data.fleet.getCargo().removeMarines(marines);
 			govtStrength += marines * VALUE_MARINES;
-			rebelStrength *= 0.8f;	// morale loss
+			rebelStrength *= 0.75f;	// morale loss + bombardment
 		}
 	}
 	
