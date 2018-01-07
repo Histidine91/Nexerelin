@@ -142,7 +142,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (wantExpelPlayerFromFaction)
         {
             wantExpelPlayerFromFaction = false;
-            expelPlayerFromFaction();
+            expelPlayerFromFaction(false);
         }
         
         if (respawnFactions){
@@ -536,9 +536,10 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static void factionEliminated(FactionAPI victor, FactionAPI defeated, MarketAPI market)
     {
-        if (defeated.getId().equals("independent"))
+        String defeatedId = defeated.getId();
+        if (defeatedId.equals(Factions.INDEPENDENT))
             return;
-        if (!defeated.getId().equals(ExerelinConstants.PLAYER_NPC_ID))
+        if (!defeatedId.equals(ExerelinConstants.PLAYER_NPC_ID))
             AllianceManager.leaveAlliance(defeated.getId(), true);
         removeLiveFactionId(defeated.getId());
         Map<String, Object> params = new HashMap<>();
@@ -553,6 +554,13 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         //DiplomacyManager.resetFactionRelationships(defeatedId);
         
         setShowFactionInIntelTab(defeated.getId(), false);
+        
+        // player leaves faction on defeat
+        if (defeated == playerFaction && ExerelinConfig.leaveEliminatedFaction 
+				&& !ExerelinUtilsFaction.isExiInCorvus(defeatedId) && !defeatedId.equals(ExerelinConstants.PLAYER_NPC_ID))
+        {
+            expelPlayerFromFaction(true);
+        }
         
         ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
         checkForVictory();
@@ -682,17 +690,17 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             sectorManager.victoryHasOccured = true;
     }
     
-	/**
-	 * Called when a market is transfered to another faction
-	 * @param market
-	 * @param newOwner
-	 * @param oldOwner
-	 * @param playerInvolved Captured by player?
-	 * @param isCapture False means transfered peacefully (i.e. player_npc transfer market function)
-	 * @param factionsToNotify Factions to cause reputation gain with on capture
-	 * @param repChangeStrength
-	 */
-	public static void transferMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
+    /**
+     * Called when a market is transfered to another faction
+     * @param market
+     * @param newOwner
+     * @param oldOwner
+     * @param playerInvolved Captured by player?
+     * @param isCapture False means transfered peacefully (i.e. player_npc transfer market function)
+     * @param factionsToNotify Factions to cause reputation gain with on capture
+     * @param repChangeStrength
+     */
+    public static void transferMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
             boolean playerInvolved, boolean isCapture, List<String> factionsToNotify, float repChangeStrength)
     {
         // forcibly refreshes the market before capture so we can loot their faction-specific goodies once we capture it
@@ -1016,7 +1024,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return sectorManager.freeStart;
     }
     
-    protected static void expelPlayerFromFaction()
+    protected static void expelPlayerFromFaction(boolean silent)
     {
         String oldFactionId = PlayerFactionStore.getPlayerFactionId();
         if (oldFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
@@ -1029,14 +1037,17 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             PlayerFactionStore.loadIndependentPlayerRelations(true);
         PlayerFactionStore.setPlayerFactionId(ExerelinConstants.PLAYER_NPC_ID);
         ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
-
-        CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
-        if (eventSuper == null) 
-            eventSuper = sector.getEventManager().startEvent(null, "exerelin_faction_changed", null);
-        FactionChangedEvent event = (FactionChangedEvent)eventSuper;
-
-        MarketAPI market = ExerelinUtils.getClosestMarket(oldFactionId);
-        event.reportEvent(oldFaction, newFaction, "expelled", market.getPrimaryEntity());
+        
+        if (!silent)
+        {
+            CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
+            if (eventSuper == null) 
+                eventSuper = sector.getEventManager().startEvent(null, "exerelin_faction_changed", null);
+            FactionChangedEvent event = (FactionChangedEvent)eventSuper;
+            
+            MarketAPI market = ExerelinUtils.getClosestMarket(oldFactionId);
+            event.reportEvent(oldFaction, newFaction, "expelled", market.getPrimaryEntity());
+        }
     }
     
     public static void scheduleExpelPlayerFromFaction()

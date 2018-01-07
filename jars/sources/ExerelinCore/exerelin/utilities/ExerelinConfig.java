@@ -107,6 +107,7 @@ public class ExerelinConfig
     public static float factionRespawnInterval = 30f;
     public static int maxFactionRespawns = 1;
     public static boolean countPiratesForVictory = false;
+    public static boolean leaveEliminatedFaction = true;
     @Deprecated
     public static boolean ownFactionCustomsInspections = false;
     public static boolean useRelationshipBounds = true;
@@ -133,7 +134,7 @@ public class ExerelinConfig
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary",  playerBaseSalary);
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel", playerSalaryIncrementPerLevel);
             playerInsuranceMult = (float)settings.optDouble("playerInsuranceMult", playerInsuranceMult);
-			followersBaseTax = (float)settings.optDouble("followersBaseTax", followersBaseTax);
+            followersBaseTax = (float)settings.optDouble("followersBaseTax", followersBaseTax);
             fleetBonusFpPerPlayerLevel = (float)settings.optDouble("fleetBonusFpPerPlayerLevel", fleetBonusFpPerPlayerLevel);
             
             prisonerRepatriateRepValue = (float)settings.optDouble("prisonerRepatriateRepValue", prisonerRepatriateRepValue);
@@ -192,13 +193,14 @@ public class ExerelinConfig
             factionRespawnInterval = (float)settings.optDouble("factionRespawnInterval", factionRespawnInterval);
             maxFactionRespawns = settings.optInt("maxFactionRespawns", maxFactionRespawns);
             countPiratesForVictory = settings.optBoolean("countPiratesForVictory", countPiratesForVictory);
+            leaveEliminatedFaction = settings.optBoolean("leaveEliminatedFaction", leaveEliminatedFaction);
             
             useRelationshipBounds = settings.optBoolean("useRelationshipBounds", useRelationshipBounds);
             
             officerDeaths = settings.optBoolean("officerDeaths", officerDeaths);
             officerDaredevilBonus = settings.optBoolean("officerDaredevilBonus", officerDaredevilBonus);
-			
-			corvusModeLandmarks = settings.optBoolean("corvusModeLandmarks", corvusModeLandmarks);
+            
+            corvusModeLandmarks = settings.optBoolean("corvusModeLandmarks", corvusModeLandmarks);
             
             builtInFactions = JSONArrayToStringArray(settings.getJSONArray("builtInFactions"));
             

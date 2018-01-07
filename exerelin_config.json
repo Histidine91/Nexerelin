@@ -65,6 +65,7 @@
     
     "countPiratesForVictory": false,
     "useRelationshipBounds": true,  # if false, disregard min/max faction relationships in faction config
+    "leaveEliminatedFaction": true, # if our faction is wiped out, leave it
     
     "enableIndependents": true, # spawn independents in random sector mode
     "enablePirates": true, # spawn pirates in random sector mode
