@@ -208,6 +208,20 @@ public class ExerelinModPlugin extends BaseModPlugin
             throw new RuntimeException("Nexerelin requires LazyLib to function!"
                     + "\nGet it at fractalsoftworks.com/forum/index.php?topic=5444.0");
         }
+        
+        // compatibility warnings
+        int playerMaxLevel = (int)Global.getSettings().getFloat("playerMaxLevel");
+        //Global.getLogger(this.getClass()).info("wololo player level: " + playerMaxLevel);
+        if (playerMaxLevel > 97)
+            throw new RuntimeException("Player max level in config is over 97 (current " + playerMaxLevel + ")"
+                    + "\nThis risks a hang during gameplay."
+                    + "\nSee http://fractalsoftworks.com/forum/index.php?topic=13195.0 for more details.");
+        int officerMaxLevel = (int)Global.getSettings().getFloat("officerMaxLevel");
+        //Global.getLogger(this.getClass()).info("wololo officer level: " + officerMaxLevel);
+        if (officerMaxLevel > 29)
+            throw new RuntimeException("Officer max level in config is over 29 (current " + officerMaxLevel + ")"
+                    + "\nThis risks a hang during gameplay."
+                    + "\nSee http://fractalsoftworks.com/forum/index.php?topic=13195.0 for more details.");
     }
     
     @Override
