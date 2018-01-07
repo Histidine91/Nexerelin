@@ -353,9 +353,9 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 			// defence stations are allowed to join battles normally (but only with a response fleet)
 			if (fleet.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
 			{
-				for (CampaignFleetAPI existingFleet : battle.getBothSides())
+				for (CampaignFleetAPI participatingFleet : battle.getBothSides())
 				{
-					if (ExerelinUtilsFleet.getFleetType(fleet).equals("exerelinResponseFleet"))
+					if (ExerelinUtilsFleet.getFleetType(participatingFleet).equals("exerelinResponseFleet"))
 						return true;
 				}
 			}

@@ -43,7 +43,7 @@ public class Nex_PrepareResponseFleet extends BaseCommandPlugin {
 			return false;
 		}
 		// backstab sneak attack on non-hostile faction! no opposition
-		if (market.getFaction().isAtWorst(Factions.PLAYER, RepLevel.SUSPICIOUS))
+		if (isRaid && market.getFaction().isAtWorst(Factions.PLAYER, RepLevel.SUSPICIOUS))
 		{
 			mem.set("$hasDefenders", false, 0);
 			return false;
