@@ -557,7 +557,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         // player leaves faction on defeat
         if (defeated == playerFaction && ExerelinConfig.leaveEliminatedFaction 
-				&& !ExerelinUtilsFaction.isExiInCorvus(defeatedId) && !defeatedId.equals(ExerelinConstants.PLAYER_NPC_ID))
+                && !ExerelinUtilsFaction.isExiInCorvus(defeatedId) && !defeatedId.equals(ExerelinConstants.PLAYER_NPC_ID))
         {
             expelPlayerFromFaction(true);
         }
@@ -688,6 +688,14 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         Global.getSector().addScript(new VictoryScreenScript(Factions.PLAYER, VictoryType.RETIRED));
         if (sectorManager != null)
             sectorManager.victoryHasOccured = true;
+    }
+    
+    // legacy fallback method (for Save Transfer)
+    @Deprecated
+    public static void captureMarket(MarketAPI market, FactionAPI newOwner, FactionAPI oldOwner, 
+            boolean playerInvolved, List<String> factionsToNotify, float repChangeStrength)
+    {
+        transferMarket(market, newOwner, oldOwner, playerInvolved, true, factionsToNotify, repChangeStrength);
     }
     
     /**
