@@ -169,7 +169,7 @@
 		"suppressionFleetPrefixSmall":"Small",
 		"suppressionFleetPrefixLarge":"Large",
 		
-		"stationName":"Defence Station",
+		"stationName":"Defense Station",
 		
 		"fleetSpawnMessage":"A fleet is being launched at $market, in $location. It will be underway shortly.",
 		"fleetSpawnMessageLocal":"A fleet is being launched and will begin defending $market shortly.",
