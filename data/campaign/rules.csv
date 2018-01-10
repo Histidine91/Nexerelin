@@ -123,8 +123,10 @@ FireAll ExerelinNGCOptions",,,
 ExerelinNGCDisableCorvusMode,NewGameOptionSelected,$option==exerelinNGCDisableCorvusMode,"NGCSetCorvusMode false
 FireAll ExerelinNGCOptions",,,
 ExerelinNGCEnablePrismMarket,NewGameOptionSelected,$option==exerelinNGCEnablePrismMarket,"NGCSetPrismMarketEnabled true
+Nex_NGCProcessSectorGenerationSliders save
 FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCDisablePrismMarket,NewGameOptionSelected,$option==exerelinNGCDisablePrismMarket,"NGCSetPrismMarketEnabled false
+Nex_NGCProcessSectorGenerationSliders save
 FireAll ExerelinNGCSectorOptions",,,
 ExerelinNGCEnableRandomStartRelationships,NewGameOptionSelected,$option==exerelinNGCEnableRandomStartRelationships,"NGCSetRandomStartRelationships true
 FireAll ExerelinNGCFactionOptions",,,
