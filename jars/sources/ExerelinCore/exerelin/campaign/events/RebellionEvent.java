@@ -637,13 +637,20 @@ public class RebellionEvent extends BaseEventPlugin {
 				if (!suppressionFleetWarning && suppressionFleetCountdown < 12)
 				{
 					suppressionFleetSource = pickSuppressionFleetSource();
-					reportStage("suppression_fleet_warning", suppressionFleetSource.getPrimaryEntity());
-					suppressionFleetWarning = true;
+					// no markets to launch fleet from, reset countdown
+					if (suppressionFleetSource == null)
+						suppressionFleetCountdown = SUPPRESSION_FLEET_INTERVAL * MathUtils.getRandomNumberInRange(0.75f, 1.25f);
+					else
+					{
+						reportStage("suppression_fleet_warning", suppressionFleetSource.getPrimaryEntity());
+						suppressionFleetWarning = true;
+					}
 				}
 				if (suppressionFleetCountdown < 0)
 				{
 					// don't spawn suppression fleet if the source market was lost in the meantime
-					if (AllianceManager.areFactionsAllied(suppressionFleetSource.getFactionId(), govtFactionId))
+					if (suppressionFleetSource != null && AllianceManager.areFactionsAllied(
+							suppressionFleetSource.getFactionId(), govtFactionId))
 						spawnSuppressionFleet();
 					else
 						suppressionFleetSource = null;
