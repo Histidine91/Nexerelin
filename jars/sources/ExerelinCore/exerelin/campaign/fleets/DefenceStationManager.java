@@ -99,14 +99,17 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 		if (conf.defenceStations.isEmpty())
 			return 0;
 		
+		// default case: planet with no (civilian) orbital station
 		int sizeForOne = 7;
 		int sizeForTwo = 12;
 		
+		// free-standing station (market does not include a planet)
 		if (market.getPrimaryEntity().hasTag(Tags.STATION) && market.getPlanetEntity() == null)
 		{
 			sizeForOne = 5;
 			sizeForTwo = 8;
 		}
+		// planet with station
 		else if (market.hasCondition(Conditions.ORBITAL_STATION))
 		{
 			sizeForOne = 4;
