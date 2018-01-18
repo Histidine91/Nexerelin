@@ -62,7 +62,7 @@
       "type": "HYBRID"
     },
     {
-      "angle": 0,
+      "angle": 0.01,
       "arc": 180,
       "id": "WS 002",
       "locations": [
@@ -86,7 +86,7 @@
       "type": "HYBRID"
     },
     {
-      "angle": -0,
+      "angle": -0.01,
       "arc": 160,
       "id": "WS 004",
       "locations": [
