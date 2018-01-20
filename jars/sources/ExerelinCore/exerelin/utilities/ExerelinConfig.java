@@ -33,7 +33,7 @@ public class ExerelinConfig
     public static float playerBaseSalary = 5000f;
     public static float playerSalaryIncrementPerLevel = 1000f;
     public static float playerInsuranceMult = 0.5f;
-	public static float followersBaseTax = 100f;
+    public static float followersBaseTax = 100f;
     
     public static float fleetBonusFpPerPlayerLevel = 0.25f;
     
@@ -61,7 +61,7 @@ public class ExerelinConfig
     public static float invasionPointsPerPlayerLevel = 1f;
     public static float invasionPointEconomyMult = 1f;
     public static float conquestMissionRewardMult = 1f;
-	public static float invasionLootMult = 0.05f;
+    public static float invasionLootMult = 0.05f;
     
     // Alliances
     public static float allianceGracePeriod = 30;
@@ -113,7 +113,7 @@ public class ExerelinConfig
     public static boolean useRelationshipBounds = true;
     public static boolean officerDeaths = true;
     public static boolean officerDaredevilBonus = true;
-	public static boolean corvusModeLandmarks = true;  
+    public static boolean corvusModeLandmarks = true;  
 
     public static void loadSettings()
     {
@@ -271,35 +271,23 @@ public class ExerelinConfig
                 customRebels.add(exerelinFactionConfig.customRebelFaction);
         }
 
-        return  customRebels;
+        return customRebels;
     }
     
-    public static List<String> getModdedFactionsList(boolean onlyPlayable)
+    public static List<String> getFactions(boolean onlyPlayable, boolean onlyStartable)
     {
-        //log.info("Getting modded factions");
-        List<String> possibleModdedFactions = new ArrayList<>();
+        List<String> factions = new ArrayList<>();
 
         for (ExerelinFactionConfig config : exerelinFactionConfigs) {
-            if (onlyPlayable && !config.playableFaction) continue;
-            if (config.isBuiltIn) continue;
+            if (onlyPlayable && !config.playableFaction)
+                continue;
+            if (onlyStartable && !config.startingFaction)
+                continue;
             if (ExerelinUtilsFaction.doesFactionExist(config.factionId))
             {
-                possibleModdedFactions.add(config.factionId);
+                factions.add(config.factionId);
             }
         }
-        return possibleModdedFactions;
-    }
-
-    public static List<String> getBuiltInFactionsList(boolean onlyPlayable)
-    {
-        List<String> possibleBuiltInFactions = new ArrayList<>();
-
-        for (ExerelinFactionConfig config : ExerelinConfig.exerelinFactionConfigs) {
-            if (onlyPlayable && !config.playableFaction) continue;
-            if (!config.isBuiltIn) continue;
-            possibleBuiltInFactions.add(config.factionId);
-        }
-
-        return possibleBuiltInFactions;
+        return factions;
     }
 }

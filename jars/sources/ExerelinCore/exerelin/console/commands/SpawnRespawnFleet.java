@@ -38,8 +38,7 @@ public class SpawnRespawnFleet implements BaseCommand {
         float closestTargetDist = 9999999;
         
         // pick faction
-        List<String> factions = ExerelinConfig.getBuiltInFactionsList(true);
-        factions.addAll(ExerelinConfig.getModdedFactionsList(true));
+        List<String> factions = ExerelinConfig.getFactions(true, false);
         WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>();
         for (String faction : factions)
         {

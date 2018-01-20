@@ -485,7 +485,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         List<String> factionIds = factionIdsAtStart;
         if (!onlyRespawnStartingFactions)
         {
-            factionIds = ExerelinSetupData.getInstance().getPlayableFactions();
+            factionIds = ExerelinConfig.getFactions(true, false);
         }
         
         for(String factionId : factionIds)
@@ -1067,7 +1067,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static void reinitLiveFactions()
     {
         if (sectorManager == null) return;
-        List<String> temp = ExerelinSetupData.getInstance().getAllFactions();
+        List<String> temp = ExerelinConfig.getFactions(false, false);
         sectorManager.liveFactionIds = new ArrayList<>();
         sectorManager.factionIdsAtStart = new ArrayList<>();
         sectorManager.historicFactionIds = new HashSet<>();

@@ -25,7 +25,6 @@ public class Nex_FactionDirectoryHelper {
 	public static final int MAX_GROUPINGS = 7;
 	
 	protected static List<FactionListGrouping> ngcFactions = new ArrayList<>();
-	protected static List<FactionListGrouping> ngcFactionsModOnly = new ArrayList<>();
 	
 	protected static Map<String, String> nameCache = new HashMap<>();
 	
@@ -33,7 +32,9 @@ public class Nex_FactionDirectoryHelper {
 	 * Groups the specified factions into alphabetically sorted lists.
 	 * e.g. group 1 = Blackrock, Diable, Hegemony; group 2 = Persean League, pirates, Sindrian Diktat; group 3 = Tyrador
 	 * Preferred group size is {@value PREFERED_ENTRIES_PER_GROUPING}, 
-	 * will go up to {@value MAX_ENTRIES_PER_GROUPING} if groups of six would require more than {@value MAX_GROUPING} groups
+	 * will go up to {@value MAX_ENTRIES_PER_GROUPING} if groups of 
+	 * {@value PREFERED_ENTRIES_PER_GROUPING} would require more than 
+	 * {@value MAX_GROUPING} groups
 	 * @param factionIds
 	 * @return
 	 */
@@ -98,25 +99,22 @@ public class Nex_FactionDirectoryHelper {
 	
 	/**
 	 * Gets alphabetically sorted groups of factions
-	 * @param modOnly Mod-only factions
 	 * @param excludeFollowers Exclude the followers faction ({@code player_npc})?
 	 * @return
 	 */
-	public static List<FactionListGrouping> getNGCFactionGroupings(boolean modOnly, boolean excludeFollowers)
+	public static List<FactionListGrouping> getNGCFactionGroupings(boolean excludeFollowers)
 	{
 		List<FactionListGrouping> list = ngcFactions;
-		if (modOnly)
-		{
-			list = ngcFactionsModOnly;
-		}
 		
 		if (list.isEmpty())
 		{
-			List<String> factions = ExerelinConfig.getModdedFactionsList(true);
-			if (!modOnly) factions.addAll(ExerelinConfig.getBuiltInFactionsList(true));
+			List<String> factions = ExerelinConfig.getFactions(false, true);
 			if (excludeFollowers)
 				factions.remove(ExerelinConstants.PLAYER_NPC_ID);
 			list.addAll(getFactionGroupings(factions));
+			
+			// cache results
+			ngcFactions = list;
 		}
 		
 		return list;

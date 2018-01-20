@@ -10,6 +10,8 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 
 
 public class NGCSetPlayerFaction extends BaseCommandPlugin {
@@ -19,7 +21,10 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 		String factionId = params.get(0).getString(memoryMap);
 		PlayerFactionStore.setPlayerFactionIdNGC(factionId);
 		if (!factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
-			ExerelinSetupData.getInstance().freeStart = false;
+		{
+			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+			ExerelinSetupData.getInstance().freeStart = conf.freeStart;
+		}
 		return true;
 	}
 }

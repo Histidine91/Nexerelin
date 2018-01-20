@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.campaign.ExerelinSetupData;
+import exerelin.utilities.ExerelinConfig;
 
 
 public class NGCDoesFactionExist extends BaseCommandPlugin {
@@ -17,10 +17,9 @@ public class NGCDoesFactionExist extends BaseCommandPlugin {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		String factionId = params.get(0).getString(memoryMap);
-		if(factions == null)
-		{
-			ExerelinSetupData data = ExerelinSetupData.getInstance();   
-			factions = data.getPlayableFactions();
+		if (factions == null)
+		{  
+			factions = ExerelinConfig.getFactions(false, true);
 		}
 		return factions.contains(factionId);
 	}

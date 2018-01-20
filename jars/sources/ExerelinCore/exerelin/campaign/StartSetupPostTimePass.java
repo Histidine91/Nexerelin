@@ -19,8 +19,11 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.world.ExerelinCorvusLocations;
 import exerelin.ExerelinConstants;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.ExerelinUtilsReputation;
 import java.awt.Color;
 import java.util.Random;
 import org.lwjgl.util.vector.Vector2f;
@@ -115,10 +118,24 @@ public class StartSetupPostTimePass {
 		{
 			member.setShipName(myFaction.pickRandomShipName());
 		}
+		
+		// spawn as a different faction if config says we should
+		// for Blade Breakers etc.
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		if (conf.spawnAsFactionId != null && !conf.spawnAsFactionId.isEmpty())
+		{
+			factionId = conf.spawnAsFactionId;
+			PlayerFactionStore.setPlayerFactionId(factionId);
+			if (conf.freeStart)	// Blade Breaker start: use BB start relations
+				ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+			else	// Lion's Guard start: use Diktat start relations
+				ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(factionId);
+		}
 	}
 	
 	/**
-	 * Sends the player fleet to the intended starting star system, orbiting the home market
+	 * Sends the player fleet to the intended starting star system, orbiting the home market.
+	 * Also grants the starting commission.
 	 * @param playerFleet
 	 * @param entity Home planet/station
 	 */

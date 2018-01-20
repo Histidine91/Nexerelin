@@ -9,8 +9,10 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
+import com.fs.starfarer.api.loading.Description;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -42,11 +44,20 @@ public class Nex_NGCListFactions extends BaseCommandPlugin {
 					return true;
 				}
 				memoryMap.get(MemKeys.LOCAL).set("$factionGroup", num);
-				FactionListGrouping group = Nex_FactionDirectoryHelper.getNGCFactionGroupings(false, true).get(num - 1);
+				FactionListGrouping group = Nex_FactionDirectoryHelper.getNGCFactionGroupings(true).get(num - 1);
 				for (FactionAPI faction : group.factions)
 				{
-					opts.addOption(Nex_FactionDirectoryHelper.getFactionDisplayName(faction), 
-							JOIN_FACTION_OPTION_PREFIX + faction.getId());
+					String factionId = faction.getId();
+					String optId = JOIN_FACTION_OPTION_PREFIX + factionId;
+					String text = Nex_FactionDirectoryHelper.getFactionDisplayName(faction);
+					if (!ExerelinConfig.getExerelinFactionConfig(factionId).difficultyString.isEmpty())
+					{
+						text = text + " (" + ExerelinConfig.getExerelinFactionConfig(factionId).difficultyString + ")";
+					}
+					
+					opts.addOption(text, optId);
+					//opts.setTooltip(optId, Global.getSettings().getDescription(
+					//			faction.getId(), Description.Type.FACTION).getText1FirstPara());
 				}
 				opts.addOption(Misc.ucFirst(StringHelper.getString("back")), "nex_NGCFactionsBack");
 				opts.setShortcut("nex_NGCFactionsBack", Keyboard.KEY_ESCAPE, false, false, false, false);
@@ -67,7 +78,7 @@ public class Nex_NGCListFactions extends BaseCommandPlugin {
 	{
 		OptionPanelAPI opts = dialog.getOptionPanel();
 		opts.clearOptions();
-		List<FactionListGrouping> groups = Nex_FactionDirectoryHelper.getNGCFactionGroupings(false, true);
+		List<FactionListGrouping> groups = Nex_FactionDirectoryHelper.getNGCFactionGroupings(true);
 
 		int groupNum = 0;
 		for (FactionListGrouping group : groups)

@@ -11,6 +11,8 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 
 
 public class Nex_NGCSetFactionFromJoinOption extends BaseCommandPlugin {
@@ -26,7 +28,11 @@ public class Nex_NGCSetFactionFromJoinOption extends BaseCommandPlugin {
 		memoryMap.get(MemKeys.LOCAL).set("$playerFaction", factionId, 0);
 		PlayerFactionStore.setPlayerFactionIdNGC(factionId);
 		if (!factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
-			ExerelinSetupData.getInstance().freeStart = false;
+		{
+			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+			ExerelinSetupData.getInstance().freeStart = conf.freeStart;
+		}
+			
 		return true;
 	}
 }

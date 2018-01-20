@@ -296,7 +296,7 @@
 		"ownFaction":"own faction",
 		"freeStart":"free start",
 		"ownFactionDisabledTooltip":"No planet to spawn from in non-random sector, use free start instead",
-		"freeStartTooltip":"Own faction, but with no starting planet; you're on your own",
+		"freeStartTooltip":"Own faction, but with no starting planet; you're on your own. Potentially quite difficult.",
 		"devStart":">> (dev) quick start",
 		"devStartFast":">> (dev) quick start no time pass",
 		

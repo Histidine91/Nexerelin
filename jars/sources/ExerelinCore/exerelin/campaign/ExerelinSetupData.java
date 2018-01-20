@@ -59,22 +59,4 @@ public final class ExerelinSetupData
 	{
 		instance = new ExerelinSetupData();
 	}
-	
-	public List<String> getPlayableFactions()
-	{
-		return new ArrayList<>(getFactions(true));
-	}
-	
-	public List<String> getAllFactions()
-	{
-		return new ArrayList<>(getFactions(false));
-	}
-	
-	protected List<String> getFactions(boolean playableOnly)
-	{
-		List<String> factionsList = new ArrayList<>();
-		factionsList.addAll(ExerelinConfig.getBuiltInFactionsList(playableOnly));
-		factionsList.addAll(ExerelinConfig.getModdedFactionsList(playableOnly));
-		return new ArrayList<>(factionsList);
-	}
 }

@@ -24,8 +24,11 @@ public class ExerelinFactionConfig
     
     public String factionId;
     public boolean playableFaction = true;
+    public boolean startingFaction = true;
     public boolean corvusCompatible = false;
     public boolean isBuiltIn = false;
+    public String spawnAsFactionId = null;
+    public boolean freeStart = false;
    
     public boolean pirateFaction = false;
     public boolean isPirateNeutral = false;
@@ -55,7 +58,7 @@ public class ExerelinFactionConfig
     public String invasionSupportFleetName = StringHelper.getString("exerelin_fleets", "invasionSupportFleetName");
     public String responseFleetName = StringHelper.getString("exerelin_fleets", "responseFleetName");
     public String defenceFleetName = StringHelper.getString("exerelin_fleets", "defenceFleetName");
-	public String suppressionFleetName = StringHelper.getString("exerelin_fleets", "suppressionFleetName");
+    public String suppressionFleetName = StringHelper.getString("exerelin_fleets", "suppressionFleetName");
     public String stationName = StringHelper.getString("exerelin_fleets", "stationName");
     
     // Diplomacy
@@ -95,6 +98,7 @@ public class ExerelinFactionConfig
     public boolean allowPrisonerActions = true;
     
     public boolean directoryUseShortName = false;
+    public String difficultyString = "";
     
     public List<String> vengeanceLevelNames = new ArrayList<>();
     public List<String> vengeanceFleetNames = new ArrayList<>();
@@ -127,15 +131,18 @@ public class ExerelinFactionConfig
             JSONObject settings = Global.getSettings().loadJSON("data/config/exerelinFactionConfig/" + factionId + ".json");
 
             playableFaction = settings.optBoolean("playableFaction", true);
+            startingFaction = settings.optBoolean("startingFaction", playableFaction);
             corvusCompatible = settings.optBoolean("corvusCompatible", false);
             
             pirateFaction = settings.optBoolean("pirateFaction", false);
             isPirateNeutral = settings.optBoolean("isPirateNeutral", false);
             spawnPatrols = settings.optBoolean("spawnPatrols", true);
             hostileToAll = settings.optInt("hostileToAll", hostileToAll);
+            spawnAsFactionId = settings.optString("spawnAsFactionId", spawnAsFactionId);
+            freeStart = settings.optBoolean("freeStart", false);
             
             baseFleetCostMultiplier = settings.optDouble("baseFleetCostMultiplier", 1);
-
+            
             customRebelFaction = settings.optString("customRebelFaction", customRebelFaction);
             customRebelFleetId = settings.optString("customRebelFleetId", customRebelFleetId);
             rebelFleetSuffix = settings.optString("rebelFleetSuffix", rebelFleetSuffix);
@@ -172,6 +179,7 @@ public class ExerelinFactionConfig
             allowPrisonerActions = settings.optBoolean("allowPrisonerActions", allowPrisonerActions);
             
             directoryUseShortName = settings.optBoolean("directoryUseShortName", directoryUseShortName);
+            difficultyString = settings.optString("difficultyString", difficultyString);
             
             if (settings.has("miningVariantsOrWings"))
                 miningVariantsOrWings = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));

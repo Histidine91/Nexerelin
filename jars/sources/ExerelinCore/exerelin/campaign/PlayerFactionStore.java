@@ -3,6 +3,7 @@ package exerelin.campaign;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.ExerelinConstants;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class PlayerFactionStore {
         Map<String, Float> storedRelations = (HashMap<String, Float>)data.get(PLAYER_RELATIONS_KEY);
         if (storedRelations == null) storedRelations = new HashMap<>();
         
-        FactionAPI playerFaction = sector.getFaction("player");
+        FactionAPI playerFaction = sector.getFaction(Factions.PLAYER);
         float relation = playerFaction.getRelationship(factionId);
         storedRelations.put(factionId, relation);
         data.put(PLAYER_RELATIONS_KEY, storedRelations);
@@ -74,7 +75,7 @@ public class PlayerFactionStore {
         SectorAPI sector = Global.getSector();
         Map<String, Object> data = sector.getPersistentData();
         Map<String, Float> storedRelations = new HashMap<>();
-        FactionAPI playerFaction = sector.getFaction("player");
+        FactionAPI playerFaction = sector.getFaction(Factions.PLAYER);
         for (FactionAPI faction : sector.getAllFactions())
         {
             float relation = playerFaction.getRelationship(faction.getId());

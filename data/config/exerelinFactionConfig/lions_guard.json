@@ -1,12 +1,23 @@
 {
     "playableFaction":false,
+    #"startingFaction":true,
     "corvusCompatible":true,
+    "spawnAsFactionId":"sindrian_diktat",
     "rebelFleetSuffix":"Rogues",
     "startRelationships":{ "sindrian_diktat":1 },
     
     "responseFleetName":"Guardian Fleet",
     
     "morality":"amoral",
+    
+    "startShipsSolo":["wolf_Starting"],
+    "startShipsSoloSSP":["brawler_lions_guard_eli"],
+    "startShipsCombatSmall":["medusa_Attack", "wolf_CS", "vigilance_lions_guard_eli"],
+    "startShipsCombatSmallSSP":["ssp_sunder_u_ass", "shade_Assault", "ssp_hecate_sta"],
+    "startShipsCombatLarge":["apogee_Balanced", "medusa_Attack", "omen_PD"],
+    "startShipsCombatLargeSSP":["apogee_Balanced", "hammerhead_lions_guard_eli", "afflictor_Strike"],
+    "startShipsCarrierSmallSSP":["ssp_vortex_sta", "tempest_Attack", "brawler_lions_guard_eli"],
+    "startShipsCarrierLargeSSP":["heron_lions_guard_eli", "medusa_Attack", "ssp_hecate_sta"],
     
     "defenceStations":["nex_asgard_Advanced"],
 }

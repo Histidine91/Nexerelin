@@ -129,13 +129,15 @@ public class ExerelinProcGen {
 		
 	protected List<String> getStartingFactions()
 	{
-		List<String> availableFactions = setupData.getPlayableFactions();
+		List<String> availableFactions = ExerelinConfig.getFactions(true, false);
+		
 		int wantedFactionNum = setupData.numStartFactions;
 		if (wantedFactionNum <= 0) {
 			if (ExerelinConfig.enableIndependents)
 				availableFactions.add(Factions.INDEPENDENT);
 			if (!ExerelinConfig.enablePirates)
 				availableFactions.remove(Factions.PIRATES);
+			availableFactions.remove(ExerelinConstants.PLAYER_NPC_ID);
 			return availableFactions;
 		}
 		
@@ -145,6 +147,12 @@ public class ExerelinProcGen {
 		if (!ExerelinSetupData.getInstance().freeStart)
 		{
 			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
+			ExerelinFactionConfig alignedConf = ExerelinConfig.getExerelinFactionConfig(alignedFactionId);
+			if (alignedConf.spawnAsFactionId != null)
+			{
+				alignedFactionId = alignedConf.spawnAsFactionId;
+			}
+			
 			factions.add(alignedFactionId);
 			availableFactions.remove(alignedFactionId);
 			numFactions++;
@@ -1271,7 +1279,6 @@ public class ExerelinProcGen {
 		// faction picker
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>(random);
 		List<String> factions = new ArrayList<>(factionIds);
-		factions.remove(ExerelinConstants.PLAYER_NPC_ID);  // player NPC faction only gets homeworld (if applicable)
 		factionPicker.addAll(factions);
 		
 		// various Collections we'll be using
@@ -1295,9 +1302,7 @@ public class ExerelinProcGen {
 				pirateFactions.add(factionId);
 		}
 		
-		// before we do anything else give the "homeworld" to our faction
-		pickHomeworld();
-		String alignedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
+		
 		/*
 		if (ExerelinSetupData.getInstance().freeStart)
 		{
@@ -1307,7 +1312,14 @@ public class ExerelinProcGen {
 		}
 		factionPicker.remove(alignedFactionId);
 		*/
-				
+		
+		String alignedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
+		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(alignedFactionId);
+		String spawnAsFactionId = factionConf.spawnAsFactionId;
+		if (spawnAsFactionId != null) alignedFactionId = spawnAsFactionId;
+		
+		// before we do anything else give the "homeworld" to our faction
+		pickHomeworld();
 		if (!ExerelinSetupData.getInstance().freeStart)	// (true)
 		{
 			homeworld.isHQ = true;
@@ -1363,6 +1375,9 @@ public class ExerelinProcGen {
 			unassignedEntities.remove(hq);
 			existingHQs.add(hq);
 			existingHQsByFaction.put(factionId, hq);
+			
+			if (factionId.equals(spawnAsFactionId))
+				homeworld = hq;
 		}
 		
 		// ensure pirate presence in most star systems

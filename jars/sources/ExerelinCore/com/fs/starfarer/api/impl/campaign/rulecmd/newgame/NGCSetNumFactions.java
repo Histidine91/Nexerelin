@@ -11,6 +11,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.ExerelinSetupData;
+import exerelin.utilities.ExerelinConfig;
 
 
 public class NGCSetNumFactions extends BaseCommandPlugin {
@@ -26,7 +27,7 @@ public class NGCSetNumFactions extends BaseCommandPlugin {
 		}
 		else
 		{
-			List<String> availableFactions = setupData.getPlayableFactions();
+			List<String> availableFactions = ExerelinConfig.getFactions(true, true);
 			availableFactions.remove(ExerelinConstants.PLAYER_NPC_ID);
 			setupData.numStartFactions = (int)(num * availableFactions.size() + 0.5f);
 		}
