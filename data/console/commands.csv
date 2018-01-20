@@ -11,6 +11,7 @@ LeaveAlliance,exerelin.console.commands.LeaveAlliance,"campaign,exerelin",leavea
 ResetRelationships,exerelin.console.commands.ResetRelationships,"campaign,exerelin",resetrelationships,Resets faction relationships as if launching a new game. Doesn't work for mod factions in Corvus mode.
 #PrintProductionInfo,exerelin.console.commands.PrintProductionInfo,"campaign,exerelin",printproductioninfo <entity> <commodity>,Print some economy debugging info for the selected market and commodity.
 RetireCharacter,exerelin.console.commands.RetireCharacter,"campaign,exerelin",retirecharacter,Retires your character and ends the game.
+StartVengeanceEvent,exerelin.console.commands.VengeanceEvent,"campaign,exerelin",startvengeanceevent <faction>,Spawns a vengeance fleet for the specified faction.
 #,,,,
 # Omnifactory,,,,
 #OmnifacStatus,org.lazywizard.omnifac.commands.OmnifacStatus,"omnifac,campaign",omnifacstatus [detailed],"Shows the location of all active Omnifactories, including their known blueprints if ""detailed"" is entered as an argument."

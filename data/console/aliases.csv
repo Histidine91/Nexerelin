@@ -1,2 +1,4 @@
 alias,command
 syncfactionrelationships,syncrelationships
+diplomacyevent,creatediplomacyevent
+vengeanceevent,startvengeanceevent

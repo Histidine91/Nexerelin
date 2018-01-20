@@ -107,6 +107,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 	public void addFactionPoints(String factionId, float points)
 	{
 		if (!isRevengeanceEnabled()) return;
+		if (SSP_FactionVengeanceEvent.EXCEPTION_LIST.contains(factionId)) return;
 		if (factionPoints == null)
 			factionPoints = new HashMap<>();
 		if (!factionPoints.containsKey(factionId))
@@ -447,7 +448,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 	 * @param factionId
 	 * @return
 	 */
-	protected MarketAPI pickMarketForFactionVengeance(String factionId) 
+	public MarketAPI pickMarketForFactionVengeance(String factionId) 
 	{
 		FactionAPI faction = Global.getSector().getFaction(factionId);
         WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();

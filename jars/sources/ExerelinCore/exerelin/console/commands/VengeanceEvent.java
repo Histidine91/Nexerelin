@@ -1,17 +1,16 @@
 package exerelin.console.commands;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.util.Misc;
-import java.util.List;
+import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import exerelin.campaign.events.RevengeanceManagerEvent;
 import org.lazywizard.console.BaseCommand;
+import org.lazywizard.console.CommandUtils;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
-import org.lwjgl.util.vector.Vector2f;
 
-public class PingDistance implements BaseCommand {
+public class VengeanceEvent implements BaseCommand {
 
     @Override
     public CommandResult runCommand(String args, CommandContext context) {
@@ -19,33 +18,42 @@ public class PingDistance implements BaseCommand {
             Console.showMessage(CommonStrings.ERROR_CAMPAIGN_ONLY);
             return CommandResult.WRONG_CONTEXT;
         }
-
-        // do me!
-        SectorAPI sector = Global.getSector();
-        CampaignFleetAPI playerFleet = sector.getPlayerFleet();
-        List<MarketAPI> markets = Misc.getMarketsInLocation(playerFleet.getContainingLocation());
-        
-        Vector2f playerPos = playerFleet.getLocation();
-        MarketAPI closestTargetMarket = null;
-        float closestTargetDist = 9999999;
-        
-        for (MarketAPI market : markets) {
-            float distance = Misc.getDistance(playerPos, market.getPrimaryEntity().getLocation());
-            if (distance < closestTargetDist)
-            {
-                closestTargetDist = distance;
-                closestTargetMarket = market;
-            }
-        }
-        
-        if (closestTargetMarket == null)
+		
+		if (args.isEmpty())
         {
-            Console.showMessage("Unable to find target");
-                return CommandResult.ERROR;
+            return CommandResult.BAD_SYNTAX;
         }
-        
-        Console.showMessage("Distance to " + closestTargetMarket.getName() + ": " + closestTargetDist);
-        
+
+        String[] tmp = args.split(" ");
+
+        if (tmp.length < 1)
+        {
+            return CommandResult.BAD_SYNTAX;
+        }
+
+        final FactionAPI faction = CommandUtils.findBestFactionMatch(tmp[0]);
+        if (faction == null)
+        {
+            Console.showMessage("No such faction '" + tmp[0] + "'!");
+            return CommandResult.ERROR;
+        }
+		
+		RevengeanceManagerEvent veng = RevengeanceManagerEvent.getOngoingEvent();
+		if (veng == null)
+		{
+			Console.showMessage("Vengeance event not running");
+            return CommandResult.ERROR;
+		}
+		
+		MarketAPI market = veng.pickMarketForFactionVengeance(faction.getId());
+		if (market == null)
+		{
+			Console.showMessage("Unable to find market for vengeance fleet");
+            return CommandResult.ERROR;
+		}
+		
+		Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_vengeance", null);
+        Console.showMessage("Spawning vengeance fleet for faction " + faction.getDisplayName() + " from " + market.getName());		
         return CommandResult.SUCCESS;
     }
 }

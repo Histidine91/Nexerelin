@@ -38,7 +38,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
     public static final Map<String, Float> FACTION_ADJUST = new HashMap<>(4);
     public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[] {
         Factions.DERELICT, Factions.REMNANTS, Factions.INDEPENDENT, 
-        Factions.SCAVENGERS, Factions.NEUTRAL, Factions.LUDDIC_PATH
+        Factions.SCAVENGERS, Factions.NEUTRAL	//, Factions.LUDDIC_PATH
     }));
 
     public static Logger log = Global.getLogger(SSP_FactionVengeanceEvent.class);
@@ -224,7 +224,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
 
     @Override
     public String getEventName() {
-        return Misc.ucFirst(faction.getDisplayName()) + " " + def.getName(escalationLevel);
+        return Misc.ucFirst(faction.getDisplayName()) + " " + def.getName(faction.getId(), escalationLevel);
     }
 
     @Override
@@ -246,8 +246,8 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         Map<String, String> map = super.getTokenReplacements();
         map.put("$duration", Misc.getAtLeastStringForDays(duration));
 
-        String name = def.getFleetName(escalationLevel).toLowerCase();
-        String nameSingle = def.getFleetNameSingle(escalationLevel).toLowerCase();
+        String name = def.getFleetName(faction.getId(), escalationLevel).toLowerCase();
+        String nameSingle = def.getFleetNameSingle(faction.getId(), escalationLevel).toLowerCase();
         map.put("$fleetType", name);
         map.put("$aFleetType", nameSingle);
         map.put("$FleetType", Misc.ucFirst(name));
@@ -443,7 +443,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         //fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "vengeanceFleet");
         fleet.getMemoryWithoutUpdate().set("$escalation", (float) escalationLevel);
         fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
-        fleet.setName(def.getFleetName(escalationLevel));
+        fleet.setName(def.getFleetName(faction.getId(), escalationLevel));
         switch (escalationLevel) {
             default:
             case 0:
@@ -566,6 +566,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         JUNK_PIRATES("junk_pirates", 1, 0.5f),
         PACK("pack", 1, 0.5f),
         ASP_SYNDICATE("syndicate_asp", 2, 0.75f),
+		DME("dassault_mikoyan", 2, 1f),
         // TODO (config in SCY mod)
         SCY("SCY",
             "Grudge", "Seeker Fleet", "a Seeker Fleet",
@@ -664,8 +665,9 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
             return str != null && !str.isEmpty();
         }
         
-        String getName(int escalationLevel)
+        String getName(String faction, int escalationLevel)
         {
+			if (faction == null) faction = this.faction;
             String name = "";
             ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction);
             if (conf.vengeanceLevelNames.size() > escalationLevel)
@@ -687,8 +689,9 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
             return StringHelper.getString("exerelin_fleets", "vengeanceLevel" + escalationLevel);
         }
         
-        String getFleetName(int escalationLevel)
+        String getFleetName(String faction, int escalationLevel)
         {
+			if (faction == null) faction = this.faction;
             String name = "";
             ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction);
             if (conf.vengeanceFleetNames.size() > escalationLevel)
@@ -710,8 +713,9 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
             return StringHelper.getString("exerelin_fleets", "vengeanceFleet" + escalationLevel);
         }
         
-        String getFleetNameSingle(int escalationLevel)
+        String getFleetNameSingle(String faction, int escalationLevel)
         {
+			if (faction == null) faction = this.faction;
             String name = "";
             ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(faction);
             if (conf.vengeanceFleetNamesSingle.size() > escalationLevel)
