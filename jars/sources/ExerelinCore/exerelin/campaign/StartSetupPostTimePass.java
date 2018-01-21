@@ -126,7 +126,7 @@ public class StartSetupPostTimePass {
 		{
 			factionId = conf.spawnAsFactionId;
 			PlayerFactionStore.setPlayerFactionId(factionId);
-			if (conf.freeStart)	// Blade Breaker start: use BB start relations
+			if (SectorManager.getFreeStart())	// Blade Breaker start: use BB start relations
 				ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
 			else	// Lion's Guard start: use Diktat start relations
 				ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(factionId);
@@ -162,7 +162,7 @@ public class StartSetupPostTimePass {
 		
 		// commission
 		String factionId = PlayerFactionStore.getPlayerFactionId();		
-		if (!PlayerFactionStore.getPlayerFactionId().equals(ExerelinConstants.PLAYER_NPC_ID))
+		if (!SectorManager.getFreeStart())
 		{
 			if (!entity.getFaction().isNeutralFaction())
 				ExerelinUtilsFaction.grantCommission(entity);
