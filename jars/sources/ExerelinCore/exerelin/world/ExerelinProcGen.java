@@ -1238,7 +1238,12 @@ public class ExerelinProcGen {
 		WeightedRandomPicker<ProcGenEntity> picker = new WeightedRandomPicker<>();
 		picker.setRandom(random);
 		
-		Vector2f hqLoc = hq.entity.getContainingLocation().getLocation();
+		// crash safety
+		Vector2f hqLoc;
+		if (hq == null)
+			hqLoc = new Vector2f(0, 0);
+		else 
+			hqLoc = hq.entity.getContainingLocation().getLocation();
 		for (ProcGenEntity candidate : candidates)
 		{
 			Vector2f loc = candidate.starSystem.getLocation();
