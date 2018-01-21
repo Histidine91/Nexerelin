@@ -11,6 +11,8 @@
     "customRebelFaction":"",
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Rivals",
+    
+    "difficultyString":"hard",
 
     "positiveDiplomacyExtra":0,
     "negativeDiplomacyExtra":0,

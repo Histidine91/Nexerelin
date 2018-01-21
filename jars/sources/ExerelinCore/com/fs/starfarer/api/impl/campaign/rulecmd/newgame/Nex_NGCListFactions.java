@@ -13,6 +13,7 @@ import com.fs.starfarer.api.loading.Description;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
+import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -48,14 +49,19 @@ public class Nex_NGCListFactions extends BaseCommandPlugin {
 				for (FactionAPI faction : group.factions)
 				{
 					String factionId = faction.getId();
+					ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
 					String optId = JOIN_FACTION_OPTION_PREFIX + factionId;
 					String text = Nex_FactionDirectoryHelper.getFactionDisplayName(faction);
-					if (!ExerelinConfig.getExerelinFactionConfig(factionId).difficultyString.isEmpty())
+					if (!conf.difficultyString.isEmpty())
 					{
-						text = text + " (" + ExerelinConfig.getExerelinFactionConfig(factionId).difficultyString + ")";
+						text = text + " (" + conf.difficultyString + ")";
 					}
 					
 					opts.addOption(text, optId);
+					if (conf.ngcTooltip != null)
+					{
+						opts.setTooltip(optId, conf.ngcTooltip);
+					}
 					//opts.setTooltip(optId, Global.getSettings().getDescription(
 					//			faction.getId(), Description.Type.FACTION).getText1FirstPara());
 				}

@@ -10,6 +10,9 @@
     "customRebelFaction":"",
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Heretics",
+    
+    "difficultyString":"hard",
+    "ngcTooltip":"Immensely powerful alien-tech ships with an equally immense supply cost. Can you earn your keep?",
 
     "asteroidMiningFleetName":"Miner",
     "gasMiningFleetName":"Collecter",

@@ -1,24 +1,24 @@
 command,class,tags,syntax,help
-SpawnInvasionFleet,exerelin.console.commands.SpawnInvasionFleet,"campaign,exerelin",spawninvasionfleet,"Spawns an invasion fleet from the closest player-aligned market to go to the closest not-player-aligned market, and teleports fleet to player location."
-SpawnInvasionFleetHostile,exerelin.console.commands.SpawnInvasionFleetHostile,"campaign,exerelin",spawninvasionfleethostile,"Spawns an invasion fleet from the closest hostile market to go to the closest player-aligned market, and teleports fleet to player location."
-SpawnRespawnFleet,exerelin.console.commands.SpawnRespawnFleet,"campaign,exerelin",spawnrespawnfleet,"Spawns a respawn fleet to go to the closest market, and teleports fleet to player location. Will try to spawn a faction currently not in the Sector, else uses player's faction."
-SpawnStation,exerelin.console.commands.SpawnStation,"campaign,exerelin",spawnstation <faction>,Spawns a defense station for the specified faction at the player location.
-SetMarketOwner,exerelin.console.commands.SetMarketOwner,"campaign,exerelin",setmarketowner <entity> [owner],"Causes the market associated with <entity> to be captured by [owner], or a random live faction if not specified."
-SyncRelationships,exerelin.console.commands.SyncRelationships,"campaign,exerelin",syncrelationships,Syncs faction relationships to match player's. Use after using Save Transfer.
-CreateDiplomacyEvent,exerelin.console.commands.CreateDiplomacyEvent,"campaign,exerelin",creatediplomacyevent <faction1> <faction2> [stage],Creates a new diplomacy event between the two factions. Specify 'stage' as an identifier for a specific event type.
-CreateAlliance,exerelin.console.commands.CreateAlliance,"campaign,exerelin",createalliance <faction1> <faction2> [alignment],"Creates an alliance between the two factions, with the specified alignment (random if not specified). If one faction is already in an alliance, add the other faction to its alliance instead. Does nothing if both factions are already in an alliance."
-LeaveAlliance,exerelin.console.commands.LeaveAlliance,"campaign,exerelin",leavealliance <faction>,"Makes the specified faction leave its alliance, if it has one."
-ResetRelationships,exerelin.console.commands.ResetRelationships,"campaign,exerelin",resetrelationships,Resets faction relationships as if launching a new game. Doesn't work for mod factions in Corvus mode.
-#PrintProductionInfo,exerelin.console.commands.PrintProductionInfo,"campaign,exerelin",printproductioninfo <entity> <commodity>,Print some economy debugging info for the selected market and commodity.
-RetireCharacter,exerelin.console.commands.RetireCharacter,"campaign,exerelin",retirecharacter,Retires your character and ends the game.
-StartVengeanceEvent,exerelin.console.commands.VengeanceEvent,"campaign,exerelin",startvengeanceevent <faction>,Spawns a vengeance fleet for the specified faction.
+SpawnInvasionFleet,exerelin.console.commands.SpawnInvasionFleet,"campaign,nexerelin",spawninvasionfleet,"Spawns an invasion fleet from the closest player-aligned market to go to the closest not-player-aligned market, and teleports fleet to player location."
+SpawnInvasionFleetHostile,exerelin.console.commands.SpawnInvasionFleetHostile,"campaign,nexerelin",spawninvasionfleethostile,"Spawns an invasion fleet from the closest hostile market to go to the closest player-aligned market, and teleports fleet to player location."
+SpawnRespawnFleet,exerelin.console.commands.SpawnRespawnFleet,"campaign,nexerelin",spawnrespawnfleet,"Spawns a respawn fleet to go to the closest market, and teleports fleet to player location. Will try to spawn a faction currently not in the Sector, else uses player's faction."
+SpawnStation,exerelin.console.commands.SpawnStation,"campaign,nexerelin",spawnstation <faction>,Spawns a defense station for the specified faction at the player location.
+SetMarketOwner,exerelin.console.commands.SetMarketOwner,"campaign,nexerelin",setmarketowner <entity> [owner],"Causes the market associated with <entity> to be captured by [owner], or a random live faction if not specified."
+SyncRelationships,exerelin.console.commands.SyncRelationships,"campaign,nexerelin",syncrelationships,Syncs faction relationships to match player's. Use after using Save Transfer.
+CreateDiplomacyEvent,exerelin.console.commands.CreateDiplomacyEvent,"campaign,nexerelin",creatediplomacyevent <faction1> <faction2> [stage],Creates a new diplomacy event between the two factions. Specify 'stage' as an identifier for a specific event type.
+CreateAlliance,exerelin.console.commands.CreateAlliance,"campaign,nexerelin",createalliance <faction1> <faction2> [alignment],"Creates an alliance between the two factions, with the specified alignment (random if not specified). If one faction is already in an alliance, add the other faction to its alliance instead. Does nothing if both factions are already in an alliance."
+LeaveAlliance,exerelin.console.commands.LeaveAlliance,"campaign,nexerelin",leavealliance <faction>,"Makes the specified faction leave its alliance, if it has one."
+ResetRelationships,exerelin.console.commands.ResetRelationships,"campaign,nexerelin",resetrelationships,Resets faction relationships as if launching a new game. Doesn't work for mod factions in Corvus mode.
+#PrintProductionInfo,exerelin.console.commands.PrintProductionInfo,"campaign,nexerelin",printproductioninfo <entity> <commodity>,Print some economy debugging info for the selected market and commodity.
+RetireCharacter,exerelin.console.commands.RetireCharacter,"campaign,nexerelin",retirecharacter,Retires your character and ends the game.
+StartVengeanceEvent,exerelin.console.commands.VengeanceEvent,"campaign,nexerelin",startvengeanceevent <faction>,Spawns a vengeance fleet for the specified faction.
 #,,,,
 # Omnifactory,,,,
 #OmnifacStatus,org.lazywizard.omnifac.commands.OmnifacStatus,"omnifac,campaign",omnifacstatus [detailed],"Shows the location of all active Omnifactories, including their known blueprints if ""detailed"" is entered as an argument."
 #,,,,
-#PingDistance,exerelin.console.commands.PingDistance,"campaign,exerelin",pingdistance,Prints distance to closest market.
-#ResetClosestMarket,exerelin.console.commands.ResetClosestMarket,"campaign,exerelin",resetclosestmarket,Debug command
-#GetTime,exerelin.console.commands.GetTime,"campaign,exerelin",gettime,Prints some clock info
+#PingDistance,exerelin.console.commands.PingDistance,"campaign,nexerelin",pingdistance,Prints distance to closest market.
+#ResetClosestMarket,exerelin.console.commands.ResetClosestMarket,"campaign,nexerelin",resetclosestmarket,Debug command
+#GetTime,exerelin.console.commands.GetTime,"campaign,nexerelin",gettime,Prints some clock info
 #,,,,
 # Override default command,,,,
 SetRelation,exerelin.console.commands.SetRelationship,"core,campaign",setrelation all|<faction> [optionalTowardsFaction] <amount>,"Sets the relationship between two factions to the given number. If no second faction is entered, relationship with the player is affected. Arguments range from -100 to 100."

@@ -29,6 +29,7 @@ public class ExerelinFactionConfig
     public boolean isBuiltIn = false;
     public String spawnAsFactionId = null;
     public boolean freeStart = false;
+	public String ngcTooltip = null;
    
     public boolean pirateFaction = false;
     public boolean isPirateNeutral = false;
@@ -40,7 +41,7 @@ public class ExerelinFactionConfig
     // 1 = inhospitable to player, hostile to everyone else
     // 2 = hostile to everyone
     // 3 = vengeful to everyone
-    public int hostileToAll = 0;    
+    public int hostileToAll = 0;
     
     public double baseFleetCostMultiplier = 1.0;    // currently unused
 
@@ -140,6 +141,7 @@ public class ExerelinFactionConfig
             hostileToAll = settings.optInt("hostileToAll", hostileToAll);
             spawnAsFactionId = settings.optString("spawnAsFactionId", spawnAsFactionId);
             freeStart = settings.optBoolean("freeStart", false);
+			ngcTooltip = settings.optString("ngcTooltip", ngcTooltip);
             
             baseFleetCostMultiplier = settings.optDouble("baseFleetCostMultiplier", 1);
             

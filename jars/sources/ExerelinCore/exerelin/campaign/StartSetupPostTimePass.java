@@ -18,7 +18,6 @@ import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.world.ExerelinCorvusLocations;
-import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -135,7 +134,7 @@ public class StartSetupPostTimePass {
 	
 	/**
 	 * Sends the player fleet to the intended starting star system, orbiting the home market.
-	 * Also grants the starting commission.
+	 * Also grants the starting commission and unlocks storage.
 	 * @param playerFleet
 	 * @param entity Home planet/station
 	 */
@@ -147,23 +146,24 @@ public class StartSetupPostTimePass {
 		Vector2f loc = entity.getLocation();
 		playerFleet.setLocation(loc.x, loc.y);
 		
-		// unlock storage
-		MarketAPI homeMarket = entity.getMarket();
-		if (homeMarket != null)
-		{
-			SubmarketAPI storage = homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE);
-			if (storage != null)
-			{
-				StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
-				if (plugin != null)
-					plugin.setPlayerPaidToUnlock(true);
-			}
-		}
-		
-		// commission
-		String factionId = PlayerFactionStore.getPlayerFactionId();		
 		if (!SectorManager.getFreeStart())
 		{
+			// unlock storage
+			MarketAPI homeMarket = entity.getMarket();
+			if (homeMarket != null)
+			{
+				SubmarketAPI storage = homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE);
+				if (storage != null)
+				{
+					StoragePlugin plugin = (StoragePlugin)homeMarket.getSubmarket(Submarkets.SUBMARKET_STORAGE).getPlugin();
+					if (plugin != null)
+						plugin.setPlayerPaidToUnlock(true);
+				}
+			}
+
+			// commission
+			String factionId = PlayerFactionStore.getPlayerFactionId();		
+		
 			if (!entity.getFaction().isNeutralFaction())
 				ExerelinUtilsFaction.grantCommission(entity);
 			else if (ExerelinUtilsFaction.isExiInCorvus(factionId))
