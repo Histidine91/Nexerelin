@@ -359,7 +359,7 @@ public class MiningHelperLegacy {
 	
 	public static float getDanger(SectorEntityToken entity)
 	{
-		if (entity instanceof AsteroidAPI) return 0.2f;
+		if (entity instanceof AsteroidAPI || entity.getMarket() == null) return 0.2f;
 		float val = entity.getMarket().getHazardValue();
 		if (entity instanceof PlanetAPI)
 		{

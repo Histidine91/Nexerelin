@@ -76,6 +76,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	{
 		if (entity instanceof AsteroidAPI) return true;
 		if (!(entity instanceof PlanetAPI)) return false;
+		if (entity.getMarket() == null || !entity.getMarket().isPlanetConditionMarketOnly()) return false;
 		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
 		{
 			float exhaustion = MiningHelper.getExhaustion(entity);
@@ -105,6 +106,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	protected boolean isGasMineable(SectorEntityToken entity)
 	{
 		if (!(entity instanceof PlanetAPI)) return false;
+		if (entity.getMarket() == null || !entity.getMarket().isPlanetConditionMarketOnly()) return false;
 		if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
 		{
 			float exhaustion = MiningHelper.getExhaustion(entity);
