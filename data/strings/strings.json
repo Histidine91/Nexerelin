@@ -293,8 +293,10 @@
 	},
 	"exerelin_ngc":{
 		"factions":"factions",
+		"randomFaction":"random faction",
 		"ownFaction":"own faction",
 		"freeStart":"free start (hard)",
+		"joinedFaction":"joined $faction",
 		"ownFactionDisabledTooltip":"No planet to spawn from in non-random sector, use free start instead",
 		"freeStartTooltip":"Own faction, but with no starting planet; you're on your own.",
 		"devStart":">> (dev) quick start",

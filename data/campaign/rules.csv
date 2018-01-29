@@ -181,6 +181,9 @@ NGCAddShipAndComplement ""medusa_Starting""
 NGCAddCredits 1000000
 NGCAddCharacterPoints 100
 NGCDone",,,
+nex_NGCRandomFaction,NewGameOptionSelected,$option == nex_NGCJoinRandomFaction,"NGCSetPlayerFaction ""random""
+$factionGroup = 0
+FireAll ExerelinNGCStep3",,,
 nex_NGCOwnFaction,NewGameOptionSelected,$option == nex_NGCJoinOwnFaction,"NGCSetPlayerFaction ""player_npc""
 NGCSetFreeStart false
 $factionGroup = 0
@@ -1376,7 +1379,8 @@ FireBest InitCommRelayDialog",,,
 commRelayAddOptionInstallSniffer,PopulateOptions,"$tag:comm_relay
 !$hasMarket
 $menuState == main
-!$commSnifferInstalled",,,0:csInstall:Install a comm sniffer,
+!$commSnifferInstalled
+$faction.id != neutral",,,0:csInstall:Install a comm sniffer,
 commRelaySaySnifferRunning,PopulateOptions,"$tag:comm_relay
 !$hasMarket
 $menuState == main
