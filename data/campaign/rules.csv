@@ -823,6 +823,7 @@ FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connec
 ExerelinConvOfficialGreetingTemplars,PickGreeting,"Nex_IsBaseOfficial command
 $faction.id == ""templars""
 !$mpm_isPlayerContact","ShowPersonVisual
+FireAll PopulateOptions
 FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
 ""This is $rank $local.name, $post of $entityName. Speak quickly or be purged.""",,
@@ -836,6 +837,7 @@ FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connec
 ExerelinConvOfficialGreetingFollowers,PickGreeting,"Nex_IsBaseOfficial command
 $faction.id == ""player_npc""
 !$mpm_isPlayerContact","ShowPersonVisual
+FireAll PopulateOptions
 FireAll ExerelinBaseCommanderOptionsInitialize","""Hello, chief. What can we do for you?""",,
 ,,,,,,
 aiCores_turnInOptionSelFollowers,DialogOptionSelected,"$option == aiCores_startTurnIn
@@ -881,6 +883,15 @@ ExerelinLeaveFactionOptionTemplars,PopulateOptions,"$showLeaveFactionOptions
 $faction.id == ""templars""","SetTooltip exerelinLeaveFaction ""Knights Templar only leave the cause in death.""
 SetEnabled exerelinLeaveFaction false",,,
 ,,,,,,
+nex_resignCommissionOption,PopulateOptions,"$player.fcm_faction == $faction.id
+$faction.id != $player.factionId
+Nex_IsBaseOfficial admin",SetEnabled nex_resignCommission true,,nex_resignCommission:Resign commission,
+nex_resignCommissionOptionTemplars,PopulateOptions,"$player.fcm_faction == $faction.id
+$faction.id != $player.factionId
+$faction.id == ""templars""
+Nex_IsBaseOfficial admin","SetTooltip nex_resignCommission ""Knights Templar only leave the cause in death.""
+SetEnabled nex_resignCommission false",,,
+,,,,,,
 ExerelinJoinFaction,DialogOptionSelected,$option == exerelinJoinFaction,"SetShortcut exerelinJoinFactionConfirm RETURN
 SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE
 Exerelin_GetSalary
@@ -918,6 +929,13 @@ exerelinBaseCommanderMenuRepeat:Cancel",
 ExerelinLeaveFactionConfirmPirate,DialogOptionSelected,"$option == exerelinLeaveFactionConfirm
 IsPirateFaction $faction.id","LeaveFaction true
 FireAll ExerelinBaseCommanderOptionsInitialize","""Alright. If you ever come to your senses, you know where to find us.""",,
+,,,,,,
+nex_resignCommission,DialogOptionSelected,$option == nex_resignCommission,"SetShortcut exerelinResignCommissionConfirm RETURN
+SetShortcut exerelinBaseCommanderMenuRepeat ESCAPE","""No longer interested, eh? Very well, fill out this form.""","nex_resignCommissionConfirm:Confirm
+exerelinBaseCommanderMenuRepeat:Cancel",
+nex_resignCommissionConfirm,DialogOptionSelected,$option == nex_resignCommissionConfirm,"Nex_ResignCommission
+FireAll ExerelinBaseCommanderOptionsInitialize","""Your commission is officially terminated. Have a good day.""",,
+,,,,,,
 #END FACTION CHANGE OPTIONS,,,,,,
 ,,,,,,
 ,,,,,,

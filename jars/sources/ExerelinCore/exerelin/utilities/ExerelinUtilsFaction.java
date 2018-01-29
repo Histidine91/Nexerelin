@@ -2,6 +2,7 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -11,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Events;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMission;
+import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMissionEvent;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
@@ -179,16 +181,17 @@ public class ExerelinUtilsFaction {
     
     public static void revokeCommission()
     {
-        SectorAPI sector = Global.getSector();
-        // find event
-        CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, Events.FACTION_COMMISSION);
-        if (eventSuper == null) return;
+        FactionCommissionMissionEvent event = Misc.getCommissionEvent();
+        if (event == null) return;
         
-        //ExerelinFactionCommissionMissionEvent event = (ExerelinFactionCommissionMissionEvent)eventSuper;
-        //event.endEvent();
-        sector.getEventManager().endEvent(eventSuper);
-        Global.getSector().getCharacterData().getMemoryWithoutUpdate().unset(MemFlags.FCM_FACTION);
-        Global.getSector().getCharacterData().getMemoryWithoutUpdate().unset(MemFlags.FCM_EVENT);
+        // end commission cleanly hax
+        // see http://fractalsoftworks.com/forum/index.php?topic=5061.msg222897#msg222897
+        FactionAPI commFaction = Misc.getCommissionFaction();  
+        float rep = commFaction.getRelationship(Factions.PLAYER);  
+        commFaction.setRelationship(Factions.PLAYER, RepLevel.SUSPICIOUS);  
+        event.advance(1f);  
+        event.cleanup();
+        commFaction.setRelationship(Factions.PLAYER, rep);
     }
     
     public static String getCommissionFactionId()

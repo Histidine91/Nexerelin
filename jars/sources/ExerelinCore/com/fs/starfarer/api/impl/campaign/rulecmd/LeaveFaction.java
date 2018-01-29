@@ -42,7 +42,7 @@ public class LeaveFaction extends BaseCommandPlugin {
 		String str = StringHelper.getString("exerelin_factions", "leftFaction");
 		
 		// -5 rep to negate join/leave infinite rep exploit
-		ExerelinUtilsReputation.adjustPlayerReputation(oldFaction, null, -0.05f);
+		ExerelinUtilsReputation.adjustPlayerReputation(oldFaction, null, -0.05f, null, dialog.getTextPanel());
 		
 		if (stayInAlliance && oldAlliance != null) {
 			newAlliance = oldAlliance;
