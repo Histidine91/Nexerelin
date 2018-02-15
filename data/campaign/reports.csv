@@ -66,16 +66,16 @@ Amount paid depends on ships destroyed (starting at $baseBounty credits for a fr
 Payment delivered via secure comm channel through a nearby comm relay.",,,,,
 exerelin_faction_bounty,bounty_payment,,,secure_comm,Bounty payment from $faction: $bountyCredits credits,The message has an encrypted attachment that contains a payment of $bountyCredits credits.,"$bountyCredits credits gained.
 
-$faction will continue to offer the bounty for $daysLeft day(s).",,graphics/icons/intel/gain_credits.png,nomap,,
+$TheFaction will continue to offer the bounty for $daysLeft day(s).",,graphics/icons/intel/gain_credits.png,nomap,,
 exerelin_faction_bounty,bounty_payment_share,,,secure_comm,Bounty payment from $faction: $bountyCredits credits,"The message has an encrypted attachment that contains your share of the bounty, coming to $bountyCredits credits.","$bountyCredits credits gained.
 
-$faction will continue to offer the bounty for $daysLeft day(s).",,graphics/icons/intel/gain_credits.png,nomap,,
+$TheFaction will continue to offer the bounty for $daysLeft day(s).",,graphics/icons/intel/gain_credits.png,nomap,,
 exerelin_faction_bounty,bounty_no_payment,,,player_intel_always,Assessment re: bounty against $enemyFaction,The message contains an internal intelligence report regarding the bounty on offer from $theFaction.,"No bounty payment due to $theFaction being $standing towards you.
 
-$faction will continue to offer the bounty for $daysLeft day(s).",,,nomap,,
+$TheFaction will continue to offer the bounty for $daysLeft day(s).",,,nomap,,
 exerelin_faction_bounty,bounty_no_rep,,,player_intel_always,Assessment re: bounty against $enemyFaction,The message contains an internal intelligence report regarding the bounty on offer from $theFaction.,"No bounty payment or relationship improvement due to $theFaction being $standing towards you.
 
-$faction will continue to offer the bounty for $daysLeft day(s).",,,nomap,,
+$TheFaction will continue to offer the bounty for $daysLeft day(s).",,,nomap,,
 exerelin_faction_bounty,end,,,news,$Faction general bounty against $enemyFaction over,$Faction authorities have declared the bounty period against $theEnemyFaction to be officially over.,No more bounty payments will be made.,,,nomap,,
 exerelin_faction_bounty,end_faction_dead,,,news,$Faction general bounty against $enemyFaction terminated: $faction annihilated,$TheFaction has been eliminated and will no longer be paying any bounties.,No more bounty payments will be made.,,,nomap,,
 exerelin_faction_bounty,end_enemyfaction_dead,,,news,$Faction general bounty against $enemyFaction terminated: $enemyFaction annihilated,"As $theEnemyFaction has been eliminated, $faction authorities have declared the bounty officially over.",No more bounty payments will be made.,,,nomap,,

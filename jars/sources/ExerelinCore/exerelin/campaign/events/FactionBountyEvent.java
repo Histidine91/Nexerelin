@@ -159,17 +159,16 @@ public class FactionBountyEvent extends BaseEventPlugin {
 		return ended;
 	}
 
-	// same as SystemBountyEvent except no enemyFaction null check + refactor
+	// same as SystemBountyEvent except no enemyFaction null check + own $standing and faction tokens + refactor
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
 		
-		String factionName = faction.getEntityNamePrefix();
-		if (factionName == null || factionName.isEmpty()) {
-			factionName = faction.getDisplayName();
-		}
-
 		StringHelper.addFactionNameTokensCustom(map, "faction", faction);
+		
+		RepLevel level = Global.getSector().getPlayerFaction().getRelationshipLevel(faction);
+		map.put("$standing", level.getDisplayName().toLowerCase());
+		map.put("$Standing", Misc.ucFirst(level.getDisplayName()));
 		
 		// this is ok because the token replacement happens right as the message is sent, not when it's received
 		// so the lastBounty is the correct value for the message
