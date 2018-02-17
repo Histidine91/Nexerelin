@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
@@ -26,6 +27,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.histidine.foundation.campaign.events.FoundationInsuranceEvent;
 import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 
 /*
 Changes from vanilla:
@@ -330,8 +332,35 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 			fleet.getMemoryWithoutUpdate().set(memFlag, true, 0);
 	}
 	
+	// needed because a market can sometimes have two greatly separated entities, and one is out of station range
+	protected boolean isMarketInRange(String marketId, CampaignFleetAPI playerFleet, CampaignFleetAPI otherFleet, float dist)
+	{
+		if (marketId == null || marketId.isEmpty())
+			return false;
+		MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
+		float x = (playerFleet.getLocation().x + otherFleet.getLocation().x)/2;
+		float y = (playerFleet.getLocation().y + otherFleet.getLocation().y)/2;
+		Vector2f loc = new Vector2f(x, y);
+		for (SectorEntityToken ent : market.getConnectedEntities())
+		{
+			if (MathUtils.isWithinRange(ent, loc, dist))
+				return true;
+		}
+		
+		return false;
+	}
+	
 	// same as vanilla, except stations don't (usually) get pulled + anything pursuing a participating fleet gets pulled
-	protected boolean shouldPullInFleet(BattleAPI battle, CampaignFleetAPI fleet, 
+	/**
+	 * Should {@code fleet} be joined to the player battle?
+	 * @param battle
+	 * @param fleet Fleet to consider for pulling in
+	 * @param dist
+	 * @param playerFleet Player fleet
+	 * @param otherFleet Fleet fighting player (i.e. interaction dialog target)
+	 * @return
+	 */
+		protected boolean shouldPullInFleet(BattleAPI battle, CampaignFleetAPI fleet, 
 			float dist, CampaignFleetAPI playerFleet, CampaignFleetAPI otherFleet)
 	{
 		//Global.getLogger(this.getClass()).info("Testing fleet for pull-in: " + fleet.getName());
@@ -343,7 +372,11 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 //				System.out.println("2380dfwef");
 //			}
 		if (dist > Misc.getBattleJoinRange())
-			return false;
+		{
+			// don't check the distance for defence fleets yet (we'll do it later)
+			if (!fleet.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
+				return false;
+		}
 		if ( !(dist < baseSensorRange || (visible && level != SectorEntityToken.VisibilityLevel.SENSOR_CONTACT)) )
 			return false;
 		if (fleet.getAI() != null && fleet.getAI().wantsToJoin(battle, true))
@@ -351,13 +384,20 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		if (fleet.isStationMode())
 		{
 			// defence stations are allowed to join battles normally (but only with a response fleet)
+			// or if someone is touching the market
 			if (fleet.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
 			{
+				String marketId = fleet.getMemoryWithoutUpdate().getString(MemFlags.MEMORY_KEY_SOURCE_MARKET);
+				float allowedDist = 0;
 				for (CampaignFleetAPI participatingFleet : battle.getBothSides())
 				{
 					if (ExerelinUtilsFleet.getFleetType(participatingFleet).equals("exerelinResponseFleet"))
-						return true;
+					{
+						allowedDist = Misc.getBattleJoinRange();
+						break;
+					}
 				}
+				return isMarketInRange(marketId, playerFleet, otherFleet, allowedDist);
 			}
 			// only pull in the station if one of us is touching it
 			return MathUtils.isWithinRange(fleet, playerFleet, 0) || MathUtils.isWithinRange(fleet, otherFleet, 0);
