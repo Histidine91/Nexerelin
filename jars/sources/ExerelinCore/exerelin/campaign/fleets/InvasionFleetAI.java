@@ -72,6 +72,11 @@ public class InvasionFleetAI implements EveryFrameScript
 		}
 	}
 	
+	/**
+	 * Makes the invasion fleet and join battle with relevant defense station if it exists.
+	 * Spawns a response fleet and joins that to the battle as well.
+	 * @return True if we're already in a battle or this method puts us in one, false otherwise
+	 */
 	protected boolean attackStationIfPresent()
 	{
 		if (fleet.getBattle() != null) return true;
@@ -94,7 +99,7 @@ public class InvasionFleetAI implements EveryFrameScript
 				Global.getFactory().createBattle(fleet, station);
 			}
 			CampaignFleetAPI responseFleet = ResponseFleetManager.requestResponseFleet(data.targetMarket, fleet, data.target);
-			if (responseFleet != null)
+			if (responseFleet != null && fleet.getBattle() != null)
 				fleet.getBattle().join(responseFleet);
 				
 			return true;
