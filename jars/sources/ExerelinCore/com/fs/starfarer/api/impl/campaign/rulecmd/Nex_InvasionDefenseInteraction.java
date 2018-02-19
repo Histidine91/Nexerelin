@@ -87,7 +87,10 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 				boolean isStation = defenders.getMemoryWithoutUpdate().getBoolean("$nex_defstation");
 				
 				if (!isStation && defenders.getContainingLocation() != null)
+				{
 					defenders.getContainingLocation().removeEntity(defenders);
+					defenders.setContainingLocation(null);
+				}
 				
 				if (!DefenceStationManager.STATIONS_IN_CAMPAIGN_LAYER)
 				{
