@@ -338,12 +338,14 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		if (marketId == null || marketId.isEmpty())
 			return false;
 		MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
-		float x = (playerFleet.getLocation().x + otherFleet.getLocation().x)/2;
-		float y = (playerFleet.getLocation().y + otherFleet.getLocation().y)/2;
-		Vector2f loc = new Vector2f(x, y);
+		//float x = (playerFleet.getLocation().x + otherFleet.getLocation().x)/2;
+		//float y = (playerFleet.getLocation().y + otherFleet.getLocation().y)/2;
+		//Vector2f loc = new Vector2f(x, y);
 		for (SectorEntityToken ent : market.getConnectedEntities())
 		{
-			if (MathUtils.isWithinRange(ent, loc, dist))
+			if (MathUtils.isWithinRange(ent, playerFleet, dist))
+				return true;
+			if (MathUtils.isWithinRange(ent, otherFleet, dist))
 				return true;
 		}
 		
