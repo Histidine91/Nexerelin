@@ -29,6 +29,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
+import com.fs.starfarer.api.loading.HullModSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -59,6 +60,9 @@ public class MiningHelperLegacy {
 	protected static final String MINING_WEAPON_DEFS = "data/config/exerelin/mining_weapons.csv";
 	protected static final String RESOURCE_DEFS = "data/config/exerelin/mining_resources.csv";
 	protected static final String EXHAUSTION_DATA_KEY = "nex_miningExhaustion";	// exhaustion list is a <SectorEntityToken, Float> map
+	
+	public static final boolean DEBUG_MODE = false;
+	
 	public static final Set<String> OUTPUT_COMMODITIES = new HashSet<>(Arrays.asList(
 			new String[]{Commodities.ORE, Commodities.RARE_ORE, Commodities.VOLATILES, Commodities.ORGANICS}
 	));
@@ -83,6 +87,8 @@ public class MiningHelperLegacy {
 	public static final Set<String> CACHE_DISALLOWED_FACTIONS = new HashSet(Arrays.asList(
 			new String[]{
 				"templars",
+				"exigency",
+				"exipirated",
 				Factions.DERELICT,
 				Factions.REMNANTS
 		}
@@ -222,6 +228,7 @@ public class MiningHelperLegacy {
 		cacheDefs.add(new CacheDef("weapon", CacheType.WEAPON, null, 1, 0.8f));
 		cacheDefs.add(new CacheDef("frigate", CacheType.FRIGATE, null, 1, 0.2f));
 		cacheDefs.add(new CacheDef("fighters", CacheType.FIGHTER_WING, null, 1, 0.3f));
+		cacheDefs.add(new CacheDef("hullmod", CacheType.HULLMOD, null, 1, 999f));
 		cacheDefs.add(new CacheDef("supplies", CacheType.COMMODITY, Commodities.SUPPLIES, 3, 1f));
 		cacheDefs.add(new CacheDef("fuel", CacheType.COMMODITY, Commodities.FUEL, 4, 1f));
 		cacheDefs.add(new CacheDef("food", CacheType.COMMODITY, Commodities.FOOD, 5, 1f));
@@ -575,6 +582,25 @@ public class MiningHelperLegacy {
 		return weaponPicker.pick();
 	}
 	
+	public static HullModSpecAPI getRandomHullmod()
+	{
+		List<FactionAPI> factions = Global.getSector().getAllFactions();
+		WeightedRandomPicker<HullModSpecAPI> hullmodPicker = new WeightedRandomPicker<>();
+		for (FactionAPI faction : factions)
+		{
+			if (CACHE_DISALLOWED_FACTIONS.contains(faction.getId())) continue;
+			
+			for (String id : faction.getHullMods()) {
+				HullModSpecAPI spec = Global.getSettings().getHullModSpec(id);
+				if (spec.isHidden()) continue;
+				if (spec.isAlwaysUnlocked()) continue;
+				if (spec.getTier() > 3) continue;
+				hullmodPicker.add(spec, spec.getRarity());
+			}
+		}
+		return hullmodPicker.pick();
+	}
+	
 	protected static float computeCrewLossFraction(FleetMemberAPI member,  float hullFraction, float hullDamage) {		
 		if (hullFraction == 0) {
 			return (0.75f + (float) Math.random() * 0.25f) * member.getStats().getCrewLossMult().getModifiedValue(); 
@@ -751,6 +777,12 @@ public class MiningHelperLegacy {
 					}
 				}
 			}
+			else if (def.type == CacheType.HULLMOD)
+			{
+				HullModSpecAPI mod = getRandomHullmod();
+				fleet.getCargo().addHullmods(mod.getId(), 1);
+				name = StringHelper.getStringAndSubstituteToken("exerelin_mining", "hullmod", "$hullmod", mod.getDisplayName());
+			}
 			else if (def.type == CacheType.COMMODITY)
 			{
 				num = (int)(Math.sqrt(strength) * def.mult * miningProductionMult * cacheSizeMult);
@@ -808,7 +840,7 @@ public class MiningHelperLegacy {
 			fleet.getCargo().addCommodity(tmp.getKey(), amount);
 		}
 		
-		if (isPlayer && Math.random() < baseCacheChance)
+		if (isPlayer && (DEBUG_MODE || Math.random() < baseCacheChance))
 		{
 			result.cachesFound = findCaches(fleet, strength, entity);
 		}
@@ -903,7 +935,7 @@ public class MiningHelperLegacy {
 	}
 		
 	public enum CacheType {
-		WEAPON, FRIGATE, FIGHTER_WING, COMMODITY
+		WEAPON, FRIGATE, FIGHTER_WING, HULLMOD, COMMODITY
 	}
 	
 	public enum AccidentType {

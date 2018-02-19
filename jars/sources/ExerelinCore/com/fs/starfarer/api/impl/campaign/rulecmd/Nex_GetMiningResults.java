@@ -74,7 +74,7 @@ public class Nex_GetMiningResults extends BaseCommandPlugin {
 			for (CacheResult cache: results.cachesFound)
 			{
 				String displayStr = cache.name;
-				if (cache.def.type != CacheType.FRIGATE && cache.def.type != CacheType.FIGHTER_WING)
+				if (cache.def.type == CacheType.COMMODITY || cache.def.type == CacheType.WEAPON)
 				{
 					displayStr += (" x " +  Misc.getWithDGS(cache.numItems));
 				}

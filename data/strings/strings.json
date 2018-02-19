@@ -269,6 +269,7 @@
 		"resourcesExtracted":"resources extracted",
 		"theAsteroid":"the asteroid",
 		"LPC":"$fighterName LPC",
+		"hullmod":"$hullmod – modspec",
 		"machineryAvailable":"Machinery usable (available)",
 		
 		"miningToolsListHeader":"The following mining ships and weapons exist in the Sector:",
