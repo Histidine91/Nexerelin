@@ -76,6 +76,8 @@
 		"rebellionStatus":"rebellion by $faction",
 		"govtStrength":"government strength",
 		"rebelStrength":"rebel strength",
+		"responseFleetPreview":"response fleet",
+		"stationPoints":"station construction progress",
 		
 		"agent":"agent",
 		"saboteur":"saboteur",

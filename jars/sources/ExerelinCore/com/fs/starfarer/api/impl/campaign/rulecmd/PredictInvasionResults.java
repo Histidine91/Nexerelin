@@ -16,6 +16,7 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import exerelin.campaign.InvasionRound.InvasionSimulationType;
+import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.utilities.StringHelper;
 
 
@@ -89,11 +90,11 @@ public class PredictInvasionResults extends BaseCommandPlugin {
 
 			text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "lootRating")) + ": " + lootLevel );
 			if (!worst.success)
-					text.highlightInLastPara(Misc.getNegativeHighlightColor(), "" + lootLevel);
+				text.highlightInLastPara(Misc.getNegativeHighlightColor(), "" + lootLevel);
 			else if (lootLevelAvg < 0.7)
-					text.highlightInLastPara(hl, "" + lootLevel);
+				text.highlightInLastPara(hl, "" + lootLevel);
 			else
-					text.highlightInLastPara(Misc.getPositiveHighlightColor(), "" + lootLevel);
+				text.highlightInLastPara(Misc.getPositiveHighlightColor(), "" + lootLevel);
 		}
 		else
 		{
@@ -113,6 +114,14 @@ public class PredictInvasionResults extends BaseCommandPlugin {
 		}
 		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "projectedLosses")) + ": " + marinesLost);
 		text.highlightInLastPara(red, "" + marinesLost);
+		
+		if (!isRaid)
+		{
+			float reserveSize = ResponseFleetManager.getReserveSize(target.getMarket());
+			reserveSize = (float)(Math.floor(reserveSize / 4) * 4);
+			text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "reserveSize")) + ": ~" + reserveSize);
+			text.highlightFirstInLastPara("" + reserveSize, Misc.getHighlightColor());
+		}
  
 		text.addParagraph("-----------------------------------------------------------------------------");
 		text.setFontInsignia();

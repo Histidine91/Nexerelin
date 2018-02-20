@@ -1,6 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +11,14 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.events.RebellionEvent;
+import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.utilities.StringHelper;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import java.awt.Color;
@@ -72,6 +75,35 @@ public class AgentGatherIntel extends AgentActionBase {
 		float reserveSize = ResponseFleetManager.getReserveSize(market);
 		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "reserveSize")) + ": " + reserveSize);
 		text.highlightFirstInLastPara("" + reserveSize, highlightColor);
+		
+		if (reserveSize > ResponseFleetManager.MIN_FP_TO_SPAWN)
+		{
+			CampaignFleetAPI responseFleet;
+			String defenderMemFlag = "$nex_invasionResponseFleet";
+			MemoryAPI mem = memoryMap.get(MemKeys.MARKET);
+			if (mem.contains(defenderMemFlag))
+			{
+				responseFleet = mem.getFleet(defenderMemFlag);
+			}
+			else
+			{
+				responseFleet = ResponseFleetManager.getManager().getResponseFleet(market, (int)(reserveSize));
+				mem.set(defenderMemFlag, responseFleet, 5);
+			}
+			
+			String fleetTitle = Misc.ucFirst(StringHelper.getString("exerelin_agents", "responseFleetPreview"));
+			dialog.getVisualPanel().showFleetInfo(fleetTitle, responseFleet, null, null);
+			//responseFleet.despawn();
+		}
+		
+		DefenceStationManager statMan = DefenceStationManager.getManager();
+		if (statMan.getFleet(market) == null && statMan.getMaxStations(market) > 0)
+		{
+			float stationPoints = statMan.getConstructionPoints(market);
+			String stationPointsStr = String.format("%.1f", stationPoints) + "%";
+			text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "stationPoints")) + ": " + stationPointsStr);
+			text.highlightFirstInLastPara("" + stationPointsStr, highlightColor);
+		}
 		
 		if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
 		{

@@ -60,7 +60,7 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 		}
 		
 		final FleetInteractionDialogPluginImpl.FIDConfig config = new FleetInteractionDialogPluginImpl.FIDConfig();
-		config.leaveAlwaysAvailable = true;	//isRaid;
+		config.leaveAlwaysAvailable = isRaid;
 		//config.showFleetAttitude = false;
 		config.showTransponderStatus = false;
 		config.showWarningDialogWhenNotHostile = false;

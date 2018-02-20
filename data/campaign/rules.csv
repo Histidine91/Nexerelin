@@ -526,7 +526,7 @@ GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 FireAll ExerelinAgentOption",,,
 ExerelinAgentOptionNumAgents,ExerelinAgentOption,,SetTextHighlights $numAgents,You have $numAgents agent(s) to deploy.,,
-ExerelinAgentOptionListGatherIntel,ExerelinAgentOption,,"SetTooltip exerelinAgentGatherIntel ""Gets the market's current stability, reserve size and security alert level, and uncovers information on any ongoing rebellions.""
+ExerelinAgentOptionListGatherIntel,ExerelinAgentOption,,"SetTooltip exerelinAgentGatherIntel ""Gets the market's current stability, reserve fleet and security alert level, and uncovers information on any ongoing rebellions.""
 SetShortcut exerelinAgentGatherIntel I",,exerelinAgentGatherIntel:Gather intel,
 ExerelinAgentOptionListRaiseRelations,ExerelinAgentOption,,"SetTooltip exerelinAgentRaiseRelations ""Influence $theFaction to like your faction more. If it fails, there is a chance they will turn more hostile instead.""
 SetShortcut exerelinAgentRaiseRelations R",,exerelinAgentRaiseRelations:Raise relations,
@@ -547,12 +547,10 @@ ExerelinAgentDestabilizeMarket,DialogOptionSelected,"$option == exerelinAgentDes
 FireBest ExerelinAgentPostDeploy",,,
 ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasItem agent,"GetNumSpecialPeople
 FireAll ExerelinAgentOption",,,
-ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasItem agent score:10,"$menuState = main 0
-ExerelinShowDefaultVisual
-FireAll PopulateOptions",You have no more agents to deploy.,,
-ExerelinAgentAfterDeployAlertLevelMaxed,ExerelinAgentPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = main 0
-ExerelinShowDefaultVisual
-FireAll PopulateOptions",Security is too tight for further agent insertions.,,
+ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasItem agent score:10,"$menuState = exerelinSpecial
+FireAll ExerelinMarketSpecial",You have no more agents to deploy.,,
+ExerelinAgentAfterDeployAlertLevelMaxed,ExerelinAgentPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = exerelinSpecial
+FireAll ExerelinMarketSpecial",Security is too tight for further agent insertions.,,
 #END AGENT OPTIONS,,,,,,
 ,,,,,,
 #START SABOTEUR OPTIONS,,,,,,
@@ -603,12 +601,10 @@ ExerelinSaboteurDestroyFood,DialogOptionSelected,$option == exerelinSaboteurDest
 FireBest ExerelinSaboteurPostDeploy",,,
 ExerelinSaboteurAfterDeploy,ExerelinSaboteurPostDeploy,HasItem saboteur,"GetNumSpecialPeople
 FireAll ExerelinSaboteurOption",,,
-ExerelinSaboteurAfterDeployNoMoreSaboteurs,ExerelinSaboteurPostDeploy,!HasItem saboteur score:10,"$menuState = main 0
-ExerelinShowDefaultVisual
-FireAll PopulateOptions",You have no more saboteurs to deploy.,,
-ExerelinSaboteurAfterDeployAlertLevelMaxed,ExerelinSaboteurPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = main 0
-ExerelinShowDefaultVisual
-FireAll PopulateOptions",Security is too tight for further saboteur insertions.,,
+ExerelinSaboteurAfterDeployNoMoreSaboteurs,ExerelinSaboteurPostDeploy,!HasItem saboteur score:10,"$menuState = exerelinSpecial
+FireAll ExerelinMarketSpecial",You have no more saboteurs to deploy.,,
+ExerelinSaboteurAfterDeployAlertLevelMaxed,ExerelinSaboteurPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = exerelinSpecial
+FireAll ExerelinMarketSpecial",Security is too tight for further saboteur insertions.,,
 #END SABOTEUR OPTIONS,,,,,,
 ,,,,,,
 #START PRISONER OPTIONS,,,,,,
@@ -668,9 +664,8 @@ SetTextHighlights $slaveValue
 FireAll ExerelinPrisonerPostTrade",You have sold the prisoner into slavery for $slaveValue credits.,,
 ExerelinPrisonerAfterTrade,ExerelinPrisonerPostTrade,HasItem prisoner,"GetNumSpecialPeople
 FireAll ExerelinPrisonerOption",,,
-ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem prisoner,"$menuState = main 0
-ExerelinShowDefaultVisual
-FireAll PopulateOptions",You have no more prisoners.,,
+ExerelinPrisonerAfterTradeNoMorePrisoners,ExerelinPrisonerPostTrade,!HasItem prisoner,"$menuState = exerelinSpecial
+FireAll ExerelinMarketSpecial",You have no more prisoners.,,
 #END PRISONER OPTIONS,,,,,,
 ,,,,,,
 #START FLEET REQUEST OPTIONS,,,,,,
