@@ -228,7 +228,7 @@ public class MiningHelperLegacy {
 		cacheDefs.add(new CacheDef("weapon", CacheType.WEAPON, null, 1, 0.8f));
 		cacheDefs.add(new CacheDef("frigate", CacheType.FRIGATE, null, 1, 0.2f));
 		cacheDefs.add(new CacheDef("fighters", CacheType.FIGHTER_WING, null, 1, 0.3f));
-		cacheDefs.add(new CacheDef("hullmod", CacheType.HULLMOD, null, 1, 999f));
+		cacheDefs.add(new CacheDef("hullmod", CacheType.HULLMOD, null, 1, 0.3f));
 		cacheDefs.add(new CacheDef("supplies", CacheType.COMMODITY, Commodities.SUPPLIES, 3, 1f));
 		cacheDefs.add(new CacheDef("fuel", CacheType.COMMODITY, Commodities.FUEL, 4, 1f));
 		cacheDefs.add(new CacheDef("food", CacheType.COMMODITY, Commodities.FOOD, 5, 1f));
