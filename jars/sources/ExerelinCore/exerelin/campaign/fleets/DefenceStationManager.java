@@ -154,14 +154,19 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 	}
 	
 	/**
-	 * Gets how much smaller defense fleets should be due to having stations
+	 * Gets how much smaller response fleets should be due to having stations
 	 * @param market
 	 * @return
 	 */
 	public float getDefenceFleetPenaltyFromStations(MarketAPI market)
 	{
 		int numStations = getMaxStations(market);
-		return numStations * DEFENCE_FP_PENALTY_PER_STATION;
+		if (numStations == 0) return 0;
+		float points = ExerelinConfig.getExerelinFactionConfig(market.getFactionId()).stationGenPoints;
+		points *= numStations;
+		//if (points != DEFENCE_FP_PENALTY_PER_STATION)
+		//	log.info("Market " + market.getName() + " has response fleet penalty " + points);
+		return points;
 	}
 	
 	public CampaignFleetAPI createFleet(MarketAPI origin)

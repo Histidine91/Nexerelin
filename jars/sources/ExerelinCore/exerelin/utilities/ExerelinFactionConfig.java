@@ -11,6 +11,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.fleets.DefenceStationManager;
 import java.io.IOException;
 import org.json.JSONObject;
 import java.util.*;
@@ -89,6 +90,7 @@ public class ExerelinFactionConfig
     public float responseFleetSizeMod = 0;
     public float invasionPointMult = 1;	// point accumulation for launching invasions
     public float patrolSizeMult = 1;
+    public float stationGenPoints = DefenceStationManager.DEFENCE_FP_PENALTY_PER_STATION;
     public String factionIdForHqResponse = null;
     
     public boolean dropPrisoners = true;
@@ -141,7 +143,7 @@ public class ExerelinFactionConfig
             hostileToAll = settings.optInt("hostileToAll", hostileToAll);
             spawnAsFactionId = settings.optString("spawnAsFactionId", spawnAsFactionId);
             freeStart = settings.optBoolean("freeStart", false);
-			ngcTooltip = settings.optString("ngcTooltip", ngcTooltip);
+            ngcTooltip = settings.optString("ngcTooltip", ngcTooltip);
             
             baseFleetCostMultiplier = settings.optDouble("baseFleetCostMultiplier", 1);
             
@@ -169,8 +171,9 @@ public class ExerelinFactionConfig
             invasionStrengthBonusDefend = (float)settings.optDouble("invasionStrengthBonusDefend", 0);
             invasionFleetSizeMod = (float)settings.optDouble("invasionFleetSizeMod", 0);
             responseFleetSizeMod = (float)settings.optDouble("responseFleetSizeMod", 0);
-            invasionPointMult = (float)settings.optDouble("invasionPointMult", 1);
-            patrolSizeMult = (float)settings.optDouble("patrolSizeMult", 1);
+            invasionPointMult = (float)settings.optDouble("invasionPointMult", invasionPointMult);
+            patrolSizeMult = (float)settings.optDouble("patrolSizeMult", patrolSizeMult);
+            stationGenPoints = (float)settings.optDouble("stationGenPoints", stationGenPoints);
             factionIdForHqResponse = settings.optString("factionIdForHqResponse", factionIdForHqResponse);
             
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
