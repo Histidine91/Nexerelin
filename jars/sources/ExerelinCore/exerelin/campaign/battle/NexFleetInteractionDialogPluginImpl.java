@@ -373,14 +373,14 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 //					(dist < baseSensorRange || (visible && level != VisibilityLevel.SENSOR_CONTACT))) {
 //				System.out.println("2380dfwef");
 //			}
-		if (dist > Misc.getBattleJoinRange())
+		// don't check the distance for defence fleets yet (we'll do it later)
+		if (!fleet.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
 		{
-			// don't check the distance for defence fleets yet (we'll do it later)
-			if (!fleet.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
+			if (dist > Misc.getBattleJoinRange())
+				return false;
+			if ( !(dist < baseSensorRange || (visible && level != SectorEntityToken.VisibilityLevel.SENSOR_CONTACT)) )
 				return false;
 		}
-		if ( !(dist < baseSensorRange || (visible && level != SectorEntityToken.VisibilityLevel.SENSOR_CONTACT)) )
-			return false;
 		if (fleet.getAI() != null && fleet.getAI().wantsToJoin(battle, true))
 			return true;
 		if (fleet.isStationMode())
