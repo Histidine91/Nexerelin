@@ -118,7 +118,7 @@ public class PredictInvasionResults extends BaseCommandPlugin {
 		if (!isRaid)
 		{
 			float reserveSize = ResponseFleetManager.getReserveSize(target.getMarket());
-			reserveSize = (float)(Math.floor(reserveSize / 4) * 4);
+			reserveSize = (float)(Math.floor(reserveSize / 4 + 0.5f) * 4);
 			text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "reserveSize")) + ": ~" + reserveSize);
 			text.highlightFirstInLastPara("" + reserveSize, Misc.getHighlightColor());
 		}
