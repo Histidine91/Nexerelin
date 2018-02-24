@@ -79,7 +79,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static final Set<String> NO_BLACK_MARKET = new HashSet(Arrays.asList(new String[]{
         "SCY_overwatchStation",
-        "SCY_hephaistosStation",
+        //"SCY_hephaistosStation",
         "uw_arigato"
     }));
     public static final Set<String> FORCE_MILITARY_MARKET = new HashSet(Arrays.asList(new String[]{
