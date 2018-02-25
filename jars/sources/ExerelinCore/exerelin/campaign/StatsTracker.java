@@ -3,20 +3,24 @@ package exerelin.campaign;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoAPI.CargoItemQuantity;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.submarkets.PrismMarket;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.lazywizard.lazylib.MathUtils;
 
 /**
@@ -38,9 +42,18 @@ public class StatsTracker extends BaseCampaignEventListener{
     protected int prisonersRansomed = 0;
     protected int slavesSold = 0;
     protected int orphansMade = 0;  // hee hee
+    protected Set<DeadOfficerEntry> deadOfficers = new HashSet<>();
     
     public StatsTracker() {
         super(true);
+    }
+    
+    public int getShipsKilled() {
+        return shipsKilled;
+    }
+
+    public int getShipsLost() {
+        return shipsLost;
     }
     
     public float getFpKilled() {
@@ -79,6 +92,14 @@ public class StatsTracker extends BaseCampaignEventListener{
         return orphansMade;
     }
     
+    public Set<DeadOfficerEntry> getDeadOfficers() {
+        return new HashSet<>(deadOfficers);
+    }
+    
+    public int getNumOfficersLost() {
+        return deadOfficers.size();
+    }
+    
     public void modifyOrphansMade(int num) {
         orphansMade += num;
     }
@@ -115,6 +136,27 @@ public class StatsTracker extends BaseCampaignEventListener{
         if (faction.equals("templars"))   // High-ranking Templars (including those who'd get to serve on a ship) have large (adopted) families
             numAvgKids = MathUtils.getRandomNumberInRange(0f, 5f) + MathUtils.getRandomNumberInRange(0f, 5f);
         orphansMade += crew * numAvgKids;
+    }
+    
+    public void addDeadOfficer(OfficerDataAPI officer, FleetMemberAPI member)
+    {
+        DeadOfficerEntry entry = new DeadOfficerEntry(officer, member);
+        deadOfficers.add(entry);
+    }
+    
+    public void removeDeadOfficer(OfficerDataAPI officer)
+    {
+        DeadOfficerEntry toRemove = null;
+        for (DeadOfficerEntry dead : deadOfficers)
+        {
+            if (dead.officer == officer)
+            {
+                toRemove = dead;
+                break;
+            }
+        }
+        if (toRemove != null)
+            deadOfficers.remove(toRemove);
     }
     
     @Override
@@ -208,5 +250,33 @@ public class StatsTracker extends BaseCampaignEventListener{
         
         data.put(TRACKER_MAP_KEY, tracker);
         return tracker;
+    }
+    
+    public static class DeadOfficerEntry
+    {
+        public OfficerDataAPI officer;
+        public int deadCycle;
+        public int deadMonth;
+        public int deadDay;
+        public String shipName;
+        public String shipClass;
+        public String shipDesignation;
+        
+        public DeadOfficerEntry(OfficerDataAPI officer, FleetMemberAPI member)
+        {
+            this.officer = officer;
+            this.shipName = member.getShipName();
+            this.shipClass = member.getHullSpec().getHullNameWithDashClass();
+            this.shipDesignation = member.getHullSpec().getDesignation();
+            CampaignClockAPI clock = Global.getSector().getClock();
+            this.deadCycle = clock.getCycle();
+            this.deadMonth = clock.getMonth();
+            this.deadDay = clock.getDay();
+        }
+        
+        public String getDeathDate()
+        {
+            return deadCycle + "." + deadMonth + "." + deadDay;
+        }
     }
 }

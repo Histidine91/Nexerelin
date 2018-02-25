@@ -17,6 +17,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.battle.NexFleetEncounterContext.EscapedOfficerData;
 import exerelin.campaign.events.FactionInsuranceEvent;
 import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.utilities.ExerelinUtilsFleet;
@@ -66,19 +67,20 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		boolean totalDefeat = !playerFleet.isValidPlayerFleet();
 		boolean mutualDestruction = context.getLastEngagementOutcome() == EngagementOutcome.MUTUAL_DESTRUCTION;
 
-		List<OfficerDataAPI> officersEscaped = ((NexFleetEncounterContext) context).getPlayerOfficersEscaped();
+		List<EscapedOfficerData> officersEscaped = ((NexFleetEncounterContext) context).getPlayerOfficersEscaped();
 		List<OfficerDataAPI> officersMIA = ((NexFleetEncounterContext) context).getPlayerOfficersMIA();
 		List<OfficerDataAPI> officersKIA = ((NexFleetEncounterContext) context).getPlayerOfficersKIA();
 		if (!officersEscaped.isEmpty() && !totalDefeat && !mutualDestruction) {
 			List<String> escaped = new ArrayList<>(officersEscaped.size());
-			for (OfficerDataAPI officer : officersEscaped) {
-				escaped.add(officer.getPerson().getName().getFullName());
+			for (EscapedOfficerData officer : officersEscaped) {
+				escaped.add(officer.officer.getPerson().getName().getFullName());
 			}
 
 			String s1, s2;
 			if (escaped.size() == 1) {
 				s1 = getTextString("officer");
-				s2 = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "hisOrHerShip", "$pronoun", StringHelper.getHisOrHer(officersEscaped.get(0).getPerson()));
+				s2 = StringHelper.getStringAndSubstituteToken(STRING_HELPER_CAT, "hisOrHerShip", 
+						"$pronoun", StringHelper.getHisOrHer(officersEscaped.get(0).officer.getPerson()));
 			} else {
 				s1 = getTextString("officers");
 				s2 = getTextString("theirShips");

@@ -16,8 +16,11 @@ import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager.VictoryType;
+import exerelin.campaign.StatsTracker.DeadOfficerEntry;
 import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.HashMap;
+import java.util.Set;
 
 // adapted from UpdateNotificationScript in LazyWizard's Version Checker
 public class VictoryScreenScript implements EveryFrameScript
@@ -88,6 +91,7 @@ public class VictoryScreenScript implements EveryFrameScript
         {
             CREDITS,
             STATS,
+			MEMORIAL,
             EXIT
         }
 
@@ -134,8 +138,11 @@ public class VictoryScreenScript implements EveryFrameScript
             
             printKeyValueLine(getString("statsLevel"), Global.getSector().getPlayerPerson().getStats().getLevel()+"");
             //printKeyValueLine(getString("statsDaysElapsed"), Global.getSector().getClock().convertToDays(time)+"");
+			printKeyValueLine(getString("statsShipsKilled"), tracker.getShipsKilled() + "");
+            printKeyValueLine(getString("statsShipsLost"), tracker.getShipsLost() + "");
             printKeyValueLine(getString("statsFpKilled"), Misc.getWithDGS((int)tracker.getFpKilled()));
             printKeyValueLine(getString("statsFpLost"), Misc.getWithDGS((int)tracker.getFpLost()));
+			printKeyValueLine(getString("statsOfficersLost"), tracker.getNumOfficersLost() + "");
             printKeyValueLine(getString("statsOrphansMade"),  Misc.getWithDGS(tracker.getOrphansMade()));
             printKeyValueLine(getString("statsMarketsCaptured"), tracker.getMarketsCaptured()+"");
             printKeyValueLine(getString("statsAgentsUsed"), tracker.getAgentsUsed()+"");
@@ -144,6 +151,42 @@ public class VictoryScreenScript implements EveryFrameScript
             printKeyValueLine(getString("statsPrisonersRansomed"), tracker.getPrisonersRansomed()+"");
             printKeyValueLine(getString("statsSlavesSold"), tracker.getSlavesSold()+"");
         }
+		
+		protected void printMemorial()
+		{
+			Set<DeadOfficerEntry> deadOfficers = StatsTracker.getStatsTracker().getDeadOfficers();
+			if (deadOfficers.isEmpty())
+			{
+				text.addParagraph(StringHelper.getString("exerelin_victoryScreen", "noOfficersDead"));
+				return;
+			}
+			
+			text.setFontSmallInsignia();
+			text.addParagraph(StringHelper.HR);
+			Color col = Misc.getHighlightColor();
+			for (DeadOfficerEntry dead : deadOfficers)
+			{
+				text.addParagraph(dead.officer.getPerson().getName().getFullName());
+
+				String level = Misc.ucFirst(StringHelper.getString("level")) + " " + dead.officer.getPerson().getStats().getLevel();
+				text.addParagraph("  " + level);
+				text.highlightLastInLastPara(dead.officer.getPerson().getStats().getLevel() + "", col);
+
+				String diedOn = getString("officerDiedOn");
+				String diedDate = dead.getDeathDate();
+				diedOn = StringHelper.substituteToken(diedOn, "$date", diedDate );
+				text.addParagraph("  " + diedOn);
+				text.highlightLastInLastPara(diedDate, col);
+
+				String lastCommand = getString("officerLastCommand");
+				lastCommand = StringHelper.substituteToken(lastCommand, "$shipName", dead.shipName);
+				lastCommand = StringHelper.substituteToken(lastCommand, "$shipClass", dead.shipClass);
+				text.addParagraph("  " + lastCommand);
+				text.highlightFirstInLastPara(dead.shipName, col);
+			}
+			text.addParagraph(StringHelper.HR);
+			text.setFontInsignia();
+		}
 
         @Override
         public void init(InteractionDialogAPI dialog)
@@ -190,6 +233,7 @@ public class VictoryScreenScript implements EveryFrameScript
             
             options.addOption(Misc.ucFirst(StringHelper.getString("stats")), Menu.STATS);
             options.addOption(Misc.ucFirst(StringHelper.getString("credits")), Menu.CREDITS);
+			options.addOption(Misc.ucFirst(getString("officerMemorial")), Menu.MEMORIAL);
             options.addOption(Misc.ucFirst(StringHelper.getString("close")), Menu.EXIT);
             dialog.setPromptText(getString("whatNow"));
         }
@@ -211,6 +255,10 @@ public class VictoryScreenScript implements EveryFrameScript
             else if (optionData == Menu.STATS)
             {
                 printStats();
+            }
+			else if (optionData == Menu.MEMORIAL)
+            {
+                printMemorial();
             }
             else if (optionData == Menu.EXIT)
             {

@@ -9,6 +9,7 @@ CreateDiplomacyEvent,exerelin.console.commands.CreateDiplomacyEvent,"campaign,ne
 CreateAlliance,exerelin.console.commands.CreateAlliance,"campaign,nexerelin",createalliance <faction1> <faction2> [alignment],"Creates an alliance between the two factions, with the specified alignment (random if not specified). If one faction is already in an alliance, add the other faction to its alliance instead. Does nothing if both factions are already in an alliance."
 LeaveAlliance,exerelin.console.commands.LeaveAlliance,"campaign,nexerelin",leavealliance <faction>,"Makes the specified faction leave its alliance, if it has one."
 ResetRelationships,exerelin.console.commands.ResetRelationships,"campaign,nexerelin",resetrelationships,Resets faction relationships as if launching a new game. Doesn't work for mod factions in Corvus mode.
+PrintDeadOfficers,exerelin.console.commands.PrintDeadOfficers,"campaign,nexerelin",printdeadofficers,Prints information on all player officers who have died in combat.
 #PrintProductionInfo,exerelin.console.commands.PrintProductionInfo,"campaign,nexerelin",printproductioninfo <entity> <commodity>,Print some economy debugging info for the selected market and commodity.
 RetireCharacter,exerelin.console.commands.RetireCharacter,"campaign,nexerelin",retirecharacter,Retires your character and ends the game.
 StartVengeanceEvent,exerelin.console.commands.VengeanceEvent,"campaign,nexerelin",startvengeanceevent <faction>,Spawns a vengeance fleet for the specified faction.

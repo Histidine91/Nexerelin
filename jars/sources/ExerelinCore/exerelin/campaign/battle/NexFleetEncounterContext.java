@@ -9,6 +9,7 @@ import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
+import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 	// START OFFICER DEATH HANDLING
 	
 	protected List<OfficerDataAPI> playerLostOfficers = new ArrayList<>(10);
-	protected List<OfficerDataAPI> playerOfficersEscaped = new ArrayList<>(10);
+	protected List<EscapedOfficerData> playerOfficersEscaped = new ArrayList<>(10);
 	protected List<OfficerDataAPI> playerOfficersKIA = new ArrayList<>(10);
 	protected List<OfficerDataAPI> playerOfficersMIA = new ArrayList<>(10);
 	protected List<OfficerDataAPI> playerRecoverableOfficerLosses = new ArrayList<>(10);
@@ -34,7 +35,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 		return Collections.unmodifiableList(playerLostOfficers);
 	}
 
-	public List<OfficerDataAPI> getPlayerOfficersEscaped() {
+	public List<EscapedOfficerData> getPlayerOfficersEscaped() {
 		return Collections.unmodifiableList(playerOfficersEscaped);
 	}
 
@@ -57,6 +58,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 	public void recoverPlayerOfficers() {
 		for (OfficerDataAPI officer : playerRecoverableOfficerLosses) {
 			Global.getSector().getPlayerFleet().getFleetData().addOfficer(officer.getPerson());
+			StatsTracker.getStatsTracker().removeDeadOfficer(officer);
 			officer.addXP(0);
 			if (officer.canLevelUp()) {
 				officer.getSkillPicks();
@@ -120,13 +122,16 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 
 			float escapeChance;
 			float recoverableChance;
+			float crewLossMult = member.getStats().getCrewLossMult().getModifiedValue();
 			if (result.getDestroyed().contains(member)) {
-				escapeChance = ExerelinUtils.lerp(0.5f, 1f, 1f - member.getStats().getCrewLossMult().getModifiedValue());
+				escapeChance = ExerelinUtils.lerp(0.5f, 1f, 1f - crewLossMult);
 				recoverableChance = 0f;
 			} else {
-				escapeChance = ExerelinUtils.lerp(0.5f, 1f, 1f - member.getStats().getCrewLossMult().getModifiedValue());
+				escapeChance = ExerelinUtils.lerp(0.5f, 1f, 1f - crewLossMult);
 				recoverableChance = 0.75f;
 			}
+			escapeChance = 0;
+			//recoverableChance = 0;
 
 			boolean isPlayer;
 			if (battle.getSourceFleet(member).isPlayerFleet()) {
@@ -139,7 +144,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			if ((float) Math.random() < escapeChance) {
 				// Escaped!
 				if (isPlayer) {
-					playerOfficersEscaped.add(officer);
+					playerOfficersEscaped.add(new EscapedOfficerData(officer, member));
 				}
 			} else if (recoverableChance == 0) {
 				// KIA
@@ -148,6 +153,7 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 				if (isPlayer) {
 					playerOfficersKIA.add(officer);
 					playerLostOfficers.add(officer);
+					StatsTracker.getStatsTracker().addDeadOfficer(officer, member);
 				}
 			} else {
 				// MIA
@@ -160,10 +166,12 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 				if ((float) Math.random() < recoverableChance) {
 					if (isPlayer) {
 						playerRecoverableOfficerLosses.add(officer);
+						StatsTracker.getStatsTracker().addDeadOfficer(officer, member);
 					}
 				} else {
 					if (isPlayer) {
 						playerLostOfficers.add(officer);
+						StatsTracker.getStatsTracker().addDeadOfficer(officer, member);
 					}
 				}
 			}
@@ -171,13 +179,27 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 
 		// If everybody blew up...
 		if (playerFleet != null && !playerFleet.isValidPlayerFleet()) {
-			for (OfficerDataAPI officer : playerOfficersEscaped) {
+			for (EscapedOfficerData escaped : playerOfficersEscaped) {
+				OfficerDataAPI officer = escaped.officer;
 				playerFleet.getFleetData().removeOfficer(officer.getPerson());
 				playerOfficersMIA.add(officer);
 				playerLostOfficers.add(officer);
 				playerUnconfirmedOfficers.add(officer);
 			}
 			playerOfficersEscaped.clear();
+		}
+	}
+	
+	// Needed because at the point where we remove escaped officers from the fleet, we've forgotten the fleet member
+	public class EscapedOfficerData
+	{
+		public OfficerDataAPI officer;
+		public FleetMemberAPI member;
+		
+		public EscapedOfficerData(OfficerDataAPI officer, FleetMemberAPI member)
+		{
+			this.officer = officer;
+			this.member = member;
 		}
 	}
 
