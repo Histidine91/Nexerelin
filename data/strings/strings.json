@@ -333,6 +333,25 @@
 		"savedFromWreckage":"Your $officer was saved from the wreckage",
 		"savedFromWreckagePlural":"Your $officers were saved from the wreckage",
 		
+		"noOfficersDeadForNow":"No officers have died under your command... so far",
+		"noOfficersDead":"No officers have died under your command.",
+		"diedOn":"Died on $date",
+		"lastCommand":"Last commanding: $shipName ($shipClass)",
+		
+		"causeOfDeath":"cause of death",
+		"causeOfDeath1":"explosive decompression",
+		"causeOfDeath2":"plasma burns",
+		"causeOfDeath3":"decapitation",
+		"causeOfDeath4":"blood loss",
+		"causeOfDeath5":"vital organ trauma",
+		"causeOfDeath6":"total bodily disintegration",
+		"causeOfDeath7":"electrocution",
+		"causeOfDeath8":"asphyxia",
+		"causeOfDeath9":"radiation poisoning",
+		"causeOfDeath10":"suit malfunction",
+		"causeOfDeath11":"escape pod failure",
+		"causeOfDeath12":"fragging",
+		
 		"hisOrHerShip":"$pronoun ship",
 		"theirShips":"their ships",
 		
@@ -373,9 +392,6 @@
 		"youHaveWon":"You have won a $victoryType victory!",
 		
 		"officerMemorial":"Officer memorial",
-		"noOfficersDead":"No officers have died under your command... so far",
-		"officerDiedOn":"Died on $date",
-		"officerLastCommand":"Last commanding: $shipName ($shipClass)",
 		
 		"statsLevel":"Level",
 		"statsDaysElapsed":"Days elapsed",

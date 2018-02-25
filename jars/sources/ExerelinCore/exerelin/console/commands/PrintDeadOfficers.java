@@ -21,7 +21,7 @@ public class PrintDeadOfficers implements BaseCommand {
 		Set<DeadOfficerEntry> deadOfficers = StatsTracker.getStatsTracker().getDeadOfficers();
 		if (deadOfficers.isEmpty())
 		{
-			Console.showMessage(StringHelper.getString("exerelin_victoryScreen", "noOfficersDead"));
+			Console.showMessage(StringHelper.getString("exerelin_officers", "noOfficersDeadForNow"));
 			return CommandResult.SUCCESS;
 		}
 		
@@ -33,14 +33,19 @@ public class PrintDeadOfficers implements BaseCommand {
 			String level = Misc.ucFirst(StringHelper.getString("level")) + " " + dead.officer.getPerson().getStats().getLevel();
 			Console.showMessage("  " + level);
 			
-			String diedOn = StringHelper.getString("exerelin_victoryScreen", "officerDiedOn");
+			String diedOn = StringHelper.getString("exerelin_officers", "diedOn");
 			diedOn = StringHelper.substituteToken(diedOn, "$date", dead.getDeathDate());
 			Console.showMessage("  " + diedOn);
 			
-			String lastCommand = StringHelper.getString("exerelin_victoryScreen", "officerLastCommand");
+			String lastCommand = StringHelper.getString("exerelin_officers", "lastCommand");
 			lastCommand = StringHelper.substituteToken(lastCommand, "$shipName", dead.shipName);
 			lastCommand = StringHelper.substituteToken(lastCommand, "$shipClass", dead.shipClass);
 			Console.showMessage("  " + lastCommand);
+			
+			String cod = Misc.ucFirst(StringHelper.getString("exerelin_officers", "causeOfDeath")  + ": ");
+			String cod2 = Misc.ucFirst(dead.causeOfDeath);
+			cod += cod2;
+			Console.showMessage("  " + cod);
 		}
         Console.showMessage(StringHelper.HR);
         return CommandResult.SUCCESS;

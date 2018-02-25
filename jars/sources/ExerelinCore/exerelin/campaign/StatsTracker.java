@@ -17,6 +17,7 @@ import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.submarkets.PrismMarket;
+import exerelin.utilities.StringHelper;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -254,6 +255,8 @@ public class StatsTracker extends BaseCampaignEventListener{
     
     public static class DeadOfficerEntry
     {
+		public static final int NUM_CAUSES_OF_DEATH = 12;
+		
         public OfficerDataAPI officer;
         public int deadCycle;
         public int deadMonth;
@@ -261,6 +264,7 @@ public class StatsTracker extends BaseCampaignEventListener{
         public String shipName;
         public String shipClass;
         public String shipDesignation;
+		public String causeOfDeath;
         
         public DeadOfficerEntry(OfficerDataAPI officer, FleetMemberAPI member)
         {
@@ -272,6 +276,8 @@ public class StatsTracker extends BaseCampaignEventListener{
             this.deadCycle = clock.getCycle();
             this.deadMonth = clock.getMonth();
             this.deadDay = clock.getDay();
+			this.causeOfDeath = StringHelper.getString("exerelin_officers", 
+					"causeOfDeath" + MathUtils.getRandomNumberInRange(1, NUM_CAUSES_OF_DEATH));
         }
         
         public String getDeathDate()

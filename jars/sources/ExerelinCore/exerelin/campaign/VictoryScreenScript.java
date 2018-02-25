@@ -157,7 +157,7 @@ public class VictoryScreenScript implements EveryFrameScript
 			Set<DeadOfficerEntry> deadOfficers = StatsTracker.getStatsTracker().getDeadOfficers();
 			if (deadOfficers.isEmpty())
 			{
-				text.addParagraph(StringHelper.getString("exerelin_victoryScreen", "noOfficersDead"));
+				text.addParagraph(StringHelper.getString("exerelin_officers", "noOfficersDead"));
 				return;
 			}
 			
@@ -172,17 +172,23 @@ public class VictoryScreenScript implements EveryFrameScript
 				text.addParagraph("  " + level);
 				text.highlightLastInLastPara(dead.officer.getPerson().getStats().getLevel() + "", col);
 
-				String diedOn = getString("officerDiedOn");
+				String diedOn = StringHelper.getString("exerelin_officers", "diedOn");
 				String diedDate = dead.getDeathDate();
 				diedOn = StringHelper.substituteToken(diedOn, "$date", diedDate );
 				text.addParagraph("  " + diedOn);
 				text.highlightLastInLastPara(diedDate, col);
 
-				String lastCommand = getString("officerLastCommand");
+				String lastCommand = StringHelper.getString("exerelin_officers", "lastCommand");
 				lastCommand = StringHelper.substituteToken(lastCommand, "$shipName", dead.shipName);
 				lastCommand = StringHelper.substituteToken(lastCommand, "$shipClass", dead.shipClass);
 				text.addParagraph("  " + lastCommand);
 				text.highlightFirstInLastPara(dead.shipName, col);
+				
+				String cod = Misc.ucFirst(StringHelper.getString("exerelin_officers", "causeOfDeath")  + ": ");
+				String cod2 = Misc.ucFirst(dead.causeOfDeath);
+				cod += cod2;
+				text.addParagraph("  " + cod);
+				text.highlightLastInLastPara(cod2, col);
 			}
 			text.addParagraph(StringHelper.HR);
 			text.setFontInsignia();
