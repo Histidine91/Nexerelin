@@ -25,6 +25,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseThemeGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.ShipRecoverySpecial.PerShipData;
@@ -601,6 +602,8 @@ public class MiningHelperLegacy {
 		return hullmodPicker.pick();
 	}
 	
+	
+	// copied from FleetEncounterContext
 	protected static float computeCrewLossFraction(FleetMemberAPI member,  float hullFraction, float hullDamage) {		
 		if (hullFraction == 0) {
 			return (0.75f + (float) Math.random() * 0.25f) * member.getStats().getCrewLossMult().getModifiedValue(); 
@@ -706,10 +709,11 @@ public class MiningHelperLegacy {
 				// crew loss
 				else if (accidentType == AccidentType.CREW_LOSS)
 				{
-					int dead = MathUtils.getRandomNumberInRange(1, 5);
+					float dead = MathUtils.getRandomNumberInRange(1f, 5f) + 0.5f;
+					dead *= fleet.getStats().getDynamic().getValue(Stats.NON_COMBAT_CREW_LOSS_MULT);
 					dead = Math.min(dead, fleet.getCargo().getTotalCrew());
 					CargoAPI cargo = fleet.getCargo();
-					cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, Commodities.CREW, dead);
+					cargo.removeItems(CargoAPI.CargoItemType.RESOURCES, Commodities.CREW, (int)dead);
 					accident.crewLost += dead;
 				}
 				// machinery loss
