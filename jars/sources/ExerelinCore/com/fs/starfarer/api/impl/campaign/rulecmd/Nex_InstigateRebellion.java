@@ -18,6 +18,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.covertops.InstigateRebellion;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RebellionEventCreator;
+import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +120,7 @@ public class Nex_InstigateRebellion extends AgentActionBase {
 		
 		boolean haveEnough = true;
 		
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		//text.addParagraph("Cargo scanner: Cargo to drop (available)", color);
 
 		ResourceCostPanelAPI cost = makeCostPanel(text, color, color2);
@@ -139,7 +140,7 @@ public class Nex_InstigateRebellion extends AgentActionBase {
 			addCargoEntry(cost, commodityId, (int)neededAmount, (int)haveAmount / 2);
 			cost.update();
 		}
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
 		
 		return haveEnough;

@@ -93,7 +93,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		text.setFontVictor();
 		text.setFontSmallInsignia();
 
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		
 		for (Map.Entry<String, Float> tmp : report.totalOutput.entrySet())
 		{
@@ -105,7 +105,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			text.highlightInLastPara(hl, resName);
 		}
  
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		
 		FactionAPI playerFaction = Global.getSector().getPlayerFaction();
 		Color color = playerFaction.getColor();
@@ -126,7 +126,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		}
 		cost.addCost(Commodities.HEAVY_MACHINERY, "" + usable + " (" + available + ")", curr);
 		cost.update();
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		
 		text.setFontInsignia();
 
@@ -143,7 +143,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		text.setFontVictor();
 		text.setFontSmallInsignia();
 
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		
 		for (FleetMemberAPI member : playerFleet.getFleetData().getMembersInPriorityOrder())
 		{
@@ -159,7 +159,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			text.highlightInLastPara(hl, strengthStr);
 		}
  
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
 	}
 	
@@ -172,7 +172,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		text.setFontVictor();
 		text.setFontSmallInsignia();
 		
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		
 		for (Map.Entry<String, Float> tmp : MiningHelperLegacy.getMiningShipsCopy().entrySet())
 		{
@@ -213,7 +213,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		text.addParagraph("");
 		text.addParagraph(StringHelper.getString(STRING_CATEGORY, "miningToolsListAddendum"));
 		
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
 	}
 }

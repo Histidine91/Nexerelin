@@ -168,7 +168,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		text.addParagraph(str);
 		text.highlightInLastPara(hl, "" + numMarkets);
 		text.setFontSmallInsignia();
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 
 		boolean anyBase = false;
 		
@@ -222,7 +222,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		{
 			//text.addParagraph("*" + StringHelper.getString("exerelin_markets", "hasBaseTip"));
 		}
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
 	}
 		

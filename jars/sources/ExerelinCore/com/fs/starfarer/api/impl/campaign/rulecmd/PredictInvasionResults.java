@@ -67,7 +67,7 @@ public class PredictInvasionResults extends BaseCommandPlugin {
 
 		Color hl = Misc.getHighlightColor();
 		Color red = Misc.getNegativeHighlightColor();
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "attackerStrength")) + ": " + attackerStrength);
 		text.highlightInLastPara(hl, "" + attackerStrength);
 		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "defenderStrength")) + ": " + defenderStrengthStr);
@@ -123,7 +123,7 @@ public class PredictInvasionResults extends BaseCommandPlugin {
 			text.highlightFirstInLastPara("" + reserveSize, Misc.getHighlightColor());
 		}
  
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
 		MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
 		memory.set("$exerelinInvasionTimeTaken", best.timeTaken, 0);

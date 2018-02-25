@@ -814,7 +814,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         text.addParagraph(StringHelper.getStringAndSubstituteToken("exerelin_alliances", "numAlliances", "$numAlliances", alliances.size()+""));
         text.highlightInLastPara(hl, "" + alliances.size());
         text.setFontSmallInsignia();
-        text.addParagraph("-----------------------------------------------------------------------------");
+        text.addParagraph(StringHelper.HR);
         for (Alliance alliance : alliances)
         {
             String allianceName = alliance.getName();
@@ -823,7 +823,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             text.addParagraph(allianceString);
             text.highlightInLastPara(hl, allianceName);
         }
-        text.addParagraph("-----------------------------------------------------------------------------");
+        text.addParagraph(StringHelper.HR);
         text.setFontInsignia();
     }
         

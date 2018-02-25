@@ -145,12 +145,12 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 		text.setFontVictor();
 		text.setFontSmallInsignia();
 
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.addParagraph(StringHelper.getStringAndSubstituteToken(STRING_CATEGORY, "stabilityPenaltyReport", "$stability", Math.abs(stabilityPenalty)+""));
 		text.highlightInLastPara(Misc.getNegativeHighlightColor(), stabilityPenalty+"");
 		text.addParagraph(StringHelper.getStringAndSubstituteToken(STRING_CATEGORY, "commodityDestructionReport", "$percent", destructionStr));
 		text.highlightInLastPara(Misc.getNegativeHighlightColor(), destructionStr);
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
 		
 		MemoryAPI memLocal = memoryMap.get(MemKeys.LOCAL);

@@ -62,7 +62,7 @@ public class AgentGatherIntel extends AgentActionBase {
 		TextPanelAPI text = dialog.getTextPanel();
 		text.addParagraph(market.getName() + " intel report");
 		text.setFontSmallInsignia();
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		
 		float stability = market.getStabilityValue();
 		text.addParagraph(Misc.ucFirst(StringHelper.getString("stability")) + ": " + stability);
@@ -128,7 +128,7 @@ public class AgentGatherIntel extends AgentActionBase {
 		}
 		
 				
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
                 
 		StatsTracker.getStatsTracker().notifyAgentsUsed(1);

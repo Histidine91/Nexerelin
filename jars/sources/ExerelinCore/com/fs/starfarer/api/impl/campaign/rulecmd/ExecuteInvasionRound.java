@@ -62,7 +62,7 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
 
 		Color hl = Misc.getHighlightColor();
 		Color red = Misc.getNegativeHighlightColor();
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "attackerStrength")) + ": " + attackerStrength);
 		text.highlightInLastPara(hl, "" + attackerStrength);
 		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "defenderStrength")) + ": " + defenderStrength);
@@ -71,7 +71,7 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
 		text.highlightInLastPara(red, "" + marinesLost);
 		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "marinesRemaining")) + ": " + marinesRemaining);
 		text.highlightInLastPara(hl, "" + marinesRemaining);
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
 
 		if (result.success)

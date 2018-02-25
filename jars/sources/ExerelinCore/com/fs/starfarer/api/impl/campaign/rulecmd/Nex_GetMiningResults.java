@@ -49,7 +49,7 @@ public class Nex_GetMiningResults extends BaseCommandPlugin {
 		text.setFontVictor();
 		text.setFontSmallInsignia();
 
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		
 		String headerStr = Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "resourcesExtracted"));
 		text.addParagraph(headerStr);
@@ -140,7 +140,7 @@ public class Nex_GetMiningResults extends BaseCommandPlugin {
 			}
 		}
  
-		text.addParagraph("-----------------------------------------------------------------------------");
+		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
 
 		return true;
