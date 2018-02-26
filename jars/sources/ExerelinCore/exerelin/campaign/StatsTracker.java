@@ -141,12 +141,14 @@ public class StatsTracker extends BaseCampaignEventListener{
     
     public void addDeadOfficer(OfficerDataAPI officer, FleetMemberAPI member)
     {
+        if (deadOfficers == null) deadOfficers = new HashSet<>();	// reverse compat
         DeadOfficerEntry entry = new DeadOfficerEntry(officer, member);
         deadOfficers.add(entry);
     }
     
     public void removeDeadOfficer(OfficerDataAPI officer)
     {
+        if (deadOfficers == null) deadOfficers = new HashSet<>();	// reverse compat
         DeadOfficerEntry toRemove = null;
         for (DeadOfficerEntry dead : deadOfficers)
         {

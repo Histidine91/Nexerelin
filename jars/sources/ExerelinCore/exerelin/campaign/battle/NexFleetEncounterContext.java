@@ -130,8 +130,6 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 				escapeChance = ExerelinUtils.lerp(0.5f, 1f, 1f - crewLossMult);
 				recoverableChance = 0.75f;
 			}
-			escapeChance = 0;
-			//recoverableChance = 0;
 
 			boolean isPlayer;
 			if (battle.getSourceFleet(member).isPlayerFleet()) {
