@@ -1051,9 +1051,9 @@ $faction.id == $player.factionId
 $faction.id != player_npc",,,nex_marketAgentReport:Get intel report,
 nex_marketAgentReportOptionFollowers,PopulateOptions,"Nex_IsBaseOfficial admin
 $faction.id == player_npc",,,nex_marketAgentReport:Get intel report,
-nex_marketAgentReport,DialogOptionSelected,$option == nex_marketAgentReport,"AgentGatherIntel false
+nex_marketAgentReport,DialogOptionSelected,$option == nex_marketAgentReport,AgentGatherIntel false,,nex_marketAgentReportDone:Done,
+nex_marketAgentReportDone,DialogOptionSelected,$option == nex_marketAgentReportDone,"ShowPersonVisual
 FireAll PopulateOptions",,,
-,,,,,,
 ,,,,,,
 #Must be after all other rules with that trigger,,,,,,
 ExerelinBaseCommanderOptionsInitializationFinished,ExerelinBaseCommanderOptionsInitialize,,FireAll PopulateOptions,,,
