@@ -408,6 +408,7 @@ public class ExerelinProcGen {
 	 */
 	protected void createEntityDataForSystem(StarSystemAPI system)
 	{
+		if (!system.isProcgen()) return;
 		for (PlanetAPI planet : system.getPlanets())
 		{
 			if (planet.isStar()) continue;
@@ -841,7 +842,10 @@ public class ExerelinProcGen {
 		{
 			StarSystemAPI nearest = Misc.getNearestStarSystem(beacon);
 			if (systems.contains(nearest))
+			{
+				//log.info("\tBeacon has nearest star system " + nearest.getBaseName() + ", removing");
 				toRemove.add(beacon);
+			}
 		}
 		
 		for (SectorEntityToken token : toRemove)
@@ -1632,10 +1636,22 @@ public class ExerelinProcGen {
 		STAR, PLANET, MOON, STATION
 	}
 	
+	protected float divideWithDiv0Protection(float f1, float f2)
+	{
+		if (f2 == 0)
+			return 0;
+		return f1/f2;
+	}
+	
 	protected Comparator<ProcGenEntity> sortByMarketPointsUsed = new Comparator<ProcGenEntity>() {
 		public int compare(ProcGenEntity e1, ProcGenEntity e2) {
-			float spendPercent1 = e1.marketPointsSpent/e1.marketPoints;
-			float spendPercent2 = e2.marketPointsSpent/e2.marketPoints;
+			//if (e1.marketPoints == 0)
+			//	throw new ArithmeticException("Fuck you, entity " + e1.name + " has zero market points");
+			//if (e2.marketPoints == 0)
+			//	throw new ArithmeticException("Fuck you, entity " + e2.name + " has zero market points");
+			
+			float spendPercent1 = divideWithDiv0Protection(e1.marketPointsSpent, e1.marketPoints);
+			float spendPercent2 = divideWithDiv0Protection(e2.marketPointsSpent, e2.marketPoints);
 
 			if (spendPercent1 > spendPercent2) return -1;
 			else if (spendPercent2 > spendPercent1) return 1;
