@@ -90,6 +90,7 @@ public class ExerelinFactionConfig
     public float responseFleetSizeMod = 0;
     public float invasionPointMult = 1;	// point accumulation for launching invasions
     public float patrolSizeMult = 1;
+    public float vengeanceFleetSizeMult = 1;
     public float stationGenPoints = DefenceStationManager.DEFENCE_FP_PENALTY_PER_STATION;
     public String factionIdForHqResponse = null;
     
@@ -173,6 +174,7 @@ public class ExerelinFactionConfig
             responseFleetSizeMod = (float)settings.optDouble("responseFleetSizeMod", 0);
             invasionPointMult = (float)settings.optDouble("invasionPointMult", invasionPointMult);
             patrolSizeMult = (float)settings.optDouble("patrolSizeMult", patrolSizeMult);
+            vengeanceFleetSizeMult = (float)settings.optDouble("vengeanceFleetSizeMult", vengeanceFleetSizeMult);
             stationGenPoints = (float)settings.optDouble("stationGenPoints", stationGenPoints);
             factionIdForHqResponse = settings.optString("factionIdForHqResponse", factionIdForHqResponse);
             

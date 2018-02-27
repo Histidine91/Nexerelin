@@ -359,7 +359,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         if (mod == null) {
             mod = 1f;
         }
-		int capBonus = (int)(ExerelinUtilsFleet.getPlayerLevelFPBonus() + 0.5f);
+        int capBonus = (int)(ExerelinUtilsFleet.getPlayerLevelFPBonus() + 0.5f);
         int combat, freighter, tanker, utility;
         float bonus;
         switch (escalationLevel) {
@@ -411,6 +411,13 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         } else if (total > 100) {
             bonus += 0.75f;
         }
+        
+        float sizeMult = ExerelinConfig.getExerelinFactionConfig(faction.getId()).vengeanceFleetSizeMult;
+        combat *= sizeMult;
+        freighter *= sizeMult;
+        tanker *= sizeMult;
+        utility *= sizeMult;
+        
         final float finalBonus = bonus;
 
         final int finalCombat = combat;
