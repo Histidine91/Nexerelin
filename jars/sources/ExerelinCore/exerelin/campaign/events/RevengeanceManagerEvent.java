@@ -88,10 +88,10 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		points += addedPoints;
 		String debugStr = "Adding revengeance points: " + addedPoints;
 		log.info(debugStr);
-		//if (Global.getSettings().isDevMode())
-		//{
-		//	Global.getSector().getCampaignUI().addMessage(debugStr);
-		//}
+		if (DEBUG_MODE)
+		{
+			Global.getSector().getCampaignUI().addMessage(debugStr);
+		}
 		if (points >= POINTS_TO_SPAWN)
 		{
 			boolean success = generateCounterInvasionFleet();
@@ -125,10 +125,10 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		
 		String debugStr = "Adding faction revengeance points for " + factionId + ": " + points;
 		log.info(debugStr);
-		//if (Global.getSettings().isDevMode())
-		//{
-		//	Global.getSector().getCampaignUI().addMessage(debugStr);
-		//}
+		if (DEBUG_MODE)
+		{
+			Global.getSector().getCampaignUI().addMessage(debugStr);
+		}
 		
 		float currPts = factionPoints.get(factionId);
 		float newPts = currPts + points;
@@ -271,7 +271,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(playerAlignedFactionId, 
-				ExerelinConfig.allowPirateInvasions, true, false);
+				true, true, false);
 		
 		for (CampaignFleetAPI killedFleet : killedFleets)
 		{
