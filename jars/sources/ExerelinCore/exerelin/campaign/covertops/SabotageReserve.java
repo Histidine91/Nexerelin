@@ -52,6 +52,9 @@ public class SabotageReserve extends CovertOpsBase {
 		eventParams.put("reserveDamage", -delta);
 		
 		reportEvent(eventParams);
+		
+		// reset response fleet, if relevant
+		market.getMemoryWithoutUpdate().unset("$nex_invasionResponseFleet");
 	}
 
 	@Override
