@@ -115,6 +115,7 @@ public class MiningHelperLegacy {
 	protected static final Map<String, Float> miningWeapons = new HashMap<>();
 	protected static final Map<String, Float> miningShips = new HashMap<>();
 	protected static final Map<String, Map<String, Float>> miningConditions = new HashMap<>();	// maps each market condition to its resource contents
+	protected static final Map<String, Float> miningConditionsCache = new HashMap<>();
 	
 	protected static final List<CacheDef> cacheDefs = new ArrayList<>();
 	
@@ -161,6 +162,7 @@ public class MiningHelperLegacy {
 						if (value > 0) resources.put(commodityId, value);
 					}
 					miningConditions.put(id, resources);
+					miningConditionsCache.put(id, (float)row.optDouble("cache", 0));
 				} catch (JSONException ex) {
 					log.error("Error loading market condition entry " + id + ": " + ex);
 				}
@@ -363,6 +365,28 @@ public class MiningHelperLegacy {
 				totalResources.put(Commodities.VOLATILES, totalResources.get(Commodities.VOLATILES) * 2);
 		}
 		*/
+	}
+	
+	public static float getCacheChanceMod(SectorEntityToken entity, boolean isPlayer)
+	{
+		float chance = 0;
+		MarketAPI market = entity.getMarket();
+		if (market != null)
+		{
+			for (MarketConditionAPI cond : market.getConditions())
+			{
+				if (!cond.isSurveyed() && isPlayer) continue;
+				String id = cond.getId();
+				if (miningConditionsCache.containsKey(id))
+					chance += miningConditionsCache.get(id);
+			}
+		}
+		if (entity instanceof AsteroidAPI)
+		{
+			chance += miningConditionsCache.get("asteroid");
+		}
+		
+		return chance;
 	}
 	
 	public static float getDanger(SectorEntityToken entity)
@@ -844,9 +868,14 @@ public class MiningHelperLegacy {
 			fleet.getCargo().addCommodity(tmp.getKey(), amount);
 		}
 		
-		if (isPlayer && (DEBUG_MODE || Math.random() < baseCacheChance))
+		if (isPlayer)
 		{
-			result.cachesFound = findCaches(fleet, strength, entity);
+			float cacheChance = baseCacheChance * (1 + getCacheChanceMod(entity, isPlayer));
+			//Global.getSector().getCampaignUI().addMessage("Cache chance: " + cacheChance);
+			if (DEBUG_MODE || Math.random() < cacheChance)
+			{
+				result.cachesFound = findCaches(fleet, strength, entity);
+			}
 		}
 		result.accidents = handleAccidents(fleet, baseStrength, getDanger(entity));
 		
