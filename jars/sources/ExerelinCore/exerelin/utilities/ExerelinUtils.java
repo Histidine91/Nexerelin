@@ -65,10 +65,6 @@ public class ExerelinUtils
 
 		return list.get(randomIndex);
 	}
-		
-	public static float lerp(float x, float y, float alpha) {
-		return (1f - alpha) * x + alpha * y;
-	}
 
 	public static MarketAPI getClosestMarket(String factionId)
 	{

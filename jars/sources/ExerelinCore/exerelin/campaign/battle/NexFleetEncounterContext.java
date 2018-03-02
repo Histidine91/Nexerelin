@@ -11,7 +11,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
 import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.utilities.NexUtilsMath;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -124,10 +124,10 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 			float recoverableChance;
 			float crewLossMult = member.getStats().getCrewLossMult().getModifiedValue();
 			if (result.getDestroyed().contains(member)) {
-				escapeChance = ExerelinUtils.lerp(0.5f, 1f, 1f - crewLossMult);
+				escapeChance = NexUtilsMath.lerp(0.5f, 1f, 1f - crewLossMult);
 				recoverableChance = 0f;
 			} else {
-				escapeChance = ExerelinUtils.lerp(0.5f, 1f, 1f - crewLossMult);
+				escapeChance = NexUtilsMath.lerp(0.5f, 1f, 1f - crewLossMult);
 				recoverableChance = 0.75f;
 			}
 

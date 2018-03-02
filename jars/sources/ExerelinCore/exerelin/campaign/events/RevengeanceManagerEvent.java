@@ -26,8 +26,8 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT;
 import static exerelin.campaign.fleets.InvasionFleetManager.EXCEPTION_LIST;
 import static exerelin.campaign.fleets.InvasionFleetManager.spawnInvasionFleet;
-import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFleet;
+import exerelin.utilities.NexUtilsMath;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -463,7 +463,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
                     continue;
                 }
             }
-            float weight = market.getSize() * (float) Math.sqrt(ExerelinUtils.lerp(0.25f, 1f, market.getShipQualityFactor()));
+            float weight = market.getSize() * (float) Math.sqrt(NexUtilsMath.lerp(0.25f, 1f, market.getShipQualityFactor()));
             float mod = 1f;
             if (market.hasCondition(Conditions.MILITARY_BASE) || market.hasCondition("ii_interstellarbazaar")) {
                 mod += 0.15f;

@@ -37,4 +37,8 @@ public class NexUtilsMath {
 	{
 		return Math.floor(num + 0.5f);
 	}
+		
+	public static float lerp(float x, float y, float alpha) {
+		return (1f - alpha) * x + alpha * y;
+	}
 }
