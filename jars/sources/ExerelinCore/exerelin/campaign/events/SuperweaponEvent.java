@@ -1,6 +1,5 @@
 package exerelin.campaign.events;
 
-import exerelin.campaign.events.covertops.CovertOpsEventBase;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -230,7 +229,7 @@ public class SuperweaponEvent extends BaseEventPlugin {
 		//addFactionNameTokens(map, "target", market.getFaction());
 		map.put("$stabilityPenalty", Math.abs(stabilityPenalty)+"");
 		map.put("$relDeltaAbs", "" + (int)Math.ceil(Math.abs(repPenalty*100f)));
-		map.put("$newRelationStr", CovertOpsEventBase.getNewRelationStr(lastAttackerFaction, market.getFaction()));
+		map.put("$newRelationStr", ExerelinUtilsReputation.getNewRelationStr(lastAttackerFaction, market.getFaction()));
 		
 		if (wasPlayer)
 		{

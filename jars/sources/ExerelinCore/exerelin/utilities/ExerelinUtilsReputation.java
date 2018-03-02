@@ -12,12 +12,14 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import java.awt.Color;
 import java.util.List;
 
 public class ExerelinUtilsReputation
@@ -34,12 +36,36 @@ public class ExerelinUtilsReputation
 		return delta;
 	}
 	
-	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction, PersonAPI person, float delta)
+	public static void printToTextPanelOrCampaignUI(TextPanelAPI text, String str,
+			String highlight, Color highlightColor)
+	{
+		if (highlightColor == null) highlightColor = Misc.getHighlightColor();
+		
+		if (text != null)
+		{
+			text.setFontSmallInsignia();
+			text.addParagraph(str, Misc.getGrayColor());
+			if (highlight != null)
+				text.highlightFirstInLastPara(highlight, highlightColor);
+			text.setFontInsignia();
+		}
+		else
+		{
+			if (highlight != null)
+				Global.getSector().getCampaignUI().addMessage(str, highlight, highlightColor);
+			else
+				Global.getSector().getCampaignUI().addMessage(str);
+		}
+	}
+	
+	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction,
+			PersonAPI person, float delta)
 	{
 		return adjustPlayerReputation(faction, person, delta, null, null);
 	}
 	
-	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction, PersonAPI person, float delta, CommMessageAPI message, TextPanelAPI textPanel)
+	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction,
+			PersonAPI person, float delta, CommMessageAPI message, TextPanelAPI textPanel)
 	{
 		String factionId = faction.getId();
 		FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
@@ -47,10 +73,13 @@ public class ExerelinUtilsReputation
 		ReputationAdjustmentResult result;
 		
 		// clamp to configs' min/max relationships
+		float deltaBase = delta;
+		boolean clamp = false;
 		if (!DiplomacyManager.isRandomFactionRelationships())
 		{
 			String myFactionId = PlayerFactionStore.getPlayerFactionId();
 			delta = getClampedRelationshipDelta(myFactionId, faction.getId(), delta);
+			clamp = deltaBase > 0 && delta < deltaBase || deltaBase < 0 && delta > deltaBase;
 		}
 		
 		CustomRepImpact impact = new CustomRepImpact();
@@ -62,6 +91,20 @@ public class ExerelinUtilsReputation
 			CustomRepImpact impact2 = new CustomRepImpact();
 			impact2.delta = delta * 1.5f;
 			result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, impact2, message, textPanel, true), person);
+		}
+		
+		// print relationship limit message
+		if (clamp)
+		{
+			FactionAPI playerAligned = PlayerFactionStore.getPlayerFaction();
+			String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
+			str = StringHelper.substituteToken(str, "$faction1", 
+					ExerelinUtilsFaction.getFactionShortName(playerAligned.getId()));
+			str = StringHelper.substituteToken(str, "$faction2", 
+					ExerelinUtilsFaction.getFactionShortName(faction));
+			String rel = getNewRelationStr(faction, playerAligned);
+			str = StringHelper.substituteToken(str, "$relationship", rel);
+			printToTextPanelOrCampaignUI(textPanel, str, rel, faction.getRelColor(playerAligned.getId()));
 		}
 		
 		boolean isHostile = player.isHostileTo(faction);
@@ -151,5 +194,14 @@ public class ExerelinUtilsReputation
 	{
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		syncPlayerRelationshipsToFaction(playerAlignedFactionId);
+	}
+	
+	public static String getNewRelationStr(FactionAPI faction1, FactionAPI faction2)
+	{
+		RepLevel level = faction1.getRelationshipLevel(faction2.getId());
+		int repInt = (int) Math.ceil((faction1.getRelationship(faction2.getId())) * 100f);
+		
+		String standing = "" + repInt + "/100" + " (" + level.getDisplayName().toLowerCase() + ")";
+		return standing;
 	}
 }
