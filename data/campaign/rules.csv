@@ -270,6 +270,7 @@ ExerelinInvadeListOptionInvade,ExerelinInvadeListOptions,HasMarines 1,"SetEnable
 SetShortcut exerelinInvasionProceed RETURN",,,
 ExerelinInvadeListOptionInvadeNoMarines,ExerelinInvadeListOptions,!HasMarines 1,"SetTooltip exerelinInvasionProceed ""You have no marines!""
 SetEnabled exerelinInvasionProceed false",,,
+ExerelinInvadeListOptionInvadeNonHostile,ExerelinInvadeListOptions,RepIsAtWorst $faction.id INHOSPITABLE,"Nex_AddOptionConfirmation exerelinInvasionProceed ""$TheFaction is not currently hostile. Are you sure you wish to invade $market?"" ""Yes"" ""No""",,,
 ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,FireAll ExerelinInvadeListOptions,"Base attacker strength = (marine strength + fleet DP/2) * 0.7
 Base defender strength = 0.2 * (market size+1)^3 * (stability + 0.5) * 0.5
 Each Military Base and Regional Capital adds 25% to defender strength, Headquarters adds 40%.
@@ -380,6 +381,7 @@ ExerelinRaidListOptionRaidNoMarines,ExerelinRaidListOptions,!HasMarines 1,"SetTo
 SetEnabled exerelinRaidProceed false",,,
 ExerelinRaidListOptionRaidHostilesNearby,ExerelinRaidListOptions,HostileFleetNearbyAndAware,"SetTooltip exerelinRaidProceed ""A nearby hostile fleet is tracking your movements, making, a raid impossible.""
 SetEnabled exerelinRaidProceed false","A nearby hostile fleet is tracking your movements, making a raid impossible.",,
+ExerelinRaidListOptionRaidNonHostile,ExerelinRaidListOptions,RepIsAtWorst $faction.id INHOSPITABLE,"Nex_AddOptionConfirmation exerelinRaidProceed ""$TheFaction is not currently hostile. Are you sure you wish to raid $market?"" ""Yes"" ""No""",,,
 ExerelinRaidHelp,DialogOptionSelected,$option == exerelinRaidHelp,FireAll ExerelinRaidListOptions,"Base attacker strength = (marine strength + fleet DP/2) * 0.7
 Base defender strength = 0.2 * (market size+1)^3 * (stability + 0.5) * 0.375
 Each Military Base and Regional Capital adds 25% to defender strength, Headquarters adds 40%.
@@ -695,6 +697,9 @@ IsFactionAlive $player.factionId","SetTooltip exerelinFleetRequestFire ""Deployi
 SetEnabled exerelinFleetRequestFire false
 SetTooltipHighlightColors exerelinFleetRequestFire buttonShortcut buttonShortcut
 SetTooltipHighlights exerelinFleetRequestFire $fleetRequestCost $player.creditsHave",,exerelinFleetRequestFire:Request a fleet,
+ExerelinFleetRequestOptionListFireNotHostile,ExerelinFleetRequestOption,"RepIsAtWorst $faction.id INHOSPITABLE
+IsValidInvasionTarget
+$fleetRequestMarines > 0","Nex_AddOptionConfirmation exerelinFleetRequestFire ""$TheFaction is not currently hostile, and you have configured the fleet request as an invasion fleet. Do you want to proceed?"" ""Yes"" ""No""",,,
 ExerelinFleetRequestOptionListChangeFP,ExerelinFleetRequestOption,,SetShortcut exerelinFleetRequestChangeFP F,,exerelinFleetRequestChangeFP:Fleet points - $fleetRequestFP,
 ExerelinFleetRequestOptionListChangeMarineCount,ExerelinFleetRequestOption,IsValidInvasionTarget,"SetEnabled exerelinFleetRequestChangeMarineCount true
 SetTooltip exerelinFleetRequestChangeMarineCount ""Carrying marines will make this fleet an invasion fleet. Dispatching one will be considered a hostile act.""
@@ -724,7 +729,8 @@ ExerelinSuperweaponPrompt,DialogOptionSelected,$option == exerelinSuperweapon,"$
 Exerelin_ShowShipVisual $bestSuperweapon
 Nex_PrepareResponseFleet true
 SetShortcut exerelinSuperweaponProceed RETURN
-SetShortcut exerelinSuperweaponCancel ESCAPE","You can use a superweapon on $market to cause massive devastation, clearing the way for an invasion. Expect the enemy to try to stop you.
+SetShortcut exerelinSuperweaponCancel ESCAPE
+Nex_AddOptionConfirmation exerelinSuperweaponProceed ""Confirm superweapon use?"" ""Fire"" ""Abort""","You can use a superweapon on $market to cause massive devastation, clearing the way for an invasion. Expect the enemy to try to stop you.
 
 Be warned of the political repercussions.","1:exerelinSuperweaponProceed:Continue
 2:exerelinSuperweaponCancel:Cancel",
@@ -948,25 +954,28 @@ $_playerAllianceName = $player.allianceName 0",,,
 ,,,,,,
 ExerelinJoinAllianceOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 !$player.isInAlliance
-$faction.isInAlliance",SetEnabled exerelinJoinAlliance true,,exerelinJoinAlliance:Join alliance $_factionAllianceName,
+$faction.isInAlliance","SetEnabled exerelinJoinAlliance true
+Nex_AddOptionConfirmation exerelinJoinAlliance ""Are you sure you want your faction to join alliance $_factionAllianceName?"" ""Yes"" ""No""",,exerelinJoinAlliance:Join alliance $_factionAllianceName,
 ExerelinJoinAllianceOptionUntrusted,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 !RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinJoinAlliance ""The $_factionAllianceName do not trust you enough yet.""
 SetEnabled exerelinJoinAlliance false",,,
 ExerelinJoinAllianceSwitchOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 $player.isInAlliance
 $faction.isInAlliance
-$faction.allianceId != $player.allianceId","SetTooltip exerelinJoinFactionSwitch ""To join alliance $_factionAllianceName your faction will leave $_playerAllianceName.""
-SetEnabled exerelinJoinAllianceSwitch true",,exerelinJoinAllianceSwitch:Join (switch to) alliance $_factionAllianceName,
+$faction.allianceId != $player.allianceId","SetTooltip exerelinJoinAlliance ""To join alliance $_factionAllianceName your faction will leave $_playerAllianceName.""
+SetEnabled exerelinJoinAlliance true
+Nex_AddOptionConfirmation exerelinJoinAlliance ""Are you sure you want your faction to leave $_playerAllianceName and join $_factionAllianceName?"" ""Yes"" ""No""",,exerelinJoinAlliance:Join (switch to) alliance $_factionAllianceName,
 ExerelinJoinAllianceSwitchOptionUntrusted,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 $player.isInAlliance
 $faction.isInAlliance
 $faction.allianceId != $player.allianceId
-!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinJoinAllianceSwitch ""The $_factionAllianceName do not trust you enough yet.\nTo join alliance $_factionAllianceName your faction would leave $_playerAllianceName.""
-SetEnabled exerelinJoinAllianceSwitch false",,,
+!RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinJoinAlliance ""The $_factionAllianceName do not trust you enough yet.\nTo join alliance $_factionAllianceName your faction would leave $_playerAllianceName.""
+SetEnabled exerelinJoinAlliance false",,,
 ,,,,,,
 ExerelinInviteToAllianceOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 $player.isInAlliance
-$faction.allianceId != $player.allianceId",SetEnabled exerelinInviteToAlliance true,,exerelinInviteToAlliance:Invite $theFaction to join alliance $_playerAllianceName,
+$faction.allianceId != $player.allianceId","SetEnabled exerelinInviteToAlliance true
+Nex_AddOptionConfirmation exerelinInviteToAlliance ""Are you sure you want to invite $theFaction to join alliance $_playerAllianceName?"" ""Yes"" ""No""",,exerelinInviteToAlliance:Invite $theFaction to join alliance $_playerAllianceName,
 ExerelinInviteToAllianceOptionUntrusted,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 !$faction.isInAlliance
 !RepIsAtWorst $faction.id FRIENDLY","SetTooltip exerelinInviteToAlliance ""$TheFaction do not trust you enough yet.""
@@ -982,7 +991,8 @@ SetEnabled exerelinInviteToAlliance false",,,
 ,,,,,,
 ExerelinFormAllianceOption,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 !$player.isInAlliance
-!$faction.isInAlliance",SetEnabled exerelinFormAlliance true,,exerelinFormAlliance:Invite $theFaction to form a new alliance,
+!$faction.isInAlliance","SetEnabled exerelinFormAlliance true
+Nex_AddOptionConfirmation exerelinFormAlliance ""Are you sure you want to form a new alliance with $theFaction?"" ""Yes"" ""No""",,exerelinFormAlliance:Invite $theFaction to form a new alliance,
 ExerelinFormAllianceOptionUntrusted,ExerelinMarketSpecial,"$showPlayerFactionDiplomacyOptions
 !$player.isInAlliance
 !$faction.isInAlliance
@@ -997,25 +1007,16 @@ $player.factionId == ""player_npc""
 $player.isInAlliance
 $faction.isInAlliance
 $faction.allianceId == $player.allianceId","$_factionAllianceName = $faction.allianceName 0
-$_playerAllianceName = $player.allianceName 0",,exerelinLeaveAlliance:Leave alliance $_factionAllianceName,
+$_playerAllianceName = $player.allianceName 0
+Nex_AddOptionConfirmation exerelinLeaveAlliance ""Are you sure you want your faction to leave alliance $_playerAllianceName?"" ""Yes"" ""No""",,exerelinLeaveAlliance:Leave alliance $_factionAllianceName,
 ,,,,,,
-ExerelinJoinAlliance,DialogOptionSelected,$option == exerelinJoinAlliance,,Are you sure you want your faction to join alliance $_factionAllianceName?,"exerelinJoinAllianceConfirm:Yes
-exerelinMarketSpecial:No",
-ExerelinJoinAllianceSwitch,DialogOptionSelected,$option == exerelinJoinAllianceSwitch,,Are you sure you want your faction to leave $_playerAllianceName and join $_factionAllianceName?,"exerelinJoinAllianceConfirm:Yes
-exerelinMarketSpecial:No",
-ExerelinJoinAllianceConfirm,DialogOptionSelected,$option == exerelinJoinAllianceConfirm,"JoinAlliance $faction.allianceId
+ExerelinJoinAlliance,DialogOptionSelected,$option == exerelinJoinAlliance,"JoinAlliance $faction.allianceId
 FireAll ExerelinMarketSpecialInitialize",,,
-ExerelinInviteToAlliance,DialogOptionSelected,$option == exerelinInviteToAlliance,,Are you sure you want to invite $theFaction to join alliance $_playerAllianceName?,"exerelinInviteToAllianceConfirm:Yes
-exerelinMarketSpecial:No",
-ExerelinInviteToAllianceConfirm,DialogOptionSelected,$option == exerelinInviteToAllianceConfirm,"InviteToAlliance $faction.id
+ExerelinInviteToAlliance,DialogOptionSelected,$option == exerelinInviteToAlliance,"InviteToAlliance $faction.id
 FireAll ExerelinMarketSpecialInitialize",,,
-ExerelinFormAlliance,DialogOptionSelected,$option == exerelinFormAlliance,,Are you sure you want to form a new alliance with $theFaction?,"exerelinFormAllianceConfirm:Yes
-exerelinMarketSpecial:No",
-ExerelinFormAllianceConfirm,DialogOptionSelected,$option == exerelinFormAllianceConfirm,"FormAlliance $faction.id
+ExerelinFormAlliance,DialogOptionSelected,$option == exerelinFormAlliance,"FormAlliance $faction.id
 FireAll ExerelinMarketSpecialInitialize",,,
-ExerelinLeaveAlliance,DialogOptionSelected,$option == exerelinLeaveAlliance,,Are you sure you want your faction to leave alliance $_playerAllianceName?,"exerelinLeaveAllianceConfirm:Yes
-exerelinMarketSpecial:No",
-ExerelinLeaveAllianceConfirm,DialogOptionSelected,$option == exerelinLeaveAllianceConfirm,"LeaveAlliance
+ExerelinLeaveAlliance,DialogOptionSelected,$option == exerelinLeaveAlliance,"LeaveAlliance
 FireAll ExerelinMarketSpecialInitialize",,,
 #END PLAYER FACTION ALLIANCE OPTIONS,,,,,,
 ,,,,,,
