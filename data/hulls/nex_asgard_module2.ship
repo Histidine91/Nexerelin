@@ -77,8 +77,8 @@
       "type": "MISSILE"
     },
     {
-      "angle": 30,
-      "arc": 160,
+      "angle": 20,
+      "arc": 135,
       "id": "WS 004",
       "locations": [
         -16.5,
@@ -89,8 +89,8 @@
       "type": "BALLISTIC"
     },
     {
-      "angle": -30,
-      "arc": 160,
+      "angle": -20,
+      "arc": 135,
       "id": "WS 005",
       "locations": [
         -16.5,

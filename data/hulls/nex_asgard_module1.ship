@@ -50,8 +50,8 @@
   "viewOffset": 0,
   "weaponSlots": [
     {
-      "angle": 0,
-      "arc": 180,
+      "angle": 15,
+      "arc": 135,
       "id": "WS 001",
       "locations": [
         -0.5,
@@ -62,8 +62,8 @@
       "type": "HYBRID"
     },
     {
-      "angle": 0.01,
-      "arc": 180,
+      "angle": -15.01,
+      "arc": 135,
       "id": "WS 002",
       "locations": [
         -0.5,
@@ -74,8 +74,8 @@
       "type": "HYBRID"
     },
     {
-      "angle": 0,
-      "arc": 160,
+      "angle": 20,
+      "arc": 150,
       "id": "WS 003",
       "locations": [
         -3,
@@ -86,8 +86,8 @@
       "type": "HYBRID"
     },
     {
-      "angle": -0.01,
-      "arc": 160,
+      "angle": -20.01,
+      "arc": 150,
       "id": "WS 004",
       "locations": [
         -3,
@@ -99,7 +99,7 @@
     },
     {
       "angle": 0,
-      "arc": 270,
+      "arc": 195,
       "id": "WS 005",
       "locations": [
         52.5,
