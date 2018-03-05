@@ -1483,6 +1483,8 @@ $exerelinFleetAggressAgainstPlayer = true 1
 $ignorePlayerCommRequests = true 1
 EndConversation",,,
 ,,,,,,
+aiCores_turnInOptionSelected,DialogOptionSelected,$option == aiCores_selectCores,Nex_AICores selectCores,,,
+,,,,,,
 #Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplars,MarketPostOpen,"!$doesFakeVariableExist score:999
 $hasMarket

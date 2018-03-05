@@ -35,6 +35,8 @@
 		"yes":"yes",
 		"no":"no",
 		"abstain":"abstain",
+		"confirm":"confirm",
+		"cancel":"cancel",
 		
 		"his":"his",
 		"her":"her",
@@ -148,6 +150,7 @@
 		"switchedFactions":"Left $theOldFaction for $theNewFaction",
 		
 		"relationshipLimit":"Relationship between $faction1 and $faction2 limited to $relationship",
+		"repLimit":"Reputation with $faction capped at %s, currently %s"
 	},
 	"exerelin_fleets":{
 		"invasionFleetName":"Invasion Fleet",
@@ -414,5 +417,11 @@
 	"exerelin_misc":{
 		"intelScreen":"Intel screen",
 		"directoryOptions":"Directory options",
+		
+		"aiCoresSelect":"Select AI cores to turn in",
+		"aiCoresMsg1":"Compared to dealing with other factions, turning AI cores in to $faction will result in:",
+		"aiCoresBounty":"Bounty value",
+		"aiCoresRep":"Reputation gain",
+		"aiCoresMsg2":"If you turn in the selected AI cores, you will receive a %s bounty and your standing with $faction will improve by %s points.",
 	},
 }
