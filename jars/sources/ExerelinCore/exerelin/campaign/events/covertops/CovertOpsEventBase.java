@@ -17,7 +17,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 
 
@@ -116,7 +116,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 		addFactionNameTokens(map, "agent", agentFaction);
 		
 		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repEffect*100f)));
-		map.put("$newRelationStr", ExerelinUtilsReputation.getNewRelationStr(agentFaction, faction));
+		map.put("$newRelationStr", NexUtilsReputation.getRelationStr(agentFaction, faction));
 		return map;
 	}
 	

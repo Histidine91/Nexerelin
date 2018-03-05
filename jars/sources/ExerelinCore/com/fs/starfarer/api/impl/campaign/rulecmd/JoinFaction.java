@@ -18,7 +18,7 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 
 
@@ -72,10 +72,10 @@ public class JoinFaction extends BaseCommandPlugin {
 		} else {
 			str = StringHelper.getString("exerelin_factions", "switchedFactions");
 			// -5 rep to negate join/leave infinite rep exploit
-			ExerelinUtilsReputation.adjustPlayerReputation(oldFaction, null, -0.05f);
+			NexUtilsReputation.adjustPlayerReputation(oldFaction, -0.05f);
 			isDefection = true;
 		}
-		ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId);
+		NexUtilsReputation.syncPlayerRelationshipsToFaction(newFactionId);
 		
 		MemoryAPI memory = memoryMap.get(MemKeys.PLAYER);
 		memory.set("$faction", newFaction, 0);

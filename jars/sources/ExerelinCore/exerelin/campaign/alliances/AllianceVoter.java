@@ -11,7 +11,7 @@ import exerelin.campaign.alliances.Alliance.Alignment;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -112,11 +112,11 @@ public class AllianceVoter {
 				FactionAPI defierFaction = Global.getSector().getFaction(defier);
 				if (member.equals(playerAlignedFactionId))
 				{
-					ExerelinUtilsReputation.adjustPlayerReputation(defierFaction, null, penalty);
+					NexUtilsReputation.adjustPlayerReputation(defierFaction, penalty);
 				}
 				else if (defier.equals(playerAlignedFactionId))
 				{
-					ExerelinUtilsReputation.adjustPlayerReputation(faction, null, penalty);
+					NexUtilsReputation.adjustPlayerReputation(faction, penalty);
 				}
 				else
 				{
@@ -126,7 +126,7 @@ public class AllianceVoter {
 				AllianceManager.remainInAllianceCheck(defier, member);
 			}
 		}
-		ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+		NexUtilsReputation.syncFactionRelationshipsToPlayer();
 	}
 	
 	protected static Map<String, Object> getEventParams(Alliance alliance, VoteResult result, 

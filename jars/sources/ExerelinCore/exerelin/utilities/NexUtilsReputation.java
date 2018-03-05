@@ -22,7 +22,7 @@ import exerelin.campaign.SectorManager;
 import java.awt.Color;
 import java.util.List;
 
-public class ExerelinUtilsReputation
+public class NexUtilsReputation
 {
 	public static float getClampedRelationshipDelta(String faction1Id, String faction2Id, float delta)
 	{
@@ -58,14 +58,19 @@ public class ExerelinUtilsReputation
 		}
 	}
 	
-	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction,
-			PersonAPI person, float delta)
+	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction,	float delta)
 	{
-		return adjustPlayerReputation(faction, person, delta, null, null);
+		return adjustPlayerReputation(faction, null, delta, delta, null, null);
 	}
 	
 	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction,
-			PersonAPI person, float delta, CommMessageAPI message, TextPanelAPI textPanel)
+			float delta, CommMessageAPI message, TextPanelAPI textPanel)
+	{
+		return adjustPlayerReputation(faction, null, delta, delta, message, textPanel);
+	}
+	
+	public static ExerelinReputationAdjustmentResult adjustPlayerReputation(FactionAPI faction,
+			PersonAPI person, float delta, float delta2, CommMessageAPI message, TextPanelAPI textPanel)
 	{
 		String factionId = faction.getId();
 		FactionAPI player = Global.getSector().getFaction(Factions.PLAYER);
@@ -89,20 +94,20 @@ public class ExerelinUtilsReputation
 		if (person != null) 
 		{
 			CustomRepImpact impact2 = new CustomRepImpact();
-			impact2.delta = delta * 1.5f;
+			impact2.delta = delta2;
 			result = Global.getSector().adjustPlayerReputation(new RepActionEnvelope(RepActions.CUSTOM, impact2, message, textPanel, true), person);
 		}
 		
 		// print relationship limit message
-		if (clamp)
+		FactionAPI playerAligned = PlayerFactionStore.getPlayerFaction();
+		if (clamp && playerAligned != faction)
 		{
-			FactionAPI playerAligned = PlayerFactionStore.getPlayerFaction();
 			String str = StringHelper.getString("exerelin_factions", "relationshipLimit");
 			str = StringHelper.substituteToken(str, "$faction1", 
 					ExerelinUtilsFaction.getFactionShortName(playerAligned.getId()));
 			str = StringHelper.substituteToken(str, "$faction2", 
 					ExerelinUtilsFaction.getFactionShortName(faction));
-			String rel = getNewRelationStr(faction, playerAligned);
+			String rel = getRelationStr(faction, playerAligned);
 			str = StringHelper.substituteToken(str, "$relationship", rel);
 			printToTextPanelOrCampaignUI(textPanel, str, rel, faction.getRelColor(playerAligned.getId()));
 		}
@@ -196,7 +201,7 @@ public class ExerelinUtilsReputation
 		syncPlayerRelationshipsToFaction(playerAlignedFactionId);
 	}
 	
-	public static String getNewRelationStr(FactionAPI faction1, FactionAPI faction2)
+	public static String getRelationStr(FactionAPI faction1, FactionAPI faction2)
 	{
 		RepLevel level = faction1.getRelationshipLevel(faction2.getId());
 		int repInt = (int) Math.ceil((faction1.getRelationship(faction2.getId())) * 100f);

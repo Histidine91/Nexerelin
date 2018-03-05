@@ -22,7 +22,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import java.awt.Color;
 import java.util.Random;
 import org.lwjgl.util.vector.Vector2f;
@@ -126,9 +126,9 @@ public class StartSetupPostTimePass {
 			factionId = conf.spawnAsFactionId;
 			PlayerFactionStore.setPlayerFactionId(factionId);
 			if (SectorManager.getFreeStart())	// Blade Breaker start: use BB start relations
-				ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+				NexUtilsReputation.syncFactionRelationshipsToPlayer();
 			else	// Lion's Guard start: use Diktat start relations
-				ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(factionId);
+				NexUtilsReputation.syncPlayerRelationshipsToFaction(factionId);
 		}
 	}
 	

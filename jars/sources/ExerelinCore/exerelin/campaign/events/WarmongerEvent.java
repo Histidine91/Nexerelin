@@ -19,7 +19,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.PlayerFactionStore;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 
@@ -85,9 +85,9 @@ public class WarmongerEvent extends BaseEventPlugin {
 				{
 					String factionId = tmp.getKey();
 					float loss = tmp.getValue();
-					ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, -loss);
+					NexUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), -loss);
 				}
-				ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+				NexUtilsReputation.syncFactionRelationshipsToPlayer();
 			}
 		});
 	}

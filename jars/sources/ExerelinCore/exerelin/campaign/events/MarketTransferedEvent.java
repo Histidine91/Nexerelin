@@ -19,7 +19,7 @@ import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -90,7 +90,7 @@ public class MarketTransferedEvent extends BaseEventPlugin {
 					if (dialog != null)
 						panel = dialog.getTextPanel();
 					
-					ExerelinUtilsReputation.adjustPlayerReputation(newOwner, null, repEffect, message, panel);
+					NexUtilsReputation.adjustPlayerReputation(newOwner, repEffect, message, panel);
 					/*
 					CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
 					impact.delta = repEffect;

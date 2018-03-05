@@ -10,7 +10,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 
 
 public class AgentLowerRelationsEvent extends CovertOpsEventBase {
@@ -47,12 +47,12 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 		// need to distinguish between agentFaction-thirdFaction and faction-thirdFaction relations
 		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repEffect*100f)));
 		map.put("$repEffectAbs2", "" + (int)Math.ceil(Math.abs(repEffect2*100f)));
-		map.put("$newRelationStr", ExerelinUtilsReputation.getNewRelationStr(agentFaction, faction));
+		map.put("$newRelationStr", NexUtilsReputation.getRelationStr(agentFaction, faction));
 		if (result.isSucessful())
-			map.put("$newRelationStr2", ExerelinUtilsReputation.getNewRelationStr(faction, thirdFaction));
+			map.put("$newRelationStr2", NexUtilsReputation.getRelationStr(faction, thirdFaction));
 		else
 		{
-			map.put("$newRelationStr2", ExerelinUtilsReputation.getNewRelationStr(agentFaction, thirdFaction));
+			map.put("$newRelationStr2", NexUtilsReputation.getRelationStr(agentFaction, thirdFaction));
 		}
 		return map;
 	}

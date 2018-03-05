@@ -1,6 +1,6 @@
 package exerelin.console.commands;
 
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
@@ -14,7 +14,7 @@ public class SyncRelationships implements BaseCommand {
             return CommandResult.WRONG_CONTEXT;
         }
         
-        ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+        NexUtilsReputation.syncFactionRelationshipsToPlayer();
         Console.showMessage("Faction relationships synced.");
         
         return CommandResult.SUCCESS;

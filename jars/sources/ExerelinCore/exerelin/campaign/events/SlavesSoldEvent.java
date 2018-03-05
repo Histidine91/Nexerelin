@@ -20,7 +20,7 @@ import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinFactionConfig.Morality;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 
 
@@ -65,10 +65,10 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 						float penalty = repPenalties.get(factionId);
 						if (factionId.equals(market.getFactionId()))
 						{
-							ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), 
-									market.getPrimaryEntity().getActivePerson(), penalty);
+							NexUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), 
+									market.getPrimaryEntity().getActivePerson(), penalty, penalty * 1.5f, null, null);
 						}
-						else ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, penalty);
+						else NexUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), penalty);
 					}
 			}
 		});

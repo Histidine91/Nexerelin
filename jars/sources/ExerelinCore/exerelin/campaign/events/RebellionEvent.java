@@ -38,7 +38,7 @@ import exerelin.campaign.fleets.SuppressionFleetAI;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.ExerelinUtilsMarket;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -390,8 +390,8 @@ public class RebellionEvent extends BaseEventPlugin {
 			Global.getSector().reportEventStage(this, "trade_rebs", market.getPrimaryEntity(), 
 					MessagePriority.ENSURE_DELIVERY, new BaseOnMessageDeliveryScript() {
 				public void beforeDelivery(CommMessageAPI message) {
-					ExerelinUtilsReputation.adjustPlayerReputation(rebs, null, rep, message, null);
-					ExerelinUtilsReputation.adjustPlayerReputation(govt, null, -rep*1.5f, message, null);
+					NexUtilsReputation.adjustPlayerReputation(rebs, rep, message, null);
+					NexUtilsReputation.adjustPlayerReputation(govt, -rep*1.5f, message, null);
 				}
 			});	
 		}
@@ -402,8 +402,8 @@ public class RebellionEvent extends BaseEventPlugin {
 			Global.getSector().reportEventStage(this, "trade_govt", market.getPrimaryEntity(), 
 					MessagePriority.ENSURE_DELIVERY, new BaseOnMessageDeliveryScript() {
 				public void beforeDelivery(CommMessageAPI message) {
-					ExerelinUtilsReputation.adjustPlayerReputation(govt, null, rep, message, null);
-					ExerelinUtilsReputation.adjustPlayerReputation(rebs, null, -rep*1.5f, message, null);
+					NexUtilsReputation.adjustPlayerReputation(govt, rep, message, null);
+					NexUtilsReputation.adjustPlayerReputation(rebs, -rep*1.5f, message, null);
 				}
 			});
 		}

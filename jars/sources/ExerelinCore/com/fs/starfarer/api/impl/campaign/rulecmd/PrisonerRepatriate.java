@@ -10,7 +10,7 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.StatsTracker;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.ExerelinConfig;
 
 public class PrisonerRepatriate extends AgentActionBase {
@@ -27,7 +27,8 @@ public class PrisonerRepatriate extends AgentActionBase {
                 
                 FactionAPI faction = target.getFaction();
                 TextPanelAPI text = dialog.getTextPanel();
-                ExerelinUtilsReputation.adjustPlayerReputation(faction, target.getActivePerson(), ExerelinConfig.prisonerRepatriateRepValue, null, text);
+                NexUtilsReputation.adjustPlayerReputation(faction, target.getActivePerson(), ExerelinConfig.prisonerRepatriateRepValue,
+						ExerelinConfig.prisonerRepatriateRepValue, null, text);
                 StatsTracker.getStatsTracker().notifyPrisonersRepatriated(1);
                 return true;
         }

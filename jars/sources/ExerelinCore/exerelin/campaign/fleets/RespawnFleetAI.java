@@ -15,7 +15,7 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.InvasionRound;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
@@ -163,7 +163,7 @@ public class RespawnFleetAI extends InvasionFleetAI
 				{
 					faction.setRelationship(targetFactionId, 0);
 					AllianceManager.doAlliancePeaceStateChange(faction.getId(), targetFactionId, false);
-					ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
+					NexUtilsReputation.syncPlayerRelationshipsToFaction();
 				}
 			}
 		}

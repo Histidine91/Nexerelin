@@ -47,7 +47,7 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.ExerelinUtilsMarket;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
 import java.util.ArrayList;
@@ -562,7 +562,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             expelPlayerFromFaction(true);
         }
         
-        ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();
+        NexUtilsReputation.syncPlayerRelationshipsToFaction();
         checkForVictory();
     }
     
@@ -1044,7 +1044,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (!ExerelinUtilsFaction.isPirateFaction(oldFactionId))
             PlayerFactionStore.loadIndependentPlayerRelations(true);
         PlayerFactionStore.setPlayerFactionId(ExerelinConstants.PLAYER_NPC_ID);
-        ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
+        NexUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
         
         if (!silent)
         {

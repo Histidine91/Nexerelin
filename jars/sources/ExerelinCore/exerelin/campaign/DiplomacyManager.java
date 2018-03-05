@@ -22,7 +22,7 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import exerelin.world.VanillaSystemsGenerator;
 import java.awt.Color;
@@ -392,7 +392,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
         
         if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
-            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction();    // note: also syncs player_npc to player
+            NexUtilsReputation.syncPlayerRelationshipsToFaction();    // note: also syncs player_npc to player
         
         boolean playerIsHostile1 = faction1.isHostileTo(Factions.PLAYER);
         boolean playerIsHostile2 = faction2.isHostileTo(Factions.PLAYER);
@@ -772,10 +772,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         
         // clamp
-        ExerelinUtilsReputation.syncFactionRelationshipToPlayer(playerAlignedFactionId, factionId);
-        ExerelinUtilsReputation.syncPlayerRelationshipToFaction(playerAlignedFactionId, factionId);
+        NexUtilsReputation.syncFactionRelationshipToPlayer(playerAlignedFactionId, factionId);
+        NexUtilsReputation.syncPlayerRelationshipToFaction(playerAlignedFactionId, factionId);
         if (!playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
-            ExerelinUtilsReputation.syncFactionRelationshipToPlayer(ExerelinConstants.PLAYER_NPC_ID, factionId);
+            NexUtilsReputation.syncFactionRelationshipToPlayer(ExerelinConstants.PLAYER_NPC_ID, factionId);
         
         float currentRel = player.getRelationship(factionId);
         boolean isHostile = player.isHostileTo(factionId);
@@ -1136,10 +1136,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         // set player relations based on selected faction
         if (selectedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
         {
-            ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+            NexUtilsReputation.syncFactionRelationshipsToPlayer();
         }
         else {
-            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId);
+            NexUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId);
             player.setRelationship(selectedFactionId, STARTING_RELATIONSHIP_FRIENDLY);
             //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);    // already done in syncPlayerRelationshipsToFaction
         }

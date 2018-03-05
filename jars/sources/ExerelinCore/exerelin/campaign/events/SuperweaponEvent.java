@@ -14,7 +14,7 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.NexUtilsMath;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -209,13 +209,13 @@ public class SuperweaponEvent extends BaseEventPlugin {
 									float loss = tmp.getValue();
 									// use adjustPlayerReputation instead of adjustRelations to print it in console
 									if (wasPlayerFinal)
-										ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, -loss);
+										NexUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), -loss);
 									else
 										DiplomacyManager.adjustRelations(faction, attackerFaction, -loss, null, null, worst);
 									
                                 }
 								if (wasPlayerFinal)
-									ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+									NexUtilsReputation.syncFactionRelationshipsToPlayer();
 			}
 		});	
 	}
@@ -229,7 +229,7 @@ public class SuperweaponEvent extends BaseEventPlugin {
 		//addFactionNameTokens(map, "target", market.getFaction());
 		map.put("$stabilityPenalty", Math.abs(stabilityPenalty)+"");
 		map.put("$relDeltaAbs", "" + (int)Math.ceil(Math.abs(repPenalty*100f)));
-		map.put("$newRelationStr", ExerelinUtilsReputation.getNewRelationStr(lastAttackerFaction, market.getFaction()));
+		map.put("$newRelationStr", NexUtilsReputation.getRelationStr(lastAttackerFaction, market.getFaction()));
 		
 		if (wasPlayer)
 		{

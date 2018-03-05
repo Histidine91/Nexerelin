@@ -13,7 +13,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtilsFaction;
-import exerelin.utilities.ExerelinUtilsReputation;
+import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,7 +93,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 				{
 					float amount = repChangeStrength;
 					if (factionId.equals("templars")) amount *= 0.5f;
-					ExerelinUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), null, amount);
+					NexUtilsReputation.adjustPlayerReputation(Global.getSector().getFaction(factionId), amount, null, null);
 				}
 			}});
 	}

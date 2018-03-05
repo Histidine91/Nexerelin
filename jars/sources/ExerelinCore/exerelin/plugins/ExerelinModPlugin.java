@@ -88,7 +88,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         SectorManager.reinitLiveFactions();
         PlayerFactionStore.setPlayerFactionId(ExerelinConstants.PLAYER_NPC_ID);
         sector.getFaction(Factions.PLAYER).setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1);
-        ExerelinUtilsReputation.syncFactionRelationshipsToPlayer();
+        NexUtilsReputation.syncFactionRelationshipsToPlayer();
         
         // add Follow Me ability
         Global.getSector().getCharacterData().addAbility("exerelin_follow_me");
