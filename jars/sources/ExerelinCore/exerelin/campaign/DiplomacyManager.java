@@ -105,7 +105,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     static {
         String[] factions = {"templars", Factions.INDEPENDENT, Factions.LUDDIC_PATH};
         disallowedFactions = new ArrayList<>(Arrays.asList(factions));
-        if (!ExerelinConfig.followersDiplomacy) disallowedFactions.add(ExerelinConstants.PLAYER_NPC_ID);
+        // disallowed factions is also used for things like rebellions
+        //if (!ExerelinConfig.followersDiplomacy) disallowedFactions.add(ExerelinConstants.PLAYER_NPC_ID);
         eventDefs = new ArrayList<>();
         eventDefsByStage = new HashMap<>();
         
@@ -569,7 +570,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         for (FactionAPI faction: factions)
         {
             if (faction.isNeutralFaction()) continue;
-            if (faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID) && !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
+            if (faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID)) {
+                if (!ExerelinConfig.followersDiplomacy) continue;
+                if (!faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
+            }
             
             if (disallowedFactions.contains(faction.getId())) continue;
             factionPicker.add(faction);
@@ -617,7 +621,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (disallowedFactions.contains(factionId)) continue;
             FactionAPI faction = sector.getFaction(factionId);
             if (faction.isNeutralFaction()) continue;
-            if (faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID) && !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
+            // don't use followers if player is affiliated with another faction
+            if (faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID) && 
+                    !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
 
             float weariness = getWarWeariness(factionId);
             List<String> enemies = getFactionsAtWarWithFaction(faction, false, false, true);
@@ -823,31 +829,31 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     }
     
     public static List<String> getFactionsAtWarWithFaction(String factionId, 
-			boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
+            boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
     {
         return getFactionsOfAtBestRepWithFaction(Global.getSector().getFaction(factionId), 
-				RepLevel.HOSTILE, includePirates, includeTemplars, mustAllowCeasefire);
+                RepLevel.HOSTILE, includePirates, includeTemplars, mustAllowCeasefire);
     }
     
     public static List<String> getFactionsAtWarWithFaction(FactionAPI faction, 
-			boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
+            boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
     {
         return getFactionsOfAtBestRepWithFaction(faction, RepLevel.HOSTILE, includePirates, 
-				includeTemplars, mustAllowCeasefire);
+                includeTemplars, mustAllowCeasefire);
     }
-	
-	/**
-	 * Gets all factions whose reputation is at best {@code rep} with the specified faction.
-	 * @param faction
-	 * @param rep
-	 * @param includePirates
-	 * @param includeTemplars
-	 * @param mustAllowCeasefire If true, will exclude any factions whose relationship bounds prevent peace with {@code faction},
-	 * or which can never have a positive diplomacy event with {@code faction}.
-	 * @return
-	 */
-	public static List<String> getFactionsOfAtBestRepWithFaction(FactionAPI faction, RepLevel rep,
-			boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
+    
+    /**
+     * Gets all factions whose reputation is at best {@code rep} with the specified faction.
+     * @param faction
+     * @param rep
+     * @param includePirates
+     * @param includeTemplars
+     * @param mustAllowCeasefire If true, will exclude any factions whose relationship bounds prevent peace with {@code faction},
+     * or which can never have a positive diplomacy event with {@code faction}.
+     * @return
+     */
+    public static List<String> getFactionsOfAtBestRepWithFaction(FactionAPI faction, RepLevel rep,
+            boolean includePirates, boolean includeTemplars, boolean mustAllowCeasefire)
     {
         String factionId = faction.getId();
         List<String> enemies = new ArrayList<>();
