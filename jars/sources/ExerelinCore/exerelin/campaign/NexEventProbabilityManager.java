@@ -71,6 +71,9 @@ public class NexEventProbabilityManager extends BaseCampaignEventListener implem
 			FactionAPI faction = Global.getSector().getFaction(factionId);
 			for (String otherFactionId : liveFactions)
 			{
+				if (factionId.equals(otherFactionId))
+					continue;
+				
 				if (!canFactionBounty(otherFactionId))
 					continue;
 				
@@ -105,7 +108,13 @@ public class NexEventProbabilityManager extends BaseCampaignEventListener implem
 		FactionAPI faction1 = primary1.getFaction();
 		FactionAPI faction2 = primary2.getFaction();
 		
+		if (faction1 == faction2)
+			return;
+		
 		if (!canFactionBounty(faction1.getId()) || !canFactionBounty(faction2.getId()))
+			return;
+		
+		if (!SectorManager.isFactionAlive(faction1.getId()) || !SectorManager.isFactionAlive(faction2.getId()))
 			return;
 		
 		float netLoss = 0;

@@ -73,6 +73,12 @@ public class FactionBountyEvent extends BaseEventPlugin {
 		faction = target.one;
 		enemyFaction = target.two;
 		
+		if (!validateEvent())
+		{
+			endEvent();
+			return;
+		}		
+		
 		float mult = 1 + 0.05f * MathUtils.getRandomNumberInRange(-3, 4);
 		baseBounty = Global.getSettings().getFloat("baseSystemBounty") * mult * BOUNTY_PAYMENT_MULT;
 		
@@ -86,6 +92,15 @@ public class FactionBountyEvent extends BaseEventPlugin {
 		}
 		
 		Global.getSector().reportEventStage(this, "start", sender.getPrimaryEntity(), MESSAGE_PRIORITY);
+	}
+	
+	protected boolean validateEvent()
+	{
+		if (faction == enemyFaction) return false;
+		if (!SectorManager.isFactionAlive(faction.getId()) || !SectorManager.isFactionAlive(enemyFaction.getId()))
+			return false;
+		if (!faction.isHostileTo(enemyFaction)) return false;
+		return true;
 	}
 	
 	protected MarketAPI pickMarket()
