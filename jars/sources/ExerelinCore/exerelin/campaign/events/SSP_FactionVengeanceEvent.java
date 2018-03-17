@@ -573,7 +573,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         JUNK_PIRATES("junk_pirates", 1, 0.5f),
         PACK("pack", 1, 0.5f),
         ASP_SYNDICATE("syndicate_asp", 2, 0.75f),
-		DME("dassault_mikoyan", 2, 1f),
+		DME("dassault_mikoyan", 2, 0.75f),
         // TODO (config in SCY mod)
         SCY("SCY",
             "Grudge", "Seeker Fleet", "a Seeker Fleet",

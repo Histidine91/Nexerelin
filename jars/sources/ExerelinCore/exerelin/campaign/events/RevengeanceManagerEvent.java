@@ -55,6 +55,8 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 	// this + ADDITIONAL_STAGE_INTERVAL should not be too far from the points required for last stage
 	public static final float ADDITIONAL_STAGE_OFFSET = 0;
 	
+	public static final float VENGEANCE_FLEET_POINT_MULT = 0.8f;
+	
 	public static Logger log = Global.getLogger(RevengeanceManagerEvent.class);
 	
 	private boolean ended = false;
@@ -119,9 +121,10 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		if (!Global.getSector().getFaction(factionId).isHostileTo(Factions.PLAYER))
 			return;
 		else if (Global.getSector().getFaction(factionId).isAtWorst(Factions.PLAYER, RepLevel.HOSTILE))
-			points *= 0.2f;
+			points *= 0.25f;
 		
 		points *= SSP_FactionVengeanceEvent.VengeanceDef.getDef(factionId).vengefulness * 2;
+		points *= VENGEANCE_FLEET_POINT_MULT;
 		
 		String debugStr = "Adding faction revengeance points for " + factionId + ": " + points;
 		log.info(debugStr);
@@ -293,7 +296,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		if (points > 0)
 		{
 			addPoints(points);
-			addFactionPoints(killedFleets.get(0).getFaction().getId(), points * 2.5f);
+			addFactionPoints(killedFleets.get(0).getFaction().getId(), points * 2f);
 		}
 	}
 	
