@@ -290,6 +290,8 @@ AdjustRep $faction.id COMBAT_NORMAL",,,
 ExerelinInvasionCancel,DialogOptionSelected,$option == exerelinInvasionCancel,FireAll ExerelinMarketSpecial,,,
 ExerelinInvasionDone,DialogOptionSelected,"$option == exerelinInvasionDone
 $hasMarket",Exerelin_LootMarket false,,,
+ExerelinInvasionAndrada,DialogOptionSelected,$option == nex_invasionAndrada,"Nex_AndradaOption
+Exerelin_LootMarket false",,,
 ExerelinInvasionLeave,DialogOptionSelected,$option == exerelinInvasionLeave,DismissDialog,,,
 ,,,,,,
 ExerelinInvasionProceedDefenders,DialogOptionSelected,"$option == exerelinInvasionProceed
@@ -308,7 +310,14 @@ FireBest ExerelinInitInvadeDialog",,,
 ExerelinInvasionRoundComplete,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionRoundComplete score:100","ExecuteInvasionRound false
 FireBest ExerelinInvasionResults",INVASION OUTCOME:,,
-ExerelinInvasionResultsComplete,ExerelinInvasionResults,$exerelinInvasionSuccessful,"$menuState = invasion 0
+ExerelinInvasionResultsComplete,ExerelinInvasionResults,"$exerelinInvasionSuccessful
+$player.factionId != ""player_npc""","$menuState = invasion 0
+ShowVisual ""graphics/illustrations/quartermaster.jpg""
+unset $player.invasionTarget
+SetShortcut exerelinInvasionDone RETURN
+Nex_AddOptionConfirmation nex_invasionAndrada ""You can take $market as a personal holding and declare independence. This will anger your current faction.\n\nProceed?"" ""Yes"" ""No""",You've successfully captured $entityName!,"exerelinInvasionDone:Collect your spoils and leave
+nex_invasionAndrada:Take $market for yourself",
+ExerelinInvasionResultsCompleteFollowers,ExerelinInvasionResults,$exerelinInvasionSuccessful,"$menuState = invasion 0
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 unset $player.invasionTarget
 SetShortcut exerelinInvasionDone RETURN",You've successfully captured $entityName!,exerelinInvasionDone:Collect your spoils and leave,

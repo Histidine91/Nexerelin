@@ -89,6 +89,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 		Global.getSector().reportEventStage(this, stage, market.getPrimaryEntity(), priority, new BaseOnMessageDeliveryScript() {
 			public void beforeDelivery(CommMessageAPI message) {
 				if (!playerInvolved) return;
+				if (factionsToNotify == null) return;
 				for (String factionId : factionsToNotify)
 				{
 					float amount = repChangeStrength;
