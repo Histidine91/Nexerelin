@@ -622,8 +622,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             FactionAPI faction = sector.getFaction(factionId);
             if (faction.isNeutralFaction()) continue;
             // don't use followers if player is affiliated with another faction
-            if (faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID) && 
-                    !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
+            if (faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID))
+			{ 
+				if (!ExerelinConfig.followersDiplomacy) continue;
+                if (!faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
+			}
 
             float weariness = getWarWeariness(factionId);
             List<String> enemies = getFactionsAtWarWithFaction(faction, false, false, true);
