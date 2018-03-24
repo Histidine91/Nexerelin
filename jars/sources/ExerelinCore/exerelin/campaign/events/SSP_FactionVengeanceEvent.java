@@ -573,17 +573,11 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         JUNK_PIRATES("junk_pirates", 1, 0.5f),
         PACK("pack", 1, 0.5f),
         ASP_SYNDICATE("syndicate_asp", 2, 0.75f),
-		DME("dassault_mikoyan", 2, 0.75f),
-        // TODO (config in SCY mod)
-        SCY("SCY",
-            "Grudge", "Seeker Fleet", "a Seeker Fleet",
-            null, null, null, null, null, null, 0.5f),
+        DME("dassault_mikoyan", 2, 0.75f),
+        SCY("SCY", 0, 0.5f),
         TIANDONG("tiandong", 1, 0.5f),
         DIABLE("diableavionics", 1, 1f),
-        // TODO (config in ORA mod)
-        ORA("ORA",
-            "Grudge", "Enforcers", "Enforcers",
-            null, null, null, null, null, null, 0.5f);
+        ORA("ORA", 0, 0.5f);
 
         final String faction;
         final String madName;
