@@ -22,7 +22,6 @@ public class FactionChangedEvent extends BaseEventPlugin {
 	
 	private FactionAPI oldFaction;
 	private FactionAPI newFaction;
-	private Map<String, Object> params;
 	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {

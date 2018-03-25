@@ -11,30 +11,30 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.utilities.NexUtilsReputation;
+import java.util.HashMap;
 
 
 public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 
 	public static Logger log = Global.getLogger(AgentLowerRelationsEvent.class);
 	
-	protected float repEffect2;
 	protected ExerelinReputationAdjustmentResult repResult2;
 	protected FactionAPI thirdFaction;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		repEffect2 = 0;
 		thirdFaction = null;
 	}
 	
 	@Override
 	public void setParam(Object param) {
 		super.setParam(param);
+		Map<String, Object> params = (HashMap)param;
+		
 		thirdFaction = (FactionAPI)params.get("thirdFaction");
 		if (params.containsKey("repEffect2"))
 		{
-			repEffect2 = (Float)params.get("repEffect2");
 			repResult2 = (ExerelinReputationAdjustmentResult)params.get("repResult2");
 		}
 	}
@@ -45,8 +45,8 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 		addFactionNameTokens(map, "third", thirdFaction);
 		
 		// need to distinguish between agentFaction-thirdFaction and faction-thirdFaction relations
-		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repEffect*100f)));
-		map.put("$repEffectAbs2", "" + (int)Math.ceil(Math.abs(repEffect2*100f)));
+		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repResult.delta*100f)));
+		map.put("$repEffectAbs2", "" + (int)Math.ceil(Math.abs(repResult2.delta*100f)));
 		map.put("$newRelationStr", NexUtilsReputation.getRelationStr(agentFaction, faction));
 		if (result.isSucessful())
 			map.put("$newRelationStr2", NexUtilsReputation.getRelationStr(faction, thirdFaction));
@@ -72,8 +72,8 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 	
 	@Override
 	public Color[] getHighlightColors(String stageId) {
-		Color colorRepEffect = repEffect > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
-		Color colorRepEffect2 = repEffect2 > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+		Color colorRepEffect = repResult.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+		Color colorRepEffect2 = repResult2.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
 		Color colorNew = agentFaction.getRelColor(faction.getId());
 		Color colorNew2 = Color.WHITE;
 		if (result.isSucessful())

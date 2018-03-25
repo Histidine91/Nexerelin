@@ -35,7 +35,6 @@ public class AllianceVoteEvent extends BaseEventPlugin {
 	protected boolean isWar = false;
 	protected String stage;
 	protected float age = 0;
-	protected Map<String, Object> params;
 	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
@@ -55,7 +54,7 @@ public class AllianceVoteEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
 		result = (VoteResult)params.get("result");
 		if (params.containsKey("allianceId"))
 			allianceId = (String)params.get("allianceId");

@@ -10,9 +10,7 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
-import data.scripts.world.exigency.Tasserus;
 import exerelin.campaign.AllianceManager;
-import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.campaign.events.RebellionEvent.SuppressionFleetData;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
@@ -27,7 +25,6 @@ public class SuppressionFleetAI implements EveryFrameScript
 	protected float daysTotal = 0.0F;
 	protected final CampaignFleetAPI fleet;
 	protected boolean orderedReturn = false;
-	protected boolean responseFleetRequested = false;
 	//protected EveryFrameScript broadcastScript;
 	
 	public SuppressionFleetAI(CampaignFleetAPI fleet, SuppressionFleetData data)

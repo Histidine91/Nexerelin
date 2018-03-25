@@ -35,7 +35,6 @@ public class MiningFleetAI implements EveryFrameScript
 	protected final CampaignFleetAPI fleet;
 	protected boolean orderedReturn = false;
 	protected boolean unloaded = false;
-	protected boolean responseFleetRequested = false;
 	//protected EveryFrameScript broadcastScript;
 	
 	public MiningFleetAI(CampaignFleetAPI fleet, MiningFleetData data)

@@ -27,7 +27,6 @@ import exerelin.utilities.StringHelper;
 public class SlavesSoldEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(SlavesSoldEvent.class);
-	protected static final int DAYS_TO_KEEP = 60;
 	
 	protected float avgRepChange = 0;
 	protected List<String> factionsToNotify = new ArrayList<>();

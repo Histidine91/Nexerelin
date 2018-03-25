@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
@@ -34,28 +33,33 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	protected FactionAPI agentFaction = null;
 	protected CovertActionResult result = CovertActionResult.SUCCESS;
 	protected boolean playerInvolved = false;
-	protected float repEffect = 0;	// between agent faction and target faction
 	protected float age = 0;
-	protected Map<String, Object> params;
 	protected ExerelinReputationAdjustmentResult repResult;
+	protected Map<String, Object> params;	// FIXME left in for reverse compatibility
 		
 	protected boolean done = false;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		params = new HashMap<>();
 	}
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
 		agentFaction = (FactionAPI)params.get("agentFaction");
-		if (params.containsKey("repEffect"))
-			repEffect = (Float)params.get("repEffect");
 		result = (CovertActionResult)params.get("result");
 		playerInvolved = (Boolean)params.get("playerInvolved");
 		repResult = (ExerelinReputationAdjustmentResult)params.get("repResult");
+	}
+	
+	// trash values that don't need saving
+	protected Object writeReplace() {
+		agentFaction = null;
+		result = null;
+		repResult = null;
+		params = null;
+		return this;
 	}
 		
 	@Override
@@ -115,7 +119,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 		Map<String, String> map = super.getTokenReplacements();
 		addFactionNameTokens(map, "agent", agentFaction);
 		
-		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repEffect*100f)));
+		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repResult.delta*100f)));
 		map.put("$newRelationStr", NexUtilsReputation.getRelationStr(agentFaction, faction));
 		return map;
 	}
@@ -130,7 +134,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	
 	@Override
 	public Color[] getHighlightColors(String stageId) {
-		Color colorRepEffect = repEffect > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+		Color colorRepEffect = repResult.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
 		Color colorNew = agentFaction.getRelColor(faction.getId());
 		return new Color[] {colorRepEffect, colorNew};
 	}

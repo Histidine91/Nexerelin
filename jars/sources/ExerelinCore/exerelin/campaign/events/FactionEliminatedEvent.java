@@ -25,21 +25,19 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 	protected boolean playerDefeated = false;
 	protected boolean playerVictory = false;
 	protected float age;
-	protected Map<String, Object> params;
 		
 	public boolean done;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		params = new HashMap<>();
 		done = false;
 		age = 0;
 	}
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
 		defeatedFaction = (FactionAPI)params.get("defeatedFaction");
 		victorFaction = (FactionAPI)params.get("victorFaction");
 		playerDefeated = (boolean)params.get("playerDefeated");

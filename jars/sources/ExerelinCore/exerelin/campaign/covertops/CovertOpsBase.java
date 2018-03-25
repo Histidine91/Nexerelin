@@ -168,7 +168,6 @@ public abstract class CovertOpsBase {
         eventParams.put("agentFaction", agentFaction);
 		eventParams.put("result", result);
         eventParams.put("playerInvolved", playerInvolved);
-        eventParams.put("repEffect", repResult.delta);
 		eventParams.put("repResult", repResult);
         return eventParams;
     }

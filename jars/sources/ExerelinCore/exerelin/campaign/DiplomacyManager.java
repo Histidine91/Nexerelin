@@ -436,7 +436,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             String eventType = "exerelin_diplomacy";
             params.put("eventStage", event.stage);
             params.put("result", result);
-            params.put("delta", delta);
             params.put("otherFaction", faction2);
             sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
         }

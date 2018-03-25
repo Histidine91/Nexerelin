@@ -15,7 +15,6 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.DiplomacyManager.DiplomacyEventDef;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.utilities.StringHelper;
 
@@ -28,23 +27,19 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	protected FactionAPI otherFaction;
 	protected String eventStage;
 	protected ExerelinReputationAdjustmentResult result;
-	protected float delta;
 	protected float age = 0;
-	protected Map<String, Object> params;
 		
 	protected boolean done = false;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		params = new HashMap<>();
 	}
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
 		otherFaction = (FactionAPI)params.get("otherFaction");
-		delta = (Float)params.get("delta");
 		eventStage = (String)params.get("eventStage");
 		result = (ExerelinReputationAdjustmentResult)params.get("result");
 	}
@@ -138,7 +133,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
 		addFactionNameTokens(map, "other", otherFaction);
-		map.put("$deltaAbs", "" + (int)Math.ceil(Math.abs(delta*100f)));
+		map.put("$deltaAbs", "" + (int)Math.ceil(Math.abs(result.delta*100f)));
 		//map.put("$newRelationStr", getNewRelationStr(delta));
 		map.put("$newRelationStr", getNewRelationStr(0));
 		return map;
@@ -154,7 +149,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	
 	@Override
 	public Color[] getHighlightColors(String stageId) {
-		Color colorDelta = delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+		Color colorDelta = result.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
 		Color colorNew = faction.getRelColor(otherFaction.getId());
 		return new Color[] {colorDelta, colorNew};
 	}

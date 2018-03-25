@@ -7,14 +7,10 @@ import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
@@ -35,7 +31,6 @@ public class MarketTransferedEvent extends BaseEventPlugin {
 	protected FactionAPI newOwner;
 	protected FactionAPI oldOwner;
 	protected float repEffect = 0;
-	protected Map<String, Object> params;
 	
 	protected boolean done;
 	protected float age;
@@ -43,7 +38,6 @@ public class MarketTransferedEvent extends BaseEventPlugin {
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		params = new HashMap<>();
 		done = false;
 		age = 0;
 		//log.info("Capture event created");
@@ -51,7 +45,7 @@ public class MarketTransferedEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
 		newOwner = (FactionAPI)params.get("newOwner");
 		oldOwner = (FactionAPI)params.get("oldOwner");
 		repEffect = (Float)params.get("repEffect");

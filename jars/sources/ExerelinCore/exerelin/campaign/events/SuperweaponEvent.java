@@ -33,8 +33,6 @@ public class SuperweaponEvent extends BaseEventPlugin {
 	protected int stabilityPenalty = 0;
 	protected String conditionToken = null;
 	
-	protected Map<String, Object> params;
-	
 	protected FactionAPI lastAttackerFaction = null;
 	protected float repPenalty = 0;
 	protected int numFactions = 0;
@@ -45,14 +43,8 @@ public class SuperweaponEvent extends BaseEventPlugin {
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		params = new HashMap<>();
 	}
-	
-	@Override
-	public void setParam(Object param) {
-		params = (HashMap)param;
-	}
-	
+		
 	@Override
 	public void startEvent() {
 		super.startEvent();

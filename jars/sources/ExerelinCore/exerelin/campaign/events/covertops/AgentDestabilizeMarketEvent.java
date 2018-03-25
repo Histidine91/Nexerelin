@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
+import java.util.HashMap;
 
 /**
  * this handles event reporting for intel screen
@@ -42,6 +43,7 @@ public class AgentDestabilizeMarketEvent extends CovertOpsEventBase {
 	@Override
 	public void setParam(Object param) {
 		super.setParam(param);
+		Map<String, Object> params = (HashMap)param;
 		if (params.containsKey("stabilityPenalty"))
 			stabilityPenalty = (Integer)params.get("stabilityPenalty");
 	}
@@ -68,7 +70,7 @@ public class AgentDestabilizeMarketEvent extends CovertOpsEventBase {
 	
 	@Override
 	public Color[] getHighlightColors(String stageId) {
-		Color colorRepEffect = repEffect > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+		Color colorRepEffect = repResult.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
 		Color colorNew = agentFaction.getRelColor(faction.getId());
 		if (stabilityPenalty != 0)
 			return new Color[] {Misc.getHighlightColor(), colorRepEffect, colorNew};

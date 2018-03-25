@@ -65,7 +65,6 @@ public class LowerRelations extends CovertOpsBase {
 		if (repResult2 != null)
 		{
 			params.put("repResult2", repResult2);
-			params.put("repEffect2", repResult2.delta);
 		}
 		else
 		{

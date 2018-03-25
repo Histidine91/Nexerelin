@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.util.Misc;
+import java.util.HashMap;
 
 
 public class SaboteurSabotageReserveEvent extends CovertOpsEventBase {
@@ -26,6 +27,7 @@ public class SaboteurSabotageReserveEvent extends CovertOpsEventBase {
 	@Override
 	public void setParam(Object param) {
 		super.setParam(param);
+		Map<String, Object> params = (HashMap)param;
 		if (params.containsKey("reserveDamage"))
 			reserveDamage = (Float)params.get("reserveDamage");
 	}
@@ -52,7 +54,7 @@ public class SaboteurSabotageReserveEvent extends CovertOpsEventBase {
 	
 	@Override
 	public Color[] getHighlightColors(String stageId) {
-		Color colorRepEffect = repEffect > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+		Color colorRepEffect = repResult.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
 		Color colorNew = agentFaction.getRelColor(faction.getId());
 		if (reserveDamage > 0)
 			return new Color[] {Misc.getHighlightColor(), colorRepEffect, colorNew};

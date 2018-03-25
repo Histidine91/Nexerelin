@@ -26,7 +26,6 @@ import java.util.List;
 public class InvasionFleetEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(InvasionFleetEvent.class);
-	protected Map<String, Object> params;
 	protected MarketAPI target;
 	protected int dp;
 	public boolean done;
@@ -36,7 +35,6 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		params = new HashMap<>();
 		done = false;
 		target = null;
 		dp = 0;
@@ -46,7 +44,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
 		target = (MarketAPI)params.get("target");
 		dp = (int)(float)params.get("dp");
 	}

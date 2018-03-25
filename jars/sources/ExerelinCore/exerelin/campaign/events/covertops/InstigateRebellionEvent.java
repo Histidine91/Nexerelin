@@ -4,15 +4,25 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.util.Misc;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class InstigateRebellionEvent extends CovertOpsEventBase {
 	
+	protected float timeframe = 0;
+	
+	@Override
+	public void setParam(Object param) {
+		super.setParam(param);
+		Map<String, Object> params = (HashMap)param;
+		timeframe = (Float)params.get("timeFrame");
+	}
+	
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		map.put("$timeFrame", (String)params.get("timeFrame") + "");
+		map.put("$timeFrame", timeframe + "");
 		
 		return map;
 	}
@@ -38,7 +48,7 @@ public class InstigateRebellionEvent extends CovertOpsEventBase {
 			result.add(Misc.getHighlightColor());
 		if (stageId.contains("detected"))
 		{
-			result.add(repEffect > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor"));
+			result.add(repResult.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor"));
 			result.add(agentFaction.getRelColor(faction.getId()));
 		}
 		return result.toArray(new Color[0]);

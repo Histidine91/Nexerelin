@@ -50,18 +50,17 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         FACTION_ADJUST.put("templars", 1.5f);
     }
     
-    protected Map<String, Object> params = new HashMap<>();
-    private float daysLeft;
-    private VengeanceDef def;
-    private int duration;
-    private boolean ended = false;
-    private int escalationLevel;
-    private CampaignFleetAPI fleet;
-    private boolean foundPlayerYet = false;
-    private final IntervalUtil interval = new IntervalUtil(0.4f, 0.6f);
-    private final IntervalUtil interval2 = new IntervalUtil(1f, 2f);
-    private float timeSpentLooking = 0f;
-    private boolean trackingMode = false;
+    protected float daysLeft;
+    protected VengeanceDef def;
+    protected int duration;
+    protected boolean ended = false;
+    protected int escalationLevel;
+    protected CampaignFleetAPI fleet;
+    protected boolean foundPlayerYet = false;
+    protected final IntervalUtil interval = new IntervalUtil(0.4f, 0.6f);
+    protected final IntervalUtil interval2 = new IntervalUtil(1f, 2f);
+    protected float timeSpentLooking = 0f;
+    protected boolean trackingMode = false;
     
     protected void setEscalationStage()
     {
@@ -538,7 +537,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         log.info("Started event of escalation level " + escalationLevel + " for " + faction.getDisplayName());
     }
 
-    private void endEvent() {
+    protected void endEvent() {
         ended = true;
         if (fleet != null && fleet.isAlive()) {
             fleet.clearAssignments();

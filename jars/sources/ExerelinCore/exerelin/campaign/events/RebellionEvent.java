@@ -72,8 +72,6 @@ public class RebellionEvent extends BaseEventPlugin {
 	
 	protected static Logger log = Global.getLogger(RebellionEvent.class);
 	
-	protected Map<String, Object> params;
-	
 	protected int stage = 0;
 	protected boolean ended = false;
 	protected float age = 0;
@@ -102,7 +100,6 @@ public class RebellionEvent extends BaseEventPlugin {
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		params = new HashMap<>();
 		
 		if (DEBUG_MODE)
 		{
@@ -112,7 +109,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
 		rebelFactionId = (String)params.get("rebelFactionId");
 		delay = (Float)params.get("delay");
 		age = -delay;

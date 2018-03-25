@@ -29,7 +29,6 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 	protected String allianceId;
 	protected float age = 0;
 	protected String stage = "formed";
-	protected Map<String, Object> params;
 	protected boolean done = false;
 	
 	@Override
@@ -53,7 +52,7 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
 		faction1Id = (String)params.get("faction1Id");
 		faction2Id = (String)params.get("faction2Id");
 		if (params.containsKey("allianceId"))

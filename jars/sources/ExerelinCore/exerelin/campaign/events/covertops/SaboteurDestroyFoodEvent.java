@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.util.Misc;
+import java.util.HashMap;
 
 
 public class SaboteurDestroyFoodEvent extends CovertOpsEventBase {
@@ -20,14 +21,15 @@ public class SaboteurDestroyFoodEvent extends CovertOpsEventBase {
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-                foodDestroyed = 0;
+		foodDestroyed = 0;
 	}
 	
 	@Override
 	public void setParam(Object param) {
-                super.setParam(param);
-                if (params.containsKey("foodDestroyed"))
-                    foodDestroyed = (Float)params.get("foodDestroyed");
+		super.setParam(param);
+		Map<String, Object> params = (HashMap)param;
+		if (params.containsKey("foodDestroyed"))
+			foodDestroyed = (Float)params.get("foodDestroyed");
 	}
 	        	
 	@Override
@@ -40,18 +42,18 @@ public class SaboteurDestroyFoodEvent extends CovertOpsEventBase {
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
-                if (foodDestroyed > 0)
-                {
-                    addTokensToList(result, "$foodDestroyed");
-                }
-                addTokensToList(result, "$repEffectAbs");
+		if (foodDestroyed > 0)
+		{
+			addTokensToList(result, "$foodDestroyed");
+		}
+		addTokensToList(result, "$repEffectAbs");
 		addTokensToList(result, "$newRelationStr");
 		return result.toArray(new String[0]);
 	}
 	
 	@Override
 	public Color[] getHighlightColors(String stageId) {
-		Color colorRepEffect = repEffect > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+		Color colorRepEffect = repResult.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
 		Color colorNew = agentFaction.getRelColor(faction.getId());
 		if (foodDestroyed > 0)
 			return new Color[] {Misc.getHighlightColor(), colorRepEffect, colorNew};

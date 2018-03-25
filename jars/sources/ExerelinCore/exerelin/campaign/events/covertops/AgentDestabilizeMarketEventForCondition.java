@@ -20,7 +20,6 @@ public class AgentDestabilizeMarketEventForCondition extends BaseEventPlugin {
 	protected float elapsedDays = 0f;
 	protected String conditionToken = null;
 	protected int stabilityPenalty = 0;
-	protected Map<String, Object> params;
 	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
@@ -29,7 +28,7 @@ public class AgentDestabilizeMarketEventForCondition extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
 		if (params.containsKey("stabilityPenalty"))
 			stabilityPenalty = (Integer)params.get("stabilityPenalty");
 	}

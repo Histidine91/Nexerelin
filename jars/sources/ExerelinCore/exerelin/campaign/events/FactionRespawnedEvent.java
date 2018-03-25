@@ -10,7 +10,6 @@ import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.SectorManager;
 import exerelin.utilities.StringHelper;
 
 
@@ -19,16 +18,13 @@ public class FactionRespawnedEvent extends BaseEventPlugin {
 	public static Logger log = Global.getLogger(FactionRespawnedEvent.class);
 	private static final int DAYS_TO_KEEP = 90;
 	
-	float age;
-	boolean existedBefore;
-	private Map<String, Object> params;
-		
+	protected float age;
+	protected boolean existedBefore;
 	public boolean done;
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		params = new HashMap<>();
 		done = false;
 		age = 0;
 		existedBefore = false;
@@ -36,7 +32,7 @@ public class FactionRespawnedEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
 		existedBefore = (boolean)params.get("existedBefore");
 	}
 		

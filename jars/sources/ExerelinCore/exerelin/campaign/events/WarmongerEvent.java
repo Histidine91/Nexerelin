@@ -32,18 +32,16 @@ public class WarmongerEvent extends BaseEventPlugin {
 	protected float avgRepLoss = 0;
 	protected int numFactions = 0;
 	protected float myFactionLoss = 0;
-	protected Map<String, Object> params;
 	protected String targetFaction = "independent";
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		params = new HashMap<>();
 	}
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
         repLoss = (HashMap<String, Float>)params.get("repLoss");
 		avgRepLoss = (float)params.get("avgRepLoss");
 		myFactionLoss = (float)params.get("myFactionLoss");

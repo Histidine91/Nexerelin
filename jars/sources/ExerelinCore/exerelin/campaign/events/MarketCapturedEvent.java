@@ -30,7 +30,6 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	protected List<String> factionsToNotify;
 	protected float repChangeStrength;
 	protected boolean playerInvolved;
-	protected Map<String, Object> params;
 	
 	protected boolean done;
 	protected float age;
@@ -38,7 +37,6 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		params = new HashMap<>();
 		done = false;
 		age = 0;
 		//log.info("Capture event created");
@@ -46,7 +44,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		Map<String, Object> params = (HashMap)param;
 		newOwner = (FactionAPI)params.get("newOwner");
 		oldOwner = (FactionAPI)params.get("oldOwner");
 		repChangeStrength = (Float)params.get("repChangeStrength");
