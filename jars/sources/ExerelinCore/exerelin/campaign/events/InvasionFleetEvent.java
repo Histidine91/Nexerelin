@@ -29,7 +29,6 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	protected MarketAPI target;
 	protected int dp;
 	public boolean done;
-	protected float age;
 	protected FactionAPI factionPermanent;	// doesn't change if the origin market gets captured in the meantime
 		
 	@Override
@@ -38,7 +37,6 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 		done = false;
 		target = null;
 		dp = 0;
-		age = 0;
 		factionPermanent = eventTarget.getFaction();
 	}
 	

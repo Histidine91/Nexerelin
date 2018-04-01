@@ -34,7 +34,6 @@ public class AllianceVoteEvent extends BaseEventPlugin {
 	protected boolean otherPartyIsAlliance = false;
 	protected boolean isWar = false;
 	protected String stage;
-	protected float age = 0;
 	
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {

@@ -139,9 +139,10 @@ public class XStreamConfig {
 	
 	public static void configureXStreamAttributes(com.thoughtworks.xstream.XStream x)
 	{
-		x.aliasAttribute("done", "done");
-		x.aliasAttribute("age", "age");
-		x.aliasAttribute("ended", "ended");
+		// these don't seem to actually work, need to apply on a per-class basis
+		//x.aliasAttribute("done", "done");
+		//x.aliasAttribute("age", "age");
+		//x.aliasAttribute("ended", "ended");
 		
 		// Alliance
 		x.aliasAttribute(Alliance.class, "name", "n");

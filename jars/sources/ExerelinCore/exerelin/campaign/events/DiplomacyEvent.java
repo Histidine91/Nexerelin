@@ -55,6 +55,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		if (age > DAYS_TO_KEEP)
 		{
 			done = true;
+			age = -1;
 			return;
 		}
 	}

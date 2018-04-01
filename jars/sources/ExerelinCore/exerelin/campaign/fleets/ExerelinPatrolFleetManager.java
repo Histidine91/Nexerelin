@@ -120,7 +120,7 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 	
 	// sizing checks faction config, and doesn't spawn during invasions
 	// point-based limiter on patrol spawns
-	// reduces effect of losses on patrol frequency/size, and reduces losses counter when spawning a patrol
+	// reduces effect of losses on patrol frequency/size, and decrements losses counter when spawning a patrol
 	// otherwise same as vanilla
 	@Override
 	public void advance(float amount) {

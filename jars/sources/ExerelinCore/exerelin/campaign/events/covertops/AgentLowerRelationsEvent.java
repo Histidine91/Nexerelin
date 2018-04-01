@@ -46,7 +46,8 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 		
 		// need to distinguish between agentFaction-thirdFaction and faction-thirdFaction relations
 		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repResult.delta*100f)));
-		map.put("$repEffectAbs2", "" + (int)Math.ceil(Math.abs(repResult2.delta*100f)));
+		if (repResult2 != null)
+			map.put("$repEffectAbs2", "" + (int)Math.ceil(Math.abs(repResult2.delta*100f)));
 		map.put("$newRelationStr", NexUtilsReputation.getRelationStr(agentFaction, faction));
 		if (result.isSucessful())
 			map.put("$newRelationStr2", NexUtilsReputation.getRelationStr(faction, thirdFaction));

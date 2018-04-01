@@ -27,7 +27,6 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 	protected String faction1Id;
 	protected String faction2Id;
 	protected String allianceId;
-	protected float age = 0;
 	protected String stage = "formed";
 	protected boolean done = false;
 	

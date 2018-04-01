@@ -55,9 +55,9 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	
 	// trash values that don't need saving
 	protected Object writeReplace() {
-		agentFaction = null;
-		result = null;
-		repResult = null;
+		//agentFaction = null;
+		//result = null;
+		//repResult = null;
 		params = null;
 		return this;
 	}
@@ -73,6 +73,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 		if (age > DAYS_TO_KEEP)
 		{
 			done = true;
+			age = -1;
 			return;
 		}
 	}
