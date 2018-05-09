@@ -200,6 +200,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         CargoAPI cargo = getCargo();
         
         float variation=(float)Math.random()*0.5f+0.75f;
+		int tries = 0;
         for ( float i=0f; i < ExerelinConfig.prismMaxWeapons*variation; i = (float) cargo.getWeapons().size()) {
             addRandomWeapons(10, 3);
             for (CargoStackAPI s : cargo.getStacksCopy()) {
@@ -210,6 +211,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
                     cargo.removeEmptyStacks();
                 }
             }
+			tries++;
+			//log.info("Add weapon try " + tries);
+			if (tries > 40) break;
         }
     }
     
@@ -278,6 +282,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         
         //renew the stock
         float variation=(float)Math.random()*0.5f+0.75f;
+		int tries = 0;
         for (int i=0; i<ExerelinConfig.prismNumShips*variation; i=cargo.getMothballedShips().getNumMembers()){
             //pick the role and faction
             FactionAPI faction = factionPicker.pick();
@@ -316,6 +321,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
                     i-=1;
                 }
             }
+			tries++;
+			//log.info("Add ship try " + tries);
+			if (tries > 40) break;
         }
         
         //add some IBBs
