@@ -66,10 +66,6 @@ public class LowerRelations extends CovertOpsBase {
 		{
 			params.put("repResult2", repResult2);
 		}
-		else
-		{
-			params.put("repEffect2", repResult.delta);
-		}
 		Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), getEventId(), params);
 	}
 	

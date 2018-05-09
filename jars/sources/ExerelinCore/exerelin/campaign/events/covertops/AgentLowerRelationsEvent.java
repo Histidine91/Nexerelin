@@ -33,7 +33,7 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 		Map<String, Object> params = (HashMap)param;
 		
 		thirdFaction = (FactionAPI)params.get("thirdFaction");
-		if (params.containsKey("repEffect2"))
+		if (params.containsKey("repResult2"))
 		{
 			repResult2 = (ExerelinReputationAdjustmentResult)params.get("repResult2");
 		}
@@ -73,8 +73,10 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 	
 	@Override
 	public Color[] getHighlightColors(String stageId) {
-		Color colorRepEffect = repResult.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
-		Color colorRepEffect2 = repResult2.delta > 0 ? Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+		Color colorRepEffect = repResult.delta > 0 ?
+				Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
+		Color colorRepEffect2 = (repResult2 != null && repResult2.delta > 0) ?
+				Global.getSettings().getColor("textFriendColor") : Global.getSettings().getColor("textEnemyColor");
 		Color colorNew = agentFaction.getRelColor(faction.getId());
 		Color colorNew2 = Color.WHITE;
 		if (result.isSucessful())
