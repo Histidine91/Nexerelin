@@ -18,6 +18,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
+import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -101,6 +102,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     protected float daysElapsed = 0;
     protected boolean randomFactionRelationships = false;
+    
+    protected Map<String, DiplomacyBrain> diplomacyBrains = new HashMap<>();
     
     static {
         String[] factions = {"templars", Factions.INDEPENDENT, Factions.LUDDIC_PATH};
@@ -701,6 +704,20 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         warWeariness.put(loseFactionId, getWarWeariness(loseFactionId) + value);
     }
     
+    public DiplomacyBrain getDiplomacyBrain(String factionId)
+    {
+        if (!diplomacyBrains.containsKey(factionId))
+            diplomacyBrains.put(factionId, new DiplomacyBrain(factionId));
+            
+        return diplomacyBrains.get(factionId);
+    }
+    
+    public void reverseCompatibility()
+    {
+        if (diplomacyBrains == null)
+            diplomacyBrains = new HashMap<>();
+    }
+    
     @Override
     public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
@@ -765,6 +782,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             updateWarWeariness();
         }
         
+        for (String factionId : SectorManager.getLiveFactionIdsCopy())
+        {
+            getDiplomacyBrain(factionId).advance(days);
+        }
+        
         this.intervalUtil.advance(days);
         if (!this.intervalUtil.intervalElapsed()) {
             return;
@@ -809,6 +831,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public boolean runWhilePaused()
     {
         return false;
+    }
+    
+    public static DiplomacyManager getManager()
+    {
+        Map<String, Object> data = Global.getSector().getPersistentData();
+        return (DiplomacyManager)data.get(MANAGER_MAP_KEY);
     }
     
     public static DiplomacyManager create()
