@@ -625,10 +625,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (faction.isNeutralFaction()) continue;
             // don't use followers if player is affiliated with another faction
             if (faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID))
-			{ 
-				if (!ExerelinConfig.followersDiplomacy) continue;
+            { 
+                if (!ExerelinConfig.followersDiplomacy) continue;
                 if (!faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
-			}
+            }
 
             float weariness = getWarWeariness(factionId);
             List<String> enemies = getFactionsAtWarWithFaction(faction, false, false, true);
@@ -895,7 +895,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (disallowedFactions.contains(otherFactionId)) continue;
             if (!includePirates && ExerelinUtilsFaction.isPirateFaction(otherFactionId)) continue;
             if (!includeTemplars && otherFactionId.equals("templars")) continue;
-            if (mustAllowCeasefire && !ExerelinFactionConfig.canCeasefire(factionId, otherFactionId))    // only count non-pirate non-Templar factions with which we can ceasefire as enemies
+            // only count non-pirate non-Templar factions with which we can ceasefire as enemies
+            if (mustAllowCeasefire && !ExerelinFactionConfig.canCeasefire(factionId, otherFactionId))
                 continue;
             enemies.add(otherFactionId);
         }

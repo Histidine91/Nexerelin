@@ -246,15 +246,18 @@ public class AllianceVoter {
 		ExerelinFactionConfig usConf = ExerelinConfig.getExerelinFactionConfig(factionId);
 		
 		// don't bother calculating vote if we like/hate them forever
-		if (isWar)
+		if (!DiplomacyManager.isRandomFactionRelationships())
 		{
-			if (ExerelinFactionConfig.getMinRelationship(factionId, otherFactionId) > AllianceManager.HOSTILE_THRESHOLD)
-				return Vote.NO;
-		}
-		else
-		{
-			if (ExerelinFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
-				return Vote.NO;
+			if (isWar)
+			{
+				if (ExerelinFactionConfig.getMinRelationship(factionId, otherFactionId) > AllianceManager.HOSTILE_THRESHOLD)
+					return Vote.NO;
+			}
+			else
+			{
+				if (ExerelinFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
+					return Vote.NO;
+			}
 		}
 		
 		float friendRelationship = us.getRelationship(friendId);
@@ -339,15 +342,18 @@ public class AllianceVoter {
 		ExerelinFactionConfig usConf = ExerelinConfig.getExerelinFactionConfig(factionId);
 		
 		// if we like/hate them forever, defy a vote that would require us to break this
-		if (isWar)
+		if (!DiplomacyManager.isRandomFactionRelationships())
 		{
-			if (ExerelinFactionConfig.getMinRelationship(factionId, otherFactionId) > AllianceManager.HOSTILE_THRESHOLD)
-				return true;
-		}
-		else
-		{
-			if (ExerelinFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
-				return true;
+			if (isWar)
+			{
+				if (ExerelinFactionConfig.getMinRelationship(factionId, otherFactionId) > AllianceManager.HOSTILE_THRESHOLD)
+					return true;
+			}
+			else
+			{
+				if (ExerelinFactionConfig.getMaxRelationship(factionId, otherFactionId) < AllianceManager.HOSTILE_THRESHOLD)
+					return true;
+			}
 		}
 		if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
 			return false;
