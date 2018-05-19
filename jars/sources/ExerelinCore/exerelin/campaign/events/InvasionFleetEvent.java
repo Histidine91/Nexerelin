@@ -5,14 +5,21 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BaseOnMessageDeliveryScript;
+import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.OnMessageDeliveryScript;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
@@ -26,17 +33,16 @@ import java.util.List;
 public class InvasionFleetEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(InvasionFleetEvent.class);
-	protected MarketAPI target;
-	protected int dp;
-	public boolean done;
+	protected MarketAPI target = null;
+	protected int dp = 0;
+	protected float killPoints = 0;
+	protected CampaignFleetAPI fleet;
+	public boolean done = false;
 	protected FactionAPI factionPermanent;	// doesn't change if the origin market gets captured in the meantime
 		
 	@Override
 	public void init(String type, CampaignEventTarget eventTarget) {
 		super.init(type, eventTarget);
-		done = false;
-		target = null;
-		dp = 0;
 		factionPermanent = eventTarget.getFaction();
 	}
 	
@@ -51,6 +57,11 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	public void startEvent()
 	{
 		
+	}
+	
+	public void setFleet(CampaignFleetAPI fleet)
+	{
+		this.fleet = fleet;
 	}
 	
 	public void reportStart()
@@ -71,9 +82,41 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 			stage += "_player";
 		
 		log.info("Ending invasion event: " + stage);
-		Global.getSector().reportEventStage(this, stage, reportSource, MessagePriority.SECTOR);
+		fleet = null;
+		
+		OnMessageDeliveryScript script = null;
+		MessagePriority priority = MessagePriority.SECTOR;
+		
+		// fleet was driven back due in full or part to player?
+		if (reason == FleetReturnReason.SHIP_LOSSES && killPoints > 0)
+		{
+			script = new BaseOnMessageDeliveryScript() {
+				public void beforeDelivery(CommMessageAPI message) {
+					if (killPoints > 0) {
+						Global.getSector().adjustPlayerReputation(
+								new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.SYSTEM_BOUNTY_REWARD, 
+										killPoints, message, true), faction.getId());
+					}
+				}
+			};
+			priority = MessagePriority.ENSURE_DELIVERY;
+		}
+		
+		Global.getSector().reportEventStage(this, stage, reportSource, priority, script);
 	}
-
+	
+	@Override
+	public void reportBattleFinished(CampaignFleetAPI primaryWinner, BattleAPI battle) {
+		if (fleet == null) return;
+		if (!battle.isPlayerInvolved()) return;
+		if (!battle.isInvolved(fleet)) return;
+		if (battle.isOnPlayerSide(fleet)) return;
+		
+		for (FleetMemberAPI loss : Misc.getSnapshotMembersLost(fleet)) {
+			killPoints += loss.getFleetPointCost();
+		}
+	}
+	
 	@Override
 	public void advance(float amount)
 	{
