@@ -1079,32 +1079,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     
                     handleHostileToAllFaction(factionId, factionIds);
                     
-                    // legacy method
-                    for (String likedFactionId : factionConfig.factionsLiked) {
-                        FactionAPI likedFaction = sector.getFaction(likedFactionId);
-                        if (likedFaction != null)
-                        {
-                            //log.info(faction.getDisplayName() + " likes " + dislikedFaction.getDisplayName());
-                            faction.setRelationship(likedFactionId, STARTING_RELATIONSHIP_WELCOMING);
-                        }
-                    }
-                    for (String dislikedFactionId : factionConfig.factionsDisliked) {
-                        FactionAPI dislikedFaction = sector.getFaction(dislikedFactionId);
-                        if (dislikedFaction != null)
-                        {
-                            //log.info(faction.getDisplayName() + " hates " + dislikedFaction.getDisplayName());
-                            setRelationshipAtBest(factionId, dislikedFactionId, STARTING_RELATIONSHIP_HOSTILE);
-                        }
-                    }
-                    for (String indifferentFactionId : factionConfig.factionsNeutral) {
-                        FactionAPI indifferentFaction = sector.getFaction(indifferentFactionId);
-                        if (indifferentFaction != null)
-                        {
-                            faction.setRelationship(indifferentFactionId, 0);
-                        }
-                    }
-                    
-                    // new specific number method
                     for (Map.Entry<String, Float> entry : factionConfig.startRelationships.entrySet())
                     {
                         faction.setRelationship(entry.getKey(), entry.getValue());

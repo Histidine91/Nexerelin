@@ -8,6 +8,7 @@ import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.alliances.Alliance.Alignment;
@@ -30,7 +31,7 @@ public class ExerelinFactionConfig
     public boolean isBuiltIn = false;
     public String spawnAsFactionId = null;
     public boolean freeStart = false;
-	public String ngcTooltip = null;
+    public String ngcTooltip = null;
    
     public boolean pirateFaction = false;
     public boolean isPirateNeutral = false;
@@ -77,6 +78,7 @@ public class ExerelinFactionConfig
     public Map<String, Float> startRelationships = new HashMap<>();
     public Map<String, Float> diplomacyPositiveChance = new HashMap<>();
     public Map<String, Float> diplomacyNegativeChance = new HashMap<>();
+    public Map<String, Float> dispositions = new HashMap<>();
     public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
     public Morality morality = Morality.NEUTRAL;
     
@@ -207,6 +209,19 @@ public class ExerelinFactionConfig
                 factionsDisliked = ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("factionsDisliked"));
             if (settings.has("factionsNeutral"))
                 factionsNeutral = ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("factionsNeutral"));
+            
+            for (String factionId : factionsLiked)
+            {
+                startRelationships.put(factionId, DiplomacyManager.STARTING_RELATIONSHIP_WELCOMING);
+            }
+            for (String factionId : factionsDisliked)
+            {
+                startRelationships.put(factionId, DiplomacyManager.STARTING_RELATIONSHIP_HOSTILE);
+            }
+            for (String factionId : factionsNeutral)
+            {
+                startRelationships.put(factionId, 0f);
+            }
                         
             fillRelationshipMap(settings, minRelationships, "minRelationships");
             fillRelationshipMap(settings, maxRelationships, "maxRelationships");
