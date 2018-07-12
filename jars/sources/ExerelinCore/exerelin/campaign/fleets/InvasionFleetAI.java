@@ -14,6 +14,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.world.exigency.Tasserus;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.utilities.ExerelinUtilsFleet;
@@ -79,7 +80,7 @@ public class InvasionFleetAI implements EveryFrameScript
 	{
 		if (fleet.getBattle() != null) return true;
 		
-		CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(data.targetMarket);
+		CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(data.targetMarket, ExerelinConstants.DEFENSE_STATION_MIN_CR_TO_JOIN);
 		if (station != null)
 		{			
 			if (fleet.getCurrentAssignment() != null && fleet.getCurrentAssignment().getTarget() == station)

@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.fleets.DefenceFleetAI;
 import exerelin.campaign.fleets.DefenceStationManager;
@@ -50,7 +51,7 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 		}
 		if (!DefenceStationManager.STATIONS_IN_CAMPAIGN_LAYER)
 		{
-			CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(market);
+			CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(market, ExerelinConstants.DEFENSE_STATION_MIN_CR_TO_JOIN);
 			if (station != null && station != defenders)
 			{
 				if (station.getContainingLocation() == null)
@@ -94,7 +95,7 @@ public class Nex_InvasionDefenseInteraction extends BaseCommandPlugin {
 				
 				if (!DefenceStationManager.STATIONS_IN_CAMPAIGN_LAYER)
 				{
-					CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(market);
+					CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(market, ExerelinConstants.DEFENSE_STATION_MIN_CR_TO_JOIN);
 					if (station != null)
 					{
 						station.setLocation(100000, 100000);

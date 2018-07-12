@@ -299,6 +299,17 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 	 */
 	public CampaignFleetAPI getFleet(MarketAPI market)
 	{
+		return getFleet(market, 0);
+	}
+	
+	/**
+	 * Gets the station fleet for the specified market.
+	 * @param market
+	 * @param minCR Return null if station's CR (0-1) is not at least this much
+	 * @return
+	 */
+	public CampaignFleetAPI getFleet(MarketAPI market, float minCR)
+	{
 		CampaignFleetAPI fleet = null;
 		if (fleets.containsKey(market.getId()))
 			fleet = fleets.get(market.getId());
@@ -309,6 +320,12 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 			reportFleetDespawned(fleet, FleetDespawnReason.NO_MEMBERS, null);
 			return null;
 		}
+		if (fleet != null)
+		{
+			if (fleet.getFlagship() == null || fleet.getFlagship().getRepairTracker().getCR() < minCR)
+				return null;
+		}
+		
 		return fleet;
 	}
 	
@@ -411,13 +428,12 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 						if (eo == EncounterOption.DISENGAGE || eo == EncounterOption.HOLD_VS_STRONGER) continue;
 						
 						MarketAPI market = Global.getSector().getEconomy().getMarket(marketId);
-						// disabled for debugging
 						ResponseFleetManager.requestResponseFleet(market, other, market.getPrimaryEntity());
 					}
 				}
 				for (FleetMemberAPI member : station.getFleetData().getMembersListCopy())
 				{
-					member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
+					//member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
 				}
 			}
 		}

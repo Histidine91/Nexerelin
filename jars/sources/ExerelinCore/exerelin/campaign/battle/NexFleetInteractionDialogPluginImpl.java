@@ -17,6 +17,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.battle.NexFleetEncounterContext.EscapedOfficerData;
 import exerelin.campaign.events.FactionInsuranceEvent;
 import exerelin.campaign.fleets.DefenceStationManager;
@@ -391,6 +392,10 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 			// or if someone is touching the market
 			if (fleet.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
 			{
+				if (fleet.getFlagship() == null 
+						|| fleet.getFlagship().getRepairTracker().getCR() < ExerelinConstants.DEFENSE_STATION_MIN_CR_TO_JOIN)
+					return false;
+				
 				String marketId = fleet.getMemoryWithoutUpdate().getString(MemFlags.MEMORY_KEY_SOURCE_MARKET);
 				float allowedDist = 0;
 				for (CampaignFleetAPI participatingFleet : battle.getBothSides())
