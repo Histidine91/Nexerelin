@@ -21,6 +21,7 @@ import exerelin.plugins.ExerelinModPlugin;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.histidine.industry.scripts.MiningHelper;
+import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 public class MiningFleetAI implements EveryFrameScript
@@ -44,6 +45,34 @@ public class MiningFleetAI implements EveryFrameScript
 		giveInitialAssignment();
 	}
 	
+	protected SectorEntityToken getNearestAsteroid()
+	{
+		List<SectorEntityToken> roids = data.fleet.getContainingLocation().getAsteroids();
+		float closestDistSq = 99999999;
+		SectorEntityToken closest = roids.get(0);
+		for (SectorEntityToken roid : roids)
+		{
+			float distSq = MathUtils.getDistanceSquared(roid.getLocation(), this.fleet.getLocation());
+			if (distSq < closestDistSq)
+			{
+				closest = roid;
+				closestDistSq = distSq;
+			}
+		}
+		
+		return closest;
+	}
+	
+	protected Object readResolve()
+	{
+		// asteroid targets were probably removed, find a new one
+		if (data.target != null && data.target instanceof AsteroidAPI)
+		{
+			data.target = null;
+		}
+		return this;
+	}
+	
 	float interval = 0;
 	
 	@Override
@@ -60,6 +89,11 @@ public class MiningFleetAI implements EveryFrameScript
 		interval += days;
 		if (interval >= UPDATE_INTERVAL) interval -= UPDATE_INTERVAL;
 		else return;
+		
+		if (data.target == null)	// we probably cleared this on load
+		{
+			data.target = getNearestAsteroid();
+		}
 		
 		FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
 		if (assignment != null)
