@@ -481,6 +481,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 			if (shouldPullInFleet(b, fleet, dist, actualPlayer, actualOther)) {
 				
 				BattleSide joiningSide = b.pickSide(fleet, true);
+				if (joiningSide == BattleSide.NO_JOIN) continue;
 				if (!config.pullInAllies && joiningSide == playerSide) continue;
 				if (!config.pullInEnemies && joiningSide != playerSide) continue;
 				
