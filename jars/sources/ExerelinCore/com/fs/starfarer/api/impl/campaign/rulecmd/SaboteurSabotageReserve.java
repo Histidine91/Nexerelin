@@ -20,17 +20,17 @@ public class SaboteurSabotageReserve extends AgentActionBase {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
-                
-                boolean superResult = useSpecialPerson("saboteur", 1);
-                if (superResult == false)
-                    return false;
-                
-                SectorAPI sector = Global.getSector();
-                SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
-                MarketAPI market = target.getMarket();
-                FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
-                result = CovertOpsManager.saboteurSabotageReserve(market, playerAlignedFaction, market.getFaction(), true);
-                StatsTracker.getStatsTracker().notifySaboteursUsed(1);
-                return super.execute(ruleId, dialog, params, memoryMap);
-        }
+		
+		boolean superResult = useSpecialPerson("saboteur", 1);
+		if (superResult == false)
+			return false;
+		
+		SectorAPI sector = Global.getSector();
+		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+		MarketAPI market = target.getMarket();
+		FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
+		result = CovertOpsManager.saboteurSabotageReserve(market, playerAlignedFaction, market.getFaction(), true);
+		StatsTracker.getStatsTracker().notifySaboteursUsed(1);
+		return super.execute(ruleId, dialog, params, memoryMap);
+	}
 }

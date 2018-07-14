@@ -26,6 +26,8 @@ public class NexUtilsReputation
 {
 	public static float getClampedRelationshipDelta(String faction1Id, String faction2Id, float delta)
 	{
+		if (faction1Id.equals(faction2Id))
+			return delta;
 		float max = ExerelinFactionConfig.getMaxRelationship(faction1Id, faction2Id);
 		float min = ExerelinFactionConfig.getMinRelationship(faction1Id, faction2Id);
 		float curr = Global.getSector().getFaction(faction1Id).getRelationship(faction2Id);
