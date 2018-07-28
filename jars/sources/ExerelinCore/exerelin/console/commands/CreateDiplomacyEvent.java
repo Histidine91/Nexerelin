@@ -47,7 +47,7 @@ public class CreateDiplomacyEvent implements BaseCommand {
 		
 		String eventId = null;
 		if (tmp.length >= 3) eventId = tmp[2];
-        DiplomacyManager.createDiplomacyEvent(fac1, fac2, eventId);
+        DiplomacyManager.createDiplomacyEvent(fac1, fac2, eventId, null);
         Console.showMessage("Creating diplomacy event between "
                 + CommandUtils.getFactionName(fac1) + " and "
                 + CommandUtils.getFactionName(fac2));

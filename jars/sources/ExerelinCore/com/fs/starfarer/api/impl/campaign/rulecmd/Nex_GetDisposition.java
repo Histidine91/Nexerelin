@@ -94,8 +94,8 @@ public class Nex_GetDisposition extends BaseCommandPlugin {
 			text.addParagraph("Error: Diplomacy brain not loaded", Misc.getNegativeHighlightColor());
 			return;
 		}
-		//brain.updateAllDispositions(0);
-		MutableStat disp = brain.getDisposition(otherFactionId);
+		brain.updateAllDispositions(0);
+		MutableStat disp = brain.getDisposition(otherFactionId).disposition;
 		printDispositionEntry(text, "Overall disposition", disp.modified);
 		
 		text.setFontSmallInsignia();
