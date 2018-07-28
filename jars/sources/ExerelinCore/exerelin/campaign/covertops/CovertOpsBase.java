@@ -151,10 +151,6 @@ public abstract class CovertOpsBase {
 		
 		Map<String, Object> params = makeEventParams(repResult);
 		reportEvent(params);
-		
-		if (result.isDetected())
-			DiplomacyManager.getManager().getDiplomacyBrain(targetFaction.getId()).reportDiplomacyEvent(
-					agentFaction.getId(), repResult.delta);
 	}
 	
 	protected void reportEvent(Map<String, Object> params)

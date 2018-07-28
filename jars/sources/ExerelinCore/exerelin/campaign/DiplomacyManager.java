@@ -18,7 +18,6 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
-import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -46,13 +45,30 @@ import org.lazywizard.lazylib.MathUtils;
  */
 public class DiplomacyManager extends BaseCampaignEventListener implements EveryFrameScript
 {
+    public static class DiplomacyEventDef {
+        public String name;
+        public String stage;
+        public RepLevel minRepLevelToOccur;
+        public RepLevel maxRepLevelToOccur;
+        public RepLevel repEnsureAtWorst;
+        public RepLevel repEnsureAtBest;
+        public RepLevel repLimit;
+        public float minRepChange;
+        public float maxRepChange;
+        public List<String> allowedFactions1;
+        public List<String> allowedFactions2;
+        public boolean allowPiratesToPirates;
+        public boolean allowPiratesToNonPirates;
+        public boolean allowNonPiratesToPirates;
+        public float chance;
+    }
     public static Logger log = Global.getLogger(DiplomacyManager.class);
     private static DiplomacyManager diplomacyManager;
     
     protected static final String CONFIG_FILE = "data/config/exerelin/diplomacyConfig.json";
     protected static final String MANAGER_MAP_KEY = "exerelin_diplomacyManager";
     
-    public static final List<String> disallowedFactions;
+    protected static final List<String> disallowedFactions;
         
     protected static List<DiplomacyEventDef> eventDefs;
     protected static Map<String, DiplomacyEventDef> eventDefsByStage;
@@ -64,7 +80,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float WAR_WEARINESS_INTERVAL = 3f;
     public static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
     public static final float PEACE_TREATY_CHANCE = 0.3f;
-    public static final float MIN_INTERVAL_BETWEEN_WARS = 15f;
     
     public static final float DOMINANCE_MIN = 0.25f;
     public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.67f;
@@ -86,9 +101,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     protected float daysElapsed = 0;
     protected boolean randomFactionRelationships = false;
-    protected long lastWarTimestamp = 0;
-    
-    protected Map<String, DiplomacyBrain> diplomacyBrains = new HashMap<>();
     
     static {
         String[] factions = {"templars", Factions.INDEPENDENT, Factions.LUDDIC_PATH};
@@ -118,7 +130,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             eventDef.name = eventDefJson.getString("name");
             //log.info("Adding diplomacy event " + eventDef.name);
             eventDef.stage = eventDefJson.getString("stage");
-            eventDef.random = eventDefJson.optBoolean("random", true);
             
             eventDef.minRepChange = (float)eventDefJson.getDouble("minRepChange");
             eventDef.maxRepChange = (float)eventDefJson.getDouble("maxRepChange");
@@ -427,32 +438,39 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             params.put("result", result);
             params.put("otherFaction", faction2);
             sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
-            
-            diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), delta);
-            diplomacyBrains.get(faction2.getId()).reportDiplomacyEvent(faction1.getId(), delta);
         }
     }
     
-    public DiplomacyEventDef pickDiplomacyEvent(FactionAPI faction1, FactionAPI faction2, DiplomacyEventParams params)
+    public static void createDiplomacyEvent(FactionAPI faction1, FactionAPI faction2)
     {
-        DiplomacyEventDef event = null;
+        createDiplomacyEvent(faction1, faction2, null);
+    }
+    
+    public static void createDiplomacyEvent(FactionAPI faction1, FactionAPI faction2, String eventId)
+    {
+        if (diplomacyManager == null) return;
+        
         String factionId1 = faction1.getId();
         String factionId2 = faction2.getId();
         
-        float dominance = 0;
+        WeightedRandomPicker<DiplomacyEventDef> eventPicker = new WeightedRandomPicker();
+        WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker();
+        List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId1);
+        
+        log.info("Factions are: " + faction1.getDisplayName() + ", " + faction2.getDisplayName());
         //float dominance = getDominanceFactor(factionId1) + getDominanceFactor(factionId2);
         //dominance = dominance/2;
-        if (params.useDominance)
-        {
-            dominance = Math.max( getDominanceFactor(factionId1), getDominanceFactor(factionId2) );
-            log.info("Dominance factor: " + dominance);
-        }
+        float dominance = Math.max( getDominanceFactor(factionId1), getDominanceFactor(factionId2) );
+        log.info("Dominance factor: " + dominance);
         
-        WeightedRandomPicker<DiplomacyEventDef> eventPicker = new WeightedRandomPicker();
+        DiplomacyEventDef event = null;
         for (DiplomacyEventDef eventDef: eventDefs)
         {
-            if (params.random != eventDef.random)
-                continue;
+            if (eventDef.stage.equals(eventId))
+            {
+                event = eventDef;
+                break;
+            }
             
             boolean pirate1 = ExerelinUtilsFaction.isPirateFaction(factionId1);
             boolean pirate2 = ExerelinUtilsFaction.isPirateFaction(factionId2);
@@ -487,8 +505,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 continue;
             
             boolean isNegative = (eventDef.maxRepChange + eventDef.minRepChange)/2 < 0;
-            if (!isNegative && params.onlyNegative) continue;
-            if (isNegative && params.onlyPositive) continue;
             
             float chance = eventDef.chance;
             if (!diplomacyManager.randomFactionRelationships) {
@@ -515,29 +531,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             }
         }
         if (event == null) event = eventPicker.pick();
-        return event;
-    }
-    
-    public static void createDiplomacyEvent(FactionAPI faction1, FactionAPI faction2)
-    {
-        createDiplomacyEvent(faction1, faction2, null, new DiplomacyEventParams());
-    }
-    
-    public static void createDiplomacyEvent(FactionAPI faction1, FactionAPI faction2, String eventId, DiplomacyEventParams params)
-    {
-        if (diplomacyManager == null) return;
-        
-        String factionId1 = faction1.getId();
-        String factionId2 = faction2.getId();
-        
-        WeightedRandomPicker<MarketAPI> marketPicker = new WeightedRandomPicker();
-        List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(factionId1);
-        
-        log.info("Factions are: " + faction1.getDisplayName() + ", " + faction2.getDisplayName());
-        
-        DiplomacyEventDef event;
-        if (eventId != null) event = eventDefsByStage.get(eventId);
-        else event = diplomacyManager.pickDiplomacyEvent(faction1, faction2, params);
         
         if (event == null)
         {
@@ -590,10 +583,10 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         FactionAPI faction1 = factionPicker.pickAndRemove();
         FactionAPI faction2 = factionPicker.pickAndRemove();
-        createDiplomacyEvent(faction1, faction2);
+        createDiplomacyEvent(faction1, faction2, null);
     }
     
-    public void reduceWarWeariness(String factionId, float amount)
+    private void reduceWarWeariness(String factionId, float amount)
     {
         Alliance alliance = AllianceManager.getFactionAlliance(factionId);
         if (alliance != null)
@@ -613,10 +606,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
     }
     
-    protected void updateWarWeariness()
+    private void updateWarWeariness()
     {
         SectorAPI sector = Global.getSector();
         List<String> factionIds = SectorManager.getLiveFactionIdsCopy();
+        FactionAPI factionWithMostWars = null;
+        int mostWarCount = 0;
+        List<String> enemiesOfFaction = new ArrayList<>();
         
         for(String factionId : factionIds)
         {
@@ -638,11 +634,61 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             {
                 //log.info("Incrementing war weariness for " + faction.getDisplayName());
                 weariness += enemies.size() * warWearinessPerInterval;
+                if (weariness >= ExerelinConfig.minWarWearinessForPeace)
+                {
+                    if (warCount > mostWarCount)
+                    {
+                        factionWithMostWars = faction;
+                        enemiesOfFaction = enemies;
+                        mostWarCount = warCount;
+                    }
+                }
             }
             else weariness -= warWearinessPerInterval;
             if (weariness < 0) weariness = 0f;
             
             warWeariness.put(factionId, weariness);
+        }
+        
+        // sue for peace?
+        if (factionWithMostWars != null)
+        {
+            log.info("Faction " + factionWithMostWars.getDisplayName() + " wants to sue for peace");
+            String factionId = factionWithMostWars.getId();
+            ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+            
+            WeightedRandomPicker<String> picker = new WeightedRandomPicker();            
+            for (String enemy : enemiesOfFaction) {
+                picker.add(enemy, getWarWeariness(enemy));
+            }
+            String toPeace = picker.pick();
+            
+            float sumWeariness = getWarWeariness(factionWithMostWars.getId()) + getWarWeariness(toPeace);
+            log.info("Sum with " + sector.getFaction(toPeace).getDisplayName() + ": " + sumWeariness);
+            float divisor = ExerelinConfig.warWearinessDivisorModPerLevel + ExerelinConfig.warWearinessDivisorModPerLevel * sector.getPlayerPerson().getStats().getLevel();
+            if (Math.random() > sumWeariness / divisor)
+                return;
+            log.info("Negotiating treaty");
+            boolean peaceTreaty = false;    // if false, only ceasefire
+            // can't peace treaty if vengeful, only ceasefire
+            if (factionWithMostWars.isAtWorst(toPeace, RepLevel.HOSTILE))
+            {
+                peaceTreaty = Math.random() < PEACE_TREATY_CHANCE;
+            }
+            DiplomacyEventDef event = peaceTreaty ? peaceTreatyEvent : ceasefireEvent;
+            float reduction = peaceTreaty ? ExerelinConfig.warWearinessPeaceTreatyReduction : ExerelinConfig.warWearinessCeasefireReduction;
+            // find someplace to sign the treaty
+            List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
+            for (MarketAPI market : markets)
+            {
+                if (market.getFaction() == factionWithMostWars)
+                {
+                    doDiplomacyEvent(event, market, factionWithMostWars, sector.getFaction(toPeace));
+                    reduceWarWeariness(factionWithMostWars.getId(), reduction);
+                    reduceWarWeariness(toPeace, reduction);
+                    return; // done here
+                }
+            } 
         }
     }
     
@@ -653,22 +699,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         float value = (market.getSize()^3) * 5;
         
         warWeariness.put(loseFactionId, getWarWeariness(loseFactionId) + value);
-    }
-    
-    public DiplomacyBrain getDiplomacyBrain(String factionId)
-    {
-        if (!diplomacyBrains.containsKey(factionId))
-            diplomacyBrains.put(factionId, new DiplomacyBrain(factionId));
-            
-        return diplomacyBrains.get(factionId);
-    }
-    
-    public long getLastWarTimestamp() {
-        return lastWarTimestamp;
-    }
-    
-    public void setLastWarTimestamp(long lastWarTimestamp) {
-        this.lastWarTimestamp = lastWarTimestamp;
     }
     
     @Override
@@ -718,8 +748,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             winnerLosses += member.getFleetPointCost();
         }
         winnerLosses *= WAR_WEARINESS_FLEET_WIN_MULT;
-        //log.info(winFaction.getDisplayName() + " war weariness from battle: " + winnerLosses);
-        //log.info(loseFaction.getDisplayName() + " war weariness from battle: " + loserLosses);
         
         warWeariness.put(winFactionId, getWarWeariness(winFactionId) + winnerLosses);
         warWeariness.put(loseFactionId, getWarWeariness(loseFactionId) + loserLosses);
@@ -735,11 +763,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         {
             daysElapsed -= WAR_WEARINESS_INTERVAL;
             updateWarWeariness();
-        }
-        
-        for (String factionId : SectorManager.getLiveFactionIdsCopy())
-        {
-            getDiplomacyBrain(factionId).advance(days);
         }
         
         this.intervalUtil.advance(days);
@@ -786,12 +809,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public boolean runWhilePaused()
     {
         return false;
-    }
-    
-    public static DiplomacyManager getManager()
-    {
-        Map<String, Object> data = Global.getSector().getPersistentData();
-        return (DiplomacyManager)data.get(MANAGER_MAP_KEY);
     }
     
     public static DiplomacyManager create()
@@ -1146,40 +1163,5 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static boolean isRandomFactionRelationships()
     {
         return diplomacyManager.randomFactionRelationships;
-    }
-    
-    protected Object readResolve()
-    {
-        if (diplomacyBrains == null)
-            diplomacyBrains = new HashMap<>();
-        
-        return this;
-    }
-    
-    
-    public static class DiplomacyEventDef {
-        public String name;
-        public String stage;
-        public boolean random = true;
-        public RepLevel minRepLevelToOccur;
-        public RepLevel maxRepLevelToOccur;
-        public RepLevel repEnsureAtWorst;
-        public RepLevel repEnsureAtBest;
-        public RepLevel repLimit;
-        public float minRepChange;
-        public float maxRepChange;
-        public List<String> allowedFactions1;
-        public List<String> allowedFactions2;
-        public boolean allowPiratesToPirates;
-        public boolean allowPiratesToNonPirates;
-        public boolean allowNonPiratesToPirates;
-        public float chance;
-    }
-    
-    public static class DiplomacyEventParams {
-        public boolean onlyPositive = false;
-        public boolean onlyNegative = false;
-        public boolean useDominance = true;
-        public boolean random = true;
     }
 }

@@ -10,7 +10,6 @@ import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsFaction;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -123,10 +122,10 @@ public class Nex_FactionDirectoryHelper {
 	
 	/**
 	 * Gets the factions that should appear in the directory
-	 * @param exclusion Factions to exclude from the result
+	 * @param excludeFollowers
 	 * @return 
 	 */
-	public static List<String> getFactionsForDirectory(Collection<String> exclusion)
+	public static List<String> getFactionsForDirectory(boolean excludeFollowers)
 	{
 		Set<String> liveFactions = new HashSet<>(SectorManager.getLiveFactionIdsCopy());
 		List<FactionAPI> allFactions = Global.getSector().getAllFactions();
@@ -140,12 +139,8 @@ public class Nex_FactionDirectoryHelper {
 			if (liveFactions.contains(factionId) || ExerelinUtilsFaction.hasAnyMarkets(factionId) || ExerelinUtilsFaction.isExiInCorvus(factionId))
 				result.add(factionId);
 		}
-		if (exclusion != null)
-		{
-			for (String toExclude : exclusion)
-				result.remove(toExclude);
-		}
-			
+		if (excludeFollowers)
+			result.remove(ExerelinConstants.PLAYER_NPC_ID);
 		
 		return result;
 	}

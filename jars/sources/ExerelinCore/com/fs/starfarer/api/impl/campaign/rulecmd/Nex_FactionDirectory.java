@@ -19,7 +19,6 @@ import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -33,7 +32,6 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	public static final float GROUPS_CACHE_TIME = 0f;
 	public static final String PRINT_FACTION_OPTION_PREFIX = "nex_printFactionMarkets_";
 	static final int PREFIX_LENGTH = PRINT_FACTION_OPTION_PREFIX.length();
-	public static final List<String> ARRAYLIST_FOLLOWERS = Arrays.asList(new String[]{ExerelinConstants.PLAYER_NPC_ID});
 	
 	static final HashMap<Integer, Color> colorByMarketSize = new HashMap<>();
 	static {
@@ -106,7 +104,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		}
 		else
 		{
-			List<String> factionsForDirectory = Nex_FactionDirectoryHelper.getFactionsForDirectory(ARRAYLIST_FOLLOWERS);
+			List<String> factionsForDirectory = Nex_FactionDirectoryHelper.getFactionsForDirectory(true);
 			groups = Nex_FactionDirectoryHelper.getFactionGroupings(factionsForDirectory);
 			memory.set(FACTION_GROUPS_KEY, groups, GROUPS_CACHE_TIME);
 		}

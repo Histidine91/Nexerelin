@@ -7,7 +7,6 @@
 		{
 			"name":"Official Aid",
 			"stage":"official_aid",
-			"random":false,
 			"minRepLevelToOccur":"inhospitable",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
@@ -34,7 +33,6 @@
 		{
 			"name":"Cooperation Deal",
 			"stage":"cooperation_deal",
-			"random":false,
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
@@ -43,7 +41,6 @@
 		{
 			"name":"Major Cooperation Deal",
 			"stage":"cooperation_deal_major",
-			"random":false,
 			"minRepLevelToOccur":"favorable",
 			"minRepChange":0.25,
 			"maxRepChange":0.3,
@@ -60,7 +57,6 @@
 		{
 			"name":"Helped Foil Terror Plot",
 			"stage":"helped_foil_terror",
-			"random":false,
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
@@ -71,7 +67,6 @@
 		{
 			"name":"Criminal Extradited",
 			"stage":"extradition",
-			"random":false,
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
@@ -80,12 +75,11 @@
 		{
 			"name":"Prisoner Exchange",
 			"stage":"prisoner_exchange",
-			"random":false,
 			"maxRepLevelToOccur":"hostile",
 			"repEnsureAtWorst":"hostile",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
-			"repLimit":"hostile",
+			"repLimit":"inhospitable",
 			"allowPiratesToPirates":true,
 			"allowPiratesToNonPirates":true,
 			"allowNonPiratesToPirates":true
@@ -137,12 +131,11 @@
 		{
 			"name":"Political Funding Uncovered",
 			"stage":"political_funding_uncovered",
-			"random":false,
 			"minRepLevelToOccur":"inhospitable",
 			"maxRepLevelToOccur":"favorable",
 			"minRepChange":-0.25,
 			"maxRepChange":-0.15,
-			"repLimit":"inhospitable",
+			"repLimit":"hostile",	# probably an overreaction but meh
 			"allowPiratesToPirates":true
 		},
 		{
@@ -157,23 +150,21 @@
 		{
 			"name":"Criminal Extradition Refused",
 			"stage":"extradition_refused",
-			"random":false,
 			"minRepLevelToOccur":"inhospitable",
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
-			"repLimit":"inhospitable",
+			"repLimit":"hostile",
 			"allowPiratesToPirates":true,
 			"chance":1.2
 		},
 		{
 			"name":"Spy Ring Uncovered",
 			"stage":"spy_ring_uncovered",
-			"random":false,
 			"maxRepLevelToOccur":"welcoming",
 			"repEnsureAtBest":"favorable",
 			"minRepChange":-0.25,
 			"maxRepChange":-0.15,
-			"repLimit":"inhospitable",
+			"repLimit":"hostile",
 			"allowPiratesToPirates":true,
 			"allowPiratesToNonPirates":true,
 			"allowNonPiratesToPirates":true,
@@ -182,7 +173,6 @@
 		{
 			"name":"Sabotage Uncovered",
 			"stage":"sabotage_uncovered",
-			"random":false,
 			"repEnsureAtBest":"suspicious",
 			"maxRepLevelToOccur":"favorable",
 			"minRepChange":-0.15,
@@ -203,7 +193,6 @@
 		{
 			"name":"Privateering",
 			"stage":"privateering",
-			"random":false,
 			"minRepLevelToOccur":"inhospitable",
 			"maxRepLevelToOccur":"neutral",
 			"repEnsureAtBest":"suspicious",
@@ -221,7 +210,7 @@
 			"repEnsureAtBest":"neutral",
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
-			"repLimit":"inhospitable",
+			"repLimit":"hostile",
 			"chance":0.5
 		},
 		{
@@ -236,22 +225,13 @@
 			"allowPiratesToPirates":true,
 			"allowPiratesToNonPirates":true,
 			"allowNonPiratesToPirates":true,
-			"chance":2	# help tip things over into outright violence
+			"chance":2.5	# help tip things over into outright violence
 		},
 		
-		{
-			"name":"Declare War",
-			"stage":"declare_war",
-			"random":false,
-			"repEnsureAtBest":"hostile",
-			"minRepChange":-0.4,
-			"maxRepChange":-0.3,
-			"chance":0	# only occurs when DiplomacyManager calls it directly
-		},
+		
 		{
 			"name":"Ceasefire",
 			"stage":"ceasefire",
-			"random":false,
 			"maxRepLevelToOccur":"hostile",
 			"repEnsureAtWorst":"inhospitable",
 			"minRepChange":0.3,
@@ -262,7 +242,6 @@
 		{
 			"name":"Peace Treaty",
 			"stage":"peace_treaty",
-			"random":false,
 			"maxRepLevelToOccur":"hostile",
 			"repEnsureAtWorst":"suspicious",
 			"minRepChange":0.5,
@@ -275,7 +254,6 @@
 		{
 			"name":"Religious Expansion",
 			"stage":"religious_expansion",
-			"random":false,
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.1,
 			"maxRepChange":0.15,
@@ -286,7 +264,6 @@
 		{
 			"name":"Religious Minority Persecuted",
 			"stage":"persecution_minority",
-			"random":false,
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"allowedFactions2":["luddic_church","kadur_theocracy","insurgency"],
@@ -296,7 +273,6 @@
 		{
 			"name":"Religious Majority Persecutes",
 			"stage":"persecution_majority",
-			"random":false,
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"allowedFactions1":["luddic_church","kadur_theocracy","insurgency"],
@@ -314,10 +290,9 @@
 		{
 			"name":"Condemn Treatment of Dissidents",
 			"stage":"dissident_treatment",
-			"random":false,
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
-			"repLimit":"inhospitable",
+			"repLimit":"hostile",
 			"allowedFactions1":["hegemony","sindrian_diktat","mayorate","interstellarimperium","new_galactic_order","kadur_theocracy"],
 			"allowedFactions2":["luddic_church","shadow_industry","pack","spire","ORA"],
 			"chance":1.5
@@ -328,7 +303,7 @@
 			"minRepLevelToOccur":"inhospitable",
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
-			"repLimit":"inhospitable",
+			"repLimit":"hostile",
 			"allowedFactions1":["hegemony","luddic_church","pack","interstellarimperium","new_galactic_order","kadur_theocracy","insurgency"],
 			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","exigency","metelson","ptech","dassault_mikoyan"],
 			"chance":1.5
@@ -336,7 +311,6 @@
 		{
 			"name":"Technology Stolen",
 			"stage":"tech_stolen",
-			"random":false,
 			"maxRepLevelToOccur":"welcoming",
 			"repEnsureAtBest":"neutral",
 			"minRepChange":-0.2,
@@ -349,7 +323,6 @@
 		{
 			"name":"Contract Cheating",
 			"stage":"contract_cheating",
-			"random":false,
 			"maxRepLevelToOccur":"welcoming",
 			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
