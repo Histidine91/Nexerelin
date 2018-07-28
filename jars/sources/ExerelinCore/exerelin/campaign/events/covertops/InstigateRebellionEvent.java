@@ -16,7 +16,8 @@ public class InstigateRebellionEvent extends CovertOpsEventBase {
 	public void setParam(Object param) {
 		super.setParam(param);
 		Map<String, Object> params = (HashMap)param;
-		timeframe = (Float)params.get("timeFrame");
+		if (params.containsKey("timeFrame"))
+			timeframe = (Float)params.get("timeFrame");
 	}
 	
 	@Override
