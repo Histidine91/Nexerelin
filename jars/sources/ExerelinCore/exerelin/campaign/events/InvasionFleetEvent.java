@@ -95,7 +95,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 					if (killPoints > 0) {
 						Global.getSector().adjustPlayerReputation(
 								new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.SYSTEM_BOUNTY_REWARD, 
-										killPoints, message, true), faction.getId());
+										killPoints, message, true), target.getFactionId());
 					}
 				}
 			};
@@ -169,7 +169,8 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> result = new ArrayList<>();
-		addTokensToList(result, "$dp");
+		if (stageId.equals("start") || stageId.equals("start_player"))
+			addTokensToList(result, "$dp");
 		return result.toArray(new String[0]);
 	}
 	
