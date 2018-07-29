@@ -111,7 +111,6 @@ public class Nex_InstigateRebellion extends AgentActionBase {
 	
 	@SuppressWarnings("unchecked")
 	protected boolean printCargo(MarketAPI market, MemoryAPI mem, TextPanelAPI text) {
-		text.setFontVictor();
 		text.setFontSmallInsignia();
 		FactionAPI playerFaction = Global.getSector().getPlayerFaction();
 		Color color = playerFaction.getColor();

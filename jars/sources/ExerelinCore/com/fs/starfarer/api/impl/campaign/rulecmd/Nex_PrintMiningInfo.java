@@ -90,7 +90,6 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "exhaustion")) + ": " + exhaustionStr);
 		text.highlightInLastPara(hl, exhaustionStr);
 		
-		text.setFontVictor();
 		text.setFontSmallInsignia();
 
 		text.addParagraph(StringHelper.HR);
@@ -140,7 +139,6 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		
-		text.setFontVictor();
 		text.setFontSmallInsignia();
 
 		text.addParagraph(StringHelper.HR);
@@ -169,7 +167,6 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		
 		text.addParagraph(StringHelper.getString(STRING_CATEGORY, "miningToolsListHeader"));
 		
-		text.setFontVictor();
 		text.setFontSmallInsignia();
 		
 		text.addParagraph(StringHelper.HR);

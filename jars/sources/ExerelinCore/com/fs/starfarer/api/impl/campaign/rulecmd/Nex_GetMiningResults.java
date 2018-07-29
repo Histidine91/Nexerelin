@@ -46,7 +46,6 @@ public class Nex_GetMiningResults extends BaseCommandPlugin {
 		
 		//text.addParagraph(Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "miningReport")));
 		
-		text.setFontVictor();
 		text.setFontSmallInsignia();
 
 		text.addParagraph(StringHelper.HR);

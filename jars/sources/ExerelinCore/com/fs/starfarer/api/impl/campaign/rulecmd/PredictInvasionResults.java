@@ -60,9 +60,8 @@ public class PredictInvasionResults extends BaseCommandPlugin {
 		String a2 = String.format("%.1f", attackerStrengthBest);
 		String attackerStrength = a1 + " - " + a2;
 		String defenderStrengthStr = String.format("%.1f", defenderStrength);
-		String marinesLost = marinesLostBest + " - " + marinesLostWorst;		 
-
-		text.setFontVictor();
+		String marinesLost = marinesLostBest + " - " + marinesLostWorst;
+		
 		text.setFontSmallInsignia();
 
 		Color hl = Misc.getHighlightColor();

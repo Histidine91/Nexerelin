@@ -21,11 +21,11 @@ import exerelin.utilities.StringHelper;
 
 public class ExecuteInvasionRound extends BaseCommandPlugin {
 
-    protected static final String STRING_CATEGORY = "exerelin_invasion";
-    
-    @Override
-    public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
-        if (dialog == null) return false;
+	protected static final String STRING_CATEGORY = "exerelin_invasion";
+	
+	@Override
+	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
+		if (dialog == null) return false;
 		
 		boolean isRaid = params.get(0).getBoolean(memoryMap);
 		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
@@ -56,8 +56,7 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
 		int marinesRemaining = playerFleet.getCargo().getMarines();
 		String attackerStrength = String.format("%.1f", result.attackerStrength);
 		String defenderStrength = String.format("%.1f", result.defenderStrength);
-
-		text.setFontVictor();
+		
 		text.setFontSmallInsignia();
 
 		Color hl = Misc.getHighlightColor();

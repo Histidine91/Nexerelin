@@ -142,7 +142,6 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 		String destructionStr = String.format("%.0f", destructionMult * 100);
 		text.addParagraph(StringHelper.getStringAndSubstituteToken(STRING_CATEGORY, "successText", "$market", market.getName()));
 		
-		text.setFontVictor();
 		text.setFontSmallInsignia();
 
 		text.addParagraph(StringHelper.HR);
