@@ -1055,6 +1055,19 @@ nex_marketTransferPostDialog,Nex_MarketPostTransfer,,,"""As you command. $market
 ""Goodbye, chief.""",cutCommLink:Cut the comm link,
 #END MARKET TRANSFER OPTIONS,,,,,,
 ,,,,,,
+#START REBELLION OPTIONS,,,,,,
+nex_supplyCounterInsurgencyOption,PopulateOptions,Nex_IsBaseOfficial admin,,,"nex_supplyCounterInsurgency:""I can help with your rebellion problem.""",
+nex_supplyCounterInsurgencyOptionTooLowRep,PopulateOptions,"Nex_IsBaseOfficial admin
+!RepIsAtWorst $faction.id INHOSPITABLE","SetTooltip nex_supplyCounterInsurgency ""$TheFaction simply do not trust you to supply them.""
+SetEnabled nex_supplyCounterInsurgency false",,,
+nex_supplyCounterInsurgency,DialogOptionSelected,$option == nex_supplyCounterInsurgency,"AddText ""Indeed? We could make good use of any supplies, hand weapons or marines you possess, purchased at market rates. And the gratitude of $theFaction, once the dust settles.""
+Nex_RebellionActions main
+Nex_RebellionActions printPriceMult",,,
+nex_supplyCounterInsurgencyProceed,DialogOptionSelected,"Nex_OptionStartsWith ""nex_supplyCounterInsurgency_deliver_""",Nex_RebellionActions deliver,,,
+nex_supplyCounterInsurgencyBack,DialogOptionSelected,$option == nex_supplyCounterInsurgencyBack,FireAll PopulateOptions,"""Anything else?""",,
+#END REBELLION OPTIONS,,,,,,
+,,,,,,
+,,,,,,
 # other base commander stuff,,,,,,
 nex_marketAgentReportOption,PopulateOptions,"Nex_IsBaseOfficial admin
 $faction.id == $player.factionId

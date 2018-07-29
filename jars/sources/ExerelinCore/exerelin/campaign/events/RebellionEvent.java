@@ -59,6 +59,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	public static final float VALUE_SUPPLIES = 0.03f;
 	public static final float VALUE_MARINES = 0.25f;
 	//public static final float VALUE_PER_CREDIT = 0.01f * 0.01f;
+	public static final float REP_MULT = 1.5f;
 	public static final float REBEL_TRADE_MULT = 2f;
 	public static final float MARINE_DEMAND = 50f;
 	public static final float WEAPONS_DEMAND = 200f;
@@ -382,7 +383,7 @@ public class RebellionEvent extends BaseEventPlugin {
 		
 		if (rebelTradePoints > 0)
 		{
-			final float rep = rebelTradePoints/getSizeMod(market) * 0.01f;
+			final float rep = rebelTradePoints/getSizeMod(market) * 0.01f * REP_MULT;
 			debugMessage("  Rebel trade rep: " + rep);
 			Global.getSector().reportEventStage(this, "trade_rebs", market.getPrimaryEntity(), 
 					MessagePriority.ENSURE_DELIVERY, new BaseOnMessageDeliveryScript() {
@@ -394,7 +395,7 @@ public class RebellionEvent extends BaseEventPlugin {
 		}
 		if (govtTradePoints > 0)
 		{
-			final float rep = govtTradePoints/getSizeMod(market) * 0.01f;
+			final float rep = govtTradePoints/getSizeMod(market) * 0.01f * REP_MULT;
 			debugMessage("  Government trade rep: " + rep);
 			Global.getSector().reportEventStage(this, "trade_govt", market.getPrimaryEntity(), 
 					MessagePriority.ENSURE_DELIVERY, new BaseOnMessageDeliveryScript() {
@@ -755,6 +756,20 @@ public class RebellionEvent extends BaseEventPlugin {
 		return transaction.getQuantitySold(commodityId) - transaction.getQuantityBought(commodityId);
 	}
 	
+	public void modifyPoints(float points, boolean rebels)
+	{
+		if (rebels)
+		{
+			rebelStrength += points;
+			rebelTradePoints += points;			
+		}
+		else
+		{
+			govtStrength += points;
+			govtTradePoints += points;
+		}
+	}
+	
 	// TODO: handle ship sales as well?
 	@Override
 	public void reportPlayerMarketTransaction(PlayerMarketTransaction transaction) {
@@ -775,17 +790,10 @@ public class RebellionEvent extends BaseEventPlugin {
 		points += getNetCommoditySold(transaction, Commodities.HAND_WEAPONS) * VALUE_WEAPONS;
 		points += getNetCommoditySold(transaction, Commodities.SUPPLIES) * VALUE_SUPPLIES;
 		
-		if (transaction.getSubmarket().getPlugin().isBlackMarket())
-		{
-			float points2 = points * REBEL_TRADE_MULT;
-			rebelStrength += points2;
-			rebelTradePoints += points2;			
-		}
-		else
-		{
-			govtStrength += points;
-			govtTradePoints += points;
-		}
+		boolean forRebels = transaction.getSubmarket().getPlugin().isBlackMarket();
+		if (forRebels) points *= 2f;
+		
+		modifyPoints(points, forRebels);
 	}
 	
 	@Override
