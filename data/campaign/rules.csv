@@ -1056,8 +1056,10 @@ nex_marketTransferPostDialog,Nex_MarketPostTransfer,,,"""As you command. $market
 #END MARKET TRANSFER OPTIONS,,,,,,
 ,,,,,,
 #START REBELLION OPTIONS,,,,,,
-nex_supplyCounterInsurgencyOption,PopulateOptions,Nex_IsBaseOfficial admin,,,"nex_supplyCounterInsurgency:""I can help with your rebellion problem.""",
+nex_supplyCounterInsurgencyOption,PopulateOptions,"Nex_IsBaseOfficial admin
+Nex_RebellionActions isOngoing",,,"nex_supplyCounterInsurgency:""I can help with your rebellion problem.""",
 nex_supplyCounterInsurgencyOptionTooLowRep,PopulateOptions,"Nex_IsBaseOfficial admin
+Nex_RebellionActions isOngoing
 !RepIsAtWorst $faction.id INHOSPITABLE","SetTooltip nex_supplyCounterInsurgency ""$TheFaction simply do not trust you to supply them.""
 SetEnabled nex_supplyCounterInsurgency false",,,
 nex_supplyCounterInsurgency,DialogOptionSelected,$option == nex_supplyCounterInsurgency,"AddText ""Indeed? We could make good use of any supplies, hand weapons or marines you possess, purchased at market rates. And the gratitude of $theFaction, once the dust settles.""

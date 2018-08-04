@@ -51,11 +51,12 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 			case "printPriceMult":
 				//printPriceMult(dialog);
 				break;
-			
 			case "deliver":
 				deliverCommodities(dialog, memoryMap.get(MemKeys.LOCAL).getString("$option"));
 				addOptions(dialog);
 				break;
+			case "isOngoing":
+				return RebellionEvent.getOngoingEvent(dialog.getInteractionTarget().getMarket()) != null;
 		}
 		return true;
 	}
@@ -131,11 +132,10 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 				rep, rep * 1.5f, null, dialog.getTextPanel());
 		
 		// modify event strength
-		CampaignEventPlugin event = Global.getSector().getEventManager().getOngoingEvent(
-				new CampaignEventTarget(market), "nex_rebellion");
+		RebellionEvent event = RebellionEvent.getOngoingEvent(market);
 		if (event != null)
 		{
-			((RebellionEvent)event).modifyPoints(points, false);
+			event.modifyPoints(points, false);
 		}
 	}
 	
