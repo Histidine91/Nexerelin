@@ -16,8 +16,7 @@ public class RebellionCondition extends BaseMarketConditionPlugin {
 		if (event == null)	// try regetting
 		{
 			Global.getLogger(this.getClass()).warn("Event is null, re-fetching");
-			event = (RebellionEvent)Global.getSector().getEventManager().getOngoingEvent(
-					new CampaignEventTarget(market), "nex_rebellion");
+			event = RebellionEvent.getOngoingEvent(market);
 		}
 		return event != null;
 	}

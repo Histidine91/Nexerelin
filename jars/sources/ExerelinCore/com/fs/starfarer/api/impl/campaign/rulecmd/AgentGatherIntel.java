@@ -105,10 +105,9 @@ public class AgentGatherIntel extends AgentActionBase {
 			text.highlightFirstInLastPara("" + stationPointsStr, highlightColor);
 		}
 		
-		if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
+		if (RebellionEvent.isOngoing(market))
 		{
-			RebellionEvent rebellion = (RebellionEvent)Global.getSector().getEventManager().getOngoingEvent(
-					new CampaignEventTarget(market), "nex_rebellion");
+			RebellionEvent rebellion = RebellionEvent.getOngoingEvent(market);
 			float govtStrength = rebellion.getGovtStrength();
 			float rebelStrength = rebellion.getRebelStrength();
 			FactionAPI rebelFaction = rebellion.getRebelFaction();

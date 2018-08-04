@@ -898,13 +898,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         // rebellion
-        CampaignEventPlugin eventSuper = Global.getSector().getEventManager().getOngoingEvent(
-            new CampaignEventTarget(market), "nex_rebellion");
-        if (eventSuper != null)
-        {
-            RebellionEvent event = (RebellionEvent)eventSuper;
-            event.marketCaptured(newOwnerId, oldOwnerId);
-        }
+		RebellionEvent rebEvent = RebellionEvent.getOngoingEvent(market);
+		if (rebEvent != null) rebEvent.marketCaptured(newOwnerId, oldOwnerId);
         
         // flip relay
         if (sectorManager != null)
@@ -954,11 +949,11 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // revengeance fleet
         if (newOwnerId.equals(PlayerFactionStore.getPlayerFactionId()) || newOwnerId.equals(ExerelinConstants.PLAYER_NPC_ID))
         {
-            RevengeanceManagerEvent event = RevengeanceManagerEvent.getOngoingEvent();
-            if (event!= null) 
+            RevengeanceManagerEvent rvngEvent = RevengeanceManagerEvent.getOngoingEvent();
+            if (rvngEvent!= null) 
             {
                 float sizeSq = market.getSize() * market.getSize();
-                event.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult);
+                rvngEvent.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult);
             }
         }
     }

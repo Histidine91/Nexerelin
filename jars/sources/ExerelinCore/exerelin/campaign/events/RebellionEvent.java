@@ -883,6 +883,23 @@ public class RebellionEvent extends BaseEventPlugin {
 		}
 	}
 	
+	public static RebellionEvent getOngoingEvent(MarketAPI market)
+	{
+		CampaignEventPlugin eventSuper = Global.getSector().getEventManager().getOngoingEvent(
+			new CampaignEventTarget(market), "nex_rebellion");
+		if (eventSuper != null)
+		{
+			RebellionEvent event = (RebellionEvent)eventSuper;
+			return event;
+		}
+		return null;
+	}
+	
+	public static boolean isOngoing(MarketAPI market)
+	{
+		return Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion");
+	}
+	
 	public static class SuppressionFleetData extends InvasionFleetManager.InvasionFleetData {
 		public RebellionEvent event;
 		

@@ -38,7 +38,7 @@ public class RebellionEventCreator extends BaseEventPlugin {
 	public static RebellionEvent createRebellion(MarketAPI market, String factionId, boolean report)
 	{
 		SectorAPI sector = Global.getSector();
-		if (sector.getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
+		if (RebellionEvent.isOngoing(market))
 			return null;
 		
 		float prepTime = market.getSize() * 2 * MathUtils.getRandomNumberInRange(0.8f, 1.2f);
@@ -63,7 +63,7 @@ public class RebellionEventCreator extends BaseEventPlugin {
 	
 	public static RebellionEvent createRebellion(MarketAPI market, boolean report)
 	{
-		if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
+		if (RebellionEvent.isOngoing(market))
 			return null;
 		FactionAPI faction = market.getFaction();
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;		
@@ -204,7 +204,7 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		if (market.getFactionId().equals(Factions.INDEPENDENT))
 			return;
 		
-		if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
+		if (RebellionEvent.isOngoing(market))
 			return;
 		
 		float points = getRebellionIncrement(market) * days;

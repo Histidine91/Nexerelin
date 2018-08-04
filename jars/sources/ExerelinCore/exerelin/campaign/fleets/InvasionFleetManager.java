@@ -401,7 +401,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			// because incoming invasion fleet being ganked by fresh spawns from the market is just annoying
 			if (ExerelinUtilsMarket.isMarketBeingInvaded(market)) continue;
 			// markets with ongoing rebellions can't launch invasions
-			if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
+			if (RebellionEvent.isOngoing(market))
 				continue;
 			
 			if	( market.getFactionId().equals(factionId) && !market.hasCondition(Conditions.DECIVILIZED) && 
@@ -487,14 +487,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				}
 				
 				// help ongoing rebellions
-				CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(
-					new CampaignEventTarget(market), "nex_rebellion");
-				if (eventSuper != null)
-				{
-					RebellionEvent event = (RebellionEvent)eventSuper;
-					if (!faction.isHostileTo(event.getRebelFactionId()))
-						weight *= 5;
-				}
+				RebellionEvent event = RebellionEvent.getOngoingEvent(market);
+				if (event != null && !faction.isHostileTo(event.getRebelFactionId()))
+					weight *= 5;
 				
 				targetPicker.add(market, weight);
 			}

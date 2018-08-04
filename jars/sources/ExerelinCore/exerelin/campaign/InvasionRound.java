@@ -22,6 +22,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.events.MarketAttackedEvent;
+import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.utilities.ExerelinConfig;
@@ -147,7 +148,7 @@ public class InvasionRound {
 			defenderBonus += baseDefenderStrength * DEFENDER_AVALON_MOD;
 		}
 		
-		if (Global.getSector().getEventManager().isOngoing(new CampaignEventTarget(market), "nex_rebellion"))
+		if (RebellionEvent.isOngoing(market))
 		{
 			defenderBonus -= baseDefenderStrength * DEFENDER_REBELLION_MOD;
 		}
