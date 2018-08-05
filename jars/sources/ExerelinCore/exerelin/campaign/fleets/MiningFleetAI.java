@@ -36,6 +36,7 @@ public class MiningFleetAI implements EveryFrameScript
 	protected final CampaignFleetAPI fleet;
 	protected boolean orderedReturn = false;
 	protected boolean unloaded = false;
+	protected boolean needReload = false;
 	//protected EveryFrameScript broadcastScript;
 	
 	public MiningFleetAI(CampaignFleetAPI fleet, MiningFleetData data)
@@ -52,7 +53,7 @@ public class MiningFleetAI implements EveryFrameScript
 		SectorEntityToken closest = roids.get(0);
 		for (SectorEntityToken roid : roids)
 		{
-			float distSq = MathUtils.getDistanceSquared(roid.getLocation(), this.fleet.getLocation());
+			float distSq = MathUtils.getDistanceSquared(roid.getLocation(), fleet.getLocation());
 			if (distSq < closestDistSq)
 			{
 				closest = roid;
@@ -65,10 +66,10 @@ public class MiningFleetAI implements EveryFrameScript
 	
 	protected Object readResolve()
 	{
-		// asteroid targets were probably removed, find a new one
+		// our asteroid won't be reloaded in star system on its own, we'll put it back in advance()
 		if (data.target != null && data.target instanceof AsteroidAPI)
 		{
-			data.target = null;
+			needReload = true;
 		}
 		return this;
 	}
@@ -90,9 +91,11 @@ public class MiningFleetAI implements EveryFrameScript
 		if (interval >= UPDATE_INTERVAL) interval -= UPDATE_INTERVAL;
 		else return;
 		
-		if (data.target == null)	// we probably cleared this on load
+		// reset asteroid
+		if (needReload)
 		{
-			data.target = getNearestAsteroid();
+			needReload = false;
+			fleet.getContainingLocation().addEntity(data.target);
 		}
 		
 		FleetAssignmentDataAPI assignment = this.fleet.getAI().getCurrentAssignment();
@@ -112,7 +115,7 @@ public class MiningFleetAI implements EveryFrameScript
 			{
 				// unload cargo if appropriate
 				if(!unloaded && assignment.getAssignment() == FleetAssignment.ORBIT_PASSIVE && data.source.getContainingLocation() == data.fleet.getContainingLocation()
-						&& Misc.getDistance(data.source.getLocation(), data.fleet.getLocation()) < 600f)
+						&& MathUtils.getDistance(data.source, data.fleet) < 600f)
 				{
 					List<CargoStackAPI> cargoStacks = cargo.getStacksCopy();
 					for (CargoStackAPI stack : cargoStacks)
@@ -131,60 +134,69 @@ public class MiningFleetAI implements EveryFrameScript
 			
 			// mine
 			if(assignment.getAssignment() == FleetAssignment.ORBIT_PASSIVE || assignment.getAssignment() == FleetAssignment.INTERCEPT
-					&& data.target.getContainingLocation() == data.fleet.getContainingLocation()
-					&& Misc.getDistance(data.target.getLocation(), data.fleet.getLocation()) < 600f)
+					&& data.target.getContainingLocation() == data.fleet.getContainingLocation())
 			{
-				fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, 0.5f);
-				miningDailyProgress += UPDATE_INTERVAL;
-				if (miningDailyProgress > 1)
+				float range = MathUtils.getDistance(data.target, data.fleet);
+				//debugLocal("Fleet " + data.fleet.getNameWithFaction() + " range to " + data.target.getName() + ": " + range);
+				if (range < 300f)
 				{
-					miningDailyProgress -= 1;
-					if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
+					fleet.getMemoryWithoutUpdate().set(MemFlags.FLEET_BUSY, true, 0.5f);
+					miningDailyProgress += UPDATE_INTERVAL;
+					if (miningDailyProgress > 1)
 					{
-						if (MiningHelper.getFleetMiningStrength(fleet) < data.miningStrength * 0.5f)
-							giveStandDownOrders();
+						miningDailyProgress -= 1;
+						if (ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST)
+						{
+							if (MiningHelper.getFleetMiningStrength(fleet) < data.miningStrength * 0.5f)
+								giveStandDownOrders();
+							else
+								MiningHelper.getMiningResults(fleet, data.target, 1f, false);
+						}
 						else
-							MiningHelper.getMiningResults(fleet, data.target, 1f, false);
+						{
+							if (MiningHelperLegacy.getFleetMiningStrength(fleet) < data.miningStrength * 0.5f)
+								giveStandDownOrders();
+							else
+								MiningHelperLegacy.getMiningResults(fleet, data.target, 1f, false);
+						}
+						//log.info("Fleet " + fleet.getName() + " has cargo " + cargo.getSpaceUsed() + " of " + cargo.getMaxCapacity());
 					}
-					else
-					{
-						if (MiningHelperLegacy.getFleetMiningStrength(fleet) < data.miningStrength * 0.5f)
-							giveStandDownOrders();
-						else
-							MiningHelperLegacy.getMiningResults(fleet, data.target, 1f, false);
-					}
-					//log.info("Fleet " + fleet.getName() + " has cargo " + cargo.getSpaceUsed() + " of " + cargo.getMaxCapacity());
 				}
+				else	// drifted too far, return to target 
+				{
+					
+					debugLocal("Moving " + fleet.getNameWithFaction() + " back to target " + data.target.getName());
+					fleet.clearAssignments();
+				}
+				return;
 			}
 		}
+		
+		// no orders, head to mining target
+		SectorEntityToken target = data.target;
+		LocationAPI loc = target.getContainingLocation();
+		String locName = "the " + loc.getName();
+
+		if (loc != fleet.getContainingLocation()) {
+			LocationAPI hyper = Global.getSector().getHyperspace();
+			Vector2f dest = Misc.getPointAtRadius(loc.getLocation(), 1500.0F);
+			SectorEntityToken token = hyper.createToken(dest.x, dest.y);
+			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
+			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", target.getName()));
+		}
+		else {
+			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", target.getName()));
+		}
+		if (target instanceof AsteroidAPI)
+			fleet.addAssignment(FleetAssignment.INTERCEPT, target, 30, StringHelper.getFleetAssignmentString("mining", target.getName()));
 		else
-		{
-			SectorEntityToken target = data.target;
-			LocationAPI loc = target.getContainingLocation();
-			String locName = "the " + loc.getName();
-			
-			if (loc != this.fleet.getContainingLocation()) {
-				LocationAPI hyper = Global.getSector().getHyperspace();
-				Vector2f dest = Misc.getPointAtRadius(loc.getLocation(), 1500.0F);
-				SectorEntityToken token = hyper.createToken(dest.x, dest.y);
-				this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
-				this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", target.getName()));
-			}
-			else {
-				this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, target, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", target.getName()));
-			}
-			if (target instanceof AsteroidAPI)
-				this.fleet.addAssignment(FleetAssignment.INTERCEPT, target, 30, StringHelper.getFleetAssignmentString("mining", target.getName()));
-			else
-				this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, target, 30, StringHelper.getFleetAssignmentString("mining", target.getName()));
-	
-		}
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, target, 30, StringHelper.getFleetAssignmentString("mining", target.getName()));
 	}
 	
 	@Override
 	public boolean isDone()
 	{
-		return !this.fleet.isAlive();
+		return !fleet.isAlive();
 	}
 	
 	@Override
@@ -197,20 +209,27 @@ public class MiningFleetAI implements EveryFrameScript
 	{
 		if (data.noWait) return;
 		float daysToOrbit = ExerelinUtilsFleet.getDaysToOrbit(fleet);
-		this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionMining"));
+		fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, this.data.source, daysToOrbit, StringHelper.getFleetAssignmentString("preparingFor", data.source.getName(), "missionMining"));
+	}
+	
+	protected void debugLocal(String str)
+	{
+		if (fleet.getContainingLocation() != Global.getSector().getPlayerFleet().getContainingLocation())
+			return;
+		Global.getSector().getCampaignUI().addMessage(str);
 	}
 	
 	protected void giveStandDownOrders()
 	{
-		if (!this.orderedReturn)
+		if (!orderedReturn)
 		{
-			this.orderedReturn = true;
-			this.fleet.clearAssignments();
+			orderedReturn = true;
+			fleet.clearAssignments();
 			
 			SectorEntityToken destination = data.source;
-			this.fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));			
-			this.fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), StringHelper.getFleetAssignmentString("miningUnload", null));
-			this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
+			fleet.addAssignment(FleetAssignment.DELIVER_RESOURCES, destination, 1000.0F, StringHelper.getFleetAssignmentString("returningTo", destination.getName()));			
+			fleet.addAssignment(FleetAssignment.ORBIT_PASSIVE, destination, ExerelinUtilsFleet.getDaysToOrbit(fleet), StringHelper.getFleetAssignmentString("miningUnload", null));
+			fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, destination, 1000.0F);
 		}
 	}
 }
