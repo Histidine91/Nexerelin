@@ -19,6 +19,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -807,17 +808,25 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // no, this risks screwing market-specific tariffs
         //market.getTariff().modifyFlat("generator", Global.getSector().getFaction(newOwnerId).getTariffFraction());    
         
+        // (un)apply free port if needed
         ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(newOwnerId);
-        if (!sectorManager.corvusMode && newOwnerConfig != null)
+        boolean wantFreeMarket = true;
+        if (!sectorManager.corvusMode)
         {
-            if (newOwnerConfig.freeMarket)
-            {
-                if (!market.hasCondition(Conditions.FREE_PORT)) market.addCondition(Conditions.FREE_PORT);
-            }
-            else 
-            {
-                market.removeCondition(Conditions.FREE_PORT);
-            }
+            wantFreeMarket = newOwnerConfig.freeMarket;
+        }
+        else
+        {
+            wantFreeMarket = market.getMemoryWithoutUpdate().getBoolean("$startingFreeMarket")
+                    || (newOwnerConfig.pirateFaction && newOwnerConfig.freeMarket);
+        }
+        if (wantFreeMarket)
+        {
+            if (!market.hasCondition(Conditions.FREE_PORT)) market.addCondition(Conditions.FREE_PORT);
+        }
+        else 
+        {
+            market.removeCondition(Conditions.FREE_PORT);
         }
         ExerelinUtilsMarket.setTariffs(market);
         
