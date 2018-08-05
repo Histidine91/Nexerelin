@@ -649,8 +649,35 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		int remainingModules = getAttachedModuleCount(member);
 		report("\t\t" + member.getShipName() + " has " + remainingModules + " modules left");
 		
-		// destroy parent if no modules remaining
+		// destroy parent if Vast Bulk + no modules remaining
 		if (member.getVariant().hasHullMod("vastbulk") && remainingModules <= 0)
+		{
+			report(member.getShipName() + " is dead, attempting to kill");
+			member.getStatus().disable();
+			removeStationFromModuleHullCache(member);
+		}
+	}
+	
+	protected void addDamageToHullAndAllModules(FleetMemberAPI member, float damageFraction)
+	{
+		if (member.getVariant().getModuleSlots().isEmpty())	// no modules, just wreck hull
+		{
+			member.getStatus().applyHullFractionDamage(damageFraction);
+			return;
+		}
+		
+		for (int i = 0; i < member.getVariant().getModuleSlots().size(); i++)
+		{
+			report("\t\tDamaging module " + i + " on " + member.getShipName());
+			addModuleDamage(member, damageFraction, i);
+		}
+		
+		int remainingModules = getAttachedModuleCount(member);
+		report("\t\t" + member.getShipName() + " has " + remainingModules + " modules left");
+		member.getStatus().applyHullFractionDamage(damageFraction);	// needs to be done after module damage?
+		
+		// destroy parent if Vast Bulk + no modules remaining, or all modules have 0 health
+		if (member.getVariant().hasHullMod("vastbulk") && remainingModules <= 0 || member.getStatus().getHullFraction() <= 0)
 		{
 			report(member.getShipName() + " is dead, attempting to kill");
 			member.getStatus().disable();
@@ -671,7 +698,7 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 	
 	/**
 	 * Damages the hull and all modules by a specified fraction if ship does not have Vast Bulk;
-	 * else just damages one module
+	 * else damages a randomly picked module
 	 * @param member
 	 * @param damageFraction
 	 */
@@ -680,8 +707,12 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		boolean hasVastBulk = member.getVariant().hasHullMod("vastbulk");
 		if (!hasVastBulk)
 		{
-			//addDamageToHullAndModules(member, damageFraction);
-			member.getStatus().applyHullFractionDamage(damageFraction);
+			report("  Damage fraction: " + damageFraction);
+			report("  Hull before: " + member.getStatus().getHullFraction());
+			//member.getStatus().applyHullFractionDamage(damageFraction);
+			addDamageToHullAndAllModules(member, damageFraction);
+			
+			report("  Hull after: " + member.getStatus().getHullFraction());
 		}
 		else {
 			//preventModuleRespawn(member);
