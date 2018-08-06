@@ -3,14 +3,23 @@ package exerelin.campaign.covertops;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.util.Highlights;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
+import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.utilities.NexUtilsReputation;
+import exerelin.utilities.StringHelper;
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
@@ -141,6 +150,40 @@ public abstract class CovertOpsBase {
 		if (!playerInvolved && useNPCMult) effect *= NPC_EFFECT_MULT;
 		ExerelinReputationAdjustmentResult repResult = DiplomacyManager.adjustRelations(
 				faction1, faction2, effect, ensureAtBest, ensureAtWorst, limit);
+		
+		// print relationship change
+		float delta = repResult.delta;
+		if (playerInvolved && delta != 0)
+			//&& (faction1.isPlayerFaction() || faction1 == PlayerFactionStore.getPlayerFaction()))
+		{
+			boolean withPlayer = faction1.isPlayerFaction() || faction1 == PlayerFactionStore.getPlayerFaction();
+			InteractionDialogAPI dialog = Global.getSector().getCampaignUI().getCurrentInteractionDialog();
+			if (dialog != null)
+			{
+				TextPanelAPI text = dialog.getTextPanel();
+				String changeStr = delta > 0 ? StringHelper.getString("improvedBy") 
+						: StringHelper.getString("reducedBy");
+				changeStr = StringHelper.substituteToken(changeStr, "$amount", (int) Math.ceil(repResult.delta * 100f) + "");
+				String repStr = NexUtilsReputation.getRelationStr(faction1, faction2);
+				
+				String str = StringHelper.getString("exerelin_diplomacy", withPlayer ? "repChangeMsg" : "repChangeMsgOther");
+				str = StringHelper.substituteFactionTokens(str, faction2);
+				str = StringHelper.substituteToken(str, "$changedBy", changeStr);
+				if (!withPlayer) str = StringHelper.substituteToken(str, "$otherFaction", 
+						ExerelinUtilsFaction.getFactionShortName(faction1), true);
+				str = StringHelper.substituteToken(str, "$currentRep", repStr);
+				
+				text.setFontSmallInsignia();
+				text.addParagraph(str);
+				Highlights h = new Highlights();
+				h.setColors(delta > 0 ? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor(), 
+						faction1.getRelColor(faction2.getId()));
+				h.setText(changeStr, repStr);
+				text.setHighlightsInLastPara(h);
+				text.setFontInsignia();
+			}
+		}
+		
 		return repResult;
 	}
 	

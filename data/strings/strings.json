@@ -42,6 +42,9 @@
 		"her":"her",
 		"their":"their",
 		
+		"improvedBy":"improved by $amount",
+		"reducedBy":"reduced by $amount",
+		
 		"ship":"ship",
 		"fleet":"fleet",
 		"fighterWing":"fighter wing"
@@ -113,7 +116,10 @@
 	},
 	"exerelin_diplomacy":{
 		"player_peace_msg":"You are no longer hostile to $factionOrAlliance",
-		"player_war_msg":"You are now hostile to $factionOrAlliance"
+		"player_war_msg":"You are now hostile to $factionOrAlliance",
+		
+		"repChangeMsg":"Relationship with $theFaction $changedBy, currently at $currentRep",
+		"repChangeMsgOther":"$OtherFaction: relationship with $theFaction $changedBy, currently at $currentRep"
 	},
 	"exerelin_events":{
 		"agentDestabilizeMarket":"Agent terror attacks on $market",

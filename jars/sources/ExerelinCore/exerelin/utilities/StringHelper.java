@@ -36,10 +36,26 @@ public class StringHelper {
 		return getString("general", id);
 	}
 	
+	public static String ucFirstIgnore$(String str)
+	{
+		if (str == null) return "Null";
+		if (str.isEmpty()) return "";
+		if (str.charAt(0) != '$') return Misc.ucFirst(str);
+		return ("" + str.charAt(0)) + ("" + str.charAt(1)).toUpperCase() + str.substring(2);
+	}
+	
+	/**
+	 *
+	 * @param toModify
+	 * @param token
+	 * @param replace
+	 * @param ucFormToo In addition to replacing $token with $replace, also replace $Token with $Replace
+	 * @return
+	 */
 	public static String substituteToken(String toModify, String token, String replace, boolean ucFormToo)
 	{
 		String str = toModify.replaceAll("\\"+token, replace);
-		if (ucFormToo) str = toModify.replaceAll("\\"+Misc.ucFirst(token), Misc.ucFirst(replace));
+		if (ucFormToo) str = toModify.replaceAll("\\"+ucFirstIgnore$(token), Misc.ucFirst(replace));
 		return str;
 	}
 	
