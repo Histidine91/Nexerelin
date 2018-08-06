@@ -165,7 +165,7 @@ public class MiningFleetAI implements EveryFrameScript
 				else	// drifted too far, return to target 
 				{
 					
-					debugLocal("Moving " + fleet.getNameWithFaction() + " back to target " + data.target.getName());
+					//debugLocal("Moving " + fleet.getNameWithFaction() + " back to target " + data.target.getName());
 					fleet.clearAssignments();
 				}
 				return;

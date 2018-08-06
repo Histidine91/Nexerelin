@@ -871,9 +871,10 @@ public class RebellionEvent extends BaseEventPlugin {
 		//Global.getSector().getCampaignUI().addMessage(message);
 	}
 	
+	//runcode exerelin.campaign.events.RebellionEvent.startDebugEvent()
 	public static void startDebugEvent()
 	{
-		SectorEntityToken target = Global.getSector().getEntityById("tartessus");
+		SectorEntityToken target = Global.getSector().getEntityById("jangala");
 		if (target != null)
 		{
 			InstigateRebellion rebel = new InstigateRebellion(target.getMarket(), 

@@ -154,12 +154,6 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		return 0;
 	}
 	
-	// runcode exerelin.campaign.events.RebellionEventCreator.testRebellion()
-	public static void testRebellion()
-	{
-		createRebellion(Global.getSector().getEntityById("jangala").getMarket(), true);
-	}
-	
 	protected void incrementRebellionPoints(MarketAPI market, float points)
 	{
 		String marketId = market.getId();
