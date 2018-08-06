@@ -43,7 +43,7 @@ public class InstigateRebellion extends CovertOpsBase {
 		
 		ExerelinReputationAdjustmentResult repResult = adjustRepIfDetected();
 		Map<String, Object> eventParams = makeEventParams(repResult);
-		eventParams.put("timeFrame", Misc.getAtLeastStringForDays((int)event.getDelay()));
+		eventParams.put("timeFrame", event.getDelay());
 		reportEvent(eventParams);
 	}
 

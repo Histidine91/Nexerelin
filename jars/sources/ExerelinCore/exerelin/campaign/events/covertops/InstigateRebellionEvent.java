@@ -23,7 +23,7 @@ public class InstigateRebellionEvent extends CovertOpsEventBase {
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
-		map.put("$timeFrame", timeframe + "");
+		map.put("$timeFrame", Misc.getAtLeastStringForDays((int)timeframe));
 		
 		return map;
 	}
