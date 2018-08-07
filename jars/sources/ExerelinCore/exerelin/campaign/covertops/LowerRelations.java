@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import java.util.Map;
 
@@ -67,6 +68,19 @@ public class LowerRelations extends CovertOpsBase {
 			params.put("repResult2", repResult2);
 		}
 		Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), getEventId(), params);
+		
+		if (result.isDetected())
+		{
+			DiplomacyManager.getManager().getDiplomacyBrain(targetFaction.getId()).reportDiplomacyEvent(
+					agentFaction.getId(), repResult.delta);
+			DiplomacyManager.getManager().getDiplomacyBrain(thirdFaction.getId()).reportDiplomacyEvent(
+					agentFaction.getId(), repResult2.delta);
+		}
+		else
+		{
+			DiplomacyManager.getManager().getDiplomacyBrain(targetFaction.getId()).reportDiplomacyEvent(
+					thirdFaction.getId(), repResult.delta);
+		}
 	}
 	
 	@Override

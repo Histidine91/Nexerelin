@@ -234,6 +234,8 @@ public class ExerelinFactionConfig
             if (!diplomacyNegativeChance.containsKey("default"))
                 diplomacyNegativeChance.put("default", 1f);
             
+            loadDispositions(settings);
+            
             // morality
             if (settings.has("morality"))
             {
@@ -301,6 +303,46 @@ public class ExerelinFactionConfig
             Global.getLogger(this.getClass()).error("Failed to load diplomacy map " + configKey, ex);
         }
     }
+    
+    float guessDispositionTowardsFaction(String factionId)
+    {
+        float posChance = getDiplomacyPositiveChance(factionId);
+        float negChance = getDiplomacyNegativeChance(factionId);
+        
+        return (posChance - negChance) * 25;
+    }
+    
+    void loadDispositions(JSONObject factionSettings)
+    {
+        Map<String, Float> dispositions = new HashMap<>();
+        if (factionSettings.has("dispositions"))
+        {
+            fillRelationshipMap(factionSettings, dispositions, "dispositions");
+        }
+        // no dispositions table, estimate based on diplomacy positive/negative chances
+        else
+        {
+            List<String> factions = new ArrayList<>();
+            Iterator<String> positive = diplomacyPositiveChance.keySet().iterator();
+            while (positive.hasNext())
+            {
+                factions.add(positive.next());
+            }
+            Iterator<String> negative = diplomacyNegativeChance.keySet().iterator();
+            while (negative.hasNext())
+            {
+                factions.add(negative.next());
+            }
+            for (String factionId : factions)
+            {
+                float disp = guessDispositionTowardsFaction(factionId);
+                Global.getLogger(this.getClass()).info("Disposition of " + this.factionId + " towards " + factionId + " is " + disp);
+                dispositions.put(factionId, disp);
+            }
+            dispositions.remove("default");
+        }
+        this.dispositions = dispositions;
+    }
 
     float getMaxRelationship(String factionId)
     {
@@ -366,6 +408,13 @@ public class ExerelinFactionConfig
             return chance1mod + 1;
         else
             return chance2mod + 1;
+    }
+    
+    public float getDisposition(String factionId)
+    {
+        if (dispositions.containsKey(factionId))
+            return dispositions.get(factionId);
+        return 0;
     }
     
     public static boolean canCeasefire(String factionId1, String factionId2)
