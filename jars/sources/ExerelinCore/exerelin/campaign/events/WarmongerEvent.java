@@ -77,6 +77,8 @@ public class WarmongerEvent extends BaseEventPlugin {
 		MessagePriority priority = MessagePriority.DELIVER_IMMEDIATELY;
 		String stage = "report";
 		if (myFactionLoss <= 0) stage = "report_noOwnFaction";
+		if (target.getContainingLocation() == null)
+			target = Global.getSector().getPlayerFleet();
 		Global.getSector().reportEventStage(this, stage, target, priority, new BaseOnMessageDeliveryScript() {
 			public void beforeDelivery(CommMessageAPI message) {
 				for (Map.Entry<String, Float> tmp : repLoss.entrySet())
