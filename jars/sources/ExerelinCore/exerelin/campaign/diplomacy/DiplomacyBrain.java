@@ -74,14 +74,13 @@ Bla
 	Pick based on disposition?
 */
 
-// TODO: revanchism for war tendency
-
 public class DiplomacyBrain {
 	
-	public static final float RELATIONS_MULT = 50f;
-	public static final float ALIGNMENT_MULT = 5f;
+	public static final float RELATIONS_MULT = 30f;
+	public static final float ALIGNMENT_MULT = 2f;
 	public static final float ALIGNMENT_DIPLOMATIC_MULT = 1.5f;
-	public static final float MORALITY_EFFECT = 25f;
+	public static final float COMMON_ENEMY_MULT = 12.5f;
+	public static final float MORALITY_EFFECT = 10f;
 	public static final float EVENT_MULT = 80f;
 	public static final float EVENT_DECREMENT_PER_DAY = 0.2f;
 	public static final float REVANCHISM_SIZE_MULT = 2;
@@ -209,6 +208,19 @@ public class DiplomacyBrain {
 		return effect;
 	}
 	
+	public float getDispositionFromEnemies(String factionId)
+	{
+		FactionAPI other = Global.getSector().getFaction(factionId);
+		float numCommon = 0;
+		for (String enemy : enemies)
+		{
+			if (other.isHostileTo(enemy))
+				numCommon++;
+		}
+		
+		return numCommon * COMMON_ENEMY_MULT;
+	}
+	
 	public float updateDispositionFromEvents(MutableStat disposition, String factionId, float days)
 	{
 		float dispFromEvents = 0;
@@ -225,10 +237,16 @@ public class DiplomacyBrain {
 			dispFromEvents += EVENT_DECREMENT_PER_DAY * days;
 			if (dispFromEvents > 0) dispFromEvents = 0;
 		}
-		disposition.modifyFlat("events", dispFromEvents, "Recent events");
+		if (dispFromEvents == 0) disposition.unmodify("events");
+		else disposition.modifyFlat("events", dispFromEvents, "Recent events");
 		return dispFromEvents;
 	}	
 	
+	/**
+	 * Update our dispositions towards the specified faction.
+	 * @param factionId
+	 * @param days Time since last update (for decaying event effects)
+	 */
 	public void updateDisposition(String factionId, float days)
 	{
 		MutableStat disposition = getDisposition(factionId).disposition;
@@ -249,6 +267,9 @@ public class DiplomacyBrain {
 		
 		float dispFromMoral = getDispositionFromMorality(factionId);
 		disposition.modifyFlat("morality", dispFromMoral, "Morality");
+		
+		float dispFromEnemies = getDispositionFromEnemies(factionId);
+		disposition.modifyFlat("commonEnemies", dispFromEnemies, "Common enemies");
 		
 		updateDispositionFromEvents(disposition, factionId, days);	
 		
@@ -352,16 +373,16 @@ public class DiplomacyBrain {
 		return true;
 	}
 	
-	protected boolean checkPeace()
+	public boolean checkPeace()
 	{
-		float ourWeariness = DiplomacyManager.getWarWeariness(factionId);
-		if (ourWeariness < ExerelinConfig.minWarWearinessForPeace)
-			return false;
-		
+		if (enemies.isEmpty()) return false;
 		if (ExerelinUtilsFaction.isPirateFaction(factionId) && !ExerelinConfig.allowPirateInvasions)
 			return false;
 		
-		if (enemies.isEmpty()) return false;
+		float ourWeariness = DiplomacyManager.getWarWeariness(factionId);
+		log.info("Checking peace for faction " + faction.getDisplayName() + ": weariness " + ourWeariness);
+		if (ourWeariness < ExerelinConfig.minWarWearinessForPeace)
+			return false;
 		
 		List<String> enemiesLocal = new ArrayList<>(this.enemies);		
 		Collections.sort(enemiesLocal, new Comparator<String>() {
@@ -393,7 +414,7 @@ public class DiplomacyBrain {
 		return false;
 	}
 	
-	protected boolean checkWar()
+	public boolean checkWar()
 	{
 		long lastWar = DiplomacyManager.getManager().getLastWarTimestamp();
 		if (Global.getSector().getClock().getElapsedDaysSince(lastWar) < DiplomacyManager.MIN_INTERVAL_BETWEEN_WARS)
@@ -420,7 +441,7 @@ public class DiplomacyBrain {
 			if (!SectorManager.isFactionAlive(otherFactionId)) continue;
 			if (DiplomacyManager.disallowedFactions.contains(otherFactionId)) continue;
 			if (ceasefires.containsKey(otherFactionId)) continue;
-			if (faction.isAtWorst(otherFactionId, RepLevel.NEUTRAL))	continue;	// relations aren't bad enough yet
+			if (faction.isAtWorst(otherFactionId, RepLevel.NEUTRAL)) continue;	// relations aren't bad enough yet
 			if (faction.isHostileTo(otherFactionId)) continue;	// already at war
 			if (disposition.disposition.getModifiedValue() > MIN_DISPOSITION_FOR_WAR) continue;
 			
@@ -571,6 +592,15 @@ public class DiplomacyBrain {
 		enemies = latestEnemies;
 	}
 	
+	public void update(float days)
+	{
+		cacheRevanchism();
+		ourStrength = getFactionStrength(factionId);
+		enemyStrength = getFactionEnemyStrength(factionId);
+		updateAllDispositions(days);
+		considerOptions();
+	}
+	
 	//==========================================================================
 	//==========================================================================
 	
@@ -585,11 +615,7 @@ public class DiplomacyBrain {
 		interval.advance(days);
 		if (interval.intervalElapsed())
 		{
-			cacheRevanchism();
-			ourStrength = getFactionStrength(factionId);
-			enemyStrength = getFactionEnemyStrength(factionId);
-			updateAllDispositions(interval.getElapsed());
-			considerOptions();
+			update(interval.getElapsed());
 		}
 	}
 	
