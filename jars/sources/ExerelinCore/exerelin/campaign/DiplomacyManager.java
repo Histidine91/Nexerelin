@@ -221,16 +221,19 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         return baseInterval * (float)Math.pow(0.95, numFactions);
     }
     
-    protected static void printPlayerHostileStateMessage(FactionAPI faction, boolean isHostile)
+    protected static void printPlayerHostileStateMessage(FactionAPI faction, boolean isHostile, boolean forAlliance)
     {
         String msg;
         Color highlightColor = Misc.getPositiveHighlightColor();
         
         String factionOrAllianceName = faction.getDisplayName();
-        Alliance alliance = AllianceManager.getFactionAlliance(faction.getId());
-        if (alliance != null)
+        if (forAlliance)
         {
-            factionOrAllianceName = alliance.getAllianceNameAndMembers();
+            Alliance alliance = AllianceManager.getFactionAlliance(faction.getId());
+            if (alliance != null)
+            {
+                factionOrAllianceName = alliance.getAllianceNameAndMembers();
+            }
         }
         if (isHostile)
         {
@@ -387,9 +390,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         boolean playerIsHostile1 = faction1.isHostileTo(Factions.PLAYER);
         boolean playerIsHostile2 = faction2.isHostileTo(Factions.PLAYER);
         if (playerIsHostile1 != playerWasHostile1)
-            printPlayerHostileStateMessage(faction1, playerIsHostile1);
+            printPlayerHostileStateMessage(faction1, playerIsHostile1, false);
         if (playerIsHostile2 != playerWasHostile2)
-            printPlayerHostileStateMessage(faction2, playerIsHostile2);
+            printPlayerHostileStateMessage(faction2, playerIsHostile2, false);
         
         // TODO: display specific reputation change in message field if it affects player
         if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
@@ -496,14 +499,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     float mult = ExerelinFactionConfig.getDiplomacyNegativeChance(factionId1, factionId2);
                     //if (mult != 1) log.info("Applying negative event mult: " + mult);
                     chance *= mult;
-					chance *= params.negativeChanceMult;
+                    chance *= params.negativeChanceMult;
                 }
                 else
                 {
                     float mult = ExerelinFactionConfig.getDiplomacyPositiveChance(factionId1, factionId2);
                     //if (mult != 1) log.info("Applying positive event mult: " + mult);
                     chance *= mult;
-					chance *= params.positiveChanceMult;
+                    chance *= params.positiveChanceMult;
                 }
 
                 if (dominance > DOMINANCE_MIN)
@@ -1183,7 +1186,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         public boolean onlyNegative = false;
         public boolean useDominance = true;
         public boolean random = true;
-		public float positiveChanceMult = 1;
-		public float negativeChanceMult = 1;
+        public float positiveChanceMult = 1;
+        public float negativeChanceMult = 1;
     }
 }

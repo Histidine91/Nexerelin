@@ -335,9 +335,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         alliance.addMember(factionId);
         alliancesByFactionId.put(factionId, alliance);
         
-        boolean playerWasHostile = faction.isHostileTo(Factions.PLAYER);
-        if (playerIsHostile != playerWasHostile)
-            DiplomacyManager.printPlayerHostileStateMessage(faction, playerIsHostile);
+        // don't do this anymore, since relationship doesn't change on joining alliance
+        //boolean playerWasHostile = faction.isHostileTo(Factions.PLAYER);
+        //if (playerIsHostile != playerWasHostile)
+        //    DiplomacyManager.printPlayerHostileStateMessage(faction, playerIsHostile, false);
         
         alliance.reportEvent(factionId, null, alliance, "join");
         SectorManager.checkForVictory();
