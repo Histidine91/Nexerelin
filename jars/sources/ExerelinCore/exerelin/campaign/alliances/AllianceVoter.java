@@ -198,15 +198,18 @@ public class AllianceVoter {
 			}
 		}
 		
-		for (String voter : noVotes)
+		boolean success = yesVotes.size() > noVotes.size();
+		if (success)	// note: only check for defiance if vote passes
 		{
-			if (decideToDefyVote(isWar, alliance, voter, factionId, otherFactionId))
+			for (String voter : noVotes)
 			{
-				defied.add(voter);
+				if (decideToDefyVote(isWar, alliance, voter, factionId, otherFactionId))
+				{
+					defied.add(voter);
+				}
 			}
 		}
 		
-		boolean success = yesVotes.size() > noVotes.size();
 		if (DEBUG_LOGGING)
 		{
 			log.info("Final vote: " + success + " (" + yesVotes.size() + " to " + noVotes.size() + ")");
