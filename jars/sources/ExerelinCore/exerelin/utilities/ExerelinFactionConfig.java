@@ -81,6 +81,8 @@ public class ExerelinFactionConfig
     public Map<String, Float> dispositions = new HashMap<>();
     public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
     public Morality morality = Morality.NEUTRAL;
+	public boolean noSyncRelations = false;
+	public boolean noRandomizeRelations = false;
     
     public float marketSpawnWeight = 1;	// what proportion of procgen markets this faction gets
     public boolean freeMarket = false;
@@ -235,6 +237,9 @@ public class ExerelinFactionConfig
                 diplomacyNegativeChance.put("default", 1f);
             
             loadDispositions(settings);
+			
+			noRandomizeRelations = settings.optBoolean("noRandomizeRelations", noRandomizeRelations);
+			noSyncRelations = settings.optBoolean("noSyncRelations", noSyncRelations);
             
             // morality
             if (settings.has("morality"))
@@ -299,6 +304,18 @@ public class ExerelinFactionConfig
                 float value = (float)json.getDouble(key);
                 map.put(key, value);
             }
+			if (map.containsKey("default"))
+			{
+				float def = map.get("default");
+				for (FactionAPI faction : Global.getSector().getAllFactions())
+				{
+					String thisId = faction.getId();
+					if (!map.containsKey(thisId))
+						map.put(thisId, def);
+				}
+				map.remove("default");
+			}
+			
         } catch (Exception ex) {
             Global.getLogger(this.getClass()).error("Failed to load diplomacy map " + configKey, ex);
         }

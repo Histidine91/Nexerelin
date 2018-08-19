@@ -1,6 +1,7 @@
 {
     "playableFaction":false,
     "corvusCompatible":true,
+    "startRelationships":{ "player": 0.6},
     "noRandomizeRelations":true,
-    "noSyncRelations":true,
+	"noSyncRelations":true,
 }

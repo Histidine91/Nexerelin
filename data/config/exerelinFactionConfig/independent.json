@@ -14,8 +14,7 @@
 
     "positiveDiplomacyExtra":0,
     "negativeDiplomacyExtra":0,
-    "factionsLiked":[],
-    "factionsDisliked":[],
+    "noRandomizeRelations":true,
     
     "alignments":{
         "diplomatic":0.5,

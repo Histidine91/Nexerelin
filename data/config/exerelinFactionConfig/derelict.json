@@ -2,4 +2,5 @@
     "playableFaction":false,
     "corvusCompatible":true,
     "dropPrisoners":false,
+	"noRandomizeRelations":true,
 }

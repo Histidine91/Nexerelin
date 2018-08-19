@@ -122,10 +122,11 @@ public class NexUtilsReputation
 	public static void syncFactionRelationshipToPlayer(String factionIdToSync, String otherFactionId)
 	{
 		if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
-		if (otherFactionId.equals("merc_hostile")) return;
-		if (otherFactionId.equals("famous_bounty")) return;
-		if (otherFactionId.equals("shippackfaction")) return;
 		if (factionIdToSync.equals(otherFactionId)) return;
+		if (ExerelinConfig.getExerelinFactionConfig(factionIdToSync).noSyncRelations)
+			return;
+		if (ExerelinConfig.getExerelinFactionConfig(otherFactionId).noSyncRelations)
+			return;
 		
 		SectorAPI sector = Global.getSector();	
 		FactionAPI playerFaction = sector.getFaction("player");
@@ -141,6 +142,9 @@ public class NexUtilsReputation
 	// easier than trying to override stuff with all the private classes and such
 	public static void syncFactionRelationshipsToPlayer(String factionId)
 	{
+		if (ExerelinConfig.getExerelinFactionConfig(factionId).noSyncRelations)
+			return;
+		
 		SectorAPI sector = Global.getSector();	
 		FactionAPI playerFaction = sector.getFaction(Factions.PLAYER);
 		FactionAPI faction = sector.getFaction(factionId);
@@ -172,6 +176,11 @@ public class NexUtilsReputation
 		if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
 		if (factionId.equals(otherFactionId)) return;
 		
+		if (ExerelinConfig.getExerelinFactionConfig(factionId).noSyncRelations)
+			return;
+		if (ExerelinConfig.getExerelinFactionConfig(otherFactionId).noSyncRelations)
+			return;
+		
 		float relationship = faction.getRelationship(otherFactionId);
 		Global.getSector().getPlayerFaction().setRelationship(otherFactionId, relationship);
 	}
@@ -181,6 +190,8 @@ public class NexUtilsReputation
 		SectorAPI sector = Global.getSector();	
 		FactionAPI playerFaction = sector.getPlayerFaction();
 		FactionAPI faction = sector.getFaction(factionId);
+		if (ExerelinConfig.getExerelinFactionConfig(factionId).noSyncRelations)
+			return;
 		
 		for (FactionAPI otherFaction: sector.getAllFactions())
 		{
@@ -189,9 +200,6 @@ public class NexUtilsReputation
 				syncPlayerRelationshipToFaction(factionId, otherFaction.getId());
 			}
 		}
-		playerFaction.setRelationship("merc_hostile", -1);
-		playerFaction.setRelationship("famous_bounty", -1);
-		playerFaction.setRelationship("shippackfaction", RepLevel.FRIENDLY);
 		
 		syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 		//SectorManager.checkForVictory(); // already done in syncFactionRelationshipsToPlayer

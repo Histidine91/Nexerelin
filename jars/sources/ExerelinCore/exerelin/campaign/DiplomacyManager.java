@@ -71,9 +71,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD = 3f;
     public static final float HARD_MODE_DOMINANCE_MOD = 0.5f;
     
-    public static final List<String> DO_NOT_RANDOMIZE = Arrays.asList(new String[]{
-        Factions.INDEPENDENT, Factions.DERELICT, Factions.REMNANTS, "famous_bounty", "merc_hostile", "shippackfaction"
-    });
+    public static final List<String> DO_NOT_RANDOMIZE = Arrays.asList(new String[]{});	// moved to faction configs
     
     protected Map<String, Float> warWeariness;
     protected static float warWearinessPerInterval = 50f;
@@ -964,7 +962,14 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         for (FactionAPI faction : sector.getAllFactions())
         {
             if (faction.isNeutralFaction()) continue;
-            factionIds.add(faction.getId());
+            String factionId = faction.getId();
+            factionIds.add(factionId);
+            
+            if (ExerelinConfig.getExerelinFactionConfig(factionId).noRandomizeRelations)
+            {
+                log.info("Faction " + factionId + " marked as non-randomizable");
+                alreadyRandomizedIds.add(factionId);
+            }
         }
 
         boolean randomize = false;
@@ -1022,8 +1027,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             }
 
             // randomize if needed
-            for (String factionId : factionIds) {
+            for (String factionId : factionIds) 
+            {
                 FactionAPI faction = sector.getFaction(factionId);
+                ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
+                
                 if (randomize)
                 {
                     if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
@@ -1063,9 +1071,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
 
                 else    // start hostile with hated factions, friendly with liked ones (from config)
                 {
-                    ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
-                    if (factionConfig == null) continue;
-                    
                     handleHostileToAllFaction(factionId, factionIds);
                     
                     for (Map.Entry<String, Float> entry : factionConfig.startRelationships.entrySet())
@@ -1075,30 +1080,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 }
             }
         }
-        
-        FactionAPI bountyHunters = sector.getFaction("merc_hostile");
-        if (bountyHunters != null)
-        {
-            bountyHunters.setRelationship(Factions.INDEPENDENT, 1f);
-            bountyHunters.setRelationship(Factions.PLAYER, -1f);
-            bountyHunters.setRelationship(ExerelinConstants.PLAYER_NPC_ID, -1f);
-        }
-        
-        FactionAPI famousBounty = sector.getFaction("famous_bounty");
-        if (famousBounty != null)
-        {
-            for (String factionId : factionIds)
-            {
-                FactionAPI faction = sector.getFaction(factionId);
-                if (!faction.isNeutralFaction() && !factionId.equals("famous_bounty"))
-                {
-                    famousBounty.setRelationship(factionId, 0f);
-                }
-            }
-            famousBounty.setRelationship(Factions.PLAYER, -1f);
-            //famousBounty.setRelationship(ExerelinConstants.PLAYER_NPC_ID, -1f);
-        }
-        player.setRelationship("shippackfaction", RepLevel.FRIENDLY);
         
         player.setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1f);
         // if we leave our faction later, we'll be neutral to most but hostile to pirates and such
@@ -1113,13 +1094,6 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             NexUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId);
             player.setRelationship(selectedFactionId, STARTING_RELATIONSHIP_FRIENDLY);
             //ExerelinUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);    // already done in syncPlayerRelationshipsToFaction
-        }
-        
-        // Exigency hax: make sure mysterious contact doesn't appear in war/peace messages on alliance formation
-        for (String factionId : factionIds)
-        {
-            FactionAPI faction = sector.getFaction(factionId);
-            faction.setRelationship("mysterious_contact", 0);
         }
     }
     
