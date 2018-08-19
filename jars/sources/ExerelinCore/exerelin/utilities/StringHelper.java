@@ -55,7 +55,7 @@ public class StringHelper {
 	public static String substituteToken(String toModify, String token, String replace, boolean ucFormToo)
 	{
 		String str = toModify.replaceAll("\\"+token, replace);
-		if (ucFormToo) str = toModify.replaceAll("\\"+ucFirstIgnore$(token), Misc.ucFirst(replace));
+		if (ucFormToo) str = str.replaceAll("\\"+ucFirstIgnore$(token), Misc.ucFirst(replace));
 		return str;
 	}
 	
