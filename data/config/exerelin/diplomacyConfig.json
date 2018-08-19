@@ -342,8 +342,8 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
-			"allowedFactions1":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc","dassault_mikoyan","ORA",
-				"interstellarimperium","mayorate","ori","rori","hiigaran_descendants","exigency","SCY","valkyrian","pn_colony","spire","metelson","ptech","oculus"],
+			"allowedFactions1":["blackrock", "citadeldefenders", "dassault_mikoyan", "diableavionics", "exigency", "fob", "hiigaran_descendants", "interstellarimperium", "mayorate", "metelson", 
+								"neutrinocorp", "oculus", "ORA", "ori", "rori", "pbc", "pn_colony", "ptech", "SCY", "shadow_industry", "spire", "sylphon", "tritachyon", "valkyrian"],
 			"chance":1.2
 		},
 		{
