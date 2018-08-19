@@ -95,8 +95,8 @@ public class ExerelinConfig
     
     // Revengeance fleets
     public static int enableRevengeFleets = 1;
-    public static float revengePointsPerEnemyFP = 0.1f;
-    public static float revengePointsForMarketCaptureMult = 4f;
+    public static float revengePointsPerEnemyFP = 0.05f;
+    public static float revengePointsForMarketCaptureMult = 2f;
     
     // Misc
     public static int directoryDialogKey = 32;  // D
