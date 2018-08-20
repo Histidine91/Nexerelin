@@ -4,6 +4,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import java.util.Map;
 
@@ -26,6 +27,9 @@ public class RaiseRelations extends CovertOpsBase {
 				agentFaction, targetFaction, effectMin, effectMax, null, null, null, true);
 
 		reportEvent(repResult);
+		
+		DiplomacyManager.getManager().getDiplomacyBrain(targetFaction.getId()).reportDiplomacyEvent(
+					agentFaction.getId(), repResult.delta);
 	}
 
 	@Override
