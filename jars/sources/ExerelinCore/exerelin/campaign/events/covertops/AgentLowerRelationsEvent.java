@@ -39,20 +39,28 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 		}
 	}
 	
+	/*
+		To avoid future confusion:
+		If successful, repResult is change between target faction and third faction
+		If failed and caught, repResult is change between self and target faction,
+		repResult2 is change between self and third faction
+	*/
 	@Override
 	public Map<String, String> getTokenReplacements() {
 		Map<String, String> map = super.getTokenReplacements();
 		addFactionNameTokens(map, "third", thirdFaction);
 		
-		// need to distinguish between agentFaction-thirdFaction and faction-thirdFaction relations
-		map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repResult.delta*100f)));
-		if (repResult2 != null)
-			map.put("$repEffectAbs2", "" + (int)Math.ceil(Math.abs(repResult2.delta*100f)));
-		map.put("$newRelationStr", NexUtilsReputation.getRelationStr(agentFaction, faction));
 		if (result.isSucessful())
-			map.put("$newRelationStr2", NexUtilsReputation.getRelationStr(faction, thirdFaction));
-		else
 		{
+			map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repResult.delta*100f)));
+			map.put("$newRelationStr", NexUtilsReputation.getRelationStr(faction, thirdFaction));
+		}
+		else if (result.isDetected())
+		{
+			map.put("$repEffectAbs", "" + (int)Math.ceil(Math.abs(repResult.delta*100f)));
+			map.put("$newRelationStr", NexUtilsReputation.getRelationStr(agentFaction, faction));
+			if (repResult2 != null)
+				map.put("$repEffectAbs2", "" + (int)Math.ceil(Math.abs(repResult2.delta*100f)));
 			map.put("$newRelationStr2", NexUtilsReputation.getRelationStr(agentFaction, thirdFaction));
 		}
 		return map;
@@ -61,13 +69,13 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 	@Override
 	public String[] getHighlights(String stageId) {
 		List<String> highlights = new ArrayList<>();
+		addTokensToList(highlights, "$repEffectAbs");
+		addTokensToList(highlights, "$newRelationStr");
 		if (!result.isSucessful() && result.isDetected())
 		{
-			addTokensToList(highlights, "$repEffectAbs");
-			addTokensToList(highlights, "$newRelationStr");
+			addTokensToList(highlights, "$repEffectAbs2");
+			addTokensToList(highlights, "$newRelationStr2");
 		}
-		addTokensToList(highlights, "$repEffectAbs2");
-		addTokensToList(highlights, "$newRelationStr2");
 		return highlights.toArray(new String[0]);
 	}
 	
@@ -81,8 +89,8 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 		Color colorNew2 = Color.WHITE;
 		if (result.isSucessful())
 		{
-			colorNew2 = faction.getRelColor(thirdFaction.getId());
-			return new Color[] {colorRepEffect2, colorNew2};
+			colorNew = faction.getRelColor(thirdFaction.getId());
+			return new Color[] {colorRepEffect, colorNew};
 		}
 		else if (result.isDetected())
 		{

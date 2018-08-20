@@ -52,6 +52,12 @@ public class LowerRelations extends CovertOpsBase {
 		reportEvent(repResult, repResult2);
 	}
 	
+	/*
+		To avoid future confusion:
+		If successful, repResult is change between target faction and third faction
+		If failed and caught, repResult is change between self and target faction,
+		repResult2 is change between self and third faction
+	*/
 	protected void reportEvent(ExerelinReputationAdjustmentResult repResult, 
 			ExerelinReputationAdjustmentResult repResult2)
 	{
