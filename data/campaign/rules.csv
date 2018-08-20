@@ -845,7 +845,7 @@ FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connec
 
 ""Yeah, what is it?""",,
 ExerelinConvOfficialGreetingFollowers,PickGreeting,"Nex_IsBaseOfficial command
-$faction.id == ""player_npc""
+Nex_IsFactionRuler
 !$mpm_isPlayerContact","ShowPersonVisual
 FireAll PopulateOptions
 FireAll ExerelinBaseCommanderOptionsInitialize","""Hello, chief. What can we do for you?""",,
@@ -953,7 +953,7 @@ FireAll ExerelinBaseCommanderOptionsInitialize","""Your commission is officially
 ExerelinPlayerFactionDiplomacyCheckConditions,ExerelinMarketSpecialInitialize,"$faction.id != ""neutral""
 $faction.id != ""independent""
 $faction.id != ""player_npc""
-$player.factionId == ""player_npc""","$showPlayerFactionDiplomacyOptions = true 0
+Nex_IsFactionRuler","$showPlayerFactionDiplomacyOptions = true 0
 $_factionAllianceName = $faction.allianceName 0
 $_playerAllianceName = $player.allianceName 0",,,
 #ExerelinPlayerFactionDiplomacyCheckConditions2,ExerelinMarketSpecialInitialize,"!$market.mc:regional_capital
@@ -1012,7 +1012,7 @@ ExerelinFormAllianceOptionAlreadyInAlliance,ExerelinMarketSpecial,"$showPlayerFa
 $faction.isInAlliance","SetTooltip exerelinFormAlliance ""$TheFaction is already in an alliance.""
 SetEnabled exerelinFormAlliance false",,,
 ExerelinLeaveAllianceOption,ExerelinMarketSpecial,"$hasMarket
-$player.factionId == ""player_npc""
+Nex_IsFactionRuler
 $player.isInAlliance
 $faction.isInAlliance
 $faction.allianceId == $player.allianceId","$_factionAllianceName = $faction.allianceName 0
@@ -1032,7 +1032,7 @@ FireAll ExerelinMarketSpecialInitialize",,,
 ,,,,,,
 #START MARKET TRANSFER OPTIONS,,,,,,
 nex_marketTransferInit,PopulateOptions,"Nex_IsBaseOfficial admin
-$faction.id == player_npc",,,nex_transferMarketMainWithDialog:Transfer this market to another faction,
+Nex_IsFactionRuler",,,nex_transferMarketMainWithDialog:Transfer this market to another faction,
 ,,,,,,
 nex_marketTransfer,DialogOptionSelected,$option == nex_transferMarketMain,FireAll Nex_MarketTransferMain,,,
 nex_marketTransferWithDialog,DialogOptionSelected,$option == nex_transferMarketMainWithDialog,"Nex_TransferMarket printRepChange
@@ -1545,7 +1545,7 @@ EndConversation",,,
 ,,,,,,
 cargoScanInitialFollowers,BeginFleetEncounter,"!$cargoScan_didAlready
 $pursuePlayer_smugglingScan score:50
-$faction.id == player_npc score:20","unset $ignorePlayerCommRequests
+Nex_IsFactionRuler score:20","unset $ignorePlayerCommRequests
 $cargoScanConv = true 0
 $cargoScan_didAlready = true 0
 $entity.smugglingScanComplete = true 1
@@ -1554,7 +1554,7 @@ AddText ""The $faction $otherShipOrFleet looks like it wants to scan you, but do
 AddText ""You're being hailed by the $faction $otherShipOrFleet."" $faction.baseColor
 OpenComms",,,
 cargoScanFirstCommsFollowers,OpenCommLink,"$entity.cargoScanConv score:100
-$faction.id == player_npc score:50",,"""We've received complaints of smuggling activity around these parts. Now I know there's no way you'd have anything to do with it, but discretion would be helpful. Appearances have to be maintained, you know.""
+Nex_IsFactionRuler score:50",,"""We've received complaints of smuggling activity around these parts. Now I know there's no way you'd have anything to do with it, but discretion would be helpful. Appearances have to be maintained, you know.""
 OR
 ""Damn it, chief, could you try to be a little more subtle? We're under a lot of pressure to deal with the smuggling around here, and we don't need to attract attention where we'd rather not people start looking.""",0:cargoScan_cleanCont:Continue,
 cargoScanRefuse,DialogOptionSelected,$option == cargoScan_refuse,"$entity.ignorePlayerCommRequests = true 0
