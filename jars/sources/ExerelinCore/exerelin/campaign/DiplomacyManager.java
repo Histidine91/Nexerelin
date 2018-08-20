@@ -63,6 +63,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float STARTING_RELATIONSHIP_FRIENDLY = 0.6f;
     public static final float WAR_WEARINESS_INTERVAL = 3f;
     public static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
+    public static final float WAR_WEARINESS_ENEMY_COUNT_MULT = 0.25f;
     public static final float PEACE_TREATY_CHANCE = 0.3f;
     public static final float MIN_INTERVAL_BETWEEN_WARS = 15f;
     
@@ -892,6 +893,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     public static float getWarWeariness(String factionId)
     {
+        return getWarWeariness(factionId, false);
+    }
+    
+    public static float getWarWeariness(String factionId, boolean useEnemyCountModifier)
+    {
         if (diplomacyManager == null) 
         {
             log.info("No diplomacy manager found");
@@ -900,9 +906,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (!diplomacyManager.warWeariness.containsKey(factionId))
         {
             diplomacyManager.warWeariness.put(factionId, 0f);
-            return 0.0f;
         }
-        return diplomacyManager.warWeariness.get(factionId);
+        float weariness = diplomacyManager.warWeariness.get(factionId);
+        if (useEnemyCountModifier)
+        {
+            int enemies = getFactionsAtWarWithFaction(factionId, ExerelinConfig.allowPirateInvasions, true, false).size();
+            weariness *= 1 + 0.25f * (enemies - 1);
+        }
+        
+        return weariness;
     }
     
     public static void setRelationshipAtBest(String factionId, String otherFactionId, float rel)

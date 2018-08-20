@@ -87,7 +87,7 @@ public class DiplomacyBrain {
 	public static final float DOMINANCE_MULT = 25;
 	public static final float DOMINANCE_HARD_MULT = 1.5f;
 	public static final float HARD_MODE_MOD = -25f;
-	public static final float MIN_DISPOSITION_FOR_WAR = -10;
+	public static final float MAX_DISPOSITION_FOR_WAR = -10;
 	public static final float MILITARISM_WAR_MULT = 1;
 	public static final float LIKE_THRESHOLD = 10;
 	public static final float DISLIKE_THRESHOLD = -10;
@@ -344,11 +344,10 @@ public class DiplomacyBrain {
 	protected boolean tryMakePeace(String enemyId, float ourWeariness)
 	{
 		FactionAPI enemy = Global.getSector().getFaction(enemyId);
-		float enemyWeariness = DiplomacyManager.getWarWeariness(enemyId);
+		float enemyWeariness = DiplomacyManager.getWarWeariness(enemyId, true);
+		log.info("\t" + enemyId + " weariness: " + enemyWeariness + "/" + ExerelinConfig.minWarWearinessForPeace);
 		if (enemyWeariness < ExerelinConfig.minWarWearinessForPeace)
 			return false;
-		
-		log.info("Faction " + faction.getDisplayName() + " seeks peace with " + enemy.getDisplayName());
 				
 		float sumWeariness = ourWeariness + enemyWeariness;
 		log.info("\tWeariness sum: " + sumWeariness);
@@ -379,7 +378,7 @@ public class DiplomacyBrain {
 		if (ExerelinUtilsFaction.isPirateFaction(factionId) && !ExerelinConfig.allowPirateInvasions)
 			return false;
 		
-		float ourWeariness = DiplomacyManager.getWarWeariness(factionId);
+		float ourWeariness = DiplomacyManager.getWarWeariness(factionId, true);
 		log.info("Checking peace for faction " + faction.getDisplayName() + ": weariness " + ourWeariness);
 		if (ourWeariness < ExerelinConfig.minWarWearinessForPeace)
 			return false;
@@ -438,12 +437,15 @@ public class DiplomacyBrain {
 		{
 			String otherFactionId = disposition.factionId;
 			if (otherFactionId.equals(this.factionId)) continue;
+			log.info("Checking vs. " + otherFactionId + ": " + disposition.disposition.getModifiedValue()
+					+ ", " + faction.isAtWorst(otherFactionId, RepLevel.NEUTRAL));
+			
 			if (!SectorManager.isFactionAlive(otherFactionId)) continue;
 			if (DiplomacyManager.disallowedFactions.contains(otherFactionId)) continue;
 			if (ceasefires.containsKey(otherFactionId)) continue;
 			if (faction.isAtWorst(otherFactionId, RepLevel.NEUTRAL)) continue;	// relations aren't bad enough yet
 			if (faction.isHostileTo(otherFactionId)) continue;	// already at war
-			if (disposition.disposition.getModifiedValue() > MIN_DISPOSITION_FOR_WAR) continue;
+			if (disposition.disposition.getModifiedValue() > MAX_DISPOSITION_FOR_WAR) continue;
 			
 			float decisionRating = getWarDecisionRating(otherFactionId);
 			if (decisionRating > 30 + MathUtils.getRandomNumberInRange(-5, 5))
@@ -583,7 +585,7 @@ public class DiplomacyBrain {
 		List<String> latestEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, true, true, true);
 		for (String enemyId : enemies)
 		{
-			if (!latestEnemies.contains(enemyId))	// no longer enemy, mark as ceasefired
+			if (!faction.isHostileTo(enemyId))	// no longer enemy, mark as ceasefired
 			{
 				log.info("Faction " + factionId + " no longer hostile to " + enemyId);
 				ceasefires.put(enemyId, CEASEFIRE_LENGTH);

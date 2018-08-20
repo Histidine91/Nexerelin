@@ -78,11 +78,11 @@ public class ExerelinConfig
     public static float prismTariff = 2f;
     
     // War weariness
-    public static float warWearinessDivisor = 20000f;
-    public static float warWearinessDivisorModPerLevel = 200f;
-    public static float minWarWearinessForPeace = 8000f;
-    public static float warWearinessCeasefireReduction = 5000f;
-    public static float warWearinessPeaceTreatyReduction = 8000f;
+    public static float warWearinessDivisor = 10000f;
+    public static float warWearinessDivisorModPerLevel = 75f;
+    public static float minWarWearinessForPeace = 5000f;
+    public static float warWearinessCeasefireReduction = 3000f;
+    public static float warWearinessPeaceTreatyReduction = 6000f;
     
     // Followers faction
     public static boolean followersAgents = false;
