@@ -2,7 +2,7 @@
     "playableFaction":false,
     "corvusCompatible":true,
     "hostileToAll":2,
-    #"pirateFaction":true,   # else they'd get whacked first thing in Corvus mode
+    "pirateFaction":true,
     "showIntelEvenIfDead":true,
     
     "baseFleetCostMultiplier":1.0,

@@ -72,7 +72,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD = 3f;
     public static final float HARD_MODE_DOMINANCE_MOD = 0.5f;
     
-    public static final List<String> DO_NOT_RANDOMIZE = Arrays.asList(new String[]{});	// moved to faction configs
+    public static final List<String> DO_NOT_RANDOMIZE = Arrays.asList(new String[]{
+		"sector", "domain", "everything"
+	});
     
     protected Map<String, Float> warWeariness;
     protected static float warWearinessPerInterval = 50f;
@@ -85,6 +87,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     protected float daysElapsed = 0;
     protected boolean randomFactionRelationships = false;
+    protected boolean randomFactionRelationshipsPirate = false;
     protected long lastWarTimestamp = 0;
     
     protected Map<String, DiplomacyBrain> diplomacyBrains = new HashMap<>();
@@ -970,18 +973,28 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         List<String> factionIds = new ArrayList<>();
         List<String> alreadyRandomizedIds = new ArrayList<>();
         alreadyRandomizedIds.addAll(DO_NOT_RANDOMIZE);
-        
+		
+		// should we prevent randomization of pirate factions?
+		boolean pirateBlock = !diplomacyManager.randomFactionRelationshipsPirate;
+		
         for (FactionAPI faction : sector.getAllFactions())
         {
             if (faction.isNeutralFaction()) continue;
             String factionId = faction.getId();
             factionIds.add(factionId);
             
+			// mark non-randomizable factions as such
+			if (alreadyRandomizedIds.contains(factionId)) continue;
             if (ExerelinConfig.getExerelinFactionConfig(factionId).noRandomizeRelations)
             {
                 log.info("Faction " + factionId + " marked as non-randomizable");
                 alreadyRandomizedIds.add(factionId);
             }
+			else if (pirateBlock && ExerelinConfig.getExerelinFactionConfig(factionId).pirateFaction)
+			{
+				log.info("Faction " + factionId + " is pirates, and pirate relations randomization is disabled");
+                alreadyRandomizedIds.add(factionId);
+			}
         }
 
         boolean randomize = false;
@@ -1044,10 +1057,9 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 FactionAPI faction = sector.getFaction(factionId);
                 ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
                 
-                if (randomize)
+                if (randomize && !alreadyRandomizedIds.contains(factionId))
                 {
                     if (faction.isNeutralFaction() || faction.isPlayerFaction()) continue;
-                    if (alreadyRandomizedIds.contains(factionId)) continue;
                     alreadyRandomizedIds.add(factionId);
                                         
                     for (String otherFactionId: factionIds)
@@ -1057,21 +1069,20 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                         
                         FactionAPI otherFaction = sector.getFaction(otherFactionId);
                         if (otherFaction.isNeutralFaction() || otherFaction.isPlayerFaction()) continue;
-
+                        
                         if (random.nextFloat() < 0.5) // 50% chance to do nothing (lower clutter)
                         {
-                            if (ExerelinUtilsFaction.isPirateFaction(factionId) || ExerelinUtilsFaction.isPirateFaction(otherFactionId))
-                                faction.setRelationship(otherFactionId, STARTING_RELATIONSHIP_HOSTILE);
-                            else
-                                faction.setRelationship(otherFactionId, 0);
+                            // empty
                         }
                         else
                         {
                             float min = -0.85f, max = 0.6f;
                             float randomRel = random.nextFloat() * (max - min) + min;
+							log.info("\tSetting relations " + factionId + "|" + otherFactionId + ": " + randomRel);
                             faction.setRelationship(otherFactionId, randomRel);
                         }
                         
+                        // player's faction is always enemy to pirate factions
                         // do this after the random stuff to ensure constant RNG output sequence
                         if (ExerelinUtilsFaction.isPirateFaction(factionId) && (otherFactionId.equals(selectedFactionId) || otherFactionId.equals(Factions.PLAYER)))
                         {
@@ -1128,10 +1139,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         }
     }
     
-    public static void setRandomFactionRelationships(boolean random)
+    public static void setRandomFactionRelationships(boolean random, boolean pirate)
     {
         if (diplomacyManager == null) return;
         diplomacyManager.randomFactionRelationships = random;
+        diplomacyManager.randomFactionRelationshipsPirate = pirate;
     }
     
     public static boolean isRandomFactionRelationships()

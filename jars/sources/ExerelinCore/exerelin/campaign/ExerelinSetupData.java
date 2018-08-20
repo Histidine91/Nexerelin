@@ -29,6 +29,7 @@ public final class ExerelinSetupData
 	public boolean onlyRespawnStartingFactions = false;
 	public int numStartFactions = -1;
 	public boolean randomStartRelationships = false;
+	public boolean randomStartRelationshipsPirate = false;
 	public boolean easyMode = false;
 	public boolean hardMode = false;
 	@Deprecated public boolean omnifactoryPresent = false;

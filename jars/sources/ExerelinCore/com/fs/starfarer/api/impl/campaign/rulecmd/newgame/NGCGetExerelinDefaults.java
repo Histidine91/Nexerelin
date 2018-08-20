@@ -10,7 +10,6 @@ import com.fs.starfarer.api.characters.CharacterCreationData;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.ExerelinSetupData;
-import exerelin.utilities.ExerelinUtils;
 
 
 public class NGCGetExerelinDefaults extends BaseCommandPlugin {
@@ -24,6 +23,7 @@ public class NGCGetExerelinDefaults extends BaseCommandPlugin {
 		map.set("$numPlanets", setupData.numPlanets, 0);
 		map.set("$numStations", setupData.numStations, 0);
 		map.set("$randomStartRelationships", setupData.randomStartRelationships, 0);
+		map.set("$randomStartRelationshipsPirate", setupData.randomStartRelationshipsPirate, 0);
 		map.set("$omniFacPresent", setupData.omnifactoryPresent, 0);
 		map.set("$randomOmnifactoryLocation", setupData.randomOmnifactoryLocation, 0);
 		map.set("$prismMarketPresent", setupData.prismMarketPresent, 0);
