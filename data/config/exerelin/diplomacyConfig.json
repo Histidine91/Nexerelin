@@ -94,6 +94,7 @@
 			"name":"Antiwar Protests",
 			"stage":"antiwar_protest",
 			"maxRepLevelToOccur":"hostile",
+			"repLimit":"hostile",
 			"minRepChange":0.1,
 			"maxRepChange":0.15
 		},
@@ -189,7 +190,7 @@
 			"maxRepChange":-0.1,
 			"repLimit":"hostile",
 			"allowPiratesToPirates":true,
-			"chance":1.25
+			"chance":1
 		},
 		{
 			"name":"Diplomat Crime Ring",
@@ -211,7 +212,7 @@
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"allowPiratesToPirates":true,
-			"chance":1.5
+			"chance":1
 		},
 		{
 			"name":"Tournament Cheating",
@@ -228,7 +229,7 @@
 			"name":"Shots Fired",
 			"stage":"shots_fired",
 			"minRepLevelToOccur":"inhospitable",
-			"maxRepLevelToOccur":"suspicious",
+			"maxRepLevelToOccur":"inhospitable",
 			"repEnsureAtBest":"hostile",
 			"minRepChange":-0.3,
 			"maxRepChange":-0.2,
@@ -236,7 +237,7 @@
 			"allowPiratesToPirates":true,
 			"allowPiratesToNonPirates":true,
 			"allowNonPiratesToPirates":true,
-			"chance":2	# help tip things over into outright violence
+			"chance":0.25
 		},
 		
 		{

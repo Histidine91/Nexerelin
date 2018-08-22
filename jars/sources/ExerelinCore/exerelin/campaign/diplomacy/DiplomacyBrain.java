@@ -325,8 +325,9 @@ public class DiplomacyBrain {
 		log.info("\tTheir strength: " + targetStrength);
 		log.info("\tTheir enemies' strength: " + targetEnemyStrength);
 		log.info("\tExisting enemies' strength " + enemyStrength);
-		float netStrength = ourStrength - enemyStrength - (targetStrength - targetEnemyStrength);
-		if (netStrength < 0) netStrength *= 0.5f;	// make small fry a bit more reckless
+		//float netStrength = ourStrength - enemyStrength - (targetStrength - targetEnemyStrength);
+		//if (netStrength < 0) netStrength *= 0.5f;	// make small fry a bit more reckless
+		float strRatio = (ourStrength + targetEnemyStrength) / (targetStrength + enemyStrength);
 		
 		float militarismMult = ourConf.alignments.get(Alignment.MILITARIST) * MILITARISM_WAR_MULT + 1;
 		log.info("\tMilitarism mult: " + militarismMult);
@@ -334,8 +335,11 @@ public class DiplomacyBrain {
 		float dominance = DiplomacyManager.getDominanceFactor(enemyId) * 40;
 		log.info("\tTarget dominance: " + dominance);
 		
-		float score = (-disposition + netStrength + dominance);
-		if (score > 0) score *= militarismMult;
+		float score = (-disposition + dominance);
+		if (score > 0) 
+		{
+			score *= militarismMult * strRatio;
+		}
 		score += dominance;
 		log.info("\tTotal score: " + score);
 		return score;
@@ -582,7 +586,7 @@ public class DiplomacyBrain {
 			ceasefires.remove(otherFactionId);
 		}
 		
-		List<String> latestEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, true, true, true);
+		List<String> latestEnemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, false, true, true);
 		for (String enemyId : enemies)
 		{
 			if (!faction.isHostileTo(enemyId))	// no longer enemy, mark as ceasefired

@@ -27,7 +27,7 @@ public class AllianceVoter {
 	public static final float BASE_POINTS = 75;
 	public static final float POINTS_NEEDED = 100;
 	public static final float MAX_POINTS_TO_DEFY = 50;
-	public static final float ABSTAIN_THRESHOLD = 25;
+	public static final float ABSTAIN_THRESHOLD = 40;
 	public static final float STRENGTH_POINT_MULT = 0.5f;
 	public static final float HAWKISHNESS_POINTS = 50;
 	public static final float RANDOM_POINTS = 50;
