@@ -286,10 +286,11 @@ public class InvasionRound {
 			attackerFaction = sector.getFaction(attackerFactionId);
 		}
 		
-		if (attackerFaction == defenderFaction || !attackerFaction.isHostileTo(defenderFaction))
+		if (attackerFaction == defenderFaction)
 		{
 			return null;
 		}
+		if (!isRaid && !attackerFaction.isHostileTo(defenderFaction)) return null;
 		
 		boolean captured = false;
 		boolean success = result.success;

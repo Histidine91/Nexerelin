@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
+import com.fs.starfarer.api.campaign.SectorEntityToken.VisibilityLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
@@ -182,11 +183,28 @@ public class ExerelinUtilsFleet
         }
         return fleets;
     }
-	
-	public static String getFleetType(CampaignFleetAPI fleet)
-	{
-		if (!fleet.getMemoryWithoutUpdate().contains(MemFlags.MEMORY_KEY_FLEET_TYPE))
-			return "";
-		return fleet.getMemoryWithoutUpdate().getString(MemFlags.MEMORY_KEY_FLEET_TYPE);
-	}
+    
+    public static String getFleetType(CampaignFleetAPI fleet)
+    {
+        if (!fleet.getMemoryWithoutUpdate().contains(MemFlags.MEMORY_KEY_FLEET_TYPE))
+            return "";
+        return fleet.getMemoryWithoutUpdate().getString(MemFlags.MEMORY_KEY_FLEET_TYPE);
+    }
+    
+    public static boolean isPlayerSeenAndIdentified(FactionAPI faction)
+    {
+        CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+        if (playerFleet.isTransponderOn()) return true;
+        for (CampaignFleetAPI fleet : playerFleet.getContainingLocation().getFleets()) {
+            if (fleet.getFaction() != faction) continue;            
+            
+            if (!fleet.knowsWhoPlayerIs()) continue;
+                
+            VisibilityLevel level = playerFleet.getVisibilityLevelTo(fleet);
+            if (level == VisibilityLevel.NONE || level == VisibilityLevel.SENSOR_CONTACT) continue;
+            
+            return true;
+        }
+        return false;
+    }
 }

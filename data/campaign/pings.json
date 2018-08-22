@@ -24,4 +24,16 @@
 		"num":2,
 		"delay":0.25,
 	},
+	
+	"nex_raid_alert":{
+		"sounds":["default_campaign_ping", "", "default_campaign_ping"],
+		"useFactionColor":true,
+		"width":15,
+		"range":2500,
+		"duration":2,
+		"invert":false,
+		
+		"num":3,
+		"delay":0.25
+	},
 }

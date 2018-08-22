@@ -403,7 +403,6 @@ SetEnabled exerelinRaid false",,,
 ExerelinRaidStart,DialogOptionSelected,$option == exerelinRaid,"$menuState = raid 0
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
 PredictInvasionResults true
-Nex_PrepareResponseFleet true
 FireAll ExerelinRaidListOptions",Your intelligence officer runs a few quick simulations to predict the outcome of the attack.,,
 ExerelinRaidListOptionsMain,ExerelinRaidListOptions,,SetShortcut exerelinInvasionCancel ESCAPE,,"1:exerelinRaidProceed:Proceed
 2:exerelinRaidHelp:Consult a help file
@@ -414,32 +413,27 @@ ExerelinRaidListOptionRaidNoMarines,ExerelinRaidListOptions,!HasMarines 1,"SetTo
 SetEnabled exerelinRaidProceed false",,,
 ExerelinRaidListOptionRaidHostilesNearby,ExerelinRaidListOptions,HostileFleetNearbyAndAware,"SetTooltip exerelinRaidProceed ""A nearby hostile fleet is tracking your movements, making, a raid impossible.""
 SetEnabled exerelinRaidProceed false","A nearby hostile fleet is tracking your movements, making a raid impossible.",,
-ExerelinRaidListOptionRaidNonHostile,ExerelinRaidListOptions,RepIsAtWorst $faction.id INHOSPITABLE,"Nex_AddOptionConfirmation exerelinRaidProceed ""$TheFaction is not currently hostile. Are you sure you wish to raid $market?"" ""Yes"" ""No""",,,
+ExerelinRaidListOptionRaidNonHostile,ExerelinRaidListOptions,"RepIsAtWorst $faction.id INHOSPITABLE
+Nex_IsPlayerSeenAndIdentified $faction.id","Nex_AddOptionConfirmation exerelinRaidProceed ""$TheFaction is not currently hostile, and you have been positively identified. Are you sure you wish to raid $market?"" ""Yes"" ""No""",,,
 ExerelinRaidHelp,DialogOptionSelected,$option == exerelinRaidHelp,FireAll ExerelinRaidListOptions,"Base attacker strength = (marine strength + fleet DP/2) * 0.7
 Base defender strength = 0.2 * (market size+1)^3 * (stability + 0.5) * 0.375
 Each Military Base and Regional Capital adds 25% to defender strength, Headquarters adds 40%.
 Attacker strength varies by up to 1/7th in either direction.
 
 Amount of loot is determined by ratio of attacker strength to defender strength (must be >1 to get anything).
-Marine losses depend on both strength values, plus a random factor.
-
-It will usually be necessary to defeat a close-in defence fleet before attempting a raid.",,
+Marine losses depend on both strength values, plus a random factor.",,
 ,,,,,,
 #ExerelinRaidProceed,DialogOptionSelected,"$option == exerelinRaidProceed
 $hasMarket ","Wait $global.exerelinRaidWait 0.25 $global.exerelinRaidComplete $global.exerelinRaidInterrupted $global.exerelinRaidInProgress ""Raiding...""
 Exerelin_NotifyInvasion $global.exerelinRaidWait 750 true
 MakePlayerImmediatelyAttackable
-$player.raidTarget = $id 0.27
-CreateWarmongerEvent $faction.id
-AdjustRep $faction.id COMBAT_NORMAL",,,
-ExerelinRaidProceedFast,DialogOptionSelected,$option == exerelinRaidProceed,"CreateWarmongerEvent $faction.id
-AdjustRep $faction.id COMBAT_NORMAL
-ExecuteInvasionRound true
+$player.raidTarget = $id 0.27",,,
+ExerelinRaidProceedFast,DialogOptionSelected,$option == exerelinRaidProceed,"ExecuteInvasionRound true
 FireBest ExerelinRaidResults",RAID OUTCOME:,,
-ExerelinRaidProceedDefenders,DialogOptionSelected,"$option == exerelinRaidProceed
+#ExerelinRaidProceedDefenders,DialogOptionSelected,"$option == exerelinRaidProceed
 $market.hasDefenders","$global.nex_afterBattleMode = ""raid"" 0
 Nex_InvasionDefenseInteraction true","As your $shipOrFleet moves in closer, a defence fleet scrambles from $market. It's clear they won't let you go further without a fight.",,
-ExerelinRaidPostDefenders,BeatDefendersContinue,"$global.nex_afterBattleMode == ""raid""","$menuState = raid 0
+#ExerelinRaidPostDefenders,BeatDefendersContinue,"$global.nex_afterBattleMode == ""raid""","$menuState = raid 0
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
 SetPromptText ""You decide to...""
 FireAll ExerelinRaidListOptions",Your $shipOrFleet neutralizes the defence fleet and is ready to continue with the raid.,,
@@ -772,7 +766,7 @@ FireAll ExerelinMarketSpecial",,,
 ,,,,,,
 ExerelinSuperweaponProceed,DialogOptionSelected,"$option == exerelinSuperweaponProceed
 !$market.hasDefenders","CreateWarmongerEvent $faction.id
-AdjustRep $faction.id COMBAT_NORMAL
+AdjustRep $faction.id COMBAT_AGGRESSIVE
 Exerelin_UseSuperweapon
 FireBest ExerelinSuperweaponDialog",,,
 ExerelinSuperweaponProceedDefenders,DialogOptionSelected,"$option == exerelinSuperweaponProceed
