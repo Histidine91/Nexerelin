@@ -7,6 +7,8 @@
     "customRebelFaction":"",
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Splinter Group",
+    
+    "directoryUseShortName":true,
 
     "positiveDiplomacyExtra":0,
     "negativeDiplomacyExtra":0,

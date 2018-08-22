@@ -6,6 +6,8 @@
     "customRebelFaction":"",
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Splinter Group",
+    
+    "directoryUseShortName":true,
 
     "logisticsFleetName":"Supply Convoy",
 
