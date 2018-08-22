@@ -377,7 +377,8 @@
 		"allowRespawn":"Allow faction respawn",
 		"allowRespawnNonOriginal":"Allow respawn for factions not currently present",
 		"hardMode":"Starfarer Mode",
-		"randomizeRelationships":"Randomize faction relationships"
+		"randomizeRelationships":"Randomize faction relationships",
+		"randomizeRelationshipsPirate":"Randomize relationships for pirate factions"
 	},
 	"exerelin_superweapon":{
 		"crText":"Superweapon used",

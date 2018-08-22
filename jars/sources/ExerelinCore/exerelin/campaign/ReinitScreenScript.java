@@ -70,6 +70,7 @@ public class ReinitScreenScript implements EveryFrameScript
         private boolean allowRespawn = false;
         private boolean allowRespawnNonOriginal = false;
         private boolean randomizeRelationships = false;
+		private boolean randomizeRelationshipsPirate = false;
         private boolean hardMode = false;
 
         private enum Menu
@@ -77,6 +78,7 @@ public class ReinitScreenScript implements EveryFrameScript
             OPTION_RESPAWN,
             OPTION_RESPAWN_NON_ORIGINAL,
             OPTION_RANDOM_RELATIONSHIPS,
+			OPTION_RANDOM_RELATIONSHIPS_PIRATE,
             OPTION_HARD_MODE,
             DONE
         }
@@ -85,11 +87,18 @@ public class ReinitScreenScript implements EveryFrameScript
         {
             options.clearOptions();
             
-            options.addOption(Misc.ucFirst(getString("allowRespawn")) + ": " + StringHelper.getString(String.valueOf(allowRespawn)), Menu.OPTION_RESPAWN);
+            options.addOption(Misc.ucFirst(getString("allowRespawn")) + ": " 
+					+ StringHelper.getString(String.valueOf(allowRespawn)), Menu.OPTION_RESPAWN);
             if (allowRespawn)
-                options.addOption(Misc.ucFirst(getString("allowRespawnNonOriginal")) + ": " + StringHelper.getString(String.valueOf(allowRespawnNonOriginal)), Menu.OPTION_RESPAWN_NON_ORIGINAL);
-            options.addOption(Misc.ucFirst(getString("randomizeRelationships")) + ": " + StringHelper.getString(String.valueOf(randomizeRelationships)), Menu.OPTION_RANDOM_RELATIONSHIPS);
-            options.addOption(Misc.ucFirst(getString("hardMode")) + ": " + StringHelper.getString(String.valueOf(hardMode)), Menu.OPTION_HARD_MODE);
+                options.addOption(Misc.ucFirst(getString("allowRespawnNonOriginal")) + ": " 
+						+ StringHelper.getString(String.valueOf(allowRespawnNonOriginal)), Menu.OPTION_RESPAWN_NON_ORIGINAL);
+            options.addOption(Misc.ucFirst(getString("randomizeRelationships")) + ": " 
+					+ StringHelper.getString(String.valueOf(randomizeRelationships)), Menu.OPTION_RANDOM_RELATIONSHIPS);
+			if (randomizeRelationships)
+				options.addOption(Misc.ucFirst(getString("randomizeRelationshipsPirate")) + ": " 
+					+ StringHelper.getString(String.valueOf(randomizeRelationshipsPirate)), Menu.OPTION_RANDOM_RELATIONSHIPS_PIRATE);
+            options.addOption(Misc.ucFirst(getString("hardMode")) + ": " 
+					+ StringHelper.getString(String.valueOf(hardMode)), Menu.OPTION_HARD_MODE);
             options.addOption(Misc.ucFirst(StringHelper.getString("done")), Menu.DONE);
         }
         
@@ -124,22 +133,22 @@ public class ReinitScreenScript implements EveryFrameScript
             if (optionData == Menu.OPTION_RESPAWN)
             {
                 allowRespawn = !allowRespawn;
-                populateOptions();
             }
             else if (optionData == Menu.OPTION_RESPAWN_NON_ORIGINAL)
             {
                 allowRespawnNonOriginal = !allowRespawnNonOriginal;
-                populateOptions();
             }
             else if (optionData == Menu.OPTION_RANDOM_RELATIONSHIPS)
             {
                 randomizeRelationships = !randomizeRelationships;
-                populateOptions();
+            }
+			else if (optionData == Menu.OPTION_RANDOM_RELATIONSHIPS_PIRATE)
+            {
+                randomizeRelationshipsPirate = !randomizeRelationshipsPirate;
             }
             else if (optionData == Menu.OPTION_HARD_MODE)
             {
                 hardMode = !hardMode;
-                populateOptions();
             }
             else if (optionData == Menu.DONE)
             {
@@ -147,11 +156,13 @@ public class ReinitScreenScript implements EveryFrameScript
                 SectorManager.setHardMode(hardMode);
                 if (randomizeRelationships)
                 {
-                    DiplomacyManager.setRandomFactionRelationships(randomizeRelationships);
+                    DiplomacyManager.setRandomFactionRelationships(randomizeRelationships, randomizeRelationshipsPirate);
                     DiplomacyManager.initFactionRelationships(true);
                 }
                 dialog.dismiss();
+				return;
             }
+			populateOptions();
         }
 
         @Override
