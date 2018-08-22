@@ -40,4 +40,5 @@
     "startShipsCombatLarge":["ii_malleus_art", "ii_interrex_bal", "ii_basileus_sup"],
     "startShipsTradeLarge":["ii_sebastos_f_art", "ii_lynx_sta", "ii_invictus_sup"],
     "startShipsCarrierLarge":["ii_sebastos_sta", "ii_princeps_art", "ii_decurion_sni"],
+    "startShipsSuper":["ii_maximus_shi"],
 }

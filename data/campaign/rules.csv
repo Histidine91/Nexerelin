@@ -201,56 +201,72 @@ NGCSetFreeStart true
 $factionGroup = 0
 FireAll ExerelinNGCStep3",,,
 ,,,,,,
-ExerelinNGCPickStartingShips,ExerelinNGCStep3,,"NGCSetStartingFleetTooltipsAndState
-SetShortcut exerelinNGCFleetBack ESCAPE",Your starting fleet?,"1:exerelinNGCFleetSolo:Solo frigate
-2:exerelinNGCFleetCombatSmall:Light combat patrol
-3:exerelinNGCFleetTradeSmall:Small trade convoy
-4:exerelinNGCFleetCarrierSmall:Escort carrier unit
-5:exerelinNGCFleetCombatLarge:Upsized military unit
-6:exerelinNGCFleetTradeLarge:Larger mercantile train
-7:exerelinNGCFleetCarrierLarge:Medium carrier force
-9:exerelinNGCFleetBack:Go back",
-ExerelinNGCPickStartingShipsReroll,ExerelinNGCStep3,$randomStartShips,,,8:exerelinNGCFleetReroll:[Reroll random ships],
-ExerelinNGCStartShipsSolo,NewGameOptionSelected,$option == exerelinNGCFleetSolo,"NGCAddStartingShipsByFleetType SOLO
+nex_NGCPickStartingShips,ExerelinNGCStep3,,"NGCSetStartingFleetTooltipsAndState
+SetShortcut nex_NGCFleetBack ESCAPE",Your starting fleet?,"1:nex_NGCFleetSolo:Solo frigate
+2:nex_NGCFleetCombatSmall:Light combat patrol
+3:nex_NGCFleetTradeSmall:Small trade convoy
+4:nex_NGCFleetCarrierSmall:Escort carrier unit
+5:nex_NGCFleetCombatLarge:Upsized military unit
+6:nex_NGCFleetTradeLarge:Larger mercantile train
+7:nex_NGCFleetCarrierLarge:Medium carrier force
+8:nex_NGCFleetSuper:Super ship
+10:nex_NGCFleetBack:Go back",
+nex_NGCPickStartingShipsReroll,ExerelinNGCStep3,$randomStartShips,,,9:nex_NGCFleetReroll:[Reroll random ships],
+nex_NGCStartShipsSolo,NewGameOptionSelected,$option == nex_NGCFleetSolo,"NGCAddStartingShipsByFleetType SOLO
 FireBest ExerelinNGCStep4",,,
-ExerelinNGCStartShipsCombatSmall,NewGameOptionSelected,$option == exerelinNGCFleetCombatSmall,"NGCAddStartingShipsByFleetType COMBAT_SMALL
+nex_NGCStartShipsCombatSmall,NewGameOptionSelected,$option == nex_NGCFleetCombatSmall,"NGCAddStartingShipsByFleetType COMBAT_SMALL
 FireBest ExerelinNGCStep4",,,
-ExerelinNGCStartShipsTradeSmall,NewGameOptionSelected,$option == exerelinNGCFleetTradeSmall,"NGCAddStartingShipsByFleetType TRADE_SMALL
+nex_NGCStartShipsTradeSmall,NewGameOptionSelected,$option == nex_NGCFleetTradeSmall,"NGCAddStartingShipsByFleetType TRADE_SMALL
 FireBest ExerelinNGCStep4",,,
-ExerelinNGCStartShipsCarrierSmall,NewGameOptionSelected,$option == exerelinNGCFleetCarrierSmall,"NGCAddStartingShipsByFleetType CARRIER_SMALL
+nex_NGCStartShipsCarrierSmall,NewGameOptionSelected,$option == nex_NGCFleetCarrierSmall,"NGCAddStartingShipsByFleetType CARRIER_SMALL
 FireBest ExerelinNGCStep4",,,
-ExerelinNGCStartShipsCombatLarge,NewGameOptionSelected,$option == exerelinNGCFleetCombatLarge,"NGCAddStartingShipsByFleetType COMBAT_LARGE
+nex_NGCStartShipsCombatLarge,NewGameOptionSelected,$option == nex_NGCFleetCombatLarge,"NGCAddStartingShipsByFleetType COMBAT_LARGE
 FireBest ExerelinNGCStep4",,,
-ExerelinNGCStartShipsTradeLarge,NewGameOptionSelected,$option == exerelinNGCFleetTradeLarge,"NGCAddStartingShipsByFleetType TRADE_LARGE
+nex_NGCStartShipsTradeLarge,NewGameOptionSelected,$option == nex_NGCFleetTradeLarge,"NGCAddStartingShipsByFleetType TRADE_LARGE
 FireBest ExerelinNGCStep4",,,
-ExerelinNGCStartShipsCarrierLarge,NewGameOptionSelected,$option == exerelinNGCFleetCarrierLarge,"NGCAddStartingShipsByFleetType CARRIER_LARGE
+nex_NGCStartShipsCarrierLarge,NewGameOptionSelected,$option == nex_NGCFleetCarrierLarge,"NGCAddStartingShipsByFleetType CARRIER_LARGE
+FireBest ExerelinNGCStep4",,,
+nex_NGCStartShipsSuper,NewGameOptionSelected,$option == nex_NGCFleetSuper,"NGCAddStartingShipsByFleetType SUPER
 FireBest ExerelinNGCStep4",,,
 ,,,,,,
-ExerelinNGCStartShipsReroll,NewGameOptionSelected,$option == exerelinNGCFleetReroll,NGCSetStartingFleetTooltipsAndState,,,
-ExerelinNGCStartShipsBack,NewGameOptionSelected,$option == exerelinNGCFleetBack,Nex_NGCListFactions listFactions $factionGroup,,,
+nex_NGCStartShipsReroll,NewGameOptionSelected,$option == nex_NGCFleetReroll,NGCSetStartingFleetTooltipsAndState,,,
+nex_NGCStartShipsBack,NewGameOptionSelected,$option == nex_NGCFleetBack,Nex_NGCListFactions listFactions $factionGroup,,,
 ,,,,,,
-ExerelinNGCFinalize,ExerelinNGCStep4,,"AddText ""Starting experience and credits?""
-SetShortcut exerelinNGCStartBack ESCAPE",,"exerelinNGCNormalStart:Ensign (20,000 credits, level 1)
-exerelinNGCEasyStart:Lieutenant (75,000 credits, level 6, one officer)
-exerelinNGCEasyStart2:Commander (250,000 credits, level 16, two officers)
-exerelinNGCStartBack:Go back",
-ExerelinNGCNormalStart,NewGameOptionSelected,$option == exerelinNGCNormalStart,"NGCAddCredits 20000
+nex_NGCFinalize,ExerelinNGCStep4,,"AddText ""Starting experience and assets?""
+SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCNormalStart:Ensign (20,000 credits, level 1)
+nex_NGCEasyStart:Lieutenant (75,000 credits, level 6, one officer)
+nex_NGCEasyStart2:Commander (250,000 credits, level 16, two officers)
+nex_NGCStartBack:Go back",
+nex_NGCFinalizeSuper,ExerelinNGCStep4,$option == nex_NGCFleetSuper,"AddText ""Starting experience and assets?""
+SetShortcut nex_NGCStartBack ESCAPE",,"nex_NGCSuperStart:Agent (20,000 credits, level 1)
+nex_NGCSuperStart2:Special Agent (75,000 credits, level 6)
+nex_NGCStartBack:Go back",
+nex_NGCNormalStart,NewGameOptionSelected,$option == nex_NGCNormalStart,"NGCAddCredits 20000
 NGCAddCharacterPoints 3
 NGCSetNumStartingOfficers 0
-SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Done,
-ExerelinNGCEasyStart,NewGameOptionSelected,$option == exerelinNGCEasyStart,"NGCAddCredits 75000
+SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+nex_NGCEasyStart,NewGameOptionSelected,$option == nex_NGCEasyStart,"NGCAddCredits 75000
 NGCAddCharacterPoints 3
 NGCAddXP 31500
 NGCSetNumStartingOfficers 1
-SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Done,
-ExerelinNGCEasyStart2,NewGameOptionSelected,$option == exerelinNGCEasyStart2,"NGCAddCredits 250000
+SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+nex_NGCEasyStart2,NewGameOptionSelected,$option == nex_NGCEasyStart2,"NGCAddCredits 250000
 NGCAddCharacterPoints 3
 NGCAddXP 214500
 NGCSetNumStartingOfficers 2
-SetShortcut exerelinNGCDone RETURN",,1:exerelinNGCDone:Done,
-ExerelinNGCStartBack,NewGameOptionSelected,$option == exerelinNGCStartBack,"NGCClearStartingGear
+SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+nex_NGCSuperStart,NewGameOptionSelected,$option == nex_NGCSuperStart,"NGCAddCredits 20000
+NGCAddCharacterPoints 3
+NGCSetNumStartingOfficers 0
+SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+nex_NGCSuperStart2,NewGameOptionSelected,$option == nex_NGCSuperStart2,"NGCAddCredits 75000
+NGCAddCharacterPoints 3
+NGCAddXP 31500
+NGCSetNumStartingOfficers 0
+SetShortcut nex_NGCDone RETURN",,1:nex_NGCDone:Done,
+nex_NGCStartBack,NewGameOptionSelected,$option == nex_NGCStartBack,"NGCClearStartingGear
 FireAll ExerelinNGCStep3",,,
-ExerelinNGCDoneOption,NewGameOptionSelected,$option == exerelinNGCDone,NGCDone,,,
+nex_NGCDoneOption,NewGameOptionSelected,$option == nex_NGCDone,NGCDone,,,
 # END NGC OPTIONS,,,,,,
 ,,,,,,
 ,,,,,,

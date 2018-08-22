@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.CharacterCreationData;
@@ -49,8 +50,16 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 
 				FleetMemberAPI temp = Global.getFactory().createFleetMember(type, variantId);
 				crew += (int)Math.min(temp.getNeededCrew() * 1.2f, temp.getMaxCrew());
-				supplies += (int)temp.getCargoCapacity()/2;
-				machinery += (int)temp.getCargoCapacity()/8;
+				
+				if (fleetTypeStr.equalsIgnoreCase("super"))
+				{
+					supplies += (int)temp.getCargoCapacity();
+				}
+				else
+				{
+					supplies += (int)temp.getCargoCapacity()/2;
+					machinery += (int)temp.getCargoCapacity()/8;
+				}
 				fuel += (int)Math.min(temp.getFuelUse() * 20, temp.getFuelCapacity());
 
 				AddRemoveCommodity.addFleetMemberGainText(temp.getVariant(), dialog.getTextPanel());
@@ -59,17 +68,20 @@ public class NGCAddStartingShipsByFleetType extends BaseCommandPlugin {
 				dialog.getTextPanel().addParagraph(rex.getMessage());
 			}	
 		}
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.CREW, crew);
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.SUPPLIES, supplies);
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.HEAVY_MACHINERY, machinery);
-		data.getStartingCargo().addItems(CargoItemType.RESOURCES, Commodities.FUEL, fuel);
-		
-		AddRemoveCommodity.addCommodityGainText(Commodities.CREW, crew, dialog.getTextPanel());
-		AddRemoveCommodity.addCommodityGainText(Commodities.SUPPLIES, supplies, dialog.getTextPanel());
-		AddRemoveCommodity.addCommodityGainText(Commodities.HEAVY_MACHINERY, machinery, dialog.getTextPanel());
-		AddRemoveCommodity.addCommodityGainText(Commodities.FUEL, fuel, dialog.getTextPanel());
+		TextPanelAPI text = dialog.getTextPanel();
+		addCargo(data, Commodities.CREW, crew, text);
+		addCargo(data, Commodities.SUPPLIES, supplies, text);
+		addCargo(data, Commodities.HEAVY_MACHINERY, machinery, text);
+		addCargo(data, Commodities.FUEL, fuel, text);
 		
 		return true;
+	}
+	
+	protected void addCargo(CharacterCreationData data, String commodity, int amount, TextPanelAPI text)
+	{
+		if (amount <= 0) return;
+		data.getStartingCargo().addItems(CargoItemType.RESOURCES, commodity, amount);
+		AddRemoveCommodity.addCommodityGainText(commodity, amount, text);
 	}
 }
 

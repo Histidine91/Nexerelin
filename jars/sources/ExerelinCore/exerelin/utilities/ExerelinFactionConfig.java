@@ -474,6 +474,8 @@ public class ExerelinFactionConfig
         getStartShipTypeIfAvailable(settings, "startShipsCarrierSmallSSP", StartFleetType.CARRIER_SMALL_SSP);
         getStartShipTypeIfAvailable(settings, "startShipsCarrierLarge", StartFleetType.CARRIER_LARGE);
         getStartShipTypeIfAvailable(settings, "startShipsCarrierLargeSSP", StartFleetType.CARRIER_LARGE_SSP);
+		getStartShipTypeIfAvailable(settings, "startShipsSuper", StartFleetType.SUPER);
+        getStartShipTypeIfAvailable(settings, "startShipsSuperSSP", StartFleetType.SUPER_SSP);
     }
     
     /**
@@ -757,7 +759,9 @@ public class ExerelinFactionConfig
         else
             useSSPShips = ExerelinModPlugin.HAVE_SWP;
         
-        if (ExerelinSetupData.getInstance().randomStartShips && (startShips.containsKey(type) || startShips.containsKey(typeSSP)) )
+        if (ExerelinSetupData.getInstance().randomStartShips
+				&& (type != StartFleetType.SUPER && type != StartFleetType.SUPER_SSP)
+				&& (startShips.containsKey(type) || startShips.containsKey(typeSSP)) )
         {
             int tries = 0;
             boolean valid = false;
@@ -797,7 +801,8 @@ public class ExerelinFactionConfig
         COMBAT_LARGE, COMBAT_LARGE_SSP,
         TRADE_LARGE, TRADE_LARGE_SSP,
         CARRIER_SMALL, CARRIER_SMALL_SSP,
-        CARRIER_LARGE, CARRIER_LARGE_SSP
+        CARRIER_LARGE, CARRIER_LARGE_SSP,
+		SUPER, SUPER_SSP
     }
     
     public static enum Morality {GOOD, NEUTRAL, AMORAL, EVIL}

@@ -32,6 +32,7 @@
     "startShipsTradeLarge":["brdy_eschaton_armed", "brdy_silverfish_standard"],
     "startShipsCarrierSmall":["brdy_typheus_defender", "brdy_zabrus_attack", "brdy_robberfly_strike"],
     "startShipsCarrierLarge":["brdy_convergence_standard", "brdy_eurypterus_standard", "scarab_hunter"],
+    "startShipsSuper":["brdy_imaginos_shock"],
     
     "defenceStations":["nex_asgard_Advanced"],
 }

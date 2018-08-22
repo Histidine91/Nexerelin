@@ -23,8 +23,8 @@ import java.util.ArrayList;
 
 public class NGCSetStartingFleetTooltipsAndState extends BaseCommandPlugin {
 	
-	protected static String[] FLEET_TYPES = {"SOLO", "COMBAT_SMALL", "TRADE_SMALL", "CARRIER_SMALL", "COMBAT_LARGE", "TRADE_LARGE", "CARRIER_LARGE"};
-	protected static String[] DIALOG_ENTRIES = {"Solo", "CombatSmall", "TradeSmall", "CarrierSmall", "CombatLarge", "TradeLarge", "CarrierLarge"};
+	protected static String[] FLEET_TYPES = {"SOLO", "COMBAT_SMALL", "TRADE_SMALL", "CARRIER_SMALL", "COMBAT_LARGE", "TRADE_LARGE", "CARRIER_LARGE", "SUPER"};
+	protected static String[] DIALOG_ENTRIES = {"Solo", "CombatSmall", "TradeSmall", "CarrierSmall", "CombatLarge", "TradeLarge", "CarrierLarge", "Super"};
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
@@ -36,7 +36,7 @@ public class NGCSetStartingFleetTooltipsAndState extends BaseCommandPlugin {
 		for (int i=0; i<FLEET_TYPES.length; i++)
 		{
 			String fleetTypeStr = FLEET_TYPES[i];
-			String option = "exerelinNGCFleet" + DIALOG_ENTRIES[i];
+			String option = "nex_NGCFleet" + DIALOG_ENTRIES[i];
 			List<String> startingVariants = factionConf.getStartShipsForType(fleetTypeStr, false);
 			if (startingVariants == null) {
 				dialog.getOptionPanel().setEnabled(option, false);

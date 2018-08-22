@@ -34,6 +34,7 @@
     "startShipsTradeLargeSSP":["ssp_circe_fis", "buffalo_tritachyon_Standard", "ssp_nautilus_str"],
     "startShipsCarrierSmallSSP":["ssp_vortex_sta", "tempest_Attack", "ssp_hecate_sup"],
     "startShipsCarrierLargeSSP":["swp_eos_sta", "ssp_arachne_art", "brawler_tritachyon_Standard"],
+    "startShipsSuper":["hyperion_Attack"],
     
     "defenceStations":["nex_asgard_Advanced"],
 }
