@@ -1,20 +1,16 @@
 {
-    "uniqueModClassName":"data.scripts.JunkPiratesModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":0.9, # Double
+    "baseFleetCostMultiplier":0.9,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Splinter Group", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Splinter Group",
 
-    "logisticsFleetName":"Supply Convoy", # String
+    "logisticsFleetName":"Supply Convoy",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
 
     "alignments":{
         "militarist":-0.5,

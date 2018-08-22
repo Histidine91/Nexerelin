@@ -1,9 +1,6 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
-
-    "factionsLiked":[],
-    "factionsDisliked":[],
     
     "startShipsSolo":["centurion_Starting"],
     "startShipsSoloSSP":["ssp_alastor_sta"],

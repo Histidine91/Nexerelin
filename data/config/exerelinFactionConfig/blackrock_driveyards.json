@@ -1,5 +1,6 @@
 {
     "playableFaction":true,
+    "corvusCompatible":true,
 
     "crewExpereinceLevelIncreaseChance":0.0,
     "baseFleetCostMultiplier":1.0,
@@ -10,8 +11,9 @@
 
     "positiveDiplomacyExtra":0,
     "negativeDiplomacyExtra":0,
-    "factionsLiked":[],
-    "factionsDisliked":["mayorate"],
+    "startRelationships":{
+        "mayorate":-0.6,
+    },
     
     "alignments":{
         "corporate":0.5,

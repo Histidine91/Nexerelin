@@ -5,7 +5,6 @@
     
     "isPirateNeutral":false,
     "spawnPatrols":true,
-    #"spawnPiratesAndMercs":false,
 
     "customRebelFaction":"",
     "customRebelFleetId":"",

@@ -1,19 +1,16 @@
 {
-    "uniqueModClassName":"data.scripts.plugins.PbcModPlugin", # String
-    "playableFaction":"true", # Boolean
+    "playableFaction":true,
     "corvusCompatible":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Splinter Group", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Splinter Group",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":["tiandong"], # String array
-    "factionsDisliked":["tritachyon","hegemony"], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "startRelationships":{ "tiandong": 0.4, "tritachyon":-0.6, "hegemony":-0.6 },
 
     "alignments":{
         "technocratic":1,

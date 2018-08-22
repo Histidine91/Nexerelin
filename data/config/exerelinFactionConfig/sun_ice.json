@@ -1,21 +1,19 @@
 {
-    "uniqueModClassName":"data.ICEModPlugin", # String
-    "playableFaction":false, # for now
+    "playableFaction":false,	# for now
     "corvusCompatible":true,
     
-    "spawnPiratesAndMercs":false,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Collaborators", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Collaborators",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":["sun_ici"], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
+    "startRelationships":{
+        "sun_ici":-0.6,
+    },
     
     "alignments":{
         "militarist":0.5,

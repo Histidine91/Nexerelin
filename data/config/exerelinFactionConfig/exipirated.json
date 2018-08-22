@@ -1,11 +1,9 @@
 {
-    "uniqueModClassName":"data.scripts.ExigencyModPlugin",
     "playableFaction":true,
     "pirateFaction":true,
     "noHomeworld":true,
     "corvusCompatible":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0,
     "baseFleetCostMultiplier":1.0,
 
     "customRebelFaction":"",

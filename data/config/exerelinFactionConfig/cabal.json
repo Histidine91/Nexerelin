@@ -1,5 +1,4 @@
 {
-    "uniqueModClassName":"data.scripts.SSPModPlugin",
     "playableFaction":false,
     "pirateFaction":true,
     "corvusCompatible":true,
@@ -7,9 +6,7 @@
     "showIntelEvenIfDead":true,
     
     "spawnPatrols":true,
-    "spawnPiratesAndMercs":"false",
 
-    "crewExpereinceLevelIncreaseChance":0.0,
     "baseFleetCostMultiplier":1.0,
 
     "customRebelFaction":"",

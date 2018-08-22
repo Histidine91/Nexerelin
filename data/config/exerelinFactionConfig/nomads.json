@@ -1,5 +1,4 @@
 {
-  "uniqueModClassName": "data.scripts.TheNomadsModPlugin",
   "playableFaction": true,
   "corvusCompatible": true,
   "baseFleetCostMultiplier": 1.0,

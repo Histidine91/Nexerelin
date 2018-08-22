@@ -1,9 +1,7 @@
 {
-    "uniqueModClassName":"data.scripts.CITModPlugin",
     "playableFaction":true,
     "corvusCompatible":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
     "baseFleetCostMultiplier":1.0,
 
     "customRebelFaction":"",

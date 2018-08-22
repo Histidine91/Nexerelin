@@ -1,20 +1,16 @@
 {
-    "uniqueModClassName":"data.scripts.AIWarModPlugin", # String
-    "playableFaction":false, # Boolean
+    "playableFaction":false,
     "corvusCompatible":true,
     "hostileToAll":3,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Splinter Group", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Splinter Group",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
     "morality":"evil",
     
     "allowAgentActions":false,

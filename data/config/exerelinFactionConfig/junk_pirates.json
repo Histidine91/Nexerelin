@@ -1,21 +1,17 @@
 {
-    "uniqueModClassName":"data.scripts.JunkPiratesModPlugin", # String
     "corvusCompatible":true,
     "playableFaction":true,
     "pirateFaction":true,
     "noHomeworld":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0, # Double, 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
+    "baseFleetCostMultiplier":1.0,
 
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
-    "rebelFleetSuffix":"Outlaws", # String
+    "customRebelFaction":"",
+    "customRebelFleetId":"",
+    "rebelFleetSuffix":"Outlaws",
 
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
-    "factionsLiked":[], # String array
-    "factionsDisliked":[], # String array
+    "positiveDiplomacyExtra":0,
+    "negativeDiplomacyExtra":0,
     
     "freeMarket":true,
     
