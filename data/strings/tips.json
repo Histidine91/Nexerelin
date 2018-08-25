@@ -1,5 +1,5 @@
 {
-    tips:[
+	tips:[
 		"[Nexerelin] A market's invasion defence strength scales with its market size (power of three), and is modified by its stability.",
 		"[Nexerelin] Attacking another faction's fleets or invading their markets in peacetime will anger their friends and your own faction, unless you can do it anonymously.",
 		"[Nexerelin] Markets hold reserve fleets that can be quickly deployed in response to invasions.",
@@ -10,6 +10,8 @@
 		"[Nexerelin] Planets are more dangerous to mine than moons, but deplete slower and regenerate faster.",
 		"[Nexerelin] Asteroids have low mining output, but are fairly safe and require no surveying.",
 		"[Nexerelin] Mining can occasionally turn up hidden caches with various goodies.",
-		"[Nexerelin] Battlestations will join a battle with/against you if either fleet is touching the station, or the market it's protecting."
-    ],
+		"[Nexerelin] Battlestations will join a battle with/against you if either fleet is touching the station, or the market it's protecting.",
+		"[Nexerelin] Raiding markets can be done anonymously, if no fleets see you who have identified you.",
+		"[Nexerelin] You can talk to an administrator or base commander to change your faction or resign your commission."
+	],
 }
