@@ -382,6 +382,10 @@ public class DiplomacyBrain {
 		if (ExerelinUtilsFaction.isPirateFaction(factionId) && !ExerelinConfig.allowPirateInvasions)
 			return false;
 		
+		long lastWar = DiplomacyManager.getManager().getLastWarTimestamp();
+		if (Global.getSector().getClock().getElapsedDaysSince(lastWar) < DiplomacyManager.MIN_INTERVAL_BETWEEN_WARS)
+			return false;
+		
 		float ourWeariness = DiplomacyManager.getWarWeariness(factionId, true);
 		log.info("Checking peace for faction " + faction.getDisplayName() + ": weariness " + ourWeariness);
 		if (ourWeariness < ExerelinConfig.minWarWearinessForPeace)
@@ -477,6 +481,7 @@ public class DiplomacyBrain {
 		int loopCount = 0;
 		for (String otherFactionId : factions)
 		{
+			if (otherFactionId.equals(factionId)) continue;
 			if (DiplomacyManager.disallowedFactions.contains(otherFactionId))
 				continue;
 			if (random.nextFloat() < EVENT_SKIP_CHANCE)

@@ -496,6 +496,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (isNegative && params.onlyPositive) continue;
             
             float chance = eventDef.chance;
+			if (chance <= 0) continue;
             if (!diplomacyManager.randomFactionRelationships) {
                 if (isNegative) {
                     float mult = ExerelinFactionConfig.getDiplomacyNegativeChance(factionId1, factionId2);
