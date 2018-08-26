@@ -150,6 +150,11 @@ public class Nex_FactionDirectoryHelper {
 		return result;
 	}
 	
+	public static String getFactionDisplayName(String factionId)
+	{
+		return getFactionDisplayName(Global.getSector().getFaction(factionId));
+	}
+	
 	public static String getFactionDisplayName(FactionAPI faction)
 	{
 		String factionId = faction.getId();

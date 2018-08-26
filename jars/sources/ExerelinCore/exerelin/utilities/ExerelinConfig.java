@@ -25,8 +25,6 @@ public class ExerelinConfig
     // System Generation settings
     public static int minimumPlanets = 3;
     public static float forcePiratesInSystemChance = 0.3f;
-    public static boolean enableIndependents = true;
-    public static boolean enablePirates = true;
     public static boolean useFactionMarketSpawnWeights = false;
 
     // Player settings
@@ -127,8 +125,6 @@ public class ExerelinConfig
 
             minimumPlanets = settings.optInt("minimumPlanets");
             forcePiratesInSystemChance = (float)settings.optDouble("piratesNotInSystemChance", forcePiratesInSystemChance);
-            enableIndependents = settings.optBoolean("enableIndependents", enableIndependents);
-            enablePirates = settings.optBoolean("enablePirates", enablePirates);
             useFactionMarketSpawnWeights = settings.optBoolean("useFactionMarketSpawnWeights", useFactionMarketSpawnWeights);
 
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary",  playerBaseSalary);

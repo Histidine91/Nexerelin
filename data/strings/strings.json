@@ -37,6 +37,11 @@
 		"abstain":"abstain",
 		"confirm":"confirm",
 		"cancel":"cancel",
+		"enabled":"enabled",
+		"disabled":"disabled",
+		
+		"previousPage":"previous page",
+		"nextPage":"next page",
 		
 		"his":"his",
 		"her":"her",

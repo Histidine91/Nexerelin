@@ -2,7 +2,6 @@ package exerelin.world;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
-import com.fs.starfarer.api.campaign.JumpPointAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
@@ -83,7 +82,7 @@ public class ExerelinProcGen {
 		Tags.THEME_REMNANT, Tags.THEME_REMNANT_DESTROYED, Tags.THEME_REMNANT_MAIN, Tags.THEME_REMNANT_RESURGENT, Tags.THEME_REMNANT_SECONDARY, Tags.THEME_REMNANT_SUPPRESSED
 	}));
 	
-	protected List<String> factionIds = new ArrayList<>();
+	protected Set<String> factionIds = new HashSet<>();
 	protected List<StarSystemAPI> systems = new ArrayList<>();
 	protected List<StarSystemAPI> maybePopulatedSystems = new ArrayList<>();
 	protected Set<StarSystemAPI> populatedSystems = new HashSet<>();
@@ -127,62 +126,27 @@ public class ExerelinProcGen {
 		}
 	}
 		
-	protected List<String> getStartingFactions()
+	protected Set<String> getStartingFactions()
 	{
-		List<String> availableFactions = ExerelinConfig.getFactions(true, false);
-		
-		int wantedFactionNum = setupData.numStartFactions;
-		if (wantedFactionNum <= 0) {
-			if (ExerelinConfig.enableIndependents)
-				availableFactions.add(Factions.INDEPENDENT);
-			if (!ExerelinConfig.enablePirates)
-				availableFactions.remove(Factions.PIRATES);
-			availableFactions.remove(ExerelinConstants.PLAYER_NPC_ID);
-			return availableFactions;
-		}
-		
-		int numFactions = 0;
 		Set<String> factions = new HashSet<>();
-		
-		if (!ExerelinSetupData.getInstance().freeStart)
+		for (Map.Entry<String, Boolean> tmp : ExerelinSetupData.getInstance().factions.entrySet())
 		{
-			String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-			ExerelinFactionConfig alignedConf = ExerelinConfig.getExerelinFactionConfig(alignedFactionId);
-			if (alignedConf.spawnAsFactionId != null)
+			String factionId = tmp.getKey();
+			if (tmp.getValue())
 			{
-				alignedFactionId = alignedConf.spawnAsFactionId;
+				factions.add(factionId);
+				log.info("Added starting faction: " + factionId);
 			}
-			
-			factions.add(alignedFactionId);
-			availableFactions.remove(alignedFactionId);
-			numFactions++;
 		}
-		
-		if (ExerelinConfig.enablePirates) {
-			factions.add(Factions.PIRATES);
-		}
-		availableFactions.remove(Factions.PIRATES);
-			
-		if (ExerelinConfig.enableIndependents) {
-			factions.add(Factions.INDEPENDENT);
-		}
-		availableFactions.remove(Factions.INDEPENDENT);	// note: normally independents can't appear as they're not a playable faction
-		
-		availableFactions.remove(ExerelinConstants.PLAYER_NPC_ID);
-		
-		WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
-		picker.addAll(availableFactions);
-		
-		while (numFactions < wantedFactionNum)
+		String playerFaction = PlayerFactionStore.getPlayerFactionIdNGC();
+		if (!playerFaction.equals(ExerelinConstants.PLAYER_NPC_ID))
 		{
-			if (picker.isEmpty()) break;
-			String factionId = picker.pickAndRemove();
-			factions.add(factionId);
-			log.info("Adding starting faction: " + factionId);
-			numFactions++;
+			factions.add(playerFaction);
+			log.info("Added player starting faction: " + playerFaction);
 		}
-		log.info("Number of starting factions: " + numFactions);
-		return new ArrayList<>(factions);
+		
+		log.info("Number of starting factions: " + factions.size());
+		return factions;
 	}
 	
 	public Random getRandom() {

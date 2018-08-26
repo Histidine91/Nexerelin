@@ -3,8 +3,8 @@ package exerelin.campaign;
 import com.fs.starfarer.api.Global;
 import exerelin.utilities.ExerelinConfig;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.log4j.Logger;
 
 /* This class functions as a data structure for Exerelin setup
@@ -22,21 +22,21 @@ public final class ExerelinSetupData
 	public int numStations = 16;
 	public int maxPlanetsPerSystem = 4;
 	public int maxMarketsPerSystem = 6;	// includes stations
+	public Map<String, Boolean> factions = new HashMap<>();
 
 	// Game defaults
 	public boolean corvusMode = true;
 	public boolean respawnFactions = false;
 	public boolean onlyRespawnStartingFactions = false;
+	@Deprecated
 	public int numStartFactions = -1;
 	public boolean randomStartRelationships = false;
 	public boolean randomStartRelationshipsPirate = false;
 	public boolean easyMode = false;
 	public boolean hardMode = false;
-	@Deprecated public boolean omnifactoryPresent = false;
-	@Deprecated public boolean randomOmnifactoryLocation = false;
 	public boolean prismMarketPresent = false;
 	public boolean freeStart = false;
-	public boolean useMarketFactionWeights = true;	// FIXME: use me!
+	public boolean useMarketFactionWeights = true;
 	public int numStartingOfficers = 0;
 	public boolean randomStartShips = false;
 

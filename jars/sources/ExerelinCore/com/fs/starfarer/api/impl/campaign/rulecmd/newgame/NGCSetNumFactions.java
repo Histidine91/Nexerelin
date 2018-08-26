@@ -13,7 +13,7 @@ import exerelin.ExerelinConstants;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 
-
+@Deprecated
 public class NGCSetNumFactions extends BaseCommandPlugin {
 	 
 	@Override

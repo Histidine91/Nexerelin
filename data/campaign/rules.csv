@@ -48,41 +48,18 @@ SetShortcut exerelinNGCSectorOptionsBack ESCAPE",,9:exerelinNGCSectorOptionsBack
 ExerelinNewGameSectorConfigBack,NewGameOptionSelected,$option==exerelinNGCSectorOptionsBack,"Nex_NGCProcessSectorGenerationSliders save
 FireAll ExerelinNGCOptions",,,
 ,,,,,,
-ExerelinNewGameFactionConfig,ExerelinNGCFactionOptions,,"SetEnabled exerelinNGCSetNumFactions true
-SetShortcut exerelinNGCOptionsBack ESCAPE",,"exerelinNGCSetNumFactions:Set number of factions at start ($numStartFactions)
+ExerelinNewGameFactionConfig,ExerelinNGCFactionOptions,,"SetEnabled nex_NGCFactionToggleMenu true
+SetShortcut exerelinNGCOptionsBack ESCAPE",,"nex_NGCFactionToggleMenu:Enable/disable factions
 9:exerelinNGCOptionsBack:Back",
-ExerelinNewGameFactionConfigCorvus,ExerelinNGCFactionOptions,$corvusMode,SetEnabled exerelinNGCSetNumFactions false,,,
+ExerelinNewGameFactionConfigCorvus,ExerelinNGCFactionOptions,$corvusMode,SetEnabled nex_NGCFactionToggleMenu false,,,
 ,,,,,,
 ExerelinNewGameChoicesDev,ExerelinNGCOptions,$global.isDevMode,,,"99:exerelinNGCDevStart:>> (dev) quick start
 100:exerelinNGCDevStartFast:>> (dev) quick start no time pass",
 ,,,,,,
 ExerelinNewGameOptionsDone,NewGameOptionSelected,$option==exerelinNGCOptionsDone,FireBest ExerelinNGCStep2,,,
 ,,,,,,
-ExerelinNGCNumFactionsMenu,NewGameOptionSelected,$option==exerelinNGCSetNumFactions,SetShortcut exerelinNGCFactionOptions ESCAPE,,"exerelinNGCNumFactions2:Two
-exerelinNGCNumFactions3:Three
-exerelinNGCNumFactions5:Five
-exerelinNGCNumFactions50%:50% of available factions
-exerelinNGCNumFactions75%:75% of available factions
-exerelinNGCNumFactionsAll:All available factions
-exerelinNGCFactionOptions:Back",
-ExerelinNGCNumFactions2,NewGameOptionSelected,$option==exerelinNGCNumFactions2,"NGCSetNumFactions 2 true
-AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
-FireAll ExerelinNGCFactionOptions",,,
-ExerelinNGCNumFactions3,NewGameOptionSelected,$option==exerelinNGCNumFactions3,"NGCSetNumFactions 3 true
-AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
-FireAll ExerelinNGCFactionOptions",,,
-ExerelinNGCNumFactions5,NewGameOptionSelected,$option==exerelinNGCNumFactions5,"NGCSetNumFactions 5 true
-AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
-FireAll ExerelinNGCFactionOptions",,,
-ExerelinNGCNumFactions50%,NewGameOptionSelected,$option==exerelinNGCNumFactions50%,"NGCSetNumFactions 0.5 false
-AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
-FireAll ExerelinNGCFactionOptions",,,
-ExerelinNGCNumFactions75%,NewGameOptionSelected,$option==exerelinNGCNumFactions75%,"NGCSetNumFactions 0.75 false
-AddText ""Set number of starting factions to $numStartFactions"" textFriendColor
-FireAll ExerelinNGCFactionOptions",,,
-ExerelinNGCNumFactionsAll,NewGameOptionSelected,$option==exerelinNGCNumFactionsAll,"NGCSetNumFactions -1 true
-AddText ""All available factions will spawn at start"" textFriendColor
-FireAll ExerelinNGCFactionOptions",,,
+nex_NGCFactionToggleMenu,NewGameOptionSelected,$option==nex_NGCFactionToggleMenu,Nex_NGCFactionToggle listFactions,,,
+nex_NGCToggleFaction,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCToggleFaction_""",Nex_NGCFactionToggle toggle,,,
 ,,,,,,
 ExerelinNGCSectorOptionsMenu,NewGameOptionSelected,$option==exerelinNGCSectorOptions,FireAll ExerelinNGCSectorOptions,,,
 ExerelinNGCFactionOptionsMenu,NewGameOptionSelected,$option==exerelinNGCFactionOptions,FireAll ExerelinNGCFactionOptions,,,
