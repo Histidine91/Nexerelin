@@ -87,7 +87,7 @@ public class DiplomacyBrain {
 	public static final float DOMINANCE_MULT = 25;
 	public static final float DOMINANCE_HARD_MULT = 1.5f;
 	public static final float HARD_MODE_MOD = -25f;
-	public static final float MAX_DISPOSITION_FOR_WAR = -10;
+	public static final float MAX_DISPOSITION_FOR_WAR = -15f;
 	public static final float MILITARISM_WAR_MULT = 1;
 	public static final float LIKE_THRESHOLD = 10;
 	public static final float DISLIKE_THRESHOLD = -10;
@@ -256,8 +256,8 @@ public class DiplomacyBrain {
 		float dispBase = ExerelinConfig.getExerelinFactionConfig(this.factionId).getDisposition(factionId);
 		if (!DiplomacyManager.isRandomFactionRelationships())
 			disposition.modifyFlat("base", dispBase, "Base disposition");
-		else
-			disposition.unmodify("base");
+		//else
+		//	disposition.unmodify("base");
 		
 		float dispFromRel = faction.getRelationship(factionId) * RELATIONS_MULT;
 		disposition.modifyFlat("relationship", dispFromRel, "Relationship");
@@ -284,8 +284,8 @@ public class DiplomacyBrain {
 		
 		if (isHardMode)
 			disposition.modifyFlat("hardmode", HARD_MODE_MOD, "Hard mode");
-		else
-			disposition.unmodify("hardmode");
+		//else
+		//	disposition.unmodify("hardmode");
 		
 		disposition.getModifiedValue();
 	}
@@ -327,7 +327,9 @@ public class DiplomacyBrain {
 		log.info("\tExisting enemies' strength " + enemyStrength);
 		//float netStrength = ourStrength - enemyStrength - (targetStrength - targetEnemyStrength);
 		//if (netStrength < 0) netStrength *= 0.5f;	// make small fry a bit more reckless
-		float strRatio = (ourStrength + targetEnemyStrength) / (targetStrength + enemyStrength);
+		
+		// existing enemy strength is weighted less, to discourage dogpiles
+		float strRatio = (ourStrength + targetEnemyStrength * 0.5f) / (targetStrength + enemyStrength);
 		
 		float militarismMult = ourConf.alignments.get(Alignment.MILITARIST) * MILITARISM_WAR_MULT + 1;
 		log.info("\tMilitarism mult: " + militarismMult);
@@ -456,7 +458,7 @@ public class DiplomacyBrain {
 			if (disposition.disposition.getModifiedValue() > MAX_DISPOSITION_FOR_WAR) continue;
 			
 			float decisionRating = getWarDecisionRating(otherFactionId);
-			if (decisionRating > 30 + MathUtils.getRandomNumberInRange(-5, 5))
+			if (decisionRating > 40 + MathUtils.getRandomNumberInRange(-5, 5))
 			{
 				DiplomacyManager.createDiplomacyEvent(faction, Global.getSector().getFaction(otherFactionId), "declare_war", null);
 				DiplomacyManager.getManager().setLastWarTimestamp(Global.getSector().getClock().getTimestamp());
@@ -483,6 +485,8 @@ public class DiplomacyBrain {
 		{
 			if (otherFactionId.equals(factionId)) continue;
 			if (DiplomacyManager.disallowedFactions.contains(otherFactionId))
+				continue;
+			if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID) && !ExerelinConfig.followersDiplomacy)
 				continue;
 			if (random.nextFloat() < EVENT_SKIP_CHANCE)
 				continue;
@@ -515,6 +519,8 @@ public class DiplomacyBrain {
 	public void considerOptions()
 	{
 		if (DiplomacyManager.disallowedFactions.contains(factionId)) return;
+		if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+			return;
 		
 		boolean didSomething = false;
 		

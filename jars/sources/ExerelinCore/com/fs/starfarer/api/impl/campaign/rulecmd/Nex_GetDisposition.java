@@ -72,6 +72,7 @@ public class Nex_GetDisposition extends BaseCommandPlugin {
 	
 	protected void printDispositionEntry(TextPanelAPI text, String title, float value)
 	{
+		if (value == 0) return;
 		String valueStr = String.format("%.2f", value);
 		text.addParagraph(title + ": " + valueStr);
 		Color color = Misc.getHighlightColor();
