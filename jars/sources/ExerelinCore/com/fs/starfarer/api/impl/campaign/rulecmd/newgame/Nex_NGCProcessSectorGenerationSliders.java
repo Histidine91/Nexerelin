@@ -43,15 +43,15 @@ public class Nex_NGCProcessSectorGenerationSliders extends BaseCommandPlugin {
 	{
 		ExerelinSetupData data = ExerelinSetupData.getInstance();
 		
-		opts.addSelector(getString("populatedSystemsTitle"), "systemCountSelector", Color.YELLOW, BAR_WIDTH, 48, 4, 32, ValueDisplayMode.VALUE, 
+		opts.addSelector(getString("populatedSystemsTitle"), "systemCountSelector", Color.YELLOW, BAR_WIDTH, 48, 4, 48, ValueDisplayMode.VALUE, 
 				getString("populatedSystemsTooltip"));
 		opts.setSelectorValue("systemCountSelector", data.numSystems);
 		
-		opts.addSelector(getString("populatedPlanetsTitle"), "planetCountSelector", Color.GREEN, BAR_WIDTH, 48, 8, 64, ValueDisplayMode.VALUE, 
+		opts.addSelector(getString("populatedPlanetsTitle"), "planetCountSelector", Color.GREEN, BAR_WIDTH, 48, 8, 80, ValueDisplayMode.VALUE, 
 				getString("populatedPlanetsTooltip"));
 		opts.setSelectorValue("planetCountSelector", data.numPlanets);
 		
-		opts.addSelector(getString("stationsTitle"), "stationCountSelector", Color.GRAY, BAR_WIDTH, 48, 8, 64, ValueDisplayMode.VALUE, 
+		opts.addSelector(getString("stationsTitle"), "stationCountSelector", Color.GRAY, BAR_WIDTH, 48, 8, 80, ValueDisplayMode.VALUE, 
 				getString("stationsTooltip"));
 		opts.setSelectorValue("stationCountSelector", data.numStations);
 	}
