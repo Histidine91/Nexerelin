@@ -58,12 +58,11 @@ public class Nex_NGCFactionToggle extends PaginatedOptions {
 	
 	protected void init(String ruleId, InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap)
 	{
-		optionsPerPage = 6;
+		//optionsPerPage = 6;
 		super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 		listFactions();
 		addOptionAllPages(Misc.ucFirst(StringHelper.getString("back")), "exerelinNGCFactionOptions");
 		dialog.getOptionPanel().setShortcut("exerelinNGCFactionOptions", Keyboard.KEY_ESCAPE, false, false, false, false);
-		Global.getLogger(this.getClass()).info("Paaage: " + currPage + ", " + lastPage);
 		currPage = lastPage;
 		showOptions();
 	}

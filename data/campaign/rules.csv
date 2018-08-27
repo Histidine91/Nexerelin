@@ -246,18 +246,26 @@ FireAll ExerelinNGCStep3",,,
 nex_NGCDoneOption,NewGameOptionSelected,$option == nex_NGCDone,NGCDone,,,
 # END NGC OPTIONS,,,,,,
 ,,,,,,
-,,,,,,
+# special options,,,,,,
 ExerelinMarketAddOptionSpecial,PopulateOptions,$menuState == main,"SetShortcut exerelinMarketSpecial ""S"" true",,6:exerelinMarketSpecial:Special functions,
 ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,"$menuState = exerelinSpecial
 FireAll ExerelinMarketSpecialInitialize
 FireAll ExerelinMarketSpecial",,,
-ExerelinMarketLeaveOption,ExerelinMarketSpecial,,SetShortcut exerelinMarketSpecialBack ESCAPE,,10:exerelinMarketSpecialBack:Back,
+ExerelinMarketSpecialBackOption,ExerelinMarketSpecial,,SetShortcut exerelinMarketSpecialBack ESCAPE,,10:exerelinMarketSpecialBack:Back,
 ExerelinMarketSpecialBack,DialogOptionSelected,$option == exerelinMarketSpecialBack,"ExerelinShowDefaultVisual
 $menuState = main 0
 FireAll PopulateOptions",,,
 ,,,,,,
+nex_MarketHostileActionMenuOption,ExerelinMarketSpecial,"$hasMarket
+$faction.id != $player.factionId
+$faction.id != ""neutral""
+$faction.id != ""player_npc""","SetShortcut nex_hostileActionMenu ""H"" true",,1:nex_hostileActionMenu:Take a hostile action,
+nex_MarketHostileActionMenu,DialogOptionSelected,$option == nex_hostileActionMenu,"$menuState = nex_hostileAction 0
+FireAll Nex_HostileAction",,,
+nex_MarketHostileActionBack,Nex_HostileAction,,SetShortcut exerelinMarketSpecial ESCAPE,,9:exerelinMarketSpecial:Back,
+,,,,,,
 # START INVASION OPTIONS,,,,,,
-ExerelinMarketInvadeOption,ExerelinMarketSpecial,"IsValidInvasionTarget
+ExerelinMarketInvadeOption,Nex_HostileAction,"IsValidInvasionTarget
 ",SetShortcut exerelinInvasion I,,1:exerelinInvasion:Invade the planet/station,
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"$menuState = invasion 0
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
@@ -288,7 +296,7 @@ MakePlayerImmediatelyAttackable
 $player.invasionTarget = $id 1.01
 CreateWarmongerEvent $faction.id
 AdjustRep $faction.id COMBAT_NORMAL",,,
-ExerelinInvasionCancel,DialogOptionSelected,$option == exerelinInvasionCancel,FireAll ExerelinMarketSpecial,,,
+ExerelinInvasionCancel,DialogOptionSelected,$option == exerelinInvasionCancel,FireAll Nex_HostileAction,,,
 ExerelinInvasionDone,DialogOptionSelected,"$option == exerelinInvasionDone
 $hasMarket",Exerelin_LootMarket false,,,
 ExerelinInvasionAndrada,DialogOptionSelected,$option == nex_invasionAndrada,"Nex_AndradaOption
@@ -301,7 +309,7 @@ Nex_InvasionDefenseInteraction false","As your $shipOrFleet moves in closer, the
 ExerelinInvasionPostDefenders,BeatDefendersContinue,"$global.nex_afterBattleMode == ""invasion""","$menuState = invasion 0
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 SetPromptText ""You decide to...""
-FireAll ExerelinInvadeListOptions",Your $shipOrFleet neutralizes the response fleet and is ready to invade $market.,exerelinMarketSpecial:Continue,
+FireAll ExerelinInvadeListOptions",Your $shipOrFleet neutralizes the response fleet and is ready to invade $market.,,
 ,,,,,,
 ,,,,,,
 ,,,,,,
@@ -372,9 +380,9 @@ ExerelinDialogInvadeInterference_open,OpenCommLink,$exerelinRespondingToInvasion
 # END INVASION OPTIONS,,,,,,
 ,,,,,,
 # START RAID OPTIONS,,,,,,
-ExerelinMarketRaidOption,ExerelinMarketSpecial,Nex_CanRaid,"SetShortcut exerelinRaid R
+ExerelinMarketRaidOption,Nex_HostileAction,Nex_CanRaid,"SetShortcut exerelinRaid R
 SetEnabled exerelinRaid true",,1:exerelinRaid:Raid and pillage the planet/station,
-ExerelinMarketRaidOptionCooldown,ExerelinMarketSpecial,"Nex_CanRaid
+ExerelinMarketRaidOptionCooldown,Nex_HostileAction,"Nex_CanRaid
 $market.nex_recentlyRaided score:100","SetTooltip exerelinRaid ""You've recently raided this market and cannot do so again for $nex_raidCooldownStr days.""
 SetEnabled exerelinRaid false",,,
 ExerelinRaidStart,DialogOptionSelected,$option == exerelinRaid,"$menuState = raid 0
@@ -496,35 +504,16 @@ nex_factionDirectoryPrint,DialogOptionSelected,"Nex_OptionStartsWith ""nex_print
 #END MARKET DIRECTORY OPTIONS,,,,,,
 ,,,,,,
 #START AGENT OPTIONS,,,,,,
-ExerelinMarketAgentOption,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""","SetEnabled exerelinUseAgent true
+ExerelinMarketAgentOption,Nex_HostileAction,,"SetEnabled exerelinUseAgent true
 SetShortcut exerelinUseAgent A",,2:exerelinUseAgent:Deploy an agent,
-ExerelinMarketAgentOptionNoAgents,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""
-!HasItem agent score:10","SetTooltip exerelinUseAgent ""You have no agents!""
+ExerelinMarketAgentOptionNoAgents,Nex_HostileAction,!HasItem agent score:10,"SetTooltip exerelinUseAgent ""You have no agents!""
 SetEnabled exerelinUseAgent false",,,
-ExerelinMarketAgentOptionNotAllowed,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""
-!FactionAllowAgentActions $faction.id score:20","SetTooltip exerelinUseAgent""$TheFaction cannot be infiltrated.""
+ExerelinMarketAgentOptionNotAllowed,Nex_HostileAction,!FactionAllowAgentActions $faction.id score:20,"SetTooltip exerelinUseAgent""$TheFaction cannot be infiltrated.""
 SetEnabled exerelinUseAgent false",,,
-#ExerelinMarketAgentOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""
-$tradeMode == NONE
+#ExerelinMarketAgentOptionNoSneak,Nex_HostileAction,"$tradeMode == NONE
 ArePatrolsNearby $faction.id 750 score:10","SetTooltip exerelinUseAgent ""The port is closed to you, and $faction patrols nearby prevent agent insertion.""
 SetEnabled exerelinUseAgent false",,,
-ExerelinMarketAgentOptionAlertLevelMaxed,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""
-HasItem agent
+ExerelinMarketAgentOptionAlertLevelMaxed,Nex_HostileAction,"HasItem agent
 $market.alertLevel >= 1","SetTooltip exerelinUseAgent ""Security forces are at maximum alertness; infiltration is not possible.""
 SetEnabled exerelinUseAgent false",,,
 ExerelinAgentOptionListMain,DialogOptionSelected,$option == exerelinUseAgent,"$menuState = agent 0
@@ -540,7 +529,7 @@ ExerelinAgentOptionListLowerRelations,ExerelinAgentOption,,"SetTooltip exerelinA
 SetShortcut exerelinAgentLowerRelations L",,exerelinAgentLowerRelations:Lower relations,
 ExerelinAgentOptionListDestabilizeMarket,ExerelinAgentOption,,"SetTooltip exerelinAgentDestabilizeMarket ""Attempt the use of terror methods to destabilize $market. There is a chance your agent will be detected, with serious diplomatic repercussions.""
 SetShortcut exerelinAgentDestabilizeMarket D",,exerelinAgentDestabilizeMarket:Destabilize market,
-ExerelinAgentOptionListBack,ExerelinAgentOption,,SetShortcut exerelinMarketSpecial ESCAPE,,exerelinMarketSpecial:Back,
+ExerelinAgentOptionListBack,ExerelinAgentOption,,SetShortcut nex_hostileActionMenu ESCAPE,,nex_hostileActionMenu:Back,
 ,,,,,,
 ExerelinAgentGatherIntel,DialogOptionSelected,$option == exerelinAgentGatherIntel,"AgentGatherIntel true
 FireBest ExerelinAgentPostDeploy",,,
@@ -554,41 +543,22 @@ FireBest ExerelinAgentPostDeploy",,,
 ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasItem agent,"GetNumSpecialPeople
 FireAll ExerelinAgentOption",,,
 ExerelinAgentAfterDeployNoMoreAgents,ExerelinAgentPostDeploy,!HasItem agent score:10,"$menuState = exerelinSpecial
-FireAll ExerelinMarketSpecial",You have no more agents to deploy.,,
+FireAll Nex_HostileAction",You have no more agents to deploy.,,
 ExerelinAgentAfterDeployAlertLevelMaxed,ExerelinAgentPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = exerelinSpecial
-FireAll ExerelinMarketSpecial",Security is too tight for further agent insertions.,,
+FireAll Nex_HostileAction",Security is too tight for further agent insertions.,,
 #END AGENT OPTIONS,,,,,,
 ,,,,,,
 #START SABOTEUR OPTIONS,,,,,,
-ExerelinMarketSaboteurOption,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""","SetEnabled exerelinUseSaboteur true
+ExerelinMarketSaboteurOption,Nex_HostileAction,,"SetEnabled exerelinUseSaboteur true
 SetShortcut exerelinUseSaboteur S",,3:exerelinUseSaboteur:Deploy a saboteur,
-ExerelinMarketSaboteurOptionNoSaboteurs,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""
-!HasItem saboteur","SetTooltip exerelinUseSaboteur ""You have no saboteurs!""
+ExerelinMarketSaboteurOptionNoSaboteurs,Nex_HostileAction,!HasItem saboteur,"SetTooltip exerelinUseSaboteur ""You have no saboteurs!""
 SetEnabled exerelinUseSaboteur false",,,
-ExerelinMarketSaboteurOptionNotAllowed,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""
-!FactionAllowAgentActions $faction.id score:20","SetTooltip exerelinUseSaboteur ""$TheFaction cannot be infiltrated.""
+ExerelinMarketSaboteurOptionNotAllowed,Nex_HostileAction,!FactionAllowAgentActions $faction.id score:20,"SetTooltip exerelinUseSaboteur ""$TheFaction cannot be infiltrated.""
 SetEnabled exerelinUseSaboteur false",,,
-#ExerelinMarketSaboteurOptionNoSneak,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""
-$tradeMode == NONE
+#ExerelinMarketSaboteurOptionNoSneak,Nex_HostileAction,"$tradeMode == NONE
 ArePatrolsNearby $faction.id 750 score:10","SetTooltip exerelinUseSaboteur ""The port is closed to you, and $faction patrols nearby prevent saboteur insertion.""
 SetEnabled exerelinUseSaboteur false",,,
-ExerelinMarketSaboteurOptionAlertLevelMaxed,ExerelinMarketSpecial,"$hasMarket
-$faction.id != $player.factionId
-$faction.id != ""neutral""
-$faction.id != ""player_npc""
-HasItem agent
+ExerelinMarketSaboteurOptionAlertLevelMaxed,Nex_HostileAction,"HasItem saboteur
 $market.alertLevel >= 1","SetTooltip exerelinUseAgent ""Security forces are at maximum alertness; infiltration is not possible.""
 SetEnabled exerelinUseSaboteur false",,,
 ExerelinSaboteurOptionListMain,DialogOptionSelected,$option == exerelinUseSaboteur,"$menuState = saboteur 0
@@ -600,7 +570,7 @@ ExerelinSaboteurOptionListSabotageReserve,ExerelinSaboteurOption,,"SetTooltip ex
 SetShortcut exerelinSaboteurSabotageReserve S",,exerelinSaboteurSabotageReserve:Sabotage reserve fleet,
 ExerelinSaboteurOptionListDestroyFood,ExerelinSaboteurOption,,"SetTooltip exerelinSaboteurDestroyFood ""Destroys a large amount of food on $market, possibly provoking a destabilizing crisis.""
 SetShortcut exerelinSaboteurDestroyFood F",,exerelinSaboteurDestroyFood:Destroy food stockpiles,
-ExerelinSaboteurOptionListBack,ExerelinSaboteurOption,,SetShortcut exerelinMarketSpecial ESCAPE,,exerelinMarketSpecial:Back,
+ExerelinSaboteurOptionListBack,ExerelinSaboteurOption,,SetShortcut nex_hostileActionMenu ESCAPE,,nex_hostileActionMenu:Back,
 ExerelinSaboteurSabotageReserve,DialogOptionSelected,$option == exerelinSaboteurSabotageReserve,"SaboteurSabotageReserve
 FireBest ExerelinSaboteurPostDeploy",,,
 ExerelinSaboteurDestroyFood,DialogOptionSelected,$option == exerelinSaboteurDestroyFood,"SaboteurDestroyFood
@@ -608,9 +578,9 @@ FireBest ExerelinSaboteurPostDeploy",,,
 ExerelinSaboteurAfterDeploy,ExerelinSaboteurPostDeploy,HasItem saboteur,"GetNumSpecialPeople
 FireAll ExerelinSaboteurOption",,,
 ExerelinSaboteurAfterDeployNoMoreSaboteurs,ExerelinSaboteurPostDeploy,!HasItem saboteur score:10,"$menuState = exerelinSpecial
-FireAll ExerelinMarketSpecial",You have no more saboteurs to deploy.,,
+FireAll Nex_HostileAction",You have no more saboteurs to deploy.,,
 ExerelinSaboteurAfterDeployAlertLevelMaxed,ExerelinSaboteurPostDeploy,$market.alertLevel >= 1 score:5,"$menuState = exerelinSpecial
-FireAll ExerelinMarketSpecial",Security is too tight for further saboteur insertions.,,
+FireAll Nex_HostileAction",Security is too tight for further saboteur insertions.,,
 #END SABOTEUR OPTIONS,,,,,,
 ,,,,,,
 #START PRISONER OPTIONS,,,,,,
@@ -721,11 +691,11 @@ FireAll ExerelinFleetRequestOption",,,
 #END FLEET REQUEST OPTIONS,,,,,,
 ,,,,,,
 #START SUPERWEAPON OPTIONS,,,,,,
-ExerelinMarketSuperweaponOption,ExerelinMarketSpecial,"IsValidInvasionTarget
+ExerelinMarketSuperweaponOption,Nex_HostileAction,"IsValidInvasionTarget
 NGCDoesFactionExist interstellarimperium
 Exerelin_CanUseSuperweapon","SetEnabled exerelinSuperweapon true
 SetShortcut exerelinSuperweapon X",,1:exerelinSuperweapon:Deploy planetbreaker,
-ExerelinMarketSuperweaponOptionNotAvailable,ExerelinMarketSpecial,"IsValidInvasionTarget
+ExerelinMarketSuperweaponOptionNotAvailable,Nex_HostileAction,"IsValidInvasionTarget
 NGCDoesFactionExist interstellarimperium
 !Exerelin_CanUseSuperweapon","SetEnabled exerelinSuperweapon false
 SetTooltip exerelinSuperweapon ""You have no ships capable of performing this action.""",,1:exerelinSuperweapon:Deploy planetbreaker,
@@ -739,7 +709,7 @@ Nex_AddOptionConfirmation exerelinSuperweaponProceed ""Confirm superweapon use?"
 Be warned of the political repercussions.","1:exerelinSuperweaponProceed:Continue
 2:exerelinSuperweaponCancel:Cancel",
 ExerelinSuperweaponCancel,DialogOptionSelected,$option == exerelinSuperweaponCancel,"ShowDefaultVisual
-FireAll ExerelinMarketSpecial",,,
+FireAll Nex_HostileAction",,,
 ,,,,,,
 ExerelinSuperweaponProceed,DialogOptionSelected,"$option == exerelinSuperweaponProceed
 !$market.hasDefenders","CreateWarmongerEvent $faction.id
@@ -753,7 +723,8 @@ ExerelinSuperweaponPostDefenders,BeatDefendersContinue,"$global.nex_afterBattleM
 Exerelin_ShowShipVisual $bestSuperweapon
 SetPromptText ""You decide to...""
 SetShortcut exerelinSuperweaponProceed RETURN
-SetShortcut exerelinSuperweaponCancel ESCAPE",Your $shipOrFleet neutralizes the defence fleet and is ready to deploy your superweapon.,"1:exerelinSuperweaponProceed:Continue
+SetShortcut exerelinSuperweaponCancel ESCAPE
+Nex_AddOptionConfirmation exerelinSuperweaponProceed ""Confirm superweapon use?"" ""Fire"" ""Abort""",Your $shipOrFleet neutralizes the defence fleet and is ready to deploy your superweapon.,"1:exerelinSuperweaponProceed:Continue
 2:exerelinSuperweaponCancel:Cancel",
 ExerelinSuperweaponLeave,DialogOptionSelected,$option == exerelinSuperweaponLeave,DismissDialog,,,
 ,,,,,,
@@ -840,7 +811,7 @@ FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connec
 
 ""Yeah, what is it?""",,
 ExerelinConvOfficialGreetingFollowers,PickGreeting,"Nex_IsBaseOfficial command
-Nex_IsFactionRuler
+Nex_IsFactionRuler $faction.id
 !$mpm_isPlayerContact","ShowPersonVisual
 FireAll PopulateOptions
 FireAll ExerelinBaseCommanderOptionsInitialize","""Hello, chief. What can we do for you?""",,
@@ -1027,7 +998,7 @@ FireAll ExerelinMarketSpecialInitialize",,,
 ,,,,,,
 #START MARKET TRANSFER OPTIONS,,,,,,
 nex_marketTransferInit,PopulateOptions,"Nex_IsBaseOfficial admin
-Nex_IsFactionRuler",,,nex_transferMarketMainWithDialog:Transfer this market to another faction,
+Nex_IsFactionRuler $faction.id",,,nex_transferMarketMainWithDialog:Transfer this market to another faction,
 ,,,,,,
 nex_marketTransfer,DialogOptionSelected,$option == nex_transferMarketMain,FireAll Nex_MarketTransferMain,,,
 nex_marketTransferWithDialog,DialogOptionSelected,$option == nex_transferMarketMainWithDialog,"Nex_TransferMarket printRepChange
@@ -1540,7 +1511,7 @@ EndConversation",,,
 ,,,,,,
 cargoScanInitialFollowers,BeginFleetEncounter,"!$cargoScan_didAlready
 $pursuePlayer_smugglingScan score:50
-Nex_IsFactionRuler score:20","unset $ignorePlayerCommRequests
+Nex_IsFactionRuler $faction.id score:20","unset $ignorePlayerCommRequests
 $cargoScanConv = true 0
 $cargoScan_didAlready = true 0
 $entity.smugglingScanComplete = true 1
@@ -1549,7 +1520,7 @@ AddText ""The $faction $otherShipOrFleet looks like it wants to scan you, but do
 AddText ""You're being hailed by the $faction $otherShipOrFleet."" $faction.baseColor
 OpenComms",,,
 cargoScanFirstCommsFollowers,OpenCommLink,"$entity.cargoScanConv score:100
-Nex_IsFactionRuler score:50",,"""We've received complaints of smuggling activity around these parts. Now I know there's no way you'd have anything to do with it, but discretion would be helpful. Appearances have to be maintained, you know.""
+Nex_IsFactionRuler $faction.id score:50",,"""We've received complaints of smuggling activity around these parts. Now I know there's no way you'd have anything to do with it, but discretion would be helpful. Appearances have to be maintained, you know.""
 OR
 ""Damn it, chief, could you try to be a little more subtle? We're under a lot of pressure to deal with the smuggling around here, and we don't need to attract attention where we'd rather not people start looking.""",0:cargoScan_cleanCont:Continue,
 cargoScanRefuse,DialogOptionSelected,$option == cargoScan_refuse,"$entity.ignorePlayerCommRequests = true 0
