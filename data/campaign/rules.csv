@@ -178,17 +178,7 @@ NGCSetFreeStart true
 $factionGroup = 0
 FireAll ExerelinNGCStep3",,,
 ,,,,,,
-nex_NGCPickStartingShips,ExerelinNGCStep3,,"NGCSetStartingFleetTooltipsAndState
-SetShortcut nex_NGCFleetBack ESCAPE",Your starting fleet?,"1:nex_NGCFleetSolo:Solo frigate
-2:nex_NGCFleetCombatSmall:Light combat patrol
-3:nex_NGCFleetTradeSmall:Small trade convoy
-4:nex_NGCFleetCarrierSmall:Escort carrier unit
-5:nex_NGCFleetCombatLarge:Upsized military unit
-6:nex_NGCFleetTradeLarge:Larger mercantile train
-7:nex_NGCFleetCarrierLarge:Medium carrier force
-8:nex_NGCFleetSuper:Super ship
-10:nex_NGCFleetBack:Go back",
-nex_NGCPickStartingShipsReroll,ExerelinNGCStep3,$randomStartShips,,,9:nex_NGCFleetReroll:[Reroll random ships],
+nex_NGCPickStartingShips,ExerelinNGCStep3,,Nex_NGCStartFleetOptions,Your starting fleet?,,
 nex_NGCStartShipsSolo,NewGameOptionSelected,$option == nex_NGCFleetSolo,"NGCAddStartingShipsByFleetType SOLO
 FireBest ExerelinNGCStep4",,,
 nex_NGCStartShipsCombatSmall,NewGameOptionSelected,$option == nex_NGCFleetCombatSmall,"NGCAddStartingShipsByFleetType COMBAT_SMALL
@@ -206,7 +196,6 @@ FireBest ExerelinNGCStep4",,,
 nex_NGCStartShipsSuper,NewGameOptionSelected,$option == nex_NGCFleetSuper,"NGCAddStartingShipsByFleetType SUPER
 FireBest ExerelinNGCStep4",,,
 ,,,,,,
-nex_NGCStartShipsReroll,NewGameOptionSelected,$option == nex_NGCFleetReroll,NGCSetStartingFleetTooltipsAndState,,,
 nex_NGCStartShipsBack,NewGameOptionSelected,$option == nex_NGCFleetBack,Nex_NGCListFactions listFactions $factionGroup,,,
 ,,,,,,
 nex_NGCFinalize,ExerelinNGCStep4,,"AddText ""Starting experience and assets?""
@@ -280,7 +269,7 @@ SetShortcut exerelinInvasionProceed RETURN",,,
 ExerelinInvadeListOptionInvadeNoMarines,ExerelinInvadeListOptions,!HasMarines 1,"SetTooltip exerelinInvasionProceed ""You have no marines!""
 SetEnabled exerelinInvasionProceed false",,,
 ExerelinInvadeListOptionInvadeNonHostile,ExerelinInvadeListOptions,RepIsAtWorst $faction.id INHOSPITABLE,"Nex_AddOptionConfirmation exerelinInvasionProceed ""$TheFaction is not currently hostile. Are you sure you wish to invade $market?"" ""Yes"" ""No""",,,
-ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,FireAll ExerelinInvadeListOptions,"Base attacker strength = (marine strength + fleet DP/2) * 0.7
+ExerelinInvasionHelp,DialogOptionSelected,$option == exerelinInvasionHelp,FireAll ExerelinInvadeListOptions,"Base attacker strength = (marine strength + fleet points/2) * 0.7
 Base defender strength = 0.2 * (market size+1)^3 * (stability + 0.5) * 0.5
 Each Military Base and Regional Capital adds 25% to defender strength, Headquarters adds 40%.
 Attacker strength varies by up to 1/7th in either direction.
@@ -400,7 +389,7 @@ ExerelinRaidListOptionRaidHostilesNearby,ExerelinRaidListOptions,HostileFleetNea
 SetEnabled exerelinRaidProceed false","A nearby hostile fleet is tracking your movements, making a raid impossible.",,
 ExerelinRaidListOptionRaidNonHostile,ExerelinRaidListOptions,"RepIsAtWorst $faction.id INHOSPITABLE
 Nex_IsPlayerSeenAndIdentified $faction.id","Nex_AddOptionConfirmation exerelinRaidProceed ""$TheFaction is not currently hostile, and you have been positively identified. Are you sure you wish to raid $market?"" ""Yes"" ""No""",,,
-ExerelinRaidHelp,DialogOptionSelected,$option == exerelinRaidHelp,FireAll ExerelinRaidListOptions,"Base attacker strength = (marine strength + fleet DP/2) * 0.7
+ExerelinRaidHelp,DialogOptionSelected,$option == exerelinRaidHelp,FireAll ExerelinRaidListOptions,"Base attacker strength = (marine strength + fleet points/2) * 0.7
 Base defender strength = 0.2 * (market size+1)^3 * (stability + 0.5) * 0.375
 Each Military Base and Regional Capital adds 25% to defender strength, Headquarters adds 40%.
 Attacker strength varies by up to 1/7th in either direction.

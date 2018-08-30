@@ -259,7 +259,7 @@
 		"museumShip":"Museum Ship ($name)",
 	},
 	
-	"exerelin_markets":{		
+	"exerelin_markets":{
 		"marketDirectoryEntry":"$market, $location (size $size)",
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
 		"hasBaseTip":"has military base",
@@ -335,7 +335,17 @@
 		"populatedPlanetsTitle":"Populated planets",
 		"populatedPlanetsTooltip":"Will fill new systems if specified number of populated systems is insufficient.",
 		"stationsTitle":"Stations",
-		"stationsTooltip":"Will fill new systems if specified number of populated systems is insufficient."
+		"stationsTooltip":"Will fill new systems if specified number of populated systems is insufficient.",
+		
+		"fleetSolo":"Solo frigate",
+		"fleetCombatSmall":"Light combat patrol",
+		"fleetTradeSmall":"Small trade convoy",
+		"fleetCarrierSmall":"Escort carrier unit",
+		"fleetCombatLarge":"Upsized military unit",
+		"fleetTradeLarge":"Larger mercantile train",
+		"fleetCarrierLarge":"Medium carrier force",
+		"fleetSuper":"Super ship",
+		"fleetRandomReroll":"[Reroll random ships]"
 	},
 	"exerelin_officers":{
 		"officer":"officer",
