@@ -11,7 +11,9 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.AgentActionBase.STRING_CATEGORY;
 import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.PlayerFactionStore;
@@ -27,9 +29,11 @@ public class Nex_InstigateRebellion extends AgentActionBase {
 
 	// needs: credits, agents, saboteurs, marines, hand weapons, supplies
 	// easier iteration
-	public static final String[] commodities = {
+	public static final String[] COMMODITIES = {
 		"agent", "saboteur", Commodities.MARINES, Commodities.HAND_WEAPONS, Commodities.SUPPLIES
 	};
+	public static final int MIN_REBLLION_POINTS = 25;
+	public static final float STRENGTH_MULT = 1.25f;
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
@@ -48,34 +52,75 @@ public class Nex_InstigateRebellion extends AgentActionBase {
 				if (!haveEnoughCommodities)
 				{
 					// disable rules command
+					dialog.getOptionPanel().setEnabled("nex_instigateRebellionProceed", false);
 				}
 				/*
-				else if (rebellionPoints < 25)
+				else if (rebellionPoints < MIN_REBLLION_POINTS)
 				{
-					
+					dialog.getOptionPanel().setEnabled("nex_instigateRebellionProceed", false);
 				}
-				*/
-				
-				
+				*/				
 				break;
 			case "proceed":
-				instigateRebellion(market);
+				instigateRebellion(market, dialog);
 				break;
 		}
 		
 		return false;
 	}
 	
-	protected void instigateRebellion(MarketAPI market)
-	{
+	protected void instigateRebellion(MarketAPI market, InteractionDialogAPI dialog)
+	{	
+		// generate result
 		FactionAPI myFaction = PlayerFactionStore.getPlayerFaction();
 		InstigateRebellion rebellion = new InstigateRebellion(market, myFaction, market.getFaction(), true, null);
-		result = CovertActionResult.SUCCESS_DETECTED;
+		result = rebellion.rollSuccess();
+		if (result == CovertActionResult.FAILURE)
+			result = CovertActionResult.SUCCESS;
+		if (result == CovertActionResult.FAILURE_DETECTED)
+			result = CovertActionResult.SUCCESS_DETECTED;
 		rebellion.setResult(result);
 		rebellion.onSuccess();
+		
+		if (result != null)
+		{
+			String str = StringHelper.getString(STRING_CATEGORY, RESULT_STRINGS.get(result));
+			str = StringHelper.substituteToken(str, "$agentType", StringHelper.getString(STRING_CATEGORY, agentType));
+			String verb = StringHelper.getString(STRING_CATEGORY, "verbSuccess");
+			Color color = Misc.getHighlightColor();
+			if (!result.isSucessful())
+			{
+				verb = StringHelper.getString(STRING_CATEGORY, "verbFailed");
+				color = Misc.getNegativeHighlightColor();
+			}
+			
+			str = StringHelper.substituteToken(str, "$resultVerb", verb);
+			
+			TextPanelAPI text = dialog.getTextPanel();
+			text.addParagraph(str);
+			text.highlightInLastPara(color, verb);
+		}
+		
+		RebellionEvent event = RebellionEvent.getOngoingEvent(market);
+		if (event != null)
+		{
+			event.setRebelStrength(event.getRebelStrength() * STRENGTH_MULT);
+		}
+		
+		// remove commodities from cargo
+		CargoAPI playerCargo = Global.getSector().getPlayerFleet().getCargo();
+		for (String commodityId : COMMODITIES) {
+			int neededAmount = getNeededCommodityAmount(market, commodityId);
+			float haveAmount = playerCargo.getCommodityQuantity(commodityId);
+			if (neededAmount > haveAmount)
+				return;
+			
+			playerCargo.removeCommodity(commodityId, neededAmount);
+			AddRemoveCommodity.addCommodityLossText(commodityId, neededAmount, dialog.getTextPanel());
+		}
 	}
 	
-	protected float getNeededCommodityAmount(MarketAPI market, String commodityId)
+	protected int getNeededCommodityAmount(MarketAPI market, String commodityId)
 	{
 		float mult = 0;
 		switch (commodityId)
@@ -84,20 +129,21 @@ public class Nex_InstigateRebellion extends AgentActionBase {
 			case "saboteur":
 				return market.getSize();
 			case Commodities.MARINES:
-				mult = 0.5f;
+				mult = 1.25f;
 				break;
 			case Commodities.HAND_WEAPONS:
-				mult = 2;
+				mult = 5f;
 				break;
 			case Commodities.SUPPLIES:
-				mult = 1;
+				mult = 2.5f;
 				break;
 		}
-		return (int)Math.min(RebellionEvent.getSizeMod(market) * mult, 1);
+		return (int)Math.max(RebellionEvent.getSizeMod(market) * mult, 1);
 	}
 	
 	protected ResourceCostPanelAPI makeCostPanel(TextPanelAPI text, Color color, Color color2) {
-		ResourceCostPanelAPI cost = text.addCostPanel("Resources needed (available)", 67, color, color2);
+		ResourceCostPanelAPI cost = text.addCostPanel(Misc.ucFirst(StringHelper.getString("exerelin_agents", "resourcesNeeded")), 
+				67, color, color2);
 		cost.setNumberOnlyMode(true);
 		cost.setWithBorder(false);
 		cost.setAlignment(Alignment.LMID);
@@ -106,6 +152,8 @@ public class Nex_InstigateRebellion extends AgentActionBase {
 	
 	protected void addCargoEntry(ResourceCostPanelAPI cost, String commodityId, int available, int needed) {
 		Color curr = Global.getSector().getPlayerFaction().getColor();
+		if (available < needed)
+			curr = Misc.getNegativeHighlightColor();
 		cost.addCost(commodityId, "" + needed + " (" + available + ")", curr);
 	}
 	
@@ -120,25 +168,34 @@ public class Nex_InstigateRebellion extends AgentActionBase {
 		boolean haveEnough = true;
 		
 		text.addParagraph(StringHelper.HR);
-		//text.addParagraph("Cargo scanner: Cargo to drop (available)", color);
-
+		String header = StringHelper.getString("exerelin_markets", "marketDirectoryEntryNoLocation");
+		header = StringHelper.substituteToken(header, "$market", market.getName());
+		header = StringHelper.substituteToken(header, "$size", market.getSize() + "");
+		text.addParagraph(header, market.getFaction().getBaseUIColor());
+		
 		ResourceCostPanelAPI cost = makeCostPanel(text, color, color2);
 		int numEntries = 0;
 
-		for (String commodityId : commodities) {
+		for (String commodityId : COMMODITIES) {
 			if (numEntries >= 3) {
 				cost = makeCostPanel(text, color, color2);
 				numEntries = 0;
 			}
 			numEntries++;
-			float neededAmount = getNeededCommodityAmount(market, commodityId);
+			int neededAmount = getNeededCommodityAmount(market, commodityId);
 			float haveAmount = playerCargo.getCommodityQuantity(commodityId);
 			if (neededAmount > haveAmount)
 				haveEnough = false;
 			
-			addCargoEntry(cost, commodityId, (int)neededAmount, (int)haveAmount / 2);
+			addCargoEntry(cost, commodityId, (int)haveAmount, (int)neededAmount);
 			cost.update();
 		}
+		float rebellionPoints = RebellionEventCreator.getRebellionPointsStatic(market);
+		if (rebellionPoints < MIN_REBLLION_POINTS)
+		{
+			
+		}
+		
 		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
 		

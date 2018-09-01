@@ -95,6 +95,8 @@
 		"verbSuccess":"completed",
 		"verbFailed":"failed",
 		
+		"resourcesNeeded":"resources needed (available)",
+		
 		"resultSuccess":"Your $agentType has $resultVerb their mission.",
 		"resultSuccessDetected":"Your $agentType has $resultVerb their mission, but was detected in the process.",
 		"resultFailure":"Your $agentType has $resultVerb in their mission.",

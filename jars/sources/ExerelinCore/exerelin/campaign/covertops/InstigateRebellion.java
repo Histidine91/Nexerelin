@@ -17,7 +17,7 @@ public class InstigateRebellion extends CovertOpsBase {
 	}
 		
 	@Override
-	protected CovertActionResult rollSuccess() {
+	public CovertActionResult rollSuccess() {
 		return covertActionRoll(
 				"instigateRebellionSuccessChance", 
 				"instigateRebellionDetectionChance",

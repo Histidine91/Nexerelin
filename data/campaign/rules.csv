@@ -526,8 +526,7 @@ ExerelinAgentRaiseRelations,DialogOptionSelected,$option == exerelinAgentRaiseRe
 FireBest ExerelinAgentPostDeploy",,,
 ExerelinAgentLowerRelations,DialogOptionSelected,$option == exerelinAgentLowerRelations,"AgentLowerRelations
 FireBest ExerelinAgentPostDeploy",,,
-ExerelinAgentDestabilizeMarket,DialogOptionSelected,"$option == exerelinAgentDestabilizeMarket
-","AgentDestabilizeMarket
+ExerelinAgentDestabilizeMarket,DialogOptionSelected,$option == exerelinAgentDestabilizeMarket,"AgentDestabilizeMarket
 FireBest ExerelinAgentPostDeploy",,,
 ExerelinAgentAfterDeploy,ExerelinAgentPostDeploy,HasItem agent,"GetNumSpecialPeople
 FireAll ExerelinAgentOption",,,
@@ -1011,6 +1010,18 @@ nex_marketTransferPostDialog,Nex_MarketPostTransfer,,,"""As you command. $market
 #END MARKET TRANSFER OPTIONS,,,,,,
 ,,,,,,
 #START REBELLION OPTIONS,,,,,,
+nex_instigateRebellion,Nex_HostileAction,,,,6:nex_instigateRebellion:Instigate a rebellion,
+nex_instigateRebellionNoSneak,Nex_HostileAction,$tradeMode == NONE,"SetTooltip nex_instigateRebellion ""You currently do not have access to $market to insert the needed assets.""
+SetEnabled nex_instigateRebellion false",,,
+nex_instigateRebellionAlreadyOngoing,Nex_HostileAction,Nex_RebellionActions isOngoing,"SetTooltip nex_instigateRebellion ""A rebellion is already in progress on $market.""
+SetEnabled nex_instigateRebellion false",,,
+nex_instigateRebellionInit,DialogOptionSelected,$option == nex_instigateRebellion,"Nex_InstigateRebellion init
+SetShortcut nex_instigateRebellionProceed RETURN
+SetShortcut nex_hostileActionMenu ESCAPE","You can attempt to start a rebellion on $market. This will always succeed but will cost a significant amount of resources, and $theFaction will turn hostile if your actions are discovered.","nex_instigateRebellionProceed:Proceed
+nex_hostileActionMenu:Cancel",
+nex_instigateRebellionProceed,DialogOptionSelected,$option == nex_instigateRebellionProceed,"Nex_InstigateRebellion proceed
+FireAll Nex_HostileAction",,,
+,,,,,,
 nex_supplyCounterInsurgencyOption,PopulateOptions,"Nex_IsBaseOfficial admin
 Nex_RebellionActions isOngoing",,,"nex_supplyCounterInsurgency:""I can help with your rebellion problem.""",
 nex_supplyCounterInsurgencyOptionTooLowRep,PopulateOptions,"Nex_IsBaseOfficial admin

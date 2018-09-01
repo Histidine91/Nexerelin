@@ -190,6 +190,14 @@ public class RebellionEvent extends BaseEventPlugin {
 		return rebelStrength;
 	}
 	
+	public void setGovtStrength(float strength) {
+		govtStrength = strength;
+	}
+	
+	public void setRebelStrength(float strength) {
+		rebelStrength = strength;
+	}
+	
 	public float getDelay()
 	{
 		return delay;

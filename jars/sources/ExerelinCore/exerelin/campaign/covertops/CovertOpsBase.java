@@ -59,6 +59,14 @@ public abstract class CovertOpsBase {
 		return (float)(double)result;
 	}
 	
+	/**
+	 * Rolls a success/failure and detected/undetected result for the covert action.
+	 * @param sChance Success chance
+	 * @param sDetectChance Config key for chance of detection if attack succeeded
+	 * @param fDetectChance Config key for chance of detection if attack failed; 
+	 * @param playerInvolved Was this covert action done by the player?
+	 * @return
+	 */
 	protected CovertActionResult covertActionRoll(String sChance, String sDetectChance, String fDetectChance, boolean playerInvolved)
     {
         return covertActionRoll(
@@ -74,6 +82,15 @@ public abstract class CovertOpsBase {
         return covertActionRoll(sChance, sDetectChance, fDetectChance, false, null, playerInvolved);
     }
     
+	/**
+	 * Rolls a success/failure and detected/undetected result for the covert action.
+	 * @param sChance Success chance
+	 * @param sDetectChance Chance of detection if attack succeeded
+	 * @param fDetectChance Chance of detection if attack failed
+	 * @param useAlertLevel If true, modifies success chance by the market's alert level
+	 * @param playerInvolved Was this covert action done by the player?
+	 * @return
+	 */
     protected CovertActionResult covertActionRoll(double sChance, double sDetectChance, double fDetectChance, boolean useAlertLevel, MarketAPI market, boolean playerInvolved)
     {
         CovertActionResult result = null;
@@ -106,7 +123,7 @@ public abstract class CovertOpsBase {
         return result;
     }
 	
-	protected abstract CovertActionResult rollSuccess();
+	public abstract CovertActionResult rollSuccess();
 	
 	public CovertActionResult execute()
 	{
@@ -187,6 +204,11 @@ public abstract class CovertOpsBase {
 		return repResult;
 	}
 	
+	/**
+	 * Creates a covert ops event for the intel screen, and alters diplomacy disposition 
+	 * of the target towards the agent's faction.
+	 * @param repResult
+	 */
 	protected void reportEvent(ExerelinReputationAdjustmentResult repResult)
 	{
 		if (Math.abs(repResult.delta) < 0.01f && !playerInvolved)
@@ -200,6 +222,10 @@ public abstract class CovertOpsBase {
 					agentFaction.getId(), repResult.delta);
 	}
 	
+	/**
+	 * Creates a covert ops event for the intel screen.
+	 * @param params
+	 */
 	protected void reportEvent(Map<String, Object> params)
 	{
 		Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), getEventId(), params);

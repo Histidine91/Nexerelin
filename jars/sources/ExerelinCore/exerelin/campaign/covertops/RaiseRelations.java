@@ -15,7 +15,7 @@ public class RaiseRelations extends CovertOpsBase {
 	}
 		
 	@Override
-	protected CovertActionResult rollSuccess() {
+	public CovertActionResult rollSuccess() {
 		return covertActionRoll("raiseRelationsSuccessChance", null, "raiseRelationsDetectionChanceFail", playerInvolved);
 	}
 

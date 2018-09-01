@@ -56,7 +56,7 @@ public class Nex_RebellionActions extends BaseCommandPlugin {
 				addOptions(dialog);
 				break;
 			case "isOngoing":
-				return RebellionEvent.getOngoingEvent(dialog.getInteractionTarget().getMarket()) != null;
+				return RebellionEvent.isOngoing(dialog.getInteractionTarget().getMarket());
 		}
 		return true;
 	}

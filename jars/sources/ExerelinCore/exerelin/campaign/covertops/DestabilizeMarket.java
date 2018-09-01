@@ -20,7 +20,7 @@ public class DestabilizeMarket extends CovertOpsBase {
 	}
 		
 	@Override
-	protected CovertActionResult rollSuccess() {
+	public CovertActionResult rollSuccess() {
 		return covertActionRoll(
 				"destabilizeSuccessChance", 
 				"destabilizeDetectionChance", 

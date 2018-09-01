@@ -19,7 +19,7 @@ public class DestroyFood extends CovertOpsBase {
 	}
 		
 	@Override
-	protected CovertActionResult rollSuccess() {
+	public CovertActionResult rollSuccess() {
 		return covertActionRoll(
 				"destroyFoodSuccessChance", 
 				"destroyFoodDetectionChance", 

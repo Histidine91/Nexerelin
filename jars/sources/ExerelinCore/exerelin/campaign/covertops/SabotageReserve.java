@@ -17,7 +17,7 @@ public class SabotageReserve extends CovertOpsBase {
 	}
 		
 	@Override
-	protected CovertActionResult rollSuccess() {
+	public CovertActionResult rollSuccess() {
 		return covertActionRoll(
 				"sabotageReserveSuccessChance", 
 				"sabotageReserveDetectionChance", 

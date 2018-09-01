@@ -20,7 +20,7 @@ public class LowerRelations extends CovertOpsBase {
 	}
 		
 	@Override
-	protected CovertActionResult rollSuccess() {
+	public CovertActionResult rollSuccess() {
 		return covertActionRoll("lowerRelationsSuccessChance", null, "lowerRelationsDetectionChanceFail", playerInvolved);
 	}
 
