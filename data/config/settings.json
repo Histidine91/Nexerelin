@@ -20,6 +20,7 @@
 		"illustrations":{
 			"facility_explosion":"graphics/illustrations/facility_explosion.jpg",
 			"fly_away":"graphics/illustrations/fly_away.jpg",
+			"corporate_lobby":"graphics/illustrations/corporate_lobby.jpg",
 		},
 		
 		# not actually referenced by config table, just here to make the game load the images

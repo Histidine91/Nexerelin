@@ -162,19 +162,24 @@ public class ExerelinProcGen {
 		allowedImages.add(new String[]{"illustrations", "cargo_loading"} );
 		allowedImages.add(new String[]{"illustrations", "hound_hangar"} );
 		allowedImages.add(new String[]{"illustrations", "space_bar"} );
-
+		
+		String factionId = entity.getFaction().getId();
 		boolean isStation = (entityType == EntityType.STATION);
 		boolean isMoon = (entityType == EntityType.MOON); 
 		int size = market.getSize();
 		boolean largeMarket = size >= 5;
 		if (isStation) largeMarket = size >= 4;
-
+		
 		if(market.hasCondition(Conditions.URBANIZED_POLITY) || largeMarket)
 		{
-			allowedImages.add(new String[]{"illustrations", "urban00"} );
-			allowedImages.add(new String[]{"illustrations", "urban01"} );
-			allowedImages.add(new String[]{"illustrations", "urban02"} );
-			allowedImages.add(new String[]{"illustrations", "urban03"} );
+			if (!factionId.equals(Factions.LUDDIC_PATH))
+			{
+				allowedImages.add(new String[]{"illustrations", "urban00"} );
+				allowedImages.add(new String[]{"illustrations", "urban01"} );
+				allowedImages.add(new String[]{"illustrations", "urban02"} );
+				allowedImages.add(new String[]{"illustrations", "urban03"} );
+				allowedImages.add(new String[]{"illustrations", "corporate_lobby"} );
+			}
 			
 			if (ExerelinUtilsFaction.doesFactionExist("citadeldefenders"))
 			{
@@ -201,10 +206,13 @@ public class ExerelinProcGen {
 			allowedImages.add(new String[]{"illustrations", "jangala_station"} );
 			allowedImages.add(new String[]{"illustrations", "orbital"} );
 		}
-		if (entity.getFaction().getId().equals("pirates"))
+		if (factionId.equals(Factions.PIRATES))
 			allowedImages.add(new String[]{"illustrations", "pirate_station"} );
 		if (!isStation && (planetType.equals("rocky_metallic") || planetType.equals("rocky_barren") || planetType.equals("barren-bombarded")) )
 			allowedImages.add(new String[]{"illustrations", "vacuum_colony"} );
+		if (market.hasCondition(Conditions.LUDDIC_MAJORITY))
+			allowedImages.add(new String[]{"illustrations", "luddic_shrine"} );
+		
 		//if (isMoon)
 		//	allowedImages.add(new String[]{"illustrations", "asteroid_belt_moon"} );
 		if (planetType.equals("desert") && isMoon)
@@ -1402,9 +1410,8 @@ public class ExerelinProcGen {
 		float totalShare = 0;
 		for (String factionId : factions) {
 			float share = 1;
-			ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
-			if (config != null && ExerelinConfig.useFactionMarketSpawnWeights)
-				share = config.marketSpawnWeight;
+			if (setupData.useFactionWeights)
+				share = ExerelinConfig.getExerelinFactionConfig(factionId).marketSpawnWeight;
 			totalShare += share;
 			factionShare.put(factionId, share);
 		}
