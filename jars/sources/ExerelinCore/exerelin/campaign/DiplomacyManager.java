@@ -420,6 +420,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (delta < 0 && delta > -0.01f) delta = -0.01f;
         if (delta > 0 && delta < 0.01f) delta = 0.01f;
         delta = Math.round(delta * 100f) / 100f;
+		float deltaBase = delta;
        
         ExerelinReputationAdjustmentResult result = DiplomacyManager.adjustRelations(event, faction1, faction2, delta);
         delta = result.delta;
@@ -433,8 +434,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             params.put("otherFaction", faction2);
             sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
             
-            diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), delta);
-            diplomacyBrains.get(faction2.getId()).reportDiplomacyEvent(faction1.getId(), delta);
+            diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), deltaBase);
+            diplomacyBrains.get(faction2.getId()).reportDiplomacyEvent(faction1.getId(), deltaBase);
         }
     }
     

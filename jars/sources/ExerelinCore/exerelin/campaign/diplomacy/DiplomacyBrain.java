@@ -82,6 +82,7 @@ public class DiplomacyBrain {
 	public static final float COMMON_ENEMY_MULT = 12.5f;
 	public static final float MORALITY_EFFECT = 10f;
 	public static final float EVENT_MULT = 80f;
+	public static final float EVENT_PEACE_MULT = 40f;
 	public static final float EVENT_DECREMENT_PER_DAY = 0.2f;
 	public static final float REVANCHISM_SIZE_MULT = 2;
 	public static final float DOMINANCE_MULT = 25;
@@ -240,7 +241,18 @@ public class DiplomacyBrain {
 		if (dispFromEvents == 0) disposition.unmodify("events");
 		else disposition.modifyFlat("events", dispFromEvents, "Recent events");
 		return dispFromEvents;
-	}	
+	}
+	
+	protected float getDispositionFromEvents(String factionId)
+	{
+		DispositionEntry disposition = this.getDisposition(factionId);
+		if (disposition == null) return 0;
+		
+		if (disposition.disposition.getFlatStatMod("events") != null)
+			return disposition.disposition.getFlatStatMod("events").getValue();
+		
+		return 0;
+	}
 	
 	/**
 	 * Update our dispositions towards the specified faction.
@@ -354,9 +366,19 @@ public class DiplomacyBrain {
 		log.info("\t" + enemyId + " weariness: " + enemyWeariness + "/" + ExerelinConfig.minWarWearinessForPeace);
 		if (enemyWeariness < ExerelinConfig.minWarWearinessForPeace)
 			return false;
-				
+		
+		// add war weariness of both factions, plus effects from recent events
 		float sumWeariness = ourWeariness + enemyWeariness;
 		log.info("\tWeariness sum: " + sumWeariness);
+		
+		float eventsMod = getDispositionFromEvents(enemyId) +
+				DiplomacyManager.getManager().getDiplomacyBrain(enemyId).getDispositionFromEvents(factionId);
+		eventsMod *= EVENT_PEACE_MULT;
+		log.info("\tEvents modifier: " + eventsMod);
+		
+		sumWeariness += eventsMod;
+		
+		// roll chance for peace
 		float divisor = ExerelinConfig.warWearinessDivisor + ExerelinConfig.warWearinessDivisorModPerLevel 
 				* Global.getSector().getPlayerPerson().getStats().getLevel();
 		if (Math.random() > sumWeariness / divisor)
@@ -413,11 +435,14 @@ public class DiplomacyBrain {
 		}
 		*/
 		
+		int tries = 3;
 		for (String enemyId : enemiesLocal)
 		{
 			// TODO: check if we have invasion fleet en route first?
 			boolean success = tryMakePeace(enemyId, ourWeariness);
 			if (success) return true;
+			tries--;
+			if (tries <= 0) break;
 		}
 		
 		return false;
