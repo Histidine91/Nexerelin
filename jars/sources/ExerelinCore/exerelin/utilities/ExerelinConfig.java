@@ -25,7 +25,6 @@ public class ExerelinConfig
     // System Generation settings
     public static int minimumPlanets = 3;
     public static float forcePiratesInSystemChance = 0.3f;
-    public static boolean useFactionMarketSpawnWeights = false;
 
     // Player settings
     public static float playerBaseSalary = 5000f;
@@ -111,7 +110,7 @@ public class ExerelinConfig
     public static boolean useRelationshipBounds = true;
     public static boolean officerDeaths = true;
     public static boolean officerDaredevilBonus = true;
-    public static boolean corvusModeLandmarks = true;  
+    public static boolean corvusModeLandmarks = false;  
 
     public static void loadSettings()
     {
@@ -125,7 +124,6 @@ public class ExerelinConfig
 
             minimumPlanets = settings.optInt("minimumPlanets");
             forcePiratesInSystemChance = (float)settings.optDouble("piratesNotInSystemChance", forcePiratesInSystemChance);
-            useFactionMarketSpawnWeights = settings.optBoolean("useFactionMarketSpawnWeights", useFactionMarketSpawnWeights);
 
             playerBaseSalary = (float)settings.optDouble("playerBaseSalary",  playerBaseSalary);
             playerSalaryIncrementPerLevel = (float)settings.optDouble("playerSalaryIncrementPerLevel", playerSalaryIncrementPerLevel);

@@ -4,7 +4,6 @@
     "minimumPlanets": 3,
     #"minimumStations": 3,
     "forcePiratesInSystemChance": 0.3,  # this proportion of systems will always be seeded with at least one pirate market
-    "useFactionMarketSpawnWeights": false,  # this lets some factions have more markets at start than others, as set in faction config
     
     "playerBaseSalary": 5000,   # per month
     "playerSalaryIncrementPerLevel": 1000,
@@ -81,7 +80,7 @@
     "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
 
     # DO NOT TOUCH!
-    # to make factions not appear, set them to unplayable in their faction config
+    # to make factions not appear, use the menu options
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "lions_guard", "persean", "luddic_church", "luddic_path", "knights_of_ludd", "pirates",
            "derelict", "remnant", "player", "player_npc", "independent", "scavengers", "neutral"],
 }
