@@ -311,7 +311,7 @@ public class ExerelinUtilsMarket {
 	
 	/**
 	 * Can factions launch invasion fleets at <code>market</code>?
-	 * Player may still be able to invade even if this returns false
+	 * Player may still be able to invade even if this returns false.
 	 * @param market
 	 * @param minSize Minimum market size to consider for invasions
 	 * @return
@@ -320,13 +320,22 @@ public class ExerelinUtilsMarket {
 	{
 		if (market.getSize() < minSize) return false;
 		FactionAPI marketFaction = market.getFaction();
+		String factionId = marketFaction.getId();
+		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
+		boolean isIndie = factionId.equals(Factions.INDEPENDENT);
 		
-		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(marketFaction.getId());
-		if (config != null && !config.playableFaction)
+		if (config != null && !config.playableFaction && !isIndie)
 			return false;
+		
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
-		if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(marketFaction.getId()))
-			return false;
+		if (!allowPirates && (ExerelinUtilsFaction.isPirateFaction(factionId) || isIndie))
+		{
+			// this is the only circumstance when pirate markets can be invaded while allowPirateInvasions is off
+			if (!ExerelinConfig.retakePirateMarkets)
+				return false;
+			if (isWithOriginalOwner(market))	// was a pirate market all along, can't invade
+				return false;
+		}
 		
 		return canBeInvaded(market, false);
 	}

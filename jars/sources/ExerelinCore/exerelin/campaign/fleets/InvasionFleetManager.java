@@ -10,7 +10,6 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -391,12 +390,10 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		WeightedRandomPicker<MarketAPI> sourcePicker = new WeightedRandomPicker();
 		WeightedRandomPicker<MarketAPI> targetPicker = new WeightedRandomPicker();
 		String factionId = faction.getId();
-		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
 		
 		// pick a source market
 		for (MarketAPI market : markets) {
 			if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
-			if (!allowPirates && ExerelinUtilsFaction.isPirateFaction(factionId)) continue;
 			if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
 			// because incoming invasion fleet being ganked by fresh spawns from the market is just annoying
 			if (ExerelinUtilsMarket.isMarketBeingInvaded(market)) continue;
@@ -558,7 +555,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (!allowPirates && isPirateFaction) continue;
 			
 			float mult = 0f;
-			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, ExerelinConfig.allowPirateInvasions, false, false);
+			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(faction, allowPirates, false, false);
 			if (enemies.isEmpty()) continue;
 			
 			if (ExerelinUtilsFaction.isFactionHostileToAll(factionId))
@@ -574,7 +571,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 					if (EXCEPTION_LIST.contains(factionId)) continue;
 					if (ExerelinUtilsFaction.isFactionHostileToAll(enemyId))
 					{
-						float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, ExerelinConfig.allowPirateInvasions, true, false).size();
+						float enemyWars = DiplomacyManager.getFactionsAtWarWithFaction(enemyId, 
+								allowPirates, true, false).size();
 						enemyWars = (float)Math.sqrt(enemyWars);
 						if (enemyWars > 0 )
 							mult += 1/((enemyWars*ALL_AGAINST_ONE_INVASION_POINT_MOD) + (1));
@@ -627,7 +625,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
 		if (!liveFactionIds.contains("templars")) return;
 		
-		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction("templars", ExerelinConfig.allowPirateInvasions, false, false);
+		List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction("templars", 
+				ExerelinConfig.allowPirateInvasions, false, false);
 		if (enemies.isEmpty()) return;
 		float templarDominance = DiplomacyManager.getDominanceFactor("templars");
 		float perLevelPoints = Global.getSector().getPlayerPerson().getStats().getLevel() * ExerelinConfig.invasionPointsPerPlayerLevel;

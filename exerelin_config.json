@@ -22,6 +22,7 @@
     "crewLootMult": 0.02,   # loot about this many crew per enemy crew in killed ships
     
     "allowPirateInvasions": false,
+    "retakePirateMarkets": true,	# allow factions to invade markets that pirates currently hold but didn't at start of game, even if allowPirateInvasions is false
     "fleetRequestCostPerMarine": 125,  # used for player-requested fleets
     "fleetRequestCostPerFP": 2000,  # used for player-requested fleets
     "invasionGracePeriod": 15,  # factions won't accumulate invasion points for this many days at start

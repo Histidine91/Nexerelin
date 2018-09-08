@@ -66,7 +66,7 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		if (RebellionEvent.isOngoing(market))
 			return null;
 		FactionAPI faction = market.getFaction();
-		boolean allowPirates = ExerelinConfig.allowPirateInvasions;		
+		boolean allowPirates = ExerelinConfig.retakePirateMarkets;		
 		
 		WeightedRandomPicker<String> enemyPicker = new WeightedRandomPicker<>();
 		List<String> enemies = DiplomacyManager.getFactionsOfAtBestRepWithFaction(market.getFaction(), 
@@ -74,10 +74,8 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		
 		if (allowPirates)
 		{
-			//if (faction.isHostileTo(Factions.INDEPENDENT))
-			//	addToListIfNotPresent(enemies, Factions.INDEPENDENT);
-			if (faction.isHostileTo(Factions.LUDDIC_PATH))
-				addToListIfNotPresent(enemies, Factions.LUDDIC_PATH);
+			if (faction.isHostileTo(Factions.INDEPENDENT))
+				addToListIfNotPresent(enemies, Factions.INDEPENDENT);
 		}
 		
 		for (String candidate : enemies)
@@ -85,10 +83,10 @@ public class RebellionEventCreator extends BaseEventPlugin {
 			float weight = 1;
 			if (faction.isAtBest(candidate, RepLevel.VENGEFUL))
 				weight += 2;
-			if (ExerelinUtilsFaction.isPirateFaction(candidate))
-				weight += 1;
+			//if (ExerelinUtilsFaction.isPirateFaction(candidate))
+			//	weight += 1;
 			if (candidate.equals(Factions.INDEPENDENT))
-				weight += 3;
+				weight += 2;
 			if (market.hasCondition(Conditions.LUDDIC_MAJORITY))
 			{
 				if (candidate.equals(Factions.LUDDIC_PATH))
