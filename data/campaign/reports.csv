@@ -214,8 +214,8 @@ nex_instigate_rebellion,success_detected_player,,,player_intel_always,$AgentFact
 Relations between $faction and $agentFaction reduced by $repEffectAbs, currently at $newRelationStr.",,,,,
 nex_instigate_rebellion,failure,,,player_intel,$AgentFaction fails to instigate rebellion $onOrAt $market,"$AgentFaction agents have failed to organize a rebellion $onOrAt $market, although they were able to escape themselves.",,,,,,
 nex_instigate_rebellion,failure_player,,,player_intel_always,$AgentFaction fails to instigate rebellion $onOrAt $market,"Your agents have failed to organize a rebellion $onOrAt $market, although they were able to escape themselves.",,,,,,
-nex_instigate_rebellion,failure_detected,,,player_intel_always,$AgentFaction caught fomenting rebellion $onOrAt $market,$TheFaction has arrested and executed $agentFaction agents attempting to forment rebellion $onOrAt $market. $TheAgentFaction has disavowed the unfortunate operatives.,"Relations between $faction and $agentFaction reduced by $repEffectAbs, currently at $newRelationStr.",,,,,
-nex_instigate_rebellion,failure_detected_player,,,player_intel_always,$AgentFaction caught fomenting rebellion $onOrAt $market,$TheFaction has arrested and executed your agents attempting to forment rebellion $onOrAt $market.,"Relations between $faction and $agentFaction reduced by $repEffectAbs, currently at $newRelationStr.",,,,,
+nex_instigate_rebellion,failure_detected,,,player_intel_always,$AgentFaction caught fomenting rebellion $onOrAt $market,$TheFaction has arrested and executed $agentFaction agents attempting to foment rebellion $onOrAt $market. $TheAgentFaction has disavowed the unfortunate operatives.,"Relations between $faction and $agentFaction reduced by $repEffectAbs, currently at $newRelationStr.",,,,,
+nex_instigate_rebellion,failure_detected_player,,,player_intel_always,$AgentFaction caught fomenting rebellion $onOrAt $market,$TheFaction has arrested and executed your agents attempting to foment rebellion $onOrAt $market.,"Relations between $faction and $agentFaction reduced by $repEffectAbs, currently at $newRelationStr.",,,,,
 ,,,,,,,,,,,,
 ,,,,,,,,,,,,
 #alliances,,,,,,,,,,,,
@@ -237,3 +237,6 @@ exerelin_faction_vengeance,stark_raving_mad,0.25,,player_intel,$Faction $fleetTy
 $TheFaction $factionHasOrHave escalated the conflict to the highest possible level.",,,important,ui_channel_sniffer,
 exerelin_faction_vengeance,stark_raving_mad,0.75,,player_intel_always,$Faction $fleetType dispatched from $market,"Warnings from underworld connections tipped you off that, due to your infamous and vengeful rivalry with $theFactionLong, $aFleetType has launched from $market, their directive being to find you and kill you by any means necessary.","$FleetType will pursue you for $duration.
 $TheFaction $factionHasOrHave escalated the conflict to the highest possible level.",,,important,ui_channel_sniffer,
+,,,,,,,,,,,,
+# other,,,,,,,,,,,,
+nex_trade_info,prices_helper,,,player_intel_always,Price update,The trade network on $market has provided price information on $commodity for several markets.,Prices updated for: $forMarkets,,,prices,,

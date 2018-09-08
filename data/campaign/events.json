@@ -68,8 +68,8 @@
 		"script":"exerelin.campaign.events.RevengeanceManagerEvent"
 	},
 	"exerelin_faction_vengeance":{
-        "script":"exerelin.campaign.events.SSP_FactionVengeanceEvent"
-    },
+		"script":"exerelin.campaign.events.SSP_FactionVengeanceEvent"
+	},
 	
 	"nex_rebellion":{
 		"script":"exerelin.campaign.events.RebellionEvent"
@@ -77,6 +77,11 @@
 	"nex_rebellion_creator":{
 		"script":"exerelin.campaign.events.RebellionEventCreator"
 	},
+	
+	#"nex_trade_info":{
+	#	"script":"exerelin.campaign.events.NexTradeInfoUpdateEvent",
+	#	"image":"graphics/icons/intel/price_update.png",
+	#},
 	
 	# agent stuff
 	"exerelin_agent_raise_relations":{

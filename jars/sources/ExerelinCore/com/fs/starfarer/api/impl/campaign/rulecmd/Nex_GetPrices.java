@@ -17,6 +17,7 @@ import static com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions.OPTION
 import static com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions.OPTION_PREV_PAGE;
 import com.fs.starfarer.api.ui.ValueDisplayMode;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.events.NexTradeInfoUpdateEvent;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -206,13 +207,31 @@ public class Nex_GetPrices extends PaginatedOptions {
 		printPriceInfo(commodityId, pricesHigh, true);
 		printPriceInfo(commodityId, pricesLow, false);
 		
-		// todo: update price event
+		// update price event
+		/*
+		NexTradeInfoUpdateEvent event = NexTradeInfoUpdateEvent.getEvent();
+		if (event != null)
+		{
+			List<MarketAPI> markets = new ArrayList<>();
+			getFirstNMarkets(pricesHigh, markets, 3);
+			getFirstNMarkets(pricesLow, markets, 3);
+			event.reportEvent(dialog.getInteractionTarget().getMarket(), commodityId, markets);
+		}
+		*/
+	}
+	
+	protected void getFirstNMarkets(List<PriceInfo> from, List<MarketAPI> to, int count)
+	{
+		int cap = Math.min(count, from.size());
+		for (int i=0; i<cap; i++)
+			to.add(from.get(i).market);
 	}
 	
 	protected void printPriceInfo(String commodityId, List<PriceInfo> prices, boolean isPlayerSelling)
 	{
 		TextPanelAPI text = dialog.getTextPanel();
-		text.addParagraph(isPlayerSelling ? "High prices" : "Low prices", Misc.getHighlightColor());
+		text.addParagraph(isPlayerSelling ? getString("highPrices", true) : getString("lowPrices", true),
+				Misc.getHighlightColor());
 		text.setFontSmallInsignia();
         text.addParagraph(StringHelper.HR);
 		int count = 0;
@@ -230,7 +249,7 @@ public class Nex_GetPrices extends PaginatedOptions {
 			String distStr = (int)Math.round(info.distance) + "";
 			
 			// market name and location
-			String l1 = StringHelper.getString("exerelin_markets", "marketDirectoryEntryForTrade");
+			String l1 = getString("marketDirectoryEntryForTrade", false);
 			l1 = StringHelper.substituteToken(l1, "$market", market.getName());
 			l1 = StringHelper.substituteToken(l1, "$location", locName);
 			l1 = StringHelper.substituteFactionTokens(l1, market.getFaction());
@@ -242,13 +261,17 @@ public class Nex_GetPrices extends PaginatedOptions {
 			// price
 			String priceStr = Misc.getDGSCredits(price);
 			String priceWithTariffStr = Misc.getDGSCredits(priceWithTariff);
-			String l2 = "  Price: " + priceStr + " (" + priceWithTariffStr + " with tariff)";
+			String l2 = "  " + getString("priceStr", true);
+			l2 = StringHelper.substituteToken(l2, "$basePrice", priceStr);
+			l2 = StringHelper.substituteToken(l2, "$priceWithTariff", priceWithTariffStr);
+			//String l2 = "  Price: " + priceStr + " (" + priceWithTariffStr + " with tariff)";
 			text.addParagraph(l2);
 			text.highlightInLastPara(hlColor, priceStr, priceWithTariffStr);
 			
 			// amount
 			String amount = Misc.getWithDGS((int)Misc.getRounded(info.amount));
-			String l3 = "  " + (isPlayerSelling ? "Demand" : "For sale") + ": ~";
+			String l3 = "  " + (isPlayerSelling ? getString("demand", true) : getString("forSale", true)) 
+					+ ": ~";
 			l3 += amount;
 			text.addParagraph(l3);
 			text.highlightFirstInLastPara(amount + "", hlColor);
@@ -259,6 +282,13 @@ public class Nex_GetPrices extends PaginatedOptions {
 		
 		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
+	}
+	
+	protected String getString(String id, boolean ucFirst)
+	{
+		String str = StringHelper.getString("exerelin_markets", id);
+		if (ucFirst) str = Misc.ucFirst(str);
+		return str;
 	}
 	
 	

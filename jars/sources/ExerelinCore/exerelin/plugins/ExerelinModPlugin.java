@@ -148,6 +148,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         addEventIfNeeded("exerelin_slaves_sold");
         addEventIfNeeded("exerelin_warmonger");
         addEventIfNeeded("nex_rebellion_creator");
+		//addEventIfNeeded("nex_trade_info");
     }
     
     @Override

@@ -267,6 +267,12 @@
 		"marketDirectoryEntryForTrade":"$market, $location ($faction, $distance LY)",
 		"hasBaseTip":"has military base",
 		
+		"highPrices":"buying at high prices",
+		"lowPrices":"selling at low prices",
+		"demand":"demand",
+		"forSale":"for sale",
+		"priceStr":"price: $basePrice ($priceWithTariff with tariff)",
+		
 		"transferMarketWarning":"Are you sure you wish to transfer $market to $theFaction?",
 		"transferMarketRep":"At the current stability, transferring $market will earn $repChange reputation with the recipient faction.",
 		
