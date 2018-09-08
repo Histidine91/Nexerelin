@@ -1,16 +1,26 @@
 package exerelin.world;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.PlanetSpecAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.impl.campaign.procgen.Constellation;
+import com.fs.starfarer.api.impl.campaign.procgen.LocationGenDataSpec;
 import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
+import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.NEBULA_NONE;
+import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.TAG_NOT_IN_NEBULA;
+import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.TAG_REQUIRES_NEBULA;
+import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.random;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
+import java.util.EnumSet;
 
 // same as vanilla except with moar planets + always custom names
 public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
+	
+	public static final float SKIP_GIANT_OR_DWARF_CHANCE = 0.5f;
 
 	public ExerelinCoreSystemGenerator(CustomConstellationParams params) {
 		super(params);
@@ -34,19 +44,67 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 		return c;
 	}
 
-	// don't want black holes or pulsars
+	// don't want black holes, pulsars or nebulae
+	// and hopefuly not giants or dwarfs
 	@Override
 	public PlanetSpecAPI pickStar(StarAge age) {
 		PlanetSpecAPI newStar = null;
 		int tries = 0;
-		while (tries < 8)
+		while (tries < 12)
 		{
 			tries++;
 			newStar = super.pickStar(age);
-			if (!newStar.isBlackHole() && !newStar.isPulsar())
+			
+			if (newStar.getPlanetType().toLowerCase().contains("giant") || newStar.getPlanetType().toLowerCase().contains("dwarf"))
+			{
+				if (random.nextFloat() < SKIP_GIANT_OR_DWARF_CHANCE)
+					continue;
+			}
+			
+			if (!newStar.isBlackHole() && !newStar.isPulsar() && !newStar.isNebulaCenter())
 				break;	// valid star
 		}
 		return newStar;
+	}
+	
+	// no nebula-type systems allowed
+	@Override
+	protected StarSystemType pickSystemType(StarAge constellationAge) {
+		
+		if (params != null && !params.systemTypes.isEmpty()) {
+			return params.systemTypes.remove(0);
+		}
+		
+		
+		WeightedRandomPicker<StarSystemType> picker = new WeightedRandomPicker<StarSystemType>(random);
+		for (StarSystemType type : EnumSet.allOf(StarSystemType.class)) {
+			Object test = Global.getSettings().getSpec(LocationGenDataSpec.class, type.name(), true);
+			if (test == null) continue;
+			LocationGenDataSpec data = (LocationGenDataSpec) test;
+			
+			if (type == StarSystemType.NEBULA) continue;
+			
+			boolean nebulaStatusOk = NEBULA_NONE.equals(nebulaType) || !data.hasTag(TAG_NOT_IN_NEBULA);
+			nebulaStatusOk &= !NEBULA_NONE.equals(nebulaType) || !data.hasTag(TAG_REQUIRES_NEBULA);
+
+			if (!nebulaStatusOk) continue;
+			
+			float freq = 0f;
+			switch (constellationAge) {
+			case AVERAGE:
+				freq = data.getFreqAVERAGE();
+				break;
+			case OLD:
+				freq = data.getFreqOLD();
+				break;
+			case YOUNG:
+				freq = data.getFreqYOUNG();
+				break;
+			}
+			picker.add(type, freq);
+		}
+		
+		return picker.pick();
 	}
 	
 	@Override

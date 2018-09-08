@@ -325,9 +325,9 @@ public class ExerelinProcGen {
 		{
 			float hazard = cond.getGenSpec().getHazard();
 			if (hazard >= 0.5f)
-				return -0.75f;
+				return -0.4f;
 			else if (hazard >= 0.25f)
-				return -0.25f;
+				return -0.2f;
 		}
 		return 0;
 	}
@@ -591,6 +591,7 @@ public class ExerelinProcGen {
 				if (planet.isStar()) continue;
 				
 				// don't put stations around any inhabited planets
+				/*
 				if (procGenEntitiesByToken.containsKey(planet))
 				{
 					ProcGenEntity entity = procGenEntitiesByToken.get(planet);
@@ -603,13 +604,29 @@ public class ExerelinProcGen {
 					ProcGenEntity primary2 = procGenEntitiesByToken.get(primary);
 					if (populatedPlanets.contains(primary2)) continue;
 				}
+				*/
 				
-				picker.add(planet);
+				// you know what, just check all planets nearby to this one for markets
+				boolean allow = true;
+				for (PlanetAPI maybeNearbyPlanet : system.getPlanets())
+				{
+					ProcGenEntity entity = procGenEntitiesByToken.get(maybeNearbyPlanet);
+					if (entity != null && populatedPlanets.contains(entity) && 
+							MathUtils.isWithinRange(planet, maybeNearbyPlanet, 2000))
+					{
+						allow = false;
+						break;
+					}
+				}
+				if (allow) picker.add(planet);
 			}
 			for (CampaignTerrainAPI terrain : system.getTerrainCopy())
 			{
 				if (ALLOWED_STATION_TERRAIN.contains(terrain.getId()))
+				{
+					log.info(terrain);
 					picker.add(terrain);
+				}
 			}
 		}
 		

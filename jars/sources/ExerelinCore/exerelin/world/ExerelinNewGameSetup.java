@@ -171,7 +171,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		else
 		{
 			// make core constellation
-			CustomConstellationParams params = new CustomConstellationParams(StarAge.AVERAGE);
+			CustomConstellationParams params = new CustomConstellationParams(StarAge.ANY);
 			int num = ExerelinSetupData.getInstance().numSystems;
 			params.minStars = 14;	//num;
 			params.maxStars = 18;	//num + (int)Math.max(num * 1.2f, 2);

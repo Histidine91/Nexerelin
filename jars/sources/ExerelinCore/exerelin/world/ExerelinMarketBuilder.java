@@ -350,7 +350,17 @@ public class ExerelinMarketBuilder
 		WeightedRandomPicker<MarketConditionDef> picker = new WeightedRandomPicker<>(random);
 		int numConds = 0;
 		
-		if (isFirst) budget += 100;	// make sure small economies can get at least one market condition
+		if (isFirst) {
+			// assign default first condition for certain archetypes
+			switch (entityData.archetype) {
+				case ORE:
+					return conditionsByID.get(Conditions.ORE_COMPLEX);
+				case ORGANICS:
+					return conditionsByID.get(Conditions.ORGANICS_COMPLEX);
+				case VOLATILES:
+					return conditionsByID.get(Conditions.VOLATILES_COMPLEX);
+			}
+		}	
 		
 		for (MarketConditionDef possibleCond : possibleConds) 
 		{
@@ -432,13 +442,15 @@ public class ExerelinMarketBuilder
 		points += bonusPoints;
 		entityData.marketPoints = points;
 		
+		boolean first = true;
 		while (entityData.marketPointsSpent < points * PRE_BALANCE_BUDGET_MULT)
 		{
 			MarketConditionDef cond = pickMarketCondition(market, conditions, entityData, 
-					(int)(points * PRE_BALANCE_BUDGET_MULT - entityData.marketPointsSpent), false);
+					(int)(points * PRE_BALANCE_BUDGET_MULT - entityData.marketPointsSpent), first);
 			if (cond == null) break;
 			log.info("\tAdding condition: " + cond.name);
 			addMarketCondition(entityData, cond);
+			first = false;
 		}
 		
 		int numSpecial = 0;
@@ -571,6 +583,7 @@ public class ExerelinMarketBuilder
 			ProcGenEntity market = sorted.get(i);
 			market.archetype = archetype;
 			results.add(market);
+			log.info("\t" + market.name + " has archetype " + archetype.toString());
 		}
 		
 		marketsByArchetype.put(archetype, results);
@@ -761,7 +774,7 @@ public class ExerelinMarketBuilder
 	// main market adding method
 	protected MarketAPI addMarket(ProcGenEntity data, String factionId)
 	{
-		log.info("Creating market for " + data.name + " (" + data.type + ")");
+		log.info("Creating market for " + data.name + " (" + data.type + "), faction " + factionId);
 		
 		SectorEntityToken entity = data.entity;
 		// don't make the markets too big; they'll screw up the economy big time
