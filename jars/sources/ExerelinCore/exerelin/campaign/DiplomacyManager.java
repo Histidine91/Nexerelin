@@ -65,7 +65,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final float WAR_WEARINESS_FLEET_WIN_MULT = 0.5f; // less war weariness from a fleet battle if you win
     public static final float WAR_WEARINESS_ENEMY_COUNT_MULT = 0.25f;
     public static final float PEACE_TREATY_CHANCE = 0.3f;
-    public static final float MIN_INTERVAL_BETWEEN_WARS = 15f;
+    public static final float MIN_INTERVAL_BETWEEN_WARS = 30f;
     
     public static final float DOMINANCE_MIN = 0.25f;
     public static final float DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD = -0.67f;
