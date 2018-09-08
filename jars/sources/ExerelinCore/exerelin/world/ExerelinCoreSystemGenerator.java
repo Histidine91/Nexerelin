@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.PlanetSpecAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.impl.campaign.procgen.CategoryGenDataSpec;
 import com.fs.starfarer.api.impl.campaign.procgen.Constellation;
 import com.fs.starfarer.api.impl.campaign.procgen.LocationGenDataSpec;
 import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
@@ -15,12 +16,13 @@ import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.TAG
 import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.random;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
+import java.util.Collection;
 import java.util.EnumSet;
 
 // same as vanilla except with moar planets + always custom names
 public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 	
-	public static final float SKIP_GIANT_OR_DWARF_CHANCE = 0.5f;
+	public static final float SKIP_GIANT_OR_DWARF_CHANCE = 0.45f;
 
 	public ExerelinCoreSystemGenerator(CustomConstellationParams params) {
 		super(params);
@@ -105,6 +107,103 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 		}
 		
 		return picker.pick();
+	}
+	
+	// weighted towards habitable worlds
+	@Override
+	public CategoryGenDataSpec pickCategory(GenContext context, String extraMult, boolean nothingOk) {
+//		int orbitIndex = context.orbitIndex;
+//		if (context.parentOrbitIndex >= 0) {
+//			orbitIndex = context.parentOrbitIndex;
+//		}
+//		int fromParentOrbitIndex = context.orbitIndex;
+		String age = context.age;
+		//String starType = context.star.getTypeId();
+		String starType = star.getTypeId();
+		if (context.center instanceof PlanetAPI) {
+			PlanetAPI star = (PlanetAPI) context.center;
+			if (star.isStar()) starType = star.getTypeId();
+		}
+		
+		String parentCategory = context.parentCategory;
+		
+		WeightedRandomPicker<CategoryGenDataSpec> picker = new WeightedRandomPicker<CategoryGenDataSpec>(random);
+		Collection<Object> categoryDataSpecs = Global.getSettings().getAllSpecs(CategoryGenDataSpec.class);
+		for (Object obj : categoryDataSpecs) {
+			CategoryGenDataSpec categoryData = (CategoryGenDataSpec) obj;
+			boolean catNothing = categoryData.getCategory().equals(CAT_NOTHING);
+			if (!nothingOk && catNothing) continue;
+//			if (categoryData.getCategory().equals("cat_terrain_rings")) {
+//				System.out.println("sdfkwefewfe");
+//			}
+			float weight = categoryData.getFrequency();
+			if (age != null) weight *= categoryData.getMultiplier(age);
+			if (starType != null) weight *= categoryData.getMultiplier(starType);
+			if (parentCategory != null) weight *= categoryData.getMultiplier(parentCategory);
+			for (String col : context.multipliers) {
+				weight *= categoryData.getMultiplier(col);
+			}
+			if (extraMult != null) weight *= categoryData.getMultiplier(extraMult);
+			
+			// prefer habitable worlds
+			if (categoryData.getCategory().contains("cat_hab"))
+			{
+				switch (categoryData.getCategory())
+				{
+					case "cat_hab5":	// none
+						weight *= 1.5f;
+						break;
+					case "cat_hab4":	// terran
+						weight *= 3f;
+						break;
+					case "cat_hab3":	// terran-eccentric, jungle, arid, water, tundra
+						weight *= 4f;
+						break;
+					case "cat_hab2":	// desert
+						weight *= 2f;
+						break;
+					case "cat_hab1":	// barren-desert
+						weight *= 1.5f;
+						break;
+				}
+			}
+			
+			//if (weight > 0 && (catNothing || !isCategoryEmpty(categoryData, orbitIndex, fromParentOrbitIndex, age, starType, parentCategory, extraMult))) {
+			if (weight > 0 && (catNothing || !isCategoryEmpty(categoryData, context, extraMult, nothingOk))) {
+				picker.add(categoryData, weight); 
+			}
+		}
+		
+		if (DEBUG) {
+			boolean withParent = context.parent != null;
+			int orbitIndex = context.orbitIndex;
+			String parentType = "";
+			if (withParent) {
+				parentType = context.parent.getSpec().getPlanetType();
+				orbitIndex = context.parentOrbitIndex;
+			}
+			
+//			float offset = orbitIndex;
+//			float minIndex = context.starData.getHabZoneStart() + planetData.getHabOffsetMin() + offset;
+//			float maxIndex = context.starData.getHabZoneStart() + planetData.getHabOffsetMax() + offset;
+			//boolean inRightRange = orbitIndex >= minIndex && orbitIndex <= maxIndex;
+			int habDiff = orbitIndex - (int) context.starData.getHabZoneStart();
+			if (withParent) {
+				picker.print("  Picking category for moon of " + parentType + 
+							 ", orbit from star: " + orbitIndex + " (" + habDiff + ")" +  ", extra: " + extraMult);
+			} else {
+				picker.print("  Picking category for entity orbiting star " + starType + 
+							", orbit from star: " + orbitIndex + " (" + habDiff + ")" +  ", extra: " + extraMult);
+			}
+		}
+		
+		CategoryGenDataSpec pick = picker.pick();
+		if (DEBUG) {
+			System.out.println("  Picked: " + pick.getCategory());
+			System.out.println();
+		}
+		
+		return pick;
 	}
 	
 	@Override

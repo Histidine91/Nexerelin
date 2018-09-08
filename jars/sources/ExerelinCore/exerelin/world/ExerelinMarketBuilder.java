@@ -575,7 +575,7 @@ public class ExerelinMarketBuilder
 	 */
 	public List<ProcGenEntity> assignArchetypesToTopMarkets(List<ProcGenEntity> markets, Archetype archetype, int num)
 	{
-		log.info("Assigning archetypes for archetype " + archetype.name() + ", available: " + markets.size());
+		log.info("Assigning markets for archetype " + archetype.name() + ", available: " + markets.size());
 		List<ProcGenEntity> sorted = getOrderedListOfMarketsForArchetype(markets, archetype);
 		List<ProcGenEntity> results = new ArrayList<>();
 		for (int i=0; i<num; i++)
@@ -583,7 +583,8 @@ public class ExerelinMarketBuilder
 			ProcGenEntity market = sorted.get(i);
 			market.archetype = archetype;
 			results.add(market);
-			log.info("\t" + market.name + " has archetype " + archetype.toString());
+			log.info("\tPicked " + market.name + " (" + (market.type == EntityType.STATION ? 
+					"station" : market.planetType) + ")");
 		}
 		
 		marketsByArchetype.put(archetype, results);
