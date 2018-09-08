@@ -1,9 +1,12 @@
 package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
@@ -42,15 +45,19 @@ public final class ExerelinSetupData
 
 	private ExerelinSetupData()
 	{
-		// Empty constructor
+		List<String> factionIds = ExerelinConfig.getFactions(true, false);
+		factionIds.add(Factions.INDEPENDENT);
+		factionIds.remove(ExerelinConstants.PLAYER_NPC_ID);
+		for (String factionId : factionIds)
+			factions.put(factionId, true);
 	}
 
 	public static ExerelinSetupData getInstance()
 	{
 		if(instance == null)
 		{
-			instance = new ExerelinSetupData();
 			ExerelinConfig.loadSettings();
+			instance = new ExerelinSetupData();
 		}
 
 		return instance;
