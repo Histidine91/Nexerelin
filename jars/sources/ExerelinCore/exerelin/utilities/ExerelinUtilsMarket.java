@@ -3,6 +3,7 @@ package exerelin.utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -357,5 +358,18 @@ public class ExerelinUtilsMarket {
 			return false;
 		
 		return true;
+	}
+	
+	public static boolean canTradeWithMarket(MarketAPI market)
+	{
+		FactionAPI faction = market.getFaction();
+		if (faction.isAtWorst(Factions.PLAYER, RepLevel.SUSPICIOUS))
+			return true;
+		if (market.hasCondition(Conditions.FREE_PORT))
+			return true;
+		if (faction.getCustomBoolean(Factions.CUSTOM_ALLOWS_TRANSPONDER_OFF_TRADE))
+			return true;
+		
+		return false;
 	}
 }

@@ -1061,6 +1061,14 @@ nex_getDispositionList7,DialogOptionSelected,$option == nex_getDispositionList7,
 nex_getDispositionPrint,DialogOptionSelected,"Nex_OptionStartsWith ""nex_getDisposition_""",Nex_GetDisposition print,,,
 #END DIPLOMACY OPTIONS,,,,,,
 ,,,,,,
+#START GET PRICE OPTIONS,,,,,,
+nex_getPricesInit,PopulateOptions,Nex_IsBaseOfficial trade,,,nex_getPricesMain:Get commodity prices,
+nex_getPricesInitInsufficientRep,PopulateOptions,"Nex_IsBaseOfficial trade
+!Nex_GetPrices canUse","SetTooltip nex_getPricesMain ""Your reputation with $theFaction is not good enough to use this service.""
+SetEnabled nex_getPricesMain false",,,
+nex_getPrices,DialogOptionSelected,$option == nex_getPricesMain,Nex_GetPrices listCommodities,,,
+nex_getPricesPrint,DialogOptionSelected,"Nex_OptionStartsWith ""nex_getPrices_""",Nex_GetPrices print,,,
+#END GET PRICE OPTIONS,,,,,,
 ,,,,,,
 # other base commander stuff,,,,,,
 nex_marketAgentReportOption,PopulateOptions,"Nex_IsBaseOfficial admin

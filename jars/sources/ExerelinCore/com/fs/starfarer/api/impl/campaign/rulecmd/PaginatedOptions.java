@@ -8,6 +8,7 @@ import java.util.Map;
 import com.fs.starfarer.api.Global;  
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;  
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;  
+import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;  
 import com.fs.starfarer.api.combat.EngagementResultAPI;  
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;  
@@ -147,10 +148,11 @@ public class PaginatedOptions extends BaseCommandPlugin implements InteractionDi
          return;  
       }  
         
-      dialog.setPlugin(originalPlugin);  
+      dialog.setPlugin(originalPlugin);
       MemoryAPI memory = dialog.getInteractionTarget().getMemory();  
       memory.set("$option", optionData);  
-      memory.expire("$option", 0);  
+      memory.expire("$option", 0);
+	  memoryMap.get(MemKeys.LOCAL).set("$option", optionData, 0);
       boolean fired = FireBest.fire(null, dialog, memoryMap, isNewGameDialog() ? "NewGameOptionSelected" : "DialogOptionSelected");
       if (!fired) {  
          dialog.setPlugin(this); // failsafe for selecting an option with no matching rule  
