@@ -212,6 +212,8 @@ public class ExerelinProcGen {
 			allowedImages.add(new String[]{"illustrations", "vacuum_colony"} );
 		if (market.hasCondition(Conditions.LUDDIC_MAJORITY))
 			allowedImages.add(new String[]{"illustrations", "luddic_shrine"} );
+		if (isStation && ExerelinUtilsFaction.doesFactionExist("blackrock_driveyards"))
+			allowedImages.add(new String[]{"illustrations", "blackrock_vigil_station"} );
 		
 		//if (isMoon)
 		//	allowedImages.add(new String[]{"illustrations", "asteroid_belt_moon"} );
