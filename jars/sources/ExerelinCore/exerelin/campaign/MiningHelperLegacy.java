@@ -458,8 +458,11 @@ public class MiningHelperLegacy {
 	{
 		float strength = 0;
 		String hullId = variant.getHullSpec().getHullId();
+		String baseHullId = variant.getHullSpec().getBaseHullId();
 		if (miningShips.containsKey(hullId))
 			strength += miningShips.get(hullId);
+		else if (miningShips.containsKey(baseHullId))
+			strength += miningShips.get(baseHullId);
 		
 		Collection<String> weaponSlots = variant.getFittedWeaponSlots();
 		for (String slot : weaponSlots)
