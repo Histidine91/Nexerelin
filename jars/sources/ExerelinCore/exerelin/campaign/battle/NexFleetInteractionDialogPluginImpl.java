@@ -400,7 +400,8 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 				float allowedDist = 0;
 				for (CampaignFleetAPI participatingFleet : battle.getBothSides())
 				{
-					if (ExerelinUtilsFleet.getFleetType(participatingFleet).equals("exerelinResponseFleet"))
+					if (ExerelinUtilsFleet.getFleetType(participatingFleet).equals("exerelinResponseFleet")
+							&& participatingFleet.getFaction() == fleet.getFaction())
 					{
 						allowedDist = Misc.getBattleJoinRange();
 						break;
