@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  */
 
 @SuppressWarnings("unchecked")
-public final class ExerelinSetupData
+public class ExerelinSetupData
 {
 	public static Logger log = Global.getLogger(ExerelinSetupData.class);
 	private static ExerelinSetupData instance = null;

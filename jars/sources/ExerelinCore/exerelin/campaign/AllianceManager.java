@@ -143,7 +143,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
         if (!bestAlignments.isEmpty())
         {
-            return (Alignment)ExerelinUtils.getRandomListElement(bestAlignments);
+            return ExerelinUtils.getRandomListElement(bestAlignments);
         }
         return null;
     }
@@ -243,9 +243,9 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 
             do {
                 tries++;
-                name = (String) ExerelinUtils.getRandomListElement(namePrefixes);
+                name = ExerelinUtils.getRandomListElement(namePrefixes);
                 List<String> alignmentNames = allianceNamesByAlignment.get(type);
-                name = name + " " + (String) ExerelinUtils.getRandomListElement(alignmentNames);
+                name = name + " " + ExerelinUtils.getRandomListElement(alignmentNames);
 
                 validName = !allianceManager.alliancesByName.containsKey(name);
             }

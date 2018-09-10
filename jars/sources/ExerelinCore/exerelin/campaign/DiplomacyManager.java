@@ -516,8 +516,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 if (dominance > DOMINANCE_MIN)
                 {
                     float strength = (dominance - DOMINANCE_MIN)/(1 - DOMINANCE_MIN);
-                    if (isNegative) chance = chance + (DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD * strength);
-                    else chance = chance + (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
+                    if (isNegative) chance += (DOMINANCE_DIPLOMACY_NEGATIVE_EVENT_MOD * strength);
+                    else chance += (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
                 }
                 if (chance <= 0) continue;
                 eventPicker.add(eventDef, chance);

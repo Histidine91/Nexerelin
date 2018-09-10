@@ -1,7 +1,6 @@
 package exerelin.campaign.econ;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.econ.BaseMarketConditionPlugin;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.utilities.StringHelper;

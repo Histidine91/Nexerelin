@@ -19,7 +19,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -192,7 +191,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         // old random prisoner drops
-        for (int i=0; i<fp; i = i + 10)
+        for (int i=0; i<fp; i += 10)
         {
             if (Math.random() < ExerelinConfig.prisonerLootChancePer10Fp)
             {
@@ -205,7 +204,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         numSurvivors += prisoners;
         
         crew = (int)(crew*ExerelinConfig.crewLootMult*MathUtils.getRandomNumberInRange(0.5f, 1.5f));
-        crew = crew + MathUtils.getRandomNumberInRange(-3, 3);
+        crew += MathUtils.getRandomNumberInRange(-3, 3);
         crew = (int)(crew * contrib);
         if (crew > 0) {
             loot.addCrew(crew);
@@ -377,7 +376,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (numFactions == 0 && myFactionLoss == 0) return;
         
         Map<String, Object> params = new HashMap<>();
-        params.put("avgRepLoss", totalRepLoss/(float)numFactions);
+        params.put("avgRepLoss", totalRepLoss/numFactions);
         params.put("numFactions", numFactions);
         params.put("repLoss", repLoss);
         params.put("myFactionLoss", myFactionLoss);
@@ -447,7 +446,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 if (market.hasCondition(Conditions.HEADQUARTERS)) weight *= 0.1f;
             targetPicker.add(market, weight);
         }
-        MarketAPI targetMarket = (MarketAPI)targetPicker.pick();
+        MarketAPI targetMarket = targetPicker.pick();
         if (targetMarket == null) {
             return null;
         }
@@ -463,7 +462,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 sourcePicker.add(market, weight);
             }
 
-            sourceMarket = (MarketAPI)sourcePicker.pick();
+            sourceMarket = sourcePicker.pick();
         }
         
         if (sourceMarket == null) {

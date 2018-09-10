@@ -70,7 +70,7 @@ public class Alliance
 			if (markets.isEmpty()) 
 				market = getRandomAllianceMarketForEvent(true);
 			else
-				market = (MarketAPI) ExerelinUtils.getRandomListElement(markets);
+				market = ExerelinUtils.getRandomListElement(markets);
 
 			eventTarget = new CampaignEventTarget(market);
 		}

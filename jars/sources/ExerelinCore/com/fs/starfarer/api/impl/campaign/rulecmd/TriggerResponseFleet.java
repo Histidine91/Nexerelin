@@ -18,7 +18,7 @@ public class TriggerResponseFleet extends BaseCommandPlugin {
     @Override
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
         if (dialog == null) return false;
-        final SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+        final SectorEntityToken target = dialog.getInteractionTarget();
             
         EveryFrameScript script = new EveryFrameScript() {
             private boolean done = false;

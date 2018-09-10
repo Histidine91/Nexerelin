@@ -1,6 +1,5 @@
 package exerelin.utilities;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -151,7 +150,7 @@ public class ExerelinUtilsAstro {
 	 * @param orbiter The entity whose orbit is being set
 	 * @param m1 Larger mass (e.g. the star)
 	 * @param m2 Smaller mass (e.g. the planet)
-	 * @param point 1 - 5 = L1 to L5, other values randomize between L4 and L5
+	 * @param point 1 - 5 = L1 to L5
 	 * @param m2Angle The starting angle of {@code m2} in its orbit
 	 * @param m2OrbitRadius The orbit radius of {@code m2} in its orbit around {@code m1} 
 	 * @param myOrbitRadius The orbit radius of {@code orbiter} in its orbit around {@code m2} (only applies to L1 and L2)

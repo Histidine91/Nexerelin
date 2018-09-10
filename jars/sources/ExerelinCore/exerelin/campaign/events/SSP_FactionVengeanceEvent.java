@@ -340,17 +340,21 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
 
         float distance = Misc.getDistanceToPlayerLY(entity);
         setEscalationStage();
-        if (escalationLevel == 0) {
-            duration = Math.max(60,
-                                Math.min(120,
-                                         Math.round((20f + distance) * MathUtils.getRandomNumberInRange(0.75f, 1f))));
-        } else if (escalationLevel == 1) {
-            duration = Math.max(90, Math.min(150,
-                                             Math.round((20f + distance) * MathUtils.getRandomNumberInRange(1.25f, 1.75f))));
-        } else {
-            duration = Math.max(120, Math.min(180,
-                                             Math.round((20f + distance) * MathUtils.getRandomNumberInRange(2f, 2.5f))));
-        }
+		switch (escalationLevel) {
+			case 0:
+				duration = Math.max(60,
+						Math.min(120,
+								Math.round((20f + distance) * MathUtils.getRandomNumberInRange(0.75f, 1f))));
+				break;
+			case 1:
+				duration = Math.max(90, Math.min(150,
+						Math.round((20f + distance) * MathUtils.getRandomNumberInRange(1.25f, 1.75f))));
+				break;
+			default:
+				duration = Math.max(120, Math.min(180,
+						Math.round((20f + distance) * MathUtils.getRandomNumberInRange(2f, 2.5f))));
+				break;
+		}
         daysLeft = duration;
 
         float player = ExerelinUtilsFleet.calculatePowerLevel(playerFleet) * 0.1f;

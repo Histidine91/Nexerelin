@@ -33,7 +33,7 @@ public class PredictInvasionResults extends BaseCommandPlugin {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
-		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+		SectorEntityToken target = dialog.getInteractionTarget();
 		TextPanelAPI text = dialog.getTextPanel();
 
 		/*if (!(target instanceof MarketAPI ))
@@ -100,7 +100,7 @@ public class PredictInvasionResults extends BaseCommandPlugin {
 			float defenderAdvantageOverWorstCase = defenderStrength - attackerStrengthWorst;
 			float attackerStrengthRange = attackerStrengthBest - attackerStrengthWorst;
 			float winChance = 1 - (defenderAdvantageOverWorstCase / attackerStrengthRange);
-			winChance = winChance * 100;
+			winChance *= 100;
 			if (winChance < 0) winChance = 0;
 			if (winChance > 100) winChance = 100;
 			String winChanceStr = String.format("%.1f", winChance) + "%";

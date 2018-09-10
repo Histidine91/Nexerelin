@@ -38,7 +38,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		Map<String, Object> params = (HashMap)param;
+		Map<String, Object> params = (Map<String, Object>)param;
 		otherFaction = (FactionAPI)params.get("otherFaction");
 		eventStage = (String)params.get("eventStage");
 		result = (ExerelinReputationAdjustmentResult)params.get("result");
@@ -51,7 +51,7 @@ public class DiplomacyEvent extends BaseEventPlugin {
 		{
 			return;
 		}
-		age = age + Global.getSector().getClock().convertToDays(amount);
+		age += Global.getSector().getClock().convertToDays(amount);
 		if (age > DAYS_TO_KEEP)
 		{
 			done = true;

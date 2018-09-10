@@ -26,7 +26,6 @@ import exerelin.campaign.MiningHelperLegacy;
 import exerelin.campaign.MiningHelperLegacy.MiningReport;
 import exerelin.utilities.StringHelper;
 import java.text.MessageFormat;
-import java.util.Iterator;
 
 
 public class Nex_PrintMiningInfo extends BaseCommandPlugin {
@@ -37,7 +36,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
-		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+		SectorEntityToken target = dialog.getInteractionTarget();
 
 		if (!MiningHelperLegacy.canMine(target)) return false;
 		

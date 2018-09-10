@@ -41,8 +41,8 @@ public class WarmongerEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		Map<String, Object> params = (HashMap)param;
-        repLoss = (HashMap<String, Float>)params.get("repLoss");
+		Map<String, Object> params = (Map<String, Object>)param;
+        repLoss = (Map<String, Float>)params.get("repLoss");
 		avgRepLoss = (float)params.get("avgRepLoss");
 		myFactionLoss = (float)params.get("myFactionLoss");
 		numFactions = (int)params.get("numFactions");

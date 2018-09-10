@@ -263,7 +263,7 @@ public class ExerelinConfig
 
         for(ExerelinFactionConfig exerelinFactionConfig : exerelinFactionConfigs)
         {
-            if(!exerelinFactionConfig.customRebelFaction.equalsIgnoreCase(""))
+            if(!exerelinFactionConfig.customRebelFaction.isEmpty())
                 customRebels.add(exerelinFactionConfig.customRebelFaction);
         }
 

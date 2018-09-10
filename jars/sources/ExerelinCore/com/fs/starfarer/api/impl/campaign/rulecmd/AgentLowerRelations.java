@@ -46,7 +46,7 @@ public class AgentLowerRelations extends AgentActionBase {
 			return false;
 		
 		SectorAPI sector = Global.getSector();
-		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+		SectorEntityToken target = dialog.getInteractionTarget();
 		MarketAPI market = target.getMarket();
 		String targetFactionId = target.getFaction().getId();
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -72,7 +72,7 @@ public class AgentLowerRelations extends AgentActionBase {
 				weight *= 4f;
 			
 			float dominance = DiplomacyManager.getDominanceFactor(factionId);
-				weight = weight * (1 + dominance*2);
+				weight *= (1 + dominance*2);
 			
 			targetPicker.add(factionId, weight);
 		}

@@ -30,7 +30,7 @@ public class AgentLowerRelationsEvent extends CovertOpsEventBase {
 	@Override
 	public void setParam(Object param) {
 		super.setParam(param);
-		Map<String, Object> params = (HashMap)param;
+		Map<String, Object> params = (Map<String, Object>)param;
 		
 		thirdFaction = (FactionAPI)params.get("thirdFaction");
 		if (params.containsKey("repResult2"))

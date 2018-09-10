@@ -471,73 +471,84 @@ public class SSP_BattleCreationPluginImpl implements BattleCreationPlugin {
     private void addEscapeObjectives(int num) {
         objs = new ArrayList<>(Arrays.asList(SENSOR, SENSOR, NAV, NAV, COMM));
 
-        if (num == 2) {
-            float r = (float) Math.random();
-            if (r < 0.33f) {
-                addObjectiveAt(0.25f, 0.25f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.75f, 1f, 1f);
-            } else if (r < 0.67f) {
-                addObjectiveAt(0.75f, 0.25f, 1f, 1f);
-                addObjectiveAt(0.25f, 0.75f, 1f, 1f);
-            } else {
-                addObjectiveAt(0.5f, 0.25f, 4f, 2f);
-                addObjectiveAt(0.5f, 0.75f, 4f, 2f);
-            }
-        } else if (num == 3) {
-            float r = (float) Math.random();
-            if (r < 0.33f) {
-                addObjectiveAt(0.25f, 0.75f, 1f, 1f);
-                addObjectiveAt(0.25f, 0.25f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.5f, 1f, 6f);
-            } else if (r < 0.67f) {
-                addObjectiveAt(0.25f, 0.5f, 1f, 6f);
-                addObjectiveAt(0.75f, 0.75f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.25f, 1f, 1f);
-            } else {
-                addObjectiveAt(0.5f, 0.25f, 4f, 1f);
-                addObjectiveAt(0.5f, 0.5f, 4f, 1f);
-                addObjectiveAt(0.5f, 0.75f, 4f, 1f);
-            }
-        } else if (num == 4) {
-            float r = (float) Math.random();
-            if (r < 0.33f) {
-                addObjectiveAt(0.25f, 0.25f, 1f, 1f);
-                addObjectiveAt(0.25f, 0.75f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.25f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.75f, 1f, 1f);
-            } else if (r < 0.67f) {
-                addObjectiveAt(0.35f, 0.25f, 2f, 0f);
-                addObjectiveAt(0.65f, 0.35f, 2f, 0f);
-                addObjectiveAt(0.5f, 0.6f, 4f, 1f);
-                addObjectiveAt(0.5f, 0.8f, 4f, 1f);
-            } else {
-                addObjectiveAt(0.65f, 0.25f, 2f, 0f);
-                addObjectiveAt(0.35f, 0.35f, 2f, 0f);
-                addObjectiveAt(0.5f, 0.6f, 4f, 1f);
-                addObjectiveAt(0.5f, 0.8f, 4f, 1f);
-            }
-        } else if (num == 5) {
-            float r = (float) Math.random();
-            if (r < 0.33f) {
-                addObjectiveAt(0.25f, 0.25f, 1f, 1f);
-                addObjectiveAt(0.25f, 0.75f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.25f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.75f, 1f, 1f);
-                addObjectiveAt(0.5f, 0.5f, 1f, 1f);
-            } else if (r < 0.67f) {
-                addObjectiveAt(0.25f, 0.45f, 2f, 0f);
-                addObjectiveAt(0.75f, 0.35f, 2f, 0f);
-                addObjectiveAt(0.5f, 0.6f, 4f, 1f);
-                addObjectiveAt(0.5f, 0.8f, 4f, 1f);
-                addObjectiveAt(0.5f, 0.25f, 2f, 0f);
-            } else {
-                addObjectiveAt(0.75f, 0.45f, 2f, 0f);
-                addObjectiveAt(0.25f, 0.35f, 2f, 0f);
-                addObjectiveAt(0.5f, 0.6f, 4f, 1f);
-                addObjectiveAt(0.5f, 0.8f, 4f, 1f);
-                addObjectiveAt(0.5f, 0.25f, 2f, 0f);
-            }
-        }
+		switch (num) {
+			case 2:
+				{
+					float r = (float) Math.random();
+					if (r < 0.33f) {
+						addObjectiveAt(0.25f, 0.25f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.75f, 1f, 1f);
+					} else if (r < 0.67f) {
+						addObjectiveAt(0.75f, 0.25f, 1f, 1f);
+						addObjectiveAt(0.25f, 0.75f, 1f, 1f);
+					} else {
+						addObjectiveAt(0.5f, 0.25f, 4f, 2f);
+						addObjectiveAt(0.5f, 0.75f, 4f, 2f);
+					}		break;
+				}
+			case 3:
+				{
+					float r = (float) Math.random();
+					if (r < 0.33f) {
+						addObjectiveAt(0.25f, 0.75f, 1f, 1f);
+						addObjectiveAt(0.25f, 0.25f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.5f, 1f, 6f);
+					} else if (r < 0.67f) {
+						addObjectiveAt(0.25f, 0.5f, 1f, 6f);
+						addObjectiveAt(0.75f, 0.75f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.25f, 1f, 1f);
+					} else {
+						addObjectiveAt(0.5f, 0.25f, 4f, 1f);
+						addObjectiveAt(0.5f, 0.5f, 4f, 1f);
+						addObjectiveAt(0.5f, 0.75f, 4f, 1f);
+					}		break;
+				}
+			case 4:
+				{
+					float r = (float) Math.random();
+					if (r < 0.33f) {
+						addObjectiveAt(0.25f, 0.25f, 1f, 1f);
+						addObjectiveAt(0.25f, 0.75f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.25f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.75f, 1f, 1f);
+					} else if (r < 0.67f) {
+						addObjectiveAt(0.35f, 0.25f, 2f, 0f);
+						addObjectiveAt(0.65f, 0.35f, 2f, 0f);
+						addObjectiveAt(0.5f, 0.6f, 4f, 1f);
+						addObjectiveAt(0.5f, 0.8f, 4f, 1f);
+					} else {
+						addObjectiveAt(0.65f, 0.25f, 2f, 0f);
+						addObjectiveAt(0.35f, 0.35f, 2f, 0f);
+						addObjectiveAt(0.5f, 0.6f, 4f, 1f);
+						addObjectiveAt(0.5f, 0.8f, 4f, 1f);
+					}		break;
+				}
+			case 5:
+				{
+					float r = (float) Math.random();
+					if (r < 0.33f) {
+						addObjectiveAt(0.25f, 0.25f, 1f, 1f);
+						addObjectiveAt(0.25f, 0.75f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.25f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.75f, 1f, 1f);
+						addObjectiveAt(0.5f, 0.5f, 1f, 1f);
+					} else if (r < 0.67f) {
+						addObjectiveAt(0.25f, 0.45f, 2f, 0f);
+						addObjectiveAt(0.75f, 0.35f, 2f, 0f);
+						addObjectiveAt(0.5f, 0.6f, 4f, 1f);
+						addObjectiveAt(0.5f, 0.8f, 4f, 1f);
+						addObjectiveAt(0.5f, 0.25f, 2f, 0f);
+					} else {
+						addObjectiveAt(0.75f, 0.45f, 2f, 0f);
+						addObjectiveAt(0.25f, 0.35f, 2f, 0f);
+						addObjectiveAt(0.5f, 0.6f, 4f, 1f);
+						addObjectiveAt(0.5f, 0.8f, 4f, 1f);
+						addObjectiveAt(0.5f, 0.25f, 2f, 0f);
+					}		break;
+				}
+			default:
+				break;
+		}
     }
 
     private void addMultiplePlanets() {
@@ -686,89 +697,101 @@ public class SSP_BattleCreationPluginImpl implements BattleCreationPlugin {
     private void addObjectives(int num) {
         objs = new ArrayList<>(Arrays.asList(SENSOR, SENSOR, NAV, NAV, COMM, COMM));
 
-        if (num == 2) {
-            objs = new ArrayList<>(Arrays.asList(SENSOR, SENSOR, NAV, NAV, COMM));
-            addObjectiveAt(0.25f, 0.5f, 0f, 0f);
-            addObjectiveAt(0.75f, 0.5f, 0f, 0f);
-        } else if (num == 3) {
-            float r = (float) Math.random();
-            if (r < 0.33f) {
-                addObjectiveAt(0.25f, 0.7f, 1f, 1f);
-                addObjectiveAt(0.25f, 0.3f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.5f, 1f, 1f);
-            } else if (r < 0.67f) {
-                addObjectiveAt(0.25f, 0.7f, 1f, 1f);
-                addObjectiveAt(0.25f, 0.3f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.7f, 1f, 1f);
-            } else {
-                addObjectiveAt(0.25f, 0.5f, 1f, 1f);
-                addObjectiveAt(0.5f, 0.5f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.5f, 1f, 1f);
-            }
-        } else if (num == 4) {
-            float r = (float) Math.random();
-            if (r < 0.33f) {
-                addObjectiveAt(0.25f, 0.25f, 2f, 1f);
-                addObjectiveAt(0.25f, 0.75f, 2f, 1f);
-                addObjectiveAt(0.75f, 0.25f, 2f, 1f);
-                addObjectiveAt(0.75f, 0.75f, 2f, 1f);
-            } else if (r < 0.67f) {
-                addObjectiveAt(0.25f, 0.5f, 1f, 1f);
-                addObjectiveAt(0.5f, 0.75f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.5f, 1f, 1f);
-                addObjectiveAt(0.5f, 0.25f, 1f, 1f);
-            } else {
-                addObjectiveAt(0.2f, 0.5f, 1f, 2f);
-                addObjectiveAt(0.4f, 0.5f, 0f, 3f);
-                addObjectiveAt(0.6f, 0.5f, 0f, 3f);
-                addObjectiveAt(0.8f, 0.5f, 1f, 2f);
-            }
-        } else if (num == 5) {
-            float r = (float) Math.random();
-            if (r < 0.33f) {
-                addObjectiveAt(0.25f, 0.25f, 2f, 1f);
-                addObjectiveAt(0.25f, 0.75f, 2f, 1f);
-                addObjectiveAt(0.75f, 0.25f, 2f, 1f);
-                addObjectiveAt(0.75f, 0.75f, 2f, 1f);
-                addObjectiveAt(0.5f, 0.5f, 2f, 1f);
-            } else if (r < 0.67f) {
-                addObjectiveAt(0.25f, 0.5f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.5f, 1f, 1f);
-                addObjectiveAt(0.5f, 0.25f, 2f, 0f);
-                addObjectiveAt(0.5f, 0.75f, 2f, 0f);
-                addObjectiveAt(0.5f, 0.5f, 1f, 1f);
-            } else {
-                addObjectiveAt(0.2f, 0.5f, 1f, 2f);
-                addObjectiveAt(0.35f, 0.5f, 0f, 3f);
-                addObjectiveAt(0.65f, 0.5f, 0f, 3f);
-                addObjectiveAt(0.8f, 0.5f, 1f, 2f);
-                addObjectiveAt(0.5f, 0.5f, 0f, 5f);
-            }
-        } else if (num == 6) {
-            float r = (float) Math.random();
-            if (r < 0.33f) {
-                addObjectiveAt(0.25f, 0.25f, 2f, 1f);
-                addObjectiveAt(0.75f, 0.25f, 2f, 1f);
-                addObjectiveAt(0.25f, 0.5f, 2f, 1f);
-                addObjectiveAt(0.75f, 0.5f, 2f, 1f);
-                addObjectiveAt(0.25f, 0.75f, 2f, 1f);
-                addObjectiveAt(0.75f, 0.75f, 2f, 1f);
-            } else if (r < 0.67f) {
-                addObjectiveAt(0.25f, 0.5f, 1f, 1f);
-                addObjectiveAt(0.75f, 0.5f, 1f, 1f);
-                addObjectiveAt(0.5f, 0.2f, 1f, 1f);
-                addObjectiveAt(0.5f, 0.4f, 1f, 1f);
-                addObjectiveAt(0.5f, 0.6f, 1f, 1f);
-                addObjectiveAt(0.5f, 0.8f, 1f, 1f);
-            } else {
-                addObjectiveAt(0.25f, 0.25f, 1f, 2f);
-                addObjectiveAt(0.25f, 0.75f, 1f, 2f);
-                addObjectiveAt(0.4f, 0.5f, 0f, 3f);
-                addObjectiveAt(0.6f, 0.5f, 0f, 3f);
-                addObjectiveAt(0.75f, 0.25f, 1f, 2f);
-                addObjectiveAt(0.75f, 0.75f, 1f, 2f);
-            }
-        }
+		switch (num) {
+			case 2:
+				objs = new ArrayList<>(Arrays.asList(SENSOR, SENSOR, NAV, NAV, COMM));
+				addObjectiveAt(0.25f, 0.5f, 0f, 0f);
+				addObjectiveAt(0.75f, 0.5f, 0f, 0f);
+				break;
+			case 3:
+				{
+					float r = (float) Math.random();
+					if (r < 0.33f) {
+						addObjectiveAt(0.25f, 0.7f, 1f, 1f);
+						addObjectiveAt(0.25f, 0.3f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.5f, 1f, 1f);
+					} else if (r < 0.67f) {
+						addObjectiveAt(0.25f, 0.7f, 1f, 1f);
+						addObjectiveAt(0.25f, 0.3f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.7f, 1f, 1f);
+					} else {
+						addObjectiveAt(0.25f, 0.5f, 1f, 1f);
+						addObjectiveAt(0.5f, 0.5f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.5f, 1f, 1f);
+					}		break;
+				}
+			case 4:
+				{
+					float r = (float) Math.random();
+					if (r < 0.33f) {
+						addObjectiveAt(0.25f, 0.25f, 2f, 1f);
+						addObjectiveAt(0.25f, 0.75f, 2f, 1f);
+						addObjectiveAt(0.75f, 0.25f, 2f, 1f);
+						addObjectiveAt(0.75f, 0.75f, 2f, 1f);
+					} else if (r < 0.67f) {
+						addObjectiveAt(0.25f, 0.5f, 1f, 1f);
+						addObjectiveAt(0.5f, 0.75f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.5f, 1f, 1f);
+						addObjectiveAt(0.5f, 0.25f, 1f, 1f);
+					} else {
+						addObjectiveAt(0.2f, 0.5f, 1f, 2f);
+						addObjectiveAt(0.4f, 0.5f, 0f, 3f);
+						addObjectiveAt(0.6f, 0.5f, 0f, 3f);
+						addObjectiveAt(0.8f, 0.5f, 1f, 2f);
+					}		break;
+				}
+			case 5:
+				{
+					float r = (float) Math.random();
+					if (r < 0.33f) {
+						addObjectiveAt(0.25f, 0.25f, 2f, 1f);
+						addObjectiveAt(0.25f, 0.75f, 2f, 1f);
+						addObjectiveAt(0.75f, 0.25f, 2f, 1f);
+						addObjectiveAt(0.75f, 0.75f, 2f, 1f);
+						addObjectiveAt(0.5f, 0.5f, 2f, 1f);
+					} else if (r < 0.67f) {
+						addObjectiveAt(0.25f, 0.5f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.5f, 1f, 1f);
+						addObjectiveAt(0.5f, 0.25f, 2f, 0f);
+						addObjectiveAt(0.5f, 0.75f, 2f, 0f);
+						addObjectiveAt(0.5f, 0.5f, 1f, 1f);
+					} else {
+						addObjectiveAt(0.2f, 0.5f, 1f, 2f);
+						addObjectiveAt(0.35f, 0.5f, 0f, 3f);
+						addObjectiveAt(0.65f, 0.5f, 0f, 3f);
+						addObjectiveAt(0.8f, 0.5f, 1f, 2f);
+						addObjectiveAt(0.5f, 0.5f, 0f, 5f);
+					}		break;
+				}
+			case 6:
+				{
+					float r = (float) Math.random();
+					if (r < 0.33f) {
+						addObjectiveAt(0.25f, 0.25f, 2f, 1f);
+						addObjectiveAt(0.75f, 0.25f, 2f, 1f);
+						addObjectiveAt(0.25f, 0.5f, 2f, 1f);
+						addObjectiveAt(0.75f, 0.5f, 2f, 1f);
+						addObjectiveAt(0.25f, 0.75f, 2f, 1f);
+						addObjectiveAt(0.75f, 0.75f, 2f, 1f);
+					} else if (r < 0.67f) {
+						addObjectiveAt(0.25f, 0.5f, 1f, 1f);
+						addObjectiveAt(0.75f, 0.5f, 1f, 1f);
+						addObjectiveAt(0.5f, 0.2f, 1f, 1f);
+						addObjectiveAt(0.5f, 0.4f, 1f, 1f);
+						addObjectiveAt(0.5f, 0.6f, 1f, 1f);
+						addObjectiveAt(0.5f, 0.8f, 1f, 1f);
+					} else {
+						addObjectiveAt(0.25f, 0.25f, 1f, 2f);
+						addObjectiveAt(0.25f, 0.75f, 1f, 2f);
+						addObjectiveAt(0.4f, 0.5f, 0f, 3f);
+						addObjectiveAt(0.6f, 0.5f, 0f, 3f);
+						addObjectiveAt(0.75f, 0.25f, 1f, 2f);
+						addObjectiveAt(0.75f, 0.75f, 1f, 2f);
+					}		break;
+				}
+			default:
+				break;
+		}
     }
 
     private void createMap() {

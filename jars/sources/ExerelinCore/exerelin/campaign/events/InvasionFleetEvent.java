@@ -48,7 +48,7 @@ public class InvasionFleetEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		Map<String, Object> params = (HashMap)param;
+		Map<String, Object> params = (Map<String, Object>)param;
 		target = (MarketAPI)params.get("target");
 		dp = (int)(float)params.get("dp");
 	}

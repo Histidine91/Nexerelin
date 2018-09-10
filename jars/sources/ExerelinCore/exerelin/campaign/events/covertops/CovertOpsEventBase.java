@@ -46,7 +46,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		Map<String, Object> params = (HashMap)param;
+		Map<String, Object> params = (Map<String, Object>)param;
 		agentFaction = (FactionAPI)params.get("agentFaction");
 		result = (CovertActionResult)params.get("result");
 		playerInvolved = (Boolean)params.get("playerInvolved");
@@ -69,7 +69,7 @@ public class CovertOpsEventBase extends BaseEventPlugin {
 		{
 			return;
 		}
-		age = age + Global.getSector().getClock().convertToDays(amount);
+		age += Global.getSector().getClock().convertToDays(amount);
 		if (age > DAYS_TO_KEEP)
 		{
 			done = true;

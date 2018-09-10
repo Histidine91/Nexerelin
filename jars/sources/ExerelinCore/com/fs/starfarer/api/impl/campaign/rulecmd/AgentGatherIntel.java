@@ -1,6 +1,5 @@
 package com.fs.starfarer.api.impl.campaign.rulecmd;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import java.util.List;
@@ -10,7 +9,6 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -54,7 +52,7 @@ public class AgentGatherIntel extends AgentActionBase {
 				return false;
 		}
 		
-		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+		SectorEntityToken target = dialog.getInteractionTarget();
 		MarketAPI market = target.getMarket();
 		Color highlightColor = Misc.getHighlightColor();
 		Color negativeColor = Misc.getNegativeHighlightColor();

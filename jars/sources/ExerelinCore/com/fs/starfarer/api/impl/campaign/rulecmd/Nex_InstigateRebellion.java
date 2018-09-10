@@ -187,7 +187,7 @@ public class Nex_InstigateRebellion extends AgentActionBase {
 			if (neededAmount > haveAmount)
 				haveEnough = false;
 			
-			addCargoEntry(cost, commodityId, (int)haveAmount, (int)neededAmount);
+			addCargoEntry(cost, commodityId, (int)haveAmount, neededAmount);
 			cost.update();
 		}
 		float rebellionPoints = RebellionEventCreator.getRebellionPointsStatic(market);

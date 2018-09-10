@@ -104,7 +104,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + (originMarket.getSize() + 2));
 		if (DefenceStationManager.getManager() != null)
 			maxFPbase += DefenceStationManager.getManager().getDefenceFleetPenaltyFromStations(targetMarket) * 1.25f;
-		maxFPbase = maxFPbase * (float)(0.75 + 0.5 * originMarket.getStabilityValue()/10);
+		maxFPbase *= (float)(0.75 + 0.5 * originMarket.getStabilityValue()/10);
 		maxFPbase *= 0.7f;
 		
 		float maxFP = maxFPbase;
@@ -120,7 +120,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			maxFP += maxFPbase * factionConfig.invasionFleetSizeMod;
 		}
 		
-		maxFP = maxFP + ExerelinUtilsFleet.getPlayerLevelFPBonus();
+		maxFP += ExerelinUtilsFleet.getPlayerLevelFPBonus();
 		
 		return (maxFP * (MathUtils.getRandomNumberInRange(0.75f, 1f) + MathUtils.getRandomNumberInRange(0, 0.25f)));
 	}
@@ -298,7 +298,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		params.name = name;
 		params.fleetType = "exerelinDefenseFleet";
 		params.faction = faction;
-		params.fp = (int)maxFP;
+		params.fp = maxFP;
 		params.qualityOverride = qf;
 		params.originMarket = originMarket;
 		params.targetMarket = targetMarket;
@@ -323,7 +323,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		params.name = name;
 		params.fleetType = "exerelinInvasionSupportFleet";
 		params.faction = faction;
-		params.fp = (int)maxFP;
+		params.fp = maxFP;
 		params.qualityOverride = qf;
 		params.originMarket = originMarket;
 		params.targetMarket = targetMarket;
@@ -357,7 +357,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		params.name = name;
 		params.fleetType = "exerelinInvasionFleet";
 		params.faction = faction;
-		params.fp = (int)maxFP;
+		params.fp = maxFP;
 		params.qualityOverride = qf;
 		params.originMarket = originMarket;
 		params.targetMarket = targetMarket;

@@ -481,7 +481,7 @@ public class ExerelinProcGen {
 					if (moon.desirability > candidate.desirability)
 					{
 						shouldSkip = true;
-						continue;
+						break;
 					}
 				}
 				

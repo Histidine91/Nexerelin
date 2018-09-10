@@ -17,7 +17,7 @@ public class PrisonerSellSlave extends AgentActionBase {
         @Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
-                SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+                SectorEntityToken target = dialog.getInteractionTarget();
                 
                 boolean superResult = useSpecialPerson("prisoner", 1);
                 if (superResult == false)

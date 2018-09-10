@@ -28,7 +28,7 @@ public class AgentDestabilizeMarketEventForCondition extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		Map<String, Object> params = (HashMap)param;
+		Map<String, Object> params = (Map<String, Object>)param;
 		if (params.containsKey("stabilityPenalty"))
 			stabilityPenalty = (Integer)params.get("stabilityPenalty");
 	}

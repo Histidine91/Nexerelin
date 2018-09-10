@@ -158,7 +158,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 else if (repLevel == RepLevel.INHOSPITABLE) weight = 3f;
                 else continue;
                 
-                weight = weight * (1.25f - dominance);
+                weight *= (1.25f - dominance);
             }
             else if (actionType == CovertActionType.LOWER_RELATIONS)
             {
@@ -170,7 +170,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 else if (repLevel == RepLevel.VENGEFUL) weight = 3f;
                 else continue;
                 
-                weight = weight * (1 + dominance*2);
+                weight *= (1 + dominance*2);
             }
             else if (actionType == CovertActionType.DESTABILIZE_MARKET 
                     || actionType == CovertActionType.DESTROY_FOOD
@@ -181,7 +181,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 else if (repLevel == RepLevel.VENGEFUL) weight = 5f;
                 else continue;
                 
-                weight = weight * (1 + dominance);
+                weight *= (1 + dominance);
             }
             else if (actionType == CovertActionType.INSTIGATE_REBELLION)
             {
@@ -190,7 +190,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
                 else if (repLevel == RepLevel.VENGEFUL) weight = 5;
                 else continue;
                 
-                weight = weight * (1 + dominance);
+                weight *= (1 + dominance);
             }
             if (ExerelinUtilsFaction.isPirateFaction(factionId))
                 weight *= 0.25f;    // reduces factions constantly targeting pirates for covert action

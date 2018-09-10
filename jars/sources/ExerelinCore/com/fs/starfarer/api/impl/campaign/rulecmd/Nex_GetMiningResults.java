@@ -29,7 +29,7 @@ public class Nex_GetMiningResults extends BaseCommandPlugin {
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
-		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+		SectorEntityToken target = dialog.getInteractionTarget();
 		TextPanelAPI text = dialog.getTextPanel();
 
 		if (!MiningHelperLegacy.canMine(target)) return false;
@@ -122,7 +122,7 @@ public class Nex_GetMiningResults extends BaseCommandPlugin {
 				text.highlightInLastPara(red, name, crLostStr);
 			}
 			
-			int crewLost = (int)results.accidents.crewLost;
+			int crewLost = results.accidents.crewLost;
 			if (crewLost > 0)
 			{
 				String displayStr = Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "crewLost"));
@@ -130,7 +130,7 @@ public class Nex_GetMiningResults extends BaseCommandPlugin {
 				text.highlightInLastPara(red, crewLost+"");
 			}
 			
-			int machineryLost = (int)results.accidents.machineryLost;
+			int machineryLost = results.accidents.machineryLost;
 			if (machineryLost > 0)
 			{
 				String displayStr = Misc.ucFirst(StringHelper.getString(STRING_CATEGORY, "machineryLost"));

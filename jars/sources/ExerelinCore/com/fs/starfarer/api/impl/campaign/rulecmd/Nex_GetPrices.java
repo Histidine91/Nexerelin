@@ -17,7 +17,6 @@ import static com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions.OPTION
 import static com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions.OPTION_PREV_PAGE;
 import com.fs.starfarer.api.ui.ValueDisplayMode;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.events.NexTradeInfoUpdateEvent;
 import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
@@ -244,8 +243,8 @@ public class Nex_GetPrices extends PaginatedOptions {
 			String locName = loc.getName();
 			if (loc instanceof StarSystemAPI)
 					locName = ((StarSystemAPI)loc).getBaseName();
-			int price = (int)Math.round(info.basePrice);
-			int priceWithTariff = (int)Math.round(isPlayerSelling ? price * (1 - info.tariff) : price * (1 + info.tariff));
+			int price = Math.round(info.basePrice);
+			int priceWithTariff = Math.round(isPlayerSelling ? price * (1 - info.tariff) : price * (1 + info.tariff));
 			String distStr = (int)Math.round(info.distance) + "";
 			
 			// market name and location

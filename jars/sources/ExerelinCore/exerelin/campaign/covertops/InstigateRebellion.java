@@ -3,7 +3,6 @@ package exerelin.campaign.covertops;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
 import exerelin.campaign.events.RebellionEvent;

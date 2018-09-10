@@ -25,7 +25,7 @@ public class PrisonerRepatriate extends AgentActionBase {
 		if (superResult == false)
 			return false;
 		
-		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+		SectorEntityToken target = dialog.getInteractionTarget();
 		
 		FactionAPI faction = target.getFaction();
 		TextPanelAPI text = dialog.getTextPanel();

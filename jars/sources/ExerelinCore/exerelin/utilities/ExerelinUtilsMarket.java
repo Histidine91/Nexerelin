@@ -197,7 +197,7 @@ public class ExerelinUtilsMarket {
 	{
 		float current = commodity.getStockpile();
 		if (variance != 0)
-			mult = mult * MathUtils.getRandomNumberInRange(1 - variance, 1 + variance);
+			mult *= MathUtils.getRandomNumberInRange(1 - variance, 1 + variance);
 		if (mult < 0) mult = 0;
 		else if (mult > 1) mult = 1;
 		return current * mult;

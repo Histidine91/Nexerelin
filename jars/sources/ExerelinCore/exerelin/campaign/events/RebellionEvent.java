@@ -110,7 +110,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		Map<String, Object> params = (HashMap)param;
+		Map<String, Object> params = (Map<String, Object>)param;
 		rebelFactionId = (String)params.get("rebelFactionId");
 		delay = (Float)params.get("delay");
 		age = -delay;

@@ -44,7 +44,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		Map<String, Object> params = (HashMap)param;
+		Map<String, Object> params = (Map<String, Object>)param;
 		newOwner = (FactionAPI)params.get("newOwner");
 		oldOwner = (FactionAPI)params.get("oldOwner");
 		repChangeStrength = (Float)params.get("repChangeStrength");
@@ -64,7 +64,7 @@ public class MarketCapturedEvent extends BaseEventPlugin {
 			return;
 		}
 		
-		age = age + Global.getSector().getClock().convertToDays(amount);
+		age += Global.getSector().getClock().convertToDays(amount);
 		if (age > DAYS_TO_KEEP)
 		{
 			done = true;

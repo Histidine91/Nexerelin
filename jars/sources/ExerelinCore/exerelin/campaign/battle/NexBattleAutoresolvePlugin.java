@@ -931,7 +931,7 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 			normalizedShieldStr = 0;
 		} else {
 			float shieldFluxPerDamage = hullSpec.getBaseShieldFluxPerDamageAbsorbed(); 
-			shieldFluxPerDamage *= stats.getShieldAbsorptionMult().getModifiedValue() * stats.getShieldDamageTakenMult().getModifiedValue();;
+			shieldFluxPerDamage *= stats.getShieldAbsorptionMult().getModifiedValue() * stats.getShieldDamageTakenMult().getModifiedValue();
 			if (shieldFluxPerDamage < 0.1f) shieldFluxPerDamage = 0.1f;
 			float shieldMult = 1f / shieldFluxPerDamage;
 			normalizedShieldStr *= shieldMult;

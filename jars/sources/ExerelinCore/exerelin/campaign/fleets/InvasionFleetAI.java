@@ -57,7 +57,7 @@ public class InvasionFleetAI implements EveryFrameScript
 				float dist = Misc.getDistance(otherFleet.getLocation(), fleet.getLocation());
 				//log.info("Distance of fleet " + otherFleet.getName() + ": " + dist);
 				if (dist <= INVADE_RESPONSE_DISTANCE) {
-					CampaignFleetAIAPI ai = (CampaignFleetAIAPI) otherFleet.getAI();
+					CampaignFleetAIAPI ai = otherFleet.getAI();
 					EncounterOption option = ai.pickEncounterOption(null, fleet);
 					//log.info("Response type of fleet " + otherFleet.getName() + ": " + option.name());
 					if (option == EncounterOption.ENGAGE || option == EncounterOption.HOLD)

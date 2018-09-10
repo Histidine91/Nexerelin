@@ -38,7 +38,7 @@ public class SecurityAlertEvent extends BaseEventPlugin {
 		
 		if (elapsedDays >= DAYS_PER_STAGE) {
 			elapsedDays -= DAYS_PER_STAGE;
-			alertLevel = alertLevel - ALERT_LEVEL_DECREMENT;
+			alertLevel -= ALERT_LEVEL_DECREMENT;
 			//market.reapplyCondition(conditionToken);
 		}
 		

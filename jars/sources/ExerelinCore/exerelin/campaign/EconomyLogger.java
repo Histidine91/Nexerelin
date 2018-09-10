@@ -23,7 +23,7 @@ public class EconomyLogger extends BaseCampaignEventListener implements EveryFra
 		super(true);
 	}
 
-	private boolean firstFrame = true;
+	private final boolean firstFrame = true;
 	public void advance(float amount) {
 		SectorAPI sector = Global.getSector();
 		float days = sector.getClock().convertToDays(amount);

@@ -46,8 +46,8 @@ public class PlayerFactionStore {
         String storedId = (String)data.get(PLAYER_FACTION_ID_KEY);
         if (storedId != null) 
         {
-            factionId = (String)storedId;
-            return (String)storedId;
+            factionId = storedId;
+            return storedId;
         }
         return factionId;
     }
@@ -61,7 +61,7 @@ public class PlayerFactionStore {
     {
         SectorAPI sector = Global.getSector();
         Map<String, Object> data = sector.getPersistentData();
-        Map<String, Float> storedRelations = (HashMap<String, Float>)data.get(PLAYER_RELATIONS_KEY);
+        Map<String, Float> storedRelations = (Map<String, Float>)data.get(PLAYER_RELATIONS_KEY);
         if (storedRelations == null) storedRelations = new HashMap<>();
         
         FactionAPI playerFaction = sector.getFaction(Factions.PLAYER);
@@ -89,7 +89,7 @@ public class PlayerFactionStore {
     {
         SectorAPI sector = Global.getSector();
         Map<String, Object> data = sector.getPersistentData();
-        Map<String, Float> storedRelations = (HashMap<String, Float>)data.get(PLAYER_RELATIONS_KEY);
+        Map<String, Float> storedRelations = (Map<String, Float>)data.get(PLAYER_RELATIONS_KEY);
         if (storedRelations == null) return;
         
         FactionAPI playerFaction = sector.getFaction("player");

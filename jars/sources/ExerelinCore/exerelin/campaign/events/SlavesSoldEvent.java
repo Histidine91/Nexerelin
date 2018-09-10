@@ -41,9 +41,9 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		params = (Map<String, Object>)param;
 		factionsToNotify = (List<String>)params.get("factionsToNotify");
-		repPenalties = (HashMap<String, Float>)params.get("repPenalties");
+		repPenalties = (Map<String, Float>)params.get("repPenalties");
 		numSlaves = (Integer)params.get("numSlaves");
 		avgRepChange = (Float)params.get("avgRepChange");
 	}

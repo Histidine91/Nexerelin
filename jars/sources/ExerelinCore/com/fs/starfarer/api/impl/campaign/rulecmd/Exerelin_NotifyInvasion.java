@@ -2,7 +2,6 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -12,13 +11,13 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
-import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.Misc.VarAndMemory;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.utilities.ExerelinUtils;
 import java.util.List;
 import java.util.Map;
+import org.lazywizard.lazylib.MathUtils;
 
 // copied from BroadcastPlayerWaitAction
 public class Exerelin_NotifyInvasion extends BaseCommandPlugin {
@@ -46,7 +45,7 @@ public class Exerelin_NotifyInvasion extends BaseCommandPlugin {
 		
 		broadcast(type, range, responseVariable, playerFleet, target);
 		broadcastScript = new EveryFrameScript() {
-			private IntervalUtil tracker = new IntervalUtil(0.05f, 0.15f);
+			private final IntervalUtil tracker = new IntervalUtil(0.05f, 0.15f);
 			private boolean done = false;
 
 			public boolean runWhilePaused() {
@@ -122,9 +121,8 @@ public class Exerelin_NotifyInvasion extends BaseCommandPlugin {
 			if (fleet == exclude) continue;
 			if (!fleet.getFaction().isHostileTo(Factions.PLAYER)) continue;
 			if (fleet.getAI() instanceof CampaignFleetAIAPI) {
-				float dist = Misc.getDistance(target.getLocation(), fleet.getLocation());
-				if (dist <= range) {
-					CampaignFleetAIAPI ai = (CampaignFleetAIAPI) fleet.getAI();
+				if (MathUtils.isWithinRange(target, fleet, range)) {
+					CampaignFleetAIAPI ai = fleet.getAI();
 					ai.reportNearbyAction(type, actor, target, responseVariable);
 					fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true, 5);
 					fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF, true, 5);

@@ -111,6 +111,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 	/**
 	 * Creates dialog options for the faction list subgroups
 	 * @param dialog
+	 * @param memory
 	 */
 	public static void listGroups(InteractionDialogAPI dialog, MemoryAPI memory)
 	{		

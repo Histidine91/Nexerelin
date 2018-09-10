@@ -54,7 +54,7 @@ public abstract class FleetRequestActionBase extends BaseCommandPlugin {
                     sourcePicker.add(market, weight);
                 }
             }
-            MarketAPI originMarket = (MarketAPI)sourcePicker.pick();
+            MarketAPI originMarket = sourcePicker.pick();
             return originMarket;
         }
     

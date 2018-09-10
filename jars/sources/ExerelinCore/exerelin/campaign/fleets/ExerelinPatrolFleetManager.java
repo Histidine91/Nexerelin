@@ -134,7 +134,7 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		
 		//tracker.advance(days);
 		//log.info("Average patrol losses for market [" + market.getName() + "]: " + losses);
-		float lossMod = (float)Math.min(losses/2, 4);
+		float lossMod = Math.min(losses/2, 4);
 		tracker.advance(days * Math.max(1f, lossMod));
 		if (!tracker.intervalElapsed()) return;
 		

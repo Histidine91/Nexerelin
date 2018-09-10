@@ -52,7 +52,7 @@ public class ReinitScreenScript implements EveryFrameScript
             return;
         }
         
-        timer = timer + Global.getSector().getClock().convertToDays(amount);
+        timer += Global.getSector().getClock().convertToDays(amount);
         if (timer < DAYS_TO_WAIT) return;
         
         if (!isDone)

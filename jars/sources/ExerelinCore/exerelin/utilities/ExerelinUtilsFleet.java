@@ -46,7 +46,7 @@ public class ExerelinUtilsFleet
         String variantId = "shepherd_Frontier";
         ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId());
         if (config != null && config.miningVariantsOrWings != null && !config.miningVariantsOrWings.isEmpty()) 
-            variantId = (String) ExerelinUtils.getRandomListElement(config.miningVariantsOrWings);
+            variantId = ExerelinUtils.getRandomListElement(config.miningVariantsOrWings);
         FleetMemberAPI miner = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
         fleet.getFleetData().addFleetMember(miner);
         return miner;

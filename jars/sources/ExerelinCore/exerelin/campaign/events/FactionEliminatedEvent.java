@@ -37,7 +37,7 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		Map<String, Object> params = (HashMap)param;
+		Map<String, Object> params = (Map<String, Object>)param;
 		defeatedFaction = (FactionAPI)params.get("defeatedFaction");
 		victorFaction = (FactionAPI)params.get("victorFaction");
 		playerDefeated = (boolean)params.get("playerDefeated");
@@ -51,7 +51,7 @@ public class FactionEliminatedEvent extends BaseEventPlugin {
 		{
 			return;
 		}
-		age = age + Global.getSector().getClock().convertToDays(amount);
+		age += Global.getSector().getClock().convertToDays(amount);
 		if (age > DAYS_TO_KEEP)
 		{
 			done = true;

@@ -34,7 +34,7 @@ public class ExecuteInvasionRound extends BaseCommandPlugin {
 		if (dialog == null) return false;
 		
 		boolean isRaid = params.get(0).getBoolean(memoryMap);
-		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+		SectorEntityToken target = dialog.getInteractionTarget();
 		TextPanelAPI text = dialog.getTextPanel();
 
 		/*if (!(target instanceof MarketAPI ))

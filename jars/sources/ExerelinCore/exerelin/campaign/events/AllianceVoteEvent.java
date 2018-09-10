@@ -53,7 +53,7 @@ public class AllianceVoteEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		Map<String, Object> params = (HashMap)param;
+		Map<String, Object> params = (Map<String, Object>)param;
 		result = (VoteResult)params.get("result");
 		if (params.containsKey("allianceId"))
 			allianceId = (String)params.get("allianceId");

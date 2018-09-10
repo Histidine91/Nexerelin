@@ -26,7 +26,7 @@ public class AgentDestabilizeMarket extends AgentActionBase {
 			return false;
 		
 		SectorAPI sector = Global.getSector();
-		SectorEntityToken target = (SectorEntityToken) dialog.getInteractionTarget();
+		SectorEntityToken target = dialog.getInteractionTarget();
 		MarketAPI market = target.getMarket();
 		FactionAPI playerAlignedFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
 		result = CovertOpsManager.agentDestabilizeMarket(market, playerAlignedFaction, market.getFaction(), true);

@@ -51,7 +51,7 @@ public class AllianceChangedEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		Map<String, Object> params = (HashMap)param;
+		Map<String, Object> params = (Map<String, Object>)param;
 		faction1Id = (String)params.get("faction1Id");
 		faction2Id = (String)params.get("faction2Id");
 		if (params.containsKey("allianceId"))

@@ -16,7 +16,6 @@ import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
-import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.StringHelper;
 import java.util.HashMap;
@@ -217,7 +216,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		if (DefenceStationManager.getManager() != null)
 			size -= DefenceStationManager.getManager().getDefenceFleetPenaltyFromStations(market);
 		
-		size = size + ExerelinUtilsFleet.getPlayerLevelFPBonus();
+		size += ExerelinUtilsFleet.getPlayerLevelFPBonus();
 		
 		return size;
 	}

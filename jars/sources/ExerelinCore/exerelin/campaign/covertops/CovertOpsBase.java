@@ -19,7 +19,6 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
@@ -97,7 +96,7 @@ public abstract class CovertOpsBase {
         
         if (useAlertLevel)
         {
-            sChance = sChance * (1 - CovertOpsManager.getAlertLevel(market));
+            sChance *= (1 - CovertOpsManager.getAlertLevel(market));
         }
         
         if (playerInvolved)

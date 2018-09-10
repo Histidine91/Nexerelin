@@ -681,7 +681,7 @@ public class DiplomacyBrain {
 	 * @param factionId
 	 * @return
 	 */
-	public static final float getFactionStrength(String factionId)
+	public static float getFactionStrength(String factionId)
 	{
 		float str = 0;
 		Collection<String> allies;
@@ -702,7 +702,7 @@ public class DiplomacyBrain {
 		return str;
 	}
 	
-	public static final float getFactionEnemyStrength(String factionId)
+	public static float getFactionEnemyStrength(String factionId)
 	{
 		Set<String> enemies = new HashSet<>(DiplomacyManager.getFactionsAtWarWithFaction(
 				factionId, ExerelinConfig.allowPirateInvasions, false, true));

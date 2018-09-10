@@ -27,7 +27,7 @@ public class SaboteurDestroyFoodEvent extends CovertOpsEventBase {
 	@Override
 	public void setParam(Object param) {
 		super.setParam(param);
-		Map<String, Object> params = (HashMap)param;
+		Map<String, Object> params = (Map<String, Object>)param;
 		if (params.containsKey("foodDestroyed"))
 			foodDestroyed = (Float)params.get("foodDestroyed");
 	}

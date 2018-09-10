@@ -62,8 +62,8 @@ public class InvasionSupportFleetAI implements EveryFrameScript
 				giveStandDownOrders();  // market is no longer hostile; abort strike mission
 			}
 			
-			if (orderedReturn)
-				return;
+			if (orderedReturn) {
+			}
 		}
 		else
 		{

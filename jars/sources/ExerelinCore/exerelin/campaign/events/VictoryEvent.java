@@ -37,7 +37,7 @@ public class VictoryEvent extends BaseEventPlugin {
 	
 	@Override
 	public void setParam(Object param) {
-		params = (HashMap)param;
+		params = (Map<String, Object>)param;
 		diplomaticVictory = (boolean)params.get("diplomaticVictory");
 		victorFactionId = (String)params.get("victorFactionId");
 		playerVictory = (boolean)params.get("playerVictory");

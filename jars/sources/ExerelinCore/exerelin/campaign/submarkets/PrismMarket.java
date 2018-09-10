@@ -31,10 +31,8 @@ import data.scripts.campaign.missions.SWP_FamousBountyEvent;
 import data.scripts.campaign.missions.SWP_FamousBountyEvent.FamousBountyStage;
 import exerelin.ExerelinConstants;
 import exerelin.plugins.ExerelinModPlugin;
-import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -201,7 +199,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         
         float variation=(float)Math.random()*0.5f+0.75f;
 		int tries = 0;
-        for ( float i=0f; i < ExerelinConfig.prismMaxWeapons*variation; i = (float) cargo.getWeapons().size()) {
+        for ( float i=0f; i < ExerelinConfig.prismMaxWeapons*variation; i = cargo.getWeapons().size()) {
             addRandomWeapons(10, 3);
             for (CargoStackAPI s : cargo.getStacksCopy()) {
                 //remove all low tier weapons
@@ -435,7 +433,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 if (entry.ibbNum > 0){
                     int diff = Math.abs(ibbProgress - entry.ibbNum);
                     if (diff > 3) diff = 3;
-                    weight = weight + 4*(3 - diff);
+                    weight += 4*(3 - diff);
                 }
                 picker.add(entry.id, weight);
             }
