@@ -90,6 +90,7 @@ public class DiplomacyBrain {
 	public static final float HARD_MODE_MOD = -25f;
 	public static final float MAX_DISPOSITION_FOR_WAR = -15f;
 	public static final float MILITARISM_WAR_MULT = 1;
+	public static final float MAX_WEARINESS_FOR_WAR = 7500f;
 	public static final float LIKE_THRESHOLD = 10;
 	public static final float DISLIKE_THRESHOLD = -10;
 	public static final float EVENT_SKIP_CHANCE = 0.5f;
@@ -456,6 +457,10 @@ public class DiplomacyBrain {
 		
 		log.info("Checking war for faction " + faction.getDisplayName());
 		if (ExerelinUtilsFaction.isPirateOrTemplarFaction(factionId) && !ExerelinConfig.allowPirateInvasions)
+			return false;
+		
+		float ourWeariness = DiplomacyManager.getWarWeariness(factionId, true);
+		if (ourWeariness > MAX_WEARINESS_FOR_WAR)
 			return false;
 		
 		// check factions in order of how much we hate them

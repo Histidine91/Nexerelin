@@ -30,6 +30,7 @@ public class AllianceVoter {
 	public static final float ABSTAIN_THRESHOLD = 40;
 	public static final float STRENGTH_POINT_MULT = 0.5f;
 	public static final float HAWKISHNESS_POINTS = 50;
+	public static final float WEARINESS_MULT = 0.005f;
 	public static final float RANDOM_POINTS = 50;
 	public static final float DEFIER_REP_LOSS_YES = -0.1f;
 	public static final float DEFIER_REP_LOSS_ABSTAIN = -0.05f;
@@ -299,6 +300,11 @@ public class AllianceVoter {
 		if (!isWar) hawkPoints *= -1;
 		totalPoints += hawkPoints;
 		
+		// weariness
+		float wearinessPoints = DiplomacyManager.getWarWeariness(factionId, false) * WEARINESS_MULT;
+		if (isWar) wearinessPoints *= -1;
+		totalPoints += wearinessPoints;
+		
 		// random
 		float randomPoints = RANDOM_POINTS * (MathUtils.getRandomNumberInRange(-0.5f, 0.5f) + MathUtils.getRandomNumberInRange(-0.5f, 0.5f));
 		totalPoints += randomPoints;
@@ -323,6 +329,7 @@ public class AllianceVoter {
 			log.info("\tOther alliance relationship: " + otherAllianceRelationshipPoints);
 			log.info("\tStrength points: " + strengthPoints);
 			log.info("\tHawk/dove points: " + hawkPoints);
+			log.info("\tWar weariness points: " + wearinessPoints);
 			log.info("\tRandom points: " + randomPoints);
 		}
 		
