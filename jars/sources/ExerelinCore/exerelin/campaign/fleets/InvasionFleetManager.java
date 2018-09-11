@@ -511,7 +511,6 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			event.reportStart();
 		}
 		spawnSupportFleet(faction, originMarket, targetMarket, false, false);
-		spawnSupportFleet(faction, originMarket, targetMarket, false, false);
 		
 		return true;
 	}
