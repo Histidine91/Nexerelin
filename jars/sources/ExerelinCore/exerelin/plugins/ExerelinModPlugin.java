@@ -208,8 +208,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             VCModPluginCustom.onApplicationLoad();
         boolean hasLazyLib = Global.getSettings().getModManager().isModEnabled("lw_lazylib");
         if (!hasLazyLib) {
-            throw new RuntimeException("Nexerelin requires LazyLib to function!"
-                    + "\nGet it at fractalsoftworks.com/forum/index.php?topic=5444.0");
+            throw new RuntimeException(StringHelper.getString("exerelin_misc", "errorLazyLib"));
         }
         
         // compatibility warnings
@@ -222,9 +221,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         int officerMaxLevel = (int)Global.getSettings().getFloat("officerMaxLevel");
         //Global.getLogger(this.getClass()).info("wololo officer level: " + officerMaxLevel);
         if (officerMaxLevel > 29)
-            throw new RuntimeException("Officer max level in config is over 29 (current: " + officerMaxLevel + ")"
-                    + "\nThis risks a hang during gameplay."
-                    + "\nSee http://fractalsoftworks.com/forum/index.php?topic=13195.0 for more details.");
+            throw new RuntimeException(StringHelper.getStringAndSubstituteToken(
+					"exerelin_misc", "errorOfficerMaxLevel", "$currMax", officerMaxLevel + ""));
     }
     
     @Override

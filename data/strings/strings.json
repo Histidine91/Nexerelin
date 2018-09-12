@@ -459,5 +459,8 @@
 		"aiCoresBounty":"Bounty value",
 		"aiCoresRep":"Reputation gain",
 		"aiCoresMsg2":"If you turn in the selected AI cores, you will receive a %s bounty and your standing with $faction will improve by %s points.",
+		
+		"errorLazyLib":"Nexerelin requires LazyLib to function!\nGet it at fractalsoftworks.com/forum/index.php?topic=5444.0",
+		"errorOfficerMaxLevel":"Officer max level in config is over 29 (current: $currMax)\nThis risks a hang during gameplay.\nSee http://fractalsoftworks.com/forum/index.php?topic=13195.0 for more details.",
 	},
 }
