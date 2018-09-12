@@ -491,7 +491,6 @@ public class DiplomacyBrain {
 			if (decisionRating > 40 + MathUtils.getRandomNumberInRange(-5, 5))
 			{
 				DiplomacyManager.createDiplomacyEvent(faction, Global.getSector().getFaction(otherFactionId), "declare_war", null);
-				DiplomacyManager.getManager().setLastWarTimestamp(Global.getSector().getClock().getTimestamp());
 				return true;
 			}
 		}

@@ -381,6 +381,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 }
             }
             if (!isAllianceAction) AllianceVoter.allianceVote(faction1Id, faction2Id, true);
+            
+            getManager().setLastWarTimestamp(Global.getSector().getClock().getTimestamp());
         }
         
         if (!isAllianceAction)
