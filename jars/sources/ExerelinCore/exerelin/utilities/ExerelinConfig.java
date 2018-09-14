@@ -90,6 +90,7 @@ public class ExerelinConfig
     public static boolean enableAvesta = true;    // Association
     public static boolean enableShanghai = true;    // Tiandong
     public static boolean enableUnos = true;    // ApproLight
+	public static boolean enableAntioch = false;	// Templars
     
     // Revengeance fleets
     public static int enableRevengeFleets = 1;
@@ -178,6 +179,7 @@ public class ExerelinConfig
             enableAvesta = settings.optBoolean("enableAvesta", enableAvesta);
             enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             enableUnos = settings.optBoolean("enableUnos", enableUnos);
+			enableAntioch = settings.optBoolean("enableAntioch", enableAntioch);
             
             enableRevengeFleets = settings.optInt("enableRevengeFleets", enableRevengeFleets);
             revengePointsPerEnemyFP = (float)settings.optDouble("revengeFleetPointsPerEnemyFP", revengePointsPerEnemyFP);
@@ -246,14 +248,26 @@ public class ExerelinConfig
 
     public static ExerelinFactionConfig getExerelinFactionConfig(String factionId)
     {
+        return getExerelinFactionConfig(factionId, true);
+    }
+	
+	public static ExerelinFactionConfig getExerelinFactionConfig(String factionId, boolean useDefault)
+    {
         for(ExerelinFactionConfig exerelinFactionConfig : exerelinFactionConfigs)
         {
             if(exerelinFactionConfig.factionId.equalsIgnoreCase(factionId))
                 return exerelinFactionConfig;
         }
-
-        Global.getLogger(ExerelinConfig.class).warn("Faction config " + factionId + " not found, using default");
-        return defaultConfig;
+		if (useDefault)
+		{
+			Global.getLogger(ExerelinConfig.class).warn("Faction config " + factionId + " not found, using default");
+			return defaultConfig;
+		}
+        else
+		{
+			Global.getLogger(ExerelinConfig.class).warn("Faction config " + factionId + " not found");
+			return null;
+		}
     }
 
     @Deprecated

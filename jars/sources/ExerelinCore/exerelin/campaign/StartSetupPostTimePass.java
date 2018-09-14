@@ -17,6 +17,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.world.templars.TEM_Antioch;
 import exerelin.world.ExerelinCorvusLocations;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -71,7 +72,14 @@ public class StartSetupPostTimePass {
 		}
 		else 
 		{
-			if (!SectorManager.getFreeStart())
+			if (ExerelinConfig.enableAntioch)
+			{
+				sector.removeStarSystem(sector.getStarSystem("Eos Exodus"));
+			}
+			
+			if (ExerelinConfig.enableAntioch && factionId.equals("templars"))
+				entity = TEM_Antioch.getAscalon();
+			else if (!SectorManager.getFreeStart())
 				entity = SectorManager.getHomeworld();
 			else
 			{

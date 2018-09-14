@@ -22,6 +22,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
+import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.CustomConstellationParams;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
@@ -30,6 +31,7 @@ import data.scripts.campaign.fleets.DS_BountyPirateFleetManager;
 import data.scripts.campaign.fleets.DS_LuddicPathFleetManager;
 import data.scripts.campaign.fleets.DS_MercFleetManager;
 import data.scripts.campaign.fleets.DS_PirateFleetManager;
+import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.plugins.*;
@@ -41,6 +43,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsMarket;
@@ -145,7 +148,12 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
         editor.clearArc(prismEntity.getLocation().x, prismEntity.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);
 	}
 	
-	
+	protected void addAntiochPart1(SectorAPI sector)
+	{
+		ProcgenUsedNames.notifyUsed("Antioch");
+        ProcgenUsedNames.notifyUsed("Ascalon");
+		new TEM_Antioch().generate(sector);
+	}
 	
 	@Override
 	public void generate(SectorAPI sector)
@@ -180,6 +188,10 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			
 			SectorEntityToken coreLabel = Global.getSector().getHyperspace().addCustomEntity("core_label_id", null, "core_label", null);
 			coreLabel.setFixedLocation(SECTOR_CENTER.getX(), SECTOR_CENTER.getY());
+			
+			if (ExerelinConfig.enableAntioch && (setupData.factions.containsKey("templars") 
+					&& setupData.factions.get("templars")))
+				addAntiochPart1(sector);
 		}
 		
 		if (setupData.prismMarketPresent) {

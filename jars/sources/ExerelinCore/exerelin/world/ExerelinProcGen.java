@@ -29,6 +29,7 @@ import data.scripts.world.exipirated.ExipiratedAvestaFleetManager;
 import data.scripts.world.exipirated.ExipiratedAvestaMovement;
 import data.scripts.world.exipirated.ExipiratedCollectorFleetManager;
 import data.scripts.world.exipirated.ExipiratedPatrolFleetManager;
+import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
@@ -273,6 +274,7 @@ public class ExerelinProcGen {
 			if (system.hasPulsar()) continue;
 			if (system.getStar().getSpec().isBlackHole()) continue;
 			if (system.getBaseName().equals("Styx")) continue;
+			if (system.getBaseName().equals("Ascalon")) continue;
 			
 			list.add(system);
 		}
@@ -1139,6 +1141,13 @@ public class ExerelinProcGen {
 		  hegemonyforALStation.setCustomDescriptionId("station_approlight01");
 	}
 	
+	protected void addAntiochPart2(SectorAPI sector)
+	{
+		TEM_Antioch.generatePt2(sector);
+		StarSystemAPI system = sector.createStarSystem("Eos Exodus");	// workaround CTD in Antioch script
+		system.getLocation().set(999999, 999999);
+	}
+	
 	protected void handleHQSpecials(SectorAPI sector, String factionId, ProcGenEntity data)
 	{
 		if (factionId.equals("exipirated") && ExerelinConfig.enableAvesta)
@@ -1279,6 +1288,10 @@ public class ExerelinProcGen {
 		// faction picker
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>(random);
 		List<String> factions = new ArrayList<>(factionIds);
+		if (ExerelinConfig.enableAntioch)
+		{
+			factions.remove("templars");
+		}
 		factionPicker.addAll(factions);
 		
 		// various Collections we'll be using
@@ -1322,20 +1335,34 @@ public class ExerelinProcGen {
 		pickHomeworld();
 		if (!ExerelinSetupData.getInstance().freeStart)	// (true)
 		{
-			homeworld.isHQ = true;
-			MarketAPI homeMarket = marketSetup.addMarket(homeworld, alignedFactionId);
-			//SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
-			//relay.setFaction(alignedFactionId);
-			populatedPlanetsCopy.remove(homeworld);
-			
-			handleHQSpecials(sector, alignedFactionId, homeworld);
-			
-			if (pirateFactions.contains(alignedFactionId))
-				systemsWithPirates.add(homeworld.starSystem);
+			if (alignedFactionId.equals("templars") && ExerelinConfig.enableAntioch)
+			{
+				// do nothing, Ascalon will be our only world
+			}
+			else
+			{
+				homeworld.isHQ = true;
+				MarketAPI homeMarket = marketSetup.addMarket(homeworld, alignedFactionId);
+				//SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
+				//relay.setFaction(alignedFactionId);
+				populatedPlanetsCopy.remove(homeworld);
+
+				handleHQSpecials(sector, alignedFactionId, homeworld);
+
+				if (pirateFactions.contains(alignedFactionId))
+					systemsWithPirates.add(homeworld.starSystem);
+				factionPlanetCount.put(alignedFactionId, 1);
+
+				existingHQs.add(homeworld);
+				existingHQsByFaction.put(alignedFactionId, homeworld);
+			}
+		}
+		
+		// Antioch
+		if (ExerelinConfig.enableAntioch && factionIds.contains("templars"))
+		{
+			addAntiochPart2(sector);
 			factionPlanetCount.put(alignedFactionId, 1);
-			
-			existingHQs.add(homeworld);
-			existingHQsByFaction.put(alignedFactionId, homeworld);
 		}
 		
 		Collections.shuffle(populatedPlanetsCopy, random);
