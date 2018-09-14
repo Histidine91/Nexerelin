@@ -870,7 +870,7 @@ public class ExerelinMarketBuilder
 		// planet type stuff
 		if (!isStation)
 		{
-			if (planetType.equals("terran-eccentric"))
+			if (planetType.equals("terran-eccentric") && !isMoon)
 			{
 				// add mirror/shade
 				LocationAPI system = entity.getContainingLocation();
