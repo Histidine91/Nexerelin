@@ -68,8 +68,6 @@ public class Nex_GetPrices extends PaginatedOptions {
 		super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 		listCommodities(dialog.getInteractionTarget().getMarket());
 		addOptionAllPages(Misc.ucFirst(StringHelper.getString("back")), "exerelinBaseCommanderMenuRepeat");
-		dialog.getOptionPanel().setShortcut("exerelinBaseCommanderMenuRepeat", 
-				Keyboard.KEY_ESCAPE, false, false, false, false);
 		currPage = lastPage;
 		showOptions();
 	}
@@ -126,6 +124,9 @@ public class Nex_GetPrices extends PaginatedOptions {
 		if (Global.getSettings().isDevMode()) {  
 		   DevMenuOptions.addOptions(dialog);  
 		}
+		
+		dialog.getOptionPanel().setShortcut("exerelinBaseCommanderMenuRepeat", 
+				Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
 	
 	protected void listCommodities(MarketAPI market)

@@ -19,6 +19,7 @@ import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.lwjgl.input.Keyboard;
 
 
 public class Nex_NGCStartFleetOptions extends PaginatedOptions {
@@ -69,6 +70,8 @@ public class Nex_NGCStartFleetOptions extends PaginatedOptions {
 			dialog.getOptionPanel().setTooltipHighlights(option, highlights.toArray(new String[0]));
 			dialog.getOptionPanel().setTooltipHighlightColors(option, colors.toArray(new Color[0]));
 		}
+		
+		dialog.getOptionPanel().setShortcut("nex_NGCFleetBack", Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
 	
 	@Override

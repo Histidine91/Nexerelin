@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import org.lwjgl.input.Keyboard;
 
 public class Nex_NGCFactionToggle extends PaginatedOptions {
@@ -23,8 +24,10 @@ public class Nex_NGCFactionToggle extends PaginatedOptions {
 	public static final String TOGGLE_FACTION_OPTION_PREFIX = "nex_NGCToggleFaction_";
 	public static final int OPT_LENGTH = TOGGLE_FACTION_OPTION_PREFIX.length();
 	public static final List<Misc.Token> EMPTY_PARAMS = new ArrayList<>();
+	public static final String RANDOMIZE_OPT = "nex_NGCRandomStartFactions";
 	protected static int lastPage = 0;
 	protected static List<String> spawnableFactionIds = null;
+	protected static Random random = new Random();
 	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
@@ -60,15 +63,37 @@ public class Nex_NGCFactionToggle extends PaginatedOptions {
 		super.execute(ruleId, dialog, EMPTY_PARAMS, memoryMap);
 		listFactions();
 		addOptionAllPages(Misc.ucFirst(StringHelper.getString("back")), "exerelinNGCFactionOptions");
-		dialog.getOptionPanel().setShortcut("exerelinNGCFactionOptions", Keyboard.KEY_ESCAPE, false, false, false, false);
 		currPage = lastPage;
 		showOptions();
 	}
 	
 	@Override
 	public void optionSelected(String optionText, Object optionData) {
+		if (optionData.equals(RANDOMIZE_OPT))
+		{
+			ExerelinSetupData data = ExerelinSetupData.getInstance();
+			for (Map.Entry<String, Boolean> tmp : data.factions.entrySet())
+			{
+				String factionId = tmp.getKey();
+				if (factionId.equals(Factions.INDEPENDENT)) continue;
+				boolean enabled = random.nextBoolean();
+				data.factions.put(factionId, enabled);
+			}
+			options.clear();
+			listFactions();
+			showOptions();
+			return;
+		}
+		
 		super.optionSelected(optionText, optionData);
 		lastPage = currPage;
+	}
+	
+	@Override
+	public void showOptions() {
+		super.showOptions();
+		dialog.getOptionPanel().setTooltip(RANDOMIZE_OPT, StringHelper.getString("exerelin_ngc", "randomizeFactionsTooltip"));
+		dialog.getOptionPanel().setShortcut("exerelinNGCFactionOptions", Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
 	
 	/**
@@ -101,6 +126,7 @@ public class Nex_NGCFactionToggle extends PaginatedOptions {
 
 			addOption(text, optId);
 		}
+		addOption(Misc.ucFirst(StringHelper.getString("randomize")), RANDOMIZE_OPT);
 	}
 	
 	public String getText(String factionId, ExerelinSetupData data)

@@ -40,6 +40,8 @@
 		"enabled":"enabled",
 		"disabled":"disabled",
 		
+		"randomize":"randomize",
+		
 		"previousPage":"previous page",
 		"nextPage":"next page",
 		
@@ -345,6 +347,7 @@
 		"populatedPlanetsTooltip":"Will fill new systems if specified number of populated systems is insufficient.",
 		"stationsTitle":"Stations",
 		"stationsTooltip":"Will fill new systems if specified number of populated systems is insufficient.",
+		"randomizeFactionsTooltip":"Every faction has a 50% chance to be enabled (except independents, which will not be toggled from their current setting).",
 		
 		"fleetSolo":"Solo frigate",
 		"fleetCombatSmall":"Light combat patrol",
