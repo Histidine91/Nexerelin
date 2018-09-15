@@ -101,7 +101,7 @@ public class Nex_NGCListFactions extends BaseCommandPlugin {
 			opts.setTooltip("nex_NGCJoinOwnFaction", StringHelper.getString("exerelin_ngc", "ownFactionDisabledTooltip"));
 			opts.setEnabled("nex_NGCJoinOwnFaction", false);
 		}
-		opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "freeStart")), "nex_NGCFreeStart");
+		opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "freeStartHard")), "nex_NGCFreeStart");
 		opts.setTooltip("nex_NGCFreeStart", StringHelper.getString("exerelin_ngc", "freeStartTooltip"));
 		
 		opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_ngc", "randomFaction")), "nex_NGCJoinRandomFaction");
