@@ -3,5 +3,5 @@
     "corvusCompatible":true,
     "startRelationships":{ "player": 0.4 },
     "noRandomizeRelations":true,
-	"noSyncRelations":true,
+    "noSyncRelations":true,
 }
