@@ -80,7 +80,8 @@ public class ExerelinProcGen {
 	}));
 	public static final Set<String> TAGS_TO_REMOVE = new HashSet<>(Arrays.asList(new String[] {
 		Tags.THEME_DERELICT, Tags.THEME_DERELICT_MOTHERSHIP, Tags.THEME_DERELICT_PROBES, Tags.THEME_DERELICT_SURVEY_SHIP,
-		Tags.THEME_REMNANT, Tags.THEME_REMNANT_DESTROYED, Tags.THEME_REMNANT_MAIN, Tags.THEME_REMNANT_RESURGENT, Tags.THEME_REMNANT_SECONDARY, Tags.THEME_REMNANT_SUPPRESSED
+		Tags.THEME_REMNANT, Tags.THEME_REMNANT_DESTROYED, Tags.THEME_REMNANT_MAIN, Tags.THEME_REMNANT_RESURGENT, Tags.THEME_REMNANT_SECONDARY, Tags.THEME_REMNANT_SUPPRESSED,
+		"theme_breakers", "theme_breakers_main", "theme_breakers_secondary", "theme_breakers_destroyed", "theme_breakers_suppressed", "theme_breakers_resurgent"
 	}));
 	
 	protected Set<String> factionIds = new HashSet<>();
@@ -819,7 +820,9 @@ public class ExerelinProcGen {
 			for (SectorEntityToken token : system.getAllEntities())
 			{
 				if (token.hasTag(Tags.GATE) || token.hasTag(Tags.DEBRIS_FIELD)) continue;
-				if (token.getFaction().getId().equals(Factions.DERELICT) || token.getFaction().getId().equals(Factions.REMNANTS))
+				if (token.getFaction().getId().equals(Factions.DERELICT) 
+						|| token.getFaction().getId().equals(Factions.REMNANTS) 
+						|| token.getFaction().getId().equals("blade_breakers"))
 					toRemove.add(token);
 				else if (token.hasTag(Tags.SALVAGEABLE))
 					toRemove.add(token);
