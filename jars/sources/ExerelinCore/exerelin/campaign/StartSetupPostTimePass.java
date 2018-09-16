@@ -74,7 +74,8 @@ public class StartSetupPostTimePass {
 		{
 			if (ExerelinConfig.enableAntioch)
 			{
-				sector.removeStarSystem(sector.getStarSystem("Eos Exodus"));
+				if (sector.getStarSystem("Eos Exodus") != null)
+					sector.removeStarSystem(sector.getStarSystem("Eos Exodus"));
 			}
 			
 			if (ExerelinConfig.enableAntioch && factionId.equals("templars"))
