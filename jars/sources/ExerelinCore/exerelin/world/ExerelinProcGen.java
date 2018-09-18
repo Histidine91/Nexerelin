@@ -131,7 +131,8 @@ public class ExerelinProcGen {
 	protected Set<String> getStartingFactions()
 	{
 		Set<String> factions = new HashSet<>();
-		for (Map.Entry<String, Boolean> tmp : ExerelinSetupData.getInstance().factions.entrySet())
+		ExerelinSetupData setup = ExerelinSetupData.getInstance();
+		for (Map.Entry<String, Boolean> tmp : setup.factions.entrySet())
 		{
 			String factionId = tmp.getKey();
 			if (tmp.getValue())
@@ -141,7 +142,7 @@ public class ExerelinProcGen {
 			}
 		}
 		String playerFaction = PlayerFactionStore.getPlayerFactionIdNGC();
-		if (!playerFaction.equals(ExerelinConstants.PLAYER_NPC_ID))
+		if (!playerFaction.equals(ExerelinConstants.PLAYER_NPC_ID) && !setup.freeStart)
 		{
 			factions.add(playerFaction);
 			log.info("Added player starting faction: " + playerFaction);
