@@ -62,7 +62,8 @@ public class ExerelinUtilsFaction {
         for (MarketAPI market : allMarkets)
         {
             if (onlyInvadable && market.getMemoryWithoutUpdate().getBoolean(ExerelinConstants.MEMORY_KEY_UNINVADABLE))
-            //if (onlyInvadable && market.getPrimaryEntity().getTags().contains(ExerelinConstants.TAG_UNINVADABLE))
+                continue;
+            if (onlyInvadable && market.getPrimaryEntity().getTags().contains(ExerelinConstants.TAG_UNINVADABLE))
                 continue;
             if (market.getFactionId().equals(factionId))
                 ret.add(market);
