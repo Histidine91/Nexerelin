@@ -10,6 +10,8 @@
     "customRebelFaction":"",
     "customRebelFleetId":"",
     "rebelFleetSuffix":"Heretics",
+
+    "difficultyString":"hard",
     
     "marketSpawnWeight":0.5,
 
