@@ -8,7 +8,6 @@ import java.util.Map;
 import exerelin.campaign.PlayerFactionStore;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.util.Misc;
@@ -19,9 +18,7 @@ import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.StringHelper;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 
 public class NGCSetPlayerFaction extends BaseCommandPlugin {
@@ -35,26 +32,22 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 		{
 			
 			WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
-			Set<String> factions = new HashSet<>();
 			if (ExerelinSetupData.getInstance().corvusMode)
 			{
-				factions.addAll(ExerelinConfig.getFactions(false, true));
+				picker.addAll(ExerelinConfig.getFactions(false, true));
 			}
 			else
 			{
 				// randomly pick between one of the enabled factions (except independent)
-				for (Map.Entry<String, Boolean> tmp : ExerelinSetupData.getInstance().factions.entrySet())
+				Map<String, Boolean> enabledFactions = ExerelinSetupData.getInstance().factions;
+				for (String pickable : ExerelinConfig.getFactions(false, true))
 				{
-					String randFactionId = tmp.getKey();
-					if (randFactionId.equals(Factions.INDEPENDENT)) continue;
-					if (tmp.getValue() == false) continue;
-					factions.add(randFactionId);
+					if (!enabledFactions.containsKey(pickable) || enabledFactions.get(pickable) == true)
+						picker.add(pickable);
 				}
 				// followers can be picked too
-				factions.add(ExerelinConstants.PLAYER_NPC_ID);
-			}
-			picker.addAll(factions);
-			
+				picker.add(ExerelinConstants.PLAYER_NPC_ID);
+			}			
 			// pick a random faction
 			factionId = picker.pick();
 			FactionAPI faction = Global.getSector().getFaction(factionId);
