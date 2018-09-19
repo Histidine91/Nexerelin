@@ -686,8 +686,8 @@ public class RebellionEvent extends BaseEventPlugin {
 		// check if factions involved are still at war
 		if (market.getFaction().isAtWorst(rebelFactionId, RepLevel.SUSPICIOUS))
 		{
-			endEvent(RebellionResult.PEACE);
-			return;
+			//endEvent(RebellionResult.PEACE);
+			//return;
 		}
 		
 		if (stage > 0)
