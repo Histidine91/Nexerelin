@@ -12,6 +12,7 @@ PrintDeadOfficers,exerelin.console.commands.PrintDeadOfficers,"campaign,nexereli
 #PrintProductionInfo,exerelin.console.commands.PrintProductionInfo,"campaign,nexerelin",printproductioninfo <entity> <commodity>,Print some economy debugging info for the selected market and commodity.
 RetireCharacter,exerelin.console.commands.RetireCharacter,"campaign,nexerelin",retirecharacter,Retires your character and ends the game.
 StartVengeanceEvent,exerelin.console.commands.VengeanceEvent,"campaign,nexerelin",startvengeanceevent <faction>,Spawns a vengeance fleet for the specified faction.
+OpenNexConfig,exerelin.console.commands.OpenNexConfig,"campaign,nexerelin",opennexconfig,Opens a dialog screen to change some Nexerelin settings (as if Nexerelin was added to an existing save).
 #,,,,
 #PingDistance,exerelin.console.commands.PingDistance,"campaign,nexerelin",pingdistance,Prints distance to closest market.
 #ResetClosestMarket,exerelin.console.commands.ResetClosestMarket,"campaign,nexerelin",resetclosestmarket,Debug command

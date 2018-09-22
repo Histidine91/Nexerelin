@@ -283,6 +283,12 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return sectorManager;
     }
     
+    public static SectorManager getManager()
+    {
+        Map<String, Object> data = Global.getSector().getPersistentData();
+        return (SectorManager)data.get(MANAGER_MAP_KEY);
+    }
+    
     public static boolean isSectorManagerSaved()
     {
         Map<String, Object> data = Global.getSector().getPersistentData();
@@ -435,6 +441,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         List<MarketAPI> markets = sector.getEconomy().getMarketsCopy();
         for (MarketAPI market : markets) 
         {
+            if (market.getFactionId().equals(respawnFactionId))    // could happen with console-spawned respawn fleets
+                continue;
             if (!ExerelinUtilsMarket.shouldTargetForInvasions(market, 4))
                 continue;
             
@@ -906,8 +914,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         // rebellion
-		RebellionEvent rebEvent = RebellionEvent.getOngoingEvent(market);
-		if (rebEvent != null) rebEvent.marketCaptured(newOwnerId, oldOwnerId);
+        RebellionEvent rebEvent = RebellionEvent.getOngoingEvent(market);
+        if (rebEvent != null) rebEvent.marketCaptured(newOwnerId, oldOwnerId);
         
         // flip relay
         if (sectorManager != null)
@@ -1093,7 +1101,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             }
         }
     }
-    
     
     public static void setAllowRespawnFactions(boolean respawn, boolean allowNew)
     {
