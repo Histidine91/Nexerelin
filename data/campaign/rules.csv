@@ -263,8 +263,7 @@ FireAll Nex_HostileAction",,,
 nex_MarketHostileActionBack,Nex_HostileAction,,SetShortcut exerelinMarketSpecial ESCAPE,,9:exerelinMarketSpecial:Back,
 ,,,,,,
 # START INVASION OPTIONS,,,,,,
-ExerelinMarketInvadeOption,Nex_HostileAction,"IsValidInvasionTarget
-",SetShortcut exerelinInvasion I,,1:exerelinInvasion:Invade the planet/station,
+ExerelinMarketInvadeOption,Nex_HostileAction,IsValidInvasionTarget,SetShortcut exerelinInvasion I,,1:exerelinInvasion:Invade the planet/station,
 ExerelinInvasionStart,DialogOptionSelected,$option == exerelinInvasion,"$menuState = invasion 0
 ShowVisual ""graphics/illustrations/quartermaster.jpg""
 PredictInvasionResults false
