@@ -81,42 +81,74 @@ public class Nex_NGCStartFleetOptions extends PaginatedOptions {
 			populate(false);
 			return;
 		}
+		else if ("nex_NGCFleetCycle".equals(optionData))
+		{
+			ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(
+					PlayerFactionStore.getPlayerFactionIdNGC());
+			factionConf.cycleStartFleets();
+			populate(false);
+			return;
+		}
 		super.optionSelected(optionText, optionData);
 	}
 	
 	protected void populate(boolean firstTime)
 	{
-		dialog.getOptionPanel().clearOptions();
-		addShipOptions();
+		boolean useCycleButton = addShipOptions();
 		
 		if (firstTime)
 		{
 			if (memoryMap.get(MemKeys.LOCAL).getBoolean("$randomStartShips"))
-				addOptionAllPages(Misc.ucFirst(StringHelper.getString("exerelin_ngc", 
+				addOptionAllPages(Misc.ucFirst(StringHelper.getString("exerelin_ngc",
 						"fleetRandomReroll")), "nex_NGCFleetReroll");
+			else if (useCycleButton)
+				addOptionAllPages(Misc.ucFirst(StringHelper.getString("exerelin_ngc",
+						"fleetCycle")), "nex_NGCFleetCycle");
 			addOptionAllPages(Misc.ucFirst(StringHelper.getString("back")), "nex_NGCFleetBack");
 		}
 		
 		showOptions();
 	}
 	
-	protected void addShipOptions()
+	/**
+	 * Generate the dialog options for each starting fleet type.
+	 * @return True if any of the starting fleet types have multiple fleets, false otherwise.
+	 */
+	protected boolean addShipOptions()
 	{
+		options.clear();
 		tooltips.clear();
 		allHighlights.clear();
 		
-		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(PlayerFactionStore.getPlayerFactionIdNGC());
+		boolean anyMultiple = false;
+		
+		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(
+				PlayerFactionStore.getPlayerFactionIdNGC());
 		for (int i=0; i<FLEET_TYPES.length; i++)
 		{
 			String fleetTypeStr = FLEET_TYPES[i];
 			String option = "nex_NGCFleet" + DIALOG_ENTRIES[i];
-			List<String> startingVariants = factionConf.getStartShipsForType(fleetTypeStr, false);
+			List<String> startingVariants = factionConf.getStartFleetForType(fleetTypeStr, false);
 			if (startingVariants == null) {
 				//dialog.getOptionPanel().setEnabled(option, false);
 				continue;
 			}
-			List<String> highlights = new ArrayList<>();
 			
+			String optionName = OPTION_TEXTS.get(fleetTypeStr);
+			
+			// check if we have multiple fleets allowed for this fleet type
+			if (!memoryMap.get(MemKeys.LOCAL).getBoolean("$randomStartShips"))
+			{
+				int numFleets = factionConf.getNumStartFleetsForType(fleetTypeStr);
+				int index = factionConf.getStartFleetIndexForType(fleetTypeStr) + 1;
+				if (numFleets > 1) {
+					anyMultiple = true;
+					optionName += " (" + index + "/" + numFleets + ")";
+				}
+			}
+			
+			// do tooltip and highlights
+			List<String> highlights = new ArrayList<>();
 			String tooltip = "";
 			for (int j=0; j < startingVariants.size(); j++)
 			{
@@ -144,11 +176,13 @@ public class Nex_NGCStartFleetOptions extends PaginatedOptions {
 				if (j < startingVariants.size() - 1) tooltip += "\n";
 				highlights.add(className);
 			}
-			addOption(OPTION_TEXTS.get(fleetTypeStr), option);
+			addOption(optionName, option);
 			tooltips.put(option, tooltip);
 			allHighlights.put(option, highlights);
 			
 			memoryMap.get(MemKeys.LOCAL).set("$startShips_" + fleetTypeStr, startingVariants);
 		}
+		
+		return anyMultiple;
 	}
 }

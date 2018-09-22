@@ -16,6 +16,7 @@ import exerelin.campaign.fleets.DefenceStationManager;
 import java.io.IOException;
 import org.json.JSONObject;
 import java.util.*;
+import org.json.JSONArray;
 import org.json.JSONException;
 
 public class ExerelinFactionConfig
@@ -117,7 +118,7 @@ public class ExerelinFactionConfig
     
     public List<String> miningVariantsOrWings = new ArrayList<>();
     
-    public Map<StartFleetType, List<String>> startShips = new HashMap<>();
+    public Map<StartFleetType, StartFleetSet> startShips = new HashMap<>();
     
     static {
         for (Alignment alignment : Alignment.values())
@@ -441,11 +442,41 @@ public class ExerelinFactionConfig
         if (getDiplomacyPositiveChance(factionId1, factionId2) <= 0) return false;
         return true;
     }
+	
+	public List<String> getStartShipList(JSONArray array) throws JSONException
+	{
+		List<String> list = ExerelinUtils.JSONArrayToArrayList(array);
+		if (!isStartingFleetValid(list)) return null;
+		return list;
+	}
     
     public void getStartShipTypeIfAvailable(JSONObject settings, String key, StartFleetType type) throws JSONException
     {
-        if (settings.has(key))
-            startShips.put(type, ExerelinUtils.JSONArrayToArrayList(settings.getJSONArray(key)));
+        if (!settings.has(key)) return;
+		StartFleetSet set = new StartFleetSet(type);
+		
+		JSONArray allFleets = settings.getJSONArray(key);
+		
+		// reverse compatibility
+		Object firstItem = allFleets.get(0);
+		if (firstItem instanceof String)
+		{
+			set.addFleet(getStartShipList(settings.getJSONArray(key)));
+		}
+		else
+		{
+			for (int i=0; i<allFleets.length(); i++)
+			{
+				JSONArray fleetJson = allFleets.optJSONArray(i);
+				if (fleetJson == null) continue;
+				List<String> fleet = ExerelinUtils.JSONArrayToArrayList(fleetJson);
+				if (!isStartingFleetValid(fleet)) continue;
+				set.addFleet(fleet);
+			}
+		}
+		
+		if (set.getNumFleets() > 0)
+			startShips.put(type, set);
     }
     
     protected void loadVengeanceNames(JSONObject settings) throws JSONException
@@ -461,21 +492,13 @@ public class ExerelinFactionConfig
     protected void loadStartShips(JSONObject settings) throws JSONException
     {
         getStartShipTypeIfAvailable(settings, "startShipsSolo", StartFleetType.SOLO);
-        getStartShipTypeIfAvailable(settings, "startShipsSoloSSP", StartFleetType.SOLO_SSP);
         getStartShipTypeIfAvailable(settings, "startShipsCombatSmall", StartFleetType.COMBAT_SMALL);
-        getStartShipTypeIfAvailable(settings, "startShipsCombatSmallSSP", StartFleetType.COMBAT_SMALL_SSP);
         getStartShipTypeIfAvailable(settings, "startShipsTradeSmall", StartFleetType.TRADE_SMALL);
-        getStartShipTypeIfAvailable(settings, "startShipsTradeSmallSSP", StartFleetType.TRADE_SMALL_SSP);
         getStartShipTypeIfAvailable(settings, "startShipsCombatLarge", StartFleetType.COMBAT_LARGE);
-        getStartShipTypeIfAvailable(settings, "startShipsCombatLargeSSP", StartFleetType.COMBAT_LARGE_SSP);
         getStartShipTypeIfAvailable(settings, "startShipsTradeLarge", StartFleetType.TRADE_LARGE);
-        getStartShipTypeIfAvailable(settings, "startShipsTradeLargeSSP", StartFleetType.TRADE_LARGE_SSP);
         getStartShipTypeIfAvailable(settings, "startShipsCarrierSmall", StartFleetType.CARRIER_SMALL);
-        getStartShipTypeIfAvailable(settings, "startShipsCarrierSmallSSP", StartFleetType.CARRIER_SMALL_SSP);
         getStartShipTypeIfAvailable(settings, "startShipsCarrierLarge", StartFleetType.CARRIER_LARGE);
-        getStartShipTypeIfAvailable(settings, "startShipsCarrierLargeSSP", StartFleetType.CARRIER_LARGE_SSP);
 		getStartShipTypeIfAvailable(settings, "startShipsSuper", StartFleetType.SUPER);
-        getStartShipTypeIfAvailable(settings, "startShipsSuperSSP", StartFleetType.SUPER_SSP);
     }
     
     /**
@@ -500,7 +523,7 @@ public class ExerelinFactionConfig
         
         WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
         
-        if (type == StartFleetType.COMBAT_LARGE || type == StartFleetType.COMBAT_LARGE_SSP)
+        if (type == StartFleetType.COMBAT_LARGE)
         {
             rolePicker.add(ShipRoles.COMBAT_MEDIUM, 1);	// Crusader
             rolePicker.add(ShipRoles.ESCORT_MEDIUM, 1);	// Crusader
@@ -516,7 +539,7 @@ public class ExerelinFactionConfig
             
             pickShipsAndAddToList(rolePicker, ships, true);
         }
-        else if (type == StartFleetType.COMBAT_SMALL || type == StartFleetType.COMBAT_SMALL_SSP)
+        else if (type == StartFleetType.COMBAT_SMALL)
         {
             //rolePicker.add(ShipRoles.COMBAT_SMALL, 2);	// Martyr or Jesuit
             rolePicker.add(ShipRoles.ESCORT_SMALL, 2);	// Jesuit
@@ -527,12 +550,12 @@ public class ExerelinFactionConfig
             //rolePicker.add(ShipRoles.FIGHTER, 1);	// Teuton (no Smiter)
             pickShipsAndAddToList(rolePicker, ships, true);
         }
-        else if (type == StartFleetType.SOLO || type == StartFleetType.SOLO_SSP)
+        else if (type == StartFleetType.SOLO)
         {
             rolePicker.add(ShipRoles.FAST_ATTACK, 1);	// Martyr, sometimes Jesuit
             pickShipsAndAddToList(rolePicker, ships, true);
         }
-        else if (type == StartFleetType.CARRIER_LARGE || type == StartFleetType.CARRIER_LARGE_SSP)
+        else if (type == StartFleetType.CARRIER_LARGE)
         {
             rolePicker.add(ShipRoles.CARRIER_LARGE, 1);	// Archbishop (lol)
             pickShipsAndAddToList(rolePicker, ships, true);
@@ -554,7 +577,7 @@ public class ExerelinFactionConfig
         
         WeightedRandomPicker<String> rolePicker = new WeightedRandomPicker<>();
         
-        if (type == StartFleetType.COMBAT_LARGE || type == StartFleetType.COMBAT_LARGE_SSP)
+        if (type == StartFleetType.COMBAT_LARGE)
         {
             rolePicker.add(ShipRoles.COMBAT_LARGE, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
@@ -571,7 +594,7 @@ public class ExerelinFactionConfig
             
             pickShipsAndAddToList(rolePicker, ships, true);
         }
-        else if (type == StartFleetType.TRADE_LARGE || type == StartFleetType.TRADE_LARGE_SSP)
+        else if (type == StartFleetType.TRADE_LARGE)
         {
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_LARGE, 1);
             rolePicker.add(ShipRoles.FREIGHTER_LARGE, 1);
@@ -589,7 +612,7 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
-        else if (type == StartFleetType.CARRIER_LARGE || type == StartFleetType.CARRIER_LARGE_SSP)
+        else if (type == StartFleetType.CARRIER_LARGE)
         {
             rolePicker.add(ShipRoles.CARRIER_MEDIUM, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
@@ -605,7 +628,7 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
-        else if (type == StartFleetType.COMBAT_SMALL || type == StartFleetType.COMBAT_SMALL_SSP)
+        else if (type == StartFleetType.COMBAT_SMALL)
         {
             rolePicker.add(ShipRoles.COMBAT_MEDIUM, 2);
             rolePicker.add(ShipRoles.ESCORT_MEDIUM, 1);
@@ -623,7 +646,7 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
-        else if (type == StartFleetType.TRADE_SMALL || type == StartFleetType.TRADE_SMALL_SSP)
+        else if (type == StartFleetType.TRADE_SMALL)
         {
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_MEDIUM, 2);
             rolePicker.add(ShipRoles.FREIGHTER_MEDIUM, 3);
@@ -641,7 +664,7 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
-        else if (type == StartFleetType.CARRIER_SMALL || type == StartFleetType.CARRIER_SMALL_SSP)
+        else if (type == StartFleetType.CARRIER_SMALL)
         {
             rolePicker.add(ShipRoles.CARRIER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
@@ -658,7 +681,7 @@ public class ExerelinFactionConfig
             rolePicker.add(ShipRoles.COMBAT_FREIGHTER_SMALL, 1);
             pickShipsAndAddToList(rolePicker, ships, true);
         }
-        else if (type == StartFleetType.SOLO || type == StartFleetType.SOLO_SSP)
+        else if (type == StartFleetType.SOLO)
         {
             rolePicker.add(ShipRoles.COMBAT_SMALL, 2);
             rolePicker.add(ShipRoles.ESCORT_SMALL, 1);
@@ -719,21 +742,36 @@ public class ExerelinFactionConfig
         */
     }
     
+	/**
+	 * Checks if the provided list of starting ships is valid (variants actually exist).
+     * @param ships A List of variant/wing IDs
+     * @return True if the ship set is valid, false otherwise
+	 */
+	protected boolean isStartingFleetValid(List<String> ships)
+	{
+		for (String variantId : ships)
+        {
+			try {
+				Global.getSettings().getVariant(variantId);
+			} catch(RuntimeException rex) {	// variant doesn't exist
+				Global.getLogger(this.getClass()).info("\tStarting variant " + variantId + " does not exist");
+				return false;
+			} 
+		}
+        return true;
+	}
+	
     /**
      * Checks if the provided list of starting ships is valid 
      * (must have at least one non-fighter wing with nonzero cargo capacity)
      * @param ships A List of variant/wing IDs
      * @return True if the ship set is valid, false otherwise
      */
-    protected boolean isStartingShipSetValid(List<String> ships)
+    protected boolean isRandomStartingFleetValid(List<String> ships)
     {
         for (String variantId : ships)
         {
-            FleetMemberType type = FleetMemberType.SHIP;
-            if (variantId.endsWith("_wing")) {
-                type = FleetMemberType.FIGHTER_WING; 
-            }
-            FleetMemberAPI temp = Global.getFactory().createFleetMember(type, variantId);
+            FleetMemberAPI temp = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
             if (!temp.isFighterWing() && temp.getCargoCapacity() > 0 && temp.getFuelCapacity() > 0)
                 return true;
         }
@@ -746,22 +784,15 @@ public class ExerelinFactionConfig
      * @param typeStr
      * @param allowFallback If true, return the specified solo start ship if the chosen type is not available,
      * or a Wolf if that isn't available either
-     * @return A list of variant IDs
+     * @return The currently selected fleet for that type, which is a list of variant IDs
      */
-    public List<String> getStartShipsForType(String typeStr, boolean allowFallback)
+    public List<String> getStartFleetForType(String typeStr, boolean allowFallback)
     {
-        StartFleetType type = StartFleetType.valueOf(typeStr.toUpperCase());
-        StartFleetType typeSSP = StartFleetType.valueOf((typeStr + "_SSP").toUpperCase());
-        
-        boolean useSSPShips = false;
-        if (factionId.equals(Factions.PIRATES))
-            useSSPShips = ExerelinModPlugin.HAVE_UNDERWORLD;
-        else
-            useSSPShips = ExerelinModPlugin.HAVE_SWP;
-        
+        StartFleetType type = StartFleetType.getType(typeStr);
+                
         if (ExerelinSetupData.getInstance().randomStartShips
-				&& (type != StartFleetType.SUPER && type != StartFleetType.SUPER_SSP)
-				&& (startShips.containsKey(type) || startShips.containsKey(typeSSP)) )
+				&& (type != StartFleetType.SUPER)
+				&& (startShips.containsKey(type)))
         {
             int tries = 0;
             boolean valid = false;
@@ -769,40 +800,93 @@ public class ExerelinFactionConfig
             while (!valid && tries < 10)
             {
                 result = getRandomStartShipsForType(type);
-                valid = isStartingShipSetValid(result);
+                valid = isRandomStartingFleetValid(result);
                 tries++;
             }
             if (valid) return result;
         }
         
-        if (useSSPShips)
-        {
-            if (startShips.containsKey(typeSSP))
-                return startShips.get(typeSSP);
-        }
-        
         if (startShips.containsKey(type))
-            return startShips.get(type);
+            return startShips.get(type).getCurrentFleet();
         
         if (!allowFallback) return null;
         
         if (startShips.containsKey(StartFleetType.SOLO))
-            return startShips.get(StartFleetType.SOLO);
+            return startShips.get(StartFleetType.SOLO).getCurrentFleet();
         
         return Arrays.asList(new String[]{"wolf_Starting"});
     }
+	
+	/**
+	 * Cycles through the available fleets for all starting fleet types.
+	 */
+	public void cycleStartFleets()
+    {
+        for (Map.Entry<StartFleetType, StartFleetSet> tmp : startShips.entrySet())
+		{
+			tmp.getValue().incrementIndex();
+		}
+	}
+	
+	public int getNumStartFleetsForType(String typeStr)
+	{
+		StartFleetType type = StartFleetType.getType(typeStr);
+		if (!startShips.containsKey(type)) return 0;
+		return startShips.get(type).getNumFleets();
+	}
+	
+	public int getStartFleetIndexForType(String typeStr)
+	{
+		StartFleetType type = StartFleetType.getType(typeStr);
+		if (!startShips.containsKey(type)) return -1;
+		return startShips.get(type).index;
+	}
 
-    
+	/**
+	 * Contains one or more fleets for a given starting fleet type
+	 */
+	public static class StartFleetSet {
+		public StartFleetType type;
+		public List<List<String>> fleets = new ArrayList<>();
+		public int index = 0;
+		
+		public StartFleetSet(StartFleetType type)
+		{
+			this.type = type;
+		}
+		
+		public void incrementIndex()
+		{
+			index++;
+			if (index >= fleets.size()) index = 0;
+		}
+		
+		public List<String> getCurrentFleet()
+		{
+			if (fleets.isEmpty()) return null;
+			return fleets.get(index);
+		}
+		
+		public int getNumFleets()
+		{
+			return fleets.size();
+		}
+		
+		public void addFleet(List<String> fleet)
+		{
+			if (fleet == null) return;
+			fleets.add(fleet);
+		}
+	}
     
     public static enum StartFleetType {
-        SOLO, SOLO_SSP,
-        COMBAT_SMALL, COMBAT_SMALL_SSP,
-        TRADE_SMALL, TRADE_SMALL_SSP,
-        COMBAT_LARGE, COMBAT_LARGE_SSP,
-        TRADE_LARGE, TRADE_LARGE_SSP,
-        CARRIER_SMALL, CARRIER_SMALL_SSP,
-        CARRIER_LARGE, CARRIER_LARGE_SSP,
-		SUPER, SUPER_SSP
+        SOLO, COMBAT_SMALL, TRADE_SMALL,COMBAT_LARGE,TRADE_LARGE, 
+		CARRIER_SMALL, CARRIER_LARGE, SUPER;
+		
+		public static StartFleetType getType(String str)
+		{
+			return StartFleetType.valueOf(str.toUpperCase());
+		}
     }
     
     public static enum Morality {GOOD, NEUTRAL, AMORAL, EVIL}

@@ -19,7 +19,7 @@
     
     "vengeanceLevelNames":["Excommunication", "Interdiction", "Jihad"],
     "vengeanceFleetNames":["Evangelists", "Inquisition", "Crusade"],
-    "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],   
+    "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],
     
     "alignments":{
         "corporate":-1,
@@ -30,10 +30,10 @@
     },
     
     "startShipsSolo":["lasher_luddic_path_Raider"],
-    "startShipsCombatSmallSSP":["enforcer_luddic_path_rai", "wolf_luddic_path_rai", "kite_luddic_path_Strike"],
-    "startShipsTradeSmallSSP":["buffalo_luddic_path_att", "dram_luddic_path_rai", "cerberus_luddic_path_Attack"],
-    "startShipsCombatLargeSSP":["colossus2_Pather", "enforcer_luddic_path_rai", "lasher_luddic_path_Raider"],
-    "startShipsCarrierSmallSSP":["condor_luddic_path_rai", "nebula_luddic_path_rai", "hound_luddic_path_Attack"],
-	
+    "startShipsCombatSmall":["enforcer_luddic_path_rai", "wolf_luddic_path_rai", "kite_luddic_path_Strike"],
+    "startShipsTradeSmall":["buffalo_luddic_path_att", "dram_luddic_path_rai", "cerberus_luddic_path_Attack"],
+    "startShipsCombatLarge":["colossus2_Pather", "enforcer_luddic_path_rai", "lasher_luddic_path_Raider"],
+    "startShipsCarrierSmall":["condor_luddic_path_rai", "nebula_luddic_path_rai", "hound_luddic_path_Attack"],
+
 	"defenceStations":["nex_asgard_Pirate"],
 }

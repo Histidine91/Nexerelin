@@ -20,11 +20,15 @@
     },
     
     "startShipsSolo":["brawler_Elite"],
-    "startShipsCombatSmall":["hammerhead_Balanced", "vigilance_AP", "monitor_Escort"],
-    "startShipsCombatSmallSSP":["ssp_archon_bul", "brawler_Assault", "centurion_Starting"],
+    "startShipsCombatSmall":[
+      ["ssp_archon_bul", "brawler_Assault", "centurion_Starting"],
+      ["hammerhead_Balanced", "vigilance_AP", "monitor_Escort"]
+    ],
     "startShipsTradeSmall":["tarsus_Standard", "vigilance_Starting", "mercury_PD"],
-    "startShipsCombatLarge":["eagle_Balanced", "hammerhead_Elite", "vigilance_FS"],
-    "startShipsCombatLargeSSP":["eagle_black_eli", "ssp_archer_stai", "ssp_alastor_sta"],
+    "startShipsCombatLarge":[
+      ["eagle_black_eli", "ssp_archer_stai", "ssp_alastor_sta"],
+      ["eagle_Balanced", "hammerhead_Elite", "vigilance_FS"]
+    ],
     "startShipsTradeLarge":["venture_Balanced", "gemini_Standard", "wayfarer_Standard"],
     "startShipsCarrierSmall":["drover_Strike", "vigilance_Standard", "brawler_Elite"],
     "startShipsCarrierLarge":["heron_Strike", "hammerhead_Balanced", "centurion_Starting"],

@@ -20,11 +20,15 @@
     },
     
     "startShipsSolo":["lasher_Starting"],
-    "startShipsCombatSmall":["enforcer_Balanced", "lasher_CS", "wolf_hegemony_CS"],
-    "startShipsCombatSmallSSP":["enforcer_Balanced", "brawler_hegemony_ass", "lasher_CS"],
+    "startShipsCombatSmall":[
+      ["enforcer_Balanced", "brawler_hegemony_ass", "lasher_CS"],
+      ["enforcer_Balanced", "lasher_CS", "wolf_hegemony_CS"]
+    ],
     "startShipsTradeSmall":["mule_Starting", "hound_hegemony_Standard", "kite_Interceptor"],
-    "startShipsCombatLarge":["dominator_Assault", "enforcer_Escort", "kite_Interceptor"],
-    "startShipsCombatLargeSSP":["ssp_punisher_eli", "ssp_vanguard_sta", "wolf_hegemony_CS"],
+    "startShipsCombatLarge":[
+      ["ssp_punisher_eli", "ssp_vanguard_sta", "wolf_hegemony_CS"],
+      ["dominator_Assault", "enforcer_Escort", "kite_Interceptor"]
+    ],
     "startShipsTradeLarge":["venture_Balanced", "buffalo_hegemony_Standard", "shepherd_Frontier"],
     "startShipsCarrierSmall":["condor_Attack", "lasher_Standard", "hound_hegemony_Standard"],
     "startShipsCarrierLarge":["mora_Assault", "enforcer_Escort", "lasher_Strike"],

@@ -18,20 +18,20 @@
 		"stability":"stability",
 		"stats":"stats",
 		"yourFleet":"your fleet",
-		
+
 		"true":"true",
 		"false":"false",
-		
+
 		"friendly":"friendly",
 		"neutral":"neutral",
 		"hostile":"hostile",
-		
+
 		"and":"and",
 		"on":"on",
 		"at":"at",
-		
+
 		"back":"back",
-		
+
 		"yes":"yes",
 		"no":"no",
 		"abstain":"abstain",
@@ -39,42 +39,42 @@
 		"cancel":"cancel",
 		"enabled":"enabled",
 		"disabled":"disabled",
-		
+
 		"randomize":"randomize",
-		
+
 		"previousPage":"previous page",
 		"nextPage":"next page",
-		
+
 		"his":"his",
 		"her":"her",
 		"their":"their",
-		
+
 		"improvedBy":"improved by $amount",
 		"reducedBy":"reduced by $amount",
-		
+
 		"ship":"ship",
 		"fleet":"fleet",
 		"fighterWing":"fighter wing"
 	},
-	
+
 	"exerelin_abilities":{
 		"followMeTitle":"Follow Me!",
 		"followMeFloatText":"Follow me!",
 		"followMeTooltip1":"Nearby non-busy fleets belonging to your faction or an alliance member will follow you around for $numDays days.",
 		"followMeTooltip2":"Only works on patrol, strike and defense fleets, and the fleet must have seen you with your transponder on."
 	},
-	
+
 	"exerelin_alliances":{
 		"allianceListOption":"Alliance list",
 		"theAlliance":"the $alliance",
-		
+
 		"joinsWarAgainst":"$factionOrAlliance1 joins war against $factionOrAlliance2!",
 		"makesPeaceWith":"$factionOrAlliance1 makes peace with $factionOrAlliance2",
 		"defiesDecisionWar":"$defying defies the decision and refuses to declare war on $theOtherParty!",
 		"defiesDecisionPeace":"$defying defies the decision and continues the war with $theOtherParty!",
 		"defyDecisionWar":"$defying defy the decision and refusesto declare war on $theOtherParty!",
 		"defyDecisionPeace":"$defying defy the decision and continue the war with $theOtherParty!",
-	
+
 		"numAlliances":"There are $numAlliances alliance(s) in the Sector",
 		"joinedAlliance":"Joined alliance $NewAlliance",
 		"switchedAlliances":"Left $OldAlliance and joined $NewAlliance",
@@ -91,19 +91,19 @@
 		"rebelStrength":"rebel strength",
 		"responseFleetPreview":"response fleet",
 		"stationPoints":"station construction progress",
-		
+
 		"agent":"agent",
 		"saboteur":"saboteur",
 		"verbSuccess":"completed",
 		"verbFailed":"failed",
-		
+
 		"resourcesNeeded":"resources needed (available)",
-		
+
 		"resultSuccess":"Your $agentType has $resultVerb their mission.",
 		"resultSuccessDetected":"Your $agentType has $resultVerb their mission, but was detected in the process.",
 		"resultFailure":"Your $agentType has $resultVerb in their mission.",
 		"resultFailureDetected":"Your $agentType has $resultVerb in their mission and was caught!",
-		
+
 		"destabilizeText1":"poisoned the water supply",
 		"destabilizeText2":"fired into a crowd at a public venue",
 		"destabilizeText3":"assassinated a local government official",
@@ -126,7 +126,7 @@
 	"exerelin_diplomacy":{
 		"player_peace_msg":"You are no longer hostile to $factionOrAlliance",
 		"player_war_msg":"You are now hostile to $factionOrAlliance",
-		
+
 		"repChangeMsg":"Relationship with $theFaction $changedBy, currently at $currentRep",
 		"repChangeMsgOther":"$OtherFaction: relationship with $theFaction $changedBy, currently at $currentRep"
 	},
@@ -155,15 +155,15 @@
 		"superweapon":"Superweapon used on $market!",
 		"victory":"$faction victory",
 		"warmonger":"Warmonger reputation penalty"
-	},	
+	},
 	"exerelin_factions":{
 		"factionDirectoryOption":"Faction directory",
-		
+
 		"joinedFaction":"Joined $theNewFaction",
 		"leftFaction":"Left $theOldFaction",
 		"numMarkets":"$TheFaction have $numMarkets market(s)",
 		"switchedFactions":"Left $theOldFaction for $theNewFaction",
-		
+
 		"relationshipLimit":"Relationship between $faction1 and $faction2 limited to $relationship",
 		"repLimit":"Reputation with $faction capped at %s, currently %s"
 	},
@@ -171,46 +171,46 @@
 		"invasionFleetName":"Invasion Fleet",
 		"invasionFleetPrefixSmall":"Small",
 		"invasionFleetPrefixLarge":"Grand",
-		
+
 		"invasionSupportFleetName":"Strike Fleet",
 		"invasionSupportFleetPrefixSmall":"Small",
 		"invasionSupportFleetPrefixLarge":"Large",
-		
+
 		"responseFleetName":"Response Fleet",
 		"responseFleetPrefixSmall":"Small",
 		"responseFleetPrefixLarge":"Prime",
-		
+
 		"defenceFleetName":"Defense Fleet",
 		"defenceFleetPrefixSmall":"Small",
 		"defenceFleetPrefixLarge":"Large",
-		
+
 		"miningFleetName":"Mining Fleet",
 		"miningFleetPrefixSmall":"Small",
 		"miningFleetPrefixLarge":"Large",
-		
+
 		"suppressionFleetName":"Suppression Fleet",
 		"suppressionFleetPrefixSmall":"Small",
 		"suppressionFleetPrefixLarge":"Large",
-		
+
 		"stationName":"Defense Station",
-		
+
 		"fleetSpawnMessage":"A fleet is being launched at $market, in $location. It will be underway shortly.",
 		"fleetSpawnMessageLocal":"A fleet is being launched and will begin defending $market shortly.",
-		
+
 		"vengeanceFleet0":"Hunter Fleet",
 		"vengeanceFleet0Single":"a Hunter Fleet",
 		"vengeanceLevel0":"Grudge",
-		
+
 		"vengeanceFleet1":"Executors",
 		"vengeanceFleet1Single":"Executors",
 		"vengeanceLevel1":"Vendetta",
-		
+
 		"vengeanceFleet2":"Kill-Fleet",
 		"vengeanceFleet2Single":"a Kill-Fleet",
 		"vengeanceLevel2":"Revenge",
-		
+
 		"fleetRelationship":"$faction $isOrAre $relationship.",
-		
+
 		"supportingYourForces":"supporting your forces",
 		"joiningTheEnemy":"joining the enemy",
 		"supportingOpposingSide":"supporting the opposing side"
@@ -224,7 +224,7 @@
 		"travellingToStarSystem":"travelling to the $target star system",
 		"scramblingFrom":"scrambling from $target",
 		"orbiting":"orbiting $target",
-		
+
 		"attacking":"attacking $target",
 		"attackingStarSystem":"attacking the $target star system",
 		"attackingAroundStarSystem":"attacking around the $target star system",
@@ -240,7 +240,7 @@
 		"mining":"mining $target",
 		"miningUnload":"unloading cargo and disbanding",
 		"suppressingRebellion":"suppressing rebellion at $target",
-		
+
 		"missionStrike":"strike mission",
 		"missionInvasion":"invasion",
 		"missionMining":"mining expedition",
@@ -262,25 +262,25 @@
 		"memorialBeacon":"Memorial Beacon",
 		"museumShip":"Museum Ship ($name)",
 	},
-	
+
 	"exerelin_markets":{
 		"marketDirectoryEntry":"$market, $location (size $size)",
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
 		"marketDirectoryEntryForTrade":"$market, $location ($faction, $distance LY)",
 		"hasBaseTip":"has military base",
-		
+
 		"highPrices":"buying at high prices",
 		"lowPrices":"selling at low prices",
 		"demand":"demand",
 		"forSale":"for sale",
 		"priceStr":"price: $basePrice ($priceWithTariff with tariff)",
-		
+
 		"transferMarketWarning":"Are you sure you wish to transfer $market to $theFaction?",
 		"transferMarketRep":"At the current stability, transferring $market will earn $repChange reputation with the recipient faction.",
-		
+
 		"prismNoSale":"No sales/returns",
 		"prismRelTooLow":"Requires: $faction - $minRelationship",
-		
+
 		"templarControl":"Templar control"
 	},
 	"exerelin_marketConditions":{
@@ -288,7 +288,7 @@
 		"agentDestabilization":"Agent destabilization",
 		"rebellion":"Rebellion",
 	},
-	
+
 	"exerelin_mining":{
 		"danger":"hazard rating",
 		"exhaustion":"resource exhaustion",
@@ -301,11 +301,11 @@
 		"LPC":"$fighterName LPC",
 		"hullmod":"$hullmod – modspec",
 		"machineryAvailable":"Machinery usable (available)",
-		
+
 		"miningToolsListHeader":"The following mining ships and weapons exist in the Sector:",
 		"miningToolsListAddendum":"Fighter wings with the appropriate weapons count towards their parent ship's mining strength.",
 		"insufficientMachineryWarning":"Your $shipOrFleet does not have enough heavy machinery to work at full capacity.",
-		
+
 		"cacheFound":"Hidden cache found!",
 		"accidentsOccured":"Accidents occured!",
 		"shipDamaged":"$ship took $damage damage",
@@ -333,7 +333,7 @@
 		"freeStartTooltip":"Own faction, but with no starting planet; you're on your own.",
 		"devStart":">> (dev) quick start",
 		"devStartFast":">> (dev) quick start no time pass",
-		
+
 		"added":"added",
 		#"shipString":"$shipClass-class $designation ($variantName)",
 		"shipString":"$shipClass-class $designation",
@@ -341,7 +341,7 @@
 		"gainedXP":"gained $xp XP",
 		"recruitedOfficer":"recruited $numOfficers officer",
 		"recruitedOfficers":"recruited $numOfficers officers",
-		
+
 		"populatedSystemsTitle":"Populated systems",
 		"populatedSystemsTooltip":"This is a target number of systems. Actual populated system count may be more or less than this.",
 		"populatedPlanetsTitle":"Populated planets",
@@ -349,7 +349,7 @@
 		"stationsTitle":"Stations",
 		"stationsTooltip":"Will fill new systems if specified number of populated systems is insufficient.",
 		"randomizeFactionsTooltip":"Every faction has a 50% chance to be enabled (except independents, which will not be toggled from their current setting).",
-		
+
 		"fleetSolo":"Solo frigate",
 		"fleetCombatSmall":"Light combat patrol",
 		"fleetTradeSmall":"Small trade convoy",
@@ -358,12 +358,13 @@
 		"fleetTradeLarge":"Larger mercantile train",
 		"fleetCarrierLarge":"Medium carrier force",
 		"fleetSuper":"Super ship",
-		"fleetRandomReroll":"[Reroll random ships]"
+		"fleetRandomReroll":"[Reroll random ships]",
+		"fleetCycle":"[Cycle fleets]"
 	},
 	"exerelin_officers":{
 		"officer":"officer",
 		"officers":"officers",
-		
+
 		"battle_escaped":"Your $officers $officerNames escaped the destruction of $theirShips",
 		"battle_noReportIn":"Your $officers did not report in after the battle",
 		"battle_casualties":"Your $officer was listed among the casualties",
@@ -371,12 +372,12 @@
 		"confirmDeath":"The post-action report confirms that your $officers didn't make it",
 		"savedFromWreckage":"Your $officer was saved from the wreckage",
 		"savedFromWreckagePlural":"Your $officers were saved from the wreckage",
-		
+
 		"noOfficersDeadForNow":"No officers have died under your command... so far",
 		"noOfficersDead":"No officers have died under your command.",
 		"diedOn":"Died on $date",
 		"lastCommand":"Last commanding: $shipName ($shipClass)",
-		
+
 		"causeOfDeath":"cause of death",
 		"causeOfDeath1":"explosive decompression",
 		"causeOfDeath2":"plasma burns",
@@ -390,18 +391,18 @@
 		"causeOfDeath10":"suit malfunction",
 		"causeOfDeath11":"escape pod failure",
 		"causeOfDeath12":"fragging",
-		
+
 		"hisOrHerShip":"$pronoun ship",
 		"theirShips":"their ships",
-		
+
 		"missingInAction":"missing in action",
 		"miaPresumedDead":"MIA, presumed dead",
 		"killedInAction":"killed in action",
 		"rescued":"rescued"
-	},	
+	},
 	"exerelin_reinitScreen":{
 		"introText":"You have loaded Nexerelin into an existing save. Please configure starting options:",
-		
+
 		"allowRespawn":"Allow faction respawn",
 		"allowRespawnNonOriginal":"Allow respawn for factions not currently present",
 		"hardMode":"Starfarer Mode",
@@ -411,7 +412,7 @@
 	"exerelin_superweapon":{
 		"crText":"Superweapon used",
 		"stabilityText":"Planet buster",
-		
+
 		"successText":"The missile scores a direct hit! $market has taken severe damage.",
 		"stabilityPenaltyReport":"Stability penalty: $stability",
 		"commodityDestructionReport":"Average $percent% of commodity stockpiles destroyed"
@@ -422,17 +423,17 @@
 		"victory_diplomatic":"Congratulations! $TheFaction and their allies control the Sector!",
 		"victory_conquest_ally":"Congratulations! Your ally $theFaction have crushed all opposition and now reigns supreme over the Sector!",
 		"victory_diplomatic_ally":"Congratulations! You have joined $theFaction and their other allies in controlling the Sector!",
-		
+
 		"defeat_conquest":"Alas, $theFaction have conquered the Sector. All your efforts have come to naught.",
 		"defeat_diplomatic":"$TheFaction and their allies now dominate the Sector. Unfortunately, you are not one of them...",
-		
+
 		"retired":"You have chosen to retire prematurely. Yet the struggles of the Sector continue, on and on...",
-		
+
 		"whatNow":"What now?",
 		"youHaveWon":"You have won a $victoryType victory!",
-		
+
 		"officerMemorial":"Officer memorial",
-		
+
 		"statsLevel":"Level",
 		"statsDaysElapsed":"Days elapsed",
 		"statsShipsKilled":"Ships killed",
@@ -448,22 +449,22 @@
 		"statsSlavesSold":"Slaves sold",
 		"statsOrphansMade":"Orphans made"
 	},
-	
+
 	"exerelin_misc":{
 		"intelScreen":"Intel screen",
 		"directoryOptions":"Directory options",
-		
+
 		"deliverCommodities":"Deliver $num $commodity",
-		
+
 		"counterInsurgencyRep":"At your current relationship with $theFaction, payment for deliveries is $mult of current per-unit price.",
 		"counterInsurgencyRepFixed":"Payment for deliveries is $mult of current per-unit price.",
-		
+
 		"aiCoresSelect":"Select AI cores to turn in",
 		"aiCoresMsg1":"Compared to dealing with other factions, turning AI cores in to $faction will result in:",
 		"aiCoresBounty":"Bounty value",
 		"aiCoresRep":"Reputation gain",
 		"aiCoresMsg2":"If you turn in the selected AI cores, you will receive a %s bounty and your standing with $faction will improve by %s points.",
-		
+
 		"errorLazyLib":"Nexerelin requires LazyLib to function!\nGet it at fractalsoftworks.com/forum/index.php?topic=5444.0",
 		"errorOfficerMaxLevel":"Officer max level in config is over 29 (current: $currMax)\nThis risks a hang during gameplay.\nSee http://fractalsoftworks.com/forum/index.php?topic=13195.0 for more details.",
 	},
