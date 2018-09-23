@@ -75,7 +75,7 @@ public class ExerelinProcGen {
 	protected static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
 	protected static List<String> stationNames = new ArrayList<>();
 	
-	public static final List<String> stationImages = new ArrayList<>(Arrays.asList(new String[] {
+	public static final List<String> STATION_IMAGES = new ArrayList<>(Arrays.asList(new String[] {
 		"station_side00", "station_side02", "station_side04", "station_jangala_type"
 	}));
 	public static final Set<String> TAGS_TO_REMOVE = new HashSet<>(Arrays.asList(new String[] {
@@ -804,7 +804,14 @@ public class ExerelinProcGen {
 			}
 			
 			if (capital == null) continue;
+			
+			capital.isCapital = true;
 			capitalsBySystem.put(system, capital);
+			/*
+			if (!capital.market.hasCondition(Conditions.HEADQUARTERS) 
+					&& capital.market.hasCondition(Conditions.REGIONAL_CAPITAL))
+				capital.market.addCondition(Conditions.REGIONAL_CAPITAL);
+			*/
 		}
 	}
 	
@@ -967,14 +974,13 @@ public class ExerelinProcGen {
 		String name = station.name;
 		String id = name.replace(' ','_');
 		id = id.toLowerCase();
-		List<String> images = stationImages;
-		ExerelinFactionConfig factionConf = ExerelinConfig.getExerelinFactionConfig(factionId);
-		if (factionConf != null && !factionConf.customStations.isEmpty())
-			images = factionConf.customStations;
 		
-		String image = (String) ExerelinUtils.getRandomListElement(images, random);
+		int size = freeStation ? marketSetup.getWantedMarketSize(station, factionId) : planet.getMarket().getSize();
+		String stationImage = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomStation(size, random);
+		if (stationImage == null)
+			stationImage = ExerelinUtils.getRandomListElement(STATION_IMAGES);
 		
-		SectorEntityToken newStation = station.starSystem.addCustomEntity(id, name, image, factionId);
+		SectorEntityToken newStation = station.starSystem.addCustomEntity(id, name, stationImage, factionId);
 		newStation.setCircularOrbitPointingDown(planet, angle, orbitRadius, orbitDays);
 		station.entity = newStation;
 		
@@ -990,7 +996,7 @@ public class ExerelinProcGen {
 		else
 		{
 			log.info("Adding free station " + station.name + " for " + factionId);
-			station.market = marketSetup.addMarket(station, factionId);
+			station.market = marketSetup.addMarket(station, factionId, size);
 			//standaloneStations.add(data);
 		}
 		newStation.setCustomDescriptionId("orbital_station_default");
@@ -1632,7 +1638,7 @@ public class ExerelinProcGen {
 		String planetType = "";
 		float desirability = 0;
 		boolean inhabited = true;
-		boolean isCapital = false;
+		boolean isCapital = false;	// merely used for internal tagging; it's not set at the time market generation occurs
 		boolean isHQ = false;
 		EntityType type = EntityType.PLANET;
 		StarSystemAPI starSystem;

@@ -113,7 +113,7 @@ public class ExerelinFactionConfig
     public List<String> vengeanceFleetNames = new ArrayList<>();
     public List<String> vengeanceFleetNamesSingle = new ArrayList<>();
     
-    public List<String> customStations = new ArrayList<>();
+    public List<CustomStation> customStations = new ArrayList<>();
     public List<String> defenceStations = new ArrayList<>();
     
     public List<String> miningVariantsOrWings = new ArrayList<>();
@@ -201,9 +201,7 @@ public class ExerelinFactionConfig
             else
                 defenceStations = Arrays.asList(DEFAULT_DEF_STATIONS);
             
-            
-            if (settings.has("customStations"))
-                customStations = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("customStations")));
+            loadCustomStations(settings);
             
             // Diplomacy
             if (settings.has("factionsLiked"))
@@ -441,6 +439,44 @@ public class ExerelinFactionConfig
         if (ExerelinConfig.useRelationshipBounds && getMaxRelationship(factionId1, factionId2) < -0.5) return false;
         if (getDiplomacyPositiveChance(factionId1, factionId2) <= 0) return false;
         return true;
+    }
+    
+    protected void loadCustomStations(JSONObject factionSettings) throws JSONException
+    {
+        if (!factionSettings.has("customStations"))
+            return;
+        
+        
+        JSONArray array = factionSettings.optJSONArray("customStations");
+        if (array == null || array.length() == 0)
+            return;
+        
+        boolean reverseCompat = array.get(0) instanceof String;
+        
+        for (int i=0; i<array.length(); i++)
+        {
+            if (reverseCompat)
+            {
+                customStations.add(new CustomStation(array.getString(i)));
+                continue;
+            }
+            JSONObject stationDef = array.getJSONObject(i);
+            CustomStation station = new CustomStation(stationDef.getString("entity"));
+            if (stationDef.has("minSize")) station.minSize = stationDef.getInt("minSize");
+            if (stationDef.has("maxSize")) station.maxSize = stationDef.getInt("maxSize");
+            customStations.add(station);
+        }
+    }
+    
+    public String getRandomStation(int size, Random rand)
+    {
+        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(rand);
+        for (CustomStation station : customStations)
+        {
+            if (station.maxSize < size || station.minSize > size) continue;
+            picker.add(station.customEntityId);
+        }
+        return picker.pick();
     }
 	
 	public List<String> getStartShipList(JSONArray array) throws JSONException
@@ -878,16 +914,28 @@ public class ExerelinFactionConfig
 			fleets.add(fleet);
 		}
 	}
-    
-    public static enum StartFleetType {
-        SOLO, COMBAT_SMALL, TRADE_SMALL,COMBAT_LARGE,TRADE_LARGE, 
+	
+	public static class CustomStation
+	{
+		String customEntityId;
+		int minSize = 0;
+		int maxSize = 99;
+		
+		public CustomStation(String entityId)
+		{
+			this.customEntityId = entityId;
+		}
+	}
+	
+	public static enum StartFleetType {
+		SOLO, COMBAT_SMALL, TRADE_SMALL,COMBAT_LARGE,TRADE_LARGE, 
 		CARRIER_SMALL, CARRIER_LARGE, SUPER;
 		
 		public static StartFleetType getType(String str)
 		{
 			return StartFleetType.valueOf(str.toUpperCase());
 		}
-    }
-    
-    public static enum Morality {GOOD, NEUTRAL, AMORAL, EVIL}
+	}
+	
+	public static enum Morality {GOOD, NEUTRAL, AMORAL, EVIL}
 }

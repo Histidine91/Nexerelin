@@ -110,6 +110,8 @@ public class ExerelinMarketBuilder
 	protected Map<ProcGenEntity, Map<Archetype, Float>> marketScoresForArchetypes = new HashMap<>();
 	protected int marketArchetypeQueueNum = 0;
 	
+	// not a literally accurate count since it disregards HQs
+	// only used to handle the market size rotation
 	protected int numStations = 0;
 	protected int numPlanets = 0;
 	protected int numMoons = 0;
@@ -771,43 +773,48 @@ public class ExerelinMarketBuilder
 		}
 	}
 	
+	protected int getWantedMarketSize(ProcGenEntity data, String factionId)
+	{
+		if (data.forceMarketSize != -1) return data.forceMarketSize;
+		
+		boolean isStation = data.type == EntityType.STATION; 
+		boolean isMoon = data.type == EntityType.MOON;
+		int size = 1;
+		if (data.isHQ) {
+			size = 7;
+		}
+		else {
+			if (isStation) size = getSizeFromRotation(STATION_SIZE_ROTATION, numStations);
+			else if (isMoon) size = getSizeFromRotation(MOON_SIZE_ROTATION, numMoons);
+			else size = getSizeFromRotation(PLANET_SIZE_ROTATION, numPlanets);
+		}
+		
+		if (ExerelinUtilsFaction.isPirateFaction(factionId)) {
+			size--;
+			if (size < 3) size = 3;
+		}
+		
+		return size;
+	}
+	
 	// =========================================================================
 	// main market adding method
+	
 	protected MarketAPI addMarket(ProcGenEntity data, String factionId)
+	{
+		return addMarket(data, factionId, getWantedMarketSize(data, factionId));
+	}
+	
+	protected MarketAPI addMarket(ProcGenEntity data, String factionId, int marketSize)
 	{
 		log.info("Creating market for " + data.name + " (" + data.type + "), faction " + factionId);
 		
 		SectorEntityToken entity = data.entity;
 		// don't make the markets too big; they'll screw up the economy big time
-		int marketSize = 1;
-		EntityType entityType = data.type;
 		
 		String planetType = data.planetType;
-		boolean isStation = entityType == EntityType.STATION; 
-		boolean isMoon = entityType == EntityType.MOON;
-		
-		if (data.isHQ) {
-			marketSize = 7;
-		}
-		else if (data.isCapital) {
-			marketSize = Math.min(marketSize + 1, 6);
-		}
-		else {
-			if (isStation) marketSize = getSizeFromRotation(STATION_SIZE_ROTATION, numStations);
-			else if (isMoon) marketSize = getSizeFromRotation(MOON_SIZE_ROTATION, numMoons);
-			else marketSize = getSizeFromRotation(PLANET_SIZE_ROTATION, numPlanets);
-			
-			if (isStation) numStations++;
-			else if (isMoon) numMoons++;
-			else numPlanets++;
-		}
-		
-		if (ExerelinUtilsFaction.isPirateFaction(factionId)) {
-			marketSize--;
-			if (marketSize < 3) marketSize = 3;
-		}
-		
-		if (data.forceMarketSize != -1) marketSize = data.forceMarketSize;
+		boolean isStation = data.type == EntityType.STATION; 
+		boolean isMoon = data.type == EntityType.MOON;
 		
 		MarketAPI market = entity.getMarket();
 		if (market == null) {
@@ -840,13 +847,6 @@ public class ExerelinMarketBuilder
 				//newMarket.addCondition(Conditions.SHIPBREAKING_CENTER);
 				//market.addCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION);
 			}
-		}
-		else if (data.isCapital)
-		{
-			//market.addCondition(Conditions.REGIONAL_CAPITAL);
-			//market.addCondition("nex_recycling_plant");
-			//market.addCondition("exerelin_supply_workshop");
-			//newMarket.addCondition("exerelin_hydroponics");
 		}
 		market.addCondition("population_" + marketSize);
 		market.removeCondition(Conditions.DECIVILIZED);
@@ -986,6 +986,13 @@ public class ExerelinMarketBuilder
 		}
 		
 		procGen.pickEntityInteractionImage(data.entity, market, planetType, data.type);
+		
+		if (!data.isHQ)
+		{
+			if (isStation) numStations++;
+			else if (isMoon) numMoons++;
+			else numPlanets++;
+		}
 		
 		return market;
 	}
