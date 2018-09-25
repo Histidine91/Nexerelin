@@ -1014,7 +1014,8 @@ FireAll Nex_MarketPostTransfer",,,
 ,,,,,,
 nex_marketTransferPostDialog,Nex_MarketPostTransfer,,,"""As you command. $market is now in possession of $entity._newFaction.
 
-""Goodbye, chief.""",cutCommLink:Cut the comm link,
+""Goodbye, chief.""",nex_transferMarketEnd:Cut the comm link and leave,
+nex_marketTransferPostDialogLeave,DialogOptionSelected,$option == nex_transferMarketEnd,DismissDialog,,,
 #END MARKET TRANSFER OPTIONS,,,,,,
 ,,,,,,
 #START REBELLION OPTIONS,,,,,,

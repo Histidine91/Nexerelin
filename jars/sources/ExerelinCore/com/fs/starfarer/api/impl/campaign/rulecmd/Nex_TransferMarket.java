@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.StringHelper;
@@ -103,6 +104,7 @@ public class Nex_TransferMarket extends BaseCommandPlugin {
 		float repChange = getRepChange(market, false);
 		
 		SectorManager.transferMarket(market, newFaction, oldFaction, true, false, null, repChange);
+		DiplomacyManager.getManager().getDiplomacyBrain(newFactionId).reportDiplomacyEvent(oldFactionId, repChange);
 				
 		//ExerelinUtilsReputation.adjustPlayerReputation(newFaction, null, repChange, null, dialog.getTextPanel());	// done in event
 		market.getPrimaryEntity().getMemoryWithoutUpdate().set("$_newFaction", newFaction.getDisplayNameWithArticle(), 0);
