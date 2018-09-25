@@ -3,21 +3,33 @@ package exerelin.world;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.PlanetSpecAPI;
+import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.procgen.AgeGenDataSpec;
 import com.fs.starfarer.api.impl.campaign.procgen.CategoryGenDataSpec;
 import com.fs.starfarer.api.impl.campaign.procgen.Constellation;
+import com.fs.starfarer.api.impl.campaign.procgen.ConstellationGen;
 import com.fs.starfarer.api.impl.campaign.procgen.LocationGenDataSpec;
 import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
+import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.NEBULA_NONE;
 import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.TAG_NOT_IN_NEBULA;
 import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.TAG_REQUIRES_NEBULA;
+import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.getNormalRandom;
 import static com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.random;
+import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import org.lwjgl.util.vector.Vector2f;
 
 // same as vanilla except with moar planets + always custom names
 public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
@@ -28,11 +40,120 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 		super(params);
 	}
 	
+	protected void regenerate()
+	{
+		this.constellationAge = params.age;
+		
+		if (this.constellationAge == StarAge.ANY) {
+			WeightedRandomPicker<StarAge> picker = new WeightedRandomPicker<StarAge>(random);
+			picker.add(StarAge.AVERAGE);
+			picker.add(StarAge.OLD);
+			picker.add(StarAge.YOUNG);
+			this.constellationAge = picker.pick();
+		}
+		
+		constellationAgeData = (AgeGenDataSpec) Global.getSettings().getSpec(AgeGenDataSpec.class, constellationAge.name(), true);
+		
+		pickNebulaAndBackground();
+	}
+	
 	@Override
 	public Constellation generate() {
-		Constellation c = super.generate();
+		lagrangeParentMap = new LinkedHashMap<SectorEntityToken, PlanetAPI>();
+		allNameableEntitiesAdded = new LinkedHashMap<SectorEntityToken, List<SectorEntityToken>>();
 		
-		// force rename
+		SectorAPI sector = Global.getSector();
+		Vector2f loc = new Vector2f();
+		if (params != null && params.location != null) {
+			loc = new Vector2f(params.location);
+		} else {
+			loc = new Vector2f(sector.getPlayerFleet().getLocation());
+			loc.x = (int) loc.x;
+			loc.y = (int) loc.y;
+		}
+		
+		
+		pickNebulaAndBackground();
+		
+		List<StarSystemAPI> systems = new ArrayList<StarSystemAPI>();
+		int stars = (int) Math.round(getNormalRandom(1, 7));
+		if (params != null && params.numStars > 0) {
+			stars = params.numStars;
+		} else if (params != null && params.minStars > 0 && params.maxStars > 0) {
+			stars = (int) Math.round(getNormalRandom(params.minStars, params.maxStars));
+		}
+		
+//		constellationName = ProcgenUsedNames.pickName(NameGenData.TAG_CONSTELLATION, null);
+//		ProcgenUsedNames.notifyUsed(constellationName.nameWithRomanSuffixIfAny);
+//		Global.getSettings().greekLetterReset();
+		
+		// CHANGED //
+		// run pickNebulaAndBackground() after every star
+		for (int i = 0; i < stars; i++) {
+			generateSystem(new Vector2f(0, 0));
+			if (system != null) {
+				systems.add(system);
+				if (nebulaType != NEBULA_NONE)
+				{
+					system.setAge(starAge);
+					system.setHasSystemwideNebula(true);
+				}
+			}
+			regenerate();
+		}
+		
+		
+		ConstellationGen.SpringSystem springs = ConstellationGen.doConstellationLayout(systems, random, loc);
+		Global.getSector().getHyperspace().updateAllOrbits();
+		
+		HyperspaceTerrainPlugin plugin = (HyperspaceTerrainPlugin) Misc.getHyperspaceTerrain().getPlugin();
+		NebulaEditor editor = new NebulaEditor(plugin);
+		
+		float minRadius = plugin.getTileSize() * 2f;
+		for (StarSystemAPI curr : systems) {
+			float radius = curr.getMaxRadiusInHyperspace();
+			editor.clearArc(curr.getLocation().x, curr.getLocation().y, 0, radius + minRadius * 0.5f, 0, 360f);
+			editor.clearArc(curr.getLocation().x, curr.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);
+		}
+		
+		for (ConstellationGen.SpringConnection conn : springs.connections) {
+			if (!conn.pull) continue;
+			float r1 = ((StarSystemAPI)conn.from.custom).getMaxRadiusInHyperspace();
+			float r2 = ((StarSystemAPI)conn.to.custom).getMaxRadiusInHyperspace();
+			float dist = Misc.getDistance(conn.from.loc, conn.to.loc);
+			
+			float radius = Math.max(0, dist * 0.67f - r1 - r2);
+			
+//			float x = (conn.from.loc.x + conn.to.loc.x) * 0.5f;
+//			float y = (conn.from.loc.y + conn.to.loc.y) * 0.5f;
+//			editor.clearArc(x, y, 0, radius + minRadius * 0.5f, 0, 360f);
+//			editor.clearArc(x, y, 0, radius + minRadius, 0, 360f, 0.25f);
+			
+			Vector2f diff = Vector2f.sub(conn.to.loc, conn.from.loc, new Vector2f());
+			float x = conn.from.loc.x + diff.x * 0.33f;
+			float y = conn.from.loc.y + diff.y * 0.33f;
+			editor.clearArc(x, y, 0, radius + minRadius * 1f, 0, 360f);
+			editor.clearArc(x, y, 0, radius + minRadius * 2f, 0, 360f, 0.25f);
+			
+			x = conn.from.loc.x + diff.x * 0.67f;
+			y = conn.from.loc.y + diff.y * 0.67f;
+			editor.clearArc(x, y, 0, radius + minRadius * 1f, 0, 360f);
+			editor.clearArc(x, y, 0, radius + minRadius * 2f, 0, 360f, 0.25f);
+		}
+		
+		// CHANGED //
+		// fixed constellation params
+		Constellation c = new Constellation(Constellation.ConstellationType.NORMAL, StarAge.ANY);
+		c.getSystems().addAll(systems);
+		c.setLagrangeParentMap(lagrangeParentMap);
+		c.setAllEntitiesAdded(allNameableEntitiesAdded);
+
+		
+//		SalvageEntityGeneratorOld seg = new SalvageEntityGeneratorOld(c);
+//		seg.addSalvageableEntities();
+		
+		// CHANGED //
+		// 100% special name chance
 		NameAssigner namer = new NameAssigner(c);
 		namer.setSpecialNamesProbability(1f);
 		namer.assignNames(params.name, params.secondaryName);
@@ -42,6 +163,12 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 				entity.getMarket().setName(entity.getName());
 			}
 		}
+		
+		//if (systems.size() > 1) {
+			for (StarSystemAPI system : systems) {
+				system.setConstellation(c);
+			}
+		//}
 		
 		return c;
 	}
@@ -84,6 +211,7 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 			if (test == null) continue;
 			LocationGenDataSpec data = (LocationGenDataSpec) test;
 			
+			// CHANGED //
 			if (type == StarSystemType.NEBULA) continue;
 			
 			boolean nebulaStatusOk = NEBULA_NONE.equals(nebulaType) || !data.hasTag(TAG_NOT_IN_NEBULA);
@@ -145,6 +273,7 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 			}
 			if (extraMult != null) weight *= categoryData.getMultiplier(extraMult);
 			
+			// CHANGED //
 			// prefer habitable worlds
 			if (categoryData.getCategory().contains("cat_hab"))
 			{
@@ -211,6 +340,8 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 		boolean hasOrbits = random.nextFloat() < starData.getProbOrbits();
 		if (!hasOrbits) return null;
 		
+		// CHANGED //
+		// arbitrary min/max values
 		float min = 4;	//starData.getMinOrbits() + starAgeData.getMinExtraOrbits() + 1;
 		float max = 9;	//starData.getMaxOrbits() + starAgeData.getMaxExtraOrbits() + 3;
 		min = Math.max(min, ExerelinConfig.minimumPlanets);
@@ -240,6 +371,4 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 		result.context = context;
 		return result;
 	}
-	
-	
 }

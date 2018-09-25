@@ -24,6 +24,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
 import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
+import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.CustomConstellationParams;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
@@ -44,10 +45,11 @@ import exerelin.campaign.StatsTracker;
 import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.Random;
+import org.lazywizard.lazylib.MathUtils;
+import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 @SuppressWarnings("unchecked")
@@ -140,18 +142,18 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		// deep hyperspace removal (copypasted from UW)
 		HyperspaceTerrainPlugin plugin = (HyperspaceTerrainPlugin) Misc.getHyperspaceTerrain().getPlugin();
-        NebulaEditor editor = new NebulaEditor(plugin);
+		NebulaEditor editor = new NebulaEditor(plugin);
 
-        float minRadius = plugin.getTileSize() * 2f;
-        float radius = 400;
-        editor.clearArc(prismEntity.getLocation().x, prismEntity.getLocation().y, 0, radius + minRadius * 0.5f, 0, 360f);
-        editor.clearArc(prismEntity.getLocation().x, prismEntity.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);
+		float minRadius = plugin.getTileSize() * 2f;
+		float radius = 400;
+		editor.clearArc(prismEntity.getLocation().x, prismEntity.getLocation().y, 0, radius + minRadius * 0.5f, 0, 360f);
+		editor.clearArc(prismEntity.getLocation().x, prismEntity.getLocation().y, 0, radius + minRadius, 0, 360f, 0.25f);
 	}
 	
 	protected void addAntiochPart1(SectorAPI sector)
 	{
 		ProcgenUsedNames.notifyUsed("Antioch");
-        ProcgenUsedNames.notifyUsed("Ascalon");
+		ProcgenUsedNames.notifyUsed("Ascalon");
 		new TEM_Antioch().generate(sector);
 	}
 	
@@ -159,7 +161,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 	public void generate(SectorAPI sector)
 	{
 		log.info("Starting sector generation...");
-		rand = new Random(ExerelinUtils.getStartingSeed());
+		rand = StarSystemGenerator.random;
 		
 		ExerelinSetupData setupData = ExerelinSetupData.getInstance();
 		boolean corvusMode = setupData.corvusMode;
