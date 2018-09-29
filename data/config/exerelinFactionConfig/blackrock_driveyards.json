@@ -25,14 +25,14 @@
     "miningVariantsOrWings":["gonodactylus_assault", "gonodactylus_cc", "gonodactylus_CS", "gonodactylus_elite"],
     "customStations":["br_station"],
     
-    "startShipsSolo":["brdy_mantis_attack"],
-    "startShipsCombatSmall":["brdy_scorpion_standard", "scarab_closesupport", "brdy_locust_cs"],
-    "startShipsTradeSmall":["brdy_megaceras_standard", "brdy_silverfish_b_standard", "brdy_robberfly_cs"],
-    "startShipsCombatLarge":["brdy_stenos_exploration", "gonodactylus_CS", "brdy_mantis_shatterer"],
-    "startShipsTradeLarge":["brdy_eschaton_armed", "brdy_silverfish_standard"],
-    "startShipsCarrierSmall":["brdy_typheus_defender", "brdy_zabrus_attack", "brdy_robberfly_strike"],
-    "startShipsCarrierLarge":["brdy_convergence_standard", "brdy_eurypterus_standard", "scarab_hunter"],
-    "startShipsSuper":["brdy_imaginos_shock"],
+    "startShipsSolo":[["brdy_mantis_attack"]],
+    "startShipsCombatSmall":[["brdy_scorpion_standard", "scarab_closesupport", "brdy_locust_cs"]],
+    "startShipsTradeSmall":[["brdy_megaceras_standard", "brdy_silverfish_b_standard", "brdy_robberfly_cs"]],
+    "startShipsCombatLarge":[["brdy_stenos_exploration", "gonodactylus_CS", "brdy_mantis_shatterer"]],
+    "startShipsTradeLarge":[["brdy_eschaton_armed", "brdy_silverfish_standard"]],
+    "startShipsCarrierSmall":[["brdy_typheus_defender", "brdy_zabrus_attack", "brdy_robberfly_strike"]],
+    "startShipsCarrierLarge":[["brdy_convergence_standard", "brdy_eurypterus_standard", "scarab_hunter"]],
+    "startShipsSuper":[["brdy_imaginos_shock"]],
     
     "defenceStations":["nex_asgard_Advanced"],
 }

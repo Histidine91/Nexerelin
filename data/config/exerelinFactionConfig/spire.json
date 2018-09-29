@@ -2,7 +2,6 @@
     "playableFaction":true,
     "corvusCompatible":true,
 
-    "crewExpereinceLevelIncreaseChance":0.0,
     "baseFleetCostMultiplier":1.0,
 
     "customRebelFaction":"",
@@ -25,9 +24,9 @@
     
     "dropPrisoners":false,
     
-    "startShipsSolo":["spire_corvette_Standoff"],
-    "startShipsCombatSmall":["spire_destroyer_Assault", "spire_corvette_Lance"],
-    "startShipsTradeSmall":["spire_stealthship_Strike", "spire_corvette_Beam"],
-    "startShipsCombatLarge":["spire_cruiser_Line", "spire_frigate_Skirmisher"],
-    "startShipsTradeLarge":["spire_colonyship_Standard", "spire_destroyer_Support"],
+    "startShipsSolo":[["spire_corvette_Standoff"]],
+    "startShipsCombatSmall":[["spire_destroyer_Assault", "spire_corvette_Lance"]],
+    "startShipsTradeSmall":[["spire_stealthship_Strike", "spire_corvette_Beam"]],
+    "startShipsCombatLarge":[["spire_cruiser_Line", "spire_frigate_Skirmisher"]],
+    "startShipsTradeLarge":[["spire_colonyship_Standard", "spire_destroyer_Support"]],
 }

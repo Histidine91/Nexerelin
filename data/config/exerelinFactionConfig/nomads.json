@@ -29,32 +29,32 @@
     "templars",
     "tiandong"
   ],
-  "startShipsSolo": [
+  "startShipsSolo": [[
     "nom_dust_devil_assault"
-  ],
-  "startShipsCombatSmall": [
+  ]],
+  "startShipsCombatSmall": [[
     "nom_wurm_royal_vanguard",
     "nom_dust_devil_assault",
     "nom_flycatcher_ant"
-  ],
-  "startShipsCombatLarge": [
+  ]],
+  "startShipsCombatLarge": [[
     "nom_komodo_mk2_assault",
     "nom_roadrunner_pursuit",
     "nom_death_bloom_strike"
-  ],
-  "startShipsTradeSmall": [
+  ]],
+  "startShipsTradeSmall": [[
     "nom_wurm_assault",
     "nom_komodo_assault",
     "nom_tortoise_freighter"
-  ],
-  "startShipsTradeLarge": [
+  ]],
+  "startShipsTradeLarge": [[
     "nom_dust_devil_assault",
     "nom_flycatcher_toad",
     "nom_rattlesnake_assault",
     "nom_cobra_personnel",
     "nom_tortoise_freighter",
     "nom_cactus_tanker"
-  ],
+  ]],
   "miningVariantsOrWings": [
     "nom_komodo_p_overdriven",
     "nom_komodo_p_support",

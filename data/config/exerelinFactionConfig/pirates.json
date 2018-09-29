@@ -46,8 +46,8 @@
       ["ssp_stalker_sta", "buffalo_pirates_Standard", "ssp_venom_fas"],
       ["venture_Balanced", "buffalo_pirates_Standard", "cerberus_Standard"]
     ],
-    "startShipsCarrierSmall":["condor_Attack", "buffalo2_FS", "lasher_Standard"],
-    "startShipsSuper":["ssp_venomx_str"],
+    "startShipsCarrierSmall":[["condor_Attack", "buffalo2_FS", "lasher_Standard"]],
+    "startShipsSuper":[["ssp_venomx_str"]],
 
     "defenceStations":["nex_asgard_Pirate"],
 }

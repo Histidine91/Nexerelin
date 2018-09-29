@@ -16,12 +16,12 @@
         "corporate":0.5,
     },
     
-    "startShipsSolo":["mi_farin_standard"],
-    "startShipsCombatSmall":["mi_rastrum_standard", "mi_mite_standard", "mi_wolf_metelson"],
-    "startShipsTradeSmall":["mi_varingur_standard", "mi_mite_standard", "mi_pala_standard"],
-    "startShipsCombatLarge":["mi_mantarn_standard", "mi_securi_brawler", "mi_glima_attack"],
-    "startShipsTradeLarge":["mi_grancursor_support", "buffalo_hegemony_Standard", "mi_vigilance_escort"],
-    "startShipsCarrierLarge":["mi_grancursor_assualt", "mi_varingur_standard", "mi_cavos_assualt"],
+    "startShipsSolo":[["mi_farin_standard"]],
+    "startShipsCombatSmall":[["mi_rastrum_standard", "mi_mite_standard", "mi_wolf_metelson"]],
+    "startShipsTradeSmall":[["mi_varingur_standard", "mi_mite_standard", "mi_pala_standard"]],
+    "startShipsCombatLarge":[["mi_mantarn_standard", "mi_securi_brawler", "mi_glima_attack"]],
+    "startShipsTradeLarge":[["mi_grancursor_support", "buffalo_hegemony_Standard", "mi_vigilance_escort"]],
+    "startShipsCarrierLarge":[["mi_grancursor_assualt", "mi_varingur_standard", "mi_cavos_assualt"]],
     
     "miningVariantsOrWings":["mi_pala_mining"]
 }

@@ -23,8 +23,8 @@
       ["apogee_Balanced", "hammerhead_lions_guard_eli", "afflictor_Strike"],
       ["apogee_Balanced", "medusa_Attack", "omen_PD"]
     ],
-    "startShipsCarrierSmall":["ssp_vortex_sta", "tempest_Attack", "brawler_lions_guard_eli"],
-    "startShipsCarrierLarge":["heron_lions_guard_eli", "medusa_Attack", "ssp_hecate_sta"],
+    "startShipsCarrierSmall":[["ssp_vortex_sta", "tempest_Attack", "brawler_lions_guard_eli"]],
+    "startShipsCarrierLarge":[["heron_lions_guard_eli", "medusa_Attack", "ssp_hecate_sta"]],
 
     "defenceStations":["nex_asgard_Advanced"],
 }

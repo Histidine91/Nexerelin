@@ -20,10 +20,10 @@
         "technocratic":1
     },
     
-    "startShipsSolo":["exigency_yria_Assault"],
-    "startShipsCombatSmall":["exigency_destroyer_Disruptor", "exigency_yria_Fleetpointdefense", "exigency_compactfrigate_Brawler"],
-    "startShipsCombatLarge":["exigency_cruiser_Assault", "exigency_lightcarrier_Standard"],
-    "startShipsSuper":["exigency_indra_Standard"],
+    "startShipsSolo":[["exigency_yria_Assault"]],
+    "startShipsCombatSmall":[["exigency_destroyer_Disruptor", "exigency_yria_Fleetpointdefense", "exigency_compactfrigate_Brawler"]],
+    "startShipsCombatLarge":[["exigency_cruiser_Assault", "exigency_lightcarrier_Standard"]],
+    "startShipsSuper":[["exigency_indra_Standard"]],
     
     "defenceStations":["nex_asgard_Advanced"],
 }

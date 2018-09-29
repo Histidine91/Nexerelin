@@ -27,16 +27,16 @@
     "vengeanceFleetNames":["Evangelists", "Inquisition", "Crusade"],
     "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],
     
-    "startShipsSolo":["vigilance_Standard"],
+    "startShipsSolo":[["vigilance_Standard"]],
     "startShipsCombatSmall":[
       ["swp_striker_luddic_church_sup", "lasher_luddic_church_Standard", "centurion_Assault"],
       ["enforcer_Balanced", "lasher_luddic_church_Standard", "centurion_Assault"]
     ],
-    "startShipsTradeSmall":["tarsus_Standard", "cerberus_Standard", "lasher_CS"],
+    "startShipsTradeSmall":[["tarsus_Standard", "cerberus_Standard", "lasher_CS"]],
     "startShipsCombatLarge":[
       ["ssp_vulture_sta", "ssp_albatross_art", "kite_Standard"],
       ["dominator_Support", "enforcer_Outdated", "kite_Interceptor"]
     ],
-    "startShipsTradeLarge":["venture_Balanced", "buffalo_luddic_church_Standard", "hound_luddic_church_Standard"],
-    "startShipsCarrierSmall":["condor_Attack", "lasher_luddic_church_Standard", "hound_luddic_church_Standard"],
+    "startShipsTradeLarge":[["venture_Balanced", "buffalo_luddic_church_Standard", "hound_luddic_church_Standard"]],
+    "startShipsCarrierSmall":[["condor_Attack", "lasher_luddic_church_Standard", "hound_luddic_church_Standard"]],
 }

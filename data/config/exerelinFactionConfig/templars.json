@@ -52,9 +52,9 @@
     "vengeanceFleetNames":["Evangelists", "Inquisition", "Crusade"],
     "vengeanceFleetNamesSingle":["Evangelists", "an Inquisition", "a Crusade Fleet"],
     
-    "startShipsSolo":["tem_martyr_sal"],
-    "startShipsCombatSmall":["tem_jesuit_est", "tem_martyr_def"],
-    "startShipsCombatLarge":["tem_crusader_est", "tem_jesuit_sal"],
+    "startShipsSolo":[["tem_martyr_sal"]],
+    "startShipsCombatSmall":[["tem_jesuit_est", "tem_martyr_def"]],
+    "startShipsCombatLarge":[["tem_crusader_est", "tem_jesuit_sal"]],
     
     "defenceStations":[],
 }

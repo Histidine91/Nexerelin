@@ -25,8 +25,8 @@
     "vengeanceFleetNames":["Enforcers", "Hit-Fleet", "Reavers"],
     "vengeanceFleetNamesSingle":["Enforcers", "a Hit-Fleet", "Reavers"],
     
-    "startShipsSolo":["exipirated_rauwel_Standard"],
-    "startShipsCombatSmall":["exipirated_azryel_Standard", "exigency_yria_Firesupport", "hound_d_pirates_Standard"],
-    "startShipsTradeSmall":["mule_d_pirates_Standard", "exigency_yria_Disruptor", "shepherd_Frontier"],
-    "startShipsCombatLarge":["exipirated_harinder_Standard", "exipirated_azryel_Support", "exigency_compactfrigate_Recon"],
+    "startShipsSolo":[["exipirated_rauwel_Standard"]],
+    "startShipsCombatSmall":[["exipirated_azryel_Standard", "exigency_yria_Firesupport", "hound_d_pirates_Standard"]],
+    "startShipsTradeSmall":[["mule_d_pirates_Standard", "exigency_yria_Disruptor", "shepherd_Frontier"]],
+    "startShipsCombatLarge":[["exipirated_harinder_Standard", "exipirated_azryel_Support", "exigency_compactfrigate_Recon"]],
 }
