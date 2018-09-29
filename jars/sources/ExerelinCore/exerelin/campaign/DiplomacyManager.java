@@ -58,7 +58,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     protected static Map<String, DiplomacyEventDef> eventDefsByStage;
     
     public static final float STARTING_RELATIONSHIP_HOSTILE = -0.6f;
-    public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.35f;
+    public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.4f;
     public static final float STARTING_RELATIONSHIP_WELCOMING = 0.4f;
     public static final float STARTING_RELATIONSHIP_FRIENDLY = 0.6f;
     public static final float WAR_WEARINESS_INTERVAL = 3f;
