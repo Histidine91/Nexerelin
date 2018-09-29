@@ -34,11 +34,12 @@ import org.apache.log4j.Logger;
 public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 	
 	public static Logger log = Global.getLogger(NexBattleAutoresolvePlugin.class);
-	public static final boolean DEBUG_MODE = false;
+	public static final String CACHE_DATA_KEY = "nex_autoresolve_health_cache";
+	public static final boolean DEBUG_MODE = true;
 	public static final float STATION_STRENGTH_MULT = 0.4f;
 	public static final float MODULE_STRENGTH_MULT = 1f;
 	
-	protected static Map<FleetMemberAPI, Map<Integer, Float>> moduleHealths = new HashMap<>();
+	protected Map<String, HealthCacheEntry> moduleHealths = getModuleHealthCache();
 	
 	private static class EngagementResultImpl implements EngagementResultAPI {
 		private BattleAPI battle;
@@ -567,17 +568,23 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		
 //		context.getBattle().uncombine();
 //		context.getBattle().finish();
+		Global.getSector().getPersistentData().put(CACHE_DATA_KEY, moduleHealths);
 	}
 	
 	protected void clampStationCR(FleetMemberAPI station)
 	{
-		//report("Clamping CR for station " + station.getShipName());
+		report("Clamping CR for station " + station.getShipName());
 		station.getRepairTracker().setCR(station.getRepairTracker().getMaxCR());
+	}
+	
+	protected HealthCacheEntry getModuleHealthEntry(FleetMemberAPI member)
+	{
+		return moduleHealths.get(member.getId());
 	}
 	
 	public static void removeStationFromModuleHullCache(FleetMemberAPI member)
 	{
-		moduleHealths.remove(member);
+		getModuleHealthCache().remove(member.getId());
 	}
 	
 	protected int getAttachedModuleCount(FleetMemberAPI member)
@@ -593,17 +600,24 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 	
 	protected void initModuleHullFractionCacheIfNeeded(FleetMemberAPI member, int index)
 	{
-		if (!moduleHealths.containsKey(member))
-			moduleHealths.put(member, new HashMap<Integer, Float>());
-		Map<Integer, Float> healths = moduleHealths.get(member);
-		if (!healths.containsKey(index))
-			healths.put(index, 1f);
+		if (!moduleHealths.containsKey(member.getId()))
+			moduleHealths.put(member.getId(), new HealthCacheEntry(member));
+		
+		HealthCacheEntry healths = getModuleHealthEntry(member);
+		float parentHealth = member.getStatus().getHullDamageTaken();
+		
+		// reset health cache if ship has undergone significant repairs since last time
+		if (parentHealth > 0.75f && parentHealth > healths.parentHealth)
+			healths.parentHealth = parentHealth;
+		
+		if (!healths.moduleHealth.containsKey(index))
+			healths.moduleHealth.put(index, 1f);
 	}
 	
 	protected float getModuleHullFraction(FleetMemberAPI member, int index)
 	{
 		initModuleHullFractionCacheIfNeeded(member, index);		
-		return moduleHealths.get(member).get(index);
+		return getModuleHealthEntry(member).moduleHealth.get(index);
 	}
 	
 	/**
@@ -618,7 +632,7 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		float newHull = currHull - damageFraction;
 		if (newHull < 0) newHull = 0;
 		member.getStatus().setHullFraction(index, newHull);
-		moduleHealths.get(member).put(index, newHull);
+		getModuleHealthEntry(member).moduleHealth.put(index, newHull);
 		
 		if (newHull <= 0)
 		{
@@ -675,9 +689,11 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		int remainingModules = getAttachedModuleCount(member);
 		report("\t\t" + member.getShipName() + " has " + remainingModules + " modules left");
 		member.getStatus().applyHullFractionDamage(damageFraction);	// needs to be done after module damage?
+		getModuleHealthEntry(member).parentHealth -= damageFraction;
 		
-		// destroy parent if Vast Bulk + no modules remaining, or all modules have 0 health
-		if (member.getVariant().hasHullMod("vastbulk") && remainingModules <= 0 || member.getStatus().getHullFraction() <= 0)
+		// destroy parent if Vast Bulk + no modules remaining, or main hull has zero health
+		if (member.getVariant().hasHullMod("vastbulk") && remainingModules <= 0 
+				|| getModuleHealthEntry(member).parentHealth <= 0)
 		{
 			report(member.getShipName() + " is dead, attempting to kill");
 			member.getStatus().disable();
@@ -1064,6 +1080,32 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		return context;
 	}
 	
+	
+	protected static class HealthCacheEntry
+	{
+		public FleetMemberAPI parent;
+		public float parentHealth = 1;
+		public Map<Integer, Float> moduleHealth = new HashMap<>();
+		
+		public HealthCacheEntry(FleetMemberAPI parent)
+		{
+			this.parent = parent;
+			parentHealth = parent.getStatus().getHullFraction();
+		}
+	}
+	
+	public static Map<String, HealthCacheEntry> getModuleHealthCache()
+    {
+        Map<String, Object> data = Global.getSector().getPersistentData();
+        Map<String, HealthCacheEntry> cache = (Map<String, HealthCacheEntry>)data.get(CACHE_DATA_KEY);
+        if (cache != null) {            
+            return cache;
+        }
+        
+        cache = new HashMap<>();
+        data.put(CACHE_DATA_KEY, cache);
+        return cache;
+    }
 }
 
 
