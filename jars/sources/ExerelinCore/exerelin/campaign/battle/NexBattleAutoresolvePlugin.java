@@ -35,7 +35,7 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 	
 	public static Logger log = Global.getLogger(NexBattleAutoresolvePlugin.class);
 	public static final String CACHE_DATA_KEY = "nex_autoresolve_health_cache";
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
 	public static final float STATION_STRENGTH_MULT = 0.4f;
 	public static final float MODULE_STRENGTH_MULT = 1f;
 	
@@ -724,11 +724,11 @@ public class NexBattleAutoresolvePlugin implements BattleAutoresolverPlugin {
 		if (!hasVastBulk)
 		{
 			report("  Damage fraction: " + damageFraction);
-			report("  Hull before: " + member.getStatus().getHullFraction());
+			//report("  Hull before: " + member.getStatus().getHullFraction());
 			//member.getStatus().applyHullFractionDamage(damageFraction);
 			addDamageToHullAndAllModules(member, damageFraction);
 			
-			report("  Hull after: " + member.getStatus().getHullFraction());
+			//report("  Hull after: " + member.getStatus().getHullFraction());
 		}
 		else {
 			//preventModuleRespawn(member);
