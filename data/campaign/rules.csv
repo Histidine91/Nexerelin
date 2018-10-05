@@ -346,7 +346,7 @@ Your marine complement has been wiped out; you cannot continue the offensive.",e
 ExerelinInvasionResultsCancelled,ExerelinInvasionResults,$exerelinInvasionCancelled score:100,"$menuState = invasion 0
 ExerelinShowDefaultVisual
 unset $player.invasionTarget
-FireAll PopulateOptions",This isn't a valid invasion target! Perhaps we already captured it?,,
+FireBest MarketPostOpen",This isn't a valid invasion target! Perhaps we already captured it?,,
 ExerelinInvasionInterupted,ExerelinInitInvadeDialog,"$hasMarket
 $global.exerelinInvasionInterrupted","unset $global.exerelinInvasionInterrupted
 unset $player.invasionTarget
@@ -359,7 +359,7 @@ $global.exerelinInvasionInProgress
 ExerelinInitInvasionAbort,DialogOptionSelected,$option==exerelinAbort,"AbortWait $global.exerelinInvasionWait
 unset $player.invasionTarget
 $menuState = main 0
-FireAll PopulateOptions",The invasion is cancelled.,,
+FireBest MarketPostOpen",The invasion is cancelled.,,
 ExerelinInvasionInterference_start,BeginFleetEncounter,"$exerelinRespondingToInvasion score:100
 $global.exerelinInvasionInProgress score:20","AbortWait $global.exerelinInvasionWait
 MakeOtherFleetHostile true
@@ -449,36 +449,6 @@ $tradeMode = NONE 0
 SetShortcut exerelinRaidLeave ESCAPE","Your raid attempt on $entityName was beaten back.
 
 Your marine complement has been wiped out; you cannot conduct further raids.",exerelinRaidLeave:Leave,
-#ExerelinRaidResultsCancelled,ExerelinRaidResults,$exerelinRaidCancelled score:100,"$menuState = exerelin_raid 0
-ExerelinShowDefaultVisual
-unset $player.raidTarget
-FireAll PopulateOptions",This isn't a valid raid target!,,
-#ExerelinRaidInterupted,ExerelinInitInvadeDialog,"$hasMarket
-$global.exerelinRaidInterrupted","unset $global.exerelinRaidInterrupted
-unset $player.raidTarget
-$menuState = main 0
-FireBest MarketPostOpen",Your raid was interrupted.,,
-#ExerelinInitRaidInProgress,ExerelinInitInvadeDialog,"$hasMarket
-$global.exerelinRaidInProgress
-!$global.exerelinRaidInterrupted
-!$global.exerelinRaidComplete",,You're currently invading $entityName.,,
-#ExerelinInitRaidAbort,DialogOptionSelected,$option==exerelinAbort,"AbortWait $global.exerelinRaidWait
-unset $player.raidTarget
-$menuState = main 0
-FireAll PopulateOptions",The raid is cancelled.,,
-#ExerelinRaidInterference_start,BeginFleetEncounter,"$exerelinRespondingToRaid score:100
-$global.exerelinRaidInProgress score:20","AbortWait $global.exerelinRaidWait
-MakeOtherFleetHostile true
-MakeOtherFleetAggressive true
-unset $entity.ignorePlayerCommRequests
-unset $player.raidTarget
-BroadcastCancelPlayerAction 1500 $exerelinRespondingToRaid",The appearance of a $faction $otherShipOrFleet interrupts your raid preparations.,,
-#ExerelinRaidInterference_cancelledAndRan,BeginFleetEncounter,"$exerelinRespondingToRaid score:100
-$faction.hostileToPlayer","MakeOtherFleetHostile true
-MakeOtherFleetAggressive true
-unset $entity.ignorePlayerCommRequests
-unset $player.raidTarget
-BroadcastCancelPlayerAction 1500 $exerelinRespondingToRaid","The $faction $otherShipOrFleet catches up with you, weapons hot.",,
 ,,,,,,
 # END RAID OPTIONS,,,,,,
 ,,,,,,
