@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
@@ -119,7 +120,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
             String factionId = faction.getId();
             if (DISALLOWED_FACTIONS.contains(factionId)) continue;
             if (ExerelinUtilsFaction.isPirateFaction(factionId)) continue;  // pirates don't do covert warfare
-            if (!ExerelinConfig.followersAgents && factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
+            if (!ExerelinConfig.followersAgents && Nex_IsFactionRuler.isRuler(faction.getId()) ) continue;
             // don't use followers if player is affiliated with another faction
             if (faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID) && 
                     !faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;

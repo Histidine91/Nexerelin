@@ -885,6 +885,7 @@ FireAll ExerelinBaseCommanderOptionsInitialize","""Your commission is officially
 ExerelinPlayerFactionDiplomacyCheckConditions,ExerelinMarketSpecialInitialize,"$faction.id != ""neutral""
 $faction.id != ""independent""
 $faction.id != ""player_npc""
+$faction.id != $player.factionId
 Nex_IsFactionRuler","$showPlayerFactionDiplomacyOptions = true 0
 $_factionAllianceName = $faction.allianceName 0
 $_playerAllianceName = $player.allianceName 0",,,

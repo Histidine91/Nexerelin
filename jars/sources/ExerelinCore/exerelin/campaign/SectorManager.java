@@ -28,6 +28,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.impl.campaign.shared.PlayerTradeDataForSubmarket;
 import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.submarkets.StoragePlugin;
@@ -344,7 +345,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (factionId.equals(targetFactionId)) continue;
             //if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
             if (targetFaction.isHostileTo(factionId)) continue;
-            if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID) && ExerelinConfig.warmongerPenalty <= 1) 
+            if (Nex_IsFactionRuler.isRuler(factionId)  && ExerelinConfig.warmongerPenalty <= 1) 
                 continue;
             
             float loss = 0;
@@ -369,7 +370,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (factionId.equals(playerAlignedFactionId))
             {
                 myFactionLoss = loss;
-                if (!factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) myFactionLoss = (2*loss) + 0.05f;
+                if (!Nex_IsFactionRuler.isRuler(factionId)) myFactionLoss = (2*loss) + 0.05f;
                 repLoss.put(factionId, myFactionLoss);
                 continue;
             }
@@ -747,7 +748,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         // followers: free storage unlock
-        if (newOwnerId.equals(ExerelinConstants.PLAYER_NPC_ID))
+        if (Nex_IsFactionRuler.isRuler(newOwnerId))
         {
             SubmarketAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
             if (storage != null)

@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import static com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler.isRuler;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 
@@ -24,7 +25,7 @@ public class FormAlliance extends BaseCommandPlugin {
 		if (dialog == null) return false;
 		
 		String playerFactionId = PlayerFactionStore.getPlayerFactionId();
-		if (!playerFactionId.equals("player_npc")) {
+		if (!isRuler(playerFactionId)) {
 			return false;
 		}
 		

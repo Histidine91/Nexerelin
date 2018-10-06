@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
@@ -30,7 +31,7 @@ public class LeaveFaction extends BaseCommandPlugin {
 		
 		SectorAPI sector = Global.getSector();
 		
-		String newFactionId = "player_npc";
+		String newFactionId = ExerelinConstants.PLAYER_NPC_ID;
 		FactionAPI newFaction = sector.getFaction(newFactionId);
 		Alliance newAlliance = null;
 		String oldFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -51,7 +52,7 @@ public class LeaveFaction extends BaseCommandPlugin {
 		} else {
 			PlayerFactionStore.loadIndependentPlayerRelations(true);
 			PlayerFactionStore.setPlayerFactionId(newFactionId);
-			NexUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
+			NexUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 		}
 		
 		

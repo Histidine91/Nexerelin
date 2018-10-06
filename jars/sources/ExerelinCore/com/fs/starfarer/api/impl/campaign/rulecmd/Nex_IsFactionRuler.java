@@ -8,6 +8,7 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
+import exerelin.utilities.ExerelinConfig;
 
 
 public class Nex_IsFactionRuler extends BaseCommandPlugin {
@@ -20,10 +21,16 @@ public class Nex_IsFactionRuler extends BaseCommandPlugin {
 		
 		//FactionAPI faction = Global.getSector().getFaction(factionId);
 		
+		return isRuler(factionId);
+	}
+	
+	public static boolean isRuler(String factionId)
+	{
 		if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
 			return true;
 		
-		// TODO: faction boss of non-follower factions
+		if (factionId.equals(PlayerFactionStore.getPlayerFactionId()))		
+			return ExerelinConfig.factionRuler;
 		
 		return false;
 	}

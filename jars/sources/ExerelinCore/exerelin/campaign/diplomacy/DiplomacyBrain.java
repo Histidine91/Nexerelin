@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
@@ -515,7 +516,7 @@ public class DiplomacyBrain {
 			if (otherFactionId.equals(factionId)) continue;
 			if (DiplomacyManager.disallowedFactions.contains(otherFactionId))
 				continue;
-			if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID) && !ExerelinConfig.followersDiplomacy)
+			if (Nex_IsFactionRuler.isRuler(otherFactionId) && !ExerelinConfig.followersDiplomacy)
 				continue;
 			if (random.nextFloat() < EVENT_SKIP_CHANCE)
 				continue;

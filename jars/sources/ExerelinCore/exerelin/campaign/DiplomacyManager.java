@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -587,7 +588,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         for (FactionAPI faction: factions)
         {
             if (faction.isNeutralFaction()) continue;
-            if (faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID)) {
+            if (Nex_IsFactionRuler.isRuler(faction.getId())) {
                 if (!ExerelinConfig.followersDiplomacy) continue;
                 if (!faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;
             }
@@ -636,7 +637,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             FactionAPI faction = sector.getFaction(factionId);
             if (faction.isNeutralFaction()) continue;
             // don't use followers if player is affiliated with another faction
-            if (faction.getId().equals(ExerelinConstants.PLAYER_NPC_ID))
+            if (Nex_IsFactionRuler.isRuler(faction.getId()))
             { 
                 if (!ExerelinConfig.followersDiplomacy) continue;
                 if (!faction.getId().equals(PlayerFactionStore.getPlayerFactionId())) continue;

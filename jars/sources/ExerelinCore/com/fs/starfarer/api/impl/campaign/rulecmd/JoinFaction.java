@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
@@ -44,7 +45,7 @@ public class JoinFaction extends BaseCommandPlugin {
 		String str;
 		
 		PlayerFactionStore.setPlayerFactionId(newFactionId);
-		if (oldFactionId.equals("player_npc"))
+		if (oldFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
 		{
 			if (oldAlliance != null)
 			{

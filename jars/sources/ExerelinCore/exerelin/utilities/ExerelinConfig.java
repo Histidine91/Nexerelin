@@ -91,6 +91,7 @@ public class ExerelinConfig
     public static boolean enableShanghai = true;    // Tiandong
     public static boolean enableUnos = true;    // ApproLight
 	public static boolean enableAntioch = false;	// Templars
+	public static boolean factionRuler = false;
     
     // Revengeance fleets
     public static int enableRevengeFleets = 1;
@@ -112,7 +113,7 @@ public class ExerelinConfig
     public static boolean useRelationshipBounds = true;
     public static boolean officerDeaths = true;
     public static boolean officerDaredevilBonus = true;
-    public static boolean corvusModeLandmarks = false;  
+    public static boolean corvusModeLandmarks = false;
 
     public static void loadSettings()
     {
@@ -180,6 +181,7 @@ public class ExerelinConfig
             enableShanghai = settings.optBoolean("enableShanghai", enableShanghai);
             enableUnos = settings.optBoolean("enableUnos", enableUnos);
 			enableAntioch = settings.optBoolean("enableAntioch", enableAntioch);
+			factionRuler = settings.optBoolean("factionRuler", factionRuler);
             
             enableRevengeFleets = settings.optInt("enableRevengeFleets", enableRevengeFleets);
             revengePointsPerEnemyFP = (float)settings.optDouble("revengeFleetPointsPerEnemyFP", revengePointsPerEnemyFP);
