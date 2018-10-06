@@ -17,6 +17,7 @@
 		"size":"size",
 		"stability":"stability",
 		"stats":"stats",
+		"vote":"vote",
 		"yourFleet":"your fleet",
 
 		"true":"true",
@@ -25,6 +26,8 @@
 		"friendly":"friendly",
 		"neutral":"neutral",
 		"hostile":"hostile",
+		"war":"war",
+		"peace":"peace",
 
 		"and":"and",
 		"on":"on",
@@ -81,7 +84,15 @@
 		"leftAlliance":"Left alliance $OldAlliance",
 		"allianceDissolved":"Alliance $OldAlliance has been dissolved",
 		"invitedToAlliance":"$TheFaction has joined $NewAlliance",
-		"formedAlliance":"Formed $NewAlliance with $theFaction"
+		"formedAlliance":"Formed $NewAlliance with $theFaction",
+		
+		"voteIntroLineWar":"Alliance vote: War between $Faction1 and $Faction2",
+		"voteIntroLinePeace":"Alliance vote: Peace between $Faction1 and $Faction2",
+		"voteNoAllysLine1":"$TheFaction has no allies",
+		"voteNoAllysLine2":"Size rating: $factionSize",
+		"voteAllianceHeader":"Alliance $allianceName: size rating $allianceSize",
+		"voteQuestionLine":"How does $myFaction vote?",
+		"voteConfirm":"Confirm vote?"
 	},
 	"exerelin_agents":{
 		"alertLevel":"alert level",

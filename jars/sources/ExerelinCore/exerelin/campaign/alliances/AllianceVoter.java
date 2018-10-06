@@ -3,6 +3,8 @@ package exerelin.campaign.alliances;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
@@ -34,6 +36,7 @@ public class AllianceVoter {
 	public static final float RANDOM_POINTS = 50;
 	public static final float DEFIER_REP_LOSS_YES = -0.1f;
 	public static final float DEFIER_REP_LOSS_ABSTAIN = -0.05f;
+	public static final String VOTE_MEM_KEY = "$allianceVote";
 	
 	protected static final boolean DEBUG_LOGGING = true;
 	
@@ -56,9 +59,47 @@ public class AllianceVoter {
 		if (ally1 == null && ally2 == null) return;
 		if (ally1 == ally2) return;
 		
-		VoteResult vote1 = null, vote2 = null;
-		if (ally1 != null) vote1 = allianceVote(ally1, faction1Id, faction2Id, isWar);		
-		if (ally2 != null) vote2 = allianceVote(ally2, faction2Id, faction1Id, isWar);
+		String playerFacId = PlayerFactionStore.getPlayerFactionId();
+		
+		// prompt player for vote if we're allied with one of the factions, while not being one of the factions
+		if (Nex_IsFactionRuler.isRuler(playerFacId))
+		{
+			if (!playerFacId.equals(faction1Id) && !playerFacId.equals(faction2Id))
+			{
+				Alliance pAlly = AllianceManager.getFactionAlliance(playerFacId);
+				if (pAlly != null && (pAlly == ally1 || pAlly == ally2))
+				{
+					log.info("Triggering alliance vote as " + playerFacId);
+					Global.getSector().addTransientScript(new AllianceVoteScreenScript(faction1Id, faction2Id, isWar));
+					return;
+				}
+			}
+		}
+		log.info("No alliance vote for " + playerFacId);
+		allianceVote(faction1Id, faction2Id, isWar, null, null);	
+	}
+	
+	/**
+	 * Decide whether the alliance(s) should declare war on/make peace with the other party, e.g. after a diplomacy event
+	 * i.e. if faction1 has declared war on or made peace with faction2, decide whether their alliance(s) should do the same
+	 * If either or both vote yes, modify relationships as appropriate
+	 * 
+	 * If one alliance votes yes but other does not, only declare on/make peace with the one faction involved
+	 * @param faction1Id
+	 * @param faction2Id
+	 * @param isWar True if the two factions have gone to war, false if they are making peace
+	 * @param vote1 Alliance 1 vote, if already executed
+	 * @param vote2 Alliance 2 vote, if already executed
+	 */
+	public static void allianceVote(String faction1Id, String faction2Id, boolean isWar, VoteResult vote1, VoteResult vote2)
+	{
+		Alliance ally1 = AllianceManager.getFactionAlliance(faction1Id);
+		Alliance ally2 = AllianceManager.getFactionAlliance(faction2Id);
+		if (ally1 == null && ally2 == null) return;
+		if (ally1 == ally2) return;
+		
+		if (ally1 != null && vote1 == null) vote1 = allianceVote(ally1, faction1Id, faction2Id, isWar);		
+		if (ally2 != null && vote2 == null) vote2 = allianceVote(ally2, faction2Id, faction1Id, isWar);
 		
 		Set<String> defyingFactions = new HashSet<>();
 		if (vote1 != null) defyingFactions.addAll(vote1.defied);
@@ -242,6 +283,19 @@ public class AllianceVoter {
 		- How aggressive we are in general
 		- Random factor
 		*/
+		
+		// return vote from memory if this is player faction
+		if (factionId.equals(PlayerFactionStore.getPlayerFactionId()))
+		{
+			FactionAPI faction = Global.getSector().getFaction(factionId);
+			MemoryAPI mem = faction.getMemoryWithoutUpdate();
+			if (mem.contains(VOTE_MEM_KEY))
+			{
+				Vote vote = (Vote)mem.get(VOTE_MEM_KEY);
+				mem.unset(VOTE_MEM_KEY);
+				return vote;
+			}
+		}
 		
 		// if we're the friend, auto-vote yes
 		if (factionId.equals(friendId)) return Vote.YES;	

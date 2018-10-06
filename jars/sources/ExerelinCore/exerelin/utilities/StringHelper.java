@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -105,6 +106,11 @@ public class StringHelper {
 		return getStringAndSubstituteTokens("general", id, replacements);
 	}
 	
+	public static String substituteFactionTokens(String str, String factionId)
+	{
+		return substituteFactionTokens(str, Global.getSector().getFaction(factionId));
+	}
+	
 	public static String substituteFactionTokens(String str, FactionAPI faction)
 	{
 		Map<String, String> replacements = new HashMap<>();
@@ -116,6 +122,20 @@ public class StringHelper {
 		replacements.put("$TheFaction", Misc.ucFirst(theName));
 		
 		return substituteTokens(str, replacements);
+	}
+	
+	public static Highlights getFactionHighlights(String factionId) {
+		return getFactionHighlights(Global.getSector().getFaction(factionId));
+	}
+	
+	public static Highlights getFactionHighlights(FactionAPI faction)
+	{
+		Highlights hl = new Highlights();
+		String name = ExerelinUtilsFaction.getFactionShortName(faction);
+		String theName = faction.getDisplayNameWithArticle();
+		hl.setText(theName, Misc.ucFirst(theName), name, Misc.ucFirst(name));
+		
+		return hl;
 	}
 	
 	public static String getFleetAssignmentString(String id, String target, String missionType)
