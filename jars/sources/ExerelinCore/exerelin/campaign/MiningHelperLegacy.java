@@ -482,6 +482,11 @@ public class MiningHelperLegacy {
 	public static float getWingMiningStrength(String wing)
 	{
 		FighterWingSpecAPI wingSpec = Global.getSettings().getFighterWingSpec(wing);
+		return getWingMiningStrength(wingSpec);
+	}
+	
+	public static float getWingMiningStrength(FighterWingSpecAPI wingSpec)
+	{
 		ShipVariantAPI variant = wingSpec.getVariant();
 		
 		float strength = getVariantMiningStrength(variant);

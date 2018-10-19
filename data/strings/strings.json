@@ -57,7 +57,8 @@
 
 		"ship":"ship",
 		"fleet":"fleet",
-		"fighterWing":"fighter wing"
+		"fighterWing":"fighter wing",
+		"fighterWingShort":"wing",
 	},
 
 	"exerelin_abilities":{
@@ -314,7 +315,7 @@
 		"machineryAvailable":"Machinery usable (available)",
 
 		"miningToolsListHeader":"The following mining ships and weapons exist in the Sector:",
-		"miningToolsListAddendum":"Fighter wings with the appropriate weapons count towards their parent ship's mining strength.",
+		"miningToolsListAddendum":"Fighter wings and modules with the appropriate weapons count towards their parent ship's mining strength. Built-in weapons are also counted.",
 		"insufficientMachineryWarning":"Your $shipOrFleet does not have enough heavy machinery to work at full capacity.",
 
 		"cacheFound":"Hidden cache found!",

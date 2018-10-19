@@ -17,7 +17,9 @@ import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
+import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.util.Misc;
@@ -31,6 +33,7 @@ import java.text.MessageFormat;
 public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 
 	protected static final String STRING_CATEGORY = "exerelin_mining";
+	protected static final String WING = Misc.ucFirst(StringHelper.getString("fighterWingShort"));
 	public static float COST_HEIGHT = 67;
 	
 	@Override
@@ -151,13 +154,19 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			String strengthModStr = String.format("%.2f", strength - strengthRaw);
 			String shipName = "";
 			if (member.isFighterWing()) shipName = member.getVariant().getFullDesignationWithHullName();
-			else shipName = member.getShipName() + " (" + member.getHullSpec().getHullName() + "-class)";
+			else shipName = member.getShipName() + " (" + member.getHullSpec().getHullNameWithDashClass() + ")";
 			text.addParagraph(shipName + ": " + strengthStr);
 			text.highlightInLastPara(hl, strengthStr);
 		}
  
 		text.addParagraph(StringHelper.HR);
 		text.setFontInsignia();
+	}
+	
+	// Formats to 1 decimal place if necessary, integers will be printed with zero decimal places
+	protected String getFormattedStrengthString(float strength)
+	{
+		return strength % 1 == 0 ? String.format("%.0f", strength) : String.format("%.1f", strength);
 	}
 	
 	public void printMiningTools(TextPanelAPI text)
@@ -170,20 +179,29 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		
 		text.addParagraph(StringHelper.HR);
 		
-		for (Map.Entry<String, Float> tmp : MiningHelperLegacy.getMiningShipsCopy().entrySet())
+		for (String variantId : Global.getSettings().getAllVariantIds())
 		{
-			String shipId = tmp.getKey();
-			float strength = tmp.getValue();
+			if (!variantId.endsWith("_Hull")) continue;
+			ShipVariantAPI variant = Global.getSettings().getVariant(variantId);
+			if (variant.isFighter()) continue;	// we'll deal fighters separately
+			
+			FleetMemberAPI temp = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variant);
+			float strength = MiningHelperLegacy.getShipMiningStrength(temp, false);
 			if (strength == 0) continue;
-			ShipVariantAPI variant;
-			try {
-				variant = Global.getSettings().getVariant(shipId + "_Hull");
-			} catch (RuntimeException rex) {
-				continue;	// doesn't exist, skip
-			}
 			String name = variant.getHullSpec().getHullName();
 			
-			String strengthStr = String.format("%.1f", strength);
+			String strengthStr = getFormattedStrengthString(strength);
+			text.addParagraph(name + ": " + strengthStr);
+			text.highlightInLastPara(hl, name);
+		}
+		text.addParagraph("");
+		for (FighterWingSpecAPI wingSpec : Global.getSettings().getAllFighterWingSpecs())
+		{
+			float strength = MiningHelperLegacy.getWingMiningStrength(wingSpec);
+			if (strength == 0) continue;
+			String name = Global.getSettings().getVariant(wingSpec.getVariantId()).getHullSpec().getHullName() + " " + wingSpec.getRoleDesc() + " " + WING;
+			
+			String strengthStr = getFormattedStrengthString(strength);
 			text.addParagraph(name + ": " + strengthStr);
 			text.highlightInLastPara(hl, name);
 		}
@@ -202,7 +220,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			}
 			String name = weapon.getWeaponName();
 			
-			String strengthStr = String.format("%.1f", strength);
+			String strengthStr = getFormattedStrengthString(strength);
 			text.addParagraph(name + ": " + strengthStr);
 			text.highlightInLastPara(hl, name);
 		}
