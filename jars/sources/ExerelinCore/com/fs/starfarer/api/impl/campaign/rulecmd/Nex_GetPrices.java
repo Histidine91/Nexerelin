@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
+// TODO: remove in Starsector 0.9
 public class Nex_GetPrices extends PaginatedOptions {
 	
 	public static final String GETPRICE_OPTION_PREFIX = "nex_getPrices_";
@@ -146,6 +147,11 @@ public class Nex_GetPrices extends PaginatedOptions {
 		}
 	}
 	
+	/**
+	 * Does the player meet the requirements to use the price getter service?
+	 * @param dialog
+	 * @return
+	 */
 	protected boolean canUse(InteractionDialogAPI dialog)
 	{
 		if (dialog.getInteractionTarget().getActivePerson().getRelToPlayer().isAtWorst(RepLevel.FAVORABLE))
@@ -220,6 +226,12 @@ public class Nex_GetPrices extends PaginatedOptions {
 		*/
 	}
 	
+	/**
+	 * Takes {@code count} price listings from {@code from} and puts them in {@code to}.
+	 * @param from
+	 * @param to
+	 * @param count
+	 */
 	protected void getFirstNMarkets(List<PriceInfo> from, List<MarketAPI> to, int count)
 	{
 		int cap = Math.min(count, from.size());

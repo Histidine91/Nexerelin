@@ -111,6 +111,13 @@ public class StringHelper {
 		return substituteFactionTokens(str, Global.getSector().getFaction(factionId));
 	}
 	
+	/**
+	 * Replaces {@code $faction} and {@code $theFaction} substrings 
+	 * (and the uppercase versions thereof) in {@code str}. 
+	 * @param str
+	 * @param faction
+	 * @return
+	 */
 	public static String substituteFactionTokens(String str, FactionAPI faction)
 	{
 		Map<String, String> replacements = new HashMap<>();

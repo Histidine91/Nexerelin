@@ -30,7 +30,7 @@
     # invasion points are added daily
     "baseInvasionPointsPerFaction": 50,
     "invasionPointsPerPlayerLevel": 1,
-    "invasionPointEconomyMult": 0.3, # each market contributes invasion points: stability * size * this number
+    "invasionPointEconomyMult": 0.3, # each market contributes invasion points -- stability * size * this number
     "conquestMissionRewardMult": 1,
     "invasionLootMult": 0.05,   # proportion of market's commodities that will be lootable on successful invasion
     
@@ -67,9 +67,9 @@
     "useRelationshipBounds": true,  # if false, disregard min/max faction relationships in faction config
     "leaveEliminatedFaction": true, # if our faction is wiped out, leave it
     
-    "enableRevengeFleets" = 2,  # 0 = disabled, 1 = only on hard mode, 2 = always (point generation halved on not-hard)
-    "revengePointsPerEnemyFP" = 0.05,
-    "revengePointsForMarketCaptureMult" = 2,
+    "enableRevengeFleets": 2,  # 0 = disabled, 1 = only on hard mode, 2 = always (point generation halved on not-hard)
+    "revengePointsPerEnemyFP": 0.05,
+    "revengePointsForMarketCaptureMult": 2,
     
     "enableAntioch": false, # adds Antioch for Templars in random mode, replacing their normal worlds
     "enableAvesta": true,   # adds Avesta Station for Ahriman Association, in addition to their normal markets (random mode only)

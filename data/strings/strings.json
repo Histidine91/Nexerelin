@@ -76,7 +76,7 @@
 		"makesPeaceWith":"$factionOrAlliance1 makes peace with $factionOrAlliance2",
 		"defiesDecisionWar":"$defying defies the decision and refuses to declare war on $theOtherParty!",
 		"defiesDecisionPeace":"$defying defies the decision and continues the war with $theOtherParty!",
-		"defyDecisionWar":"$defying defy the decision and refusesto declare war on $theOtherParty!",
+		"defyDecisionWar":"$defying defy the decision and refuses to declare war on $theOtherParty!",
 		"defyDecisionPeace":"$defying defy the decision and continue the war with $theOtherParty!",
 
 		"numAlliances":"There are $numAlliances alliance(s) in the Sector",
@@ -89,7 +89,7 @@
 		
 		"voteIntroLineWar":"Alliance vote: War between $Faction1 and $Faction2",
 		"voteIntroLinePeace":"Alliance vote: Peace between $Faction1 and $Faction2",
-		"voteNoAllysLine1":"$TheFaction has no allies",
+		"voteNoAllysLine1":"$Faction has no allies",
 		"voteNoAllysLine2":"Size rating: $factionSize",
 		"voteAllianceHeader":"Alliance $allianceName: size rating $allianceSize",
 		"voteQuestionLine":"How does $myFaction vote?",

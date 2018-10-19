@@ -115,19 +115,24 @@ public class AllianceVoteScreenScript implements EveryFrameScript
 			return Global.getSector().getFaction(factionId).getDisplayName();
 		}
 		
+		/**
+		 * List the members of the specified faction's alliance (if any) and their market size sum.
+		 * @param factionId
+		 */
 		protected void printAlliance(String factionId)
 		{
 			Color hlColor = Misc.getHighlightColor();
 			
 			Alliance ally = AllianceManager.getFactionAlliance(factionId);
-			if (ally == null)
+			if (ally == null)	// just print info for the one faction
 			{
 				String str = getString("voteNoAllysLine1");
 				str = StringHelper.substituteFactionTokens(str, factionId);
 				
 				text.addParagraph(str);
 				Highlights hl = StringHelper.getFactionHighlights(factionId);
-				hl.setColors(Global.getSector().getFaction(factionId).getBaseUIColor());
+				Color facColor = Global.getSector().getFaction(factionId).getBaseUIColor();
+				hl.setColors(facColor, facColor, facColor, facColor);
 				text.setHighlightsInLastPara(hl);
 				
 				String size = ExerelinUtilsFaction.getFactionMarketSizeSum(factionId) + "";

@@ -94,7 +94,7 @@ public class ExerelinConfig
 	public static boolean factionRuler = false;
     
     // Revengeance fleets
-    public static int enableRevengeFleets = 1;
+    public static int enableRevengeFleets = 2;
     public static float revengePointsPerEnemyFP = 0.05f;
     public static float revengePointsForMarketCaptureMult = 2f;
     
