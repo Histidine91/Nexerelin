@@ -1536,6 +1536,17 @@ EndConversation",,,
 ,,,,,,
 aiCores_turnInOptionSelected,DialogOptionSelected,$option == aiCores_selectCores,Nex_AICores selectCores,,,
 ,,,,,,
+LPTitheCheck,BeginFleetEncounter,"$faction.id == luddic_path score:100
+RepIsAtWorst $faction.id HOSTILE
+RepIsAtBest $faction.id INHOSPITABLE
+!$LP_tithePaid
+!$LP_titheAskedFor
+$relativeStrength >= 0
+LPTitheCalc","$LP_titheConv = true 0
+$LP_titheAskedFor = true 7
+AddText ""You're being hailed by the $faction $otherShipOrFleet."" $faction.baseColor",,,
+,,,,,,
+,,,,,,
 #Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplars,MarketPostOpen,"!$doesFakeVariableExist score:999
 $hasMarket
