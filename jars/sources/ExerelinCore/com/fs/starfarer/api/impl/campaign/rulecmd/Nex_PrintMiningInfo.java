@@ -179,11 +179,14 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		
 		text.addParagraph(StringHelper.HR);
 		
+		// print ships
 		for (String variantId : Global.getSettings().getAllVariantIds())
 		{
 			if (!variantId.endsWith("_Hull")) continue;
 			ShipVariantAPI variant = Global.getSettings().getVariant(variantId);
 			if (variant.isFighter()) continue;	// we'll deal fighters separately
+			if (MiningHelperLegacy.isHidden(variant.getHullSpec().getHullId()) || MiningHelperLegacy.isHidden(variant.getHullSpec().getBaseHullId()))
+				continue;
 			
 			FleetMemberAPI temp = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variant);
 			float strength = MiningHelperLegacy.getShipMiningStrength(temp, false);
@@ -195,11 +198,21 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			text.highlightInLastPara(hl, name);
 		}
 		text.addParagraph("");
+		
+		//print fighters
 		for (FighterWingSpecAPI wingSpec : Global.getSettings().getAllFighterWingSpecs())
 		{
 			float strength = MiningHelperLegacy.getWingMiningStrength(wingSpec);
 			if (strength == 0) continue;
-			String name = Global.getSettings().getVariant(wingSpec.getVariantId()).getHullSpec().getHullName() + " " + wingSpec.getRoleDesc() + " " + WING;
+			if (MiningHelperLegacy.isHidden(wingSpec.getVariant().getHullSpec().getHullId()) 
+					|| MiningHelperLegacy.isHidden(wingSpec.getVariant().getHullSpec().getBaseHullId()))
+				continue;
+			
+			String name = Global.getSettings().getVariant(wingSpec.getVariantId()).getHullSpec().getHullName();
+			String roleDesc = wingSpec.getRoleDesc();
+			if (!name.endsWith(roleDesc))
+				name += " " + roleDesc;
+			name += " " + WING;
 			
 			String strengthStr = getFormattedStrengthString(strength);
 			text.addParagraph(name + ": " + strengthStr);
@@ -207,6 +220,7 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 		}
 		text.addParagraph("");
 		
+		// now weapons
 		for (Map.Entry<String, Float> tmp : MiningHelperLegacy.getMiningWeaponsCopy().entrySet())
 		{
 			String weaponId = tmp.getKey();
@@ -225,6 +239,8 @@ public class Nex_PrintMiningInfo extends BaseCommandPlugin {
 			text.highlightInLastPara(hl, name);
 		}
 		text.addParagraph("");
+		
+		// additional help notes
 		text.addParagraph(StringHelper.getString(STRING_CATEGORY, "miningToolsListAddendum"));
 		
 		text.addParagraph(StringHelper.HR);

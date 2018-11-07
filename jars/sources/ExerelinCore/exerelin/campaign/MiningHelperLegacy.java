@@ -116,6 +116,7 @@ public class MiningHelperLegacy {
 	protected static final Map<String, Float> miningShips = new HashMap<>();
 	protected static final Map<String, Map<String, Float>> miningConditions = new HashMap<>();	// maps each market condition to its resource contents
 	protected static final Map<String, Float> miningConditionsCache = new HashMap<>();
+	protected static final Set<String> hiddenTools = new HashSet<>();
 	
 	protected static final List<CacheDef> cacheDefs = new ArrayList<>();
 	
@@ -191,6 +192,10 @@ public class MiningHelperLegacy {
 					if (shipId.isEmpty()) continue;
 					float strength = (float)row.getDouble("strength");
 					miningShips.put(shipId, strength);
+					if (row.optBoolean("hidden", false))
+					{
+						hiddenTools.add(shipId);
+					}
 				} catch (JSONException ex) {
 					log.error("Error loading mining ship " + shipId + ": " + ex);
 				}
@@ -215,6 +220,10 @@ public class MiningHelperLegacy {
 					if (weaponId.isEmpty()) continue;
 					float strength = (float)row.getDouble("strength");
 					miningWeapons.put(weaponId, strength);
+					if (row.optBoolean("hidden", false))
+					{
+						hiddenTools.add(weaponId);
+					}
 				} catch (JSONException ex) {
 					log.error("Error loading mining weapon " + weaponId + ": " + ex);
 				}
@@ -269,6 +278,11 @@ public class MiningHelperLegacy {
 			//if (planet.isGasGiant()) return true;
 		}
 		return false;
+	}
+	
+	public static boolean isHidden(String shipOrWeaponId)
+	{
+		return hiddenTools.contains(shipOrWeaponId);
 	}
 	
 	/**

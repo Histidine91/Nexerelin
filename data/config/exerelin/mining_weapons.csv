@@ -1,5 +1,5 @@
-id,strength
-miningblaster,10
-mininglaser,1.5
-hammer,1.5
-hammerrack,20
+id,strength,hidden
+miningblaster,10,
+mininglaser,1.5,
+hammer,1.5,
+hammerrack,20,
