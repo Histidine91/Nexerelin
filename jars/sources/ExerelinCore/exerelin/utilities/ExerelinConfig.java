@@ -90,7 +90,7 @@ public class ExerelinConfig
     public static boolean enableAvesta = true;    // Association
     public static boolean enableShanghai = true;    // Tiandong
     public static boolean enableUnos = true;    // ApproLight
-	public static boolean enableAntioch = false;	// Templars
+	public static boolean enableAntioch = true;	// Templars
 	public static boolean factionRuler = false;
     
     // Revengeance fleets
