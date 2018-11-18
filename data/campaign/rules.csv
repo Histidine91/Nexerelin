@@ -1016,7 +1016,8 @@ nex_supplyCounterInsurgencyBack,DialogOptionSelected,$option == nex_supplyCounte
 #END REBELLION OPTIONS,,,,,,
 ,,,,,,
 #START DIPLOMACY OPTIONS,,,,,,
-nex_getDispositionInit,PopulateOptions,Nex_IsBaseOfficial admin,,,nex_getDispositionMain:>> (dev) Diplomacy dispositions,
+nex_getDispositionInit,PopulateOptions,"$global.isDevMode
+Nex_IsBaseOfficial admin",,,nex_getDispositionMain:>> (dev) Diplomacy dispositions,
 ,,,,,,
 nex_getDisposition,DialogOptionSelected,$option == nex_getDispositionMain,FireAll Nex_GetDispositionMain,,,
 nex_getDispositionByTrigger,Nex_GetDispositionMain,,Nex_GetDisposition listGroups,,,
