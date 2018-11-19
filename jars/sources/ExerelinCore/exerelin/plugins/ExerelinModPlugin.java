@@ -29,7 +29,6 @@ import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManager;
 import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.campaign.fleets.ResponseFleetManager;
-import exerelin.campaign.fleets.ScavengerCleaner;
 import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
@@ -181,8 +180,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         if (!HAVE_VERSION_CHECKER)
             VCModPluginCustom.onGameLoad(newGame);
-        
-        sector.addTransientListener(new ScavengerCleaner());
         
         DefenceStationManager.getManager().setFleetsDoNotAttackStations();
     }

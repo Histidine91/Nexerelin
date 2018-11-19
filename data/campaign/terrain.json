@@ -1,5 +1,0 @@
-{
-	"debris_field":{
-		"plugin":"exerelin.campaign.terrain.ExpiringDebrisFieldTerrainPlugin",
-	}
-}
