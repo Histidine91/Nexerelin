@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.CustomCampaignEntityAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
+import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -526,7 +528,7 @@ public class MiningHelperLegacy {
 		{
 			if (member.getStatus().isDetached(i)) continue;
 			String moduleSlot = member.getVariant().getModuleSlots().get(i);
-			ShipVariantAPI moduleVar = member.getModuleVariant(moduleSlot);
+			ShipVariantAPI moduleVar = member.getVariant().getModuleVariant(moduleSlot);
 			if (moduleVar != null)
 				strength += getVariantMiningStrength(moduleVar);
 		}
@@ -565,7 +567,7 @@ public class MiningHelperLegacy {
 			if (!faction.isShowInIntelTab()) continue;
 			if (CACHE_DISALLOWED_FACTIONS.contains(faction.getId())) continue;
 			
-			List<ShipRolePick> picks = faction.pickShip(role, 1, rolePicker.getRandom());
+			List<ShipRolePick> picks = faction.pickShip(role, new ShipPickParams(ShipPickMode.PRIORITY_THEN_ALL), null, rolePicker.getRandom());
 			for (ShipRolePick pick : picks) 
 			{				
 				if (restrictedShips.contains(pick.variantId)) continue;
@@ -637,7 +639,7 @@ public class MiningHelperLegacy {
 		{
 			if (CACHE_DISALLOWED_FACTIONS.contains(faction.getId())) continue;
 			
-			for (String id : faction.getHullMods()) {
+			for (String id : faction.getKnownHullMods()) {
 				HullModSpecAPI spec = Global.getSettings().getHullModSpec(id);
 				if (spec.isHidden()) continue;
 				if (spec.isAlwaysUnlocked()) continue;
