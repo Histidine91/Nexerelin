@@ -1,25 +1,10 @@
 name,id,script,desc,icon,order
-Recycling Plant,nex_recycling_plant,exerelin.campaign.econ.RecyclingPlant,"A facility to convert various waste streams into usable organics, volatiles, metals and rare metals.",graphics/exerelin/icons/markets/exerelin_recycling_plant.png,30
-Templar Control,exerelin_templar_control,exerelin.campaign.econ.TemplarControl,The Templars exert all-pervasive control over every aspect of the markets they hold. Increases stability and removes stability penalty from smuggling. Creates some demand for marines to enforce order.,graphics/templars/icons/intel/tem_crusade_event.png,31
-Supply Workshop,exerelin_supply_workshop,exerelin.campaign.econ.SupplyWorkshop,"A medium-scale fabrication unit for producing useful supplies from raw organics, volatiles and metals.",graphics/exerelin/icons/markets/exerelin_supplyworkshop.png,32
-,,,,,
-Volturnian Lobster Pens (Small),exerelin_volturnian_lobster_pens,exerelin.campaign.econ.VolturnianLobsterSmall,A mix of several Old Earth species and a little imagination produced this creature which grows wild in the crushing depths of Volturn's sea-floor. The flavor is said to be exceptional.,graphics/icons/markets/lobster_pens.png,30
-,,,,,
-Market Attacked,exerelin_market_attacked_condition,exerelin.campaign.econ.MarketAttackedCondition,"$market has recently been attacked by a hostile force, causing widespread damage to infrastructure and panic amongst the populace.
-
-- Stability reduced by $stabilityPenalty",graphics/icons/markets/mercenaries.png,1000
-Agent Destabilization,exerelin_agent_destabilize_condition,exerelin.campaign.econ.AgentDestabilizeMarketCondition,"Foreign agents have recently conducted terror attacks on $market.
-
-- Stability reduced by $stabilityPenalty",graphics/icons/markets/plundered.png,1001
+#Templar Control,exerelin_templar_control,exerelin.campaign.econ.TemplarControl,The Templars exert all-pervasive control over every aspect of the markets they hold. Increases stability and removes stability penalty from smuggling. Creates some demand for marines to enforce order.,graphics/templars/icons/intel/tem_crusade_event.png,31
 Rebellion,nex_rebellion_condition,exerelin.campaign.econ.RebellionCondition,"A rebellion is ongoing on $market.
 
 - Stability reduced by $stabilityPenalty
 - Increased demand for marines, hand weapons and supplies; sales to $market will strengthen rebels or government depending on channel",graphics/icons/markets/pirate_moot.png,1002
-Superweapon Attack,exerelin_superweapon_condition,exerelin.campaign.econ.SuperweaponCondition," $market has recently been hit by a planet buster superweapon, causing widespread devastation.
-
-- Stability reduced by $stabilityPenalty",graphics/icons/markets/meteor_strike.png,1003
-,,,,,
 #vanilla override,,,,,
-Military Base,military_base,exerelin.campaign.econ.ExerelinMilitaryBase,"Requires supplies, fuel, hand weapons, and machinery. There's some turnover in personnel, resulting in a trickle of trained crew and marines available for hire.
+#Military Base,military_base,exerelin.campaign.econ.ExerelinMilitaryBase,"Requires supplies, fuel, hand weapons, and machinery. There's some turnover in personnel, resulting in a trickle of trained crew and marines available for hire.
 
 Increases the quality and number of officers in $market's fleets.",graphics/icons/markets/military_base.png,30
