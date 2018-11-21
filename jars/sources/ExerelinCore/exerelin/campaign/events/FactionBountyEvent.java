@@ -22,6 +22,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -111,11 +112,9 @@ public class FactionBountyEvent extends BaseEventPlugin {
 			float weight = market.getSize();
 			if (market.hasCondition(Conditions.DECIVILIZED))
 				weight *= 0.01f;
-			if (market.hasCondition(Conditions.HEADQUARTERS))
+			if (market.hasIndustry(Industries.HIGHCOMMAND))
 				weight *= 4;
-			if (market.hasCondition(Conditions.MILITARY_BASE))
-				weight *= 3;
-			if (market.hasCondition(Conditions.REGIONAL_CAPITAL))
+			if (market.hasIndustry(Industries.MILITARYBASE))
 				weight *= 3;
 			picker.add(market, weight);
 		}

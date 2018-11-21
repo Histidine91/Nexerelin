@@ -13,6 +13,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -108,11 +109,13 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		maxFPbase *= 0.7f;
 		
 		float maxFP = maxFPbase;
-		if (originMarket.hasCondition(Conditions.MILITARY_BASE)) maxFP += maxFPbase * 0.15;
-		if (originMarket.hasCondition(Conditions.ORBITAL_STATION)) maxFP += maxFPbase * 0.05;
-		if (originMarket.hasCondition(Conditions.SPACEPORT)) maxFP += maxFPbase * 0.05;
-		if (originMarket.hasCondition(Conditions.REGIONAL_CAPITAL)) maxFP += maxFPbase * 0.05;
-		if (originMarket.hasCondition(Conditions.HEADQUARTERS)) maxFP += maxFPbase * 0.1;
+		if (originMarket.hasIndustry(Industries.PATROLHQ)) maxFP += maxFPbase * 0.05;
+		if (originMarket.hasIndustry(Industries.MILITARYBASE)) maxFP += maxFPbase * 0.1;
+		if (originMarket.hasIndustry(Industries.HIGHCOMMAND)) maxFP += maxFPbase * 0.2;
+		if (originMarket.hasIndustry(Industries.MEGAPORT)) maxFP += maxFPbase * 0.15;
+		if (originMarket.hasIndustry(Industries.HEAVYINDUSTRY)) maxFP += maxFPbase * 0.1;
+		if (originMarket.hasIndustry(Industries.ORBITALWORKS)) maxFP += maxFPbase * 0.15;
+		if (originMarket.hasIndustry(Industries.WAYSTATION)) maxFP += maxFPbase * 0.05;
 		
 		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(originMarket.getFactionId());
 		if (factionConfig != null)
@@ -401,29 +404,32 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (RebellionEvent.isOngoing(market))
 				continue;
 			
-			if	( market.getFactionId().equals(factionId) && !market.hasCondition(Conditions.DECIVILIZED) && 
-				( (market.hasCondition(Conditions.SPACEPORT)) || (market.hasCondition(Conditions.ORBITAL_STATION)) || (market.hasCondition(Conditions.MILITARY_BASE))
-					|| (market.hasCondition(Conditions.REGIONAL_CAPITAL)) || (market.hasCondition(Conditions.HEADQUARTERS))
-				) && market.getSize() >= 3 )
+			if	( market.getFactionId().equals(factionId) && market.hasSpaceport() && market.getSize() >= 3 )
 			{
 				//marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
 				//if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
 				//		continue;
 				float weight = 1;	 //marineStockpile;
-				if (market.hasCondition(Conditions.MILITARY_BASE)) {
-					weight *= 1.4F;
+				if (market.hasIndustry(Industries.PATROLHQ)) {
+					weight *= 1.2f;
 				}
-				if (market.hasCondition(Conditions.ORBITAL_STATION)) {
-					weight *= 1.15F;
+				if (market.hasIndustry(Industries.MILITARYBASE)) {
+					weight *= 1.5f;
 				}
-				if (market.hasCondition(Conditions.SPACEPORT)) {
-					weight *= 1.35F;
+				if (market.hasIndustry(Industries.HIGHCOMMAND)) {
+					weight *= 2;
 				}
-				if (market.hasCondition(Conditions.HEADQUARTERS)) {
-					weight *= 1.3F;
+				if (market.hasIndustry(Industries.MEGAPORT)) {
+					weight *= 1.5f;
 				}
-				if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) {
-					weight *= 1.1F;
+				if (market.hasIndustry(Industries.HEAVYINDUSTRY)) {
+					weight *= 1.2f;
+				}
+				if (market.hasIndustry(Industries.ORBITALWORKS)) {
+					weight *= 1.5f;
+				}
+				if (market.hasIndustry(Industries.WAYSTATION)) {
+					weight *= 1.2f;
 				}
 				weight *= 0.5f + (0.5f * market.getSize() * market.getStabilityValue());
 				sourcePicker.add(market, weight);
