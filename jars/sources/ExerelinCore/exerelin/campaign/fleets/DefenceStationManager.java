@@ -22,7 +22,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.ExerelinConstants;
-import exerelin.campaign.battle.NexBattleAutoresolvePlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -39,6 +38,7 @@ import org.apache.log4j.Logger;
 /**
  * Handles defence stations
  */
+@Deprecated
 public class DefenceStationManager extends BaseCampaignEventListener implements EveryFrameScript
 {
 	public static final boolean ENABLED = true;
@@ -572,7 +572,6 @@ public class DefenceStationManager extends BaseCampaignEventListener implements 
 			if (!fleet.isStationMode()) continue;
 			for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy())
 			{
-				NexBattleAutoresolvePlugin.removeStationFromModuleHullCache(member);
 				for (int i = 0; i < member.getVariant().getModuleSlots().size(); i++)
 				{
 					if (member.getStatus().isDetached(i)) continue;

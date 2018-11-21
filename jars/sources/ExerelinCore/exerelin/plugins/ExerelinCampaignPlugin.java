@@ -13,7 +13,6 @@ import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.MiningHelperLegacy;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import exerelin.campaign.alliances.Alliance;
-import exerelin.campaign.battle.NexBattleAutoresolvePlugin;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.combat.SSP_BattleCreationPluginImpl;
 
@@ -104,22 +103,9 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
         return null;
     }
 	
-	@Override
-	public PluginPick<BattleAutoresolverPlugin> pickBattleAutoresolverPlugin(BattleAPI battle) {
-		return new PluginPick<BattleAutoresolverPlugin>(new NexBattleAutoresolvePlugin(battle), PickPriority.MOD_GENERAL);
-	}
-
     @Override
     public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
         if (interactionTarget instanceof CampaignFleetAPI) {
-			
-			if (interactionTarget.getMemoryWithoutUpdate().getBoolean("$nex_defstation"))
-			{
-				CampaignFleetAPI fleet = (CampaignFleetAPI)interactionTarget;
-				if (fleet.getBattle() == null)
-					return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
-			}
-			
             return new PluginPick<InteractionDialogPlugin>(new NexFleetInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
         }
 		if (!ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST && interactionTarget instanceof AsteroidAPI) {
