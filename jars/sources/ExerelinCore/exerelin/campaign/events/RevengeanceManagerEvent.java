@@ -13,6 +13,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -349,29 +350,23 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 			if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
 			if (market.hasCondition(Conditions.DECIVILIZED)) continue;
 			if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
-			if  ( market.getFactionId().equals(revengeFactionId) && 
-				( (market.hasCondition(Conditions.SPACEPORT)) || (market.hasCondition(Conditions.ORBITAL_STATION)) || (market.hasCondition(Conditions.MILITARY_BASE))
-					|| (market.hasCondition(Conditions.REGIONAL_CAPITAL)) || (market.hasCondition(Conditions.HEADQUARTERS))
-				) && market.getSize() >= 3 )
+			if  ( market.getFactionId().equals(revengeFactionId) && market.hasSpaceport() && market.getSize() >= 3 )
 			{
 				//marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
 				//if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
 				//		continue;
 				float weight = 1;   //marineStockpile;
-				if (market.hasCondition(Conditions.MILITARY_BASE)) {
+				if (market.hasIndustry(Industries.HIGHCOMMAND)) {
+					weight *= 1.75F;
+				}
+				if (market.hasIndustry(Industries.MILITARYBASE)) {
 					weight *= 1.4F;
 				}
-				if (market.hasCondition(Conditions.ORBITAL_STATION)) {
-					weight *= 1.15F;
+				if (market.hasIndustry(Industries.PATROLHQ)) {
+					weight *= 1.2F;
 				}
-				if (market.hasCondition(Conditions.SPACEPORT)) {
-					weight *= 1.35F;
-				}
-				if (market.hasCondition(Conditions.HEADQUARTERS)) {
-					weight *= 1.3F;
-				}
-				if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) {
-					weight *= 1.1F;
+				if (market.hasIndustry(Industries.MEGAPORT)) {
+					weight *= 1.25F;
 				}
 				weight *= 0.5f + (0.5f * market.getSize() * market.getStabilityValue());
 				sourcePicker.add(market, weight);
@@ -408,15 +403,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 			
 			float weight = 20000.0F / dist;
 			// prefer high value targets
-			if (market.hasCondition(Conditions.MILITARY_BASE)) {
-				weight *= 1.25F;
-			}
-			if (market.hasCondition(Conditions.HEADQUARTERS)) {
-				weight *= 1.5F;
-			}
-			if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) {
-				weight *= 1.2F;
-			}
+			weight *= market.getIndustryIncome()/10000;
 
 			//weight *= market.getSize() * market.getStabilityValue();	// try to go after high value targets
 			targetPicker.add(market, weight);
@@ -466,18 +453,20 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
                     continue;
                 }
             }
+			if (!market.hasSpaceport()) continue;
+			
             float weight = market.getSize() * (float) Math.sqrt(NexUtilsMath.lerp(0.25f, 1f, market.getShipQualityFactor()));
             float mod = 1f;
-            if (market.hasCondition(Conditions.MILITARY_BASE) || market.hasCondition("ii_interstellarbazaar")) {
+            if (market.hasIndustry(Industries.MILITARYBASE) || market.hasCondition("ii_interstellarbazaar")) {
                 mod += 0.15f;
             }
-            if (market.hasCondition(Conditions.HEADQUARTERS)) {
+            if (market.hasIndustry(Industries.HIGHCOMMAND)) {
+                mod += 0.2f;
+            }
+            if (market.hasIndustry(Industries.PATROLHQ)) {
                 mod += 0.1f;
             }
-            if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) {
-                mod += 0.1f;
-            }
-            if (market.hasCondition(Conditions.SPACEPORT) || market.hasCondition(Conditions.ORBITAL_STATION)) {
+            if (market.hasIndustry(Industries.MEGAPORT)) {
                 mod += 0.15f;
             }
             weight *= mod;

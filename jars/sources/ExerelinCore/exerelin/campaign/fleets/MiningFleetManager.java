@@ -16,7 +16,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.MiningHelperLegacy;
@@ -61,15 +61,13 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 	protected boolean hasOreFacilities(MarketAPI market)
 	{
 		FactionAPI faction = market.getFaction();
-		return market.hasCondition(Conditions.ORE_COMPLEX) || market.hasCondition(Conditions.ORE_REFINING_COMPLEX) 
+		return market.hasIndustry(Industries.MINING) || market.hasIndustry(Industries.REFINING)
 				|| market.hasCondition("aiw_inorganic_populace");
 	}
 	
 	protected boolean hasGasFacilities(MarketAPI market)
 	{
-		return market.hasCondition(Conditions.VOLATILES_COMPLEX) || market.hasCondition(Conditions.VOLATILES_DEPOT)
-				|| market.hasCondition(Conditions.CRYOSANCTUM) || market.hasCondition(Conditions.ANTIMATTER_FUEL_PRODUCTION)
-				|| market.hasCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
+		return market.hasIndustry(Industries.MINING) || market.hasIndustry(Industries.FUELPROD);
 	}
 	
 	protected boolean isOreMineable(SectorEntityToken entity)
@@ -289,14 +287,16 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 			if (ExerelinUtilsFaction.isPirateOrTemplarFaction(market.getFactionId()))
 				continue;
 			
+			if (!market.hasSpaceport()) continue;
+			
 			if (!spawnCounter.containsKey(market.getId()))
 				spawnCounter.put(market.getId(), 0f);
 			
 			float baseIncrement = (0.5f + (market.getStabilityValue()/MARKET_STABILITY_DIVISOR));
 			float increment = baseIncrement;
 			//if (market.hasCondition("regional_capital")) increment += baseIncrement * 0.1f;
-			if (market.hasCondition(Conditions.SPACEPORT)) increment += baseIncrement * 0.25f;
-			if (market.hasCondition(Conditions.ORBITAL_STATION)) increment += baseIncrement * 0.25f;
+			if (market.hasIndustry(Industries.MEGAPORT)) increment += baseIncrement * 0.25f;
+			if (market.hasIndustry(Industries.WAYSTATION)) increment += baseIncrement * 0.1f;
 			
 			increment = increment * POINT_INCREMENT_PER_DAY * days;
 			float newValue = spawnCounter.get(market.getId()) + increment;

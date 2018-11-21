@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
@@ -204,7 +205,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			String sizeStr = size + "";
 			
 			// Has military base
-			if (market.hasCondition(Conditions.MILITARY_BASE))
+			if (market.hasSubmarket(Submarkets.GENERIC_MILITARY))
 			{
 				anyBase = true;
 				sizeStr += ", " + StringHelper.getString("base");

@@ -10,6 +10,8 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
@@ -128,20 +130,22 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		duration *= DURATION_MULT;
 		bonusDuration *= DURATION_MULT;
 		
-		float reward = (float)Math.pow(3, target.getSize());
+		float reward = target.getIndustryIncome();	//(float)Math.pow(3, target.getSize());
 		reward *= MathUtils.getRandomNumberInRange(0.75f, 1.25f) * ExerelinConfig.conquestMissionRewardMult;
-		if (target.hasCondition(Conditions.MILITARY_BASE))
-			reward *= 1.25f;
-		if (target.hasCondition(Conditions.SPACEPORT))
-			reward *= 1.1f;
-		if (target.hasCondition(Conditions.ORBITAL_STATION))
-			reward *= 1.1f;
-		if (target.hasCondition(Conditions.REGIONAL_CAPITAL))
-			reward *= 1.1f;
-		if (target.hasCondition(Conditions.HEADQUARTERS))
+		if (target.hasIndustry(Industries.MILITARYBASE))
+			reward *= 1.2f;
+		if (target.hasIndustry(Industries.HIGHCOMMAND))
+			reward *= 1.4f;
+		if (target.hasIndustry(Industries.ORBITALWORKS))
+			reward *= 1.4f;
+		if (target.hasIndustry(Industries.HEAVYINDUSTRY))
+			reward *= 1.2f;
+		if (target.hasIndustry(Industries.FUELPROD))
 			reward *= 1.2f;
 		if (target.getFactionId().equals("templars"))
 			reward *= 2f;
+		
+		reward *= 1 + target.getStats().getDynamic().getValue(Stats.GROUND_DEFENSES_MOD) * 0.5f;
 		
 		float bonusReward = reward * MathUtils.getRandomNumberInRange(0.5f, 1f);
 		reward = (int)reward * REWARD_MULT;
@@ -157,7 +161,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 				continue;
 			if (market.getFaction().isAtBest(faction, RepLevel.INHOSPITABLE))
 				continue;
-			if (market.hasCondition(Conditions.MILITARY_BASE) || market.hasCondition(Conditions.REGIONAL_CAPITAL) || market.hasCondition(Conditions.HEADQUARTERS))
+			if (market.hasIndustry(Industries.PATROLHQ) || market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND))
 				board.makeAvailableAt(mission, market);
 		}
 	}

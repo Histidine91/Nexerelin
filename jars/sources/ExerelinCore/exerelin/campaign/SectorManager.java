@@ -24,6 +24,7 @@ import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
@@ -451,7 +452,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             if (wasOriginalOwner)
                 weight *= 10;
             else
-                if (market.hasCondition(Conditions.HEADQUARTERS)) weight *= 0.1f;
+			{
+                if (market.hasIndustry(Industries.HIGHCOMMAND)) weight *= 0.1f;
+			}
             targetPicker.add(market, weight);
         }
         MarketAPI targetMarket = targetPicker.pick();
@@ -726,7 +729,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // transfer market and associated entities
         String newOwnerId = newOwner.getId();
         String oldOwnerId = oldOwner.getId();
-        List<SectorEntityToken> linkedEntities = market.getConnectedEntities();
+        Set<SectorEntityToken> linkedEntities = market.getConnectedEntities();
         for (SectorEntityToken entity : linkedEntities)
         {
             entity.setFaction(newOwnerId);
@@ -773,7 +776,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             market.addSubmarket(Submarkets.SUBMARKET_OPEN);
             if (!NO_BLACK_MARKET.contains(market.getId()))
                 market.addSubmarket(Submarkets.SUBMARKET_BLACK);
-            if (market.hasCondition(Conditions.MILITARY_BASE) || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId())) 
+            if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId())) 
                 market.addSubmarket(Submarkets.GENERIC_MILITARY);
             
             market.removeSubmarket("tem_templarmarket");
@@ -784,8 +787,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (newOwnerId.equals("approlight") && !oldOwnerId.equals("approlight"))
         {
             
-            if (market.hasCondition(Conditions.MILITARY_BASE) || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId())
-                && market.hasCondition(Conditions.HEADQUARTERS))
+            if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) 
+					|| market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId()))
             {
                 market.removeSubmarket(Submarkets.GENERIC_MILITARY);
                 market.addSubmarket("AL_militaryMarket");
@@ -793,7 +796,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         else if (!newOwnerId.equals("approlight") && oldOwnerId.equals("approlight"))
         {
-            if (market.hasCondition(Conditions.MILITARY_BASE) || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId()))
+            if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) 
+					|| market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId()))
             {
                 if (!newOwnerId.equals("templars"))
                     market.addSubmarket(Submarkets.GENERIC_MILITARY);
@@ -806,7 +810,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (newOwnerId.equals("interstellarimperium") && market.getMemoryWithoutUpdate().contains("$startingFactionId")
                 && market.getMemoryWithoutUpdate().getString("$startingFactionId").equals("interstellarimperium"))
         {
-            if (!market.hasCondition(Conditions.DISSIDENT)    && !market.hasCondition(Conditions.LARGE_REFUGEE_POPULATION)) 
+            if (!market.hasCondition(Conditions.DISSIDENT) && !market.hasCondition(Conditions.LARGE_REFUGEE_POPULATION)) 
                 market.addCondition("ii_imperialdoctrine");
         }
         

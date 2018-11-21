@@ -24,6 +24,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Events;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -518,9 +519,11 @@ public class RebellionEvent extends BaseEventPlugin {
 	{
 		String factionId = sourceMarket.getFactionId();
 		float fp = (int)(getSizeMod(market) * 1.5f);
-		if (market.hasCondition(Conditions.HEADQUARTERS))
+		if (market.hasIndustry(Industries.HIGHCOMMAND))
 			fp *= 1.25f;
-		else if (market.hasCondition(Conditions.REGIONAL_CAPITAL))
+		if (market.hasIndustry(Industries.MILITARYBASE))
+			fp *= 1.1f;
+		if (market.hasIndustry(Industries.MEGAPORT))
 			fp *= 1.1f;
 		
 		String name = getFleetName("nex_suppressionFleet", factionId, fp);
@@ -584,6 +587,8 @@ public class RebellionEvent extends BaseEventPlugin {
 			if (maybeSource == this.market)
 				continue;
 			
+			if (!maybeSource.hasSpaceport()) continue;
+			
 			float dist = Misc.getDistance(maybeSource.getLocationInHyperspace(), targetLoc);
 			if (dist < 5000.0f) {
 				dist = 5000.0f;
@@ -594,11 +599,11 @@ public class RebellionEvent extends BaseEventPlugin {
 			if (!govtFactionId.equals(maybeSource.getFactionId()))
 				weight /= 2;
 				
-			if (maybeSource.hasCondition(Conditions.MILITARY_BASE))
+			if (market.hasIndustry(Industries.MILITARYBASE))
 				weight *= 2;
-			if (maybeSource.hasCondition(Conditions.HEADQUARTERS))
+			if (market.hasIndustry(Industries.HIGHCOMMAND))
 				weight *= 3;
-			if (maybeSource.hasCondition(Conditions.REGIONAL_CAPITAL))
+			if (market.hasIndustry(Industries.MEGAPORT))
 				weight *= 2;
 			picker.add(maybeSource, weight);
 		}

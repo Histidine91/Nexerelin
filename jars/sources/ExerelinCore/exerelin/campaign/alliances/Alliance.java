@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.events.AllianceChangedEvent;
@@ -132,10 +133,10 @@ public class Alliance
 		for (MarketAPI market : markets)
 		{
 			float weight = market.getSize();
-			if (market.hasCondition(Conditions.MILITARY_BASE))
+			if (market.hasIndustry(Industries.MILITARYBASE))
 				weight *= 1.5f;
 			picker2.add(market, weight);
-			if (market.hasCondition(Conditions.HEADQUARTERS))
+			if (market.hasIndustry(Industries.HIGHCOMMAND))
 				picker.add(market, weight);
 		}
 		if (preferHq && !picker.isEmpty())
