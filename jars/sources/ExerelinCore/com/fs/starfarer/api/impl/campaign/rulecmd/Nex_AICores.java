@@ -6,7 +6,9 @@ import com.fs.starfarer.api.campaign.CargoPickerListener;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
-import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
+import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.AICores;
@@ -59,17 +61,17 @@ public class Nex_AICores extends AICores {
 				}
 				
 				if (repChange >= 1f) {
-					CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
+					CustomRepImpact impact = new CustomRepImpact();
 					impact.delta = repChange * 0.01f;
 					Global.getSector().adjustPlayerReputation(
-							new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.CUSTOM, impact,
+							new RepActionEnvelope(RepActions.CUSTOM, impact,
 												  null, text, true), 
 												  faction.getId());
 					
 					impact.delta *= 0.25f;
 					if (impact.delta >= 0.01f) {
 						Global.getSector().adjustPlayerReputation(
-								new CoreReputationPlugin.RepActionEnvelope(CoreReputationPlugin.RepActions.CUSTOM, impact,
+								new RepActionEnvelope(RepActions.CUSTOM, impact,
 													  null, text, true), 
 													  person);
 					}
@@ -95,6 +97,7 @@ public class Nex_AICores extends AICores {
 				panel.setParaFontDefault();
 				
 				panel.addImage(faction.getLogo(), width * 1f, pad);
+				
 				
 				//panel.setParaFontColor(Misc.getGrayColor());
 				//panel.setParaSmallInsignia();
@@ -130,7 +133,7 @@ public class Nex_AICores extends AICores {
 								maxRepInt + "/100", NexUtilsReputation.getRelationStr(myFaction, faction));
 						panel.setParaFontColor(Misc.getTextColor());
 					}
-				}				
+				}
 				
 				//panel.addPara("Bounty: %s", opad, Misc.getHighlightColor(), Misc.getWithDGS(bounty) + Strings.C);
 				//panel.addPara("Reputation: %s", pad, Misc.getHighlightColor(), "+12");
