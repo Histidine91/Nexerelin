@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.StarSystemType;
@@ -70,6 +71,9 @@ public class Yma {
 		
 		yma2a.setCustomDescriptionId("planet_killa");
 		
+		SectorEntityToken hanan_pacha_loc = system.addCustomEntity(null,null, "stable_location",Factions.NEUTRAL); 
+		hanan_pacha_loc.setCircularOrbitPointingDown( yma_star, 180 - 60, 4400, 330);		
+		
 		// Outer asteroids
 		
 		system.addRingBand(yma_star, "misc", "rings_asteroids0", 256f, 3, Color.white, 256f, 5100, 475f, null, null);
@@ -113,6 +117,9 @@ public class Yma {
 			yma3b.getSpec().setUseReverseLightForGlow(true);
 			yma3b.applySpecChanges();
 			yma3b.setCustomDescriptionId("planet_salamanca");
+			
+			SectorEntityToken chupi_orco_loc = system.addCustomEntity(null,null, "nav_buoy_makeshift",Factions.PERSEAN); 
+			chupi_orco_loc.setCircularOrbitPointingDown( yma3, 0, 1800, 50);
 		
 			// Chupi Orco trojans
 			SectorEntityToken chupi_orcoL4 = system.addTerrain(Terrain.ASTEROID_FIELD,

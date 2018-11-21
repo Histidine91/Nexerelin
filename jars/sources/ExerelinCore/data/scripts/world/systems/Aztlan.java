@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
@@ -49,11 +50,15 @@ public class Aztlan {
 			//system.addRingBand(aztlan2, "misc", "rings1", 256f, 3, Color.white, 256f, 500, 30f);
 			system.addRingBand(aztlan2, "misc", "rings_dust0", 256f, 3, Color.white, 256f, 500, 33f, Terrain.RING, null);
 			
-			SectorEntityToken hegemonyStation = system.addCustomEntity("aztlan_starport", "Aztlan Starport", "station_side00", "hegemony");
+			SectorEntityToken hegemonyStation = system.addCustomEntity("aztlan_starport", "Aztlan Starport", "station_lowtech2", "hegemony");
 			hegemonyStation.setCircularOrbitPointingDown(system.getEntityById("chicomoztoc"), 0, 350, 30);		
 			hegemonyStation.setInteractionImage("illustrations", "orbital");
 			//hegemonyStation.setCustomDescriptionId("station_jangala");
 		
+			// Sensor Array in far orbit of Chicomoztoc
+			SectorEntityToken aztlan_loc = system.addCustomEntity(null, null, "sensor_array", Factions.HEGEMONY);
+			aztlan_loc.setCircularOrbitPointingDown(aztlan_star, 240, 4200, 300);
+			
 			JumpPointAPI jumpPoint_aztlan = Global.getFactory().createJumpPoint("aztlan_jump_point_alpha", "Aztlan Inner System Jump-point");
 			OrbitAPI orbit = Global.getFactory().createCircularOrbit(aztlan_star, 0, 4200, 300);
 			jumpPoint_aztlan.setOrbit(orbit);
@@ -140,15 +145,13 @@ public class Aztlan {
 		jumpPoint_aztlan2.setStandardWormholeToHyperspaceVisual();
 		system.addEntity(jumpPoint_aztlan2);
 		
+		
+		// Loc in counter-orbit to Tlalocan
+		SectorEntityToken tlalocan_loc = system.addCustomEntity(null, null, "stable_location", Factions.NEUTRAL);
+		tlalocan_loc.setCircularOrbitPointingDown(aztlan_star, 130 + 180 , 7500, 500);
+		
 		//PlanetAPI aztlan4 = system.addPlanet("toci", aztlan_star, "Toci", "frozen", 30, 80, 13000, 900);
-		
-		//SectorEntityToken station = system.addOrbitalStation("diktat_cnc", a1, 45, 300, 50, "Command & Control", "sindrian_diktat");
-		//initStationCargo(station);
-		
-//		SectorEntityToken station = system.addCustomEntity("diktat_cnc", "Command & Control", "station_side02", "sindrian_diktat");
-//		station.setCircularOrbitPointingDown(system.getEntityById("sindria"), 45, 300, 50);		
-//		station.setCustomDescriptionId("station_ragnar");
-		
+
 		// example of using custom visuals below
 //		a1.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", "hull_breach", 800, 800));
 //		jumpPoint.setCustomInteractionDialogImageVisual(new InteractionDialogImageVisual("illustrations", "space_wreckage", 1200, 1200));

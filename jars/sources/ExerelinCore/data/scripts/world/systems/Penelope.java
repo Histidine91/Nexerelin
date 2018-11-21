@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.terrain.AsteroidFieldTerrainPlugin.AsteroidFieldParams;
@@ -41,6 +42,9 @@ public class Penelope {
 		PlanetAPI penelope2 = system.addPlanet("penelope2", penelope_star, "Ithaca", "desert", 50, 150, 4500, 135);
 		penelope2.setCustomDescriptionId("planet_ithaca");
 			// TODO: some abandoned infrastructure?
+		
+			SectorEntityToken ithaca_loc = system.addCustomEntity(null,null, "stable_location",Factions.NEUTRAL); 
+			ithaca_loc.setCircularOrbitPointingDown( penelope_star, 50 + 60, 4500, 135);	
 		
 		// Ogygia, terraforming target B
 		PlanetAPI penelope3 = system.addPlanet("penelope3", penelope_star, "Ogygia", "barren-bombarded", 80, 130, 6800, 225);
@@ -121,6 +125,12 @@ public class Penelope {
 			penelopeL4.setCircularOrbit(penelope_star, 230 + 60, 9500, 450);
 			penelopeL5.setCircularOrbit(penelope_star, 230 - 60, 9500, 450);
 			
+			SectorEntityToken aeolus_l5_loc = system.addCustomEntity(null,null, "stable_location",Factions.NEUTRAL); 
+			aeolus_l5_loc.setCircularOrbitPointingDown( penelope_star, 230 - 60, 9500, 450);		
+			
+			SectorEntityToken aeolus_counter_loc = system.addCustomEntity(null,null, "stable_location",Factions.NEUTRAL); 
+			aeolus_counter_loc.setCircularOrbitPointingDown( penelope_star, 230 - 180, 9500, 450);
+			
 		PlanetAPI penelope5 = system.addPlanet("penelope5", penelope_star, "Telepylus", "gas_giant", 250, 280, 12050, 650);
 		penelope5.getSpec().setPlanetColor(new Color(170,190,255,255));
 		penelope5.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "banded"));
@@ -146,7 +156,7 @@ public class Penelope {
 			
 			
 		// Asteroid belt.
-		system.addRingBand(penelope_star, "misc", "rings_asteroids0", 256f, 0, Color.white, 256f, 13750, 345f, Terrain.RING, null);
+		system.addRingBand(penelope_star, "misc", "rings_asteroids0", 256f, 0, Color.white, 256f, 13750, 345f, Terrain.ASTEROID_BELT, null);
 		system.addAsteroidBelt(penelope_star, 100, 13750, 200, 330, 360, Terrain.ASTEROID_BELT, "The Cyclopeans");
 
 		// Ismara : mass driven volatiles, looted

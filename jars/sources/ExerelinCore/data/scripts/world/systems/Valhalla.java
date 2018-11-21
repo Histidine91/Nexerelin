@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
@@ -111,6 +112,12 @@ public class Valhalla {
 				yggdrasilL4.setCircularOrbit(star, 230 - 60, 6000, 250);
 				yggdrasilL5.setCircularOrbit(star, 230 + 60, 6000, 250);
 		
+		
+			// Yggdrasil loc 
+			SectorEntityToken yggdrasil_location = system.addCustomEntity(null,null, "stable_location",Factions.NEUTRAL); 
+			yggdrasil_location.setCircularOrbitPointingDown( star, 230 - 180, 6000, 250);		
+				
+				
 				
 	// Niflheim
 		PlanetAPI val3 = system.addPlanet("niflheim", star, "Niflheim", "ice_giant", 230, 250, 9000, 450);
@@ -123,9 +130,17 @@ public class Valhalla {
 		mimir_station.setCustomDescriptionId("station_mimir");
 //		initStationCargo(mimir_station);
 		
+		// Niflheim Nav Buoy 
+		SectorEntityToken niflheim_location = system.addCustomEntity(null,null, "nav_buoy_makeshift",Factions.TRITACHYON); 
+		niflheim_location.setCircularOrbitPointingDown( val3, 45 + 180, 520, 50);
+		
 		PlanetAPI val3a = system.addPlanet("skathi", val3, "Skathi", "frozen", 45, 70, 620, 50);
 		val3a.setCustomDescriptionId("planet_skathi");
 			val3a.setInteractionImage("illustrations", "cargo_loading");
+			
+		
+			
+			
 		
 	// Red Dwarf star Ragnar & friends
 	// orbited by station, relay, and asteroid field each 1/3rd orbit off from one another.

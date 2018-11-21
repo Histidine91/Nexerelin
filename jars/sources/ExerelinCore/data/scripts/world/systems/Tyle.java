@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
@@ -52,6 +53,9 @@ public class Tyle {
 		PlanetAPI tyle_b = system.addPlanet("cibola", tyle_star, "Cibola", "desert", 0, 145, 3500, 210);
 		tyle_b.setCustomDescriptionId("planet_cibola");
 		tyle_b.setInteractionImage("illustrations", "desert_moons_ruins");
+		
+			SectorEntityToken cibola_stable = system.addCustomEntity(null, null, "nav_buoy_makeshift", "persean");
+			cibola_stable.setCircularOrbitPointingDown(tyle_star, 60 , 3500, 210);
 		
 		PlanetAPI tyle_b1 = system.addPlanet("dorado", tyle_b, "Dorado", "barren-bombarded", 0, 48, 400, 24);
 		
@@ -111,6 +115,10 @@ public class Tyle {
 					"Sargossa")); // null for default name
 		
 		tyle_field2.setCircularOrbit(tyle_star, 180 - 60, 9000, 750);
+		
+		// stable loc orbits the asteroid field.
+		SectorEntityToken sargossa_stable = system.addCustomEntity(null, null, "stable_location", Factions.NEUTRAL);
+		sargossa_stable.setCircularOrbitPointingDown(tyle_field2, 00 , 500, 110);
 		
 		// Star: Antillia gets a strong mag field (can we do coronas on fake stars? something to add to the list ... )
 		PlanetAPI antillia_star = system.addPlanet("antillia",

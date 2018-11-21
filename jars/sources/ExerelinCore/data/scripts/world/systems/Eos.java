@@ -109,6 +109,10 @@ public class Eos {
 			eos2a.getSpec().setAtmosphereColor( new Color(250, 220, 120, 128) );
 			eos2a.applySpecChanges();
 			
+			// counter-orbit sensor array
+			SectorEntityToken tartessus_sensor = system.addCustomEntity(null, null, "sensor_array_makeshift", "luddic_church");
+			tartessus_sensor.setCircularOrbitPointingDown( star, 200 - 180, 4400, 120);
+			
 		// Asteroids - "The Pilgrims"
 		system.addRingBand(star, "misc", "rings_asteroids0", 256f, 1, Color.white, 256f, 5980, 205f, null, null);
 		system.addAsteroidBelt(star, 150, 6000, 250, 150, 250, Terrain.ASTEROID_BELT, "The Pilgrims");
@@ -160,8 +164,7 @@ public class Eos {
 			
 			
 		SectorEntityToken relay = system.addCustomEntity("hesperus_relay", "Hesperus Relay", "comm_relay", "luddic_church");
-		
-		relay.setCircularOrbitPointingDown(system.getEntityById("hesperus"), 90, 1000, 45);
+		relay.setCircularOrbitPointingDown( star, 0 + 60, 7400, 200);
 		
 		// Eos Exodus Gate - Tartessus L4 (ahead)
 		SectorEntityToken gate = system.addCustomEntity("eos_exodus_gate", // unique id

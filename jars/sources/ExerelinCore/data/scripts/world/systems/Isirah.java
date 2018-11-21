@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
@@ -103,7 +104,7 @@ public class Isirah {
 		system.addAsteroidBelt(isirah_star, 50, 4200, 150, 170, 210, Terrain.ASTEROID_BELT, null);
 		
 		
-		SectorEntityToken station1 = system.addOrbitalStation("laicaille_habitat", isirah_star, 180 + 60, 4300, 400, "Laicaille Habitat", "persean");
+		SectorEntityToken station1 = system.addCustomEntity("laicaille_habitat", "Laicaille Habitat", "station_side00", "persean");
 		station1.setCustomDescriptionId("station_laicaille");
 		station1.setInteractionImage("illustrations", "orbital");
 		station1.setCircularOrbitWithSpin(isirah_star, 180+60, 4300, 400, -1f, -3f);
@@ -113,6 +114,12 @@ public class Isirah {
 		station2.setInteractionImage("illustrations", "industrial_megafacility");
 		//station2.setCircularOrbitPointingDown(system.getEntityById("isirah"), 180-60, 4300, 400);		
 		station2.setCircularOrbitWithSpin(isirah_star, 180-60, 4300, 400, -1f, -3f);
+		
+		SectorEntityToken isirah_loc1 = system.addCustomEntity(null, null, "sensor_array_makeshift", Factions.PIRATES); 
+		isirah_loc1.setCircularOrbitPointingDown(isirah_star, 180-120, 4300, 400);
+
+		SectorEntityToken isirah_loc2 = system.addCustomEntity(null, null, "comm_relay_makeshift", Factions.PERSEAN); 
+		isirah_loc2.setCircularOrbitPointingDown(isirah_star, 180+120, 4300, 400);
 		
 		// Isirah Gate
 		SectorEntityToken gate = system.addCustomEntity("isirah_gate", // unique id
@@ -146,7 +153,7 @@ public class Isirah {
 			isirah_e1.getSpec().setTexture(Global.getSettings().getSpriteName("planets", "frozen00"));
 			isirah_e1.applySpecChanges();
 			
-		SectorEntityToken station3 = system.addOrbitalStation("groombridge_habitat", isirah_star, 270 + 60, 7000, 500, "Groombridge Habitat", "neutral");
+		SectorEntityToken station3 = system.addCustomEntity("groombridge_habitat", "Groombridge Habitat", "station_side00", "neutral");
 		station3.setCustomDescriptionId("station_groombridge");
 		station3.setInteractionImage("illustrations", "abandoned_station3");
 		station3.setCircularOrbitPointingDown(isirah_star, 270+60, 7000, 500);

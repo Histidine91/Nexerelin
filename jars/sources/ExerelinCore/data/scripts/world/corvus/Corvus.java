@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
@@ -51,10 +52,32 @@ public class Corvus { // implements SectorGeneratorPlugin {
 		corvusI.getSpec().setUseReverseLightForGlow(true);
 		corvusI.applySpecChanges();
 		corvusI.setCustomDescriptionId("planet_asharu");
-		     
+		
+		SectorEntityToken corvus_loc1 = system.addCustomEntity(null, null, "sensor_array_makeshift", Factions.HEGEMONY);
+		corvus_loc1.setCircularOrbitPointingDown(star, 55 + 60, 2800, 100);
+		
+		// Asharu abandoned station
+		SectorEntityToken neutralStation = system.addCustomEntity("corvus_abandoned_station",
+				"Abandoned Terraforming Platform", "station_side06", "neutral");
+		
+			neutralStation.setCircularOrbitPointingDown(system.getEntityById("asharu"), 45, 300, 30);		
+			neutralStation.setCustomDescriptionId("asharu_platform");
+			neutralStation.setInteractionImage("illustrations", "abandoned_station2");
+			Misc.setAbandonedStationMarket("corvus_abandoned_station_market", neutralStation);
+			neutralStation.getMarket().getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().addMothballedShip(FleetMemberType.SHIP, "hermes_d_Hull", null);
+		
+//	SectorEntityToken neutralStation = system.addOrbitalStation("corvus_abandoned_station", 
+//																system.getEntityById("asharu"),
+//																45, 
+//																300, 
+//																30,
+//																"Abandoned Terraforming Platform",
+//																"neutral");
+		
+		
 		// Asharu stellar shade - out of orbit, settled in one of Asharu's lagrangian points 
 		SectorEntityToken asharu_shade = system.addCustomEntity("asharu_shade", "Asharu Stellar Shade", "stellar_shade", "neutral");
-		asharu_shade.setCircularOrbitPointingDown(system.getEntityById("corvus"), 55 + 60, 2800, 100);		
+		asharu_shade.setCircularOrbitPointingDown(system.getEntityById("corvus"), 55 + 60 + 10, 2800, 100);		
 		asharu_shade.setCustomDescriptionId("stellar_shade");
 		
 	// Jangala 
@@ -68,8 +91,9 @@ public class Corvus { // implements SectorGeneratorPlugin {
 			// Jangala Station 
 			SectorEntityToken hegemonyStation = system.addCustomEntity("corvus_hegemony_station",
 					"Jangala Station", "station_jangala_type", "hegemony");
+					// "Jangala Station", "station_jangala_type", "hegemony");
 			
-			hegemonyStation.setCircularOrbitPointingDown(system.getEntityById("jangala"), 45 + 180, 320, 30);		
+			hegemonyStation.setCircularOrbitPointingDown(system.getEntityById("jangala"), 45 + 180, 360, 30);		
 			hegemonyStation.setCustomDescriptionId("station_jangala");
 			
 			// Jangala Relay - L5 (behind)
@@ -78,6 +102,30 @@ public class Corvus { // implements SectorGeneratorPlugin {
 					 "comm_relay", // type of object, defined in custom_entities.json
 					 "hegemony"); // faction
 			relay.setCircularOrbitPointingDown(system.getEntityById("corvus"), 245-60, 4500, 200);
+			
+			
+			// testing objectives
+	//		SectorEntityToken array1 = system.addCustomEntity(null, // unique id
+	//				 null,
+	//				 "sensor_array_makeshift", // type of object, defined in custom_entities.json
+	//				 Factions.PLAYER); // faction
+	//		array1.setCircularOrbitPointingDown(system.getEntityById("corvus"), 245-60-10, 4500, 200);
+	//		
+	//		SectorEntityToken buoy1 = system.addCustomEntity(null, // unique id
+	//				null,
+	//				"nav_buoy_makeshift", // type of object, defined in custom_entities.json
+	//				Factions.HEGEMONY); // faction
+	//		buoy1.setCircularOrbitPointingDown(system.getEntityById("corvus"), 245-60-20, 4500, 200);
+	//		
+	//		SectorEntityToken stable = system.addCustomEntity(null, // unique id
+	//				null,
+	//				"stable_location", // type of object, defined in custom_entities.json
+	//				"neutral"); // faction
+	//		stable.setCircularOrbitPointingDown(system.getEntityById("corvus"), 245-60-30, 4500, 200);
+			
+			
+			
+			
 		
 			// Jangala Jumppoint - L4 (ahead)
 			JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("jangala_jump", "Jangala Jump-point");
@@ -100,7 +148,10 @@ public class Corvus { // implements SectorGeneratorPlugin {
 		system.addRingBand(star, "misc", "rings_asteroids0", 256f, 3, Color.white, 256f, 5720, 295f, null, null);
 		
 	// Barad system
-		SectorEntityToken corvusIII = system.addPlanet("barad", star, "Barad", "gas_giant", 200, 300, 7800, 400);
+		//SectorEntityToken corvusIII = system.addPlanet("barad", star, "Barad", "gas_giant", 200, 300, 7800, 400);
+		// move further along orbit so it's not so close to Jangala on game start
+		float baradAngle = 100;
+		SectorEntityToken corvusIII = system.addPlanet("barad", star, "Barad", "gas_giant", baradAngle, 300, 7800, 400);
 		
 		// Barad magnetic field
 		SectorEntityToken barad_field = system.addTerrain(Terrain.MAGNETIC_FIELD,
@@ -126,8 +177,8 @@ public class Corvus { // implements SectorGeneratorPlugin {
 			
 			// Pirate Station
 			SectorEntityToken pirateStation = system.addCustomEntity("corvus_pirate_station",
-					"Garnir Extraction Depot", "station_mining00", "pirates");
-			pirateStation.setCircularOrbitPointingDown(system.getEntityById("corvus_IIIa"), 45, 170, 20);		
+					"Garnir Extraction Depot", "station_lowtech1", "pirates");
+			pirateStation.setCircularOrbitPointingDown(system.getEntityById("corvus_IIIa"), 45, 180, 20);		
 			pirateStation.setCustomDescriptionId("pirate_base_barad");
 			pirateStation.setInteractionImage("illustrations", "pirate_station");
 			
@@ -158,8 +209,12 @@ public class Corvus { // implements SectorGeneratorPlugin {
 						16f, // max asteroid radius
 						"Barad L5 Asteroids")); // null for default name
 			
-			baradL4.setCircularOrbit(star, 200f -60f, 7800, 400);
-			baradL5.setCircularOrbit(star, 200f +60f, 7800, 400);
+			baradL4.setCircularOrbit(star, baradAngle -60f, 7800, 400);
+			baradL5.setCircularOrbit(star, baradAngle +60f, 7800, 400);
+			
+			
+			SectorEntityToken corvus_loc3 = system.addCustomEntity(null, null, "stable_location", Factions.NEUTRAL);
+			corvus_loc3.setCircularOrbitPointingDown(star, baradAngle - 180, 7800, 400);
 				
 	// Outer system
 	
@@ -172,24 +227,7 @@ public class Corvus { // implements SectorGeneratorPlugin {
 		corvusV.applySpecChanges();
 		*/ 
 			
-		SectorEntityToken neutralStation = system.addOrbitalStation("corvus_abandoned_station", 
-																	system.getEntityById("asharu"),
-																	45, 
-																	300, 
-																	30,
-																	"Abandoned Terraforming Platform",
-																	"neutral");
-		
-		// Hey it should orbit facing down and stuff.
-		neutralStation.setCircularOrbitPointingDown(system.getEntityById("asharu"), 45, 300, 30);
-			
-		Misc.setAbandonedStationMarket("corvus_abandoned_station_market", neutralStation);
-
-		neutralStation.setCustomDescriptionId("asharu_platform");
-		neutralStation.setInteractionImage("illustrations", "abandoned_station2");
-		
-		neutralStation.getMarket().getSubmarket(Submarkets.SUBMARKET_STORAGE).getCargo().addMothballedShip(FleetMemberType.SHIP, "hermes_d_Hull", null);
-		
+	
 		
 		SectorEntityToken nebula = system.addTerrain(Terrain.NEBULA, new BaseTiledTerrain.TileParams(
 				"   xx " +

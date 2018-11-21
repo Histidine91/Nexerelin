@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
@@ -104,13 +105,14 @@ public class Samarra {
 		samarra_gate.setCircularOrbit(samarra_star, 210, 4250, 200);
 		
 	// Typhon System
-		PlanetAPI samarra2 = system.addPlanet("typhon", samarra_star, "Typon", "gas_giant", 60, 350, 7000, 500);
+		PlanetAPI samarra2 = system.addPlanet("typhon", samarra_star, "Typhon", "gas_giant", 60, 350, 7000, 500);
 		samarra2.getSpec().setPlanetColor(new Color(250,180,120,255));
 		samarra2.getSpec().setCloudColor(new Color(250,180,120,150));
 		samarra2.getSpec().setAtmosphereColor(new Color(250,180,120,150));
 		samarra2.applySpecChanges();
+		samarra2.setCustomDescriptionId("planet_typhon");
 		
-			PlanetAPI samarra2a = system.addPlanet("chimera", samarra2, "Chimera", "toxic", 20, 50, 500, 12);
+			PlanetAPI samarra2a = system.addPlanet("chimera", samarra2, "Chimera", "toxic_cold", 20, 50, 500, 12);
 			PlanetAPI samarra2b = system.addPlanet("ladon", samarra2, "Ladon", "barren-bombarded", 40, 30, 620, 16);
 			
 			system.addRingBand(samarra2, "misc", "rings_ice0", 256f, 3, Color.white, 256f, 850, 30f, Terrain.RING, null);
@@ -124,7 +126,7 @@ public class Samarra {
 					 "independent"); // faction
 			orthrus_relay.setCircularOrbit( samarra2, 40 -60, 1475, 41);
 			
-			PlanetAPI samarra3d = system.addPlanet("sphinx", samarra2, "Sphinx", "barren", 50, 60, 1600, 56);
+			PlanetAPI samarra3d = system.addPlanet("sphinx", samarra2, "Sphinx", "barren", 150, 60, 1600, 56);
 			samarra3d.setCustomDescriptionId("planet_sphinx");
 			
 			// Typhon trojans
@@ -159,6 +161,12 @@ public class Samarra {
 			jumpPoint2.setStandardWormholeToHyperspaceVisual();
 			system.addEntity(jumpPoint2);
 			naw. */
+			
+			
+			SectorEntityToken typhon_opposite_loc = system.addCustomEntity(null, null, "sensor_array", Factions.HEGEMONY); 
+			typhon_opposite_loc.setCircularOrbitPointingDown( samarra_star, 350-180, 7000, 500);
+			
+			
 			
 			float radiusAfter = StarSystemGenerator.addOrbitingEntities(system, samarra_star, StarAge.OLD,
 					1, 2, // min/max entities to add

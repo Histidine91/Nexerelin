@@ -8,9 +8,13 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.tutorial.GalatianAcademyStipend;
 import data.scripts.world.corvus.Corvus;
 import data.scripts.world.systems.AlGebbar;
 import data.scripts.world.systems.Arcadia;
@@ -35,6 +39,7 @@ import data.scripts.world.systems.Valhalla;
 import data.scripts.world.systems.Westernesse;
 import data.scripts.world.systems.Yma;
 import data.scripts.world.systems.Zagan;
+import exerelin.campaign.ExerelinSetupData;
 
 public class VanillaSystemsGenerator {
 	public static void generate(SectorAPI sector)
@@ -77,7 +82,7 @@ public class VanillaSystemsGenerator {
 		new Tyle().generate(sector);
 		
 		//TutorialMissionEvent.endGalatiaPortionOfMission();
-		exerelinEndGalatiaPortionOfMission();
+		exerelinEndGalatiaPortionOfMission(!ExerelinSetupData.getInstance().hardMode);
 		
 		LocationAPI hyper = Global.getSector().getHyperspace();
 		SectorEntityToken atlanticLabel = hyper.addCustomEntity("atlantic_label_id", null, "atlantic_label", null);
@@ -100,25 +105,53 @@ public class VanillaSystemsGenerator {
 		abyssLabel.setFixedLocation(-65000, -47000);		
 	}
 	
-	public static void exerelinEndGalatiaPortionOfMission()
+	public static void exerelinEndGalatiaPortionOfMission(boolean withStipend)
 	{
+		if (withStipend) {
+			new GalatianAcademyStipend();
+		}
+
 		StarSystemAPI system = Global.getSector().getStarSystem("galatia");
 		PlanetAPI ancyra = (PlanetAPI) system.getEntityById("ancyra");
+		PlanetAPI pontus = (PlanetAPI) system.getEntityById("pontus");
+		PlanetAPI tetra = (PlanetAPI) system.getEntityById("tetra");
 		SectorEntityToken derinkuyu = system.getEntityById("derinkuyu_station");
+		SectorEntityToken probe = system.getEntityById("galatia_probe");
 		SectorEntityToken inner = system.getEntityById("galatia_jump_point_alpha");
 		SectorEntityToken fringe = system.getEntityById("galatia_jump_point_fringe");
 		SectorEntityToken relay = system.getEntityById("ancyra_relay");
-		
-		relay.getMemoryWithoutUpdate().unset(MemFlags.COMM_RELAY_NON_FUNCTIONAL);
-		
-		Global.getSector().getEconomy().addMarket(ancyra.getMarket());
-		Global.getSector().getEconomy().addMarket(derinkuyu.getMarket());
+
+		relay.getMemoryWithoutUpdate().unset(MemFlags.OBJECTIVE_NON_FUNCTIONAL);
+
+		FactionAPI hegemony = Global.getSector().getFaction(Factions.HEGEMONY);
+		if (hegemony.getRelToPlayer().getRel() < 0) {
+			hegemony.getRelToPlayer().setRel(0);
+		}
+
+		ancyra.getMarket().removeSubmarket(Submarkets.LOCAL_RESOURCES);
+
+		Global.getSector().getEconomy().addMarket(ancyra.getMarket(), false);
+		Global.getSector().getEconomy().addMarket(derinkuyu.getMarket(), false);
 		
 		inner.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.UNSTABLE_KEY);
 		inner.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.CAN_STABILIZE);
-		
+
 		fringe.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.UNSTABLE_KEY);
 		fringe.getMemoryWithoutUpdate().unset(JumpPointInteractionDialogPluginImpl.CAN_STABILIZE);
+
+		system.removeTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER);
+
+		MarketAPI market = ancyra.getMarket();
+		market.getMemoryWithoutUpdate().unset(MemFlags.MARKET_DO_NOT_INIT_COMM_LISTINGS);
+		market.setEconGroup(null);
+		
+		market = derinkuyu.getMarket();
+		market.setEconGroup(null);
+		derinkuyu.setFaction(Factions.INDEPENDENT);
+		market.setFactionId(Factions.INDEPENDENT);
+			
+		FactionAPI ind = Global.getSector().getFaction(Factions.INDEPENDENT);
+		market.getSubmarket(Submarkets.SUBMARKET_OPEN).setFaction(ind);
 	}
 	
 	public static void initFactionRelationships(SectorAPI sector) 

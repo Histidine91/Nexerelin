@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
@@ -111,6 +112,10 @@ public class Askonia {
 			a2b.applySpecChanges();
 			a2b.setInteractionImage("illustrations", "space_bar");
 			
+				// Salus nav buoy, in L5
+				SectorEntityToken salus_nav = system.addCustomEntity(null, "Salus Navigation Buoy", "nav_buoy", Factions.DIKTAT); 
+				salus_nav.setCircularOrbitPointingDown( star, 110-60, 1400, 45);
+			
 			system.addRingBand(a2, "misc", "rings_dust0", 256f, 1, Color.white, 256f, 1800, 70f);
 			system.addRingBand(a2, "misc", "rings_dust0", 256f, 1, Color.white, 256f, 1800, 90f);
 			system.addRingBand(a2, "misc", "rings_dust0", 256f, 1, Color.white, 256f, 1800, 110f, Terrain.RING, "Dust Ring");
@@ -167,7 +172,7 @@ public class Askonia {
 			askonia_gate.setCircularOrbit(star, 230-180, 7000, 230);
 		
 		// Umbra - the resistance (or pirates)
-		PlanetAPI a4 = system.addPlanet("umbra", star, "Umbra", "rocky_ice", 280, 150, 10000, 600);
+		PlanetAPI a4 = system.addPlanet("umbra", star, "Umbra", "rocky_ice", 280, 150, 11000, 600);
 		a4.setCustomDescriptionId("planet_umbra");
 		a4.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "asharu"));
 		a4.getSpec().setGlowColor(new Color(255,255,255,255));
@@ -175,6 +180,10 @@ public class Askonia {
 		a4.applySpecChanges();
 		a4.setInteractionImage("illustrations", "pirate_station");
 		
+		// makeshift sensor array in counter-orbit to Umbra
+		SectorEntityToken askonia_outer_array = system.addCustomEntity(null, "Askonia Fringe Listening Station", "sensor_array_makeshift", Factions.DIKTAT); 
+		askonia_outer_array.setCircularOrbitPointingDown( star, 150+180, 11000, 600);
+	
 //		system.addOrbitalJunk(a1,
 //				 "orbital_junk", // from custom_entities.json 
 //				 30, // num of junk

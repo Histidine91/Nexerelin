@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI.SurveyLevel;
 import com.fs.starfarer.api.impl.campaign.JumpPointInteractionDialogPluginImpl;
@@ -19,8 +20,11 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.DefenderDataOverride;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
@@ -43,9 +47,6 @@ import com.fs.starfarer.api.util.Misc;
  *
  * Copyright 2017 Fractal Softworks, LLC
  */
-// in Nexerelin the GalatiaMarketScripts are commented out 
-// (they add commodities to simulate normal economic behaviour during the tutorial)
-// Mission boards too
 public class Galatia {
 
 	public void generate(SectorAPI sector) {
@@ -91,8 +92,12 @@ public class Galatia {
 		market.addCondition(Conditions.HOT);
 		market.addCondition(Conditions.HABITABLE);
 		market.addCondition(Conditions.POPULATION_5);
-		market.addCondition(Conditions.ORBITAL_STATION);
-		market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
+		
+		market.addIndustry(Industries.POPULATION);
+		market.addIndustry(Industries.LIGHTINDUSTRY);
+		market.addIndustry(Industries.SPACEPORT);
+		market.addIndustry(Industries.PATROLHQ);
+		market.addIndustry(Industries.ORBITALSTATION);
 		
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
@@ -101,7 +106,19 @@ public class Galatia {
 		ancyraStation.setMarket(market);
 		ancyra.setMarket(market);
 		
-		//market.getCommDirectory().addMissionBoard();
+		market.addSubmarket(Submarkets.LOCAL_RESOURCES);
+		Misc.getLocalResourcesCargo(market).addSupplies(2000f);
+		Misc.getLocalResourcesCargo(market).addFuel(5000f);
+		//Misc.getLocalResourcesCargo(market).addItems(CargoItemType.RESOURCES, Commodities.HEAVY_MACHINERY, 500f);
+		Misc.getLocalResourcesCargo(market).addItems(CargoItemType.RESOURCES, Commodities.FOOD, 8000f);
+		//Misc.getLocalResourcesCargo(market).addItems(CargoItemType.RESOURCES, Commodities.DOMESTIC_GOODS, 2000f);
+		
+		market.getMemoryWithoutUpdate().set(MemFlags.MARKET_DO_NOT_INIT_COMM_LISTINGS, true);
+		market.getStats().getDynamic().getMod(Stats.PATROL_NUM_LIGHT_MOD).modifyMult("tut", 0f);
+		market.getStats().getDynamic().getMod(Stats.PATROL_NUM_MEDIUM_MOD).modifyMult("tut", 0f);
+		market.getStats().getDynamic().getMod(Stats.PATROL_NUM_HEAVY_MOD).modifyMult("tut", 0f);
+		market.setEconGroup(market.getId());
+		Global.getSector().getEconomy().addMarket(market, true);
 		
 		//ancyra.addScript(new GalatiaMarketScript(market));
 		
@@ -115,7 +132,7 @@ public class Galatia {
 										   ancyra.getCircularOrbitAngle() - 60f, 
 										   ancyra.getCircularOrbitRadius(),
 										   ancyra.getCircularOrbitPeriod());
-		relay.getMemoryWithoutUpdate().set(MemFlags.COMM_RELAY_NON_FUNCTIONAL, true);
+		relay.getMemoryWithoutUpdate().set(MemFlags.OBJECTIVE_NON_FUNCTIONAL, true);
 		
 		
 		SectorEntityToken pontus = system.addPlanet("pontus", star, "Pontus", "gas_giant", 200, 300, 6200, 400);
@@ -127,9 +144,12 @@ public class Galatia {
 		extraProbeSalvage.addCommodity(Commodities.GAMMA_CORE, 1);
 		BaseSalvageSpecial.setExtraSalvage(extraProbeSalvage, probe.getMemoryWithoutUpdate(), -1);
 		
-		
 		system.addRingBand(pontus, "misc", "rings_ice0", 256f, 2, Color.white, 256f, 650, 45, Terrain.RING, null);
 		system.addRingBand(pontus, "misc", "rings_ice0", 256f, 3, Color.white, 256f, 800, 50, Terrain.RING, null);
+		
+		
+		SectorEntityToken galatia_loc2 = system.addCustomEntity(null, null, "stable_location", Factions.NEUTRAL); 
+		galatia_loc2.setCircularOrbitPointingDown( star, 200-60, 6200, 400);
 		
 		float beltOrbitRadius = 8000;
 		system.addAsteroidBelt(star, 150, beltOrbitRadius, 500, 150, 300, Terrain.ASTEROID_BELT, null);
@@ -146,7 +166,7 @@ public class Galatia {
 		addDerelict(system, tetra, "buffalo2_FS", ShipCondition.BATTERED, 400f, false);
 		addDerelict(system, tetra, "hammerhead_Balanced", ShipCondition.AVERAGE, 450f, true);
 		addDerelict(system, tetra, "condor_Support", ShipCondition.BATTERED, 500f, true);
-			
+		addDerelict(system, tetra, "dram_Light", ShipCondition.BATTERED, 525f, true);
 		
 		SectorEntityToken derinkuyuStation = system.addCustomEntity("derinkuyu_station", "Derinkuyu Mining Station", "station_mining00", Factions.PIRATES);
 		derinkuyuStation.setCircularOrbitWithSpin(star, 135, beltOrbitRadius - 100f, 300f, 3f, 5f);
@@ -163,18 +183,23 @@ public class Galatia {
 		
 		market.setFactionId(derinkuyuStation.getFaction().getId());
 		market.addCondition(Conditions.POPULATION_4);
-		market.addCondition(Conditions.ORBITAL_STATION);
-		market.addCondition(Conditions.ORE_COMPLEX);
-		market.addCondition(Conditions.ORE_COMPLEX);
-		market.addCondition(Conditions.FREE_PORT);
+		//market.addCondition(Conditions.ORBITAL_STATION);
+		//market.addCondition(Conditions.FREE_PORT);
+		
+		market.addIndustry(Industries.POPULATION);
+		market.addIndustry(Industries.SPACEPORT);
+		market.addIndustry(Industries.MINING);
+
 		
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		
 		derinkuyuStation.setMarket(market);
-		//market.getCommDirectory().addMissionBoard();
-		//derinkuyuStation.addScript(new GalatiaMarketScript(market));
+		derinkuyuStation.addScript(new GalatiaMarketScript(market));
+		
+		market.setEconGroup(market.getId());
+		Global.getSector().getEconomy().addMarket(market, true);
 		
 		// Galatia Gate
 		SectorEntityToken gate = system.addCustomEntity("galatia_gate", // unique id
@@ -230,6 +255,7 @@ public class Galatia {
 		
 		inner.getMemoryWithoutUpdate().set(JumpPointInteractionDialogPluginImpl.UNSTABLE_KEY, true);
 		fringe.getMemoryWithoutUpdate().set(JumpPointInteractionDialogPluginImpl.UNSTABLE_KEY, true);
+		system.addTag(Tags.SYSTEM_CUT_OFF_FROM_HYPER);
 			
 		// L4 & L5 mini-nebulas
 		SectorEntityToken pontus_L4_nebula = system.addTerrain(Terrain.NEBULA, new BaseTiledTerrain.TileParams(

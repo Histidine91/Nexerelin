@@ -60,7 +60,7 @@ public class Canaan {
 			// L4
 			SectorEntityToken relay = system.addCustomEntity("gilead_relay", // unique id
 					 "Gilead Relay", // name - if null, defaultName from custom_entities.json will be used
-					 "comm_relay", // type of object, defined in custom_entities.json
+					 "comm_relay_makeshift", // type of object, defined in custom_entities.json
 					 "luddic_church"); // faction
 			relay.setCircularOrbitPointingDown(canaan_star, 60-60, 5000, 250);
 			
@@ -83,6 +83,9 @@ public class Canaan {
 			asher.getSpec().setGlowColor(new Color(250,225,195,255));
 			asher.applySpecChanges();
 			asher.setCustomDescriptionId("planet_asher");
+			
+			SectorEntityToken gad_loc = system.addCustomEntity(null, null, "sensor_array_makeshift", "luddic_church"); 
+			gad_loc.setCircularOrbitPointingDown(canaan_star, 0 + 180, 1000, 40);
 			
 		// and have asteroids on the other side, too. - L5 is behind
 		SectorEntityToken gadL5 = system.addTerrain(Terrain.ASTEROID_FIELD,

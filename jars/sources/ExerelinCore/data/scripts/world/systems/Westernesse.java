@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 
@@ -48,10 +49,15 @@ public class Westernesse {
 			fikenhild.getSpec().setPlanetColor(new Color(240,225,255,255));
 			fikenhild.applySpecChanges();
 			fikenhild.setCustomDescriptionId("planet_fikenhild");
+			
+		//	SectorEntityToken fikenhildStation = system.addCustomEntity("fikenhild_station", "Horn Starport", "station_midline1",  Factions.PERSEAN);
+		//	fikenhildStation.setCircularOrbitPointingDown( fikenhild, 0, 150, 30);		
+		//	fikenhildStation.setInteractionImage("illustrations", "orbital");
 		
 		JumpPointAPI jumpPoint1 = Global.getFactory().createJumpPoint("westernesse_jump", "Westernesse Jump-point");
 		jumpPoint1.setCircularOrbit( system.getEntityById("westernesse"), 90 + 60, radiusAfter1 + 1500 , 90);
 		jumpPoint1.setRelatedPlanet(horn);
+		jumpPoint1.setStandardWormholeToHyperspaceVisual();
 		system.addEntity(jumpPoint1);
 		
 		// Westernesse Relay - L5 (behind)
@@ -59,9 +65,14 @@ public class Westernesse {
 		westernesse_relay.setCircularOrbitPointingDown( system.getEntityById("westernesse"), 90 - 60, radiusAfter1 + 1500 , 90);
 				
 		PlanetAPI suddene = system.addPlanet("suddene", westernesse_star, "Suddene", "barren-desert", 180, 145, radiusAfter1+2600, 210);
+		suddene.setCustomDescriptionId("planet_suddene");
 		
-		PlanetAPI ailmar = system.addPlanet("ailmar", westernesse_star, "Ailmar", "tundra", 0, 165, radiusAfter1+3300, 400);
+		PlanetAPI ailmar = system.addPlanet("ailmar", westernesse_star, "Ailmar", "tundra", 0, 165, radiusAfter1+3300, 390);
+		ailmar.setCustomDescriptionId("planet_ailmar");
 			PlanetAPI rymenhild = system.addPlanet("rymenhild", ailmar, "Rymenhild", "barren-bombarded", 180, 65, 450, 40);
+			
+		SectorEntityToken westernesse_stable2 = system.addCustomEntity(null, null, "nav_buoy_makeshift", Factions.INDEPENDENT);
+		westernesse_stable2.setCircularOrbitPointingDown(westernesse_star, -60, radiusAfter1+3300, 390);
 			
 			
 		float radiusAfter2 = StarSystemGenerator.addOrbitingEntities(system, westernesse_star, StarAge.AVERAGE,

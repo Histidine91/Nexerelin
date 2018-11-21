@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 
@@ -66,6 +67,9 @@ public class AlGebbar {
 			// btw, jump-point is related to this one.
 			jumpPoint2.setRelatedPlanet(gebbar4);
 		
+		SectorEntityToken al_gebbar_loc1 = system.addCustomEntity(null,null, "sensor_array_makeshift",Factions.LUDDIC_PATH); 
+		al_gebbar_loc1.setCircularOrbitPointingDown( algebbar_star, 270 - 60, 5000, 225);
+		
 		PlanetAPI gebbar5 = system.addPlanet("gebbar5", algebbar_star, "Loutron", "cryovolcanic", 90, 120, 6400, 295);
 			gebbar5.getSpec().setPlanetColor(new Color(235,255,245,255));
 			
@@ -75,6 +79,9 @@ public class AlGebbar {
 			abandoned_station.setInteractionImage("illustrations", "orbital_construction");
 			abandoned_station.addTag("abandoned");
 			abandoned_station.addTag("volatiles_extraction_platform");
+			
+		SectorEntityToken al_gebbar_loc2 = system.addCustomEntity(null,null, "stable_location",Factions.NEUTRAL); 
+		al_gebbar_loc2.setCircularOrbitPointingDown( algebbar_star, 90 + 60, 6400, 295);
 			
 		system.autogenerateHyperspaceJumpPoints(true, true);
 	}

@@ -8,16 +8,72 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI.SurveyLevel;
+import com.fs.starfarer.api.impl.campaign.DebugFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin.MagneticFieldParams;
 
 public class Duzahk {
+	
+	public void addHyperspaceStation(final SectorAPI sector) {
+		// create a hyperspace station, dev mode only, to help make sure that doesn't cause various crashes
+		
+		LocationAPI hyper = Global.getSector().getHyperspace();
 
+		final SectorEntityToken hyperstation = hyper.addCustomEntity("hyperstation_test", "Hyper Station", "station_mining00", Factions.INDEPENDENT);
+		hyperstation.setInteractionImage("illustrations", "orbital");
+		hyperstation.setCircularOrbit(hyper.createToken(0, 0), 0, 500, 100);
+
+		MarketAPI market = Global.getFactory().createMarket("hyper_market", hyperstation.getName(), 0);
+		market.setSize(4);
+		market.setFactionId(Factions.PIRATES);
+
+		market.setSurveyLevel(SurveyLevel.FULL);
+		market.setPrimaryEntity(hyperstation);
+
+		market.setFactionId(hyperstation.getFaction().getId());
+		market.addCondition(Conditions.POPULATION_4);
+		//market.addCondition(Conditions.ORBITAL_STATION);
+		//market.addCondition(Conditions.FREE_PORT);
+
+		market.addIndustry(Industries.POPULATION);
+		
+		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
+		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
+		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
+
+		hyperstation.setMarket(market);
+		sector.getEconomy().addMarket(market, false);
+		//hyperstation.removeTag(Tags.STATION);
+		
+//		hyperstation.addScript(new EveryFrameScript() {
+//			public boolean runWhilePaused() {
+//				return false;
+//			}
+//			public boolean isDone() {
+//				return false;
+//			}
+//			public void advance(float amount) {
+//				hyperstation.setContainingLocation(sector.getStarSystem("Duzahk"));
+//			}
+//		});
+	}
+	 
 	public void generate(SectorAPI sector) {
 		
 		StarSystemAPI system = sector.createStarSystem("Duzahk");
+		
+		if (Global.getSettings().isDevMode() && DebugFlags.WITH_HYPER_STATION) {
+			 addHyperspaceStation(sector);
+		}
+		
 		LocationAPI hyper = Global.getSector().getHyperspace();
 		
 		system.setBackgroundTextureFilename("graphics/backgrounds/background1.jpg");
@@ -93,11 +149,17 @@ public class Duzahk {
 		duzahk2.setCustomDescriptionId("planet_druj");
 		
 		// Druj Relay - L5 (behind)
-		SectorEntityToken druj_relay = system.addCustomEntity("druj_relay", // unique id
-				 "Druj Relay", // name - if null, defaultName from custom_entities.json will be used
-				 "comm_relay", // type of object, defined in custom_entities.json
-				 "pirates"); // faction
-		druj_relay.setCircularOrbitPointingDown( duzahk_star, 130 - 60, 4200, 135);
+		//SectorEntityToken druj_relay = system.addCustomEntity("druj_relay", // unique id
+		//		 "Druj Relay", // name - if null, defaultName from custom_entities.json will be used
+		//		 "comm_relay", // type of object, defined in custom_entities.json
+		//		 "pirates"); // faction
+		//druj_relay.setCircularOrbitPointingDown( duzahk_star, 130 - 60, 4200, 135);
+		
+		SectorEntityToken druj_stable1 = system.addCustomEntity(null, null, "sensor_array_makeshift", "pirates");
+		druj_stable1.setCircularOrbitPointingDown( duzahk_star, 130 - 60, 4200, 135);
+		
+		SectorEntityToken druj_stable2 = system.addCustomEntity(null, null, "stable_location", "neutral");
+		druj_stable2.setCircularOrbitPointingDown( duzahk_star, 130 + 60, 4200, 135);
 
 		//JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("penelope_jump_point_alpha", "Penelope's Star Inner System Jump");
 		//OrbitAPI orbit = Global.getFactory().createCircularOrbit(penelope_star, 0, 800, 45);

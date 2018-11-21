@@ -59,6 +59,9 @@ public class TiaTaxet {
 		
 		taxet_star_field.setCircularOrbit(taxet_star, 0, 0, 50);
 		
+		SectorEntityToken tia_stable1 = system.addCustomEntity(null, null, "stable_location", "neutral");
+		tia_stable1.setCircularOrbitPointingDown(tia_star, 0 , 2900, 100);
+		
 		// An asteroid belts
 		system.addRingBand(tia_star, "misc", "rings_dust0", 256f, 1, Color.white, 256f, 4300, 220f, null, null);
 		system.addRingBand(tia_star, "misc", "rings_asteroids0", 256f, 0, Color.white, 256f, 4400, 226f, null, null);
@@ -79,7 +82,7 @@ public class TiaTaxet {
 		
 		
 		// Abandoned shipyard /research station
-			SectorEntityToken abandoned_station1 = system.addOrbitalStation("abandoned_spacedock", tia_star, 270 + 60, 7100, 500, "Abandoned Research Station", "neutral");
+			SectorEntityToken abandoned_station1 = system.addCustomEntity("abandoned_spacedock", "Abandoned Research Station", "station_side00", "neutral");
 			//abandoned_station1.setCustomDescriptionId("station_tiataxet_abandoned_spacedock");
 			abandoned_station1.setInteractionImage("illustrations", "space_wreckage");
 			abandoned_station1.setCircularOrbitPointingDown(system.getEntityById("tia"), 180, 4450, 250);
@@ -139,6 +142,9 @@ public class TiaTaxet {
 		
 		
 		PlanetAPI tia2 = system.addPlanet("tia2", tia_star, "Ogre", "irradiated", 0, 90, 5700, 400);
+		
+		SectorEntityToken tia_stable2 = system.addCustomEntity(null, null, "stable_location", "neutral");
+		tia_stable2.setCircularOrbitPointingDown(tia_star, -60 , 5700, 400);
 		
 		// Arbitrary Asteroid field #4
 		SectorEntityToken tia_field4 = system.addTerrain(Terrain.ASTEROID_FIELD,

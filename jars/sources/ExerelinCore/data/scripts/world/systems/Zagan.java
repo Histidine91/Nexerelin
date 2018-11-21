@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
@@ -133,6 +134,8 @@ public class Zagan {
 				new Color(10, 0, 150)));
 		melikah_magfield.setCircularOrbit(melikah, 0, 0, 100);
 				
+		SectorEntityToken zagan_stable2 = system.addCustomEntity(null, null, "nav_buoy_makeshift", Factions.INDEPENDENT);
+		zagan_stable2.setCircularOrbitPointingDown(zagan_star, -60, 7800, 400);
 		
 			PlanetAPI hikmah = system.addPlanet("hikmah", melikah, "Hikmah", "toxic_cold", 0, 95, 750, 30);
 			//hikmah.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "volturn"));

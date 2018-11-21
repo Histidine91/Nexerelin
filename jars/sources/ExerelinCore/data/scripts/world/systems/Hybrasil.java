@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.terrain.BaseTiledTerrain;
@@ -120,6 +121,9 @@ public class Hybrasil {
 		hybrasil3.getMarket().addCondition(Conditions.THIN_ATMOSPHERE);
 		
 		
+		SectorEntityToken crom_cruach_loc = system.addCustomEntity(null,null, "sensor_array_makeshift",Factions.TRITACHYON); 
+		crom_cruach_loc.setCircularOrbitPointingDown( hybrasil_star, 180-60, 7300, 340);		
+		
 		// jump point Crom Leim!
 		JumpPointAPI jumpPoint = Global.getFactory().createJumpPoint("hybrasil_inner_jump", "Hybrasil Inner System Jump-point");
 		OrbitAPI orbit = Global.getFactory().createCircularOrbit(hybrasil3, 0, 1500, 65);
@@ -190,6 +194,9 @@ public class Hybrasil {
 					10, 10, // size of the nebula grid, should match above string
 					"terrain", "nebula_blue", 4, 4, null));
 			balar_L4_nebula.setCircularOrbit(hybrasil_star, 60 + 60, 11500, 820);
+			
+			SectorEntityToken balar_loc = system.addCustomEntity(null,null, "nav_buoy_makeshift",Factions.TRITACHYON); 
+			balar_loc.setCircularOrbitPointingDown( hybrasil_star, 60 + 60, 11500, 820);	
 			
 			SectorEntityToken balar_L5_nebula = system.addTerrain(Terrain.NEBULA, new BaseTiledTerrain.TileParams(
 					"          " +

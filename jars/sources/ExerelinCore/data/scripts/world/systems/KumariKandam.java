@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
@@ -95,6 +96,9 @@ public class KumariKandam {
 			kumari_aruL4.setCircularOrbit(kumarikandam_star, 270 +60, 2800, 80);
 			kumari_aruL5.setCircularOrbit(kumarikandam_star, 270 -60, 2800, 80);
 			
+			SectorEntityToken kumari_aru_l5_loc = system.addCustomEntity(null, null, "comm_relay_makeshift", Factions.LUDDIC_PATH); 
+			kumari_aru_l5_loc.setCircularOrbitPointingDown(kumarikandam_star, 270 -60, 2800, 80);
+			
 			
 		PlanetAPI chalcedon = system.addPlanet("chalcedon", kumarikandam_star, "Chalcedon", "terran-eccentric", 220, 160, 4300, 180);
 		chalcedon.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "volturn"));
@@ -103,8 +107,12 @@ public class KumariKandam {
 		chalcedon.applySpecChanges();
 		chalcedon.setCustomDescriptionId("planet_chalcedon");
 		
+		// counter-orbit sensor array
+		SectorEntityToken chalcedon_loc = system.addCustomEntity(null, null, "nav_buoy_makeshift", Factions.PERSEAN); 
+		chalcedon_loc.setCircularOrbitPointingDown(kumarikandam_star, 220-180, 4300, 180);
+		
 			// Destroyed station
-			SectorEntityToken abandoned_station1 = system.addOrbitalStation("abandoned_spacedock", kumarikandam_star, 60 + 12, 4300, 180, "Abandoned Spacedock", "neutral");
+			SectorEntityToken abandoned_station1 = system.addCustomEntity("abandoned_spacedock", "Abandoned Spacedock", "station_side00", "neutral");
 			abandoned_station1.setInteractionImage("illustrations", "abandoned_station3");
 			abandoned_station1.setCircularOrbitPointingDown(kumarikandam_star, 220 + 14, 4300, 180);
 			abandoned_station1.setCustomDescriptionId("station_chalcedon");
@@ -170,6 +178,9 @@ public class KumariKandam {
 		PlanetAPI kanni = system.addPlanet("kanni", kumarikandam_star, "Kanni", "barren", 180, 100, 8100, 500);
 		kanni.setCustomDescriptionId("planet_kanni");
 		kanni.setInteractionImage("illustrations", "mine");
+		
+		SectorEntityToken kanni_loc = system.addCustomEntity(null, null, "sensor_array_makeshift", Factions.PIRATES); 
+		kanni_loc.setCircularOrbitPointingDown(kumarikandam_star, 180 + 60, 8100, 500);
 		
 		float radiusAfter = StarSystemGenerator.addOrbitingEntities(system, kumarikandam_star, StarAge.AVERAGE,
 				1, 2, // min/max entities to add

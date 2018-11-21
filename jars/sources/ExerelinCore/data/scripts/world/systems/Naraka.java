@@ -33,12 +33,15 @@ public class Naraka {
 		PlanetAPI naraka_star = system.initStar("naraka", // unique id for this star 
 											    "star_orange",  // id in planets.json
 											    650f, 		  // radius (in pixels at default zoom)
-											    160, // corona
+											    200, // corona
 											    5f, // solar wind burn level
 												0.65f, // flare probability
 												2.2f); // CR loss multiplier, good values are in the range of 1-5
 		
 		system.setLightColor(new Color(255, 220, 200)); // light color in entire system, affects all entities
+		
+		SectorEntityToken naraka_stable1 = system.addCustomEntity(null, null, "stable_location", "neutral");
+		naraka_stable1.setCircularOrbitPointingDown(naraka_star, 0, 2750, 160);
 		
 		system.addRingBand(naraka_star, "misc", "rings_dust0", 256f, 0, Color.white, 256f, 3300, 220f, Terrain.RING, "The Yamuna");
 		
@@ -65,18 +68,12 @@ public class Naraka {
 		
 		JumpPointAPI jumpPoint1 = Global.getFactory().createJumpPoint("naraka_jump", "Naraka Jump-point");
 		jumpPoint1.setCircularOrbit( system.getEntityById("naraka"), 60 + 60, 4600, 140);
-		//jumpPoint1.setRelatedPlanet(naraka_b);
 		jumpPoint1.setRelatedPlanet(naraka_c);
 		system.addEntity(jumpPoint1);
 		
-		
 		// Naraka Relay
-		SectorEntityToken relay = system.addCustomEntity("naraka_relay", // unique id
-				 "Naraka Relay", // name - if null, defaultName from custom_entities.json will be used
-				 "comm_relay", // type of object, defined in custom_entities.json
-				 "hegemony"); // faction
+		SectorEntityToken relay = system.addCustomEntity("naraka_relay", "Naraka Relay", "comm_relay", "hegemony");
 		relay.setCircularOrbitPointingDown(system.getEntityById("naraka"), 60 + 180, 4600, 140);
-		
 		
 		float radiusAfter = StarSystemGenerator.addOrbitingEntities(system, naraka_star, StarAge.AVERAGE,
 				4, 5, // min/max entities to add

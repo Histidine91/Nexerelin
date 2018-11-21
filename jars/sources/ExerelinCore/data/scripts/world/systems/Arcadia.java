@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.StarTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
@@ -34,7 +35,10 @@ public class Arcadia {
 		
 		
 		PlanetAPI arcadia1 = system.addPlanet("nomios", star, "Nomios", "frozen", 90, 130, 3000, 100);
-		//arcadia1.setCustomDescriptionId("planet_nomios");
+		arcadia1.setCustomDescriptionId("planet_nomios");
+		
+			SectorEntityToken nomios_location = system.addCustomEntity(null,null, "stable_location",Factions.NEUTRAL); 
+			nomios_location.setCircularOrbitPointingDown( star, 90 + 60, 3000, 100);		
 		
 		PlanetAPI arcadia2 = system.addPlanet("syrinx", star, "Syrinx", "ice_giant", 180, 300, 6000, 200);
 		arcadia2.setCustomDescriptionId("planet_syrinx");
@@ -55,7 +59,7 @@ public class Arcadia {
 			// langrangian point of Syrinx
 			SectorEntityToken relay = system.addCustomEntity("syrinx_relay", // unique id
 					 "Syrinx Relay", // name - if null, defaultName from custom_entities.json will be used
-					 "comm_relay", // type of object, defined in custom_entities.json
+					 "comm_relay_makeshift", // type of object, defined in custom_entities.json
 					 "hegemony"); // faction
 			relay.setCircularOrbitPointingDown( system.getEntityById("arcadia"), 180 + 60, 6000, 200);
 			

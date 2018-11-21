@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
@@ -49,6 +50,9 @@ public class Thule {
 		hekla.getSpec().setPlanetColor( new Color(255, 235, 170,255) );
 		hekla.applySpecChanges();
 		
+				SectorEntityToken array1 = system.addCustomEntity(null, null, "sensor_array", Factions.PERSEAN); 
+				array1.setCircularOrbitPointingDown( thule_star, 60, 2870, 90);
+		
 		system.addAsteroidBelt(thule_star, 90, 3750, 500, 100, 120, Terrain.ASTEROID_BELT,  "The Ingwin");
 		system.addRingBand(thule_star, "misc", "rings_dust0", 256f, 0, Color.white, 256f, 3600, 105f, null, null);
 		system.addRingBand(thule_star, "misc", "rings_asteroids0", 256f, 0, Color.white, 256f, 3720, 115f, null, null);
@@ -68,7 +72,11 @@ public class Thule {
 		kazeron.applySpecChanges();
 		kazeron.setCustomDescriptionId("planet_kazeron");
 		
-			PlanetAPI draugr = system.addPlanet("draugr", kazeron, "Draugr", "barren-bombarded", 0, 50, 400, 24);
+		//SectorEntityToken kazeronStation = system.addCustomEntity("kazeron_station", "Kazeron Star Command", "station_midline2", Factions.PERSEAN);
+		//kazeronStation.setCircularOrbitPointingDown( kazeron, 0, 150, 30);		
+		//kazeronStation.setInteractionImage("illustrations", "orbital");
+		
+			PlanetAPI draugr = system.addPlanet("draugr", kazeron, "Draugr", "barren-bombarded", 0, 50, 420, 24);
 			draugr.getSpec().setGlowTexture(Global.getSettings().getSpriteName("hab_glows", "banded"));
 			draugr.getSpec().setGlowColor( new Color(255,220,50,35) );
 			draugr.getSpec().setUseReverseLightForGlow(true);
@@ -76,7 +84,7 @@ public class Thule {
 			draugr.getSpec().setTilt(90f);
 			draugr.getSpec().setPlanetColor( new Color(255, 245, 230,255) );
 			draugr.applySpecChanges();
-			
+
 			// Kazeron jump-point
 			JumpPointAPI jumpPoint1 = Global.getFactory().createJumpPoint("thule_jump", "Thule Jump-point");
 			jumpPoint1.setCircularOrbit( system.getEntityById("thule"), 30, 5200, 225);
@@ -84,11 +92,8 @@ public class Thule {
 			system.addEntity(jumpPoint1);
 			
 			// Kazeron Relay - L5 (behind)
-			SectorEntityToken relay = system.addCustomEntity("kazeron_relay", // unique id
-					 "Kazeron Relay", // name - if null, defaultName from custom_entities.json will be used
-					 "comm_relay", // type of object, defined in custom_entities.json
-					 "persean"); // faction
-			relay.setCircularOrbitPointingDown(system.getEntityById("thule"), 150, 5200, 225);
+			SectorEntityToken kazeron_relay = system.addCustomEntity("kazeron_relay", "Kazeron Relay",  "comm_relay", Factions.PERSEAN); 
+			kazeron_relay.setCircularOrbitPointingDown( thule_star, 150, 5200, 225);
 			
 		system.addAsteroidBelt(thule_star, 90, 5950, 500, 150, 300, Terrain.ASTEROID_BELT,  "Inged's Crown");
 		system.addRingBand(thule_star, "misc", "rings_ice0", 256f, 1, Color.white, 256f, 5900, 305f, null, null);
@@ -113,13 +118,10 @@ public class Thule {
 						 "inactive_gate", // type of object, defined in custom_entities.json
 						 null); // faction
 
-				gate.setCircularOrbit(system.getEntityById("thule"), 180+60, 6700, 360);
-		
-				// Eldfell jump-point
-				JumpPointAPI jumpPoint2 = Global.getFactory().createJumpPoint("eldfell_jump", "Eldfell Jump-point");
-				jumpPoint2.setCircularOrbit( system.getEntityById("thule"), 180-60, 6700, 360);
-				jumpPoint2.setRelatedPlanet(eldfell);
-				system.addEntity(jumpPoint1);
+				gate.setCircularOrbit(thule_star, 180+60, 6700, 360);
+				
+				SectorEntityToken eldfell_stable = system.addCustomEntity(null, null, "stable_location", "neutral");
+				eldfell_stable.setCircularOrbitPointingDown( thule_star, 180-60 , 6700, 360);
 				
 		system.addAsteroidBelt(thule_star, 90, 7650, 500, 150, 300, Terrain.ASTEROID_BELT,  "Garmund's Ring");
 		system.addRingBand(thule_star, "misc", "rings_ice0", 256f, 2, Color.white, 256f, 7750, 385, null, null);

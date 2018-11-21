@@ -89,18 +89,17 @@ public class Magec {
 		magec2.applySpecChanges();
 
 		
-		
 		// And herrrrre's Achaman
-		PlanetAPI magec3 = system.addPlanet("achaman", star, "Achaman", StarTypes.WHITE_DWARF, 45, 120, 8000, 1000);
+		PlanetAPI magec3 = system.addPlanet("achaman", star, "Achaman", StarTypes.WHITE_DWARF, 45, 120, 8000, 700);
 		system.setSecondary(magec3);
 		system.addCorona(magec3, 150, 3f, 0.05f, 1f); // it's a very docile star.
 		
-		SectorEntityToken relay = system.addCustomEntity("achaman_relay", // unique id
+		SectorEntityToken achaman_buoy = system.addCustomEntity("achaman_relay", // unique id
 				 "Achaman Relay", // name - if null, defaultName from custom_entities.json will be used
-				 "comm_relay", // type of object, defined in custom_entities.json
+				 "nav_buoy", // type of object, defined in custom_entities.json
 				 "tritachyon"); // faction
 		
-		relay.setCircularOrbitPointingDown(system.getEntityById("achaman"), 90, 1000, 45);
+		achaman_buoy.setCircularOrbitPointingDown( star, 45+60, 8000, 700);
 		
 		PlanetAPI magec3a = system.addPlanet("tibicena", magec3, "Tibicena", "rocky_metallic", 200, 80, 800, 45);
 		
@@ -175,7 +174,7 @@ public class Magec {
 		// Guayota Relay - L5 (behind); well, okay, not quite the L5. But whatever.
 		SectorEntityToken guayota_relay = system.addCustomEntity("guayota_relay", // unique id
 				 "Guayota Relay", // name - if null, defaultName from custom_entities.json will be used
-				 "comm_relay", // type of object, defined in custom_entities.json
+				 "comm_relay_makeshift", // type of object, defined in custom_entities.json
 				 "independent"); // faction
 		
 		guayota_relay.setCircularOrbitPointingDown( star, 0 + 30, 3900, 160);

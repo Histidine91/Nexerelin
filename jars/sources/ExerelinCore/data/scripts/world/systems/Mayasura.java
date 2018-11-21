@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.SalvageSpecialAssigner;
@@ -42,7 +43,7 @@ public class Mayasura {
 		mayasura_b.getSpec().setUseReverseLightForGlow(true);
 		mayasura_b.getSpec().setAtmosphereThicknessMin(16);
 		mayasura_b.getSpec().setAtmosphereThickness(0.14f);
-		mayasura_b.getSpec().setAtmosphereColor( new Color(150,125,100,30) );
+		mayasura_b.getSpec().setAtmosphereColor( new Color(150,125,100,30));
 		mayasura_b.applySpecChanges();
 		
 		PlanetAPI mayasura_c = system.addPlanet("gelan", mayasura_star, "Gelan", "toxic", 300, 200, 2400, 104);
@@ -51,6 +52,7 @@ public class Mayasura {
 		mayasura_c.getSpec().setGlowColor(new Color(255,150,0,255));
 		mayasura_c.getSpec().setUseReverseLightForGlow(true);
 		mayasura_c.getSpec().setCloudColor(new Color(255,245,205,220));
+		mayasura_c.getSpec().setAtmosphereThicknessMin(62f); // fix for aliasing issue on outward side of planet
 		mayasura_c.applySpecChanges();
 
 			system.addRingBand(mayasura_c, "misc", "rings_special0", 256f, 0, new Color(255,230,100,255), 256f, 420, 60f, Terrain.RING, "Gelan's Shackle");
@@ -91,6 +93,10 @@ public class Mayasura {
 			mairaath_shade.setCircularOrbitPointingDown( mayasura_star, 300, 3550, 183 );		
 			mairaath_shade.setCustomDescriptionId("stellar_shade");
 		
+			// pirate sensor array counter-rotating Mairaath
+			SectorEntityToken mayasura_stable1 = system.addCustomEntity(null, null, "sensor_array_makeshift", Factions.PIRATES);
+			mayasura_stable1.setCircularOrbitPointingDown(mayasura_star, 180, 3800, 183);
+			
 		system.addAsteroidBelt(mayasura_star, 90, 4300, 200, 140, 180, Terrain.ASTEROID_BELT, "The Danavas");
 		system.addRingBand(mayasura_star, "misc", "rings_dust0", 256f, 0, Color.white, 256f, 4360, 160f);
 		
@@ -129,7 +135,6 @@ public class Mayasura {
 			debris.setCircularOrbit(mayasura_star, 45 + 10, 4500, 250);
 			
 			
-			
 			// a gate opposite of the Lost Astropolis
 			SectorEntityToken gate = system.addCustomEntity("mayasura_gate", // unique id
 					 "Mayasura Gate", // name - if null, defaultName from custom_entities.json will be used
@@ -153,7 +158,7 @@ public class Mayasura {
 		mayasura_e.applySpecChanges();
 		
 			// rumoured to have the finest cocktail lounge in the entire Sector
-			SectorEntityToken tritachStation = system.addOrbitalStation("port_tse", mayasura_e, 120, 4750, 160, "Port Tse Franchise Station", "tritachyon");
+			SectorEntityToken tritachStation = system.addCustomEntity("port_tse", "Port Tse Franchise Station", "station_side00", "tritachyon");
 			tritachStation.setCustomDescriptionId("station_tse_enterprise");
 			tritachStation.setInteractionImage("illustrations", "space_bar");
 			tritachStation.setCircularOrbitWithSpin(mayasura_e, 60, 510, 30, 3, 5);
@@ -169,6 +174,9 @@ public class Mayasura {
 		SectorEntityToken mayasura_relay = system.addCustomEntity("mayasura_relay", "Mayasura Relay", "comm_relay", "tritachyon");
 		mayasura_relay.setCircularOrbitPointingDown( mayasura_star, 270 + 60, 6200, 290);
 			
+		// stable loc in counter-orbit to Diti
+		SectorEntityToken mayasura_stable2 = system.addCustomEntity(null, null, "stable_location", Factions.NEUTRAL);
+		mayasura_stable2.setCircularOrbitPointingDown(mayasura_star, 90, 6200, 290);
 		
 		system.addAsteroidBelt(mayasura_star, 150, 7500, 400, 370, 430, Terrain.ASTEROID_BELT, "The Takshaka");
 		system.addRingBand(mayasura_star, "misc", "rings_dust0", 256f, 0, Color.white, 256f, 7520, 400f);
