@@ -54,7 +54,7 @@ public class NexUtilsReputation
 		else
 		{
 			if (highlight != null)
-				Global.getSector().getCampaignUI().addMessage(str, highlight, highlightColor);
+				Global.getSector().getCampaignUI().addMessage(str, Misc.getTextColor(), highlight, null, highlightColor, null);
 			else
 				Global.getSector().getCampaignUI().addMessage(str);
 		}

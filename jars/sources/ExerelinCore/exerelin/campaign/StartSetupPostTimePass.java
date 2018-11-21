@@ -66,7 +66,7 @@ public class StartSetupPostTimePass {
 				Color color = Misc.getHighlightColor();
 				Color color2 = Color.RED;
 				CampaignUIAPI ui = sector.getCampaignUI();
-				ui.addMessage("You are using " + numIncompatibles + " mod faction(s) that do not support non-random sector mode!", color, numIncompatibles+"", color2);
+				ui.addMessage("You are using " + numIncompatibles + " mod faction(s) that do not support non-random sector mode!", color, numIncompatibles+"", null, color2, null);
 				ui.addMessage("See starsector.log for details", color);
 			}
 		}
