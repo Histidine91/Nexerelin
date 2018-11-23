@@ -821,24 +821,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         // (un)apply free port if needed
         ExerelinFactionConfig newOwnerConfig = ExerelinConfig.getExerelinFactionConfig(newOwnerId);
-        boolean wantFreeMarket = true;
+        boolean wantFreePort = true;
         if (!sectorManager.corvusMode)
         {
-            wantFreeMarket = newOwnerConfig.freeMarket;
+            wantFreePort = newOwnerConfig.freeMarket;
         }
         else
         {
-            wantFreeMarket = market.getMemoryWithoutUpdate().getBoolean("$startingFreeMarket")
+            wantFreePort = market.getMemoryWithoutUpdate().getBoolean("$startingFreeMarket")
                     || (newOwnerConfig.pirateFaction && newOwnerConfig.freeMarket);
         }
-        if (wantFreeMarket)
-        {
-            if (!market.hasCondition(Conditions.FREE_PORT)) market.addCondition(Conditions.FREE_PORT);
-        }
-        else 
-        {
-            market.removeCondition(Conditions.FREE_PORT);
-        }
+        market.setFreePort(wantFreePort);
+        
         ExerelinUtilsMarket.setTariffs(market);
         
         List<SubmarketAPI> submarkets = market.getSubmarketsCopy();

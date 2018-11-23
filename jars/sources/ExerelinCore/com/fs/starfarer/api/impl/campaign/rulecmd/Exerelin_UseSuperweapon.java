@@ -3,22 +3,18 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.StatsTracker;
-import exerelin.campaign.events.SuperweaponEvent;
-import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import java.util.HashMap;
@@ -27,6 +23,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
+// TODO think over what this should do and how
+@Deprecated
 public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 	
 	public static final float STOCKPILE_DESTRUCTION_BASE_MULT = 0.80f;
@@ -98,20 +96,14 @@ public class Exerelin_UseSuperweapon extends BaseCommandPlugin {
 		// wreck stuff
 		int size = market.getSize();
 		float destructionMult = STOCKPILE_DESTRUCTION_BASE_MULT / (STOCKPILE_DESTRUCTION_SIZE_DIV_MULT * size);
-		ExerelinUtilsMarket.destroyAllCommodityStocks(market, destructionMult, STOCKPILE_DESTRUCTION_VARIANCE);
+		//ExerelinUtilsMarket.destroyAllCommodityStocks(market, destructionMult, STOCKPILE_DESTRUCTION_VARIANCE);
 		
 		int reduction = (int)(size / STABILITY_SIZE_DIVISOR);
 		if (reduction > STABILITY_MAX_SIZE_REDUCTION)
 			reduction = STABILITY_MAX_SIZE_REDUCTION;
 		int stabilityPenalty = STABILITY_BASE_PENALTY - reduction;
 		
-		SectorAPI sector = Global.getSector();
-		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_superweapon");
-		if (eventSuper == null) 
-			eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_superweapon", null);
-		SuperweaponEvent event = (SuperweaponEvent)eventSuper;
-		event.setStabilityPenalty(stabilityPenalty);
-		event.reportSuperweaponUse(fleet);
+		RecentUnrest.get(dialog.getInteractionTarget().getMarket()).add(stabilityPenalty, "Superweapon use");
 		
 		ResponseFleetManager.modifyReserveSize(market, -999);
 		

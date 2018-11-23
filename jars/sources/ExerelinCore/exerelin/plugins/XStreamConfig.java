@@ -6,13 +6,11 @@ import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.AllianceVoter;
 import exerelin.campaign.covertops.InstigateRebellion;
 import exerelin.campaign.events.covertops.AgentDestabilizeMarketEvent;
-import exerelin.campaign.events.covertops.AgentDestabilizeMarketEventForCondition;
 import exerelin.campaign.events.covertops.AgentLowerRelationsEvent;
 import exerelin.campaign.events.AllianceChangedEvent;
 import exerelin.campaign.events.AllianceVoteEvent;
 import exerelin.campaign.events.covertops.CovertOpsEventBase;
 import exerelin.campaign.events.DiplomacyEvent;
-import exerelin.campaign.events.ExerelinFactionCommissionMissionEvent;
 import exerelin.campaign.events.ExerelinRepTrackerEvent;
 import exerelin.campaign.events.ExigencyRespawnFleetEvent;
 import exerelin.campaign.events.FactionBountyEvent;
@@ -22,7 +20,6 @@ import exerelin.campaign.events.FactionInsuranceEvent;
 import exerelin.campaign.events.FactionRespawnedEvent;
 import exerelin.campaign.events.FactionSalaryEvent;
 import exerelin.campaign.events.InvasionFleetEvent;
-import exerelin.campaign.events.MarketAttackedEvent;
 import exerelin.campaign.events.MarketCapturedEvent;
 import exerelin.campaign.events.MarketTransferedEvent;
 import exerelin.campaign.events.RebellionEvent;
@@ -84,14 +81,12 @@ public class XStreamConfig {
 		x.alias("ExePatrolFltMngr", ExerelinPatrolFleetManager.class);
 		
 		x.alias("AgntDestabilizeMrktEvnt", AgentDestabilizeMarketEvent.class);
-		x.alias("AgntDestabilizeMrktEvntForCondition", AgentDestabilizeMarketEventForCondition.class);
 		x.alias("AgntLowerRelationsEvnt", AgentLowerRelationsEvent.class);
 		x.alias("AllyChangedEvnt", AllianceChangedEvent.class);
 		x.alias("AllyVoteEvnt", AllianceVoteEvent.class);
 		x.alias("AllyVoteRslt", AllianceVoter.VoteResult.class);
 		x.alias("CovertOpsEvnt", CovertOpsEventBase.class);
 		x.alias("DiploEvnt", DiplomacyEvent.class);
-		x.alias("ExeCommissionMissionEvnt", ExerelinFactionCommissionMissionEvent.class);
 		x.alias("ExeRepTrckrEvnt", ExerelinRepTrackerEvent.class);
 		x.alias("ExiRespawnFltEvnt", ExigencyRespawnFleetEvent.class);
 		x.alias("FactionBntyEvnt", FactionBountyEvent.class);
@@ -105,7 +100,6 @@ public class XStreamConfig {
 		x.alias("InvasionFltEvnt", InvasionFleetEvent.class);
 		x.alias("InstigateRebellionEvnt", InstigateRebellion.class);	// FIXME wrong alias
 		x.alias("InstgtRblEvnt", InstigateRebellionEvent.class);
-		x.alias("MrktAttackedEvnt", MarketAttackedEvent.class);
 		x.alias("MrktCapturedEvnt", MarketCapturedEvent.class);
 		x.alias("MrktTrnsfrEvnt", MarketTransferedEvent.class);
 		x.alias("RebelEvnt", RebellionEvent.class);
@@ -190,12 +184,7 @@ public class XStreamConfig {
 		// InvasionFleetEvent
 		x.aliasAttribute(InvasionFleetEvent.class, "target", "tgt");
 		x.aliasAttribute(InvasionFleetEvent.class, "factionPermanent", "facP");
-		
-		// MarketAttackedEvent
-		x.aliasAttribute(MarketAttackedEvent.class, "elapsedDays", "days");
-		x.aliasAttribute(MarketAttackedEvent.class, "stabilityPenalty", "stbLoss");
-		x.aliasAttribute(MarketAttackedEvent.class, "conditionToken", "cond");
-		
+				
 		// MarketCapturedEvent
 		x.aliasAttribute(MarketCapturedEvent.class, "newOwner", "new");
 		x.aliasAttribute(MarketCapturedEvent.class, "oldOwner", "old");
@@ -237,7 +226,6 @@ public class XStreamConfig {
 		// SuperweaponEvent
 		x.aliasAttribute(SuperweaponEvent.class, "elapsedDays", "days");
 		x.aliasAttribute(SuperweaponEvent.class, "stabilityPenalty", "stbLoss");
-		x.aliasAttribute(SuperweaponEvent.class, "conditionToken", "cond");
 		x.aliasAttribute(SuperweaponEvent.class, "lastAttackerFaction", "attkr");
 		x.aliasAttribute(SuperweaponEvent.class, "repPenalty", "rep");
 		x.aliasAttribute(SuperweaponEvent.class, "lastRepEffect", "lastRep");
@@ -247,12 +235,7 @@ public class XStreamConfig {
 		// Agent events
 		// AgentDestabilizeMarketEvent
 		x.aliasAttribute(AgentDestabilizeMarketEvent.class, "stabilityPenalty", "stbLoss");
-		
-		// AgentDestabilizeMarketEventForCondition
-		x.aliasAttribute(AgentDestabilizeMarketEventForCondition.class, "elapsedDays", "days");
-		x.aliasAttribute(AgentDestabilizeMarketEventForCondition.class, "stabilityPenalty", "stbLoss");
-		x.aliasAttribute(AgentDestabilizeMarketEventForCondition.class, "conditionToken", "cond");
-		
+				
 		// CovertOpsEventBase
 		x.aliasAttribute(CovertOpsEventBase.class, "agentFaction", "af");
 		x.aliasAttribute(CovertOpsEventBase.class, "result", "rslt");

@@ -2,13 +2,14 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMission;
-import com.fs.starfarer.api.impl.campaign.missions.FactionCommissionMissionEvent;
+import com.fs.starfarer.api.impl.campaign.intel.BaseMissionIntel;
+import com.fs.starfarer.api.impl.campaign.intel.FactionCommissionIntel;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
@@ -171,23 +172,20 @@ public class ExerelinUtilsFaction {
             return;    // already have commission
         
         revokeCommission();
-        FactionCommissionMission mission = new FactionCommissionMission(faction.getId());
-        mission.playerAccept(entity);
+        FactionCommissionIntel intel = new FactionCommissionIntel(faction);
+        intel.missionAccepted();
+        intel.sendUpdate(FactionCommissionIntel.UPDATE_PARAM_ACCEPTED, null);
+        intel.makeRepChanges(null);
     }
     
     public static void revokeCommission()
     {
-        FactionCommissionMissionEvent event = Misc.getCommissionEvent();
-        if (event == null) return;
-        
-        // end commission cleanly hax
-        // see http://fractalsoftworks.com/forum/index.php?topic=5061.msg222897#msg222897
-        FactionAPI commFaction = Misc.getCommissionFaction();  
-        float rep = commFaction.getRelationship(Factions.PLAYER);  
-        commFaction.setRelationship(Factions.PLAYER, RepLevel.SUSPICIOUS);  
-        event.advance(1f);  
-        event.cleanup();
-        commFaction.setRelationship(Factions.PLAYER, rep);
+        FactionCommissionIntel intel = Misc.getCommissionIntel();
+		if (intel == null) return;
+		BaseMissionIntel.MissionResult result = intel.createResignedCommissionResult(true, true, null);
+		intel.setMissionResult(result);
+		intel.setMissionState(BaseMissionIntel.MissionState.ABANDONED);
+		intel.endMission(null);
     }
     
     public static String getCommissionFactionId()

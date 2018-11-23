@@ -39,7 +39,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 	public static Logger log = Global.getLogger(ConquestMissionCreator.class);
 	
 	public ConquestMissionCreator() {
-		board = Global.getSector().getMissionBoard();
+		//board = Global.getSector().getMissionBoard();
 	}
 	
 	@Override

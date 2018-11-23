@@ -22,7 +22,6 @@ import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.events.RevengeanceManagerEvent;
-import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.campaign.fleets.ExerelinPatrolFleetManager;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
@@ -59,17 +58,17 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(SectorManager.create());
         sector.addScript(DiplomacyManager.create());
         sector.addScript(im);
-        sector.addScript(ResponseFleetManager.create());
+        //sector.addScript(ResponseFleetManager.create());
         sector.addScript(MiningFleetManager.create());
         sector.addScript(CovertOpsManager.create());
         sector.addScript(am);
-		sector.addScript(DefenceStationManager.create());
         // debugging
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
         SectorManager.setSystemToRelayMap(new HashMap<String,String>());
         SectorManager.setPlanetToRelayMap(new HashMap<String,String>());
         
+        /*
         // replace patrol handling with our own
         sector.addScript(new PatrolFleetManagerReplacer());
         // not sure if this is needed since the replacer should already do it, but just to be safe
@@ -78,6 +77,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             ExerelinUtils.removeScriptAndListener(market.getPrimaryEntity(), 
                     PatrolFleetManager.class, ExerelinPatrolFleetManager.class);
         }
+        */
         
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
         {
@@ -183,21 +183,17 @@ public class ExerelinModPlugin extends BaseModPlugin
             VCModPluginCustom.onGameLoad(newGame);
         
         sector.addTransientListener(new ScavengerCleaner());
-        
-        DefenceStationManager.getManager().setFleetsDoNotAttackStations();
     }
     
     @Override
     public void beforeGameSave()
     {
         Global.getLogger(this.getClass()).info("Before game save");
-        DefenceStationManager.getManager().clearFleetsDoNotAttackStations();
     }
     
     @Override
     public void afterGameSave() {
         Global.getLogger(this.getClass()).info("After game save");
-        DefenceStationManager.getManager().setFleetsDoNotAttackStations();
     }
     
     @Override
@@ -267,9 +263,6 @@ public class ExerelinModPlugin extends BaseModPlugin
             market.getMemoryWithoutUpdate().set("$startingFactionId", market.getFactionId());
 			market.getMemoryWithoutUpdate().set("$startingFreeMarket", market.hasCondition(Conditions.FREE_PORT));
         }
-        
-        if (DefenceStationManager.getManager() != null)
-            DefenceStationManager.getManager().seedFleets();
         
         new LandmarkGenerator().generate(Global.getSector(), SectorManager.getCorvusMode());
     }

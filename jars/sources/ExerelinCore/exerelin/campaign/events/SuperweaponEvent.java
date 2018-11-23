@@ -31,7 +31,6 @@ public class SuperweaponEvent extends BaseEventPlugin {
 	
 	protected float elapsedDays = 0f;
 	protected int stabilityPenalty = 0;
-	protected String conditionToken = null;
 	
 	protected FactionAPI lastAttackerFaction = null;
 	protected float repPenalty = 0;
@@ -52,7 +51,6 @@ public class SuperweaponEvent extends BaseEventPlugin {
 			endEvent();
 			return;
 		}
-		conditionToken = market.addCondition("exerelin_superweapon_condition", true, this);
 	}
 	
 	@Override
@@ -66,7 +64,6 @@ public class SuperweaponEvent extends BaseEventPlugin {
 		if (elapsedDays >= DAYS_PER_STAGE) {
 			elapsedDays -= DAYS_PER_STAGE;
 			stabilityPenalty--;
-			market.reapplyCondition(conditionToken);
 		}
 		
 		if (stabilityPenalty <= 0) {
@@ -76,9 +73,6 @@ public class SuperweaponEvent extends BaseEventPlugin {
 	
 	protected boolean ended = false;
 	public void endEvent() {
-		if (market != null && conditionToken != null) {
-			market.removeSpecificCondition(conditionToken);
-		}
 		ended = true;
 	}
 
@@ -89,33 +83,6 @@ public class SuperweaponEvent extends BaseEventPlugin {
 
 	public int getStabilityPenalty() {
 		return stabilityPenalty;
-	}
-
-	public void setStabilityPenalty(int stabilityPenalty) {
-		this.stabilityPenalty = stabilityPenalty;
-		if (stabilityPenalty <= 0) {
-			endEvent();
-		} else {
-			market.reapplyCondition(conditionToken);
-		}
-	}
-	
-	public void increaseStabilityPenalty(int penalty) {
-		this.stabilityPenalty += penalty;
-		if (stabilityPenalty <= 0) {
-			endEvent();
-		} else {
-			market.reapplyCondition(conditionToken);
-		}
-	}
-	
-	public void reduceStabilityPenalty(int penalty) {
-		this.stabilityPenalty -= penalty;
-		if (stabilityPenalty <= 0) {
-			endEvent();
-		} else {
-			market.reapplyCondition(conditionToken);
-		}
 	}
 	
 	public void reportSuperweaponUse(CampaignFleetAPI attackingFleet) {

@@ -5,12 +5,9 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
+import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import exerelin.campaign.CovertOpsManager.CovertActionResult;
-import static exerelin.campaign.CovertOpsManager.NPC_EFFECT_MULT;
 import exerelin.campaign.ExerelinReputationAdjustmentResult;
-import exerelin.campaign.events.covertops.AgentDestabilizeMarketEventForCondition;
 import java.util.Map;
 
 public class DestabilizeMarket extends CovertOpsBase {
@@ -45,21 +42,12 @@ public class DestabilizeMarket extends CovertOpsBase {
 	@Override
 	public void onSuccess() {
 		SectorAPI sector = Global.getSector();
-		CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market_for_condition");
-		if (eventSuper == null) 
-			eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_agent_destabilize_market_for_condition", null);
-		AgentDestabilizeMarketEventForCondition event = (AgentDestabilizeMarketEventForCondition)eventSuper;
-
-		int currentPenalty = event.getStabilityPenalty();
-		int delta = 1;
-		if (currentPenalty < 2) delta = 2;
-		if (!playerInvolved) delta = Math.round(delta * NPC_EFFECT_MULT);
-		event.increaseStabilityPenalty(delta);
+		RecentUnrest.get(market).add(4, agentFaction.getDisplayName() + " agent destabilization");	// TODO externalize
 		
 		ExerelinReputationAdjustmentResult repResult = adjustRepIfDetected();
 
 		Map<String, Object> eventParams = makeEventParams(repResult);
-		eventParams.put("stabilityPenalty", delta);
+		eventParams.put("stabilityPenalty", 4);
 		
 		reportEvent(eventParams);
 	}

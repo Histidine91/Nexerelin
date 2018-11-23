@@ -13,11 +13,11 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
-import exerelin.campaign.fleets.ExerelinLionsGuardFleetManager;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -67,6 +67,7 @@ import org.json.JSONObject;
  * Add/remove market conditions to balance supply and demand of domestic goods, metal and supplies
 */
 
+// TODO needs overhaul
 @SuppressWarnings("unchecked")
 public class ExerelinMarketBuilder
 {
@@ -118,7 +119,6 @@ public class ExerelinMarketBuilder
 	
 	protected final ExerelinProcGen procGen;
 	protected final Random random;
-	protected final MarketBalancer balancer = new MarketBalancer(this);
 	
 	static {
 		// (probably) must sum to 1
@@ -354,6 +354,7 @@ public class ExerelinMarketBuilder
 		
 		if (isFirst) {
 			// assign default first condition for certain archetypes
+			/*
 			switch (entityData.archetype) {
 				case ORE:
 					return conditionsByID.get(Conditions.ORE_COMPLEX);
@@ -362,6 +363,7 @@ public class ExerelinMarketBuilder
 				case VOLATILES:
 					return conditionsByID.get(Conditions.VOLATILES_COMPLEX);
 			}
+			*/
 		}	
 		
 		for (MarketConditionDef possibleCond : possibleConds) 
@@ -387,13 +389,6 @@ public class ExerelinMarketBuilder
 		MarketAPI market = entityData.market;
 		market.addCondition(cond.name);
 		entityData.marketPointsSpent += cond.cost;
-		
-		if (cond.name.equals(Conditions.ORBITAL_STATION))
-		{
-			ProcGenEntity station = procGen.createEntityDataForStation(entityData.entity);
-			station.market = market;
-			procGen.createStation(station, market.getFactionId(), false);
-		}
 	}
 	
 	public void addMarketCondition(ProcGenEntity entityData, String cond)
@@ -403,7 +398,7 @@ public class ExerelinMarketBuilder
 	
 	public void removeMarketCondition(ProcGenEntity entityData, MarketConditionDef cond)
 	{
-		ExerelinUtilsMarket.removeOneMarketCondition(entityData.market, cond.name);
+		//ExerelinUtilsMarket.removeOneMarketCondition(entityData.market, cond.name);
 		entityData.marketPointsSpent -= cond.cost;
 	}
 	
@@ -669,7 +664,7 @@ public class ExerelinMarketBuilder
 			for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
 			{
 				if (!market.getFactionId().equals(Factions.TRITACHYON)) continue;
-				if (market.hasCondition(Conditions.MILITARY_BASE) && random.nextFloat() > CABAL_MILITARY_MARKET_CHANCE) 
+				if ((market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND)) && random.nextFloat() > CABAL_MILITARY_MARKET_CHANCE) 
 				{
 					cabalCandidatesBackup.add(market);
 					continue;
@@ -834,8 +829,10 @@ public class ExerelinMarketBuilder
 		
 		if (data.isHQ)
 		{
-			market.addCondition(Conditions.HEADQUARTERS);
-			market.addCondition(Conditions.MILITARY_BASE);
+			market.addIndustry(Industries.HIGHCOMMAND);
+			// add biggest available station
+			List<String> stations = ExerelinConfig.getExerelinFactionConfig(factionId).defenceStations;
+			market.addIndustry(stations.get(stations.size() - 1));
 			//newMarket.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);	// dependent on number of factions; bad idea
 			//market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
 			//market.addCondition("nex_recycling_plant");
@@ -858,13 +855,23 @@ public class ExerelinMarketBuilder
 		else if (isStation) minSizeForMilitaryBase = 5;
 		if (isPirate) minSizeForMilitaryBase -= 1;
 		
-		if (marketSize >= minSizeForMilitaryBase && !market.hasCondition(Conditions.MILITARY_BASE))
+		// add military base if needed
+		if (marketSize >= minSizeForMilitaryBase && !market.hasIndustry(Industries.MILITARYBASE) && !market.hasIndustry(Industries.HIGHCOMMAND))
 		{
 			float roll = (random.nextFloat() + random.nextFloat())*0.5f;
 			float req = FORCE_MILITARY_BASE_CHANCE;
 			if (isPirate) req = FORCE_MILITARY_BASE_CHANCE_PIRATE;
 			if (roll > req)
-				market.addCondition(Conditions.MILITARY_BASE);
+				market.addIndustry(Industries.MILITARYBASE);
+		}
+		// add patrol HQ if needed
+		if (marketSize >= 4 && !market.hasIndustry(Industries.MILITARYBASE) && !market.hasIndustry(Industries.HIGHCOMMAND))
+		{
+			float roll = (random.nextFloat() + random.nextFloat())*0.5f;
+			float req = FORCE_MILITARY_BASE_CHANCE;
+			if (isPirate) req = FORCE_MILITARY_BASE_CHANCE_PIRATE;
+			if (roll > req)
+				market.addIndustry(Industries.PATROLHQ);
 		}
 		
 		// planet type stuff
@@ -944,47 +951,15 @@ public class ExerelinMarketBuilder
 		}
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
 		
-		Global.getSector().getEconomy().addMarket(market);
+		Global.getSector().getEconomy().addMarket(market, true);
 		entity.setFaction(factionId);	// http://fractalsoftworks.com/forum/index.php?topic=8581.0
 		
 		// Lion's Guard
 		if (data.isHQ && factionId.equals(Factions.DIKTAT))
 		{
-			ExerelinLionsGuardFleetManager script = new ExerelinLionsGuardFleetManager(market);
-			entity.addScript(script);
+			market.addIndustry("lionsguard");
 		}
-		
-		//addStartingMarketCommodities(market);	// done after balancing
-		
-		for (MarketConditionAPI cond : market.getConditions())
-		{
-			balancer.onAddMarketCondition(market, cond);
-		}
-		
-		// remove excess market conditions (prevent GUI overflow)
-		int condCount = market.getConditions().size();
-		Set<MarketConditionAPI> toRemove = new HashSet<>();
-		int needRemoval = condCount - MAX_CONDITIONS;
-		if (needRemoval > 0)
-		{
-			List<MarketConditionAPI> conds = new ArrayList<>(market.getConditions());
-			Collections.shuffle(conds, random);
-			for (MarketConditionAPI cond : conds)
-			{
-				if (cond.getGenSpec() != null && cond.getGenSpec().getXpMult() > 1)
-				{
-					toRemove.add(cond);
-					log.info("\tRemoving surplus market condition " + cond.getId());
-					needRemoval--;
-					if (needRemoval <= 0) break;
-				}
-			}
-			for (MarketConditionAPI cond : toRemove)
-			{
-				market.removeSpecificCondition(cond.getIdForPluginModifications());
-			}
-		}
-		
+				
 		procGen.pickEntityInteractionImage(data.entity, market, planetType, data.type);
 		
 		if (!data.isHQ)
@@ -996,41 +971,7 @@ public class ExerelinMarketBuilder
 		
 		return market;
 	}
-	
-	// =========================================================================	
-	// Economy balancer functions
-	
-	
-	public static void addStartingMarketCommodities(MarketAPI market)
-	{
-		for (CommodityOnMarketAPI commodity : market.getAllCommodities())
-		{
-			if (commodity.isNonEcon()) continue;
-			if (commodity.getCommodity().hasTag("noseed")) continue;
-			float demand = commodity.getDemand().getDemand().modified;
-			float unmet = 1.2f - commodity.getDemand().getFractionMet();
-			commodity.addToStockpile(demand * unmet);
-			
-			float supply = commodity.getSupply().modified;
-			commodity.addToStockpile(supply);
-		}
-	}
-	
-	public static boolean hasProductiveCondition(MarketAPI market)
-	{
-		for (MarketConditionAPI cond : market.getConditions())
-		{
-			String id = cond.getId();
-			if (id.equals("nex_recycling_plany")) return true;
-			if (conditionsByID.containsKey(id))
-			{
-				MarketConditionDef def = conditionsByID.get(id);
-				if (def.productive) return true;
-			}
-		}
-		return false;
-	}
-	
+		
 	// =========================================================================
 	// static classes
 	public static class MarketConditionDef

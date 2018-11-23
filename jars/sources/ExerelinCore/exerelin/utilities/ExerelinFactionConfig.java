@@ -2,6 +2,7 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
@@ -10,7 +11,6 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.alliances.Alliance.Alignment;
-import exerelin.campaign.fleets.DefenceStationManager;
 import java.io.IOException;
 import org.json.JSONObject;
 import java.util.*;
@@ -34,6 +34,7 @@ public class ExerelinFactionConfig
    
     public boolean pirateFaction = false;
     public boolean isPirateNeutral = false;
+    @Deprecated
     public boolean spawnPatrols = false;    // only used for factions set to not spawn patrols in .faction file
     @Deprecated
     public boolean spawnPiratesAndMercs = false;    // ditto
@@ -80,8 +81,8 @@ public class ExerelinFactionConfig
     public Map<String, Float> dispositions = new HashMap<>();
     public Map<Alignment, Float> alignments = new HashMap<>(DEFAULT_ALIGNMENTS);
     public Morality morality = Morality.NEUTRAL;
-	public boolean noSyncRelations = false;
-	public boolean noRandomizeRelations = false;
+    public boolean noSyncRelations = false;
+    public boolean noRandomizeRelations = false;
     
     public float marketSpawnWeight = 1;	// what proportion of procgen markets this faction gets
     public boolean freeMarket = false;
@@ -94,7 +95,6 @@ public class ExerelinFactionConfig
     public float invasionPointMult = 1;	// point accumulation for launching invasions
     public float patrolSizeMult = 1;
     public float vengeanceFleetSizeMult = 1;
-    public float stationGenPoints = DefenceStationManager.DEFENCE_FP_PENALTY_PER_STATION;
     public String factionIdForHqResponse = null;
     
     public boolean dropPrisoners = true;
@@ -178,7 +178,6 @@ public class ExerelinFactionConfig
             invasionPointMult = (float)settings.optDouble("invasionPointMult", invasionPointMult);
             patrolSizeMult = (float)settings.optDouble("patrolSizeMult", patrolSizeMult);
             vengeanceFleetSizeMult = (float)settings.optDouble("vengeanceFleetSizeMult", vengeanceFleetSizeMult);
-            stationGenPoints = (float)settings.optDouble("stationGenPoints", stationGenPoints);
             factionIdForHqResponse = settings.optString("factionIdForHqResponse", factionIdForHqResponse);
             
             dropPrisoners = settings.optBoolean("dropPrisoners", dropPrisoners);
@@ -544,7 +543,7 @@ public class ExerelinFactionConfig
     protected void pickShipsAndAddToList(WeightedRandomPicker<String> picker, List<String> list, boolean clear)
     {
         FactionAPI faction = Global.getSector().getFaction(factionId);
-        List<ShipRolePick> picks = faction.pickShip(picker.pick(), 1, picker.getRandom());
+        List<ShipRolePick> picks = faction.pickShip(picker.pick(), new ShipPickParams(), null, picker.getRandom());
         for (ShipRolePick pick : picks)
             list.add(pick.variantId);
         if (clear) picker.clear();

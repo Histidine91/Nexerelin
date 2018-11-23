@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.util.IntervalUtil;
@@ -25,6 +26,8 @@ import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO review and update
+@Deprecated
 public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 
 	public static final float DAILY_POINT_MULT = 0.1f;
@@ -78,11 +81,12 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		float size = baseSize;
 		if (raw) return size;
 
-		if (market.hasCondition(Conditions.MILITARY_BASE)) size += baseSize * 0.2;
-		if (market.hasCondition(Conditions.ORBITAL_STATION)) size += baseSize * 0.1;
-		if (market.hasCondition(Conditions.SPACEPORT)) size += baseSize * 0.1;
-		if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) size += baseSize * 0.1;
-		if (market.hasCondition(Conditions.HEADQUARTERS)) size += baseSize * 0.2;
+		if (market.hasIndustry(Industries.PATROLHQ)) size += baseSize * 0.05;
+		if (market.hasIndustry(Industries.MILITARYBASE)) size += baseSize * 0.1;
+		if (market.hasIndustry(Industries.HIGHCOMMAND)) size += baseSize * 0.2;
+		if (market.hasIndustry(Industries.HEAVYINDUSTRY)) size += baseSize * 0.05;
+		if (market.hasIndustry(Industries.ORBITALWORKS)) size += baseSize * 0.1;
+		if (market.hasIndustry(Industries.MEGAPORT)) size += baseSize * 0.1;
 		
 		return size;
 	}
@@ -103,9 +107,9 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		float baseIncrement = marketSize * (0.5f + (market.getStabilityValue()/MARKET_STABILITY_DIVISOR));
 		float increment = baseIncrement;
 		//if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) increment += baseIncrement * 0.1f;
-		if (market.hasCondition(Conditions.HEADQUARTERS)) increment += baseIncrement * 0.2f;
-		if (market.hasCondition(Conditions.MILITARY_BASE)) increment += baseIncrement * 0.2f;
-		if (market.hasCondition(Conditions.SPACEPORT) || market.hasCondition(Conditions.ORBITAL_STATION)) 
+		if (market.hasIndustry(Industries.HIGHCOMMAND)) increment += baseIncrement * 0.2f;
+		if (market.hasIndustry(Industries.MILITARYBASE)) increment += baseIncrement * 0.1f;
+		if (market.hasIndustry(Industries.MEGAPORT) || market.hasIndustry(Industries.ORBITALWORKS)) 
 			increment += baseIncrement * 0.1f;
 
 		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
@@ -143,10 +147,10 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		
 		float sizeMult = 1;
-		if (market.getFaction().getCustom().optBoolean(Factions.CUSTOM_NO_PATROLS)) 
-		{
-			if (factionConfig == null || !factionConfig.spawnPatrols) return;
-		}
+		//if (market.getFaction().getCustom().optBoolean(Factions.CUSTOM_NO_PATROLS)) 
+		//{
+		//	if (factionConfig == null || !factionConfig.spawnPatrols) return;
+		//}
 		sizeMult = factionConfig.patrolSizeMult;
 		if (sizeMult <= 0) return;
 		
@@ -173,12 +177,12 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 					(int) Math.max(0, Math.min(losses, 5));
 		if (maxPatrols < 1) maxPatrols = 1;
 		
-		boolean hasStationOrSpaceport = market.hasCondition(Conditions.ORBITAL_STATION) || market.hasCondition(Conditions.SPACEPORT);
-		if (market.hasCondition(Conditions.MILITARY_BASE)) {
+		boolean hasSpaceport = market.hasSpaceport();
+		if (market.hasIndustry(Industries.MILITARYBASE)) {
 			maxPatrols += 1;
-			if (hasStationOrSpaceport) maxPatrols++;
+			if (hasSpaceport) maxPatrols++;
 		}
-		if (hasStationOrSpaceport) maxPatrols++;
+		if (hasSpaceport) maxPatrols++;
 		
 		
 		log.debug("");

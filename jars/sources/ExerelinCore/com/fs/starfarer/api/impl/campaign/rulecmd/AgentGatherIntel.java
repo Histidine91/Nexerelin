@@ -16,11 +16,12 @@ import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.campaign.events.RebellionEvent;
-import exerelin.campaign.fleets.DefenceStationManager;
 import exerelin.utilities.StringHelper;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import java.awt.Color;
 
+// TODO: probably useless now
+@Deprecated
 public class AgentGatherIntel extends AgentActionBase {
 
 	protected Color getColorFromScale(float number, float max, boolean reverse)
@@ -92,15 +93,6 @@ public class AgentGatherIntel extends AgentActionBase {
 			String fleetTitle = Misc.ucFirst(StringHelper.getString("exerelin_agents", "responseFleetPreview"));
 			dialog.getVisualPanel().showFleetInfo(fleetTitle, responseFleet, null, null);
 			//responseFleet.despawn();
-		}
-		
-		DefenceStationManager statMan = DefenceStationManager.getManager();
-		if (statMan.getFleet(market) == null && statMan.getMaxStations(market) > 0)
-		{
-			float stationPoints = statMan.getConstructionPoints(market);
-			String stationPointsStr = String.format("%.1f", stationPoints) + "%";
-			text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "stationPoints")) + ": " + stationPointsStr);
-			text.highlightFirstInLastPara("" + stationPointsStr, highlightColor);
 		}
 		
 		if (RebellionEvent.isOngoing(market))

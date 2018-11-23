@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -19,7 +20,6 @@ import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
 import com.fs.starfarer.api.impl.campaign.procgen.StarAge;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantSeededFleetManager;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantStationFleetManager;
-import com.fs.starfarer.api.impl.campaign.shared.SharedData;
 import com.fs.starfarer.api.impl.campaign.terrain.MagneticFieldTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -194,7 +194,7 @@ public class ExerelinProcGen {
 				allowedImages.add(new String[]{"illustrations", "eochu_bres"} );
 			}
 		}
-		if (!isStation && market.hasCondition(Conditions.ORE_COMPLEX))
+		if (!isStation && market.hasIndustry(Industries.MINING))
 		{
 			allowedImages.add(new String[]{"illustrations", "mine"} );
 		}
@@ -688,24 +688,24 @@ public class ExerelinProcGen {
 			ProcGenEntity capital = capitalsBySystem.get(system);
 			if (capital == null) continue;
 			
-			// see if there are existing relays we can co-opt
-			for (SectorEntityToken relayCandidate : system.getEntitiesWithTag(Tags.COMM_RELAY))
+			// see if there are existing relays or other objectives we can co-opt
+			for (SectorEntityToken objective : system.getEntitiesWithTag(Tags.OBJECTIVE))
 			{
-				// only one relay per system
-				if (relay != null)
-					system.removeEntity(relayCandidate);
-				else
+				if (objective.hasTag(Tags.COMM_RELAY))
 				{
-					relay = relayCandidate;
+					relay = objective;
 					relay.setFaction(capital.market.getFactionId());
-					relay.getMemoryWithoutUpdate().unset(MemFlags.COMM_RELAY_NON_FUNCTIONAL);
 				}
+				
+				objective.getMemoryWithoutUpdate().unset(MemFlags.OBJECTIVE_NON_FUNCTIONAL);
+				
 			}
 			
-			// else make our own relay
+			// make our own relay if needed
 			if (relay == null)
 			{
 				log.info("Creating comm relay for system " + system.getName());
+				
 				relay = system.addCustomEntity(system.getId() + "_relay", // unique id
 					system.getBaseName() + " Relay", // name - if null, defaultName from custom_entities.json will be used
 					"comm_relay", // type of object, defined in custom_entities.json
@@ -754,8 +754,11 @@ public class ExerelinProcGen {
 				}
 			}
 			
-			systemToRelay.put(system.getId(), relay.getId());
-			planetToRelay.put(capital.entity.getId(), relay.getId());
+			if (relay != null)
+			{
+				systemToRelay.put(system.getId(), relay.getId());
+				planetToRelay.put(capital.entity.getId(), relay.getId());
+			}
 		}
 	}
 	
@@ -942,10 +945,7 @@ public class ExerelinProcGen {
 		
 		log.info("Cleaning up derelicts/Remnants");
 		cleanupDerelicts(populatedSystems);
-		
-		log.info("Balancing economy");
-		balanceMarkets();
-		
+				
 		log.info("Finishing");
 		finish();
 	}
@@ -1034,30 +1034,27 @@ public class ExerelinProcGen {
 		MarketAPI market = Global.getFactory().createMarket("exipirated_avesta" + "_market", "Avesta Station", 5);
 		market.setFactionId("exipirated");
 		market.addCondition(Conditions.POPULATION_5);
-		market.addCondition(Conditions.ORBITAL_STATION);
-		market.addCondition(Conditions.URBANIZED_POLITY);
-		market.addCondition(Conditions.ORGANIZED_CRIME);
-		market.addCondition(Conditions.STEALTH_MINEFIELDS);
-		market.addCondition(Conditions.HEADQUARTERS);
-		market.addCondition(Conditions.OUTPOST);
-		market.addCondition(Conditions.TRADE_CENTER);
-		market.addCondition(Conditions.FREE_PORT);
+		market.addIndustry(Industries.POPULATION);
+		market.addIndustry(Industries.HIGHCOMMAND);
+		market.addIndustry(Industries.WAYSTATION);
+		market.addIndustry(Industries.STARFORTRESS_HIGH);
+		market.addIndustry(Industries.HEAVYBATTERIES);
+		market.addIndustry(Industries.ORBITALWORKS);
+		market.setFreePort(true);
 		//market.addCondition("nex_recycling_plant");
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		market.addSubmarket("exipirated_avesta_market");
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
-		market.setBaseSmugglingStabilityValue(0);
 		
-		ExerelinMarketBuilder.addStartingMarketCommodities(market);
+		//ExerelinMarketBuilder.addStartingMarketCommodities(market);
 		
 		market.getTariff().modifyFlat("generator", 0.2f);
 		market.getTariff().modifyMult("isFreeMarket", 0.5f);
 		market.setPrimaryEntity(avesta);
 		avesta.setMarket(market);
 		avesta.setFaction("exipirated");
-		sector.getEconomy().addMarket(market);
+		sector.getEconomy().addMarket(market, true);
 		
-		SharedData.getData().getMarketsWithoutPatrolSpawn().add(market.getId());
 		avesta.addScript(new ExipiratedAvestaFleetManager(market));
 		avesta.addScript(new ExipiratedPatrolFleetManager(market));
 		avesta.addScript(new ExipiratedCollectorFleetManager(market));
@@ -1074,10 +1071,7 @@ public class ExerelinProcGen {
 		
 		shanghaiEntity.setMarket(market);
 		market.getConnectedEntities().add(shanghaiEntity);
-		if (!market.hasCondition(Conditions.ORBITAL_STATION) && !market.hasCondition(Conditions.SPACEPORT))
-		{
-			market.addCondition(Conditions.ORBITAL_STATION);
-		}
+		// TODO: may need to add orbital station industry
 		market.addSubmarket("tiandong_retrofit");
 		toOrbit.addTag("shanghai");
 		shanghaiEntity.addTag("shanghai");
@@ -1550,75 +1544,6 @@ public class ExerelinProcGen {
 		}
 		
 		// end distribution of markets and stations
-	}
-	
-	protected void balanceMarkets()
-	{
-		log.info("INITIAL SUPPLY/DEMAND");
-		marketSetup.balancer.reportSupplyDemand();
-		
-		List<ProcGenEntity> haveMarkets = new ArrayList<>(populatedPlanets);
-		haveMarkets.addAll(stations);
-		Collections.sort(haveMarkets, new Comparator<ProcGenEntity>() {	// biggest markets first
-			@Override
-			public int compare(ProcGenEntity data1, ProcGenEntity data2)
-			{
-				//log.warn ("lol, " + data1.name + ", " + data2.name);
-				int size1 = data1.market.getSize();
-				int size2 = data2.market.getSize();
-				if (size1 == size2) return 0;
-				else if (size1 > size2) return 1;
-				else return -1;
-			}
-		});
-		
-		Collections.sort(haveMarkets, sortByMarketPointsUsed);
-		marketSetup.balancer.balanceFood(haveMarkets);
-		Collections.sort(haveMarkets, sortByMarketPointsUsed);
-		marketSetup.balancer.balanceDomesticGoods(haveMarkets);
-		Collections.sort(haveMarkets, sortByMarketPointsUsed);
-		marketSetup.balancer.balanceFuel(haveMarkets);
-		Collections.sort(haveMarkets, sortByMarketPointsUsed);
-		marketSetup.balancer.balanceRareMetal(haveMarkets);
-		Collections.sort(haveMarkets, sortByMarketPointsUsed);
-		marketSetup.balancer.balanceMachinery(haveMarkets);
-		Collections.sort(haveMarkets, sortByMarketPointsUsed);
-		marketSetup.balancer.balanceSupplies(haveMarkets);
-		Collections.sort(haveMarkets, sortByMarketPointsUsed);
-		marketSetup.balancer.balanceOrganics(haveMarkets);
-		Collections.sort(haveMarkets, sortByMarketPointsUsed);
-		marketSetup.balancer.balanceVolatiles(haveMarkets);
-		Collections.sort(haveMarkets, sortByMarketPointsUsed);
-		marketSetup.balancer.balanceMetal(haveMarkets);
-		Collections.sort(haveMarkets, sortByMarketPointsUsed);
-		marketSetup.balancer.balanceOre(haveMarkets);
-		
-		// second pass
-		/*
-		marketSetup.balancer.balanceMachinery(haveMarkets);
-		//marketSetup.balancer.balanceSupplies(haveMarkets);
-		marketSetup.balancer.balanceOrganics(haveMarkets);
-		marketSetup.balancer.balanceVolatiles(haveMarkets);
-		marketSetup.balancer.balanceMetal(haveMarkets);
-		marketSetup.balancer.balanceOre(haveMarkets);
-		*/
-				
-		log.info("FINAL SUPPLY/DEMAND");
-		marketSetup.balancer.reportSupplyDemand();
-		
-		
-		// give any market without something useful a recycling station
-		for (ProcGenEntity ent : haveMarkets)
-		{
-			if (!ExerelinMarketBuilder.hasProductiveCondition(ent.market))
-			{
-				log.info("Adding recycling plant to market " + ent.market.getName());
-				ent.market.addCondition("nex_recycling_plant");
-			}
-		}		
-		
-		for (ProcGenEntity entity : haveMarkets)
-			ExerelinMarketBuilder.addStartingMarketCommodities(entity.market);
 	}
 	
 	protected void finish()

@@ -1,6 +1,5 @@
 package exerelin.world;
 
-import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManager;
 import org.apache.log4j.Logger;
@@ -11,13 +10,13 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.CoreCampaignPluginImpl;
 import com.fs.starfarer.api.impl.campaign.CoreScript;
 import com.fs.starfarer.api.impl.campaign.events.CoreEventProbabilityManager;
-import com.fs.starfarer.api.impl.campaign.fleets.BountyPirateFleetManager;
-import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetManager;
-import com.fs.starfarer.api.impl.campaign.fleets.LuddicPathFleetManager;
-import com.fs.starfarer.api.impl.campaign.fleets.MercFleetManager;
-import com.fs.starfarer.api.impl.campaign.fleets.PirateFleetManager;
+import com.fs.starfarer.api.impl.campaign.fleets.DisposableLuddicPathFleetManager;
+import com.fs.starfarer.api.impl.campaign.fleets.DisposablePirateFleetManager;
+import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetRouteManager;
+import com.fs.starfarer.api.impl.campaign.fleets.MercFleetManagerV2;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
@@ -28,7 +27,6 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.CustomConstellationParams;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
-import data.scripts.campaign.fleets.DS_BountyPirateFleetManager;
 import data.scripts.campaign.fleets.DS_LuddicPathFleetManager;
 import data.scripts.campaign.fleets.DS_MercFleetManager;
 import data.scripts.campaign.fleets.DS_PirateFleetManager;
@@ -42,14 +40,10 @@ import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
-import exerelin.campaign.fleets.DefenceStationManager;
-import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.Random;
-import org.lazywizard.lazylib.MathUtils;
-import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 @SuppressWarnings("unchecked")
@@ -105,25 +99,21 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		MarketAPI market = Global.getFactory().createMarket("nex_prismFreeport" /*+ "_market"*/, "Prism Freeport", 5);
 		market.setFactionId(Factions.INDEPENDENT);
 		market.addCondition(Conditions.POPULATION_5);
-		market.addCondition(Conditions.SPACEPORT);
-		//market.addCondition("nex_recycling_plant");
-		//market.addCondition("nex_recycling_plant");
-		//market.addCondition("exerelin_supply_workshop");
-		//market.addCondition("exerelin_hydroponics");
-		market.addCondition(Conditions.LIGHT_INDUSTRIAL_COMPLEX);
-		market.addCondition(Conditions.HYDROPONICS_COMPLEX);
-		market.addCondition(Conditions.TRADE_CENTER);
-		market.addCondition(Conditions.STEALTH_MINEFIELDS);
-		market.addCondition(Conditions.CRYOSANCTUM);
-		market.addCondition(Conditions.MILITARY_BASE);
-		market.addCondition(Conditions.FREE_PORT);
+		market.addIndustry(Industries.POPULATION);
+		market.addIndustry("commerce");
+		market.addIndustry(Industries.LIGHTINDUSTRY);
+		market.addIndustry(Industries.MILITARYBASE);
+		market.addIndustry(Industries.MEGAPORT);
+		market.addIndustry(Industries.HEAVYINDUSTRY);
+		market.addIndustry(Industries.HEAVYBATTERIES);
+		market.addIndustry(Industries.STARFORTRESS_HIGH);
+		market.addIndustry(Industries.CRYOSANCTUM);
+		
+		market.setFreePort(true);
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
-		market.setBaseSmugglingStabilityValue(0);
 		market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_UNINVADABLE, true);
-		
-		ExerelinMarketBuilder.addStartingMarketCommodities(market);
 		
 		market.getTariff().modifyFlat("generator", sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
 		ExerelinUtilsMarket.setTariffs(market);
@@ -132,9 +122,9 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		prismEntity.setMarket(market);
 		prismEntity.setFaction(Factions.INDEPENDENT);
 		market.setSurveyLevel(MarketAPI.SurveyLevel.FULL);	// not doing this makes market condition tooltips fail to appear
-		sector.getEconomy().addMarket(market);
+		sector.getEconomy().addMarket(market, true);
 		
-		prismEntity.removeTag(Tags.STATION);	// workaround http://fractalsoftworks.com/forum/index.php?topic=12548.msg213678#msg213678
+		//prismEntity.removeTag(Tags.STATION);	// workaround http://fractalsoftworks.com/forum/index.php?topic=12548.msg213678#msg213678
 		
 		//pickEntityInteractionImage(prismEntity, market, "", EntityType.STATION);
 		//prismEntity.setInteractionImage("illustrations", "space_bar");
@@ -204,37 +194,36 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
 		
 		log.info("Adding scripts and plugins");
-		sector.addScript(new CoreScript());
-		sector.addScript(new PatrolFleetManagerReplacer());
 		sector.registerPlugin(new CoreCampaignPluginImpl());
 		sector.registerPlugin(new ExerelinCampaignPlugin());
+		sector.addScript(new CoreScript());
 		sector.addScript(new CoreEventProbabilityManager());
-		sector.addScript(new EconomyFleetManager());
+		sector.addScript(new EconomyFleetRouteManager());
+		
+		//sector.addScript(new PatrolFleetManagerReplacer());
+		
 		if (ExerelinModPlugin.HAVE_DYNASECTOR)
 		{
 			sector.addScript(new DS_MercFleetManager());
 			sector.addScript(new DS_LuddicPathFleetManager());
 			sector.addScript(new DS_PirateFleetManager());
-			sector.addScript(new DS_BountyPirateFleetManager());
+			//sector.addScript(new DS_BountyPirateFleetManager());
 		}
 		else
 		{
-			sector.addScript(new MercFleetManager());
-			sector.addScript(new LuddicPathFleetManager());
-			sector.addScript(new PirateFleetManager());
-			sector.addScript(new BountyPirateFleetManager());
-		}			
-		
-		//sector.addScript(new EconomyLogger());
+			sector.addScript(new MercFleetManagerV2());
+			sector.addScript(new DisposablePirateFleetManager());
+			sector.addScript(new DisposableLuddicPathFleetManager());
+			//sector.addScript(new BountyPirateFleetManager());
+		}
 		
 		sector.addScript(SectorManager.create());
 		sector.addScript(DiplomacyManager.create());
 		sector.addScript(InvasionFleetManager.create());
-		sector.addScript(ResponseFleetManager.create());
+		//sector.addScript(ResponseFleetManager.create());
 		sector.addScript(MiningFleetManager.create());
 		sector.addScript(CovertOpsManager.create());
 		sector.addScript(AllianceManager.create());
-		sector.addScript(DefenceStationManager.create());
 		StatsTracker.create();
 		
 		DiplomacyManager.setRandomFactionRelationships(setupData.randomStartRelationships, 
@@ -244,11 +233,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		SectorManager.setCorvusMode(corvusMode);
 		SectorManager.setHardMode(setupData.hardMode);
 		SectorManager.setFreeStart(setupData.freeStart);
-		
-		// Remove any data stored in ExerelinSetupData
-		//resetVars();
-		//ExerelinSetupData.resetInstance();
-		
+				
 		log.info("Finished sector generation");
 	}
 }

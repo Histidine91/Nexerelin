@@ -11,8 +11,8 @@ import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import data.scripts.util.DS_Defs;
 import exerelin.plugins.ExerelinModPlugin;
@@ -59,7 +59,7 @@ public class ExerelinUtilsFleet
      * @param params
      * @return 
      */
-    public static CampaignFleetAPI customCreateFleet(FactionAPI faction, FleetParams params) {
+    public static CampaignFleetAPI customCreateFleet(FactionAPI faction, FleetParamsV3 params) {
         int total = (int)(params.combatPts + params.tankerPts + params.freighterPts);
         CampaignFleetAPI fleet = null;
         
@@ -69,7 +69,7 @@ public class ExerelinUtilsFleet
         else if (ExerelinModPlugin.HAVE_SWP) {
             fleet = SWPFleetUtilsProxy.enhancedCreateFleet(faction, params, total);
         }
-        else fleet = FleetFactoryV2.createFleet(params);
+        else fleet = FleetFactoryV3.createFleet(params);
         
         if (fleet == null) return null;
         

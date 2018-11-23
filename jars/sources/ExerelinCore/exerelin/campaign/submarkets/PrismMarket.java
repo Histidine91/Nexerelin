@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.CargoAPI.CargoItemQuantity;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.CoreUIAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
 import com.fs.starfarer.api.campaign.FleetDataAPI;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction.ShipSaleInfo;
@@ -101,7 +102,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     @Override
     public void updateCargoPrePlayerInteraction() {
 
-        if (!okToUpdateCargo()) return;
+        if (!okToUpdateShipsAndWeapons()) return;
         sinceLastCargoUpdate = 0f;
         
         CargoAPI cargo = getCargo();
@@ -158,8 +159,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
         return true;
     }
     
-    // same as vanilla one except without inflated weights for some weapons like HMG and Light Needler
-    @Override
+    // same as (old) vanilla one except without inflated weights for some weapons like HMG and Light Needler
     protected void addRandomWeapons(int max, int maxTier) {
         CargoAPI cargo = getCargo();
         List<String> weaponIds = Global.getSector().getAllWeaponIds();
@@ -286,7 +286,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
             FactionAPI faction = factionPicker.pick();
             String role = rolePicker.pick();            
             //pick the random ship
-            List<ShipRolePick> picks = faction.pickShip(role, 1, rolePicker.getRandom());
+            List<ShipRolePick> picks = faction.pickShip(role, new ShipPickParams());
             for (ShipRolePick pick : picks) {
                 FleetMemberType type = FleetMemberType.SHIP;
                 String variantId = pick.variantId; 

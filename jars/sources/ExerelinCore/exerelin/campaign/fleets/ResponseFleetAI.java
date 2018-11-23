@@ -45,8 +45,6 @@ public class ResponseFleetAI implements EveryFrameScript
 			return;
 		}
 		
-		tryRequestStation();
-		
 		interval += days;
 		if (interval >= 0.25f) interval -= 0.25f;
 		else return;
@@ -81,27 +79,6 @@ public class ResponseFleetAI implements EveryFrameScript
 						StringHelper.getFleetAssignmentString("defending", market.getName()));
 			}
 		}
-	}
-	
-	protected void tryRequestStation()
-	{
-		if (!DefenceStationManager.STATIONS_IN_CAMPAIGN_LAYER) return;
-		if (fleet.getBattle() == null) return;
-		
-		MarketAPI market = data.source.getMarket();
-		CampaignFleetAPI stationFleet = DefenceStationManager.getManager().getFleet(market, ExerelinConstants.DEFENSE_STATION_MIN_CR_TO_JOIN);
-		if (stationFleet == null || stationFleet.getContainingLocation() == null)
-			return;
-		if (stationFleet.getBattle() != null)
-			return;
-		if (!MathUtils.isWithinRange(data.fleet, data.source, 300))
-			return;
-		if (stationFleet.getFlagship().getRepairTracker().getCR() < 0.05f)
-			return;
-		
-		//data.fleet.getContainingLocation().addEntity(stationFleet);
-		//stationFleet.setLocation(data.fleet.getLocation().x, data.fleet.getLocation().y);
-		fleet.getBattle().join(stationFleet);
 	}
 	
 	@Override

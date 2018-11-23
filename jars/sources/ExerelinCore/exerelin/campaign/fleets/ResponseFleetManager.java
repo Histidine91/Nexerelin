@@ -9,8 +9,8 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import exerelin.ExerelinConstants;
@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 /**
  * When someone tries to invade our market, spawn a big freaking fleet to eat them
  */
+@Deprecated
 public class ResponseFleetManager extends BaseCampaignEventListener implements EveryFrameScript
 {
 	public static final String MANAGER_MAP_KEY = "exerelin_responseFleetManager";
@@ -78,7 +79,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(factionId);
 		ExerelinFactionConfig fleetFactionConfig = null;
 		
-		if (factionConfig.factionIdForHqResponse != null && origin.hasCondition(Conditions.HEADQUARTERS))
+		if (factionConfig.factionIdForHqResponse != null && origin.hasIndustry(Industries.HIGHCOMMAND))
 		{
 			fleetFactionId = factionConfig.factionIdForHqResponse;
 			fleetFactionConfig = ExerelinConfig.getExerelinFactionConfig(fleetFactionId);
@@ -201,20 +202,19 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		float size = baseSize;
 		if (raw) return size;
 		
-		if (market.hasCondition(Conditions.MILITARY_BASE)) size += baseSize * 0.1;
-		if (market.hasCondition(Conditions.ORBITAL_STATION)) size += baseSize * 0.05;
-		if (market.hasCondition(Conditions.SPACEPORT)) size += baseSize * 0.05;
-		if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) size += baseSize * 0.1;
-		if (market.hasCondition(Conditions.HEADQUARTERS)) size += baseSize * 0.2;
+		if (market.hasIndustry(Industries.PATROLHQ)) size += baseSize * 0.05;
+		if (market.hasIndustry(Industries.MILITARYBASE)) size += baseSize * 0.1;
+		if (market.hasIndustry(Industries.HIGHCOMMAND)) size += baseSize * 0.2;
+		if (market.hasIndustry(Industries.HEAVYINDUSTRY)) size += baseSize * 0.05;
+		if (market.hasIndustry(Industries.ORBITALWORKS)) size += baseSize * 0.1;
+		if (market.hasIndustry(Industries.MEGAPORT)) size += baseSize * 0.1;
+		
 		
 		ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		if (factionConfig != null)
 		{
 			size += baseSize * factionConfig.responseFleetSizeMod;
 		}
-		
-		if (DefenceStationManager.getManager() != null)
-			size -= DefenceStationManager.getManager().getDefenceFleetPenaltyFromStations(market);
 		
 		size += ExerelinUtilsFleet.getPlayerLevelFPBonus();
 		
@@ -239,7 +239,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 			float baseIncrement = marketSize * (0.5f + (market.getStabilityValue()/RESERVE_MARKET_STABILITY_DIVISOR));
 			float increment = baseIncrement;
 			//if (market.hasCondition(Conditions.REGIONAL_CAPITAL)) increment += baseIncrement * 0.1f;
-			if (market.hasCondition(Conditions.HEADQUARTERS)) increment += baseIncrement * 0.25f;
+			if (market.hasIndustry(Industries.HIGHCOMMAND)) increment += baseIncrement * 0.25f;
 			
 			ExerelinFactionConfig factionConfig = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 			if (factionConfig != null)

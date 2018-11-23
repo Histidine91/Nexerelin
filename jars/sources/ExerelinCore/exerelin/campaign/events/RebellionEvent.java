@@ -7,7 +7,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
 import com.fs.starfarer.api.campaign.RepLevel;
-import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
@@ -16,12 +15,10 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
-import com.fs.starfarer.api.impl.campaign.events.RecentUnrestEvent;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Events;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -42,7 +39,6 @@ import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
@@ -255,9 +251,9 @@ public class RebellionEvent extends BaseEventPlugin {
 		debugMessage("  Stability: " + stability);
 		debugMessage("  Initial force strengths: " + govtStrength + ", " + rebelStrength);
 		
-		float mult = market.getDemand(Commodities.HAND_WEAPONS).getFractionMet();
-		mult *= market.getDemand(Commodities.MARINES).getFractionMet();
-		mult *= market.getDemand(Commodities.SUPPLIES).getFractionMet();
+		float mult = market.getCommodityData(Commodities.HAND_WEAPONS).getAvailable() / 5;
+		mult += market.getCommodityData(Commodities.MARINES).getAvailable() / 5;
+		mult *= market.getCommodityData(Commodities.SUPPLIES).getAvailable() / 5;
 		mult += 0.25f;
 		
 		govtStrength += (2f + stability/10) * mult;
@@ -271,13 +267,7 @@ public class RebellionEvent extends BaseEventPlugin {
 		String modId = this.getStatModId();
 		if (ended)
 		{
-			market.getDemand(Commodities.MARINES).getDemand().unmodify(modId);
-			market.getDemand(Commodities.HAND_WEAPONS).getDemand().unmodify(modId);
-			market.getDemand(Commodities.SUPPLIES).getDemand().unmodify(modId);
-		
-			market.getDemand(Commodities.MARINES).getNonConsumingDemand().unmodify(modId);
-			market.getDemand(Commodities.HAND_WEAPONS).getNonConsumingDemand().unmodify(modId);
-			market.getDemand(Commodities.SUPPLIES).getNonConsumingDemand().unmodify(modId);
+			market.getCommodityData(Commodities.HAND_WEAPONS).getDemand().getDemand().modifyFlat(modId, age, "Rebellion");
 			
 			return;
 		}
@@ -294,6 +284,8 @@ public class RebellionEvent extends BaseEventPlugin {
 		market.getDemand(Commodities.SUPPLIES).getDemand().modifyFlat(modId, SUPPLIES_DEMAND * mult);
 		
 		// still stockpiling ahead of conflict; demand is non-consuming
+		// TODO
+		/*
 		if (stage == 0)
 		{
 			market.getDemand(Commodities.MARINES).getNonConsumingDemand().modifyFlat(modId, MARINE_DEMAND * mult);
@@ -306,6 +298,7 @@ public class RebellionEvent extends BaseEventPlugin {
 			market.getDemand(Commodities.HAND_WEAPONS).getNonConsumingDemand().unmodify(modId);
 			market.getDemand(Commodities.SUPPLIES).getNonConsumingDemand().unmodify(modId);
 		}
+		*/
 	}
 	
 	/**
@@ -341,8 +334,7 @@ public class RebellionEvent extends BaseEventPlugin {
 	}
 	
 	/**
-	 * Applies a event with market condition to apply lingering, decaying stability penalty after the rebellion ends.
-	 * Usually a Recent Unrest event, uses Market Attacked event if rebels win.
+	 * Applies recent unrest instability once the rebellion ends.
 	 * @param result
 	 * @param amount
 	 */
@@ -352,31 +344,7 @@ public class RebellionEvent extends BaseEventPlugin {
 		
 		if (amount > MAX_STABILITY_PENALTY_INCREMENT) amount = MAX_STABILITY_PENALTY_INCREMENT;
 		
-		SectorAPI sector = Global.getSector();
-		if (result == RebellionResult.REBEL_VICTORY || result == RebellionResult.MUTUAL_ANNIHILATION)
-		{
-			CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(
-				new CampaignEventTarget(market), "exerelin_market_attacked");
-			if (eventSuper == null) 
-				eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), 
-						"exerelin_market_attacked", null);
-			MarketAttackedEvent event = (MarketAttackedEvent)eventSuper;
-			int newPenalty = Math.min(event.getStabilityPenalty() + amount, MAX_STABILITY_PENALTY);
-			if (newPenalty > event.getStabilityPenalty())
-				event.setStabilityPenalty(newPenalty);
-		}
-		else
-		{
-			CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(
-				new CampaignEventTarget(market), Events.RECENT_UNREST);
-			if (eventSuper == null) 
-				eventSuper = sector.getEventManager().startEvent(new CampaignEventTarget(market), 
-						Events.RECENT_UNREST, null);
-			RecentUnrestEvent event = (RecentUnrestEvent)eventSuper;
-			int newPenalty = Math.min(event.getStabilityPenalty() + amount, MAX_STABILITY_PENALTY);
-			if (newPenalty > event.getStabilityPenalty())
-				event.setStabilityPenalty(newPenalty);
-		}
+		RecentUnrest.get(market).add(stabilityPenalty, "Rebellion");
 	}
 	
 	/**
@@ -676,9 +644,6 @@ public class RebellionEvent extends BaseEventPlugin {
 			if (age > 0)
 			{
 				stage = 1;
-				conditionToken = market.addCondition("nex_rebellion_condition", true, this);
-				market.reapplyCondition(conditionToken);
-
 				reportStage("start");
 			}
 		}

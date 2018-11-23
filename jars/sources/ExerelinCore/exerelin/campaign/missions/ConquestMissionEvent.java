@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -63,9 +64,8 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 			
 			float dist = Misc.getDistanceToPlayerLY(market.getPrimaryEntity());
 			float weight = Math.max(1f, 10f - dist);
-			if (market.hasCondition(Conditions.HEADQUARTERS) ||
-					market.hasCondition(Conditions.REGIONAL_CAPITAL) ||
-					market.hasCondition(Conditions.MILITARY_BASE)) {
+			if (market.hasIndustry(Industries.HIGHCOMMAND) ||
+					market.hasIndustry(Industries.MILITARYBASE)) {
 				military.add(market, weight);
 			} else {
 				nonMilitary.add(market, weight);

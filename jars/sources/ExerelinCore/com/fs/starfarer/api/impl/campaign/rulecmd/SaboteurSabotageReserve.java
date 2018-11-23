@@ -15,6 +15,7 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.StatsTracker;
 
+@Deprecated
 public class SaboteurSabotageReserve extends AgentActionBase {
 
 	@Override

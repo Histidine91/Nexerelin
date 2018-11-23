@@ -24,70 +24,11 @@ import java.util.List;
 import java.util.Map;
 import org.lazywizard.lazylib.MathUtils;
 
+// TODO: Clean up this crap
 public class ExerelinUtilsMarket {
 	
 	// use the memory key instead of this wherever possible
 	public static final List<String> NO_INVADE_MARKETS = Arrays.asList(new String[]{"SCY_prismFreeport", "prismFreeport", "prismFreeport_market"});
-	
-	/**
-	 * Gets demand for a particular commodity on a given market. Should be safe to use in most instances.
-	 * @param market
-	 * @param commodity
-	 * @param consumingOnly if true, subtract non-consuming demand from total demand
-	 * @return
-	 */
-	public static float getCommodityDemand(MarketAPI market, String commodity, boolean consumingOnly)
-	{
-		float demand = market.getCommodityData(commodity).getDemand().getDemand().modified;
-		if (consumingOnly) demand -= market.getCommodityData(commodity).getDemand().getNonConsumingDemand().modified;
-		return demand;
-	}
-	
-	public static float getCommodityDemand(MarketAPI market, String commodity)
-	{
-		return getCommodityDemand(market, commodity, true);
-	}
-	
-	/**
-	 * Gets supply for a particular commodity on a given market.
-	 * Because many market conditions scale their output based on the demand met of input commodities (and almost all use crew),
-	 * this is not recommended for processed and finished items (metals, machinery, etc.)
-	 * In fact, you better not use it at all prior to the economy stabilization phase
-	 * @param market
-	 * @param commodity
-	 * @return
-	 */
-	public static float getCommoditySupply(MarketAPI market, String commodity)
-	{
-		return market.getCommodityData(commodity).getSupply().modified;
-	}
-	
-	public static float getCommoditySupplyMult(MarketAPI market, String commodity)
-	{
-		return market.getCommodityData(commodity).getSupply().computeMultMod();
-	}
-	
-	public static float getCommodityDemandMult(MarketAPI market, String commodity)
-	{
-		return market.getCommodityData(commodity).getDemand().getDemand().computeMultMod();
-	}
-	
-	public static float getCommodityDemandFractionMet(MarketAPI market, String commodity, boolean clamp)
-	{
-		if (clamp) return market.getCommodityData(commodity).getDemand().getClampedFractionMet();
-		else return market.getCommodityData(commodity).getDemand().getFractionMet();
-	}
-	
-	public static int countMarketConditions(MarketAPI market, String marketCondition)
-	{
-		int count = 0;
-		List<MarketConditionAPI> conditions = market.getConditions();
-		for (MarketConditionAPI condition : conditions)
-		{
-			if (condition.getId().equals(marketCondition)) count++;
-		}
-		return count;
-	}
 	
 	public static float getPopulation(MarketAPI market)
 	{
@@ -103,17 +44,7 @@ public class ExerelinUtilsMarket {
 		
 		return (float) Math.pow(2, size - 4);
 	}
-	
-	public static void removeOneMarketCondition(MarketAPI market, String conditionId)
-	{
-		int count = countMarketConditions(market, conditionId);
-		if (count == 0)
-			Global.getLogger(ExerelinUtilsMarket.class).warn("Tried to remove nonexistent market condition " + conditionId + " from " + market.getId());
-		market.removeCondition(conditionId);	// removes all
-		for (int i=0; i<count - 1; i++)
-			market.addCondition(conditionId);	// add back all but one
-	}
-	
+		
 	public static float getHyperspaceDistance(MarketAPI market1, MarketAPI market2)
 	{
 		SectorEntityToken primary1 = market1.getPrimaryEntity();
@@ -123,145 +54,7 @@ public class ExerelinUtilsMarket {
 		
 		return Misc.getDistance(primary1.getLocationInHyperspace(), primary2.getLocationInHyperspace());
 	}
-	
-	// the fancy bits are adapted from LazyWizard's Console Commands
-	@Deprecated
-	public static void refreshMarket(MarketAPI market, boolean force)
-	{
-		if (market.getFactionId().equals("templars"))	// doesn't work on Templars, sorry
-			return;
 		
-		boolean canUpdate = true;
-		final Field sinceLastCargoUpdate, minCargoUpdateInterval;
-		if (force) {
-			try
-			{
-				sinceLastCargoUpdate = BaseSubmarketPlugin.class.getDeclaredField("sinceLastCargoUpdate");
-				sinceLastCargoUpdate.setAccessible(true);
-				minCargoUpdateInterval = BaseSubmarketPlugin.class.getDeclaredField("minCargoUpdateInterval");
-				minCargoUpdateInterval.setAccessible(true);
-			}
-			catch (Exception ex)	// bah
-			{
-				Global.getLogger(ExerelinUtilsMarket.class).error(ex);
-				return;
-			}
-		}
-		else {
-			sinceLastCargoUpdate = null;
-			minCargoUpdateInterval = null;
-		}
-		if (!canUpdate) return;
-		
-		
-		for (SubmarketAPI submarket : market.getSubmarketsCopy())
-		{
-			// Ignore storage tabs
-			if (Submarkets.SUBMARKET_STORAGE.equals(submarket.getSpec().getId()))
-				continue;
-			
-			if (submarket.getPlugin() instanceof BaseSubmarketPlugin)
-			{
-				final BaseSubmarketPlugin plugin = (BaseSubmarketPlugin) submarket.getPlugin();
-				
-				if (force)
-				{ 
-					try
-					{
-						float lastUpdate = sinceLastCargoUpdate.getFloat(plugin);
-						float minUpdateInterval = minCargoUpdateInterval.getFloat(plugin);
-						if (lastUpdate > minUpdateInterval)
-						sinceLastCargoUpdate.setFloat(plugin, minUpdateInterval + 1);
-					}
-					catch (Exception ex)	// meh
-					{
-						Global.getLogger(ExerelinUtilsMarket.class).error(ex);
-						continue;
-					}
-				}
-				
-				plugin.updateCargoPrePlayerInteraction();
-			}
-		}
-	}
-	
-	/**
-	 * Gets a float representing a portion of the stockpile for the specified commodity on the market.
-	 * @param market
-	 * @param commodity
-	 * @param mult
-	 * @param variance Output amount is multiplied by a random number from (1 - variance) to (1 + variance)
-	 * @return
-	 */
-	public static float getCommodityPartialStocks(MarketAPI market, CommodityOnMarketAPI commodity, float mult, float variance)
-	{
-		float current = commodity.getStockpile();
-		if (variance != 0)
-			mult *= MathUtils.getRandomNumberInRange(1 - variance, 1 + variance);
-		if (mult < 0) mult = 0;
-		else if (mult > 1) mult = 1;
-		return current * mult;
-	}
-	
-	/**
-	 * Gets a float representing a portion of the stockpile for the specified commodity on the market.
-	 * @param market
-	 * @param commodityId
-	 * @param mult
-	 * @param variance Output amount is multiplied by a random number from (1 - variance) to (1 + variance)
-	 * @return
-	 */
-	public static float getCommodityPartialStocks(MarketAPI market, String commodityId, float mult, float variance)
-	{
-		CommodityOnMarketAPI commodity = market.getCommodityData(commodityId);
-		return getCommodityPartialStocks(market, commodity, mult, variance);
-	}
-	
-	/**
-	 * Gets a float representing a portion of the stockpile for each commodity on the market, 
-	 * with variance for each commodity.
-	 * @param market
-	 * @param mult
-	 * @param variance Output amount is multiplied by a random number from (1 - variance) to (1 + variance)
-	 * @param ignoreNonEcon Ignore non-econ commodities
-	 * @param ignorePersonnel Ignore crew/marines
-	 * @return
-	 */
-	public static Map<String, Float> getAllCommodityPartialStocks(MarketAPI market, 
-			float mult, float variance, boolean ignoreNonEcon, boolean ignorePersonnel) {
-		Map<String, Float> results = new HashMap<>();
-		for (CommodityOnMarketAPI commodity: market.getAllCommodities()) 
-		{
-			if (ignoreNonEcon && commodity.isNonEcon()) continue;
-			if (ignorePersonnel && commodity.isPersonnel()) continue;
-			float amount = getCommodityPartialStocks(market, commodity, mult, variance);
-			results.put(commodity.getId(), amount);
-		}
-		return results;
-	}
-	
-	public static void destroyCommodityStocks(MarketAPI market, CommodityOnMarketAPI commodity, float mult, float variance)
-	{
-		float amount = getCommodityPartialStocks(market, commodity, mult, variance);
-		commodity.removeFromStockpile(amount);
-		Global.getLogger(ExerelinUtilsMarket.class).info("Destroyed " + String.format("%.1f", amount) + " of " + commodity.getId() 
-				+ " on " + market.getName() + " (mult " + String.format("%.2f", mult) + ")");
-	}
-	
-	public static void destroyCommodityStocks(MarketAPI market, String commodityId, float mult, float variance)
-	{
-		CommodityOnMarketAPI commodity = market.getCommodityData(commodityId);
-		destroyCommodityStocks(market, commodity, mult, variance);
-	}
-	
-	public static void destroyAllCommodityStocks(MarketAPI market, float mult, float variance) {
-		for (CommodityOnMarketAPI commodity: market.getAllCommodities()) 
-		{
-			if (commodity.isNonEcon()) continue;
-			destroyCommodityStocks(market, commodity, mult, variance);
-		}
-	}
-	
 	public static void setTariffs(MarketAPI market)
 	{
 		String factionId = market.getFactionId();

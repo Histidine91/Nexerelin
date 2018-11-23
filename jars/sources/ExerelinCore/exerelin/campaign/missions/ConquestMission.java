@@ -13,6 +13,8 @@ import com.fs.starfarer.api.impl.campaign.missions.BaseCampaignMission;
 import exerelin.utilities.StringHelper;
 import java.util.UUID;
 
+// FIXME: Update to use intel system
+@Deprecated
 public class ConquestMission extends BaseCampaignMission {
 	public static final float MIN_DURATION_REMAINING_TO_OFFER = 30;
 	public static final float MIN_BONUS_DUR = 5f;
@@ -53,14 +55,14 @@ public class ConquestMission extends BaseCampaignMission {
 	public void advance(float amount) {
 		if (!target.getFaction().isHostileTo(issuer))
 		{
-			Global.getSector().getMissionBoard().removeMission(this, true);
+			//Global.getSector().getMissionBoard().removeMission(this, true);
 		}
 		
 		float days = Global.getSector().getClock().convertToDays(amount);
 		baseDuration -= days;
 		bonusDuration -= days;
 		if (baseDuration < MIN_DURATION_REMAINING_TO_OFFER) {
-			Global.getSector().getMissionBoard().removeMission(this, true);
+			//Global.getSector().getMissionBoard().removeMission(this, true);
 		}
 		if (bonusDuration <= MIN_BONUS_DUR) {
 			bonusDuration = 0f;

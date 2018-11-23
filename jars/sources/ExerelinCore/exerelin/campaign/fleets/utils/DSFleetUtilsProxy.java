@@ -4,8 +4,8 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV2;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import data.scripts.campaign.DS_FleetFactory;
 import data.scripts.campaign.fleets.DS_FleetInjector;
 import static data.scripts.campaign.fleets.DS_FleetInjector.randomizeVariants;
@@ -17,12 +17,12 @@ import java.util.Random;
 
 public class DSFleetUtilsProxy {
 	
-	public static CampaignFleetAPI enhancedCreateFleet(FactionAPI faction, FleetParams params, int total) {
-		final FleetParams params2 = params;
+	public static CampaignFleetAPI enhancedCreateFleet(FactionAPI faction, FleetParamsV3 params, int total) {
+		final FleetParamsV3 params2 = params;
 		return DS_FleetFactory.enhancedCreateFleet(faction, total, new DS_FleetFactory.FleetFactoryDelegate() {
 			@Override
 			public CampaignFleetAPI createFleet() {
-				return FleetFactoryV2.createFleet(params2);
+				return FleetFactoryV3.createFleet(params2);
 			}
 		});
 	}

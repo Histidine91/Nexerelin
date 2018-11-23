@@ -15,6 +15,8 @@ import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.StatsTracker;
 
+// TODO: general industry attack
+@Deprecated
 public class SaboteurDestroyFood extends AgentActionBase {
 
 	@Override
