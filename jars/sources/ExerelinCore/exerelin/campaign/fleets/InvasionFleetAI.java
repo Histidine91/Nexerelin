@@ -181,9 +181,8 @@ public class InvasionFleetAI implements EveryFrameScript
 					if (attackStationIfPresent())
 						return;
 					
-					InvasionRound.InvasionRoundResult result = InvasionRound.AttackMarket(fleet, data.target, false);
-					if (result == null) giveStandDownOrders();	// something borked
-					else if (result.success)
+					boolean success = InvasionRound.npcInvade(fleet, data.targetMarket);
+					if (success)
 					{
 						if (data.event != null)
 							data.event.endEvent(InvasionFleetEvent.FleetReturnReason.MISSION_COMPLETE, data.target);

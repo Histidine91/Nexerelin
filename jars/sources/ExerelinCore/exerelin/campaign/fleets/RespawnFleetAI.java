@@ -105,8 +105,8 @@ public class RespawnFleetAI extends InvasionFleetAI
 					giveStandDownOrders();
 				else
 				{
-					InvasionRound.InvasionRoundResult result = InvasionRound.AttackMarket(fleet, data.target, false);
-					if (result.success)
+					boolean success = InvasionRound.npcInvade(fleet, data.targetMarket);
+					if (success)
 					{
 						// respawn fleets have no event
 						//data.event.endEvent(InvasionFleetEvent.FleetReturnReason.MISSION_COMPLETE, data.target);
