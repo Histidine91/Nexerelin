@@ -80,6 +80,8 @@ public class InvasionFleetAI implements EveryFrameScript
 	{
 		if (fleet.getBattle() != null) return true;
 		
+		// TODO replace with vanilla station
+		/*
 		CampaignFleetAPI station = DefenceStationManager.getManager().getFleet(data.targetMarket, ExerelinConstants.DEFENSE_STATION_MIN_CR_TO_JOIN);
 		if (station != null)
 		{			
@@ -103,6 +105,7 @@ public class InvasionFleetAI implements EveryFrameScript
 				
 			return true;
 		}
+		*/
 		return false;
 	}
 	
@@ -205,10 +208,6 @@ public class InvasionFleetAI implements EveryFrameScript
 			if (system != null && system != this.fleet.getContainingLocation()) {
 				//LocationAPI hyper = Global.getSector().getHyperspace();
 				//Vector2f dest = Misc.getPointAtRadius(system.getLocation(), 1500.0F);
-				SectorEntityToken token = system.getHyperspaceAnchor();	//system.createToken(dest.x, dest.y);
-				//this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
-				//this.fleet.addAssignment(FleetAssignment.GO_TO_LOCATION, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
-				this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, token, 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", locName));
 				this.fleet.addAssignment(FleetAssignment.DELIVER_MARINES, market.getPrimaryEntity(), 1000.0F, StringHelper.getFleetAssignmentString("travellingTo", marketName));
 			}
 			else {

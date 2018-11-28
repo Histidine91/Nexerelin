@@ -6,7 +6,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactory.PatrolType;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolAssignmentAI;
 import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
@@ -240,23 +240,16 @@ public class ExerelinPatrolFleetManager extends PatrolFleetManager {
 			
 			//combat += Math.min(30f, losses * 3f);
 			
-			FleetParams params = new FleetParams(
-						null,
-						market, 
-						market.getFactionId(),
-						null, // fleet's faction, if different from above, which is also used for source market picking
+			FleetParamsV3 params = new FleetParamsV3(
+						market,
 						fleetType,
 						combat, // combatPts
 						freighter, // freighterPts 
 						tanker, // tankerPts
 						0f, // transportPts
-						0f, // linerPts
-						0f, // civilianPts 
+						0f, // linerPts 
 						0f, // utilityPts
-						0f, // qualityBonus
-						-1f, // qualityOverride
-						1f + Math.min(1f, lossMod / 12.5f),	//1f + Math.min(1f, losses / 10f), // officer num mult
-						0 + (int) (lossMod * 0.75f)	// 0 + (int) losses // officer level bonus
+						0f // qualityMod
 						);
 			CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(market.getFaction(), params);
 			if (fleet == null) return;

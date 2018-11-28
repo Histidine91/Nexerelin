@@ -11,7 +11,7 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -134,15 +134,14 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		int tankerFP = (int)(fp * TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000);
 		//fp -= tankerFP;
 		
-		FleetParams fleetParams = new FleetParams(null, params.originMarket, factionId, null, params.fleetType, 
+		FleetParamsV3 fleetParams = new FleetParamsV3(params.originMarket, params.fleetType, 
 				fp*0.85f, // combat
 				fp*0.1f, // freighters
 				tankerFP,		// tankers
 				params.numMarines/100*2,		// personnel transports
 				0,		// liners
-				0,		// civilian
 				fp*0.05f,	// utility
-				0, params.qualityOverride, 1.25f, 1);	// quality bonus, quality override, officer num mult, officer level bonus
+				0);	// quality mod
 		
 		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(params.faction, fleetParams);
 		if (fleet == null) return null;
@@ -236,11 +235,9 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	
 	public static InvasionFleetData spawnRespawnFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, boolean useOriginLocation)
 	{
-		float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket, 1f, false);
+		float defenderStrength = InvasionRound.getDefenderStrength(targetMarket, 1f);
 		float responseFleetSize = ResponseFleetManager.getMaxReserveSize(targetMarket, false);
 		float maxFPbase = (responseFleetSize * DEFENDER_STRENGTH_FP_MULT + (originMarket.getSize() + 2));
-		if (DefenceStationManager.getManager() != null)
-			maxFPbase += DefenceStationManager.getManager().getDefenceFleetPenaltyFromStations(targetMarket) * 1.25f;
 		maxFPbase *= 0.8f;
 		
 		float maxFP = maxFPbase + ExerelinUtilsFleet.getPlayerLevelFPBonus();
@@ -346,7 +343,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 	public static InvasionFleetData spawnInvasionFleet(FactionAPI faction, MarketAPI originMarket, MarketAPI targetMarket, 
 			float marineMult, float fpMult, boolean noWait)
 	{
-		float defenderStrength = InvasionRound.GetDefenderStrength(targetMarket, 0.5f, false);
+		float defenderStrength = InvasionRound.getDefenderStrength(targetMarket, 0.5f);
 		
 		int maxFP = (int)(calculateMaxFpForFleet(originMarket, targetMarket) * fpMult);
 		float qf = originMarket.getShipQualityFactor();

@@ -8,7 +8,7 @@ import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -35,7 +35,7 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 	private static final float RESERVE_INCREMENT_PER_DAY = 0.08f;
 	private static final float RESERVE_MARKET_STABILITY_DIVISOR = 5f;
 	private static final float INITIAL_RESERVE_SIZE_MULT = 0.75f;
-	public static final float MIN_FP_TO_SPAWN = 5f;
+	public static final float MIN_FP_TO_SPAWN = 25f;
 	
 	protected Map<String, Float> revengeStrength = new HashMap<>();
 	protected Map<String, Float> reserves = new HashMap<>();
@@ -92,21 +92,23 @@ public class ResponseFleetManager extends BaseCampaignEventListener implements E
 		else
 			name = factionConfig.responseFleetName;
 		
-		if (points <= 18) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixSmall") + " " + name;
-		else if (points >= 54) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
+		points *= 5;
+		
+		if (points <= 90) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixSmall") + " " + name;
+		else if (points >= 270) name = StringHelper.getString("exerelin_fleets", "responseFleetPrefixLarge") + " " + name;
 		
 		//int marketSize = origin.getSize();
 		//if (origin.getId().equals(ExerelinConstants.AVESTA_ID)) marketSize += 2;
 		//CampaignFleetAPI fleet = FleetFactory.createGenericFleet(origin.getFactionId(), name, qf, maxFP);
-		FleetParams fleetParams = new FleetParams(null, origin, fleetFactionId, null, "exerelinResponseFleet", 
+		
+		FleetParamsV3 fleetParams = new FleetParamsV3(origin, "exerelinResponseFleet", 
 				points, // combat
 				0,	//maxFP*0.1f, // freighters
 				0,		// tankers
 				0,		// personnel transports
 				0,		// liners
-				0,		// civilian
 				0,	//maxFP*0.1f,	// utility
-				0.15f, -1, 1.25f, 1);	// quality bonus, quality override, officer num mult, officer level bonus
+				0.15f);	// quality mod
 		fleetParams.random = getRandom();
 		
 		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(Global.getSector().getFaction(fleetFactionId), fleetParams);

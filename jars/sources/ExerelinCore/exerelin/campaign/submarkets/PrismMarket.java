@@ -286,7 +286,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
             FactionAPI faction = factionPicker.pick();
             String role = rolePicker.pick();            
             //pick the random ship
-            List<ShipRolePick> picks = faction.pickShip(role, new ShipPickParams());
+            List<ShipRolePick> picks = faction.pickShip(role, ShipPickParams.priority());
             for (ShipRolePick pick : picks) {
                 FleetMemberType type = FleetMemberType.SHIP;
                 String variantId = pick.variantId; 

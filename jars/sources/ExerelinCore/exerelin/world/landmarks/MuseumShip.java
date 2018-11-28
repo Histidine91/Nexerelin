@@ -3,6 +3,7 @@ package exerelin.world.landmarks;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CustomCampaignEntityAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.fleet.ShipRolePick;
@@ -60,7 +61,7 @@ public class MuseumShip extends BaseLandmarkDef {
 			rolePicker.add(ShipRoles.COMBAT_LARGE, 3f);
 			String role = rolePicker.pick();
 
-			List<ShipRolePick> picks = faction.pickShip(role, 1, random);
+			List<ShipRolePick> picks = faction.pickShip(role, ShipPickParams.priority(), null, random);
 			if (picks.isEmpty()) continue;
 			
 			// create ship

@@ -17,7 +17,7 @@ import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
@@ -501,17 +501,17 @@ public class RebellionEvent extends BaseEventPlugin {
 		float distance = ExerelinUtilsMarket.getHyperspaceDistance(sourceMarket, market);
 		int tankerFP = (int)(fp * InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000);
 		//fp -= tankerFP;
-		
-		FleetParams fleetParams = new FleetParams(null, sourceMarket, factionId, null, 
-				"nex_suppressionFleet", 
+				
+		FleetParamsV3 fleetParams = new FleetParamsV3(
+				sourceMarket,
+				"nex_suppressionFleet", // fleet type
 				fp*0.85f, // combat
 				fp*0.1f, // freighters
 				tankerFP,		// tankers
-				numMarines/100*2,		// personnel transports
+				numMarines/200,		// personnel transports
 				0,		// liners
-				0,		// civilian
 				fp*0.05f,	// utility
-				0, -1, 1, 0);	// quality bonus, quality override, officer num mult, officer level bonus
+				0);	// quality mod
 		
 		CampaignFleetAPI fleet = ExerelinUtilsFleet.customCreateFleet(faction, fleetParams);
 		if (fleet == null) return null;

@@ -3,6 +3,7 @@ package exerelin.world.landmarks;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.StringHelper;
@@ -25,13 +26,11 @@ public class AbandonedStation extends BaseLandmarkDef {
 		LocationAPI system = entity.getContainingLocation();
 		float orbitRadius = entity.getRadius() + 200;
 		float orbitPeriod = ExerelinUtilsAstro.getOrbitalPeriod(entity, orbitRadius);
-		SectorEntityToken neutralStation = system.addOrbitalStation("nex_abandoned_station_" + count, 
-																	entity,
-																	ExerelinUtilsAstro.getRandomAngle(random),
-																	orbitRadius, 
-																	orbitPeriod,
+		SectorEntityToken neutralStation = system.addCustomEntity("nex_abandoned_station_" + count, 
 																	StringHelper.getString("exerelin_landmarks", "abandonedStation"),
-																	"neutral");
+																	"station_side06", Factions.NEUTRAL);
+		neutralStation.setCircularOrbitPointingDown(entity, ExerelinUtilsAstro.getRandomAngle(random),
+				orbitRadius, orbitPeriod);
 		
 		// Hey it should orbit facing down and stuff.
 		neutralStation.setCircularOrbitPointingDown(entity, 45, 300, 30);

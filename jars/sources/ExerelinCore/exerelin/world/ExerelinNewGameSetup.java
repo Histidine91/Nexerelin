@@ -204,10 +204,13 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		
 		if (ExerelinModPlugin.HAVE_DYNASECTOR)
 		{
+			// FIXME
+			/*
 			sector.addScript(new DS_MercFleetManager());
 			sector.addScript(new DS_LuddicPathFleetManager());
 			sector.addScript(new DS_PirateFleetManager());
 			//sector.addScript(new DS_BountyPirateFleetManager());
+			*/
 		}
 		else
 		{

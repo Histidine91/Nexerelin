@@ -49,7 +49,6 @@ import exerelin.campaign.fleets.ResponseFleetManager.ResponseFleetData;
 import exerelin.campaign.fleets.SuppressionFleetAI;
 import exerelin.campaign.missions.ConquestMission;
 import exerelin.campaign.missions.ConquestMissionEvent;
-import exerelin.campaign.terrain.ExpiringDebrisFieldTerrainPlugin;
 
 public class XStreamConfig {
 	
@@ -121,8 +120,6 @@ public class XStreamConfig {
 		
 		x.alias("ExeRepAdjustmentResult", ExerelinReputationAdjustmentResult.class);
 		x.alias("ExeAlliance", Alliance.class);
-		
-		x.alias("NexExpDbrsFld", ExpiringDebrisFieldTerrainPlugin.class);
 		
 		// enums
 		x.alias("CovertActionResult", CovertOpsManager.CovertActionResult.class);

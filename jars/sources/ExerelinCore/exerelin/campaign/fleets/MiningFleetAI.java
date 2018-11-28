@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.MiningHelperLegacy;
 import exerelin.utilities.ExerelinUtilsCargo;
@@ -53,6 +54,8 @@ public class MiningFleetAI implements EveryFrameScript
 		SectorEntityToken closest = roids.get(0);
 		for (SectorEntityToken roid : roids)
 		{
+			if (roid.hasTag(Tags.NON_CLICKABLE))	// asteroid created from drive bubble bounce
+					continue;	
 			float distSq = MathUtils.getDistanceSquared(roid.getLocation(), fleet.getLocation());
 			if (distSq < closestDistSq)
 			{

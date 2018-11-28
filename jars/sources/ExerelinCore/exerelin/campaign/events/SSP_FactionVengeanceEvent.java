@@ -10,7 +10,7 @@ import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetParams;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
@@ -427,22 +427,16 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         final int finalFreighter = freighter;
         final int finalTanker = tanker;
         final int finalUtility = utility;
-        FleetParams params = new FleetParams(null, // location
-                                                market, // market
-                                                faction.getId(),
-                                                null, // fleet's faction, if different from above, which is also used for source market picking
+        FleetParamsV3 params = new FleetParamsV3(market, // market
                                                 "vengeanceFleet",
                                                 finalCombat, // combatPts
                                                 finalFreighter, // freighterPts
                                                 finalTanker, // tankerPts
                                                 0f, // transportPts
                                                 0f, // linerPts
-                                                0f, // civilianPts
                                                 finalUtility, // utilityPts
-                                                finalBonus, // qualityBonus
-                                                -1f, // qualityOverride
-                                                1f + finalBonus, // officer num mult
-                                                Math.round(finalBonus * 10f));
+                                                finalBonus // qualityMod
+                                                );
         fleet = ExerelinUtilsFleet.customCreateFleet(faction, params);
 
         if (fleet == null) {

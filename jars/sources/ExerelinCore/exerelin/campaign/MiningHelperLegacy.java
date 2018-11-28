@@ -592,7 +592,7 @@ public class MiningHelperLegacy {
 			
 			for (String role : ROLES_FOR_FIGHTERS) 
 			{
-				List<ShipRolePick> picks = faction.pickShip(role, 1);
+				List<ShipRolePick> picks = faction.pickShip(role, ShipPickParams.priority());
 				for (ShipRolePick pick : picks) {
 					FleetMemberType type = FleetMemberType.SHIP;
 					if (pick.isFighterWing()) continue;
