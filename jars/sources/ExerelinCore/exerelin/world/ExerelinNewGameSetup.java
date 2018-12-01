@@ -190,9 +190,6 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 			addPrismMarket(sector);
 		}
 		
-		final String selectedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
-		PlayerFactionStore.setPlayerFactionId(selectedFactionId);
-		
 		log.info("Adding scripts and plugins");
 		sector.registerPlugin(new CoreCampaignPluginImpl());
 		sector.registerPlugin(new ExerelinCampaignPlugin());

@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class PlayerFactionStore {
     
     public static Logger log = Global.getLogger(PlayerFactionStore.class);
     
+    @Deprecated
     public static void setPlayerFactionId(String newFactionId)
     {
         factionId = newFactionId;
@@ -42,14 +44,9 @@ public class PlayerFactionStore {
     
     public static String getPlayerFactionId()
     {
-        Map<String, Object> data = Global.getSector().getPersistentData();
-        String storedId = (String)data.get(PLAYER_FACTION_ID_KEY);
-        if (storedId != null) 
-        {
-            factionId = storedId;
-            return storedId;
-        }
-        return factionId;
+        String cfId = Misc.getCommissionFactionId();
+        if (cfId == null) return Factions.PLAYER;
+        return cfId;
     }
     
     public static FactionAPI getPlayerFaction()
@@ -92,13 +89,13 @@ public class PlayerFactionStore {
         Map<String, Float> storedRelations = (Map<String, Float>)data.get(PLAYER_RELATIONS_KEY);
         if (storedRelations == null) return;
         
-        FactionAPI playerFaction = sector.getFaction("player");
+        FactionAPI playerFaction = sector.getFaction(Factions.PLAYER);
         for (FactionAPI faction : sector.getAllFactions())
         {
             Float relation = storedRelations.get(faction.getId());
             if (relation != null && (!retainWithCurrentFaction || !faction.getId().equals(factionId)))
             {
-                faction.setRelationship("player", relation);
+                faction.setRelationship(Factions.PLAYER, relation);
                 log.info("Loading independent player relations with " + faction.getDisplayName() + " as " + relation);
             }
         }

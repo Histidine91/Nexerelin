@@ -97,7 +97,14 @@ public class StartSetupPostTimePass {
 		}
 		
 		if (entity != null)
+		{
 			sendPlayerFleetToLocation(playerFleet, entity);
+			ExerelinUtilsFaction.grantCommission(entity);
+		}
+		else
+		{
+			ExerelinUtilsFaction.grantCommission(playerFleet);
+		}
 		
 		// assign officers
 		int numOfficers = ExerelinSetupData.getInstance().numStartingOfficers;
