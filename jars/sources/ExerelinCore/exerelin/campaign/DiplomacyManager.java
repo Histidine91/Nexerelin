@@ -435,7 +435,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             params.put("eventStage", event.stage);
             params.put("result", result);
             params.put("otherFaction", faction2);
-            // TODO: update to intel system
+			// TODO: update to intel system
             //sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
             
             diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), deltaBase);
@@ -774,8 +774,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         // clamp
         NexUtilsReputation.syncFactionRelationshipToPlayer(playerAlignedFactionId, factionId);
         NexUtilsReputation.syncPlayerRelationshipToFaction(playerAlignedFactionId, factionId);
-        if (!playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
-            NexUtilsReputation.syncFactionRelationshipToPlayer(ExerelinConstants.PLAYER_NPC_ID, factionId);
+        //if (!playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+        //    NexUtilsReputation.syncFactionRelationshipToPlayer(ExerelinConstants.PLAYER_NPC_ID, factionId);
         
         float currentRel = player.getRelationship(factionId);
         boolean isHostile = player.isHostileTo(factionId);

@@ -129,7 +129,7 @@ public class NexUtilsReputation
 			return;
 		
 		SectorAPI sector = Global.getSector();	
-		FactionAPI playerFaction = sector.getFaction("player");
+		FactionAPI playerFaction = sector.getFaction(Factions.PLAYER);
 		FactionAPI factionToSync = sector.getFaction(factionIdToSync);
 		
 		float relationship = playerFaction.getRelationship(otherFactionId);
@@ -166,7 +166,7 @@ public class NexUtilsReputation
 		syncFactionRelationshipsToPlayer(playerAlignedFactionId);
 		if (!playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
 		{
-			syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
+			//syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 		}
 	}
 	
@@ -201,7 +201,7 @@ public class NexUtilsReputation
 			}
 		}
 		
-		syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
+		//syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
 		//SectorManager.checkForVictory(); // already done in syncFactionRelationshipsToPlayer
 	}
 	

@@ -88,7 +88,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         SectorManager.setCorvusMode(true);
         SectorManager.reinitLiveFactions();
-        PlayerFactionStore.setPlayerFactionId(ExerelinConstants.PLAYER_NPC_ID);
+        PlayerFactionStore.setPlayerFactionId(Factions.HEGEMONY);	// FIXME
         sector.getFaction(Factions.PLAYER).setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1);
         NexUtilsReputation.syncFactionRelationshipsToPlayer();
         
