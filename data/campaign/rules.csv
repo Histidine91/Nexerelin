@@ -568,7 +568,14 @@ FireAll nex_miningOption",,,
 nex_miningListTools,DialogOptionSelected,$option == nex_miningListTools,"Nex_PrintMiningInfo tools
 FireAll nex_miningOption",,,
 nex_miningStart,DialogOptionSelected,"$nex_canMine
-$option == nex_miningStart",Nex_GetMiningResults 1,,nex_miningBack:Back,
+$option == nex_miningStart","Wait $global.miningWait 1.0 $global.miningFinished $global.miningInterrupted $global.miningInProgress ""Mining...""
+MakePlayerImmediatelyAttackable",,,
+nex_miningInterrupted,BeginFleetEncounter,$global.miningInProgress,AbortWait $global.miningWait,Contact with the other fleet suspends mining operations.,,
+nex_miningComplete,OpenInteractionDialog,"$nex_canMine
+$global.miningFinished score:3","Nex_GetMiningResults 1
+ShowDefaultVisual",Your $shipOrFleet has completed mining on $entityName.,"nex_miningPreview:Mine again
+nex_miningBack:Back",
+,,,,,,
 nex_miningBack,DialogOptionSelected,$option == nex_miningBack,"$menuState = main 0
 FireAll PopulateOptions",,,
 #END MINING OPTIONS,,,,,,

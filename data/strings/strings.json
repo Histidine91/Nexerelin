@@ -302,7 +302,7 @@
 	},
 
 	"exerelin_mining":{
-		"danger":"hazard rating",
+		"danger":"mining danger",
 		"exhaustion":"resource exhaustion",
 		"miningAccident":"mining accident",
 		"miningReport":"mining report",

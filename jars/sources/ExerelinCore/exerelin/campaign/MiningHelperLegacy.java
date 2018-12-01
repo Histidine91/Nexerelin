@@ -422,6 +422,10 @@ public class MiningHelperLegacy {
 		}
 		*/
 		
+		// subtract base 100% hazard
+		val -= 1;
+		if (val < 0) val = 0;
+		
 		return val;
 	}
 	
