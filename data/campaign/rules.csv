@@ -498,7 +498,6 @@ NGCDoesFactionExist interstellarimperium
 SetTooltip exerelinSuperweapon ""You have no ships capable of performing this action.""",,1:exerelinSuperweapon:Deploy planetbreaker,
 ExerelinSuperweaponPrompt,DialogOptionSelected,$option == exerelinSuperweapon,"$menuState = superweapon 0
 Exerelin_ShowShipVisual $bestSuperweapon
-Nex_PrepareResponseFleet true
 SetShortcut exerelinSuperweaponProceed RETURN
 SetShortcut exerelinSuperweaponCancel ESCAPE
 Nex_AddOptionConfirmation exerelinSuperweaponProceed ""Confirm superweapon use?"" ""Fire"" ""Abort""","You can use a superweapon on $market to cause massive devastation, clearing the way for an invasion. Expect the enemy to try to stop you.
@@ -508,14 +507,10 @@ Be warned of the political repercussions.","1:exerelinSuperweaponProceed:Continu
 ExerelinSuperweaponCancel,DialogOptionSelected,$option == exerelinSuperweaponCancel,"ShowDefaultVisual
 FireAll Nex_HostileAction",,,
 ,,,,,,
-ExerelinSuperweaponProceed,DialogOptionSelected,"$option == exerelinSuperweaponProceed
-!$market.hasDefenders","CreateWarmongerEvent $faction.id
+ExerelinSuperweaponProceed,DialogOptionSelected,$option == exerelinSuperweaponProceed,"CreateWarmongerEvent $faction.id
 AdjustRep $faction.id COMBAT_AGGRESSIVE
 Exerelin_UseSuperweapon
 FireBest ExerelinSuperweaponDialog",,,
-ExerelinSuperweaponProceedDefenders,DialogOptionSelected,"$option == exerelinSuperweaponProceed
-$market.hasDefenders","$global.nex_afterBattleMode = ""superweapon"" 0
-Nex_InvasionDefenseInteraction true","As your $shipOrFleet moves in closer, a defence fleet scrambles from $market. You'll need to fight your way through them to deploy your superweapon.",,
 ExerelinSuperweaponPostDefenders,BeatDefendersContinue,"$global.nex_afterBattleMode == ""superweapon""","$menuState = superweapon 0
 Exerelin_ShowShipVisual $bestSuperweapon
 SetPromptText ""You decide to...""
