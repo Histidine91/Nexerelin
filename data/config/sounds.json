@@ -1,12 +1,12 @@
 {
 	"music_campaign_victory_theme":{
 		"sounds":[
-			{"file":"sounds/Exerelin/music/Posthumus_Regnum_Finale.ogg","pitch":1.0,"volume":1.0},
+			{"file":"sounds/nexerelin/music/Posthumus_Regnum_Finale.ogg","pitch":1.0,"volume":1.0},
 		],
 	},
 	"music_campaign_defeat_theme":{
 		"sounds":[
-			{"file":"sounds/Exerelin/music/el_prendimiento_intro.ogg","pitch":1.0,"volume":1.0},
+			{"file":"sounds/nexerelin/music/el_prendimiento_intro.ogg","pitch":1.0,"volume":1.0},
 		],
 	},
 }
