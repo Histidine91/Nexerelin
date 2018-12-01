@@ -184,14 +184,16 @@ public class VanillaSystemsGenerator {
 		player.setRelationship(path.getId(), RepLevel.HOSTILE);
 		
 
-		hegemony.setRelationship(tritachyon.getId(), RepLevel.HOSTILE);
-		hegemony.setRelationship(persean.getId(), RepLevel.HOSTILE);
+		// replaced by hostilities set in CoreLifecyclePluginImpl
+		//hegemony.setRelationship(tritachyon.getId(), RepLevel.HOSTILE);
+		//hegemony.setRelationship(persean.getId(), RepLevel.HOSTILE);
+		
 		hegemony.setRelationship(pirates.getId(), RepLevel.HOSTILE);
 		
 		tritachyon.setRelationship(pirates.getId(), RepLevel.HOSTILE);
 		//tritachyon.setRelationship(independent.getId(), -1);
 		tritachyon.setRelationship(kol.getId(), RepLevel.HOSTILE);
-		tritachyon.setRelationship(church.getId(), RepLevel.HOSTILE);
+		//tritachyon.setRelationship(church.getId(), RepLevel.HOSTILE);
 		tritachyon.setRelationship(path.getId(), RepLevel.HOSTILE);
 		tritachyon.setRelationship(persean.getId(), RepLevel.SUSPICIOUS);
 		
@@ -209,8 +211,8 @@ public class VanillaSystemsGenerator {
 		path.setRelationship(hegemony.getId(), RepLevel.HOSTILE);
 		path.setRelationship(diktat.getId(), RepLevel.HOSTILE);
 		path.setRelationship(persean.getId(), RepLevel.HOSTILE);
+		path.setRelationship(church.getId(), RepLevel.COOPERATIVE);
 		
-		persean.setRelationship(hegemony.getId(), RepLevel.HOSTILE);
 		persean.setRelationship(tritachyon.getId(), RepLevel.SUSPICIOUS);
 		persean.setRelationship(pirates.getId(), RepLevel.HOSTILE);
 		persean.setRelationship(path.getId(), RepLevel.HOSTILE);
@@ -231,6 +233,5 @@ public class VanillaSystemsGenerator {
 //		independent.setRelationship(pirates.getId(), 0);
 //		independent.setRelationship(independent.getId(), 0);
 //		independent.setRelationship(player.getId(), 0);
-		
 	}
 }
