@@ -212,8 +212,9 @@ public class Alliance
             eventTarget = new CampaignEventTarget(market);
         }
         
-        AllianceChangedEvent event = (AllianceChangedEvent)sector.getEventManager().startEvent(eventTarget, eventType, params);
-	    return event;
+        //AllianceChangedEvent event = (AllianceChangedEvent)sector.getEventManager().startEvent(eventTarget, eventType, params);
+	    //return event;
+		return null;
     }
     
     public static class AllianceSyncMessage {

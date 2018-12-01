@@ -197,7 +197,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 				//Global.getSector().getCampaignUI().addMessage(debugStr);
 			}
 			
-			Global.getSector().getEventManager().startEvent(new CampaignEventTarget(source), "exerelin_faction_vengeance", null);
+			//Global.getSector().getEventManager().startEvent(new CampaignEventTarget(source), "exerelin_faction_vengeance", null);
 		}
 	}
 	
@@ -426,9 +426,9 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		Map<String, Object> params = new HashMap<>();
 		params.put("target", targetMarket);
 		params.put("dp", data.startingFleetPoints);
-		InvasionFleetEvent event = (InvasionFleetEvent)Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
-		data.event = event;
-		event.reportStart();
+		//InvasionFleetEvent event = (InvasionFleetEvent)Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
+		//data.event = event;
+		//event.reportStart();
 		
 		return true;
 	}

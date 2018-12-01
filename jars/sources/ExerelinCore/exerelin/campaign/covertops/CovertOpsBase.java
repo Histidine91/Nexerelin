@@ -227,7 +227,7 @@ public abstract class CovertOpsBase {
 	 */
 	protected void reportEvent(Map<String, Object> params)
 	{
-		Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), getEventId(), params);
+		//Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), getEventId(), params);
 	}
 	
 	protected abstract float getAlertLevel();

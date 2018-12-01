@@ -559,7 +559,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         FactionAPI playerFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
         params.put("playerDefeated", defeated == playerFaction);
         //params.put("playerVictory", victor == playerFaction && getLiveFactionIdsCopy().size() == 1);
-        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
+        //Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
         
         //String defeatedId = defeated.getId();
         //DiplomacyManager.resetFactionRelationships(defeatedId);
@@ -587,7 +587,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             existedBefore = sectorManager.historicFactionIds.contains(factionId);
         }
         params.put("existedBefore", existedBefore);
-        Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_respawned", params);
+        //Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_respawned", params);
         SectorManager.addLiveFactionId(faction.getId());
         if (sectorManager != null && !existedBefore)
         {
@@ -871,7 +871,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             params.put("playerInvolved", playerInvolved);
             params.put("factionsToNotify", factionsToNotify);
             params.put("repChangeStrength", repChangeStrength);
-            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
+            //Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
         }
         else
         {
@@ -879,7 +879,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             params.put("newOwner", newOwner);
             params.put("oldOwner", oldOwner);
             params.put("repEffect", repChangeStrength);
-            Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_transfered", params);
+            //Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_transfered", params);
         }
                 
         DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
@@ -1045,6 +1045,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         if (!silent)
         {
+			/*
             CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(null, "exerelin_faction_changed");
             if (eventSuper == null) 
                 eventSuper = sector.getEventManager().startEvent(null, "exerelin_faction_changed", null);
@@ -1052,6 +1053,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             
             MarketAPI market = ExerelinUtils.getClosestMarket(oldFactionId);
             event.reportEvent(oldFaction, newFaction, "expelled", market.getPrimaryEntity());
+			*/
         }
     }
     

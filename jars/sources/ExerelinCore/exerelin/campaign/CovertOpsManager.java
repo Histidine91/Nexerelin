@@ -303,6 +303,8 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     
     public static void modifyAlertLevel(MarketAPI market, float amount)
     {
+		// FIXME
+		/*
         SectorAPI sector = Global.getSector();
         CampaignEventPlugin eventSuper = sector.getEventManager().getOngoingEvent(new CampaignEventTarget(market), "exerelin_security_alert");
         if (eventSuper == null) 
@@ -310,6 +312,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
         SecurityAlertEvent event = (SecurityAlertEvent)eventSuper;
         
         event.increaseAlertLevel(amount);
+		*/
     }
     
     public static float getAlertLevel(MarketAPI market)

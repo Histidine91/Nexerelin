@@ -135,6 +135,7 @@ public class ExerelinModPlugin extends BaseModPlugin
             sector.addScript(new NexEventProbabilityManager());
         }
         
+		/*
         addEventIfNeeded("exerelin_faction_salary");
         addEventIfNeeded("exerelin_followers_tax");
         addEventIfNeeded("exerelin_faction_insurance");
@@ -148,6 +149,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         addEventIfNeeded("exerelin_warmonger");
         addEventIfNeeded("nex_rebellion_creator");
 		//addEventIfNeeded("nex_trade_info");
+		*/
     }
     
     @Override

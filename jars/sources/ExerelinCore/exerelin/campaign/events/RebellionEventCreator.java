@@ -47,12 +47,16 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		Map<String, Object> eventParams = new HashMap<>();
 		eventParams.put("rebelFactionId", factionId);
 		eventParams.put("delay", prepTime);
+		
+		/*
 		RebellionEvent event = (RebellionEvent)sector.getEventManager().startEvent(new CampaignEventTarget(market), "nex_rebellion", eventParams);
 		
 		if (report)
 			event.reportStage("before_start");
 		
 		return event;
+		*/
+		return null;
 	}
 	
 	protected static void addToListIfNotPresent(List<String> list, String toAdd)

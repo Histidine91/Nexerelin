@@ -506,10 +506,12 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			Map<String, Object> params = new HashMap<>();
 			params.put("target", targetMarket);
 			params.put("dp", data.startingFleetPoints);
+			/*
 			InvasionFleetEvent event = (InvasionFleetEvent)Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
 			data.event = event;
 			event.setFleet(data.fleet);
 			event.reportStart();
+			*/
 		}
 		spawnSupportFleet(faction, originMarket, targetMarket, false, false);
 		

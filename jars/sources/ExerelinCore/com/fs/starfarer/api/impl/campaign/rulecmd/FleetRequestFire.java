@@ -106,9 +106,9 @@ public class FleetRequestFire extends FleetRequestActionBase {
 			Map<String, Object> eventParams = new HashMap<>();
             eventParams.put("target", targetMarket);
             eventParams.put("dp", data.startingFleetPoints);
-            InvasionFleetEvent event = (InvasionFleetEvent)Global.getSector().getEventManager().startEvent(new CampaignEventTarget(sourceMarket), "exerelin_invasion_fleet", eventParams);
-			data.event = event;
-			event.reportStart();
+            //InvasionFleetEvent event = (InvasionFleetEvent)Global.getSector().getEventManager().startEvent(new CampaignEventTarget(sourceMarket), "exerelin_invasion_fleet", eventParams);
+			//data.event = event;
+			//event.reportStart();
 		}
 		return true;
 	}

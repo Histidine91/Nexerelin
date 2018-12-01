@@ -537,7 +537,10 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 	}
 	
-	
+	@Override
+	protected int getNumPicks(Random random, float pAny, float pMore) {
+		return 20;
+	}
 	
 	// TBD
 	public static void reportInvasionFinished(InteractionDialogAPI dialog, MarketAPI market, TempDataInvasion actionData) {

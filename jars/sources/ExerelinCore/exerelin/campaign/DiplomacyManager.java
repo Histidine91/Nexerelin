@@ -435,7 +435,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             params.put("eventStage", event.stage);
             params.put("result", result);
             params.put("otherFaction", faction2);
-            sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
+            // TODO: update to intel system
+            //sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
             
             diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), deltaBase);
             diplomacyBrains.get(faction2.getId()).reportDiplomacyEvent(faction1.getId(), deltaBase);
@@ -447,6 +448,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         DiplomacyEventDef event = null;
         String factionId1 = faction1.getId();
         String factionId2 = faction2.getId();
+        
+        if (params == null) params = new DiplomacyEventParams();
         
         float dominance = 0;
         //float dominance = getDominanceFactor(factionId1) + getDominanceFactor(factionId2);
