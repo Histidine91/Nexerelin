@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.StatBonus;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_MarketCMD;
@@ -36,7 +37,7 @@ import org.lazywizard.lazylib.MathUtils;
 
 public class InvasionRound {
 	
-	public static final float DAMAGE_PER_ROUND_MULT = 0.25f;
+	public static final float DAMAGE_PER_ROUND_MULT = 0.3f;
 	public static final float INSTABILITY_PER_ROUND = 1;
 	
 	public static Logger log = Global.getLogger(InvasionRound.class);
@@ -45,8 +46,10 @@ public class InvasionRound {
 	{
 		int marines = fleet.getCargo().getMarines();
 		
-		float atkDam = (atkStr - defStr/3) * DAMAGE_PER_ROUND_MULT;
-		float defDam = (defStr - atkStr/3) * DAMAGE_PER_ROUND_MULT;
+		float atkDam = (atkStr - defStr/3) * DAMAGE_PER_ROUND_MULT * (float)(0.75f + random.nextGaussian() * 0.5f);
+		float defDam = (defStr - atkStr/3) * DAMAGE_PER_ROUND_MULT * (float)(0.75f + random.nextGaussian() * 0.5f);
+		if (atkDam < 0) atkDam = 0;
+		if (defDam < 0) defDam = 0;
 		
 		int losses = (int)(marines * defDam/atkStr);
 		if (losses > marines) losses = marines;
@@ -61,8 +64,11 @@ public class InvasionRound {
 		// disruption
 		WeightedRandomPicker<Industry> industryPicker = new WeightedRandomPicker<>();
 		for (Industry curr : defender.getIndustries()) {
-			if (curr.canBeDisrupted()) 
+			if (curr.canBeDisrupted() && !curr.getSpec().hasTag(Industries.TAG_UNRAIDABLE)) 
+			{
 				industryPicker.add(curr, curr.getBuildCost());
+				industryPicker.add(curr, 1);
+			}
 		}
 		Industry toDisrupt = industryPicker.pick();
 		if (toDisrupt != null)

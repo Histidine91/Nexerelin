@@ -255,7 +255,7 @@ $menuState = main 0
 FireAll PopulateOptions",,,
 ,,,,,,
 # Military options override + additions,,,,,,
-marketHostileSel,DialogOptionSelected,$option == marketConsiderHostile,MarketCMD showDefenses,,,
+marketHostileSel,DialogOptionSelected,$option == marketConsiderHostile,Nex_MarketCMD showDefenses,,,
 marketHostileGoBackSel,DialogOptionSelected,$option == mktGoBack,"ShowDefaultVisual
 FireAll PopulateOptions",,,
 marketHostileEngageSel,DialogOptionSelected,$option == mktEngage,Nex_MarketCMD engage,,,

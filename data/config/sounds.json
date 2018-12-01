@@ -9,4 +9,7 @@
 			{"file":"sounds/nexerelin/music/el_prendimiento_intro.ogg","pitch":1.0,"volume":1.0},
 		],
 	},
+	"nex_sfx_combat":[
+		{"file":"sounds/nexerelin/sfx_interface/combat.wav","pitch":0.8,"volume":1.0},
+	],
 }

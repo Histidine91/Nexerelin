@@ -2,6 +2,7 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CoreInteractionListener;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -16,6 +17,7 @@ import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.DebugFlags;
 import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
+import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -31,6 +33,7 @@ import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.statP
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
@@ -39,6 +42,7 @@ import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import java.awt.Color;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -49,7 +53,8 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final String INVADE = "nex_mktInvade";
 	public static final String INVADE_CONFIRM = "nex_mktInvadeConfirm";
 	public static final String INVADE_ABORT = "nex_mktInvadeAbort";
-	public static final String INVADE_GO_BACK = "nex_marketInvadeGoBack";
+	public static final String INVADE_RESULT = "nex_mktInvadeResult";
+	public static final String INVADE_GO_BACK = "nex_mktInvadeGoBack";
 	public static final float FAIL_THRESHOLD_INVASION = 0.5f;
 	
 	protected TempDataInvasion tempInvasion = new TempDataInvasion();
@@ -82,12 +87,13 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (mem.contains(key)) {
 			tempInvasion = (TempDataInvasion) mem.get(key);
 		} else {
-			mem.set(key, temp, 0f);
+			mem.set(key, tempInvasion, 0f);
 		}
 	}
 	
 	@Override
 	protected void clearTemp() {
+		super.clearTemp();
 		if (tempInvasion != null) {
 			tempInvasion.invasionLoot = null;
 			tempInvasion.invasionValuables = null;
@@ -98,6 +104,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	protected void showDefenses(boolean withText) {
 		super.showDefenses(withText);
 		
+		Global.getLogger(this.getClass()).info("Checking entity for invasion: " + entity.getName());
 		if (InvasionRound.canInvade(entity))
 		{
 			options.addOption("Invade the market", INVADE);
@@ -105,6 +112,8 @@ public class Nex_MarketCMD extends MarketCMD {
 	}
 	
 	protected void invadeMenu() {
+		tempInvasion.invasionValuables = computeInvasionValuables();
+		
 		float width = 350;
 		float opad = 10f;
 		float small = 5f;
@@ -217,6 +226,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.setShortcut(INVADE_GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);
 	}
 	
+	// TODO: sound effect
 	protected void invadeRunRound() 
 	{
 		MarketAPI market = dialog.getInteractionTarget().getMarket();
@@ -232,7 +242,6 @@ public class Nex_MarketCMD extends MarketCMD {
 			setRaidCooldown(getRaidCooldownMax());
 			
 			
-			
 			Misc.setFlagWithReason(market.getMemoryWithoutUpdate(), "$nex_recentlyInvaded", 
 								   Factions.PLAYER, true, 60f);
 		}
@@ -240,6 +249,8 @@ public class Nex_MarketCMD extends MarketCMD {
 		InvasionRoundResult result = InvasionRound.execute(playerFleet, market, 
 				tempInvasion.attackerStr, tempInvasion.defenderStr, getRandom());
 		tempInvasion.stabilityPenalty += InvasionRound.INSTABILITY_PER_ROUND;		
+		tempInvasion.attackerStr = Math.max(result.atkStr, 0);
+		tempInvasion.defenderStr = Math.max(result.defStr, 0);
 				
 		//losses = random.nextInt(marines / 2);
 		if (tempInvasion.defenderStr <= 0)
@@ -248,11 +259,11 @@ public class Nex_MarketCMD extends MarketCMD {
 					+ ". Surviving defenders are surrendering.");
 			tempInvasion.success = true;
 		}
-		else if (result.atkStr >= result.defStr * 2)
+		else if (result.atkDam >= result.defDam * 2)
 		{
 			text.addPara("Your forces make excellent progress, pushing back the enemy rapidly.");
 		}
-		else if (result.atkStr >= result.defStr)
+		else if (result.atkDam >= result.defDam)
 		{
 			text.addPara("Your forces slowly but surely gain ground against the enemy, driving them back.");
 		}
@@ -276,17 +287,27 @@ public class Nex_MarketCMD extends MarketCMD {
 			AddRemoveCommodity.addCommodityLossText(Commodities.MARINES, result.losses, text);
 		}
 		
+		text.setFontSmallInsignia();
 		// disruption
 		if (result.disrupted != null)
 		{
 			String name = result.disrupted.getSpec().getName();
-			String durStr = result.disruptionLength + "";
+			String durStr = Math.round(result.disruptionLength) + "";
 			text.addPara(name + " disrupted for " + durStr + " days", Misc.getHighlightColor(), name, durStr);
 		}
 		
 		Color hl = tempInvasion.attackerStr > tempInvasion.defenderStr ? Misc.getPositiveHighlightColor() : Misc.getNegativeHighlightColor();
-		text.addPara("Remaining attacker strength: " + tempInvasion.attackerStr, hl, tempInvasion.attackerStr + "");
-		text.addPara("Remaining defender strength: " + tempInvasion.defenderStr, hl, tempInvasion.defenderStr + "");
+		Color hl2 = Misc.getHighlightColor();
+		String as = (int)tempInvasion.attackerStr + "";
+		String ds = (int)tempInvasion.defenderStr + "";
+		String ad = (int)result.atkDam + "";
+		String dd = (int)result.defDam + "";
+		text.addPara("Remaining attacker strength: " + as + " (-" + dd + ")");
+		Highlights h = new Highlights();
+		h.setColors(hl, result.atkDam > result.defDam ? hl2 : Misc.getNegativeHighlightColor());
+		h.setText(as, dd);
+		text.setHighlightsInLastPara(h);
+		text.addPara("Remaining defender strength: " + ds + " (-" + ad + ")", hl2, ds, ad);
 		
 		text.setFontInsignia();
 		
@@ -296,6 +317,9 @@ public class Nex_MarketCMD extends MarketCMD {
 		}
 		else
 		{
+			if (tempInvasion.roundNum == 1)
+				Global.getSoundPlayer().playUISound("nex_sfx_combat", 1f, 1f);
+			options.clearOptions();
 			// options: continue or leave
 			options.addOption("Continue the offensive", INVADE_CONFIRM);
 			options.addOption("Abort invasion", INVADE_ABORT);
@@ -340,7 +364,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		// handle loot
 		String contText = null;
 		
-		float targetValue = getBaseRaidValue();
+		float targetValue = getBaseInvasionValue();
 		CargoAPI result = Global.getFactory().createCargo(true);
 		
 		// loot
@@ -398,7 +422,51 @@ public class Nex_MarketCMD extends MarketCMD {
 		
 		Global.getSoundPlayer().playUISound("ui_raid_finished", 1f, 1f);
 		
-		addContinueOption(contText);
+		addContinueOptionInvasion(contText);
+	}
+	
+	protected void addContinueOptionInvasion(String text) {
+		if (text == null) text = "Continue";
+		options.clearOptions();
+		options.addOption(text, INVADE_RESULT);
+	}
+	
+	protected Map<CommodityOnMarketAPI, Float> computeInvasionValuables() {
+		Map<CommodityOnMarketAPI, Float> result = new HashMap<CommodityOnMarketAPI, Float>();
+		float totalDemand = 0f;
+		float totalShortage = 0f;
+		for (CommodityOnMarketAPI com : market.getAllCommodities()) {
+			if (com.isPersonnel()) continue;
+			if (com.getCommodity().hasTag(Commodities.TAG_META)) continue;
+			
+			int a = com.getAvailable();
+			if (a > 0) {
+				float num = BaseIndustry.getSizeMult(a) * com.getCommodity().getEconUnit() * 0.5f;
+				result.put(com, num);
+			}
+			
+			float max = com.getMaxDemand();
+			totalDemand += max;
+			totalShortage += Math.max(0, max - a);
+		}
+		
+		tempInvasion.shortageMult = 1f;
+		if (totalShortage > 0 && totalDemand > 0) {
+			tempInvasion.shortageMult = Math.max(0, totalDemand - totalShortage) / totalDemand;
+		}
+		
+		return result;
+	}
+	
+	protected float getBaseInvasionValue() {
+		float targetValue = 0f;
+		for (CommodityOnMarketAPI com : tempInvasion.invasionValuables.keySet()) {
+			targetValue += tempInvasion.invasionValuables.get(com) * com.getCommodity().getBasePrice();
+		}
+		targetValue *= 0.1f;
+		targetValue *= tempInvasion.invasionMult;
+		targetValue *= tempInvasion.shortageMult;
+		return targetValue;
 	}
 	
 	/**
@@ -527,20 +595,49 @@ public class Nex_MarketCMD extends MarketCMD {
 	{
 		if (tempInvasion.invasionLoot != null) {
 			if (tempInvasion.invasionLoot.isEmpty()) {
-				finishedRaidOrBombard();
+				finishedInvade();
 			} else {
-				raidShowLoot();
+				invadeShowLoot();
 			}
 			return;
 		} else {
-			finishedRaidOrBombard();
+			finishedInvade();
 		}
 	}
 	
+	protected void finishedInvade() {
+		clearTemp();
+		//showDefenses(true);
+	
+		new ShowDefaultVisual().execute(null, dialog, Misc.tokenize(""), memoryMap);
+		
+		//FireAll.fire(null, dialog, memoryMap, "MarketPostOpen");
+		dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$menuState", "main", 0);
+		if (market.isPlanetConditionMarketOnly()) {
+			dialog.getInteractionTarget().getMemoryWithoutUpdate().unset("$hasMarket");
+		}
+		else
+			dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$tradeMode", "OPEN", 0);
+		
+		FireAll.fire(null, dialog, memoryMap, "PopulateOptions");
+	}
+	
+	protected void invadeShowLoot() {
+		dialog.getVisualPanel().showLoot("Spoils", tempInvasion.invasionLoot, false, true, true, new CoreInteractionListener() {
+			public void coreUIDismissed() {
+				//dialog.dismiss();
+				finishedInvade();
+			}
+		});
+	}
+	
+	// this was just to debug Tiandong
+	/*
 	@Override
 	protected int getNumPicks(Random random, float pAny, float pMore) {
 		return 20;
 	}
+	*/
 	
 	// TBD
 	public static void reportInvasionFinished(InteractionDialogAPI dialog, MarketAPI market, TempDataInvasion actionData) {
@@ -557,12 +654,11 @@ public class Nex_MarketCMD extends MarketCMD {
 		public boolean success = false;
 		
 		public float invasionMult;
+		public float shortageMult;
 		
 		public float attackerStr;
 		public float defenderStr;
 		
-		public RaidType raidType = null;
-		public BombardType bombardType = null;
 		public Map<CommodityOnMarketAPI, Float> invasionValuables;
 		public CargoAPI invasionLoot;
 		public int invasionCredits;
