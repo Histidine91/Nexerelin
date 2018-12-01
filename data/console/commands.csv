@@ -1,7 +1,6 @@
 command,class,tags,syntax,help
 SpawnInvasionFleet,exerelin.console.commands.SpawnInvasionFleet,"campaign,nexerelin",spawninvasionfleet [faction|”any”] [targetFaction],"Spawns an invasion fleet from the closest market of faction to go to the closest market of target faction, and teleports fleet to player location. Faction is randomly picked if not specified; if target faction is not specified it will attack the closest hostile market."
 SpawnRespawnFleet,exerelin.console.commands.SpawnRespawnFleet,"campaign,nexerelin",spawnrespawnfleet [faction],"Spawns a respawn fleet to go to a random suitable target, and teleports fleet to player location. Will try to spawn a faction currently not in the Sector, if not specified."
-SpawnStation,exerelin.console.commands.SpawnStation,"campaign,nexerelin",spawnstation <faction>,Spawns a defense station for the specified faction at the player location.
 SetMarketOwner,exerelin.console.commands.SetMarketOwner,"campaign,nexerelin",setmarketowner <entity> [owner],"Causes the market associated with <entity> to be captured by [owner], or a random live faction if not specified."
 SyncRelationships,exerelin.console.commands.SyncRelationships,"campaign,nexerelin",syncrelationships,Syncs faction relationships to match player's. Use after using Save Transfer.
 CreateDiplomacyEvent,exerelin.console.commands.CreateDiplomacyEvent,"campaign,nexerelin",creatediplomacyevent <faction1> <faction2> [stage],Creates a new diplomacy event between the two factions. Specify 'stage' as an identifier for a specific event type.

@@ -56,7 +56,6 @@ public class ExerelinSetupData
 	{
 		if(instance == null)
 		{
-			ExerelinConfig.loadSettings();
 			instance = new ExerelinSetupData();
 		}
 

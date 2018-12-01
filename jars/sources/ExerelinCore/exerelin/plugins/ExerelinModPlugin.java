@@ -129,10 +129,10 @@ public class ExerelinModPlugin extends BaseModPlugin
     protected void addScriptsAndEventsIfNeeded() {
         SectorAPI sector = Global.getSector();
         if (!sector.hasScript(ConquestMissionCreator.class)) {
-            sector.addScript(new ConquestMissionCreator());
+            //sector.addScript(new ConquestMissionCreator());
         }
         if (!sector.hasScript(NexEventProbabilityManager.class)) {
-            sector.addScript(new NexEventProbabilityManager());
+            //sector.addScript(new NexEventProbabilityManager());
         }
         
 		/*
@@ -157,7 +157,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         Global.getLogger(this.getClass()).info("Game load; " + SectorManager.isSectorManagerSaved());
         isNewGame = newGame;
         
-        ExerelinConfig.loadSettings();
         // legacy: assign the static variables referencing the singletons,
         // so the static methods in those classes can get them
         SectorManager.create();
@@ -225,7 +224,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         Global.getLogger(this.getClass()).info("New game");
         isNewGame = true;
         //ExerelinSetupData.resetInstance();
-        ExerelinConfig.loadSettings();
         //ExerelinCheck.checkModCompatability();
         addScriptsAndEventsIfNeeded();
     }

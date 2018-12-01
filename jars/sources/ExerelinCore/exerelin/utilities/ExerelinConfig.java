@@ -230,6 +230,10 @@ public class ExerelinConfig
                 ExerelinConfig.exerelinFactionConfigs.add(new ExerelinFactionConfig(factionId));
         }
     }
+	
+	static {
+		loadSettings();
+	}
     
     protected static void loadModFactionList()
     {
