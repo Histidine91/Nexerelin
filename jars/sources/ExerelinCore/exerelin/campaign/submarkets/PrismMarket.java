@@ -280,13 +280,23 @@ public class PrismMarket extends BaseSubmarketPlugin {
         
         //renew the stock
         float variation=(float)Math.random()*0.5f+0.75f;
-		int tries = 0;
+        int tries = 0;
         for (int i=0; i<ExerelinConfig.prismNumShips*variation; i=cargo.getMothballedShips().getNumMembers()){
             //pick the role and faction
-            FactionAPI faction = factionPicker.pick();
-            String role = rolePicker.pick();            
-            //pick the random ship
-            List<ShipRolePick> picks = faction.pickShip(role, ShipPickParams.priority());
+            List<ShipRolePick> picks = null;
+            int tries2 = 0;
+            do {
+                tries2++;
+                FactionAPI faction = factionPicker.pick();
+                String role = rolePicker.pick();
+                //pick the random ship
+                try {
+                    picks = faction.pickShip(role, ShipPickParams.priority());
+                } catch (NullPointerException npex) {
+                    // likely picker picked a role when faction has no ships for that role; do nothing
+                }
+            } while (picks == null);
+            
             for (ShipRolePick pick : picks) {
                 FleetMemberType type = FleetMemberType.SHIP;
                 String variantId = pick.variantId; 

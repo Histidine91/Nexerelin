@@ -543,7 +543,7 @@ public class ExerelinFactionConfig
     protected void pickShipsAndAddToList(WeightedRandomPicker<String> picker, List<String> list, boolean clear)
     {
         FactionAPI faction = Global.getSector().getFaction(factionId);
-        List<ShipRolePick> picks = faction.pickShip(picker.pick(), new ShipPickParams(), null, picker.getRandom());
+        List<ShipRolePick> picks = faction.pickShip(picker.pick(), ShipPickParams.priority(), null, picker.getRandom());
         for (ShipRolePick pick : picks)
             list.add(pick.variantId);
         if (clear) picker.clear();
@@ -775,25 +775,21 @@ public class ExerelinFactionConfig
         */
     }
     
-	/**
-	 * Checks if the provided list of starting ships is valid (variants actually exist).
+    /**
+     * Checks if the provided list of starting ships is valid (variants actually exist).
      * @param ships A List of variant/wing IDs
      * @return True if the ship set is valid, false otherwise
-	 */
-	protected boolean isStartingFleetValid(List<String> ships)
-	{
-		for (String variantId : ships)
+     */
+    protected boolean isStartingFleetValid(List<String> ships)
+    {
+        for (String variantId : ships)
         {
-			try {
-				Global.getSettings().getVariant(variantId);
-			} catch(RuntimeException rex) {	// variant doesn't exist
-				Global.getLogger(this.getClass()).info("\tStarting variant " + variantId + " does not exist");
-				return false;
-			} 
-		}
+            if (!Global.getSettings().doesVariantExist(variantId))
+                return false;
+        }
         return true;
-	}
-	
+    }
+    
     /**
      * Checks if the provided list of starting ships is valid 
      * (must have at least one non-fighter wing with nonzero cargo capacity)

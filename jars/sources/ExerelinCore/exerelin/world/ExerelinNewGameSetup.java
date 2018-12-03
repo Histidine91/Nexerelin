@@ -18,7 +18,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.ids.Terrain;
 import com.fs.starfarer.api.impl.campaign.procgen.NebulaEditor;
 import com.fs.starfarer.api.impl.campaign.procgen.ProcgenUsedNames;
@@ -80,9 +79,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		{
 			LocationAPI hyperspace = sector.getHyperspace();
 			prismEntity = hyperspace.addCustomEntity("nex_prismFreeport", "Prism Freeport", "exerelin_freeport_type", "independent");
-			float xpos = 2000;
-			if (!ExerelinSetupData.getInstance().corvusMode) xpos = -2000;
-			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(xpos, 0), ExerelinUtilsAstro.getRandomAngle(rand), 150, 60, 30, 30);
+			prismEntity.setCircularOrbitWithSpin(hyperspace.createToken(-8005, -4385), ExerelinUtilsAstro.getRandomAngle(rand), 150, 60, 30, 30);
 		}
 		
 		prismEntity.addTag(ExerelinConstants.TAG_UNINVADABLE);
@@ -107,12 +104,14 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		market.addIndustry(Industries.HEAVYINDUSTRY);
 		market.addIndustry(Industries.HEAVYBATTERIES);
 		market.addIndustry(Industries.STARFORTRESS_HIGH);
-		market.addIndustry(Industries.CRYOSANCTUM);
+		//market.addIndustry(Industries.CRYOSANCTUM);
 		
 		market.setFreePort(true);
 		market.addSubmarket(Submarkets.SUBMARKET_OPEN);
+		market.addSubmarket(Submarkets.GENERIC_MILITARY);
 		market.addSubmarket(Submarkets.SUBMARKET_BLACK);
 		market.addSubmarket(Submarkets.SUBMARKET_STORAGE);
+		
 		market.getMemoryWithoutUpdate().set(ExerelinConstants.MEMORY_KEY_UNINVADABLE, true);
 		
 		market.getTariff().modifyFlat("generator", sector.getFaction(Factions.INDEPENDENT).getTariffFraction());
