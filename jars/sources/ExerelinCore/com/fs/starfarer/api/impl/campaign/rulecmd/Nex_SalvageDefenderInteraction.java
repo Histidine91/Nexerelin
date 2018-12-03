@@ -23,6 +23,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageDefenderInterac
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageEntity;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.SalvageGenFromSeed;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Misc.Token;
 import exerelin.campaign.battle.NexFleetInteractionDialogPluginImpl;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ import java.util.Map;
 public class Nex_SalvageDefenderInteraction extends SalvageDefenderInteraction {
 	
 	@Override
-	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, final Map<String, MemoryAPI> memoryMap) {
+	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, final Map<String, MemoryAPI> memoryMap) {
 		if (dialog == null) return false;
 		
 		final SectorEntityToken entity = dialog.getInteractionTarget();
@@ -55,6 +56,7 @@ public class Nex_SalvageDefenderInteraction extends SalvageDefenderInteraction {
 		config.impactsEnemyReputation = false;
 		config.pullInAllies = false;
 		config.pullInEnemies = false;
+		config.pullInStations = false;
 		config.lootCredits = false;
 		
 		config.firstTimeEngageOptionText = "Engage the automated defenses";
@@ -78,6 +80,7 @@ public class Nex_SalvageDefenderInteraction extends SalvageDefenderInteraction {
 				defenders.getMemoryWithoutUpdate().clear();
 				// there's a "standing down" assignment given after a battle is finished that we don't care about
 				defenders.clearAssignments();
+				defenders.deflate();
 				
 				dialog.setPlugin(originalPlugin);
 				dialog.setInteractionTarget(entity);
@@ -183,7 +186,7 @@ public class Nex_SalvageDefenderInteraction extends SalvageDefenderInteraction {
 				//float fuel = salvage.getFuel();
 				//salvage.addFuel((int) Math.round(fuel * fuelMult));
 				
-				CargoAPI extra = SalvageEntity.generateSalvage(config.salvageRandom, valueMultFleet + valueModShips, 1f, fuelMult, dropValue, dropRandom);
+				CargoAPI extra = SalvageEntity.generateSalvage(config.salvageRandom, valueMultFleet + valueModShips, 1f, 1f, fuelMult, dropValue, dropRandom);
 				for (CargoStackAPI stack : extra.getStacksCopy()) {
 					if (stack.isFuelStack()) {
 						stack.setSize((int)(stack.getSize() * fuelMult));

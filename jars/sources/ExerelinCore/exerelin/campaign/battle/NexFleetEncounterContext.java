@@ -208,35 +208,21 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 	@Override
 	protected void gainOfficerXP(DataForEncounterSide data, float xp) {
 		float max = data.getMaxTimeDeployed();
-		if (max < 1) {
-			max = 1;
-		}
+		if (max < 1) max = 1;
 		float num = data.getOfficerData().size();
-		if (num < 1) {
-			num = 1;
-		}
+		if (num < 1) num = 1;
 		for (PersonAPI person : data.getOfficerData().keySet()) {
 			OfficerEngagementData oed = data.getOfficerData().get(person);
-			if (oed.sourceFleet == null || !oed.sourceFleet.isPlayerFleet()) {
-				continue;
-			}
-
+			if (oed.sourceFleet == null || !oed.sourceFleet.isPlayerFleet()) continue;
+			
 			OfficerDataAPI od = oed.sourceFleet.getFleetData().getOfficerData(person);
-			if (od == null) {
-				continue; // shouldn't happen, as this is checked earlier before it goes into the map
-			}
+			if (od == null) continue; // shouldn't happen, as this is checked earlier before it goes into the map
+			
 			float f = oed.timeDeployed / max;
-			if (f < 0) {
-				f = 0;
-			}
-			if (f > 1) {
-				f = 1;
-			}
-
-			float bonus = 1f;
-			if (data.getFleet().getCommanderStats() != null) {
-				bonus *= data.getFleet().getCommanderStats().getDynamic().getValue("officerXPMult");
-			}
+			if (f < 0) f = 0;
+			if (f > 1) f = 1;
+			
+			float bonus = 0;
 			if (ExerelinConfig.officerDaredevilBonus) {
 				FleetMemberAPI member = oed.sourceFleet.getFleetData().getMemberWithCaptain(person);
 				if (member != null && member.isFrigate()) {
@@ -245,8 +231,9 @@ public class NexFleetEncounterContext extends FleetEncounterContext {
 					bonus = DESTROYER_XP_BONUS;
 				}
 			}
-
-			od.addXP((long) (bonus * f * xp / num), textPanelForXPGain);
+			xp *= bonus;
+			
+			od.addXP((long)(f * xp / num), textPanelForXPGain);
 		}
 	}
 }
