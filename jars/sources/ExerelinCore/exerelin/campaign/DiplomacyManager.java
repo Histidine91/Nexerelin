@@ -101,6 +101,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         eventDefs = new ArrayList<>();
         eventDefsByStage = new HashMap<>();
         
+        for (FactionAPI faction : Global.getSector().getAllFactions())
+        {
+            if (ExerelinConfig.getExerelinFactionConfig(faction.getId()).disableDiplomacy)
+                disallowedFactions.add(faction.getId());
+        }
+        
         try {
             loadSettings();
         } catch (IOException | JSONException ex) {

@@ -65,6 +65,7 @@ public class ExerelinFactionConfig
     public String stationName = StringHelper.getString("exerelin_fleets", "stationName");
     
     // Diplomacy
+    public boolean disableDiplomacy = false;
     public int positiveDiplomacyExtra = 0;
     public int negativeDiplomacyExtra = 0;
     @Deprecated
@@ -201,6 +202,8 @@ public class ExerelinFactionConfig
             loadCustomStations(settings);
             
             // Diplomacy
+            disableDiplomacy = settings.optBoolean("disableDiplomacy", disableDiplomacy);
+            
             if (settings.has("factionsLiked"))
                 factionsLiked = ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("factionsLiked"));
             if (settings.has("factionsDisliked"))
