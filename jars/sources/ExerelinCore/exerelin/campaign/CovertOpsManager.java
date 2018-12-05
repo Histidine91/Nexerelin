@@ -73,7 +73,7 @@ public class CovertOpsManager extends BaseCampaignEventListener implements Every
     }
     
     private static void loadSettings() throws IOException, JSONException {
-        JSONObject configJson = Global.getSettings().loadJSON(CONFIG_FILE);
+        JSONObject configJson = Global.getSettings().getMergedJSONForMod(CONFIG_FILE, ExerelinConstants.MOD_ID);
                 
         config = ExerelinUtils.jsonToMap(configJson);
         //baseInterval = (float)(double)config.get("eventFrequency");   // ClassCastException

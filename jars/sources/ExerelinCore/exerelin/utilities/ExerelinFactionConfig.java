@@ -8,6 +8,7 @@ import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.alliances.Alliance.Alignment;
@@ -136,7 +137,8 @@ public class ExerelinFactionConfig
     {
         try
         {
-            JSONObject settings = Global.getSettings().loadJSON("data/config/exerelinFactionConfig/" + factionId + ".json");
+            JSONObject settings = Global.getSettings().getMergedJSONForMod(
+					"data/config/exerelinFactionConfig/" + factionId + ".json", ExerelinConstants.MOD_ID);
 
             playableFaction = settings.optBoolean("playableFaction", true);
             startingFaction = settings.optBoolean("startingFaction", playableFaction);

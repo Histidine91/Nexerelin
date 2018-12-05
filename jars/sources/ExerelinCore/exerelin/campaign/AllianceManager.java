@@ -88,7 +88,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     public static void loadAllianceNames()
     {
         try {
-            JSONObject nameConfig = Global.getSettings().loadJSON(ALLIANCE_NAMES_FILE);
+            JSONObject nameConfig = Global.getSettings().getMergedJSONForMod(ALLIANCE_NAMES_FILE, ExerelinConstants.MOD_ID);
             JSONObject namesByAlignment = nameConfig.getJSONObject("namesByAlignment");
             JSONObject namePrefixes = nameConfig.getJSONObject("prefixes");
             JSONArray namePrefixesCommon = namePrefixes.getJSONArray("common");

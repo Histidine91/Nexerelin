@@ -119,7 +119,7 @@ public class ExerelinProcGen {
 	protected static void loadData()
 	{
 		try {
-			JSONObject planetConfig = Global.getSettings().loadJSON(PLANET_NAMES_FILE);
+			JSONObject planetConfig = Global.getSettings().getMergedJSONForMod(PLANET_NAMES_FILE, ExerelinConstants.MOD_ID);
 			
 			JSONArray stationNames = planetConfig.getJSONArray("stations");
 			ExerelinProcGen.stationNames = ExerelinUtils.JSONArrayToArrayList(stationNames);

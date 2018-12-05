@@ -145,7 +145,7 @@ public class ExerelinMarketBuilder
 				conditionArchetypes.put(cond, entry);
             }
 			
-			JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
+			JSONObject config = Global.getSettings().getMergedJSONForMod(CONFIG_FILE, ExerelinConstants.MOD_ID);
 			
 			JSONArray conditionsJson = config.getJSONArray("conditions");
 			for(int i=0; i<conditionsJson.length(); i++)

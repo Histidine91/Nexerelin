@@ -115,7 +115,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     }
     
     private static void loadSettings() throws IOException, JSONException {
-        JSONObject config = Global.getSettings().loadJSON(CONFIG_FILE);
+        JSONObject config = Global.getSettings().getMergedJSONForMod(CONFIG_FILE, ExerelinConstants.MOD_ID);
         baseInterval = (float)config.optDouble("eventFrequency", 10f);
         warWearinessPerInterval = (float)config.optDouble("warWearinessPerInterval", 10f);
         
