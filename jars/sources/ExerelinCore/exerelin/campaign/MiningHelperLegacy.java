@@ -76,7 +76,6 @@ public class MiningHelperLegacy {
 				ShipRoles.COMBAT_FREIGHTER_SMALL, 
 				ShipRoles.CARRIER_SMALL,
 				ShipRoles.COMBAT_MEDIUM,
-				ShipRoles.ESCORT_MEDIUM,
 				ShipRoles.FREIGHTER_MEDIUM, 
 				ShipRoles.COMBAT_FREIGHTER_MEDIUM, 
 				ShipRoles.CARRIER_MEDIUM,

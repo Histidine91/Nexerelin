@@ -10,6 +10,6 @@
 		],
 	},
 	"nex_sfx_combat":[
-		{"file":"sounds/nexerelin/sfx_interface/combat.wav","pitch":0.8,"volume":1.0},
+		{"file":"sounds/nexerelin/sfx_interface/combat.wav","pitch":0.8,"volume":0.8},
 	],
 }
