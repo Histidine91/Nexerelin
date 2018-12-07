@@ -2,8 +2,9 @@ package exerelin.console.commands;
 
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import exerelin.utilities.NexUtilsReputation;
+import org.lazywizard.console.commands.SetRelation;
 
-public class SetRelationship extends org.lazywizard.console.commands.SetRelationship {
+public class SetRelationship extends SetRelation {
 
 	@Override
 	public CommandResult runCommand(String args, CommandContext context) {
