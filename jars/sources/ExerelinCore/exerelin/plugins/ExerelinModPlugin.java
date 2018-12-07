@@ -6,27 +6,20 @@ import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.fleets.PatrolFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.thoughtworks.xstream.XStream;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DirectoryScreenScript;
 import exerelin.campaign.NexEventProbabilityManager;
-import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.campaign.ReinitScreenScript;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
-import exerelin.campaign.events.RevengeanceManagerEvent;
-import exerelin.campaign.fleets.ExerelinPatrolFleetManager;
 import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManager;
-import exerelin.campaign.fleets.PatrolFleetManagerReplacer;
 import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.campaign.submarkets.PrismMarket;
@@ -59,7 +52,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(im);
         //sector.addScript(ResponseFleetManager.create());
         sector.addScript(MiningFleetManager.create());
-        sector.addScript(CovertOpsManager.create());
+        //sector.addScript(CovertOpsManager.create());
         sector.addScript(am);
         // debugging
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
@@ -88,8 +81,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         
         SectorManager.setCorvusMode(true);
         SectorManager.reinitLiveFactions();
-        PlayerFactionStore.setPlayerFactionId(Factions.HEGEMONY);	// FIXME
-        sector.getFaction(Factions.PLAYER).setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1);
+        //sector.getFaction(Factions.PLAYER).setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1);
         NexUtilsReputation.syncFactionRelationshipsToPlayer();
         
         // add Follow Me ability
@@ -164,7 +156,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         InvasionFleetManager.create();
         ResponseFleetManager.create();
         MiningFleetManager.create();
-        CovertOpsManager.create();
+        //CovertOpsManager.create();
         AllianceManager.create();
         
         addScriptsAndEventsIfNeeded();
