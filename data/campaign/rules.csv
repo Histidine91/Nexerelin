@@ -40,8 +40,8 @@ ExerelinNewGameOptionsPopulate,ExerelinNGCOptions,,SetShortcut exerelinNGCOption
 7:exerelinNGCSectorOptions:Sector generation
 8:exerelinNGCFactionOptions:Faction settings
 9:exerelinNGCOtherOptions:Other options",
-ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems""",,exerelinNGCEnableCorvusMode:Disable random core worlds,
-ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems""",,exerelinNGCDisableCorvusMode:Enable random core worlds,
+#ExerelinNGCListOptionEnableCorvusMode,ExerelinNGCOptions,!$corvusMode,"SetTooltip exerelinNGCEnableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems""",,exerelinNGCEnableCorvusMode:Disable random core worlds,
+#ExerelinNGCListOptionDisableCorvusMode,ExerelinNGCOptions,$corvusMode,"SetTooltip exerelinNGCDisableCorvusMode ""Sets whether to use the handcrafted core worlds (vanilla and from mods), or randomly generated systems""",,exerelinNGCDisableCorvusMode:Enable random core worlds,
 ExerelinNewGameSectorConfigNonCorvus,ExerelinNGCSectorOptions,!$corvusMode,Nex_NGCProcessSectorGenerationSliders create,,,
 ExerelinNewGameSectorConfig,ExerelinNGCSectorOptions,,"SetTooltip exerelinNGCSetNumFactions ""Note: pirates and independents are always present, unless disabled in config""
 SetShortcut exerelinNGCSectorOptionsBack ESCAPE",,9:exerelinNGCSectorOptionsBack:Back,
@@ -245,7 +245,7 @@ nex_NGCDoneOption,NewGameOptionSelected,$option == nex_NGCDone,NGCDone,,,
 # END NGC OPTIONS,,,,,,
 ,,,,,,
 # special options,,,,,,
-ExerelinMarketAddOptionSpecial,PopulateOptions,$menuState == main,"SetShortcut exerelinMarketSpecial ""S"" true",,6:exerelinMarketSpecial:Special functions,
+ExerelinMarketAddOptionSpecial,PopulateOptions,$menuState == main,"SetShortcut exerelinMarketSpecial ""S"" true",,21:exerelinMarketSpecial:Special functions,
 ExerelinMarketSpecialOptions,DialogOptionSelected,$option == exerelinMarketSpecial,"$menuState = exerelinSpecial
 FireAll ExerelinMarketSpecialInitialize
 FireAll ExerelinMarketSpecial",,,
@@ -398,7 +398,7 @@ GetNumSpecialPeople
 ShowVisual ""graphics/illustrations/pirate_station.jpg""
 FireAll ExerelinPrisonerOption",,,
 ExerelinPrisonerOptionNumPrisoners,ExerelinPrisonerOption,,SetTextHighlights $numPrisoners,You have $numPrisoners prisoner(s).,,
-ExerelinPrisonerOptionListRepatriate,ExerelinPrisonerOption,,"SetTooltip exerelinPrisonerRepatriate ""Release a prisoner for a reputation boost with $theFaction.""
+ExerelinPrisonerOptionListRepatriate,ExerelinPrisonerOption,"$faction.id != ""player""","SetTooltip exerelinPrisonerRepatriate ""Release a prisoner for a reputation boost with $theFaction.""
 SetShortcut exerelinPrisonerRepatriate P",,exerelinPrisonerRepatriate:Repatriate prisoner,
 ExerelinPrisonerOptionListRansomBase,ExerelinPrisonerOption,,,,exerelinPrisonerRansom:Collect ransom,
 ExerelinPrisonerOptionListRansom,ExerelinPrisonerOption,!IsPirateFaction $faction.id,"GetPrisonerValue
