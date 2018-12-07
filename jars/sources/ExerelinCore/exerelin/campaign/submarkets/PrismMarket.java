@@ -54,6 +54,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public static final String IBB_FILE = "data/config/prism/prism_boss_ships.csv";
     public static final String SHIPS_BLACKLIST = "data/config/prism/prism_ships_blacklist.csv";
     public static final String WEAPONS_BLACKLIST = "data/config/prism/prism_weapons_blacklist.csv";
+    public static final String FACTION_WHITELIST = "data/config/prism/prism_factions_whitelist.csv";
     public static final String ILLEGAL_TRANSFER_MESSAGE = StringHelper.getString("exerelin_markets", "prismNoSale");
     public static final Set<String> DISALLOWED_FACTIONS = new HashSet<>(Arrays.asList(new String[] {
         "templars", Factions.DERELICT, Factions.REMNANTS, Factions.PIRATES
@@ -67,6 +68,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     protected static Set<String> restrictedWeapons;
     protected static Set<String> restrictedShips;
+    protected static Set<String> allowedFactions;
     
     protected static Set<SubmarketAPI> cachedSubmarkets = null;
     
@@ -492,6 +494,19 @@ public class PrismMarket extends BaseSubmarketPlugin {
         // Restricted goods
         restrictedWeapons = new HashSet<>();
         restrictedShips = new HashSet<>();
+        allowedFactions = new HashSet<>(Arrays.asList(new String[] {
+            Factions.HEGEMONY, Factions.TRITACHYON, Factions.PERSEAN, Factions.DIKTAT,
+            Factions.INDEPENDENT, Factions.LUDDIC_CHURCH, Factions.LUDDIC_PATH, Factions.LIONS_GUARD
+        }));
+        
+        JSONArray factions = Global.getSettings().getMergedSpreadsheetDataForMod("id", 
+                FACTION_WHITELIST, ExerelinConstants.MOD_ID);
+
+        for(int i = 0; i < factions.length(); i++) {            
+            JSONObject row = factions.getJSONObject(i);
+            allowedFactions.add(row.getString("id"));
+            log.info("Added to faction whitelist: " + row.getString("id"));
+        }
         
         JSONArray csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
                 WEAPONS_BLACKLIST, ExerelinConstants.MOD_ID);
