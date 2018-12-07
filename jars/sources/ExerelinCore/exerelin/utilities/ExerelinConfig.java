@@ -59,7 +59,7 @@ public class ExerelinConfig
     public static float invasionPointsPerPlayerLevel = 1f;
     public static float invasionPointEconomyMult = 1f;
     public static float conquestMissionRewardMult = 1f;
-    public static float invasionLootMult = 0.05f;
+    @Deprecated public static float invasionLootMult = 0.05f;
     
     // Alliances
     public static float allianceGracePeriod = 30;

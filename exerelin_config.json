@@ -32,7 +32,7 @@
     "invasionPointsPerPlayerLevel": 1,
     "invasionPointEconomyMult": 0.3, # each market contributes invasion points -- stability * size * this number
     "conquestMissionRewardMult": 1,
-    "invasionLootMult": 0.05,   # proportion of market's commodities that will be lootable on successful invasion
+    #"invasionLootMult": 0.05,   # proportion of market's commodities that will be lootable on successful invasion
     
     "allianceGracePeriod": 60,  # no alliances can form for this long at start
     "allianceFormationInterval": 30,    # try to form a new alliance every N days on average
@@ -86,5 +86,5 @@
     # DO NOT TOUCH!
     # to make factions not appear, use the menu options
     "builtInFactions":["hegemony", "tritachyon", "sindrian_diktat", "lions_guard", "persean", "luddic_church", "luddic_path", "knights_of_ludd", "pirates",
-           "derelict", "remnant", "player", "player_npc", "independent", "scavengers", "neutral"],
+           "derelict", "remnant", "player", "independent", "scavengers", "neutral"],
 }

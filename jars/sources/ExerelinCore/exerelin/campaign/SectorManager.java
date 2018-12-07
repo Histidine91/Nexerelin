@@ -17,11 +17,8 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
-import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -38,7 +35,6 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.world.ExerelinCorvusLocations;
 import exerelin.ExerelinConstants;
-import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.events.SlavesSoldEvent;
@@ -742,6 +738,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 person.setFaction(newOwnerId);
         }
         market.setFactionId(newOwnerId);
+		log.info("Should be player-owned: " + newOwnerId.equals(Factions.PLAYER));
+		market.setPlayerOwned(newOwnerId.equals(Factions.PLAYER));
+        
+        // transfer defense station
+        if (Misc.getStationFleet(market) != null)
+        {
+            Misc.getStationFleet(market).setFaction(newOwnerId, true);
+        }
+        if (Misc.getStationBaseFleet(market) != null)
+        {
+            Misc.getStationBaseFleet(market).setFaction(newOwnerId, true);
+        }
         
         // don't lock player out of freshly captured market
         if (!newOwner.isHostileTo(Factions.PLAYER))
@@ -761,50 +769,18 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             }
         }
         
+        updateSubmarkets(market, oldOwnerId, newOwnerId);
+        
         // Templar stuff
         if (newOwnerId.equals("templars") && !oldOwnerId.equals("templars"))
         {
-            market.removeSubmarket(Submarkets.SUBMARKET_OPEN);
-            market.removeSubmarket(Submarkets.SUBMARKET_BLACK);
-            market.removeSubmarket(Submarkets.GENERIC_MILITARY);
-            
-            market.addSubmarket("tem_templarmarket");
             if (!market.hasCondition("exerelin_templar_control")) market.addCondition("exerelin_templar_control");
         }
         else if (!newOwnerId.equals("templars") && oldOwnerId.equals("templars"))
         {
-            market.addSubmarket(Submarkets.SUBMARKET_OPEN);
-            if (!NO_BLACK_MARKET.contains(market.getId()))
-                market.addSubmarket(Submarkets.SUBMARKET_BLACK);
-            if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId())) 
-                market.addSubmarket(Submarkets.GENERIC_MILITARY);
-            
-            market.removeSubmarket("tem_templarmarket");
             if (market.hasCondition("exerelin_templar_control")) market.removeCondition("exerelin_templar_control");
         }
-        
-        // ApproLight
-        if (newOwnerId.equals("approlight") && !oldOwnerId.equals("approlight"))
-        {
-            
-            if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) 
-					|| market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId()))
-            {
-                market.removeSubmarket(Submarkets.GENERIC_MILITARY);
-                market.addSubmarket("AL_militaryMarket");
-            }
-        }
-        else if (!newOwnerId.equals("approlight") && oldOwnerId.equals("approlight"))
-        {
-            if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) 
-					|| market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId()))
-            {
-                if (!newOwnerId.equals("templars"))
-                    market.addSubmarket(Submarkets.GENERIC_MILITARY);
-            }
-            market.removeSubmarket("AL_militaryMarket");
-        }
-        
+                
         // II
         market.removeCondition("ii_imperialdoctrine");
         if (newOwnerId.equals("interstellarimperium") && market.getMemoryWithoutUpdate().contains("$startingFactionId")
@@ -835,8 +811,8 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         ExerelinUtilsMarket.setTariffs(market);
         
+		// set submarket factions
         List<SubmarketAPI> submarkets = market.getSubmarketsCopy();
-        
         for (SubmarketAPI submarket : submarkets)
         {
             //if (submarket.getFaction() != oldOwner) continue;
@@ -861,8 +837,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             submarket.setFaction(newOwner);
         }
         
-        // event report
         market.reapplyConditions();
+        market.reapplyIndustries();
+        
+        // prompt player to name faction if needed
+        // doesn't work, probably because we're still in a dialog screen at the time
+        //if (newOwnerId.equals(Factions.PLAYER) && !Misc.isPlayerFactionSetUp())
+        //    Global.getSector().getCampaignUI().showPlayerFactionConfigDialog();
+        
+        // event report
         if (isCapture)
         {
             Map<String, Object> params = new HashMap<>();
@@ -898,7 +881,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         {
             factionRespawned(newOwner, market);
         }
-                
+        
         // rebellion
         RebellionEvent rebEvent = RebellionEvent.getOngoingEvent(market);
         if (rebEvent != null) rebEvent.marketCaptured(newOwnerId, oldOwnerId);
@@ -958,6 +941,68 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 rvngEvent.addPoints(sizeSq * ExerelinConfig.revengePointsForMarketCaptureMult);
             }
         }
+    }
+    
+    public static void addOrRemoveSubmarket(MarketAPI market, String submarketId, boolean shouldHave)
+    {
+        if (market.hasSubmarket(submarketId) && !shouldHave)
+            market.removeSubmarket(submarketId);
+        else if (!market.hasSubmarket(submarketId) && shouldHave)
+            market.addSubmarket(submarketId);
+    }
+    
+    /**
+     * Update <code>@market</code>'s submarkets on market capture/transfer.
+     * @param market
+     * @param oldOwnerId
+     * @param newOwnerId
+     */
+    public static void updateSubmarkets(MarketAPI market, String oldOwnerId, String newOwnerId)
+    {
+        
+        boolean haveLocalResources = newOwnerId.equals(Factions.PLAYER);
+        boolean haveOpen = false;
+        boolean haveMilitary = false;
+        boolean haveBlackMarket = false;
+        boolean haveTemplar = newOwnerId.equals("templars");
+        
+        if (!newOwnerId.equals("templars") && !newOwnerId.equals(Factions.PLAYER))
+        {
+            if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND) 
+                    || market.hasCondition("tem_avalon") || FORCE_MILITARY_MARKET.contains(market.getId()))
+                haveMilitary = true;
+            if (!NO_BLACK_MARKET.contains(market.getId()))
+                haveBlackMarket = true;
+        }        
+        
+        if (!newOwnerId.equals("templars") && (!newOwnerId.equals(Factions.PLAYER) || market.hasIndustry("commerce")))
+            haveOpen = true;
+        
+        addOrRemoveSubmarket(market, Submarkets.LOCAL_RESOURCES, haveLocalResources);
+        addOrRemoveSubmarket(market, Submarkets.SUBMARKET_OPEN, haveOpen);
+        addOrRemoveSubmarket(market, Submarkets.SUBMARKET_BLACK, haveBlackMarket);
+        addOrRemoveSubmarket(market, "tem_templarmarket", haveTemplar);
+        
+        // handle ApproLight special market
+        if (newOwnerId.equals("approlight") && !oldOwnerId.equals("approlight"))
+        {
+            if (haveMilitary)
+            {
+                market.removeSubmarket(Submarkets.GENERIC_MILITARY);
+                market.addSubmarket("AL_militaryMarket");
+            }
+        }
+        else if (!newOwnerId.equals("approlight") && oldOwnerId.equals("approlight"))
+        {
+            if (haveMilitary)
+            {
+                if (!newOwnerId.equals("templars"))
+                    market.addSubmarket(Submarkets.GENERIC_MILITARY);
+            }
+            market.removeSubmarket("AL_militaryMarket");
+        }
+        else
+            addOrRemoveSubmarket(market, Submarkets.GENERIC_MILITARY, haveMilitary);
     }
     
     public static void notifySlavesSold(MarketAPI market, int count)

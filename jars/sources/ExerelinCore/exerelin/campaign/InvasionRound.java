@@ -20,6 +20,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtilsMarket;
+import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -83,6 +84,18 @@ public class InvasionRound {
 		return result;
 	}
 	
+	public static String getString(String entry, boolean ucFirst)
+	{
+		String str = StringHelper.getString("exerelin_invasion", entry);
+		if (ucFirst) str = Misc.ucFirst(str);
+		return str;
+	}
+	
+	public static String getString(String entry)
+	{
+		return getString(entry, false);
+	}
+	
 	// TODO: modMult should be used to make invader underestimate defense bonuses
 	public static float getDefenderStrength(MarketAPI market, float modMult)
 	{
@@ -90,12 +103,14 @@ public class InvasionRound {
 		StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
 		
 		ExerelinFactionConfig defConf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-		defenderBase.modifyPercent("nex_invasionDefBonus", defConf.invasionStrengthBonusDefend * 100f, market.getFaction().getDisplayName() + " defense bonus");
+		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "defendBonus", "$Faction", 
+				Misc.ucFirst(market.getFaction().getDisplayName()));
+		defenderBase.modifyPercent("nex_invasionDefBonus", defConf.invasionStrengthBonusDefend * 100f, str);
 		
 		String increasedDefensesKey = "core_addedDefStr";
 		float added = Nex_MarketCMD.getDefenderIncreaseValue(market);
 		if (added > 0) {
-			defender.modifyFlat(increasedDefensesKey, added, "Increased defender preparedness");
+			defender.modifyFlat(increasedDefensesKey, added, getString("defenderPreparedness", true));
 		}
 		
 		float defenderStr = (int) Math.round(defender.computeEffective(defenderBase.computeEffective(0f)));
@@ -112,13 +127,15 @@ public class InvasionRound {
 		StatBonus attackerBase = new StatBonus();
 		//defenderBase.modifyFlatAlways("base", baseDef, "Base value for a size " + market.getSize() + " colony");
 		
-		attackerBase.modifyFlatAlways("core_marines", marines, "Marines on board");
-		attackerBase.modifyFlatAlways("core_support", support, "Fleet capability for ground support");
+		attackerBase.modifyFlatAlways("core_marines", marines, getString("marinesOnBoard", true));
+		attackerBase.modifyFlatAlways("core_support", support, getString("groundSupportCapability", true));
 		
 		StatBonus attacker = fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
 		
 		ExerelinFactionConfig atkConf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-		attackerBase.modifyPercent("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack * 100f, fleet.getFaction().getDisplayName() + " attack bonus");
+		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "attackBonus", "$Faction", 
+				Misc.ucFirst(fleet.getFaction().getDisplayName()));
+		attackerBase.modifyPercent("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack * 100f, str);
 				
 		float attackerStr = (int) Math.round(attacker.computeEffective(attackerBase.computeEffective(0f)));
 		float defenderStr = getDefenderStrength(market, 1);
@@ -137,6 +154,8 @@ public class InvasionRound {
 			if (attackerStr <= 0 || defenderStr <= 0)
 			{
 				finishInvasion(fleet, market, numRounds, defenderStr <= 0);
+				if (defenderStr <= 0) 
+					conquerMarket(market, fleet.getFaction(), false);
 				break;
 			}
 			
@@ -169,9 +188,7 @@ public class InvasionRound {
 		}
 		
 		float defStrength = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).computeEffective(0);
-		
-		// TODO intel event
-		
+				
 		// trash resource availability
 		WeightedRandomPicker<CommodityOnMarketAPI> picker = new WeightedRandomPicker<>();
 		for (CommodityOnMarketAPI commodity : market.getAllCommodities())
@@ -185,7 +202,33 @@ public class InvasionRound {
 			commodity.addTradeModMinus("invasion_" + Misc.genUID(), -1, BaseSubmarketPlugin.TRADE_IMPACT_DAYS);
 		}
 		
-		//ExerelinUtilsMarket.refreshMarket(market, true);
+		// XP
+		if (playerInvolved)
+		{
+			float xp = defStrength;
+			playerFleet.getCargo().gainCrewXP(xp);
+			playerFleet.getCommander().getStats().addXP((long) xp);
+			playerFleet.getCommander().getStats().levelUpIfNeeded();
+		}
+		
+		// make orphans
+		if (playerInvolved)
+		{
+			// Spire biology is different
+			if (!defenderFactionId.equals("spire") &&  !defenderFactionId.equals("darkspire"))
+			{
+				float deathsInflicted = defStrength;
+				float numAvgKids = MathUtils.getRandomNumberInRange(0f, 1.5f) + MathUtils.getRandomNumberInRange(0f, 1.5f);
+				StatsTracker.getStatsTracker().modifyOrphansMade((int)(deathsInflicted * numAvgKids));
+			}
+		}
+				
+		log.info( String.format("Invasion of [%s] by " + attacker.getNameWithFaction() + (success ? " successful" : " failed"), market.getName()) );
+	}
+	
+	public static void conquerMarket(MarketAPI market, FactionAPI attackerFaction, boolean playerInvolved)
+	{
+		FactionAPI defenderFaction = market.getFaction();
 		
 		// relationship changes
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsWithSameGroup(market);
@@ -193,38 +236,23 @@ public class InvasionRound {
 		// but it's null when it gets to the event for some reason
 		List<String> factionsToNotify = new ArrayList<>();  
 		Set<String> seenFactions = new HashSet<>();
-		float repChangeStrength = 0;
-		if (success)
-		{
-			repChangeStrength = market.getSize() * 0.01f;
+		float repChangeStrength = market.getSize() * 0.01f;
 
-			for (final MarketAPI otherMarket : markets) {
-				if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
-				//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide
-				if (seenFactions.contains(otherMarket.getFactionId())) continue;
+		for (final MarketAPI otherMarket : markets) {
+			if (!otherMarket.getFaction().isHostileTo(defenderFaction)) continue;
+			//if (!defender.isInOrNearSystem(otherMarket.getStarSystem())) continue;	// station capture news is sector-wide
+			if (seenFactions.contains(otherMarket.getFactionId())) continue;
 
-				RepLevel level = attackerFaction.getRelationshipLevel(otherMarket.getFaction());
-				seenFactions.add(otherMarket.getFactionId());
-				if (playerInvolved)
-				{
-					factionsToNotify.add(otherMarket.getFactionId());
-				}
+			RepLevel level = attackerFaction.getRelationshipLevel(otherMarket.getFaction());
+			seenFactions.add(otherMarket.getFactionId());
+			if (playerInvolved)
+			{
+				factionsToNotify.add(otherMarket.getFactionId());
 			}
 		}
 		
-		// add intel event if captured
-		if (success)
-		{
-			SectorManager.transferMarket(market, attackerFaction, defenderFaction, playerInvolved, true, factionsToNotify, repChangeStrength);
-			
-			if (playerInvolved)
-			{
-				float xp = defStrength;
-				playerFleet.getCargo().gainCrewXP(xp);
-				playerFleet.getCommander().getStats().addXP((long) xp);
-				playerFleet.getCommander().getStats().levelUpIfNeeded();
-			}
-		}
+		// perform actual transfer
+		SectorManager.transferMarket(market, attackerFaction, defenderFaction, playerInvolved, true, factionsToNotify, repChangeStrength);
 		
 		// revengeance
 		/*
@@ -241,20 +269,6 @@ public class InvasionRound {
 			}
 		}
 		*/
-		
-		// make orphans
-		if (playerInvolved)
-		{
-			// Spire biology is different
-			if (!defenderFactionId.equals("spire") &&  !defenderFactionId.equals("darkspire"))
-			{
-				float deathsInflicted = defStrength;
-				float numAvgKids = MathUtils.getRandomNumberInRange(0f, 1.5f) + MathUtils.getRandomNumberInRange(0f, 1.5f);
-				StatsTracker.getStatsTracker().modifyOrphansMade((int)(deathsInflicted * numAvgKids));
-			}
-		}
-				
-		log.info( String.format("Invasion of [%s] by " + attacker.getNameWithFaction() + (success ? " successful" : " failed"), market.getName()) );
 	}
 	
 	public static boolean canInvade(SectorEntityToken entity)
