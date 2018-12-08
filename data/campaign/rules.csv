@@ -1138,6 +1138,63 @@ $nex_memorialBeacon","ShowDefaultVisual
 SetShortcut beaconLeave ""ESCAPE""","This autonomous beacon serves as a memorial marker, in remembrance of a battle between the $faction and $nex_memorialFaction2 forces. Its looping message contains a list of the $faction casualties, with the names of their family members and their places of origin. The $nex_memorialFaction2 dead are not listed.",beaconLeave:Leave,
 # END LANDMARKS,,,,,,
 ,,,,,,
+# commission stuff,,,,,,
+,,,,,,
+cmsn_askForCommissionOpt,PopulateOptions,"$isPerson
+Nex_Commission personCanGiveCommission
+!Nex_Commission hasFactionCommission",,,"20:cmsn_askCommission:""I'd like to be commissioned by $theFaction""",
+cmsn_resignCommissionOpt,PopulateOptions,"$isPerson
+Nex_Commission personCanGiveCommission
+Nex_Commission hasFactionCommission",,,"20:cmsn_resignCommission:""I'd like to resign my $faction commission""",
+cmsn_lolNo,DialogOptionSelected,"$option == cmsn_askCommission
+$faction.hostileToPlayer score:100","SetEnabled cmsn_askCommission false
+FireBest CMSNTextRejectHostile",,,
+cmsn_doesNotMeetCriteria,DialogOptionSelected,"$option == cmsn_askCommission
+!Nex_Commission playerMeetsCriteria","SetEnabled cmsn_askCommission false
+FireBest CMSNTextUnsuited
+Nex_Commission printRequirements",,,
+cmsn_meetsCriteria,DialogOptionSelected,"$option == cmsn_askCommission
+Nex_Commission playerMeetsCriteria",FireBest CMSNTextSuitedPart1,,0:cmsn_continueMeetsReq:Continue,
+,,,,,,
+# Luddic Path commission,,,,,,
+CMSNTextRejectHostile_path,CMSNTextRejectHostile,$faction.id == luddic_path,,"""What is this madness, heathen? If I could slay you in the name of Ludd right now, I would.""",,
+CMSNTextHasOther_path,CMSNTextHasOther,$faction.id == luddic_path,,"""You're already commissioned by $theOtherCommissionFaction. Our cause permits no conflicting loyalties; any who love others more than Ludd is unworthy of Him.""",,
+CMSNTextUnsuited_path,CMSNTextUnsuited,$faction.id == luddic_path,,"""You are not yet worthy to join us.""",,
+CMSNTextSuitedPart1_path,CMSNTextSuitedPart1,$faction.id == luddic_path,,"""Interesting. You may be worthy yet of our holy cause.
+
+The way of the Path is a demanding one. Our godless enemies are many; you must not falter in fighting them wherever you find them, and spreading the word of Ludd to all in this dark sector.
+
+Deviation from the cause is a grievous sin. Should you be so lost as to attempt any such thing, our brethren shall think nothing of slaying you as a traitor deserves.""",,
+CMSNTextSuitedPart2_path,CMSNTextSuitedPart2,$faction.id == luddic_path,,"""Shall you raise this sword with the blessings of Ludd?""",,
+CMSNTextWelcomePart1_path,CMSNTextWelcomePart1,$faction.id == luddic_path,,"""Praise be to the spirit of the stars! I am blessed to be the first to welcome you to this righteous service.""",,
+CMSNTextWelcomePart2_path,CMSNTextWelcomePart2,$faction.id == luddic_path,,"""Greetings, dear sibling. Please do ask if there is anything I can do for you.""",,
+CMSNTextChangeMind_path,CMSNTextChangeMind,$faction.id == luddic_path,,"""So be it, then. We have no use for those too weak to face the path of righteousness.
+
+Do you have anything else to say?""",,
+CMSNResignAskToConfirm_path,CMSNResignAskToConfirm,$faction.id == luddic_path,,"""You speak of treason. Is your faith wavering? There is no way from the Path except in death or damnation.""",,
+CMSNResignConfirmed_path,CMSNResignConfirmed,$faction.id == luddic_path,,"""So be it, accursed one.
+
+Depart now, before the hammer of righteous judgment finds you.""",,
+CMSNResignCancelled_path,CMSNResignCancelled,$faction.id == luddic_path,,"""We will not speak of this matter again. I expect penitence from you, sibling.""",,
+,,,,,,
+# Pirate commission,,,,,,
+CMSNTextRejectHostile_pirate,CMSNTextRejectHostile,$faction.id == pirates,,"""Yeah, not gonna happen, buddy. You sure as hell ain't one of us.""",,
+CMSNTextHasOther_pirate,CMSNTextHasOther,$faction.id == pirates,,"""No can do. Stop flying the flag of $theOtherCommissionFaction and maybe we can talk.""",,
+CMSNTextUnsuited_pirate,CMSNTextUnsuited,$faction.id == pirates,,"""You ain't got our trust yet. It takes more than a fancy suit and a piece of paper to make a pirate, mate; it takes a real tough guy.""",,
+CMSNTextSuitedPart1_pirate,CMSNTextSuitedPart1,$faction.id == pirates,,"""So, you wanna fly the black flag eh? Sick of the rules and laws of petty tyrants?
+
+Guess I should remind you that we're enemies of most of the Sector. Expect to be beset at every turn by those self-righteous pricks... but at the same time, there's plunder aplenty for those daring enough, and you get your share of the common booty.""",,
+CMSNTextSuitedPart2_pirate,CMSNTextSuitedPart2,$faction.id == pirates,,"""You up for the challenge, friend?""",,
+CMSNTextWelcomePart1_pirate,CMSNTextWelcomePart1,$faction.id == pirates,,"""Th' boss will be pleased to hear it. Come on down to the bar and have a drink with us.""",,
+CMSNTextWelcomePart2_pirate,CMSNTextWelcomePart2,$faction.id == pirates,,"""Anything else ya need?""",,
+CMSNTextChangeMind_pirate,CMSNTextChangeMind,$faction.id == pirates,,"""Yeah, not everyone has the balls to be a pirate. Guess you'll just have to be content with being the prey instead. Heh.
+
+Anything else ya want?""",,
+CMSNResignAskToConfirm_pirate,CMSNResignAskToConfirm,$faction.id == pirates,,"""Wanna go legit, eh? I can't stop ya, but some of the boys might get ideas now that yer ain't one of us any longer.""",,
+CMSNResignConfirmed_pirate,CMSNResignConfirmed,$faction.id == pirates,,"""Fine, then, I'll inform the boss. See ya on the other end of my guns, sucker!""",,
+CMSNResignCancelled_pirate,CMSNResignCancelled,$faction.id == pirates,,"""Of course. Once you've tasted freedom, there ain't no going back. Now, ran into any vulnerable convoys lately?""",,
+,,,,,,
+# end commission stuff,,,,,,
 ,,,,,,
 # bla,,,,,,
 ExerelinFlavorTextMarketPrismFreeport,TradePanelFlavorText,"$global.tradePanelMode == MARKET
