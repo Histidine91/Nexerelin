@@ -111,7 +111,7 @@ public class ExerelinConfig
     @Deprecated
     public static boolean ownFactionCustomsInspections = false;
     public static boolean useRelationshipBounds = true;
-    public static boolean officerDeaths = true;
+    public static boolean officerDeaths = false;
     public static boolean officerDaredevilBonus = true;
     public static boolean corvusModeLandmarks = false;
 

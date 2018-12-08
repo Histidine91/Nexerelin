@@ -76,11 +76,11 @@
     "enableShanghai": true,   # adds Shanghai for Tiandong Heavy Industries, attached to homeworld (random mode only)
     "enableUnos": true, # adds Unos for ApproLight, attached to homeworld (random mode only)
     
-    "factionRuler": false,  # gain same powers over a normal faction as you'd have with followers
+    "factionRuler": false,  # gain same powers over a normal faction as you'd have with followers (probably not fully functional)
     
     "corvusModeLandmarks": false,    # adds some decorative landmarks in non-random Sector (will always be present in random Sector)
     
-    "officerDeaths": true,	# officer permadeath
+    "officerDeaths": false,	# officer permadeath
     "officerDaredevilBonus": true,	# 50% experience bonus for officers in a frigate, 25% in a destroyer
 
     # DO NOT TOUCH!
