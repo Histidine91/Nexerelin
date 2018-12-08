@@ -67,8 +67,13 @@ public class InvasionRound {
 		for (Industry curr : defender.getIndustries()) {
 			if (curr.canBeDisrupted() && !curr.getSpec().hasTag(Industries.TAG_UNRAIDABLE)) 
 			{
-				industryPicker.add(curr, curr.getBuildCost());
-				industryPicker.add(curr, 1);
+				float currDisruption = curr.getDisruptedDays();
+				//industryPicker.add(curr, curr.getBuildCost());
+				if (currDisruption > curr.getBuildTime() * 4)
+					continue;
+				float weight = Math.max(100 - currDisruption, 20);
+				if (currDisruption > 0) weight *= 0.5f;
+				industryPicker.add(curr, weight);
 			}
 		}
 		Industry toDisrupt = industryPicker.pick();
@@ -76,6 +81,7 @@ public class InvasionRound {
 		{
 			float dur = toDisrupt.getBuildTime() + toDisrupt.getDisruptedDays();
 			dur *= StarSystemGenerator.getNormalRandom(random, 1f, 1.25f);
+			dur = Math.min(dur, toDisrupt.getBuildTime() * 4);
 			toDisrupt.setDisrupted(dur);
 			result.disrupted = toDisrupt;
 			result.disruptionLength = dur;
