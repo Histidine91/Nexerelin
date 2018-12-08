@@ -15,6 +15,7 @@
 		"level":"level",
 		"marine":"marine",
 		"options":"options",
+		"player":"player",
 		"size":"size",
 		"spoils":"spoils",
 		"stability":"stability",
@@ -264,6 +265,7 @@
 	},
 	"exerelin_invasion":{
 		"nonHostileWarning":"$TheFaction $isOrAre not currently hostile. An invasion is a major enough hostile action that it can't be concealed, regardless of transponder status.",
+		"takeForSelfWarning":"You can take $market as a personal holding, but this will not please your current faction.\n\nProceed?",
 		
 		"invasion":"invasion",
 		"invasionStrength":"invasion strength",
@@ -285,6 +287,7 @@
 		"invasionAbort":"Abort invasion",
 		"invasionFail":"Withdraw from $market",
 		"invasionSpoils":"Pick through the spoils",
+		"invasionTakeForSelf":"Take $market for yourself",
 		
 		"attackerStrength":"attacker strength",
 		"defenderStrength":"defender strength",

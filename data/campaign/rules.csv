@@ -281,6 +281,7 @@ nex_marketHostileInvadeGoBackSel,DialogOptionSelected,$option == nex_mktInvadeGo
 nex_marketHostileInvadeConfirmSel,DialogOptionSelected,$option == nex_mktInvadeConfirm,Nex_MarketCMD invadeConfirm,,,
 nex_marketHostileInvadeAbortSel,DialogOptionSelected,$option == nex_mktInvadeAbort,Nex_MarketCMD invadeAbort,,,
 nex_marketHostileInvadeResultSel,DialogOptionSelected,$option == nex_mktInvadeResult,Nex_MarketCMD invadeResult,,,
+nex_marketHostileInvadeResultAndradaSel,DialogOptionSelected,$option == nex_mktInvadeResultAndrada,Nex_MarketCMD invadeResultAndrada,,,
 ,,,,,,
 # end military options,,,,,,
 ,,,,,,

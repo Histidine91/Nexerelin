@@ -2,8 +2,11 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CampaignUIAPI;
+import com.fs.starfarer.api.campaign.CampaignUIAPI.CoreUITradeMode;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
+import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -41,10 +44,12 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.InvasionRound.InvasionRoundResult;
 import static exerelin.campaign.InvasionRound.getString;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +62,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final String INVADE_CONFIRM = "nex_mktInvadeConfirm";
 	public static final String INVADE_ABORT = "nex_mktInvadeAbort";
 	public static final String INVADE_RESULT = "nex_mktInvadeResult";
+	public static final String INVADE_RESULT_ANDRADA = "nex_mktInvadeResultAndrada";
 	public static final String INVADE_GO_BACK = "nex_mktInvadeGoBack";
 	public static final float FAIL_THRESHOLD_INVASION = 0.5f;
 	
@@ -76,7 +82,9 @@ public class Nex_MarketCMD extends MarketCMD {
 		} else if (command.equals("invadeAbort")) {
 			invadeFinish();
 		} else if (command.equals("invadeResult")) {
-			invadeResult();
+			invadeResult(false);
+		} else if (command.equals("invadeResultAndrada")) {
+			invadeResult(true);
 		}
 		
 		return true;
@@ -366,7 +374,7 @@ public class Nex_MarketCMD extends MarketCMD {
 			applyDefenderIncreaseFromRaid(market);
 		
 		// unrest
-		String reason = getString("recentlyInvaded");
+		String reason = Misc.ucFirst(getString("recentlyInvaded"));
 		if (Misc.isPlayerFactionSetUp()) {
 			reason = playerFaction.getDisplayName() + " " + getString("invasion");
 		}
@@ -458,6 +466,20 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (text == null) text = Misc.ucFirst(StringHelper.getString("continue"));
 		options.clearOptions();
 		options.addOption(text, INVADE_RESULT);
+		
+		if (tempInvasion.success && playerFaction != PlayerFactionStore.getPlayerFaction())
+		{
+			String str = getString("invasionTakeForSelf");
+			String marketName = market.getName();
+			str = StringHelper.substituteToken(str, "$market", marketName);
+			options.addOption(str, INVADE_RESULT_ANDRADA);
+			
+			str = getString("takeForSelfWarning");
+			str = StringHelper.substituteToken(str, "$market", marketName);
+			options.addOptionConfirmation(INVADE_RESULT_ANDRADA, str, 
+					Misc.ucFirst(StringHelper.getString("yes")),
+					Misc.ucFirst(StringHelper.getString("no")));
+		}
 	}
 	
 	protected Map<CommodityOnMarketAPI, Float> computeInvasionValuables() {
@@ -619,9 +641,14 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	/**
 	 * Show loot if applicable, cleanup and exit
+	 * @param tookForSelf True if we decided to take the market for ourselves, 
+	 * instead of turning it over to commissioning faction
+	 * Note: this is always false if we have no commission
 	 */
-	protected void invadeResult()
+	protected void invadeResult(boolean tookForSelf)
 	{
+		tempInvasion.tookForSelf = tookForSelf;
+		
 		if (tempInvasion.invasionLoot != null) {
 			if (tempInvasion.invasionLoot.isEmpty()) {
 				finishedInvade();
@@ -640,7 +667,19 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 		new ShowDefaultVisual().execute(null, dialog, Misc.tokenize(""), memoryMap);
 		
-		InvasionRound.conquerMarket(market, playerFaction, true);
+		if (tempInvasion.tookForSelf)
+		{
+			InvasionRound.conquerMarket(market, playerFaction, true);
+			CoreReputationPlugin.CustomRepImpact impact = new CoreReputationPlugin.CustomRepImpact();
+			impact.delta = -0.04f * market.getSize();
+			//impact.ensureAtBest = RepLevel.SUSPICIOUS;
+			impact.limit = RepLevel.INHOSPITABLE;
+			Global.getSector().adjustPlayerReputation(new CoreReputationPlugin.RepActionEnvelope(
+					CoreReputationPlugin.RepActions.CUSTOM, impact, null, text, true), 
+					PlayerFactionStore.getPlayerFactionId());
+		}
+		else 
+			InvasionRound.conquerMarket(market, PlayerFactionStore.getPlayerFaction(), true);
 		
 		//FireAll.fire(null, dialog, memoryMap, "MarketPostOpen");
 		dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$menuState", "main", 0);
@@ -650,13 +689,15 @@ public class Nex_MarketCMD extends MarketCMD {
 		else
 			dialog.getInteractionTarget().getMemoryWithoutUpdate().set("$tradeMode", "OPEN", 0);
 		
-		// FIXME: make sure this appears
+		FireAll.fire(null, dialog, memoryMap, "PopulateOptions");
+		
+		// create player faction setup screein if needed
+		// FIXME nothing I do works, work around it for now
 		if (!Misc.isPlayerFactionSetUp())
 		{
-			Global.getSector().getCampaignUI().showPlayerFactionConfigDialog();
+			playerFaction.setDisplayNameOverride(Misc.ucFirst(StringHelper.getString("player")));
+			//new Nex_SetupFaction().execute(null, dialog, new ArrayList<Token>(), memoryMap);
 		}
-		
-		FireAll.fire(null, dialog, memoryMap, "PopulateOptions");
 	}
 	
 	protected void invadeShowLoot() {
@@ -690,6 +731,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		public int roundNum = 0;
 		public int stabilityPenalty = 0;
 		public boolean success = false;
+		public boolean tookForSelf = true;
 		
 		public float invasionMult;
 		public float shortageMult;

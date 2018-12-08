@@ -147,8 +147,7 @@ public class ExerelinUtilsMarket {
 		FactionAPI marketFaction = market.getFaction();
 		if (isPlayer)
 		{
-			String factionId = marketFaction.getId();
-			if (factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+			if (marketFaction == PlayerFactionStore.getPlayerFaction() || marketFaction.isPlayerFaction())
 				return false;
 		}
 		if (marketFaction.isNeutralFaction()) return false;
