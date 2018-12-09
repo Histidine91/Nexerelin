@@ -18,7 +18,7 @@ public class StringHelper {
 	
 	public static final String HR = "-----------------------------------------------------------------------------";
 	
-	public static String getString(String category, String id) {
+	public static String getString(String category, String id, boolean ucFirst) {
 		String str = "";
 		try {
 			str = Global.getSettings().getString(category, id);
@@ -28,13 +28,21 @@ public class StringHelper {
 			// could be a string not found
 			//str = ex.toString();  // looks really silly
 			Global.getLogger(StringHelper.class).warn(ex);
-			str = "INVALID_STRING";
 		}
+		if (ucFirst) str = Misc.ucFirst(str);
 		return str;
 	}
 	
+	public static String getString(String category, String id) {
+		return getString(category, id, false);
+	}
+	
+	public static String getString(String id, boolean ucFirst) {
+		return getString("general", id, ucFirst);
+	}
+	
 	public static String getString(String id) {
-		return getString("general", id);
+		return getString("general", id, false);
 	}
 	
 	public static String ucFirstIgnore$(String str)

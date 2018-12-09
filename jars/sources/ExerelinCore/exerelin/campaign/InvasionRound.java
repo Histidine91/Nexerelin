@@ -10,6 +10,7 @@ import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.StatBonus;
+import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
@@ -102,7 +103,35 @@ public class InvasionRound {
 		return getString(entry, false);
 	}
 	
-	// TODO: modMult should be used to make invader underestimate defense bonuses
+	public static float getAttackerStrength(CampaignFleetAPI fleet)
+	{
+		float marines = fleet.getCargo().getMarines();
+		float support = Misc.getFleetwideTotalMod(fleet, Stats.FLEET_GROUND_SUPPORT, 0f);
+		if (support > marines) support = marines;
+				
+		StatBonus attackerBase = new StatBonus();
+		//defenderBase.modifyFlatAlways("base", baseDef, "Base value for a size " + market.getSize() + " colony");
+		
+		attackerBase.modifyFlatAlways("core_marines", marines, getString("marinesOnBoard", true));
+		attackerBase.modifyFlatAlways("core_support", support, getString("groundSupportCapability", true));
+		
+		StatBonus attacker = fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
+		
+		ExerelinFactionConfig atkConf = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId());
+		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "attackBonus", "$Faction", 
+				Misc.ucFirst(fleet.getFaction().getDisplayName()));
+		attackerBase.modifyMult("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack + 1, str);
+		
+		float attackerStr = (int) Math.round(attacker.computeEffective(attackerBase.computeEffective(0f)));
+		return attackerStr;
+	}
+	
+	/**
+	 *
+	 * @param market
+	 * @param modMult Values over 1 make it overestimate defender strength, values under 1 give an underestimate
+	 * @return
+	 */
 	public static float getDefenderStrength(MarketAPI market, float modMult)
 	{
 		StatBonus defenderBase = new StatBonus();
@@ -111,7 +140,7 @@ public class InvasionRound {
 		ExerelinFactionConfig defConf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "defendBonus", "$Faction", 
 				Misc.ucFirst(market.getFaction().getDisplayName()));
-		defenderBase.modifyPercent("nex_invasionDefBonus", defConf.invasionStrengthBonusDefend * 100f, str);
+		defender.modifyMult("nex_invasionDefBonus", defConf.invasionStrengthBonusDefend + 1, str);
 		
 		String increasedDefensesKey = "core_addedDefStr";
 		float added = Nex_MarketCMD.getDefenderIncreaseValue(market);
@@ -121,29 +150,16 @@ public class InvasionRound {
 		
 		float defenderStr = (int) Math.round(defender.computeEffective(defenderBase.computeEffective(0f)));
 		
-		return defenderStr;
+		if (modMult == 1) return defenderStr;
+		
+		float trueBase = defender.getFlatBonus();
+		float bonus = defenderStr - trueBase;
+		return trueBase + bonus * modMult;
 	}
 	
 	public static boolean npcInvade(CampaignFleetAPI fleet, MarketAPI market)
 	{
-		float marines = fleet.getCargo().getMarines();
-		float support = Misc.getFleetwideTotalMod(fleet, Stats.FLEET_GROUND_SUPPORT, 0f);
-		if (support > marines) support = marines;
-		
-		StatBonus attackerBase = new StatBonus();
-		//defenderBase.modifyFlatAlways("base", baseDef, "Base value for a size " + market.getSize() + " colony");
-		
-		attackerBase.modifyFlatAlways("core_marines", marines, getString("marinesOnBoard", true));
-		attackerBase.modifyFlatAlways("core_support", support, getString("groundSupportCapability", true));
-		
-		StatBonus attacker = fleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
-		
-		ExerelinFactionConfig atkConf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
-		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "attackBonus", "$Faction", 
-				Misc.ucFirst(fleet.getFaction().getDisplayName()));
-		attackerBase.modifyPercent("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack * 100f, str);
-				
-		float attackerStr = (int) Math.round(attacker.computeEffective(attackerBase.computeEffective(0f)));
+		float attackerStr = getAttackerStrength(fleet);
 		float defenderStr = getDefenderStrength(market, 1);
 		
 		Random random = new Random();
@@ -194,7 +210,19 @@ public class InvasionRound {
 		}
 		
 		float defStrength = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).computeEffective(0);
-				
+		
+		// destabilize
+		int stabilityPenalty = (int)(numRounds * INSTABILITY_PER_ROUND);
+		if (!success) stabilityPenalty /= 2;
+		
+		if (stabilityPenalty > 0) {
+			String reason = Misc.ucFirst(getString("recentlyInvaded"));
+			if (!attackerFaction.isPlayerFaction() || Misc.isPlayerFactionSetUp()) {
+				reason = attackerFaction.getDisplayName() + " " + getString("invasion");
+			}
+			RecentUnrest.get(market).add(stabilityPenalty, reason);
+		}
+		
 		// trash resource availability
 		WeightedRandomPicker<CommodityOnMarketAPI> picker = new WeightedRandomPicker<>();
 		for (CommodityOnMarketAPI commodity : market.getAllCommodities())

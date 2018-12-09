@@ -68,6 +68,10 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	protected TempDataInvasion tempInvasion = new TempDataInvasion();
 	
+	public Nex_MarketCMD(SectorEntityToken entity) {
+		init(entity);
+	}
+	
 	@Override
 	public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Token> params, Map<String, MemoryAPI> memoryMap) {
 		super.execute(ruleId, dialog, params, memoryMap);
@@ -119,6 +123,14 @@ public class Nex_MarketCMD extends MarketCMD {
 		if (InvasionRound.canInvade(entity))
 		{
 			options.addOption("Invade the market", INVADE);
+			
+			// attempt to reorder
+			List opts = options.getSavedOptionList();
+			Object lastOpt = opts.get(opts.size() - 1);
+			opts.remove(lastOpt);
+			opts.add(opts.size() - 1, lastOpt);
+			options.restoreSavedOptions(opts);
+			options.setShortcut(GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);	// put back the hotkey
 		}
 	}
 	
@@ -148,18 +160,18 @@ public class Nex_MarketCMD extends MarketCMD {
 		attackerBase.modifyFlatAlways("core_marines", marines, getString("marinesOnBoard", true));
 		attackerBase.modifyFlatAlways("core_support", support, getString("groundSupportCapability", true));
 		
-		ExerelinFactionConfig atkConf = ExerelinConfig.getExerelinFactionConfig(fleet.getFaction().getId());
+		ExerelinFactionConfig atkConf = ExerelinConfig.getExerelinFactionConfig(PlayerFactionStore.getPlayerFactionId());
 		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "attackBonus", "$Faction", 
 				Misc.ucFirst(fleet.getFaction().getDisplayName()));
-		attackerBase.modifyPercent("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack * 100f, str);
+		attackerBase.modifyMult("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack + 1, str);
+		
+		StatBonus attacker = playerFleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
+		StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
 		
 		ExerelinFactionConfig defConf = ExerelinConfig.getExerelinFactionConfig(market.getFactionId());
 		str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "defendBonus", "$Faction", 
 				Misc.ucFirst(market.getFaction().getDisplayName()));
-		defenderBase.modifyPercent("nex_invasionDefBonus", defConf.invasionStrengthBonusDefend * 100f, str);
-		
-		StatBonus attacker = playerFleet.getStats().getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD);
-		StatBonus defender = market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD);
+		defender.modifyMult("nex_invasionDefBonus", defConf.invasionStrengthBonusDefend + 1, str);
 		
 		String increasedDefensesKey = "core_addedDefStr";
 		float added = getDefenderIncreaseValue(market);
@@ -374,15 +386,11 @@ public class Nex_MarketCMD extends MarketCMD {
 			applyDefenderIncreaseFromRaid(market);
 		
 		// unrest
-		String reason = Misc.ucFirst(getString("recentlyInvaded"));
-		if (Misc.isPlayerFactionSetUp()) {
-			reason = playerFaction.getDisplayName() + " " + getString("invasion");
-		}
+		
 		//RecentUnrest.get(market).add(3, Misc.ucFirst(reason));
 		int stabilityPenalty = tempInvasion.stabilityPenalty;
-		if (stabilityPenalty > 0) {
-			RecentUnrest.get(dialog.getInteractionTarget().getMarket()).add(stabilityPenalty, reason);
-		}
+		if (!tempInvasion.success)
+			stabilityPenalty /= 2;
 		
 		if (stabilityPenalty > 0) {
 			text.addPara(StringHelper.substituteToken(getString("stabilityReduced"), 
