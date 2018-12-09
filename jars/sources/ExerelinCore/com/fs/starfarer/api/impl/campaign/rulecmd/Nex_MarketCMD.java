@@ -2,11 +2,8 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.CampaignUIAPI;
-import com.fs.starfarer.api.campaign.CampaignUIAPI.CoreUITradeMode;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CoreInteractionListener;
-import com.fs.starfarer.api.campaign.CoreUITabId;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -20,7 +17,6 @@ import com.fs.starfarer.api.combat.StatBonus;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
 import com.fs.starfarer.api.impl.campaign.DebugFlags;
-import com.fs.starfarer.api.impl.campaign.econ.RecentUnrest;
 import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -49,7 +45,6 @@ import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,8 +63,13 @@ public class Nex_MarketCMD extends MarketCMD {
 	
 	protected TempDataInvasion tempInvasion = new TempDataInvasion();
 	
+	public Nex_MarketCMD() {
+		
+	}
+	
 	public Nex_MarketCMD(SectorEntityToken entity) {
-		init(entity);
+		super(entity);
+		initForInvasion(entity);
 	}
 	
 	@Override
@@ -94,9 +94,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		return true;
 	}
 	
-	@Override
-	protected void init(SectorEntityToken entity) {
-		super.init(entity);
+	private void initForInvasion(SectorEntityToken entity) {
 		String key = "$nex_MarketCMD_tempInvasion";
 		MemoryAPI mem = entity.getMarket().getMemoryWithoutUpdate();
 		if (mem.contains(key)) {

@@ -55,6 +55,10 @@ public abstract class CovertOpsBase {
 	{
 		Object result = getConfigValue(key);
 		if (result == null) return 0;
+		if (result instanceof String)
+		{
+			return Float.parseFloat((String)result);
+		}
 		return (float)(double)result;
 	}
 	
