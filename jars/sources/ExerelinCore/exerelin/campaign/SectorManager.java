@@ -477,7 +477,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         //log.info("Respawn fleet created for " + respawnFaction.getDisplayName());
-        return InvasionFleetManager.spawnRespawnFleet(respawnFaction, sourceMarket, targetMarket, useOriginLoc);
+        return null;	//InvasionFleetManager.spawnRespawnFleet(respawnFaction, sourceMarket, targetMarket, useOriginLoc);
     }
     
     public void handleFactionRespawn()
@@ -738,8 +738,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
                 person.setFaction(newOwnerId);
         }
         market.setFactionId(newOwnerId);
-		log.info("Should be player-owned: " + newOwnerId.equals(Factions.PLAYER));
-		market.setPlayerOwned(newOwnerId.equals(Factions.PLAYER));
+        market.setPlayerOwned(newOwnerId.equals(Factions.PLAYER));
         
         // transfer defense station
         if (Misc.getStationFleet(market) != null)
@@ -757,7 +756,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             market.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_PLAYER_HOSTILE_ACTIVITY_NEAR_MARKET);
         }
         
-        // followers: free storage unlock
+        // player: free storage unlock
         if (Nex_IsFactionRuler.isRuler(newOwnerId))
         {
             SubmarketAPI storage = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
@@ -840,10 +839,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         market.reapplyConditions();
         market.reapplyIndustries();
         
-        // prompt player to name faction if needed
-        // doesn't work, probably because we're still in a dialog screen at the time
-        //if (newOwnerId.equals(Factions.PLAYER) && !Misc.isPlayerFactionSetUp())
-        //    Global.getSector().getCampaignUI().showPlayerFactionConfigDialog();
+        // prompt player to name faction if needed (does this ever pop up?)
+        if (newOwnerId.equals(Factions.PLAYER) && !Misc.isPlayerFactionSetUp())
+            Global.getSector().getCampaignUI().showPlayerFactionConfigDialog();
         
         // event report
         if (isCapture)

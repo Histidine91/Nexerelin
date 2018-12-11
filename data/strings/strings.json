@@ -25,6 +25,10 @@
 
 		"true":"true",
 		"false":"false",
+		
+		"successful":"successful",
+		"failed":"failed",
+		"over":"over",
 
 		"friendly":"friendly",
 		"neutral":"neutral",
@@ -268,6 +272,9 @@
 		"takeForSelfWarning":"You can take $market as a personal holding, but this will not please your current faction.\n\nProceed?",
 		
 		"invasion":"invasion",
+		"invasions":"invasions",
+		"invasionOf":"$Faction invasion: $market",
+		
 		"invasionStrength":"invasion strength",
 		"groundDefStrength":"ground defense strength",
 		"marinesOnBoard":"marines on board",

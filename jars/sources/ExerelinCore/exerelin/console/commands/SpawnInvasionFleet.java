@@ -3,13 +3,13 @@ package exerelin.console.commands;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.FleetAssignment;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.SectorManager;
-import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.campaign.fleets.InvasionFleetManager;
+import exerelin.utilities.ExerelinUtilsFaction;
+import exerelin.campaign.intel.InvasionIntel;
 import exerelin.utilities.ExerelinUtilsMarket;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,22 +105,15 @@ public class SpawnInvasionFleet implements BaseCommand {
 		}
 		
 		// spawn fleet
-		InvasionFleetManager.InvasionFleetData data = InvasionFleetManager.spawnInvasionFleet(
-				faction, closestOriginMarket, closestTargetMarket, 1.1f, true);
-		if (data == null) {
+		InvasionIntel intel = new InvasionIntel(faction, closestOriginMarket, 
+				closestTargetMarket, InvasionFleetManager.getWantedFleetSize(closestTargetMarket), 1);	
+		if (intel == null) {
 			Console.showMessage("Unable to spawn fleet");
 			return CommandResult.ERROR;
 		}
-		if (closestOriginMarket.getContainingLocation() != playerFleet.getContainingLocation())
-		{
-			closestOriginMarket.getContainingLocation().removeEntity(data.fleet);
-			playerFleet.getContainingLocation().addEntity(data.fleet);
-		}
-		Console.showMessage("Spawning " + data.fleet.getNameWithFaction() + " from " + closestOriginMarket.getName());
+		Console.showMessage("Spawning invasion from " + closestOriginMarket.getName());
 		Console.showMessage("Oscar Mike to " + closestTargetMarket.getName() + " (" + closestTargetMarket.getFaction().getDisplayName()
 				+ ") in " + closestTargetMarket.getContainingLocation().getName());
-		data.fleet.setLocation(playerFleet.getLocation().x, playerFleet.getLocation().y);
-		data.fleet.addAssignmentAtStart(FleetAssignment.STANDING_DOWN, data.fleet, 0.5f, null);	// so it doesn't instantly attack player
 		return CommandResult.SUCCESS;
 	}
 	

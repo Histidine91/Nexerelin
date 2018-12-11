@@ -162,6 +162,8 @@ public class InvasionRound {
 		float attackerStr = getAttackerStrength(fleet);
 		float defenderStr = getDefenderStrength(market, 1);
 		
+		if (attackerStr <= 0) return false;
+		
 		Random random = new Random();
 		int numRounds = 0;
 		

@@ -26,7 +26,6 @@ import exerelin.utilities.StringHelper;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT;
 import static exerelin.campaign.fleets.InvasionFleetManager.EXCEPTION_LIST;
-import static exerelin.campaign.fleets.InvasionFleetManager.spawnInvasionFleet;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.NexUtilsMath;
 import java.util.Arrays;
@@ -345,90 +344,15 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		FactionAPI revengeFaction = Global.getSector().getFaction(revengeFactionId);
 		log.info("Picked enemy: " + revengeFaction.getDisplayName());
 		
-		// pick a source market
-		for (MarketAPI market : markets) {
-			if (market.hasCondition(Conditions.ABANDONED_STATION)) continue;
-			if (market.hasCondition(Conditions.DECIVILIZED)) continue;
-			if (market.getPrimaryEntity() instanceof CampaignFleetAPI) continue;
-			if  ( market.getFactionId().equals(revengeFactionId) && market.hasSpaceport() && market.getSize() >= 3 )
-			{
-				//marineStockpile = market.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
-				//if (marineStockpile < MIN_MARINE_STOCKPILE_FOR_INVASION)
-				//		continue;
-				float weight = 1;   //marineStockpile;
-				if (market.hasIndustry(Industries.HIGHCOMMAND)) {
-					weight *= 1.75F;
-				}
-				if (market.hasIndustry(Industries.MILITARYBASE)) {
-					weight *= 1.4F;
-				}
-				if (market.hasIndustry(Industries.PATROLHQ)) {
-					weight *= 1.2F;
-				}
-				if (market.hasIndustry(Industries.MEGAPORT)) {
-					weight *= 1.25F;
-				}
-				weight *= 0.5f + (0.5f * market.getSize() * market.getStabilityValue());
-				sourcePicker.add(market, weight);
-			}
-		}
-		MarketAPI originMarket = sourcePicker.pick();
-		if (originMarket == null) {
-			return false;
-		}
-		log.info("\tStaging from " + originMarket.getName());
-		//marineStockpile = originMarket.getCommodityData(Commodities.MARINES).getAverageStockpileAfterDemand();
-
-		// now we pick a target
-		Vector2f originMarketLoc = originMarket.getLocationInHyperspace();
-		for (MarketAPI market : markets) 
-		{
-			FactionAPI marketFaction = market.getFaction();
-			if (EXCEPTION_LIST.contains(marketFaction.getId())) continue;
-			if (!marketFaction.getId().equals(playerAlignedFactionId))
-				continue;
-			
-
-			if (!ExerelinUtilsMarket.shouldTargetForInvasions(market, 0)) continue;
-			/*
-			float defenderStrength = InvasionRound.GetDefenderStrength(market);
-			float estimateMarinesRequired = defenderStrength * 1.2f;
-			if (estimateMarinesRequired > marineStockpile * MAX_MARINE_STOCKPILE_TO_DEPLOY)
-				continue;   // too strong for us
-			*/
-			float dist = Misc.getDistance(market.getLocationInHyperspace(), originMarketLoc);
-			if (dist < 5000.0F) {
-				dist = 5000.0F;
-			}
-			
-			float weight = 20000.0F / dist;
-			// prefer high value targets
-			weight *= market.getIndustryIncome()/10000;
-
-			//weight *= market.getSize() * market.getStabilityValue();	// try to go after high value targets
-			targetPicker.add(market, weight);
-		}
-		MarketAPI targetMarket = targetPicker.pick();
-		if (targetMarket == null) {
-			return false;
-		}
-		log.info("\tTarget: " + targetMarket.getName());
-
 		// spawn our revengeance fleet
-		String debugStr = "Spawning counter-invasion fleet for " + revengeFactionId + "; source " + originMarket.getName() + "; target " + targetMarket.getName();
+		String debugStr = "Spawning counter-invasion fleet for " + revengeFactionId;
 		log.info(debugStr);
 		if (Global.getSettings().isDevMode())
 		{
 			//Global.getSector().getCampaignUI().addMessage(debugStr);
 		}
 		
-		InvasionFleetManager.InvasionFleetData data = spawnInvasionFleet(revengeFaction, originMarket, targetMarket, DEFENDER_STRENGTH_MARINE_MULT, 1.5f, false);
-		Map<String, Object> params = new HashMap<>();
-		params.put("target", targetMarket);
-		params.put("dp", data.startingFleetPoints);
-		//InvasionFleetEvent event = (InvasionFleetEvent)Global.getSector().getEventManager().startEvent(new CampaignEventTarget(originMarket), "exerelin_invasion_fleet", params);
-		//data.event = event;
-		//event.reportStart();
+		InvasionFleetManager.getManager().generateInvasionFleet(revengeFaction, PlayerFactionStore.getPlayerFaction(), false, 1.5f);
 		
 		return true;
 	}

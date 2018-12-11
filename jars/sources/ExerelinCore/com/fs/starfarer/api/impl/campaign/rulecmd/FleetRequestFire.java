@@ -73,7 +73,7 @@ public class FleetRequestFire extends FleetRequestActionBase {
 		fleetParams.noWander = true;
 		fleetParams.noWait = true;
 		
-		InvasionFleetData data = InvasionFleetManager.spawnFleet(fleetParams);
+		InvasionFleetData data = null;	//InvasionFleetManager.spawnFleet(fleetParams);
 		
 		TextPanelAPI text = dialog.getTextPanel();
 		Color hl = Misc.getHighlightColor();
