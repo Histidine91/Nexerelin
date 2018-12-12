@@ -9,11 +9,11 @@ import com.fs.starfarer.api.campaign.MissionBoardAPI.MissionAvailabilityAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
@@ -99,7 +99,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		//log.info("Picking faction for conquest mission");
 		for (String factionId : factions)
 		{
-			if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
+			if (factionId.equals(Factions.PLAYER)) continue;
 			List<String> enemies = DiplomacyManager.getFactionsAtWarWithFaction(factionId, ExerelinConfig.allowPirateInvasions, true, false);
 			enemiesByFaction.put(factionId, enemies);
 			factionPicker.add(factionId, enemies.size());
@@ -111,7 +111,7 @@ public class ConquestMissionCreator implements EveryFrameScript {
 		List<String> enemies = enemiesByFaction.get(factionId);
 		for (String enemyId: enemies)
 		{
-			if (enemyId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
+			if (enemyId.equals(Factions.PLAYER)) continue;
 			List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(enemyId, true);
 			for (MarketAPI market : markets) {
 				if (!doesFactionTargetPairAlreadyExist(factionId, market))

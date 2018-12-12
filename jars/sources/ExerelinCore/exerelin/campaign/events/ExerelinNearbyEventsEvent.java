@@ -13,6 +13,7 @@ import exerelin.utilities.ExerelinUtilsFaction;
 
 // same as vanilla except checks to make sure there are pirate markets before spawning pirate calls
 // see http://fractalsoftworks.com/forum/index.php?topic=12680.0
+@Deprecated
 public class ExerelinNearbyEventsEvent extends NearbyEventsEvent {
 	
 	@Override

@@ -5,11 +5,10 @@ import java.util.Map;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.utilities.ExerelinConfig;
-
 
 public class Nex_IsFactionRuler extends BaseCommandPlugin {
 	
@@ -26,7 +25,7 @@ public class Nex_IsFactionRuler extends BaseCommandPlugin {
 	
 	public static boolean isRuler(String factionId)
 	{
-		if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+		if (factionId.equals(Factions.PLAYER))
 			return true;
 		
 		if (factionId.equals(PlayerFactionStore.getPlayerFactionId()))		

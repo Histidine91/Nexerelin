@@ -199,12 +199,12 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (alliance != null) ourMarkets = alliance.getAllianceMarkets();
         else ourMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
         //ourMarkets = ExerelinUtilsFaction.getFactionMarkets(factionId);
-        if (factionId.equals(playerAlignedFactionId) && !playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+        if (factionId.equals(playerAlignedFactionId) && !playerAlignedFactionId.equals(Factions.PLAYER))
         {
-            // player_npc faction can be in the same alliance so don't count it two times
-            if (!(alliance != null && AllianceManager.getFactionAlliance(ExerelinConstants.PLAYER_NPC_ID) == alliance)) 
+            // player faction can be in the same alliance so don't count it two times
+            if (!(alliance != null && AllianceManager.getFactionAlliance(Factions.PLAYER) == alliance)) 
             {
-                List<MarketAPI> playerNpcMarkets = ExerelinUtilsFaction.getFactionMarkets(ExerelinConstants.PLAYER_NPC_ID);
+                List<MarketAPI> playerNpcMarkets = ExerelinUtilsFaction.getFactionMarkets(Factions.PLAYER);
                 ourMarkets.addAll(playerNpcMarkets);
             }
         }
@@ -348,45 +348,15 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         //log.info("Relationship delta: " + delta);
         boolean isHostile = faction1.isHostileTo(faction2);
         
-        // if now at peace/war, set relationships for commission holder
-        // TODO figure out if the playerFaction bit is really needed
+        // if now at peace/war, do alliance vote
         ExerelinReputationAdjustmentResult repResult = new ExerelinReputationAdjustmentResult(delta, wasHostile, isHostile);
         
         if (repResult.wasHostile && !repResult.isHostile)
         {
-            String commissionFactionId = ExerelinUtilsFaction.getCommissionFactionId();
-            if (commissionFactionId != null && playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))    // i.e. not with a "real faction"
-            {                                                // who wouldn't want to change relations just because our employee is working with an involved faction
-                if (commissionFactionId.equals(faction1Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction1Id))
-                {
-                    // for some reason ensureAtWorst sets it to -25 instead of -49, so don't add the delta on top of that
-                    playerAlignedFaction.ensureAtWorst(faction2Id, RepLevel.INHOSPITABLE);
-                    playerFaction.ensureAtWorst(faction2Id, RepLevel.INHOSPITABLE);
-                }
-                if (commissionFactionId.equals(faction2Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction2Id))
-                {
-                    playerAlignedFaction.ensureAtWorst(faction1Id, RepLevel.INHOSPITABLE);
-                    playerFaction.ensureAtWorst(faction1Id, RepLevel.INHOSPITABLE);
-                }
-            }
             if (!isAllianceAction) AllianceVoter.allianceVote(faction1Id, faction2Id, false);
         }
         else if (!repResult.wasHostile && repResult.isHostile)
         {
-            String commissionFactionId = ExerelinUtilsFaction.getCommissionFactionId();
-            if (commissionFactionId != null && playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))    // i.e. not with a "real faction"
-            {                                                // who wouldn't want to change relations just because our employee is working with an involved faction
-                if (commissionFactionId.equals(faction1Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction1Id))
-                {
-                    playerAlignedFaction.ensureAtBest(faction2Id, RepLevel.HOSTILE);    // is this needed?
-                    playerFaction.ensureAtBest(faction2Id, RepLevel.HOSTILE);
-                }
-                if (commissionFactionId.equals(faction2Id) || AllianceManager.areFactionsAllied(commissionFactionId, faction2Id))
-                {
-                    playerAlignedFaction.ensureAtBest(faction1Id, RepLevel.HOSTILE);
-                    playerFaction.ensureAtBest(faction1Id, RepLevel.HOSTILE);
-                }
-            }
             if (!isAllianceAction) AllianceVoter.allianceVote(faction1Id, faction2Id, true);
             
             getManager().setLastWarTimestamp(Global.getSector().getClock().getTimestamp());
@@ -396,7 +366,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             AllianceManager.remainInAllianceCheck(faction1Id, faction2Id);
         
         if (faction1Id.equals(playerAlignedFactionId) || faction2Id.equals(playerAlignedFactionId))
-            NexUtilsReputation.syncPlayerRelationshipsToFaction();    // note: also syncs player_npc to player
+            NexUtilsReputation.syncPlayerRelationshipsToFaction();
         
         boolean playerIsHostile1 = faction1.isHostileTo(Factions.PLAYER);
         boolean playerIsHostile2 = faction2.isHostileTo(Factions.PLAYER);
@@ -958,7 +928,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             if (otherFactionId.equals(factionId)) continue;
             if (isPirateNeutral && ExerelinUtilsFaction.isPirateFaction(otherFactionId))
                 continue;
-            boolean isPlayer = otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID) || otherFactionId.equals(Factions.PLAYER);
+            boolean isPlayer = otherFactionId.equals(Factions.PLAYER);
             
             FactionAPI otherFaction = Global.getSector().getFaction(otherFactionId);
             if (factionConfig.hostileToAll == 1 && isPlayer)
@@ -1118,14 +1088,13 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             }
         }
         
-        player.setRelationship(ExerelinConstants.PLAYER_NPC_ID, 1f);
         // if we leave our faction later, we'll be neutral to most but hostile to pirates and such
         PlayerFactionStore.saveIndependentPlayerRelations();
         
         // set player relations based on selected faction
-        if (selectedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+        if (selectedFactionId.equals(Factions.PLAYER))
         {
-            NexUtilsReputation.syncFactionRelationshipsToPlayer();
+            // do nothing
         }
         else {
             NexUtilsReputation.syncPlayerRelationshipsToFaction(selectedFactionId);

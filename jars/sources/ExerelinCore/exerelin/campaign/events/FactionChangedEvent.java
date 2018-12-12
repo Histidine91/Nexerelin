@@ -10,12 +10,12 @@ import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 
-
+@Deprecated
 public class FactionChangedEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(FactionChangedEvent.class);
@@ -52,7 +52,7 @@ public class FactionChangedEvent extends BaseEventPlugin {
 		String theOldFactionStr = oldFaction.getDisplayNameWithArticle();
 		String newFactionStr = ExerelinUtilsFaction.getFactionShortName(newFaction);
 		String theNewFactionStr = newFaction.getDisplayNameWithArticle();
-		String sender = newFaction.getId().equals(ExerelinConstants.PLAYER_NPC_ID) ? 
+		String sender = newFaction.getId().equals(Factions.PLAYER) ? 
 				ExerelinUtilsFaction.getFactionShortName(oldFaction): ExerelinUtilsFaction.getFactionShortName(newFaction);
 		map.put("$sender", sender);
 		map.put("$oldFaction", oldFactionStr);

@@ -178,12 +178,15 @@ public class StartSetupPostTimePass {
 			}
 
 			// commission
-			String factionId = PlayerFactionStore.getPlayerFactionId();		
-		
-			if (!entity.getFaction().isNeutralFaction())
-				ExerelinUtilsFaction.grantCommission(entity);
-			else if (ExerelinUtilsFaction.isExiInCorvus(factionId))
-				ExerelinUtilsFaction.grantCommission(Global.getSector().getStarSystem("Tasserus").getEntityById("exigency_anomaly"));
+			String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
+			
+			if (factionId.equals(Factions.PLAYER))
+			{
+				if (!entity.getFaction().isNeutralFaction())
+					ExerelinUtilsFaction.grantCommission(entity);
+				else if (ExerelinUtilsFaction.isExiInCorvus(factionId))
+					ExerelinUtilsFaction.grantCommission(Global.getSector().getStarSystem("Tasserus").getEntityById("exigency_anomaly"));
+			}
 		}
 	}
 }

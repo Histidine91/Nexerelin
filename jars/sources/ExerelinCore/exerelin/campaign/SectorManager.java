@@ -329,7 +329,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         FactionAPI targetFaction = Global.getSector().getFaction(targetFactionId);
         String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
         if (targetFaction.isHostileTo(Factions.PLAYER)) return;
-        if (targetFactionId.equals(playerAlignedFactionId) || targetFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
+        if (targetFactionId.equals(playerAlignedFactionId) || targetFactionId.equals(Factions.PLAYER)) return;
         
         int numFactions = 0;
         float totalRepLoss = 0;    // note: does not include the loss with player-aligned faction
@@ -339,7 +339,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         for (String factionId : factions)
         {
             if (factionId.equals(targetFactionId)) continue;
-            //if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
+            //if (factionId.equals(Factions.PLAYER)) continue;
             if (targetFaction.isHostileTo(factionId)) continue;
             if (Nex_IsFactionRuler.isRuler(factionId)  && ExerelinConfig.warmongerPenalty <= 1) 
                 continue;
@@ -497,7 +497,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         for(String factionId : factionIds)
         {
-            if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
+            if (factionId.equals(Factions.PLAYER)) continue;
             if (factionId.equals(Factions.INDEPENDENT)) continue;
             ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);
             if (config != null && !config.playableFaction) continue;
@@ -527,7 +527,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     
     public static void setShowFactionInIntelTab(String factionId, boolean show)
     {
-        if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+        if (factionId.equals(Factions.PLAYER))
             return;    // do nothing
         
         if (!show && ExerelinUtilsFaction.isExiInCorvus(factionId)) // don't hide Exi in Corvus mode
@@ -546,7 +546,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         String defeatedId = defeated.getId();
         if (defeatedId.equals(Factions.INDEPENDENT))
             return;
-        if (!defeatedId.equals(ExerelinConstants.PLAYER_NPC_ID))
+        if (!defeatedId.equals(Factions.PLAYER))
             AllianceManager.leaveAlliance(defeated.getId(), true);
         removeLiveFactionId(defeated.getId());
         Map<String, Object> params = new HashMap<>();
@@ -564,7 +564,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         
         // player leaves faction on defeat
         if (defeated == playerFaction && ExerelinConfig.leaveEliminatedFaction 
-                && !ExerelinUtilsFaction.isExiInCorvus(defeatedId) && !defeatedId.equals(ExerelinConstants.PLAYER_NPC_ID))
+                && !ExerelinUtilsFaction.isExiInCorvus(defeatedId) && !defeatedId.equals(Factions.PLAYER))
         {
             expelPlayerFromFaction(true);
         }
@@ -930,7 +930,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         }
         
         // revengeance fleet
-        if (newOwnerId.equals(PlayerFactionStore.getPlayerFactionId()) || newOwnerId.equals(ExerelinConstants.PLAYER_NPC_ID))
+        if (newOwnerId.equals(PlayerFactionStore.getPlayerFactionId()) || newOwnerId.equals(Factions.PLAYER))
         {
             RevengeanceManagerEvent rvngEvent = RevengeanceManagerEvent.getOngoingEvent();
             if (rvngEvent!= null) 
@@ -1072,19 +1072,20 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         return sectorManager.freeStart;
     }
     
+	@Deprecated
     protected static void expelPlayerFromFaction(boolean silent)
     {
         String oldFactionId = PlayerFactionStore.getPlayerFactionId();
-        if (oldFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
+        if (oldFactionId.equals(Factions.PLAYER)) return;
 
         SectorAPI sector = Global.getSector();
-        FactionAPI newFaction = sector.getFaction(ExerelinConstants.PLAYER_NPC_ID);
+        FactionAPI newFaction = sector.getFaction(Factions.PLAYER);
         FactionAPI oldFaction = sector.getFaction(oldFactionId);
 
         if (!ExerelinUtilsFaction.isPirateFaction(oldFactionId))
             PlayerFactionStore.loadIndependentPlayerRelations(true);
-        PlayerFactionStore.setPlayerFactionId(ExerelinConstants.PLAYER_NPC_ID);
-        NexUtilsReputation.syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
+        PlayerFactionStore.setPlayerFactionId(Factions.PLAYER);
+        NexUtilsReputation.syncFactionRelationshipsToPlayer(Factions.PLAYER);
         
         if (!silent)
         {

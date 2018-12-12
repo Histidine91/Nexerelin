@@ -5,8 +5,8 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import java.util.HashSet;
 import java.util.List;
@@ -59,7 +59,7 @@ public class SetMarketOwner implements BaseCommand {
         
         FactionAPI defenderFaction = market.getFaction();
         String defenderFactionId = defenderFaction.getId();
-        String attackerFactionId = ExerelinConstants.PLAYER_NPC_ID;
+        String attackerFactionId = Factions.PLAYER;
         
         if (tmp.length < 2)
         {

@@ -9,8 +9,8 @@ import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+// TODO: figure out what to do with this
 public class SuperweaponEvent extends BaseEventPlugin {
 
 	public static final float DAYS_PER_STAGE = 20f;
@@ -112,7 +112,7 @@ public class SuperweaponEvent extends BaseEventPlugin {
 				if (factionId.equals(targetFactionId)) continue;
 				//if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)) continue;
 				if (targetFaction.isHostileTo(factionId)) continue;
-				if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID) || factionId.equals(playerAlignedFactionId))
+				if (factionId.equals(Factions.PLAYER) || factionId.equals(playerAlignedFactionId))
 					continue;
 				
 				// non-victim reputation loss is based on their relationship with the victim

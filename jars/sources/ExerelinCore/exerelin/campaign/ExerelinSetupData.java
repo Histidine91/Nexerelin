@@ -2,7 +2,6 @@ package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 
 import java.util.HashMap;
@@ -47,7 +46,7 @@ public class ExerelinSetupData
 	{
 		List<String> factionIds = ExerelinConfig.getFactions(true, false);
 		factionIds.add(Factions.INDEPENDENT);
-		factionIds.remove(ExerelinConstants.PLAYER_NPC_ID);
+		factionIds.remove(Factions.PLAYER);
 		for (String factionId : factionIds)
 			factions.put(factionId, true);
 	}

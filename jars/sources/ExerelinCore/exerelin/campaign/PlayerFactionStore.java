@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.ExerelinConstants;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
@@ -14,7 +13,7 @@ public class PlayerFactionStore {
     private static final String PLAYER_FACTION_ID_KEY = "exerelin_playerFactionId";
     private static final String PLAYER_RELATIONS_KEY = "exerelin_independentPlayerRelations";
     
-    private static String factionId = ExerelinConstants.PLAYER_NPC_ID;
+    private static String factionId = Factions.PLAYER;
     
     //private static Map<String, Float> independentPlayerRelations = new HashSet<>();
     

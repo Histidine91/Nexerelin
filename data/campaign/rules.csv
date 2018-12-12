@@ -161,14 +161,14 @@ nex_NGCListFactions7,NewGameOptionSelected,$option==nex_NGCListFactions7,Nex_NGC
 nex_NGCJoinFaction,NewGameOptionSelected,"Nex_OptionStartsWith ""nex_NGCJoinFaction_""","Nex_NGCSetFactionFromJoinOption
 FireAll ExerelinNGCStep3",,,
 ,,,,,,
-nex_NGCDevStart,NewGameOptionSelected,$option == nex_NGCDevStart,"NGCSetPlayerFaction ""player_npc""
+nex_NGCDevStart,NewGameOptionSelected,$option == nex_NGCDevStart,"NGCSetPlayerFaction ""player""
 NGCSetFreeStart false
 NGCSetWithTimePass false
 NGCAddShipAndComplement ""medusa_Starting""
 NGCAddCredits 1000000
 NGCAddCharacterPoints 100
 NGCDone",,,
-nex_NGCDevStartFast,NewGameOptionSelected,$option == nex_NGCDevStartFast,"NGCSetPlayerFaction ""player_npc""
+nex_NGCDevStartFast,NewGameOptionSelected,$option == nex_NGCDevStartFast,"NGCSetPlayerFaction ""player""
 NGCSetFreeStart false
 NGCSetWithTimePass false
 NGCAddShipAndComplement ""medusa_Starting""
@@ -178,11 +178,11 @@ NGCDone",,,
 nex_NGCRandomFaction,NewGameOptionSelected,$option == nex_NGCJoinRandomFaction,"NGCSetPlayerFaction ""random""
 $factionGroup = 0
 FireAll ExerelinNGCStep3",,,
-nex_NGCOwnFaction,NewGameOptionSelected,$option == nex_NGCJoinOwnFaction,"NGCSetPlayerFaction ""player_npc""
+nex_NGCOwnFaction,NewGameOptionSelected,$option == nex_NGCJoinOwnFaction,"NGCSetPlayerFaction ""player""
 NGCSetFreeStart false
 $factionGroup = 0
 FireAll ExerelinNGCStep3",,,
-nex_NGCFreeStart,NewGameOptionSelected,$option == nex_NGCFreeStart,"NGCSetPlayerFaction ""player_npc""
+nex_NGCFreeStart,NewGameOptionSelected,$option == nex_NGCFreeStart,"NGCSetPlayerFaction ""player""
 NGCSetFreeStart true
 $factionGroup = 0
 FireAll ExerelinNGCStep3",,,
@@ -449,7 +449,7 @@ SetShortcut exerelinFleetRequestMenu F",,5:exerelinFleetRequestMenu:Request a fl
 ExerelinMarketFleetRequestOptionNoBase,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""
 !IsFactionAlive $player.factionId
-!IsFactionAlive player_npc","SetTooltip exerelinFleetRequestMenu ""Your faction has no base to launch a fleet from.""
+!IsFactionAlive player","SetTooltip exerelinFleetRequestMenu ""Your faction has no base to launch a fleet from.""
 SetEnabled exerelinFleetRequestMenu false",,,
 ExerelinFleetRequestOptionListMain,DialogOptionSelected,$option == exerelinFleetRequestMenu,"$fleetRequestFP = 15
 $fleetRequestMarines=0
@@ -610,7 +610,7 @@ FireAll PopulateOptions
 FireAll ExerelinBaseCommanderOptionsInitialize","""Hello, chief. What can we do for you?""",,
 ,,,,,,
 aiCores_turnInOptionSelFollowers,DialogOptionSelected,"$option == aiCores_startTurnIn
-$faction.id == player_npc",FireAll PopulateCoresTurnInOptions,"""Good to hear. We can always use more of these things. Standard bounty applies.""",,
+$faction.id == player",FireAll PopulateCoresTurnInOptions,"""Good to hear. We can always use more of these things. Standard bounty applies.""",,
 ,,,,,,
 ,,,,,,
 #ExerelinBaseCommanderInitializeAddDialogs,ExerelinBaseCommanderOptionsInitialize,,<do something>,,,
@@ -620,7 +620,7 @@ ExerelinBaseCommanderMenuRepeat,DialogOptionSelected,$option == exerelinBaseComm
 #START PLAYER FACTION ALLIANCE OPTIONS,,,,,,
 ExerelinPlayerFactionDiplomacyCheckConditions,ExerelinMarketSpecialInitialize,"$faction.id != ""neutral""
 $faction.id != ""independent""
-$faction.id != ""player_npc""
+$faction.id != ""player""
 $faction.id != $player.factionId
 Nex_IsFactionRuler","$showPlayerFactionDiplomacyOptions = true 0
 $_factionAllianceName = $faction.allianceName 0
@@ -793,9 +793,9 @@ nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,Fire
 # other base commander stuff,,,,,,
 nex_marketAgentReportOption,PopulateOptions,"Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
-$faction.id != player_npc",,,nex_marketAgentReport:Get intel report,
+$faction.id != player",,,nex_marketAgentReport:Get intel report,
 nex_marketAgentReportOptionFollowers,PopulateOptions,"Nex_IsBaseOfficial admin
-$faction.id == player_npc",,,nex_marketAgentReport:Get intel report,
+$faction.id == player",,,nex_marketAgentReport:Get intel report,
 nex_marketAgentReport,DialogOptionSelected,$option == nex_marketAgentReport,AgentGatherIntel false,,nex_marketAgentReportDone:Done,
 nex_marketAgentReportDone,DialogOptionSelected,$option == nex_marketAgentReportDone,"ShowPersonVisual
 FireAll PopulateOptions",,,
@@ -803,17 +803,6 @@ FireAll PopulateOptions",,,
 #Must be after all other rules with that trigger,,,,,,
 nex_baseCommanderOptionsInitializationFinished,ExerelinBaseCommanderOptionsInitialize,,FireAll PopulateOptions,,,
 nex_marketSpecialInitializationFinished,ExerelinMarketSpecialInitialize,,FireAll ExerelinMarketSpecial,,,
-,,,,,,
-# not needed at present,,,,,,
-#tOffPatrolOpenCommTOnPlayerNPC,OpenCommLink,"$entity.transponderOffConv score:100
-$player.transponderOn
-$faction.id == player_npc score:100","AddText ""\Don't screw around with your transponder in our space, damnit! Uh. Chief.\""""
-$sawPlayerWithTOffCount = 0",,,
-#tOffCargoScanPlayerNPC,DialogOptionSelected,"$option == tOff_scan_continue
-$faction.id == player_npc score:100
-!$faction.hostileToPlayer",$sawPlayerWithTOffCount = 0,"Moments later, $PersonRank $personName reappears, looking vaguely flustered and embarrassed.
-
-""Sorry, chief. Didn't recognize you with your transponder off. You can go, now.""",0:tOff_cleanCont1:Continue,
 ,,,,,,
 ,,,,,,
 # START FACTION VENGEANCE DIALOG,,,,,,
@@ -1221,7 +1210,7 @@ CMSNResignCancelled_pirate,CMSNResignCancelled,$faction.id == pirates,,"""Of cou
 ExerelinFlavorTextMarketPrismFreeport,TradePanelFlavorText,"$global.tradePanelMode == MARKET
 $market.id == nex_prismFreeport","AddText ""Bright, slick, overusing chrome and opal ornaments, the concourse is quite the unusual sight for a station lost in hyperspace. Wherever the eye looks, every detail spells luxury. On the sides, behind extravagant transparent promenades, the source of all this wealth is offered to the observation of all potential buyers: the menacing and yet reassuring silhouettes of ships from all origins, all pristine looking and advantageously lit. A bit further it's the weapons that are exposed in the same fashion. Holo displays and simulators are available everywhere to help clients to find the perfect tool to fit their needs."" marketFlavorTextColor",,,
 ExerelinFlavorTextMarketFollowers,TradePanelFlavorText,"$global.tradePanelMode == MARKET
-$faction.id == ""player_npc""","AddText ""The port concourse is filled with trader starcraft of every size. Speculators crowd offloading ship captains with deals and peddlers call out to crew, holding wares and projecting personal ad-holos. Guards salute you in recognition as you pass by them."" marketFlavorTextColor",,,
+$faction.id == ""player""","AddText ""The port concourse is filled with trader starcraft of every size. Speculators crowd offloading ship captains with deals and peddlers call out to crew, holding wares and projecting personal ad-holos. Guards salute you in recognition as you pass by them."" marketFlavorTextColor",,,
 ExerelinMarketOptionIntel,DialogOptionSelected,$option == exerelinMarketIntel,OpenCoreTab INTEL $tradeMode,,,
 ExerelinMarketOptionAlliances,DialogOptionSelected,$option == exerelinAllianceReport,PrintAlliances,,,
 ,,,,,,
@@ -1249,7 +1238,6 @@ $relativeStrength >= 0
 LPTitheCalc","$LP_titheConv = true 0
 $LP_titheAskedFor = true 7
 AddText ""You're being hailed by the $faction $otherShipOrFleet."" $faction.baseColor",,,
-,,,,,,
 ,,,,,,
 #Templar overrides,,,,,,
 ExerelinMarketPostOpenTemplars,MarketPostOpen,"!$doesFakeVariableExist score:999

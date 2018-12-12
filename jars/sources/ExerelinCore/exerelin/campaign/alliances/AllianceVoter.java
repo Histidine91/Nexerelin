@@ -4,8 +4,8 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
@@ -419,7 +419,7 @@ public class AllianceVoter {
 					return true;
 			}
 		}
-		if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+		if (factionId.equals(Factions.PLAYER))
 			return false;
 		
 		float hawkishness = usConf.alignments.get(Alignment.MILITARIST);

@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper.FactionListGrouping;
 import com.fs.starfarer.api.util.Misc;
@@ -34,7 +35,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 	public static final float GROUPS_CACHE_TIME = 0f;
 	public static final String PRINT_FACTION_OPTION_PREFIX = "nex_printFactionMarkets_";
 	static final int PREFIX_LENGTH = PRINT_FACTION_OPTION_PREFIX.length();
-	public static final List<String> ARRAYLIST_FOLLOWERS = Arrays.asList(new String[]{ExerelinConstants.PLAYER_NPC_ID});
+	public static final List<String> ARRAYLIST_PLAYERFACTION = Arrays.asList(new String[]{Factions.PLAYER});
 	
 	static final HashMap<Integer, Color> colorByMarketSize = new HashMap<>();
 	static {
@@ -107,7 +108,7 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 		}
 		else
 		{
-			List<String> factionsForDirectory = Nex_FactionDirectoryHelper.getFactionsForDirectory(ARRAYLIST_FOLLOWERS);
+			List<String> factionsForDirectory = Nex_FactionDirectoryHelper.getFactionsForDirectory(ARRAYLIST_PLAYERFACTION);
 			groups = Nex_FactionDirectoryHelper.getFactionGroupings(factionsForDirectory);
 			memory.set(FACTION_GROUPS_KEY, groups, GROUPS_CACHE_TIME);
 		}
@@ -122,9 +123,9 @@ public class Nex_FactionDirectory extends BaseCommandPlugin {
 			opts.setTooltipHighlights(optionId, group.getFactionNames().toArray(new String[0]));
 			opts.setTooltipHighlightColors(optionId, group.getTooltipColors().toArray(new Color[0]));
 		}
-		if (SectorManager.isFactionAlive(ExerelinConstants.PLAYER_NPC_ID))
-			opts.addOption(Misc.ucFirst(Global.getSector().getFaction(ExerelinConstants.PLAYER_NPC_ID).getDisplayName()), 
-					PRINT_FACTION_OPTION_PREFIX + ExerelinConstants.PLAYER_NPC_ID);
+		if (SectorManager.isFactionAlive(Factions.PLAYER))
+			opts.addOption(Misc.ucFirst(Global.getSector().getPlayerFaction().getDisplayName()), 
+					PRINT_FACTION_OPTION_PREFIX + Factions.PLAYER);
 						
 		if (!special)
 			opts.addOption(Misc.ucFirst(StringHelper.getString("exerelin_alliances", "allianceListOption")), 

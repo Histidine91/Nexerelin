@@ -14,6 +14,7 @@ import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.Strings;
 import com.fs.starfarer.api.util.Misc;
@@ -83,7 +84,7 @@ public class ConquestMissionEvent extends BaseEventPlugin {
 	public void advance(float amount) {
 		String targetFactionId = mission.getTarget().getFactionId();
 		
-		if (targetFactionId.equals(ExerelinConstants.PLAYER_NPC_ID) || targetFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
+		if (targetFactionId.equals(Factions.PLAYER) || targetFactionId.equals(PlayerFactionStore.getPlayerFactionId()))
 		{
 			String stageId = "success";
 			if (mission.hasBonus(elapsedDays))

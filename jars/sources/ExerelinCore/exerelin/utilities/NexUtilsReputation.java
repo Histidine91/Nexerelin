@@ -121,7 +121,6 @@ public class NexUtilsReputation
 	
 	public static void syncFactionRelationshipToPlayer(String factionIdToSync, String otherFactionId)
 	{
-		if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
 		if (factionIdToSync.equals(otherFactionId)) return;
 		if (ExerelinConfig.getExerelinFactionConfig(factionIdToSync).noSyncRelations)
 			return;
@@ -164,16 +163,11 @@ public class NexUtilsReputation
 	{
 		String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
 		syncFactionRelationshipsToPlayer(playerAlignedFactionId);
-		if (!playerAlignedFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
-		{
-			//syncFactionRelationshipsToPlayer(ExerelinConstants.PLAYER_NPC_ID);
-		}
 	}
 	
 	public static void syncPlayerRelationshipToFaction(String factionId, String otherFactionId)
 	{
 		FactionAPI faction = Global.getSector().getFaction(factionId);
-		if (otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) return;
 		if (factionId.equals(otherFactionId)) return;
 		
 		if (ExerelinConfig.getExerelinFactionConfig(factionId).noSyncRelations)

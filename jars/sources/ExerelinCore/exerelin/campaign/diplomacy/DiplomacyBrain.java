@@ -5,9 +5,9 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.combat.MutableStat;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_IsFactionRuler;
 import com.fs.starfarer.api.util.IntervalUtil;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DiplomacyManager.DiplomacyEventParams;
@@ -549,7 +549,7 @@ public class DiplomacyBrain {
 	public void considerOptions()
 	{
 		if (DiplomacyManager.disallowedFactions.contains(factionId)) return;
-		if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+		if (factionId.equals(Factions.PLAYER))
 			return;
 		
 		boolean didSomething = false;
@@ -590,9 +590,9 @@ public class DiplomacyBrain {
 			return false;
 		String myFactionId = PlayerFactionStore.getPlayerFactionId();
 		
-		return factionId.equals(ExerelinConstants.PLAYER_NPC_ID) 
+		return factionId.equals(Factions.PLAYER) 
 				|| factionId.equals(myFactionId)
-				|| this.factionId.equals(ExerelinConstants.PLAYER_NPC_ID) 
+				|| this.factionId.equals(Factions.PLAYER) 
 				|| this.factionId.equals(myFactionId);
 	}
 	

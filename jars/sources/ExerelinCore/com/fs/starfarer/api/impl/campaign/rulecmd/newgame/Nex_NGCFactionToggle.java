@@ -7,7 +7,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.impl.campaign.rulecmd.PaginatedOptions;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
@@ -105,7 +104,7 @@ public class Nex_NGCFactionToggle extends PaginatedOptions {
 		{
 			spawnableFactionIds = ExerelinConfig.getFactions(true, false);
 			spawnableFactionIds.add(Factions.INDEPENDENT);
-			spawnableFactionIds.remove(ExerelinConstants.PLAYER_NPC_ID);
+			spawnableFactionIds.remove(Factions.PLAYER);
 			Collections.sort(spawnableFactionIds, new Comparator<String>()
 			{
 				@Override

@@ -142,7 +142,7 @@ public class ExerelinProcGen {
 			}
 		}
 		String playerFaction = PlayerFactionStore.getPlayerFactionIdNGC();
-		if (!playerFaction.equals(ExerelinConstants.PLAYER_NPC_ID) && !setup.freeStart)
+		if (!playerFaction.equals(Factions.PLAYER) && !setup.freeStart)
 		{
 			factions.add(playerFaction);
 			log.info("Added player starting faction: " + playerFaction);

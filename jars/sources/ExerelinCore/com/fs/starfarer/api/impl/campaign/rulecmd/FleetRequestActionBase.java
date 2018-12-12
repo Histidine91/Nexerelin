@@ -4,11 +4,10 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +45,7 @@ public abstract class FleetRequestActionBase extends BaseCommandPlugin {
 			Vector2f targetMarketLoc = targetMarket.getLocationInHyperspace();
 			
 			for (MarketAPI market : markets) {
-				if ( market.getFaction() == invader || market.getFactionId().equals(ExerelinConstants.PLAYER_NPC_ID))
+				if ( market.getFaction() == invader || market.getFactionId().equals(Factions.PLAYER))
 				{
 					if (!market.hasSpaceport())
 						continue;

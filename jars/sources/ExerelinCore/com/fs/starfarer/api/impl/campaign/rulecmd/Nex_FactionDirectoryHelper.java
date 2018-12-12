@@ -2,8 +2,8 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -100,18 +100,18 @@ public class Nex_FactionDirectoryHelper {
 	
 	/**
 	 * Gets alphabetically sorted groups of factions
-	 * @param excludeFollowers Exclude the followers faction ({@code player_npc})?
+	 * @param excludePlayer Exclude the player faction?
 	 * @return
 	 */
-	public static List<FactionListGrouping> getNGCFactionGroupings(boolean excludeFollowers)
+	public static List<FactionListGrouping> getNGCFactionGroupings(boolean excludePlayer)
 	{
 		List<FactionListGrouping> list = ngcFactions;
 		
 		if (list.isEmpty())
 		{
 			List<String> factions = ExerelinConfig.getFactions(false, true);
-			if (excludeFollowers)
-				factions.remove(ExerelinConstants.PLAYER_NPC_ID);
+			if (excludePlayer)
+				factions.remove(Factions.PLAYER);
 			list.addAll(getFactionGroupings(factions));
 			
 			// cache results

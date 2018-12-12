@@ -11,17 +11,15 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
-import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.utilities.StringHelper;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
@@ -42,10 +40,10 @@ public class FleetRequestFire extends FleetRequestActionBase {
 		FactionAPI fleetFaction = sector.getFaction(PlayerFactionStore.getPlayerFactionId());
 		
 		MarketAPI sourceMarket = getSourceMarketForInvasion(fleetFaction, targetMarket);
-		if (targetMarket.getFactionId().equals(ExerelinConstants.PLAYER_NPC_ID))
+		if (targetMarket.getFactionId().equals(Factions.PLAYER))
 		{
 			sourceMarket = targetMarket;
-			fleetFaction = sector.getFaction(ExerelinConstants.PLAYER_NPC_ID);
+			fleetFaction = sector.getPlayerFaction();
 		}
 		else if (targetMarket.getFaction() == fleetFaction) 
 			sourceMarket = targetMarket;

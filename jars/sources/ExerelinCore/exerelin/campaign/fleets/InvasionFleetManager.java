@@ -12,12 +12,12 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
@@ -393,7 +393,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				if (SectorManager.getHardMode())
 				{
 					if (marketFactionId.equals(PlayerFactionStore.getPlayerFactionId()) 
-							|| marketFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+							|| marketFactionId.equals(Factions.PLAYER))
 						weight *= HARD_MODE_INVASION_TARGETING_CHANCE;
 				}
 				

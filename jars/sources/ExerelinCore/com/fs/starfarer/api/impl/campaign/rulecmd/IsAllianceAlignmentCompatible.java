@@ -2,8 +2,8 @@ package com.fs.starfarer.api.impl.campaign.rulecmd;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance;
@@ -18,7 +18,7 @@ public class IsAllianceAlignmentCompatible extends BaseCommandPlugin {
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
         
         String playerFactionId = PlayerFactionStore.getPlayerFactionId();
-		if (!playerFactionId.equals(ExerelinConstants.PLAYER_NPC_ID)) {
+		if (!playerFactionId.equals(Factions.PLAYER)) {
 			return false;
 		}
 		if (ExerelinConfig.ignoreAlignmentForAlliances) return true;

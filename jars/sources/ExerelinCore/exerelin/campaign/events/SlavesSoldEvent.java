@@ -15,8 +15,8 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import exerelin.ExerelinConstants;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinFactionConfig.Morality;
@@ -138,7 +138,7 @@ public class SlavesSoldEvent extends BaseEventPlugin {
 	public static float getSlaveRepPenalty(String factionId, int slaveCount)
 	{
 		FactionAPI faction = Global.getSector().getFaction(factionId);
-		if (faction.isNeutralFaction() || faction.isPlayerFaction() || (factionId.equals(ExerelinConstants.PLAYER_NPC_ID)))
+		if (faction.isNeutralFaction() || faction.isPlayerFaction() || (factionId.equals(Factions.PLAYER)))
 			return 0;
 		
 		float penalty = 0;

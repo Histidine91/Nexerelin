@@ -13,8 +13,8 @@ import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.SectorManager.VictoryType;
 import exerelin.campaign.StatsTracker.DeadOfficerEntry;
 import exerelin.utilities.StringHelper;
@@ -26,7 +26,7 @@ import java.util.Set;
 public class VictoryScreenScript implements EveryFrameScript
 {
 	private boolean isDone = false;
-	private String faction = ExerelinConstants.PLAYER_NPC_ID;
+	private String faction = Factions.PLAYER;
 	private VictoryType victoryType = VictoryType.CONQUEST;
 
 	public VictoryScreenScript(String faction, VictoryType victoryType)

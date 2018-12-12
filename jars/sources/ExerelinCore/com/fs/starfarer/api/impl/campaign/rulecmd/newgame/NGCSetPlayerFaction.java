@@ -8,12 +8,12 @@ import java.util.Map;
 import exerelin.campaign.PlayerFactionStore;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.Nex_FactionDirectoryHelper;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -46,14 +46,14 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 						picker.add(pickable);
 				}
 				// followers can be picked too
-				picker.add(ExerelinConstants.PLAYER_NPC_ID);
+				picker.add(Factions.PLAYER);
 			}			
 			// pick a random faction
 			factionId = picker.pick();
 			FactionAPI faction = Global.getSector().getFaction(factionId);
 			String name = Nex_FactionDirectoryHelper.getFactionDisplayName(faction);
 			// if we picked followers, have a 50% chance for it to be free start
-			if (factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+			if (factionId.equals(Factions.PLAYER))
 			{
 				boolean freeStart = Math.random() < 0.5f;
 				ExerelinSetupData.getInstance().freeStart = freeStart;
@@ -66,7 +66,7 @@ public class NGCSetPlayerFaction extends BaseCommandPlugin {
 		}
 		
 		PlayerFactionStore.setPlayerFactionIdNGC(factionId);
-		if (!factionId.equals(ExerelinConstants.PLAYER_NPC_ID))
+		if (!factionId.equals(Factions.PLAYER))
 		{
 			ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
 			ExerelinSetupData.getInstance().freeStart = conf.freeStart;

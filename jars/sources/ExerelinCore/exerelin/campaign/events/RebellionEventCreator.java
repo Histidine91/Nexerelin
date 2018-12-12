@@ -6,13 +6,11 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
@@ -119,7 +117,7 @@ public class RebellionEventCreator extends BaseEventPlugin {
 		int size = market.getSize();
 		String factionId = market.getFactionId();
 		boolean hardModePenalty = SectorManager.getHardMode() 
-				&& (factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals(ExerelinConstants.PLAYER_NPC_ID));
+				&& (factionId.equals(PlayerFactionStore.getPlayerFactionId()) || factionId.equals(Factions.PLAYER));
 		
 		if (market.hasCondition(Conditions.DISSIDENT))
 			stability -= 1;
