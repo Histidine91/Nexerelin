@@ -769,6 +769,27 @@ nex_getDispositionList7,DialogOptionSelected,$option == nex_getDispositionList7,
 nex_getDispositionPrint,DialogOptionSelected,"Nex_OptionStartsWith ""nex_getDisposition_""",Nex_GetDisposition print,,,
 #END DIPLOMACY OPTIONS,,,,,,
 ,,,,,,
+# blueprint swap options,,,,,,
+nex_blueprintSwapOption,PopulateOptions,"Nex_IsBaseOfficial admin
+Nex_BlueprintSwap hasOption",,,nex_blueprintSwapMenu:Exchange blueprints,
+nex_blueprintSwapMenuSel,DialogOptionSelected,$option == nex_blueprintSwapMenu,FireAll Nex_BlueprintSwapMenu,"""Ah, good. Looking to buy or sell?""",,
+nex_blueprintSwapMenuReturnSel,DialogOptionSelected,$option == nex_blueprintSwapMenuReturn,FireAll Nex_BlueprintSwapMenu,,,
+nex_blueprintSwapMenu,Nex_BlueprintSwapMenu,,"AddTextSmall ""You have $nex_BPSwap_pointsStr points.""
+SetTextHighlights $nex_BPSwap_pointsStr
+SetShortcut nex_blueprintSwapExit ""ESCAPE""",,"nex_blueprintSwapBuy:Purchase blueprints
+nex_blueprintSwapSell:Trade in blueprints
+nex_blueprintSwapExit:Go back",
+nex_blueprintSwapSellOption,DialogOptionSelected,$option == nex_blueprintSwapSell,Nex_BlueprintSwap sell,,,
+nex_blueprintSwap_SellResponse,Nex_BlueprintsSold,,FireAll Nex_BlueprintSwapMenu,"""Thank you for your business.""",,
+nex_blueprintSwap_ListBuyable,DialogOptionSelected,$option == nex_blueprintSwapBuy,Nex_BlueprintSwap getForSale,,,
+nex_blueprintSwapBuyOption,DialogOptionSelected,"Nex_OptionStartsWith ""nex_blueprintSwap_pick_""","Nex_BlueprintSwap buy
+AddText ""\""Will this be suitable?\""""
+SetShortcut nex_blueprintSwapBuy ""ESCAPE""",,"nex_blueprintSwapConfirmPurchase:Buy this blueprint
+nex_blueprintSwapBuy:Go back",
+nex_blueprintSwapBuyConfirm,DialogOptionSelected,$option == nex_blueprintSwapConfirmPurchase,"Nex_BlueprintSwap confirmPurchase
+Nex_BlueprintSwap getForSale","""Thank you for your business.""",,
+nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,FireAll PopulateOptions,,,
+,,,,,,
 # other base commander stuff,,,,,,
 nex_marketAgentReportOption,PopulateOptions,"Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
@@ -780,8 +801,8 @@ nex_marketAgentReportDone,DialogOptionSelected,$option == nex_marketAgentReportD
 FireAll PopulateOptions",,,
 ,,,,,,
 #Must be after all other rules with that trigger,,,,,,
-ExerelinBaseCommanderOptionsInitializationFinished,ExerelinBaseCommanderOptionsInitialize,,FireAll PopulateOptions,,,
-ExerelinMarketSpecialInitializationFinished,ExerelinMarketSpecialInitialize,,FireAll ExerelinMarketSpecial,,,
+nex_baseCommanderOptionsInitializationFinished,ExerelinBaseCommanderOptionsInitialize,,FireAll PopulateOptions,,,
+nex_marketSpecialInitializationFinished,ExerelinMarketSpecialInitialize,,FireAll ExerelinMarketSpecial,,,
 ,,,,,,
 # not needed at present,,,,,,
 #tOffPatrolOpenCommTOnPlayerNPC,OpenCommLink,"$entity.transponderOffConv score:100
