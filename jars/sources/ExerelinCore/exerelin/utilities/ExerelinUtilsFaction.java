@@ -2,8 +2,6 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -166,7 +164,7 @@ public class ExerelinUtilsFaction {
     public static void grantCommission(SectorEntityToken entity)
     {
         FactionAPI faction = entity.getFaction();
-        if (!faction.getCustomBoolean(Factions.CUSTOM_OFFERS_COMMISSIONS))
+        if (!ExerelinConfig.getExerelinFactionConfig(faction.getId()).playableFaction)
             return;
         if (faction.getId().equals(getCommissionFactionId()))
             return;    // already have commission

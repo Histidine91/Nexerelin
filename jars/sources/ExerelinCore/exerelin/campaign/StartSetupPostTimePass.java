@@ -38,6 +38,7 @@ public class StartSetupPostTimePass {
 		SectorEntityToken entity = null;
 		String factionId = PlayerFactionStore.getPlayerFactionId();
 		FactionAPI myFaction = sector.getFaction(factionId);
+		boolean isPlayer = myFaction.isPlayerFaction();
 		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
 		if (SectorManager.getCorvusMode())
 		{
@@ -99,11 +100,11 @@ public class StartSetupPostTimePass {
 		if (entity != null)
 		{
 			sendPlayerFleetToLocation(playerFleet, entity);
-			ExerelinUtilsFaction.grantCommission(entity);
+			if (!isPlayer) ExerelinUtilsFaction.grantCommission(entity);
 		}
 		else
 		{
-			ExerelinUtilsFaction.grantCommission(playerFleet);
+			if (!isPlayer) ExerelinUtilsFaction.grantCommission(playerFleet);
 		}
 		
 		// assign officers

@@ -946,7 +946,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     {
         SectorAPI sector = Global.getSector();
         FactionAPI player = sector.getFaction(Factions.PLAYER);
-        String selectedFactionId = PlayerFactionStore.getPlayerFactionId();
+        String selectedFactionId = PlayerFactionStore.getPlayerFactionIdNGC();
         FactionAPI selectedFaction = sector.getFaction(selectedFactionId);
         log.info("Selected faction is " + selectedFaction + " | " + selectedFactionId);
 
