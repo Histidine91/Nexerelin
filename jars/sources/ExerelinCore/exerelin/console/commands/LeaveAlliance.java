@@ -23,7 +23,7 @@ public class LeaveAlliance implements BaseCommand {
 
         String[] tmp = args.split(" ");
 
-        if (tmp.length < 1)
+        if (tmp.length != 1)
         {
             return CommandResult.BAD_SYNTAX;
         }
