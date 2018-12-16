@@ -18,7 +18,6 @@ import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.campaign.events.FactionEliminatedEvent;
 import exerelin.campaign.events.FactionInsuranceEvent;
 import exerelin.campaign.events.FactionRespawnedEvent;
-import exerelin.campaign.events.FactionSalaryEvent;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.campaign.events.MarketCapturedEvent;
 import exerelin.campaign.events.MarketTransferedEvent;
@@ -94,10 +93,8 @@ public class XStreamConfig {
 		x.alias("FactionElimEvnt", FactionEliminatedEvent.class);
 		x.alias("FactionInsurEvnt", FactionInsuranceEvent.class);
 		x.alias("FactionRespawnEvnt", FactionRespawnedEvent.class);
-		x.alias("FactionSalaryEvnt", FactionSalaryEvent.class);
 		x.alias("FactionVengeanceEvnt", SSP_FactionVengeanceEvent.class);
-		x.alias("InvasionFltEvnt", InvasionFleetEvent.class);
-		x.alias("InstigateRebellionEvnt", InstigateRebellion.class);	// FIXME wrong alias
+		x.alias("InstgtRbl", InstigateRebellion.class);
 		x.alias("InstgtRblEvnt", InstigateRebellionEvent.class);
 		x.alias("MrktCapturedEvnt", MarketCapturedEvent.class);
 		x.alias("MrktTrnsfrEvnt", MarketTransferedEvent.class);
