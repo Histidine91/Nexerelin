@@ -25,6 +25,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,8 +38,6 @@ import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 
 // TODO:
-// item blacklist
-// test if list refreshes correctly
 // obey ForceMarketUpdate
 public class Nex_BlueprintSwap extends PaginatedOptions {
 	
@@ -380,13 +379,14 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		List<PurchaseInfo> blueprints = new ArrayList<>();
 		WeightedRandomPicker<PurchaseInfo> picker = new WeightedRandomPicker<>();
 		FactionAPI playerFaction = Global.getSector().getPlayerFaction();
+		Set<String> banned = PrismMarket.getRestrictedBlueprints();
 		
 		// hull.hasTag("tiandong_retrofit")
 		for (ShipHullSpecAPI hull : Global.getSettings().getAllShipHullSpecs()) {
 			if (!hull.hasTag("rare_bp") || hull.hasTag(Tags.NO_DROP)) 
 				continue;
 			String hullId = hull.getHullId();
-			if (playerFaction.knowsShip(hullId)) continue;
+			if (playerFaction.knowsShip(hullId) || banned.contains(hullId)) continue;
 			
 			PurchaseInfo info = new PurchaseInfo(hullId, PurchaseType.SHIP, 
 					hull.getHullNameWithDashClass(), getBlueprintPointValue(Items.SHIP_BP, hull.getBaseValue()));
@@ -399,7 +399,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (!wing.hasTag("rare_bp") || wing.hasTag(Tags.NO_DROP))
 				continue;
 			String wingId = wing.getId();
-			if (playerFaction.knowsWeapon(wingId)) continue;
+			if (playerFaction.knowsWeapon(wingId) || banned.contains(wingId)) continue;
 			
 			PurchaseInfo info = new PurchaseInfo(wingId, PurchaseType.FIGHTER, 
 					wing.getWingName(), getBlueprintPointValue(Items.FIGHTER_BP, wing.getBaseValue()));
@@ -412,7 +412,8 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			if (!wep.hasTag("rare_bp") || wep.hasTag(Tags.NO_DROP))
 				continue;
 			String weaponId = wep.getWeaponId();
-			if (playerFaction.knowsWeapon(weaponId)) continue;
+			if (playerFaction.knowsWeapon(weaponId) || banned.contains(weaponId)) continue;
+			
 			PurchaseInfo info = new PurchaseInfo(weaponId, PurchaseType.WEAPON, 
 					wep.getWeaponName(), getBlueprintPointValue(Items.WEAPON_BP, wep.getBaseValue()));
 			picker.add(info, 2);
@@ -521,7 +522,8 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	
 	public static boolean hasPrism(MarketAPI market)
 	{
-		return market.hasSubmarket("exerelin_prismMarket") || market.hasSubmarket("SCY_prismMarket");
+		// TODO: config for whether SCY prism has this
+		return market.hasSubmarket("exerelin_prismMarket");	// || market.hasSubmarket("SCY_prismMarket");
 	}
 	
 	public static class PurchaseInfo implements Comparable<PurchaseInfo>

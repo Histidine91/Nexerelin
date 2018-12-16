@@ -11,7 +11,9 @@ FireBest ExerelinNGCIntroPage",,,
 #introPage needs to be a float,,,,,,
 ExerelinNGCIntro1,ExerelinNGCIntroPage,"$introPage == 1.0
 $isInIntro","SetShortcut exerelinNGCIntroNextPage RETURN
-SetShortcut exerelinNGCIntroEnd ESCAPE","Welcome to the Nexerelin mod for Starsector!
+SetShortcut exerelinNGCIntroEnd ESCAPE",">>> GREETINGS, STARFARER <<<
+
+Welcome to the Nexerelin mod for Starsector!
 
 Nexerelin is essentially a 4X game set in a corner of the Starsector universe. Factions within the sector will wage war, create alliances and compete to control a greater share of the sector.
 

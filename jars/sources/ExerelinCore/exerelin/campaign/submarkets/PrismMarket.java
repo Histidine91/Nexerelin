@@ -54,6 +54,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     public static final String IBB_FILE = "data/config/prism/prism_boss_ships.csv";
     public static final String SHIPS_BLACKLIST = "data/config/prism/prism_ships_blacklist.csv";
     public static final String WEAPONS_BLACKLIST = "data/config/prism/prism_weapons_blacklist.csv";
+	public static final String BLUEPRINTS_BLACKLIST = "data/config/prism/prism_blueprints_blacklist.csv";
     public static final String FACTION_WHITELIST = "data/config/prism/prism_factions_whitelist.csv";
     public static final String ILLEGAL_TRANSFER_MESSAGE = StringHelper.getString("exerelin_markets", "prismNoSale");
     public static final Set<String> DISALLOWED_FACTIONS = new HashSet<>(Arrays.asList(new String[] {
@@ -68,6 +69,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
     
     protected static Set<String> restrictedWeapons;
     protected static Set<String> restrictedShips;
+	protected static Set<String> restrictedBlueprints;
     protected static Set<String> allowedFactions;
     
     protected static Set<SubmarketAPI> cachedSubmarkets = null;
@@ -102,9 +104,10 @@ public class PrismMarket extends BaseSubmarketPlugin {
     }
 
     @Override
-    public void updateCargoPrePlayerInteraction() {
-
-        if (!okToUpdateShipsAndWeapons()) return;
+    public void updateCargoPrePlayerInteraction() 
+	{
+        log.info("Days since update: "+ sinceLastCargoUpdate);
+        if (sinceLastCargoUpdate<30) return;
         sinceLastCargoUpdate = 0f;
         
         CargoAPI cargo = getCargo();
@@ -494,6 +497,8 @@ public class PrismMarket extends BaseSubmarketPlugin {
         // Restricted goods
         restrictedWeapons = new HashSet<>();
         restrictedShips = new HashSet<>();
+		restrictedBlueprints = new HashSet<>();
+		
         allowedFactions = new HashSet<>(Arrays.asList(new String[] {
             Factions.HEGEMONY, Factions.TRITACHYON, Factions.PERSEAN, Factions.DIKTAT,
             Factions.INDEPENDENT, Factions.LUDDIC_CHURCH, Factions.LUDDIC_PATH, Factions.LIONS_GUARD
@@ -523,6 +528,14 @@ public class PrismMarket extends BaseSubmarketPlugin {
         {
             JSONObject row = csv.getJSONObject(x);
             restrictedShips.add(row.getString("id"));
+        }
+		
+		csv = Global.getSettings().getMergedSpreadsheetDataForMod("id",
+                BLUEPRINTS_BLACKLIST, ExerelinConstants.MOD_ID);
+        for (int x = 0; x < csv.length(); x++)
+        {
+            JSONObject row = csv.getJSONObject(x);
+            restrictedBlueprints.add(row.getString("id"));
         }
     }
     
@@ -592,6 +605,10 @@ public class PrismMarket extends BaseSubmarketPlugin {
     {
         cachedSubmarkets = null;
     }
+	
+	public static Set<String> getRestrictedBlueprints() {
+		return restrictedBlueprints;
+	}
     
     //==========================================================================
     //==========================================================================
