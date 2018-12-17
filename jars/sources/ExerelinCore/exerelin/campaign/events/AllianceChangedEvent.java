@@ -1,8 +1,5 @@
 package exerelin.campaign.events;
 
-import java.util.Map;
-import org.apache.log4j.Logger;
-
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.comm.MessagePriority;
@@ -14,11 +11,14 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-
+//Keeping it as reference for now
+@Deprecated
 public class AllianceChangedEvent extends BaseEventPlugin {
 
 	public static Logger log = Global.getLogger(AllianceChangedEvent.class);

@@ -1096,7 +1096,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             FactionChangedEvent event = (FactionChangedEvent)eventSuper;
             
             MarketAPI market = ExerelinUtils.getClosestMarket(oldFactionId);
-            event.reportEvent(oldFaction, newFaction, "expelled", market.getPrimaryEntity());
+            event.changeIntel(oldFaction, newFaction, "expelled", market.getPrimaryEntity());
 			*/
         }
     }

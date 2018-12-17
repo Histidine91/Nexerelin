@@ -4,18 +4,14 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.AllianceManager;
-import exerelin.campaign.events.AllianceChangedEvent;
 import exerelin.campaign.events.AllianceVoteEvent;
-import exerelin.utilities.ExerelinUtils;
+import exerelin.campaign.intel.AllianceChangedIntel;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,8 +23,8 @@ public class Alliance
 	protected String name;
 	protected Set<String> members;
 	protected Alignment alignment;
-	protected AllianceChangedEvent event;
 	protected AllianceVoteEvent voteEvent;
+	private AllianceChangedIntel allianceChangedIntel;
 	public final String uuId;
 
 	public Alliance(String name, Alignment alignment, String member1, String member2)
@@ -42,42 +38,42 @@ public class Alliance
 		uuId = UUID.randomUUID().toString();
 	}
 	
-	public void createEvents(String member1, String member2) {
-		event = createAllianceEvent(member1, member2);
+	public void createIntel(String member1, String member2) {
+		allianceChangedIntel = createAllianceEvent(member1, member2);
 		voteEvent = (AllianceVoteEvent)Global.getSector().getEventManager().primeEvent(null, "exerelin_alliance_vote", null);
 	}
-	
-	public AllianceChangedEvent getEvent() {
-		return event;
-	}
-		
+
 	public AllianceVoteEvent getVoteEvent() {
 		return voteEvent;
 	}
 	
-	public void reportEvent(String faction1, String faction2, Alliance alliance, String stage)
+	public void changeIntel(String faction, AllianceTypeEnum allianceTypeEnum)
 	{
-		HashMap<String, Object> params = new HashMap<>();
-		params.put("faction1Id", faction1);
-		if (faction2 != null) params.put("faction2Id", faction2);
-		params.put("stage", stage);
+		//Idk if it is better to re use the intel or just kill previous and create another one
+		allianceChangedIntel.endImmediately();
 
-		CampaignEventTarget eventTarget;
-		if (AllianceManager.getPlayerInteractionTarget() != null) {
-			eventTarget = new CampaignEventTarget(AllianceManager.getPlayerInteractionTarget());
-		} else {
-			MarketAPI market;
-			List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(faction1);
-			if (markets.isEmpty()) 
-				market = getRandomAllianceMarketForEvent(true);
-			else
-				market = ExerelinUtils.getRandomListElement(markets);
-
-			eventTarget = new CampaignEventTarget(market);
-		}
-		event.setParam(params);
-		event.setTarget(eventTarget);
-		event.reportEvent();
+//		HashMap<String, Object> params = new HashMap<>();
+//		params.put("faction1Id", faction);
+//		if (faction2 != null) params.put("faction2Id", faction2);
+//		params.put("stage", stage);
+//
+//		CampaignEventTarget eventTarget;
+//		if (AllianceManager.getPlayerInteractionTarget() != null) {
+//			eventTarget = new CampaignEventTarget(AllianceManager.getPlayerInteractionTarget());
+//		} else {
+//			MarketAPI market;
+//			List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(faction);
+//			if (markets.isEmpty())
+//				market = getRandomAllianceMarketForEvent(true);
+//			else
+//				market = ExerelinUtils.getRandomListElement(markets);
+//
+//			eventTarget = new CampaignEventTarget(market);
+//		}
+//		event.setParam(params);
+//		event.setTarget(eventTarget);
+		FactionAPI one = Global.getSector().getFaction(faction);
+		allianceChangedIntel = new AllianceChangedIntel(one, null, this.uuId, allianceTypeEnum);
 	}
 
 	public String getName() {
@@ -193,41 +189,12 @@ public class Alliance
         return sumRelationships/numFactions;
 	}
 	
-	protected AllianceChangedEvent createAllianceEvent(String faction1, String faction2)
+	protected AllianceChangedIntel createAllianceEvent(String faction1, String faction2)
     {
-        HashMap<String, Object> params = new HashMap<>();
         SectorAPI sector = Global.getSector();
-        String eventType = "exerelin_alliance_changed";
-        params.put("faction1Id", faction1);
-        if (faction2 != null) params.put("faction2Id", faction2);
-        params.put("allianceId", this.uuId);
-        params.put("stage", "formed");
-        
-        CampaignEventTarget eventTarget;
-        if (AllianceManager.getPlayerInteractionTarget() != null) {
-            eventTarget = new CampaignEventTarget(AllianceManager.getPlayerInteractionTarget());
-        } else {
-            MarketAPI market = getRandomAllianceMarketForEvent(false);
-            
-            eventTarget = new CampaignEventTarget(market);
-        }
-        
-        //AllianceChangedEvent event = (AllianceChangedEvent)sector.getEventManager().startEvent(eventTarget, eventType, params);
-	    //return event;
-		return null;
-    }
-    
-    public static class AllianceSyncMessage {
-        public String message;
-        public String party1;
-        public String party2;
-        
-        public AllianceSyncMessage(String message, String party1, String party2)
-        {
-            this.message = message;
-            this.party1 = party1;
-            this.party2 = party2;
-        }
+		FactionAPI one = sector.getFaction(faction1);
+		FactionAPI two = sector.getFaction(faction2);
+		return new AllianceChangedIntel(one, two, this.uuId, AllianceTypeEnum.FORMED);
     }
     
     public enum Alignment {

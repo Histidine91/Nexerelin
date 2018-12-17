@@ -136,7 +136,7 @@ public class XStreamConfig {
 		x.aliasAttribute(Alliance.class, "name", "n");
 		x.aliasAttribute(Alliance.class, "uuId", "id");
 		x.aliasAttribute(Alliance.class, "alignment", "algn");
-		x.aliasAttribute(Alliance.class, "event", "evnt");
+//		x.aliasAttribute(Alliance.class, "event", "evnt");
 		x.aliasAttribute(Alliance.class, "voteEvent", "vote");
 		
 		// AllianceChangedEvent
