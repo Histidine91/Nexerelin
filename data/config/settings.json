@@ -23,11 +23,12 @@
 			"corporate_lobby":"graphics/illustrations/corporate_lobby.jpg",
 		},
 		
-		# not actually referenced by config table, just here to make the game load the images
-		"eventIcons":{
+		"intel":{
+			"alliance":"graphics/icons/intel/star.png",
+			
 			"spyEvent0":"graphics/exerelin/icons/intel/spy4.png",
 			"spyEvent1":"graphics/exerelin/icons/intel/spy4_amber.png",
-			"spyEvent2":"graphics/exerelin/icons/intel/spy4_red.png"
+			"spyEvent2":"graphics/exerelin/icons/intel/spy4_red.png"	
 		},
 	}
 }

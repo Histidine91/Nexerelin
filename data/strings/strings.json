@@ -35,6 +35,9 @@
 		"hostile":"hostile",
 		"war":"war",
 		"peace":"peace",
+		
+		"formed":"formed",
+		"dissolved":"dissolved",
 
 		"and":"and",
 		"on":"on",
@@ -79,6 +82,23 @@
 	"exerelin_alliances":{
 		"allianceListOption":"Alliance list",
 		"theAlliance":"the $alliance",
+		
+		"intelDesc":"The $alliance alliance is present in the Sector. It has $numMembers members, with $numMarkets markets of total size $marketSizeSum.",
+		"intelMemberEntry":"$faction: $num markets (total size $size)",
+		"intelDissolvedDesc":"The $alliance alliance has been dissolved. Its members have gone their separate ways.",
+		
+		"intelTitle":"$name",
+		"intelFormedPoint":"Founded by: $faction1, faction$2",	# not used
+		"intelJoinedPoint":"$Faction joined",
+		"intelLeftPoint":"$Faction left",
+		"intelDissolvedPoint":"Dissolved",
+		
+		"intelStrengthPoint":"Now has $num members; size $size",
+		"intelStrengthPointShort":"Size $size",
+		
+		"intelMembersHeader":"Members",
+
+		"allianceVote":"Alliance vote",
 
 		"joinsWarAgainst":"$factionOrAlliance1 joins war against $factionOrAlliance2!",
 		"makesPeaceWith":"$factionOrAlliance1 makes peace with $factionOrAlliance2",
@@ -91,7 +111,7 @@
 		"joinedAlliance":"Joined alliance $NewAlliance",
 		"switchedAlliances":"Left $OldAlliance and joined $NewAlliance",
 		"leftAlliance":"Left alliance $OldAlliance",
-		"allianceDissolved":"Alliance $OldAlliance has been dissolved",
+		#"allianceDissolved":"Alliance $OldAlliance has been dissolved",
 		"invitedToAlliance":"$TheFaction has joined $NewAlliance",
 		"formedAlliance":"Formed $NewAlliance with $theFaction",
 		

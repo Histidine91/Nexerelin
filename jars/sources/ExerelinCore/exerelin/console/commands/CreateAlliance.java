@@ -26,7 +26,7 @@ public class CreateAlliance implements BaseCommand {
 
         String[] tmp = args.split(" ");
 
-        if (tmp.length < 2)
+        if (tmp.length < 2 || tmp.length > 3)
         {
             return CommandResult.BAD_SYNTAX;
         }

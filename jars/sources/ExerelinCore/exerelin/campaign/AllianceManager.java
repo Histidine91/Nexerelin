@@ -20,12 +20,19 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.intel.AllianceIntel.UpdateType;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
-import java.awt.Color;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,11 +44,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class AllianceManager  extends BaseCampaignEventListener implements EveryFrameScript {
     public static Logger log = Global.getLogger(AllianceManager.class);
@@ -81,11 +83,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     public AllianceManager()
     {
         super(true);
-        float interval = ExerelinConfig.allianceFormationInterval;
+        float interval = 2f;
         this.tracker = new IntervalUtil(interval * 0.8f, interval * 1.2f);
     }
     
-    public static void loadAllianceNames()
+    private static void loadAllianceNames()
     {
         try {
             JSONObject nameConfig = Global.getSettings().getMergedJSONForMod(ALLIANCE_NAMES_FILE, ExerelinConstants.MOD_ID);
@@ -170,7 +172,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         return createAlliance(member1, member2, type, null);
     }
     
-    public static Alliance createAlliance(String member1, String member2, Alignment type, String name)
+    private static Alliance createAlliance(String member1, String member2, Alignment type, String name)
     {
         if (allianceManager == null) return null;
         
@@ -194,63 +196,14 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return alliance2;
         }
         
-        FactionAPI memberFaction1 = Global.getSector().getFaction(member1);
-        FactionAPI memberFaction2 = Global.getSector().getFaction(member2);
-        
         if (type == null) type = (Alignment) ExerelinUtils.getRandomArrayElement(Alignment.values());
         
-        // name stuff + population count
-        float pop1 = 0, pop2 = 0;
-        List<String> namePrefixes = new ArrayList<>(allianceNameCommonPrefixes);
-        log.info("Getting name prefixes of alliance type " + type);
-        if (!alliancePrefixesByAlignment.containsKey(type))
-        {
-            log.error("Missing name prefixes for alliance type " + type);
-        }
-        else namePrefixes.addAll(alliancePrefixesByAlignment.get(type));
-        
-        if (namePrefixes.isEmpty())
-        {
-            log.error("Missing name prefixes");
-            namePrefixes.add("Common");    // just to make it not crash
-        }
-        
-        List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(member1);
-        for (MarketAPI market : markets)
-        {
-            pop1 += market.getSize();
-            if (market.getPrimaryEntity().isInHyperspace()) continue;
-            String systemName = ((StarSystemAPI)market.getContainingLocation()).getBaseName();
-            //if (!namePrefixes.contains(systemName))
-               namePrefixes.add(systemName);
-        }
-        
-        markets = ExerelinUtilsFaction.getFactionMarkets(member2);
-        for (MarketAPI market : markets)
-        {
-            pop2 += market.getSize();
-            if (market.getPrimaryEntity().isInHyperspace()) continue;
-            String systemName = ((StarSystemAPI)market.getContainingLocation()).getBaseName();
-            //if (!namePrefixes.contains(systemName))
-               namePrefixes.add(systemName);
-        }
+        List<String> namePrefixes = generateNamePrefixes(member1, member2, type);
         
         // generate alliance name
         if (name == null || name.isEmpty())
         {
-            boolean validName;
-            int tries = 0;
-            namePrefixes.addAll(alliancePrefixesByAlignment.get(type));
-
-            do {
-                tries++;
-                name = ExerelinUtils.getRandomListElement(namePrefixes);
-                List<String> alignmentNames = allianceNamesByAlignment.get(type);
-                name = name + " " + ExerelinUtils.getRandomListElement(alignmentNames);
-
-                validName = !allianceManager.alliancesByName.containsKey(name);
-            }
-            while (validName == false && tries < 25);
+        	name = generateAllianceName(namePrefixes, type);
         }
         
         SectorAPI sector = Global.getSector();
@@ -262,42 +215,68 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         allianceManager.alliancesByName.put(name, alliance);
 		allianceManager.alliancesById.put(alliance.uuId, alliance);
         allianceManager.alliances.add(alliance);
-        alliance.createEvents(member1, member2);
-		
-        //average out faction relationships
-        /*
-		boolean playerWasHostile1 = memberFaction1.isHostileTo(Factions.PLAYER);
-        boolean playerWasHostile2 = memberFaction2.isHostileTo(Factions.PLAYER);
-        
-        for (FactionAPI faction : Global.getSector().getAllFactions())
-        {
-            if (faction.getId().equals(member1)) continue;
-            if (faction.getId().equals(member2)) continue;
-            
-            float rel1 = faction.getRelationship(member1);
-            float rel2 = faction.getRelationship(member2);
-            float average = (rel1*pop1 + rel2*pop2)/(pop1 + pop2);
-            faction.setRelationship(member1, average);
-            //faction.setRelationship(member2, average);
-        }
-        String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-        if (member1.equals(playerAlignedFactionId) || member2.equals(playerAlignedFactionId))
-        {
-            ExerelinUtilsReputation.syncPlayerRelationshipsToFaction(playerAlignedFactionId, true);
-            if (!playerAlignedFactionId.equals("player_npc"))
-                ExerelinUtilsReputation.syncFactionRelationshipsToPlayer("player_npc");
-        }
-        
-        boolean playerIsHostile1 = memberFaction1.isHostileTo(Factions.PLAYER);
-        boolean playerIsHostile2 = memberFaction2.isHostileTo(Factions.PLAYER);
-        if (playerIsHostile1 != playerWasHostile1 || playerIsHostile2 != playerWasHostile2)
-            DiplomacyManager.printPlayerHostileStateMessage(memberFaction1, playerIsHostile1);
-        */
+        alliance.createIntel(member1, member2);
         SectorManager.checkForVictory();
         return alliance;
     }
-    
-    public void joinAlliance(String factionId, Alliance alliance)
+
+    private static List<String> generateNamePrefixes(String member1, String member2, Alignment type) {
+		List<String> namePrefixes = new ArrayList<>(allianceNameCommonPrefixes);
+		log.info("Getting name prefixes of alliance type " + type);
+		if (!alliancePrefixesByAlignment.containsKey(type))
+		{
+			log.error("Missing name prefixes for alliance type " + type);
+		}
+		else namePrefixes.addAll(alliancePrefixesByAlignment.get(type));
+
+		if (namePrefixes.isEmpty())
+		{
+			log.error("Missing name prefixes");
+			namePrefixes.add("Common");    // just to make it not crash
+		}
+
+		List<MarketAPI> markets = ExerelinUtilsFaction.getFactionMarkets(member1);
+		for (MarketAPI market : markets)
+		{
+			if (market.getPrimaryEntity().isInHyperspace()) continue;
+			String systemName = ((StarSystemAPI)market.getContainingLocation()).getBaseName();
+			namePrefixes.add(systemName);
+		}
+
+		markets = ExerelinUtilsFaction.getFactionMarkets(member2);
+		for (MarketAPI market : markets)
+		{
+			if (market.getPrimaryEntity().isInHyperspace()) continue;
+			String systemName = ((StarSystemAPI)market.getContainingLocation()).getBaseName();
+			namePrefixes.add(systemName);
+		}
+		return namePrefixes;
+	}
+
+    private static String generateAllianceName(List<String> namePrefixes, Alignment type) {
+    	String name;
+		boolean validName;
+		int tries = 0;
+		namePrefixes.addAll(alliancePrefixesByAlignment.get(type));
+
+		do {
+			tries++;
+			name = ExerelinUtils.getRandomListElement(namePrefixes);
+			List<String> alignmentNames = allianceNamesByAlignment.get(type);
+			name = name + " " + ExerelinUtils.getRandomListElement(alignmentNames);
+
+			validName = !allianceManager.alliancesByName.containsKey(name);
+		}
+		while (!validName && tries < 25);
+
+		//I doubt this will occur
+		if(tries == 25)
+			name = "No Valid Alliance Name " + System.currentTimeMillis();
+
+		return  name;
+	}
+
+    private void joinAlliance(String factionId, Alliance alliance)
     {
         // sync faction relationships
         SectorAPI sector = Global.getSector();
@@ -316,23 +295,6 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
         boolean playerIsHostile = faction.isHostileTo(Factions.PLAYER);
         
-        // sync relationship with existing members
-        /*
-        List<FactionAPI> factions = sector.getAllFactions();
-        for (FactionAPI otherFaction: factions)
-        {
-            String otherFactionId = otherFaction.getId();
-            if (otherFaction == faction) continue;
-            if (getFactionAlliance(otherFactionId) == alliance) continue;
-            if (otherFactionId.equals(Factions.PLAYER) || otherFactionId.equals(ExerelinConstants.PLAYER_NPC_ID))
-            {
-                String playerAlignedFactionId = PlayerFactionStore.getPlayerFactionId();
-                if (getFactionAlliance(playerAlignedFactionId) == alliance) continue;
-            }
-            faction.setRelationship( otherFactionId, firstMember.getRelationship(otherFaction.getId()) );
-        }
-        */
-        
         alliance.addMember(factionId);
         alliancesByFactionId.put(factionId, alliance);
         
@@ -341,11 +303,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         //if (playerIsHostile != playerWasHostile)
         //    DiplomacyManager.printPlayerHostileStateMessage(faction, playerIsHostile, false);
         
-        alliance.reportEvent(factionId, null, alliance, "join");
+        alliance.updateIntel(factionId, UpdateType.JOINED);
         SectorManager.checkForVictory();
     }
        
-    public void leaveAlliance(String factionId, Alliance alliance, boolean noEvent)
+    private void leaveAlliance(String factionId, Alliance alliance, boolean noEvent)
     {
         alliance.removeMember(factionId);
         alliancesByFactionId.remove(factionId);
@@ -355,11 +317,11 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return;
         }
         
-        if (!noEvent) alliance.reportEvent(factionId, null, alliance, "leave");
+        if (!noEvent) alliance.updateIntel(factionId, UpdateType.LEFT);
         SectorManager.checkForVictory();
     }
     
-    public void leaveAlliance(String factionId, Alliance alliance)
+    private void leaveAlliance(String factionId, Alliance alliance)
     {
         leaveAlliance(factionId, alliance, false);
     }
@@ -378,8 +340,10 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 		//alliancesById.remove(alliance.uuId);	// events will still want to read this
         alliances.remove(alliance);
 		alliance.clearMembers();
-        if (randomMember != null) alliance.reportEvent(randomMember, null, alliance, "dissolved");
-		alliance.getEvent().setDone(true);
+
+        if (randomMember != null)
+            alliance.updateIntel(randomMember, UpdateType.DISSOLVED);
+//		alliance.getEvent().setDone(true);
         SectorManager.checkForVictory();
     }
 
@@ -388,6 +352,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
      */
     public void tryMakeAlliance()
     {
+        log.info("Trying to Make Alliance");
         SectorAPI sector = Global.getSector();
         List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
         Collections.shuffle(liveFactionIds);
@@ -564,8 +529,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         
     public static void doAlliancePeaceStateChange(String faction1Id, String faction2Id, boolean isWar)
     {
-        doAlliancePeaceStateChange(faction1Id, faction2Id, 
-                getFactionAlliance(faction1Id), getFactionAlliance(faction2Id), isWar, new HashSet<String>());
+        doAlliancePeaceStateChange(faction1Id, faction2Id, getFactionAlliance(faction1Id), getFactionAlliance(faction2Id), isWar, new HashSet<String>());
     }
 
     public static void doAlliancePeaceStateChange(String faction1Id, String faction2Id, 
@@ -577,16 +541,6 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         SectorAPI sector = Global.getSector();
         FactionAPI faction1 = sector.getFaction(faction1Id);
         FactionAPI faction2 = sector.getFaction(faction2Id);
-        /*
-        if (faction1.getId().equals(Factions.PLAYER)) return null;
-        else if (faction2.getId().equals(Factions.PLAYER)) return null;
-
-        if (faction1.getId().equals(ExerelinConstants.PLAYER_NPC_ID) || faction2.getId().equals(ExerelinConstants.PLAYER_NPC_ID))
-        {
-            if (PlayerFactionStore.getPlayerFactionId().equals(ExerelinConstants.PLAYER_NPC_ID) == false)
-                return null;
-        }
-        */
         
         // declare war on/make peace with the other faction/alliance
         float delta = isWar ? -0.1f : 0.3f;
@@ -673,6 +627,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         }
         //else if (faction2.getId().equals("player")) party2 = Misc.ucFirst(playerAlignedFaction.getEntityNamePrefix());
 
+		//TODO use something similar to Hostility Intel
         String messageStr = isWar ? StringHelper.getString("exerelin_alliances", "joinsWarAgainst") 
                 : StringHelper.getString("exerelin_alliances", "makesPeaceWith");
         String highlightOrdered1 = highlight1, highlightOrdered2 = highlight2;
@@ -839,9 +794,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             int size1 = alliance1.getMembersCopy().size();
             int size2 = alliance2.getMembersCopy().size();
 
-            if (size1 > size2) return -1;
-            else if (size2 > size1) return 1;
-            else return 0;
+            return Integer.compare(size2, size1);
         }
     }
 }

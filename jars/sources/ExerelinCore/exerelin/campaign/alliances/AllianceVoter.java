@@ -118,7 +118,8 @@ public class AllianceVoter {
 			AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, null, ally2, isWar, defyingFactions);
 		}
 		
-		// report event
+		// TODO: report intel
+		/*
 		if (ally1 != null)
 		{
 			Map<String, Object> params = getEventParams(ally1, vote1, faction2Id, ally2, isWar);
@@ -129,6 +130,7 @@ public class AllianceVoter {
 			Map<String, Object> params = getEventParams(ally2, vote2, faction1Id, ally1, isWar);
 			ally2.getVoteEvent().reportEvent(params);
 		}
+		*/
 		
 		// alliance hates on defiers
 		handleDefyRelations(vote1);
