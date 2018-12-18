@@ -29,16 +29,16 @@ import java.util.Set;
 public class FactionInsuranceIntel extends BaseIntelPlugin {
 	private static Logger log = Global.getLogger(FactionInsuranceIntel.class);
 
-	public static final float HARD_MODE_MULT = 0.5f;
-	public static final boolean COMPENSATE_DMODS = false;
-	public static final float DMOD_BASE_COST = Global.getSettings().getFloat("baseRestoreCostMult");
-	public static final float DMOD_COST_PER_MOD = Global.getSettings().getFloat("baseRestoreCostMultPerDMod");
-	public static final float LIFE_INSURANCE_PER_LEVEL = 2000f;
-	public static final float BASE_HULL_VALUE_MULT_FOR_DMODS = 0.4f;
+	protected static final float HARD_MODE_MULT = 0.5f;
+	protected static final boolean COMPENSATE_DMODS = false;
+	protected static final float DMOD_BASE_COST = Global.getSettings().getFloat("baseRestoreCostMult");
+	protected static final float DMOD_COST_PER_MOD = Global.getSettings().getFloat("baseRestoreCostMultPerDMod");
+	protected static final float LIFE_INSURANCE_PER_LEVEL = 2000f;
+	protected static final float BASE_HULL_VALUE_MULT_FOR_DMODS = 0.4f;
 
-	private boolean paid = true;
-	private float paidAmount = 0f;
-	private FactionAPI faction;
+	protected boolean paid = true;
+	protected float paidAmount = 0f;
+	protected FactionAPI faction;
 
 	public FactionInsuranceIntel(Map<FleetMemberAPI, Float[]> disabledOrDestroyedMembers, List<OfficerDataAPI> deadOfficers) {
 		if (intelValidations()) {
@@ -64,8 +64,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		}
 	}
 
-	private boolean intelValidations() {
-		boolean flag = true;
+	protected boolean intelValidations() {
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		BattleAPI battle = playerFleet.getBattle();
 
@@ -80,10 +79,10 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 			return false;
 
 		faction = Global.getSector().getFaction(alignedFactionId);
-		return flag;
+		return true;
 	}
 
-	private float calculateAmount(List<OfficerDataAPI> deadOfficers, Map<FleetMemberAPI, Float[]> disabledOrDestroyedMembers) {
+	protected float calculateAmount(List<OfficerDataAPI> deadOfficers, Map<FleetMemberAPI, Float[]> disabledOrDestroyedMembers) {
 		float value = 0f;
 
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
@@ -156,7 +155,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		return getName();
 	}
 
-	private String getName() {
+	protected String getName() {
 		String str;
 		if (paid) str = "exerelinFactionInsurance";
 		else str = "exerelinFactionInsuranceUnpaid";
@@ -194,7 +193,7 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 
 	@Override
 	public String getIcon() {
-		return "graphics/icons/intel/gain_credits.png";
+		return Global.getSettings().getSpriteName("intel", "credits");
 	}
 
 	@Override
