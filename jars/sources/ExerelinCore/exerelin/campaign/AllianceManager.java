@@ -20,7 +20,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
-import exerelin.campaign.alliances.AllianceTypeEnum;
+import exerelin.campaign.intel.AllianceIntel.UpdateType;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -303,7 +303,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         //if (playerIsHostile != playerWasHostile)
         //    DiplomacyManager.printPlayerHostileStateMessage(faction, playerIsHostile, false);
         
-        alliance.changeIntel(factionId, AllianceTypeEnum.JOINED);
+        alliance.updateIntel(factionId, UpdateType.JOINED);
         SectorManager.checkForVictory();
     }
        
@@ -317,7 +317,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
             return;
         }
         
-        if (!noEvent) alliance.changeIntel(factionId, AllianceTypeEnum.LEFT);
+        if (!noEvent) alliance.updateIntel(factionId, UpdateType.LEFT);
         SectorManager.checkForVictory();
     }
     
@@ -342,7 +342,7 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
 		alliance.clearMembers();
 
         if (randomMember != null)
-            alliance.changeIntel(randomMember, AllianceTypeEnum.DISSOLVED);
+            alliance.updateIntel(randomMember, UpdateType.DISSOLVED);
 //		alliance.getEvent().setDone(true);
         SectorManager.checkForVictory();
     }
