@@ -13,8 +13,6 @@ exerelin_faction_respawned,respawned,,,news,$Faction return to Sector,"$TheFacti
 ,,,,,,,,,,,,
 exerelin_faction_salary,report,,,secure_comm,Monthly salary report: $paid received,You have received $paid from $theEmployer for your continued services.,,,graphics/icons/intel/gain_credits.png,,,
 exerelin_faction_salary,report_unpaid,,,secure_comm,Monthly salary report: no payment,"Due to your bad conduct in their eyes, $theEmployer have withheld your salary for this month.",,,graphics/icons/intel/gain_credits.png,,,
-exerelin_faction_insurance,report,,,secure_comm,Insurance payout: $paid received,You have received $paid from $theEmployer to help cover your losses in the recent battle.,,,graphics/icons/intel/gain_credits.png,,,
-exerelin_faction_insurance,report_unpaid,,,secure_comm,Insurance payout: no payment,"Due to your bad conduct in their eyes, $theEmployer have refused to make any insurance payments.",,,graphics/icons/intel/gain_credits.png,,,
 exerelin_followers_tax,report,,,secure_comm,Monthly tax collection: $paid received,Your markets have generated $paid of tax revenue.,,,graphics/icons/intel/gain_credits.png,,,
 exerelin_followers_tax,report_unpaid,,,secure_comm,Monthly tax collection: no payment,$TheFaction is revolting against your misrule and has refused to collect or pay taxes.,,,graphics/icons/intel/gain_credits.png,,,
 ,,,,,,,,,,,,

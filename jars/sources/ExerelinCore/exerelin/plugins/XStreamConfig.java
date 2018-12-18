@@ -16,7 +16,6 @@ import exerelin.campaign.events.ExigencyRespawnFleetEvent;
 import exerelin.campaign.events.FactionBountyEvent;
 import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.campaign.events.FactionEliminatedEvent;
-import exerelin.campaign.events.FactionInsuranceEvent;
 import exerelin.campaign.events.FactionRespawnedEvent;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.campaign.events.MarketCapturedEvent;
@@ -91,7 +90,6 @@ public class XStreamConfig {
 		x.alias("FactionBntyEvntKey", FactionBountyEvent.FactionBountyPairKey.class);
 		x.alias("FactionChangeEvnt", FactionChangedEvent.class);
 		x.alias("FactionElimEvnt", FactionEliminatedEvent.class);
-		x.alias("FactionInsurEvnt", FactionInsuranceEvent.class);
 		x.alias("FactionRespawnEvnt", FactionRespawnedEvent.class);
 		x.alias("FactionVengeanceEvnt", SSP_FactionVengeanceEvent.class);
 		x.alias("InstgtRbl", InstigateRebellion.class);

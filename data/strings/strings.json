@@ -185,7 +185,12 @@
 		"switchedFactions":"Left $theOldFaction for $theNewFaction",
 
 		"relationshipLimit":"Relationship between $faction1 and $faction2 limited to $relationship",
-		"repLimit":"Reputation with $faction capped at %s, currently %s"
+		"repLimit":"Reputation with $faction capped at %s, currently %s",
+
+		"exerelinFactionInsurance":"Insurance Payout",
+		"exerelinFactionInsuranceDesc":"You have received $paid from $theEmployer to help cover your losses in the recent battle.",
+		"exerelinFactionInsuranceUnpaid":"Insurance payout: no payment",
+		"exerelinFactionInsuranceUnpaidDesc":"Due to your bad conduct in their eyes, $theEmployer have refused to make any insurance payments."
 	},
 	"exerelin_fleets":{
 		"invasionFleetName":"Invasion Fleet",
