@@ -1,0 +1,2 @@
+listenerId,listenerClass,priority
+Nex_ForceMarketUpdateListener,exerelin.console.listeners.ForceMarketUpdateListener,0

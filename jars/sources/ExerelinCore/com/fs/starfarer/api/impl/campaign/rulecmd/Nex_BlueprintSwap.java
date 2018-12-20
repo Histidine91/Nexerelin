@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.input.Keyboard;
 
 // TODO:
 // obey ForceMarketUpdate
@@ -157,6 +158,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 		{
 			dialog.getOptionPanel().setEnabled(optId, false);
 		}
+		dialog.getOptionPanel().setShortcut("nex_blueprintSwapMenuReturn", Keyboard.KEY_ESCAPE, false, false, false, false);
 	}
 	
 	protected void selectBPs() {
@@ -372,6 +374,14 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 			time = mem.getExpire(STOCK_ARRAY_KEY);
 		
 		mem.set(STOCK_ARRAY_KEY, stock, time);
+	}
+	
+	public static void unsetBlueprintStocks()
+	{
+		for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy())
+		{
+			market.getMemoryWithoutUpdate().unset(STOCK_ARRAY_KEY);
+		}
 	}
 	
 	public static List<PurchaseInfo> generateBlueprintStock()
