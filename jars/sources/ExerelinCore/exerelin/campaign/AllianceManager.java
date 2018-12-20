@@ -20,6 +20,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
@@ -303,21 +304,22 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
         //if (playerIsHostile != playerWasHostile)
         //    DiplomacyManager.printPlayerHostileStateMessage(faction, playerIsHostile, false);
         
-        alliance.updateIntel(factionId, UpdateType.JOINED);
+        alliance.updateIntel(factionId, null, UpdateType.JOINED);
         SectorManager.checkForVictory();
     }
        
     private void leaveAlliance(String factionId, Alliance alliance, boolean noEvent)
     {
-        alliance.removeMember(factionId);
-        alliancesByFactionId.remove(factionId);
-        if (alliance.getMembersCopy().size() <= 1) 
+        if (alliance.getMembersCopy().size() <= 2) 
         {
             dissolveAlliance(alliance);
             return;
         }
+		
+        alliance.removeMember(factionId);
+        alliancesByFactionId.remove(factionId);
         
-        if (!noEvent) alliance.updateIntel(factionId, UpdateType.LEFT);
+        if (!noEvent) alliance.updateIntel(factionId, null, UpdateType.LEFT);
         SectorManager.checkForVictory();
     }
     
@@ -329,20 +331,24 @@ public class AllianceManager  extends BaseCampaignEventListener implements Every
     public void dissolveAlliance(Alliance alliance)
     {
         if (!alliances.contains(alliance)) return;
+		
+		WeightedRandomPicker<String> memberPicker = new WeightedRandomPicker<>();
         
-        String randomMember = null;
         for (String member : alliance.getMembersCopy())
         {
             alliancesByFactionId.remove(member);
-            randomMember = member;
+			memberPicker.add(member);
         }
         alliancesByName.remove(alliance.getName());
 		//alliancesById.remove(alliance.uuId);	// events will still want to read this
         alliances.remove(alliance);
 		alliance.clearMembers();
 
-        if (randomMember != null)
-            alliance.updateIntel(randomMember, UpdateType.DISSOLVED);
+        alliance.updateIntel(memberPicker.pickAndRemove(), memberPicker.pickAndRemove(), UpdateType.DISSOLVED);
+		AllianceIntel intel = alliance.getIntel();
+		Global.getSector().addScript(intel);	// so its advance() method can run and the intel can expire
+		intel.endAfterDelay();
+		
 //		alliance.getEvent().setDone(true);
         SectorManager.checkForVictory();
     }

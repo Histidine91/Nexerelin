@@ -14,8 +14,12 @@ import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.StringHelper;
 import org.apache.log4j.Logger;
 
-import java.awt.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,8 +30,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 	protected FactionAPI faction1;
 	protected FactionAPI faction2;
 	protected String allianceId;
-	// more permanent store, since alliance will no longer be accessible by ID once dissolved
-	// or maybe alliances should just have more persistency?
+	// more permanent store, since we may decide to no longer have alliance be accessible by ID once dissolved
 	protected String allianceName;	
 	protected UpdateType updateType;
 
@@ -59,7 +62,13 @@ public class AllianceIntel extends BaseIntelPlugin {
 		{
 			Map<String, Object> params = (Map<String, Object>)listInfoParam;
 			updateType = (UpdateType)params.get("type");
-			faction1 = (FactionAPI)params.get("faction1");
+			String factionId1 = (String)params.get("faction1");
+			String factionId2 = (String)params.get("faction2");
+			
+			if (factionId1 != null)
+				faction1 = Global.getSector().getFaction(factionId1);
+			if (factionId2 != null)
+				faction2 = Global.getSector().getFaction(factionId2);
 		}
 		
 		Color c = getTitleColor(mode);
@@ -125,6 +134,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 		
 		if (updateType == UpdateType.DISSOLVED)
 		{
+			info.addImages(width, 128, opad, opad, faction1.getCrest(), faction2.getCrest());
 			str = StringHelper.getStringAndSubstituteToken("exerelin_alliances", 
 					"intelDissolvedDesc", "$alliance", allianceName);
 			info.addPara(str, opad);
@@ -137,7 +147,10 @@ public class AllianceIntel extends BaseIntelPlugin {
 			info.addPara("ERROR: Unable to find alliance " + allianceName + "!", opad);
 			return;
 		}
-		// header
+		
+		printMemberCrests(info, alliance, width);
+		
+		// alliance info paragraph
 		String numMembers = alliance.getMembersCopy().size() + "";
 		String numMarkets = alliance.getNumAllianceMarkets() + "";
 		String size = alliance.getAllianceMarketSizeSum() + "";
@@ -152,11 +165,42 @@ public class AllianceIntel extends BaseIntelPlugin {
 		str = StringHelper.getString("exerelin_alliances", "intelMembersHeader");
 		info.addSectionHeading(str, Alignment.MID, opad);
 		
-		// TODO: print members
-		for (String factionId : alliance.getMembersCopy())
+		// print members
+		List<String> members = new ArrayList<>(alliance.getMembersCopy());
+		Collections.sort(members);
+		for (String factionId : members)
 		{
 			printMemberInfo(info, factionId);
 		}
+	}
+	
+	protected void printMemberCrests(TooltipMakerAPI info, Alliance alliance, float width)
+	{
+		float opad = 10f;
+		List<String> members = new ArrayList<>(alliance.getMembersCopy());
+		Collections.sort(members);
+		List<String> crests = new ArrayList<>();
+		int count = 0;
+		for (String factionId : members)
+		{
+			crests.add(Global.getSector().getFaction(factionId).getCrest());
+			count++;
+			if (count >= 8) break;
+		}
+		
+		// use two rows for crests if alliance has > 4 members
+		int rows = 1;
+		int row1Num = count, row2Num = 0; 
+		if (count > 4) {
+			rows = 2;
+			row2Num = count/2;
+			row1Num = count - row2Num;
+		}
+		String[] crestsArray = crests.toArray(new String[0]);
+		
+		info.addImages(width, (int)(256/row1Num), opad, opad, Arrays.copyOfRange(crestsArray, 0, row1Num));
+		if (rows == 2)
+			info.addImages(width, (int)(256/row1Num), opad, opad, Arrays.copyOfRange(crestsArray, row1Num, crestsArray.length));
 	}
 	
 	protected void printMemberInfo(TooltipMakerAPI info, String factionId)
@@ -199,8 +243,14 @@ public class AllianceIntel extends BaseIntelPlugin {
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
 		tags.add("Alliances");
-		tags.add(faction1.getId());
-		if(faction2 != null) tags.add(faction2.getId());
+		Alliance alliance = AllianceManager.getAllianceByUUID(allianceId);
+		if (alliance != null)
+		{
+			for (String factionId : alliance.getMembersCopy())
+			{
+				tags.add(factionId);
+			}
+		}
 		return tags;
 	}
 
@@ -211,10 +261,11 @@ public class AllianceIntel extends BaseIntelPlugin {
 	}
 
 	@Override
-	protected void notifyEnded() {
-		super.notifyEnded();
-		Global.getSector().removeScript(this);
+	protected float getBaseDaysAfterEnd() {
+		return 30;
 	}
+	
+	
 	
 	public enum UpdateType {
 		DISSOLVED,

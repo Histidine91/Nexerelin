@@ -46,19 +46,27 @@ public class Alliance
 		// TODO convert this as well
 		voteEvent = null;	//(AllianceVoteEvent)Global.getSector().getEventManager().primeEvent(null, "exerelin_alliance_vote", null);
 	}
+	
+	public AllianceIntel getIntel()
+	{
+		return intel;
+	}
 
 	public AllianceVoteEvent getVoteEvent() {
 		return voteEvent;
 	}
 	
-	public void updateIntel(String factionId, UpdateType type)
+	public void updateIntel(String factionId, String factionId2, UpdateType type)
 	{
-		FactionAPI faction = Global.getSector().getFaction(factionId);
 		Map<String, Object> infoParam = new HashMap<>(); 
 		infoParam.put("type", type);
-		infoParam.put("faction1", faction);
+		infoParam.put("faction1", factionId);
+		infoParam.put("faction2", factionId2);
 		
 		intel.sendUpdateIfPlayerHasIntel(infoParam, false);
+		
+		if (type == UpdateType.DISSOLVED)
+			intel.endAfterDelay();
 	}
 
 	public String getName() {
