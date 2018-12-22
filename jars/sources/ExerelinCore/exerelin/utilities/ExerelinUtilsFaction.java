@@ -161,9 +161,9 @@ public class ExerelinUtilsFaction {
         return config.corvusCompatible;
     }
     
-    public static void grantCommission(SectorEntityToken entity)
+    public static void grantCommission(String factionId, SectorEntityToken entity)
     {
-        FactionAPI faction = entity.getFaction();
+        FactionAPI faction = Global.getSector().getFaction(factionId);
         if (!ExerelinConfig.getExerelinFactionConfig(faction.getId()).playableFaction)
             return;
         if (faction.getId().equals(getCommissionFactionId()))
@@ -172,7 +172,6 @@ public class ExerelinUtilsFaction {
         revokeCommission();
         FactionCommissionIntel intel = new FactionCommissionIntel(faction);
         intel.missionAccepted();
-        intel.sendUpdate(FactionCommissionIntel.UPDATE_PARAM_ACCEPTED, null);
         intel.makeRepChanges(null);
     }
     

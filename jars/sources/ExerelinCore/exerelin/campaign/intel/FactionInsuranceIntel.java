@@ -7,6 +7,7 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -64,19 +65,33 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		}
 	}
 
+	/**
+	 * Check if we should actually pay insurance.
+	 * @return
+	 */
 	protected boolean intelValidations() {
+		//log.info("Validating insurance intel item");
 		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
 		BattleAPI battle = playerFleet.getBattle();
 
 		if (!battle.isPlayerInvolved() || Global.getSector().getMemoryWithoutUpdate().contains("$tutStage"))
+		{
+			//log.info("Player is not involved in battle");
 			return false;
+		}
+			
 
 		String alignedFactionId = PlayerFactionStore.getPlayerFactionId();
-		//TODO double check for player's own faction, dont want to do self insurance.
-		if (ExerelinUtilsFaction.isExiInCorvus(alignedFactionId)) {
-			// do nothing
-		} else if (!SectorManager.isFactionAlive(alignedFactionId))
+		if (alignedFactionId.equals(Factions.PLAYER)) {	// no self insurance
+			//log.info("Cannot self-insure");
 			return false;
+		}	
+		if (ExerelinUtilsFaction.isExiInCorvus(alignedFactionId)) {
+			// assume Exigency is alive on the other side of the wormhole, do nothing
+		} else if (!SectorManager.isFactionAlive(alignedFactionId))	{
+			//log.info("Faction is not alive");
+			return false;
+		}
 
 		faction = Global.getSector().getFaction(alignedFactionId);
 		return true;

@@ -100,11 +100,6 @@ public class StartSetupPostTimePass {
 		if (entity != null)
 		{
 			sendPlayerFleetToLocation(playerFleet, entity);
-			if (!isPlayer) ExerelinUtilsFaction.grantCommission(entity);
-		}
-		else
-		{
-			if (!isPlayer) ExerelinUtilsFaction.grantCommission(playerFleet);
 		}
 		
 		// assign officers
@@ -181,12 +176,12 @@ public class StartSetupPostTimePass {
 			// commission
 			String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
 			
-			if (factionId.equals(Factions.PLAYER))
+			if (!factionId.equals(Factions.PLAYER))
 			{
-				if (!entity.getFaction().isNeutralFaction())
-					ExerelinUtilsFaction.grantCommission(entity);
-				else if (ExerelinUtilsFaction.isExiInCorvus(factionId))
-					ExerelinUtilsFaction.grantCommission(Global.getSector().getStarSystem("Tasserus").getEntityById("exigency_anomaly"));
+				if (ExerelinUtilsFaction.isExiInCorvus(factionId))
+					ExerelinUtilsFaction.grantCommission(factionId, Global.getSector().getStarSystem("Tasserus").getEntityById("exigency_anomaly"));
+				else
+					ExerelinUtilsFaction.grantCommission(factionId, entity);
 			}
 		}
 	}
