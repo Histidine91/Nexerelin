@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class AllianceIntel extends BaseIntelPlugin {
-	public static Logger log = Global.getLogger(AllianceIntel.class);
+	private static Logger log = Global.getLogger(AllianceIntel.class);
 	
 	// everything protected out of habit
 	protected FactionAPI faction1;
@@ -46,7 +46,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 	
 	@Override
 	public String getSortString() {
-		//TODO what does this string do?
+		//what does this string do?
 		return "Alliances";
 	}
 	
@@ -256,7 +256,6 @@ public class AllianceIntel extends BaseIntelPlugin {
 
 	@Override
 	public String getIcon() {
-		//TODO hardcoded for now
 		return Global.getSettings().getSpriteName("intel", "alliance");
 	}
 

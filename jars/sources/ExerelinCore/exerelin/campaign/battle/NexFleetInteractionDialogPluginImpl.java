@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.BattleAPI.BattleSide;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.EngagementResultForFleetAPI;
 import com.fs.starfarer.api.campaign.FleetEncounterContextPlugin.EngagementOutcome;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -12,16 +13,20 @@ import com.fs.starfarer.api.campaign.ai.FleetAssignmentDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.OfficerDataAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
+import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import exerelin.campaign.battle.NexFleetEncounterContext.EscapedOfficerData;
-import exerelin.campaign.events.FactionInsuranceEvent;
+import exerelin.campaign.intel.FactionInsuranceIntel;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.histidine.foundation.campaign.events.FoundationInsuranceEvent;
 
@@ -40,6 +45,8 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	protected static final Color NEUTRAL_COLOR = Global.getSettings().getColor("textNeutralColor");
 	protected boolean recoveredOfficers = false;
 
+	private Map<FleetMemberAPI, Float[]> disabledOrDestroyedMembers = new HashMap<>();
+
 	protected String getTextString(String id)
 	{
 		return StringHelper.getString(STRING_HELPER_CAT, id);
@@ -56,9 +63,30 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 		context = new NexFleetEncounterContext();
 	}
 
+	private void reportPlayerEngagement(EngagementResultAPI result) {
+		EngagementResultForFleetAPI er = result.didPlayerWin() ? result.getWinnerResult() : result.getLoserResult();
+		List<FleetMemberAPI> disabledOrDestroyed = new ArrayList<>();
+		disabledOrDestroyed.addAll(er.getDisabled());
+		disabledOrDestroyed.addAll(er.getDestroyed());
+
+		for (FleetMemberAPI member : disabledOrDestroyed)
+		{
+			if (disabledOrDestroyedMembers.containsKey(member))
+				continue;	// though this shouldn't happen anyway
+			if (member.isAlly())
+				continue;
+			if (member.isFighterWing())
+				continue;
+			log.info("Member " + member.getShipName() + " disabled or destroyed");
+			disabledOrDestroyedMembers.put(member, new Float[]{member.getBaseBuyValue(), (float)FactionInsuranceIntel.countDMods(member)});
+		}
+	}
+
 	@Override
 	public void backFromEngagement(EngagementResultAPI result) {
+		log.debug("Back From Engagement");
 		super.backFromEngagement(result);
+		reportPlayerEngagement(result);
 
 		boolean totalDefeat = !playerFleet.isValidPlayerFleet();
 		boolean mutualDestruction = context.getLastEngagementOutcome() == EngagementOutcome.MUTUAL_DESTRUCTION;
@@ -143,6 +171,7 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 	
 	@Override
 	protected void losingPath() {
+		log.debug("Losing Path");
 		if (!recoveredOfficers) {
 			recoveredOfficers = true;
 
@@ -200,11 +229,11 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 
 	@Override
 	protected void winningPath() {
+		log.debug("Winning Path");
 		if (!recoveredOfficers) {
 			recoveredOfficers = true;
 
-			List<OfficerDataAPI> recoverableOfficers =
-								 ((NexFleetEncounterContext) context).getPlayerRecoverableOfficers();
+			List<OfficerDataAPI> recoverableOfficers = ((NexFleetEncounterContext) context).getPlayerRecoverableOfficers();
 			List<OfficerDataAPI> lostOfficers = ((NexFleetEncounterContext) context).getPlayerLostOfficers();
 			if (!recoverableOfficers.isEmpty()) {
 				String s1;
@@ -269,26 +298,24 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 
 		super.winningPath();
 	}
-	
-	// FIXME
+
 	protected void handleLifeInsurance(List<OfficerDataAPI> deadOfficers, List<OfficerDataAPI> miaOfficers)
 	{
 		List<OfficerDataAPI> officers = new ArrayList<>(deadOfficers);
 		if (miaOfficers != null)
 			officers.addAll(miaOfficers);
-		if (Global.getSector().getEventManager().isOngoing(null, "exerelin_faction_insurance"))
-		{
-			FactionInsuranceEvent event = (FactionInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
-					null, "exerelin_faction_insurance");
-			event.addDeadOfficers(officers);
-		}
-		
+
+		FactionInsuranceIntel insuranceIntel = new FactionInsuranceIntel(disabledOrDestroyedMembers, officers);
+
 		if (Global.getSector().getEventManager().isOngoing(null, "foundation_insurance"))
 		{
 			FoundationInsuranceEvent event = (FoundationInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
 					null, "foundation_insurance");
 			event.addDeadOfficers(officers);
 		}
+
+		officers.clear();
+		disabledOrDestroyedMembers.clear();
 	}
 	
 	@Override
