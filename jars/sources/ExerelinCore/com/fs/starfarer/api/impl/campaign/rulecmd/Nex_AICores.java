@@ -129,7 +129,7 @@ public class Nex_AICores extends AICores {
 						str = StringHelper.getStringAndSubstituteToken("exerelin_factions", 
 								"repLimit", "$faction", shortName);
 						panel.setParaFontColor(Misc.getGrayColor());
-						panel.addPara(str, opad * 1f, Misc.getHighlightColor(), 
+						panel.addPara(str, opad * 1f, NexUtilsReputation.getRelColor(maxRep), 
 								maxRepInt + "/100", NexUtilsReputation.getRelationStr(myFaction, faction));
 						panel.setParaFontColor(Misc.getTextColor());
 					}

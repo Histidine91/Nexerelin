@@ -9,6 +9,7 @@
 		"conquest":"conquest",
 		"continue":"continue",
 		"credits":"credits",
+		"diplomacy":"diplomacy",
 		"diplomatic":"diplomatic",
 		"done":"done",
 		"intelReport":"intel report",
@@ -88,7 +89,7 @@
 		"intelDissolvedDesc":"The $alliance alliance has been dissolved. Its members have gone their separate ways.",
 		
 		"intelTitle":"$name",
-		"intelFormedPoint":"Founded by: $faction1, faction$2",	# not used
+		"intelFormedPoint":"Founded by: $faction1, $faction2",	# not used
 		"intelJoinedPoint":"$Faction joined",
 		"intelLeftPoint":"$Faction left",
 		"intelDissolvedPoint":"Dissolved",
@@ -163,7 +164,14 @@
 		"contribution_ssModCommunity":"Various tips, pointers and feedback",
 		"contribution_fractalSoftworks":"The Fractal Softworks team that made Starsector"
 	},
-	"exerelin_diplomacy":{
+	"exerelin_diplomacy":{	
+		"intelTitle":"Diplomacy Event",
+		"intelHeader1":"News summary",
+		"intelHeader2":"Effects",
+		"intelRepResult":"Relations between $faction1 and $faction2 reduced by $deltaAbs, to $newRelationStr.",
+		"intelRepCurrent":"Current relations: $relationStr",
+		"intelRepCurrentShort":"Now at $relationStr",
+	
 		"player_peace_msg":"You are no longer hostile to $factionOrAlliance",
 		"player_war_msg":"You are now hostile to $factionOrAlliance",
 

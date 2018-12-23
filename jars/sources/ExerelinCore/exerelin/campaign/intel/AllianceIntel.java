@@ -242,7 +242,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 	@Override
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
-		tags.add("Alliances");
+		tags.add(StringHelper.getString("alliances", true));
 		Alliance alliance = AllianceManager.getAllianceByUUID(allianceId);
 		if (alliance != null)
 		{

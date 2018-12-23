@@ -207,10 +207,28 @@ public class NexUtilsReputation
 	
 	public static String getRelationStr(FactionAPI faction1, FactionAPI faction2)
 	{
-		RepLevel level = faction1.getRelationshipLevel(faction2.getId());
-		int repInt = (int) Math.ceil((faction1.getRelationship(faction2.getId())) * 100f);
+		return getRelationStr(faction1.getRelationship(faction2.getId()));
+	}
+	
+	public static String getRelationStr(float rel)
+	{
+		int repInt = (int) Math.ceil(rel * 100f);
 		
-		String standing = "" + repInt + "/100" + " (" + level.getDisplayName().toLowerCase() + ")";
+		String standing = "" + repInt + "/100" + " (" + Misc.lcFirst(RepLevel.getLevelFor(rel).getDisplayName()) + ")";
 		return standing;
 	}
+	
+	public static Color getRelColor(float rel) 
+	{  
+		Color relColor = new Color(125,125,125,255);
+		if (rel > 1) rel = 1;  
+		if (rel < -1) rel = -1;  
+
+		if (rel > 0) {  
+			relColor = Misc.interpolateColor(relColor, Misc.getPositiveHighlightColor(), Math.max(0.15f, rel));  
+		} else if (rel < 0) {  
+			relColor = Misc.interpolateColor(relColor, Misc.getNegativeHighlightColor(), Math.max(0.15f, -rel));  
+		}  
+			return relColor;  
+	}  
 }

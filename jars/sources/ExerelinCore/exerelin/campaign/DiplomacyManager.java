@@ -20,6 +20,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.alliances.Alliance;
 import exerelin.campaign.diplomacy.DiplomacyBrain;
+import exerelin.campaign.intel.DiplomacyIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
 import exerelin.utilities.ExerelinUtils;
@@ -56,7 +57,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     public static final List<String> disallowedFactions;
         
     protected static List<DiplomacyEventDef> eventDefs;
-    protected static Map<String, DiplomacyEventDef> eventDefsByStage;
+    protected static Map<String, DiplomacyEventDef> eventDefsById;
     
     public static final float STARTING_RELATIONSHIP_HOSTILE = -0.6f;
     public static final float STARTING_RELATIONSHIP_INHOSPITABLE = -0.4f;
@@ -99,7 +100,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         // disallowed factions is also used for things like rebellions
         //if (!ExerelinConfig.followersDiplomacy) disallowedFactions.add(ExerelinConstants.PLAYER_NPC_ID);
         eventDefs = new ArrayList<>();
-        eventDefsByStage = new HashMap<>();
+        eventDefsById = new HashMap<>();
         
         for (FactionAPI faction : Global.getSector().getAllFactions())
         {
@@ -126,7 +127,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
             DiplomacyEventDef eventDef = new DiplomacyEventDef();
             eventDef.name = eventDefJson.getString("name");
             //log.info("Adding diplomacy event " + eventDef.name);
-            eventDef.stage = eventDefJson.getString("stage");
+            eventDef.id = eventDefJson.getString("stage");
+			eventDef.desc = eventDefJson.getString("desc");
             eventDef.random = eventDefJson.optBoolean("random", true);
             
             eventDef.minRepChange = (float)eventDefJson.getDouble("minRepChange");
@@ -157,7 +159,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                 eventDef.repEnsureAtBest = RepLevel.valueOf(StringHelper.flattenToAscii(repEnsureAtBest.toUpperCase())); 
             
             eventDefs.add(eventDef);
-            eventDefsByStage.put(eventDef.stage, eventDef);
+            eventDefsById.put(eventDef.id, eventDef);
             
             if(eventDef.name.equals("Peace Treaty"))
                 peaceTreatyEvent = eventDef;
@@ -168,8 +170,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     public static DiplomacyEventDef getEventByStage(String stage)
     {
-        if (!eventDefsByStage.containsKey(stage)) return null;
-        return eventDefsByStage.get(stage);
+        if (!eventDefsById.containsKey(stage)) return null;
+        return eventDefsById.get(stage);
     }
 
     public DiplomacyManager()
@@ -406,13 +408,11 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         
         if (Math.abs(delta) >= 0.01f) {
             log.info("Transmitting event: " + event.name);
-            HashMap<String, Object> params = new HashMap<>();
-            String eventType = "exerelin_diplomacy";
-            params.put("eventStage", event.stage);
-            params.put("result", result);
-            params.put("otherFaction", faction2);
-			// TODO: update to intel system
-            //sector.getEventManager().startEvent(new CampaignEventTarget(market), eventType, params);
+			
+			DiplomacyIntel intel = new DiplomacyIntel(event.id, faction1.getId(), faction2.getId(), market, result);
+			Global.getSector().getIntelManager().addIntel(intel);
+			Global.getSector().addScript(intel);
+			intel.endAfterDelay();
             
             diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), deltaBase);
             diplomacyBrains.get(faction2.getId()).reportDiplomacyEvent(faction1.getId(), deltaBase);
@@ -502,8 +502,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
                     else chance += (DOMINANCE_DIPLOMACY_POSITIVE_EVENT_MOD * strength);
                 }
                 if (chance <= 0) continue;
-                eventPicker.add(eventDef, chance);
             }
+			eventPicker.add(eventDef, chance);
         }
         if (event == null) event = eventPicker.pick();
         return event;
@@ -527,7 +527,7 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         log.info("Factions are: " + faction1.getDisplayName() + ", " + faction2.getDisplayName());
         
         DiplomacyEventDef event;
-        if (eventId != null) event = eventDefsByStage.get(eventId);
+        if (eventId != null) event = eventDefsById.get(eventId);
         else event = diplomacyManager.pickDiplomacyEvent(faction1, faction2, params);
         
         if (event == null)
@@ -1145,7 +1145,8 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
     
     public static class DiplomacyEventDef {
         public String name;
-        public String stage;
+        public String id;
+		public String desc;
         public boolean random = true;
         public RepLevel minRepLevelToOccur;
         public RepLevel maxRepLevelToOccur;

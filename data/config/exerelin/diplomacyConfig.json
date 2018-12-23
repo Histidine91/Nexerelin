@@ -11,7 +11,8 @@
 			"minRepLevelToOccur":"inhospitable",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
-			"allowNonPiratesToPirates":true
+			"allowNonPiratesToPirates":true,
+			"desc":"$OtherFaction authorities have sent a charitable aid package to $faction citizens $onOrAt $market. Local officials have expressed their gratitude."
 		},
 		{
 			"name":"Philanthropy",
@@ -21,7 +22,8 @@
 			"maxRepChange":0.15,
 			"allowPiratesToPirates":true,
 			"allowPiratesToNonPirates":true,
-			"allowNonPiratesToPirates":true
+			"allowNonPiratesToPirates":true,
+			"desc":"An influential private figure in $theOtherFaction has made a generous donation $onOrAt $market. This has improved relations with $theFaction."
 		},
 		{
 			"name":"Cultural Boom",
@@ -29,7 +31,8 @@
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.1,
 			"maxRepChange":0.15,
-			"allowNonPiratesToPirates":true
+			"allowNonPiratesToPirates":true,
+			"desc":"Popular media works from $theOtherFaction have gained a strong following $onOrAt $market, leading to a $faction interest in strengthened cultural ties.",
 		},
 		{
 			"name":"Cooperation Deal",
@@ -38,7 +41,8 @@
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
-			"allowPiratesToPirates":true
+			"allowPiratesToPirates":true,
+			"desc":"Officials of $theFaction and $theOtherFaction have signed an agreement to further cooperation on areas of mutual interest."
 		},
 		{
 			"name":"Major Cooperation Deal",
@@ -47,7 +51,8 @@
 			"minRepLevelToOccur":"favorable",
 			"minRepChange":0.25,
 			"maxRepChange":0.3,
-			"allowPiratesToPirates":true
+			"allowPiratesToPirates":true,
+			"desc":"$TheFaction and $theOtherFaction have signed a new agreement for much closer military and trade associations."
 		},
 		{
 			"name":"Celebrity Wedding",
@@ -55,7 +60,9 @@
 			"minRepLevelToOccur":"favorable",
 			"minRepChange":0.1,
 			"maxRepChange":0.15,
-			"chance":0.3	# because realistically, how often would this happen?
+			"chance":0.3,	# because realistically, how often would this happen?
+			
+			"desc":"The marriage of two celebrities from $theFaction and $theOtherFaction is the hottest new media sensation, with even official figures quick to play themselves into the matter."
 		},
 		{
 			"name":"Helped Foil Terror Plot",
@@ -66,7 +73,8 @@
 			"maxRepChange":0.2,
 			"allowPiratesToPirates":true,
 			"allowPiratesToNonPirates":true,
-			"allowNonPiratesToPirates":true
+			"allowNonPiratesToPirates":true,
+			"desc":"Official statements by $theFaction praise $theOtherFaction for its assistance in foiling a terrorist plot $onOrAt $market."
 		},
 		{
 			"name":"Criminal Extradited",
@@ -75,7 +83,8 @@
 			"minRepLevelToOccur":"suspicious",
 			"minRepChange":0.15,
 			"maxRepChange":0.2,
-			"allowPiratesToPirates":true
+			"allowPiratesToPirates":true,
+			"desc":"Police $onOrAt $market have extradited a wanted $otherFaction criminal. Law enforcement officials have praised the cooperation of $faction authorities."
 		},
 		{
 			"name":"Prisoner Exchange",
@@ -88,7 +97,8 @@
 			"repLimit":"hostile",
 			"allowPiratesToPirates":true,
 			"allowPiratesToNonPirates":true,
-			"allowNonPiratesToPirates":true
+			"allowNonPiratesToPirates":true,
+			"desc":"$TheFaction and $theOtherFaction have held a prisoner exchange $onOrAt $market. The honorable conduct of the two combatants has raised the prospect of peace talks in the future."
 		},
 		{
 			"name":"Antiwar Protests",
@@ -96,7 +106,8 @@
 			"maxRepLevelToOccur":"hostile",
 			"repLimit":"hostile",
 			"minRepChange":0.1,
-			"maxRepChange":0.15
+			"maxRepChange":0.15,
+			"desc":"Anti-war protestors have gathered $onOrAt $market, pressuring $theFaction leaders to seek peace with $theOtherFaction."
 		},
 		{
 			"name":"Star-crossed Lovers",	# love conquers all
@@ -106,7 +117,8 @@
 			"minRepChange":0.15,
 			"maxRepChange":0.25,
 			"allowPiratesToPirates":true,
-			"chance":0.2
+			"chance":0.2,
+			"desc":"Media reports of a \"Romeo & Juliet\" forbidden romance between a couple from $theFaction and $theOtherFaction have captivated the public imagination, and led to a thawing of relations between the two factions."
 		},		
 		{
 			"name":"Diplomatic Blunder",
@@ -115,7 +127,8 @@
 			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
 			"repLimit":"inhospitable",
-			"allowPiratesToPirates":true
+			"allowPiratesToPirates":true,
+			"desc":"A diplomatic faux pas by a $otherFaction delegate has caused grave offence to $faction officials $onOrAt $market."
 		},
 		{
 			"name":"Failed Deal",
@@ -124,7 +137,8 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"repLimit":"inhospitable",
-			"allowPiratesToPirates":true
+			"allowPiratesToPirates":true,
+			"desc":"$OtherFaction delegates walked out of a meeting at $market today, dissatisfied with the hard line taken by $faction negotiators. The incident has ruffled feathers on both sides."
 		},
 		{
 			"name":"Celebrity Wedding Jilted",
@@ -133,7 +147,8 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"repLimit":"inhospitable",
-			"chance":0.3
+			"chance":0.3,
+			"desc":"$market tabloids are abuzz with the news of a prominent $otherFaction figure who abandoned his $faction bride at the altar. The woman's influential family - and large segments of the public - are outraged."
 		},
 		{
 			"name":"Political Funding Uncovered",
@@ -144,7 +159,8 @@
 			"minRepChange":-0.25,
 			"maxRepChange":-0.15,
 			"repLimit":"inhospitable",
-			"allowPiratesToPirates":true
+			"allowPiratesToPirates":true,
+			"desc":"$Faction officials have accused $theOtherFaction of funding opposition groups $onOrAt $market. The resulting dispute has soured relations between the two factions."
 		},
 		{
 			"name":"Xenophobia",
@@ -153,7 +169,8 @@
 			"maxRepLevelToOccur":"friendly",
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
-			"repLimit":"inhospitable"
+			"repLimit":"inhospitable",
+			"desc":"A sharp increase in hostility to $theOtherFaction $onOrAt $market has been observed. $otherFaction citizens are being harassed and even assaulted on the streets, with authorities slow to respond."
 		},
 		{
 			"name":"Criminal Extradition Refused",
@@ -164,7 +181,8 @@
 			"maxRepChange":-0.15,
 			"repLimit":"inhospitable",
 			"allowPiratesToPirates":true,
-			"chance":1.2
+			"chance":1.2,
+			"desc":"$Faction authorities are refusing to turn over an escaped $otherFaction criminal $onOrAt $market, despite official protests through diplomatic channels."
 		},
 		{
 			"name":"Spy Ring Uncovered",
@@ -178,11 +196,12 @@
 			"allowPiratesToPirates":true,
 			"allowPiratesToNonPirates":true,
 			"allowNonPiratesToPirates":true,
-			"chance":1.2
+			"chance":1.2,
+			"desc":"Rumors have surfaced that $faction counter-intelligence has broken up a spy ring operated by $theOtherFaction. Although official figures remain silent on the matter, it's clear that diplomatic relations are suffering."
 		},
 		{
-			"name":"Sabotage Uncovered",
-			"stage":"sabotage_uncovered",
+			"name":"Terrorist Plot Uncovered",
+			"stage":"terrorism_uncovered",
 			"random":false,
 			"repEnsureAtBest":"suspicious",
 			"maxRepLevelToOccur":"favorable",
@@ -190,7 +209,8 @@
 			"maxRepChange":-0.1,
 			"repLimit":"hostile",
 			"allowPiratesToPirates":true,
-			"chance":1
+			"chance":1,
+			"desc":"$Faction officials announce discovering evidence of an $otherFaction-backed terrorist plot $onOrAt $market. The $otherFaction leadership denies any involvement."
 		},
 		{
 			"name":"Diplomat Crime Ring",
@@ -199,7 +219,8 @@
 			"minRepChange":-0.15,
 			"maxRepChange":-0.1,
 			"repLimit":"inhospitable",
-			"chance":0.5
+			"chance":0.5,
+			"desc":"Police $onOrAt $market have broken up a crime syndicate operated by a $otherFaction envoy. While $theOtherFaction have disavowed the diplomat's actions, relations with $theFaction have nevertheless cooled."
 		},
 		{
 			"name":"Privateering",
@@ -212,7 +233,8 @@
 			"maxRepChange":-0.15,
 			"repLimit":"hostile",
 			"allowPiratesToPirates":true,
-			"chance":1
+			"chance":1,
+			"desc":"$TheFaction has accused $theOtherFaction of sponsoring privateers to attack its shipping. A formal military response has been considered."
 		},
 		{
 			"name":"Tournament Cheating",
@@ -223,7 +245,8 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"repLimit":"inhospitable",
-			"chance":0.5
+			"chance":0.5,
+			"desc":"$TheOtherFaction has made allegations of cheating by $faction hosts of the most recent Interstellar Simulated Battles Tournament. While ISBT officials are still investigating, rumors of banned mods and other such shenanigans have fed the rumor mill."
 		},
 		{
 			"name":"Shots Fired",
@@ -237,7 +260,8 @@
 			"allowPiratesToPirates":true,
 			"allowPiratesToNonPirates":true,
 			"allowNonPiratesToPirates":true,
-			"chance":0.25
+			"chance":0.25,
+			"desc":"Unconfirmed news reports have arrived of a shootout between forces of $theFaction and $theOtherFaction near $market. As of the time of writing, a state of war exists between the two factions."
 		},
 		
 		{
@@ -247,7 +271,8 @@
 			"repEnsureAtBest":"hostile",
 			"minRepChange":-0.4,
 			"maxRepChange":-0.3,
-			"chance":0	# only occurs when DiplomacyManager calls it directly
+			"chance":0,	# only occurs when DiplomacyManager calls it directly
+			"desc":"$TheFaction announces initiation of hostilities against $theOtherFaction!"
 		},
 		{
 			"name":"Ceasefire",
@@ -258,7 +283,8 @@
 			"minRepChange":0.3,
 			"maxRepChange":0.45,
 			"repLimit":"neutral",
-			"chance":0	# only occurs when DiplomacyManager calls it directly
+			"chance":0,	# only occurs when DiplomacyManager calls it directly
+			"desc":"Weary of the fighting, $theFaction and $theOtherFaction have agreed to a cessation of hostilities. Nevertheless, relations remain tense."
 		},
 		{
 			"name":"Peace Treaty",
@@ -269,7 +295,8 @@
 			"minRepChange":0.5,
 			"maxRepChange":0.65,
 			"repLimit":"favorable",
-			"chance":0	# only occurs when DiplomacyManager calls it directly
+			"chance":0,	# only occurs when DiplomacyManager calls it directly
+			"desc":"$TheFaction and $theOtherFaction have set aside their differences and signed a lasting peace treaty."
 		},
 		
 		# faction-specific
@@ -282,7 +309,8 @@
 			"maxRepChange":0.15,
 			"allowedFactions2":["luddic_church","kadur_theocracy","insurgency"],
 			"allowNonPiratesToPirates":true,
-			"chance":1.5
+			"chance":1.5,
+			"desc":"$OtherFaction missionaries are spreading their religion amongst the people of $market. This has created a common bond with $theFaction."
 		},
 		{
 			"name":"Religious Minority Persecuted",
@@ -292,7 +320,8 @@
 			"maxRepChange":-0.15,
 			"allowedFactions2":["luddic_church","kadur_theocracy","insurgency"],
 			"allowPiratesToNonPirates":true,
-			"chance":1.5
+			"chance":1.5,
+			"desc":"$OtherFaction adherents $onOrAt $market are facing social and state penalties for their faith, ranging from ostracism to beatings and confiscation of property. The $otherFaction believers have made their anger at $theFaction known."
 		},
 		{
 			"name":"Religious Majority Persecutes",
@@ -301,7 +330,8 @@
 			"minRepChange":-0.2,
 			"maxRepChange":-0.15,
 			"allowedFactions1":["luddic_church","kadur_theocracy","insurgency"],
-			"chance":1.5
+			"chance":1.5,
+			"desc":"$OtherFaction figures have condemned the actions of $theFaction in suppressing \"heresy\" $onOrAt $market, describing as \"persecution\" and \"inquisition\" such acts as forced conversions and false criminal accusations against $otherFaction non-believers."
 		},
 		{
 			"name":"Priest Scandal",
@@ -310,7 +340,8 @@
 			"maxRepChange":-0.1,
 			"repLimit":"inhospitable",
 			"allowedFactions2":["luddic_church","kadur_theocracy","insurgency"],
-			"chance":1.5
+			"chance":1.5,
+			"desc":"An $otherFaction clergyman $onOrAt $market has been charged with embezzlement of church funds and various sexual offences. Opinion polls show a marked decrease in respect for $theOtherFaction among $faction citizens."
 		},
 		{
 			"name":"Condemn Treatment of Dissidents",
@@ -321,7 +352,8 @@
 			"repLimit":"inhospitable",
 			"allowedFactions1":["hegemony","sindrian_diktat","mayorate","interstellarimperium","new_galactic_order","kadur_theocracy"],
 			"allowedFactions2":["luddic_church","shadow_industry","pack","spire","ORA"],
-			"chance":1.5
+			"chance":1.5,
+			"desc":"$OtherFaction officials and commentators have harshly criticized the actions of $faction authorities, who have arrested and beaten scores of dissidents and activists $onOrAt $market."
 		},
 		{
 			"name":"Anti-Corporation Movement",
@@ -332,7 +364,8 @@
 			"repLimit":"inhospitable",
 			"allowedFactions1":["hegemony","luddic_church","pack","interstellarimperium","new_galactic_order","kadur_theocracy","insurgency"],
 			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","exigency","metelson","ptech","dassault_mikoyan"],
-			"chance":1.5
+			"chance":1.5,
+			"desc":"$TheOtherFaction is in the crosshairs of a populist anti-corporate movement $onOrAt $market, which sees it as an oppressive, exploitative entity. Movement leaders are pressing $faction authorities to crack down on $theOtherFaction's various crimes."
 		},
 		{
 			"name":"Technology Stolen",
@@ -345,7 +378,8 @@
 			"repLimit":"hostile",
 			"allowedFactions1":["blackrock", "citadeldefenders", "dassault_mikoyan", "diableavionics", "exigency", "fob", "hiigaran_descendants", "interstellarimperium", "mayorate", "metelson", 
 								"neutrinocorp", "oculus", "ORA", "ori", "rori", "pbc", "pn_colony", "ptech", "SCY", "shadow_industry", "spire", "sylphon", "tritachyon", "valkyrian"],
-			"chance":1.2
+			"chance":1.2,
+			"desc":"A major $faction R&D facility $onOrAt $market reports the theft of large amounts of advanced technology and related data. $TheOtherFaction denies allegations that it was responsible."
 		},
 		{
 			"name":"Contract Cheating",
@@ -359,7 +393,8 @@
 				"ori","rori","tiandong","ptech","tiandong"],
 			"allowedFactions2":["tritachyon","blackrock","neutrinocorp","diableavionics","shadow_industry","citadeldefenders","pbc","dassault_mikoyan",
 				"ori","rori","tiandong","ptech","tiandong"],
-			"chance":1.2
+			"chance":1.2,
+			"desc":"After $theOtherFaction won a major defense contract, competitor $Faction issued a press release alleging the use of bribery and kickbacks. $OtherFaction and client officials claim the process was entirely above board."
 		},
 	]
 }
