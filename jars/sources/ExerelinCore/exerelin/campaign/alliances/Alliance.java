@@ -6,7 +6,6 @@ import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.events.AllianceVoteEvent;
 import exerelin.campaign.intel.AllianceIntel;
 import exerelin.campaign.intel.AllianceIntel.UpdateType;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -26,7 +25,6 @@ public class Alliance
 	protected String name;
 	protected Set<String> members;
 	protected Alignment alignment;
-	protected AllianceVoteEvent voteEvent;
 	private AllianceIntel intel;
 	public final String uuId;
 
@@ -43,17 +41,11 @@ public class Alliance
 	
 	public void createIntel(String member1, String member2) {
 		intel = createAllianceEvent(member1, member2);
-		// TODO convert this as well
-		voteEvent = null;	//(AllianceVoteEvent)Global.getSector().getEventManager().primeEvent(null, "exerelin_alliance_vote", null);
 	}
 	
 	public AllianceIntel getIntel()
 	{
 		return intel;
-	}
-
-	public AllianceVoteEvent getVoteEvent() {
-		return voteEvent;
 	}
 	
 	public void updateIntel(String factionId, String factionId2, UpdateType type)

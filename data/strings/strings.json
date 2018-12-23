@@ -30,6 +30,8 @@
 		"successful":"successful",
 		"failed":"failed",
 		"over":"over",
+		"pass":"pass",
+		"fail":"fail",
 
 		"friendly":"friendly",
 		"neutral":"neutral",
@@ -98,15 +100,23 @@
 		"intelStrengthPointShort":"Size $size",
 		
 		"intelMembersHeader":"Members",
-
+		
+		"intelVoteTitle":"Alliance Vote: $alliance",
+		"intelVoteBullet":"$warOrPeace with $otherParty: $passOrFail",
+		"intelVoteBreakdownHeader":"Voting tally",
+		"intelDescPeaceYes":"The alliance $alliance has voted to make peace with $theOtherParty.",
+		"intelDescPeaceNo":"The alliance $alliance has voted against making peace with $theOtherParty.",
+		"intelDescWarYes":"The alliance $alliance has voted to declare war on $theOtherParty.",
+		"intelDescWarNo":"The alliance $alliance has voted against declaring war on $theOtherParty.",
+		
 		"allianceVote":"Alliance vote",
 
 		"joinsWarAgainst":"$factionOrAlliance1 joins war against $factionOrAlliance2!",
 		"makesPeaceWith":"$factionOrAlliance1 makes peace with $factionOrAlliance2",
-		"defiesDecisionWar":"$defying defies the decision and refuses to declare war on $theOtherParty!",
-		"defiesDecisionPeace":"$defying defies the decision and continues the war with $theOtherParty!",
-		"defyDecisionWar":"$defying defy the decision and refuses to declare war on $theOtherParty!",
-		"defyDecisionPeace":"$defying defy the decision and continue the war with $theOtherParty!",
+		"defiesDecisionWar":"$defying defies the decision and refuses to declare war!",
+		"defiesDecisionPeace":"$defying defies the decision and continues the war!",
+		"defyDecisionWar":"$defying defy the decision and refuses to declare war!",
+		"defyDecisionPeace":"$defying defy the decision and continue the war!",
 
 		"numAlliances":"There are $numAlliances alliance(s) in the Sector",
 		"joinedAlliance":"Joined alliance $NewAlliance",

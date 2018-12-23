@@ -7,17 +7,12 @@ import exerelin.campaign.alliances.AllianceVoter;
 import exerelin.campaign.covertops.InstigateRebellion;
 import exerelin.campaign.events.covertops.AgentDestabilizeMarketEvent;
 import exerelin.campaign.events.covertops.AgentLowerRelationsEvent;
-import exerelin.campaign.events.AllianceChangedEvent;
-import exerelin.campaign.events.AllianceVoteEvent;
 import exerelin.campaign.events.covertops.CovertOpsEventBase;
-import exerelin.campaign.events.DiplomacyEvent;
 import exerelin.campaign.events.ExerelinRepTrackerEvent;
 import exerelin.campaign.events.ExigencyRespawnFleetEvent;
 import exerelin.campaign.events.FactionBountyEvent;
-import exerelin.campaign.events.FactionChangedEvent;
 import exerelin.campaign.events.FactionEliminatedEvent;
 import exerelin.campaign.events.FactionRespawnedEvent;
-import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.campaign.events.MarketCapturedEvent;
 import exerelin.campaign.events.MarketTransferedEvent;
 import exerelin.campaign.events.RebellionEvent;
@@ -79,16 +74,12 @@ public class XStreamConfig {
 		
 		x.alias("AgntDestabilizeMrktEvnt", AgentDestabilizeMarketEvent.class);
 		x.alias("AgntLowerRelationsEvnt", AgentLowerRelationsEvent.class);
-		x.alias("AllyChangedEvnt", AllianceChangedEvent.class);
-		x.alias("AllyVoteEvnt", AllianceVoteEvent.class);
 		x.alias("AllyVoteRslt", AllianceVoter.VoteResult.class);
 		x.alias("CovertOpsEvnt", CovertOpsEventBase.class);
-		x.alias("DiploEvnt", DiplomacyEvent.class);
 		x.alias("ExeRepTrckrEvnt", ExerelinRepTrackerEvent.class);
 		x.alias("ExiRespawnFltEvnt", ExigencyRespawnFleetEvent.class);
 		x.alias("FactionBntyEvnt", FactionBountyEvent.class);
 		x.alias("FactionBntyEvntKey", FactionBountyEvent.FactionBountyPairKey.class);
-		x.alias("FactionChangeEvnt", FactionChangedEvent.class);
 		x.alias("FactionElimEvnt", FactionEliminatedEvent.class);
 		x.alias("FactionRespawnEvnt", FactionRespawnedEvent.class);
 		x.alias("FactionVengeanceEvnt", SSP_FactionVengeanceEvent.class);
@@ -118,7 +109,6 @@ public class XStreamConfig {
 		
 		// enums
 		x.alias("CovertActionResult", CovertOpsManager.CovertActionResult.class);
-		x.alias("InvasionFltReturnReason", InvasionFleetEvent.FleetReturnReason.class);
 		
 		configureXStreamAttributes(x);
 	}
@@ -134,24 +124,6 @@ public class XStreamConfig {
 		x.aliasAttribute(Alliance.class, "name", "n");
 		x.aliasAttribute(Alliance.class, "uuId", "id");
 		x.aliasAttribute(Alliance.class, "alignment", "algn");
-//		x.aliasAttribute(Alliance.class, "event", "evnt");
-		x.aliasAttribute(Alliance.class, "voteEvent", "vote");
-		
-		// AllianceChangedEvent
-		x.aliasAttribute(AllianceChangedEvent.class, "faction1Id", "f1");
-		x.aliasAttribute(AllianceChangedEvent.class, "faction2Id", "f2");
-		x.aliasAttribute(AllianceChangedEvent.class, "allianceId", "aID");
-		x.aliasAttribute(AllianceChangedEvent.class, "stage", "stg");
-		
-		// AllianceVoteEvent
-		x.aliasAttribute(AllianceVoteEvent.class, "allianceId", "aID");
-		x.aliasAttribute(AllianceVoteEvent.class, "otherParty", "other");
-		x.aliasAttribute(AllianceVoteEvent.class, "stage", "stg");
-		
-		// DiplomacyEvent
-		x.aliasAttribute(DiplomacyEvent.class, "eventStage", "stage");
-		x.aliasAttribute(DiplomacyEvent.class, "result", "rslt");
-		x.aliasAttribute(DiplomacyEvent.class, "otherFaction", "other");
 		
 		// FactionBountyEvent
 		x.aliasAttribute(FactionBountyEvent.class, "elapsedDays", "days");
@@ -159,10 +131,6 @@ public class XStreamConfig {
 		x.aliasAttribute(FactionBountyEvent.class, "baseBounty", "pays");
 		x.aliasAttribute(FactionBountyEvent.class, "lastBounty", "last");
 		x.aliasAttribute(FactionBountyEvent.class, "enemyFaction", "ef");
-		
-		// FactionChangedEvent
-		x.aliasAttribute(FactionChangedEvent.class, "oldFaction", "old");
-		x.aliasAttribute(FactionChangedEvent.class, "newFaction", "new");
 		
 		// FactionEliminatedEvent
 		x.aliasAttribute(FactionEliminatedEvent.class, "defeatedFaction", "lose");
@@ -172,11 +140,7 @@ public class XStreamConfig {
 		
 		// FactionRespawnedEvent
 		x.aliasAttribute(FactionRespawnedEvent.class, "existedBefore", "notNew");
-		
-		// InvasionFleetEvent
-		x.aliasAttribute(InvasionFleetEvent.class, "target", "tgt");
-		x.aliasAttribute(InvasionFleetEvent.class, "factionPermanent", "facP");
-				
+			
 		// MarketCapturedEvent
 		x.aliasAttribute(MarketCapturedEvent.class, "newOwner", "new");
 		x.aliasAttribute(MarketCapturedEvent.class, "oldOwner", "old");

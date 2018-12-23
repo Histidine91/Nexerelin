@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.DevMenuOptions;
+import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.rulecmd.DumpMemory;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
@@ -33,6 +34,13 @@ public class ExerelinUtils
 	{
 		float days = Global.getSector().getClock().convertToDays(time);
 		interval.advance(days);
+	}
+	
+	public static <T extends BaseIntelPlugin> void addExpiringIntel(T intel)
+	{
+		Global.getSector().getIntelManager().addIntel(intel);
+		Global.getSector().addScript(intel);
+		intel.endAfterDelay();
 	}
 
 	public static Object getRandomArrayElement(Object[] array)

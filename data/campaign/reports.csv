@@ -29,11 +29,6 @@ exerelin_invasion_fleet,no_longer_hostile_player,,,secure_comm,$Faction invasion
 ,,,,,,,,,,,,
 exerelin_slaves_sold,report,,,player_intel_always,Slave trade $onOrAt $market,Rumors have surfaced concerning your sale of slaves $onOrAt $market. The lawful factions in the $location are appalled at your lack of respect for basic human dignity.,Reputation with $numFactions faction(s) reduced by an average of $repPenaltyAbs.,,,,,
 ,,,,,,,,,,,,
-exerelin_faction_changed,join,,,secure_comm,Joined $newFaction,You have joined $theNewFaction. Your new employers are expecting great deeds of you.,,,,important,,
-exerelin_faction_changed,leave,,,secure_comm,Left $oldFaction,You have left $theOldFaction to stake it out on your own.,,,,important,,
-exerelin_faction_changed,switch,,,secure_comm,Joined $newFaction,You have left $theOldFaction for $theNewFaction. Your new employers are expecting great deeds of you.,,,,important,,
-exerelin_faction_changed,expelled,,,secure_comm,Expelled from $oldFaction,"Due to your abominable conduct, $theOldFaction have expelled you from their ranks.",,,,important,,
-,,,,,,,,,,,,
 exerelin_victory,conquest,,,player_intel_always,$VictorFaction $isOrAre victorious,$TheVictorFaction have crushed all possible competition. Their rule over the Sector is now undisputed.,,,,important,,
 exerelin_victory,conquest_player,,,player_intel_always,$VictorFaction $isOrAre victorious,$TheVictorFaction have crushed all possible competition. Their rule over the Sector is now undisputed.,You have won the game!,,,important,,
 exerelin_victory,diplomatic,,,player_intel_always,$VictorFaction $isOrAre victorious,"$TheVictorFaction and their allies are the only remaining powers in the Sector. Peace has come to this corner of the galaxy, at least for now.",,,,important,,
@@ -170,16 +165,6 @@ nex_instigate_rebellion,failure_player,,,player_intel_always,$AgentFaction fails
 nex_instigate_rebellion,failure_detected,,,player_intel_always,$AgentFaction caught fomenting rebellion $onOrAt $market,$TheFaction has arrested and executed $agentFaction agents attempting to foment rebellion $onOrAt $market. $TheAgentFaction has disavowed the unfortunate operatives.,"Relations between $faction and $agentFaction reduced by $repEffectAbs, currently at $newRelationStr.",,,,,
 nex_instigate_rebellion,failure_detected_player,,,player_intel_always,$AgentFaction caught fomenting rebellion $onOrAt $market,$TheFaction has arrested and executed your agents attempting to foment rebellion $onOrAt $market.,"Relations between $faction and $agentFaction reduced by $repEffectAbs, currently at $newRelationStr.",,,,,
 ,,,,,,,,,,,,
-,,,,,,,,,,,,
-#alliances,,,,,,,,,,,,
-exerelin_alliance_vote,yes_peace,,,news,$alliance votes for peace with $otherParty,The alliance $alliance has voted to make peace with $theOtherParty.$defyText,"Voting results:
-$voteBreakdown",,graphics/exerelin/icons/intel/peace.png,,,
-exerelin_alliance_vote,yes_war,,,news,$alliance votes for war with $otherParty,The alliance $alliance has voted to declare war on $theOtherParty.$defyText,"Voting results:
-$voteBreakdown",,graphics/exerelin/icons/intel/war.png,,,
-exerelin_alliance_vote,no_peace,,,news,$alliance votes against peace with $otherParty,The alliance $alliance has voted against making peace with $theOtherParty.$defyText,"Voting results:
-$voteBreakdown",,graphics/icons/intel/star.png,,,
-exerelin_alliance_vote,no_war,,,news,$alliance votes against war with $otherParty,The alliance $alliance has voted against declaring war on $theOtherParty.$defyText,"Voting results:
-$voteBreakdown",,graphics/icons/intel/star.png,,,
 ,,,,,,,,,,,,
 # vengeance,,,,,,,,,,,,
 exerelin_faction_vengeance,mad,0.75,,player_intel,$Faction $fleetType dispatched from $market,"Intercepted comm traffic reveals that, due to your reputation with $theFactionLong, $aFleetType has launched from $market, assigned to seek you out and eliminate you if possible.",$FleetType will pursue you for $duration.,,,important,ui_channel_sniffer,

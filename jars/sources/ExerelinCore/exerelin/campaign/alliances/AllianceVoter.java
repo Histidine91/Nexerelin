@@ -10,8 +10,10 @@ import exerelin.campaign.AllianceManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.alliances.Alliance.Alignment;
+import exerelin.campaign.intel.AllianceVoteIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinUtils;
 import exerelin.utilities.ExerelinUtilsFaction;
 import exerelin.utilities.NexUtilsReputation;
 import java.util.HashMap;
@@ -118,19 +120,21 @@ public class AllianceVoter {
 			AllianceManager.doAlliancePeaceStateChange(faction1Id, faction2Id, null, ally2, isWar, defyingFactions);
 		}
 		
-		// TODO: report intel
-		/*
+		// report intel
 		if (ally1 != null)
 		{
-			Map<String, Object> params = getEventParams(ally1, vote1, faction2Id, ally2, isWar);
-			ally1.getVoteEvent().reportEvent(params);
+			AllianceVoteIntel intel = new AllianceVoteIntel(ally1.uuId, vote1, 
+					ally2 != null ? ally2.uuId: faction2Id, 
+					ally2 != null, isWar);
+			ExerelinUtils.addExpiringIntel(intel);
 		}
 		if (ally2 != null)
 		{
-			Map<String, Object> params = getEventParams(ally2, vote2, faction1Id, ally1, isWar);
-			ally2.getVoteEvent().reportEvent(params);
+			AllianceVoteIntel intel = new AllianceVoteIntel(ally2.uuId, vote1, 
+					ally1 != null ? ally1.uuId: faction1Id, 
+					ally1 != null, isWar);
+			ExerelinUtils.addExpiringIntel(intel);
 		}
-		*/
 		
 		// alliance hates on defiers
 		handleDefyRelations(vote1);

@@ -401,18 +401,16 @@ public class DiplomacyManager extends BaseCampaignEventListener implements Every
         if (delta < 0 && delta > -0.01f) delta = -0.01f;
         if (delta > 0 && delta < 0.01f) delta = 0.01f;
         delta = Math.round(delta * 100f) / 100f;
-		float deltaBase = delta;
+        float deltaBase = delta;
        
         ExerelinReputationAdjustmentResult result = DiplomacyManager.adjustRelations(event, faction1, faction2, delta);
         delta = result.delta;
         
         if (Math.abs(delta) >= 0.01f) {
             log.info("Transmitting event: " + event.name);
-			
-			DiplomacyIntel intel = new DiplomacyIntel(event.id, faction1.getId(), faction2.getId(), market, result);
-			Global.getSector().getIntelManager().addIntel(intel);
-			Global.getSector().addScript(intel);
-			intel.endAfterDelay();
+            
+            DiplomacyIntel intel = new DiplomacyIntel(event.id, faction1.getId(), faction2.getId(), market, result);
+            ExerelinUtils.addExpiringIntel(intel);
             
             diplomacyBrains.get(faction1.getId()).reportDiplomacyEvent(faction2.getId(), deltaBase);
             diplomacyBrains.get(faction2.getId()).reportDiplomacyEvent(faction1.getId(), deltaBase);

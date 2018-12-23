@@ -148,7 +148,7 @@ public class AllianceIntel extends BaseIntelPlugin {
 			return;
 		}
 		
-		printMemberCrests(info, alliance, width);
+		printMemberCrests(info, alliance, width, opad);
 		
 		// alliance info paragraph
 		String numMembers = alliance.getMembersCopy().size() + "";
@@ -174,9 +174,8 @@ public class AllianceIntel extends BaseIntelPlugin {
 		}
 	}
 	
-	protected void printMemberCrests(TooltipMakerAPI info, Alliance alliance, float width)
+	public static void printMemberCrests(TooltipMakerAPI info, Alliance alliance, float width, float padding)
 	{
-		float opad = 10f;
 		List<String> members = new ArrayList<>(alliance.getMembersCopy());
 		Collections.sort(members);
 		List<String> crests = new ArrayList<>();
@@ -198,9 +197,9 @@ public class AllianceIntel extends BaseIntelPlugin {
 		}
 		String[] crestsArray = crests.toArray(new String[0]);
 		
-		info.addImages(width, (int)(256/row1Num), opad, opad, Arrays.copyOfRange(crestsArray, 0, row1Num));
+		info.addImages(width, (int)(256/row1Num), padding, padding, Arrays.copyOfRange(crestsArray, 0, row1Num));
 		if (rows == 2)
-			info.addImages(width, (int)(256/row1Num), opad, opad, Arrays.copyOfRange(crestsArray, row1Num, crestsArray.length));
+			info.addImages(width, (int)(256/row1Num), padding, padding, Arrays.copyOfRange(crestsArray, row1Num, crestsArray.length));
 	}
 	
 	protected void printMemberInfo(TooltipMakerAPI info, String factionId)

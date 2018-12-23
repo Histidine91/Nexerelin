@@ -25,6 +25,7 @@
 		
 		"intel":{
 			"alliance":"graphics/icons/intel/star.png",
+			"allianceVote":"graphics/icons/intel/stars.png",
 			"credits":"graphics/icons/intel/gain_credits.png",
 			
 			"diplomacy":"graphics/icons/intel/faction_peace.png",

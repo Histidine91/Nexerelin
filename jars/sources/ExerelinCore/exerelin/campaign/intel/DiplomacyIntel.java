@@ -30,6 +30,8 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	protected MarketAPI market;
 	ExerelinReputationAdjustmentResult reputation;
 	protected float storedRelation;
+	protected boolean isWar;
+	protected boolean isPeace;
 	
 	public DiplomacyIntel(String eventId, String factionId1, String factionId2, MarketAPI market, ExerelinReputationAdjustmentResult reputation)
 	{
@@ -41,6 +43,9 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		
 		FactionAPI faction1 = getFaction(factionId1);
 		storedRelation = faction1.getRelationship(factionId2);
+		
+		isWar = !reputation.wasHostile && reputation.isHostile;
+		isPeace = reputation.wasHostile && !reputation.isHostile;
 	}
 	
 	protected FactionAPI getFaction(String id)
@@ -126,19 +131,24 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		str = StringHelper.substituteToken(str, "$faction2", fn2);
 		str = StringHelper.substituteToken(str, "$deltaAbs", delta);
 		str = StringHelper.substituteToken(str, "$newRelationStr", newRel);
+		str = StringHelper.substituteToken(str, "$newRelationStr", newRel);
 		
 		LabelAPI para = info.addPara(str, opad);
 		para.setHighlight(fn1, fn2, delta, newRel);
 		para.setHighlightColors(faction1.getBaseUIColor(), faction2.getBaseUIColor(), 
 				deltaColor, NexUtilsReputation.getRelColor(storedRelation));
 		
+		// days ago
+		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
+		
 		// display current relationship
 		String currRel = NexUtilsReputation.getRelationStr(faction1, faction2);
 		str = StringHelper.getString("exerelin_diplomacy", "intelRepCurrent");
 		str = StringHelper.substituteToken(str, "$relationStr", currRel);
-		info.addPara(str, opad, faction1.getRelColor(factionId2), currRel);
+		info.addPara(str, opad, faction1.getRelColor(factionId2), currRel);		
 	}
 	
+	/*
 	protected static void addFactionHighlights(List<String> hl, FactionAPI faction)
 	{
 		String name = ExerelinUtilsFaction.getFactionShortName(faction);
@@ -169,6 +179,7 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		}
 		return array;
 	}
+	*/
 	
 	protected static void addFactionNamePara(TooltipMakerAPI info, float pad, Color color, FactionAPI faction) {
 		String name = faction.getDisplayName();
@@ -200,18 +211,24 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 	
 	@Override
 	protected float getBaseDaysAfterEnd() {
+		if (isWar || isPeace)
+			return 30;
 		return 15;
 	}
 	
 	@Override
 	public String getIcon() {
 		String id = "diplomacy";
-		if (!reputation.wasHostile && reputation.isHostile)
+		if (isWar)
 			id = "war";
-		else if (reputation.wasHostile && !reputation.isHostile)
+		else if (isPeace)
 			id = "peace";
 		
 		return Global.getSettings().getSpriteName("intel", id);
 	}
 	
+	@Override
+	public String getSortString() {
+		return "Diplomacy";
+	}
 }
