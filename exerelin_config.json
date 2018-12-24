@@ -14,9 +14,9 @@
     "prisonerRepatriateRepValue": 0.05,
     "prisonerBaseRansomValue": 4000,
     "prisonerRansomValueIncrementPerLevel": 200,
-    "prisonerBaseSlaveValue": 8000,
-    "prisonerSlaveValueIncrementPerLevel": 400,
-    "prisonerSlaveRepValue": -0.02,
+    #"prisonerBaseSlaveValue": 8000,
+    #"prisonerSlaveValueIncrementPerLevel": 400,
+    #"prisonerSlaveRepValue": -0.02,
     "prisonerLootChancePer10Fp": 0.025,
     
     "crewLootMult": 0.02,   # loot about this many crew per enemy crew in killed ships
