@@ -57,8 +57,6 @@ public class ExerelinModPlugin extends BaseModPlugin
         // debugging
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
-        SectorManager.setSystemToRelayMap(new HashMap<String,String>());
-        SectorManager.setPlanetToRelayMap(new HashMap<String,String>());
         
         /*
         // replace patrol handling with our own
@@ -167,6 +165,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.registerPlugin(new ExerelinCampaignPlugin());
         sector.addTransientScript(new DirectoryScreenScript());
         sector.addTransientScript(new SSP_AsteroidTracker());
+        //sector.removeScriptsOfClass(FactionHostilityManager.class);
         
         PrismMarket.clearSubmarketCache();
         

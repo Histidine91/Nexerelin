@@ -101,9 +101,6 @@ public class ExerelinProcGen {
 	
 	protected Map<PlanetAPI, Float> planetDesirabilityCache = new HashMap<>();
 	
-	protected Map<String, String> systemToRelay = new HashMap<>();
-	protected Map<String, String> planetToRelay = new HashMap<>();
-	
 	protected ProcGenEntity homeworld;
 	
 	protected ExerelinSetupData setupData;
@@ -698,10 +695,15 @@ public class ExerelinProcGen {
 				}
 				
 				objective.getMemoryWithoutUpdate().unset(MemFlags.OBJECTIVE_NON_FUNCTIONAL);
-				
 			}
 			
-			// make our own relay if needed
+			// see if system has any stable locations that could be left for a relay
+			if (!system.getEntitiesWithTag(Tags.STABLE_LOCATION).isEmpty())
+			{
+				continue;
+			}
+			
+			// no relays nor stable locations; make our own relay
 			if (relay == null)
 			{
 				log.info("Creating comm relay for system " + system.getName());
@@ -753,12 +755,6 @@ public class ExerelinProcGen {
 					}
 				}
 			}
-			
-			if (relay != null)
-			{
-				systemToRelay.put(system.getId(), relay.getId());
-				planetToRelay.put(capital.entity.getId(), relay.getId());
-			}
 		}
 	}
 	
@@ -779,7 +775,7 @@ public class ExerelinProcGen {
 	
 	/**
 	 * Sets capitals for each star system
-	 * When the capital is captured, the relay changes owner
+	 * [deprecated] When the capital is captured, the relay changes owner
 	 */
 	protected void setCapitals()
 	{
@@ -1393,12 +1389,6 @@ public class ExerelinProcGen {
 			marketSetup.addMarket(hq, factionId);
 			handleHQSpecials(sector, factionId, hq);
 			
-			if (hq.isCapital)
-			{
-				SectorEntityToken relay = sector.getEntityById(systemToRelay.get(hq.starSystem.getId()));
-				relay.setFaction(factionId);
-			}
-			
 			if (pirateFactions.contains(factionId))
 				systemsWithPirates.add(hq.starSystem);
 			factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
@@ -1480,11 +1470,6 @@ public class ExerelinProcGen {
 				marketSetup.addMarket(habitable, factionId);
 				factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
 				
-				if (habitable.isCapital)
-				{
-					SectorEntityToken relay = sector.getEntityById(systemToRelay.get(habitable.starSystem.getId()));
-					relay.setFaction(factionId);
-				}
 				populatedSystemsByFaction.get(factionId).add(habitable.starSystem);
 			}
 			if (populatedPlanetsCopy.isEmpty()) break;
@@ -1549,9 +1534,6 @@ public class ExerelinProcGen {
 	protected void finish()
 	{
 		SectorManager.setHomeworld(homeworld.entity);
-		
-		SectorManager.setSystemToRelayMap(systemToRelay);
-		SectorManager.setPlanetToRelayMap(planetToRelay);
 		
 		SectorManager.reinitLiveFactions();
 		DiplomacyManager.initFactionRelationships(false);

@@ -95,8 +95,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     protected List<String> liveFactionIds = new ArrayList<>();
     protected Set<String> historicFactionIds = new HashSet<>();
     protected Map<String, Integer> factionRespawnCounts = new HashMap<>();
-    protected Map<String, String> systemToRelayMap = new HashMap<>();
-    protected Map<String, String> planetToRelayMap = new HashMap<>();
     
     protected boolean victoryHasOccured = false;
     protected boolean respawnFactions = false;
@@ -868,52 +866,7 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         // rebellion
         RebellionEvent rebEvent = RebellionEvent.getOngoingEvent(market);
         if (rebEvent != null) rebEvent.marketCaptured(newOwnerId, oldOwnerId);
-        
-        // flip relay
-        if (sectorManager != null)
-        {
-            boolean flipRelay = false;
-            if (sectorManager.planetToRelayMap != null)   // reverse compatibility; may not have been set
-            {
-                flipRelay = sectorManager.planetToRelayMap.containsKey(market.getPrimaryEntity().getId());
-            }
-            
-            if (!flipRelay)
-            {
-                if (ExerelinCorvusLocations.getSystemCapitalsCopy().containsValue(market.getPrimaryEntity().getId()))
-                    flipRelay = true;
-                //else flipRelay = market.hasCondition("regional_capital") || market.hasCondition("headquarters");
-            }
-            
-            if (flipRelay)
-            {
-                StarSystemAPI loc = market.getStarSystem();
-                if (loc != null)
-                {
-                    SectorEntityToken relay = null;
-                    // safety
-                    if (sectorManager.systemToRelayMap == null)
-                    {
-                        setSystemToRelayMap(new HashMap<String, String>());
-                    }
-                    String relayId = sectorManager.systemToRelayMap.get(loc.getId());
-                    if (relayId != null)
-                    {
-                        relay = Global.getSector().getEntityById(relayId);
-                    }
-                    else 
-                    {
-                        List<SectorEntityToken> relays = loc.getEntitiesWithTag(Tags.COMM_RELAY);
-                        //log.info("#entities: " + relays.size());
-                        if (!relays.isEmpty() && relays.get(0).getMarket() == null) 
-                            relay = relays.get(0);
-                    }
-                    if (relay != null && relay.getFaction().getId().equals(oldOwnerId))
-                        relay.setFaction(newOwnerId);
-                }
-            }
-        }
-        
+                
         // revengeance fleet
         if (newOwnerId.equals(PlayerFactionStore.getPlayerFactionId()) || newOwnerId.equals(Factions.PLAYER))
         {
@@ -942,7 +895,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
      */
     public static void updateSubmarkets(MarketAPI market, String oldOwnerId, String newOwnerId)
     {
-        
         boolean haveLocalResources = newOwnerId.equals(Factions.PLAYER);
         boolean haveOpen = false;
         boolean haveMilitary = false;
@@ -1019,18 +971,6 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     {
         if (sectorManager == null) return false;
         return sectorManager.liveFactionIds.contains(factionId);
-    }
-    
-    public static void setSystemToRelayMap(Map<String, String> map)
-    {
-        if (sectorManager == null) return;
-        sectorManager.systemToRelayMap = map;
-    }
-    
-    public static void setPlanetToRelayMap(Map<String, String> map)
-    {
-        if (sectorManager == null) return;
-        sectorManager.planetToRelayMap = map;
     }
     
     public static void setHomeworld(SectorEntityToken entity)
