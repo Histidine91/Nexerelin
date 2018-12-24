@@ -21,6 +21,7 @@
 		"spoils":"spoils",
 		"stability":"stability",
 		"stats":"stats",
+		"status":"status",
 		"vote":"vote",
 		"yourFleet":"your fleet",
 
@@ -203,16 +204,14 @@
 		"followersTax":"Tax collection",
 		"insurance":"Ship loss insurance",
 		"invasionFleet":"$faction invasion fleet update",
-		"marketAttacked":"Recent attack on $market",
-		"marketCaptured":"$market captured by $faction",
-		"marketTransfered":"$market transfered to $faction",
 		"rebellion":"Rebellion on $market",
 		"revengeanceFleetEvent":"Revenge Fleet",
 		"securityAlert":"Security alert on $market",
 		"slaveTrade":"Slave trade on $market",
 		"superweapon":"Superweapon used on $market!",
 		"victory":"$faction victory",
-		"warmonger":"Warmonger reputation penalty"
+		"warmonger":"Warmonger reputation penalty",
+		
 	},
 	"exerelin_factions":{
 		"factionDirectoryOption":"Faction directory",
@@ -373,12 +372,19 @@
 		"marketDirectoryEntryNoLocation":"$market (size $size)",
 		"marketDirectoryEntryForTrade":"$market, $location ($faction, $distance LY)",
 		"hasBaseTip":"has military base",
-
-		"highPrices":"buying at high prices",
-		"lowPrices":"selling at low prices",
-		"demand":"demand",
-		"forSale":"for sale",
-		"priceStr":"price: $basePrice ($priceWithTariff with tariff)",
+		
+		"intelCaptureTitle":"Market Captured - $market",
+		"intelTransferedTitle":"Market Transfered - $market",
+		"intelTransferBullet1":"Now under $faction",
+		"intelTransferBullet2":"Previously $faction",
+		
+		"intelCaptureDesc":"$newFaction has captured $market (size $size) from $oldFaction.",
+		"intelCapturePlayerDesc":"$newFaction has captured $market (size $size) from the $oldFaction, under the command of $player.",
+		"intelTransferDesc":"$oldFaction has transfered $market (size $size) to $newFaction.",
+		"intelTransferFactionSizeHeader":"Current status",
+		"intelTransferFactionSizeEntry":"$faction: $num markets (total size $size)",
+		
+		"intelTag":"Captures",
 
 		"transferMarketWarning":"Are you sure you wish to transfer $market to $theFaction?",
 		"transferMarketRep":"At the current stability, transferring $market will earn $repChange reputation with the recipient faction.",

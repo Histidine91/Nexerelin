@@ -47,6 +47,7 @@ import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
+import exerelin.campaign.intel.MarketTransferIntel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -843,25 +844,9 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         if (newOwnerId.equals(Factions.PLAYER) && !Misc.isPlayerFactionSetUp())
             Global.getSector().getCampaignUI().showPlayerFactionConfigDialog();
         
-        // event report
-        if (isCapture)
-        {
-            Map<String, Object> params = new HashMap<>();
-            params.put("newOwner", newOwner);
-            params.put("oldOwner", oldOwner);
-            params.put("playerInvolved", playerInvolved);
-            params.put("factionsToNotify", factionsToNotify);
-            params.put("repChangeStrength", repChangeStrength);
-            //Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_captured", params);
-        }
-        else
-        {
-            Map<String, Object> params = new HashMap<>();
-            params.put("newOwner", newOwner);
-            params.put("oldOwner", oldOwner);
-            params.put("repEffect", repChangeStrength);
-            //Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_market_transfered", params);
-        }
+        // intel report
+        MarketTransferIntel intel = new MarketTransferIntel(market, oldOwnerId, newOwnerId, isCapture, playerInvolved);
+        ExerelinUtils.addExpiringIntel(intel);
                 
         DiplomacyManager.notifyMarketCaptured(market, oldOwner, newOwner);
         if (playerInvolved) StatsTracker.getStatsTracker().notifyMarketCaptured(market);
