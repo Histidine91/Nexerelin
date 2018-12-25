@@ -1,6 +1,7 @@
-package exerelin.campaign.events;
+package exerelin.campaign;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.BaseCampaignEventListener;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -8,24 +9,17 @@ import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
-import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.util.IntervalUtil;
-import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
+import exerelin.campaign.events.SSP_FactionVengeanceEvent;
 import exerelin.utilities.ExerelinConfig;
-import exerelin.utilities.ExerelinUtilsMarket;
-import exerelin.utilities.StringHelper;
 import exerelin.campaign.fleets.InvasionFleetManager;
-import static exerelin.campaign.fleets.InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT;
-import static exerelin.campaign.fleets.InvasionFleetManager.EXCEPTION_LIST;
 import exerelin.utilities.ExerelinUtilsFleet;
 import exerelin.utilities.NexUtilsMath;
 import java.util.Arrays;
@@ -33,14 +27,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import org.lwjgl.util.vector.Vector2f;
 
 /**
  * Handles SS+ vengeance fleets and Nexerelin counter-invasion fleets
  */
-public class RevengeanceManagerEvent extends BaseEventPlugin {
+public class RevengeanceManager extends BaseCampaignEventListener {
 
 	public static final boolean DEBUG_MODE = false;
+	public static final String PERSISTENT_KEY = "nex_revengeanceManager";
 	
 	// controls frequency of spawning counter-invasion fleets
 	public static final float POINTS_TO_SPAWN = 125;
@@ -57,10 +51,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 	
 	public static final float VENGEANCE_FLEET_POINT_MULT = 0.8f;
 	
-	public static Logger log = Global.getLogger(RevengeanceManagerEvent.class);
-	
-	private boolean ended = false;
-	private final IntervalUtil interval = new IntervalUtil(1f, 1f);
+	public static Logger log = Global.getLogger(RevengeanceManager.class);
 	
 	float points = 0;
 	Map<String, Float> factionPoints = new HashMap<>();
@@ -75,6 +66,15 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 				stage[1] = 2;
 			}
 		}		
+	}
+
+	public RevengeanceManager() {
+		super(true);
+	}
+	
+	// this exists because else it'd be a leak in constructor
+	public void init() {
+		Global.getSector().getPersistentData().put(PERSISTENT_KEY, this);
 	}
 	
 	/**
@@ -196,6 +196,7 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 				//Global.getSector().getCampaignUI().addMessage(debugStr);
 			}
 			
+			// TODO: actually spawn the vengeance fleet
 			//Global.getSector().getEventManager().startEvent(new CampaignEventTarget(source), "exerelin_faction_vengeance", null);
 		}
 	}
@@ -220,50 +221,12 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
 		else if (stage > FLEET_STAGES.size() - 1) return 2;
 		else return (FLEET_STAGES.get(stage)[1]);
 	}
-
-	@Override
-	public String getCurrentImage() {
-		return faction.getLogo();
-	}
-
-	@Override
-	public String getCurrentMessageIcon() {
-		return faction.getCrest();
-	}
-
-	@Override
-	public CampaignEventCategory getEventCategory() {
-		return CampaignEventCategory.EVENT;
-	}
-
-	@Override
-	public String getEventIcon() {
-		return faction.getCrest();
-	}
-
-	@Override
-	public String getEventName() {
-		return StringHelper.getString("exerelin_events", "revengeanceFleet");
-	}
-	
-	@Override
-	public void init(String eventType, CampaignEventTarget eventTarget) {
-		super.init(eventType, eventTarget, false);
-	}
-
-	@Override
-	public boolean isDone() {
-		return ended;
-	}
-	
-	public void endEvent()
-	{
-		ended = true;
-	}
 	
 	// because for some reason ReportBattleFinished isn't being called, have StatsTracker call this instead
-	public void reportBattle(CampaignFleetAPI winner, BattleAPI battle)
+	@Override
+	public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
 	{
+		log.info("Battle finished");
 		if (!battle.isPlayerInvolved()) return;
 		
 		List<CampaignFleetAPI> killedFleets = battle.getNonPlayerSide();
@@ -399,15 +362,9 @@ public class RevengeanceManagerEvent extends BaseEventPlugin {
         return picker.pick();
     }
 	
-	public static RevengeanceManagerEvent getOngoingEvent()
+	public static RevengeanceManager getManager()
 	{
-		CampaignEventPlugin eventSuper = Global.getSector().getEventManager().getOngoingEvent(null, "exerelin_revengeance_manager");
-		if (eventSuper != null) 
-		{
-			RevengeanceManagerEvent event = (RevengeanceManagerEvent)eventSuper;
-			return event;
-		}
-		return null;
+		return (RevengeanceManager)Global.getSector().getPersistentData().get(PERSISTENT_KEY);
 	}
 	
 }

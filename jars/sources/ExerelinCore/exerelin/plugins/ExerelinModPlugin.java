@@ -21,6 +21,7 @@ import exerelin.campaign.DirectoryScreenScript;
 import exerelin.campaign.NexEventProbabilityManager;
 import exerelin.campaign.StartSetupPostTimePass;
 import exerelin.campaign.ReinitScreenScript;
+import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.utilities.*;
@@ -83,6 +84,7 @@ public class ExerelinModPlugin extends BaseModPlugin
         //sector.addScript(CovertOpsManager.create());
         sector.addScript(am);
         sector.addScript(new ColonyManager());
+        new RevengeanceManager().init();
         
         // debugging
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);

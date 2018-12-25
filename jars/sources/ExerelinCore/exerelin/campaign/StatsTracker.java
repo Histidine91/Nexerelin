@@ -15,7 +15,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.RuleBasedInteractionDialogPluginImpl;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.util.Misc;
-import exerelin.campaign.events.RevengeanceManagerEvent;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.StringHelper;
 import java.util.HashSet;
@@ -165,9 +164,9 @@ public class StatsTracker extends BaseCampaignEventListener{
     @Override
     public void reportBattleFinished(CampaignFleetAPI winner, BattleAPI battle)
     {
-        if (RevengeanceManagerEvent.getOngoingEvent() != null)
+        if (RevengeanceManager.getManager() != null)
         {
-            RevengeanceManagerEvent.getOngoingEvent().reportBattle(winner, battle);
+            //RevengeanceManager.getManager().reportBattle(winner, battle);
         }
         
         if (!battle.isPlayerInvolved()) return;

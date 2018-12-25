@@ -1,5 +1,6 @@
 package exerelin.campaign.events;
 
+import exerelin.campaign.RevengeanceManager;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -64,7 +65,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
     
     protected void setEscalationStage()
     {
-        escalationLevel = RevengeanceManagerEvent.getOngoingEvent().getVengeanceEscalation(faction.getId());
+        escalationLevel = RevengeanceManager.getManager().getVengeanceEscalation(faction.getId());
         
         /*
         if (faction.getRelToPlayer().getRel() <= -0.9)
@@ -264,7 +265,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
     public void init(String eventType, CampaignEventTarget eventTarget) {
         super.init(eventType, eventTarget, false);
         
-        if (!RevengeanceManagerEvent.isRevengeanceEnabled()) {
+        if (!RevengeanceManager.isRevengeanceEnabled()) {
             endEvent();
             return;
         }
@@ -316,7 +317,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
 
         super.startEvent(true);
         
-        if (!RevengeanceManagerEvent.isRevengeanceEnabled()) {
+        if (!RevengeanceManager.isRevengeanceEnabled()) {
             endEvent();
             return;
         }
@@ -576,18 +577,18 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         DIABLE("diableavionics", 1, 1f),
         ORA("ORA", 0, 0.5f);
 
-        final String faction;
-        final String madName;
-        final String madFleet;
-        final String madFleetSingle;
-        final String ravingMadName;
-        final String ravingMadFleet;
-        final String ravingMadFleetSingle;
-        final String starkRavingMadName;
-        final String starkRavingMadFleet;
-        final String starkRavingMadFleetSingle;
-        final float vengefulness;
-        final int maxLevel;
+        public final String faction;
+        public final String madName;
+        public final String madFleet;
+        public final String madFleetSingle;
+        public final String ravingMadName;
+        public final String ravingMadFleet;
+        public final String ravingMadFleetSingle;
+        public final String starkRavingMadName;
+        public final String starkRavingMadFleet;
+        public final String starkRavingMadFleetSingle;
+        public final float vengefulness;
+        public final int maxLevel;
         
         // legacy constructor with non-external names
         @Deprecated
@@ -649,7 +650,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
             this.maxLevel = maxLevel;
         }
 
-        static VengeanceDef getDef(String faction) {
+        public static VengeanceDef getDef(String faction) {
             for (VengeanceDef def : VengeanceDef.values()) {
                 if (def.faction.contentEquals(faction)) {
                     return def;

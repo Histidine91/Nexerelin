@@ -17,7 +17,7 @@ import exerelin.campaign.events.MarketCapturedEvent;
 import exerelin.campaign.events.MarketTransferedEvent;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RebellionEventCreator;
-import exerelin.campaign.events.RevengeanceManagerEvent;
+import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.events.SSP_FactionVengeanceEvent;
 import exerelin.campaign.events.covertops.SaboteurDestroyFoodEvent;
 import exerelin.campaign.events.covertops.SaboteurSabotageReserveEvent;
@@ -54,6 +54,7 @@ public class XStreamConfig {
 		x.alias("DiplomacyMngr", DiplomacyManager.class);
 		x.alias("ExerelinCoreScript", ExerelinCoreScript.class);
 		x.alias("PlayerFactionStore", PlayerFactionStore.class);
+		x.alias("RevengeanceMngr", RevengeanceManager.class);
 		x.alias("SectorMngr", SectorManager.class);
 		
 		x.alias("InvasionFltMngr", InvasionFleetManager.class);
@@ -89,7 +90,6 @@ public class XStreamConfig {
 		x.alias("MrktTrnsfrEvnt", MarketTransferedEvent.class);
 		x.alias("RebelEvnt", RebellionEvent.class);
 		x.alias("RebelEvntCreator", RebellionEventCreator.class);
-		x.alias("RevengeanceMngrEvnt", RevengeanceManagerEvent.class);
 		x.alias("SbtrDestroyFoodEvnt", SaboteurDestroyFoodEvent.class);
 		x.alias("SbtrSabotageReserveEvnt", SaboteurSabotageReserveEvent.class);
 		x.alias("SecurityAlertEvnt", SecurityAlertEvent.class);
