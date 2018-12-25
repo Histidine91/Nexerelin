@@ -2,27 +2,26 @@ package exerelin.utilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI;
+import com.fs.starfarer.api.campaign.CommDirectoryEntryAPI.EntryType;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
-import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.ImportantPeopleAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.Submarkets;
-import com.fs.starfarer.api.impl.campaign.submarkets.BaseSubmarketPlugin;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.PlayerFactionStore;
-import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.lazywizard.lazylib.MathUtils;
 
 // TODO: Clean up this crap
 public class ExerelinUtilsMarket {
@@ -172,5 +171,112 @@ public class ExerelinUtilsMarket {
 			return true;
 		
 		return false;
+	}
+	
+	public static PersonAPI getPerson(MarketAPI market, String postId)
+	{
+		for (CommDirectoryEntryAPI dir : market.getCommDirectory().getEntriesCopy())
+		{
+			if (dir.getType() != EntryType.PERSON) continue;
+			PersonAPI person = (PersonAPI)dir.getEntryData();
+			if (person.getPostId().equals(postId))
+				return person;
+		}
+		return null;
+	}
+	
+	public static boolean hasPerson(MarketAPI market, String postId)
+	{
+		return getPerson(market, postId) != null;
+	}
+	
+	public static boolean removePerson(MarketAPI market, String postId)
+	{
+		PersonAPI person = getPerson(market, postId);
+		if (person == null) return false;
+		
+		market.getCommDirectory().removePerson(person);
+		market.removePerson(person);
+		Global.getSector().getImportantPeople().removePerson(person);
+		return true;
+	}
+	
+	public static PersonAPI addPerson(ImportantPeopleAPI ip, MarketAPI market, 
+			String rankId, String postId, boolean noDuplicate)
+	{
+		if (noDuplicate && hasPerson(market, postId))
+			return null;
+		
+		PersonAPI person = market.getFaction().createRandomPerson();
+		if (rankId != null) person.setRankId(rankId);
+		person.setPostId(postId);
+
+		market.getCommDirectory().addPerson(person);
+		market.addPerson(person);
+		ip.addPerson(person);
+		ip.getData(person).getLocation().setMarket(market);
+		ip.checkOutPerson(person, "permanent_staff");
+		
+		return person;
+	}
+	
+	public static void addMarketPeople(MarketAPI market)
+	{
+		ImportantPeopleAPI ip = Global.getSector().getImportantPeople();
+		
+		if (market.getMemoryWithoutUpdate().getBoolean(MemFlags.MARKET_DO_NOT_INIT_COMM_LISTINGS)) return;
+		
+		boolean addedPerson = false;
+		if (market.hasIndustry(Industries.MILITARYBASE) || market.hasIndustry(Industries.HIGHCOMMAND)) {
+			String rankId = Ranks.GROUND_MAJOR;
+			if (market.getSize() >= 6) {
+				rankId = Ranks.GROUND_GENERAL;
+			} else if (market.getSize() >= 4) {
+				rankId = Ranks.GROUND_COLONEL;
+			}
+			
+			addPerson(ip, market, rankId, Ranks.POST_BASE_COMMANDER, true);
+			addedPerson = true;
+		}
+
+		boolean hasStation = false;
+		for (Industry curr : market.getIndustries()) {
+			if (curr.getSpec().hasTag(Industries.TAG_STATION)) {
+				hasStation = true;
+				continue;
+			}
+		}
+		if (hasStation) {
+			PersonAPI person = market.getFaction().createRandomPerson();
+			String rankId = Ranks.SPACE_COMMANDER;
+			if (market.getSize() >= 6) {
+				rankId = Ranks.SPACE_ADMIRAL;
+			} else if (market.getSize() >= 4) {
+				rankId = Ranks.SPACE_CAPTAIN;
+			}
+			
+			addPerson(ip, market, rankId, Ranks.POST_STATION_COMMANDER, true);
+			addedPerson = true;
+		}
+
+//			if (market.hasIndustry(Industries.WAYSTATION)) {
+//				// kept here as a reminder to check core plugin again when needed
+//			}
+
+		if (market.hasSpaceport()) {
+			//person.setRankId(Ranks.SPACE_CAPTAIN);
+
+			addPerson(ip, market, null, Ranks.POST_PORTMASTER, true);
+			addedPerson = true;
+		}
+
+		if (addedPerson) {
+			addPerson(ip, market, Ranks.SPACE_COMMANDER, Ranks.POST_SUPPLY_OFFICER, true);
+			addedPerson = true;
+		}
+
+		if (!addedPerson) {
+			addPerson(ip, market, Ranks.CITIZEN, Ranks.POST_ADMINISTRATOR, true);
+		}
 	}
 }

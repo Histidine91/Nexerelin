@@ -605,7 +605,7 @@ FireAll PopulateOptions
 FireAll ExerelinBaseCommanderOptionsInitialize","After a short wait, your connection request is accepted.
 
 ""Yeah, what is it?""",,
-ExerelinConvOfficialGreetingFollowers,PickGreeting,"Nex_IsBaseOfficial command
+ExerelinConvOfficialGreetingFollowers,PickGreeting,"Nex_IsBaseOfficial any
 Nex_IsFactionRuler $faction.id
 !$mpm_isPlayerContact","ShowPersonVisual
 FireAll PopulateOptions
@@ -793,7 +793,7 @@ Nex_BlueprintSwap getForSale","""Thank you for your business.""",,
 nex_blueprintSwapExit,DialogOptionSelected,$option == nex_blueprintSwapExit,FireAll PopulateOptions,,,
 ,,,,,,
 # other base commander stuff,,,,,,
-nex_marketAgentReportOption,PopulateOptions,"Nex_IsBaseOfficial admin
+#nex_marketAgentReportOption,PopulateOptions,"Nex_IsBaseOfficial admin
 $faction.id == $player.factionId
 $faction.id != player",,,nex_marketAgentReport:Get intel report,
 nex_marketAgentReportOptionFollowers,PopulateOptions,"Nex_IsBaseOfficial admin

@@ -63,37 +63,13 @@ public class AgentGatherIntel extends AgentActionBase {
 		text.setFontSmallInsignia();
 		text.addParagraph(StringHelper.HR);
 		
-		float stability = market.getStabilityValue();
+		int stability = (int)market.getStabilityValue();
 		text.addParagraph(Misc.ucFirst(StringHelper.getString("stability")) + ": " + stability);
 		text.highlightFirstInLastPara("" + stability, getColorFromScale(stability, 10, false));
 		
 		int alertLevel = Math.round(CovertOpsManager.getAlertLevel(market) * 100);
 		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "alertLevel")) + ": " + alertLevel + "%");
 		text.highlightFirstInLastPara("" + alertLevel, getColorFromScale(alertLevel, 100, true));
-		
-		float reserveSize = ResponseFleetManager.getReserveSize(market);
-		text.addParagraph(Misc.ucFirst(StringHelper.getString("exerelin_agents", "reserveSize")) + ": " + reserveSize);
-		text.highlightFirstInLastPara("" + reserveSize, highlightColor);
-		
-		if (reserveSize > ResponseFleetManager.MIN_FP_TO_SPAWN)
-		{
-			CampaignFleetAPI responseFleet;
-			String defenderMemFlag = "$nex_invasionResponseFleet";
-			MemoryAPI mem = memoryMap.get(MemKeys.MARKET);
-			if (mem.contains(defenderMemFlag))
-			{
-				responseFleet = mem.getFleet(defenderMemFlag);
-			}
-			else
-			{
-				responseFleet = ResponseFleetManager.getManager().getResponseFleet(market, (int)(reserveSize));
-				mem.set(defenderMemFlag, responseFleet, 5);
-			}
-			
-			String fleetTitle = Misc.ucFirst(StringHelper.getString("exerelin_agents", "responseFleetPreview"));
-			dialog.getVisualPanel().showFleetInfo(fleetTitle, responseFleet, null, null);
-			//responseFleet.despawn();
-		}
 		
 		if (RebellionEvent.isOngoing(market))
 		{

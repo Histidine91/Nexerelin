@@ -9,6 +9,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.thoughtworks.xstream.XStream;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.ColonyManager;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.DiplomacyManager;
 import exerelin.campaign.DirectoryScreenScript;
@@ -54,6 +55,8 @@ public class ExerelinModPlugin extends BaseModPlugin
         sector.addScript(MiningFleetManager.create());
         //sector.addScript(CovertOpsManager.create());
         sector.addScript(am);
+        sector.addScript(new ColonyManager());
+        
         // debugging
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);

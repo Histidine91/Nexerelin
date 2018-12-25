@@ -26,17 +26,14 @@ import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.CustomConstellationParams;
 import com.fs.starfarer.api.impl.campaign.terrain.HyperspaceTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
-import data.scripts.campaign.fleets.DS_LuddicPathFleetManager;
-import data.scripts.campaign.fleets.DS_MercFleetManager;
-import data.scripts.campaign.fleets.DS_PirateFleetManager;
 import data.scripts.world.templars.TEM_Antioch;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.AllianceManager;
+import exerelin.campaign.ColonyManager;
 import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
@@ -223,6 +220,8 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		sector.addScript(MiningFleetManager.create());
 		sector.addScript(CovertOpsManager.create());
 		sector.addScript(AllianceManager.create());
+		sector.addScript(new ColonyManager());
+		
 		StatsTracker.create();
 		
 		DiplomacyManager.setRandomFactionRelationships(setupData.randomStartRelationships, 
