@@ -1,12 +1,17 @@
 package exerelin.plugins;
 
 import com.fs.starfarer.api.BaseModPlugin;
+import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignEventListener;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotAPI;
 import com.fs.starfarer.api.campaign.PersistentUIDataAPI.AbilitySlotsAPI;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.intel.FactionHostilityManager;
+import com.fs.starfarer.api.impl.campaign.intel.inspection.HegemonyInspectionManager;
+import com.fs.starfarer.api.impl.campaign.intel.punitive.PunitiveExpeditionManager;
 import com.thoughtworks.xstream.XStream;
 import exerelin.campaign.AllianceManager;
 import exerelin.campaign.ColonyManager;
@@ -22,6 +27,8 @@ import exerelin.utilities.*;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.MiningFleetManager;
 import exerelin.campaign.fleets.ResponseFleetManager;
+import exerelin.campaign.intel.Nex_HegemonyInspectionManager;
+import exerelin.campaign.intel.Nex_PunitiveExpeditionManager;
 import exerelin.campaign.missions.ConquestMissionCreator;
 import exerelin.campaign.submarkets.PrismMarket;
 import exerelin.utilities.versionchecker.VCModPluginCustom;
@@ -40,6 +47,26 @@ public class ExerelinModPlugin extends BaseModPlugin
     public static final boolean HAVE_VERSION_CHECKER = Global.getSettings().getModManager().isModEnabled("lw_version_checker");
     
     protected static boolean isNewGame = false;
+    
+    protected <T extends EveryFrameScript> void replaceScript(SectorAPI sector, Class toRemove, T toAdd)
+    {
+        for (EveryFrameScript script : sector.getScripts())
+        {
+            if (toRemove.isInstance(script))
+            {
+                if (toAdd != null && toAdd.getClass().isInstance(script))
+                    continue;
+                
+                sector.removeScript(script);
+                if (script instanceof CampaignEventListener)
+                    sector.removeListener((CampaignEventListener)script);
+                
+                if (toAdd != null)
+                    sector.addScript(toAdd);
+                break;
+            }
+        }
+    }
     
     protected void applyToExistingSave()
     {
@@ -60,6 +87,11 @@ public class ExerelinModPlugin extends BaseModPlugin
         // debugging
         //im.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.invasionGracePeriod);
         //am.advance(sector.getClock().getSecondsPerDay() * ExerelinConfig.allianceGracePeriod);
+        
+        // replace or remove relevant intel items
+        replaceScript(sector, FactionHostilityManager.class, null);
+        replaceScript(sector, HegemonyInspectionManager.class, new Nex_HegemonyInspectionManager());
+        replaceScript(sector, PunitiveExpeditionManager.class, new Nex_PunitiveExpeditionManager());
         
         /*
         // replace patrol handling with our own

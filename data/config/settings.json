@@ -7,6 +7,7 @@
 	#"factionCommissionBounty":500,
 	
 	"plugins":{
+		"coreLifecyclePlugin":"exerelin.plugins.NexCoreLifecyclePlugin",
 		"newGameCreationEntryPoint":"exerelin.world.ExerelinNewGameSetup",
 		#"newGameSectorProcGen":"exerelin.world.ExerelinSectorProcGen",
 	},
