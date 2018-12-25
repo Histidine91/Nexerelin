@@ -105,16 +105,18 @@ public class AllianceVoteIntel extends BaseIntelPlugin {
 		}
 		String str = StringHelper.getString("exerelin_alliances", strKey);
 		
-		String otherParty;
+		String otherParty, otherPartyHl;
 		Color otherPartyCol;
 		if (otherPartyIsAlliance)
 		{
 			otherParty = AllianceManager.getAllianceByUUID(otherPartyId).getName();
+			otherPartyHl = otherParty;
 			otherPartyCol = h;
 		}
 		else {
 			FactionAPI other = Global.getSector().getFaction(otherPartyId);
 			otherParty = other.getDisplayNameWithArticle();
+			otherPartyHl = other.getDisplayNameWithArticleWithoutArticle();
 			otherPartyCol = other.getBaseUIColor();
 		}
 		
@@ -124,7 +126,7 @@ public class AllianceVoteIntel extends BaseIntelPlugin {
 		str = StringHelper.substituteToken(str, "$alliance", alliance.getName());
 		str = StringHelper.substituteToken(str, "$theOtherParty", otherParty);
 		LabelAPI para = info.addPara(str, opad);
-		para.setHighlight(alliance.getName(), StringHelper.getString(isWar ? "war" : "peace"), otherParty);
+		para.setHighlight(alliance.getName(), StringHelper.getString(isWar ? "war" : "peace"), otherPartyHl);
 		para.setHighlightColors(h, warPeaceHl, otherPartyCol);
 		
 		// defiers

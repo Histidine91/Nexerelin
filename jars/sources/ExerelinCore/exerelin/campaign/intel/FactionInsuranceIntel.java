@@ -196,6 +196,8 @@ public class FactionInsuranceIntel extends BaseIntelPlugin {
 		LabelAPI label = info.addPara(para, opad);
 		label.setHighlight(paid, faction.getDisplayNameLongWithArticle());
 		label.setHighlightColors(h, faction.getBaseUIColor());
+		
+		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
 	}
 
 	@Override
