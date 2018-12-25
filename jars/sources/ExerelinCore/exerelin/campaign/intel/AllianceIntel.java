@@ -50,11 +50,6 @@ public class AllianceIntel extends BaseIntelPlugin {
 		return "Alliances";
 	}
 	
-	protected String getString(String id)
-	{
-		return StringHelper.getString("exerelin_alliances", id);
-	}
-	
 	@Override
 	//This is the message info that shows on the left
 	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {

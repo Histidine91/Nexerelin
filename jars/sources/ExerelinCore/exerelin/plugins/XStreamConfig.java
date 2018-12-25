@@ -8,17 +8,12 @@ import exerelin.campaign.covertops.InstigateRebellion;
 import exerelin.campaign.events.covertops.AgentDestabilizeMarketEvent;
 import exerelin.campaign.events.covertops.AgentLowerRelationsEvent;
 import exerelin.campaign.events.covertops.CovertOpsEventBase;
-import exerelin.campaign.events.ExerelinRepTrackerEvent;
 import exerelin.campaign.events.ExigencyRespawnFleetEvent;
 import exerelin.campaign.events.FactionBountyEvent;
-import exerelin.campaign.events.FactionEliminatedEvent;
-import exerelin.campaign.events.FactionRespawnedEvent;
-import exerelin.campaign.events.MarketCapturedEvent;
-import exerelin.campaign.events.MarketTransferedEvent;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RebellionEventCreator;
 import exerelin.campaign.RevengeanceManager;
-import exerelin.campaign.events.SSP_FactionVengeanceEvent;
+import exerelin.campaign.intel.VengeanceFleetIntel;
 import exerelin.campaign.events.covertops.SaboteurDestroyFoodEvent;
 import exerelin.campaign.events.covertops.SaboteurSabotageReserveEvent;
 import exerelin.campaign.events.covertops.SecurityAlertEvent;
@@ -72,22 +67,17 @@ public class XStreamConfig {
 		x.alias("ResponseFltAI", ResponseFleetAI.class);
 		x.alias("SuppressFltAI", SuppressionFleetAI.class);
 		x.alias("ExePatrolFltMngr", ExerelinPatrolFleetManager.class);
+		x.alias("VengFltIntl", VengeanceFleetIntel.class);
 		
 		x.alias("AgntDestabilizeMrktEvnt", AgentDestabilizeMarketEvent.class);
 		x.alias("AgntLowerRelationsEvnt", AgentLowerRelationsEvent.class);
 		x.alias("AllyVoteRslt", AllianceVoter.VoteResult.class);
 		x.alias("CovertOpsEvnt", CovertOpsEventBase.class);
-		x.alias("ExeRepTrckrEvnt", ExerelinRepTrackerEvent.class);
 		x.alias("ExiRespawnFltEvnt", ExigencyRespawnFleetEvent.class);
 		x.alias("FactionBntyEvnt", FactionBountyEvent.class);
 		x.alias("FactionBntyEvntKey", FactionBountyEvent.FactionBountyPairKey.class);
-		x.alias("FactionElimEvnt", FactionEliminatedEvent.class);
-		x.alias("FactionRespawnEvnt", FactionRespawnedEvent.class);
-		x.alias("FactionVengeanceEvnt", SSP_FactionVengeanceEvent.class);
 		x.alias("InstgtRbl", InstigateRebellion.class);
 		x.alias("InstgtRblEvnt", InstigateRebellionEvent.class);
-		x.alias("MrktCapturedEvnt", MarketCapturedEvent.class);
-		x.alias("MrktTrnsfrEvnt", MarketTransferedEvent.class);
 		x.alias("RebelEvnt", RebellionEvent.class);
 		x.alias("RebelEvntCreator", RebellionEventCreator.class);
 		x.alias("SbtrDestroyFoodEvnt", SaboteurDestroyFoodEvent.class);
@@ -131,28 +121,7 @@ public class XStreamConfig {
 		x.aliasAttribute(FactionBountyEvent.class, "baseBounty", "pays");
 		x.aliasAttribute(FactionBountyEvent.class, "lastBounty", "last");
 		x.aliasAttribute(FactionBountyEvent.class, "enemyFaction", "ef");
-		
-		// FactionEliminatedEvent
-		x.aliasAttribute(FactionEliminatedEvent.class, "defeatedFaction", "lose");
-		x.aliasAttribute(FactionEliminatedEvent.class, "victorFaction", "win");
-		x.aliasAttribute(FactionEliminatedEvent.class, "playerDefeated", "pLose");
-		x.aliasAttribute(FactionEliminatedEvent.class, "playerVictory", "pWin");
-		
-		// FactionRespawnedEvent
-		x.aliasAttribute(FactionRespawnedEvent.class, "existedBefore", "notNew");
-			
-		// MarketCapturedEvent
-		x.aliasAttribute(MarketCapturedEvent.class, "newOwner", "new");
-		x.aliasAttribute(MarketCapturedEvent.class, "oldOwner", "old");
-		x.aliasAttribute(MarketCapturedEvent.class, "repChangeStrength", "rep");
-		x.aliasAttribute(MarketCapturedEvent.class, "factionsToNotify", "ntfy");
-		x.aliasAttribute(MarketCapturedEvent.class, "playerInvolved", "plyr");
-		
-		// MarketTransferedEvent
-		x.aliasAttribute(MarketTransferedEvent.class, "newOwner", "new");
-		x.aliasAttribute(MarketTransferedEvent.class, "oldOwner", "old");
-		x.aliasAttribute(MarketTransferedEvent.class, "repEffect", "rep");
-		
+				
 		// RebellionEvent
 		x.aliasAttribute(RebellionEvent.class, "stage", "stg");
 		x.aliasAttribute(RebellionEvent.class, "suppressionFleetCountdown", "fltCntdwn");
@@ -171,13 +140,13 @@ public class XStreamConfig {
 		x.aliasAttribute(RebellionEvent.class, "result", "rslt");
 		x.aliasAttribute(RebellionEvent.class, "conditionToken", "cond");
 		
-		// SSP_FactionVengeanceEvent
-		x.aliasAttribute(SSP_FactionVengeanceEvent.class, "daysLeft", "days");
-		x.aliasAttribute(SSP_FactionVengeanceEvent.class, "escalationLevel", "escal");
-		x.aliasAttribute(SSP_FactionVengeanceEvent.class, "fleet", "flt");
-		x.aliasAttribute(SSP_FactionVengeanceEvent.class, "foundPlayerYet", "found");
-		x.aliasAttribute(SSP_FactionVengeanceEvent.class, "timeSpentLooking", "look");
-		x.aliasAttribute(SSP_FactionVengeanceEvent.class, "trackingMode", "trck");
+		// VengeanceFleetIntel
+		x.aliasAttribute(VengeanceFleetIntel.class, "daysLeft", "days");
+		x.aliasAttribute(VengeanceFleetIntel.class, "escalationLevel", "escal");
+		x.aliasAttribute(VengeanceFleetIntel.class, "fleet", "flt");
+		x.aliasAttribute(VengeanceFleetIntel.class, "foundPlayerYet", "found");
+		x.aliasAttribute(VengeanceFleetIntel.class, "timeSpentLooking", "look");
+		x.aliasAttribute(VengeanceFleetIntel.class, "trackingMode", "trck");
 		
 		// SuperweaponEvent
 		x.aliasAttribute(SuperweaponEvent.class, "elapsedDays", "days");
