@@ -3,11 +3,6 @@
     "corvusCompatible":true,
     "hostileToAll":1,
     
-    "isPirateNeutral":false,
-    "spawnPatrols":true,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
     "rebelFleetSuffix":"Heretics",
 
     "marketSpawnWeight":0.5,
@@ -22,9 +17,7 @@
     "invasionSupportFleetName":"Destruire",
     "defenceFleetName":"Defens",
     "stationName":"Fortin",
-
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
+    
     "factionsLiked":[],
     "factionsDisliked":[],
     "morality":"evil",
@@ -55,6 +48,4 @@
     "startShipsSolo":[["tem_martyr_sal"]],
     "startShipsCombatSmall":[["tem_jesuit_est", "tem_martyr_def"]],
     "startShipsCombatLarge":[["tem_crusader_est", "tem_jesuit_sal"]],
-    
-    "defenceStations":[],
 }

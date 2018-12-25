@@ -1,9 +1,7 @@
 {
   "playableFaction": true,
   "corvusCompatible": true,
-  "baseFleetCostMultiplier": 1.0,
-  "customRebelFaction": "",
-  "customRebelFleetId": "",
+  
   "rebelFleetSuffix": "Vagabond",
   "alignments": {
     "technocratic": 0.0,

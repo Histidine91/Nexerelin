@@ -4,16 +4,10 @@
     "showIntelEvenIfDead":true,
     "noHomeworld":true,
     
-    "baseFleetCostMultiplier":1.0,
-
     "directoryUseShortName":true,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
+    
     "rebelFleetSuffix":"Rebels",
-
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
+    
     "noRandomizeRelations":true,
     
     "alignments":{

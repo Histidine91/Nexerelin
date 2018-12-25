@@ -1,28 +1,14 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
-
-
-    "crewExpereinceLevelIncreaseChance":0.0, # Double 0 - 1.0
-    "baseFleetCostMultiplier":1.0, # Double
-
-
-    "customRebelFaction":"", # String
-    "customRebelFleetId":"", # String
+    
     "rebelFleetSuffix":"Splinter Group", # String
-
-
-    "positiveDiplomacyExtra":0, # Integer
-
-    "negativeDiplomacyExtra":0, # Integer
-
+    
     "alignments":{},
 
     "freeMarket":true,
     "miningVariantsOrWings":["daedalus_Basic", "daedalus_Support"],
-
-    "customStations":[],
-
+    
     "startShipsSolo":[["foxhound_Basic"]],
     "startShipsCombatSmall":[["timberwolf_Assault", "striker_Basic", "ryker_Support"]],
     "startShipsTradeSmall":[["talus_Basic", "wrestler_Basic", "skylarkc_Support"]],

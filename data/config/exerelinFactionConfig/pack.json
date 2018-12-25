@@ -1,19 +1,12 @@
 {
     "playableFaction":true,
-
-    "baseFleetCostMultiplier":0.9,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
+    
     "rebelFleetSuffix":"Splinter Group",
     
     "directoryUseShortName":true,
 
     "logisticsFleetName":"Supply Convoy",
-
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
-
+    
     "alignments":{
         "militarist":-0.5,
         "diplomatic":0.5,

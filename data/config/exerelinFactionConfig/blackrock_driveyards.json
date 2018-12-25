@@ -1,16 +1,11 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
-
-    "crewExpereinceLevelIncreaseChance":0.0,
+    
     "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
+    
     "rebelFleetSuffix":"Splinter Group",
-
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
+    
     "startRelationships":{
         "mayorate":-0.6,
     },
@@ -33,6 +28,4 @@
     "startShipsCarrierSmall":[["brdy_typheus_defender", "brdy_zabrus_attack", "brdy_robberfly_strike"]],
     "startShipsCarrierLarge":[["brdy_convergence_standard", "brdy_eurypterus_standard", "scarab_hunter"]],
     "startShipsSuper":[["brdy_imaginos_shock"]],
-    
-    "defenceStations":["nex_asgard_Advanced"],
 }

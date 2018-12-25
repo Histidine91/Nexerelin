@@ -1,12 +1,7 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
-
-    "crewExpereinceLevelIncreaseChance":0.0,
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
+    
     "rebelFleetSuffix":"Splinter Group",
     
     "startRelationships":{ "exipirated": -0.8 },
@@ -24,6 +19,4 @@
     "startShipsCombatSmall":[["exigency_destroyer_Disruptor", "exigency_yria_Fleetpointdefense", "exigency_compactfrigate_Brawler"]],
     "startShipsCombatLarge":[["exigency_cruiser_Assault", "exigency_lightcarrier_Standard"]],
     "startShipsSuper":[["exigency_indra_Standard"]],
-    
-    "defenceStations":["nex_asgard_Advanced"],
 }

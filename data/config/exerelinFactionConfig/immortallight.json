@@ -1,21 +1,13 @@
 {
     "playableFaction":false,
     "corvusCompatible":true,
-
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
+    
     "rebelFleetSuffix":"Splinter Group",
     
-    "positiveDiplomacyExtra":0, # Integer
-    "negativeDiplomacyExtra":0, # Integer
     "startRelationships":{
         "approlight":-0.6,
     },
     "morality":"amoral",
     
     "alignments":{},
-    
-    "defenceStations":["nex_asgard_Advanced"],
 }

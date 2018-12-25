@@ -2,10 +2,6 @@
     "playableFaction":true,
     "corvusCompatible":true,
     
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
     "rebelFleetSuffix":"Traitors",
     
     "marketSpawnWeight":2,

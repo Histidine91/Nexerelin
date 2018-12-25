@@ -2,15 +2,8 @@
     "playableFaction":false,	# for now
     "corvusCompatible":true,
     
-
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
     "rebelFleetSuffix":"Collaborators",
-
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
+    
     "startRelationships":{
         "sun_ici":-0.6,
     },

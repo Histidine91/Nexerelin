@@ -1,17 +1,11 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
-
-    "baseFleetCostMultiplier":1.0,
     
     "directoryUseShortName":true,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
+    
     "rebelFleetSuffix":"Splinter Group",
-
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
+    
     "morality":"good",
 
     "alignments":{
@@ -34,6 +28,4 @@
     "startShipsCarrierSmall":[["ms_sargasso_Balanced", "ms_enlil_AF", "ms_belet-seri_CS"]],
     "startShipsCarrierLarge":[["ms_charybdis_Attack", "ms_morningstar_CS", "ms_seski_LA"]],
     "startShipsSuper":[["ms_shamash_EMP"]],
-    
-    "defenceStations":["nex_asgard_Advanced"],
 }

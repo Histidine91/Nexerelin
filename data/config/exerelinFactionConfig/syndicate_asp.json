@@ -1,18 +1,11 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
-
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
+    
     "rebelFleetSuffix":"Splinter Group",
     
     "directoryUseShortName":true,
-
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
-     
+    
     "alignments":{
         "corporate":1,
     },

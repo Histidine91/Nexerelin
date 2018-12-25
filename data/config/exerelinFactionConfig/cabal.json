@@ -6,15 +6,11 @@
     "showIntelEvenIfDead":true,
     
     "spawnPatrols":true,
-
+    
     "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
+    
     "rebelFleetSuffix":"Splinter Group",
-
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
+    
     "startRelationships":{ "tritachyon":0.1, "templars":-0.1 }, # in Corvus they're also only suspicious with League and Exi but meh
     "morality":"evil",
     

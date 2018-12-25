@@ -2,10 +2,6 @@
     "playableFaction":true,
     "corvusCompatible":true,
     
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
     "rebelFleetSuffix":"Splinter Group",
     
     "directoryUseShortName":true,
@@ -43,6 +39,4 @@
     "startShipsCarrierSmall":[["ssp_vortex_sta", "tempest_Attack", "ssp_hecate_sup"]],
     "startShipsCarrierLarge":[["swp_eos_sta", "ssp_arachne_art", "brawler_tritachyon_Standard"]],
     "startShipsSuper":[["hyperion_Attack"]],
-    
-    "defenceStations":["nex_asgard_Advanced"],
 }

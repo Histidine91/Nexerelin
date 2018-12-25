@@ -1,11 +1,7 @@
 {
     "playableFaction":true,
     "corvusCompatible":true,
-
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
+    
     "rebelFleetSuffix":"Splinter Group",
     
     "startRelationships":{ "tiandong": -0.6 },
@@ -28,6 +24,4 @@
     "startShipsTradeSmall":[["Fox_LDestroyer_standard", "Fox_Drone_standard", "Fox_Hauler_standard"]],  # Comet, Porter, Stable
     "startShipsCombatLarge":[["Fox_Cruiser_standard", "Fox_Minelayer_standard", "fox_dfrigate_closesupport"]], # Nova, Modem, Rondure
     #"startShipsTradeLarge":["Fox_Carrier_standard", "Fox_Hauler_standard", "fox_heak_wing"],   # Inland, Stable, Heak
-    
-    "defenceStations":["nex_asgard_Advanced"],
 }

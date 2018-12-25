@@ -5,10 +5,6 @@
     "pirateFaction":true,
     "showIntelEvenIfDead":true,
     
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
     "rebelFleetSuffix":"Heretics",
 
     "difficultyString":"hard",
@@ -34,6 +30,4 @@
     "startShipsTradeSmall":[["buffalo_luddic_path_att", "dram_luddic_path_rai", "cerberus_luddic_path_Attack"]],
     "startShipsCombatLarge":[["colossus2_Pather", "enforcer_luddic_path_rai", "lasher_luddic_path_Raider"]],
     "startShipsCarrierSmall":[["condor_luddic_path_rai", "nebula_luddic_path_rai", "hound_luddic_path_Attack"]],
-
-	"defenceStations":["nex_asgard_Pirate"],
 }

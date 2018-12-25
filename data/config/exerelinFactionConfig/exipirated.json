@@ -3,11 +3,7 @@
     "pirateFaction":true,
     "noHomeworld":true,
     "corvusCompatible":true,
-
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
+    
     "rebelFleetSuffix":"Splinter Group",
 
     "startRelationships":{ "exigency": -0.8 },

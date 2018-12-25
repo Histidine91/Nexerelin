@@ -3,15 +3,8 @@
     "playableFaction":true,
     "pirateFaction":true,
     "noHomeworld":true,
-
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
+    
     "rebelFleetSuffix":"Outlaws",
-
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
     
     "freeMarket":true,
     

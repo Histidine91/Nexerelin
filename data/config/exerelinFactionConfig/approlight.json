@@ -2,14 +2,8 @@
     "playableFaction":true,
     "corvusCompatible":true,
 
-    "baseFleetCostMultiplier":1.0,
-
-    "customRebelFaction":"",
-    "customRebelFleetId":"",
     "rebelFleetSuffix":"Splinter Group",
-    
-    "positiveDiplomacyExtra":0,
-    "negativeDiplomacyExtra":0,
+	
     "startRelationships":{
         "immortallight":-0.6,
     },
@@ -25,6 +19,4 @@
     "startShipsTradeSmall":[["AL_referee_Standard", "AL_textbook_Standard", "AL_textbook_Standard"]],
     "startShipsCombatLarge":[["AL_postgraduate_Standard", "AL_whitewolf_Balanced", "AL_mumber_C", "AL_textbook_Standard"]],
     "startShipsTradeLarge":[["AL_oilphaser_Standard", "AL_scolder_Standard", "AL_scolder_Standard", "AL_brain_Defend"]],
-    
-    "defenceStations":["nex_asgard_Advanced"],
 }
