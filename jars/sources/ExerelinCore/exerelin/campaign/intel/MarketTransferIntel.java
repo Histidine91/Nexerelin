@@ -47,11 +47,11 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		info.addPara(getName(), c, 0f);
 		bullet(info);
 
-		float pad = 3f;
+		float initPad = 3f, pad = 0;
 		Color tc = getBulletColorForMode(mode);
 		Color h = Misc.getHighlightColor();
 		
-		addFactionBullet(info, "intelTransferBullet1", newFactionId, tc, pad);
+		addFactionBullet(info, "intelTransferBullet1", newFactionId, tc, initPad);
 		addFactionBullet(info, "intelTransferBullet2", oldFactionId, tc, pad);
 	}
 	
@@ -159,6 +159,11 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		tags.add(oldFactionId);
 		tags.add(newFactionId);
 		return tags;
+	}
+	
+	@Override
+	public FactionAPI getFactionForUIColors() {
+		return Global.getSector().getFaction(newFactionId);
 	}
 	
 	@Override

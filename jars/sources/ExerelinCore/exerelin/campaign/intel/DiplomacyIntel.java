@@ -65,10 +65,10 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		info.addPara(getName(), c, 0f);
 		bullet(info);
 
-		float pad = 3f;
+		float initPad = 3f, pad = 0;
 		Color tc = getBulletColorForMode(mode);
 		Color h = Misc.getHighlightColor();
-		addFactionNamePara(info, pad, tc, getFaction(factionId1));
+		addFactionNamePara(info, initPad, tc, getFaction(factionId1));
 		addFactionNamePara(info, pad, tc, getFaction(factionId2));
 		
 		String relation = NexUtilsReputation.getRelationStr(storedRelation);
