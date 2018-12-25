@@ -1074,6 +1074,19 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
         DIPLOMATIC_ALLY,
         DEFEAT_CONQUEST,  //not a victory type but who's counting?
         DEFEAT_DIPLOMATIC,
-        RETIRED
+        RETIRED;
+        
+        public boolean isConquest()
+        {
+            return this == CONQUEST || this == CONQUEST_ALLY || this == DEFEAT_CONQUEST;
+        }
+        public boolean isDiplomatic()
+        {
+            return this == DIPLOMATIC || this == DIPLOMATIC_ALLY || this == DEFEAT_DIPLOMATIC;
+        }
+        public boolean isDefeat()
+        {
+            return this == DEFEAT_CONQUEST || this == DEFEAT_DIPLOMATIC;
+        }
     }
 }

@@ -23,12 +23,6 @@ exerelin_invasion_fleet,no_longer_hostile_player,,,secure_comm,$Faction invasion
 ,,,,,,,,,,,,
 exerelin_slaves_sold,report,,,player_intel_always,Slave trade $onOrAt $market,Rumors have surfaced concerning your sale of slaves $onOrAt $market. The lawful factions in the $location are appalled at your lack of respect for basic human dignity.,Reputation with $numFactions faction(s) reduced by an average of $repPenaltyAbs.,,,,,
 ,,,,,,,,,,,,
-exerelin_victory,conquest,,,player_intel_always,$VictorFaction $isOrAre victorious,$TheVictorFaction have crushed all possible competition. Their rule over the Sector is now undisputed.,,,,important,,
-exerelin_victory,conquest_player,,,player_intel_always,$VictorFaction $isOrAre victorious,$TheVictorFaction have crushed all possible competition. Their rule over the Sector is now undisputed.,You have won the game!,,,important,,
-exerelin_victory,diplomatic,,,player_intel_always,$VictorFaction $isOrAre victorious,"$TheVictorFaction and their allies are the only remaining powers in the Sector. Peace has come to this corner of the galaxy, at least for now.",,,,important,,
-exerelin_victory,diplomatic_player,,,player_intel_always,$VictorFaction $isOrAre victorious,"$TheVictorFaction and their allies are the only remaining powers in the Sector. Peace has come to this corner of the galaxy, at least for now.",You have won the game!,,,important,,
-exerelin_victory,retired,,,player_intel_always,Player retired,You have chosen to retire from the game. The conflicts of the Sector will have to unfold without you.,,,,important,,
-,,,,,,,,,,,,
 exerelin_warmonger,report,,,player_intel_always,Unprovoked attack on $faction,"Your unprovoked attack on $theFaction has angered some of the other factions, and caused great consternation for $thePlayerFaction.","Reputation with $playerFaction reduced by $repPenaltyMyFactionAbs, currently at $newRelationStr.
 Average reputation penalty with $numFactions other faction(s): $repPenaltyAvgAbs",,graphics/exerelin/icons/intel/war.png,,,
 exerelin_warmonger,report_noOwnFaction,,,player_intel_always,Unprovoked attack on $faction,Your unprovoked attack on $theFaction has angered some of the other factions.,Average reputation penalty with $numFactions other faction(s): $repPenaltyAvgAbs,,graphics/exerelin/icons/intel/war.png,,,

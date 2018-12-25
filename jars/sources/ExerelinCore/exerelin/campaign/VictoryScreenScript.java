@@ -10,16 +10,16 @@ import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogPlugin;
 import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.SectorManager.VictoryType;
 import exerelin.campaign.StatsTracker.DeadOfficerEntry;
+import exerelin.campaign.intel.VictoryIntel;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
-import java.util.HashMap;
 import java.util.Set;
 
 // adapted from UpdateNotificationScript in LazyWizard's Version Checker
@@ -62,17 +62,10 @@ public class VictoryScreenScript implements EveryFrameScript
 		{
 			ui.showInteractionDialog(new VictoryDialog(faction, victoryType), Global.getSector().getPlayerFleet());
 			
-			Map<String, Object> params = new HashMap<>();
-			
-			String victoryTypeStr = victoryType.toString().toLowerCase();
-			boolean playerVictory = !victoryTypeStr.startsWith("defeat_");
-			
-			params.put("victorFactionId", faction);
-			params.put("diplomaticVictory", victoryTypeStr.contains("diplomatic"));
-			params.put("playerVictory", playerVictory);
-			params.put("retired", victoryType == VictoryType.RETIRED);
-			Global.getSector().getEventManager().startEvent(
-					new CampaignEventTarget(Global.getSector().getPlayerFleet()), "exerelin_victory", params);
+			boolean playerWon = !victoryType.isDefeat() && victoryType != VictoryType.RETIRED;
+			VictoryIntel intel = new VictoryIntel(faction, victoryType, playerWon);
+			Global.getSector().getIntelManager().addIntel(intel);
+			intel.setImportant(true);
 			
 			isDone = true;
 		}
@@ -80,6 +73,7 @@ public class VictoryScreenScript implements EveryFrameScript
 
 	private static class VictoryDialog implements InteractionDialogPlugin
 	{
+		protected boolean officerDeaths = ExerelinConfig.officerDeaths || !StatsTracker.getStatsTracker().deadOfficers.isEmpty();
 		
 		private InteractionDialogAPI dialog;
 		private TextPanelAPI text;
@@ -142,14 +136,15 @@ public class VictoryScreenScript implements EveryFrameScript
 			printKeyValueLine(getString("statsShipsLost"), tracker.getShipsLost() + "");
 			printKeyValueLine(getString("statsFpKilled"), Misc.getWithDGS((int)tracker.getFpKilled()));
 			printKeyValueLine(getString("statsFpLost"), Misc.getWithDGS((int)tracker.getFpLost()));
-			printKeyValueLine(getString("statsOfficersLost"), tracker.getNumOfficersLost() + "");
+			if (officerDeaths)
+				printKeyValueLine(getString("statsOfficersLost"), tracker.getNumOfficersLost() + "");
 			printKeyValueLine(getString("statsOrphansMade"),  Misc.getWithDGS(tracker.getOrphansMade()));
 			printKeyValueLine(getString("statsMarketsCaptured"), tracker.getMarketsCaptured()+"");
-			printKeyValueLine(getString("statsAgentsUsed"), tracker.getAgentsUsed()+"");
-			printKeyValueLine(getString("statsSaboteursUsed"), tracker.getSaboteursUsed()+"");
+			//printKeyValueLine(getString("statsAgentsUsed"), tracker.getAgentsUsed()+"");
+			//printKeyValueLine(getString("statsSaboteursUsed"), tracker.getSaboteursUsed()+"");
 			printKeyValueLine(getString("statsPrisonersRepatriated"), tracker.getPrisonersRepatriated()+"");
 			printKeyValueLine(getString("statsPrisonersRansomed"), tracker.getPrisonersRansomed()+"");
-			printKeyValueLine(getString("statsSlavesSold"), tracker.getSlavesSold()+"");
+			//printKeyValueLine(getString("statsSlavesSold"), tracker.getSlavesSold()+"");
 		}
 		
 		protected void printMemorial()
@@ -239,7 +234,8 @@ public class VictoryScreenScript implements EveryFrameScript
 			
 			options.addOption(Misc.ucFirst(StringHelper.getString("stats")), Menu.STATS);
 			options.addOption(Misc.ucFirst(StringHelper.getString("credits")), Menu.CREDITS);
-			options.addOption(Misc.ucFirst(getString("officerMemorial")), Menu.MEMORIAL);
+			if (officerDeaths)
+				options.addOption(Misc.ucFirst(getString("officerMemorial")), Menu.MEMORIAL);
 			options.addOption(Misc.ucFirst(StringHelper.getString("close")), Menu.EXIT);
 			dialog.setPromptText(getString("whatNow"));
 		}

@@ -39,6 +39,8 @@
 		"hostile":"hostile",
 		"war":"war",
 		"peace":"peace",
+		"victory":"victory",
+		"defeat":"defeat",
 		
 		"formed":"formed",
 		"dissolved":"dissolved",
@@ -374,7 +376,7 @@
 		"hasBaseTip":"has military base",
 		
 		"intelCaptureTitle":"Market Captured - $market",
-		"intelTransferedTitle":"Market Transfered - $market",
+		"intelTransferTitle":"Market Transfered - $market",
 		"intelTransferBullet1":"Now under $faction",
 		"intelTransferBullet2":"Previously $faction",
 		
@@ -558,7 +560,20 @@
 		"statsPrisonersRepatriated":"Prisoners repatriated",
 		"statsPrisonersRansomed":"Prisoners ransomed",
 		"statsSlavesSold":"Slaves sold",
-		"statsOrphansMade":"Orphans made"
+		"statsOrphansMade":"Orphans made",
+		
+		"intelTitleConquest":"Conquest Victory",
+		"intelTitleDiplomatic":"Diplomatic Victory",
+		"intelTitleRetired":"Player Retired",
+		
+		"intelBulletFaction":"$faction",
+		"intelBulletFactionAndAllies":"$faction and allies",
+		
+		"intelDescConquest":"$TheFaction $hasOrHave crushed all possible competition. Their rule over the Sector is now undisputed.",
+		"intelDescDiplomatic":"$TheFaction and their allies are the only remaining powers in the Sector. Peace has come to this corner of the galaxy, at least for now.",
+		"intelDescRetired":"You, $playerName, have chosen to retire from the game. The conflicts of the Sector will have to unfold without you.",
+		
+		"intelStringYouWon":"You have won the game!"
 	},
 
 	"exerelin_misc":{
