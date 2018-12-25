@@ -229,7 +229,18 @@
 		"exerelinFactionInsurance":"Insurance Payout",
 		"exerelinFactionInsuranceDesc":"You have received $paid from $theEmployer to help cover your losses in the recent battle.",
 		"exerelinFactionInsuranceUnpaid":"Insurance payout: no payment",
-		"exerelinFactionInsuranceUnpaidDesc":"Due to your bad conduct in their eyes, $theEmployer have refused to make any insurance payments."
+		"exerelinFactionInsuranceUnpaidDesc":"Due to your bad conduct in their eyes, $theEmployer have refused to make any insurance payments.",
+		
+		"intel_titleEliminated":"Faction Eliminated",
+		"intel_titleSpawned":"Faction Arrives",
+		"intel_titleRespawned":"Faction Respawns",
+		
+		"intel_descEliminated":"$TheFaction $hasOrHave lost their last stronghold of $market, and their surviving fleets are taking refuge elsewhere. Their ambitions in the Sector are clearly over.",
+		"intel_descSpawned":"$TheFaction $isOrAre moving into the Sector, with a foothold in $market.",
+		"intel_descRespawned":"$TheFaction $hasOrHave regained a foothold in the Sector, at $market.",
+		
+		"intel_descWon":"With the defeat of $theFaction, your $playerFaction reigns supreme over the Sector. Congratulations!",
+		"intel_descLost":"With your faction beaten and scattered, you are on your own with whatever allies you still have or can cobble up. It may be time to find greener pastures elsewhere.",
 	},
 	"exerelin_fleets":{
 		"invasionFleetName":"Invasion Fleet",

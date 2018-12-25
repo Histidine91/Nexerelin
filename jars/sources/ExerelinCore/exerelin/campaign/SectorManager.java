@@ -46,6 +46,7 @@ import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.NexUtilsReputation;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.campaign.fleets.InvasionFleetManager.InvasionFleetData;
+import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
 import exerelin.campaign.intel.MarketTransferIntel;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -546,14 +547,15 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
             return;
         if (!defeatedId.equals(Factions.PLAYER))
             AllianceManager.leaveAlliance(defeated.getId(), true);
+        
         removeLiveFactionId(defeated.getId());
-        Map<String, Object> params = new HashMap<>();
-        params.put("defeatedFaction", defeated);
-        params.put("victorFaction", victor);
-        FactionAPI playerFaction = Global.getSector().getFaction(PlayerFactionStore.getPlayerFactionId());
-        params.put("playerDefeated", defeated == playerFaction);
-        //params.put("playerVictory", victor == playerFaction && getLiveFactionIdsCopy().size() == 1);
-        //Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_eliminated", params);
+        
+        FactionAPI playerFaction = PlayerFactionStore.getPlayerFaction();
+        
+        FactionSpawnedOrEliminatedIntel intel = new FactionSpawnedOrEliminatedIntel(defeatedId, 
+            FactionSpawnedOrEliminatedIntel.EventType.ELIMINATED,
+            market, false, defeated == playerFaction);
+        ExerelinUtils.addExpiringIntel(intel);
         
         //String defeatedId = defeated.getId();
         //DiplomacyManager.resetFactionRelationships(defeatedId);
@@ -574,14 +576,19 @@ public class SectorManager extends BaseCampaignEventListener implements EveryFra
     public static void factionRespawned(FactionAPI faction, MarketAPI market)
     {
         String factionId = faction.getId();
-        Map<String, Object> params = new HashMap<>();
         boolean existedBefore = false;
         if (sectorManager != null)
         {
             existedBefore = sectorManager.historicFactionIds.contains(factionId);
         }
-        params.put("existedBefore", existedBefore);
-        //Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_respawned", params);
+        
+        FactionSpawnedOrEliminatedIntel.EventType type = FactionSpawnedOrEliminatedIntel.EventType.SPAWNED;
+        if (existedBefore) type = FactionSpawnedOrEliminatedIntel.EventType.RESPAWNED;
+        
+        FactionSpawnedOrEliminatedIntel intel = new FactionSpawnedOrEliminatedIntel(factionId, 
+            type, market, false, false);
+        ExerelinUtils.addExpiringIntel(intel);
+        
         SectorManager.addLiveFactionId(faction.getId());
         if (sectorManager != null && !existedBefore)
         {
