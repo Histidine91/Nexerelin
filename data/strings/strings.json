@@ -76,6 +76,9 @@
 		"fleet":"fleet",
 		"fighterWing":"fighter wing",
 		"fighterWingShort":"wing",
+		
+		"unknownLocation":"unknown location",
+		"anUnknownLocation":"an unknown location",
 	},
 
 	"exerelin_abilities":{
@@ -178,7 +181,7 @@
 		"contribution_fractalSoftworks":"The Fractal Softworks team that made Starsector"
 	},
 	"exerelin_diplomacy":{	
-		"intelTitle":"Diplomacy Event",
+		"intelTitle":"Diplomacy",
 		"intelHeader1":"News summary",
 		"intelHeader2":"Effects",
 		"intelRepResult":"Relations between $faction1 and $faction2 reduced by $deltaAbs, to $newRelationStr.",
@@ -271,18 +274,6 @@
 
 		"fleetSpawnMessage":"A fleet is being launched at $market, in $location. It will be underway shortly.",
 		"fleetSpawnMessageLocal":"A fleet is being launched and will begin defending $market shortly.",
-
-		"vengeanceFleet0":"Hunter Fleet",
-		"vengeanceFleet0Single":"a Hunter Fleet",
-		"vengeanceLevel0":"Grudge",
-
-		"vengeanceFleet1":"Executors",
-		"vengeanceFleet1Single":"Executors",
-		"vengeanceLevel1":"Vendetta",
-
-		"vengeanceFleet2":"Kill-Fleet",
-		"vengeanceFleet2Single":"a Kill-Fleet",
-		"vengeanceLevel2":"Revenge",
 
 		"fleetRelationship":"$faction $isOrAre $relationship.",
 
@@ -540,6 +531,42 @@
 		"successText":"The missile scores a direct hit! $market has taken severe damage.",
 		"stabilityPenaltyReport":"Stability penalty: $stability",
 		"commodityDestructionReport":"Average $percent% of commodity stockpiles destroyed"
+	},
+	"nex_vengeance":{
+		"vengeanceFleet0":"Hunter Fleet",
+		"vengeanceFleet0Single":"a Hunter Fleet",
+		"vengeanceLevel0":"Grudge",
+
+		"vengeanceFleet1":"Executors",
+		"vengeanceFleet1Single":"Executors",
+		"vengeanceLevel1":"Vendetta",
+
+		"vengeanceFleet2":"Kill-Fleet",
+		"vengeanceFleet2Single":"a Kill-Fleet",
+		"vengeanceLevel2":"Revenge",
+		
+		"intelTitle":"Vengeance Fleet - Level $level",
+		
+		"intelDesc0":"Due to your reputation with $theFaction, $aFleetType is being prepared, assigned to seek you out and eliminate you if possible.",
+		"intelDesc1":"Due to your bitter hostilities with $theFaction, $aFleetType is being prepared, ordered to hunt your fleet down and destroy you.",
+		"intelDesc2":"Due to your infamous and vengeful conflict with $theFaction, $aFleetType is being prepared, their directive being to find you and kill you by any means necessary.",
+		
+		"intelBulletAssembling":"Launching from $market in $days",
+		"intelBulletAssemblingUnknownLoc":"Launching in $days",
+		"intelBulletLaunched":"Fleet launched from $market",
+		"intelBulletFailedToSpawn":"Fleet failed to assemble",
+		"intelBulletDefeated":"Fleet defeated",
+		"intelBulletExpired":"Mission over",
+		"intelBulletNoLongerHostile":"Cancelled: No longer hostile",
+		
+		
+		"intelStatusAssembling":"The fleet will launch from $market in $days.",
+		"intelStatusActive":"The fleet is currently active and will pursue you for $duration.",
+		"intelStatusFailedToSpawn":"The fleet has failed to spawn. The event is now over.",
+		"intelStatusDefeated":"The fleet has been defeated.",
+		"intelStatusExpired":"The fleet is returning to base.",
+		"intelStatusNoLongerHostile":"$TheFaction $isOrAre no longer hostile. The vengeance mission has been terminated.",
+		"intelStatusUnknown":"The mission has been called off for unspecified reasons.",
 	},
 	"exerelin_victoryScreen":{
 		#"victory_conquest":"Congratulations! $TheFaction have crushed all opposition and now reigns supreme over the $clusterName cluster!",

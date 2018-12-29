@@ -34,6 +34,7 @@ import exerelin.plugins.*;
 import exerelin.campaign.CovertOpsManager;
 import exerelin.campaign.ExerelinSetupData;
 import exerelin.campaign.DiplomacyManager;
+import exerelin.campaign.RevengeanceManager;
 import exerelin.campaign.SectorManager;
 import exerelin.campaign.StatsTracker;
 import exerelin.utilities.ExerelinConfig;
@@ -221,6 +222,7 @@ public class ExerelinNewGameSetup implements SectorGeneratorPlugin
 		sector.addScript(CovertOpsManager.create());
 		sector.addScript(AllianceManager.create());
 		sector.addScript(new ColonyManager());
+		new RevengeanceManager().init();
 		
 		StatsTracker.create();
 		

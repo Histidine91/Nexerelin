@@ -1,21 +1,25 @@
-package exerelin.campaign.events;
+package exerelin.campaign.intel;
 
 import exerelin.campaign.RevengeanceManager;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
-import com.fs.starfarer.api.campaign.RepLevel;
+import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
 import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
-import com.fs.starfarer.api.campaign.comm.MessagePriority;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
-import com.fs.starfarer.api.impl.campaign.events.BaseEventPlugin;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
+import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.LabelAPI;
+import com.fs.starfarer.api.ui.SectorMapAPI;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import exerelin.utilities.ExerelinConfig;
@@ -34,15 +38,16 @@ import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
+public class VengeanceFleetIntel extends BaseIntelPlugin {
 
     public static final Map<String, Float> FACTION_ADJUST = new HashMap<>(4);
     public static final Set<String> EXCEPTION_LIST = new HashSet<>(Arrays.asList(new String[] {
         Factions.DERELICT, Factions.REMNANTS, Factions.INDEPENDENT, 
         Factions.SCAVENGERS, Factions.NEUTRAL	//, Factions.LUDDIC_PATH
     }));
+	public static final boolean ALWAYS_SPAWN_ONSITE = true;
 
-    public static Logger log = Global.getLogger(SSP_FactionVengeanceEvent.class);
+    public static Logger log = Global.getLogger(VengeanceFleetIntel.class);
 
     static {
         FACTION_ADJUST.put(Factions.TRITACHYON, 1.1f);
@@ -51,10 +56,16 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         FACTION_ADJUST.put("templars", 1.5f);
     }
     
+	protected VengeanceDef def;
+	protected String factionId;
+	protected MarketAPI market;
+	protected EndReason endReason;
+	protected boolean assembling = true;
+	protected boolean over = false;
+	protected float daysToLaunch;
+	protected final float daysToLaunchFixed;
     protected float daysLeft;
-    protected VengeanceDef def;
     protected int duration;
-    protected boolean ended = false;
     protected int escalationLevel;
     protected CampaignFleetAPI fleet;
     protected boolean foundPlayerYet = false;
@@ -62,32 +73,244 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
     protected final IntervalUtil interval2 = new IntervalUtil(1f, 2f);
     protected float timeSpentLooking = 0f;
     protected boolean trackingMode = false;
+	
+	public VengeanceFleetIntel(String factionId, MarketAPI market, int escalationLevel) {
+		this.factionId = factionId;
+		this.market = market;
+		def = VengeanceDef.getDef(factionId);
+		
+		if (escalationLevel < 0) escalationLevel = 0;
+		this.escalationLevel = Math.min(escalationLevel, def.maxLevel);
+		daysToLaunch = 15 + (this.escalationLevel * 5);	// TODO: maybe something nicer
+		daysToLaunch = 3;	// debug
+		daysToLaunchFixed = daysToLaunch;
+	}
     
-    protected void setEscalationStage()
-    {
-        escalationLevel = RevengeanceManager.getManager().getVengeanceEscalation(faction.getId());
-        
-        /*
-        if (faction.getRelToPlayer().getRel() <= -0.9)
-            escalation = 2;
-        else if (faction.getRelToPlayer().getRel() <= -0.7)
-            escalation = 1;
-        */
-        
-        if (escalationLevel > def.maxLevel) escalationLevel = def.maxLevel;
-    }
+	protected FactionAPI getFaction()
+	{
+		return Global.getSector().getFaction(factionId);
+	}
+	
+	protected String getString(String id)
+	{
+		return StringHelper.getString("nex_vengeance", id);
+	}
+	
+	@Override
+	public String getSmallDescriptionTitle() {
+		return getName();
+	}
+	
+	protected String getName() {
+		String str = getString("intelTitle");
+		str = StringHelper.substituteToken(str, "$level", (escalationLevel + 1) + "");
+		return str;
+	}
+	
+	// bullet points
+	@Override
+	public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
+		Color c = getTitleColor(mode);
+		info.addPara(getName(), c, 0f);
+		bullet(info);
+		
+		FactionAPI faction = Global.getSector().getFaction(factionId);
+		
+		float initPad = 3, pad = 0;
+		Color tc = getBulletColorForMode(mode);
+		String name = Misc.ucFirst(faction.getDisplayName());
+		info.addPara(name, initPad, tc, faction.getBaseUIColor(), name);
+				
+		String key = "intelBullet";
+		Map<String, String> sub = new HashMap<>();
+		
+		if (over)
+		{
+			switch (endReason)
+			{
+				case FAILED_TO_SPAWN:
+					key += "FailedToSpawn";
+					break;
+				case DEFEATED:
+					key += "Defeated";
+					break;
+				case EXPIRED:
+					key += "Expired";
+					break;
+				case NO_LONGER_HOSTILE:
+					key += "NoLongerHostile";
+					break;
+			}
+			addBullet(info, key, sub, pad, tc);
+		}
+		else if (assembling)
+		{
+			key += "Assembling";
+			String dtl = getDays(daysToLaunchFixed) + " " + getDaysString(daysToLaunchFixed);
+			sub.put("$days", dtl);
+			if (!isMarketKnown())
+			{
+				key += "UnknownLoc";
+				addBullet(info, key, sub, pad, tc, getDays(daysToLaunchFixed));
+			}
+			else
+			{
+				sub.put("$market", market.getName());
+				addBullet(info, key, sub, pad, tc, market.getName(), getDays(daysToLaunchFixed));
+			}
+		}
+		else
+		{
+			key += "Launched";
+			sub.put("$market", market.getName());
+			addBullet(info, key, sub, pad, tc, market.getName());
+		}
+	}
+	
+	protected void addBullet(TooltipMakerAPI info, String key, Map<String, String> sub, float pad, Color color, String... highlights)
+	{
+		String str = getString(key);
+		str = StringHelper.substituteTokens(str, sub);
+		
+		info.addPara(str, pad, color, Misc.getHighlightColor(), highlights);
+	}
+	
+	// sidebar text description
+	@Override
+	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
+		float opad = 10f;
+		FactionAPI faction = getFaction();
+		
+		//if (fleet != null)
+		//	info.addImages(width, 128, opad, opad, faction.getCrest(), fleet.getCommander().getPortraitSprite());
+		//else
+			info.addImage(faction.getLogo(), width, 128, opad);
+		
+		String str = getString("intelDesc" + escalationLevel);
+		str = StringHelper.substituteToken(str, "$theFaction", faction.getDisplayNameWithArticle(), true);
+		str = StringHelper.substituteToken(str, "$aFleetType", def.getFleetNameSingle(factionId, escalationLevel));
+		
+		LabelAPI para = info.addPara(str, opad);
+		para.setHighlight(faction.getDisplayNameWithArticleWithoutArticle());
+		para.setHighlightColor(faction.getBaseUIColor());
+		
+		info.addSectionHeading(StringHelper.getString("status", true), 
+				faction.getBaseUIColor(), faction.getDarkUIColor(), Alignment.MID, opad);
+		
+		String key = "intelStatus";
+		Map<String, String> sub = new HashMap<>();
+		List<String> highlights = new ArrayList<>();
+		Color hl = Misc.getHighlightColor();
+		
+		if (over)
+		{
+			switch (endReason)
+			{
+				case FAILED_TO_SPAWN:
+					key += "FailedToSpawn";
+					break;
+				case DEFEATED:
+					key += "Defeated";
+					break;
+				case EXPIRED:
+					key += "Expired";
+					break;
+				case NO_LONGER_HOSTILE:
+					key += "NoLongerHostile";
+					sub.put("$theFaction", faction.getDisplayNameWithArticle());
+					sub.put("$TheFaction", Misc.ucFirst(faction.getDisplayNameWithArticle()));
+					sub.put("$isOrAre", faction.getDisplayNameIsOrAre());
+					hl = faction.getBaseUIColor();
+					highlights.add(faction.getDisplayNameWithArticleWithoutArticle());
+					break;
+			}
+		}
+		else if (assembling)
+		{
+			key += "Assembling";
+			sub.put("$days", getDays(daysToLaunch) + " " + getDaysString(daysToLaunch));
+			if (!isMarketKnown())
+			{
+				sub.put("$market", StringHelper.getString("anUnknownLocation"));
+			}
+			else
+			{
+				sub.put("$market", market.getName());
+				highlights.add(market.getName());
+			}
+			highlights.add(getDays(daysToLaunch));
+		}
+		else
+		{
+			key += "Active";
+			String durStr = Misc.getAtLeastStringForDays(duration);
+			sub.put("$duration", durStr);
+			highlights.add(durStr);
+		}
+		str = getString(key);
+		str = StringHelper.substituteTokens(str, sub);
+		
+		info.addPara(str, opad, hl, highlights.toArray(new String[0]));
+	}
+	
+	protected boolean isMarketKnown()
+	{
+		if (Global.getSettings().isDevMode()) return true;
+		return market.getPrimaryEntity().isVisibleToPlayerFleet();
+	}
+	
+	@Override
+	public Set<String> getIntelTags(SectorMapAPI map) {
+		Set<String> tags = super.getIntelTags(map);
+		tags.add(factionId);
+		tags.add(Tags.INTEL_MILITARY);
+		return tags;
+	}
+
+	@Override
+	public String getIcon() {
+		return getFaction().getCrest();
+	}
+	
+	@Override
+	public FactionAPI getFactionForUIColors() {
+		return getFaction();
+	}
+
+	@Override
+	protected float getBaseDaysAfterEnd() {
+		return 30;
+	}
+	
+	@Override
+	public SectorEntityToken getMapLocation(SectorMapAPI map) {
+		if (assembling && isMarketKnown()) return market.getPrimaryEntity();
+		return null;
+	}
     
     @Override
-    public void advance(float amount) {
-        if (eventTarget != null) {
-            setTarget(eventTarget);
-        }
-
-        if (!isEventStarted()) {
+    public void advanceImpl(float amount) {
+		if (over) {
             return;
         }
-        if (isDone()) {
+		
+        if (!getFaction().isHostileTo(Factions.PLAYER)) {
+            endEvent(EndReason.NO_LONGER_HOSTILE);
             return;
+        }
+		
+        if (assembling) {
+			daysToLaunch -= Global.getSector().getClock().convertToDays(amount);
+			if (daysToLaunch < 0)
+			{
+				assembling = false;
+				fleet = spawnFleet();
+				if (fleet != null) 
+					sendUpdateIfPlayerHasIntel(null, false);
+				else
+					endEvent(EndReason.FAILED_TO_SPAWN);
+			}
+			return;
         }
 
         CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
@@ -96,19 +319,14 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         }
 
         if (!fleet.isAlive()) {
-            endEvent();
-            return;
-        }
-
-        if (!fleet.getFaction().isHostileTo(Factions.PLAYER)) {
-            endEvent();
+            endEvent(EndReason.DEFEATED);
             return;
         }
         
         // fleet took too many losses, quit
         if (fleet.getMemoryWithoutUpdate().contains("$startingFP") && fleet.getFleetPoints() < 0.4 * fleet.getMemoryWithoutUpdate().getFloat("$startingFP"))
         {
-            endEvent();
+            endEvent(EndReason.DEFEATED);
             return;
         }
 
@@ -191,97 +409,18 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                 }
             }
         } else {
-            endEvent();
+            endEvent(EndReason.DEFEATED);
             return;
         }
 
         if (!fleetVisible || !playerVisible) {
             if (daysLeft <= 0f) {
-                endEvent();
+                endEvent(EndReason.EXPIRED);
             }
         }
     }
-
-    @Override
-    public String getCurrentImage() {
-        return faction.getLogo();
-    }
-
-    @Override
-    public String getCurrentMessageIcon() {
-        return faction.getCrest();
-    }
-
-    @Override
-    public CampaignEventCategory getEventCategory() {
-        return CampaignEventCategory.EVENT;
-    }
-
-    @Override
-    public String getEventIcon() {
-        return faction.getCrest();
-    }
-
-    @Override
-    public String getEventName() {
-        return Misc.ucFirst(faction.getDisplayName()) + " " + def.getName(faction.getId(), escalationLevel);
-    }
-
-    @Override
-    public Color[] getHighlightColors(String stageId) {
-        Color[] colors = new Color[1];
-        colors[0] = Misc.getHighlightColor();
-        return colors;
-    }
-
-    @Override
-    public String[] getHighlights(String stageId) {
-        List<String> result = new ArrayList<>(1);
-        addTokensToList(result, "$duration");
-        return result.toArray(new String[result.size()]);
-    }
-
-    @Override
-    public Map<String, String> getTokenReplacements() {
-        Map<String, String> map = super.getTokenReplacements();
-        map.put("$duration", Misc.getAtLeastStringForDays(duration));
-
-        String name = def.getFleetName(faction.getId(), escalationLevel).toLowerCase();
-        String nameSingle = def.getFleetNameSingle(faction.getId(), escalationLevel).toLowerCase();
-        map.put("$fleetType", name);
-        map.put("$aFleetType", nameSingle);
-        map.put("$FleetType", Misc.ucFirst(name));
-        map.put("$AFleetType", Misc.ucFirst(nameSingle));
-        
-        if (faction.getDisplayNameIsOrAre().contentEquals("is")) {
-            map.put("$factionHasOrHave", "has");
-        } else {
-            map.put("$factionHasOrHave", "have");
-        }
-        return map;
-    }
-
-    @Override
-    public void init(String eventType, CampaignEventTarget eventTarget) {
-        super.init(eventType, eventTarget, false);
-        
-        if (!RevengeanceManager.isRevengeanceEnabled()) {
-            endEvent();
-            return;
-        }
-        
-        def = VengeanceDef.getDef(faction.getId());
-        if (def == null) {
-            endEvent();
-            return;
-        }
-    }
-    
-    @Override
-    public boolean isDone() {
-        return ended;
-    }
-
+	
+	/*
     @Override
     public void reportBattleOccurred(CampaignFleetAPI primaryWinner, BattleAPI battle) {
         if (!isEventStarted()) {
@@ -308,39 +447,28 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         }
         float loss = Math.max(0f, 1f - (after / before));
     }
-
-    @Override
+	*/
+	
     public void startEvent() {
-        if (eventTarget != null) {
-            setTarget(eventTarget);
-        }
-
-        super.startEvent(true);
         
         if (!RevengeanceManager.isRevengeanceEnabled()) {
-            endEvent();
+            endEvent(EndReason.OTHER, 0);
             return;
         }
 
-        def = VengeanceDef.getDef(faction.getId());
+        def = VengeanceDef.getDef(factionId);
         if (def == null) {
-            endEvent();
+            endEvent(EndReason.OTHER, 0);
             return;
-        }
-
-        if (faction.isAtWorst(Factions.PLAYER, RepLevel.HOSTILE)) {
-            //endEvent();
-            //return;
         }
 
         CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
         if (playerFleet == null) {
-            endEvent();
+            endEvent(EndReason.OTHER, 0);
             return;
         }
 
-        float distance = Misc.getDistanceToPlayerLY(entity);
-        setEscalationStage();
+        float distance = Misc.getDistanceToPlayerLY(market.getPrimaryEntity());
 		switch (escalationLevel) {
 			case 0:
 				duration = Math.max(60,
@@ -357,9 +485,22 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
 				break;
 		}
         daysLeft = duration;
-
-        float player = ExerelinUtilsFleet.calculatePowerLevel(playerFleet) * 0.1f;
-        Float mod = FACTION_ADJUST.get(faction.getId());
+		
+        Global.getSector().getIntelManager().addIntel(this);
+		Global.getSector().addScript(this);
+        log.info("Started event of escalation level " + escalationLevel + " for " + getFaction().getDisplayName());
+    }
+	
+	protected CampaignFleetAPI spawnFleet()
+	{
+		if (!market.getFactionId().equals(factionId))
+			return null;
+		if (!market.isInEconomy())
+			return null;
+		
+		CampaignFleetAPI playerFleet = Global.getSector().getPlayerFleet();
+		float player = ExerelinUtilsFleet.calculatePowerLevel(playerFleet) * 0.1f;
+        Float mod = FACTION_ADJUST.get(factionId);
         if (mod == null) {
             mod = 1f;
         }
@@ -416,7 +557,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
             bonus += 0.75f;
         }
         
-        float sizeMult = ExerelinConfig.getExerelinFactionConfig(faction.getId()).vengeanceFleetSizeMult;
+        float sizeMult = ExerelinConfig.getExerelinFactionConfig(factionId).vengeanceFleetSizeMult;
         combat *= sizeMult;
         freighter *= sizeMult;
         tanker *= sizeMult;
@@ -438,17 +579,15 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                                                 finalUtility, // utilityPts
                                                 finalBonus // qualityMod
                                                 );
-        fleet = ExerelinUtilsFleet.customCreateFleet(faction, params);
+        fleet = ExerelinUtilsFleet.customCreateFleet(getFaction(), params);
 
-        if (fleet == null) {
-            endEvent();
-            return;
-        }
+        if (fleet == null)
+            return null;
 
         //fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_TYPE, "vengeanceFleet");
         fleet.getMemoryWithoutUpdate().set("$escalation", (float) escalationLevel);
         fleet.getMemoryWithoutUpdate().set("$startingFP", fleet.getFleetPoints());
-        fleet.setName(def.getFleetName(faction.getId(), escalationLevel));
+        fleet.setName(def.getFleetName(factionId, escalationLevel));
         switch (escalationLevel) {
             default:
             case 0:
@@ -478,7 +617,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                 fleet.getFlagship().getCaptain().setPostId(Ranks.POST_FLEET_COMMANDER);
                 break;
         }
-        if (playerFleet.getContainingLocation() != market.getContainingLocation()) {
+        if (ALWAYS_SPAWN_ONSITE || playerFleet.getContainingLocation() != market.getContainingLocation()) {
             market.getPrimaryEntity().getContainingLocation().addEntity(fleet);
             fleet.setLocation(market.getPrimaryEntity().getLocation().x, market.getPrimaryEntity().getLocation().y);
 
@@ -493,51 +632,20 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
         }
 
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SAW_PLAYER_WITH_TRANSPONDER_ON, true);
+		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_LOW_REP_IMPACT, true);
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PATROL_FLEET, true);
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
-
-        float extraExtremeScale;
-        switch (escalationLevel) {
-            default:
-            case 0:
-                extraExtremeScale = 1f + player / 24f;
-                break;
-            case 1:
-                extraExtremeScale = 1f + player / 48f;
-                break;
-            case 2:
-                extraExtremeScale = 1f + player / 96f;
-                break;
-        }
-        switch (escalationLevel) {
-            default:
-            case 0:
-                if (def.maxLevel == 0) {
-                    Global.getSector().reportEventStage(this, "mad", market.getPrimaryEntity(),
-                                                        MessagePriority.CLUSTER);
-                } else {
-                    Global.getSector().reportEventStage(this, "mad", market.getPrimaryEntity(), MessagePriority.CLUSTER);
-                }
-                break;
-            case 1:
-                if (def.maxLevel == 1) {
-                    Global.getSector().reportEventStage(this, "raving_mad", market.getPrimaryEntity(),
-                                                        MessagePriority.SECTOR);
-                } else {
-                    Global.getSector().reportEventStage(this, "raving_mad", market.getPrimaryEntity(),
-                                                        MessagePriority.SECTOR);
-                }
-                break;
-            case 2:
-                Global.getSector().reportEventStage(this, "stark_raving_mad", market.getPrimaryEntity(),
-                                                    MessagePriority.ENSURE_DELIVERY);
-                break;
-        }
-        log.info("Started event of escalation level " + escalationLevel + " for " + faction.getDisplayName());
-    }
-
-    protected void endEvent() {
-        ended = true;
+		
+		return fleet;
+	}
+	
+	protected void endEvent(EndReason reason) {
+		endEvent(reason, getBaseDaysAfterEnd());
+	}
+	
+    protected void endEvent(EndReason reason, float time) {
+        over = true;
+		endReason = reason;
         if (fleet != null && fleet.isAlive()) {
             fleet.clearAssignments();
             fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN, market.getPrimaryEntity(), 1000,
@@ -546,6 +654,10 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
             fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, false);
             ((ModularFleetAIAPI) fleet.getAI()).getTacticalModule().forceTargetReEval();
         }
+		
+		sendUpdateIfPlayerHasIntel(null, false);
+		
+		endAfterDelay(time);
     }
 
     public static enum VengeanceDef {
@@ -685,7 +797,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                     if (isValidString(starkRavingMadName)) return starkRavingMadName;
             }
             
-            return StringHelper.getString("exerelin_fleets", "vengeanceLevel" + escalationLevel);
+            return StringHelper.getString("nex_vengeance", "vengeanceLevel" + escalationLevel);
         }
         
         String getFleetName(String faction, int escalationLevel)
@@ -709,7 +821,7 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                     if (isValidString(starkRavingMadFleet)) return starkRavingMadFleet;
             }
             
-            return StringHelper.getString("exerelin_fleets", "vengeanceFleet" + escalationLevel);
+            return StringHelper.getString("nex_vengeance", "vengeanceFleet" + escalationLevel);
         }
         
         String getFleetNameSingle(String faction, int escalationLevel)
@@ -733,7 +845,11 @@ public class SSP_FactionVengeanceEvent extends BaseEventPlugin {
                     if (isValidString(starkRavingMadFleetSingle)) return starkRavingMadFleetSingle;
             }
             
-            return StringHelper.getString("exerelin_fleets", "vengeanceFleet" + escalationLevel + "Single");
+            return StringHelper.getString("nex_vengeance", "vengeanceFleet" + escalationLevel + "Single");
         }
     }
+	
+	public enum EndReason {
+		FAILED_TO_SPAWN, DEFEATED, EXPIRED, NO_LONGER_HOSTILE, OTHER
+	}
 }

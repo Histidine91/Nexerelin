@@ -1,10 +1,9 @@
 package exerelin.console.commands;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventTarget;
 import exerelin.campaign.RevengeanceManager;
+import exerelin.campaign.intel.VengeanceFleetIntel;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommandUtils;
 import org.lazywizard.console.CommonStrings;
@@ -39,12 +38,10 @@ public class VengeanceEvent implements BaseCommand {
 		}
 		
 		RevengeanceManager veng = RevengeanceManager.getManager();
-		if (veng == null)
-		{
-			Console.showMessage("Vengeance event not running");
-			return CommandResult.ERROR;
-		}
-		
+		int level;
+		if (tmp.length >= 2) level = Integer.parseInt(tmp[1]);
+		else level = veng.getCurrentVengeanceStage(faction.getId());
+			
 		MarketAPI market = veng.pickMarketForFactionVengeance(faction.getId());
 		if (market == null)
 		{
@@ -52,8 +49,9 @@ public class VengeanceEvent implements BaseCommand {
 			return CommandResult.ERROR;
 		}
 		
-		Global.getSector().getEventManager().startEvent(new CampaignEventTarget(market), "exerelin_faction_vengeance", null);
-		Console.showMessage("Spawning vengeance fleet for faction " + faction.getDisplayName() + " from " + market.getName());		
+		VengeanceFleetIntel vengeance = new VengeanceFleetIntel(faction.getId(), market, level);
+		vengeance.startEvent();
+		Console.showMessage("Spawning vengeance fleet level " + level + " for faction " + faction.getDisplayName() + " from " + market.getName());	
 		return CommandResult.SUCCESS;
 	}
 }

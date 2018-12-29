@@ -8,16 +8,11 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.SectorAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.events.CampaignEventPlugin;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import exerelin.campaign.DiplomacyManager;
-import exerelin.campaign.PlayerFactionStore;
-import exerelin.campaign.SectorManager;
-import exerelin.campaign.events.SSP_FactionVengeanceEvent;
+import exerelin.campaign.intel.VengeanceFleetIntel;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import exerelin.utilities.ExerelinUtilsFleet;
@@ -109,7 +104,7 @@ public class RevengeanceManager extends BaseCampaignEventListener {
 	public void addFactionPoints(String factionId, float points)
 	{
 		if (!isRevengeanceEnabled()) return;
-		if (SSP_FactionVengeanceEvent.EXCEPTION_LIST.contains(factionId)) return;
+		if (VengeanceFleetIntel.EXCEPTION_LIST.contains(factionId)) return;
 		if (factionPoints == null)
 			factionPoints = new HashMap<>();
 		if (!factionPoints.containsKey(factionId))
@@ -123,7 +118,7 @@ public class RevengeanceManager extends BaseCampaignEventListener {
 		else if (Global.getSector().getFaction(factionId).isAtWorst(Factions.PLAYER, RepLevel.HOSTILE))
 			points *= 0.25f;
 		
-		points *= SSP_FactionVengeanceEvent.VengeanceDef.getDef(factionId).vengefulness * 2;
+		points *= VengeanceFleetIntel.VengeanceDef.getDef(factionId).vengefulness * 2;
 		points *= VENGEANCE_FLEET_POINT_MULT;
 		
 		String debugStr = "Adding faction revengeance points for " + factionId + ": " + points;
@@ -196,8 +191,8 @@ public class RevengeanceManager extends BaseCampaignEventListener {
 				//Global.getSector().getCampaignUI().addMessage(debugStr);
 			}
 			
-			// TODO: actually spawn the vengeance fleet
-			//Global.getSector().getEventManager().startEvent(new CampaignEventTarget(source), "exerelin_faction_vengeance", null);
+			VengeanceFleetIntel vengeance = new VengeanceFleetIntel(factionId, source, getVengeanceEscalation(factionId));
+			vengeance.startEvent();
 		}
 	}
 	

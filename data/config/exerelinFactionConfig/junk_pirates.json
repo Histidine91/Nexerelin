@@ -10,7 +10,7 @@
     
     "vengeanceLevelNames":["Grudge", "Vendetta"],
     "vengeanceFleetNames":["Enforcers", "Hit-Fleet"],
-    "vengeanceFleetNamesSingle":["Enforcers", "a Hit-Fleet"],
+    "vengeanceFleetNamesSingle":["an Enforcer fleet", "a Hit-Fleet"],
     
     "miningVariantsOrWings":["junk_pirates_the_reaper_Standard"],
     

@@ -16,7 +16,7 @@
     "freeMarket":true,
     
     "vengeanceFleetNames":["Enforcers", "Hit-Fleet", "Horde"],
-    "vengeanceFleetNamesSingle":["Enforcers", "a Hit-Fleet", "a Horde"],
+    "vengeanceFleetNamesSingle":["an Enforcer fleet", "a Hit-Fleet", "a Horde"],
 
     "startShipsSolo":[
       ["ssp_scythe_bal"],
