@@ -74,6 +74,7 @@ public class ExerelinConfig
     public static boolean prismRenewBossShips = false;
     public static boolean prismUseIBBProgressForBossShips = true;
     public static float prismTariff = 2f;
+	public static float prismBlueprintPriceMult = 1.5f;
     
     // War weariness
     public static float warWearinessDivisor = 10000f;
@@ -167,6 +168,7 @@ public class ExerelinConfig
             prismRenewBossShips = settings.optBoolean("prismRenewBossShips", prismRenewBossShips);
             prismUseIBBProgressForBossShips = settings.optBoolean("prismUseIBBProgressForBossShips", prismUseIBBProgressForBossShips);
             prismTariff = (float)settings.optDouble("prismTariff", prismTariff);
+			prismBlueprintPriceMult = (float)settings.optDouble("prismBlueprintPriceMult", prismBlueprintPriceMult);
             
             warWearinessDivisor = (float)settings.optDouble("warWearinessDivisor", warWearinessDivisor);
             warWearinessDivisorModPerLevel = (float)settings.optDouble("warWearinessDivisorModPerLevel", warWearinessDivisorModPerLevel);

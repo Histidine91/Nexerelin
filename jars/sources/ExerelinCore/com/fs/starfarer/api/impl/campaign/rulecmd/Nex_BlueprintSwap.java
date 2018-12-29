@@ -26,6 +26,7 @@ import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Misc.Token;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.campaign.submarkets.PrismMarket;
+import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.StringHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +40,6 @@ import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.input.Keyboard;
 
 // TODO:
-// obey ForceMarketUpdate
 public class Nex_BlueprintSwap extends PaginatedOptions {
 	
 	public static final String POINTS_KEY = "$nex_BPSwapPoints";
@@ -47,7 +47,6 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 	public static final float STOCK_KEEP_DAYS = 30;
 	public static final int STOCK_COUNT_MIN = 6;
 	public static final int STOCK_COUNT_MAX = 8;
-	public static final float PURCHASE_COST_MULT = 1.25f;
 	public static final float PRICE_POINT_MULT = 0.01f;
 	
 	public static final String DIALOG_OPTION_PREFIX = "nex_blueprintSwap_pick_";
@@ -279,7 +278,7 @@ public class Nex_BlueprintSwap extends PaginatedOptions {
 				return;
 		}
 		
-		cost *= PURCHASE_COST_MULT;
+		cost *= ExerelinConfig.prismBlueprintPriceMult;
 		cost = 5 * Math.round(cost/5f);
 		
 		String optId = DIALOG_OPTION_PREFIX + index;
