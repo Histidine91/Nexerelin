@@ -54,8 +54,6 @@ public class FactionSpawnedOrEliminatedIntel extends BaseIntelPlugin {
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		float opad = 10f;
 		
-		Color h = Misc.getHighlightColor();
-		
 		FactionAPI faction = Global.getSector().getFaction(factionId);
 		
 		info.addImage(faction.getLogo(), width, 128, opad);

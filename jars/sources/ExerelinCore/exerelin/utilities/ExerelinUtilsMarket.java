@@ -23,7 +23,6 @@ import exerelin.campaign.PlayerFactionStore;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO: Clean up this crap
 public class ExerelinUtilsMarket {
 	
 	// use the memory key instead of this wherever possible

@@ -58,6 +58,8 @@ public class ExerelinModPlugin extends BaseModPlugin
                 if (toAdd != null && toAdd.getClass().isInstance(script))
                     continue;
                 
+                Global.getLogger(this.getClass()).info("Removing EveryFrameScript " + script.toString() + " | " + toRemove.getCanonicalName());
+                
                 sector.removeScript(script);
                 if (script instanceof CampaignEventListener)
                     sector.removeListener((CampaignEventListener)script);

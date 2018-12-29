@@ -306,13 +306,16 @@ public class NexFleetInteractionDialogPluginImpl extends FleetInteractionDialogP
 			officers.addAll(miaOfficers);
 
 		FactionInsuranceIntel insuranceIntel = new FactionInsuranceIntel(disabledOrDestroyedMembers, officers);
-
+		
+		// TODO: deprecated until Steiner Foundation update
+		/*
 		if (Global.getSector().getEventManager().isOngoing(null, "foundation_insurance"))
 		{
 			FoundationInsuranceEvent event = (FoundationInsuranceEvent)Global.getSector().getEventManager().getOngoingEvent(
 					null, "foundation_insurance");
 			event.addDeadOfficers(officers);
 		}
+		*/
 
 		officers.clear();
 		disabledOrDestroyedMembers.clear();

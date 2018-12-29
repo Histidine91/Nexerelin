@@ -382,8 +382,8 @@
 		"intelTransferBullet1":"Now under $faction",
 		"intelTransferBullet2":"Previously $faction",
 		
-		"intelCaptureDesc":"$newFaction has captured $market (size $size) from $oldFaction.",
-		"intelCapturePlayerDesc":"$newFaction has captured $market (size $size) from the $oldFaction, under the command of $player.",
+		"intelCaptureDesc":"$NewFaction $hasOrHave captured $market (size $size) from $oldFaction.",
+		"intelCapturePlayerDesc":"$NewFaction $hasOrHave captured $market (size $size) from the $oldFaction, under the command of $player.",
 		"intelTransferDesc":"$oldFaction has transfered $market (size $size) to $newFaction.",
 		"intelTransferFactionSizeHeader":"Current status",
 		"intelTransferFactionSizeEntry":"$faction: $num markets (total size $size)",

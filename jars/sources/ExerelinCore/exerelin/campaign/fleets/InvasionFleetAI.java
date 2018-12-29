@@ -14,7 +14,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.Misc;
 import data.scripts.world.exigency.Tasserus;
-import exerelin.ExerelinConstants;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.events.InvasionFleetEvent;
 import exerelin.utilities.ExerelinUtilsFleet;
@@ -22,6 +21,7 @@ import exerelin.utilities.StringHelper;
 import java.util.List;
 import org.apache.log4j.Logger;
 
+@Deprecated
 public class InvasionFleetAI implements EveryFrameScript
 {
 	public static Logger log = Global.getLogger(InvasionFleetAI.class);

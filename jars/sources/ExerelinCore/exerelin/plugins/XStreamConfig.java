@@ -12,7 +12,7 @@ import exerelin.campaign.events.ExigencyRespawnFleetEvent;
 import exerelin.campaign.events.FactionBountyEvent;
 import exerelin.campaign.events.RebellionEvent;
 import exerelin.campaign.events.RebellionEventCreator;
-import exerelin.campaign.RevengeanceManager;
+import exerelin.campaign.diplomacy.DiplomacyBrain;
 import exerelin.campaign.intel.VengeanceFleetIntel;
 import exerelin.campaign.events.covertops.SaboteurDestroyFoodEvent;
 import exerelin.campaign.events.covertops.SaboteurSabotageReserveEvent;
@@ -32,15 +32,19 @@ import exerelin.campaign.fleets.MiningFleetManager;
 import exerelin.campaign.fleets.MiningFleetManager.MiningFleetData;
 import exerelin.campaign.fleets.RespawnFleetAI;
 import exerelin.campaign.fleets.ResponseFleetAI;
-import exerelin.campaign.fleets.ResponseFleetManager;
 import exerelin.campaign.fleets.ResponseFleetManager.ResponseFleetData;
 import exerelin.campaign.fleets.SuppressionFleetAI;
+import exerelin.campaign.intel.DiplomacyIntel;
+import exerelin.campaign.intel.FactionSpawnedOrEliminatedIntel;
+import exerelin.campaign.intel.MarketTransferIntel;
 import exerelin.campaign.missions.ConquestMission;
 import exerelin.campaign.missions.ConquestMissionEvent;
+import exerelin.campaign.submarkets.Nex_BlackMarketPlugin;
+import exerelin.campaign.submarkets.Nex_MilitarySubmarketPlugin;
+import exerelin.campaign.submarkets.Nex_OpenMarketPlugin;
 
 public class XStreamConfig {
 	
-	// TODO: shorten aliases when willing to break saves
 	public static void configureXStream(com.thoughtworks.xstream.XStream x)
 	{
 		/*
@@ -67,8 +71,20 @@ public class XStreamConfig {
 		x.alias("ResponseFltAI", ResponseFleetAI.class);
 		x.alias("SuppressFltAI", SuppressionFleetAI.class);
 		x.alias("ExePatrolFltMngr", ExerelinPatrolFleetManager.class);
+		x.alias("InvasionFltData", InvasionFleetManager.InvasionFleetData.class);
 		x.alias("VengFltIntl", VengeanceFleetIntel.class);
 		
+		x.alias("DiploIntl", DiplomacyIntel.class);
+		x.alias("MktTrnsfrIntl", MarketTransferIntel.class);
+		x.alias("FactionChngIntl", FactionSpawnedOrEliminatedIntel.class);
+		
+		// submarkets
+		x.alias("NexOpnMkt", Nex_OpenMarketPlugin.class);
+		x.alias("NexMilSubmkt", Nex_MilitarySubmarketPlugin.class);
+		x.alias("NexBlackMkt", Nex_BlackMarketPlugin.class);
+		
+		// events
+		// most of these will be deleted eventually
 		x.alias("AgntDestabilizeMrktEvnt", AgentDestabilizeMarketEvent.class);
 		x.alias("AgntLowerRelationsEvnt", AgentLowerRelationsEvent.class);
 		x.alias("AllyVoteRslt", AllianceVoter.VoteResult.class);
@@ -85,17 +101,15 @@ public class XStreamConfig {
 		x.alias("SecurityAlertEvnt", SecurityAlertEvent.class);
 		x.alias("SlavesSoldEvnt", SlavesSoldEvent.class);
 		x.alias("SuperweaponEvnt", SuperweaponEvent.class);
-		//x.alias("VictoryEvnt", VictoryEvent.class);
 		x.alias("WarmongerEvnt", WarmongerEvent.class);
 		
 		x.alias("ConquestMission", ConquestMission.class);
 		x.alias("ConquestMissionEvnt", ConquestMissionEvent.class);
 		
-		x.alias("InvasionFltData", InvasionFleetManager.InvasionFleetData.class);
-		x.alias("ResponseFltData", ResponseFleetManager.ResponseFleetData.class);
-		
-		x.alias("ExeRepAdjustmentResult", ExerelinReputationAdjustmentResult.class);
-		x.alias("ExeAlliance", Alliance.class);
+		// misc
+		x.alias("NexRepAdjustmentResult", ExerelinReputationAdjustmentResult.class);
+		x.alias("NexAlliance", Alliance.class);
+		x.alias("DiploDspsEntry", DiplomacyBrain.DispositionEntry.class);
 		
 		// enums
 		x.alias("CovertActionResult", CovertOpsManager.CovertActionResult.class);
@@ -103,6 +117,7 @@ public class XStreamConfig {
 		configureXStreamAttributes(x);
 	}
 	
+	// todo: new aliases
 	public static void configureXStreamAttributes(com.thoughtworks.xstream.XStream x)
 	{
 		// these don't seem to actually work, need to apply on a per-class basis
@@ -121,7 +136,7 @@ public class XStreamConfig {
 		x.aliasAttribute(FactionBountyEvent.class, "baseBounty", "pays");
 		x.aliasAttribute(FactionBountyEvent.class, "lastBounty", "last");
 		x.aliasAttribute(FactionBountyEvent.class, "enemyFaction", "ef");
-				
+		
 		// RebellionEvent
 		x.aliasAttribute(RebellionEvent.class, "stage", "stg");
 		x.aliasAttribute(RebellionEvent.class, "suppressionFleetCountdown", "fltCntdwn");

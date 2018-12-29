@@ -84,10 +84,15 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		
 		String marketName = market.getName();
 		String size = market.getSize() + "";
+		String newName = newFaction.getDisplayNameWithArticle();
+		String oldName = oldFaction.getDisplayNameWithArticle();
 		
 		Map<String, String> sub = new HashMap<>();
-		sub.put("$newFaction", newFaction.getDisplayNameWithArticle());
-		sub.put("$oldFaction", oldFaction.getDisplayNameWithArticle());
+		sub.put("$newFaction", newName);
+		sub.put("$oldFaction", oldName);
+		sub.put("$NewFaction", Misc.ucFirst(newName));
+		sub.put("$OldFaction", Misc.ucFirst(oldName));
+		sub.put("$hasOrHave", newFaction.getDisplayNameHasOrHave());
 		sub.put("$market", marketName);
 		sub.put("$size", size);
 		if (isPlayerInvolved) 
@@ -112,7 +117,7 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		info.addPara(Misc.getAgoStringForTimestamp(timestamp) + ".", opad);
 		
 		info.addSectionHeading(StringHelper.getString("exerelin_markets", "intelTransferFactionSizeHeader"),
-				Alignment.MID, opad);
+				newFaction.getBaseUIColor(), newFaction.getDarkUIColor(), Alignment.MID, opad);
 		
 		addFactionCurrentInfoPara(info, newFactionId, opad);
 		addFactionCurrentInfoPara(info, oldFactionId, opad);
@@ -128,7 +133,7 @@ public class MarketTransferIntel extends BaseIntelPlugin {
 		String size = ExerelinUtilsFaction.getFactionMarketSizeSum(factionId) + "";
 		
 		Map<String, String> sub = new HashMap<>();
-		sub.put("$faction", Misc.ucFirst(faction.getDisplayNameWithArticle()));
+		sub.put("$faction", factionName);
 		sub.put("$num", numMarkets);
 		sub.put("$size", size);
 		

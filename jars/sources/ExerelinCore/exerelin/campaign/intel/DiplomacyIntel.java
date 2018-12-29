@@ -67,7 +67,6 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 
 		float initPad = 3f, pad = 0;
 		Color tc = getBulletColorForMode(mode);
-		Color h = Misc.getHighlightColor();
 		addFactionNamePara(info, initPad, tc, getFaction(factionId1));
 		addFactionNamePara(info, pad, tc, getFaction(factionId2));
 		
@@ -78,6 +77,7 @@ public class DiplomacyIntel extends BaseIntelPlugin {
 		info.addPara(str, pad, tc, relColor, relation);
 	}
 	
+	// text sidebar
 	@Override
 	public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
 		float opad = 10f;

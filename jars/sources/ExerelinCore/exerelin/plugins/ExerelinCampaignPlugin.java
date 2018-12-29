@@ -96,21 +96,21 @@ public class ExerelinCampaignPlugin extends BaseCampaignPlugin {
 	}
 	
 	@Override
-    public PluginPick<BattleCreationPlugin> pickBattleCreationPlugin(SectorEntityToken opponent) {
-        if (opponent instanceof CampaignFleetAPI) {
-            return new PluginPick<BattleCreationPlugin>(new SSP_BattleCreationPluginImpl(), PickPriority.MOD_GENERAL);
-        }
-        return null;
-    }
+	public PluginPick<BattleCreationPlugin> pickBattleCreationPlugin(SectorEntityToken opponent) {
+		if (opponent instanceof CampaignFleetAPI) {
+			return new PluginPick<BattleCreationPlugin>(new SSP_BattleCreationPluginImpl(), PickPriority.MOD_GENERAL);
+		}
+		return null;
+	}
 	
-    @Override
-    public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
-        if (interactionTarget instanceof CampaignFleetAPI) {
-            return new PluginPick<InteractionDialogPlugin>(new NexFleetInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
-        }
+	@Override
+	public PluginPick<InteractionDialogPlugin> pickInteractionDialogPlugin(SectorEntityToken interactionTarget) {
+		if (interactionTarget instanceof CampaignFleetAPI) {
+			return new PluginPick<InteractionDialogPlugin>(new NexFleetInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
+		}
 		if (!ExerelinModPlugin.HAVE_STELLAR_INDUSTRIALIST && interactionTarget instanceof AsteroidAPI) {
 			return new PluginPick<InteractionDialogPlugin>(new RuleBasedInteractionDialogPluginImpl(), PickPriority.MOD_GENERAL);
 		}
-        return null;
-    }
+		return null;
+	}
 }
