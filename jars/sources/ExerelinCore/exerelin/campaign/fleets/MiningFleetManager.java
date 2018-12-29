@@ -33,12 +33,14 @@ import org.apache.log4j.Logger;
 import org.histidine.industry.scripts.MiningHelper;
 import org.histidine.industry.scripts.MiningHelper.MiningReport;
 
+// Script still runs, but fleet spawning is disabled until we can implement the "out of sight, out of memory" functionality
+@Deprecated
 public class MiningFleetManager extends BaseCampaignEventListener implements EveryFrameScript
 {
 	public static final String MANAGER_MAP_KEY = "exerelin_miningFleetManager";
 		
 	public static Logger log = Global.getLogger(MiningFleetManager.class);
-	protected static final float POINT_INCREMENT_PER_DAY = 1f;
+	protected static final float POINT_INCREMENT_PER_DAY = 0.5f;
 	protected static final float MARKET_STABILITY_DIVISOR = 5f;
 	protected static final float POINTS_TO_SPAWN = 100f;
 	protected static final float POINT_INCREMENT_PERIOD = 1;
@@ -302,7 +304,7 @@ public class MiningFleetManager extends BaseCampaignEventListener implements Eve
 			if (newValue > POINTS_TO_SPAWN)
 			{
 				newValue -= POINTS_TO_SPAWN;
-				spawnMiningFleet(market);
+				//spawnMiningFleet(market);
 			}
 			
 			spawnCounter.put(market.getId(), newValue);
