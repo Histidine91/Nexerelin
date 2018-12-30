@@ -100,7 +100,7 @@ public class ExerelinConfig
     public static float revengePointsForMarketCaptureMult = 2f;
     
     // Misc
-    public static int directoryDialogKey = 32;  // D
+    public static int directoryDialogKey = 44;  // Z
     
     public static float baseTariffMult = 1;
     public static float freeMarketTariffMult = 0.5f;

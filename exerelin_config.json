@@ -1,5 +1,5 @@
 {
-    "directoryDialogKey": 32,   # integer, default 32 (D)
+    "directoryDialogKey": 44,   # integer, default 44 (Z)
     
     "minimumPlanets": 3,
     #"minimumStations": 3,

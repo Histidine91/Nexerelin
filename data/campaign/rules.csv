@@ -445,10 +445,10 @@ FireAll ExerelinMarketSpecial",You have no more prisoners.,,
 #END PRISONER OPTIONS,,,,,,
 ,,,,,,
 #START FLEET REQUEST OPTIONS,,,,,,
-ExerelinMarketFleetRequestOption,ExerelinMarketSpecial,"$hasMarket
+#ExerelinMarketFleetRequestOption,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""","SetEnabled exerelinFleetRequestMenu true
 SetShortcut exerelinFleetRequestMenu F",,5:exerelinFleetRequestMenu:Request a fleet,
-ExerelinMarketFleetRequestOptionNoBase,ExerelinMarketSpecial,"$hasMarket
+#ExerelinMarketFleetRequestOptionNoBase,ExerelinMarketSpecial,"$hasMarket
 $faction.id != ""neutral""
 !IsFactionAlive $player.factionId
 !IsFactionAlive player","SetTooltip exerelinFleetRequestMenu ""Your faction has no base to launch a fleet from.""
