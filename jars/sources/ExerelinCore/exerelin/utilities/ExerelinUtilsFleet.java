@@ -17,7 +17,6 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import data.scripts.util.DS_Defs;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.campaign.fleets.utils.DSFleetUtilsProxy;
-import exerelin.campaign.fleets.utils.SWPFleetUtilsProxy;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -65,9 +64,6 @@ public class ExerelinUtilsFleet
         
         if (ExerelinModPlugin.HAVE_DYNASECTOR) {
             fleet = DSFleetUtilsProxy.enhancedCreateFleet(faction, params, total);
-        }
-        else if (ExerelinModPlugin.HAVE_SWP) {
-            fleet = SWPFleetUtilsProxy.enhancedCreateFleet(faction, params, total);
         }
         else fleet = FleetFactoryV3.createFleet(params);
         

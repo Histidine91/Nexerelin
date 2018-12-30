@@ -27,7 +27,6 @@ import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.util.Highlights;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import data.scripts.campaign.events.SWP_IBBTracker;
 import data.scripts.campaign.missions.SWP_FamousBountyEvent;
 import data.scripts.campaign.missions.SWP_FamousBountyEvent.FamousBountyStage;
 import exerelin.ExerelinConstants;
@@ -424,8 +423,9 @@ public class PrismMarket extends BaseSubmarketPlugin {
                 String stageStr = entry.stage;
                 if (doIBBCheck && stageStr != null && !stageStr.isEmpty()) {
                     try {
+                        // FIXME: update IBB stage check when IBB is updated
                         FamousBountyStage stage = SWP_FamousBountyEvent.FamousBountyStage.valueOf(stageStr);
-                        if (!SWP_IBBTracker.getTracker().isStageComplete(stage)){
+                        if (false){
                             log.info("IBB not completed for " + entry.id + " (" + stageStr + ")");
                             proceed = false;
                         }
