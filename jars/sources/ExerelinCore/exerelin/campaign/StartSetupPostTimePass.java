@@ -36,7 +36,7 @@ public class StartSetupPostTimePass {
 		if (Global.getSector().isInNewGameAdvance()) return;
 		
 		SectorEntityToken entity = null;
-		String factionId = PlayerFactionStore.getPlayerFactionId();
+		String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
 		FactionAPI myFaction = sector.getFaction(factionId);
 		boolean isPlayer = myFaction.isPlayerFaction();
 		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
@@ -136,11 +136,16 @@ public class StartSetupPostTimePass {
 		if (conf.spawnAsFactionId != null && !conf.spawnAsFactionId.isEmpty())
 		{
 			factionId = conf.spawnAsFactionId;
-			PlayerFactionStore.setPlayerFactionId(factionId);
 			if (SectorManager.getFreeStart())	// Blade Breaker start: use BB start relations
 				NexUtilsReputation.syncFactionRelationshipsToPlayer();
 			else	// Lion's Guard start: use Diktat start relations
 				NexUtilsReputation.syncPlayerRelationshipsToFaction(factionId);
+		}
+		
+		// commission
+		if (!factionId.equals(Factions.PLAYER))
+		{
+			ExerelinUtilsFaction.grantCommission(factionId);
 		}
 	}
 	
@@ -171,17 +176,6 @@ public class StartSetupPostTimePass {
 					if (plugin != null)
 						plugin.setPlayerPaidToUnlock(true);
 				}
-			}
-
-			// commission
-			String factionId = PlayerFactionStore.getPlayerFactionIdNGC();
-			
-			if (!factionId.equals(Factions.PLAYER))
-			{
-				if (ExerelinUtilsFaction.isExiInCorvus(factionId))
-					ExerelinUtilsFaction.grantCommission(factionId, Global.getSector().getStarSystem("Tasserus").getEntityById("exigency_anomaly"));
-				else
-					ExerelinUtilsFaction.grantCommission(factionId, entity);
 			}
 		}
 	}

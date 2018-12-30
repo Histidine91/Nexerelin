@@ -161,7 +161,7 @@ public class ExerelinUtilsFaction {
         return config.corvusCompatible;
     }
     
-    public static void grantCommission(String factionId, SectorEntityToken entity)
+    public static void grantCommission(String factionId)
     {
         FactionAPI faction = Global.getSector().getFaction(factionId);
         if (!ExerelinConfig.getExerelinFactionConfig(faction.getId()).playableFaction)
