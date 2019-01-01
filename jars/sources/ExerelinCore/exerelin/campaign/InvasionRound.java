@@ -41,17 +41,32 @@ public class InvasionRound {
 	
 	public static final float DAMAGE_PER_ROUND_MULT = 0.3f;
 	public static final float INSTABILITY_PER_ROUND = 1;
+	public static final boolean DEBUG_MESSAGES = true;
 	
 	public static Logger log = Global.getLogger(InvasionRound.class);
 	
+	public static void printDebug(String str)
+	{
+		if (!DEBUG_MESSAGES) return;
+		log.info(str);
+	}
+	
 	public static InvasionRoundResult execute(CampaignFleetAPI fleet, MarketAPI defender, float atkStr, float defStr, Random random)
 	{
-		int marines = fleet.getCargo().getMarines();
+		printDebug("Executing invasion round of " + defender.getName());
+		int marines = 0;
+		if (fleet != null)
+			marines = fleet.getCargo().getMarines();
 		
 		float atkDam = (atkStr - defStr/3) * DAMAGE_PER_ROUND_MULT * (float)(0.75f + random.nextGaussian() * 0.5f);
 		float defDam = (defStr - atkStr/3) * DAMAGE_PER_ROUND_MULT * (float)(0.75f + random.nextGaussian() * 0.5f);
 		if (atkDam < 0) atkDam = 0;
 		if (defDam < 0) defDam = 0;
+		
+		printDebug("\tInitial attacker strength: " + atkStr);
+		printDebug("\tInitial defender strength: " + defStr);
+		printDebug("\tAttacker damage: " + atkDam);
+		printDebug("\tDefender damage: " + defDam);
 		
 		int losses = (int)(marines * defDam/atkStr);
 		if (losses > marines) losses = marines;
@@ -62,6 +77,10 @@ public class InvasionRound {
 		result.defDam = defDam;
 		result.atkStr = atkStr - defDam;
 		result.defStr = defStr - atkDam;
+		
+		//printDebug("\tAttacker losses: " + losses);
+		printDebug("\tFinal attacker strength: " + result.atkStr);
+		printDebug("\tFinal defender strength: " + result.defStr);
 		
 		// disruption
 		WeightedRandomPicker<Industry> industryPicker = new WeightedRandomPicker<>();
@@ -86,6 +105,7 @@ public class InvasionRound {
 			toDisrupt.setDisrupted(dur);
 			result.disrupted = toDisrupt;
 			result.disruptionLength = dur;
+			printDebug("\t" + toDisrupt.getCurrentName() + " disrupted for " + dur + " days");
 		}
 		
 		return result;
@@ -126,6 +146,22 @@ public class InvasionRound {
 		return attackerStr;
 	}
 	
+	public static float getAttackerStrength(FactionAPI faction, float marines)
+	{
+		StatBonus attackerBase = new StatBonus();
+		//defenderBase.modifyFlatAlways("base", baseDef, "Base value for a size " + market.getSize() + " colony");
+		
+		attackerBase.modifyFlatAlways("core_marines", marines, getString("marinesOnBoard", true));
+		
+		ExerelinFactionConfig atkConf = ExerelinConfig.getExerelinFactionConfig(faction.getId());
+		String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", "attackBonus", "$Faction", 
+				Misc.ucFirst(faction.getDisplayName()));
+		attackerBase.modifyMult("nex_invasionAtkBonus", atkConf.invasionStrengthBonusAttack + 1, str);
+		
+		float attackerStr = (int) Math.round(attackerBase.computeEffective(0f));
+		return attackerStr;
+	}
+	
 	/**
 	 *
 	 * @param market
@@ -157,9 +193,29 @@ public class InvasionRound {
 		return trueBase + bonus * modMult;
 	}
 	
+	/**
+	 * Resolves an NPC invasion event. This overload automatically gets attacker strength and faction from the fleet.
+	 * @param fleet
+	 * @param market
+	 * @return
+	 */
 	public static boolean npcInvade(CampaignFleetAPI fleet, MarketAPI market)
 	{
 		float attackerStr = getAttackerStrength(fleet);
+		
+		return npcInvade(attackerStr, fleet, fleet.getFaction(), market);
+	}
+	
+	/**
+	 * Resolves an NPC invasion event.
+	 * @param attackerStr
+	 * @param fleet Invading fleet. Can be null if being abstracted
+	 * @param attackerFaction
+	 * @param market
+	 * @return
+	 */
+	public static boolean npcInvade(float attackerStr, CampaignFleetAPI fleet, FactionAPI attackerFaction, MarketAPI market)
+	{
 		float defenderStr = getDefenderStrength(market, 1);
 		
 		if (attackerStr <= 0) return false;
@@ -175,11 +231,15 @@ public class InvasionRound {
 			attackerStr = result.atkStr;
 			defenderStr = result.defStr;
 			
+			if (fleet != null)
+				fleet.getCargo().removeMarines(result.losses);
+			
 			if (attackerStr <= 0 || defenderStr <= 0)
 			{
-				finishInvasion(fleet, market, numRounds, defenderStr <= 0);
+				printDebug(market.getName() + " invasion by " + attackerFaction.getDisplayName() + " ended: " + (defenderStr <= 0));
+				finishInvasion(fleet, attackerFaction, market, numRounds, defenderStr <= 0);
 				if (defenderStr <= 0) 
-					conquerMarket(market, fleet.getFaction(), false);
+					conquerMarket(market, attackerFaction, false);
 				break;
 			}
 			
@@ -189,17 +249,24 @@ public class InvasionRound {
 		return defenderStr <= 0;
 	}
 	
-	public static void finishInvasion(CampaignFleetAPI attacker, MarketAPI market, float numRounds, boolean success)
-	{		
+	/**
+	 * Finalizes invasion effects, including stability impacts and XP received.
+	 * @param fleet Invading fleet. Can be null if this is an abstracted NPC fleet.
+	 * @param attackerFaction
+	 * @param market
+	 * @param numRounds Rounds required to complete invasion action.
+	 * @param success
+	 */
+	public static void finishInvasion(CampaignFleetAPI fleet, FactionAPI attackerFaction, MarketAPI market, float numRounds, boolean success)
+	{
 		SectorAPI sector = Global.getSector();
-		FactionAPI attackerFaction = attacker.getFaction();
 		String attackerFactionId = attackerFaction.getId();
 		FactionAPI defenderFaction = market.getFaction();
 		String defenderFactionId = defenderFaction.getId();
 		
 		boolean playerInvolved = false;
 		CampaignFleetAPI playerFleet = sector.getPlayerFleet();
-		if ( attacker == playerFleet )
+		if ( fleet == playerFleet )
 		{
 			playerInvolved = true;
 			attackerFactionId = PlayerFactionStore.getPlayerFactionId();
@@ -259,7 +326,8 @@ public class InvasionRound {
 			}
 		}
 				
-		log.info( String.format("Invasion of [%s] by " + attacker.getNameWithFaction() + (success ? " successful" : " failed"), market.getName()) );
+		log.info( String.format("Invasion of [%s] by " + (fleet == null ? attackerFaction.getDisplayName() : fleet.getNameWithFaction())
+				+ (success ? " successful" : " failed"), market.getName()) );
 	}
 	
 	public static void conquerMarket(MarketAPI market, FactionAPI attackerFaction, boolean playerInvolved)

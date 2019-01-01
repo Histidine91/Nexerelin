@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.command.WarSimScript;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -412,8 +413,8 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		//log.info("\tTarget: " + targetMarket.getName());
 		
 		// FIXME
-		float fp = 100;
-		float organizeTime = 75;
+		float fp = getWantedFleetSize(targetMarket);
+		float organizeTime = 10 + fp/30;
 		
 		// okay, assemble battlegroup
 		if (!strikeOnly)
@@ -429,6 +430,28 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		return true;
 	}
 	
+	protected float getPointsPerMarketPerTick(MarketAPI market)
+	{
+		float ships = market.getCommodityData(Commodities.SHIPS).getAvailable();
+		float supplies = market.getCommodityData(Commodities.SUPPLIES).getAvailable();
+		float marines = market.getCommodityData(Commodities.MARINES).getAvailable();
+		
+		float stabilityMult = 0.25f + (0.75f * market.getStabilityValue()/10);
+		
+		float total = (ships*2 + supplies + marines) * stabilityMult * ExerelinConfig.invasionPointEconomyMult;
+		
+		/*
+		log.info("Processing invasion points from market: " + market.getName());
+		log.info("\tShips available: " + ships);
+		log.info("\tSupplies available: " + supplies);
+		log.info("\tMarines available: " + marines);
+		log.info("\tStability mult: " + stabilityMult);
+		log.info("\tTotal points: " + total);
+		*/
+		
+		return total;
+	}
+	
 	protected void processInvasionPoints()
 	{
 		SectorAPI sector = Global.getSector();
@@ -438,7 +461,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 		
 		boolean allowPirates = ExerelinConfig.allowPirateInvasions;
 		
-		// pick a faction to invade someone
+		// increment points by market
 		if (spawnCounter == null) spawnCounter = new HashMap<>();
 		HashMap<String, Float> pointsPerFaction = new HashMap<>();
 		for (MarketAPI market : markets)
@@ -448,13 +471,16 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 			if (!pointsPerFaction.containsKey(factionId))
 				pointsPerFaction.put(factionId, 0f);
 			
-			float points = pointsPerFaction.get(factionId);
-			points += market.getSize() * market.getStabilityValue() * ExerelinConfig.invasionPointEconomyMult;
-			pointsPerFaction.put(factionId, points);
+			float currPoints = pointsPerFaction.get(factionId);
+			float addedPoints = getPointsPerMarketPerTick(market);
+			
+			currPoints += addedPoints;
+			pointsPerFaction.put(factionId, currPoints);
 		}
 		
 		int playerLevel = Global.getSector().getPlayerPerson().getStats().getLevel();
 		
+		// pick a faction to invade someone
 		List<String> liveFactionIds = SectorManager.getLiveFactionIdsCopy();
 		for (String factionId: liveFactionIds)
 		{
@@ -499,7 +525,7 @@ public class InvasionFleetManager extends BaseCampaignEventListener implements E
 				if (mult > 1) mult = 1;
 			}
 			
-			// increment invasion counter
+			// increment invasion counter for faction
 			if (!spawnCounter.containsKey(factionId))
 				spawnCounter.put(factionId, 0f);
 			

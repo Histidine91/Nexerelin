@@ -28,7 +28,7 @@
     "invasionGracePeriod": 15,  # factions won't accumulate invasion points for this many days at start
     "pointsRequiredForInvasionFleet": 4000,    # bigger = longer delay between invasion fleets
     # invasion points are added daily
-    "baseInvasionPointsPerFaction": 50,
+    "baseInvasionPointsPerFaction": 30,
     "invasionPointsPerPlayerLevel": 1,
     "invasionPointEconomyMult": 0.3, # each market contributes invasion points -- stability * size * this number
     "conquestMissionRewardMult": 1,

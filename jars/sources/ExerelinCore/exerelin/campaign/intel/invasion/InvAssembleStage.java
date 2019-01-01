@@ -7,6 +7,7 @@ import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.intel.InvasionIntel;
 import java.awt.Color;
 
 public class InvAssembleStage extends AssembleStage {
@@ -40,12 +41,14 @@ public class InvAssembleStage extends AssembleStage {
 	
 	@Override
 	protected String pickNextType() {
+		if (InvasionIntel.NO_STRIKE_FLEETS)
+			return "exerelinInvasionFleet";
+		
 		int fleetCount = this.getRoutes().size();
 		Global.getLogger(this.getClass()).info("Current fleet count: " + fleetCount);
 		if (fleetCount % 3 == 1)	// first fleet will be invasion
 			return "exerelinInvasionFleet";
 		return "exerelinInvasionSupportFleet";
-		//return "exerelinInvasionFleet";
 	}
 	
 	@Override

@@ -12,6 +12,7 @@
 		"diplomacy":"diplomacy",
 		"diplomatic":"diplomatic",
 		"done":"done",
+		"faction":"faction",
 		"intelReport":"intel report",
 		"level":"level",
 		"marine":"marine",
@@ -22,6 +23,8 @@
 		"stability":"stability",
 		"stats":"stats",
 		"status":"status",
+		"target":"target",
+		"unknown":"unknown",
 		"vote":"vote",
 		"yourFleet":"your fleet",
 
@@ -319,7 +322,16 @@
 		
 		"invasion":"invasion",
 		"invasions":"invasions",
-		"invasionOf":"$Faction invasion: $market",
+		
+		"intelTitle":"Invasion: $market",
+		"intelDesc":"$TheFaction $isOrAre invading $market in the $location, held by $theTargetFaction. The invasion forces are projected to be $strDesc.",
+		"intelBulletTarget":"Held by $targetFaction",
+		"intelBulletArrived":"Invasion force arrived in system",
+		"intelBulletSuccess":"Invasion successful",
+		"intelBulletFailed":"Invasion failed",
+		"intelBulletNoLongerExists":"Invasion aborted: target destroyed",
+		"intelBulletNoLongerHostile":"Invasion aborted: no longer hostile",
+		"intelBulletCancelled":"Invasion cancelled",
 		
 		"invasionStrength":"invasion strength",
 		"groundDefStrength":"ground defense strength",
@@ -333,7 +345,7 @@
 		"recentlyInvaded":"recently invaded",
 		
 		"insufficientForces":"You do not have the forces to carry out an effective invasion.",
-		"insufficientForcesTooltip":"Requires at least %percent force balance.",
+		"insufficientForcesTooltip":"Requires at least $percent% force balance.",
 		
 		"invasionProceed":"Proceed with invasion",
 		"invasionContinue":"Continue the offensive",

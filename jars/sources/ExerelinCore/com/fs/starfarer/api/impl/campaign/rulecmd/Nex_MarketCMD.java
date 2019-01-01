@@ -27,9 +27,6 @@ import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.applyDefenderIncreaseFromRaid;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.getDefenderIncreaseValue;
-import static com.fs.starfarer.api.impl.campaign.rulecmd.salvage.MarketCMD.statPrinter;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -49,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 public class Nex_MarketCMD extends MarketCMD {
@@ -60,6 +58,8 @@ public class Nex_MarketCMD extends MarketCMD {
 	public static final String INVADE_RESULT_ANDRADA = "nex_mktInvadeResultAndrada";
 	public static final String INVADE_GO_BACK = "nex_mktInvadeGoBack";
 	public static final float FAIL_THRESHOLD_INVASION = 0.5f;
+	
+	public static Logger log = Global.getLogger(Nex_MarketCMD.class);
 	
 	protected TempDataInvasion tempInvasion = new TempDataInvasion();
 	
@@ -117,7 +117,6 @@ public class Nex_MarketCMD extends MarketCMD {
 	protected void showDefenses(boolean withText) {
 		super.showDefenses(withText);
 		
-		Global.getLogger(this.getClass()).info("Checking entity for invasion: " + entity.getName());
 		if (InvasionRound.canInvade(entity))
 		{
 			options.addOption("Invade the market", INVADE);
@@ -256,7 +255,6 @@ public class Nex_MarketCMD extends MarketCMD {
 		options.setShortcut(INVADE_GO_BACK, Keyboard.KEY_ESCAPE, false, false, false, true);
 	}
 	
-	// TODO: sound effect
 	protected void invadeRunRound() 
 	{
 		MarketAPI market = dialog.getInteractionTarget().getMarket();
@@ -378,7 +376,7 @@ public class Nex_MarketCMD extends MarketCMD {
 	 */
 	protected void invadeFinish() {
 		Random random = getRandom();
-		InvasionRound.finishInvasion(playerFleet, market, tempInvasion.roundNum, tempInvasion.success);
+		InvasionRound.finishInvasion(playerFleet, null, market, tempInvasion.roundNum, tempInvasion.success);
 		
 		if (!tempInvasion.success)
 			applyDefenderIncreaseFromRaid(market);
@@ -701,7 +699,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		// FIXME nothing I do works, work around it for now
 		if (!Misc.isPlayerFactionSetUp())
 		{
-			playerFaction.setDisplayNameOverride(Misc.ucFirst(StringHelper.getString("player")));
+			playerFaction.setDisplayNameOverride(StringHelper.getString("player", true));
 			//new Nex_SetupFaction().execute(null, dialog, new ArrayList<Token>(), memoryMap);
 		}
 	}
@@ -714,6 +712,10 @@ public class Nex_MarketCMD extends MarketCMD {
 				finishedInvade();
 			}
 		});
+	}
+	
+	public TempData getTempData() {
+		return temp;
 	}
 	
 	// this was just to debug Tiandong
@@ -730,6 +732,7 @@ public class Nex_MarketCMD extends MarketCMD {
 		//	x.reportSaturationBombardmentFinished(dialog, market, actionData);
 		//}
 	}
+	
 	
 	public static class TempDataInvasion {
 		public boolean canInvade;

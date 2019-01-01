@@ -18,6 +18,7 @@ import com.fs.starfarer.api.impl.campaign.econ.impl.OrbitalStation;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
+import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.intel.raid.ActionStage;
 import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel.RaidStageStatus;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.BaseAssignmentAI.FleetActionDelegate;
@@ -28,8 +29,11 @@ import com.fs.starfarer.api.util.Misc;
 import exerelin.campaign.InvasionRound;
 import exerelin.campaign.intel.InvasionIntel;
 import exerelin.campaign.intel.InvasionIntel.InvasionOutcome;
+import org.apache.log4j.Logger;
 
 public class InvActionStage extends ActionStage implements FleetActionDelegate {
+	
+	public static Logger log = Global.getLogger(InvActionStage.class);
 	
 	protected MarketAPI target;
 	protected boolean playerTargeted = false;
@@ -104,7 +108,6 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 //		}
 		
 		abortIfNeededBasedOnFP(true);
-		abortIfOutOfMarines(true);
 		if (status != RaidStageStatus.ONGOING) return;
 		
 		boolean inSpawnRange = RouteManager.isPlayerInSpawnRange(target.getPrimaryEntity());
@@ -122,26 +125,6 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		}
 	}
 	
-	protected void abortIfOutOfMarines(boolean giveReturnOrders) {
-		float marines = 0;
-		List<RouteData> routes = getRoutes();
-		List<RouteManager.RouteData> stragglers = new ArrayList<>();	//getStragglers(routes, to, 1000);
-		for (CampaignFleetAPI fleet : ((InvasionIntel)intel).getFleetsThatMadeIt(routes, stragglers))
-		{
-			marines += fleet.getCargo().getMarines();
-		}
-		float startingMarines = ((InvasionIntel)intel).getStartingMarines();
-		if (marines/startingMarines < 0.4f)
-		{
-			Global.getLogger(this.getClass()).info("Invasion: Insufficient marines, aborting (" + marines + "/" + startingMarines + ")");
-			status = RaidStageStatus.FAILURE;
-			((InvasionIntel)intel).setOutcome(InvasionOutcome.FAIL);
-			if (giveReturnOrders) {
-				giveReturnOrdersToStragglers(routes);
-			}
-		}
-	}
-	
 	// TODO: only primary invasion fleet should have invasion action text
 	// if primary invasion fleets are still a thing
 	@Override
@@ -154,13 +137,12 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		return "moving in to invade " + market.getName();
 	}
 	
-	// TODO
 	// get attacker strength and defender strength
 	// if latter is too much higher than former, bomb target if possible
 	// call NPC invade method, await results
 	@Override
 	public void performRaid(CampaignFleetAPI fleet, MarketAPI market) {
-		Global.getLogger(this.getClass()).info("Resolving invasion action: " + (fleet == null));
+		log.info("Resolving invasion action against " + market.getName() + ": " + (fleet == null));
 		
 		removeMilScripts();
 		
@@ -168,30 +150,41 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		
 		status = RaidStageStatus.SUCCESS;
 		
-		float atkStrength = InvasionRound.getAttackerStrength(fleet);
+		float atkStrength = fleet != null ? InvasionRound.getAttackerStrength(fleet) 
+				: InvasionRound.getAttackerStrength(intel.getFaction(), intel.getMarinesPerFleet());
 		float defStrength = InvasionRound.getDefenderStrength(market, 1);
+		
+		log.info("\tStrength ratio: " + atkStrength + " : " + defStrength);
 		
 		boolean needBomb = atkStrength < defStrength;
 		
 		if (needBomb)
 		{
-			Global.getLogger(this.getClass()).info("\tWant to bomb target");
 			float bombCost = Nex_MarketCMD.getBombardmentCost(market, fleet);
 			float maxCost = intel.getRaidFP() / intel.getNumFleets() * Misc.FP_TO_BOMBARD_COST_APPROX_MULT;
 			if (fleet != null) {
 				maxCost = fleet.getCargo().getMaxFuel() * 0.25f;
 			}
+			Global.getLogger(this.getClass()).info("\tWant to bomb target, will cost " + bombCost + " of " + maxCost);
 
 			if (bombCost <= maxCost) {
 				Global.getLogger(this.getClass()).info("\tBombing target");
-				new Nex_MarketCMD().doBombardment(intel.getFaction(), BombardType.TACTICAL);
+				Nex_MarketCMD cmd = new Nex_MarketCMD(market.getPrimaryEntity());
+				cmd.doBombardment(intel.getFaction(), BombardType.TACTICAL);
+				
+				// force recompute of def strength
+				market.reapplyConditions();
+				market.reapplyIndustries();
+				log.info("New strength is " + market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).computeEffective(0));
 			}
 		}
 		
 		Global.getLogger(this.getClass()).info("\tInvading target");
-		boolean success = InvasionRound.npcInvade(fleet, market);
+		boolean success = InvasionRound.npcInvade(atkStrength, fleet, intel.getFaction(), market);
 		if (success)
+		{
 			intel.setOutcome(InvasionOutcome.SUCCESS);
+		}
 		
 		// when FAILURE, gets sent by RaidIntel
 		if (intel.getOutcome() != null) {
@@ -218,7 +211,6 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 			removeMilScripts();
 			giveReturnOrdersToStragglers(getRoutes());
 			
-			
 			intel.setOutcome(InvasionOutcome.TASK_FORCE_DEFEATED);
 			return;
 		}
@@ -229,10 +221,16 @@ public class InvActionStage extends ActionStage implements FleetActionDelegate {
 		}
 		
 		List<RouteData> routes = getRoutes();
-		List<RouteData> stragglers = getStragglers(routes, target.getPrimaryEntity(), 1000);
-		for (CampaignFleetAPI fleet : intel.getFleetsThatMadeIt(routes, stragglers))
+		for (RouteData route : routes)
 		{
-			performRaid(fleet, target);
+			performRaid(route.getActiveFleet(), target);
+			if (intel.getOutcome() != null) break;	// stop attacking if event already over (e.g. already captured)
+		}
+		if (intel.getOutcome() != InvasionOutcome.SUCCESS)
+		{
+			status = RaidStageStatus.FAILURE;
+			intel.setOutcome(InvasionOutcome.FAIL);
+			intel.sendOutcomeUpdate();
 		}
 	}
 	

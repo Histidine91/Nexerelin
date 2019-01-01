@@ -3,6 +3,7 @@ package exerelin.campaign.intel;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
@@ -24,7 +25,9 @@ import com.fs.starfarer.api.ui.LabelAPI;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import exerelin.campaign.AllianceManager;
 import exerelin.campaign.InvasionRound;
+import exerelin.campaign.PlayerFactionStore;
 import exerelin.campaign.fleets.InvasionFleetManager;
 import static exerelin.campaign.fleets.InvasionFleetManager.DEFENDER_STRENGTH_MARINE_MULT;
 import static exerelin.campaign.fleets.InvasionFleetManager.TANKER_FP_PER_FLEET_FP_PER_10K_DIST;
@@ -33,16 +36,21 @@ import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.utilities.StringHelper;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
+// TODO: test autoresolve
 public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	
 	public static final Object ENTERED_SYSTEM_UPDATE = new Object();
 	public static final Object OUTCOME_UPDATE = new Object();
+	public static final boolean NO_STRIKE_FLEETS = true;
+	public static final boolean DEBUG_MODE = true;
 	
 	public static Logger log = Global.getLogger(InvasionIntel.class);
 	
@@ -50,7 +58,9 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	protected MarketAPI target;
 	protected FactionAPI targetFaction;
 	protected InvasionOutcome outcome;
-	protected float startingMarines = 0;
+	protected boolean isRespawn = false;
+	protected boolean intelQueuedOrAdded;
+	protected int marinesPerFleet = 0;
 	
 	protected InvActionStage action;
 	
@@ -87,7 +97,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		
 		// don't add a travel stage for same-system invasions
 		// FIXME: does this fix even work for what we want it to?
-		if (from.getContainingLocation() != target.getContainingLocation())
+		if (true || from.getContainingLocation() != target.getContainingLocation())
 		{
 			SectorEntityToken raidJump = RouteLocationCalculator.findJumpPointToUse(getFactionForUIColors(), target.getPrimaryEntity());
 
@@ -102,11 +112,54 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		
 		addStage(new InvReturnStage(this));
 		
+		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.5f);
+		marinesPerFleet = (int)(defenderStrength * DEFENDER_STRENGTH_MARINE_MULT);
+		
+		if (shouldDisplayIntel())
+			queueIntelIfNeeded();
+		else if (DEBUG_MODE)
+		{
+			Global.getSector().getCampaignUI().addMessage("Invasion intel from " 
+					+ from.getName() + " to " + target.getName() + " concealed due to lack of sniffer");
+		}
+	}
+	
+	protected void queueIntelIfNeeded()
+	{
+		if (intelQueuedOrAdded) return;
+		Global.getSector().getIntelManager().queueIntel(this);
+		intelQueuedOrAdded = true;
+	}
+	
+	protected void addIntelIfNeeded()
+	{
+		if (intelQueuedOrAdded) return;
 		Global.getSector().getIntelManager().addIntel(this);
+		intelQueuedOrAdded = true;
+	}
+	
+	protected boolean shouldDisplayIntel()
+	{
+		LocationAPI loc = from.getContainingLocation();
+		if (faction.isPlayerFaction()) return true;		
+		if (AllianceManager.areFactionsAllied(faction.getId(), PlayerFactionStore.getPlayerFactionId()))
+			return true;
+		
+		List<SectorEntityToken> sniffers = Global.getSector().getIntel().getCommSnifferLocations();
+		for (SectorEntityToken relay : sniffers)
+		{
+			if (relay.getContainingLocation() == loc)
+				return true;
+		}
+		return false;
 	}
 	
 	public InvasionOutcome getOutcome() {
 		return outcome;
+	}
+	
+	public int getMarinesPerFleet() {
+		return marinesPerFleet;
 	}
 	
 	@Override
@@ -115,19 +168,26 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	}
 
 	public void sendOutcomeUpdate() {
+		addIntelIfNeeded();
 		sendUpdateIfPlayerHasIntel(OUTCOME_UPDATE, false);
 	}
 	
 	public void sendEnteredSystemUpdate() {
+		queueIntelIfNeeded();
 		sendUpdateIfPlayerHasIntel(ENTERED_SYSTEM_UPDATE, false);
+	}
+	
+	@Override
+	public void sendUpdateIfPlayerHasIntel(Object listInfoParam, boolean onlyIfImportant, boolean sendIfHidden) {
+		if (listInfoParam == UPDATE_RETURNING) {
+			// we're using sendOutcomeUpdate() to send an end-of-event update instead
+			return;
+		}
+		super.sendUpdateIfPlayerHasIntel(listInfoParam, onlyIfImportant, sendIfHidden);
 	}
 
 	public void setOutcome(InvasionOutcome outcome) {
 		this.outcome = outcome;
-	}
-	
-	public float getStartingMarines() {
-		return startingMarines;
 	}
 	
 	public List<CampaignFleetAPI> getFleetsThatMadeIt(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers)
@@ -141,6 +201,23 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 			}
 		}
 		return fleets;
+	}
+	
+	public int estimateAvailableMarines(List<RouteManager.RouteData> routes, List<RouteManager.RouteData> stragglers)
+	{
+		int marines = 0;
+		List<CampaignFleetAPI> fleets = new ArrayList<>();
+		for (RouteManager.RouteData route : routes) {
+			if (stragglers.contains(route)) continue;
+			CampaignFleetAPI fleet = route.getActiveFleet();
+			if (fleet != null) {
+				marines += fleet.getCargo().getMarines();
+			}
+			else {
+				marines += marinesPerFleet;
+			}
+		}
+		return marines;
 	}
 	
 	// for intel popup in campaign screen's message area
@@ -161,53 +238,49 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		boolean isUpdate = getListInfoParam() != null;
 		
 		float eta = getETA();
+		FactionAPI other = target.getFaction();
 		
-		info.addPara("Faction: " + faction.getDisplayName(), initPad, tc,
+		info.addPara(StringHelper.getString("faction", true) + ": " + faction.getDisplayName(), initPad, tc,
 				 	 faction.getBaseUIColor(), faction.getDisplayName());
 		initPad = 0f;
 		
-		if (target != null) {
-			FactionAPI other = target.getFaction();
-			info.addPara("Target: " + target.getName(), initPad, tc,
-					     other.getBaseUIColor(), target.getName());
+		if (outcome == null)
+		{
+			String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion",
+					"intelBulletTarget", "$targetFaction", other.getDisplayName());
+			info.addPara(str, initPad, tc,
+						 other.getBaseUIColor(), other.getDisplayName());
 		}
 		
 		if (getListInfoParam() == ENTERED_SYSTEM_UPDATE) {
-			info.addPara("Invasion force arrived in system", 
+			info.addPara(StringHelper.getString("exerelin_invasion", "intelBulletArrived"),
 						tc, initPad);
 			return;
 		}
 		
 		if (outcome != null)
 		{
+			String key = "intelBulletCancelled";
 			switch (outcome) {
 				case SUCCESS:
-					info.addPara("Invasion of " + target.getName() + " successful",
-							tc, initPad);
+					key = "intelBulletSuccess";
 					break;
 				case TASK_FORCE_DEFEATED:
-					info.addPara("Invasion of " + target.getName() + " has failed",
-							tc, initPad);
-					info.addPara("Invasion force defeated",
-							tc, initPad);
-					break;
 				case FAIL:
-					info.addPara("Invasion force defeated",
-							tc, initPad);
+					key = "intelBulletFailed";
 					break;
 				case MARKET_NO_LONGER_EXISTS:
-					info.addPara("Invasion of " + target.getName() + " aborted: target destroyed",
-							tc, initPad);
+					key = "intelBulletNoLongerExists";
 					break;
 				case NO_LONGER_HOSTILE:
-					info.addPara("Invasion of " + target.getName() + " aborted: no longer hostile",
-							tc, initPad);
-					break;
-				default:
-					info.addPara("Invasion of " + target.getName() + " cancelled",
-							tc, initPad);
+					key = "intelBulletNoLongerHostile";
 					break;
 			}
+			//String str = StringHelper.getStringAndSubstituteToken("exerelin_invasion", 
+			//		key, "$target", target.getName());
+			//info.addPara(str, initPad, tc, other.getBaseUIColor(), target.getName());
+			String str = StringHelper.getString("exerelin_invasion", key);
+			info.addPara(str, tc, initPad);
 		} else {
 			info.addPara(system.getNameWithLowercaseType(), tc, initPad);
 		}
@@ -235,26 +308,40 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		
 		info.addImage(getFactionForUIColors().getLogo(), width, 128, opad);
 		
-		FactionAPI faction = getFaction();
-		String has = faction.getDisplayNameHasOrHave();
-		String is = faction.getDisplayNameIsOrAre();
+		FactionAPI attacker = getFaction();
+		FactionAPI defender = target.getFaction();
+		String has = attacker.getDisplayNameHasOrHave();
+		String is = attacker.getDisplayNameIsOrAre();
+		String locationName = target.getContainingLocation().getNameWithLowercaseType();
 		
 		String strDesc = getRaidStrDesc();
 		
-		LabelAPI label = info.addPara(Misc.ucFirst(faction.getDisplayNameWithArticle()) + " " + is + 
-				" invading " + target.getName() + " in " + system.getName() + ". The invasion forces are " +
-						"projected to be " + strDesc + ".",
-				opad, faction.getBaseUIColor(), faction.getDisplayNameWithArticleWithoutArticle());
-		label.setHighlight(faction.getDisplayNameWithArticleWithoutArticle(), target.getName(), strDesc);
-		label.setHighlightColors(faction.getBaseUIColor(), target.getFaction().getBaseUIColor(), h);
+		String string = StringHelper.getString("exerelin_invasion", "intelDesc");
+		String attackerName = attacker.getDisplayNameWithArticle();
+		String defenderName = defender.getDisplayNameWithArticle();
+		Map<String, String> sub = new HashMap<>();
+		sub.put("$theFaction", attackerName);
+		sub.put("$TheFaction", Misc.ucFirst(attackerName));
+		sub.put("$theTargetFaction", defenderName);
+		sub.put("$TheTargetFaction", Misc.ucFirst(defenderName));
+		sub.put("$market", target.getName());
+		sub.put("$isOrAre", attacker.getDisplayNameIsOrAre());
+		sub.put("$location", locationName);
+		sub.put("$strDesc", strDesc);
+		string = StringHelper.substituteTokens(string, sub);
+		
+		LabelAPI label = info.addPara(string, opad);
+		label.setHighlight(attacker.getDisplayNameWithArticleWithoutArticle(), target.getName(), 
+				defender.getDisplayNameWithArticleWithoutArticle(), strDesc);
+		label.setHighlightColors(attacker.getBaseUIColor(), h, defender.getBaseUIColor(), h);
 		
 		if (outcome == null) {
 			addStandardStrengthComparisons(info, target, targetFaction, true, false,
 										   "expedition", "expedition's");
 		}
 		
-		info.addSectionHeading("Status", 
-				   faction.getBaseUIColor(), faction.getDarkUIColor(), Alignment.MID, opad);
+		info.addSectionHeading(StringHelper.getString("status", true), 
+				   attacker.getBaseUIColor(), attacker.getDarkUIColor(), Alignment.MID, opad);
 		
 		for (RaidStage stage : stages) {
 			stage.showStageInfo(info);
@@ -277,10 +364,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		// only one fleet is the actual invasion fleet; rest are strike fleets supporting it
 		// not sure that'll even work given the spawn/despawn behavior
 		boolean isInvasionFleet = extra.fleetType.equals("exerelinInvasionFleet");
-				
-		float defenderStrength = InvasionRound.getDefenderStrength(target, 0.5f);
 		float distance = ExerelinUtilsMarket.getHyperspaceDistance(market, target);
-		int numMarines = (int)(defenderStrength * DEFENDER_STRENGTH_MARINE_MULT);
 		
 		float fp = extra.fp;
 		if (!isInvasionFleet) fp *= 0.75f;
@@ -288,7 +372,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		float combat = fp;
 		float tanker = fp * (0.1f + random.nextFloat() * 0.05f)
 				+ TANKER_FP_PER_FLEET_FP_PER_10K_DIST * distance/10000;
-		float transport = isInvasionFleet ? numMarines/100 : 0;
+		float transport = isInvasionFleet ? marinesPerFleet/100 : 0;
 		float freighter = fp * (0.1f + random.nextFloat() * 0.05f);
 		
 		if (isInvasionFleet) freighter *= 2;
@@ -321,9 +405,8 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 		
 		fleet.setName(InvasionFleetManager.getFleetName(extra.fleetType, factionId, totalFp));
 		
-		fleet.getCargo().addMarines(numMarines);
-		startingMarines += numMarines;
-		log.info("Adding marines to cargo: " + numMarines);
+		fleet.getCargo().addMarines(marinesPerFleet);
+		log.info("Adding marines to cargo: " + marinesPerFleet);
 		
 		fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_WAR_FLEET, true);
 		if (isInvasionFleet)
@@ -353,7 +436,7 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	public Set<String> getIntelTags(SectorMapAPI map) {
 		Set<String> tags = super.getIntelTags(map);
 		tags.add(Tags.INTEL_MILITARY);
-		tags.add(StringHelper.getString("exerelin_invasion", "invasions", true));
+		//tags.add(StringHelper.getString("exerelin_invasion", "invasions", true));
 		if (targetFaction.isPlayerFaction())
 			tags.add(Tags.INTEL_COLONIES);
 		tags.add(getFaction().getId());
@@ -363,8 +446,8 @@ public class InvasionIntel extends RaidIntel implements RaidDelegate {
 	
 	@Override
 	public String getName() {
-		String base = StringHelper.getString("exerelin_invasion", "invasionOf");
-		base = StringHelper.substituteToken(base, "$faction", faction.getPersonNamePrefix(), true);
+		String base = StringHelper.getString("exerelin_invasion", "intelTitle");
+		base = StringHelper.substituteToken(base, "$faction", faction.getDisplayName(), true);
 		base = StringHelper.substituteToken(base, "$market", target.getName());
 		
 		if (isEnding()) {
