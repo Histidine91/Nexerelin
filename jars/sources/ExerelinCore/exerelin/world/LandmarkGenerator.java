@@ -81,7 +81,7 @@ public class LandmarkGenerator {
 		}
 		catch (IOException | JSONException ex)
 		{
-			log.error("Failed to load landmarks: " + ex);
+			log.error("Failed to load landmarks", ex);
 		}
 	}
 

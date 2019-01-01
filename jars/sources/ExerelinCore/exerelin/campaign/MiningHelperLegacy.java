@@ -166,11 +166,11 @@ public class MiningHelperLegacy {
 					miningConditions.put(id, resources);
 					miningConditionsCache.put(id, (float)row.optDouble("cache", 0));
 				} catch (JSONException ex) {
-					log.error("Error loading market condition entry " + id + ": " + ex);
+					log.error("Error loading market condition entry " + id, ex);
 				}
 			}
 		} catch (IOException | JSONException ex) {
-			log.error("Error loading market condition data: " + ex);
+			log.error("Error loading market condition data", ex);
 		}
 		
 		initCacheDefs();
@@ -198,11 +198,11 @@ public class MiningHelperLegacy {
 						hiddenTools.add(shipId);
 					}
 				} catch (JSONException ex) {
-					log.error("Error loading mining ship " + shipId + ": " + ex);
+					log.error("Error loading mining ship " + shipId, ex);
 				}
 			}
 		} catch (IOException | JSONException ex) {
-			log.error("Error loading mining ships: " + ex);
+			log.error("Error loading mining ships", ex);
 		} catch (RuntimeException rex) {
 			// file not found, do nothing
 		}
@@ -226,11 +226,11 @@ public class MiningHelperLegacy {
 						hiddenTools.add(weaponId);
 					}
 				} catch (JSONException ex) {
-					log.error("Error loading mining weapon " + weaponId + ": " + ex);
+					log.error("Error loading mining weapon " + weaponId + ": ", ex);
 				}
 			}
 		} catch (IOException | JSONException ex) {
-			log.error("Error loading mining weapons: " + ex);
+			log.error("Error loading mining weapons", ex);
 		} catch (RuntimeException rex) {
 			// file not found, do nothing
 		}

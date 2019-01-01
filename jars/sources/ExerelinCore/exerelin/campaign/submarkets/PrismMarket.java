@@ -430,7 +430,7 @@ public class PrismMarket extends BaseSubmarketPlugin {
                             proceed = false;
                         }
                     } catch (IllegalArgumentException | NullPointerException ex) {
-                        log.error("Failed to check IBB completion for " + entry.id + ": " + ex);
+                        log.error("Failed to check IBB completion for " + entry.id, ex);
                         //proceed = false;
                     }
                 }

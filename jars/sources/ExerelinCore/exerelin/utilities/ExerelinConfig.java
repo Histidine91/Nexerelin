@@ -250,7 +250,7 @@ public class ExerelinConfig
             }
             supportedModFactions = modFactions.toArray(new String[]{});
         } catch (IOException | JSONException ex) {
-            log.error("Failed to load mod faction file: " + ex);
+            log.error("Failed to load mod faction file", ex);
         }
     }
 
