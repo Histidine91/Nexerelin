@@ -130,7 +130,7 @@ public class AllianceVoter {
 		}
 		if (ally2 != null)
 		{
-			AllianceVoteIntel intel = new AllianceVoteIntel(ally2.uuId, vote1, 
+			AllianceVoteIntel intel = new AllianceVoteIntel(ally2.uuId, vote2, 
 					ally1 != null ? ally1.uuId: faction1Id, 
 					ally1 != null, isWar);
 			ExerelinUtils.addExpiringIntel(intel);
