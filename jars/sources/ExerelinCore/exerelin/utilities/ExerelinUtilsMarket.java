@@ -110,6 +110,7 @@ public class ExerelinUtilsMarket {
 	public static boolean shouldTargetForInvasions(MarketAPI market, int minSize)
 	{
 		if (market.getSize() < minSize) return false;
+		if (market.isHidden()) return false;
 		FactionAPI marketFaction = market.getFaction();
 		String factionId = marketFaction.getId();
 		ExerelinFactionConfig config = ExerelinConfig.getExerelinFactionConfig(factionId);

@@ -569,7 +569,6 @@ public class ExerelinProcGen {
 			data.primary = target.getOrbitFocus();
 		}
 		data.name = getStationName(data.primary);
-		data.archetype = marketSetup.pickArchetypeForStation(data);
 		if (target instanceof PlanetAPI)
 		{
 			data.planetType = ((PlanetAPI)target).getTypeId();
@@ -972,7 +971,7 @@ public class ExerelinProcGen {
 		id = id.toLowerCase();
 		
 		int size = freeStation ? marketSetup.getWantedMarketSize(station, factionId) : planet.getMarket().getSize();
-		String stationImage = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomStation(size, random);
+		String stationImage = ExerelinConfig.getExerelinFactionConfig(factionId).getRandomCustomStation(size, random);
 		if (stationImage == null)
 			stationImage = ExerelinUtils.getRandomListElement(STATION_IMAGES);
 		
@@ -992,7 +991,7 @@ public class ExerelinProcGen {
 		else
 		{
 			log.info("Adding free station " + station.name + " for " + factionId);
-			station.market = marketSetup.addMarket(station, factionId, size);
+			station.market = marketSetup.initMarket(station, factionId, size);
 			//standaloneStations.add(data);
 		}
 		newStation.setCustomDescriptionId("orbital_station_default");
@@ -1276,15 +1275,6 @@ public class ExerelinProcGen {
 	 */
 	public void populateSector(SectorAPI sector)
 	{
-		// initial setup
-		// first add planet type conditions so archetype picker knows about them
-		for (ProcGenEntity entity : populatedPlanets)
-		{
-			marketSetup.addMarketConditionForPlanetType(entity);
-		}
-		
-		marketSetup.pickMarketArchetypes(populatedPlanets);
-		
 		// faction picker
 		WeightedRandomPicker<String> factionPicker = new WeightedRandomPicker<>(random);
 		List<String> factions = new ArrayList<>(factionIds);
@@ -1342,7 +1332,7 @@ public class ExerelinProcGen {
 			else
 			{
 				homeworld.isHQ = true;
-				MarketAPI homeMarket = marketSetup.addMarket(homeworld, alignedFactionId);
+				MarketAPI homeMarket = marketSetup.initMarket(homeworld, alignedFactionId);
 				//SectorEntityToken relay = sector.getEntityById(systemToRelay.get(homeworld.starSystem.getId()));
 				//relay.setFaction(alignedFactionId);
 				populatedPlanetsCopy.remove(homeworld);
@@ -1386,7 +1376,7 @@ public class ExerelinProcGen {
 			if (!(config != null && config.noHomeworld == true))
 				hq.isHQ = true;
 			
-			marketSetup.addMarket(hq, factionId);
+			marketSetup.initMarket(hq, factionId);
 			handleHQSpecials(sector, factionId, hq);
 			
 			if (pirateFactions.contains(factionId))
@@ -1428,7 +1418,7 @@ public class ExerelinProcGen {
 				
 				if (entity.type == EntityType.PLANET || entity.type == EntityType.MOON)
 				{
-					marketSetup.addMarket(entity, factionId);
+					marketSetup.initMarket(entity, factionId);
 					populatedPlanetsCopy.remove(entity);
 					factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
 				}
@@ -1467,7 +1457,7 @@ public class ExerelinProcGen {
 						existingHQsByFaction.get(factionId), populatedSystemsByFaction.get(factionId));
 				populatedPlanetsCopy.remove(habitable);
 				unassignedEntities.remove(habitable);
-				marketSetup.addMarket(habitable, factionId);
+				marketSetup.initMarket(habitable, factionId);
 				factionPlanetCount.put(factionId, factionPlanetCount.get(factionId) + 1);
 				
 				populatedSystemsByFaction.get(factionId).add(habitable.starSystem);
@@ -1488,7 +1478,7 @@ public class ExerelinProcGen {
 				factionPicker.addAll(factions);
 			String factionId = factionPicker.pickAndRemove();
 			
-			marketSetup.addMarket(planet, factionId);
+			marketSetup.initMarket(planet, factionId);
 			unassignedEntities.remove(planet);
 			populatedSystemsByFaction.get(factionId).add(planet.starSystem);
 		}
@@ -1528,6 +1518,20 @@ public class ExerelinProcGen {
 			populatedSystemsByFaction.get(factionId).add(station.starSystem);
 		}
 		
+		// add key industries for each faction
+		for (String factionId : factions)
+		{
+			marketSetup.addKeyIndustriesForFaction(factionId);
+		}
+		// add industries to each entity
+		marketSetup.addIndustriesToMarkets();
+		
+		// add faction specials
+		for (String factionId : factions)
+		{
+			marketSetup.addFactionSpecials(factionId);
+		}
+		
 		// end distribution of markets and stations
 	}
 	
@@ -1540,25 +1544,25 @@ public class ExerelinProcGen {
 	}
 	
 	public static class ProcGenEntity {
-		String name = "";
-		SectorEntityToken entity;
-		String planetType = "";
-		float desirability = 0;
-		boolean inhabited = true;
-		boolean isCapital = false;	// merely used for internal tagging; it's not set at the time market generation occurs
-		boolean isHQ = false;
-		EntityType type = EntityType.PLANET;
-		StarSystemAPI starSystem;
-		SectorEntityToken primary;
-		CampaignTerrainAPI terrain;	// for stations
-		MarketAPI market;
-		ExerelinMarketBuilder.Archetype archetype = ExerelinMarketBuilder.Archetype.MISC;
-		int forceMarketSize = -1;
-		//float orbitRadius = 0;
-		//float orbitPeriod = 0;
-		int marketPoints = 0;
-		int marketPointsSpent = 0;
-		int bonusMarketPoints = 0;
+		public String name = "";
+		public SectorEntityToken entity;
+		public String planetType = "";
+		public float desirability = 0;
+		public boolean inhabited = true;
+		public boolean isCapital = false;	// merely used for internal tagging; it's not set at the time market generation occurs
+		public boolean isHQ = false;
+		public EntityType type = EntityType.PLANET;
+		public StarSystemAPI starSystem;
+		public SectorEntityToken primary;
+		public CampaignTerrainAPI terrain;	// for stations
+		public MarketAPI market;
+		public int forceMarketSize = -1;
+		//public float orbitRadius = 0;
+		//public float orbitPeriod = 0;
+		@Deprecated public int marketPoints = 0;
+		@Deprecated public int marketPointsSpent = 0;
+		@Deprecated public int bonusMarketPoints = 0;
+		public int numProductiveIndustries = 0;
 		
 		public ProcGenEntity(SectorEntityToken entity) 
 		{

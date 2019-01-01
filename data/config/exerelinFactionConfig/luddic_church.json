@@ -35,4 +35,13 @@
     ],
     "startShipsTradeLarge":[["venture_Balanced", "buffalo_luddic_church_Standard", "hound_luddic_church_Standard"]],
     "startShipsCarrierSmall":[["condor_Attack", "lasher_luddic_church_Standard", "hound_luddic_church_Standard"]],
+	
+	"industrySeeds":[
+	  {"id":"lightindustry", "mult":0.2},
+    ],
+	
+	"industrySpawnMults":[
+	  {"id":"heavyindustry", "mult":0},
+	  {"id":"fuelproduction", "mult":0},
+	],
 }

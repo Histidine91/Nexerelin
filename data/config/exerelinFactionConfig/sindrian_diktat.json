@@ -34,4 +34,9 @@
       ["heron_lions_guard_eli", "ssp_archon_bul", "kite_Standard"],
       ["heron_Strike", "sunder_Assault", "centurion_Starting"]
     ],
+    
+    "industrySeeds":[
+      {"id":"orbitalworks", "mult":0.1},
+	  {"id":"fuelprod", "mult":0.2},
+    ],
 }

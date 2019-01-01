@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.FactionAPI.ShipPickParams;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
@@ -21,7 +22,8 @@ import org.json.JSONException;
 public class ExerelinFactionConfig
 {
     public static final String[] DEFAULT_MINERS = {"venture_Outdated", "shepherd_Frontier"};
-    public static final String[] DEFAULT_DEF_STATIONS = {"nex_asgard_Standard"};
+    public static final List<DefenceStationSet> DEFAULT_DEFENCE_STATIONS = new ArrayList<>();
+	public static final List<IndustrySeed> DEFAULT_INDUSTRY_SEEDS = new ArrayList<>();
     public static final Map<Alignment, Float> DEFAULT_ALIGNMENTS = new HashMap<>();
     
     public String factionId;
@@ -56,14 +58,11 @@ public class ExerelinFactionConfig
     // Fleet names
     public String asteroidMiningFleetName = StringHelper.getString("exerelin_fleets", "miningFleetName");
     public String gasMiningFleetName = StringHelper.getString("exerelin_fleets", "miningFleetName");
-    @Deprecated
-    public String logisticsFleetName = "Logistics Convoy";	//StringHelper.getString("exerelin_fleets", "logisticsFleetName")
     public String invasionFleetName = StringHelper.getString("exerelin_fleets", "invasionFleetName");
     public String invasionSupportFleetName = StringHelper.getString("exerelin_fleets", "invasionSupportFleetName");
     public String responseFleetName = StringHelper.getString("exerelin_fleets", "responseFleetName");
     public String defenceFleetName = StringHelper.getString("exerelin_fleets", "defenceFleetName");
     public String suppressionFleetName = StringHelper.getString("exerelin_fleets", "suppressionFleetName");
-    public String stationName = StringHelper.getString("exerelin_fleets", "stationName");
     
     // Diplomacy
     public boolean disableDiplomacy = false;
@@ -86,10 +85,15 @@ public class ExerelinFactionConfig
     public boolean noSyncRelations = false;
     public boolean noRandomizeRelations = false;
     
+    // economy and such
     public float marketSpawnWeight = 1;	// what proportion of procgen markets this faction gets
     public boolean freeMarket = false;
     public float tariffMult = 1;
-
+    
+    public List<IndustrySeed> industrySeeds = new ArrayList<>();
+	public Map<String, Float> industrySpawnMults = new HashMap<>();	// TODO load this
+    
+    // invasions and stuff
     public float invasionStrengthBonusAttack = 0;	// marines
     public float invasionStrengthBonusDefend = 0;
     public float invasionFleetSizeMod = 0;	// ships
@@ -99,6 +103,7 @@ public class ExerelinFactionConfig
     public float vengeanceFleetSizeMult = 1;
     public String factionIdForHqResponse = null;
     
+    // misc
     public boolean dropPrisoners = true;
     public boolean noHomeworld = false;	// don't give this faction a HQ in procgen
     public boolean showIntelEvenIfDead = false;	// intel tab
@@ -109,22 +114,34 @@ public class ExerelinFactionConfig
     public boolean directoryUseShortName = false;
     public String difficultyString = "";
     
+    // vengeance
     public List<String> vengeanceLevelNames = new ArrayList<>();
     public List<String> vengeanceFleetNames = new ArrayList<>();
     public List<String> vengeanceFleetNamesSingle = new ArrayList<>();
     
+    // misc. part 2
     public List<CustomStation> customStations = new ArrayList<>();
-    public List<String> defenceStations = new ArrayList<>();
+    public List<DefenceStationSet> defenceStations = new ArrayList<>();
     
     public List<String> miningVariantsOrWings = new ArrayList<>();
     
     public Map<StartFleetType, StartFleetSet> startShips = new HashMap<>();
     
+	// set defaults
     static {
         for (Alignment alignment : Alignment.values())
         {
             DEFAULT_ALIGNMENTS.put(alignment, 0f);
         }
+        
+        DefenceStationSet low = new DefenceStationSet(1, Industries.ORBITALSTATION, Industries.BATTLESTATION, Industries.STARFORTRESS);
+        DefenceStationSet mid = new DefenceStationSet(0.75f, Industries.ORBITALSTATION_MID, Industries.BATTLESTATION_MID, Industries.STARFORTRESS_MID);
+        DefenceStationSet high = new DefenceStationSet(0.5f, Industries.ORBITALSTATION_HIGH, Industries.BATTLESTATION_HIGH, Industries.STARFORTRESS_HIGH);
+        DEFAULT_DEFENCE_STATIONS.addAll(Arrays.asList(low, mid, high));
+		
+		DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.HEAVYINDUSTRY, 0.1f, true));
+		DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.FUELPROD, 0.1f, true));
+		DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.LIGHTINDUSTRY, 0.1f, true));
     }
 
     public ExerelinFactionConfig(String factionId)
@@ -160,12 +177,10 @@ public class ExerelinFactionConfig
             
             asteroidMiningFleetName = settings.optString("asteroidMiningFleetName", asteroidMiningFleetName);
             gasMiningFleetName = settings.optString("gasMiningFleetName", gasMiningFleetName);
-            logisticsFleetName = settings.optString("logisticsFleetName", logisticsFleetName);
             invasionFleetName = settings.optString("invasionFleetName", invasionFleetName);
             invasionSupportFleetName = settings.optString("invasionSupportFleetName", invasionSupportFleetName);
             defenceFleetName = settings.optString("defenceFleetName", defenceFleetName);
             responseFleetName = settings.optString("responseFleetName", responseFleetName);
-            stationName = settings.optString("stationName", stationName);
             
             positiveDiplomacyExtra = settings.optInt("positiveDiplomacyExtra");
             negativeDiplomacyExtra = settings.optInt("negativeDiplomacyExtra");
@@ -197,9 +212,9 @@ public class ExerelinFactionConfig
                 miningVariantsOrWings = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
             
             if (settings.has("defenceStations"))
-                defenceStations = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("defenceStations")));
+                loadDefenceStations(settings);
             else
-                defenceStations = Arrays.asList(DEFAULT_DEF_STATIONS);
+                defenceStations = DEFAULT_DEFENCE_STATIONS;
             
             loadCustomStations(settings);
             
@@ -282,6 +297,24 @@ public class ExerelinFactionConfig
             loadVengeanceNames(settings);
             
             loadStartShips(settings);
+			
+			
+            // industry
+            if (settings.has("industrySeeds"))
+            {
+                JSONArray seedsJson = settings.getJSONArray("industrySeedMults");
+                for (int i = 0; i < seedsJson.length(); i++)
+                {
+                    JSONObject seedJson = seedsJson.getJSONObject(i);
+                    String id = seedJson.getString("id");
+                    float mult = (float)seedJson.getDouble("mult");
+                    boolean roundUp = seedJson.optBoolean("roundUp", true);
+                    industrySeeds.add(new IndustrySeed(id, mult, roundUp));
+                }
+            }
+            else
+				industrySeeds = DEFAULT_INDUSTRY_SEEDS;
+			
         } catch(IOException | JSONException ex)
         {
             Global.getLogger(this.getClass()).error("Failed to load faction config for " + factionId + ": " + ex);
@@ -448,7 +481,6 @@ public class ExerelinFactionConfig
         if (!factionSettings.has("customStations"))
             return;
         
-        
         JSONArray array = factionSettings.optJSONArray("customStations");
         if (array == null || array.length() == 0)
             return;
@@ -470,7 +502,23 @@ public class ExerelinFactionConfig
         }
     }
     
-    public String getRandomStation(int size, Random rand)
+    protected void loadDefenceStations(JSONObject factionSettings) throws JSONException
+    {
+        JSONArray array = factionSettings.optJSONArray("defenceStations");
+        if (array == null || array.length() == 0)
+            return;
+        
+        for (int i=0; i<array.length(); i++)
+        {
+            JSONObject defJson = array.getJSONObject(i);
+            List<String> ids = ExerelinUtils.JSONArrayToArrayList(defJson.getJSONArray("ids"));
+            float weight = (float)defJson.optDouble("weight", 1);
+            
+            defenceStations.add(new DefenceStationSet(weight, ids));
+        }
+    }
+    
+    public String getRandomCustomStation(int size, Random rand)
     {
         WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(rand);
         for (CustomStation station : customStations)
@@ -481,6 +529,29 @@ public class ExerelinFactionConfig
         return picker.pick();
     }
 	
+    public String getRandomDefenceStation(Random rand, int sizeIndex)
+    {
+        if (defenceStations.isEmpty()) return null;
+        WeightedRandomPicker<DefenceStationSet> picker = new WeightedRandomPicker<>(rand);
+        for (DefenceStationSet set : defenceStations)
+        {
+            picker.add(set, set.weight);
+        }
+        DefenceStationSet set = picker.pick();
+        if (set == null) return null;
+        if (set.industryIds.isEmpty()) return null;
+        
+        sizeIndex = Math.min(sizeIndex, set.industryIds.size() - 1);
+        return set.industryIds.get(sizeIndex);
+    }
+	
+	public float getIndustryTypeMult(String defId)
+	{
+		if (!industrySpawnMults.containsKey(defId))
+			return 1;
+		return industrySpawnMults.get(defId);
+	}
+    
 	public List<String> getStartShipList(JSONArray array) throws JSONException
 	{
 		List<String> list = ExerelinUtils.JSONArrayToArrayList(array);
@@ -915,13 +986,47 @@ public class ExerelinFactionConfig
 	
 	public static class CustomStation
 	{
-		String customEntityId;
-		int minSize = 0;
-		int maxSize = 99;
+		public String customEntityId;
+		public int minSize = 0;
+		public int maxSize = 99;
 		
 		public CustomStation(String entityId)
 		{
 			this.customEntityId = entityId;
+		}
+	}
+	
+	public static class IndustrySeed
+	{
+		public String industryId;
+		public float mult;
+		public boolean roundUp;
+		
+		public IndustrySeed(String industryId, float mult, boolean roundUp)
+		{
+			this.industryId = industryId;
+			this.mult = mult;
+			this.roundUp = roundUp;
+		}
+	}
+	
+	public static class DefenceStationSet
+	{
+		public float weight;
+		public List<String> industryIds;
+		
+		public DefenceStationSet(float weight, String... industryIds)
+		{
+			this.weight = weight;
+			this.industryIds = new ArrayList<>();
+			for (String industryId : industryIds)
+				this.industryIds.add(industryId);
+		}
+		
+		public DefenceStationSet(float weight, List<String> industryIds)
+		{
+			this.weight = weight;
+			this.industryIds = industryIds;
 		}
 	}
 	
