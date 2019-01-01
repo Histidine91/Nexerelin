@@ -1,0 +1,9 @@
+id,name,class,requiredMod
+nanoforge_pristine,Pristine Nanoforge,exerelin.world.industry.bonus.Nanoforge,
+nanoforge_corrupted,Corrupted Nanoforge,exerelin.world.industry.bonus.Nanoforge,
+synchrotron,Synchrotron,exerelin.world.industry.bonus.Synchrotron,
+aiCore_heavyindustry,AI Core (Heavy Industry),exerelin.world.industry.bonus.AICoreHeavyIndustry,
+aiCore_fuelprod,AI Core (Fuel Production),exerelin.world.industry.bonus.AICoreFuelProduction,
+aiCore_military,AI Core (Military),exerelin.world.industry.bonus.AICoreMilitary,
+aiCore_station,AI Core (Orbital Station),exerelin.world.industry.bonus.AICoreStation,
+aiCore_other,AI Core (Other),exerelin.world.industry.bonus.AICoreOther,

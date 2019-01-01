@@ -8,7 +8,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.econ.MarketConditionAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
@@ -21,6 +23,7 @@ import exerelin.campaign.SectorManager;
 import exerelin.plugins.ExerelinModPlugin;
 import exerelin.utilities.ExerelinConfig;
 import exerelin.utilities.ExerelinFactionConfig;
+import exerelin.utilities.ExerelinFactionConfig.BonusSeed;
 import exerelin.utilities.ExerelinFactionConfig.IndustrySeed;
 import exerelin.utilities.ExerelinUtilsAstro;
 import exerelin.utilities.ExerelinUtilsFaction;
@@ -28,8 +31,8 @@ import exerelin.utilities.ExerelinUtilsMarket;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import exerelin.world.ExerelinProcGen.EntityType;
 import exerelin.world.industry.IndustryClassGen;
+import exerelin.world.industry.bonus.BonusGen;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -44,27 +47,25 @@ import org.json.JSONObject;
  * How it works.
  * Stage 1: init markets (add to economy, set size, add population industry), etc.
  *	Add defenses & starport based on size
- * Stage 2: add key manufacturing from config to randomly picked planet
- * Stage 3: for each market, for all possible industries, get priority, add to market in order of priority till max industries reached
+ * Stage 2: for each market, for all possible industries, get priority, add to market in order of priority till max industries reached
  *	Priority is based on local resources and hazard rating
+ * Stage 3: add key manufacturing from config to randomly picked planet
  * Stage 4: distribute bonus items to markets
  * 
  * Notes:
  *	Free stations in asteroid belt should have ore mining,
- *	free stations orbiting gas giant should have gas extraction
- * 
- * How to tell Luddic Church etc. "don't build industry"?
- * Perhaps just return 0 priority for those factions
+ *	free stations in ring or orbiting gas giant should have gas extraction
 */
 
 // TODO: overhaul pending
 @SuppressWarnings("unchecked")
-public class ExerelinMarketBuilder
+public class NexMarketBuilder
 {
-	public static Logger log = Global.getLogger(ExerelinMarketBuilder.class);
+	public static Logger log = Global.getLogger(NexMarketBuilder.class);
 	//private List possibleMarketConditions;
 	
 	public static final String INDUSTRY_CONFIG_FILE = "data/config/exerelin/industryClassDefs.csv";
+	public static final String BONUS_CONFIG_FILE = "data/config/exerelin/industry_bonuses.csv";
 	//public static final Map<MarketArchetype, Float> STATION_ARCHETYPE_QUOTAS = new HashMap<>(MarketArchetype.values().length);
 	// this proportion of TT markets with no military bases will have Cabal submarkets (Underworld)
 	public static final float CABAL_MARKET_MULT = 0.4f;	
@@ -78,14 +79,16 @@ public class ExerelinMarketBuilder
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MIN = 1.3f;
 	//protected static final float SUPPLIES_SUPPLY_DEMAND_RATIO_MAX = 0.5f;	// lower than min so it can swap autofacs for shipbreakers if needed
 	
-	protected static final int[] PLANET_SIZE_ROTATION = new int[] {4, 5, 6, 7, 6, 5, 4};
+	protected static final int[] PLANET_SIZE_ROTATION = new int[] {4, 5, 6, 7, 6, 5};
 	protected static final int[] MOON_SIZE_ROTATION = new int[] {3, 4, 5, 6, 5, 4};
 	protected static final int[] STATION_SIZE_ROTATION = new int[] {3, 4, 5, 4, 3};
 	
-	protected static final List<IndustryClassDef> industryDefs = new ArrayList<>();
-	protected static final Map<String, IndustryClassDef> industryDefsByDefId = new HashMap<>();
-	protected static final Map<String, IndustryClassDef> industryDefsByIndustryId = new HashMap<>();
-	protected static final List<IndustryClassDef> specialIndustryClassDefs = new ArrayList<>();
+	protected static final List<IndustryClassDef> industryClasses = new ArrayList<>();
+	protected static final Map<String, IndustryClassDef> industryClassesById = new HashMap<>();
+	protected static final Map<String, IndustryClassDef> industryClassesByIndustryId = new HashMap<>();
+	protected static final List<IndustryClassDef> specialIndustryClasses = new ArrayList<>();
+	protected static final List<BonusItem> bonuses = new ArrayList<>();
+	protected static final Map<String, BonusItem> bonusesById = new HashMap<>();
 	
 	// not a literally accurate count since it disregards HQs
 	// only used to handle the market size rotation
@@ -101,6 +104,7 @@ public class ExerelinMarketBuilder
 	
 	static {
 		loadIndustries();
+		loadBonuses();
 	}
 	
 	protected static void loadIndustries()
@@ -121,13 +125,17 @@ public class ExerelinMarketBuilder
 				
 				IndustryClassDef def = new IndustryClassDef(id, name, classDef, special);
 				
-				industryDefs.add(def);
-				industryDefsByDefId.put(id, def);
-				if (special) specialIndustryClassDefs.add(def);
+				industryClasses.add(def);
+				industryClassesById.put(id, def);
+				if (special) {
+					log.info("Added special industry class: " + def.id);
+					specialIndustryClasses.add(def);
+				}
 				Set<String> industryIds = def.generator.getIndustryIds();
 				for (String industryId : industryIds)
 				{
-					industryDefsByIndustryId.put(industryId, def);
+					industryClassesByIndustryId.put(industryId, def);
+					//log.info("Adding industry ID key " + industryId + " for industry class def " + def.name);
 				}
 			}
 			
@@ -137,7 +145,33 @@ public class ExerelinMarketBuilder
 		}	
 	}
 	
-	public ExerelinMarketBuilder(ExerelinProcGen procGen)
+	protected static void loadBonuses()
+	{
+		try {			
+			JSONArray configJson = Global.getSettings().getMergedSpreadsheetDataForMod("id", BONUS_CONFIG_FILE, ExerelinConstants.MOD_ID);
+			for(int i=0; i<configJson.length(); i++)
+			{
+				JSONObject row = configJson.getJSONObject(i);
+				String id = row.getString("id");
+				String name = row.getString("name");
+				String classDef = row.getString("class");
+				String requiredMod = row.optString("requiredMod", "");
+				
+				if (!requiredMod.isEmpty() && !Global.getSettings().getModManager().isModEnabled(requiredMod))
+					continue;
+				
+				BonusItem bonus = new BonusItem(id, name, classDef);
+				bonuses.add(bonus);
+				bonusesById.put(id, bonus);
+			}
+			
+		} catch (IOException | JSONException ex) {	// fail-deadly to make sure errors don't go unnoticed
+			log.error(ex);
+			throw new IllegalStateException("Error loading bonus items for procgen: " + ex);
+		}	
+	}
+	
+	public NexMarketBuilder(ExerelinProcGen procGen)
 	{
 		this.procGen = procGen;
 		random = procGen.getRandom();
@@ -208,7 +242,7 @@ public class ExerelinMarketBuilder
 		boolean isMoon = data.type == EntityType.MOON;
 		int size = 1;
 		if (data.isHQ) {
-			size = 7;
+			size = 8;
 		}
 		else {
 			if (isStation) size = getSizeFromRotation(STATION_SIZE_ROTATION, numStations);
@@ -345,8 +379,14 @@ public class ExerelinMarketBuilder
 				sizeIndex = 0;
 			
 			if (sizeIndex > 0)
-				market.addIndustry(ExerelinConfig.getExerelinFactionConfig(market.getFactionId())
-						.getRandomDefenceStation(random, sizeIndex));
+			{
+				String station = ExerelinConfig.getExerelinFactionConfig(market.getFactionId())
+						.getRandomDefenceStation(random, sizeIndex);
+				if (station != null) {
+					//log.info("Adding station: " + station);
+					market.addIndustry(station);
+				}
+			}
 		}
 	}
 	
@@ -398,7 +438,7 @@ public class ExerelinMarketBuilder
 		{
 			market.addIndustry(Industries.HIGHCOMMAND);
 			market.addIndustry(Industries.WAYSTATION);
-			ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 2);
+			market.addIndustry(ExerelinConfig.getExerelinFactionConfig(factionId).getRandomDefenceStation(random, 2));
 			if (data == procGen.getHomeworld()) 
 			{
 				//market.addCondition(Conditions.AUTOFAC_HEAVY_INDUSTRY);
@@ -438,6 +478,7 @@ public class ExerelinMarketBuilder
 				PlanetAPI planet = (PlanetAPI) token;
 				if (planet.isGasGiant())
 				{
+					log.info(market.getName() + " orbits gas giant " + planet.getName() + ", checking for volatiles");
 					MarketAPI planetMarket = planet.getMarket();
 					if (planetMarket.hasCondition(Conditions.VOLATILES_TRACE))
 						market.addCondition(Conditions.VOLATILES_TRACE);
@@ -450,10 +491,15 @@ public class ExerelinMarketBuilder
 				}
 			}
 			
-			if (data.terrain.getType().equals(Terrain.ASTEROID_BELT))
-				market.addCondition(Conditions.ORE_SPARSE);
-			if (data.terrain.getType().equals(Terrain.ASTEROID_FIELD))
-				market.addCondition(Conditions.ORE_MODERATE);
+			if (data.terrain != null)
+			{
+				if (data.terrain.getType().equals(Terrain.ASTEROID_BELT))
+					market.addCondition(Conditions.ORE_SPARSE);
+				if (data.terrain.getType().equals(Terrain.ASTEROID_FIELD))
+					market.addCondition(Conditions.ORE_MODERATE);
+				if (data.terrain.getType().equals(Terrain.RING))
+					market.addCondition(Conditions.VOLATILES_TRACE);
+			}
 		}
 				
 		// free port status, tariffs
@@ -482,6 +528,12 @@ public class ExerelinMarketBuilder
 			else numPlanets++;
 		}
 		
+		market.setSurveyLevel(MarketAPI.SurveyLevel.FULL);
+		for (MarketConditionAPI cond : market.getConditions())
+		{
+			cond.setSurveyed(true);
+		}
+		
 		markets.add(data);
 		if (!marketsByFactionId.containsKey(factionId))
 			marketsByFactionId.put(factionId, new ArrayList<ProcGenEntity>());
@@ -507,12 +559,19 @@ public class ExerelinMarketBuilder
 			
 			if (count == 0) continue;
 			
-			IndustryClassDef def = industryDefsByIndustryId.get(seed.industryId);			
+			IndustryClassDef def = industryClassesByIndustryId.get(seed.industryId);
 			
-			// order entities by reverse priority, highes priority markets get the industries
+			// order entities by reverse priority, highest priority markets get the industries
 			List<Pair<ProcGenEntity, Float>> ordered = new ArrayList<>();	// float is priority value
 			for (ProcGenEntity entity : entities)
 			{
+				// already present?
+				if (entity.market.hasIndustry(seed.industryId))
+				{
+					count -= 1;
+					continue;
+				}
+				
 				// this industry isn't usable on this market
 				if (!def.generator.canApply(factionId, entity))
 					continue;
@@ -521,7 +580,7 @@ public class ExerelinMarketBuilder
 			
 			Collections.sort(ordered, new Comparator<Pair<ProcGenEntity, Float>>() {
 				public int compare(Pair<ProcGenEntity, Float> p1, Pair<ProcGenEntity, Float> p2) {
-					return p2.two.compareTo(p1.two);
+					return p1.two.compareTo(p2.two);
 				}
 			});
 			
@@ -529,7 +588,8 @@ public class ExerelinMarketBuilder
 			{
 				if (ordered.isEmpty()) break;
 				Pair<ProcGenEntity, Float> highest = ordered.remove(ordered.size() - 1);
-				log.info("Adding key industry " + def.name + " to market " + highest.one.name);
+				log.info("Adding key industry " + def.name + " to market " + highest.one.name
+						+ " (priority " + highest.two + ")");
 				highest.one.market.addIndustry(seed.industryId);
 				highest.one.numProductiveIndustries += 1;
 			}
@@ -552,7 +612,7 @@ public class ExerelinMarketBuilder
 		List<Pair<IndustryClassDef, Float>> industries = new ArrayList<>();
 		
 		// order compatible indsutries by priority
-		for (IndustryClassDef def : industryDefs)
+		for (IndustryClassDef def : industryClasses)
 		{
 			if (def.special) continue;
 			if (!def.generator.canApply(factionId, entity))
@@ -566,7 +626,7 @@ public class ExerelinMarketBuilder
 		
 		Collections.sort(industries, new Comparator<Pair<IndustryClassDef, Float>>() {
 			public int compare(Pair<IndustryClassDef, Float> p1, Pair<IndustryClassDef, Float> p2) {
-				return p2.two.compareTo(p1.two);
+				return p1.two.compareTo(p2.two);
 			}
 		});
 		
@@ -577,8 +637,10 @@ public class ExerelinMarketBuilder
 			if (entity.market.getIndustries().size() >= 16)
 				break;
 			
-			IndustryClassDef def = industries.remove(industries.size() - 1).one;
-			log.info("Adding industry " + def.name + " to market " + entity.name);
+			Pair<IndustryClassDef, Float> highest = industries.remove(industries.size() - 1);
+			IndustryClassDef def = highest.one;
+			log.info("Adding industry " + def.name + " to market " + entity.name 
+					+ " (priority " + highest.two + ")");
 			def.generator.apply(entity);
 		}
 		
@@ -588,18 +650,21 @@ public class ExerelinMarketBuilder
 		if (random.nextFloat() > specialChance) return;
 		
 		WeightedRandomPicker<IndustryClassDef> specialPicker = new WeightedRandomPicker<>();
-		for (IndustryClassDef def : specialIndustryClassDefs)
+		for (IndustryClassDef def : specialIndustryClasses)
 		{
 			if (!def.generator.canApply(factionId, entity))
 				continue;
 			
 			float weight = def.generator.getSpecialWeight(entity);
 			if (weight <= 0) continue;
-			industries.add(new Pair<>(def, weight));
+			specialPicker.add(def, weight);
 		}
 		IndustryClassDef picked = specialPicker.pick();
 		if (picked != null)
+		{
+			log.info("Adding special industry " + picked.name + " to market " + entity.name);
 			picked.generator.apply(entity);
+		}
 	}
 	
 	public void addIndustriesToMarkets()
@@ -608,10 +673,60 @@ public class ExerelinMarketBuilder
 			addIndustriesToMarket(ent);
 	}
 	
-	// TODO
-	public void addFactionSpecials(String factionId)
+	/**
+	 * Add bonus items (AI cores, synchrotrons, etc.) to a faction's industries.
+	 * @param factionId
+	 */
+	public void addFactionBonuses(String factionId)
 	{
+		ExerelinFactionConfig conf = ExerelinConfig.getExerelinFactionConfig(factionId);
+		List<Industry> industries = new ArrayList<>();
+		for (ProcGenEntity ent : marketsByFactionId.get(factionId))
+		{
+			industries.addAll(ent.market.getIndustries());
+		}
 		
+		for (BonusSeed bonusEntry : conf.bonusSeeds)
+		{
+			int count = bonusEntry.count;
+			if (bonusEntry.mult > 0)
+				count += Math.round(marketsByFactionId.get(factionId).size() * bonusEntry.mult);
+			
+			if (count <= 0)
+				continue;
+			
+			BonusItem bonus = bonusesById.get(bonusEntry.id);
+			
+			// order industries by reverse priority, highest priority markets get the bonuses
+			List<Pair<Industry, Float>> ordered = new ArrayList<>();	// float is priority value
+			for (Industry ind : industries)
+			{
+				ProcGenEntity ent = procGen.procGenEntitiesByToken.get(ind.getMarket().getPrimaryEntity());
+				// this bonus isn't usable for this industry
+				if (!bonus.generator.canApply(ind, ent))
+					continue;
+				
+				ordered.add(new Pair<>(ind, bonus.generator.getPriority(ind, ent)));
+			}
+			
+			Collections.sort(ordered, new Comparator<Pair<Industry, Float>>() {
+				public int compare(Pair<Industry, Float> p1, Pair<Industry, Float> p2) {
+					return p1.two.compareTo(p2.two);
+				}
+			});
+			
+			for (int i = 0; i < count; i++)
+			{
+				if (ordered.isEmpty()) break;
+				Pair<Industry, Float> highest = ordered.remove(ordered.size() - 1);
+				Industry ind = highest.one;
+				ProcGenEntity ent = procGen.procGenEntitiesByToken.get(ind.getMarket().getPrimaryEntity());
+				
+				log.info("Adding bonus " + bonus.name + " to industry " + ind.getNameForModifier() 
+						+ " on " + ind.getMarket().getName());
+				bonus.generator.apply(ind, ent);
+			}
+		}		
 	}
 		
 	// =========================================================================
@@ -630,12 +745,39 @@ public class ExerelinMarketBuilder
 			this.special = special;
 			
 			try {
-				Class<?> clazz = Class.forName(generatorClass);
-				Constructor<?> ctor = clazz.getConstructor(String.class);
-				generator = (IndustryClassGen)ctor.newInstance();
+				ClassLoader loader = Global.getSettings().getScriptClassLoader();
+				Class<?> clazz = loader.loadClass(generatorClass);
+				generator = (IndustryClassGen)clazz.newInstance();
 			} catch (Exception ex) {
-				log.error("Failed to set generator for industry def " + name + ": " + ex);
+				log.error("Failed to set generator for industry def " + name, ex);
 			}
+			
+			generator.setId(id);
+			generator.setName(name);
+		}
+	}
+	
+	public static class BonusItem
+	{
+		public final String id;
+		public final String name;
+		public BonusGen generator;
+		
+		public BonusItem(String id, String name, String generatorClass)
+		{
+			this.id = id;
+			this.name = name;
+			
+			try {
+				ClassLoader loader = Global.getSettings().getScriptClassLoader();
+				Class<?> clazz = loader.loadClass(generatorClass);
+				generator = (BonusGen)clazz.newInstance();
+			} catch (Exception ex) {
+				log.error("Failed to set generator for industry def " + name, ex);
+			}
+			
+			generator.setId(id);
+			generator.setName(name);
 		}
 	}
 }

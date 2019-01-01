@@ -28,4 +28,24 @@
     "startShipsTradeLarge":[["venture_Balanced", "gemini_Standard", "wayfarer_Standard"]],
     "startShipsCarrierSmall":[["drover_Strike", "vigilance_Standard", "brawler_Elite"]],
     "startShipsCarrierLarge":[["heron_Strike", "hammerhead_Balanced", "centurion_Starting"]],
+    
+    "defenceStations":[
+        {"ids":["orbitalstation", "battlestation", "starfortress"], "weight":0.5},
+        {"ids":["orbitalstation_mid", "battlestation_mid", "starfortress_mid"]},
+        {"ids":["orbitalstation_high", "battlestation_high", "starfortress_high"], "weight":0.5},
+    ],
+    
+    "industrySeeds":[
+        {"id":"orbitalworks", "mult":0.1},
+        {"id":"fuelprod", "mult":0.1},
+        {"id":"lightindustry", "mult":0.1},
+    ],
+    
+    "bonusSeeds":[
+        {"id":"nanoforge_pristine", "count":1},
+        {"id":"aiCore_station", "count":1, "mult":0.1},
+        {"id":"aiCore_military", "mult":0.25},
+        {"id":"aiCore_fuelprod", "count":1},
+        {"id":"aiCore_other", "mult":0.5},
+    ],
 }

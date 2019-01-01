@@ -30,4 +30,17 @@
     "startShipsTradeSmall":[["buffalo_luddic_path_att", "dram_luddic_path_rai", "cerberus_luddic_path_Attack"]],
     "startShipsCombatLarge":[["colossus2_Pather", "enforcer_luddic_path_rai", "lasher_luddic_path_Raider"]],
     "startShipsCarrierSmall":[["condor_luddic_path_rai", "nebula_luddic_path_rai", "hound_luddic_path_Attack"]],
+    
+    "defenceStations":[
+        {"ids":["orbitalstation", "battlestation", "starfortress"]},
+    ],
+    
+    "industrySeeds":[
+        {"id":"lightindustry", "mult":0.1},
+    ],
+    
+    "industrySpawnMults":{
+        "heavyindustry":0,
+        "fuelproduction":0,
+    },
 }

@@ -21,29 +21,15 @@ public class TechMining extends IndustryClassGen {
 			switch (cond.getId())
 			{
 				case Conditions.RUINS_SCATTERED:
-					return 50;
+					return 200;
 				case Conditions.RUINS_WIDESPREAD:
-					return 125;
-				case Conditions.RUINS_EXTENSIVE:
-					return 250;
-				case Conditions.RUINS_VAST:
 					return 500;
+				case Conditions.RUINS_EXTENSIVE:
+					return 1000;
+				case Conditions.RUINS_VAST:
+					return 9000;
 			}
 		}
 		return 0;
-	}
-	
-	@Override
-	public boolean canApply(String factionId, ProcGenEntity entity) {
-		if (entity.market.hasIndustry(Industries.AQUACULTURE)) return false;
-		return super.canApply(factionId, entity);
-	}
-		
-	@Override
-	public void apply(ProcGenEntity entity) {
-		if (com.fs.starfarer.api.impl.campaign.econ.impl.Farming.AQUA_PLANETS.contains(entity.planetType))
-			entity.market.addIndustry(Industries.AQUACULTURE);
-		else
-			entity.market.addIndustry(Industries.FARMING);
 	}
 }

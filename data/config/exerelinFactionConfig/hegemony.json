@@ -28,4 +28,19 @@
     "startShipsTradeLarge":[["venture_Balanced", "buffalo_hegemony_Standard", "shepherd_Frontier"]],
     "startShipsCarrierSmall":[["condor_Attack", "lasher_Standard", "hound_hegemony_Standard"]],
     "startShipsCarrierLarge":[["mora_Assault", "enforcer_Escort", "lasher_Strike"]],
+    
+    "defenceStations":[
+        {"ids":["orbitalstation", "battlestation", "starfortress"]},
+        {"ids":["orbitalstation_mid", "battlestation_mid", "starfortress_mid"], "weight":0.5},
+    ],
+    
+    "industrySeeds":[
+        {"id":"orbitalworks", "mult":0.1},
+        {"id":"fuelprod", "mult":0.1},
+        {"id":"lightindustry", "mult":0.1},
+    ],
+    
+    "bonusSeeds":[
+        {"id":"nanoforge_pristine", "count":1},
+    ],
 }

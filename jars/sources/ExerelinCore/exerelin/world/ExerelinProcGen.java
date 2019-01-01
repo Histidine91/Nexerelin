@@ -68,9 +68,9 @@ public class ExerelinProcGen {
 	public static final float CORE_WIDTH = 15000;
 	public static final float CORE_HEIGHT = 12000;
 	public static final int CORE_RECURSION_MAX_DEPTH = 6;
-	public static final Set<String> ALLOWED_STATION_TERRAIN = new HashSet<>(Arrays.asList(new String[] {
+	public static final Set<String> ALLOWED_STATION_TERRAIN = new HashSet<>(Arrays.asList(
 		Terrain.ASTEROID_BELT, Terrain.ASTEROID_FIELD, Terrain.RING
-	}));
+	));
 	
 	protected static final String PLANET_NAMES_FILE = "data/config/exerelin/planetNames.json";
 	protected static List<String> stationNames = new ArrayList<>();
@@ -104,7 +104,7 @@ public class ExerelinProcGen {
 	protected ProcGenEntity homeworld;
 	
 	protected ExerelinSetupData setupData;
-	protected ExerelinMarketBuilder marketSetup;
+	protected NexMarketBuilder marketSetup;
 	
 	protected Random random;
 	
@@ -304,20 +304,28 @@ public class ExerelinProcGen {
 				return 2;
 			case Conditions.MILD_CLIMATE:
 				return 0.5f;
+			case Conditions.ORE_MODERATE:
+			case Conditions.RARE_ORE_MODERATE:
+			case Conditions.ORGANICS_COMMON:
+				return 0.15f;
 			case Conditions.ORE_ABUNDANT:
 			case Conditions.RARE_ORE_ABUNDANT:
 			case Conditions.ORGANICS_ABUNDANT:
-			case Conditions.VOLATILES_ABUNDANT:
+			case Conditions.VOLATILES_TRACE:
 				return 0.3f;
 			case Conditions.ORE_RICH:
 			case Conditions.RARE_ORE_RICH:
 			case Conditions.ORGANICS_PLENTIFUL:
-			case Conditions.VOLATILES_PLENTIFUL:
+			case Conditions.VOLATILES_DIFFUSE:
 				return 0.6f;
 			case Conditions.ORE_ULTRARICH:
 			case Conditions.RARE_ORE_ULTRARICH:
+			case Conditions.VOLATILES_ABUNDANT:
 				return 1f;
+			case Conditions.VOLATILES_PLENTIFUL:
+				return 1.5f;
 			case Conditions.FARMLAND_ADEQUATE:
+			case Conditions.WATER_SURFACE:
 				return 0.2f;
 			case Conditions.FARMLAND_RICH:
 				return 0.35f;
@@ -387,7 +395,11 @@ public class ExerelinProcGen {
 		for (PlanetAPI planet : system.getPlanets())
 		{
 			if (planet.isStar()) continue;
-			if (planet.isGasGiant()) continue;
+			if (planet.isGasGiant()){
+				// gas giants are of interest even though we won't populate them directly
+				addDesirabilityForSystem(system, getDesirability(planet));
+				continue;
+			}
 			
 			//log.info("Creating entity data for planet " + planet.getName());
 			ProcGenEntity planetData = createEntityDataForPlanet(planet);
@@ -620,14 +632,17 @@ public class ExerelinProcGen {
 						break;
 					}
 				}
-				if (allow) picker.add(planet);
+				
+				float weight = 1;
+				if (planet.isGasGiant()) weight *= 6;	// helps us get volatiles
+				if (allow) picker.add(planet, weight);
 			}
 			for (CampaignTerrainAPI terrain : system.getTerrainCopy())
 			{
 				if (ALLOWED_STATION_TERRAIN.contains(terrain.getId()))
 				{
 					log.info(terrain);
-					picker.add(terrain);
+					picker.add(terrain, 2);
 				}
 			}
 		}
@@ -876,7 +891,7 @@ public class ExerelinProcGen {
 	protected void init()
 	{
 		random = new Random(ExerelinUtils.getStartingSeed());
-		marketSetup = new ExerelinMarketBuilder(this);
+		marketSetup = new NexMarketBuilder(this);
 		setupData = ExerelinSetupData.getInstance();
 		factionIds = getStartingFactions();
 	}
@@ -1517,19 +1532,19 @@ public class ExerelinProcGen {
 			createStation(station, factionId, true);
 			populatedSystemsByFaction.get(factionId).add(station.starSystem);
 		}
+		// add industries to each entity
+		marketSetup.addIndustriesToMarkets();
 		
 		// add key industries for each faction
 		for (String factionId : factions)
 		{
 			marketSetup.addKeyIndustriesForFaction(factionId);
 		}
-		// add industries to each entity
-		marketSetup.addIndustriesToMarkets();
 		
-		// add faction specials
+		// add faction bonus items
 		for (String factionId : factions)
 		{
-			marketSetup.addFactionSpecials(factionId);
+			marketSetup.addFactionBonuses(factionId);
 		}
 		
 		// end distribution of markets and stations
@@ -1563,6 +1578,7 @@ public class ExerelinProcGen {
 		@Deprecated public int marketPointsSpent = 0;
 		@Deprecated public int bonusMarketPoints = 0;
 		public int numProductiveIndustries = 0;
+		public int numBonuses = 0;
 		
 		public ProcGenEntity(SectorEntityToken entity) 
 		{

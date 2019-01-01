@@ -8,6 +8,7 @@ import com.fs.starfarer.api.fleet.FleetMemberType;
 import com.fs.starfarer.api.fleet.ShipRolePick;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
+import com.fs.starfarer.api.util.Pair;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import exerelin.ExerelinConstants;
 import exerelin.campaign.DiplomacyManager;
@@ -23,7 +24,7 @@ public class ExerelinFactionConfig
 {
     public static final String[] DEFAULT_MINERS = {"venture_Outdated", "shepherd_Frontier"};
     public static final List<DefenceStationSet> DEFAULT_DEFENCE_STATIONS = new ArrayList<>();
-	public static final List<IndustrySeed> DEFAULT_INDUSTRY_SEEDS = new ArrayList<>();
+    public static final List<IndustrySeed> DEFAULT_INDUSTRY_SEEDS = new ArrayList<>();
     public static final Map<Alignment, Float> DEFAULT_ALIGNMENTS = new HashMap<>();
     
     public String factionId;
@@ -91,7 +92,8 @@ public class ExerelinFactionConfig
     public float tariffMult = 1;
     
     public List<IndustrySeed> industrySeeds = new ArrayList<>();
-	public Map<String, Float> industrySpawnMults = new HashMap<>();	// TODO load this
+    public Map<String, Float> industrySpawnMults = new HashMap<>();    // TODO: load this
+    public List<BonusSeed> bonusSeeds = new ArrayList<>();
     
     // invasions and stuff
     public float invasionStrengthBonusAttack = 0;	// marines
@@ -127,7 +129,7 @@ public class ExerelinFactionConfig
     
     public Map<StartFleetType, StartFleetSet> startShips = new HashMap<>();
     
-	// set defaults
+    // set defaults
     static {
         for (Alignment alignment : Alignment.values())
         {
@@ -138,10 +140,10 @@ public class ExerelinFactionConfig
         DefenceStationSet mid = new DefenceStationSet(0.75f, Industries.ORBITALSTATION_MID, Industries.BATTLESTATION_MID, Industries.STARFORTRESS_MID);
         DefenceStationSet high = new DefenceStationSet(0.5f, Industries.ORBITALSTATION_HIGH, Industries.BATTLESTATION_HIGH, Industries.STARFORTRESS_HIGH);
         DEFAULT_DEFENCE_STATIONS.addAll(Arrays.asList(low, mid, high));
-		
-		DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.HEAVYINDUSTRY, 0.1f, true));
-		DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.FUELPROD, 0.1f, true));
-		DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.LIGHTINDUSTRY, 0.1f, true));
+        
+        DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.HEAVYINDUSTRY, 0.1f, true));
+        DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.FUELPROD, 0.1f, true));
+        DEFAULT_INDUSTRY_SEEDS.add(new IndustrySeed(Industries.LIGHTINDUSTRY, 0.1f, true));
     }
 
     public ExerelinFactionConfig(String factionId)
@@ -155,8 +157,8 @@ public class ExerelinFactionConfig
         try
         {
             JSONObject settings = Global.getSettings().getMergedJSONForMod(
-					"data/config/exerelinFactionConfig/" + factionId + ".json", ExerelinConstants.MOD_ID);
-
+                    "data/config/exerelinFactionConfig/" + factionId + ".json", ExerelinConstants.MOD_ID);
+    
             playableFaction = settings.optBoolean("playableFaction", true);
             startingFaction = settings.optBoolean("startingFaction", playableFaction);
             corvusCompatible = settings.optBoolean("corvusCompatible", false);
@@ -211,10 +213,7 @@ public class ExerelinFactionConfig
             if (settings.has("miningVariantsOrWings"))
                 miningVariantsOrWings = Arrays.asList(ExerelinUtils.JSONArrayToStringArray(settings.getJSONArray("miningVariantsOrWings")));
             
-            if (settings.has("defenceStations"))
-                loadDefenceStations(settings);
-            else
-                defenceStations = DEFAULT_DEFENCE_STATIONS;
+            loadDefenceStations(settings);
             
             loadCustomStations(settings);
             
@@ -253,9 +252,9 @@ public class ExerelinFactionConfig
                 diplomacyNegativeChance.put("default", 1f);
             
             loadDispositions(settings);
-			
-			noRandomizeRelations = settings.optBoolean("noRandomizeRelations", noRandomizeRelations);
-			noSyncRelations = settings.optBoolean("noSyncRelations", noSyncRelations);
+            
+            noRandomizeRelations = settings.optBoolean("noRandomizeRelations", noRandomizeRelations);
+            noSyncRelations = settings.optBoolean("noSyncRelations", noSyncRelations);
             
             // morality
             if (settings.has("morality"))
@@ -297,12 +296,11 @@ public class ExerelinFactionConfig
             loadVengeanceNames(settings);
             
             loadStartShips(settings);
-			
-			
+            
             // industry
             if (settings.has("industrySeeds"))
             {
-                JSONArray seedsJson = settings.getJSONArray("industrySeedMults");
+                JSONArray seedsJson = settings.getJSONArray("industrySeeds");
                 for (int i = 0; i < seedsJson.length(); i++)
                 {
                     JSONObject seedJson = seedsJson.getJSONObject(i);
@@ -313,8 +311,32 @@ public class ExerelinFactionConfig
                 }
             }
             else
-				industrySeeds = DEFAULT_INDUSTRY_SEEDS;
-			
+                industrySeeds = DEFAULT_INDUSTRY_SEEDS;
+            
+            if (settings.has("industrySpawnMults"))
+            {
+                JSONObject multsJson = settings.getJSONObject("industrySpawnMults");
+                Iterator<?> keys = multsJson.keys();
+                while( keys.hasNext() ) {
+                    String key = (String)keys.next();
+                    float value = (float)multsJson.optDouble(key, 0);
+                    industrySpawnMults.put(key, value);
+                }
+            }
+            
+            if (settings.has("bonusSeeds"))
+            {
+                JSONArray seedsJson = settings.getJSONArray("bonusSeeds");
+                for (int i = 0; i < seedsJson.length(); i++)
+                {
+                    JSONObject seedJson = seedsJson.getJSONObject(i);
+                    String id = seedJson.getString("id");
+                    int count = seedJson.optInt("count", 0);
+                    float mult = (float)seedJson.optDouble("mult", -1);
+                    bonusSeeds.add(new BonusSeed(id, count, mult));
+                }
+            }
+            
         } catch(IOException | JSONException ex)
         {
             Global.getLogger(this.getClass()).error("Failed to load faction config for " + factionId + ": " + ex);
@@ -504,13 +526,26 @@ public class ExerelinFactionConfig
     
     protected void loadDefenceStations(JSONObject factionSettings) throws JSONException
     {
+        if (!factionSettings.has("defenceStations"))
+        {
+            defenceStations = DEFAULT_DEFENCE_STATIONS;
+            return;
+        }            
+        
         JSONArray array = factionSettings.optJSONArray("defenceStations");
         if (array == null || array.length() == 0)
             return;
         
         for (int i=0; i<array.length(); i++)
         {
-            JSONObject defJson = array.getJSONObject(i);
+            JSONObject defJson;
+            // reverse compatibility: don't break on faction configs with old defence station list
+            try {
+                defJson = array.getJSONObject(i);
+            } catch (JSONException ex) {
+                defenceStations = DEFAULT_DEFENCE_STATIONS;
+                return;
+            }
             List<String> ids = ExerelinUtils.JSONArrayToArrayList(defJson.getJSONArray("ids"));
             float weight = (float)defJson.optDouble("weight", 1);
             
@@ -528,7 +563,7 @@ public class ExerelinFactionConfig
         }
         return picker.pick();
     }
-	
+    
     public String getRandomDefenceStation(Random rand, int sizeIndex)
     {
         if (defenceStations.isEmpty()) return null;
@@ -544,20 +579,22 @@ public class ExerelinFactionConfig
         sizeIndex = Math.min(sizeIndex, set.industryIds.size() - 1);
         return set.industryIds.get(sizeIndex);
     }
-	
-	public float getIndustryTypeMult(String defId)
-	{
-		if (!industrySpawnMults.containsKey(defId))
-			return 1;
-		return industrySpawnMults.get(defId);
-	}
     
-	public List<String> getStartShipList(JSONArray array) throws JSONException
-	{
-		List<String> list = ExerelinUtils.JSONArrayToArrayList(array);
-		if (!isStartingFleetValid(list)) return null;
-		return list;
-	}
+    public float getIndustryTypeMult(String defId)
+    {
+        if (!industrySpawnMults.containsKey(defId))
+            return 1;
+        Global.getLogger(this.getClass()).info("What the fuck is this, " 
+                + industrySpawnMults.get(defId) + ", " + industrySpawnMults.get(defId).getClass().getName());
+        return (float)industrySpawnMults.get(defId);
+    }
+    
+    public List<String> getStartShipList(JSONArray array) throws JSONException
+    {
+        List<String> list = ExerelinUtils.JSONArrayToArrayList(array);
+        if (!isStartingFleetValid(list)) return null;
+        return list;
+    }
     
     public void getStartShipTypeIfAvailable(JSONObject settings, String key, StartFleetType type) throws JSONException
     {
@@ -607,7 +644,7 @@ public class ExerelinFactionConfig
         getStartShipTypeIfAvailable(settings, "startShipsTradeLarge", StartFleetType.TRADE_LARGE);
         getStartShipTypeIfAvailable(settings, "startShipsCarrierSmall", StartFleetType.CARRIER_SMALL);
         getStartShipTypeIfAvailable(settings, "startShipsCarrierLarge", StartFleetType.CARRIER_LARGE);
-		getStartShipTypeIfAvailable(settings, "startShipsSuper", StartFleetType.SUPER);
+        getStartShipTypeIfAvailable(settings, "startShipsSuper", StartFleetType.SUPER);
     }
     
     /**
@@ -1007,6 +1044,20 @@ public class ExerelinFactionConfig
 			this.industryId = industryId;
 			this.mult = mult;
 			this.roundUp = roundUp;
+		}
+	}
+	
+	public static class BonusSeed
+	{
+		public String id;
+		public float mult;
+		public int count;
+		
+		public BonusSeed(String id, int count, float mult)
+		{
+			this.id = id;
+			this.count = count;
+			this.mult = mult;
 		}
 	}
 	

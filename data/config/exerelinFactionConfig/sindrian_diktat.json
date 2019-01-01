@@ -5,6 +5,8 @@
     "baseFleetCostMultiplier":1.0,
     
     "rebelFleetSuffix":"Dissidents",
+	
+	"marketSpawnWeight":0.75,
     
     "morality":"evil",
     
@@ -35,8 +37,20 @@
       ["heron_Strike", "sunder_Assault", "centurion_Starting"]
     ],
     
+    "defenceStations":[
+        {"ids":["orbitalstation", "battlestation", "starfortress"], "weight":0.5},
+        {"ids":["orbitalstation_mid", "battlestation_mid", "starfortress_mid"]},
+        {"ids":["orbitalstation_high", "battlestation_high", "starfortress_high"], "weight":0.5},
+    ],
+    
     "industrySeeds":[
-      {"id":"orbitalworks", "mult":0.1},
-	  {"id":"fuelprod", "mult":0.2},
+        {"id":"orbitalworks", "mult":0.1},
+        {"id":"fuelprod", "mult":0.2},
+    ],
+    
+    "bonusSeeds":[
+        {"id":"synchrotron", "count":1},
+        {"id":"nanoforge_corrupted", "count":1},
+        {"id":"aiCore_station", "count":1},
     ],
 }

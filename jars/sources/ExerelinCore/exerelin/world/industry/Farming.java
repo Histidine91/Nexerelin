@@ -20,20 +20,28 @@ public class Farming extends IndustryClassGen {
 		// aquaculture
 		if (entity.type != EntityType.STATION 
 				&& com.fs.starfarer.api.impl.campaign.econ.impl.Farming.AQUA_PLANETS.contains(entity.planetType)) 
-			return 999;
+			return 9000;
 		
 		for (MarketConditionAPI cond : market.getConditions())
 		{
 			switch (cond.getId())
 			{
+				/*
 				case Conditions.FARMLAND_POOR:
-					return 25;
+					return 100;
 				case Conditions.FARMLAND_ADEQUATE:
-					return 75;
+					return 250;
 				case Conditions.FARMLAND_RICH:
-					return 125;
+					return 400;
 				case Conditions.FARMLAND_BOUNTIFUL:
-					return 200;
+					return 600;
+				*/
+				case Conditions.FARMLAND_POOR:
+					return 400;
+				case Conditions.FARMLAND_ADEQUATE:
+				case Conditions.FARMLAND_RICH:
+				case Conditions.FARMLAND_BOUNTIFUL:
+					return 9000;
 			}
 		}
 		return 0;

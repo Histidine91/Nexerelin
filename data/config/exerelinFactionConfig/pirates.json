@@ -39,6 +39,15 @@
       ["venture_Balanced", "buffalo_pirates_Standard", "cerberus_d_pirates_Standard"]
     ],
     "startShipsCarrierSmall":[["condor_Attack", "buffalo2_FS", "lasher_Standard"]],
-	"startShipsCarrierLarge":[["colossus3_Pirate", "enforcer_d_pirates_Strike", "hound_d_pirates_Standard"]],
+    "startShipsCarrierLarge":[["colossus3_Pirate", "enforcer_d_pirates_Strike", "hound_d_pirates_Standard"]],
     "startShipsSuper":[["ssp_venomx_str"]],
+    
+    "defenceStations":[
+        {"ids":["orbitalstation", "battlestation", "starfortress"]},
+    ],
+    
+    "industrySeeds":[
+        {"id":"heavyindustry", "mult":0.05},
+        {"id":"fuelprod", "mult":0.05, "roundUp":false},
+    ],
 }

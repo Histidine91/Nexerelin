@@ -44,7 +44,9 @@ public class Refining extends IndustryClassGen {
 			}
 		}
 		// bad for high hazard worlds
-		priority += (175 - market.getHazardValue()) * 5;
+		priority += (175 - market.getHazardValue()) * 2;
+		
+		priority /= 2;
 		
 		return priority;
 	}

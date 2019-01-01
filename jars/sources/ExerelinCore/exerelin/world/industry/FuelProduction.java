@@ -17,7 +17,9 @@ public class FuelProduction extends IndustryClassGen {
 		MarketAPI market = entity.market;
 		
 		float priority = 25 + market.getSize() * 5;
-				
+		
+		// don't give bonus for local volatiles; we don't want this thing competing with volatiles mines
+		/*
 		for (MarketConditionAPI cond : market.getConditions())
 		{
 			switch (cond.getId())
@@ -36,13 +38,17 @@ public class FuelProduction extends IndustryClassGen {
 					break;
 			}
 		}
+		*/
 		
 		// bad for high hazard worlds
-		priority += (175 - market.getHazardValue()) * 5;
+		priority += (175 - market.getHazardValue()) * 2;
 		
 		// prefer to not be on same planet as heavy industry
 		if (HeavyIndustry.hasHeavyIndustry(market))
-			priority -= 350;
+			priority -= 400;
+		// or light industry for that matter
+		if (market.hasIndustry(Industries.LIGHTINDUSTRY))
+			priority -= 250;
 		
 		return priority;
 	}

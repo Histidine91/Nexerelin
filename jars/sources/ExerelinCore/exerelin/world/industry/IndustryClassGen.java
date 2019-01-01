@@ -1,6 +1,5 @@
 package exerelin.world.industry;
 
-import com.fs.starfarer.api.campaign.econ.Industry;
 import exerelin.world.ExerelinProcGen.ProcGenEntity;
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,6 +11,8 @@ public abstract class IndustryClassGen {
 	// all Starsector industry IDs that this class handles
 	// e.g. Farming class handles farming and aquaculture industries
 	protected final Set<String> industryIds;
+	protected String id;
+	protected String name;
 		
 	public IndustryClassGen(Collection<String> industryIds)
 	{
@@ -41,12 +42,18 @@ public abstract class IndustryClassGen {
 	
 	public boolean canApply(String factionId, ProcGenEntity entity)
 	{
+		if (alreadyExists(entity)) return false;
+		return true;
+	}
+	
+	public boolean alreadyExists(ProcGenEntity entity)
+	{
 		for (String ind : industryIds)
 		{
 			if (entity.market.hasIndustry(ind))
-				return false;
+				return true;
 		}
-		return getPriority(entity) > 0;
+		return false;
 	}
 	
 	/**
@@ -74,5 +81,21 @@ public abstract class IndustryClassGen {
 	
 	public boolean isSpecial() {
 		return false;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	public String getName() {
+		return name;
 	}
 }

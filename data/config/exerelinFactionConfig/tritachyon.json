@@ -5,6 +5,8 @@
     "rebelFleetSuffix":"Splinter Group",
     
     "directoryUseShortName":true,
+	
+	"marketSpawnWeight":0.75,
      
     "startRelationships":{ "hegemony": -0.3, "luddic_church":-0.6, "cabal":0.1 },
     "maxRelationships":{ "luddic_church":-0.1 },
@@ -39,4 +41,21 @@
     "startShipsCarrierSmall":[["ssp_vortex_sta", "tempest_Attack", "ssp_hecate_sup"]],
     "startShipsCarrierLarge":[["swp_eos_sta", "ssp_arachne_art", "brawler_tritachyon_Standard"]],
     "startShipsSuper":[["hyperion_Attack"]],
+    
+    "defenceStations":[
+        {"ids":["orbitalstation_high", "battlestation_high", "starfortress_high"]},
+    ],
+    
+    "industrySeeds":[
+      {"id":"orbitalworks", "mult":0.1},
+      {"id":"lightindustry", "mult":0.1},
+    ],
+    
+    "bonusSeeds":[
+        {"id":"nanoforge_corrupted", "count":1},
+        {"id":"aiCore_station", "count":2},
+        {"id":"aiCore_military", "mult":0.5},
+        {"id":"aiCore_heavyindustry", "count":1},
+        {"id":"aiCore_other", "mult":1},
+    ],
 }

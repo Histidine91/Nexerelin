@@ -9,7 +9,7 @@ import exerelin.world.ExerelinProcGen.ProcGenEntity;
 public class LightIndustry extends IndustryClassGen {
 
 	public LightIndustry() {
-		super(Industries.FUELPROD);
+		super(Industries.LIGHTINDUSTRY);
 	}
 
 	@Override
@@ -38,11 +38,14 @@ public class LightIndustry extends IndustryClassGen {
 		}
 		
 		// bad for high hazard worlds
-		priority += (175 - market.getHazardValue()) * 5;
+		priority += (175 - market.getHazardValue()) * 2;
 		
 		// prefer to not be on same planet as heavy industry
 		if (HeavyIndustry.hasHeavyIndustry(market))
 			priority -= 300;
+		// nor fuel production
+		if (market.hasIndustry(Industries.FUELPROD))
+			priority -= 250;
 		
 		return priority;
 	}

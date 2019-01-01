@@ -275,26 +275,27 @@ public class ExerelinCoreSystemGenerator extends StarSystemGenerator {
 			
 			// CHANGED //
 			// prefer habitable worlds
-			if (categoryData.getCategory().contains("cat_hab"))
+			// also gas giants for their volatiles
+			switch (categoryData.getCategory())
 			{
-				switch (categoryData.getCategory())
-				{
-					case "cat_hab5":	// none
-						weight *= 1.5f;
-						break;
-					case "cat_hab4":	// terran
-						weight *= 3f;
-						break;
-					case "cat_hab3":	// terran-eccentric, jungle, arid, water, tundra
-						weight *= 4f;
-						break;
-					case "cat_hab2":	// desert
-						weight *= 2f;
-						break;
-					case "cat_hab1":	// barren-desert
-						weight *= 1.5f;
-						break;
-				}
+				case "cat_hab5":	// none
+					weight *= 1.5f;
+					break;
+				case "cat_hab4":	// terran
+					weight *= 2f;
+					break;
+				case "cat_hab3":	// terran-eccentric, jungle, arid, water, tundra
+					weight *= 3f;
+					break;
+				case "cat_hab2":	// desert
+					weight *= 2f;
+					break;
+				case "cat_hab1":	// barren-desert
+					weight *= 1.5f;
+					break;
+				case "cat_giant":
+					weight *= 2f;
+					break;
 			}
 			
 			//if (weight > 0 && (catNothing || !isCategoryEmpty(categoryData, orbitIndex, fromParentOrbitIndex, age, starType, parentCategory, extraMult))) {

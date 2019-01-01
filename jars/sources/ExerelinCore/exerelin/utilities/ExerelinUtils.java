@@ -141,16 +141,7 @@ public class ExerelinUtils
 		return new ArrayList<>();
 	}
 
-	public static Map jsonToMap(JSONObject json) throws JSONException {
-		Map<String, Object> retMap = new HashMap<>();
-
-		if(json != JSONObject.NULL) {
-			retMap = toMap(json);
-		}
-		return retMap;
-	}
-
-	public static Map toMap(JSONObject object) throws JSONException {
+	public static Map<String, Object> jsonToMap(JSONObject object) throws JSONException {
 		Map<String, Object> map = new HashMap<>();
 
 		Iterator<String> keysItr = object.keys();
@@ -159,27 +150,27 @@ public class ExerelinUtils
 			Object value = object.get(key);
 
 			if(value instanceof JSONArray) {
-				value = toList((JSONArray) value);
+				value = jsonToList((JSONArray) value);
 			}
 
 			else if(value instanceof JSONObject) {
-				value = toMap((JSONObject) value);
+				value = jsonToMap((JSONObject) value);
 			}
 			map.put(key, value);
 		}
 		return map;
 	}
 
-	public static List toList(JSONArray array) throws JSONException {
+	public static List jsonToList(JSONArray array) throws JSONException {
 		List<Object> list = new ArrayList<>();
 		for(int i = 0; i < array.length(); i++) {
 			Object value = array.get(i);
 			if(value instanceof JSONArray) {
-				value = toList((JSONArray) value);
+				value = jsonToList((JSONArray) value);
 			}
 
 			else if(value instanceof JSONObject) {
-				value = toMap((JSONObject) value);
+				value = jsonToMap((JSONObject) value);
 			}
 			list.add(value);
 		}

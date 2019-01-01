@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class HeavyIndustry extends IndustryClassGen {
 	
-	protected static final Set<String> HEAVY_INDUSTRY = new HashSet<>(Arrays.asList(
+	public static final Set<String> HEAVY_INDUSTRY = new HashSet<>(Arrays.asList(
 		Industries.HEAVYINDUSTRY, Industries.ORBITALWORKS, "ms_modularFac", "ms_massIndustry"));
 
 	public HeavyIndustry() {
@@ -22,10 +22,17 @@ public class HeavyIndustry extends IndustryClassGen {
 	public float getPriority(ProcGenEntity entity) {
 		MarketAPI market = entity.market;
 		
-		float priority = 25 + market.getSize() * 5;
+		float priority = (25 + market.getSize() * 5) * 2;
 				
 		// bad for high hazard worlds
-		priority += (175 - market.getHazardValue()) * 5;
+		priority += (150 - market.getHazardValue()) * 2;
+		
+		// prefer not to be on same planet as fuel production
+		if (market.hasIndustry(Industries.FUELPROD))
+			priority -= 400;
+		// or light industry
+		if (market.hasIndustry(Industries.LIGHTINDUSTRY))
+			priority -= 250;
 		
 		return priority;
 	}
@@ -47,6 +54,7 @@ public class HeavyIndustry extends IndustryClassGen {
 			ind.startUpgrading();
 			ind.finishBuildingOrUpgrading();
 		}
+		/*	TODO: modular fac not supported yet, requires a source of high capacitance storage
 		else if (market.hasIndustry("ms_modularFac")) {
 			Industry ind = market.getIndustry("ms_modularFac");
 			ind.startUpgrading();
@@ -54,6 +62,7 @@ public class HeavyIndustry extends IndustryClassGen {
 		}
 		else if (market.getFactionId().equals("shadow_industry"))
 			market.addIndustry("ms_modularFac");
+		*/
 		else
 			market.addIndustry(Industries.HEAVYINDUSTRY);
 		

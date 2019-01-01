@@ -35,25 +35,24 @@ public class Mining extends IndustryClassGen {
 				case Conditions.ORE_ABUNDANT:
 				case Conditions.RARE_ORE_ABUNDANT:
 				case Conditions.ORGANICS_ABUNDANT:
-					priority += 100;
+					priority += 125;
 					break;
 				case Conditions.ORE_RICH:
 				case Conditions.RARE_ORE_RICH:
 				case Conditions.ORGANICS_PLENTIFUL:
-				case Conditions.VOLATILES_TRACE:
-					priority += 150;
+				//case Conditions.VOLATILES_TRACE:
+					priority += 200;
 					break;
 				case Conditions.ORE_ULTRARICH:
 				case Conditions.RARE_ORE_ULTRARICH:
-				case Conditions.VOLATILES_DIFFUSE:
-					priority += 200;
-					break;
-				case Conditions.VOLATILES_ABUNDANT:
-					priority += 250;
-					break;
-				case Conditions.VOLATILES_PLENTIFUL:
+				//case Conditions.VOLATILES_DIFFUSE:
 					priority += 300;
 					break;
+				case Conditions.VOLATILES_TRACE:
+				case Conditions.VOLATILES_DIFFUSE:
+				case Conditions.VOLATILES_ABUNDANT:
+				case Conditions.VOLATILES_PLENTIFUL:
+					return 9999;
 			}
 		}
 		return priority;
